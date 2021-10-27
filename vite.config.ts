@@ -73,6 +73,7 @@ export default defineConfig({
     },
   },
   server: {
+    port: 9090,
     fs: {
       allow: ["."],
     },

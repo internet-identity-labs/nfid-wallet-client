@@ -34,8 +34,10 @@ import { hasOwnProperty } from "./utils"
 import * as tweetnacl from "tweetnacl"
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 
-// eslint-disable-next-line
-const canisterId: string = "rkp4c-7iaaa-aaaaa-aaaca-cai" // process.env.II_CANISTER_ID!
+const canisterId: string = import.meta.env.VITE_II_CANISTER_ID as string
+if (!canisterId)
+  throw new Error("you need to add VITE_II_CANISTER_ID to your environment")
+
 console.log(">> ", { canisterId })
 
 // export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)

@@ -10,7 +10,7 @@ const ICNetworks = {
 const icNetwork = process.env.DFX_NETWORK || ICNetworks.ic;
 
 // TODO: reset comment
-// const II_CANISTER_ID = process.env.II_CANISTER_ID;
+const II_CANISTER_ID = process.env.II_CANISTER_ID;
 const II_CANISTER_URL =
   icNetwork === ICNetworks.ic
     ? "https://identity.ic0.app/#authorize"

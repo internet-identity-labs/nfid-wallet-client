@@ -88,7 +88,7 @@ export class IIConnection {
     try {
       delegationIdentity = await requestFEDelegation(identity)
     } catch (error) {
-      return { kind: "authFail", error }
+      return { kind: "authFail", error: error as Error }
     }
 
     const actor = await IIConnection.createActor(delegationIdentity)
@@ -111,7 +111,7 @@ export class IIConnection {
         pow,
       )
     } catch (error) {
-      return { kind: "apiError", error }
+      return { kind: "apiError", error: error as Error }
     }
 
     if (hasOwnProperty(registerResponse, "canister_full")) {
@@ -140,7 +140,7 @@ export class IIConnection {
     } catch (e) {
       return {
         kind: "apiError",
-        error: e,
+        error: e as Error,
       }
     }
 
@@ -169,7 +169,7 @@ export class IIConnection {
     try {
       delegationIdentity = await requestFEDelegation(multiIdent)
     } catch (e) {
-      return { kind: "authFail", error: e }
+      return { kind: "authFail", error: e as Error }
     }
 
     const actor = await IIConnection.createActor(delegationIdentity)

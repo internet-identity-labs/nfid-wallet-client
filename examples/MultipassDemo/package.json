@@ -1,0 +1,71 @@
+{
+  "name": "identity-labs-react-ic-ii-auth-example",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@dfinity/agent": "0.10.1",
+    "@dfinity/auth-client": "0.10.1",
+    "@dfinity/authentication": "0.10.1",
+    "@dfinity/candid": "0.10.1",
+    "@dfinity/identity": "0.10.1",
+    "@dfinity/principal": "0.10.1",
+    "@identity-labs/react-ic-ii-auth": "0.0.13",
+    "clsx": "1.1.1",
+    "next": "11.1.2",
+    "qrcode": "1.4.4",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "typescript": "^4.4.4",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "dev": "next",
+    "start": "next start",
+    "build": "next build && next export",
+    "export": "next export",
+    "test": "jest",
+    "ic:deploy": "dfx deploy",
+    "ic:start": "dfx start --background",
+    "ic:start-clean": "dfx start --background --clean"
+  },
+  "eslintConfig": {},
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "7.15.8",
+    "@babel/plugin-transform-typescript": "7.15.8",
+    "@testing-library/dom": "8.7.2",
+    "@testing-library/jest-dom": "5.14.1",
+    "@testing-library/react": "12.1.2",
+    "@testing-library/user-event": "13.2.1",
+    "@types/jest": "27.0.2",
+    "@types/node": "^16.11.4",
+    "@types/qrcode": "1.4.1",
+    "@types/react": "^17.0.32",
+    "@types/react-dom": "17.0.10",
+    "@typescript-eslint/eslint-plugin": "5.1.0",
+    "@typescript-eslint/parser": "5.1.0",
+    "autoprefixer": "10.3.7",
+    "cross-env": "7.0.3",
+    "eslint": "8.1.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-react": "7.26.1",
+    "eslint-plugin-react-hooks": "4.2.1-alpha-f6abf4b40-20211020",
+    "jest": "27.2.4",
+    "patch-package": "6.4.7",
+    "postcss": "8.3.9",
+    "prettier": "2.4.1",
+    "tailwindcss": "2.2.16",
+    "ts-jest": "27.0.5"
+  }
+}

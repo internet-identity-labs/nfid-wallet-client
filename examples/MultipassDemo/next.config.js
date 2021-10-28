@@ -14,7 +14,7 @@ const II_CANISTER_ID = process.env.II_CANISTER_ID;
 const II_CANISTER_URL =
   icNetwork === ICNetworks.ic
     ? "https://identity.ic0.app/#authorize"
-    : `http://localhost:8080/#authorize`; // TODO: reset to http://${II_CANISTER_ID}.localhost:8000/#authorize
+    : `http://${II_CANISTER_ID}.localhost:9090/authenticate`;
 
 const getCanisters = () => {
   return icNetwork === ICNetworks.local

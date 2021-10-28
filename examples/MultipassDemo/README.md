@@ -1,4 +1,4 @@
-# React IC II Auth example
+# Multipass Demo
 
 This project is bootstrapped with [Next.js](https://nextjs.org/).
 

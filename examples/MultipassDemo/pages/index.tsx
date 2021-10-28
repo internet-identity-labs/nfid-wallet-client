@@ -20,7 +20,7 @@ function App() {
       <div className='h-screen w-full bg-gradient-to-br from-blue-500 to-yellow-500'>
         <Navigation />
         <div className='p-8 pt-20 md:p-8 md:w-8/12 md:m-auto md:pt-32 lg:pt-48 2xl:max-w-7xl'>
-          <H1 className='py-8'>Auth plugin for IC Internet Identity</H1>
+          <H1 className='py-8'>Sample application to demonstrate Multipass</H1>
 
           <div className='pt-8'>
             <AuthComponent />

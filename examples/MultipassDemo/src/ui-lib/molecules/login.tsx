@@ -52,33 +52,18 @@ export const InternetAuthButton: React.FC<InternetAuthProps> = ({
     isAuthenticated && setShowModal(false)
   }, [isAuthenticated])
 
-  return (
-    <>
-      <Button onClick={handleAuthModal}>Login Modal</Button>
-      <Button onClick={handleNewAuth}>Simulate Delegate</Button>
-      {showModal && (
-        <Modal
-          className='md:min-w-[450px]'
-          isVisible={showModal}
-          onClose={handleClose}
-        >
-          <ModalHeader onClose={handleClose} />
-          <InternetIdentityIframe
-            internetIdentityProvider={identityProvider}
-            onLoad={handleAuthentication}
-          />
-        </Modal>
-      )}
-      {showJsonDelegateModal && (
-        <Modal
-          className='md:min-w-[450px]'
-          isVisible={showModal}
-          onClose={handleClose}
-        >
-          <ModalHeader onClose={handleClose} />
-          <SimulateRemoteDelegate />
-        </Modal>
-      )}
-    </>
-  )
+  return showModal ? (
+    <Modal
+      id="authenticate"
+      className='md:min-w-[450px]'
+      isVisible={showModal}
+      onClose={handleClose}
+    >
+      <ModalHeader onClose={handleClose} />
+      <InternetIdentityIframe
+        internetIdentityProvider={identityProvider}
+        onLoad={handleAuthentication}
+      />
+    </Modal>
+  ) : null
 }

@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "example:dev": "cd example && yarn dev"
   },
   "dependencies": {
     "@dfinity/agent": "0.9.2",

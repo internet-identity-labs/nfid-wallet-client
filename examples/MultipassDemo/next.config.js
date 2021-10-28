@@ -11,12 +11,12 @@ const ICNetworks = {
 const IC_NETWORK = process.env.DFX_NETWORK || ICNetworks.ic
 
 const II_CANISTER_ID = process.env.II_CANISTER_ID
-const DEMO_APPLICATION_PORT = process.env.DEMO_APPLICATION_PORT
+const MULTIPASS_FRONTEND_PORT = process.env.MULTIPASS_FRONTEND_PORT
 
 const II_CANISTER_URL =
   IC_NETWORK === ICNetworks.ic
     ? "https://identity.ic0.app/#authorize"
-    : `http://${II_CANISTER_ID}.localhost:${DEMO_APPLICATION_PORT}/authenticate`
+    : `http://${II_CANISTER_ID}.localhost:${MULTIPASS_FRONTEND_PORT}/authenticate`
 
 const getCanisters = () => {
   return IC_NETWORK === ICNetworks.local

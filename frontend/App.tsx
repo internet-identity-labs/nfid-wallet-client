@@ -6,6 +6,7 @@ import {
   Link
 } from "react-router-dom";
 import { Authenticate } from "./flows/authenticate";
+import { SampleFlowWithCss } from "./flows/sample-flow";
 // import { IIConnection } from "./ii-utils/iiConnection";
 
 function App() {
@@ -21,13 +22,16 @@ function App() {
                   <Link to="/">Screen Overview</Link>
                 </li>
                 <li>
+                  <Link to="/sample-flow-with-css">Sample Flow with css styles</Link>
+                </li>
+                <li>
                   <Link to="/authenticate">Authenticate</Link>
                 </li>
               </ul>
             </nav>
           </Route>
-          <Route path="/about">
-            <div className="text-red-600">about</div>
+          <Route path="/sample-flow-with-css">
+            <SampleFlowWithCss />
           </Route>
           <Route path="/authenticate">
             <Authenticate />

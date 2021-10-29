@@ -33,18 +33,18 @@ import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { hasOwnProperty } from "./utils"
 import * as tweetnacl from "tweetnacl"
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
+import { CONFIG } from "frontend/config"
 
-const canisterId: string = import.meta.env.VITE_II_CANISTER_ID as string
+const canisterId: string = CONFIG.II_CANISTER_ID as string
+
 if (!canisterId)
   throw new Error("you need to add VITE_II_CANISTER_ID to your environment")
-
-console.log(">> ", { canisterId })
-
-// export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
+export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
 export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
   agent: new HttpAgent({}),
   canisterId,
 })
+console.log(">> ", { canisterId, canisterIdPrincipal })
 
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
@@ -243,7 +243,7 @@ export class IIConnection {
     const agent = new HttpAgent({ identity: delegationIdentity })
 
     // Only fetch the root key when we're not in prod
-    if (process.env.II_ENV === "development") {
+    if (CONFIG.II_ENV === "development") {
       await agent.fetchRootKey()
     }
     const actor = Actor.createActor<_SERVICE>(internet_identity_idl, {
@@ -316,6 +316,7 @@ export class IIConnection {
       `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
     )
     const actor = await this.getActor()
+
     return await actor.prepare_delegation(
       userNumber,
       hostname,

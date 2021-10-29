@@ -11,25 +11,31 @@ import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import React from "react"
 
+const READY_MESSAGE = {
+  kind: "authorize-ready",
+}
 interface UseAuthenticationProps {
   userNumber?: number
 }
 
-const READY_MESSAGE = {
-  kind: "authorize-ready",
-}
-
+// Custom react hook to connnect the Authenticate Component
+// with the application requesting authorization
 const useAuthentication = ({
   userNumber = 10000,
 }: UseAuthenticationProps = {}) => {
+  // the isLoading state is used to display the astronaut
   const [isLoading, setLoading] = React.useState(false)
+  // the error state is used to display potential errors
   const [error, setError] = React.useState<LoginError | null>(null)
+  // the authResult state is used to store the II
   const [authResult, setAuthResult] = React.useState<LoginSuccess | null>(null)
 
+  // Sends the opening message to the requesting application (e.g. DSCVR)
   const postClientReadyMessage = React.useCallback((opener) => {
     opener.postMessage(READY_MESSAGE, "*")
   }, [])
 
+  // Sends the succees message and the delegate to the requesting application (e.g. DSCVR)
   const postClientAuthorizeSuccessMessage = React.useCallback((opener, { parsedSignedDelegation, userKey, hostname }) => {
     opener.postMessage({
       kind: "authorize-client-success",
@@ -38,6 +44,7 @@ const useAuthentication = ({
     }, hostname)
   }, [])
 
+  // event handler for the message send from the requesting application (e.g. DSCVR)
   const handleAuthMessage = React.useCallback(async (event) => {
     const message = event.data
     if (message.kind === "authorize-client") {
@@ -86,8 +93,8 @@ const useAuthentication = ({
     }
   }, [authResult, postClientAuthorizeSuccessMessage, userNumber])
 
-
-
+  // polls for `window.opener` and when received sends the ready message to the
+  // requesting application
   const handleAuthorizationReady = React.useCallback(() => {
     const maxTries = 5
     let interval: NodeJS.Timer
@@ -109,7 +116,8 @@ const useAuthentication = ({
     }, 500)
   }, [postClientReadyMessage])
 
-  const login = React.useCallback(async () => {
+  // handles the authentication of the current user
+  const handleAuthenticate = React.useCallback(async () => {
     setLoading(true)
     const response = await IIConnection.login(BigInt(userNumber))
     const result = apiResultToLoginResult(response)
@@ -129,18 +137,19 @@ const useAuthentication = ({
     return () => window.removeEventListener("message", handleAuthMessage)
   }, [handleAuthMessage])
 
-  return { isLoading, error, connection: authResult, login }
+  return { isLoading, error, connection: authResult, authenticate: handleAuthenticate }
 }
 
 export const Authenticate: React.FC = () => {
+  // TODO: pull scope from backend or locastorage
   const scope = "DSCVR"
 
-  const { isLoading, login } = useAuthentication()
+  const { isLoading, authenticate } = useAuthentication()
 
   return (
     <Centered>
       <div className="font-medium mb-3">Sign in to {scope} with Multipass</div>
-      <div className="flex items-center" onClick={login}>
+      <div className="flex items-center" onClick={authenticate}>
         <TouchId />
         <div className="ml-1">Continue with TouchID as Philipp</div>
       </div>

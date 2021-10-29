@@ -18,6 +18,11 @@ const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 // See guide on how to configure Vite at:
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    // TODO: THIS BLOCKS OUT OLDER BROWSER
+    // required for BigInt (biguintle) support
+    target: ["es2020"],
+  },
   plugins: [reactRefresh(), tsconfigPaths()],
   resolve: {
     alias: {

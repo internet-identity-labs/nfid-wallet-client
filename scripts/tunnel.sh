@@ -6,4 +6,5 @@ if [ -f "$NGROK" ]; then
   $NGROK http 3000
 else
   echo "you need to download and unzip ngrok in this folder"
+  echo "https://dashboard.ngrok.com/get-started/setup"
 fi

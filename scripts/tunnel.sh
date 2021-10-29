@@ -1,0 +1,9 @@
+NGROK=./scripts/ngrok
+if [ -f "$NGROK" ]; then
+  # TODO:
+  # - [ ] get port from .env
+  # - [ ] get static configured subdomain
+  $NGROK http 3000
+else
+  echo "you need to download and unzip ngrok in this folder"
+fi

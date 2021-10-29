@@ -5,6 +5,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
+    "tunnel": "./scripts/tunnel.sh",
     "example:dev": "cd example && yarn dev"
   },
   "dependencies": {

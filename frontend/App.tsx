@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { Authenticate } from "./flows/authenticate";
 import { SampleFlowWithCss } from "./flows/sample-flow";
-// import { IIConnection } from "./ii-utils/iiConnection";
+import { UnknownDeviceScreen } from "./flows/login-unknown";
 
 function App() {
 
@@ -27,11 +27,17 @@ function App() {
                 <li>
                   <Link to="/authenticate">Authenticate</Link>
                 </li>
+                <li>
+                  <Link to="/login-unknown-device">LoginUnknown</Link>
+                </li>
               </ul>
             </nav>
           </Route>
           <Route path="/sample-flow-with-css">
             <SampleFlowWithCss />
+          </Route>
+          <Route path="/login-unknown-device">
+            <UnknownDeviceScreen />
           </Route>
           <Route path="/authenticate">
             <Authenticate />

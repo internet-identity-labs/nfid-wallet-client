@@ -137,22 +137,30 @@ const useAuthentication = ({
     return () => window.removeEventListener("message", handleAuthMessage)
   }, [handleAuthMessage])
 
-  return { isLoading, error, connection: authResult, authenticate: handleAuthenticate }
+  // return the hooks props
+  return { isLoading, error, authenticate: handleAuthenticate }
 }
 
 export const Authenticate: React.FC = () => {
   // TODO: pull scope from backend or locastorage
+
   const scope = "DSCVR"
 
-  const { isLoading, authenticate } = useAuthentication()
+  const { isLoading, error, authenticate } = useAuthentication()
 
   return (
     <Centered>
-      <div className="font-medium mb-3">Sign in to {scope} with Multipass</div>
-      <div className="flex items-center" onClick={authenticate}>
-        <TouchId />
-        <div className="ml-1">Continue with TouchID as Philipp</div>
-      </div>
+      {!error ? (
+        <>
+          <div className="font-medium mb-3">Sign in to {scope} with Multipass</div>
+          <div className="flex items-center" onClick={authenticate}>
+            <TouchId />
+            <div className="ml-1">Continue with TouchID as Philipp</div>
+          </div>
+        </>
+      ) : (
+        <div className="text-red-500">{error.message}</div>
+      )}
       <Loader isLoading={isLoading} />
     </Centered>
   )

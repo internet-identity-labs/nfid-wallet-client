@@ -11,7 +11,7 @@ function App() {
   // const userNumber = BigInt(10000);
   return (
     <Router>
-      <div className="h-full w-full relative">
+      <div className="h-screen w-screen relative">
         <Switch>
           <Route path="/" exact>
             <nav>

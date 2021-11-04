@@ -4,6 +4,7 @@ import { apiResultToLoginResult } from "frontend/ii-utils/api-result-to-login-re
 import { retryGetDelegation } from "frontend/ii-utils/auth"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { Button } from "frontend/ui-utils/atoms/button"
+import { Loader } from "frontend/ui-utils/atoms/loader"
 import React from "react"
 import { useParams } from "react-router-dom"
 
@@ -65,20 +66,19 @@ const useRegisterDevicePromt = () => {
 interface RegisterDevicePromptProps {}
 
 export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
-  const [success, setSuccess] = React.useState(false)
-  const [error, setError] = React.useState("")
-  const [isLoading, setIsloading] = React.useState(false)
+  const [status, setStatus] = React.useState<
+    "initial" | "loading" | "success" | "error"
+  >("initial")
   let { secret, scope } = useParams<{ secret: string; scope: string }>()
   const { login } = useRegisterDevicePromt()
-  console.log(">> ", { secret, scope })
 
   const handleLogin = React.useCallback(async () => {
-    console.log(">> handleLogin", {})
-
-    // setIsloading(true)
+    setStatus("loading")
     const response = await login(secret, scope)
-    console.log(">> ", { response })
-    // setIsloading(false)
+    if (response.status_code === 200) {
+      return setStatus("success")
+    }
+    setStatus("error")
   }, [login, secret, scope])
 
   const notImplemented = React.useCallback(() => {
@@ -86,12 +86,19 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   }, [])
 
   return (
-    <div className="p-4">
-      <div className={clsx("py-10")}>
-        <h1 className={clsx("text-center font-bold text-3xl")}>
-          Go Password-less?
-        </h1>
-        <div>Is this your MacBook Pro?</div>
+    <div className={clsx("p-4 py-10 flex flex-col h-4/5")}>
+      <h1 className={clsx("text-center font-bold text-3xl")}>
+        Go Password-less?
+      </h1>
+      {status === "success" && (
+        <div className="flex flex-col items-center">Success</div>
+      )}
+      {status === "error" && (
+        <div className="flex flex-col items-center">Something went wrong</div>
+      )}
+      {(status === "initial" || status === "loading") && (
+        <>
+          {/* <div>Is this your MacBook Pro?</div>
         <div className={clsx("pt-3 flex flex-row space-x-3")}>
           <Button onClick={notImplemented}>Yes</Button>
           <Button onClick={notImplemented}>No</Button>
@@ -103,17 +110,20 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
         <div className={clsx("pt-3 flex flex-row space-x-3")}>
           <Button onClick={notImplemented}>Yes</Button>
           <Button onClick={notImplemented}>No</Button>
-        </div>
-        <p>
-          Do you want to stop using usernames and passwords to register and log
-          in to supported websites and applications while using Safari on your
-          Mackbook Pro?
-        </p>
-        <div className={clsx("pt-3 flex flex-row space-x-3")}>
-          <Button onClick={handleLogin}>Yes</Button>
-          <Button onClick={notImplemented}>No</Button>
-        </div>
-      </div>
+        </div> */}
+          <div className={clsx("flex-grow")} />
+          <p>
+            Do you want to stop using usernames and passwords to register and
+            log in to supported websites and applications while using Safari on
+            your Mackbook Pro?
+          </p>
+          <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
+            <Button onClick={handleLogin}>Yes</Button>
+            <Button onClick={notImplemented}>No</Button>
+          </div>
+          <Loader isLoading={status === "loading"} />
+        </>
+      )}
     </div>
   )
 }

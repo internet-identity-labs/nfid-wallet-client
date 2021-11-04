@@ -9,53 +9,54 @@ import { useParams } from "react-router-dom"
 
 const useRegisterDevicePromt = () => {
   const login = React.useCallback(async (secret, scope) => {
-    const blobReverse = blobFromHex(secret)
-    const sessionKey = Array.from(blobFromUint8Array(blobReverse))
     // TODO: load userNumber from localStorage
     const userNumber = BigInt(10000)
     const response = await IIConnection.login(userNumber)
     const result = apiResultToLoginResult(response)
+    console.log(">> ", { result })
 
-    if (result.tag === "err") {
+    if (result.tag !== "ok") {
       console.error(result)
+      return { ...result, status_code: 400 }
     }
-    if (result.tag === "ok") {
-      const prepRes = await result.connection.prepareDelegation(
-        userNumber,
-        scope,
-        sessionKey,
-      )
-      // TODO: move to error handler
-      if (prepRes.length !== 2) {
-        throw new Error(
-          `Error preparing the delegation. Result received: ${prepRes}`,
-        )
-      }
-      const [userKey, timestamp] = prepRes
 
-      const signedDelegation = await retryGetDelegation(
-        result.connection,
-        userNumber,
-        scope,
-        sessionKey,
-        timestamp,
-      )
-
-      // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
-      const parsedSignedDelegation = {
-        delegation: {
-          pubkey: signedDelegation.delegation.pubkey,
-          expiration: signedDelegation.delegation.expiration.toString(),
-          targets: undefined,
-        },
-        signature: signedDelegation.signature,
-        userKey,
-      }
-      await result.connection.putDelegate(
-        secret,
-        JSON.stringify(parsedSignedDelegation),
+    const blobReverse = blobFromHex(secret)
+    const sessionKey = Array.from(blobFromUint8Array(blobReverse))
+    const prepRes = await result.connection.prepareDelegation(
+      userNumber,
+      scope,
+      sessionKey,
+    )
+    // TODO: move to error handler
+    if (prepRes.length !== 2) {
+      throw new Error(
+        `Error preparing the delegation. Result received: ${prepRes}`,
       )
     }
+    const [userKey, timestamp] = prepRes
+
+    const signedDelegation = await retryGetDelegation(
+      result.connection,
+      userNumber,
+      scope,
+      sessionKey,
+      timestamp,
+    )
+
+    // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
+    const parsedSignedDelegation = {
+      delegation: {
+        pubkey: signedDelegation.delegation.pubkey,
+        expiration: signedDelegation.delegation.expiration.toString(),
+        targets: undefined,
+      },
+      signature: signedDelegation.signature,
+      userKey,
+    }
+    return await result.connection.putDelegate(
+      secret,
+      JSON.stringify(parsedSignedDelegation),
+    )
   }, [])
 
   return { login }
@@ -64,11 +65,20 @@ const useRegisterDevicePromt = () => {
 interface RegisterDevicePromptProps {}
 
 export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
+  const [success, setSuccess] = React.useState(false)
+  const [error, setError] = React.useState("")
+  const [isLoading, setIsloading] = React.useState(false)
   let { secret, scope } = useParams<{ secret: string; scope: string }>()
   const { login } = useRegisterDevicePromt()
+  console.log(">> ", { secret, scope })
 
   const handleLogin = React.useCallback(async () => {
-    await login(secret, scope)
+    console.log(">> handleLogin", {})
+
+    // setIsloading(true)
+    const response = await login(secret, scope)
+    console.log(">> ", { response })
+    // setIsloading(false)
   }, [login, secret, scope])
 
   const notImplemented = React.useCallback(() => {

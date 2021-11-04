@@ -464,10 +464,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.0.tgz#87de7af9c231826fdd68ac7258f77c429e0e5fcf"
   integrity sha512-wdppn25U8z/2yiaT6YGquE6X8sSv7hNMWSXYSSU1jGv/yd6XqjXgTDJ8KP4NgjTXfJ3GbRjeeb8RTV7a/VpM+w==
 
-"@identity-labs/react-ic-ii-auth@0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@identity-labs/react-ic-ii-auth/-/react-ic-ii-auth-0.0.13.tgz#392f9b5ef14cb1d39876059784039ce2472909b7"
-  integrity sha512-yn+CaEFsX3tbShfwUR4Mw/PghM2LabOoSFpE7gVGY84LdJ6DIEnjzuYgiLIKv3EPXhro5ZsZ97V6fSvQbARVTQ==
+"@identity-labs/react-ic-ii-auth@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@identity-labs/react-ic-ii-auth/-/react-ic-ii-auth-0.0.14.tgz#c73abe1c1d503b4edeca560dd899d58cf43452e4"
+  integrity sha512-r90yJbkhOhdf64X+k8AD6blW+ZYFl35UdE0F4c7CKLCWpyXDg498OJvztXZOD88IV6sAWDmESyYdB8pG1MDdsQ==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

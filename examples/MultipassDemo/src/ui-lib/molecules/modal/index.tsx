@@ -1,8 +1,8 @@
-import ReactDOM from "react-dom";
-import clsx from "clsx";
-import React from "react";
+import ReactDOM from "react-dom"
+import clsx from "clsx"
+import React from "react"
 
-export const Header: React.FC = ({ children }) => <div>{children}</div>;
+export const Header: React.FC = ({ children }) => <div>{children}</div>
 
 const useModalRoot = (id: string) => {
   const modalRoot = React.useRef<HTMLDivElement | null>(null)
@@ -20,13 +20,13 @@ const useModalRoot = (id: string) => {
 
 interface ModalProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
   > {
-  onClose: () => void;
-  onModalMounted?: () => void;
-  id: string;
-  isVisible?: boolean;
+  onClose: () => void
+  onModalMounted?: () => void
+  id: string
+  isVisible?: boolean
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -37,58 +37,53 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   onModalMounted,
 }) => {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = React.useState(false)
   const modalRoot = useModalRoot(id)
 
   React.useEffect(() => {
-    const val = setTimeout(() => setVisible(!!isVisible));
-    return () => clearTimeout(val);
-  }, [isVisible]);
+    const val = setTimeout(() => setVisible(!!isVisible))
+    return () => clearTimeout(val)
+  }, [isVisible])
 
   React.useEffect(() => {
-    const timeout = setTimeout(() => onModalMounted && onModalMounted());
-    return () => clearTimeout(timeout);
-  }, [onModalMounted]);
+    const timeout = setTimeout(() => onModalMounted && onModalMounted())
+    return () => clearTimeout(timeout)
+  }, [onModalMounted])
 
   const escFunction = React.useCallback(
     (event) => {
       if (event.keyCode === 27) {
-        onClose();
+        onClose()
       }
     },
-    [onClose]
-  );
+    [onClose],
+  )
 
   React.useEffect(() => {
-    document.addEventListener("keydown", escFunction, false);
+    document.addEventListener("keydown", escFunction, false)
 
     return () => {
-      document.removeEventListener("keydown", escFunction, false);
-    };
-  });
+      document.removeEventListener("keydown", escFunction, false)
+    }
+  })
 
   return modalRoot?.current
     ? ReactDOM.createPortal(
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className={clsx([
-          'z-[100]',
-          'transiton duration-500',
-          'bg-white bg-opacity-100',
-          'fixed top-10 right-10',
-          'md:rounded-md',
-          // 'h-40',
-          'shadow-2xl',
-          'overflow-hidden',
-          !visible && 'bg-transparent',
-          className
-
-        ])}
-      >
-        {children}
-      </div>
-      ,
-      modalRoot.current
-    )
-    : null;
-};
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className={clsx([
+            "transiton duration-500",
+            "bg-white bg-opacity-100",
+            "fixed top-10 right-10",
+            "md:rounded-md",
+            "shadow-2xl",
+            !visible && "bg-transparent",
+            className,
+          ])}
+        >
+          {children}
+        </div>,
+        modalRoot.current,
+      )
+    : null
+}

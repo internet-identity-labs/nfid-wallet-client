@@ -1,25 +1,25 @@
-import React from "react";
-import QR from "qrcode";
-import clsx from "clsx";
+import React from "react"
+import QR from "qrcode"
+import clsx from "clsx"
 
 interface QRCodeProps {
-  content: string;
+  content: string
 }
 
 export const QRCode: React.FC<QRCodeProps> = ({ content }: QRCodeProps) => {
-  const canvas = React.useRef<HTMLCanvasElement | null>(null);
+  const canvas = React.useRef<HTMLCanvasElement | null>(null)
 
   React.useEffect(() => {
     if (content) {
       QR.toCanvas(canvas.current, content, function (error: any) {
-        if (error) console.error(error);
-      });
+        if (error) console.error(error)
+      })
     }
-  }, [content]);
+  }, [content])
 
   return (
     <div className={clsx("center")} style={{ cursor: "pointer" }}>
       <canvas ref={canvas} />
     </div>
-  );
-};
+  )
+}

@@ -1,21 +1,22 @@
-import React from 'react'
-import { Button } from 'src/ui-lib/atoms/button'
-import { useInternetIdentity } from '@identity-labs/react-ic-ii-auth'
-import { Modal } from 'src/ui-lib/molecules/modal'
-import { InternetIdentityIframe } from './internet-identity-auth'
+import React from "react"
+import {
+  AuthIframe,
+  useInternetIdentity,
+} from "@identity-labs/react-ic-ii-auth"
+import { Modal } from "src/ui-lib/molecules/modal"
 
-import { ModalHeader } from './modal/header'
-import { SimulateRemoteDelegate } from './simulate-remote-delegate'
+import { ModalHeader } from "./modal/header"
+import clsx from "clsx"
+import { Loader } from "../atoms/loader"
 
 interface InternetAuthProps {
   onClick?: () => void
 }
 
 export const InternetAuthButton: React.FC<InternetAuthProps> = ({
-  onClick
+  onClick,
 } = {}) => {
-  const [showJsonDelegateModal, setShowJsonDelegateModal] =
-    React.useState(false)
+  const [isLoading, loading] = React.useState(true)
   const [showModal, setShowModal] = React.useState(false)
   const { isAuthenticated, identityProvider, authenticate } =
     useInternetIdentity()
@@ -26,21 +27,16 @@ export const InternetAuthButton: React.FC<InternetAuthProps> = ({
   }, [onClick])
 
   const handleAuthentication = React.useCallback(async () => {
+    loading(false)
     try {
       await authenticate()
     } catch {
-      console.error('something happened')
+      console.error("something happened")
     }
   }, [authenticate])
 
-  const handleNewAuth = React.useCallback(
-    () => setShowJsonDelegateModal(true),
-    []
-  )
-
   const handleClose = React.useCallback(() => {
     setShowModal(false)
-    setShowJsonDelegateModal(false)
   }, [])
 
   React.useEffect(() => {
@@ -55,15 +51,15 @@ export const InternetAuthButton: React.FC<InternetAuthProps> = ({
   return showModal ? (
     <Modal
       id="authenticate"
-      className='md:min-w-[450px]'
       isVisible={showModal}
       onClose={handleClose}
+      className={clsx("w-[30rem] h-[20rem]")}
     >
       <ModalHeader onClose={handleClose} />
-      <InternetIdentityIframe
-        internetIdentityProvider={identityProvider}
-        onLoad={handleAuthentication}
-      />
+      <div className={clsx("py-10 w-full h-full")}>
+        <Loader isLoading={isLoading} />
+        <AuthIframe src={identityProvider} onLoad={handleAuthentication} />
+      </div>
     </Modal>
   ) : null
 }

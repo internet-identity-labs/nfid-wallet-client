@@ -21,6 +21,8 @@ import {
   Purpose,
   KeyType,
   DeviceKey,
+  DelegationKey,
+  DelegationJson,
 } from "./generated/internet_identity_types"
 import {
   DelegationChain,
@@ -44,7 +46,6 @@ export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
   agent: new HttpAgent({}),
   canisterId,
 })
-console.log(">> ", { canisterId, canisterIdPrincipal })
 
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
@@ -131,12 +132,9 @@ export class IIConnection {
   }
 
   static async login(userNumber: bigint): Promise<LoginResult> {
-    console.log(">> login", { userNumber })
-
     let devices: DeviceData[]
     try {
       devices = await this.lookupAuthenticators(userNumber)
-      console.log(">> login", { devices })
     } catch (e) {
       return {
         kind: "apiError",
@@ -157,8 +155,6 @@ export class IIConnection {
   ): Promise<LoginResult> {
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
       devices.flatMap((device) => {
-        console.log(">> ", { device })
-
         return device.credential_id.map((credentialId: CredentialId) => ({
           pubkey: derFromPubkey(device.pubkey),
           credentialId: blobFromUint8Array(Buffer.from(credentialId)),
@@ -219,9 +215,7 @@ export class IIConnection {
   static async lookupAuthenticators(
     userNumber: UserNumber,
   ): Promise<DeviceData[]> {
-    console.log(">> lookupAuthenticators", { userNumber, baseActor })
     const allDevices = await baseActor.lookup(userNumber)
-    console.log(">> lookupAuthenticators", { allDevices })
 
     return allDevices.filter((device) =>
       hasOwnProperty(device.purpose, "authentication"),
@@ -233,6 +227,17 @@ export class IIConnection {
     return allDevices.filter((device) =>
       hasOwnProperty(device.purpose, "recovery"),
     )
+  }
+
+  static getDelegate = async (key: DelegationKey) => {
+    console.log(`getDelegate(key: ${key})`)
+    return await baseActor.get_delegate(key)
+  }
+
+  putDelegate = async (key: DelegationKey, delegate: DelegationJson) => {
+    console.log(`putDelegate(key: ${key}, delegate: ${delegate})`)
+    const actor = await this.getActor()
+    return await actor.put_delegate(key, delegate)
   }
 
   // Create an actor representing the backend

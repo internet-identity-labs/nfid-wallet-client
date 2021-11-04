@@ -1,11 +1,11 @@
 interface BaseProps<C extends React.ElementType> {
-  as?: C;
-  children: React.ReactNode;
-  className?: string;
+  as?: C
+  children: React.ReactNode
+  className?: string
 }
 
 type TextProps<C extends React.ElementType> = BaseProps<C> &
-  Omit<React.ComponentPropsWithRef<C>, keyof BaseProps<C>>;
+  Omit<React.ComponentPropsWithRef<C>, keyof BaseProps<C>>
 
 const headlineStyles = {
   H1: "font-lato uppercase font-bold text-black tracking-wider",
@@ -13,7 +13,7 @@ const headlineStyles = {
   H3: "font-lato uppercase text-black tracking-wider",
   H4: "font-lato text-black tracking-wider",
   H5: "font-lato text-black tracking-wide",
-};
+}
 
 const headlineSizes = {
   H1: "text-4xl",
@@ -21,7 +21,7 @@ const headlineSizes = {
   H3: "text-xl",
   H4: "text-lg",
   H5: "text-md",
-};
+}
 
 const H1 = <C extends React.ElementType = "h1">({
   children,
@@ -29,7 +29,7 @@ const H1 = <C extends React.ElementType = "h1">({
   as,
   className = "",
 }: TextProps<C>): JSX.Element => {
-  const Component = as || "h1";
+  const Component = as || "h1"
   return (
     <Component
       className={`${headlineStyles.H1} ${headlineSizes.H1} ${className || ""}`}
@@ -37,8 +37,8 @@ const H1 = <C extends React.ElementType = "h1">({
     >
       {children}
     </Component>
-  );
-};
+  )
+}
 
 const H2 = <C extends React.ElementType = "h2">({
   children,
@@ -46,7 +46,7 @@ const H2 = <C extends React.ElementType = "h2">({
   as,
   className = "",
 }: TextProps<C>): JSX.Element => {
-  const Component = as || "h2";
+  const Component = as || "h2"
   return (
     <Component
       className={`${headlineStyles.H2} ${headlineSizes.H2} ${className || ""}`}
@@ -54,8 +54,8 @@ const H2 = <C extends React.ElementType = "h2">({
     >
       {children}
     </Component>
-  );
-};
+  )
+}
 
 const H3 = <C extends React.ElementType = "h3">({
   children,
@@ -63,7 +63,7 @@ const H3 = <C extends React.ElementType = "h3">({
   as,
   className = "",
 }: TextProps<C>): JSX.Element => {
-  const Component = as || "h3";
+  const Component = as || "h3"
   return (
     <Component
       className={`${headlineStyles.H3} ${headlineSizes.H3} ${className || ""}`}
@@ -71,8 +71,8 @@ const H3 = <C extends React.ElementType = "h3">({
     >
       {children}
     </Component>
-  );
-};
+  )
+}
 
 const H4 = <C extends React.ElementType = "h4">({
   children,
@@ -80,7 +80,7 @@ const H4 = <C extends React.ElementType = "h4">({
   as,
   className = "",
 }: TextProps<C>): JSX.Element => {
-  const Component = as || "h4";
+  const Component = as || "h4"
   return (
     <Component
       className={`${headlineStyles.H4} ${headlineSizes.H4} ${className || ""}`}
@@ -88,8 +88,8 @@ const H4 = <C extends React.ElementType = "h4">({
     >
       {children}
     </Component>
-  );
-};
+  )
+}
 
 const H5 = <C extends React.ElementType = "h5">({
   children,
@@ -97,7 +97,7 @@ const H5 = <C extends React.ElementType = "h5">({
   as,
   className = "",
 }: TextProps<C>): JSX.Element => {
-  const Component = as || "h5";
+  const Component = as || "h5"
   return (
     <Component
       className={`${headlineStyles.H5} ${headlineSizes.H5} ${className || ""}`}
@@ -105,7 +105,7 @@ const H5 = <C extends React.ElementType = "h5">({
     >
       {children}
     </Component>
-  );
-};
+  )
+}
 
-export { H1, H2, H3, H4, H5 };
+export { H1, H2, H3, H4, H5 }

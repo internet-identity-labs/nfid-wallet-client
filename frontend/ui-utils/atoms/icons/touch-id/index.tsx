@@ -1,6 +1,4 @@
-import React from 'react'
-import TouchIdIcon from './logo.png'
+import React from "react"
+import TouchIdIcon from "./logo.png"
 
-export const TouchId = () => (
-  <img src={TouchIdIcon} className="w-10" />
-)
+export const TouchId = () => <img src={TouchIdIcon} className="w-10" />

@@ -6,6 +6,7 @@ import {
 } from "frontend/ii-utils/api-result-to-login-result"
 import { retryGetDelegation } from "frontend/ii-utils/auth"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
+import { getUserNumber } from "frontend/ii-utils/userNumber"
 import { Centered } from "frontend/ui-utils/atoms/centered"
 import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
 import { Loader } from "frontend/ui-utils/atoms/loader"
@@ -15,13 +16,13 @@ const READY_MESSAGE = {
   kind: "authorize-ready",
 }
 interface UseAuthenticationProps {
-  userNumber?: number
+  userNumber?: bigint
 }
 
 // Custom react hook to connnect the Authenticate Component
 // with the application requesting authorization
 const useAuthentication = ({
-  userNumber = 10000,
+  userNumber = BigInt(10001),
 }: UseAuthenticationProps = {}) => {
   // the isLoading state is used to display the astronaut
   const [isLoading, setLoading] = React.useState(false)
@@ -36,62 +37,74 @@ const useAuthentication = ({
   }, [])
 
   // Sends the succees message and the delegate to the requesting application (e.g. DSCVR)
-  const postClientAuthorizeSuccessMessage = React.useCallback((opener, { parsedSignedDelegation, userKey, hostname }) => {
-    opener.postMessage({
-      kind: "authorize-client-success",
-      delegations: [parsedSignedDelegation],
-      userPublicKey: Uint8Array.from(userKey),
-    }, hostname)
-  }, [])
+  const postClientAuthorizeSuccessMessage = React.useCallback(
+    (opener, { parsedSignedDelegation, userKey, hostname }) => {
+      opener.postMessage(
+        {
+          kind: "authorize-client-success",
+          delegations: [parsedSignedDelegation],
+          userPublicKey: Uint8Array.from(userKey),
+        },
+        hostname,
+      )
+    },
+    [],
+  )
 
   // event handler for the message send from the requesting application (e.g. DSCVR)
-  const handleAuthMessage = React.useCallback(async (event) => {
-    const message = event.data
-    if (message.kind === "authorize-client") {
-      if (authResult !== null) {
-        setLoading(true)
+  const handleAuthMessage = React.useCallback(
+    async (event) => {
+      const message = event.data
+      if (message.kind === "authorize-client") {
+        if (authResult !== null) {
+          setLoading(true)
 
-        const { maxTimeToLive, sessionPublicKey } = message
-        const bigUserNumber = BigInt(userNumber)
-        const hostname = event.origin
+          const { maxTimeToLive, sessionPublicKey } = message
+          const hostname = event.origin
 
-        const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey));
-        const prepRes = await authResult.connection.prepareDelegation(
-          bigUserNumber,
-          hostname,
-          sessionKey,
-          maxTimeToLive
-        );
-        // TODO: move to error handler
-        if (prepRes.length !== 2) {
-          throw new Error(
-            `Error preparing the delegation. Result received: ${prepRes}`
-          );
+          const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
+          const prepRes = await authResult.connection.prepareDelegation(
+            userNumber,
+            hostname,
+            sessionKey,
+            maxTimeToLive,
+          )
+          // TODO: move to error handler
+          if (prepRes.length !== 2) {
+            throw new Error(
+              `Error preparing the delegation. Result received: ${prepRes}`,
+            )
+          }
+          const [userKey, timestamp] = prepRes
+
+          const signedDelegation = await retryGetDelegation(
+            authResult.connection,
+            userNumber,
+            hostname,
+            sessionKey,
+            timestamp,
+          )
+
+          // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
+          const parsedSignedDelegation = {
+            delegation: {
+              pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
+              expiration: BigInt(signedDelegation.delegation.expiration),
+              targets: undefined,
+            },
+            signature: Uint8Array.from(signedDelegation.signature),
+          }
+          postClientAuthorizeSuccessMessage(event.source, {
+            parsedSignedDelegation,
+            userKey,
+            hostname,
+          })
+          setLoading(false)
         }
-        const [userKey, timestamp] = prepRes;
-
-        const signedDelegation = await retryGetDelegation(
-          authResult.connection,
-          bigUserNumber,
-          hostname,
-          sessionKey,
-          timestamp
-        );
-
-        // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
-        const parsedSignedDelegation = {
-          delegation: {
-            pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
-            expiration: BigInt(signedDelegation.delegation.expiration),
-            targets: undefined,
-          },
-          signature: Uint8Array.from(signedDelegation.signature),
-        };
-        postClientAuthorizeSuccessMessage(event.source, { parsedSignedDelegation, userKey, hostname })
-        setLoading(false)
       }
-    }
-  }, [authResult, postClientAuthorizeSuccessMessage, userNumber])
+    },
+    [authResult, postClientAuthorizeSuccessMessage, userNumber],
+  )
 
   // polls for `window.opener` and when received sends the ready message to the
   // requesting application
@@ -141,18 +154,22 @@ const useAuthentication = ({
   return { isLoading, error, authenticate: handleAuthenticate }
 }
 
-export const Authenticate: React.FC = () => {
+export const Authenticate: React.FC<{ userNumber: bigint }> = ({
+  userNumber,
+}) => {
   // TODO: pull scope from backend or locastorage
 
   const scope = "DSCVR"
 
-  const { isLoading, error, authenticate } = useAuthentication()
+  const { isLoading, error, authenticate } = useAuthentication({ userNumber })
 
   return (
     <Centered>
       {!error ? (
         <>
-          <div className="font-medium mb-3">Sign in to {scope} with Multipass</div>
+          <div className="font-medium mb-3">
+            Sign in to {scope} with Multipass
+          </div>
           <div className="flex items-center" onClick={authenticate}>
             <TouchId />
             <div className="ml-1">Continue with TouchID as Philipp</div>

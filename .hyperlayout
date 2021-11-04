@@ -1,0 +1,13 @@
+{
+  "entry": "vertical",
+  "layout": [
+    [
+      "dfx start"
+    ],
+    [
+      "yarn dev",
+      "cd examples/MultipassDemo && yarn dev",
+      "yarn tunnel"
+    ]
+  ]
+}

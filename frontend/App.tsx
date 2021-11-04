@@ -5,6 +5,7 @@ import { SampleFlowWithCss } from "./flows/sample-flow"
 import { UnknownDeviceScreen } from "./flows/login-unknown"
 import { getUserNumber } from "./ii-utils/userNumber"
 import { RegisterDevicePrompt } from "./flows/register-device-promt"
+import { Register } from "./flows/register"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -20,6 +21,9 @@ function App() {
                   <Link to="/">Screen Overview</Link>
                 </li>
                 <li>
+                  <Link to="/register">Register</Link>
+                </li>
+                <li>
                   <Link to="/sample-flow-with-css">
                     Sample Flow with css styles
                   </Link>
@@ -32,6 +36,9 @@ function App() {
                 </li>
               </ul>
             </nav>
+          </Route>
+          <Route path="/register">
+            <Register />
           </Route>
           <Route path="/sample-flow-with-css">
             <SampleFlowWithCss />

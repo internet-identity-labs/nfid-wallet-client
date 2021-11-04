@@ -7,20 +7,16 @@
  *   then we know which one the user is actually using
  * - It doesn't support creating credentials; use `WebAuthnIdentity` for that
  */
-import { PublicKey, SignIdentity } from "@dfinity/agent";
-import {
-  BinaryBlob,
-  blobFromUint8Array,
-  DerEncodedBlob,
-} from "@dfinity/candid";
-import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity";
-import borc from "borc";
+import { PublicKey, SignIdentity } from "@dfinity/agent"
+import { BinaryBlob, blobFromUint8Array, DerEncodedBlob } from "@dfinity/candid"
+import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
+import borc from "borc"
 
-export type CredentialId = BinaryBlob;
+export type CredentialId = BinaryBlob
 export type CredentialData = {
-  pubkey: DerEncodedBlob;
-  credentialId: CredentialId;
-};
+  pubkey: DerEncodedBlob
+  credentialId: CredentialId
+}
 
 /**
  * A SignIdentity that uses `navigator.credentials`. See https://webauthn.guide/ for
@@ -32,23 +28,23 @@ export class MultiWebAuthnIdentity extends SignIdentity {
    * @param json - json to parse
    */
   public static fromCredentials(
-    credentialData: CredentialData[]
+    credentialData: CredentialData[],
   ): MultiWebAuthnIdentity {
-    return new this(credentialData);
+    return new this(credentialData)
   }
 
-  public _actualIdentity?: WebAuthnIdentity;
+  public _actualIdentity?: WebAuthnIdentity
 
   protected constructor(readonly credentialData: CredentialData[]) {
-    super();
-    this._actualIdentity = undefined;
+    super()
+    this._actualIdentity = undefined
   }
 
   public getPublicKey(): PublicKey {
     if (this._actualIdentity === undefined) {
-      throw new Error("cannot use getPublicKey() before a successful sign()");
+      throw new Error("cannot use getPublicKey() before a successful sign()")
     } else {
-      return this._actualIdentity.getPublicKey();
+      return this._actualIdentity.getPublicKey()
     }
   }
 
@@ -62,29 +58,29 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         challenge: blob,
         userVerification: "discouraged",
       },
-    })) as PublicKeyCredential;
+    })) as PublicKeyCredential
 
     this.credentialData.forEach((cd) => {
       if (
         cd.credentialId.equals(blobFromUint8Array(Buffer.from(result.rawId)))
       ) {
-        const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID);
+        const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
         // would be nice if WebAuthnIdentity had a directly usable constructor
         this._actualIdentity = WebAuthnIdentity.fromJSON(
           JSON.stringify({
             rawId: Buffer.from(cd.credentialId).toString("hex"),
             publicKey: Buffer.from(strippedKey).toString("hex"),
-          })
-        );
+          }),
+        )
       }
-    });
+    })
 
     if (this._actualIdentity === undefined) {
       // Odd, user logged in with a credential we didn't provide?
-      throw new Error("internal error");
+      throw new Error("internal error")
     }
 
-    const response = result.response as AuthenticatorAssertionResponse;
+    const response = result.response as AuthenticatorAssertionResponse
     if (
       response.signature instanceof ArrayBuffer &&
       response.authenticatorData instanceof ArrayBuffer
@@ -94,17 +90,17 @@ export class MultiWebAuthnIdentity extends SignIdentity {
           authenticator_data: new Uint8Array(response.authenticatorData),
           client_data_json: new TextDecoder().decode(response.clientDataJSON),
           signature: new Uint8Array(response.signature),
-        })
-      );
+        }),
+      )
       // eslint-disable-next-line
       if (!cbor) {
-        throw new Error("failed to encode cbor");
+        throw new Error("failed to encode cbor")
       }
-      return blobFromUint8Array(new Uint8Array(cbor));
+      return blobFromUint8Array(new Uint8Array(cbor))
     } else {
-      throw new Error("Invalid response from WebAuthn.");
+      throw new Error("Invalid response from WebAuthn.")
     }
   }
 }
 
-export default {};
+export default {}

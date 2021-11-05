@@ -6,6 +6,7 @@ import { UnknownDeviceScreen } from "./flows/login-unknown"
 import { getUserNumber } from "./ii-utils/userNumber"
 import { RegisterDevicePrompt } from "./flows/register-device-promt"
 import { Register } from "./flows/register"
+import { RegisterConfirmation } from "./flows/register-confirmation"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -22,6 +23,9 @@ function App() {
                 </li>
                 <li>
                   <Link to="/register">Register</Link>
+                </li>
+                <li>
+                  <Link to="/register-confirmation">RegisterConfirmation</Link>
                 </li>
                 <li>
                   <Link to="/sample-flow-with-css">
@@ -55,6 +59,9 @@ function App() {
           </Route>
           <Route path="/rdp/:secret/:scope">
             <RegisterDevicePrompt />
+          </Route>
+          <Route path="/register-confirmation">
+            <RegisterConfirmation />
           </Route>
         </Switch>
       </div>

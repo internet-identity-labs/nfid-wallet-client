@@ -41,9 +41,17 @@ const canisterId: string = CONFIG.II_CANISTER_ID as string
 
 if (!canisterId)
   throw new Error("you need to add VITE_II_CANISTER_ID to your environment")
+const getAgent = () => {
+  const agent = new HttpAgent({})
+  // Only fetch the root key when we're not in prod
+  if (CONFIG.II_ENV === "development") {
+    agent.fetchRootKey()
+  }
+  return agent
+}
 export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
 export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
-  agent: new HttpAgent({}),
+  agent: getAgent(),
   canisterId,
 })
 
@@ -234,10 +242,9 @@ export class IIConnection {
     return await baseActor.get_delegate(key)
   }
 
-  putDelegate = async (key: DelegationKey, delegate: DelegationJson) => {
+  static putDelegate = async (key: DelegationKey, delegate: DelegationJson) => {
     console.log(`putDelegate(key: ${key}, delegate: ${delegate})`)
-    const actor = await this.getActor()
-    return await actor.put_delegate(key, delegate)
+    return await baseActor.put_delegate(key, delegate)
   }
 
   // Create an actor representing the backend

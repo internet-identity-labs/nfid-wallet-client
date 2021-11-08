@@ -17,11 +17,12 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
 
   const handleLogin = React.useCallback(async () => {
     setStatus("loading")
-    const response = await login(secret, scope)
+    const response = await remoteLogin({ secret, scope })
     if (response.status_code === 200) {
       return setStatus("success")
     }
     setStatus("error")
+  }, [remoteLogin, secret, scope])
 
   const handleLoginAndRegister = React.useCallback(async () => {
     const response = await remoteLogin({ secret, scope, register: true })
@@ -68,6 +69,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
           </p>
           <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
             <Button onClick={handleLoginAndRegister}>Yes</Button>
+            <Button onClick={handleLogin}>No</Button>
           </div>
           <Loader isLoading={status === "loading"} />
         </>

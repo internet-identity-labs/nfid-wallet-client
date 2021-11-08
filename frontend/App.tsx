@@ -7,6 +7,7 @@ import { getUserNumber } from "./ii-utils/userNumber"
 import { RegisterDevicePrompt } from "./flows/register-device-promt"
 import { Register } from "./flows/register"
 import { RegisterConfirmation } from "./flows/register-confirmation"
+import { RegisterNewDevice } from "./flows/register-new-device"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -62,6 +63,9 @@ function App() {
           </Route>
           <Route path="/register-confirmation">
             <RegisterConfirmation />
+          </Route>
+          <Route path="/register-new-device/:secret/:userNumber">
+            <RegisterNewDevice />
           </Route>
         </Switch>
       </div>

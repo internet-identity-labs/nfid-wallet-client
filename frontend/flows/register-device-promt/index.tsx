@@ -2,7 +2,7 @@ import React from "react"
 import clsx from "clsx"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { Loader } from "frontend/ui-utils/atoms/loader"
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
 
 interface RegisterDevicePromptProps {}
@@ -11,8 +11,9 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   const [status, setStatus] = React.useState<
     "initial" | "loading" | "success" | "error"
   >("initial")
-  let { secret, scope } = useParams<{ secret: string; scope: string }>()
-  const { login } = useRegisterDevicePromt()
+  const { secret, scope } = useParams<{ secret: string; scope: string }>()
+  const { push } = useHistory()
+  const { remoteLogin } = useRegisterDevicePromt()
 
   const handleLogin = React.useCallback(async () => {
     setStatus("loading")
@@ -21,7 +22,13 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
       return setStatus("success")
     }
     setStatus("error")
-  }, [login, secret, scope])
+
+  const handleLoginAndRegister = React.useCallback(async () => {
+    const response = await remoteLogin({ secret, scope, register: true })
+    if (response.status_code === 200) {
+      return push(`/register-confirmation/${secret}`)
+    }
+  }, [push, remoteLogin, scope, secret])
 
   const notImplemented = React.useCallback(() => {
     console.warn("Not yet implemented")
@@ -60,8 +67,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
             your Mackbook Pro?
           </p>
           <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
-            <Button onClick={handleLogin}>Yes</Button>
-            <Button onClick={notImplemented}>No</Button>
+            <Button onClick={handleLoginAndRegister}>Yes</Button>
           </div>
           <Loader isLoading={status === "loading"} />
         </>

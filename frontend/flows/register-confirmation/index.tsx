@@ -1,8 +1,11 @@
+import React from "react"
 import clsx from "clsx"
 import { useInterval } from "frontend/hooks/use-interval"
+import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { FaceId } from "frontend/ui-utils/atoms/icons/face-id"
-import React from "react"
+import { useParams } from "react-router"
+import { getUserNumber } from "frontend/ii-utils/userNumber"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000
@@ -10,7 +13,10 @@ const TRY_DELAY = 2000
 type State = "loading" | "pause" | "success" | "error"
 
 export const RegisterConfirmation = () => {
+  const { secret } = useParams<{ secret: string }>()
   const [status, setStatus] = React.useState<State>("loading")
+
+  const userNumber = React.useMemo(() => getUserNumber(), [])
 
   // TODO:
   // - [ ] poll for confirmation data (pubkey)
@@ -18,7 +24,17 @@ export const RegisterConfirmation = () => {
   const DEVICE = "MacBook Pro"
 
   const handlePoll = React.useCallback(
-    (cancelPoll: () => void, totalTries: number) => {
+    async (cancelPoll: () => void, totalTries: number) => {
+      const {
+        delegation: [response],
+        status_code,
+      } = await IIConnection.getDelegate(secret)
+      if (status_code === 200 && userNumber) {
+        const message = JSON.parse(response || "")
+        console.log(">> ", { message })
+        const authResponse = await IIConnection.login(userNumber)
+      }
+
       if (totalTries >= MAX_TRIES) {
         console.log(">> total tries exceeded", { totalTries })
         cancelPoll()
@@ -26,7 +42,7 @@ export const RegisterConfirmation = () => {
         return
       }
     },
-    [],
+    [secret, userNumber],
   )
 
   const { start, resetTries } = useInterval(handlePoll, TRY_DELAY)

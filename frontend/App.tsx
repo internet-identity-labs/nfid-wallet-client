@@ -61,7 +61,7 @@ function App() {
           <Route path="/rdp/:secret/:scope">
             <RegisterDevicePrompt />
           </Route>
-          <Route path="/register-confirmation">
+          <Route path="/register-confirmation/:secret">
             <RegisterConfirmation />
           </Route>
           <Route path="/register-new-device/:secret/:userNumber">

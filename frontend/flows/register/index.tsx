@@ -1,3 +1,4 @@
+import { Identity } from "@dfinity/agent"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import clsx from "clsx"
 import { LoginSuccess } from "frontend/ii-utils/api-result-to-login-result"
@@ -10,18 +11,20 @@ import {
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/ii-utils/iiConnection"
+import { setUserNumber } from "frontend/ii-utils/userNumber"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { Centered } from "frontend/ui-utils/atoms/centered"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import React from "react"
 import { getBrowser, getPlatform } from "./utils"
 
+type Status = "initial" | "loading" | "confirmation" | "success"
+
 export const Register = () => {
   const [userId, setUserId] = React.useState<bigint | null>(null)
   const [recovery, setRecovery] = React.useState<string | null>(null)
-  const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
-    "initial",
-  )
+  const [status, setStatus] = React.useState<Status>("initial")
+  const [registerPayload, setRegisterPayload] = React.useState<any | null>(null)
 
   const deviceName = React.useMemo(() => {
     const appName = getBrowser()
@@ -31,13 +34,20 @@ export const Register = () => {
 
   console.log(">> ", { deviceName })
 
-  const handleRegister = React.useCallback(async () => {
+  const handleCreateIdentity = React.useCallback(async () => {
     setStatus("loading")
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(),
     })
     const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
     const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
+
+    setRegisterPayload({ identity, deviceName, pow })
+    setStatus("confirmation")
+  }, [deviceName])
+
+  const handleRegister = React.useCallback(async () => {
+    const { identity, deviceName, pow } = registerPayload
     // TODO: this opens WebAuthN the second time
     const response = await IIConnection.register(identity, deviceName, pow)
     console.log(">> ", { response })
@@ -63,12 +73,13 @@ export const Register = () => {
       console.log(">> ", { recoveryResponse })
 
       setUserId(userNumber)
+      setUserNumber(userNumber)
       setRecovery(recovery)
       setStatus("success")
     }
 
     setStatus("success")
-  }, [deviceName])
+  }, [registerPayload])
 
   return (
     <div className={clsx("p-4 py-10 flex flex-col h-4/5")}>
@@ -80,7 +91,7 @@ export const Register = () => {
         <>
           <p>Do you want to stop using usernames and passwords and register?</p>
           <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
-            <Button onClick={handleRegister}>Yes</Button>
+            <Button onClick={handleCreateIdentity}>Yes</Button>
           </div>
         </>
       )}
@@ -95,6 +106,11 @@ export const Register = () => {
             <div>{recovery}</div>
           </div>
         </>
+      )}
+      {status === "confirmation" && (
+        <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
+          <Button onClick={handleRegister}>Confirm registration</Button>
+        </div>
       )}
       <Loader isLoading={status === "loading"} />
     </div>

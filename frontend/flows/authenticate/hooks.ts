@@ -6,10 +6,6 @@ import {
 } from "frontend/ii-utils/api-result-to-login-result"
 import { retryGetDelegation } from "frontend/ii-utils/auth"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
-import { getUserNumber } from "frontend/ii-utils/userNumber"
-import { Centered } from "frontend/ui-utils/atoms/centered"
-import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
-import { Loader } from "frontend/ui-utils/atoms/loader"
 import React from "react"
 
 const READY_MESSAGE = {
@@ -21,7 +17,7 @@ interface UseAuthenticationProps {
 
 // Custom react hook to connnect the Authenticate Component
 // with the application requesting authorization
-const useAuthentication = ({
+export const useAuthentication = ({
   userNumber = BigInt(10001),
 }: UseAuthenticationProps = {}) => {
   // the isLoading state is used to display the astronaut
@@ -152,33 +148,4 @@ const useAuthentication = ({
 
   // return the hooks props
   return { isLoading, error, authenticate: handleAuthenticate }
-}
-
-export const Authenticate: React.FC<{ userNumber: bigint }> = ({
-  userNumber,
-}) => {
-  // TODO: pull scope from backend or locastorage
-
-  const scope = "DSCVR"
-
-  const { isLoading, error, authenticate } = useAuthentication({ userNumber })
-
-  return (
-    <Centered>
-      {!error ? (
-        <>
-          <div className="font-medium mb-3">
-            Sign in to {scope} with Multipass
-          </div>
-          <div className="flex items-center" onClick={authenticate}>
-            <TouchId />
-            <div className="ml-1">Continue with TouchID as Philipp</div>
-          </div>
-        </>
-      ) : (
-        <div className="text-red-500">{error.message}</div>
-      )}
-      <Loader isLoading={isLoading} />
-    </Centered>
-  )
 }

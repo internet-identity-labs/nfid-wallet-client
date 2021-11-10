@@ -48,6 +48,7 @@ export type KeyType =
   | { seed_phrase: null }
   | { cross_platform: null }
   | { unknown: null }
+export type Message = string
 export interface ProofOfWork {
   nonce: bigint
   timestamp: Timestamp
@@ -71,6 +72,7 @@ export type StreamingStrategy = {
 }
 export type Timestamp = bigint
 export type Token = {}
+export type Topic = string
 export type UserKey = PublicKey
 export type UserNumber = bigint
 export interface _SERVICE {
@@ -82,12 +84,14 @@ export interface _SERVICE {
     arg_2: SessionKey,
     arg_3: Timestamp,
   ) => Promise<GetDelegationResponse>
+  get_messages: (arg_0: Topic) => Promise<Array<Message>>
   get_principal: (
     arg_0: UserNumber,
     arg_1: FrontendHostname,
   ) => Promise<Principal>
   init_salt: () => Promise<undefined>
   lookup: (arg_0: UserNumber) => Promise<Array<DeviceData>>
+  post_messages: (arg_0: Topic, arg_1: Array<Message>) => Promise<undefined>
   prepare_delegation: (
     arg_0: UserNumber,
     arg_1: FrontendHostname,

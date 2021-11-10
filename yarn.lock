@@ -259,10 +259,10 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
-"@dfinity/candid@0.9.2":
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.9.2.tgz#2c2562d09aeab505d918fbce11a2f9b246abf094"
-  integrity sha512-h8fzslfP5wiZLQoaAGQEEx7naaOWmfSrL8cfHRk98fiy5m3SnoQrAkIQVLr5l3tq8zFosIyYov+47lgxMTBRUA==
+"@dfinity/candid@0.9.3":
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.9.3.tgz#96b2a5339da634ccc5546a0560f48f5ceef70dfe"
+  integrity sha512-VMovKFrExqN0mwcn1/aut4Ou4cA9IA2+QrBjV+Ro4eVCpVvGpVRqn4jizlV9QnJjcuEBG1yImIG5RKMdZ2ejQQ==
   dependencies:
     buffer "^6.0.3"
     buffer-pipe "^0.0.4"

@@ -1,44 +1,33 @@
 import React from "react"
-import { Centered } from "frontend/ui-utils/atoms/centered"
 import { useParams } from "react-router-dom"
 import { useMultipass } from "frontend/hooks/use-ii-connection"
 import { Button } from "frontend/ui-utils/atoms/button"
+import clsx from "clsx"
+import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
+import { Screen } from "frontend/ui-utils/atoms/screen"
+import { getBrowser, getPlatform } from "../register/utils"
 
 export const RegisterNewDevice = () => {
-  const [pubKey, setPubKey] = React.useState<any | null>(null)
   const [opener, setOpener] = React.useState<Window | null>(null)
   let { secret, userNumber } =
     useParams<{ secret: string; userNumber: string }>()
   const { handleAddDevice } = useMultipass()
 
-  const handleSendDeviceKey = React.useCallback(() => {
-    console.log(">> ", { pubKey, opener })
-
-    opener?.postMessage(
-      { kind: "registered-device", deviceKey: pubKey },
-      opener.origin,
-    )
-    window.close()
-  }, [opener, pubKey])
+  const handleSendDeviceKey = React.useCallback(
+    (pubKey) => {
+      opener?.postMessage(
+        { kind: "registered-device", deviceKey: pubKey },
+        opener.origin,
+      )
+      window.close()
+    },
+    [opener],
+  )
 
   const handleRegisterNewDevice = React.useCallback(async () => {
-    // TODO:
-    // send key to opender automatically
     const response = await handleAddDevice(secret, BigInt(userNumber))
-    // opener?.postMessage(
-    //   { kind: "registered-device", deviceKey: pubKey },
-    //   opener.origin,
-    // )
-    setPubKey(response.publicKey)
-    // handleSendDeviceKey()
-    // window.close()
-  }, [handleAddDevice, secret, userNumber])
-
-  React.useEffect(() => {
-    if (secret && userNumber) {
-      handleRegisterNewDevice()
-    }
-  }, [handleRegisterNewDevice, handleAddDevice, secret, userNumber])
+    handleSendDeviceKey(response.publicKey)
+  }, [handleAddDevice, handleSendDeviceKey, secret, userNumber])
 
   const waitForOpener = React.useCallback(async () => {
     const maxTries = 5
@@ -61,9 +50,26 @@ export const RegisterNewDevice = () => {
   }, [waitForOpener])
 
   return (
-    <Centered>
-      <div>RegisterNewDevice</div>
-      <Button onClick={handleSendDeviceKey}>send pubKey</Button>
-    </Centered>
+    <Screen className={clsx("max-w-sm m-auto")}>
+      <h1 className={clsx("text-center font-bold text-3xl")}>
+        Register this device
+      </h1>
+      <div className={clsx("mt-10 text-center")}>
+        If you'd like to use Face ID as your Multipass "password" on supported
+        Safari applications, prove you can unlock Face ID to register this
+        MacBook
+      </div>
+      <div className={clsx("my-10 mx-auto")}>
+        <TouchId className={clsx("w-20")} />
+      </div>
+      <Button
+        onClick={handleRegisterNewDevice}
+        className={clsx("bg-blue-700 text-white border-blue-900")}
+      >
+        I want to use Touch ID as my Multipass "password" in {getBrowser()} on{" "}
+        {getPlatform()}
+      </Button>
+      <a className={clsx("underline text-center mt-7")}>cancel</a>
+    </Screen>
   )
 }

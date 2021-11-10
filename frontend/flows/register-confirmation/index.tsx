@@ -6,6 +6,9 @@ import { Button } from "frontend/ui-utils/atoms/button"
 import { FaceId } from "frontend/ui-utils/atoms/icons/face-id"
 import { useParams } from "react-router"
 import { getUserNumber } from "frontend/ii-utils/userNumber"
+import { useAuthContext } from "../auth-wrapper"
+import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
+import { ExistingDevices } from "frontend/debug/existing-devices"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000
@@ -15,8 +18,10 @@ type State = "loading" | "pause" | "success" | "error"
 export const RegisterConfirmation = () => {
   const { secret } = useParams<{ secret: string }>()
   const [status, setStatus] = React.useState<State>("loading")
+  const [confirmation, setConfirmation] = React.useState<any | null>(null)
 
   const userNumber = React.useMemo(() => getUserNumber(), [])
+  const { connection } = useAuthContext()
 
   // TODO:
   // - [ ] poll for confirmation data (pubkey)
@@ -25,14 +30,20 @@ export const RegisterConfirmation = () => {
 
   const handlePoll = React.useCallback(
     async (cancelPoll: () => void, totalTries: number) => {
-      const {
-        delegation: [response],
-        status_code,
-      } = await IIConnection.getDelegate(secret)
-      if (status_code === 200 && userNumber) {
-        const message = JSON.parse(response || "")
-        console.log(">> ", { message })
-        const authResponse = await IIConnection.login(userNumber)
+      const messages = await IIConnection.getMessages(secret)
+      if (messages.length > 0 && userNumber && connection) {
+        const message = JSON.parse(messages[0] || "")
+        const addResponse = await connection.add(
+          userNumber,
+          message.deviceName,
+          { unknown: null },
+          { authentication: null },
+          derBlobFromBlob(blobFromHex(message.publicKey)),
+          blobFromHex(message.rawId),
+        )
+        console.log(">> ", { addResponse })
+        cancelPoll()
+        setStatus("success")
       }
 
       if (totalTries >= MAX_TRIES) {
@@ -42,7 +53,7 @@ export const RegisterConfirmation = () => {
         return
       }
     },
-    [secret, userNumber],
+    [connection, secret, userNumber],
   )
 
   const { start, resetTries } = useInterval(handlePoll, TRY_DELAY)
@@ -69,6 +80,11 @@ export const RegisterConfirmation = () => {
           This screen will update once you've registered your device
         </div>
       )}
+      {status === "success" && (
+        <div className={clsx("text-center mt-40")}>
+          Device has been registered!
+        </div>
+      )}
       {status === "pause" && (
         <>
           <div className={clsx("text-center mt-40")}>
@@ -77,6 +93,7 @@ export const RegisterConfirmation = () => {
           <Button onClick={handleRetry}>Retry</Button>
         </>
       )}
+      <ExistingDevices />
     </div>
   )
 }

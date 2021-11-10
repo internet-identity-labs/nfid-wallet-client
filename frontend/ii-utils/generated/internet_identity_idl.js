@@ -45,6 +45,8 @@ export const idlFactory = ({ IDL }) => {
     no_such_delegation: IDL.Null,
     signed_delegation: SignedDelegation,
   })
+  const Topic = IDL.Text
+  const Message = IDL.Text
   const UserKey = PublicKey
   const ProofOfWork = IDL.Record({
     nonce: IDL.Nat64,
@@ -70,6 +72,7 @@ export const idlFactory = ({ IDL }) => {
       [GetDelegationResponse],
       ["query"],
     ),
+    get_messages: IDL.Func([Topic], [IDL.Vec(Message)], []),
     get_principal: IDL.Func(
       [UserNumber, FrontendHostname],
       [IDL.Principal],
@@ -77,6 +80,7 @@ export const idlFactory = ({ IDL }) => {
     ),
     init_salt: IDL.Func([], [], []),
     lookup: IDL.Func([UserNumber], [IDL.Vec(DeviceData)], ["query"]),
+    post_messages: IDL.Func([Topic, IDL.Vec(Message)], [], []),
     prepare_delegation: IDL.Func(
       [UserNumber, FrontendHostname, SessionKey, IDL.Opt(IDL.Nat64)],
       [UserKey, Timestamp],

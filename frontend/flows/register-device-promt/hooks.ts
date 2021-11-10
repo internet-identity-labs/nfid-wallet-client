@@ -8,6 +8,7 @@ import { PublicKey } from "frontend/ii-utils/generated/internet_identity_types"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { getUserNumber } from "frontend/ii-utils/userNumber"
 import React from "react"
+import { useAuthContext } from "../auth-wrapper"
 
 type RemoteLoginMessage = {
   delegation: {
@@ -22,6 +23,7 @@ type RemoteLoginMessage = {
 
 export const useRegisterDevicePromt = () => {
   const userNumber = React.useMemo(() => getUserNumber(), [])
+  const { connection } = useAuthContext()
 
   const selfAuthenticate = React.useCallback(async () => {
     if (!userNumber) {
@@ -33,13 +35,13 @@ export const useRegisterDevicePromt = () => {
   }, [userNumber])
 
   const createRemoteDelegate = React.useCallback(
-    async (secret: string, scope: string, result: LoginSuccess) => {
+    async (secret: string, scope: string, connection: IIConnection) => {
       if (!userNumber) {
         throw new Error("Device not registered")
       }
       const blobReverse = blobFromHex(secret)
       const sessionKey = Array.from(blobFromUint8Array(blobReverse))
-      const prepRes = await result.connection.prepareDelegation(
+      const prepRes = await connection.prepareDelegation(
         userNumber,
         scope,
         sessionKey,
@@ -53,7 +55,7 @@ export const useRegisterDevicePromt = () => {
       const [userKey, timestamp] = prepRes
 
       const signedDelegation = await retryGetDelegation(
-        result.connection,
+        connection,
         userNumber,
         scope,
         sessionKey,
@@ -80,29 +82,25 @@ export const useRegisterDevicePromt = () => {
       if (!userNumber) {
         throw new Error("Device not registered")
       }
-
-      const result = await selfAuthenticate()
-
-      if (result.tag !== "ok") {
-        console.error(result)
-        return { ...result, status_code: 400 }
+      if (!connection) {
+        throw new Error("Unauthorized")
       }
 
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,
         scope,
-        result,
+        connection,
       )
 
-      return await IIConnection.putDelegate(
-        secret,
+      return await IIConnection.postMessages(secret, [
         JSON.stringify({
+          type: register ? "remote-login-register" : "remote-login",
           ...parsedSignedDelegation,
           ...(register ? { userNumber: userNumber.toString() } : {}),
         }),
-      )
+      ])
     },
-    [createRemoteDelegate, selfAuthenticate, userNumber],
+    [connection, createRemoteDelegate, userNumber],
   )
 
   return { remoteLogin }

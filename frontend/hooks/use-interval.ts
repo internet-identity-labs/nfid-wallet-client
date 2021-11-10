@@ -41,7 +41,7 @@ export const useInterval = (
 
   // Set up the interval.
   React.useEffect(() => {
-    start()
+    shouldPoll && start()
     return () => stop()
   }, [delay, shouldPoll, start, stop, tick])
   return { start, stop, totalTries, resetTries }

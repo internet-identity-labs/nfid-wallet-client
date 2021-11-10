@@ -247,6 +247,16 @@ export class IIConnection {
     return await baseActor.put_delegate(key, delegate)
   }
 
+  static getMessages = async (key: DelegationKey) => {
+    console.log(`getMessages(key: ${key})`)
+    return await baseActor.get_messages(key)
+  }
+
+  static postMessages = async (key: DelegationKey, messages: string[]) => {
+    console.log(`postMessages(key: ${key}, message: ${messages})`)
+    return await baseActor.post_messages(key, messages)
+  }
+
   // Create an actor representing the backend
 
   static async createActor(

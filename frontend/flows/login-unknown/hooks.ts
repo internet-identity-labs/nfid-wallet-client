@@ -6,7 +6,7 @@ const READY_MESSAGE = {
   kind: "authorize-ready",
 }
 
-type MessageKinds = "authorize-client"
+type MessageKinds = "authorize-client" | "registered-device"
 
 interface Message {
   kind: MessageKinds
@@ -91,6 +91,7 @@ export const useUnknownDeviceConfig = () => {
   const [appWindow, setAppWindow] = React.useState<Window | null>(null)
   const [domain, setDomain] = React.useState("")
   const [pubKey, setPubKey] = React.useState("")
+  const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
 
   const url = React.useMemo(() => {
     const multipassDomain = import.meta.env.VITE_MULTIPASS_DOMAIN
@@ -112,6 +113,10 @@ export const useUnknownDeviceConfig = () => {
           setPubKey(hex)
           setDomain(new URL(event.origin).host)
         },
+        "registered-device": (event: any) => {
+          console.log(">> ", { event })
+          setNewDeviceKey(event.data.deviceKey)
+        },
       },
     })
 
@@ -124,43 +129,7 @@ export const useUnknownDeviceConfig = () => {
     pubKey,
     scope: domain,
     appWindow,
+    newDeviceKey,
     postClientAuthorizeSuccessMessage,
   }
-}
-
-interface UsePollforDelegateProps {
-  pubKey: string
-  onSuccess: (delegations: any) => void
-}
-
-// TODO:
-// - [ ] add maxTries
-// - [ ] add restart
-export const usePollforDelegate = ({
-  pubKey,
-  onSuccess,
-}: UsePollforDelegateProps) => {
-  const fetchDelegate = React.useCallback(
-    (stopInterval: () => void) => async () => {
-      const {
-        status_code,
-        delegation: [delegate],
-      } = await IIConnection.getDelegate(pubKey)
-      if (status_code === 200 && delegate) {
-        stopInterval()
-
-        return onSuccess(delegate)
-      }
-    },
-    [onSuccess, pubKey],
-  )
-
-  React.useEffect(() => {
-    let interval: NodeJS.Timer
-    interval = setInterval(
-      fetchDelegate(() => clearInterval(interval)),
-      2000,
-    )
-    return () => clearInterval(interval)
-  }, [fetchDelegate])
 }

@@ -4,6 +4,7 @@ import { Button } from "frontend/ui-utils/atoms/button"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { useHistory, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
+import { useAuthContext } from "../auth-wrapper"
 
 interface RegisterDevicePromptProps {}
 
@@ -17,23 +18,16 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
 
   const handleLogin = React.useCallback(async () => {
     setStatus("loading")
-    const response = await remoteLogin({ secret, scope })
-    if (response.status_code === 200) {
-      return setStatus("success")
-    }
-    setStatus("error")
+    await remoteLogin({ secret, scope })
+    return setStatus("success")
   }, [remoteLogin, secret, scope])
 
   const handleLoginAndRegister = React.useCallback(async () => {
-    const response = await remoteLogin({ secret, scope, register: true })
-    if (response.status_code === 200) {
-      return push(`/register-confirmation/${secret}`)
-    }
+    setStatus("loading")
+    await remoteLogin({ secret, scope, register: true })
+    setStatus("success")
+    return push(`/register-confirmation/${secret}`)
   }, [push, remoteLogin, scope, secret])
-
-  const notImplemented = React.useCallback(() => {
-    console.warn("Not yet implemented")
-  }, [])
 
   return (
     <div className={clsx("p-4 py-10 flex flex-col h-4/5")}>

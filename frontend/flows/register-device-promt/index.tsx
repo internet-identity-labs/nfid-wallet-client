@@ -4,7 +4,7 @@ import { Button } from "frontend/ui-utils/atoms/button"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { useHistory, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
-import { useAuthContext } from "../auth-wrapper"
+import { Screen } from "frontend/ui-utils/atoms/screen"
 
 interface RegisterDevicePromptProps {}
 
@@ -30,7 +30,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   }, [push, remoteLogin, scope, secret])
 
   return (
-    <div className={clsx("p-4 py-10 flex flex-col h-4/5")}>
+    <Screen>
       <h1 className={clsx("text-center font-bold text-3xl")}>
         Go Password-less?
       </h1>
@@ -68,6 +68,6 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
           <Loader isLoading={status === "loading"} />
         </>
       )}
-    </div>
+    </Screen>
   )
 }

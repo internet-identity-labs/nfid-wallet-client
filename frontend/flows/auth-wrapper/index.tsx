@@ -7,6 +7,8 @@ import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { getUserNumber } from "frontend/ii-utils/userNumber"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { Loader } from "frontend/ui-utils/atoms/loader"
+import { Screen } from "frontend/ui-utils/atoms/screen"
+import { H2 } from "frontend/ui-utils/atoms/typography"
 import React from "react"
 
 interface AuthContextState {
@@ -77,21 +79,20 @@ export const useAuthContext = () => React.useContext(AuthContext)
 export const AuthWrapper: React.FC = ({ children }) => {
   const { isLoading, isAuthenticated, userNumber, login, register } =
     useAuthContext()
-  console.log(">> ", { isAuthenticated })
 
   return isAuthenticated ? (
     <>{children}</>
   ) : userNumber ? (
-    <div className={clsx("flex flex-col")}>
-      <div>You need to be authenticated</div>
+    <Screen>
+      <H2>Authenticate</H2>
       <Button onClick={login}>Login</Button>
       <Loader isLoading={isLoading} />
-    </div>
+    </Screen>
   ) : (
-    <div className={clsx("flex flex-col")}>
-      <div>You need to register</div>
-      <Button onClick={register}>Login</Button>
+    <Screen>
+      <H2>You need to register</H2>
+      <Button onClick={register}>register</Button>
       <Loader isLoading={isLoading} />
-    </div>
+    </Screen>
   )
 }

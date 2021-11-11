@@ -24,7 +24,6 @@ export const RegisterConfirmation = () => {
   const { connection } = useAuthContext()
 
   // TODO:
-  // - [ ] poll for confirmation data (pubkey)
   // - [ ] get device from communication channel
   const DEVICE = "MacBook Pro"
 
@@ -41,13 +40,11 @@ export const RegisterConfirmation = () => {
           derBlobFromBlob(blobFromHex(message.publicKey)),
           blobFromHex(message.rawId),
         )
-        console.log(">> ", { addResponse })
         cancelPoll()
         setStatus("success")
       }
 
       if (totalTries >= MAX_TRIES) {
-        console.log(">> total tries exceeded", { totalTries })
         cancelPoll()
         setStatus("pause")
         return

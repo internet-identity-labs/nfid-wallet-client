@@ -11,18 +11,14 @@ export const ExistingDevices = () => {
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber && connection) {
       const existingDevices = await IIConnection.lookupAll(userNumber)
-      console.log(">> ", { existingDevices })
       setExistingDevices(existingDevices)
     }
   }, [connection, userNumber])
 
   const handleDeleteDevice = React.useCallback(
     async (pubKey: number[]) => {
-      console.log(">> ", { connection, userNumber, pubKey })
-
       if (connection && userNumber) {
         const response = await connection.remove(userNumber, pubKey)
-        console.log(">> ", { response })
 
         handleLoadDevices()
       }

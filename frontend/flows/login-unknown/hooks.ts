@@ -114,7 +114,6 @@ export const useUnknownDeviceConfig = () => {
           setDomain(new URL(event.origin).host)
         },
         "registered-device": (event: any) => {
-          console.log(">> ", { event })
           setNewDeviceKey(event.data.deviceKey)
         },
       },

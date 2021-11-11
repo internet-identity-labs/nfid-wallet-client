@@ -385,7 +385,7 @@ const requestFEDelegation = async (
 
 export const creationOptions = (
   exclude: DeviceData[] = [],
-  authenticatorAttachment?: AuthenticatorAttachment,
+  authenticatorAttachment: AuthenticatorAttachment = "platform",
 ): PublicKeyCredentialCreationOptions => {
   return {
     authenticatorSelection: {

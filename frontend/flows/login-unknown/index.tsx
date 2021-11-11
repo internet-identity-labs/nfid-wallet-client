@@ -6,8 +6,8 @@ import { useUnknownDeviceConfig } from "./hooks"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { useInterval } from "frontend/hooks/use-interval"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
-import { blobFromUint8Array, derBlobFromBlob } from "@dfinity/candid"
 import { setUserNumber } from "frontend/ii-utils/userNumber"
+import clsx from "clsx"
 
 export const UnknownDeviceScreen: React.FC = () => {
   const [message, setMessage] = React.useState<any | null>(null)
@@ -21,13 +21,9 @@ export const UnknownDeviceScreen: React.FC = () => {
     postClientAuthorizeSuccessMessage,
   } = useUnknownDeviceConfig()
 
-  console.log(">> ", { pubKey })
-
   const handleSendDelegate = React.useCallback(
     (delegation) => {
       try {
-        console.log(">> handleSendDelegate", { delegation })
-
         const parsedSignedDelegation = buildDelegate(delegation)
 
         postClientAuthorizeSuccessMessage(appWindow, {
@@ -70,7 +66,6 @@ export const UnknownDeviceScreen: React.FC = () => {
     async (cancelPoll: () => void) => {
       const messages = await IIConnection.getMessages(pubKey)
       if (messages.length > 0) {
-        console.log(">> ", { messages })
         const parsedMessages = messages.map((m) => JSON.parse(m))
         const loginMessage = parsedMessages.find(
           (m) => m.type === "remote-login",
@@ -96,8 +91,6 @@ export const UnknownDeviceScreen: React.FC = () => {
       (deviceData) => deviceData.pubkey.toString() === newDeviceKey.toString(),
     )
 
-    console.log(">> ", { existingDevices, newDeviceKey, matchedDevice })
-
     if (matchedDevice) {
       setUserNumber(BigInt(message.userNumber))
       handleSendDelegate(message)
@@ -119,8 +112,19 @@ export const UnknownDeviceScreen: React.FC = () => {
         </a>
       ) : null}
       {showRegister && (
-        <div className="flex flex-row">
-          <Button onClick={handleRegisterDevice}>Register this device?</Button>
+        <div className="flex flex-col">
+          <Button
+            onClick={handleRegisterDevice}
+            className={clsx("bg-blue-800 text-white border-blue-900")}
+          >
+            Register this device
+          </Button>
+          <a
+            onClick={() => handleSendDelegate(message)}
+            className={clsx("text-blue-900 text-center mt-4 cursor-pointer")}
+          >
+            just log me in!
+          </a>
         </div>
       )}
     </Centered>

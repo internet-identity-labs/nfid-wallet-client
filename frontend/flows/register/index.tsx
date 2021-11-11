@@ -32,8 +32,6 @@ export const Register = () => {
     return `${appName} on ${platform}`
   }, [])
 
-  console.log(">> ", { deviceName })
-
   const handleCreateIdentity = React.useCallback(async () => {
     setStatus("loading")
     const identity = await WebAuthnIdentity.create({
@@ -50,19 +48,16 @@ export const Register = () => {
     const { identity, deviceName, pow } = registerPayload
     // TODO: this opens WebAuthN the second time
     const response = await IIConnection.register(identity, deviceName, pow)
-    console.log(">> ", { response })
 
     if (response.kind === "loginSuccess") {
       const { userNumber, connection } = response
       const recovery = generate().trim()
-      console.log(">> ", { recovery })
 
       const recoverIdentity = await fromMnemonicWithoutValidation(
         recovery,
         IC_DERIVATION_PATH,
       )
 
-      console.log(">> ", { recoverIdentity })
       const recoveryResponse = await connection.add(
         userNumber,
         "Recovery phrase",
@@ -70,7 +65,6 @@ export const Register = () => {
         { recovery: null },
         recoverIdentity.getPublicKey().toDer(),
       )
-      console.log(">> ", { recoveryResponse })
 
       setUserId(userNumber)
       setUserNumber(userNumber)

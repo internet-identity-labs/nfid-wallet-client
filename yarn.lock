@@ -246,10 +246,10 @@
   resolved "https://registry.yarnpkg.com/@cush/relative/-/relative-1.0.0.tgz#8cd1769bf9bde3bb27dac356b1bc94af40f6cc16"
   integrity sha512-RpfLEtTlyIxeNPGKcokS+p3BZII/Q3bYxryFRglh5H3A3T8q9fsLYm72VYAMEOOIBLEa8o93kFLiBDUWKrwXZA==
 
-"@dfinity/agent@0.9.2":
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.9.2.tgz#3df764bfa308a4fba7e0f42e1ffa45bd1c2a406d"
-  integrity sha512-nxYagdY1zAIimgff/NbOGs4pfgNlSWw/oBR/pIHfJMIdklGGzlU69wnyqRJCL9yUCO3I/0bbxeWGzaV7aVabIw==
+"@dfinity/agent@0.9.3":
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.9.3.tgz#e49f07d6749e534c4c30aa2df2bba59e3fa9570f"
+  integrity sha512-vR0t5Uf+srbUHTdGunJxek3a4jCmBKU+B2yYEX0/aSGQfJmEf5X5snuNcnrIDOCfHeK7uxmOqs65BdI8Lhn4fg==
   dependencies:
     base64-arraybuffer "^0.2.0"
     bignumber.js "^9.0.0"

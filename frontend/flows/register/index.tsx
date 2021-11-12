@@ -20,7 +20,11 @@ import { getBrowser, getPlatform } from "./utils"
 
 type Status = "initial" | "loading" | "confirmation" | "success"
 
-export const Register = () => {
+interface RegisterProps {
+  onSuccess?: (connection: IIConnection) => void
+}
+
+export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
   const [userId, setUserId] = React.useState<bigint | null>(null)
   const [recovery, setRecovery] = React.useState<string | null>(null)
   const [status, setStatus] = React.useState<Status>("initial")
@@ -45,6 +49,7 @@ export const Register = () => {
   }, [deviceName])
 
   const handleRegister = React.useCallback(async () => {
+    setStatus("loading")
     const { identity, deviceName, pow } = registerPayload
     // TODO: this opens WebAuthN the second time
     const response = await IIConnection.register(identity, deviceName, pow)
@@ -58,7 +63,7 @@ export const Register = () => {
         IC_DERIVATION_PATH,
       )
 
-      const recoveryResponse = await connection.add(
+      await connection.add(
         userNumber,
         "Recovery phrase",
         { seed_phrase: null },
@@ -70,10 +75,11 @@ export const Register = () => {
       setUserNumber(userNumber)
       setRecovery(recovery)
       setStatus("success")
+      onSuccess && onSuccess(connection)
     }
 
     setStatus("success")
-  }, [registerPayload])
+  }, [onSuccess, registerPayload])
 
   return (
     <div className={clsx("p-4 py-10 flex flex-col h-4/5")}>

@@ -10,6 +10,7 @@ import { Loader } from "frontend/ui-utils/atoms/loader"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { H2 } from "frontend/ui-utils/atoms/typography"
 import React from "react"
+import { Register } from "../register"
 
 interface AuthContextState {
   isAuthenticated: boolean
@@ -17,7 +18,7 @@ interface AuthContextState {
   connection?: IIConnection
   userNumber?: bigint
   login: () => void
-  register: () => void
+  onRegisterSuccess: (connection: IIConnection) => void
 }
 
 export const AuthContext = React.createContext<AuthContextState>({
@@ -26,7 +27,7 @@ export const AuthContext = React.createContext<AuthContextState>({
   connection: undefined,
   userNumber: undefined,
   login: () => console.warn(">> called before initialisation"),
-  register: () => console.warn(">> called before initialisation"),
+  onRegisterSuccess: () => console.warn(">> called before initialisation"),
 })
 
 export const AuthProvider: React.FC = ({ children }) => {
@@ -54,9 +55,12 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
   }, [userNumber])
 
-  const register = React.useCallback(async () => {
-    console.log(">> not yet implemented")
-  }, [])
+  const onRegisterSuccess = React.useCallback(
+    async (connection: IIConnection) => {
+      setConnection(connection)
+    },
+    [],
+  )
 
   return (
     <AuthContext.Provider
@@ -66,7 +70,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         userNumber,
         connection,
         login,
-        register,
+        onRegisterSuccess,
       }}
     >
       {children}
@@ -77,7 +81,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 export const useAuthContext = () => React.useContext(AuthContext)
 
 export const AuthWrapper: React.FC = ({ children }) => {
-  const { isLoading, isAuthenticated, userNumber, login, register } =
+  const { isLoading, isAuthenticated, userNumber, login, onRegisterSuccess } =
     useAuthContext()
 
   return isAuthenticated ? (
@@ -89,10 +93,6 @@ export const AuthWrapper: React.FC = ({ children }) => {
       <Loader isLoading={isLoading} />
     </Screen>
   ) : (
-    <Screen>
-      <H2>You need to register</H2>
-      <Button onClick={register}>register</Button>
-      <Loader isLoading={isLoading} />
-    </Screen>
+    <Register onSuccess={onRegisterSuccess} />
   )
 }

@@ -8,8 +8,12 @@ import { useInterval } from "frontend/hooks/use-interval"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { setUserNumber } from "frontend/ii-utils/userNumber"
 import clsx from "clsx"
+import { Loader } from "frontend/ui-utils/atoms/loader"
 
 export const UnknownDeviceScreen: React.FC = () => {
+  const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
+    "initial",
+  )
   const [message, setMessage] = React.useState<any | null>(null)
   const [showRegister, setShowRegister] = React.useState(false)
   const {
@@ -55,6 +59,7 @@ export const UnknownDeviceScreen: React.FC = () => {
   )
 
   const handleRegisterDevice = React.useCallback(async () => {
+    setStatus("loading")
     window.open(
       `/register-new-device/${pubKey}/${message.userNumber}`,
       "_blank",
@@ -92,6 +97,7 @@ export const UnknownDeviceScreen: React.FC = () => {
     )
 
     if (matchedDevice) {
+      setStatus("success")
       setUserNumber(BigInt(message.userNumber))
       handleSendDelegate(message)
     }
@@ -127,6 +133,7 @@ export const UnknownDeviceScreen: React.FC = () => {
           </a>
         </div>
       )}
+      <Loader isLoading={status === "loading"} />
     </Centered>
   )
 }

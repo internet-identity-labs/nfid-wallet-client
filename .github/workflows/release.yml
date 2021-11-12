@@ -9,6 +9,7 @@ jobs:
         run: |
           mkdir -p $ID_PATH
           echo $GIN_ADMIN_PEMGH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
+          sed -i 's/\\r\\n/\r\n/g' $ID_PATH/identity.pem
         shell: bash
         env:
           GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
@@ -17,3 +18,10 @@ jobs:
         run: bash .github/workflows/dfx-provision-linux.sh
       - name: BACKEND | Deploy to production
         run: make deploy
+        env:
+          DFX_NETWORK: ${{secrets.DFX_NETWORK}}
+          MULTIPASS_FRONTEND_DOMAIN: ${{secrets.MULTIPASS_FRONTEND_DOMAIN}}
+          NEXT_PUBLIC_IC_HOST: ${{secrets.NEXT_PUBLIC_IC_HOST}}
+          VITE_II_CANISTER_ID: ${{secrets.VITE_II_CANISTER_ID}}
+          VITE_II_ENV: ${{secrets.VITE_II_ENV}}
+          VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_II_ENVVITE_II_ENV}}

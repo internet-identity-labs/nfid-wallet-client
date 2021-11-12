@@ -1,8 +1,8 @@
 import clsx from "clsx"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
-import { Button } from "frontend/ui-utils/atoms/button"
 import React from "react"
+import { DeviceItem } from "./device-item"
 
 export const ExistingDevices = () => {
   const [existingDevices, setExistingDevices] = React.useState<any[]>([])
@@ -15,35 +15,23 @@ export const ExistingDevices = () => {
     }
   }, [connection, userNumber])
 
-  const handleDeleteDevice = React.useCallback(
-    async (pubKey: number[]) => {
-      if (connection && userNumber) {
-        const response = await connection.remove(userNumber, pubKey)
-
-        handleLoadDevices()
-      }
-    },
-    [connection, handleLoadDevices, userNumber],
-  )
-
   React.useEffect(() => {
     let timer: NodeJS.Timer
     if (connection) {
-      timer = setTimeout(handleLoadDevices, 2000)
+      timer = setInterval(handleLoadDevices, 2000)
     }
-    return () => clearTimeout(timer)
+    return () => clearInterval(timer)
   }, [connection, handleLoadDevices])
 
   return (
     <div className={clsx("flex flex-col")}>
       <div>Existing Devices</div>
       {existingDevices.map((device) => (
-        <div className={clsx("flex flex-row")} key={device.alias}>
-          <div className={clsx("flex-1")}>{device.alias}</div>
-          <Button onClick={() => handleDeleteDevice(device.pubkey)}>
-            delete
-          </Button>
-        </div>
+        <DeviceItem
+          device={device}
+          key={device.alias}
+          refresh={handleLoadDevices}
+        />
       ))}
     </div>
   )

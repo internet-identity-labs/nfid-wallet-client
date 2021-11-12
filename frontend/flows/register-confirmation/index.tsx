@@ -8,7 +8,7 @@ import { useParams } from "react-router"
 import { getUserNumber } from "frontend/ii-utils/userNumber"
 import { useAuthContext } from "../auth-wrapper"
 import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
-import { ExistingDevices } from "frontend/debug/existing-devices"
+import { ExistingDevices } from "frontend/modules/devices/existing-devices"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000
@@ -32,7 +32,7 @@ export const RegisterConfirmation = () => {
       const messages = await IIConnection.getMessages(secret)
       if (messages.length > 0 && userNumber && connection) {
         const message = JSON.parse(messages[0] || "")
-        const addResponse = await connection.add(
+        await connection.add(
           userNumber,
           message.deviceName,
           { unknown: null },

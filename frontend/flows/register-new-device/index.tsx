@@ -6,8 +6,12 @@ import clsx from "clsx"
 import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { getBrowser, getPlatform } from "../register/utils"
+import { Loader } from "frontend/ui-utils/atoms/loader"
+
+type Status = "initial" | "loading" | "success"
 
 export const RegisterNewDevice = () => {
+  const [status, setStatus] = React.useState<Status>("initial")
   const [opener, setOpener] = React.useState<Window | null>(null)
   let { secret, userNumber } =
     useParams<{ secret: string; userNumber: string }>()
@@ -25,11 +29,14 @@ export const RegisterNewDevice = () => {
   )
 
   const handleRegisterNewDevice = React.useCallback(async () => {
+    setStatus("loading")
     const response = await handleAddDevice(secret, BigInt(userNumber))
     handleSendDeviceKey(response.publicKey)
+    setStatus("success")
   }, [handleAddDevice, handleSendDeviceKey, secret, userNumber])
 
   const waitForOpener = React.useCallback(async () => {
+    setStatus("loading")
     const maxTries = 5
     let interval: NodeJS.Timer
     let run: number = 0
@@ -40,6 +47,7 @@ export const RegisterNewDevice = () => {
       }
       if (window.opener !== null) {
         setOpener(window.opener)
+        setStatus("initial")
         clearInterval(interval)
       }
     }, 500)
@@ -69,7 +77,13 @@ export const RegisterNewDevice = () => {
         I want to use Touch ID as my Multipass "password" in {getBrowser()} on{" "}
         {getPlatform()}
       </Button>
-      <a className={clsx("underline text-center mt-7")}>cancel</a>
+      <a
+        className={clsx("underline text-center mt-7 cursor-pointer")}
+        onClick={() => window.close()}
+      >
+        cancel
+      </a>
+      <Loader isLoading={status === "loading"} />
     </Screen>
   )
 }

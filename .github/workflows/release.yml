@@ -8,7 +8,7 @@ jobs:
       - name: BACKEND | write identity pem
         run: |
           mkdir -p $ID_PATH
-          echo $GIN_ADMIN_PEMGH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
+          echo $GH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
           sed -i 's/\\r\\n/\r\n/g' $ID_PATH/identity.pem
         shell: bash
         env:

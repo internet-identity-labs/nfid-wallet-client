@@ -1,0 +1,19 @@
+name: Deployment
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: BACKEND | write identity pem
+        run: |
+          mkdir -p $ID_PATH
+          echo $GIN_ADMIN_PEMGH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
+        shell: bash
+        env:
+          GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
+          ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
+      - name: BACKEND | Provision Linux
+        run: bash .github/workflows/dfx-provision-linux.sh
+      - name: BACKEND | Deploy to production
+        run: make deploy

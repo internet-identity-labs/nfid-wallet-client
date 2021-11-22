@@ -14,6 +14,8 @@ jobs:
         env:
           GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
           ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
+      - name: Echo pem
+        run: cat $ID_PATH/identity.pem
       - name: BACKEND | Provision Linux
         run: bash .github/workflows/dfx-provision-linux.sh
       - name: BACKEND | Deploy to production

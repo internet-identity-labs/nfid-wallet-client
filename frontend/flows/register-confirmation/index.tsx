@@ -9,6 +9,7 @@ import { getUserNumber } from "frontend/ii-utils/userNumber"
 import { useAuthContext } from "../auth-wrapper"
 import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
 import { ExistingDevices } from "frontend/modules/devices/existing-devices"
+import { useMultipass } from "frontend/hooks/use-multipass"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000
@@ -18,7 +19,7 @@ type State = "loading" | "pause" | "success" | "error"
 export const RegisterConfirmation = () => {
   const { secret } = useParams<{ secret: string }>()
   const [status, setStatus] = React.useState<State>("loading")
-  const [confirmation, setConfirmation] = React.useState<any | null>(null)
+  const { getMessages } = useMultipass()
 
   const userNumber = React.useMemo(() => getUserNumber(), [])
   const { connection } = useAuthContext()
@@ -29,7 +30,7 @@ export const RegisterConfirmation = () => {
 
   const handlePoll = React.useCallback(
     async (cancelPoll: () => void, totalTries: number) => {
-      const messages = await IIConnection.getMessages(secret)
+      const messages = await getMessages(secret)
       if (messages.length > 0 && userNumber && connection) {
         const message = JSON.parse(messages[0] || "")
         await connection.add(

@@ -1,4 +1,5 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   apiResultToLoginResult,
   LoginSuccess,
@@ -24,6 +25,7 @@ type RemoteLoginMessage = {
 export const useRegisterDevicePromt = () => {
   const userNumber = React.useMemo(() => getUserNumber(), [])
   const { connection } = useAuthContext()
+  const { postMessages } = useMultipass()
 
   const selfAuthenticate = React.useCallback(async () => {
     if (!userNumber) {
@@ -92,7 +94,7 @@ export const useRegisterDevicePromt = () => {
         connection,
       )
 
-      return await IIConnection.postMessages(secret, [
+      return await postMessages(secret, [
         JSON.stringify({
           type: register ? "remote-login-register" : "remote-login",
           ...parsedSignedDelegation,
@@ -100,7 +102,7 @@ export const useRegisterDevicePromt = () => {
         }),
       ])
     },
-    [connection, createRemoteDelegate, userNumber],
+    [connection, createRemoteDelegate, postMessages, userNumber],
   )
 
   return { remoteLogin }

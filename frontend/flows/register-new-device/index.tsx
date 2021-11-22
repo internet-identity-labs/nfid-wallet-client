@@ -1,6 +1,6 @@
 import React from "react"
 import { useParams } from "react-router-dom"
-import { useMultipass } from "frontend/hooks/use-ii-connection"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { Button } from "frontend/ui-utils/atoms/button"
 import clsx from "clsx"
 import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"

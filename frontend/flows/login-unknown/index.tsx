@@ -9,6 +9,7 @@ import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { setUserNumber } from "frontend/ii-utils/userNumber"
 import clsx from "clsx"
 import { Loader } from "frontend/ui-utils/atoms/loader"
+import { useMultipass } from "frontend/hooks/use-multipass"
 
 export const UnknownDeviceScreen: React.FC = () => {
   const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
@@ -24,6 +25,7 @@ export const UnknownDeviceScreen: React.FC = () => {
     newDeviceKey,
     postClientAuthorizeSuccessMessage,
   } = useUnknownDeviceConfig()
+  const { getMessages } = useMultipass()
 
   const handleSendDelegate = React.useCallback(
     (delegation) => {
@@ -69,7 +71,7 @@ export const UnknownDeviceScreen: React.FC = () => {
 
   const handlePollForDelegate = React.useCallback(
     async (cancelPoll: () => void) => {
-      const messages = await IIConnection.getMessages(pubKey)
+      const messages = await getMessages(pubKey)
       if (messages.length > 0) {
         const parsedMessages = messages.map((m) => JSON.parse(m))
         const loginMessage = parsedMessages.find(
@@ -84,7 +86,7 @@ export const UnknownDeviceScreen: React.FC = () => {
         }
       }
     },
-    [handleSuccess, pubKey],
+    [getMessages, handleSuccess, pubKey],
   )
 
   const handleWaitForRegisteredDeviceKey = React.useCallback(async () => {

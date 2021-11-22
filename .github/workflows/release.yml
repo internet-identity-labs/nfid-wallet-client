@@ -29,7 +29,7 @@ jobs:
         env:
           VITE_II_CANISTER_ID: ${{secrets.VITE_II_CANISTER_ID}}
           VITE_II_ENV: ${{secrets.VITE_II_ENV}}
-          VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_II_ENVVITE_II_ENV}}
+          VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_MULTIPASS_DOMAIN}}
 
       - name: MULTIPASS DEMO | Install
         run: |

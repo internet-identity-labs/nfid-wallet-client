@@ -15,7 +15,7 @@ import { idlFactory as internet_identity_idl } from "../ii-utils/generated/inter
 const canisterId: string = CONFIG.MP_CANISTER_ID as string
 
 if (!canisterId)
-  throw new Error("you need to add VITE_II_CANISTER_ID to your environment")
+  throw new Error("you need to add VITE_MP_CANISTER_ID to your environment")
 const getAgent = () => {
   const agent = new HttpAgent({})
   // Only fetch the root key when we're not in prod

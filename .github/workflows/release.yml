@@ -37,7 +37,12 @@ jobs:
           VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_II_ENVVITE_II_ENV}}
 
       - name: MULTIPASS DEMO | Install
-        run: cd examples/MultipassDemo && yarn
+        run: |
+          cd examples/MultipassDemo && yarn
+          dfx identity use gh_mp_admin
+          dfx start --clean --background
+          dfx deploy --no-wallet
+          dfx stop
 
       - name: MULTIPASS FRONTEND | Deploy to production
         run: |

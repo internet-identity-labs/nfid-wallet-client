@@ -17,7 +17,9 @@ jobs:
       - name: BACKEND | Provision Linux
         run: bash .github/workflows/dfx-provision-linux.sh
       - name: BACKEND | Deploy to production
-        run: make deploy
+        run: |
+          dfx identity use gh_mp_admin
+          dfx deploy --network ic --no-wallet
         env:
           DFX_NETWORK: ${{secrets.DFX_NETWORK}}
           MULTIPASS_FRONTEND_DOMAIN: ${{secrets.MULTIPASS_FRONTEND_DOMAIN}}

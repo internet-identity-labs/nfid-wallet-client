@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: BACKEND | write identity pem
+      - name: DFX SETUP | write identity pem
         run: |
           mkdir -p $ID_PATH
           echo $GH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
@@ -16,12 +16,7 @@ jobs:
           GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
           ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
 
-      - name: Echo pem
-        run: cat $ID_PATH/identity.pem
-        env:
-          ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
-
-      - name: BACKEND | Provision Linux
+      - name: DFX SETUP  | Provision Linux
         run: bash .github/workflows/dfx-provision-linux.sh
 
       - name: MULTIPASS FRONTEND | Install

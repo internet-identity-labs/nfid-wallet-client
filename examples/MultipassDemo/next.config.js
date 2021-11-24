@@ -1,40 +1,37 @@
-const path = require("path");
-const dfxJson = require("./dfx.json");
+const path = require("path")
+const dfxJson = require("./dfx.json")
 
-const webpack = require("webpack");
+const webpack = require("webpack")
 
 const ICNetworks = {
   local: "local",
   ic: "ic",
-};
+}
 
-const IC_NETWORK = process.env.DFX_NETWORK || ICNetworks.ic;
+const IC_NETWORK = process.env.DFX_NETWORK || ICNetworks.ic
 
-const MULTIPASS_FRONTEND_DOMAIN = process.env.MULTIPASS_FRONTEND_DOMAIN;
+const MULTIPASS_FRONTEND_DOMAIN = process.env.MULTIPASS_FRONTEND_DOMAIN
 
-const II_CANISTER_URL =
-  IC_NETWORK === ICNetworks.ic
-    ? "https://identity.ic0.app/#authorize"
-    : `https://${MULTIPASS_FRONTEND_DOMAIN}/authenticate`;
+const II_CANISTER_URL = `https://${MULTIPASS_FRONTEND_DOMAIN}/authenticate`
 
 const getCanisters = () => {
   return IC_NETWORK === ICNetworks.local
     ? require(path.resolve(".dfx", ICNetworks.local, "canister_ids.json"))
-    : require(path.resolve("canister_ids.json"));
-};
+    : require(path.resolve("canister_ids.json"))
+}
 
 const canisterIdsEnv = () => {
-  const canisters = getCanisters();
+  const canisters = getCanisters()
 
-  process.env.NEXT_PUBLIC_II_CANISTER_URL = II_CANISTER_URL;
+  process.env.NEXT_PUBLIC_II_CANISTER_URL = II_CANISTER_URL
 
   for (const canister in canisters) {
-    const envVar = `NEXT_PUBLIC_${canister.toUpperCase()}_CANISTER_ID`;
-    process.env[envVar] = canisters[canister][IC_NETWORK];
+    const envVar = `NEXT_PUBLIC_${canister.toUpperCase()}_CANISTER_ID`
+    process.env[envVar] = canisters[canister][IC_NETWORK]
   }
-};
+}
 
-canisterIdsEnv();
+canisterIdsEnv()
 
 // List of all aliases for canisters. This creates the module alias for
 // the `import ... from "@dfinity/ic/canisters/xyz"` where xyz is the name of a
@@ -47,24 +44,24 @@ const aliases = Object.entries(dfxJson.canisters).reduce(
       ".dfx",
       IC_NETWORK,
       "canisters",
-      name
-    );
+      name,
+    )
 
     return {
       ...acc,
-      [`dfx-generated/${name}`]: path.join(outputRoot, name + ".js"),
-      [`dfx-generated/${name}.did`]: path.join(outputRoot, name + ".did.js"),
-    };
+      [`ic/${name}`]: path.join(outputRoot, name + ".js"),
+      [`ic/${name}.did`]: path.join(outputRoot, name + ".did.js"),
+    }
   },
-  {}
-);
+  {},
+)
 
 module.exports = {
   trailingSlash: true,
   exportPathMap: () => {
     return {
       "/": { page: "/" },
-    };
+    }
   },
   webpack: (
     config,
@@ -74,20 +71,20 @@ module.exports = {
       isServer: _isServer,
       defaultLoaders: _defaultLoaders,
       webpack: _webpack,
-    }
+    },
   ) => {
     config.plugins.push(
       new webpack.EnvironmentPlugin({
-        DFX_NETWORK: "local",
-      })
-    );
+        DFX_NETWORK: IC_NETWORK,
+      }),
+    )
 
     config.resolve.alias = {
       ...config.resolve.alias,
       ...aliases,
-    };
+    }
 
     // Important: return the modified config
-    return config;
+    return config
   },
-};
+}

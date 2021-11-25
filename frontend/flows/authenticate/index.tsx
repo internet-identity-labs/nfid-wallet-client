@@ -19,7 +19,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
     <Centered>
       {!error ? (
         <div className={clsx("w-full p-10")}>
-          <div className="font-medium mb-3">Sign in to {scope}</div>
+          <div className="font-medium text-lg mb-3">Sign in to {scope}</div>
           <div
             className="flex items-center cursor-pointer border border-gray-200 rounded hover:shadow-sm hover:bg-gray-50"
             onClick={authenticate}

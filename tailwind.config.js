@@ -5,6 +5,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      boxShadow: {
+        "bottom-sheet": "0 0 30px 8px rgba(0, 0, 0, 0.02)",
+      },
       colors: {
         black: "#303030",
         white: "#FFFFFF",

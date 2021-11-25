@@ -3,12 +3,12 @@ import { buildDelegate } from "frontend/ii-utils/build-delegate"
 import { Centered } from "frontend/ui-utils/atoms/centered"
 import { QRCode } from "frontend/ui-utils/atoms/qrcode"
 import { useUnknownDeviceConfig } from "./hooks"
-import { Button } from "frontend/ui-utils/atoms/button"
 import { useInterval } from "frontend/hooks/use-interval"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { setUserNumber } from "frontend/ii-utils/userNumber"
 import clsx from "clsx"
 import { Loader } from "frontend/ui-utils/atoms/loader"
+import { SetupTouchId } from "frontend/ui-utils/molecules/setup-touch-id"
 import { useMultipass } from "frontend/hooks/use-multipass"
 
 export const UnknownDeviceScreen: React.FC = () => {
@@ -48,7 +48,7 @@ export const UnknownDeviceScreen: React.FC = () => {
     (receivedMessage) => {
       setMessage(receivedMessage)
 
-      // user requested divice registration
+      // user requested device registration
       if (receivedMessage.userNumber) {
         setShowRegister(true)
         return
@@ -73,6 +73,9 @@ export const UnknownDeviceScreen: React.FC = () => {
       const messages = await getMessages(pubKey)
       if (messages.length > 0) {
         const parsedMessages = messages.map((m) => JSON.parse(m))
+        const waitingMessage = parsedMessages.find(
+          (m) => m.type === "remote-login-wait-for-user",
+        )
         const loginMessage = parsedMessages.find(
           (m) => m.type === "remote-login",
         )
@@ -80,8 +83,12 @@ export const UnknownDeviceScreen: React.FC = () => {
           (m) => m.type === "remote-login-register",
         )
         if (loginMessage || registerMessage) {
+          setStatus("success")
           handleSuccess(loginMessage || registerMessage)
           cancelPoll()
+        }
+        if (waitingMessage) {
+          setStatus("loading")
         }
       }
     },
@@ -109,23 +116,19 @@ export const UnknownDeviceScreen: React.FC = () => {
 
   return (
     <Centered>
-      <div className="font-medium mb-3">Sign in to {scope} with Multipass</div>
       {!showRegister && url ? (
-        <a href={url} target="_blank">
-          <div className="flex flex-row">
-            <div className="mr-2">Scan code to login</div>
-            <QRCode content={url} options={{ margin: 0 }} />
-          </div>
-        </a>
+        <>
+          <div className="font-medium mb-3">Scan to sign in</div>
+          <a href={url} target="_blank">
+            <div className="flex flex-row">
+              <QRCode content={url} options={{ margin: 0 }} />
+            </div>
+          </a>
+        </>
       ) : null}
       {showRegister && (
         <div className="flex flex-col">
-          <Button
-            onClick={handleRegisterDevice}
-            className={clsx("bg-blue-800 text-white border-blue-900")}
-          >
-            Register this device
-          </Button>
+          <SetupTouchId onClick={handleRegisterDevice} />
           <a
             onClick={() => handleSendDelegate(message)}
             className={clsx("text-blue-900 text-center mt-4 cursor-pointer")}

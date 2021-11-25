@@ -1,9 +1,5 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import {
-  apiResultToLoginResult,
-  LoginSuccess,
-} from "frontend/ii-utils/api-result-to-login-result"
 import { retryGetDelegation } from "frontend/ii-utils/auth"
 import { PublicKey } from "frontend/ii-utils/generated/internet_identity_types"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
@@ -26,15 +22,6 @@ export const useRegisterDevicePromt = () => {
   const userNumber = React.useMemo(() => getUserNumber(), [])
   const { connection } = useAuthContext()
   const { postMessages } = useMultipass()
-
-  const selfAuthenticate = React.useCallback(async () => {
-    if (!userNumber) {
-      throw new Error("Device not registered")
-    }
-    const response = await IIConnection.login(userNumber)
-    const result = apiResultToLoginResult(response)
-    return result
-  }, [userNumber])
 
   const createRemoteDelegate = React.useCallback(
     async (secret: string, scope: string, connection: IIConnection) => {
@@ -105,5 +92,13 @@ export const useRegisterDevicePromt = () => {
     [connection, createRemoteDelegate, postMessages, userNumber],
   )
 
-  return { remoteLogin }
+  const sendWaitForUserInput = React.useCallback(async (secret) => {
+    await IIConnection.postMessages(secret, [
+      JSON.stringify({
+        type: "remote-login-wait-for-user",
+      }),
+    ])
+  }, [])
+
+  return { remoteLogin, sendWaitForUserInput }
 }

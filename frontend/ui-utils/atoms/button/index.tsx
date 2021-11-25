@@ -12,10 +12,7 @@ export const Button: React.FC<ButtonProps> = ({
   className,
   ...buttonProps
 }) => (
-  <button
-    className={clsx("py-2 px-10 rounded-lg border-2", className)}
-    {...buttonProps}
-  >
-    <div className={clsx("font-bold")}>{children}</div>
+  <button className={clsx("rounded-lg border-2", className)} {...buttonProps}>
+    {children}
   </button>
 )

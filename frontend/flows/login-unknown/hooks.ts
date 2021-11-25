@@ -1,5 +1,4 @@
-import { IIConnection } from "frontend/ii-utils/iiConnection"
-import { blobFromHex, blobFromUint8Array, blobToHex } from "@dfinity/candid"
+import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
 import React from "react"
 
 const READY_MESSAGE = {

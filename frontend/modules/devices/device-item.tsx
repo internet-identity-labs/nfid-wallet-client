@@ -28,7 +28,10 @@ export const DeviceItem: React.FC<DeviceItemProps> = ({ device, refresh }) => {
     <div className={clsx("flex flex-row", deleting)} key={device.alias}>
       <div className={clsx("flex-1")}>{device.alias}</div>
       <Button
-        className={clsx(deleting && "animate-pulse bg-red-600 text-white")}
+        className={clsx(
+          "py-2 px-10",
+          deleting && "animate-pulse bg-red-600 text-white",
+        )}
         onClick={handleDeleteDevice}
       >
         delete

@@ -77,6 +77,7 @@ export const Modal: React.FC<ModalProps> = ({
             "fixed top-10 right-10",
             "md:rounded-md",
             "shadow-2xl",
+            "overflow-hidden",
             !visible && "bg-transparent",
             className,
           ])}

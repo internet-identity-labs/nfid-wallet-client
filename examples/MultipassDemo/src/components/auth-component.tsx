@@ -41,10 +41,10 @@ export const AuthComponent = () => {
             <span>whoami</span>
           </LoadingButton>
         )}
-        <Button className="mt-2" onClick={signout}>
+        <Button className="py-2 px-10 mt-2" onClick={signout}>
           signout
         </Button>
-        <Button className="mt-2" onClick={() => setIam("")}>
+        <Button className="py-2 px-10 mt-2" onClick={() => setIam("")}>
           clear
         </Button>
       </div>

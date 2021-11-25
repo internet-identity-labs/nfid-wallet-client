@@ -58,7 +58,7 @@ export const RegisterNewDevice = () => {
   }, [waitForOpener])
 
   return (
-    <Screen className={clsx("max-w-sm m-auto")}>
+    <Screen className={clsx("max-w-sm m-auto p-7 py-10")}>
       <h1 className={clsx("text-center font-bold text-3xl")}>
         Register this device
       </h1>

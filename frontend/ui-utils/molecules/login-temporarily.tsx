@@ -1,9 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 import { Button } from "../atoms/button"
-import { TouchId } from "../atoms/icons/touch-id"
+import { TemporarId } from "../atoms/icons/temporar-id"
 
-export const SetupTouchId: React.FC<
+export const LoginTemporarily: React.FC<
   React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
@@ -16,8 +16,8 @@ export const SetupTouchId: React.FC<
     )}
   >
     <div className={clsx("p-2 bg-gray-200")}>
-      <TouchId />
+      <TemporarId />
     </div>
-    <div className="ml-1 p-2">Setup Touch ID for Chrome</div>
+    <div className="ml-1 p-2 align-middle">Log me in temporarily</div>
   </Button>
 )

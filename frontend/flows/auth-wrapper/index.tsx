@@ -6,9 +6,11 @@ import {
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { getUserNumber } from "frontend/ii-utils/userNumber"
 import { Button } from "frontend/ui-utils/atoms/button"
+import { FaceId } from "frontend/ui-utils/atoms/icons/face-id"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { H2 } from "frontend/ui-utils/atoms/typography"
+import { AuthTicket } from "frontend/ui-utils/molecules/ticket"
 import React from "react"
 import { Register } from "../register"
 
@@ -87,10 +89,20 @@ export const AuthWrapper: React.FC = ({ children }) => {
   return isAuthenticated ? (
     <>{children}</>
   ) : userNumber ? (
-    <Screen>
-      <H2>Authenticate</H2>
-      <Button className="py-2 px-10" onClick={login}>
-        Login
+    <Screen className={clsx("p-7 py-10")}>
+      <h1 className={clsx("font-bold text-3xl")}>Multipass</h1>
+      <div className={clsx("flex-grow")} />
+      <p className="font-medium text-center my-5">
+        You need to authenticate to use this app.
+      </p>
+      <Button
+        className={clsx("flex flex-row w-full justify-start items-center")}
+        onClick={login}
+      >
+        <div className={clsx("p-2 bg-gray-200")}>
+          <FaceId />
+        </div>
+        <div className="ml-1 p-2 align-middle">Login using Face ID</div>
       </Button>
       <Loader isLoading={isLoading} />
     </Screen>

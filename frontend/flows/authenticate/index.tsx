@@ -4,6 +4,7 @@ import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
+import { Link } from "react-router-dom"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,
@@ -28,6 +29,9 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
               <TouchId />
             </div>
             <div className="ml-1 p-2">Continue with TouchID as Philipp</div>
+          </div>
+          <div className={clsx("mt-5 text-blue-900 hover:underline")}>
+            <Link to="/login-unknown-device">log in as a new user</Link>
           </div>
         </div>
       ) : (

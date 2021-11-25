@@ -7,6 +7,7 @@ import {
 import { retryGetDelegation } from "frontend/ii-utils/auth"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import React from "react"
+import { useMessageChannel } from "../login-unknown/hooks"
 
 const READY_MESSAGE = {
   kind: "authorize-ready",
@@ -27,103 +28,61 @@ export const useAuthentication = ({
   // the authResult state is used to store the II
   const [authResult, setAuthResult] = React.useState<LoginSuccess | null>(null)
 
-  // Sends the opening message to the requesting application (e.g. DSCVR)
-  const postClientReadyMessage = React.useCallback((opener) => {
-    opener.postMessage(READY_MESSAGE, "*")
-  }, [])
+  const { opener, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
+    useMessageChannel({
+      messageHandler: {
+        "authorize-client": async (event: any) => {
+          if (authResult !== null) {
+            setLoading(true)
+            const message = event.data
+            const { maxTimeToLive, sessionPublicKey } = message
+            const hostname = event.origin
 
-  // Sends the succees message and the delegate to the requesting application (e.g. DSCVR)
-  const postClientAuthorizeSuccessMessage = React.useCallback(
-    (opener, { parsedSignedDelegation, userKey, hostname }) => {
-      opener.postMessage(
-        {
-          kind: "authorize-client-success",
-          delegations: [parsedSignedDelegation],
-          userPublicKey: Uint8Array.from(userKey),
-        },
-        hostname,
-      )
-    },
-    [],
-  )
-
-  // event handler for the message send from the requesting application (e.g. DSCVR)
-  const handleAuthMessage = React.useCallback(
-    async (event) => {
-      const message = event.data
-      if (message.kind === "authorize-client") {
-        if (authResult !== null) {
-          setLoading(true)
-
-          const { maxTimeToLive, sessionPublicKey } = message
-          const hostname = event.origin
-
-          const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
-          const prepRes = await authResult.connection.prepareDelegation(
-            userNumber,
-            hostname,
-            sessionKey,
-            maxTimeToLive,
-          )
-          // TODO: move to error handler
-          if (prepRes.length !== 2) {
-            throw new Error(
-              `Error preparing the delegation. Result received: ${prepRes}`,
+            const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
+            const prepRes = await authResult.connection.prepareDelegation(
+              userNumber,
+              hostname,
+              sessionKey,
+              maxTimeToLive,
             )
+            // TODO: move to error handler
+            if (prepRes.length !== 2) {
+              throw new Error(
+                `Error preparing the delegation. Result received: ${prepRes}`,
+              )
+            }
+            const [userKey, timestamp] = prepRes
+
+            const signedDelegation = await retryGetDelegation(
+              authResult.connection,
+              userNumber,
+              hostname,
+              sessionKey,
+              timestamp,
+            )
+
+            // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
+            const parsedSignedDelegation = {
+              delegation: {
+                pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
+                expiration: BigInt(signedDelegation.delegation.expiration),
+                targets: undefined,
+              },
+              signature: Uint8Array.from(signedDelegation.signature),
+            }
+            postClientAuthorizeSuccessMessage(event.source, {
+              parsedSignedDelegation,
+              userKey,
+              hostname,
+            })
+            setLoading(false)
           }
-          const [userKey, timestamp] = prepRes
-
-          const signedDelegation = await retryGetDelegation(
-            authResult.connection,
-            userNumber,
-            hostname,
-            sessionKey,
-            timestamp,
-          )
-
-          // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
-          const parsedSignedDelegation = {
-            delegation: {
-              pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
-              expiration: BigInt(signedDelegation.delegation.expiration),
-              targets: undefined,
-            },
-            signature: Uint8Array.from(signedDelegation.signature),
-          }
-          postClientAuthorizeSuccessMessage(event.source, {
-            parsedSignedDelegation,
-            userKey,
-            hostname,
-          })
-          setLoading(false)
-        }
-      }
-    },
-    [authResult, postClientAuthorizeSuccessMessage, userNumber],
-  )
-
-  // polls for `window.opener` and when received sends the ready message to the
-  // requesting application
-  const handleAuthorizationReady = React.useCallback(() => {
-    const maxTries = 5
-    let interval: NodeJS.Timer
-    let run: number = 0
-
-    interval = setInterval(() => {
-      if (run >= maxTries) {
-        clearInterval(interval)
-        setError({
-          tag: "err",
-          title: "failed to establish connection",
-          message: "could communicate with requesting app",
-        })
-      }
-      if (window.opener !== null) {
-        postClientReadyMessage(window.opener)
-        clearInterval(interval)
-      }
-    }, 500)
-  }, [postClientReadyMessage])
+        },
+        "registered-device": (event: any) => {
+          console.log(">> TODO: make registered-device optional", {})
+        },
+      },
+    })
 
   // handles the authentication of the current user
   const handleAuthenticate = React.useCallback(async () => {
@@ -136,16 +95,10 @@ export const useAuthentication = ({
     }
     if (result.tag === "ok") {
       setAuthResult(result)
-      handleAuthorizationReady()
+      postClientReadyMessage()
     }
-  }, [handleAuthorizationReady, userNumber])
-
-  // SETUP MESSAGE BUS WITH REQUESTING APPLICATION
-  React.useEffect(() => {
-    window.addEventListener("message", handleAuthMessage)
-    return () => window.removeEventListener("message", handleAuthMessage)
-  }, [handleAuthMessage])
+  }, [postClientReadyMessage, userNumber])
 
   // return the hooks props
-  return { isLoading, error, authenticate: handleAuthenticate }
+  return { isLoading, opener, error, authenticate: handleAuthenticate }
 }

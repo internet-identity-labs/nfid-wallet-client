@@ -7,6 +7,8 @@ import { useRegisterDevicePromt } from "./hooks"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
 import { TemporarId } from "frontend/ui-utils/atoms/icons/temporar-id"
+import { Centered } from "frontend/ui-utils/atoms/centered"
+import { SetupTouchId } from "frontend/ui-utils/molecules/setup-touch-id"
 
 interface RegisterDevicePromptProps {}
 
@@ -37,15 +39,17 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
 
   return (
     <Screen>
-      <h1 className={clsx("font-bold text-3xl")}>Multipass</h1>
       {status === "success" && (
-        <div className="flex flex-col items-center">Success</div>
+        <Centered>
+          <div className="flex flex-col items-center">Success</div>
+        </Centered>
       )}
       {status === "error" && (
         <div className="flex flex-col items-center">Something went wrong</div>
       )}
       {(status === "initial" || status === "loading") && (
         <>
+          <h1 className={clsx("font-bold text-3xl")}>Multipass</h1>
           <div className={clsx("flex-grow")} />
           <p className="font-medium text-center my-5">
             How would you like to proceed?
@@ -62,17 +66,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
               </div>
               <div className="ml-1 p-2 align-middle">Log me in temporarily</div>
             </Button>
-            <Button
-              onClick={handleLoginAndRegister}
-              className={clsx(
-                "flex flex-row w-full justify-start items-center",
-              )}
-            >
-              <div className={clsx("p-2 bg-gray-200")}>
-                <TouchId />
-              </div>
-              <div className="ml-1 p-2">Setup Touch ID for Chrome</div>
-            </Button>
+            <SetupTouchId onClick={handleLoginAndRegister} />
           </div>
           <Loader isLoading={status === "loading"} />
         </>

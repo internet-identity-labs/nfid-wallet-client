@@ -109,14 +109,15 @@ export const UnknownDeviceScreen: React.FC = () => {
 
   return (
     <Centered>
-      <div className="font-medium mb-3">Sign in to {scope} with Multipass</div>
       {!showRegister && url ? (
-        <a href={url} target="_blank">
-          <div className="flex flex-row">
-            <div className="mr-2">Scan code to login</div>
-            <QRCode content={url} options={{ margin: 0 }} />
-          </div>
-        </a>
+        <>
+          <div className="font-medium mb-3">Scan to sign in</div>
+          <a href={url} target="_blank">
+            <div className="flex flex-row">
+              <QRCode content={url} options={{ margin: 0 }} />
+            </div>
+          </a>
+        </>
       ) : null}
       {showRegister && (
         <div className="flex flex-col">

@@ -9,22 +9,13 @@ import { ModalHeader } from "./modal/header"
 import clsx from "clsx"
 import { Loader } from "../atoms/loader"
 
-interface InternetAuthProps {
-  onClick?: () => void
-}
+interface InternetAuthProps {}
 
-export const InternetAuthButton: React.FC<InternetAuthProps> = ({
-  onClick,
-} = {}) => {
+export const InternetAuthButton: React.FC<InternetAuthProps> = () => {
   const [isLoading, loading] = React.useState(true)
   const [showModal, setShowModal] = React.useState(false)
   const { isAuthenticated, identityProvider, authenticate } =
     useInternetIdentity()
-
-  const handleAuthModal = React.useCallback(() => {
-    setShowModal(true)
-    onClick && onClick()
-  }, [onClick])
 
   const handleAuthentication = React.useCallback(async () => {
     loading(false)

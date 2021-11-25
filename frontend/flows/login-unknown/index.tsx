@@ -48,7 +48,7 @@ export const UnknownDeviceScreen: React.FC = () => {
     (receivedMessage) => {
       setMessage(receivedMessage)
 
-      // user requested divice registration
+      // user requested device registration
       if (receivedMessage.userNumber) {
         setShowRegister(true)
         return
@@ -73,6 +73,9 @@ export const UnknownDeviceScreen: React.FC = () => {
       const messages = await getMessages(pubKey)
       if (messages.length > 0) {
         const parsedMessages = messages.map((m) => JSON.parse(m))
+        const waitingMessage = parsedMessages.find(
+          (m) => m.type === "remote-login-wait-for-user",
+        )
         const loginMessage = parsedMessages.find(
           (m) => m.type === "remote-login",
         )
@@ -80,8 +83,12 @@ export const UnknownDeviceScreen: React.FC = () => {
           (m) => m.type === "remote-login-register",
         )
         if (loginMessage || registerMessage) {
+          setStatus("success")
           handleSuccess(loginMessage || registerMessage)
           cancelPoll()
+        }
+        if (waitingMessage) {
+          setStatus("loading")
         }
       }
     },

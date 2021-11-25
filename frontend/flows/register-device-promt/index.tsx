@@ -16,7 +16,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   >("initial")
   const { secret, scope } = useParams<{ secret: string; scope: string }>()
   const { push } = useHistory()
-  const { remoteLogin } = useRegisterDevicePromt()
+  const { remoteLogin, sendWaitForUserInput } = useRegisterDevicePromt()
 
   const handleLogin = React.useCallback(async () => {
     setStatus("loading")
@@ -30,6 +30,10 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
     setStatus("success")
     return push(`/register-confirmation/${secret}`)
   }, [push, remoteLogin, scope, secret])
+
+  React.useEffect(() => {
+    secret && sendWaitForUserInput(secret)
+  }, [secret, sendWaitForUserInput])
 
   return (
     <Screen>
@@ -48,7 +52,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
           </p>
           <div className={clsx("pt-3 flex flex-col space-y-1 justify-center")}>
             <Button
-              onClick={handleLoginAndRegister}
+              onClick={handleLogin}
               className={clsx(
                 "flex flex-row w-full justify-start items-center",
               )}
@@ -59,7 +63,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
               <div className="ml-1 p-2 align-middle">Log me in temporarily</div>
             </Button>
             <Button
-              onClick={handleLogin}
+              onClick={handleLoginAndRegister}
               className={clsx(
                 "flex flex-row w-full justify-start items-center",
               )}

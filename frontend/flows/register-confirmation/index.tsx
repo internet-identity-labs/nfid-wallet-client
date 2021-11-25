@@ -88,7 +88,9 @@ export const RegisterConfirmation = () => {
           <div className={clsx("text-center mt-40")}>
             Haven't received confirmation yet. Have you registered on your Mac?
           </div>
-          <Button onClick={handleRetry}>Retry</Button>
+          <Button className="py-2 px-10 " onClick={handleRetry}>
+            Retry
+          </Button>
         </>
       )}
       <ExistingDevices />

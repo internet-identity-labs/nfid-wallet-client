@@ -89,7 +89,9 @@ export const AuthWrapper: React.FC = ({ children }) => {
   ) : userNumber ? (
     <Screen>
       <H2>Authenticate</H2>
-      <Button onClick={login}>Login</Button>
+      <Button className="py-2 px-10" onClick={login}>
+        Login
+      </Button>
       <Loader isLoading={isLoading} />
     </Screen>
   ) : (

@@ -5,6 +5,8 @@ import { Loader } from "frontend/ui-utils/atoms/loader"
 import { useHistory, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
 import { Screen } from "frontend/ui-utils/atoms/screen"
+import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
+import { TemporarId } from "frontend/ui-utils/atoms/icons/temporar-id"
 
 interface RegisterDevicePromptProps {}
 
@@ -31,9 +33,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
 
   return (
     <Screen>
-      <h1 className={clsx("text-center font-bold text-3xl")}>
-        Go Password-less?
-      </h1>
+      <h1 className={clsx("font-bold text-3xl")}>Multipass</h1>
       {status === "success" && (
         <div className="flex flex-col items-center">Success</div>
       )}
@@ -42,28 +42,33 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
       )}
       {(status === "initial" || status === "loading") && (
         <>
-          {/* <div>Is this your MacBook Pro?</div>
-        <div className={clsx("pt-3 flex flex-row space-x-3")}>
-          <Button onClick={notImplemented}>Yes</Button>
-          <Button onClick={notImplemented}>No</Button>
-        </div>
-        <div>
-          Does anyone else have the password or registred with Touch ID on this
-          computer?
-        </div>
-        <div className={clsx("pt-3 flex flex-row space-x-3")}>
-          <Button onClick={notImplemented}>Yes</Button>
-          <Button onClick={notImplemented}>No</Button>
-        </div> */}
           <div className={clsx("flex-grow")} />
-          <p>
-            Do you want to stop using usernames and passwords to register and
-            log in to supported websites and applications while using Safari on
-            your Mackbook Pro?
+          <p className="font-medium text-center my-5">
+            How would you like to proceed?
           </p>
-          <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
-            <Button onClick={handleLoginAndRegister}>Yes</Button>
-            <Button onClick={handleLogin}>No</Button>
+          <div className={clsx("pt-3 flex flex-col space-y-1 justify-center")}>
+            <Button
+              onClick={handleLoginAndRegister}
+              className={clsx(
+                "flex flex-row w-full justify-start items-center",
+              )}
+            >
+              <div className={clsx("p-2 bg-gray-200")}>
+                <TemporarId />
+              </div>
+              <div className="ml-1 p-2 align-middle">Log me in temporarily</div>
+            </Button>
+            <Button
+              onClick={handleLogin}
+              className={clsx(
+                "flex flex-row w-full justify-start items-center",
+              )}
+            >
+              <div className={clsx("p-2 bg-gray-200")}>
+                <TouchId />
+              </div>
+              <div className="ml-1 p-2">Setup Touch ID for Chrome</div>
+            </Button>
           </div>
           <Loader isLoading={status === "loading"} />
         </>

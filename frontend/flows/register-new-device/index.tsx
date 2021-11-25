@@ -72,7 +72,7 @@ export const RegisterNewDevice = () => {
       </div>
       <Button
         onClick={handleRegisterNewDevice}
-        className={clsx("bg-blue-700 text-white border-blue-900")}
+        className={clsx("py-2 px-10 bg-blue-700 text-white border-blue-900")}
       >
         I want to use Touch ID as my Multipass "password" in {getBrowser()} on{" "}
         {getPlatform()}

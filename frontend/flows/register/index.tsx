@@ -88,7 +88,9 @@ export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
         <>
           <p>Do you want to stop using usernames and passwords and register?</p>
           <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
-            <Button onClick={handleCreateIdentity}>Yes</Button>
+            <Button className="py-2 px-10 " onClick={handleCreateIdentity}>
+              Yes
+            </Button>
           </div>
         </>
       )}
@@ -106,7 +108,9 @@ export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
       )}
       {status === "confirmation" && (
         <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
-          <Button onClick={handleRegister}>Confirm registration</Button>
+          <Button className="py-2 px-10 " onClick={handleRegister}>
+            Confirm registration
+          </Button>
         </div>
       )}
       <Loader isLoading={status === "loading"} />

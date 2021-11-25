@@ -123,7 +123,9 @@ export const UnknownDeviceScreen: React.FC = () => {
         <div className="flex flex-col">
           <Button
             onClick={handleRegisterDevice}
-            className={clsx("bg-blue-800 text-white border-blue-900")}
+            className={clsx(
+              "py-2 px-10 bg-blue-800 text-white border-blue-900",
+            )}
           >
             Register this device
           </Button>

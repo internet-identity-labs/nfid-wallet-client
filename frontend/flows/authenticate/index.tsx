@@ -20,7 +20,10 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
           <div className="font-medium mb-3">
             Sign in to {scope} with Multipass
           </div>
-          <div className="flex items-center" onClick={authenticate}>
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={authenticate}
+          >
             <TouchId />
             <div className="ml-1">Continue with TouchID as Philipp</div>
           </div>

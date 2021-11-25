@@ -16,7 +16,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   return (
     <Centered>
       {!error ? (
-        <>
+        <div className={clsx("w-full p-4")}>
           <div className="font-medium mb-3">
             Sign in to {scope} with Multipass
           </div>
@@ -27,7 +27,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
             <TouchId />
             <div className="ml-1">Continue with TouchID as Philipp</div>
           </div>
-        </>
+        </div>
       ) : (
         <div className="text-red-500">{error.message}</div>
       )}

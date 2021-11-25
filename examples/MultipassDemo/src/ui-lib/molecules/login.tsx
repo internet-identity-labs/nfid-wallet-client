@@ -56,7 +56,7 @@ export const InternetAuthButton: React.FC<InternetAuthProps> = ({
       className={clsx("w-[30rem] h-[20rem]")}
     >
       <ModalHeader onClose={handleClose} />
-      <div className={clsx("py-10 w-full h-full")}>
+      <div className={clsx("w-full h-full")}>
         <Loader isLoading={isLoading} />
         <AuthIframe src={identityProvider} onLoad={handleAuthentication} />
       </div>

@@ -11,7 +11,7 @@ import { Loader } from "../atoms/loader"
 
 interface InternetAuthProps {}
 
-export const InternetAuthButton: React.FC<InternetAuthProps> = () => {
+export const MultipassAuth: React.FC<InternetAuthProps> = () => {
   const [isLoading, loading] = React.useState(true)
   const [showModal, setShowModal] = React.useState(false)
   const { isAuthenticated, identityProvider, authenticate } =

@@ -4,10 +4,11 @@ import clsx from "clsx"
 import React from "react"
 import { useProfile } from "src/ic-utils/profile"
 import { Button, LoadingButton } from "src/ui-lib/atoms/button"
-import { InternetAuthButton } from "src/ui-lib/molecules/login"
+import { MultipassAuth } from "src/ui-lib/molecules/multipass-auth"
 import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
+import { IIAuth } from "src/ui-lib/molecules/ii-auth"
 
-export const AuthComponent = () => {
+export const MPAuthComponent = () => {
   const [isLoading, setIsLoading] = React.useState(false)
   const [iam, setIam] = React.useState("")
   const { identity, isAuthenticated, signout } = useInternetIdentity()
@@ -22,17 +23,19 @@ export const AuthComponent = () => {
   }, [whoami])
 
   return !isAuthenticated ? (
-    <InternetAuthButton />
+    <MultipassAuth />
   ) : (
     <div className={clsx("flex flex-col")}>
-      {iam && (
-        <>
-          <div className={clsx("font-bold mb-2")}>your identity is:</div>
-          <div className={clsx("mb-6")}>{iam}</div>
-        </>
-      )}
       <div className={clsx("flex flex-col")}>
-        {!iam && (
+        <h2 className={clsx("font-bold text-lg uppercase mb-4")}>
+          Delegate: Multipass
+        </h2>
+        {iam ? (
+          <>
+            <div className={clsx("font-bold mb-2")}>your identity is:</div>
+            <div className={clsx("mb-6")}>{iam}</div>
+          </>
+        ) : (
           <LoadingButton
             isLoading={isLoading}
             onClick={handleWhoami}
@@ -41,10 +44,10 @@ export const AuthComponent = () => {
             <span>whoami</span>
           </LoadingButton>
         )}
-        <Button className="py-2 px-10 mt-2" onClick={signout}>
+        <Button className="mt-2" onClick={signout}>
           signout
         </Button>
-        <Button className="py-2 px-10 mt-2" onClick={() => setIam("")}>
+        <Button className="mt-2" onClick={() => setIam("")}>
           clear
         </Button>
       </div>

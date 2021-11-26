@@ -9,6 +9,7 @@ import { Register } from "./flows/register"
 import { RegisterConfirmation } from "./flows/register-confirmation"
 import { RegisterNewDevice } from "./flows/register-new-device"
 import { AuthProvider, AuthWrapper } from "./flows/auth-wrapper"
+import { LinkInternetIdentity } from "./flows/link-internet-identity"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -41,6 +42,11 @@ function App() {
                   </li>
                   <li>
                     <Link to="/login-unknown-device">LoginUnknown</Link>
+                  </li>
+                  <li>
+                    <Link to="/link-internet-identity">
+                      LinkInternetIdentity
+                    </Link>
                   </li>
                 </ul>
               </nav>
@@ -75,6 +81,9 @@ function App() {
             </Route>
             <Route path="/register-new-device/:secret/:userNumber">
               <RegisterNewDevice />
+            </Route>
+            <Route path="/link-internet-identity">
+              <LinkInternetIdentity />
             </Route>
           </Switch>
         </div>

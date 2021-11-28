@@ -7,9 +7,9 @@ interface Props
     HTMLDivElement
   > {}
 
-export const Card: React.FC<Props> = ({ children, className }) => {
+export const CardTitle: React.FC<Props> = ({ children, className }) => {
   return (
-    <div className={clsx(["shadow rounded-md bg-white", className])}>
+    <div className={clsx("text-xl lg:text-3xl xl:text-4xl text-gray-700 font-medium text-center py-8 lg:py-14 capitalize", className)}>
       {children}
     </div>
   )

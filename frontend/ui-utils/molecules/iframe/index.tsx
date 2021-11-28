@@ -14,7 +14,7 @@ interface Props
 
 export const IFrame: React.FC<Props> = ({ children, className, title }) => {
   return (
-    <Card className="bg-transparent md:bg-white px-4 md:px-0 shadow-xl fixed bottom-0 right-0  md:top-10 md:right-10 w-full max-w-screen md:max-w-xl rounded-xl overflow-hidden max-h-[25rem] h-full">
+    <Card className="bg-transparent md:bg-white shadow-xl fixed bottom-0 right-0  md:top-10 md:right-10 w-full max-w-screen md:max-w-xl rounded-xl overflow-hidden max-h-[25rem] h-full">
       <div className="w-full h-14 bg-white text-black border-b-0 border overflow-hidden rounded-t-xl">
         <div
           className={clsx(

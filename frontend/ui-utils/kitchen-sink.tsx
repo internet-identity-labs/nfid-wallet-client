@@ -15,6 +15,9 @@ import { CardAction } from "./molecules/card/action"
 import { Chip } from "./atoms/chip"
 import { MagnifyIcon } from "./atoms/icons/magnify"
 import { IFrame } from "./molecules/iframe"
+import { List } from "./molecules/list"
+import { ListItemHead } from "./molecules/list/list-item-head"
+import { ListItem } from "./molecules/list/list-item"
 
 export const KitchenSink: React.FC = () => {
   const [showFrame, setShowFrame] = useState(false)
@@ -65,13 +68,6 @@ export const KitchenSink: React.FC = () => {
             <P>
               Lorem, ipsum dolor sit amet consectetur adipisicing elit. In dolor
               deleniti odio dignissimos voluptatum inventore sequi sed quisquam
-              ullam voluptatibus, perspiciatis dicta maiores quibusdam, ad, quae
-              eveniet dolorum. Iste, incidunt.
-            </P>
-
-            <P className="mt-6">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Cupiditate laborum corporis nam quaerat placeat voluptates.
             </P>
 
             <div className="mt-4">
@@ -85,6 +81,32 @@ export const KitchenSink: React.FC = () => {
                 Toggle IFrame
               </Button>
               {showFrame && <IFrame title={"Lorem ipsum dolor sit amet"} />}
+            </div>
+
+            <div className="mt-4">
+              <List>
+                {{
+                  head: (
+                    <ListItemHead
+                      title={"List item head"}
+                      description={
+                        "This describes or gives context to the list (optional)"
+                      }
+                    />
+                  ),
+                  items: [
+                    <ListItem
+                      title={"Mert Polat"}
+                      subtitle={"Front-end Developer"}
+                      src="/frontend/assets/dfinity.svg"
+                    />,
+                    <ListItem
+                      title={"John Doe"}
+                      subtitle={"Second variant without image"}
+                    />,
+                  ],
+                }}
+              </List>
             </div>
           </CardBody>
         </Card>

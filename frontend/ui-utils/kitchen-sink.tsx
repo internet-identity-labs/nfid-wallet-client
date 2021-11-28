@@ -3,7 +3,7 @@ import { Input } from "frontend/ui-utils/atoms/input"
 import { Label } from "frontend/ui-utils/atoms/input/label"
 import { TextArea } from "frontend/ui-utils/atoms/input/text-area"
 import { P } from "frontend/ui-utils/atoms/typography/paragraph"
-import React from "react"
+import React, { useState } from "react"
 import { Card } from "./molecules/card"
 import { H1, H2, H3, H4, H5 } from "frontend/ui-utils/atoms/typography"
 import { Button } from "frontend/ui-utils/atoms/button"
@@ -12,11 +12,15 @@ import { HamburgerIcon } from "./atoms/icons/hamburger"
 import { CardTitle } from "./molecules/card/title"
 import { CardBody } from "./molecules/card/body"
 import { CardAction } from "./molecules/card/action"
+import { Chip } from "./atoms/chip"
+import { MagnifyIcon } from "./atoms/icons/magnify"
+import { IFrame } from "./molecules/iframe"
 
 export const KitchenSink: React.FC = () => {
+  const [showFrame, setShowFrame] = useState(false)
   return (
     <>
-      <div className="md:grid md:grid-cols-2  space-y-5 md:space-y-0 md:space-x-5">
+      <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
         <Card>
           <CardBody>
             <div className="grid grid-cols-2 gap-6">
@@ -32,10 +36,26 @@ export const KitchenSink: React.FC = () => {
                 />
               </div>
               <div className="col-span-2 sm:col-span-2">
+                <Label>Search input</Label>
+                <Input icon={<MagnifyIcon />} placeholder={"Search"} />
+              </div>
+              <div className="col-span-2 sm:col-span-2">
                 <Label>Example</Label>
                 <TextArea
                   infoMessage={"Some help information can be put here"}
                 />
+              </div>
+              <div className="col-span-2 sm:col-span-2">
+                <Label>Chips</Label>
+                <div className="inline-flex items-center flex-wrap">
+                  <Chip solid icon={<HamburgerIcon />}>
+                    Hamburger
+                  </Chip>
+                  <Chip solid className="my-1 mr-1 sm:m-1">
+                    Hamburger
+                  </Chip>
+                  <Chip>Hamburger</Chip>
+                </div>
               </div>
             </div>
           </CardBody>
@@ -57,6 +77,14 @@ export const KitchenSink: React.FC = () => {
             <div className="mt-4">
               <Label>Dropdown button</Label>
               <DropdownMenu />
+            </div>
+
+            <div className="mt-4">
+              <Label>IFrame</Label>
+              <Button onClick={() => setShowFrame(!showFrame)}>
+                Toggle IFrame
+              </Button>
+              {showFrame && <IFrame title={"Lorem ipsum dolor sit amet"} />}
             </div>
           </CardBody>
         </Card>
@@ -93,7 +121,7 @@ export const KitchenSink: React.FC = () => {
       {/* Example Screen 1*/}
       <div className="h-[100vh] mb-12">
         <Card className="h-full flex flex-col">
-          <CardTitle>The easiest identity</CardTitle>
+          <CardTitle>Example screen 1</CardTitle>
           <Divider noGutters />
           <CardBody>
             <P>

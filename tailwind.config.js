@@ -9,7 +9,7 @@ module.exports = {
         "bottom-sheet": "0 0 30px 8px rgba(0, 0, 0, 0.02)",
       },
       colors: {
-        black: "#303030",
+        black: "#212121",
         white: "#FFFFFF",
         blue: {
           50: "#94d5f1",

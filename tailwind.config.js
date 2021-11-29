@@ -46,7 +46,14 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ["checked"],
+      borderColor: ["checked"],
+      inset: ["checked"],
+      zIndex: ["hover", "active"],
+    },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+  ],
 }

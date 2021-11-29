@@ -24,10 +24,6 @@ export const NavigationBar: React.FC = () => {
                 href={"/register-confirmation"}
                 text={"Register Confirmation"}
               />
-              <NavigationLink
-                href={"/sample-flow-with-css"}
-                text={"Sample Flow with CSS styles"}
-              />
               <NavigationLink href={"/authenticate"} text={"Authenticate"} />
               <NavigationLink
                 href={"/login-unknown-device"}
@@ -36,6 +32,10 @@ export const NavigationBar: React.FC = () => {
               <NavigationLink
                 href={"/link-internet-identity"}
                 text={"Link InternetIdentity"}
+              />
+              <NavigationLink
+                href={"/kitchen-sink"}
+                text={"🚰"}
               />
             </nav>
 
@@ -60,10 +60,6 @@ export const NavigationBar: React.FC = () => {
               <NavigationLink
                 href={"/register-confirmation"}
                 text={"Register Confirmation"}
-              />
-              <NavigationLink
-                href={"/sample-flow-with-css"}
-                text={"Sample Flow with CSS styles"}
               />
               <NavigationLink href={"/authenticate"} text={"Authenticate"} />
               <NavigationLink

@@ -3,17 +3,45 @@ import clsx from "clsx"
 import { ListItemHead } from "./list-item-head"
 import { Card } from "../card"
 
+const Header: React.FC = ({ children }) => {
+  return <>{children}</>
+}
+
+const Items: React.FC = ({ children }) => {
+  return <>{children}</>
+}
+
+interface ListCompoundProps {
+  Header: React.FC;
+  Items: React.FC;
+}
+
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  children: React.ReactElement[] | React.ReactElement
+}
 
-export const List: React.FC<Props> = ({ children, className }) => {
+export const List: React.FC<Props> & ListCompoundProps = ({ children, className }: any) => {
+  const header: React.ReactNode[] = []
+  const items: React.ReactNode[] = []
+
+  React.Children.forEach(children, (child) => {
+    if (child && child?.type === Header) {
+      return header.push(child)
+    }
+    items.push(child)
+  })
+
   return (
     <Card className={className}>
-      {children.head}
-      <ul className="flex flex-col divide divide-y">{children.items}</ul>
+      {header}
+      <ul className="flex flex-col divide divide-y">{items}</ul>
     </Card>
   )
 }
+
+List.Header = Header
+List.Items = Items

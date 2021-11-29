@@ -4,25 +4,26 @@ import { Label } from "frontend/ui-utils/atoms/input/label"
 import { TextArea } from "frontend/ui-utils/atoms/input/text-area"
 import { P } from "frontend/ui-utils/atoms/typography/paragraph"
 import React, { useState } from "react"
-import { Card } from "./molecules/card"
 import { H1, H2, H3, H4, H5 } from "frontend/ui-utils/atoms/typography"
 import { Button } from "frontend/ui-utils/atoms/button"
-import { DropdownMenu } from "./molecules/menu"
-import { HamburgerIcon } from "./atoms/icons/hamburger"
-import { CardTitle } from "./molecules/card/title"
-import { CardBody } from "./molecules/card/body"
-import { CardAction } from "./molecules/card/action"
-import { Chip } from "./atoms/chip"
-import { MagnifyIcon } from "./atoms/icons/magnify"
-import { IFrame } from "./molecules/iframe"
-import { List } from "./molecules/list"
-import { ListItemHead } from "./molecules/list/list-item-head"
-import { ListItem } from "./molecules/list/list-item"
+import { DropdownMenu } from "frontend/ui-utils/molecules/menu"
+import { IFrame } from "frontend/ui-utils/molecules/iframe"
+import { List } from "frontend/ui-utils/molecules/list"
+import { ListItemHead } from "frontend/ui-utils/molecules/list/list-item-head"
+import { ListItem } from "frontend/ui-utils/molecules/list/list-item"
+import { CardBody } from "frontend/ui-utils/molecules/card/body"
+import { Card } from "frontend/ui-utils/molecules/card"
+import { CardTitle } from "frontend/ui-utils/molecules/card/title"
+import { CardAction } from "frontend/ui-utils/molecules/card/action"
+import { MagnifyIcon } from "frontend/ui-utils/atoms/icons/magnify"
+import { HamburgerIcon } from "frontend/ui-utils/atoms/icons/hamburger"
+import { Chip } from "frontend/ui-utils/atoms/chip"
+import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
 
 export const KitchenSink: React.FC = () => {
   const [showFrame, setShowFrame] = useState(false)
   return (
-    <>
+    <DefaultWrapper title="Kitchen Sink" description="Example components">
       <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
         <Card>
           <CardBody>
@@ -85,27 +86,25 @@ export const KitchenSink: React.FC = () => {
 
             <div className="mt-4">
               <List>
-                {{
-                  head: (
-                    <ListItemHead
-                      title={"List item head"}
-                      description={
-                        "This describes or gives context to the list (optional)"
-                      }
-                    />
-                  ),
-                  items: [
-                    <ListItem
-                      title={"Mert Polat"}
-                      subtitle={"Front-end Developer"}
-                      src="/frontend/assets/dfinity.svg"
-                    />,
-                    <ListItem
-                      title={"John Doe"}
-                      subtitle={"Second variant without image"}
-                    />,
-                  ],
-                }}
+                <List.Header>
+                  <ListItemHead
+                    title={"List item head"}
+                    description={
+                      "This describes or gives context to the list (optional)"
+                    }
+                  ></ListItemHead>
+                </List.Header>
+                <List.Items>
+                  <ListItem
+                    title={"Mert Polat"}
+                    subtitle={"Front-end Developer"}
+                    src="/frontend/assets/dfinity.svg"
+                  />
+                  <ListItem
+                    title={"John Doe"}
+                    subtitle={"Second variant without image"}
+                  />
+                </List.Items>
               </List>
             </div>
           </CardBody>
@@ -144,7 +143,9 @@ export const KitchenSink: React.FC = () => {
       <div className="h-[100vh] mb-12">
         <Card className="h-full flex flex-col">
           <CardTitle>Example screen 1</CardTitle>
+
           <Divider noGutters />
+
           <CardBody>
             <P>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia
@@ -153,6 +154,7 @@ export const KitchenSink: React.FC = () => {
               necessitatibus eveniet. Eveniet nihil voluptatibus quae corrupti.
             </P>
           </CardBody>
+
           <CardAction className="md:flex-row-reverse" bottom divider>
             <Button filled className="w-full md:w-[250px]">
               Create new Profile
@@ -168,7 +170,9 @@ export const KitchenSink: React.FC = () => {
       <div className="h-[100vh] mb-12">
         <Card className="h-full flex flex-col">
           <CardTitle>Example Screen 2</CardTitle>
+
           <Divider noGutters />
+
           <CardBody>
             <P>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia
@@ -177,6 +181,7 @@ export const KitchenSink: React.FC = () => {
               necessitatibus eveniet. Eveniet nihil voluptatibus quae corrupti.
             </P>
           </CardBody>
+
           <CardAction className="justify-center">
             <Button filled className="w-full md:w-[250px]">
               Continue
@@ -189,7 +194,9 @@ export const KitchenSink: React.FC = () => {
       <div className="h-[100vh] mb-12">
         <Card className="h-full flex flex-col">
           <CardTitle>Example Screen 3</CardTitle>
+
           <Divider noGutters />
+
           <CardBody>
             <P>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia
@@ -198,6 +205,7 @@ export const KitchenSink: React.FC = () => {
               necessitatibus eveniet. Eveniet nihil voluptatibus quae corrupti.
             </P>
           </CardBody>
+
           <CardAction className="justify-center my-6 lg:my-12" bottom divider>
             <Button className="w-full md:w-[250px]">Back</Button>
             <Button filled className="w-full md:w-[250px]">
@@ -206,6 +214,6 @@ export const KitchenSink: React.FC = () => {
           </CardAction>
         </Card>
       </div>
-    </>
+    </DefaultWrapper>
   )
 }

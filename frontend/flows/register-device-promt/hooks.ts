@@ -93,12 +93,12 @@ export const useRegisterDevicePromt = () => {
   )
 
   const sendWaitForUserInput = React.useCallback(async (secret) => {
-    await IIConnection.postMessages(secret, [
+    await postMessages(secret, [
       JSON.stringify({
         type: "remote-login-wait-for-user",
       }),
     ])
-  }, [])
+  }, [postMessages])
 
   return { remoteLogin, sendWaitForUserInput }
 }

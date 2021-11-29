@@ -9,7 +9,7 @@ interface Props
 
 export const Card: React.FC<Props> = ({ children, className }) => {
   return (
-    <div className={clsx(className, "bg-white overflow-hidden rounded-md shadow")}>
+    <div className={clsx(className, "bg-white rounded-md shadow")}>
       {children}
     </div>
   )

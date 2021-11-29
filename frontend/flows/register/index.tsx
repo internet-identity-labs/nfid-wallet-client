@@ -11,7 +11,14 @@ import {
 } from "frontend/ii-utils/iiConnection"
 import { setUserNumber } from "frontend/ii-utils/userNumber"
 import { Button } from "frontend/ui-utils/atoms/button"
+import { Divider } from "frontend/ui-utils/atoms/divider"
 import { Loader } from "frontend/ui-utils/atoms/loader"
+import { P } from "frontend/ui-utils/atoms/typography/paragraph"
+import { Card } from "frontend/ui-utils/molecules/card"
+import { CardAction } from "frontend/ui-utils/molecules/card/action"
+import { CardBody } from "frontend/ui-utils/molecules/card/body"
+import { CardTitle } from "frontend/ui-utils/molecules/card/title"
+import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
 import React from "react"
 import { getBrowser, getPlatform } from "./utils"
 
@@ -79,41 +86,52 @@ export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
   }, [onSuccess, registerPayload])
 
   return (
-    <div className={clsx("p-4 py-10 flex flex-col h-4/5")}>
-      <h1 className={clsx("text-center font-bold text-3xl")}>
-        Welcome to Multipass
-      </h1>
-      <div className={clsx("flex-grow")} />
-      {status === "initial" && (
-        <>
-          <p>Do you want to stop using usernames and passwords and register?</p>
-          <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
-            <Button className="py-2 px-10 " onClick={handleCreateIdentity}>
-              Yes
+    <DefaultWrapper title="Register">
+      <Card className="h-full flex flex-col sm:block">
+        <CardTitle>Welcome to Multipass</CardTitle>
+
+        <Divider noGutters />
+
+        {status === "initial" && (
+          <>
+            <CardBody>
+              <P className="text-center">
+                Do you want to stop using usernames and passwords and register?
+              </P>
+            </CardBody>
+            <CardAction bottom className="justify-center">
+              <Button large onClick={handleCreateIdentity}>
+                Yes
+              </Button>
+            </CardAction>
+          </>
+        )}
+
+        {status === "success" && (
+          <CardBody>
+            <div className={clsx("flex flex-col")}>
+              <div className="font-bold">User ID:</div>
+              <div>{userId?.toString()}</div>
+            </div>
+
+            <Divider />
+
+            <div className={clsx("flex flex-col")}>
+              <div className="font-bold">Recovery Phrase </div>
+              <div>{recovery}</div>
+            </div>
+          </CardBody>
+        )}
+
+        {status === "confirmation" && (
+          <div className={clsx("flex flex-row justify-center")}>
+            <Button large filled onClick={handleRegister}>
+              Confirm registration
             </Button>
           </div>
-        </>
-      )}
-      {status === "success" && (
-        <>
-          <div className={clsx("flex flex-col")}>
-            <div>your user id </div>
-            <div>{userId?.toString()}</div>
-          </div>
-          <div className={clsx("flex flex-col")}>
-            <div>your recovery phrase </div>
-            <div>{recovery}</div>
-          </div>
-        </>
-      )}
-      {status === "confirmation" && (
-        <div className={clsx("pt-3 flex flex-row space-x-3 justify-center")}>
-          <Button className="py-2 px-10 " onClick={handleRegister}>
-            Confirm registration
-          </Button>
-        </div>
-      )}
-      <Loader isLoading={status === "loading"} />
-    </div>
+        )}
+        <Loader isLoading={status === "loading"} />
+      </Card>
+    </DefaultWrapper>
   )
 }

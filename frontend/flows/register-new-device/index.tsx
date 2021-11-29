@@ -7,6 +7,7 @@ import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { getBrowser, getPlatform } from "../register/utils"
 import { Loader } from "frontend/ui-utils/atoms/loader"
+import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
 
 type Status = "initial" | "loading" | "success"
 
@@ -58,32 +59,34 @@ export const RegisterNewDevice = () => {
   }, [waitForOpener])
 
   return (
-    <Screen className={clsx("max-w-sm m-auto p-7 py-10")}>
-      <h1 className={clsx("text-center font-bold text-3xl")}>
-        Register this device
-      </h1>
-      <div className={clsx("mt-10 text-center")}>
-        If you'd like to use Face ID as your Multipass "password" on supported
-        Safari applications, prove you can unlock Face ID to register this
-        MacBook
-      </div>
-      <div className={clsx("my-10 mx-auto")}>
-        <TouchId className={clsx("w-20")} />
-      </div>
-      <Button
-        onClick={handleRegisterNewDevice}
-        className={clsx("py-2 px-10 bg-blue-700 text-white border-blue-900")}
-      >
-        I want to use Touch ID as my Multipass "password" in {getBrowser()} on{" "}
-        {getPlatform()}
-      </Button>
-      <a
-        className={clsx("underline text-center mt-7 cursor-pointer")}
-        onClick={() => window.close()}
-      >
-        cancel
-      </a>
-      <Loader isLoading={status === "loading"} />
-    </Screen>
+    <DefaultWrapper>
+      <Screen className={clsx("max-w-sm m-auto p-7 py-10")}>
+        <h1 className={clsx("text-center font-bold text-3xl")}>
+          Register this device
+        </h1>
+        <div className={clsx("mt-10 text-center")}>
+          If you'd like to use Face ID as your Multipass "password" on supported
+          Safari applications, prove you can unlock Face ID to register this
+          MacBook
+        </div>
+        <div className={clsx("my-10 mx-auto")}>
+          <TouchId className={clsx("w-20")} />
+        </div>
+        <Button
+          onClick={handleRegisterNewDevice}
+          className={clsx("py-2 px-10 bg-blue-700 text-white border-blue-900")}
+        >
+          I want to use Touch ID as my Multipass "password" in {getBrowser()} on{" "}
+          {getPlatform()}
+        </Button>
+        <a
+          className={clsx("underline text-center mt-7 cursor-pointer")}
+          onClick={() => window.close()}
+        >
+          cancel
+        </a>
+        <Loader isLoading={status === "loading"} />
+      </Screen>
+    </DefaultWrapper>
   )
 }

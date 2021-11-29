@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React from "react"
 
 interface Props
@@ -10,10 +11,8 @@ interface Props
 
 export const Divider: React.FC<Props> = ({ className, noGutters = false }) => {
   return (
-    <div aria-hidden="true" className={className}>
-      <div className={noGutters ? 'py-0': 'py-5'}>
+      <div className={clsx(noGutters ? 'py-0': 'py-5', className)}>
         <div className="border-t border-gray-200" />
       </div>
-    </div>
   )
 }

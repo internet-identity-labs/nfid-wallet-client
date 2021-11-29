@@ -9,6 +9,7 @@ interface ButtonProps
   filled?: boolean
   block?: boolean,
   text?: boolean,
+  large?: boolean,
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -17,6 +18,7 @@ export const Button: React.FC<ButtonProps> = ({
   filled = false,
   block = false,
   text = false,
+  large = false,
   ...buttonProps
 }) => (
   <button
@@ -27,6 +29,7 @@ export const Button: React.FC<ButtonProps> = ({
       filled &&
         "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white border-0",
       block && "w-full",
+      large && "md:min-w-[200px]",
       className,
     )}
     {...buttonProps}

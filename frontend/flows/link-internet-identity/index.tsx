@@ -16,12 +16,7 @@ export const LinkInternetIdentity = () => {
   const { push } = useHistory()
   const [addDeviceLink, setAddDeviceLink] = React.useState<string>("")
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm()
+  const { register, handleSubmit } = useForm()
 
   const submit = React.useCallback(async (data: any) => {
     const userNumber = parseUserNumber(data.anchor)

@@ -424,5 +424,5 @@ export const creationOptions = (
   }
 }
 
-const derFromPubkey = (pubkey: DeviceKey): DerEncodedBlob =>
+export const derFromPubkey = (pubkey: DeviceKey): DerEncodedBlob =>
   derBlobFromBlob(blobFromUint8Array(Buffer.from(pubkey)))

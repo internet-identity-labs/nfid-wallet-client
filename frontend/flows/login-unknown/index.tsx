@@ -86,12 +86,6 @@ export const UnknownDeviceScreen: React.FC = () => {
           (m) => m.type === "remote-login-register",
         )
 
-        console.log(">> handlePollForDelegate", {
-          messages,
-          loginMessage,
-          registerMessage,
-        })
-
         if (loginMessage || registerMessage) {
           setStatus("success")
           handleSuccess(loginMessage || registerMessage)

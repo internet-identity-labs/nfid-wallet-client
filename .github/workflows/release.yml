@@ -47,5 +47,5 @@ jobs:
           dfx deploy --network ic --no-wallet
         env:
           DFX_NETWORK: ${{secrets.DFX_NETWORK}}
-          MULTIPASS_FRONTEND_DOMAIN: ${{secrets.MULTIPASS_FRONTEND_DOMAIN}}
+          NEXT_PUBLIC_MP_ID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}
           NEXT_PUBLIC_IC_HOST: ${{secrets.NEXT_PUBLIC_IC_HOST}}

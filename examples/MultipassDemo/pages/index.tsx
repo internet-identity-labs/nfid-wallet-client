@@ -1,7 +1,6 @@
 import React from "react"
 import { InternetIdentityProvider } from "@identity-labs/react-ic-ii-auth"
 
-import { H1 } from "src/ui-lib/atoms/headlines"
 import { Navigation } from "src/ui-lib/organisms/navigation"
 
 import { MPAuthComponent } from "src/components/mp-auth-component"
@@ -15,7 +14,7 @@ function App() {
         <InternetIdentityProvider
           authClientOptions={{
             maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
-            identityProvider: process.env.NEXT_PUBLIC_II_CANISTER_URL,
+            identityProvider: process.env.NEXT_PUBLIC_MP_ID_PROVIDER_URL,
             onSuccess: (principal) => {
               console.log(">> onSuccess", { principal })
             },
@@ -28,7 +27,10 @@ function App() {
         <InternetIdentityProvider
           authClientOptions={{
             maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
-            identityProvider: `http://qjdve-lqaaa-aaaaa-aaaeq-cai.localhost:8000/#authorize`,
+            identityProvider:
+              process.env.NEXT_PUBLIC_ENV === "development"
+                ? process.env.NEXT_PUBLIC_II_ID_PROVIDER_URL
+                : "https://identity.ic0.app/#authorize",
             onSuccess: (principal) => {
               console.log(">> onSuccess", { principal })
             },

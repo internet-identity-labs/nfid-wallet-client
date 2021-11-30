@@ -10,6 +10,7 @@ import { RegisterConfirmation } from "./flows/register-confirmation"
 import { RegisterNewDevice } from "./flows/register-new-device"
 import { AuthProvider, AuthWrapper } from "./flows/auth-wrapper"
 import { LinkInternetIdentity } from "./flows/link-internet-identity"
+import { CopyDevices } from "./flows/copy-devices"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -48,6 +49,9 @@ function App() {
                       LinkInternetIdentity
                     </Link>
                   </li>
+                  <li>
+                    <Link to="/copy-devices">CopyDevices</Link>
+                  </li>
                 </ul>
               </nav>
             </Route>
@@ -84,6 +88,9 @@ function App() {
             </Route>
             <Route path="/link-internet-identity">
               <LinkInternetIdentity />
+            </Route>
+            <Route path="/copy-devices">
+              <CopyDevices />
             </Route>
           </Switch>
         </div>

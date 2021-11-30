@@ -1,27 +1,20 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import clsx from "clsx"
+import { CONFIG } from "frontend/config"
 import { creationOptions, IIConnection } from "frontend/ii-utils/iiConnection"
 import { parseUserNumber } from "frontend/ii-utils/userNumber"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { Centered } from "frontend/ui-utils/atoms/centered"
-import { QRCode } from "frontend/ui-utils/atoms/qrcode"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import React from "react"
 import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"
-import { Link, useHistory } from "react-router-dom"
 
 export const LinkInternetIdentity = () => {
-  const { push } = useHistory()
   const [addDeviceLink, setAddDeviceLink] = React.useState<string>("")
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm()
+  const { register, handleSubmit } = useForm()
 
   const submit = React.useCallback(async (data: any) => {
     const userNumber = parseUserNumber(data.anchor)
@@ -41,6 +34,7 @@ export const LinkInternetIdentity = () => {
         title: "Failed to authenticate",
         message:
           "We failed to collect the necessary information from your security device.",
+        // @ts-ignore
         detail: error.message,
         primaryButton: "Try again",
       })
@@ -48,7 +42,11 @@ export const LinkInternetIdentity = () => {
     const publicKey = identity.getPublicKey().toDer()
     const rawId = blobToHex(identity.rawId)
 
-    const url = new URL("http://qjdve-lqaaa-aaaaa-aaaeq-cai.localhost:8000")
+    const url = new URL(
+      CONFIG.II_ENV === "development"
+        ? `http://${CONFIG.II_CANISTER_ID}.localhost:3000`
+        : "https://identity.ic0.app",
+    )
     url.pathname = "/"
     url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
     const link = encodeURI(url.toString())

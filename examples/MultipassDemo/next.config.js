@@ -10,10 +10,6 @@ const ICNetworks = {
 
 const IC_NETWORK = process.env.DFX_NETWORK || ICNetworks.ic
 
-const MULTIPASS_FRONTEND_DOMAIN = process.env.MULTIPASS_FRONTEND_DOMAIN
-
-const II_CANISTER_URL = `https://${MULTIPASS_FRONTEND_DOMAIN}/authenticate`
-
 const getCanisters = () => {
   return IC_NETWORK === ICNetworks.local
     ? require(path.resolve(".dfx", ICNetworks.local, "canister_ids.json"))
@@ -22,8 +18,6 @@ const getCanisters = () => {
 
 const canisterIdsEnv = () => {
   const canisters = getCanisters()
-
-  process.env.NEXT_PUBLIC_II_CANISTER_URL = II_CANISTER_URL
 
   for (const canister in canisters) {
     const envVar = `NEXT_PUBLIC_${canister.toUpperCase()}_CANISTER_ID`

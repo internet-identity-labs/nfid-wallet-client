@@ -1,7 +1,6 @@
 import React from "react"
 import { InternetIdentityProvider } from "@identity-labs/react-ic-ii-auth"
 
-import { H1 } from "src/ui-lib/atoms/headlines"
 import { Navigation } from "src/ui-lib/organisms/navigation"
 
 import { MPAuthComponent } from "src/components/mp-auth-component"

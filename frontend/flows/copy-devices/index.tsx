@@ -50,16 +50,27 @@ export const CopyDevices = () => {
       const response = await IIConnection.login(userNumber)
       const result = apiResultToLoginResult(response)
       if (result.tag === "ok") {
-        console.log(">> ", { device })
-
-        result.connection.add(
+        await result.connection.add(
           userNumber,
           device.alias,
           device.key_type,
           device.purpose,
           derFromPubkey(device.pubkey),
-          // device.credential_id,
+          // TODO: find proper type
+          device.credential_id[0] as any,
         )
+      }
+    },
+    [anchors],
+  )
+  const deleteDevice = React.useCallback(
+    (otherAnchor) => async (device: DeviceData) => {
+      const userNumber = parseUserNumber(anchors[otherAnchor])
+      if (!userNumber) throw new Error("Invalid anchor")
+      const response = await IIConnection.login(userNumber)
+      const result = apiResultToLoginResult(response)
+      if (result.tag === "ok") {
+        await result.connection.remove(userNumber, device.pubkey)
       }
     },
     [anchors],
@@ -148,6 +159,14 @@ export const CopyDevices = () => {
                   devices["anchor-b"].map((d) => (
                     <div key={d.alias} className={clsx("flex")}>
                       <div>{d.alias}</div>
+                      <button
+                        onClick={() => deleteDevice("anchor-b")(d)}
+                        className={clsx(
+                          "p-1 text-right bg-gray-100 rounded border",
+                        )}
+                      >
+                        X
+                      </button>
                     </div>
                   ))}
               </div>

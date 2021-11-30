@@ -14,7 +14,7 @@ function App() {
         <InternetIdentityProvider
           authClientOptions={{
             maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
-            identityProvider: process.env.NEXT_PUBLIC_II_CANISTER_URL,
+            identityProvider: process.env.NEXT_PUBLIC_MP_ID_PROVIDER_URL,
             onSuccess: (principal) => {
               console.log(">> onSuccess", { principal })
             },
@@ -27,9 +27,10 @@ function App() {
         <InternetIdentityProvider
           authClientOptions={{
             maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
-            // TODO: pull from env PLEASE!
-            // identityProvider: `http://qjdve-lqaaa-aaaaa-aaaeq-cai.localhost:8000/#authorize`,
-            identityProvider: "https://identity.ic0.app/#authorize",
+            identityProvider:
+              process.env.NEXT_PUBLIC_ENV === "development"
+                ? process.env.NEXT_PUBLIC_II_ID_PROVIDER_URL
+                : "https://identity.ic0.app/#authorize",
             onSuccess: (principal) => {
               console.log(">> onSuccess", { principal })
             },

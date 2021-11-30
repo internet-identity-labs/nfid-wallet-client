@@ -47,7 +47,8 @@ export const useRegisterDevicePromt = () => {
       const signedDelegation = await retryGetDelegation(
         connection,
         userNumber,
-        scope,
+        // TODO: find better way to handle protocol
+        `https://${scope}`,
         sessionKey,
         timestamp,
       )

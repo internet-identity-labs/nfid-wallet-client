@@ -15,7 +15,7 @@ import { NavigationHeader } from "./ui-utils/molecules/navigation/navigation-hea
 import { KitchenSink } from "./flows/kitchen-sink"
 import { H4 } from "./ui-utils/atoms/typography"
 import { HomeScreen } from "./flows/home"
-import { IFrameOverviewScreen } from "./flows/overview"
+import { IFrameOverviewScreen } from "./flows/iframe-overview"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])

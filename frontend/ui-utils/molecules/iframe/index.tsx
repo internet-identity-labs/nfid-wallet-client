@@ -9,12 +9,26 @@ interface Props
     HTMLDivElement
   > {
   title?: string
+  src: string
+  inline?: boolean
 }
 
-export const IFrame: React.FC<Props> = ({ children, className, title }) => {
+export const IFrame: React.FC<Props> = ({
+  children,
+  className,
+  title,
+  src,
+  inline = false,
+}) => {
   return (
-    <Card className="bg-transparent md:bg-white shadow-xl fixed bottom-0 right-0  md:top-10 md:right-10 w-full max-w-screen md:max-w-xl rounded-xl overflow-hidden max-h-[25rem] h-full">
-      <div className="w-full h-14 bg-white text-black border-b-0 border overflow-hidden rounded-t-xl">
+    <Card
+      className={clsx(
+        "bg-transparent md:bg-white shadow-xl w-full max-w-screen md:max-w-xl rounded-xl overflow-hidden max-h-[25rem] h-full",
+        className,
+        !inline && "fixed bottom-0 right-0  md:top-10 md:right-10",
+      )}
+    >
+      <div className="w-full h-14 bg-white text-black border border-b-0 overflow-hidden rounded-t-xl">
         <div
           className={clsx(
             title ? "justify-between" : "flex-row-reverse",
@@ -32,7 +46,7 @@ export const IFrame: React.FC<Props> = ({ children, className, title }) => {
 
       <iframe
         className={clsx("w-full h-[calc(100%-56px)]", className)}
-        src="https://dfinity.org/"
+        src={src}
         frameBorder="0"
         title={title}
       >

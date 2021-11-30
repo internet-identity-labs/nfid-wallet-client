@@ -1,8 +1,8 @@
 import React from "react"
 import { NavigationLink } from "./navigation-link"
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
-import { Logo } from "../../atoms/icons/logo"
-import { HamburgerIcon } from "../../atoms/icons/hamburger"
+import { Logo } from "../../atoms/images/logo"
+import { HiMenu } from "react-icons/hi"
 
 export const NavigationBar: React.FC = () => {
   const [userDropdownOpen, setUserDropdownOpen] = React.useState<boolean>(false)
@@ -41,7 +41,7 @@ export const NavigationBar: React.FC = () => {
                 className="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-gray-300 bg-white text-gray-800 shadow-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300 hover:shadow focus:ring focus:ring-gray-500 focus:ring-opacity-25 active:bg-white active:border-white active:shadow-none"
                 onClick={() => setMobileNavOpen(!mobileNavOpen)}
               >
-                <HamburgerIcon />
+                <HiMenu className="text-xl" />
               </button>
             </div>
           </div>

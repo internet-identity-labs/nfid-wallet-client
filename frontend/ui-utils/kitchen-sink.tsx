@@ -8,16 +8,15 @@ import { Card } from "./molecules/card"
 import { H1, H2, H3, H4, H5 } from "frontend/ui-utils/atoms/typography"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { DropdownMenu } from "./molecules/menu"
-import { HamburgerIcon } from "./atoms/icons/hamburger"
 import { CardTitle } from "./molecules/card/title"
 import { CardBody } from "./molecules/card/body"
 import { CardAction } from "./molecules/card/action"
 import { Chip } from "./atoms/chip"
-import { MagnifyIcon } from "./atoms/icons/magnify"
 import { IFrame } from "./molecules/iframe"
 import { List } from "./molecules/list"
 import { ListItemHead } from "./molecules/list/list-item-head"
 import { ListItem } from "./molecules/list/list-item"
+import { HiMenu, HiSearch } from "react-icons/hi"
 
 export const KitchenSink: React.FC = () => {
   const [showFrame, setShowFrame] = useState(false)
@@ -40,7 +39,7 @@ export const KitchenSink: React.FC = () => {
               </div>
               <div className="col-span-2 sm:col-span-2">
                 <Label>Search input</Label>
-                <Input icon={<MagnifyIcon />} placeholder={"Search"} />
+                <Input icon={<HiSearch />} placeholder={"Search"} />
               </div>
               <div className="col-span-2 sm:col-span-2">
                 <Label>Example</Label>
@@ -51,7 +50,7 @@ export const KitchenSink: React.FC = () => {
               <div className="col-span-2 sm:col-span-2">
                 <Label>Chips</Label>
                 <div className="inline-flex items-center flex-wrap">
-                  <Chip solid icon={<HamburgerIcon />}>
+                  <Chip solid icon={<HiMenu className="mr-2"/>}>
                     Hamburger
                   </Chip>
                   <Chip solid className="my-1 mr-1 sm:m-1">

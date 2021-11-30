@@ -1,6 +1,6 @@
 import React from "react"
 import clsx from "clsx"
-import { CaretRightIcon } from "frontend/ui-utils/atoms/icons/caret/caret-right"
+import { HiChevronRight } from "react-icons/hi"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -35,7 +35,9 @@ export const ListItem: React.FC<Props> = ({
         )}
 
         <div className="flex-1 pl-1 mr-16">
-          <div className="font-medium text-gray-700 dark:text-white">{title}</div>
+          <div className="font-medium text-gray-700 dark:text-white">
+            {title}
+          </div>
 
           {subtitle && (
             <div className="text-gray-600 dark:text-gray-200 text-sm">
@@ -45,7 +47,7 @@ export const ListItem: React.FC<Props> = ({
         </div>
 
         <button className="w-24 text-right flex justify-end">
-          <CaretRightIcon />
+          <HiChevronRight className="text-2xl text-gray-500 group-hover:text-gray-800" />
         </button>
       </div>
     </li>

@@ -15,10 +15,9 @@ import { CardBody } from "frontend/ui-utils/molecules/card/body"
 import { Card } from "frontend/ui-utils/molecules/card"
 import { CardTitle } from "frontend/ui-utils/molecules/card/title"
 import { CardAction } from "frontend/ui-utils/molecules/card/action"
-import { MagnifyIcon } from "frontend/ui-utils/atoms/icons/magnify"
-import { HamburgerIcon } from "frontend/ui-utils/atoms/icons/hamburger"
 import { Chip } from "frontend/ui-utils/atoms/chip"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
+import { HiMenu, HiSearch } from "react-icons/hi"
 
 export const KitchenSink: React.FC = () => {
   const [showFrame, setShowFrame] = useState(false)
@@ -41,7 +40,7 @@ export const KitchenSink: React.FC = () => {
               </div>
               <div className="col-span-2 sm:col-span-2">
                 <Label>Search input</Label>
-                <Input icon={<MagnifyIcon />} placeholder={"Search"} />
+                <Input icon={<HiSearch className="w-5 h-5 text-gray-500" />} placeholder={"Search"} />
               </div>
               <div className="col-span-2 sm:col-span-2">
                 <Label>Example</Label>
@@ -52,7 +51,7 @@ export const KitchenSink: React.FC = () => {
               <div className="col-span-2 sm:col-span-2">
                 <Label>Chips</Label>
                 <div className="inline-flex items-center flex-wrap">
-                  <Chip solid icon={<HamburgerIcon />}>
+                  <Chip solid icon={<HiMenu />}>
                     Hamburger
                   </Chip>
                   <Chip solid className="my-1 mr-1 sm:m-1">

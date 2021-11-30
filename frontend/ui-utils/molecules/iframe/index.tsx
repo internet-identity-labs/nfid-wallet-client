@@ -1,8 +1,7 @@
 import React from "react"
 import clsx from "clsx"
 import { Card } from "../card"
-import { CardBody } from "../card/body"
-import { CloseIcon } from "frontend/ui-utils/atoms/icons/close"
+import { HiX } from "react-icons/hi"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -27,7 +26,7 @@ export const IFrame: React.FC<Props> = ({ children, className, title }) => {
           )}
 
           {/* TODO: send event to parent when clicked */}
-          <CloseIcon className="hover:bg-gray-200 rounded-xl p-[1px]" />
+          <HiX className="hover:bg-gray-200 rounded-xl p-[1px] cursor-pointer text-2xl text-gray-500 hover:text-gray-600" />
         </div>
       </div>
 

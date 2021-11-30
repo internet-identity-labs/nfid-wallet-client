@@ -1,4 +1,3 @@
-import { HamburgerIcon } from "frontend/ui-utils/atoms/icons/hamburger"
 import React from "react"
 
 interface Props

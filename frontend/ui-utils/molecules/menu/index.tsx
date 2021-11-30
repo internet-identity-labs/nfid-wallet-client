@@ -1,8 +1,6 @@
-import { CaretIcon } from "frontend/ui-utils/atoms/icons/caret"
-import { HamburgerIcon } from "frontend/ui-utils/atoms/icons/hamburger"
 import React, { useState } from "react"
 import { MenuItem } from "./menu-item"
-
+import { HiCheck, HiChevronDown, HiMenu } from "react-icons/hi"
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -25,7 +23,7 @@ export const DropdownMenu: React.FC<Props> = ({
         className="border border-gray-300 bg-white dark:bg-gray-800 shadow-sm flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none"
       >
         {title}
-        <CaretIcon />
+        <HiChevronDown className="ml-3 text-lg" />
       </button>
 
       {showDialog && (
@@ -40,7 +38,7 @@ export const DropdownMenu: React.FC<Props> = ({
               title={"Option 1"}
             />
             <MenuItem title={"Option 2"} subtitle={"This is subtitle for option 2"}  />
-            <MenuItem title={"Option 3"} icon={<HamburgerIcon />} subtitle={"This is subtitle with icon for option 3"}  />
+            <MenuItem title={"Option 3"} icon={<HiCheck className="text-2xl mx-2" />} subtitle={"This is subtitle with icon for option 3"}  />
           </div>
         </div>
       )}

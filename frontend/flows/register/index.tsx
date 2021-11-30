@@ -18,7 +18,7 @@ import { Card } from "frontend/ui-utils/molecules/card"
 import { CardAction } from "frontend/ui-utils/molecules/card/action"
 import { CardBody } from "frontend/ui-utils/molecules/card/body"
 import { CardTitle } from "frontend/ui-utils/molecules/card/title"
-import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
+import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import React from "react"
 import { getBrowser, getPlatform } from "./utils"
 
@@ -86,7 +86,7 @@ export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
   }, [onSuccess, registerPayload])
 
   return (
-    <DefaultWrapper title="Register">
+    <AppScreen title="Register">
       <Card className="h-full flex flex-col sm:block">
         <CardTitle>Welcome to Multipass</CardTitle>
 
@@ -109,12 +109,10 @@ export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
 
         {status === "success" && (
           <CardBody>
-            <div className={clsx("flex flex-col")}>
+            <div className={clsx("flex flex-col mb-6")}>
               <div className="font-bold">User ID:</div>
               <div>{userId?.toString()}</div>
             </div>
-
-            <Divider />
 
             <div className={clsx("flex flex-col")}>
               <div className="font-bold">Recovery Phrase </div>
@@ -124,14 +122,14 @@ export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
         )}
 
         {status === "confirmation" && (
-          <div className={clsx("flex flex-row justify-center")}>
+          <CardAction bottom className="justify-center">
             <Button large filled onClick={handleRegister}>
               Confirm registration
             </Button>
-          </div>
+          </CardAction>
         )}
         <Loader isLoading={status === "loading"} />
       </Card>
-    </DefaultWrapper>
+    </AppScreen>
   )
 }

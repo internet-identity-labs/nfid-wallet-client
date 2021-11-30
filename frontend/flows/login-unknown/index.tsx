@@ -10,6 +10,7 @@ import clsx from "clsx"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { SetupTouchId } from "frontend/ui-utils/molecules/setup-touch-id"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { CONFIG } from "frontend/config"
 
 export const UnknownDeviceScreen: React.FC = () => {
   const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
@@ -31,12 +32,12 @@ export const UnknownDeviceScreen: React.FC = () => {
     (delegation) => {
       try {
         const parsedSignedDelegation = buildDelegate(delegation)
+        const protocol = CONFIG.II_ENV ? window.location.protocol : "http"
 
         postClientAuthorizeSuccessMessage(appWindow, {
           parsedSignedDelegation,
           userKey: delegation.userKey,
-          // TODO: check how to handle protocol
-          hostname: `http://${scope}`,
+          hostname: `${protocol}//${scope}`,
         })
       } catch (err) {
         console.error(">> not a valid delegate", { err })
@@ -72,7 +73,7 @@ export const UnknownDeviceScreen: React.FC = () => {
   const handlePollForDelegate = React.useCallback(
     async (cancelPoll: () => void) => {
       const messages = await getMessages(pubKey)
-      
+
       if (messages.length > 0) {
         const parsedMessages = messages.map((m) => JSON.parse(m))
         const waitingMessage = parsedMessages.find(
@@ -85,7 +86,11 @@ export const UnknownDeviceScreen: React.FC = () => {
           (m) => m.type === "remote-login-register",
         )
 
-        console.log('>> handlePollForDelegate', { messages, loginMessage, registerMessage });
+        console.log(">> handlePollForDelegate", {
+          messages,
+          loginMessage,
+          registerMessage,
+        })
 
         if (loginMessage || registerMessage) {
           setStatus("success")

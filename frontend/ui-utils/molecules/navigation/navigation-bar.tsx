@@ -24,19 +24,15 @@ export const NavigationBar: React.FC = () => {
                 href={"/register-confirmation"}
                 text={"Register Confirmation"}
               />
-              <NavigationLink href={"/authenticate"} text={"Authenticate"} />
-              <NavigationLink
-                href={"/login-unknown-device"}
-                text={"Login Unknown"}
-              />
               <NavigationLink
                 href={"/link-internet-identity"}
                 text={"Link InternetIdentity"}
               />
               <NavigationLink
-                href={"/kitchen-sink"}
-                text={"🚰"}
+                href={"/iframe-overview"}
+                text={"IFrame Overview"}
               />
+              <NavigationLink href={"/kitchen-sink"} text={"Kitchen Sink"} />
             </nav>
 
             <div className="lg:hidden">
@@ -61,15 +57,15 @@ export const NavigationBar: React.FC = () => {
                 href={"/register-confirmation"}
                 text={"Register Confirmation"}
               />
-              <NavigationLink href={"/authenticate"} text={"Authenticate"} />
-              <NavigationLink
-                href={"/login-unknown-device"}
-                text={"Login Unknown"}
-              />
               <NavigationLink
                 href={"/link-internet-identity"}
                 text={"Link InternetIdentity"}
               />
+              <NavigationLink
+                href={"/iframe-overview"}
+                text={"IFrame Overview"}
+              />
+              <NavigationLink href={"/kitchen-sink"} text={"Kitchen Sink"} />
             </nav>
           </div>
         )}

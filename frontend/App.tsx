@@ -15,6 +15,7 @@ import { NavigationHeader } from "./ui-utils/molecules/navigation/navigation-hea
 import { KitchenSink } from "./flows/kitchen-sink"
 import { H4 } from "./ui-utils/atoms/typography"
 import { HomeScreen } from "./flows/home"
+import { IFrameOverviewScreen } from "./flows/overview"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -23,7 +24,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Switch>
-          {/* DEFAULT SCREENS => wrapped with DefaultWrapper */}
+          {/* DEFAULT SCREENS => wrapped with AppScreen */}
           <Route path="/" exact>
             <HomeScreen />
           </Route>
@@ -46,10 +47,13 @@ function App() {
           <Route path="/link-internet-identity">
             <LinkInternetIdentity />
           </Route>
+          <Route path="/iframe-overview">
+            <IFrameOverviewScreen />
+          </Route>
           <Route path="/kitchen-sink">
             <KitchenSink />
           </Route>
-
+          
           {/* IFRAME SCREENS => wrapped with IFrameWrapper */}
           <Route path="/login-unknown-device">
             <UnknownDeviceScreen />

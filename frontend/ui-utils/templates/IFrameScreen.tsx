@@ -7,13 +7,13 @@ interface IFrameWrapperProps
     HTMLDivElement
   > {}
 
-export const IFrameWrapper: React.FC<IFrameWrapperProps> = ({
+export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
   children,
   className,
 }) => {
   return (
     <div className={clsx("", className)}>
-      {/* TODO: implement IFrame wrapper */}
+      {/* TODO: implement*/}
     </div>
   )
 }

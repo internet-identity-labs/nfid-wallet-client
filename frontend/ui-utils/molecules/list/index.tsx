@@ -12,8 +12,8 @@ const Items: React.FC = ({ children }) => {
 }
 
 interface ListCompoundProps {
-  Header: React.FC;
-  Items: React.FC;
+  Header: React.FC<{}>;
+  Items: React.FC<{}>;
 }
 
 interface Props
@@ -21,7 +21,7 @@ interface Props
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  children: React.ReactElement[] | React.ReactElement
+  children: React.ReactElement[] | JSX.Element[] | React.ReactNode
 }
 
 export const List: React.FC<Props> & ListCompoundProps = ({ children, className }: any) => {

@@ -7,7 +7,7 @@ import { TouchId } from "frontend/ui-utils/atoms/icons/touch-id"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { getBrowser, getPlatform } from "../register/utils"
 import { Loader } from "frontend/ui-utils/atoms/loader"
-import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
+import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 
 type Status = "initial" | "loading" | "success"
 
@@ -59,7 +59,7 @@ export const RegisterNewDevice = () => {
   }, [waitForOpener])
 
   return (
-    <DefaultWrapper>
+    <AppScreen>
       <Screen className={clsx("max-w-sm m-auto p-7 py-10")}>
         <h1 className={clsx("text-center font-bold text-3xl")}>
           Register this device
@@ -87,6 +87,6 @@ export const RegisterNewDevice = () => {
         </a>
         <Loader isLoading={status === "loading"} />
       </Screen>
-    </DefaultWrapper>
+    </AppScreen>
   )
 }

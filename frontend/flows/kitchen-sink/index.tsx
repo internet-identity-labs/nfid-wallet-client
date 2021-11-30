@@ -18,12 +18,12 @@ import { CardAction } from "frontend/ui-utils/molecules/card/action"
 import { MagnifyIcon } from "frontend/ui-utils/atoms/icons/magnify"
 import { HamburgerIcon } from "frontend/ui-utils/atoms/icons/hamburger"
 import { Chip } from "frontend/ui-utils/atoms/chip"
-import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
+import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 
 export const KitchenSink: React.FC = () => {
   const [showFrame, setShowFrame] = useState(false)
   return (
-    <DefaultWrapper title="Kitchen Sink" description="Example components">
+    <AppScreen title="Kitchen Sink" description="Example components">
       <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
         <Card>
           <CardBody>
@@ -214,6 +214,6 @@ export const KitchenSink: React.FC = () => {
           </CardAction>
         </Card>
       </div>
-    </DefaultWrapper>
+    </AppScreen>
   )
 }

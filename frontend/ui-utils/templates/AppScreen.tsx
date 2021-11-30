@@ -12,7 +12,7 @@ interface Props
   description?: string
 }
 
-export const DefaultWrapper: React.FC<Props> = ({
+export const AppScreen: React.FC<Props> = ({
   children,
   className,
   title,

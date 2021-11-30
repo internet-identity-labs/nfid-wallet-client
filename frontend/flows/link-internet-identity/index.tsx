@@ -9,7 +9,7 @@ import { QRCode } from "frontend/ui-utils/atoms/qrcode"
 import { Card } from "frontend/ui-utils/molecules/card"
 import { CardBody } from "frontend/ui-utils/molecules/card/body"
 import { CardTitle } from "frontend/ui-utils/molecules/card/title"
-import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
+import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { Link, useHistory } from "react-router-dom"
@@ -63,7 +63,7 @@ export const LinkInternetIdentity = () => {
   }, [])
 
   return (
-    <DefaultWrapper>
+    <AppScreen>
       <Card className="flex flex-col h-full">
         <CardTitle>Link your existing internet identity anchor?</CardTitle>
 
@@ -88,6 +88,6 @@ export const LinkInternetIdentity = () => {
           )}
         </CardBody>
       </Card>
-    </DefaultWrapper>
+    </AppScreen>
   )
 }

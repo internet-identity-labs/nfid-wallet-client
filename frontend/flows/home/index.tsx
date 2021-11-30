@@ -1,6 +1,6 @@
 import React from "react"
 import clsx from "clsx"
-import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
+import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import { H4 } from "frontend/ui-utils/atoms/typography"
 
 interface Props
@@ -12,9 +12,9 @@ interface Props
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   return (
     <>
-      <DefaultWrapper title="Home">
+      <AppScreen title="Home">
         <H4>Welcome 👋</H4>
-      </DefaultWrapper>
+      </AppScreen>
     </>
   )
 }

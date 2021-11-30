@@ -9,7 +9,7 @@ import { Button } from "frontend/ui-utils/atoms/button"
 import { FaceId } from "frontend/ui-utils/atoms/icons/face-id"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { Screen } from "frontend/ui-utils/atoms/screen"
-import { DefaultWrapper } from "frontend/ui-utils/templates/DefaultWrapper"
+import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import React from "react"
 import { Register } from "../register"
 
@@ -88,7 +88,7 @@ export const AuthWrapper: React.FC = ({ children }) => {
   return isAuthenticated ? (
     <>{children}</>
   ) : userNumber ? (
-    <DefaultWrapper>
+    <AppScreen>
       <Screen className={clsx("p-7 py-10")}>
         <h1 className={clsx("font-bold text-3xl")}>Multipass</h1>
         <div className={clsx("flex-grow")} />
@@ -106,7 +106,7 @@ export const AuthWrapper: React.FC = ({ children }) => {
         </Button>
         <Loader isLoading={isLoading} />
       </Screen>
-    </DefaultWrapper>
+    </AppScreen>
   ) : (
     <Register onSuccess={onRegisterSuccess} />
   )

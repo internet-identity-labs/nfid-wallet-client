@@ -46,7 +46,7 @@ export const LinkInternetIdentity = () => {
 
     // const url = new URL("http://qjdve-lqaaa-aaaaa-aaaeq-cai.localhost:8000")
     // TODO: pull from env
-    const url = new URL("https//identity.ic0.app")
+    const url = new URL("https://identity.ic0.app")
     url.pathname = "/"
     url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
     const link = encodeURI(url.toString())

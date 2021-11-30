@@ -44,7 +44,7 @@
   "devDependencies": {
     "@babel/core": "7.16.0",
     "@babel/plugin-transform-typescript": "7.16.1",
-    "@testing-library/dom": "8.11.0",
+    "@testing-library/dom": "8.11.1",
     "@testing-library/jest-dom": "5.15.0",
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
@@ -57,14 +57,14 @@
     "@typescript-eslint/parser": "5.3.1",
     "autoprefixer": "10.4.0",
     "cross-env": "7.0.3",
-    "eslint": "8.2.0",
+    "eslint": "8.3.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-react": "7.27.0",
     "eslint-plugin-react-hooks": "4.2.1-alpha-f6abf4b40-20211020",
     "jest": "27.3.1",
     "patch-package": "6.4.7",
     "postcss": "8.3.11",
-    "prettier": "2.4.1",
+    "prettier": "2.5.0",
     "tailwindcss": "2.2.19",
     "ts-jest": "27.0.7"
   }

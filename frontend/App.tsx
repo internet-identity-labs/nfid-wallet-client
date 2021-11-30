@@ -24,7 +24,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Switch>
-          {/* DEFAULT SCREENS => wrapped with AppScreen */}
+          {/* APP SCREENS */}
           <Route path="/" exact>
             <HomeScreen />
           </Route>
@@ -54,7 +54,7 @@ function App() {
             <KitchenSink />
           </Route>
           
-          {/* IFRAME SCREENS => wrapped with IFrameWrapper */}
+          {/* IFRAME SCREENS */}
           <Route path="/login-unknown-device">
             <UnknownDeviceScreen />
           </Route>

@@ -11,6 +11,7 @@ import { Loader } from "frontend/ui-utils/atoms/loader"
 import { SetupTouchId } from "frontend/ui-utils/molecules/setup-touch-id"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { CONFIG } from "frontend/config"
+import { IFrameScreen } from "frontend/ui-utils/templates/IFrameScreen"
 
 export const UnknownDeviceScreen: React.FC = () => {
   const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
@@ -119,29 +120,31 @@ export const UnknownDeviceScreen: React.FC = () => {
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   return (
-    <Centered>
-      {!showRegister && url ? (
-        <>
-          <div className="font-medium mb-3">Scan to sign in</div>
-          <a href={url} target="_blank">
-            <div className="flex flex-row">
-              <QRCode content={url} options={{ margin: 0 }} />
-            </div>
-          </a>
-        </>
-      ) : null}
-      {showRegister && (
-        <div className="flex flex-col">
-          <SetupTouchId onClick={handleRegisterDevice} />
-          <a
-            onClick={() => handleSendDelegate(message)}
-            className={clsx("text-blue-900 text-center mt-4 cursor-pointer")}
-          >
-            just log me in!
-          </a>
-        </div>
-      )}
-      <Loader isLoading={status === "loading"} />
-    </Centered>
+    <IFrameScreen>
+      <Centered>
+        {!showRegister && url ? (
+          <>
+            <div className="font-medium mb-3">Scan to sign in</div>
+            <a href={url} target="_blank">
+              <div className="flex flex-row">
+                <QRCode content={url} options={{ margin: 0 }} />
+              </div>
+            </a>
+          </>
+        ) : null}
+        {showRegister && (
+          <div className="flex flex-col">
+            <SetupTouchId onClick={handleRegisterDevice} />
+            <a
+              onClick={() => handleSendDelegate(message)}
+              className={clsx("text-blue-900 text-center mt-4 cursor-pointer")}
+            >
+              just log me in!
+            </a>
+          </div>
+        )}
+        <Loader isLoading={status === "loading"} />
+      </Centered>
+    </IFrameScreen>
   )
 }

@@ -13,7 +13,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
 }) => {
   return (
     <div className={clsx("", className)}>
-      {/* TODO: implement*/}
+      { children }
     </div>
   )
 }

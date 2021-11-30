@@ -9,6 +9,7 @@ import { RegisterConfirmation } from "./flows/register-confirmation"
 import { RegisterNewDevice } from "./flows/register-new-device"
 import { AuthProvider, AuthWrapper } from "./flows/auth-wrapper"
 import { LinkInternetIdentity } from "./flows/link-internet-identity"
+import { CopyDevices } from "./flows/copy-devices"
 
 import { NavigationBar } from "./ui-utils/molecules/navigation/navigation-bar"
 import { NavigationHeader } from "./ui-utils/molecules/navigation/navigation-header"
@@ -53,7 +54,10 @@ function App() {
           <Route path="/kitchen-sink">
             <KitchenSink />
           </Route>
-          
+          <Route path="/copy-devices">
+            <CopyDevices />
+          </Route>
+
           {/* IFRAME SCREENS */}
           <Route path="/login-unknown-device">
             <UnknownDeviceScreen />

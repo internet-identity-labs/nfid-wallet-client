@@ -32,7 +32,8 @@ export const useRegisterDevicePromt = () => {
       const sessionKey = Array.from(blobFromUint8Array(blobReverse))
       const prepRes = await connection.prepareDelegation(
         userNumber,
-        scope,
+        // TODO: find better way to handle protocol
+        `https://${scope}`,
         sessionKey,
       )
       // TODO: move to error handler
@@ -46,7 +47,8 @@ export const useRegisterDevicePromt = () => {
       const signedDelegation = await retryGetDelegation(
         connection,
         userNumber,
-        scope,
+        // TODO: find better way to handle protocol
+        `https://${scope}`,
         sessionKey,
         timestamp,
       )
@@ -92,13 +94,16 @@ export const useRegisterDevicePromt = () => {
     [connection, createRemoteDelegate, postMessages, userNumber],
   )
 
-  const sendWaitForUserInput = React.useCallback(async (secret) => {
-    await postMessages(secret, [
-      JSON.stringify({
-        type: "remote-login-wait-for-user",
-      }),
-    ])
-  }, [postMessages])
+  const sendWaitForUserInput = React.useCallback(
+    async (secret) => {
+      await postMessages(secret, [
+        JSON.stringify({
+          type: "remote-login-wait-for-user",
+        }),
+      ])
+    },
+    [postMessages],
+  )
 
   return { remoteLogin, sendWaitForUserInput }
 }

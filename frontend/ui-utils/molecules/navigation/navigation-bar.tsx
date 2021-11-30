@@ -33,6 +33,7 @@ export const NavigationBar: React.FC = () => {
                 text={"IFrame Overview"}
               />
               <NavigationLink href={"/kitchen-sink"} text={"Kitchen Sink"} />
+              <NavigationLink href={"/copy-devices"} text={"Copy Devices"} />
             </nav>
 
             <div className="lg:hidden">
@@ -66,6 +67,7 @@ export const NavigationBar: React.FC = () => {
                 text={"IFrame Overview"}
               />
               <NavigationLink href={"/kitchen-sink"} text={"Kitchen Sink"} />
+              <NavigationLink href={"/copy-devices"} text={"Copy Devices"} />
             </nav>
           </div>
         )}

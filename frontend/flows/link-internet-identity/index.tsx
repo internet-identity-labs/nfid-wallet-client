@@ -36,6 +36,7 @@ export const LinkInternetIdentity = () => {
         title: "Failed to authenticate",
         message:
           "We failed to collect the necessary information from your security device.",
+        // @ts-ignore
         detail: error.message,
         primaryButton: "Try again",
       })

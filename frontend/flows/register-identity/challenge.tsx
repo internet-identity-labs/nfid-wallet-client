@@ -34,7 +34,7 @@ export const IdentityChallengeScreen: React.FC<IdentityChallengeProps> = ({
             in.
           </P>
 
-          <TouchId className="mx-auto w-[60px] my-12" />
+          <TouchId className="mx-auto w-[60px] mt-12" />
         </CardBody>
         <CardAction bottom className="justify-center">
           <Button large filled>

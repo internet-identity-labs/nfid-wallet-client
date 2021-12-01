@@ -23,7 +23,7 @@ export const CardAction: React.FC<Props> = ({
       {divider && <Divider noGutters />}
       <div
         className={clsx(
-          "p-6 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2",
+          "py-6 px-10 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2",
           className,
         )}
       >

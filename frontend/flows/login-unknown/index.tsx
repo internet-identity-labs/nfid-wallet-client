@@ -13,12 +13,18 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/ui-utils/templates/IFrameScreen"
 
-export const UnknownDeviceScreen: React.FC = () => {
+interface UnknownDeviceScreenProps {
+  showRegisterDefault?: boolean
+}
+
+export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
+  showRegisterDefault = false,
+}) => {
   const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
     "initial",
   )
   const [message, setMessage] = React.useState<any | null>(null)
-  const [showRegister, setShowRegister] = React.useState(false)
+  const [showRegister, setShowRegister] = React.useState(showRegisterDefault)
   const {
     url,
     scope,

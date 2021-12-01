@@ -51,7 +51,7 @@ export const RegisterConfirmation = () => {
         return
       }
     },
-    [connection, secret, userNumber],
+    [connection, getMessages, secret, userNumber],
   )
 
   const { start, resetTries } = useInterval(handlePoll, TRY_DELAY)

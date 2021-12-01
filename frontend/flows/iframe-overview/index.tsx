@@ -38,13 +38,6 @@ export const IFrameOverviewScreen: React.FC<IFrameOverviewScreenProps> = ({
               className="min-h-[300px] col-span-2 md:col-span-1"
               inline
             />
-            {/* TODO: make this IFrame work */}
-            <IFrame
-              title="Login Unknown Device"
-              src={iframeUrl("login-unknown-device")}
-              className="min-h-[300px] col-span-2 md:col-span-1"
-              inline
-            />
           </div>
         </CardBody>
       </Card>

@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import { Authenticate } from "./flows/authenticate"
 import { UnknownDeviceScreen } from "./flows/login-unknown"
 import { getUserNumber } from "./ii-utils/userNumber"
@@ -11,10 +11,7 @@ import { AuthProvider, AuthWrapper } from "./flows/auth-wrapper"
 import { LinkInternetIdentity } from "./flows/link-internet-identity"
 import { CopyDevices } from "./flows/copy-devices"
 
-import { NavigationBar } from "./ui-utils/molecules/navigation/navigation-bar"
-import { NavigationHeader } from "./ui-utils/molecules/navigation/navigation-header"
 import { KitchenSink } from "./flows/kitchen-sink"
-import { H4 } from "./ui-utils/atoms/typography"
 import { HomeScreen } from "./flows/home"
 import { IFrameOverviewScreen } from "./flows/iframe-overview"
 
@@ -59,9 +56,7 @@ function App() {
           </Route>
 
           {/* IFRAME SCREENS */}
-          <Route path="/login-unknown-device">
-            <UnknownDeviceScreen />
-          </Route>
+          {/* TODO: move this decider logic into the component and make it mockable */}
           <Route path="/authenticate">
             {userNumber ? (
               <Authenticate userNumber={userNumber} />

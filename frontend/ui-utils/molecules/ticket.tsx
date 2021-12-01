@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import React from "react"
-import { AvatarDan } from "../atoms/avatar/dan"
+import { AvatarDan } from "../atoms/images/avatar/dan"
 
 export const AuthTicket: React.FC = () => {
   return (

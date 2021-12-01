@@ -14,7 +14,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
     userNumber,
   })
 
-  const { hostname } = new URL(window.location.href)
+  const { hostname } = new URL(document.referrer || "http://localhost:3000") // NOTE: just a fallback for testing
   const scope = `${hostname}`
 
   return (

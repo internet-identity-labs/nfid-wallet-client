@@ -19,6 +19,12 @@ import { IdentityNameScreen } from "./flows/register-identity/name"
 import { IdentityPhoneScreen } from "./flows/register-identity/phone"
 import { IdentitySmsScreen } from "./flows/register-identity/sms"
 import { IdentityChallengeScreen } from "./flows/register-identity/challenge"
+import { IdentityPersonaScreen } from "./flows/register-identity/create-persona"
+import { IdentityPersonaInfoScreen } from "./flows/register-identity/create-persona-info"
+import { IdentityPersonaSuccessScreen } from "./flows/register-identity/create-persona-success"
+import { IdentityPersonaWelcomeScreen } from "./flows/register-identity/create-persona-welcome"
+import { IdentityPersonaCreatekeysScreen } from "./flows/register-identity/create-persona-createkeys"
+import { IdentityPersonaCreatekeysCompleteScreen } from "./flows/register-identity/create-persona-createkeys-complete"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -73,6 +79,24 @@ function App() {
           </Route>
           <Route path="/register-identity-challenge">
             <IdentityChallengeScreen />
+          </Route>
+          <Route path="/register-identity-persona-welcome">
+            <IdentityPersonaWelcomeScreen />
+          </Route>
+          <Route path="/register-identity-persona">
+            <IdentityPersonaScreen />
+          </Route>
+          <Route path="/register-identity-persona-info">
+            <IdentityPersonaInfoScreen />
+          </Route>
+          <Route path="/register-identity-persona-success">
+            <IdentityPersonaSuccessScreen />
+          </Route>
+          <Route path="/register-identity-persona-createkeys">
+            <IdentityPersonaCreatekeysScreen />
+          </Route>
+          <Route path="/register-identity-persona-createkeys-complete">
+            <IdentityPersonaCreatekeysCompleteScreen />
           </Route>
 
           {/* IFRAME SCREENS */}

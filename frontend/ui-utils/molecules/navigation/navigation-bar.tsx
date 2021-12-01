@@ -19,8 +19,6 @@ export const NavigationBar: React.FC = () => {
           <div className="flex items-center space-x-1 lg:space-x-5">
             <nav className="hidden lg:flex lg:items-center lg:space-x-2">
               <NavigationLink href={"/"} text={"Home"} />
-              <NavigationLink href={"/register"} text={"Register"} />
-              <NavigationLink href={"/register-identity"} text={"Register Identity"} />
               <NavigationLink
                 href={"/register-confirmation/this-is-a-fake-secret"}
                 text={"Register Confirmation"}
@@ -33,7 +31,6 @@ export const NavigationBar: React.FC = () => {
                 href={"/iframe-overview"}
                 text={"IFrame Overview"}
               />
-              <NavigationLink href={"/kitchen-sink"} text={"Kitchen Sink"} />
               <NavigationLink href={"/copy-devices"} text={"Copy Devices"} />
             </nav>
 
@@ -54,10 +51,8 @@ export const NavigationBar: React.FC = () => {
           <div className="lg:hidden">
             <nav className="flex flex-col space-y-2 py-4 border-t">
               <NavigationLink href={"/"} text={"Home"} />
-              <NavigationLink href={"/register"} text={"Register"} />
-              <NavigationLink href={"/register-identity"} text={"Register Identity"} />
               <NavigationLink
-                href={"/register-confirmation"}
+                href={"/register-confirmation/this-is-a-fake-secret"}
                 text={"Register Confirmation"}
               />
               <NavigationLink
@@ -68,7 +63,6 @@ export const NavigationBar: React.FC = () => {
                 href={"/iframe-overview"}
                 text={"IFrame Overview"}
               />
-              <NavigationLink href={"/kitchen-sink"} text={"Kitchen Sink"} />
               <NavigationLink href={"/copy-devices"} text={"Copy Devices"} />
             </nav>
           </div>

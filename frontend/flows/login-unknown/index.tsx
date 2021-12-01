@@ -10,13 +10,21 @@ import clsx from "clsx"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { SetupTouchId } from "frontend/ui-utils/molecules/setup-touch-id"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { CONFIG } from "frontend/config"
+import { IFrameScreen } from "frontend/ui-utils/templates/IFrameScreen"
 
-export const UnknownDeviceScreen: React.FC = () => {
+interface UnknownDeviceScreenProps {
+  showRegisterDefault?: boolean
+}
+
+export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
+  showRegisterDefault = false,
+}) => {
   const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
     "initial",
   )
   const [message, setMessage] = React.useState<any | null>(null)
-  const [showRegister, setShowRegister] = React.useState(false)
+  const [showRegister, setShowRegister] = React.useState(showRegisterDefault)
   const {
     url,
     scope,
@@ -31,11 +39,12 @@ export const UnknownDeviceScreen: React.FC = () => {
     (delegation) => {
       try {
         const parsedSignedDelegation = buildDelegate(delegation)
+        const protocol = CONFIG.II_ENV ? window.location.protocol : "http"
 
         postClientAuthorizeSuccessMessage(appWindow, {
           parsedSignedDelegation,
           userKey: delegation.userKey,
-          hostname: `${window.location.protocol}//${scope}`,
+          hostname: `${protocol}//${scope}`,
         })
       } catch (err) {
         console.error(">> not a valid delegate", { err })
@@ -71,6 +80,7 @@ export const UnknownDeviceScreen: React.FC = () => {
   const handlePollForDelegate = React.useCallback(
     async (cancelPoll: () => void) => {
       const messages = await getMessages(pubKey)
+
       if (messages.length > 0) {
         const parsedMessages = messages.map((m) => JSON.parse(m))
         const waitingMessage = parsedMessages.find(
@@ -82,6 +92,7 @@ export const UnknownDeviceScreen: React.FC = () => {
         const registerMessage = parsedMessages.find(
           (m) => m.type === "remote-login-register",
         )
+
         if (loginMessage || registerMessage) {
           setStatus("success")
           handleSuccess(loginMessage || registerMessage)
@@ -115,29 +126,31 @@ export const UnknownDeviceScreen: React.FC = () => {
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   return (
-    <Centered>
-      {!showRegister && url ? (
-        <>
-          <div className="font-medium mb-3">Scan to sign in</div>
-          <a href={url} target="_blank">
-            <div className="flex flex-row">
-              <QRCode content={url} options={{ margin: 0 }} />
-            </div>
-          </a>
-        </>
-      ) : null}
-      {showRegister && (
-        <div className="flex flex-col">
-          <SetupTouchId onClick={handleRegisterDevice} />
-          <a
-            onClick={() => handleSendDelegate(message)}
-            className={clsx("text-blue-900 text-center mt-4 cursor-pointer")}
-          >
-            just log me in!
-          </a>
-        </div>
-      )}
-      <Loader isLoading={status === "loading"} />
-    </Centered>
+    <IFrameScreen>
+      <Centered>
+        {!showRegister && url ? (
+          <>
+            <div className="font-medium mb-3">Scan to sign in</div>
+            <a href={url} target="_blank">
+              <div className="flex flex-row">
+                <QRCode content={url} options={{ margin: 0 }} />
+              </div>
+            </a>
+          </>
+        ) : null}
+        {showRegister && (
+          <div className="flex flex-col">
+            <SetupTouchId onClick={handleRegisterDevice} />
+            <a
+              onClick={() => handleSendDelegate(message)}
+              className={clsx("text-blue-900 text-center mt-4 cursor-pointer")}
+            >
+              just log me in!
+            </a>
+          </div>
+        )}
+        <Loader isLoading={status === "loading"} />
+      </Centered>
+    </IFrameScreen>
   )
 }

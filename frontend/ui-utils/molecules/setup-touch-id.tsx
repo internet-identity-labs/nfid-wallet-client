@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 import { Button } from "../atoms/button"
-import { TouchId } from "../atoms/icons/touch-id"
+import { TouchId } from "../atoms/images/touch-id"
 
 export const SetupTouchId: React.FC<
   React.DetailedHTMLProps<

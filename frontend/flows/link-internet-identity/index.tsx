@@ -5,10 +5,12 @@ import { CONFIG } from "frontend/config"
 import { creationOptions, IIConnection } from "frontend/ii-utils/iiConnection"
 import { parseUserNumber } from "frontend/ii-utils/userNumber"
 import { Button } from "frontend/ui-utils/atoms/button"
-import { Centered } from "frontend/ui-utils/atoms/centered"
-import { Screen } from "frontend/ui-utils/atoms/screen"
+import { Divider } from "frontend/ui-utils/atoms/divider"
+import { Card } from "frontend/ui-utils/molecules/card"
+import { CardBody } from "frontend/ui-utils/molecules/card/body"
+import { CardTitle } from "frontend/ui-utils/molecules/card/title"
+import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import React from "react"
-import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"
 
 export const LinkInternetIdentity = () => {
@@ -58,18 +60,13 @@ export const LinkInternetIdentity = () => {
   }, [])
 
   return (
-    <Screen
-      className={clsx("bg-gradient-to-b from-blue-400 via-white to-white")}
-    >
-      <Helmet>
-        <meta name="theme-color" content="#3eb3e5" />
-      </Helmet>
-      <div className={clsx("p-7 py-10 flex flex-col h-full")}>
-        <h1 className={clsx("text-center font-bold text-3xl")}>
-          Link your existing internet identity anchor?
-        </h1>
-        <div className={clsx("flex-grow")} />
-        <Centered>
+    <AppScreen>
+      <Card className="flex flex-col h-full">
+        <CardTitle>Link your existing internet identity anchor?</CardTitle>
+
+        <Divider noGutters />
+
+        <CardBody className="justify-center flex h-full items-center">
           {addDeviceLink ? (
             <a href={addDeviceLink} target="_blank">
               <Button className={clsx("p-1 px-3")}>Link Device</Button>
@@ -86,8 +83,8 @@ export const LinkInternetIdentity = () => {
               />
             </form>
           )}
-        </Centered>
-      </div>
-    </Screen>
+        </CardBody>
+      </Card>
+    </AppScreen>
   )
 }

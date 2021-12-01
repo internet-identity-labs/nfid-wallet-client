@@ -94,6 +94,8 @@ export const useUnknownDeviceConfig = () => {
 
   const url = React.useMemo(() => {
     const multipassDomain = import.meta.env.VITE_MULTIPASS_DOMAIN
+
+    
     // TODO: create custom hook to generate secret
     return domain && pubKey
       ? `https://${multipassDomain}/rdp/${pubKey}/${domain}`

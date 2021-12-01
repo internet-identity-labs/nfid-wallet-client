@@ -9,7 +9,7 @@ module.exports = {
         "bottom-sheet": "0 0 30px 8px rgba(0, 0, 0, 0.02)",
       },
       colors: {
-        black: "#303030",
+        black: "#212121",
         white: "#FFFFFF",
         blue: {
           50: "#94d5f1",
@@ -46,7 +46,14 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ["checked"],
+      borderColor: ["checked"],
+      inset: ["checked"],
+      zIndex: ["hover", "active"],
+    },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+  ],
 }

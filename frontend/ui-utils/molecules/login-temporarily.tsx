@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 import { Button } from "../atoms/button"
-import { TemporarId } from "../atoms/icons/temporar-id"
+import { TemporarId } from "../atoms/images/temporar-id"
 
 export const LoginTemporarily: React.FC<
   React.DetailedHTMLProps<

@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { useInterval } from "frontend/hooks/use-interval"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { Button } from "frontend/ui-utils/atoms/button"
-import { FaceId } from "frontend/ui-utils/atoms/icons/face-id"
+import { FaceId } from "frontend/ui-utils/atoms/images/face-id"
 import { useParams } from "react-router"
 import { getUserNumber } from "frontend/ii-utils/userNumber"
 import { useAuthContext } from "../auth-wrapper"
@@ -51,7 +51,7 @@ export const RegisterConfirmation = () => {
         return
       }
     },
-    [connection, secret, userNumber],
+    [connection, getMessages, secret, userNumber],
   )
 
   const { start, resetTries } = useInterval(handlePoll, TRY_DELAY)

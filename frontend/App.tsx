@@ -57,6 +57,9 @@ function App() {
 
           {/* IFRAME SCREENS */}
           {/* TODO: move this decider logic into the component and make it mockable */}
+          <Route path="/login-unknown-device">
+            <UnknownDeviceScreen />
+          </Route>
           <Route path="/authenticate">
             {userNumber ? (
               <Authenticate userNumber={userNumber} />

@@ -8,6 +8,7 @@ import { Button } from "frontend/ui-utils/atoms/button"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import { Input } from "frontend/ui-utils/atoms/input"
 import { P } from "frontend/ui-utils/atoms/typography/paragraph"
+import { Link } from "react-router-dom"
 
 interface IdentityPhoneScreenProps
   extends React.DetailedHTMLProps<
@@ -23,7 +24,7 @@ export const IdentityPhoneScreen: React.FC<IdentityPhoneScreenProps> = ({
     <AppScreen>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>Phone Number</CardTitle>
-        <CardBody className="text-center max-w-xl">
+        <CardBody className="text-center max-w-lg">
           <P className="pb-3">
             There is a limit of one NFID per person and multiple levels of
             verification that this rule is followed.
@@ -36,9 +37,11 @@ export const IdentityPhoneScreen: React.FC<IdentityPhoneScreenProps> = ({
           <Input placeholder="+38 123 333 444" className="mt-8" />
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Button large filled href="/register-identity-sms">
+        <Link to="/register-identity-sms">
+          <Button large filled>
             Next
           </Button>
+          </Link>
         </CardAction>
       </Card>
     </AppScreen>

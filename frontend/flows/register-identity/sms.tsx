@@ -9,6 +9,7 @@ import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import { Input } from "frontend/ui-utils/atoms/input"
 import { P } from "frontend/ui-utils/atoms/typography/paragraph"
 import { HiRefresh } from "react-icons/hi"
+import { Link } from "react-router-dom"
 
 interface IdentitySmsProps
   extends React.DetailedHTMLProps<
@@ -24,7 +25,7 @@ export const IdentitySmsScreen: React.FC<IdentitySmsProps> = ({
     <AppScreen>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>SMS verification</CardTitle>
-        <CardBody className="text-center max-w-xl">
+        <CardBody className="text-center max-w-lg">
           <P className="pb-3">Please enter the SMS code you were just sent</P>
           <Input placeholder="33 44 55" />
           <Button
@@ -36,9 +37,11 @@ export const IdentitySmsScreen: React.FC<IdentitySmsProps> = ({
           </Button>
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Button large filled href="/register-identity-challenge">
-            Next
-          </Button>
+          <Link to="/register-identity-challenge">
+            <Button large filled>
+              Next
+            </Button>
+          </Link>
         </CardAction>
       </Card>
     </AppScreen>

@@ -20,6 +20,7 @@ export const NavigationBar: React.FC = () => {
             <nav className="hidden lg:flex lg:items-center lg:space-x-2">
               <NavigationLink href={"/"} text={"Home"} />
               <NavigationLink href={"/register"} text={"Register"} />
+              <NavigationLink href={"/register-identity"} text={"Register Identity"} />
               <NavigationLink
                 href={"/register-confirmation/this-is-a-fake-secret"}
                 text={"Register Confirmation"}
@@ -54,6 +55,7 @@ export const NavigationBar: React.FC = () => {
             <nav className="flex flex-col space-y-2 py-4 border-t">
               <NavigationLink href={"/"} text={"Home"} />
               <NavigationLink href={"/register"} text={"Register"} />
+              <NavigationLink href={"/register-identity"} text={"Register Identity"} />
               <NavigationLink
                 href={"/register-confirmation"}
                 text={"Register Confirmation"}

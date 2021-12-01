@@ -267,10 +267,10 @@
     buffer "^6.0.3"
     buffer-pipe "^0.0.4"
 
-"@dfinity/identity@0.9.2":
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.9.2.tgz#7c4ec2babf0873a9ab212ddfdd411144bc19a98a"
-  integrity sha512-68dLni+yl+hYIgovKsHV9AOlnAbzizEbECGQGj9NnLyPwYIPEfZrl+7stObPoUUHjIV/x6q0QksMmbMEj4ssHg==
+"@dfinity/identity@0.9.3":
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.9.3.tgz#7d65d1ee7655d9028034bf22a92c21eea8b24028"
+  integrity sha512-8mEpkLqGW74QMsVJzuewwN0tO1fdShAT+vyfQM08VOX/u4IHckH8zZ+qGTeXKaGzuwiJRa5WZT2U7L32LDfJJg==
   dependencies:
     borc "^2.1.1"
     buffer "^6.0.3"

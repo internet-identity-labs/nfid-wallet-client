@@ -40,7 +40,10 @@ export const KitchenSink: React.FC = () => {
               </div>
               <div className="col-span-2 sm:col-span-2">
                 <Label>Search input</Label>
-                <Input icon={<HiSearch className="w-5 h-5 text-gray-500" />} placeholder={"Search"} />
+                <Input
+                  icon={<HiSearch className="w-5 h-5 text-gray-500" />}
+                  placeholder={"Search"}
+                />
               </div>
               <div className="col-span-2 sm:col-span-2">
                 <Label>Example</Label>
@@ -80,7 +83,14 @@ export const KitchenSink: React.FC = () => {
               <Button onClick={() => setShowFrame(!showFrame)}>
                 Toggle IFrame
               </Button>
-              {showFrame && <IFrame title={"Lorem ipsum dolor sit amet"} />}
+              {showFrame && (
+                <IFrame
+                  src={
+                    "https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app/authenticate/"
+                  }
+                  title={"Lorem ipsum dolor sit amet"}
+                />
+              )}
             </div>
 
             <div className="mt-4">

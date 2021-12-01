@@ -50,7 +50,7 @@ export const KitchenSink: React.FC = () => {
               <div className="col-span-2 sm:col-span-2">
                 <Label>Chips</Label>
                 <div className="inline-flex items-center flex-wrap">
-                  <Chip solid icon={<HiMenu className="mr-2"/>}>
+                  <Chip solid icon={<HiMenu className="mr-2" />}>
                     Hamburger
                   </Chip>
                   <Chip solid className="my-1 mr-1 sm:m-1">
@@ -79,7 +79,14 @@ export const KitchenSink: React.FC = () => {
               <Button onClick={() => setShowFrame(!showFrame)}>
                 Toggle IFrame
               </Button>
-              {showFrame && <IFrame title={"Lorem ipsum dolor sit amet"} />}
+              {showFrame && (
+                <IFrame
+                  src={
+                    "https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app/authenticate"
+                  }
+                  title={"Lorem ipsum dolor sit amet"}
+                />
+              )}
             </div>
 
             <div className="mt-4">

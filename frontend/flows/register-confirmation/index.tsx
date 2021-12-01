@@ -1,7 +1,6 @@
 import React from "react"
 import clsx from "clsx"
 import { useInterval } from "frontend/hooks/use-interval"
-import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { FaceId } from "frontend/ui-utils/atoms/images/face-id"
 import { useParams } from "react-router"

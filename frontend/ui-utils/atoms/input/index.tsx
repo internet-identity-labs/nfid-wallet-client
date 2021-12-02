@@ -1,21 +1,28 @@
 import React, { ReactElement } from "react"
 import clsx from "clsx"
 
-interface Props {
+interface InputProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > {
   prependedText?: string
   placeholder?: string
   type?: string
   icon?: ReactElement
 }
 
-export const Input: React.FC<Props> = ({
+export const Input: React.FC<InputProps> = ({
+  children,
+  className,
   prependedText,
   placeholder,
   type = "text",
   icon,
+  ...inputProps
 }) => {
   return (
-    <div className="rounded-md shadow-sm mt-1">
+    <div className={clsx("rounded-md shadow-sm mt-1", className)}>
       <div className="flex relative">
         {prependedText && (
           <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
@@ -31,6 +38,7 @@ export const Input: React.FC<Props> = ({
             icon && "pr-10",
           )}
           placeholder={placeholder ?? ""}
+          {...inputProps}
         />
 
         {icon && <span className="absolute right-3 top-2">{icon}</span>}

@@ -3,8 +3,8 @@ import clsx from "clsx"
 
 interface InputProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+    React.HTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
   > {
   prependedText?: string
   placeholder?: string
@@ -19,6 +19,7 @@ export const Input: React.FC<InputProps> = ({
   placeholder,
   type = "text",
   icon,
+  ...inputProps
 }) => {
   return (
     <div className={clsx("rounded-md shadow-sm mt-1", className)}>
@@ -37,6 +38,7 @@ export const Input: React.FC<InputProps> = ({
             icon && "pr-10",
           )}
           placeholder={placeholder ?? ""}
+          {...inputProps}
         />
 
         {icon && <span className="absolute right-3 top-2">{icon}</span>}

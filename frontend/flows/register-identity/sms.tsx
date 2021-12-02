@@ -37,8 +37,8 @@ export const IdentitySmsScreen: React.FC<IdentitySmsProps> = ({
           </Button>
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity-challenge">
-            <Button large filled>
+          <Link to="/register-identity-challenge" className="flex justify-center">
+            <Button large filled block>
               Next
             </Button>
           </Link>

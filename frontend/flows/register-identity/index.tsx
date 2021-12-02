@@ -26,13 +26,13 @@ export const IdentityScreen: React.FC<IdentityScreenProps> = ({
           You can create a new Identity or register this device with an existing
           Identity.
         </CardBody>
-        <CardAction bottom className="justify-center flex-col-reverse">
-          <Link to="/register-identity-name">
-            <Button large text>
+        <CardAction bottom className="justify-center">
+          <Link to="/register-identity-name" className="flex justify-center">
+            <Button text>
               I already have an Identity
             </Button>
           </Link>
-          <Button large filled>
+          <Button filled>
             Create a new Identity
           </Button>
         </CardAction>

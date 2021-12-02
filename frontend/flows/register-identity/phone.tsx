@@ -30,15 +30,15 @@ export const IdentityPhoneScreen: React.FC<IdentityPhoneScreenProps> = ({
             verification that this rule is followed.
           </P>
 
-          <P>
+          <P className="mb-8">
             Phone number verification is level 1 and required to register an
             NFID.
           </P>
-          <Input placeholder="+38 123 333 444" className="mt-8" />
+          <Input placeholder="+38 123 333 444" />
         </CardBody>
         <CardAction bottom className="justify-center">
-        <Link to="/register-identity-sms">
-          <Button large filled>
+        <Link to="/register-identity-sms" className="flex justify-center">
+          <Button large filled block>
             Next
           </Button>
           </Link>

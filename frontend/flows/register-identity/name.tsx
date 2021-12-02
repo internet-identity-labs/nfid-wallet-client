@@ -32,8 +32,8 @@ export const IdentityNameScreen: React.FC<IdentityNameScreenProps> = ({
           <Input placeholder="Enter your full name" />
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity-phone">
-            <Button large filled>
+          <Link to="/register-identity-phone" className="flex justify-center">
+            <Button block large filled>
               Next
             </Button>
           </Link>

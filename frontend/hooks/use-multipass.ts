@@ -9,6 +9,8 @@ import {
   _SERVICE,
 } from "frontend/ii-utils/generated/internet_identity_types"
 import { creationOptions, IIConnection } from "frontend/ii-utils/iiConnection"
+import { ACCOUNT_LOCAL_STORAGE_KEY } from "frontend/modules/account/constants"
+import { Account, HTTPResponse } from "frontend/modules/account/types"
 import React from "react"
 import { idlFactory as internet_identity_idl } from "../ii-utils/generated/internet_identity_idl"
 
@@ -31,6 +33,18 @@ export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
 })
 
 export const useMultipass = () => {
+  const [account, setAccount] = React.useState<Account | null>(null)
+
+  const getAccount = React.useCallback(async () => {
+    const accountFromLS = localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY)
+    const account: Account = accountFromLS ? JSON.parse(accountFromLS) : null
+    return new Promise<Account | null>((resolve) => resolve(account))
+  }, [])
+
+  React.useEffect(() => {
+    getAccount().then((account) => setAccount(account))
+  }, [getAccount])
+
   const getMessages = React.useCallback(async (key: DelegationKey) => {
     return await baseActor.get_messages(key)
   }, [])
@@ -62,5 +76,5 @@ export const useMultipass = () => {
     [postMessages],
   )
 
-  return { handleAddDevice, getMessages, postMessages }
+  return { account, getAccount, handleAddDevice, getMessages, postMessages }
 }

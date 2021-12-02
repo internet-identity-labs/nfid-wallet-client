@@ -8,6 +8,7 @@ import { Button } from "frontend/ui-utils/atoms/button"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import { Input } from "frontend/ui-utils/atoms/input"
 import { P } from "frontend/ui-utils/atoms/typography/paragraph"
+import { Link } from "react-router-dom"
 
 interface IdentityNameScreenProps
   extends React.DetailedHTMLProps<
@@ -23,7 +24,7 @@ export const IdentityNameScreen: React.FC<IdentityNameScreenProps> = ({
     <AppScreen>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>What should we call you?</CardTitle>
-        <CardBody className="text-center max-w-xl">
+        <CardBody className="text-center max-w-lg">
           <P className="pb-8">
             You'll find using your full name most convenient, and rest assured
             you're the only person in the world with the permission to see this.
@@ -31,9 +32,11 @@ export const IdentityNameScreen: React.FC<IdentityNameScreenProps> = ({
           <Input placeholder="Enter your full name" />
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Button large filled href="/register-identity-phone">
-            Next
-          </Button>
+          <Link to="/register-identity-phone">
+            <Button large filled>
+              Next
+            </Button>
+          </Link>
         </CardAction>
       </Card>
     </AppScreen>

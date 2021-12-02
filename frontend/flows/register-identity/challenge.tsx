@@ -24,7 +24,7 @@ export const IdentityChallengeScreen: React.FC<IdentityChallengeProps> = ({
     <AppScreen>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>Register your NFID</CardTitle>
-        <CardBody className="text-center max-w-xl">
+        <CardBody className="text-center max-w-lg">
           <P className="pb-3">
             Complete your registration by proving you are this phone's owner.
           </P>

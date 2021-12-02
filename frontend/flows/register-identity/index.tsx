@@ -6,6 +6,7 @@ import { CardBody } from "frontend/ui-utils/molecules/card/body"
 import { CardAction } from "frontend/ui-utils/molecules/card/action"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
+import { Link } from "react-router-dom"
 
 interface IdentityScreenProps
   extends React.DetailedHTMLProps<
@@ -26,9 +27,11 @@ export const IdentityScreen: React.FC<IdentityScreenProps> = ({
           Identity.
         </CardBody>
         <CardAction bottom className="justify-center flex-col-reverse">
-          <Button large text href="/register-identity-name">
-            I already have an Identity
-          </Button>
+          <Link to="/register-identity-name">
+            <Button large text>
+              I already have an Identity
+            </Button>
+          </Link>
           <Button large filled>
             Create a new Identity
           </Button>

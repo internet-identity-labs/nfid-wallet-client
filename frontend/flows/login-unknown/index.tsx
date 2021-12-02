@@ -38,13 +38,16 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   const handleSendDelegate = React.useCallback(
     (delegation) => {
       try {
+        console.log(">> handleSendDelegate", { delegation })
         const parsedSignedDelegation = buildDelegate(delegation)
-        const protocol = CONFIG.II_ENV ? window.location.protocol : "http"
+        const protocol =
+          CONFIG.II_ENV === "development" ? "http:" : window.location.protocol
+        const hostname = `${protocol}//${scope}`
 
         postClientAuthorizeSuccessMessage(appWindow, {
           parsedSignedDelegation,
           userKey: delegation.userKey,
-          hostname: `${protocol}//${scope}`,
+          hostname,
         })
       } catch (err) {
         console.error(">> not a valid delegate", { err })
@@ -92,6 +95,11 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
         const registerMessage = parsedMessages.find(
           (m) => m.type === "remote-login-register",
         )
+
+        console.log(">> handlePollForDelegate", {
+          loginMessage,
+          registerMessage,
+        })
 
         if (loginMessage || registerMessage) {
           setStatus("success")

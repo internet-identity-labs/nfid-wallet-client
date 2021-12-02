@@ -13,8 +13,7 @@ import { Loader } from "frontend/ui-utils/atoms/loader"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import React from "react"
-import { Redirect } from "react-router"
-import { Register } from "../register"
+import { Navigate, useLocation } from "react-router-dom"
 
 interface AuthContextState {
   isAuthenticated: boolean
@@ -22,6 +21,7 @@ interface AuthContextState {
   connection?: IIConnection
   userNumber?: bigint
   account: Account | null
+  startUrl: string
   login: () => void
   onRegisterSuccess: (connection: IIConnection) => void
 }
@@ -32,19 +32,29 @@ export const AuthContext = React.createContext<AuthContextState>({
   connection: undefined,
   userNumber: undefined,
   account: null,
+  startUrl: "",
   login: () => console.warn(">> called before initialisation"),
   onRegisterSuccess: () => console.warn(">> called before initialisation"),
 })
 
-export const AuthProvider: React.FC = ({ children }) => {
+interface AuthProvider {
+  startUrl: string
+}
+
+export const AuthProvider: React.FC<AuthProvider> = ({
+  children,
+  startUrl,
+}) => {
   const [isLoading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<LoginError | null>(null)
   const [connection, setConnection] = React.useState<IIConnection | undefined>(
     undefined,
   )
   const { account } = useMultipass()
-
-  const userNumber = React.useMemo(() => getUserNumber(), [])
+  const userNumber = React.useMemo(
+    () => getUserNumber(account ? account.rootAnchor : null),
+    [account],
+  )
 
   const login = React.useCallback(async () => {
     setLoading(true)
@@ -77,6 +87,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         userNumber,
         connection,
         account,
+        startUrl,
         login,
         onRegisterSuccess,
       }}
@@ -115,6 +126,6 @@ export const AuthWrapper: React.FC = ({ children }) => {
       </Screen>
     </AppScreen>
   ) : (
-    <Redirect to="/register-identity-persona-welcome" />
+    <Navigate to="/register-identity-persona-welcome" />
   )
 }

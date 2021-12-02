@@ -1,7 +1,7 @@
 import React from "react"
 import clsx from "clsx"
 import { Loader } from "frontend/ui-utils/atoms/loader"
-import { useHistory, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { Centered } from "frontend/ui-utils/atoms/centered"
@@ -16,8 +16,8 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   const [status, setStatus] = React.useState<
     "initial" | "loading" | "success" | "error"
   >("initial")
-  const { secret, scope } = useParams<{ secret: string; scope: string }>()
-  const { push } = useHistory()
+  const { secret, scope } = useParams()
+  const navigate = useNavigate()
   const { remoteLogin, sendWaitForUserInput } = useRegisterDevicePromt()
 
   const handleLogin = React.useCallback(async () => {
@@ -30,8 +30,8 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
     setStatus("loading")
     await remoteLogin({ secret, scope, register: true })
     setStatus("success")
-    return push(`/register-confirmation/${secret}`)
-  }, [push, remoteLogin, scope, secret])
+    return navigate(`/register-confirmation/${secret}`)
+  }, [navigate, remoteLogin, scope, secret])
 
   React.useEffect(() => {
     secret && sendWaitForUserInput(secret)

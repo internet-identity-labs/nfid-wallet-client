@@ -1,3 +1,5 @@
+import { Persona, RootAnchor } from "../persona/types"
+
 // Standard HTTP STATUS CODES
 type StatusCode = number
 
@@ -8,10 +10,6 @@ export interface HTTPResponse<T, E extends {} = {}> {
 }
 
 type Name = string
-type PersonaName = string
-
-type Anchor = string
-type RootAnchor = Anchor
 
 interface Device {
   pubKeyHash: string
@@ -19,14 +17,6 @@ interface Device {
   make: string // "Apple"
   model: string // "iPhone"
   browser: string // "Safari"
-}
-
-interface Persona {
-  name: PersonaName
-  isRoot: boolean
-  isSeedPhraseCopied: boolean
-  isIIAnchor: boolean
-  anchor: Anchor
 }
 
 interface PhoneNumber {
@@ -41,6 +31,7 @@ interface Email {
 
 export interface Account {
   principalId: string
+  rootAnchor: RootAnchor
   name: Name // "John Doe"
   phoneNumber: PhoneNumber
   email: Email | null

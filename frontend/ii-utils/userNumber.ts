@@ -1,5 +1,6 @@
-export const getUserNumber = (): bigint | undefined => {
-  const userNumber = localStorage.getItem("userNumber")
+export const getUserNumber = (
+  userNumber: string | null,
+): bigint | undefined => {
   return userNumber !== null ? BigInt(userNumber) : undefined
 }
 

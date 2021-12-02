@@ -14,6 +14,11 @@ import { CopyDevices } from "./flows/copy-devices"
 import { KitchenSink } from "./flows/kitchen-sink"
 import { HomeScreen } from "./flows/home"
 import { IFrameOverviewScreen } from "./flows/iframe-overview"
+import { IdentityScreen } from "./flows/register-identity"
+import { IdentityNameScreen } from "./flows/register-identity/name"
+import { IdentityPhoneScreen } from "./flows/register-identity/phone"
+import { IdentitySmsScreen } from "./flows/register-identity/sms"
+import { IdentityChallengeScreen } from "./flows/register-identity/challenge"
 
 function App() {
   const userNumber = React.useMemo(() => getUserNumber(), [])
@@ -53,6 +58,21 @@ function App() {
           </Route>
           <Route path="/copy-devices">
             <CopyDevices />
+          </Route>
+          <Route path="/register-identity">
+            <IdentityScreen />
+          </Route>
+          <Route path="/register-identity-name">
+            <IdentityNameScreen />
+          </Route>
+          <Route path="/register-identity-phone">
+            <IdentityPhoneScreen />
+          </Route>
+          <Route path="/register-identity-sms">
+            <IdentitySmsScreen />
+          </Route>
+          <Route path="/register-identity-challenge">
+            <IdentityChallengeScreen />
           </Route>
 
           {/* IFRAME SCREENS */}

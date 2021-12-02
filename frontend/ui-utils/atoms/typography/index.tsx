@@ -10,11 +10,11 @@ type TextProps<C extends React.ElementType> = BaseProps<C> &
   Omit<React.ComponentPropsWithRef<C>, keyof BaseProps<C>>
 
 const headlineStyles = {
-  H1: "font-oswald capitalize font-medium leading-6 text-gray-900",
-  H2: "font-oswald capitalize font-medium leading-6 text-gray-900",
-  H3: "font-oswald capitalize font-medium leading-6 text-gray-900",
-  H4: "font-oswald capitalize font-medium leading-6 text-gray-900",
-  H5: "font-oswald capitalize font-medium leading-6 text-gray-900",
+  H1: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
+  H2: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
+  H3: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
+  H4: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
+  H5: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
 }
 
 const headlineSizes = {

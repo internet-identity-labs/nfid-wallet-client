@@ -31,10 +31,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     "/register-identity-persona-createkeys-complete",
   ]
 
-  const flowSequences = [
-    { title: "register-device-promt", sequence: [{ title: "", route: "/" }] },
-  ]
-
   const getRouteName = (route: string) => {
     return route.replace(/\//g, "").replace(/-/g, " ")
   }

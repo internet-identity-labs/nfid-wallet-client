@@ -88,7 +88,7 @@ export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
         >
           <FaceId className="mx-auto h-16 mb-4" />
           {hasAnchor ? (
-            <Button large filled disabled={anchor.length < 5}>
+            <Button large filled disabled={anchor?.length < 5}>
               Use FaceID to create keys for this device
             </Button>
           ) : (

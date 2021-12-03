@@ -38,7 +38,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   const handleSendDelegate = React.useCallback(
     (delegation) => {
       try {
-        console.log(">> handleSendDelegate", { delegation })
         const parsedSignedDelegation = buildDelegate(delegation)
         const protocol =
           CONFIG.II_ENV === "development" ? "http:" : window.location.protocol

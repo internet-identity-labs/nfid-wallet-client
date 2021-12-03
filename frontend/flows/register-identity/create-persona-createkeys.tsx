@@ -31,7 +31,6 @@ export const IdentityPersonaCreatekeysScreen: React.FC<IdentityPersonaCreatekeys
     const {
       state: { name, identity, deviceName, pow },
     } = useLocation()
-    console.log(">> ", { name, identity, deviceName, pow })
     const { onRegisterSuccess } = useAuthContext()
     const { updateAccount } = useMultipass()
 

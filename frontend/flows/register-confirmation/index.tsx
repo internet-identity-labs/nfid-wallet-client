@@ -16,7 +16,7 @@ const TRY_DELAY = 2000
 type State = "loading" | "pause" | "success" | "error"
 
 export const RegisterConfirmation = () => {
-  const { secret } = useParams<{ secret: string }>()
+  const { secret = "" } = useParams()
   const [status, setStatus] = React.useState<State>("loading")
   const { getMessages } = useMultipass()
 

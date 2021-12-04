@@ -39,12 +39,14 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     (delegation) => {
       try {
         const parsedSignedDelegation = buildDelegate(delegation)
-        const protocol = CONFIG.II_ENV ? window.location.protocol : "http"
+        const protocol =
+          CONFIG.II_ENV === "development" ? "http:" : window.location.protocol
+        const hostname = `${protocol}//${scope}`
 
         postClientAuthorizeSuccessMessage(appWindow, {
           parsedSignedDelegation,
           userKey: delegation.userKey,
-          hostname: `${protocol}//${scope}`,
+          hostname,
         })
       } catch (err) {
         console.error(">> not a valid delegate", { err })

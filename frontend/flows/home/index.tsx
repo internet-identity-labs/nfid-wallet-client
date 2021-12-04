@@ -1,7 +1,6 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
-import { H4 } from "frontend/ui-utils/atoms/typography"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Card } from "frontend/ui-utils/molecules/card"
 import { CardBody } from "frontend/ui-utils/molecules/card/body"

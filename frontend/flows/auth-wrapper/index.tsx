@@ -1,23 +1,27 @@
 import clsx from "clsx"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   apiResultToLoginResult,
   LoginError,
 } from "frontend/ii-utils/api-result-to-login-result"
 import { IIConnection } from "frontend/ii-utils/iiConnection"
 import { getUserNumber } from "frontend/ii-utils/userNumber"
+import { Account } from "frontend/modules/account/types"
 import { Button } from "frontend/ui-utils/atoms/button"
 import { FaceId } from "frontend/ui-utils/atoms/images/face-id"
 import { Loader } from "frontend/ui-utils/atoms/loader"
 import { Screen } from "frontend/ui-utils/atoms/screen"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import React from "react"
-import { Register } from "../register"
+import { Navigate, useLocation } from "react-router-dom"
 
 interface AuthContextState {
   isAuthenticated: boolean
   isLoading: boolean
   connection?: IIConnection
   userNumber?: bigint
+  account: Account | null
+  startUrl: string
   login: () => void
   onRegisterSuccess: (connection: IIConnection) => void
 }
@@ -27,18 +31,30 @@ export const AuthContext = React.createContext<AuthContextState>({
   isLoading: false,
   connection: undefined,
   userNumber: undefined,
+  account: null,
+  startUrl: "",
   login: () => console.warn(">> called before initialisation"),
   onRegisterSuccess: () => console.warn(">> called before initialisation"),
 })
 
-export const AuthProvider: React.FC = ({ children }) => {
+interface AuthProvider {
+  startUrl: string
+}
+
+export const AuthProvider: React.FC<AuthProvider> = ({
+  children,
+  startUrl,
+}) => {
   const [isLoading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<LoginError | null>(null)
   const [connection, setConnection] = React.useState<IIConnection | undefined>(
     undefined,
   )
-
-  const userNumber = React.useMemo(() => getUserNumber(), [])
+  const { account } = useMultipass()
+  const userNumber = React.useMemo(
+    () => getUserNumber(account ? account.rootAnchor : null),
+    [account],
+  )
 
   const login = React.useCallback(async () => {
     setLoading(true)
@@ -70,6 +86,8 @@ export const AuthProvider: React.FC = ({ children }) => {
         isAuthenticated: !!connection,
         userNumber,
         connection,
+        account,
+        startUrl,
         login,
         onRegisterSuccess,
       }}
@@ -82,12 +100,12 @@ export const AuthProvider: React.FC = ({ children }) => {
 export const useAuthContext = () => React.useContext(AuthContext)
 
 export const AuthWrapper: React.FC = ({ children }) => {
-  const { isLoading, isAuthenticated, userNumber, login, onRegisterSuccess } =
+  const { isLoading, isAuthenticated, account, login, onRegisterSuccess } =
     useAuthContext()
 
   return isAuthenticated ? (
     <>{children}</>
-  ) : userNumber ? (
+  ) : account ? (
     <AppScreen>
       <Screen className={clsx("p-7 py-10")}>
         <h1 className={clsx("font-bold text-3xl")}>Multipass</h1>
@@ -108,6 +126,6 @@ export const AuthWrapper: React.FC = ({ children }) => {
       </Screen>
     </AppScreen>
   ) : (
-    <Register onSuccess={onRegisterSuccess} />
+    <Navigate to="/register-identity-persona-welcome" />
   )
 }

@@ -1,31 +1,33 @@
 {
-	"Generate React Typescript Component with Props": {
-		"prefix": "ilfc",
-		"body": [
-			"import React from \"react\"",
-			"import clsx from \"clsx\"",
-			"",
-			"interface ${1}Props",
-			"  extends React.DetailedHTMLProps<",
-			"    React.HTMLAttributes<HTMLDivElement>,",
-			"    HTMLDivElement",
-			"  > {}",
-			"",
-			"export const ${1:Component}: React.FC<${1}Props> = ({ children, className }) => {",
-			"  return (",
-			"    <div className={clsx(\"\", className)}>",
-			"      ${2}",
-			"    </div>",
-			"  )",
-			"}"
-		],
-		"description": "Generate React Typescript Component with Props"
-	},
-	"Generate className with clsx format": {
-		"prefix": "ilclass",
-		"body": [
-			"className={clsx(\"${1}\", className)}",
-		],
-		"description": "Generate className with clsx format"
-	}
+  "Generate React Typescript Component with Props": {
+    "prefix": "ilfc",
+    "body": [
+      "import React from \"react\"",
+      "import clsx from \"clsx\"",
+      "",
+      "interface ${1}Props",
+      "  extends React.DetailedHTMLProps<",
+      "    React.HTMLAttributes<HTMLDivElement>,",
+      "    HTMLDivElement",
+      "  > {}",
+      "",
+      "export const ${1:Component}: React.FC<${1}Props> = ({ children, className }) => {",
+      "  return (",
+      "    <div className={clsx(\"\", className)}>",
+      "      ${2}",
+      "    </div>",
+      "  )",
+      "}"
+    ],
+    "description": "Generate React Typescript Component with Props"
+  },
+  "Generate className with clsx format": {
+    "prefix": "ilclass",
+    "body": ["className={clsx(\"${1}\", className)}"],
+    "description": "Generate className with clsx format"
+  },
+  "Generate React.useCallback": {
+    "prefix": "ilurcb",
+    "body": ["const $1 = React.useCallback(() => {$0}, [])"]
+  }
 }

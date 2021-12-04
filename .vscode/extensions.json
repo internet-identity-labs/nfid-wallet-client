@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "editorconfig.editorconfig",
     "joffreykern.markdown-toc",
     "mhutchie.git-graph",
     "esbenp.prettier-vscode",

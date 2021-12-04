@@ -21,7 +21,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   return (
     <>
       {!error ? (
-        <div>
+        <div className="px-6 py-4">
           <div className="font-medium text-lg mb-3">Sign in to {scope}</div>
           <div
             className="flex items-center cursor-pointer border border-gray-200 rounded hover:shadow-sm hover:bg-gray-50"

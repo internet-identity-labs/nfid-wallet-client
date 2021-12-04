@@ -28,11 +28,17 @@ export const IFrame: React.FC<Props> = ({
   const handleLoad = (iframe: any) => {
     if (iframe) {
       const topBarHeight = 57
-      const iframeHeight =
-        iframe.target.contentWindow.document.body.offsetHeight
+      let iframeHeight = iframe.target.contentWindow.document.body.scrollHeight
 
-      setHeight(topBarHeight + iframeHeight + 46)
+      setHeight(topBarHeight + iframeHeight)
       setLoading(false)
+
+      setInterval(() => {
+        if (iframeHeight !== height) {
+          iframeHeight = iframe.target.contentWindow.document.body.scrollHeight
+          setHeight(topBarHeight + iframeHeight)
+        }
+      }, 200)
     }
   }
 
@@ -41,12 +47,13 @@ export const IFrame: React.FC<Props> = ({
 
     const timeout = setTimeout(() => setVisible(true), 500)
     return () => clearTimeout(timeout)
-  }, [])
+  }, [setLoading])
 
   return visible ? (
     <Card
       className={clsx(
-        "bg-white shadow-xl max-w-screen md:max-w-xl rounded-xl w-full md:w-[390px] transition-all duration-300",
+        "bg-white shadow-xl max-w-screen rounded-xl w-full md:w-[390px] transition-all duration-300",
+        "flex flex-col",
         className,
         !inline && "fixed bottom-0 right-0  md:top-[18px] md:right-7",
       )}
@@ -70,15 +77,9 @@ export const IFrame: React.FC<Props> = ({
         </div>
       </div>
 
-      {loading && (
-        <div className="h-[calc(100%-57px)] flex justify-center items-center">
-          <Spinner />
-        </div>
-      )}
-
       <iframe
         className={clsx(
-          "w-full transition-all delay-300 px-6 py-4 h-full",
+          "w-full transition-all delay-300 h-full",
           loading && "opacity-0",
         )}
         src={src}

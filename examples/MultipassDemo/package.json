@@ -12,7 +12,7 @@
     "@identity-labs/react-ic-ii-auth": "0.0.14",
     "clsx": "1.1.1",
     "next": "11.1.2",
-    "qrcode": "1.4.4",
+    "qrcode": "1.5.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "typescript": "^4.4.4",

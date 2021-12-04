@@ -59,9 +59,9 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           <Card>
             <CardBody>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {routes.map((routes) => (
-                  <div className="col-span-1 sm:col-span-2 md:col-span-1">
-                    <H4 key={routes.title}>{routes.title}</H4>
+                {routes.map((routes, index) => (
+                  <div className="col-span-1 sm:col-span-2 md:col-span-1" key={index}>
+                    <H4>{routes.title}</H4>
                     <Divider />
                     <div className="space-y-3">
                       {routes.items.map((item, index) => (

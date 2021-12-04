@@ -91,7 +91,6 @@ export const IdentityPersonaCreatekeysScreen: React.FC<IdentityPersonaCreatekeys
           connection,
         )
         setLoading(false)
-        console.log(">> ", { recoveryPhrase })
 
         return navigate("/register-identity-persona-createkeys-complete", {
           state: { recoveryPhrase },

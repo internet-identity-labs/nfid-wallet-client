@@ -20,7 +20,7 @@ export const AppScreen: React.FC<Props> = ({
 }) => {
   return (
     <div className={clsx("", className)}>
-      <div className="flex flex-col mx-auto w-full min-h-screen bg-gray-100">
+      <div className="flex flex-col mx-auto w-full min-h-screen min-h-screen-ios bg-gray-100">
         <NavigationBar />
         {title && <NavigationHeader title={title} description={description} />}
 

@@ -1,10 +1,10 @@
 import React from "react"
-import clsx from "clsx"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Card } from "frontend/ui-utils/molecules/card"
 import { CardBody } from "frontend/ui-utils/molecules/card/body"
 import { Divider } from "frontend/ui-utils/atoms/divider"
+import { H4 } from "frontend/ui-utils/atoms/typography"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -59,7 +59,10 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             <CardBody>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {routes.map((routes, index) => (
-                  <div className="col-span-1 sm:col-span-2 md:col-span-1" key={index}>
+                  <div
+                    className="col-span-1 sm:col-span-2 md:col-span-1"
+                    key={index}
+                  >
                     <H4>{routes.title}</H4>
                     <Divider />
                     <div className="space-y-3">

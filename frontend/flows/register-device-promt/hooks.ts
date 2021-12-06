@@ -1,9 +1,9 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { retryGetDelegation } from "frontend/ii-utils/auth"
-import { PublicKey } from "frontend/ii-utils/generated/internet_identity_types"
-import { IIConnection } from "frontend/ii-utils/iiConnection"
-import { getUserNumber } from "frontend/ii-utils/userNumber"
+import { retryGetDelegation } from "frontend/utils/internet-identity/auth"
+import { PublicKey } from "frontend/utils/internet-identity/generated/internet_identity_types"
+import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
+import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
 import React from "react"
 import { useAuthContext } from "../auth-wrapper"
 

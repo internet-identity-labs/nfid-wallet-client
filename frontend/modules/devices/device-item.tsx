@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
-import { Button } from "frontend/ui-utils/atoms/button"
+import { Button } from "frontend/design-system/atoms/button"
 import React from "react"
 
 interface Device {

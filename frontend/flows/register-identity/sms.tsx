@@ -1,13 +1,13 @@
 import React from "react"
 import clsx from "clsx"
-import { Card } from "frontend/ui-utils/molecules/card"
-import { CardTitle } from "frontend/ui-utils/molecules/card/title"
-import { CardBody } from "frontend/ui-utils/molecules/card/body"
-import { CardAction } from "frontend/ui-utils/molecules/card/action"
-import { Button } from "frontend/ui-utils/atoms/button"
-import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
-import { Input } from "frontend/ui-utils/atoms/input"
-import { P } from "frontend/ui-utils/atoms/typography/paragraph"
+import { Card } from "frontend/design-system/molecules/card"
+import { CardTitle } from "frontend/design-system/molecules/card/title"
+import { CardBody } from "frontend/design-system/molecules/card/body"
+import { CardAction } from "frontend/design-system/molecules/card/action"
+import { Button } from "frontend/design-system/atoms/button"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { Input } from "frontend/design-system/atoms/input"
+import { P } from "frontend/design-system/atoms/typography/paragraph"
 import { HiRefresh } from "react-icons/hi"
 import { Link } from "react-router-dom"
 
@@ -37,7 +37,10 @@ export const IdentitySmsScreen: React.FC<IdentitySmsProps> = ({
           </Button>
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity-challenge" className="flex justify-center">
+          <Link
+            to="/register-identity-challenge"
+            className="flex justify-center"
+          >
             <Button large filled block>
               Next
             </Button>

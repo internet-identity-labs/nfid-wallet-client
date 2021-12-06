@@ -1,14 +1,14 @@
 import React from "react"
 import clsx from "clsx"
 import { useInterval } from "frontend/hooks/use-interval"
-import { Button } from "frontend/ui-utils/atoms/button"
-import { FaceId } from "frontend/ui-utils/atoms/images/face-id"
+import { Button } from "frontend/design-system/atoms/button"
+import { FaceId } from "frontend/design-system/atoms/images/face-id"
 import { useParams } from "react-router"
-import { getUserNumber } from "frontend/ii-utils/userNumber"
 import { useAuthContext } from "../auth-wrapper"
 import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
 import { ExistingDevices } from "frontend/modules/devices/existing-devices"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000

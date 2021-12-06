@@ -2,7 +2,6 @@ import React from "react"
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import { Authenticate } from "./flows/authenticate"
 import { UnknownDeviceScreen } from "./flows/login-unknown"
-import { getUserNumber } from "./ii-utils/userNumber"
 import { RegisterDevicePrompt } from "./flows/register-device-promt"
 import { Register } from "./flows/register"
 import { RegisterConfirmation } from "./flows/register-confirmation"
@@ -27,6 +26,7 @@ import { IdentityPersonaCreatekeysScreen } from "./flows/register-identity/creat
 import { IdentityPersonaCreatekeysCompleteScreen } from "./flows/register-identity/create-persona-createkeys-complete"
 import { REGISTER_DEVICE_PROMPT } from "./flows/constants"
 import { useMultipass } from "./hooks/use-multipass"
+import { getUserNumber } from "./utils/internet-identity/userNumber"
 
 function App() {
   const { account } = useMultipass()

@@ -3,20 +3,21 @@ import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { CONFIG } from "frontend/config"
-import { getBrowser, getPlatform } from "frontend/flows/register/utils"
-import { getProofOfWork } from "frontend/ii-utils/crypto/pow"
+import { getBrowser, getPlatform } from "frontend/utils"
 import {
   DelegationKey,
   _SERVICE,
-} from "frontend/ii-utils/generated/internet_identity_types"
-import { creationOptions, IIConnection } from "frontend/ii-utils/iiConnection"
-import { ACCOUNT_LOCAL_STORAGE_KEY } from "frontend/modules/account/constants"
-import { Account } from "frontend/modules/account/types"
+} from "frontend/utils/internet-identity/generated/internet_identity_types"
 import React from "react"
-import { idlFactory as internet_identity_idl } from "../ii-utils/generated/internet_identity_idl"
-import { canisterIdPrincipal as iiCanisterIdPrincipal } from "frontend/ii-utils/iiConnection"
+import { idlFactory as internet_identity_idl } from "frontend/utils/internet-identity/generated/internet_identity_idl"
+import {
+  canisterIdPrincipal as iiCanisterIdPrincipal,
+  creationOptions,
+  IIConnection,
+} from "frontend/utils/internet-identity/iiConnection"
 import { useAccount } from "frontend/modules/account/hooks"
 import { usePersona } from "frontend/modules/persona/hooks"
+import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
 
 const canisterId: string = CONFIG.MP_CANISTER_ID as string
 

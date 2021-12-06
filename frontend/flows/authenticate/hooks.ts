@@ -3,9 +3,9 @@ import {
   apiResultToLoginResult,
   LoginError,
   LoginSuccess,
-} from "frontend/ii-utils/api-result-to-login-result"
-import { retryGetDelegation } from "frontend/ii-utils/auth"
-import { IIConnection } from "frontend/ii-utils/iiConnection"
+} from "frontend/utils/internet-identity/api-result-to-login-result"
+import { retryGetDelegation } from "frontend/utils/internet-identity/auth"
+import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import React from "react"
 import { useMessageChannel } from "../login-unknown/hooks"
 

@@ -3,15 +3,15 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   apiResultToLoginResult,
   LoginError,
-} from "frontend/ii-utils/api-result-to-login-result"
-import { IIConnection } from "frontend/ii-utils/iiConnection"
-import { getUserNumber } from "frontend/ii-utils/userNumber"
+} from "frontend/utils/internet-identity/api-result-to-login-result"
+import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
+import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
 import { Account } from "frontend/modules/account/types"
-import { Button } from "frontend/ui-utils/atoms/button"
-import { FaceId } from "frontend/ui-utils/atoms/images/face-id"
-import { Loader } from "frontend/ui-utils/atoms/loader"
-import { Screen } from "frontend/ui-utils/atoms/screen"
-import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
+import { Button } from "frontend/design-system/atoms/button"
+import { FaceId } from "frontend/design-system/atoms/images/face-id"
+import { Loader } from "frontend/design-system/atoms/loader"
+import { Screen } from "frontend/design-system/atoms/screen"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Navigate, useLocation } from "react-router-dom"
 

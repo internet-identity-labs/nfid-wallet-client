@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import clsx from "clsx"
 import { Card } from "../card"
 import { HiX } from "react-icons/hi"
-import { Spinner } from "frontend/ui-utils/atoms/loader/spinner"
+import { Spinner } from "frontend/design-system/atoms/loader/spinner"
 
 interface Props
   extends React.DetailedHTMLProps<

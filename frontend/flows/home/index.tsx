@@ -1,10 +1,10 @@
 import React from "react"
-import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { HiChevronDoubleRight } from "react-icons/hi"
-import { Card } from "frontend/ui-utils/molecules/card"
-import { CardBody } from "frontend/ui-utils/molecules/card/body"
-import { Divider } from "frontend/ui-utils/atoms/divider"
-import { H4 } from "frontend/ui-utils/atoms/typography"
+import { Card } from "frontend/design-system/molecules/card"
+import { CardBody } from "frontend/design-system/molecules/card/body"
+import { Divider } from "frontend/design-system/atoms/divider"
+import { H4 } from "frontend/design-system/atoms/typography"
 
 interface Props
   extends React.DetailedHTMLProps<

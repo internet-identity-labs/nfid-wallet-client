@@ -1,11 +1,11 @@
 import React from "react"
 import clsx from "clsx"
-import { Card } from "frontend/ui-utils/molecules/card"
-import { CardTitle } from "frontend/ui-utils/molecules/card/title"
-import { CardBody } from "frontend/ui-utils/molecules/card/body"
-import { CardAction } from "frontend/ui-utils/molecules/card/action"
-import { Button } from "frontend/ui-utils/atoms/button"
-import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
+import { Card } from "frontend/design-system/molecules/card"
+import { CardTitle } from "frontend/design-system/molecules/card/title"
+import { CardBody } from "frontend/design-system/molecules/card/body"
+import { CardAction } from "frontend/design-system/molecules/card/action"
+import { Button } from "frontend/design-system/atoms/button"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { Link } from "react-router-dom"
 
 interface IdentityScreenProps
@@ -28,13 +28,9 @@ export const IdentityScreen: React.FC<IdentityScreenProps> = ({
         </CardBody>
         <CardAction bottom className="justify-center">
           <Link to="/register-identity-name" className="flex justify-center">
-            <Button text>
-              I already have an Identity
-            </Button>
+            <Button text>I already have an Identity</Button>
           </Link>
-          <Button filled>
-            Create a new Identity
-          </Button>
+          <Button filled>Create a new Identity</Button>
         </CardAction>
       </Card>
     </AppScreen>

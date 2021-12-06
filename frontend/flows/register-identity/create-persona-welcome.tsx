@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react"
 import clsx from "clsx"
-import { Card } from "frontend/ui-utils/molecules/card"
-import { CardTitle } from "frontend/ui-utils/molecules/card/title"
-import { CardBody } from "frontend/ui-utils/molecules/card/body"
-import { P } from "frontend/ui-utils/atoms/typography/paragraph"
+import { Card } from "frontend/design-system/molecules/card"
+import { CardTitle } from "frontend/design-system/molecules/card/title"
+import { CardBody } from "frontend/design-system/molecules/card/body"
+import { P } from "frontend/design-system/atoms/typography/paragraph"
 import { Link } from "react-router-dom"
-import { CardAction } from "frontend/ui-utils/molecules/card/action"
-import { Button } from "frontend/ui-utils/atoms/button"
-import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
+import { CardAction } from "frontend/design-system/molecules/card/action"
+import { Button } from "frontend/design-system/atoms/button"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 interface IdentityPersonaWelcomeScreenProps
   extends React.DetailedHTMLProps<
@@ -22,7 +22,8 @@ export const IdentityPersonaWelcomeScreen: React.FC<IdentityPersonaWelcomeScreen
         <Card className={clsx("h-full flex flex-col sm:block", className)}>
           <CardTitle>Welcome</CardTitle>
           <CardBody className="text-center max-w-lg">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, doloribus?
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores,
+            doloribus?
           </CardBody>
           <CardAction bottom className="justify-center">
             <Link

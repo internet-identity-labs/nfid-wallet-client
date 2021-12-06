@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
-import { IIConnection } from "frontend/ii-utils/iiConnection"
+import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import React from "react"
 import { DeviceItem } from "./device-item"
 

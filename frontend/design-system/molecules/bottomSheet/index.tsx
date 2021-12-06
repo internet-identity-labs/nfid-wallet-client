@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { ArrowButton } from "frontend/ui-utils/atoms/button/arrow-button"
+import { ArrowButton } from "frontend/design-system/atoms/button/arrow-button"
 import React from "react"
 
 const Content: React.FC = ({ children }) => {

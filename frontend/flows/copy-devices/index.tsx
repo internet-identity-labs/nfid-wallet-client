@@ -1,12 +1,14 @@
 import clsx from "clsx"
-import { apiResultToLoginResult } from "frontend/ii-utils/api-result-to-login-result"
-import { DeviceData } from "frontend/ii-utils/generated/internet_identity_types"
-import { derFromPubkey, IIConnection } from "frontend/ii-utils/iiConnection"
-import { parseUserNumber } from "frontend/ii-utils/userNumber"
-import { Button } from "frontend/ui-utils/atoms/button"
-import { Centered } from "frontend/ui-utils/atoms/centered"
-import { Loader } from "frontend/ui-utils/atoms/loader"
-import { Screen } from "frontend/ui-utils/atoms/screen"
+import { apiResultToLoginResult } from "frontend/utils/internet-identity/api-result-to-login-result"
+import { DeviceData } from "frontend/utils/internet-identity/generated/internet_identity_types"
+import {
+  derFromPubkey,
+  IIConnection,
+} from "frontend/utils/internet-identity/iiConnection"
+import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
+import { Centered } from "frontend/design-system/atoms/centered"
+import { Loader } from "frontend/design-system/atoms/loader"
+import { Screen } from "frontend/design-system/atoms/screen"
 import React from "react"
 import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"

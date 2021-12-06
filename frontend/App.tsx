@@ -1,5 +1,5 @@
 import React from "react"
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import { Authenticate } from "./flows/authenticate"
 import { UnknownDeviceScreen } from "./flows/login-unknown"
 import { getUserNumber } from "./ii-utils/userNumber"
@@ -25,93 +25,127 @@ import { IdentityPersonaSuccessScreen } from "./flows/register-identity/create-p
 import { IdentityPersonaWelcomeScreen } from "./flows/register-identity/create-persona-welcome"
 import { IdentityPersonaCreatekeysScreen } from "./flows/register-identity/create-persona-createkeys"
 import { IdentityPersonaCreatekeysCompleteScreen } from "./flows/register-identity/create-persona-createkeys-complete"
+import { REGISTER_DEVICE_PROMPT } from "./flows/constants"
+import { useMultipass } from "./hooks/use-multipass"
 
 function App() {
-  const userNumber = React.useMemo(() => getUserNumber(), [])
+  const { account } = useMultipass()
+  const userNumber = React.useMemo(
+    () => getUserNumber(account ? account.rootAnchor : null),
+    [account],
+  )
+  const startUrl = React.useMemo(() => window.location.pathname, [])
 
   return (
-    <AuthProvider>
+    <AuthProvider startUrl={startUrl}>
       <Router>
-        <Switch>
+        <Routes>
           {/* APP SCREENS */}
-          <Route path="/" exact>
-            <HomeScreen />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-          <Route path="/rdp/:secret/:scope">
-            <AuthWrapper>
-              <RegisterDevicePrompt />
-            </AuthWrapper>
-          </Route>
-          <Route path="/register-confirmation/:secret">
-            <AuthWrapper>
-              <RegisterConfirmation />
-            </AuthWrapper>
-          </Route>
-          <Route path="/register-new-device/:secret/:userNumber">
-            <RegisterNewDevice />
-          </Route>
-          <Route path="/link-internet-identity">
-            <LinkInternetIdentity />
-          </Route>
-          <Route path="/iframe-overview">
-            <IFrameOverviewScreen />
-          </Route>
-          <Route path="/kitchen-sink">
-            <KitchenSink />
-          </Route>
-          <Route path="/copy-devices">
-            <CopyDevices />
-          </Route>
-          <Route path="/register-identity">
-            <IdentityScreen />
-          </Route>
-          <Route path="/register-identity-name">
-            <IdentityNameScreen />
-          </Route>
-          <Route path="/register-identity-phone">
-            <IdentityPhoneScreen />
-          </Route>
-          <Route path="/register-identity-sms">
-            <IdentitySmsScreen />
-          </Route>
-          <Route path="/register-identity-challenge">
-            <IdentityChallengeScreen />
-          </Route>
-          <Route path="/register-identity-persona-welcome">
-            <IdentityPersonaWelcomeScreen />
-          </Route>
-          <Route path="/register-identity-persona">
-            <IdentityPersonaScreen />
-          </Route>
-          <Route path="/register-identity-persona-info">
-            <IdentityPersonaInfoScreen />
-          </Route>
-          <Route path="/register-identity-persona-success">
-            <IdentityPersonaSuccessScreen />
-          </Route>
-          <Route path="/register-identity-persona-createkeys">
-            <IdentityPersonaCreatekeysScreen />
-          </Route>
-          <Route path="/register-identity-persona-createkeys-complete">
-            <IdentityPersonaCreatekeysCompleteScreen />
-          </Route>
+          <Route path="/" element={<HomeScreen />} />
+
+          <Route path="/register" element={<Register />} />
+
+          {/*
+          TITLE: Register Device Prompt
+          DESCRIPTION: This screen is shown when the user has scanned a QR code on a new device.
+          */}
+          <Route
+            path={REGISTER_DEVICE_PROMPT.path}
+            element={
+              <AuthWrapper>
+                <RegisterDevicePrompt />
+              </AuthWrapper>
+            }
+          />
+          <Route
+            path="/register-confirmation/:secret"
+            element={
+              <AuthWrapper>
+                <RegisterConfirmation />
+              </AuthWrapper>
+            }
+          />
+
+          <Route
+            path="/register-new-device/:secret/:userNumber"
+            element={<RegisterNewDevice />}
+          />
+
+          <Route
+            path="/link-internet-identity"
+            element={<LinkInternetIdentity />}
+          />
+          <Route path="/iframe-overview" element={<IFrameOverviewScreen />} />
+          <Route path="/kitchen-sink" element={<KitchenSink />} />
+          <Route path="/copy-devices" element={<CopyDevices />} />
+
+          <Route path="/register-identity" element={<IdentityScreen />} />
+          <Route
+            path="/register-identity-name"
+            element={<IdentityNameScreen />}
+          />
+
+          <Route
+            path="/register-identity-phone"
+            element={<IdentityPhoneScreen />}
+          />
+
+          <Route
+            path="/register-identity-sms"
+            element={<IdentitySmsScreen />}
+          />
+
+          <Route
+            path="/register-identity-challenge"
+            element={<IdentityChallengeScreen />}
+          />
+
+          {/*
+          TITLE: Register Identity Persona - Welcome Screen
+          DESCRIPTION: This screen is shown when we haven't found an account in localStorage
+          */}
+          <Route
+            path="/register-identity-persona-welcome"
+            element={<IdentityPersonaWelcomeScreen />}
+          />
+          <Route
+            path="/register-identity-persona"
+            element={<IdentityPersonaScreen />}
+          />
+          <Route
+            path="/register-identity-persona-info"
+            element={<IdentityPersonaInfoScreen />}
+          />
+          <Route
+            path="/register-identity-persona-success"
+            element={<IdentityPersonaSuccessScreen />}
+          />
+          <Route
+            path="/register-identity-persona-createkeys"
+            element={<IdentityPersonaCreatekeysScreen />}
+          />
+          <Route
+            path="/register-identity-persona-createkeys-complete"
+            element={<IdentityPersonaCreatekeysCompleteScreen />}
+          />
 
           {/* IFRAME SCREENS */}
           {/* TODO: move this decider logic into the component and make it mockable */}
-          <Route path="/login-unknown-device">
-            <UnknownDeviceScreen />
-          </Route>
-          <Route path="/authenticate">
-            {userNumber ? (
-              <Authenticate userNumber={userNumber} />
-            ) : (
-              <UnknownDeviceScreen />
-            )}
-          </Route>
-        </Switch>
+          <Route
+            path="/login-unknown-device"
+            element={<UnknownDeviceScreen />}
+          />
+          <Route
+            path="/authenticate"
+            element={
+              userNumber ? (
+                <Authenticate userNumber={userNumber} />
+              ) : (
+                <UnknownDeviceScreen />
+              )
+            }
+          />
+        </Routes>
       </Router>
     </AuthProvider>
   )

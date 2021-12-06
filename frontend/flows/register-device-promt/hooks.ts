@@ -19,7 +19,11 @@ type RemoteLoginMessage = {
 }
 
 export const useRegisterDevicePromt = () => {
-  const userNumber = React.useMemo(() => getUserNumber(), [])
+  const { account } = useMultipass()
+  const userNumber = React.useMemo(
+    () => getUserNumber(account ? account.rootAnchor : null),
+    [account],
+  )
   const { connection } = useAuthContext()
   const { postMessages } = useMultipass()
 

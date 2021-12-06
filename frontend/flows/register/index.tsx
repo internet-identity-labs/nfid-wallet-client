@@ -1,11 +1,8 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
 import clsx from "clsx"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { fromMnemonicWithoutValidation } from "frontend/ii-utils/crypto/ed25519"
 import { generate } from "frontend/ii-utils/crypto/mnemonic"
-import { getProofOfWork } from "frontend/ii-utils/crypto/pow"
 import {
-  canisterIdPrincipal,
-  creationOptions,
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/ii-utils/iiConnection"
@@ -20,7 +17,6 @@ import { CardBody } from "frontend/ui-utils/molecules/card/body"
 import { CardTitle } from "frontend/ui-utils/molecules/card/title"
 import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import React from "react"
-import { getBrowser, getPlatform } from "./utils"
 
 type Status = "initial" | "loading" | "confirmation" | "success"
 
@@ -34,27 +30,20 @@ export const Register: React.FC<RegisterProps> = ({ onSuccess }) => {
   const [status, setStatus] = React.useState<Status>("initial")
   const [registerPayload, setRegisterPayload] = React.useState<any | null>(null)
 
-  const deviceName = React.useMemo(() => {
-    const appName = getBrowser()
-    const platform = getPlatform()
-    return `${appName} on ${platform}`
-  }, [])
+  const { createWebAuthNIdentity } = useMultipass()
 
   const handleCreateIdentity = React.useCallback(async () => {
     setStatus("loading")
-    const identity = await WebAuthnIdentity.create({
-      publicKey: creationOptions(),
-    })
-    const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
-    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
+    const { identity, deviceName, pow } = await createWebAuthNIdentity()
 
     setRegisterPayload({ identity, deviceName, pow })
     setStatus("confirmation")
-  }, [deviceName])
+  }, [createWebAuthNIdentity])
 
   const handleRegister = React.useCallback(async () => {
     setStatus("loading")
     const { identity, deviceName, pow } = registerPayload
+    debugger
     // TODO: this opens WebAuthN the second time
     const response = await IIConnection.register(identity, deviceName, pow)
 

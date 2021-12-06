@@ -5,7 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: install
+      - name: Multipass Frontend | install
         run: yarn
-      - name: Run minimal checks
+      - name: Multipass Frontend | Run minimal checks
         run: yarn build
+
+      - name: Multipass Demo | install
+        run: cd examples/MultipassDemo && yarn
+      - name: Multipass Demo | Run minimal checks
+        run: cd examples/MultipassDemo && yarn build

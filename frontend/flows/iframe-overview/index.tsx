@@ -24,19 +24,19 @@ export const IFrameOverviewScreen: React.FC<IFrameOverviewScreenProps> = ({
   }
 
   return (
-    <AppScreen className={clsx("", className)}>
+    <AppScreen className={clsx("", className)} title="IFrame overview">
       <Card className={clsx("h-full flex flex-col flex-1", className)}>
-        <CardTitle>IFrame overview</CardTitle>
-
-        <Divider />
-
         <CardBody className="min-w-full h-full">
-          <div className="grid grid-cols-2 gap-6 h-full ">
+          <div className="grid grid-cols-2 gap-6 h-full">
             <IFrame
               title="Authentication"
               src={iframeUrl("authenticate")}
-              className="min-h-[300px] col-span-2 md:col-span-1"
+              className="col-span-2 md:col-span-1"
               inline
+            />
+            <IFrame
+              title="Authentication"
+              src={iframeUrl("authenticate")}
             />
           </div>
         </CardBody>

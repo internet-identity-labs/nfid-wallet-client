@@ -20,7 +20,6 @@ import { AppScreen } from "frontend/ui-utils/templates/AppScreen"
 import { HiMenu, HiSearch } from "react-icons/hi"
 
 export const KitchenSink: React.FC = () => {
-  const [showFrame, setShowFrame] = useState(false)
   return (
     <AppScreen title="Kitchen Sink" description="Example components">
       <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
@@ -69,31 +68,21 @@ export const KitchenSink: React.FC = () => {
         <Card>
           <CardBody>
             <P>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Perferendis, quo ullam ad modi impedit quam fuga nesciunt animi
+              placeat quidem?
+            </P>
+            <P>
               Lorem, ipsum dolor sit amet consectetur adipisicing elit. In dolor
               deleniti odio dignissimos voluptatum inventore sequi sed quisquam
             </P>
 
-            <div className="mt-4">
+            <div className="mt-6">
               <Label>Dropdown button</Label>
               <DropdownMenu />
             </div>
 
-            <div className="mt-4">
-              <Label>IFrame</Label>
-              <Button onClick={() => setShowFrame(!showFrame)}>
-                Toggle IFrame
-              </Button>
-              {showFrame && (
-                <IFrame
-                  src={
-                    "https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app/authenticate/"
-                  }
-                  title={"Lorem ipsum dolor sit amet"}
-                />
-              )}
-            </div>
-
-            <div className="mt-4">
+            <div className="mt-6">
               <List>
                 <List.Header>
                   <ListItemHead

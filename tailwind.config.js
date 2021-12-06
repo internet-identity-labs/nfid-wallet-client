@@ -55,5 +55,6 @@ module.exports = {
   },
   plugins: [
     require("@tailwindcss/forms"),
+    require("./plugins/tailwind-ios-height"),
   ],
 }

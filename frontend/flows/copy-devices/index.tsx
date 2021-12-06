@@ -25,8 +25,6 @@ export const CopyDevices = () => {
   const { register, handleSubmit } = useForm()
 
   const fetchDevices = React.useCallback(async (anchor) => {
-    console.log(">> fetchDevices", { anchor })
-
     const userNumber = parseUserNumber(anchor)
     if (!userNumber) {
       throw new Error("Invalid anchor")

@@ -55,7 +55,6 @@ export const LinkInternetIdentity = () => {
     url.pathname = "/"
     url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
     const link = encodeURI(url.toString())
-    console.log(">> ", { link })
 
     setAddDeviceLink(link)
 

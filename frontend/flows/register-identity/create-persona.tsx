@@ -14,6 +14,14 @@ import { useForm } from "react-hook-form"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { Loader } from "frontend/design-system/atoms/loader"
 import { useNavigate } from "react-router"
+import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
+import {
+  creationOptions,
+  IIConnection,
+} from "frontend/utils/internet-identity/iiConnection"
+import { WebAuthnIdentity } from "@dfinity/identity"
+import { blobToHex } from "@dfinity/candid"
+import { CONFIG } from "frontend/config"
 
 interface IdentityPersonaScreenProps
   extends React.DetailedHTMLProps<
@@ -35,7 +43,6 @@ export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
   const name = watch("name")
 
   const handleHasAnchor = React.useCallback(() => {
-    console.log(">> handleHasAnchor", {})
     setHasAnchor(!hasAnchor)
   }, [hasAnchor])
 
@@ -49,6 +56,47 @@ export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
       },
     })
   }, [createWebAuthNIdentity, name, navigate])
+
+  const handleLinkAnchor = React.useCallback(async () => {
+    const userNumber = parseUserNumber(anchor)
+    if (!userNumber) {
+      throw new Error("Invalid anchor")
+    }
+
+    const existingDevices = await IIConnection.lookupAll(userNumber)
+
+    let identity
+    try {
+      identity = await WebAuthnIdentity.create({
+        publicKey: creationOptions(existingDevices),
+      })
+    } catch (error) {
+      return console.error({
+        title: "Failed to authenticate",
+        message:
+          "We failed to collect the necessary information from your security device.",
+        // @ts-ignore
+        detail: error.message,
+        primaryButton: "Try again",
+      })
+    }
+    const publicKey = identity.getPublicKey().toDer()
+    const rawId = blobToHex(identity.rawId)
+
+    const url = new URL(
+      CONFIG.II_ENV === "development"
+        ? `http://${CONFIG.II_CANISTER_ID}.localhost:8000`
+        : "https://identity.ic0.app",
+    )
+    url.pathname = "/"
+    url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
+    const link = encodeURI(url.toString())
+
+    navigate("/register-identity-persona-info", {
+      replace: true, // seems to be important. Otherwise we're loosing Context??? Very weird.
+      state: { iiDeviceLink: link, userNumber },
+    })
+  }, [anchor, navigate])
 
   return (
     <AppScreen>
@@ -88,9 +136,16 @@ export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
         >
           <FaceId className="mx-auto h-16 mb-4" />
           {hasAnchor ? (
-            <Button large filled disabled={anchor?.length < 5}>
-              Use FaceID to create keys for this device
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                large
+                filled
+                disabled={!anchor || anchor.length < 5}
+                onClick={handleLinkAnchor}
+              >
+                Use FaceID to create keys for this device
+              </Button>
+            </div>
           ) : (
             <div className="flex justify-center">
               <Button

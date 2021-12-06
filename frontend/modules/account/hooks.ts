@@ -5,7 +5,6 @@ import { Account } from "./types"
 
 const getAccountFromLocalStorage = (): Account | null => {
   const accountFromLS = localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY)
-  console.log(">> ", { accountFromLS })
 
   const account: Account = accountFromLS ? JSON.parse(accountFromLS) : null
   return account

@@ -1,11 +1,9 @@
 import React from "react"
 import { NavigationLink } from "./navigation-link"
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
 import { Logo } from "../../atoms/images/logo"
 import { HiMenu } from "react-icons/hi"
 
 export const NavigationBar: React.FC = () => {
-  const [userDropdownOpen, setUserDropdownOpen] = React.useState<boolean>(false)
   const [mobileNavOpen, setMobileNavOpen] = React.useState<boolean>(false)
 
   return (

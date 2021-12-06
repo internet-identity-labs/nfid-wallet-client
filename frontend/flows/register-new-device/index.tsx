@@ -14,8 +14,7 @@ type Status = "initial" | "loading" | "success"
 export const RegisterNewDevice = () => {
   const [status, setStatus] = React.useState<Status>("initial")
   const [opener, setOpener] = React.useState<Window | null>(null)
-  let { secret, userNumber } =
-    useParams<{ secret: string; userNumber: string }>()
+  let { secret, userNumber } = useParams()
   const { handleAddDevice } = useMultipass()
 
   const handleSendDeviceKey = React.useCallback(
@@ -31,6 +30,11 @@ export const RegisterNewDevice = () => {
 
   const handleRegisterNewDevice = React.useCallback(async () => {
     setStatus("loading")
+    if (!secret || !userNumber) {
+      return console.error(
+        `Missing secret: ${secret} or userNumber: ${userNumber} from url`,
+      )
+    }
     const response = await handleAddDevice(secret, BigInt(userNumber))
     handleSendDeviceKey(response.publicKey)
     setStatus("success")

@@ -18,9 +18,11 @@ type State = "loading" | "pause" | "success" | "error"
 export const RegisterConfirmation = () => {
   const { secret = "" } = useParams()
   const [status, setStatus] = React.useState<State>("loading")
-  const { getMessages } = useMultipass()
-
-  const userNumber = React.useMemo(() => getUserNumber(), [])
+  const { account, getMessages } = useMultipass()
+  const userNumber = React.useMemo(
+    () => getUserNumber(account ? account.rootAnchor : null),
+    [account],
+  )
   const { connection } = useAuthContext()
 
   // TODO:

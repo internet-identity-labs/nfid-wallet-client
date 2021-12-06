@@ -41,7 +41,7 @@ take the last line and put it into `.env.local`.
 
 ```
 DFX_NETWORK=local
-II_CANISTER_ID=r7inp-6aaaa-aaaaa-aaabq-cai
+II_CANISTER_ID=qhbym-qaaaa-aaaaa-aaafq-cai
 ```
 
 now you can run `yarn ic:deploy` which deploys the example backend canister. When this is successful,

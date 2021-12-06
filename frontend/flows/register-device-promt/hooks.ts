@@ -87,24 +87,25 @@ export const useRegisterDevicePromt = () => {
         connection,
       )
 
-      return await postMessages(secret, [
-        JSON.stringify({
-          type: register ? "remote-login-register" : "remote-login",
-          ...parsedSignedDelegation,
-          ...(register ? { userNumber: userNumber.toString() } : {}),
-        }),
-      ])
+      const message = JSON.stringify({
+        type: register ? "remote-login-register" : "remote-login",
+        ...parsedSignedDelegation,
+        ...(register ? { userNumber: userNumber.toString() } : {}),
+      })
+
+      return await postMessages(secret, [message])
     },
     [connection, createRemoteDelegate, postMessages, userNumber],
   )
 
   const sendWaitForUserInput = React.useCallback(
     async (secret) => {
-      await postMessages(secret, [
-        JSON.stringify({
-          type: "remote-login-wait-for-user",
-        }),
-      ])
+      const message = JSON.stringify({
+        type: "remote-login-wait-for-user",
+      })
+      console.log(">> sendWaitForUserInput", { secret, message })
+
+      const response = await postMessages(secret, [message])
     },
     [postMessages],
   )

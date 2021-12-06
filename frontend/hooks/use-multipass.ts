@@ -4,12 +4,9 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { CONFIG } from "frontend/config"
 import { getBrowser, getPlatform } from "frontend/utils"
-import {
-  DelegationKey,
-  _SERVICE,
-} from "frontend/utils/internet-identity/generated/internet_identity_types"
+import { Topic, _SERVICE } from "frontend/generated/identity_manager"
 import React from "react"
-import { idlFactory as internet_identity_idl } from "frontend/utils/internet-identity/generated/internet_identity_idl"
+import { idlFactory as identity_manager_idl } from "frontend/generated/identity_manager_idl"
 import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
@@ -32,7 +29,7 @@ const getAgent = () => {
   return agent
 }
 export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
-export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
+export const baseActor = Actor.createActor<_SERVICE>(identity_manager_idl, {
   agent: getAgent(),
   canisterId,
 })
@@ -52,12 +49,19 @@ export const useMultipass = () => {
     return { identity: JSON.stringify(identity.toJSON()), deviceName, pow }
   }, [])
 
-  const getMessages = React.useCallback(async (key: DelegationKey) => {
+  const createTopic = React.useCallback(async (key: Topic) => {
+    return await baseActor.create_topic(key)
+  }, [])
+  const deleteTopic = React.useCallback(async (key: Topic) => {
+    return await baseActor.delete_topic(key)
+  }, [])
+
+  const getMessages = React.useCallback(async (key: Topic) => {
     return await baseActor.get_messages(key)
   }, [])
 
   const postMessages = React.useCallback(
-    async (key: DelegationKey, messages: string[]) => {
+    async (key: Topic, messages: string[]) => {
       return await baseActor.post_messages(key, messages)
     },
     [],
@@ -71,13 +75,13 @@ export const useMultipass = () => {
         publicKey: creationOptions(existingDevices),
       })
       const publicKey = identity.getPublicKey().toDer()
-      await postMessages(secret, [
-        JSON.stringify({
-          publicKey,
-          rawId: blobToHex(identity.rawId),
-          deviceName: `${getBrowser()} on ${getPlatform()}`,
-        }),
-      ])
+      const message = JSON.stringify({
+        publicKey,
+        rawId: blobToHex(identity.rawId),
+        deviceName: `${getBrowser()} on ${getPlatform()}`,
+      })
+
+      await postMessages(secret, [message])
       return { publicKey }
     },
     [postMessages],
@@ -92,6 +96,8 @@ export const useMultipass = () => {
     updatePersona,
     createWebAuthNIdentity,
     handleAddDevice,
+    createTopic,
+    deleteTopic,
     getMessages,
     postMessages,
   }

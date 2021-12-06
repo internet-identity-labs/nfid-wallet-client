@@ -33,7 +33,20 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     newDeviceKey,
     postClientAuthorizeSuccessMessage,
   } = useUnknownDeviceConfig()
-  const { getMessages } = useMultipass()
+  const { createTopic, deleteTopic, getMessages } = useMultipass()
+
+  const setupChannel = React.useCallback(() => {
+    createTopic(pubKey)
+  }, [createTopic, pubKey])
+
+  const clearChannel = React.useCallback(() => {
+    deleteTopic(pubKey)
+  }, [deleteTopic, pubKey])
+
+  React.useEffect(() => {
+    setupChannel()
+    return () => clearChannel()
+  }, [clearChannel, setupChannel])
 
   const handleSendDelegate = React.useCallback(
     (delegation) => {
@@ -48,11 +61,12 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           userKey: delegation.userKey,
           hostname,
         })
+        clearChannel()
       } catch (err) {
         console.error(">> not a valid delegate", { err })
       }
     },
-    [appWindow, postClientAuthorizeSuccessMessage, scope],
+    [appWindow, clearChannel, postClientAuthorizeSuccessMessage, scope],
   )
 
   const handleSuccess = React.useCallback(
@@ -81,9 +95,11 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
   const handlePollForDelegate = React.useCallback(
     async (cancelPoll: () => void) => {
-      const messages = await getMessages(pubKey)
+      const {
+        body: [messages],
+      } = await getMessages(pubKey)
 
-      if (messages.length > 0) {
+      if (messages && messages.length > 0) {
         const parsedMessages = messages.map((m) => JSON.parse(m))
         const waitingMessage = parsedMessages.find(
           (m) => m.type === "remote-login-wait-for-user",

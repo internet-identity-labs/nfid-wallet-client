@@ -31,8 +31,11 @@ export const RegisterConfirmation = () => {
 
   const handlePoll = React.useCallback(
     async (cancelPoll: () => void, totalTries: number) => {
-      const messages = await getMessages(secret)
-      if (messages.length > 0 && userNumber && connection) {
+      const {
+        body: [messages],
+      } = await getMessages(secret)
+
+      if (messages && messages.length > 0 && userNumber && connection) {
         const message = JSON.parse(messages[0] || "")
         await connection.add(
           userNumber,

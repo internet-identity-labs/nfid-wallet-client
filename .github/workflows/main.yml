@@ -5,6 +5,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: DFX SETUP | write identity pem
+        run: |
+          mkdir -p $ID_PATH
+          echo $GH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
+          sed -i 's/\\r\\n/\r\n/g' $ID_PATH/identity.pem
+        shell: bash
+        env:
+          GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
+          ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
+
+      - name: DFX SETUP  | Provision Linux
+        run: bash .github/workflows/dfx-provision-linux.sh
+
       - name: Multipass Frontend | install
         run: yarn
       - name: Multipass Frontend | Run minimal checks
@@ -12,5 +26,14 @@ jobs:
 
       - name: Multipass Demo | install
         run: cd examples/MultipassDemo && yarn
+
+      - name: MULTIPASS DEMO | deploy backend locally
+        run: |
+          cd examples/MultipassDemo && yarn
+          dfx identity use gh_mp_admin
+          dfx start --clean --background
+          dfx deploy --no-wallet
+          dfx stop
+
       - name: Multipass Demo | Run minimal checks
         run: cd examples/MultipassDemo && yarn build

@@ -27,44 +27,38 @@ jobs:
       - name: DFX SETUP  | Provision Linux
         run: bash .github/workflows/dfx-provision-linux.sh
 
-      - name: MULTIPASS FRONTEND | Install
-        run: yarn
-
-      - name: MULTIPASS FRONTEND | Deploy to production
+      - name: MULTIPASS FRONTEND | deploy
         run: |
-          network="local"
-          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            network="ic"
+          yarn
+          network="ic"
+          if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
+            network="local"
+            dfx start --clean --background
           fi
           dfx identity use gh_mp_admin
           dfx deploy --network $network --no-wallet
+          if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
+            dfx stop
+          fi
         env:
           VITE_MP_CANISTER_ID: ${{secrets.VITE_MP_CANISTER_ID}}
           VITE_II_CANISTER_ID: ${{secrets.VITE_II_CANISTER_ID}}
           VITE_II_ENV: ${{secrets.VITE_II_ENV}}
           VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_MULTIPASS_DOMAIN}}
 
-      - name: MULTIPASS DEMO | Install
+      - name: MULTIPASS FRONTEND | deploy
         run: |
-          network="local"
-          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            network="ic"
-          fi
-          cd examples/MultipassDemo && yarn
-          dfx identity use gh_mp_admin
-          dfx start --clean --background
-          dfx deploy --network $network --no-wallet
-          dfx stop
-
-      - name: MULTIPASS FRONTEND | Deploy to production
-        run: |
-          network="local"
-          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            network="ic"
+          network="ic"
+          if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
+            network="local"
+            dfx start --clean --background
           fi
           cd examples/MultipassDemo
           dfx identity use gh_mp_admin
           dfx deploy --network $network --no-wallet
+          if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
+            dfx stop
+          fi
         env:
           DFX_NETWORK: ${{secrets.DFX_NETWORK}}
           NEXT_PUBLIC_MP_ID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}

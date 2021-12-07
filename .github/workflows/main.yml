@@ -8,13 +8,12 @@ jobs:
 
       - name: DFX SETUP | write identity pem
         run: |
-          mkdir -p $ID_PATH
-          echo $GH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
+          echo $GH_MP_ADMIN_PEM >> /tmp/identity.pem
+          dfx identity import gh_mp_admin /tmp/identity.pem
 
         shell: bash
         env:
           GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
-          ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
 
       - name: DFX SETUP  | Provision Linux
         run: bash .github/workflows/dfx-provision-linux.sh

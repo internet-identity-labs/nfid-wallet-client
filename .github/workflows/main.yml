@@ -6,6 +6,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: DFX SETUP  | Provision Linux
+        run: bash .github/workflows/dfx-provision-linux.sh
+
       - name: DFX SETUP | write identity pem
         run: |
           echo $GH_MP_ADMIN_PEM >> /tmp/identity.pem
@@ -14,9 +17,6 @@ jobs:
         shell: bash
         env:
           GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
-
-      - name: DFX SETUP  | Provision Linux
-        run: bash .github/workflows/dfx-provision-linux.sh
 
       - name: Multipass Frontend | install
         run: yarn

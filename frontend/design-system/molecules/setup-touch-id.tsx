@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React from "react"
+import { HiFingerPrint } from "react-icons/hi"
 import { Button } from "../atoms/button"
 import { TouchId } from "../atoms/images/touch-id"
 
@@ -9,15 +10,12 @@ export const SetupTouchId: React.FC<
     HTMLButtonElement
   >
 > = ({ onClick }) => (
-  <Button
-    onClick={onClick}
-    className={clsx(
-      "flex flex-row w-full justify-start items-center bg-gray-50",
-    )}
-  >
-    <div className={clsx("p-2 bg-gray-200")}>
-      <TouchId />
+  <Button large filled onClick={onClick}>
+    <div className="flex flex-row items-center justify-center">
+      <HiFingerPrint className="mr-2" />
+      <div>
+        Set up {"{PA}"} for {"{BROWSERNAME}"}
+      </div>
     </div>
-    <div className="ml-1 p-2">Setup Touch ID for Chrome</div>
   </Button>
 )

@@ -3,11 +3,10 @@ import { Input } from "frontend/design-system/atoms/input"
 import { Label } from "frontend/design-system/atoms/input/label"
 import { TextArea } from "frontend/design-system/atoms/input/text-area"
 import { P } from "frontend/design-system/atoms/typography/paragraph"
-import React, { useState } from "react"
+import React from "react"
 import { H1, H2, H3, H4, H5 } from "frontend/design-system/atoms/typography"
 import { Button } from "frontend/design-system/atoms/button"
 import { DropdownMenu } from "frontend/design-system/molecules/menu"
-import { IFrame } from "frontend/design-system/molecules/iframe"
 import { List } from "frontend/design-system/molecules/list"
 import { ListItemHead } from "frontend/design-system/molecules/list/list-item-head"
 import { ListItem } from "frontend/design-system/molecules/list/list-item"
@@ -17,7 +16,11 @@ import { CardTitle } from "frontend/design-system/molecules/card/title"
 import { CardAction } from "frontend/design-system/molecules/card/action"
 import { Chip } from "frontend/design-system/atoms/chip"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { HiMenu, HiSearch } from "react-icons/hi"
+import { HiMenu, HiSearch, HiTrash } from "react-icons/hi"
+import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
+import { BiLoaderCircle } from "react-icons/bi"
+import { FaKey } from "react-icons/fa"
+import { DeleteButton } from "frontend/design-system/atoms/button/delete-button"
 
 export const KitchenSink: React.FC = () => {
   return (
@@ -198,10 +201,42 @@ export const KitchenSink: React.FC = () => {
           <CardBody>
             <P>
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia
-              molestias rerum perferendis aspernatur ad voluptatem molestiae
-              quod, voluptate distinctio fugit reiciendis id eaque
-              necessitatibus eveniet. Eveniet nihil voluptatibus quae corrupti.
             </P>
+
+            <div className="mt-12">
+              <List>
+                <List.Items>
+                  <ListItem
+                    title={"iPhone 13"}
+                    subtitle={
+                      <div className="flex flex-row flex-wrap gap-1">
+                        <Chip icon={<FaKey />} dense>
+                          Chrome
+                        </Chip>
+                      </div>
+                    }
+                    icon={<MdPhoneAndroid className="text-xl text-gray-600" />}
+                    action={<DeleteButton disabled />}
+                  />
+                  <ListItem
+                    title={"MacBook Pro"}
+                    subtitle={
+                      <div className="flex flex-row flex-wrap gap-1">
+                        <Chip icon={<FaKey />} dense>
+                          Chrome
+                        </Chip>
+                        <Chip icon={<FaKey />} dense>
+                          Edge
+                          <BiLoaderCircle className="ml-2 animate-spin" />
+                        </Chip>
+                      </div>
+                    }
+                    icon={<MdLaptopMac className="text-xl text-gray-600" />}
+                    action={<DeleteButton onClick={() => {}} />}
+                  />
+                </List.Items>
+              </List>
+            </div>
           </CardBody>
 
           <CardAction className="justify-center my-6 lg:my-12" bottom divider>

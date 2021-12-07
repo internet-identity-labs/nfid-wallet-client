@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { List } from "frontend/design-system/molecules/list"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import React from "react"
@@ -24,8 +25,7 @@ export const ExistingDevices = () => {
   }, [connection, handleLoadDevices])
 
   return (
-    <div className={clsx("flex flex-col")}>
-      <div>Existing Devices</div>
+    <List>
       {existingDevices.map((device) => (
         <DeviceItem
           device={device}
@@ -33,6 +33,6 @@ export const ExistingDevices = () => {
           refresh={handleLoadDevices}
         />
       ))}
-    </div>
+    </List>
   )
 }

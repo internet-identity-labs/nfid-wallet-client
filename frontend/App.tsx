@@ -23,6 +23,7 @@ import { IdentityPersonaSuccessScreen } from "./flows/register-identity/create-p
 import { IdentityPersonaWelcomeScreen } from "./flows/register-identity/create-persona-welcome"
 import { IdentityPersonaCreatekeysScreen } from "./flows/register-identity/create-persona-createkeys"
 import { IdentityPersonaCreatekeysCompleteScreen } from "./flows/register-identity/create-persona-createkeys-complete"
+import { RegisterDevicePromptSuccess } from "./flows/register-device-promt/success"
 import { REGISTER_DEVICE_PROMPT } from "./flows/constants"
 import { useMultipass } from "./hooks/use-multipass"
 import { getUserNumber } from "./utils/internet-identity/userNumber"
@@ -55,6 +56,14 @@ function App() {
             }
           />
           <Route
+            path="/rdp/success"
+            element={
+              <AuthWrapper>
+                <RegisterDevicePromptSuccess />
+              </AuthWrapper>
+            }
+          />
+          <Route
             path="/register-confirmation/:secret"
             element={
               <AuthWrapper>
@@ -75,7 +84,6 @@ function App() {
           <Route path="/iframe-overview" element={<IFrameOverviewScreen />} />
           <Route path="/kitchen-sink" element={<KitchenSink />} />
           <Route path="/copy-devices" element={<CopyDevices />} />
-
           <Route path="/register-identity" element={<IdentityScreen />} />
           <Route
             path="/register-identity-name"

@@ -8,8 +8,10 @@ interface Props
     HTMLDivElement
   > {
   title: string
-  subtitle?: string
+  subtitle?: string | React.ReactNode
   src?: string
+  icon?: React.ReactNode
+  action?: React.ReactNode
 }
 
 export const ListItem: React.FC<Props> = ({
@@ -18,6 +20,8 @@ export const ListItem: React.FC<Props> = ({
   title,
   subtitle,
   src,
+  icon,
+  action,
 }) => {
   return (
     <li className={clsx("flex flex-row group hover:bg-gray-50", className)}>
@@ -30,21 +34,27 @@ export const ListItem: React.FC<Props> = ({
           />
         )}
 
+        {icon && <div className="mr-4">{icon}</div>}
+
         <div className="flex-1 pl-1 flex-shrink">
           <div className="font-medium text-gray-700 dark:text-white">
             {title}
           </div>
 
           {subtitle && (
-            <div className="text-gray-600 dark:text-gray-200 text-sm">
+            <div className="text-gray-600 dark:text-gray-200 text-sm my-1">
               {subtitle}
             </div>
           )}
         </div>
 
-        <button className="text-right justify-end">
-          <HiChevronRight className="text-2xl text-gray-500 group-hover:text-gray-800" />
-        </button>
+        {action ? (
+          action
+        ) : (
+          <button className="text-right justify-end">
+            <HiChevronRight className="text-2xl text-gray-500 group-hover:text-gray-800" />
+          </button>
+        )}
       </div>
     </li>
   )

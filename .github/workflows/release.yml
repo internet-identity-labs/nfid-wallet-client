@@ -30,13 +30,16 @@ jobs:
       - name: MULTIPASS FRONTEND | deploy
         run: |
           yarn
+
           network="ic"
           if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
             network="local"
             dfx start --clean --background
           fi
+
           dfx identity use gh_mp_admin
           dfx deploy --network $network --no-wallet
+
           if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
             dfx stop
           fi
@@ -46,16 +49,19 @@ jobs:
           VITE_II_ENV: ${{secrets.VITE_II_ENV}}
           VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_MULTIPASS_DOMAIN}}
 
-      - name: MULTIPASS FRONTEND | deploy
+      - name: MULTIPASS Demo | deploy
         run: |
+          cd examples/MultipassDemo && yarn
+
           network="ic"
           if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
             network="local"
             dfx start --clean --background
           fi
-          cd examples/MultipassDemo
+
           dfx identity use gh_mp_admin
           dfx deploy --network $network --no-wallet
+
           if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
             dfx stop
           fi

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import { Authenticate } from "./flows/authenticate"
 import { UnknownDeviceScreen } from "./flows/login-unknown"
 import { RegisterDevicePrompt } from "./flows/register-device-promt"
-import { Register } from "./flows/register"
 import { RegisterConfirmation } from "./flows/register-confirmation"
 import { RegisterNewDevice } from "./flows/register-new-device"
 import { AuthProvider, AuthWrapper } from "./flows/auth-wrapper"
@@ -19,7 +18,7 @@ import { IdentityPhoneScreen } from "./flows/register-identity/phone"
 import { IdentitySmsScreen } from "./flows/register-identity/sms"
 import { IdentityChallengeScreen } from "./flows/register-identity/challenge"
 import { IdentityPersonaScreen } from "./flows/register-identity/create-persona"
-import { IdentityPersonaInfoScreen } from "./flows/register-identity/create-persona-info"
+import { IdentityPersonaInfoScreen } from "./flows/register/link-internet-identity/create-persona-info"
 import { IdentityPersonaSuccessScreen } from "./flows/register-identity/create-persona-success"
 import { IdentityPersonaWelcomeScreen } from "./flows/register-identity/create-persona-welcome"
 import { IdentityPersonaCreatekeysScreen } from "./flows/register-identity/create-persona-createkeys"
@@ -42,8 +41,6 @@ function App() {
         <Routes>
           {/* APP SCREENS */}
           <Route path="/" element={<HomeScreen />} />
-
-          <Route path="/register" element={<Register />} />
 
           {/*
           TITLE: Register Device Prompt

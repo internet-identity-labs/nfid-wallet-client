@@ -6,7 +6,9 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "tunnel": "./scripts/tunnel.sh",
-    "example:dev": "cd example && yarn dev"
+    "example:dev": "cd example && yarn dev",
+    "generate:types": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t ts > frontend/generated/identity_manager.d.ts",
+    "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js"
   },
   "dependencies": {
     "@dfinity/agent": "0.9.3",

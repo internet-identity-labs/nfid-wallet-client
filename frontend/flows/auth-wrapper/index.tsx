@@ -100,8 +100,7 @@ export const AuthProvider: React.FC<AuthProvider> = ({
 export const useAuthContext = () => React.useContext(AuthContext)
 
 export const AuthWrapper: React.FC = ({ children }) => {
-  const { isLoading, isAuthenticated, account, login, onRegisterSuccess } =
-    useAuthContext()
+  const { isLoading, isAuthenticated, account, login } = useAuthContext()
 
   return isAuthenticated ? (
     <>{children}</>

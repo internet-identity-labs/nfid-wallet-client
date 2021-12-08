@@ -27,7 +27,7 @@ export const IdentityPersonaCreatekeysCompleteScreen: React.FC<IdentityPersonaCr
 
     const [copied, setCopied] = useState(false)
     return (
-      <AppScreen>
+      <AppScreen isFocused>
         <Card className={clsx("h-full flex flex-col sm:block", className)}>
           <CardTitle>Welcome! You're all set</CardTitle>
           <CardBody className="flex flex-col items-center max-w-lg">

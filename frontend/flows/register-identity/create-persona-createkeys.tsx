@@ -105,7 +105,7 @@ export const IdentityPersonaCreatekeysScreen: React.FC<
   ])
 
   return (
-    <AppScreen>
+    <AppScreen isFocused>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>Keys created for {name}</CardTitle>
         <CardBody className="flex flex-col items-center">

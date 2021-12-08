@@ -26,7 +26,7 @@ interface IdentityPersonaCreatekeysScreenProps
     HTMLDivElement
   > {}
 
-export const IdentityPersonaCreatekeysScreen: React.FC<
+export const RegisterFinalizePersonaScreen: React.FC<
   IdentityPersonaCreatekeysScreenProps
 > = ({ className }) => {
   const {

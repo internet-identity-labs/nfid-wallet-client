@@ -9,7 +9,6 @@ import { CardAction } from "frontend/design-system/molecules/card/action"
 import { Button } from "frontend/design-system/atoms/button"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
-import { AuthContext, useAuthContext } from "frontend/flows/auth-wrapper"
 import { useMultipass } from "frontend/hooks/use-multipass"
 
 interface IdentityPersonaInfoScreenProps

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import { Authenticate } from "./flows/authenticate"
 import { UnknownDeviceScreen } from "./flows/login-unknown"
 import { RegisterDevicePrompt } from "./flows/register-device-promt"
-import { RegisterConfirmation } from "./flows/register-confirmation"
+import { AwaitingConfirmation } from "./flows/register/awaiting-confirmation"
 import { RegisterNewDevice } from "./flows/register-new-device"
 import { AuthProvider, AuthWrapper } from "./flows/auth-wrapper"
 import { LinkInternetIdentity } from "./flows/link-internet-identity"
@@ -12,17 +12,17 @@ import { CopyDevices } from "./flows/copy-devices"
 import { KitchenSink } from "./flows/kitchen-sink"
 import { HomeScreen } from "./flows/home"
 import { IFrameOverviewScreen } from "./flows/iframe-overview"
-import { IdentityScreen } from "./flows/register-identity"
-import { IdentityNameScreen } from "./flows/register-identity/name"
-import { IdentityPhoneScreen } from "./flows/register-identity/phone"
-import { IdentitySmsScreen } from "./flows/register-identity/sms"
-import { IdentityChallengeScreen } from "./flows/register-identity/challenge"
-import { IdentityPersonaScreen } from "./flows/register-identity/create-persona"
-import { IdentityPersonaInfoScreen } from "./flows/register/link-internet-identity/create-persona-info"
-import { IdentityPersonaSuccessScreen } from "./flows/register-identity/create-persona-success"
-import { IdentityPersonaWelcomeScreen } from "./flows/register-identity/create-persona-welcome"
-import { IdentityPersonaCreatekeysScreen } from "./flows/register-identity/create-persona-createkeys"
-import { IdentityPersonaCreatekeysCompleteScreen } from "./flows/register-identity/create-persona-createkeys-complete"
+import { IdentityScreen } from "./flows/phone-number-verification"
+import { IdentityNameScreen } from "./flows/phone-number-verification/name"
+import { IdentityPhoneScreen } from "./flows/phone-number-verification/phone"
+import { IdentitySmsScreen } from "./flows/phone-number-verification/sms"
+import { IdentityChallengeScreen } from "./flows/phone-number-verification/challenge"
+import { RegisterCreatePersonaScreen } from "./flows/register/create-persona"
+import { IdentityPersonaInfoScreen } from "./flows/register/link-internet-identity"
+import { IdentityPersonaSuccessScreen } from "./flows/phone-number-verification/create-persona-success"
+import { RegisterWelcome } from "./flows/register/welcome"
+import { RegisterFinalizePersonaScreen } from "./flows/register/finalize-persona"
+import { RegisterRecoveryPhraseScreen } from "./flows/register/recovery-phrase"
 import { RegisterDevicePromptSuccess } from "./flows/register-device-promt/success"
 import { REGISTER_DEVICE_PROMPT } from "./flows/constants"
 import { useMultipass } from "./hooks/use-multipass"
@@ -69,7 +69,7 @@ function App() {
             path="/register-confirmation/:secret"
             element={
               <AuthWrapper>
-                <RegisterConfirmation />
+                <AwaitingConfirmation />
               </AuthWrapper>
             }
           />
@@ -113,11 +113,11 @@ function App() {
           */}
           <Route
             path="/register-identity-persona-welcome"
-            element={<IdentityPersonaWelcomeScreen />}
+            element={<RegisterWelcome />}
           />
           <Route
             path="/register-identity-persona"
-            element={<IdentityPersonaScreen />}
+            element={<RegisterCreatePersonaScreen />}
           />
           <Route
             path="/register-identity-persona-info"
@@ -129,11 +129,11 @@ function App() {
           />
           <Route
             path="/register-identity-persona-createkeys"
-            element={<IdentityPersonaCreatekeysScreen />}
+            element={<RegisterFinalizePersonaScreen />}
           />
           <Route
             path="/register-identity-persona-createkeys-complete"
-            element={<IdentityPersonaCreatekeysCompleteScreen />}
+            element={<RegisterRecoveryPhraseScreen />}
           />
 
           {/* IFRAME SCREENS */}

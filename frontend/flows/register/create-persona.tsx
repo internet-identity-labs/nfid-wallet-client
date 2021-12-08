@@ -29,9 +29,9 @@ interface IdentityPersonaScreenProps
     HTMLDivElement
   > {}
 
-export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
-  className,
-}) => {
+export const RegisterCreatePersonaScreen: React.FC<
+  IdentityPersonaScreenProps
+> = ({ className }) => {
   const [isLoading, setIslaoding] = useState(false)
   const { register, watch } = useForm()
   const [hasAnchor, setHasAnchor] = useState(false)

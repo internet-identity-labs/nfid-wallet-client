@@ -1,50 +1,53 @@
 name: Deployment
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: DFX SETUP | write identity pem
-        run: |
-          mkdir -p $ID_PATH
-          echo $GH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
-          sed -i 's/\\r\\n/\r\n/g' $ID_PATH/identity.pem
-        shell: bash
+      - uses: aviate-labs/setup-dfx@v0.2.3
+        with:
+          dfx-version: 0.8.4
         env:
-          GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
-          ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
+          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
-      - name: DFX SETUP  | Provision Linux
-        run: bash .github/workflows/dfx-provision-linux.sh
-
-      - name: MULTIPASS FRONTEND | Install
-        run: yarn
-
-      - name: MULTIPASS FRONTEND | Deploy to production
+      - name: MULTIPASS FRONTEND | install & deploy
         run: |
-          dfx identity use gh_mp_admin
-          dfx deploy --network ic --no-wallet
+          yarn
+
+          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
+            dfx identity use action
+            dfx deploy --network ic  --no-wallet
+          fi
+
         env:
           VITE_MP_CANISTER_ID: ${{secrets.VITE_MP_CANISTER_ID}}
           VITE_II_CANISTER_ID: ${{secrets.VITE_II_CANISTER_ID}}
           VITE_II_ENV: ${{secrets.VITE_II_ENV}}
           VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_MULTIPASS_DOMAIN}}
 
-      - name: MULTIPASS DEMO | Install
+      - name: MULTIPASS Demo | install & deploy
         run: |
           cd examples/MultipassDemo && yarn
-          dfx identity use gh_mp_admin
+
+          # install local to generate the types
           dfx start --clean --background
           dfx deploy --no-wallet
           dfx stop
 
-      - name: MULTIPASS FRONTEND | Deploy to production
-        run: |
-          cd examples/MultipassDemo
-          dfx identity use gh_mp_admin
-          dfx deploy --network ic --no-wallet
+          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
+            dfx identity use action
+            dfx deploy --network ic  --no-wallet
+          fi
+
         env:
           DFX_NETWORK: ${{secrets.DFX_NETWORK}}
           NEXT_PUBLIC_MP_ID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}

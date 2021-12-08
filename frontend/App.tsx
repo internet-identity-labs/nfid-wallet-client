@@ -29,6 +29,8 @@ import { getUserNumber } from "./utils/internet-identity/userNumber"
 
 function App() {
   const { account } = useMultipass()
+  console.log(">> App", { account })
+
   const userNumber = React.useMemo(
     () => getUserNumber(account ? account.rootAnchor : null),
     [account],

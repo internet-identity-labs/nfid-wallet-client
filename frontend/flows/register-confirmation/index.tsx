@@ -9,6 +9,11 @@ import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
 import { ExistingDevices } from "frontend/modules/devices/existing-devices"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { Card } from "frontend/design-system/molecules/card"
+import { CardTitle } from "frontend/design-system/molecules/card/title"
+import { CardBody } from "frontend/design-system/molecules/card/body"
+import { H4 } from "frontend/design-system/atoms/typography"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000
@@ -67,37 +72,37 @@ export const RegisterConfirmation = () => {
   }, [resetTries, start])
 
   return (
-    <div className={clsx("p-4 py-10 flex flex-col h-4/5")}>
-      <h1 className={clsx("text-center font-bold text-3xl")}>
-        Awaiting confirmation
-      </h1>
-      <div className={clsx("text-center")}>
-        Follow instructions on your {DEVICE}
-      </div>
-      <div className={clsx("flex justify-center mt-10")}>
-        <FaceId />
-      </div>
-      {status === "loading" && (
-        <div className={clsx("text-center mt-40")}>
-          This screen will update once you've registered your device
-        </div>
-      )}
-      {status === "success" && (
-        <div className={clsx("text-center mt-40")}>
-          Device has been registered!
-        </div>
-      )}
-      {status === "pause" && (
-        <>
-          <div className={clsx("text-center mt-40")}>
-            Haven't received confirmation yet. Have you registered on your Mac?
+    <AppScreen isFocused>
+      <Card className="flex flex-col h-full">
+        <CardTitle>Awaiting confirmation</CardTitle>
+        <CardBody className="w-full max-w-xl">
+          <h1 className={clsx("text-center font-bold text-3xl")}></h1>
+          <div className={clsx("text-center")}>
+            Follow instructions on your {DEVICE}
           </div>
-          <Button className="py-2 px-10 " onClick={handleRetry}>
-            Retry
-          </Button>
-        </>
-      )}
-      <ExistingDevices />
-    </div>
+          <div className={clsx("flex justify-center mt-10")}>
+            <FaceId />
+          </div>
+          {status === "success" && (
+            <div className={clsx("text-center mt-40")}>
+              Device has been registered!
+            </div>
+          )}
+          {status === "pause" && (
+            <div className="w-full py-12">
+              <div className={clsx("text-center mb-4")}>
+                Haven't received confirmation yet. Have you registered on your
+                Mac?
+              </div>
+              <Button className="w-full" large onClick={handleRetry}>
+                Retry
+              </Button>
+            </div>
+          )}
+          <H4 className="my-6 text-center">My Devices</H4>
+          <ExistingDevices />
+        </CardBody>
+      </Card>
+    </AppScreen>
   )
 }

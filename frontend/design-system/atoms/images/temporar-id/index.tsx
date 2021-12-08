@@ -6,4 +6,4 @@ export const TemporarId: React.FC<
     React.ImgHTMLAttributes<HTMLImageElement>,
     HTMLImageElement
   >
-> = ({ className = "w-10" }) => <img src={TouchIdIcon} className={className} />
+> = ({ className = "w-6" }) => <img src={TouchIdIcon} className={className} />

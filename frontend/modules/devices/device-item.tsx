@@ -1,7 +1,12 @@
 import clsx from "clsx"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
-import { Button } from "frontend/design-system/atoms/button"
 import React from "react"
+import { ListItem } from "frontend/design-system/molecules/list/list-item"
+import { Chip } from "frontend/design-system/atoms/chip"
+import { FaKey } from "react-icons/fa"
+import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
+import { DeleteButton } from "frontend/design-system/atoms/button/delete-button"
+import { BiLoaderCircle } from "react-icons/bi"
 
 interface Device {
   alias: string
@@ -16,6 +21,7 @@ interface DeviceItemProps {
 export const DeviceItem: React.FC<DeviceItemProps> = ({ device, refresh }) => {
   const [deleting, setDeleting] = React.useState(false)
   const { userNumber, connection } = useAuthContext()
+
   const handleDeleteDevice = React.useCallback(async () => {
     if (connection && userNumber) {
       setDeleting(true)
@@ -24,18 +30,35 @@ export const DeviceItem: React.FC<DeviceItemProps> = ({ device, refresh }) => {
       refresh()
     }
   }, [connection, device.pubkey, refresh, userNumber])
+
+  const deviceType = () => {
+    // TODO: switch on device type
+    return <MdLaptopMac className="text-xl text-gray-600" />
+  }
+
   return (
-    <div className={clsx("flex flex-row", deleting)} key={device.alias}>
-      <div className={clsx("flex-1")}>{device.alias}</div>
-      <Button
-        className={clsx(
-          "py-2 px-10",
-          deleting && "animate-pulse bg-red-600 text-white",
-        )}
-        onClick={handleDeleteDevice}
-      >
-        delete
-      </Button>
-    </div>
+    <ListItem
+      title={device.alias}
+      subtitle={
+        <div className="flex flex-row flex-wrap gap-x-1">
+          <Chip icon={<FaKey />} dense>
+            Chrome
+            {/* <BiLoaderCircle className={clsx("ml-2 animate-spin")} /> */}
+          </Chip>
+          <Chip icon={<FaKey />} dense>
+            Edge
+            {/* <BiLoaderCircle className={clsx("ml-2 animate-spin")} /> */}
+          </Chip>
+        </div>
+      }
+      icon={deviceType()}
+      action={
+        deleting ? (
+          <BiLoaderCircle className="animate-spin" />
+        ) : (
+          <DeleteButton onClick={handleDeleteDevice} />
+        )
+      }
+    />
   )
 }

@@ -14,6 +14,10 @@ import { Screen } from "frontend/design-system/atoms/screen"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Navigate, useLocation } from "react-router-dom"
+import { Card } from "frontend/design-system/molecules/card"
+import { CardTitle } from "frontend/design-system/molecules/card/title"
+import { CardBody } from "frontend/design-system/molecules/card/body"
+import { CardAction } from "frontend/design-system/molecules/card/action"
 
 interface AuthContextState {
   isAuthenticated: boolean
@@ -105,24 +109,17 @@ export const AuthWrapper: React.FC = ({ children }) => {
   return isAuthenticated ? (
     <>{children}</>
   ) : account ? (
-    <AppScreen>
-      <Screen className={clsx("p-7 py-10")}>
-        <h1 className={clsx("font-bold text-3xl")}>Multipass</h1>
-        <div className={clsx("flex-grow")} />
-        <p className="font-medium text-center my-5">
-          You need to authenticate to use this app.
-        </p>
-        <Button
-          className={clsx("flex flex-row w-full justify-start items-center")}
-          onClick={login}
-        >
-          <div className={clsx("p-2 bg-gray-200")}>
+    <AppScreen isFocused>
+      <Card className="flex flex-col h-full">
+        <CardTitle>Login</CardTitle>
+        <CardBody className="text-center max-w-lg">Use FaceID to sign in</CardBody>
+        <CardAction className="justify-center items-center">
+          <Button onClick={login}>
             <FaceId />
-          </div>
-          <div className="ml-1 p-2 align-middle">Login using Face ID</div>
-        </Button>
+          </Button>
+        </CardAction>
         <Loader isLoading={isLoading} />
-      </Screen>
+      </Card>
     </AppScreen>
   ) : (
     <Navigate to="/register-identity-persona-welcome" />

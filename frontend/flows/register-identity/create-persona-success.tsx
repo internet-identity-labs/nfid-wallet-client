@@ -19,7 +19,7 @@ export const IdentityPersonaSuccessScreen: React.FC<
   const { startUrl } = useAuthContext()
 
   return (
-    <AppScreen>
+    <AppScreen isFocused>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>Welcome! You're all set</CardTitle>
         <CardAction bottom className="justify-center">

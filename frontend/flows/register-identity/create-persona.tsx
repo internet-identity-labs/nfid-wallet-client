@@ -99,7 +99,7 @@ export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
   }, [anchor, navigate])
 
   return (
-    <AppScreen>
+    <AppScreen isFocused>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>What should we call you?</CardTitle>
         <CardBody className="text-center max-w-lg">

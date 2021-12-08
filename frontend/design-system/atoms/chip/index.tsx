@@ -8,6 +8,7 @@ interface Props
   > {
   solid?: boolean
   icon?: ReactElement
+  dense?: boolean
 }
 
 export const Chip: React.FC<Props> = ({
@@ -15,13 +16,15 @@ export const Chip: React.FC<Props> = ({
   className,
   icon,
   solid = false,
+  dense = false,
 }) => {
   return (
     <div
       className={clsx(
         className,
         solid ? "bg-indigo-500 text-white" : "text-indigo-500",
-        "px-4 h-[30px]  text-sm rounded-full border border-indigo-500 w-min flex items-center",
+        "text-sm rounded-full border border-indigo-500 w-min flex items-center",
+        dense ? "py-[1px] px-[12px]" : "px-4 h-[30px]",
       )}
     >
       {icon && <span className="mr-2">{icon}</span>}

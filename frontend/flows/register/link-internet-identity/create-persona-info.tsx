@@ -60,7 +60,7 @@ export const IdentityPersonaInfoScreen: React.FC<
   }, [handleVisibilityChange])
 
   return (
-    <AppScreen>
+    <AppScreen isFocused>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>We're waiting here for you</CardTitle>
         <CardBody className="text-center max-w-lg">

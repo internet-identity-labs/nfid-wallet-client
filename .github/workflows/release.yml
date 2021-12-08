@@ -15,24 +15,18 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: DFX SETUP | write identity pem
-        run: |
-          mkdir -p $ID_PATH
-          echo $GH_MP_ADMIN_PEM >> $ID_PATH/identity.pem
-          sed -i 's/\\r\\n/\r\n/g' $ID_PATH/identity.pem
-        shell: bash
-        env:
-          GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
-          ID_PATH: /home/runner/.config/dfx/identity/gh_mp_admin
-
-      - name: DFX SETUP  | Provision Linux
-        run: bash .github/workflows/dfx-provision-linux.sh
+        uses: aviate-labs/setup-dfx@v0.2.3
+          with:
+            dfx-version: 0.8.4
+          env:
+            DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
       - name: MULTIPASS FRONTEND | install & deploy
         run: |
           yarn
 
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            dfx identity use gh_mp_admin
+            dfx identity use action
             dfx deploy --network ic  --no-wallet
           fi
 
@@ -52,7 +46,7 @@ jobs:
           dfx stop
 
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            dfx identity use gh_mp_admin
+            dfx identity use action
             dfx deploy --network ic  --no-wallet
           fi
 

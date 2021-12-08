@@ -16,7 +16,7 @@ function App() {
             maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
             identityProvider: process.env.NEXT_PUBLIC_MP_ID_PROVIDER_URL,
             onSuccess: (principal) => {
-              console.log(">> onSuccess", { principal })
+              console.log(">> onSuccess:", { principal })
             },
           }}
         >
@@ -32,7 +32,7 @@ function App() {
                 ? process.env.NEXT_PUBLIC_II_ID_PROVIDER_URL
                 : "https://identity.ic0.app/#authorize",
             onSuccess: (principal) => {
-              console.log(">> onSuccess", { principal })
+              console.log(">> onSuccess:", { principal })
             },
           }}
         >

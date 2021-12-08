@@ -13,13 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: DFX SETUP | write identity pem
-        uses: aviate-labs/setup-dfx@v0.2.3
-          with:
-            dfx-version: 0.8.4
-          env:
-            DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
+      - uses: aviate-labs/setup-dfx@v0.2.3
+        with:
+          dfx-version: 0.8.4
+        env:
+          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
       - name: MULTIPASS FRONTEND | install & deploy
         run: |

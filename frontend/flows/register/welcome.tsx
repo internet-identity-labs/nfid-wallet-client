@@ -14,9 +14,9 @@ interface IdentityPersonaWelcomeScreenProps
     HTMLDivElement
   > {}
 
-export const IdentityPersonaWelcomeScreen: React.FC<
-  IdentityPersonaWelcomeScreenProps
-> = ({ className }) => {
+export const RegisterWelcome: React.FC<IdentityPersonaWelcomeScreenProps> = ({
+  className,
+}) => {
   return (
     <AppScreen isFocused>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
@@ -26,7 +26,7 @@ export const IdentityPersonaWelcomeScreen: React.FC<
           doloribus?
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity-persona" className="flex justify-center">
+          <Link to="/register/create-persona" className="flex justify-center">
             <Button block large filled>
               Register
             </Button>

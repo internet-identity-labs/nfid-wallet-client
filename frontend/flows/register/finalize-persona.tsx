@@ -26,7 +26,7 @@ interface IdentityPersonaCreatekeysScreenProps
     HTMLDivElement
   > {}
 
-export const IdentityPersonaCreatekeysScreen: React.FC<
+export const RegisterFinalizePersonaScreen: React.FC<
   IdentityPersonaCreatekeysScreenProps
 > = ({ className }) => {
   const {
@@ -92,7 +92,7 @@ export const IdentityPersonaCreatekeysScreen: React.FC<
       )
       setLoading(false)
 
-      return navigate("/register-identity-persona-createkeys-complete", {
+      return navigate("/register/recovery-phrase", {
         state: { recoveryPhrase },
       })
     }

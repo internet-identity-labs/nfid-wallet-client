@@ -1,12 +1,9 @@
 import React from "react"
-import { Centered } from "frontend/design-system/atoms/centered"
 import { TouchId } from "frontend/design-system/atoms/images/touch-id"
 import { Loader } from "frontend/design-system/atoms/loader"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
 import { Link } from "react-router-dom"
-import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { Button } from "frontend/design-system/atoms/button"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,

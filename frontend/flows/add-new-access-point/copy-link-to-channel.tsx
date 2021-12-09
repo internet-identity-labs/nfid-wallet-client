@@ -1,5 +1,11 @@
 import React from "react"
-import clsx from "clsx"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { Card } from "frontend/design-system/molecules/card"
+import { CardBody } from "frontend/design-system/molecules/card/body"
+import { Button } from "frontend/design-system/atoms/button"
+import { CardAction } from "frontend/design-system/molecules/card/action"
+import { CardTitle } from "frontend/design-system/molecules/card/title"
+import { P } from "frontend/design-system/atoms/typography/paragraph"
 
 interface CopyLinkToChannelProps
   extends React.DetailedHTMLProps<
@@ -7,8 +13,31 @@ interface CopyLinkToChannelProps
     HTMLDivElement
   > {}
 
-export const CopyLinkToChannel: React.FC<CopyLinkToChannelProps> = ({
-  className,
-}) => {
-  return <div className={clsx("", className)}>CopyLinkToChannel</div>
+export const CopyLinkToChannel: React.FC<CopyLinkToChannelProps> = () => {
+  return (
+    <AppScreen isFocused>
+      <Card className="flex flex-col h-full">
+        <CardTitle>Link another Access Point?</CardTitle>
+        <CardBody className="w-full max-w-xl">
+          <P>
+            Each Access Point you want to use, needs to be connected to your
+            Multipass Account.
+          </P>
+        </CardBody>
+        <CardAction
+          bottom
+          className="justify-center md:flex-col md:items-center"
+        >
+          <div className="flex flex-col justify-center">
+            <Button large text onClick={() => console.log(">> click")}>
+              show QR Code to scan
+            </Button>
+            <Button large filled onClick={() => console.log(">> click")}>
+              copy link
+            </Button>
+          </div>
+        </CardAction>
+      </Card>
+    </AppScreen>
+  )
 }

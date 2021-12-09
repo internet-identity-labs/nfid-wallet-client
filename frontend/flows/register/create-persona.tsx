@@ -49,7 +49,7 @@ export const RegisterCreatePersonaScreen: React.FC<
   const handleCreateIdentity = React.useCallback(async () => {
     setIslaoding(true)
     const registerPayload = await createWebAuthNIdentity()
-    navigate("/register-identity-persona-createkeys", {
+    navigate("/register/finalize-persona", {
       state: {
         ...registerPayload,
         name,
@@ -92,7 +92,7 @@ export const RegisterCreatePersonaScreen: React.FC<
     url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
     const link = encodeURI(url.toString())
 
-    navigate("/register-identity-persona-info", {
+    navigate("/register/link-internet-identity", {
       replace: true, // seems to be important. Otherwise we're loosing Context??? Very weird.
       state: { iiDeviceLink: link, userNumber },
     })

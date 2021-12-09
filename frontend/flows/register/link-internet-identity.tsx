@@ -17,7 +17,7 @@ interface IdentityPersonaInfoScreenProps
     HTMLDivElement
   > {}
 
-export const IdentityPersonaInfoScreen: React.FC<
+export const RegisterLinkInternetIdentityScreen: React.FC<
   IdentityPersonaInfoScreenProps
 > = ({ className }) => {
   const [numDevices, setNumDevices] = React.useState(0)
@@ -36,7 +36,7 @@ export const IdentityPersonaInfoScreen: React.FC<
         rootAnchor: userNumber.toString(),
       })
       if (devices.length > numDevices) {
-        navigate("/register-identity-persona-success")
+        navigate("/register/link-internet-identity-success")
       }
     },
     [navigate, numDevices, updateAccount, userNumber],

@@ -1,38 +1,23 @@
 import React from "react"
-import clsx from "clsx"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Link } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
+import { IdentityChallengeScreen } from "./challenge"
+import { IdentityNameScreen } from "./name"
+import { IdentityPhoneScreen } from "./phone"
+import { IdentitySmsScreen } from "./sms"
+import { IdentityScreen } from "./start"
 
-interface IdentityScreenProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+export const PhoneNumberVerificationRoutes = () => (
+  <Routes>
+    <Route path="/register-identity" element={<IdentityScreen />} />
+    <Route path="/register-identity-name" element={<IdentityNameScreen />} />
 
-export const IdentityScreen: React.FC<IdentityScreenProps> = ({
-  children,
-  className,
-}) => {
-  return (
-    <AppScreen>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardTitle>Already have an Identity?</CardTitle>
-        <CardBody className="text-center">
-          You can create a new Identity or register this device with an existing
-          Identity.
-        </CardBody>
-        <CardAction bottom className="justify-center">
-          <Link to="/register-identity-name" className="flex justify-center">
-            <Button text>I already have an Identity</Button>
-          </Link>
-          <Button filled>Create a new Identity</Button>
-        </CardAction>
-      </Card>
-    </AppScreen>
-  )
-}
+    <Route path="/register-identity-phone" element={<IdentityPhoneScreen />} />
+
+    <Route path="/register-identity-sms" element={<IdentitySmsScreen />} />
+
+    <Route
+      path="/register-identity-challenge"
+      element={<IdentityChallengeScreen />}
+    />
+  </Routes>
+)

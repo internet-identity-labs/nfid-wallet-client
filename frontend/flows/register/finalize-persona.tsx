@@ -92,7 +92,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
       )
       setLoading(false)
 
-      return navigate("/register-identity-persona-createkeys-complete", {
+      return navigate("/register/recovery-phrase", {
         state: { recoveryPhrase },
       })
     }

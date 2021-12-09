@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   apiResultToLoginResult,
@@ -13,7 +12,7 @@ import { Loader } from "frontend/design-system/atoms/loader"
 import { Screen } from "frontend/design-system/atoms/screen"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
-import { Navigate, useLocation } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import { Card } from "frontend/design-system/molecules/card"
 import { CardTitle } from "frontend/design-system/molecules/card/title"
 import { CardBody } from "frontend/design-system/molecules/card/body"
@@ -112,7 +111,9 @@ export const AuthWrapper: React.FC = ({ children }) => {
     <AppScreen isFocused>
       <Card className="flex flex-col h-full">
         <CardTitle>Login</CardTitle>
-        <CardBody className="text-center max-w-lg">Use FaceID to sign in</CardBody>
+        <CardBody className="text-center max-w-lg">
+          Use FaceID to sign in
+        </CardBody>
         <CardAction className="justify-center items-center">
           <Button onClick={login}>
             <FaceId />
@@ -122,6 +123,6 @@ export const AuthWrapper: React.FC = ({ children }) => {
       </Card>
     </AppScreen>
   ) : (
-    <Navigate to="/register-identity-persona-welcome" />
+    <Navigate to="/register/welcome" />
   )
 }

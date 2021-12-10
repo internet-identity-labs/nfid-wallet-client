@@ -1,7 +1,6 @@
 import React from "react"
 import clsx from "clsx"
-import { NavigationBar } from "../molecules/navigation/navigation-bar"
-import { NavigationHeader } from "../molecules/navigation/navigation-header"
+import { NavigationBar, NavigationHeader } from "@identitylabs/ui"
 
 interface Props
   extends React.DetailedHTMLProps<

@@ -1,14 +1,13 @@
 import React from "react"
 import clsx from "clsx"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
+import { Card } from "@identitylabs/ui"
+import { CardTitle } from "@identitylabs/ui"
+import { CardBody } from "@identitylabs/ui"
+import { CardAction } from "@identitylabs/ui"
+import { Button } from "@identitylabs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Input } from "frontend/design-system/atoms/input"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
-import { TouchId } from "frontend/design-system/atoms/images/touch-id"
+import { Input } from "@identitylabs/ui"
+import { P, TouchId } from "@identitylabs/ui"
 
 interface IdentityChallengeProps
   extends React.DetailedHTMLProps<

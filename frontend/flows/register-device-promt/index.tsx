@@ -1,14 +1,14 @@
 import React from "react"
 import clsx from "clsx"
-import { Loader } from "frontend/design-system/atoms/loader"
+import { Loader } from "@identitylabs/ui"
 import { useNavigate, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
-import { SetupTouchId } from "frontend/design-system/molecules/setup-touch-id"
-import { LoginTemporarily } from "frontend/design-system/molecules/login-temporarily"
+import { SetupTouchId } from "@identitylabs/ui"
+import { LoginTemporarily } from "@identitylabs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Card } from "frontend/design-system/molecules/card"
+import { CardTitle } from "@identitylabs/ui"
+import { CardAction } from "@identitylabs/ui"
+import { Card } from "@identitylabs/ui"
 
 interface RegisterDevicePromptProps {}
 

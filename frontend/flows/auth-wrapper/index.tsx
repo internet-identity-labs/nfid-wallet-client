@@ -6,18 +6,20 @@ import {
 } from "frontend/utils/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
-import { Account } from "frontend/modules/account/types"
-import { Button } from "frontend/design-system/atoms/button"
-import { FaceId } from "frontend/design-system/atoms/images/face-id"
-import { Loader } from "frontend/design-system/atoms/loader"
-import { Screen } from "frontend/design-system/atoms/screen"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Navigate, useLocation } from "react-router-dom"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { CardAction } from "frontend/design-system/molecules/card/action"
+import { Account } from "frontend/modules/account/types"
+import {
+  Card,
+  CardTitle,
+  CardBody,
+  CardAction,
+  Button,
+  FaceId,
+  Loader,
+  Screen,
+} from "@identitylabs/ui"
 
 interface AuthContextState {
   isAuthenticated: boolean
@@ -112,7 +114,9 @@ export const AuthWrapper: React.FC = ({ children }) => {
     <AppScreen isFocused>
       <Card className="flex flex-col h-full">
         <CardTitle>Login</CardTitle>
-        <CardBody className="text-center max-w-lg">Use FaceID to sign in</CardBody>
+        <CardBody className="text-center max-w-lg">
+          Use FaceID to sign in
+        </CardBody>
         <CardAction className="justify-center items-center">
           <Button onClick={login}>
             <FaceId />

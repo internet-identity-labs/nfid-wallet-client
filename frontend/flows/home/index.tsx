@@ -1,10 +1,10 @@
 import React from "react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { HiChevronDoubleRight } from "react-icons/hi"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { Divider } from "frontend/design-system/atoms/divider"
-import { H4 } from "frontend/design-system/atoms/typography"
+import { Card } from "@identitylabs/ui"
+import { CardBody } from "@identitylabs/ui"
+import { Divider } from "@identitylabs/ui"
+import { H4 } from "@identitylabs/ui"
 
 interface Props
   extends React.DetailedHTMLProps<

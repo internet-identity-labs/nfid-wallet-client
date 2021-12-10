@@ -1,12 +1,12 @@
 import React from "react"
-import { Centered } from "frontend/design-system/atoms/centered"
-import { TouchId } from "frontend/design-system/atoms/images/touch-id"
-import { Loader } from "frontend/design-system/atoms/loader"
+import { Centered } from "@identitylabs/ui"
+import { TouchId } from "@identitylabs/ui"
+import { Loader } from "@identitylabs/ui"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { Button } from "frontend/design-system/atoms/button"
+import { Button } from "@identitylabs/ui"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,

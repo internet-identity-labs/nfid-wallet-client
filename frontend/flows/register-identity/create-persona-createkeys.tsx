@@ -1,15 +1,14 @@
 import React, { useState } from "react"
 import clsx from "clsx"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
+import { Card } from "@identitylabs/ui"
+import { CardTitle } from "@identitylabs/ui"
 import { useLocation, useNavigate } from "react-router-dom"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
+import { CardAction } from "@identitylabs/ui"
+import { Button } from "@identitylabs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { FaceId } from "frontend/design-system/atoms/images/face-id"
-import { CardBody } from "frontend/design-system/molecules/card/body"
+import { CardBody } from "@identitylabs/ui"
 import { HiCheckCircle } from "react-icons/hi"
-import { Spinner } from "frontend/design-system/atoms/loader/spinner"
+import { Spinner, FaceId } from "@identitylabs/ui"
 import {
   IC_DERIVATION_PATH,
   IIConnection,

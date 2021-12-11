@@ -8,8 +8,6 @@ import { RegisterNewDevice } from "./flows/register-new-device"
 import { AuthProvider, AuthWrapper } from "./flows/auth-wrapper"
 import { LinkInternetIdentity } from "./flows/link-internet-identity"
 import { CopyDevices } from "./flows/copy-devices"
-
-import { KitchenSink } from "./flows/kitchen-sink"
 import { HomeScreen } from "./flows/home"
 import { IFrameOverviewScreen } from "./flows/iframe-overview"
 import { IdentityScreen } from "./flows/register-identity"
@@ -84,7 +82,6 @@ function App() {
             element={<LinkInternetIdentity />}
           />
           <Route path="/iframe-overview" element={<IFrameOverviewScreen />} />
-          <Route path="/kitchen-sink" element={<KitchenSink />} />
           <Route path="/copy-devices" element={<CopyDevices />} />
           <Route path="/register-identity" element={<IdentityScreen />} />
           <Route

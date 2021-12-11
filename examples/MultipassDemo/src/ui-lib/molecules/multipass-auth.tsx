@@ -7,7 +7,7 @@ import { Modal } from "src/ui-lib/molecules/modal"
 
 import { ModalHeader } from "./modal/header"
 import clsx from "clsx"
-import { Loader } from "../atoms/loader"
+import { Button, Loader } from "@identitylabs/ui"
 
 interface InternetAuthProps {}
 

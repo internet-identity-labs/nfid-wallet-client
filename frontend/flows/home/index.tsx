@@ -1,7 +1,7 @@
 import React from "react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { HiChevronDoubleRight } from "react-icons/hi"
-import { Card } from "@identitylabs/ui"
+import { Button, Card } from "@identitylabs/ui"
 import { CardBody } from "@identitylabs/ui"
 import { Divider } from "@identitylabs/ui"
 import { H4 } from "@identitylabs/ui"
@@ -21,7 +21,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         "/iframe-overview",
         "/link-internet-identity",
         "/copy-devices",
-        "/kitchen-sink",
       ],
     },
     {
@@ -56,6 +55,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       <AppScreen title="Home">
         {process.env.NODE_ENV == "development" && (
           <Card>
+            <Button filled>fileld button</Button>
             <CardBody>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {routes.map((routes, index) => (

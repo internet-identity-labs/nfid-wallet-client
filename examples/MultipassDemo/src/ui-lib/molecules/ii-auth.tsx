@@ -3,12 +3,12 @@ import {
   AuthIframe,
   useInternetIdentity,
 } from "@identity-labs/react-ic-ii-auth"
-import { Modal } from "src/ui-lib/molecules/modal"
 
+import { Modal } from "src/ui-lib/molecules/modal"
 import { ModalHeader } from "./modal/header"
+import { Button, Chip, Loader } from "@identitylabs/ui"
+
 import clsx from "clsx"
-import { Loader } from "../atoms/loader"
-import { Button } from "../atoms/button"
 
 interface InternetAuthProps {}
 
@@ -49,6 +49,11 @@ export const IIAuth: React.FC<InternetAuthProps> = () => {
       </div>
     </Modal>
   ) : (
-    <Button onClick={() => setShowModal(true)}>Login with II</Button>
+    <>
+      <Chip dense>chip</Chip>
+      <Button onClick={() => setShowModal(true)} filled>
+        Login with II
+      </Button>
+    </>
   )
 }

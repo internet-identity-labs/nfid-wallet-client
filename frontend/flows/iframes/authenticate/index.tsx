@@ -5,6 +5,7 @@ import { Loader } from "@identitylabs/ui"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
 import { Link } from "react-router-dom"
+import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { Button } from "@identitylabs/ui"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({

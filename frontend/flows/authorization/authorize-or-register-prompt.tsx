@@ -38,7 +38,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   }, [secret, sendWaitForUserInput])
 
   return (
-    <AppScreen>
+    <AppScreen isFocused>
       <Card className="h-full flex flex-col">
         {status === "error" && <CardTitle>Something went wrong</CardTitle>}
         {(status === "initial" || status === "loading") && (

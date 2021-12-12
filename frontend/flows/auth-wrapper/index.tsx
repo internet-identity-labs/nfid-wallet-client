@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   apiResultToLoginResult,
@@ -126,6 +125,6 @@ export const AuthWrapper: React.FC = ({ children }) => {
       </Card>
     </AppScreen>
   ) : (
-    <Navigate to="/register-identity-persona-welcome" />
+    <Navigate to="/register/welcome" />
   )
 }

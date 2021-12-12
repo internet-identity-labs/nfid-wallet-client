@@ -11,7 +11,7 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 type Status = "initial" | "loading" | "success"
 
-export const RegisterNewDevice = () => {
+export const NewFromDelegate = () => {
   const [status, setStatus] = React.useState<Status>("initial")
   const [opener, setOpener] = React.useState<Window | null>(null)
   let { secret, userNumber } = useParams()

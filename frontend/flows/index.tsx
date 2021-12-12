@@ -5,6 +5,17 @@ import { Button, Card } from "@identitylabs/ui"
 import { CardBody } from "@identitylabs/ui"
 import { Divider } from "@identitylabs/ui"
 import { H4 } from "@identitylabs/ui"
+import { Link } from "react-router-dom"
+
+interface Route {
+  path: string
+  state?: { [key: string]: any }
+}
+
+interface Flow {
+  title: string
+  items: Route[]
+}
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -13,41 +24,50 @@ interface Props
   > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const routes = [
+  const routes: Flow[] = [
     {
       title: "Common Pages",
+      items: [{ path: "/iframe-overview" }, { path: "/copy-devices" }],
+    },
+    {
+      title: "Mobile Registration Flow",
       items: [
-        "/register",
-        "/iframe-overview",
-        "/link-internet-identity",
-        "/copy-devices",
+        { path: "/register/welcome" },
+        { path: "/register/create-persona" },
+        {
+          path: "/register/link-internet-identity",
+          state: { iiDeviceLink: "", userNumber: "" },
+        },
+        { path: "/register/link-internet-identity-success" },
+        { path: "/register/finalize-persona" },
+        {
+          path: "/register/recovery-phrase",
+          state: { recoveryPhrase: "This is not your real recovery phrase" },
+        },
+      ],
+    },
+    {
+      title: "Add new access point",
+      items: [
+        { path: "/new-access-point/copy-link-to-channel" },
+        { path: "/new-access-point/awaiting-confirmation" },
+        { path: "/new-access-point/create-keys" },
       ],
     },
     {
       title: "Phone Number Verification Flow",
       items: [
-        "/register-identity",
-        "/register-identity-name",
-        "/register-identity-phone",
-        "/register-identity-sms",
-        "/register-identity-challenge",
-      ],
-    },
-    {
-      title: "Mobile Registration Flow",
-      items: [
-        "/register-identity-persona-welcome",
-        "/register-identity-persona",
-        "/register-identity-persona-info",
-        "/register-identity-persona-success",
-        "/register-identity-persona-createkeys",
-        "/register-identity-persona-createkeys-complete",
+        { path: "/register-identity" },
+        { path: "/register-identity-name" },
+        { path: "/register-identity-phone" },
+        { path: "/register-identity-sms" },
+        { path: "/register-identity-challenge" },
       ],
     },
   ]
 
   const getRouteName = (route: string) => {
-    return route.replace(/\//g, "").replace(/-/g, " ")
+    return route.replace(/\//g, " ").replace(/-/g, " ")
   }
 
   return (
@@ -66,20 +86,21 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     <H4>{routes.title}</H4>
                     <Divider />
                     <div className="space-y-3">
-                      {routes.items.map((item, index) => (
-                        <a
+                      {routes.items.map(({ path, state = {} }, index) => (
+                        <Link
                           className="group hover:border-indigo-500 hover:text-indigo-500 cursor-pointer border rounded flex items-center justify-between p-2 w-full"
-                          href={item}
+                          to={path}
                           key={index}
+                          state={state}
                         >
                           <span className="capitalize">
-                            {getRouteName(item)}
+                            {getRouteName(path)}
                           </span>
                           <div className="flex">
                             <div className="border-l w-[10px] flex mr-1"></div>
                             <HiChevronDoubleRight className="group-hover:text-indigo-500 text-lg" />
                           </div>
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>

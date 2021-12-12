@@ -28,9 +28,9 @@ interface IdentityPersonaScreenProps
     HTMLDivElement
   > {}
 
-export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
-  className,
-}) => {
+export const RegisterCreatePersonaScreen: React.FC<
+  IdentityPersonaScreenProps
+> = ({ className }) => {
   const [isLoading, setIslaoding] = useState(false)
   const { register, watch } = useForm()
   const [hasAnchor, setHasAnchor] = useState(false)
@@ -48,7 +48,7 @@ export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
   const handleCreateIdentity = React.useCallback(async () => {
     setIslaoding(true)
     const registerPayload = await createWebAuthNIdentity()
-    navigate("/register-identity-persona-createkeys", {
+    navigate("/register/finalize-persona", {
       state: {
         ...registerPayload,
         name,
@@ -91,7 +91,7 @@ export const IdentityPersonaScreen: React.FC<IdentityPersonaScreenProps> = ({
     url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
     const link = encodeURI(url.toString())
 
-    navigate("/register-identity-persona-info", {
+    navigate("/register/link-internet-identity", {
       replace: true, // seems to be important. Otherwise we're loosing Context??? Very weird.
       state: { iiDeviceLink: link, userNumber },
     })

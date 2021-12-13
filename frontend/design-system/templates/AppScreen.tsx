@@ -24,7 +24,8 @@ export const AppScreen: React.FC<Props> = ({
       <div className="flex flex-col mx-auto w-full min-h-screen min-h-screen-ios bg-gray-100">
         {!isFocused && (
           <>
-            <NavigationBar />
+            {/* TODO: BREAKING: */}
+            {/* <NavigationBar /> */}
             {title && (
               <NavigationHeader title={title} description={description} />
             )}

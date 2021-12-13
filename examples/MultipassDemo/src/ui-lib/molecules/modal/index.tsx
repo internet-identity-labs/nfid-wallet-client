@@ -14,7 +14,7 @@ const useModalRoot = (id: string) => {
     return () => {
       modalRoot.current && document.body.removeChild(modalRoot.current)
     }
-  }, [])
+  }, [id])
   return modalRoot
 }
 

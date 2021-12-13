@@ -75,7 +75,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       <AppScreen title="Home">
         {process.env.NODE_ENV == "development" && (
           <Card>
-            <Button filled>fileld button</Button>
             <CardBody>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {routes.map((routes, index) => (

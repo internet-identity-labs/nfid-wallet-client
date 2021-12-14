@@ -1,6 +1,6 @@
 import React from "react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Button, Card, CardAction, CardBody, CardTitle, P } from "@identitylabs/ui"
+import { Button, Card, CardAction, CardBody, CardTitle, P } from "@identity-labs/ui"
 
 
 interface CopyLinkToChannelProps

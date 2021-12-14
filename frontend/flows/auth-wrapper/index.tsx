@@ -18,7 +18,7 @@ import {
   FaceId,
   Loader,
   Screen,
-} from "@identitylabs/ui"
+} from "@identity-labs/ui"
 
 interface AuthContextState {
   isAuthenticated: boolean

@@ -1,7 +1,7 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Button, Card, CardAction, CardBody, CardTitle, Spinner } from "@identitylabs/ui"
+import { Button, Card, CardAction, CardBody, CardTitle, Spinner } from "@identity-labs/ui"
 import { HiCheckCircle } from "react-icons/hi"
 import { InputSelect } from "frontend/design-system/molecules/inputs/select"
 

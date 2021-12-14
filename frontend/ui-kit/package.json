@@ -1,0 +1,65 @@
+{
+  "name": "@identity-labs/ui",
+  "version": "1.0.0",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "peerDependencies": {
+    "@tailwindcss/forms": "^0.3.4",
+    "react": "link:../node_modules/react",
+    "react-dom": "link:../node_modules/react-dom",
+    "react-helmet": "link:../node_modules/react-helmet",
+    "react-hook-form": "link:../node_modules/react-hook-form",
+    "react-router-dom": "link:../node_modules/react-router-dom",
+    "react-icons": "^4.3.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@tailwindcss/forms": "^0.4.0",
+    "@tailwindcss/jit": "^0.1.18",
+    "@types/node": "^16.11.12",
+    "@types/qrcode": "^1.4.1",
+    "@types/react": "link:../node_modules/@types/react",
+    "@types/react-dom": "link:../node_modules/@types/react-dom",
+    "@types/react-helmet": "link:../node_modules/@types/react-helmet",
+    "@types/react-router-dom": "link:../node_modules/@types/react-router-dom",
+    "@typescript-eslint/eslint-plugin": "5.6.0",
+    "@typescript-eslint/parser": "5.5.0",
+    "@vitejs/plugin-react": "^1.0.7",
+    "autoprefixer": "^10.4.0",
+    "clsx": "1.1.1",
+    "eslint": "8.4.1",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-react": "7.27.1",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "postcss": "^8.4.4",
+    "prettier": "2.0.0",
+    "typescript": "link:../node_modules/typescript",
+    "react-icons": "^4.3.1",
+    "react-router": "link:../node_modules/react-router",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "tailwindcss": "2.2.19",
+    "vite": "^2.7.0"
+  },
+  "dependencies": {
+    "qrcode": "1.5.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --watch",
+    "serve": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mert Polat",
+  "license": "ISC"
+}

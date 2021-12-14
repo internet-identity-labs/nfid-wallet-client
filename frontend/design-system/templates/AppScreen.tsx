@@ -1,6 +1,6 @@
 import React from "react"
 import clsx from "clsx"
-import { NavigationBar, NavigationHeader } from "@identitylabs/ui"
+import { NavigationBar, NavigationHeader } from "@identity-labs/ui"
 
 interface Props
   extends React.DetailedHTMLProps<

@@ -1,11 +1,11 @@
 import React from "react"
-import { Centered } from "@identitylabs/ui"
-import { TouchId } from "@identitylabs/ui"
-import { Loader } from "@identitylabs/ui"
+import { Centered } from "@identity-labs/ui"
+import { TouchId } from "@identity-labs/ui"
+import { Loader } from "@identity-labs/ui"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
 import { Link } from "react-router-dom"
-import { Button } from "@identitylabs/ui"
+import { Button } from "@identity-labs/ui"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,

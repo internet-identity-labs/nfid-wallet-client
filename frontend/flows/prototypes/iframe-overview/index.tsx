@@ -1,12 +1,12 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card } from "@identitylabs/ui"
-import { IFrame } from "@identitylabs/ui"
-import { H1, H3, H4 } from "@identitylabs/ui"
-import { CardTitle } from "@identitylabs/ui"
-import { Divider } from "@identitylabs/ui"
-import { CardBody } from "@identitylabs/ui"
+import { Card } from "@identity-labs/ui"
+import { IFrame } from "@identity-labs/ui"
+import { H1, H3, H4 } from "@identity-labs/ui"
+import { CardTitle } from "@identity-labs/ui"
+import { Divider } from "@identity-labs/ui"
+import { CardBody } from "@identity-labs/ui"
 
 interface IFrameOverviewScreenProps
   extends React.DetailedHTMLProps<

@@ -1,14 +1,14 @@
 import React from "react"
 import clsx from "clsx"
-import { Loader } from "@identitylabs/ui"
+import { Loader } from "@identity-labs/ui"
 import { useNavigate, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
-import { SetupTouchId } from "@identitylabs/ui"
-import { LoginTemporarily } from "@identitylabs/ui"
+import { SetupTouchId } from "@identity-labs/ui"
+import { LoginTemporarily } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardTitle } from "@identitylabs/ui"
-import { CardAction } from "@identitylabs/ui"
-import { Card } from "@identitylabs/ui"
+import { CardTitle } from "@identity-labs/ui"
+import { CardAction } from "@identity-labs/ui"
+import { Card } from "@identity-labs/ui"
 
 interface RegisterDevicePromptProps {}
 

@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react"
 import clsx from "clsx"
-import { Card } from "@identitylabs/ui"
-import { CardTitle } from "@identitylabs/ui"
-import { CardAction } from "@identitylabs/ui"
-import { Button } from "@identitylabs/ui"
+import { Card } from "@identity-labs/ui"
+import { CardTitle } from "@identity-labs/ui"
+import { CardAction } from "@identity-labs/ui"
+import { Button } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthContext } from "../auth-wrapper"
 

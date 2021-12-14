@@ -12,7 +12,7 @@ import {
   CardTitle,
   H4,
   Spinner,
-} from "@identitylabs/ui"
+} from "@identity-labs/ui"
 
 interface AwaitingConfirmationProps
   extends React.DetailedHTMLProps<

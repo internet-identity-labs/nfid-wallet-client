@@ -6,9 +6,9 @@ import {
   IIConnection,
 } from "frontend/utils/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
-import { Centered } from "@identitylabs/ui"
-import { Loader } from "@identitylabs/ui"
-import { Screen } from "@identitylabs/ui"
+import { Centered } from "@identity-labs/ui"
+import { Loader } from "@identity-labs/ui"
+import { Screen } from "@identity-labs/ui"
 import React from "react"
 import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"

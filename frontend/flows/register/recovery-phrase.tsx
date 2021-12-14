@@ -7,7 +7,7 @@ import {
   CardBody,
   CardTitle,
   P,
-} from "@identitylabs/ui"
+} from "@identity-labs/ui"
 import { Link, useLocation } from "react-router-dom"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { HiCheck, HiClipboard } from "react-icons/hi"

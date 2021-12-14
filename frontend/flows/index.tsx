@@ -1,10 +1,10 @@
 import React from "react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { HiChevronDoubleRight } from "react-icons/hi"
-import { Button, Card } from "@identitylabs/ui"
-import { CardBody } from "@identitylabs/ui"
-import { Divider } from "@identitylabs/ui"
-import { H4 } from "@identitylabs/ui"
+import { Button, Card } from "@identity-labs/ui"
+import { CardBody } from "@identity-labs/ui"
+import { Divider } from "@identity-labs/ui"
+import { H4 } from "@identity-labs/ui"
 import { Link } from "react-router-dom"
 
 interface Route {

@@ -1,0 +1,58 @@
+{
+  "name": "@identitylabs/ui",
+  "version": "1.0.0",
+  "main": "./dist/main.umd.js",
+  "module": "./dist/main.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.es.js",
+      "require": "./dist/main.umd.js"
+    }
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-icons": "^4.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/jit": "^0.1.18",
+    "@types/node": "^16.11.12",
+    "@types/qrcode": "^1.4.1",
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@types/react-helmet": "6.1.4",
+    "@types/react-router-dom": "^5.3.2",
+    "@typescript-eslint/eslint-plugin": "5.6.0",
+    "@typescript-eslint/parser": "5.5.0",
+    "@vitejs/plugin-react": "^1.0.7",
+    "autoprefixer": "^10.4.0",
+    "clsx": "1.1.1",
+    "eslint": "8.4.1",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-react": "7.27.1",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "postcss": "^8.4.4",
+    "prettier": "2.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-helmet": "6.1.0",
+    "react-icons": "^4.3.1",
+    "react-router-dom": "^5.2.1",
+    "tailwindcss": "2.2.19",
+    "typescript": "^4.4.4",
+    "vite": "^2.7.0"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.3.4",
+    "qrcode": "1.5.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mert Polat",
+  "license": "ISC"
+}

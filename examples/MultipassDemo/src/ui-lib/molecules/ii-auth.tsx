@@ -6,8 +6,9 @@ import {
 
 import { Modal } from "src/ui-lib/molecules/modal"
 import { ModalHeader } from "./modal/header"
-import { Button, Chip, IFrame, Loader } from "@identitylabs/ui"
+
 import clsx from "clsx"
+import { Button, IFrame, Loader } from "@identity-labs/ui"
 
 interface InternetAuthProps {}
 
@@ -16,17 +17,19 @@ export const IIAuth: React.FC<InternetAuthProps> = () => {
   const [showModal, setShowModal] = React.useState(false)
   const { isAuthenticated, identityProvider, authenticate } =
     useInternetIdentity()
-    
-  function iframeDynamicDimensions(frame: any) {
+
+  function iframeDynamicDimensions() {
+    const frame = document.querySelector("#iframe-wrapper") as HTMLIFrameElement
+
     const dimensions = {
       width: 200,
-      height: 200,
+      height: 830,
       topBarHeight: 57,
     }
 
     if (frame) {
-      let iframeHeight = frame.contentWindow.document.body.scrollHeight
-      let iframeWidth = frame.contentWindow.document.body.scrollWidth
+      let iframeHeight = frame?.contentWindow?.document.body.scrollHeight || 0
+      let iframeWidth = frame?.contentWindow?.document.body.scrollWidth || 0
 
       dimensions.height = dimensions.topBarHeight + iframeHeight
 
@@ -35,8 +38,8 @@ export const IIAuth: React.FC<InternetAuthProps> = () => {
           iframeHeight !== dimensions.height ||
           iframeWidth !== dimensions.width
         ) {
-          iframeHeight = frame.contentWindow.document.body.scrollHeight
-          iframeWidth = frame.contentWindow.document.body.scrollWidth
+          iframeHeight = frame?.contentWindow?.document.body.scrollHeight || 0
+          iframeWidth = frame?.contentWindow?.document.body.scrollWidth || 0
 
           dimensions.width = iframeWidth
           dimensions.height = dimensions.topBarHeight + iframeHeight
@@ -47,21 +50,18 @@ export const IIAuth: React.FC<InternetAuthProps> = () => {
     }
   }
 
-  const handleAuthentication: any = React.useCallback(
-    async (frame: any) => {
-      loading(false)
+  const handleAuthentication: any = React.useCallback(async () => {
+    loading(false)
 
-      const dimensions = iframeDynamicDimensions(frame)
-      console.log("dimensions :>> ", dimensions)
+    const dimensions = iframeDynamicDimensions()
+    console.log("dimensions :>> ", dimensions)
 
-      try {
-        await authenticate()
-      } catch {
-        console.error("something happened")
-      }
-    },
-    [authenticate],
-  )
+    try {
+      await authenticate()
+    } catch {
+      console.error("something happened")
+    }
+  }, [authenticate])
 
   const handleClose = React.useCallback(() => {
     setShowModal(false)
@@ -78,14 +78,22 @@ export const IIAuth: React.FC<InternetAuthProps> = () => {
         <Loader isLoading={isLoading} />
         <AuthIframe
           src={identityProvider}
-          onLoad={(frame) => handleAuthentication(frame.target)}
+          onLoad={handleAuthentication}
           id="idpWindow"
         />
       </div>
     </Modal>
+    // <IFrame
+    //   title="Internet Identity"
+    //   src={identityProvider}
+    //   onLoad={handleAuthentication}
+    //   height={iframeDynamicDimensions()?.height}
+    // />
   ) : (
-    <Button onClick={() => setShowModal(true)} filled>
-      Login with II
-    </Button>
+    <>
+      <Button onClick={() => setShowModal(true)} filled>
+        Login with II
+      </Button>
+    </>
   )
 }

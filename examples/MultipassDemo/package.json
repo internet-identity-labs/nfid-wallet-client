@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@identitylabs/ui": "link:../../frontend/ui-kit",
     "@dfinity/agent": "0.10.1",
     "@dfinity/auth-client": "0.10.1",
     "@dfinity/authentication": "0.10.1",
@@ -12,8 +13,8 @@
     "@identity-labs/react-ic-ii-auth": "0.0.14",
     "clsx": "1.1.1",
     "next": "12.0.7",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "link:../../node_modules/react",
+    "react-dom": "link:../../node_modules/react-dom",
     "typescript": "^4.5.2",
     "web-vitals": "^2.1.2"
   },

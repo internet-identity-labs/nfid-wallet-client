@@ -27,7 +27,7 @@
     "react-helmet": "6.1.0",
     "react-hook-form": "7.21.2",
     "react-icons": "^4.3.1",
-    "react-router": "6.0.2",
+    "react-router": "6.1.1",
     "react-router-dom": "6.0.2",
     "stream-browserify": "3.0.0"
   },

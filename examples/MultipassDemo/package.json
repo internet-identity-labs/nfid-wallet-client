@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@identitylabs/ui": "link:../../frontend/ui-kit",
+    "@identity-labs/ui": "link:../../frontend/ui-kit",
     "@dfinity/agent": "0.10.1",
     "@dfinity/auth-client": "0.10.1",
     "@dfinity/authentication": "0.10.1",

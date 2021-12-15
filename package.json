@@ -32,7 +32,7 @@
     "stream-browserify": "3.0.0"
   },
   "devDependencies": {
-    "@types/node": "16.11.12",
+    "@types/node": "16.11.13",
     "@types/qrcode": "1.4.1",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",

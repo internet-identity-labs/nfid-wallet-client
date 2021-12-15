@@ -22,6 +22,9 @@ jobs:
       - name: MULTIPASS FRONTEND | install & deploy
         run: |
           yarn
+          
+          # install the UI kit
+          cd frontend/ui-kit && yarn
 
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
             dfx identity use action

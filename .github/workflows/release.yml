@@ -19,12 +19,12 @@ jobs:
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
+      - name: MULTIPASS UI KIT | install
+        run: cd frontend/ui-kit && yarn
+
       - name: MULTIPASS FRONTEND | install & deploy
         run: |
           yarn
-          
-          # install the UI kit
-          cd frontend/ui-kit && yarn
 
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
             dfx identity use action

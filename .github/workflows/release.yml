@@ -20,7 +20,7 @@ jobs:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
       - name: MULTIPASS UI KIT | install
-        run: cd frontend/ui-kit && yarn
+        run: cd frontend/ui-kit && yarn && yarn build
 
       - name: MULTIPASS FRONTEND | install & deploy
         run: |

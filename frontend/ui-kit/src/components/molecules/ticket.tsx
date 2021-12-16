@@ -10,11 +10,11 @@ export const AuthTicket: React.FC = () => {
         "shadow-bottom-sheet",
         "rounded overflow-hidden",
         "bg-gradient-to-r from-pink-500 via-yellow-400 to-blue-500 ",
-        "p-3px",
+        "p-[3px]",
         "text-white",
       )}
     >
-      <div className={clsx("rounded-3px bg-gray-900 flex flex-row")}>
+      <div className={clsx("rounded-[3px] bg-gray-900 flex flex-row")}>
         {/* left col */}
         <div className={clsx("p-7 flex-grow")}>
           <div className={clsx("flex flex-row")}>

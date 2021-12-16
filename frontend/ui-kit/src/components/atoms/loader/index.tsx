@@ -15,7 +15,7 @@ export const Loader: React.FC<LoaderProps> = ({ isLoading }) =>
           "absolute",
           "left-1/2 -translate-x-1/2",
           "top-1/2 -translate-y-1/2",
-          "m-auto w-125px min-w-125px max-w-[calc(100vw-1rem)]",
+          "m-auto w-[125px] min-w-[125px] max-w-[calc(100vw-1rem)]",
         )}
         src={loaderAsset}
       />

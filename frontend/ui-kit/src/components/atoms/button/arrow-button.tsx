@@ -38,7 +38,7 @@ export const ArrowButton: React.FC<ArrowButtonProps> = ({
 
       <div
         className={clsx([
-          "mt-4px h-15px fill-current ml-10px transform",
+          "mt-[4px] h-[15px] fill-current ml-[10px] transform",
           direction === "right" && "",
           direction === "top" && "-rotate-90",
           direction === "bottom" && "rotate-90",

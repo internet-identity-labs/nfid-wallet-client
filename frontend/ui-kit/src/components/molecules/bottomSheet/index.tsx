@@ -3,7 +3,7 @@ import React from "react"
 import { ArrowButton } from "../../atoms/button/arrow-button"
 
 const Content: React.FC = ({ children }) => {
-  return <div className="mt-50px text-black p-4 pb-28">{children}</div>
+  return <div className="mt-[50px] text-black p-4 pb-28">{children}</div>
 }
 
 export const BottomSheet = ({
@@ -48,7 +48,7 @@ export const BottomSheet = ({
       >
         <ArrowButton
           className={clsx([
-            "h-70px rounded-t-lg bg-white",
+            "h-[70px] rounded-t-lg bg-white",
             more ? "fixed" : "absolute",
           ])}
           onClick={() => showMore(!more)}

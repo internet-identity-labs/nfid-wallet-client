@@ -1,24 +1,18 @@
+import {
+  Button, Card, CardAction, CardBody, CardTitle, FaceId,
+  Loader
+} from "@identity-labs/ui"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { Account } from "frontend/modules/account/types"
 import {
   apiResultToLoginResult,
-  LoginError,
+  LoginError
 } from "frontend/utils/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
-import { Navigate, useLocation } from "react-router-dom"
-import { Account } from "frontend/modules/account/types"
-import {
-  Card,
-  CardTitle,
-  CardBody,
-  CardAction,
-  Button,
-  FaceId,
-  Loader,
-  Screen,
-} from "@identity-labs/ui"
+import { Navigate } from "react-router-dom"
 
 interface AuthContextState {
   isAuthenticated: boolean

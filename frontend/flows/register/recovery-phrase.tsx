@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react"
-import clsx from "clsx"
 import {
   Button,
   Card,
   CardAction,
   CardBody,
   CardTitle,
-  P,
+  P
 } from "@identity-labs/ui"
-import { Link, useLocation } from "react-router-dom"
+import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import React, { useState } from "react"
 import { HiCheck, HiClipboard } from "react-icons/hi"
+import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "../auth-wrapper"
 
 interface IdentityPersonaCreatekeysCompleteScreenProps

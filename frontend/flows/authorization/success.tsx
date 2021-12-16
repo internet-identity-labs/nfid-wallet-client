@@ -1,13 +1,6 @@
-import React from "react"
-import clsx from "clsx"
+import { Button, Card, CardAction, CardBody, CardTitle, P } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card } from "@identity-labs/ui"
-import { CardTitle } from "@identity-labs/ui"
-import { CardBody } from "@identity-labs/ui"
-import { H4 } from "@identity-labs/ui"
-import { P } from "@identity-labs/ui"
-import { CardAction } from "@identity-labs/ui"
-import { Button } from "@identity-labs/ui"
+import React from "react"
 import { HiShare } from "react-icons/hi"
 
 interface RegisterDevicePromptSuccessScreenProps

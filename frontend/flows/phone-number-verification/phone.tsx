@@ -1,13 +1,7 @@
-import React from "react"
+import { Button, Card, CardAction, CardBody, CardTitle, Input, P } from "@identity-labs/ui"
 import clsx from "clsx"
-import { Card } from "@identity-labs/ui"
-import { CardTitle } from "@identity-labs/ui"
-import { CardBody } from "@identity-labs/ui"
-import { CardAction } from "@identity-labs/ui"
-import { Button } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Input } from "@identity-labs/ui"
-import { P } from "@identity-labs/ui"
+import React from "react"
 import { Link } from "react-router-dom"
 
 interface IdentityPhoneScreenProps

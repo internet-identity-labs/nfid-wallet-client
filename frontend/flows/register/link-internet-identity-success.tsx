@@ -1,11 +1,8 @@
 import React, { useRef, useState } from "react"
 import clsx from "clsx"
-import { Card } from "@identity-labs/ui"
-import { CardTitle } from "@identity-labs/ui"
-import { CardAction } from "@identity-labs/ui"
-import { Button } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthContext } from "../auth-wrapper"
+import { Card, CardTitle, CardAction, Button } from "@identity-labs/ui"
 
 interface IdentityPersonaSuccessScreenProps
   extends React.DetailedHTMLProps<

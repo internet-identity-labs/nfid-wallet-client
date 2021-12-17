@@ -64,6 +64,6 @@
     "postcss": "8.4.5",
     "prettier": "2.5.1",
     "tailwindcss": "2.2.19",
-    "ts-jest": "27.1.1"
+    "ts-jest": "27.1.2"
   }
 }

@@ -11,6 +11,8 @@ import { HiCheckCircle } from "react-icons/hi"
 import { InputSelect } from "frontend/design-system/molecules/inputs/select"
 import { useForm } from "react-hook-form"
 import { H2, H4 } from "frontend/design-system/atoms/typography"
+import { P } from "frontend/design-system/atoms/typography/paragraph"
+import { getBrowser } from "frontend/utils"
 
 interface CreateKeysScreenProps
   extends React.DetailedHTMLProps<
@@ -23,13 +25,17 @@ export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
   const [deviceLinked, setDeviceLinked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
 
+  const platformAuth = "FaceID"
+  const browserName = getBrowser()
+  const deviceMake = "Apple"
+
   const { register, watch } = useForm({ defaultValues: { device: "1" } })
   const device = watch("device")
 
   return (
     <AppScreen isFocused>
       <Card className="flex flex-col h-full">
-        <CardTitle>Link another Access Point?</CardTitle>
+        <CardTitle>Register this access point</CardTitle>
         <CardBody className="w-full max-w-xl">
           <div className="mb-4">
             <div className="flex flex-row space-x-4 items-center py-3">
@@ -51,6 +57,11 @@ export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
               <div>Device linked</div>
             </div>
           </div>
+          <P>
+            If you'd like to use {platformAuth} as your NFID "password" on
+            supported {browserName} applications, prove you can unlock
+            {platformAuth} to register this {deviceMake}
+          </P>
           <div className={clsx("flex flex-col items-center")}>
             {loading ? <Spinner className="w-12 h-12" /> : null}
           </div>

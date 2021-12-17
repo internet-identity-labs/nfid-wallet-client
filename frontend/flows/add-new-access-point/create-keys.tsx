@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form"
 import { H2, H4 } from "frontend/design-system/atoms/typography"
 import { P } from "frontend/design-system/atoms/typography/paragraph"
 import { getBrowser } from "frontend/utils"
+import { useParams } from "react-router"
 
 interface CreateKeysScreenProps
   extends React.DetailedHTMLProps<
@@ -24,6 +25,8 @@ export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
   const [keysCreated, setKeysCreated] = React.useState(false)
   const [deviceLinked, setDeviceLinked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
+
+  const { secret } = useParams()
 
   const platformAuth = "FaceID"
   const browserName = getBrowser()

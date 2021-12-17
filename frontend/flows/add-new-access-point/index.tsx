@@ -9,7 +9,7 @@ export const AddNewAccessPointRoutes = () => (
     <Route path="new-access-point/" element={<AddNewAccessPoint />}>
       <Route path="copy-link-to-channel" element={<CopyLinkToChannel />} />
       <Route path="awaiting-confirmation" element={<AwaitingConfirmation />} />
-      <Route path="create-keys" element={<CreateKeysScreen />} />
+      <Route path="create-keys/:secret" element={<CreateKeysScreen />} />
     </Route>
   </Routes>
 )

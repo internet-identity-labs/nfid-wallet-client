@@ -55,7 +55,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       items: [
         { path: "/new-access-point/copy-link-to-channel" },
         { path: "/new-access-point/awaiting-confirmation" },
-        { path: "/new-access-point/create-keys" },
+        { path: "/new-access-point/create-keys/fake-secret" },
       ],
     },
     {

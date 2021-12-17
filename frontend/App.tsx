@@ -17,6 +17,10 @@ function App() {
   return (
     <AuthProvider startUrl={startUrl}>
       <BrowserRouter>
+        {/*
+          TODO: refactor routes with useRoutes hook:
+          https://reactrouter.com/docs/en/v6/api#useroutes
+        */}
         <Routes>
           {/* APP SCREENS */}
           <Route path="/" element={<HomeScreen />} />

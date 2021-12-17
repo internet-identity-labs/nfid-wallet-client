@@ -1,9 +1,9 @@
 import React from "react"
 import { Outlet, Route, Routes } from "react-router-dom"
-import { IdentityPersonaSuccessScreen } from "../phone-number-verification/create-persona-success"
 import { RegisterCreatePersonaScreen } from "./create-persona"
 import { RegisterFinalizePersonaScreen } from "./finalize-persona"
 import { RegisterLinkInternetIdentityScreen } from "./link-internet-identity"
+import { LinkInternetIdentitySuccessScreen } from "./link-internet-identity-success"
 import { RegisterRecoveryPhraseScreen } from "./recovery-phrase"
 import { RegisterWelcome } from "./welcome"
 
@@ -30,7 +30,7 @@ export const RegisterRoutes = () => {
         />
         <Route
           path="link-internet-identity-success"
-          element={<IdentityPersonaSuccessScreen />}
+          element={<LinkInternetIdentitySuccessScreen />}
         />
       </Route>
     </Routes>

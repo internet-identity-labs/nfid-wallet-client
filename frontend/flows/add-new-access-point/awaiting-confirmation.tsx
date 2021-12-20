@@ -1,3 +1,6 @@
+import React from "react"
+import clsx from "clsx"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import {
   Button,
   Card,
@@ -5,13 +8,11 @@ import {
   CardBody,
   CardTitle,
   H4,
-  Spinner
+  Spinner,
 } from "@identity-labs/ui"
-import clsx from "clsx"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { DeviceItem } from "frontend/modules/devices/device-item"
-import React from "react"
+
 import { HiCheckCircle } from "react-icons/hi"
+import { DeviceItem } from "frontend/modules/devices/device-item"
 
 interface AwaitingConfirmationProps
   extends React.DetailedHTMLProps<

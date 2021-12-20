@@ -1,9 +1,21 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Button, Card, CardAction, CardBody, CardTitle, Spinner } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  H4,
+  P,
+  Spinner,
+} from "@identity-labs/ui"
 import { HiCheckCircle } from "react-icons/hi"
 import { InputSelect } from "frontend/design-system/molecules/inputs/select"
+import { useForm } from "react-hook-form"
+import { getBrowser } from "frontend/utils"
+import { useParams } from "react-router"
 
 interface CreateKeysScreenProps
   extends React.DetailedHTMLProps<
@@ -12,16 +24,32 @@ interface CreateKeysScreenProps
   > {}
 
 export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
+  const [keysCreated, setKeysCreated] = React.useState(false)
   const [deviceLinked, setDeviceLinked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
+
+  const { secret } = useParams()
+
+  const platformAuth = "FaceID"
+  const browserName = getBrowser()
+  const deviceMake = "Apple"
+
+  const { register, watch } = useForm({ defaultValues: { device: "1" } })
+  const device = watch("device")
+
   return (
     <AppScreen isFocused>
       <Card className="flex flex-col h-full">
-        <CardTitle>Link another Access Point?</CardTitle>
+        <CardTitle>Register this access point</CardTitle>
         <CardBody className="w-full max-w-xl">
           <div className="mb-4">
             <div className="flex flex-row space-x-4 items-center py-3">
-              <HiCheckCircle className={clsx("text-2xl", "text-black")} />
+              <HiCheckCircle
+                className={clsx(
+                  "text-2xl",
+                  keysCreated ? "text-black" : "text-gray-300",
+                )}
+              />
               <div>Key created</div>
             </div>
             <div className="flex flex-row space-x-4 items-center py-3">
@@ -34,24 +62,32 @@ export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
               <div>Device linked</div>
             </div>
           </div>
-          {loading ? <Spinner className="w-12 h-12" /> : null}
+          <P>
+            If you'd like to use {platformAuth} as your NFID "password" on
+            supported {browserName} applications, prove you can unlock
+            {platformAuth} to register this {deviceMake}
+          </P>
+          <div className={clsx("flex flex-col items-center")}>
+            {loading ? <Spinner className="w-12 h-12" /> : null}
+          </div>
         </CardBody>
         <CardAction
           bottom
           className="justify-center md:flex-col md:items-center"
         >
           <div className="flex flex-col justify-center">
-            <InputSelect
-              id="device-select"
-              name="device"
-              options={[
-                { value: "1", label: "iPhone X", selected: true },
-                { value: "2", label: "MacBook Pro 13", selected: false },
-              ]}
-              onChange={(event) =>
-                console.log(">> ", { value: event.target.value })
-              }
-            />
+            <H4 className={clsx("text-center")}>select device</H4>
+            <div className={clsx("py-2")}>
+              <InputSelect
+                className={clsx("w-full rounded")}
+                defaultValue={device}
+                options={[
+                  { value: "1", label: "iPhone X" },
+                  { value: "2", label: "MacBook Pro 13" },
+                ]}
+                {...register("device", { required: true })}
+              />
+            </div>
             <Button large filled onClick={() => console.log(">> click")}>
               use Face ID to create keys
             </Button>

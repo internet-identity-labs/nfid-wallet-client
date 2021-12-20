@@ -11,6 +11,7 @@
     "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js"
   },
   "dependencies": {
+    "@identity-labs/ui": "link:frontend/ui-kit",
     "@dfinity/agent": "0.9.3",
     "@dfinity/candid": "0.9.3",
     "@dfinity/identity": "0.9.3",

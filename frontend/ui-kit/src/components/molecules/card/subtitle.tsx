@@ -1,6 +1,6 @@
 import React from "react"
 import clsx from "clsx"
-import { H5 } from "frontend/design-system/atoms/typography"
+import { H5 } from "../../atoms/typography"
 
 interface CardSubtitleProps
   extends React.DetailedHTMLProps<

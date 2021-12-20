@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  P
+} from "@identity-labs/ui"
 import clsx from "clsx"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { Link, useLocation } from "react-router-dom"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
+import React, { useState } from "react"
 import { HiCheck, HiClipboard } from "react-icons/hi"
+import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "../auth-wrapper"
 
 interface IdentityPersonaCreatekeysCompleteScreenProps

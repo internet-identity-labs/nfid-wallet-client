@@ -1,15 +1,17 @@
-import React from "react"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  P
+} from "@identity-labs/ui"
 import clsx from "clsx"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
-import { useLocation, useNavigate } from "react-router-dom"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
+import React from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 interface IdentityPersonaInfoScreenProps
   extends React.DetailedHTMLProps<

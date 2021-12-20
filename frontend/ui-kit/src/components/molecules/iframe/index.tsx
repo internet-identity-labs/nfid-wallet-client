@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import clsx from "clsx"
 import { Card } from "../card"
 import { HiX } from "react-icons/hi"
-import { Spinner } from "frontend/design-system/atoms/loader/spinner"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -12,6 +11,8 @@ interface Props
   title?: string
   src: string
   inline?: boolean
+  onLoad?: () => void,
+  height?: number
 }
 
 export const IFrame: React.FC<Props> = ({
@@ -20,27 +21,12 @@ export const IFrame: React.FC<Props> = ({
   title,
   src,
   inline = false,
+  height = 200,
+  onLoad,
 }) => {
   const [visible, setVisible] = useState(true)
-  const [height, setHeight] = useState(200)
+  const [_height, setHeight] = useState(height)
   const [loading, setLoading] = useState(true)
-
-  const handleLoad = (iframe: any) => {
-    if (iframe) {
-      const topBarHeight = 57
-      let iframeHeight = iframe.target.contentWindow.document.body.scrollHeight
-
-      setHeight(topBarHeight + iframeHeight)
-      setLoading(false)
-
-      setInterval(() => {
-        if (iframeHeight !== height) {
-          iframeHeight = iframe.target.contentWindow.document.body.scrollHeight
-          setHeight(topBarHeight + iframeHeight)
-        }
-      }, 200)
-    }
-  }
 
   React.useEffect(() => {
     setLoading(true)
@@ -57,7 +43,7 @@ export const IFrame: React.FC<Props> = ({
         className,
         !inline && "fixed bottom-0 right-0  md:top-[18px] md:right-7",
       )}
-      style={{ height: height }}
+      style={{ height: _height }}
     >
       <div className="w-full  text-black overflow-hidden rounded-t-xl border-b border-gray-200 bg-white">
         <div
@@ -77,18 +63,26 @@ export const IFrame: React.FC<Props> = ({
         </div>
       </div>
 
-      <iframe
-        className={clsx(
-          "w-full transition-all delay-300 h-full",
-          loading && "opacity-0",
-        )}
-        src={src}
-        frameBorder="0"
-        title={title}
-        onLoad={(iframe) => handleLoad(iframe)}
-      >
-        {children}
-      </iframe>
+      <div className="w-full h-full">
+        <iframe
+          className={clsx(
+            "w-full transition-all delay-300 h-full",
+            loading && "opacity-0",
+          )}
+          src={src}
+          frameBorder="0"
+          title="idpWindow"
+          name="idpWindow"
+          width="100%"
+          height="100%"
+          allow="publickey-credentials-get"
+          onLoad={() => {
+            setLoading(false), onLoad
+          }}
+        >
+          {children}
+        </iframe>
+      </div>
     </Card>
   ) : null
 }

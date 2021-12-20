@@ -1,13 +1,10 @@
+import { Button, Loader, TouchId } from "@identity-labs/ui"
+import clsx from "clsx"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import { getBrowser, getPlatform } from "frontend/utils"
 import React from "react"
 import { useParams } from "react-router-dom"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { Button } from "frontend/design-system/atoms/button"
-import clsx from "clsx"
-import { TouchId } from "frontend/design-system/atoms/images/touch-id"
-import { Screen } from "frontend/design-system/atoms/screen"
-import { getBrowser, getPlatform } from "frontend/utils"
-import { Loader } from "frontend/design-system/atoms/loader"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 type Status = "initial" | "loading" | "success"
 

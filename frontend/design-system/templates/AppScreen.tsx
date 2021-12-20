@@ -1,7 +1,6 @@
 import React from "react"
 import clsx from "clsx"
-import { NavigationBar } from "../molecules/navigation/navigation-bar"
-import { NavigationHeader } from "../molecules/navigation/navigation-header"
+import { NavigationBar, NavigationHeader } from "@identity-labs/ui"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -25,7 +24,8 @@ export const AppScreen: React.FC<Props> = ({
       <div className="flex flex-col mx-auto w-full min-h-screen min-h-screen-ios bg-gray-100">
         {!isFocused && (
           <>
-            <NavigationBar />
+            {/* TODO: BREAKING: */}
+            {/* <NavigationBar /> */}
             {title && (
               <NavigationHeader title={title} description={description} />
             )}

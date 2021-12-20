@@ -1,14 +1,8 @@
 import React from "react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { Button } from "frontend/design-system/atoms/button"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
+import { Button, Card, CardAction, CardBody, CardTitle, Loader, P } from "@identity-labs/ui"
 import { v4 } from "uuid"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { Loader } from "frontend/design-system/atoms/loader"
 
 interface CopyLinkToChannelProps
   extends React.DetailedHTMLProps<

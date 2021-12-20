@@ -1,6 +1,6 @@
 import clsx from "clsx"
-import { ArrowButton } from "frontend/design-system/atoms/button/arrow-button"
 import React from "react"
+import { ArrowButton } from "../../atoms/button/arrow-button"
 
 const Content: React.FC = ({ children }) => {
   return <div className="mt-[50px] text-black p-4 pb-28">{children}</div>
@@ -43,7 +43,7 @@ export const BottomSheet = ({
           "shadow-bottom-sheet",
           "transition-all duration-300 rounded-t-md w-full h-full",
           "bg-white absolute top-[calc(100%-70px)] shadow-top",
-          more && "top-[9%] overflow-scroll md:overflow-hidden",
+          more && "top-9% overflow-scroll md:overflow-hidden",
         ])}
       >
         <ArrowButton

@@ -18,5 +18,5 @@
     "baseUrl": ".",
     "paths": {}
   },
-  "include": ["./frontend"]
+  "include": ["./frontend"],
 }

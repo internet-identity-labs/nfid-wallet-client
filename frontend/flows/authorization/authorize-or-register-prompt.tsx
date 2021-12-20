@@ -1,14 +1,8 @@
+import { Card, CardAction, CardTitle, Loader, LoginTemporarily, SetupTouchId } from "@identity-labs/ui"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
-import clsx from "clsx"
-import { Loader } from "frontend/design-system/atoms/loader"
 import { useNavigate, useParams } from "react-router-dom"
 import { useRegisterDevicePromt } from "./hooks"
-import { SetupTouchId } from "frontend/design-system/molecules/setup-touch-id"
-import { LoginTemporarily } from "frontend/design-system/molecules/login-temporarily"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Card } from "frontend/design-system/molecules/card"
 
 interface RegisterDevicePromptProps {}
 

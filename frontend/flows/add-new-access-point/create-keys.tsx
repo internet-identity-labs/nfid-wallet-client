@@ -1,17 +1,19 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { Button } from "frontend/design-system/atoms/button"
-import { Spinner } from "frontend/design-system/atoms/loader/spinner"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { CardBody } from "frontend/design-system/molecules/card/body"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  H4,
+  P,
+  Spinner,
+} from "@identity-labs/ui"
 import { HiCheckCircle } from "react-icons/hi"
 import { InputSelect } from "frontend/design-system/molecules/inputs/select"
 import { useForm } from "react-hook-form"
-import { H2, H4 } from "frontend/design-system/atoms/typography"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
 import { getBrowser } from "frontend/utils"
 import { useParams } from "react-router"
 

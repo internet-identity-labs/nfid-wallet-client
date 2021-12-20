@@ -1,24 +1,21 @@
-import React, { useState } from "react"
-import clsx from "clsx"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { useLocation, useNavigate } from "react-router-dom"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { FaceId } from "frontend/design-system/atoms/images/face-id"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { HiCheckCircle } from "react-icons/hi"
-import { Spinner } from "frontend/design-system/atoms/loader/spinner"
+import { WebAuthnIdentity } from "@dfinity/identity"
 import {
-  IC_DERIVATION_PATH,
-  IIConnection,
-} from "frontend/utils/internet-identity/iiConnection"
+  Button, Card, CardAction, CardBody, CardTitle, FaceId, Spinner
+} from "@identity-labs/ui"
+import clsx from "clsx"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { fromMnemonicWithoutValidation } from "frontend/utils/internet-identity/crypto/ed25519"
 import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
-import { WebAuthnIdentity } from "@dfinity/identity"
+import {
+  IC_DERIVATION_PATH,
+  IIConnection
+} from "frontend/utils/internet-identity/iiConnection"
+import React, { useState } from "react"
+import { HiCheckCircle } from "react-icons/hi"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useAuthContext } from "../auth-wrapper"
-import { useMultipass } from "frontend/hooks/use-multipass"
+
 
 interface IdentityPersonaCreatekeysScreenProps
   extends React.DetailedHTMLProps<

@@ -1,22 +1,18 @@
+import {
+  Button, Card, CardAction, CardBody, CardTitle, FaceId,
+  Loader
+} from "@identity-labs/ui"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { Account } from "frontend/modules/account/types"
 import {
   apiResultToLoginResult,
-  LoginError,
+  LoginError
 } from "frontend/utils/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
-import { Account } from "frontend/modules/account/types"
-import { Button } from "frontend/design-system/atoms/button"
-import { FaceId } from "frontend/design-system/atoms/images/face-id"
-import { Loader } from "frontend/design-system/atoms/loader"
-import { Screen } from "frontend/design-system/atoms/screen"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Navigate } from "react-router-dom"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { CardAction } from "frontend/design-system/molecules/card/action"
 
 interface AuthContextState {
   isAuthenticated: boolean

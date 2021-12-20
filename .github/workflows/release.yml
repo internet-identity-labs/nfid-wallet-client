@@ -23,6 +23,10 @@ jobs:
         run: |
           yarn
 
+          pushd frontend/ui-kit
+          yarn && yarn build
+          popd
+
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
             dfx identity use action
             dfx deploy --network ic  --no-wallet

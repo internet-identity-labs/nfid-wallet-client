@@ -1,17 +1,17 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  H4,
+  Spinner,
+} from "@identity-labs/ui"
+
 import { HiCheckCircle } from "react-icons/hi"
-import { Spinner } from "frontend/design-system/atoms/loader/spinner"
-import { H4 } from "frontend/design-system/atoms/typography"
-import { ExistingDevices } from "frontend/modules/devices/existing-devices"
-import { List } from "frontend/design-system/molecules/list"
 import { DeviceItem } from "frontend/modules/devices/device-item"
 
 interface AwaitingConfirmationProps

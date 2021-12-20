@@ -1,27 +1,18 @@
-import React, { useRef, useState } from "react"
+import { blobToHex } from "@dfinity/candid"
+import { WebAuthnIdentity } from "@dfinity/identity"
+import { Button, Card, CardAction, CardBody, CardTitle, FaceId, Input, Loader, P, Switch } from "@identity-labs/ui"
 import clsx from "clsx"
-import { Card } from "frontend/design-system/molecules/card"
-import { CardTitle } from "frontend/design-system/molecules/card/title"
-import { CardBody } from "frontend/design-system/molecules/card/body"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
-import { Input } from "frontend/design-system/atoms/input"
-import { CardAction } from "frontend/design-system/molecules/card/action"
-import { Button } from "frontend/design-system/atoms/button"
+import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Switch } from "frontend/design-system/atoms/switch"
-import { FaceId } from "frontend/design-system/atoms/images/face-id"
-import { useForm } from "react-hook-form"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { Loader } from "frontend/design-system/atoms/loader"
-import { useNavigate } from "react-router"
-import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
 import {
   creationOptions,
-  IIConnection,
+  IIConnection
 } from "frontend/utils/internet-identity/iiConnection"
-import { WebAuthnIdentity } from "@dfinity/identity"
-import { blobToHex } from "@dfinity/candid"
-import { CONFIG } from "frontend/config"
+import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
+import React, { useState } from "react"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router"
 
 interface IdentityPersonaScreenProps
   extends React.DetailedHTMLProps<

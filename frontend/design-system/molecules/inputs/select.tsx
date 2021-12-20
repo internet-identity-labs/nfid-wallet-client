@@ -6,30 +6,25 @@ interface InputSelectProps
     React.SelectHTMLAttributes<HTMLSelectElement>,
     HTMLSelectElement
   > {
-  id: string
   name: string
   options: Array<{
     value: string
-    selected: boolean
     label: string
   }>
 }
 
 // TODO: make dynamic
-export const InputSelect: React.FC<InputSelectProps> = ({
-  id,
-  name,
-  options,
-  onChange,
-  ...props
-}) => {
+export const InputSelect = React.forwardRef<
+  HTMLSelectElement,
+  InputSelectProps
+>(({ name, options, onChange, ...props }, ref) => {
   return (
-    <select name={name} id={id} onChange={onChange} {...props}>
-      {options.map(({ value, label, selected }) => (
-        <option value={value} selected={selected}>
+    <select ref={ref} name={name} onChange={onChange} {...props}>
+      {options.map(({ value, label }) => (
+        <option key={value} value={value}>
           {label}
         </option>
       ))}
     </select>
   )
-}
+})

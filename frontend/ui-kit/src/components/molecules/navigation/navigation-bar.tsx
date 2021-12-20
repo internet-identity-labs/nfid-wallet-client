@@ -25,10 +25,6 @@ export const NavigationBar: React.FC = () => {
                 href={"/link-internet-identity"}
                 text={"Link InternetIdentity"}
               />
-              <NavigationLink
-                href={"/iframe-overview"}
-                text={"IFrame Overview"}
-              />
               <NavigationLink href={"/copy-devices"} text={"Copy Devices"} />
             </nav>
 
@@ -56,10 +52,6 @@ export const NavigationBar: React.FC = () => {
               <NavigationLink
                 href={"/link-internet-identity"}
                 text={"Link InternetIdentity"}
-              />
-              <NavigationLink
-                href={"/iframe-overview"}
-                text={"IFrame Overview"}
               />
               <NavigationLink href={"/copy-devices"} text={"Copy Devices"} />
             </nav>

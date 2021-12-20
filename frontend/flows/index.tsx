@@ -1,10 +1,7 @@
-import React from "react"
+import { Card, CardBody, Divider, H4 } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
-import { Button, Card } from "@identity-labs/ui"
-import { CardBody } from "@identity-labs/ui"
-import { Divider } from "@identity-labs/ui"
-import { H4 } from "@identity-labs/ui"
 import { Link } from "react-router-dom"
 
 interface Route {
@@ -27,7 +24,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   const routes: Flow[] = [
     {
       title: "Common Pages",
-      items: [{ path: "/iframe-overview" }, { path: "/copy-devices" }],
+      items: [{ path: "/copy-devices" }],
     },
     {
       title: "Mobile Registration Flow",

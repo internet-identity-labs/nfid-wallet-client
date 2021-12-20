@@ -11,7 +11,6 @@ interface Props
   > {
   src: string
   onLoad?: () => void
-  inline?: boolean
 }
 
 export const IFrame: React.FC<Props> = ({
@@ -19,7 +18,6 @@ export const IFrame: React.FC<Props> = ({
   className,
   src,
   onLoad,
-  inline,
 }) => {
   const [visible, setVisible] = useState(true)
   const [title, setTitle] = useState("")
@@ -46,7 +44,7 @@ export const IFrame: React.FC<Props> = ({
   }, [])
 
   return visible ? (
-    <IFrameWrapper className={clsx(className)} inline={inline}>
+    <IFrameWrapper className={clsx(className)}>
       <IFrameHeader onClick={() => setVisible(false)} title={title} />
       <IFrameContent src={src} onLoad={onLoad} />
     </IFrameWrapper>

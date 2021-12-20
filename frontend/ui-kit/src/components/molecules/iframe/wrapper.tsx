@@ -6,14 +6,11 @@ interface IFrameWrapperProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {
-  inline?: boolean
-}
+  > {}
 
 export const IFrameWrapper: React.FC<IFrameWrapperProps> = ({
   children,
   className,
-  inline,
 }) => {
   return (
     <Card
@@ -21,8 +18,8 @@ export const IFrameWrapper: React.FC<IFrameWrapperProps> = ({
       className={clsx(
         "bg-white shadow-xl max-w-screen rounded-xl w-full md:w-[390px] transition-all duration-500",
         "flex flex-col",
+        "fixed bottom-0 right-0  md:top-[18px] md:right-7",
         className,
-        !inline && "fixed bottom-0 right-0  md:top-[18px] md:right-7",
       )}
       style={{ height: 190 }}
     >

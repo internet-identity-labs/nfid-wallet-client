@@ -51,6 +51,14 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       ],
     },
     {
+      title: "Add new access point",
+      items: [
+        { path: "/new-access-point/copy-link-to-channel" },
+        { path: "/new-access-point/awaiting-confirmation" },
+        { path: "/new-access-point/create-keys/fake-secret" },
+      ],
+    },
+    {
       title: "Phone Number Verification Flow",
       items: [
         { path: "/register-identity" },

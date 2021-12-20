@@ -1,6 +1,4 @@
-import React, { ReactChildren, ReactChild } from "react"
-import clsx from "clsx"
-import { ListItemHead } from "./list-item-head"
+import React from "react"
 import { Card } from "../card"
 
 const Header: React.FC = ({ children }) => {
@@ -12,8 +10,8 @@ const Items: React.FC = ({ children }) => {
 }
 
 interface ListCompoundProps {
-  Header: React.FC<{}>;
-  Items: React.FC<{}>;
+  Header: React.FC
+  Items: React.FC
 }
 
 interface Props
@@ -24,7 +22,10 @@ interface Props
   children: React.ReactElement[] | JSX.Element[] | React.ReactNode
 }
 
-export const List: React.FC<Props> & ListCompoundProps = ({ children, className }: any) => {
+export const List: React.FC<Props> & ListCompoundProps = ({
+  children,
+  className,
+}: any) => {
   const header: React.ReactNode[] = []
   const items: React.ReactNode[] = []
 

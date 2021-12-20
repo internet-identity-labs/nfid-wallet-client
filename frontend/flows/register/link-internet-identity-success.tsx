@@ -13,7 +13,7 @@ interface IdentityPersonaSuccessScreenProps
     HTMLDivElement
   > {}
 
-export const IdentityPersonaSuccessScreen: React.FC<
+export const LinkInternetIdentitySuccessScreen: React.FC<
   IdentityPersonaSuccessScreenProps
 > = ({ className }) => {
   const { startUrl } = useAuthContext()

@@ -144,13 +144,11 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     <IFrameScreen title="Scan to sign in">
       <div className="px-6 py-4">
         {!showRegister && url ? (
-          <>
-            <a href={url} target="_blank">
-              <div className="flex flex-row justify-center">
-                <QRCode content={url} options={{ margin: 0 }} />
-              </div>
-            </a>
-          </>
+          <a href={url} target="_blank">
+            <div className="flex flex-row justify-center">
+              <QRCode content={url} options={{ margin: 0 }} />
+            </div>
+          </a>
         ) : null}
         {showRegister && (
           <div className="flex flex-col">

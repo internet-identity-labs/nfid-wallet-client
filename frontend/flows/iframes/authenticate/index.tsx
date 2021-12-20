@@ -16,7 +16,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   const scope = `${hostname}`
 
   return (
-    <IFrameScreen>
+    <IFrameScreen title="Sign in using Multipass">
       {!error ? (
         <div className="px-6 py-4">
           <div

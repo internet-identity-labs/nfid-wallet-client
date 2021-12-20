@@ -8,6 +8,7 @@ import { Modal } from "src/ui-lib/molecules/modal"
 import { ModalHeader } from "./modal/header"
 import clsx from "clsx"
 import { Loader } from "../atoms/loader"
+import { IFrame } from "@identity-labs/ui"
 
 interface InternetAuthProps {}
 
@@ -40,17 +41,24 @@ export const MultipassAuth: React.FC<InternetAuthProps> = () => {
   }, [isAuthenticated])
 
   return showModal ? (
-    <Modal
-      id="authenticate"
-      isVisible={showModal}
-      onClose={handleClose}
-      className={clsx("w-[30rem] h-[20rem]")}
-    >
-      <ModalHeader onClose={handleClose} />
-      <div className={clsx("w-full h-full")}>
-        <Loader isLoading={isLoading} />
-        <AuthIframe src={identityProvider} onLoad={handleAuthentication} />
-      </div>
-    </Modal>
+    <>
+      {/* <Modal
+        id="authenticate"
+        isVisible={showModal}
+        onClose={handleClose}
+        className={clsx("w-[30rem] h-[20rem]")}
+      >
+        <ModalHeader onClose={handleClose} />
+        <div className={clsx("w-full h-full")}>
+          <Loader isLoading={isLoading} />
+          <AuthIframe src={identityProvider} onLoad={handleAuthentication} />
+        </div>
+      </Modal> */}
+
+      <IFrame
+        src={identityProvider}
+        onLoad={handleAuthentication}
+      />
+    </>
   ) : null
 }

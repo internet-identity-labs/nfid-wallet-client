@@ -1,32 +1,48 @@
-import React, { useState } from "react"
 import clsx from "clsx"
-import { Card } from "../card"
+import React, { useState } from "react"
 import { HiX } from "react-icons/hi"
+import { Card } from "../card"
 
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  title?: string
   src: string
   inline?: boolean
-  onLoad?: () => void,
+  onLoad?: () => void
   height?: number
 }
 
 export const IFrame: React.FC<Props> = ({
   children,
   className,
-  title,
   src,
   inline = false,
   height = 200,
   onLoad,
 }) => {
+  const [title, setTitle] = useState("")
   const [visible, setVisible] = useState(true)
   const [_height, setHeight] = useState(height)
   const [loading, setLoading] = useState(true)
+  const origin = new URL(src).origin
+
+  React.useEffect(() => {
+    window.addEventListener("message", function (event) {
+      if (event.origin !== origin) return
+
+      const height = parseInt(event.data.height) + 57
+
+      setTitle(event.data.title)
+      setHeight(height > 200 ? height : 200)
+    })
+  }, [])
+
+  const handleLoad = () => {
+    setLoading(false)
+    onLoad && onLoad()
+  }
 
   React.useEffect(() => {
     setLoading(true)
@@ -63,26 +79,24 @@ export const IFrame: React.FC<Props> = ({
         </div>
       </div>
 
-      <div className="w-full h-full">
-        <iframe
-          className={clsx(
-            "w-full transition-all delay-300 h-full",
-            loading && "opacity-0",
-          )}
-          src={src}
-          frameBorder="0"
-          title="idpWindow"
-          name="idpWindow"
-          width="100%"
-          height="100%"
-          allow="publickey-credentials-get"
-          onLoad={() => {
-            setLoading(false), onLoad
-          }}
-        >
-          {children}
-        </iframe>
-      </div>
+      <iframe
+        className={clsx(
+          "w-full transition-all delay-300 h-full",
+          loading && "opacity-0",
+        )}
+        src={src}
+        frameBorder="0"
+        title="idpWindow"
+        name="idpWindow"
+        width="100%"
+        height="100%"
+        allow="publickey-credentials-get"
+        onLoad={() => {
+          handleLoad()
+        }}
+      >
+        {children}
+      </iframe>
     </Card>
   ) : null
 }

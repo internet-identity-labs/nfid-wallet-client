@@ -1,12 +1,9 @@
-import React from "react"
-import { Centered } from "@identity-labs/ui"
-import { TouchId } from "@identity-labs/ui"
-import { Loader } from "@identity-labs/ui"
+import React, { useEffect } from "react"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
 import { Link } from "react-router-dom"
+import { Loader, TouchId } from "@identity-labs/ui"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { Button } from "@identity-labs/ui"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,
@@ -19,10 +16,9 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   const scope = `${hostname}`
 
   return (
-    <>
+    <IFrameScreen>
       {!error ? (
         <div className="px-6 py-4">
-          <div className="font-medium text-lg mb-3">Sign in to {scope}</div>
           <div
             className="flex items-center cursor-pointer border border-gray-200 rounded hover:shadow-sm hover:bg-gray-50"
             onClick={authenticate}
@@ -40,6 +36,6 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
         <div className="text-red-500">{error.message}</div>
       )}
       <Loader isLoading={isLoading} />
-    </>
+    </IFrameScreen>
   )
 }

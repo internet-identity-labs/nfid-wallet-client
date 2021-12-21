@@ -2,7 +2,7 @@ import { Loader, TouchId } from "@identity-labs/ui"
 import clsx from "clsx"
 import React from "react"
 import { Link } from "react-router-dom"
-import { useAuthentication } from "./hooks"
+import { useAuthentication } from "../iframes/authenticate/hooks"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,

@@ -1,17 +1,14 @@
-import React from "react"
-import { buildDelegate } from "frontend/utils/internet-identity/build-delegate"
-import { Centered } from "@identity-labs/ui"
-import { QRCode } from "@identity-labs/ui"
-import { useUnknownDeviceConfig } from "./hooks"
-import { useInterval } from "frontend/hooks/use-interval"
-import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
-import { setUserNumber } from "frontend/utils/internet-identity/userNumber"
+import { Loader, QRCode, SetupTouchId } from "@identity-labs/ui"
 import clsx from "clsx"
-import { Loader } from "@identity-labs/ui"
-import { SetupTouchId } from"@identity-labs/ui"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { useInterval } from "frontend/hooks/use-interval"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import { buildDelegate } from "frontend/utils/internet-identity/build-delegate"
+import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
+import { setUserNumber } from "frontend/utils/internet-identity/userNumber"
+import React from "react"
+import { useUnknownDeviceConfig } from "./hooks"
 
 interface UnknownDeviceScreenProps {
   showRegisterDefault?: boolean
@@ -144,17 +141,14 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   return (
-    <IFrameScreen>
-      <Centered>
+    <IFrameScreen title="Scan to sign in">
+      <div className="px-6 py-4">
         {!showRegister && url ? (
-          <>
-            <div className="font-medium mb-3">Scan to sign in</div>
-            <a href={url} target="_blank">
-              <div className="flex flex-row">
-                <QRCode content={url} options={{ margin: 0 }} />
-              </div>
-            </a>
-          </>
+          <a href={url} target="_blank">
+            <div className="flex flex-row justify-center">
+              <QRCode content={url} options={{ margin: 0 }} />
+            </div>
+          </a>
         ) : null}
         {showRegister && (
           <div className="flex flex-col">
@@ -168,7 +162,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           </div>
         )}
         <Loader isLoading={status === "loading"} />
-      </Centered>
+      </div>
     </IFrameScreen>
   )
 }

@@ -24,7 +24,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   const routes: Flow[] = [
     {
       title: "Common Pages",
-      items: [{ path: "/iframe-overview" }, { path: "/copy-devices" }],
+      items: [{ path: "/copy-devices" }],
     },
     {
       title: "Mobile Registration Flow",

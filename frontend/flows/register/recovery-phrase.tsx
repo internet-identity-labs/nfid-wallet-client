@@ -4,7 +4,7 @@ import {
   CardAction,
   CardBody,
   CardTitle,
-  P
+  P,
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
@@ -12,6 +12,10 @@ import React, { useState } from "react"
 import { HiCheck, HiClipboard } from "react-icons/hi"
 import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "../auth-wrapper"
+
+interface LocationState {
+  recoveryPhrase: string
+}
 
 interface IdentityPersonaCreatekeysCompleteScreenProps
   extends React.DetailedHTMLProps<
@@ -22,10 +26,10 @@ interface IdentityPersonaCreatekeysCompleteScreenProps
 export const RegisterRecoveryPhraseScreen: React.FC<
   IdentityPersonaCreatekeysCompleteScreenProps
 > = ({ className }) => {
-  const {
-    // FIXME: the user anchor needs to be part of the seed phrase!
-    state: { recoveryPhrase },
-  } = useLocation()
+  const { state } = useLocation()
+
+  // FIXME: the user anchor needs to be part of the seed phrase!
+  const { recoveryPhrase } = state as LocationState
 
   const { startUrl } = useAuthContext()
 

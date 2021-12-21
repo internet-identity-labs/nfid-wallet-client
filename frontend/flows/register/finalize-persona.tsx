@@ -1,21 +1,34 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import {
-  Button, Card, CardAction, CardBody, CardTitle, FaceId, Spinner
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  FaceId,
+  Spinner,
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { fromMnemonicWithoutValidation } from "frontend/utils/internet-identity/crypto/ed25519"
 import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
+import { ProofOfWork } from "frontend/utils/internet-identity/generated/internet_identity_types"
 import {
   IC_DERIVATION_PATH,
-  IIConnection
+  IIConnection,
 } from "frontend/utils/internet-identity/iiConnection"
 import React, { useState } from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useAuthContext } from "../auth-wrapper"
 
+interface RegisterLocationState {
+  name: string
+  identity: string
+  deviceName: string
+  pow: ProofOfWork
+}
 
 interface IdentityPersonaCreatekeysScreenProps
   extends React.DetailedHTMLProps<
@@ -26,9 +39,9 @@ interface IdentityPersonaCreatekeysScreenProps
 export const RegisterFinalizePersonaScreen: React.FC<
   IdentityPersonaCreatekeysScreenProps
 > = ({ className }) => {
-  const {
-    state: { name, identity, deviceName, pow },
-  } = useLocation()
+  const { state } = useLocation()
+  const { name, identity, deviceName, pow } = state as RegisterLocationState
+
   const { onRegisterSuccess } = useAuthContext()
   const { updateAccount } = useMultipass()
 

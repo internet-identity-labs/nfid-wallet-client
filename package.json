@@ -11,11 +11,11 @@
     "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js"
   },
   "dependencies": {
-    "@identity-labs/ui": "link:frontend/ui-kit",
     "@dfinity/agent": "0.9.3",
     "@dfinity/candid": "0.9.3",
     "@dfinity/identity": "0.9.3",
     "@dfinity/principal": "0.9.3",
+    "@identity-labs/ui": "link:frontend/ui-kit",
     "@tailwindcss/forms": "^0.3.4",
     "biguintle": "1.0.3",
     "bip39": "3.0.4",
@@ -39,9 +39,8 @@
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "@types/react-helmet": "6.1.4",
-    "@types/react-router-dom": "5.3.2",
-    "@typescript-eslint/eslint-plugin": "5.8.0",
     "@types/uuid": "8.3.3",
+    "@typescript-eslint/eslint-plugin": "5.8.0",
     "@typescript-eslint/parser": "5.8.0",
     "@vitejs/plugin-react-refresh": "^1.3.6",
     "assert": "2.0.0",

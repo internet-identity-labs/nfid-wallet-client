@@ -4,7 +4,7 @@ import {
   CardAction,
   CardBody,
   CardTitle,
-  P
+  P,
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
@@ -12,6 +12,11 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+
+interface LocationState {
+  iiDeviceLink: string
+  userNumber: string
+}
 
 interface IdentityPersonaInfoScreenProps
   extends React.DetailedHTMLProps<
@@ -26,9 +31,9 @@ export const RegisterLinkInternetIdentityScreen: React.FC<
 
   const { updateAccount } = useMultipass()
 
-  const {
-    state: { iiDeviceLink, userNumber },
-  } = useLocation()
+  const { state } = useLocation()
+  const { iiDeviceLink, userNumber } = state as LocationState
+
   const navigate = useNavigate()
 
   const handleVisibilityChange = React.useCallback(

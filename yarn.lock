@@ -306,6 +306,7 @@
 
 "@identity-labs/ui@link:frontend/ui-kit":
   version "0.0.0"
+  uid ""
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -347,11 +348,6 @@
   integrity sha512-vlAoBifNJUkagB+PAdW4aHMe4pKmSLroH398UPgIogBFc91D2VlHUxe4pjxQhiJl0Nfw53sHSJSQBSTQBZP3vA==
   dependencies:
     mini-svg-data-uri "^1.2.3"
-
-"@types/history@*":
-  version "4.7.9"
-  resolved "https://registry.npmjs.org/@types/history/-/history-4.7.9.tgz"
-  integrity sha512-MUc6zSmU3tEVnkQ78q0peeEjKWPUADMlC/t++2bI8WnAG2tvYRPIgHG8lWkXwqc8MsUF6Z2MOf+Mh5sazOmhiQ==
 
 "@types/json-schema@^7.0.9":
   version "7.0.9"
@@ -402,23 +398,6 @@
   resolved "https://registry.npmjs.org/@types/react-helmet/-/react-helmet-6.1.4.tgz"
   integrity sha512-jyx50RNZXVaTGHY3MsoRPNpeiVk8b0XTPgD/O6KHF6COTDnG/+lRjPYvTK5nfWtR3xDOux0w6bHLAsaHo2ZLTA==
   dependencies:
-    "@types/react" "*"
-
-"@types/react-router-dom@5.3.2":
-  version "5.3.2"
-  resolved "https://registry.npmjs.org/@types/react-router-dom/-/react-router-dom-5.3.2.tgz"
-  integrity sha512-ELEYRUie2czuJzaZ5+ziIp9Hhw+juEw8b7C11YNA4QdLCVbQ3qLi2l4aq8XnlqM7V31LZX8dxUuFUCrzHm6sqQ==
-  dependencies:
-    "@types/history" "*"
-    "@types/react" "*"
-    "@types/react-router" "*"
-
-"@types/react-router@*":
-  version "5.1.17"
-  resolved "https://registry.npmjs.org/@types/react-router/-/react-router-5.1.17.tgz"
-  integrity sha512-RNSXOyb3VyRs/EOGmjBhhGKTbnN6fHWvy5FNLzWfOWOGjgVUKqJZXfpKzLmgoU8h6Hj8mpALj/mbXQASOb92wQ==
-  dependencies:
-    "@types/history" "*"
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^17.0.37":

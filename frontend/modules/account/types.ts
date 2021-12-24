@@ -1,15 +1,13 @@
-import { Persona, RootAnchor } from "../persona/types"
+import { Name, Persona } from "../persona/types"
 
 // Standard HTTP STATUS CODES
 type StatusCode = number
 
-export interface HTTPResponse<T, E extends {} = {}> {
+interface HTTPResponse<T, E extends {} = {}> {
   data: T
   error: E
   status: StatusCode
 }
-
-type Name = string
 
 interface Device {
   pubKeyHash: string
@@ -22,6 +20,7 @@ interface Device {
 interface PhoneNumber {
   value: string
   isVerified: boolean
+  valueSalted: string // New
 }
 
 interface Email {
@@ -31,20 +30,20 @@ interface Email {
 
 export interface Account {
   principalId: string
-  rootAnchor: RootAnchor
-  name: Name // "John Doe"
+  saltedPrincipalId: string
+  isSeedPhraseCopied: boolean
+  name: Name
   phoneNumber: PhoneNumber
   email: Email | null
 }
 
-// Verify Phonenumber API
-declare function verifyPhoneNumber(phoneNumber: string): HTTPResponse<boolean>
 declare function verifyToken(token: string): HTTPResponse<boolean>
 
 // ALL REQUIRE CALLER
 // Account API
 declare function createAccount(
   record: Omit<Account, "principalId">,
+  token: string, // New (SMS token)
 ): HTTPResponse<Account>
 declare function getAccount(): HTTPResponse<Account>
 declare function updateAccount(record: Partial<Account>): HTTPResponse<Account>

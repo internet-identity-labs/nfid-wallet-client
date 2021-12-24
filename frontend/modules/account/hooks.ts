@@ -1,3 +1,4 @@
+import { CONFIG } from "frontend/config"
 import produce from "immer"
 import React from "react"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
@@ -36,8 +37,25 @@ export const useAccount = () => {
     [account],
   )
 
+  const verifyPhoneNumber = React.useCallback(async () => {
+    const domain: string = CONFIG.AWS_VERIFY_PHONENUMBER as string
+
+    const response = await fetch(domain, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber: account?.phoneNumber.value,
+      }),
+    })
+
+    return new Promise<boolean>((resolve) => resolve(response.ok))
+  }, [account?.phoneNumber.value])
+
   React.useEffect(() => {
     getAccount().then((account) => setAccount(account))
   }, [getAccount])
-  return { account, getAccount, updateAccount }
+
+  return { account, getAccount, updateAccount, verifyPhoneNumber }
 }

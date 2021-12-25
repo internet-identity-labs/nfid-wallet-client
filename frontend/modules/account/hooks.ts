@@ -37,26 +37,21 @@ export const useAccount = () => {
     [account],
   )
 
-  const verifyPhoneNumber = React.useCallback(
-    async (phoneNumber?: string) => {
-      const domain: string = CONFIG.AWS_VERIFY_PHONENUMBER as string
+  const verifyPhoneNumber = React.useCallback(async (phoneNumber: string) => {
+    const domain: string = CONFIG.AWS_VERIFY_PHONENUMBER as string
 
-      const response = await fetch(domain, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phoneNumber: phoneNumber ?? account?.phoneNumber.value,
-        }),
-      })
+    const response = await fetch(domain, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+      }),
+    })
 
-      return new Promise<boolean>((resolve) => resolve(response.ok))
-    },
-    [account?.phoneNumber.value],
-  )
-
-  verifyPhoneNumber();
+    return new Promise<boolean>((resolve) => resolve(response.ok))
+  }, [])
 
   React.useEffect(() => {
     getAccount().then((account) => setAccount(account))

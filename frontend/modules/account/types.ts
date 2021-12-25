@@ -38,7 +38,7 @@ export interface Account {
 }
 
 // Verify Phonenumber API
-declare function verifyPhoneNumber(phoneNumber?: string): HTTPResponse<boolean>
+declare function verifyPhoneNumber(phoneNumber: string): HTTPResponse<boolean>
 declare function verifyToken(token: string): HTTPResponse<boolean>
 
 // ALL REQUIRE CALLER

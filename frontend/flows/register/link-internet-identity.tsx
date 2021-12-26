@@ -29,7 +29,7 @@ export const RegisterLinkInternetIdentityScreen: React.FC<
 > = ({ className }) => {
   const [numDevices, setNumDevices] = React.useState(0)
 
-  const { updateAccount } = useMultipass()
+  const { updatePersona } = useMultipass()
 
   const { state } = useLocation()
   const { iiDeviceLink, userNumber } = state as LocationState
@@ -39,14 +39,14 @@ export const RegisterLinkInternetIdentityScreen: React.FC<
   const handleVisibilityChange = React.useCallback(
     async (e) => {
       const devices = await IIConnection.lookupAll(BigInt(userNumber))
-      updateAccount({
-        rootAnchor: userNumber.toString(),
+      updatePersona({
+        anchor: userNumber.toString(),
       })
       if (devices.length > numDevices) {
         navigate("/register/link-internet-identity-success")
       }
     },
-    [navigate, numDevices, updateAccount, userNumber],
+    [navigate, numDevices, updatePersona, userNumber],
   )
 
   const fetchDevices = React.useCallback(async () => {

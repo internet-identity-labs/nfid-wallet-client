@@ -1,17 +1,10 @@
-import clsx from "clsx"
+import { Chip, DeleteButton, ListItem } from "@identity-labs/ui"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import React from "react"
-import { ListItem } from "@identity-labs/ui"
-import { Chip } from "@identity-labs/ui"
-import { FaKey } from "react-icons/fa"
-import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
-import { DeleteButton } from "@identity-labs/ui"
 import { BiLoaderCircle } from "react-icons/bi"
-
-interface Device {
-  alias: string
-  pubkey: number[]
-}
+import { FaKey } from "react-icons/fa"
+import { MdLaptopMac } from "react-icons/md"
+import { Device } from "./types"
 
 interface DeviceItemProps {
   device: Device
@@ -25,11 +18,17 @@ export const DeviceItem: React.FC<DeviceItemProps> = ({ device, refresh }) => {
   const handleDeleteDevice = React.useCallback(async () => {
     if (connection && userNumber) {
       setDeleting(true)
-      await connection.remove(userNumber, device.pubkey)
+
+      // TODO: confirm that pubKeyHash argument is number[], not string?
+      const pubKeyHash = device.pubKeyHash
+        .split("")
+        .map((char) => parseInt(char, 16))
+
+      await connection.remove(userNumber, pubKeyHash)
 
       refresh()
     }
-  }, [connection, device.pubkey, refresh, userNumber])
+  }, [connection, device.pubKeyHash, refresh, userNumber])
 
   const deviceType = () => {
     // TODO: switch on device type

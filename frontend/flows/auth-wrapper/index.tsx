@@ -49,10 +49,10 @@ export const AuthProvider: React.FC<AuthProvider> = ({
   const [connection, setConnection] = React.useState<IIConnection | undefined>(
     undefined,
   )
-  const { account } = useMultipass()
+  const { persona, account } = useMultipass()
   const userNumber = React.useMemo(
-    () => getUserNumber(account ? account.rootAnchor : null),
-    [account],
+    () => getUserNumber(persona ? persona.anchor : null),
+    [persona],
   )
 
   const login = React.useCallback(async () => {
@@ -86,6 +86,7 @@ export const AuthProvider: React.FC<AuthProvider> = ({
         userNumber,
         connection,
         account,
+        // TODO: persona,
         startUrl,
         login,
         onRegisterSuccess,

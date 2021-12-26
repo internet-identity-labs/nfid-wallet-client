@@ -13,6 +13,7 @@ import {
 
 import { HiCheckCircle } from "react-icons/hi"
 import { DeviceItem } from "frontend/modules/devices/device-item"
+import { Device } from "frontend/modules/devices/types"
 
 interface AwaitingConfirmationProps
   extends React.DetailedHTMLProps<
@@ -25,8 +26,15 @@ export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
 }) => {
   const [deviceLinked, setDeviceLinked] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
-
-  const device = { alias: "iPhone X", pubkey: [] }
+  
+  const device: Device = {
+    alias: "My Device",
+    pubKeyHash: "hash",
+    make: "Apple",
+    model: "iPhone",
+    browser: "Safari",
+    lastUsed: new Date().toISOString(),
+  }
 
   return (
     <AppScreen isFocused>

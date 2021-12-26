@@ -9,4 +9,5 @@ export interface Persona {
   isSeedPhraseCopied: boolean
   isIIAnchor: boolean
   anchor: Anchor
+  principalId: string
 }

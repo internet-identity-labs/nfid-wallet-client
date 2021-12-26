@@ -1,3 +1,4 @@
+import { Device } from "../devices/types"
 import { Name, Persona } from "../persona/types"
 
 // Standard HTTP STATUS CODES
@@ -7,14 +8,6 @@ interface HTTPResponse<T, E extends {} = {}> {
   data: T
   error: E
   status: StatusCode
-}
-
-interface Device {
-  pubKeyHash: string
-  lastUsed: string // UTC ISO 8601
-  make: string // "Apple"
-  model: string // "iPhone"
-  browser: string // "Safari"
 }
 
 interface PhoneNumber {
@@ -30,9 +23,7 @@ interface Email {
 
 export interface Account {
   principalId: string
-  saltedPrincipalId: string
-  isSeedPhraseCopied: boolean
-  name: Name
+  name: Name // "John Doe"
   phoneNumber: PhoneNumber
   email: Email | null
 }

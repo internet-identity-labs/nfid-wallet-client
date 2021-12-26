@@ -18,10 +18,10 @@ type State = "loading" | "pause" | "success" | "error"
 export const AwaitingConfirmation = () => {
   const { secret = "" } = useParams()
   const [status, setStatus] = React.useState<State>("loading")
-  const { account, getMessages } = useMultipass()
+  const { account, getMessages, persona } = useMultipass()
   const userNumber = React.useMemo(
-    () => getUserNumber(account ? account.rootAnchor : null),
-    [account],
+    () => getUserNumber(persona ? persona.anchor : null),
+    [persona],
   )
   const { connection } = useAuthContext()
 

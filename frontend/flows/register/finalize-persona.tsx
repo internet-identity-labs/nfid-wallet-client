@@ -6,7 +6,8 @@ import {
   CardBody,
   CardTitle,
   FaceId,
-  Spinner,
+  P,
+  Spinner
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
@@ -16,7 +17,7 @@ import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
 import { ProofOfWork } from "frontend/utils/internet-identity/generated/internet_identity_types"
 import {
   IC_DERIVATION_PATH,
-  IIConnection,
+  IIConnection
 } from "frontend/utils/internet-identity/iiConnection"
 import React, { useState } from "react"
 import { HiCheckCircle } from "react-icons/hi"
@@ -39,11 +40,12 @@ interface IdentityPersonaCreatekeysScreenProps
 export const RegisterFinalizePersonaScreen: React.FC<
   IdentityPersonaCreatekeysScreenProps
 > = ({ className }) => {
+  const [error, setError] = React.useState(false)
   const { state } = useLocation()
   const { name, identity, deviceName, pow } = state as RegisterLocationState
 
   const { onRegisterSuccess } = useAuthContext()
-  const { updateAccount } = useMultipass()
+  const { updateAccount, updatePersona } = useMultipass()
 
   const navigate = useNavigate()
   const [anchorCreated, setAnchorCreated] = useState(false)
@@ -57,16 +59,20 @@ export const RegisterFinalizePersonaScreen: React.FC<
       deviceName,
       pow,
     )
+
     if (response.kind === "loginSuccess") {
       const { userNumber } = response
       updateAccount({
         principalId: webAuthnIdentity.getPrincipal().toString(),
-        rootAnchor: userNumber.toString(),
+      })
+      updatePersona({
+        principalId: webAuthnIdentity.getPrincipal().toString(),
+        anchor: userNumber.toString(),
       })
     }
     setAnchorCreated(true)
     return response
-  }, [deviceName, identity, pow, updateAccount])
+  }, [deviceName, identity, pow, updateAccount, updatePersona])
 
   const handleCreateRecoveryPhrase = React.useCallback(
     async (userNumber: bigint, connection: IIConnection) => {
@@ -105,8 +111,11 @@ export const RegisterFinalizePersonaScreen: React.FC<
       return navigate("/register/recovery-phrase", {
         state: { recoveryPhrase },
       })
+    } else {
+      setLoading(false)
+      setError(true)
+      throw new Error("Failed to register anchor")
     }
-    console.error("handle this error")
   }, [
     handleCreateRecoveryPhrase,
     handleRegisterAnchor,
@@ -143,6 +152,11 @@ export const RegisterFinalizePersonaScreen: React.FC<
               <div>Create recovery phrase</div>
             </div>
           </div>
+          {error && (
+            <P className="text-red-400 font-bold">
+              Something went wrong. Please try again.
+            </P>
+          )}
           {loading ? <Spinner className="w-12 h-12" /> : null}
         </CardBody>
         {!loading && (

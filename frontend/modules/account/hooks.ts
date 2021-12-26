@@ -5,7 +5,7 @@ import {
   validateEmail,
   validateName,
   validatePhonenumber,
-  validateUniqueName,
+  validateUniqueName
 } from "../../utils/validations"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import { Account } from "./types"

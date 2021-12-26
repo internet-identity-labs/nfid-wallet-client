@@ -7,7 +7,7 @@ import {
   CardTitle,
   FaceId,
   P,
-  Spinner
+  Spinner,
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"

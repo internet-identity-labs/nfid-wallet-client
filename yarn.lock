@@ -306,7 +306,6 @@
 
 "@identity-labs/ui@link:frontend/ui-kit":
   version "0.0.0"
-  uid ""
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

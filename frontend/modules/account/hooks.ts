@@ -66,7 +66,7 @@ export const useAccount = () => {
             "Content-Type": "application/json",
             // Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(encryptedAccount),
+          body: JSON.stringify({ encryptedAccount, token }),
         }).then((res) => res.json())
 
         return new Promise((resolve, reject) => {
@@ -108,7 +108,7 @@ export const useAccount = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          phoneNumber: phoneNumber,
+          phoneNumber,
         }),
       }).then((res) => res.json())
 

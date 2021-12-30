@@ -1,13 +1,18 @@
 import {
-  Button, Card, CardAction, CardBody, CardTitle, FaceId,
-  Loader
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  FaceId,
+  Loader,
 } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { Account } from "frontend/modules/account/types"
 import {
   apiResultToLoginResult,
-  LoginError
+  LoginError,
 } from "frontend/utils/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
@@ -99,7 +104,7 @@ export const AuthProvider: React.FC<AuthProvider> = ({
 export const useAuthContext = () => React.useContext(AuthContext)
 
 export const AuthWrapper: React.FC = ({ children }) => {
-  const { isLoading, isAuthenticated, account, login} = useAuthContext()
+  const { isLoading, isAuthenticated, account, login } = useAuthContext()
 
   return isAuthenticated ? (
     <>{children}</>

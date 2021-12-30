@@ -1,3 +1,4 @@
+import CryptoJS from "crypto-js"
 import { CONFIG } from "frontend/config"
 import produce from "immer"
 import React from "react"
@@ -5,7 +6,7 @@ import {
   validateEmail,
   validateName,
   validatePhonenumber,
-  validateUniqueName
+  validateUniqueName,
 } from "../../utils/validations"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import { Account } from "./types"
@@ -35,6 +36,9 @@ export const useAccount = () => {
   const createAccount = React.useCallback(
     async (record: Omit<Account, "principalId">, token: string) => {
       try {
+        const secret = CONFIG.ENCRYPTION_SECRET as string
+        if (!secret) throw new Error("ENCRYPTION_SECRET is not defined")
+
         if (!validateName(record.name)) {
           throw new Error("Invalid name")
         } else if (!validateUniqueName(account, record.name)) {
@@ -51,7 +55,26 @@ export const useAccount = () => {
           draft.email = record.email
         })
 
-        setAccount(newAccount)
+        const encryptedAccount = CryptoJS.AES.encrypt(
+          JSON.stringify(newAccount),
+          CONFIG.ENCRYPTION_SECRET as string,
+        ).toString()
+
+        const response = await fetch(`${CONFIG.API.CREATE_ACCOUNT}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(encryptedAccount),
+        }).then((res) => res.json())
+
+        return new Promise((resolve, reject) => {
+          response.error && reject(response.error)
+
+          setAccount(newAccount)
+          resolve(response.data)
+        })
       } catch (error) {
         console.error(error)
       }
@@ -78,17 +101,25 @@ export const useAccount = () => {
       throw new Error("No domain configured for AWS_VERIFY_PHONENUMBER")
     }
 
-    const response = await fetch(domain, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        phoneNumber: phoneNumber,
-      }),
-    })
+    try {
+      const response = await fetch(domain, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+        }),
+      }).then((res) => res.json())
 
-    return new Promise<boolean>((resolve) => resolve(response.ok))
+      return new Promise((resolve, reject) => {
+        response.error && reject(response.error)
+
+        resolve(response.data)
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }, [])
 
   React.useEffect(() => {

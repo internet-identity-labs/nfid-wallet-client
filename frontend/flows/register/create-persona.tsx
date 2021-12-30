@@ -1,13 +1,24 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { Button, Card, CardAction, CardBody, CardTitle, FaceId, Input, Loader, P, Switch } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  FaceId,
+  Input,
+  Loader,
+  P,
+  Switch,
+} from "@identity-labs/ui"
 import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   creationOptions,
-  IIConnection
+  IIConnection,
 } from "frontend/utils/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
 import React, { useState } from "react"
@@ -23,7 +34,7 @@ interface IdentityPersonaScreenProps
 export const RegisterCreatePersonaScreen: React.FC<
   IdentityPersonaScreenProps
 > = ({ className }) => {
-  const [isLoading, setIslaoding] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { register, watch } = useForm()
   const [hasAnchor, setHasAnchor] = useState(false)
 
@@ -38,7 +49,7 @@ export const RegisterCreatePersonaScreen: React.FC<
   }, [hasAnchor])
 
   const handleCreateIdentity = React.useCallback(async () => {
-    setIslaoding(true)
+    setLoading(true)
     const registerPayload = await createWebAuthNIdentity()
     navigate("/register/finalize-persona", {
       state: {
@@ -150,7 +161,7 @@ export const RegisterCreatePersonaScreen: React.FC<
               </Button>
             </div>
           )}
-          <Loader isLoading={isLoading} />
+          <Loader isLoading={loading} />
         </CardAction>
       </Card>
     </AppScreen>

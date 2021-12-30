@@ -35,8 +35,8 @@ export const baseActor = Actor.createActor<_SERVICE>(identity_manager_idl, {
 })
 
 export const useMultipass = () => {
-  const { account, getAccount, updateAccount } = useAccount()
-  const { persona, getPersona, updatePersona } = usePersona()
+  const { account, getAccount, updateAccount, createAccount } = useAccount()
+  const { persona, getPersona, updatePersona, createPersona } = usePersona()
 
   const createWebAuthNIdentity = React.useCallback(async () => {
     const deviceName = `${getBrowser()} on ${getPlatform()}`
@@ -90,9 +90,11 @@ export const useMultipass = () => {
   return {
     account,
     getAccount,
+    createAccount,
     updateAccount,
     persona,
     getPersona,
+    createPersona,
     updatePersona,
     createWebAuthNIdentity,
     handleAddDevice,

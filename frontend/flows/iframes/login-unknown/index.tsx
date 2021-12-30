@@ -88,6 +88,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       "_blank",
     )
     // const response = await handleAddDevice(BigInt(delegation.userNumber))
+    
   }, [message, pubKey])
 
   const handlePollForDelegate = React.useCallback(

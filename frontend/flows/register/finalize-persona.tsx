@@ -7,7 +7,7 @@ import {
   CardTitle,
   FaceId,
   P,
-  Spinner,
+  Spinner
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
@@ -62,9 +62,6 @@ export const RegisterFinalizePersonaScreen: React.FC<
 
     if (response.kind === "loginSuccess") {
       const { userNumber } = response
-      updateAccount({
-        principalId: webAuthnIdentity.getPrincipal().toString(),
-      })
       updatePersona({
         principalId: webAuthnIdentity.getPrincipal().toString(),
         anchor: userNumber.toString(),
@@ -72,7 +69,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
     }
     setAnchorCreated(true)
     return response
-  }, [deviceName, identity, pow, updateAccount, updatePersona])
+  }, [deviceName, identity, pow, updatePersona])
 
   const handleCreateRecoveryPhrase = React.useCallback(
     async (userNumber: bigint, connection: IIConnection) => {

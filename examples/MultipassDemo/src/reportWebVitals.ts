@@ -1,5 +1,3 @@
-// TODO: fix this
-// eslint-disable-next-line no-unused-vars
 import { ReportHandler } from "web-vitals"
 
 const reportWebVitals = (onPerfEntry?: ReportHandler) => {

@@ -9,12 +9,11 @@ export const useDevice = (_userNumber: UserNumber) => {
   const [userNumber, setUserNumber] = React.useState<UserNumber>(_userNumber)
 
   const readDevices = React.useCallback(async () => {
-    const devices = await IIConnection.lookupAll(BigInt(userNumber))
-    // TODO: convert from DeviceData[] to Device[]?
+    // const devices = await IIConnection.lookupAll(BigInt(userNumber))
     // setDevices(devices)
 
     return devices.length
-  }, [userNumber])
+  }, [devices.length])
 
   React.useEffect(() => {
     userNumber && readDevices()

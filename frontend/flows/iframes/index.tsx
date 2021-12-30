@@ -6,15 +6,13 @@ import { Authenticate } from "./authenticate"
 import { UnknownDeviceScreen } from "./login-unknown"
 
 export const IFrameRoutes = () => {
-  const { account, persona } = useMultipass()
+  const { persona } = useMultipass()
 
   const userNumber = React.useMemo(
     () => getUserNumber(persona ? persona.anchor : null),
     [persona],
   )
-  console.log(">> App", { account })
-  console.log("userNumber :>> ", userNumber)
-  
+  console.log(">App :>> ", { persona, userNumber })
   return (
     <Routes>
       <Route path="/login-unknown-device" element={<UnknownDeviceScreen />} />

@@ -7,7 +7,7 @@ import {
   CardTitle,
   FaceId,
   P,
-  Spinner
+  Spinner,
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
@@ -17,7 +17,7 @@ import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
 import { ProofOfWork } from "frontend/utils/internet-identity/generated/internet_identity_types"
 import {
   IC_DERIVATION_PATH,
-  IIConnection
+  IIConnection,
 } from "frontend/utils/internet-identity/iiConnection"
 import React, { useState } from "react"
 import { HiCheckCircle } from "react-icons/hi"
@@ -45,7 +45,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
   const { name, identity, deviceName, pow } = state as RegisterLocationState
 
   const { onRegisterSuccess } = useAuthContext()
-  const { updateAccount, updatePersona } = useMultipass()
+  const { updatePersona } = useMultipass()
 
   const navigate = useNavigate()
   const [anchorCreated, setAnchorCreated] = useState(false)
@@ -53,6 +53,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
   const [loading, setLoading] = useState(false)
 
   const handleRegisterAnchor = React.useCallback(async () => {
+    // FIXME: doesn't work?
     const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
     const response = await IIConnection.register(
       webAuthnIdentity,

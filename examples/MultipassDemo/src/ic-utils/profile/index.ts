@@ -1,9 +1,6 @@
 import React from "react"
 import { createActor } from "src/ic-utils/create-actor"
 import { idlFactory } from "ic/profile.did"
-
-// TODO: fix this
-// eslint-disable-next-line no-unused-vars
 import { Identity } from "@dfinity/agent"
 
 interface UseProfileProps {

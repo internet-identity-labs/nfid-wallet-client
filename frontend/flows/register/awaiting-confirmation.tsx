@@ -1,5 +1,12 @@
 import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
-import { Button, Card, CardBody, CardTitle, FaceId, H4 } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  FaceId,
+  H4,
+} from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useInterval } from "frontend/hooks/use-interval"
@@ -25,8 +32,7 @@ export const AwaitingConfirmation = () => {
   )
   const { connection } = useAuthContext()
 
-  // TODO:
-  // - [ ] get device from communication channel
+  // TODO: get device from communication channel
   const DEVICE = "MacBook Pro"
 
   const handlePoll = React.useCallback(

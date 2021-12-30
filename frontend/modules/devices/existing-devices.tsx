@@ -28,7 +28,6 @@ export const ExistingDevices = () => {
       {existingDevices.map((device) => (
         <DeviceItem
           device={device}
-          key={device.alias}
           refresh={handleLoadDevices}
         />
       ))}

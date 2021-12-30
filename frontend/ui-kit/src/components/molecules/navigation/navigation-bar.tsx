@@ -1,7 +1,7 @@
 import React from "react"
-import { NavigationLink } from "./navigation-link"
-import { Logo } from "../../atoms/images/logo"
 import { HiMenu } from "react-icons/hi"
+import { Logo } from "../../atoms/images/logo"
+import { NavigationLink } from "./navigation-link"
 
 export const NavigationBar: React.FC = () => {
   const [mobileNavOpen, setMobileNavOpen] = React.useState<boolean>(false)
@@ -40,7 +40,6 @@ export const NavigationBar: React.FC = () => {
           </div>
         </div>
 
-        {/* <!-- Mobile Navigation --> */}
         {mobileNavOpen && (
           <div className="lg:hidden">
             <nav className="flex flex-col space-y-2 py-4 border-t">

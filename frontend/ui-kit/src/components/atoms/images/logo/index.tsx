@@ -1,9 +1,9 @@
 import React from "react"
-import { Link } from "react-router-dom"
 
 export const Logo: React.FC = () => {
   return (
-    <Link to="/"
+    <a
+      href="/"
       className="group inline-flex items-center space-x-2 font-bold text-lg tracking-wide text-gray-700 hover:text-indigo-600 active:text-gray-700"
     >
       <svg
@@ -18,7 +18,7 @@ export const Logo: React.FC = () => {
           clipRule="evenodd"
         ></path>
       </svg>
-      <span>Ubiquid</span>
-    </Link>
+      <span>NFID</span>
+    </a>
   )
 }

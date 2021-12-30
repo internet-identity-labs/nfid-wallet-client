@@ -2,8 +2,8 @@ import { Chip, DeleteButton, ListItem } from "@identity-labs/ui"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import React from "react"
 import { BiLoaderCircle } from "react-icons/bi"
-import { FaKey } from "react-icons/fa"
-import { MdLaptopMac } from "react-icons/md"
+import { FaKey, FaLaptop } from "react-icons/fa"
+import { MdLaptopMac, MdLaptopWindows } from "react-icons/md"
 import { Device } from "./types"
 
 interface DeviceItemProps {
@@ -19,20 +19,21 @@ export const DeviceItem: React.FC<DeviceItemProps> = ({ device, refresh }) => {
     if (connection && userNumber) {
       setDeleting(true)
 
-      // TODO: confirm that pubKeyHash argument is number[], not string?
-      const pubKeyHash = device.pubKeyHash
-        .split("")
-        .map((char) => parseInt(char, 16))
-
-      await connection.remove(userNumber, pubKeyHash)
+      // TODO: decrypt device.pubKeyHash with keySync
+      const pubKey = [...device.pubKeyHash].map((x) => parseInt(x, 16))
+      await connection.remove(userNumber, pubKey)
 
       refresh()
     }
   }, [connection, device.pubKeyHash, refresh, userNumber])
 
   const deviceType = () => {
-    // TODO: switch on device type
-    return <MdLaptopMac className="text-xl text-gray-600" />
+    switch (device.make) {
+      case "Apple":
+        return <MdLaptopMac className="text-xl text-gray-600" />
+      default:
+        return <MdLaptopWindows className="text-xl text-gray-600" />
+    }
   }
 
   return (

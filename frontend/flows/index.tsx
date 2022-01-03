@@ -55,10 +55,10 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       title: "Phone Number Verification Flow",
       items: [
         { path: "/register-identity" },
-        { path: "/register-identity-name" },
-        { path: "/register-identity-phone" },
-        { path: "/register-identity-sms" },
-        { path: "/register-identity-challenge" },
+        { path: "/register-identity/name" },
+        { path: "/register-identity/phone" },
+        { path: "/register-identity/sms" },
+        { path: "/register-identity/challenge" },
       ],
     },
   ]

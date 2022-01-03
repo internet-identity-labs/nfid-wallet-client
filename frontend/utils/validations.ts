@@ -16,6 +16,7 @@ export const validateName = (name: string) => {
   return regex.test(name)
 }
 
-export const validateUniqueName = (account: Account | null, name: string) => {
-  return !account || account.name !== name
+export const validateUniqueName = (name: string) => {
+  // TODO: check backend for uniqueness of name
+  return true
 }

@@ -1,4 +1,5 @@
 type Anchor = string
+export type Name = string 
 
 export interface Persona {
   anchor: Anchor // 10003

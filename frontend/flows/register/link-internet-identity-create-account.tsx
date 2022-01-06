@@ -34,6 +34,9 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
         phone_number: "0123456789",
       }
       await result.identityManager.create_account(account)
+      const response = await result.identityManager.get_account()
+      console.log(">> identityManager.get_account", { response })
+
       updateAccount({ ...account, rootAnchor: userNumber })
       navigate("/register/link-internet-identity-success")
     }

@@ -83,12 +83,8 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
   const handleRegisterDevice = React.useCallback(async () => {
     setStatus("loading")
-    window.open(
-      `/register-new-device/${pubKey}/${message.userNumber}`,
-      "_blank",
-    )
+    window.open(`/rdp/new-device/${pubKey}/${message.userNumber}`, "_blank")
     // const response = await handleAddDevice(BigInt(delegation.userNumber))
-    
   }, [message, pubKey])
 
   const handlePollForDelegate = React.useCallback(

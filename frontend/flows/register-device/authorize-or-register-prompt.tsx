@@ -1,4 +1,11 @@
-import { Card, CardAction, CardTitle, Loader, LoginTemporarily, SetupTouchId } from "@identity-labs/ui"
+import {
+  Card,
+  CardAction,
+  CardTitle,
+  Loader,
+  LoginTemporarily,
+  SetupTouchId,
+} from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
@@ -24,7 +31,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
     setStatus("loading")
     await remoteLogin({ secret, scope, register: true })
     setStatus("success")
-    return navigate(`/register-confirmation/${secret}`)
+    return navigate(`/register/confirmation/${secret}`)
   }, [navigate, remoteLogin, scope, secret])
 
   React.useEffect(() => {

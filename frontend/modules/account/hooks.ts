@@ -41,7 +41,7 @@ export const useAccount = () => {
 
         if (!validateName(record.name)) {
           throw new Error("Invalid name")
-        } else if (!validateUniqueName(account, record.name)) {
+        } else if (!validateUniqueName(record.name)) {
           throw new Error("Account name is already taken")
         } else if (!validateEmail(record.email?.value as string)) {
           throw new Error("Invalid email")

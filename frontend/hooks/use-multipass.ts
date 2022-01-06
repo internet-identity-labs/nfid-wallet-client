@@ -15,6 +15,7 @@ import {
 import { useAccount } from "frontend/modules/account/hooks"
 import { usePersona } from "frontend/modules/persona/hooks"
 import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
+import { useAuthContext } from "frontend/flows/auth-wrapper"
 
 const canisterId: string = CONFIG.MP_CANISTER_ID as string
 
@@ -35,9 +36,7 @@ export const baseActor = Actor.createActor<_SERVICE>(identity_manager_idl, {
 })
 
 export const useMultipass = () => {
-  const { account, getAccount, updateAccount, createAccount } = useAccount()
-  const { persona, getPersona, updatePersona, createPersona } = usePersona()
-
+  const { identityManager } = useAuthContext()
   const createWebAuthNIdentity = React.useCallback(async () => {
     const deviceName = `${getBrowser()} on ${getPlatform()}`
     const identity = await WebAuthnIdentity.create({
@@ -88,14 +87,8 @@ export const useMultipass = () => {
   )
 
   return {
-    account,
-    getAccount,
-    createAccount,
-    updateAccount,
-    persona,
-    getPersona,
-    createPersona,
-    updatePersona,
+    ...useAccount(identityManager),
+    ...usePersona(),
     createWebAuthNIdentity,
     handleAddDevice,
     createTopic,

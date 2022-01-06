@@ -63,9 +63,9 @@ export const RegisterFinalizePersonaScreen: React.FC<
 
     if (response.kind === "loginSuccess") {
       const { userNumber } = response
-      updatePersona({
-        principalId: webAuthnIdentity.getPrincipal().toString(),
-        anchor: userNumber.toString(),
+      updateAccount({
+        principal_id: webAuthnIdentity.getPrincipal().toString(),
+        rootAnchor: userNumber.toString(),
       })
     }
     setAnchorCreated(true)

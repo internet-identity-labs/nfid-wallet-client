@@ -9,7 +9,6 @@ import {
 } from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { Account } from "frontend/modules/account/types"
 import {
   apiResultToLoginResult,
   LoginError,
@@ -18,13 +17,19 @@ import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
 import React from "react"
 import { Navigate } from "react-router-dom"
+import { ActorSubclass } from "@dfinity/agent"
+import {
+  Account,
+  _SERVICE as _IDENTITY_MANAGER_SERVICE,
+} from "frontend/generated/identity_manager"
 
 interface AuthContextState {
   isAuthenticated: boolean
   isLoading: boolean
   connection?: IIConnection
+  identityManager?: ActorSubclass<_IDENTITY_MANAGER_SERVICE>
   userNumber?: bigint
-  account: Account | null
+  account: Account | undefined
   startUrl: string
   login: () => void
   onRegisterSuccess: (connection: IIConnection) => void
@@ -34,8 +39,9 @@ export const AuthContext = React.createContext<AuthContextState>({
   isAuthenticated: false,
   isLoading: false,
   connection: undefined,
+  identityManager: undefined,
   userNumber: undefined,
-  account: null,
+  account: undefined,
   startUrl: "",
   login: () => console.warn(">> called before initialisation"),
   onRegisterSuccess: () => console.warn(">> called before initialisation"),
@@ -54,7 +60,11 @@ export const AuthProvider: React.FC<AuthProvider> = ({
   const [connection, setConnection] = React.useState<IIConnection | undefined>(
     undefined,
   )
-  const { persona, account } = useMultipass()
+  const [identityManager, setIdentityManager] = React.useState<
+    ActorSubclass<_IDENTITY_MANAGER_SERVICE> | undefined
+  >(undefined)
+  const { account, persona } = useMultipass()
+
   const userNumber = React.useMemo(
     () => getUserNumber(persona ? persona.anchor : null),
     [persona],
@@ -73,6 +83,7 @@ export const AuthProvider: React.FC<AuthProvider> = ({
     }
     if (result.tag === "ok") {
       setConnection(result.connection)
+      setIdentityManager(result.identityManager)
     }
   }, [userNumber])
 
@@ -90,6 +101,7 @@ export const AuthProvider: React.FC<AuthProvider> = ({
         isAuthenticated: !!connection,
         userNumber,
         connection,
+        identityManager,
         account,
         startUrl,
         login,

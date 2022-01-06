@@ -5,6 +5,7 @@ import { AwaitingConfirmation } from "./awaiting-confirmation"
 import { RegisterCreatePersonaScreen } from "./create-persona"
 import { RegisterFinalizePersonaScreen } from "./finalize-persona"
 import { RegisterLinkInternetIdentityScreen } from "./link-internet-identity"
+import { LinkInternetIdentityCreateAccountScreen } from "./link-internet-identity-create-account"
 import { LinkInternetIdentitySuccessScreen } from "./link-internet-identity-success"
 import { RegisterRecoveryPhraseScreen } from "./recovery-phrase"
 import { RegisterWelcome } from "./welcome"
@@ -15,6 +16,7 @@ export const RegisterConstants = {
   createPersona: "create-persona",
   linkInternetIdentity: "link-internet-identity",
   linkInternetIdentitySuccess: "link-internet-identity-success",
+  linkInternetIdentityCreateAccount: "link-internet-identity-create-account",
   finalizePersona: "finalize-persona",
   recoveryPhrase: "recovery-phrase",
   confirmation: "confirmation",
@@ -25,7 +27,10 @@ export const RegisterRoutes = {
   element: <Outlet />,
   children: [
     { path: RegisterConstants.welcome, element: <RegisterWelcome /> },
-    { path: RegisterConstants.createPersona, element: <RegisterCreatePersonaScreen /> },
+    {
+      path: RegisterConstants.createPersona,
+      element: <RegisterCreatePersonaScreen />,
+    },
     {
       path: RegisterConstants.linkInternetIdentity,
       element: (
@@ -49,6 +54,10 @@ export const RegisterRoutes = {
           <AwaitingConfirmation />
         </AuthWrapper>
       ),
+    },
+    {
+      path: `${RegisterConstants.linkInternetIdentityCreateAccount}/:userNumber`,
+      element: <LinkInternetIdentityCreateAccountScreen />,
     },
     {
       path: RegisterConstants.recoveryPhrase,

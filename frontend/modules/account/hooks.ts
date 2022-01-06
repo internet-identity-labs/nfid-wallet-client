@@ -1,5 +1,9 @@
-import CryptoJS from "crypto-js"
 import { CONFIG } from "frontend/config"
+import {
+  Account,
+  HTTPAccountRequest,
+  _SERVICE as _IDENTITY_MANAGER_SERVICE,
+} from "frontend/generated/identity_manager"
 import produce from "immer"
 import React from "react"
 import {
@@ -9,17 +13,23 @@ import {
   validateUniqueName,
 } from "../../utils/validations"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
-import { Account } from "./types"
 
-const getAccountFromLocalStorage = (): Account | null => {
+type AccountService = Pick<
+  _IDENTITY_MANAGER_SERVICE,
+  "create_account" | "update_account" | "get_account"
+>
+
+type LocalAccount = Account & { rootAnchor: string }
+
+const getAccountFromLocalStorage = (): LocalAccount | undefined => {
   const accountFromLS = localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY)
 
-  const account: Account = accountFromLS ? JSON.parse(accountFromLS) : null
+  const account = accountFromLS ? JSON.parse(accountFromLS) : undefined
   return account
 }
 
-export const useAccount = () => {
-  const [account, setAccount] = React.useState<Account | null>(
+export const useAccount = (accountService?: AccountService) => {
+  const [account, setAccount] = React.useState<LocalAccount | undefined>(
     getAccountFromLocalStorage(),
   )
 
@@ -28,63 +38,29 @@ export const useAccount = () => {
       localStorage.setItem(ACCOUNT_LOCAL_STORAGE_KEY, JSON.stringify(account))
   }, [account])
 
-  const getAccount = React.useCallback(async () => {
-    const account = getAccountFromLocalStorage()
-    return account
-  }, [])
-
   const createAccount = React.useCallback(
-    async (record: Omit<Account, "principalId">, token: string) => {
-      try {
-        const secret = CONFIG.ENCRYPTION_SECRET as string
-        if (!secret) throw new Error("ENCRYPTION_SECRET is not defined")
-
-        if (!validateName(record.name)) {
-          throw new Error("Invalid name")
-        } else if (!validateUniqueName(record.name)) {
-          throw new Error("Account name is already taken")
-        } else if (!validateEmail(record.email?.value as string)) {
-          throw new Error("Invalid email")
-        } else if (!validatePhonenumber(record.phoneNumber.value)) {
-          throw new Error("Invalid phone number")
-        }
-
-        const newAccount = produce(account, (draft: Account) => {
-          draft.name = record.name
-          draft.phoneNumber = record.phoneNumber
-          draft.email = record.email
-        })
-
-        const encryptedAccount = CryptoJS.AES.encrypt(
-          JSON.stringify(newAccount),
-          CONFIG.ENCRYPTION_SECRET as string,
-        ).toString()
-
-        const response = await fetch(`${CONFIG.API.CREATE_ACCOUNT}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ encryptedAccount, token }),
-        }).then((res) => res.json())
-
-        return new Promise((resolve, reject) => {
-          response.error && reject(response.error)
-
-          setAccount(newAccount)
-          resolve(response.data)
-        })
-      } catch (error) {
-        console.error(error)
+    async (account: HTTPAccountRequest) => {
+      if (!accountService) {
+        throw new Error("accountService is required")
       }
+      const response = await accountService.create_account(account)
+      if (response.status_code === 200) {
+        // @ts-ignore TODO: fix types
+        setAccount(response.data[0])
+      }
+      return response
     },
-    [account],
+    [accountService],
   )
 
+  const getAccount = React.useCallback(async () => {
+    const account = getAccountFromLocalStorage()
+    return new Promise<Account | undefined>((resolve) => resolve(account))
+  }, [])
+
   const updateAccount = React.useCallback(
-    (partialAccount: Partial<Account>) => {
-      const newAccount = produce(account, (draft: Account) => ({
+    (partialAccount: Partial<LocalAccount>) => {
+      const newAccount = produce(account, (draft: LocalAccount) => ({
         ...draft,
         ...partialAccount,
       }))
@@ -123,14 +99,9 @@ export const useAccount = () => {
   }, [])
 
   React.useEffect(() => {
+    // @ts-ignore TODO: fix types
     getAccount().then((account) => setAccount(account))
   }, [getAccount])
 
-  return {
-    account,
-    getAccount,
-    createAccount,
-    updateAccount,
-    verifyPhoneNumber,
-  }
+  return { account, createAccount, getAccount, updateAccount }
 }

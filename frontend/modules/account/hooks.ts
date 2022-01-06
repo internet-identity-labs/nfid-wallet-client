@@ -38,6 +38,7 @@ export const useAccount = (accountService?: AccountService) => {
       }
       const response = await accountService.create_account(account)
       if (response.status_code === 200) {
+        // @ts-ignore TODO: fix types
         setAccount(response.data[0])
       }
       return response
@@ -62,6 +63,7 @@ export const useAccount = (accountService?: AccountService) => {
   )
 
   React.useEffect(() => {
+    // @ts-ignore TODO: fix types
     getAccount().then((account) => setAccount(account))
   }, [getAccount])
 

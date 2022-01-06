@@ -24,6 +24,8 @@ import {
   DelegationKey,
   DelegationJson,
 } from "./generated/internet_identity_types"
+import { _SERVICE as IdentityManagerService } from "frontend/generated/identity_manager"
+import { idlFactory as IdentityManagerIdlFactory } from "frontend/generated/identity_manager_idl"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -73,6 +75,7 @@ export type RegisterResult =
 type LoginSuccess = {
   kind: "loginSuccess"
   connection: IIConnection
+  identityManager: ActorSubclass<IdentityManagerService>
   userNumber: bigint
 }
 type UnknownUser = { kind: "unknownUser"; userNumber: bigint }
@@ -131,6 +134,9 @@ export class IIConnection {
       return {
         kind: "loginSuccess",
         connection: new IIConnection(identity, delegationIdentity, actor),
+        identityManager: await this.createIdentityManagerActor(
+          delegationIdentity,
+        ),
         userNumber,
       }
     } else {
@@ -187,6 +193,9 @@ export class IIConnection {
         delegationIdentity,
         actor,
       ),
+      identityManager: await this.createIdentityManagerActor(
+        delegationIdentity,
+      ),
     }
   }
 
@@ -213,6 +222,9 @@ export class IIConnection {
       kind: "loginSuccess",
       userNumber,
       connection: new IIConnection(identity, delegationIdentity, actor),
+      identityManager: await this.createIdentityManagerActor(
+        delegationIdentity,
+      ),
     }
   }
 
@@ -272,6 +284,25 @@ export class IIConnection {
       agent,
       canisterId: canisterId,
     })
+    return actor
+  }
+
+  static async createIdentityManagerActor(
+    delegationIdentity: DelegationIdentity,
+  ): Promise<ActorSubclass<IdentityManagerService>> {
+    const agent = new HttpAgent({ identity: delegationIdentity })
+
+    // Only fetch the root key when we're not in prod
+    if (CONFIG.II_ENV === "development") {
+      await agent.fetchRootKey()
+    }
+    const actor = Actor.createActor<IdentityManagerService>(
+      IdentityManagerIdlFactory,
+      {
+        agent,
+        canisterId: CONFIG.MP_CANISTER_ID as string,
+      },
+    )
     return actor
   }
 
@@ -377,7 +408,10 @@ const requestFEDelegation = async (
     sessionKey.getPublicKey(),
     new Date(Date.now() + tenMinutesInMsec),
     {
-      targets: [Principal.from(canisterId)],
+      targets: [
+        Principal.from(canisterId),
+        Principal.from(CONFIG.MP_CANISTER_ID),
+      ],
     },
   )
   return DelegationIdentity.fromDelegation(sessionKey, chain)

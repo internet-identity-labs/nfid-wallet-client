@@ -3,6 +3,7 @@ import { Outlet, Route, Routes } from "react-router-dom"
 import { RegisterCreatePersonaScreen } from "./create-persona"
 import { RegisterFinalizePersonaScreen } from "./finalize-persona"
 import { RegisterLinkInternetIdentityScreen } from "./link-internet-identity"
+import { LinkInternetIdentityCreateAccountScreen } from "./link-internet-identity-create-account"
 import { LinkInternetIdentitySuccessScreen } from "./link-internet-identity-success"
 import { RegisterRecoveryPhraseScreen } from "./recovery-phrase"
 import { RegisterWelcome } from "./welcome"
@@ -27,6 +28,10 @@ export const RegisterRoutes = () => {
         <Route
           path="link-internet-identity"
           element={<RegisterLinkInternetIdentityScreen />}
+        />
+        <Route
+          path="link-internet-identity-create-account/:userNumber"
+          element={<LinkInternetIdentityCreateAccountScreen />}
         />
         <Route
           path="link-internet-identity-success"

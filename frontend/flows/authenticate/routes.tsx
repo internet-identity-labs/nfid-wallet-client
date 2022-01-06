@@ -4,7 +4,7 @@ import React from "react"
 import { Authenticate } from "."
 import { UnknownDeviceScreen } from "../iframes/login-unknown"
 
-export const CONSTANTS = {
+export const AuthenticateConstants = {
   base: "authenticate",
 }
 
@@ -17,7 +17,7 @@ export const AuthenticateRoutes = () => {
   )
 
   return {
-    path: CONSTANTS.base,
+    path: AuthenticateConstants.base,
     element: userNumber ? (
       <Authenticate userNumber={userNumber} />
     ) : (

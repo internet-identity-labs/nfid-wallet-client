@@ -6,7 +6,7 @@ import { IdentityPhoneScreen } from "./phone"
 import { IdentitySmsScreen } from "./sms"
 import { IdentityScreen } from "./start"
 
-export const CONSTANTS = {
+export const PhoneNumberVerificationConstants = {
   base: "register-identity",
   identity: "", // renders IdentityScreen on /register-identity
   name: "name",
@@ -16,19 +16,19 @@ export const CONSTANTS = {
 }
 
 export const PhoneNumberVerificationRoutes = {
-  path: CONSTANTS.base,
+  path: PhoneNumberVerificationConstants.base,
   element: <Outlet />,
   children: [
     {
-      path: CONSTANTS.identity,
+      path: PhoneNumberVerificationConstants.identity,
       element: <IdentityScreen />,
     },
     {
-      path: CONSTANTS.name,
+      path: PhoneNumberVerificationConstants.name,
       element: <IdentityNameScreen />,
     },
-    { path: CONSTANTS.phone, element: <IdentityPhoneScreen /> },
-    { path: CONSTANTS.sms, element: <IdentitySmsScreen /> },
-    { path: CONSTANTS.challenge, element: <IdentityChallengeScreen /> },
+    { path: PhoneNumberVerificationConstants.phone, element: <IdentityPhoneScreen /> },
+    { path: PhoneNumberVerificationConstants.sms, element: <IdentitySmsScreen /> },
+    { path: PhoneNumberVerificationConstants.challenge, element: <IdentityChallengeScreen /> },
   ],
 }

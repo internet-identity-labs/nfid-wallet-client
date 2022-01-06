@@ -4,14 +4,14 @@ import { RegisterDevicePrompt } from "./authorize-or-register-prompt"
 import { NewFromDelegate } from "./new-from-delegate"
 import { RegisterDevicePromptSuccess } from "./success"
 
-export const CONSTANTS = {
+export const RegisterDeviceConstants = {
   base: "rdp",
   success: "success",
   newDevice: "new-device",
 }
 
 export const RegisterDeviceRoutes = {
-  path: CONSTANTS.base,
+  path: RegisterDeviceConstants.base,
   children: [
     {
       path: ":secret/:scope",
@@ -22,7 +22,7 @@ export const RegisterDeviceRoutes = {
       ),
     },
     {
-      path: CONSTANTS.success,
+      path: RegisterDeviceConstants.success,
       element: (
         <AuthWrapper>
           <RegisterDevicePromptSuccess />
@@ -30,7 +30,7 @@ export const RegisterDeviceRoutes = {
       ),
     },
     {
-      path: `${CONSTANTS.newDevice}/:secret/:userNumber`,
+      path: `${RegisterDeviceConstants.newDevice}/:secret/:userNumber`,
       element: <NewFromDelegate />,
     },
   ],

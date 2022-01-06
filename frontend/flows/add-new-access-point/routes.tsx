@@ -5,7 +5,7 @@ import { AwaitingConfirmation } from "./awaiting-confirmation"
 import { CopyLinkToChannel } from "./copy-link-to-channel"
 import { CreateKeysScreen } from "./create-keys"
 
-export const CONSTANTS = {
+export const AccessPointConstants = {
   base: "new-access-point",
   copyLinkToChannel: "copy-link-to-channel",
   awaitingConfirmation: "awaiting-confirmation",
@@ -13,18 +13,24 @@ export const CONSTANTS = {
 }
 
 export const AccessPointRoutes = {
-  path: CONSTANTS.base,
+  path: AccessPointConstants.base,
   element: <Outlet />,
   children: [
     {
-      path: CONSTANTS.copyLinkToChannel,
+      path: AccessPointConstants.copyLinkToChannel,
       element: (
         <AuthWrapper>
           <CopyLinkToChannel />
         </AuthWrapper>
       ),
     },
-    { path: CONSTANTS.awaitingConfirmation, element: <AwaitingConfirmation /> },
-    { path: `${CONSTANTS.createKeys}/:secret`, element: <CreateKeysScreen /> },
+    {
+      path: AccessPointConstants.awaitingConfirmation,
+      element: <AwaitingConfirmation />,
+    },
+    {
+      path: `${AccessPointConstants.createKeys}/:secret`,
+      element: <CreateKeysScreen />,
+    },
   ],
 }

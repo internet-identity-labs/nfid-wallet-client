@@ -1,11 +1,11 @@
 import React from "react"
 import { UnknownDeviceScreen } from "./login-unknown"
 
-export const CONSTANTS = {
+export const IFrameConstants = {
   base: "login-unknown-device",
 }
 
 export const IFrameRoutes = {
-  path: CONSTANTS.base,
+  path: IFrameConstants.base,
   element: <UnknownDeviceScreen />,
 }

@@ -60,7 +60,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
     if (response.kind === "loginSuccess") {
       const { userNumber } = response
       updateAccount({
-        principalId: webAuthnIdentity.getPrincipal().toString(),
+        principal_id: webAuthnIdentity.getPrincipal().toString(),
         rootAnchor: userNumber.toString(),
       })
     }

@@ -1,17 +1,28 @@
+import {
+  Account,
+  HTTPAccountRequest,
+  _SERVICE as _IDENTITY_MANAGER_SERVICE,
+} from "frontend/generated/identity_manager"
 import produce from "immer"
 import React from "react"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
-import { Account } from "./types"
 
-const getAccountFromLocalStorage = (): Account | null => {
+type AccountService = Pick<
+  _IDENTITY_MANAGER_SERVICE,
+  "create_account" | "update_account" | "get_account"
+>
+
+type LocalAccount = Account & { rootAnchor: string }
+
+const getAccountFromLocalStorage = (): LocalAccount | undefined => {
   const accountFromLS = localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY)
 
-  const account: Account = accountFromLS ? JSON.parse(accountFromLS) : null
+  const account = accountFromLS ? JSON.parse(accountFromLS) : undefined
   return account
 }
 
-export const useAccount = () => {
-  const [account, setAccount] = React.useState<Account | null>(
+export const useAccount = (accountService?: AccountService) => {
+  const [account, setAccount] = React.useState<LocalAccount | undefined>(
     getAccountFromLocalStorage(),
   )
 
@@ -20,14 +31,28 @@ export const useAccount = () => {
       localStorage.setItem(ACCOUNT_LOCAL_STORAGE_KEY, JSON.stringify(account))
   }, [account])
 
+  const createAccount = React.useCallback(
+    async (account: HTTPAccountRequest) => {
+      if (!accountService) {
+        throw new Error("accountService is required")
+      }
+      const response = await accountService.create_account(account)
+      if (response.status_code === 200) {
+        setAccount(response.data[0])
+      }
+      return response
+    },
+    [accountService],
+  )
+
   const getAccount = React.useCallback(async () => {
     const account = getAccountFromLocalStorage()
-    return new Promise<Account | null>((resolve) => resolve(account))
+    return new Promise<Account | undefined>((resolve) => resolve(account))
   }, [])
 
   const updateAccount = React.useCallback(
-    (partialAccount: Partial<Account>) => {
-      const newAccount = produce(account, (draft: Account) => ({
+    (partialAccount: Partial<LocalAccount>) => {
+      const newAccount = produce(account, (draft: LocalAccount) => ({
         ...draft,
         ...partialAccount,
       }))
@@ -39,5 +64,6 @@ export const useAccount = () => {
   React.useEffect(() => {
     getAccount().then((account) => setAccount(account))
   }, [getAccount])
-  return { account, getAccount, updateAccount }
+
+  return { account, createAccount, getAccount, updateAccount }
 }

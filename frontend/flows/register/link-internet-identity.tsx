@@ -8,7 +8,6 @@ import {
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -29,8 +28,6 @@ export const RegisterLinkInternetIdentityScreen: React.FC<
 > = ({ className }) => {
   const [numDevices, setNumDevices] = React.useState(0)
 
-  const { updateAccount } = useMultipass()
-
   const { state } = useLocation()
   const { iiDeviceLink, userNumber } = state as LocationState
 
@@ -38,15 +35,15 @@ export const RegisterLinkInternetIdentityScreen: React.FC<
 
   const handleVisibilityChange = React.useCallback(
     async (e) => {
-      const devices = await IIConnection.lookupAll(BigInt(userNumber))
-      updateAccount({
-        rootAnchor: userNumber.toString(),
-      })
+      const bigUserNumber = BigInt(userNumber)
+      const devices = await IIConnection.lookupAll(bigUserNumber)
       if (devices.length > numDevices) {
-        navigate("/register/link-internet-identity-success")
+        navigate(
+          `/register/link-internet-identity-create-account/${userNumber}`,
+        )
       }
     },
-    [navigate, numDevices, updateAccount, userNumber],
+    [navigate, numDevices, userNumber],
   )
 
   const fetchDevices = React.useCallback(async () => {

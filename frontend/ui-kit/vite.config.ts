@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
+      // TODO: add css input/output config
       entry: resolve(__dirname, "src/index.ts"),
       name: "ilui",
       fileName: (format) => `index.${format}.js`,

@@ -11,6 +11,8 @@ import { RegisterDeviceRoutes } from "./flows/register-device"
 import { AuthorizationRoutes } from "./flows/authorization"
 import { AddNewAccessPointRoutes } from "./flows/add-new-access-point"
 
+import "tailwindcss/tailwind.css"
+
 function App() {
   const startUrl = React.useMemo(() => window.location.pathname, [])
 

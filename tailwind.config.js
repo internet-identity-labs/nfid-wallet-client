@@ -1,8 +1,5 @@
 module.exports = {
-  content: [
-    "./frontend/**/*.{js,jsx,ts,tsx}",
-    "./examples/MultipassDemo/**/*.{ts,tsx}",
-  ],
+  content: ["./frontend/**/*.{ts,tsx}"],
   theme: {
     extend: {},
   },

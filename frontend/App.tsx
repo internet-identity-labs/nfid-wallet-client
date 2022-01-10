@@ -8,7 +8,10 @@ import { AuthenticateRoutes } from "./flows/authenticate/routes"
 import { IFrameRoutes } from "./flows/iframes/routes"
 import { PhoneNumberVerificationRoutes } from "./flows/phone-number-verification/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
-import { RegisterDeviceRoutes } from "./flows/register-device/routes"
+import {
+  RegisterDevicePromptRoutes,
+  RegisterNewDeviceRoutes,
+} from "./flows/register-device/routes"
 import { RegisterRoutes } from "./flows/register/routes"
 
 import "tailwindcss/tailwind.css"
@@ -19,7 +22,8 @@ function App() {
   const routes = useRoutes([
     { path: "/", element: <HomeScreen /> },
     AccessPointRoutes,
-    RegisterDeviceRoutes,
+    RegisterNewDeviceRoutes,
+    RegisterDevicePromptRoutes,
     RegisterRoutes,
     PhoneNumberVerificationRoutes,
     IFrameRoutes,

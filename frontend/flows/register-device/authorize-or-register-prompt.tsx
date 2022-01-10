@@ -9,7 +9,9 @@ import {
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import { RegisterConstants as RC } from "../register/routes"
 import { useRegisterDevicePromt } from "./hooks"
+import { RegisterDevicePromptConstants as RDPC } from "./routes"
 
 interface RegisterDevicePromptProps {}
 
@@ -24,14 +26,14 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   const handleLogin = React.useCallback(async () => {
     setStatus("loading")
     await remoteLogin({ secret, scope })
-    return navigate(`/rdp/success`)
+    return navigate(`${RDPC.base}/${RDPC.success}`)
   }, [navigate, remoteLogin, secret, scope])
 
   const handleLoginAndRegister = React.useCallback(async () => {
     setStatus("loading")
     await remoteLogin({ secret, scope, register: true })
     setStatus("success")
-    return navigate(`/register/confirmation/${secret}`)
+    return navigate(`${RC.base}/${RC.confirmation}/${secret}`)
   }, [navigate, remoteLogin, scope, secret])
 
   React.useEffect(() => {

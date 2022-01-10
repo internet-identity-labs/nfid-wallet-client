@@ -1,18 +1,30 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { Button, Card, CardAction, CardBody, CardTitle, FaceId, Input, Loader, P, Switch } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  FaceId,
+  Input,
+  Loader,
+  P,
+  Switch,
+} from "@identity-labs/ui"
 import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   creationOptions,
-  IIConnection
+  IIConnection,
 } from "frontend/utils/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
+import { RegisterConstants as RC } from "./routes"
 
 interface IdentityPersonaScreenProps
   extends React.DetailedHTMLProps<
@@ -40,7 +52,7 @@ export const RegisterCreatePersonaScreen: React.FC<
   const handleCreateIdentity = React.useCallback(async () => {
     setIslaoding(true)
     const registerPayload = await createWebAuthNIdentity()
-    navigate("/register/finalize-persona", {
+    navigate(`${RC.base}/${RC.finalizePersona}`, {
       state: {
         ...registerPayload,
         name,
@@ -83,7 +95,7 @@ export const RegisterCreatePersonaScreen: React.FC<
     url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
     const link = encodeURI(url.toString())
 
-    navigate("/register/link-internet-identity", {
+    navigate(`${RC.base}/${RC.linkInternetIdentity}`, {
       replace: true, // seems to be important. Otherwise we're loosing Context??? Very weird.
       state: { iiDeviceLink: link, userNumber },
     })

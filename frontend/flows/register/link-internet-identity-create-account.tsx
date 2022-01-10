@@ -6,6 +6,7 @@ import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import { useNavigate, useParams } from "react-router-dom"
 import { apiResultToLoginResult } from "frontend/utils/internet-identity/api-result-to-login-result"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { RegisterConstants as RC } from "./routes"
 
 interface LinkInternetIdentityCreateAccountScreenProps
   extends React.DetailedHTMLProps<
@@ -38,7 +39,7 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
       console.log(">> identityManager.get_account", { response })
 
       updateAccount({ ...account, rootAnchor: userNumber })
-      navigate("/register/link-internet-identity-success")
+      navigate(`${RC.base}/${RC.linkInternetIdentitySuccess}`)
     }
   }, [navigate, updateAccount, userNumber])
   return (

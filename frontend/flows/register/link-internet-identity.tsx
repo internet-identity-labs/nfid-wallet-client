@@ -11,6 +11,7 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import { RegisterConstants as RC } from "./routes"
 
 interface LocationState {
   iiDeviceLink: string
@@ -39,7 +40,7 @@ export const RegisterLinkInternetIdentityScreen: React.FC<
       const devices = await IIConnection.lookupAll(bigUserNumber)
       if (devices.length > numDevices) {
         navigate(
-          `/register/link-internet-identity-create-account/${userNumber}`,
+          `${RC.base}/${RC.linkInternetIdentityCreateAccount}/${userNumber}`,
         )
       }
     },

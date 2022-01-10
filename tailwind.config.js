@@ -3,5 +3,8 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("./plugins/tailwind-ios-height"),
+  ],
 }

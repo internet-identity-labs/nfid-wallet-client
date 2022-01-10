@@ -26,7 +26,7 @@ export const Switch: React.FC<SwitchProps> = ({
     >
       <div
         className={clsx(
-          "bg-white h-[22px] w-[23px] rounded-full shadow-md transform duration-500 transition-all mt-[20px]",
+          "bg-white h-[22px] w-[23px] rounded-full shadow-md transform duration-500 transition-all",
           isActive && "transform translate-x-[26px]",
         )}
       ></div>

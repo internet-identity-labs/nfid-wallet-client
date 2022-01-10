@@ -11,14 +11,14 @@ export const NavigationBar: React.FC = () => {
       <div className="container xl:max-w-7xl mx-auto px-4 lg:px-8">
         <div className="flex justify-between py-4">
           <div className="flex items-center">
-            <Logo />
+            <Logo nav />
           </div>
 
           <div className="flex items-center space-x-1 lg:space-x-5">
             <nav className="hidden lg:flex lg:items-center lg:space-x-2">
               <NavigationLink href={"/"} text={"Home"} />
               <NavigationLink
-                href={"/register-confirmation/this-is-a-fake-secret"}
+                href={"/register/confirmation/this-is-a-fake-secret"}
                 text={"Register Confirmation"}
               />
               <NavigationLink

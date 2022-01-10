@@ -22,6 +22,7 @@ import React, { useState } from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useAuthContext } from "../auth-wrapper"
+import { RegisterConstants as RC } from "./routes"
 
 interface RegisterLocationState {
   name: string
@@ -102,7 +103,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
       )
       setLoading(false)
 
-      return navigate("/register/recovery-phrase", {
+      return navigate(`${RC.base}/${RC.recoveryPhrase}`, {
         state: { recoveryPhrase },
       })
     }

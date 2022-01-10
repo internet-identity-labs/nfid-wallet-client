@@ -1,8 +1,15 @@
-import { Button, Card, CardAction, CardBody, CardTitle } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+} from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Link } from "react-router-dom"
+import { PhoneNumberVerificationConstants as PNVC } from "./routes"
 
 interface IdentityScreenProps
   extends React.DetailedHTMLProps<
@@ -23,7 +30,10 @@ export const IdentityScreen: React.FC<IdentityScreenProps> = ({
           Identity.
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity-name" className="flex justify-center">
+          <Link
+            to={`${PNVC.base}/${PNVC.name}`}
+            className="flex justify-center"
+          >
             <Button text>I already have an Identity</Button>
           </Link>
           <Button filled>Create a new Identity</Button>

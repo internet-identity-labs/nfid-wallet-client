@@ -1,4 +1,5 @@
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
+import { RegisterDevicePromptConstants as RDPC } from "frontend/flows/register-device/routes"
 import React from "react"
 
 const READY_MESSAGE = {
@@ -95,10 +96,9 @@ export const useUnknownDeviceConfig = () => {
   const url = React.useMemo(() => {
     const multipassDomain = import.meta.env.VITE_MULTIPASS_DOMAIN
 
-    
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `https://${multipassDomain}/rdp/${pubKey}/${domain}`
+      ? `https://${multipassDomain}${RDPC.base}/${pubKey}/${domain}`
       : null
   }, [domain, pubKey])
 

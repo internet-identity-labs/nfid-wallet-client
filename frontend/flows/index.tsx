@@ -3,6 +3,16 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
+import { AccessPointConstants } from "./add-new-access-point/routes"
+import { PhoneNumberVerificationConstants } from "./phone-number-verification/routes"
+import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
+import { RegisterConstants } from "./register/routes"
+
+interface Props
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 interface Route {
   path: string
@@ -11,60 +21,67 @@ interface Route {
 
 interface Flow {
   title: string
+  base?: string
   items: Route[]
 }
-
-interface Props
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   const routes: Flow[] = [
     {
       title: "Common Pages",
-      items: [{ path: "/copy-devices" }],
+      base: "",
+      items: [{ path: CopyDevicesConstants.base }],
     },
     {
       title: "Mobile Registration Flow",
+      base: RegisterConstants.base,
       items: [
-        { path: "/register/welcome" },
-        { path: "/register/create-persona" },
+        { path: RegisterConstants.welcome },
+        { path: RegisterConstants.createPersona },
         {
-          path: "/register/link-internet-identity",
+          path: RegisterConstants.linkInternetIdentity,
           state: { iiDeviceLink: "", userNumber: "" },
         },
-        { path: "/register/link-internet-identity-success" },
-        { path: "/register/finalize-persona" },
+        { path: RegisterConstants.linkInternetIdentitySuccess },
+        { path: RegisterConstants.finalizePersona },
         {
-          path: "/register/recovery-phrase",
+          path: RegisterConstants.recoveryPhrase,
           state: { recoveryPhrase: "This is not your real recovery phrase" },
         },
       ],
     },
     {
       title: "Add new access point",
+      base: AccessPointConstants.base,
       items: [
-        { path: "/new-access-point/copy-link-to-channel" },
-        { path: "/new-access-point/awaiting-confirmation" },
-        { path: "/new-access-point/create-keys/fake-secret" },
+        { path: AccessPointConstants.copyLinkToChannel },
+        { path: AccessPointConstants.awaitingConfirmation },
+        { path: `${AccessPointConstants.createKeys}/fake-secret` },
       ],
     },
     {
       title: "Phone Number Verification Flow",
+      base: PhoneNumberVerificationConstants.base,
       items: [
-        { path: "/register-identity" },
-        { path: "/register-identity-name" },
-        { path: "/register-identity-phone" },
-        { path: "/register-identity-sms" },
-        { path: "/register-identity-challenge" },
+        { path: PhoneNumberVerificationConstants.base },
+        { path: PhoneNumberVerificationConstants.name },
+        { path: PhoneNumberVerificationConstants.phone },
+        { path: PhoneNumberVerificationConstants.sms },
+        { path: PhoneNumberVerificationConstants.challenge },
       ],
     },
   ]
 
-  const getRouteName = (route: string) => {
+  const getRouteToText = (route: string, base?: string) => {
     return route.replace(/\//g, " ").replace(/-/g, " ")
+  }
+
+  const getFullRoute = (route: string, base?: string) => {
+    if (!base || base == route) {
+      return route
+    }
+
+    return `${base}/${route}`
   }
 
   return (
@@ -80,17 +97,18 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     key={index}
                   >
                     <H4>{routes.title}</H4>
+                    <small>{routes.base || "default"}</small>
                     <Divider />
                     <div className="space-y-3">
                       {routes.items.map(({ path, state = {} }, index) => (
                         <Link
                           className="group hover:border-indigo-500 hover:text-indigo-500 cursor-pointer border rounded flex items-center justify-between p-2 w-full"
-                          to={path}
+                          to={getFullRoute(path, routes.base)}
                           key={index}
                           state={state}
                         >
                           <span className="capitalize">
-                            {getRouteName(path)}
+                            {getRouteToText(path)}
                           </span>
                           <div className="flex">
                             <div className="border-l w-[10px] flex mr-1"></div>

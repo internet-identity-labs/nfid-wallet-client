@@ -6,6 +6,7 @@ import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Link } from "react-router-dom"
+import { RegisterConstants as RC } from "./routes"
 
 interface IdentityPersonaWelcomeScreenProps
   extends React.DetailedHTMLProps<
@@ -25,7 +26,7 @@ export const RegisterWelcome: React.FC<IdentityPersonaWelcomeScreenProps> = ({
           doloribus?
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register/create-persona" className="flex justify-center">
+          <Link to={`${RC.base}/${RC.createPersona}`} className="flex justify-center">
             <Button block large filled>
               Register
             </Button>

@@ -2,6 +2,7 @@ import { Loader, QRCode, SetupTouchId } from "@identity-labs/ui"
 import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/register-device/routes"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { buildDelegate } from "frontend/utils/internet-identity/build-delegate"
@@ -83,10 +84,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
   const handleRegisterDevice = React.useCallback(async () => {
     setStatus("loading")
-    window.open(
-      `/register-new-device/${pubKey}/${message.userNumber}`,
-      "_blank",
-    )
+    window.open(`${RNDC.base}/${pubKey}/${message.userNumber}`, "_blank")
     // const response = await handleAddDevice(BigInt(delegation.userNumber))
   }, [message, pubKey])
 

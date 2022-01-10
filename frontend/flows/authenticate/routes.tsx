@@ -8,7 +8,7 @@ export const AuthenticateConstants = {
   base: "authenticate",
 }
 
-export const AuthenticateRoutes = () => {
+const AuthenticateDecider: React.FC = () => {
   const { persona } = useMultipass()
 
   const userNumber = React.useMemo(
@@ -16,12 +16,14 @@ export const AuthenticateRoutes = () => {
     [persona],
   )
 
-  return {
-    path: AuthenticateConstants.base,
-    element: userNumber ? (
-      <Authenticate userNumber={userNumber} />
-    ) : (
-      <UnknownDeviceScreen />
-    ),
-  }
+  return userNumber ? (
+    <Authenticate userNumber={userNumber} />
+  ) : (
+    <UnknownDeviceScreen />
+  )
+}
+
+export const AuthenticateRoutes = {
+  path: AuthenticateConstants.base,
+  element: <AuthenticateDecider />,
 }

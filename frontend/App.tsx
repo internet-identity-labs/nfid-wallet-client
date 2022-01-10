@@ -23,7 +23,7 @@ function App() {
     RegisterRoutes,
     PhoneNumberVerificationRoutes,
     IFrameRoutes,
-    AuthenticateRoutes(),
+    AuthenticateRoutes,
     CopyDevicesRoutes,
     { path: "*", element: <NotFound /> },
   ])

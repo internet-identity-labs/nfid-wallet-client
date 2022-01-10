@@ -9,7 +9,7 @@ import { LinkInternetIdentitySuccessScreen } from "./link-internet-identity-succ
 import { RegisterRecoveryPhraseScreen } from "./recovery-phrase"
 import { RegisterWelcome } from "./welcome"
 
-export const CONSTANTS = {
+export const RegisterConstants = {
   base: "register",
   welcome: "welcome",
   createPersona: "create-persona",
@@ -21,13 +21,13 @@ export const CONSTANTS = {
 }
 
 export const RegisterRoutes = {
-  path: CONSTANTS.base,
+  path: RegisterConstants.base,
   element: <Outlet />,
   children: [
-    { path: CONSTANTS.welcome, element: <RegisterWelcome /> },
-    { path: CONSTANTS.createPersona, element: <RegisterCreatePersonaScreen /> },
+    { path: RegisterConstants.welcome, element: <RegisterWelcome /> },
+    { path: RegisterConstants.createPersona, element: <RegisterCreatePersonaScreen /> },
     {
-      path: CONSTANTS.linkInternetIdentity,
+      path: RegisterConstants.linkInternetIdentity,
       element: (
         <AuthWrapper>
           <RegisterLinkInternetIdentityScreen />
@@ -35,15 +35,15 @@ export const RegisterRoutes = {
       ),
     },
     {
-      path: CONSTANTS.linkInternetIdentitySuccess,
+      path: RegisterConstants.linkInternetIdentitySuccess,
       element: <LinkInternetIdentitySuccessScreen />,
     },
     {
-      path: CONSTANTS.finalizePersona,
+      path: RegisterConstants.finalizePersona,
       element: <RegisterFinalizePersonaScreen />,
     },
     {
-      path: `${CONSTANTS.confirmation}/:secret`,
+      path: `${RegisterConstants.confirmation}/:secret`,
       element: (
         <AuthWrapper>
           <AwaitingConfirmation />
@@ -51,7 +51,7 @@ export const RegisterRoutes = {
       ),
     },
     {
-      path: CONSTANTS.recoveryPhrase,
+      path: RegisterConstants.recoveryPhrase,
       element: <RegisterRecoveryPhraseScreen />,
     },
   ],

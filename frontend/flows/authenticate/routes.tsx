@@ -5,7 +5,7 @@ import { Authenticate } from "."
 import { UnknownDeviceScreen } from "../iframes/login-unknown"
 
 export const AuthenticateConstants = {
-  base: "authenticate",
+  base: "/authenticate",
 }
 
 const AuthenticateDecider: React.FC = () => {

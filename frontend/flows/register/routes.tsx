@@ -10,7 +10,7 @@ import { RegisterRecoveryPhraseScreen } from "./recovery-phrase"
 import { RegisterWelcome } from "./welcome"
 
 export const RegisterConstants = {
-  base: "register",
+  base: "/register",
   welcome: "welcome",
   createPersona: "create-persona",
   linkInternetIdentity: "link-internet-identity",

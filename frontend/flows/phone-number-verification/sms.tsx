@@ -4,6 +4,7 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { HiRefresh } from "react-icons/hi"
 import { Link } from "react-router-dom"
+import { PhoneNumberVerificationConstants as PNVC } from "./routes"
 
 interface IdentitySmsProps
   extends React.DetailedHTMLProps<
@@ -32,7 +33,7 @@ export const IdentitySmsScreen: React.FC<IdentitySmsProps> = ({
         </CardBody>
         <CardAction bottom className="justify-center">
           <Link
-            to="/register-identity/challenge"
+            to={`${PNVC.base}/${PNVC.challenge}`}
             className="flex justify-center"
           >
             <Button large filled block>

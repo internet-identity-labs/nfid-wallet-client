@@ -4,6 +4,7 @@ import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { Loader, TouchId } from "@identity-labs/ui"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { IFrameConstants } from "../routes"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,
@@ -29,7 +30,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
             <div className="ml-1 p-2">Continue with TouchID as Philipp</div>
           </div>
           <div className={clsx("mt-5 text-blue-900 hover:underline")}>
-            <Link to="/login-unknown-device">Log in as a new user</Link>
+            <Link to={IFrameConstants.base}>Log in as a new user</Link>
           </div>
         </div>
       ) : (

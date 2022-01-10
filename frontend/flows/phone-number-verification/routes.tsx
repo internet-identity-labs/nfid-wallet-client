@@ -7,7 +7,7 @@ import { IdentitySmsScreen } from "./sms"
 import { IdentityScreen } from "./start"
 
 export const PhoneNumberVerificationConstants = {
-  base: "register-identity",
+  base: "/register-identity",
   identity: "", // renders IdentityScreen on /register-identity
   name: "name",
   phone: "phone",

@@ -1,8 +1,17 @@
-import { Button, Card, CardAction, CardBody, CardTitle, Input, P } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  Input,
+  P,
+} from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Link } from "react-router-dom"
+import { PhoneNumberVerificationConstants as PNVC } from "./routes"
 
 interface IdentityNameScreenProps
   extends React.DetailedHTMLProps<
@@ -26,7 +35,10 @@ export const IdentityNameScreen: React.FC<IdentityNameScreenProps> = ({
           <Input placeholder="Enter your full name" />
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity/phone" className="flex justify-center">
+          <Link
+            to={`${PNVC.base}/${PNVC.phone}`}
+            className="flex justify-center"
+          >
             <Button block large filled>
               Next
             </Button>

@@ -5,7 +5,7 @@ import { NewFromDelegate } from "./new-from-delegate"
 import { RegisterDevicePromptSuccess } from "./success"
 
 export const RegisterDeviceConstants = {
-  base: "rdp",
+  base: "/rdp",
   success: "success",
   newDevice: "new-device",
 }

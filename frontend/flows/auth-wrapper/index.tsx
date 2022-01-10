@@ -22,6 +22,7 @@ import {
   Account,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/generated/identity_manager"
+import { RegisterConstants } from "../register/routes"
 
 interface AuthContextState {
   isAuthenticated: boolean

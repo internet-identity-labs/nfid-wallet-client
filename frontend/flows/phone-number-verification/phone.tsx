@@ -1,8 +1,17 @@
-import { Button, Card, CardAction, CardBody, CardTitle, Input, P } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  Input,
+  P,
+} from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Link } from "react-router-dom"
+import { PhoneNumberVerificationConstants as PNVC } from "./routes"
 
 interface IdentityPhoneScreenProps
   extends React.DetailedHTMLProps<
@@ -31,7 +40,7 @@ export const IdentityPhoneScreen: React.FC<IdentityPhoneScreenProps> = ({
           <Input placeholder="+38 123 333 444" />
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity/sms" className="flex justify-center">
+          <Link to={`${PNVC.base}/${PNVC.sms}`} className="flex justify-center">
             <Button large filled block>
               Next
             </Button>

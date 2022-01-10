@@ -1,13 +1,6 @@
 import React from "react"
-import {
-  AuthIframe,
-  useInternetIdentity,
-} from "@identity-labs/react-ic-ii-auth"
-import { Modal } from "src/ui-lib/molecules/modal"
+import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
 
-import { ModalHeader } from "./modal/header"
-import clsx from "clsx"
-import { Loader } from "../atoms/loader"
 import { IFrame } from "@identity-labs/ui"
 
 interface InternetAuthProps {}

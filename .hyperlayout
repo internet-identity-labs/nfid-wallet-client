@@ -2,7 +2,8 @@
   "entry": "vertical",
   "layout": [
     [
-      "dfx start"
+      "dfx start",
+      "cd frontend/ui-kit && yarn && yarn build:dev"
     ],
     [
       "yarn dev",

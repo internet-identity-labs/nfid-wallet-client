@@ -31,7 +31,7 @@ export const IdentityPhoneScreen: React.FC<IdentityPhoneScreenProps> = ({
           <Input placeholder="+38 123 333 444" />
         </CardBody>
         <CardAction bottom className="justify-center">
-          <Link to="/register-identity-sms" className="flex justify-center">
+          <Link to="/register-identity/sms" className="flex justify-center">
             <Button large filled block>
               Next
             </Button>

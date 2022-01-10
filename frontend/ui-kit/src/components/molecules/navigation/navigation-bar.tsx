@@ -18,7 +18,7 @@ export const NavigationBar: React.FC = () => {
             <nav className="hidden lg:flex lg:items-center lg:space-x-2">
               <NavigationLink href={"/"} text={"Home"} />
               <NavigationLink
-                href={"/register-confirmation/this-is-a-fake-secret"}
+                href={"/register/confirmation/this-is-a-fake-secret"}
                 text={"Register Confirmation"}
               />
               <NavigationLink

@@ -4,7 +4,7 @@ import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
 import { AccessPointConstants } from "./add-new-access-point/routes"
-import { PhoneNumberVerificationConstants } from "./phone-number-verification/routes"
+import { RegisterAccountConstants } from "./register-account/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
 import { RegisterConstants } from "./register/routes"
 
@@ -33,6 +33,11 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       items: [{ path: CopyDevicesConstants.base }],
     },
     {
+      title: "Register Account (NFID) Flow",
+      base: RegisterAccountConstants.base,
+      items: [{ path: RegisterAccountConstants.base }],
+    },
+    {
       title: "Mobile Registration Flow",
       base: RegisterConstants.base,
       items: [
@@ -57,17 +62,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         { path: AccessPointConstants.copyLinkToChannel },
         { path: AccessPointConstants.awaitingConfirmation },
         { path: `${AccessPointConstants.createKeys}/fake-secret` },
-      ],
-    },
-    {
-      title: "Phone Number Verification Flow",
-      base: PhoneNumberVerificationConstants.base,
-      items: [
-        { path: PhoneNumberVerificationConstants.base },
-        { path: PhoneNumberVerificationConstants.name },
-        { path: PhoneNumberVerificationConstants.phone },
-        { path: PhoneNumberVerificationConstants.sms },
-        { path: PhoneNumberVerificationConstants.challenge },
       ],
     },
   ]

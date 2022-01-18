@@ -1,0 +1,11 @@
+.swiper-slide {
+  @apply flex justify-start w-full flex-col;
+}
+
+.swiper-slide img {
+  @apply block w-full h-full object-cover;
+}
+
+.swiper-pagination {
+  @apply !relative !bottom-0 mt-4;
+}

@@ -6,7 +6,7 @@ import { AccessPointRoutes } from "./flows/add-new-access-point/routes"
 import { AuthProvider } from "./flows/auth-wrapper"
 import { AuthenticateRoutes } from "./flows/authenticate/routes"
 import { IFrameRoutes } from "./flows/iframes/routes"
-import { PhoneNumberVerificationRoutes } from "./flows/phone-number-verification/routes"
+import { RegisterAccountRoutes } from "./flows/register-account/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import {
   RegisterDevicePromptRoutes,
@@ -25,7 +25,7 @@ function App() {
     RegisterNewDeviceRoutes,
     RegisterDevicePromptRoutes,
     RegisterRoutes,
-    PhoneNumberVerificationRoutes,
+    RegisterAccountRoutes,
     IFrameRoutes,
     AuthenticateRoutes,
     CopyDevicesRoutes,

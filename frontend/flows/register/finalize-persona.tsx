@@ -95,8 +95,19 @@ export const RegisterFinalizePersonaScreen: React.FC<
     const response = await handleRegisterAnchor()
 
     if (response.kind === "loginSuccess") {
-      const { userNumber, connection } = response
-      onRegisterSuccess(connection)
+      const {
+        userNumber,
+        connection,
+        identityManager,
+        keysyncActor,
+        vaultActor,
+      } = response
+      onRegisterSuccess({
+        connection,
+        identityManager,
+        keysyncActor,
+        vaultActor,
+      })
       const recoveryPhrase = await handleCreateRecoveryPhrase(
         userNumber,
         connection,

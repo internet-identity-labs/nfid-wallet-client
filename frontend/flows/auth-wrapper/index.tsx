@@ -22,18 +22,25 @@ import {
   Account,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/generated/identity_manager"
-import { RegisterConstants } from "../register/routes"
+import { _SERVICE as KeysyncService } from "frontend/modules/keysync/keysync.did"
+import { _SERVICE as VaultService } from "frontend/modules/vault/vault.did"
+import produce from "immer"
 
-interface AuthContextState {
-  isAuthenticated: boolean
-  isLoading: boolean
+interface Actors {
   connection?: IIConnection
   identityManager?: ActorSubclass<_IDENTITY_MANAGER_SERVICE>
+  keysyncActor?: ActorSubclass<KeysyncService>
+  vaultActor?: ActorSubclass<VaultService>
+}
+
+interface AuthContextState extends Actors {
+  isAuthenticated: boolean
+  isLoading: boolean
   userNumber?: bigint
   account: Account | undefined
   startUrl: string
   login: () => void
-  onRegisterSuccess: (connection: IIConnection) => void
+  onRegisterSuccess: (actors: Actors) => void
 }
 
 export const AuthContext = React.createContext<AuthContextState>({
@@ -41,6 +48,8 @@ export const AuthContext = React.createContext<AuthContextState>({
   isLoading: false,
   connection: undefined,
   identityManager: undefined,
+  keysyncActor: undefined,
+  vaultActor: undefined,
   userNumber: undefined,
   account: undefined,
   startUrl: "",
@@ -58,12 +67,7 @@ export const AuthProvider: React.FC<AuthProvider> = ({
 }) => {
   const [isLoading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<LoginError | null>(null)
-  const [connection, setConnection] = React.useState<IIConnection | undefined>(
-    undefined,
-  )
-  const [identityManager, setIdentityManager] = React.useState<
-    ActorSubclass<_IDENTITY_MANAGER_SERVICE> | undefined
-  >(undefined)
+  const [actors, setActors] = React.useState<Actors>({})
   const { account } = useMultipass()
 
   const userNumber = React.useMemo(
@@ -83,28 +87,30 @@ export const AuthProvider: React.FC<AuthProvider> = ({
       setLoading(false)
     }
     if (result.tag === "ok") {
-      setConnection(result.connection)
-      setIdentityManager(result.identityManager)
+      setActors(
+        produce(actors, () => ({
+          connection: result.connection,
+          identityManager: result.identityManager,
+          keysyncActor: result.keysyncActor,
+          vaultActor: result.vaultActor,
+        })),
+      )
     }
-  }, [userNumber])
+  }, [actors, userNumber])
 
-  const onRegisterSuccess = React.useCallback(
-    async (connection: IIConnection) => {
-      setConnection(connection)
-    },
-    [],
-  )
+  const onRegisterSuccess = React.useCallback(async (actors: Actors) => {
+    setActors(actors)
+  }, [])
 
   return (
     <AuthContext.Provider
       value={{
         isLoading,
-        isAuthenticated: !!connection,
+        isAuthenticated: !!actors.connection,
         userNumber,
-        connection,
-        identityManager,
         account,
         startUrl,
+        ...actors,
         login,
         onRegisterSuccess,
       }}
@@ -125,10 +131,10 @@ export const AuthWrapper: React.FC = ({ children }) => {
     <AppScreen isFocused>
       <Card className="flex flex-col h-full">
         <CardTitle>Login</CardTitle>
-        <CardBody className="text-center max-w-lg">
+        <CardBody className="max-w-lg text-center">
           Use FaceID to sign in
         </CardBody>
-        <CardAction className="justify-center items-center">
+        <CardAction className="items-center justify-center">
           <Button onClick={login}>
             <FaceId />
           </Button>

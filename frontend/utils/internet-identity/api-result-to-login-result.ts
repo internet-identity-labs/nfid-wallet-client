@@ -1,5 +1,7 @@
 import { ActorSubclass } from "@dfinity/agent"
 import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/generated/identity_manager"
+import { _SERVICE as KeysyncService } from "frontend/modules/keysync/keysync.did"
+import { _SERVICE as VaultService } from "frontend/modules/vault/vault.did"
 import { ApiResult, IIConnection } from "./iiConnection"
 
 export type LoginSuccess = {
@@ -7,6 +9,8 @@ export type LoginSuccess = {
   userNumber: bigint
   connection: IIConnection
   identityManager: ActorSubclass<_IDENTITY_MANAGER_SERVICE>
+  keysyncActor: ActorSubclass<KeysyncService>
+  vaultActor: ActorSubclass<VaultService>
 }
 export type LoginError = {
   tag: "err"
@@ -25,6 +29,8 @@ export const apiResultToLoginResult = (result: ApiResult): LoginResult => {
         userNumber: result.userNumber,
         connection: result.connection,
         identityManager: result.identityManager,
+        keysyncActor: result.keysyncActor,
+        vaultActor: result.vaultActor,
       }
     }
     case "authFail": {

@@ -452,6 +452,8 @@ const requestFEDelegation = async (
       targets: [
         Principal.from(canisterId),
         Principal.from(CONFIG.MP_CANISTER_ID),
+        Principal.from(CONFIG.KEYSYNC_CANISTER_ID),
+        Principal.from(CONFIG.VAULT_CANISTER_ID),
       ],
     },
   )

@@ -98,9 +98,12 @@ export const AuthProvider: React.FC<AuthProvider> = ({
     }
   }, [actors, userNumber])
 
-  const onRegisterSuccess = React.useCallback(async (actors: Actors) => {
-    setActors(actors)
-  }, [])
+  const onRegisterSuccess = React.useCallback(
+    async (newActors: Actors) => {
+      setActors(produce(actors, () => newActors))
+    },
+    [actors],
+  )
 
   return (
     <AuthContext.Provider

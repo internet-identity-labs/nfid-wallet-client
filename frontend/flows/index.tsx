@@ -35,7 +35,11 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     {
       title: "Register Account (NFID) Flow",
       base: RegisterAccountConstants.base,
-      items: [{ path: RegisterAccountConstants.base }],
+      items: [
+        { path: RegisterAccountConstants.base },
+        { path: RegisterAccountConstants.createNFIDProfile },
+        { path: RegisterAccountConstants.smsVerification },
+      ],
     },
     {
       title: "Mobile Registration Flow",

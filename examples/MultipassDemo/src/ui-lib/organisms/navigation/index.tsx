@@ -1,3 +1,4 @@
+import { Logo } from "@identity-labs/ui"
 import React from "react"
 
 interface NavigationProps {
@@ -6,10 +7,11 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = () => {
   return (
-    <nav className="w-full flex fixed bg-gray-100 m-auto">
-      <div className="w-full md:max-w-7xl m-auto p-4 md:p-6 xl:py-8 md:m-auto lg:m-auto flex justify-between">
-        <div className="uppercase font-lato font-bold tracking-widest text-lg">
-          Multipass Demo 1
+    <nav className="fixed flex w-full m-auto bg-gray-100">
+      <div className="flex justify-between w-full p-4 m-auto md:max-w-7xl md:p-6 xl:py-8 md:m-auto lg:m-auto">
+        <div className="text-lg font-bold tracking-widest uppercase font-lato">
+          <Logo nav />
+          <span className="ml-3">demo</span>
         </div>
       </div>
     </nav>

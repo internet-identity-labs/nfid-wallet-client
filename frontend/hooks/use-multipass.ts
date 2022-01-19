@@ -16,6 +16,7 @@ import { useAccount } from "frontend/modules/account/hooks"
 import { usePersona } from "frontend/modules/persona/hooks"
 import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
+import { useSearchParams } from "react-router-dom"
 
 const canisterId: string = CONFIG.MP_CANISTER_ID as string
 
@@ -37,6 +38,8 @@ export const baseActor = Actor.createActor<_SERVICE>(identity_manager_idl, {
 
 export const useMultipass = () => {
   const { identityManager } = useAuthContext()
+  const [params] = useSearchParams()
+
   const createWebAuthNIdentity = React.useCallback(async () => {
     const deviceName = `${getBrowser()} on ${getPlatform()}`
     const identity = await WebAuthnIdentity.create({
@@ -95,5 +98,6 @@ export const useMultipass = () => {
     deleteTopic,
     getMessages,
     postMessages,
+    applicationName: params.get("applicationName"),
   }
 }

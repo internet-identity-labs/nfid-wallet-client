@@ -52,13 +52,15 @@ export const RegisterAccountSMSVerification: React.FC<
   }, [])
 
   const handleVerifyPhonenumber = React.useCallback(async () => {
+    // TODO: handle validation of token w backend
+
     const registerPayload = await createWebAuthNIdentity()
 
     navigate(`${RAC.base}/${RAC.captcha}`, {
       state: {
         name,
         phonenumber,
-        registerPayload,
+        registerPayload: registerPayload,
       },
     })
   }, [createWebAuthNIdentity, name, navigate, phonenumber])
@@ -81,7 +83,7 @@ export const RegisterAccountSMSVerification: React.FC<
           />
           <Button
             text
-            className="my-2 underline underline-offset-4 flex items-center gap-4"
+            className="flex items-center gap-4 my-2 underline underline-offset-4"
             onClick={resendSMS}
           >
             <HiRefresh className="text-lg" />
@@ -94,7 +96,7 @@ export const RegisterAccountSMSVerification: React.FC<
             filled
             onClick={handleVerifyPhonenumber}
             disabled={!verificationCode}
-            className="flex justify-center space-x-4 items-center mx-auto my-6"
+            className="flex items-center justify-center mx-auto my-6 space-x-4"
           >
             <HiFingerPrint className="text-lg" />
 

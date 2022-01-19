@@ -28,8 +28,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
 > = ({ children, className }) => {
   const { state } = useLocation()
-  // const { recoveryPhrase } = state as LocationState
-  const recoveryPhrase = "recoveryPhrase" // temporary
+  const { recoveryPhrase } = state as LocationState
 
   const [copied, setCopied] = React.useState(false)
 

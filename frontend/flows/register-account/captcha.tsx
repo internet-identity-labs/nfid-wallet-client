@@ -12,7 +12,7 @@ import {
   Loader,
   P,
 } from "@identity-labs/ui"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { fromMnemonicWithoutValidation } from "frontend/utils/internet-identity/crypto/ed25519"
@@ -38,15 +38,26 @@ interface RegisterAccountCaptchaProps
     HTMLDivElement
   > {}
 
+interface RegisterAccountCaptchaState {
+  registerPayload: {
+    identity: string
+    deviceName: string
+    pow: ProofOfWork
+  }
+  name: string
+  phonenumber: string
+}
+
 export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   children,
   className,
 }) => {
-  const { register, watch } = useForm()
+  const { register, watch, setValue } = useForm()
+  const { state } = useLocation()
   const navigate = useNavigate()
-  const { createWebAuthNIdentity, updateAccount } = useMultipass()
+  const { updateAccount } = useMultipass()
 
-  const [captchaResp, setCaptchaResp] = React.useState<Challenge>()
+  const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
   const [loading, setLoading] = React.useState(true)
   const captcha = watch("captcha")
 
@@ -67,10 +78,13 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
   const handleRegisterAnchor = React.useCallback(
     async (identity: string, deviceName: string, pow: ProofOfWork) => {
+      if (!captchaResp) throw new Error("No challenge response")
+
       const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
+
       const challengeResult: ChallengeResult = {
-        chars: captchaResp?.challenge_key as string,
-        key: captcha,
+        chars: captcha,
+        key: captchaResp.challenge_key,
       }
 
       const response = await IIConnection.register(
@@ -81,9 +95,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
       if (response.kind === "badChallenge") {
         requestCaptcha()
-        // set captcha input value
-        captcha.value = ""
-        captcha.current.focus()
+        setValue("captcha", "")
       }
 
       if (response.kind === "loginSuccess") {
@@ -96,7 +108,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
       return response
     },
-    [captcha, captchaResp?.challenge_key, requestCaptcha, updateAccount],
+    [captcha, captchaResp, requestCaptcha, setValue, updateAccount],
   )
 
   const handleCreateRecoveryPhrase = React.useCallback(
@@ -123,11 +135,13 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     setLoading(true)
 
     try {
-      const { identity, deviceName, pow } = await createWebAuthNIdentity()
+      const { registerPayload, name, phonenumber } =
+        state as RegisterAccountCaptchaState
+
       const responseRegisterAnchor = await handleRegisterAnchor(
-        identity,
-        deviceName,
-        pow,
+        registerPayload.identity,
+        registerPayload.deviceName,
+        registerPayload.pow,
       )
 
       console.log("responseRegisterAnchor :>> ", responseRegisterAnchor)
@@ -143,22 +157,30 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           connection,
         )
 
-        console.log("recoveryPhrase :>> ", recoveryPhrase)
-
-        // navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
-        //   state: {
-        //     name,
-        //     phonenumber,
-        //     recoveryPhrase,
-        //   },
-        // })
+        navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
+          state: {
+            name,
+            phonenumber,
+            recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
+          },
+        })
       }
     } catch {
+      requestCaptcha()
       throw new Error("Failed to complete NFID Profile")
     } finally {
+      setValue("captcha", "")
+      setCaptchaResp(undefined)
       setLoading(false)
     }
-  }, [createWebAuthNIdentity, handleCreateRecoveryPhrase, handleRegisterAnchor])
+  }, [
+    handleCreateRecoveryPhrase,
+    handleRegisterAnchor,
+    navigate,
+    requestCaptcha,
+    setValue,
+    state,
+  ])
 
   return (
     <AppScreen isFocused>
@@ -186,9 +208,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
                 large
                 block
                 filled
-                disabled={!captcha}
+                disabled={!captcha || !captchaResp}
                 onClick={handleCompleteNFIDProfile}
-                className="flex justify-center space-x-4 items-center mx-auto my-6"
+                className="flex items-center justify-center mx-auto my-6 space-x-4"
                 data-captcha-key={captchaResp?.challenge_key}
               >
                 <HiFingerPrint className="text-lg" />

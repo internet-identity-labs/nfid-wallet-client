@@ -11,6 +11,7 @@ import {
   PublicKey,
   SessionKey,
   CredentialId,
+  Challenge,
   UserNumber,
   FrontendHostname,
   Timestamp,
@@ -21,10 +22,9 @@ import {
   Purpose,
   KeyType,
   DeviceKey,
-  DelegationKey,
-  DelegationJson,
+  ChallengeResult,
 } from "./generated/internet_identity_types"
-import { _SERVICE as IdentityManagerService } from "frontend/generated/identity_manager"
+import { DelegationJson, DelegationKey, _SERVICE as IdentityManagerService } from "frontend/generated/identity_manager"
 import { idlFactory as IdentityManagerIdlFactory } from "frontend/generated/identity_manager_idl"
 import {
   DelegationChain,
@@ -71,6 +71,7 @@ export type RegisterResult =
   | AuthFail
   | ApiError
   | RegisterNoSpace
+  | BadChallenge
 
 type LoginSuccess = {
   kind: "loginSuccess"
@@ -78,11 +79,15 @@ type LoginSuccess = {
   identityManager: ActorSubclass<IdentityManagerService>
   userNumber: bigint
 }
+
+type BadChallenge = { kind: "badChallenge" }
 type UnknownUser = { kind: "unknownUser"; userNumber: bigint }
 type AuthFail = { kind: "authFail"; error: Error }
 type ApiError = { kind: "apiError"; error: Error }
 type RegisterNoSpace = { kind: "registerNoSpace" }
 type SeedPhraseFail = { kind: "seedPhraseFail" }
+
+export type { ChallengeResult } from "./generated/internet_identity_types"
 
 export class IIConnection {
   protected constructor(
@@ -94,22 +99,26 @@ export class IIConnection {
   static async register(
     identity: WebAuthnIdentity,
     alias: string,
-    pow: ProofOfWork,
+    challengeResult: ChallengeResult,
   ): Promise<RegisterResult> {
     let delegationIdentity: DelegationIdentity
     try {
       delegationIdentity = await requestFEDelegation(identity)
-    } catch (error) {
-      return { kind: "authFail", error: error as Error }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { kind: "authFail", error }
+      } else {
+        return {
+          kind: "authFail",
+          error: new Error("Unknown error when requesting delegation"),
+        }
+      }
     }
 
     const actor = await IIConnection.createActor(delegationIdentity)
     const credential_id = Array.from(identity.rawId)
     const pubkey = Array.from(identity.getPublicKey().toDer())
 
-    console.log(
-      `register(DeviceData { alias=${alias}, pubkey=${pubkey}, credential_id=${credential_id} }, ProofOfWork { timestamp=${pow.timestamp}, nonce=${pow.nonce})`,
-    )
     let registerResponse: RegisterResponse
     try {
       registerResponse = await actor.register(
@@ -120,10 +129,17 @@ export class IIConnection {
           key_type: { unknown: null },
           purpose: { authentication: null },
         },
-        pow,
+        challengeResult,
       )
-    } catch (error) {
-      return { kind: "apiError", error: error as Error }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { kind: "apiError", error }
+      } else {
+        return {
+          kind: "apiError",
+          error: new Error("Unknown error when registering"),
+        }
+      }
     }
 
     if (hasOwnProperty(registerResponse, "canister_full")) {
@@ -139,6 +155,8 @@ export class IIConnection {
         ),
         userNumber,
       }
+    } else if (hasOwnProperty(registerResponse, "bad_challenge")) {
+      return { kind: "badChallenge" }
     } else {
       console.error("unexpected register response", registerResponse)
       throw Error("unexpected register response")
@@ -149,10 +167,14 @@ export class IIConnection {
     let devices: DeviceData[]
     try {
       devices = await this.lookupAuthenticators(userNumber)
-    } catch (e) {
-      return {
-        kind: "apiError",
-        error: e as Error,
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return { kind: "apiError", error: e }
+      } else {
+        return {
+          kind: "apiError",
+          error: new Error("Unknown error when looking up authenticators"),
+        }
       }
     }
 
@@ -168,18 +190,25 @@ export class IIConnection {
     devices: DeviceData[],
   ): Promise<LoginResult> {
     const multiIdent = MultiWebAuthnIdentity.fromCredentials(
-      devices.flatMap((device) => {
-        return device.credential_id.map((credentialId: CredentialId) => ({
+      devices.flatMap((device) =>
+        device.credential_id.map((credentialId: CredentialId) => ({
           pubkey: derFromPubkey(device.pubkey),
           credentialId: blobFromUint8Array(Buffer.from(credentialId)),
-        }))
-      }),
+        })),
+      ),
     )
     let delegationIdentity: DelegationIdentity
     try {
       delegationIdentity = await requestFEDelegation(multiIdent)
-    } catch (e) {
-      return { kind: "authFail", error: e as Error }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return { kind: "authFail", error: e }
+      } else {
+        return {
+          kind: "authFail",
+          error: new Error("Unknown error when requesting delegation"),
+        }
+      }
     }
 
     const actor = await IIConnection.createActor(delegationIdentity)
@@ -232,11 +261,20 @@ export class IIConnection {
     return await baseActor.lookup(userNumber)
   }
 
+  static async createChallenge(pow: ProofOfWork): Promise<Challenge> {
+    const actor = await this.createActor()
+    console.log(
+      `createChallenge(ProofOfWork { timestamp=${pow.timestamp}, nonce=${pow.nonce} })`,
+    )
+    const challenge = await actor.create_challenge(pow)
+    console.log("Challenge Created")
+    return challenge
+  }
+
   static async lookupAuthenticators(
     userNumber: UserNumber,
   ): Promise<DeviceData[]> {
     const allDevices = await baseActor.lookup(userNumber)
-
     return allDevices.filter((device) =>
       hasOwnProperty(device.purpose, "authentication"),
     )
@@ -249,30 +287,9 @@ export class IIConnection {
     )
   }
 
-  static getDelegate = async (key: DelegationKey) => {
-    console.log(`getDelegate(key: ${key})`)
-    return await baseActor.get_delegate(key)
-  }
-
-  static putDelegate = async (key: DelegationKey, delegate: DelegationJson) => {
-    console.log(`putDelegate(key: ${key}, delegate: ${delegate})`)
-    return await baseActor.put_delegate(key, delegate)
-  }
-
-  static getMessages = async (key: DelegationKey) => {
-    console.log(`getMessages(key: ${key})`)
-    return await baseActor.get_messages(key)
-  }
-
-  static postMessages = async (key: DelegationKey, messages: string[]) => {
-    console.log(`postMessages(key: ${key}, message: ${messages})`)
-    return await baseActor.post_messages(key, messages)
-  }
-
   // Create an actor representing the backend
-
   static async createActor(
-    delegationIdentity: DelegationIdentity,
+    delegationIdentity?: DelegationIdentity,
   ): Promise<ActorSubclass<_SERVICE>> {
     const agent = new HttpAgent({ identity: delegationIdentity })
 
@@ -369,7 +386,6 @@ export class IIConnection {
       `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
     )
     const actor = await this.getActor()
-
     return await actor.prepare_delegation(
       userNumber,
       hostname,
@@ -417,6 +433,23 @@ const requestFEDelegation = async (
   return DelegationIdentity.fromDelegation(sessionKey, chain)
 }
 
+// The options sent to the browser when creating the credentials.
+// Credentials (key pair) creation is signed with a private key that is unique per device
+// model, as an "attestation" that the credentials were created with a FIDO
+// device. In II we discard this attestation because we only care about the key
+// pair that was created and that we use later. Discarding the attestation
+// means we do not have to care about attestation checking security concerns
+// like setting a server-generated, random challenge.
+//
+// Algorithm -7, ECDSA_WITH_SHA256, is specified. The reason is that the
+// generated (ECDSA) key pair is used later directly to sign messages to the
+// IC -- the "assertion" -- so we must use a signing algorithm supported by the
+// IC:
+//  * https://smartcontracts.org/docs/interface-spec/index.html#signatures
+//
+// For more information on attestation vs assertion (credentials.create vs
+// credentials.get), see
+//  * https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/Attestation_and_Assertion
 export const creationOptions = (
   exclude: DeviceData[] = [],
   authenticatorAttachment: AuthenticatorAttachment = "platform",

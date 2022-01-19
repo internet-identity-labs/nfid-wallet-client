@@ -17,14 +17,20 @@ import { useForm } from "react-hook-form"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { fromMnemonicWithoutValidation } from "frontend/utils/internet-identity/crypto/ed25519"
 import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
-import { ProofOfWork } from "frontend/utils/internet-identity/generated/internet_identity_types"
 import {
+  Challenge,
+  ChallengeResult,
+  ProofOfWork,
+} from "frontend/utils/internet-identity/generated/internet_identity_types"
+import {
+  canisterIdPrincipal,
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/utils/internet-identity/iiConnection"
 import { HiFingerPrint, HiRefresh } from "react-icons/hi"
 import { RegisterAccountConstants as RAC } from "./routes"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<
@@ -40,20 +46,45 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   const navigate = useNavigate()
   const { createWebAuthNIdentity, updateAccount } = useMultipass()
 
-  const [loading, setLoading] = React.useState(false)
+  const [captchaResp, setCaptchaResp] = React.useState<Challenge>()
+  const [loading, setLoading] = React.useState(true)
   const captcha = watch("captcha")
+
+  const requestCaptcha = React.useCallback(async () => {
+    setLoading(true)
+
+    const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
+    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
+    const cha = await IIConnection.createChallenge(pow)
+
+    setCaptchaResp(cha)
+    setLoading(false)
+  }, [])
+
+  React.useEffect(() => {
+    requestCaptcha()
+  }, [requestCaptcha])
 
   const handleRegisterAnchor = React.useCallback(
     async (identity: string, deviceName: string, pow: ProofOfWork) => {
       const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
-
-      console.log("webAuthnIdentity :>> ", webAuthnIdentity)
+      const challengeResult: ChallengeResult = {
+        chars: captchaResp?.challenge_key as string,
+        key: captcha,
+      }
 
       const response = await IIConnection.register(
         webAuthnIdentity,
         deviceName,
-        pow,
+        challengeResult,
       )
+
+      if (response.kind === "badChallenge") {
+        requestCaptcha()
+        // set captcha input value
+        captcha.value = ""
+        captcha.current.focus()
+      }
 
       if (response.kind === "loginSuccess") {
         const { userNumber } = response
@@ -63,10 +94,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         })
       }
 
-      setLoading(false)
       return response
     },
-    [updateAccount],
+    [captcha, captchaResp?.challenge_key, requestCaptcha, updateAccount],
   )
 
   const handleCreateRecoveryPhrase = React.useCallback(
@@ -136,13 +166,15 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         <CardTitle>Enter Captcha</CardTitle>
         <CardBody className="max-w-lg">
           <P className="mt-2">Please type in the characters you see.</P>
-          
+
           <div className="my-6">
             <div className="my-3">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Captcha-smwm.svg/1200px-Captcha-smwm.svg.png"
-                className="object-contain aspect-video"
-              />
+              {captchaResp && (
+                <img
+                  src={`data:image/png;base64,${captchaResp.png_base64}`}
+                  className="object-contain aspect-video"
+                />
+              )}
 
               <Input
                 placeholder="Captcha"
@@ -157,6 +189,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
                 disabled={!captcha}
                 onClick={handleCompleteNFIDProfile}
                 className="flex justify-center space-x-4 items-center mx-auto my-6"
+                data-captcha-key={captchaResp?.challenge_key}
               >
                 <HiFingerPrint className="text-lg" />
                 <span>Create my NFID</span>

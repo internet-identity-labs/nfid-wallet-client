@@ -1,18 +1,10 @@
-import React from "react"
+import { Button, Card, CardBody, H3, Input, Label, P } from "@identity-labs/ui"
 import clsx from "clsx"
-import {
-  Button,
-  Card,
-  CardAction,
-  CardBody,
-  H3,
-  Input,
-  Label,
-  P,
-} from "@identity-labs/ui"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { nameRules, phoneRules } from "frontend/utils/validations"
+import React from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCreateNFIDProfileProps
@@ -24,20 +16,27 @@ interface RegisterAccountCreateNFIDProfileProps
 export const RegisterAccountCreateNFIDProfile: React.FC<
   RegisterAccountCreateNFIDProfileProps
 > = ({ children, className }) => {
-  const { register, watch } = useForm()
   const navigate = useNavigate()
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm({
+    mode: "onBlur",
+  })
 
-  const name = watch("name")
-  const phonenumber = watch("phonenumber")
+  const handleVerifyPhonenumber = (data: any) => {
+    const { name, phonenumber } = data
 
-  const handleVerifyPhonenumber = React.useCallback(async () => {
-    navigate(`${RAC.base}/${RAC.smsVerification}`, {
-      state: {
-        name,
-        phonenumber,
-      },
-    })
-  }, [name, navigate, phonenumber])
+    if (isValid) {
+      navigate(`${RAC.base}/${RAC.smsVerification}`, {
+        state: {
+          name,
+          phonenumber,
+        },
+      })
+    }
+  }
 
   return (
     <AppScreen isFocused>
@@ -60,23 +59,49 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
               <Label>Full name</Label>
               <Input
                 placeholder="Enter your full name"
-                {...register("name", { required: true })}
+                {...register("name", {
+                  required: nameRules.errorMessages.required,
+                  pattern: nameRules.regex,
+                  minLength: {
+                    value: nameRules.minLength,
+                    message: nameRules.errorMessages.length,
+                  },
+                  maxLength: {
+                    value: nameRules.maxLength,
+                    message: nameRules.errorMessages.length,
+                  },
+                })}
               />
+              <P className="text-red-400 text-sm">{errors.name?.message}</P>
             </div>
             <div className="my-3">
               <Label>Phone number</Label>
               <Input
-                placeholder="+XX XXX XXX XX XX"
-                {...register("phonenumber", { required: true })}
+                placeholder="+XXXXXXXXXXX"
+                {...register("phonenumber", {
+                  required: phoneRules.errorMessages.required,
+                  pattern: phoneRules.regex,
+                  minLength: {
+                    value: phoneRules.minLength,
+                    message: phoneRules.errorMessages.length,
+                  },
+                  maxLength: {
+                    value: phoneRules.maxLength,
+                    message: phoneRules.errorMessages.length,
+                  },
+                })}
               />
+              <P className="text-red-400 text-sm">
+                {errors.phonenumber?.message}
+              </P>
             </div>
             <div className="my-3">
               <Button
                 large
                 block
                 filled
-                disabled={!name || !phonenumber}
-                onClick={handleVerifyPhonenumber}
+                disabled={!isValid}
+                onClick={handleSubmit(handleVerifyPhonenumber)}
               >
                 Verify phone number
               </Button>

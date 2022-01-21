@@ -1,6 +1,16 @@
-import { Button, Card, CardBody, H3, Input, Label, P } from "@identity-labs/ui"
+import {
+  Button,
+  Card,
+  CardBody,
+  H3,
+  Input,
+  Label,
+  Loader,
+  P,
+} from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { nameRules, phoneRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -16,25 +26,48 @@ interface RegisterAccountCreateNFIDProfileProps
 export const RegisterAccountCreateNFIDProfile: React.FC<
   RegisterAccountCreateNFIDProfileProps
 > = ({ children, className }) => {
+  const { verifyPhonenumber } = useMultipass()
   const navigate = useNavigate()
   const {
     register,
     formState: { errors, isValid },
     handleSubmit,
+    setError,
   } = useForm({
-    mode: "onBlur",
+    mode: "all",
   })
 
-  const handleVerifyPhonenumber = (data: any) => {
+  const [loading, setLoading] = React.useState(false)
+
+  const handleVerifyPhonenumber = async (data: any) => {
     const { name, phonenumber } = data
 
-    if (isValid) {
-      navigate(`${RAC.base}/${RAC.smsVerification}`, {
-        state: {
-          name,
-          phonenumber,
-        },
+    try {
+      setLoading(true)
+
+      // Backend validation
+      const response = await verifyPhonenumber(phonenumber)
+      const data = await response.json()
+
+      const validPhonenumber =
+        data.response.MessageResponse.Result[phonenumber].DeliveryStatus ==
+          "SUCCESSFUL" || !data.error
+
+      if (isValid && validPhonenumber) {
+        navigate(`${RAC.base}/${RAC.smsVerification}`, {
+          state: {
+            name,
+            phonenumber,
+          },
+        })
+      }
+    } catch (error) {
+      setError("phonenumber", {
+        type: "manual",
+        message: "Something went wrong. Please try again.",
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -61,7 +94,10 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
                 placeholder="Enter your full name"
                 {...register("name", {
                   required: nameRules.errorMessages.required,
-                  pattern: nameRules.regex,
+                  pattern: {
+                    value: nameRules.regex,
+                    message: nameRules.errorMessages.pattern,
+                  },
                   minLength: {
                     value: nameRules.minLength,
                     message: nameRules.errorMessages.length,
@@ -72,7 +108,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
                   },
                 })}
               />
-              <P className="text-red-400 text-sm">{errors.name?.message}</P>
+              <P className="!text-red-400 text-sm">{errors.name?.message}</P>
             </div>
             <div className="my-3">
               <Label>Phone number</Label>
@@ -80,7 +116,10 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
                 placeholder="+XXXXXXXXXXX"
                 {...register("phonenumber", {
                   required: phoneRules.errorMessages.required,
-                  pattern: phoneRules.regex,
+                  pattern: {
+                    value: phoneRules.regex,
+                    message: phoneRules.errorMessages.pattern,
+                  },
                   minLength: {
                     value: phoneRules.minLength,
                     message: phoneRules.errorMessages.length,
@@ -91,7 +130,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
                   },
                 })}
               />
-              <P className="text-red-400 text-sm">
+              <P className="!text-red-400 text-sm">
                 {errors.phonenumber?.message}
               </P>
             </div>
@@ -100,11 +139,12 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
                 large
                 block
                 filled
-                disabled={!isValid}
+                disabled={!isValid || loading}
                 onClick={handleSubmit(handleVerifyPhonenumber)}
               >
                 Verify phone number
               </Button>
+              <Loader isLoading={loading} />
             </div>
           </div>
         </CardBody>

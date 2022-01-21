@@ -62,10 +62,31 @@ export const useAccount = (accountService?: AccountService) => {
     [account],
   )
 
+  const verifyPhonenumber = async (phoneNumber: string) => {
+    const response = await fetch("/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+      }),
+    })
+
+    return response
+  }
+
   React.useEffect(() => {
     // @ts-ignore TODO: fix types
     getAccount().then((account) => setAccount(account))
   }, [getAccount])
 
-  return { account, createAccount, getAccount, updateAccount }
+  return {
+    account,
+    createAccount,
+    getAccount,
+    updateAccount,
+    verifyPhonenumber,
+  }
 }

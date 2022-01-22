@@ -74,7 +74,13 @@ export const useAccount = (accountService?: AccountService) => {
       }),
     })
 
-    return response
+    const data = await response.json()
+
+    const validPhonenumber =
+      data.response.MessageResponse.Result[phoneNumber].DeliveryStatus ==
+        "SUCCESSFUL" || !data.error
+
+    return { response: data, validPhonenumber }
   }
 
   React.useEffect(() => {

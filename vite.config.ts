@@ -11,6 +11,7 @@ interface CanisterIds {
 
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
+
 const verifyPhonenumberEndpoint = process.env.VITE_AWS_VERIFY_PHONENUMBER
 
 // See guide on how to configure Vite at:

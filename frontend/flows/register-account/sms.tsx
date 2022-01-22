@@ -1,4 +1,3 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
 import {
   Button,
   Card,
@@ -11,13 +10,7 @@ import {
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { fromMnemonicWithoutValidation } from "frontend/utils/internet-identity/crypto/ed25519"
-import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
-import { ProofOfWork } from "frontend/utils/internet-identity/generated/internet_identity_types"
-import {
-  IC_DERIVATION_PATH,
-  IIConnection,
-} from "frontend/utils/internet-identity/iiConnection"
+import { tokenRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { HiFingerPrint, HiRefresh } from "react-icons/hi"
@@ -40,30 +33,55 @@ export const RegisterAccountSMSVerification: React.FC<
 > = ({ children, className }) => {
   const navigate = useNavigate()
   const { state } = useLocation()
-  const { register, watch } = useForm()
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+    setError,
+  } = useForm({
+    mode: "all",
+  })
 
-  const { createWebAuthNIdentity, updateAccount } = useMultipass()
+  const { createWebAuthNIdentity, verifyPhonenumber } = useMultipass()
 
   const { name, phonenumber } = state as RegisterAccountState
-  const verificationCode = watch("verificationCode")
+  const [loading, setLoading] = React.useState(false)
 
-  const resendSMS = React.useCallback(() => {
-    console.log("resendSMS")
-  }, [])
+  const resendSMS = React.useCallback(async () => {
+    try {
+      setLoading(true)
+      const { validPhonenumber } = await verifyPhonenumber(phonenumber)
+      if (!validPhonenumber) throw new Error()
+    } catch {
+      setError("phonenumber", {
+        type: "manual",
+        message: "Something went wrong. Please try again.",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }, [phonenumber, setError, verifyPhonenumber])
 
-  const handleVerifyPhonenumber = React.useCallback(async () => {
-    // TODO: handle validation of token w backend
+  const handleVerifySMSToken = async (data: any) => {
+    try {
+      const { verificationCode } = data
+      const registerPayload = await createWebAuthNIdentity()
 
-    const registerPayload = await createWebAuthNIdentity()
-
-    navigate(`${RAC.base}/${RAC.captcha}`, {
-      state: {
-        name,
-        phonenumber,
-        registerPayload: registerPayload,
-      },
-    })
-  }, [createWebAuthNIdentity, name, navigate, phonenumber])
+      navigate(`${RAC.base}/${RAC.captcha}`, {
+        state: {
+          name,
+          phonenumber,
+          registerPayload: registerPayload,
+          verificationCode,
+        },
+      })
+    } catch (error) {
+      setError("verificationCode", {
+        type: "manual",
+        message: "Something went wrong. Please try again.",
+      })
+    }
+  }
 
   return (
     <AppScreen>
@@ -72,36 +90,52 @@ export const RegisterAccountSMSVerification: React.FC<
         <CardBody className="max-w-lg">
           <P className="pb-3">
             Please enter the verification code to verify your phone number. A
-            code has been send to +1 234 856 7890. Didn't receive a code? Resend
+            code has been sent to {phonenumber}.
           </P>
-          <Input
-            placeholder="SMS code"
-            {...register("verificationCode", {
-              required: true,
-              valueAsNumber: true,
-            })}
-          />
-          <Button
-            text
-            className="flex items-center gap-4 my-2 underline underline-offset-4"
-            onClick={resendSMS}
-          >
-            <HiRefresh className="text-lg" />
-            Re-send code in 60s
-          </Button>
+
+          <P>
+            Didn't receive a code?
+            <Button text onClick={resendSMS} className="!px-1 !py-1 mx-2">
+              Resend
+            </Button>
+          </P>
+          <div className="mt-3">
+            <Input
+              placeholder="SMS code"
+              {...register("verificationCode", {
+                required: tokenRules.errorMessages.required,
+                pattern: {
+                  value: tokenRules.regex,
+                  message: tokenRules.errorMessages.pattern,
+                },
+                minLength: {
+                  value: tokenRules.minLength,
+                  message: tokenRules.errorMessages.length,
+                },
+                maxLength: {
+                  value: tokenRules.maxLength,
+                  message: tokenRules.errorMessages.length,
+                },
+              })}
+            />
+            <P className="!text-red-400 text-sm">
+              {errors.verificationCode?.message}
+            </P>
+          </div>
 
           <Button
             large
             block
             filled
-            onClick={handleVerifyPhonenumber}
-            disabled={!verificationCode}
+            onClick={handleSubmit(handleVerifySMSToken)}
+            disabled={!isValid || loading}
             className="flex items-center justify-center mx-auto my-6 space-x-4"
           >
             <HiFingerPrint className="text-lg" />
 
             <span>Verify my phone number</span>
           </Button>
+          <Loader isLoading={loading} />
         </CardBody>
       </Card>
     </AppScreen>

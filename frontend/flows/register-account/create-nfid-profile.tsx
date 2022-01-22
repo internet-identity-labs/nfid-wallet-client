@@ -46,12 +46,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
       setLoading(true)
 
       // Backend validation
-      const response = await verifyPhonenumber(phonenumber)
-      const data = await response.json()
-
-      const validPhonenumber =
-        data.response.MessageResponse.Result[phonenumber].DeliveryStatus ==
-          "SUCCESSFUL" || !data.error
+      const { validPhonenumber } = await verifyPhonenumber(phonenumber)
 
       if (isValid && validPhonenumber) {
         navigate(`${RAC.base}/${RAC.smsVerification}`, {
@@ -61,7 +56,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
           },
         })
       }
-    } catch (error) {
+    } catch {
       setError("phonenumber", {
         type: "manual",
         message: "Something went wrong. Please try again.",

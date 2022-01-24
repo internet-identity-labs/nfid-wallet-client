@@ -137,6 +137,6 @@ export const AuthWrapper: React.FC = ({ children }) => {
       </Card>
     </AppScreen>
   ) : (
-    <Navigate to="/register/welcome" />
+    <Navigate to="/register-account" />
   )
 }

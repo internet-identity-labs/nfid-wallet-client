@@ -43,28 +43,24 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
     async (data: any) => {
       const { name, phonenumber } = data
 
-      try {
-        setLoading(true)
+      setLoading(true)
 
-        // Backend validation
-        const { validPhonenumber } = await verifyPhonenumber(phonenumber)
+      // Backend validation
+      const { validPhonenumber } = await verifyPhonenumber(phonenumber)
 
-        if (isValid && validPhonenumber) {
-          navigate(`${RAC.base}/${RAC.smsVerification}`, {
-            state: {
-              name,
-              phonenumber,
-            },
-          })
-        }
-      } catch {
-        setError("phonenumber", {
-          type: "manual",
-          message: "Something went wrong. Please try again.",
+      if (isValid && validPhonenumber) {
+        return navigate(`${RAC.base}/${RAC.smsVerification}`, {
+          state: {
+            name,
+            phonenumber,
+          },
         })
-      } finally {
-        setLoading(false)
       }
+      setError("phonenumber", {
+        type: "manual",
+        message: "Something went wrong. Please try again.",
+      })
+      setLoading(false)
     },
     [isValid, navigate, setError, verifyPhonenumber],
   )

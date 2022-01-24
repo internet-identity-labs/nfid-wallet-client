@@ -39,32 +39,35 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
   const [loading, setLoading] = React.useState(false)
 
-  const handleVerifyPhonenumber = async (data: any) => {
-    const { name, phonenumber } = data
+  const handleVerifyPhonenumber = React.useCallback(
+    async (data: any) => {
+      const { name, phonenumber } = data
 
-    try {
-      setLoading(true)
+      try {
+        setLoading(true)
 
-      // Backend validation
-      const { validPhonenumber } = await verifyPhonenumber(phonenumber)
+        // Backend validation
+        const { validPhonenumber } = await verifyPhonenumber(phonenumber)
 
-      if (isValid && validPhonenumber) {
-        navigate(`${RAC.base}/${RAC.smsVerification}`, {
-          state: {
-            name,
-            phonenumber,
-          },
+        if (isValid && validPhonenumber) {
+          navigate(`${RAC.base}/${RAC.smsVerification}`, {
+            state: {
+              name,
+              phonenumber,
+            },
+          })
+        }
+      } catch {
+        setError("phonenumber", {
+          type: "manual",
+          message: "Something went wrong. Please try again.",
         })
+      } finally {
+        setLoading(false)
       }
-    } catch {
-      setError("phonenumber", {
-        type: "manual",
-        message: "Something went wrong. Please try again.",
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    [isValid, navigate, setError, verifyPhonenumber],
+  )
 
   return (
     <AppScreen isFocused>

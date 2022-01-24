@@ -1,17 +1,8 @@
-import React from "react"
+import { Button, Card, CardBody, CardTitle, H3, P } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import {
-  Card,
-  CardTitle,
-  CardBody,
-  P,
-  Input,
-  Button,
-  CardAction,
-  H3,
-} from "@identity-labs/ui"
-import { HiCheck, HiClipboard, HiFingerPrint, HiRefresh } from "react-icons/hi"
+import React from "react"
+import { HiCheck, HiClipboard } from "react-icons/hi"
 import { useLocation } from "react-router-dom"
 
 interface RegisterAccountCopyRecoveryPhraseProps
@@ -47,11 +38,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
             <div className="uppercase font-bold text-center mb-5 text-indigo-600">
               You need to save this!
             </div>
-            <P>
-              {recoveryPhrase
-                ? recoveryPhrase
-                : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique quaerat dolore ullam incidunt eius debitis sunt rerum obcaecati suscipit? Expedita quos quidem animi neque nostrum rem tenetur eos dolor"}
-            </P>
+            <P>{recoveryPhrase}</P>
 
             <Button
               className={clsx(

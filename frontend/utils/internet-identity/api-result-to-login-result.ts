@@ -69,5 +69,12 @@ export const apiResultToLoginResult = (result: ApiResult): LoginResult => {
           "Failed to recover using this seedphrase. Did you enter it correctly?",
       }
     }
+    default: {
+      return {
+        tag: "err",
+        title: "Unknown error",
+        message: "Something went wrong",
+      }
+    }
   }
 }

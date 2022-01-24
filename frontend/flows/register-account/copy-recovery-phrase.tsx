@@ -23,6 +23,12 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
 
   const [copied, setCopied] = React.useState(false)
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(recoveryPhrase).then(function () {
+      setCopied(true)
+    })
+  }
+
   return (
     <AppScreen>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
@@ -38,6 +44,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
             <div className="uppercase font-bold text-center mb-5 text-indigo-600">
               You need to save this!
             </div>
+
             <P>{recoveryPhrase}</P>
 
             <Button
@@ -47,7 +54,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
                   ? "border-indigo-700 text-indigo-700"
                   : "border-indigo-500 text-indigo-500",
               )}
-              onClick={() => setCopied(true)}
+              onClick={() => copyToClipboard()}
             >
               {copied ? (
                 <HiCheck className="text-lg mr-2" />

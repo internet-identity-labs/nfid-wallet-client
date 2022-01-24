@@ -42,6 +42,17 @@ export const tokenRules = {
   },
 }
 
+export const captchaRules = {
+  regex: /^[a-zA-Z0-9]{5}$/,
+  minLength: 5,
+  maxLength: 5,
+  errorMessages: {
+    pattern: "Captcha must only contain letters and numbers (5 characters)",
+    required: "Captcha is required",
+    length: "Captcha must be 5 characters long",
+  },
+}
+
 export const isValidPhonenumber = (phonenumber: string) => {
   return phoneRules.regex.test(phonenumber)
 }
@@ -52,4 +63,8 @@ export const isValidName = (name: string) => {
 
 export const isValidToken = (token: string) => {
   return tokenRules.regex.test(token)
+}
+
+export const isValidCaptcha = (captcha: string) => {
+  return captchaRules.regex.test(captcha)
 }

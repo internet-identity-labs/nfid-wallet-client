@@ -31,6 +31,7 @@ import { HiFingerPrint, HiRefresh } from "react-icons/hi"
 import { RegisterAccountConstants as RAC } from "./routes"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
+import { captchaRules } from "frontend/utils/validations"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<
@@ -52,14 +53,21 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   children,
   className,
 }) => {
-  const { register, watch, setValue } = useForm()
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+    setValue,
+    setError,
+  } = useForm({
+    mode: "all",
+  })
   const { state } = useLocation()
   const navigate = useNavigate()
   const { updateAccount } = useMultipass()
 
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
   const [loading, setLoading] = React.useState(true)
-  const captcha = watch("captcha")
 
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
@@ -76,8 +84,13 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     requestCaptcha()
   }, [requestCaptcha])
 
-  const handleRegisterAnchor = React.useCallback(
-    async (identity: string, deviceName: string, pow: ProofOfWork) => {
+  const registerAnchor = React.useCallback(
+    async (
+      identity: string,
+      deviceName: string,
+      pow: ProofOfWork,
+      captcha: string,
+    ) => {
       if (!captchaResp) throw new Error("No challenge response")
 
       const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
@@ -95,7 +108,6 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
       if (response.kind === "badChallenge") {
         requestCaptcha()
-        setValue("captcha", "")
       }
 
       if (response.kind === "loginSuccess") {
@@ -108,10 +120,10 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
       return response
     },
-    [captcha, captchaResp, requestCaptcha, setValue, updateAccount],
+    [captchaResp, requestCaptcha, updateAccount],
   )
 
-  const handleCreateRecoveryPhrase = React.useCallback(
+  const createRecoveryPhrase = React.useCallback(
     async (userNumber: bigint, connection: IIConnection) => {
       const recovery = generate().trim()
       const recoverIdentity = await fromMnemonicWithoutValidation(
@@ -131,56 +143,55 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     [],
   )
 
-  const handleCompleteNFIDProfile = React.useCallback(async () => {
-    setLoading(true)
+  const completeNFIDProfile = React.useCallback(
+    async (data: any) => {
+      try {
+        setLoading(true)
 
-    try {
-      const { registerPayload, name, phonenumber } =
-        state as RegisterAccountCaptchaState
+        const { captcha } = data
+        const { registerPayload, name, phonenumber } =
+          state as RegisterAccountCaptchaState
 
-      const responseRegisterAnchor = await handleRegisterAnchor(
-        registerPayload.identity,
-        registerPayload.deviceName,
-        registerPayload.pow,
-      )
-
-      console.log("responseRegisterAnchor :>> ", responseRegisterAnchor)
-
-      if (
-        responseRegisterAnchor &&
-        responseRegisterAnchor.kind === "loginSuccess"
-      ) {
-        const { userNumber, connection } = responseRegisterAnchor
-
-        const recoveryPhrase = await handleCreateRecoveryPhrase(
-          userNumber,
-          connection,
+        const responseRegisterAnchor = await registerAnchor(
+          registerPayload.identity,
+          registerPayload.deviceName,
+          registerPayload.pow,
+          captcha,
         )
 
-        navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
-          state: {
-            name,
-            phonenumber,
-            recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
-          },
+        if (
+          responseRegisterAnchor &&
+          responseRegisterAnchor.kind === "loginSuccess"
+        ) {
+          const { userNumber, connection } = responseRegisterAnchor
+
+          const recoveryPhrase = await createRecoveryPhrase(
+            userNumber,
+            connection,
+          )
+
+          navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
+            state: {
+              name,
+              phonenumber,
+              recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
+            },
+          })
+        }
+      } catch {
+        setValue("captcha", "")
+        setError("captcha", {
+          type: "manual",
+          message: "Something went wrong. Please try again.",
         })
+        requestCaptcha()
+      } finally {
+        setCaptchaResp(undefined)
+        setLoading(false)
       }
-    } catch {
-      requestCaptcha()
-      throw new Error("Failed to complete NFID Profile")
-    } finally {
-      setValue("captcha", "")
-      setCaptchaResp(undefined)
-      setLoading(false)
-    }
-  }, [
-    handleCreateRecoveryPhrase,
-    handleRegisterAnchor,
-    navigate,
-    requestCaptcha,
-    setValue,
-    state,
-  ])
+    },
+    [state, registerAnchor, createRecoveryPhrase, navigate, setValue, setError, requestCaptcha],
+  )
 
   return (
     <AppScreen isFocused>
@@ -200,16 +211,32 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
               <Input
                 placeholder="Captcha"
-                {...register("captcha", { required: true })}
+                {...register("captcha", {
+                  required: captchaRules.errorMessages.required,
+                  minLength: {
+                    value: captchaRules.minLength,
+                    message: captchaRules.errorMessages.length,
+                  },
+                  maxLength: {
+                    value: captchaRules.maxLength,
+                    message: captchaRules.errorMessages.length,
+                  },
+                  pattern: {
+                    value: captchaRules.regex,
+                    message: captchaRules.errorMessages.pattern,
+                  },
+                })}
               />
+
+              <P className="!text-red-400 text-sm">{errors.captcha?.message}</P>
             </div>
             <div className="my-3">
               <Button
                 large
                 block
                 filled
-                disabled={!captcha || !captchaResp}
-                onClick={handleCompleteNFIDProfile}
+                disabled={!isValid || loading}
+                onClick={handleSubmit(completeNFIDProfile)}
                 className="flex items-center justify-center mx-auto my-6 space-x-4"
                 data-captcha-key={captchaResp?.challenge_key}
               >

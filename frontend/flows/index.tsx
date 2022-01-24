@@ -39,6 +39,8 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         { path: RegisterAccountConstants.base },
         { path: RegisterAccountConstants.createNFIDProfile },
         { path: RegisterAccountConstants.smsVerification },
+        { path: RegisterAccountConstants.captcha },
+        { path: RegisterAccountConstants.copyRecoveryPhrase },
       ],
     },
     {

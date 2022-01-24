@@ -52,22 +52,24 @@ export const RegisterFinalizePersonaScreen: React.FC<
   const [loading, setLoading] = useState(false)
 
   const handleRegisterAnchor = React.useCallback(async () => {
-    const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
-    const response = await IIConnection.register(
-      webAuthnIdentity,
-      deviceName,
-      pow,
-    )
-    if (response.kind === "loginSuccess") {
-      const { userNumber } = response
-      updateAccount({
-        principal_id: webAuthnIdentity.getPrincipal().toString(),
-        rootAnchor: userNumber.toString(),
-      })
-    }
-    setAnchorCreated(true)
-    return response
-  }, [deviceName, identity, pow, updateAccount])
+    console.log(">> handleRegisterAnchor disabled after II upgrade")
+
+    // const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
+    // const response = await IIConnection.register(
+    //   webAuthnIdentity,
+    //   deviceName,
+    //   pow,
+    // )
+    // if (response.kind === "loginSuccess") {
+    //   const { userNumber } = response
+    //   updateAccount({
+    //     principal_id: webAuthnIdentity.getPrincipal().toString(),
+    //     rootAnchor: userNumber.toString(),
+    //   })
+    // }
+    // setAnchorCreated(true)
+    // return response
+  }, [])
 
   const handleCreateRecoveryPhrase = React.useCallback(
     async (userNumber: bigint, connection: IIConnection) => {
@@ -121,11 +123,11 @@ export const RegisterFinalizePersonaScreen: React.FC<
         <CardTitle>Keys created for {name}</CardTitle>
         <CardBody className="flex flex-col items-center">
           <div className="mb-4">
-            <div className="flex flex-row space-x-4 items-center py-3">
+            <div className="flex flex-row items-center py-3 space-x-4">
               <HiCheckCircle className={clsx("text-2xl", "text-black")} />
               <div>Key created</div>
             </div>
-            <div className="flex flex-row space-x-4 items-center py-3">
+            <div className="flex flex-row items-center py-3 space-x-4">
               <HiCheckCircle
                 className={clsx(
                   "text-2xl",
@@ -134,7 +136,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
               />
               <div>Anchor created</div>
             </div>
-            <div className="flex flex-row space-x-4 items-center py-3">
+            <div className="flex flex-row items-center py-3 space-x-4">
               <HiCheckCircle
                 className={clsx(
                   "text-2xl",
@@ -151,7 +153,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
             bottom
             className="justify-center md:flex-col md:items-center"
           >
-            <FaceId className="mx-auto h-16 mb-4" />
+            <FaceId className="h-16 mx-auto mb-4" />
             <div className="flex justify-center">
               <Button block large filled onClick={handleConfirm}>
                 Use FaceID to finalize your persona

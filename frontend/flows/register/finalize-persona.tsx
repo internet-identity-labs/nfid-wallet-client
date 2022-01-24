@@ -93,29 +93,26 @@ export const RegisterFinalizePersonaScreen: React.FC<
   )
 
   const handleConfirm = React.useCallback(async () => {
-    setLoading(true)
-    const response = await handleRegisterAnchor()
+    console.log(">> handleConfirm disabled after II upgrade")
 
-    if (response.kind === "loginSuccess") {
-      const { userNumber, connection } = response
-      onRegisterSuccess(connection)
-      const recoveryPhrase = await handleCreateRecoveryPhrase(
-        userNumber,
-        connection,
-      )
-      setLoading(false)
+    // setLoading(true)
+    // const response = await handleRegisterAnchor()
 
-      return navigate(`${RC.base}/${RC.recoveryPhrase}`, {
-        state: { recoveryPhrase },
-      })
-    }
-    console.error("handle this error")
-  }, [
-    handleCreateRecoveryPhrase,
-    handleRegisterAnchor,
-    navigate,
-    onRegisterSuccess,
-  ])
+    // if (response.kind === "loginSuccess") {
+    //   const { userNumber, connection } = response
+    //   onRegisterSuccess(connection)
+    //   const recoveryPhrase = await handleCreateRecoveryPhrase(
+    //     userNumber,
+    //     connection,
+    //   )
+    //   setLoading(false)
+
+    //   return navigate(`${RC.base}/${RC.recoveryPhrase}`, {
+    //     state: { recoveryPhrase },
+    //   })
+    // }
+    // console.error("handle this error")
+  }, [])
 
   return (
     <AppScreen isFocused>

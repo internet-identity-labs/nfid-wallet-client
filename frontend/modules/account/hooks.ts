@@ -1,3 +1,4 @@
+import { CONFIG } from "frontend/config"
 import {
   Account,
   HTTPAccountRequest,
@@ -63,7 +64,7 @@ export const useAccount = (accountService?: AccountService) => {
   )
 
   const verifyPhonenumber = async (phoneNumber: string) => {
-    const response = await fetch("/verify", {
+    const response = await fetch(`${CONFIG.VERIFY_PHONE_NUMBER}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

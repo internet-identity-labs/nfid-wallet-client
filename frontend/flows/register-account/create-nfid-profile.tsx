@@ -113,6 +113,9 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
               <Input
                 placeholder="+XXXXXXXXXXX"
                 {...register("phonenumber", {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.replace(/[^\d\+]/g, "")
+                  },
                   required: phoneRules.errorMessages.required,
                   pattern: {
                     value: phoneRules.regex,

@@ -1,4 +1,10 @@
 import type { Principal } from "@dfinity/principal"
+export type DelegationJson = string
+export interface DelegationJsonResponse {
+  delegation: [] | [DelegationJson]
+  status_code: number
+}
+export type DelegationKey = string
 export interface Account {
   name: string
   email: string

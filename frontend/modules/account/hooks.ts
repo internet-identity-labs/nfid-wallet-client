@@ -1,3 +1,4 @@
+import { CONFIG } from "frontend/config"
 import {
   Account,
   HTTPAccountRequest,
@@ -62,10 +63,37 @@ export const useAccount = (accountService?: AccountService) => {
     [account],
   )
 
+  const verifyPhonenumber = async (phoneNumber: string) => {
+    const response = await fetch(`${CONFIG.VERIFY_PHONE_NUMBER}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber,
+      }),
+    })
+
+    const data = await response.json()
+
+    const validPhonenumber =
+      data.response?.MessageResponse.Result[phoneNumber].StatusCode == 200 ||
+      false
+
+    return { response: data, validPhonenumber }
+  }
+
   React.useEffect(() => {
     // @ts-ignore TODO: fix types
     getAccount().then((account) => setAccount(account))
   }, [getAccount])
 
-  return { account, createAccount, getAccount, updateAccount }
+  return {
+    account,
+    createAccount,
+    getAccount,
+    updateAccount,
+    verifyPhonenumber,
+  }
 }

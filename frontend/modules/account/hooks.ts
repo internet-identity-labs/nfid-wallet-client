@@ -68,7 +68,6 @@ export const useAccount = (accountService?: AccountService) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         phoneNumber: phoneNumber,

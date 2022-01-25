@@ -1,8 +1,9 @@
-import { Button, Card, CardBody, H3, H5, P } from "@identity-labs/ui"
+import { Button, Card, CardBody, H5, P } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
+import { useNavigate } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { RegisterAccountConstants as RAC } from "./routes"
 
@@ -17,6 +18,11 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   className,
 }) => {
   const navigate = useNavigate()
+  const [lastSlide, setLastSlide] = React.useState(false)
+  const [firstSlide, setFirstSlide] = React.useState(true)
+
+  const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
+  const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)
 
   return (
     <AppScreen>
@@ -28,9 +34,23 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       >
         <CardBody small>
           <Swiper
-            className="overflow-hidden rounded-lg  flex flex-col-reverse"
-            pagination={true}
+            navigation={{
+              prevEl,
+              nextEl,
+              disabledClass: "swiper-nav-disabled",
+            }}
+            className="overflow-hidden rounded-lg"
+            pagination={{
+              el: ".swiper-pagination",
+              clickable: true,
+            }}
             grabCursor={true}
+            onRealIndexChange={(swiper) => {
+              setFirstSlide(swiper.realIndex === 0 ? true : false)
+              setLastSlide(
+                swiper.realIndex === swiper.slides.length - 1 ? true : false,
+              )
+            }}
           >
             <SwiperSlide>
               <H5 className="md:mb-7 font-bold mb-4">
@@ -120,6 +140,41 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               </div>
             </SwiperSlide>
           </Swiper>
+
+          <div className="swiper-controls">
+            <div
+              ref={(node) => setPrevEl(node)}
+              className={clsx(
+                "swiper-button-prev",
+                !firstSlide && "cursor-pointer",
+              )}
+            >
+              <HiArrowLeft
+                className={clsx(
+                  "text-2xl",
+                  !firstSlide ? "text-black" : "text-gray-400",
+                )}
+              />
+            </div>
+
+            <div className="swiper-pagination pb-[5px] mx-8"></div>
+
+            <div
+              className={clsx(
+                "swiper-button-next",
+                "p-5 bg-black-base rounded-full",
+                lastSlide ? "bg-opacity-10 text-gray-400" : "cursor-pointer",
+              )}
+              ref={(node) => setNextEl(node)}
+            >
+              <HiArrowRight
+                className={clsx(
+                  "text-2xl",
+                  !lastSlide ? "text-white" : "text-gray-400",
+                )}
+              />
+            </div>
+          </div>
         </CardBody>
       </Card>
     </AppScreen>

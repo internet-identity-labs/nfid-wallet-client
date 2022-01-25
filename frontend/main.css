@@ -7,7 +7,7 @@
 }
 
 .swiper-pagination {
-  @apply !relative !bottom-0 mt-[80px] !text-left;
+  @apply !relative;
 }
 
 .swiper-title {
@@ -15,9 +15,17 @@
 }
 
 .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  @apply !rounded-full !w-[36px] !bg-black-base transition-all duration-200 ease-out;
+  @apply !rounded-full !w-[36px] !bg-black-base;
 }
 
 .swiper-pagination-bullet {
   @apply !rounded-full !w-[16px] !bg-[#0B0E13] !h-[6px] !mx-2 transition-all duration-200 ease-in-out;
+}
+
+.swiper-pagination-horizontal {
+  @apply !w-auto !bottom-0 !left-0;
+}
+
+.swiper-controls {
+  @apply flex items-center mt-[80px];
 }

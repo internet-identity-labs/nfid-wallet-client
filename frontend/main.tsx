@@ -11,9 +11,9 @@ import "swiper/css/pagination"
 
 import { BrowserRouter as Router } from "react-router-dom"
 
-import SwiperCore, { Pagination } from "swiper"
+import SwiperCore, { Pagination, Navigation } from "swiper"
 
-SwiperCore.use([Pagination])
+SwiperCore.use([Pagination, Navigation])
 
 ReactDOM.render(
   <React.StrictMode>

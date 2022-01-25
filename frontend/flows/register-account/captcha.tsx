@@ -15,22 +15,22 @@ import {
 import { useLocation, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { fromMnemonicWithoutValidation } from "frontend/utils/internet-identity/crypto/ed25519"
-import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
+import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
+import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import {
   Challenge,
   ChallengeResult,
   ProofOfWork,
-} from "frontend/utils/internet-identity/generated/internet_identity_types"
+} from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   canisterIdPrincipal,
   IC_DERIVATION_PATH,
   IIConnection,
-} from "frontend/utils/internet-identity/iiConnection"
+} from "frontend/services/internet-identity/iiConnection"
 import { HiFingerPrint, HiRefresh } from "react-icons/hi"
 import { RegisterAccountConstants as RAC } from "./routes"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
+import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import { captchaRules } from "frontend/utils/validations"
 
 interface RegisterAccountCaptchaProps

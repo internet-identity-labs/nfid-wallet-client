@@ -14,10 +14,10 @@ import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
   IIConnection,
-} from "frontend/utils/internet-identity/iiConnection"
+} from "frontend/services/internet-identity/iiConnection"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/modules/persona/hooks"
-import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import { useSearchParams } from "react-router-dom"
 

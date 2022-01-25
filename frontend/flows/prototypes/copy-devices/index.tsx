@@ -1,12 +1,12 @@
 import { Centered, Loader, Screen } from "@identity-labs/ui"
 import clsx from "clsx"
-import { apiResultToLoginResult } from "frontend/utils/internet-identity/api-result-to-login-result"
-import { DeviceData } from "frontend/utils/internet-identity/generated/internet_identity_types"
+import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
+import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   derFromPubkey,
-  IIConnection
-} from "frontend/utils/internet-identity/iiConnection"
-import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
+  IIConnection,
+} from "frontend/services/internet-identity/iiConnection"
+import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import React from "react"
 import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"

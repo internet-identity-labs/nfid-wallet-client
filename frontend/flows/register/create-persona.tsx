@@ -19,8 +19,8 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   creationOptions,
   IIConnection,
-} from "frontend/utils/internet-identity/iiConnection"
-import { parseUserNumber } from "frontend/utils/internet-identity/userNumber"
+} from "frontend/services/internet-identity/iiConnection"
+import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"

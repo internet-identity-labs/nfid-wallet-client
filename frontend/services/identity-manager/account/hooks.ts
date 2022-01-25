@@ -79,8 +79,7 @@ export const useAccount = (accountService?: AccountService) => {
     const data = await response.json()
 
     const validPhonenumber =
-      data.response?.MessageResponse.Result[phoneNumber].StatusCode == 200 ||
-      false
+      data.response?.MessageResponse.Result[phoneNumber].StatusCode === 200
 
     return { response: data, validPhonenumber }
   }

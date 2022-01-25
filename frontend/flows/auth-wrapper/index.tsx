@@ -19,7 +19,7 @@ import React from "react"
 import { Navigate } from "react-router-dom"
 import { ActorSubclass } from "@dfinity/agent"
 import {
-  Account,
+  AccountResponse,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/services/identity-manager/identity_manager"
 
@@ -29,7 +29,7 @@ interface AuthContextState {
   connection?: IIConnection
   identityManager?: ActorSubclass<_IDENTITY_MANAGER_SERVICE>
   userNumber?: bigint
-  account: Account | undefined
+  account: AccountResponse | undefined
   startUrl: string
   login: () => void
   onRegisterSuccess: (connection: IIConnection) => void
@@ -124,10 +124,10 @@ export const AuthWrapper: React.FC = ({ children }) => {
     <AppScreen isFocused>
       <Card className="flex flex-col h-full">
         <CardTitle>Login</CardTitle>
-        <CardBody className="text-center max-w-lg">
+        <CardBody className="max-w-lg text-center">
           Use FaceID to sign in
         </CardBody>
-        <CardAction className="justify-center items-center">
+        <CardAction className="items-center justify-center">
           <Button onClick={login}>
             <FaceId />
           </Button>

@@ -1,6 +1,6 @@
 import { CONFIG } from "frontend/config"
 import {
-  Account,
+  AccountResponse,
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/services/identity-manager/identity_manager"
@@ -13,7 +13,7 @@ type AccountService = Pick<
   "create_account" | "update_account" | "get_account"
 >
 
-type LocalAccount = Account & { rootAnchor: string }
+type LocalAccount = AccountResponse & { rootAnchor: string }
 
 const getAccountFromLocalStorage = (): LocalAccount | undefined => {
   const accountFromLS = localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY)
@@ -49,7 +49,9 @@ export const useAccount = (accountService?: AccountService) => {
 
   const getAccount = React.useCallback(async () => {
     const account = getAccountFromLocalStorage()
-    return new Promise<Account | undefined>((resolve) => resolve(account))
+    return new Promise<AccountResponse | undefined>((resolve) =>
+      resolve(account),
+    )
   }, [])
 
   const updateAccount = React.useCallback(
@@ -77,8 +79,7 @@ export const useAccount = (accountService?: AccountService) => {
     const data = await response.json()
 
     const validPhonenumber =
-      data.response?.MessageResponse.Result[phoneNumber].StatusCode == 200 ||
-      false
+      data.response?.MessageResponse.Result[phoneNumber].StatusCode === 200
 
     return { response: data, validPhonenumber }
   }

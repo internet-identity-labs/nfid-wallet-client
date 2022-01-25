@@ -48,39 +48,32 @@ export const RegisterAccountSMSVerification: React.FC<
   const [loading, setLoading] = React.useState(false)
 
   const resendSMS = React.useCallback(async () => {
-    try {
-      setLoading(true)
-      const { validPhonenumber } = await verifyPhonenumber(phonenumber)
-      if (!validPhonenumber) throw new Error()
-    } catch {
+    setLoading(true)
+
+    const { validPhonenumber } = await verifyPhonenumber(phonenumber)
+
+    if (!validPhonenumber) {
       setError("phonenumber", {
         type: "manual",
         message: "Something went wrong. Please try again.",
       })
-    } finally {
-      setLoading(false)
     }
+
+    setLoading(false)
   }, [phonenumber, setError, verifyPhonenumber])
 
   const handleVerifySMSToken = async (data: any) => {
-    try {
-      const { verificationCode } = data
-      const registerPayload = await createWebAuthNIdentity()
+    const { verificationCode } = data
+    const registerPayload = await createWebAuthNIdentity()
 
-      navigate(`${RAC.base}/${RAC.captcha}`, {
-        state: {
-          name,
-          phonenumber,
-          registerPayload: registerPayload,
-          verificationCode,
-        },
-      })
-    } catch (error) {
-      setError("verificationCode", {
-        type: "manual",
-        message: "Something went wrong. Please try again.",
-      })
-    }
+    navigate(`${RAC.base}/${RAC.captcha}`, {
+      state: {
+        name,
+        phonenumber,
+        registerPayload: registerPayload,
+        verificationCode,
+      },
+    })
   }
 
   return (

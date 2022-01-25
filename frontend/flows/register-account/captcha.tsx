@@ -1,20 +1,15 @@
-import React from "react"
-import clsx from "clsx"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { WebAuthnIdentity } from "@dfinity/identity"
 import {
   Button,
   Card,
   CardBody,
   CardTitle,
-  H3,
   Input,
-  Label,
   Loader,
   P,
 } from "@identity-labs/ui"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useForm } from "react-hook-form"
-import { useMultipass } from "frontend/hooks/use-multipass"
+import clsx from "clsx"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import {
@@ -23,15 +18,15 @@ import {
   ProofOfWork,
 } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
-  canisterIdPrincipal,
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { HiFingerPrint, HiRefresh } from "react-icons/hi"
-import { RegisterAccountConstants as RAC } from "./routes"
-import { WebAuthnIdentity } from "@dfinity/identity"
-import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import { captchaRules } from "frontend/utils/validations"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { HiFingerPrint } from "react-icons/hi"
+import { useLocation, useNavigate } from "react-router-dom"
+import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<
@@ -64,7 +59,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   })
   const { state } = useLocation()
   const navigate = useNavigate()
-  const { updateAccount } = useMultipass()
+
+  // TODO: handle account creation
+  // const { updateAccount } = useMultipass()
 
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
   const [loading, setLoading] = React.useState(true)
@@ -72,25 +69,22 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
 
-    const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
-    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
+    const {
+      registerPayload: { pow },
+    } = state as RegisterAccountCaptchaState
+
     const cha = await IIConnection.createChallenge(pow)
 
     setCaptchaResp(cha)
     setLoading(false)
-  }, [])
+  }, [state])
 
   React.useEffect(() => {
     requestCaptcha()
   }, [requestCaptcha])
 
   const registerAnchor = React.useCallback(
-    async (
-      identity: string,
-      deviceName: string,
-      pow: ProofOfWork,
-      captcha: string,
-    ) => {
+    async (identity: string, deviceName: string, captcha: string) => {
       if (!captchaResp) throw new Error("No challenge response")
 
       const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
@@ -106,21 +100,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         challengeResult,
       )
 
-      if (response.kind === "badChallenge") {
-        requestCaptcha()
-      }
-
-      if (response.kind === "loginSuccess") {
-        const { userNumber } = response
-        updateAccount({
-          principal_id: webAuthnIdentity.getPrincipal().toString(),
-          rootAnchor: userNumber.toString(),
-        })
-      }
-
       return response
     },
-    [captchaResp, requestCaptcha, updateAccount],
+    [captchaResp],
   )
 
   const createRecoveryPhrase = React.useCallback(
@@ -144,53 +126,66 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   )
 
   const completeNFIDProfile = React.useCallback(
-    async (data: any) => {
-      try {
-        setLoading(true)
+    async ({ captcha }: any) => {
+      setLoading(true)
 
-        const { captcha } = data
-        const { registerPayload, name, phonenumber } =
-          state as RegisterAccountCaptchaState
+      const { registerPayload, name, phonenumber } =
+        state as RegisterAccountCaptchaState
 
-        const responseRegisterAnchor = await registerAnchor(
-          registerPayload.identity,
-          registerPayload.deviceName,
-          registerPayload.pow,
-          captcha,
+      const responseRegisterAnchor = await registerAnchor(
+        registerPayload.identity,
+        registerPayload.deviceName,
+        captcha,
+      )
+
+      if (responseRegisterAnchor.kind === "loginSuccess") {
+        const { userNumber, connection } = responseRegisterAnchor
+
+        const recoveryPhrase = await createRecoveryPhrase(
+          userNumber,
+          connection,
         )
 
-        if (
-          responseRegisterAnchor &&
-          responseRegisterAnchor.kind === "loginSuccess"
-        ) {
-          const { userNumber, connection } = responseRegisterAnchor
+        // TODO: handle account creation
+      //   const { userNumber } = response
+      //   updateAccount({
+      //     principal_id: webAuthnIdentity.getPrincipal().toString(),
+      //     rootAnchor: userNumber.toString(),
+      //   })
 
-          const recoveryPhrase = await createRecoveryPhrase(
-            userNumber,
-            connection,
-          )
-
-          navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
-            state: {
-              name,
-              phonenumber,
-              recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
-            },
-          })
-        }
-      } catch {
+        return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
+          state: {
+            name,
+            phonenumber,
+            recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
+          },
+        })
+      }
+      if (responseRegisterAnchor.kind === "badChallenge") {
         setValue("captcha", "")
         setError("captcha", {
           type: "manual",
-          message: "Something went wrong. Please try again.",
+          message: "Wrong captcha! Please try again",
         })
-        requestCaptcha()
-      } finally {
-        setCaptchaResp(undefined)
+        await requestCaptcha()
+        setLoading(false)
+      }
+      if (responseRegisterAnchor.kind === "apiError") {
+        console.error(">> completeNFIDProfile, please handle me:", {
+          error: responseRegisterAnchor.error,
+        })
         setLoading(false)
       }
     },
-    [state, registerAnchor, createRecoveryPhrase, navigate, setValue, setError, requestCaptcha],
+    [
+      state,
+      registerAnchor,
+      createRecoveryPhrase,
+      navigate,
+      setValue,
+      setError,
+      requestCaptcha,
+    ],
   )
 
   return (

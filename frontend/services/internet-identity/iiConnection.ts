@@ -317,7 +317,7 @@ export class IIConnection {
       IdentityManagerIdlFactory,
       {
         agent,
-        canisterId: CONFIG.MP_CANISTER_ID as string,
+        canisterId: CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
       },
     )
     return actor
@@ -426,7 +426,7 @@ const requestFEDelegation = async (
     {
       targets: [
         Principal.from(canisterId),
-        Principal.from(CONFIG.MP_CANISTER_ID),
+        Principal.from(CONFIG.IDENTITY_MANAGER_CANISTER_ID),
       ],
     },
   )

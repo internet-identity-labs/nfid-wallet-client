@@ -33,6 +33,7 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
         name: "John Doe",
         email: "test@test.de",
         phone_number: "0123456789",
+        token: "123",
       }
       await result.identityManager.create_account(account)
       const response = await result.identityManager.get_account()

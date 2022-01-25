@@ -64,7 +64,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   })
   const { state } = useLocation()
   const navigate = useNavigate()
-  const { updateAccount } = useMultipass()
+
+  // TODO: handle account creation
+  // const { updateAccount } = useMultipass()
 
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
   const [loading, setLoading] = React.useState(true)
@@ -72,13 +74,15 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
 
-    const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
-    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
+    const {
+      registerPayload: { pow },
+    } = state as RegisterAccountCaptchaState
+
     const cha = await IIConnection.createChallenge(pow)
 
     setCaptchaResp(cha)
     setLoading(false)
-  }, [])
+  }, [state])
 
   React.useEffect(() => {
     requestCaptcha()

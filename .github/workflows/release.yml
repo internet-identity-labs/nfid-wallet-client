@@ -21,11 +21,12 @@ jobs:
 
       - name: MULTIPASS FRONTEND | install & deploy
         run: |
+          yarn
+
           pushd frontend/ui-kit
           yarn && yarn build
           popd
 
-          yarn
 
           # install local to generate the types
           dfx start --clean --background

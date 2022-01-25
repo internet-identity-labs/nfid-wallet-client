@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { List } from "@identity-labs/ui"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
-import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import React from "react"
 import { DeviceItem } from "./device-item"
 

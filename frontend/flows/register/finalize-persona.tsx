@@ -1,4 +1,3 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
 import {
   Button,
   Card,
@@ -11,13 +10,13 @@ import {
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { fromMnemonicWithoutValidation } from "frontend/utils/internet-identity/crypto/ed25519"
-import { generate } from "frontend/utils/internet-identity/crypto/mnemonic"
-import { ProofOfWork } from "frontend/utils/internet-identity/generated/internet_identity_types"
+import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
+import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
+import { ProofOfWork } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   IC_DERIVATION_PATH,
   IIConnection,
-} from "frontend/utils/internet-identity/iiConnection"
+} from "frontend/services/internet-identity/iiConnection"
 import React, { useState } from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"

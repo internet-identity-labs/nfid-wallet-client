@@ -12,7 +12,7 @@ import {
 } from "@identity-labs/ui"
 
 import { HiCheckCircle } from "react-icons/hi"
-import { DeviceItem } from "frontend/modules/devices/device-item"
+import { DeviceItem } from "frontend/services/identity-manager/devices/device-item"
 
 interface AwaitingConfirmationProps
   extends React.DetailedHTMLProps<

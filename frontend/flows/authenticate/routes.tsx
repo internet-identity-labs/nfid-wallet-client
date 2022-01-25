@@ -1,5 +1,5 @@
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
+import { getUserNumber } from "frontend/services/internet-identity/userNumber"
 import React from "react"
 import { Authenticate } from "."
 import { UnknownDeviceScreen } from "../iframes/login-unknown"

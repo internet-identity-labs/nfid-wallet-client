@@ -24,8 +24,8 @@ import {
   DeviceKey,
   ChallengeResult,
 } from "./generated/internet_identity_types"
-import { DelegationJson, DelegationKey, _SERVICE as IdentityManagerService } from "frontend/generated/identity_manager"
-import { idlFactory as IdentityManagerIdlFactory } from "frontend/generated/identity_manager_idl"
+import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
+import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
 import {
   DelegationChain,
   DelegationIdentity,

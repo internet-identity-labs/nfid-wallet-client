@@ -8,7 +8,7 @@ import {
 } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { RegisterConstants as RC } from "./routes"

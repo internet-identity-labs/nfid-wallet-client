@@ -12,17 +12,16 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   apiResultToLoginResult,
   LoginError,
-} from "frontend/utils/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/utils/internet-identity/iiConnection"
-import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
+} from "frontend/services/internet-identity/api-result-to-login-result"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { getUserNumber } from "frontend/services/internet-identity/userNumber"
 import React from "react"
 import { Navigate } from "react-router-dom"
 import { ActorSubclass } from "@dfinity/agent"
 import {
   Account,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/generated/identity_manager"
-import { RegisterConstants } from "../register/routes"
+} from "frontend/services/identity-manager/identity_manager"
 
 interface AuthContextState {
   isAuthenticated: boolean

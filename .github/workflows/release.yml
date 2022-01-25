@@ -21,16 +21,17 @@ jobs:
 
       - name: MULTIPASS FRONTEND | install & deploy
         run: |
-          yarn && yarn
+          pushd frontend/ui-kit
+          yarn && yarn build
+          popd
+
+          yarn
 
           # install local to generate the types
           dfx start --clean --background
           dfx deploy --no-wallet
           dfx stop
 
-          pushd frontend/ui-kit
-          yarn && yarn build
-          popd
 
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
             dfx identity use action

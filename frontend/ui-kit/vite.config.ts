@@ -1,7 +1,7 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import typescript from "@rollup/plugin-typescript"
-import typescript2 from "rollup-plugin-typescript2"
+
 const { resolve } = require("path")
 
 export default defineConfig({

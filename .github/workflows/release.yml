@@ -21,7 +21,12 @@ jobs:
 
       - name: MULTIPASS FRONTEND | install & deploy
         run: |
-          yarn && yarn build
+          yarn && yarn
+
+          # install local to generate the types
+          dfx start --clean --background
+          dfx deploy --no-wallet
+          dfx stop
 
           pushd frontend/ui-kit
           yarn && yarn build
@@ -42,7 +47,7 @@ jobs:
 
       - name: MULTIPASS Demo | install & deploy
         run: |
-          cd examples/MultipassDemo && yarn build
+          cd examples/MultipassDemo && yarn
 
           # install local to generate the types
           dfx start --clean --background

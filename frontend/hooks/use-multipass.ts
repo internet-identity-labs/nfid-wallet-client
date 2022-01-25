@@ -4,15 +4,18 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { CONFIG } from "frontend/config"
 import { getBrowser, getPlatform } from "frontend/utils"
-import { Topic, _SERVICE } from "frontend/generated/identity_manager"
+import {
+  Topic,
+  _SERVICE,
+} from "frontend/modules/identity-manager/identity_manager"
 import React from "react"
-import { idlFactory as identity_manager_idl } from "frontend/generated/identity_manager_idl"
+import { idlFactory as identity_manager_idl } from "frontend/modules/identity-manager/identity_manager_idl"
 import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
   IIConnection,
 } from "frontend/utils/internet-identity/iiConnection"
-import { useAccount } from "frontend/modules/account/hooks"
+import { useAccount } from "frontend/modules/identity-manager/account/hooks"
 import { usePersona } from "frontend/modules/persona/hooks"
 import { getProofOfWork } from "frontend/utils/internet-identity/crypto/pow"
 import { useAuthContext } from "frontend/flows/auth-wrapper"

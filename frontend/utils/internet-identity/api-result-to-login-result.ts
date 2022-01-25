@@ -1,5 +1,5 @@
 import { ActorSubclass } from "@dfinity/agent"
-import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/generated/identity_manager"
+import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/modules/identity-manager/identity_manager"
 import { ApiResult, IIConnection } from "./iiConnection"
 
 export type LoginSuccess = {

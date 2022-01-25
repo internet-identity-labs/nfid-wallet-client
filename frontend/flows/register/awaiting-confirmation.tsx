@@ -11,7 +11,7 @@ import { useParams } from "react-router"
 import { useAuthContext } from "../auth-wrapper"
 
 const MAX_TRIES = 10
-const TRY_DELAY = 2000
+const TRY_DELAY = 2000frontend/services/identity-manager/devices/existing-devices
 
 type State = "loading" | "pause" | "success" | "error"
 

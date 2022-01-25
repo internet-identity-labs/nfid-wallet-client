@@ -3,7 +3,7 @@ import {
   Account,
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/modules/identity-manager/identity_manager"
+} from "frontend/services/identity-manager/identity_manager"
 import produce from "immer"
 import React from "react"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"

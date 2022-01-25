@@ -85,12 +85,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   }, [requestCaptcha])
 
   const registerAnchor = React.useCallback(
-    async (
-      identity: string,
-      deviceName: string,
-      pow: ProofOfWork,
-      captcha: string,
-    ) => {
+    async (identity: string, deviceName: string, captcha: string) => {
       if (!captchaResp) throw new Error("No challenge response")
 
       const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
@@ -106,21 +101,22 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         challengeResult,
       )
 
-      if (response.kind === "badChallenge") {
-        requestCaptcha()
-      }
+      // TODO: handle account creation
+      // if (response.kind === "badChallenge") {
+      //   requestCaptcha()
+      // }
 
-      if (response.kind === "loginSuccess") {
-        const { userNumber } = response
-        updateAccount({
-          principal_id: webAuthnIdentity.getPrincipal().toString(),
-          rootAnchor: userNumber.toString(),
-        })
-      }
+      // if (response.kind === "loginSuccess") {
+      //   const { userNumber } = response
+      //   updateAccount({
+      //     principal_id: webAuthnIdentity.getPrincipal().toString(),
+      //     rootAnchor: userNumber.toString(),
+      //   })
+      // }
 
       return response
     },
-    [captchaResp, requestCaptcha, updateAccount],
+    [captchaResp],
   )
 
   const createRecoveryPhrase = React.useCallback(
@@ -144,53 +140,59 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   )
 
   const completeNFIDProfile = React.useCallback(
-    async (data: any) => {
-      try {
-        setLoading(true)
+    async ({ captcha }: any) => {
+      setLoading(true)
 
-        const { captcha } = data
-        const { registerPayload, name, phonenumber } =
-          state as RegisterAccountCaptchaState
+      const { registerPayload, name, phonenumber } =
+        state as RegisterAccountCaptchaState
 
-        const responseRegisterAnchor = await registerAnchor(
-          registerPayload.identity,
-          registerPayload.deviceName,
-          registerPayload.pow,
-          captcha,
+      const responseRegisterAnchor = await registerAnchor(
+        registerPayload.identity,
+        registerPayload.deviceName,
+        captcha,
+      )
+
+      if (responseRegisterAnchor.kind === "loginSuccess") {
+        const { userNumber, connection } = responseRegisterAnchor
+
+        const recoveryPhrase = await createRecoveryPhrase(
+          userNumber,
+          connection,
         )
 
-        if (
-          responseRegisterAnchor &&
-          responseRegisterAnchor.kind === "loginSuccess"
-        ) {
-          const { userNumber, connection } = responseRegisterAnchor
-
-          const recoveryPhrase = await createRecoveryPhrase(
-            userNumber,
-            connection,
-          )
-
-          navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
-            state: {
-              name,
-              phonenumber,
-              recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
-            },
-          })
-        }
-      } catch {
+        return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
+          state: {
+            name,
+            phonenumber,
+            recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
+          },
+        })
+      }
+      if (responseRegisterAnchor.kind === "badChallenge") {
         setValue("captcha", "")
         setError("captcha", {
           type: "manual",
-          message: "Something went wrong. Please try again.",
+          message: "Wrong captcha! Please try again",
         })
-        requestCaptcha()
-      } finally {
-        setCaptchaResp(undefined)
+        await requestCaptcha()
+        setLoading(false)
+      }
+      if (responseRegisterAnchor.kind === "apiError") {
+        console.error(">> completeNFIDProfile, please handle me:", {
+          error: responseRegisterAnchor.error,
+        })
         setLoading(false)
       }
     },
-    [state, registerAnchor, createRecoveryPhrase, navigate, setValue, setError, requestCaptcha],
+    [
+      state,
+      registerAnchor,
+      createRecoveryPhrase,
+      navigate,
+      setValue,
+      setError,
+      requestCaptcha,
+    ],
   )
 
   return (

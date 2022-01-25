@@ -21,8 +21,7 @@ import { ActorSubclass } from "@dfinity/agent"
 import {
   Account,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/services/identity-manager/identity_manager
-import { RegisterConstants } from "../register/routes"
+} from "frontend/services/identity-manager/identity_manager"
 
 interface AuthContextState {
   isAuthenticated: boolean

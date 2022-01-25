@@ -12,7 +12,9 @@ import { idlFactory as pub_sub_channel_idl } from "frontend/services/pub-sub-cha
 const pubSubCanisterId: string = CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string
 
 if (!pubSubCanisterId)
-  throw new Error("you need to add VITE_MP_CANISTER_ID to your environment")
+  throw new Error(
+    "you need to add VITE_PUB_SUB_CHANNEL_CANISTER_ID to your environment",
+  )
 
 const getAgent = () => {
   const agent = new HttpAgent({})

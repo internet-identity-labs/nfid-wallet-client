@@ -33,7 +33,8 @@ jobs:
           fi
 
         env:
-          VITE_MP_CANISTER_ID: ${{secrets.VITE_MP_CANISTER_ID}}
+          VITE_IDENTITY_MANAGER_CANISTER_ID: ${{secrets.VITE_IDENTITY_MANAGER_CANISTER_ID}}
+          VITE_PUB_SUB_CHANNEL_CANISTER_ID: ${{secrets.VITE_PUB_SUB_CHANNEL_CANISTER_ID}}
           VITE_II_CANISTER_ID: ${{secrets.VITE_II_CANISTER_ID}}
           VITE_II_ENV: ${{secrets.VITE_II_ENV}}
           VITE_MULTIPASS_DOMAIN: ${{secrets.VITE_MULTIPASS_DOMAIN}}

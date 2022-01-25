@@ -1,15 +1,7 @@
-import { Actor, HttpAgent } from "@dfinity/agent"
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-import { CONFIG } from "frontend/config"
 import { getBrowser, getPlatform } from "frontend/utils"
-import {
-  Topic,
-  _SERVICE,
-} from "frontend/services/identity-manager/identity_manager"
 import React from "react"
-import { idlFactory as identity_manager_idl } from "frontend/services/identity-manager/identity_manager_idl"
 import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
@@ -20,28 +12,14 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import { useSearchParams } from "react-router-dom"
-
-const canisterId: string = CONFIG.MP_CANISTER_ID as string
-
-if (!canisterId)
-  throw new Error("you need to add VITE_MP_CANISTER_ID to your environment")
-const getAgent = () => {
-  const agent = new HttpAgent({})
-  // Only fetch the root key when we're not in prod
-  if (CONFIG.II_ENV === "development") {
-    agent.fetchRootKey()
-  }
-  return agent
-}
-export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
-export const baseActor = Actor.createActor<_SERVICE>(identity_manager_idl, {
-  agent: getAgent(),
-  canisterId,
-})
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
 export const useMultipass = () => {
   const { identityManager } = useAuthContext()
   const [params] = useSearchParams()
+
+  const { postMessages, getMessages, createTopic, deleteTopic } =
+    usePubSubChannel()
 
   const createWebAuthNIdentity = React.useCallback(async () => {
     const deviceName = `${getBrowser()} on ${getPlatform()}`
@@ -53,24 +31,6 @@ export const useMultipass = () => {
 
     return { identity: JSON.stringify(identity.toJSON()), deviceName, pow }
   }, [])
-
-  const createTopic = React.useCallback(async (key: Topic) => {
-    return await baseActor.create_topic(key)
-  }, [])
-  const deleteTopic = React.useCallback(async (key: Topic) => {
-    return await baseActor.delete_topic(key)
-  }, [])
-
-  const getMessages = React.useCallback(async (key: Topic) => {
-    return await baseActor.get_messages(key)
-  }, [])
-
-  const postMessages = React.useCallback(
-    async (key: Topic, messages: string[]) => {
-      return await baseActor.post_messages(key, messages)
-    },
-    [],
-  )
 
   const handleAddDevice = React.useCallback(
     async (secret: string, userNumber: bigint) => {

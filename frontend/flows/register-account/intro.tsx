@@ -1,8 +1,8 @@
-import React from "react"
+import { Button, Card, CardBody, H3, H5, P } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card, CardBody, H3, P, Button } from "frontend/ui-kit/src/index"
-import { Link } from "react-router-dom"
+import React from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { RegisterAccountConstants as RAC } from "./routes"
 
@@ -16,18 +16,33 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   children,
   className,
 }) => {
+  const navigate = useNavigate()
+
   return (
-    <AppScreen isFocused>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardBody className="max-w-lg">
-          <div className="font-bold mb-4">{"applicationName"} uses NFID</div>
+    <AppScreen>
+      <Card
+        className={clsx(
+          "h-full flex flex-col sm:block md:max-w-2xl md:mt-20",
+          className,
+        )}
+      >
+        <CardBody small>
           <Swiper
-            className="overflow-hidden rounded-lg md:max-w-2xl flex flex-col-reverse"
+            className="overflow-hidden rounded-lg  flex flex-col-reverse"
             pagination={true}
             grabCursor={true}
           >
             <SwiperSlide>
-              <H3>Your passport to a secure and private Internet</H3>
+              <H5 className="md:mb-7 font-bold mb-4">
+                {"applicationName"} uses NFID
+              </H5>
+              <div className="swiper-title">
+                Your passport to a{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
+                  secure and private Internet
+                </span>
+              </div>
+
               <P>
                 NFID guarantees the security and privacy of your online identity
                 by making the process of successfully unlocking your personal
@@ -36,7 +51,20 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               </P>
             </SwiperSlide>
             <SwiperSlide>
-              <H3>Isn't the Internet already secure?</H3>
+              <H5 className="md:mb-7 font-bold mb-4">
+                {"applicationName"} uses NFID
+              </H5>
+              <div className="swiper-title">
+                Isn't the{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
+                  Internet
+                </span>{" "}
+                already{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
+                  secure?
+                </span>
+              </div>
+
               <P>
                 NFID guarantees the security and privacy of your online identity
                 by making the process of successfully unlocking your personal
@@ -45,7 +73,19 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               </P>
             </SwiperSlide>
             <SwiperSlide>
-              <H3>Isn't the Internet already private?</H3>
+              <H5 className="md:mb-7 font-bold mb-4">
+                {"applicationName"} uses NFID
+              </H5>
+              <div className="swiper-title">
+                Isn't the{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
+                  Internet
+                </span>{" "}
+                already{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
+                  private?
+                </span>
+              </div>
               <P>
                 NFID guarantees the security and privacy of your online identity
                 by making the process of successfully unlocking your personal
@@ -54,25 +94,30 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               </P>
             </SwiperSlide>
             <SwiperSlide>
-              <H3>Continue to {"applicationName"}</H3>
+              <div className="swiper-title">
+                Continue to <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
+                  applicationName
+                </span>
+              </div>
               <P>
                 Restore your NFID on this {"device"} or create a new NFID with{" "}
                 {"platformAuthenticator"}.
               </P>
 
-              <Link
-                to={`${RAC.base}/${RAC.createNFIDProfile}`}
-                className="flex justify-center mt-6"
-              >
-                <Button block large filled>
+              <div className="grid md:grid-cols-2 mt-6 md:gap-x-3 gap-y-3">
+                <Button
+                  large
+                  filled
+                  onClick={() =>
+                    navigate(`${RAC.base}/${RAC.createNFIDProfile}`)
+                  }
+                >
                   Create new NFID
                 </Button>
-              </Link>
 
-              {/* TODO: map button to route */}
-              <Button block large className="mt-2">
-                Restore my NFID
-              </Button>
+                <Button large>Restore my NFID</Button>
+              </div>
             </SwiperSlide>
           </Swiper>
         </CardBody>

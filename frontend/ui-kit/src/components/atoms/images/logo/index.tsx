@@ -18,12 +18,18 @@ export const Logo: React.FC<LogoProps> = ({
   return nav ? (
     <a
       href="/"
-      className="group inline-flex items-center space-x-2 font-bold text-lg tracking-wide text-gray-700 hover:scale-110 transition-all duration-300 active:text-gray-700"
+      className="group inline-flex items-center space-x-2 font-black text-2xl tracking-wide text-black hover:scale-110 transition-all duration-300"
     >
       <span>NF</span>
-      <img className="inline-block w-6 h-6 object-contain" src={Image} />
+      <img
+        className="inline-block w-[40px] h-[40px] object-contain"
+        src={Image}
+      />
     </a>
   ) : (
-    <img className={clsx("object-contain", className)} src={Image} />
+    <img
+      className={clsx("w-[40px] h-[40px] object-contain", className)}
+      src={Image}
+    />
   )
 }

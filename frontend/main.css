@@ -7,5 +7,17 @@
 }
 
 .swiper-pagination {
-  @apply !relative !bottom-0 mt-4;
+  @apply !relative !bottom-0 mt-[80px] !text-left;
+}
+
+.swiper-title {
+  @apply text-title font-bold mb-5;
+}
+
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+  @apply !rounded-full !w-[36px] !bg-black-base transition-all duration-200 ease-out;
+}
+
+.swiper-pagination-bullet {
+  @apply !rounded-full !w-[16px] !bg-[#0B0E13] !h-[6px] !mx-2 transition-all duration-200 ease-in-out;
 }

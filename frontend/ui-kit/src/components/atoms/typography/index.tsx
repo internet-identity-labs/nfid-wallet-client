@@ -14,7 +14,8 @@ const headlineStyles = {
   H2: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
   H3: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
   H4: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
-  H5: "font-oswald first-letter:capitalize font-medium leading-6 text-gray-900",
+  H5:
+    "font-oswald first-letter:capitalize font-bold leading-6 text-black text-xl",
 }
 
 const headlineSizes = {

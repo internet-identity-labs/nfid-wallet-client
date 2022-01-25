@@ -1,15 +1,15 @@
+import { Logo } from "@identity-labs/ui"
 import React from "react"
-import { NavigationLink } from "./navigation-link"
-import { Logo } from "../../atoms/images/logo"
 import { HiMenu } from "react-icons/hi"
+import { NavigationLink } from "./navigation-link"
 
 export const NavigationBar: React.FC = () => {
   const [mobileNavOpen, setMobileNavOpen] = React.useState<boolean>(false)
 
   return (
-    <header className="flex flex-none items-center bg-white shadow-sm z-1">
-      <div className="container xl:max-w-7xl mx-auto px-4 lg:px-8">
-        <div className="flex justify-between py-4">
+    <header className="flex flex-none items-center z-1">
+      <div className="container px-6 mx-auto">
+        <div className="flex justify-between py-5">
           <div className="flex items-center">
             <Logo nav />
           </div>

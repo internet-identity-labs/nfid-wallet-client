@@ -5,7 +5,7 @@ import {
   Loader,
   LoginTemporarily,
   SetupTouchId,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"

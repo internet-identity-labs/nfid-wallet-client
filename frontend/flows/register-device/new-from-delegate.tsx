@@ -1,4 +1,4 @@
-import { Button, Loader, TouchId } from "@identity-labs/ui"
+import { Button, Loader, TouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"

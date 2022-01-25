@@ -7,7 +7,7 @@ import {
   Label,
   Loader,
   P,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"

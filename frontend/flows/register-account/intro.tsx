@@ -1,7 +1,7 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card, CardBody, H3, P, Button } from "@identity-labs/ui"
+import { Card, CardBody, H3, P, Button } from "frontend/ui-kit/src/index"
 import { Link } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { RegisterAccountConstants as RAC } from "./routes"

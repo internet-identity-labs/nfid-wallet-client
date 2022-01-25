@@ -1,11 +1,11 @@
 import clsx from "clsx"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import React from "react"
-import { ListItem } from "@identity-labs/ui"
-import { Chip } from "@identity-labs/ui"
+import { ListItem } from "frontend/ui-kit/src/index"
+import { Chip } from "frontend/ui-kit/src/index"
 import { FaKey } from "react-icons/fa"
 import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
-import { DeleteButton } from "@identity-labs/ui"
+import { DeleteButton } from "frontend/ui-kit/src/index"
 import { BiLoaderCircle } from "react-icons/bi"
 
 interface Device {

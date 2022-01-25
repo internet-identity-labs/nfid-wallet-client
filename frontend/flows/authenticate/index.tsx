@@ -1,4 +1,4 @@
-import { Loader, TouchId } from "@identity-labs/ui"
+import { Loader, TouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"

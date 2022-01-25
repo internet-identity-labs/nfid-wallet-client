@@ -6,7 +6,7 @@ import {
   CardTitle,
   FaceId,
   Loader,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import {

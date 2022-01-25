@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardTitle, Logo } from "@identity-labs/ui"
+import { Button, Card, CardBody, CardTitle, Logo } from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { Link } from "react-router-dom"

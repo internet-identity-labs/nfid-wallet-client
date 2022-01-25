@@ -1,4 +1,4 @@
-import { Centered, Loader, Screen } from "@identity-labs/ui"
+import { Centered, Loader, Screen } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"

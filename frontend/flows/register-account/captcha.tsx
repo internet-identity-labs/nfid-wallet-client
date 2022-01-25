@@ -7,7 +7,7 @@ import {
   Input,
   Loader,
   P,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"

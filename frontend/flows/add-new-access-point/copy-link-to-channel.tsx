@@ -1,6 +1,6 @@
 import React from "react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Button, Card, CardAction, CardBody, CardTitle, Loader, P } from "@identity-labs/ui"
+import { Button, Card, CardAction, CardBody, CardTitle, Loader, P } from "frontend/ui-kit/src/index"
 import { v4 } from "uuid"
 import { useMultipass } from "frontend/hooks/use-multipass"
 

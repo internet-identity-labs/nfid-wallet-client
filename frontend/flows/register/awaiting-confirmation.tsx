@@ -4,14 +4,14 @@ import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { ExistingDevices } from "frontend/modules/devices/existing-devices"
+import { ExistingDevices } from "frontend/services/identity-manager/devices/existing-devices"
 import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
 import React from "react"
 import { useParams } from "react-router"
 import { useAuthContext } from "../auth-wrapper"
 
 const MAX_TRIES = 10
-const TRY_DELAY = 2000frontend/services/identity-manager/devices/existing-devices
+const TRY_DELAY = 2000
 
 type State = "loading" | "pause" | "success" | "error"
 

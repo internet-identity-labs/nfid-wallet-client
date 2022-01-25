@@ -162,8 +162,8 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             <div
               className={clsx(
                 "swiper-button-next",
-                "p-5 bg-black-base rounded-full",
-                lastSlide ? "bg-opacity-10 text-gray-400" : "cursor-pointer",
+                "p-5 rounded-full",
+                lastSlide ? "bg-opacity-10 text-gray-400 bg-transparent" : "cursor-pointer bg-black-base",
               )}
               ref={(node) => setNextEl(node)}
             >

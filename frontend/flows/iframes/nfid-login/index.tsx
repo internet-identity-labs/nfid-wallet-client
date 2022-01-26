@@ -1,7 +1,7 @@
 import React from "react"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import { Button, Loader, TouchId } from "frontend/ui-kit/src"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameConstants } from "../routes"
@@ -11,25 +11,20 @@ import { AuthoriseAppConstants } from "../authorize-app/routes"
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,
 }) => {
-  const navigate = useNavigate()
   const { account } = useMultipass()
-  const { isLoading, error, authenticate } = useAuthentication({
-    userNumber,
-  })
-
-  console.log(">> Authenticate", { isLoading, error })
-
-  const handleAuhtenticate = React.useCallback(async () => {
-    await authenticate()
-    console.log(">> navigate", { to: AuthoriseAppConstants.base })
-    navigate(AuthoriseAppConstants.base)
-  }, [authenticate, navigate])
+  const { isLoading, isAuthenticated, error, authenticate } = useAuthentication(
+    {
+      userNumber,
+    },
+  )
+  console.log(">> ", { isAuthenticated, Authenticate })
 
   return (
     <IFrameScreen title="Sign in using Multipass">
+      {isAuthenticated && <Navigate to={AuthoriseAppConstants.base} />}
       {!error ? (
         <div className="px-6 py-4">
-          <Button block large filled onClick={handleAuhtenticate}>
+          <Button block large filled onClick={authenticate}>
             <div className={clsx("p-1")}>
               <TouchId />
             </div>

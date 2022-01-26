@@ -138,6 +138,8 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         captcha,
       )
 
+      console.log("responseRegisterAnchor :>> ", responseRegisterAnchor)
+
       if (responseRegisterAnchor.kind === "loginSuccess") {
         const { userNumber, connection } = responseRegisterAnchor
 
@@ -146,12 +148,18 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           connection,
         )
 
+        console.log("{userNumber, connection, recoveryPhrase} :>> ", {
+          userNumber,
+          connection,
+          recoveryPhrase,
+        })
+
         // TODO: handle account creation
-      //   const { userNumber } = response
-      //   updateAccount({
-      //     principal_id: webAuthnIdentity.getPrincipal().toString(),
-      //     rootAnchor: userNumber.toString(),
-      //   })
+        //   const { userNumber } = response
+        //   updateAccount({
+        //     principal_id: webAuthnIdentity.getPrincipal().toString(),
+        //     rootAnchor: userNumber.toString(),
+        //   })
 
         return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
           state: {
@@ -162,6 +170,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         })
       }
       if (responseRegisterAnchor.kind === "badChallenge") {
+        console.log('"badChallenge" :>> ', "badChallenge")
         setValue("captcha", "")
         setError("captcha", {
           type: "manual",

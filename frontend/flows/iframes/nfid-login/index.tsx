@@ -13,27 +13,23 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
 }) => {
   const navigate = useNavigate()
   const { account } = useMultipass()
-  const { isAuthenticated, isLoading, error, authenticate } = useAuthentication(
-    {
-      userNumber,
-    },
-  )
+  const { isLoading, error, authenticate } = useAuthentication({
+    userNumber,
+  })
 
-  console.log(">> Authenticate", { isAuthenticated, isLoading, error })
+  console.log(">> Authenticate", { isLoading, error })
 
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      console.log(">> navigate", { to: AuthoriseAppConstants.base })
-
-      navigate(AuthoriseAppConstants.base, { replace: true })
-    }
-  }, [isAuthenticated, navigate])
+  const handleAuhtenticate = React.useCallback(async () => {
+    await authenticate()
+    console.log(">> navigate", { to: AuthoriseAppConstants.base })
+    navigate(AuthoriseAppConstants.base, { replace: true })
+  }, [authenticate, navigate])
 
   return (
     <IFrameScreen title="Sign in using Multipass">
       {!error ? (
         <div className="px-6 py-4">
-          <Button block large filled onClick={authenticate}>
+          <Button block large filled onClick={handleAuhtenticate}>
             <div className={clsx("p-1")}>
               <TouchId />
             </div>

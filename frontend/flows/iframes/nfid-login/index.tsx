@@ -2,7 +2,7 @@ import React from "react"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
 import { Link, useNavigate } from "react-router-dom"
-import { Button, Loader, TouchId } from "@identity-labs/ui"
+import { Button, Loader, TouchId } from "frontend/ui-kit/src"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameConstants } from "../routes"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -22,7 +22,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   const handleAuhtenticate = React.useCallback(async () => {
     await authenticate()
     console.log(">> navigate", { to: AuthoriseAppConstants.base })
-    navigate(AuthoriseAppConstants.base, { replace: true })
+    navigate(AuthoriseAppConstants.base)
   }, [authenticate, navigate])
 
   return (

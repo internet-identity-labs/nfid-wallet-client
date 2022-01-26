@@ -6,7 +6,6 @@ import { useProfile } from "src/ic-utils/profile"
 import { Button, LoadingButton } from "src/ui-lib/atoms/button"
 import { MultipassAuth } from "src/ui-lib/molecules/multipass-auth"
 import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
-import { IIAuth } from "src/ui-lib/molecules/ii-auth"
 
 export const MPAuthComponent = () => {
   const [isLoading, setIsLoading] = React.useState(false)

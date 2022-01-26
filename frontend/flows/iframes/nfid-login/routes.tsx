@@ -16,6 +16,8 @@ const AuthenticateDecider: React.FC = () => {
     [account],
   )
 
+  console.log(">> AuthenticateDecider", { account, userNumber })
+
   return userNumber ? (
     <Authenticate userNumber={userNumber} />
   ) : (

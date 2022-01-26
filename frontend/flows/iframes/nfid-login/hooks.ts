@@ -138,13 +138,13 @@ export const useAuthentication = ({
 
     if (result.tag === "err") {
       setError(result)
-      setLoading(false)
     }
     if (result.tag === "ok") {
       setAuthResult(result)
       // TODO: this needs to wait until we clicked the persona
       // postClientReadyMessage()
     }
+    setLoading(false)
   }, [setAuthResult, userNumber])
 
   // return the hooks props

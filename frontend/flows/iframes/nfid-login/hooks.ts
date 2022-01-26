@@ -51,6 +51,8 @@ export const useAuthentication = ({
     useMessageChannel({
       messageHandler: {
         "authorize-client": async (event: any) => {
+          console.log(">> authorize-client", { event, authResult })
+
           if (authResult !== null) {
             const message = event.data
             const { maxTimeToLive, sessionPublicKey } = message
@@ -141,9 +143,9 @@ export const useAuthentication = ({
     if (result.tag === "ok") {
       setAuthResult(result)
       // TODO: this needs to wait until we clicked the persona
-      postClientReadyMessage()
+      // postClientReadyMessage()
     }
-  }, [postClientReadyMessage, setAuthResult, userNumber])
+  }, [setAuthResult, userNumber])
 
   // return the hooks props
   return {

@@ -19,8 +19,12 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
     },
   )
 
+  console.log(">> Authenticate", { isAuthenticated })
+
   React.useEffect(() => {
     if (isAuthenticated) {
+      console.log(">> navigate", { to: AuthoriseAppConstants.base })
+
       navigate(AuthoriseAppConstants.base)
     }
   }, [isAuthenticated, navigate])

@@ -14,11 +14,5 @@ export const CardBody: React.FC<Props> = ({
   className,
   small = false,
 }) => {
-  return (
-    <div
-      className={clsx(className, "py-6", small && "2xl:max-w-xl xl:max-w-lg")}
-    >
-      {children}
-    </div>
-  )
+  return <div className={clsx(className, "py-6")}>{children}</div>
 }

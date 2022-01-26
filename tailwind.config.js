@@ -41,7 +41,12 @@ module.exports = {
           "42px",
           {
             lineHeight: "50px",
-            letterSpacing: "1%",
+          },
+        ],
+        titleMobile: [
+          "27px",
+          {
+            lineHeight: "40px",
           },
         ],
       },

@@ -27,17 +27,13 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   return (
     <AppScreen>
       <Card
-        className={clsx(
-          "h-full flex flex-col sm:block md:max-w-2xl md:mt-20",
-          className,
-        )}
+        className={clsx("h-full flex flex-col sm:block  md:mt-10", className)}
       >
-        <CardBody small>
+        <CardBody>
           <Swiper
             navigation={{
               prevEl,
               nextEl,
-              disabledClass: "swiper-nav-disabled",
             }}
             className="overflow-hidden rounded-lg"
             pagination={{
@@ -53,90 +49,111 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             }}
           >
             <SwiperSlide>
-              <H5 className="md:mb-7 font-bold mb-4">
-                {"applicationName"} uses NFID
-              </H5>
-              <div className="swiper-title">
-                Your passport to a{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
-                  secure and private Internet
-                </span>
+              <div className="max-w-2xl">
+                <H5 className="md:mb-7 font-bold mb-4">
+                  {"applicationName"} uses NFID
+                </H5>
+                <div className="swiper-title">
+                  The only way to guarantee your{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
+                    privacy and security
+                  </span>{" "}
+                  on the Internet
+                </div>
               </div>
-
-              <P>
-                NFID guarantees the security and privacy of your online identity
-                by making the process of successfully unlocking your personal
-                devices' hardware encryption protocols – like facial or
-                fingerprint scans – the only way to access your accounts.
-              </P>
             </SwiperSlide>
             <SwiperSlide>
-              <H5 className="md:mb-7 font-bold mb-4">
-                {"applicationName"} uses NFID
-              </H5>
-              <div className="swiper-title">
-                Isn't the{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
-                  Internet
-                </span>{" "}
-                already{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
-                  secure?
-                </span>
-              </div>
+              <div className="max-w-2xl">
+                <H5 className="md:mb-7 font-bold mb-4">
+                  {"applicationName"} uses NFID
+                </H5>
+                <div className="swiper-title">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
+                    This is your {"device"}.
+                  </span>{" "}
+                  There are many like it but this one is yours.
+                </div>
+                <P className="mb-3">
+                  This {"device"} is equipped with the most advanced security in
+                  the world – a biometric scanner that ensures only you have
+                  access.
+                </P>
 
-              <P>
-                NFID guarantees the security and privacy of your online identity
-                by making the process of successfully unlocking your personal
-                devices' hardware encryption protocols – like facial or
-                fingerprint scans – the only way to access your accounts.
-              </P>
+                <P>
+                  NFID introduces this security model to your online activity.
+                </P>
+              </div>
             </SwiperSlide>
             <SwiperSlide>
-              <H5 className="md:mb-7 font-bold mb-4">
-                {"applicationName"} uses NFID
-              </H5>
-              <div className="swiper-title">
-                Isn't the{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
-                  Internet
-                </span>{" "}
-                already{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
-                  private?
-                </span>
+              <div className="max-w-2xl">
+                <H5 className="md:mb-7 font-bold mb-4">
+                  {"applicationName"} uses NFID
+                </H5>
+                <div className="swiper-title">
+                  Without{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
+                    you and your {"device"}
+                  </span>
+                  , your online accounts are inaccessible.
+                </div>
+                <P className="mb-3">
+                  Anyone could pretend to be you with your username and
+                  password, but only you can unlock your {"device"}.
+                </P>
+
+                <P>Authenticate simply and securely with NFID.</P>
               </div>
-              <P>
-                NFID guarantees the security and privacy of your online identity
-                by making the process of successfully unlocking your personal
-                devices' hardware encryption protocols – like facial or
-                fingerprint scans – the only way to access your accounts.
-              </P>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="swiper-title">
-                Continue to <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
-                  applicationName
-                </span>
+              <div className="max-w-3xl">
+                <H5 className="md:mb-7 font-bold mb-4">
+                  {"applicationName"} uses NFID
+                </H5>
+                <div className="swiper-title">
+                  Without{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
+                    your consent
+                  </span>
+                  , no government, business, or individual shall access any{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
+                    information about you.
+                  </span>
+                </div>
+                <P className="mb-3">
+                  Every single thing we do online is tracked, sold, and used to
+                  understand and manipulate us.
+                </P>
+
+                <P>Stay anonymous and untrackable with NFID.</P>
               </div>
-              <P>
-                Restore your NFID on this {"device"} or create a new NFID with{" "}
-                {"platformAuthenticator"}.
-              </P>
+            </SwiperSlide>
 
-              <div className="grid md:grid-cols-2 mt-6 md:gap-x-3 gap-y-3">
-                <Button
-                  large
-                  filled
-                  onClick={() =>
-                    navigate(`${RAC.base}/${RAC.createNFIDProfile}`)
-                  }
-                >
-                  Create new NFID
-                </Button>
+            <SwiperSlide>
+              <div className="max-w-[750px]">
+                <H5 className="md:mb-7 font-bold mb-4">
+                  {"applicationName"} uses NFID
+                </H5>
+                <div className="swiper-title">
+                  So be it, until{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
+                    convenience, security, and privacy online
+                  </span>{" "}
+                  are no longer required.
+                </div>
 
-                <Button large>Restore my NFID</Button>
+                <div className="grid md:grid-cols-2 mt-12 md:mt-6 md:gap-x-3 gap-y-3 max-w-lg">
+                  <Button
+                    large
+                    filled
+                    onClick={() =>
+                      navigate(`${RAC.base}/${RAC.createNFIDProfile}`)
+                    }
+                  >
+                    Create new NFID
+                  </Button>
+
+                  <Button large>Restore my NFID</Button>
+                </div>
               </div>
             </SwiperSlide>
           </Swiper>
@@ -157,13 +174,15 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               />
             </div>
 
-            <div className="swiper-pagination pb-[5px] mx-8"></div>
+            <div className="swiper-pagination"></div>
 
             <div
               className={clsx(
                 "swiper-button-next",
                 "p-5 rounded-full",
-                lastSlide ? "bg-opacity-10 text-gray-400 bg-transparent" : "cursor-pointer bg-black-base",
+                lastSlide
+                  ? "bg-opacity-10 text-gray-400 bg-transparent"
+                  : "cursor-pointer bg-black-base",
               )}
               ref={(node) => setNextEl(node)}
             >

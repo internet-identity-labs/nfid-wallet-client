@@ -1,1 +1,1 @@
-export const PERSONA_LOCAL_STORAGE_KEY = "persona"
+export const PERSONA_LOCAL_STORAGE_KEY = "personas"

@@ -18,6 +18,15 @@ interface UseAuthenticationProps {
   userNumber?: bigint
 }
 
+interface AuthorizationRequest {
+  maxTimeToLive: any
+  sessionPublicKey: any
+  hostname: string
+  source: any
+}
+
+const authorizationRequestAtom = atom<AuthorizationRequest | null>(null)
+
 const authResultAtom = atom<LoginSuccess | null>(null)
 const isAuthenticatedAtom = atom((get) => get(authResultAtom) !== null)
 
@@ -34,54 +43,23 @@ export const useAuthentication = ({
   const [authResult, setAuthResult] = useAtom(authResultAtom)
   const [isAuthenticated] = useAtom(isAuthenticatedAtom)
 
+  const [authorizationRequest, setAuthorizationRequest] = useAtom(
+    authorizationRequestAtom,
+  )
+
   const { opener, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({
       messageHandler: {
         "authorize-client": async (event: any) => {
           if (authResult !== null) {
-            setLoading(true)
             const message = event.data
             const { maxTimeToLive, sessionPublicKey } = message
-            const hostname = event.origin
-
-            const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
-            const prepRes = await authResult.connection.prepareDelegation(
-              userNumber,
-              hostname,
-              sessionKey,
+            setAuthorizationRequest({
               maxTimeToLive,
-            )
-            // TODO: move to error handler
-            if (prepRes.length !== 2) {
-              throw new Error(
-                `Error preparing the delegation. Result received: ${prepRes}`,
-              )
-            }
-            const [userKey, timestamp] = prepRes
-
-            const signedDelegation = await retryGetDelegation(
-              authResult.connection,
-              userNumber,
-              hostname,
-              sessionKey,
-              timestamp,
-            )
-
-            // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
-            const parsedSignedDelegation = {
-              delegation: {
-                pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
-                expiration: BigInt(signedDelegation.delegation.expiration),
-                targets: undefined,
-              },
-              signature: Uint8Array.from(signedDelegation.signature),
-            }
-            postClientAuthorizeSuccessMessage(event.source, {
-              parsedSignedDelegation,
-              userKey,
-              hostname,
+              sessionPublicKey,
+              hostname: event.origin,
+              source: event.source,
             })
-            setLoading(false)
           }
         },
         "registered-device": (event: any) => {
@@ -89,6 +67,64 @@ export const useAuthentication = ({
         },
       },
     })
+
+  const authorizeApp = React.useCallback(
+    async ({ persona_id }) => {
+      setLoading(true)
+      if (!authorizationRequest || !authResult)
+        throw new Error("client not ready")
+
+      const { sessionPublicKey, hostname, maxTimeToLive, source } =
+        authorizationRequest
+
+      const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
+      const scope = persona_id ? `${persona_id}@${hostname}` : hostname
+
+      const prepRes = await authResult.connection.prepareDelegation(
+        userNumber,
+        scope,
+        sessionKey,
+        maxTimeToLive,
+      )
+      // TODO: move to error handler
+      if (prepRes.length !== 2) {
+        throw new Error(
+          `Error preparing the delegation. Result received: ${prepRes}`,
+        )
+      }
+      const [userKey, timestamp] = prepRes
+
+      const signedDelegation = await retryGetDelegation(
+        authResult.connection,
+        userNumber,
+        scope,
+        sessionKey,
+        timestamp,
+      )
+
+      // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
+      const parsedSignedDelegation = {
+        delegation: {
+          pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
+          expiration: BigInt(signedDelegation.delegation.expiration),
+          targets: undefined,
+        },
+        signature: Uint8Array.from(signedDelegation.signature),
+      }
+      postClientAuthorizeSuccessMessage(source, {
+        parsedSignedDelegation,
+        userKey,
+        hostname,
+      })
+      setLoading(false)
+    },
+    [
+      authResult,
+      authorizationRequest,
+      postClientAuthorizeSuccessMessage,
+      userNumber,
+    ],
+  )
 
   // handles the authentication of the current user
   const handleAuthenticate = React.useCallback(async () => {
@@ -102,9 +138,9 @@ export const useAuthentication = ({
     if (result.tag === "ok") {
       setAuthResult(result)
       // TODO: this needs to wait until we clicked the persona
-      // postClientReadyMessage()
+      postClientReadyMessage()
     }
-  }, [setAuthResult, userNumber])
+  }, [postClientReadyMessage, setAuthResult, userNumber])
 
   // return the hooks props
   return {
@@ -112,6 +148,8 @@ export const useAuthentication = ({
     isLoading,
     opener,
     error,
+    authorizationRequest,
+    authorizeApp,
     authenticate: handleAuthenticate,
   }
 }

@@ -1,5 +1,3 @@
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { getUserNumber } from "frontend/utils/internet-identity/userNumber"
 import React from "react"
 import { AuthorizeApp } from "."
 

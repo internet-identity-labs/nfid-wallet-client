@@ -40,6 +40,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
       <div className="px-6 py-4">
         {nfidPersonas?.map(({ persona_id }) => (
           <Button
+            key={persona_id}
             block
             filled
             onClick={() => authorizeApp({ persona_id })}
@@ -63,6 +64,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
       <div className="px-6 py-4">
         {iiPersonas?.map(({ anchor }) => (
           <Button
+            key={anchor}
             block
             filled
             onClick={() => authorizeApp({ anchor })}

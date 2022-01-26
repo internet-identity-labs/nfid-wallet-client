@@ -26,7 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={clsx(
-        "text-center py-2 px-4 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 first-letter:capitalize",
+        "flex text-center py-2 px-4 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 first-letter:capitalize",
         !text && "border shadow-sm hover:shadow",
         !disabled && "cursor-pointer",
         text && "hover:underline text-indigo-600",

@@ -1,4 +1,6 @@
 import { blobFromUint8Array } from "@dfinity/candid"
+import { atom, useAtom } from "jotai"
+
 import {
   apiResultToLoginResult,
   LoginError,
@@ -16,6 +18,9 @@ interface UseAuthenticationProps {
   userNumber?: bigint
 }
 
+const authResultAtom = atom<LoginSuccess | null>(null)
+const isAuthenticatedAtom = atom((get) => get(authResultAtom) !== null)
+
 // Custom react hook to connnect the Authenticate Component
 // with the application requesting authorization
 export const useAuthentication = ({
@@ -26,7 +31,8 @@ export const useAuthentication = ({
   // the error state is used to display potential errors
   const [error, setError] = React.useState<LoginError | null>(null)
   // the authResult state is used to store the II
-  const [authResult, setAuthResult] = React.useState<LoginSuccess | null>(null)
+  const [authResult, setAuthResult] = useAtom(authResultAtom)
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom)
 
   const { opener, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({
@@ -95,10 +101,17 @@ export const useAuthentication = ({
     }
     if (result.tag === "ok") {
       setAuthResult(result)
-      postClientReadyMessage()
+      // TODO: this needs to wait until we clicked the persona
+      // postClientReadyMessage()
     }
-  }, [postClientReadyMessage, userNumber])
+  }, [setAuthResult, userNumber])
 
   // return the hooks props
-  return { isLoading, opener, error, authenticate: handleAuthenticate }
+  return {
+    isAuthenticated,
+    isLoading,
+    opener,
+    error,
+    authenticate: handleAuthenticate,
+  }
 }

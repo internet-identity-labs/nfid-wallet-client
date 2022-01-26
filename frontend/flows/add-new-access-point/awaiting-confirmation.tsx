@@ -34,11 +34,11 @@ export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
         <CardTitle>Link another Access Point?</CardTitle>
         <CardBody className="w-full max-w-xl">
           <div className="mb-4">
-            <div className="flex flex-row space-x-4 items-center py-3">
+            <div className="flex flex-row items-center py-3 space-x-4">
               <HiCheckCircle className={clsx("text-2xl", "text-black")} />
               <div>Key created</div>
             </div>
-            <div className="flex flex-row space-x-4 items-center py-3">
+            <div className="flex flex-row items-center py-3 space-x-4">
               <HiCheckCircle
                 className={clsx(
                   "text-2xl",

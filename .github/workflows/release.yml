@@ -28,13 +28,10 @@ jobs:
           popd
 
 
-          # On pull requests build on local replica
           # install local to generate the types
-          if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
-            dfx start --clean --background
-            dfx deploy --no-wallet
-            dfx stop
-          fi
+          dfx start --clean --background
+          dfx deploy --no-wallet
+          dfx stop
 
           # On main branch build on ic
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
@@ -54,13 +51,10 @@ jobs:
         run: |
           cd examples/MultipassDemo && yarn
 
-          # On pull requests build on local replica
           # install local to generate the types
-          if [[ ${GITHUB_REF} != "refs/heads/main" ]]; then
-            dfx start --clean --background
-            dfx deploy --no-wallet
-            dfx stop
-          fi
+          dfx start --clean --background
+          dfx deploy --no-wallet
+          dfx stop
 
           # On main branch build on ic
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then

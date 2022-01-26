@@ -130,7 +130,10 @@ export const useAuthentication = ({
   const handleAuthenticate = React.useCallback(async () => {
     setLoading(true)
     const response = await IIConnection.login(BigInt(userNumber))
+    console.log(">> IIConnection.login", { response })
     const result = apiResultToLoginResult(response)
+    console.log(">> apiResultToLoginResult", { result })
+
     if (result.tag === "err") {
       setError(result)
       setLoading(false)

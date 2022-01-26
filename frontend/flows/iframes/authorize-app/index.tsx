@@ -1,13 +1,12 @@
 import React from "react"
 import { useAuthentication } from "../nfid-login/hooks"
-import { usePersona } from "frontend/modules/identity-manager/persona/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { useAccount } from "frontend/modules/identity-manager/account/hooks"
 import { Button } from "frontend/ui-kit/src/components/atoms/button"
 import {
   IIPersona,
   NFIDPersona,
-} from "frontend/modules/identity-manager/persona/types"
+} from "frontend/services/identity-manager/persona/types"
 import { useMultipass } from "frontend/hooks/use-multipass"
 
 interface AuthorizeAppProps

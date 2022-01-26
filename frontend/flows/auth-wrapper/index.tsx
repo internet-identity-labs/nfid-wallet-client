@@ -120,6 +120,7 @@ export const useAuthContext = () => React.useContext(AuthContext)
 
 export const AuthWrapper: React.FC = ({ children }) => {
   const { isLoading, isAuthenticated, account, login } = useAuthContext()
+  console.log(">> AuthWrapper", { isLoading, isAuthenticated })
 
   return isAuthenticated ? (
     <>{children}</>

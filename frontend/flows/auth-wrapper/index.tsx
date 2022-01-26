@@ -63,6 +63,8 @@ export const AuthProvider: React.FC<AuthProvider> = ({
   const [identityManager, setIdentityManager] = React.useState<
     ActorSubclass<_IDENTITY_MANAGER_SERVICE> | undefined
   >(undefined)
+  console.log(">> AuthProvider", { identityManager })
+
   const { account } = useMultipass()
 
   const userNumber = React.useMemo(
@@ -77,6 +79,7 @@ export const AuthProvider: React.FC<AuthProvider> = ({
     }
     const response = await IIConnection.login(userNumber)
     const result = apiResultToLoginResult(response)
+    console.log(">> AuthProvider", { result })
     if (result.tag === "err") {
       setError(result)
       setLoading(false)

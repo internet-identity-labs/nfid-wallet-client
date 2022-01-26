@@ -144,6 +144,7 @@ export const useAuthentication = ({
 
   // return the hooks props
   return {
+    identityManager: authResult?.identityManager,
     isAuthenticated,
     isLoading,
     opener,

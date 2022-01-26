@@ -1,18 +1,23 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { useSearchParams } from "react-router-dom"
+
 import { getBrowser, getPlatform } from "frontend/utils"
+import {
+  Topic,
+  _SERVICE,
+} from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import React from "react"
 import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
-import { useSearchParams } from "react-router-dom"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 export const useMultipass = () => {
   const { identityManager } = useAuthContext()
@@ -54,7 +59,7 @@ export const useMultipass = () => {
 
   return {
     ...useAccount(identityManager),
-    ...usePersona(),
+    ...usePersona({ personaService: identityManager }),
     createWebAuthNIdentity,
     handleAddDevice,
     createTopic,

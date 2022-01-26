@@ -5,6 +5,7 @@ import {
   derBlobFromBlob,
   DerEncodedBlob,
 } from "@dfinity/candid"
+
 import { idlFactory as internet_identity_idl } from "./generated/internet_identity_idl"
 import {
   _SERVICE,
@@ -26,6 +27,8 @@ import {
 } from "./generated/internet_identity_types"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
 import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
+import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
+import { idlFactory as PubsubChannelIdlFactory } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -77,6 +80,7 @@ type LoginSuccess = {
   kind: "loginSuccess"
   connection: IIConnection
   identityManager: ActorSubclass<IdentityManagerService>
+  pubsubChannelActor: ActorSubclass<PubsubChannelService>
   userNumber: bigint
 }
 
@@ -150,8 +154,15 @@ export class IIConnection {
       return {
         kind: "loginSuccess",
         connection: new IIConnection(identity, delegationIdentity, actor),
-        identityManager: await this.createIdentityManagerActor(
+        identityManager: await this.createServiceActor<IdentityManagerService>(
           delegationIdentity,
+          IdentityManagerIdlFactory,
+          CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+        ),
+        pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
+          delegationIdentity,
+          PubsubChannelIdlFactory,
+          CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
         ),
         userNumber,
       }
@@ -222,8 +233,15 @@ export class IIConnection {
         delegationIdentity,
         actor,
       ),
-      identityManager: await this.createIdentityManagerActor(
+      identityManager: await this.createServiceActor<IdentityManagerService>(
         delegationIdentity,
+        IdentityManagerIdlFactory,
+        CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+      ),
+      pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
+        delegationIdentity,
+        PubsubChannelIdlFactory,
+        CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
       ),
     }
   }
@@ -251,8 +269,15 @@ export class IIConnection {
       kind: "loginSuccess",
       userNumber,
       connection: new IIConnection(identity, delegationIdentity, actor),
-      identityManager: await this.createIdentityManagerActor(
+      identityManager: await this.createServiceActor<IdentityManagerService>(
         delegationIdentity,
+        IdentityManagerIdlFactory,
+        CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+      ),
+      pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
+        delegationIdentity,
+        PubsubChannelIdlFactory,
+        CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
       ),
     }
   }
@@ -304,22 +329,21 @@ export class IIConnection {
     return actor
   }
 
-  static async createIdentityManagerActor(
+  static async createServiceActor<T>(
     delegationIdentity: DelegationIdentity,
-  ): Promise<ActorSubclass<IdentityManagerService>> {
+    factory: any,
+    canisterId: string,
+  ): Promise<ActorSubclass<T>> {
     const agent = new HttpAgent({ identity: delegationIdentity })
 
     // Only fetch the root key when we're not in prod
     if (CONFIG.II_ENV === "development") {
       await agent.fetchRootKey()
     }
-    const actor = Actor.createActor<IdentityManagerService>(
-      IdentityManagerIdlFactory,
-      {
-        agent,
-        canisterId: CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
-      },
-    )
+    const actor = Actor.createActor<T>(factory, {
+      agent,
+      canisterId,
+    })
     return actor
   }
 

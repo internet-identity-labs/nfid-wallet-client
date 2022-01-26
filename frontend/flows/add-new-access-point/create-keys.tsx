@@ -10,7 +10,7 @@ import {
   H4,
   P,
   Spinner,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import { HiCheckCircle } from "react-icons/hi"
 import { InputSelect } from "frontend/design-system/molecules/inputs/select"
 import { useForm } from "react-hook-form"

@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { List } from "@identity-labs/ui"
+import { List } from "frontend/ui-kit/src/index"
 import { useAuthContext } from "frontend/flows/auth-wrapper"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import React from "react"

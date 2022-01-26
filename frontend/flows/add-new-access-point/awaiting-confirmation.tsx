@@ -9,7 +9,7 @@ import {
   CardTitle,
   H4,
   Spinner,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 
 import { HiCheckCircle } from "react-icons/hi"
 import { DeviceItem } from "frontend/services/identity-manager/devices/device-item"

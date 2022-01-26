@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { useAuthentication } from "./hooks"
 import clsx from "clsx"
 import { Link } from "react-router-dom"
-import { Loader, TouchId } from "@identity-labs/ui"
+import { Loader, TouchId } from "frontend/ui-kit/src/index"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameConstants } from "../routes"
 

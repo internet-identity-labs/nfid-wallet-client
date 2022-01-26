@@ -1,4 +1,4 @@
-import { Card, CardBody, Divider, H4 } from "@identity-labs/ui"
+import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"

@@ -1,4 +1,4 @@
-import { Loader, QRCode, SetupTouchId } from "@identity-labs/ui"
+import { Loader, QRCode, SetupTouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"

@@ -5,7 +5,7 @@ import {
   CardBody,
   CardTitle,
   P,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { HiShare } from "react-icons/hi"

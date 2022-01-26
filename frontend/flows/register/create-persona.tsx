@@ -11,7 +11,7 @@ import {
   Loader,
   P,
   Switch,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"

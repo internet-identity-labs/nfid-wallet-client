@@ -5,7 +5,7 @@ import {
   CardBody,
   CardTitle,
   P,
-} from "@identity-labs/ui"
+} from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React, { useState } from "react"

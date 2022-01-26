@@ -1,7 +1,7 @@
 import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card, CardTitle, CardAction, Button } from "@identity-labs/ui"
+import { Card, CardTitle, CardAction, Button } from "frontend/ui-kit/src/index"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { useNavigate, useParams } from "react-router-dom"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"

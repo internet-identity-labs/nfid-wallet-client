@@ -1,5 +1,5 @@
 import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
-import { Button, Card, CardBody, CardTitle, FaceId, H4 } from "@identity-labs/ui"
+import { Button, Card, CardBody, CardTitle, FaceId, H4 } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useInterval } from "frontend/hooks/use-interval"

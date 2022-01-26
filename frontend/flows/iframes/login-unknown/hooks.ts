@@ -49,7 +49,7 @@ export const useMessageChannel = ({
       if (eventHandler && typeof eventHandler === "function") {
         return eventHandler(event)
       }
-      console.warn(`Unknown message kind: ${kind}`)
+      console.warn(`Unknown message kind: ${kind}`, { data: event.data })
     },
     [messageHandler],
   )

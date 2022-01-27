@@ -44,7 +44,6 @@ export const useAuthentication = () => {
     }
     const response = await IIConnection.login(userNumber)
     const result = apiResultToLoginResult(response)
-    console.log(">> AuthProvider", { result })
     if (result.tag === "err") {
       setError(result)
       setIsLoading(false)
@@ -66,7 +65,6 @@ export const useAuthentication = () => {
 export const AuthWrapper: React.FC = ({ children }) => {
   const { isLoading, isAuthenticated, login } = useAuthentication()
   const { account } = useAccount()
-  console.log(">> AuthWrapper", { isLoading, isAuthenticated })
 
   return isAuthenticated ? (
     <>{children}</>

@@ -25,7 +25,7 @@ interface RegisterAccountCreateNFIDProfileProps
 
 export const RegisterAccountCreateNFIDProfile: React.FC<
   RegisterAccountCreateNFIDProfileProps
-> = ({ children, className }) => {
+> = ({ className }) => {
   const { verifyPhonenumber } = useMultipass()
   const navigate = useNavigate()
   const {

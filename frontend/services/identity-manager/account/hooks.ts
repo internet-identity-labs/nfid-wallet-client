@@ -15,23 +15,27 @@ type AccountService = Pick<
   "create_account" | "update_account" | "get_account"
 >
 
-export const useAccount = (accountService?: AccountService) => {
+export const useAccount = () => {
   const [account, setAccount] = useAtom(accountAtom)
   const [userNumber] = useAtom(userNumberAtom)
 
   const createAccount = React.useCallback(
-    async (account: HTTPAccountRequest) => {
-      if (!accountService) {
-        throw new Error("accountService is required")
-      }
+    async (
+      accountService: AccountService,
+      account: HTTPAccountRequest,
+      userNumber,
+    ) => {
+      console.log(">> createAccount", { account })
+
       const response = await accountService.create_account(account)
+
       if (response.status_code === 200) {
         // @ts-ignore TODO: fix types
-        setAccount(response.data[0])
+        setAccount({ ...response.data[0], rootAnchor: userNumber.toString() })
       }
       return response
     },
-    [accountService, setAccount],
+    [setAccount],
   )
 
   const getAccount = React.useCallback(async () => {

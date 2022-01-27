@@ -19,7 +19,6 @@ import { useStartUrl } from "./hooks/use-start-url"
 
 export const App = () => {
   useStartUrl()
-  console.log(">> App am I still rerendering all the time?", {})
 
   return (
     <Routes>

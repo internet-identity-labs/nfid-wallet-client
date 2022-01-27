@@ -36,8 +36,7 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
         token: "123",
       }
       await result.identityManager.create_account(account)
-      const response = await result.identityManager.get_account()
-      console.log(">> identityManager.get_account", { response })
+      await result.identityManager.get_account()
 
       updateAccount({ ...account, rootAnchor: userNumber })
       navigate(`${RC.base}/${RC.linkInternetIdentitySuccess}`)

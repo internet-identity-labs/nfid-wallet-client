@@ -28,7 +28,6 @@ import { HiFingerPrint } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
 import { RegisterAccountConstants as RAC } from "./routes"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useAuthentication } from "../auth-wrapper"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<
@@ -44,10 +43,10 @@ interface RegisterAccountCaptchaState {
   }
   name: string
   phonenumber: string
+  verificationCode: string
 }
 
 export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
-  children,
   className,
 }) => {
   const {
@@ -61,11 +60,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   })
   const { state } = useLocation()
   const navigate = useNavigate()
-  const { identityManager } = useAuthentication()
-  const { createAccount } = useAccount(identityManager)
-
-  // TODO: handle account creation
-  // const { updateAccount } = useMultipass()
+  const { createAccount } = useAccount()
 
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
   const [loading, setLoading] = React.useState(true)
@@ -133,7 +128,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     async ({ captcha }: any) => {
       setLoading(true)
 
-      const { registerPayload, name, phonenumber } =
+      const { registerPayload, name, phonenumber, verificationCode } =
         state as RegisterAccountCaptchaState
 
       const responseRegisterAnchor = await registerAnchor(
@@ -141,8 +136,6 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         registerPayload.deviceName,
         captcha,
       )
-
-      console.log("responseRegisterAnchor :>> ", responseRegisterAnchor)
 
       if (responseRegisterAnchor.kind === "loginSuccess") {
         const { userNumber, internetIdentity } = responseRegisterAnchor
@@ -152,25 +145,23 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           internetIdentity,
         )
 
-        console.log("{userNumber, connection, recoveryPhrase} :>> ", {
+        await createAccount(
+          responseRegisterAnchor.identityManager,
+          {
+            name,
+            phone_number: phonenumber,
+            token: verificationCode,
+          },
           userNumber,
-          internetIdentity,
-          recoveryPhrase,
-        })
-
-        // TODO: add token
-        await createAccount({ name, phone_number: phonenumber, token: "123" })
+        )
 
         return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
           state: {
-            name,
-            phonenumber,
-            recoveryPhrase: `${userNumber.toString()} ${recoveryPhrase}`,
+            recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
           },
         })
       }
       if (responseRegisterAnchor.kind === "badChallenge") {
-        console.log('"badChallenge" :>> ', "badChallenge")
         setValue("captcha", "")
         setError("captcha", {
           type: "manual",
@@ -180,9 +171,6 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         setLoading(false)
       }
       if (responseRegisterAnchor.kind === "apiError") {
-        console.error(">> completeNFIDProfile, please handle me:", {
-          error: responseRegisterAnchor.error,
-        })
         setLoading(false)
       }
     },

@@ -43,11 +43,6 @@ export const useAuthorization = ({
     useMessageChannel({
       messageHandler: {
         "authorize-client": async (event: any) => {
-          console.log(">> authorize-client", {
-            event,
-            internetIdentity,
-          })
-
           if (internetIdentity !== null) {
             const message = event.data
             const { maxTimeToLive, sessionPublicKey } = message

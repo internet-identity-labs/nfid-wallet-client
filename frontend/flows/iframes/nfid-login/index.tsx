@@ -1,23 +1,22 @@
 import React from "react"
-import { useAuthentication } from "./hooks"
+import { useAuthorization } from "./hooks"
 import clsx from "clsx"
 import { Link, Navigate } from "react-router-dom"
 import { Button, Loader, TouchId } from "frontend/ui-kit/src"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameConstants } from "../routes"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { AuthoriseAppConstants } from "../authorize-app/routes"
+import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,
 }) => {
-  const { account } = useMultipass()
-  const { isLoading, isAuthenticated, error, authenticate } = useAuthentication(
-    {
-      userNumber,
-    },
-  )
-  console.log(">> ", { isAuthenticated, Authenticate })
+  const { account } = useAccount()
+  const { isAuthenticated } = useAuthentication()
+  const { isLoading, error, authenticate } = useAuthorization({
+    userNumber,
+  })
 
   return (
     <IFrameScreen title="Sign in using Multipass">

@@ -1,12 +1,14 @@
 import { ActorSubclass } from "@dfinity/agent"
 import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/services/identity-manager/identity_manager"
+import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { ApiResult, IIConnection } from "./iiConnection"
 
 export type LoginSuccess = {
   tag: "ok"
   userNumber: bigint
-  connection: IIConnection
+  internetIdentity: IIConnection
   identityManager: ActorSubclass<_IDENTITY_MANAGER_SERVICE>
+  pubsubChannelActor: ActorSubclass<PubsubChannelService>
 }
 export type LoginError = {
   tag: "err"
@@ -23,8 +25,9 @@ export const apiResultToLoginResult = (result: ApiResult): LoginResult => {
       return {
         tag: "ok",
         userNumber: result.userNumber,
-        connection: result.connection,
+        internetIdentity: result.internetIdentity,
         identityManager: result.identityManager,
+        pubsubChannelActor: result.pubsubChannelActor,
       }
     }
     case "authFail": {

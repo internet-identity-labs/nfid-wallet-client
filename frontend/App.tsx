@@ -1,6 +1,5 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
-import { AuthProvider } from "./flows/auth-wrapper"
 import { HomeScreen } from "./flows"
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/add-new-access-point/routes"
@@ -16,28 +15,26 @@ import { RegisterRoutes } from "./flows/register/routes"
 
 import "tailwindcss/tailwind.css"
 import { AuthoriseAppRoutes } from "./flows/iframes/authorize-app/routes"
+import { useStartUrl } from "./hooks/use-start-url"
 
 export const App = () => {
-  const startUrl = React.useMemo(() => window.location.pathname, [])
+  useStartUrl()
   console.log(">> App am I still rerendering all the time?", {})
 
   return (
-    <AuthProvider startUrl={startUrl}>
-      <Routes>
-        <Route path={"/"} element={<HomeScreen />} />
-        {RegisterNewDeviceRoutes}
-        {RegisterDevicePromptRoutes}
-        {RegisterRoutes}
-        {RegisterAccountRoutes}
-        {IFrameRoutes}
-        {AuthoriseAppRoutes}
-        {CopyDevicesRoutes}
-
-        {AuthenticateRoutes}
-        {AccessPointRoutes}
-        <Route path={"*"} element={<NotFound />} />
-      </Routes>
-    </AuthProvider>
+    <Routes>
+      <Route path={"/"} element={<HomeScreen />} />
+      {RegisterNewDeviceRoutes}
+      {RegisterDevicePromptRoutes}
+      {RegisterRoutes}
+      {RegisterAccountRoutes}
+      {IFrameRoutes}
+      {AuthoriseAppRoutes}
+      {CopyDevicesRoutes}
+      {AuthenticateRoutes}
+      {AccessPointRoutes}
+      <Route path={"*"} element={<NotFound />} />
+    </Routes>
   )
 }
 

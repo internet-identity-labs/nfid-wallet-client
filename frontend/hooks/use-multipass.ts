@@ -1,26 +1,21 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { useSearchParams } from "react-router-dom"
-
-import { getBrowser, getPlatform } from "frontend/utils"
-import {
-  Topic,
-  _SERVICE,
-} from "frontend/services/pub-sub-channel/pub_sub_channel.did"
-import React from "react"
+import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
-import { useAuthContext } from "frontend/flows/auth-wrapper"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { getBrowser, getPlatform } from "frontend/utils"
+import React from "react"
+import { useSearchParams } from "react-router-dom"
 
 export const useMultipass = () => {
-  const { identityManager } = useAuthContext()
+  const { identityManager } = useAuthentication()
   const [params] = useSearchParams()
 
   const { postMessages, getMessages, createTopic, deleteTopic } =

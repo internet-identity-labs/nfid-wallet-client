@@ -1,5 +1,5 @@
 import React from "react"
-import { useAuthentication } from "../nfid-login/hooks"
+import { useAuthorization } from "../nfid-login/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { Button } from "frontend/ui-kit/src/components/atoms/button"
@@ -7,7 +7,8 @@ import {
   IIPersona,
   NFIDPersona,
 } from "frontend/services/identity-manager/persona/types"
-import { useMultipass } from "frontend/hooks/use-multipass"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useAuthentication } from "frontend/flows/auth-wrapper"
 
 interface AuthorizeAppProps
   extends React.DetailedHTMLProps<
@@ -15,15 +16,13 @@ interface AuthorizeAppProps
     HTMLDivElement
   > {}
 
-// NOTE:
-// signarure should be different for each persona
-// publicKey should stay the same between logins and different for each persona
-// why are the first couple of digits the same for each publicKey?
-
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
-  const { account, createPersona } = useMultipass()
-  const { authorizationRequest, authorizeApp } = useAuthentication({
-    userNumber: account && BigInt(account?.rootAnchor),
+  const { identityManager } = useAuthentication()
+  const { userNumber, account } = useAccount()
+  const { createPersona } = usePersona({ personaService: identityManager })
+
+  const { authorizationRequest, authorizeApp } = useAuthorization({
+    userNumber,
   })
   const { personas } = usePersona({
     application: authorizationRequest?.hostname,

@@ -1,4 +1,3 @@
-import { useAuthContext } from "frontend/flows/auth-wrapper"
 import React from "react"
 import { ListItem } from "frontend/ui-kit/src/index"
 import { Chip } from "frontend/ui-kit/src/index"
@@ -6,11 +5,8 @@ import { FaKey } from "react-icons/fa"
 import { MdLaptopMac } from "react-icons/md"
 import { DeleteButton } from "frontend/ui-kit/src/index"
 import { BiLoaderCircle } from "react-icons/bi"
-
-interface Device {
-  alias: string
-  pubkey: number[]
-}
+import { Device } from "./state"
+import { useDevices } from "./hooks"
 
 interface DeviceItemProps {
   device: Device
@@ -19,16 +15,13 @@ interface DeviceItemProps {
 
 export const DeviceItem: React.FC<DeviceItemProps> = ({ device, refresh }) => {
   const [deleting, setDeleting] = React.useState(false)
-  const { userNumber, connection } = useAuthContext()
+  const { deleteDevice } = useDevices()
 
   const handleDeleteDevice = React.useCallback(async () => {
-    if (connection && userNumber) {
-      setDeleting(true)
-      await connection.remove(userNumber, device.pubkey)
-
-      refresh()
-    }
-  }, [connection, device.pubkey, refresh, userNumber])
+    setDeleting(true)
+    await deleteDevice(device.pubkey)
+    setDeleting(false)
+  }, [deleteDevice, device.pubkey])
 
   const deviceType = () => {
     // TODO: switch on device type

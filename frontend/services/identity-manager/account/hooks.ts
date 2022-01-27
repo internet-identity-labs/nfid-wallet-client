@@ -5,32 +5,19 @@ import {
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/services/identity-manager/identity_manager"
 import produce from "immer"
+import { useAtom } from "jotai"
+
 import React from "react"
-import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
+import { accountAtom, LocalAccount, userNumberAtom } from "./state"
 
 type AccountService = Pick<
   _IDENTITY_MANAGER_SERVICE,
   "create_account" | "update_account" | "get_account"
 >
 
-type LocalAccount = AccountResponse & { rootAnchor: string }
-
-const getAccountFromLocalStorage = (): LocalAccount | undefined => {
-  const accountFromLS = localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY)
-
-  const account = accountFromLS ? JSON.parse(accountFromLS) : undefined
-  return account
-}
-
 export const useAccount = (accountService?: AccountService) => {
-  const [account, setAccount] = React.useState<LocalAccount | undefined>(
-    getAccountFromLocalStorage(),
-  )
-
-  React.useEffect(() => {
-    account &&
-      localStorage.setItem(ACCOUNT_LOCAL_STORAGE_KEY, JSON.stringify(account))
-  }, [account])
+  const [account, setAccount] = useAtom(accountAtom)
+  const [userNumber] = useAtom(userNumberAtom)
 
   const createAccount = React.useCallback(
     async (account: HTTPAccountRequest) => {
@@ -44,15 +31,14 @@ export const useAccount = (accountService?: AccountService) => {
       }
       return response
     },
-    [accountService],
+    [accountService, setAccount],
   )
 
   const getAccount = React.useCallback(async () => {
-    const account = getAccountFromLocalStorage()
     return new Promise<AccountResponse | undefined>((resolve) =>
-      resolve(account),
+      resolve(account || undefined),
     )
-  }, [])
+  }, [account])
 
   const updateAccount = React.useCallback(
     (partialAccount: Partial<LocalAccount>) => {
@@ -62,7 +48,7 @@ export const useAccount = (accountService?: AccountService) => {
       }))
       setAccount(newAccount)
     },
-    [account],
+    [account, setAccount],
   )
 
   const verifyPhonenumber = async (phoneNumber: string) => {
@@ -84,13 +70,9 @@ export const useAccount = (accountService?: AccountService) => {
     return { response: data, validPhonenumber }
   }
 
-  React.useEffect(() => {
-    // @ts-ignore TODO: fix types
-    getAccount().then((account) => setAccount(account))
-  }, [getAccount])
-
   return {
     account,
+    userNumber,
     createAccount,
     getAccount,
     updateAccount,

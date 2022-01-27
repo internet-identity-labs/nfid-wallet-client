@@ -20,8 +20,6 @@ import {
 import React, { useState } from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
-import { useAuthContext } from "../auth-wrapper"
-import { RegisterConstants as RC } from "./routes"
 
 interface RegisterLocationState {
   name: string
@@ -42,7 +40,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
   const { state } = useLocation()
   const { name, identity, deviceName, pow } = state as RegisterLocationState
 
-  const { onRegisterSuccess } = useAuthContext()
+  // const { onRegisterSuccess } = useAuthentication()
   const { updateAccount } = useMultipass()
 
   const navigate = useNavigate()

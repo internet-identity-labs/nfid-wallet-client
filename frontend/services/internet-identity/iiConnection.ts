@@ -46,6 +46,7 @@ const canisterId: string = CONFIG.II_CANISTER_ID as string
 
 if (!canisterId)
   throw new Error("you need to add VITE_II_CANISTER_ID to your environment")
+
 const getAgent = () => {
   const agent = new HttpAgent({})
   // Only fetch the root key when we're not in prod
@@ -54,7 +55,9 @@ const getAgent = () => {
   }
   return agent
 }
+
 export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
+
 export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
   agent: getAgent(),
   canisterId,
@@ -78,7 +81,7 @@ export type RegisterResult =
 
 type LoginSuccess = {
   kind: "loginSuccess"
-  connection: IIConnection
+  internetIdentity: IIConnection
   identityManager: ActorSubclass<IdentityManagerService>
   pubsubChannelActor: ActorSubclass<PubsubChannelService>
   userNumber: bigint
@@ -153,7 +156,7 @@ export class IIConnection {
       console.log(`registered Identity Anchor ${userNumber}`)
       return {
         kind: "loginSuccess",
-        connection: new IIConnection(identity, delegationIdentity, actor),
+        internetIdentity: new IIConnection(identity, delegationIdentity, actor),
         identityManager: await this.createServiceActor<IdentityManagerService>(
           delegationIdentity,
           IdentityManagerIdlFactory,
@@ -227,7 +230,7 @@ export class IIConnection {
     return {
       kind: "loginSuccess",
       userNumber,
-      connection: new IIConnection(
+      internetIdentity: new IIConnection(
         // eslint-disable-next-line
         multiIdent._actualIdentity!,
         delegationIdentity,
@@ -268,7 +271,7 @@ export class IIConnection {
     return {
       kind: "loginSuccess",
       userNumber,
-      connection: new IIConnection(identity, delegationIdentity, actor),
+      internetIdentity: new IIConnection(identity, delegationIdentity, actor),
       identityManager: await this.createServiceActor<IdentityManagerService>(
         delegationIdentity,
         IdentityManagerIdlFactory,

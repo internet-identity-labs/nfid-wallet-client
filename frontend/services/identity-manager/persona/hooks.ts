@@ -1,8 +1,9 @@
 import produce from "immer"
 import React from "react"
-import { PERSONA_LOCAL_STORAGE_KEY } from "./constants"
-import { Persona } from "./types"
 import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/services/identity-manager/identity_manager"
+import { useAtom } from "jotai"
+import { personaAtom } from "./state"
+import { Persona } from "./types"
 
 type PersonaService = Pick<_IDENTITY_MANAGER_SERVICE, "create_persona">
 interface UsePersona {
@@ -10,28 +11,15 @@ interface UsePersona {
   personaService?: PersonaService
 }
 
-// personas: [{"principal_id": "1", "application": "localhost:3000"}]
-
 export const usePersona = ({
   application,
   personaService,
 }: UsePersona = {}) => {
-  // const { isAuthenticated, identityManager } = useAuthentication()
-  const [personas, setPersonas] = React.useState<Persona[] | null>(null)
-
-  // console.log(">> ", { isAuthenticated })
-
-  React.useEffect(() => {
-    personas &&
-      localStorage.setItem(PERSONA_LOCAL_STORAGE_KEY, JSON.stringify(personas))
-  }, [personas])
+  const [personas, setPersonas] = useAtom(personaAtom)
 
   const getPersona = React.useCallback(async () => {
-    const personaFromLS = localStorage.getItem(PERSONA_LOCAL_STORAGE_KEY)
-    const persona: Persona[] = personaFromLS ? JSON.parse(personaFromLS) : null
-
-    return new Promise<Persona[]>((resolve) => resolve(persona))
-  }, [])
+    return new Promise<Persona[]>((resolve) => resolve(personas || []))
+  }, [personas])
 
   const updatePersona = React.useCallback(
     (partialPersona: Partial<Persona>) => {
@@ -41,7 +29,7 @@ export const usePersona = ({
       }))
       setPersonas(newPersona)
     },
-    [personas],
+    [personas, setPersonas],
   )
 
   const createPersona = React.useCallback(
@@ -51,12 +39,12 @@ export const usePersona = ({
       })
       console.log(">> ", { response })
     },
-    [],
+    [personaService],
   )
 
   React.useEffect(() => {
     getPersona().then((persona) => setPersonas(persona))
-  }, [getPersona])
+  }, [getPersona, setPersonas])
 
   return {
     personas:

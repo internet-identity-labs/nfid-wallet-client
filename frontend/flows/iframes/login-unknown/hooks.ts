@@ -14,7 +14,7 @@ interface Message {
 
 interface UseMessageChannelProps {
   messageHandler: {
-    [key in MessageKinds]: (event: any) => void
+    [key in MessageKinds]?: (event: any) => void
   }
 }
 

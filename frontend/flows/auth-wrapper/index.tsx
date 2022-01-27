@@ -8,72 +8,37 @@ import {
   Loader,
 } from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import {
-  apiResultToLoginResult,
-  LoginError,
-} from "frontend/services/internet-identity/api-result-to-login-result"
+import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { getUserNumber } from "frontend/services/internet-identity/userNumber"
 import React from "react"
 import { Navigate } from "react-router-dom"
+import { atom, useAtom } from "jotai"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { ActorSubclass } from "@dfinity/agent"
-import {
-  AccountResponse,
-  _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/services/identity-manager/identity_manager"
+import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
+import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 
-interface AuthContextState {
-  isAuthenticated: boolean
-  isLoading: boolean
-  connection?: IIConnection
-  identityManager?: ActorSubclass<_IDENTITY_MANAGER_SERVICE>
-  userNumber?: bigint
-  account: AccountResponse | undefined
-  startUrl: string
-  login: () => void
-  onRegisterSuccess: (connection: IIConnection) => void
+interface Actors {
+  internetIdentity: IIConnection
+  identityManager: ActorSubclass<IdentityManagerService>
+  pubsubChannelActor: ActorSubclass<PubsubChannelService>
 }
 
-export const AuthContext = React.createContext<AuthContextState>({
-  isAuthenticated: false,
-  isLoading: false,
-  connection: undefined,
-  identityManager: undefined,
-  userNumber: undefined,
-  account: undefined,
-  startUrl: "",
-  login: () => console.warn(">> called before initialisation"),
-  onRegisterSuccess: () => console.warn(">> called before initialisation"),
-})
+const errorAtom = atom<any | null>(null)
+const loadingAtom = atom<boolean>(false)
+const actorsAtom = atom<Actors | null>(null)
+const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
 
-interface AuthProvider {
-  startUrl: string
-}
+export const useAuthentication = () => {
+  const [error, setError] = useAtom(errorAtom)
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom)
+  const [isLoading, setIsLoading] = useAtom(loadingAtom)
+  const [actors, setActors] = useAtom(actorsAtom)
 
-export const AuthProvider: React.FC<AuthProvider> = ({
-  children,
-  startUrl,
-}) => {
-  const [isLoading, setLoading] = React.useState(false)
-  const [error, setError] = React.useState<LoginError | null>(null)
-  const [connection, setConnection] = React.useState<IIConnection | undefined>(
-    undefined,
-  )
-  const [identityManager, setIdentityManager] = React.useState<
-    ActorSubclass<_IDENTITY_MANAGER_SERVICE> | undefined
-  >(undefined)
-  console.log(">> AuthProvider", { identityManager })
-
-  const { account } = useMultipass()
-
-  const userNumber = React.useMemo(
-    () => getUserNumber(account ? account.rootAnchor : null),
-    [account],
-  )
+  const { userNumber } = useAccount()
 
   const login = React.useCallback(async () => {
-    setLoading(true)
+    setIsLoading(true)
     if (!userNumber) {
       throw new Error("register first")
     }
@@ -82,44 +47,25 @@ export const AuthProvider: React.FC<AuthProvider> = ({
     console.log(">> AuthProvider", { result })
     if (result.tag === "err") {
       setError(result)
-      setLoading(false)
+      setIsLoading(false)
     }
     if (result.tag === "ok") {
-      setConnection(result.connection)
-      setIdentityManager(result.identityManager)
+      setActors(result)
     }
-  }, [userNumber])
+  }, [setActors, setError, setIsLoading, userNumber])
 
-  const onRegisterSuccess = React.useCallback(
-    async (connection: IIConnection) => {
-      setConnection(connection)
-    },
-    [],
-  )
-
-  return (
-    <AuthContext.Provider
-      value={{
-        isLoading,
-        isAuthenticated: !!connection,
-        userNumber,
-        connection,
-        identityManager,
-        account,
-        startUrl,
-        login,
-        onRegisterSuccess,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
+  return {
+    isLoading,
+    isAuthenticated,
+    internetIdentity: actors?.internetIdentity,
+    identityManager: actors?.identityManager,
+    login,
+  }
 }
 
-export const useAuthContext = () => React.useContext(AuthContext)
-
 export const AuthWrapper: React.FC = ({ children }) => {
-  const { isLoading, isAuthenticated, account, login } = useAuthContext()
+  const { isLoading, isAuthenticated, login } = useAuthentication()
+  const { account } = useAccount()
   console.log(">> AuthWrapper", { isLoading, isAuthenticated })
 
   return isAuthenticated ? (

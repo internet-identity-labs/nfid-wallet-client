@@ -53,7 +53,7 @@ export const useMultipass = () => {
   )
 
   return {
-    ...useAccount(identityManager),
+    ...useAccount(),
     ...usePersona({ personaService: identityManager }),
     createWebAuthNIdentity,
     handleAddDevice,

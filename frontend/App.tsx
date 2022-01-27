@@ -1,5 +1,6 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
+import { AuthProvider } from "./flows/auth-wrapper"
 import { HomeScreen } from "./flows"
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/add-new-access-point/routes"
@@ -17,21 +18,24 @@ import "tailwindcss/tailwind.css"
 import { AuthoriseAppRoutes } from "./flows/iframes/authorize-app/routes"
 
 export const App = () => {
+  const startUrl = React.useMemo(() => window.location.pathname, [])
   return (
-    <Routes>
-      <Route path={"/"} element={<HomeScreen />} />
-      {RegisterNewDeviceRoutes}
-      {RegisterDevicePromptRoutes}
-      {RegisterRoutes}
-      {RegisterAccountRoutes}
-      {IFrameRoutes}
-      {AuthoriseAppRoutes}
-      {CopyDevicesRoutes}
+    <AuthProvider startUrl={startUrl}>
+      <Routes>
+        <Route path={"/"} element={<HomeScreen />} />
+        {RegisterNewDeviceRoutes}
+        {RegisterDevicePromptRoutes}
+        {RegisterRoutes}
+        {RegisterAccountRoutes}
+        {IFrameRoutes}
+        {AuthoriseAppRoutes}
+        {CopyDevicesRoutes}
 
-      {AuthenticateRoutes}
-      {AccessPointRoutes}
-      <Route path={"*"} element={<NotFound />} />
-    </Routes>
+        {AuthenticateRoutes}
+        {AccessPointRoutes}
+        <Route path={"*"} element={<NotFound />} />
+      </Routes>
+    </AuthProvider>
   )
 }
 

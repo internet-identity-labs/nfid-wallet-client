@@ -1,31 +1,14 @@
 import { List } from "frontend/ui-kit/src/index"
-import { useAuthContext } from "frontend/flows/auth-wrapper"
-import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import React from "react"
 import { DeviceItem } from "./device-item"
+import { useDevices } from "./hooks"
 
 export const ExistingDevices = () => {
-  const [existingDevices, setExistingDevices] = React.useState<any[]>([])
-  const { userNumber, connection } = useAuthContext()
-
-  const handleLoadDevices = React.useCallback(async () => {
-    if (userNumber && connection) {
-      const existingDevices = await IIConnection.lookupAll(userNumber)
-      setExistingDevices(existingDevices)
-    }
-  }, [connection, userNumber])
-
-  React.useEffect(() => {
-    let timer: NodeJS.Timer
-    if (connection) {
-      timer = setInterval(handleLoadDevices, 2000)
-    }
-    return () => clearInterval(timer)
-  }, [connection, handleLoadDevices])
+  const { devices, handleLoadDevices } = useDevices()
 
   return (
     <List>
-      {existingDevices.map((device) => (
+      {devices.map((device) => (
         <DeviceItem
           device={device}
           key={device.alias}

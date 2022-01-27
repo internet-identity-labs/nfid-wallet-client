@@ -12,10 +12,10 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { ExistingDevices } from "frontend/services/identity-manager/devices/existing-devices"
-import { getUserNumber } from "frontend/services/internet-identity/userNumber"
 import React from "react"
 import { useParams } from "react-router"
-import { useAuthContext } from "../auth-wrapper"
+import { useAuthentication } from "../auth-wrapper"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000
@@ -25,12 +25,10 @@ type State = "loading" | "pause" | "success" | "error"
 export const AwaitingConfirmation = () => {
   const { secret = "" } = useParams()
   const [status, setStatus] = React.useState<State>("loading")
-  const { account, getMessages } = useMultipass()
-  const userNumber = React.useMemo(
-    () => getUserNumber(account ? account.rootAnchor : null),
-    [account],
-  )
-  const { connection } = useAuthContext()
+  const { userNumber } = useAccount()
+  const { getMessages } = useMultipass()
+
+  const { internetIdentity } = useAuthentication()
 
   // TODO:
   // - [ ] get device from communication channel
@@ -42,9 +40,9 @@ export const AwaitingConfirmation = () => {
         body: [messages],
       } = await getMessages(secret)
 
-      if (messages && messages.length > 0 && userNumber && connection) {
+      if (messages && messages.length > 0 && userNumber && internetIdentity) {
         const message = JSON.parse(messages[0] || "")
-        await connection.add(
+        await internetIdentity.add(
           userNumber,
           message.deviceName,
           { unknown: null },
@@ -62,7 +60,7 @@ export const AwaitingConfirmation = () => {
         return
       }
     },
-    [connection, getMessages, secret, userNumber],
+    [internetIdentity, getMessages, secret, userNumber],
   )
 
   const { start, resetTries } = useInterval(handlePoll, TRY_DELAY)

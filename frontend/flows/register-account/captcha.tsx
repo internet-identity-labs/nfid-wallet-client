@@ -27,6 +27,8 @@ import { useForm } from "react-hook-form"
 import { HiFingerPrint } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
 import { RegisterAccountConstants as RAC } from "./routes"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useAuthentication } from "../auth-wrapper"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<
@@ -59,6 +61,8 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   })
   const { state } = useLocation()
   const navigate = useNavigate()
+  const { identityManager } = useAuthentication()
+  const { createAccount } = useAccount(identityManager)
 
   // TODO: handle account creation
   // const { updateAccount } = useMultipass()
@@ -141,25 +145,21 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       console.log("responseRegisterAnchor :>> ", responseRegisterAnchor)
 
       if (responseRegisterAnchor.kind === "loginSuccess") {
-        const { userNumber, connection } = responseRegisterAnchor
+        const { userNumber, internetIdentity } = responseRegisterAnchor
 
         const recoveryPhrase = await createRecoveryPhrase(
           userNumber,
-          connection,
+          internetIdentity,
         )
 
         console.log("{userNumber, connection, recoveryPhrase} :>> ", {
           userNumber,
-          connection,
+          internetIdentity,
           recoveryPhrase,
         })
 
-        // TODO: handle account creation
-        //   const { userNumber } = response
-        //   updateAccount({
-        //     principal_id: webAuthnIdentity.getPrincipal().toString(),
-        //     rootAnchor: userNumber.toString(),
-        //   })
+        // TODO: add token
+        await createAccount({ name, phone_number: phonenumber, token: "123" })
 
         return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
           state: {
@@ -190,6 +190,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       state,
       registerAnchor,
       createRecoveryPhrase,
+      createAccount,
       navigate,
       setValue,
       setError,

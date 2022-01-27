@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react"
+import React from "react"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useAuthContext } from "../auth-wrapper"
 import { Card, CardTitle, CardAction, Button } from "frontend/ui-kit/src/index"
+import { useStartUrl } from "frontend/hooks/use-start-url"
 
 interface IdentityPersonaSuccessScreenProps
   extends React.DetailedHTMLProps<
@@ -13,7 +13,7 @@ interface IdentityPersonaSuccessScreenProps
 export const LinkInternetIdentitySuccessScreen: React.FC<
   IdentityPersonaSuccessScreenProps
 > = ({ className }) => {
-  const { startUrl } = useAuthContext()
+  const startUrl = useStartUrl()
 
   return (
     <AppScreen isFocused>

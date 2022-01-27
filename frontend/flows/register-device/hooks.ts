@@ -3,9 +3,9 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { getUserNumber } from "frontend/services/internet-identity/userNumber"
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import React from "react"
-import { useAuthContext } from "../auth-wrapper"
+import { useAuthentication } from "../auth-wrapper"
 
 type RemoteLoginMessage = {
   delegation: {
@@ -19,13 +19,9 @@ type RemoteLoginMessage = {
 }
 
 export const useRegisterDevicePromt = () => {
-  const { account } = useMultipass()
-  const userNumber = React.useMemo(
-    () => getUserNumber(account ? account.rootAnchor : null),
-    [account],
-  )
-  const { connection } = useAuthContext()
-  const { postMessages } = useMultipass()
+  const { userNumber } = useMultipass()
+  const { internetIdentity } = useAuthentication()
+  const { postMessages } = usePubSubChannel()
 
   const createRemoteDelegate = React.useCallback(
     async (secret: string, scope: string, connection: IIConnection) => {
@@ -77,14 +73,14 @@ export const useRegisterDevicePromt = () => {
       if (!userNumber) {
         throw new Error("Device not registered")
       }
-      if (!connection) {
+      if (!internetIdentity) {
         throw new Error("Unauthorized")
       }
 
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,
         scope,
-        connection,
+        internetIdentity,
       )
 
       const message = JSON.stringify({
@@ -95,7 +91,7 @@ export const useRegisterDevicePromt = () => {
 
       return await postMessages(secret, [message])
     },
-    [connection, createRemoteDelegate, postMessages, userNumber],
+    [internetIdentity, createRemoteDelegate, postMessages, userNumber],
   )
 
   const sendWaitForUserInput = React.useCallback(

@@ -11,7 +11,7 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React, { useState } from "react"
 import { HiCheck, HiClipboard } from "react-icons/hi"
 import { Link, useLocation } from "react-router-dom"
-import { useAuthContext } from "../auth-wrapper"
+import { useStartUrl } from "frontend/hooks/use-start-url"
 
 interface LocationState {
   recoveryPhrase: string
@@ -27,11 +27,9 @@ export const RegisterRecoveryPhraseScreen: React.FC<
   IdentityPersonaCreatekeysCompleteScreenProps
 > = ({ className }) => {
   const { state } = useLocation()
+  const startUrl = useStartUrl()
 
-  // FIXME: the user anchor needs to be part of the seed phrase!
   const { recoveryPhrase } = state as LocationState
-
-  const { startUrl } = useAuthContext()
 
   const [copied, setCopied] = useState(false)
   return (
@@ -39,8 +37,8 @@ export const RegisterRecoveryPhraseScreen: React.FC<
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>Welcome! You're all set</CardTitle>
         <CardBody className="flex flex-col items-center max-w-lg">
-          <div className="bg-gray-200 rounded p-4">
-            <div className="uppercase font-bold text-center mb-5 text-indigo-600">
+          <div className="p-4 bg-gray-200 rounded">
+            <div className="mb-5 font-bold text-center text-indigo-600 uppercase">
               You need to save this!
             </div>
             <P>{recoveryPhrase}</P>
@@ -55,16 +53,16 @@ export const RegisterRecoveryPhraseScreen: React.FC<
               onClick={() => setCopied(true)}
             >
               {copied ? (
-                <HiCheck className="text-lg mr-2" />
+                <HiCheck className="mr-2 text-lg" />
               ) : (
-                <HiClipboard className="text-lg mr-2" />
+                <HiClipboard className="mr-2 text-lg" />
               )}
               {copied ? "Copied!" : "Copy"}
             </Button>
           </div>
         </CardBody>
         <CardAction bottom className="justify-center">
-          {copied ? (
+          {startUrl && copied ? (
             <Link to={startUrl}>
               <Button block large filled>
                 Log in to DSCVR

@@ -48,7 +48,7 @@ export const CopyDevices = () => {
       const response = await IIConnection.login(userNumber)
       const result = apiResultToLoginResult(response)
       if (result.tag === "ok") {
-        await result.connection.add(
+        await result.internetIdentity.add(
           userNumber,
           device.alias,
           device.key_type,
@@ -68,7 +68,7 @@ export const CopyDevices = () => {
       const response = await IIConnection.login(userNumber)
       const result = apiResultToLoginResult(response)
       if (result.tag === "ok") {
-        await result.connection.remove(userNumber, device.pubkey)
+        await result.internetIdentity.remove(userNumber, device.pubkey)
       }
     },
     [anchors],

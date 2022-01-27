@@ -4,6 +4,7 @@ import {
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/services/identity-manager/identity_manager"
+import { getUserNumber } from "frontend/services/internet-identity/userNumber"
 import produce from "immer"
 import React from "react"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
@@ -25,6 +26,11 @@ const getAccountFromLocalStorage = (): LocalAccount | undefined => {
 export const useAccount = (accountService?: AccountService) => {
   const [account, setAccount] = React.useState<LocalAccount | undefined>(
     getAccountFromLocalStorage(),
+  )
+
+  const userNumber = React.useMemo(
+    () => getUserNumber(account ? account.rootAnchor : null),
+    [account],
   )
 
   React.useEffect(() => {
@@ -91,6 +97,7 @@ export const useAccount = (accountService?: AccountService) => {
 
   return {
     account,
+    userNumber,
     createAccount,
     getAccount,
     updateAccount,

@@ -1,4 +1,4 @@
-import { useAccount } from "frontend/services/identity-manager/identity-manager/account/hooks"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
 import { Route } from "react-router-dom"
 import { Authenticate } from "."

@@ -9,8 +9,7 @@ export const AuthenticateConstants = {
 }
 
 const AuthenticateDecider: React.FC = () => {
-  // const { userNumber } = useAccount()
-  const userNumber = BigInt("10003")
+  const { userNumber } = useAccount()
 
   return userNumber ? (
     <Authenticate userNumber={userNumber} />

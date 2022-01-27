@@ -1,5 +1,5 @@
-import React from "react"
 import clsx from "clsx"
+import React from "react"
 import { NavigationBar } from "../organisms/navigation/navigation-bar"
 import { NavigationHeader } from "../organisms/navigation/navigation-header"
 
@@ -31,7 +31,7 @@ export const AppScreen: React.FC<Props> = ({
             )}
           </>
         )}
-        <main className="flex flex-1">
+        <main>
           <div className="container px-6 py-4 mx-auto">{children}</div>
         </main>
       </div>

@@ -1,5 +1,8 @@
 import React, { ReactElement } from "react"
 import clsx from "clsx"
+import { HiExclamationCircle, HiOutlineExclamationCircle } from "react-icons/hi"
+import { ErrorIcon } from "./icons/error"
+import { Label } from "./label"
 
 interface InputProps
   extends React.DetailedHTMLProps<
@@ -10,6 +13,9 @@ interface InputProps
   placeholder?: string
   type?: string
   icon?: ReactElement
+  errorText?: string
+  labelText?: string
+  pin?: boolean
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -20,33 +26,48 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       prependedText,
       placeholder,
       type = "text",
+      pin,
       icon,
+      errorText,
+      labelText,
       ...inputProps
     },
     ref,
   ) => {
     return (
-      <div className={clsx("rounded-md shadow-sm mt-1", className)}>
+      <div className={clsx("rounded-md", className)}>
+        {labelText && <Label>{labelText}</Label>}
         <div className="flex relative">
-          {prependedText && (
-            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-              {prependedText}
-            </span>
-          )}
-
           <input
             type={type}
             className={clsx(
-              "focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full sm:text-sm border-gray-300",
+              "flex-1 block w-full placeholder:text-sm border-black-base active:border-blue-base active:bg-[#F6FAFF] active:drop-shadow-[0_0px_2px_rgba(14,98,255,1)]",
+              "disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none disabled:focus:ring-transparent disabled:drop-shadow-none",
+              errorText &&
+                "active:drop-shadow-none active:bg-transparent active:border-red-base border-red-base text-red-base focus:border-red-base focus:ring-red-base",
               prependedText ? "rounded-r-md" : "rounded-md",
-              icon && "pr-10",
+              icon && "pl-10",
+              pin && "max-w-[45px] h-[60px] text-3xl",
             )}
-            placeholder={placeholder ?? ""}
+            placeholder={placeholder}
             ref={ref}
             {...inputProps}
           />
 
-          {icon && <span className="absolute right-3 top-2">{icon}</span>}
+          {errorText && (
+            <span className="absolute right-3 top-3">
+              <ErrorIcon />
+            </span>
+          )}
+        </div>
+
+        <div
+          className={clsx(
+            "text-sm py-1 text-gray-400",
+            errorText && "!text-red-base",
+          )}
+        >
+          {errorText}
         </div>
       </div>
     )

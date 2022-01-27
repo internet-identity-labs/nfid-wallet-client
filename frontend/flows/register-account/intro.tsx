@@ -1,6 +1,7 @@
 import { Button, Card, CardBody, H5, P } from "@identity-labs/ui"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import React from "react"
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
 import { useNavigate } from "react-router-dom"
@@ -18,8 +19,11 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   className,
 }) => {
   const navigate = useNavigate()
+  const { applicationName } = useMultipass()
   const [lastSlide, setLastSlide] = React.useState(false)
   const [firstSlide, setFirstSlide] = React.useState(true)
+
+  const appName = applicationName || "This application"
 
   const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
   const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)
@@ -50,9 +54,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           >
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="md:mb-7 font-bold mb-4">
-                  {"applicationName"} uses NFID
-                </H5>
+                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   The only way to guarantee your{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
@@ -64,9 +66,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="md:mb-7 font-bold mb-4">
-                  {"applicationName"} uses NFID
-                </H5>
+                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
                     This is your {"device"}.
@@ -86,9 +86,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="md:mb-7 font-bold mb-4">
-                  {"applicationName"} uses NFID
-                </H5>
+                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
@@ -106,9 +104,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-3xl">
-                <H5 className="md:mb-7 font-bold mb-4">
-                  {"applicationName"} uses NFID
-                </H5>
+                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
@@ -130,9 +126,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
             <SwiperSlide>
               <div className="max-w-[750px]">
-                <H5 className="md:mb-7 font-bold mb-4">
-                  {"applicationName"} uses NFID
-                </H5>
+                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   So be it, until{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">

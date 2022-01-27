@@ -37,6 +37,12 @@ module.exports = {
         },
       },
       fontSize: {
+        titleLarge: [
+          "54px",
+          {
+            lineHeight: "64px",
+          },
+        ],
         title: [
           "42px",
           {

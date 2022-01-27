@@ -29,3 +29,7 @@
 .swiper-controls {
   @apply flex items-center mt-[50px];
 }
+
+.offset-header {
+  @apply md:mt-[80px] mt-[50px];
+}

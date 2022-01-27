@@ -19,6 +19,8 @@ import { AuthoriseAppRoutes } from "./flows/iframes/authorize-app/routes"
 
 export const App = () => {
   const startUrl = React.useMemo(() => window.location.pathname, [])
+  console.log(">> App am I still rerendering all the time?", {})
+
   return (
     <AuthProvider startUrl={startUrl}>
       <Routes>

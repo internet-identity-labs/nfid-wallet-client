@@ -1,9 +1,8 @@
 import React from "react"
-import { useRoutes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import { HomeScreen } from "./flows"
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/add-new-access-point/routes"
-import { AuthProvider } from "./flows/auth-wrapper"
 import { AuthenticateRoutes } from "./flows/iframes/nfid-login/routes"
 import { IFrameRoutes } from "./flows/iframes/routes"
 import { RegisterAccountRoutes } from "./flows/register-account/routes"
@@ -17,24 +16,21 @@ import { RegisterRoutes } from "./flows/register/routes"
 import "tailwindcss/tailwind.css"
 import { AuthoriseAppRoutes } from "./flows/iframes/authorize-app/routes"
 
-function App() {
-  const startUrl = React.useMemo(() => window.location.pathname, [])
+export const App = () => {
+  return (
+    <Routes>
+      <Route path={"/"} element={<HomeScreen />} />
+      {RegisterNewDeviceRoutes}
+      {RegisterDevicePromptRoutes}
+      {RegisterRoutes}
+      {RegisterAccountRoutes}
+      {IFrameRoutes}
+      {AuthoriseAppRoutes}
+      {CopyDevicesRoutes}
 
-  const routes = useRoutes([
-    { path: "/", element: <HomeScreen /> },
-    AccessPointRoutes,
-    RegisterNewDeviceRoutes,
-    RegisterDevicePromptRoutes,
-    RegisterRoutes,
-    RegisterAccountRoutes,
-    IFrameRoutes,
-    AuthenticateRoutes,
-    AuthoriseAppRoutes,
-    CopyDevicesRoutes,
-    { path: "*", element: <NotFound /> },
-  ])
-
-  return <AuthProvider startUrl={startUrl}>{routes}</AuthProvider>
+      {AuthenticateRoutes}
+      {AccessPointRoutes}
+      <Route path={"*"} element={<NotFound />} />
+    </Routes>
+  )
 }
-
-export default App

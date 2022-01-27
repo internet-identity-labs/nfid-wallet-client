@@ -1,5 +1,5 @@
 import React from "react"
-import { Outlet } from "react-router"
+import { Outlet, Route } from "react-router-dom"
 import { AuthWrapper } from "../auth-wrapper"
 import { AwaitingConfirmation } from "./awaiting-confirmation"
 import { CopyLinkToChannel } from "./copy-link-to-channel"
@@ -12,25 +12,23 @@ export const AccessPointConstants = {
   createKeys: "create-keys",
 }
 
-export const AccessPointRoutes = {
-  path: AccessPointConstants.base,
-  element: <Outlet />,
-  children: [
-    {
-      path: AccessPointConstants.copyLinkToChannel,
-      element: (
+export const AccessPointRoutes = (
+  <Route path={AccessPointConstants.base} element={<Outlet />}>
+    <Route
+      path={AccessPointConstants.copyLinkToChannel}
+      element={
         <AuthWrapper>
           <CopyLinkToChannel />
         </AuthWrapper>
-      ),
-    },
-    {
-      path: AccessPointConstants.awaitingConfirmation,
-      element: <AwaitingConfirmation />,
-    },
-    {
-      path: `${AccessPointConstants.createKeys}/:secret`,
-      element: <CreateKeysScreen />,
-    },
-  ],
-}
+      }
+    />
+    <Route
+      path={AccessPointConstants.awaitingConfirmation}
+      element={<AwaitingConfirmation />}
+    />
+    <Route
+      path={`${AccessPointConstants.createKeys}/:secret`}
+      element={<CreateKeysScreen />}
+    />
+  </Route>
+)

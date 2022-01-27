@@ -1,5 +1,5 @@
 import React from "react"
-import { Outlet } from "react-router"
+import { Outlet, Route } from "react-router-dom"
 import { AuthWrapper } from "../auth-wrapper"
 import { RegisterDevicePrompt } from "./authorize-or-register-prompt"
 import { NewFromDelegate } from "./new-from-delegate"
@@ -11,39 +11,34 @@ export const RegisterDevicePromptConstants = {
   success: "success",
 }
 
-export const RegisterDevicePromptRoutes = {
-  path: RegisterDevicePromptConstants.base,
-  children: [
-    {
-      path: ":secret/:scope",
-      element: (
+export const RegisterDevicePromptRoutes = (
+  <Route path={RegisterDevicePromptConstants.base}>
+    <Route
+      path={":secret/:scope"}
+      element={
         <AuthWrapper>
           <RegisterDevicePrompt />
         </AuthWrapper>
-      ),
-    },
-    {
-      path: RegisterDevicePromptConstants.success,
-      element: (
+      }
+    />
+    <Route
+      path={RegisterDevicePromptConstants.success}
+      element={
         <AuthWrapper>
           <RegisterDevicePromptSuccess />
         </AuthWrapper>
-      ),
-    },
-  ],
-}
+      }
+    />
+  </Route>
+)
 
 // New device routes
 export const RegisterNewDeviceConstants = {
   base: "/register-new-device",
 }
 
-export const RegisterNewDeviceRoutes = {
-  path: RegisterNewDeviceConstants.base,
-  children: [
-    {
-      path: ":secret/:userNumber",
-      element: <NewFromDelegate />,
-    },
-  ],
-}
+export const RegisterNewDeviceRoutes = (
+  <Route path={RegisterNewDeviceConstants.base} element={<Outlet />}>
+    <Route path={":secret/:userNumber"} element={<NewFromDelegate />} />
+  </Route>
+)

@@ -1,5 +1,5 @@
 import React from "react"
-import { Outlet } from "react-router"
+import { Outlet, Route } from "react-router-dom"
 import { AuthWrapper } from "../auth-wrapper"
 import { AwaitingConfirmation } from "./awaiting-confirmation"
 import { RegisterCreatePersonaScreen } from "./create-persona"
@@ -22,46 +22,44 @@ export const RegisterConstants = {
   confirmation: "confirmation",
 }
 
-export const RegisterRoutes = {
-  path: RegisterConstants.base,
-  element: <Outlet />,
-  children: [
-    { path: RegisterConstants.welcome, element: <RegisterWelcome /> },
-    {
-      path: RegisterConstants.createPersona,
-      element: <RegisterCreatePersonaScreen />,
-    },
-    {
-      path: RegisterConstants.linkInternetIdentity,
-      element: (
+export const RegisterRoutes = (
+  <Route path={RegisterConstants.base} element={<Outlet />}>
+    <Route path={RegisterConstants.welcome} element={<RegisterWelcome />} />
+    <Route
+      path={RegisterConstants.createPersona}
+      element={<RegisterCreatePersonaScreen />}
+    />
+    <Route
+      path={RegisterConstants.linkInternetIdentity}
+      element={
         <AuthWrapper>
           <RegisterLinkInternetIdentityScreen />
         </AuthWrapper>
-      ),
-    },
-    {
-      path: RegisterConstants.linkInternetIdentityCreateAccount,
-      element: <LinkInternetIdentityCreateAccountScreen />,
-    },
-    {
-      path: RegisterConstants.linkInternetIdentitySuccess,
-      element: <LinkInternetIdentitySuccessScreen />,
-    },
-    {
-      path: RegisterConstants.finalizePersona,
-      element: <RegisterFinalizePersonaScreen />,
-    },
-    {
-      path: `${RegisterConstants.confirmation}/:secret`,
-      element: (
+      }
+    />
+    <Route
+      path={RegisterConstants.linkInternetIdentityCreateAccount}
+      element={<LinkInternetIdentityCreateAccountScreen />}
+    />
+    <Route
+      path={RegisterConstants.linkInternetIdentitySuccess}
+      element={<LinkInternetIdentitySuccessScreen />}
+    />
+    <Route
+      path={RegisterConstants.finalizePersona}
+      element={<RegisterFinalizePersonaScreen />}
+    />
+    <Route
+      path={`${RegisterConstants.confirmation}/:secret`}
+      element={
         <AuthWrapper>
           <AwaitingConfirmation />
         </AuthWrapper>
-      ),
-    },
-    {
-      path: RegisterConstants.recoveryPhrase,
-      element: <RegisterRecoveryPhraseScreen />,
-    },
-  ],
-}
+      }
+    />
+    <Route
+      path={RegisterConstants.recoveryPhrase}
+      element={<RegisterRecoveryPhraseScreen />}
+    />
+  </Route>
+)

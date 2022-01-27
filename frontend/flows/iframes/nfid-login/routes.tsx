@@ -1,6 +1,6 @@
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { getUserNumber } from "frontend/services/internet-identity/userNumber"
+import { useAccount } from "frontend/services/identity-manager/identity-manager/account/hooks"
 import React from "react"
+import { Route } from "react-router-dom"
 import { Authenticate } from "."
 import { UnknownDeviceScreen } from "../login-unknown"
 
@@ -9,14 +9,7 @@ export const AuthenticateConstants = {
 }
 
 const AuthenticateDecider: React.FC = () => {
-  const { account } = useMultipass()
-
-  const userNumber = React.useMemo(
-    () => getUserNumber(account ? account.rootAnchor : null),
-    [account],
-  )
-
-  console.log(">> AuthenticateDecider", { account, userNumber })
+  const { userNumber } = useAccount()
 
   return userNumber ? (
     <Authenticate userNumber={userNumber} />
@@ -25,7 +18,6 @@ const AuthenticateDecider: React.FC = () => {
   )
 }
 
-export const AuthenticateRoutes = {
-  path: AuthenticateConstants.base,
-  element: <AuthenticateDecider />,
-}
+export const AuthenticateRoutes = (
+  <Route path={AuthenticateConstants.base} element={<AuthenticateDecider />} />
+)

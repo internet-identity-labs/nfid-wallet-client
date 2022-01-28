@@ -37,7 +37,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       title: "Register Account (NFID) Flow",
       base: RegisterAccountConstants.base,
       items: [
-        { path: RegisterAccountConstants.base },
+        { path: RegisterAccountConstants.account },
         { path: RegisterAccountConstants.createNFIDProfile },
         { path: RegisterAccountConstants.smsVerification },
         { path: RegisterAccountConstants.captcha },
@@ -48,7 +48,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       title: "Link II Anchor Flow",
       base: LinkIIAnchorConstants.base,
       items: [
-        { path: LinkIIAnchorConstants.base },
+        { path: LinkIIAnchorConstants.linkIIAnchor },
         {
           path: LinkIIAnchorConstants.keys,
           state: { iiDeviceLink: "", userNumber: "" },
@@ -59,7 +59,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       title: "Mobile Registration Flow",
       base: RegisterConstants.base,
       items: [
-        { path: RegisterConstants.welcome },
         { path: RegisterConstants.linkInternetIdentitySuccess },
         { path: RegisterConstants.finalizePersona },
         {

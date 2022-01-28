@@ -1,25 +1,20 @@
 import React from "react"
-import { Outlet } from "react-router"
+import { Outlet, Route } from "react-router-dom"
 import { LinkIIAnchor } from "./link-ii-anchor"
 import { LinkIIAnchorKeys } from "./link-ii-anchor-keys"
 
 export const LinkIIAnchorConstants = {
-  base: "/link-ii-anchor",
-  linkIIAnchor: "", // renders LinkIIAnchor on /link-ii-anchor,
+  base: "/link-ii",
+  linkIIAnchor: "anchor",
   keys: "keys",
 }
 
-export const LinkIIAnchorRoutes = {
-  path: LinkIIAnchorConstants.base,
-  element: <Outlet />,
-  children: [
-    {
-      path: LinkIIAnchorConstants.linkIIAnchor,
-      element: <LinkIIAnchor />,
-    },
-    {
-      path: LinkIIAnchorConstants.keys,
-      element: <LinkIIAnchorKeys />,
-    },
-  ],
-}
+export const LinkIIAnchorRoutes = (
+  <Route path={LinkIIAnchorConstants.base} element={<Outlet />}>
+    <Route
+      path={LinkIIAnchorConstants.linkIIAnchor}
+      element={<LinkIIAnchor />}
+    />
+    <Route path={LinkIIAnchorConstants.keys} element={<LinkIIAnchorKeys />} />
+  </Route>
+)

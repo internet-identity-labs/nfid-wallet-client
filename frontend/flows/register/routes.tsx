@@ -9,7 +9,6 @@ import { RegisterRecoveryPhraseScreen } from "./recovery-phrase"
 
 export const RegisterConstants = {
   base: "/register",
-  welcome: "welcome",
   linkInternetIdentitySuccess: "link-internet-identity-success",
   linkInternetIdentityCreateAccount: "link-internet-identity-create-account",
   finalizePersona: "finalize-persona",

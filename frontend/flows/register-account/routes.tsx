@@ -8,7 +8,7 @@ import { RegisterAccountSMSVerification } from "./sms"
 
 export const RegisterAccountConstants = {
   base: "/register-account",
-  account: "", // renders Intro on /register-account,
+  account: "intro",
   createNFIDProfile: "create-nfid-profile",
   smsVerification: "sms",
   captcha: "captcha",

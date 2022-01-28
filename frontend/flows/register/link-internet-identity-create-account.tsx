@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { RegisterConstants as RC } from "./routes"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface LinkInternetIdentityCreateAccountScreenProps
   extends React.DetailedHTMLProps<
@@ -20,7 +21,7 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
   const { userNumber } = useParams()
   const navigate = useNavigate()
 
-  const { updateAccount } = useMultipass()
+  const { createAccount } = useAccount()
 
   const login = React.useCallback(async () => {
     if (!userNumber) throw new Error("userNumber is required")
@@ -28,20 +29,19 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
     const response = await IIConnection.login(BigInt(userNumber))
     const result = apiResultToLoginResult(response)
     if (result.tag === "ok") {
-      // TODO: pull data from state
+      // TODO: get real data
       const account = {
         name: "John Doe",
         email: "test@test.de",
         phone_number: "0123456789",
         token: "123",
+        anchor: BigInt(userNumber),
       }
-      await result.identityManager.create_account(account)
-      await result.identityManager.get_account()
+      await createAccount(result.identityManager, account)
 
-      updateAccount({ ...account, rootAnchor: userNumber })
       navigate(`${RC.base}/${RC.linkInternetIdentitySuccess}`)
     }
-  }, [navigate, updateAccount, userNumber])
+  }, [createAccount, navigate, userNumber])
   return (
     <AppScreen isFocused>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>

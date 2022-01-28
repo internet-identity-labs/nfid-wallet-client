@@ -53,6 +53,13 @@ export const useAuthentication = () => {
     }
   }, [setActors, setError, setIsLoading, userNumber])
 
+  const onRegisterSuccess = React.useCallback(
+    (actors) => {
+      setActors(actors)
+    },
+    [setActors],
+  )
+
   return {
     isLoading,
     isAuthenticated,
@@ -60,6 +67,7 @@ export const useAuthentication = () => {
     identityManager: actors?.identityManager,
     pubsubChannel: actors?.pubsubChannelActor,
     login,
+    onRegisterSuccess,
   }
 }
 

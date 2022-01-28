@@ -1,9 +1,17 @@
-import { Button, Card, CardBody, CardTitle, H3, P } from "frontend/ui-kit/src/index"
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  H3,
+  P,
+} from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { HiCheck, HiClipboard } from "react-icons/hi"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useStartUrl } from "frontend/hooks/use-start-url"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
@@ -18,6 +26,8 @@ interface LocationState {
 export const RegisterAccountCopyRecoveryPhrase: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
 > = ({ children, className }) => {
+  const navigate = useNavigate()
+  const startUrl = useStartUrl()
   const { state } = useLocation()
   const { recoveryPhrase } = state as LocationState
 
@@ -40,8 +50,8 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
             recover your account. Save this recovery phrase somewhere safe!
           </P>
 
-          <div className="border border-black rounded p-4">
-            <div className="uppercase font-bold text-center mb-5 text-indigo-600">
+          <div className="p-4 border border-black rounded">
+            <div className="mb-5 font-bold text-center text-indigo-600 uppercase">
               You need to save this!
             </div>
 
@@ -57,19 +67,20 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
               onClick={() => copyToClipboard()}
             >
               {copied ? (
-                <HiCheck className="text-lg mr-2" />
+                <HiCheck className="mr-2 text-lg" />
               ) : (
-                <HiClipboard className="text-lg mr-2" />
+                <HiClipboard className="mr-2 text-lg" />
               )}
               {copied ? "Copied!" : "Copy"}
             </Button>
           </div>
 
           <Button
+            onClick={() => navigate(startUrl || "")}
             disabled={!copied}
             filled
             block
-            className="flex justify-center space-x-4 items-center mx-auto mb-2 mt-6"
+            className="flex items-center justify-center mx-auto mt-6 mb-2 space-x-4"
           >
             Login
           </Button>
@@ -77,7 +88,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
           <Button
             disabled={!copied}
             block
-            className="flex justify-center space-x-4 items-center mx-auto"
+            className="flex items-center justify-center mx-auto space-x-4"
           >
             Link existing account
           </Button>

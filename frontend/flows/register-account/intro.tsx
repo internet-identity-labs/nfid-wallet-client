@@ -24,6 +24,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   const [firstSlide, setFirstSlide] = React.useState(true)
 
   const appName = applicationName || "This application"
+  const device = "device"
 
   const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
   const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)
@@ -52,7 +53,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           >
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   The only way to guarantee your{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
@@ -64,17 +65,15 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
-                    This is your {"device"}.
+                    {`This is your ${device}.`}
                   </span>{" "}
                   There are many like it but this one is yours.
                 </div>
                 <P className="mb-3">
-                  This {"device"} is equipped with the most advanced security in
-                  the world – a biometric scanner that ensures only you have
-                  access.
+                  {`This ${device} is equipped with the most advanced security in the world – a biometric scanner that ensures only you have access.`}
                 </P>
 
                 <P>
@@ -84,17 +83,17 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
-                    you and your {"device"}
+                    {`you and your ${device}`}
                   </span>
                   , your online accounts are inaccessible.
                 </div>
                 <P className="mb-3">
                   Anyone could pretend to be you with your username and
-                  password, but only you can unlock your {"device"}.
+                  password, but only you can unlock your {device}.
                 </P>
 
                 <P>Authenticate simply and securely with NFID.</P>
@@ -102,7 +101,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-3xl">
-                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
@@ -124,7 +123,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
             <SwiperSlide>
               <div className="max-w-[750px]">
-                <H5 className="md:mb-7 font-bold mb-4">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   So be it, until{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
@@ -133,7 +132,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   are no longer required.
                 </div>
 
-                <div className="grid md:grid-cols-2 mt-12 md:mt-6 md:gap-x-3 gap-y-3 max-w-lg">
+                <div className="grid max-w-lg mt-12 md:grid-cols-2 md:mt-6 md:gap-x-3 gap-y-3">
                   <Button
                     large
                     filled

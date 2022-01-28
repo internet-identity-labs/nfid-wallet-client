@@ -67,7 +67,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
   return (
     <AppScreen>
       <Card className="offset-header grid grid-cols-12">
-        <CardBody className="col-span-12 md:col-span-6">
+        <CardBody className="col-span-12 md:col-span-9 lg:col-span-7">
           <H2>Your NFID profile</H2>
           <div className="mt-5 mb-8">
             <P className="mb-3">
@@ -84,6 +84,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
           <Input
             small
+            autoFocus
             className="my-3"
             labelText="Full name"
             errorText={errors.name?.message}

@@ -119,12 +119,13 @@ export const RegisterAccountSMSVerification: React.FC<
                 Resend
               </Button>
             </P>
-            <div className="mt-3">
+            <div className="mt-6 mb-3">
               <div className="flex space-x-3">
                 {list.map((_, index) => (
                   <Input
                     pin
                     key={index}
+                    autoFocus={index === 0}
                     ref={(el) => (inputItemsRef.current[index] = el)}
                     onChange={(e) => {
                       const validRegex = inputItemsRef.current[
@@ -172,8 +173,6 @@ export const RegisterAccountSMSVerification: React.FC<
             onClick={handleVerifySMSToken}
             disabled={!isValidToken(getVerificationCode()) || loading}
           >
-            <HiFingerPrint className="text-lg" />
-
             <span>Complete</span>
           </Button>
           <Loader isLoading={loading} />

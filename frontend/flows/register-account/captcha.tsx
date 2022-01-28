@@ -1,34 +1,33 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Input,
-  Loader,
-  P,
-} from "frontend/ui-kit/src/index"
-import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import {
   Challenge,
   ChallengeResult,
-  ProofOfWork,
+  ProofOfWork
 } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   IC_DERIVATION_PATH,
-  IIConnection,
+  IIConnection
 } from "frontend/services/internet-identity/iiConnection"
+import { RefreshIcon } from "frontend/ui-kit/src/components/atoms/button/icons/refresh"
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  Input,
+  Loader,
+  P
+} from "frontend/ui-kit/src/index"
 import { captchaRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { HiFingerPrint } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
-import { RegisterAccountConstants as RAC } from "./routes"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useAuthentication } from "../auth-wrapper"
+import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<
@@ -189,56 +188,60 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
   return (
     <AppScreen isFocused>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardTitle>Enter Captcha</CardTitle>
-        <CardBody className="max-w-lg">
-          <P className="mt-2">Please type in the characters you see.</P>
+      <Card className="offset-header grid grid-cols-12">
+        <CardBody className="col-span-12 md:col-span-9 lg:col-span-6 xl:col-span-5">
+          <H2 className="my-4">Captcha protected</H2>
 
-          <div className="my-6">
-            <div className="my-3">
+          <P>Type the characters you see in the image.</P>
+
+          <div>
+            <div className="h-[150px] w-auto bg-white border border-gray-200 rounded-md my-4">
               {captchaResp && (
                 <img
                   src={`data:image/png;base64,${captchaResp.png_base64}`}
-                  className="object-contain aspect-video"
+                  className="object-contain w-full h-full"
                 />
               )}
-
-              <Input
-                placeholder="Captcha"
-                {...register("captcha", {
-                  required: captchaRules.errorMessages.required,
-                  minLength: {
-                    value: captchaRules.minLength,
-                    message: captchaRules.errorMessages.length,
-                  },
-                  maxLength: {
-                    value: captchaRules.maxLength,
-                    message: captchaRules.errorMessages.length,
-                  },
-                  pattern: {
-                    value: captchaRules.regex,
-                    message: captchaRules.errorMessages.pattern,
-                  },
-                })}
-              />
-
-              <P className="!text-red-400 text-sm">{errors.captcha?.message}</P>
             </div>
-            <div className="my-3">
-              <Button
-                large
-                block
-                filled
-                disabled={!isValid || loading}
-                onClick={handleSubmit(completeNFIDProfile)}
-                className="flex items-center justify-center mx-auto my-6 space-x-4"
-                data-captcha-key={captchaResp?.challenge_key}
-              >
-                <HiFingerPrint className="text-lg" />
-                <span>Create my NFID</span>
-              </Button>
-              <Loader isLoading={loading} />
-            </div>
+
+            <Button text className="flex items-center space-x-2 !my-1 ml-auto">
+              <RefreshIcon />
+              <span>Try a different image</span>
+            </Button>
+            <Input
+              autoFocus
+              placeholder="Captcha"
+              {...register("captcha", {
+                required: captchaRules.errorMessages.required,
+                minLength: {
+                  value: captchaRules.minLength,
+                  message: captchaRules.errorMessages.length,
+                },
+                maxLength: {
+                  value: captchaRules.maxLength,
+                  message: captchaRules.errorMessages.length,
+                },
+                pattern: {
+                  value: captchaRules.regex,
+                  message: captchaRules.errorMessages.pattern,
+                },
+              })}
+            />
+
+            <div className="text-red-base text-sm py-1"></div>
+          </div>
+          <div className="my-3">
+            <Button
+              large
+              block
+              filled
+              disabled={!isValid || loading}
+              onClick={handleSubmit(completeNFIDProfile)}
+              data-captcha-key={captchaResp?.challenge_key}
+            >
+              <span>Verify</span>
+            </Button>
+            <Loader isLoading={loading} />
           </div>
         </CardBody>
       </Card>

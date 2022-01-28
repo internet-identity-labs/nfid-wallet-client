@@ -5,14 +5,8 @@ interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {
-  small?: boolean
-}
+  > {}
 
-export const CardBody: React.FC<Props> = ({
-  children,
-  className,
-  small = false,
-}) => {
+export const CardBody: React.FC<Props> = ({ children, className }) => {
   return <div className={clsx(className, "py-6")}>{children}</div>
 }

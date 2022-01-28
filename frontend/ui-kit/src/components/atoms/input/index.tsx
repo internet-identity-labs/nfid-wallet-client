@@ -6,7 +6,7 @@ import { Label } from "./label"
 
 interface InputProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLInputElement>,
+    React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
   prependedText?: string
@@ -47,7 +47,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 "active:drop-shadow-none active:bg-transparent active:border-red-base border-red-base text-red-base focus:border-red-base focus:ring-red-base",
               prependedText ? "rounded-r-md" : "rounded-md",
               icon && "pl-10",
-              pin && "max-w-[45px] h-[60px] text-3xl",
+              pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",
             )}
             placeholder={placeholder}
             ref={ref}

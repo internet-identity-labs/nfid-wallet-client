@@ -3,6 +3,7 @@ import {
   Card,
   CardBody,
   CardTitle,
+  H2,
   Input,
   Loader,
   P,
@@ -10,8 +11,8 @@ import {
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { tokenRules } from "frontend/utils/validations"
-import React from "react"
+import { isValidToken, tokenRules } from "frontend/utils/validations"
+import React, { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { HiFingerPrint, HiRefresh } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -34,10 +35,9 @@ export const RegisterAccountSMSVerification: React.FC<
   const navigate = useNavigate()
   const { state } = useLocation()
   const {
-    register,
-    formState: { errors, isValid },
-    handleSubmit,
+    formState: { errors },
     setError,
+    clearErrors,
   } = useForm({
     mode: "all",
   })
@@ -46,6 +46,14 @@ export const RegisterAccountSMSVerification: React.FC<
 
   const { name, phonenumber } = state as RegisterAccountState
   const [loading, setLoading] = React.useState(false)
+
+  const list = [...Array(6).keys()]
+  const inputItemsRef = useRef<Array<HTMLInputElement | null>>([])
+
+  const getVerificationCode = React.useCallback(
+    () => inputItemsRef.current.map((item) => item?.value).join(""),
+    [],
+  )
 
   const resendSMS = React.useCallback(async () => {
     setLoading(true)
@@ -62,8 +70,25 @@ export const RegisterAccountSMSVerification: React.FC<
     setLoading(false)
   }, [phonenumber, setError, verifyPhonenumber])
 
-  const handleVerifySMSToken = async (data: any) => {
-    const { verificationCode } = data
+  const handleVerifySMSToken = async () => {
+    const verificationCode = getVerificationCode()
+
+    if (verificationCode.length != tokenRules.minLength) {
+      return setError("verificationCode", {
+        type: "manual",
+        message: tokenRules.errorMessages.length,
+      })
+    }
+
+    if (!isValidToken(verificationCode)) {
+      return setError("verificationCode", {
+        type: "manual",
+        message: tokenRules.errorMessages.pattern,
+      })
+    }
+
+    clearErrors("verificationCode")
+
     const registerPayload = await createWebAuthNIdentity()
 
     navigate(`${RAC.base}/${RAC.captcha}`, {
@@ -71,62 +96,85 @@ export const RegisterAccountSMSVerification: React.FC<
         name,
         phonenumber,
         registerPayload: registerPayload,
-        verificationCode,
+        verificationCode: verificationCode,
       },
     })
   }
 
   return (
     <AppScreen>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardTitle>SMS verification</CardTitle>
+      <Card className="offset-header">
         <CardBody className="max-w-lg">
-          <P className="pb-3">
-            Please enter the verification code to verify your phone number. A
-            code has been sent to {phonenumber}.
-          </P>
-
-          <P>
-            Didn't receive a code?
-            <Button text onClick={resendSMS} className="!px-1 !py-1 mx-2">
-              Resend
-            </Button>
-          </P>
-          <div className="mt-3">
-            <Input
-              placeholder="SMS code"
-              {...register("verificationCode", {
-                required: tokenRules.errorMessages.required,
-                pattern: {
-                  value: tokenRules.regex,
-                  message: tokenRules.errorMessages.pattern,
-                },
-                minLength: {
-                  value: tokenRules.minLength,
-                  message: tokenRules.errorMessages.length,
-                },
-                maxLength: {
-                  value: tokenRules.maxLength,
-                  message: tokenRules.errorMessages.length,
-                },
-              })}
-            />
-            <P className="!text-red-400 text-sm">
-              {errors.verificationCode?.message}
+          <H2>SMS verification</H2>
+          <div className="mt-5 mb-8">
+            <P className="pb-3">
+              Please enter the verification code to verify your phone number. A
+              code has been sent to {phonenumber}.
             </P>
+
+            <P>
+              Didn't receive a code?
+              <Button text onClick={resendSMS} className="!px-1 !py-1 mx-2">
+                Resend
+              </Button>
+            </P>
+            <div className="mt-3">
+              <div className="flex space-x-3">
+                {list.map((_, index) => (
+                  <Input
+                    pin
+                    key={index}
+                    ref={(el) => (inputItemsRef.current[index] = el)}
+                    onChange={(e) => {
+                      const validRegex = inputItemsRef.current[
+                        index
+                      ]?.value.match(e.target.pattern)
+
+                      if (isValidToken(getVerificationCode())) {
+                        clearErrors("verificationCode")
+                      } else {
+                        setError("verificationCode", {
+                          type: "manual",
+                          message: tokenRules.errorMessages.length,
+                        })
+                      }
+
+                      if (validRegex) {
+                        if (index == list.length - 1) {
+                          inputItemsRef.current[index]?.blur()
+                        }
+
+                        inputItemsRef.current[index + 1]?.focus()
+                      } else {
+                        e.target.value = e.target.value.replace(
+                          /[^0-9]{1}$/,
+                          "",
+                        )
+                      }
+                    }}
+                    maxLength={1}
+                    pattern="^[0-9]{1}$"
+                  />
+                ))}
+              </div>
+
+              <div className="text-red-400 text-sm py-1">
+                {errors.verificationCode?.message}
+              </div>
+            </div>
           </div>
 
           <Button
             large
             block
             filled
-            onClick={handleSubmit(handleVerifySMSToken)}
-            disabled={!isValid || loading}
+            onClick={handleVerifySMSToken}
+            disabled={!isValidToken(getVerificationCode()) || loading}
             className="flex items-center justify-center mx-auto my-6 space-x-4"
           >
             <HiFingerPrint className="text-lg" />
 
-            <span>Verify my phone number</span>
+            <span>Complete my NFID</span>
           </Button>
           <Loader isLoading={loading} />
         </CardBody>

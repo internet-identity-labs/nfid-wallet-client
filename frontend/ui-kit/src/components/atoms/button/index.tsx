@@ -31,7 +31,8 @@ export const Button: React.FC<ButtonProps> = ({
         "text-center p-4 text-sm font-bold rounded-md focus:ring-2 focus:ring-offset-[3px] focus:ring-black-base first-letter:capitalize",
         !text && "border border-black-base shadow-sm hover:shadow",
         !disabled && "cursor-pointer",
-        text && "hover:underline text-blue-base font-normal",
+        text &&
+          "hover:underline text-blue-base font-normal py-2 focus:ring-blue-base outline-none",
         filled &&
           "bg-black-base hover:bg-black-hover focus:ring-black-base text-white border-0",
         large && "md:w-[230px] w-full",

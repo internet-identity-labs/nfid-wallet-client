@@ -39,7 +39,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={clsx("rounded-md", className)}>
         {labelText && <Label>{labelText}</Label>}
-        <div className="flex relative">
+        <div className={clsx("flex relative", small && "md:max-w-[340px]")}>
           <input
             type={type}
             className={clsx(
@@ -50,7 +50,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               prependedText ? "rounded-r-md" : "rounded-md",
               icon && "pl-10",
               pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",
-              small && "md:max-w-[340px]"
             )}
             placeholder={placeholder}
             ref={ref}
@@ -67,6 +66,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             "text-sm py-1 text-gray-400",
+            "transition-all duration-100 ease-in",
             errorText && "!text-red-base",
           )}
         >

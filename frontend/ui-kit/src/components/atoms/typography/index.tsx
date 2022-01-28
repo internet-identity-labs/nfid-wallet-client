@@ -20,7 +20,7 @@ const headlineStyles = {
 
 const headlineSizes = {
   H1: "sm:titleLarge text-titleMobile",
-  H2: "sm:text-title text-titleMobile",
+  H2: "sm:text-title text-3xl",
   H3: "sm:text-3xl text-titleMobile",
   H4: "text-2xl",
   H5: "text-xl",

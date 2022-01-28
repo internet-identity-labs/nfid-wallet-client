@@ -1,6 +1,7 @@
 import type { Principal } from "@dfinity/principal"
 export interface AccountResponse {
   name: string
+  anchor: bigint
   personas: Array<PersonaVariant>
   principal_id: string
   phone_number: string
@@ -12,6 +13,7 @@ export interface BoolHttpResponse {
   status_code: number
 }
 export interface Configuration {
+  key: Array<number>
   lambda: Principal
   token_ttl: bigint
 }
@@ -31,6 +33,7 @@ export type Error = string
 export interface HTTPAccountRequest {
   token: string
   name: string
+  anchor: bigint
   phone_number: string
 }
 export interface HTTPAccountResponse {
@@ -57,7 +60,7 @@ export interface HTTPVerifyPhoneNumberRequest {
 }
 export interface PersonaIIResponse {
   domain: string
-  anchor: string
+  anchor: bigint
 }
 export interface PersonaNFIDResponse {
   domain: string

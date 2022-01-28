@@ -20,18 +20,12 @@ export const useAccount = () => {
   const [userNumber] = useAtom(userNumberAtom)
 
   const createAccount = React.useCallback(
-    async (
-      accountService: AccountService,
-      account: HTTPAccountRequest,
-      userNumber,
-    ) => {
-      console.log(">> createAccount", { account })
-
+    async (accountService: AccountService, account: HTTPAccountRequest) => {
       const response = await accountService.create_account(account)
+      const newAccount = response.data[0]
 
-      if (response.status_code === 200) {
-        // @ts-ignore TODO: fix types
-        setAccount({ ...response.data[0], rootAnchor: userNumber.toString() })
+      if (response.status_code === 200 && newAccount) {
+        setAccount({ ...newAccount, anchor: newAccount.anchor.toString() })
       }
       return response
     },
@@ -39,7 +33,7 @@ export const useAccount = () => {
   )
 
   const getAccount = React.useCallback(async () => {
-    return new Promise<AccountResponse | undefined>((resolve) =>
+    return new Promise<LocalAccount | undefined>((resolve) =>
       resolve(account || undefined),
     )
   }, [account])

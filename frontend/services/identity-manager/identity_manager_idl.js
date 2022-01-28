@@ -1,16 +1,18 @@
 export const idlFactory = ({ IDL }) => {
   const Configuration = IDL.Record({
+    key: IDL.Vec(IDL.Nat8),
     lambda: IDL.Principal,
     token_ttl: IDL.Nat64,
   })
   const HTTPAccountRequest = IDL.Record({
     token: IDL.Text,
     name: IDL.Text,
+    anchor: IDL.Nat64,
     phone_number: IDL.Text,
   })
   const PersonaIIResponse = IDL.Record({
     domain: IDL.Text,
-    anchor: IDL.Text,
+    anchor: IDL.Nat64,
   })
   const PersonaNFIDResponse = IDL.Record({
     domain: IDL.Text,
@@ -29,6 +31,7 @@ export const idlFactory = ({ IDL }) => {
   })
   const AccountResponse = IDL.Record({
     name: IDL.Text,
+    anchor: IDL.Nat64,
     personas: IDL.Vec(PersonaVariant),
     principal_id: IDL.Text,
     phone_number: IDL.Text,

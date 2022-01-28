@@ -28,17 +28,18 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
     const response = await IIConnection.login(BigInt(userNumber))
     const result = apiResultToLoginResult(response)
     if (result.tag === "ok") {
-      // TODO: pull data from state
+      // TODO: get real data
       const account = {
         name: "John Doe",
         email: "test@test.de",
         phone_number: "0123456789",
         token: "123",
+        anchor: BigInt(userNumber),
       }
       await result.identityManager.create_account(account)
       await result.identityManager.get_account()
 
-      updateAccount({ ...account, rootAnchor: userNumber })
+      updateAccount(account)
       navigate(`${RC.base}/${RC.linkInternetIdentitySuccess}`)
     }
   }, [navigate, updateAccount, userNumber])

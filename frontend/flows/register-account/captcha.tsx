@@ -145,15 +145,12 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           internetIdentity,
         )
 
-        await createAccount(
-          responseRegisterAnchor.identityManager,
-          {
-            name,
-            phone_number: phonenumber,
-            token: verificationCode,
-          },
-          userNumber,
-        )
+        await createAccount(responseRegisterAnchor.identityManager, {
+          name,
+          phone_number: phonenumber,
+          token: verificationCode,
+          anchor: userNumber,
+        })
 
         return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
           state: {

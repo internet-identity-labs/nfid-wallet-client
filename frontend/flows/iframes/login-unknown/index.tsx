@@ -31,20 +31,9 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     newDeviceKey,
     postClientAuthorizeSuccessMessage,
   } = useUnknownDeviceConfig()
-  const { createTopic, deleteTopic, getMessages } = useMultipass()
+  const { getMessages } = useMultipass()
 
-  const setupChannel = React.useCallback(() => {
-    createTopic(pubKey)
-  }, [createTopic, pubKey])
-
-  const clearChannel = React.useCallback(() => {
-    deleteTopic(pubKey)
-  }, [deleteTopic, pubKey])
-
-  React.useEffect(() => {
-    setupChannel()
-    return () => clearChannel()
-  }, [clearChannel, setupChannel])
+  // TODO: for cleanup we need NFID delegate
 
   const handleSendDelegate = React.useCallback(
     (delegation) => {
@@ -59,12 +48,11 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           userKey: delegation.userKey,
           hostname,
         })
-        clearChannel()
       } catch (err) {
         console.error(">> not a valid delegate", { err })
       }
     },
-    [appWindow, clearChannel, postClientAuthorizeSuccessMessage, scope],
+    [appWindow, postClientAuthorizeSuccessMessage, scope],
   )
 
   const handleSuccess = React.useCallback(

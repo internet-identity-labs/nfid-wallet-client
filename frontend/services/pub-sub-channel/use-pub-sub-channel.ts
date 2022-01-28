@@ -8,6 +8,7 @@ import {
   _SERVICE,
 } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { idlFactory as pub_sub_channel_idl } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"
+import { useAuthentication } from "frontend/flows/auth-wrapper"
 
 const pubSubCanisterId: string = CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string
 
@@ -33,12 +34,23 @@ export const baseActor = Actor.createActor<_SERVICE>(pub_sub_channel_idl, {
 })
 
 export const usePubSubChannel = () => {
-  const createTopic = React.useCallback(async (key: Topic) => {
-    return await baseActor.create_topic(key)
-  }, [])
-  const deleteTopic = React.useCallback(async (key: Topic) => {
-    return await baseActor.delete_topic(key)
-  }, [])
+  const { pubsubChannel } = useAuthentication()
+
+  const createTopic = React.useCallback(
+    async (key: Topic) => {
+      if (!pubsubChannel) throw new Error("unauthorized")
+      return await pubsubChannel.create_topic(key)
+    },
+    [pubsubChannel],
+  )
+
+  const deleteTopic = React.useCallback(
+    async (key: Topic) => {
+      if (!pubsubChannel) throw new Error("unauthorized")
+      return await pubsubChannel.delete_topic(key)
+    },
+    [pubsubChannel],
+  )
 
   const getMessages = React.useCallback(async (key: Topic) => {
     return await baseActor.get_messages(key)
@@ -46,9 +58,10 @@ export const usePubSubChannel = () => {
 
   const postMessages = React.useCallback(
     async (key: Topic, messages: string[]) => {
-      return await baseActor.post_messages(key, messages)
+      if (!pubsubChannel) throw new Error("unauthorized")
+      return await pubsubChannel.post_messages(key, messages)
     },
-    [],
+    [pubsubChannel],
   )
   return {
     createTopic,

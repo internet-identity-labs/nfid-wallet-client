@@ -1,5 +1,5 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
-import { useMultipass } from "frontend/hooks/use-multipass"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
@@ -19,9 +19,9 @@ type RemoteLoginMessage = {
 }
 
 export const useRegisterDevicePromt = () => {
-  const { userNumber } = useMultipass()
+  const { userNumber } = useAccount()
   const { internetIdentity } = useAuthentication()
-  const { postMessages } = usePubSubChannel()
+  const { createTopic, postMessages } = usePubSubChannel()
 
   const createRemoteDelegate = React.useCallback(
     async (secret: string, scope: string, connection: IIConnection) => {
@@ -89,7 +89,9 @@ export const useRegisterDevicePromt = () => {
         ...(register ? { userNumber: userNumber.toString() } : {}),
       })
 
-      return await postMessages(secret, [message])
+      const response = await postMessages(secret, [message])
+
+      return response
     },
     [internetIdentity, createRemoteDelegate, postMessages, userNumber],
   )
@@ -99,11 +101,10 @@ export const useRegisterDevicePromt = () => {
       const message = JSON.stringify({
         type: "remote-login-wait-for-user",
       })
-      console.log(">> sendWaitForUserInput", { secret, message })
-
-      const response = await postMessages(secret, [message])
+      await createTopic(secret)
+      await postMessages(secret, [message])
     },
-    [postMessages],
+    [createTopic, postMessages],
   )
 
   return { remoteLogin, sendWaitForUserInput }

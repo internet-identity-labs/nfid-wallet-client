@@ -58,6 +58,7 @@ export const useAuthentication = () => {
     isAuthenticated,
     internetIdentity: actors?.internetIdentity,
     identityManager: actors?.identityManager,
+    pubsubChannel: actors?.pubsubChannelActor,
     login,
   }
 }

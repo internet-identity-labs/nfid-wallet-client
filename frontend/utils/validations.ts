@@ -53,6 +53,16 @@ export const captchaRules = {
   },
 }
 
+export const anchorRules = {
+  regex: /^[0-9]{5,}$/,
+  minLength: 5,
+  errorMessages: {
+    pattern: "Anchor must only contain numbers (5 or more digits)",
+    required: "Anchor is required",
+    length: "Anchor must be 5 or more digits long",
+  },
+}
+
 export const isValidPhonenumber = (phonenumber: string) => {
   return phoneRules.regex.test(phonenumber)
 }
@@ -67,4 +77,8 @@ export const isValidToken = (token: string) => {
 
 export const isValidCaptcha = (captcha: string) => {
   return captchaRules.regex.test(captcha)
+}
+
+export const isValidAnchor = (anchor: string) => {
+  return anchorRules.regex.test(anchor)
 }

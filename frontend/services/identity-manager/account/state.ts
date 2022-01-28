@@ -6,6 +6,7 @@ import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 
 export interface LocalAccount extends Omit<AccountResponse, "anchor"> {
   anchor: string
+  iiAnchors?: string[]
 }
 
 export const accountAtom = atomWithStorage<LocalAccount | undefined>(

@@ -7,6 +7,7 @@ import { AccessPointConstants } from "./add-new-access-point/routes"
 import { RegisterAccountConstants } from "./register-account/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
 import { RegisterConstants } from "./register/routes"
+import { LinkIIAnchorConstants } from "./link-ii-anchor/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -36,7 +37,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       title: "Register Account (NFID) Flow",
       base: RegisterAccountConstants.base,
       items: [
-        { path: RegisterAccountConstants.base },
+        { path: RegisterAccountConstants.account },
         { path: RegisterAccountConstants.createNFIDProfile },
         { path: RegisterAccountConstants.smsVerification },
         { path: RegisterAccountConstants.captcha },
@@ -44,15 +45,20 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       ],
     },
     {
+      title: "Link II Anchor Flow",
+      base: LinkIIAnchorConstants.base,
+      items: [
+        { path: LinkIIAnchorConstants.linkIIAnchor },
+        {
+          path: LinkIIAnchorConstants.keys,
+          state: { iiDeviceLink: "", userNumber: "" },
+        },
+      ],
+    },
+    {
       title: "Mobile Registration Flow",
       base: RegisterConstants.base,
       items: [
-        { path: RegisterConstants.welcome },
-        { path: RegisterConstants.createPersona },
-        {
-          path: RegisterConstants.linkInternetIdentity,
-          state: { iiDeviceLink: "", userNumber: "" },
-        },
         { path: RegisterConstants.linkInternetIdentitySuccess },
         { path: RegisterConstants.finalizePersona },
         {
@@ -107,7 +113,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                           key={index}
                           state={state}
                         >
-                          <span className="capitalize">
+                          <span className="first-letter:capitalize">
                             {getRouteToText(path)}
                           </span>
                           <div className="flex">

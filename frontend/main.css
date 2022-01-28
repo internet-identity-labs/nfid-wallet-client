@@ -7,5 +7,29 @@
 }
 
 .swiper-pagination {
-  @apply !relative !bottom-0 mt-4;
+  @apply !relative pb-[9px] mr-4 ml-2 sm:mx-8;
+}
+
+.swiper-title {
+  @apply sm:text-title text-titleMobile font-bold mb-5;
+}
+
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+  @apply !rounded-full !w-[36px] !bg-black-base;
+}
+
+.swiper-pagination-bullet {
+  @apply !rounded-full !w-[16px] !bg-[#0B0E13] !h-[3px] !mx-2 transition-all duration-200 ease-in-out;
+}
+
+.swiper-pagination-horizontal {
+  @apply !w-auto !bottom-0 !left-0;
+}
+
+.swiper-controls {
+  @apply flex items-center mt-[50px];
+}
+
+.offset-header {
+  @apply md:mt-[80px] mt-[20px];
 }

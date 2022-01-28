@@ -1,16 +1,15 @@
+import clsx from "clsx"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   Button,
   Card,
   CardBody,
-  H3,
+  H2,
   Input,
-  Label,
   Loader,
   P,
 } from "frontend/ui-kit/src/index"
-import clsx from "clsx"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { nameRules, phoneRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -66,25 +65,27 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
   )
 
   return (
-    <AppScreen isFocused>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
+    <AppScreen>
+      <Card className="offset-header">
         <CardBody className="max-w-lg">
-          <H3>Your NFID profile</H3>
-          <P>
-            Your name and phone number are the first level of verification that
-            you are an individual person, freeing the Internet from spam and
-            scam accounts.
-          </P>
+          <H2>Your NFID profile</H2>
+          <div className="mt-5 mb-8">
+            <P className="mb-3">
+              Your name and phone number are the first level of verification
+              that you are an individual person, freeing the Internet from spam
+              and scam accounts.
+            </P>
 
-          <P className="mt-2">
-            All your NFID Profile data is encrypted such that only your devices
-            have access.
-          </P>
-
+            <P>
+              All your NFID Profile data is encrypted such that only your
+              devices have access.
+            </P>
+          </div>
           <div className="my-6">
             <div className="my-3">
-              <Label>Full name</Label>
               <Input
+                labelText="Full name"
+                errorText={errors.name?.message}
                 placeholder="Enter your full name"
                 {...register("name", {
                   required: nameRules.errorMessages.required,
@@ -102,12 +103,12 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
                   },
                 })}
               />
-              <P className="!text-red-400 text-sm">{errors.name?.message}</P>
             </div>
             <div className="my-3">
-              <Label>Phone number</Label>
               <Input
                 placeholder="+XXXXXXXXXXX"
+                labelText="Phone number"
+                errorText={errors.phonenumber?.message}
                 {...register("phonenumber", {
                   onChange: (e) => {
                     e.target.value = e.target.value.replace(/[^\d\+]/g, "")
@@ -127,14 +128,10 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
                   },
                 })}
               />
-              <P className="!text-red-400 text-sm">
-                {errors.phonenumber?.message}
-              </P>
             </div>
-            <div className="my-3">
+            <div className="mt-8 mb-3">
               <Button
                 large
-                block
                 filled
                 disabled={!isValid || loading}
                 onClick={handleSubmit(handleVerifyPhonenumber)}

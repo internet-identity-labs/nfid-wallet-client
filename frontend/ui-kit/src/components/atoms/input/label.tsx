@@ -1,5 +1,5 @@
 import React from "react"
-import clsx from 'clsx'
+import clsx from "clsx"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -9,7 +9,9 @@ interface Props
 
 export const Label: React.FC<Props> = ({ children, className }) => {
   return (
-    <label className={clsx('block text-sm font-medium text-gray-700 mb-1', className)}>
+    <label
+      className={clsx("text-sm text-black-base leading-4 mb-1 block", className)}
+    >
       {children}
     </label>
   )

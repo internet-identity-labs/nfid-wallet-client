@@ -17,6 +17,7 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { ActorSubclass } from "@dfinity/agent"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
+import { RegisterAccountConstants } from "../register-account/routes"
 
 interface Actors {
   internetIdentity: IIConnection
@@ -53,6 +54,13 @@ export const useAuthentication = () => {
     }
   }, [setActors, setError, setIsLoading, userNumber])
 
+  const onRegisterSuccess = React.useCallback(
+    (actors) => {
+      setActors(actors)
+    },
+    [setActors],
+  )
+
   return {
     isLoading,
     isAuthenticated,
@@ -60,6 +68,7 @@ export const useAuthentication = () => {
     identityManager: actors?.identityManager,
     pubsubChannel: actors?.pubsubChannelActor,
     login,
+    onRegisterSuccess,
   }
 }
 
@@ -85,6 +94,8 @@ export const AuthWrapper: React.FC = ({ children }) => {
       </Card>
     </AppScreen>
   ) : (
-    <Navigate to="/register-account" />
+    <Navigate
+      to={`${RegisterAccountConstants.base}/${RegisterAccountConstants.account}`}
+    />
   )
 }

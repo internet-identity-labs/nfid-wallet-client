@@ -47,7 +47,6 @@
     "typescript": "link:../node_modules/typescript",
     "react-icons": "^4.3.1",
     "react-router": "link:../node_modules/react-router",
-    "rollup-plugin-typescript2": "^0.31.1",
     "tailwindcss": "3.0.8",
     "vite": "^2.7.0"
   },

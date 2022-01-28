@@ -28,6 +28,7 @@ import { HiFingerPrint } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
 import { RegisterAccountConstants as RAC } from "./routes"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useAuthentication } from "../auth-wrapper"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<
@@ -65,6 +66,8 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
   const [loading, setLoading] = React.useState(true)
 
+  const { onRegisterSuccess } = useAuthentication()
+
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
 
@@ -98,10 +101,11 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         deviceName,
         challengeResult,
       )
+      onRegisterSuccess(response)
 
       return response
     },
-    [captchaResp],
+    [captchaResp, onRegisterSuccess],
   )
 
   const createRecoveryPhrase = React.useCallback(

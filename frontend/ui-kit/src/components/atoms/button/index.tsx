@@ -26,15 +26,14 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={clsx(
-        "flex text-center py-2 px-4 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 first-letter:capitalize",
-        !text && "border shadow-sm hover:shadow",
+        "text-center p-4 text-sm font-bold rounded-md focus:ring-2 focus:ring-offset-[3px] focus:ring-black-base first-letter:capitalize",
+        !text && "border border-black-base shadow-sm hover:shadow",
         !disabled && "cursor-pointer",
-        text && "hover:underline text-indigo-600",
+        text && "hover:underline text-blue-base font-normal",
         filled &&
-          "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white border-0",
-        block && "block w-full",
-        large && "md:min-w-[200px]",
-        disabled && "cursor-not-allowed opacity-50 pointer-events-none",
+          "bg-black-base hover:bg-black-hover focus:ring-black-base text-white border-0",
+        large && "md:min-w-[230px] w-full",
+        disabled && "cursor-not-allowed opacity-20 pointer-events-none",
         className,
       )}
       {...buttonProps}

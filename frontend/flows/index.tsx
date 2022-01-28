@@ -39,7 +39,10 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       items: [
         { path: RegisterAccountConstants.account },
         { path: RegisterAccountConstants.createNFIDProfile },
-        { path: RegisterAccountConstants.smsVerification },
+        {
+          path: RegisterAccountConstants.smsVerification,
+          state: { name: "John Doe", phonenumber: "+1234567890" },
+        },
         { path: RegisterAccountConstants.captcha },
         { path: RegisterAccountConstants.copyRecoveryPhrase },
       ],

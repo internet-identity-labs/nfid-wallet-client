@@ -34,7 +34,6 @@ export const nameRules = {
 export const tokenRules = {
   regex: /^[0-9]{6}$/,
   minLength: 6,
-  maxLength: 6,
   errorMessages: {
     pattern: "Token must only contain numbers (6 digits)",
     required: "Token is required",

@@ -103,13 +103,14 @@ export const RegisterAccountSMSVerification: React.FC<
 
   return (
     <AppScreen>
-      <Card className="offset-header">
-        <CardBody className="max-w-lg">
+      <Card className="offset-header grid grid-cols-12">
+        <CardBody className="col-span-12 md:col-span-8">
           <H2>SMS verification</H2>
-          <div className="mt-5 mb-8">
+          <div className="my-5">
             <P className="pb-3">
-              Please enter the verification code to verify your phone number. A
-              code has been sent to {phonenumber}.
+              Please enter the verification code to verify your phone number.{" "}
+              <br className="hidden sm:block" /> A code has been sent to{" "}
+              {phonenumber}.
             </P>
 
             <P>
@@ -158,7 +159,7 @@ export const RegisterAccountSMSVerification: React.FC<
                 ))}
               </div>
 
-              <div className="text-red-400 text-sm py-1">
+              <div className="text-red-base text-sm py-1">
                 {errors.verificationCode?.message}
               </div>
             </div>
@@ -166,15 +167,14 @@ export const RegisterAccountSMSVerification: React.FC<
 
           <Button
             large
-            block
+            icon
             filled
             onClick={handleVerifySMSToken}
             disabled={!isValidToken(getVerificationCode()) || loading}
-            className="flex items-center justify-center mx-auto my-6 space-x-4"
           >
             <HiFingerPrint className="text-lg" />
 
-            <span>Complete my NFID</span>
+            <span>Complete</span>
           </Button>
           <Loader isLoading={loading} />
         </CardBody>

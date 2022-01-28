@@ -11,16 +11,18 @@ interface ButtonProps
   text?: boolean
   large?: boolean
   disabled?: boolean
+  icon?: boolean
 }
 
 export const Button: React.FC<ButtonProps> = ({
   children,
   className,
-  filled = false,
-  block = false,
-  text = false,
-  large = false,
-  disabled = false,
+  filled,
+  block,
+  text,
+  large,
+  disabled,
+  icon,
   ...buttonProps
 }) => {
   return (
@@ -32,8 +34,9 @@ export const Button: React.FC<ButtonProps> = ({
         text && "hover:underline text-blue-base font-normal",
         filled &&
           "bg-black-base hover:bg-black-hover focus:ring-black-base text-white border-0",
-        large && "md:min-w-[230px] w-full",
+        large && "md:w-[230px] w-full",
         disabled && "cursor-not-allowed opacity-20 pointer-events-none",
+        icon && "flex items-center justify-center space-x-4",
         className,
       )}
       {...buttonProps}

@@ -66,8 +66,8 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
   return (
     <AppScreen>
-      <Card className="offset-header">
-        <CardBody className="max-w-lg">
+      <Card className="offset-header grid grid-cols-12">
+        <CardBody className="col-span-12 md:col-span-6">
           <H2>Your NFID profile</H2>
           <div className="mt-5 mb-8">
             <P className="mb-3">
@@ -81,65 +81,65 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
               devices have access.
             </P>
           </div>
-          <div className="my-6">
-            <div className="my-3">
-              <Input
-                labelText="Full name"
-                errorText={errors.name?.message}
-                placeholder="Enter your full name"
-                {...register("name", {
-                  required: nameRules.errorMessages.required,
-                  pattern: {
-                    value: nameRules.regex,
-                    message: nameRules.errorMessages.pattern,
-                  },
-                  minLength: {
-                    value: nameRules.minLength,
-                    message: nameRules.errorMessages.length,
-                  },
-                  maxLength: {
-                    value: nameRules.maxLength,
-                    message: nameRules.errorMessages.length,
-                  },
-                })}
-              />
-            </div>
-            <div className="my-3">
-              <Input
-                placeholder="+XXXXXXXXXXX"
-                labelText="Phone number"
-                errorText={errors.phonenumber?.message}
-                {...register("phonenumber", {
-                  onChange: (e) => {
-                    e.target.value = e.target.value.replace(/[^\d\+]/g, "")
-                  },
-                  required: phoneRules.errorMessages.required,
-                  pattern: {
-                    value: phoneRules.regex,
-                    message: phoneRules.errorMessages.pattern,
-                  },
-                  minLength: {
-                    value: phoneRules.minLength,
-                    message: phoneRules.errorMessages.length,
-                  },
-                  maxLength: {
-                    value: phoneRules.maxLength,
-                    message: phoneRules.errorMessages.length,
-                  },
-                })}
-              />
-            </div>
-            <div className="mt-8 mb-3">
-              <Button
-                large
-                filled
-                disabled={!isValid || loading}
-                onClick={handleSubmit(handleVerifyPhonenumber)}
-              >
-                Verify phone number
-              </Button>
-              <Loader isLoading={loading} />
-            </div>
+
+          <Input
+            small
+            className="my-3"
+            labelText="Full name"
+            errorText={errors.name?.message}
+            placeholder="Enter your full name"
+            {...register("name", {
+              required: nameRules.errorMessages.required,
+              pattern: {
+                value: nameRules.regex,
+                message: nameRules.errorMessages.pattern,
+              },
+              minLength: {
+                value: nameRules.minLength,
+                message: nameRules.errorMessages.length,
+              },
+              maxLength: {
+                value: nameRules.maxLength,
+                message: nameRules.errorMessages.length,
+              },
+            })}
+          />
+
+          <Input
+            small
+            className="my-3"
+            placeholder="+XXXXXXXXXXX"
+            labelText="Phone number"
+            errorText={errors.phonenumber?.message}
+            {...register("phonenumber", {
+              onChange: (e) => {
+                e.target.value = e.target.value.replace(/[^\d\+]/g, "")
+              },
+              required: phoneRules.errorMessages.required,
+              pattern: {
+                value: phoneRules.regex,
+                message: phoneRules.errorMessages.pattern,
+              },
+              minLength: {
+                value: phoneRules.minLength,
+                message: phoneRules.errorMessages.length,
+              },
+              maxLength: {
+                value: phoneRules.maxLength,
+                message: phoneRules.errorMessages.length,
+              },
+            })}
+          />
+          <div className="mt-8 mb-3">
+            <Button
+              large
+              filled
+              disabled={!isValid || loading}
+              onClick={handleSubmit(handleVerifyPhonenumber)}
+            >
+              Verify phone number
+            </Button>
+            <Loader isLoading={loading} />
           </div>
         </CardBody>
       </Card>

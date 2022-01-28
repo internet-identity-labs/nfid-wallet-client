@@ -3,14 +3,15 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
+import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import {
   Challenge,
   ChallengeResult,
-  ProofOfWork
 } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
+  canisterIdPrincipal,
   IC_DERIVATION_PATH,
-  IIConnection
+  IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { RefreshIcon } from "frontend/ui-kit/src/components/atoms/button/icons/refresh"
 import {
@@ -20,7 +21,7 @@ import {
   H2,
   Input,
   Loader,
-  P
+  P,
 } from "frontend/ui-kit/src/index"
 import { captchaRules } from "frontend/utils/validations"
 import React from "react"
@@ -39,7 +40,6 @@ interface RegisterAccountCaptchaState {
   registerPayload: {
     identity: string
     deviceName: string
-    pow: ProofOfWork
   }
   name: string
   phonenumber: string
@@ -70,19 +70,18 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
 
-    const {
-      registerPayload: { pow },
-    } = state as RegisterAccountCaptchaState
+    const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
+    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
 
     const cha = await IIConnection.createChallenge(pow)
 
     setCaptchaResp(cha)
     setLoading(false)
-  }, [state])
+  }, [])
 
   React.useEffect(() => {
     requestCaptcha()
-  }, [requestCaptcha])
+  }, [requestCaptcha, state])
 
   const registerAnchor = React.useCallback(
     async (identity: string, deviceName: string, captcha: string) => {
@@ -204,12 +203,17 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
               )}
             </div>
 
-            <Button text className="flex items-center space-x-2 !my-1 ml-auto">
+            <Button
+              text
+              className="flex items-center space-x-2 !my-1 ml-auto"
+              onClick={() => requestCaptcha()}
+            >
               <RefreshIcon />
               <span>Try a different image</span>
             </Button>
+
             <Input
-              autoFocus
+              errorText={errors.captcha?.message}
               placeholder="Captcha"
               {...register("captcha", {
                 required: captchaRules.errorMessages.required,
@@ -227,9 +231,8 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
                 },
               })}
             />
-
-            <div className="text-red-base text-sm py-1"></div>
           </div>
+
           <div className="my-3">
             <Button
               large

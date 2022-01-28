@@ -1,14 +1,13 @@
 import { CONFIG } from "frontend/config"
 import {
-  AccountResponse,
   HTTPAccountRequest,
-  _SERVICE as _IDENTITY_MANAGER_SERVICE,
+  _SERVICE as _IDENTITY_MANAGER_SERVICE
 } from "frontend/services/identity-manager/identity_manager"
 import produce from "immer"
 import { useAtom } from "jotai"
-
 import React from "react"
 import { accountAtom, LocalAccount, userNumberAtom } from "./state"
+
 
 type AccountService = Pick<
   _IDENTITY_MANAGER_SERVICE,

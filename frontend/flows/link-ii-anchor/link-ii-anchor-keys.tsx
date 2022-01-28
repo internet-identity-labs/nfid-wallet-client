@@ -1,3 +1,7 @@
+import clsx from "clsx"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import {
   Button,
   Card,
@@ -6,45 +10,49 @@ import {
   CardTitle,
   P,
 } from "frontend/ui-kit/src/index"
-import clsx from "clsx"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { RegisterConstants as RC } from "./routes"
 
 interface LocationState {
   iiDeviceLink: string
   userNumber: string
 }
 
-interface IdentityPersonaInfoScreenProps
+interface LinkIIAnchorKeysProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {}
 
-export const RegisterLinkInternetIdentityScreen: React.FC<
-  IdentityPersonaInfoScreenProps
-> = ({ className }) => {
+export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
+  className,
+}) => {
   const [numDevices, setNumDevices] = React.useState(0)
 
   const { state } = useLocation()
-  const { iiDeviceLink, userNumber } = state as LocationState
-
+  const { account, updateAccount } = useMultipass()
   const navigate = useNavigate()
+
+  const { iiDeviceLink, userNumber } = state as LocationState
 
   const handleVisibilityChange = React.useCallback(
     async (e) => {
       const bigUserNumber = BigInt(userNumber)
       const devices = await IIConnection.lookupAll(bigUserNumber)
+
       if (devices.length > numDevices) {
-        navigate(
-          `${RC.base}/${RC.linkInternetIdentityCreateAccount}/${userNumber}`,
-        )
+        if (!account) throw new Error("No account found")
+
+        account.iiAnchors = [
+          ...(account.iiAnchors || []),
+          userNumber.toString(),
+        ]
+
+        updateAccount(account)
+        navigate("/")
       }
     },
-    [navigate, numDevices, userNumber],
+    [account, navigate, numDevices, updateAccount, userNumber],
   )
 
   const fetchDevices = React.useCallback(async () => {
@@ -66,11 +74,16 @@ export const RegisterLinkInternetIdentityScreen: React.FC<
   return (
     <AppScreen isFocused>
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardTitle>We're waiting here for you</CardTitle>
+        <CardTitle>Link anchor {userNumber}</CardTitle>
         <CardBody className="text-center max-w-lg">
+          <P className="mb-3">
+            Log in to Internet Identity with anchor {userNumber} to complete the
+            linking.
+          </P>
+
           <P>
-            Don't close or refresh this screen. We're waiting here for you to
-            finish setting up the new device on Internet Identity.
+            <span className="font-bold">Do not</span> close or refresh this
+            screen.
           </P>
         </CardBody>
         <CardAction bottom className="justify-center">

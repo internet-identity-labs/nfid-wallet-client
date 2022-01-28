@@ -6,7 +6,6 @@ import { RegisterFinalizePersonaScreen } from "./finalize-persona"
 import { LinkInternetIdentityCreateAccountScreen } from "./link-internet-identity-create-account"
 import { LinkInternetIdentitySuccessScreen } from "./link-internet-identity-success"
 import { RegisterRecoveryPhraseScreen } from "./recovery-phrase"
-import { RegisterWelcome } from "./welcome"
 
 export const RegisterConstants = {
   base: "/register",
@@ -20,7 +19,6 @@ export const RegisterConstants = {
 
 export const RegisterRoutes = (
   <Route path={RegisterConstants.base} element={<Outlet />}>
-    <Route path={RegisterConstants.welcome} element={<RegisterWelcome />} />
     <Route
       path={RegisterConstants.linkInternetIdentityCreateAccount}
       element={<LinkInternetIdentityCreateAccountScreen />}

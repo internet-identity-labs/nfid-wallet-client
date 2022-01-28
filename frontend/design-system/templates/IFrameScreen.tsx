@@ -20,7 +20,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
     const timeout = setInterval(() => {
       const newHeight = window.document.body.clientHeight
 
-      if (ref.current != newHeight) {
+      if (ref.current !== newHeight) {
         window.parent.postMessage({ height: newHeight, title: title }, "*")
         ref.current = newHeight
       }

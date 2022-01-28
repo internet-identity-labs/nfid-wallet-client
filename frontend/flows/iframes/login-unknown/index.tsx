@@ -1,4 +1,4 @@
-import { Loader, QRCode, SetupTouchId } from "frontend/ui-kit/src/index"
+import { Button, Loader, QRCode, SetupTouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
@@ -18,6 +18,7 @@ interface UnknownDeviceScreenProps {
 export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   showRegisterDefault = false,
 }) => {
+  const { applicationName } = useMultipass()
   const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
     "initial",
   )
@@ -61,6 +62,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
       // user requested device registration
       if (receivedMessage.userNumber) {
+        setStatus("success")
         setShowRegister(true)
         return
       }
@@ -126,13 +128,25 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   useInterval(handlePollForDelegate, 2000)
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
+  const isLoading = status === "loading"
+
   return (
-    <IFrameScreen title="Scan to sign in">
+    <IFrameScreen
+      title={
+        isLoading
+          ? "Awaiting confirmation from your phone"
+          : `Log in to ${applicationName} with your NFID`
+      }
+    >
       <div className="px-6 py-4">
-        {!showRegister && url ? (
+        {!isLoading && !showRegister && url ? (
           <a href={url} target="_blank">
-            <div className="flex flex-row justify-center">
-              <QRCode content={url} options={{ margin: 0 }} />
+            <div className="flex flex-col justify-center text-center">
+              <div>Scan this code with the camera app on your phone</div>
+              <div className="m-auto my-2">
+                <QRCode content={url} options={{ margin: 0 }} />
+              </div>
+              <Button text>I already have an NFID</Button>
             </div>
           </a>
         ) : null}
@@ -147,7 +161,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
             </a>
           </div>
         )}
-        <Loader isLoading={status === "loading"} />
+        <Loader isLoading={isLoading} />
       </div>
     </IFrameScreen>
   )

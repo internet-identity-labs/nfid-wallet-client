@@ -66,13 +66,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
   return (
     <AppScreen>
-      <Card
-        className={clsx(
-          "h-full flex flex-col sm:block ",
-          "offset-header",
-          className,
-        )}
-      >
+      <Card className="offset-header">
         <CardBody className="max-w-lg">
           <H2>Your NFID profile</H2>
           <div className="mt-5 mb-8">

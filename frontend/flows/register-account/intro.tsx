@@ -30,9 +30,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
   return (
     <AppScreen>
-      <Card
-        className={clsx("h-full flex flex-col sm:block  md:mt-10", className)}
-      >
+      <Card className="offset-header">
         <CardBody>
           <Swiper
             navigation={{
@@ -110,7 +108,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
                     your consent
                   </span>
-                  , no government, business, or individual shall access any{" "}
+                  , nobody can access any{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
                     information about you.
                   </span>

@@ -15,7 +15,6 @@ import React from "react"
 import { useSearchParams } from "react-router-dom"
 
 export const useMultipass = () => {
-  const { identityManager } = useAuthentication()
   const [params] = useSearchParams()
 
   const { postMessages, getMessages, createTopic, deleteTopic } =
@@ -54,7 +53,7 @@ export const useMultipass = () => {
 
   return {
     ...useAccount(),
-    ...usePersona({ personaService: identityManager }),
+    ...usePersona(),
     createWebAuthNIdentity,
     handleAddDevice,
     createTopic,

@@ -119,8 +119,9 @@ export const useAuthorization = ({
   const handleAuthenticate = React.useCallback(async () => {
     setLoading(true)
     await login()
+    postClientReadyMessage()
     setLoading(false)
-  }, [login])
+  }, [login, postClientReadyMessage])
 
   // return the hooks props
   return {

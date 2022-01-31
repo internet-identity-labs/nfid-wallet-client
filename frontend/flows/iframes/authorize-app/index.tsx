@@ -3,12 +3,9 @@ import { useAuthorization } from "../nfid-login/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { Button } from "frontend/ui-kit/src/components/atoms/button"
-import {
-  IIPersona,
-  NFIDPersona,
-} from "frontend/services/identity-manager/persona/types"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { Loader } from "frontend/ui-kit/src"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
 
 interface AuthorizeAppProps
   extends React.DetailedHTMLProps<
@@ -17,22 +14,27 @@ interface AuthorizeAppProps
   > {}
 
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
-  const { identityManager } = useAuthentication()
+  const { isLoading, setIsloading } = useIsLoading()
   const { userNumber, account } = useAccount()
-  const { createPersona } = usePersona({ personaService: identityManager })
+  const { createPersona } = usePersona()
 
   const { authorizationRequest, authorizeApp } = useAuthorization({
     userNumber,
   })
-  const { personas } = usePersona({
+
+  const { nextPersonaId, nfidPersonas, iiPersonas } = usePersona({
     application: authorizationRequest?.hostname,
   })
 
-  const nfidPersonas =
-    personas && (personas as NFIDPersona[]).filter((p) => p.persona_id)
-
-  const iiPersonas =
-    personas && (personas as IIPersona[]).filter((p) => p.anchor)
+  const handleCreatePersona = React.useCallback(
+    async ({ domain }) => {
+      setIsloading(true)
+      await createPersona({ domain })
+      await authorizeApp({ persona_id: nextPersonaId })
+      setIsloading(false)
+    },
+    [authorizeApp, createPersona, nextPersonaId, setIsloading],
+  )
 
   return (
     <IFrameScreen title={account && `Welcome ${account.name}`}>
@@ -53,7 +55,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
           filled
           color="white"
           onClick={() =>
-            createPersona({ personaId: "3", domain: "localhost:3000" })
+            handleCreatePersona({ domain: authorizationRequest?.hostname })
           }
           className="mt-1"
         >
@@ -73,6 +75,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
           </Button>
         ))}
       </div>
+      <Loader isLoading={isLoading} />
     </IFrameScreen>
   )
 }

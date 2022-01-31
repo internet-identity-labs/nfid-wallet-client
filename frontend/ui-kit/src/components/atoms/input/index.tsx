@@ -16,6 +16,7 @@ interface InputProps
   errorText?: string
   labelText?: string
   pin?: boolean
+  small?: boolean
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -28,6 +29,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       pin,
       icon,
+      small,
       errorText,
       labelText,
       ...inputProps
@@ -37,7 +39,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={clsx("rounded-md", className)}>
         {labelText && <Label>{labelText}</Label>}
-        <div className="flex relative">
+        <div className={clsx("flex relative", small && "md:max-w-[340px]")}>
           <input
             type={type}
             className={clsx(
@@ -64,6 +66,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             "text-sm py-1 text-gray-400",
+            "transition-all duration-100 ease-in",
             errorText && "!text-red-base",
           )}
         >

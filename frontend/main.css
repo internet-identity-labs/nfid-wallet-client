@@ -31,5 +31,5 @@
 }
 
 .offset-header {
-  @apply md:mt-[80px] mt-[20px];
+  @apply md:mt-[56px] mt-[20px];
 }

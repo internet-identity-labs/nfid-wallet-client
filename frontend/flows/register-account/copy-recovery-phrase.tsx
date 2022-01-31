@@ -1,17 +1,10 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  H3,
-  P,
-} from "frontend/ui-kit/src/index"
-import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import React from "react"
-import { HiCheck, HiClipboard } from "react-icons/hi"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { useStartUrl } from "frontend/hooks/use-start-url"
+import { CopyIcon } from "frontend/ui-kit/src/components/atoms/button/icons/copy"
+import { Button, Card, CardBody, H2, H5, P } from "frontend/ui-kit/src/index"
+import React from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
@@ -28,6 +21,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
 > = ({ children, className }) => {
   const navigate = useNavigate()
   const startUrl = useStartUrl()
+  const { applicationName } = useMultipass()
   const { state } = useLocation()
   const { recoveryPhrase } = state as LocationState
 
@@ -41,56 +35,46 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
 
   return (
     <AppScreen>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardTitle>Congratulations!</CardTitle>
-        <CardBody className="max-w-lg">
-          <H3>You're now the owner of your Internet Identity</H3>
-          <P className="pb-3">
+      <H5 className="mt-8">Congratulations!</H5>
+      <Card className="grid grid-cols-12">
+        <CardBody className="col-span-12 md:col-span-11 lg:col-span-7">
+          <H2 className="leading-10">
+            You're now the{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6040d3] to-[#8f18ce]">
+              owner
+            </span>{" "}
+            of your{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0390dc] to-[#633ed4]">
+              Internet Identity
+            </span>
+          </H2>
+
+          <P className="my-6">
             Secret recovery phrase. This is the only way you will be able to
             recover your account. Save this recovery phrase somewhere safe!
           </P>
 
-          <div className="p-4 border border-black rounded">
-            <div className="mb-5 font-bold text-center text-indigo-600 uppercase">
-              You need to save this!
-            </div>
-
-            <P>{recoveryPhrase}</P>
-
-            <Button
-              className={clsx(
-                "flex ml-auto justify-center mt-4",
-                copied
-                  ? "border-indigo-700 text-indigo-700"
-                  : "border-indigo-500 text-indigo-500",
-              )}
-              onClick={() => copyToClipboard()}
-            >
-              {copied ? (
-                <HiCheck className="mr-2 text-lg" />
-              ) : (
-                <HiClipboard className="mr-2 text-lg" />
-              )}
-              {copied ? "Copied!" : "Copy"}
-            </Button>
+          <div className="p-4 border border-black-base rounded-t">
+            <P className="font-mono">{recoveryPhrase}</P>
           </div>
+
+          <Button
+            filled
+            className="!rounded-t-none w-full flex items-center justify-center space-x-3 focus:outline-none"
+            onClick={() => copyToClipboard()}
+          >
+            <CopyIcon />
+            <span>{copied ? "Copied" : "Copy"}</span>
+          </Button>
 
           <Button
             onClick={() => navigate(startUrl || "")}
             disabled={!copied}
             filled
-            block
-            className="flex items-center justify-center mx-auto mt-6 mb-2 space-x-4"
+            large
+            className="mt-8"
           >
-            Login
-          </Button>
-
-          <Button
-            disabled={!copied}
-            block
-            className="flex items-center justify-center mx-auto space-x-4"
-          >
-            Link existing account
+            Log in to {applicationName}
           </Button>
         </CardBody>
       </Card>

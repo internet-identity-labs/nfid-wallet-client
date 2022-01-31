@@ -44,7 +44,13 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           state: { name: "John Doe", phonenumber: "+1234567890" },
         },
         { path: RegisterAccountConstants.captcha },
-        { path: RegisterAccountConstants.copyRecoveryPhrase },
+        {
+          path: RegisterAccountConstants.copyRecoveryPhrase,
+          state: {
+            recoveryPhrase:
+              "Lorem ipsum dolor sit amit. Error nobis unde sunt delectus dicta explicabo nisi maiores voluptate consectetur ex perspiciatis, libero praesentium vel hic omnis molestiae eaque. Voluptas, dolore!",
+          },
+        },
       ],
     },
     {

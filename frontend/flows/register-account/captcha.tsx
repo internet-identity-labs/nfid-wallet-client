@@ -186,7 +186,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   )
 
   return (
-    <AppScreen isFocused>
+    <AppScreen>
       <Card className="offset-header grid grid-cols-12">
         <CardBody className="col-span-12 md:col-span-9 lg:col-span-6 xl:col-span-5">
           <H2 className="my-4">Captcha protected</H2>

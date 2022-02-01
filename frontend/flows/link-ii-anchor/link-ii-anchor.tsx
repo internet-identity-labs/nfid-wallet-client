@@ -1,6 +1,5 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -9,18 +8,9 @@ import {
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
-import {
-  Button,
-  Card,
-  CardAction,
-  CardBody,
-  CardTitle,
-  Input,
-  Loader,
-  P,
-} from "frontend/ui-kit/src/index"
+import { Button, Card, CardBody, H2, Input, P } from "frontend/ui-kit/src/index"
 import { anchorRules } from "frontend/utils/validations"
-import React, { useState } from "react"
+import React from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
 import { LinkIIAnchorConstants as LIIAC } from "./routes"
@@ -89,14 +79,19 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
   )
 
   return (
-    <AppScreen isFocused>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardTitle>Link existing {applicationName} account</CardTitle>
-        <CardBody className="text-center max-w-lg">
+    <AppScreen>
+      <Card className="offset-header grid grid-cols-12">
+        <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
+          <H2 className="my-4">Link existing {applicationName} account</H2>
+
           <P>Enter the Internet Identity anchor you want to link with NFID:</P>
 
           <Input
+            small
+            autoFocus
             placeholder="Anchor ID"
+            errorText={errors.anchor?.message}
+            className="mt-4 mb-6"
             {...register("anchor", {
               required: anchorRules.errorMessages.required,
               pattern: {
@@ -110,24 +105,15 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
             })}
           />
 
-          <P className="!text-red-400 text-sm">{errors.anchor?.message}</P>
+          <Button
+            filled
+            largeMax
+            disabled={!isValid}
+            onClick={handleSubmit(handleLinkAnchor)}
+          >
+            Prove I own this access point
+          </Button>
         </CardBody>
-
-        <CardAction
-          bottom
-          className="justify-center md:flex-col md:items-center"
-        >
-          <div className="flex justify-center">
-            <Button
-              large
-              filled
-              disabled={!isValid}
-              onClick={handleSubmit(handleLinkAnchor)}
-            >
-              Prove I own this access point
-            </Button>
-          </div>
-        </CardAction>
       </Card>
     </AppScreen>
   )

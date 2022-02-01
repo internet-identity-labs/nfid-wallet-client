@@ -44,7 +44,6 @@ export const RegisterAccountSMSVerification: React.FC<
   const { name, phonenumber } = state as RegisterAccountState
   const [loading, setLoading] = React.useState(false)
   const [showResend, setShowResend] = React.useState(true)
-  const [counter, setCounter] = React.useState(60)
 
   const list = [...Array(6).keys()]
   const inputItemsRef = useRef<Array<HTMLInputElement | null>>([])
@@ -81,7 +80,6 @@ export const RegisterAccountSMSVerification: React.FC<
   }, [handlePaste])
 
   const resendSMS = React.useCallback(async () => {
-    setCounter(60)
     setShowResend(false)
     setLoading(true)
 
@@ -149,7 +147,14 @@ export const RegisterAccountSMSVerification: React.FC<
                 </Button>
               </P>
             ) : (
-              <P>Code can be resent in {counter} seconds</P>
+              <P>
+                Code can be resent in{" "}
+                <Timer
+                  format="seconds"
+                  defaultCounter={60}
+                  noTimeRemaining={() => setShowResend(true)}
+                />
+              </P>
             )}
 
             <div className="mt-6 mb-3">

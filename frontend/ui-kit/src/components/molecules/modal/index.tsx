@@ -1,8 +1,7 @@
 import React from "react"
-import clsx from "clsx"
-import { H5 } from "src/components/atoms/typography"
-import { P } from "src/components/atoms/typography/paragraph"
-import { Button } from "src/components/atoms/button"
+import { H5 } from "components/atoms/typography"
+import { P } from "components/atoms/typography/paragraph"
+import { Button } from "components/atoms/button"
 import { ModalSuccessIcon } from "./successIcon"
 import { ModalCloseIcon } from "./closeIcon"
 

@@ -1,4 +1,4 @@
-import { Logo } from "@identity-labs/ui"
+import { Logo } from "frontend/ui-kit/src"
 import React from "react"
 import { HiMenu } from "react-icons/hi"
 import { NavigationLink } from "./navigation-link"

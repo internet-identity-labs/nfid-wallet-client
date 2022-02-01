@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, H5, P } from "@identity-labs/ui"
+import { Button, Card, CardBody, H5, P } from "frontend/ui-kit/src"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"

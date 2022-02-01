@@ -10,17 +10,17 @@ type TextProps<C extends React.ElementType> = BaseProps<C> &
   Omit<React.ComponentPropsWithRef<C>, keyof BaseProps<C>>
 
 const headlineStyles = {
-  H1: "font-inter first-letter:capitalize font-bold leading-6 text-black",
-  H2: "font-inter first-letter:capitalize font-bold leading-6 text-black",
-  H3: "font-inter first-letter:capitalize font-bold leading-6 text-black",
-  H4: "font-inter first-letter:capitalize font-bold leading-6 text-black",
-  H5: "font-inter first-letter:capitalize font-bold leading-6 text-black",
-  H6: "font-inter first-letter:capitalize font-bold leading-6 text-black",
+  H1: "font-inter first-letter:capitalize font-bold text-black",
+  H2: "font-inter first-letter:capitalize font-bold text-black",
+  H3: "font-inter first-letter:capitalize font-bold text-black",
+  H4: "font-inter first-letter:capitalize font-bold text-black",
+  H5: "font-inter first-letter:capitalize font-bold text-black",
+  H6: "font-inter first-letter:capitalize font-bold text-black",
 }
 
 const headlineSizes = {
   H1: "sm:titleLarge text-titleMobile",
-  H2: "sm:text-title text-3xl",
+  H2: "sm:text-title text-titleMobile",
   H3: "sm:text-3xl text-titleMobile",
   H4: "text-2xl",
   H5: "text-xl",

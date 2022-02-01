@@ -16,7 +16,9 @@
     "noEmit": true,
     "jsx": "react",
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "components/*": ["./frontend/ui-kit/src/components/*"]
+    }
   },
   "include": ["./frontend"],
 }

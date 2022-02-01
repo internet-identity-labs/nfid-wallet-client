@@ -50,7 +50,7 @@ module.exports = {
           },
         ],
         titleMobile: [
-          "27px",
+          "32px",
           {
             lineHeight: "40px",
           },

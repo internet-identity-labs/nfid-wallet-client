@@ -1,15 +1,7 @@
-import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import {
-  Button,
-  Card,
-  CardAction,
-  CardBody,
-  CardTitle,
-  P,
-} from "frontend/ui-kit/src/index"
+import { Button, Card, CardBody, H2, Modal, P } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
@@ -27,6 +19,7 @@ interface LinkIIAnchorKeysProps
 export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
   className,
 }) => {
+  const [showModal, setShowModal] = React.useState(false)
   const [numDevices, setNumDevices] = React.useState(0)
 
   const { state } = useLocation()
@@ -49,10 +42,10 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
         ]
 
         updateAccount(account)
-        navigate("/")
+        setShowModal(true)
       }
     },
-    [account, navigate, numDevices, updateAccount, userNumber],
+    [account, numDevices, updateAccount, userNumber],
   )
 
   const fetchDevices = React.useCallback(async () => {
@@ -72,10 +65,11 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
   }, [handleVisibilityChange])
 
   return (
-    <AppScreen isFocused>
-      <Card className={clsx("h-full flex flex-col sm:block", className)}>
-        <CardTitle>Link anchor {userNumber}</CardTitle>
-        <CardBody className="text-center max-w-lg">
+    <AppScreen>
+      <Card className="offset-header grid grid-cols-12">
+        <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
+          <H2 className="my-4">Link anchor {"anchorNumber"}</H2>
+
           <P className="mb-3">
             Log in to Internet Identity with anchor {userNumber} to complete the
             linking.
@@ -85,19 +79,25 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
             <span className="font-bold">Do not</span> close or refresh this
             screen.
           </P>
-        </CardBody>
-        <CardAction bottom className="justify-center">
-          <a
-            href={iiDeviceLink}
-            target="_blank"
-            className="flex justify-center"
-          >
-            <Button block large filled>
+
+          <a href={iiDeviceLink} target="_blank" className="block my-6">
+            <Button filled largeMax>
               Log in with Internet Identity
             </Button>
           </a>
-        </CardAction>
+        </CardBody>
       </Card>
+      {showModal ? (
+        <Modal
+          title={"Great job!"}
+          description="You signed in to {applicationName}"
+          buttonText="Done"
+          onClick={() => {
+            setShowModal(false)
+            navigate("/")
+          }}
+        />
+      ) : null}
     </AppScreen>
   )
 }

@@ -1,20 +1,17 @@
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   Button,
   Card,
   CardBody,
-  CardTitle,
   H2,
   Input,
   Loader,
   P,
 } from "frontend/ui-kit/src/index"
-import clsx from "clsx"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 import React, { useRef } from "react"
 import { useForm } from "react-hook-form"
-import { HiFingerPrint, HiRefresh } from "react-icons/hi"
 import { useLocation, useNavigate } from "react-router-dom"
 import { RegisterAccountConstants as RAC } from "./routes"
 
@@ -46,6 +43,8 @@ export const RegisterAccountSMSVerification: React.FC<
 
   const { name, phonenumber } = state as RegisterAccountState
   const [loading, setLoading] = React.useState(false)
+  const [showResend, setShowResend] = React.useState(true)
+  const [counter, setCounter] = React.useState(60)
 
   const list = [...Array(6).keys()]
   const inputItemsRef = useRef<Array<HTMLInputElement | null>>([])
@@ -82,12 +81,15 @@ export const RegisterAccountSMSVerification: React.FC<
   }, [handlePaste])
 
   const resendSMS = React.useCallback(async () => {
+    setCounter(60)
+    setShowResend(false)
     setLoading(true)
 
     const { validPhonenumber } = await verifyPhonenumber(phonenumber)
 
     if (!validPhonenumber) {
-      setError("phonenumber", {
+      setLoading(false)
+      return setError("phonenumber", {
         type: "manual",
         message: "Something went wrong. Please try again.",
       })
@@ -139,12 +141,17 @@ export const RegisterAccountSMSVerification: React.FC<
               {phonenumber}.
             </P>
 
-            <P>
-              Didn't receive a code?
-              <Button text onClick={resendSMS} className="!px-1 !py-1 mx-2">
-                Resend
-              </Button>
-            </P>
+            {showResend ? (
+              <P>
+                Didn't receive a code?
+                <Button text onClick={resendSMS} className="!px-1 !py-1 mx-2">
+                  Resend
+                </Button>
+              </P>
+            ) : (
+              <P>Code can be resent in {counter} seconds</P>
+            )}
+
             <div className="mt-6 mb-3">
               <div className="flex space-x-3">
                 {list.map((_, index) => (
@@ -187,7 +194,8 @@ export const RegisterAccountSMSVerification: React.FC<
               </div>
 
               <div className="text-red-base text-sm py-1">
-                {errors.verificationCode?.message}
+                {errors.verificationCode?.message ||
+                  errors.phonenumber?.message}
               </div>
             </div>
           </div>

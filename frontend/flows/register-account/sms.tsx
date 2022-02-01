@@ -55,6 +55,26 @@ export const RegisterAccountSMSVerification: React.FC<
     [],
   )
 
+  React.useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      const paste = event.clipboardData?.getData("text/plain")
+
+      if (paste && isValidToken(paste)) {
+        inputItemsRef.current.forEach((item, index) => {
+          if (item) {
+            item.value = paste[index]
+          }
+        })
+      }
+    }
+
+    document.addEventListener("paste", handlePaste)
+
+    return () => {
+      document.removeEventListener("paste", handlePaste)
+    }
+  }, [])
+
   const resendSMS = React.useCallback(async () => {
     setLoading(true)
 

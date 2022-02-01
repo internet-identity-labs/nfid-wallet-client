@@ -13,7 +13,8 @@ import { isValidToken, tokenRules } from "frontend/utils/validations"
 import React, { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
-import { RegisterAccountConstants as RAC } from "./routes"
+import { RegisterAccountConstants as RAC } from "../routes"
+import { ResendSMS } from "./resend-countdown"
 
 interface RegisterAccountState {
   name: string
@@ -43,7 +44,6 @@ export const RegisterAccountSMSVerification: React.FC<
 
   const { name, phonenumber } = state as RegisterAccountState
   const [loading, setLoading] = React.useState(false)
-  const [showResend, setShowResend] = React.useState(true)
 
   const list = [...Array(6).keys()]
   const inputItemsRef = useRef<Array<HTMLInputElement | null>>([])
@@ -80,7 +80,6 @@ export const RegisterAccountSMSVerification: React.FC<
   }, [handlePaste])
 
   const resendSMS = React.useCallback(async () => {
-    setShowResend(false)
     setLoading(true)
 
     const { validPhonenumber } = await verifyPhonenumber(phonenumber)
@@ -129,7 +128,7 @@ export const RegisterAccountSMSVerification: React.FC<
 
   return (
     <AppScreen>
-      <Card className="offset-header grid grid-cols-12">
+      <Card className="grid grid-cols-12 offset-header">
         <CardBody className="col-span-12 md:col-span-8">
           <H2>SMS verification</H2>
           <div className="my-5">
@@ -139,23 +138,7 @@ export const RegisterAccountSMSVerification: React.FC<
               {phonenumber}.
             </P>
 
-            {showResend ? (
-              <P>
-                Didn't receive a code?
-                <Button text onClick={resendSMS} className="!px-1 !py-1 mx-2">
-                  Resend
-                </Button>
-              </P>
-            ) : (
-              <P>
-                Code can be resent in{" "}
-                <Timer
-                  format="seconds"
-                  defaultCounter={60}
-                  noTimeRemaining={() => setShowResend(true)}
-                />
-              </P>
-            )}
+            <ResendSMS defaultCounter={60} handleResend={resendSMS} />
 
             <div className="mt-6 mb-3">
               <div className="flex space-x-3">
@@ -198,7 +181,7 @@ export const RegisterAccountSMSVerification: React.FC<
                 ))}
               </div>
 
-              <div className="text-red-base text-sm py-1">
+              <div className="py-1 text-sm text-red-base">
                 {errors.verificationCode?.message ||
                   errors.phonenumber?.message}
               </div>

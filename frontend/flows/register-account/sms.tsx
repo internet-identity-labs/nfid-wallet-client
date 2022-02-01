@@ -63,6 +63,7 @@ export const RegisterAccountSMSVerification: React.FC<
         inputItemsRef.current.forEach((item, index) => {
           if (item) {
             item.value = paste[index]
+            inputItemsRef.current[index]?.blur()
           }
         })
 
@@ -152,7 +153,6 @@ export const RegisterAccountSMSVerification: React.FC<
                     key={index}
                     autoFocus={index === 0}
                     ref={(el) => (inputItemsRef.current[index] = el)}
-                    onPaste={() => handlePaste}
                     onChange={(e) => {
                       const validRegex = inputItemsRef.current[
                         index

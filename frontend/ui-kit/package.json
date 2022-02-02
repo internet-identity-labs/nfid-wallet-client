@@ -47,7 +47,7 @@
     "typescript": "link:../node_modules/typescript",
     "react-icons": "^4.3.1",
     "react-router": "link:../node_modules/react-router",
-    "tailwindcss": "3.0.8",
+    "tailwindcss": "3.0.18",
     "vite": "^2.7.0"
   },
   "dependencies": {

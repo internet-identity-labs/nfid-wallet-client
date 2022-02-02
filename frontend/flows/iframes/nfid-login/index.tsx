@@ -1,43 +1,42 @@
 import React from "react"
 import { useAuthorization } from "./hooks"
 import clsx from "clsx"
-import { Link, Navigate } from "react-router-dom"
+import { Link, Navigate, useNavigate } from "react-router-dom"
 import { Button, Loader, TouchId } from "frontend/ui-kit/src"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameConstants } from "../routes"
 import { AuthoriseAppConstants } from "../authorize-app/routes"
 import { useAuthentication } from "frontend/flows/auth-wrapper"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useMultipass } from "frontend/hooks/use-multipass"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   userNumber,
 }) => {
+  const navigate = useNavigate()
   const { account } = useAccount()
+  const { applicationName } = useMultipass()
   const { isAuthenticated } = useAuthentication()
   const { isLoading, error, authenticate } = useAuthorization({
     userNumber,
   })
 
   return (
-    <IFrameScreen title="Sign in using Multipass">
+    <IFrameScreen
+      title={`Log in to ${applicationName}
+    with your NFID`}
+    >
       {isAuthenticated && <Navigate to={AuthoriseAppConstants.base} />}
+
       {!error ? (
-        <div className="px-6 py-4">
-          <Button block large filled onClick={authenticate}>
-            <div className={clsx("p-1")}>
-              <TouchId />
-            </div>
-            <div className="p-2 ml-1">
-              Unlock NFID {account && `as ${account.name}`}
-            </div>
+        <div>
+          <Button block filled onClick={authenticate} className="mb-3">
+            Unlock NFID {account && `as ${account.name}`}
           </Button>
-          <div
-            className={clsx(
-              "flex mt-5 justify-center text-blue-900 hover:underline",
-            )}
-          >
-            <Link to={IFrameConstants.base}>Log in as different person</Link>
-          </div>
+
+          <Button block stroke onClick={() => navigate(IFrameConstants.base)}>
+            Create new NFID
+          </Button>
         </div>
       ) : (
         <div className="text-red-500">{error.message}</div>

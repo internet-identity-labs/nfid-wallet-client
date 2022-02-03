@@ -1,8 +1,23 @@
 export const idlFactory = ({ IDL }) => {
   const Configuration = IDL.Record({
     key: IDL.Vec(IDL.Nat8),
+    whitelisted_phone_numbers: IDL.Opt(IDL.Vec(IDL.Text)),
     lambda: IDL.Principal,
     token_ttl: IDL.Nat64,
+  })
+  const AccessPoint = IDL.Record({
+    model: IDL.Text,
+    make: IDL.Text,
+    name: IDL.Text,
+    pub_key: IDL.Text,
+    browser: IDL.Text,
+    last_used: IDL.Text,
+  })
+  const Error = IDL.Text
+  const HTTPAccessPointResponse = IDL.Record({
+    data: IDL.Opt(IDL.Vec(AccessPoint)),
+    error: IDL.Opt(Error),
+    status_code: IDL.Nat16,
   })
   const HTTPAccountRequest = IDL.Record({
     token: IDL.Text,
@@ -22,29 +37,16 @@ export const idlFactory = ({ IDL }) => {
     ii_persona: PersonaIIResponse,
     nfid_persona: PersonaNFIDResponse,
   })
-  const Device = IDL.Record({
-    model: IDL.Text,
-    pub_key_hash: IDL.Text,
-    make: IDL.Text,
-    browser: IDL.Text,
-    last_used: IDL.Text,
-  })
   const AccountResponse = IDL.Record({
     name: IDL.Text,
     anchor: IDL.Nat64,
+    access_points: IDL.Vec(AccessPoint),
     personas: IDL.Vec(PersonaVariant),
     principal_id: IDL.Text,
     phone_number: IDL.Text,
-    devices: IDL.Vec(Device),
   })
-  const Error = IDL.Text
   const HTTPAccountResponse = IDL.Record({
     data: IDL.Opt(AccountResponse),
-    error: IDL.Opt(Error),
-    status_code: IDL.Nat16,
-  })
-  const BoolHttpResponse = IDL.Record({
-    data: IDL.Opt(IDL.Bool),
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
@@ -52,8 +54,8 @@ export const idlFactory = ({ IDL }) => {
     token: IDL.Text,
     phone_number: IDL.Text,
   })
-  const HTTPDeviceResponse = IDL.Record({
-    data: IDL.Opt(IDL.Vec(Device)),
+  const BoolHttpResponse = IDL.Record({
+    data: IDL.Opt(IDL.Bool),
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
@@ -63,10 +65,11 @@ export const idlFactory = ({ IDL }) => {
     status_code: IDL.Nat16,
   })
   const HTTPAccountUpdateRequest = IDL.Record({ name: IDL.Opt(IDL.Text) })
+  const PhoneNumber = IDL.Text
   return IDL.Service({
     configure: IDL.Func([Configuration], [], []),
+    create_access_point: IDL.Func([AccessPoint], [HTTPAccessPointResponse], []),
     create_account: IDL.Func([HTTPAccountRequest], [HTTPAccountResponse], []),
-    create_device: IDL.Func([Device], [BoolHttpResponse], []),
     create_persona: IDL.Func([PersonaVariant], [HTTPAccountResponse], []),
     get_account: IDL.Func([], [HTTPAccountResponse], ["query"]),
     post_token: IDL.Func(
@@ -74,12 +77,19 @@ export const idlFactory = ({ IDL }) => {
       [BoolHttpResponse],
       [],
     ),
-    read_devices: IDL.Func([], [HTTPDeviceResponse], []),
+    read_access_points: IDL.Func([], [HTTPAccessPointResponse], []),
     read_personas: IDL.Func([], [HTTPPersonasResponse], []),
+    remove_access_point: IDL.Func([AccessPoint], [HTTPAccessPointResponse], []),
+    update_access_point: IDL.Func([AccessPoint], [HTTPAccessPointResponse], []),
     update_account: IDL.Func(
       [HTTPAccountUpdateRequest],
       [HTTPAccountResponse],
       [],
+    ),
+    validate_phone_number: IDL.Func(
+      [PhoneNumber],
+      [BoolHttpResponse],
+      ["query"],
     ),
   })
 }

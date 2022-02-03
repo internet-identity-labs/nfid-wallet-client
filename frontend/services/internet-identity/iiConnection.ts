@@ -48,7 +48,10 @@ if (!canisterId)
   throw new Error("you need to add VITE_II_CANISTER_ID to your environment")
 
 const getAgent = () => {
-  const agent = new HttpAgent({})
+  const agent = new HttpAgent({
+    host: CONFIG.IC_HOST,
+  })
+
   // Only fetch the root key when we're not in prod
   if (CONFIG.II_ENV === "development") {
     agent.fetchRootKey()
@@ -319,7 +322,10 @@ export class IIConnection {
   static async createActor(
     delegationIdentity?: DelegationIdentity,
   ): Promise<ActorSubclass<_SERVICE>> {
-    const agent = new HttpAgent({ identity: delegationIdentity })
+    const agent = new HttpAgent({
+      host: CONFIG.IC_HOST,
+      identity: delegationIdentity,
+    })
 
     // Only fetch the root key when we're not in prod
     if (CONFIG.II_ENV === "development") {
@@ -337,7 +343,10 @@ export class IIConnection {
     factory: any,
     canisterId: string,
   ): Promise<ActorSubclass<T>> {
-    const agent = new HttpAgent({ identity: delegationIdentity })
+    const agent = new HttpAgent({
+      host: CONFIG.IC_HOST,
+      identity: delegationIdentity,
+    })
 
     // Only fetch the root key when we're not in prod
     if (CONFIG.II_ENV === "development") {

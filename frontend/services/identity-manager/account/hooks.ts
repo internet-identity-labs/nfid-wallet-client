@@ -1,13 +1,12 @@
 import { CONFIG } from "frontend/config"
 import {
   HTTPAccountRequest,
-  _SERVICE as _IDENTITY_MANAGER_SERVICE
+  _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/services/identity-manager/identity_manager"
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
 import { accountAtom, LocalAccount, userNumberAtom } from "./state"
-
 
 type AccountService = Pick<
   _IDENTITY_MANAGER_SERVICE,
@@ -61,8 +60,7 @@ export const useAccount = () => {
 
     const data = await response.json()
 
-    const validPhonenumber =
-      data.response?.MessageResponse.Result[phoneNumber].StatusCode === 200
+    const validPhonenumber = response.status === 200
 
     return { response: data, validPhonenumber }
   }

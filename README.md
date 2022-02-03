@@ -5,7 +5,7 @@
   - 1.2. [Install dfx](#Installdfx)
   - 1.3. [Install ngrok (https tunnel for mobile device)](#Installngrokhttpstunnelformobiledevice)
   - 1.4. [configure environment](#configureenvironment)
-    - 1.4.1. [`VITE_II_ENV`: used to decide if we need to fetch rootkeys](#VITE_II_ENV:usedtodecideifweneedtofetchrootkeys)
+    - 1.4.1. [`VITE_II_MODE`: used to decide if we need to fetch rootkeys](#VITE_II_MODE:usedtodecideifweneedtofetchrootkeys)
     - 1.4.2. [`VITE_II_CANISTER_ID`: Multipass Frontend Canister ID](#VITE_II_CANISTER_ID:MultipassFrontendCanisterID)
     - 1.4.3. [`VITE_MULTIPASS_DOMAIN`: The domain which should be used for the qrcode](#VITE_MULTIPASS_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode)
 - 2. [Available scripts](#Availablescripts)
@@ -52,10 +52,10 @@ copy the env template:
 cp .env.local.template .env.local
 ```
 
-#### 1.4.1. <a name='VITE_II_ENV:usedtodecideifweneedtofetchrootkeys'></a>`VITE_II_ENV`: used to decide if we need to fetch rootkeys
+#### 1.4.1. <a name='VITE_II_MODE:usedtodecideifweneedtofetchrootkeys'></a>`VITE_II_MODE`: used to decide if we need to fetch rootkeys
 
 ```
-VITE_II_ENV=development
+VITE_II_MODE=development
 ```
 
 #### 1.4.2. <a name='VITE_II_CANISTER_ID:MultipassFrontendCanisterID'></a>`VITE_II_CANISTER_ID`: Multipass Frontend Canister ID

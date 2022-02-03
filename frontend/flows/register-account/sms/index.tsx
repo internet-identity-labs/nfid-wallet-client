@@ -81,19 +81,9 @@ export const RegisterAccountSMSVerification: React.FC<
 
   const resendSMS = React.useCallback(async () => {
     setLoading(true)
-
-    const { validPhonenumber } = await verifyPhonenumber(phonenumber)
-
-    if (!validPhonenumber) {
-      setLoading(false)
-      return setError("phonenumber", {
-        type: "manual",
-        message: "Something went wrong. Please try again.",
-      })
-    }
-
+    await verifyPhonenumber(phonenumber)
     setLoading(false)
-  }, [phonenumber, setError, verifyPhonenumber])
+  }, [phonenumber, verifyPhonenumber])
 
   const handleVerifySMSToken = async () => {
     const verificationCode = getVerificationCode()

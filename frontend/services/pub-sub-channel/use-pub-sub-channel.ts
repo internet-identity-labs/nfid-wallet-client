@@ -18,7 +18,9 @@ if (!pubSubCanisterId)
   )
 
 const getAgent = () => {
-  const agent = new HttpAgent({})
+  const agent = new HttpAgent({
+    host: CONFIG.IC_HOST,
+  })
   // Only fetch the root key when we're not in prod
   if (CONFIG.II_ENV === "development") {
     agent.fetchRootKey()

@@ -6,7 +6,6 @@ export const createActor = (canisterId: any, idlFactory: any, options: any) => {
     ...options?.agentOptions,
   })
 
-  console.log(">> createActor", { env: process.env.NEXT_PUBLIC_ENV })
   // Fetch root key for certificate validation during development
   if (process.env.NEXT_PUBLIC_ENV !== "production") {
     agent.fetchRootKey().catch((err) => {

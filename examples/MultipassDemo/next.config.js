@@ -1,6 +1,9 @@
 const path = require("path")
 const dfxJson = require("./dfx.json")
 
+process.env.NEXT_PUBLIC_ENV =
+  process.env.NEXT_PUBLIC_ENV || process.env.NODE_ENV
+
 const webpack = require("webpack")
 
 const ICNetworks = {

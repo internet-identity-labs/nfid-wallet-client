@@ -18,7 +18,6 @@ const getCanisters = () => {
 
 const canisterIdsEnv = () => {
   const canisters = getCanisters()
-  console.log('canisters', canisters);
   for (const canister in canisters) {
     const envVar = `NEXT_PUBLIC_${canister.toUpperCase()}_CANISTER_ID`
     process.env[envVar] = canisters[canister][IC_NETWORK]

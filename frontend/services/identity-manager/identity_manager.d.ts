@@ -1,11 +1,19 @@
 import type { Principal } from "@dfinity/principal"
+export interface AccessPoint {
+  model: string
+  make: string
+  name: string
+  pub_key: string
+  browser: string
+  last_used: string
+}
 export interface AccountResponse {
   name: string
   anchor: bigint
+  access_points: Array<AccessPoint>
   personas: Array<PersonaVariant>
   principal_id: string
   phone_number: string
-  devices: Array<Device>
 }
 export interface BoolHttpResponse {
   data: [] | [boolean]
@@ -14,15 +22,9 @@ export interface BoolHttpResponse {
 }
 export interface Configuration {
   key: Array<number>
+  whitelisted_phone_numbers: [] | [Array<string>]
   lambda: Principal
   token_ttl: bigint
-}
-export interface Device {
-  model: string
-  pub_key_hash: string
-  make: string
-  browser: string
-  last_used: string
 }
 export interface EmptyHttpResponse {
   data: [] | [string]
@@ -30,6 +32,11 @@ export interface EmptyHttpResponse {
   status_code: number
 }
 export type Error = string
+export interface HTTPAccessPointResponse {
+  data: [] | [Array<AccessPoint>]
+  error: [] | [Error]
+  status_code: number
+}
 export interface HTTPAccountRequest {
   token: string
   name: string
@@ -43,11 +50,6 @@ export interface HTTPAccountResponse {
 }
 export interface HTTPAccountUpdateRequest {
   name: [] | [string]
-}
-export interface HTTPDeviceResponse {
-  data: [] | [Array<Device>]
-  error: [] | [Error]
-  status_code: number
 }
 export interface HTTPPersonasResponse {
   data: [] | [Array<PersonaVariant>]
@@ -73,14 +75,17 @@ export type PhoneNumber = string
 export type Token = string
 export interface _SERVICE {
   configure: (arg_0: Configuration) => Promise<undefined>
+  create_access_point: (arg_0: AccessPoint) => Promise<HTTPAccessPointResponse>
   create_account: (arg_0: HTTPAccountRequest) => Promise<HTTPAccountResponse>
-  create_device: (arg_0: Device) => Promise<BoolHttpResponse>
   create_persona: (arg_0: PersonaVariant) => Promise<HTTPAccountResponse>
   get_account: () => Promise<HTTPAccountResponse>
   post_token: (arg_0: HTTPVerifyPhoneNumberRequest) => Promise<BoolHttpResponse>
-  read_devices: () => Promise<HTTPDeviceResponse>
+  read_access_points: () => Promise<HTTPAccessPointResponse>
   read_personas: () => Promise<HTTPPersonasResponse>
+  remove_access_point: (arg_0: AccessPoint) => Promise<HTTPAccessPointResponse>
+  update_access_point: (arg_0: AccessPoint) => Promise<HTTPAccessPointResponse>
   update_account: (
     arg_0: HTTPAccountUpdateRequest,
   ) => Promise<HTTPAccountResponse>
+  validate_phone_number: (arg_0: PhoneNumber) => Promise<BoolHttpResponse>
 }

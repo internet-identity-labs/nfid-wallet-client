@@ -11,6 +11,7 @@ interface Props
   title?: string
   description?: string
   isFocused?: boolean
+  classNameWrapper?: string
 }
 
 export const AppScreen: React.FC<Props> = ({
@@ -19,6 +20,7 @@ export const AppScreen: React.FC<Props> = ({
   title,
   description,
   isFocused = false,
+  classNameWrapper,
 }) => {
   return (
     <div className={clsx("", className)}>
@@ -31,7 +33,8 @@ export const AppScreen: React.FC<Props> = ({
             )}
           </>
         )}
-        <main>
+
+        <main className={clsx(classNameWrapper)}>
           <div className="container px-6 py-4 mx-auto">{children}</div>
         </main>
       </div>

@@ -4,6 +4,9 @@ import { P } from "components/atoms/typography/paragraph"
 import { Button } from "components/atoms/button"
 import { ModalSuccessIcon } from "./successIcon"
 import { ModalCloseIcon } from "./closeIcon"
+import { ModalWarningIcon } from "./warningIcon"
+
+type ModalIconType = "success" | "error"
 
 interface ModalProps
   extends React.DetailedHTMLProps<
@@ -14,6 +17,7 @@ interface ModalProps
   title: string
   description?: string
   onClick?: () => void
+  iconType?: ModalIconType
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -23,18 +27,22 @@ export const Modal: React.FC<ModalProps> = ({
   buttonText,
   description,
   onClick,
+  iconType,
 }) => {
   return (
     <>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none mx-4">
         <div className="relative w-full my-6 mx-auto max-w-sm">
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="relative flex-auto text-center">
-              <ModalSuccessIcon className="mx-auto" />
+            <div className="relative flex-auto text-center px-6">
+              {iconType == "success" && (
+                <ModalSuccessIcon className="mx-auto" />
+              )}
+              {iconType == "error" && <ModalWarningIcon className="mx-auto" />}
 
               <H5 className="my-4">{title}</H5>
 
-              <P className="mb-6">{description}</P>
+              <P className="mb-2">{description}</P>
             </div>
 
             <div className="flex items-center justify-end p-6">

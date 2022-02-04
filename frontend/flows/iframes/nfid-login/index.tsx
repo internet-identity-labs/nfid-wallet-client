@@ -2,7 +2,7 @@ import React from "react"
 import { useAuthorization } from "./hooks"
 import clsx from "clsx"
 import { Link, Navigate, useNavigate } from "react-router-dom"
-import { Button, Loader, TouchId } from "frontend/ui-kit/src"
+import { Button, H5, Loader, TouchId } from "frontend/ui-kit/src"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameConstants } from "../routes"
 import { AuthoriseAppConstants } from "../authorize-app/routes"
@@ -22,15 +22,16 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   })
 
   return (
-    <IFrameScreen
-      title={`Log in to ${applicationName}
-    with your NFID`}
-    >
+    // TODO: title
+    <IFrameScreen>
       {isAuthenticated && <Navigate to={AuthoriseAppConstants.base} />}
+
+      <H5 className="text-center py-4">{`Log in to ${applicationName}
+    with your NFID`}</H5>
 
       {!error ? (
         <div>
-          <Button block filled onClick={authenticate} className="mb-3">
+          <Button block filled onClick={authenticate} className="mb-2">
             Unlock NFID {account && `as ${account.name}`}
           </Button>
 

@@ -28,7 +28,7 @@ export const Logo: React.FC<LogoProps> = ({
     </a>
   ) : (
     <img
-      className={clsx("w-[40px] h-[40px] object-contain", className)}
+      className={clsx("object-contain", className ?? "w-[40px] h-[40px]")}
       src={Image}
     />
   )

@@ -9,7 +9,7 @@ interface LoaderProps {
 export const Loader: React.FC<LoaderProps> = ({ isLoading }) =>
   isLoading ? (
     <div className="fixed top-0 right-0 bottom-0 left-0 h-full w-ful">
-      <div className="absolute w-full h-full top-0 right-0 bottom-0 left-0 bg-gray-900 opacity-50" />
+      <div className="absolute w-full h-full top-0 right-0 bottom-0 left-0 bg-gray-900 opacity-[85%]" />
       <img
         className={clsx(
           "absolute",

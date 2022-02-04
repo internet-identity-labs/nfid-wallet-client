@@ -10,7 +10,7 @@ interface SpinnerProps
 export const Spinner: React.FC<SpinnerProps> = ({ children, className }) => {
   return (
     <svg
-    className={clsx("animate-spin", className ?? "h-5 w-5 text-black")}
+      className={clsx("animate-spin", className ?? "h-5 w-5 text-black")}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

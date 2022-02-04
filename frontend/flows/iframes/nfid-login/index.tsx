@@ -22,7 +22,6 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   })
 
   return (
-    // TODO: title
     <IFrameScreen>
       {isAuthenticated && <Navigate to={AuthoriseAppConstants.base} />}
 

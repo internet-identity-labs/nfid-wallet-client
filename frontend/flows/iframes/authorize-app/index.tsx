@@ -37,7 +37,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
   )
 
   return (
-    // TODO: title
     <IFrameScreen>
       <H5 className="text-center py-4">
         {account && `Welcome ${account.name}`}

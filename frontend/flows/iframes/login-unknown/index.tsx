@@ -137,13 +137,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   const isLoading = status === "loading"
 
   return (
-    // TODO: title
     <IFrameScreen>
       <H5 className="text-center py-4">
         {isLoading
           ? "Awaiting confirmation from your phone"
           : `Log in to ${applicationName} with your NFID`}
       </H5>
+      
       {!isLoading && !showRegister && url ? (
         <a href={url} target="_blank">
           <div className="flex flex-col justify-center text-center">

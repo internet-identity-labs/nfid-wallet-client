@@ -4,6 +4,7 @@ import "tailwindcss/tailwind.css"
 import { HomeScreen } from "./flows"
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/add-new-access-point/routes"
+import { AuthenticateAccountRoutes } from "./flows/authenticate/routes"
 import { AuthoriseAppRoutes } from "./flows/iframes/authorize-app/routes"
 import { AuthenticateRoutes } from "./flows/iframes/nfid-login/routes"
 import { IFrameRoutes } from "./flows/iframes/routes"
@@ -33,6 +34,7 @@ export const App = () => {
       {CopyDevicesRoutes}
       {AuthenticateRoutes}
       {AccessPointRoutes}
+      {AuthenticateAccountRoutes}
       <Route path={"*"} element={<NotFound />} />
     </Routes>
   )

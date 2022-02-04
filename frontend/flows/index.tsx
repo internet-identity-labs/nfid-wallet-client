@@ -1,13 +1,14 @@
-import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src/index"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
 import { AccessPointConstants } from "./add-new-access-point/routes"
-import { RegisterAccountConstants } from "./register-account/routes"
-import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
-import { RegisterConstants } from "./register/routes"
+import { AuthenticateAccountConstants as AAC } from "./authenticate/routes"
 import { LinkIIAnchorConstants } from "./link-ii-anchor/routes"
+import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
+import { RegisterAccountConstants } from "./register-account/routes"
+import { RegisterConstants } from "./register/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -31,7 +32,10 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     {
       title: "Common Pages",
       base: "",
-      items: [{ path: CopyDevicesConstants.base }],
+      items: [
+        { path: CopyDevicesConstants.base },
+        { path: `${AAC.base}/${AAC.login}` },
+      ],
     },
     {
       title: "Register Account (NFID) Flow",

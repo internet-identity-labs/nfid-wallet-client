@@ -14,20 +14,20 @@ export const phoneRules: IValidationRules = {
   minLength: 5,
   maxLength: 15,
   errorMessages: {
-    pattern: 'Phonenumber must start with a "+" followed by digits (max 15)',
-    required: "Phonenumber is required",
-    length: "Phonenumber should be within 15 characters long",
+    pattern: 'Phone number must start with a "+" followed by 5-15 digits',
+    required: "Phone number is required",
+    length: "Phone number must be between 5 and 15 digits long",
   },
 }
 
 export const nameRules = {
-  regex: /^[a-zA-Z0-9]{5,15}$/,
+  regex: /^[a-zA-Z0-9 ]{5,30}$/,
   minLength: 5,
-  maxLength: 15,
+  maxLength: 30,
   errorMessages: {
-    pattern: "Name must only contain letters and numbers (5-15 characters)",
+    pattern: "Full name must only contain letters and numbers",
     required: "Full name is required",
-    length: "Full name must be between 5 and 15 characters long",
+    length: "Full name must be between 5 and 30 characters long",
   },
 }
 
@@ -35,7 +35,7 @@ export const tokenRules = {
   regex: /^[0-9]{6}$/,
   minLength: 6,
   errorMessages: {
-    pattern: "Token must only contain numbers (6 digits)",
+    pattern: "Token must only contain numbers",
     required: "Token is required",
     length: "Token must be 6 digits long",
   },
@@ -46,7 +46,7 @@ export const captchaRules = {
   minLength: 5,
   maxLength: 5,
   errorMessages: {
-    pattern: "Captcha must only contain letters and numbers (5 characters)",
+    pattern: "Captcha must only contain letters and numbers",
     required: "Captcha is required",
     length: "Captcha must be 5 characters long",
   },
@@ -56,7 +56,7 @@ export const anchorRules = {
   regex: /^[0-9]{5,}$/,
   minLength: 5,
   errorMessages: {
-    pattern: "Anchor must only contain numbers (5 or more digits)",
+    pattern: "Anchor must only contain numbers",
     required: "Anchor is required",
     length: "Anchor must be 5 or more digits long",
   },

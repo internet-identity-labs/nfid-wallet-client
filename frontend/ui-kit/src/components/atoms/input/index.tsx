@@ -14,6 +14,7 @@ interface InputProps
   type?: string
   icon?: ReactElement
   errorText?: string
+  helperText?: string
   labelText?: string
   pin?: boolean
   small?: boolean
@@ -31,6 +32,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       icon,
       small,
       errorText,
+      helperText,
       labelText,
       ...inputProps
     },
@@ -66,11 +68,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             "text-sm py-1 text-gray-400",
-            "transition-all duration-100 ease-in",
             errorText && "!text-red-base",
           )}
         >
-          {errorText}
+          {errorText ?? helperText}
         </div>
       </div>
     )

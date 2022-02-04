@@ -125,10 +125,12 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
           <Input
             small
+            type="tel"
             className="my-3"
             placeholder="+XXXXXXXXXXX"
             labelText="Phone number"
             errorText={errors.phonenumber?.message}
+            helperText="Example: +31612345678"
             {...register("phonenumber", {
               onChange: (e) => {
                 e.target.value = e.target.value.replace(/[^\d\+]/g, "")

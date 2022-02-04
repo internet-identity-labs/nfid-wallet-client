@@ -18,7 +18,7 @@ export const IFrameHeader: React.FC<IFrameHeaderProps> = ({
   onClick,
 }) => {
   return (
-    <div className="bg-white px-3 py-4 rounded-t-xl text-black w-full">
+    <div className="bg-white p-3 rounded-t-xl text-black w-full">
       {title && <H5 className="text-center">{title}</H5>}
     </div>
   )

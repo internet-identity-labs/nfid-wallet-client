@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import {
@@ -13,7 +12,7 @@ import {
 import { nameRules, phoneRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCreateNFIDProfileProps
@@ -21,6 +20,11 @@ interface RegisterAccountCreateNFIDProfileProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {}
+
+interface RegisterAccountNFIDState {
+  name?: string
+  phonenumber?: string
+}
 
 export const RegisterAccountCreateNFIDProfile: React.FC<
   RegisterAccountCreateNFIDProfileProps
@@ -32,11 +36,22 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
     formState: { errors, isValid },
     handleSubmit,
     setError,
+    setValue,
   } = useForm({
     mode: "all",
   })
 
   const [loading, setLoading] = React.useState(false)
+
+  const { state } = useLocation()
+
+  React.useEffect(() => {
+    if (state) {
+      const { name, phonenumber } = state as RegisterAccountNFIDState
+      name && setValue("name", name)
+      phonenumber && setValue("phonenumber", phonenumber)
+    }
+  }, [setValue, state])
 
   const handleVerifyPhonenumber = React.useCallback(
     async (data: any) => {
@@ -45,7 +60,9 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
       setLoading(true)
 
       // Backend validation
-      const { response, validPhonenumber } = await verifyPhonenumber(phonenumber)
+      const { response, validPhonenumber } = await verifyPhonenumber(
+        phonenumber,
+      )
 
       if (isValid && validPhonenumber) {
         return navigate(`${RAC.base}/${RAC.smsVerification}`, {

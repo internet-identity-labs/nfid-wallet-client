@@ -1,3 +1,4 @@
+import { ButtonChevronIcon } from "components/atoms/button/icons/chevron"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import {
@@ -7,7 +8,7 @@ import {
   H2,
   Input,
   Loader,
-  P,
+  P
 } from "frontend/ui-kit/src/index"
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 import React, { useRef } from "react"
@@ -44,7 +45,8 @@ export const RegisterAccountSMSVerification: React.FC<
 
   const { name, phonenumber } = state as RegisterAccountState
   const [loading, setLoading] = React.useState(false)
-
+  const [showCheckNumberButton, setShowCheckNumberButton] =
+    React.useState(false)
   const list = [...Array(6).keys()]
   const inputItemsRef = useRef<Array<HTMLInputElement | null>>([])
 
@@ -81,7 +83,16 @@ export const RegisterAccountSMSVerification: React.FC<
 
   const resendSMS = React.useCallback(async () => {
     setLoading(true)
+
     await verifyPhonenumber(phonenumber)
+
+    inputItemsRef.current.forEach((item) => {
+      item && (item.value = "")
+
+      inputItemsRef.current[0]?.focus()
+    })
+
+    setShowCheckNumberButton(true)
     setLoading(false)
   }, [phonenumber, verifyPhonenumber])
 
@@ -180,13 +191,30 @@ export const RegisterAccountSMSVerification: React.FC<
 
           <Button
             large
-            icon
             filled
             onClick={handleVerifySMSToken}
             disabled={!isValidToken(getVerificationCode()) || loading}
           >
             <span>Complete</span>
           </Button>
+
+          {showCheckNumberButton && (
+            <Button
+              text
+              large
+              icon
+              className="mt-4"
+              onClick={() =>
+                navigate(`${RAC.base}/${RAC.createNFIDProfile}`, {
+                  state: { name, phonenumber },
+                })
+              }
+            >
+              <ButtonChevronIcon />
+              <span>Check phone number</span>
+            </Button>
+          )}
+
           <Loader isLoading={loading} />
         </CardBody>
       </Card>

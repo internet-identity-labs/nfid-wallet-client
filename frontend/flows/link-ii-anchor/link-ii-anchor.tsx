@@ -8,7 +8,15 @@ import {
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
-import { Button, Card, CardBody, H2, Input, P } from "frontend/ui-kit/src/index"
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  Input,
+  Modal,
+  P,
+} from "frontend/ui-kit/src/index"
 import { anchorRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -22,13 +30,17 @@ interface LinkIIAnchorProps
   > {}
 
 export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
+  const [showModal, setShowModal] = React.useState(false)
+
   const {
     register,
     formState: { errors, isValid },
+    resetField,
     handleSubmit,
   } = useForm({
     mode: "all",
   })
+
   const { applicationName } = useMultipass()
   const navigate = useNavigate()
 
@@ -115,6 +127,18 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           </Button>
         </CardBody>
       </Card>
+      {showModal ? (
+        <Modal
+          title={"Oops"}
+          description="It's impossible to link this Internet Identity anchor, please try another one."
+          iconType="error"
+          buttonText="Try another one"
+          onClick={() => {
+            resetField("anchor")
+            setShowModal(false)
+          }}
+        />
+      ) : null}
     </AppScreen>
   )
 }

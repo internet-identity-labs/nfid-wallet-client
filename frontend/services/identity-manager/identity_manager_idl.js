@@ -86,11 +86,7 @@ export const idlFactory = ({ IDL }) => {
       [HTTPAccountResponse],
       [],
     ),
-    validate_phone_number: IDL.Func(
-      [PhoneNumber],
-      [BoolHttpResponse],
-      ["query"],
-    ),
+    validate_phone_number: IDL.Func([PhoneNumber], [BoolHttpResponse], []),
   })
 }
 export const init = ({ IDL }) => {

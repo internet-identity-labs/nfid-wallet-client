@@ -55,6 +55,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     handleSubmit,
     setValue,
     setError,
+    setFocus,
   } = useForm({
     mode: "all",
   })
@@ -77,11 +78,16 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
     setCaptchaResp(cha)
     setLoading(false)
-  }, [])
+    setFocus("captcha")
+  }, [setFocus])
 
   React.useEffect(() => {
     requestCaptcha()
-  }, [requestCaptcha, state])
+
+    return () => {
+      setCaptchaResp(undefined)
+    }
+  }, [requestCaptcha])
 
   const registerAnchor = React.useCallback(
     async (identity: string, deviceName: string, captcha: string) => {
@@ -162,12 +168,12 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       }
       if (responseRegisterAnchor.kind === "badChallenge") {
         setValue("captcha", "")
+        await requestCaptcha()
+        setLoading(false)
         setError("captcha", {
           type: "manual",
           message: "Wrong captcha! Please try again",
         })
-        await requestCaptcha()
-        setLoading(false)
       }
       if (responseRegisterAnchor.kind === "apiError") {
         setLoading(false)
@@ -180,8 +186,8 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       createAccount,
       navigate,
       setValue,
-      setError,
       requestCaptcha,
+      setError,
     ],
   )
 
@@ -195,7 +201,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
           <div>
             <div className="h-[150px] w-auto bg-white border border-gray-200 rounded-md my-4">
-              {captchaResp && (
+              {captchaResp && !loading && (
                 <img
                   src={`data:image/png;base64,${captchaResp.png_base64}`}
                   className="object-contain w-full h-full"

@@ -1,10 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import { Principal } from "@dfinity/principal"
+import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
+import { Loader } from "@identity-labs/ui"
 import clsx from "clsx"
 import React from "react"
 import { useProfile } from "src/ic-utils/profile"
-import { Button, LoadingButton } from "src/ui-lib/atoms/button"
-import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
+import { Button } from "src/ui-lib/atoms/button"
 import { IIAuth } from "src/ui-lib/molecules/ii-auth"
 
 export const IIAuthComponent = () => {
@@ -35,13 +36,9 @@ export const IIAuthComponent = () => {
             <div className={clsx("mb-6")}>{iam}</div>
           </>
         ) : (
-          <LoadingButton
-            isLoading={isLoading}
-            onClick={handleWhoami}
-            className="relative overflow-hidden"
-          >
+          <Button onClick={handleWhoami}>
             <span>whoami</span>
-          </LoadingButton>
+          </Button>
         )}
         <Button className="py-2 px-10 mt-2" onClick={signout}>
           signout
@@ -49,6 +46,7 @@ export const IIAuthComponent = () => {
         <Button className="py-2 px-10 mt-2" onClick={() => setIam("")}>
           clear
         </Button>
+        <Loader isLoading={isLoading} />
       </div>
     </div>
   )

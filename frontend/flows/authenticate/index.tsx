@@ -8,7 +8,7 @@ interface NFIDLoginProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  onLogin: () => void
+  onLogin?: () => void
 }
 
 export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = ({
@@ -26,7 +26,7 @@ export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = ({
               The NFID on this access point can only be unlocked by{" "}
               {"accountName"}.
             </P>
-            <Button large filled className="mt-8" onClick={onClick}>
+            <Button large secondary className="mt-8" onClick={onClick}>
               Unlock NFID
             </Button>
           </div>

@@ -49,7 +49,6 @@ export const RegisterAccountSMSVerification: React.FC<
     React.useState(false)
   const list = [...Array(6).keys()]
   const inputItemsRef = useRef<Array<HTMLInputElement | null>>([])
-
   const getVerificationCode = React.useCallback(
     () => inputItemsRef.current.map((item) => item?.value).join(""),
     [],
@@ -73,13 +72,25 @@ export const RegisterAccountSMSVerification: React.FC<
     [clearErrors],
   )
 
+  const handleKeydown = React.useCallback((event: KeyboardEvent) => {
+    if (event.key === "Backspace" || event.key === "Delete") {
+      const currentFocus = document.activeElement
+      const index = Number(currentFocus?.getAttribute("data-pin-index"))
+
+      if (index && !inputItemsRef.current[index]?.value) {
+        inputItemsRef.current[index - 1]?.focus()
+      }
+    }
+  }, [])
+
   React.useEffect(() => {
     document.addEventListener("paste", handlePaste)
+    document.addEventListener("keydown", handleKeydown)
 
     return () => {
       document.removeEventListener("paste", handlePaste)
     }
-  }, [handlePaste])
+  }, [handleKeydown, handlePaste])
 
   const resendSMS = React.useCallback(async () => {
     setLoading(true)
@@ -146,8 +157,10 @@ export const RegisterAccountSMSVerification: React.FC<
                 {list.map((_, index) => (
                   <Input
                     pin
+                    type="number"
                     key={index}
                     autoFocus={index === 0}
+                    data-pin-index={index}
                     ref={(el) => (inputItemsRef.current[index] = el)}
                     onChange={(e) => {
                       const validRegex = inputItemsRef.current[
@@ -170,10 +183,7 @@ export const RegisterAccountSMSVerification: React.FC<
 
                         inputItemsRef.current[index + 1]?.focus()
                       } else {
-                        e.target.value = e.target.value.replace(
-                          /[^0-9]{1}$/,
-                          "",
-                        )
+                        e.target.value = e.target.value[0]
                       }
                     }}
                     maxLength={1}

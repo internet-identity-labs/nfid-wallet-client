@@ -27,28 +27,49 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
   })
 
   const handleCreatePersona = React.useCallback(
-    async ({ domain }) => {
-      setIsloading(true)
-      await createPersona({ domain })
-      await authorizeApp({ persona_id: nextPersonaId })
-      setIsloading(false)
-    },
+    ({ domain }) =>
+      async () => {
+        setIsloading(true)
+        await createPersona({ domain })
+        await authorizeApp({ persona_id: nextPersonaId })
+        setIsloading(false)
+      },
     [authorizeApp, createPersona, nextPersonaId, setIsloading],
+  )
+
+  const handleAuthorizePersona = React.useCallback(
+    ({ persona_id }) =>
+      async () => {
+        setIsloading(true)
+        await authorizeApp({ persona_id })
+        setIsloading(false)
+      },
+    [authorizeApp, setIsloading],
+  )
+
+  const handleAuthorizeIIPersona = React.useCallback(
+    ({ anchor }) =>
+      async () => {
+        setIsloading(true)
+        await authorizeApp({ anchor })
+        setIsloading(false)
+      },
+    [authorizeApp, setIsloading],
   )
 
   return (
     <IFrameScreen>
-      <H5 className="text-center py-4">
+      <H5 className="py-4 text-center">
         {account && `Welcome ${account.name}`}
       </H5>
-      
+
       <div>
         {nfidPersonas?.map(({ persona_id }) => (
           <Button
             key={persona_id}
             block
             filled
-            onClick={() => authorizeApp({ persona_id })}
+            onClick={handleAuthorizePersona({ persona_id })}
             className="mt-1"
           >
             Continue as NFID persona {persona_id}
@@ -58,9 +79,9 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
           block
           filled
           color="white"
-          onClick={() =>
-            handleCreatePersona({ domain: authorizationRequest?.hostname })
-          }
+          onClick={handleCreatePersona({
+            domain: authorizationRequest?.hostname,
+          })}
           className="mt-1"
         >
           Create new persona
@@ -72,7 +93,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
             key={anchor}
             block
             filled
-            onClick={() => authorizeApp({ anchor })}
+            onClick={handleAuthorizeIIPersona({ anchor })}
             className="mt-1"
           >
             Continue as NFID persona {anchor}

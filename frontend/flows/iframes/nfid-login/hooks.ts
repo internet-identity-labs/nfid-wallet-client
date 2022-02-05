@@ -58,7 +58,7 @@ export const useAuthorization = ({
     })
 
   const authorizeApp = React.useCallback(
-    async ({ persona_id }) => {
+    async ({ persona_id, anchor }) => {
       setLoading(true)
       if (!authorizationRequest || !internetIdentity)
         throw new Error("client not ready")
@@ -70,7 +70,7 @@ export const useAuthorization = ({
       const scope = persona_id ? `${persona_id}@${hostname}` : hostname
 
       const prepRes = await internetIdentity.prepareDelegation(
-        userNumber,
+        anchor || userNumber,
         scope,
         sessionKey,
         maxTimeToLive,
@@ -85,7 +85,7 @@ export const useAuthorization = ({
 
       const signedDelegation = await retryGetDelegation(
         internetIdentity,
-        userNumber,
+        anchor || userNumber,
         scope,
         sessionKey,
         timestamp,

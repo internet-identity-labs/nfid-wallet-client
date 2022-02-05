@@ -33,3 +33,13 @@
 .offset-header {
   @apply md:mt-[56px] mt-[20px];
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+}

@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 import { IFrameContent } from "./content"
-import { IFrameHeader } from "./header"
 import { IFrameWrapper } from "./wrapper"
 
 interface Props
@@ -20,7 +19,6 @@ export const IFrame: React.FC<Props> = ({
   onLoad,
 }) => {
   const [visible, setVisible] = useState(true)
-  const [title, setTitle] = useState("")
 
   React.useEffect(() => {
     const timeout = setTimeout(() => setVisible(true), 500)
@@ -36,16 +34,14 @@ export const IFrame: React.FC<Props> = ({
     window.addEventListener("message", function (event) {
       if (event.origin !== origin) return
 
-      const height = parseInt(event.data.height) + 57
-      setTitle(event.data.title)
+      const height = parseInt(event.data.height)
 
-      iframeWrapperCard.style.height = `${height > 200 ? height : 200}px`
+      iframeWrapperCard.style.height = `${height > 190 ? height : 190}px`
     })
   }, [])
 
   return visible ? (
     <IFrameWrapper className={clsx(className)}>
-      <IFrameHeader onClick={() => setVisible(false)} title={title} />
       <IFrameContent src={src} onLoad={onLoad} />
     </IFrameWrapper>
   ) : null

@@ -23,6 +23,7 @@ export const IFrameContent: React.FC<IFrameContentProps> = ({
       className={clsx(
         "w-full transition-all delay-300 h-full",
         loading && "opacity-0",
+        className,
       )}
       src={src}
       frameBorder="0"

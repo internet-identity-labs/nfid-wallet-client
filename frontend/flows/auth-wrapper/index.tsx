@@ -1,23 +1,14 @@
-import {
-  Button,
-  Card,
-  CardAction,
-  CardBody,
-  CardTitle,
-  FaceId,
-  Loader,
-} from "frontend/ui-kit/src/index"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { ActorSubclass } from "@dfinity/agent"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
+import { atom, useAtom } from "jotai"
 import React from "react"
 import { Navigate } from "react-router-dom"
-import { atom, useAtom } from "jotai"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { ActorSubclass } from "@dfinity/agent"
-import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
-import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
-import { RegisterAccountConstants } from "../register-account/routes"
+import { AuthenticateNFIDLogin } from "../authenticate"
+import { RegisterAccountConstants as RAC } from "../register-account/routes"
 
 interface Actors {
   internetIdentity: IIConnection
@@ -79,23 +70,8 @@ export const AuthWrapper: React.FC = ({ children }) => {
   return isAuthenticated ? (
     <>{children}</>
   ) : account ? (
-    <AppScreen isFocused>
-      <Card className="flex flex-col h-full">
-        <CardTitle>Login</CardTitle>
-        <CardBody className="max-w-lg text-center">
-          Use FaceID to sign in
-        </CardBody>
-        <CardAction className="items-center justify-center">
-          <Button onClick={login}>
-            <FaceId />
-          </Button>
-        </CardAction>
-        <Loader isLoading={isLoading} />
-      </Card>
-    </AppScreen>
+    <AuthenticateNFIDLogin onLogin={login} />
   ) : (
-    <Navigate
-      to={`${RegisterAccountConstants.base}/${RegisterAccountConstants.account}`}
-    />
+    <Navigate to={`${RAC.base}/${RAC.account}`} />
   )
 }

@@ -59,7 +59,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
           </div>
 
           <Button
-            filled
+            secondary
             className="!rounded-t-none w-full flex items-center justify-center space-x-3 focus:outline-none"
             onClick={() => copyToClipboard()}
           >
@@ -70,7 +70,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
           <Button
             onClick={() => navigate(startUrl || "")}
             disabled={!copied}
-            filled
+            secondary
             large
             className="mt-8"
           >

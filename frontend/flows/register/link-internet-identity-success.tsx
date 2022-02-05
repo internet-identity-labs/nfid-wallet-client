@@ -21,7 +21,7 @@ export const LinkInternetIdentitySuccessScreen: React.FC<
         <CardTitle>Welcome! You're all set</CardTitle>
         <CardAction bottom className="justify-center">
           <a href={startUrl}>
-            <Button large filled>
+            <Button large secondary>
               Log in to DSCVR
             </Button>
           </a>

@@ -26,7 +26,7 @@ export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
           <H1 className="mb-12">Page not found</H1>
 
           <Logo className="max-w-[160px] mx-auto mb-12" />
-          <Button large filled onClick={() => navigate("/")}>
+          <Button large secondary onClick={() => navigate("/")}>
             Return to Home
           </Button>
         </CardBody>

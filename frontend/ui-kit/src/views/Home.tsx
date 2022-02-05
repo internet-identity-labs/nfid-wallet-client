@@ -139,14 +139,14 @@ export const KitchenSink: React.FC = () => {
           <div className="my-4">
             <Button>Default button</Button>
 
-            <Button filled className="mx-2">
+            <Button secondary className="mx-2">
               Filled button
             </Button>
 
             <Button text>Text button</Button>
             <DeleteButton />
 
-            <Button filled block className="my-3">
+            <Button secondary block className="my-3">
               Block button
             </Button>
           </div>
@@ -169,7 +169,7 @@ export const KitchenSink: React.FC = () => {
               </CardBody>
 
               <CardAction className="md:flex-row-reverse" bottom divider>
-                <Button filled className="w-full md:w-[250px]">
+                <Button secondary className="w-full md:w-[250px]">
                   Create new Profile
                 </Button>
                 <Button text className="w-full md:w-[250px]">
@@ -197,7 +197,7 @@ export const KitchenSink: React.FC = () => {
               </CardBody>
 
               <CardAction className="justify-center">
-                <Button filled className="w-full md:w-[250px]">
+                <Button secondary className="w-full md:w-[250px]">
                   Continue
                 </Button>
               </CardAction>
@@ -261,7 +261,7 @@ export const KitchenSink: React.FC = () => {
                 divider
               >
                 <Button className="w-full md:w-[250px]">Back</Button>
-                <Button filled className="w-full md:w-[250px]">
+                <Button secondary className="w-full md:w-[250px]">
                   Continue
                 </Button>
               </CardAction>

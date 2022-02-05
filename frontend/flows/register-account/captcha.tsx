@@ -243,7 +243,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
             <Button
               large
               block
-              filled
+              secondary
               disabled={!isValid || loading}
               onClick={handleSubmit(completeNFIDProfile)}
               data-captcha-key={captchaResp?.challenge_key}

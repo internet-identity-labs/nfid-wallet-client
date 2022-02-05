@@ -64,7 +64,7 @@ export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
             <Button large text onClick={() => console.log(">> click")}>
               show QR Code to scan
             </Button>
-            <Button large filled onClick={() => console.log(">> click")}>
+            <Button large secondary onClick={() => console.log(">> click")}>
               copy link
             </Button>
           </div>

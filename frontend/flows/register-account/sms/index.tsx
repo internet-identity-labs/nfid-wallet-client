@@ -201,7 +201,7 @@ export const RegisterAccountSMSVerification: React.FC<
 
           <Button
             large
-            filled
+            secondary
             onClick={handleVerifySMSToken}
             disabled={!isValidToken(getVerificationCode()) || loading}
           >

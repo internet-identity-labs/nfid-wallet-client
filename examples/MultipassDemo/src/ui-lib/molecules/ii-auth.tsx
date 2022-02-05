@@ -12,7 +12,7 @@ export const IIAuth: React.FC<InternetAuthProps> = () => {
   }, [authenticate])
 
   return (
-    <Button onClick={handleAuthenticate} filled>
+    <Button onClick={handleAuthenticate} secondary>
       Login with II
     </Button>
   )

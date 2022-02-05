@@ -64,12 +64,12 @@ export const RegisterRecoveryPhraseScreen: React.FC<
         <CardAction bottom className="justify-center">
           {startUrl && copied ? (
             <Link to={startUrl}>
-              <Button block large filled>
+              <Button block large secondary>
                 Log in to DSCVR
               </Button>
             </Link>
           ) : (
-            <Button block large filled disabled>
+            <Button block large secondary disabled>
               Log in to DSCVR
             </Button>
           )}

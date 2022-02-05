@@ -153,7 +153,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
           <div className="mt-8 mb-3">
             <Button
               large
-              filled
+              secondary
               disabled={!isValid || loading}
               onClick={handleSubmit(handleVerifyPhonenumber)}
             >

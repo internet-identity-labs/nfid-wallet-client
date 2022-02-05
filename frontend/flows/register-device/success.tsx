@@ -28,7 +28,7 @@ export const RegisterDevicePromptSuccess: React.FC<
         </CardBody>
 
         <CardAction bottom className="justify-center">
-          <Button filled large className="flex items-center justify-center">
+          <Button secondary large className="flex items-center justify-center">
             <HiShare className="mr-2" />
             Tell your friends
           </Button>

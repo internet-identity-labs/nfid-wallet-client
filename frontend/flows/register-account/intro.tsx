@@ -135,7 +135,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <div className="grid max-w-lg mt-12 md:grid-cols-2 md:mt-6 md:gap-x-3 gap-y-3">
                   <Button
                     large
-                    filled
+                    secondary
                     onClick={() =>
                       navigate(`${RAC.base}/${RAC.createNFIDProfile}`)
                     }

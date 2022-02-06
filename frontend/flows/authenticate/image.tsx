@@ -13,7 +13,7 @@ export const ImageNFIDLogin: React.FC<PictureNFIDLoginProps> = ({
 }) => {
   return (
     <svg
-      className="2xl:max-w-4xl fixed left-[50%] top-[40%] w-[700px] lg:inset-0 md:w-full -translate-x-1/2 -translate-y-1/2 lg:translate-x-0 lg:translate-y-0 lg:left-0 lg:top-0 lg:relative"
+      className="w-full h-full fixed left-0 sm:relative"
       viewBox="0 0 657 442"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

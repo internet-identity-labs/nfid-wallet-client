@@ -25,7 +25,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
     <IFrameScreen>
       {isAuthenticated && <Navigate to={AuthoriseAppConstants.base} />}
 
-      <H5 className="text-center py-4">{`Log in to ${applicationName}
+      <H5 className="text-center mb-4">{`Log in to ${applicationName}
     with your NFID`}</H5>
 
       {!error ? (

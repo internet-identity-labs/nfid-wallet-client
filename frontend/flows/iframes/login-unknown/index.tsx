@@ -138,20 +138,22 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
   return (
     <IFrameScreen>
-      <H5 className="text-center py-4">
+      <H5 className="text-center mb-4">
         {isLoading
           ? "Awaiting confirmation from your phone"
           : `Log in to ${applicationName} with your NFID`}
       </H5>
-      
+
       {!isLoading && !showRegister && url ? (
         <a href={url} target="_blank">
           <div className="flex flex-col justify-center text-center">
             <div>Scan this code with the camera app on your phone</div>
-            <div className="m-auto py-2">
+            <div className="m-auto py-5">
               <QRCode content={url} options={{ margin: 0 }} />
             </div>
-            <Button text className="mb-2">I already have an NFID</Button>
+            <Button secondary className="mb-2">
+              I already have an NFID
+            </Button>
           </div>
         </a>
       ) : null}

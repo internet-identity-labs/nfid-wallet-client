@@ -118,7 +118,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           />
 
           <Button
-            filled
+            secondary
             largeMax
             disabled={!isValid}
             onClick={handleSubmit(handleLinkAnchor)}

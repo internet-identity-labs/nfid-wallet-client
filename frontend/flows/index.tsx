@@ -32,9 +32,14 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     {
       title: "Common Pages",
       base: "",
+      items: [{ path: CopyDevicesConstants.base }],
+    },
+    {
+      title: "Authenticate",
+      base: AAC.base,
       items: [
-        { path: CopyDevicesConstants.base },
-        { path: `${AAC.base}/${AAC.login}` },
+        { path: `${AAC.login}` },
+        { path: `${AAC.home}` },
       ],
     },
     {

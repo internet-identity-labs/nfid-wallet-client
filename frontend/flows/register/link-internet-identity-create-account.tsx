@@ -47,7 +47,7 @@ export const LinkInternetIdentityCreateAccountScreen: React.FC<
       <Card className={clsx("h-full flex flex-col sm:block", className)}>
         <CardTitle>One last step</CardTitle>
         <CardAction bottom className="justify-center">
-          <Button block large filled onClick={login}>
+          <Button block large secondary onClick={login}>
             Use FaceID to finalize your account
           </Button>
         </CardAction>

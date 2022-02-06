@@ -88,7 +88,7 @@ export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
                 {...register("device", { required: true })}
               />
             </div>
-            <Button large filled onClick={() => console.log(">> click")}>
+            <Button large secondary onClick={() => console.log(">> click")}>
               use Face ID to create keys
             </Button>
           </div>

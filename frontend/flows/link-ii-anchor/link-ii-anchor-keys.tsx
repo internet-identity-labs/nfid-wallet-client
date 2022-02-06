@@ -81,7 +81,7 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
           </P>
 
           <a href={iiDeviceLink} target="_blank" className="block my-6">
-            <Button filled largeMax>
+            <Button secondary largeMax>
               Log in with Internet Identity
             </Button>
           </a>

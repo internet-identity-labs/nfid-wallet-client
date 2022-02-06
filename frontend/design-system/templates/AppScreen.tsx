@@ -12,6 +12,7 @@ interface Props
   description?: string
   isFocused?: boolean
   classNameWrapper?: string
+  navigationItems?: React.ReactNode
 }
 
 export const AppScreen: React.FC<Props> = ({
@@ -21,13 +22,14 @@ export const AppScreen: React.FC<Props> = ({
   description,
   isFocused = false,
   classNameWrapper,
+  navigationItems,
 }) => {
   return (
     <div className={clsx("", className)}>
       <div className="flex flex-col mx-auto w-full min-h-screen min-h-screen-ios">
         {!isFocused && (
           <>
-            <NavigationBar />
+            <NavigationBar navigationItems={navigationItems} />
             {title && (
               <NavigationHeader title={title} description={description} />
             )}

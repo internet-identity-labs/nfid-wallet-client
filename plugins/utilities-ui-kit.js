@@ -23,6 +23,7 @@ const colors = {
   red: {
     base: "#EA1A1A",
     hover: "#FF1A27",
+    active: "#DE2020",
   },
   green: {
     base: "#008847",

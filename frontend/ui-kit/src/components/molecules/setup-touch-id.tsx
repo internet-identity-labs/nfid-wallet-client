@@ -10,7 +10,7 @@ export const SetupTouchId: React.FC<
     HTMLButtonElement
   >
 > = ({ onClick }) => (
-  <Button large filled onClick={onClick}>
+  <Button large secondary onClick={onClick}>
     <div className="flex flex-row items-center justify-center">
       <HiFingerPrint className="mr-2" />
       <div>

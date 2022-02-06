@@ -30,7 +30,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
 
       {!error ? (
         <div>
-          <Button block filled onClick={authenticate} className="mb-2">
+          <Button block secondary onClick={authenticate} className="mb-2">
             Unlock NFID {account && `as ${account.name}`}
           </Button>
 

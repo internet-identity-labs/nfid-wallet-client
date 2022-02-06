@@ -64,7 +64,7 @@ export const CopyLinkToChannel: React.FC<CopyLinkToChannelProps> = () => {
               >
                 show QR Code to scan
               </Button>
-              <Button large filled onClick={handleCopyUrl} disabled={!uuid}>
+              <Button large secondary onClick={handleCopyUrl} disabled={!uuid}>
                 copy link
               </Button>
             </div>

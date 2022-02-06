@@ -149,7 +149,7 @@ export const RegisterFinalizePersonaScreen: React.FC<
           >
             <FaceId className="h-16 mx-auto mb-4" />
             <div className="flex justify-center">
-              <Button block large filled onClick={handleConfirm}>
+              <Button block large secondary onClick={handleConfirm}>
                 Use FaceID to finalize your persona
               </Button>
             </div>

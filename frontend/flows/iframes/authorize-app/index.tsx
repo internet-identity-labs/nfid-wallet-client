@@ -68,7 +68,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
           <Button
             key={persona_id}
             block
-            filled
+            secondary
             onClick={handleAuthorizePersona({ persona_id })}
             className="mt-1"
           >
@@ -77,7 +77,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
         ))}
         <Button
           block
-          filled
+          secondary
           color="white"
           onClick={handleCreatePersona({
             domain: authorizationRequest?.hostname,
@@ -92,7 +92,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
           <Button
             key={anchor}
             block
-            filled
+            secondary
             onClick={handleAuthorizeIIPersona({ anchor })}
             className="mt-1"
           >

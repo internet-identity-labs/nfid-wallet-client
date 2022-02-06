@@ -7,11 +7,14 @@ interface NFIDLoginProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  onLogin?: () => void
+}
 
 export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = ({
   children,
   className,
+  onLogin: onClick,
 }) => {
   return (
     <AppScreen classNameWrapper="mt-auto lg:mt-0 flex flex-col h-full">
@@ -23,7 +26,7 @@ export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = ({
               The NFID on this access point can only be unlocked by{" "}
               {"accountName"}.
             </P>
-            <Button large filled className="mt-8">
+            <Button large secondary className="mt-8" onClick={onClick}>
               Unlock NFID
             </Button>
           </div>

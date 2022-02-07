@@ -51,14 +51,17 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 }) => {
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors, isValid, dirtyFields },
     handleSubmit,
-    setValue,
     setError,
     setFocus,
+    setValue,
   } = useForm({
-    mode: "all",
+    mode: "onTouched",
   })
+
+  const isFormComplete = ["captcha"].every((field) => dirtyFields[field])
+
   const { state } = useLocation()
   const navigate = useNavigate()
   const { createAccount } = useAccount()
@@ -249,7 +252,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
               large
               block
               secondary
-              disabled={!isValid || loading}
+              disabled={!isFormComplete || loading}
               onClick={handleSubmit(completeNFIDProfile)}
               data-captcha-key={captchaResp?.challenge_key}
             >

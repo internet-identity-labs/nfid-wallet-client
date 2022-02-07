@@ -57,7 +57,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
     [authorizeApp, setIsloading],
   )
 
-  const anchors = ["12890323", "1819231", "2813943"]
+  const anchors = iiPersonas.length > 0 ? iiPersonas :  [{anchor: "12890323"}, {anchor:"1819231"}, {anchor: "2813943"}]
 
   return (
     <IFrameScreen>

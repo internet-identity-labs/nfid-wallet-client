@@ -1,11 +1,3 @@
-import {
-  Button,
-  H5,
-  Loader,
-  QRCode,
-  SetupTouchId,
-} from "frontend/ui-kit/src/index"
-import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/register-device/routes"
@@ -14,6 +6,13 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { buildDelegate } from "frontend/services/internet-identity/build-delegate"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { setUserNumber } from "frontend/services/internet-identity/userNumber"
+import {
+  Button,
+  H5,
+  Loader,
+  QRCode,
+  SetupTouchId,
+} from "frontend/ui-kit/src/index"
 import React from "react"
 import { useUnknownDeviceConfig } from "./hooks"
 
@@ -22,7 +21,7 @@ interface UnknownDeviceScreenProps {
 }
 
 export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
-  showRegisterDefault = false,
+  showRegisterDefault,
 }) => {
   const { applicationName } = useMultipass()
   const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
@@ -157,17 +156,20 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           </div>
         </a>
       ) : null}
+
       {showRegister && (
         <div className="flex flex-col">
           <SetupTouchId onClick={handleRegisterDevice} />
-          <a
+          <Button
+            text
             onClick={() => handleSendDelegate(message)}
-            className={clsx("text-blue-900 text-center mt-4 cursor-pointer")}
+            className="mt-2"
           >
-            just log me in!
-          </a>
+            Log me in temporarily
+          </Button>
         </div>
       )}
+
       <Loader isLoading={isLoading} />
     </IFrameScreen>
   )

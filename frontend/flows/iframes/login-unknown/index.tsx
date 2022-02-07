@@ -14,6 +14,8 @@ import {
   SetupTouchId,
 } from "frontend/ui-kit/src/index"
 import React from "react"
+import { useNavigate } from "react-router-dom"
+import { IFrameRestoreAccessPointConstants as RAC } from "../restore-account/routes"
 import { useUnknownDeviceConfig } from "./hooks"
 
 interface UnknownDeviceScreenProps {
@@ -140,6 +142,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   const isLoading = status === "loading"
+  const navigate = useNavigate()
 
   return (
     <IFrameScreen>
@@ -150,17 +153,23 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       </H5>
 
       {!isLoading && !showRegister && url ? (
-        <a href={url} target="_blank">
-          <div className="flex flex-col justify-center text-center">
-            <div>Scan this code with the camera app on your phone</div>
-            <div className="m-auto py-5">
+        <div className="flex flex-col justify-center text-center">
+          <div>Scan this code with the camera app on your phone</div>
+
+          <div className="m-auto py-5">
+            <a href={url} target="_blank">
               <QRCode content={url} options={{ margin: 0 }} />
-            </div>
-            <Button secondary className="mb-2">
-              I already have an NFID
-            </Button>
+            </a>
           </div>
-        </a>
+
+          <Button
+            secondary
+            className="mb-2"
+            onClick={() => navigate(`${RAC.base}`)}
+          >
+            I already have an NFID
+          </Button>
+        </div>
       ) : null}
 
       {showRegister && (

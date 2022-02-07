@@ -1,4 +1,5 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
+import { CONFIG } from "frontend/config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
@@ -88,7 +89,12 @@ export const useRegisterDevicePromt = () => {
       const { chain, sessionKey } =
         await internetIdentity.getRemoteFEDelegation()
 
-      const scope = persona_id ? `${persona_id}@${hostname}` : hostname
+      const protocol = CONFIG.FRONTEND_MODE === "production" ? "https" : "http"
+
+      const scope = persona_id
+        ? `${persona_id}@${protocol}://${hostname}`
+        : hostname
+
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,
         scope,

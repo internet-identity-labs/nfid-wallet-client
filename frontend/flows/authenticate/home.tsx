@@ -18,6 +18,7 @@ import {
   Input,
   List,
   ListItem,
+  Loader,
   P,
 } from "frontend/ui-kit/src"
 import React from "react"
@@ -36,6 +37,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   const applications = ["Example app", "DSCVR", "OpenChat"]
 
   const [showModal, setShowModal] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
   const [modalOptions, setModalOptions] =
     React.useState<ModalAdvancedProps | null>(null)
 
@@ -45,9 +47,13 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
 
   const handleDeleteDevice = React.useCallback(
     (publicKey) => async () => {
+      setLoading(true)
+
       const response = await deleteDevice(publicKey)
       console.log(">> handleDeleteDevice", { response })
       handleLoadDevices()
+
+      setLoading(false)
       setShowModal(false)
     },
     [deleteDevice, handleLoadDevices],
@@ -167,7 +173,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                                       <P>
                                         Do you really want to delete{" "}
                                         <span className="font-bold">
-                                          One more AP
+                                          {device.alias}
                                         </span>{" "}
                                         access point? This process cannot be
                                         undone.
@@ -220,6 +226,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
             secondaryButton={modalOptions.secondaryButton}
           >
             {modalOptions.children}
+            <Loader isLoading={loading} />
           </ModalAdvanced>
         )}
       </Card>

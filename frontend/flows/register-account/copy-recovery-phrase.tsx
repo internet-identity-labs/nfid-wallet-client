@@ -74,7 +74,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
             large
             className="mt-8"
           >
-            Log in to {applicationName}
+            Log in to {applicationName || "NFID Demo"}
           </Button>
         </CardBody>
       </Card>

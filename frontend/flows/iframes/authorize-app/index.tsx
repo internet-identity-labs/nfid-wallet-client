@@ -4,7 +4,7 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { Button } from "frontend/ui-kit/src/components/atoms/button"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { H5, Loader } from "frontend/ui-kit/src"
+import { H5, List, ListItem, Loader } from "frontend/ui-kit/src"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 
 interface AuthorizeAppProps
@@ -57,9 +57,14 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
     [authorizeApp, setIsloading],
   )
 
+  const anchors =
+    iiPersonas.length > 0
+      ? iiPersonas
+      : [{ anchor: "12890323" }, { anchor: "1819231" }, { anchor: "2813943" }]
+
   return (
     <IFrameScreen>
-      <H5 className="py-4 text-center">
+      <H5 className="mb-4 text-center">
         {account && `Welcome ${account.name}`}
       </H5>
 
@@ -77,7 +82,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
         ))}
         <Button
           block
-          secondary
+          stroke
           color="white"
           onClick={handleCreatePersona({
             domain: authorizationRequest?.hostname,
@@ -87,19 +92,33 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
           Create new persona
         </Button>
       </div>
+
       <div>
-        {iiPersonas?.map(({ anchor }) => (
-          <Button
-            key={anchor}
-            block
-            secondary
-            onClick={handleAuthorizeIIPersona({ anchor })}
-            className="mt-1"
-          >
-            Continue as NFID persona {anchor}
-          </Button>
-        ))}
+        {/* TODO: make dynamic */}
+        <List>
+          {anchors.length > 1 && (
+            <List.Header>
+              <div className="text-base text-center py-5">
+                We have found several anchors. Choose with which one you want to
+                continue:
+              </div>
+            </List.Header>
+          )}
+          <List.Items>
+            {anchors.map(({ anchor }, index) => (
+              <ListItem
+                key={index}
+                title={anchor}
+                onClick={() => handleAuthorizeIIPersona({ anchor })}
+              />
+            ))}
+          </List.Items>
+        </List>
       </div>
+
+      <Button stroke block className="mt-2">
+        Link new Internet Identity Anchor
+      </Button>
       <Loader isLoading={isLoading} />
     </IFrameScreen>
   )

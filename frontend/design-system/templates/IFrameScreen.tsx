@@ -28,5 +28,9 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
 
     return () => clearInterval(timeout)
   }, [title])
-  return <div className={clsx("px-4", className)}>{children}</div>
+  return (
+    <div className={clsx("p-4", className)}>
+      {children}
+    </div>
+  )
 }

@@ -7,6 +7,7 @@ import { AccessPointRoutes } from "./flows/add-new-access-point/routes"
 import { AuthenticateAccountRoutes } from "./flows/authenticate/routes"
 import { AuthoriseAppRoutes } from "./flows/iframes/authorize-app/routes"
 import { AuthenticateRoutes } from "./flows/iframes/nfid-login/routes"
+import { IFrameRestoreAccessPointRoutes } from "./flows/iframes/restore-account/routes"
 import { IFrameRoutes } from "./flows/iframes/routes"
 import { LinkIIAnchorRoutes } from "./flows/link-ii-anchor/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
@@ -29,6 +30,7 @@ export const App = () => {
       {RegisterRoutes}
       {RegisterAccountRoutes}
       {IFrameRoutes}
+      {IFrameRestoreAccessPointRoutes}
       {AuthoriseAppRoutes}
       {LinkIIAnchorRoutes}
       {CopyDevicesRoutes}

@@ -54,7 +54,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
     console.log(">> handleCreatePersonaAndLogin", { response })
 
     if (response?.status_code === 200) {
-      handleAuthorizePersona({ persona_id: nextPersonaId })
+      return handleAuthorizePersona({ persona_id: nextPersonaId })()
     }
     console.error(">> handleCreatePersonaAndLogin", { response })
   }, [createPersona, handleAuthorizePersona, nextPersonaId, scope])

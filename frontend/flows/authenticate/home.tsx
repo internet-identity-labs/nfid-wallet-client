@@ -7,6 +7,7 @@ import {
   ModalAdvancedProps,
 } from "components/molecules/modal/advanced"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import {
   Button,
@@ -17,6 +18,7 @@ import {
   Input,
   List,
   ListItem,
+  Loader,
   P,
 } from "frontend/ui-kit/src"
 import React from "react"
@@ -35,17 +37,23 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   const applications = ["Example app", "DSCVR", "OpenChat"]
 
   const [showModal, setShowModal] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
   const [modalOptions, setModalOptions] =
     React.useState<ModalAdvancedProps | null>(null)
 
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
   console.log(">> ", { devices })
+  const { account } = useAccount()
 
   const handleDeleteDevice = React.useCallback(
     (publicKey) => async () => {
+      setLoading(true)
+
       const response = await deleteDevice(publicKey)
       console.log(">> handleDeleteDevice", { response })
       handleLoadDevices()
+
+      setLoading(false)
       setShowModal(false)
     },
     [deleteDevice, handleLoadDevices],
@@ -63,8 +71,8 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
       <Card className="grid grid-cols-12">
         <CardBody className="col-span-12">
           <div>
-            <H2 className="py-2">John Smith</H2>
-            <P className="">NFID Number: 10001</P>
+            <H2 className="py-2">{account?.name}</H2>
+            <P className="">NFID Number: {account?.anchor}</P>
           </div>
 
           <div className="grid grid-cols-12 gap-4 py-6 md:py-14">
@@ -165,7 +173,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                                       <P>
                                         Do you really want to delete{" "}
                                         <span className="font-bold">
-                                          One more AP
+                                          {device.alias}
                                         </span>{" "}
                                         access point? This process cannot be
                                         undone.
@@ -218,6 +226,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
             secondaryButton={modalOptions.secondaryButton}
           >
             {modalOptions.children}
+            <Loader isLoading={loading} />
           </ModalAdvanced>
         )}
       </Card>

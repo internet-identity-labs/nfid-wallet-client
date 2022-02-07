@@ -46,8 +46,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       try {
         const parsedSignedDelegation = buildDelegate(delegation)
         const protocol =
-          CONFIG.II_ENV === "development" ? "http:" : window.location.protocol
+          CONFIG.FRONTEND_MODE === "development"
+            ? "http:"
+            : window.location.protocol
         const hostname = `${protocol}//${scope}`
+        console.log(">> ", { hostname })
+
+        console.log(">> ", { appWindow, delegation, parsedSignedDelegation })
 
         postClientAuthorizeSuccessMessage(appWindow, {
           parsedSignedDelegation,
@@ -88,6 +93,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       const {
         body: [messages],
       } = await getMessages(pubKey)
+      console.log(">> ", { messages })
 
       if (messages && messages.length > 0) {
         const parsedMessages = messages.map((m) => JSON.parse(m))

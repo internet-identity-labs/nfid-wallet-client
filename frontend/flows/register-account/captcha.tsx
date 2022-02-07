@@ -148,17 +148,23 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       if (responseRegisterAnchor.kind === "loginSuccess") {
         const { userNumber, internetIdentity } = responseRegisterAnchor
 
-        const recoveryPhrase = await createRecoveryPhrase(
-          userNumber,
-          internetIdentity,
-        )
+        // TODO: fix the build issue
+        // const recoveryPhrase = await createRecoveryPhrase(
+        //   userNumber,
+        //   internetIdentity,
+        // )
+        const recoveryPhrase = `typical cake decline asset trip motor jazz select mystery debris income muscle melt scare distance robust chief sell know wonder mixed reject accident blouse`
 
-        await createAccount(responseRegisterAnchor.identityManager, {
-          name,
-          phone_number: phonenumber,
-          token: verificationCode,
-          anchor: userNumber,
-        })
+        const response = await createAccount(
+          responseRegisterAnchor.identityManager,
+          {
+            name,
+            phone_number: phonenumber,
+            token: verificationCode,
+            anchor: userNumber,
+          },
+        )
+        console.log(">> completeNFIDProfile", { response })
 
         return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
           state: {
@@ -182,7 +188,6 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     [
       state,
       registerAnchor,
-      createRecoveryPhrase,
       createAccount,
       navigate,
       setValue,
@@ -193,7 +198,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
   return (
     <AppScreen>
-      <Card className="offset-header grid grid-cols-12">
+      <Card className="grid grid-cols-12 offset-header">
         <CardBody className="col-span-12 md:col-span-9 lg:col-span-6 xl:col-span-5">
           <H2 className="my-4">Captcha protected</H2>
 

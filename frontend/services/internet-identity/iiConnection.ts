@@ -42,6 +42,9 @@ import * as tweetnacl from "tweetnacl"
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { CONFIG } from "frontend/config"
 
+const ONE_MINUTE_IN_M_SEC = 60 * 1000
+const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
+
 const canisterId: string = CONFIG.II_CANISTER_ID as string
 
 if (!canisterId)
@@ -378,6 +381,17 @@ export class IIConnection {
     return this.actor
   }
 
+  async getRemoteFEDelegation(): Promise<any> {
+    const { chain, sessionKey } = await requestFEDelegationChain(
+      this.identity,
+      ONE_MINUTE_IN_M_SEC,
+    )
+    return {
+      chain: chain.toJSON(),
+      sessionKey: sessionKey.toJSON(),
+    }
+  }
+
   add = async (
     userNumber: UserNumber,
     alias: string,
@@ -452,13 +466,20 @@ export class IIConnection {
 const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<DelegationIdentity> => {
+  const { sessionKey, chain } = await requestFEDelegationChain(identity)
+  return DelegationIdentity.fromDelegation(sessionKey, chain)
+}
+
+const requestFEDelegationChain = async (
+  identity: SignIdentity,
+  ttl: number = TEN_MINUTES_IN_M_SEC,
+) => {
   const sessionKey = Ed25519KeyIdentity.generate()
-  const tenMinutesInMsec = 10 * 1000 * 60
   // Here the security device is used. Besides creating new keys, this is the only place.
   const chain = await DelegationChain.create(
     identity,
     sessionKey.getPublicKey(),
-    new Date(Date.now() + tenMinutesInMsec),
+    new Date(Date.now() + ttl),
     {
       targets: [
         Principal.from(canisterId),
@@ -467,7 +488,7 @@ const requestFEDelegation = async (
       ],
     },
   )
-  return DelegationIdentity.fromDelegation(sessionKey, chain)
+  return { chain, sessionKey }
 }
 
 // The options sent to the browser when creating the credentials.

@@ -58,7 +58,13 @@ export const useAuthorization = ({
     })
 
   const authorizeApp = React.useCallback(
-    async ({ persona_id, anchor }) => {
+    async ({
+      persona_id,
+      anchor: rawAnchor,
+    }: {
+      persona_id?: string
+      anchor?: string
+    }) => {
       setLoading(true)
       if (!authorizationRequest || !internetIdentity)
         throw new Error("client not ready")
@@ -68,6 +74,8 @@ export const useAuthorization = ({
 
       const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
       const scope = persona_id ? `${persona_id}@${hostname}` : hostname
+
+      const anchor = rawAnchor && BigInt(rawAnchor)
 
       const prepRes = await internetIdentity.prepareDelegation(
         anchor || userNumber,

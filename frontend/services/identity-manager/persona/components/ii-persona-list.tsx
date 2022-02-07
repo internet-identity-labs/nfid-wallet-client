@@ -1,7 +1,7 @@
+import React from "react"
 import clsx from "clsx"
 import { List } from "components/molecules/list"
 import { H5, ListItem } from "frontend/ui-kit/src"
-import React from "react"
 
 interface IIPersonaListProps
   extends React.DetailedHTMLProps<

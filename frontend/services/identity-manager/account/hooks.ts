@@ -37,9 +37,14 @@ export const useAccount = () => {
     async (accountService?: AccountService) => {
       if (!accountService) throw new Error('"accountService" is required')
       const response = await accountService.get_account()
-      console.log(">> ", { response })
+      const newAccount = response.data[0]
+      console.log(">> readAccount", { response, newAccount })
+
+      if (newAccount) {
+        setAccount({ ...newAccount, anchor: newAccount.anchor.toString() })
+      }
     },
-    [],
+    [setAccount],
   )
 
   const getAccount = React.useCallback(async () => {

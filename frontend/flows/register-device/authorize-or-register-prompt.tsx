@@ -1,6 +1,5 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
 import { NFIDPersonas } from "frontend/services/identity-manager/persona/components/nfid-persona"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { Button, Card, CardBody, H2, Loader } from "frontend/ui-kit/src/index"
@@ -9,6 +8,8 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useAuthorization } from "../iframes/nfid-login/hooks"
 import { useRegisterDevicePromt } from "./hooks"
 import { RegisterDevicePromptConstants as RDPC } from "./routes"
+import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
+import { AuthenticateAccountConstants } from "../authenticate/routes"
 
 interface RegisterDevicePromptProps {}
 
@@ -32,13 +33,15 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   console.log(">> RegisterDevicePrompt", { nfidPersonas, iiPersonas })
 
   const handleAuthorizePersona = React.useCallback(
-    ({ persona_id, anchor }: { persona_id?: string; anchor?: string }) =>
+    ({ persona_id }: { persona_id?: string; anchor?: string }) =>
       async () => {
         setStatus("loading")
         if (!secret || !scope || !persona_id)
           throw new Error("missing secret, scope or persona_id")
         await remoteLogin({ secret, scope, persona_id })
-        return navigate(`${RDPC.base}/${RDPC.success}`)
+        return navigate(
+          `${AuthenticateAccountConstants.base}/${AuthenticateAccountConstants.home}`,
+        )
       },
     [navigate, remoteLogin, secret, scope],
   )
@@ -88,11 +91,15 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
                 />
 
                 <IIPersonaList
-                  personas={[
-                    { anchor: "10001" },
-                    { anchor: "10002" },
-                    { anchor: "10003" },
-                  ]}
+                  personas={
+                    iiPersonas.length > 0
+                      ? iiPersonas
+                      : [
+                          { anchor: "10001" },
+                          { anchor: "10002" },
+                          { anchor: "10003" },
+                        ]
+                  }
                   onClickPersona={handleAuthorizeIIPersona}
                 />
 

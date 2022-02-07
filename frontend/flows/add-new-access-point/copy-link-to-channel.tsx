@@ -1,8 +1,16 @@
 import React from "react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Button, Card, CardAction, CardBody, CardTitle, Loader, P } from "frontend/ui-kit/src/index"
+import {
+  Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  Loader,
+  P,
+} from "frontend/ui-kit/src/index"
 import { v4 } from "uuid"
-import { useMultipass } from "frontend/hooks/use-multipass"
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
 interface CopyLinkToChannelProps
   extends React.DetailedHTMLProps<
@@ -13,7 +21,7 @@ interface CopyLinkToChannelProps
 export const CopyLinkToChannel: React.FC<CopyLinkToChannelProps> = () => {
   const [uuid, setUuid] = React.useState("")
 
-  const { createTopic } = useMultipass()
+  const { createTopic } = usePubSubChannel()
 
   const setupTopicChannel = React.useCallback(async () => {
     if (!uuid) {

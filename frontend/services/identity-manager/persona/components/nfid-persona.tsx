@@ -1,6 +1,6 @@
+import React from "react"
 import { Button } from "components/atoms/button"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import React from "react"
 
 interface NFIDPersonasProps
   extends React.DetailedHTMLProps<

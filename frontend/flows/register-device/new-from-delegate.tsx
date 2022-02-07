@@ -17,7 +17,7 @@ export const RegisterNewFromDelegate = () => {
   })
 
   let { secret, userNumber } = useParams()
-  const { createWebAuthNDevice: handleAddDevice } = useDevices()
+  const { createWebAuthNDevice } = useDevices()
 
   // TODO: remove this and all dependants
   const handleSendDeviceKey = React.useCallback(
@@ -38,16 +38,16 @@ export const RegisterNewFromDelegate = () => {
         `Missing secret: ${secret} or userNumber: ${userNumber} from url`,
       )
     }
-    const { device } = await handleAddDevice(secret, BigInt(userNumber))
+    const { device } = await createWebAuthNDevice(BigInt(userNumber))
     opener?.postMessage({ kind: "new-device", device }, opener.origin)
     window.close()
 
     setStatus("success")
-  }, [handleAddDevice, opener, secret, userNumber])
+  }, [createWebAuthNDevice, opener, secret, userNumber])
 
   return (
     <AppScreen classNameWrapper="flex flex-1" isFocused>
-      <div className="h-full w-full flex flex-col items-center justify-center text-center max-w-sm mx-auto">
+      <div className="flex flex-col items-center justify-center w-full h-full max-w-sm mx-auto text-center">
         <H5 className="mb-3">Trust this browser</H5>
 
         <div>

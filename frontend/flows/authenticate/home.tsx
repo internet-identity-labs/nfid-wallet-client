@@ -7,6 +7,7 @@ import {
   ModalAdvancedProps,
 } from "components/molecules/modal/advanced"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import {
   Button,
   Card,
@@ -36,6 +37,19 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   const [showModal, setShowModal] = React.useState(false)
   const [modalOptions, setModalOptions] =
     React.useState<ModalAdvancedProps | null>(null)
+
+  const { devices, deleteDevice, handleLoadDevices } = useDevices()
+  console.log(">> ", { devices })
+
+  const handleDeleteDevice = React.useCallback(
+    (publicKey) => async () => {
+      const response = await deleteDevice(publicKey)
+      console.log(">> handleDeleteDevice", { response })
+      handleLoadDevices()
+      setShowModal(false)
+    },
+    [deleteDevice, handleLoadDevices],
+  )
 
   return (
     <AppScreen
@@ -88,102 +102,108 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                   </div>
                 </List.Header>
                 <List.Items>
-                  <ListItem
-                    title={"MacBook Pro"}
-                    subtitle={"Mozilla Firefox 78.0.2 – 12.08.2021"}
-                    icon={<MdLaptopMac className="text-xl text-blue-base" />}
-                    action={
-                      <ButtonMenu buttonElement={<DotsIcon />}>
-                        {(toggle) => (
-                          <>
-                            <li
-                              className="hover:bg-gray-200"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                toggle()
-                                setShowModal(true)
+                  {devices.map((device, index) => (
+                    <ListItem
+                      key={device.alias}
+                      title={device.alias}
+                      subtitle={"Mozilla Firefox 78.0.2 – 12.08.2021"}
+                      icon={<MdLaptopMac className="text-xl text-blue-base" />}
+                      action={
+                        <ButtonMenu buttonElement={<DotsIcon />}>
+                          {(toggle) => (
+                            <>
+                              <li
+                                className="hover:bg-gray-200"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggle()
+                                  setShowModal(true)
 
-                                setModalOptions({
-                                  title: "Rename access point",
-                                  children: (
-                                    <>
-                                      <Input
-                                        autoFocus
-                                        labelText="Access point name"
-                                        defaultValue={"MacBook Pro"}
-                                      />
-                                    </>
-                                  ),
-                                  primaryButton: {
-                                    text: "Rename",
-                                    type: "primary",
-                                    onClick: () => {
-                                      console.log("rename")
-                                      setShowModal(false)
+                                  setModalOptions({
+                                    title: "Rename access point",
+                                    children: (
+                                      <>
+                                        <Input
+                                          autoFocus
+                                          labelText="Access point name"
+                                          defaultValue={"MacBook Pro"}
+                                        />
+                                      </>
+                                    ),
+                                    primaryButton: {
+                                      text: "Rename",
+                                      type: "primary",
+                                      onClick: () => {
+                                        console.log("rename")
+                                        setShowModal(false)
+                                      },
                                     },
-                                  },
-                                  secondaryButton: {
-                                    text: "Cancel",
-                                    onClick: () => {
-                                      console.log("cancel")
-                                      setShowModal(false)
+                                    secondaryButton: {
+                                      text: "Cancel",
+                                      onClick: () => {
+                                        console.log("cancel")
+                                        setShowModal(false)
+                                      },
                                     },
-                                  },
-                                })
-                              }}
-                            >
-                              <a className="block px-4 py-2 text-sm">Rename</a>
-                            </li>
-                            <li
-                              className="hover:bg-gray-200"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                toggle()
-                                setShowModal(true)
+                                  })
+                                }}
+                              >
+                                <a className="block px-4 py-2 text-sm">
+                                  Rename
+                                </a>
+                              </li>
+                              <li
+                                className="hover:bg-gray-200"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggle()
+                                  setShowModal(true)
 
-                                setModalOptions({
-                                  title: "Delete access point",
-                                  children: (
-                                    <P>
-                                      Do you really want to delete{" "}
-                                      <span className="font-bold">
-                                        One more AP
-                                      </span>{" "}
-                                      access point? This process cannot be
-                                      undone.
-                                    </P>
-                                  ),
-                                  primaryButton: {
-                                    text: "Delete",
-                                    type: "error",
-                                    onClick: () => {
-                                      console.log("Delete access point")
-                                      setShowModal(false)
+                                  setModalOptions({
+                                    title: "Delete access point",
+                                    children: (
+                                      <P>
+                                        Do you really want to delete{" "}
+                                        <span className="font-bold">
+                                          One more AP
+                                        </span>{" "}
+                                        access point? This process cannot be
+                                        undone.
+                                      </P>
+                                    ),
+                                    primaryButton: {
+                                      text: "Delete",
+                                      type: "error",
+                                      onClick: handleDeleteDevice(
+                                        device.pubkey,
+                                      ),
                                     },
-                                  },
-                                  secondaryButton: {
-                                    text: "Cancel",
-                                    onClick: () => {
-                                      console.log("cancel")
-                                      setShowModal(false)
+                                    secondaryButton: {
+                                      text: "Cancel",
+                                      onClick: () => {
+                                        console.log("cancel")
+                                        setShowModal(false)
+                                      },
                                     },
-                                  },
-                                })
-                              }}
-                            >
-                              <a className="block px-4 py-2 text-sm">Delete</a>
-                            </li>
-                          </>
-                        )}
-                      </ButtonMenu>
-                    }
-                  />
-                  {/* 
-                    AVAILABLE ICONS: 
-                      MdLaptopChromebook - MdLaptopMac - MdLaptopWindows - 
-                      MdPhoneAndroid - MdPhoneIphone - 
-                      MdDesktopMac - MdDesktopWindows 
-                    */}
+                                  })
+                                }}
+                              >
+                                <a className="block px-4 py-2 text-sm">
+                                  Delete
+                                </a>
+                              </li>
+                            </>
+                          )}
+                        </ButtonMenu>
+                      }
+                    />
+                    // {/*
+                    //   AVAILABLE ICONS:
+                    //     MdLaptopChromebook - MdLaptopMac - MdLaptopWindows -
+                    //     MdPhoneAndroid - MdPhoneIphone -
+                    //     MdDesktopMac - MdDesktopWindows
+                    //   */}
+                  ))}
                 </List.Items>
               </List>
             </div>

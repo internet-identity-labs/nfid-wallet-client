@@ -7,6 +7,7 @@ import {
   ModalAdvancedProps,
 } from "components/molecules/modal/advanced"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import {
   Button,
@@ -40,6 +41,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
 
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
   console.log(">> ", { devices })
+  const { account } = useAccount()
 
   const handleDeleteDevice = React.useCallback(
     (publicKey) => async () => {
@@ -63,8 +65,8 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
       <Card className="grid grid-cols-12">
         <CardBody className="col-span-12">
           <div>
-            <H2 className="py-2">John Smith</H2>
-            <P className="">NFID Number: 10001</P>
+            <H2 className="py-2">{account?.name}</H2>
+            <P className="">NFID Number: {account?.anchor}</P>
           </div>
 
           <div className="grid grid-cols-12 gap-4 py-6 md:py-14">

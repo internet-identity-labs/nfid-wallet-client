@@ -46,23 +46,23 @@ export const RegisterNewFromDelegate = () => {
   }, [handleAddDevice, opener, secret, userNumber])
 
   return (
-    <AppScreen classNameWrapper="flex flex-1">
+    <AppScreen classNameWrapper="flex flex-1" isFocused>
       <div className="h-full w-full flex flex-col items-center justify-center text-center max-w-sm mx-auto">
-          <H5 className="mb-3">Trust this browser</H5>
+        <H5 className="mb-3">Trust this browser</H5>
 
-          <div>
-            Prove you own this {getPlatform()} by successfully unlocking it to
-            trust this browser.
-          </div>
+        <div>
+          Prove you own this {getPlatform()} by successfully unlocking it to
+          trust this browser.
+        </div>
 
-          <Button
-            onClick={handleRegisterNewDevice}
-            large
-            secondary
-            className="mt-8"
-          >
-            I own this {getPlatform()}
-          </Button>
+        <Button
+          onClick={handleRegisterNewDevice}
+          large
+          secondary
+          className="mt-8"
+        >
+          I own this {getPlatform()}
+        </Button>
       </div>
 
       <Loader isLoading={status === "loading"} />

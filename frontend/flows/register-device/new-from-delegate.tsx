@@ -1,19 +1,25 @@
 import { Button, Loader, TouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { getBrowser, getPlatform } from "frontend/utils"
 import React from "react"
 import { useParams } from "react-router-dom"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { usePostMessage } from "frontend/hooks/use-post-message"
 
 type Status = "initial" | "loading" | "success"
 
-export const NewFromDelegate = () => {
+export const RegisterNewFromDelegate = () => {
   const [status, setStatus] = React.useState<Status>("initial")
-  const [opener, setOpener] = React.useState<Window | null>(null)
-  let { secret, userNumber } = useParams()
-  const { handleAddDevice } = useMultipass()
+  const { opener } = usePostMessage({
+    // @ts-ignore TODO: fix this
+    onMessage: (window, ev) => console.log(">> onMessage", { window, ev }),
+  })
 
+  let { secret, userNumber } = useParams()
+  const { createWebAuthNDevice: handleAddDevice } = useDevices()
+
+  // TODO: remove this and all dependants
   const handleSendDeviceKey = React.useCallback(
     (pubKey) => {
       opener?.postMessage(
@@ -32,32 +38,12 @@ export const NewFromDelegate = () => {
         `Missing secret: ${secret} or userNumber: ${userNumber} from url`,
       )
     }
-    const response = await handleAddDevice(secret, BigInt(userNumber))
-    handleSendDeviceKey(response.publicKey)
+    const { device } = await handleAddDevice(secret, BigInt(userNumber))
+    opener?.postMessage({ kind: "new-device", device }, opener.origin)
+    window.close()
+
     setStatus("success")
-  }, [handleAddDevice, handleSendDeviceKey, secret, userNumber])
-
-  const waitForOpener = React.useCallback(async () => {
-    setStatus("loading")
-    const maxTries = 5
-    let interval: NodeJS.Timer
-    let run: number = 0
-
-    interval = setInterval(() => {
-      if (run >= maxTries) {
-        clearInterval(interval)
-      }
-      if (window.opener !== null) {
-        setOpener(window.opener)
-        setStatus("initial")
-        clearInterval(interval)
-      }
-    }, 500)
-  }, [])
-
-  React.useEffect(() => {
-    waitForOpener()
-  }, [waitForOpener])
+  }, [handleAddDevice, opener, secret, userNumber])
 
   return (
     <AppScreen>

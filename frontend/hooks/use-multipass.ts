@@ -17,9 +17,6 @@ import { useSearchParams } from "react-router-dom"
 export const useMultipass = () => {
   const [params] = useSearchParams()
 
-  const { postMessages, getMessages, createTopic, deleteTopic } =
-    usePubSubChannel()
-
   const createWebAuthNIdentity = React.useCallback(async () => {
     const deviceName = `${getBrowser()} on ${getPlatform()}`
     const identity = await WebAuthnIdentity.create({
@@ -31,35 +28,10 @@ export const useMultipass = () => {
     return { identity: JSON.stringify(identity.toJSON()), deviceName, pow }
   }, [])
 
-  const handleAddDevice = React.useCallback(
-    async (secret: string, userNumber: bigint) => {
-      const existingDevices = await IIConnection.lookupAll(userNumber)
-
-      const identity = await WebAuthnIdentity.create({
-        publicKey: creationOptions(existingDevices),
-      })
-      const publicKey = identity.getPublicKey().toDer()
-      const message = JSON.stringify({
-        publicKey,
-        rawId: blobToHex(identity.rawId),
-        deviceName: `${getBrowser()} on ${getPlatform()}`,
-      })
-
-      await postMessages(secret, [message])
-      return { publicKey }
-    },
-    [postMessages],
-  )
-
   return {
     ...useAccount(),
     ...usePersona(),
     createWebAuthNIdentity,
-    handleAddDevice,
-    createTopic,
-    deleteTopic,
-    getMessages,
-    postMessages,
     applicationName: params.get("applicationName"),
   }
 }

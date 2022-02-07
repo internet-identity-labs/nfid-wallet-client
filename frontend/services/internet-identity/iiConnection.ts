@@ -42,6 +42,9 @@ import * as tweetnacl from "tweetnacl"
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { CONFIG } from "frontend/config"
 
+const ONE_MINUTE_IN_M_SEC = 60 * 1000
+const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
+
 const canisterId: string = CONFIG.II_CANISTER_ID as string
 
 if (!canisterId)
@@ -202,18 +205,56 @@ export class IIConnection {
     return this.fromWebauthnDevices(userNumber, devices)
   }
 
+  static async loginFromRemoteFrontendDelegation({
+    userNumber,
+    chain: chainJSON,
+    sessionKey: sessionKeyJSON,
+  }: {
+    userNumber: bigint
+    chain: string
+    sessionKey: string
+  }): Promise<LoginResult> {
+    const { chain, sessionKey } = {
+      chain: DelegationChain.fromJSON(chainJSON),
+      sessionKey: Ed25519KeyIdentity.fromJSON(sessionKeyJSON),
+    }
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      sessionKey,
+      chain,
+    )
+    const actor = await IIConnection.createActor(delegationIdentity)
+
+    const devices = await IIConnection.lookupAuthenticators(userNumber)
+    const multiIdent = getMultiIdent(devices)
+
+    return {
+      kind: "loginSuccess",
+      userNumber,
+      internetIdentity: new IIConnection(
+        // eslint-disable-next-line
+        multiIdent._actualIdentity!,
+        delegationIdentity,
+        actor,
+      ),
+      identityManager: await this.createServiceActor<IdentityManagerService>(
+        delegationIdentity,
+        IdentityManagerIdlFactory,
+        CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+      ),
+      pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
+        delegationIdentity,
+        PubsubChannelIdlFactory,
+        CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
+      ),
+    }
+  }
+
   static async fromWebauthnDevices(
     userNumber: bigint,
     devices: DeviceData[],
   ): Promise<LoginResult> {
-    const multiIdent = MultiWebAuthnIdentity.fromCredentials(
-      devices.flatMap((device) =>
-        device.credential_id.map((credentialId: CredentialId) => ({
-          pubkey: derFromPubkey(device.pubkey),
-          credentialId: blobFromUint8Array(Buffer.from(credentialId)),
-        })),
-      ),
-    )
+    const multiIdent = getMultiIdent(devices)
+
     let delegationIdentity: DelegationIdentity
     try {
       delegationIdentity = await requestFEDelegation(multiIdent)
@@ -378,6 +419,17 @@ export class IIConnection {
     return this.actor
   }
 
+  async getRemoteFEDelegation(): Promise<any> {
+    const { chain, sessionKey } = await requestFEDelegationChain(
+      this.identity,
+      ONE_MINUTE_IN_M_SEC,
+    )
+    return {
+      chain: chain.toJSON(),
+      sessionKey: sessionKey.toJSON(),
+    }
+  }
+
   add = async (
     userNumber: UserNumber,
     alias: string,
@@ -452,13 +504,20 @@ export class IIConnection {
 const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<DelegationIdentity> => {
+  const { sessionKey, chain } = await requestFEDelegationChain(identity)
+  return DelegationIdentity.fromDelegation(sessionKey, chain)
+}
+
+const requestFEDelegationChain = async (
+  identity: SignIdentity,
+  ttl: number = TEN_MINUTES_IN_M_SEC,
+) => {
   const sessionKey = Ed25519KeyIdentity.generate()
-  const tenMinutesInMsec = 10 * 1000 * 60
   // Here the security device is used. Besides creating new keys, this is the only place.
   const chain = await DelegationChain.create(
     identity,
     sessionKey.getPublicKey(),
-    new Date(Date.now() + tenMinutesInMsec),
+    new Date(Date.now() + ttl),
     {
       targets: [
         Principal.from(canisterId),
@@ -467,7 +526,7 @@ const requestFEDelegation = async (
       ],
     },
   )
-  return DelegationIdentity.fromDelegation(sessionKey, chain)
+  return { chain, sessionKey }
 }
 
 // The options sent to the browser when creating the credentials.
@@ -530,3 +589,14 @@ export const creationOptions = (
 
 export const derFromPubkey = (pubkey: DeviceKey): DerEncodedBlob =>
   derBlobFromBlob(blobFromUint8Array(Buffer.from(pubkey)))
+
+const getMultiIdent = (devices: DeviceData[]) => {
+  return MultiWebAuthnIdentity.fromCredentials(
+    devices.flatMap((device) =>
+      device.credential_id.map((credentialId: CredentialId) => ({
+        pubkey: derFromPubkey(device.pubkey),
+        credentialId: blobFromUint8Array(Buffer.from(credentialId)),
+      })),
+    ),
+  )
+}

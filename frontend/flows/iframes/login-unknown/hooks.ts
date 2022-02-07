@@ -1,12 +1,14 @@
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
 import { RegisterDevicePromptConstants as RDPC } from "frontend/flows/register-device/routes"
+import { usePostMessage } from "frontend/hooks/use-post-message"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import React from "react"
 
 const READY_MESSAGE = {
   kind: "authorize-ready",
 }
 
-type MessageKinds = "authorize-client" | "registered-device"
+type MessageKinds = "authorize-client" | "registered-device" | "new-device"
 
 interface Message {
   kind: MessageKinds
@@ -21,7 +23,19 @@ interface UseMessageChannelProps {
 export const useMessageChannel = ({
   messageHandler,
 }: UseMessageChannelProps) => {
-  const [opener, setOpener] = React.useState<Window | null>(null)
+  const handleAuthMessage = React.useCallback(
+    async (event: { data: Message }) => {
+      const { kind } = event.data
+      const eventHandler = messageHandler[kind]
+      if (eventHandler && typeof eventHandler === "function") {
+        return eventHandler(event)
+      }
+      console.warn(`Unknown message kind: ${kind}`, { data: event.data })
+    },
+    [messageHandler],
+  )
+
+  const { opener } = usePostMessage({ onMessage: <any>handleAuthMessage })
 
   const postClientReadyMessage = React.useCallback(() => {
     if (opener) return opener.postMessage(READY_MESSAGE, "*")
@@ -42,43 +56,6 @@ export const useMessageChannel = ({
     [],
   )
 
-  const handleAuthMessage = React.useCallback(
-    async (event: { data: Message }) => {
-      const { kind } = event.data
-      const eventHandler = messageHandler[kind]
-      if (eventHandler && typeof eventHandler === "function") {
-        return eventHandler(event)
-      }
-      console.warn(`Unknown message kind: ${kind}`, { data: event.data })
-    },
-    [messageHandler],
-  )
-
-  const waitForOpener = React.useCallback(async () => {
-    const maxTries = 5
-    let interval: NodeJS.Timer
-    let run: number = 0
-
-    interval = setInterval(() => {
-      if (run >= maxTries) {
-        clearInterval(interval)
-      }
-      if (window.opener !== null) {
-        setOpener(window.opener)
-        clearInterval(interval)
-      }
-    }, 500)
-  }, [])
-
-  React.useEffect(() => {
-    waitForOpener()
-  }, [waitForOpener])
-
-  React.useEffect(() => {
-    window.addEventListener("message", handleAuthMessage)
-    return () => window.removeEventListener("message", handleAuthMessage)
-  }, [handleAuthMessage])
-
   return {
     isReady: opener !== null,
     opener,
@@ -88,10 +65,15 @@ export const useMessageChannel = ({
 }
 
 export const useUnknownDeviceConfig = () => {
+  const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
+    "initial",
+  )
+  const [message, setMessage] = React.useState<any | null>(null)
   const [appWindow, setAppWindow] = React.useState<Window | null>(null)
   const [domain, setDomain] = React.useState("")
   const [pubKey, setPubKey] = React.useState("")
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
+  const { createDevice } = useDevices()
 
   const url = React.useMemo(() => {
     const multipassDomain = import.meta.env.VITE_MULTIPASS_DOMAIN
@@ -114,22 +96,50 @@ export const useUnknownDeviceConfig = () => {
           setPubKey(hex)
           setDomain(new URL(event.origin).host)
         },
+        "new-device": (event: any) => {
+          console.log(">> useUnknownDeviceConfig new-device", { event })
+          handleStoreNewDevice(event.data)
+        },
         "registered-device": (event: any) => {
           setNewDeviceKey(event.data.deviceKey)
         },
       },
     })
 
+  const handleStoreNewDevice = React.useCallback(
+    async ({ device }) => {
+      console.log(">> handleStoreNewDevice", { device })
+
+      if (!message) throw new Error("No message")
+
+      const { userNumber } = message
+      console.log(">> ", { userNumber, ...device })
+
+      setNewDeviceKey(device.publicKey)
+      const response = await createDevice({
+        ...device,
+        userNumber: BigInt(userNumber),
+      })
+      console.log(">> ", { response })
+    },
+    [createDevice, message],
+  )
+
   React.useEffect(() => {
     isReady && postClientReadyMessage()
   }, [isReady, postClientReadyMessage])
 
   return {
+    status,
+    setStatus,
+    message,
+    setMessage,
     url,
     pubKey,
     scope: domain,
     appWindow,
     newDeviceKey,
+    setNewDeviceKey,
     postClientAuthorizeSuccessMessage,
   }
 }

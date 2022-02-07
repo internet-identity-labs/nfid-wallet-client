@@ -1,19 +1,25 @@
-import { Button, Loader, TouchId } from "frontend/ui-kit/src/index"
+import { Button, H5, Loader, TouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { getBrowser, getPlatform } from "frontend/utils"
 import React from "react"
 import { useParams } from "react-router-dom"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { usePostMessage } from "frontend/hooks/use-post-message"
 
 type Status = "initial" | "loading" | "success"
 
-export const NewFromDelegate = () => {
+export const RegisterNewFromDelegate = () => {
   const [status, setStatus] = React.useState<Status>("initial")
-  const [opener, setOpener] = React.useState<Window | null>(null)
-  let { secret, userNumber } = useParams()
-  const { handleAddDevice } = useMultipass()
+  const { opener } = usePostMessage({
+    // @ts-ignore TODO: fix this
+    onMessage: (window, ev) => console.log(">> onMessage", { window, ev }),
+  })
 
+  let { secret, userNumber } = useParams()
+  const { createWebAuthNDevice } = useDevices()
+
+  // TODO: remove this and all dependants
   const handleSendDeviceKey = React.useCallback(
     (pubKey) => {
       opener?.postMessage(
@@ -32,59 +38,33 @@ export const NewFromDelegate = () => {
         `Missing secret: ${secret} or userNumber: ${userNumber} from url`,
       )
     }
-    const response = await handleAddDevice(secret, BigInt(userNumber))
-    handleSendDeviceKey(response.publicKey)
+    const { device } = await createWebAuthNDevice(BigInt(userNumber))
+    opener?.postMessage({ kind: "new-device", device }, opener.origin)
+    window.close()
+
     setStatus("success")
-  }, [handleAddDevice, handleSendDeviceKey, secret, userNumber])
-
-  const waitForOpener = React.useCallback(async () => {
-    setStatus("loading")
-    const maxTries = 5
-    let interval: NodeJS.Timer
-    let run: number = 0
-
-    interval = setInterval(() => {
-      if (run >= maxTries) {
-        clearInterval(interval)
-      }
-      if (window.opener !== null) {
-        setOpener(window.opener)
-        setStatus("initial")
-        clearInterval(interval)
-      }
-    }, 500)
-  }, [])
-
-  React.useEffect(() => {
-    waitForOpener()
-  }, [waitForOpener])
+  }, [createWebAuthNDevice, opener, secret, userNumber])
 
   return (
-    <AppScreen>
-      <h1 className={clsx("text-center font-bold text-3xl")}>
-        Register this device
-      </h1>
-      <div className={clsx("mt-10 text-center")}>
-        If you'd like to use Face ID as your Multipass "password" on supported
-        Safari applications, prove you can unlock Face ID to register this
-        MacBook
+    <AppScreen classNameWrapper="flex flex-1" isFocused>
+      <div className="flex flex-col items-center justify-center w-full h-full max-w-sm mx-auto text-center">
+        <H5 className="mb-3">Trust this browser</H5>
+
+        <div>
+          Prove you own this {getPlatform()} by successfully unlocking it to
+          trust this browser.
+        </div>
+
+        <Button
+          onClick={handleRegisterNewDevice}
+          large
+          secondary
+          className="mt-8"
+        >
+          I own this {getPlatform()}
+        </Button>
       </div>
-      <div className={clsx("my-10 mx-auto")}>
-        <TouchId className={clsx("w-20")} />
-      </div>
-      <Button
-        onClick={handleRegisterNewDevice}
-        className={clsx("py-2 px-10 bg-blue-700 text-white border-blue-900")}
-      >
-        I want to use Touch ID as my Multipass "password" in {getBrowser()} on{" "}
-        {getPlatform()}
-      </Button>
-      <a
-        className={clsx("underline text-center mt-7 cursor-pointer")}
-        onClick={() => window.close()}
-      >
-        cancel
-      </a>
+
       <Loader isLoading={status === "loading"} />
     </AppScreen>
   )

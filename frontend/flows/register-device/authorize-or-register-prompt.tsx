@@ -1,17 +1,15 @@
-import {
-  Card,
-  CardAction,
-  CardTitle,
-  Loader,
-  LoginTemporarily,
-  SetupTouchId,
-} from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { NFIDPersonas } from "frontend/services/identity-manager/persona/components/nfid-persona"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { Button, Card, CardBody, H2, Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { RegisterConstants as RC } from "../register/routes"
+import { useAuthorization } from "../iframes/nfid-login/hooks"
 import { useRegisterDevicePromt } from "./hooks"
 import { RegisterDevicePromptConstants as RDPC } from "./routes"
+import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
+import { AuthenticateAccountConstants } from "../authenticate/routes"
 
 interface RegisterDevicePromptProps {}
 
@@ -20,41 +18,100 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
     "initial" | "loading" | "success" | "error"
   >("initial")
   const { secret, scope } = useParams()
+  // TODO: pass applicationName through QRCode?
+  const applicationName = "{applicationName}"
+
+  const { userNumber } = useAccount()
   const navigate = useNavigate()
   const { remoteLogin, sendWaitForUserInput } = useRegisterDevicePromt()
+  const { authorizeApp } = useAuthorization({
+    userNumber,
+  })
+  const { nextPersonaId, nfidPersonas, iiPersonas, createPersona } =
+    usePersona()
 
-  const handleLogin = React.useCallback(async () => {
-    setStatus("loading")
-    await remoteLogin({ secret, scope })
-    return navigate(`${RDPC.base}/${RDPC.success}`)
-  }, [navigate, remoteLogin, secret, scope])
+  console.log(">> RegisterDevicePrompt", { nfidPersonas, iiPersonas })
 
-  const handleLoginAndRegister = React.useCallback(async () => {
+  const handleAuthorizePersona = React.useCallback(
+    ({ persona_id }: { persona_id?: string; anchor?: string }) =>
+      async () => {
+        setStatus("loading")
+        if (!secret || !scope || !persona_id)
+          throw new Error("missing secret, scope or persona_id")
+        await remoteLogin({ secret, scope, persona_id })
+        return navigate(
+          `${AuthenticateAccountConstants.base}/${AuthenticateAccountConstants.home}`,
+        )
+      },
+    [navigate, remoteLogin, secret, scope],
+  )
+
+  const handleCreatePersonaAndLogin = React.useCallback(async () => {
     setStatus("loading")
-    await remoteLogin({ secret, scope, register: true })
-    setStatus("success")
-    return navigate(`${RC.base}/${RC.confirmation}/${secret}`)
-  }, [navigate, remoteLogin, scope, secret])
+    console.log(">> handleCreatePersonaAndLogin", { scope })
+
+    const response = await createPersona({ domain: scope })
+    console.log(">> handleCreatePersonaAndLogin", { response })
+
+    if (response?.status_code === 200) {
+      handleAuthorizePersona({ persona_id: nextPersonaId })
+    }
+    console.error(">> handleCreatePersonaAndLogin", { response })
+  }, [createPersona, handleAuthorizePersona, nextPersonaId, scope])
+
+  const handleAuthorizeIIPersona = React.useCallback(
+    ({ anchor }) =>
+      async () => {
+        setStatus("loading")
+        await authorizeApp({ anchor })
+        setStatus("success")
+      },
+    [authorizeApp],
+  )
 
   React.useEffect(() => {
     secret && sendWaitForUserInput(secret)
   }, [secret, sendWaitForUserInput])
 
   return (
-    <AppScreen isFocused>
-      <Card className="h-full flex flex-col">
-        {status === "error" && <CardTitle>Something went wrong</CardTitle>}
-        {(status === "initial" || status === "loading") && (
-          <>
-            <CardTitle>How to proceed?</CardTitle>
-            <Loader isLoading={status === "loading"} />
-            <CardAction bottom className="justify-center">
-              <LoginTemporarily onClick={handleLogin} />
-              <SetupTouchId onClick={handleLoginAndRegister} />
-            </CardAction>
-          </>
-        )}
+    <AppScreen>
+      <Card className="grid grid-cols-12">
+        <CardBody className="col-span-12 md:col-span-10 lg:col-span-8">
+          {status === "error" && <H2>Something went wrong</H2>}
+
+          {(status === "initial" || status === "loading") && (
+            <div>
+              <H2 className="mb-4">Sign in to {applicationName}</H2>
+
+              <div className="max-w-md">
+                <NFIDPersonas
+                  personas={nfidPersonas}
+                  onClickPersona={handleAuthorizePersona}
+                  onClickCreatePersona={handleCreatePersonaAndLogin}
+                />
+
+                <IIPersonaList
+                  personas={
+                    iiPersonas.length > 0
+                      ? iiPersonas
+                      : [
+                          { anchor: "10001" },
+                          { anchor: "10002" },
+                          { anchor: "10003" },
+                        ]
+                  }
+                  onClickPersona={handleAuthorizeIIPersona}
+                />
+
+                <Button stroke block className="mt-3">
+                  Link new Internet Identity Anchor
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardBody>
       </Card>
+      <Loader isLoading={status === "loading"} />
     </AppScreen>
   )
 }

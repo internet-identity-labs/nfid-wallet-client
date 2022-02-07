@@ -6,7 +6,7 @@ import { Button, H5, Loader } from "frontend/ui-kit/src"
 import React from "react"
 import { Navigate, useNavigate } from "react-router-dom"
 import { AuthoriseAppConstants } from "../authorize-app/routes"
-import { IFrameRestoreAccessPointConstants as RAPC } from "../restore-account/routes"
+import { IFrameConstants } from "../routes"
 import { useAuthorization } from "./hooks"
 
 export const Authenticate: React.FC<{ userNumber: bigint }> = ({
@@ -33,7 +33,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
             Unlock NFID {account && `as ${account.name}`}
           </Button>
 
-          <Button block stroke onClick={() => navigate(RAPC.base)}>
+          <Button block stroke onClick={() => navigate(IFrameConstants.base)}>
             Create new NFID
           </Button>
         </div>

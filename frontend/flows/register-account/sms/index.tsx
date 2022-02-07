@@ -8,7 +8,7 @@ import {
   H2,
   Input,
   Loader,
-  P
+  P,
 } from "frontend/ui-kit/src/index"
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 import React, { useRef } from "react"
@@ -108,6 +108,7 @@ export const RegisterAccountSMSVerification: React.FC<
   }, [phonenumber, verifyPhonenumber])
 
   const handleVerifySMSToken = async () => {
+    setLoading(true)
     const verificationCode = getVerificationCode()
 
     if (verificationCode.length != tokenRules.minLength) {

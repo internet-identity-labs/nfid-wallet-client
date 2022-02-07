@@ -14,7 +14,14 @@ import {
   SetupTouchId,
 } from "frontend/ui-kit/src/index"
 import React from "react"
+import { useNavigate } from "react-router-dom"
+import { IFrameRestoreAccessPointConstants as RAC } from "../restore-account/routes"
 import { useUnknownDeviceConfig } from "./hooks"
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
+import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
+import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface UnknownDeviceScreenProps {
   showRegisterDefault?: boolean
@@ -24,30 +31,56 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   showRegisterDefault,
 }) => {
   const { applicationName } = useMultipass()
-  const [status, setStatus] = React.useState<"initial" | "loading" | "success">(
-    "initial",
-  )
-  const [message, setMessage] = React.useState<any | null>(null)
+  const { readAccount } = useAccount()
+  // TODO: improve method naming
+  const { identityManager, onRegisterSuccess: setAuthenticatedActors } =
+    useAuthentication()
   const [showRegister, setShowRegister] = React.useState(showRegisterDefault)
   const {
+    status,
+    setStatus,
+    message,
+    setMessage,
     url,
     scope,
     pubKey,
     appWindow,
     newDeviceKey,
+    setNewDeviceKey,
     postClientAuthorizeSuccessMessage,
   } = useUnknownDeviceConfig()
-  const { getMessages } = useMultipass()
+  const { getMessages } = usePubSubChannel()
 
-  // TODO: for cleanup we need NFID delegate
+  const handleLoginFromRemoteDelegation = React.useCallback(
+    async (registerMessage) => {
+      const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
+        chain: JSON.stringify(registerMessage.nfid.chain),
+        sessionKey: JSON.stringify(registerMessage.nfid.sessionKey),
+        userNumber: BigInt(registerMessage.userNumber),
+      })
+      const result = apiResultToLoginResult(loginResult)
+
+      if (result.tag === "ok") {
+        setAuthenticatedActors(result)
+      }
+      // TODO: handle this more gracefully
+      if (result.tag !== "ok") throw new Error("login failed")
+    },
+    [setAuthenticatedActors],
+  )
 
   const handleSendDelegate = React.useCallback(
     (delegation) => {
       try {
         const parsedSignedDelegation = buildDelegate(delegation)
         const protocol =
-          CONFIG.II_ENV === "development" ? "http:" : window.location.protocol
+          CONFIG.FRONTEND_MODE === "development"
+            ? "http:"
+            : window.location.protocol
         const hostname = `${protocol}//${scope}`
+        console.log(">> ", { hostname })
+
+        console.log(">> ", { appWindow, delegation, parsedSignedDelegation })
 
         postClientAuthorizeSuccessMessage(appWindow, {
           parsedSignedDelegation,
@@ -61,27 +94,11 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     [appWindow, postClientAuthorizeSuccessMessage, scope],
   )
 
-  const handleSuccess = React.useCallback(
-    (receivedMessage) => {
-      setMessage(receivedMessage)
-
-      // user requested device registration
-      if (receivedMessage.userNumber) {
-        setStatus("success")
-        setShowRegister(true)
-        return
-      }
-
-      handleSendDelegate(receivedMessage)
-    },
-    [handleSendDelegate],
-  )
-
   const handleRegisterDevice = React.useCallback(async () => {
     setStatus("loading")
     window.open(`${RNDC.base}/${pubKey}/${message.userNumber}`, "_blank")
     // const response = await handleAddDevice(BigInt(delegation.userNumber))
-  }, [message, pubKey])
+  }, [message?.userNumber, pubKey, setStatus])
 
   const handlePollForDelegate = React.useCallback(
     async (cancelPoll: () => void) => {
@@ -94,16 +111,18 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
         const waitingMessage = parsedMessages.find(
           (m) => m.type === "remote-login-wait-for-user",
         )
-        const loginMessage = parsedMessages.find(
-          (m) => m.type === "remote-login",
-        )
         const registerMessage = parsedMessages.find(
           (m) => m.type === "remote-login-register",
         )
 
-        if (loginMessage || registerMessage) {
+        if (registerMessage) {
+          console.log(">> handlePollForDelegate", { registerMessage })
+
+          handleLoginFromRemoteDelegation(registerMessage)
+          setMessage(registerMessage)
+
           setStatus("success")
-          handleSuccess(loginMessage || registerMessage)
+          setShowRegister(true)
           cancelPoll()
         }
         if (waitingMessage) {
@@ -111,7 +130,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
         }
       }
     },
-    [getMessages, handleSuccess, pubKey],
+    [
+      getMessages,
+      handleLoginFromRemoteDelegation,
+      pubKey,
+      setMessage,
+      setStatus,
+    ],
   )
 
   const handleWaitForRegisteredDeviceKey = React.useCallback(async () => {
@@ -119,42 +144,67 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       BigInt(message.userNumber),
     )
 
-    const matchedDevice = existingDevices.find(
-      (deviceData) => deviceData.pubkey.toString() === newDeviceKey.toString(),
-    )
+    // TODO: fix the comparison
+    const matchedDevice = existingDevices.find((deviceData) => {
+      const existingDeviceString = deviceData.pubkey.toString()
+      const newDeviceKeyString = blobFromHex(newDeviceKey).toString()
 
-    if (matchedDevice) {
-      setStatus("success")
-      setUserNumber(BigInt(message.userNumber))
-      handleSendDelegate(message)
-    }
-  }, [handleSendDelegate, message, newDeviceKey])
+      existingDeviceString === newDeviceKeyString
+    })
+
+    console.log(">> handleWaitForRegisteredDeviceKey", {
+      existingDevices,
+      newDeviceKey,
+      matchedDevice,
+    })
+
+    await readAccount(identityManager)
+    setStatus("success")
+    setUserNumber(BigInt(message.userNumber))
+    handleSendDelegate(message)
+    setNewDeviceKey(null)
+  }, [
+    handleSendDelegate,
+    identityManager,
+    message,
+    newDeviceKey,
+    readAccount,
+    setNewDeviceKey,
+    setStatus,
+  ])
 
   useInterval(handlePollForDelegate, 2000)
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   const isLoading = status === "loading"
+  const navigate = useNavigate()
 
   return (
     <IFrameScreen>
-      <H5 className="text-center mb-4">
+      <H5 className="mb-4 text-center">
         {isLoading
           ? "Awaiting confirmation from your phone"
           : `Log in to ${applicationName} with your NFID`}
       </H5>
 
       {!isLoading && !showRegister && url ? (
-        <a href={url} target="_blank">
-          <div className="flex flex-col justify-center text-center">
-            <div>Scan this code with the camera app on your phone</div>
-            <div className="m-auto py-5">
+        <div className="flex flex-col justify-center text-center">
+          <div>Scan this code with the camera app on your phone</div>
+
+          <div className="py-5 m-auto">
+            <a href={url} target="_blank">
               <QRCode content={url} options={{ margin: 0 }} />
-            </div>
-            <Button secondary className="mb-2">
-              I already have an NFID
-            </Button>
+            </a>
           </div>
-        </a>
+
+          <Button
+            secondary
+            className="mb-2"
+            onClick={() => navigate(`${RAC.base}`)}
+          >
+            I already have an NFID
+          </Button>
+        </div>
       ) : null}
 
       {showRegister && (

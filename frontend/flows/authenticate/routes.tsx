@@ -1,6 +1,7 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 import { AuthenticateNFIDLogin } from "."
+import { AuthWrapper } from "../auth-wrapper"
 import { AuthenticateNFIDHome } from "./home"
 
 export const AuthenticateAccountConstants = {
@@ -17,7 +18,11 @@ export const AuthenticateAccountRoutes = (
     />
     <Route
       path={AuthenticateAccountConstants.home}
-      element={<AuthenticateNFIDHome />}
+      element={
+        <AuthWrapper>
+          <AuthenticateNFIDHome />
+        </AuthWrapper>
+      }
     />
   </Route>
 )

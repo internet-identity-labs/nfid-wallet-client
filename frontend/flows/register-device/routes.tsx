@@ -2,7 +2,7 @@ import React from "react"
 import { Outlet, Route } from "react-router-dom"
 import { AuthWrapper } from "../auth-wrapper"
 import { RegisterDevicePrompt } from "./authorize-or-register-prompt"
-import { NewFromDelegate } from "./new-from-delegate"
+import { RegisterNewFromDelegate } from "./new-from-delegate"
 import { RegisterDevicePromptSuccess } from "./success"
 
 // Prompt routes
@@ -39,6 +39,6 @@ export const RegisterNewDeviceConstants = {
 
 export const RegisterNewDeviceRoutes = (
   <Route path={RegisterNewDeviceConstants.base} element={<Outlet />}>
-    <Route path={":secret/:userNumber"} element={<NewFromDelegate />} />
+    <Route path={":secret/:userNumber"} element={<RegisterNewFromDelegate />} />
   </Route>
 )

@@ -19,13 +19,30 @@ export const useAccount = () => {
 
   const createAccount = React.useCallback(
     async (accountService: AccountService, account: HTTPAccountRequest) => {
+      console.log(">> ", { account })
+
       const response = await accountService.create_account(account)
       const newAccount = response.data[0]
+      console.log(">> createAccount", { response, newAccount })
 
-      if (response.status_code === 200 && newAccount) {
+      if (newAccount) {
         setAccount({ ...newAccount, anchor: newAccount.anchor.toString() })
       }
       return response
+    },
+    [setAccount],
+  )
+
+  const readAccount = React.useCallback(
+    async (accountService?: AccountService) => {
+      if (!accountService) throw new Error('"accountService" is required')
+      const response = await accountService.get_account()
+      const newAccount = response.data[0]
+      console.log(">> readAccount", { response, newAccount })
+
+      if (newAccount) {
+        setAccount({ ...newAccount, anchor: newAccount.anchor.toString() })
+      }
     },
     [setAccount],
   )
@@ -69,6 +86,7 @@ export const useAccount = () => {
     account,
     userNumber,
     createAccount,
+    readAccount,
     getAccount,
     updateAccount,
     verifyPhonenumber,

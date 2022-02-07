@@ -20,7 +20,7 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   const [personas, setPersonas] = useAtom(personaAtom)
   const { isLoading } = useIsLoading()
   const { identityManager: personaService } = useAuthentication()
-  const { account, createAccount } = useAccount()
+  const { account, createAccount, readAccount } = useAccount()
 
   const nfidPersonas = React.useMemo(() => {
     if (!personas) return []
@@ -43,6 +43,8 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   const getPersona = React.useCallback(async () => {
     if (!personaService) return
     const response = await personaService.read_personas()
+    console.log(">> getPersona", { response })
+
     if (response.status_code === 200) {
       setPersonas(normalizePersonas(response.data[0]))
     }
@@ -50,31 +52,39 @@ export const usePersona = ({ application }: UsePersona = {}) => {
 
   const createPersona = React.useCallback(
     async ({ domain }) => {
-      const response = await personaService?.create_persona({
+      console.log(">> ", { account })
+
+      if (!account) throw new Error('"account" is required')
+
+      const persona = {
         nfid_persona: { domain, persona_id: nextPersonaId },
-      })
+      }
+
+      const response = await personaService?.create_persona(persona)
+      console.log(">> createPersona", { response })
 
       if (response?.status_code === 200) {
         setPersonas(normalizePersonas(response.data[0]?.personas))
       }
       // NOTE: this is only for dev purposes
-      if (response?.status_code === 404 && personaService && account) {
-        const newAccount: HTTPAccountRequest = {
-          token: "123",
-          name: account.name,
-          anchor: BigInt(account.anchor),
-          phone_number: account.phone_number,
-        }
-        await createAccount(personaService, newAccount)
-        await createPersona({ domain })
-      }
+      // if (response?.status_code === 404 && personaService && account) {
+      //   const newAccount: HTTPAccountRequest = {
+      //     token: "123",
+      //     name: account.name,
+      //     anchor: BigInt(account.anchor),
+      //     phone_number: account.phone_number,
+      //   }
+      //   await createAccount(personaService, newAccount)
+      //   await createPersona({ domain })
+      // }
+      return response
     },
-    [account, createAccount, nextPersonaId, personaService, setPersonas],
+    [account, nextPersonaId, personaService, setPersonas],
   )
 
   React.useEffect(() => {
-    getPersona()
-  }, [getPersona, setPersonas])
+    personaService && getPersona()
+  }, [getPersona, personaService, setPersonas])
 
   return {
     isLoadingPersonas: isLoading,

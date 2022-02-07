@@ -69,7 +69,15 @@ export const useRegisterDevicePromt = () => {
   )
 
   const remoteLogin = React.useCallback(
-    async ({ secret, scope, register = false }) => {
+    async ({
+      secret,
+      scope: hostname,
+      persona_id,
+    }: {
+      secret: string
+      scope: string
+      persona_id: string
+    }) => {
       if (!userNumber) {
         throw new Error("Device not registered")
       }
@@ -77,6 +85,10 @@ export const useRegisterDevicePromt = () => {
         throw new Error("Unauthorized")
       }
 
+      const { chain, sessionKey } =
+        await internetIdentity.getRemoteFEDelegation()
+
+      const scope = persona_id ? `${persona_id}@${hostname}` : hostname
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,
         scope,
@@ -84,10 +96,12 @@ export const useRegisterDevicePromt = () => {
       )
 
       const message = JSON.stringify({
-        type: register ? "remote-login-register" : "remote-login",
+        type: "remote-login-register",
+        userNumber: userNumber.toString(),
+        nfid: { chain, sessionKey },
         ...parsedSignedDelegation,
-        ...(register ? { userNumber: userNumber.toString() } : {}),
       })
+      console.log(">> ", { message, size: message.length })
 
       const response = await postMessages(secret, [message])
 

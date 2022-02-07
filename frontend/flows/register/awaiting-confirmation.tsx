@@ -10,12 +10,12 @@ import {
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useInterval } from "frontend/hooks/use-interval"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { ExistingDevices } from "frontend/services/identity-manager/devices/existing-devices"
 import React from "react"
 import { useParams } from "react-router"
 import { useAuthentication } from "../auth-wrapper"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
 const MAX_TRIES = 10
 const TRY_DELAY = 2000
@@ -26,7 +26,7 @@ export const AwaitingConfirmation = () => {
   const { secret = "" } = useParams()
   const [status, setStatus] = React.useState<State>("loading")
   const { userNumber } = useAccount()
-  const { getMessages } = useMultipass()
+  const { getMessages } = usePubSubChannel()
 
   const { internetIdentity } = useAuthentication()
 

@@ -33,13 +33,17 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
   const navigate = useNavigate()
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors, isValid, dirtyFields },
     handleSubmit,
     setError,
     setValue,
   } = useForm({
-    mode: "all",
+    mode: "onTouched",
   })
+
+  const isFormComplete = ["name", "phonenumber"].every(
+    (field) => dirtyFields[field],
+  )
 
   const [loading, setLoading] = React.useState(false)
 
@@ -59,9 +63,10 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
       setLoading(true)
 
-      // Backend validation
+      // Backend validation requires trimmed phonenumber
+      const trimmedPhonenumber = phonenumber.replace(/\s/g, "")
       const { response, validPhonenumber } = await verifyPhonenumber(
-        phonenumber,
+        trimmedPhonenumber,
       )
 
       if (isValid && validPhonenumber) {
@@ -101,7 +106,6 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
           <Input
             small
-            autoFocus
             className="my-3"
             labelText="Full name"
             errorText={errors.name?.message}
@@ -130,11 +134,8 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
             placeholder="+XXXXXXXXXXX"
             labelText="Phone number"
             errorText={errors.phonenumber?.message}
-            helperText="Example: +31612345678"
+            helperText="Example: +31 6 123 45 678"
             {...register("phonenumber", {
-              onChange: (e) => {
-                e.target.value = e.target.value.replace(/[^\d\+]/g, "")
-              },
               required: phoneRules.errorMessages.required,
               pattern: {
                 value: phoneRules.regex,
@@ -154,7 +155,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
             <Button
               large
               secondary
-              disabled={!isValid || loading}
+              disabled={!isFormComplete || loading}
               onClick={handleSubmit(handleVerifyPhonenumber)}
             >
               Verify phone number

@@ -10,13 +10,13 @@ interface IValidationRules {
 }
 
 export const phoneRules: IValidationRules = {
-  regex: /^\+[1-9]\d{4,15}$/,
-  minLength: 5,
-  maxLength: 15,
+  regex: /^\+[0-9 ]{4,20}$/,
+  minLength: 4,
+  maxLength: 20,
   errorMessages: {
-    pattern: 'Phone number must start with a "+" followed by 5-15 digits',
+    pattern: 'Phone number must start with a "+" followed by digits',
     required: "Phone number is required",
-    length: "Phone number must be between 5 and 15 digits long",
+    length: "Phone number must be between 4 and 20 digits long",
   },
 }
 

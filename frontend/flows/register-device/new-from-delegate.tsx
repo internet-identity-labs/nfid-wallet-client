@@ -1,4 +1,4 @@
-import { Button, Loader, TouchId } from "frontend/ui-kit/src/index"
+import { Button, H5, Loader, TouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { getBrowser, getPlatform } from "frontend/utils"
@@ -46,31 +46,25 @@ export const RegisterNewFromDelegate = () => {
   }, [handleAddDevice, opener, secret, userNumber])
 
   return (
-    <AppScreen>
-      <h1 className={clsx("text-center font-bold text-3xl")}>
-        Register this device
-      </h1>
-      <div className={clsx("mt-10 text-center")}>
-        If you'd like to use Face ID as your Multipass "password" on supported
-        Safari applications, prove you can unlock Face ID to register this
-        MacBook
+    <AppScreen classNameWrapper="flex flex-1">
+      <div className="h-full w-full flex flex-col items-center justify-center text-center max-w-sm mx-auto">
+          <H5 className="mb-3">Trust this browser</H5>
+
+          <div>
+            Prove you own this {getPlatform()} by successfully unlocking it to
+            trust this browser.
+          </div>
+
+          <Button
+            onClick={handleRegisterNewDevice}
+            large
+            secondary
+            className="mt-8"
+          >
+            I own this {getPlatform()}
+          </Button>
       </div>
-      <div className={clsx("my-10 mx-auto")}>
-        <TouchId className={clsx("w-20")} />
-      </div>
-      <Button
-        onClick={handleRegisterNewDevice}
-        className={clsx("py-2 px-10 bg-blue-700 text-white border-blue-900")}
-      >
-        I want to use Touch ID as my Multipass "password" in {getBrowser()} on{" "}
-        {getPlatform()}
-      </Button>
-      <a
-        className={clsx("underline text-center mt-7 cursor-pointer")}
-        onClick={() => window.close()}
-      >
-        cancel
-      </a>
+
       <Loader isLoading={status === "loading"} />
     </AppScreen>
   )

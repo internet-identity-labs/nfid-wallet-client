@@ -1,5 +1,6 @@
-import React from "react"
 import { Button } from "components/atoms/button"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import React from "react"
 
 interface NFIDPersonasProps
   extends React.DetailedHTMLProps<
@@ -16,8 +17,10 @@ export const NFIDPersonas: React.FC<NFIDPersonasProps> = ({
   onClickPersona,
   onClickCreatePersona,
 }) => {
+  const { applicationName } = useMultipass()
+
   return (
-    <div className="px-6 py-4">
+    <div>
       {personas?.map(({ persona_id }) => (
         <Button
           key={persona_id}
@@ -29,14 +32,9 @@ export const NFIDPersonas: React.FC<NFIDPersonasProps> = ({
           Continue as NFID persona {persona_id}
         </Button>
       ))}
-      <Button
-        block
-        secondary
-        color="white"
-        onClick={onClickCreatePersona}
-        className="mt-1"
-      >
-        Create new persona
+
+      <Button block stroke onClick={onClickCreatePersona} className="mt-2">
+        Create a new {applicationName} persona
       </Button>
     </div>
   )

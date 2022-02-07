@@ -1,7 +1,7 @@
-import React from "react"
 import clsx from "clsx"
-import { usePersona } from "../hooks"
-import { Button } from "components/atoms/button"
+import { List } from "components/molecules/list"
+import { H5, ListItem } from "frontend/ui-kit/src"
+import React from "react"
 
 interface IIPersonaListProps
   extends React.DetailedHTMLProps<
@@ -15,20 +15,29 @@ interface IIPersonaListProps
 export const IIPersonaList: React.FC<IIPersonaListProps> = ({
   personas,
   onClickPersona,
+  className,
 }) => {
   return (
-    <div className="px-6 py-4">
-      {personas?.map(({ anchor }) => (
-        <Button
-          key={anchor}
-          block
-          secondary
-          onClick={onClickPersona({ anchor })}
-          className="mt-1"
-        >
-          Continue as NFID persona {anchor}
-        </Button>
-      ))}
+    <div className={clsx("pb-5", className)}>
+      <List>
+        {personas.length > 1 && (
+          <List.Header>
+            <div className="pt-12 pb-5">
+              <H5>We have found several anchors.</H5>
+              <div>Choose with which one you want to continue:</div>
+            </div>
+          </List.Header>
+        )}
+        <List.Items>
+          {personas?.map(({ anchor }) => (
+            <ListItem
+              key={anchor}
+              title={`Continue as NFID persona ${anchor}`}
+              onClick={onClickPersona({ anchor })}
+            />
+          ))}
+        </List.Items>
+      </List>
     </div>
   )
 }

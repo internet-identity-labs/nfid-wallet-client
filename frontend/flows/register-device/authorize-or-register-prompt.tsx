@@ -1,15 +1,14 @@
-import { Card, CardAction, CardTitle, Loader } from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
+import { NFIDPersonas } from "frontend/services/identity-manager/persona/components/nfid-persona"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { Button, Card, CardBody, H2, Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { RegisterConstants as RC } from "../register/routes"
+import { useAuthorization } from "../iframes/nfid-login/hooks"
 import { useRegisterDevicePromt } from "./hooks"
 import { RegisterDevicePromptConstants as RDPC } from "./routes"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { NFIDPersonas } from "frontend/services/identity-manager/persona/components/nfid-persona"
-import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
-import { useAuthorization } from "../iframes/nfid-login/hooks"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface RegisterDevicePromptProps {}
 
@@ -72,25 +71,38 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   }, [secret, sendWaitForUserInput])
 
   return (
-    <AppScreen isFocused>
-      <Card className="flex flex-col h-full">
-        {status === "error" && <CardTitle>Something went wrong</CardTitle>}
-        {(status === "initial" || status === "loading") && (
-          <>
-            <CardTitle>Sign in to {applicationName}</CardTitle>
-            <CardAction bottom className="justify-center">
-              <NFIDPersonas
-                personas={nfidPersonas}
-                onClickPersona={handleAuthorizePersona}
-                onClickCreatePersona={handleCreatePersonaAndLogin}
-              />
-              <IIPersonaList
-                personas={iiPersonas}
-                onClickPersona={handleAuthorizeIIPersona}
-              />
-            </CardAction>
-          </>
-        )}
+    <AppScreen>
+      <Card className="grid grid-cols-12">
+        <CardBody className="col-span-12 md:col-span-10 lg:col-span-8">
+          {status === "error" && <H2>Something went wrong</H2>}
+
+          {(status === "initial" || status === "loading") && (
+            <div>
+              <H2 className="mb-4">Sign in to {applicationName}</H2>
+
+              <div className="max-w-md">
+                <NFIDPersonas
+                  personas={nfidPersonas}
+                  onClickPersona={handleAuthorizePersona}
+                  onClickCreatePersona={handleCreatePersonaAndLogin}
+                />
+
+                <IIPersonaList
+                  personas={[
+                    { anchor: "10001" },
+                    { anchor: "10002" },
+                    { anchor: "10003" },
+                  ]}
+                  onClickPersona={handleAuthorizeIIPersona}
+                />
+
+                <Button stroke block className="mt-3">
+                  Link new Internet Identity Anchor
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardBody>
       </Card>
       <Loader isLoading={status === "loading"} />
     </AppScreen>

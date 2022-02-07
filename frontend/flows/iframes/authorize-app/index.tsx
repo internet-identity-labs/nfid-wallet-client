@@ -57,7 +57,10 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
     [authorizeApp, setIsloading],
   )
 
-  const anchors = iiPersonas.length > 0 ? iiPersonas :  [{anchor: "12890323"}, {anchor:"1819231"}, {anchor: "2813943"}]
+  const anchors =
+    iiPersonas.length > 0
+      ? iiPersonas
+      : [{ anchor: "12890323" }, { anchor: "1819231" }, { anchor: "2813943" }]
 
   return (
     <IFrameScreen>
@@ -102,7 +105,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
             </List.Header>
           )}
           <List.Items>
-            {anchors.map((anchor, index) => (
+            {anchors.map(({ anchor }, index) => (
               <ListItem
                 key={index}
                 title={anchor}

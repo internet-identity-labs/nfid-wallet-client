@@ -33,8 +33,7 @@ export const useRegisterDevicePromt = () => {
       const sessionKey = Array.from(blobFromUint8Array(blobReverse))
       const prepRes = await connection.prepareDelegation(
         userNumber,
-        // TODO: find better way to handle protocol
-        `https://${scope}`,
+        scope,
         sessionKey,
       )
       // TODO: move to error handler
@@ -48,8 +47,7 @@ export const useRegisterDevicePromt = () => {
       const signedDelegation = await retryGetDelegation(
         connection,
         userNumber,
-        // TODO: find better way to handle protocol
-        `https://${scope}`,
+        scope,
         sessionKey,
         timestamp,
       )

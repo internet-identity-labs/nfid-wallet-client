@@ -5,7 +5,7 @@ import {
   creationOptions,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { getBrowser, getPlatform } from "frontend/utils"
+import { getBrowser, getPlatformInfo } from "frontend/utils"
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
@@ -53,7 +53,7 @@ export const useDevices = () => {
     })
     const publicKey = blobToHex(identity.getPublicKey().toDer())
     const rawId = blobToHex(identity.rawId)
-    const deviceName = `NFID ${getBrowser()} on ${getPlatform()}`
+    const deviceName = `NFID ${getBrowser()} on ${getPlatformInfo().os}`
 
     const device = {
       publicKey,

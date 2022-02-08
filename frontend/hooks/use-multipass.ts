@@ -10,7 +10,7 @@ import {
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
-import { getBrowser, getPlatform } from "frontend/utils"
+import { getBrowser, getPlatformInfo } from "frontend/utils"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 
@@ -18,7 +18,7 @@ export const useMultipass = () => {
   const [params] = useSearchParams()
 
   const createWebAuthNIdentity = React.useCallback(async () => {
-    const deviceName = `${getBrowser()} on ${getPlatform()}`
+    const deviceName = `${getBrowser()} on ${getPlatformInfo().os}`
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(),
     })

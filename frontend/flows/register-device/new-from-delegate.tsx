@@ -1,7 +1,7 @@
 import { Button, H5, Loader, TouchId } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { getBrowser, getPlatform } from "frontend/utils"
+import { getPlatformInfo } from "frontend/utils"
 import React from "react"
 import { useParams } from "react-router-dom"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
@@ -51,8 +51,8 @@ export const RegisterNewFromDelegate = () => {
         <H5 className="mb-3">Trust this browser</H5>
 
         <div>
-          Prove you own this {getPlatform()} by successfully unlocking it to
-          trust this browser.
+          Prove you own this {getPlatformInfo().os} by successfully unlocking it
+          to trust this browser.
         </div>
 
         <Button
@@ -61,7 +61,7 @@ export const RegisterNewFromDelegate = () => {
           secondary
           className="mt-8"
         >
-          I own this {getPlatform()}
+          I own this {getPlatformInfo().os}
         </Button>
       </div>
 

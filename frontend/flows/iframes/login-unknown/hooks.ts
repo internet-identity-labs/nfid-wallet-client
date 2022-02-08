@@ -41,7 +41,7 @@ export const useMessageChannel = ({
     if (opener)
       return opener.postMessage(
         {
-          READY_MESSAGE,
+          ...READY_MESSAGE,
           height: window.document.body.clientHeight,
         },
         "*",

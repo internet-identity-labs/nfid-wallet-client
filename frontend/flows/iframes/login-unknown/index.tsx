@@ -2,7 +2,6 @@ import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/register-device/routes"
 import { useInterval } from "frontend/hooks/use-interval"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { buildDelegate } from "frontend/services/internet-identity/build-delegate"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { setUserNumber } from "frontend/services/internet-identity/userNumber"
@@ -20,8 +19,10 @@ import { useUnknownDeviceConfig } from "./hooks"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import { useAuthentication } from "frontend/flows/auth-wrapper"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
-import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
+import { blobFromHex } from "@dfinity/candid"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import { getBrowser, getPlatformInfo } from "frontend/utils"
 
 interface UnknownDeviceScreenProps {
   showRegisterDefault?: boolean
@@ -30,6 +31,7 @@ interface UnknownDeviceScreenProps {
 export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   showRegisterDefault,
 }) => {
+  const { applicationName } = useMultipass()
   const { readAccount } = useAccount()
   // TODO: improve method naming
   const { identityManager, onRegisterSuccess: setAuthenticatedActors } =
@@ -176,54 +178,42 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
   const isLoading = status === "loading"
   const navigate = useNavigate()
-  const platformAuth = "FaceID"
-  const deviceMake = "Apple"
+  const browser = getBrowser()
+  const platformInfo = getPlatformInfo()
+  const platformAuth = platformInfo.authenticator
+  const os = platformInfo.os
+
+  console.log(">> ", { isLoading, showRegister, url })
 
   return (
     <IFrameScreen>
-      {!isLoading && <H5 className="mb-4 text-center">Trust this browser?</H5>}
-
+      {/* IFrameAuthorizeAppUnkownDevice */}
       {!isLoading && !showRegister && url ? (
-        <div className="flex flex-col justify-center text-center">
-          <div>Scan this code with the camera app on your phone</div>
+        <>
+          <H5 className="mb-4 text-center">
+            Log in to {applicationName} with your NFID
+          </H5>
+          <div className="flex flex-col justify-center text-center">
+            <div>Scan this code with the camera app on your phone</div>
 
-          <div className="py-5 m-auto">
-            <a href={url} target="_blank">
-              <QRCode content={url} options={{ margin: 0 }} />
-            </a>
+            <div className="py-5 m-auto">
+              <a href={url} target="_blank">
+                <QRCode content={url} options={{ margin: 0 }} />
+              </a>
+            </div>
+
+            <Button
+              secondary
+              className="mb-2"
+              onClick={() => navigate(`${RAC.base}`)}
+            >
+              I already have an NFID
+            </Button>
           </div>
-
-          <Button
-            secondary
-            className="mb-2"
-            onClick={() => navigate(`${RAC.base}`)}
-          >
-            I already have an NFID
-          </Button>
-        </div>
+        </>
       ) : null}
 
-      {showRegister && !isLoading && (
-        <div>
-          <div className="text-center">
-            {platformAuth} is used to anonymously and securely register new
-            accounts or log in to existing ones anywhere NFID is supported.
-          </div>
-
-          <div className="font-bold py-4 text-center">
-            Do you confirm that this is your {deviceMake} and do you trust this
-            browser?
-          </div>
-
-          <div className="flex space-x-3 items-center justify-center">
-            <Button stroke largeMax onClick={() => handleSendDelegate(message)}>
-              Cancel
-            </Button>
-            <SetupTouchId onClick={handleRegisterDevice} />
-          </div>
-        </div>
-      )}
-
+      {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState) */}
       {isLoading && (
         <div className="p-8 text-center">
           <Loader
@@ -233,6 +223,35 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           />
           <div>Awaiting confirmation from your phone...</div>
         </div>
+      )}
+
+      {/* IFrameAuthorizeRegisterDecider */}
+      {showRegister && !isLoading && (
+        <>
+          <H5 className="mb-4 text-center">Trust this browser?</H5>
+          <div>
+            <div className="text-center">
+              {platformAuth} is used to anonymously and securely register new
+              accounts or log in to existing ones anywhere NFID is supported.
+            </div>
+
+            <div className="py-4 font-bold text-center">
+              Do you confirm that this is your {os} and do you trust this{" "}
+              {browser} Browser?
+            </div>
+
+            <div className="flex items-center justify-center space-x-3">
+              <Button
+                stroke
+                largeMax
+                onClick={() => handleSendDelegate(message)}
+              >
+                Cancel
+              </Button>
+              <SetupTouchId onClick={handleRegisterDevice} />
+            </div>
+          </div>
+        </>
       )}
     </IFrameScreen>
   )

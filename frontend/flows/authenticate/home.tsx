@@ -51,7 +51,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
 
       const response = await deleteDevice(publicKey)
       console.log(">> handleDeleteDevice", { response })
-      handleLoadDevices()
+      await handleLoadDevices()
 
       setLoading(false)
       setShowModal(false)

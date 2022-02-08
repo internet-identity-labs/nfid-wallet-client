@@ -27,11 +27,11 @@
 }
 
 .swiper-controls {
-  @apply flex items-center mt-[50px];
+  @apply flex items-center md:mt-[50px];
 }
 
 .offset-header {
-  @apply md:mt-[56px] mt-[20px];
+  @apply lg:mt-[56px];
 }
 
 input::-webkit-outer-spin-button,

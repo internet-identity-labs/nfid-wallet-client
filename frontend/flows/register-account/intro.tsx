@@ -56,9 +56,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   The only way to guarantee your{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
-                    privacy and security
-                  </span>{" "}
+                  <span className="text-[#008DDD]">privacy and security</span>{" "}
                   on the Internet
                 </div>
               </div>
@@ -67,7 +65,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               <div className="max-w-2xl">
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
+                  <span className="text-[#E324B5]">
                     {`This is your ${device}.`}
                   </span>{" "}
                   There are many like it but this one is yours.
@@ -86,7 +84,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
+                  <span className="text-[#ff6a00]">
                     {`you and your ${device}`}
                   </span>
                   , your online accounts are inaccessible.
@@ -104,13 +102,12 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
-                    your consent
-                  </span>
-                  , nobody can access any{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
-                    information about you.
-                  </span>
+                  <span className="text-[#00e05a]">your consent</span>
+                  , nobody can access{" "}
+                  <span className="text-[#00e05a]">
+                    any information
+                  </span>{" "}
+                  about you.
                 </div>
                 <P className="mb-3">
                   Every single thing we do online is tracked, sold, and used to
@@ -126,15 +123,17 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   So be it, until{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
-                    convenience, security, and privacy online
+                  <span className="text-[#cd00ae]">
+                    convenience, security,
                   </span>{" "}
+                  <span className="text-[#cd00ae]">
+                    and privacy online
+                  </span>{" "} 
                   are no longer required.
                 </div>
 
-                <div className="grid max-w-lg mt-12 md:grid-cols-2 md:mt-6 md:gap-x-3 gap-y-3">
+                <div className="gap-2 grid max-w-sm md:grid-cols-2 md:mt-6 mt-12 py-3">
                   <Button
-                    large
                     secondary
                     onClick={() =>
                       navigate(`${RAC.base}/${RAC.createNFIDProfile}`)
@@ -143,7 +142,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                     Create new NFID
                   </Button>
 
-                  <Button large>Restore my NFID</Button>
+                  <Button stroke>Restore my NFID</Button>
                 </div>
               </div>
             </SwiperSlide>

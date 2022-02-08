@@ -1,4 +1,5 @@
 import { ActorSubclass } from "@dfinity/agent"
+import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
@@ -11,6 +12,8 @@ import { AuthenticateNFIDLogin } from "../authenticate"
 import { RegisterAccountConstants as RAC } from "../register-account/routes"
 
 interface Actors {
+  chain: DelegationChain
+  sessionKey: Ed25519KeyIdentity
   internetIdentity: IIConnection
   identityManager: ActorSubclass<IdentityManagerService>
   pubsubChannelActor: ActorSubclass<PubsubChannelService>
@@ -55,6 +58,8 @@ export const useAuthentication = () => {
   return {
     isLoading,
     isAuthenticated,
+    chain: actors?.chain,
+    sessionKey: actors?.sessionKey,
     internetIdentity: actors?.internetIdentity,
     identityManager: actors?.identityManager,
     pubsubChannel: actors?.pubsubChannelActor,

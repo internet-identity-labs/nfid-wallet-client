@@ -1,15 +1,11 @@
-import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { useAuthentication } from "frontend/flows/auth-wrapper"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
-  IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import { getBrowser, getPlatformInfo } from "frontend/utils"
 import React from "react"
 import { useSearchParams } from "react-router-dom"

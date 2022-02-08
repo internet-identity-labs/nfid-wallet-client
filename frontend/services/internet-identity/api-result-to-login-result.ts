@@ -1,10 +1,13 @@
 import { ActorSubclass } from "@dfinity/agent"
+import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/services/identity-manager/identity_manager"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { ApiResult, IIConnection } from "./iiConnection"
 
 export type LoginSuccess = {
   tag: "ok"
+  chain: DelegationChain
+  sessionKey: Ed25519KeyIdentity
   userNumber: bigint
   internetIdentity: IIConnection
   identityManager: ActorSubclass<_IDENTITY_MANAGER_SERVICE>
@@ -24,6 +27,8 @@ export const apiResultToLoginResult = (result: ApiResult): LoginResult => {
     case "loginSuccess": {
       return {
         tag: "ok",
+        chain: result.chain,
+        sessionKey: result.sessionKey,
         userNumber: result.userNumber,
         internetIdentity: result.internetIdentity,
         identityManager: result.identityManager,

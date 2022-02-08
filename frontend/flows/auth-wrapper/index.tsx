@@ -22,15 +22,22 @@ interface Actors {
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const actorsAtom = atom<Actors | null>(null)
-const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
+const isAuthenticatedAtom = atom(
+  (get) => get(actorsAtom) !== null,
+  (get, set, _arg) => set(actorsAtom, null),
+)
 
 export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom)
+  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [actors, setActors] = useAtom(actorsAtom)
 
   const { userNumber } = useAccount()
+
+  const logout = React.useCallback(() => {
+    setIsAuthenticated(false)
+  }, [setIsAuthenticated])
 
   const login = React.useCallback(async () => {
     setIsLoading(true)
@@ -64,6 +71,7 @@ export const useAuthentication = () => {
     identityManager: actors?.identityManager,
     pubsubChannel: actors?.pubsubChannelActor,
     login,
+    logout,
     onRegisterSuccess,
   }
 }

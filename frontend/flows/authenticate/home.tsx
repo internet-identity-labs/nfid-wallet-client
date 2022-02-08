@@ -23,6 +23,7 @@ import {
 } from "frontend/ui-kit/src"
 import React from "react"
 import { MdLaptopMac } from "react-icons/md"
+import { useAuthentication } from "../auth-wrapper"
 
 interface AuthenticateNFIDHomeProps
   extends React.DetailedHTMLProps<
@@ -34,7 +35,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   children,
   className,
 }) => {
-  const applications: any[] = []
+  const applications: any[] = ["NFID Demo"]
 
   const [showModal, setShowModal] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
@@ -43,6 +44,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
 
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
   const { account } = useAccount()
+  const { logout } = useAuthentication()
 
   const handleDeleteDevice = React.useCallback(
     (publicKey) => async () => {
@@ -60,7 +62,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   return (
     <AppScreen
       navigationItems={
-        <Button text icon>
+        <Button text icon onClick={logout}>
           <LogoutIcon />
           <span className="hidden md:block">Logout</span>
         </Button>

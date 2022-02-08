@@ -53,21 +53,19 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           >
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
                 <div className="swiper-title">
                   The only way to guarantee your{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
-                    privacy and security
-                  </span>{" "}
+                  <span className="text-[#008DDD]">privacy and security</span>{" "}
                   on the Internet
                 </div>
               </div>
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
                 <div className="swiper-title">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E324B5] to-[#6500CA]">
+                  <span className="text-[#E324B5]">
                     {`This is your ${device}.`}
                   </span>{" "}
                   There are many like it but this one is yours.
@@ -83,10 +81,10 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#FF6B00] to-[#D900B6]">
+                  <span className="text-[#ff6a00]">
                     {`you and your ${device}`}
                   </span>
                   , your online accounts are inaccessible.
@@ -101,16 +99,15 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-3xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
-                    your consent
-                  </span>
-                  , nobody can access any{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00DE59] to-[#005B83]">
-                    information about you.
-                  </span>
+                  <span className="text-[#00e05a]">your consent</span>
+                  , nobody can access{" "}
+                  <span className="text-[#00e05a]">
+                    any information
+                  </span>{" "}
+                  about you.
                 </div>
                 <P className="mb-3">
                   Every single thing we do online is tracked, sold, and used to
@@ -123,12 +120,15 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
             <SwiperSlide>
               <div className="max-w-[750px]">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
                 <div className="swiper-title">
                   So be it, until{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#008DDD] to-[#A400CD]">
-                    convenience, security, and privacy online
+                  <span className="text-[#cd00ae]">
+                    convenience, security,
                   </span>{" "}
+                  <span className="text-[#cd00ae]">
+                    and privacy online
+                  </span>{" "} 
                   are no longer required.
                 </div>
 

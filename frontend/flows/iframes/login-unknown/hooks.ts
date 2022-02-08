@@ -38,7 +38,14 @@ export const useMessageChannel = ({
   const { opener } = usePostMessage({ onMessage: <any>handleAuthMessage })
 
   const postClientReadyMessage = React.useCallback(() => {
-    if (opener) return opener.postMessage(READY_MESSAGE, "*")
+    if (opener)
+      return opener.postMessage(
+        {
+          READY_MESSAGE,
+          height: window.document.body.clientHeight,
+        },
+        "*",
+      )
     throw new Error("opener not ready")
   }, [opener])
 

@@ -30,7 +30,6 @@ interface UnknownDeviceScreenProps {
 export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   showRegisterDefault,
 }) => {
-  const { applicationName } = useMultipass()
   const { readAccount } = useAccount()
   // TODO: improve method naming
   const { identityManager, onRegisterSuccess: setAuthenticatedActors } =
@@ -50,7 +49,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     postClientAuthorizeSuccessMessage,
   } = useUnknownDeviceConfig()
   const { getMessages } = usePubSubChannel()
-
   const handleLoginFromRemoteDelegation = React.useCallback(
     async (registerMessage) => {
       const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
@@ -178,14 +176,12 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
   const isLoading = status === "loading"
   const navigate = useNavigate()
+  const platformAuth = "FaceID"
+  const deviceMake = "Apple"
 
   return (
     <IFrameScreen>
-      <H5 className="mb-4 text-center">
-        {isLoading
-          ? "Awaiting confirmation from your phone"
-          : `Log in to ${applicationName} with your NFID`}
-      </H5>
+      {!isLoading && <H5 className="mb-4 text-center">Trust this browser?</H5>}
 
       {!isLoading && !showRegister && url ? (
         <div className="flex flex-col justify-center text-center">
@@ -207,20 +203,37 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
         </div>
       ) : null}
 
-      {showRegister && (
-        <div className="flex flex-col">
-          <SetupTouchId onClick={handleRegisterDevice} />
-          <Button
-            text
-            onClick={() => handleSendDelegate(message)}
-            className="mt-2"
-          >
-            Log me in temporarily
-          </Button>
+      {showRegister && !isLoading && (
+        <div>
+          <div className="text-center">
+            {platformAuth} is used to anonymously and securely register new
+            accounts or log in to existing ones anywhere NFID is supported.
+          </div>
+
+          <div className="font-bold py-4 text-center">
+            Do you confirm that this is your {deviceMake} and do you trust this
+            browser?
+          </div>
+
+          <div className="flex space-x-3 items-center justify-center">
+            <Button stroke largeMax onClick={() => handleSendDelegate(message)}>
+              Cancel
+            </Button>
+            <SetupTouchId onClick={handleRegisterDevice} />
+          </div>
         </div>
       )}
 
-      <Loader isLoading={isLoading} />
+      {isLoading && (
+        <div className="p-8 text-center">
+          <Loader
+            isLoading={isLoading}
+            fullscreen={false}
+            imageClasses={"w-[90px] mx-auto py-6"}
+          />
+          <div>Awaiting confirmation from your phone...</div>
+        </div>
+      )}
     </IFrameScreen>
   )
 }

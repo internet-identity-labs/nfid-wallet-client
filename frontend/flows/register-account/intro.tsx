@@ -132,9 +132,8 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   are no longer required.
                 </div>
 
-                <div className="grid max-w-lg mt-12 md:grid-cols-2 md:mt-6 md:gap-x-3 gap-y-3">
+                <div className="gap-2 grid max-w-sm md:grid-cols-2 md:mt-6 mt-12 py-3">
                   <Button
-                    large
                     secondary
                     onClick={() =>
                       navigate(`${RAC.base}/${RAC.createNFIDProfile}`)
@@ -143,7 +142,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                     Create new NFID
                   </Button>
 
-                  <Button large>Restore my NFID</Button>
+                  <Button stroke>Restore my NFID</Button>
                 </div>
               </div>
             </SwiperSlide>

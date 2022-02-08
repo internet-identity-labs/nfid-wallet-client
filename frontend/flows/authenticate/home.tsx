@@ -23,6 +23,7 @@ import {
 } from "frontend/ui-kit/src"
 import React from "react"
 import { MdLaptopMac } from "react-icons/md"
+import { useAuthentication } from "../auth-wrapper"
 
 interface AuthenticateNFIDHomeProps
   extends React.DetailedHTMLProps<
@@ -34,7 +35,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   children,
   className,
 }) => {
-  const applications = ["Example app", "DSCVR", "OpenChat"]
+  const applications: any[] = ["NFID Demo"]
 
   const [showModal, setShowModal] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
@@ -43,6 +44,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
 
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
   const { account } = useAccount()
+  const { logout } = useAuthentication()
 
   const handleDeleteDevice = React.useCallback(
     (publicKey) => async () => {
@@ -60,7 +62,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   return (
     <AppScreen
       navigationItems={
-        <Button text icon>
+        <Button text icon onClick={logout}>
           <LogoutIcon />
           <span className="hidden md:block">Logout</span>
         </Button>
@@ -82,17 +84,18 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                   </div>
                 </List.Header>
                 <List.Items>
-                  {applications.map((application, index) => (
-                    <ListItem
-                      key={index}
-                      title={application}
-                      icon={
-                        <span className="text-xl font-medium text-blue-base">
-                          {application[0]}
-                        </span>
-                      }
-                    />
-                  ))}
+                  {applications.length > 0 &&
+                    applications.map((application, index) => (
+                      <ListItem
+                        key={index}
+                        title={application}
+                        icon={
+                          <span className="text-xl font-medium text-blue-base">
+                            {application[0]}
+                          </span>
+                        }
+                      />
+                    ))}
                 </List.Items>
               </List>
             </div>
@@ -102,7 +105,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                   <div className="flex items-center justify-between mb-5">
                     <H5>Access points</H5>
 
-                    <div>
+                    <div className="hidden">
                       <PlusIcon className="text-blue-base mr-[14px]" />
                     </div>
                   </div>
@@ -112,7 +115,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                     <ListItem
                       key={device.alias}
                       title={device.alias}
-                      subtitle={"Mozilla Firefox 78.0.2 – 12.08.2021"}
+                      subtitle={""}
                       icon={<MdLaptopMac className="text-xl text-blue-base" />}
                       action={
                         <ButtonMenu buttonElement={<DotsIcon />}>
@@ -132,7 +135,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                                         <Input
                                           autoFocus
                                           labelText="Access point name"
-                                          defaultValue={"MacBook Pro"}
+                                          defaultValue={device.alias}
                                         />
                                       </>
                                     ),

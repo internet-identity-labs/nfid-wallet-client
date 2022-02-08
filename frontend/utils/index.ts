@@ -1,3 +1,5 @@
+import bowser from "bowser"
+
 export const getPlatformInfo = () => {
   var userAgent = window.navigator.userAgent,
     platform = window.navigator.platform,
@@ -41,6 +43,7 @@ export const getPlatformInfo = () => {
   return info
 }
 
+// TODO: refactor to bowser plugin
 export const getBrowser = () => {
   const agent = window.navigator.userAgent.toLowerCase()
   switch (true) {
@@ -59,4 +62,16 @@ export const getBrowser = () => {
     default:
       return "Other"
   }
+}
+
+export const getBrowserVersion = () => {
+  const browser = bowser.getParser(window.navigator.userAgent)
+
+  return browser.getBrowser().version
+}
+
+export const getBrowserName = () => {
+  const browser = bowser.getParser(window.navigator.userAgent)
+
+  return browser.getBrowser().name
 }

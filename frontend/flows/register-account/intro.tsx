@@ -53,7 +53,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           >
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   The only way to guarantee your{" "}
                   <span className="text-[#008DDD]">privacy and security</span>{" "}
@@ -63,7 +63,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   <span className="text-[#E324B5]">
                     {`This is your ${device}.`}
@@ -81,7 +81,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
                   <span className="text-[#ff6a00]">
@@ -99,7 +99,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-3xl">
-                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
                   <span className="text-[#00e05a]">your consent</span>
@@ -120,7 +120,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
             <SwiperSlide>
               <div className="max-w-[750px]">
-                <H5 className="mb-4 font-bold md:mb-7">{applicationName} uses NFID</H5>
+                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   So be it, until{" "}
                   <span className="text-[#cd00ae]">

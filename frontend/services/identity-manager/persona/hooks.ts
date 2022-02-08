@@ -43,7 +43,6 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   const getPersona = React.useCallback(async () => {
     if (!personaService) return
     const response = await personaService.read_personas()
-    console.log(">> getPersona", { response })
 
     if (response.status_code === 200) {
       setPersonas(normalizePersonas(response.data[0]))
@@ -52,8 +51,6 @@ export const usePersona = ({ application }: UsePersona = {}) => {
 
   const createPersona = React.useCallback(
     async ({ domain }) => {
-      console.log(">> ", { account })
-
       if (!account) throw new Error('"account" is required')
 
       const persona = {
@@ -61,7 +58,6 @@ export const usePersona = ({ application }: UsePersona = {}) => {
       }
 
       const response = await personaService?.create_persona(persona)
-      console.log(">> createPersona", { response })
 
       if (response?.status_code === 200) {
         setPersonas(normalizePersonas(response.data[0]?.personas))

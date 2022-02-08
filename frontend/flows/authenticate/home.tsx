@@ -42,7 +42,6 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
     React.useState<ModalAdvancedProps | null>(null)
 
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
-  console.log(">> ", { devices })
   const { account } = useAccount()
 
   const handleDeleteDevice = React.useCallback(
@@ -50,7 +49,6 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
       setLoading(true)
 
       const response = await deleteDevice(publicKey)
-      console.log(">> handleDeleteDevice", { response })
       await handleLoadDevices()
 
       setLoading(false)

@@ -30,8 +30,6 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   const { nextPersonaId, nfidPersonas, iiPersonas, createPersona } =
     usePersona()
 
-  console.log(">> RegisterDevicePrompt", { nfidPersonas, iiPersonas })
-
   const handleAuthorizePersona = React.useCallback(
     ({ persona_id }: { persona_id?: string; anchor?: string }) =>
       async () => {
@@ -48,10 +46,8 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
 
   const handleCreatePersonaAndLogin = React.useCallback(async () => {
     setStatus("loading")
-    console.log(">> handleCreatePersonaAndLogin", { scope })
 
     const response = await createPersona({ domain: scope })
-    console.log(">> handleCreatePersonaAndLogin", { response })
 
     if (response?.status_code === 200) {
       return handleAuthorizePersona({ persona_id: nextPersonaId })()

@@ -105,7 +105,6 @@ export const useRegisterDevicePromt = () => {
         nfid: { chain, sessionKey },
         ...parsedSignedDelegation,
       })
-      console.log(">> ", { message, size: message.length })
 
       const response = await postMessages(secret, [message])
 

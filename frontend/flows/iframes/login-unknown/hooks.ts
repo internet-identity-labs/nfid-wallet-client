@@ -104,7 +104,6 @@ export const useUnknownDeviceConfig = () => {
           setDomain(new URL(event.origin).host)
         },
         "new-device": (event: any) => {
-          console.log(">> useUnknownDeviceConfig new-device", { event })
           handleStoreNewDevice(event.data)
         },
         "registered-device": (event: any) => {
@@ -115,19 +114,15 @@ export const useUnknownDeviceConfig = () => {
 
   const handleStoreNewDevice = React.useCallback(
     async ({ device }) => {
-      console.log(">> handleStoreNewDevice", { device })
-
       if (!message) throw new Error("No message")
 
       const { userNumber } = message
-      console.log(">> ", { userNumber, ...device })
 
       setNewDeviceKey(device.publicKey)
       const response = await createDevice({
         ...device,
         userNumber: BigInt(userNumber),
       })
-      console.log(">> ", { response })
     },
     [createDevice, message],
   )

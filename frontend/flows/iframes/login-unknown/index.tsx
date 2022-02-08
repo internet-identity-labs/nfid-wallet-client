@@ -78,9 +78,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
             ? "http:"
             : window.location.protocol
         const hostname = `${protocol}//${scope}`
-        console.log(">> ", { hostname })
-
-        console.log(">> ", { appWindow, delegation, parsedSignedDelegation })
 
         postClientAuthorizeSuccessMessage(appWindow, {
           parsedSignedDelegation,
@@ -116,8 +113,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
         )
 
         if (registerMessage) {
-          console.log(">> handlePollForDelegate", { registerMessage })
-
           handleLoginFromRemoteDelegation(registerMessage)
           setMessage(registerMessage)
 
@@ -152,12 +147,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       existingDeviceString === newDeviceKeyString
     })
 
-    console.log(">> handleWaitForRegisteredDeviceKey", {
-      existingDevices,
-      newDeviceKey,
-      matchedDevice,
-    })
-
     await readAccount(identityManager)
     setStatus("success")
     setUserNumber(BigInt(message.userNumber))
@@ -182,8 +171,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   const platformInfo = getPlatformInfo()
   const platformAuth = platformInfo.authenticator
   const os = platformInfo.os
-
-  console.log(">> ", { isLoading, showRegister, url })
 
   return (
     <IFrameScreen>

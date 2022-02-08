@@ -14,7 +14,7 @@ export const Loader: React.FC<LoaderProps> = ({
   imageClasses,
 }) =>
   isLoading && fullscreen ? (
-    <div className="absolute top-0 bottom-0 left-0 right-0 w-full h-full">
+    <div className="fixed top-0 bottom-0 left-0 right-0 w-full h-full">
       <div className="absolute w-full h-full top-0 right-0 bottom-0 left-0 bg-gray-900 opacity-[85%]" />
       <img
         className={clsx(

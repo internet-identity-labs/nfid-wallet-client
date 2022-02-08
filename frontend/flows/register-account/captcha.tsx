@@ -167,7 +167,6 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
             anchor: userNumber,
           },
         )
-        console.log(">> completeNFIDProfile", { response })
 
         return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
           state: {

@@ -1,25 +1,46 @@
-export const getPlatform = () => {
+export const getPlatformInfo = () => {
   var userAgent = window.navigator.userAgent,
     platform = window.navigator.platform,
     macosPlatforms = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"],
     windowsPlatforms = ["Win32", "Win64", "Windows", "WinCE"],
     iosPlatforms = ["iPhone", "iPad", "iPod"],
-    os = null
+    info = { make: "unknown", os: "unknown", authenticator: "unknown" }
 
   if (macosPlatforms.indexOf(platform) !== -1) {
-    os = "Mac OS"
+    info = {
+      make: "Apple",
+      os: "Mac OS",
+      authenticator: "Touch ID",
+    }
   } else if (iosPlatforms.indexOf(platform) !== -1) {
-    os = "iOS"
+    info = {
+      make: "Apple",
+      os: "iOS",
+      authenticator: "Face Id",
+    }
   } else if (windowsPlatforms.indexOf(platform) !== -1) {
-    os = "Windows"
+    info = {
+      make: "Microsoft",
+      os: "Windows",
+      authenticator: "Hello",
+    }
   } else if (/Android/.test(userAgent)) {
-    os = "Android"
-  } else if (!os && /Linux/.test(platform)) {
-    os = "Linux"
+    info = {
+      make: "Google",
+      os: "Android",
+      authenticator: "Fingerprint",
+    }
+  } else if (!info && /Linux/.test(platform)) {
+    info = {
+      make: "Unknown",
+      os: "Linux",
+      authenticator: "Fingerprint",
+    }
   }
 
-  return os
+  return info
 }
+
 export const getBrowser = () => {
   const agent = window.navigator.userAgent.toLowerCase()
   switch (true) {

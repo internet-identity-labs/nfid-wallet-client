@@ -19,7 +19,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   >("initial")
   const { secret, scope } = useParams()
   // TODO: pass applicationName through QRCode?
-  const applicationName = "NFID-Demo"
+  const applicationName = "{applicationName}"
 
   const { userNumber } = useAccount()
   const navigate = useNavigate()
@@ -87,7 +87,15 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
                 />
 
                 <IIPersonaList
-                  personas={iiPersonas}
+                  personas={
+                    iiPersonas.length > 0
+                      ? iiPersonas
+                      : [
+                          { anchor: "10001" },
+                          { anchor: "10002" },
+                          { anchor: "10003" },
+                        ]
+                  }
                   onClickPersona={handleAuthorizeIIPersona}
                 />
 

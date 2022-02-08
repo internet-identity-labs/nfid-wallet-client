@@ -7,6 +7,7 @@ import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import {
   Challenge,
   ChallengeResult,
+  ProofOfWork,
 } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   canisterIdPrincipal,
@@ -36,11 +37,14 @@ interface RegisterAccountCaptchaProps
     HTMLDivElement
   > {}
 
+interface RegisterPayload {
+  pow: ProofOfWork
+  identity: string
+  deviceName: string
+}
+
 interface RegisterAccountCaptchaState {
-  registerPayload: {
-    identity: string
-    deviceName: string
-  }
+  registerPayload: RegisterPayload
   name: string
   phonenumber: string
   verificationCode: string
@@ -67,6 +71,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   const { createAccount } = useAccount()
 
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
+  const [pow, setPow] = React.useState<ProofOfWork | null>(
+    (state as RegisterPayload).pow || null,
+  )
   const [loading, setLoading] = React.useState(true)
 
   const { onRegisterSuccess } = useAuthentication()
@@ -75,14 +82,15 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     setLoading(true)
 
     const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
-    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
+    const freshPow = pow ? pow : getProofOfWork(now_in_ns, canisterIdPrincipal)
 
-    const cha = await IIConnection.createChallenge(pow)
+    const cha = await IIConnection.createChallenge(freshPow)
 
     setCaptchaResp(cha)
     setLoading(false)
     setFocus("captcha")
-  }, [setFocus])
+    setPow(null)
+  }, [pow, setFocus])
 
   React.useEffect(() => {
     requestCaptcha()

@@ -21,7 +21,7 @@ type RemoteLoginMessage = {
 
 export const useRegisterDevicePromt = () => {
   const { userNumber } = useAccount()
-  const { internetIdentity } = useAuthentication()
+  const { internetIdentity, chain, sessionKey } = useAuthentication()
   const { createTopic, postMessages } = usePubSubChannel()
 
   const createRemoteDelegate = React.useCallback(
@@ -84,9 +84,6 @@ export const useRegisterDevicePromt = () => {
         throw new Error("Unauthorized")
       }
 
-      const { chain, sessionKey } =
-        await internetIdentity.getRemoteFEDelegation()
-
       const protocol = CONFIG.FRONTEND_MODE === "production" ? "https" : "http"
 
       const scope = persona_id
@@ -110,7 +107,14 @@ export const useRegisterDevicePromt = () => {
 
       return response
     },
-    [internetIdentity, createRemoteDelegate, postMessages, userNumber],
+    [
+      userNumber,
+      internetIdentity,
+      createRemoteDelegate,
+      chain,
+      sessionKey,
+      postMessages,
+    ],
   )
 
   const sendWaitForUserInput = React.useCallback(

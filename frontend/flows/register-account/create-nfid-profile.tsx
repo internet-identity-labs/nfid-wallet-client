@@ -73,7 +73,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
         return navigate(`${RAC.base}/${RAC.smsVerification}`, {
           state: {
             name,
-            phonenumber,
+            trimmedPhonenumber,
           },
         })
       }

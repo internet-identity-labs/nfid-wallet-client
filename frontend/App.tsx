@@ -9,7 +9,7 @@ import { AuthoriseAppRoutes } from "./flows/iframes/authorize-app/routes"
 import { AuthenticateRoutes } from "./flows/iframes/nfid-login/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/iframes/restore-account/routes"
 import { IFrameRoutes } from "./flows/iframes/routes"
-import { LinkIIAnchorRoutes } from "./flows/link-ii-anchor/routes"
+import { LinkIIAnchorRoutes } from "./flows/app-screens/link-ii-anchor/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { RegisterAccountRoutes } from "./flows/register-account/routes"
 import {

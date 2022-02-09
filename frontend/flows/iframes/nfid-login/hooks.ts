@@ -6,6 +6,7 @@ import { useAuthentication } from "frontend/flows/auth-wrapper"
 import { LoginError } from "frontend/services/internet-identity/api-result-to-login-result"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { useMessageChannel } from "../login-unknown/hooks"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
 const READY_MESSAGE = {
   kind: "authorize-ready",
@@ -61,12 +62,16 @@ export const useAuthorization = ({
     async ({
       persona_id,
       anchor: rawAnchor,
+      internetIdentityForAnchor,
     }: {
       persona_id?: string
       anchor?: string
+      internetIdentityForAnchor?: IIConnection
     }) => {
+      const internetIdentityService =
+        internetIdentityForAnchor || internetIdentity
       setLoading(true)
-      if (!authorizationRequest || !internetIdentity)
+      if (!authorizationRequest || !internetIdentityService)
         throw new Error("client not ready")
 
       const { sessionPublicKey, hostname, maxTimeToLive, source } =
@@ -77,7 +82,7 @@ export const useAuthorization = ({
 
       const anchor = rawAnchor && BigInt(rawAnchor)
 
-      const prepRes = await internetIdentity.prepareDelegation(
+      const prepRes = await internetIdentityService.prepareDelegation(
         anchor || userNumber,
         scope,
         sessionKey,
@@ -92,7 +97,7 @@ export const useAuthorization = ({
       const [userKey, timestamp] = prepRes
 
       const signedDelegation = await retryGetDelegation(
-        internetIdentity,
+        internetIdentityService,
         anchor || userNumber,
         scope,
         sessionKey,

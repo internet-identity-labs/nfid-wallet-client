@@ -1,7 +1,7 @@
 import React from "react"
 import clsx from "clsx"
 
-export interface ButtonProps
+export interface ButtonProps<T extends React.ElementType = "button">
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
@@ -16,9 +16,10 @@ export interface ButtonProps
   disabled?: boolean
   icon?: boolean
   largeMax?: boolean
+  as?: T
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = <T extends React.ElementType = "button">({
   children,
   className,
   secondary,
@@ -31,10 +32,14 @@ export const Button: React.FC<ButtonProps> = ({
   largeMax,
   stroke,
   error,
+  as,
   ...buttonProps
-}) => {
+}: ButtonProps<T> &
+  Omit<React.ComponentPropsWithoutRef<T>, keyof ButtonProps<T>>) => {
+  const Component = as || "button"
+
   return (
-    <button
+    <Component
       disabled={disabled}
       className={clsx(
         "text-center p-4 text-sm font-bold rounded-md outline-none focus:ring-2 focus:ring-offset-[3px] focus:ring-black-base first-letter:capitalize  hover:no-underline",
@@ -59,6 +64,6 @@ export const Button: React.FC<ButtonProps> = ({
       {...buttonProps}
     >
       {children}
-    </button>
+    </Component>
   )
 }

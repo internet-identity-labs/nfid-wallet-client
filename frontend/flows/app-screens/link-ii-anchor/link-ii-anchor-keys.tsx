@@ -24,7 +24,6 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
 
   const { state } = useLocation()
   const { account, updateAccount } = useMultipass()
-  const navigate = useNavigate()
 
   const { iiDeviceLink, userNumber } = state as LocationState
 
@@ -36,10 +35,9 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
       if (devices.length > numDevices) {
         if (!account) throw new Error("No account found")
 
-        account.iiAnchors = [
-          ...(account.iiAnchors || []),
-          userNumber.toString(),
-        ]
+        account.iiAnchors = Array.from(
+          new Set([...(account.iiAnchors || []), userNumber.toString()]),
+        )
 
         updateAccount(account)
         setShowModal(true)
@@ -66,9 +64,9 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
 
   return (
     <AppScreen>
-      <Card className="offset-header grid grid-cols-12">
+      <Card className="grid grid-cols-12 offset-header">
         <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
-          <H2 className="my-4">Link anchor {"anchorNumber"}</H2>
+          <H2 className="my-4">Link anchor {userNumber}</H2>
 
           <P className="mb-3">
             Log in to Internet Identity with anchor {userNumber} to complete the
@@ -90,11 +88,11 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
       {showModal ? (
         <Modal
           title={"Great job!"}
-          description="You signed in to {applicationName}"
+          description={"You've successfully linked NFID"}
           buttonText="Done"
           onClick={() => {
             setShowModal(false)
-            navigate("/")
+            window.close()
           }}
         />
       ) : null}

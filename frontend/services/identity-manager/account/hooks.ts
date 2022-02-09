@@ -6,6 +6,7 @@ import {
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
+import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import { accountAtom, LocalAccount, userNumberAtom } from "./state"
 
 type AccountService = Pick<
@@ -43,11 +44,13 @@ export const useAccount = () => {
     [setAccount],
   )
 
-  const getAccount = React.useCallback(async () => {
-    return new Promise<LocalAccount | undefined>((resolve) =>
-      resolve(account || undefined),
-    )
-  }, [account])
+  const resetLocalAccount = React.useCallback(async () => {
+    const localAccount = JSON.parse(
+      window.localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY) || "{}",
+    ) as LocalAccount
+
+    setAccount(localAccount)
+  }, [setAccount])
 
   const updateAccount = React.useCallback(
     (partialAccount: Partial<LocalAccount>) => {
@@ -83,7 +86,7 @@ export const useAccount = () => {
     userNumber,
     createAccount,
     readAccount,
-    getAccount,
+    resetLocalAccount,
     updateAccount,
     verifyPhonenumber,
   }

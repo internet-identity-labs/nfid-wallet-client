@@ -72,8 +72,10 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
 
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
   const [pow, setPow] = React.useState<ProofOfWork | null>(
-    (state as RegisterPayload).pow || null,
+    (state as RegisterAccountCaptchaState)?.registerPayload?.pow || null,
   )
+  console.log(">> RegisterAccountCaptcha", { pow })
+
   const [loading, setLoading] = React.useState(true)
 
   const { onRegisterSuccess } = useAuthentication()

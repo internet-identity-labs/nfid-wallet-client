@@ -5,7 +5,7 @@ import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
 import { AccessPointConstants } from "./add-new-access-point/routes"
 import { AuthenticateAccountConstants as AAC } from "./authenticate/routes"
-import { LinkIIAnchorConstants } from "./link-ii-anchor/routes"
+import { LinkIIAnchorConstants } from "./app-screens/link-ii-anchor/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
 import { RegisterAccountConstants } from "./register-account/routes"
 import { RegisterConstants } from "./register/routes"
@@ -37,10 +37,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     {
       title: "Authenticate",
       base: AAC.base,
-      items: [
-        { path: `${AAC.login}` },
-        { path: `${AAC.home}` },
-      ],
+      items: [{ path: `${AAC.login}` }, { path: `${AAC.home}` }],
     },
     {
       title: "Register Account (NFID) Flow",
@@ -114,7 +111,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         {process.env.NODE_ENV == "development" && (
           <Card>
             <CardBody>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {routes.map((routes, index) => (
                   <div
                     className="col-span-1 sm:col-span-2 md:col-span-1"
@@ -126,7 +123,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     <div className="space-y-3">
                       {routes.items.map(({ path, state = {} }, index) => (
                         <Link
-                          className="group hover:border-indigo-500 hover:text-indigo-500 cursor-pointer border rounded flex items-center justify-between p-2 w-full"
+                          className="flex items-center justify-between w-full p-2 border rounded cursor-pointer group hover:border-indigo-500 hover:text-indigo-500"
                           to={getFullRoute(path, routes.base)}
                           key={index}
                           state={state}
@@ -136,7 +133,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                           </span>
                           <div className="flex">
                             <div className="border-l w-[10px] flex mr-1"></div>
-                            <HiChevronDoubleRight className="group-hover:text-indigo-500 text-lg" />
+                            <HiChevronDoubleRight className="text-lg group-hover:text-indigo-500" />
                           </div>
                         </Link>
                       ))}

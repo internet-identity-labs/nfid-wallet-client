@@ -92,7 +92,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
 
   return (
     <AppScreen>
-      <Card className="offset-header grid grid-cols-12">
+      <Card className="grid grid-cols-12 offset-header">
         <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
           <H2 className="my-4">Link existing {applicationName} account</H2>
 

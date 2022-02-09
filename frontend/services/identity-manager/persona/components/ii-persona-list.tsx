@@ -20,7 +20,7 @@ export const IIPersonaList: React.FC<IIPersonaListProps> = ({
   return (
     <div className={clsx("pb-5", className)}>
       <List>
-        {personas.length > 1 && (
+        {personas.length > 0 && (
           <List.Header>
             <div className="pt-12 pb-5">
               <H5>We have found several anchors.</H5>

@@ -22,9 +22,14 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
 
   return (
     <IFrameScreen>
-      {isAuthenticated && <Navigate to={AuthoriseAppConstants.base} />}
+      {isAuthenticated && (
+        <Navigate
+          // TODO: this is fragile. We need pass the applicationName query string
+          to={`${AuthoriseAppConstants.base}${window.location.search}`}
+        />
+      )}
 
-      <H5 className="text-center mb-4">{`Log in to ${applicationName}
+      <H5 className="mb-4 text-center">{`Log in to ${applicationName}
     with your NFID`}</H5>
 
       {!error ? (

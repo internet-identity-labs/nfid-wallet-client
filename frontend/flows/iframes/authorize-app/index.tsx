@@ -7,6 +7,10 @@ import { H5, Loader } from "frontend/ui-kit/src"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { NFIDPersonas } from "frontend/services/identity-manager/persona/components/nfid-persona"
 import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
+import { LinkIIAnchorHref } from "frontend/flows/app-screens/link-ii-anchor/routes"
+import { useInterval } from "frontend/hooks/use-interval"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 
 interface AuthorizeAppProps
   extends React.DetailedHTMLProps<
@@ -16,14 +20,18 @@ interface AuthorizeAppProps
 
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
   const { isLoading, setIsloading } = useIsLoading()
-  const { userNumber, account } = useAccount()
+  const { userNumber, account, resetLocalAccount } = useAccount()
   const { nfidPersonas, createPersona } = usePersona()
+  const [pollForNewAnchor, setPollForNewAnchor] = React.useState(false)
+  const [iiAnchorsBeforeLinking, setIIAnchorsBeforeLinking] = React.useState(
+    account?.iiAnchors?.length ?? 0,
+  )
 
   const { authorizationRequest, authorizeApp } = useAuthorization({
     userNumber,
   })
 
-  const { nextPersonaId, iiPersonas } = usePersona({
+  const { nextPersonaId, iiPersonas: iiPersonasPersisted } = usePersona({
     application: authorizationRequest?.hostname,
   })
 
@@ -54,11 +62,37 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
     ({ anchor }) =>
       async () => {
         setIsloading(true)
-        await authorizeApp({ anchor })
-        setIsloading(false)
+        const loginResult = await IIConnection.login(BigInt(anchor))
+        const result = apiResultToLoginResult(loginResult)
+
+        if (result.tag === "ok") {
+          await authorizeApp({
+            anchor,
+            internetIdentityForAnchor: result.internetIdentity,
+          })
+          setIsloading(false)
+        }
       },
     [authorizeApp, setIsloading],
   )
+
+  const handleLinkIIAnchor = React.useCallback(() => {
+    setPollForNewAnchor(true)
+    setIIAnchorsBeforeLinking(account?.iiAnchors?.length ?? 0)
+  }, [account?.iiAnchors?.length])
+
+  const iiPersonas = [
+    ...iiPersonasPersisted,
+    ...(account?.iiAnchors?.map((anchor) => ({ anchor })) || []),
+  ]
+
+  React.useEffect(() => {
+    if (iiAnchorsBeforeLinking < (account?.iiAnchors?.length ?? 0)) {
+      setPollForNewAnchor(false)
+    }
+  }, [account?.iiAnchors?.length, iiAnchorsBeforeLinking])
+
+  useInterval(resetLocalAccount, 500, pollForNewAnchor)
 
   return (
     <IFrameScreen>
@@ -74,6 +108,9 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
         personas={iiPersonas}
         onClickPersona={handleAuthorizeIIPersona}
       />
+      <div className="flex justify-center">
+        <LinkIIAnchorHref onClick={handleLinkIIAnchor} />
+      </div>
       <Loader isLoading={isLoading} />
     </IFrameScreen>
   )

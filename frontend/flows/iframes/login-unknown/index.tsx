@@ -22,7 +22,7 @@ import { apiResultToLoginResult } from "frontend/services/internet-identity/api-
 import { blobFromHex } from "@dfinity/candid"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { getBrowser, getPlatformInfo } from "frontend/utils"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 interface UnknownDeviceScreenProps {
   showRegisterDefault?: boolean
@@ -50,6 +50,10 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     setNewDeviceKey,
     postClientAuthorizeSuccessMessage,
   } = useUnknownDeviceConfig()
+  const isLoading = status === "loading"
+  const navigate = useNavigate()
+  const { authenticator: platformAuth, os, browser } = useDeviceInfo()
+
   const { getMessages } = usePubSubChannel()
   const handleLoginFromRemoteDelegation = React.useCallback(
     async (registerMessage) => {
@@ -164,13 +168,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
   useInterval(handlePollForDelegate, 2000)
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
-
-  const isLoading = status === "loading"
-  const navigate = useNavigate()
-  const browser = getBrowser()
-  const platformInfo = getPlatformInfo()
-  const platformAuth = platformInfo.authenticator
-  const os = platformInfo.os
 
   return (
     <IFrameScreen>

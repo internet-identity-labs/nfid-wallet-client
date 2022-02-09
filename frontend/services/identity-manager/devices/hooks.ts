@@ -1,11 +1,11 @@
 import { blobFromHex, blobToHex, derBlobFromBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import {
   creationOptions,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { getBrowser, getPlatformInfo } from "frontend/utils"
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
@@ -14,6 +14,7 @@ import { Device, devicesAtom } from "./state"
 
 export const useDevices = () => {
   const [devices, setDevices] = useAtom(devicesAtom)
+  const { newDeviceName } = useDeviceInfo()
 
   const { userNumber } = useAccount()
   const { internetIdentity } = useAuthentication()
@@ -45,24 +46,26 @@ export const useDevices = () => {
     [internetIdentity, userNumber],
   )
 
-  const createWebAuthNDevice = React.useCallback(async (userNumber: bigint) => {
-    const existingDevices = await IIConnection.lookupAll(userNumber)
+  const createWebAuthNDevice = React.useCallback(
+    async (userNumber: bigint) => {
+      const existingDevices = await IIConnection.lookupAll(userNumber)
 
-    const identity = await WebAuthnIdentity.create({
-      publicKey: creationOptions(existingDevices),
-    })
-    const publicKey = blobToHex(identity.getPublicKey().toDer())
-    const rawId = blobToHex(identity.rawId)
-    const deviceName = `NFID ${getBrowser()} on ${getPlatformInfo().os}`
+      const identity = await WebAuthnIdentity.create({
+        publicKey: creationOptions(existingDevices),
+      })
+      const publicKey = blobToHex(identity.getPublicKey().toDer())
+      const rawId = blobToHex(identity.rawId)
 
-    const device = {
-      publicKey,
-      rawId,
-      deviceName,
-    }
+      const device = {
+        publicKey,
+        rawId,
+        deviceName: newDeviceName,
+      }
 
-    return { device }
-  }, [])
+      return { device }
+    },
+    [newDeviceName],
+  )
 
   const createDevice = React.useCallback(
     async ({

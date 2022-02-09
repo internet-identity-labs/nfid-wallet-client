@@ -1,11 +1,10 @@
-import { Button, H5, Loader, TouchId } from "frontend/ui-kit/src/index"
-import clsx from "clsx"
+import { Button, H5, Loader } from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { getPlatformInfo } from "frontend/utils"
 import React from "react"
 import { useParams } from "react-router-dom"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePostMessage } from "frontend/hooks/use-post-message"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 type Status = "initial" | "loading" | "success"
 
@@ -16,20 +15,10 @@ export const RegisterNewFromDelegate = () => {
     onMessage: (window, ev) => console.log(">> onMessage", { window, ev }),
   })
 
+  const { os } = useDeviceInfo()
+
   let { secret, userNumber } = useParams()
   const { createWebAuthNDevice } = useDevices()
-
-  // TODO: remove this and all dependants
-  const handleSendDeviceKey = React.useCallback(
-    (pubKey) => {
-      opener?.postMessage(
-        { kind: "registered-device", deviceKey: pubKey },
-        opener.origin,
-      )
-      window.close()
-    },
-    [opener],
-  )
 
   const handleRegisterNewDevice = React.useCallback(async () => {
     setStatus("loading")
@@ -51,8 +40,8 @@ export const RegisterNewFromDelegate = () => {
         <H5 className="mb-3">Trust this browser</H5>
 
         <div>
-          Prove you own this {getPlatformInfo().os} by successfully unlocking it
-          to trust this browser.
+          Prove you own this {os} by successfully unlocking it to trust this
+          browser.
         </div>
 
         <Button
@@ -61,7 +50,7 @@ export const RegisterNewFromDelegate = () => {
           secondary
           className="mt-8"
         >
-          I own this {getPlatformInfo().os}
+          I own this {os}
         </Button>
       </div>
 

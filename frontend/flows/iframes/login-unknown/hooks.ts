@@ -8,7 +8,7 @@ const READY_MESSAGE = {
   kind: "authorize-ready",
 }
 
-type MessageKinds = "authorize-client" | "registered-device" | "new-device"
+type MessageKinds = "authorize-client" | "new-device"
 
 interface Message {
   kind: MessageKinds
@@ -105,9 +105,6 @@ export const useUnknownDeviceConfig = () => {
         },
         "new-device": (event: any) => {
           handleStoreNewDevice(event.data)
-        },
-        "registered-device": (event: any) => {
-          setNewDeviceKey(event.data.deviceKey)
         },
       },
     })

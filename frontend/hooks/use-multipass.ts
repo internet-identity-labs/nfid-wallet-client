@@ -6,23 +6,27 @@ import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
 } from "frontend/services/internet-identity/iiConnection"
-import { getBrowser, getPlatformInfo } from "frontend/utils"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
+import { useDeviceInfo } from "./use-device-info"
 
 export const useMultipass = () => {
   const [params] = useSearchParams()
+  const { newDeviceName } = useDeviceInfo()
 
   const createWebAuthNIdentity = React.useCallback(async () => {
-    const deviceName = `${getBrowser()} on ${getPlatformInfo().os}`
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(),
     })
     const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
     const pow = getProofOfWork(now_in_ns, iiCanisterIdPrincipal)
 
-    return { identity: JSON.stringify(identity.toJSON()), deviceName, pow }
-  }, [])
+    return {
+      identity: JSON.stringify(identity.toJSON()),
+      deviceName: newDeviceName,
+      pow,
+    }
+  }, [newDeviceName])
 
   return {
     ...useAccount(),

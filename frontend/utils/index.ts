@@ -1,46 +1,46 @@
 import bowser from "bowser"
+const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
+const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
+const PLATFORMS_IOS = ["iPhone", "iPad", "iPod"]
 
 export const getPlatformInfo = () => {
   var userAgent = window.navigator.userAgent,
-    platform = window.navigator.platform,
-    macosPlatforms = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"],
-    windowsPlatforms = ["Win32", "Win64", "Windows", "WinCE"],
-    iosPlatforms = ["iPhone", "iPad", "iPod"],
-    info = { make: "unknown", os: "unknown", authenticator: "unknown" }
+    platform = window.navigator.platform
 
-  if (macosPlatforms.indexOf(platform) !== -1) {
-    info = {
-      make: "Apple",
-      os: "Mac OS",
-      authenticator: "Touch ID",
-    }
-  } else if (iosPlatforms.indexOf(platform) !== -1) {
-    info = {
-      make: "Apple",
-      os: "iOS",
-      authenticator: "Face Id",
-    }
-  } else if (windowsPlatforms.indexOf(platform) !== -1) {
-    info = {
-      make: "Microsoft",
-      os: "Windows",
-      authenticator: "Hello",
-    }
-  } else if (/Android/.test(userAgent)) {
-    info = {
-      make: "Google",
-      os: "Android",
-      authenticator: "Fingerprint",
-    }
-  } else if (!info && /Linux/.test(platform)) {
-    info = {
-      make: "Unknown",
-      os: "Linux",
-      authenticator: "Fingerprint",
-    }
+  switch (true) {
+    case PLATFORMS_MACOS.indexOf(platform) !== -1:
+      return {
+        make: "Apple",
+        os: "Mac OS",
+        authenticator: "Touch ID",
+      }
+    case PLATFORMS_IOS.indexOf(platform) !== -1:
+      return {
+        make: "Apple",
+        os: "iOS",
+        authenticator: "Face Id",
+      }
+    case PLATFORMS_WINDOWS.indexOf(platform) !== -1:
+      return {
+        make: "Microsoft",
+        os: "Windows",
+        authenticator: "Hello",
+      }
+    case /Android/.test(userAgent):
+      return {
+        make: "Google",
+        os: "Android",
+        authenticator: "Fingerprint",
+      }
+    case /Linux/.test(platform):
+      return {
+        make: "Unknown",
+        os: "Linux",
+        authenticator: "Fingerprint",
+      }
+    default:
+      return { make: "unknown", os: "unknown", authenticator: "unknown" }
   }
-
-  return info
 }
 
 // TODO: refactor to bowser plugin

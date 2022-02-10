@@ -33,7 +33,7 @@
     "react-router": "6.2.1",
     "react-router-dom": "6.2.1",
     "stream-browserify": "3.0.0",
-    "swiper": "^8.0.3",
+    "swiper": "^8.0.5",
     "uuid": "8.3.2"
   },
   "devDependencies": {

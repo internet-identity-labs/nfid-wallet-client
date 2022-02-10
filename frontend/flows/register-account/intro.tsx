@@ -29,6 +29,29 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
   const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)
 
+  const slideStyles = {
+    slide1: {
+      background: `linear-gradient(90deg,#008DDD,#A400CD)`,
+    },
+    slide2: {
+      background: `linear-gradient(90deg,#E324B5,#6500CA)`,
+    },
+    slide3: {
+      background: `linear-gradient(90deg,#FF6B00,#D900B6)`,
+    },
+    slide4: [
+      {
+        background: `linear-gradient(90deg,#00dd59,#009e6e)`,
+      },
+      {
+        background: `linear-gradient(90deg,#00cc60,#016081)`,
+      },
+    ],
+    slide5: {
+      background: `linear-gradient(90deg,#008DDD,#A400CD)`,
+    },
+  }
+
   return (
     <AppScreen>
       <Card className="offset-header">
@@ -56,7 +79,12 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   The only way to guarantee your{" "}
-                  <span className="text-[#008DDD]">privacy and security</span>{" "}
+                  <span
+                    className="clip-text whitespace-nowrap"
+                    style={slideStyles.slide1}
+                  >
+                    privacy and security
+                  </span>{" "}
                   on the Internet
                 </div>
               </div>
@@ -65,8 +93,11 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               <div className="max-w-2xl">
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
-                  <span className="text-[#E324B5]">
-                    {`This is your ${device}.`}
+                  <span
+                    className="clip-text whitespace-nowrap"
+                    style={slideStyles.slide2}
+                  >
+                    This is your {device}.
                   </span>{" "}
                   There are many like it but this one is yours.
                 </div>
@@ -84,10 +115,13 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
-                  <span className="text-[#ff6a00]">
-                    {`you and your ${device}`}
-                  </span>
-                  , your online accounts are inaccessible.
+                  <span
+                    className="clip-text whitespace-nowrap"
+                    style={slideStyles.slide3}
+                  >
+                    you and your {device},
+                  </span>{" "}
+                  your online accounts are inaccessible.
                 </div>
                 <P className="mb-3">
                   Anyone could pretend to be you with your username and
@@ -102,9 +136,17 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   Without{" "}
-                  <span className="text-[#00e05a]">your consent</span>
-                  , nobody can access{" "}
-                  <span className="text-[#00e05a]">
+                  <span
+                    className="clip-text whitespace-nowrap"
+                    style={slideStyles.slide4[0]}
+                  >
+                    your consent,
+                  </span>{" "}
+                  nobody can access{" "}
+                  <span
+                    className="clip-text whitespace-nowrap"
+                    style={slideStyles.slide4[1]}
+                  >
                     any information
                   </span>{" "}
                   about you.
@@ -123,12 +165,18 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   So be it, until{" "}
-                  <span className="text-[#cd00ae]">
+                  <span
+                    className="clip-text whitespace-nowrap"
+                    style={slideStyles.slide5}
+                  >
                     convenience, security,
                   </span>{" "}
-                  <span className="text-[#cd00ae]">
+                  <span
+                    className="clip-text whitespace-nowrap"
+                    style={slideStyles.slide5}
+                  >
                     and privacy online
-                  </span>{" "} 
+                  </span>{" "}
                   are no longer required.
                 </div>
 

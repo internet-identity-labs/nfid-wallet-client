@@ -1,8 +1,9 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { Li, Ol } from "components/atoms/typography/lists"
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import {
   creationOptions,
   IIConnection,
@@ -30,7 +31,10 @@ interface LinkIIAnchorProps
   > {}
 
 export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
-  const [showModal, setShowModal] = React.useState(false)
+  const [showErrorModal, setShowErrorModal] = React.useState(false)
+  const [showAlreadyLinkedModal, setShowAlreadyLinkedModal] =
+    React.useState(false)
+  const { account, updateAccount } = useAccount()
 
   const {
     register,
@@ -41,7 +45,6 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
     mode: "all",
   })
 
-  const { applicationName } = useMultipass()
   const navigate = useNavigate()
 
   const handleLinkAnchor = React.useCallback(
@@ -61,14 +64,14 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           publicKey: creationOptions(existingDevices),
         })
       } catch (error) {
-        return console.error({
-          title: "Failed to authenticate",
-          message:
-            "We failed to collect the necessary information from your security device.",
-          // @ts-ignore
-          detail: error.message,
-          primaryButton: "Try again",
-        })
+        if (account) {
+          account.iiAnchors = Array.from(
+            new Set([...(account.iiAnchors || []), userNumber.toString()]),
+          )
+          updateAccount(account)
+          setShowAlreadyLinkedModal(true)
+        }
+        return
       }
       const publicKey = identity.getPublicKey().toDer()
       const rawId = blobToHex(identity.rawId)
@@ -87,16 +90,45 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
         state: { iiDeviceLink: link, userNumber },
       })
     },
-    [navigate],
+    [account, navigate, updateAccount],
   )
 
   return (
     <AppScreen>
       <Card className="grid grid-cols-12 offset-header">
         <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
-          <H2 className="my-4">Link existing {applicationName} account</H2>
+          <H2 className="my-4">
+            Understanding the Internet Identity linking feature for NFID
+          </H2>
 
-          <P>Enter the Internet Identity anchor you want to link with NFID:</P>
+          <P>
+            NFID is developed by Internet Identity Labs, a company based in the
+            US with funding from Tomahawk, Polychain, Joachim Breitner, Matt
+            Symons, and RubyLight Ventures.
+          </P>
+          <P>
+            Although our commitment is to build the most private, secure, and
+            convenient self-sovereign internet identity, we are not yet a
+            decentralized, tokenized protocol and therefore must earn your trust
+            by being consistently honest with you.
+          </P>
+          <P>Honestly, linking your Internet Identity does two things:</P>
+          <Ol>
+            <Li>
+              Replaces your Internet Identity frontend experience with NFID's
+              (hopefully this is a big advantage and if it's not, please reach
+              out and let us know how it could be better)
+            </Li>
+            <Li>
+              Gives us <strong>a lot</strong> of control of your Internet
+              Identity
+            </Li>
+          </Ol>
+          <P>
+            Do not do this unless you trust the team behind the project asking
+            you to link Internet Identity anchors in this way.
+          </P>
+          <P>That includes us.</P>
 
           <Input
             small
@@ -127,7 +159,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           </Button>
         </CardBody>
       </Card>
-      {showModal ? (
+      {showErrorModal ? (
         <Modal
           title={"Oops"}
           description="It's impossible to link this Internet Identity anchor, please try another one."
@@ -135,7 +167,18 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           buttonText="Try another one"
           onClick={() => {
             resetField("anchor")
-            setShowModal(false)
+            setShowErrorModal(false)
+          }}
+        />
+      ) : null}
+      {showAlreadyLinkedModal ? (
+        <Modal
+          title={"Looks like your anchor was already linked"}
+          description="You can now use your anchor with NFID"
+          buttonText="Done"
+          onClick={() => {
+            setShowAlreadyLinkedModal(false)
+            window.close()
           }}
         />
       ) : null}

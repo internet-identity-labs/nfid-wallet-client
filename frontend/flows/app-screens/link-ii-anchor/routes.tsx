@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from "components/atoms/button"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import React from "react"
-import { Outlet, Route, useNavigate } from "react-router-dom"
+import { Outlet, Route } from "react-router-dom"
 import { LinkIIAnchor } from "./link-ii-anchor"
 import { LinkIIAnchorKeys } from "./link-ii-anchor-keys"
 

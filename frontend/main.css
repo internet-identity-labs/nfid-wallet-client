@@ -43,3 +43,10 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   appearance: textfield;
 }
+
+.clip-text {
+  -webkit-background-clip: text !important;
+  -moz-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  -moz-text-fill-color: transparent !important;
+}

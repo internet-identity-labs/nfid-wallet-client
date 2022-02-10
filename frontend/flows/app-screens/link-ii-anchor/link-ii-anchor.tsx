@@ -1,5 +1,6 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { Li, Ol } from "components/atoms/typography/lists"
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -94,9 +95,38 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
     <AppScreen>
       <Card className="grid grid-cols-12 offset-header">
         <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
-          <H2 className="my-4">Link existing {applicationName} account</H2>
+          <H2 className="my-4">
+            Understanding the Internet Identity linking feature for NFID
+          </H2>
 
-          <P>Enter the Internet Identity anchor you want to link with NFID:</P>
+          <P>
+            NFID is developed by Internet Identity Labs, a company based in the
+            US with funding from Tomahawk, Polychain, Joachim Breitner, Matt
+            Symons, and RubyLight Ventures.
+          </P>
+          <P>
+            Although our commitment is to build the most private, secure, and
+            convenient self-sovereign internet identity, we are not yet a
+            decentralized, tokenized protocol and therefore must earn your trust
+            by being consistently honest with you.
+          </P>
+          <P>Honestly, linking your Internet Identity does two things:</P>
+          <Ol>
+            <Li>
+              Replaces your Internet Identity frontend experience with NFID's
+              (hopefully this is a big advantage and if it's not, please reach
+              out and let us know how it could be better)
+            </Li>
+            <Li>
+              Gives us <strong>a lot</strong> of control of your Internet
+              Identity
+            </Li>
+          </Ol>
+          <P>
+            Do not do this unless you trust the team behind the project asking
+            you to link Internet Identity anchors in this way.
+          </P>
+          <P>That includes us.</P>
 
           <Input
             small

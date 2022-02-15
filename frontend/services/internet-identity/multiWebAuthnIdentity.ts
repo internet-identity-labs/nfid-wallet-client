@@ -54,9 +54,10 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         allowCredentials: this.credentialData.map((cd) => ({
           type: "public-key",
           id: cd.credentialId,
+          transports: ["internal"],
         })),
         challenge: blob,
-        userVerification: "discouraged",
+        userVerification: "preferred",
       },
     })) as PublicKeyCredential
 

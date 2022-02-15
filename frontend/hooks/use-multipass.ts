@@ -6,12 +6,17 @@ import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
   creationOptions,
 } from "frontend/services/internet-identity/iiConnection"
+import { atom, useAtom } from "jotai"
 import React from "react"
-import { useSearchParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import { useDeviceInfo } from "./use-device-info"
+
+const applicationNameAtom = atom<string | undefined>(undefined)
 
 export const useMultipass = () => {
   const [params] = useSearchParams()
+  const { applicationName: applicationNameFromPath } = useParams()
+  const [applicationName, setApplicationName] = useAtom(applicationNameAtom)
   const { newDeviceName } = useDeviceInfo()
 
   const createWebAuthNIdentity = React.useCallback(async () => {
@@ -28,10 +33,21 @@ export const useMultipass = () => {
     }
   }, [newDeviceName])
 
+  React.useEffect(() => {
+    const applicationNameFromParams = params.get("applicationName")
+    if (
+      !applicationName &&
+      (applicationNameFromParams || applicationNameFromPath)
+    ) {
+      setApplicationName(applicationNameFromParams || applicationNameFromPath)
+    }
+  }, [applicationName, applicationNameFromPath, params, setApplicationName])
+
   return {
     ...useAccount(),
     ...usePersona(),
     createWebAuthNIdentity,
-    applicationName: params.get("applicationName"),
+    applicationName,
+    setApplicationName,
   }
 }

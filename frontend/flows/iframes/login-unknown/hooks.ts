@@ -1,5 +1,6 @@
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
 import { RegisterDevicePromptConstants as RDPC } from "frontend/flows/register-device/routes"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { usePostMessage } from "frontend/hooks/use-post-message"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import React from "react"
@@ -81,15 +82,16 @@ export const useUnknownDeviceConfig = () => {
   const [pubKey, setPubKey] = React.useState("")
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
   const { createDevice } = useDevices()
+  const { applicationName } = useMultipass()
 
   const url = React.useMemo(() => {
     const multipassDomain = import.meta.env.VITE_MULTIPASS_DOMAIN
 
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `https://${multipassDomain}${RDPC.base}/${pubKey}/${domain}`
+      ? `https://${multipassDomain}${RDPC.base}/${pubKey}/${domain}/${applicationName}`
       : null
-  }, [domain, pubKey])
+  }, [applicationName, domain, pubKey])
 
   const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({

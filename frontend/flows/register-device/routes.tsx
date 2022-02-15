@@ -8,13 +8,14 @@ import { RegisterDevicePromptSuccess } from "./success"
 // Prompt routes
 export const RegisterDevicePromptConstants = {
   base: "/rdp",
+  authorize: ":secret/:scope/:applicationName",
   success: "success",
 }
 
 export const RegisterDevicePromptRoutes = (
   <Route path={RegisterDevicePromptConstants.base}>
     <Route
-      path={":secret/:scope"}
+      path={RegisterDevicePromptConstants.authorize}
       element={
         <AuthWrapper>
           <RegisterDevicePrompt />

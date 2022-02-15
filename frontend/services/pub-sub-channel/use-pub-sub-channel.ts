@@ -8,7 +8,7 @@ import {
   _SERVICE,
 } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { idlFactory as pub_sub_channel_idl } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"
-import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 
 const pubSubCanisterId: string = CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string
 

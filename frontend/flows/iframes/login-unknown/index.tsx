@@ -17,12 +17,12 @@ import { useNavigate } from "react-router-dom"
 import { IFrameRestoreAccessPointConstants as RAC } from "../restore-account/routes"
 import { useUnknownDeviceConfig } from "./hooks"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
-import { useAuthentication } from "frontend/flows/auth-wrapper"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { blobFromHex } from "@dfinity/candid"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 
 interface UnknownDeviceScreenProps {
   showRegisterDefault?: boolean

@@ -252,6 +252,16 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
+"@dfinity/auth-client@0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.10.2.tgz#36079df982ffc73ba99fa18ebc4800953616d704"
+  integrity sha512-u9RThzTvsrKb85PhnEUXgZ3KwdSJCeNwHBZ3zVCZ7XQEkDhwNZK87JD00Mh2Z5kCbN3+A+OdGZtYXloFlgENew==
+
+"@dfinity/authentication@0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@dfinity/authentication/-/authentication-0.10.2.tgz#fcc4e82e13f18e66556e40807190709dbbde92d7"
+  integrity sha512-+fNuknjSl1SI4f0e+KQdCnJy3vuSTeGFriLXstjYDCO2ez432lMiyqoF9eC4Gvp6AX9RZifRt2BXuWnhzwZwEQ==
+
 "@dfinity/candid@0.9.3":
   version "0.9.3"
   resolved "https://registry.npmjs.org/@dfinity/candid/-/candid-0.9.3.tgz"
@@ -306,6 +316,7 @@
 
 "@identity-labs/ui@link:frontend/ui-kit":
   version "0.0.0"
+  uid ""
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -3013,6 +3024,10 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
+
+"usergeek-ic-js@github:usergeek/usergeek-ic-js":
+  version "1.0.1"
+  resolved "https://codeload.github.com/usergeek/usergeek-ic-js/tar.gz/44df4ba2b05b18a01429f92482110ed6c5d4dfda"
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2:
   version "1.0.2"

@@ -28,7 +28,7 @@ import { captchaRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
-import { useAuthentication } from "../auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCaptchaProps

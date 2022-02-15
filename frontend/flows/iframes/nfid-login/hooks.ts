@@ -2,7 +2,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { blobFromUint8Array } from "@dfinity/candid"
 
-import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { LoginError } from "frontend/services/internet-identity/api-result-to-login-result"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { useMessageChannel } from "../login-unknown/hooks"

@@ -7,6 +7,7 @@ import {
   ModalAdvancedProps,
 } from "components/molecules/modal/advanced"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import {
@@ -23,7 +24,6 @@ import {
 } from "frontend/ui-kit/src"
 import React from "react"
 import { MdLaptopMac } from "react-icons/md"
-import { useAuthentication } from "../auth-wrapper"
 
 interface AuthenticateNFIDHomeProps
   extends React.DetailedHTMLProps<

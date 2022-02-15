@@ -6,7 +6,7 @@ import {
 import { useAtom } from "jotai"
 import { personaAtom } from "./state"
 import { isNFIDPersona, isIIPersona } from "./types"
-import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { normalizePersonas } from "./utils"

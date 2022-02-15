@@ -1,5 +1,5 @@
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { Button, H5, Loader } from "frontend/ui-kit/src"

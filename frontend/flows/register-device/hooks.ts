@@ -6,7 +6,7 @@ import { PublicKey } from "frontend/services/internet-identity/generated/interne
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import React from "react"
-import { useAuthentication } from "../auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 
 type RemoteLoginMessage = {
   delegation: {

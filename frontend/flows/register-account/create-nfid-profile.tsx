@@ -70,7 +70,7 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
       )
 
       if (isValid && validPhonenumber) {
-        return navigate(`${RAC.base}/${RAC.smsVerification}`, {
+        return navigate(`TODO: replace with new url`, {
           state: {
             name,
             trimmedPhonenumber,

@@ -1,6 +1,6 @@
 import { blobFromHex, blobToHex, derBlobFromBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { useAuthentication } from "frontend/flows/auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import {
   creationOptions,

@@ -13,7 +13,7 @@ import { useInterval } from "frontend/hooks/use-interval"
 import { ExistingDevices } from "frontend/services/identity-manager/devices/existing-devices"
 import React from "react"
 import { useParams } from "react-router"
-import { useAuthentication } from "../auth-wrapper"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 

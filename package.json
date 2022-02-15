@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@dfinity/agent": "0.9.3",
+    "@dfinity/auth-client": "0.10.2",
+    "@dfinity/authentication": "0.10.2",
     "@dfinity/candid": "0.9.3",
     "@dfinity/identity": "0.9.3",
     "@dfinity/principal": "0.9.3",
@@ -34,6 +36,7 @@
     "react-router-dom": "6.2.1",
     "stream-browserify": "3.0.0",
     "swiper": "^8.0.6",
+    "usergeek-ic-js": "github:usergeek/usergeek-ic-js",
     "uuid": "8.3.2"
   },
   "devDependencies": {

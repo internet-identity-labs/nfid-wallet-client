@@ -57,7 +57,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
           transports: ["internal"],
         })),
         challenge: blob,
-        userVerification: "preferred",
+        userVerification: "discouraged",
       },
     })) as PublicKeyCredential
 

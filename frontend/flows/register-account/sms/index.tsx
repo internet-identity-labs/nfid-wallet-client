@@ -215,11 +215,7 @@ export const RegisterAccountSMSVerification: React.FC<
               large
               icon
               className="mt-4"
-              onClick={() =>
-                navigate(`${RAC.base}/${RAC.createNFIDProfile}`, {
-                  state: { name, phonenumber },
-                })
-              }
+              onClick={() => console.log(">> onClick check phone number", {})}
             >
               <ButtonChevronIcon />
               <span>Check phone number</span>

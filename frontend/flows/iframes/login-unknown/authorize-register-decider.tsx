@@ -21,7 +21,6 @@ export const AuthorizeRegisterDecider: React.FC<
   const [linkAccount, setLinkAccount] = React.useState(
     "rb_link_account_register",
   )
-
   const handleClick = () => {
     if (linkAccount === "rb_link_account_register") {
       onRegister()
@@ -43,14 +42,15 @@ export const AuthorizeRegisterDecider: React.FC<
 
       <div className="py-5">
         <RadioButton
-          defaultChecked
-          name={"link_account"}
+          checked={linkAccount === "rb_link_account_register"}
+          name={"rb_link_account_register"}
           text={"Link existing account"}
           value={"rb_link_account_register"}
           onChange={() => setLinkAccount("rb_link_account_register")}
         />
         <RadioButton
-          name={"link_account"}
+          checked={linkAccount === "rb_link_account_login"}
+          name={"rb_link_account_login"}
           text={"No thanks, I'm new"}
           value={"rb_link_account_login"}
           onChange={() => setLinkAccount("rb_link_account_login")}

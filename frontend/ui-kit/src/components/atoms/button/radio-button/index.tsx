@@ -4,7 +4,7 @@ import { Label } from "components/atoms/input/label"
 
 interface RadioButtonProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
+    React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
   name: string
@@ -20,21 +20,25 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
   value,
   name,
   disabled,
+  onClick,
   ...props
 }) => {
   return (
-    <div className="flex items-center mb-4">
-      <label className="inline-flex items-center">
+    <div className="flex items-center mb-4" onClick={onClick}>
+      <div className="inline-flex items-center">
         <input
           type="radio"
           disabled={disabled}
+          id={name}
           name={name}
           value={value}
-          className="h-5 w-5 hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black-base"
+          className="w-5 h-5 hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black-base"
           {...props}
         />
-        <Label className="ml-3 !mb-0">{text}</Label>
-      </label>
+        <Label htmlFor={name} className="ml-3 !mb-0">
+          {text}
+        </Label>
+      </div>
     </div>
   )
 }

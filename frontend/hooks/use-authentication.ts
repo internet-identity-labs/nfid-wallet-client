@@ -10,6 +10,7 @@ import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { atom, useAtom } from "jotai"
 import React from "react"
+import { Principal } from "@dfinity/principal"
 
 interface Actors {
   chain: DelegationChain
@@ -42,11 +43,12 @@ export const useAuthentication = () => {
     setActors(null)
   }, [setActors])
 
-  const initUserGeek = React.useCallback((principalId: string) => {
+  const initUserGeek = React.useCallback((principal: Principal) => {
     // TODO: create pull request removing the requirement of
     // @dfinity/auth-client to be installed
     // they just use LocalStorage implementation from it.
     Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
+    Usergeek.setPrincipal(principal)
   }, [])
 
   const login = React.useCallback(async () => {
@@ -62,9 +64,7 @@ export const useAuthentication = () => {
     }
     if (result.tag === "ok") {
       setActors(result)
-      initUserGeek(
-        result.internetIdentity.delegationIdentity.getPrincipal().toString(),
-      )
+      initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
     }
   }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
 

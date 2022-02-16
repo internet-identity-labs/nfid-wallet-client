@@ -58,7 +58,7 @@ export const AuthorizeRegisterDecider: React.FC<
       </div>
 
       <div className="mt-6">
-        <Button secondary block onClick={() => handleClick()}>
+        <Button secondary block onClick={handleClick}>
           Continue
         </Button>
       </div>

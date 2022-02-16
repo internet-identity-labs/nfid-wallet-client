@@ -2,7 +2,7 @@ import { CONFIG } from "frontend/config"
 import {
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/services/identity-manager/identity_manager"
+} from "frontend/services/identity-manager/identity_manager.did"
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"

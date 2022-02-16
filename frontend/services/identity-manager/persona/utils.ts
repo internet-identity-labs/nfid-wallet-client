@@ -1,4 +1,4 @@
-import { PersonaVariant } from "../identity_manager"
+import { PersonaVariant } from "../identity_manager.did"
 import { IIPersona, NFIDPersona, Persona } from "./types"
 
 export const normalizePersonas = (personas?: PersonaVariant[]): Persona[] => {

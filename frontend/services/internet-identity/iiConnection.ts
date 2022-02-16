@@ -25,7 +25,7 @@ import {
   DeviceKey,
   ChallengeResult,
 } from "./generated/internet_identity_types"
-import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
+import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { idlFactory as PubsubChannelIdlFactory } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"

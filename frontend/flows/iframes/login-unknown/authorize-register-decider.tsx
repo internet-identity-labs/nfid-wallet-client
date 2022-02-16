@@ -10,16 +10,21 @@ interface AuthorizeRegisterDeciderProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  onClick: () => void
+  onClick: (selectedItem: any) => void
 }
 
 export const AuthorizeRegisterDecider: React.FC<
   AuthorizeRegisterDeciderProps
 > = ({ onClick }) => {
   const { make: deviceMake, authenticator: platformAuth } = useDeviceInfo()
+  const [linkAccount, setLinkAccount] = React.useState(
+    "rb_link_account_proceed",
+  )
+
   return (
     <IFrameScreen logo>
       <H5 className="mb-4">Log in faster on this device</H5>
+
       <div>
         Trust this {deviceMake}? You can quickly and securely log in the next
         time using this device's {platformAuth}.
@@ -27,19 +32,22 @@ export const AuthorizeRegisterDecider: React.FC<
 
       <div className="py-5">
         <RadioButton
+          defaultChecked
           name={"link_account"}
           text={"Link existing account"}
           value={"rb_link_account_proceed"}
+          onChange={() => setLinkAccount("rb_link_account_proceed")}
         />
         <RadioButton
           name={"link_account"}
           text={"No thanks, I'm new"}
           value={"rb_link_account_ignore"}
+          onChange={() => setLinkAccount("rb_link_account_ignore")}
         />
       </div>
 
       <div className="mt-6">
-        <Button secondary block onClick={onClick}>
+        <Button secondary block onClick={() => onClick(linkAccount)}>
           Continue
         </Button>
       </div>

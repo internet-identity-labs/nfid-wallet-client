@@ -115,8 +115,8 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <AuthorizeRegisterDecider
-                onClick={() => {
-                  // get radio button value
+                onClick={(selectedItem) => {
+                  alert(selectedItem)
                 }}
               />
             </IFrameWrapper>

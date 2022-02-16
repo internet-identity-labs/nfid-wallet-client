@@ -204,8 +204,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
       {showRegister && !isLoading && (
         <AuthorizeRegisterDecider
-          onRegister={handleRegisterDevice}
-          onLogin={() => handleSendDelegate(message)}
+          onClick={(selectedItem) => {
+            if (selectedItem === "rb_link_account_proceed") {
+              handleRegisterDevice()
+            } else if (selectedItem === "rb_link_account_cancel") {
+              handleSendDelegate(message)
+            }
+          }}
         />
       )}
     </IFrameScreen>

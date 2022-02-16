@@ -7,6 +7,7 @@ interface RadioButtonProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLInputElement
   > {
+  name: string
   text?: string
   value?: string
   disabled?: boolean
@@ -17,16 +18,17 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
   className,
   text,
   value,
+  name,
   disabled,
   ...props
 }) => {
   return (
-    <div className="flex items-center mb-2">
+    <div className="flex items-center mb-4">
       <label className="inline-flex items-center">
         <input
           type="radio"
           disabled={disabled}
-          name={text}
+          name={name}
           value={value}
           className="h-5 w-5 hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black-base"
           {...props}

@@ -6,22 +6,25 @@ interface IFrameWrapperProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  fixedHeight?: boolean
+}
 
 export const IFrameWrapper: React.FC<IFrameWrapperProps> = ({
   children,
   className,
+  fixedHeight = true,
 }) => {
   return (
     <Card
       id="iframe-wrapper-card"
       className={clsx(
-        "bg-white shadow-xl max-w-screen rounded-t-xl md:rounded-xl w-full md:w-[390px] duration-200 ease-in-out",
+        "bg-white shadow-xl max-w-screen rounded-t-xl md:rounded-xl w-full md:w-[360px] duration-200 ease-in-out",
         "flex flex-col",
-        "fixed bottom-0 right-0 md:top-[18px] md:right-7 md:overflow-hidden",
+        "fixed bottom-0 right-0 md:top-[18px] md:right-7",
         className,
       )}
-      style={{ height: 190 }}
+      style={{ height: fixedHeight ? 190 : "fit-content" }}
     >
       {children}
     </Card>

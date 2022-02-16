@@ -42,13 +42,19 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div className={clsx("rounded-md", className)}>
         {labelText && <Label>{labelText}</Label>}
         <div className={clsx("flex relative", small && "md:max-w-[340px]")}>
+          {icon && (
+            <div className="flex-shrink-0 absolute left-[10px] top-[12px] z-10">
+              {icon}
+            </div>
+          )}
           <input
             type={type}
             className={clsx(
-              "flex-1 block w-full placeholder:text-sm border-black-base active:border-blue-base active:bg-[#F6FAFF] active:drop-shadow-[0_0px_2px_rgba(14,98,255,1)]",
-              "disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none disabled:focus:ring-transparent disabled:drop-shadow-none",
-              errorText &&
-                "active:drop-shadow-none active:bg-transparent active:border-red-base border-red-base text-red-base focus:border-red-base focus:ring-red-base",
+              "flex-1 block w-full placeholder:text-sm border-black-base bg-transparent py-[10px]",
+              "disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none disabled:ring-transparent disabled:drop-shadow-none shadow-none placeholder:text-base",
+              errorText
+                ? "active:ring-4 active:ring-red-200 active:border-red-base border-red-base focus:border-red-base focus:ring-red-base"
+                : "active:border-blue-base active:ring-4 active:ring-blue-200 active:outline-none",
               prependedText ? "rounded-r-md" : "rounded-md",
               icon && "pl-10",
               pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",

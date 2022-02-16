@@ -1,28 +1,22 @@
+import { blobFromHex } from "@dfinity/candid"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/register-device/routes"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useInterval } from "frontend/hooks/use-interval"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { buildDelegate } from "frontend/services/internet-identity/build-delegate"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { setUserNumber } from "frontend/services/internet-identity/userNumber"
-import {
-  Button,
-  H5,
-  Loader,
-  QRCode,
-  SetupTouchId,
-} from "frontend/ui-kit/src/index"
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
+import { Button, H5, Loader, QRCode } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { IFrameRestoreAccessPointConstants as RAC } from "../restore-account/routes"
+import { AuthorizeRegisterDecider } from "./authorize-register-decider"
 import { useUnknownDeviceConfig } from "./hooks"
-import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
-import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
-import { blobFromHex } from "@dfinity/candid"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 
 interface UnknownDeviceScreenProps {
   showRegisterDefault?: boolean
@@ -52,7 +46,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   } = useUnknownDeviceConfig()
   const isLoading = status === "loading"
   const navigate = useNavigate()
-  const { authenticator: platformAuth, os, browser } = useDeviceInfo()
 
   const { getMessages } = usePubSubChannel()
   const handleLoginFromRemoteDelegation = React.useCallback(
@@ -170,10 +163,10 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   return (
-    <IFrameScreen>
+    <>
       {/* IFrameAuthorizeAppUnkownDevice */}
       {!isLoading && !showRegister && url ? (
-        <>
+        <IFrameScreen>
           <H5 className="mb-4 text-center">
             Log in to {applicationName} with your NFID
           </H5>
@@ -194,7 +187,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               I already have an NFID
             </Button>
           </div>
-        </>
+        </IFrameScreen>
       ) : null}
 
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState) */}
@@ -209,34 +202,12 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
         </div>
       )}
 
-      {/* IFrameAuthorizeRegisterDecider */}
       {showRegister && !isLoading && (
-        <>
-          <H5 className="mb-4 text-center">Trust this browser?</H5>
-          <div>
-            <div className="text-center">
-              {platformAuth} is used to anonymously and securely register new
-              accounts or log in to existing ones anywhere NFID is supported.
-            </div>
-
-            <div className="py-4 font-bold text-center">
-              Do you confirm that this is your {os} and do you trust this{" "}
-              {browser} Browser?
-            </div>
-
-            <div className="flex items-center justify-center space-x-3">
-              <Button
-                stroke
-                largeMax
-                onClick={() => handleSendDelegate(message)}
-              >
-                Cancel
-              </Button>
-              <SetupTouchId onClick={handleRegisterDevice} />
-            </div>
-          </div>
-        </>
+        <AuthorizeRegisterDecider
+          onRegister={handleRegisterDevice}
+          onLogin={() => handleSendDelegate(message)}
+        />
       )}
-    </IFrameScreen>
+    </>
   )
 }

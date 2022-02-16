@@ -12,6 +12,7 @@ const colors = {
     hover: "#3B3E43",
   },
   blue: {
+    active: "#F6FAFF",
     base: "#0E62FF",
     hover: "#2079FF",
     light: "#5993FC;",
@@ -56,6 +57,11 @@ const fontFamily = {
   inter: ["Inter", "sans-serif"],
 }
 
+const dropShadow = {
+  blue: "0 0px 2px rgba(14,98,255,1)",
+  red: "0 0px 2px rgba(234,26,26,1)",
+}
+
 module.exports = require("tailwindcss/plugin")(function () {}, {
-  theme: { extend: { colors, fontSize, fontFamily } },
+  theme: { extend: { colors, fontSize, fontFamily, dropShadow } },
 })

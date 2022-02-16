@@ -18,6 +18,7 @@ import {
 } from "./flows/register-device/routes"
 import { RegisterRoutes } from "./flows/register/routes"
 import { useStartUrl } from "./hooks/use-start-url"
+import { DevScreensRoutes } from "./flows/dev-screens/routes"
 
 export const App = () => {
   useStartUrl()
@@ -25,6 +26,7 @@ export const App = () => {
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />
+      {DevScreensRoutes}
       {RegisterNewDeviceRoutes}
       {RegisterDevicePromptRoutes}
       {RegisterRoutes}

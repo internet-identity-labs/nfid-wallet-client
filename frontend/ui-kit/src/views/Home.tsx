@@ -91,11 +91,6 @@ export const KitchenSink: React.FC = () => {
                 </P>
 
                 <div className="mt-6">
-                  <Label>Dropdown button</Label>
-                  <DropdownMenu />
-                </div>
-
-                <div className="mt-6">
                   <List>
                     <List.Header>
                       <ListItemHead

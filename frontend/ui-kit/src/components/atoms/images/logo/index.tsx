@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React from "react"
+import { LogoText } from "./logo-text"
 import Image from "./NFID.png"
 
 interface LogoProps
@@ -15,21 +16,18 @@ export const Logo: React.FC<LogoProps> = ({
   className,
   nav = false,
 }) => {
-  return nav ? (
+  return (
     <a
-      href="/"
-      className="group inline-flex items-center space-x-2 font-black text-2xl tracking-wide text-black hover:scale-110 transition-all duration-300"
+      href={nav ? "/" : "#"}
+      className={clsx(
+        "flex items-center space-x-2 font-black tracking-wide text-black select-none",
+        nav
+          ? "hover:scale-110 transition-all duration-300 text-2xl"
+          : "pointer-events-none text-3xl",
+        className,
+      )}
     >
-      <span>NF</span>
-      <img
-        className="inline-block w-[40px] h-[40px] object-contain"
-        src={Image}
-      />
+      <LogoText />
     </a>
-  ) : (
-    <img
-      className={clsx("object-contain", className ?? "w-[40px] h-[40px]")}
-      src={Image}
-    />
   )
 }

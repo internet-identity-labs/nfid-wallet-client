@@ -1,14 +1,7 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  H1,
-  Logo,
-} from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { Button, Card, H2, P } from "frontend/ui-kit/src/index"
 import React from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 interface NotFoundProps
   extends React.DetailedHTMLProps<
@@ -21,15 +14,16 @@ export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
 
   return (
     <AppScreen isFocused>
-      <Card className="flex flex-col h-full">
-        <CardBody className="justify-center text-center items-center">
-          <H1 className="mb-12">Page not found</H1>
+      <Card className="flex flex-col h-full justify-center items-center text-center">
+        <H2 className="capitalize mb-4">Page not found</H2>
 
-          <Logo className="max-w-[160px] mx-auto mb-12" />
-          <Button large secondary onClick={() => navigate("/")}>
+        <div>
+          <P>The page you are looking for does not exist.</P>
+
+          <Button large stroke onClick={() => navigate("/")} className="my-4">
             Return to Home
           </Button>
-        </CardBody>
+        </div>
       </Card>
     </AppScreen>
   )

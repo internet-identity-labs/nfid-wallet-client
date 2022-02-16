@@ -15,21 +15,25 @@ export const Logo: React.FC<LogoProps> = ({
   className,
   nav = false,
 }) => {
-  return nav ? (
+  return (
     <a
-      href="/"
-      className="group inline-flex items-center space-x-2 font-black text-2xl tracking-wide text-black hover:scale-110 transition-all duration-300"
+      href={nav ? "/" : "#"}
+      className={clsx(
+        "group inline-flex items-center space-x-2 font-black tracking-wide text-black select-none",
+        nav
+          ? "hover:scale-110 transition-all duration-300 text-2xl"
+          : "pointer-events-none text-3xl scale-110",
+        className,
+      )}
     >
       <span>NF</span>
       <img
-        className="inline-block w-[40px] h-[40px] object-contain"
+        className={clsx(
+          "inline-block object-contain",
+          nav ? "w-[40px] h-[40px]" : "w-[50px] h-[50px]",
+        )}
         src={Image}
       />
     </a>
-  ) : (
-    <img
-      className={clsx("object-contain", className ?? "w-[40px] h-[40px]")}
-      src={Image}
-    />
   )
 }

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import clsx from "clsx"
+import { Logo } from "frontend/ui-kit/src"
 
 interface IFrameWrapperProps
   extends React.DetailedHTMLProps<
@@ -7,12 +8,14 @@ interface IFrameWrapperProps
     HTMLDivElement
   > {
   title?: string
+  logo?: boolean
 }
 
 export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
   children,
   className,
   title,
+  logo,
 }) => {
   const ref = React.useRef(0)
 
@@ -29,8 +32,12 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
     return () => clearInterval(timeout)
   }, [title])
   return (
-    <div className={clsx("p-5", className)}>
-      {children}
+    <div>
+      <div className="nfid-gradient-bar absolute top-0 h-[4px] rounded-b w-[90%] inset-0 mx-auto"></div>
+
+      {logo && <Logo className="justify-center w-full pt-12 pb-6" />}
+
+      <div className={clsx("p-5 relative", className)}>{children}</div>
     </div>
   )
 }

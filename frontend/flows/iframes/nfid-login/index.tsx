@@ -21,7 +21,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
   })
 
   return (
-    <IFrameScreen>
+    <IFrameScreen logo>
       {isAuthenticated && (
         <Navigate
           // TODO: this is fragile. We need pass the applicationName query string

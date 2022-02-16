@@ -35,26 +35,18 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
 
   return (
     <AppScreen>
-      <H5 className="mt-8">Congratulations!</H5>
+      <H5 className="mt-8">This device is now equipped for Web 3.0</H5>
       <Card className="grid grid-cols-12">
         <CardBody className="col-span-12 md:col-span-11 lg:col-span-7">
-          <H2 className="leading-10">
-            You're now the{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6040d3] to-[#8f18ce]">
-              owner
-            </span>{" "}
-            of your{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0390dc] to-[#633ed4]">
-              Internet Identity
-            </span>
-          </H2>
+          <H2 className="leading-10">Your NFID is ready</H2>
 
           <P className="my-6">
-            Secret recovery phrase. This is the only way you will be able to
-            recover your account. Save this recovery phrase somewhere safe!
+            This recovery phrase is the only backup to access your NFID in case
+            all other access points are lost. Keep this secret, safe, and
+            offline!
           </P>
 
-          <div className="p-4 border border-black-base rounded-t">
+          <div className="p-4 border rounded-t border-black-base">
             <P className="font-mono">{recoveryPhrase}</P>
           </div>
 

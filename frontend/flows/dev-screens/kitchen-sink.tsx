@@ -1,3 +1,4 @@
+import { RadioButton } from "components/atoms/button/radio-button"
 import Logo from "frontend/assets/dfinity.svg"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import {
@@ -81,11 +82,7 @@ export const KitchenSink: React.FC = () => {
           </Card>
           <Card>
             <CardBody className="p-4">
-              <P>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Perferendis, quo ullam ad modi impedit quam fuga nesciunt animi
-                placeat quidem?
-              </P>
+              <RadioButton text={"Radio button"} value={"radio_1"} />
               <P>
                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. In
                 dolor deleniti odio dignissimos voluptatum inventore sequi sed

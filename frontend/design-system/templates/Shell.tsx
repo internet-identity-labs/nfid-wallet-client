@@ -20,17 +20,17 @@ export const Shell: React.FC<ShellProps> = ({
   className,
   bubbleOptions = {
     showBubbles: true,
-    bubbleColors: ["#a69cff", "#79e9f1"],
+    bubbleColors: ["#a69cff", "#4df1ffa8"],
   },
 }) => {
   const bubbles = (
     <>
       <div
         className={clsx(
-          "fixed rounded-full opacity-[0.5] md:opacity-[0.7] top-[10vh] blur-[70px] xl:blur-[120px]",
+          "fixed rounded-full opacity-[0.5] md:opacity-[0.8] md:top-[15vh] blur-[70px] xl:blur-[120px] transition duration-500 ease-out",
           bubbleOptions.bubbleClassNames?.[0]
             ? bubbleOptions.bubbleClassNames[0]
-            : "right-[-25vw] lg:right-[-5vw] xl:top-[16vh] 2xl:right-[-10vw]",
+            : "right-[-40vw] md:right-[-5vw] 2xl:right-[-10vw]",
         )}
         style={{
           background: bubbleOptions.bubbleColors?.[0],
@@ -40,10 +40,10 @@ export const Shell: React.FC<ShellProps> = ({
       />
       <div
         className={clsx(
-          "fixed rounded-full opacity-[1] md:opacity-[0.8] blur-[70px] xl:blur-[150px]",
+          "fixed rounded-full opacity-80 md:opacity-100 blur-[70px] xl:blur-[150px] transition duration-500 ease-out",
           bubbleOptions.bubbleClassNames?.[1]
             ? bubbleOptions.bubbleClassNames[1]
-            : "bottom-[-20vh] right-[-25vw] lg:right-0 lg:-bottom-20 2xl:right-0",
+            : "bottom-[-10vh] right-[-10vw] md:bottom-0 md:right-0 lg:-bottom-20 2xl:right-0",
         )}
         style={{
           background: bubbleOptions.bubbleColors?.[1],

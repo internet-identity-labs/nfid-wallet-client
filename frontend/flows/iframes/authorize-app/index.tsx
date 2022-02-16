@@ -111,7 +111,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
       <div className="flex justify-center">
         <LinkIIAnchorHref onClick={handleLinkIIAnchor} />
       </div>
-      <Loader isLoading={isLoading} />
+      <Loader isLoading={isLoading} iframe />
     </IFrameScreen>
   )
 }

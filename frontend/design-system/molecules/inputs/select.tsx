@@ -13,7 +13,6 @@ interface InputSelectProps
   }>
 }
 
-// TODO: make dynamic
 export const InputSelect = React.forwardRef<
   HTMLSelectElement,
   InputSelectProps

@@ -1,50 +1,53 @@
+import clsx from "clsx"
 import React, { useState } from "react"
-import { MenuItem } from "./menu-item"
-import { HiCheck, HiChevronDown, HiMenu } from "react-icons/hi"
+import { HiChevronDown } from "react-icons/hi"
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
   title?: string
+  children: (toggle: () => void) => React.ReactNode
 }
 
 export const DropdownMenu: React.FC<Props> = ({
   children,
   title = "Choose an option",
+  className,
 }) => {
+  const ref = React.useRef<HTMLDivElement | null>(null)
   const [showDialog, setShowDialog] = useState(false)
 
+  React.useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setShowDialog(false)
+      }
+    }
+    document.addEventListener("click", handleClickOutside, true)
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true)
+    }
+  }, [])
+
   return (
-    <div className="relative inline-block text-left">
+    <div className={clsx("relative inline-block w-full", className)} ref={ref}>
       <button
         type="button"
         onClick={() => setShowDialog(!showDialog)}
-        className="border border-gray-300 bg-white shadow-sm flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+        className="border border-black-base bg-white flex justify-between items-center w-full rounded-md px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
       >
         {title}
         <HiChevronDown className="ml-3 text-lg" />
       </button>
 
       {showDialog && (
-        <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-          <div
-            className="py-1 divide-y divide-gray-100"
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="options-menu"
-          >
-            <MenuItem title={"Option 1"} />
-            <MenuItem
-              title={"Option 2"}
-              subtitle={"This is subtitle for option 2"}
-            />
-            <MenuItem
-              title={"Option 3"}
-              icon={<HiCheck className="text-2xl mx-2" />}
-              subtitle={"This is subtitle with icon for option 3"}
-            />
-          </div>
+        <div
+          className={clsx(
+            "origin-top-right rounded-md shadow-lg bg-white z-50 absolute w-full",
+          )}
+        >
+          <div className="py-1">{children(() => setShowDialog(false))}</div>
         </div>
       )}
     </div>

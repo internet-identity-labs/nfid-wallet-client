@@ -50,10 +50,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             type={type}
             className={clsx(
-              "flex-1 block w-full placeholder:text-sm border-black-base active:border-blue-base active:bg-[#F6FAFF] active:drop-shadow-[0_0px_2px_rgba(14,98,255,1)]",
+              "flex-1 block w-full placeholder:text-sm border-black-base bg-white",
               "disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none disabled:focus:ring-transparent disabled:drop-shadow-none",
-              errorText &&
-                "active:drop-shadow-none active:bg-transparent active:border-red-base border-red-base text-red-base focus:border-red-base focus:ring-red-base",
+              errorText
+                ? "active:drop-shadow-red active:border-red-base border-red-base focus:border-red-base focus:ring-red-base"
+                : "active:border-blue-base active:bg-blue-active active:drop-shadow-blue",
               prependedText ? "rounded-r-md" : "rounded-md",
               icon && "pl-10",
               pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",

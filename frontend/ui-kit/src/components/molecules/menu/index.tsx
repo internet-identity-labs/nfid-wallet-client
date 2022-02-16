@@ -51,9 +51,9 @@ export const DropdownMenu: React.FC<Props> = ({
             : "bg-white border border-gray-400 hover:border-black-hover active:bg-gray-50",
           showDialog &&
             !errorText &&
-            "!border-blue-base bg-[#F6FAFF] drop-shadow-[0_0px_2px_rgba(14,98,255,1)] ring-1",
+            "!border-blue-base bg-blue-active drop-shadow-blue ring-1",
           errorText &&
-            "active:bg-transparent active:border-red-base !border-red-base !text-red-base drop-shadow-[0_0px_2px_rgba(234,26,26,1)]",
+            "active:bg-transparent active:border-red-base !border-red-base drop-shadow-red",
         )}
       >
         <div>{title}</div>

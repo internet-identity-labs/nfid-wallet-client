@@ -44,9 +44,9 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <IFrameScreen logo>
-                <H5 className="mb-4 text-center">Unlock your NFID</H5>
+                <H5 className="mb-4">Unlock your NFID</H5>
 
-                <P className="text-center pb-12">
+                <P className="pb-12">
                   The NFID on this device can only be unlocked by {accountName}.
                 </P>
 
@@ -65,9 +65,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <IFrameScreen logo>
-                <H5 className="mb-4 text-center">
-                  Log in to {applicationName}
-                </H5>
+                <H5 className="mb-4">Log in to {applicationName}</H5>
 
                 <div className="mb-5">
                   <Label>Continue as</Label>
@@ -117,8 +115,9 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <AuthorizeRegisterDecider
-                onRegister={() => console.log("onRegister")}
-                onLogin={() => console.log("onLogin")}
+                onClick={() => {
+                  // get radio button value
+                }}
               />
             </IFrameWrapper>
           </div>

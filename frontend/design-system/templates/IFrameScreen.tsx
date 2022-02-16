@@ -35,7 +35,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
     <div className="relative">
       <div className="nfid-gradient-bar absolute top-0 h-[4px] rounded-b w-[90%] inset-0 mx-auto"></div>
 
-      {logo && <Logo className="justify-center w-full pt-12 pb-6" />}
+      {logo && <Logo className="pt-6 px-5" />}
 
       <div className={clsx("p-5 relative", className)}>{children}</div>
     </div>

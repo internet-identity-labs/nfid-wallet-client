@@ -35,7 +35,7 @@ export const KitchenSink: React.FC = () => {
   const personas = ["John Doe", "John77", "john_doe"]
 
   return (
-    <AppScreen className="bg-gray-50">
+    <AppScreen showBubbles={false}>
       <div className="container xl:max-w-7xl mx-auto p-4 lg:p-8">
         <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
           <Card>
@@ -82,7 +82,11 @@ export const KitchenSink: React.FC = () => {
           </Card>
           <Card>
             <CardBody className="p-4">
-              <RadioButton text={"Radio button"} value={"radio_1"} />
+              <RadioButton
+                text={"Radio button"}
+                value={"radio_1"}
+                name={"rb_example"}
+              />
               <P>
                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. In
                 dolor deleniti odio dignissimos voluptatum inventore sequi sed

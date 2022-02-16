@@ -27,10 +27,10 @@ export const AppScreen: React.FC<Props> = ({
   classNameWrapper,
   navigationItems,
   bubbleColors,
-  showBubbles,
+  showBubbles = true,
 }) => {
   return (
-    <Shell showBubbles={true} bubbleColors={bubbleColors}>
+    <Shell showBubbles={showBubbles} bubbleColors={bubbleColors}>
       <div className="flex flex-col mx-auto w-full min-h-screen min-h-screen-ios">
         {!isFocused && (
           <>

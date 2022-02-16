@@ -2,7 +2,6 @@ import { Usergeek } from "usergeek-ic-js"
 import { ActorSubclass } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { CONFIG } from "frontend/config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
@@ -41,13 +40,13 @@ export const useAuthentication = () => {
 
   const logout = React.useCallback(() => {
     setActors(null)
+    Usergeek.setPrincipal(Principal.anonymous())
   }, [setActors])
 
   const initUserGeek = React.useCallback((principal: Principal) => {
     // TODO: create pull request removing the requirement of
     // @dfinity/auth-client to be installed
     // they just use LocalStorage implementation from it.
-    Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
     Usergeek.setPrincipal(principal)
   }, [])
 

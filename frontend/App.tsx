@@ -1,4 +1,5 @@
 import React from "react"
+import { Usergeek } from "usergeek-ic-js"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { HomeScreen } from "./flows"
@@ -19,6 +20,9 @@ import {
 import { RegisterRoutes } from "./flows/register/routes"
 import { useStartUrl } from "./hooks/use-start-url"
 import { DevScreensRoutes } from "./flows/dev-screens/routes"
+import { CONFIG } from "./config"
+
+Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 
 export const App = () => {
   useStartUrl()

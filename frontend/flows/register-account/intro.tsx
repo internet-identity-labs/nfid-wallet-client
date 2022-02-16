@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, H5, P } from "frontend/ui-kit/src"
+import { Button, Card, CardBody, H5, Loader, P } from "frontend/ui-kit/src"
 import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -7,6 +7,7 @@ import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
 import { useNavigate } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { RegisterAccountConstants as RAC } from "./routes"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
 
 interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<
@@ -18,8 +19,9 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   children,
   className,
 }) => {
+  const { isLoading, setIsloading } = useIsLoading()
   const navigate = useNavigate()
-  const { applicationName } = useMultipass()
+  const { applicationName, createWebAuthNIdentity } = useMultipass()
   const [lastSlide, setLastSlide] = React.useState(false)
   const [firstSlide, setFirstSlide] = React.useState(true)
 
@@ -51,6 +53,17 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       background: `linear-gradient(90deg,#008DDD,#A400CD)`,
     },
   }
+
+  const handleCreateKeys = React.useCallback(async () => {
+    setIsloading(true)
+    const registerPayload = await createWebAuthNIdentity()
+
+    navigate(`${RAC.base}/${RAC.captcha}`, {
+      state: {
+        registerPayload,
+      },
+    })
+  }, [createWebAuthNIdentity, navigate, setIsloading])
 
   return (
     <AppScreen>
@@ -180,13 +193,8 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   are no longer required.
                 </div>
 
-                <div className="gap-2 grid max-w-sm md:grid-cols-2 md:mt-6 mt-12 py-3">
-                  <Button
-                    secondary
-                    onClick={() =>
-                      navigate(`${RAC.base}/${RAC.createNFIDProfile}`)
-                    }
-                  >
+                <div className="grid max-w-sm gap-2 py-3 mt-12 md:grid-cols-2 md:mt-6">
+                  <Button secondary onClick={handleCreateKeys}>
                     Create new NFID
                   </Button>
 
@@ -232,6 +240,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               />
             </div>
           </div>
+          <Loader isLoading={isLoading} />
         </CardBody>
       </Card>
     </AppScreen>

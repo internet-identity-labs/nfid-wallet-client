@@ -4,7 +4,7 @@ import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { CONFIG } from "frontend/config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager"
+import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"

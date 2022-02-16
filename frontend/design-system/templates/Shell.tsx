@@ -19,7 +19,9 @@ export const Shell: React.FC<ShellProps> = ({
   const bubbles = (
     <>
       <div
-        className="bg-bubble-1"
+        className={
+          "fixed rounded-full opacity-[0.5] md:opacity-[0.7] top-[10vh] right-[-25vw] lg:right-[-5vw] xl:top-[16vh] 2xl:right-[-10vw] blur-[70px] xl:blur-[120px]"
+        }
         style={{
           background: bubbleColors[0],
           width: "clamp(400px, 25vw, 800px)",
@@ -27,7 +29,9 @@ export const Shell: React.FC<ShellProps> = ({
         }}
       />
       <div
-        className="bg-bubble-2"
+        className={
+          "fixed rounded-full opacity-[1] md:opacity-[0.8] bottom-[-20vh] right-[-25vw] lg:right-0 lg:-bottom-20 2xl:right-0 blur-[70px] xl:blur-[150px]"
+        }
         style={{
           background: bubbleColors[1],
           width: "clamp(600px, 30vw, 800px)",

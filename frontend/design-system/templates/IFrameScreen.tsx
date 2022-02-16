@@ -17,6 +17,17 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
   title,
   logo,
 }) => {
+  const nfidGradientBar = {
+    background: `linear-gradient(
+      90deg,
+      #3dedd7 0%,
+      #02cdfe 25%,
+      #3781f4 50.52%,
+      #7063ff 76.04%,
+      #cc5cdc 100%
+    )`,
+  }
+
   const ref = React.useRef(0)
 
   useEffect(() => {
@@ -33,7 +44,10 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
   }, [title])
   return (
     <div className="relative">
-      <div className="nfid-gradient-bar absolute top-0 h-[4px] rounded-b w-[90%] inset-0 mx-auto"></div>
+      <div
+        className="absolute top-0 h-[4px] rounded-b w-[90%] inset-0 mx-auto"
+        style={nfidGradientBar}
+      />
 
       {logo && <Logo className="pt-6 px-5" />}
 

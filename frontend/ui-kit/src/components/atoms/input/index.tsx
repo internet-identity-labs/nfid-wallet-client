@@ -42,6 +42,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div className={clsx("rounded-md", className)}>
         {labelText && <Label>{labelText}</Label>}
         <div className={clsx("flex relative", small && "md:max-w-[340px]")}>
+          {icon && (
+            <div className="flex-shrink-0 absolute left-[10px] top-[10px] z-10">
+              {icon}
+            </div>
+          )}
           <input
             type={type}
             className={clsx(

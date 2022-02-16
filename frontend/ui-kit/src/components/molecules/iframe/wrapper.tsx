@@ -6,11 +6,14 @@ interface IFrameWrapperProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  fixedHeight?: boolean
+}
 
 export const IFrameWrapper: React.FC<IFrameWrapperProps> = ({
   children,
   className,
+  fixedHeight = true,
 }) => {
   return (
     <Card
@@ -21,7 +24,7 @@ export const IFrameWrapper: React.FC<IFrameWrapperProps> = ({
         "fixed bottom-0 right-0 md:top-[18px] md:right-7 md:overflow-hidden",
         className,
       )}
-      style={{ height: 190 }}
+      style={{ height: fixedHeight ? 190 : "fit-content" }}
     >
       {children}
     </Card>

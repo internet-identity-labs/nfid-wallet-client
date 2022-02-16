@@ -10,16 +10,27 @@ interface AuthorizeRegisterDeciderProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  onClick: (selectedItem: any) => void
+  onRegister: () => void
+  onLogin: () => void
 }
 
 export const AuthorizeRegisterDecider: React.FC<
   AuthorizeRegisterDeciderProps
-> = ({ onClick }) => {
+> = ({ onRegister, onLogin }) => {
   const { make: deviceMake, authenticator: platformAuth } = useDeviceInfo()
   const [linkAccount, setLinkAccount] = React.useState(
-    "rb_link_account_proceed",
+    "rb_link_account_register",
   )
+
+  const handleClick = () => {
+    if (linkAccount === "rb_link_account_register") {
+      onRegister()
+    }
+
+    if (linkAccount === "rb_link_account_login") {
+      onLogin()
+    }
+  }
 
   return (
     <IFrameScreen logo>
@@ -35,19 +46,19 @@ export const AuthorizeRegisterDecider: React.FC<
           defaultChecked
           name={"link_account"}
           text={"Link existing account"}
-          value={"rb_link_account_proceed"}
-          onChange={() => setLinkAccount("rb_link_account_proceed")}
+          value={"rb_link_account_register"}
+          onChange={() => setLinkAccount("rb_link_account_register")}
         />
         <RadioButton
           name={"link_account"}
           text={"No thanks, I'm new"}
-          value={"rb_link_account_ignore"}
-          onChange={() => setLinkAccount("rb_link_account_ignore")}
+          value={"rb_link_account_login"}
+          onChange={() => setLinkAccount("rb_link_account_login")}
         />
       </div>
 
       <div className="mt-6">
-        <Button secondary block onClick={() => onClick(linkAccount)}>
+        <Button secondary block onClick={() => handleClick()}>
           Continue
         </Button>
       </div>

@@ -115,9 +115,8 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <AuthorizeRegisterDecider
-                onClick={(selectedItem) => {
-                  alert(selectedItem)
-                }}
+                onRegister={() => console.log("register")}
+                onLogin={() => console.log("login")}
               />
             </IFrameWrapper>
           </div>

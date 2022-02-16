@@ -3,13 +3,18 @@ import clsx from "clsx"
 
 interface Props
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+    React.LabelHTMLAttributes<HTMLLabelElement>,
+    HTMLLabelElement
   > {
   menuItem?: boolean
 }
 
-export const Label: React.FC<Props> = ({ menuItem, children, className }) => {
+export const Label: React.FC<Props> = ({
+  menuItem,
+  children,
+  className,
+  ...props
+}) => {
   return (
     <label
       className={clsx(
@@ -17,6 +22,7 @@ export const Label: React.FC<Props> = ({ menuItem, children, className }) => {
         menuItem && "px-3 font-bold pt-2",
         className,
       )}
+      {...props}
     >
       {children}
     </label>

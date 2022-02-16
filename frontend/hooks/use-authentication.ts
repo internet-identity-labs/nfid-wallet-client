@@ -52,6 +52,7 @@ export const useAuthentication = () => {
     console.log(">> initUserGeek", { principalId: principal.toString() })
 
     Usergeek.setPrincipal(principal)
+    Usergeek.trackSession()
   }, [])
 
   const login = React.useCallback(async () => {

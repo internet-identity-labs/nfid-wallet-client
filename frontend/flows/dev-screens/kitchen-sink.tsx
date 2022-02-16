@@ -1,35 +1,37 @@
-import React from "react"
+import Logo from "frontend/assets/dfinity.svg"
 import {
   Button,
+  Card,
+  CardAction,
+  CardBody,
+  CardTitle,
+  Chip,
+  DeleteButton,
+  Divider,
+  DropdownMenu,
   H1,
   H2,
   H3,
   H4,
   H5,
-  Divider,
   Input,
   Label,
-  TextArea,
-  P,
-  DeleteButton,
-  DropdownMenu,
   List,
-  ListItemHead,
   ListItem,
-  CardBody,
-  Card,
-  CardTitle,
-  CardAction,
-  Chip,
+  ListItemHead,
+  MenuItem,
+  P,
+  TextArea,
 } from "frontend/ui-kit/src"
-
-import { HiMenu, HiSearch } from "react-icons/hi"
-import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
+import React from "react"
 import { BiLoaderCircle } from "react-icons/bi"
 import { FaKey } from "react-icons/fa"
-import Logo from "frontend/assets/dfinity.svg"
+import { HiMenu, HiSearch } from "react-icons/hi"
+import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
 
 export const KitchenSink: React.FC = () => {
+  const personas = ["John Doe", "John77", "john_doe"]
+
   return (
     <div className="flex flex-col mx-auto w-full min-h-screen bg-gray-100">
       <main className="flex flex-1">
@@ -92,7 +94,23 @@ export const KitchenSink: React.FC = () => {
 
                 <div className="mt-6">
                   <Label>Dropdown button</Label>
-                  <DropdownMenu />
+                  <DropdownMenu>
+                    {(toggle) => (
+                      <>
+                        <Label menuItem>Personas</Label>
+                        {personas.map((persona) => (
+                          <MenuItem
+                            key={persona}
+                            title={persona}
+                            onClick={() => {
+                              console.log("persona clicked", persona)
+                              toggle()
+                            }}
+                          />
+                        ))}
+                      </>
+                    )}
+                  </DropdownMenu>
                 </div>
 
                 <div className="mt-6">

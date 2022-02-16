@@ -32,7 +32,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
     return () => clearInterval(timeout)
   }, [title])
   return (
-    <div>
+    <div className="relative">
       <div className="nfid-gradient-bar absolute top-0 h-[4px] rounded-b w-[90%] inset-0 mx-auto"></div>
 
       {logo && <Logo className="justify-center w-full pt-12 pb-6" />}

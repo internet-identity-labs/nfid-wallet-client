@@ -9,6 +9,7 @@ import { LinkIIAnchorConstants } from "./app-screens/link-ii-anchor/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
 import { RegisterAccountConstants } from "./register-account/routes"
 import { RegisterConstants } from "./register/routes"
+import { DevScreensConstants } from "./dev-screens/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -29,6 +30,18 @@ interface Flow {
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   const routes: Flow[] = [
+    {
+      title: "Dev Screens",
+      base: DevScreensConstants.base,
+      items: [
+        {
+          path: DevScreensConstants.kitchenSink,
+        },
+        {
+          path: DevScreensConstants.iframeOverview,
+        },
+      ],
+    },
     {
       title: "Common Pages",
       base: "",

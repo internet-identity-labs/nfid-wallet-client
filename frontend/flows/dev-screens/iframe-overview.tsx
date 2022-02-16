@@ -109,6 +109,17 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
                 </Button>
               </IFrameScreen>
             </IFrameWrapper>
+
+            {/* IFrameAuthorizeRegisterDecider */}
+            <IFrameWrapper
+              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+              fixedHeight={false}
+            >
+              <AuthorizeRegisterDecider
+                onRegister={() => console.log("onRegister")}
+                onLogin={() => console.log("onLogin")}
+              />
+            </IFrameWrapper>
           </div>
         </CardBody>
       </Card>

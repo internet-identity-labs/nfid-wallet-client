@@ -30,6 +30,8 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
   const personas = ["John Doe", "John77", "john_doe"]
   const anchors = ["10001", "10002", "10003"]
 
+  const [selectedItem, setSelectedItem] = React.useState(personas[0])
+
   return (
     <AppScreen className={clsx("", className)}>
       <Card>
@@ -68,7 +70,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
 
                 <div className="mb-5">
                   <Label>Continue as</Label>
-                  <DropdownMenu title={`Continue as ${personas[0]}`}>
+                  <DropdownMenu title={`Continue as ${selectedItem}`}>
                     {(toggle) => (
                       <>
                         <Label menuItem>Personas</Label>
@@ -77,7 +79,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
                             key={persona}
                             title={persona}
                             onClick={() => {
-                              console.log("persona clicked", persona)
+                              setSelectedItem(persona)
                               toggle()
                             }}
                           />
@@ -89,7 +91,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
                             key={anchor}
                             title={anchor}
                             onClick={() => {
-                              console.log("anchor clicked", anchor)
+                              setSelectedItem(anchor)
                               toggle()
                             }}
                           />

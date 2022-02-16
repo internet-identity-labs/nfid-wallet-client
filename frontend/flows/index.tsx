@@ -115,7 +115,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
 
   return (
     <>
-      <AppScreen title="Home">
+      <AppScreen>
         {process.env.NODE_ENV == "development" && (
           <Card>
             <CardBody>

@@ -163,10 +163,10 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   return (
-    <IFrameScreen>
+    <>
       {/* IFrameAuthorizeAppUnkownDevice */}
       {!isLoading && !showRegister && url ? (
-        <>
+        <IFrameScreen>
           <H5 className="mb-4 text-center">
             Log in to {applicationName} with your NFID
           </H5>
@@ -187,7 +187,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               I already have an NFID
             </Button>
           </div>
-        </>
+        </IFrameScreen>
       ) : null}
 
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState) */}
@@ -207,12 +207,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           onClick={(selectedItem) => {
             if (selectedItem === "rb_link_account_proceed") {
               handleRegisterDevice()
-            } else if (selectedItem === "rb_link_account_cancel") {
+            }
+            if (selectedItem === "rb_link_account_cancel") {
               handleSendDelegate(message)
             }
           }}
         />
       )}
-    </IFrameScreen>
+    </>
   )
 }

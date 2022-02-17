@@ -14,7 +14,7 @@ import {
   P,
 } from "frontend/ui-kit/src"
 import React from "react"
-import { AuthorizeRegisterDecider } from "../iframes/login-unknown/authorize-register-decider"
+import { AuthorizeRegisterDecider } from "../screens-iframe/login-unknown/authorize-register-decider"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<

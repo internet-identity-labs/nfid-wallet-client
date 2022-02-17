@@ -8,7 +8,7 @@ import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 type Status = "initial" | "loading" | "success"
 
-export const RegisterNewFromDelegate = () => {
+export const RegisterDevice = () => {
   const [status, setStatus] = React.useState<Status>("initial")
   const { opener } = usePostMessage({
     // @ts-ignore TODO: fix this

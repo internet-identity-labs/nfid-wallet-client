@@ -12,7 +12,6 @@ export const AuthWrapper: React.FC<AuthWrapper> = ({
   redirectTo,
 }) => {
   const { isAuthenticated, login } = useAuthentication()
-  const { secret, scope } = useParams()
   const { account } = useAccount()
 
   return isAuthenticated ? (

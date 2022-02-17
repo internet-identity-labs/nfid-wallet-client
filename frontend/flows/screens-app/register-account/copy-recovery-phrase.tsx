@@ -16,7 +16,8 @@ import {
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { AuthenticateAccountConstants } from "../authenticate/routes"
-import { useRegisterDevicePromt } from "../register-device/hooks"
+import { ProfileConstants } from "../profile/routes"
+import { useRegisterDevicePromt } from "../register-device-prompt/hooks"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
@@ -107,9 +108,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
           buttonText="Done"
           iconType="success"
           onClick={() => {
-            navigate(
-              `${AuthenticateAccountConstants.base}/${AuthenticateAccountConstants.home}`,
-            )
+            navigate(`${ProfileConstants.profile}`)
           }}
         />
       ) : null}

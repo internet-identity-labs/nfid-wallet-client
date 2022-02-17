@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .swiper {
   @apply overflow-hidden rounded-lg w-full;
 }

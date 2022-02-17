@@ -1,7 +1,6 @@
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 import { Route, Routes } from "react-router-dom"
-import "tailwindcss/tailwind.css"
 import { HomeScreen } from "./flows"
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/add-new-access-point/routes"

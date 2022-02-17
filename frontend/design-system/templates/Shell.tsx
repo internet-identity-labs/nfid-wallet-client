@@ -36,6 +36,7 @@ export const Shell: React.FC<ShellProps> = ({
           background: bubbleOptions.bubbleColors?.[0],
           width: "clamp(400px, 25vw, 800px)",
           height: "clamp(400px, 35vh, 800px)",
+          zIndex: -1,
         }}
       />
       <div
@@ -49,6 +50,7 @@ export const Shell: React.FC<ShellProps> = ({
           background: bubbleOptions.bubbleColors?.[1],
           width: "clamp(600px, 30vw, 800px)",
           height: "clamp(400px, 70vh, 850px)",
+          zIndex: -1,
         }}
       />
     </>

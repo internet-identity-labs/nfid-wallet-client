@@ -1,5 +1,5 @@
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
-import { RegisterDevicePromptConstants as RDPC } from "frontend/flows/register-device/routes"
+import { RegisterDevicePromptConstants as RDPC } from "frontend/flows/screens-app/register-device/routes"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { usePostMessage } from "frontend/hooks/use-post-message"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"

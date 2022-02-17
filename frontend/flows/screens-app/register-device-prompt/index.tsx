@@ -5,10 +5,11 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { Button, Card, CardBody, H2, Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { useAuthorization } from "../iframes/nfid-login/hooks"
+import { useAuthorization } from "../../screens-iframe/nfid-login/hooks"
 import { useRegisterDevicePromt } from "./hooks"
 import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
 import { AuthenticateAccountConstants } from "../authenticate/routes"
+import { ProfileConstants } from "../profile/routes"
 
 interface RegisterDevicePromptProps {}
 
@@ -36,9 +37,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
         if (!secret || !scope || !persona_id)
           throw new Error("missing secret, scope or persona_id")
         await remoteLogin({ secret, scope, persona_id })
-        return navigate(
-          `${AuthenticateAccountConstants.base}/${AuthenticateAccountConstants.home}`,
-        )
+        return navigate(`${ProfileConstants.profile}`)
       },
     [navigate, remoteLogin, secret, scope],
   )

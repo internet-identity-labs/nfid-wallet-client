@@ -77,9 +77,9 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
         </Button>
       }
     >
-      <div className="absolute top-0 left-0 bg-white h-full w-full"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-white"></div>
 
-      <Card className="grid grid-cols-12 relative">
+      <Card className="relative grid grid-cols-12">
         <CardBody className="col-span-12">
           <div className="mt-[-150px]">
             <H2 className="py-2">{account?.name}</H2>

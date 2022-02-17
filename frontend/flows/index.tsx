@@ -3,12 +3,13 @@ import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src/index"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
-import { AccessPointConstants } from "./add-new-access-point/routes"
-import { LinkIIAnchorConstants } from "./app-screens/link-ii-anchor/routes"
-import { AuthenticateAccountConstants as AAC } from "./authenticate/routes"
-import { DevScreensConstants } from "./dev-screens/routes"
+import { AccessPointConstants } from "./prototypes/add-new-access-point/routes"
+import { LinkIIAnchorConstants } from "./screens-app/link-ii-anchor/routes"
+import { AuthenticateAccountConstants as AAC } from "./screens-app/authenticate/routes"
+import { DevScreensConstants } from "./screens-dev/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
-import { RegisterAccountConstants } from "./register-account/routes"
+import { RegisterAccountConstants } from "./screens-app/register-account/routes"
+import { ProfileConstants } from "./screens-app/profile/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -47,9 +48,9 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       items: [{ path: CopyDevicesConstants.base }],
     },
     {
-      title: "Authenticate",
-      base: AAC.base,
-      items: [{ path: `${AAC.login}` }, { path: `${AAC.home}` }],
+      title: "Profile",
+      base: ProfileConstants.profile,
+      items: [{ path: `${ProfileConstants.profile}` }],
     },
     {
       title: "Register Account (NFID) Flow",

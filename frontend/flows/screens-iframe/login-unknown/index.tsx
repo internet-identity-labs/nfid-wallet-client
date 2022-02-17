@@ -1,7 +1,7 @@
 import { blobFromHex } from "@dfinity/candid"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/register-device/routes"
+import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/screens-app/register-device/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"

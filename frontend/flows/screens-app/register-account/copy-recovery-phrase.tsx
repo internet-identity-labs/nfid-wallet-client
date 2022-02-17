@@ -16,7 +16,7 @@ import {
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { AuthenticateAccountConstants } from "../authenticate/routes"
-import { useRegisterDevicePromt } from "../register-device/hooks"
+import { useRegisterDevicePromt } from "../register-device-prompt/hooks"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<

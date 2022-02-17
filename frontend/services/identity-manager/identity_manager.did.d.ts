@@ -1,16 +1,7 @@
 import type { Principal } from '@dfinity/principal';
-export interface AccessPoint {
-  'model' : string,
-  'make' : string,
-  'name' : string,
-  'pub_key' : string,
-  'browser' : string,
-  'last_used' : string,
-}
 export interface AccountResponse {
   'name' : string,
   'anchor' : bigint,
-  'access_points' : Array<AccessPoint>,
   'personas' : Array<PersonaVariant>,
   'principal_id' : string,
   'phone_number' : string,
@@ -39,11 +30,6 @@ export interface EmptyHttpResponse {
   'status_code' : number,
 }
 export type Error = string;
-export interface HTTPAccessPointResponse {
-  'data' : [] | [Array<AccessPoint>],
-  'error' : [] | [Error],
-  'status_code' : number,
-}
 export interface HTTPAccountRequest {
   'token' : string,
   'name' : string,
@@ -82,9 +68,6 @@ export type PhoneNumber = string;
 export type Token = string;
 export interface _SERVICE {
   'configure' : (arg_0: ConfigurationRequest) => Promise<undefined>,
-  'create_access_point' : (arg_0: AccessPoint) => Promise<
-      HTTPAccessPointResponse
-    >,
   'create_account' : (arg_0: HTTPAccountRequest) => Promise<
       HTTPAccountResponse
     >,
@@ -100,15 +83,9 @@ export interface _SERVICE {
   'post_token' : (arg_0: HTTPVerifyPhoneNumberRequest) => Promise<
       BoolHttpResponse
     >,
-  'read_access_points' : () => Promise<HTTPAccessPointResponse>,
   'read_applications' : () => Promise<HTTPApplicationResponse>,
   'read_personas' : () => Promise<HTTPPersonasResponse>,
-  'remove_access_point' : (arg_0: AccessPoint) => Promise<
-      HTTPAccessPointResponse
-    >,
-  'update_access_point' : (arg_0: AccessPoint) => Promise<
-      HTTPAccessPointResponse
-    >,
+  'remove_account' : () => Promise<BoolHttpResponse>,
   'update_account' : (arg_0: HTTPAccountUpdateRequest) => Promise<
       HTTPAccountResponse
     >,

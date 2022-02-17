@@ -6,20 +6,6 @@ export const idlFactory = ({ IDL }) => {
     'token_refresh_ttl' : IDL.Nat64,
     'token_ttl' : IDL.Nat64,
   });
-  const AccessPoint = IDL.Record({
-    'model' : IDL.Text,
-    'make' : IDL.Text,
-    'name' : IDL.Text,
-    'pub_key' : IDL.Text,
-    'browser' : IDL.Text,
-    'last_used' : IDL.Text,
-  });
-  const Error = IDL.Text;
-  const HTTPAccessPointResponse = IDL.Record({
-    'data' : IDL.Opt(IDL.Vec(AccessPoint)),
-    'error' : IDL.Opt(Error),
-    'status_code' : IDL.Nat16,
-  });
   const HTTPAccountRequest = IDL.Record({
     'token' : IDL.Text,
     'name' : IDL.Text,
@@ -41,11 +27,11 @@ export const idlFactory = ({ IDL }) => {
   const AccountResponse = IDL.Record({
     'name' : IDL.Text,
     'anchor' : IDL.Nat64,
-    'access_points' : IDL.Vec(AccessPoint),
     'personas' : IDL.Vec(PersonaVariant),
     'principal_id' : IDL.Text,
     'phone_number' : IDL.Text,
   });
+  const Error = IDL.Text;
   const HTTPAccountResponse = IDL.Record({
     'data' : IDL.Opt(AccountResponse),
     'error' : IDL.Opt(Error),
@@ -81,11 +67,6 @@ export const idlFactory = ({ IDL }) => {
   const PhoneNumber = IDL.Text;
   return IDL.Service({
     'configure' : IDL.Func([ConfigurationRequest], [], []),
-    'create_access_point' : IDL.Func(
-        [AccessPoint],
-        [HTTPAccessPointResponse],
-        [],
-      ),
     'create_account' : IDL.Func(
         [HTTPAccountRequest],
         [HTTPAccountResponse],
@@ -109,19 +90,9 @@ export const idlFactory = ({ IDL }) => {
         [BoolHttpResponse],
         [],
       ),
-    'read_access_points' : IDL.Func([], [HTTPAccessPointResponse], []),
     'read_applications' : IDL.Func([], [HTTPApplicationResponse], ['query']),
     'read_personas' : IDL.Func([], [HTTPPersonasResponse], []),
-    'remove_access_point' : IDL.Func(
-        [AccessPoint],
-        [HTTPAccessPointResponse],
-        [],
-      ),
-    'update_access_point' : IDL.Func(
-        [AccessPoint],
-        [HTTPAccessPointResponse],
-        [],
-      ),
+    'remove_account' : IDL.Func([], [BoolHttpResponse], []),
     'update_account' : IDL.Func(
         [HTTPAccountUpdateRequest],
         [HTTPAccountResponse],

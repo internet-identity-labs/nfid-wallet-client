@@ -194,6 +194,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       {isLoading && (
         <div className="p-8 text-center">
           <Loader
+            iframe
             isLoading={isLoading}
             fullscreen={false}
             imageClasses={"w-[90px] mx-auto py-6"}

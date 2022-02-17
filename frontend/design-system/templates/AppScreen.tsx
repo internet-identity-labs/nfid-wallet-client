@@ -39,7 +39,7 @@ export const AppScreen: React.FC<Props> = ({
           </>
         )}
 
-        <main className={clsx(classNameWrapper, "flex flex-1 z-50")}>
+        <main className={clsx(classNameWrapper, "flex flex-1")}>
           <div className="container px-6 py-4 mx-auto">{children}</div>
         </main>
       </div>

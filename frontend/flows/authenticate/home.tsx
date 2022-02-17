@@ -63,8 +63,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
     <AppScreen
       bubbleOptions={{
         showBubbles: true,
-        // TODO: required otherwise colors are not showing?
-        bubbleColors: ["#a69cff", "#79e9f1"],
+        bubbleColors: ["#a69cff", "#4df1ffa8"],
         bubbleClassNames: [
           "",
           "top-[20vh] right-[-15vw] md:top-56 md:right-[9vw]",

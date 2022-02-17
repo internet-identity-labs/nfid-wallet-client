@@ -45,7 +45,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
       ) : (
         <div className="text-red-500">{error.message}</div>
       )}
-      <Loader isLoading={isLoading} />
+      <Loader isLoading={isLoading} iframe />
     </IFrameScreen>
   )
 }

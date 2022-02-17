@@ -61,6 +61,16 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
 
   return (
     <AppScreen
+      bubbleOptions={{
+        showBubbles: true,
+        // TODO: required otherwise colors are not showing?
+        bubbleColors: ["#a69cff", "#79e9f1"],
+        bubbleClassNames: [
+          "",
+          "top-[20vh] right-[-15vw] md:top-56 md:right-[9vw]",
+        ],
+      }}
+      classNameWrapper="relative mt-[150px]"
       navigationItems={
         <Button text icon onClick={logout}>
           <LogoutIcon />
@@ -68,14 +78,16 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
         </Button>
       }
     >
-      <Card className="grid grid-cols-12">
+      <div className="absolute top-0 left-0 bg-white h-full w-full"></div>
+
+      <Card className="grid grid-cols-12 relative">
         <CardBody className="col-span-12">
-          <div>
+          <div className="mt-[-150px]">
             <H2 className="py-2">{account?.name}</H2>
             <P className="">NFID Number: {account?.anchor}</P>
           </div>
 
-          <div className="grid grid-cols-12 gap-4 py-6 md:py-14">
+          <div className="grid grid-cols-12 gap-4 py-12 md:py-14">
             <div className="col-span-12 md:col-span-6">
               <List>
                 <List.Header>

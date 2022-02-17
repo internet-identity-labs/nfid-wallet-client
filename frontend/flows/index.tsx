@@ -4,12 +4,12 @@ import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
 import { AccessPointConstants } from "./add-new-access-point/routes"
-import { AuthenticateAccountConstants as AAC } from "./authenticate/routes"
 import { LinkIIAnchorConstants } from "./app-screens/link-ii-anchor/routes"
+import { AuthenticateAccountConstants as AAC } from "./authenticate/routes"
+import { DevScreensConstants } from "./dev-screens/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
 import { RegisterAccountConstants } from "./register-account/routes"
 import { RegisterConstants } from "./register/routes"
-import { DevScreensConstants } from "./dev-screens/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -114,7 +114,11 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   }
 
   return (
-    <AppScreen showBubbles={false}>
+    <AppScreen
+      bubbleOptions={{
+        showBubbles: false,
+      }}
+    >
       {process.env.NODE_ENV == "development" && (
         <Card>
           <CardBody>

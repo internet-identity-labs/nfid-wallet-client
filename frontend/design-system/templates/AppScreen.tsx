@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { NavigationBar } from "../organisms/navigation/navigation-bar"
 import { NavigationHeader } from "../organisms/navigation/navigation-header"
-import { Shell } from "./Shell"
+import { BubbleOptions, Shell } from "./Shell"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -14,8 +14,7 @@ interface Props
   isFocused?: boolean
   classNameWrapper?: string
   navigationItems?: React.ReactNode
-  bubbleColors?: [string, string]
-  showBubbles?: boolean
+  bubbleOptions?: BubbleOptions
 }
 
 export const AppScreen: React.FC<Props> = ({
@@ -26,11 +25,10 @@ export const AppScreen: React.FC<Props> = ({
   isFocused = false,
   classNameWrapper,
   navigationItems,
-  bubbleColors,
-  showBubbles = true,
+  bubbleOptions,
 }) => {
   return (
-    <Shell showBubbles={showBubbles} bubbleColors={bubbleColors}>
+    <Shell bubbleOptions={bubbleOptions}>
       <div className="flex flex-col mx-auto w-full min-h-screen min-h-screen-ios">
         {!isFocused && (
           <>

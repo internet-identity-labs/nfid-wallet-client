@@ -15,7 +15,9 @@ export const RegisterNewFromDelegate = () => {
     onMessage: (window, ev) => console.log(">> onMessage", { window, ev }),
   })
 
-  const { os } = useDeviceInfo()
+  const {
+    platform: { device },
+  } = useDeviceInfo()
 
   let { secret, userNumber } = useParams()
   const { createWebAuthNDevice } = useDevices()
@@ -40,7 +42,7 @@ export const RegisterNewFromDelegate = () => {
         <H5 className="mb-3">Trust this browser</H5>
 
         <div>
-          Prove you own this {os} by successfully unlocking it to trust this
+          Prove you own this {device} by successfully unlocking it to trust this
           browser.
         </div>
 
@@ -50,7 +52,7 @@ export const RegisterNewFromDelegate = () => {
           secondary
           className="mt-8"
         >
-          I own this {os}
+          I own this {device}
         </Button>
       </div>
 

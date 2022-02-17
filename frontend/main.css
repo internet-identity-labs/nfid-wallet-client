@@ -1,3 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.swiper {
+  @apply overflow-hidden rounded-lg w-full;
+}
+
 .swiper-slide {
   @apply flex justify-start w-full flex-col;
 }

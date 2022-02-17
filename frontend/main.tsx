@@ -4,7 +4,6 @@ import ReactDOM from "react-dom"
 import { App } from "./App"
 
 import "./main.css"
-import "tailwindcss/tailwind.css"
 
 import "swiper/css"
 import "swiper/css/pagination"

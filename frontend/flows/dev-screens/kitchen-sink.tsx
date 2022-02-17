@@ -35,7 +35,11 @@ export const KitchenSink: React.FC = () => {
   const personas = ["John Doe", "John77", "john_doe"]
 
   return (
-    <AppScreen showBubbles={false}>
+    <AppScreen
+      bubbleOptions={{
+        showBubbles: false,
+      }}
+    >
       <div className="container xl:max-w-7xl mx-auto p-4 lg:p-8">
         <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
           <Card>

@@ -30,28 +30,39 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
   const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
   const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)
+  const [slide, setSlide] = React.useState<Number>()
 
-  const slideStyles = {
-    slide1: {
-      background: `linear-gradient(90deg,#008DDD,#A400CD)`,
-    },
-    slide2: {
-      background: `linear-gradient(90deg,#E324B5,#6500CA)`,
-    },
-    slide3: {
-      background: `linear-gradient(90deg,#FF6B00,#D900B6)`,
-    },
-    slide4: [
-      {
-        background: `linear-gradient(90deg,#00dd59,#009e6e)`,
-      },
-      {
-        background: `linear-gradient(90deg,#00cc60,#016081)`,
-      },
-    ],
-    slide5: {
-      background: `linear-gradient(90deg,#008DDD,#A400CD)`,
-    },
+  const gradientStyles = () => {
+    switch (slide) {
+      case 1:
+        return {
+          styles: {
+            background: `linear-gradient(90deg,#0094FF,#A400CD)`,
+          },
+          bubbleBackground: ["#a69cff", "#4df1ffa8"],
+        }
+      case 2:
+        return {
+          styles: {
+            background: `linear-gradient(90deg,#FF6B00,#D900B6)`,
+          },
+          bubbleBackground: ["#FFC83A95", "#FF1AF680"],
+        }
+      case 3:
+        return {
+          styles: {
+            background: `linear-gradient(90deg,#00DE59,#005B83)`,
+          },
+          bubbleBackground: ["#ecfcae", "#a9fdd7"],
+        }
+      default:
+        return {
+          styles: {
+            background: `linear-gradient(90deg,#0094FF,#A400CD)`,
+          },
+          bubbleBackground: ["#a69cff", "#4df1ffa8"],
+        }
+    }
   }
 
   const handleCreateKeys = React.useCallback(async () => {
@@ -66,7 +77,19 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   }, [createWebAuthNIdentity, navigate, setIsloading])
 
   return (
-    <AppScreen>
+    <AppScreen
+      bubbleOptions={{
+        showBubbles: true,
+        bubbleColors: [
+          gradientStyles().bubbleBackground[0],
+          gradientStyles().bubbleBackground[1],
+        ],
+        bubbleClassNames: [
+          "right-[-40vw] md:right-[13vw] md:top-[16vh]",
+          "bottom-[-10vh] md:right-[20vw] md:top-[30vh]",
+        ],
+      }}
+    >
       <Card className="offset-header">
         <CardBody>
           <Swiper
@@ -74,7 +97,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               prevEl,
               nextEl,
             }}
-            className="overflow-hidden rounded-lg"
+            onSlideChange={(swiper) => setSlide(swiper.activeIndex + 1)}
             pagination={{
               el: ".swiper-pagination",
               clickable: true,
@@ -91,35 +114,23 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               <div className="max-w-2xl">
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
-                  The only way to guarantee your{" "}
                   <span
                     className="clip-text whitespace-nowrap"
-                    style={slideStyles.slide1}
+                    style={gradientStyles().styles}
                   >
-                    privacy and security
+                    Privacy
                   </span>{" "}
-                  on the Internet
+                  with NFID
                 </div>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
-                <div className="swiper-title">
-                  <span
-                    className="clip-text whitespace-nowrap"
-                    style={slideStyles.slide2}
-                  >
-                    This is your {device}.
-                  </span>{" "}
-                  There are many like it but this one is yours.
-                </div>
-                <P className="mb-3">
-                  {`This ${device} is equipped with the most advanced security in the world – a biometric scanner that ensures only you have access.`}
+                <P className="pb-4">
+                  Every account you create across any service that supports NFID
+                  will automatically create a new, untraceable hardware wallet.
                 </P>
 
                 <P>
-                  NFID introduces this security model to your online activity.
+                  You are the only person in the world able to trace accounts to
+                  your NFID, providing you with the best possible privacy
+                  online.
                 </P>
               </div>
             </SwiperSlide>
@@ -127,79 +138,49 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               <div className="max-w-2xl">
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
-                  Without{" "}
                   <span
                     className="clip-text whitespace-nowrap"
-                    style={slideStyles.slide3}
+                    style={gradientStyles().styles}
                   >
-                    you and your {device},
+                    Security
                   </span>{" "}
-                  your online accounts are inaccessible.
+                  with NFID
                 </div>
-                <P className="mb-3">
-                  Anyone could pretend to be you with your username and
-                  password, but only you can unlock your {device}.
+                <P className="pb-4">
+                  Hardware wallets offer the greatest security guarantees
+                  because their private keys can't be exported, making it a
+                  one-way vault that only you have the ability to access.
                 </P>
 
-                <P>Authenticate simply and securely with NFID.</P>
+                <P>
+                  NFID makes each of your internet accounts exactly this kind of
+                  vault.
+                </P>
               </div>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="max-w-3xl">
+              <div className="max-w-xl">
                 <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
-                  Without{" "}
                   <span
                     className="clip-text whitespace-nowrap"
-                    style={slideStyles.slide4[0]}
+                    style={gradientStyles().styles}
                   >
-                    your consent,
+                    Convenience
                   </span>{" "}
-                  nobody can access{" "}
-                  <span
-                    className="clip-text whitespace-nowrap"
-                    style={slideStyles.slide4[1]}
-                  >
-                    any information
-                  </span>{" "}
-                  about you.
+                  with NFID
                 </div>
-                <P className="mb-3">
-                  Every single thing we do online is tracked, sold, and used to
-                  understand and manipulate us.
+                <P className="pb-4">
+                  A hardware device for each online account used to be
+                  impractical. NFID stores private keys on the
+                  specially-designed cryptographic chips of your phones,
+                  tablets, and computers so that creating new accounts or
+                  authenticating is simply a face or touch scan away.
                 </P>
 
-                <P>Stay anonymous and untrackable with NFID.</P>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className="max-w-[750px]">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
-                <div className="swiper-title">
-                  So be it, until{" "}
-                  <span
-                    className="clip-text whitespace-nowrap"
-                    style={slideStyles.slide5}
-                  >
-                    convenience, security,
-                  </span>{" "}
-                  <span
-                    className="clip-text whitespace-nowrap"
-                    style={slideStyles.slide5}
-                  >
-                    and privacy online
-                  </span>{" "}
-                  are no longer required.
-                </div>
-
-                <div className="grid max-w-sm gap-2 py-3 mt-12 md:grid-cols-2 md:mt-6">
-                  <Button secondary onClick={handleCreateKeys}>
-                    Create new NFID
-                  </Button>
-
-                  <Button stroke>Restore my NFID</Button>
-                </div>
+                <Button secondary onClick={handleCreateKeys} className="mb-4">
+                  Create new NFID
+                </Button>
               </div>
             </SwiperSlide>
           </Swiper>

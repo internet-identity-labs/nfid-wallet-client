@@ -17,7 +17,9 @@ interface AuthorizeRegisterDeciderProps
 export const AuthorizeRegisterDecider: React.FC<
   AuthorizeRegisterDeciderProps
 > = ({ onRegister, onLogin }) => {
-  const { make: deviceMake, authenticator: platformAuth } = useDeviceInfo()
+  const {
+    platform: { device, authenticator: platformAuth },
+  } = useDeviceInfo()
   const [linkAccount, setLinkAccount] = React.useState(
     "rb_link_account_register",
   )
@@ -36,8 +38,8 @@ export const AuthorizeRegisterDecider: React.FC<
       <H5 className="mb-4">Log in faster on this device</H5>
 
       <div>
-        Trust this {deviceMake}? You can quickly and securely log in the next
-        time using this device's {platformAuth}.
+        Trust this {device}? You can quickly and securely log in the next time
+        using this device's {platformAuth}.
       </div>
 
       <div className="py-5">

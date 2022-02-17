@@ -12,30 +12,35 @@ export const getPlatformInfo = () => {
       return {
         make: "Apple",
         os: "Mac OS",
+        device: "Mac",
         authenticator: "Touch ID",
       }
     case PLATFORMS_IOS.indexOf(platform) !== -1:
       return {
         make: "Apple",
         os: "iOS",
+        device: "iPhone",
         authenticator: "Face Id",
       }
     case PLATFORMS_WINDOWS.indexOf(platform) !== -1:
       return {
         make: "Microsoft",
         os: "Windows",
+        device: "Windows",
         authenticator: "Hello",
       }
     case /Android/.test(userAgent):
       return {
         make: "Google",
         os: "Android",
+        device: "Mobile",
         authenticator: "Fingerprint",
       }
     case /Linux/.test(platform):
       return {
         make: "Unknown",
         os: "Linux",
+        device: "Computer",
         authenticator: "Fingerprint",
       }
     default:

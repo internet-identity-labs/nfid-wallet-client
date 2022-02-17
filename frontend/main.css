@@ -1,5 +1,5 @@
 .swiper {
-  @apply overflow-hidden rounded-lg w-min max-w-3xl mr-auto !ml-0;
+  @apply overflow-hidden rounded-lg w-full;
 }
 
 .swiper-slide {

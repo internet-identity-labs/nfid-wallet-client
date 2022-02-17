@@ -1,5 +1,5 @@
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
-import { RegisterDevicePromptConstants as RDPC } from "frontend/flows/screens-app/register-device/routes"
+import { RegisterDevicePromptConstants } from "frontend/flows/screens-app/register-device-prompt/routes"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { usePostMessage } from "frontend/hooks/use-post-message"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
@@ -89,7 +89,7 @@ export const useUnknownDeviceConfig = () => {
 
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `https://${multipassDomain}${RDPC.base}/${pubKey}/${domain}/${applicationName}`
+      ? `https://${multipassDomain}${RegisterDevicePromptConstants.base}/${pubKey}/${domain}/${applicationName}`
       : null
   }, [applicationName, domain, pubKey])
 

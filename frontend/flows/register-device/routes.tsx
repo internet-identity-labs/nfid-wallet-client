@@ -12,12 +12,12 @@ export const RegisterDevicePromptConstants = {
   success: "success",
 }
 
-export const RegisterDevicePromptRoutes = (
+export const RegisterDevicePromptRoutes = (redirectTo: string) => (
   <Route path={RegisterDevicePromptConstants.base}>
     <Route
       path={RegisterDevicePromptConstants.authorize}
       element={
-        <AuthWrapper>
+        <AuthWrapper redirectTo={redirectTo}>
           <RegisterDevicePrompt />
         </AuthWrapper>
       }
@@ -25,7 +25,7 @@ export const RegisterDevicePromptRoutes = (
     <Route
       path={RegisterDevicePromptConstants.success}
       element={
-        <AuthWrapper>
+        <AuthWrapper redirectTo={redirectTo}>
           <RegisterDevicePromptSuccess />
         </AuthWrapper>
       }

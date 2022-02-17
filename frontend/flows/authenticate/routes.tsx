@@ -19,7 +19,7 @@ export const AuthenticateAccountRoutes = (
     <Route
       path={AuthenticateAccountConstants.home}
       element={
-        <AuthWrapper>
+        <AuthWrapper redirectTo="/">
           <AuthenticateNFIDHome />
         </AuthWrapper>
       }

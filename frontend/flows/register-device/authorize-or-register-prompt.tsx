@@ -7,7 +7,6 @@ import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useAuthorization } from "../iframes/nfid-login/hooks"
 import { useRegisterDevicePromt } from "./hooks"
-import { RegisterDevicePromptConstants as RDPC } from "./routes"
 import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
 import { AuthenticateAccountConstants } from "../authenticate/routes"
 
@@ -52,7 +51,6 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
     if (response?.status_code === 200) {
       return handleAuthorizePersona({ persona_id: nextPersonaId })()
     }
-    console.error(">> handleCreatePersonaAndLogin", { response })
   }, [createPersona, handleAuthorizePersona, nextPersonaId, scope])
 
   const handleAuthorizeIIPersona = React.useCallback(

@@ -9,7 +9,6 @@ import { AuthenticateAccountConstants as AAC } from "./authenticate/routes"
 import { DevScreensConstants } from "./dev-screens/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
 import { RegisterAccountConstants } from "./register-account/routes"
-import { RegisterConstants } from "./register/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -75,18 +74,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         {
           path: LinkIIAnchorConstants.keys,
           state: { iiDeviceLink: "", userNumber: "" },
-        },
-      ],
-    },
-    {
-      title: "Mobile Registration Flow",
-      base: RegisterConstants.base,
-      items: [
-        { path: RegisterConstants.linkInternetIdentitySuccess },
-        { path: RegisterConstants.finalizePersona },
-        {
-          path: RegisterConstants.recoveryPhrase,
-          state: { recoveryPhrase: "This is not your real recovery phrase" },
         },
       ],
     },

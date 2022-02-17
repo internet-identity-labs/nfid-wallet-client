@@ -27,7 +27,7 @@ import {
 import { captchaRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { RegisterAccountConstants as RAC } from "./routes"
 
@@ -53,6 +53,7 @@ interface RegisterAccountCaptchaState {
 export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
   className,
 }) => {
+  const { secret, scope } = useParams()
   const {
     register,
     formState: { errors, isValid, dirtyFields },
@@ -178,11 +179,14 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           },
         )
 
-        return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
-          state: {
-            recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
+        return navigate(
+          `${RAC.base}/${secret}/${scope}/${RAC.copyRecoveryPhrase}`,
+          {
+            state: {
+              recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
+            },
           },
-        })
+        )
       }
       if (responseRegisterAnchor.kind === "badChallenge") {
         setValue("captcha", "")
@@ -202,6 +206,8 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       registerAnchor,
       createAccount,
       navigate,
+      secret,
+      scope,
       setValue,
       requestCaptcha,
       setError,

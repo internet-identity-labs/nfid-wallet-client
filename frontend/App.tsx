@@ -1,6 +1,7 @@
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useParams } from "react-router-dom"
+import "tailwindcss/tailwind.css"
 import { HomeScreen } from "./flows"
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/add-new-access-point/routes"
@@ -16,23 +17,24 @@ import {
   RegisterDevicePromptRoutes,
   RegisterNewDeviceRoutes,
 } from "./flows/register-device/routes"
-import { RegisterRoutes } from "./flows/register/routes"
 import { useStartUrl } from "./hooks/use-start-url"
 import { DevScreensRoutes } from "./flows/dev-screens/routes"
 import { CONFIG } from "./config"
+import { RegisterAccountConstants as RAC } from "frontend/flows/register-account/routes"
 
 Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 
 export const App = () => {
   useStartUrl()
+  const { secret, scope } = useParams()
 
+  const redirectPath = `${RAC.base}/${secret}/${scope}/${RAC.account}`
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />
       {DevScreensRoutes}
       {RegisterNewDeviceRoutes}
-      {RegisterDevicePromptRoutes}
-      {RegisterRoutes}
+      {RegisterDevicePromptRoutes(redirectPath)}
       {RegisterAccountRoutes}
       {IFrameRoutes}
       {IFrameRestoreAccessPointRoutes}

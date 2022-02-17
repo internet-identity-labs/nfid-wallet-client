@@ -5,7 +5,7 @@ import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"
 
 export const RegisterAccountConstants = {
-  base: "/register-account",
+  base: "/register-account/:secret/:scope",
   account: "intro",
   captcha: "captcha",
   copyRecoveryPhrase: "copy-recovery-phrase",

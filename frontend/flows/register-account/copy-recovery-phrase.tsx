@@ -1,10 +1,22 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { useStartUrl } from "frontend/hooks/use-start-url"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { CopyIcon } from "frontend/ui-kit/src/components/atoms/button/icons/copy"
-import { Button, Card, CardBody, H2, H5, P } from "frontend/ui-kit/src/index"
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  H5,
+  Loader,
+  Modal,
+  P,
+} from "frontend/ui-kit/src/index"
 import React from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { AuthenticateAccountConstants } from "../authenticate/routes"
+import { useRegisterDevicePromt } from "../register-device/hooks"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
@@ -20,18 +32,35 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
 > = ({ children, className }) => {
   const navigate = useNavigate()
-  const startUrl = useStartUrl()
+  const { secret, scope } = useParams()
+  const { isLoading, setIsloading } = useIsLoading()
   const { applicationName } = useMultipass()
+  const { remoteLogin } = useRegisterDevicePromt()
   const { state } = useLocation()
   const { recoveryPhrase } = state as LocationState
 
+  const { nextPersonaId, createPersona } = usePersona()
+
   const [copied, setCopied] = React.useState(false)
+  const [successModal, setShowSuccessModal] = React.useState(false)
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(recoveryPhrase).then(function () {
       setCopied(true)
     })
   }
+
+  const handleAuthorizePersona = React.useCallback(async () => {
+    setIsloading(true)
+    const response = await createPersona({ domain: scope })
+    if (response?.status_code === 200) {
+      if (!secret || !scope) throw new Error("missing secret or scope")
+      await remoteLogin({ secret, scope, persona_id: nextPersonaId })
+      setIsloading(false)
+      return setShowSuccessModal(true)
+    }
+    console.error(response)
+  }, [createPersona, nextPersonaId, remoteLogin, scope, secret, setIsloading])
 
   return (
     <AppScreen>
@@ -60,7 +89,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
           </Button>
 
           <Button
-            onClick={() => navigate(startUrl || "")}
+            onClick={handleAuthorizePersona}
             disabled={!copied}
             secondary
             large
@@ -70,6 +99,20 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
           </Button>
         </CardBody>
       </Card>
+      <Loader isLoading={isLoading} />
+      {successModal ? (
+        <Modal
+          title={"Success!"}
+          description={`You signed in to ${applicationName}`}
+          buttonText="Done"
+          iconType="success"
+          onClick={() => {
+            navigate(
+              `${AuthenticateAccountConstants.base}/${AuthenticateAccountConstants.home}`,
+            )
+          }}
+        />
+      ) : null}
     </AppScreen>
   )
 }

@@ -19,7 +19,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
   >("initial")
   const { secret, scope } = useParams()
   // TODO: pass applicationName through QRCode?
-  const applicationName = "NFID-Demo"
+  const applicationName = "NFID Demo"
 
   const { userNumber } = useAccount()
   const navigate = useNavigate()
@@ -37,7 +37,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
         if (!secret || !scope || !persona_id)
           throw new Error("missing secret, scope or persona_id")
         await remoteLogin({ secret, scope, persona_id })
-        return navigate(`${ProfileConstants.profile}`)
+        return navigate(`${ProfileConstants.authenticate}`)
       },
     [navigate, remoteLogin, secret, scope],
   )

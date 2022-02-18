@@ -108,7 +108,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
           buttonText="Done"
           iconType="success"
           onClick={() => {
-            navigate(`${ProfileConstants.profile}`)
+            navigate(`${ProfileConstants.authenticate}`)
           }}
         />
       ) : null}

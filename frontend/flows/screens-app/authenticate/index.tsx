@@ -21,7 +21,7 @@ export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = ({
 
   return (
     <AppScreen className="flex flex-col h-full">
-      <CardBody className="flex flex-col-reverse h-full justify-between py-0 offset-header lg:flex-row lg:justify-between">
+      <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
         <div>
           <H2 className="my-6">Unlock your NFID</H2>
           <P>

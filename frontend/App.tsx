@@ -20,6 +20,7 @@ import { CONFIG } from "./config"
 import { RegisterAccountConstants as RAC } from "frontend/flows/screens-app/register-account/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import { RegisterDevicePromptRoutes } from "./flows/screens-app/register-device-prompt/routes"
+import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 
 Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 
@@ -40,6 +41,7 @@ export const App = () => {
       {RegisterDevicePromptRoutes(redirectPath)}
       {RegisterAccountRoutes}
       {IFrameRoutes}
+      {IFrameProfileRoutes}
       {IFrameRestoreAccessPointRoutes}
       {AuthoriseAppRoutes}
       {LinkIIAnchorRoutes}

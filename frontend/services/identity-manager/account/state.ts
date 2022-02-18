@@ -7,6 +7,9 @@ import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 export interface LocalAccount extends Omit<AccountResponse, "anchor"> {
   anchor: string
   iiAnchors?: string[]
+
+  // temporary front-end hack to skip personalization process
+  skipPersonalize?: boolean
 }
 
 export const accountAtom = atomWithStorage<LocalAccount | undefined>(

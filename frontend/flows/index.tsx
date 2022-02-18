@@ -4,12 +4,11 @@ import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
 import { AccessPointConstants } from "./prototypes/add-new-access-point/routes"
-import { LinkIIAnchorConstants } from "./screens-app/link-ii-anchor/routes"
-import { AuthenticateAccountConstants } from "./screens-app/authenticate/routes"
-import { DevScreensConstants } from "./screens-dev/routes"
 import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
-import { RegisterAccountConstants } from "./screens-app/register-account/routes"
+import { LinkIIAnchorConstants } from "./screens-app/link-ii-anchor/routes"
 import { ProfileConstants } from "./screens-app/profile/routes"
+import { RegisterAccountConstants } from "./screens-app/register-account/routes"
+import { DevScreensConstants } from "./screens-dev/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -49,18 +48,11 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     },
     {
       title: "Profile",
-      base: ProfileConstants.profile,
-      items: [{ path: `${ProfileConstants.profile}` }],
-    },
-    {
-      title: "Authenticate",
-      base: AuthenticateAccountConstants.base,
+      base: ProfileConstants.base,
       items: [
+        { path: `${ProfileConstants.authenticate}` },
         {
-          path: `${AuthenticateAccountConstants.login}`,
-        },
-        {
-          path: `${AuthenticateAccountConstants.personalize}`,
+          path: `${ProfileConstants.personalize}`,
         },
       ],
     },

@@ -16,6 +16,7 @@ export const ImageNFIDLogin: React.FC<PictureNFIDLoginProps> = ({
       viewBox="0 0 657 442"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="max-w-[720px] 2xl:max-w-[920px] sm:max-h-[300px] md:max-h-full mb-auto h-full md:h-min"
     >
       <path
         fillRule="evenodd"

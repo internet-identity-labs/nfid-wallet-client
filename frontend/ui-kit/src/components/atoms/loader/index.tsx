@@ -19,7 +19,7 @@ export const Loader: React.FC<LoaderProps> = ({
     <div className="fixed top-0 bottom-0 left-0 right-0 w-full h-full z-50">
       <div
         className={clsx(
-          "absolute w-full h-full top-0 right-0 bottom-0 left-0 bg-gray-900 opacity-[75%]",
+          "absolute w-full h-full top-0 right-0 bottom-0 left-0 bg-gray-900 opacity-[75%] pointer-events-none select-none",
           iframe && "rounded-lg",
         )}
       />
@@ -29,10 +29,14 @@ export const Loader: React.FC<LoaderProps> = ({
           "left-1/2 -translate-x-1/2",
           "top-1/2 -translate-y-1/2",
           "m-auto w-[125px] min-w-[125px] max-w-[calc(100vw-1rem)]",
+          "select-none pointer-events-none",
         )}
         src={loaderAsset}
       />
     </div>
   ) : isLoading && !fullscreen ? (
-    <img src={loaderAsset} className={clsx(imageClasses)} />
+    <img
+      src={loaderAsset}
+      className={clsx("select-none pointer-events-none", imageClasses)}
+    />
   ) : null

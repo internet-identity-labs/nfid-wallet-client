@@ -1,5 +1,7 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
@@ -28,7 +30,6 @@ import { captchaRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCaptchaProps
@@ -223,7 +224,12 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           <P>Type the characters you see in the image.</P>
 
           <div>
-            <div className="h-[150px] w-auto bg-white border border-gray-200 rounded-md my-4">
+            <div
+              className={clsx(
+                "h-[150px] w-auto rounded-md my-4",
+                captchaResp ? "bg-white border border-gray-200" : "",
+              )}
+            >
               {captchaResp && !loading && (
                 <img
                   src={`data:image/png;base64,${captchaResp.png_base64}`}

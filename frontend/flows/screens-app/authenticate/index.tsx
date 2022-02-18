@@ -18,24 +18,23 @@ export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = ({
   onLogin: onClick,
 }) => {
   const { account } = useAccount()
-  return (
-    <AppScreen classNameWrapper="mt-auto lg:mt-0 flex flex-col h-full">
-      <Card>
-        <CardBody className="flex flex-col-reverse justify-between py-0 offset-header lg:flex-row lg:justify-between">
-          <div>
-            <H2 className="my-6">Your NFID profile</H2>
-            <P>
-              The NFID on this access point can only be unlocked by{" "}
-              {account?.name || account?.anchor}.
-            </P>
-            <Button large secondary className="mt-8" onClick={onClick}>
-              Unlock NFID
-            </Button>
-          </div>
 
-          <ImageNFIDLogin />
-        </CardBody>
-      </Card>
+  return (
+    <AppScreen className="flex flex-col h-full">
+      <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
+        <div>
+          <H2 className="my-6">Unlock your NFID</H2>
+          <P>
+            The NFID on this device can only be unlocked by{" "}
+            {account?.name || account?.anchor}.
+          </P>
+          <Button large secondary className="mt-8" onClick={onClick}>
+            Unlock as {account?.name || account?.anchor}
+          </Button>
+        </div>
+
+        <ImageNFIDLogin />
+      </CardBody>
     </AppScreen>
   )
 }

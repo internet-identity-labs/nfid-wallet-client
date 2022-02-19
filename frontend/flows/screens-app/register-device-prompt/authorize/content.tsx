@@ -1,14 +1,14 @@
-import React from "react"
-import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { H5 } from "components/atoms/typography"
 import { DropdownMenu } from "components/molecules/menu"
-import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
 import { useAuthorization } from "frontend/flows/screens-iframe/nfid-login/hooks"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { useParams, useNavigate } from "react-router"
+import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
+import React from "react"
+import { useNavigate, useParams } from "react-router"
+import { LinkIIAnchorHref } from "../../link-ii-anchor/routes"
 import { ProfileConstants } from "../../profile/routes"
 import { useRegisterDevicePromt } from "../hooks"
 
@@ -18,12 +18,14 @@ interface AuthorizeAppContentProps
     HTMLDivElement
   > {
   iframe?: boolean
+  handleIILink?: () => void
 }
 
 export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
   children,
   className,
-  iframe,
+  iframe = false,
+  handleIILink,
 }) => {
   const [status, setStatus] = React.useState<
     "initial" | "loading" | "success" | "error"
@@ -145,9 +147,8 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
       <Button text block onClick={handleCreatePersonaAndLogin}>
         Create a new account
       </Button>
-      <Button text block>
-        Link Internet Identity anchor
-      </Button>
+
+      <LinkIIAnchorHref onClick={handleIILink} />
 
       <Loader isLoading={status === "loading"} iframe={iframe} />
     </div>

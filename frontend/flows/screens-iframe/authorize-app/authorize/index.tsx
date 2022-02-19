@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { LinkIIAnchorHref } from "frontend/flows/screens-app/link-ii-anchor/routes"
+import { AuthorizeAppContent } from "frontend/flows/screens-app/register-device-prompt/authorize/content"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -18,6 +19,7 @@ interface AuthorizeAppProps
   > {}
 
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
+  // TODO: clean this up to only handle handleLinkIIAnchor + (persisted) iiPersonas?
   const { isLoading, setIsloading } = useIsLoading()
   const { userNumber, account, resetLocalAccount } = useAccount()
   const { nfidPersonas, createPersona } = usePersona()
@@ -33,11 +35,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
   const { nextPersonaId, iiPersonas: iiPersonasPersisted } = usePersona({
     application: authorizationRequest?.hostname,
   })
-
-  const [selectedItem, setSelectedItem] = React.useState<string>(
-    nfidPersonas[0].persona_id,
-  )
-  const [isPersonaSelected, setIsPersonaSelected] = React.useState(true)
 
   const handleCreatePersona = React.useCallback(async () => {
     setIsloading(true)
@@ -100,54 +97,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
 
   return (
     <IFrameScreen logo>
-      <H5 className="mb-4 text-center">
-        {account && `Welcome ${account.name}`}
-      </H5>
-
-      <div className="mb-5">
-        <Label>Continue as</Label>
-        <DropdownMenu title={selectedItem}>
-          {(toggle) => (
-            <>
-              <Label menuItem>Personas</Label>
-              {nfidPersonas.map((persona, index) => (
-                <MenuItem
-                  key={index}
-                  title={persona.persona_id}
-                  onClick={() => {
-                    setSelectedItem(persona.persona_id)
-                    setIsPersonaSelected(true)
-                    toggle()
-                  }}
-                />
-              ))}
-
-              <Label
-                menuItem
-                className={clsx(iiPersonas.length === 0 && "hidden")}
-              >
-                Anchors
-              </Label>
-              {iiPersonas.map((persona, index) => (
-                <MenuItem
-                  key={index}
-                  title={persona.anchor}
-                  onClick={() => {
-                    setSelectedItem(persona.anchor)
-                    setIsPersonaSelected(false)
-                    toggle()
-                  }}
-                />
-              ))}
-            </>
-          )}
-        </DropdownMenu>
-      </div>
-
-      <div className="flex justify-center">
-        <LinkIIAnchorHref onClick={handleLinkIIAnchor} />
-      </div>
-      <Loader isLoading={isLoading} iframe />
+      <AuthorizeAppContent handleIILink={handleLinkIIAnchor} iframe />
     </IFrameScreen>
   )
 }

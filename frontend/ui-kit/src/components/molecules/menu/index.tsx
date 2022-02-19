@@ -48,7 +48,7 @@ export const DropdownMenu: React.FC<Props> = ({
           "flex justify-between items-center w-full rounded-md px-4 py-2 text-sm leading-5 text-black-base transition duration-150 ease-in-out focus:outline-none focus:shadow-outline-blue",
           disabled
             ? "bg-gray-200 hover:border-0"
-            : "bg-white border border-gray-400 hover:border-black-hover active:bg-gray-50",
+            : "border border-gray-400 hover:border-black-hover active:bg-gray-50",
           showDialog &&
             !errorText &&
             "!border-blue-base bg-blue-active drop-shadow-blue ring-1",

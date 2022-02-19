@@ -42,10 +42,10 @@ export const Button = <T extends React.ElementType = "button">({
     <Component
       disabled={disabled}
       className={clsx(
-        "text-center p-4 text-sm font-bold rounded-md outline-none focus:ring-2 focus:ring-offset-[3px] focus:ring-black-base first-letter:capitalize  hover:no-underline transition duration-75",
+        "text-center text-sm font-bold rounded-md outline-none focus:ring-2 focus:ring-offset-[3px] focus:ring-black-base first-letter:capitalize  hover:no-underline transition duration-75 p-4",
         !disabled && "cursor-pointer",
         text &&
-          "hover:underline text-blue-base outline-none active:bg-gray-200 hover:bg-gray-100 font-normal mt-1",
+          "hover:underline text-blue-base outline-none active:bg-gray-200 hover:bg-gray-100 font-normal mt-1 !p-[10px]",
         secondary &&
           "bg-black-base hover:bg-black-hover focus:ring-black-base text-white border-0 hover:shadow-black",
         stroke &&

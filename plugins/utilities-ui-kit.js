@@ -13,6 +13,7 @@ const colors = {
   },
   blue: {
     active: "#F6FAFF",
+    activeDark: "#0B50D2",
     base: "#0E62FF",
     hover: "#2079FF",
     light: "#5993FC;",
@@ -62,6 +63,11 @@ const dropShadow = {
   red: "0 0px 2px rgba(234,26,26,1)",
 }
 
+const boxShadow = {
+  black: "0 3px 10px rgba(59,62,67,0.4)",
+  blueLight: "0 3px 10px rgba(32,121,255,0.4)",
+}
+
 module.exports = require("tailwindcss/plugin")(function () {}, {
-  theme: { extend: { colors, fontSize, fontFamily, dropShadow } },
+  theme: { extend: { colors, fontSize, fontFamily, dropShadow, boxShadow } },
 })

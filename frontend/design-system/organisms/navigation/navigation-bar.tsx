@@ -1,6 +1,7 @@
 import React from "react"
 import clsx from "clsx"
-import { Logo } from "frontend/ui-kit/src"
+import { ImageOnlyLoader, Logo } from "frontend/ui-kit/src"
+import { Link } from "react-router-dom"
 
 interface NavigationBarProps
   extends React.DetailedHTMLProps<
@@ -20,7 +21,10 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       <div className="container px-6 mx-auto">
         <div className="flex justify-between py-5">
           <div className="flex items-center">
-            <Logo nav />
+            <Link to={"/"} className="font-black text-2xl flex items-center">
+              <span>NF</span>
+              <ImageOnlyLoader className="h-12 w-12" />
+            </Link>
           </div>
 
           <div>{navigationItems}</div>

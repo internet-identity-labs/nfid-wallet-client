@@ -5,7 +5,7 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { Button, H5, Loader } from "frontend/ui-kit/src"
 import React from "react"
 import { Navigate, useNavigate } from "react-router-dom"
-import { AuthoriseAppConstants } from "../authorize-app/routes"
+import { IFrameAuthorizeAppConstants } from "../authorize-app/routes"
 import { IFrameConstants } from "../routes"
 import { useAuthorization } from "./hooks"
 
@@ -25,7 +25,7 @@ export const Authenticate: React.FC<{ userNumber: bigint }> = ({
       {isAuthenticated && (
         <Navigate
           // TODO: this is fragile. We need pass the applicationName query string
-          to={`${AuthoriseAppConstants.base}${window.location.search}`}
+          to={`${IFrameAuthorizeAppConstants.base}${window.location.search}`}
         />
       )}
 

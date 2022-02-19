@@ -66,14 +66,18 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   }
 
   const handleCreateKeys = React.useCallback(async () => {
-    setIsloading(true)
-    const registerPayload = await createWebAuthNIdentity()
+    try {
+      setIsloading(true)
+      const registerPayload = await createWebAuthNIdentity()
 
-    navigate(`${RAC.base}/${RAC.captcha}`, {
-      state: {
-        registerPayload,
-      },
-    })
+      navigate(`${RAC.base}/${RAC.captcha}`, {
+        state: {
+          registerPayload,
+        },
+      })
+    } catch (error) {
+      setIsloading(false)
+    }
   }, [createWebAuthNIdentity, navigate, setIsloading])
 
   return (
@@ -91,6 +95,8 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       }}
     >
       <Card className="offset-header">
+        <H5 className="mb-2 font-bold">{appName} uses NFID</H5>
+
         <CardBody>
           <Swiper
             navigation={{
@@ -112,10 +118,9 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           >
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   <span
-                    className="clip-text whitespace-nowrap"
+                    className="clip-text whitespace-nowrap "
                     style={gradientStyles().styles}
                   >
                     Privacy
@@ -136,7 +141,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-2xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   <span
                     className="clip-text whitespace-nowrap"
@@ -160,7 +164,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             </SwiperSlide>
             <SwiperSlide>
               <div className="max-w-xl">
-                <H5 className="mb-4 font-bold md:mb-7">{appName} uses NFID</H5>
                 <div className="swiper-title">
                   <span
                     className="clip-text whitespace-nowrap"

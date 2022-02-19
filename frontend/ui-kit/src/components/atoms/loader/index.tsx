@@ -1,12 +1,32 @@
 import clsx from "clsx"
 import React from "react"
 import loaderAsset from "./loader.webp"
+import { NFIDLogoID } from "./NFIDLogoID"
 
 interface LoaderProps {
   isLoading: boolean
   fullscreen?: boolean
   imageClasses?: string
   iframe?: boolean
+}
+
+export const ImageOnlyLoader: React.FC<React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+>> = ({ className }) => {
+  return (
+    <div className="group transition duration-100">
+      <img
+        src={loaderAsset}
+        className={clsx(
+          "select-none pointer-events-none group-hover:flex hidden",
+          className,
+        )}
+      />
+
+      <NFIDLogoID className="group-hover:hidden w-12 h-12 p-1" />
+    </div>
+  )
 }
 
 export const Loader: React.FC<LoaderProps> = ({

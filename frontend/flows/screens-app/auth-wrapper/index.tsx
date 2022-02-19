@@ -1,8 +1,8 @@
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
-import { Navigate, useParams } from "react-router-dom"
-import { AuthenticateNFIDLogin } from "../authenticate"
+import { Navigate } from "react-router-dom"
+import { AuthenticateNFIDLogin } from "../authenticate/login"
 
 interface AuthWrapper {
   redirectTo: string
@@ -11,13 +11,13 @@ export const AuthWrapper: React.FC<AuthWrapper> = ({
   children,
   redirectTo,
 }) => {
-  const { isAuthenticated, login } = useAuthentication()
+  const { isAuthenticated } = useAuthentication()
   const { account } = useAccount()
 
   return isAuthenticated ? (
     <>{children}</>
   ) : account ? (
-    <AuthenticateNFIDLogin onLogin={login} />
+    <AuthenticateNFIDLogin />
   ) : (
     <Navigate to={redirectTo} />
   )

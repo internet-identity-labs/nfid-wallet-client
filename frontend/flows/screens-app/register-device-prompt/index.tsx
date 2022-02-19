@@ -1,15 +1,15 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
 import { NFIDPersonas } from "frontend/services/identity-manager/persona/components/nfid-persona"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { Button, Card, CardBody, H2, Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useAuthorization } from "../../screens-iframe/nfid-login/hooks"
-import { useRegisterDevicePromt } from "./hooks"
-import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
-import { AuthenticateAccountConstants } from "../authenticate/routes"
 import { ProfileConstants } from "../profile/routes"
+import { useRegisterDevicePromt } from "./hooks"
 
 interface RegisterDevicePromptProps {}
 
@@ -18,8 +18,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
     "initial" | "loading" | "success" | "error"
   >("initial")
   const { secret, scope } = useParams()
-  // TODO: pass applicationName through QRCode?
-  const applicationName = "NFID-Demo"
+  const { applicationName } = useMultipass()
 
   const { userNumber } = useAccount()
   const navigate = useNavigate()
@@ -37,7 +36,7 @@ export const RegisterDevicePrompt: React.FC<RegisterDevicePromptProps> = () => {
         if (!secret || !scope || !persona_id)
           throw new Error("missing secret, scope or persona_id")
         await remoteLogin({ secret, scope, persona_id })
-        return navigate(`${ProfileConstants.profile}`)
+        return navigate(`${ProfileConstants.authenticate}`)
       },
     [navigate, remoteLogin, secret, scope],
   )

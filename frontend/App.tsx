@@ -16,7 +16,7 @@ import { RegisterDevicePromptRoutes } from "./flows/screens-app/register-device-
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-device/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
-import { AuthoriseAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
+import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
 import { AuthenticateRoutes } from "./flows/screens-iframe/nfid-login/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-account/routes"
@@ -41,7 +41,6 @@ export const App = () => {
       {AccessPointRoutes}
       {AuthenticateRoutes}
       {AuthenticateAccountRoutes}
-      {AuthoriseAppRoutes}
       {CopyDevicesRoutes}
       {LinkIIAnchorRoutes}
       {ProfileRoutes}
@@ -51,6 +50,7 @@ export const App = () => {
 
       {IFrameRoutes}
       {IFrameProfileRoutes}
+      {IFrameAuthorizeAppRoutes}
       {IFrameRestoreAccessPointRoutes}
       {IFrameAuthenticateAccountRoutes}
       <Route path={"*"} element={<NotFound />} />

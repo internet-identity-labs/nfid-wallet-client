@@ -44,8 +44,9 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
       })
 
       // TODO: navigate to the next screen IFrame/AppScreen AuthorizeApp
+      alert("Authorize app from IFrame:" + iframe)
     },
-    [updateAccount],
+    [iframe, updateAccount],
   )
 
   const handleSkipPersonalize = React.useCallback(() => {

@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { IFrameWrapper } from "components/molecules/iframe/wrapper"
-import { InputSelect } from "frontend/design-system/molecules/inputs/select"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import {
@@ -11,9 +10,9 @@ import {
   H5,
   Label,
   MenuItem,
-  P,
 } from "frontend/ui-kit/src"
 import React from "react"
+import { IFrameAuthenticateNFIDLogin } from "../screens-iframe/authenticate/login"
 import { AuthorizeRegisterDecider } from "../screens-iframe/login-unknown/authorize-register-decider"
 import { IFrameNFIDPersonalize } from "../screens-iframe/personalize"
 
@@ -44,20 +43,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               className="inset-0 col-span-12 md:col-span-6 xl:col-span-4 relative"
               fixedHeight={false}
             >
-              <IFrameScreen logo>
-                <H5 className="mb-4">Unlock your NFID</H5>
-
-                <P className="pb-12">
-                  The NFID on this device can only be unlocked by {accountName}.
-                </P>
-
-                <Button secondary block>
-                  Unlock as {accountName}
-                </Button>
-                <Button text block>
-                  Log in as different person
-                </Button>
-              </IFrameScreen>
+              <IFrameAuthenticateNFIDLogin />
             </IFrameWrapper>
 
             {/* IFrameAuthorizeApp */}

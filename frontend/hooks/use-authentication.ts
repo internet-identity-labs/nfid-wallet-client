@@ -70,6 +70,7 @@ export const useAuthentication = () => {
       setActors(result)
       initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
     }
+    setIsLoading(false)
   }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
 
   const onRegisterSuccess = React.useCallback(

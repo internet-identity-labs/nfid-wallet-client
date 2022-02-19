@@ -1,6 +1,6 @@
 import React from "react"
 import { Route } from "react-router-dom"
-import { AuthorizeApp } from "."
+import { AuthorizeApp } from "./authorize"
 
 export const IFrameAuthorizeAppConstants = {
   base: "/authorize-app-iframe",

@@ -1,7 +1,7 @@
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
 import { Route } from "react-router-dom"
-import { Authenticate } from "."
+import { IFrameAuthenticateNFIDLogin } from "../authenticate/login"
 import { UnknownDeviceScreen } from "../login-unknown"
 
 export const AuthenticateConstants = {
@@ -11,11 +11,7 @@ export const AuthenticateConstants = {
 const AuthenticateDecider: React.FC = () => {
   const { userNumber } = useAccount()
 
-  return userNumber ? (
-    <Authenticate userNumber={userNumber} />
-  ) : (
-    <UnknownDeviceScreen />
-  )
+  return userNumber ? <IFrameAuthenticateNFIDLogin /> : <UnknownDeviceScreen />
 }
 
 export const AuthenticateRoutes = (

@@ -64,7 +64,7 @@ export const AuthenticateNFIDLoginContent: React.FC<
           Unlock as {account?.name || account?.anchor}
         </Button>
 
-        <Loader isLoading={isLoading} />
+        <Loader isLoading={isLoading} iframe={iframe} />
       </div>
 
       <ImageNFIDLogin />

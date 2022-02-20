@@ -1,16 +1,16 @@
-import React from "react"
-import { useAuthorization } from "../nfid-login/hooks"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { H5, Loader } from "frontend/ui-kit/src"
-import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { NFIDPersonas } from "frontend/services/identity-manager/persona/components/nfid-persona"
-import { IIPersonaList } from "frontend/services/identity-manager/persona/components/ii-persona-list"
 import { LinkIIAnchorHref } from "frontend/flows/screens-app/link-ii-anchor/routes"
+import { AuthorizeAppContent } from "frontend/flows/screens-app/register-device-prompt/authorize/content"
 import { useInterval } from "frontend/hooks/use-interval"
-import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { DropdownMenu, H5, Label, Loader, MenuItem } from "frontend/ui-kit/src"
+import React from "react"
+import { useAuthorization } from "../../nfid-login/hooks"
 
 interface AuthorizeAppProps
   extends React.DetailedHTMLProps<
@@ -19,6 +19,7 @@ interface AuthorizeAppProps
   > {}
 
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
+  // TODO: clean this up to only handle handleLinkIIAnchor + (persisted) iiPersonas?
   const { isLoading, setIsloading } = useIsLoading()
   const { userNumber, account, resetLocalAccount } = useAccount()
   const { nfidPersonas, createPersona } = usePersona()
@@ -95,23 +96,8 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
   useInterval(resetLocalAccount, 500, pollForNewAnchor)
 
   return (
-    <IFrameScreen>
-      <H5 className="mb-4 text-center">
-        {account && `Welcome ${account.name}`}
-      </H5>
-      <NFIDPersonas
-        personas={nfidPersonas}
-        onClickPersona={handleAuthorizePersona}
-        onClickCreatePersona={handleCreatePersona}
-      />
-      <IIPersonaList
-        personas={iiPersonas}
-        onClickPersona={handleAuthorizeIIPersona}
-      />
-      <div className="flex justify-center">
-        <LinkIIAnchorHref onClick={handleLinkIIAnchor} />
-      </div>
-      <Loader isLoading={isLoading} iframe />
+    <IFrameScreen logo>
+      <AuthorizeAppContent handleIILink={handleLinkIIAnchor} iframe />
     </IFrameScreen>
   )
 }

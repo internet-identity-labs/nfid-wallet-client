@@ -22,16 +22,17 @@ export const LinkIIAnchorRoutes = (
 )
 
 export const LinkIIAnchorHref = (props: ButtonProps<"a">) => {
-  const { applicationName } = useMultipass()
   return (
     <Button
+      text
+      block
+      className="block"
       as="a"
-      href={`${LinkIIAnchorConstants.base}/${LinkIIAnchorConstants.linkIIAnchor}`}
       target={"_blank"}
-      className="outline-none hover:underline text-blue-base active:bg-gray-200 hover:bg-gray-100"
+      href={`${LinkIIAnchorConstants.base}/${LinkIIAnchorConstants.linkIIAnchor}`}
       {...props}
     >
-      Link II {applicationName} account
+      Link Internet Identity anchor
     </Button>
   )
 }

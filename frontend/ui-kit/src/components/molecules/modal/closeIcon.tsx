@@ -13,25 +13,19 @@ export const ModalCloseIcon: React.FC<ModalCloseIconProps> = ({
 }) => {
   return (
     <svg
-      width="16"
-      height="17"
-      viewBox="0 0 16 17"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      width="21"
+      height="21"
+      fill="currentColor"
+      viewBox="0 0 21 21"
       className={clsx("hover:cursor-pointer", className)}
     >
       <path
-        d="M3.66699 4.16663L12.3337 12.8333"
-        stroke="black"
+        stroke="#000"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-      <path
-        d="M12.333 4.16663L3.66634 12.8333"
-        stroke="black"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+        d="M3.162 3.167L17.83 17.833M17.828 3.167L3.161 17.833"
+      ></path>
     </svg>
   )
 }

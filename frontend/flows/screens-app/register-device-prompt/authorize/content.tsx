@@ -1,5 +1,6 @@
+import clsx from "clsx"
 import { Button } from "components/atoms/button"
-import { H5 } from "components/atoms/typography"
+import { H2, H5 } from "components/atoms/typography"
 import { DropdownMenu } from "components/molecules/menu"
 import { useAuthorization } from "frontend/flows/screens-iframe/nfid-login/hooks"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -8,7 +9,6 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
 import React from "react"
 import { useNavigate, useParams } from "react-router"
-import { LinkIIAnchorHref } from "../../link-ii-anchor/routes"
 import { ProfileConstants } from "../../profile/routes"
 import { useRegisterDevicePromt } from "../hooks"
 
@@ -102,9 +102,15 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
     selectedItem,
   ])
 
+  const title = `Log in to ${applicationName}`
+
   return status === "initial" || status === "loading" ? (
     <div>
-      <H5 className="mb-4">Log in to {applicationName}</H5>
+      {iframe ? (
+        <H5 className="mb-4">{title}</H5>
+      ) : (
+        <H2 className="mb-4">{title}</H2>
+      )}
 
       <div className="mb-5">
         <Label>Continue as</Label>
@@ -124,7 +130,12 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
                 />
               ))}
 
-              <Label menuItem>Anchors</Label>
+              <Label
+                menuItem
+                className={clsx(iiPersonas?.length === 0 && "hidden")}
+              >
+                Anchors
+              </Label>
               {iiPersonas.map((persona, index) => (
                 <MenuItem
                   key={index}
@@ -140,7 +151,6 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
           )}
         </DropdownMenu>
       </div>
-
       <Button secondary block onClick={handleLogin}>
         Log in
       </Button>
@@ -148,8 +158,8 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
         Create a new account
       </Button>
 
-      <LinkIIAnchorHref onClick={handleIILink} />
-
+      {/* Disabled for first version */}
+      {/* <LinkIIAnchorHref onClick={handleIILink} /> */}
       <Loader isLoading={status === "loading"} iframe={iframe} />
     </div>
   ) : null

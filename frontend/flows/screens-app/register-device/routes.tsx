@@ -7,10 +7,14 @@ import { RegisterDevice } from "."
 // New device routes
 export const RegisterNewDeviceConstants = {
   base: "/register-new-device",
+  register: ":secret/:userNumber",
 }
 
 export const RegisterNewDeviceRoutes = (
   <Route path={RegisterNewDeviceConstants.base} element={<Outlet />}>
-    <Route path={":secret/:userNumber"} element={<RegisterDevice />} />
+    <Route
+      path={RegisterNewDeviceConstants.register}
+      element={<RegisterDevice />}
+    />
   </Route>
 )

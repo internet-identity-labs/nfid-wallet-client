@@ -1,4 +1,4 @@
-import { Button, H5, Loader } from "frontend/ui-kit/src/index"
+import { Button, Card, CardBody, H2, H5, Loader } from "frontend/ui-kit/src/index"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import React from "react"
 import { useParams } from "react-router-dom"
@@ -37,25 +37,26 @@ export const RegisterDevice = () => {
   }, [createWebAuthNDevice, opener, secret, userNumber])
 
   return (
-    <AppScreen classNameWrapper="flex flex-1" isFocused>
-      <div className="flex flex-col items-center justify-center w-full h-full max-w-sm mx-auto text-center">
-        <H5 className="mb-3">Trust this browser</H5>
+    <AppScreen>
+      <Card className="grid grid-cols-12 offset-header">
+        <CardBody className="col-span-12 md:col-span-9 lg:col-span-7">
+          <H2 className="mb-3">Trust this device</H2>
 
-        <div>
-          Prove you own this {device} by successfully unlocking it to trust this
-          browser.
-        </div>
+          <div>
+            Prove you own this {device} by successfully unlocking it to trust
+            this device.
+          </div>
 
-        <Button
-          onClick={handleRegisterNewDevice}
-          large
-          secondary
-          className="mt-8"
-        >
-          I own this {device}
-        </Button>
-      </div>
-
+          <Button
+            onClick={handleRegisterNewDevice}
+            large
+            secondary
+            className="mt-8"
+          >
+            Prove I own this {device}
+          </Button>
+        </CardBody>
+      </Card>
       <Loader isLoading={status === "loading"} />
     </AppScreen>
   )

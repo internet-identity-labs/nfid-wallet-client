@@ -55,10 +55,15 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
     ({ persona_id }: { persona_id?: string; anchor?: string }) =>
       async () => {
         setStatus("loading")
+
         if (!secret || !scope || !persona_id)
           throw new Error("missing secret, scope or persona_id")
+
         await remoteLogin({ secret, scope, persona_id })
-        return navigate(`${ProfileConstants.authenticate}`)
+
+        return navigate(
+          `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
+        )
       },
     [navigate, remoteLogin, secret, scope],
   )

@@ -170,15 +170,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
         // )
         const recoveryPhrase = `typical cake decline asset trip motor jazz select mystery debris income muscle melt scare distance robust chief sell know wonder mixed reject accident blouse`
 
-        const response = await createAccount(
-          responseRegisterAnchor.identityManager,
-          {
-            name,
-            phone_number: phonenumber,
-            token: verificationCode,
-            anchor: userNumber,
-          },
-        )
+        await createAccount(responseRegisterAnchor.identityManager, {
+          anchor: userNumber,
+        })
 
         return navigate(
           `${RAC.base}/${secret}/${scope}/${RAC.copyRecoveryPhrase}`,

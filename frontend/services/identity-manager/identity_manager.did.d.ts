@@ -1,10 +1,10 @@
 import type { Principal } from '@dfinity/principal';
 export interface AccountResponse {
-  'name' : string,
+  'name' : [] | [string],
   'anchor' : bigint,
   'personas' : Array<PersonaVariant>,
   'principal_id' : string,
-  'phone_number' : string,
+  'phone_number' : [] | [string],
 }
 export interface Application {
   'user_limit' : number,
@@ -30,12 +30,7 @@ export interface EmptyHttpResponse {
   'status_code' : number,
 }
 export type Error = string;
-export interface HTTPAccountRequest {
-  'token' : string,
-  'name' : string,
-  'anchor' : bigint,
-  'phone_number' : string,
-}
+export interface HTTPAccountRequest { 'anchor' : bigint }
 export interface HTTPAccountResponse {
   'data' : [] | [AccountResponse],
   'error' : [] | [Error],
@@ -52,10 +47,13 @@ export interface HTTPPersonasResponse {
   'error' : [] | [Error],
   'status_code' : number,
 }
-export interface HTTPVerifyPhoneNumberRequest {
-  'token' : string,
-  'phone_number' : string,
+export interface Log {
+  'log' : string,
+  'level' : LogLevel,
+  'timestamp' : bigint,
 }
+export type LogLevel = { 'INFO' : null } |
+  { 'ERROR' : null };
 export type Name = string;
 export interface PersonaIIResponse { 'domain' : string, 'anchor' : bigint }
 export interface PersonaNFIDResponse {
@@ -64,8 +62,17 @@ export interface PersonaNFIDResponse {
 }
 export type PersonaVariant = { 'ii_persona' : PersonaIIResponse } |
   { 'nfid_persona' : PersonaNFIDResponse };
-export type PhoneNumber = string;
+export interface Response { 'error' : [] | [Error], 'status_code' : number }
 export type Token = string;
+export interface TokenRequest {
+  'token' : string,
+  'principal_id' : string,
+  'phone_number' : string,
+}
+export interface ValidatePhoneRequest {
+  'principal_id' : string,
+  'phone_number' : string,
+}
 export interface _SERVICE {
   'configure' : (arg_0: ConfigurationRequest) => Promise<undefined>,
   'create_account' : (arg_0: HTTPAccountRequest) => Promise<
@@ -77,17 +84,18 @@ export interface _SERVICE {
   'create_persona' : (arg_0: PersonaVariant) => Promise<HTTPAccountResponse>,
   'delete_application' : (arg_0: Name) => Promise<BoolHttpResponse>,
   'get_account' : () => Promise<HTTPAccountResponse>,
+  'get_all_logs' : () => Promise<Array<Log>>,
+  'get_logs' : (arg_0: bigint) => Promise<Array<Log>>,
   'is_over_the_application_limit' : (arg_0: Domain) => Promise<
       BoolHttpResponse
     >,
-  'post_token' : (arg_0: HTTPVerifyPhoneNumberRequest) => Promise<
-      BoolHttpResponse
-    >,
+  'post_token' : (arg_0: TokenRequest) => Promise<Response>,
   'read_applications' : () => Promise<HTTPApplicationResponse>,
   'read_personas' : () => Promise<HTTPPersonasResponse>,
   'remove_account' : () => Promise<BoolHttpResponse>,
   'update_account' : (arg_0: HTTPAccountUpdateRequest) => Promise<
       HTTPAccountResponse
     >,
-  'validate_phone_number' : (arg_0: PhoneNumber) => Promise<BoolHttpResponse>,
+  'validate_phone' : (arg_0: ValidatePhoneRequest) => Promise<Response>,
+  'verify_token' : (arg_0: Token) => Promise<Response>,
 }

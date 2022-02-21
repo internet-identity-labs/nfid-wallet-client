@@ -58,6 +58,11 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
       async () => {
         setStatus("loading")
 
+        if (iframe && persona_id) {
+          await authorizeApp({ persona_id })
+          return setStatus("success")
+        }
+
         if (!secret || !scope || !persona_id)
           throw new Error("missing secret, scope or persona_id")
 
@@ -67,7 +72,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
           `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
         )
       },
-    [navigate, remoteLogin, secret, scope],
+    [iframe, secret, scope, remoteLogin, navigate, authorizeApp],
   )
 
   const handleAuthorizeIIPersona = React.useCallback(

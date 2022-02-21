@@ -5,6 +5,8 @@ import { Button } from "components/atoms/button"
 import { ModalSuccessIcon } from "./successIcon"
 import { ModalCloseIcon } from "./closeIcon"
 import { ModalWarningIcon } from "./warningIcon"
+import { NFIDGradientBar } from "../gradient-bar"
+
 
 type ModalIconType = "success" | "error"
 
@@ -35,6 +37,8 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="relative w-full my-6 mx-auto max-w-sm">
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="relative flex-auto text-center px-6">
+              <NFIDGradientBar />
+
               {iconType == "success" && (
                 <ModalSuccessIcon className="mx-auto" />
               )}
@@ -57,7 +61,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         </div>
       </div>
-      <div className="opacity-5 fixed inset-0 z-40 bg-black-base"></div>
+      <div className="opacity-30 fixed inset-0 z-40 bg-black-base"></div>
     </>
   )
 }

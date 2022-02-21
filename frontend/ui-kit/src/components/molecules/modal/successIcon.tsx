@@ -13,121 +13,119 @@ export const ModalSuccessIcon: React.FC<ModalSuccessIconProps> = ({
 }) => {
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
       width="235"
       height="235"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
       className={clsx("", className)}
     >
-      <g opacity="0.7" filter="url(#filter0_f_1055_1100)">
+      <g filter="url(#filter0_f_1055_1100)" opacity="0.7">
         <circle
           cx="163.622"
-          cy="99.6216"
-          r="64.5318"
-          transform="rotate(-81.2244 163.622 99.6216)"
+          cy="99.622"
+          r="64.532"
           fill="url(#paint0_radial_1055_1100)"
-        />
+          transform="rotate(-81.224 163.622 99.622)"
+        ></circle>
       </g>
       <g filter="url(#filter1_f_1055_1100)">
         <ellipse
           cx="117"
           cy="135.5"
+          fill="url(#paint1_radial_1055_1100)"
           rx="82"
           ry="81.5"
-          fill="url(#paint1_radial_1055_1100)"
-        />
+        ></ellipse>
       </g>
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M118.807 191C72.1486 191 62.8066 181.679 62.8066 135C62.8066 88.3349 72.1486 79.0005 118.807 79.0005C165.458 79.0005 174.807 88.3349 174.807 135C174.807 181.679 165.458 191 118.807 191Z"
-        fill="white"
+        fill="#fff"
         fillOpacity="0.55"
-      />
+        fillRule="evenodd"
+        d="M118.807 191c-46.658 0-56-9.321-56-56 0-46.665 9.342-56 56-56 46.651 0 56 9.335 56 56 0 46.679-9.349 56-56 56z"
+        clipRule="evenodd"
+      ></path>
       <path
-        d="M63.3066 135C63.3066 146.66 63.8907 155.952 65.4841 163.338C67.0763 170.717 69.6693 176.159 73.6634 180.151C77.6575 184.144 83.0996 186.735 90.4782 188.326C97.8624 189.918 107.152 190.5 118.807 190.5C130.46 190.5 139.748 189.918 147.132 188.326C154.511 186.735 159.953 184.144 163.947 180.151C167.942 176.158 170.535 170.717 172.128 163.338C173.722 155.952 174.307 146.66 174.307 135C174.307 123.344 173.722 114.053 172.128 106.669C170.535 99.29 167.942 93.8481 163.947 89.8545C159.953 85.8608 154.51 83.2685 147.132 81.6769C139.748 80.0841 130.46 79.5005 118.807 79.5005C107.152 79.5005 97.8625 80.0841 90.4783 81.6769C83.0997 83.2685 77.6576 85.8608 73.6634 89.8544C69.6693 93.8481 67.0763 99.29 65.4841 106.669C63.8907 114.053 63.3066 123.344 63.3066 135Z"
         stroke="url(#paint2_linear_1055_1100)"
         strokeOpacity="0.24"
-      />
+        d="M63.307 135c0 11.66.584 20.952 2.177 28.338 1.592 7.379 4.185 12.821 8.18 16.813 3.993 3.993 9.436 6.584 16.814 8.175 7.384 1.592 16.674 2.174 28.329 2.174 11.653 0 20.941-.582 28.325-2.174 7.379-1.591 12.821-4.182 16.815-8.175 3.995-3.993 6.588-9.434 8.181-16.813 1.594-7.386 2.179-16.678 2.179-28.338 0-11.656-.585-20.947-2.179-28.331-1.593-7.379-4.186-12.82-8.181-16.814-3.994-3.994-9.437-6.587-16.815-8.178-7.384-1.593-16.672-2.177-28.325-2.177-11.655 0-20.945.584-28.329 2.177-7.378 1.591-12.82 4.184-16.815 8.177-3.994 3.994-6.587 9.436-8.179 16.815-1.593 7.384-2.177 16.675-2.177 28.331z"
+      ></path>
       <path
-        d="M114.045 152C112.732 152 111.419 151.516 110.416 150.542L96.5047 137.027C94.4997 135.079 94.4997 131.924 96.5047 129.982C98.5097 128.034 101.752 128.028 103.757 129.976L114.045 139.971L138.245 116.461C140.25 114.513 143.492 114.513 145.497 116.461C147.502 118.409 147.502 121.564 145.497 123.512L117.674 150.542C116.672 151.516 115.358 152 114.045 152Z"
         fill="#13D377"
-      />
+        d="M114.045 152a5.192 5.192 0 01-3.629-1.458l-13.911-13.515a4.878 4.878 0 010-7.045c2.005-1.948 5.247-1.954 7.252-.006l10.288 9.995 24.2-23.51c2.005-1.948 5.247-1.948 7.252 0a4.885 4.885 0 010 7.051l-27.823 27.03a5.19 5.19 0 01-3.629 1.458z"
+      ></path>
       <defs>
         <filter
           id="filter0_f_1055_1100"
-          x="64.0811"
-          y="0.0806885"
           width="199.082"
           height="199.082"
-          filterUnits="userSpaceOnUse"
+          x="64.081"
+          y="0.081"
           colorInterpolationFilters="sRGB"
+          filterUnits="userSpaceOnUse"
         >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood>
           <feBlend
-            mode="normal"
             in="SourceGraphic"
             in2="BackgroundImageFix"
             result="shape"
-          />
+          ></feBlend>
           <feGaussianBlur
-            stdDeviation="17.5"
             result="effect1_foregroundBlur_1055_1100"
-          />
+            stdDeviation="17.5"
+          ></feGaussianBlur>
         </filter>
         <filter
           id="filter1_f_1055_1100"
-          x="0"
-          y="19"
           width="234"
           height="233"
-          filterUnits="userSpaceOnUse"
+          x="0"
+          y="19"
           colorInterpolationFilters="sRGB"
+          filterUnits="userSpaceOnUse"
         >
-          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood>
           <feBlend
-            mode="normal"
             in="SourceGraphic"
             in2="BackgroundImageFix"
             result="shape"
-          />
+          ></feBlend>
           <feGaussianBlur
-            stdDeviation="17.5"
             result="effect1_foregroundBlur_1055_1100"
-          />
+            stdDeviation="17.5"
+          ></feGaussianBlur>
         </filter>
         <radialGradient
           id="paint0_radial_1055_1100"
           cx="0"
           cy="0"
           r="1"
+          gradientTransform="rotate(90 32 131.622) scale(64.5318)"
           gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(163.622 99.6216) rotate(90) scale(64.5318)"
         >
-          <stop stopColor="#B1FF62" />
-          <stop offset="1" stopColor="#FFF73A" stopOpacity="0" />
+          <stop stopColor="#3CECD7"></stop>
+          <stop offset="1" stopColor="#3A95FF" stopOpacity="0"></stop>
         </radialGradient>
         <radialGradient
           id="paint1_radial_1055_1100"
           cx="0"
           cy="0"
           r="1"
+          gradientTransform="matrix(0 81.5 -82 0 117 135.5)"
           gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(117 135.5) rotate(90) scale(81.5 82)"
         >
-          <stop stopColor="#1AFF68" />
-          <stop offset="1" stopColor="#1AFF68" stopOpacity="0.13" />
+          <stop stopColor="#1AFFD6"></stop>
+          <stop offset="1" stopColor="#1AFF4C" stopOpacity="0.13"></stop>
         </radialGradient>
         <linearGradient
           id="paint2_linear_1055_1100"
           x1="119.002"
-          y1="191"
           x2="119.002"
+          y1="191"
           y2="79"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="white" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
+          <stop stopColor="#fff"></stop>
+          <stop offset="1" stopColor="#fff" stopOpacity="0"></stop>
         </linearGradient>
       </defs>
     </svg>

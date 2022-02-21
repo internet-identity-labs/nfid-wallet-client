@@ -44,15 +44,9 @@ export const useAuthorization = ({
     useMessageChannel({
       messageHandler: {
         "authorize-client": async (event: any) => {
-          console.log(">> useAuthorization", {
-            data: event.data,
-            internetIdentity,
-          })
           if (internetIdentity !== null) {
             const message = event.data
             const { maxTimeToLive, sessionPublicKey } = message
-
-            console.log(">> setAuthorizationRequest")
 
             setAuthorizationRequest({
               maxTimeToLive,
@@ -78,10 +72,6 @@ export const useAuthorization = ({
       const internetIdentityService =
         internetIdentityForAnchor || internetIdentity
       setLoading(true)
-      console.log(">> TODO: why is authorizationRequest undefined?", {
-        authorizationRequest,
-        internetIdentityService,
-      })
 
       if (!authorizationRequest || !internetIdentityService)
         throw new Error("client not ready")

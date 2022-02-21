@@ -111,8 +111,6 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
 
   const title = `Log in to ${applicationName}`
 
-  console.log(">> ", { nfidPersonas })
-
   return status === "initial" || status === "loading" ? (
     <div>
       {iframe ? (

@@ -46,14 +46,14 @@ export const AuthorizeRegisterDecider: React.FC<
         <RadioButton
           checked={linkAccount === "rb_link_account_register"}
           name={"rb_link_account_register"}
-          text={"Link existing account"}
+          text={"Yes, I trust this device"}
           value={"rb_link_account_register"}
           onChange={() => setLinkAccount("rb_link_account_register")}
         />
         <RadioButton
           checked={linkAccount === "rb_link_account_login"}
           name={"rb_link_account_login"}
-          text={"No thanks, I'm new"}
+          text={"Just log me in"}
           value={"rb_link_account_login"}
           onChange={() => setLinkAccount("rb_link_account_login")}
         />

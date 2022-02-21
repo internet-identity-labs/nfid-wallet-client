@@ -1,6 +1,7 @@
 import { Button } from "components/atoms/button"
 import { H2, H5 } from "components/atoms/typography"
 import { IFrameAuthorizeAppConstants as IFrameAuthorize } from "frontend/flows/screens-iframe/authorize-app/routes"
+import { useAuthorization } from "frontend/flows/screens-iframe/nfid-login/hooks"
 import { IFrameProfileConstants as IFrameProfile } from "frontend/flows/screens-iframe/personalize/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -22,11 +23,12 @@ export const AuthenticateNFIDLoginContent: React.FC<
   AuthenticateNFIDLoginContentProps
 > = ({ children, className, iframe }) => {
   const { account } = useAccount()
-  const { isLoading, login } = useAuthentication()
+  const { isLoading } = useAuthentication()
+  const { authenticate } = useAuthorization()
   const navigate = useNavigate()
 
   const handleUnlock = React.useCallback(async () => {
-    await login()
+    await authenticate()
 
     if (account && account.skipPersonalize) {
       // TODO: figure out if we really need to navigate here.
@@ -39,7 +41,7 @@ export const AuthenticateNFIDLoginContent: React.FC<
         ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`)
         : navigate(`${profile.base}/${profile.personalize}`)
     }
-  }, [account, iframe, login, navigate])
+  }, [account, authenticate, iframe, navigate])
 
   const title = "Unlock your NFID"
 

@@ -146,7 +146,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
     await readAccount(identityManager)
     setStatus("success")
-    setUserNumber(BigInt(message.userNumber))
     handleSendDelegate(message)
     setNewDeviceKey(null)
   }, [

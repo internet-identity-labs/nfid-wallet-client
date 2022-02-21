@@ -29,7 +29,9 @@ export const AuthenticateNFIDLoginContent: React.FC<
     await login()
 
     if (account && account.skipPersonalize) {
-      iframe ? navigate(`${IFrameAuthorize.base}`) : alert("skipPersonalize") // TODO: navigate to AuthorizeApp
+      // TODO: figure out if we really need to navigate here.
+      // Normally as this is a AuhtWrapper, it should not be necessary at this point!
+      iframe && navigate(`${IFrameAuthorize.base}`)
     }
 
     if (account && !account.skipPersonalize) {

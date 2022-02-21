@@ -1,8 +1,5 @@
 import React from "react"
-import {
-  HTTPAccountRequest,
-  _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/services/identity-manager/identity_manager.did"
+import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/services/identity-manager/identity_manager.did"
 import { useAtom } from "jotai"
 import { personaAtom } from "./state"
 import { isNFIDPersona, isIIPersona } from "./types"
@@ -47,7 +44,16 @@ export const usePersona = ({ application }: UsePersona = {}) => {
     if (response.status_code === 200) {
       setPersonas(normalizePersonas(response.data[0]))
     }
-  }, [personaService, setPersonas])
+    // NOTE: this is only for dev purposes
+    if (response.status_code === 404 && account?.anchor) {
+      const anchor = BigInt(account?.anchor)
+      await personaService.create_account({
+        anchor,
+      })
+
+      getPersona()
+    }
+  }, [account?.anchor, personaService, setPersonas])
 
   const createPersona = React.useCallback(
     async ({ domain }) => {

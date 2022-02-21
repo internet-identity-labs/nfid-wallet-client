@@ -24,7 +24,11 @@ export const useAccount = () => {
       const newAccount = response.data[0]
 
       if (newAccount) {
-        setAccount({ ...newAccount, anchor: newAccount.anchor.toString() })
+        setAccount({
+          ...newAccount,
+          name: newAccount.name[0],
+          anchor: newAccount.anchor.toString(),
+        })
       }
       return response
     },
@@ -38,10 +42,18 @@ export const useAccount = () => {
       const newAccount = response.data[0]
 
       if (newAccount) {
-        setAccount({ ...newAccount, anchor: newAccount.anchor.toString() })
+        setAccount({
+          ...newAccount,
+          name: newAccount.name[0],
+          anchor: newAccount.anchor.toString(),
+        })
+      }
+      if (!newAccount && account) {
+        await accountService.create_account({ anchor: BigInt(account.anchor) })
+        readAccount(accountService)
       }
     },
-    [setAccount],
+    [account, setAccount],
   )
 
   const resetLocalAccount = React.useCallback(async () => {

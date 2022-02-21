@@ -70,7 +70,7 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
         </P>
 
         <P>
-          Privace and security questions? Visit our{" "}
+          Privacy and security questions? Visit our{" "}
           <Link to={"/"} className="text-blue-base">
             FAQ page
           </Link>

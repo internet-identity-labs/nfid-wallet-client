@@ -3,13 +3,15 @@ import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { Input } from "components/atoms/input"
 import { H2, H5 } from "components/atoms/typography"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { P } from "frontend/ui-kit/src"
+import { Loader, P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { IFrameAuthorizeAppConstants as IFrameAuthorizeConstants } from "frontend/flows/screens-iframe/authorize-app/routes"
 import { RegisterDevicePromptConstants as AuthorizeConstants } from "../../register-device-prompt/routes"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
@@ -32,95 +34,108 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
     mode: "onTouched",
   })
 
+  const { isLoading, setIsloading } = useIsLoading()
   const isFormComplete = ["name"].every((field) => dirtyFields[field])
-  const { updateAccount } = useMultipass()
+  const { identityManager } = useAuthentication()
+  const { updateAccount } = useAccount()
   const navigate = useNavigate()
 
   const handlePersonalize = React.useCallback(
-    (data: any) => {
+    async (data: any) => {
+      setIsloading(true)
       const { name } = data
 
-      updateAccount({
+      if (!identityManager) throw new Error("identityManager required")
+
+      await updateAccount(identityManager, {
         name,
         skipPersonalize: true,
       })
+      setIsloading(false)
 
       iframe
         ? navigate(`${IFrameAuthorizeConstants.base}`)
         : navigate(`${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`)
     },
-    [iframe, navigate, updateAccount],
+    [identityManager, iframe, navigate, setIsloading, updateAccount],
   )
 
-  const handleSkipPersonalize = React.useCallback(() => {
-    updateAccount({
+  const handleSkipPersonalize = React.useCallback(async () => {
+    setIsloading(true)
+    if (!identityManager) throw new Error("identityManager required")
+    await updateAccount(identityManager, {
       skipPersonalize: true,
     })
+    setIsloading(false)
 
     iframe
       ? navigate(`${IFrameAuthorizeConstants.base}`)
       : navigate(`${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`)
-  }, [iframe, navigate, updateAccount])
+  }, [identityManager, iframe, navigate, setIsloading, updateAccount])
 
   const title = "Personalize your experience"
 
   return (
-    <div className={clsx("", className)}>
-      {iframe ? <H5>{title}</H5> : <H2>{title}</H2>}
+    <>
+      <div className={clsx("", className)}>
+        {iframe ? <H5>{title}</H5> : <H2>{title}</H2>}
 
-      <div className="my-5">
-        <P className="mb-3">
-          Using your name will help you understand which NFID profile you're
-          unlocking. You can always change it later on the NFID Account section.
-        </P>
+        <div className="my-5">
+          <P className="mb-3">
+            Using your name will help you understand which NFID profile you're
+            unlocking. You can always change it later on the NFID Account
+            section.
+          </P>
 
-        <P>
-          Privacy and security questions? Visit our{" "}
-          <Link to={"/"} className="text-blue-base">
-            FAQ page
-          </Link>
-          .
-        </P>
-      </div>
+          <P>
+            Privacy and security questions? Visit our{" "}
+            <Link to={"/"} className="text-blue-base">
+              FAQ page
+            </Link>
+            .
+          </P>
+        </div>
 
-      <div className="md:max-w-[340px]">
-        <Input
-          small
-          className="my-3"
-          labelText="Full name"
-          errorText={errors.name?.message}
-          placeholder="Enter your full name"
-          {...register("name", {
-            required: nameRules.errorMessages.required,
-            pattern: {
-              value: nameRules.regex,
-              message: nameRules.errorMessages.pattern,
-            },
-            minLength: {
-              value: nameRules.minLength,
-              message: nameRules.errorMessages.length,
-            },
-            maxLength: {
-              value: nameRules.maxLength,
-              message: nameRules.errorMessages.length,
-            },
-          })}
-        />
+        <div className="md:max-w-[340px]">
+          <Input
+            small
+            className="my-3"
+            labelText="Full name"
+            errorText={errors.name?.message}
+            placeholder="Enter your full name"
+            {...register("name", {
+              required: nameRules.errorMessages.required,
+              pattern: {
+                value: nameRules.regex,
+                message: nameRules.errorMessages.pattern,
+              },
+              minLength: {
+                value: nameRules.minLength,
+                message: nameRules.errorMessages.length,
+              },
+              maxLength: {
+                value: nameRules.maxLength,
+                message: nameRules.errorMessages.length,
+              },
+            })}
+          />
 
-        <div className="mt-5 flex flex-col w-auto">
-          <Button
-            block
-            secondary
-            disabled={!isFormComplete}
-            onClick={handleSubmit(handlePersonalize)}
-          >
-            Personalize
-          </Button>
-          <Button text block onClick={handleSkipPersonalize}>
-            Skip for now
-          </Button>
+          <div className="flex flex-col w-auto mt-5">
+            <Button
+              block
+              secondary
+              disabled={!isFormComplete}
+              onClick={handleSubmit(handlePersonalize)}
+            >
+              Personalize
+            </Button>
+            <Button text block onClick={handleSkipPersonalize}>
+              Skip for now
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+      <Loader isLoading={isLoading} />
+    </>
   )
 }

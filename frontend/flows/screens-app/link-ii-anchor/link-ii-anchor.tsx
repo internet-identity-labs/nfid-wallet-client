@@ -3,6 +3,7 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { Li, Ol } from "components/atoms/typography/lists"
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import {
   creationOptions,
@@ -34,6 +35,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
   const [showErrorModal, setShowErrorModal] = React.useState(false)
   const [showAlreadyLinkedModal, setShowAlreadyLinkedModal] =
     React.useState(false)
+  const { identityManager } = useAuthentication()
   const { account, updateAccount } = useAccount()
 
   const {
@@ -68,7 +70,9 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           account.iiAnchors = Array.from(
             new Set([...(account.iiAnchors || []), userNumber.toString()]),
           )
-          updateAccount(account)
+          if (!identityManager) throw new Error("identityManager required")
+
+          updateAccount(identityManager, account)
           setShowAlreadyLinkedModal(true)
         }
         return

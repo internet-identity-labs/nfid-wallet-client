@@ -23,7 +23,7 @@ export const AuthenticateNFIDLoginContent: React.FC<
   AuthenticateNFIDLoginContentProps
 > = ({ iframe }) => {
   const params = useParams()
-  console.log(">> AuthenticateNFIDLoginContent", { params })
+  console.log(">> AuthenticateNFIDLoginContent", { params, iframe })
 
   const { account } = useAccount()
   const { isLoading, login } = useAuthentication()
@@ -42,7 +42,9 @@ export const AuthenticateNFIDLoginContent: React.FC<
     if (account && !account.skipPersonalize) {
       iframe
         ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`) // TODO: pass secret and scope?
-        : navigate(`${profile.base}/${profile.personalize}`, params)
+        : navigate(`${profile.base}/${profile.personalize}`, {
+            state: params,
+          })
     }
   }, [account, iframe, login, navigate, params])
 

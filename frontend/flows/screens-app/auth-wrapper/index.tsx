@@ -12,7 +12,7 @@ export const AuthWrapper: React.FC<AuthWrapper> = ({
   redirectTo,
 }) => {
   const params = useParams()
-  console.log(">> ", { params })
+  console.log(">> AuthWrapper", { params })
 
   const { isAuthenticated } = useAuthentication()
   const { account } = useAccount()

@@ -27,14 +27,6 @@ Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 
 export const App = () => {
   useStartUrl()
-  const { secret, scope } = useParams()
-  console.log(">> App", { secret, scope })
-
-  // TODO: find better way to handle this
-  const redirectPath =
-    secret && scope
-      ? generatePath(`${RAC.base}/${RAC.account}`, { secret, scope })
-      : "/"
 
   return (
     <Routes>
@@ -47,7 +39,7 @@ export const App = () => {
       {LinkIIAnchorRoutes}
       {ProfileRoutes}
       {RegisterNewDeviceRoutes}
-      {RegisterDevicePromptRoutes(redirectPath)}
+      {RegisterDevicePromptRoutes(`${RAC.base}/${RAC.account}`)}
       {RegisterAccountRoutes}
 
       {IFrameRoutes}

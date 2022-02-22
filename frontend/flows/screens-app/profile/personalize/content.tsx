@@ -6,7 +6,7 @@ import { H2, H5 } from "components/atoms/typography"
 import { Loader, P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
 import { useForm } from "react-hook-form"
-import { Link, useNavigate } from "react-router-dom"
+import { generatePath, Link, useNavigate, useParams } from "react-router-dom"
 import { IFrameAuthorizeAppConstants as IFrameAuthorizeConstants } from "frontend/flows/screens-iframe/authorize-app/routes"
 import { RegisterDevicePromptConstants as AuthorizeConstants } from "../../register-device-prompt/routes"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -27,6 +27,7 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   children,
   className,
 }) => {
+  const params = useParams()
   const { state } = useLocation()
   const {
     register,
@@ -65,8 +66,13 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   const handleSkipPersonalize = React.useCallback(async () => {
     iframe
       ? navigate(`${IFrameAuthorizeConstants.base}`)
-      : navigate(`${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`)
-  }, [iframe, navigate])
+      : navigate(
+          generatePath(
+            `${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`,
+            params,
+          ),
+        )
+  }, [iframe, navigate, params])
 
   const title = "Personalize your experience"
 

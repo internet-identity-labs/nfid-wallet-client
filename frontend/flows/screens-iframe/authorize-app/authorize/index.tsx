@@ -1,6 +1,4 @@
-import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { LinkIIAnchorHref } from "frontend/flows/screens-app/link-ii-anchor/routes"
 import { AuthorizeAppContent } from "frontend/flows/screens-app/register-device-prompt/authorize/content"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
@@ -8,7 +6,6 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { DropdownMenu, H5, Label, Loader, MenuItem } from "frontend/ui-kit/src"
 import React from "react"
 import { useAuthorization } from "../../nfid-login/hooks"
 
@@ -77,6 +74,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
     [authorizeApp, setIsloading],
   )
 
+  // TODO: implement after first version
   const handleLinkIIAnchor = React.useCallback(() => {
     setPollForNewAnchor(true)
     setIIAnchorsBeforeLinking(account?.iiAnchors?.length ?? 0)
@@ -97,7 +95,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
 
   return (
     <IFrameScreen logo>
-      <AuthorizeAppContent handleIILink={handleLinkIIAnchor} iframe />
+      <AuthorizeAppContent iframe />
     </IFrameScreen>
   )
 }

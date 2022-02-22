@@ -1,9 +1,10 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { Button, Card, CardBody, H2, Modal, P } from "frontend/ui-kit/src/index"
 import React from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
 interface LocationState {
   iiDeviceLink: string
@@ -23,6 +24,7 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
   const [numDevices, setNumDevices] = React.useState(0)
 
   const { state } = useLocation()
+  const { identityManager } = useAuthentication()
   const { account, updateAccount } = useMultipass()
 
   const { iiDeviceLink, userNumber } = state as LocationState
@@ -34,16 +36,17 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
 
       if (devices.length > numDevices) {
         if (!account) throw new Error("No account found")
+        if (!identityManager) throw new Error("identityManager required")
 
         account.iiAnchors = Array.from(
           new Set([...(account.iiAnchors || []), userNumber.toString()]),
         )
 
-        updateAccount(account)
+        updateAccount(identityManager, account)
         setShowModal(true)
       }
     },
-    [account, numDevices, updateAccount, userNumber],
+    [account, identityManager, numDevices, updateAccount, userNumber],
   )
 
   const fetchDevices = React.useCallback(async () => {

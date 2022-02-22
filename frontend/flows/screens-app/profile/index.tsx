@@ -82,8 +82,8 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
       <Card className="relative grid grid-cols-12">
         <CardBody className="col-span-12">
           <div className="mt-[-150px]">
-            <H2 className="py-2">{account?.name}</H2>
-            <P className="">NFID Number: {account?.anchor}</P>
+            <H2 className="py-2 block">NFID Number</H2>
+            <P className="">{account?.anchor}</P>
           </div>
 
           <div className="grid grid-cols-12 gap-4 py-12 md:py-14">

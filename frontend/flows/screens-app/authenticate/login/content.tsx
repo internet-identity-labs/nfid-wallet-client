@@ -21,27 +21,27 @@ interface AuthenticateNFIDLoginContentProps
 
 export const AuthenticateNFIDLoginContent: React.FC<
   AuthenticateNFIDLoginContentProps
-> = ({ children, className, iframe }) => {
+> = ({ iframe }) => {
   const { account } = useAccount()
-  const { isLoading } = useAuthentication()
-  const { authenticate } = useAuthorization()
+  const { isLoading, login } = useAuthentication()
   const navigate = useNavigate()
 
   const handleUnlock = React.useCallback(async () => {
-    await authenticate()
+    await login()
 
+    // TODO: fix navigate on both if statements
     if (account && account.skipPersonalize) {
       // TODO: figure out if we really need to navigate here.
       // Normally as this is a AuhtWrapper, it should not be necessary at this point!
-      iframe && navigate(`${IFrameAuthorize.base}`)
+      iframe && navigate(IFrameAuthorize.base)
     }
 
     if (account && !account.skipPersonalize) {
       iframe
-        ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`)
+        ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`) // TODO: pass secret and scope
         : navigate(`${profile.base}/${profile.personalize}`)
     }
-  }, [account, authenticate, iframe, navigate])
+  }, [account, iframe, login, navigate])
 
   const title = "Unlock your NFID"
 

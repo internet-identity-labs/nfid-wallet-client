@@ -15,7 +15,6 @@ import {
 } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { AuthenticateAccountConstants } from "../authenticate/routes"
 import { ProfileConstants } from "../profile/routes"
 import { useRegisterDevicePromt } from "../register-device-prompt/hooks"
 
@@ -96,7 +95,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
             large
             className="mt-8"
           >
-            Log in to {applicationName || "NFID Demo"}
+            Log in to {applicationName || "NFID Demo"}.
           </Button>
         </CardBody>
       </Card>
@@ -104,11 +103,13 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
       {successModal ? (
         <Modal
           title={"Success!"}
-          description={`You signed in to ${applicationName}`}
+          description={`You signed in to ${applicationName || "NFID Demo"}`}
           buttonText="Done"
           iconType="success"
           onClick={() => {
-            navigate(`${ProfileConstants.authenticate}`)
+            navigate(
+              `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
+            )
           }}
         />
       ) : null}

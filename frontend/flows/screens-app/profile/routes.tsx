@@ -15,6 +15,7 @@ export const ProfileRoutes = (
     <Route
       path={ProfileConstants.authenticate}
       element={
+        // TODO: redirect to general register flow
         <AuthWrapper redirectTo="/">
           <AuthenticateNFIDHome />
         </AuthWrapper>

@@ -29,7 +29,12 @@ import {
 import { captchaRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  generatePath,
+} from "react-router-dom"
 import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCaptchaProps
@@ -46,15 +51,14 @@ interface RegisterPayload {
 
 interface RegisterAccountCaptchaState {
   registerPayload: RegisterPayload
-  name: string
-  phonenumber: string
-  verificationCode: string
 }
 
-export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
-  className,
-}) => {
+export const RegisterAccountCaptcha: React.FC<
+  RegisterAccountCaptchaProps
+> = () => {
   const { secret, scope } = useParams()
+  console.log(">> RegisterAccountCaptcha", { secret, scope })
+
   const {
     register,
     formState: { errors, isValid, dirtyFields },
@@ -151,8 +155,7 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
     async ({ captcha }: any) => {
       setLoading(true)
 
-      const { registerPayload, name, phonenumber, verificationCode } =
-        state as RegisterAccountCaptchaState
+      const { registerPayload } = state as RegisterAccountCaptchaState
 
       const responseRegisterAnchor = await registerAnchor(
         registerPayload.identity,
@@ -174,14 +177,17 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           anchor: userNumber,
         })
 
-        return navigate(
-          `${RAC.base}/${secret}/${scope}/${RAC.copyRecoveryPhrase}`,
-          {
-            state: {
-              recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
-            },
+        const navPath = generatePath(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
+          secret,
+          scope,
+        })
+        console.log(">> ", { navPath })
+
+        return navigate(navPath, {
+          state: {
+            recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
           },
-        )
+        })
       }
       if (responseRegisterAnchor.kind === "badChallenge") {
         setValue("captcha", "")
@@ -200,9 +206,9 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       state,
       registerAnchor,
       createAccount,
-      navigate,
       secret,
       scope,
+      navigate,
       setValue,
       requestCaptcha,
       setError,

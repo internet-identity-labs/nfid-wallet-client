@@ -18,27 +18,33 @@ interface AuthorizeAppContentProps
     HTMLDivElement
   > {
   iframe?: boolean
-  handleIILink?: () => void
 }
 
 export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
-  children,
-  className,
   iframe = false,
-  handleIILink,
 }) => {
   const [status, setStatus] = React.useState<
     "initial" | "loading" | "success" | "error"
-  >("initial")
+  >("loading")
   const { secret, scope } = useParams()
   const { applicationName } = useMultipass()
 
   const { userNumber } = useAccount()
   const navigate = useNavigate()
   const { remoteLogin, sendWaitForUserInput } = useRegisterDevicePromt()
-  const { authorizeApp } = useAuthorization({
-    userNumber,
-  })
+
+  const { opener, postClientReadyMessage, authorizeApp, authorizationRequest } =
+    useAuthorization({
+      userNumber,
+    })
+
+  React.useEffect(() => {
+    if (!authorizationRequest && opener) {
+      return postClientReadyMessage()
+    }
+    setStatus("initial")
+  }, [authorizationRequest, opener, postClientReadyMessage])
+
   const { nextPersonaId, nfidPersonas, iiPersonas, createPersona } =
     usePersona()
 
@@ -114,7 +120,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
     selectedItem,
   ])
 
-  const title = `Log in to ${applicationName}`
+  const title = `Log in to ${applicationName || "NFID Demo"}`
 
   return status === "initial" || status === "loading" ? (
     <div>

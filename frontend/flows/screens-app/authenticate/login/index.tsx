@@ -9,10 +9,7 @@ interface NFIDLoginProps
     HTMLDivElement
   > {}
 
-export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = ({
-  children,
-  className,
-}) => {
+export const AuthenticateNFIDLogin: React.FC<NFIDLoginProps> = () => {
   return (
     <AppScreen className="flex flex-col h-full">
       <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">

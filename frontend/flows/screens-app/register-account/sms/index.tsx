@@ -129,6 +129,7 @@ export const RegisterAccountSMSVerification: React.FC<
 
     const registerPayload = await createWebAuthNIdentity()
 
+    // TODO: fix url
     navigate(`${RAC.base}/${RAC.captcha}`, {
       state: {
         name,

@@ -4,10 +4,11 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import React from "react"
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { RegisterAccountConstants as RAC } from "./routes"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { generatePath } from "react-router-dom"
 
 interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<
@@ -19,6 +20,9 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   children,
   className,
 }) => {
+  const { secret, scope } = useParams()
+  console.log(">> RegisterAccountIntro", { secret, scope })
+
   const { isLoading, setIsloading } = useIsLoading()
   const navigate = useNavigate()
   const { applicationName, createWebAuthNIdentity } = useMultipass()
@@ -70,7 +74,15 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       setIsloading(true)
       const registerPayload = await createWebAuthNIdentity()
 
-      navigate(`${RAC.base}/${RAC.captcha}`, {
+      // TODO: fix url
+      const captchaPath = generatePath(`${RAC.base}/${RAC.captcha}`, {
+        secret,
+        scope,
+      })
+
+      console.log(">> handleCreateKeys", { captchaPath })
+
+      navigate(captchaPath, {
         state: {
           registerPayload,
         },
@@ -78,7 +90,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     } catch (error) {
       setIsloading(false)
     }
-  }, [createWebAuthNIdentity, navigate, setIsloading])
+  }, [createWebAuthNIdentity, navigate, scope, secret, setIsloading])
 
   return (
     <AppScreen

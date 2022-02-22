@@ -34,7 +34,7 @@ export const useAuthorization = ({
   // the error state is used to display potential errors
   const [error, setError] = React.useState<LoginError | null>(null)
   // the authResult state is used to store the II
-  const { internetIdentity, login } = useAuthentication()
+  const { internetIdentity } = useAuthentication()
 
   const [authorizationRequest, setAuthorizationRequest] = useAtom(
     authorizationRequestAtom,
@@ -130,21 +130,13 @@ export const useAuthorization = ({
     ],
   )
 
-  // handles the authentication of the current user
-  const handleAuthenticate = React.useCallback(async () => {
-    setLoading(true)
-    await login()
-    postClientReadyMessage()
-    setLoading(false)
-  }, [login, postClientReadyMessage])
-
   // return the hooks props
   return {
     isLoading,
     opener,
     error,
     authorizationRequest,
+    postClientReadyMessage,
     authorizeApp,
-    authenticate: handleAuthenticate,
   }
 }

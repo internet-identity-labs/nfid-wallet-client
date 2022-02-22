@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { Input } from "components/atoms/input"
@@ -6,7 +6,7 @@ import { H2, H5 } from "components/atoms/typography"
 import { Loader, P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
 import { useForm } from "react-hook-form"
-import { generatePath, Link, useNavigate, useParams } from "react-router-dom"
+import { generatePath, Link, useNavigate } from "react-router-dom"
 import { IFrameAuthorizeAppConstants as IFrameAuthorizeConstants } from "frontend/flows/screens-iframe/authorize-app/routes"
 import { RegisterDevicePromptConstants as AuthorizeConstants } from "../../register-device-prompt/routes"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -28,6 +28,8 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   className,
 }) => {
   const { state } = useLocation()
+  console.log(">> NFIDPersonalizeContent", { state })
+
   const {
     register,
     formState: { errors, isValid, dirtyFields },
@@ -57,12 +59,23 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
 
       iframe
         ? navigate(`${IFrameAuthorizeConstants.base}`)
-        : navigate(`${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`)
+        : navigate(
+            generatePath(
+              `${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`,
+              state as {
+                secret: string
+                scope: string
+                applicationName: string
+              },
+            ),
+          )
     },
-    [identityManager, iframe, navigate, setIsloading, updateAccount],
+    [identityManager, iframe, navigate, setIsloading, state, updateAccount],
   )
 
   const handleSkipPersonalize = React.useCallback(async () => {
+    console.log(">> ", { iframe, state })
+
     iframe
       ? navigate(`${IFrameAuthorizeConstants.base}`)
       : navigate(

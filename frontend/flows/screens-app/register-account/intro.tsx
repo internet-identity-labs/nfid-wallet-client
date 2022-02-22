@@ -99,6 +99,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
         <CardBody>
           <Swiper
+            autoHeight
             navigation={{
               prevEl,
               nextEl,
@@ -180,10 +181,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   tablets, and computers so that creating new accounts or
                   authenticating is simply a face or touch scan away.
                 </P>
-
-                <Button secondary onClick={handleCreateKeys} className="mb-4">
-                  Create new NFID
-                </Button>
               </div>
             </SwiperSlide>
           </Swiper>
@@ -198,8 +195,8 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             >
               <HiArrowLeft
                 className={clsx(
-                  "text-2xl",
-                  !firstSlide ? "text-black" : "text-gray-400",
+                  "text-lg",
+                  !firstSlide ? "text-black-base" : "text-gray-400",
                 )}
               />
             </div>
@@ -209,21 +206,23 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             <div
               className={clsx(
                 "swiper-button-next",
-                "p-5 rounded-full",
-                lastSlide
-                  ? "bg-opacity-10 text-gray-400 bg-transparent"
-                  : "cursor-pointer bg-black-base",
+                !lastSlide && "cursor-pointer",
               )}
               ref={(node) => setNextEl(node)}
             >
               <HiArrowRight
                 className={clsx(
-                  "text-2xl",
-                  !lastSlide ? "text-white" : "text-gray-400",
+                  "text-lg",
+                  !lastSlide ? "text-black-base" : "text-gray-400",
                 )}
               />
             </div>
           </div>
+
+          <Button secondary onClick={handleCreateKeys} className="mt-8">
+            Create new NFID
+          </Button>
+
           <Loader isLoading={isLoading} />
         </CardBody>
       </Card>

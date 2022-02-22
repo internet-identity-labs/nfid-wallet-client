@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { Input } from "components/atoms/input"
@@ -12,6 +12,7 @@ import { RegisterDevicePromptConstants as AuthorizeConstants } from "../../regis
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { useLocation } from "react-router-dom"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
@@ -26,6 +27,7 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   children,
   className,
 }) => {
+  const { state } = useLocation()
   const {
     register,
     formState: { errors, isValid, dirtyFields },
@@ -61,17 +63,10 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   )
 
   const handleSkipPersonalize = React.useCallback(async () => {
-    setIsloading(true)
-    if (!identityManager) throw new Error("identityManager required")
-    await updateAccount(identityManager, {
-      skipPersonalize: true,
-    })
-    setIsloading(false)
-
     iframe
       ? navigate(`${IFrameAuthorizeConstants.base}`)
       : navigate(`${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`)
-  }, [identityManager, iframe, navigate, setIsloading, updateAccount])
+  }, [iframe, navigate])
 
   const title = "Personalize your experience"
 

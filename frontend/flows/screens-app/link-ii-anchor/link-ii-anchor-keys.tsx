@@ -4,7 +4,7 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { Button, Card, CardBody, H2, Modal, P } from "frontend/ui-kit/src/index"
 import React from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
 interface LocationState {
   iiDeviceLink: string

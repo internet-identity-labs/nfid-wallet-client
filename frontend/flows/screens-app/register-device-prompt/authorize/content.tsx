@@ -36,9 +36,11 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
   const { userNumber } = useAccount()
   const navigate = useNavigate()
   const { remoteLogin, sendWaitForUserInput } = useRegisterDevicePromt()
-  const { authorizeApp } = useAuthorization({
+  const { authorizeApp, authorizationRequest } = useAuthorization({
     userNumber,
   })
+  console.log(">> AuthorizeAppContent", { authorizationRequest })
+
   const { nextPersonaId, nfidPersonas, iiPersonas, createPersona } =
     usePersona()
 
@@ -114,7 +116,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
     selectedItem,
   ])
 
-  const title = `Log in to ${applicationName}`
+  const title = `Log in to ${applicationName || "NFID Demo"}`
 
   return status === "initial" || status === "loading" ? (
     <div>

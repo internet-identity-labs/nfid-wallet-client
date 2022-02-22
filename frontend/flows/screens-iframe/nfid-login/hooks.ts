@@ -47,6 +47,7 @@ export const useAuthorization = ({
           if (internetIdentity !== null) {
             const message = event.data
             const { maxTimeToLive, sessionPublicKey } = message
+
             setAuthorizationRequest({
               maxTimeToLive,
               sessionPublicKey,
@@ -71,6 +72,7 @@ export const useAuthorization = ({
       const internetIdentityService =
         internetIdentityForAnchor || internetIdentity
       setLoading(true)
+
       if (!authorizationRequest || !internetIdentityService)
         throw new Error("client not ready")
 

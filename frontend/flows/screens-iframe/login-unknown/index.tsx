@@ -9,7 +9,6 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { buildDelegate } from "frontend/services/internet-identity/build-delegate"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { setUserNumber } from "frontend/services/internet-identity/userNumber"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import { Button, H5, Loader, QRCode } from "frontend/ui-kit/src/index"
 import React from "react"
@@ -146,7 +145,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
     await readAccount(identityManager)
     setStatus("success")
-    setUserNumber(BigInt(message.userNumber))
     handleSendDelegate(message)
     setNewDeviceKey(null)
   }, [

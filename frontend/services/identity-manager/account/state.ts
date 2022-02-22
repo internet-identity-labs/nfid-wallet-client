@@ -4,8 +4,9 @@ import { atomWithStorage } from "jotai/utils"
 import { AccountResponse } from "../identity_manager.did"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 
-export interface LocalAccount extends Omit<AccountResponse, "anchor"> {
+export interface LocalAccount extends Omit<AccountResponse, "anchor" | "name"> {
   anchor: string
+  name?: string
   iiAnchors?: string[]
 
   // temporary front-end hack to skip personalization process

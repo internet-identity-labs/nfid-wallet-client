@@ -42,12 +42,14 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
   const { nextPersonaId, nfidPersonas, iiPersonas, createPersona } =
     usePersona()
 
+  const hasNFIDPersonas = nfidPersonas.length > 0
+
   React.useEffect(() => {
     secret && sendWaitForUserInput(secret)
   }, [iiPersonas, nfidPersonas, secret, sendWaitForUserInput])
 
   const [selectedItem, setSelectedItem] = React.useState<string>(
-    nfidPersonas[0].persona_id,
+    nfidPersonas[0]?.persona_id,
   )
   const [isPersonaSelected, setIsPersonaSelected] = React.useState(true)
 
@@ -55,6 +57,11 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
     ({ persona_id }: { persona_id?: string; anchor?: string }) =>
       async () => {
         setStatus("loading")
+
+        if (iframe && persona_id) {
+          await authorizeApp({ persona_id })
+          return setStatus("success")
+        }
 
         if (!secret || !scope || !persona_id)
           throw new Error("missing secret, scope or persona_id")
@@ -65,7 +72,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
           `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
         )
       },
-    [navigate, remoteLogin, secret, scope],
+    [iframe, secret, scope, remoteLogin, navigate, authorizeApp],
   )
 
   const handleAuthorizeIIPersona = React.useCallback(
@@ -118,48 +125,57 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
       )}
 
       <div className="mb-5">
-        <Label>Continue as</Label>
-        <DropdownMenu title={selectedItem}>
-          {(toggle) => (
-            <>
-              <Label menuItem>Personas</Label>
-              {nfidPersonas.map((persona, index) => (
-                <MenuItem
-                  key={index}
-                  title={persona.persona_id}
-                  onClick={() => {
-                    setSelectedItem(persona.persona_id)
-                    setIsPersonaSelected(true)
-                    toggle()
-                  }}
-                />
-              ))}
+        {hasNFIDPersonas && (
+          <>
+            <Label>Continue as</Label>
+            <DropdownMenu title={selectedItem}>
+              {(toggle) => (
+                <>
+                  <Label menuItem>Personas</Label>
+                  {nfidPersonas.map((persona, index) => (
+                    <MenuItem
+                      key={index}
+                      title={persona.persona_id}
+                      onClick={() => {
+                        setSelectedItem(persona.persona_id)
+                        setIsPersonaSelected(true)
+                        toggle()
+                      }}
+                    />
+                  ))}
 
-              <Label
-                menuItem
-                className={clsx(iiPersonas?.length === 0 && "hidden")}
-              >
-                Anchors
-              </Label>
-              {iiPersonas.map((persona, index) => (
-                <MenuItem
-                  key={index}
-                  title={persona.anchor}
-                  onClick={() => {
-                    setSelectedItem(persona.anchor)
-                    setIsPersonaSelected(false)
-                    toggle()
-                  }}
-                />
-              ))}
-            </>
-          )}
-        </DropdownMenu>
+                  <Label
+                    menuItem
+                    className={clsx(iiPersonas?.length === 0 && "hidden")}
+                  >
+                    Anchors
+                  </Label>
+                  {iiPersonas.map((persona, index) => (
+                    <MenuItem
+                      key={index}
+                      title={persona.anchor}
+                      onClick={() => {
+                        setSelectedItem(persona.anchor)
+                        setIsPersonaSelected(false)
+                        toggle()
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+            </DropdownMenu>
+            <Button secondary block onClick={handleLogin}>
+              Log in
+            </Button>
+          </>
+        )}
       </div>
-      <Button secondary block onClick={handleLogin}>
-        Log in
-      </Button>
-      <Button text block onClick={handleCreatePersonaAndLogin}>
+      <Button
+        text={hasNFIDPersonas ? true : false}
+        secondary={hasNFIDPersonas ? false : true}
+        block
+        onClick={handleCreatePersonaAndLogin}
+      >
         Create a new account
       </Button>
 

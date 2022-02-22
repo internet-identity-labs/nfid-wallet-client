@@ -1,6 +1,6 @@
 import { RegisterAccountConstants as RAC } from "frontend/flows/screens-app/register-account/routes"
 import React from "react"
-import { Route, Routes, useParams } from "react-router-dom"
+import { generatePath, Route, Routes, useParams } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 import { CONFIG } from "./config"
@@ -28,11 +28,13 @@ Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 export const App = () => {
   useStartUrl()
   const { secret, scope } = useParams()
+  console.log(">> App", { secret, scope })
 
   // TODO: find better way to handle this
-  const redirectPath = `${RAC.base
-    .replace(":secret", secret || ":secret")
-    .replace(":scope", scope || ":scope")}/${RAC.account}`
+  const redirectPath =
+    secret && scope
+      ? generatePath(`${RAC.base}/${RAC.account}`, { secret, scope })
+      : "/"
 
   return (
     <Routes>

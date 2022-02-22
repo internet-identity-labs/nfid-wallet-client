@@ -30,10 +30,11 @@ export const AuthenticateNFIDLoginContent: React.FC<
   const handleUnlock = React.useCallback(async () => {
     await authenticate()
 
+    // TODO: fix navigate on both if statements
     if (account && account.skipPersonalize) {
       // TODO: figure out if we really need to navigate here.
       // Normally as this is a AuhtWrapper, it should not be necessary at this point!
-      iframe && navigate(`${IFrameAuthorize.base}`)
+      iframe && navigate(IFrameAuthorize.base)
     }
 
     if (account && !account.skipPersonalize) {

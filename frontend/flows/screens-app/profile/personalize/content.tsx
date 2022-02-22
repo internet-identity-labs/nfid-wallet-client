@@ -8,6 +8,8 @@ import { P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
+import { IFrameAuthorizeAppConstants as IFrameAuthorizeConstants } from "frontend/flows/screens-iframe/authorize-app/routes"
+import { RegisterDevicePromptConstants as AuthorizeConstants } from "../../register-device-prompt/routes"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
@@ -43,10 +45,11 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
         skipPersonalize: true,
       })
 
-      // TODO: navigate to the next screen IFrame/AppScreen AuthorizeApp
-      alert("Authorize app from IFrame:" + iframe)
+      iframe
+        ? navigate(`${IFrameAuthorizeConstants.base}`)
+        : navigate(`${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`)
     },
-    [iframe, updateAccount],
+    [iframe, navigate, updateAccount],
   )
 
   const handleSkipPersonalize = React.useCallback(() => {
@@ -54,8 +57,10 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
       skipPersonalize: true,
     })
 
-    // TODO: navigate to the next screen IFrame/AppScreen AuthorizeApp
-  }, [updateAccount])
+    iframe
+      ? navigate(`${IFrameAuthorizeConstants.base}`)
+      : navigate(`${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`)
+  }, [iframe, navigate, updateAccount])
 
   const title = "Personalize your experience"
 

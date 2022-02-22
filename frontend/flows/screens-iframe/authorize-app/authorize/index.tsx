@@ -77,6 +77,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
     [authorizeApp, setIsloading],
   )
 
+  // TODO: implement after first version
   const handleLinkIIAnchor = React.useCallback(() => {
     setPollForNewAnchor(true)
     setIIAnchorsBeforeLinking(account?.iiAnchors?.length ?? 0)
@@ -97,7 +98,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
 
   return (
     <IFrameScreen logo>
-      <AuthorizeAppContent handleIILink={handleLinkIIAnchor} iframe />
+      <AuthorizeAppContent iframe />
     </IFrameScreen>
   )
 }

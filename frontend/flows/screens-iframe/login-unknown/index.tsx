@@ -164,12 +164,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
     <>
       {/* IFrameAuthorizeAppUnkownDevice */}
       {!isLoading && !showRegister && url ? (
-        <IFrameScreen>
-          <H5 className="mb-4 text-center">
-            Log in to {applicationName} with your NFID
-          </H5>
-          <div className="flex flex-col justify-center text-center">
-            <div>Scan this code with the camera app on your phone</div>
+        <IFrameScreen logo>
+          <H5 className="mb-4">Log in to {applicationName} with your NFID</H5>
+          <div className="flex flex-col">
+            <div>
+              This application uses NFID, the most secure, private, and
+              convenient Internet Identity.
+            </div>
 
             <div className="py-5 m-auto">
               <a href={url} target="_blank">
@@ -178,7 +179,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
             </div>
 
             <Button
-              secondary
+              text
               className="mb-2"
               onClick={() => navigate(`${RAC.base}`)}
             >

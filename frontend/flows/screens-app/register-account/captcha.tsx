@@ -174,14 +174,11 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
           anchor: userNumber,
         })
 
-        return navigate(
-          `${RAC.base}/${secret}/${scope}/${RAC.copyRecoveryPhrase}`,
-          {
-            state: {
-              recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
-            },
+        return navigate(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
+          state: {
+            recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
           },
-        )
+        })
       }
       if (responseRegisterAnchor.kind === "badChallenge") {
         setValue("captcha", "")
@@ -201,8 +198,6 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = ({
       registerAnchor,
       createAccount,
       navigate,
-      secret,
-      scope,
       setValue,
       requestCaptcha,
       setError,

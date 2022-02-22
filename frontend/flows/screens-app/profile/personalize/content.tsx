@@ -27,7 +27,6 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   children,
   className,
 }) => {
-  const params = useParams()
   const { state } = useLocation()
   const {
     register,
@@ -69,10 +68,10 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
       : navigate(
           generatePath(
             `${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`,
-            params,
+            state as { secret: string; scope: string; applicationName: string },
           ),
         )
-  }, [iframe, navigate, params])
+  }, [iframe, navigate, state])
 
   const title = "Personalize your experience"
 

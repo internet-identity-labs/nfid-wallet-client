@@ -7,7 +7,7 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { Loader, P } from "frontend/ui-kit/src"
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { ProfileConstants as profile } from "../../profile/routes"
 import { ImageNFIDLogin } from "../image"
 
@@ -22,6 +22,9 @@ interface AuthenticateNFIDLoginContentProps
 export const AuthenticateNFIDLoginContent: React.FC<
   AuthenticateNFIDLoginContentProps
 > = ({ iframe }) => {
+  const params = useParams()
+  console.log(">> AuthenticateNFIDLoginContent", { params })
+
   const { account } = useAccount()
   const { isLoading, login } = useAuthentication()
   const navigate = useNavigate()
@@ -38,10 +41,10 @@ export const AuthenticateNFIDLoginContent: React.FC<
 
     if (account && !account.skipPersonalize) {
       iframe
-        ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`) // TODO: pass secret and scope
-        : navigate(`${profile.base}/${profile.personalize}`)
+        ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`) // TODO: pass secret and scope?
+        : navigate(`${profile.base}/${profile.personalize}`, params)
     }
-  }, [account, iframe, login, navigate])
+  }, [account, iframe, login, navigate, params])
 
   const title = "Unlock your NFID"
 

@@ -21,16 +21,12 @@ import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-account/routes"
 import { IFrameRoutes } from "./flows/screens-iframe/routes"
 import { useStartUrl } from "./hooks/use-start-url"
-import { useAccount } from "./services/identity-manager/account/hooks"
 
 Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 
 export const App = () => {
   useStartUrl()
 
-  const { userNumber } = useAccount()
-
-  console.log("userNumber :>> ", userNumber)
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />

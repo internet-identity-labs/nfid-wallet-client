@@ -1,6 +1,6 @@
 import React from "react"
 import { Route } from "react-router-dom"
-import { UnknownDeviceScreen } from "./login-unknown"
+import { UnknownDeviceScreen } from "./authenticate/login-unknown"
 
 export const IFrameConstants = {
   base: "/login-unknown-device",

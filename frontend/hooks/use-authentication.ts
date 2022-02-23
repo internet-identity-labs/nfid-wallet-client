@@ -57,19 +57,28 @@ export const useAuthentication = () => {
 
   const login = React.useCallback(async () => {
     setIsLoading(true)
+
     if (!userNumber) {
       throw new Error("register first")
     }
+
     const response = await IIConnection.login(userNumber)
     const result = apiResultToLoginResult(response)
+
     if (result.tag === "err") {
       setError(result)
       setIsLoading(false)
+      return
     }
+
     if (result.tag === "ok") {
       setActors(result)
       initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
+      setIsLoading(false)
+      setError(null)
+      return
     }
+
     setIsLoading(false)
   }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
 
@@ -89,6 +98,7 @@ export const useAuthentication = () => {
     internetIdentity: actors?.internetIdentity,
     identityManager: actors?.identityManager,
     pubsubChannel: actors?.pubsubChannelActor,
+    error,
     login,
     logout,
     onRegisterSuccess,

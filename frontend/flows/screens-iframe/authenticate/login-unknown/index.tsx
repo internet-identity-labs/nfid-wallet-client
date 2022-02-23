@@ -13,7 +13,7 @@ import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-
 import { Button, H5, Loader, QRCode } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { IFrameRestoreAccessPointConstants as RAC } from "../restore-account/routes"
+import { IFrameRestoreAccessPointConstants as RAC } from "../../restore-account/routes"
 import { AuthorizeRegisterDecider } from "./authorize-register-decider"
 import { useUnknownDeviceConfig } from "./hooks"
 

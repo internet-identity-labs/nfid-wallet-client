@@ -1,6 +1,6 @@
 import { RegisterAccountConstants as RAC } from "frontend/flows/screens-app/register-account/routes"
 import React from "react"
-import { generatePath, Route, Routes, useParams } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 import { CONFIG } from "./config"
@@ -17,23 +17,25 @@ import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-device/rou
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
-import { AuthenticateRoutes } from "./flows/screens-iframe/nfid-login/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-account/routes"
 import { IFrameRoutes } from "./flows/screens-iframe/routes"
 import { useStartUrl } from "./hooks/use-start-url"
+import { useAccount } from "./services/identity-manager/account/hooks"
 
 Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 
 export const App = () => {
   useStartUrl()
 
+  const { userNumber } = useAccount()
+
+  console.log("userNumber :>> ", userNumber)
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />
       {DevScreensRoutes}
       {AccessPointRoutes}
-      {AuthenticateRoutes}
       {AuthenticateAccountRoutes}
       {CopyDevicesRoutes}
       {LinkIIAnchorRoutes}

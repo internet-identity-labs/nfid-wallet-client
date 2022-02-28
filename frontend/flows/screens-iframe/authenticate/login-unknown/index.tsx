@@ -1,6 +1,7 @@
 import { blobFromHex } from "@dfinity/candid"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { RegisterAccountConstants as RAC } from "frontend/flows/screens-app/register-account/routes"
 import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/screens-app/register-device/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useInterval } from "frontend/hooks/use-interval"
@@ -13,7 +14,6 @@ import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-
 import { Button, H5, Loader, QRCode } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { IFrameRestoreAccessPointConstants as RAC } from "../../restore-account/routes"
 import { AuthorizeRegisterDecider } from "./authorize-register-decider"
 import { useUnknownDeviceConfig } from "./hooks"
 

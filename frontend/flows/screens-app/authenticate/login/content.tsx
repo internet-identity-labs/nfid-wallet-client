@@ -1,7 +1,7 @@
 import { Button } from "components/atoms/button"
 import { H2, H5 } from "components/atoms/typography"
 import { IFrameAuthorizeAppConstants as IFrameAuthorize } from "frontend/flows/screens-iframe/authorize-app/routes"
-import { useAuthorization } from "frontend/flows/screens-iframe/nfid-login/hooks"
+import { useAuthorization } from "frontend/flows/screens-iframe/authenticate/login/hooks"
 import { IFrameProfileConstants as IFrameProfile } from "frontend/flows/screens-iframe/personalize/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"

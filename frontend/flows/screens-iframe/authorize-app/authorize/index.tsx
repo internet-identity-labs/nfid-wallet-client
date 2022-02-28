@@ -7,7 +7,7 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import React from "react"
-import { useAuthorization } from "../../nfid-login/hooks"
+import { useAuthorization } from "../../authenticate/login/hooks"
 
 interface AuthorizeAppProps
   extends React.DetailedHTMLProps<

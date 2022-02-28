@@ -1,6 +1,6 @@
 import { RegisterAccountConstants as RAC } from "frontend/flows/screens-app/register-account/routes"
 import React from "react"
-import { generatePath, Route, Routes, useParams } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 import { CONFIG } from "./config"
@@ -17,7 +17,6 @@ import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-device/rou
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
-import { AuthenticateRoutes } from "./flows/screens-iframe/nfid-login/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-account/routes"
 import { IFrameRoutes } from "./flows/screens-iframe/routes"
@@ -33,7 +32,6 @@ export const App = () => {
       <Route path={"/"} element={<HomeScreen />} />
       {DevScreensRoutes}
       {AccessPointRoutes}
-      {AuthenticateRoutes}
       {AuthenticateAccountRoutes}
       {CopyDevicesRoutes}
       {LinkIIAnchorRoutes}

@@ -1,17 +1,22 @@
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
-import { Outlet, Route } from "react-router-dom"
+import { Route } from "react-router-dom"
 import { IFrameAuthenticateNFIDLogin } from "./login"
+import { UnknownDeviceScreen } from "./login-unknown"
+
+const AuthenticateDecider: React.FC = () => {
+  const { userNumber } = useAccount()
+
+  return userNumber ? <IFrameAuthenticateNFIDLogin /> : <UnknownDeviceScreen />
+}
 
 export const IFrameAuthenticateAccountConstants = {
-  base: "/auth-iframe",
-  login: "login",
+  base: "/authenticate",
 }
 
 export const IFrameAuthenticateAccountRoutes = (
-  <Route path={IFrameAuthenticateAccountConstants.base} element={<Outlet />}>
-    <Route
-      path={IFrameAuthenticateAccountConstants.login}
-      element={<IFrameAuthenticateNFIDLogin />}
-    />
-  </Route>
+  <Route
+    path={IFrameAuthenticateAccountConstants.base}
+    element={<AuthenticateDecider />}
+  />
 )

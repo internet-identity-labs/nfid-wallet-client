@@ -1,4 +1,5 @@
 import { blobFromHex } from "@dfinity/candid"
+import clsx from "clsx"
 import { CONFIG } from "frontend/config"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { RegisterAccountConstants as RAC } from "frontend/flows/screens-app/register-account/routes"
@@ -161,7 +162,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
   useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
 
   return (
-    <>
+    <div className={clsx("relative", isLoading && "bg-white")}>
       {/* IFrameAuthorizeAppUnkownDevice */}
       {!isLoading && !showRegister && url ? (
         <IFrameScreen logo>
@@ -172,18 +173,18 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               convenient Internet Identity.
             </div>
 
-            <div className="py-5 m-auto">
+            <div className="pt-5 pb-3 m-auto">
               <a href={url} target="_blank">
                 <QRCode content={url} options={{ margin: 0 }} />
               </a>
             </div>
 
-            <Button
-              text
-              className="mb-2"
-              onClick={() => navigate(`${RAC.base}`)}
-            >
-              I already have an NFID
+            <div className="text-gray-500 text-xs text-center mb-1">
+              Scan this code with your phone's camera
+            </div>
+
+            <Button text className="mb-2">
+              Log in with Recovery Phrase
             </Button>
           </div>
         </IFrameScreen>
@@ -191,14 +192,18 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState) */}
       {isLoading && (
-        <div className="p-8 text-center">
-          <Loader
-            iframe
-            isLoading={isLoading}
-            fullscreen={false}
-            imageClasses={"w-[90px] mx-auto py-6"}
-          />
-          <div>Awaiting confirmation from your phone...</div>
+        <div className="absolute overflow-hidden h-full w-full inset-0">
+          <div className="flex flex-col h-full w-full items-center justify-center px-14 backdrop-blur bg-[#ffffffd9]">
+            <Loader
+              iframe
+              isLoading={isLoading}
+              fullscreen={false}
+              imageClasses={"w-[90px] mx-auto py-6 -mt-4"}
+            />
+            <div className="text-center mt-5">
+              Awaiting confirmation from your phone...
+            </div>
+          </div>
         </div>
       )}
 
@@ -208,6 +213,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           onLogin={() => handleSendDelegate(message)}
         />
       )}
-    </>
+    </div>
   )
 }

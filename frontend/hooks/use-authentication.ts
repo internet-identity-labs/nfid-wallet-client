@@ -1,6 +1,7 @@
 import { ActorSubclass } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
@@ -37,6 +38,7 @@ export const useAuthentication = () => {
   const [principalId] = useAtom(principalIdAtom)
 
   const { userNumber } = useAccount()
+  const { setUserNumber } = useUnknownDeviceConfig()
 
   const logout = React.useCallback(() => {
     setActors(null)
@@ -124,6 +126,7 @@ export const useAuthentication = () => {
           initUserGeek(
             result.internetIdentity.delegationIdentity.getPrincipal(),
           )
+          setUserNumber(userNumber)
           setIsLoading(false)
           setError(null)
         }
@@ -134,7 +137,7 @@ export const useAuthentication = () => {
         setIsLoading(false)
       }
     },
-    [initUserGeek, setActors, setError, setIsLoading],
+    [initUserGeek, setActors, setError, setIsLoading, setUserNumber],
   )
 
   return {

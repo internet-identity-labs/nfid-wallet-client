@@ -1,9 +1,10 @@
+import { IFrameAuthorizeAppConstants } from "./../../../authorize-app/routes"
 import { PublicKey } from "@dfinity/agent"
-import { blobFromHex, blobFromUint8Array, blobToHex } from "@dfinity/candid"
+import { blobFromUint8Array, blobToHex, blobFromHex } from "@dfinity/candid"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { CONFIG } from "frontend/config"
 import { RegisterDevicePromptConstants } from "frontend/flows/screens-app/register-device-prompt/routes"
-import { RegisterNewDeviceConstants as RNDC } from "frontend/flows/screens-app/register-device/routes"
+import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-device/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -14,16 +15,17 @@ import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import { atom, useAtom } from "jotai"
 import React from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useMessageChannel } from "./use-message-channel"
 
 type loadingState = "initial" | "loading" | "success"
 
-export type nfidJsonDelegate = {
+export type NfidJsonDelegate = {
   chain: DelegationChain | undefined
   sessionKey: Ed25519KeyIdentity | undefined
 }
 
-export type signedDelegation = {
+export type SignedDelegation = {
   delegation: {
     pubkey: PublicKey
     expiration: string
@@ -33,6 +35,11 @@ export type signedDelegation = {
   userKey: PublicKey
 }
 
+type StateProps = {
+  userNumber?: bigint
+  from?: string
+}
+
 const registerAtom = atom<boolean>(false)
 const loadingAtom = atom<loadingState>("initial")
 
@@ -40,19 +47,23 @@ export const useUnknownDeviceConfig = () => {
   const [status, setStatus] = useAtom(loadingAtom)
   const [showRegister, setShowRegister] = useAtom(registerAtom)
 
+  const { state } = useLocation()
   const [userNumber, setUserNumber] = React.useState<bigint | undefined>(
-    undefined,
+    (state as StateProps)?.userNumber,
   )
+  const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
+
   const [nfidJsonDelegate, setNfidJsonDelegate] =
-    React.useState<nfidJsonDelegate>()
+    React.useState<NfidJsonDelegate>()
   const [signedDelegation, setSignedDelegation] =
-    React.useState<signedDelegation>()
+    React.useState<SignedDelegation>()
 
   const [appWindow, setAppWindow] = React.useState<Window | null>(null)
   const [domain, setDomain] = React.useState("")
   const [pubKey, setPubKey] = React.useState("")
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
 
+  const navigate = useNavigate()
   const { createDevice } = useDevices()
   const { applicationName } = useMultipass()
   const { getMessages } = usePubSubChannel()
@@ -106,13 +117,26 @@ export const useUnknownDeviceConfig = () => {
 
   const handleRegisterDevice = React.useCallback(async () => {
     setStatus("loading")
-    window.open(`${RNDC.base}/${pubKey}/${userNumber}`, "_blank")
+    window.open(
+      `${RegisterNewDeviceConstants.base}/${pubKey}/${userNumber}`,
+      "_blank",
+    )
     // const response = await handleAddDevice(BigInt(delegation.userNumber))
   }, [pubKey, setStatus, userNumber])
 
-  const handleSendDelegate = React.useCallback(() => {
+  const handleSendDelegate = React.useCallback(async () => {
     try {
-      if (!signedDelegation) throw new Error("No signed delegation found")
+      if (!signedDelegation) {
+        if (fromPath === "loginWithRecovery") {
+          const response = await readAccount(identityManager, userNumber)
+
+          console.log("response :>> ", response)
+
+          return navigate(`${IFrameAuthorizeAppConstants.base}`)
+        }
+
+        throw new Error("No signed delegation found")
+      }
 
       const parsedSignedDelegation = buildDelegate(signedDelegation)
       const protocol =
@@ -129,7 +153,17 @@ export const useUnknownDeviceConfig = () => {
     } catch (err) {
       console.error(">> not a valid delegate", { err })
     }
-  }, [signedDelegation, domain, postClientAuthorizeSuccessMessage, appWindow])
+  }, [
+    signedDelegation,
+    domain,
+    postClientAuthorizeSuccessMessage,
+    appWindow,
+    fromPath,
+    readAccount,
+    identityManager,
+    userNumber,
+    navigate,
+  ])
 
   const handleLoginFromRemoteDelegation = React.useCallback(async () => {
     if (!nfidJsonDelegate || !userNumber)
@@ -204,11 +238,21 @@ export const useUnknownDeviceConfig = () => {
 
     await readAccount(identityManager)
     setStatus("success")
-    handleSendDelegate()
+
+    if (!fromPath || fromPath !== "loginWithRecovery") {
+      handleSendDelegate()
+    }
+
+    if (fromPath === "loginWithRecovery") {
+      navigate(`${IFrameAuthorizeAppConstants.base}`)
+    }
+
     setNewDeviceKey(null)
   }, [
+    fromPath,
     handleSendDelegate,
     identityManager,
+    navigate,
     newDeviceKey,
     readAccount,
     setStatus,

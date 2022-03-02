@@ -4,6 +4,7 @@ import { Loader } from "components/atoms/loader"
 import { H2, H5 } from "components/atoms/typography"
 import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import { TextArea } from "frontend/ui-kit/src"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -22,7 +23,7 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
 > = ({ children, className, iframe }) => {
   const { loginWithRecovery, error, isLoading } = useAuthentication()
   const navigate = useNavigate()
-  const { setShowRegister, setUserNumber } = useUnknownDeviceConfig()
+  const { setShowRegister } = useUnknownDeviceConfig()
   const {
     register,
     formState: { errors, isValid },
@@ -34,17 +35,42 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
 
   const onLogin = React.useCallback(
     async (data: any) => {
-      const { recoveryPhrase } = data
+      try {
+        const { recoveryPhrase } = data
 
-      const result = await loginWithRecovery(recoveryPhrase)
+        const stringUserNumber = recoveryPhrase.split(" ")[0]
+        const userNumber = parseUserNumber(stringUserNumber)
 
-      if (result?.tag === "ok") {
-        setShowRegister(true)
-        navigate(`/login-unknown-device`)
-      } else {
+        if (!userNumber) {
+          throw new Error("Invalid anchor")
+        }
+
+        const result = await loginWithRecovery(
+          recoveryPhrase.split(`${userNumber} `)[1],
+          userNumber,
+        )
+
+        if (result?.tag === "ok") {
+          setShowRegister(true)
+
+          navigate(`/login-unknown-device`, {
+            state: {
+              userNumber,
+              from: "loginWithRecovery",
+            },
+          })
+        } else {
+          console.log("result :>> ", result)
+
+          setError("recoveryPhrase", {
+            type: "manual",
+            message: "Invalid Recovery Phrase",
+          })
+        }
+      } catch (error) {
         setError("recoveryPhrase", {
           type: "manual",
-          message: "Invalid Recovery Phrase",
+          message: "Invalid Recovery Phrase (missing Anchor)",
         })
       }
     },

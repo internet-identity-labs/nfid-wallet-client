@@ -24,7 +24,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
   const [iiAnchorsBeforeLinking, setIIAnchorsBeforeLinking] = React.useState(
     account?.iiAnchors?.length ?? 0,
   )
-
+  
   const { authorizationRequest, authorizeApp } = useAuthorization({
     userNumber,
   })

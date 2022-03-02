@@ -1,21 +1,15 @@
-import { Usergeek } from "usergeek-ic-js"
 import { ActorSubclass } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
-
+import { Principal } from "@dfinity/principal"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
-import {
-  derFromPubkey,
-  IC_DERIVATION_PATH,
-  IIConnection,
-} from "frontend/services/internet-identity/iiConnection"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { atom, useAtom } from "jotai"
 import React from "react"
-import { Principal } from "@dfinity/principal"
-import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
-import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
+import { Usergeek } from "usergeek-ic-js"
 
 interface Actors {
   chain: DelegationChain
@@ -155,7 +149,6 @@ export const useAuthentication = () => {
     error,
     login,
     logout,
-    error,
     onRegisterSuccess,
     loginWithRecovery,
   }

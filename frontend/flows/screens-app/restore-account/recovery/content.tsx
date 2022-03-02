@@ -33,7 +33,7 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
   const onLogin = React.useCallback(
     async (data: any) => {
       const { recoveryPhrase } = data
-      console.log("recoveryPhrase :>> ", recoveryPhrase)
+
       const result = await loginWithRecovery(recoveryPhrase)
 
       console.log("onLogin :>> ", result)

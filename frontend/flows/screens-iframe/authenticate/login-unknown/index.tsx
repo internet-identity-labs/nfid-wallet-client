@@ -172,26 +172,18 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               convenient Internet Identity.
             </div>
 
-            <div className="pt-5 pb-3 m-auto">
+            <div className="py-5 m-auto">
               <a href={url} target="_blank">
                 <QRCode content={url} options={{ margin: 0 }} />
               </a>
             </div>
 
-            <div className="text-gray-500 text-xs text-center mb-1">
-              Scan this code with your phone's camera
-            </div>
-
             <Button
               text
               className="mb-2"
-              onClick={() =>
-                navigate(
-                  `${IFrameRestoreAccessPointConstants.base}/${IFrameRestoreAccessPointConstants.recoveryPhrase}`,
-                )
-              }
+              onClick={() => navigate(`${RAC.base}`)}
             >
-              Log in with Recovery Phrase
+              I already have an NFID
             </Button>
           </div>
         </IFrameScreen>

@@ -6,8 +6,8 @@
       "cd frontend/ui-kit && yarn && yarn build:dev"
     ],
     [
-      "yarn dev",
-      "cd examples/MultipassDemo && yarn dev",
+      "yarn && yarn dev",
+      "cd examples/MultipassDemo && yarn && yarn dev",
       "yarn tunnel"
     ]
   ]

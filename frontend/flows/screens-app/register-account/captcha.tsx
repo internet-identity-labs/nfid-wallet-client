@@ -44,7 +44,6 @@ interface RegisterAccountCaptchaProps
   > {}
 
 interface RegisterPayload {
-  pow: ProofOfWork
   identity: string
   deviceName: string
 }
@@ -64,7 +63,6 @@ export const RegisterAccountCaptcha: React.FC<
     formState: { errors, isValid, dirtyFields },
     handleSubmit,
     setError,
-    setFocus,
     setValue,
   } = useForm({
     mode: "onTouched",
@@ -77,10 +75,6 @@ export const RegisterAccountCaptcha: React.FC<
   const { createAccount } = useAccount()
 
   const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
-  const [pow, setPow] = React.useState<ProofOfWork | null>(
-    (state as RegisterAccountCaptchaState)?.registerPayload?.pow || null,
-  )
-  console.log(">> RegisterAccountCaptcha", { pow })
 
   const [loading, setLoading] = React.useState(true)
 
@@ -90,15 +84,12 @@ export const RegisterAccountCaptcha: React.FC<
     setLoading(true)
 
     const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
-    const freshPow = pow ? pow : getProofOfWork(now_in_ns, canisterIdPrincipal)
-
-    const cha = await IIConnection.createChallenge(freshPow)
+    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
+    const cha = await IIConnection.createChallenge(pow)
 
     setCaptchaResp(cha)
     setLoading(false)
-    setFocus("captcha")
-    setPow(null)
-  }, [pow, setFocus])
+  }, [])
 
   React.useEffect(() => {
     requestCaptcha()
@@ -167,11 +158,11 @@ export const RegisterAccountCaptcha: React.FC<
         const { userNumber, internetIdentity } = responseRegisterAnchor
 
         // TODO: fix the build issue
-        // const recoveryPhrase = await createRecoveryPhrase(
-        //   userNumber,
-        //   internetIdentity,
-        // )
-        const recoveryPhrase = `typical cake decline asset trip motor jazz select mystery debris income muscle melt scare distance robust chief sell know wonder mixed reject accident blouse`
+        // const recoveryPhrase = `typical cake decline asset trip motor jazz select mystery debris income muscle melt scare distance robust chief sell know wonder mixed reject accident blouse`
+        const recoveryPhrase = await createRecoveryPhrase(
+          userNumber,
+          internetIdentity,
+        )
 
         await createAccount(responseRegisterAnchor.identityManager, {
           anchor: userNumber,
@@ -205,6 +196,7 @@ export const RegisterAccountCaptcha: React.FC<
     [
       state,
       registerAnchor,
+      createRecoveryPhrase,
       createAccount,
       secret,
       scope,

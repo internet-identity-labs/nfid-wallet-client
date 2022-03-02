@@ -53,7 +53,7 @@ export const DropdownMenu: React.FC<Props> = ({
             !errorText &&
             "!border-blue-base bg-blue-active drop-shadow-blue ring-1",
           errorText &&
-            "active:bg-transparent active:border-red-base !border-red-base drop-shadow-red",
+            "active:bg-transparent active:border-red-base !border-red-base box-shadow-red",
         )}
       >
         <div>{title}</div>

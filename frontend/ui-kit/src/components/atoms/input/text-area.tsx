@@ -1,36 +1,31 @@
+import clsx from "clsx"
 import React from "react"
 
-interface Props
+interface TextAreaProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+    React.HTMLAttributes<HTMLTextAreaElement>,
+    HTMLTextAreaElement
   > {
   rows?: number
   placeholder?: string
-  defaultValue?: string
   infoMessage?: string
 }
 
-export const TextArea: React.FC<Props> = ({
-  rows = 3,
-  placeholder,
-  infoMessage,
-  defaultValue,
-}) => {
-  return (
-    <div>
-      <div className="mt-1">
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  ({ children, className, rows = 3, infoMessage, ...props }, ref) => {
+    return (
+      <div className={clsx("", className)}>
         <textarea
-          id="about"
+          ref={ref}
           rows={rows}
-          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-          placeholder={placeholder}
-          defaultValue={defaultValue}
+          className="shadow-sm focus:ring-black-base focus:border-black-base text-black-base my-1 block w-full text-sm border border-black-base rounded-md font-mono"
+          {...props}
         />
+
+        {infoMessage && (
+          <p className="mt-2 text-xs text-gray-500">{infoMessage}</p>
+        )}
       </div>
-      {infoMessage && (
-        <p className="mt-2 text-xs text-gray-500">{infoMessage}</p>
-      )}
-    </div>
-  )
-}
+    )
+  },
+)

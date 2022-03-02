@@ -37,7 +37,9 @@ export default ({ mode }) => {
       },
     },
     server: {
-      hmr: false,
+      hmr: {
+        port: 443,
+      },
       cors: true,
       port: 9090,
       fs: {

@@ -8,7 +8,7 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
 import React from "react"
-import { useNavigate, useParams } from "react-router"
+import { useNavigate, useParams } from "react-router-dom"
 import { ProfileConstants } from "../../profile/routes"
 import { useRegisterDevicePromt } from "../hooks"
 

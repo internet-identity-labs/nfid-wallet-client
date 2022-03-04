@@ -35,7 +35,7 @@
     "react-router": "6.2.2",
     "react-router-dom": "6.2.2",
     "stream-browserify": "3.0.0",
-    "swiper": "^8.0.6",
+    "swiper": "^8.0.7",
     "usergeek-ic-js": "github:usergeek/usergeek-ic-js",
     "uuid": "8.3.2"
   },

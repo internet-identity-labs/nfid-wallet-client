@@ -156,7 +156,13 @@ export const useUnknownDeviceConfig = () => {
         }
       }
     },
-    [getMessages, handleLoginFromRemoteDelegation, pubKey, setShowRegister],
+    [
+      getMessages,
+      handleLoginFromRemoteDelegation,
+      pubKey,
+      setShowRegister,
+      setStatus,
+    ],
   )
 
   const handleWaitForRegisteredDeviceKey = React.useCallback(async () => {

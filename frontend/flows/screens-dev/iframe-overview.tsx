@@ -15,7 +15,8 @@ import React from "react"
 import { IFrameAuthenticateNFIDLogin } from "../screens-iframe/authenticate/login"
 import { AuthorizeRegisterDecider } from "../screens-iframe/authenticate/login-unknown/authorize-register-decider"
 import { IFrameNFIDPersonalize } from "../screens-iframe/personalize"
-import { IFrameRestoreAccessPointRecoveryPhrase } from "../screens-iframe/restore-account/recovery"
+import { IFrameRestoreAccessPointStart } from "../screens-iframe/restore-access-point"
+import { IFrameRestoreAccessPointRecoveryPhrase } from "../screens-iframe/restore-access-point/recovery-phrase"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<

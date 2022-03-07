@@ -5,7 +5,7 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { Button, H5, Loader, QRCode } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { IFrameRestoreAccessPointConstants as RAC } from "../../restore-account/routes"
+import { IFrameRestoreAccessPointConstants as RAC } from "../../restore-access-point/routes"
 import { AuthorizeRegisterDecider } from "./authorize-register-decider"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 

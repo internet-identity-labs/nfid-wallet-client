@@ -1,7 +1,7 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 import { IFrameRestoreAccessPointStart } from "."
-import { IFrameRestoreAccessPointRecoveryPhrase } from "./recovery"
+import { IFrameRestoreAccessPointRecoveryPhrase } from "./recovery-phrase"
 
 export const IFrameRestoreAccessPointConstants = {
   base: "/restore-account-iframe",

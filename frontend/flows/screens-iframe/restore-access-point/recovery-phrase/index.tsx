@@ -1,7 +1,6 @@
-import React from "react"
-import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { RestoreAccessPointRecoveryPhraseContent } from "../../../screens-app/restore-account/recovery/content"
+import { RestoreAccessPointRecoveryPhraseContent } from "frontend/flows/screens-app/restore-access-point/recovery-phrase/content"
+import React from "react"
 
 interface IFrameRestoreAccessPointRecoveryPhraseProps
   extends React.DetailedHTMLProps<

@@ -1,6 +1,7 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { Button, Card, CardBody, H2, Modal, P } from "frontend/ui-kit/src/index"
 import React from "react"
@@ -25,7 +26,7 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
 
   const { state } = useLocation()
   const { identityManager } = useAuthentication()
-  const { account, updateAccount } = useMultipass()
+  const { account, updateAccount } = useAccount()
 
   const { iiDeviceLink, userNumber } = state as LocationState
 

@@ -12,7 +12,7 @@ import {
   MenuItem,
 } from "frontend/ui-kit/src"
 import React from "react"
-import { AuthorizeRegisterDecider } from "frontend/flows/screens-iframe/authorize-register-decider"
+import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
 import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
 import { IFrameAuthenticateNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
 import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"

@@ -1,6 +1,6 @@
 import React from "react"
 import { Route } from "react-router-dom"
-import { AuthorizeRegisterDecider } from "."
+import { AppScreenAuthorizeRegisterDecider } from "."
 
 export const UnknownDeviceConstants = {
   base: "/login-unknown-device",
@@ -9,6 +9,6 @@ export const UnknownDeviceConstants = {
 export const UnknownDeviceRoutes = (
   <Route
     path={UnknownDeviceConstants.base}
-    element={<AuthorizeRegisterDecider />}
+    element={<AppScreenAuthorizeRegisterDecider />}
   />
 )

@@ -2,7 +2,7 @@ import { Card } from "components/molecules/card"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { CardBody } from "frontend/ui-kit/src"
 import React from "react"
-import { AuthorizeRegisterDecider } from "../../../../screens-iframe/authorize-register-decider"
+import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
 
 interface AuthorizeRegisterDeciderProps
   extends React.DetailedHTMLProps<
@@ -10,10 +10,10 @@ interface AuthorizeRegisterDeciderProps
     HTMLDivElement
   > {}
 
-export const AuthorizeRegisterDecider: React.FC<
+export const AppScreenAuthorizeRegisterDecider: React.FC<
   AuthorizeRegisterDeciderProps
 > = ({ children, className }) => {
-  // TODO: implement useUnknownDeviceConfig()?
+  const {} = useUnknown
 
   return (
     <AppScreen>

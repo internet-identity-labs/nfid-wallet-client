@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { AuthorizeRegisterDecider } from "frontend/flows/screens-iframe/authorize-register-decider"
+import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
 import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"

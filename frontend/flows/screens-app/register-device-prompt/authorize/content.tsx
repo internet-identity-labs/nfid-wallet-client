@@ -52,7 +52,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
 
   React.useEffect(() => {
     secret && sendWaitForUserInput(secret)
-  }, [iiPersonas, nfidPersonas, secret, sendWaitForUserInput])
+  }, [secret, sendWaitForUserInput])
 
   const [selectedItem, setSelectedItem] = React.useState<string>(
     nfidPersonas[0]?.persona_id,

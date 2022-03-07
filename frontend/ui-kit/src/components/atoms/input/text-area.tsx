@@ -18,7 +18,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
         <textarea
           ref={ref}
           rows={rows}
-          className="shadow-sm focus:ring-black-base focus:border-black-base text-black-base my-1 block w-full text-sm border border-black-base rounded-md font-mono"
+          className="shadow-sm focus:ring-black-base focus:border-black-base text-black-base my-1 block w-full text-sm border border-black-base rounded-md font-mono bg-transparent"
           {...props}
         />
 

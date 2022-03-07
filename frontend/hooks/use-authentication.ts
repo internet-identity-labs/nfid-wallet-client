@@ -5,11 +5,16 @@ import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import {
+  derFromPubkey,
+  IC_DERIVATION_PATH,
+  IIConnection,
+} from "frontend/services/internet-identity/iiConnection"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { atom, useAtom } from "jotai"
 import React from "react"
 import { Principal } from "@dfinity/principal"
+import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 
 interface Actors {
   chain: DelegationChain
@@ -91,6 +96,46 @@ export const useAuthentication = () => {
     [setActors],
   )
 
+  const loginWithRecovery = React.useCallback(
+    async (seedPhrase: string) => {
+      setIsLoading(true)
+
+      const [userNumber] = seedPhrase.split(" ")[0]
+      const _userNumber = BigInt(userNumber)
+
+      // FIX: recovery devices returns null
+      const recoveryDevices = await IIConnection.lookupRecovery(_userNumber)
+
+      console.log("devices", recoveryDevices)
+
+      if (recoveryDevices.length === 0) {
+        throw new Error("no devices found")
+      }
+
+      const response = await IIConnection.fromSeedPhrase(
+        _userNumber,
+        seedPhrase,
+        recoveryDevices[0],
+      )
+
+      const result = apiResultToLoginResult(response)
+
+      if (result.tag === "err") {
+        setError(result)
+        setIsLoading(false)
+        console.log('"error"', "error")
+      }
+
+      if (result.tag === "ok") {
+        setActors(result)
+        initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
+        setIsLoading(false)
+        console.log("success result", result)
+      }
+    },
+    [initUserGeek, setActors, setError, setIsLoading],
+  )
+
   return {
     isLoading,
     principalId,
@@ -103,6 +148,8 @@ export const useAuthentication = () => {
     error,
     login,
     logout,
+    error,
     onRegisterSuccess,
+    loginWithRecovery,
   }
 }

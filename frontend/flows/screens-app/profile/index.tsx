@@ -45,7 +45,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
   const { account } = useAccount()
   const { logout } = useAuthentication()
-
+  console.log("devices", devices)
   const handleDeleteDevice = React.useCallback(
     (publicKey) => async () => {
       setLoading(true)

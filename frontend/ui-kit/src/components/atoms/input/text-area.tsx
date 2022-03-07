@@ -8,23 +8,34 @@ interface TextAreaProps
   > {
   rows?: number
   placeholder?: string
-  infoMessage?: string
+  helperText?: string
+  errorText?: string
 }
 
 export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ children, className, rows = 3, infoMessage, ...props }, ref) => {
+  ({ children, className, rows = 3, helperText, errorText, ...props }, ref) => {
     return (
       <div className={clsx("", className)}>
         <textarea
           ref={ref}
           rows={rows}
-          className="shadow-sm focus:ring-black-base focus:border-black-base text-black-base my-1 block w-full text-sm border border-black-base rounded-md font-mono bg-transparent"
+          className={clsx(
+            "shadow-sm text-black-base my-1 block w-full text-sm border rounded-md font-mono bg-transparent",
+            errorText
+              ? "active:bg-transparent active:border-red-base !border-red-base box-shadow-red focus:ring-red-base"
+              : "focus:ring-black-base focus:border-black-base border-black-base",
+          )}
           {...props}
         />
 
-        {infoMessage && (
-          <p className="mt-2 text-xs text-gray-500">{infoMessage}</p>
-        )}
+        <div
+          className={clsx(
+            "text-sm py-1 text-gray-400",
+            errorText && "!text-red-base",
+          )}
+        >
+          {errorText ?? helperText}
+        </div>
       </div>
     )
   },

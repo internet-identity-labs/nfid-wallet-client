@@ -1,13 +1,12 @@
-import React from "react"
 import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { Loader } from "components/atoms/loader"
-import { H5, H2 } from "components/atoms/typography"
-import { DropdownMenu } from "components/molecules/menu"
-import { Label, MenuItem, TextArea } from "frontend/ui-kit/src"
-import { title } from "process"
-import { useForm } from "react-hook-form"
+import { H2, H5 } from "components/atoms/typography"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { TextArea } from "frontend/ui-kit/src"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<
@@ -20,11 +19,13 @@ interface RestoreAccessPointRecoveryPhraseContentProps
 export const RestoreAccessPointRecoveryPhraseContent: React.FC<
   RestoreAccessPointRecoveryPhraseContentProps
 > = ({ children, className, iframe }) => {
-  const { loginWithRecovery } = useAuthentication()
+  const { loginWithRecovery, error, isLoading } = useAuthentication()
+  const navigate = useNavigate()
 
   const {
     register,
     formState: { errors, isValid },
+    setError,
     handleSubmit,
   } = useForm({
     mode: "all",
@@ -36,12 +37,28 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
 
       const result = await loginWithRecovery(recoveryPhrase)
 
-      console.log("onLogin :>> ", result)
+      if (result?.tag === "ok") {
+        console.log('"success" :>> ', "success! navigate me")
+      } else {
+        setError("recoveryPhrase", {
+          type: "manual",
+          message: "Invalid Recovery Phrase",
+        })
+      }
     },
-    [loginWithRecovery],
+    [loginWithRecovery, setError],
   )
 
   const title = "Log in with Recovery Phrase"
+
+  React.useEffect(() => {
+    if (error) {
+      setError("recoveryPhrase", {
+        type: "manual",
+        message: "Invalid Recovery Phrase",
+      })
+    }
+  }, [error, setError])
 
   return (
     <div className={clsx("", className)}>
@@ -58,8 +75,12 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
 
         <TextArea
           rows={6}
+          errorText={errors.recoveryPhrase?.message}
           {...register("recoveryPhrase", {
-            required: true,
+            required: {
+              value: true,
+              message: "Please enter your Recovery Phrase",
+            },
           })}
         />
 
@@ -69,12 +90,11 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
           large={!iframe}
           className="my-4"
           onClick={handleSubmit(onLogin)}
-          disabled={!isValid}
         >
           Log in
         </Button>
 
-        {/* <Loader isLoading={} iframe={iframe} /> */}
+        <Loader isLoading={isLoading} iframe={iframe} />
       </div>
     </div>
   )

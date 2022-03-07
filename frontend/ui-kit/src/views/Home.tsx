@@ -59,7 +59,7 @@ export const KitchenSink: React.FC = () => {
                   <div className="col-span-2 sm:col-span-2">
                     <Label>Example</Label>
                     <TextArea
-                      infoMessage={"Some help information can be put here"}
+                      helperText={"Some help information can be put here"}
                     />
                   </div>
                   <div className="col-span-2 sm:col-span-2">

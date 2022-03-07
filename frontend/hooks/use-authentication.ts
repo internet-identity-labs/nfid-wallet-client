@@ -15,6 +15,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Principal } from "@dfinity/principal"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
+import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 
 interface Actors {
   chain: DelegationChain
@@ -98,39 +99,47 @@ export const useAuthentication = () => {
 
   const loginWithRecovery = React.useCallback(
     async (seedPhrase: string) => {
-      setIsLoading(true)
+      try {
+        setIsLoading(true)
+        const numberFromSeedphrase = seedPhrase.split(" ")[0]
+        const userNumber = parseUserNumber(numberFromSeedphrase)
 
-      const [userNumber] = seedPhrase.split(" ")[0]
-      const _userNumber = BigInt(userNumber)
+        if (!userNumber) {
+          throw new Error("Invalid anchor")
+        }
 
-      // FIX: recovery devices returns null
-      const recoveryDevices = await IIConnection.lookupRecovery(_userNumber)
+        const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
 
-      console.log("devices", recoveryDevices)
+        if (recoveryDevices.length === 0) {
+          throw new Error("No devices found")
+        }
 
-      if (recoveryDevices.length === 0) {
-        throw new Error("no devices found")
-      }
+        const response = await IIConnection.fromSeedPhrase(
+          userNumber,
+          seedPhrase.split(`${userNumber} `)[1],
+          recoveryDevices[0],
+        )
 
-      const response = await IIConnection.fromSeedPhrase(
-        _userNumber,
-        seedPhrase,
-        recoveryDevices[0],
-      )
+        const result = apiResultToLoginResult(response)
 
-      const result = apiResultToLoginResult(response)
+        if (result.tag === "err") {
+          setIsLoading(false)
+          setError(result)
+        }
 
-      if (result.tag === "err") {
-        setError(result)
+        if (result.tag === "ok") {
+          setActors(result)
+          initUserGeek(
+            result.internetIdentity.delegationIdentity.getPrincipal(),
+          )
+          setIsLoading(false)
+          setError(null)
+        }
+
+        return result
+      } catch (error) {
+        setError("Invalid Recovery Phrase")
         setIsLoading(false)
-        console.log('"error"', "error")
-      }
-
-      if (result.tag === "ok") {
-        setActors(result)
-        initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
-        setIsLoading(false)
-        console.log("success result", result)
       }
     },
     [initUserGeek, setActors, setError, setIsLoading],

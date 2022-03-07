@@ -1,11 +1,7 @@
 import { Card } from "components/molecules/card"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
-import { useInterval } from "frontend/hooks/use-interval"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { CardBody, Loader } from "frontend/ui-kit/src"
+import { CardBody } from "frontend/ui-kit/src"
 import React from "react"
-import { useLocation } from "react-router-dom"
 import { AuthorizeRegisterDeciderContent } from "./content"
 
 interface AuthorizeRegisterDeciderProps

@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom"
 
 type Status = "initial" | "loading" | "success"
 
-export const RegisterDevice = () => {
+export const RegisterNewFromDelegate = () => {
   const [status, setStatus] = React.useState<Status>("initial")
   const [showModal, setShowModal] = React.useState(false)
   const { opener } = usePostMessage({

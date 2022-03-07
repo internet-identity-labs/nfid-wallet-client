@@ -11,6 +11,8 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { UnknownDeviceConstants } from "frontend/flows/screens-app/authenticate/login-unknown/register-decider/routes"
+import { useInterval } from "frontend/hooks/use-interval"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<
@@ -23,9 +25,18 @@ interface RestoreAccessPointRecoveryPhraseContentProps
 export const RestoreAccessPoint: React.FC<
   RestoreAccessPointRecoveryPhraseContentProps
 > = ({ children, className, iframe }) => {
-  const { loginWithRecovery, error, isLoading } = useAuthentication()
-  const navigate = useNavigate()
-  const { setShowRegister } = useUnknownDeviceConfig()
+  const { loginWithRecovery, error, isLoading, isAuthenticated } =
+    useAuthentication()
+  const { setLocalAccount } = useAccount()
+  const {
+    setUserNumber,
+    handleRegisterDevice,
+    handleWaitForRegisteredDeviceKey,
+    newDeviceKey,
+  } = useUnknownDeviceConfig()
+
+  useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
+
   const {
     register,
     formState: { errors, isValid },
@@ -53,19 +64,8 @@ export const RestoreAccessPoint: React.FC<
         )
 
         if (result?.tag === "ok") {
-          setShowRegister(true)
-
-          navigate(
-            iframe
-              ? `${IFrameUnknownDeviceConstants.base}`
-              : `${UnknownDeviceConstants.base}`,
-            {
-              state: {
-                userNumber,
-                from: "loginWithRecovery",
-              },
-            },
-          )
+          setUserNumber(userNumber)
+          setLocalAccount({ anchor: userNumber.toString() })
         } else {
           console.log("result :>> ", result)
 
@@ -81,7 +81,7 @@ export const RestoreAccessPoint: React.FC<
         })
       }
     },
-    [iframe, loginWithRecovery, navigate, setError, setShowRegister],
+    [loginWithRecovery, setError, setLocalAccount, setUserNumber],
   )
 
   const title = "Log in with Recovery Phrase"
@@ -95,7 +95,13 @@ export const RestoreAccessPoint: React.FC<
     }
   }, [error, setError])
 
-  return (
+  return isAuthenticated ? (
+    <div>
+      <Button secondary onClick={handleRegisterDevice}>
+        Register Device
+      </Button>
+    </div>
+  ) : (
     <div className={clsx("", className)}>
       <div>
         {iframe ? (

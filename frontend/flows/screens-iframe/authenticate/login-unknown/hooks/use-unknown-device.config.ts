@@ -4,7 +4,7 @@ import { blobFromUint8Array, blobToHex, blobFromHex } from "@dfinity/candid"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { CONFIG } from "frontend/config"
 import { RegisterDevicePromptConstants } from "frontend/flows/screens-app/register-device-prompt/routes"
-import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-device/routes"
+import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -15,7 +15,7 @@ import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import { atom, useAtom } from "jotai"
 import React from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { generatePath, useLocation, useNavigate } from "react-router-dom"
 import { useMessageChannel } from "./use-message-channel"
 
 type loadingState = "initial" | "loading" | "success"
@@ -52,6 +52,7 @@ export const useUnknownDeviceConfig = () => {
     (state as StateProps)?.userNumber,
   )
   const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
+  console.log(">> useUnknownDeviceConfig", { fromPath })
 
   const [nfidJsonDelegate, setNfidJsonDelegate] =
     React.useState<NfidJsonDelegate>()
@@ -107,6 +108,7 @@ export const useUnknownDeviceConfig = () => {
         ...device,
         userNumber: userNumber,
       })
+      console.log(">> ", { response })
     },
     [createDevice, userNumber],
   )
@@ -117,11 +119,15 @@ export const useUnknownDeviceConfig = () => {
 
   const handleRegisterDevice = React.useCallback(async () => {
     setStatus("loading")
+    if (!userNumber) throw new Error("userNumber required")
+
     window.open(
-      `${RegisterNewDeviceConstants.base}/${pubKey}/${userNumber}`,
+      generatePath(RegisterNewDeviceConstants.base, {
+        userNumber: userNumber.toString(),
+        secret: pubKey,
+      }),
       "_blank",
     )
-    // const response = await handleAddDevice(BigInt(delegation.userNumber))
   }, [pubKey, setStatus, userNumber])
 
   const handleSendDelegate = React.useCallback(async () => {
@@ -227,6 +233,7 @@ export const useUnknownDeviceConfig = () => {
     if (!userNumber) throw new Error("No anchor found")
 
     const existingDevices = await IIConnection.lookupAll(userNumber)
+    console.log(">> ", { existingDevices })
 
     // TODO: fix the comparison
     const matchedDevice = existingDevices.find((deviceData) => {
@@ -269,6 +276,7 @@ export const useUnknownDeviceConfig = () => {
     newDeviceKey,
     showRegister,
     setUserNumber,
+    setFromPath,
     setShowRegister,
     setNewDeviceKey,
     handleRegisterDevice,

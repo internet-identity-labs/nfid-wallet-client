@@ -13,10 +13,10 @@ import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import {
   RegisterAccountConstants as RAC,
-  RegisterAccountRoutes
+  RegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
 import { RegisterDevicePromptRoutes } from "./flows/screens-app/register-device-prompt/routes"
-import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-device/routes"
+import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameUnknownDeviceRoutes } from "./flows/screens-iframe/authenticate/login-unknown/routes"

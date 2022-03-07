@@ -4,7 +4,8 @@ import { AuthorizeRegisterDeciderContent } from "frontend/flows/screens-app/auth
 import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { Button, H5, Loader, QRCode } from "frontend/ui-kit/src/index"
+import { AuthorizeAppUnknownDevice } from "frontend/screens/authorize-app-unknown-device"
+import { Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
@@ -35,33 +36,21 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
       {/* IFrameAuthorizeAppUnkownDevice */}
       {!isLoading && !showRegister && url ? (
         <IFrameScreen logo>
-          <H5 className="mb-4">Log in to {applicationName} with your NFID</H5>
-          <div className="flex flex-col">
-            <div>
-              This application uses NFID, the most secure, private, and
-              convenient Internet Identity.
-            </div>
-
-            <div className="py-5 m-auto">
-              <a href={url} target="_blank">
-                <QRCode content={url} options={{ margin: 0 }} />
-              </a>
-            </div>
-
-            <Button
-              text
-              className="mb-2"
-              onClick={() => navigate(`${RAC.base}/${RAC.recoveryPhrase}`)}
-            >
-              Log in with Recovery Phrase
-            </Button>
-          </div>
+          <AuthorizeAppUnknownDevice
+            applicationName={applicationName}
+            url={url}
+            onLogin={() =>
+              navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
+                state: { from: "loginWithRecovery" },
+              })
+            }
+          />
         </IFrameScreen>
       ) : null}
 
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState) */}
       {isLoading && (
-        <div className="absolute overflow-hidden h-full w-full inset-0">
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
           <div className="flex flex-col h-full w-full items-center justify-center px-14 backdrop-blur bg-[#ffffffd9]">
             <Loader
               iframe
@@ -69,7 +58,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
               fullscreen={false}
               imageClasses={"w-[90px] mx-auto py-6 -mt-4"}
             />
-            <div className="text-center mt-5">
+            <div className="mt-5 text-center">
               Awaiting confirmation from your phone...
             </div>
           </div>

@@ -10,6 +10,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useMessageChannel } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-message-channel"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<
@@ -25,14 +26,23 @@ export const RestoreAccessPoint: React.FC<
   const { loginWithRecovery, error, isLoading, isAuthenticated } =
     useAuthentication()
   const { setLocalAccount } = useAccount()
-  const {
-    setUserNumber,
-    handleRegisterDevice,
-    handleWaitForRegisteredDeviceKey,
-    newDeviceKey,
-  } = useUnknownDeviceConfig()
+  const { handleStoreNewDevice, setUserNumber, handleRegisterDevice } =
+    useUnknownDeviceConfig()
 
-  useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
+  const handleNewDevice = React.useCallback(
+    async (event) => {
+      console.log(">> ", { event })
+      const response = await handleStoreNewDevice(event.data)
+      console.log(">> ", { response })
+    },
+    [handleStoreNewDevice],
+  )
+
+  const { isReady } = useMessageChannel({
+    messageHandler: {
+      "new-device": handleNewDevice,
+    },
+  })
 
   const {
     register,

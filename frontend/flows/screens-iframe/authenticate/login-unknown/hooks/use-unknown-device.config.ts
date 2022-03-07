@@ -109,6 +109,7 @@ export const useUnknownDeviceConfig = () => {
         userNumber: userNumber,
       })
       console.log(">> ", { response })
+      return response
     },
     [createDevice, userNumber],
   )
@@ -272,6 +273,7 @@ export const useUnknownDeviceConfig = () => {
     pubKey,
     scope: domain,
     appWindow,
+    userNumber,
     newDeviceKey,
     showRegister,
     setUserNumber,
@@ -284,5 +286,6 @@ export const useUnknownDeviceConfig = () => {
     handleWaitForRegisteredDeviceKey,
     handleLoginFromRemoteDelegation,
     handlePollForDelegate,
+    handleStoreNewDevice,
   }
 }

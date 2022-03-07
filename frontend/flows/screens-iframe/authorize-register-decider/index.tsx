@@ -14,7 +14,7 @@ interface AuthorizeRegisterDeciderContentProps
   iframe?: boolean
 }
 
-export const AuthorizeRegisterDeciderContent: React.FC<
+export const AuthorizeRegisterDecider: React.FC<
   AuthorizeRegisterDeciderContentProps
 > = ({ children, className, onRegister, onLogin, iframe }) => {
   const {

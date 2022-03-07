@@ -81,7 +81,7 @@ export const useDevices = () => {
     }) => {
       if (!internetIdentity) throw new Error("Unauthorized")
 
-      await internetIdentity.add(
+      return await internetIdentity.add(
         userNumber,
         deviceName,
         { unknown: null },

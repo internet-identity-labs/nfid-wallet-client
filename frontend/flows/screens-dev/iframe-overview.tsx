@@ -12,10 +12,10 @@ import {
   MenuItem,
 } from "frontend/ui-kit/src"
 import React from "react"
-import { AuthorizeRegisterDeciderContent } from "../screens-app/authenticate/login-unknown/register-decider/content"
+import { AuthorizeRegisterDecider } from "frontend/flows/screens-iframe/authorize-register-decider"
 import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
-import { IFrameAuthenticateNFIDLogin } from "../screens-iframe/authenticate/login"
-import { IFrameNFIDPersonalize } from "../screens-iframe/personalize"
+import { IFrameAuthenticateNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
+import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<
@@ -103,7 +103,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <IFrameScreen logo>
-                <AuthorizeRegisterDeciderContent
+                <AuthorizeRegisterDecider
                   iframe
                   onRegister={() => {
                     console.log("Register")

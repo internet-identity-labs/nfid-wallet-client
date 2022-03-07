@@ -56,30 +56,32 @@ export const useAuthentication = () => {
   }, [])
 
   const login = React.useCallback(async () => {
-    setIsLoading(true)
+    try {
+      setIsLoading(true)
 
-    if (!userNumber) {
-      throw new Error("register first")
-    }
+      if (!userNumber) {
+        throw new Error("Register first")
+      }
 
-    const response = await IIConnection.login(userNumber)
-    const result = apiResultToLoginResult(response)
+      const response = await IIConnection.login(userNumber)
+      const result = apiResultToLoginResult(response)
 
-    if (result.tag === "err") {
-      setError(result)
+      if (result.tag === "err") {
+        setError(result.title)
+      }
+
+      if (result.tag === "ok") {
+        setActors(result)
+        initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
+        setError(null)
+      }
+
       setIsLoading(false)
-      return
-    }
-
-    if (result.tag === "ok") {
-      setActors(result)
-      initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
+      return result
+    } catch {
+      setError("Failed to authenticate")
       setIsLoading(false)
-      setError(null)
-      return
     }
-
-    setIsLoading(false)
   }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
 
   const onRegisterSuccess = React.useCallback(

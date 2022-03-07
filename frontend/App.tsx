@@ -14,6 +14,7 @@ import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import { RegisterAccountRoutes } from "./flows/screens-app/register-account/routes"
 import { RegisterDevicePromptRoutes } from "./flows/screens-app/register-device-prompt/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-device/routes"
+import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-account/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
@@ -39,12 +40,14 @@ export const App = () => {
       {RegisterNewDeviceRoutes}
       {RegisterDevicePromptRoutes(`${RAC.base}/${RAC.account}`)}
       {RegisterAccountRoutes}
+      {RestoreAccessPointRoutes}
 
       {IFrameRoutes}
       {IFrameProfileRoutes}
       {IFrameAuthorizeAppRoutes}
       {IFrameRestoreAccessPointRoutes}
       {IFrameAuthenticateAccountRoutes}
+      {IFrameRestoreAccessPointRoutes}
       <Route path={"*"} element={<NotFound />} />
     </Routes>
   )

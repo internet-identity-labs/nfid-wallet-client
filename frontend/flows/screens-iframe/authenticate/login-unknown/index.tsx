@@ -182,7 +182,15 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               Scan this code with your phone's camera
             </div>
 
-            <Button text className="mb-2">
+            <Button
+              text
+              className="mb-2"
+              onClick={() =>
+                navigate(
+                  `${IFrameRestoreAccessPointConstants.base}/${IFrameRestoreAccessPointConstants.recoveryPhrase}`,
+                )
+              }
+            >
               Log in with Recovery Phrase
             </Button>
           </div>

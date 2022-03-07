@@ -15,6 +15,7 @@ import React from "react"
 import { IFrameAuthenticateNFIDLogin } from "../screens-iframe/authenticate/login"
 import { AuthorizeRegisterDecider } from "../screens-iframe/authenticate/login-unknown/authorize-register-decider"
 import { IFrameNFIDPersonalize } from "../screens-iframe/personalize"
+import { IFrameRestoreAccessPointRecoveryPhrase } from "../screens-iframe/restore-account/recovery"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<
@@ -113,6 +114,14 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <IFrameNFIDPersonalize />
+            </IFrameWrapper>
+
+            {/* IFrameRestoreAccessPoint */}
+            <IFrameWrapper
+              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+              fixedHeight={false}
+            >
+              <IFrameRestoreAccessPointRecoveryPhrase />
             </IFrameWrapper>
           </div>
         </CardBody>

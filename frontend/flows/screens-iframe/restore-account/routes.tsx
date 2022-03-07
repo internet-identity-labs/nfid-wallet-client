@@ -1,14 +1,23 @@
 import React from "react"
-import { Route } from "react-router-dom"
+import { Outlet, Route } from "react-router-dom"
 import { IFrameRestoreAccessPointStart } from "."
+import { IFrameRestoreAccessPointRecoveryPhrase } from "./recovery"
 
 export const IFrameRestoreAccessPointConstants = {
-  base: "/restore-account",
+  base: "/restore-account-iframe",
+  nfid: "nfid",
+  recoveryPhrase: "recovery-phrase",
 }
 
 export const IFrameRestoreAccessPointRoutes = (
-  <Route
-    path={IFrameRestoreAccessPointConstants.base}
-    element={<IFrameRestoreAccessPointStart />}
-  />
+  <Route path={IFrameRestoreAccessPointConstants.base} element={<Outlet />}>
+    <Route
+      path={IFrameRestoreAccessPointConstants.nfid}
+      element={<IFrameRestoreAccessPointStart />}
+    />
+    <Route
+      path={IFrameRestoreAccessPointConstants.recoveryPhrase}
+      element={<IFrameRestoreAccessPointRecoveryPhrase />}
+    />
+  </Route>
 )

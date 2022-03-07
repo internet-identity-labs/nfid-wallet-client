@@ -4,7 +4,11 @@ import { atomWithStorage } from "jotai/utils"
 import { AccountResponse } from "../identity_manager.did"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 
-export interface LocalAccount extends Omit<AccountResponse, "anchor" | "name"> {
+export interface LocalAccount
+  extends Omit<
+    AccountResponse,
+    "anchor" | "name" | "personas" | "phone_number" | "principal_id"
+  > {
   anchor: string
   name?: string
   iiAnchors?: string[]

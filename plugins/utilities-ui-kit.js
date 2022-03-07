@@ -60,13 +60,13 @@ const fontFamily = {
 
 const dropShadow = {
   blue: "0 0px 2px rgba(14,98,255,1)",
-  red: "0 0px 2px rgba(234,26,26,1)",
 }
 
 const boxShadow = {
   black: "0 3px 10px rgba(59,62,67,0.4)",
   blueLight: "0 3px 10px rgba(32,121,255,0.4)",
   iframe: "0 3px 20px rgba(0,0,0,0.1)",
+  red: "0 0px 2px rgba(234,26,26,1)",
 }
 
 module.exports = require("tailwindcss/plugin")(function () {}, {

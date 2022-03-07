@@ -18,6 +18,11 @@ export const IFrameContent: React.FC<IFrameContentProps> = ({
 }) => {
   const [loading, setLoading] = useState(true)
 
+  const handleOnLoad = React.useCallback(() => {
+    setLoading(false)
+    onLoad && onLoad()
+  }, [onLoad])
+
   return (
     <iframe
       className={clsx(
@@ -30,10 +35,7 @@ export const IFrameContent: React.FC<IFrameContentProps> = ({
       title="idpWindow"
       name="idpWindow"
       allow="publickey-credentials-get"
-      onLoad={() => {
-        setLoading(false)
-        onLoad && onLoad()
-      }}
+      onLoad={handleOnLoad}
     />
   )
 }

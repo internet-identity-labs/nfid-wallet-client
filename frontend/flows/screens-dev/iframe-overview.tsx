@@ -12,9 +12,10 @@ import {
   MenuItem,
 } from "frontend/ui-kit/src"
 import React from "react"
-import { IFrameAuthenticateNFIDLogin } from "../screens-iframe/authenticate/login"
-import { AuthorizeRegisterDecider } from "../screens-iframe/authenticate/login-unknown/authorize-register-decider"
-import { IFrameNFIDPersonalize } from "../screens-iframe/personalize"
+import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
+import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
+import { IFrameAuthenticateNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
+import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<
@@ -37,10 +38,10 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
     <AppScreen className={clsx("", className)}>
       <Card>
         <CardBody>
-          <div className="grid grid-cols-12 gap-x-4 gap-y-12 grid-flow-row">
+          <div className="grid grid-flow-row grid-cols-12 gap-x-4 gap-y-12">
             {/* IFrameNFIDLogin */}
             <IFrameWrapper
-              className="inset-0 col-span-12 md:col-span-6 xl:col-span-4 relative"
+              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
               fixedHeight={false}
             >
               <IFrameAuthenticateNFIDLogin />
@@ -48,7 +49,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
 
             {/* IFrameAuthorizeApp */}
             <IFrameWrapper
-              className="inset-0 col-span-12 md:col-span-6 xl:col-span-4 relative"
+              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
               fixedHeight={false}
             >
               <IFrameScreen logo>
@@ -101,10 +102,17 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
               fixedHeight={false}
             >
-              <AuthorizeRegisterDecider
-                onRegister={() => console.log("register")}
-                onLogin={() => console.log("login")}
-              />
+              <IFrameScreen logo>
+                <AuthorizeRegisterDecider
+                  iframe
+                  onRegister={() => {
+                    console.log("Register")
+                  }}
+                  onLogin={() => {
+                    console.log("Login")
+                  }}
+                />
+              </IFrameScreen>
             </IFrameWrapper>
 
             {/* IFrameNFIDPersonalize */}
@@ -113,6 +121,16 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               fixedHeight={false}
             >
               <IFrameNFIDPersonalize />
+            </IFrameWrapper>
+
+            {/* IFrameRestoreAccessPoint */}
+            <IFrameWrapper
+              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+              fixedHeight={false}
+            >
+              <IFrameScreen logo>
+                <RestoreAccessPoint iframe />
+              </IFrameScreen>
             </IFrameWrapper>
           </div>
         </CardBody>

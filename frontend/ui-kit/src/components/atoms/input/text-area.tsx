@@ -1,36 +1,42 @@
+import clsx from "clsx"
 import React from "react"
 
-interface Props
+interface TextAreaProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+    React.HTMLAttributes<HTMLTextAreaElement>,
+    HTMLTextAreaElement
   > {
   rows?: number
   placeholder?: string
-  defaultValue?: string
-  infoMessage?: string
+  helperText?: string
+  errorText?: string
 }
 
-export const TextArea: React.FC<Props> = ({
-  rows = 3,
-  placeholder,
-  infoMessage,
-  defaultValue,
-}) => {
-  return (
-    <div>
-      <div className="mt-1">
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  ({ children, className, rows = 3, helperText, errorText, ...props }, ref) => {
+    return (
+      <div className={clsx("", className)}>
         <textarea
-          id="about"
+          ref={ref}
           rows={rows}
-          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-          placeholder={placeholder}
-          defaultValue={defaultValue}
+          className={clsx(
+            "shadow-sm text-black-base my-1 block w-full text-sm border rounded-md font-mono bg-transparent",
+            errorText
+              ? "active:bg-transparent active:border-red-base !border-red-base box-shadow-red focus:ring-red-base"
+              : "focus:ring-black-base focus:border-black-base border-black-base",
+          )}
+          {...props}
         />
+
+        <div
+          className={clsx(
+            "text-sm py-1 text-gray-400",
+            errorText && "!text-red-base",
+          )}
+        >
+          {errorText ?? helperText}
+        </div>
       </div>
-      {infoMessage && (
-        <p className="mt-2 text-xs text-gray-500">{infoMessage}</p>
-      )}
-    </div>
-  )
-}
+    )
+  },
+)

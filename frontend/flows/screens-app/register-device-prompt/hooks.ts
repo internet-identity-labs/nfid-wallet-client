@@ -119,6 +119,8 @@ export const useRegisterDevicePromt = () => {
 
   const sendWaitForUserInput = React.useCallback(
     async (secret) => {
+      console.log(">> sendWaitForUserInput", { secret })
+
       const message = JSON.stringify({
         type: "remote-login-wait-for-user",
       })

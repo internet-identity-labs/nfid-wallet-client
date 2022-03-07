@@ -1,5 +1,4 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import {
   Button,
   Card,
@@ -13,7 +12,7 @@ import { nameRules, phoneRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
-import { RegisterAccountConstants as RAC } from "./routes"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface RegisterAccountCreateNFIDProfileProps
   extends React.DetailedHTMLProps<
@@ -29,7 +28,7 @@ interface RegisterAccountNFIDState {
 export const RegisterAccountCreateNFIDProfile: React.FC<
   RegisterAccountCreateNFIDProfileProps
 > = ({ className }) => {
-  const { verifyPhonenumber } = useMultipass()
+  const { verifyPhonenumber } = useAccount()
   const navigate = useNavigate()
   const {
     register,

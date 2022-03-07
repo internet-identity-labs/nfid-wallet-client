@@ -17,7 +17,7 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   const [personas, setPersonas] = useAtom(personaAtom)
   const { isLoading } = useIsLoading()
   const { identityManager: personaService } = useAuthentication()
-  const { account, createAccount, readAccount } = useAccount()
+  const { account } = useAccount()
 
   const nfidPersonas = React.useMemo(() => {
     if (!personas) return []
@@ -38,8 +38,12 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   }, [nfidPersonas])
 
   const getPersona = React.useCallback(async () => {
+    console.log(">> debug getPersona", { personaService })
+
     if (!personaService) return
     const response = await personaService.read_personas()
+
+    console.log(">> debug getPersona", { response })
 
     if (response.status_code === 200) {
       setPersonas(normalizePersonas(response.data[0]))

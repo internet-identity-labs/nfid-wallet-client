@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom"
 
 type Status = "initial" | "loading" | "success"
 
-export const RegisterDevice = () => {
+export const RegisterNewFromDelegate = () => {
   const [status, setStatus] = React.useState<Status>("initial")
   const [showModal, setShowModal] = React.useState(false)
   const { opener } = usePostMessage({
@@ -28,7 +28,7 @@ export const RegisterDevice = () => {
     platform: { device },
   } = useDeviceInfo()
 
-  let { secret, userNumber } = useParams()
+  let { userNumber } = useParams()
   const { createWebAuthNDevice } = useDevices()
   const { counter } = useTimer({
     defaultCounter: 10,
@@ -37,10 +37,8 @@ export const RegisterDevice = () => {
     try {
       setStatus("loading")
 
-      if (!secret || !userNumber) {
-        return console.error(
-          `Missing secret: ${secret} or userNumber: ${userNumber} from url`,
-        )
+      if (!userNumber) {
+        return console.error(`Missing userNumber: ${userNumber} from url`)
       }
 
       const { device } = await createWebAuthNDevice(BigInt(userNumber))
@@ -53,7 +51,7 @@ export const RegisterDevice = () => {
       setStatus("initial")
       setShowModal(false)
     }
-  }, [createWebAuthNDevice, opener, secret, userNumber])
+  }, [createWebAuthNDevice, opener, userNumber])
 
   React.useEffect(() => {
     if (counter === 0) {
@@ -86,7 +84,7 @@ export const RegisterDevice = () => {
       {status === "success" && showModal ? (
         <Modal
           title={"This device is now equipped for Web 3.0"}
-          description={`Please wait a few moments for your other device's screen to update. Click the button below if this tab doesn't close in ${counter}.`}
+          description={`Please wait a few moments for your other device's screen to update. Click the button below if this tab doesn't close.`}
           iconType="success"
           buttonText="Done"
           onClick={() => {

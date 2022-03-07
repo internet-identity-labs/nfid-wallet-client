@@ -38,7 +38,6 @@ export const useAuthentication = () => {
   const [principalId] = useAtom(principalIdAtom)
 
   const { userNumber } = useAccount()
-  const { setUserNumber } = useUnknownDeviceConfig()
 
   const logout = React.useCallback(() => {
     setActors(null)
@@ -69,7 +68,9 @@ export const useAuthentication = () => {
       const result = apiResultToLoginResult(response)
 
       if (result.tag === "err") {
-        setError(result.title)
+        setError(result)
+        setIsLoading(false)
+        return
       }
 
       if (result.tag === "ok") {
@@ -94,15 +95,9 @@ export const useAuthentication = () => {
   )
 
   const loginWithRecovery = React.useCallback(
-    async (seedPhrase: string) => {
+    async (seedPhrase: string, userNumber: bigint) => {
       try {
         setIsLoading(true)
-        const numberFromSeedphrase = seedPhrase.split(" ")[0]
-        const userNumber = parseUserNumber(numberFromSeedphrase)
-
-        if (!userNumber) {
-          throw new Error("Invalid anchor")
-        }
 
         const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
 
@@ -110,9 +105,11 @@ export const useAuthentication = () => {
           throw new Error("No devices found")
         }
 
+        console.log("recoveryDevices[0]", recoveryDevices[0])
+
         const response = await IIConnection.fromSeedPhrase(
           userNumber,
-          seedPhrase.split(`${userNumber} `)[1],
+          seedPhrase,
           recoveryDevices[0],
         )
 
@@ -128,7 +125,6 @@ export const useAuthentication = () => {
           initUserGeek(
             result.internetIdentity.delegationIdentity.getPrincipal(),
           )
-          setUserNumber(userNumber)
           setIsLoading(false)
           setError(null)
         }
@@ -139,7 +135,7 @@ export const useAuthentication = () => {
         setIsLoading(false)
       }
     },
-    [initUserGeek, setActors, setError, setIsLoading, setUserNumber],
+    [initUserGeek, setActors, setError, setIsLoading],
   )
 
   return {

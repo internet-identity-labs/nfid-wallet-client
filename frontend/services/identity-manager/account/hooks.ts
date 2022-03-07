@@ -28,6 +28,7 @@ export const useAccount = () => {
           ...newAccount,
           name: newAccount.name[0],
           anchor: newAccount.anchor.toString(),
+          skipPersonalize: false,
         })
       }
       return response
@@ -36,8 +37,11 @@ export const useAccount = () => {
   )
 
   const readAccount = React.useCallback(
-    async (accountService?: AccountService) => {
+    async (accountService?: AccountService, anchor?: bigint) => {
       if (!accountService) throw new Error('"accountService" is required')
+      if (!account && !anchor) throw new Error('"anchor" is required')
+
+      const _anchor = account?.anchor || anchor
       const response = await accountService.get_account()
       const newAccount = response.data[0]
 
@@ -46,12 +50,21 @@ export const useAccount = () => {
           ...newAccount,
           name: newAccount.name[0],
           anchor: newAccount.anchor.toString(),
+          skipPersonalize: false,
         })
       }
-      if (!newAccount && account) {
-        await accountService.create_account({ anchor: BigInt(account.anchor) })
-        readAccount(accountService)
+
+      // NOTE: this is only for dev purposes!!!
+      if (!newAccount && _anchor) {
+        const res = await accountService.create_account({
+          anchor: BigInt(_anchor),
+        })
+        console.log("res :>> ", res)
+
+        readAccount(accountService, BigInt(_anchor))
       }
+
+      return response
     },
     [account, setAccount],
   )

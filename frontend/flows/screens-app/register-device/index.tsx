@@ -86,7 +86,7 @@ export const RegisterDevice = () => {
       {status === "success" && showModal ? (
         <Modal
           title={"This device is now equipped for Web 3.0"}
-          description={`Please wait a few moments for your other device's screen to update. Click the button below if this tab doesn't close in ${counter}.`}
+          description={`Please wait a few moments for your other device's screen to update. Click the button below if this tab doesn't close.`}
           iconType="success"
           buttonText="Done"
           onClick={() => {

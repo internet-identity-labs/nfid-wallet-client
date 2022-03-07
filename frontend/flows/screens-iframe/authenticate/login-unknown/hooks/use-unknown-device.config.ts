@@ -93,9 +93,6 @@ export const useUnknownDeviceConfig = () => {
           setPubKey(hex)
           setDomain(new URL(event.origin).host)
         },
-        "new-device": (event: any) => {
-          handleStoreNewDevice(event.data)
-        },
       },
     })
 
@@ -119,8 +116,8 @@ export const useUnknownDeviceConfig = () => {
   }, [isReady, postClientReadyMessage])
 
   const handleRegisterDevice = React.useCallback(async () => {
-    setStatus("loading")
     if (!userNumber) throw new Error("userNumber required")
+    setStatus("loading")
 
     window.open(
       generatePath(RegisterNewDeviceConstants.base, {
@@ -132,19 +129,14 @@ export const useUnknownDeviceConfig = () => {
 
   const handleSendDelegate = React.useCallback(async () => {
     try {
-      if (!signedDelegation) {
-        if (fromPath === "loginWithRecovery") {
-          const response = await readAccount(identityManager, userNumber)
-
-          console.log("response :>> ", response)
-
-          return navigate(`${IFrameAuthorizeAppConstants.base}`)
-        }
-
-        throw new Error("No signed delegation found")
-      }
+      if (!signedDelegation) throw new Error("No signed delegation found")
 
       const parsedSignedDelegation = buildDelegate(signedDelegation)
+      console.log(">> handleSendDelegate", {
+        signedDelegation,
+        parsedSignedDelegation,
+      })
+
       const protocol =
         CONFIG.FRONTEND_MODE === "development"
           ? "http:"
@@ -159,35 +151,25 @@ export const useUnknownDeviceConfig = () => {
     } catch (err) {
       console.error(">> not a valid delegate", { err })
     }
-  }, [
-    signedDelegation,
-    domain,
-    postClientAuthorizeSuccessMessage,
-    appWindow,
-    fromPath,
-    readAccount,
-    identityManager,
-    userNumber,
-    navigate,
-  ])
+  }, [signedDelegation, domain, postClientAuthorizeSuccessMessage, appWindow])
 
-  const handleLoginFromRemoteDelegation = React.useCallback(async () => {
-    if (!nfidJsonDelegate || !userNumber)
-      throw new Error("Missing delegate or userNumber")
+  const handleLoginFromRemoteDelegation = React.useCallback(
+    async (nfidJsonDelegate, userNumber) => {
+      const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
+        chain: JSON.stringify(nfidJsonDelegate.chain),
+        sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
+        userNumber: BigInt(userNumber),
+      })
+      const result = apiResultToLoginResult(loginResult)
 
-    const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
-      chain: JSON.stringify(nfidJsonDelegate.chain),
-      sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
-      userNumber: userNumber,
-    })
-    const result = apiResultToLoginResult(loginResult)
-
-    if (result.tag === "ok") {
-      setAuthenticatedActors(result)
-    }
-    // TODO: handle this more gracefully
-    if (result.tag !== "ok") throw new Error("login failed")
-  }, [nfidJsonDelegate, setAuthenticatedActors, userNumber])
+      if (result.tag === "ok") {
+        setAuthenticatedActors(result)
+      }
+      // TODO: handle this more gracefully
+      if (result.tag !== "ok") throw new Error("login failed")
+    },
+    [setAuthenticatedActors],
+  )
 
   const handlePollForDelegate = React.useCallback(
     async (cancelPoll: () => void) => {
@@ -205,10 +187,15 @@ export const useUnknownDeviceConfig = () => {
         )
 
         if (registerMessage) {
+          console.log(">> handlePollForDelegate", { registerMessage })
           setUserNumber(BigInt(registerMessage.userNumber))
           setNfidJsonDelegate(registerMessage.nfid)
           setSignedDelegation(registerMessage.signedDelegate)
-          handleLoginFromRemoteDelegation()
+
+          handleLoginFromRemoteDelegation(
+            registerMessage.nfid,
+            registerMessage.userNumber,
+          )
 
           setStatus("success")
           setShowRegister(true)
@@ -216,6 +203,8 @@ export const useUnknownDeviceConfig = () => {
         }
 
         if (waitingMessage) {
+          console.log(">> handlePollForDelegate", { waitingMessage })
+
           setStatus("loading")
         }
       }
@@ -228,43 +217,6 @@ export const useUnknownDeviceConfig = () => {
       setStatus,
     ],
   )
-
-  const handleWaitForRegisteredDeviceKey = React.useCallback(async () => {
-    if (!userNumber) throw new Error("No anchor found")
-
-    const existingDevices = await IIConnection.lookupAll(userNumber)
-    console.log(">> ", { existingDevices })
-
-    // TODO: fix the comparison
-    const matchedDevice = existingDevices.find((deviceData) => {
-      const existingDeviceString = deviceData.pubkey.toString()
-      const newDeviceKeyString = blobFromHex(newDeviceKey).toString()
-
-      existingDeviceString === newDeviceKeyString
-    })
-
-    await readAccount(identityManager)
-    setStatus("success")
-
-    if (!fromPath || fromPath !== "loginWithRecovery") {
-      handleSendDelegate()
-    }
-
-    if (fromPath === "loginWithRecovery") {
-      navigate(`${IFrameAuthorizeAppConstants.base}`)
-    }
-
-    setNewDeviceKey(null)
-  }, [
-    fromPath,
-    handleSendDelegate,
-    identityManager,
-    navigate,
-    newDeviceKey,
-    readAccount,
-    setStatus,
-    userNumber,
-  ])
 
   return {
     status,
@@ -283,7 +235,6 @@ export const useUnknownDeviceConfig = () => {
     handleRegisterDevice,
     handleSendDelegate,
     postClientAuthorizeSuccessMessage,
-    handleWaitForRegisteredDeviceKey,
     handleLoginFromRemoteDelegation,
     handlePollForDelegate,
     handleStoreNewDevice,

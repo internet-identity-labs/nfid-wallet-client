@@ -7,32 +7,73 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { AuthorizeAppUnknownDevice } from "frontend/screens/authorize-app-unknown-device"
 import { Loader } from "frontend/ui-kit/src/index"
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
+import { useMessageChannel } from "./hooks/use-message-channel"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 
 interface UnknownDeviceScreenProps {}
 
 export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
   const { applicationName } = useMultipass()
+  const { identityManager, isAuthenticated } = useAuthentication()
+  const { createDevice } = useDevices()
+  const { readAccount } = useAccount()
+  const navigate = useNavigate()
 
   const {
     status,
     url,
-    newDeviceKey,
     showRegister,
+    userNumber,
     handleRegisterDevice,
     handleSendDelegate,
-    handleWaitForRegisteredDeviceKey,
     handlePollForDelegate,
   } = useUnknownDeviceConfig()
   const isLoading = status === "loading"
-  const navigate = useNavigate()
+
+  console.log(">> UnknownDeviceScreen", {
+    isAuthenticated,
+    isLoading,
+    status,
+    showRegister,
+  })
 
   useInterval(handlePollForDelegate, 2000)
-  useInterval(handleWaitForRegisteredDeviceKey, 2000, !!newDeviceKey)
+
+  const handleNewDevice = React.useCallback(
+    async (event) => {
+      console.log(">> handleNewDevice", { event })
+      const response = await createDevice({
+        ...event.data.device,
+        userNumber,
+      })
+      console.log(">> TODO: handle response codes", { response })
+
+      const readAccountResponse = await readAccount(identityManager, userNumber)
+
+      console.log(">> TODO: handle response codes", { readAccountResponse })
+      handleSendDelegate()
+    },
+    [
+      createDevice,
+      handleSendDelegate,
+      identityManager,
+      readAccount,
+      userNumber,
+    ],
+  )
+
+  useMessageChannel({
+    messageHandler: {
+      "new-device": handleNewDevice,
+    },
+  })
 
   return (
-    <div className={clsx("relative", isLoading && "bg-white")}>
+    <div className={clsx("relative")}>
       {/* IFrameAuthorizeAppUnkownDevice */}
       {!isLoading && !showRegister && url ? (
         <IFrameScreen logo>
@@ -47,10 +88,9 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
           />
         </IFrameScreen>
       ) : null}
-
-      {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState) */}
+      {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState)  */}
       {isLoading && (
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
+        <div className="relative w-full h-full">
           <div className="flex flex-col h-full w-full items-center justify-center px-14 backdrop-blur bg-[#ffffffd9]">
             <Loader
               iframe
@@ -64,12 +104,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
           </div>
         </div>
       )}
-
       {showRegister && !isLoading && (
-        <AuthorizeRegisterDecider
-          onRegister={handleRegisterDevice}
-          onLogin={handleSendDelegate}
-        />
+        <IFrameScreen logo>
+          <AuthorizeRegisterDecider
+            onRegister={handleRegisterDevice}
+            onLogin={handleSendDelegate}
+          />
+        </IFrameScreen>
       )}
     </div>
   )

@@ -1,6 +1,7 @@
 import { ButtonChevronIcon } from "components/atoms/button/icons/chevron"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import {
   Button,
   Card,
@@ -41,7 +42,8 @@ export const RegisterAccountSMSVerification: React.FC<
     mode: "all",
   })
 
-  const { createWebAuthNIdentity, verifyPhonenumber } = useMultipass()
+  const { verifyPhonenumber } = useAccount()
+  const { createWebAuthNIdentity } = useMultipass()
 
   const { name, phonenumber } = state as RegisterAccountState
   const [loading, setLoading] = React.useState(false)

@@ -8,7 +8,6 @@ import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import { TextArea } from "frontend/ui-kit/src"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { useInterval } from "frontend/hooks/use-interval"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useMessageChannel } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-message-channel"
 
@@ -38,7 +37,7 @@ export const RestoreAccessPoint: React.FC<
     [handleStoreNewDevice],
   )
 
-  const { isReady } = useMessageChannel({
+  useMessageChannel({
     messageHandler: {
       "new-device": handleNewDevice,
     },

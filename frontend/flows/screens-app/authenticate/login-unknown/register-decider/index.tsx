@@ -13,8 +13,6 @@ interface AuthorizeRegisterDeciderProps
 export const AppScreenAuthorizeRegisterDecider: React.FC<
   AuthorizeRegisterDeciderProps
 > = ({ children, className }) => {
-  const {} = useUnknown
-
   return (
     <AppScreen>
       <Card className="grid grid-cols-12">

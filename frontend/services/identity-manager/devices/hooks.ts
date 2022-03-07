@@ -81,7 +81,7 @@ export const useDevices = () => {
     }) => {
       if (!internetIdentity) throw new Error("Unauthorized")
 
-      return await internetIdentity.add(
+      const response = await internetIdentity.add(
         userNumber,
         deviceName,
         { unknown: null },
@@ -89,6 +89,8 @@ export const useDevices = () => {
         derBlobFromBlob(blobFromHex(publicKey)),
         blobFromHex(rawId),
       )
+      console.log(">> createDevice", { response })
+      return response
     },
     [internetIdentity],
   )

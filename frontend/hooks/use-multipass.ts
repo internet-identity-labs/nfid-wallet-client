@@ -1,6 +1,4 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import {
   canisterIdPrincipal as iiCanisterIdPrincipal,
@@ -44,8 +42,6 @@ export const useMultipass = () => {
   }, [applicationName, applicationNameFromPath, params, setApplicationName])
 
   return {
-    ...useAccount(),
-    ...usePersona(),
     createWebAuthNIdentity,
     applicationName,
     setApplicationName,

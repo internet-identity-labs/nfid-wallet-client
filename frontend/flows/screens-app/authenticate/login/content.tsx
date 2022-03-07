@@ -1,14 +1,14 @@
+import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { H2, H5 } from "components/atoms/typography"
+import { ProfileConstants as AppScreenProfile } from "frontend/flows/screens-app/profile/routes"
 import { IFrameAuthorizeAppConstants as IFrameAuthorize } from "frontend/flows/screens-iframe/authorize-app/routes"
-import { useAuthorization } from "frontend/flows/screens-iframe/authenticate/login/hooks"
 import { IFrameProfileConstants as IFrameProfile } from "frontend/flows/screens-iframe/personalize/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { Loader, P } from "frontend/ui-kit/src"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { ProfileConstants as profile } from "../../profile/routes"
 import { ImageNFIDLogin } from "../image"
 
 interface AuthenticateNFIDLoginContentProps
@@ -26,25 +26,31 @@ export const AuthenticateNFIDLoginContent: React.FC<
   console.log(">> AuthenticateNFIDLoginContent", { params, iframe })
 
   const { account } = useAccount()
-  const { isLoading, login } = useAuthentication()
+  const { isLoading, login, error } = useAuthentication()
   const navigate = useNavigate()
 
   const handleUnlock = React.useCallback(async () => {
-    await login()
+    const result = await login()
 
-    // TODO: fix navigate on both if statements
-    if (account && account.skipPersonalize) {
-      // TODO: figure out if we really need to navigate here.
-      // Normally as this is a AuhtWrapper, it should not be necessary at this point!
-      iframe && navigate(IFrameAuthorize.base)
-    }
+    if (result?.tag === "ok") {
+      if (account && account.skipPersonalize) {
+        // TODO: figure out if we really need to navigate here.
+        // Normally as this is a AuhtWrapper, it should not be necessary at this point!
+        iframe && navigate(IFrameAuthorize.base)
+      }
 
-    if (account && !account.skipPersonalize) {
-      iframe
-        ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`) // TODO: pass secret and scope?
-        : navigate(`${profile.base}/${profile.personalize}`, {
-            state: params,
-          })
+      if (account && !account.skipPersonalize) {
+        iframe
+          ? navigate(`${IFrameProfile.base}/${IFrameProfile.personalize}`, {
+              state: params,
+            })
+          : navigate(
+              `${AppScreenProfile.base}/${AppScreenProfile.personalize}`,
+              {
+                state: params,
+              },
+            )
+      }
     }
   }, [account, iframe, login, navigate, params])
 
@@ -72,6 +78,10 @@ export const AuthenticateNFIDLoginContent: React.FC<
         >
           Unlock as {account?.name || account?.anchor}
         </Button>
+
+        {error && (
+          <div className={clsx("text-sm mt-2 text-red-base")}>{error}</div>
+        )}
 
         <Loader isLoading={isLoading} iframe={iframe} />
       </div>

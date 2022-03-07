@@ -124,11 +124,10 @@ export const useUnknownDeviceConfig = () => {
     window.open(
       generatePath(RegisterNewDeviceConstants.base, {
         userNumber: userNumber.toString(),
-        secret: pubKey,
       }),
       "_blank",
     )
-  }, [pubKey, setStatus, userNumber])
+  }, [setStatus, userNumber])
 
   const handleSendDelegate = React.useCallback(async () => {
     try {

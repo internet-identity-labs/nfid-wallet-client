@@ -28,7 +28,7 @@ export const RegisterNewFromDelegate = () => {
     platform: { device },
   } = useDeviceInfo()
 
-  let { secret, userNumber } = useParams()
+  let { userNumber } = useParams()
   const { createWebAuthNDevice } = useDevices()
   const { counter } = useTimer({
     defaultCounter: 10,
@@ -37,10 +37,8 @@ export const RegisterNewFromDelegate = () => {
     try {
       setStatus("loading")
 
-      if (!secret || !userNumber) {
-        return console.error(
-          `Missing secret: ${secret} or userNumber: ${userNumber} from url`,
-        )
+      if (!userNumber) {
+        return console.error(`Missing userNumber: ${userNumber} from url`)
       }
 
       const { device } = await createWebAuthNDevice(BigInt(userNumber))
@@ -53,7 +51,7 @@ export const RegisterNewFromDelegate = () => {
       setStatus("initial")
       setShowModal(false)
     }
-  }, [createWebAuthNDevice, opener, secret, userNumber])
+  }, [createWebAuthNDevice, opener, userNumber])
 
   React.useEffect(() => {
     if (counter === 0) {

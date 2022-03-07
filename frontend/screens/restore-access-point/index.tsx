@@ -10,7 +10,7 @@ import { TextArea } from "frontend/ui-kit/src"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { UnknownDeviceConstants } from "../../authenticate/login-unknown/register-decider/routes"
+import { UnknownDeviceConstants } from "frontend/flows/screens-app/authenticate/login-unknown/register-decider/routes"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<
@@ -20,7 +20,7 @@ interface RestoreAccessPointRecoveryPhraseContentProps
   iframe?: boolean
 }
 
-export const RestoreAccessPointRecoveryPhraseContent: React.FC<
+export const RestoreAccessPoint: React.FC<
   RestoreAccessPointRecoveryPhraseContentProps
 > = ({ children, className, iframe }) => {
   const { loginWithRecovery, error, isLoading } = useAuthentication()

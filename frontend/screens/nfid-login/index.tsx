@@ -9,7 +9,7 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { Loader, P } from "frontend/ui-kit/src"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { ImageNFIDLogin } from "../image"
+import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 
 interface AuthenticateNFIDLoginContentProps
   extends React.DetailedHTMLProps<

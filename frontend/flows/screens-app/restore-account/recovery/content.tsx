@@ -22,7 +22,7 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
 > = ({ children, className, iframe }) => {
   const { loginWithRecovery, error, isLoading } = useAuthentication()
   const navigate = useNavigate()
-  const { setShowRegister } = useUnknownDeviceConfig()
+  const { setShowRegister, setUserNumber } = useUnknownDeviceConfig()
   const {
     register,
     formState: { errors, isValid },

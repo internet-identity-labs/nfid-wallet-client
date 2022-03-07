@@ -16,7 +16,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
 
   const {
     status,
-    message,
     url,
     newDeviceKey,
     showRegister,
@@ -80,7 +79,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
       {showRegister && !isLoading && (
         <AuthorizeRegisterDecider
           onRegister={handleRegisterDevice}
-          onLogin={() => handleSendDelegate(message)}
+          onLogin={() => handleSendDelegate}
         />
       )}
     </div>

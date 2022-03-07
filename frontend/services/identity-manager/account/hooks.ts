@@ -44,6 +44,8 @@ export const useAccount = () => {
 
       const _anchor = account?.anchor || anchor
       const response = await accountService.get_account()
+      console.log(">> debug readAccount", { response })
+
       const newAccount = response.data[0]
 
       if (newAccount) {
@@ -51,7 +53,7 @@ export const useAccount = () => {
           ...newAccount,
           name: newAccount.name[0],
           anchor: newAccount.anchor.toString(),
-          skipPersonalize: false,
+          skipPersonalize: !!newAccount.name[0],
         })
       }
 
@@ -60,7 +62,6 @@ export const useAccount = () => {
         const res = await accountService.create_account({
           anchor: BigInt(_anchor),
         })
-        console.log("res :>> ", res)
 
         readAccount(accountService, BigInt(_anchor))
       }

@@ -25,14 +25,21 @@ export const AuthenticateNFIDLoginContent: React.FC<
   const params = useParams()
   console.log(">> AuthenticateNFIDLoginContent", { params, iframe })
 
-  const { account } = useAccount()
-  const { isLoading, login, error } = useAuthentication()
+  const { account, readAccount } = useAccount()
+  const { isLoading, error, login } = useAuthentication()
   const navigate = useNavigate()
 
   const handleUnlock = React.useCallback(async () => {
-    const result = await login()
+    const response = await login()
 
-    if (result?.tag === "ok") {
+    // TODO: check for response codes
+    if (response?.tag === "ok") {
+      // TODO: refresh account when authenticated
+      // currently broken because of different principalId
+      // const accountResponse = await readAccount(response.identityManager)
+      // console.log(">> handleUnlock", { accountResponse })
+
+      // TODO: fix navigate on both if statements
       if (account && account.skipPersonalize) {
         // TODO: figure out if we really need to navigate here.
         // Normally as this is a AuhtWrapper, it should not be necessary at this point!

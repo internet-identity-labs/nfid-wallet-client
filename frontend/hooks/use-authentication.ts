@@ -82,6 +82,7 @@ export const useAuthentication = () => {
     } catch {
       setError("Failed to authenticate")
       setIsLoading(false)
+      setError(null)
     }
   }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
 

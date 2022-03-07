@@ -129,6 +129,7 @@ export const useUnknownDeviceConfig = () => {
 
   const handleSendDelegate = React.useCallback(async () => {
     try {
+      console.log(">> handleSendDelegate", { signedDelegation })
       if (!signedDelegation) throw new Error("No signed delegation found")
 
       const parsedSignedDelegation = buildDelegate(signedDelegation)
@@ -190,7 +191,11 @@ export const useUnknownDeviceConfig = () => {
           console.log(">> handlePollForDelegate", { registerMessage })
           setUserNumber(BigInt(registerMessage.userNumber))
           setNfidJsonDelegate(registerMessage.nfid)
-          setSignedDelegation(registerMessage.signedDelegate)
+          setSignedDelegation({
+            delegation: registerMessage.delegation,
+            signature: registerMessage.signature,
+            userKey: registerMessage.userKey,
+          })
 
           handleLoginFromRemoteDelegation(
             registerMessage.nfid,

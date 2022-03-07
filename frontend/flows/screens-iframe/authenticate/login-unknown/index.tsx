@@ -7,12 +7,13 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { AuthorizeAppUnknownDevice } from "frontend/screens/authorize-app-unknown-device"
 import { Loader } from "frontend/ui-kit/src/index"
 import React from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 import { useMessageChannel } from "./hooks/use-message-channel"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface UnknownDeviceScreenProps {}
 
@@ -20,6 +21,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
   const { applicationName } = useMultipass()
   const { identityManager, isAuthenticated } = useAuthentication()
   const { createDevice } = useDevices()
+  const { getPersona } = usePersona()
   const { readAccount } = useAccount()
   const navigate = useNavigate()
 
@@ -53,12 +55,18 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
       console.log(">> TODO: handle response codes", { response })
 
       const readAccountResponse = await readAccount(identityManager, userNumber)
+      // TODO: fetch personas when registered
+      const getPersonaResponse = await getPersona()
 
-      console.log(">> TODO: handle response codes", { readAccountResponse })
+      console.log(">> TODO: debug handle response codes", {
+        readAccountResponse,
+        getPersonaResponse,
+      })
       handleSendDelegate()
     },
     [
       createDevice,
+      getPersona,
       handleSendDelegate,
       identityManager,
       readAccount,

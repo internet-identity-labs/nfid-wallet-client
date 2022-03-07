@@ -5,7 +5,7 @@ import { blobFromUint8Array } from "@dfinity/candid"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { LoginError } from "frontend/services/internet-identity/api-result-to-login-result"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
-import { useMessageChannel } from "../login-unknown/hooks"
+import { useMessageChannel } from "../login-unknown/hooks/use-message-channel"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
 const READY_MESSAGE = {

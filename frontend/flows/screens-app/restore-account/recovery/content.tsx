@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { Loader } from "components/atoms/loader"
 import { H2, H5 } from "components/atoms/typography"
+import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { TextArea } from "frontend/ui-kit/src"
 import React from "react"
@@ -21,6 +22,7 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
 > = ({ children, className, iframe }) => {
   const { loginWithRecovery, error, isLoading } = useAuthentication()
   const navigate = useNavigate()
+  const { setShowRegister } = useUnknownDeviceConfig()
 
   const {
     register,
@@ -38,7 +40,8 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
       const result = await loginWithRecovery(recoveryPhrase)
 
       if (result?.tag === "ok") {
-        console.log('"success" :>> ', "success! navigate me")
+        setShowRegister(true)
+        navigate(`/login-unknown-device`)
       } else {
         setError("recoveryPhrase", {
           type: "manual",
@@ -46,7 +49,7 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
         })
       }
     },
-    [loginWithRecovery, setError],
+    [loginWithRecovery, navigate, setError, setShowRegister],
   )
 
   const title = "Log in with Recovery Phrase"

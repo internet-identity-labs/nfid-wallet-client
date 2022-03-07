@@ -6,19 +6,21 @@ import { IFrame } from "@identity-labs/ui"
 interface InternetAuthProps {}
 
 export const MultipassAuth: React.FC<InternetAuthProps> = () => {
-  const [isLoading, loading] = React.useState(true)
+  const [calledAuth, setCalledAuth] = React.useState(false)
   const [showModal, setShowModal] = React.useState(false)
   const { isAuthenticated, identityProvider, authenticate } =
     useInternetIdentity()
 
   const handleAuthentication = React.useCallback(async () => {
-    loading(false)
     try {
-      await authenticate()
+      if (!calledAuth) {
+        authenticate()
+        setCalledAuth(true)
+      }
     } catch {
       console.error("something happened")
     }
-  }, [authenticate])
+  }, [authenticate, calledAuth])
 
   React.useEffect(() => {
     const timeout = setTimeout(() => setShowModal(true), 500)

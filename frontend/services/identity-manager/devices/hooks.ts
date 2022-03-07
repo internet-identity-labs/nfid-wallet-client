@@ -4,15 +4,19 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import {
   creationOptions,
+  derFromPubkey,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import produce from "immer"
-import { useAtom } from "jotai"
+import { atom, useAtom } from "jotai"
 import React from "react"
 import { useAccount } from "../account/hooks"
 import { Device, devicesAtom } from "./state"
 
+const errorAtom = atom<any | null>(null)
+
 export const useDevices = () => {
+  const [error, setError] = useAtom(errorAtom)
   const [devices, setDevices] = useAtom(devicesAtom)
   const { newDeviceName } = useDeviceInfo()
 
@@ -79,20 +83,37 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      if (!internetIdentity) throw new Error("Unauthorized")
+      try {
+        if (!internetIdentity) throw new Error("Unauthorized")
 
-      const response = await internetIdentity.add(
-        userNumber,
-        deviceName,
-        { unknown: null },
-        { authentication: null },
-        derBlobFromBlob(blobFromHex(publicKey)),
-        blobFromHex(rawId),
-      )
-      console.log(">> createDevice", { response })
-      return response
+        const devicesLengthBeforeAdd = (await IIConnection.lookupAll(userNumber)).length
+
+        await internetIdentity.add(
+          userNumber,
+          deviceName,
+          { unknown: null },
+          { authentication: null },
+          derBlobFromBlob(blobFromHex(publicKey)),
+          blobFromHex(rawId),
+        )
+
+        const allDevices = await IIConnection.lookupAll(userNumber)
+        const matchDevice = allDevices.find(
+          (item) =>
+            derFromPubkey(item.pubkey) ===
+            derBlobFromBlob(blobFromHex(publicKey)),
+        )
+        const matchNewDeviceLength = devicesLengthBeforeAdd + 1 === allDevices.length
+        if (!matchDevice || !matchNewDeviceLength) {
+          throw new Error("Device length mismatch or device not found")
+        }
+
+        setError(null)
+      } catch (error) {
+        setError("Device creation failed")
+      }
     },
-    [internetIdentity],
+    [internetIdentity, setError],
   )
 
   const getDevices = React.useCallback(async () => {
@@ -104,6 +125,7 @@ export const useDevices = () => {
   }, [userNumber, handleLoadDevices])
 
   return {
+    error,
     devices,
     createWebAuthNDevice,
     getDevices,

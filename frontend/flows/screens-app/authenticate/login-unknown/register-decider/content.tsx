@@ -1,22 +1,22 @@
-import React from "react"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
-import { H5 } from "components/atoms/typography"
 import { Button } from "components/atoms/button"
-import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { RadioButton } from "components/atoms/button/radio-button"
+import { H2, H5 } from "components/atoms/typography"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import React from "react"
 
-interface AuthorizeRegisterDeciderProps
+interface AuthorizeRegisterDeciderContentProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
   onRegister: () => void
   onLogin: () => void
+  iframe?: boolean
 }
 
-export const AuthorizeRegisterDecider: React.FC<
-  AuthorizeRegisterDeciderProps
-> = ({ onRegister, onLogin }) => {
+export const AuthorizeRegisterDeciderContent: React.FC<
+  AuthorizeRegisterDeciderContentProps
+> = ({ children, className, onRegister, onLogin, iframe }) => {
   const {
     platform: { device, authenticator: platformAuth },
   } = useDeviceInfo()
@@ -33,9 +33,15 @@ export const AuthorizeRegisterDecider: React.FC<
     }
   }
 
+  const title = "Log in faster on this device"
+
   return (
-    <IFrameScreen logo>
-      <H5 className="mb-4">Log in faster on this device</H5>
+    <>
+      {iframe ? (
+        <H5 className="mb-4">{title}</H5>
+      ) : (
+        <H2 className="mb-4">{title}</H2>
+      )}
 
       <div>
         Trust this {device}? You can quickly and securely log in the next time
@@ -60,10 +66,10 @@ export const AuthorizeRegisterDecider: React.FC<
       </div>
 
       <div className="mt-6">
-        <Button secondary block onClick={handleClick}>
+        <Button secondary block={iframe} large={!iframe} onClick={handleClick}>
           Continue
         </Button>
       </div>
-    </IFrameScreen>
+    </>
   )
 }

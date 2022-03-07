@@ -12,11 +12,10 @@ import {
   MenuItem,
 } from "frontend/ui-kit/src"
 import React from "react"
+import { AuthorizeRegisterDeciderContent } from "../screens-app/authenticate/login-unknown/register-decider/content"
+import { RestoreAccessPointRecoveryPhraseContent } from "../screens-app/restore-access-point/recovery-phrase/content"
 import { IFrameAuthenticateNFIDLogin } from "../screens-iframe/authenticate/login"
-import { AuthorizeRegisterDecider } from "../screens-iframe/authenticate/login-unknown/authorize-register-decider"
 import { IFrameNFIDPersonalize } from "../screens-iframe/personalize"
-import { IFrameRestoreAccessPointStart } from "../screens-iframe/restore-access-point"
-import { IFrameRestoreAccessPointRecoveryPhrase } from "../screens-iframe/restore-access-point/recovery-phrase"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<
@@ -103,10 +102,17 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
               fixedHeight={false}
             >
-              <AuthorizeRegisterDecider
-                onRegister={() => console.log("register")}
-                onLogin={() => console.log("login")}
-              />
+              <IFrameScreen logo>
+                <AuthorizeRegisterDeciderContent
+                  iframe
+                  onRegister={() => {
+                    console.log("Register")
+                  }}
+                  onLogin={() => {
+                    console.log("Login")
+                  }}
+                />
+              </IFrameScreen>
             </IFrameWrapper>
 
             {/* IFrameNFIDPersonalize */}
@@ -122,7 +128,9 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
               fixedHeight={false}
             >
-              <IFrameRestoreAccessPointRecoveryPhrase />
+              <IFrameScreen logo>
+                <RestoreAccessPointRecoveryPhraseContent iframe />
+              </IFrameScreen>
             </IFrameWrapper>
           </div>
         </CardBody>

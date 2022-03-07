@@ -3,7 +3,7 @@ import { Outlet, Route } from "react-router-dom"
 import { RestoreAccessPointRecoveryPhrase } from "./recovery-phrase"
 
 export const RestoreAccessPointConstants = {
-  base: "/restore-account",
+  base: "/restore-access-point",
   recoveryPhrase: "recovery-phrase",
 }
 

@@ -4,7 +4,7 @@ import { IFrameRestoreAccessPointStart } from "."
 import { IFrameRestoreAccessPointRecoveryPhrase } from "./recovery-phrase"
 
 export const IFrameRestoreAccessPointConstants = {
-  base: "/restore-account-iframe",
+  base: "/restore-access-point-iframe",
   nfid: "nfid",
   recoveryPhrase: "recovery-phrase",
 }

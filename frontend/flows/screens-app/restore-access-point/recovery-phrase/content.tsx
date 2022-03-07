@@ -3,12 +3,14 @@ import { Button } from "components/atoms/button"
 import { Loader } from "components/atoms/loader"
 import { H2, H5 } from "components/atoms/typography"
 import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
+import { IFrameUnknownDeviceConstants } from "frontend/flows/screens-iframe/authenticate/login-unknown/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import { TextArea } from "frontend/ui-kit/src"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+import { UnknownDeviceConstants } from "../../authenticate/login-unknown/register-decider/routes"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<
@@ -53,12 +55,17 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
         if (result?.tag === "ok") {
           setShowRegister(true)
 
-          navigate(`/login-unknown-device`, {
-            state: {
-              userNumber,
-              from: "loginWithRecovery",
+          navigate(
+            iframe
+              ? `${IFrameUnknownDeviceConstants.base}`
+              : `${UnknownDeviceConstants.base}`,
+            {
+              state: {
+                userNumber,
+                from: "loginWithRecovery",
+              },
             },
-          })
+          )
         } else {
           console.log("result :>> ", result)
 
@@ -74,7 +81,7 @@ export const RestoreAccessPointRecoveryPhraseContent: React.FC<
         })
       }
     },
-    [loginWithRecovery, navigate, setError, setShowRegister],
+    [iframe, loginWithRecovery, navigate, setError, setShowRegister],
   )
 
   const title = "Log in with Recovery Phrase"

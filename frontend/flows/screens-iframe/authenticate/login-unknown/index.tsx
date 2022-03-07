@@ -1,12 +1,12 @@
 import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { AuthorizeRegisterDeciderContent } from "frontend/flows/screens-app/authenticate/login-unknown/register-decider/content"
+import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { Button, H5, Loader, QRCode } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { IFrameRestoreAccessPointConstants as RAC } from "../../restore-access-point/routes"
-import { AuthorizeRegisterDecider } from "./authorize-register-decider"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 
 interface UnknownDeviceScreenProps {}
@@ -77,7 +77,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
       )}
 
       {showRegister && !isLoading && (
-        <AuthorizeRegisterDecider
+        <AuthorizeRegisterDeciderContent
           onRegister={handleRegisterDevice}
           onLogin={handleSendDelegate}
         />

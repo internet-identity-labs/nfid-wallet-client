@@ -77,7 +77,7 @@ export const useUnknownDeviceConfig = () => {
 
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `https://${multipassDomain}${RegisterDevicePromptConstants.base}/${pubKey}/${domain}/${applicationName}`
+      ? `http://${multipassDomain}${RegisterDevicePromptConstants.base}/${pubKey}/${domain}/${applicationName}`
       : null
   }, [applicationName, domain, pubKey])
 

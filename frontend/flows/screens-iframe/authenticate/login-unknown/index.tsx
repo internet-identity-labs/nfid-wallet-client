@@ -1,4 +1,4 @@
-import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
+import { blobFromHex } from "@dfinity/candid"
 import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
@@ -10,10 +10,7 @@ import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-de
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import {
-  derFromPubkey,
-  IIConnection,
-} from "frontend/services/internet-identity/iiConnection"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
@@ -25,7 +22,7 @@ interface UnknownDeviceScreenProps {}
 export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
   const { applicationName } = useMultipass()
   const { identityManager, isAuthenticated } = useAuthentication()
-  const { createDevice, error } = useDevices()
+  const { createDevice } = useDevices()
   const { getPersona } = usePersona()
   const { readAccount } = useAccount()
   const navigate = useNavigate()
@@ -41,20 +38,13 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
   } = useUnknownDeviceConfig()
   const isLoading = status === "loading"
 
-  console.log(">> UnknownDeviceScreen", {
-    isAuthenticated,
-    isLoading,
-    status,
-    showRegister,
-  })
-
   useInterval(handlePollForDelegate, 2000)
 
   const handleNewDevice = React.useCallback(
     async (event) => {
       if (!userNumber) throw new Error("No userNumber found")
 
-      const { publicKey: pubkey } = event.data.device
+      const { publicKey: pubKey } = event.data.device
 
       await createDevice({
         ...event.data.device,
@@ -62,21 +52,27 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
       })
 
       const allDevices = await IIConnection.lookupAll(BigInt(userNumber))
-      const publicKey = derBlobFromBlob(blobFromHex(pubkey))
-
-      const matchDevice = allDevices.find(
-        (item) => derFromPubkey(item.pubkey) === publicKey,
-      )
+      const publicKey = Array.from(blobFromHex(pubKey)).toString()
+      const matchDevice = allDevices.find((item) => {
+        return item.pubkey.toString() === publicKey
+      })
       if (!matchDevice) throw new Error("Device creation failed")
 
       const [account, persona] = await Promise.all([
-        readAccount(),
+        readAccount(identityManager, userNumber),
         getPersona(),
       ])
 
       handleSendDelegate()
     },
-    [createDevice, getPersona, handleSendDelegate, readAccount, userNumber],
+    [
+      createDevice,
+      getPersona,
+      handleSendDelegate,
+      identityManager,
+      readAccount,
+      userNumber,
+    ],
   )
 
   useMessageChannel({

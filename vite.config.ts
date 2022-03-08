@@ -37,12 +37,8 @@ export default ({ mode }) => {
       },
     },
     server: {
-      https: {
-        key: process.env.VITE_LOCALHOST_KEY_LOCATION,
-        cert: process.env.VITE_LOCALHOST_CERT_LOCATION,
-      },
       hmr: {
-        port: 443,
+        port: 9090,
       },
       cors: true,
       port: 9090,

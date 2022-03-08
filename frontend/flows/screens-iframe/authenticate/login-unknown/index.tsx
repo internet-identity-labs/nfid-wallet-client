@@ -54,7 +54,6 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
     async (event) => {
       if (!userNumber) throw new Error("No userNumber found")
 
-      const allDevices = await IIConnection.lookupAll(BigInt(userNumber))
       const { publicKey: pubkey } = event.data.device
 
       await createDevice({
@@ -62,6 +61,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
         userNumber,
       })
 
+      const allDevices = await IIConnection.lookupAll(BigInt(userNumber))
       const publicKey = derBlobFromBlob(blobFromHex(pubkey))
 
       const matchDevice = allDevices.find(

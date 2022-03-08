@@ -4,19 +4,15 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import {
   creationOptions,
-  derFromPubkey,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import produce from "immer"
-import { atom, useAtom } from "jotai"
+import { useAtom } from "jotai"
 import React from "react"
 import { useAccount } from "../account/hooks"
 import { Device, devicesAtom } from "./state"
 
-const errorAtom = atom<any | null>(null)
-
 export const useDevices = () => {
-  const [error, setError] = useAtom(errorAtom)
   const [devices, setDevices] = useAtom(devicesAtom)
   const { newDeviceName } = useDeviceInfo()
 
@@ -106,7 +102,6 @@ export const useDevices = () => {
   }, [userNumber, handleLoadDevices])
 
   return {
-    error,
     devices,
     createWebAuthNDevice,
     getDevices,

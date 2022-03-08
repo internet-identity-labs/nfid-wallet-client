@@ -38,8 +38,6 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   }, [nfidPersonas])
 
   const getPersona = React.useCallback(async () => {
-    console.log(">> debug getPersona", { personaService })
-
     if (!personaService) return
     const response = await personaService.read_personas()
 
@@ -87,10 +85,6 @@ export const usePersona = ({ application }: UsePersona = {}) => {
     },
     [account, nextPersonaId, personaService, setPersonas],
   )
-
-  React.useEffect(() => {
-    personaService && getPersona()
-  }, [getPersona, personaService, setPersonas])
 
   return {
     isLoadingPersonas: isLoading,

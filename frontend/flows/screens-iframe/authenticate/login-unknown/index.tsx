@@ -1,19 +1,21 @@
+import { blobFromHex } from "@dfinity/candid"
 import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
 import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { AuthorizeAppUnknownDevice } from "frontend/screens/authorize-app-unknown-device"
-import { Loader } from "frontend/ui-kit/src/index"
-import React from "react"
-import { useNavigate } from "react-router-dom"
-import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
-import { useMessageChannel } from "./hooks/use-message-channel"
-import { useAuthentication } from "frontend/hooks/use-authentication"
+import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { Loader } from "frontend/ui-kit/src/index"
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import { useMessageChannel } from "./hooks/use-message-channel"
+import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 
 interface UnknownDeviceScreenProps {}
 
@@ -36,32 +38,31 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
   } = useUnknownDeviceConfig()
   const isLoading = status === "loading"
 
-  console.log(">> UnknownDeviceScreen", {
-    isAuthenticated,
-    isLoading,
-    status,
-    showRegister,
-  })
-
   useInterval(handlePollForDelegate, 2000)
 
   const handleNewDevice = React.useCallback(
     async (event) => {
-      console.log(">> handleNewDevice", { event })
-      const response = await createDevice({
+      if (!userNumber) throw new Error("No userNumber found")
+
+      const { publicKey: pubKey } = event.data.device
+
+      await createDevice({
         ...event.data.device,
         userNumber,
       })
-      console.log(">> TODO: handle response codes", { response })
 
-      const readAccountResponse = await readAccount(identityManager, userNumber)
-      // TODO: fetch personas when registered
-      const getPersonaResponse = await getPersona()
-
-      console.log(">> TODO: debug handle response codes", {
-        readAccountResponse,
-        getPersonaResponse,
+      const allDevices = await IIConnection.lookupAll(BigInt(userNumber))
+      const publicKey = Array.from(blobFromHex(pubKey)).toString()
+      const matchDevice = allDevices.find((item) => {
+        return item.pubkey.toString() === publicKey
       })
+      if (!matchDevice) throw new Error("Device creation failed")
+
+      await Promise.all([
+        readAccount(identityManager, userNumber),
+        getPersona(),
+      ])
+
       handleSendDelegate()
     },
     [

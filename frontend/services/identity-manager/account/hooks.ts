@@ -39,7 +39,6 @@ export const useAccount = () => {
   const readAccount = React.useCallback(
     async (accountService?: AccountService, anchor?: bigint) => {
       if (!accountService) throw new Error('"accountService" is required')
-
       if (!account && !anchor) throw new Error('"anchor" is required')
 
       const _anchor = account?.anchor || anchor

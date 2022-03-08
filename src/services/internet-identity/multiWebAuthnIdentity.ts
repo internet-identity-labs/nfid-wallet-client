@@ -11,6 +11,7 @@ import { PublicKey, SignIdentity } from "@dfinity/agent"
 import { BinaryBlob, blobFromUint8Array, DerEncodedBlob } from "@dfinity/candid"
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
+import { Buffer } from "buffer"
 
 export type CredentialId = BinaryBlob
 export type CredentialData = {

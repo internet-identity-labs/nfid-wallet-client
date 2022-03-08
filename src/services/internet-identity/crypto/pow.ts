@@ -2,6 +2,7 @@ import cubeHash from "./cubehash"
 import { Principal } from "@dfinity/principal"
 import bigUintLE from "biguintle"
 import { ProofOfWork, Timestamp } from "../generated/internet_identity_types"
+import { Buffer } from "buffer"
 
 const DIFFICULTY = 2 // Number of leading bytes that must equal zero in the hash.
 const DOMAIN = "ic-proof-of-work"

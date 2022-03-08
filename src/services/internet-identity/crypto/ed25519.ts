@@ -74,6 +74,7 @@ async function derive(
   i: number,
 ): Promise<[Uint8Array, Uint8Array]> {
   // From the spec: Data = 0x00 || ser256(kpar) || ser32(i)
+  // @ts-ignore
   const data = new Uint8Array([0, ...parentKey, ...toBigEndianArray(i)])
   const key = await window.crypto.subtle.importKey(
     "raw",

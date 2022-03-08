@@ -1,7 +1,7 @@
 import React from "react"
 import clsx from "clsx"
-import { ImageOnlyLoader, Logo } from "frontend/ui-kit/src"
 import { Link } from "react-router-dom"
+import { ImageOnlyLoader } from "frontend/ui-kit/src"
 
 interface NavigationBarProps
   extends React.DetailedHTMLProps<
@@ -17,13 +17,13 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   navigationItems,
 }) => {
   return (
-    <header className="flex flex-none items-center z-1">
+    <header className="flex items-center flex-none z-1">
       <div className="container px-6 mx-auto">
         <div className="flex justify-between py-5">
           <div className="flex items-center">
-            <Link to={"/"} className="font-black text-2xl flex items-center">
+            <Link to={"/"} className="flex items-center text-2xl font-black">
               <span>NF</span>
-              <ImageOnlyLoader className="h-12 w-12" />
+              <ImageOnlyLoader className="w-12 h-12" />
             </Link>
           </div>
 

@@ -35,6 +35,7 @@ import {
   Ed25519KeyIdentity,
   WebAuthnIdentity,
 } from "@dfinity/identity"
+import { Buffer } from "buffer"
 import { Principal } from "@dfinity/principal"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { hasOwnProperty } from "./utils"
@@ -48,7 +49,9 @@ const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
 const canisterId: string = CONFIG.II_CANISTER_ID as string
 
 if (!canisterId)
-  throw new Error("you need to add VITE_II_CANISTER_ID to your environment")
+  throw new Error(
+    "you need to add REACT_APP_II_CANISTER_ID to your environment",
+  )
 
 const getAgent = () => {
   const agent = new HttpAgent({

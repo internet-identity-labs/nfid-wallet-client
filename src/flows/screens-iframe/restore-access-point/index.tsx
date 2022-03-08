@@ -1,5 +1,5 @@
 import { H5 } from "components/atoms/typography"
-import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { IFrameScreen } from "src/design-system/templates/IFrameScreen"
 import { Button, Input } from "frontend/ui-kit/src"
 import { anchorRules } from "frontend/utils/validations"
 import React from "react"
@@ -25,7 +25,7 @@ export const IFrameRestoreAccessPointStart: React.FC<
 
   return (
     <IFrameScreen>
-      <H5 className="text-center mb-4">Log in to your NFID</H5>
+      <H5 className="mb-4 text-center">Log in to your NFID</H5>
 
       <div className="text-center">
         Is this access point already registered? <br />

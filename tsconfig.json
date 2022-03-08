@@ -1,24 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client"],
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
+    "downlevelIteration": true,
+    "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "components/*": ["./frontend/ui-kit/src/components/*"]
+      "frontend/*": ["./src/*"],
+      "components/*": ["src/ui-kit/src/components/*"]
     }
   },
-  "include": ["./frontend"],
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

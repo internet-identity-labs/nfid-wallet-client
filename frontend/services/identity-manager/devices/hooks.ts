@@ -83,37 +83,18 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      try {
-        if (!internetIdentity) throw new Error("Unauthorized")
+      if (!internetIdentity) throw new Error("Unauthorized")
 
-        const devicesLengthBeforeAdd = (await IIConnection.lookupAll(userNumber)).length
-
-        await internetIdentity.add(
-          userNumber,
-          deviceName,
-          { unknown: null },
-          { authentication: null },
-          derBlobFromBlob(blobFromHex(publicKey)),
-          blobFromHex(rawId),
-        )
-
-        const allDevices = await IIConnection.lookupAll(userNumber)
-        const matchDevice = allDevices.find(
-          (item) =>
-            derFromPubkey(item.pubkey) ===
-            derBlobFromBlob(blobFromHex(publicKey)),
-        )
-        const matchNewDeviceLength = devicesLengthBeforeAdd + 1 === allDevices.length
-        if (!matchDevice || !matchNewDeviceLength) {
-          throw new Error("Device length mismatch or device not found")
-        }
-
-        setError(null)
-      } catch (error) {
-        setError("Device creation failed")
-      }
+      await internetIdentity.add(
+        userNumber,
+        deviceName,
+        { unknown: null },
+        { authentication: null },
+        derBlobFromBlob(blobFromHex(publicKey)),
+        blobFromHex(rawId),
+      )
     },
-    [internetIdentity, setError],
+    [internetIdentity],
   )
 
   const getDevices = React.useCallback(async () => {

@@ -1,3 +1,4 @@
+import { blobFromHex, derBlobFromBlob } from "@dfinity/candid"
 import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
@@ -9,6 +10,10 @@ import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-de
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import {
+  derFromPubkey,
+  IIConnection,
+} from "frontend/services/internet-identity/iiConnection"
 import { Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useNavigate } from "react-router-dom"
@@ -47,27 +52,31 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
 
   const handleNewDevice = React.useCallback(
     async (event) => {
+      if (!userNumber) throw new Error("No userNumber found")
+
+      const allDevices = await IIConnection.lookupAll(BigInt(userNumber))
+      const { publicKey: pubkey } = event.data.device
+
       await createDevice({
         ...event.data.device,
         userNumber,
       })
 
-      const readAccountResponse = await readAccount(identityManager, userNumber)
+      const publicKey = derBlobFromBlob(blobFromHex(pubkey))
 
-      if (readAccountResponse.status_code === 200 && !error) {
-        await getPersona()
-        handleSendDelegate()
-      }
+      const matchDevice = allDevices.find(
+        (item) => derFromPubkey(item.pubkey) === publicKey,
+      )
+      if (!matchDevice) throw new Error("Device creation failed")
+
+      const [account, persona] = await Promise.all([
+        readAccount(),
+        getPersona(),
+      ])
+
+      handleSendDelegate()
     },
-    [
-      createDevice,
-      error,
-      getPersona,
-      handleSendDelegate,
-      identityManager,
-      readAccount,
-      userNumber,
-    ],
+    [createDevice, getPersona, handleSendDelegate, readAccount, userNumber],
   )
 
   useMessageChannel({

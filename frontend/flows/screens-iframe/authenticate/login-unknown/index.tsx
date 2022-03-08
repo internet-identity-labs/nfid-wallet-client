@@ -58,7 +58,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
       })
       if (!matchDevice) throw new Error("Device creation failed")
 
-      const [account, persona] = await Promise.all([
+      await Promise.all([
         readAccount(identityManager, userNumber),
         getPersona(),
       ])

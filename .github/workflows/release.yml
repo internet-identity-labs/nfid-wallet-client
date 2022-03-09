@@ -23,7 +23,7 @@ jobs:
         run: |
           yarn
 
-          pushd frontend/ui-kit
+          pushd src/ui-kit
           yarn && yarn build
           popd
 

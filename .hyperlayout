@@ -3,7 +3,7 @@
   "layout": [
     [
       "dfx start",
-      "cd frontend/ui-kit && yarn && yarn build:dev"
+      "cd src/ui-kit && yarn && yarn build:dev"
     ],
     [
       "yarn && yarn dev",

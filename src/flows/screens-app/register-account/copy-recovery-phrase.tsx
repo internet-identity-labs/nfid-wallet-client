@@ -2,6 +2,7 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import { CopyIcon } from "frontend/ui-kit/src/components/atoms/button/icons/copy"
 import {
   Button,
@@ -37,7 +38,12 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   const { applicationName } = useMultipass()
   const { remoteLogin } = useRegisterDevicePromt()
   const { state } = useLocation()
-  const { recoveryPhrase } = state as LocationState
+
+  const recoveryPhrase = React.useMemo(() => {
+    return (
+      (state as LocationState)?.recoveryPhrase ?? `123456 ${generate().trim()}`
+    )
+  }, [state])
 
   const { nextPersonaId, createPersona } = usePersona()
 

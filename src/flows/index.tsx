@@ -64,10 +64,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         { path: RegisterAccountConstants.captcha },
         {
           path: RegisterAccountConstants.copyRecoveryPhrase,
-          state: {
-            recoveryPhrase:
-              "Lorem ipsum dolor sit amit. Error nobis unde sunt delectus dicta explicabo nisi maiores voluptate consectetur ex perspiciatis, libero praesentium vel hic omnis molestiae eaque. Voluptas, dolore!",
-          },
         },
       ],
     },

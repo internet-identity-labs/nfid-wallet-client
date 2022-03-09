@@ -9,7 +9,6 @@ import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import {
   Challenge,
   ChallengeResult,
-  ProofOfWork,
 } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   canisterIdPrincipal,
@@ -157,8 +156,6 @@ export const RegisterAccountCaptcha: React.FC<
       if (responseRegisterAnchor.kind === "loginSuccess") {
         const { userNumber, internetIdentity } = responseRegisterAnchor
 
-        // TODO: fix the build issue
-        // const recoveryPhrase = `typical cake decline asset trip motor jazz select mystery debris income muscle melt scare distance robust chief sell know wonder mixed reject accident blouse`
         const recoveryPhrase = await createRecoveryPhrase(
           userNumber,
           internetIdentity,

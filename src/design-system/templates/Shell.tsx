@@ -27,7 +27,7 @@ export const Shell: React.FC<ShellProps> = ({
     <>
       <div
         className={clsx(
-          "fixed rounded-full opacity-[0.5] md:opacity-[0.8] md:top-[15vh] transition duration-500 ease-out blur-7xl",
+          "fixed rounded-full opacity-[0.5] md:opacity-[0.8] md:top-[15vh] transition duration-500 ease-out",
           bubbleOptions.bubbleClassNames?.[0]
             ? bubbleOptions.bubbleClassNames[0]
             : "right-[-40vw] md:right-[-5vw] 2xl:right-[-10vw]",
@@ -37,11 +37,12 @@ export const Shell: React.FC<ShellProps> = ({
           width: "clamp(400px, 25vw, 800px)",
           height: "clamp(400px, 35vh, 800px)",
           zIndex: -1,
+          filter: "blur(120px)",
         }}
       />
       <div
         className={clsx(
-          "fixed rounded-full opacity-80 md:opacity-100 transition duration-500 ease-out blur-7xl",
+          "fixed rounded-full opacity-80 md:opacity-100 transition duration-500 ease-out",
           bubbleOptions.bubbleClassNames?.[1]
             ? bubbleOptions.bubbleClassNames[1]
             : "bottom-[-10vh] right-[-10vw] md:bottom-0 md:right-0 lg:-bottom-20 2xl:right-0",
@@ -51,6 +52,7 @@ export const Shell: React.FC<ShellProps> = ({
           width: "clamp(600px, 30vw, 800px)",
           height: "clamp(400px, 70vh, 850px)",
           zIndex: -1,
+          filter: "blur(120px)",
         }}
       />
     </>

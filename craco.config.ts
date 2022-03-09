@@ -1,3 +1,4 @@
+// import {} from "@craco/craco"
 import { IgnorePlugin, ProvidePlugin } from "webpack"
 import path from "path"
 import dfxJson from "./dfx.json"
@@ -14,6 +15,17 @@ const config = {
     configure: (webpackConfig: any, { env, paths }: any) => {
       return {
         ...webpackConfig,
+        // FIXME: configure source map parser
+        // module: {
+        //   rules: [
+        //     {
+        //       test: /\.js$/,
+        //       enforce: "pre",
+        //       use: ["source-map-loader"],
+        //     },
+        //   ],
+        // },
+        ignoreWarnings: [/Failed to parse source map from/],
         resolve: {
           ...webpackConfig.resolve,
           extensions: [".js", ".ts", ".jsx", ".tsx"],

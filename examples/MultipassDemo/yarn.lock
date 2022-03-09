@@ -471,7 +471,7 @@
   resolved "https://registry.yarnpkg.com/@identity-labs/react-ic-ii-auth/-/react-ic-ii-auth-0.0.14.tgz#c73abe1c1d503b4edeca560dd899d58cf43452e4"
   integrity sha512-r90yJbkhOhdf64X+k8AD6blW+ZYFl35UdE0F4c7CKLCWpyXDg498OJvztXZOD88IV6sAWDmESyYdB8pG1MDdsQ==
 
-"@identity-labs/ui@link:../../frontend/ui-kit":
+"@identity-labs/ui@link:../../src/ui-kit":
   version "0.0.0"
   uid ""
 

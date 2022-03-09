@@ -73,7 +73,7 @@ export const useUnknownDeviceConfig = () => {
     useAuthentication()
 
   const url = React.useMemo(() => {
-    const multipassDomain = import.meta.env.VITE_MULTIPASS_DOMAIN
+    const multipassDomain = process.env.REACT_APP_MULTIPASS_DOMAIN
 
     // TODO: create custom hook to generate secret
     return domain && pubKey

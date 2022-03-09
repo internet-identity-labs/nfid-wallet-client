@@ -3,7 +3,7 @@ import ReactDOM from "react-dom"
 
 import { App } from "./App"
 
-import "./main.css"
+import "./index.css"
 
 import "swiper/css"
 import "swiper/css/pagination"

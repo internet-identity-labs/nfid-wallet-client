@@ -69,6 +69,15 @@ const boxShadow = {
   red: "0 0px 2px rgba(234,26,26,1)",
 }
 
+const blur = {
+  "4xl": "80px",
+  "5xl": "96px",
+  "6xl": "112px",
+  "7xl": "128px ",
+}
+
 module.exports = require("tailwindcss/plugin")(function () {}, {
-  theme: { extend: { colors, fontSize, fontFamily, dropShadow, boxShadow } },
+  theme: {
+    extend: { blur, colors, fontSize, fontFamily, dropShadow, boxShadow },
+  },
 })

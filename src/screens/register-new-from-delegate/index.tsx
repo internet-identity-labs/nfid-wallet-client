@@ -1,18 +1,11 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { usePostMessage } from "frontend/hooks/use-post-message"
-import { useTimer } from "frontend/hooks/use-timer"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import {
-  Button,
-  Card,
-  CardBody,
-  H2,
-  Loader,
-  Modal,
-} from "frontend/ui-kit/src/index"
+import { Button, Card, CardBody, H2, Loader } from "frontend/ui-kit/src/index"
 import React from "react"
 import { useParams } from "react-router-dom"
+import { ModalSuccess } from "./modal-success"
 
 type Status = "initial" | "loading" | "success"
 
@@ -30,9 +23,6 @@ export const RegisterNewFromDelegate = () => {
 
   let { userNumber } = useParams()
   const { createWebAuthNDevice } = useDevices()
-  const { counter } = useTimer({
-    defaultCounter: 10,
-  })
   const handleRegisterNewDevice = React.useCallback(async () => {
     try {
       setStatus("loading")
@@ -43,7 +33,6 @@ export const RegisterNewFromDelegate = () => {
 
       const { device } = await createWebAuthNDevice(BigInt(userNumber))
       opener?.postMessage({ kind: "new-device", device }, opener.origin)
-      window.close()
 
       setStatus("success")
       setShowModal(true)
@@ -52,12 +41,6 @@ export const RegisterNewFromDelegate = () => {
       setShowModal(false)
     }
   }, [createWebAuthNDevice, opener, userNumber])
-
-  React.useEffect(() => {
-    if (counter === 0) {
-      setShowModal(false)
-    }
-  }, [counter])
 
   return (
     <AppScreen>
@@ -82,15 +65,7 @@ export const RegisterNewFromDelegate = () => {
       </Card>
 
       {status === "success" && showModal ? (
-        <Modal
-          title={"This device is now equipped for Web 3.0"}
-          description={`Please wait a few moments for your other device's screen to update. Click the button below if this tab doesn't close.`}
-          iconType="success"
-          buttonText="Done"
-          onClick={() => {
-            setShowModal(false)
-          }}
-        />
+        <ModalSuccess onClick={() => setShowModal(false)} />
       ) : null}
 
       <Loader isLoading={status === "loading"} />

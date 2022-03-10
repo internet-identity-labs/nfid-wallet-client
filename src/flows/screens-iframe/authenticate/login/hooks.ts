@@ -3,14 +3,10 @@ import React from "react"
 import { blobFromUint8Array } from "@dfinity/candid"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { LoginError } from "frontend/services/internet-identity/api-result-to-login-result"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { useMessageChannel } from "../login-unknown/hooks/use-message-channel"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
-const READY_MESSAGE = {
-  kind: "authorize-ready",
-}
 interface UseAuthenticationProps {
   userNumber?: bigint
 }
@@ -31,8 +27,6 @@ export const useAuthorization = ({
 }: UseAuthenticationProps = {}) => {
   // the isLoading state is used to display the astronaut
   const [isLoading, setLoading] = React.useState(false)
-  // the error state is used to display potential errors
-  const [error, setError] = React.useState<LoginError | null>(null)
   // the authResult state is used to store the II
   const { internetIdentity } = useAuthentication()
 
@@ -134,7 +128,6 @@ export const useAuthorization = ({
   return {
     isLoading,
     opener,
-    error,
     authorizationRequest,
     postClientReadyMessage,
     authorizeApp,

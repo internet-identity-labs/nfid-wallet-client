@@ -17,6 +17,7 @@ export const ImageOnlyLoader: React.FC<React.DetailedHTMLProps<
   return (
     <div className="transition duration-100 group">
       <img
+        alt="loader"
         src={loaderAsset}
         className={clsx(
           "select-none pointer-events-none group-hover:flex hidden",
@@ -44,6 +45,7 @@ export const Loader: React.FC<LoaderProps> = ({
         )}
       />
       <img
+        alt="loader"
         className={clsx(
           "absolute",
           "left-1/2 -translate-x-1/2",
@@ -56,6 +58,7 @@ export const Loader: React.FC<LoaderProps> = ({
     </div>
   ) : isLoading && !fullscreen ? (
     <img
+      alt="loader"
       src={loaderAsset}
       className={clsx("select-none pointer-events-none", imageClasses)}
     />

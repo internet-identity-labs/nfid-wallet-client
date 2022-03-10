@@ -88,8 +88,10 @@ function final(state: HashState): Uint8Array {
   return hashval
 }
 
-export default function (data: Uint8Array): Uint8Array {
+function cubeHash(data: Uint8Array): Uint8Array {
   const state = init()
   update(state, data)
   return final(state)
 }
+
+export default cubeHash

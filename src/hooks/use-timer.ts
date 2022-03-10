@@ -11,6 +11,7 @@ export const useTimer = ({ defaultCounter, loop }: useTimerProps) => {
 
   React.useEffect(() => {
     if (counter > 0) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       timer = setInterval(() => setCounter(counter - 1), 1000)
     } else {
       loop && setCounter(defaultCounter)

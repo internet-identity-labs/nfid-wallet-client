@@ -8,6 +8,8 @@ import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-
 import React from "react"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 
+// FIXME:
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type RemoteLoginMessage = {
   delegation: {
     pubkey: PublicKey

@@ -9,5 +9,7 @@ interface FaceIdProps
   > {}
 
 export const FaceId: React.FC<FaceIdProps> = ({ children, className }) => {
-  return <img src={Logo} className={clsx(className ?? "w-20")} />
+  return (
+    <img alt="faceid-icon" src={Logo} className={clsx(className ?? "w-20")} />
+  )
 }

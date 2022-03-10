@@ -1,5 +1,4 @@
 import React from "react"
-import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/services/identity-manager/identity_manager.did"
 import { useAtom } from "jotai"
 import { personaAtom } from "./state"
 import { isNFIDPersona, isIIPersona } from "./types"

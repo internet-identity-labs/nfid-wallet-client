@@ -45,7 +45,7 @@ export const RestoreAccessPoint: React.FC<
 
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors },
     setError,
     handleSubmit,
   } = useForm({

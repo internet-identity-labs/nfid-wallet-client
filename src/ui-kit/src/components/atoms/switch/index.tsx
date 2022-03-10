@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from "react"
+import React from "react"
 import clsx from "clsx"
 
 interface SwitchProps

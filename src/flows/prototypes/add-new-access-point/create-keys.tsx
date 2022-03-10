@@ -15,7 +15,6 @@ import { HiCheckCircle } from "react-icons/hi"
 import { InputSelect } from "frontend/design-system/molecules/inputs/select"
 import { useForm } from "react-hook-form"
 import { getBrowser } from "frontend/utils"
-import { useParams } from "react-router"
 
 interface CreateKeysScreenProps
   extends React.DetailedHTMLProps<
@@ -24,11 +23,9 @@ interface CreateKeysScreenProps
   > {}
 
 export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
-  const [keysCreated, setKeysCreated] = React.useState(false)
-  const [deviceLinked, setDeviceLinked] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
-
-  const { secret } = useParams()
+  const [keysCreated] = React.useState(false)
+  const [deviceLinked] = React.useState(false)
+  const [loading] = React.useState(false)
 
   const platformAuth = "FaceID"
   const browserName = getBrowser()
@@ -43,7 +40,7 @@ export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
         <CardTitle>Register this access point</CardTitle>
         <CardBody className="w-full max-w-xl">
           <div className="mb-4">
-            <div className="flex flex-row space-x-4 items-center py-3">
+            <div className="flex flex-row items-center py-3 space-x-4">
               <HiCheckCircle
                 className={clsx(
                   "text-2xl",
@@ -52,7 +49,7 @@ export const CreateKeysScreen: React.FC<CreateKeysScreenProps> = () => {
               />
               <div>Key created</div>
             </div>
-            <div className="flex flex-row space-x-4 items-center py-3">
+            <div className="flex flex-row items-center py-3 space-x-4">
               <HiCheckCircle
                 className={clsx(
                   "text-2xl",

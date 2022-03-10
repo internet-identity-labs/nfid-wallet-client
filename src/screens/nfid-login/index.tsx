@@ -25,7 +25,7 @@ export const AuthenticateNFIDLoginContent: React.FC<
   const params = useParams()
   console.log(">> AuthenticateNFIDLoginContent", { params, iframe })
 
-  const { account, readAccount } = useAccount()
+  const { account } = useAccount()
   const { isLoading, error, login } = useAuthentication()
   const navigate = useNavigate()
 

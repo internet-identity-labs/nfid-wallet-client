@@ -30,7 +30,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   const [firstSlide, setFirstSlide] = React.useState(true)
 
   const appName = applicationName || "This application"
-  const device = "device"
 
   const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
   const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)

@@ -1,6 +1,5 @@
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { Button, Card, CardBody, H2, Modal, P } from "frontend/ui-kit/src/index"
@@ -82,7 +81,12 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
             screen.
           </P>
 
-          <a href={iiDeviceLink} target="_blank" className="block my-6">
+          <a
+            href={iiDeviceLink}
+            target="_blank"
+            className="block my-6"
+            rel="noreferrer"
+          >
             <Button secondary largeMax>
               Log in with Internet Identity
             </Button>

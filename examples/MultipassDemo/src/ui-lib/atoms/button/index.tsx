@@ -32,7 +32,7 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
   ...props
 }) => (
   <Button
-    className="py-2 px-10 relative overflow-hidden"
+    className="relative px-10 py-2 overflow-hidden"
     disabled={isLoading}
     {...props}
   >

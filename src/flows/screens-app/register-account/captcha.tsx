@@ -59,7 +59,7 @@ export const RegisterAccountCaptcha: React.FC<
 
   const {
     register,
-    formState: { errors, isValid, dirtyFields },
+    formState: { errors, dirtyFields },
     handleSubmit,
     setError,
     setValue,
@@ -221,6 +221,7 @@ export const RegisterAccountCaptcha: React.FC<
             >
               {captchaResp && !loading && (
                 <img
+                  alt="captcha"
                   src={`data:image/png;base64,${captchaResp.png_base64}`}
                   className="object-contain w-full h-full"
                 />

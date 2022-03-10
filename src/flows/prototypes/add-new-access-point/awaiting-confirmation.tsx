@@ -23,8 +23,8 @@ interface AwaitingConfirmationProps
 export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
   className,
 }) => {
-  const [deviceLinked, setDeviceLinked] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
+  const [deviceLinked] = React.useState(false)
+  const [loading] = React.useState(false)
 
   const device = { alias: "iPhone X", pubkey: [] }
 

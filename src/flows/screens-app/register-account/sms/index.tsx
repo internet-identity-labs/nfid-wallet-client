@@ -113,7 +113,7 @@ export const RegisterAccountSMSVerification: React.FC<
     setLoading(true)
     const verificationCode = getVerificationCode()
 
-    if (verificationCode.length != tokenRules.minLength) {
+    if (verificationCode.length !== tokenRules.minLength) {
       return setError("verificationCode", {
         type: "manual",
         message: tokenRules.errorMessages.length,
@@ -181,7 +181,7 @@ export const RegisterAccountSMSVerification: React.FC<
                       }
 
                       if (validRegex) {
-                        if (index == list.length - 1) {
+                        if (index === list.length - 1) {
                           inputItemsRef.current[index]?.blur()
                         }
 

@@ -1,6 +1,5 @@
 import React from "react"
 import clsx from "clsx"
-import { HiChevronRight } from "react-icons/hi"
 import { ListItemChevron } from "./icons/chevron"
 
 interface Props

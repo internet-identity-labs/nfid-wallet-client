@@ -32,7 +32,7 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
 
   const {
     register,
-    formState: { errors, isValid, dirtyFields },
+    formState: { errors, dirtyFields },
     handleSubmit,
   } = useForm({
     mode: "onTouched",

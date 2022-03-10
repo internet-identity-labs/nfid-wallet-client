@@ -1,5 +1,4 @@
 import React from "react"
-import clsx from "clsx"
 import { H5 } from "../../atoms/typography"
 
 interface CardSubtitleProps
@@ -13,7 +12,7 @@ export const CardSubtitle: React.FC<CardSubtitleProps> = ({
   className,
 }) => {
   return (
-    <H5 className="leading-5 text-center font-medium text-gray-600 mb-8">
+    <H5 className="mb-8 font-medium leading-5 text-center text-gray-600">
       {children}
     </H5>
   )

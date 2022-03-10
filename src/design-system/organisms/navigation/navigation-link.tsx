@@ -10,7 +10,7 @@ export const NavigationLink: React.FC<Props> = ({ href = "#", text }) => {
   return (
     <Link
       to={href}
-      className="text-sm font-medium text-center flex items-center space-x-2 lg:px-2 px-1 py-2 rounded text-black hover:text-indigo-700 capitalize"
+      className="flex items-center px-1 py-2 text-sm font-medium text-center text-black capitalize rounded space-x-2 lg:px-2 hover:text-indigo-700"
     >
       <span>{text}</span>
     </Link>

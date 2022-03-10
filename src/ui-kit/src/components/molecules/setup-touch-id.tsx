@@ -1,5 +1,4 @@
 import React from "react"
-import { HiFingerPrint } from "react-icons/hi"
 import { Button } from "../atoms/button"
 
 export const SetupTouchId: React.FC<React.DetailedHTMLProps<

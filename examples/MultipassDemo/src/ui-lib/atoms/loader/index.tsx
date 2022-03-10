@@ -17,7 +17,7 @@ export const Loader = ({
       isLoading ? "block" : "hidden",
     ])}
   >
-    <div className="flex absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+    <div className="absolute flex top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
       <div
         className={clsx(
           "h-2.5 w-2.5 rounded-full mr-1 animate-bounce",

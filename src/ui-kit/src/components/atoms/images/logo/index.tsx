@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 import { LogoText } from "./logo-text"
-import Image from "./NFID.png"
 
 interface LogoProps
   extends React.DetailedHTMLProps<

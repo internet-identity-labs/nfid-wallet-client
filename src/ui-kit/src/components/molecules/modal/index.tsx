@@ -7,7 +7,6 @@ import { ModalCloseIcon } from "./closeIcon"
 import { ModalWarningIcon } from "./warningIcon"
 import { NFIDGradientBar } from "../gradient-bar"
 
-
 type ModalIconType = "success" | "error"
 
 interface ModalProps
@@ -33,16 +32,16 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none mx-4">
-        <div className="relative w-full my-6 mx-auto max-w-sm">
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="relative flex-auto text-center px-6">
+      <div className="fixed inset-0 z-50 flex items-center justify-center mx-4 overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+        <div className="relative w-full max-w-sm mx-auto my-6">
+          <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none">
+            <div className="relative flex-auto px-6 text-center">
               <NFIDGradientBar />
 
-              {iconType == "success" && (
+              {iconType === "success" && (
                 <ModalSuccessIcon className="mx-auto" />
               )}
-              {iconType == "error" && <ModalWarningIcon className="mx-auto" />}
+              {iconType === "error" && <ModalWarningIcon className="mx-auto" />}
 
               <H5 className="my-4">{title}</H5>
 
@@ -61,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         </div>
       </div>
-      <div className="opacity-30 fixed inset-0 z-40 bg-black-base"></div>
+      <div className="fixed inset-0 z-40 opacity-30 bg-black-base"></div>
     </>
   )
 }

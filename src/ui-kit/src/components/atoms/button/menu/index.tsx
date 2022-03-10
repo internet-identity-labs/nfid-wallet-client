@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 import { Button, ButtonProps } from ".."
-import { DotsIcon } from "../icons/dots"
 
 interface ButtonMenuProps
   extends React.DetailedHTMLProps<
@@ -22,10 +21,13 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   const [toggleMenu, setToggleMenu] = React.useState(false)
   const ref = React.useRef<HTMLDivElement | null>(null)
 
-  const handleMenuToggle = React.useCallback((e) => {
-    e.stopPropagation()
-    setToggleMenu(!toggleMenu)
-  }, [])
+  const handleMenuToggle = React.useCallback(
+    (e) => {
+      e.stopPropagation()
+      setToggleMenu(!toggleMenu)
+    },
+    [toggleMenu],
+  )
 
   React.useEffect(() => {
     const handleClickOutside = (event: any) => {

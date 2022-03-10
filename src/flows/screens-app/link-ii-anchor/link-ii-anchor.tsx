@@ -94,7 +94,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
         state: { iiDeviceLink: link, userNumber },
       })
     },
-    [account, navigate, updateAccount],
+    [account, identityManager, navigate, updateAccount],
   )
 
   return (

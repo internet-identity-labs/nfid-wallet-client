@@ -27,7 +27,7 @@ export const AuthorizeAppUnknownDevice: React.FC<
         </div>
 
         <div className="py-5 m-auto">
-          <a href={url} target="_blank">
+          <a href={url} target="_blank" rel="noreferrer">
             <QRCode content={url} options={{ margin: 0 }} />
           </a>
         </div>

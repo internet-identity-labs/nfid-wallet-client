@@ -1,6 +1,5 @@
 import React, { ReactElement } from "react"
 import clsx from "clsx"
-import { HiExclamationCircle, HiOutlineExclamationCircle } from "react-icons/hi"
 import { ErrorIcon } from "./icons/error"
 import { Label } from "./label"
 

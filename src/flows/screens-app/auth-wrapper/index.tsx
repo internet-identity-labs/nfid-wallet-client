@@ -4,10 +4,10 @@ import React from "react"
 import { generatePath, Navigate, useParams } from "react-router-dom"
 import { AuthenticateNFIDLogin } from "../authenticate/login"
 
-interface AuthWrapper {
+interface AuthWrapperProps {
   redirectTo: string
 }
-export const AuthWrapper: React.FC<AuthWrapper> = ({
+export const AuthWrapper: React.FC<AuthWrapperProps> = ({
   children,
   redirectTo,
 }) => {

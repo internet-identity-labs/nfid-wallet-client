@@ -19,13 +19,13 @@ export const MenuItem: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className="flex items-center px-5 py-2 cursor-pointer space-x-2 text-md text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+      className="flex items-center px-5 py-2 text-gray-700 cursor-pointer space-x-2 text-md hover:bg-gray-100 hover:text-gray-900"
       onClick={onClick}
     >
       {icon && icon}
       <span className="flex flex-col">
         <span>{title}</span>
-        {subtitle && <span className="text-gray-400 text-xs">{subtitle}</span>}
+        {subtitle && <span className="text-xs text-gray-400">{subtitle}</span>}
       </span>
     </div>
   )

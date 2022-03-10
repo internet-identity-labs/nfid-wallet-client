@@ -40,7 +40,7 @@ export const KitchenSink: React.FC = () => {
         showBubbles: false,
       }}
     >
-      <div className="container xl:max-w-7xl mx-auto p-4 lg:p-8">
+      <div className="container p-4 mx-auto xl:max-w-7xl lg:p-8">
         <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
           <Card>
             <CardBody className="p-4">
@@ -71,7 +71,7 @@ export const KitchenSink: React.FC = () => {
                 </div>
                 <div className="col-span-2 sm:col-span-2">
                   <Label>Chips</Label>
-                  <div className="inline-flex items-center flex-wrap">
+                  <div className="inline-flex flex-wrap items-center">
                     <Chip solid icon={<HiMenu />}>
                       Hamburger
                     </Chip>
@@ -175,8 +175,8 @@ export const KitchenSink: React.FC = () => {
         </div>
 
         {/* Example Screen 1*/}
-        <div className="h-100vh mb-12">
-          <Card className="h-full flex flex-col">
+        <div className="mb-12 h-100vh">
+          <Card className="flex flex-col h-full">
             <CardTitle>Example screen 1</CardTitle>
 
             <Divider noGutters />
@@ -203,8 +203,8 @@ export const KitchenSink: React.FC = () => {
         </div>
 
         {/* Example Screen 2*/}
-        <div className="h-100vh mb-12">
-          <Card className="h-full flex flex-col">
+        <div className="mb-12 h-100vh">
+          <Card className="flex flex-col h-full">
             <CardTitle>Example Screen 2</CardTitle>
 
             <Divider noGutters />
@@ -228,8 +228,8 @@ export const KitchenSink: React.FC = () => {
         </div>
 
         {/* Example Screen 3*/}
-        <div className="h-100vh mb-12">
-          <Card className="h-full flex flex-col">
+        <div className="mb-12 h-100vh">
+          <Card className="flex flex-col h-full">
             <CardTitle>Example Screen 3</CardTitle>
 
             <Divider noGutters />

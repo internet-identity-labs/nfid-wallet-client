@@ -16,9 +16,7 @@ export const IFrameRestoreAccessPointStart: React.FC<
 > = ({ children, className }) => {
   const {
     register,
-    formState: { errors, isValid },
-    resetField,
-    handleSubmit,
+    formState: { errors },
   } = useForm({
     mode: "all",
   })

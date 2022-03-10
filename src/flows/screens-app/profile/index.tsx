@@ -50,7 +50,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
     (publicKey) => async () => {
       setLoading(true)
 
-      const response = await deleteDevice(publicKey)
+      await deleteDevice(publicKey)
       await handleLoadDevices()
 
       setLoading(false)
@@ -82,7 +82,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
       <Card className="relative grid grid-cols-12">
         <CardBody className="col-span-12">
           <div className="mt-[-150px]">
-            <H2 className="py-2 block">NFID Number</H2>
+            <H2 className="block py-2">NFID Number</H2>
             <P className="">{account?.anchor}</P>
           </div>
 
@@ -168,7 +168,10 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                                   })
                                 }}
                               >
-                                <a className="block px-4 py-2 text-sm">
+                                <a
+                                  href="FIXME: implementation missing"
+                                  className="block px-4 py-2 text-sm"
+                                >
                                   Rename
                                 </a>
                               </li>
@@ -208,7 +211,10 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                                   })
                                 }}
                               >
-                                <a className="block px-4 py-2 text-sm">
+                                <a
+                                  href="FIXME: implementation missing"
+                                  className="block px-4 py-2 text-sm"
+                                >
                                   Delete
                                 </a>
                               </li>

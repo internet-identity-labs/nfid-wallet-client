@@ -1,5 +1,4 @@
 import React from "react"
-import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { ImageOnlyLoader } from "frontend/ui-kit/src"
 

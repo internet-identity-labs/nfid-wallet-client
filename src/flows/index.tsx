@@ -94,7 +94,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   }
 
   const getFullRoute = (route: string, base?: string) => {
-    if (!base || base == route) {
+    if (!base || base === route) {
       return route
     }
 
@@ -107,7 +107,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         showBubbles: false,
       }}
     >
-      {process.env.NODE_ENV == "development" && (
+      {process.env.NODE_ENV === "development" && (
         <Card>
           <CardBody>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

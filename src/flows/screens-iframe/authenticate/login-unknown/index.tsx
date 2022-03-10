@@ -19,9 +19,9 @@ import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 
 interface UnknownDeviceScreenProps {}
 
-export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({}) => {
+export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = () => {
   const { applicationName } = useMultipass()
-  const { identityManager, isAuthenticated } = useAuthentication()
+  const { identityManager } = useAuthentication()
   const { createDevice } = useDevices()
   const { getPersona } = usePersona()
   const { readAccount } = useAccount()

@@ -12,9 +12,9 @@ import { Helmet } from "react-helmet"
 import { useForm } from "react-hook-form"
 
 export const CopyDevices = () => {
-  const [status, setStatus] = React.useState<
-    "initial" | "loading" | "success" | "error"
-  >("initial")
+  const [status] = React.useState<"initial" | "loading" | "success" | "error">(
+    "initial",
+  )
   const [anchors, setAnchors] = React.useState<{ [key: string]: string }>({})
   const [devices, setDevices] = React.useState<{ [key: string]: DeviceData[] }>(
     {},

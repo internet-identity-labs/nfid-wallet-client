@@ -28,7 +28,6 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
   className,
 }) => {
   const applicationName = "NFID Demo"
-  const accountName = "John Doe"
   const personas = ["John Doe", "John77", "john_doe"]
   const anchors = ["10001", "10002", "10003"]
 

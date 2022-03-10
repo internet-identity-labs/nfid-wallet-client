@@ -66,7 +66,7 @@ function toLeBytes(num: BigInt): Buffer {
 // Returns true if the hash passes the set level of difficulty.
 function hashOk(hash: Uint8Array): boolean {
   for (let i = 0; i < DIFFICULTY; i++) {
-    if (hash[i] != 0) {
+    if (hash[i] !== 0) {
       return false
     }
   }

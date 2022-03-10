@@ -1,5 +1,4 @@
 import React from "react"
-import clsx from "clsx"
 import { NFIDPersonalizeContent } from "frontend/flows/screens-app/profile/personalize/content"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 

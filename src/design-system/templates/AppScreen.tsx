@@ -29,7 +29,7 @@ export const AppScreen: React.FC<Props> = ({
 }) => {
   return (
     <Shell bubbleOptions={bubbleOptions}>
-      <div className="flex flex-col mx-auto w-full min-h-screen min-h-screen-ios">
+      <div className="flex flex-col w-full min-h-screen mx-auto min-h-screen-ios">
         {!isFocused && (
           <>
             <NavigationBar navigationItems={navigationItems} />

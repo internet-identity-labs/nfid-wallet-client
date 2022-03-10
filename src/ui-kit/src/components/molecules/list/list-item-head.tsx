@@ -18,11 +18,11 @@ export const ListItemHead: React.FC<Props> = ({
 }) => {
   return (
     <div className={clsx("px-4 py-5 sm:px-6 border-b w-full", className)}>
-      <h3 className="text-lg leading-6 font-medium text-gray-800">
+      <h3 className="text-lg font-medium text-gray-800 leading-6">
         {title}
       </h3>
       {description && (
-        <p className="mt-1 max-w-2xl text-sm text-gray-500">
+        <p className="max-w-2xl mt-1 text-sm text-gray-500">
           { description}
         </p>
       )}

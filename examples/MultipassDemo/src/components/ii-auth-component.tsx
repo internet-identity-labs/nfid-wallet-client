@@ -40,10 +40,10 @@ export const IIAuthComponent = () => {
             <span>whoami</span>
           </Button>
         )}
-        <Button className="py-2 px-10 mt-2" onClick={signout}>
+        <Button className="px-10 py-2 mt-2" onClick={signout}>
           signout
         </Button>
-        <Button className="py-2 px-10 mt-2" onClick={() => setIam("")}>
+        <Button className="px-10 py-2 mt-2" onClick={() => setIam("")}>
           clear
         </Button>
         <Loader isLoading={isLoading} />

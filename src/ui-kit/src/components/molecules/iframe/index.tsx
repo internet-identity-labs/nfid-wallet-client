@@ -38,7 +38,7 @@ export const IFrame: React.FC<Props> = ({
 
       iframeWrapperCard.style.height = `${height > 190 ? height : 190}px`
     })
-  }, [])
+  }, [src])
 
   return visible ? (
     <IFrameWrapper className={clsx(className)}>

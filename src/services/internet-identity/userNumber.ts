@@ -13,7 +13,7 @@ export const setUserNumber = (userNumber: bigint | undefined): void => {
 }
 
 // BigInt parses various things we do not want to allow, like:
-// - BigInt(whitespace) == 0
+// - BigInt(whitespace) === 0
 // - Hex/Octal formatted numbers
 // - Scientific notation
 // So we check that the user has entered a sequence of digits only,

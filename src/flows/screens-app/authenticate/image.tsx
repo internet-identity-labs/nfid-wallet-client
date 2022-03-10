@@ -1,5 +1,4 @@
 import React from "react"
-import clsx from "clsx"
 
 interface PictureNFIDLoginProps
   extends React.DetailedHTMLProps<

@@ -11,40 +11,31 @@ export const useTimer = ({
   loop,
   frequency = 1000,
 }: useTimerProps) => {
-  const counter = React.useRef(defaultCounter)
+  const [counter, setCounter] = React.useState(defaultCounter)
   const timer = React.useRef<NodeJS.Timer>()
   const [elapsed, setElapsed] = React.useState(false)
 
   const handleInterval = React.useCallback(() => {
-    if (counter.current > 0) {
-      counter.current -= 1
+    if (counter > 0) {
+      setCounter(counter - 1)
     }
 
-    if (counter.current === 0) {
+    if (counter === 0) {
       setElapsed(true)
       clearInterval(Number(timer.current))
     }
 
-    if (counter.current === 0 && loop) {
-      counter.current = defaultCounter
+    if (counter === 0 && loop) {
+      setCounter(defaultCounter)
       timer.current = setInterval(handleInterval, frequency)
       setElapsed(false)
     }
-  }, [defaultCounter, frequency, loop])
-
-  const setCounter = React.useCallback(
-    (value: number) => {
-      counter.current = value
-    },
-    [counter],
-  )
+  }, [counter, defaultCounter, frequency, loop])
 
   React.useEffect(() => {
     timer.current = setInterval(handleInterval, frequency)
     return () => clearInterval(Number(timer.current))
   }, [frequency, handleInterval])
 
-  const getCounter = React.useCallback(() => counter.current, [counter])
-
-  return { elapsed, setCounter, getCounter }
+  return { elapsed, setCounter, counter }
 }

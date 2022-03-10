@@ -84,7 +84,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = () => {
   return (
     <div className={clsx("relative")}>
       {/* IFrameAuthorizeAppUnkownDevice */}
-      {!isLoading && !showRegister && url ? (
+      {!showRegister && url ? (
         <IFrameScreen logo>
           <AuthorizeAppUnknownDevice
             applicationName={applicationName}
@@ -99,8 +99,8 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = () => {
       ) : null}
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState)  */}
       {isLoading && (
-        <div className="relative w-full h-full">
-          <div className="flex flex-col h-full w-full items-center justify-center px-14 backdrop-blur bg-[#ffffffd9]">
+        <div className="fixed bottom-0 top-0 bg-white">
+          <div className="flex flex-col h-full w-full items-center justify-center px-14">
             <Loader
               iframe
               isLoading={isLoading}
@@ -118,6 +118,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = () => {
           <AuthorizeRegisterDecider
             onRegister={handleRegisterDevice}
             onLogin={handleSendDelegate}
+            iframe
           />
         </IFrameScreen>
       )}

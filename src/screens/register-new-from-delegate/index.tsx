@@ -30,7 +30,7 @@ export const RegisterNewFromDelegate = () => {
 
   let { userNumber } = useParams()
   const { createWebAuthNDevice } = useDevices()
-  const { counter } = useTimer({
+  const { elapsed } = useTimer({
     defaultCounter: 10,
   })
   const handleRegisterNewDevice = React.useCallback(async () => {
@@ -43,7 +43,6 @@ export const RegisterNewFromDelegate = () => {
 
       const { device } = await createWebAuthNDevice(BigInt(userNumber))
       opener?.postMessage({ kind: "new-device", device }, opener.origin)
-      window.close()
 
       setStatus("success")
       setShowModal(true)
@@ -54,10 +53,11 @@ export const RegisterNewFromDelegate = () => {
   }, [createWebAuthNDevice, opener, userNumber])
 
   React.useEffect(() => {
-    if (counter === 0) {
+    if (elapsed) {
       setShowModal(false)
+      setTimeout(window.close, 300)
     }
-  }, [counter])
+  }, [elapsed])
 
   return (
     <AppScreen>

@@ -32,7 +32,8 @@ export const useMessageChannel = ({
     [messageHandler],
   )
 
-  const { opener } = usePostMessage({ onMessage: <any>handleAuthMessage })
+  // FIXME: type def
+  const { opener } = usePostMessage({ onMessage: handleAuthMessage as any })
 
   const postClientReadyMessage = React.useCallback(() => {
     if (opener)

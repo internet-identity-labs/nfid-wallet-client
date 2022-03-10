@@ -58,7 +58,7 @@ export const useAccount = () => {
 
       // NOTE: this is only for dev purposes!!!
       if (!newAccount && _anchor) {
-        const res = await accountService.create_account({
+        await accountService.create_account({
           anchor: BigInt(_anchor),
         })
 

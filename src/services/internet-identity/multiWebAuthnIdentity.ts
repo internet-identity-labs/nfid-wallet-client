@@ -104,5 +104,3 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     }
   }
 }
-
-export default {}

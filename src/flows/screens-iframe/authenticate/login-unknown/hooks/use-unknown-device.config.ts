@@ -1,13 +1,11 @@
-import { IFrameAuthorizeAppConstants } from "./../../../authorize-app/routes"
 import { PublicKey } from "@dfinity/agent"
-import { blobFromUint8Array, blobToHex, blobFromHex } from "@dfinity/candid"
+import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { CONFIG } from "frontend/config"
 import { RegisterDevicePromptConstants } from "frontend/flows/screens-app/register-device-prompt/routes"
 import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { buildDelegate } from "frontend/services/internet-identity/build-delegate"
@@ -15,7 +13,7 @@ import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import { atom, useAtom } from "jotai"
 import React from "react"
-import { generatePath, useLocation, useNavigate } from "react-router-dom"
+import { generatePath, useLocation } from "react-router-dom"
 import { useMessageChannel } from "./use-message-channel"
 
 type loadingState = "initial" | "loading" | "success"
@@ -52,10 +50,7 @@ export const useUnknownDeviceConfig = () => {
     (state as StateProps)?.userNumber,
   )
   const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
-  console.log(">> useUnknownDeviceConfig", { fromPath })
 
-  const [nfidJsonDelegate, setNfidJsonDelegate] =
-    React.useState<NfidJsonDelegate>()
   const [signedDelegation, setSignedDelegation] =
     React.useState<SignedDelegation>()
 
@@ -64,13 +59,10 @@ export const useUnknownDeviceConfig = () => {
   const [pubKey, setPubKey] = React.useState("")
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
 
-  const navigate = useNavigate()
   const { createDevice } = useDevices()
   const { applicationName } = useMultipass()
   const { getMessages } = usePubSubChannel()
-  const { readAccount } = useAccount()
-  const { identityManager, onRegisterSuccess: setAuthenticatedActors } =
-    useAuthentication()
+  const { onRegisterSuccess: setAuthenticatedActors } = useAuthentication()
 
   const url = React.useMemo(() => {
     const multipassDomain = process.env.REACT_APP_MULTIPASS_DOMAIN
@@ -190,7 +182,6 @@ export const useUnknownDeviceConfig = () => {
         if (registerMessage) {
           console.log(">> handlePollForDelegate", { registerMessage })
           setUserNumber(BigInt(registerMessage.userNumber))
-          setNfidJsonDelegate(registerMessage.nfid)
           setSignedDelegation({
             delegation: registerMessage.delegation,
             signature: registerMessage.signature,
@@ -234,6 +225,7 @@ export const useUnknownDeviceConfig = () => {
     newDeviceKey,
     showRegister,
     setUserNumber,
+    fromPath,
     setFromPath,
     setShowRegister,
     setNewDeviceKey,

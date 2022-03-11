@@ -6,6 +6,14 @@ export const idlFactory = ({ IDL }) => {
     'token_refresh_ttl' : IDL.Nat64,
     'token_ttl' : IDL.Nat64,
   });
+  const AccessPointRequest = IDL.Record({ 'pub_key' : IDL.Vec(IDL.Nat8) });
+  const AccessPoint = IDL.Record({ 'principal_id' : IDL.Text });
+  const Error = IDL.Text;
+  const HTTPAccessPointResponse = IDL.Record({
+    'data' : IDL.Opt(IDL.Vec(AccessPoint)),
+    'error' : IDL.Opt(Error),
+    'status_code' : IDL.Nat16,
+  });
   const HTTPAccountRequest = IDL.Record({ 'anchor' : IDL.Nat64 });
   const PersonaIIResponse = IDL.Record({
     'domain' : IDL.Text,
@@ -22,11 +30,11 @@ export const idlFactory = ({ IDL }) => {
   const AccountResponse = IDL.Record({
     'name' : IDL.Opt(IDL.Text),
     'anchor' : IDL.Nat64,
+    'access_points' : IDL.Vec(AccessPoint),
     'personas' : IDL.Vec(PersonaVariant),
     'principal_id' : IDL.Text,
     'phone_number' : IDL.Opt(IDL.Text),
   });
-  const Error = IDL.Text;
   const HTTPAccountResponse = IDL.Record({
     'data' : IDL.Opt(AccountResponse),
     'error' : IDL.Opt(Error),
@@ -77,6 +85,11 @@ export const idlFactory = ({ IDL }) => {
   const Token = IDL.Text;
   return IDL.Service({
     'configure' : IDL.Func([ConfigurationRequest], [], []),
+    'create_access_point' : IDL.Func(
+        [AccessPointRequest],
+        [HTTPAccessPointResponse],
+        [],
+      ),
     'create_account' : IDL.Func(
         [HTTPAccountRequest],
         [HTTPAccountResponse],
@@ -98,8 +111,14 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'post_token' : IDL.Func([TokenRequest], [Response], []),
+    'read_access_points' : IDL.Func([], [HTTPAccessPointResponse], []),
     'read_applications' : IDL.Func([], [HTTPApplicationResponse], ['query']),
     'read_personas' : IDL.Func([], [HTTPPersonasResponse], []),
+    'remove_access_point' : IDL.Func(
+        [AccessPointRequest],
+        [HTTPAccessPointResponse],
+        [],
+      ),
     'remove_account' : IDL.Func([], [BoolHttpResponse], []),
     'update_account' : IDL.Func(
         [HTTPAccountUpdateRequest],

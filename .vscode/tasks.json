@@ -1,0 +1,89 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run NFID Development Environment",
+      "type": "shell",
+      "dependsOn": [
+        "NFID Frontend for development",
+        "NFID Demo for development",
+        "NFID UI-Kit for development",
+        "NGROK tunnel"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    },
+    {
+      "label": "NGROK tunnel",
+      "type": "shell",
+      "command": "yarn tunnel",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    },
+    {
+      "label": "DFX replica",
+      "type": "shell",
+      "command": "dfx start",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "backend"
+      }
+    },
+    {
+      "label": "DFX deploy demo",
+      "dependsOn": ["DFX replica"],
+      "type": "shell",
+      "command": "cd examples/MultipassDemo && dfx deploy",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "backend"
+      }
+    },
+    {
+      "label": "NFID Frontend for development",
+      "type": "shell",
+      "command": "yarn && yarn dev",
+      "isBackground": true,
+      "problemMatcher": ["$eslint-stylish", "$tsc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    },
+    {
+      "label": "NFID Demo for development",
+      "type": "shell",
+      "command": "cd examples/MultipassDemo && yarn && yarn dev",
+      "isBackground": true,
+      "problemMatcher": ["$eslint-stylish", "$tsc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    },
+    {
+      "label": "NFID UI-Kit for development",
+      "type": "shell",
+      "command": "cd src/ui-kit/ && yarn && yarn build:dev",
+      "isBackground": true,
+      "problemMatcher": ["$eslint-stylish", "$tsc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    }
+  ]
+}

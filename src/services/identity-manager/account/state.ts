@@ -7,7 +7,12 @@ import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 export interface LocalAccount
   extends Omit<
     AccountResponse,
-    "anchor" | "name" | "personas" | "phone_number" | "principal_id"
+    | "anchor"
+    | "name"
+    | "personas"
+    | "phone_number"
+    | "principal_id"
+    | "access_points"
   > {
   anchor: string
   name?: string

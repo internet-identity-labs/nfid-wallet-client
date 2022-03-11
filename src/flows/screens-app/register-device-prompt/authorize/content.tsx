@@ -94,12 +94,20 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
   const handleCreatePersonaAndLogin = React.useCallback(async () => {
     setStatus("loading")
 
-    const response = await createPersona({ domain: scope })
+    const response = await createPersona({
+      domain: scope || authorizationRequest?.hostname,
+    })
 
     if (response?.status_code === 200) {
       return handleAuthorizePersona({ persona_id: nextPersonaId })()
     }
-  }, [createPersona, handleAuthorizePersona, nextPersonaId, scope])
+  }, [
+    authorizationRequest?.hostname,
+    createPersona,
+    handleAuthorizePersona,
+    nextPersonaId,
+    scope,
+  ])
 
   const handleLogin = React.useCallback(async () => {
     if (isPersonaSelected) {

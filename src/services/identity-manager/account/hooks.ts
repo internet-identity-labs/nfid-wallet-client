@@ -39,11 +39,8 @@ export const useAccount = () => {
   const readAccount = React.useCallback(
     async (accountService?: AccountService, anchor?: bigint) => {
       if (!accountService) throw new Error('"accountService" is required')
-      if (!account && !anchor) throw new Error('"anchor" is required')
 
-      const _anchor = account?.anchor || anchor
       const response = await accountService.get_account()
-      console.log(">> debug readAccount", { response })
 
       const newAccount = response.data[0]
 
@@ -56,18 +53,9 @@ export const useAccount = () => {
         })
       }
 
-      // NOTE: this is only for dev purposes!!!
-      if (!newAccount && _anchor) {
-        await accountService.create_account({
-          anchor: BigInt(_anchor),
-        })
-
-        readAccount(accountService, BigInt(_anchor))
-      }
-
       return response
     },
-    [account, setAccount],
+    [setAccount],
   )
 
   const resetLocalAccount = React.useCallback(async () => {

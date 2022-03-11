@@ -17,7 +17,7 @@ export const useDevices = () => {
   const { newDeviceName } = useDeviceInfo()
 
   const { userNumber } = useAccount()
-  const { internetIdentity } = useAuthentication()
+  const { internetIdentity, identityManager } = useAuthentication()
 
   const updateDevices = React.useCallback(
     (partialDevices: Partial<Device[]>) => {
@@ -79,18 +79,25 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      if (!internetIdentity) throw new Error("Unauthorized")
+      if (!internetIdentity || !identityManager) throw new Error("Unauthorized")
 
-      await internetIdentity.add(
-        userNumber,
-        deviceName,
-        { unknown: null },
-        { authentication: null },
-        derBlobFromBlob(blobFromHex(publicKey)),
-        blobFromHex(rawId),
-      )
+      const pub_key = derBlobFromBlob(blobFromHex(publicKey))
+
+      await Promise.all([
+        internetIdentity.add(
+          userNumber,
+          deviceName,
+          { unknown: null },
+          { authentication: null },
+          pub_key,
+          blobFromHex(rawId),
+        ),
+        identityManager.create_access_point({
+          pub_key: Array.from(pub_key),
+        }),
+      ])
     },
-    [internetIdentity],
+    [internetIdentity, identityManager],
   )
 
   const getDevices = React.useCallback(async () => {

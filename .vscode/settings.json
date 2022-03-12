@@ -1,4 +1,3 @@
 {
-  "liveshare.launcherClient": "visualStudioCode",
-  "terminal.integrated.shellIntegration.enabled": true
+  "liveshare.launcherClient": "visualStudioCode"
 }

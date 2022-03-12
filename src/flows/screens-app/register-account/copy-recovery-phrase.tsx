@@ -17,7 +17,7 @@ import {
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { ProfileConstants } from "../profile/routes"
-import { useRegisterDevicePromt } from "../register-device-prompt/hooks"
+import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
@@ -36,7 +36,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   const { secret, scope } = useParams()
   const { isLoading, setIsloading } = useIsLoading()
   const { applicationName } = useMultipass()
-  const { remoteLogin } = useRegisterDevicePromt()
+  const { remoteLogin } = useAuthorizeApp()
   const { state } = useLocation()
 
   const recoveryPhrase = React.useMemo(() => {

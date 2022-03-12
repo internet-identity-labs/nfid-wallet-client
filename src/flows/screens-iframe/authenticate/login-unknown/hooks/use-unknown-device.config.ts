@@ -69,7 +69,7 @@ export const useUnknownDeviceConfig = () => {
 
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `http://localhost:9090${AppScreenAuthorizeAppConstants.base}/${pubKey}/${domain}/${applicationName}`
+      ? `${window.location.protocol}//${multipassDomain}${AppScreenAuthorizeAppConstants.base}/${pubKey}/${domain}/${applicationName}`
       : null
   }, [applicationName, domain, pubKey])
 

@@ -1,18 +1,17 @@
-import React from "react"
 import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { Input } from "components/atoms/input"
 import { H2, H5 } from "components/atoms/typography"
-import { Loader, P } from "frontend/ui-kit/src"
-import { nameRules } from "frontend/utils/validations"
-import { useForm } from "react-hook-form"
-import { generatePath, Link, useNavigate } from "react-router-dom"
-import { IFrameAuthorizeAppConstants as IFrameAuthorizeConstants } from "frontend/flows/screens-iframe/authorize-app/routes"
-import { RegisterDevicePromptConstants as AuthorizeConstants } from "../../register-device-prompt/routes"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { IFrameAuthenticateAccountConstants } from "frontend/flows/screens-iframe/authenticate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { useLocation } from "react-router-dom"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { Loader, P } from "frontend/ui-kit/src"
+import { nameRules } from "frontend/utils/validations"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { ProfileConstants } from "../routes"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
@@ -27,9 +26,6 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   children,
   className,
 }) => {
-  const { state } = useLocation()
-  console.log(">> NFIDPersonalizeContent", { state })
-
   const {
     register,
     formState: { errors, dirtyFields },
@@ -43,48 +39,51 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   const { identityManager } = useAuthentication()
   const { updateAccount } = useAccount()
   const navigate = useNavigate()
+  const { state } = useLocation()
+
+  console.log(">> NFIDPersonalizeContent", { state })
+
+  const navigateToUrl = iframe
+    ? IFrameAuthenticateAccountConstants.base
+    : `${ProfileConstants.base}/${ProfileConstants.authenticate}`
+
+  // generatePath(
+  //   `${AppScreenAuthorizeAppConstants.base}/${AppScreenAuthorizeAppConstants.authorize}`,
+  //   state as {
+  //     secret: string
+  //     scope: string
+  //     applicationName: string
+  //   },
+  // )
 
   const handlePersonalize = React.useCallback(
     async (data: any) => {
+      if (!identityManager) throw new Error("identityManager required")
       setIsloading(true)
       const { name } = data
-
-      if (!identityManager) throw new Error("identityManager required")
-
+      
       await updateAccount(identityManager, {
         name,
         skipPersonalize: true,
       })
+      
       setIsloading(false)
-
-      iframe
-        ? navigate(`${IFrameAuthorizeConstants.base}`)
-        : navigate(
-            generatePath(
-              `${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`,
-              state as {
-                secret: string
-                scope: string
-                applicationName: string
-              },
-            ),
-          )
+      navigate(navigateToUrl)
     },
-    [identityManager, iframe, navigate, setIsloading, state, updateAccount],
+    [identityManager, navigate, navigateToUrl, setIsloading, updateAccount],
   )
 
   const handleSkipPersonalize = React.useCallback(async () => {
-    console.log(">> ", { iframe, state })
-
-    iframe
-      ? navigate(`${IFrameAuthorizeConstants.base}`)
-      : navigate(
-          generatePath(
-            `${AuthorizeConstants.base}/${AuthorizeConstants.authorize}`,
-            state as { secret: string; scope: string; applicationName: string },
-          ),
-        )
-  }, [iframe, navigate, state])
+    if (!identityManager) throw new Error("identityManager required")
+    setIsloading(true)
+   
+    await updateAccount(identityManager, {
+      skipPersonalize: true,
+    })
+    
+    setIsloading(false)
+    navigate(navigateToUrl)
+  }, [identityManager, navigate, navigateToUrl, setIsloading, updateAccount])
 
   const title = "Personalize your experience"
 

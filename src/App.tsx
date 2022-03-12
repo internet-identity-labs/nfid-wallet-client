@@ -15,7 +15,7 @@ import {
   RegisterAccountConstants as RAC,
   RegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
-import { RegisterDevicePromptRoutes } from "./flows/screens-app/register-device-prompt/routes"
+import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
@@ -42,7 +42,7 @@ export const App = () => {
       {ProfileRoutes}
       {RegisterNewDeviceRoutes}
       {RegisterAccountRoutes}
-      {RegisterDevicePromptRoutes(`${RAC.base}/${RAC.account}`)}
+      {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
       {UnknownDeviceRoutes}
       {RestoreAccessPointRoutes}
 

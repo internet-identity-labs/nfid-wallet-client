@@ -2,6 +2,8 @@ import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { H2, H5 } from "components/atoms/typography"
 import { DropdownMenu } from "components/molecules/menu"
+import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
+import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
 import { useAuthorization } from "frontend/flows/screens-iframe/authenticate/login/hooks"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -9,10 +11,8 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { ProfileConstants } from "../../profile/routes"
-import { useRegisterDevicePromt } from "../hooks"
 
-interface AuthorizeAppContentProps
+interface AuthorizeAppProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
@@ -20,7 +20,7 @@ interface AuthorizeAppContentProps
   iframe?: boolean
 }
 
-export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
+export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   iframe = false,
 }) => {
   const [status, setStatus] = React.useState<
@@ -31,7 +31,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
 
   const { userNumber } = useAccount()
   const navigate = useNavigate()
-  const { remoteLogin, sendWaitForUserInput } = useRegisterDevicePromt()
+  const { remoteLogin, sendWaitForUserInput } = useAuthorizeApp()
 
   const { opener, postClientReadyMessage, authorizeApp, authorizationRequest } =
     useAuthorization({
@@ -128,7 +128,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
     selectedItem,
   ])
 
-  const title = `Log in to ${applicationName || "NFID Demo"}`
+  const title = `Log in to ${applicationName}`
 
   return status === "initial" || status === "loading" ? (
     <div>
@@ -138,7 +138,7 @@ export const AuthorizeAppContent: React.FC<AuthorizeAppContentProps> = ({
         <H2 className="mb-4">{title}</H2>
       )}
 
-      <div className="mb-5">
+      <div>
         {hasNFIDPersonas && (
           <>
             <Label>Continue as</Label>

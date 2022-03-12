@@ -2,7 +2,7 @@ import { PublicKey } from "@dfinity/agent"
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { CONFIG } from "frontend/config"
-import { RegisterDevicePromptConstants } from "frontend/flows/screens-app/register-device-prompt/routes"
+import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
 import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -69,7 +69,7 @@ export const useUnknownDeviceConfig = () => {
 
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `https://${multipassDomain}${RegisterDevicePromptConstants.base}/${pubKey}/${domain}/${applicationName}`
+      ? `http://localhost:9090${AppScreenAuthorizeAppConstants.base}/${pubKey}/${domain}/${applicationName}`
       : null
   }, [applicationName, domain, pubKey])
 

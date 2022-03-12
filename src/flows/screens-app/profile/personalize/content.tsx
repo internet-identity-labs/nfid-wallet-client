@@ -2,7 +2,6 @@ import clsx from "clsx"
 import { Button } from "components/atoms/button"
 import { Input } from "components/atoms/input"
 import { H2, H5 } from "components/atoms/typography"
-import { IFrameAuthenticateAccountConstants } from "frontend/flows/screens-iframe/authenticate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -10,8 +9,7 @@ import { Loader, P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import { ProfileConstants } from "../routes"
+import { Link, useLocation } from "react-router-dom"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
@@ -38,52 +36,38 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   const isFormComplete = ["name"].every((field) => dirtyFields[field])
   const { identityManager } = useAuthentication()
   const { updateAccount } = useAccount()
-  const navigate = useNavigate()
   const { state } = useLocation()
 
   console.log(">> NFIDPersonalizeContent", { state })
-
-  const navigateToUrl = iframe
-    ? IFrameAuthenticateAccountConstants.base
-    : `${ProfileConstants.base}/${ProfileConstants.authenticate}`
-
-  // generatePath(
-  //   `${AppScreenAuthorizeAppConstants.base}/${AppScreenAuthorizeAppConstants.authorize}`,
-  //   state as {
-  //     secret: string
-  //     scope: string
-  //     applicationName: string
-  //   },
-  // )
 
   const handlePersonalize = React.useCallback(
     async (data: any) => {
       if (!identityManager) throw new Error("identityManager required")
       setIsloading(true)
       const { name } = data
-      
+
       await updateAccount(identityManager, {
         name,
         skipPersonalize: true,
       })
-      
+
       setIsloading(false)
-      navigate(navigateToUrl)
+      window.history.back()
     },
-    [identityManager, navigate, navigateToUrl, setIsloading, updateAccount],
+    [identityManager, setIsloading, updateAccount],
   )
 
   const handleSkipPersonalize = React.useCallback(async () => {
     if (!identityManager) throw new Error("identityManager required")
     setIsloading(true)
-   
+
     await updateAccount(identityManager, {
       skipPersonalize: true,
     })
-    
+
     setIsloading(false)
-    navigate(navigateToUrl)
-  }, [identityManager, navigate, navigateToUrl, setIsloading, updateAccount])
+    window.history.back()
+  }, [identityManager, setIsloading, updateAccount])
 
   const title = "Personalize your experience"
 

@@ -11,7 +11,7 @@ interface IFrameAuthorizeAppProps
   > {}
 
 export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
-  const { userNumber, readAccount } = useAccount()
+  const { readAccount, userNumber } = useAccount()
   const { identityManager } = useAuthentication()
 
   console.log(">> AuthorizeApp")

@@ -8,7 +8,6 @@ import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
-import { AuthenticateAccountRoutes } from "./flows/screens-app/authenticate/routes"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import {
@@ -36,7 +35,6 @@ export const App = () => {
       <Route path={"/"} element={<HomeScreen />} />
       {DevScreensRoutes}
       {AccessPointRoutes}
-      {AuthenticateAccountRoutes}
       {CopyDevicesRoutes}
       {LinkIIAnchorRoutes}
       {ProfileRoutes}

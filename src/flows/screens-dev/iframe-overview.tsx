@@ -14,7 +14,7 @@ import {
 import React from "react"
 import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
 import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
-import { IFrameAuthenticateNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
+import { IFrameNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
 import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"
 
 interface IFrameOverviewProps
@@ -43,7 +43,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
               className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
               fixedHeight={false}
             >
-              <IFrameAuthenticateNFIDLogin />
+              <IFrameNFIDLogin />
             </IFrameWrapper>
 
             {/* IFrameAuthorizeApp */}

@@ -1,5 +1,5 @@
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { AuthenticateNFIDLoginContent } from "frontend/screens/nfid-login"
+import { NFIDLogin } from "frontend/screens/nfid-login"
 import React from "react"
 
 interface IFrameAuthenticateNFIDLoginProps
@@ -8,14 +8,12 @@ interface IFrameAuthenticateNFIDLoginProps
     HTMLDivElement
   > {}
 
-export const IFrameAuthenticateNFIDLogin: React.FC<
+export const IFrameNFIDLogin: React.FC<
   IFrameAuthenticateNFIDLoginProps
-> = ({ children, className }) => {
-  return (
-    <IFrameScreen logo>
-      <div className="flex flex-col-reverse">
-        <AuthenticateNFIDLoginContent iframe />
-      </div>
-    </IFrameScreen>
-  )
-}
+> = () => (
+  <IFrameScreen logo>
+    <div className="flex flex-col-reverse">
+      <NFIDLogin iframe />
+    </div>
+  </IFrameScreen>
+)

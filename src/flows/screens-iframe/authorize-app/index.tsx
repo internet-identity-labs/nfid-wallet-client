@@ -1,16 +1,16 @@
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { AuthorizeAppContent } from "frontend/flows/screens-app/register-device-prompt/authorize/content"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { AuthorizeApp } from "frontend/screens/authorize-app"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
 
-interface AuthorizeAppProps
+interface IFrameAuthorizeAppProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {}
 
-export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
+export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
   const { readAccount, userNumber } = useAccount()
   const { identityManager } = useAuthentication()
 
@@ -22,7 +22,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = () => {
 
   return (
     <IFrameScreen logo>
-      <AuthorizeAppContent iframe />
+      <AuthorizeApp iframe />
     </IFrameScreen>
   )
 }

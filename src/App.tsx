@@ -8,14 +8,13 @@ import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
-import { AuthenticateAccountRoutes } from "./flows/screens-app/authenticate/routes"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import {
   RegisterAccountConstants as RAC,
   RegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
-import { RegisterDevicePromptRoutes } from "./flows/screens-app/register-device-prompt/routes"
+import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
@@ -36,13 +35,12 @@ export const App = () => {
       <Route path={"/"} element={<HomeScreen />} />
       {DevScreensRoutes}
       {AccessPointRoutes}
-      {AuthenticateAccountRoutes}
       {CopyDevicesRoutes}
       {LinkIIAnchorRoutes}
       {ProfileRoutes}
       {RegisterNewDeviceRoutes}
       {RegisterAccountRoutes}
-      {RegisterDevicePromptRoutes(`${RAC.base}/${RAC.account}`)}
+      {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
       {UnknownDeviceRoutes}
       {RestoreAccessPointRoutes}
 

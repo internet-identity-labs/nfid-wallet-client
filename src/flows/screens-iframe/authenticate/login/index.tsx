@@ -10,12 +10,10 @@ interface IFrameAuthenticateNFIDLoginProps
 
 export const IFrameNFIDLogin: React.FC<
   IFrameAuthenticateNFIDLoginProps
-> = ({ children, className }) => {
-  return (
-    <IFrameScreen logo>
-      <div className="flex flex-col-reverse">
-        <NFIDLogin iframe />
-      </div>
-    </IFrameScreen>
-  )
-}
+> = () => (
+  <IFrameScreen logo>
+    <div className="flex flex-col-reverse">
+      <NFIDLogin iframe />
+    </div>
+  </IFrameScreen>
+)

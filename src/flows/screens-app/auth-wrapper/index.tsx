@@ -1,8 +1,9 @@
+import { IFrameNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
 import { generatePath, Navigate, useParams } from "react-router-dom"
-import { AuthenticateNFIDLogin } from "../authenticate/login"
+import { AppScreenNFIDLogin } from "../authenticate/login"
 
 interface AuthWrapperProps {
   redirectTo: string
@@ -14,7 +15,6 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({
   iframe,
 }) => {
   const params = useParams()
-  console.log(">> AuthWrapper", { params })
 
   const { isAuthenticated } = useAuthentication()
   const { account } = useAccount()
@@ -22,8 +22,11 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({
   return isAuthenticated ? (
     <>{children}</>
   ) : account ? (
-    <AuthenticateNFIDLogin iframe={iframe} />
+    <NFIDLoginDecider iframe={iframe} />
   ) : (
     <Navigate to={generatePath(redirectTo, params)} />
   )
 }
+
+const NFIDLoginDecider: React.FC<{ iframe?: boolean }> = ({ iframe }) =>
+  iframe ? <IFrameNFIDLogin /> : <AppScreenNFIDLogin />

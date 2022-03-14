@@ -1,5 +1,5 @@
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { AuthWrapper } from "frontend/flows/screens-app/auth-wrapper"
+import { AuthWrapper } from "frontend/screens/auth-wrapper"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"

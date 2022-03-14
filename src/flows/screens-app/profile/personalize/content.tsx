@@ -9,7 +9,7 @@ import { Loader, P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { Link, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
@@ -36,9 +36,6 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
   const isFormComplete = ["name"].every((field) => dirtyFields[field])
   const { identityManager } = useAuthentication()
   const { updateAccount } = useAccount()
-  const { state } = useLocation()
-
-  console.log(">> NFIDPersonalizeContent", { state })
 
   const handlePersonalize = React.useCallback(
     async (data: any) => {

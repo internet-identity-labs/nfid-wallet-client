@@ -14,8 +14,6 @@ export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
   const { readAccount, userNumber } = useAccount()
   const { identityManager } = useAuthentication()
 
-  console.log(">> AuthorizeApp")
-
   React.useEffect(() => {
     if (userNumber && identityManager) {
       readAccount(identityManager, userNumber)

@@ -7,5 +7,8 @@ export const IFrameAuthorizeAppConstants = {
 }
 
 export const IFrameAuthorizeAppRoutes = (
-  <Route path={IFrameAuthorizeAppConstants.base} element={<IFrameAuthorizeApp />} />
+  <Route
+    path={IFrameAuthorizeAppConstants.base}
+    element={<IFrameAuthorizeApp />}
+  />
 )

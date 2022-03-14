@@ -49,13 +49,13 @@ export const useAccount = () => {
           ...newAccount,
           name: newAccount.name[0],
           anchor: newAccount.anchor.toString(),
-          skipPersonalize: !!newAccount.name[0],
+          skipPersonalize: !!newAccount.name[0] || !!account?.skipPersonalize,
         })
       }
 
       return response
     },
-    [setAccount],
+    [account?.skipPersonalize, setAccount],
   )
 
   const resetLocalAccount = React.useCallback(async () => {

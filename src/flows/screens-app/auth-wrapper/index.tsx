@@ -6,10 +6,12 @@ import { AuthenticateNFIDLogin } from "../authenticate/login"
 
 interface AuthWrapperProps {
   redirectTo: string
+  iframe?: boolean
 }
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({
   children,
   redirectTo,
+  iframe,
 }) => {
   const params = useParams()
   console.log(">> AuthWrapper", { params })
@@ -20,7 +22,7 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({
   return isAuthenticated ? (
     <>{children}</>
   ) : account ? (
-    <AuthenticateNFIDLogin />
+    <AuthenticateNFIDLogin iframe={iframe} />
   ) : (
     <Navigate to={generatePath(redirectTo, params)} />
   )

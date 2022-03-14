@@ -1,7 +1,7 @@
 import React from "react"
 import { Route } from "react-router-dom"
 import { AppScreenAuthorizeApp } from "."
-import { AuthWrapper } from "../auth-wrapper"
+import { AuthWrapper } from "frontend/screens/auth-wrapper"
 
 export const AppScreenAuthorizeAppConstants = {
   base: "/rdp",

@@ -4,7 +4,7 @@ import { blobFromUint8Array } from "@dfinity/candid"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
-import { useMessageChannel } from "../login-unknown/hooks/use-message-channel"
+import { useMessageChannel } from "../flows/screens-iframe/authenticate/login-unknown/hooks/use-message-channel"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
 interface UseAuthenticationProps {

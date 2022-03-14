@@ -55,8 +55,9 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   }, [secret, sendWaitForUserInput])
 
   const [selectedItem, setSelectedItem] = React.useState<string>(
-    nfidPersonas[0]?.persona_id,
+    String(nfidPersonas[0]?.persona_id),
   )
+
   const [isPersonaSelected, setIsPersonaSelected] = React.useState(true)
 
   const handleAuthorizePersona = React.useCallback(
@@ -144,14 +145,14 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             <Label>Continue as</Label>
             <DropdownMenu title={selectedItem}>
               {(toggle) => (
-                <>
+                <div className="h-40 overflow-y-auto">
                   <Label menuItem>Personas</Label>
                   {nfidPersonas.map((persona, index) => (
                     <MenuItem
                       key={index}
-                      title={persona.persona_id}
+                      title={String(persona.persona_id)}
                       onClick={() => {
-                        setSelectedItem(persona.persona_id)
+                        setSelectedItem(String(persona.persona_id))
                         setIsPersonaSelected(true)
                         toggle()
                       }}
@@ -175,7 +176,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
                       }}
                     />
                   ))}
-                </>
+                </div>
               )}
             </DropdownMenu>
             <Button secondary block onClick={handleLogin}>

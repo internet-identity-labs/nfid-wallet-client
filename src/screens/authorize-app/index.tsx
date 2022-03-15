@@ -1,16 +1,18 @@
 import clsx from "clsx"
-import { Button } from "components/atoms/button"
-import { H2, H5 } from "components/atoms/typography"
-import { DropdownMenu } from "components/molecules/menu"
-import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
+import React from "react"
+import { useNavigate, useParams } from "react-router-dom"
+
 import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
 import { useAuthorization } from "frontend/hooks/use-authorization"
+import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
-import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
+
+import { Button } from "components/atoms/button"
+import { H2, H5 } from "components/atoms/typography"
+import { DropdownMenu } from "components/molecules/menu"
 
 interface AuthorizeAppProps
   extends React.DetailedHTMLProps<

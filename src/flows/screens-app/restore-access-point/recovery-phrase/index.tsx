@@ -1,8 +1,10 @@
-import { Card } from "components/molecules/card"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardBody } from "frontend/ui-kit/src"
 import React from "react"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
+import { CardBody } from "frontend/ui-kit/src"
+
+import { Card } from "components/molecules/card"
 
 interface RestoreAccessPointRecoveryPhraseProps
   extends React.DetailedHTMLProps<

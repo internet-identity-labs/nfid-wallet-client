@@ -1,8 +1,10 @@
-import { Card } from "components/molecules/card"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardBody } from "frontend/ui-kit/src"
 import React from "react"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
+import { CardBody } from "frontend/ui-kit/src"
+
+import { Card } from "components/molecules/card"
 
 interface AuthorizeRegisterDeciderProps
   extends React.DetailedHTMLProps<

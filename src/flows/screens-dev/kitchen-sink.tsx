@@ -1,4 +1,9 @@
-import { RadioButton } from "components/atoms/button/radio-button"
+import React from "react"
+import { BiLoaderCircle } from "react-icons/bi"
+import { FaKey } from "react-icons/fa"
+import { HiMenu, HiSearch } from "react-icons/hi"
+import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
+
 import Logo from "frontend/assets/dfinity.svg"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import {
@@ -25,11 +30,8 @@ import {
   P,
   TextArea,
 } from "frontend/ui-kit/src"
-import React from "react"
-import { BiLoaderCircle } from "react-icons/bi"
-import { FaKey } from "react-icons/fa"
-import { HiMenu, HiSearch } from "react-icons/hi"
-import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
+
+import { RadioButton } from "components/atoms/button/radio-button"
 
 export const KitchenSink: React.FC = () => {
   const personas = ["John Doe", "John77", "john_doe"]

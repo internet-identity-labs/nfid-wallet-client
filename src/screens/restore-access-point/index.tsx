@@ -1,15 +1,17 @@
 import clsx from "clsx"
+import React from "react"
+import { useForm } from "react-hook-form"
+
+import { useMessageChannel } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-message-channel"
+import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
+import { TextArea } from "frontend/ui-kit/src"
+
 import { Button } from "components/atoms/button"
 import { Loader } from "components/atoms/loader"
 import { H2, H5 } from "components/atoms/typography"
-import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
-import { TextArea } from "frontend/ui-kit/src"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useMessageChannel } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-message-channel"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<

@@ -1,7 +1,9 @@
 import { ActorSubclass } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+
 import { _SERVICE as _IDENTITY_MANAGER_SERVICE } from "frontend/services/identity-manager/identity_manager.did"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
+
 import { ApiResult, IIConnection } from "./iiConnection"
 
 export type LoginSuccess = {

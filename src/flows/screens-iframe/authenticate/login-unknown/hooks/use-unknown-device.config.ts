@@ -1,6 +1,10 @@
 import { PublicKey } from "@dfinity/agent"
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+import { atom, useAtom } from "jotai"
+import React from "react"
+import { generatePath, useLocation } from "react-router-dom"
+
 import { CONFIG } from "frontend/config"
 import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
 import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
@@ -11,9 +15,7 @@ import { apiResultToLoginResult } from "frontend/services/internet-identity/api-
 import { buildDelegate } from "frontend/services/internet-identity/build-delegate"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
-import { atom, useAtom } from "jotai"
-import React from "react"
-import { generatePath, useLocation } from "react-router-dom"
+
 import { useMessageChannel } from "./use-message-channel"
 
 type loadingState = "initial" | "loading" | "success"

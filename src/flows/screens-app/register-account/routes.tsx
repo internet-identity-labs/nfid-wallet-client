@@ -1,5 +1,6 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
+
 import { RegisterAccountCaptcha } from "./captcha"
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"

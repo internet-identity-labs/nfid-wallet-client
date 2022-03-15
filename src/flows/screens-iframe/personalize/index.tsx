@@ -1,6 +1,7 @@
 import React from "react"
-import { NFIDPersonalizeContent } from "frontend/flows/screens-app/profile/personalize/content"
+
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { NFIDPersonalizeContent } from "frontend/flows/screens-app/profile/personalize/content"
 
 interface IFrameNFIDPersonalizeProps
   extends React.DetailedHTMLProps<

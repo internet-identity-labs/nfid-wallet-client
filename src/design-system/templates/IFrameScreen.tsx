@@ -1,5 +1,6 @@
-import React, { useEffect } from "react"
 import clsx from "clsx"
+import React, { useEffect } from "react"
+
 import { Logo, NFIDGradientBar } from "frontend/ui-kit/src"
 
 interface IFrameWrapperProps

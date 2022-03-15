@@ -1,14 +1,16 @@
 import { blobFromHex, blobToHex, derBlobFromBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import produce from "immer"
+import { useAtom } from "jotai"
+import React from "react"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import {
   creationOptions,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import produce from "immer"
-import { useAtom } from "jotai"
-import React from "react"
+
 import { useAccount } from "../account/hooks"
 import { Device, devicesAtom } from "./state"
 

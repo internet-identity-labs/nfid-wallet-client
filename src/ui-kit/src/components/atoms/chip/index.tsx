@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react"
 import clsx from "clsx"
+import React, { ReactElement } from "react"
 
 interface Props
   extends React.DetailedHTMLProps<

@@ -1,8 +1,10 @@
+import React from "react"
+
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
+
 import { Button } from "components/atoms/button"
 import { RadioButton } from "components/atoms/button/radio-button"
 import { H2, H5 } from "components/atoms/typography"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
-import React from "react"
 
 interface AuthorizeRegisterDeciderContentProps
   extends React.DetailedHTMLProps<

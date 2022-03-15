@@ -1,5 +1,14 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import clsx from "clsx"
+import React from "react"
+import { useForm } from "react-hook-form"
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  generatePath,
+} from "react-router-dom"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -26,14 +35,7 @@ import {
   P,
 } from "frontend/ui-kit/src/index"
 import { captchaRules } from "frontend/utils/validations"
-import React from "react"
-import { useForm } from "react-hook-form"
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  generatePath,
-} from "react-router-dom"
+
 import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCaptchaProps

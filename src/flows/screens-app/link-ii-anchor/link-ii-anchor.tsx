@@ -1,6 +1,9 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { Li, Ol } from "components/atoms/typography/lists"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router"
+
 import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -20,9 +23,9 @@ import {
   P,
 } from "frontend/ui-kit/src/index"
 import { anchorRules } from "frontend/utils/validations"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router"
+
+import { Li, Ol } from "components/atoms/typography/lists"
+
 import { LinkIIAnchorConstants as LIIAC } from "./routes"
 
 interface LinkIIAnchorProps

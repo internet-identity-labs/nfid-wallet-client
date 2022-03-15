@@ -5,7 +5,23 @@ import {
   derBlobFromBlob,
   DerEncodedBlob,
 } from "@dfinity/candid"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+  WebAuthnIdentity,
+} from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+import { Buffer } from "buffer"
+import * as tweetnacl from "tweetnacl"
 
+import { CONFIG } from "frontend/config"
+import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
+import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
+import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
+import { idlFactory as PubsubChannelIdlFactory } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"
+
+import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { idlFactory as internet_identity_idl } from "./generated/internet_identity_idl"
 import {
   _SERVICE,
@@ -25,23 +41,8 @@ import {
   DeviceKey,
   ChallengeResult,
 } from "./generated/internet_identity_types"
-import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
-import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
-import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
-import { idlFactory as PubsubChannelIdlFactory } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"
-import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-  WebAuthnIdentity,
-} from "@dfinity/identity"
-import { Buffer } from "buffer"
-import { Principal } from "@dfinity/principal"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { hasOwnProperty } from "./utils"
-import * as tweetnacl from "tweetnacl"
-import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
-import { CONFIG } from "frontend/config"
 
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
 const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC

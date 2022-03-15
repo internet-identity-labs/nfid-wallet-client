@@ -1,18 +1,21 @@
-import React from "react"
 import clsx from "clsx"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { generatePath, Link, useNavigate } from "react-router-dom"
+import { useLocation } from "react-router-dom"
+
+import { IFrameAuthorizeAppConstants as IFrameAuthorizeConstants } from "frontend/flows/screens-iframe/authorize-app/routes"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { Loader, P } from "frontend/ui-kit/src"
+import { nameRules } from "frontend/utils/validations"
+
 import { Button } from "components/atoms/button"
 import { Input } from "components/atoms/input"
 import { H2, H5 } from "components/atoms/typography"
-import { Loader, P } from "frontend/ui-kit/src"
-import { nameRules } from "frontend/utils/validations"
-import { useForm } from "react-hook-form"
-import { generatePath, Link, useNavigate } from "react-router-dom"
-import { IFrameAuthorizeAppConstants as IFrameAuthorizeConstants } from "frontend/flows/screens-iframe/authorize-app/routes"
+
 import { RegisterDevicePromptConstants as AuthorizeConstants } from "../../register-device-prompt/routes"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { useLocation } from "react-router-dom"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<

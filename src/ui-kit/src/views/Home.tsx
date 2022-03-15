@@ -1,4 +1,10 @@
 import React from "react"
+import { BiLoaderCircle } from "react-icons/bi"
+import { FaKey } from "react-icons/fa"
+import { HiMenu, HiSearch } from "react-icons/hi"
+import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
+
+import Logo from "../assets/dfinity.svg"
 import {
   Button,
   H1,
@@ -21,12 +27,6 @@ import {
   CardAction,
   Chip,
 } from "../index"
-
-import { HiMenu, HiSearch } from "react-icons/hi"
-import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
-import { BiLoaderCircle } from "react-icons/bi"
-import { FaKey } from "react-icons/fa"
-import Logo from "../assets/dfinity.svg"
 
 export const KitchenSink: React.FC = () => {
   return (

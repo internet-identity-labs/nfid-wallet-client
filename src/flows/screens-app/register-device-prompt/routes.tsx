@@ -1,7 +1,8 @@
 import React from "react"
 import { Route } from "react-router-dom"
-import { RegisterDevicePrompt } from "./authorize"
+
 import { AuthWrapper } from "../auth-wrapper"
+import { RegisterDevicePrompt } from "./authorize"
 
 export const RegisterDevicePromptConstants = {
   base: "/rdp",

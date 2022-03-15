@@ -1,5 +1,6 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
+
 import { AuthenticateNFIDHome } from "."
 import { AuthWrapper } from "../auth-wrapper"
 import { NFIDPersonalize } from "./personalize"

@@ -1,12 +1,13 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
+import React from "react"
+
 import { CONFIG } from "frontend/config"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
-import React from "react"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 
 // FIXME:
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

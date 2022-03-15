@@ -1,8 +1,9 @@
+import React from "react"
+
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { AuthorizeAppContent } from "frontend/flows/screens-app/register-device-prompt/authorize/content"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import React from "react"
 
 interface AuthorizeAppProps
   extends React.DetailedHTMLProps<

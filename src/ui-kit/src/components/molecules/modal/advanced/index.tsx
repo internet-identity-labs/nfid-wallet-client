@@ -1,7 +1,9 @@
 import clsx from "clsx"
+import React from "react"
+
 import { Button } from "components/atoms/button"
 import { H5 } from "components/atoms/typography"
-import React from "react"
+
 import { ModalCloseIcon } from "../closeIcon"
 
 export interface ModalButtonProps {

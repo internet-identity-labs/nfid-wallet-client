@@ -1,6 +1,8 @@
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
 import { Route } from "react-router-dom"
+
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+
 import { IFrameAuthenticateNFIDLogin } from "./login"
 import { UnknownDeviceScreen } from "./login-unknown"
 

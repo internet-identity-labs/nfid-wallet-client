@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React from "react"
+
 import { NavigationBar } from "../organisms/navigation/navigation-bar"
 import { NavigationHeader } from "../organisms/navigation/navigation-header"
 import { BubbleOptions, Shell } from "./Shell"

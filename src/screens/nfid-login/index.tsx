@@ -1,15 +1,17 @@
 import clsx from "clsx"
-import { Button } from "components/atoms/button"
-import { H2, H5 } from "components/atoms/typography"
+import React from "react"
+import { useNavigate, useParams } from "react-router-dom"
+
+import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 import { ProfileConstants as AppScreenProfile } from "frontend/flows/screens-app/profile/routes"
 import { IFrameAuthorizeAppConstants as IFrameAuthorize } from "frontend/flows/screens-iframe/authorize-app/routes"
 import { IFrameProfileConstants as IFrameProfile } from "frontend/flows/screens-iframe/personalize/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { Loader, P } from "frontend/ui-kit/src"
-import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
+
+import { Button } from "components/atoms/button"
+import { H2, H5 } from "components/atoms/typography"
 
 interface AuthenticateNFIDLoginContentProps
   extends React.DetailedHTMLProps<

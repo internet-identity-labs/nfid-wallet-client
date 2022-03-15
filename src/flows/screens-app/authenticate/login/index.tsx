@@ -1,7 +1,8 @@
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardBody } from "frontend/ui-kit/src"
 import React from "react"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { AuthenticateNFIDLoginContent } from "frontend/screens/nfid-login"
+import { CardBody } from "frontend/ui-kit/src"
 
 interface NFIDLoginProps
   extends React.DetailedHTMLProps<

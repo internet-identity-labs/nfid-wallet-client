@@ -1,11 +1,13 @@
+import produce from "immer"
+import { useAtom } from "jotai"
+import React from "react"
+
 import { CONFIG } from "frontend/config"
 import {
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/services/identity-manager/identity_manager.did"
-import produce from "immer"
-import { useAtom } from "jotai"
-import React from "react"
+
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import { accountAtom, LocalAccount, userNumberAtom } from "./state"
 

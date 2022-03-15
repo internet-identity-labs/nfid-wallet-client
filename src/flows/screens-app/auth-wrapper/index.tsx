@@ -1,7 +1,9 @@
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import React from "react"
 import { generatePath, Navigate, useParams } from "react-router-dom"
+
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+
 import { AuthenticateNFIDLogin } from "../authenticate/login"
 
 interface AuthWrapperProps {

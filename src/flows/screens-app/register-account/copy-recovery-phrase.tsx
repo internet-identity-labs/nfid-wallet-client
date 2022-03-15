@@ -1,3 +1,6 @@
+import React from "react"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -14,8 +17,7 @@ import {
   Modal,
   P,
 } from "frontend/ui-kit/src/index"
-import React from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+
 import { ProfileConstants } from "../profile/routes"
 import { useRegisterDevicePromt } from "../register-device-prompt/hooks"
 

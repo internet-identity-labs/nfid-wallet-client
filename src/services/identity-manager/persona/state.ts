@@ -1,7 +1,7 @@
 import { atomWithStorage } from "jotai/utils"
-import { Persona } from "./types"
 
 import { PERSONA_LOCAL_STORAGE_KEY } from "./constants"
+import { Persona } from "./types"
 
 // personas: [
 //  {"principal_id": "1", "domain": "localhost:3000"}

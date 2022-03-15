@@ -1,16 +1,12 @@
 import React from "react"
 import ReactDOM from "react-dom"
-
-import { App } from "./App"
-
-import "./index.css"
-
+import { BrowserRouter as Router } from "react-router-dom"
+import SwiperCore, { Pagination, Navigation } from "swiper"
 import "swiper/css"
 import "swiper/css/pagination"
 
-import { BrowserRouter as Router } from "react-router-dom"
-
-import SwiperCore, { Pagination, Navigation } from "swiper"
+import { App } from "./App"
+import "./index.css"
 
 SwiperCore.use([Pagination, Navigation])
 

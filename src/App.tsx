@@ -2,8 +2,7 @@ import React from "react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
-import { CONFIG } from "./config"
-import { HomeScreen } from "./flows"
+
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
@@ -24,7 +23,11 @@ import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenti
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-access-point/routes"
+
 import { useStartUrl } from "./hooks/use-start-url"
+
+import { CONFIG } from "./config"
+import { HomeScreen } from "./flows"
 
 Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 

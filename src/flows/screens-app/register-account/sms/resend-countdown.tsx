@@ -1,5 +1,6 @@
-import { Button, P } from "frontend/ui-kit/src"
 import React from "react"
+
+import { Button, P } from "frontend/ui-kit/src"
 
 interface ResendSMSProps {
   handleResend: () => void

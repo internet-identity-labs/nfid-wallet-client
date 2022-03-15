@@ -1,5 +1,6 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
+
 import { RestoreAccessPointRecoveryPhrase } from "./recovery-phrase"
 
 export const RestoreAccessPointConstants = {

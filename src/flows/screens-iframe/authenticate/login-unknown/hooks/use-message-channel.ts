@@ -1,5 +1,6 @@
-import { usePostMessage } from "frontend/hooks/use-post-message"
 import React from "react"
+
+import { usePostMessage } from "frontend/hooks/use-post-message"
 
 const READY_MESSAGE = {
   kind: "authorize-ready",

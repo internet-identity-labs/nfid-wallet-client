@@ -1,11 +1,12 @@
+import { blobFromUint8Array } from "@dfinity/candid"
 import { atom, useAtom } from "jotai"
 import React from "react"
-import { blobFromUint8Array } from "@dfinity/candid"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
-import { useMessageChannel } from "../login-unknown/hooks/use-message-channel"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+
+import { useMessageChannel } from "../login-unknown/hooks/use-message-channel"
 
 interface UseAuthenticationProps {
   userNumber?: bigint

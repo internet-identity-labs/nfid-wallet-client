@@ -1,7 +1,8 @@
 import clsx from "clsx"
 import React from "react"
-import loaderAsset from "./loader.webp"
+
 import { NFIDLogoID } from "./NFIDLogoID"
+import loaderAsset from "./loader.webp"
 
 interface LoaderProps {
   isLoading: boolean
@@ -10,10 +11,12 @@ interface LoaderProps {
   iframe?: boolean
 }
 
-export const ImageOnlyLoader: React.FC<React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLImageElement>,
-  HTMLImageElement
->> = ({ className }) => {
+export const ImageOnlyLoader: React.FC<
+  React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLImageElement>,
+    HTMLImageElement
+  >
+> = ({ className }) => {
   return (
     <div className="transition duration-100 group">
       <img

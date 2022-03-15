@@ -50,6 +50,13 @@ export const idlFactory = ({ IDL }) => {
     'error' : IDL.Opt(Error),
     'status_code' : IDL.Nat16,
   });
+  const PhoneNumberCredential = IDL.Record({ 'phone_number' : IDL.Text });
+  const Credential = IDL.Variant({ 'phone_number' : PhoneNumberCredential });
+  const CredentialResponse = IDL.Record({
+    'data' : IDL.Opt(IDL.Vec(Credential)),
+    'error' : IDL.Opt(Error),
+    'status_code' : IDL.Nat16,
+  });
   const Name = IDL.Text;
   const BoolHttpResponse = IDL.Record({
     'data' : IDL.Opt(IDL.Bool),
@@ -101,6 +108,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'create_persona' : IDL.Func([PersonaVariant], [HTTPAccountResponse], []),
+    'credentials' : IDL.Func([], [CredentialResponse], []),
     'delete_application' : IDL.Func([Name], [BoolHttpResponse], []),
     'get_account' : IDL.Func([], [HTTPAccountResponse], ['query']),
     'get_all_logs' : IDL.Func([], [IDL.Vec(Log)], []),

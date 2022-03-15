@@ -1,4 +1,9 @@
+import React from "react"
+import { useForm } from "react-hook-form"
+import { useLocation, useNavigate } from "react-router-dom"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import {
   Button,
   Card,
@@ -9,10 +14,6 @@ import {
   P,
 } from "frontend/ui-kit/src/index"
 import { nameRules, phoneRules } from "frontend/utils/validations"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface RegisterAccountCreateNFIDProfileProps
   extends React.DetailedHTMLProps<

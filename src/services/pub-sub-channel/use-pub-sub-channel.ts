@@ -1,14 +1,15 @@
-import React from "react"
 import { Actor, HttpAgent } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
-import { CONFIG } from "frontend/config"
+import React from "react"
 
+import { CONFIG } from "frontend/config"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import {
   Topic,
   _SERVICE,
 } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
+
 import { idlFactory as pub_sub_channel_idl } from "./pub_sub_channel_idl"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 
 const pubSubCanisterId: string = CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string
 

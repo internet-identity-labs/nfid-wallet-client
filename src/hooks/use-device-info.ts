@@ -1,7 +1,7 @@
 import bowser from "bowser"
+import React from "react"
 
 import { getPlatformInfo } from "frontend/utils"
-import React from "react"
 
 export const useDeviceInfo = () => {
   const deviceInfo = React.useMemo(() => {

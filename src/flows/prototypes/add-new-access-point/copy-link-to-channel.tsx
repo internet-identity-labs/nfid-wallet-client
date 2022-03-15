@@ -1,5 +1,8 @@
 import React from "react"
+import { v4 } from "uuid"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 import {
   Button,
   Card,
@@ -9,8 +12,6 @@ import {
   Loader,
   P,
 } from "frontend/ui-kit/src/index"
-import { v4 } from "uuid"
-import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
 interface CopyLinkToChannelProps
   extends React.DetailedHTMLProps<

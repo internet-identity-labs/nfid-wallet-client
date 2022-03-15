@@ -1,11 +1,13 @@
 import React from "react"
+
+import { Button } from "components/atoms/button"
 import { H5 } from "components/atoms/typography"
 import { P } from "components/atoms/typography/paragraph"
-import { Button } from "components/atoms/button"
-import { ModalSuccessIcon } from "./successIcon"
-import { ModalCloseIcon } from "./closeIcon"
-import { ModalWarningIcon } from "./warningIcon"
+
 import { NFIDGradientBar } from "../gradient-bar"
+import { ModalCloseIcon } from "./closeIcon"
+import { ModalSuccessIcon } from "./successIcon"
+import { ModalWarningIcon } from "./warningIcon"
 
 type ModalIconType = "success" | "error"
 

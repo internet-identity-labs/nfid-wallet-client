@@ -1,15 +1,17 @@
 import clsx from "clsx"
-import { Button } from "components/atoms/button"
-import { Input } from "components/atoms/input"
-import { H2, H5 } from "components/atoms/typography"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { Link } from "react-router-dom"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { Loader, P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+
+import { Button } from "components/atoms/button"
+import { Input } from "components/atoms/input"
+import { H2, H5 } from "components/atoms/typography"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<

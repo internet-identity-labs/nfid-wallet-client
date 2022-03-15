@@ -1,7 +1,12 @@
 import clsx from "clsx"
-import { IFrameWrapper } from "components/molecules/iframe/wrapper"
+import React from "react"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { IFrameNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
+import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"
+import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
+import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
 import {
   Button,
   Card,
@@ -11,11 +16,8 @@ import {
   Label,
   MenuItem,
 } from "frontend/ui-kit/src"
-import React from "react"
-import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
-import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
-import { IFrameNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
-import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"
+
+import { IFrameWrapper } from "components/molecules/iframe/wrapper"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<

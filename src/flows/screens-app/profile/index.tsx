@@ -1,11 +1,6 @@
-import { DotsIcon } from "components/atoms/button/icons/dots"
-import { LogoutIcon } from "components/atoms/button/icons/logout"
-import { PlusIcon } from "components/atoms/button/icons/plus"
-import { ButtonMenu } from "components/atoms/button/menu"
-import {
-  ModalAdvanced,
-  ModalAdvancedProps,
-} from "components/molecules/modal/advanced"
+import React from "react"
+import { MdLaptopMac } from "react-icons/md"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -22,8 +17,15 @@ import {
   Loader,
   P,
 } from "frontend/ui-kit/src"
-import React from "react"
-import { MdLaptopMac } from "react-icons/md"
+
+import { DotsIcon } from "components/atoms/button/icons/dots"
+import { LogoutIcon } from "components/atoms/button/icons/logout"
+import { PlusIcon } from "components/atoms/button/icons/plus"
+import { ButtonMenu } from "components/atoms/button/menu"
+import {
+  ModalAdvanced,
+  ModalAdvancedProps,
+} from "components/molecules/modal/advanced"
 
 interface AuthenticateNFIDHomeProps
   extends React.DetailedHTMLProps<

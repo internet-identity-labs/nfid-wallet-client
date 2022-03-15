@@ -1,4 +1,3 @@
-import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { AuthWrapper } from "frontend/screens/auth-wrapper"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
@@ -9,16 +8,19 @@ import { Navigate, Route } from "react-router-dom"
 import { IFrameAuthorizeApp } from "../authorize-app"
 import { IFrameProfileConstants } from "../personalize/routes"
 import { UnknownDeviceScreen } from "./login-unknown"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 
 const AuthenticateDecider: React.FC = () => {
   const { isLoading, setIsloading } = useIsLoading(true)
   const { userNumber, account, readAccount } = useAccount()
+  const { getPersona } = usePersona()
   const { isAuthenticated, identityManager } = useAuthentication()
 
   const handleLoadAccount = React.useCallback(async () => {
-    await readAccount(identityManager, userNumber)
+    await Promise.all([readAccount(identityManager, userNumber), getPersona()])
     setIsloading(false)
-  }, [identityManager, readAccount, setIsloading, userNumber])
+  }, [getPersona, identityManager, readAccount, setIsloading, userNumber])
 
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -28,13 +30,13 @@ const AuthenticateDecider: React.FC = () => {
 
   return userNumber ? (
     <AuthWrapper iframe redirectTo="/">
-      {isLoading && (
+      {isLoading ? (
         <IFrameScreen logo>
           <Loader isLoading={isLoading} iframe />
         </IFrameScreen>
-      )}
-      {account?.skipPersonalize && <IFrameAuthorizeApp />}
-      {!isLoading && !account?.skipPersonalize && (
+      ) : account?.skipPersonalize ? (
+        <IFrameAuthorizeApp />
+      ) : (
         <Navigate
           to={`${IFrameProfileConstants.base}/${IFrameProfileConstants.personalize}`}
         />

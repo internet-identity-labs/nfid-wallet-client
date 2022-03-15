@@ -32,7 +32,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
     return () => clearInterval(timeout)
   }, [title])
   return (
-    <div className="relative">
+    <div className="relative min-h-[510px]">
       <NFIDGradientBar />
 
       {logo && <Logo className="px-5 pt-6" />}

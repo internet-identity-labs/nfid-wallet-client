@@ -5,10 +5,11 @@
       "label": "Run NFID Development Environment",
       "type": "shell",
       "dependsOn": [
-        "NFID Frontend for development",
-        "NFID Demo for development",
-        "NFID UI-Kit for development",
-        "NGROK tunnel"
+        "NFID Frontend",
+        "NFID Demo",
+        "NFID UI-Kit",
+        "NFID NGROK tunnel",
+        "NFID DFX replica"
       ],
       "presentation": {
         "reveal": "always",
@@ -17,7 +18,7 @@
       }
     },
     {
-      "label": "NGROK tunnel",
+      "label": "NFID NGROK tunnel",
       "type": "shell",
       "command": "yarn tunnel",
       "isBackground": true,
@@ -28,19 +29,19 @@
       }
     },
     {
-      "label": "DFX replica",
+      "label": "NFID DFX replica",
       "type": "shell",
       "command": "dfx start",
       "isBackground": true,
       "presentation": {
         "reveal": "always",
         "panel": "new",
-        "group": "backend"
+        "group": "develop"
       }
     },
     {
       "label": "DFX deploy demo",
-      "dependsOn": ["DFX replica"],
+      "dependsOn": ["NFID DFX replica"],
       "type": "shell",
       "command": "cd examples/MultipassDemo && dfx deploy",
       "presentation": {
@@ -50,7 +51,7 @@
       }
     },
     {
-      "label": "NFID Frontend for development",
+      "label": "NFID Frontend",
       "type": "shell",
       "command": "yarn && yarn dev",
       "presentation": {
@@ -60,7 +61,7 @@
       }
     },
     {
-      "label": "NFID Demo for development",
+      "label": "NFID Demo",
       "type": "shell",
       "command": "cd examples/MultipassDemo && yarn && yarn dev",
       "presentation": {
@@ -70,7 +71,7 @@
       }
     },
     {
-      "label": "NFID UI-Kit for development",
+      "label": "NFID UI-Kit",
       "type": "shell",
       "command": "cd src/ui-kit/ && yarn && yarn build:dev",
       "presentation": {

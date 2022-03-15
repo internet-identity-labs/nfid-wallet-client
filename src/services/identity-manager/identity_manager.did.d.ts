@@ -26,6 +26,12 @@ export interface ConfigurationRequest {
   'token_refresh_ttl' : bigint,
   'token_ttl' : bigint,
 }
+export type Credential = { 'phone_number' : PhoneNumberCredential };
+export interface CredentialResponse {
+  'data' : [] | [Array<Credential>],
+  'error' : [] | [Error],
+  'status_code' : number,
+}
 export type Domain = string;
 export interface EmptyHttpResponse {
   'data' : [] | [string],
@@ -70,6 +76,7 @@ export interface PersonaNFIDResponse {
 }
 export type PersonaVariant = { 'ii_persona' : PersonaIIResponse } |
   { 'nfid_persona' : PersonaNFIDResponse };
+export interface PhoneNumberCredential { 'phone_number' : string }
 export interface Response { 'error' : [] | [Error], 'status_code' : number }
 export type Token = string;
 export interface TokenRequest {
@@ -93,6 +100,7 @@ export interface _SERVICE {
       HTTPApplicationResponse
     >,
   'create_persona' : (arg_0: PersonaVariant) => Promise<HTTPAccountResponse>,
+  'credentials' : () => Promise<CredentialResponse>,
   'delete_application' : (arg_0: Name) => Promise<BoolHttpResponse>,
   'get_account' : () => Promise<HTTPAccountResponse>,
   'get_all_logs' : () => Promise<Array<Log>>,

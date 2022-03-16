@@ -1,7 +1,6 @@
-import React from "react"
-import clsx from "clsx"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { CredentialRequesterPhonenumber } from "frontend/screens/credential-requester/phonenumber"
+import { CredentialRequesterPhonenumber } from "frontend/screens/credential-requester/phonenumber/phonenumber"
+import React from "react"
 
 interface IFrameCredentialRequesterPhonenumberProps
   extends React.DetailedHTMLProps<

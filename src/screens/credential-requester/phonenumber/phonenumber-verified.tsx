@@ -1,5 +1,4 @@
 import React from "react"
-import clsx from "clsx"
 import { Button } from "frontend/ui-kit/src"
 import { RadioButton } from "frontend/ui-kit/src/components/atoms/button/radio-button"
 

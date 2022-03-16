@@ -1,5 +1,4 @@
 import React from "react"
-import clsx from "clsx"
 import { Input, Button } from "frontend/ui-kit/src"
 import { phoneRules } from "frontend/utils/validations"
 import { useForm } from "react-hook-form"

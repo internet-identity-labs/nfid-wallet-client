@@ -1,7 +1,10 @@
-import { Card } from "components/molecules/card"
+import React from "react"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { CardBody } from "frontend/ui-kit/src"
-import React from "react"
+
+import { Card } from "components/molecules/card"
+
 import { NFIDPersonalizeContent } from "./content"
 
 interface NFIDPersonalizeProps

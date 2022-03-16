@@ -1,6 +1,7 @@
 import React from "react"
-import { Modal } from "frontend/ui-kit/src"
+
 import { useTimer } from "frontend/hooks/use-timer"
+import { Modal } from "frontend/ui-kit/src"
 
 interface ModalSuccessProps
   extends React.DetailedHTMLProps<

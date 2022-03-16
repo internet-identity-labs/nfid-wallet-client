@@ -1,5 +1,9 @@
-import React from "react"
 import clsx from "clsx"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { HiCheckCircle } from "react-icons/hi"
+
+import { InputSelect } from "frontend/design-system/molecules/inputs/select"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import {
   Button,
@@ -11,9 +15,6 @@ import {
   P,
   Spinner,
 } from "frontend/ui-kit/src/index"
-import { HiCheckCircle } from "react-icons/hi"
-import { InputSelect } from "frontend/design-system/molecules/inputs/select"
-import { useForm } from "react-hook-form"
 import { getBrowser } from "frontend/utils"
 
 interface CreateKeysScreenProps

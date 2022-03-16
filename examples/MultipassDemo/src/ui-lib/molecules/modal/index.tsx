@@ -1,6 +1,6 @@
-import ReactDOM from "react-dom"
 import clsx from "clsx"
 import React from "react"
+import ReactDOM from "react-dom"
 
 export const Header: React.FC = ({ children }) => <div>{children}</div>
 

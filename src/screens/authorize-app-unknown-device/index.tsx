@@ -1,8 +1,9 @@
-import React from "react"
 import clsx from "clsx"
-import { H5 } from "components/atoms/typography"
+import React from "react"
+
 import { Button } from "components/atoms/button"
 import { QRCode } from "components/atoms/qrcode"
+import { H5 } from "components/atoms/typography"
 
 interface AuthorizeAppUnknownDeviceProps
   extends React.DetailedHTMLProps<

@@ -1,6 +1,7 @@
-import React from "react"
-import Logo from "./logo.png"
 import clsx from "clsx"
+import React from "react"
+
+import Logo from "./logo.png"
 
 interface FaceIdProps
   extends React.DetailedHTMLProps<

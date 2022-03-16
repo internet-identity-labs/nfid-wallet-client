@@ -1,6 +1,7 @@
+import React from "react"
+
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { NFIDLogin } from "frontend/screens/nfid-login"
-import React from "react"
 
 interface IFrameAuthenticateNFIDLoginProps
   extends React.DetailedHTMLProps<

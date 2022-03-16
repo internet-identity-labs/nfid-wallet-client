@@ -1,7 +1,10 @@
 import clsx from "clsx"
-import { ErrorIcon } from "components/atoms/input/icons/error"
 import React, { useState } from "react"
+
+import { ErrorIcon } from "components/atoms/input/icons/error"
+
 import { DropdownMenuChevron } from "./icons/chevron"
+
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,

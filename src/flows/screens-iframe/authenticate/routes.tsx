@@ -1,15 +1,17 @@
-import { AuthWrapper } from "frontend/screens/auth-wrapper"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { Loader } from "frontend/ui-kit/src"
 import React from "react"
 import { Navigate, Route } from "react-router-dom"
+
+import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { AuthWrapper } from "frontend/screens/auth-wrapper"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { Loader } from "frontend/ui-kit/src"
+
 import { IFrameAuthorizeApp } from "../authorize-app"
 import { IFrameProfileConstants } from "../personalize/routes"
 import { UnknownDeviceScreen } from "./login-unknown"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 
 const AuthenticateDecider: React.FC = () => {
   const { isLoading, setIsloading } = useIsLoading(true)

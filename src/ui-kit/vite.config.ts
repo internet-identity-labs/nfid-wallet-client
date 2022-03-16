@@ -1,6 +1,6 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
 import typescript from "@rollup/plugin-typescript"
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
 
 const { resolve } = require("path")
 

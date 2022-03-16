@@ -1,7 +1,6 @@
-import React from "react"
 import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
-
 import { IFrame } from "@identity-labs/ui"
+import React from "react"
 
 interface InternetAuthProps {}
 

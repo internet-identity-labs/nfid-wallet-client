@@ -1,4 +1,7 @@
-import { ButtonChevronIcon } from "components/atoms/button/icons/chevron"
+import React, { useRef } from "react"
+import { useForm } from "react-hook-form"
+import { useLocation, useNavigate } from "react-router-dom"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -12,9 +15,9 @@ import {
   P,
 } from "frontend/ui-kit/src/index"
 import { isValidToken, tokenRules } from "frontend/utils/validations"
-import React, { useRef } from "react"
-import { useForm } from "react-hook-form"
-import { useLocation, useNavigate } from "react-router-dom"
+
+import { ButtonChevronIcon } from "components/atoms/button/icons/chevron"
+
 import { RegisterAccountConstants as RAC } from "../routes"
 import { ResendSMS } from "./resend-countdown"
 

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { ArrowButton } from "../../atoms/button/arrow-button"
+import { ArrowButton } from "components/atoms/button/arrow-button"
 
 const Content: React.FC = ({ children }) => {
   return <div className="mt-[50px] text-black p-4 pb-28">{children}</div>

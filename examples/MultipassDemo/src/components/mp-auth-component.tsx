@@ -6,12 +6,15 @@ import clsx from "clsx"
 import React from "react"
 import { useProfile } from "src/ic-utils/profile"
 import { Button } from "src/ui-lib/atoms/button"
+import { RequestCredential } from "src/ui-lib/molecules/credentials-request"
 import { MultipassAuth } from "src/ui-lib/molecules/multipass-auth"
 
 export const MPAuthComponent = () => {
   const [isLoading, setIsLoading] = React.useState(false)
   const [iam, setIam] = React.useState("")
   const { identity, isAuthenticated, signout } = useInternetIdentity()
+  const [showRequestCredential, setShowRequestCredential] =
+    React.useState(false)
 
   const { whoami } = useProfile({ identity })
 
@@ -40,6 +43,10 @@ export const MPAuthComponent = () => {
             <span>whoami</span>
           </Button>
         )}
+
+        <Button className="mt-2" onClick={() => setShowRequestCredential(true)}>
+          <span>Verify Phone number</span>
+        </Button>
         <Button className="mt-2" onClick={signout}>
           signout
         </Button>
@@ -47,6 +54,7 @@ export const MPAuthComponent = () => {
           clear
         </Button>
 
+        {showRequestCredential && <RequestCredential />}
         <Loader isLoading={isLoading} />
       </div>
     </div>

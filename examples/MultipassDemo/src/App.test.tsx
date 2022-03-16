@@ -1,15 +1,16 @@
-import React from 'react'
-import { render, waitFor } from '@testing-library/react'
-import App from '../pages'
+import { render, waitFor } from "@testing-library/react"
+import React from "react"
 
-jest.mock('.dfx/local/canisters/profile/index.js', () => ({
-  createActor: jest.fn()
+import App from "../pages"
+
+jest.mock(".dfx/local/canisters/profile/index.js", () => ({
+  createActor: jest.fn(),
 }))
-jest.mock('src/ic-utils/create-actor', () => ({
-  createActor: jest.fn()
+jest.mock("src/ic-utils/create-actor", () => ({
+  createActor: jest.fn(),
 }))
 
-test('renders learn react link', async () => {
+test("renders learn react link", async () => {
   const { getByText } = render(<App />)
 
   await waitFor(() => {

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Divider } from "../../atoms/divider"
+import { Divider } from "components/atoms/divider"
 
 interface Props
   extends React.DetailedHTMLProps<

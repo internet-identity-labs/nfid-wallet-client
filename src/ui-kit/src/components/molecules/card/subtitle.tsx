@@ -1,6 +1,6 @@
 import React from "react"
 
-import { H5 } from "../../atoms/typography"
+import { H5 } from "components/atoms/typography"
 
 interface CardSubtitleProps
   extends React.DetailedHTMLProps<

@@ -23,10 +23,11 @@ import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/r
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-access-point/routes"
 
+import { HomeScreen } from "./flows"
+
 import { useStartUrl } from "./hooks/use-start-url"
 
 import { CONFIG } from "./config"
-import { HomeScreen } from "./flows"
 
 Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
 

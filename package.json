@@ -10,8 +10,8 @@
     "example:dev": "cd example && yarn dev",
     "generate:types": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t ts > frontend/generated/identity_manager.d.ts",
     "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js",
-    "format": "prettier --config .prettierrc.js --write ./src",
-    "format:examples": "prettier --config .prettierrc.js --write ./examples/MultipassDemo/src"
+    "format": "prettier --write ./src",
+    "format:examples": "prettier --write ./examples/MultipassDemo/src"
   },
   "dependencies": {
     "@dfinity/agent": "0.9.3",

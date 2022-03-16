@@ -1,14 +1,16 @@
-import { Button, Card, CardBody, H5, Loader, P } from "frontend/ui-kit/src"
 import clsx from "clsx"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import React from "react"
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
 import { useNavigate, useParams } from "react-router-dom"
-import { Swiper, SwiperSlide } from "swiper/react"
-import { RegisterAccountConstants as RAC } from "./routes"
-import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { generatePath } from "react-router-dom"
+import { Swiper, SwiperSlide } from "swiper/react"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import { Button, Card, CardBody, H5, Loader, P } from "frontend/ui-kit/src"
+
+import { RegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<

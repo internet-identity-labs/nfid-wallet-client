@@ -1,5 +1,6 @@
 import React from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+
 import { KitchenSink } from "./views/Home"
 
 const App = () => {

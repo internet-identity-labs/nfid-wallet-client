@@ -1,4 +1,5 @@
 import bowser from "bowser"
+
 const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
 const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
 const PLATFORMS_IOS = ["iPhone", "iPad", "iPod"]

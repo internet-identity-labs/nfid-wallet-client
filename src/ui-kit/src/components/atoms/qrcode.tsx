@@ -1,6 +1,6 @@
-import React from "react"
-import QR, { QRCodeRenderersOptions } from "qrcode"
 import clsx from "clsx"
+import QR, { QRCodeRenderersOptions } from "qrcode"
+import React from "react"
 
 interface QRCodeProps {
   content: string

@@ -1,5 +1,8 @@
 import { blobFromHex } from "@dfinity/candid"
 import clsx from "clsx"
+import React from "react"
+import { useNavigate } from "react-router-dom"
+
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -12,8 +15,7 @@ import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { Loader } from "frontend/ui-kit/src/index"
-import React from "react"
-import { useNavigate } from "react-router-dom"
+
 import { useMessageChannel } from "./hooks/use-message-channel"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 

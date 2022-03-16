@@ -1,5 +1,8 @@
-import { Centered, Loader, Screen } from "frontend/ui-kit/src/index"
 import clsx from "clsx"
+import React from "react"
+import { Helmet } from "react-helmet"
+import { useForm } from "react-hook-form"
+
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
@@ -7,9 +10,7 @@ import {
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
-import React from "react"
-import { Helmet } from "react-helmet"
-import { useForm } from "react-hook-form"
+import { Centered, Loader, Screen } from "frontend/ui-kit/src/index"
 
 export const CopyDevices = () => {
   const [status] = React.useState<"initial" | "loading" | "success" | "error">(

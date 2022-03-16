@@ -1,9 +1,11 @@
-import { H5 } from "components/atoms/typography"
-import { IFrameScreen } from "src/design-system/templates/IFrameScreen"
-import { Button, Input } from "frontend/ui-kit/src"
-import { anchorRules } from "frontend/utils/validations"
 import React from "react"
 import { useForm } from "react-hook-form"
+import { IFrameScreen } from "src/design-system/templates/IFrameScreen"
+
+import { Button, Input } from "frontend/ui-kit/src"
+import { anchorRules } from "frontend/utils/validations"
+
+import { H5 } from "components/atoms/typography"
 
 interface IFrameRestoreAccessPointStartProps
   extends React.DetailedHTMLProps<

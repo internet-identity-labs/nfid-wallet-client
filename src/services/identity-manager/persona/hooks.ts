@@ -1,12 +1,13 @@
-import React from "react"
 import { useAtom } from "jotai"
+import React from "react"
+
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+
 import { personaAtom } from "./state"
 import { isNFIDPersona, isIIPersona } from "./types"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { normalizePersonas } from "./utils"
-import { useIsLoading } from "frontend/hooks/use-is-loading"
 
 interface UsePersona {
   application?: string

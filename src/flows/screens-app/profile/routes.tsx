@@ -1,7 +1,9 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
-import { AuthenticateNFIDHome } from "."
+
 import { AuthWrapper } from "frontend/screens/auth-wrapper"
+
+import { AuthenticateNFIDHome } from "."
 import { NFIDPersonalize } from "./personalize"
 
 export const ProfileConstants = {

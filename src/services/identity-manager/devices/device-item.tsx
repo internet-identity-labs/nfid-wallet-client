@@ -1,12 +1,14 @@
 import React from "react"
-import { ListItem } from "frontend/ui-kit/src/index"
-import { Chip } from "frontend/ui-kit/src/index"
+import { BiLoaderCircle } from "react-icons/bi"
 import { FaKey } from "react-icons/fa"
 import { MdLaptopMac } from "react-icons/md"
+
+import { ListItem } from "frontend/ui-kit/src/index"
+import { Chip } from "frontend/ui-kit/src/index"
 import { DeleteButton } from "frontend/ui-kit/src/index"
-import { BiLoaderCircle } from "react-icons/bi"
-import { Device } from "./state"
+
 import { useDevices } from "./hooks"
+import { Device } from "./state"
 
 interface DeviceItemProps {
   device: Device

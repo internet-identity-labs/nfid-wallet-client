@@ -1,14 +1,15 @@
-import React from "react";
-import clsx from "clsx";
-import { Divider } from "../../atoms/divider";
+import clsx from "clsx"
+import React from "react"
+
+import { Divider } from "components/atoms/divider"
 
 interface Props
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  divider?: boolean;
-  bottom?: boolean;
+  divider?: boolean
+  bottom?: boolean
 }
 
 export const CardAction: React.FC<Props> = ({
@@ -23,10 +24,11 @@ export const CardAction: React.FC<Props> = ({
       <div
         className={clsx(
           "py-6 px-10 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2",
-          className
-        )}>
+          className,
+        )}
+      >
         {children}
       </div>
     </div>
-  );
-};
+  )
+}

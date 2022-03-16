@@ -1,5 +1,6 @@
 import React from "react"
 import { Route } from "react-router-dom"
+
 import { AppScreenAuthorizeRegisterDecider } from "."
 
 export const UnknownDeviceConstants = {

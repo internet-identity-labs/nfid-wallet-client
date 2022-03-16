@@ -38,7 +38,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
 
       {logo && <Logo className="px-5 pt-6" />}
 
-      <div className={clsx("p-5 relative", className)}>{children}</div>
+      <div className={clsx("p-5 relative text-sm", className)}>{children}</div>
     </div>
   )
 }

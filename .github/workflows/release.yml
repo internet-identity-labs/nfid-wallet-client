@@ -50,26 +50,6 @@ jobs:
           REACT_APP_AWS_VERIFY_PHONENUMBER: ${{secrets.VITE_AWS_VERIFY_PHONENUMBER}}
           REACT_APP_USERGEEK_API_KEY: ${{secrets.VITE_USERGEEK_API_KEY}}
 
-      - name: MULTIPASS Demo | install & deploy
-        run: |
-          cd examples/MultipassDemo && yarn
-
-          # install local to generate the types
-          dfx start --clean --background
-          dfx deploy --no-wallet
-          dfx stop
-
-          # On main branch build on ic
-          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            dfx identity use action
-            dfx deploy --network ic  --no-wallet
-          fi
-
-        env:
-          DFX_NETWORK: ${{secrets.DFX_NETWORK}}
-          NEXT_PUBLIC_MP_ID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}
-          NEXT_PUBLIC_IC_HOST: ${{secrets.NEXT_PUBLIC_IC_HOST}}
-
       - name: CREATE-IC-APP-REACT Demo | install & deploy
         run: |
           cd examples/create-ic-app-react-demo && yarn

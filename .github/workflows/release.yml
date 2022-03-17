@@ -66,6 +66,4 @@ jobs:
           fi
 
         env:
-          DFX_NETWORK: ${{secrets.DFX_NETWORK}}
           VITE_NFID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}
-          NEXT_PUBLIC_IC_HOST: ${{secrets.NEXT_PUBLIC_IC_HOST}}

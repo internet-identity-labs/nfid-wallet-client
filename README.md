@@ -31,7 +31,7 @@ yarn install
 ### 1.2. <a name='Installdfx'></a>Install dfx
 
 ```
-DFX_VERSION=0.8.4 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.9.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 ### 1.3. <a name='Installngrokhttpstunnelformobiledevice'></a>Install ngrok (https tunnel for mobile device)

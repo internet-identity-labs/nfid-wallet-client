@@ -1,15 +1,19 @@
 {
   "canisters": {
-    "profile": {
-      "main": "ic/profile/main.mo",
+    "counter": {
+      "main": "counter-canister/main.mo",
       "type": "motoko"
     },
     "assets": {
-      "dependencies": ["profile"],
-      "ui": {
+      "dependencies": [
+        "counter"
+      ],
+      "frontend": {
         "entrypoint": "dist/index.html"
       },
-      "source": ["dist/"],
+      "source": [
+        "dist/"
+      ],
       "type": "assets"
     }
   },
@@ -23,6 +27,12 @@
     "local": {
       "bind": "127.0.0.1:8000",
       "type": "ephemeral"
+    },
+    "ic": {
+      "providers": [
+        "https://mainnet.dfinity.network"
+      ],
+      "type": "persistent"
     }
   },
   "version": 1

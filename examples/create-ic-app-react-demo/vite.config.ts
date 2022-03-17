@@ -1,8 +1,9 @@
-import { defineConfig } from "vite"
 import reactRefresh from "@vitejs/plugin-react-refresh"
-import path from "path"
-import dfxJson from "./dfx.json"
 import fs from "fs"
+import path from "path"
+import { defineConfig } from "vite"
+
+import dfxJson from "./dfx.json"
 
 const isDev = process.env["DFX_NETWORK"] !== "ic"
 
@@ -49,7 +50,6 @@ const aliases = Object.entries(dfxJson.canisters).reduce(
 
 // Generate canister ids, required by the generated canister code in .dfx/local/canisters/*
 // This strange way of JSON.stringifying the value is required by vite
-// @ts-ignore
 const canisterDefinitions = Object.entries(canisterIds).reduce(
   (acc, [key, val]) => ({
     ...acc,
@@ -80,7 +80,7 @@ export default defineConfig({
     proxy: {
       // This proxies all http requests made to /api to our running dfx instance
       "/api": {
-        target: `http://localhost:${DFX_PORT}`,
+        target: `http://127.0.0.1:${DFX_PORT}`,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "/api"),
       },

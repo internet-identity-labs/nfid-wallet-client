@@ -12,7 +12,7 @@ export const ToggleMode = ({ isIframeMode, setIsIframeMode }: IToggleMode) => {
   }
 
   return (
-    <div className="absolute top-0 left-0 p-4">
+    <div className="absolute top-0 left-0 p-4 sm:top-0">
       <div className="flex items-center justify-center w-full mb-12">
         <label htmlFor="mode" className="flex items-center cursor-pointer">
           <div className="relative">

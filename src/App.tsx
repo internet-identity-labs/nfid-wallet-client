@@ -18,7 +18,10 @@ import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-d
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameUnknownDeviceRoutes } from "./flows/screens-iframe/authenticate/login-unknown/routes"
-import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
+import {
+  AppScreenAuthenticateAccountRoutes,
+  IFrameAuthenticateAccountRoutes,
+} from "./flows/screens-iframe/authenticate/routes"
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-access-point/routes"
@@ -52,6 +55,7 @@ export const App = () => {
       {IFrameProfileRoutes}
       {IFrameAuthorizeAppRoutes}
       {IFrameAuthenticateAccountRoutes}
+      {AppScreenAuthenticateAccountRoutes}
       {IFrameRestoreAccessPointRoutes}
       <Route path={"*"} element={<NotFound />} />
     </Routes>

@@ -13,7 +13,7 @@ import { IFrameAuthorizeApp } from "../authorize-app"
 import { IFrameProfileConstants } from "../personalize/routes"
 import { UnknownDeviceScreen } from "./login-unknown"
 
-const AuthenticateDecider: React.FC = () => {
+const AuthenticateDecider = ({ iframe = true }: { iframe?: boolean }) => {
   const { isLoading, setIsloading } = useIsLoading(true)
   const { userNumber, account, readAccount } = useAccount()
   const { getPersona } = usePersona()
@@ -31,10 +31,10 @@ const AuthenticateDecider: React.FC = () => {
   }, [handleLoadAccount, isAuthenticated])
 
   return userNumber ? (
-    <AuthWrapper iframe redirectTo="/">
+    <AuthWrapper iframe={iframe} redirectTo="/">
       {isLoading ? (
         <IFrameScreen logo>
-          <Loader isLoading={isLoading} iframe />
+          <Loader isLoading={isLoading} iframe={iframe} />
         </IFrameScreen>
       ) : account?.skipPersonalize ? (
         <IFrameAuthorizeApp />
@@ -45,17 +45,28 @@ const AuthenticateDecider: React.FC = () => {
       )}
     </AuthWrapper>
   ) : (
-    <UnknownDeviceScreen />
+    <UnknownDeviceScreen iframe={iframe} />
   )
 }
 
 export const IFrameAuthenticateAccountConstants = {
-  base: "/authenticate",
+  base: "/iframe-authenticate",
 }
 
 export const IFrameAuthenticateAccountRoutes = (
   <Route
     path={IFrameAuthenticateAccountConstants.base}
-    element={<AuthenticateDecider />}
+    element={<AuthenticateDecider iframe />}
+  />
+)
+
+export const AppScreenAuthenticateAccountConstants = {
+  base: "/authenticate",
+}
+
+export const AppScreenAuthenticateAccountRoutes = (
+  <Route
+    path={AppScreenAuthenticateAccountConstants.base}
+    element={<AuthenticateDecider iframe={false} />}
   />
 )

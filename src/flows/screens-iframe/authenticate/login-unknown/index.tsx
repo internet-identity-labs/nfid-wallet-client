@@ -3,6 +3,7 @@ import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 import { IFrameRestoreAccessPointConstants as RAC } from "frontend/flows/screens-iframe/restore-access-point/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -19,9 +20,13 @@ import { Loader } from "frontend/ui-kit/src/index"
 import { useMessageChannel } from "./hooks/use-message-channel"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 
-interface UnknownDeviceScreenProps {}
+interface UnknownDeviceScreenProps {
+  iframe?: boolean
+}
 
-export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = () => {
+export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
+  iframe,
+}) => {
   const { applicationName } = useMultipass()
   const { identityManager } = useAuthentication()
   const { createDevice } = useDevices()
@@ -86,7 +91,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = () => {
   return (
     <div className={clsx("relative")}>
       {/* IFrameAuthorizeAppUnkownDevice */}
-      {!showRegister && url ? (
+      {!showRegister && url && iframe ? (
         <IFrameScreen logo>
           <AuthorizeAppUnknownDevice
             applicationName={applicationName}
@@ -99,10 +104,24 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = () => {
           />
         </IFrameScreen>
       ) : null}
+
+      {!showRegister && url && !iframe ? (
+        <AppScreen>
+          <AuthorizeAppUnknownDevice
+            applicationName={applicationName}
+            url={url}
+            onLogin={() =>
+              navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
+                state: { from: "loginWithRecovery" },
+              })
+            }
+          />
+        </AppScreen>
+      ) : null}
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState)  */}
       {isLoading && (
-        <div className="fixed bottom-0 top-0 bg-white">
-          <div className="flex flex-col h-full w-full items-center justify-center px-14">
+        <div className="fixed top-0 bottom-0 bg-white">
+          <div className="flex flex-col items-center justify-center w-full h-full px-14">
             <Loader
               iframe
               isLoading={isLoading}

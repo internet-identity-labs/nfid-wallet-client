@@ -1,6 +1,7 @@
 import React from "react"
-import { Auth } from "./Auth"
+
 import { Intro } from "./Intro"
+import { Auth } from "./nfid-integration/Auth"
 
 function App() {
   return (

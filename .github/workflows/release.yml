@@ -67,3 +67,4 @@ jobs:
 
         env:
           VITE_NFID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}
+          VITE_NFID_PROVIDER_IFRAME_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_IFRAME_URL}}

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -76,14 +80,38 @@ button {
     text-decoration: underline;
     display: flex;
     align-items: center;
-}
+  }
 
-.auth-button img {
-  width: 60px;
-  margin-left: 10px;
-}
+  .auth-button img {
+    width: 60px;
+    margin-left: 10px;
+  }
 
-.signout {
-  display: flex;
-  align-items: center;
-}
+  .signout {
+    display: flex;
+    align-items: center;
+  }
+
+  #mode:checked ~ .dot {
+    transform: translateX(100%);
+    background: rgb(164, 165, 255)
+  }
+
+  .iframe {
+    width: 430px !important
+  }
+
+  @media screen and (max-width: 500px) {
+    .auth-section {
+      top: 50px;
+      width: 100%;
+      justify-content: space-around;
+    }
+    .auth-button {
+      padding: 0 0.5em;
+    }
+    .iframe {
+      width: 90% !important;
+      margin-right: 5%;
+    }
+  }

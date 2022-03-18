@@ -18,7 +18,7 @@ export const AuthIFrame = ({
   return (
     <div ref={iframeRef}>
       <IFrame
-        className="shadow-lg right-4 top-4 iframe"
+        className="right-0 shadow-lg sm:right-4 top-4 iframe"
         src={identityProvider}
         onLoad={handler}
       />

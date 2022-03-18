@@ -31,6 +31,10 @@ export const AuthButton = ({ provider, reset, iframeMode }: IAuthButton) => {
     reset()
   }
 
+  React.useEffect(() => {
+    if (iframeMode) setIsIframeOpened(true)
+  }, [iframeMode])
+
   return (
     <div>
       {isIframeOpened && (

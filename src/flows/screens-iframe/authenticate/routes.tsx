@@ -17,12 +17,25 @@ const AuthenticateDecider = ({ iframe = true }: { iframe?: boolean }) => {
   const { isLoading, setIsloading } = useIsLoading(true)
   const { userNumber, account, readAccount } = useAccount()
   const { getPersona } = usePersona()
-  const { isAuthenticated, identityManager } = useAuthentication()
+  const { isAuthenticated, isRemoteDelegate, identityManager } =
+    useAuthentication()
 
   const handleLoadAccount = React.useCallback(async () => {
-    await Promise.all([readAccount(identityManager, userNumber), getPersona()])
+    if (!isRemoteDelegate) {
+      await Promise.all([
+        readAccount(identityManager, userNumber),
+        getPersona(),
+      ])
+    }
     setIsloading(false)
-  }, [getPersona, identityManager, readAccount, setIsloading, userNumber])
+  }, [
+    getPersona,
+    identityManager,
+    isRemoteDelegate,
+    readAccount,
+    setIsloading,
+    userNumber,
+  ])
 
   React.useEffect(() => {
     if (isAuthenticated) {

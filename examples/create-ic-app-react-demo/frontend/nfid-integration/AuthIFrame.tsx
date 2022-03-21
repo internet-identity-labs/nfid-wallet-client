@@ -2,18 +2,16 @@ import { IFrame } from "@identity-labs/ui"
 import React from "react"
 
 import useClickOutside from "../hooks/useClickOutside"
+import { AuthContext } from "./AuthContext"
 
 interface IAuthFrame {
   identityProvider: string
   handler: () => void
-  onClose: () => void
 }
-export const AuthIFrame = ({
-  identityProvider,
-  handler,
-  onClose,
-}: IAuthFrame) => {
-  const iframeRef = useClickOutside(onClose)
+export const AuthIFrame = ({ identityProvider, handler }: IAuthFrame) => {
+  const { setIsIframeOpened } = React.useContext(AuthContext)
+
+  const iframeRef = useClickOutside(() => setIsIframeOpened(false))
 
   return (
     <div ref={iframeRef}>

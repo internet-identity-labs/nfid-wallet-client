@@ -1,14 +1,17 @@
 import React from "react"
 
-interface IToggleMode {
-  isIframeMode: boolean
-  setIsIframeMode: React.Dispatch<React.SetStateAction<boolean>>
-}
-export const ToggleMode = ({ isIframeMode, setIsIframeMode }: IToggleMode) => {
+import { AuthContext } from "./AuthContext"
+
+export const ToggleMode = () => {
+  const { isIframeMode, setIsIframeMode, setIsIframeOpened } =
+    React.useContext(AuthContext)
+
   const validateToggle = (e: any) => {
-    if (navigator.userAgent.indexOf("Chrome") !== -1)
-      setIsIframeMode(e.target.checked)
-    else alert("Sorry, but iframe mode available only for Google Chrome")
+    if (navigator.userAgent.indexOf("Chrome") === -1) {
+      return alert("Sorry, but iframe mode available only for Google Chrome")
+    }
+    setIsIframeMode(e.target.checked)
+    setIsIframeOpened(e.target.checked)
   }
 
   return (

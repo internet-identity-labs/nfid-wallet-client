@@ -3,45 +3,34 @@ import React from "react"
 
 import ii from "../assets/dfinity.svg"
 import nfid from "../assets/nfid-logo.svg"
+import { AuthContext } from "./AuthContext"
 import { AuthIFrame } from "./AuthIFrame"
 
 const ProvidersLogos: { [key: string]: string } = {
   NFID: nfid,
   II: ii,
 }
-
 interface IAuthButton {
   provider: string
-  reset: () => void
-  iframeMode: boolean
 }
 
-export const AuthButton = ({ provider, reset, iframeMode }: IAuthButton) => {
+export const AuthButton = ({ provider }: IAuthButton) => {
+  const { isIframeOpened, setIsIframeOpened, setActiveProvider, isIframeMode } =
+    React.useContext(AuthContext)
   const { signout, authenticate, isAuthenticated, identity, identityProvider } =
     useInternetIdentity()
-  const [isIframeOpened, setIsIframeOpened] = React.useState(false)
 
   const signIn = () => {
-    if (provider === "NFID" && iframeMode) setIsIframeOpened(true)
+    if (provider === "NFID" && isIframeMode) setIsIframeOpened(true)
     else authenticate()
   }
 
-  const signOut = () => {
-    signout()
-    reset()
-  }
-
-  React.useEffect(() => {
-    if (iframeMode) setIsIframeOpened(true)
-  }, [iframeMode])
-
   return (
     <div>
-      {isIframeOpened && (
+      {isIframeOpened && provider === "NFID" && (
         <AuthIFrame
           identityProvider={identityProvider}
           handler={() => authenticate()}
-          onClose={() => setIsIframeOpened(false)}
         />
       )}
       {!isAuthenticated ? (
@@ -55,7 +44,13 @@ export const AuthButton = ({ provider, reset, iframeMode }: IAuthButton) => {
             <strong>Signed in as: </strong>
             {identity?.getPrincipal().toText()}
           </span>
-          <button onClick={signOut} className="auth-button">
+          <button
+            onClick={() => {
+              signout()
+              setActiveProvider(null)
+            }}
+            className="auth-button"
+          >
             Sign out
           </button>
         </div>

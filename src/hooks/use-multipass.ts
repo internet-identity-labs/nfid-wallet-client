@@ -3,11 +3,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { useParams, useSearchParams } from "react-router-dom"
 
-import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
-import {
-  canisterIdPrincipal as iiCanisterIdPrincipal,
-  creationOptions,
-} from "frontend/services/internet-identity/iiConnection"
+import { creationOptions } from "frontend/services/internet-identity/iiConnection"
 
 import { useDeviceInfo } from "./use-device-info"
 
@@ -23,13 +19,10 @@ export const useMultipass = () => {
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(),
     })
-    const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
-    const pow = getProofOfWork(now_in_ns, iiCanisterIdPrincipal)
 
     return {
       identity: JSON.stringify(identity.toJSON()),
       deviceName: newDeviceName,
-      pow,
     }
   }, [newDeviceName])
 

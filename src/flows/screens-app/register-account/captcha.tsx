@@ -14,13 +14,11 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
-import { getProofOfWork } from "frontend/services/internet-identity/crypto/pow"
 import {
   Challenge,
   ChallengeResult,
 } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
-  canisterIdPrincipal,
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
@@ -84,9 +82,10 @@ export const RegisterAccountCaptcha: React.FC<
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
 
-    const now_in_ns = BigInt(Date.now()) * BigInt(1000000)
-    const pow = getProofOfWork(now_in_ns, canisterIdPrincipal)
-    const cha = await IIConnection.createChallenge(pow)
+    console.log(">> requestCaptcha")
+
+    const cha = await IIConnection.createChallenge()
+    console.log(">> requestCaptcha", { cha })
 
     setCaptchaResp(cha)
     setLoading(false)

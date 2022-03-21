@@ -21,6 +21,7 @@ interface Actors {
 
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
+const remoteLoginAtom = atom<boolean>(false)
 const actorsAtom = atom<Actors | null>(null)
 const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
 export const principalIdAtom = atom((get) =>
@@ -33,6 +34,7 @@ export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
   const [isAuthenticated] = useAtom(isAuthenticatedAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
+  const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
   const [actors, setActors] = useAtom(actorsAtom)
   const [principalId] = useAtom(principalIdAtom)
 
@@ -86,6 +88,14 @@ export const useAuthentication = () => {
       setError(null)
     }
   }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
+
+  const remoteLogin = React.useCallback(
+    async (actors) => {
+      setIsRemoteDelegate(true)
+      setActors(actors)
+    },
+    [setActors, setIsRemoteDelegate],
+  )
 
   const onRegisterSuccess = React.useCallback(
     (actors) => {
@@ -148,7 +158,9 @@ export const useAuthentication = () => {
     identityManager: actors?.identityManager,
     pubsubChannel: actors?.pubsubChannelActor,
     error,
+    isRemoteDelegate,
     login,
+    remoteLogin,
     logout,
     onRegisterSuccess,
     loginWithRecovery,

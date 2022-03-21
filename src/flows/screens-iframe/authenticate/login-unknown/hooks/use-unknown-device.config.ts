@@ -64,7 +64,7 @@ export const useUnknownDeviceConfig = () => {
   const { createDevice } = useDevices()
   const { applicationName } = useMultipass()
   const { getMessages } = usePubSubChannel()
-  const { onRegisterSuccess: setAuthenticatedActors } = useAuthentication()
+  const { remoteLogin: setAuthenticatedActors } = useAuthentication()
 
   const url = React.useMemo(() => {
     const multipassDomain = process.env.REACT_APP_MULTIPASS_DOMAIN

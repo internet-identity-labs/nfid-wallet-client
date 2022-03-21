@@ -2,12 +2,16 @@ import { InternetIdentityProvider } from "@identity-labs/react-ic-ii-auth"
 import React from "react"
 
 import { AuthButton } from "./AuthButton"
+import { AuthContext } from "./AuthContext"
 import { ToggleMode } from "./ToggleMode"
 
 // Note: This is just a basic example to get you started
 function Auth() {
-  const [provider, setProvider] = React.useState<"II" | "NFID" | null>(null)
+  const [activeProvider, setActiveProvider] = React.useState<
+    "II" | "NFID" | null
+  >(null)
   const [isIframeMode, setIsIframeMode] = React.useState(false)
+  const [isIframeOpened, setIsIframeOpened] = React.useState(false)
 
   const NFIDUrl = React.useMemo(() => {
     return !isIframeMode
@@ -16,48 +20,46 @@ function Auth() {
   }, [isIframeMode])
 
   return (
-    <div>
-      <ToggleMode
-        isIframeMode={isIframeMode}
-        setIsIframeMode={setIsIframeMode}
-      />
+    <AuthContext.Provider
+      value={{
+        isIframeMode,
+        setIsIframeMode,
+        isIframeOpened,
+        setIsIframeOpened,
+        activeProvider,
+        setActiveProvider,
+      }}
+    >
+      <ToggleMode />
       <div className="auth-section">
-        {!provider || provider === "II" ? (
+        {!activeProvider || activeProvider === "II" ? (
           <InternetIdentityProvider
             authClientOptions={{
               maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
               identityProvider: "https://identity.ic0.app/#authorize",
               onSuccess: (principal) => {
-                setProvider("II")
+                setActiveProvider("II")
               },
             }}
           >
-            <AuthButton
-              iframeMode={false}
-              reset={() => setProvider(null)}
-              provider="II"
-            />
+            <AuthButton provider="II" />
           </InternetIdentityProvider>
         ) : null}
-        {!provider || provider === "NFID" ? (
+        {!activeProvider || activeProvider === "NFID" ? (
           <InternetIdentityProvider
             authClientOptions={{
               maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
               identityProvider: NFIDUrl as string,
               onSuccess: (principal) => {
-                setProvider("NFID")
+                setActiveProvider("NFID")
               },
             }}
           >
-            <AuthButton
-              iframeMode={isIframeMode}
-              reset={() => setProvider(null)}
-              provider="NFID"
-            />
+            <AuthButton provider="NFID" />
           </InternetIdentityProvider>
         ) : null}
       </div>
-    </div>
+    </AuthContext.Provider>
   )
 }
 

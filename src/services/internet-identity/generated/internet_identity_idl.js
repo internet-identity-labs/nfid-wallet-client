@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-  IDL.Record({
+  const InternetIdentityInit = IDL.Record({
     assigned_user_number_range: IDL.Tuple(IDL.Nat64, IDL.Nat64),
   })
   const UserNumber = IDL.Nat64
@@ -24,14 +24,26 @@ export const idlFactory = ({ IDL }) => {
     credential_id: IDL.Opt(CredentialId),
   })
   const Timestamp = IDL.Nat64
-  const ProofOfWork = IDL.Record({
-    nonce: IDL.Nat64,
-    timestamp: Timestamp,
+  const AddTentativeDeviceResponse = IDL.Variant({
+    device_registration_mode_off: IDL.Null,
+    another_device_tentatively_added: IDL.Null,
+    added_tentatively: IDL.Record({
+      verification_code: IDL.Text,
+      device_registration_timeout: Timestamp,
+    }),
   })
   const ChallengeKey = IDL.Text
   const Challenge = IDL.Record({
     png_base64: IDL.Text,
     challenge_key: ChallengeKey,
+  })
+  const DeviceRegistrationInfo = IDL.Record({
+    tentative_device: IDL.Opt(DeviceData),
+    expiration: Timestamp,
+  })
+  const IdentityAnchorInfo = IDL.Record({
+    devices: IDL.Vec(DeviceData),
+    device_registration: IDL.Opt(DeviceRegistrationInfo),
   })
   const FrontendHostname = IDL.Text
   const SessionKey = PublicKey
@@ -86,9 +98,23 @@ export const idlFactory = ({ IDL }) => {
     users_registered: IDL.Nat64,
     assigned_user_number_range: IDL.Tuple(IDL.Nat64, IDL.Nat64),
   })
+  const VerifyTentativeDeviceResponse = IDL.Variant({
+    device_registration_mode_off: IDL.Null,
+    verified: IDL.Null,
+    wrong_code: IDL.Record({ retries_left: IDL.Nat8 }),
+    no_device_to_verify: IDL.Null,
+  })
   return IDL.Service({
     add: IDL.Func([UserNumber, DeviceData], [], []),
-    create_challenge: IDL.Func([ProofOfWork], [Challenge], []),
+    add_tentative_device: IDL.Func(
+      [UserNumber, DeviceData],
+      [AddTentativeDeviceResponse],
+      [],
+    ),
+    create_challenge: IDL.Func([], [Challenge], []),
+    enter_device_registration_mode: IDL.Func([UserNumber], [Timestamp], []),
+    exit_device_registration_mode: IDL.Func([UserNumber], [], []),
+    get_anchor_info: IDL.Func([UserNumber], [IdentityAnchorInfo], []),
     get_delegation: IDL.Func(
       [UserNumber, FrontendHostname, SessionKey, Timestamp],
       [GetDelegationResponse],
@@ -110,6 +136,11 @@ export const idlFactory = ({ IDL }) => {
     register: IDL.Func([DeviceData, ChallengeResult], [RegisterResponse], []),
     remove: IDL.Func([UserNumber, DeviceKey], [], []),
     stats: IDL.Func([], [InternetIdentityStats], ["query"]),
+    verify_tentative_device: IDL.Func(
+      [UserNumber, IDL.Text],
+      [VerifyTentativeDeviceResponse],
+      [],
+    ),
   })
 }
 export const init = ({ IDL }) => {

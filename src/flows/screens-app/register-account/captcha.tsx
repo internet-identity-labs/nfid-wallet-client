@@ -82,10 +82,7 @@ export const RegisterAccountCaptcha: React.FC<
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
 
-    console.log(">> requestCaptcha")
-
     const cha = await IIConnection.createChallenge()
-    console.log(">> requestCaptcha", { cha })
 
     setCaptchaResp(cha)
     setLoading(false)

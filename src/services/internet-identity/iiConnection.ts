@@ -33,7 +33,6 @@ import {
   FrontendHostname,
   Timestamp,
   DeviceData,
-  ProofOfWork,
   RegisterResponse,
   GetDelegationResponse,
   Purpose,
@@ -359,13 +358,9 @@ export class IIConnection {
     return await baseActor.lookup(userNumber)
   }
 
-  static async createChallenge(pow: ProofOfWork): Promise<Challenge> {
+  static async createChallenge(): Promise<Challenge> {
     const actor = await this.createActor()
-    console.log(
-      `createChallenge(ProofOfWork { timestamp=${pow.timestamp}, nonce=${pow.nonce} })`,
-    )
-    const challenge = await actor.create_challenge(pow)
-    console.log("Challenge Created")
+    const challenge = await actor.create_challenge()
     return challenge
   }
 

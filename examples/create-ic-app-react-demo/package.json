@@ -15,8 +15,8 @@
     "@dfinity/principal": "0.10.0",
     "@identity-labs/react-ic-ii-auth": "^0.0.15",
     "@identity-labs/ui": "link:../../src/ui-kit",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "link:../../node_modules/react",
+    "react-dom": "link:../../node_modules/react-dom",
     "tailwindcss": "^3.0.23"
   },
   "devDependencies": {

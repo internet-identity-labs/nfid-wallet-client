@@ -1,6 +1,6 @@
 # features/register.feature
 
-Feature: Register to MultiPass
+Feature: Register to NFID
 
     Feature Description
     A user has the ability to register and open an account

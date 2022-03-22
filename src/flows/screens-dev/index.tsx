@@ -1,18 +1,16 @@
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
+import { AccessPointConstants } from "../prototypes/add-new-access-point/routes"
+import { CopyDevicesConstants } from "../prototypes/copy-devices/routes"
+import { LinkIIAnchorConstants } from "../screens-app/link-ii-anchor/routes"
+import { ProfileConstants } from "../screens-app/profile/routes"
+import { RegisterAccountConstants } from "../screens-app/register-account/routes"
+import { DevScreensConstants } from "./routes"
 
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src/index"
-
-import { AccessPointConstants } from "./prototypes/add-new-access-point/routes"
-import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
-import { LinkIIAnchorConstants } from "./screens-app/link-ii-anchor/routes"
-import { ProfileConstants } from "./screens-app/profile/routes"
-import { RegisterAccountConstants } from "./screens-app/register-account/routes"
-import { DevScreensConstants } from "./screens-dev/routes"
-
-interface Props
+interface DevHomeScreenProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
@@ -29,7 +27,10 @@ interface Flow {
   items: Route[]
 }
 
-export const HomeScreen: React.FC<Props> = ({ children, className }) => {
+export const DevHomeScreen: React.FC<DevHomeScreenProps> = ({
+  children,
+  className,
+}) => {
   const routes: Flow[] = [
     {
       title: "Dev Screens",

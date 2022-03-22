@@ -1,16 +1,8 @@
-import React from "react"
-import { HiChevronDoubleRight } from "react-icons/hi"
-import { Link } from "react-router-dom"
-
+import clsx from "clsx"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src/index"
-
-import { AccessPointConstants } from "./prototypes/add-new-access-point/routes"
-import { CopyDevicesConstants } from "./prototypes/copy-devices/routes"
-import { LinkIIAnchorConstants } from "./screens-app/link-ii-anchor/routes"
-import { ProfileConstants } from "./screens-app/profile/routes"
-import { RegisterAccountConstants } from "./screens-app/register-account/routes"
-import { DevScreensConstants } from "./screens-dev/routes"
+import { Button, Chip } from "frontend/ui-kit/src"
+import React from "react"
+import { MdChevronRight } from "react-icons/md"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -18,89 +10,11 @@ interface Props
     HTMLDivElement
   > {}
 
-interface Route {
-  path: string
-  state?: { [key: string]: any }
-}
-
-interface Flow {
-  title: string
-  base?: string
-  items: Route[]
-}
-
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const routes: Flow[] = [
-    {
-      title: "Dev Screens",
-      base: DevScreensConstants.base,
-      items: [
-        {
-          path: DevScreensConstants.kitchenSink,
-        },
-        {
-          path: DevScreensConstants.iframeOverview,
-        },
-      ],
-    },
-    {
-      title: "Common Pages",
-      base: "",
-      items: [{ path: CopyDevicesConstants.base }],
-    },
-    {
-      title: "Profile",
-      base: ProfileConstants.base,
-      items: [
-        { path: `${ProfileConstants.authenticate}` },
-        {
-          path: `${ProfileConstants.personalize}`,
-        },
-      ],
-    },
-    {
-      title: "Register Account (NFID) Flow",
-      base: RegisterAccountConstants.base,
-      items: [
-        { path: RegisterAccountConstants.account },
-        { path: RegisterAccountConstants.captcha },
-        {
-          path: RegisterAccountConstants.copyRecoveryPhrase,
-        },
-      ],
-    },
-    {
-      title: "Link II Anchor Flow",
-      base: LinkIIAnchorConstants.base,
-      items: [
-        { path: LinkIIAnchorConstants.linkIIAnchor },
-        {
-          path: LinkIIAnchorConstants.keys,
-          state: { iiDeviceLink: "", userNumber: "" },
-        },
-      ],
-    },
-    {
-      title: "Add new access point",
-      base: AccessPointConstants.base,
-      items: [
-        { path: AccessPointConstants.copyLinkToChannel },
-        { path: AccessPointConstants.awaitingConfirmation },
-        { path: `${AccessPointConstants.createKeys}/fake-secret` },
-      ],
-    },
-  ]
-
-  const getRouteToText = (route: string, base?: string) => {
-    return route.replace(/\//g, " ").replace(/-/g, " ")
-  }
-
-  const getFullRoute = (route: string, base?: string) => {
-    if (!base || base === route) {
-      return route
-    }
-
-    return `${base}/${route}`
+  const classes = {
+    gridRow: "grid grid-cols-12 col-span-12 my-32",
+    header: "text-4xl text-center font-bold py-12",
+    subHeader: "font-bold text-2xl pb-12",
   }
 
   return (
@@ -109,42 +23,146 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         showBubbles: false,
       }}
     >
-      {process.env.NODE_ENV === "development" && (
-        <Card>
-          <CardBody>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {routes.map((routes, index) => (
-                <div
-                  className="col-span-1 sm:col-span-2 md:col-span-1"
-                  key={index}
+      <div className="">
+        <div className={classes.gridRow}>
+          <div className="col-span-12 lg:col-span-6">
+            <div className="swiper-title tracking-wide">
+              The Identity Layer for the Internet
+            </div>
+            <div>Equip your Web 2.0 devices for Web 3.0 with NFID</div>
+          </div>
+          <div className="col-span-12 lg:col-span-6" />
+        </div>
+
+        <div className={classes.gridRow}>
+          <div className="col-span-12 lg:col-span-6">
+            <div className={classes.subHeader}>
+              Digital wallets are a revolution in online identity management
+            </div>
+            <div>
+              In today's surveillance society where everything about us is
+              collected and sold between government and industry, digital
+              wallets have the potential of offering us a way out.
+            </div>
+          </div>
+        </div>
+
+        <div className={classes.gridRow}>
+          <div className="col-span-12 lg:col-span-6"></div>
+          <div className="col-span-12 lg:col-span-6">
+            <div className={classes.subHeader}>
+              It's what we self-custody our identity credentials and digital
+              assets with
+            </div>
+            <div>
+              Like physical wallets, digital wallets keep our digital items -
+              cryptocurrencies, NFTs, vaccine cards, diplomas, identity
+              credentials, etc - away from thieves.
+            </div>
+          </div>
+        </div>
+
+        <div className={classes.gridRow}>
+          <div className="col-span-12 lg:col-span-6">
+            <div className={classes.subHeader}>
+              But today's wallets all suffer from the same problems
+            </div>
+            <div>
+              Online or software-based wallets can still be hacked, hardware
+              wallets are hard to use, and no matter the type, all our online
+              activity can still be tracked and associated to us personally.
+            </div>
+          </div>
+        </div>
+
+        <div className={classes.gridRow}>
+          <div className="font-bold text-2xl col-span-12 text-center">
+            The easiest way to preserve your privacy and secure your identity
+            online
+          </div>
+        </div>
+
+        <div className={clsx("gap-x-12", classes.gridRow)}>
+          <div className="col-span-12">
+            <div className={classes.header}>Only with NFID</div>
+          </div>
+
+          <div className="col-span-12 lg:col-span-4">
+            <div className={classes.subHeader}>Private</div>
+            <div>
+              Every account you create across any service that supports NFID
+              will automatically create a new, untraceable hardware wallet. You
+              are the only person in the world able to trace accounts to your
+              NFID, providing you with the best possible privacy online.
+            </div>
+          </div>
+          <div className="col-span-12 lg:col-span-4">
+            <div className={classes.subHeader}>Private</div>
+            <div>
+              Hardware wallets offer the greatest security guarantees because
+              their private keys can't be exported, making it a one-way vault
+              that only you have the ability to access. NFID makes each of your
+              internet accounts exactly this kind of vault.
+            </div>
+          </div>
+
+          <div className="col-span-12 lg:col-span-4">
+            <div className={classes.subHeader}>Convenient</div>
+            <div>
+              A hardware device for each online account used to be impractical.
+              NFID stores private keys on the specially-designed cryptographic
+              chips of your phones, tablets, and computers so that creating new
+              accounts or authenticating is simply a face or touch scan away.
+            </div>
+          </div>
+        </div>
+
+        <div className={classes.gridRow}>
+          <div className="col-span-12">
+            <div className={classes.header}>Our mission</div>
+            <div>
+              At Internet Identity Labs, our mission is to provide every human
+              with the freedom to move digital assets, freedom to speak our
+              minds, and freedom from targeted manipulation, all with the
+              security and simplicity of the native face or fingerprint scan of
+              our personal devices. We see a future where we can’t be subject to
+              targeted manipulation because our activity can’t be tracked across
+              accounts, where we can speak our minds because creating an account
+              reveals no personal information about ourselves, and where we can
+              move our digital assets without revealing who we are or the
+              accounts in which our assets were stored.
+            </div>
+
+            <div className="mt-6">
+              What we believe is simple: The internet should be our internet,
+              nobody else's.
+            </div>
+
+            <div className="w-full justify-center flex">
+              <Button primary large className="my-12">
+                Read More
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className={classes.gridRow}>
+          <div className="col-span-12">
+            <div className={classes.header}>Where you can use NFID today</div>
+            <div className="flex justify-around gap-12 items-center flex-wrap">
+              {Array.from({ length: 14 }, (_, i) => (
+                <Chip
+                  icon={<MdChevronRight />}
+                  className="py-5 rounded-md mx-4 shrink-0 whitespace-nowrap"
+                  key={i}
                 >
-                  <H4>{routes.title}</H4>
-                  <small>{routes.base || "default"}</small>
-                  <Divider />
-                  <div className="space-y-3">
-                    {routes.items.map(({ path, state = {} }, index) => (
-                      <Link
-                        className="flex items-center justify-between w-full p-2 border rounded cursor-pointer group hover:border-indigo-500 hover:text-indigo-500"
-                        to={getFullRoute(path, routes.base)}
-                        key={index}
-                        state={state}
-                      >
-                        <span className="first-letter:capitalize">
-                          {getRouteToText(path)}
-                        </span>
-                        <div className="flex">
-                          <div className="border-l w-[10px] flex mr-1"></div>
-                          <HiChevronDoubleRight className="text-lg group-hover:text-indigo-500" />
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+                  <span>Item {i}</span>
+                </Chip>
               ))}
             </div>
-          </CardBody>
-        </Card>
-      )}
+          </div>
+        </div>
+      </div>
     </AppScreen>
   )
 }

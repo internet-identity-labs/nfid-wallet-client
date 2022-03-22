@@ -28,7 +28,7 @@ export const ImageOnlyLoader: React.FC<
         )}
       />
 
-      <NFIDLogoID className="w-12 h-12 p-1 group-hover:hidden" />
+      <NFIDLogoID className="w-14 h-14 p-1 group-hover:hidden" />
     </div>
   )
 }

@@ -23,7 +23,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
           <div className="flex items-center">
             <Link to={"/"} className="flex items-center text-2xl font-black">
               <span>NF</span>
-              <ImageOnlyLoader className="w-12 h-12" />
+              <ImageOnlyLoader className="w-14 h-14" />
             </Link>
           </div>
 

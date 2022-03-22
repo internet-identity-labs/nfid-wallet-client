@@ -14,7 +14,7 @@ export const Footer: React.FC<FooterProps> = ({ children, className }) => {
   }
 
   return (
-    <footer className="flex justify-between items-center w-full">
+    <footer className="flex flex-col md:flex-row justify-between items-center">
       <div className="flex items-center">
         <span className="mr-2 font-medium text-sm">Connect with us on</span>
         <div className="flex items-center space-x-2">

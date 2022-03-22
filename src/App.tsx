@@ -26,7 +26,7 @@ import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/r
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-access-point/routes"
 
-import { HomeScreen } from "./flows"
+import { HomeScreen } from "./flows/screens-app/landing-page"
 
 import { useStartUrl } from "./hooks/use-start-url"
 

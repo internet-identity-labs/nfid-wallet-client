@@ -37,7 +37,10 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
     },
   ]
 
-  const handleGoTo = (e: any, item: any) => {
+  const handleGoTo = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    item: any,
+  ) => {
     e.preventDefault()
 
     const element = document.getElementById(item)
@@ -80,7 +83,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
         {items.map((item, index) => (
           <div
             className={classes.navItem}
-            onClick={(el) => handleGoTo(el, item.to)}
+            onClick={(e) => handleGoTo(e, item.to)}
             key={index}
           >
             {item.label}

@@ -32,7 +32,7 @@
     "description": "Generate React Typescript Component with Props"
   },
   "Generate className with clsx format": {
-    "prefix": "il-class",
+    "prefix": "il-className",
     "body": ["className={clsx(\"${1}\", className)}"],
     "description": "Generate className with clsx format"
   },

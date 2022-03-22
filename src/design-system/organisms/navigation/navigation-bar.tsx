@@ -4,6 +4,8 @@ import { Link } from "react-router-dom"
 
 import { ImageOnlyLoader } from "frontend/ui-kit/src"
 
+import { NavigationItems as NavigationItemsDefault } from "./navigation-items"
+
 interface NavigationBarProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
@@ -19,8 +21,6 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
 }) => {
   const [scrollDir, setScrollDir] = useState("")
   const [scrollY, setScrollY] = useState(0)
-
-  const threshold = 50
 
   useEffect(() => {
     const threshold = 0
@@ -58,12 +58,12 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       className={clsx(
         "flex items-center flex-none z-1 sticky top-0 transition-all duration-300",
         scrollDir === "down" && "shadow-md bg-white/70 backdrop-blur-md",
-        scrollDir === "up" && scrollY < threshold && "opacity-0",
-        scrollY < threshold && "opacity-100",
+        scrollDir === "up" && "opacity-0",
+        scrollY < 50 && "opacity-100",
       )}
     >
       <div className="container px-3 mx-auto">
-        <div className="flex justify-between py-3 items-center pr-3">
+        <div className="flex justify-between p-3 items-center pr-3">
           <div className="flex items-center">
             <Link to={"/"} className="flex items-center text-2xl font-black">
               <span>NF</span>
@@ -71,7 +71,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
             </Link>
           </div>
 
-          <div>{navigationItems}</div>
+          {!navigationItems && <NavigationItemsDefault />}
         </div>
       </div>
     </header>

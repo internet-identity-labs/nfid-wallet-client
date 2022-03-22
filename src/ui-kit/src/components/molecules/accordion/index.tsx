@@ -22,19 +22,25 @@ export const Accordion: React.FC<AccordionProps> = ({
   return (
     <div className={clsx("", className)}>
       <div
-        className="cursor-pointer w-full flex items-start py-3"
-        onClick={() => setExpanded(!expanded)}
+        className={clsx("w-full flex items-start py-3")}
+        onClick={() => !expanded && setExpanded(!expanded)}
       >
-        <div className="mx-4">
+        <div
+          className="cursor-pointer mr-2 lg:mx-4"
+          onClick={() => setExpanded(!expanded)}
+        >
           {expanded ? (
-            <BiChevronDown className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+            <BiChevronDown className="w-5 h-5 text-gray-500 hover:text-gray-700 mt-0.5" />
           ) : (
-            <BiChevronRight className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+            <BiChevronRight className="w-5 h-5 text-gray-500 hover:text-gray-700 mt-0.5" />
           )}
         </div>
 
         <div className="flex-1">
-          <div className="font-medium" onClick={() => setExpanded(!expanded)}>
+          <div
+            className="font-medium cursor-pointer"
+            onClick={() => setExpanded(!expanded)}
+          >
             {title}
           </div>
           <div hidden={!expanded}>{details}</div>

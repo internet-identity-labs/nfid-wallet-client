@@ -16,7 +16,7 @@ export const Footer: React.FC<FooterProps> = ({ children, className }) => {
   return (
     <footer className="flex justify-between items-center w-full">
       <div className="flex items-center">
-        <span className="mr-2 font-medium text-sm">Connect us on</span>
+        <span className="mr-2 font-medium text-sm">Connect with us on</span>
         <div className="flex items-center space-x-2">
           <a
             href="https://twitter.com/IdentityMaxis"

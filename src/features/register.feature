@@ -5,7 +5,7 @@ Feature: Register to MultiPass
     Feature Description
     A user has the ability to register and open an account
 
-    Scenario: TC_00001 Register to MultiPass
+    Scenario: TC_00001 Register to NFID
     Given user opens website on browser
     And device is not registered
     Then user scans QR code with camera

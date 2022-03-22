@@ -39,7 +39,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
 
   const handleGoTo = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    item: any,
+    item: string,
   ) => {
     e.preventDefault()
 

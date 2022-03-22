@@ -1,8 +1,12 @@
 import clsx from "clsx"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Button, Chip } from "frontend/ui-kit/src"
 import React from "react"
-import { MdChevronRight } from "react-icons/md"
+import { FaCheck } from "react-icons/fa"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { Footer } from "frontend/flows/screens-app/landing-page/footer"
+import { Accordion, Button, Chip } from "frontend/ui-kit/src"
+
+import { NavigationItems } from "./screens-app/landing-page/navigation-items"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -17,13 +21,43 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     subHeader: "font-bold text-2xl pb-12",
   }
 
+  const questions = [
+    {
+      id: 1,
+      title: "Do I have to allow the use of cookies?",
+      info: "Unicorn vinyl poutine brooklyn, next level direct trade iceland. Shaman copper mug church-key coloring book, whatever poutine normcore fixie cred kickstarter post-ironic street art.",
+    },
+    {
+      id: 2,
+      title: "How do I change my My Page password?",
+      info: "Coloring book forage photo booth gentrify lumbersexual. Migas chillwave poutine synth shoreditch, enamel pin thundercats fashion axe roof party polaroid chartreuse.",
+    },
+    {
+      id: 3,
+      title: "What is BankID?",
+      info: "Enamel pin fam sustainable woke whatever venmo. Authentic asymmetrical put a bird on it, lumbersexual activated charcoal kinfolk banjo cred pickled sartorial.",
+    },
+    {
+      id: 4,
+      title: "Whose birth number can I use?",
+      info: "Edison bulb direct trade gentrify beard lo-fi seitan sustainable roof party franzen occupy squid. Knausgaard cronut succulents, scenester readymade shabby chic lyft. Copper mug meh vegan gentrify.",
+    },
+    {
+      id: 5,
+      title: "When do I recieve a password ordered by letter?",
+      info: "Locavore franzen fashion axe live-edge neutra irony synth af tilde shabby chic man braid chillwave waistcoat copper mug messenger bag. Banjo snackwave blog, microdosing thundercats migas vaporware viral lo-fi seitan ",
+    },
+  ]
+
   return (
     <AppScreen
       bubbleOptions={{
         showBubbles: false,
       }}
+      navigationItems={<NavigationItems />}
     >
-      <div className="">
+      <div id="home" className="-mt-28"></div>
+      <div>
         <div className={classes.gridRow}>
           <div className="col-span-12 lg:col-span-6">
             <div className="swiper-title tracking-wide">
@@ -118,6 +152,8 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         </div>
 
         <div className={classes.gridRow}>
+          <div className="-mt-12" id="our-mission"></div>
+
           <div className="col-span-12">
             <div className={classes.header}>Our mission</div>
             <div>
@@ -147,13 +183,14 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         </div>
 
         <div className={classes.gridRow}>
+          <div className="-mt-12" id="partners"></div>
           <div className="col-span-12">
             <div className={classes.header}>Where you can use NFID today</div>
             <div className="flex justify-around gap-12 items-center flex-wrap">
-              {Array.from({ length: 14 }, (_, i) => (
+              {Array.from({ length: 12 }, (_, i) => (
                 <Chip
-                  icon={<MdChevronRight />}
-                  className="py-5 rounded-md mx-4 shrink-0 whitespace-nowrap"
+                  icon={<FaCheck />}
+                  className="py-4 !rounded-md mx-4 shrink-0 whitespace-nowrap"
                   key={i}
                 >
                   <span>Item {i}</span>
@@ -162,6 +199,31 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             </div>
           </div>
         </div>
+
+        <div className={classes.gridRow}>
+          <div className="-mt-12" id="faq"></div>
+          <div className="col-span-12">
+            <div className={classes.header}>Frequently Asked Questions</div>
+
+            <div className="max-w-3xl">
+              {questions.map((question, i) => (
+                <Accordion
+                  title={question.title}
+                  details={question.info}
+                  key={i}
+                />
+              ))}
+            </div>
+
+            <div className="w-full justify-center flex">
+              <Button primary large className="my-12">
+                View More
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <Footer />
       </div>
     </AppScreen>
   )

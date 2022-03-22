@@ -8,14 +8,14 @@ import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { ReactProps } from "frontend/types"
+import { ElementProps } from "frontend/types/react"
 import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
 
 import { Button } from "components/atoms/button"
 import { H2, H5 } from "components/atoms/typography"
 import { DropdownMenu } from "components/molecules/menu"
 
-interface AuthorizeAppProps extends ReactProps<HTMLDivElement> {
+interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   iframe?: boolean
 }
 

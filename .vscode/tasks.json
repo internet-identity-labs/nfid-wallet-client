@@ -71,6 +71,16 @@
       }
     },
     {
+      "label": "NFID Account linking demo",
+      "type": "shell",
+      "command": "cd examples/account-linking-demo && yarn && yarn dev",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    },
+    {
       "label": "NFID UI-Kit",
       "type": "shell",
       "command": "cd src/ui-kit/ && yarn && yarn build:dev",

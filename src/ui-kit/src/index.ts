@@ -19,6 +19,7 @@ export * from "./components/atoms/switch/index"
 export * from "./components/atoms/typography/index"
 export * from "./components/atoms/typography/paragraph"
 export * from "./components/atoms/typography/typoDefinitions"
+export * from "./components/molecules/accordion"
 export * from "./components/molecules/bottomSheet/index"
 export * from "./components/molecules/card/action"
 export * from "./components/molecules/card/body"
@@ -35,3 +36,5 @@ export * from "./components/molecules/menu/index"
 export * from "./components/molecules/menu/menu-item"
 export * from "./components/molecules/modal/index"
 export * from "./components/molecules/setup-touch-id"
+
+

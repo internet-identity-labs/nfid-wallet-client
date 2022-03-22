@@ -1,12 +1,12 @@
-import clsx from "clsx"
 import React from "react"
 import { FaCheck } from "react-icons/fa"
+import { Link } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { Footer } from "frontend/flows/screens-app/landing-page/footer"
 import { Accordion, Button, Chip } from "frontend/ui-kit/src"
 
-import { NavigationItems } from "./screens-app/landing-page/navigation-items"
+import { ProfileConstants } from "./screens-app/profile/routes"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -23,29 +23,72 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
 
   const questions = [
     {
-      id: 1,
-      title: "Do I have to allow the use of cookies?",
-      info: "Unicorn vinyl poutine brooklyn, next level direct trade iceland. Shaman copper mug church-key coloring book, whatever poutine normcore fixie cred kickstarter post-ironic street art.",
+      title: "What is NFID?",
+      info: "NFID is the most private, secure, and convenient way to sign in to third-party apps and websites using the devices you already own. When you see a Continue with NFID prompt on a participating app or website, it means you can set up an account using your NFID. No more usernames or passwords to manage, no more loss of privacy, and no more identity theft or theft of the cryptocurrency you’re holding.",
     },
     {
-      id: 2,
-      title: "How do I change my My Page password?",
-      info: "Coloring book forage photo booth gentrify lumbersexual. Migas chillwave poutine synth shoreditch, enamel pin thundercats fashion axe roof party polaroid chartreuse.",
+      title: "How is this different than a cryptocurrency wallet?",
+      info: "NFID creates a new cryptocurrency wallet for every account you create with NFID that can't be traced to each other, and only NFID offers the ability to create accounts and authenticate quickly and securely across all of your devices using the face or touch scan from those same devices. No more browser plugins or standalone apps to download and manage.",
     },
     {
-      id: 3,
-      title: "What is BankID?",
-      info: "Enamel pin fam sustainable woke whatever venmo. Authentic asymmetrical put a bird on it, lumbersexual activated charcoal kinfolk banjo cred pickled sartorial.",
+      title: "What if my device is lost or stolen?",
+      info: (
+        <ul>
+          <li>
+            <strong className="pr-1">A</strong> - use one of your registered
+            devices to remove the lost or stolen device from your list of NFID{" "}
+            <Link
+              className="text-blue-base"
+              to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+            >
+              authorized devices
+            </Link>
+            .
+          </li>
+          <li>
+            <strong className="pr-1">B</strong> - remotely lock the lost or
+            stolen device to prevent anyone from using it. Follow{" "}
+            <Link to="#" className="text-blue-base">
+              these
+            </Link>{" "}
+            instructions for Apple, these for Google, these for Microsoft.
+          </li>
+          <li>
+            <strong className="pr-1">C</strong> - if you have no other
+            registered devices, use your recovery phrase to temporarily
+            authenticate yourself and remove the lost device from your list of
+            NFID{" "}
+            <Link
+              className="text-blue-base"
+              to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+            >
+              authorized devices
+            </Link>
+            .
+          </li>
+        </ul>
+      ),
     },
     {
-      id: 4,
-      title: "Whose birth number can I use?",
-      info: "Edison bulb direct trade gentrify beard lo-fi seitan sustainable roof party franzen occupy squid. Knausgaard cronut succulents, scenester readymade shabby chic lyft. Copper mug meh vegan gentrify.",
+      title:
+        "Why don’t you offer passwords or other methods of authentication?",
+      info: "Other authentication methods are the culprit for over 80% of all security hacks and data breaches because a username and password is all an attacker needs to impersonate you. NFID makes it impossible for anyone to breach any of your accounts without your device and the ability to unlock it.",
     },
     {
-      id: 5,
-      title: "When do I recieve a password ordered by letter?",
-      info: "Locavore franzen fashion axe live-edge neutra irony synth af tilde shabby chic man braid chillwave waistcoat copper mug messenger bag. Banjo snackwave blog, microdosing thundercats migas vaporware viral lo-fi seitan ",
+      title:
+        "What if I don’t have a device with a face or touch scanner, or a security key?",
+      info: (
+        <>
+          Please email us at{" "}
+          <a href="mailto:hello@identitylabs.ooo" className="text-blue-base">
+            hello@identitylabs.ooo
+          </a>{" "}
+          or let us know in the feedback channel of our Discord server - we want
+          to make sure everyone has a self-sovereign identity that’s impossible
+          to breach. If you don’t yet have a biometric-capable device, we want
+          to hear from you.",
+        </>
+      ),
     },
   ]
 
@@ -54,7 +97,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       bubbleOptions={{
         showBubbles: false,
       }}
-      navigationItems={<NavigationItems />}
     >
       <div id="home" className="-mt-28"></div>
       <div>
@@ -116,12 +158,12 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           </div>
         </div>
 
-        <div className={clsx("gap-x-12", classes.gridRow)}>
+        <div className={classes.gridRow}>
           <div className="col-span-12">
             <div className={classes.header}>Only with NFID</div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4">
+          <div className="col-span-12 lg:col-span-4 pr-6 py-6">
             <div className={classes.subHeader}>Private</div>
             <div>
               Every account you create across any service that supports NFID
@@ -130,8 +172,8 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               NFID, providing you with the best possible privacy online.
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-4">
-            <div className={classes.subHeader}>Private</div>
+          <div className="col-span-12 lg:col-span-4 pr-6 py-6">
+            <div className={classes.subHeader}>Secure</div>
             <div>
               Hardware wallets offer the greatest security guarantees because
               their private keys can't be exported, making it a one-way vault
@@ -140,7 +182,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4">
+          <div className="col-span-12 lg:col-span-4 pr-6 py-6">
             <div className={classes.subHeader}>Convenient</div>
             <div>
               A hardware device for each online account used to be impractical.
@@ -205,12 +247,13 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           <div className="col-span-12">
             <div className={classes.header}>Frequently Asked Questions</div>
 
-            <div className="max-w-3xl">
+            <div className="max-w-6xl mx-auto">
               {questions.map((question, i) => (
                 <Accordion
                   title={question.title}
                   details={question.info}
                   key={i}
+                  className="xl:text-lg"
                 />
               ))}
             </div>

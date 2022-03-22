@@ -1,12 +1,10 @@
-import React from "react"
 import { Auth } from "./Auth"
-import { Intro } from "./Intro"
+import React from "react"
 
 function App() {
   return (
     <div className="App">
       <Auth />
-      <Intro />
     </div>
   )
 }

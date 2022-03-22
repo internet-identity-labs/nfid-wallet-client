@@ -37,7 +37,7 @@
     "description": "Generate className with clsx format"
   },
   "Generate React.useCallback": {
-    "prefix": "il-urcb",
+    "prefix": "il-ucb",
     "body": ["const $1 = React.useCallback(() => {$0}, [])"]
   }
 }

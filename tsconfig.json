@@ -20,7 +20,8 @@
     "paths": {
       "frontend/*": ["./src/*"],
       "components/*": ["src/ui-kit/src/components/*"]
-    }
+    },
+    "types": ["src/types"]
   },
   "include": ["src"],
   "exclude": ["node_modules"]

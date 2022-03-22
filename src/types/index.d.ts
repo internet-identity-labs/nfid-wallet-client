@@ -1,5 +1,3 @@
-export type ReactProps<T> = React.DetailedHTMLProps<React.HTMLAttributes<T>, T>
-
 declare namespace globalThis {
   any
 }

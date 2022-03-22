@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: aviate-labs/setup-dfx@v0.2.3
         with:
-          dfx-version: 0.8.4
+          dfx-version: 0.9.2
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
@@ -50,9 +50,9 @@ jobs:
           REACT_APP_AWS_VERIFY_PHONENUMBER: ${{secrets.VITE_AWS_VERIFY_PHONENUMBER}}
           REACT_APP_USERGEEK_API_KEY: ${{secrets.VITE_USERGEEK_API_KEY}}
 
-      - name: MULTIPASS Demo | install & deploy
+      - name: CREATE-IC-APP-REACT Demo | install & deploy
         run: |
-          cd examples/MultipassDemo && yarn
+          cd examples/create-ic-app-react-demo && yarn
 
           # install local to generate the types
           dfx start --clean --background
@@ -66,6 +66,5 @@ jobs:
           fi
 
         env:
-          DFX_NETWORK: ${{secrets.DFX_NETWORK}}
-          NEXT_PUBLIC_MP_ID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}
-          NEXT_PUBLIC_IC_HOST: ${{secrets.NEXT_PUBLIC_IC_HOST}}
+          VITE_NFID_PROVIDER_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_URL}}
+          VITE_NFID_PROVIDER_IFRAME_URL: ${{secrets.NEXT_PUBLIC_MP_ID_PROVIDER_IFRAME_URL}}

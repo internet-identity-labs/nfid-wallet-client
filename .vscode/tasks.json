@@ -43,7 +43,7 @@
       "label": "DFX deploy demo",
       "dependsOn": ["NFID DFX replica"],
       "type": "shell",
-      "command": "cd examples/MultipassDemo && dfx deploy",
+      "command": "cd examples/create-ic-app-react-demo && dfx deploy",
       "presentation": {
         "reveal": "always",
         "panel": "new",
@@ -63,7 +63,7 @@
     {
       "label": "NFID Demo",
       "type": "shell",
-      "command": "cd examples/MultipassDemo && yarn && yarn dev",
+      "command": "cd examples/create-ic-app-react-demo && yarn && yarn dev",
       "presentation": {
         "reveal": "always",
         "panel": "new",

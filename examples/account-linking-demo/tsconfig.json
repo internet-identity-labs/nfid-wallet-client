@@ -1,34 +1,44 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es5",
     "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
-    "types": [
-      "vite/client"
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "baseUrl": ".",
+    // TODO: automate this mapping
     "paths": {
-      "canisters/counter": [
-        ".dfx/local/canisters/counter"
+      "ic/profile": [
+        ".dfx/local/canisters/profile/index.js"
+      ],
+      "ic/profile.did": [
+        ".dfx/local/canisters/profile/profile.did.js"
       ]
-    }
+    },
+    "incremental": true
   },
   "include": [
-    "./frontend"
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    ".dfx",
+    "internet-identity"
   ]
 }

@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@dfinity/agent": "0.10.0",
@@ -15,6 +16,7 @@
     "@dfinity/principal": "0.10.0",
     "@identity-labs/react-ic-ii-auth": "^0.0.15",
     "@identity-labs/ui": "link:../../src/ui-kit",
+    "patch-package": "^6.4.7",
     "react": "link:../../node_modules/react",
     "react-dom": "link:../../node_modules/react-dom",
     "tailwindcss": "^3.0.23"

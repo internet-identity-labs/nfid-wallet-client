@@ -211,10 +211,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@dfinity/agent@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.10.0.tgz#fa5ea1bf9201e12e0f95f9c333368f8554427a30"
-  integrity sha512-wRXZ54spejA6K74Gn5g0sdtf2nSi6B2gTpx+D/WxqQKDvZbtkp8AOT+zhH5o+UQILrchZgq40pCzOWpy2W01mQ==
+"@dfinity/agent@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.10.3.tgz#488939eb5bc1562b37705efe5f7c6caa7b82513d"
+  integrity sha512-trbTm8/o7N0yoIsNIMeKfbfKsqphDQ0Ql5cL5VdIUb57ClFKQg7VrQJoFXn9CYuhgqC7u5EnkNhlfLc2SH1Y3A==
   dependencies:
     base64-arraybuffer "^0.2.0"
     bignumber.js "^9.0.0"
@@ -222,40 +222,40 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
-"@dfinity/auth-client@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.10.0.tgz#f2454c1d8e53d360b8df7082f5aef518db566465"
-  integrity sha512-Po6TLXWOmytH7t9wuzeJ+FiM7rUmRGStCDAnbhpSAGstTtOh2HheTXIVgpwv3XFbUgkdOjpI3lNsG+G1kNm/1Q==
+"@dfinity/auth-client@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.10.3.tgz#b382342679b6bdf404c18370e4b23ca342f50c0d"
+  integrity sha512-1aNMWnqlwQ3/uvJFOPp1aK0S++nc68ZoG9dKPNdCQJ7AwSxyJbcyGDubFldd1stm2VloD4KOge81s/J7+h43gg==
 
-"@dfinity/authentication@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/authentication/-/authentication-0.10.0.tgz#6be2519d4deedde10b25f0f1841a09dfc7472084"
-  integrity sha512-KDz34wLx/mg3JVsQ5QEX4ryTzn6lO7hE7xe+FWYE3KfFt1hKoQzlt/4OSo6UFFu3Bp0LCEZpQn5AuARr4FBK9Q==
+"@dfinity/authentication@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/authentication/-/authentication-0.10.3.tgz#95ad61c365b23d7297beab9e4a15587c19039837"
+  integrity sha512-u4DScN3q5MuPusZ5NgORlPEnYsvjiSEXRdw0FzI2hegSU2KzocBs190WZPKFM0C52s6ZC5BP16xTX0eDm6NWgA==
 
-"@dfinity/candid@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.10.0.tgz#5ef45f84701716607f1ab8e6c57ff3d3246817b1"
-  integrity sha512-APU9Qefk6fhTVsKaltxDP1tlg5Gy41XlCMZWbDGHH7UTKJdmEEpylUWgSwn/AzMZCMWoF3PXt2kyq7OijVy01g==
+"@dfinity/candid@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.10.3.tgz#0c93b7ad9a1f7250f01c11a8f786443319d8e18f"
+  integrity sha512-+zhJGIlhPLsxh6ft2HPwKz6TQzkBIZHkOCgyrZ9ajvBWq1riyCEVlIgISlIiGfNcCWT4UjWZfe8s/2YIR2VqrQ==
 
-"@dfinity/identity@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.10.0.tgz#cbb6fc6f2c139244c9ec2a1487ccc16c856a4494"
-  integrity sha512-0KUAcP/s5j/3q8uWXAFbE5dWuxf9xSack6OYkSa5LGGdJ/s3DCwrgb0bPzYEX2CeIqNUG3x8/YwUZrMNWBxvNQ==
+"@dfinity/identity@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.10.3.tgz#d04e70329d5422595f815b91e29e1bf708c83f71"
+  integrity sha512-5YnQPObtbcRb+wSmX92cukC5hwpk/GDEZAGp0/98oZJZYy5YdMb7mOIZ6mLdVm4UvtoBt76UyzwhTYjUn70Erg==
   dependencies:
     borc "^2.1.1"
     js-sha256 "^0.9.0"
     secp256k1 "^4.0.2"
     tweetnacl "^1.0.1"
 
-"@dfinity/principal@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.10.0.tgz#96a5b11ef80424a66488f02a24a08f2fed09eea7"
-  integrity sha512-SvlsLDLpqDQFqmTWttLWKR1D5XODmT7BmTN9QdEx+Q8x9Zxcm9K5EJevuXhe9bAAAorwgRK+vg5riF4+hW7fAw==
+"@dfinity/principal@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.10.3.tgz#31b4d9e626dad7a5e0bc0ef07c40f996eb6218b8"
+  integrity sha512-32xwA+uSr3ieus55OG70b+wctiWxUJ5e/3JcmXgvC4o8TredAnfbQFuTqRi4AO+dh230hHqeRsKLoCvTdDRBXg==
 
-"@identity-labs/react-ic-ii-auth@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@identity-labs/react-ic-ii-auth/-/react-ic-ii-auth-0.0.15.tgz#8dd132e82c48b9e3e91c11252b65e1a15f4750e3"
-  integrity sha512-sZaVFquCX/XPw4CGLn21sSmDAOhRA1jabOu6zCWR/wPKdU1v/pAY0Fhgwk98zxxIqx2C8WjrpPS4eRXNK5qulA==
+"@identity-labs/react-ic-ii-auth@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@identity-labs/react-ic-ii-auth/-/react-ic-ii-auth-0.0.16.tgz#d345d6aadc2f68e27c884158335f57c820f433f0"
+  integrity sha512-70pZbFfcJQKbGMe48LZcMpfvz8HtUzoUq7fnejXBU+OaVwKyicM3pg22FpjtPW4WhzGdV+D0r5wnIhWPDSTwDw==
 
 "@identity-labs/ui@link:../../src/ui-kit":
   version "0.0.0"

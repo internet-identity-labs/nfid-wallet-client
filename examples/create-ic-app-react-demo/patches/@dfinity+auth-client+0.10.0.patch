@@ -14,17 +14,15 @@ index 1b54a5c..db88f72 100644
  /**
   * Interface for persisting user authentication data
 diff --git a/node_modules/@dfinity/auth-client/lib/cjs/index.js b/node_modules/@dfinity/auth-client/lib/cjs/index.js
-index 0642e25..3d32d10 100644
+index 0642e25..e08e993 100644
 --- a/node_modules/@dfinity/auth-client/lib/cjs/index.js
 +++ b/node_modules/@dfinity/auth-client/lib/cjs/index.js
-@@ -150,7 +150,9 @@ class AuthClient {
+@@ -150,7 +150,7 @@ class AuthClient {
          this._eventHandler = this._getEventHandler(identityProviderUrl, options);
          window.addEventListener('message', this._eventHandler);
          // Open a new window with the IDP provider.
 -        this._idpWindow = (_c = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _c !== void 0 ? _c : undefined;
-+        this._idpWindow =
-+          options && options?.opener ? options.opener() ?? undefined
-+          : window.open(identityProviderUrl.toString(), 'idpWindow') ?? undefined;
++        (void 0)._idpWindow = options && (_options = options) !== null && _options !== void 0 && _options.opener ? (_options$opener = options.opener()) !== null && _options$opener !== void 0 ? _options$opener : undefined : (_window$open = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _window$open !== void 0 ? _window$open : undefined;
      }
      _getEventHandler(identityProviderUrl, options) {
          return async (event) => {
@@ -44,16 +42,15 @@ index 1b54a5c..2285b4e 100644
  /**
   * Interface for persisting user authentication data
 diff --git a/node_modules/@dfinity/auth-client/lib/esm/index.js b/node_modules/@dfinity/auth-client/lib/esm/index.js
-index e7fd34c..1ef3988 100644
+index e7fd34c..c661e1b 100644
 --- a/node_modules/@dfinity/auth-client/lib/esm/index.js
 +++ b/node_modules/@dfinity/auth-client/lib/esm/index.js
-@@ -146,7 +146,8 @@ export class AuthClient {
+@@ -146,7 +146,7 @@ export class AuthClient {
          this._eventHandler = this._getEventHandler(identityProviderUrl, options);
          window.addEventListener('message', this._eventHandler);
          // Open a new window with the IDP provider.
 -        this._idpWindow = (_c = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _c !== void 0 ? _c : undefined;
-+        this._idpWindow = options?.opener ? options.opener() ?? undefined
-+          : window.open(identityProviderUrl.toString(), 'idpWindow') ?? undefined;
++        (void 0)._idpWindow = options && (_options = options) !== null && _options !== void 0 && _options.opener ? (_options$opener = options.opener()) !== null && _options$opener !== void 0 ? _options$opener : undefined : (_window$open = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _window$open !== void 0 ? _window$open : undefined;
      }
      _getEventHandler(identityProviderUrl, options) {
          return async (event) => {

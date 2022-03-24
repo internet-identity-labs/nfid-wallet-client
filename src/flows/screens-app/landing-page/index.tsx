@@ -25,7 +25,6 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       bubbleOptions={{
         showBubbles: false,
       }}
-      navigationItems={true}
     >
       <div id="home" className="-mt-28"></div>
       <div>

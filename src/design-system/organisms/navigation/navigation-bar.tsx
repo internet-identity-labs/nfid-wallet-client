@@ -12,12 +12,14 @@ interface NavigationBarProps
     HTMLDivElement
   > {
   navigationItems?: React.ReactNode
+  isFocused?: boolean
 }
 
 export const NavigationBar: React.FC<NavigationBarProps> = ({
   children,
   className,
   navigationItems,
+  isFocused = false,
 }) => {
   const [scrollDir, setScrollDir] = useState("")
   const [scrollY, setScrollY] = useState(0)
@@ -71,7 +73,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
             </Link>
           </div>
 
-          {navigationItems && <NavigationItemsDefault />}
+          {navigationItems ? navigationItems : <NavigationItemsDefault />}
         </div>
       </div>
     </header>

@@ -66,6 +66,8 @@ export const useAuthentication = () => {
       }
 
       const response = await IIConnection.login(userNumber)
+      if (response.kind === "authFail") return setIsLoading(false)
+
       const result = apiResultToLoginResult(response)
 
       if (result.tag === "err") {

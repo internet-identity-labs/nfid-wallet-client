@@ -33,7 +33,7 @@ export const AppScreen: React.FC<Props> = ({
       <div className="flex flex-col w-full min-h-screen mx-auto min-h-screen-ios">
         {!isFocused && (
           <>
-            <NavigationBar navigationItems={navigationItems} />
+            <NavigationBar navigationItems={false} />
             {title && (
               <NavigationHeader title={title} description={description} />
             )}

@@ -26,7 +26,7 @@ const actorsAtom = atom<Actors | null>(null)
 const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
 export const principalIdAtom = atom((get) =>
   get(actorsAtom)
-    ?.internetIdentity.delegationIdentity.getPrincipal()
+    ?.internetIdentity?.delegationIdentity.getPrincipal()
     .toString(),
 )
 
@@ -76,7 +76,9 @@ export const useAuthentication = () => {
 
       if (result.tag === "ok") {
         setActors(result)
-        initUserGeek(result.internetIdentity.delegationIdentity.getPrincipal())
+        initUserGeek(
+          result?.internetIdentity?.delegationIdentity.getPrincipal(),
+        )
         setError(null)
       }
 
@@ -133,7 +135,7 @@ export const useAuthentication = () => {
         if (result.tag === "ok") {
           setActors(result)
           initUserGeek(
-            result.internetIdentity.delegationIdentity.getPrincipal(),
+            result?.internetIdentity?.delegationIdentity.getPrincipal(),
           )
           setIsLoading(false)
           setError(null)

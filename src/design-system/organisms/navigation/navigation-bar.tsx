@@ -63,7 +63,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       )}
     >
       <div className="container px-3 mx-auto">
-        <div className="flex justify-between p-3 items-center pr-3">
+        <div className="flex items-center justify-between p-3 pr-3">
           <div className="flex items-center">
             <Link to={"/"} className="flex items-center text-2xl font-black">
               <span>NF</span>
@@ -71,7 +71,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
             </Link>
           </div>
 
-          {!navigationItems && <NavigationItemsDefault />}
+          {navigationItems && <NavigationItemsDefault />}
         </div>
       </div>
     </header>

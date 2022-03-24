@@ -1,9 +1,8 @@
-import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
-import React from "react"
-
 import ii from "../assets/dfinity.svg"
 import nfid from "../assets/nfid-logo.svg"
 import { AuthIFrame } from "./AuthIFrame"
+import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
+import React from "react"
 
 const ProvidersLogos: { [key: string]: string } = {
   NFID: nfid,
@@ -35,12 +34,20 @@ export const AuthButton = ({ provider, reset, iframeMode }: IAuthButton) => {
     if (iframeMode) setIsIframeOpened(true)
   }, [iframeMode])
 
+  const [calledAuth, setCalledAuth] = React.useState(false)
+  const handleAuthentication = React.useCallback(async () => {
+    if (!calledAuth) {
+      authenticate()
+      setCalledAuth(true)
+    }
+  }, [authenticate, calledAuth])
+
   return (
     <div>
       {!isAuthenticated && isIframeOpened && (
         <AuthIFrame
           identityProvider={identityProvider}
-          handler={() => authenticate()}
+          handler={handleAuthentication}
           onClose={() => setIsIframeOpened(false)}
         />
       )}

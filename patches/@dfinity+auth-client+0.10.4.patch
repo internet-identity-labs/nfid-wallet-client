@@ -1,0 +1,58 @@
+diff --git a/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts b/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts
+index bf32455..f25c361 100644
+--- a/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts
++++ b/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts
+@@ -31,6 +31,10 @@ export interface AuthClientLoginOptions {
+      * Callback in case authentication fails
+      */
+     onError?: ((error?: string) => void) | ((error?: string) => Promise<void>);
++    /**
++     * Callback for overwriting the opener window
++     */
++    opener?: () => Window | null;
+ }
+ /**
+  * Interface for persisting user authentication data
+diff --git a/node_modules/@dfinity/auth-client/lib/cjs/index.js b/node_modules/@dfinity/auth-client/lib/cjs/index.js
+index 2be9d2b..df2bb0e 100644
+--- a/node_modules/@dfinity/auth-client/lib/cjs/index.js
++++ b/node_modules/@dfinity/auth-client/lib/cjs/index.js
+@@ -159,7 +159,8 @@ class AuthClient {
+         this._eventHandler = this._getEventHandler(identityProviderUrl, Object.assign({ maxTimeToLive: defaultTimeToLive }, options));
+         window.addEventListener('message', this._eventHandler);
+         // Open a new window with the IDP provider.
+-        this._idpWindow = (_c = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _c !== void 0 ? _c : undefined;
++        if (!options?.opener) this._idpWindow = (_c = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _c !== void 0 ? _c : undefined;
++        else this._idpWindow = (_c = options.opener()) !== null && _c !== void 0 ? _c : undefined;
+         // Check if the _idpWindow is closed by user.
+         const checkInterruption = () => {
+             // The _idpWindow is opened and not yet closed by the client
+diff --git a/node_modules/@dfinity/auth-client/lib/esm/index.d.ts b/node_modules/@dfinity/auth-client/lib/esm/index.d.ts
+index bf32455..f25c361 100644
+--- a/node_modules/@dfinity/auth-client/lib/esm/index.d.ts
++++ b/node_modules/@dfinity/auth-client/lib/esm/index.d.ts
+@@ -31,6 +31,10 @@ export interface AuthClientLoginOptions {
+      * Callback in case authentication fails
+      */
+     onError?: ((error?: string) => void) | ((error?: string) => Promise<void>);
++    /**
++     * Callback for overwriting the opener window
++     */
++    opener?: () => Window | null;
+ }
+ /**
+  * Interface for persisting user authentication data
+diff --git a/node_modules/@dfinity/auth-client/lib/esm/index.js b/node_modules/@dfinity/auth-client/lib/esm/index.js
+index 84a6a7a..73b34e4 100644
+--- a/node_modules/@dfinity/auth-client/lib/esm/index.js
++++ b/node_modules/@dfinity/auth-client/lib/esm/index.js
+@@ -155,7 +155,8 @@ export class AuthClient {
+         this._eventHandler = this._getEventHandler(identityProviderUrl, Object.assign({ maxTimeToLive: defaultTimeToLive }, options));
+         window.addEventListener('message', this._eventHandler);
+         // Open a new window with the IDP provider.
+-        this._idpWindow = (_c = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _c !== void 0 ? _c : undefined;
++        if (!options?.opener) this._idpWindow = (_c = window.open(identityProviderUrl.toString(), 'idpWindow')) !== null && _c !== void 0 ? _c : undefined;
++        else this._idpWindow = (_c = options.opener()) !== null && _c !== void 0 ? _c : undefined;
+         // Check if the _idpWindow is closed by user.
+         const checkInterruption = () => {
+             // The _idpWindow is opened and not yet closed by the client

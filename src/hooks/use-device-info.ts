@@ -14,7 +14,6 @@ export const useDeviceInfo = () => {
       browser,
       newDeviceName: `NFID ${browser.name} on ${platform.os}`,
     }
-    console.log(">> useDeviceInfo", { info })
     return info
   }, [])
   return deviceInfo

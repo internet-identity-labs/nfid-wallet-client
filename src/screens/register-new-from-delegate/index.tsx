@@ -16,7 +16,7 @@ export const RegisterNewFromDelegate = () => {
   const [showModal, setShowModal] = React.useState(false)
   const { opener } = usePostMessage({
     // @ts-ignore TODO: fix this
-    onMessage: (window, ev) => console.log(">> onMessage", { window, ev }),
+    onMessage: () => {},
   })
 
   const {

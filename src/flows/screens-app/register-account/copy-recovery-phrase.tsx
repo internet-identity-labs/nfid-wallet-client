@@ -71,7 +71,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   }, [createPersona, nextPersonaId, remoteLogin, scope, secret, setIsloading])
 
   return (
-    <AppScreen>
+    <AppScreen isFocused>
       <H5 className="mt-8">This device is now equipped for Web 3.0</H5>
       <Card className="grid grid-cols-12">
         <CardBody className="col-span-12 md:col-span-11 lg:col-span-7">

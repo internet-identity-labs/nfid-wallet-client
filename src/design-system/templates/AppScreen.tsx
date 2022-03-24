@@ -31,14 +31,11 @@ export const AppScreen: React.FC<Props> = ({
   return (
     <Shell bubbleOptions={bubbleOptions}>
       <div className="flex flex-col w-full min-h-screen mx-auto min-h-screen-ios">
-        {!isFocused && (
-          <>
-            <NavigationBar navigationItems={navigationItems} />
-            {title && (
-              <NavigationHeader title={title} description={description} />
-            )}
-          </>
-        )}
+        <NavigationBar
+          navigationItems={navigationItems}
+          isFocused={isFocused}
+        />
+        {title && <NavigationHeader title={title} description={description} />}
 
         <main className={clsx(classNameWrapper, "flex flex-1")}>
           <div className="container px-6 py-4 mx-auto">{children}</div>

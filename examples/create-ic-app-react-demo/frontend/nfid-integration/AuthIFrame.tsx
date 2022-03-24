@@ -1,7 +1,6 @@
+import useClickOutside from "../hooks/useClickOutside"
 import { IFrame } from "@identity-labs/ui"
 import React from "react"
-
-import useClickOutside from "../hooks/useClickOutside"
 
 interface IAuthFrame {
   identityProvider: string
@@ -14,13 +13,20 @@ export const AuthIFrame = ({
   onClose,
 }: IAuthFrame) => {
   const iframeRef = useClickOutside(onClose)
+  const [calledAuth, setCalledAuth] = React.useState(false)
+  const handleCallOnce = React.useCallback(async () => {
+    if (!calledAuth) {
+      handler()
+      setCalledAuth(true)
+    }
+  }, [calledAuth, handler])
 
   return (
     <div ref={iframeRef}>
       <IFrame
         className="right-0 shadow-lg sm:right-4 top-4 iframe"
         src={identityProvider}
-        onLoad={handler}
+        onLoad={handleCallOnce}
       />
     </div>
   )

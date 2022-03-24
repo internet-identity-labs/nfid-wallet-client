@@ -55,7 +55,6 @@ export const RegisterAccountCaptcha: React.FC<
   RegisterAccountCaptchaProps
 > = () => {
   const { secret, scope } = useParams()
-  console.log(">> RegisterAccountCaptcha", { secret, scope })
 
   const {
     register,
@@ -167,7 +166,6 @@ export const RegisterAccountCaptcha: React.FC<
           secret,
           scope,
         })
-        console.log(">> ", { navPath })
 
         return navigate(navPath, {
           state: {

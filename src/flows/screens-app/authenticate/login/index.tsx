@@ -11,7 +11,7 @@ interface AppScreenNFIDLoginProps
   > {}
 
 export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = () => (
-  <AppScreen className="flex flex-col h-full">
+  <AppScreen className="flex flex-col h-full" isFocused>
     <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
       <NFIDLogin />
     </CardBody>

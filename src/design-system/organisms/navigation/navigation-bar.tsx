@@ -73,7 +73,11 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
             </Link>
           </div>
 
-          {navigationItems ? navigationItems : <NavigationItemsDefault />}
+          {isFocused ? null : navigationItems ? (
+            navigationItems
+          ) : (
+            <NavigationItemsDefault />
+          )}
         </div>
       </div>
     </header>

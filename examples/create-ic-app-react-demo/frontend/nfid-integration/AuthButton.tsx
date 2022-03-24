@@ -34,20 +34,12 @@ export const AuthButton = ({ provider, reset, iframeMode }: IAuthButton) => {
     if (iframeMode) setIsIframeOpened(true)
   }, [iframeMode])
 
-  const [calledAuth, setCalledAuth] = React.useState(false)
-  const handleAuthentication = React.useCallback(async () => {
-    if (!calledAuth) {
-      authenticate()
-      setCalledAuth(true)
-    }
-  }, [authenticate, calledAuth])
-
   return (
     <div>
       {!isAuthenticated && isIframeOpened && (
         <AuthIFrame
           identityProvider={identityProvider}
-          handler={handleAuthentication}
+          handler={authenticate}
           onClose={() => setIsIframeOpened(false)}
         />
       )}

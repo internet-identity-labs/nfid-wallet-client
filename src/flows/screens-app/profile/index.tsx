@@ -170,12 +170,9 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                                   })
                                 }}
                               >
-                                <a
-                                  href="FIXME: implementation missing"
-                                  className="block px-4 py-2 text-sm"
-                                >
+                                <div className="block px-4 py-2 text-sm">
                                   Rename
-                                </a>
+                                </div>
                               </li>
                               <li
                                 className="hover:bg-gray-200"
@@ -213,12 +210,9 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                                   })
                                 }}
                               >
-                                <a
-                                  href="FIXME: implementation missing"
-                                  className="block px-4 py-2 text-sm"
-                                >
+                                <div className="block px-4 py-2 text-sm">
                                   Delete
-                                </a>
+                                </div>
                               </li>
                             </>
                           )}

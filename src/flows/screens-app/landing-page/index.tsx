@@ -30,7 +30,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       <div>
         <div className={classes.gridRow}>
           <div className="col-span-12 lg:col-span-6">
-            <div className="swiper-title tracking-wide">
+            <div className="tracking-wide swiper-title">
               The Identity Layer for the Internet
             </div>
             <div>Equip your Web 2.0 devices for Web 3.0 with NFID</div>
@@ -80,7 +80,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         </div>
 
         <div className={classes.gridRow}>
-          <div className="font-bold text-2xl col-span-12 text-center">
+          <div className="col-span-12 text-2xl font-bold text-center">
             The easiest way to preserve your privacy and secure your identity
             online
           </div>
@@ -91,7 +91,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             <div className={classes.header}>Only with NFID</div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 pr-6 py-6">
+          <div className="col-span-12 py-6 pr-6 lg:col-span-4">
             <div className={classes.subHeader}>Private</div>
             <div>
               Every account you create across any service that supports NFID
@@ -100,7 +100,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               NFID, providing you with the best possible privacy online.
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-4 pr-6 py-6">
+          <div className="col-span-12 py-6 pr-6 lg:col-span-4">
             <div className={classes.subHeader}>Secure</div>
             <div>
               Hardware wallets offer the greatest security guarantees because
@@ -110,7 +110,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 pr-6 py-6">
+          <div className="col-span-12 py-6 pr-6 lg:col-span-4">
             <div className={classes.subHeader}>Convenient</div>
             <div>
               A hardware device for each online account used to be impractical.
@@ -144,7 +144,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               nobody else's.
             </div>
 
-            <div className="w-full justify-center flex">
+            <div className="flex justify-center w-full">
               <Button primary large className="my-12">
                 Read More
               </Button>
@@ -156,7 +156,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           <div className="-mt-12" id="partners"></div>
           <div className="col-span-12">
             <div className={classes.header}>Where you can use NFID today</div>
-            <div className="flex justify-around gap-12 items-center flex-wrap">
+            <div className="flex flex-wrap items-center justify-around gap-12">
               {Array.from({ length: 12 }, (_, i) => (
                 <Chip
                   icon={<FaCheck />}
@@ -186,7 +186,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               ))}
             </div>
 
-            <div className="w-full justify-center flex">
+            <div className="flex justify-center w-full">
               <Button primary large className="my-12">
                 View More
               </Button>

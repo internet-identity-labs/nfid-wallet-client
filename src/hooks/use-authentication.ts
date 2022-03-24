@@ -50,9 +50,6 @@ export const useAuthentication = () => {
     // @dfinity/auth-client to be installed
     // they just use LocalStorage implementation from it.
 
-    // TODO: remove logger before release
-    console.log(">> initUserGeek", { principalId: principal.toString() })
-
     Usergeek.setPrincipal(principal)
     Usergeek.trackSession()
   }, [])

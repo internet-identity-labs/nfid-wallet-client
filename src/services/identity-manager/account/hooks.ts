@@ -79,10 +79,9 @@ export const useAccount = () => {
       }))
       if (!newAccount) throw new Error("account undefined")
       // NOTE: looks silly? `name` is an optional parameter :/
-      const response = await accountService.update_account({
+      await accountService.update_account({
         name: newAccount.name ? [newAccount.name] : [],
       })
-      console.log(">> TODO: handle success/error correctly", { response })
 
       setAccount(newAccount)
     },

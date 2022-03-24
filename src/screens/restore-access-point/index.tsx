@@ -32,9 +32,7 @@ export const RestoreAccessPoint: React.FC<
 
   const handleNewDevice = React.useCallback(
     async (event) => {
-      console.log(">> ", { event })
-      const response = await handleStoreNewDevice(event.data)
-      console.log(">> ", { response })
+      await handleStoreNewDevice(event.data)
     },
     [handleStoreNewDevice],
   )

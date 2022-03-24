@@ -23,7 +23,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   className,
 }) => {
   const { secret, scope } = useParams()
-  console.log(">> RegisterAccountIntro", { secret, scope })
 
   const { isLoading, setIsloading } = useIsLoading()
   const navigate = useNavigate()
@@ -80,8 +79,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         secret,
         scope,
       })
-
-      console.log(">> handleCreateKeys", { captchaPath })
 
       navigate(captchaPath, {
         state: {

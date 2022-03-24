@@ -11,7 +11,8 @@
     "generate:types": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t ts > frontend/generated/identity_manager.d.ts",
     "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js",
     "format": "prettier --write ./src",
-    "format:examples": "prettier --write ./examples/MultipassDemo/src"
+    "format:examples": "prettier --write ./examples/MultipassDemo/src",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@dfinity/agent": "0.9.3",
@@ -29,6 +30,7 @@
     "clsx": "1.1.1",
     "immer": "9.0.12",
     "jotai": "1.6.1",
+    "patch-package": "^6.4.7",
     "process": "0.11.10",
     "qrcode": "1.5.0",
     "react": "^17.0.2",

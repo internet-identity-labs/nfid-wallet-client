@@ -41,8 +41,6 @@ export const usePersona = ({ application }: UsePersona = {}) => {
     if (!personaService) return
     const response = await personaService.read_personas()
 
-    console.log(">> debug getPersona", { response })
-
     if (response.status_code === 200) {
       setPersonas(normalizePersonas(response.data[0]))
     }

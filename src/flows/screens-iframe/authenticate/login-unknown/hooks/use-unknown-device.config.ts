@@ -99,7 +99,6 @@ export const useUnknownDeviceConfig = () => {
         ...device,
         userNumber: userNumber,
       })
-      console.log(">> ", { response })
       return response
     },
     [createDevice, userNumber],
@@ -123,14 +122,9 @@ export const useUnknownDeviceConfig = () => {
 
   const handleSendDelegate = React.useCallback(async () => {
     try {
-      console.log(">> handleSendDelegate", { signedDelegation })
       if (!signedDelegation) throw new Error("No signed delegation found")
 
       const parsedSignedDelegation = buildDelegate(signedDelegation)
-      console.log(">> handleSendDelegate", {
-        signedDelegation,
-        parsedSignedDelegation,
-      })
 
       const protocol =
         CONFIG.FRONTEND_MODE === "development"
@@ -182,7 +176,6 @@ export const useUnknownDeviceConfig = () => {
         )
 
         if (registerMessage) {
-          console.log(">> handlePollForDelegate", { registerMessage })
           setUserNumber(BigInt(registerMessage.userNumber))
           setSignedDelegation({
             delegation: registerMessage.delegation,
@@ -201,8 +194,6 @@ export const useUnknownDeviceConfig = () => {
         }
 
         if (waitingMessage) {
-          console.log(">> handlePollForDelegate", { waitingMessage })
-
           setStatus("loading")
         }
       }

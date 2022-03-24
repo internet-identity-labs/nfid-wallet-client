@@ -7,12 +7,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@dfinity/agent": "0.10.0",
-    "@dfinity/auth-client": "0.10.0",
-    "@dfinity/authentication": "0.10.0",
-    "@dfinity/candid": "0.10.0",
-    "@dfinity/identity": "0.10.0",
-    "@dfinity/principal": "0.10.0",
+    "@dfinity/agent": "link:../../node_modules/@dfinity/agent",
+    "@dfinity/auth-client": "link:../../node_modules/@dfinity/auth-client",
+    "@dfinity/authentication": "link:../../node_modules/@dfinity/authentication",
+    "@dfinity/candid": "link:../../node_modules/@dfinity/candid",
+    "@dfinity/identity": "link:../../node_modules/@dfinity/identity",
+    "@dfinity/principal": "link:../../node_modules/@dfinity/principal",
     "@identity-labs/react-ic-ii-auth": "^0.0.15",
     "@identity-labs/ui": "link:../../src/ui-kit",
     "react": "link:../../node_modules/react",

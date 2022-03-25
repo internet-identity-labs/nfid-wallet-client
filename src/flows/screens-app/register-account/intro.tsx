@@ -128,7 +128,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             }}
           >
             <SwiperSlide>
-              <div className="max-w-2xl overflow-auto h-80">
+              <div className="max-w-2xl overflow-auto h-80 sm:h-60">
                 <div className="sticky top-0 swiper-title">
                   <span
                     className="clip-text whitespace-nowrap "
@@ -151,7 +151,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               </div>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="max-w-2xl overflow-auto h-80">
+              <div className="max-w-2xl overflow-auto h-80 sm:h-60">
                 <div className="sticky top-0 swiper-title">
                   <span
                     className="clip-text whitespace-nowrap"
@@ -174,7 +174,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               </div>
             </SwiperSlide>
             <SwiperSlide>
-              <div className="max-w-xl overflow-auto h-80">
+              <div className="max-w-xl overflow-auto h-80 sm:h-60">
                 <div className="sticky top-0 swiper-title">
                   <span
                     className="clip-text whitespace-nowrap"

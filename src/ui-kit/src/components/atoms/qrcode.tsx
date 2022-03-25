@@ -24,7 +24,7 @@ export const QRCode: React.FC<QRCodeProps> = ({
   }, [content, options])
 
   return (
-    <div className={clsx("center qrcode")} style={{ cursor: "pointer" }}>
+    <div className={clsx("center relative qrcode")}>
       <canvas ref={canvas} />
     </div>
   )

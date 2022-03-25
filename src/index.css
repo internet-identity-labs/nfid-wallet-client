@@ -59,10 +59,6 @@ input[type="number"] {
   -moz-text-fill-color: transparent !important;
 }
 
-.qrcode {
-  position: relative;
-}
-
 .qrcode::before {
   content: "";
   position: absolute;

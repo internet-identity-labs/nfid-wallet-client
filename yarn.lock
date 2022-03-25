@@ -1372,6 +1372,7 @@
 
 "@identity-labs/ui@link:src/ui-kit":
   version "0.0.0"
+  uid ""
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

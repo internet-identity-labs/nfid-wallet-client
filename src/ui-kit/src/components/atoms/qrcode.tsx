@@ -15,19 +15,16 @@ export const QRCode: React.FC<QRCodeProps> = ({
 
   React.useEffect(() => {
     if (content) {
-      QR.toCanvas(
-        canvas.current,
-        content,
-        options || {},
-        function (error: any) {
-          if (error) console.error(error)
-        },
-      )
+      QR.toCanvas(canvas.current, content, options || {}, function (
+        error: any,
+      ) {
+        if (error) console.error(error)
+      })
     }
   }, [content, options])
 
   return (
-    <div className={clsx("center")} style={{ cursor: "pointer" }}>
+    <div className={clsx("center qrcode")} style={{ cursor: "pointer" }}>
       <canvas ref={canvas} />
     </div>
   )

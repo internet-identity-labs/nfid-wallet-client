@@ -120,21 +120,22 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       ) : null}
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState)  */}
       {isLoading && (
-        <div className="fixed top-0 bottom-0 bg-white">
-          <div className="flex flex-col items-center justify-center w-full h-full px-14">
+        <div className="fixed top-0 bottom-0 w-full">
+          <div className="absolute top-0 left-0 z-10 w-full h-full bg-white bg-opacity-90 backdrop-blur-sm" />
+          <div className="z-20 flex flex-col items-center justify-center w-full h-full px-14">
             <Loader
               iframe
               isLoading={isLoading}
               fullscreen={false}
-              imageClasses={"w-[90px] mx-auto py-6 -mt-4"}
+              imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
             />
-            <div className="mt-5 text-center">
+            <div className="z-20 mt-5 text-center">
               Awaiting confirmation from your phone...
             </div>
           </div>
         </div>
       )}
-      {showRegister && !isLoading && (
+      {showRegister && (
         <IFrameScreen logo>
           <AuthorizeRegisterDecider
             onRegister={handleRegisterDevice}

@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 .swiper {
-  @apply overflow-hidden rounded-lg w-full;
+  @apply w-full overflow-hidden rounded-lg;
 }
 
 .swiper-slide {
-  @apply flex justify-start w-full flex-col;
+  @apply flex flex-col justify-start w-full;
 }
 
 .swiper-slide img {
-  @apply block w-full h-full object-cover;
+  @apply block object-cover w-full h-full;
 }
 
 .swiper-pagination {
@@ -19,7 +19,7 @@
 }
 
 .swiper-title {
-  @apply sm:text-title text-titleMobile font-bold mb-5;
+  @apply mb-5 font-bold sm:text-title text-titleMobile;
 }
 
 .swiper-pagination-bullet.swiper-pagination-bullet-active {
@@ -57,4 +57,19 @@ input[type="number"] {
   -moz-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   -moz-text-fill-color: transparent !important;
+}
+
+.qrcode {
+  position: relative;
+}
+
+.qrcode::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(319deg, #3DEDD7 0%, #02CDFE 10%, #3781F4 50.52%, #7063FF 66.04%, #CC5CDC 100%);
+  mix-blend-mode: lighten;
 }

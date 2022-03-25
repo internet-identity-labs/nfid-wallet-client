@@ -23,8 +23,8 @@ export const AuthorizeAppUnknownDevice: React.FC<
       <H5 className="mb-4">Log in to {applicationName} with your NFID</H5>
       <div className="flex flex-col">
         <div>
-          This application uses NFID, the most secure, private, and convenient
-          Internet Identity.
+          This application uses NFID, the single sign-on protocol for the
+          internet.
         </div>
 
         <div className="py-5 m-auto">
@@ -32,6 +32,9 @@ export const AuthorizeAppUnknownDevice: React.FC<
             <QRCode content={url} options={{ margin: 0 }} />
           </a>
         </div>
+        <p className="text-xs text-center text-gray-500">
+          Scan this code with your phone’s camera
+        </p>
 
         <Button text className="mb-2" onClick={onLogin}>
           Log in with Recovery Phrase

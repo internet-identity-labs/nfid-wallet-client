@@ -106,7 +106,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
       ) : null}
 
       {!showRegister && url && !iframe ? (
-        <AppScreen>
+        <AppScreen isFocused bubbleOptions={{ showBubbles: false }}>
           <AuthorizeAppUnknownDevice
             applicationName={applicationName}
             url={url}
@@ -118,6 +118,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
           />
         </AppScreen>
       ) : null}
+
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState)  */}
       {isLoading && (
         <div className="fixed top-0 bottom-0 w-full">

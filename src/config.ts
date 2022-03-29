@@ -16,5 +16,3 @@ export const CONFIG = {
       ? process.env.REACT_APP_AWS_VERIFY_PHONENUMBER
       : "/verify",
 }
-
-console.log(">> ", { CONFIG })

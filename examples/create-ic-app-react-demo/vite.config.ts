@@ -54,7 +54,7 @@ const canisterDefinitions = Object.entries(canisterIds).reduce(
     ...acc,
     [`process.env.${key.toUpperCase()}_CANISTER_ID`]: isDev
       ? JSON.stringify(val.local)
-      : JSON.stringify(val.ic),
+      : JSON.stringify(val[process.env["DFX_NETWORK"]]),
   }),
   {},
 )

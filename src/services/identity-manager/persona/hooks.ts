@@ -42,7 +42,7 @@ export const usePersona = ({ application }: UsePersona = {}) => {
     const response = await personaService.read_personas()
 
     if (response.status_code === 200) {
-      setPersonas(normalizePersonas(response.data[0]))
+      setPersonas(response.data[0])
     }
     // NOTE: this is only for dev purposes
     if (response.status_code === 404 && account?.anchor) {

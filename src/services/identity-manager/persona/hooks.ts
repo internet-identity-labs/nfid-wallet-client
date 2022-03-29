@@ -7,7 +7,6 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import { personaAtom } from "./state"
 import { isNFIDPersona, isIIPersona } from "./types"
-import { normalizePersonas } from "./utils"
 
 interface UsePersona {
   application?: string

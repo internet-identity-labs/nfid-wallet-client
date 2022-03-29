@@ -111,12 +111,11 @@ export const useAuthentication = () => {
         setIsLoading(true)
 
         const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
+        console.log(">> loginWithRecovery", { recoveryDevices })
 
         if (recoveryDevices.length === 0) {
           throw new Error("No devices found")
         }
-
-        console.log("recoveryDevices[0]", recoveryDevices[0])
 
         const response = await IIConnection.fromSeedPhrase(
           userNumber,
@@ -124,7 +123,11 @@ export const useAuthentication = () => {
           recoveryDevices[0],
         )
 
+        console.log(">> loginWithRecovery", { response })
+
         const result = apiResultToLoginResult(response)
+
+        console.log(">> loginWithRecovery", { result })
 
         if (result.tag === "err") {
           setIsLoading(false)

@@ -69,6 +69,8 @@ export const RestoreAccessPoint: React.FC<
           userNumber,
         )
 
+        console.log(">> ", { result, userNumber, recoveryPhrase })
+
         if (result?.tag === "ok") {
           setUserNumber(userNumber)
           setLocalAccount({ anchor: userNumber.toString() })

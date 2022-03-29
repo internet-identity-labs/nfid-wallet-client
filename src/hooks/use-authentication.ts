@@ -145,6 +145,8 @@ export const useAuthentication = () => {
 
         return result
       } catch (error) {
+        console.log(">> loginWithRecovery", { error })
+
         setError("Invalid Recovery Phrase")
         setIsLoading(false)
       }

@@ -1,13 +1,12 @@
+import dfxJson from "./dfx.json"
 import reactRefresh from "@vitejs/plugin-react-refresh"
 import fs from "fs"
 import path from "path"
 import { defineConfig } from "vite"
 
-import dfxJson from "./dfx.json"
+const isDev = !["ic", "dev"].includes(process.env["DFX_NETWORK"])
 
-const isDev = process.env["DFX_NETWORK"] !== "ic"
-
-type Network = "ic" | "local"
+type Network = "ic" | "dev" | "local"
 
 interface CanisterIds {
   [key: string]: { [key in Network]: string }

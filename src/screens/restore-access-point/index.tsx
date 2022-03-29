@@ -54,38 +54,31 @@ export const RestoreAccessPoint: React.FC<
 
   const onLogin = React.useCallback(
     async (data: any) => {
-      try {
-        const { recoveryPhrase } = data
+      const { recoveryPhrase } = data
 
-        const stringUserNumber = recoveryPhrase.split(" ")[0]
-        const userNumber = parseUserNumber(stringUserNumber)
+      const stringUserNumber = recoveryPhrase.split(" ")[0]
+      const userNumber = parseUserNumber(stringUserNumber)
 
-        if (!userNumber) {
-          throw new Error("Invalid anchor")
-        }
+      if (!userNumber) {
+        throw new Error("Invalid anchor")
+      }
 
-        const result = await loginWithRecovery(
-          recoveryPhrase.split(`${userNumber} `)[1],
-          userNumber,
-        )
+      const result = await loginWithRecovery(
+        recoveryPhrase.split(`${userNumber} `)[1],
+        userNumber,
+      )
 
-        console.log(">> ", { result, userNumber, recoveryPhrase })
+      console.log(">> ", { result, userNumber, recoveryPhrase })
 
-        if (result?.tag === "ok") {
-          setUserNumber(userNumber)
-          setLocalAccount({ anchor: userNumber.toString() })
-        } else {
-          console.log("result :>> ", result)
+      if (result?.tag === "ok") {
+        setUserNumber(userNumber)
+        setLocalAccount({ anchor: userNumber.toString() })
+      } else {
+        console.log("result :>> ", result)
 
-          setError("recoveryPhrase", {
-            type: "manual",
-            message: "Invalid Recovery Phrase",
-          })
-        }
-      } catch (error) {
         setError("recoveryPhrase", {
           type: "manual",
-          message: "Invalid Recovery Phrase (missing Anchor)",
+          message: "Invalid Recovery Phrase",
         })
       }
     },

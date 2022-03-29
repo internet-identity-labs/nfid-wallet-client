@@ -24,7 +24,7 @@
       "type": "persistent"
     },
     "dev": {
-      "providers": ["https://mainnet.dfinity.network"],
+      "providers": ["https://ic0.app"],
       "type": "persistent"
     }
   },

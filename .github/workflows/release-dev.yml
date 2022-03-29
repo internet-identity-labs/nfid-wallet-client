@@ -22,7 +22,7 @@ jobs:
           popd
 
           dfx identity use action
-          dfx deploy --network ic  --no-wallet
+          dfx deploy --network dev  --no-wallet
 
         env:
           REACT_APP_FRONTEND_MODE: production
@@ -40,7 +40,7 @@ jobs:
           cd examples/create-ic-app-react-demo && yarn
 
           dfx identity use action
-          dfx deploy --network ic  --no-wallet
+          dfx deploy --network dev  --no-wallet
 
         env:
           VITE_NFID_PROVIDER_URL: https://${{secrets.DEV_CANISTER_ID_NFID_FRONTEND}}.ic0.app/authenticate/?applicationName=NFID-Demo

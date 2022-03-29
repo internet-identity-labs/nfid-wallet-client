@@ -6,11 +6,20 @@ export interface AccessPoint {
 export interface AccessPointRequest {
   pub_key: Array<number>
 }
+export interface Account {
+  name: [] | [string]
+  anchor: bigint
+  access_points: Array<AccessPoint>
+  basic_entity: BasicEntity
+  personas: Array<Persona>
+  principal_id: string
+  phone_number: [] | [string]
+}
 export interface AccountResponse {
   name: [] | [string]
   anchor: bigint
   access_points: Array<AccessPoint>
-  personas: Array<PersonaVariant>
+  personas: Array<PersonaResponse>
   principal_id: string
   phone_number: [] | [string]
 }
@@ -18,6 +27,10 @@ export interface Application {
   user_limit: number
   domain: string
   name: string
+}
+export interface BasicEntity {
+  modified_date: bigint
+  created_date: bigint
 }
 export interface BoolHttpResponse {
   data: [] | [boolean]
@@ -27,8 +40,10 @@ export interface BoolHttpResponse {
 export interface ConfigurationRequest {
   key: Array<number>
   whitelisted_phone_numbers: [] | [Array<string>]
+  backup_canister_id: string
   lambda: Principal
   token_refresh_ttl: bigint
+  heartbeat: number
   token_ttl: bigint
 }
 export type Credential = { phone_number: PhoneNumberCredential }
@@ -37,7 +52,6 @@ export interface CredentialResponse {
   error: [] | [Error]
   status_code: number
 }
-export type Domain = string
 export interface EmptyHttpResponse {
   data: [] | [string]
   error: [] | [Error]
@@ -66,7 +80,7 @@ export interface HTTPApplicationResponse {
   status_code: number
 }
 export interface HTTPPersonasResponse {
-  data: [] | [Array<PersonaVariant>]
+  data: [] | [Array<PersonaResponse>]
   error: [] | [Error]
   status_code: number
 }
@@ -76,18 +90,19 @@ export interface Log {
   timestamp: bigint
 }
 export type LogLevel = { INFO: null } | { ERROR: null }
-export type Name = string
-export interface PersonaIIResponse {
+export interface Persona {
   domain: string
-  anchor: bigint
+  basic_entity: BasicEntity
+  persona_id: string
 }
-export interface PersonaNFIDResponse {
+export interface PersonaRequest {
   domain: string
   persona_id: string
 }
-export type PersonaVariant =
-  | { ii_persona: PersonaIIResponse }
-  | { nfid_persona: PersonaNFIDResponse }
+export interface PersonaResponse {
+  domain: string
+  persona_id: string
+}
 export interface PhoneNumberCredential {
   phone_number: string
 }
@@ -112,13 +127,13 @@ export interface _SERVICE {
   ) => Promise<HTTPAccessPointResponse>
   create_account: (arg_0: HTTPAccountRequest) => Promise<HTTPAccountResponse>
   create_application: (arg_0: Application) => Promise<HTTPApplicationResponse>
-  create_persona: (arg_0: PersonaVariant) => Promise<HTTPAccountResponse>
+  create_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
   credentials: () => Promise<CredentialResponse>
-  delete_application: (arg_0: Name) => Promise<BoolHttpResponse>
+  delete_application: (arg_0: string) => Promise<BoolHttpResponse>
   get_account: () => Promise<HTTPAccountResponse>
   get_all_logs: () => Promise<Array<Log>>
   get_logs: (arg_0: bigint) => Promise<Array<Log>>
-  is_over_the_application_limit: (arg_0: Domain) => Promise<BoolHttpResponse>
+  is_over_the_application_limit: (arg_0: string) => Promise<BoolHttpResponse>
   post_token: (arg_0: TokenRequest) => Promise<Response>
   read_access_points: () => Promise<HTTPAccessPointResponse>
   read_applications: () => Promise<HTTPApplicationResponse>
@@ -127,6 +142,8 @@ export interface _SERVICE {
     arg_0: AccessPointRequest,
   ) => Promise<HTTPAccessPointResponse>
   remove_account: () => Promise<BoolHttpResponse>
+  restore_accounts: (arg_0: string) => Promise<BoolHttpResponse>
+  store_accounts: (arg_0: Array<Account>) => Promise<BoolHttpResponse>
   update_account: (
     arg_0: HTTPAccountUpdateRequest,
   ) => Promise<HTTPAccountResponse>

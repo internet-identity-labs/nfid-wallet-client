@@ -59,26 +59,13 @@ export const usePersona = ({ application }: UsePersona = {}) => {
     async ({ domain }) => {
       if (!account) throw new Error('"account" is required')
 
-      const persona = {
-        nfid_persona: { domain, persona_id: nextPersonaId },
-      }
+      const persona = { domain, persona_id: nextPersonaId }
 
       const response = await personaService?.create_persona(persona)
 
       if (response?.status_code === 200) {
-        setPersonas(normalizePersonas(response.data[0]?.personas))
+        setPersonas(response.data[0]?.personas)
       }
-      // NOTE: this is only for dev purposes
-      // if (response?.status_code === 404 && personaService && account) {
-      //   const newAccount: HTTPAccountRequest = {
-      //     token: "123",
-      //     name: account.name,
-      //     anchor: BigInt(account.anchor),
-      //     phone_number: account.phone_number,
-      //   }
-      //   await createAccount(personaService, newAccount)
-      //   await createPersona({ domain })
-      // }
       return response
     },
     [account, nextPersonaId, personaService, setPersonas],

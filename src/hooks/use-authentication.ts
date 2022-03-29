@@ -107,49 +107,42 @@ export const useAuthentication = () => {
 
   const loginWithRecovery = React.useCallback(
     async (seedPhrase: string, userNumber: bigint) => {
-      try {
-        setIsLoading(true)
+      setIsLoading(true)
 
-        const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
-        console.log(">> loginWithRecovery", { recoveryDevices })
+      const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
+      console.log(">> loginWithRecovery", { recoveryDevices })
 
-        if (recoveryDevices.length === 0) {
-          throw new Error("No devices found")
-        }
-
-        const response = await IIConnection.fromSeedPhrase(
-          userNumber,
-          seedPhrase,
-          recoveryDevices[0],
-        )
-
-        console.log(">> loginWithRecovery", { response })
-
-        const result = apiResultToLoginResult(response)
-
-        console.log(">> loginWithRecovery", { result })
-
-        if (result.tag === "err") {
-          setIsLoading(false)
-          setError(result)
-        }
-
-        if (result.tag === "ok") {
-          setActors(result)
-          initUserGeek(
-            result?.internetIdentity?.delegationIdentity.getPrincipal(),
-          )
-          setIsLoading(false)
-          setError(null)
-        }
-
-        return result
-      } catch (error) {
-        console.log(">> loginWithRecovery", { error })
-
-        setError("Invalid Recovery Phrase")
-        setIsLoading(false)
+      if (recoveryDevices.length === 0) {
+        throw new Error("No devices found")
       }
+
+      const response = await IIConnection.fromSeedPhrase(
+        userNumber,
+        seedPhrase,
+        recoveryDevices[0],
+      )
+
+      console.log(">> loginWithRecovery", { response })
+
+      const result = apiResultToLoginResult(response)
+
+      console.log(">> loginWithRecovery", { result })
+
+      if (result.tag === "err") {
+        setIsLoading(false)
+        setError(result)
+      }
+
+      if (result.tag === "ok") {
+        setActors(result)
+        initUserGeek(
+          result?.internetIdentity?.delegationIdentity.getPrincipal(),
+        )
+        setIsLoading(false)
+        setError(null)
+      }
+
+      return result
     },
     [initUserGeek, setActors, setError, setIsLoading],
   )

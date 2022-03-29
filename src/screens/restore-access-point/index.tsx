@@ -60,7 +60,10 @@ export const RestoreAccessPoint: React.FC<
       const userNumber = parseUserNumber(stringUserNumber)
 
       if (!userNumber) {
-        throw new Error("Invalid anchor")
+        return setError("recoveryPhrase", {
+          type: "manual",
+          message: "Invalid Recovery Phrase (missing Anchor)",
+        })
       }
 
       const result = await loginWithRecovery(
@@ -68,14 +71,10 @@ export const RestoreAccessPoint: React.FC<
         userNumber,
       )
 
-      console.log(">> ", { result, userNumber, recoveryPhrase })
-
       if (result?.tag === "ok") {
         setUserNumber(userNumber)
         setLocalAccount({ anchor: userNumber.toString() })
       } else {
-        console.log("result :>> ", result)
-
         setError("recoveryPhrase", {
           type: "manual",
           message: "Invalid Recovery Phrase",

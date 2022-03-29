@@ -110,7 +110,6 @@ export const useAuthentication = () => {
       setIsLoading(true)
 
       const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
-      console.log(">> loginWithRecovery", { recoveryDevices })
 
       if (recoveryDevices.length === 0) {
         throw new Error("No devices found")
@@ -122,14 +121,9 @@ export const useAuthentication = () => {
         recoveryDevices[0],
       )
 
-      console.log(">> loginWithRecovery", { response })
-
       const result = apiResultToLoginResult(response)
 
-      console.log(">> loginWithRecovery", { result })
-
       if (result.tag === "err") {
-        setIsLoading(false)
         setError(result)
       }
 
@@ -138,10 +132,10 @@ export const useAuthentication = () => {
         initUserGeek(
           result?.internetIdentity?.delegationIdentity.getPrincipal(),
         )
-        setIsLoading(false)
         setError(null)
       }
 
+      setIsLoading(false)
       return result
     },
     [initUserGeek, setActors, setError, setIsLoading],

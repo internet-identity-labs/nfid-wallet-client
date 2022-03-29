@@ -28,6 +28,7 @@ jobs:
           REACT_APP_FRONTEND_MODE: production
           REACT_APP_BACKEND_MODE: DEV
           REACT_APP_II_MODE: production
+          DFX_NETWORK: dev
           REACT_APP_MULTIPASS_DOMAIN: ${{secrets.DEV_CANISTER_ID_NFID_FRONTEND}}.ic0.app
           REACT_APP_IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           REACT_APP_PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
@@ -47,5 +48,6 @@ jobs:
           dfx deploy --network dev  --no-wallet
 
         env:
+          DFX_NETWORK: dev
           VITE_NFID_PROVIDER_URL: https://${{secrets.DEV_CANISTER_ID_NFID_FRONTEND}}.ic0.app/authenticate/?applicationName=NFID-Demo
           VITE_NFID_PROVIDER_IFRAME_URL: https://${{secrets.DEV_CANISTER_ID_NFID_FRONTEND}}.ic0.app/iframe-authenticate/?applicationName=NFID-Demo

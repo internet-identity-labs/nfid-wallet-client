@@ -27,6 +27,10 @@
     "ic": {
       "providers": ["https://mainnet.dfinity.network"],
       "type": "persistent"
+    },
+    "dev": {
+      "providers": ["https://mainnet.dfinity.network"],
+      "type": "persistent"
     }
   },
   "version": 1

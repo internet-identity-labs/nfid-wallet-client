@@ -1,12 +1,12 @@
 {
   "canisters": {
     "profile": {
-      "main": "ic/profile/main.mo",
+      "main": "ic/main.mo",
       "type": "motoko"
     },
     "assets": {
       "dependencies": ["profile"],
-      "ui": {
+      "frontend": {
         "entrypoint": "out/index.html"
       },
       "source": ["out/"],

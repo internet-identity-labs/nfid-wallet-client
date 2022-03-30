@@ -5,7 +5,7 @@ import Iter "mo:base/Iter";
 import User "./user/main";
 import Authenticator "./authenticator/main";
 
-shared (install) actor class GinActor () {
+shared (install) actor class NFIDAccountLinkingActor () {
     let admin = install.caller;
 
     public type Result<Data, Err> = {
@@ -15,28 +15,24 @@ shared (install) actor class GinActor () {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // USER
-
     stable var stableUsers: User.StaticUserStore = {entities = []; nextUserId = 1; };
     var nextUserId = stableUsers.nextUserId;
     let users = User.init(stableUsers.entities);
 
-
-    // USER
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // AUTHENTICATOR
-
     stable var stableAuthenticators: Authenticator.StaticAuthenticators = [];
     let authenticators = Authenticator.init(stableAuthenticators);
 
-    // AUTHENTICATOR
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // Returns principal id of the method caller
     public shared ({caller}) func whoami() : async Principal {
       return caller;
     };
 
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // Returns the registered account linked to the method caller
     public shared ({caller}) func readAccount() : async Result<User.User, Text>{
       if (Principal.isAnonymous(caller)) {
         return #err "unauthenticated"
@@ -59,7 +55,8 @@ shared (install) actor class GinActor () {
       }
     };
 
-    // REGISTER
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // Registers a new account and links it to the method caller
     public shared ({caller}) func register(userName: Text) : async Result<User.User, Text> {
       if (Principal.isAnonymous(caller)) {
         return #err "unauthenticated"
@@ -85,6 +82,9 @@ shared (install) actor class GinActor () {
       }
     };
 
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // Links the account of the method caller to a given
+    // authenticator (principalId)
     public shared ({caller}) func linkAuthenticator(principalId: Text) : async Result<Text, Text> {
       if (Principal.isAnonymous(caller)) {
         return #err "unauthenticated"
@@ -110,8 +110,6 @@ shared (install) actor class GinActor () {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // SYSTEM
-    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
     system func preupgrade() {
       stableUsers:= User.persist(users.entities, nextUserId);
       stableAuthenticators := Authenticator.persist(authenticators);

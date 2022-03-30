@@ -1,28 +1,28 @@
-// TODO: fix this
-// eslint-disable-next-line no-unused-vars
-import { Identity } from "@dfinity/agent"
+import { Actor, Identity } from "@dfinity/agent"
 import { idlFactory } from "ic/profile.did"
-import React from "react"
-import { createActor } from "src/ic-utils/create-actor"
+import { _SERVICE } from "ic/profile.types"
+
+import { getAgent } from "../get-agent"
+
+const PROFILE_CANISTER = process.env.NEXT_PUBLIC_PROFILE_CANISTER_ID as string
 
 interface UseProfileProps {
-  identity?: Identity | null
+  identity?: Identity
 }
-export const useProfile = ({ identity }: UseProfileProps) => {
-  const profileActor = React.useMemo(() => {
-    const profileCanister = process.env.NEXT_PUBLIC_PROFILE_CANISTER_ID
+export const createProfileActor = ({ identity }: UseProfileProps) => {
+  console.log(">> ", { identity })
 
-    return createActor(profileCanister, idlFactory, {
-      agentOptions: {
-        identity,
-        host: process.env.NEXT_PUBLIC_IC_HOST || "http://localhost:8000",
-      },
-    })
-  }, [identity])
+  const agent = getAgent({
+    host: process.env.NEXT_PUBLIC_IC_HOST as string,
+    identity,
+  })
+  const actor = Actor.createActor<_SERVICE>(idlFactory, {
+    agent,
+    canisterId: PROFILE_CANISTER,
+  })
 
-  const whoami = React.useCallback(async () => {
-    return await profileActor.whoami()
-  }, [profileActor])
-
-  return { whoami }
+  return {
+    ...actor,
+    isAuthenticated: !identity?.getPrincipal().isAnonymous(),
+  }
 }

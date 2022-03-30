@@ -4,7 +4,7 @@ import { useInternetIdentity } from "@identity-labs/react-ic-ii-auth"
 import { Loader } from "@identity-labs/ui"
 import clsx from "clsx"
 import React from "react"
-import { useProfile } from "src/ic-utils/profile"
+import { createProfileActor } from "src/ic-utils/profile"
 import { Button } from "src/ui-lib/atoms/button"
 
 interface IIAuthComponentProps {
@@ -22,7 +22,7 @@ export const IIAuthComponent: React.FC<IIAuthComponentProps> = ({
   const { identity, isAuthenticated, signout, authenticate } =
     useInternetIdentity()
 
-  const { whoami } = useProfile({ identity })
+  const { whoami } = createProfileActor({ identity: identity ?? undefined })
 
   const handleWhoami = React.useCallback(async () => {
     setIsLoading(true)

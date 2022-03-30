@@ -1,13 +1,13 @@
-import React from 'react'
-import { AppComponent } from 'next/dist/shared/lib/router/router'
-import 'tailwindcss/tailwind.css'
+import React from "react"
+import { AppComponent } from "next/dist/shared/lib/router/router"
+import "tailwindcss/tailwind.css"
 
-const GetImpactNow: AppComponent = ({ Component, pageProps }) => {
+const AccountLinkingApp: AppComponent = ({ Component, pageProps }) => {
   return (
-    <div className='relative'>
+    <div className="w-screen h-screen antialiased bg-white text-slate-500">
       <Component {...pageProps} />
     </div>
   )
 }
 
-export default GetImpactNow
+export default AccountLinkingApp

@@ -1,6 +1,10 @@
 import { Actor, HttpAgent } from "@dfinity/agent"
 
-export const createActor = (canisterId: any, idlFactory: any, options: any) => {
+export const createActor = (
+  canisterId: string,
+  idlFactory: any,
+  options: any,
+) => {
   const agent = new HttpAgent({
     host: process.env.NEXT_PUBLIC_IC_HOST as string,
     ...options?.agentOptions,

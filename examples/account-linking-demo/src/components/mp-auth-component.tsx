@@ -6,7 +6,7 @@ import clsx from "clsx"
 import React from "react"
 import { useProfile } from "src/ic-utils/profile"
 import { Button } from "src/ui-lib/atoms/button"
-import { AccountLinkingDemo } from "./account-linking"
+import { AccountLinking } from "./account-linking"
 
 export const MPAuthComponent = () => {
   const [isLoading, setIsLoading] = React.useState(false)
@@ -42,7 +42,7 @@ export const MPAuthComponent = () => {
               <span>whoami</span>
             </Button>
           )}
-          <AccountLinkingDemo />
+          <AccountLinking />
           <Button onClick={signout}>signout</Button>
           <Button onClick={() => setIam("")}>clear</Button>
         </div>

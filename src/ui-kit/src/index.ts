@@ -1,6 +1,7 @@
 export * from "./components/atoms/button"
 export * from "./components/atoms/button/arrow-button"
 export * from "./components/atoms/button/delete-button"
+export * from "./components/atoms/button/radio-button"
 export * from "./components/atoms/centered"
 export * from "./components/atoms/chip/index"
 export * from "./components/atoms/divider"
@@ -36,5 +37,3 @@ export * from "./components/molecules/menu/index"
 export * from "./components/molecules/menu/menu-item"
 export * from "./components/molecules/modal/index"
 export * from "./components/molecules/setup-touch-id"
-
-

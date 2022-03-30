@@ -7,9 +7,16 @@ import React from "react"
 import { useProfile } from "src/ic-utils/profile"
 import { Button } from "src/ui-lib/atoms/button"
 
-interface IIAuthComponentProps {}
+interface IIAuthComponentProps {
+  unmountNFID: () => void
+  isUnmounted: boolean
+}
 
-export const IIAuthComponent: React.FC<IIAuthComponentProps> = () => {
+export const IIAuthComponent: React.FC<IIAuthComponentProps> = ({
+  unmountNFID,
+  isUnmounted,
+}) => {
+  const [delayedAuthenticate, setDelayedAuthenticate] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const [iam, setIam] = React.useState("")
   const { identity, isAuthenticated, signout, authenticate } =
@@ -24,8 +31,20 @@ export const IIAuthComponent: React.FC<IIAuthComponentProps> = () => {
     setIsLoading(false)
   }, [whoami])
 
+  const handleAuthenticate = React.useCallback(async () => {
+    unmountNFID()
+    setDelayedAuthenticate(true)
+  }, [unmountNFID])
+
+  React.useCallback(() => {
+    if (isUnmounted && delayedAuthenticate) {
+      authenticate()
+      setDelayedAuthenticate(false)
+    }
+  }, [isUnmounted, delayedAuthenticate, authenticate])
+
   return !isAuthenticated ? (
-    <Button onClick={authenticate}>Login with II</Button>
+    <Button onClick={handleAuthenticate}>Login with II</Button>
   ) : (
     <div className={clsx("flex flex-col")}>
       <div className={clsx("flex flex-col")}>

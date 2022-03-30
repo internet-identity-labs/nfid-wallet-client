@@ -12,6 +12,8 @@ module User {
     userName: Text;
   };
   public type UserId = Nat;
+  // TODO: Create ticket: Cannot use type User as dfx complains
+  // about unbound type when redeploy
   public type StaticUsers = [(User.UserId, { userName: Text; })];
   public type UserEntities = TrieMap.TrieMap<UserId, User.User>;
   public type UserStore = {

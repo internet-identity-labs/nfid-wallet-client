@@ -7,7 +7,6 @@ import { Modal } from "src/ui-lib/molecules/modal"
 import React from "react"
 import { ExternalScreenMigrateExistingAccountDecider } from "./screen-migrate-existing-account-decider"
 import { Loader } from "@identity-labs/ui"
-import { ExternalScreenApproveAccountToMigrate } from "./screen-approve-account-to-migrate"
 
 interface AccountLinkingProviderProps {
   onNewUser: () => void
@@ -34,7 +33,6 @@ export const AccountLinking: React.FC<AccountLinkingProviderProps> = ({
       authClientOptions={{
         maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
         onSuccess: (identityB) => {
-          console.log(">> onSuccess", { identityB })
           setIdentityB(identityB)
         },
         opener: () =>
@@ -72,12 +70,6 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
 }) => {
   const { authenticate } = useInternetIdentity()
   const [loading, setLoading] = React.useState(false)
-  console.log(">> AccountLinkingContent", {
-    showLinking,
-    identityA: identityA?.getPrincipal().toString(),
-    identityB: identityB?.getPrincipal().toString(),
-    loading,
-  })
 
   const handleAuthenticateIdentityB = React.useCallback(() => {
     authenticate()

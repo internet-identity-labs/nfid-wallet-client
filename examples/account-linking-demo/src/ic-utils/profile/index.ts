@@ -10,8 +10,6 @@ interface UseProfileProps {
   identity?: Identity
 }
 export const createProfileActor = ({ identity }: UseProfileProps) => {
-  console.log(">> ", { identity })
-
   const agent = getAgent({
     host: process.env.NEXT_PUBLIC_IC_HOST as string,
     identity,

@@ -46,11 +46,6 @@ const RegiserIIAccountContent = () => {
     useInternetIdentity()
   const { state, setIIUserName } = useAccountLinkingStepper()
 
-  console.log(">> RegiserIIAccountContent", {
-    isAuthenticated,
-    account: state.ii.userName,
-  })
-
   const handleReadAccount = React.useCallback(async () => {
     fetchRef.current = {
       readAccount: true,
@@ -63,7 +58,6 @@ const RegiserIIAccountContent = () => {
     if ("data" in respone) {
       setIIUserName(respone.data.userName)
     }
-    console.log(">> RegiserIIAccountContent handleReadAccount", { respone })
     setLoadingAccount(false)
   }, [identity, setIIUserName])
 
@@ -93,8 +87,6 @@ const RegiserIIAccountContent = () => {
         <div>
           <RegisterAccountForm
             onRegister={({ userName }) => {
-              console.log(">> ", { userName })
-
               const { register } = createProfileActor({
                 identity: identity ?? undefined,
               })
@@ -106,25 +98,29 @@ const RegiserIIAccountContent = () => {
         <div>Registered userName: {state.ii.userName}</div>
       )}
       {isAuthenticated && (
-        <div className="flex">
+        <div className="flex mt-2 space-x-2">
           <Button
             secondary
             onClick={async () => {
               if (identity) {
-                console.log(">> readAccount", {
-                  principalId: identity.getPrincipal().toString(),
-                })
                 const { readAccount } = createProfileActor({
                   identity: identity ?? undefined,
                 })
                 const response = await readAccount()
-                console.log(">> readAccount", { response })
+                if ("data" in response) {
+                  console.log(">> readAccount", {
+                    principalId: identity.getPrincipal().toString(),
+                    user: response.data,
+                  })
+                }
               }
             }}
           >
             readAccount
           </Button>
-          <Button onClick={signout}>Log out II</Button>
+          <Button secondary onClick={signout}>
+            Log out II
+          </Button>
         </div>
       )}
     </div>

@@ -75,9 +75,6 @@ const RegiserNFIDAccountContent: React.FC = () => {
     })
     const respone = await readAccount()
     if ("data" in respone) {
-      console.log(">> RegiserNFIDAccountContent handleReadAccount", {
-        user: respone.data,
-      })
       setShowLinking(false)
       return setNFIDUserName(principalId, respone.data.userName)
     }
@@ -101,10 +98,6 @@ const RegiserNFIDAccountContent: React.FC = () => {
       identityA: Identity
       identityB: Identity
     }) => {
-      console.log(">> handleLinkIdentities", {
-        identityA: identityA.getPrincipal().toText(),
-        identityB: identityB.getPrincipal().toText(),
-      })
       const { linkAuthenticator } = createProfileActor({
         identity: identityB,
       })
@@ -112,7 +105,9 @@ const RegiserNFIDAccountContent: React.FC = () => {
         identityA.getPrincipal().toText(),
       )
       if ("data" in response) {
-        console.log(">> handleLinkIdentities", {
+        console.log(">> handleLinkIdentities success", {
+          iiIdentity: identityB.getPrincipal().toText(),
+          nfidIdentity: identityA.getPrincipal().toText(),
           message: response.data,
         })
         await handleReadAccount()
@@ -124,13 +119,6 @@ const RegiserNFIDAccountContent: React.FC = () => {
     [handleReadAccount],
   )
 
-  console.log(">> RegiserNFIDAccountContent", {
-    identity,
-    principalId: identity?.getPrincipal().toString(),
-    isAuthenticated,
-    showLinking,
-  })
-
   return (
     <div className="py-4 lg:px-8">
       <div className="my-2 text-lg font-medium">
@@ -140,9 +128,9 @@ const RegiserNFIDAccountContent: React.FC = () => {
         <Button secondary onClick={authenticate}>
           Log in NFID
         </Button>
-      ) : (
+      ) : nfidState.userName ? (
         <div>Linked Account userName: {nfidState.userName}</div>
-      )}
+      ) : null}
       {identity && isAuthenticated && showLinking && (
         <AccountLinking
           showLinking={showLinking}
@@ -152,19 +140,21 @@ const RegiserNFIDAccountContent: React.FC = () => {
         />
       )}
       {isAuthenticated && (
-        <div className="flex">
+        <div className="flex mt-2 space-x-2">
           <Button
             secondary
             onClick={async () => {
               if (identity) {
-                console.log(">> readAccount", {
-                  principalId: principalId,
-                })
                 const { readAccount } = createProfileActor({
                   identity: identity ?? undefined,
                 })
                 const response = await readAccount()
-                console.log(">> readAccount", { response })
+                if ("data" in response) {
+                  console.log(">> readAccount", {
+                    principalId: identity.getPrincipal().toString(),
+                    user: response.data,
+                  })
+                }
               }
             }}
           >

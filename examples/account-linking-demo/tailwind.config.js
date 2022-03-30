@@ -1,7 +1,10 @@
 module.exports = {
-  content: [],
+  content: ["./**/*.{ts,tsx}"],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("../../plugins/utilities-ui-kit"),
+  ],
 }

@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,23 +18,12 @@
     "baseUrl": ".",
     // TODO: automate this mapping
     "paths": {
-      "ic/profile": [
-        ".dfx/local/canisters/profile/index.js"
-      ],
-      "ic/profile.did": [
-        ".dfx/local/canisters/profile/profile.did.js"
-      ]
+      "ic/profile": [".dfx/local/canisters/profile/index.js"],
+      "ic/profile.did": [".dfx/local/canisters/profile/profile.did.js"],
+      "ic/profile.types": [".dfx/local/canisters/profile/profile.did.d.ts"]
     },
     "incremental": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    ".dfx",
-    "internet-identity"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", ".dfx", "internet-identity"]
 }

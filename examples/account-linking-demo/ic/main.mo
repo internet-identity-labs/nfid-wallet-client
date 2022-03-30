@@ -8,8 +8,8 @@ import Authenticator "./authenticator/main";
 shared (install) actor class GinActor () {
     let admin = install.caller;
 
-    public type Result<Ok, Err> = {
-      #ok : Ok;
+    public type Result<Data, Err> = {
+      #data : Data;
       #err : Err;
     };
 
@@ -37,25 +37,39 @@ shared (install) actor class GinActor () {
       return caller;
     };
 
-    public shared ({caller}) func readAccount() : async ?User.User {
+    public shared ({caller}) func readAccount() : async Result<User.User, Text>{
       switch (Authenticator.read(authenticators, Principal.toText(caller))) {
         case (?userId) {
-          User.read(users.entities, userId)
+          switch(User.read(users.entities, userId)){
+            case (?user) {
+              return #data user;
+            };
+            case(_) {
+              return #err "user not found";
+            };
+          }
         };
         case(_) {
-          null;
+          #err "not registered";
         };
       }
     };
 
     // REGISTER
-    public shared ({caller}) func register(userName: Text) : async Result<?User.User, Text> {
+    public shared ({caller}) func register(userName: Text) : async Result<User.User, Text> {
       switch (Authenticator.read(authenticators, Principal.toText(caller))) {
         case (null) {
           let userId = User.create(users.entities, nextUserId, userName);
           nextUserId := nextUserId + 1;
           let authenticator = Authenticator.create(authenticators, Principal.toText(caller), userId);
-          return #ok (User.read(users.entities, userId))
+          switch (User.read(users.entities, userId)) {
+            case (?user) {
+              return #data user;
+            };
+            case(_) {
+              return #err "User not found";
+            };
+          };
         };
         case (_) {
           return #err "already registered";
@@ -69,7 +83,7 @@ shared (install) actor class GinActor () {
           switch (Authenticator.read(authenticators, Principal.toText(caller))) {
             case (?userId) {
               let authenticator = Authenticator.create(authenticators, principalId, userId);
-              return #ok "account linked";
+              return #data "account linked";
             };
             case (_) {
               return #err "not registered";

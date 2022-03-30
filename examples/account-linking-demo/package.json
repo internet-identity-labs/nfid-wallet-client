@@ -3,18 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@dfinity/agent": "0.10.1",
-    "@dfinity/auth-client": "0.10.1",
+    "@dfinity/agent": "0.10.3",
+    "@dfinity/auth-client": "0.10.3",
     "@dfinity/authentication": "0.10.1",
-    "@dfinity/candid": "0.10.1",
+    "@dfinity/candid": "0.10.3",
     "@dfinity/identity": "0.10.1",
-    "@dfinity/principal": "0.10.1",
+    "@dfinity/principal": "0.10.3",
     "@identity-labs/react-ic-ii-auth": "0.0.16",
     "@identity-labs/ui": "link:../../src/ui-kit",
     "clsx": "1.1.1",
+    "jotai": "1.6.1",
     "next": "12.0.7",
     "react": "link:../../node_modules/react",
     "react-dom": "link:../../node_modules/react-dom",
+    "react-hook-form": "7.28.1",
+    "swr": "1.2.2",
     "typescript": "4.5.4",
     "web-vitals": "^2.1.2"
   },
@@ -26,7 +29,8 @@
     "test": "jest",
     "ic:deploy": "dfx deploy",
     "ic:start": "dfx start --background",
-    "ic:start-clean": "dfx start --background --clean"
+    "ic:start-clean": "dfx start --background --clean",
+    "postinstall": "patch-package"
   },
   "eslintConfig": {},
   "browserslist": {

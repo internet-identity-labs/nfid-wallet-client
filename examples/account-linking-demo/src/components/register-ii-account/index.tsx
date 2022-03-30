@@ -42,7 +42,8 @@ export const RegiserIIAccount: React.FC<RegiserIIAccountProps> = ({
 const RegiserIIAccountContent = () => {
   const fetchRef = React.useRef<{ readAccount?: boolean }>({})
   const [loadingAccount, setLoadingAccount] = React.useState(false)
-  const { isAuthenticated, identity, authenticate } = useInternetIdentity()
+  const { isAuthenticated, identity, authenticate, signout } =
+    useInternetIdentity()
   const { state, setIIUserName } = useAccountLinkingStepper()
 
   console.log(">> RegiserIIAccountContent", {
@@ -101,22 +102,25 @@ const RegiserIIAccountContent = () => {
         <div>Registered userName: {state.ii.userName}</div>
       )}
       {isAuthenticated && (
-        <Button
-          onClick={async () => {
-            if (identity) {
-              console.log(">> readAccount", {
-                principalId: identity.getPrincipal().toString(),
-              })
-              const { readAccount } = createProfileActor({
-                identity: identity ?? undefined,
-              })
-              const response = await readAccount()
-              console.log(">> readAccount", { response })
-            }
-          }}
-        >
-          readAccount
-        </Button>
+        <div className="flex">
+          <Button
+            onClick={async () => {
+              if (identity) {
+                console.log(">> readAccount", {
+                  principalId: identity.getPrincipal().toString(),
+                })
+                const { readAccount } = createProfileActor({
+                  identity: identity ?? undefined,
+                })
+                const response = await readAccount()
+                console.log(">> readAccount", { response })
+              }
+            }}
+          >
+            readAccount
+          </Button>
+          <Button onClick={signout}>Log out II</Button>
+        </div>
       )}
     </div>
   )

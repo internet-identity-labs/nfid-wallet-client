@@ -10,7 +10,7 @@ import { Loader } from "@identity-labs/ui"
 import { ExternalScreenApproveAccountToMigrate } from "./screen-approve-account-to-migrate"
 
 interface AccountLinkingProviderProps {
-  onSuccessIdentityB: (identityB: Identity) => void
+  onNewUser: () => void
   onLinkIdentities: ({
     identityA,
     identityB,
@@ -19,18 +19,14 @@ interface AccountLinkingProviderProps {
     identityB: Identity
   }) => Promise<boolean>
   identityA: Identity
-  loadingAccountInformation: boolean
-  accountInformation: { [key: string]: string | undefined } | null
   showLinking?: boolean
 }
 
 export const AccountLinking: React.FC<AccountLinkingProviderProps> = ({
   identityA,
   showLinking,
-  loadingAccountInformation,
-  accountInformation,
+  onNewUser,
   onLinkIdentities,
-  onSuccessIdentityB,
 }) => {
   const [identityB, setIdentityB] = React.useState<Identity | null>(null)
   return (
@@ -40,7 +36,6 @@ export const AccountLinking: React.FC<AccountLinkingProviderProps> = ({
         onSuccess: (identityB) => {
           console.log(">> onSuccess", { identityB })
           setIdentityB(identityB)
-          onSuccessIdentityB(identityB)
         },
         opener: () =>
           window.open(
@@ -54,10 +49,9 @@ export const AccountLinking: React.FC<AccountLinkingProviderProps> = ({
     >
       <AccountLinkingContent
         identityA={identityA}
-        loadingAccountInformation={loadingAccountInformation}
         showLinking={showLinking}
         identityB={identityB}
-        accountInformation={accountInformation}
+        onNewUser={onNewUser}
         onLinkIdentities={onLinkIdentities}
       />
     </InternetIdentityProvider>
@@ -73,8 +67,7 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
   identityA,
   identityB,
   showLinking,
-  loadingAccountInformation,
-  accountInformation,
+  onNewUser,
   onLinkIdentities,
 }) => {
   const { isAuthenticated, authenticate } = useInternetIdentity()
@@ -88,16 +81,7 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
   const handleAuthenticateIdentityB = React.useCallback(() => {
     authenticate()
     setLoading(true)
-
-    console.log(">> AccountLinkingProvider", { identityA, identityB })
-  }, [authenticate, identityA, identityB])
-
-  const handleLinkIdentities = React.useCallback(async () => {
-    if (!identityA || !identityB)
-      throw new Error("identityA or identityB is null")
-
-    onLinkIdentities({ identityA, identityB })
-  }, [identityA, identityB, onLinkIdentities])
+  }, [authenticate])
 
   React.useEffect(() => {
     if (identityA && identityB && loading) {
@@ -120,19 +104,11 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
     >
       {!identityB && (
         <ExternalScreenMigrateExistingAccountDecider
-          onNewUser={() => console.log("onNewUser")}
+          onNewUser={onNewUser}
           onLinkAccount={handleAuthenticateIdentityB}
         />
       )}
-      {identityA && identityB && (
-        <ExternalScreenApproveAccountToMigrate
-          identityA={identityA}
-          identityB={identityB}
-          accountInformation={accountInformation}
-          onLinkAccount={handleLinkIdentities}
-        />
-      )}
-      <Loader isLoading={loading || loadingAccountInformation} />
+      <Loader isLoading={loading} />
     </Modal>
   )
 }

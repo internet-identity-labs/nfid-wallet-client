@@ -42,8 +42,10 @@ export const RegisterNFIDAccount: React.FC<RegisterNFIDAccountProps> = ({
 
 const RegiserNFIDAccountContent: React.FC = () => {
   const fetchRef = React.useRef<{ readAccount?: boolean }>({})
-  const { isAuthenticated, identity, authenticate } = useInternetIdentity()
+  const { isAuthenticated, identity, authenticate, signout } =
+    useInternetIdentity()
   const { state, setNFIDUserName } = useAccountLinkingStepper()
+  const [showLinking, setShowLinking] = React.useState(false)
 
   const handleReadAccount = React.useCallback(async () => {
     fetchRef.current = {
@@ -54,9 +56,16 @@ const RegiserNFIDAccountContent: React.FC = () => {
     })
     const respone = await readAccount()
     if ("data" in respone) {
-      setNFIDUserName(respone.data.userName)
+      console.log(">> RegiserNFIDAccountContent handleReadAccount", {
+        user: respone.data,
+      })
+      setShowLinking(false)
+      return setNFIDUserName(respone.data.userName)
     }
-    console.log(">> RegiserNFIDAccountContent handleReadAccount", { respone })
+    console.log(">> RegiserNFIDAccountContent handleReadAccount", {
+      err: respone.err,
+    })
+    setShowLinking(true)
   }, [identity, setNFIDUserName])
 
   React.useEffect(() => {
@@ -64,37 +73,6 @@ const RegiserNFIDAccountContent: React.FC = () => {
       handleReadAccount()
     }
   }, [handleReadAccount, isAuthenticated])
-
-  const [identityB, setIdentityB] = React.useState<Identity | undefined>()
-  const [loadingAccount, setLoadingAccount] = React.useState(false)
-  const [accountInformation, setAccountInformation] = React.useState<{
-    [key: string]: string | undefined
-  } | null>(null)
-
-  console.log(">> RegiserNFIDAccountContent", {
-    loadingAccount,
-    accountInformation,
-  })
-
-  const handleGetAccountInformation = React.useCallback(async () => {
-    setLoadingAccount(true)
-    const { readAccount: iiReadAccount } = createProfileActor({
-      identity: identityB,
-    })
-    const response = await iiReadAccount()
-    if ("data" in response) {
-      setLoadingAccount(false)
-      return setAccountInformation({ ...response.data })
-    }
-    setAccountInformation({ error: response.err })
-    setLoadingAccount(false)
-  }, [identityB])
-
-  React.useEffect(() => {
-    if (identityB) {
-      handleGetAccountInformation()
-    }
-  }, [handleGetAccountInformation, identityB])
 
   const handleLinkIdentities = React.useCallback(
     async ({
@@ -133,33 +111,34 @@ const RegiserNFIDAccountContent: React.FC = () => {
         <Button onClick={authenticate}>Log in NFID</Button>
       ) : !state.nfid.userName && identity ? (
         <AccountLinking
-          showLinking
+          showLinking={showLinking}
           identityA={identity}
-          loadingAccountInformation={loadingAccount}
-          onSuccessIdentityB={(principalB) => setIdentityB(principalB)}
-          accountInformation={accountInformation}
           onLinkIdentities={handleLinkIdentities}
+          onNewUser={() => setShowLinking(false)}
         />
       ) : (
         <div>Linked Account userName: {state.nfid.userName}</div>
       )}
       {isAuthenticated && (
-        <Button
-          onClick={async () => {
-            if (identity) {
-              console.log(">> readAccount", {
-                principalId: identity.getPrincipal().toString(),
-              })
-              const { readAccount } = createProfileActor({
-                identity: identity ?? undefined,
-              })
-              const response = await readAccount()
-              console.log(">> readAccount", { response })
-            }
-          }}
-        >
-          readAccount
-        </Button>
+        <div className="flex">
+          <Button
+            onClick={async () => {
+              if (identity) {
+                console.log(">> readAccount", {
+                  principalId: identity.getPrincipal().toString(),
+                })
+                const { readAccount } = createProfileActor({
+                  identity: identity ?? undefined,
+                })
+                const response = await readAccount()
+                console.log(">> readAccount", { response })
+              }
+            }}
+          >
+            readAccount
+          </Button>
+          <Button onClick={signout}>Log out NFID</Button>
+        </div>
       )}
     </div>
   )

@@ -72,7 +72,7 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
 }) => {
   const { authenticate } = useInternetIdentity()
   const [loading, setLoading] = React.useState(false)
-  console.log(">> ", {
+  console.log(">> AccountLinkingContent", {
     showLinking,
     identityA: identityA?.getPrincipal().toString(),
     identityB: identityB?.getPrincipal().toString(),
@@ -99,17 +99,11 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
   }, [identityA, identityB, onLinkIdentities, loading, handleLinkIdentities])
 
   return (
-    <Modal
-      isVisible={showLinking}
-      id="account-linking"
-      onClose={() => console.log("onClose")}
-    >
-      {!identityB && (
-        <ExternalScreenMigrateExistingAccountDecider
-          onNewUser={onNewUser}
-          onLinkAccount={handleAuthenticateIdentityB}
-        />
-      )}
+    <Modal isVisible={showLinking} id="account-linking" onClose={onNewUser}>
+      <ExternalScreenMigrateExistingAccountDecider
+        onNewUser={onNewUser}
+        onLinkAccount={handleAuthenticateIdentityB}
+      />
       <Loader isLoading={loading} />
     </Modal>
   )

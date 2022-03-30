@@ -73,14 +73,18 @@ const RegiserIIAccountContent = () => {
     }
   }, [handleReadAccount, isAuthenticated])
   return (
-    <div className="py-4 mx-4">
-      <div>1. Register your Internet Identity Account</div>
+    <div className="py-4 lg:px-8">
+      <div className="my-2 text-lg font-medium">
+        1. Register your Internet Identity Account
+      </div>
       {isAuthenticated && state.ii.principalId ? (
         <div>your principal id: {identity?.getPrincipal().toString()}</div>
       ) : (
-        <Button onClick={authenticate}>Login with II</Button>
+        <Button secondary onClick={authenticate}>
+          Login with II
+        </Button>
       )}
-      <div>2. Regiser your Account</div>
+      <div className="my-2 text-lg font-medium">2. Regiser your Account</div>
       {loadingAccount ? (
         <div>...loading</div>
       ) : isAuthenticated &&
@@ -104,6 +108,7 @@ const RegiserIIAccountContent = () => {
       {isAuthenticated && (
         <div className="flex">
           <Button
+            secondary
             onClick={async () => {
               if (identity) {
                 console.log(">> readAccount", {

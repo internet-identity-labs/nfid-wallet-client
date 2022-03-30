@@ -124,24 +124,37 @@ const RegiserNFIDAccountContent: React.FC = () => {
     [handleReadAccount],
   )
 
+  console.log(">> RegiserNFIDAccountContent", {
+    identity,
+    principalId: identity?.getPrincipal().toString(),
+    isAuthenticated,
+    showLinking,
+  })
+
   return (
-    <div className="py-4 mx-4">
-      <div>3. Register your NFID Account</div>
+    <div className="py-4 lg:px-8">
+      <div className="my-2 text-lg font-medium">
+        3. Register your NFID Account
+      </div>
       {!isAuthenticated ? (
-        <Button onClick={authenticate}>Log in NFID</Button>
-      ) : identity && !nfidState.userName ? (
+        <Button secondary onClick={authenticate}>
+          Log in NFID
+        </Button>
+      ) : (
+        <div>Linked Account userName: {nfidState.userName}</div>
+      )}
+      {identity && isAuthenticated && showLinking && (
         <AccountLinking
           showLinking={showLinking}
           identityA={identity}
           onLinkIdentities={handleLinkIdentities}
           onNewUser={() => setShowLinking(false)}
         />
-      ) : (
-        <div>Linked Account userName: {nfidState.userName}</div>
       )}
       {isAuthenticated && (
         <div className="flex">
           <Button
+            secondary
             onClick={async () => {
               if (identity) {
                 console.log(">> readAccount", {
@@ -157,7 +170,9 @@ const RegiserNFIDAccountContent: React.FC = () => {
           >
             readAccount
           </Button>
-          <Button onClick={signout}>Log out NFID</Button>
+          <Button secondary onClick={signout}>
+            Log out NFID
+          </Button>
         </div>
       )}
     </div>

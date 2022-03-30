@@ -27,13 +27,13 @@ shared (install) actor class NFIDAccountLinkingActor () {
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // Returns principal id of the method caller
-    public shared ({caller}) func whoami() : async Principal {
+    public shared query({caller}) func whoami() : async Principal {
       return caller;
     };
 
     // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // Returns the registered account linked to the method caller
-    public shared ({caller}) func readAccount() : async Result<User.User, Text>{
+    public shared query({caller}) func readAccount() : async Result<User.User, Text>{
       if (Principal.isAnonymous(caller)) {
         return #err "unauthenticated"
       };

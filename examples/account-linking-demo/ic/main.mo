@@ -38,6 +38,10 @@ shared (install) actor class GinActor () {
     };
 
     public shared ({caller}) func readAccount() : async Result<User.User, Text>{
+      if (Principal.isAnonymous(caller)) {
+        return #err "unauthenticated"
+      };
+
       switch (Authenticator.read(authenticators, Principal.toText(caller))) {
         case (?userId) {
           switch(User.read(users.entities, userId)){
@@ -57,6 +61,10 @@ shared (install) actor class GinActor () {
 
     // REGISTER
     public shared ({caller}) func register(userName: Text) : async Result<User.User, Text> {
+      if (Principal.isAnonymous(caller)) {
+        return #err "unauthenticated"
+      };
+
       switch (Authenticator.read(authenticators, Principal.toText(caller))) {
         case (null) {
           let userId = User.create(users.entities, nextUserId, userName);
@@ -78,6 +86,10 @@ shared (install) actor class GinActor () {
     };
 
     public shared ({caller}) func linkAuthenticator(principalId: Text) : async Result<Text, Text> {
+      if (Principal.isAnonymous(caller)) {
+        return #err "unauthenticated"
+      };
+
       switch (Authenticator.read(authenticators, principalId)) {
         case (null) {
           switch (Authenticator.read(authenticators, Principal.toText(caller))) {

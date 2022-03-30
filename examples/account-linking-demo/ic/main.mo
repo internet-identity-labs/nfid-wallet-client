@@ -38,17 +38,24 @@ shared (install) actor class NFIDAccountLinkingActor () {
         return #err "unauthenticated"
       };
 
+      // read userId for authenticated caller from Authenticator map
       switch (Authenticator.read(authenticators, Principal.toText(caller))) {
+        // in case caller has entry
         case (?userId) {
+          // read user data from User map
           switch(User.read(users.entities, userId)){
+            // in case caller has entry
             case (?user) {
               return #data user;
             };
+            // this case is only to fulfil the type system
+            // this cannot happen at the moment
             case(_) {
               return #err "user not found";
             };
           }
         };
+        // in case caller has no entry
         case(_) {
           #err "not registered";
         };

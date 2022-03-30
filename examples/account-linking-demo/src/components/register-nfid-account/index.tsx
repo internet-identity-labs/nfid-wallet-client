@@ -41,15 +41,34 @@ export const RegisterNFIDAccount: React.FC<RegisterNFIDAccountProps> = ({
 }
 
 const RegiserNFIDAccountContent: React.FC = () => {
-  const fetchRef = React.useRef<{ readAccount?: boolean }>({})
+  const fetchRef = React.useRef<{
+    [principalID: string]: { readAccount?: boolean } | undefined
+  }>({})
   const { isAuthenticated, identity, authenticate, signout } =
     useInternetIdentity()
   const { state, setNFIDUserName } = useAccountLinkingStepper()
   const [showLinking, setShowLinking] = React.useState(false)
 
+  const principalId = React.useMemo(
+    () =>
+      identity &&
+      !identity.getPrincipal().isAnonymous() &&
+      identity.getPrincipal().toString(),
+    [identity],
+  )
+
+  const nfidState: { [key: string]: string } = React.useMemo(() => {
+    if (principalId) {
+      return state.nfid[principalId] || {}
+    }
+    return {}
+  }, [principalId, state.nfid])
+
   const handleReadAccount = React.useCallback(async () => {
+    if (!principalId) throw new Error("unauthorized")
+
     fetchRef.current = {
-      readAccount: true,
+      [principalId]: { readAccount: true },
     }
     const { readAccount } = createProfileActor({
       identity: identity ?? undefined,
@@ -60,19 +79,19 @@ const RegiserNFIDAccountContent: React.FC = () => {
         user: respone.data,
       })
       setShowLinking(false)
-      return setNFIDUserName(respone.data.userName)
+      return setNFIDUserName(principalId, respone.data.userName)
     }
     console.log(">> RegiserNFIDAccountContent handleReadAccount", {
       err: respone.err,
     })
     setShowLinking(true)
-  }, [identity, setNFIDUserName])
+  }, [identity, principalId, setNFIDUserName])
 
   React.useEffect(() => {
-    if (isAuthenticated && !fetchRef.current.readAccount) {
+    if (principalId && !fetchRef.current[principalId]?.readAccount) {
       handleReadAccount()
     }
-  }, [handleReadAccount, isAuthenticated])
+  }, [handleReadAccount, identity, isAuthenticated, principalId])
 
   const handleLinkIdentities = React.useCallback(
     async ({
@@ -96,12 +115,13 @@ const RegiserNFIDAccountContent: React.FC = () => {
         console.log(">> handleLinkIdentities", {
           message: response.data,
         })
+        await handleReadAccount()
         return true
       }
       console.error(">> handleLinkIdentities", { error: response.err })
       return false
     },
-    [],
+    [handleReadAccount],
   )
 
   return (
@@ -109,7 +129,7 @@ const RegiserNFIDAccountContent: React.FC = () => {
       <div>3. Register your NFID Account</div>
       {!isAuthenticated ? (
         <Button onClick={authenticate}>Log in NFID</Button>
-      ) : !state.nfid.userName && identity ? (
+      ) : identity && !nfidState.userName ? (
         <AccountLinking
           showLinking={showLinking}
           identityA={identity}
@@ -117,7 +137,7 @@ const RegiserNFIDAccountContent: React.FC = () => {
           onNewUser={() => setShowLinking(false)}
         />
       ) : (
-        <div>Linked Account userName: {state.nfid.userName}</div>
+        <div>Linked Account userName: {nfidState.userName}</div>
       )}
       {isAuthenticated && (
         <div className="flex">
@@ -125,7 +145,7 @@ const RegiserNFIDAccountContent: React.FC = () => {
             onClick={async () => {
               if (identity) {
                 console.log(">> readAccount", {
-                  principalId: identity.getPrincipal().toString(),
+                  principalId: principalId,
                 })
                 const { readAccount } = createProfileActor({
                   identity: identity ?? undefined,

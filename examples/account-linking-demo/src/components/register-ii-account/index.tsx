@@ -75,7 +75,7 @@ const RegiserIIAccountContent = () => {
   return (
     <div className="py-4 mx-4">
       <div>1. Register your Internet Identity Account</div>
-      {isAuthenticated || state.ii.principalId ? (
+      {isAuthenticated && state.ii.principalId ? (
         <div>your principal id: {identity?.getPrincipal().toString()}</div>
       ) : (
         <Button onClick={authenticate}>Login with II</Button>

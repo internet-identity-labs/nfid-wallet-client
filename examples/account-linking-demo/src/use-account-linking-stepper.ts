@@ -4,7 +4,13 @@ import React from "react"
 
 interface AccountLinkingState {
   ii: { registered: boolean; userName?: string; principalId?: string }
-  nfid: { registered: boolean; userName?: string; principalId?: string }
+  nfid: {
+    [principalId: string]: {
+      registered: boolean
+      userName?: string
+      principalId?: string
+    }
+  }
   usedProvider: "II" | "NFID" | null
 }
 
@@ -14,9 +20,7 @@ const stepAtom = atomWithStorage<AccountLinkingState>(
     ii: {
       registered: false,
     },
-    nfid: {
-      registered: false,
-    },
+    nfid: {},
     usedProvider: null,
   },
 )
@@ -32,7 +36,13 @@ export const useAccountLinkingStepper = () => {
 
   const setNFIDPrincipalId = React.useCallback(
     (principalId: string) => {
-      setState((s) => ({ ...s, nfid: { ...s.nfid, principalId } }))
+      setState((s) => ({
+        ...s,
+        nfid: {
+          ...s.nfid,
+          [principalId]: { ...s.nfid[principalId], principalId },
+        },
+      }))
     },
     [setState],
   )
@@ -45,10 +55,13 @@ export const useAccountLinkingStepper = () => {
   )
 
   const setNFIDUserName = React.useCallback(
-    (userName: string) => {
+    (principalId: string, userName: string) => {
       setState((s) => ({
         ...s,
-        nfid: { ...s.nfid, registered: true, userName },
+        nfid: {
+          ...s.nfid,
+          [principalId]: { ...s.nfid[principalId], userName },
+        },
       }))
     },
     [setState],

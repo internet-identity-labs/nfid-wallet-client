@@ -70,9 +70,10 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
   onNewUser,
   onLinkIdentities,
 }) => {
-  const { isAuthenticated, authenticate } = useInternetIdentity()
+  const { authenticate } = useInternetIdentity()
   const [loading, setLoading] = React.useState(false)
   console.log(">> ", {
+    showLinking,
     identityA: identityA?.getPrincipal().toString(),
     identityB: identityB?.getPrincipal().toString(),
     loading,
@@ -83,22 +84,23 @@ const AccountLinkingContent: React.FC<AccountLinkingProps> = ({
     setLoading(true)
   }, [authenticate])
 
-  React.useEffect(() => {
-    if (identityA && identityB && loading) {
-      onLinkIdentities({ identityA, identityB })
+  const handleLinkIdentities = React.useCallback(
+    async ({ identityA, identityB }) => {
+      await onLinkIdentities({ identityA, identityB })
       setLoading(false)
-    }
-  }, [identityA, identityB, onLinkIdentities, loading])
+    },
+    [onLinkIdentities],
+  )
 
   React.useEffect(() => {
-    if (loading && identityB) {
-      setLoading(false)
+    if (identityA && identityB && loading) {
+      handleLinkIdentities({ identityA, identityB })
     }
-  }, [loading, identityB])
+  }, [identityA, identityB, onLinkIdentities, loading, handleLinkIdentities])
 
   return (
     <Modal
-      isVisible={isAuthenticated && showLinking}
+      isVisible={showLinking}
       id="account-linking"
       onClose={() => console.log("onClose")}
     >

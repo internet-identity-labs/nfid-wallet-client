@@ -22,6 +22,9 @@
       "components/*": ["src/ui-kit/src/components/*"]
     }
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "examples/create-ic-app-react-demo/frontend/identity-manager-test"
+  ],
   "exclude": ["node_modules"]
 }

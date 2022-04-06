@@ -1,8 +1,9 @@
 // import {} from "@craco/craco"
-import { IgnorePlugin, ProvidePlugin } from "webpack"
-import path from "path"
-import dfxJson from "./dfx.json"
 import { config as loadEnv } from "dotenv"
+import path from "path"
+import { IgnorePlugin, ProvidePlugin, DefinePlugin } from "webpack"
+
+import dfxJson from "./dfx.json"
 
 loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
@@ -44,6 +45,11 @@ const config = {
       }
     },
     plugins: [
+      new DefinePlugin({
+        "process.env.IDENTITY_MANAGER_TEST_REPLICA_CANISTER_ID": JSON.stringify(
+          "vwali-piaaa-aaaal-qatfq-cai",
+        ),
+      }),
       new ProvidePlugin({
         Buffer: [require.resolve("buffer/"), "Buffer"],
         process: require.resolve("process/browser"),

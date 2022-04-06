@@ -3,6 +3,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { identity_manager_test_replica } from "frontend/services/identity-manager-test"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
@@ -100,6 +101,9 @@ export const useAuthorization = ({
         sessionKey,
         timestamp,
       )
+
+      const response = await identity_manager_test_replica.lookup(userNumber)
+      console.log(">> ", { response })
 
       // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
       const parsedSignedDelegation = {

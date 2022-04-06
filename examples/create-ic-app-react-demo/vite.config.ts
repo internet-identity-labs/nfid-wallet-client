@@ -70,6 +70,7 @@ export default defineConfig({
     alias: {
       // Here we tell Vite the "fake" modules that we want to define
       ...aliases,
+      "identity-manager-test": path.join(__dirname, "identity-manager-test"),
     },
   },
   server: {

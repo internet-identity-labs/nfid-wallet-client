@@ -1,8 +1,9 @@
-import { InternetIdentityProvider } from "@identity-labs/react-ic-ii-auth"
-import React from "react"
-
 import { AuthButton } from "./AuthButton"
 import { ToggleMode } from "./ToggleMode"
+import { InternetIdentityProvider } from "@identity-labs/react-ic-ii-auth"
+import { canisterId } from "canisters/counter"
+import { createActor } from "frontend/identity-manager-test"
+import React from "react"
 
 // Note: This is just a basic example to get you started
 function Auth() {
@@ -52,7 +53,13 @@ function Auth() {
             authClientOptions={{
               maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
               identityProvider: NFIDUrl as string,
-              onSuccess: (principal) => {
+              onSuccess: async (principal) => {
+                const actor = createActor(canisterId as string, {
+                  agentOptions: { identity: principal },
+                })
+                const response = await actor.lookup(BigInt("1957941"))
+                console.log(">> ", { response })
+
                 setProvider("NFID")
               },
               opener: () =>

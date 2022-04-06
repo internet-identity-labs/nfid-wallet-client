@@ -45,11 +45,6 @@ const config = {
       }
     },
     plugins: [
-      new DefinePlugin({
-        "process.env.IDENTITY_MANAGER_TEST_REPLICA_CANISTER_ID": JSON.stringify(
-          "vwali-piaaa-aaaal-qatfq-cai",
-        ),
-      }),
       new ProvidePlugin({
         Buffer: [require.resolve("buffer/"), "Buffer"],
         process: require.resolve("process/browser"),

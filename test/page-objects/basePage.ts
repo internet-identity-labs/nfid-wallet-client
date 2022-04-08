@@ -9,7 +9,10 @@ class BasePage {
     async navigateTo(path: string) {
         await browser.url(path);
         await browser.maximizeWindow();
-        await (await browser.$('#L2AGLb > div')).click();
+    }
+
+    async dummy() {
+      console.log(await browser.getUrl());
     }
 
     async click(ele: WebdriverIO.Element) {

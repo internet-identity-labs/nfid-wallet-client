@@ -69,7 +69,7 @@ export const useUnknownDeviceConfig = () => {
   const url = React.useMemo(() => {
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `${window.location.origin}/${AppScreenAuthorizeAppConstants.base}/${pubKey}/${domain}/${applicationName}`
+      ? `${window.location.origin}${AppScreenAuthorizeAppConstants.base}/${pubKey}/${domain}/${applicationName}`
       : null
   }, [applicationName, domain, pubKey])
 

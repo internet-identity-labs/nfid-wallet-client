@@ -8,6 +8,8 @@
     "rust-lang.rust",
     "vadimcn.vscode-lldb",
     "ms-vsliveshare.vsliveshare",
-    "heybourn.headwind"
+    "heybourn.headwind",
+    "alexkrechik.cucumberautocomplete",
+    "stevejpurves.cucumber"
   ]
 }

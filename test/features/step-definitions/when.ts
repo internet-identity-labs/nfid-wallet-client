@@ -1,9 +1,7 @@
 import { When } from "@cucumber/cucumber";
 import chai from "chai";
+import basePage from "../../page-objects/basePage"
 
-When(/^Search with (.*)$/, async function (searchItem) {
-  // reporter.addStep(this.testid, "info", `Searching: ${searchItem} in Google...`)
-  let ele = await $(`[name=q]`)
-  await ele.setValue(searchItem)
-  await browser.keys("Enter")
+When(/^user clicks on our mission link on the navigation bar$/, async function () {
+  await basePage.dummy();
 })

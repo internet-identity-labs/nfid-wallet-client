@@ -2229,6 +2229,14 @@
     debug "^4.3.2"
     tsutils "^3.21.0"
 
+"@typescript-eslint/type-utils@5.16.0":
+  version "5.16.0"
+  resolved "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-5.16.0.tgz#b482bdde1d7d7c0c7080f7f2f67ea9580b9e0692"
+  dependencies:
+    "@typescript-eslint/utils" "5.16.0"
+    debug "^4.3.2"
+    tsutils "^3.21.0"
+
 "@typescript-eslint/types@5.14.0":
   version "5.14.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/types/-/types-5.14.0.tgz"
@@ -2261,6 +2269,18 @@
     semver "^7.3.5"
     tsutils "^3.21.0"
 
+"@typescript-eslint/typescript-estree@5.16.0":
+  version "5.16.0"
+  resolved "https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-5.16.0.tgz#32259459ec62f5feddca66adc695342f30101f61"
+  dependencies:
+    "@typescript-eslint/types" "5.16.0"
+    "@typescript-eslint/visitor-keys" "5.16.0"
+    debug "^4.3.2"
+    globby "^11.0.4"
+    is-glob "^4.0.3"
+    semver "^7.3.5"
+    tsutils "^3.21.0"
+
 "@typescript-eslint/utils@5.14.0":
   version "5.14.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-5.14.0.tgz"
@@ -2283,6 +2303,17 @@
     eslint-scope "^5.1.1"
     eslint-utils "^3.0.0"
 
+"@typescript-eslint/utils@5.16.0":
+  version "5.16.0"
+  resolved "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-5.16.0.tgz#42218b459d6d66418a4eb199a382bdc261650679"
+  dependencies:
+    "@types/json-schema" "^7.0.9"
+    "@typescript-eslint/scope-manager" "5.16.0"
+    "@typescript-eslint/types" "5.16.0"
+    "@typescript-eslint/typescript-estree" "5.16.0"
+    eslint-scope "^5.1.1"
+    eslint-utils "^3.0.0"
+
 "@typescript-eslint/visitor-keys@5.14.0":
   version "5.14.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-5.14.0.tgz"
@@ -2293,6 +2324,13 @@
 "@typescript-eslint/visitor-keys@5.16.0":
   version "5.16.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-5.16.0.tgz"
+  dependencies:
+    "@typescript-eslint/types" "5.16.0"
+    eslint-visitor-keys "^3.0.0"
+
+"@typescript-eslint/visitor-keys@5.16.0":
+  version "5.16.0"
+  resolved "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-5.16.0.tgz#f27dc3b943e6317264c7492e390c6844cd4efbbb"
   dependencies:
     "@typescript-eslint/types" "5.16.0"
     eslint-visitor-keys "^3.0.0"
@@ -10243,6 +10281,10 @@ url-to-options@^1.0.1:
 "usergeek-ic-js@github:usergeek/usergeek-ic-js":
   version "1.0.1"
   resolved "git+ssh://git@github.com/usergeek/usergeek-ic-js.git#44df4ba2b05b18a01429f92482110ed6c5d4dfda"
+
+util-arity@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/util-arity/-/util-arity-1.1.0.tgz#59d01af1fdb3fede0ac4e632b0ab5f6ce97c9330"
 
 util-arity@^1.1.0:
   version "1.1.0"

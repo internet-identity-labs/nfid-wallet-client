@@ -1,8 +1,9 @@
 // import {} from "@craco/craco"
-import { IgnorePlugin, ProvidePlugin } from "webpack"
-import path from "path"
-import dfxJson from "./dfx.json"
 import { config as loadEnv } from "dotenv"
+import path from "path"
+import { IgnorePlugin, ProvidePlugin } from "webpack"
+
+import dfxJson from "./dfx.json"
 
 loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
@@ -13,7 +14,6 @@ const config = {
   webpack: {
     alias: {
       frontend: path.resolve(__dirname, "src"),
-      components: path.resolve(__dirname, "src/ui-kit/src/components"),
     },
     configure: (webpackConfig: any, { env, paths }: any) => {
       return {

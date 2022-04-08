@@ -84,7 +84,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
 
       const url = new URL(
         CONFIG.II_ENV === "development"
-          ? `http://${CONFIG.II_CANISTER_ID}.localhost:8000`
+          ? `http://${CONFIG.INTERNET_IDENTITY_CANISTER_ID}.localhost:8000`
           : "https://identity.ic0.app",
       )
       url.pathname = "/"

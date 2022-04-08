@@ -1,4 +1,0 @@
-{
-  "script": "sauce:context=Error: Can't call click on element with selector \"#L2AGLb > div\" because element wasn't found",
-  "args": []
-}

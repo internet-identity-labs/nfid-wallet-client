@@ -1,4 +1,5 @@
 import { blobFromHex } from "@dfinity/candid"
+import { Loader } from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
@@ -15,7 +16,6 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { Loader } from "frontend/ui-kit/src/index"
 
 import { useMessageChannel } from "./hooks/use-message-channel"
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"

@@ -21,7 +21,7 @@
     "@dfinity/candid": "0.9.3",
     "@dfinity/identity": "0.9.3",
     "@dfinity/principal": "0.9.3",
-    "@identity-labs/ui": "link:src/ui-kit",
+    "@identity-labs/nfid-sdk-react": "0.0.1",
     "@tailwindcss/forms": "^0.5.0",
     "biguintle": "1.0.3",
     "bip39": "3.0.4",

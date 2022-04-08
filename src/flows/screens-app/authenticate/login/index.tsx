@@ -1,8 +1,8 @@
+import { CardBody } from "@identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { NFIDLogin } from "frontend/screens/nfid-login"
-import { CardBody } from "frontend/ui-kit/src"
 
 interface AppScreenNFIDLoginProps
   extends React.DetailedHTMLProps<

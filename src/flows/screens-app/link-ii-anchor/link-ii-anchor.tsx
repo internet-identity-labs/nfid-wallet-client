@@ -1,5 +1,15 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { Li, Ol } from "@identity-labs/nfid-sdk-react"
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  Input,
+  Modal,
+  P,
+} from "@identity-labs/nfid-sdk-react"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
@@ -13,18 +23,7 @@ import {
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
-import {
-  Button,
-  Card,
-  CardBody,
-  H2,
-  Input,
-  Modal,
-  P,
-} from "frontend/ui-kit/src/index"
 import { anchorRules } from "frontend/utils/validations"
-
-import { Li, Ol } from "components/atoms/typography/lists"
 
 import { LinkIIAnchorConstants as LIIAC } from "./routes"
 

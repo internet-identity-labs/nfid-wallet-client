@@ -1,11 +1,4 @@
-import React from "react"
-import { BiLoaderCircle } from "react-icons/bi"
-import { FaKey } from "react-icons/fa"
-import { HiMenu, HiSearch } from "react-icons/hi"
-import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
-
-import Logo from "frontend/assets/dfinity.svg"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { RadioButton } from "@identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -29,9 +22,15 @@ import {
   MenuItem,
   P,
   TextArea,
-} from "frontend/ui-kit/src"
+} from "@identity-labs/nfid-sdk-react"
+import React from "react"
+import { BiLoaderCircle } from "react-icons/bi"
+import { FaKey } from "react-icons/fa"
+import { HiMenu, HiSearch } from "react-icons/hi"
+import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
 
-import { RadioButton } from "components/atoms/button/radio-button"
+import Logo from "frontend/assets/dfinity.svg"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 export const KitchenSink: React.FC = () => {
   const personas = ["John Doe", "John77", "john_doe"]

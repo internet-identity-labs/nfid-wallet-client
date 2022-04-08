@@ -1,3 +1,11 @@
+import {
+  Button,
+  Card,
+  CardBody,
+  H5,
+  Loader,
+  P,
+} from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
@@ -8,7 +16,6 @@ import { Swiper, SwiperSlide } from "swiper/react"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { Button, Card, CardBody, H5, Loader, P } from "frontend/ui-kit/src"
 
 import { RegisterAccountConstants as RAC } from "./routes"
 

@@ -1,9 +1,8 @@
+import { Button } from "@identity-labs/nfid-sdk-react"
+import { QRCode } from "@identity-labs/nfid-sdk-react"
+import { H5 } from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-
-import { Button } from "components/atoms/button"
-import { QRCode } from "components/atoms/qrcode"
-import { H5 } from "components/atoms/typography"
 
 interface AuthorizeAppUnknownDeviceProps
   extends React.DetailedHTMLProps<

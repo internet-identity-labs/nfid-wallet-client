@@ -1,7 +1,6 @@
+import { Logo, NFIDGradientBar } from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useEffect } from "react"
-
-import { Logo, NFIDGradientBar } from "frontend/ui-kit/src"
 
 interface IFrameWrapperProps
   extends React.DetailedHTMLProps<

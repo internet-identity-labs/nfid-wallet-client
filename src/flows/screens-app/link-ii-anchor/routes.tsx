@@ -1,6 +1,5 @@
+import { Button, ButtonProps } from "@identity-labs/nfid-sdk-react"
 import { Outlet, Route } from "react-router-dom"
-
-import { Button, ButtonProps } from "components/atoms/button"
 
 import { LinkIIAnchor } from "./link-ii-anchor"
 import { LinkIIAnchorKeys } from "./link-ii-anchor-keys"

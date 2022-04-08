@@ -1,9 +1,3 @@
-import React from "react"
-import { useForm } from "react-hook-form"
-import { useLocation, useNavigate } from "react-router-dom"
-
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import {
   Button,
   Card,
@@ -12,7 +6,13 @@ import {
   Input,
   Loader,
   P,
-} from "frontend/ui-kit/src/index"
+} from "@identity-labs/nfid-sdk-react"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { useLocation, useNavigate } from "react-router-dom"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { nameRules, phoneRules } from "frontend/utils/validations"
 
 interface RegisterAccountCreateNFIDProfileProps

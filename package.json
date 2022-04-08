@@ -11,7 +11,8 @@
     "generate:types": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t ts > frontend/generated/identity_manager.d.ts",
     "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js",
     "format": "prettier --write ./src",
-    "format:examples": "prettier --write ./examples/MultipassDemo/src"
+    "format:examples": "prettier --write ./examples/MultipassDemo/src",
+    "wdio": "wdio run test/wdio.conf.ts"
   },
   "dependencies": {
     "@dfinity/agent": "0.9.3",
@@ -42,7 +43,9 @@
     "stream-browserify": "3.0.0",
     "swiper": "^8.0.7",
     "usergeek-ic-js": "github:usergeek/usergeek-ic-js",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "geckodriver": "^3.0.1",
+    "wdio-geckodriver-service": "^2.1.0"
   },
   "devDependencies": {
     "@craco/craco": "6.4.3",
@@ -73,7 +76,18 @@
     "typescript": "^4.6.2",
     "util": "0.12.4",
     "vite": "^2.8.6",
-    "vite-tsconfig-paths": "3.4.1"
+    "vite-tsconfig-paths": "3.4.1",
+    "@types/chai": "^4.3.0",
+    "@wdio/allure-reporter": "^7.19.1",
+    "@wdio/cli": "^7.19.1",
+    "@wdio/cucumber-framework": "^7.19.1",
+    "@wdio/local-runner": "^7.19.1",
+    "@wdio/sauce-service": "^7.19.1",
+    "@wdio/spec-reporter": "^7.19.1",
+    "chai": "^4.3.6",
+    "chromedriver": "^99.0.0",
+    "ts-node": "^10.7.0",
+    "wdio-chromedriver-service": "^7.3.2"
   },
   "eslintConfig": {
     "extends": [
@@ -94,5 +108,7 @@
       "last 2 safari version",
       "last 2 edge version"
     ]
-  }
+  },
+  "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
+  "license": "MIT"
 }

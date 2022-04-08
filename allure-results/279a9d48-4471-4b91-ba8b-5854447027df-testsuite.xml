@@ -1,0 +1,71 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1648735179876' stop='1648735179882'>
+    <name>Home page: HM_002 User navigates to Home section</name>
+    <title>Home page: HM_002 User navigates to Home section</title>
+    <test-cases>
+        <test-case start='1648735179876' status='passed' stop='1648735179878'>
+            <name></name>
+            <title></title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-1'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-99.0.4844.84'/>
+            </parameters>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1648735179878' status='broken' stop='1648735179879'>
+            <name>When user clicks on home link on the navigation bar</name>
+            <title>When user clicks on home link on the navigation bar</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-1'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-99.0.4844.84'/>
+            </parameters>
+            <steps/>
+            <attachments/>
+            <failure>
+                <message>Step "user clicks on home link on the navigation bar" is not defined. You can ignore this error by setting cucumberOpts.ignoreUndefinedDefinitions as true.</message>
+                <stack-trace>Step "user clicks on home link on the navigation bar" is not defined. You can ignore this error by setting cucumberOpts.ignoreUndefinedDefinitions as true.
+                	at Feature(/Users/rags/workspace/identity/MultipassFrontend/test/features/demo/HomePage.feature):1:1
+                	at Scenario(HM_002 User navigates to Home section):17:3
+                	at Step(user clicks on home link on the navigation bar):18:5
+                </stack-trace>
+            </failure>
+        </test-case>
+        <test-case start='1648735179879' status='undefined'>
+            <name>Then user should be navigated to home</name>
+            <title>Then user should be navigated to home</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-1'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-99.0.4844.84'/>
+            </parameters>
+            <steps/>
+            <attachments/>
+        </test-case>
+        <test-case start='1648735179879' status='passed' stop='1648735179881'>
+            <name></name>
+            <title></title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-1'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-99.0.4844.84'/>
+            </parameters>
+            <steps/>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

@@ -12,7 +12,7 @@ class BasePage {
     }
 
     async dummy() {
-      console.log(await browser.getUrl());
+      console.log(`value => ${await browser.getUrl()}`);
     }
 
     async click(ele: WebdriverIO.Element) {

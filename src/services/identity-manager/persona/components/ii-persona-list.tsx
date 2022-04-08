@@ -1,5 +1,5 @@
-import { List } from "@identity-labs/nfid-sdk-react"
-import { H5, ListItem } from "@identity-labs/nfid-sdk-react"
+import { List } from "@internet-identity-labs/nfid-sdk-react"
+import { H5, ListItem } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 

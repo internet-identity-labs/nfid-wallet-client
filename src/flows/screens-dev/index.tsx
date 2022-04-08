@@ -1,4 +1,9 @@
-import { Card, CardBody, Divider, H4 } from "@identity-labs/nfid-sdk-react"
+import {
+  Card,
+  CardBody,
+  Divider,
+  H4,
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"

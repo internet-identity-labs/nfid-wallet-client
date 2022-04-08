@@ -5,7 +5,7 @@ import {
   H2,
   Modal,
   P,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useLocation } from "react-router-dom"
 

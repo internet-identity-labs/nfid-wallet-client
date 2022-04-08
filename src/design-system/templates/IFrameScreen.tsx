@@ -1,4 +1,4 @@
-import { Logo, NFIDGradientBar } from "@identity-labs/nfid-sdk-react"
+import { Logo, NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useEffect } from "react"
 

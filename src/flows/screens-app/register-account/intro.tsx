@@ -5,7 +5,7 @@ import {
   H5,
   Loader,
   P,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { HiArrowLeft, HiArrowRight } from "react-icons/hi"

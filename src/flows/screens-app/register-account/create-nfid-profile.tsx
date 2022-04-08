@@ -6,7 +6,7 @@ import {
   Input,
   Loader,
   P,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"

@@ -1,4 +1,4 @@
-import { IFrameWrapper } from "@identity-labs/nfid-sdk-react"
+import { IFrameWrapper } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -7,7 +7,7 @@ import {
   H5,
   Label,
   MenuItem,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 

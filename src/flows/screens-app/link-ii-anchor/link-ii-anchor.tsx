@@ -1,6 +1,6 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { Li, Ol } from "@identity-labs/nfid-sdk-react"
+import { Li, Ol } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -9,7 +9,7 @@ import {
   Input,
   Modal,
   P,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"

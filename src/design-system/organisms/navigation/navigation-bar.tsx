@@ -1,4 +1,4 @@
-import { ImageOnlyLoader } from "@identity-labs/nfid-sdk-react"
+import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"

@@ -1,4 +1,4 @@
-import { Accordion, Button, Chip } from "@identity-labs/nfid-sdk-react"
+import { Accordion, Button, Chip } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { FaCheck } from "react-icons/fa"
 

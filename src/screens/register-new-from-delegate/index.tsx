@@ -4,7 +4,7 @@ import {
   CardBody,
   H2,
   Loader,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useParams } from "react-router-dom"
 

@@ -2,78 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run NFID Development Environment",
-      "type": "shell",
-      "dependsOn": [
-        "NFID Frontend",
-        "NFID Demo",
-        "NFID UI-Kit",
-        "NFID NGROK tunnel",
-        "NFID DFX replica"
-      ],
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "group": "develop"
-      }
-    },
-    {
-      "label": "NFID NGROK tunnel",
-      "type": "shell",
-      "command": "yarn tunnel",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "group": "develop"
-      }
-    },
-    {
-      "label": "NFID DFX replica",
-      "type": "shell",
-      "command": "dfx start",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "group": "develop"
-      }
-    },
-    {
-      "label": "DFX deploy demo",
-      "dependsOn": ["NFID DFX replica"],
-      "type": "shell",
-      "command": "cd examples/create-ic-app-react-demo && dfx deploy",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "group": "backend"
-      }
-    },
-    {
       "label": "NFID Frontend",
       "type": "shell",
       "command": "yarn && yarn dev",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "group": "develop"
-      }
-    },
-    {
-      "label": "NFID Demo",
-      "type": "shell",
-      "command": "cd examples/create-ic-app-react-demo && yarn && yarn dev",
-      "presentation": {
-        "reveal": "always",
-        "panel": "new",
-        "group": "develop"
-      }
-    },
-    {
-      "label": "NFID UI-Kit",
-      "type": "shell",
-      "command": "cd src/ui-kit/ && yarn && yarn build:dev",
       "presentation": {
         "reveal": "always",
         "panel": "new",

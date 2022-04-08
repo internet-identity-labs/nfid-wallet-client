@@ -1,4 +1,4 @@
-import { ButtonMenu } from "@identity-labs/nfid-sdk-react"
+import { ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { HiMenu } from "react-icons/hi"
 

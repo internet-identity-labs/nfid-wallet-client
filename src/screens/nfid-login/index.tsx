@@ -1,6 +1,6 @@
-import { Button } from "@identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@identity-labs/nfid-sdk-react"
-import { Loader, P } from "@identity-labs/nfid-sdk-react"
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
+import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 

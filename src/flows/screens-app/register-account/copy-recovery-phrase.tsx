@@ -1,4 +1,4 @@
-import { CopyIcon } from "@identity-labs/nfid-sdk-react"
+import { CopyIcon } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -8,7 +8,7 @@ import {
   Loader,
   Modal,
   P,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 

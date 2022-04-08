@@ -1,9 +1,10 @@
 // import {} from "@craco/craco"
 import { config as loadEnv } from "dotenv"
 import path from "path"
-import { IgnorePlugin, ProvidePlugin, DefinePlugin } from "webpack"
 
 import dfxJson from "./dfx.json"
+
+const webpack = require("webpack")
 
 loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
@@ -14,12 +15,15 @@ const caniserEnv = [
 ].reduce(
   (acc, key) => ({
     ...acc,
-    [`process.env.${key}`]: JSON.stringify(process.env[key]),
+    [`process.env.${key}`]:
+      process.env.EXAMPLE_BUILD === "1"
+        ? JSON.stringify(`<${key}>`)
+        : JSON.stringify(
+            process.env[`${key}_${process.env.REACT_APP_BACKEND_MODE}`],
+          ),
   }),
   {},
 )
-
-console.log(">> ", { caniserEnv })
 
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
@@ -30,6 +34,20 @@ const config = {
       frontend: path.resolve(__dirname, "src"),
     },
     configure: (webpackConfig: any, { env, paths }: any) => {
+      console.log(">> ", { caniserEnv })
+      webpackConfig.plugins.push(new webpack.DefinePlugin(caniserEnv))
+      webpackConfig.plugins.push(
+        new webpack.ProvidePlugin({
+          Buffer: [require.resolve("buffer/"), "Buffer"],
+          process: require.resolve("process/browser"),
+        }),
+      )
+      webpackConfig.plugins.push(
+        new webpack.IgnorePlugin({
+          contextRegExp: /^\.\/wordlists\/(?!english)/,
+          resourceRegExp: /bip39\/src$/,
+        }),
+      )
       return {
         ...webpackConfig,
         // FIXME: configure source map parser
@@ -57,17 +75,6 @@ const config = {
         },
       }
     },
-    plugins: [
-      new DefinePlugin(caniserEnv),
-      new ProvidePlugin({
-        Buffer: [require.resolve("buffer/"), "Buffer"],
-        process: require.resolve("process/browser"),
-      }),
-      new IgnorePlugin({
-        contextRegExp: /^\.\/wordlists\/(?!english)/,
-        resourceRegExp: /bip39\/src$/,
-      }),
-    ],
   },
   devServer: {
     open: false,

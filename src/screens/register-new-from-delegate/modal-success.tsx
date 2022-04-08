@@ -1,4 +1,4 @@
-import { Modal } from "@identity-labs/nfid-sdk-react"
+import { Modal } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { useTimer } from "frontend/hooks/use-timer"

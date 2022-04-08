@@ -6,7 +6,7 @@ import {
   CardTitle,
   Loader,
   P,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { v4 } from "uuid"
 

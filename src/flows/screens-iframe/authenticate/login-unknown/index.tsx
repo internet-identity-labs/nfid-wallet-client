@@ -1,5 +1,5 @@
 import { blobFromHex } from "@dfinity/candid"
-import { Loader } from "@identity-labs/nfid-sdk-react"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"

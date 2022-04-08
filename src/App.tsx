@@ -8,6 +8,7 @@ import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/route
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
+import { HomeScreen } from "./flows/screens-app/landing-page"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import {
@@ -25,8 +26,6 @@ import {
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-access-point/routes"
-
-import { HomeScreen } from "./flows/screens-app/landing-page"
 
 import { useStartUrl } from "./hooks/use-start-url"
 

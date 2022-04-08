@@ -1,4 +1,4 @@
-import { Button, Card, H2, P } from "@identity-labs/nfid-sdk-react"
+import { Button, Card, H2, P } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 

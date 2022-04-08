@@ -1,6 +1,6 @@
-import { Button } from "@identity-labs/nfid-sdk-react"
-import { RadioButton } from "@identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@identity-labs/nfid-sdk-react"
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
+import { RadioButton } from "@internet-identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { useDeviceInfo } from "frontend/hooks/use-device-info"

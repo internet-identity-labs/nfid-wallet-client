@@ -1,6 +1,6 @@
-import { Button } from "@identity-labs/nfid-sdk-react"
-import { QRCode } from "@identity-labs/nfid-sdk-react"
-import { H5 } from "@identity-labs/nfid-sdk-react"
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
+import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
+import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 

@@ -1,4 +1,8 @@
-import { Centered, Loader, Screen } from "@identity-labs/nfid-sdk-react"
+import {
+  Centered,
+  Loader,
+  Screen,
+} from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Helmet } from "react-helmet"

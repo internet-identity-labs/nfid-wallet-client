@@ -1,4 +1,4 @@
-import { Loader } from "@identity-labs/nfid-sdk-react"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { Navigate, Route } from "react-router-dom"
 

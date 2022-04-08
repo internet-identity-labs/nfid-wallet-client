@@ -1,11 +1,11 @@
-import { DotsIcon } from "@identity-labs/nfid-sdk-react"
-import { LogoutIcon } from "@identity-labs/nfid-sdk-react"
-import { PlusIcon } from "@identity-labs/nfid-sdk-react"
-import { ButtonMenu } from "@identity-labs/nfid-sdk-react"
+import { DotsIcon } from "@internet-identity-labs/nfid-sdk-react"
+import { LogoutIcon } from "@internet-identity-labs/nfid-sdk-react"
+import { PlusIcon } from "@internet-identity-labs/nfid-sdk-react"
+import { ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
 import {
   ModalAdvanced,
   ModalAdvancedProps,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -17,7 +17,7 @@ import {
   ListItem,
   Loader,
   P,
-} from "@identity-labs/nfid-sdk-react"
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { MdLaptopMac } from "react-icons/md"
 

@@ -1,4 +1,4 @@
-import { List } from "@identity-labs/nfid-sdk-react"
+import { List } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { DeviceItem } from "./device-item"

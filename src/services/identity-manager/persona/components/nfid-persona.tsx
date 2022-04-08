@@ -1,4 +1,4 @@
-import { Button } from "@identity-labs/nfid-sdk-react"
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { useMultipass } from "frontend/hooks/use-multipass"

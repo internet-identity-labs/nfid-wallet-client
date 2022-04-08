@@ -1,0 +1,140 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1649430920968' stop='1649430943662'>
+    <name>Home page</name>
+    <title>Home page</title>
+    <test-cases>
+        <test-case start='1649430920980' status='passed' stop='1649430927340'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+            </parameters>
+            <steps>
+                <step start='1649430920982' status='passed' stop='1649430924252'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430924252' status='passed' stop='1649430927314'>
+                    <name>When user clicks on The Identity Layer link on the navigation bar</name>
+                    <title>When user clicks on The Identity Layer link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430927314' status='passed' stop='1649430927339'>
+                    <name>Then user should be navigated to The Identity Layer</name>
+                    <title>Then user should be navigated to The Identity Layer</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+        <test-case start='1649430927340' status='passed' stop='1649430932179'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+            </parameters>
+            <steps>
+                <step start='1649430927340' status='passed' stop='1649430929083'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430929084' status='passed' stop='1649430932162'>
+                    <name>When user clicks on Only with NFID link on the navigation bar</name>
+                    <title>When user clicks on Only with NFID link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430932162' status='passed' stop='1649430932179'>
+                    <name>Then user should be navigated to Only with NFID</name>
+                    <title>Then user should be navigated to Only with NFID</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+        <test-case start='1649430932180' status='passed' stop='1649430938068'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+            </parameters>
+            <steps>
+                <step start='1649430932180' status='passed' stop='1649430934983'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430934983' status='passed' stop='1649430938044'>
+                    <name>When user clicks on Our mission link on the navigation bar</name>
+                    <title>When user clicks on Our mission link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430938044' status='passed' stop='1649430938068'>
+                    <name>Then user should be navigated to Our mission</name>
+                    <title>Then user should be navigated to Our mission</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+        <test-case start='1649430938068' status='passed' stop='1649430943662'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+                <parameter kind='environment-variable' name='Environment:' value='undefined'/>
+            </parameters>
+            <steps>
+                <step start='1649430938069' status='passed' stop='1649430940600'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430940600' status='passed' stop='1649430943646'>
+                    <name>When user clicks on FAQ link on the navigation bar</name>
+                    <title>When user clicks on FAQ link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430943646' status='passed' stop='1649430943662'>
+                    <name>Then user should be navigated to FAQ</name>
+                    <title>Then user should be navigated to FAQ</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

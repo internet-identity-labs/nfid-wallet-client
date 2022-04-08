@@ -42,7 +42,7 @@ export const useAuthentication = () => {
 
   const logout = React.useCallback(() => {
     setActors(null)
-    // @ts-ignore TODO: fix types
+    // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(Principal.anonymous())
   }, [setActors])
 
@@ -51,7 +51,7 @@ export const useAuthentication = () => {
     // @dfinity/auth-client to be installed
     // they just use LocalStorage implementation from it.
 
-    // @ts-ignore TODO: fix types
+    // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(principal)
     Usergeek.trackSession()
   }, [])

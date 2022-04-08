@@ -1,11 +1,25 @@
 // import {} from "@craco/craco"
 import { config as loadEnv } from "dotenv"
 import path from "path"
-import { IgnorePlugin, ProvidePlugin } from "webpack"
+import { IgnorePlugin, ProvidePlugin, DefinePlugin } from "webpack"
 
 import dfxJson from "./dfx.json"
 
 loadEnv({ path: path.resolve(__dirname, ".env.local") })
+
+const caniserEnv = [
+  "INTERNET_IDENTITY_CANISTER_ID",
+  "IDENTITY_MANAGER_CANISTER_ID",
+  "PUB_SUB_CHANNEL_CANISTER_ID",
+].reduce(
+  (acc, key) => ({
+    ...acc,
+    [`process.env.${key}`]: JSON.stringify(process.env[key]),
+  }),
+  {},
+)
+
+console.log(">> ", { caniserEnv })
 
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
@@ -44,6 +58,7 @@ const config = {
       }
     },
     plugins: [
+      new DefinePlugin(caniserEnv),
       new ProvidePlugin({
         Buffer: [require.resolve("buffer/"), "Buffer"],
         process: require.resolve("process/browser"),

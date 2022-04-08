@@ -46,7 +46,7 @@ import { hasOwnProperty } from "./utils"
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
 const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
 
-const canisterId: string = CONFIG.II_CANISTER_ID as string
+const canisterId: string = CONFIG.INTERNET_IDENTITY_CANISTER_ID as string
 
 if (!canisterId)
   throw new Error(

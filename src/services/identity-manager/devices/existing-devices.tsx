@@ -1,6 +1,5 @@
+import { List } from "@identity-labs/nfid-sdk-react"
 import React from "react"
-
-import { List } from "frontend/ui-kit/src/index"
 
 import { DeviceItem } from "./device-item"
 import { useDevices } from "./hooks"

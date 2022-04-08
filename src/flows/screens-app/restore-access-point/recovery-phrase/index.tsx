@@ -1,10 +1,9 @@
+import { Card } from "@identity-labs/nfid-sdk-react"
+import { CardBody } from "@identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
-import { CardBody } from "frontend/ui-kit/src"
-
-import { Card } from "components/molecules/card"
 
 interface RestoreAccessPointRecoveryPhraseProps
   extends React.DetailedHTMLProps<

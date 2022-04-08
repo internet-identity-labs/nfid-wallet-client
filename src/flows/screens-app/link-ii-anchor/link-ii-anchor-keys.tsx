@@ -1,3 +1,11 @@
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  Modal,
+  P,
+} from "@identity-labs/nfid-sdk-react"
 import React from "react"
 import { useLocation } from "react-router-dom"
 
@@ -5,7 +13,6 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { Button, Card, CardBody, H2, Modal, P } from "frontend/ui-kit/src/index"
 
 interface LocationState {
   iiDeviceLink: string

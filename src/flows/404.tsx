@@ -1,8 +1,8 @@
+import { Button, Card, H2, P } from "@identity-labs/nfid-sdk-react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Button, Card, H2, P } from "frontend/ui-kit/src"
 
 interface NotFoundProps
   extends React.DetailedHTMLProps<

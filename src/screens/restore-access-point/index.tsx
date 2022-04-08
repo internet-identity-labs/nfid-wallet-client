@@ -1,3 +1,7 @@
+import { Button } from "@identity-labs/nfid-sdk-react"
+import { Loader } from "@identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@identity-labs/nfid-sdk-react"
+import { TextArea } from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -7,11 +11,6 @@ import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authentica
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
-import { TextArea } from "frontend/ui-kit/src"
-
-import { Button } from "components/atoms/button"
-import { Loader } from "components/atoms/loader"
-import { H2, H5 } from "components/atoms/typography"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<

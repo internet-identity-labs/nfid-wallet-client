@@ -1,13 +1,12 @@
+import { Button } from "@identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@identity-labs/nfid-sdk-react"
+import { Loader, P } from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 
 import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { Loader, P } from "frontend/ui-kit/src"
-
-import { Button } from "components/atoms/button"
-import { H2, H5 } from "components/atoms/typography"
 
 interface AuthenticateNFIDLoginContentProps
   extends React.DetailedHTMLProps<

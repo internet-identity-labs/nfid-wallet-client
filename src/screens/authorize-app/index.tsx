@@ -1,3 +1,7 @@
+import { Button } from "@identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@identity-labs/nfid-sdk-react"
+import { DropdownMenu } from "@identity-labs/nfid-sdk-react"
+import { Label, Loader, MenuItem } from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
@@ -9,11 +13,6 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { ElementProps } from "frontend/types/react"
-import { Label, Loader, MenuItem } from "frontend/ui-kit/src"
-
-import { Button } from "components/atoms/button"
-import { H2, H5 } from "components/atoms/typography"
-import { DropdownMenu } from "components/molecules/menu"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   iframe?: boolean

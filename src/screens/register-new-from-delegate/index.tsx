@@ -1,3 +1,10 @@
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  Loader,
+} from "@identity-labs/nfid-sdk-react"
 import React from "react"
 import { useParams } from "react-router-dom"
 
@@ -5,7 +12,6 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { usePostMessage } from "frontend/hooks/use-post-message"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import { Button, Card, CardBody, H2, Loader } from "frontend/ui-kit/src/index"
 
 import { ModalSuccess } from "./modal-success"
 

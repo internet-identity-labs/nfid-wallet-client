@@ -1,3 +1,4 @@
+import { Centered, Loader, Screen } from "@identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Helmet } from "react-helmet"
@@ -10,7 +11,6 @@ import {
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
-import { Centered, Loader, Screen } from "frontend/ui-kit/src/index"
 
 export const CopyDevices = () => {
   const [status] = React.useState<"initial" | "loading" | "success" | "error">(

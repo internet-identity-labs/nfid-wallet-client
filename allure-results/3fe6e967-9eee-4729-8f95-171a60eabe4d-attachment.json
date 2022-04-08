@@ -1,4 +1,0 @@
-{
-  "script": "sauce:context=TypeError: browser.get is not a function",
-  "args": []
-}

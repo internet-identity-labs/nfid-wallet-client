@@ -109,7 +109,6 @@
       "last 2 edge version"
     ]
   },
-  "main": "index.js",
-  "repository": "git@github.com:InternetIdentityLabs/MultipassFrontend.git",
+  "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
   "license": "MIT"
 }

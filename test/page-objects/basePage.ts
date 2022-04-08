@@ -1,18 +1,27 @@
 class BasePage {
 
-    /**Page objects */
-    get usernameInputBox() { return browser.$(`#Email`) }
-    get passwordInputBox() { return browser.$(`#Password`) }
-    get loginBtn() { return browser.$(`button=Log in`) }
-
-    /**All reusable web functions */
     async navigateTo(path: string) {
         await browser.url(path);
-        await browser.maximizeWindow();
     }
 
-    async dummy() {
-      console.log(`value => ${await browser.getUrl()}`);
+    async switches(section: string) {
+      switch (section) {
+        case 'Home':
+          return browser.$('//*[@id="home"]');
+        case 'F.A.Q.':
+          return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[4]');
+        case 'Partners':
+          return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[3]');
+        case 'Our mission':
+          return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[2]') };
+      }
+
+    async clickOnSection(sectionName) {
+      await (await this.switches(sectionName)).waitForDisplayed();
+      await (await this.switches(sectionName)).click();
+      await browser.pause(3000);
+      await (await browser.$('//*[@id="root"]/div/div/header/div/div/div[1]/a/div')).scrollIntoView();
+
     }
 
     async click(ele: WebdriverIO.Element) {
@@ -29,6 +38,11 @@ class BasePage {
             throw Error(ele.error.message)
         }
         await ele.setValue(text)
+    }
+
+    async getSectionName(sectionName){
+      await (await this.switches(sectionName)).waitForDisplayed();
+      return await (await this.switches(sectionName)).getText();
     }
 }
 

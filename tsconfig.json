@@ -18,8 +18,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "frontend/*": ["./src/*"],
-      "components/*": ["src/ui-kit/src/components/*"]
+      "frontend/*": ["./src/*"]
     },
     "suppressExcessPropertyErrors": true,
     "types": [
@@ -27,7 +26,7 @@
       "webdriverio/async",
       "@wdio/cucumber-framework",
       "expect-webdriverio"
-  ]
+    ]
   },
   "include": ["src"],
   "exclude": ["node_modules"]

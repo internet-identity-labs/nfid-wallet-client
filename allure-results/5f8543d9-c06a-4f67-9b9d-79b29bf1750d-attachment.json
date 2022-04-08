@@ -1,0 +1,4 @@
+{
+  "script": "sauce:context=ReferenceError: reporter is not defined",
+  "args": []
+}

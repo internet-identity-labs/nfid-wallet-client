@@ -9,7 +9,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -20,7 +20,14 @@
     "paths": {
       "frontend/*": ["./src/*"],
       "components/*": ["src/ui-kit/src/components/*"]
-    }
+    },
+    "suppressExcessPropertyErrors": true,
+    "types": [
+      "node",
+      "webdriverio/async",
+      "@wdio/cucumber-framework",
+      "expect-webdriverio"
+  ]
   },
   "include": ["src"],
   "exclude": ["node_modules"]

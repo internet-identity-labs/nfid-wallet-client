@@ -1,0 +1,4 @@
+{
+  "script": "sauce:context=TypeError: browser.alertAccept is not a function",
+  "args": []
+}

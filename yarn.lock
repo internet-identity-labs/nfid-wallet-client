@@ -10240,9 +10240,9 @@ url-to-options@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/url-to-options/-/url-to-options-1.0.1.tgz#1505a03a289a48cbd7a434efbaeec5055f5633a9"
 
-"usergeek-ic-js@github:usergeek/usergeek-ic-js":
+"usergeek-ic-js@git+https://github.com/usergeek/usergeek-ic-js":
   version "1.0.1"
-  resolved "git+ssh://git@github.com/usergeek/usergeek-ic-js.git#44df4ba2b05b18a01429f92482110ed6c5d4dfda"
+  resolved "git+https://github.com/usergeek/usergeek-ic-js#44df4ba2b05b18a01429f92482110ed6c5d4dfda"
 
 util-arity@^1.1.0:
   version "1.1.0"

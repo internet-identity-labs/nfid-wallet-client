@@ -1,0 +1,140 @@
+<?xml version='1.0'?>
+<ns2:test-suite xmlns:ns2='urn:model.allure.qatools.yandex.ru' start='1649430838419' stop='1649430849419'>
+    <name>Home page</name>
+    <title>Home page</title>
+    <test-cases>
+        <test-case start='1649430838431' status='broken' stop='1649430841320'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+            </parameters>
+            <steps>
+                <step start='1649430838435' status='passed' stop='1649430841273'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430841273' status='broken' stop='1649430841320'>
+                    <name>When user clicks on The Identity Layer link on the navigation bar</name>
+                    <title>When user clicks on The Identity Layer link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>invalid selector: invalid selector: An invalid or illegal selector was specified</message>
+                <stack-trace>invalid selector: invalid selector: An invalid or illegal selector was specified
+                  (Session info: chrome=100.0.4896.75)
+                    at processTicksAndRejections (node:internal/process/task_queues:96:5)</stack-trace>
+            </failure>
+        </test-case>
+        <test-case start='1649430841322' status='broken' stop='1649430844313'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+            </parameters>
+            <steps>
+                <step start='1649430841323' status='passed' stop='1649430844286'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430844286' status='broken' stop='1649430844313'>
+                    <name>When user clicks on Only with NFID link on the navigation bar</name>
+                    <title>When user clicks on Only with NFID link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>invalid selector: invalid selector: An invalid or illegal selector was specified</message>
+                <stack-trace>invalid selector: invalid selector: An invalid or illegal selector was specified
+                  (Session info: chrome=100.0.4896.75)
+                    at processTicksAndRejections (node:internal/process/task_queues:96:5)</stack-trace>
+            </failure>
+        </test-case>
+        <test-case start='1649430844314' status='broken' stop='1649430845964'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+            </parameters>
+            <steps>
+                <step start='1649430844315' status='passed' stop='1649430845937'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430845937' status='broken' stop='1649430845964'>
+                    <name>When user clicks on Our mission link on the navigation bar</name>
+                    <title>When user clicks on Our mission link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>invalid selector: invalid selector: An invalid or illegal selector was specified</message>
+                <stack-trace>invalid selector: invalid selector: An invalid or illegal selector was specified
+                  (Session info: chrome=100.0.4896.75)
+                    at processTicksAndRejections (node:internal/process/task_queues:96:5)</stack-trace>
+            </failure>
+        </test-case>
+        <test-case start='1649430845967' status='broken' stop='1649430849418'>
+            <name>HM_001 User navigation on Home page</name>
+            <title>HM_001 User navigation on Home page</title>
+            <labels>
+                <label name='language' value='javascript'/>
+                <label name='framework' value='wdio'/>
+                <label name='thread' value='0-0'/>
+            </labels>
+            <parameters>
+                <parameter kind='argument' name='browser' value='chrome-100.0.4896.75'/>
+                <parameter kind='environment-variable' name='Environment:' value='undefined'/>
+            </parameters>
+            <steps>
+                <step start='1649430845968' status='passed' stop='1649430849396'>
+                    <name>Given User navigates to home page using</name>
+                    <title>Given User navigates to home page using</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+                <step start='1649430849396' status='broken' stop='1649430849418'>
+                    <name>When user clicks on FAQ link on the navigation bar</name>
+                    <title>When user clicks on FAQ link on the navigation bar</title>
+                    <attachments/>
+                    <steps/>
+                </step>
+            </steps>
+            <attachments/>
+            <failure>
+                <message>invalid selector: invalid selector: An invalid or illegal selector was specified</message>
+                <stack-trace>invalid selector: invalid selector: An invalid or illegal selector was specified
+                  (Session info: chrome=100.0.4896.75)
+                    at processTicksAndRejections (node:internal/process/task_queues:96:5)</stack-trace>
+            </failure>
+        </test-case>
+    </test-cases>
+</ns2:test-suite>

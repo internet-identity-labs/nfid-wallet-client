@@ -1,11 +1,4 @@
-import React from "react"
-import { BiLoaderCircle } from "react-icons/bi"
-import { FaKey } from "react-icons/fa"
-import { HiMenu, HiSearch } from "react-icons/hi"
-import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
-
-import Logo from "frontend/assets/dfinity.svg"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { RadioButton } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -29,9 +22,14 @@ import {
   MenuItem,
   P,
   TextArea,
-} from "frontend/ui-kit/src"
+} from "@internet-identity-labs/nfid-sdk-react"
+import React from "react"
+import { BiLoaderCircle } from "react-icons/bi"
+import { FaKey } from "react-icons/fa"
+import { HiMenu, HiSearch } from "react-icons/hi"
+import { MdLaptopMac, MdPhoneAndroid } from "react-icons/md"
 
-import { RadioButton } from "components/atoms/button/radio-button"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 export const KitchenSink: React.FC = () => {
   const personas = ["John Doe", "John77", "john_doe"]
@@ -43,7 +41,7 @@ export const KitchenSink: React.FC = () => {
       }}
     >
       <div className="container p-4 mx-auto xl:max-w-7xl lg:p-8">
-        <div className="md:grid lg:grid-cols-2  space-y-5 lg:space-y-0 lg:space-x-5">
+        <div className="space-y-5 md:grid lg:grid-cols-2 lg:space-y-0 lg:space-x-5">
           <Card>
             <CardBody className="p-4">
               <div className="grid grid-cols-2 gap-6">
@@ -134,7 +132,6 @@ export const KitchenSink: React.FC = () => {
                     <ListItem
                       title={"Mert Polat"}
                       subtitle={"Front-end Developer"}
-                      src={Logo}
                     />
                     <ListItem
                       title={"John Doe"}

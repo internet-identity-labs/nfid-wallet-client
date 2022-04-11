@@ -1,9 +1,7 @@
+import { List } from "@internet-identity-labs/nfid-sdk-react"
+import { H5, ListItem } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-
-import { H5, ListItem } from "frontend/ui-kit/src"
-
-import { List } from "components/molecules/list"
 
 interface IIPersonaListProps
   extends React.DetailedHTMLProps<

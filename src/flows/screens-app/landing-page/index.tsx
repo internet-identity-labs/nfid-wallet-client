@@ -1,9 +1,9 @@
+import { Accordion, Button, Chip } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { FaCheck } from "react-icons/fa"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { Footer } from "frontend/flows/screens-app/landing-page/footer"
-import { Accordion, Button, Chip } from "frontend/ui-kit/src"
 
 import { questions } from "./questions"
 

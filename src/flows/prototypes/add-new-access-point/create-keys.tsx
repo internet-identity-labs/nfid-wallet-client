@@ -1,10 +1,3 @@
-import clsx from "clsx"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { HiCheckCircle } from "react-icons/hi"
-
-import { InputSelect } from "frontend/design-system/molecules/inputs/select"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import {
   Button,
   Card,
@@ -14,7 +7,14 @@ import {
   H4,
   P,
   Spinner,
-} from "frontend/ui-kit/src/index"
+} from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { HiCheckCircle } from "react-icons/hi"
+
+import { InputSelect } from "frontend/design-system/molecules/inputs/select"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { getBrowser } from "frontend/utils"
 
 interface CreateKeysScreenProps

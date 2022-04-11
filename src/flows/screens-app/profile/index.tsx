@@ -1,10 +1,11 @@
-import React from "react"
-import { MdLaptopMac } from "react-icons/md"
-
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { DotsIcon } from "@internet-identity-labs/nfid-sdk-react"
+import { LogoutIcon } from "@internet-identity-labs/nfid-sdk-react"
+import { PlusIcon } from "@internet-identity-labs/nfid-sdk-react"
+import { ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
+import {
+  ModalAdvanced,
+  ModalAdvancedProps,
+} from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -16,16 +17,14 @@ import {
   ListItem,
   Loader,
   P,
-} from "frontend/ui-kit/src"
+} from "@internet-identity-labs/nfid-sdk-react"
+import React from "react"
+import { MdLaptopMac } from "react-icons/md"
 
-import { DotsIcon } from "components/atoms/button/icons/dots"
-import { LogoutIcon } from "components/atoms/button/icons/logout"
-import { PlusIcon } from "components/atoms/button/icons/plus"
-import { ButtonMenu } from "components/atoms/button/menu"
-import {
-  ModalAdvanced,
-  ModalAdvancedProps,
-} from "components/molecules/modal/advanced"
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 
 interface AuthenticateNFIDHomeProps
   extends React.DetailedHTMLProps<

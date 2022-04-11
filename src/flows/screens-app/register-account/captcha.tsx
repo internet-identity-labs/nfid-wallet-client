@@ -1,4 +1,14 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { RefreshIcon } from "@internet-identity-labs/nfid-sdk-react"
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  Input,
+  Loader,
+  P,
+} from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -22,16 +32,6 @@ import {
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { RefreshIcon } from "frontend/ui-kit/src/components/atoms/button/icons/refresh"
-import {
-  Button,
-  Card,
-  CardBody,
-  H2,
-  Input,
-  Loader,
-  P,
-} from "frontend/ui-kit/src/index"
 import { captchaRules } from "frontend/utils/validations"
 
 import { RegisterAccountConstants as RAC } from "./routes"

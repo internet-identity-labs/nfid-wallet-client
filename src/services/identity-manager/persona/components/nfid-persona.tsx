@@ -1,8 +1,7 @@
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { useMultipass } from "frontend/hooks/use-multipass"
-
-import { Button } from "components/atoms/button"
 
 interface NFIDPersonasProps
   extends React.DetailedHTMLProps<

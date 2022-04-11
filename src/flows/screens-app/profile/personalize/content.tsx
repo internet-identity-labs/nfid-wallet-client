@@ -1,3 +1,7 @@
+import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
+import { Input } from "@internet-identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -6,12 +10,7 @@ import { Link } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { Loader, P } from "frontend/ui-kit/src"
 import { nameRules } from "frontend/utils/validations"
-
-import { Button } from "components/atoms/button"
-import { Input } from "components/atoms/input"
-import { H2, H5 } from "components/atoms/typography"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<

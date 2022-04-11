@@ -23,11 +23,6 @@ jobs:
         run: |
           yarn
 
-          pushd src/ui-kit
-          yarn && yarn build
-          popd
-
-
           # install local to generate the types
           dfx start --clean --background
           dfx deploy --no-wallet

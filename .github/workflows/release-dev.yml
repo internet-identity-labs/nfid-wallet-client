@@ -17,10 +17,6 @@ jobs:
         run: |
           yarn
 
-          pushd src/ui-kit
-          yarn && yarn build
-          popd
-
           dfx identity use action
           dfx deploy --network dev  --no-wallet
 

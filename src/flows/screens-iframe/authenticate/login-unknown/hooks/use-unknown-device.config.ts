@@ -67,11 +67,9 @@ export const useUnknownDeviceConfig = () => {
   const { remoteLogin: setAuthenticatedActors } = useAuthentication()
 
   const url = React.useMemo(() => {
-    const multipassDomain = process.env.REACT_APP_MULTIPASS_DOMAIN
-
     // TODO: create custom hook to generate secret
     return domain && pubKey
-      ? `${window.location.protocol}//${multipassDomain}${AppScreenAuthorizeAppConstants.base}/${pubKey}/${domain}/${applicationName}`
+      ? `${window.location.origin}${AppScreenAuthorizeAppConstants.base}/${pubKey}/${domain}/${applicationName}`
       : null
   }, [applicationName, domain, pubKey])
 

@@ -1,8 +1,7 @@
+import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-
-import { ImageOnlyLoader } from "frontend/ui-kit/src"
 
 import { NavigationItems as NavigationItemsDefault } from "./navigation-items"
 

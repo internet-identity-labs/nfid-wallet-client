@@ -1,3 +1,4 @@
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { Navigate, Route } from "react-router-dom"
 
@@ -7,7 +8,6 @@ import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { AuthWrapper } from "frontend/screens/auth-wrapper"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { Loader } from "frontend/ui-kit/src"
 
 import { IFrameAuthorizeApp } from "../authorize-app"
 import { IFrameProfileConstants } from "../personalize/routes"

@@ -50,23 +50,3 @@ jobs:
           REACT_APP_II_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_INTERNET_IDENTITY}}
           REACT_APP_AWS_VERIFY_PHONENUMBER: ${{secrets.PROD_AWS_VERIFY_PHONENUMBER}}
           REACT_APP_USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-
-      - name: CREATE-IC-APP-REACT Demo | install & deploy
-        run: |
-          cd examples/create-ic-app-react-demo && yarn
-
-          # install local to generate the types
-          dfx start --clean --background
-          dfx deploy --no-wallet
-          dfx stop
-
-          # On main branch build on ic
-          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            dfx identity use action
-            dfx deploy --network ic  --no-wallet
-          fi
-
-        env:
-          DFX_NETWORK: ic
-          VITE_NFID_PROVIDER_URL: https://${{secrets.PROD_CANISTER_ID_NFID_FRONTEND}}.ic0.app/authenticate/?applicationName=NFID-Demo
-          VITE_NFID_PROVIDER_IFRAME_URL: https://${{secrets.PROD_CANISTER_ID_NFID_FRONTEND}}.ic0.app/iframe-authenticate/?applicationName=NFID-Demo

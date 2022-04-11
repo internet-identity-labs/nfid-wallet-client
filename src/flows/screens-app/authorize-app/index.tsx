@@ -1,8 +1,8 @@
+import { Card, CardBody } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { AuthorizeApp } from "frontend/screens/authorize-app"
-import { Card, CardBody } from "frontend/ui-kit/src/index"
 
 interface AppScreenAuthorizeAppProps {}
 

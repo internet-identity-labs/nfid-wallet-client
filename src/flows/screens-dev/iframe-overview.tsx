@@ -1,3 +1,13 @@
+import { IFrameWrapper } from "@internet-identity-labs/nfid-sdk-react"
+import {
+  Button,
+  Card,
+  CardBody,
+  DropdownMenu,
+  H5,
+  Label,
+  MenuItem,
+} from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 
@@ -7,17 +17,6 @@ import { IFrameNFIDLogin } from "frontend/flows/screens-iframe/authenticate/logi
 import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"
 import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
 import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
-import {
-  Button,
-  Card,
-  CardBody,
-  DropdownMenu,
-  H5,
-  Label,
-  MenuItem,
-} from "frontend/ui-kit/src"
-
-import { IFrameWrapper } from "components/molecules/iframe/wrapper"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<

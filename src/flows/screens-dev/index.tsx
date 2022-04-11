@@ -1,8 +1,15 @@
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { Card, CardBody, Divider, H4 } from "frontend/ui-kit/src"
+import {
+  Card,
+  CardBody,
+  Divider,
+  H4,
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+
 import { AccessPointConstants } from "../prototypes/add-new-access-point/routes"
 import { CopyDevicesConstants } from "../prototypes/copy-devices/routes"
 import { LinkIIAnchorConstants } from "../screens-app/link-ii-anchor/routes"

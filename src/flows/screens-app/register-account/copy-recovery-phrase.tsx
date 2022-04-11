@@ -1,13 +1,4 @@
-import React from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
-
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
-import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
-import { CopyIcon } from "frontend/ui-kit/src/components/atoms/button/icons/copy"
+import { CopyIcon } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -17,7 +8,16 @@ import {
   Loader,
   Modal,
   P,
-} from "frontend/ui-kit/src/index"
+} from "@internet-identity-labs/nfid-sdk-react"
+import React from "react"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
+import { useIsLoading } from "frontend/hooks/use-is-loading"
+import { useMultipass } from "frontend/hooks/use-multipass"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 
 import { ProfileConstants } from "../profile/routes"
 

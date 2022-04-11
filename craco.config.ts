@@ -1,10 +1,38 @@
 // import {} from "@craco/craco"
-import { IgnorePlugin, ProvidePlugin } from "webpack"
-import path from "path"
-import dfxJson from "./dfx.json"
 import { config as loadEnv } from "dotenv"
+import path from "path"
+
+import dfxJson from "./dfx.json"
+
+const webpack = require("webpack")
 
 loadEnv({ path: path.resolve(__dirname, ".env.local") })
+
+const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
+
+const FRONTEND_ENV = {
+  "process.env.INTERNET_IDENTITY_CANISTER_ID": isExampleBuild
+    ? '"<INTERNET_IDENTITY_CANISTER_ID>"'
+    : JSON.stringify(
+        process.env[
+          `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+        ],
+      ),
+  "process.env.IDENTITY_MANAGER_CANISTER_ID": isExampleBuild
+    ? '"<IDENTITY_MANAGER_CANISTER_ID>"'
+    : JSON.stringify(
+        process.env[
+          `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+        ],
+      ),
+  "process.env.PUB_SUB_CHANNEL_CANISTER_ID": isExampleBuild
+    ? '"<PUB_SUB_CHANNEL_CANISTER_ID>"'
+    : JSON.stringify(
+        process.env[
+          `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+        ],
+      ),
+}
 
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
@@ -13,9 +41,21 @@ const config = {
   webpack: {
     alias: {
       frontend: path.resolve(__dirname, "src"),
-      components: path.resolve(__dirname, "src/ui-kit/src/components"),
     },
     configure: (webpackConfig: any, { env, paths }: any) => {
+      webpackConfig.plugins.push(new webpack.DefinePlugin(FRONTEND_ENV))
+      webpackConfig.plugins.push(
+        new webpack.ProvidePlugin({
+          Buffer: [require.resolve("buffer/"), "Buffer"],
+          process: require.resolve("process/browser"),
+        }),
+      )
+      webpackConfig.plugins.push(
+        new webpack.IgnorePlugin({
+          contextRegExp: /^\.\/wordlists\/(?!english)/,
+          resourceRegExp: /bip39\/src$/,
+        }),
+      )
       return {
         ...webpackConfig,
         // FIXME: configure source map parser
@@ -43,16 +83,6 @@ const config = {
         },
       }
     },
-    plugins: [
-      new ProvidePlugin({
-        Buffer: [require.resolve("buffer/"), "Buffer"],
-        process: require.resolve("process/browser"),
-      }),
-      new IgnorePlugin({
-        contextRegExp: /^\.\/wordlists\/(?!english)/,
-        resourceRegExp: /bip39\/src$/,
-      }),
-    ],
   },
   devServer: {
     open: false,

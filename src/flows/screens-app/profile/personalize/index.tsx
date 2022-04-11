@@ -1,9 +1,8 @@
+import { Card } from "@internet-identity-labs/nfid-sdk-react"
+import { CardBody } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { CardBody } from "frontend/ui-kit/src"
-
-import { Card } from "components/molecules/card"
 
 import { NFIDPersonalizeContent } from "./content"
 

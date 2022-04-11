@@ -22,7 +22,7 @@ const FRONTEND_ENV = {
     ? '"<IDENTITY_MANAGER_CANISTER_ID>"'
     : JSON.stringify(
         process.env[
-          `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+          `IDENTITY_MANAGER_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
         ],
       ),
   "process.env.PUB_SUB_CHANNEL_CANISTER_ID": isExampleBuild

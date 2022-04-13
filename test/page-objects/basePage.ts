@@ -45,6 +45,17 @@ class BasePage {
     await (await this.switches(sectionName)).waitForDisplayed()
     return await (await this.switches(sectionName)).getText()
   }
+
+  async signInWithNFID(newUrl) {
+    await (await browser.$('#root > div > div > div.auth-section > div:nth-child(2) > button')).click();
+    await browser.switchWindow(newUrl);
+    return (await browser.getTitle());
+  }
+
+  async getWindowTitle() {
+    return (await browser.getTitle());
+  }
+
 }
 
 export default new BasePage()

@@ -1343,10 +1343,10 @@
   version "1.2.1"
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
 
-"@internet-identity-labs/nfid-sdk-react@0.0.1-alpha.2":
-  version "0.0.1-alpha.2"
-  resolved "https://registry.yarnpkg.com/@internet-identity-labs/nfid-sdk-react/-/nfid-sdk-react-0.0.1-alpha.2.tgz#6800d0158c039e0b079303f0ee6261c3fa621fb3"
-  integrity sha512-iU1B+IlZIn6OIY4gRrduoyGkvcf0Uu5F/UUfP6yzWOhpchPpXWnaPYgo5SztpGhfsoguZtnC8RIWJY7TSgmm2Q==
+"@internet-identity-labs/nfid-sdk-react@0.0.1-alpha.5":
+  version "0.0.1-alpha.5"
+  resolved "https://registry.yarnpkg.com/@internet-identity-labs/nfid-sdk-react/-/nfid-sdk-react-0.0.1-alpha.5.tgz#9834b531b24a85ac2b59eb0259b5dd5f6a34b783"
+  integrity sha512-cu6UgaGRLleWF9MNNG7Ss4tdzBWaKMsFgaORm2IU2iOI5GLg6R4vvPZdkWRoO999Vtw9m9NmC48hcbW25iOQPg==
   dependencies:
     "@dfinity/candid" "0.11.0"
     "@dfinity/principal" "0.11.0"
@@ -1355,10 +1355,10 @@
     react-helmet "6.1.0"
     react-icons "4.3.1"
 
-"@internet-identity-labs/nfid-ui-kit-core@0.0.1-alpha.2":
-  version "0.0.1-alpha.2"
-  resolved "https://registry.yarnpkg.com/@internet-identity-labs/nfid-ui-kit-core/-/nfid-ui-kit-core-0.0.1-alpha.2.tgz#22b04a895cd01779db95b9fa8d5dd60de08c105f"
-  integrity sha512-p8Hs1DCbl2P7siwjFun3WFiK5dqYkFowjpnvD3mwjHSynCMA1Ik9pukCUZ82es0ERQvPVOYrtRF7Q6HvEH09rQ==
+"@internet-identity-labs/nfid-ui-kit-core@0.0.1-alpha.3":
+  version "0.0.1-alpha.3"
+  resolved "https://registry.yarnpkg.com/@internet-identity-labs/nfid-ui-kit-core/-/nfid-ui-kit-core-0.0.1-alpha.3.tgz#73633af2cbd3d7915b86c9ef4f6ba16f0e7b616e"
+  integrity sha512-kh1sP4LpyFD/Eq9KnYt1WEUBIEyMXF5JWg2nRABvwmfgz7GjS037VxIlOW21DlLFU5fbSM0yaSeEGTQbio+rbA==
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"

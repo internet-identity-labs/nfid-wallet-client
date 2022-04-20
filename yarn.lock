@@ -51,7 +51,7 @@
     semver "^6.3.0"
     source-map "^0.5.0"
 
-"@babel/core@^7.1.0", "@babel/core@^7.11.1", "@babel/core@^7.12.3", "@babel/core@^7.14.8", "@babel/core@^7.16.0", "@babel/core@^7.7.2", "@babel/core@^7.8.0":
+"@babel/core@^7.1.0", "@babel/core@^7.11.1", "@babel/core@^7.12.3", "@babel/core@^7.16.0", "@babel/core@^7.7.2", "@babel/core@^7.8.0":
   version "7.17.5"
   resolved "https://registry.npmjs.org/@babel/core/-/core-7.17.5.tgz"
   dependencies:
@@ -785,18 +785,6 @@
   dependencies:
     "@babel/plugin-transform-react-jsx" "^7.16.7"
 
-"@babel/plugin-transform-react-jsx-self@^7.14.5":
-  version "7.16.7"
-  resolved "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.16.7.tgz"
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.16.7"
-
-"@babel/plugin-transform-react-jsx-source@^7.14.5":
-  version "7.16.7"
-  resolved "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.16.7.tgz"
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.16.7"
-
 "@babel/plugin-transform-react-jsx@^7.16.7":
   version "7.17.3"
   resolved "https://registry.npmjs.org/@babel/plugin-transform-react-jsx/-/plugin-transform-react-jsx-7.17.3.tgz"
@@ -1263,10 +1251,6 @@
   version "4.1.0"
   resolved "https://registry.npmjs.org/@cucumber/tag-expressions/-/tag-expressions-4.1.0.tgz#9a91b0e0dd2f2ba703e3038c52b49b9ac06c2c6f"
 
-"@cush/relative@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@cush/relative/-/relative-1.0.0.tgz"
-
 "@dfinity/agent@0.9.3":
   version "0.9.3"
   resolved "https://registry.npmjs.org/@dfinity/agent/-/agent-0.9.3.tgz"
@@ -1610,13 +1594,6 @@
   dependencies:
     "@types/estree" "0.0.39"
     estree-walker "^1.0.1"
-    picomatch "^2.2.2"
-
-"@rollup/pluginutils@^4.1.1":
-  version "4.2.0"
-  resolved "https://registry.npmjs.org/@rollup/pluginutils/-/pluginutils-4.2.0.tgz"
-  dependencies:
-    estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
 "@rushstack/eslint-patch@^1.1.0":
@@ -2328,16 +2305,6 @@
     "@typescript-eslint/types" "5.20.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vitejs/plugin-react-refresh@^1.3.6":
-  version "1.3.6"
-  resolved "https://registry.npmjs.org/@vitejs/plugin-react-refresh/-/plugin-react-refresh-1.3.6.tgz"
-  dependencies:
-    "@babel/core" "^7.14.8"
-    "@babel/plugin-transform-react-jsx-self" "^7.14.5"
-    "@babel/plugin-transform-react-jsx-source" "^7.14.5"
-    "@rollup/pluginutils" "^4.1.1"
-    react-refresh "^0.10.0"
-
 "@wdio/allure-reporter@^7.19.1":
   version "7.19.1"
   resolved "https://registry.npmjs.org/@wdio/allure-reporter/-/allure-reporter-7.19.1.tgz#185e5daab0c7bd4a9390d24e589db0e01249fb69"
@@ -2421,15 +2388,16 @@
     long "^4.0.0"
     mockery "^2.1.0"
 
-"@wdio/local-runner@^7.19.1":
-  version "7.19.1"
-  resolved "https://registry.npmjs.org/@wdio/local-runner/-/local-runner-7.19.1.tgz#dc3976cde752f8ed7b25bf8de4c49e8f95f1afd2"
+"@wdio/local-runner@^7.19.5":
+  version "7.19.5"
+  resolved "https://registry.yarnpkg.com/@wdio/local-runner/-/local-runner-7.19.5.tgz#1a2a519e0e8eb7fd5197bda7651ffbc813a2c1e0"
+  integrity sha512-VZr726za6JHY+14SqEEq/VolKIsC2QgMH9BhX3sw0yWUsRxWy4M7STl2fiQWgJbW0bc2Z74TRLrx7TYfncIPpw==
   dependencies:
     "@types/stream-buffers" "^3.0.3"
     "@wdio/logger" "7.19.0"
-    "@wdio/repl" "7.19.1"
-    "@wdio/runner" "7.19.1"
-    "@wdio/types" "7.19.1"
+    "@wdio/repl" "7.19.5"
+    "@wdio/runner" "7.19.5"
+    "@wdio/types" "7.19.5"
     async-exit-hook "^2.0.1"
     split2 "^4.0.0"
     stream-buffers "^3.0.2"
@@ -2491,18 +2459,19 @@
     object-inspect "^1.10.3"
     supports-color "8.1.1"
 
-"@wdio/runner@7.19.1":
-  version "7.19.1"
-  resolved "https://registry.npmjs.org/@wdio/runner/-/runner-7.19.1.tgz#edc8097c05025625f5b504b1ea4ab32855c6d3af"
+"@wdio/runner@7.19.5":
+  version "7.19.5"
+  resolved "https://registry.yarnpkg.com/@wdio/runner/-/runner-7.19.5.tgz#c9ca9574264143070c27ff73c02739be7bcb19c8"
+  integrity sha512-9eKoTqT/Ht8RPlVfqBcDTvhluP/nwyHOvqw0+zHUoJHTtLFCsZNcAXnBgAuozIrHFgyX5e4LMQLvY0voWDmqCQ==
   dependencies:
-    "@wdio/config" "7.19.1"
+    "@wdio/config" "7.19.5"
     "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.19.1"
-    "@wdio/utils" "7.19.1"
+    "@wdio/types" "7.19.5"
+    "@wdio/utils" "7.19.5"
     deepmerge "^4.0.0"
     gaze "^1.1.2"
-    webdriver "7.19.1"
-    webdriverio "7.19.1"
+    webdriver "7.19.5"
+    webdriverio "7.19.5"
 
 "@wdio/sauce-service@^7.19.1":
   version "7.19.1"
@@ -4763,111 +4732,6 @@ es6-symbol@^3.1.1, es6-symbol@^3.1.3:
     d "^1.0.1"
     ext "^1.1.2"
 
-esbuild-android-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-android-64/-/esbuild-android-64-0.14.25.tgz#d532d38cb5fe0ae45167ce35f4bbc784c636be40"
-
-esbuild-android-arm64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-android-arm64/-/esbuild-android-arm64-0.14.25.tgz#9c5bb3366aabfd14a1c726d36978b79441dfcb6e"
-
-esbuild-darwin-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-darwin-64/-/esbuild-darwin-64-0.14.25.tgz"
-
-esbuild-darwin-arm64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.14.25.tgz#28e080da4ea0cfe9498071e7f8060498caee1a95"
-
-esbuild-freebsd-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-freebsd-64/-/esbuild-freebsd-64-0.14.25.tgz#200d3664a3b945bc9fdcba73614b49a11ebd1cfa"
-
-esbuild-freebsd-arm64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-freebsd-arm64/-/esbuild-freebsd-arm64-0.14.25.tgz#624b08c5da6013bdc312aaa23c4ff409580f5c3c"
-
-esbuild-linux-32@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-32/-/esbuild-linux-32-0.14.25.tgz#0238e597eb0b60aa06c7e98fccbbfd6bb9a0d6c5"
-
-esbuild-linux-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-64/-/esbuild-linux-64-0.14.25.tgz#8a8b8cf47dfce127c858e71229d9a385a82c62e8"
-
-esbuild-linux-arm64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-arm64/-/esbuild-linux-arm64-0.14.25.tgz#7ac94371418a2640ba413bc1700aaedeb2794e52"
-
-esbuild-linux-arm@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-arm/-/esbuild-linux-arm-0.14.25.tgz#034bd18e9310b9f010c89f90ef7f05706689600b"
-
-esbuild-linux-mips64le@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-mips64le/-/esbuild-linux-mips64le-0.14.25.tgz#05f98a8cf6b578eab6b4e6b0ab094f37530934f4"
-
-esbuild-linux-ppc64le@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-ppc64le/-/esbuild-linux-ppc64le-0.14.25.tgz#46fd0add8d8535678439d7a9c2876ad20042d952"
-
-esbuild-linux-riscv64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-riscv64/-/esbuild-linux-riscv64-0.14.25.tgz#ea2e986f0f3e5df73c635135dd778051734fc605"
-
-esbuild-linux-s390x@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-linux-s390x/-/esbuild-linux-s390x-0.14.25.tgz#efe89486e9a1b1508925048076e3f3a6698aa6a3"
-
-esbuild-netbsd-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-netbsd-64/-/esbuild-netbsd-64-0.14.25.tgz#439fe27d8ee3b5887501ee63988e85f920107db6"
-
-esbuild-openbsd-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-openbsd-64/-/esbuild-openbsd-64-0.14.25.tgz#31ebf616aadf6e60674469f2b92cec92280d9930"
-
-esbuild-sunos-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-sunos-64/-/esbuild-sunos-64-0.14.25.tgz#815e4f936d74970292a63ccfd5791fe5e3569f5f"
-
-esbuild-windows-32@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-windows-32/-/esbuild-windows-32-0.14.25.tgz#189e14df2478f2c193c86968ab1fb54e1ceaafd2"
-
-esbuild-windows-64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-windows-64/-/esbuild-windows-64-0.14.25.tgz#3d5fbfdc3856850bb47439299e3b60dd18be111f"
-
-esbuild-windows-arm64@0.14.25:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild-windows-arm64/-/esbuild-windows-arm64-0.14.25.tgz#8b243cbbad8a86cf98697da9ccb88c05df2ef458"
-
-esbuild@^0.14.14:
-  version "0.14.25"
-  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.14.25.tgz"
-  optionalDependencies:
-    esbuild-android-64 "0.14.25"
-    esbuild-android-arm64 "0.14.25"
-    esbuild-darwin-64 "0.14.25"
-    esbuild-darwin-arm64 "0.14.25"
-    esbuild-freebsd-64 "0.14.25"
-    esbuild-freebsd-arm64 "0.14.25"
-    esbuild-linux-32 "0.14.25"
-    esbuild-linux-64 "0.14.25"
-    esbuild-linux-arm "0.14.25"
-    esbuild-linux-arm64 "0.14.25"
-    esbuild-linux-mips64le "0.14.25"
-    esbuild-linux-ppc64le "0.14.25"
-    esbuild-linux-riscv64 "0.14.25"
-    esbuild-linux-s390x "0.14.25"
-    esbuild-netbsd-64 "0.14.25"
-    esbuild-openbsd-64 "0.14.25"
-    esbuild-sunos-64 "0.14.25"
-    esbuild-windows-32 "0.14.25"
-    esbuild-windows-64 "0.14.25"
-    esbuild-windows-arm64 "0.14.25"
-
 escalade@^3.1.1:
   version "3.1.1"
   resolved "https://registry.npmjs.org/escalade/-/escalade-3.1.1.tgz"
@@ -5134,10 +4998,6 @@ estraverse@^5.1.0, estraverse@^5.2.0, estraverse@^5.3.0:
 estree-walker@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/estree-walker/-/estree-walker-1.0.1.tgz"
-
-estree-walker@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/estree-walker/-/estree-walker-2.0.2.tgz"
 
 esutils@^2.0.2:
   version "2.0.3"
@@ -5668,10 +5528,6 @@ glob-parent@^6.0.1, glob-parent@^6.0.2:
   dependencies:
     is-glob "^4.0.3"
 
-glob-regex@^0.3.0:
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/glob-regex/-/glob-regex-0.3.2.tgz"
-
 glob-to-regexp@^0.4.1:
   version "0.4.1"
   resolved "https://registry.npmjs.org/glob-to-regexp/-/glob-to-regexp-0.4.1.tgz"
@@ -5732,10 +5588,6 @@ globby@^11.0.1, globby@^11.0.4:
     ignore "^5.2.0"
     merge2 "^1.4.1"
     slash "^3.0.0"
-
-globrex@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.npmjs.org/globrex/-/globrex-0.1.2.tgz"
 
 globule@^1.0.0:
   version "1.3.3"
@@ -6865,9 +6717,10 @@ jest@^27.4.3:
     import-local "^3.0.2"
     jest-cli "^27.5.1"
 
-jotai@1.6.1:
-  version "1.6.1"
-  resolved "https://registry.npmjs.org/jotai/-/jotai-1.6.1.tgz"
+jotai@1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-1.6.4.tgz#4d9904362c53c4293d32e21fb358d3de34b82912"
+  integrity sha512-XC0ExLhdE6FEBdIjKTe6kMlHaAUV/QiwN7vZond76gNr/WdcdonJOEW79+5t8u38sR41bJXi26B1dRi7cCRz9A==
 
 js-sha256@0.9.0:
   version "0.9.0"
@@ -8845,10 +8698,6 @@ react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
 
-react-refresh@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.10.0.tgz"
-
 react-refresh@^0.11.0:
   version "0.11.0"
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.11.0.tgz"
@@ -8994,15 +8843,6 @@ readdirp@~3.6.0:
   resolved "https://registry.npmjs.org/readdirp/-/readdirp-3.6.0.tgz"
   dependencies:
     picomatch "^2.2.1"
-
-recrawl-sync@^2.0.3:
-  version "2.2.1"
-  resolved "https://registry.npmjs.org/recrawl-sync/-/recrawl-sync-2.2.1.tgz"
-  dependencies:
-    "@cush/relative" "^1.0.0"
-    glob-regex "^0.3.0"
-    slash "^3.0.0"
-    tslib "^1.9.3"
 
 recursive-readdir@^2.2.2:
   version "2.2.2"
@@ -9226,7 +9066,7 @@ rollup-plugin-terser@^7.0.0:
     serialize-javascript "^4.0.0"
     terser "^5.0.0"
 
-rollup@^2.43.1, rollup@^2.59.0:
+rollup@^2.43.1:
   version "2.70.0"
   resolved "https://registry.npmjs.org/rollup/-/rollup-2.70.0.tgz"
   optionalDependencies:
@@ -10180,7 +10020,7 @@ ts-node@^10.6.0, ts-node@^10.7.0:
     v8-compile-cache-lib "^3.0.0"
     yn "3.1.1"
 
-tsconfig-paths@^3.12.0, tsconfig-paths@^3.9.0:
+tsconfig-paths@^3.12.0:
   version "3.13.0"
   resolved "https://registry.npmjs.org/tsconfig-paths/-/tsconfig-paths-3.13.0.tgz"
   dependencies:
@@ -10189,7 +10029,7 @@ tsconfig-paths@^3.12.0, tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1.8.1, tslib@^1.9.3:
+tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
 
@@ -10439,26 +10279,6 @@ verror@^1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
-
-vite-tsconfig-paths@3.4.1:
-  version "3.4.1"
-  resolved "https://registry.npmjs.org/vite-tsconfig-paths/-/vite-tsconfig-paths-3.4.1.tgz"
-  dependencies:
-    debug "^4.1.1"
-    globrex "^0.1.2"
-    recrawl-sync "^2.0.3"
-    tsconfig-paths "^3.9.0"
-
-vite@^2.8.6:
-  version "2.8.6"
-  resolved "https://registry.npmjs.org/vite/-/vite-2.8.6.tgz"
-  dependencies:
-    esbuild "^0.14.14"
-    postcss "^8.4.6"
-    resolve "^1.22.0"
-    rollup "^2.59.0"
-  optionalDependencies:
-    fsevents "~2.3.2"
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"

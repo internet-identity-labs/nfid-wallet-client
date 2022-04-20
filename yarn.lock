@@ -2222,14 +2222,14 @@
   dependencies:
     "@typescript-eslint/utils" "5.14.0"
 
-"@typescript-eslint/parser@5.19.0", "@typescript-eslint/parser@^5.5.0":
-  version "5.19.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.19.0.tgz#05e587c1492868929b931afa0cb5579b0f728e75"
-  integrity sha512-yhktJjMCJX8BSBczh1F/uY8wGRYrBeyn84kH6oyqdIJwTGKmzX5Qiq49LRQ0Jh0LXnWijEziSo6BRqny8nqLVQ==
+"@typescript-eslint/parser@5.20.0", "@typescript-eslint/parser@^5.5.0":
+  version "5.20.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.20.0.tgz#4991c4ee0344315c2afc2a62f156565f689c8d0b"
+  integrity sha512-UWKibrCZQCYvobmu3/N8TWbEeo/EPQbS41Ux1F9XqPzGuV7pfg6n50ZrFo6hryynD8qOTTfLHtHjjdQtxJ0h/w==
   dependencies:
-    "@typescript-eslint/scope-manager" "5.19.0"
-    "@typescript-eslint/types" "5.19.0"
-    "@typescript-eslint/typescript-estree" "5.19.0"
+    "@typescript-eslint/scope-manager" "5.20.0"
+    "@typescript-eslint/types" "5.20.0"
+    "@typescript-eslint/typescript-estree" "5.20.0"
     debug "^4.3.2"
 
 "@typescript-eslint/scope-manager@5.14.0":
@@ -2238,14 +2238,6 @@
   dependencies:
     "@typescript-eslint/types" "5.14.0"
     "@typescript-eslint/visitor-keys" "5.14.0"
-
-"@typescript-eslint/scope-manager@5.19.0":
-  version "5.19.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/scope-manager/-/scope-manager-5.19.0.tgz#97e59b0bcbcb54dbcdfba96fc103b9020bbe9cb4"
-  integrity sha512-Fz+VrjLmwq5fbQn5W7cIJZ066HxLMKvDEmf4eu1tZ8O956aoX45jAuBB76miAECMTODyUxH61AQM7q4/GOMQ5g==
-  dependencies:
-    "@typescript-eslint/types" "5.19.0"
-    "@typescript-eslint/visitor-keys" "5.19.0"
 
 "@typescript-eslint/scope-manager@5.20.0":
   version "5.20.0"
@@ -2268,11 +2260,6 @@
   version "5.14.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/types/-/types-5.14.0.tgz"
 
-"@typescript-eslint/types@5.19.0":
-  version "5.19.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-5.19.0.tgz#12d3d600d754259da771806ee8b2c842d3be8d12"
-  integrity sha512-zR1ithF4Iyq1wLwkDcT+qFnhs8L5VUtjgac212ftiOP/ZZUOCuuF2DeGiZZGQXGoHA50OreZqLH5NjDcDqn34w==
-
 "@typescript-eslint/types@5.20.0":
   version "5.20.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-5.20.0.tgz#fa39c3c2aa786568302318f1cb51fcf64258c20c"
@@ -2284,19 +2271,6 @@
   dependencies:
     "@typescript-eslint/types" "5.14.0"
     "@typescript-eslint/visitor-keys" "5.14.0"
-    debug "^4.3.2"
-    globby "^11.0.4"
-    is-glob "^4.0.3"
-    semver "^7.3.5"
-    tsutils "^3.21.0"
-
-"@typescript-eslint/typescript-estree@5.19.0":
-  version "5.19.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-5.19.0.tgz#fc987b8f62883f9ea6a5b488bdbcd20d33c0025f"
-  integrity sha512-dRPuD4ocXdaE1BM/dNR21elSEUPKaWgowCA0bqJ6YbYkvtrPVEvZ+zqcX5a8ECYn3q5iBSSUcBBD42ubaOp0Hw==
-  dependencies:
-    "@typescript-eslint/types" "5.19.0"
-    "@typescript-eslint/visitor-keys" "5.19.0"
     debug "^4.3.2"
     globby "^11.0.4"
     is-glob "^4.0.3"
@@ -2344,14 +2318,6 @@
   resolved "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-5.14.0.tgz"
   dependencies:
     "@typescript-eslint/types" "5.14.0"
-    eslint-visitor-keys "^3.0.0"
-
-"@typescript-eslint/visitor-keys@5.19.0":
-  version "5.19.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/visitor-keys/-/visitor-keys-5.19.0.tgz#c84ebc7f6c744707a361ca5ec7f7f64cd85b8af6"
-  integrity sha512-Ym7zZoMDZcAKWsULi2s7UMLREdVQdScPQ/fKWMYefarCztWlHPFVJo8racf8R0Gc8FAEJ2eD4of8As1oFtnQlQ==
-  dependencies:
-    "@typescript-eslint/types" "5.19.0"
     eslint-visitor-keys "^3.0.0"
 
 "@typescript-eslint/visitor-keys@5.20.0":
@@ -2455,15 +2421,16 @@
     long "^4.0.0"
     mockery "^2.1.0"
 
-"@wdio/local-runner@^7.19.1":
-  version "7.19.1"
-  resolved "https://registry.npmjs.org/@wdio/local-runner/-/local-runner-7.19.1.tgz#dc3976cde752f8ed7b25bf8de4c49e8f95f1afd2"
+"@wdio/local-runner@^7.19.5":
+  version "7.19.5"
+  resolved "https://registry.yarnpkg.com/@wdio/local-runner/-/local-runner-7.19.5.tgz#1a2a519e0e8eb7fd5197bda7651ffbc813a2c1e0"
+  integrity sha512-VZr726za6JHY+14SqEEq/VolKIsC2QgMH9BhX3sw0yWUsRxWy4M7STl2fiQWgJbW0bc2Z74TRLrx7TYfncIPpw==
   dependencies:
     "@types/stream-buffers" "^3.0.3"
     "@wdio/logger" "7.19.0"
-    "@wdio/repl" "7.19.1"
-    "@wdio/runner" "7.19.1"
-    "@wdio/types" "7.19.1"
+    "@wdio/repl" "7.19.5"
+    "@wdio/runner" "7.19.5"
+    "@wdio/types" "7.19.5"
     async-exit-hook "^2.0.1"
     split2 "^4.0.0"
     stream-buffers "^3.0.2"
@@ -2525,18 +2492,19 @@
     object-inspect "^1.10.3"
     supports-color "8.1.1"
 
-"@wdio/runner@7.19.1":
-  version "7.19.1"
-  resolved "https://registry.npmjs.org/@wdio/runner/-/runner-7.19.1.tgz#edc8097c05025625f5b504b1ea4ab32855c6d3af"
+"@wdio/runner@7.19.5":
+  version "7.19.5"
+  resolved "https://registry.yarnpkg.com/@wdio/runner/-/runner-7.19.5.tgz#c9ca9574264143070c27ff73c02739be7bcb19c8"
+  integrity sha512-9eKoTqT/Ht8RPlVfqBcDTvhluP/nwyHOvqw0+zHUoJHTtLFCsZNcAXnBgAuozIrHFgyX5e4LMQLvY0voWDmqCQ==
   dependencies:
-    "@wdio/config" "7.19.1"
+    "@wdio/config" "7.19.5"
     "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.19.1"
-    "@wdio/utils" "7.19.1"
+    "@wdio/types" "7.19.5"
+    "@wdio/utils" "7.19.5"
     deepmerge "^4.0.0"
     gaze "^1.1.2"
-    webdriver "7.19.1"
-    webdriverio "7.19.1"
+    webdriver "7.19.5"
+    webdriverio "7.19.5"
 
 "@wdio/sauce-service@^7.19.1":
   version "7.19.1"

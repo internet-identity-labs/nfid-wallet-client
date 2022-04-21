@@ -6,13 +6,13 @@ class BasePage {
   async switches(section: string) {
     switch (section) {
       case "The Identity Layer":
-        return browser.$("//*[@id='root']/div/div/header/div/div/div[3]/div[1]")
+        return browser.$("/html//div[@id='root']/div/div//div[.='The Identity Layer for the Internet']")
       case "Only with NFID":
-        return browser.$("//*[@id='root']/div/div/header/div/div/div[3]/div[2]")
+        return browser.$("div:nth-of-type(6) > .col-span-12 > .font-bold.py-12.text-4xl.text-center")
       case "Our mission":
-        return browser.$("//*[@id='root']/div/div/header/div/div/div[3]/div[3]")
-      case "FAQ":
-        return browser.$("//*[@id='root']/div/div/header/div/div/div[3]/div[4]")
+        return browser.$("div:nth-of-type(7) > .col-span-12 > .font-bold.py-12.text-4xl.text-center")
+      case "Where you can use NFID today":
+        return browser.$("div:nth-of-type(8) > .col-span-12 > .font-bold.py-12.text-4xl.text-center")
     }
   }
 

@@ -13,6 +13,9 @@ module.exports = {
   core: {
     builder: "@storybook/builder-webpack5",
   },
+  typescript: {
+    check: true, // type-check stories during Storybook build
+  },
   webpackFinal: async (config) => {
     const canisterEnv = {
       IC_HOST: JSON.stringify(process.env.IC_HOST),
@@ -44,6 +47,12 @@ module.exports = {
         process: require.resolve("process/browser"),
       }),
     )
+
+    config.resolve.modules = [
+      ...(config.resolve.modules || []),
+      path.resolve(__dirname, "../src"),
+    ]
+
     return {
       ...config,
       resolve: {

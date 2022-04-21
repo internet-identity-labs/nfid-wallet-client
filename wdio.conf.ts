@@ -81,10 +81,12 @@ export const config: WebdriverIO.Config = {
   //
   capabilities: [
     {
-      maxInstances: 5,
-      browserName: 'chrome',
+      browserName: "chrome",
+      "goog:chromeOptions": {
+        args: ["--no-sandbox","headless","headless", "disable-gpu"],
+      },
       acceptInsecureCerts: true,
-    }
+    },
   ],
   //
   // ===================

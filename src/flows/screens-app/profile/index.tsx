@@ -162,6 +162,19 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
     [],
   )
 
+  const handleNavigateToApplication = React.useCallback(
+    (applicationName: string) => {
+      const application = iiPersonas.find((iiPersona) => {
+        return iiPersona.domain.includes(applicationName.toLowerCase())
+      })
+
+      if (application) {
+        window.open(application.domain, "_blank")
+      }
+    },
+    [iiPersonas],
+  )
+
   return (
     <AppScreen
       bubbleOptions={{
@@ -172,7 +185,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
           "top-[20vh] left-[27vw] md:top-[60vh] md:left-[10vw]",
         ],
       }}
-      classNameWrapper="relative mt-32 md:mt-0 md:absolute md:flex md:right-0 md:top-0 md:w-1/2 md:h-full md:overflow-y-auto bg-white z-[100]"
+      classNameWrapper="relative mt-32 md:mt-0 md:absolute md:flex md:right-0 md:top-0 md:w-1/2 md:h-full md:overflow-y-auto bg-white md:z-[100]"
       navigationItems={<ProfileHomeMenu className="md:hidden" />}
     >
       <div className="relative grid grid-cols-12 -mt-32 sm:mt-0 md:px-6">
@@ -209,6 +222,10 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                         <span className="text-xl font-medium text-blue-base">
                           {application.applicationName[0]}
                         </span>
+                      }
+                      defaultAction={false}
+                      onClick={() =>
+                        handleNavigateToApplication(application.applicationName)
                       }
                     />
                   ))

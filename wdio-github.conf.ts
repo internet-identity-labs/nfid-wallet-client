@@ -1,17 +1,38 @@
-const basicConfig = require('./wdio.conf')
+import path from 'path';
+import { config as buildConfig } from './wdio.conf';
 
-exports.config = {
-  ...basicConfig.config,
-  // We only need to override the Chrome configuration of capabilities
-  capabilities: [
-    {
-      maxInstances: 5,
-      browserName: 'chrome',
-      acceptInsecureCerts: true,
-      // extends some Chrome flags in order to tell Chrome to run headless
-      'goog:chromeOptions': {
-        args: ['--headless', '--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox', '--single-process'],
-      },
+buildConfig.capabilities = [{
+    browserName: 'chrome',
+    'goog:chromeOptions': {
+        args: [
+            '--disable-infobars',
+            '--window-size=1280,800',
+            '--headless',
+            '--no-sandbox',
+            '--disable-gpu',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+        ],
     },
-  ],
-}
+}];
+
+buildConfig.port = 9516;
+buildConfig.services = [
+    [
+        'chromedriver',
+        {
+            chromeDriverArgs: ['--port=9516', '--url-base=\'/\''],
+        },
+    ],
+    [
+        'static-server',
+        {
+            port: 8080,
+            folders: [
+                { mount: '/', path: path.join(__dirname, 'demo-app') },
+            ],
+        },
+    ],
+];
+buildConfig.path = '/';
+export const config = buildConfig;

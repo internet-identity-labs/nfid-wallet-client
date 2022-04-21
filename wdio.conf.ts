@@ -84,17 +84,7 @@ export const config: WebdriverIO.Config = {
       maxInstances: 5,
       browserName: 'chrome',
       acceptInsecureCerts: true,
-       "goog:chromeOptions": {
-               args: [
-                 "--headless",
-                 "--ignore-certificate-errors", // allow self-signed certificates
-                 "--disable-gpu",
-                 `--window-size=${runConfig.screenConfiguration.windowSize}`,
-                "--no-sandbox", 
-                "--single-process",
-               ],
     }
-   }
   ],
   //
   // ===================

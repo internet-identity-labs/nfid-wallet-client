@@ -172,7 +172,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
           "top-[20vh] left-[27vw] md:top-[60vh] md:left-[10vw]",
         ],
       }}
-      classNameWrapper="relative mt-32 md:mt-0 md:absolute md:flex md:right-0 md:top-0 md:w-1/2 md:h-full md:overflow-y-auto bg-white z-50"
+      classNameWrapper="relative mt-32 md:mt-0 md:absolute md:flex md:right-0 md:top-0 md:w-1/2 md:h-full md:overflow-y-auto bg-white z-[100]"
       navigationItems={<ProfileHomeMenu className="md:hidden" />}
     >
       <div className="relative grid grid-cols-12 -mt-32 sm:mt-0 md:px-6">

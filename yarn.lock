@@ -1327,10 +1327,10 @@
   version "1.2.1"
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
 
-"@internet-identity-labs/nfid-sdk-react@0.0.1-alpha.5":
-  version "0.0.1-alpha.5"
-  resolved "https://registry.yarnpkg.com/@internet-identity-labs/nfid-sdk-react/-/nfid-sdk-react-0.0.1-alpha.5.tgz#9834b531b24a85ac2b59eb0259b5dd5f6a34b783"
-  integrity sha512-cu6UgaGRLleWF9MNNG7Ss4tdzBWaKMsFgaORm2IU2iOI5GLg6R4vvPZdkWRoO999Vtw9m9NmC48hcbW25iOQPg==
+"@internet-identity-labs/nfid-sdk-react@0.0.1-alpha.7":
+  version "0.0.1-alpha.7"
+  resolved "https://registry.yarnpkg.com/@internet-identity-labs/nfid-sdk-react/-/nfid-sdk-react-0.0.1-alpha.7.tgz#e778a56676fb2ebb65b0e19684806a981c0e14d6"
+  integrity sha512-DB8b8FVAkZhWz/elktOsRWCNhgVfh74F/Y2kqmI6XwuD9+Cb23j/wERCmlnf3PcAvFtYF9TPLkP+2PO64v1rHw==
   dependencies:
     "@dfinity/candid" "0.11.0"
     "@dfinity/principal" "0.11.0"

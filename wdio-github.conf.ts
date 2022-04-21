@@ -24,15 +24,6 @@ buildConfig.services = [
             chromeDriverArgs: ['--port=9516', '--url-base=\'/\''],
         },
     ],
-    [
-        'static-server',
-        {
-            port: 8080,
-            folders: [
-                { mount: '/', path: path.join(__dirname, 'demo-app') },
-            ],
-        },
-    ],
 ];
 buildConfig.path = '/';
 export const config = buildConfig;

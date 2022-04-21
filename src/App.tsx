@@ -1,3 +1,4 @@
+import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 import React from "react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
@@ -29,9 +30,11 @@ import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-a
 
 import { useStartUrl } from "./hooks/use-start-url"
 
-import { CONFIG } from "./config"
+declare const USERGEEK_API_KEY: string
 
-Usergeek.init({ apiKey: CONFIG.USERGEEK_API_KEY as string })
+if (USERGEEK_API_KEY) {
+  Usergeek.init({ apiKey: USERGEEK_API_KEY as string })
+}
 
 export const App = () => {
   useStartUrl()

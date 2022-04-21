@@ -2,7 +2,6 @@ import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
 
-import { CONFIG } from "frontend/config"
 import {
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
@@ -10,6 +9,8 @@ import {
 
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import { accountAtom, LocalAccount, userNumberAtom } from "./state"
+
+declare const VERIFY_PHONE_NUMBER: string
 
 type AccountService = Pick<
   _IDENTITY_MANAGER_SERVICE,
@@ -89,7 +90,7 @@ export const useAccount = () => {
   )
 
   const verifyPhonenumber = async (phoneNumber: string) => {
-    const response = await fetch(`${CONFIG.VERIFY_PHONE_NUMBER}`, {
+    const response = await fetch(`${VERIFY_PHONE_NUMBER}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -18,8 +18,13 @@ import { MdLaptopMac } from "react-icons/md"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { Device } from "frontend/services/identity-manager/devices/state"
 
+import { DeviceListButtonGroup } from "./device-list-button-group"
+
 interface DeviceListItemProps {
   device: Device
+  onChangeIcon: (device: Device) => Promise<void>
+  onChangeLabel: (device: Device) => Promise<void>
+  onDelete: (device: Device) => Promise<void>
 }
 
 export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
@@ -94,13 +99,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
             <P>
               Choose icon for <span className="font-bold">{device.alias}</span>
             </P>
-            <div className="flex justify-center space-x-2">
-              <MobileIcon onClick={function noRefCheck() {}} />
-              <TabletIcon onClick={function noRefCheck() {}} />
-              <DesktopIcon onClick={() => {}} />
-              <LaptopIcon onClick={function noRefCheck() {}} />
-              <KeyIcon onClick={function noRefCheck() {}} />
-            </div>
+            <DeviceListButtonGroup />
           </div>
         ),
         primaryButton: {

@@ -57,10 +57,9 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   return (
     <header
       className={clsx(
-        "flex items-center flex-none z-1 sticky top-0 transition-all duration-300",
-        scrollDir === "down" && "shadow-md bg-white/70 backdrop-blur-md",
-        scrollDir === "up" && "opacity-0",
-        scrollY < 50 && "opacity-100",
+        "flex items-center flex-none z-1 sticky top-0 transition-all duration-300 z-50",
+        scrollDir === "down" && "shadow-md bg-white",
+        scrollY > 50 && scrollDir === "up" && "opacity-0",
       )}
     >
       <div className="container px-3 mx-auto">

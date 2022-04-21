@@ -20,38 +20,19 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: nanasess/setup-chromedriver@master
-      with:
-       chromedriver-version: '100.0.4896.88'
-    - run: |
-       export DISPLAY=:99
-       chromedriver --url-base=/wd/hub &
-       sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-
-    - uses: actions/checkout@v1
+    - uses: browser-actions/setup-chrome@latest
+    - run: chrome --version
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install, build, and test
-      run: |
-        npm ci
-        npm run build --if-present
-        ./node_modules/.bin/wdio wdio.conf.js
-      env:
-        CI: true
+        cache: 'npm'
 
-    # - uses: actions/checkout@v3
-    # - name: Use Node.js ${{ matrix.node-version }}
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: ${{ matrix.node-version }}
-    #     cache: 'npm'
+    # Install your dependencies (with yarn "we could use npm")
+    - run: yarn install
+      name: Install dependencies
 
-    # # Install your dependencies (with yarn "we could use npm")
-    # - run: yarn install --ignore-engines
-    #   name: Install dependencies
-
-    #  # Run your test with the same command you uses locally
-    # - run: npx wdio wdio.conf.ts
-    #   name: Running E2E test
+     # Run your test with the same command you uses locally
+    - run: npx wdio wdio.conf.ts
+      name: Running E2E test

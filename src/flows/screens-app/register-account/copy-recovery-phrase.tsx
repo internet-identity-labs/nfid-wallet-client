@@ -1,8 +1,8 @@
-import { CopyIcon } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
   CardBody,
+  CopyIcon,
   H2,
   H5,
   Loader,

@@ -1,13 +1,14 @@
 import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { Li, Ol } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
   CardBody,
   H2,
   Input,
+  Li,
   Modal,
+  Ol,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"

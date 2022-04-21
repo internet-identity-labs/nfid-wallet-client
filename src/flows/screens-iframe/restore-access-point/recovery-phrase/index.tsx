@@ -9,9 +9,10 @@ interface IFrameRestoreAccessPointRecoveryPhraseProps
     HTMLDivElement
   > {}
 
-export const IFrameRestoreAccessPointRecoveryPhrase: React.FC<
-  IFrameRestoreAccessPointRecoveryPhraseProps
-> = ({ children, className }) => {
+export const IFrameRestoreAccessPointRecoveryPhrase: React.FC<IFrameRestoreAccessPointRecoveryPhraseProps> = ({
+  children,
+  className,
+}) => {
   return (
     <IFrameScreen logo>
       <RestoreAccessPoint iframe />

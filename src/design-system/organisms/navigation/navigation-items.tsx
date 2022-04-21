@@ -1,6 +1,14 @@
-import { ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
+import { Button, ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
-import { HiMenu } from "react-icons/hi"
+
+import User from "frontend/assets/user.svg"
+import useClickOutside from "frontend/hooks/use-click-outside"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+
+import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.svg"
+import { NavigationPopup } from "./navigation-popup"
+import { PopupLogin } from "./navigation-popup/popup-login"
 
 interface NavigationItemsProps
   extends React.DetailedHTMLProps<
@@ -8,30 +16,36 @@ interface NavigationItemsProps
     HTMLDivElement
   > {}
 
-export const NavigationItems: React.FC<NavigationItemsProps> = ({
-  children,
-  className,
-}) => {
+export const NavigationItems: React.FC<NavigationItemsProps> = () => {
+  const { account } = useAccount()
+
+  const [isPopupVisible, setIsPopupVisible] = React.useState(false)
+  const popupRef = useClickOutside(() => setIsPopupVisible(false))
+
   const classes = {
     navItem:
-      "text-gray-600 hover:text-gray-800 hover:underline decoration-dashed hover:underline-offset-4 cursor-pointer",
+      "text-black hover:underline cursor-pointer hover:text-blue-hover transition-all",
   }
 
   const items = [
     {
-      label: "Home",
+      label: "The Identity Layer",
       to: "home",
+    },
+    {
+      label: "Only with NFID",
+      to: "only-with-nfid",
     },
     {
       label: "Our mission",
       to: "our-mission",
     },
+    // {
+    //   label: "Partners",
+    //   to: "partners",
+    // },
     {
-      label: "Partners",
-      to: "partners",
-    },
-    {
-      label: "F.A.Q.",
+      label: "FAQ",
       to: "faq",
     },
   ]
@@ -54,12 +68,10 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
 
   return (
     <>
-      <div className="md:hidden relative">
-        <ButtonMenu
-          buttonElement={<HiMenu className="w-6 h-6 text-gray-500" />}
-        >
+      <div className="md:hidden">
+        <ButtonMenu buttonElement={<img src={IconMenu} alt="menu" />}>
           {(toggleMenu) => (
-            <div className="p-4 py-6 bg-white rounded shadow-lg w-48 space-y-2">
+            <div className="p-4 py-6 space-y-5 font-bold bg-white rounded w-[70vw] pt-28">
               {items.map((item, index) => (
                 <div
                   className={classes.navItem}
@@ -73,12 +85,26 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
                   {item.label}
                 </div>
               ))}
+              {account ? (
+                <PopupLogin />
+              ) : (
+                <Button
+                  className={clsx(
+                    "h-full leading-none",
+                    window.scrollY < 500 && "hidden",
+                  )}
+                  primary
+                  onClick={() => setIsPopupVisible(!isPopupVisible)}
+                >
+                  Register
+                </Button>
+              )}
             </div>
           )}
         </ButtonMenu>
       </div>
 
-      <div className="hidden md:flex items-center space-x-4">
+      <div className="items-center hidden space-x-10 md:flex">
         {items.map((item, index) => (
           <div
             className={classes.navItem}
@@ -88,6 +114,36 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
             {item.label}
           </div>
         ))}
+        <div className="relative" ref={popupRef}>
+          {account ? (
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base">
+              <img
+                src={User}
+                alt="user"
+                className="cursor-pointer"
+                onClick={() => setIsPopupVisible(!isPopupVisible)}
+              />
+            </div>
+          ) : (
+            <Button
+              className={clsx(
+                "h-full leading-none",
+                window.scrollY < 500 && "hidden",
+              )}
+              primary
+              onClick={() => setIsPopupVisible(!isPopupVisible)}
+            >
+              Register
+            </Button>
+          )}
+          {isPopupVisible && (
+            <div>
+              <NavigationPopup
+                className={clsx(window.scrollY < 500 && "hidden")}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </>
   )

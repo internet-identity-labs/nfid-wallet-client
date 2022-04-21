@@ -5,37 +5,33 @@ name: E2E Tests CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: browser-actions/setup-chrome@latest
-    - run: chrome --version
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - uses: browser-actions/setup-chrome@latest
+      - run: chrome --version
+      - uses: actions/checkout@v3
 
-    - run: mkdir -p /home/runner/.cache/yarn/v6
-      continue-on-error: true
+      - uses: aviate-labs/setup-dfx@v0.2.3
+        with:
+          dfx-version: 0.9.3
+        env:
+          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
-    # Install your dependencies (with yarn "we could use npm")
-    - run: yarn install  --ignore-engines
-      name: Install dependencies
+      - run: mkdir -p /home/runner/.cache/yarn/v6
+        continue-on-error: true
 
-     # Run your test with the same command you uses locally
-    - run: npx wdio wdio.conf.ts
-      name: Running E2E test
+      - name: Install dependencies
+        run: yarn install --ignore-engines
+
+      - name: Deploy to local replica
+        run: dfx deploy
+
+      - name: Running E2E test
+        run: npx wdio wdio.conf.ts

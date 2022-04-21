@@ -34,5 +34,5 @@ jobs:
       name: Install dependencies
 
      # Run your test with the same command you uses locally
-    - run: wdio run wdio.conf.ts
+    - run: yarn wdio run wdio.conf.js
       name: Running E2E test

@@ -42,8 +42,8 @@ export const tokenRules = {
 }
 
 export const captchaRules = {
-  regex: /^[a-zA-Z0-9]{5}$/,
-  minLength: 5,
+  regex: /^[a-zA-Z0-9].*$/,
+  minLength: 0,
   maxLength: 5,
   errorMessages: {
     pattern: "Captcha must only contain letters and numbers",

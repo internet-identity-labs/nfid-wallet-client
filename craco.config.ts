@@ -10,30 +10,6 @@ loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 
-const FRONTEND_ENV = {
-  "process.env.INTERNET_IDENTITY_CANISTER_ID": isExampleBuild
-    ? '"<INTERNET_IDENTITY_CANISTER_ID>"'
-    : JSON.stringify(
-        process.env[
-          `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-        ],
-      ),
-  "process.env.IDENTITY_MANAGER_CANISTER_ID": isExampleBuild
-    ? '"<IDENTITY_MANAGER_CANISTER_ID>"'
-    : JSON.stringify(
-        process.env[
-          `IDENTITY_MANAGER_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-        ],
-      ),
-  "process.env.PUB_SUB_CHANNEL_CANISTER_ID": isExampleBuild
-    ? '"<PUB_SUB_CHANNEL_CANISTER_ID>"'
-    : JSON.stringify(
-        process.env[
-          `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-        ],
-      ),
-}
-
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 
@@ -42,8 +18,38 @@ const config = {
     alias: {
       frontend: path.resolve(__dirname, "src"),
     },
+    optimization: {
+      minimize: !isExampleBuild,
+    },
     configure: (webpackConfig: any, { env, paths }: any) => {
-      webpackConfig.plugins.push(new webpack.DefinePlugin(FRONTEND_ENV))
+      webpackConfig.plugins.push(
+        new webpack.DefinePlugin({
+          ...(isExampleBuild
+            ? {}
+            : {
+                IC_HOST: JSON.stringify(process.env.REACT_APP_IC_HOST),
+                II_ENV: JSON.stringify(process.env.REACT_APP_II_MODE),
+                FRONTEND_MODE: JSON.stringify(
+                  process.env.REACT_APP_FRONTEND_MODE,
+                ),
+                INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
+                  process.env[
+                    `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                  ],
+                ),
+                IDENTITY_MANAGER_CANISTER_ID: JSON.stringify(
+                  process.env[
+                    `IDENTITY_MANAGER_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                  ],
+                ),
+                PUB_SUB_CHANNEL_CANISTER_ID: JSON.stringify(
+                  process.env[
+                    `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                  ],
+                ),
+              }),
+        }),
+      )
       webpackConfig.plugins.push(
         new webpack.ProvidePlugin({
           Buffer: [require.resolve("buffer/"), "Buffer"],

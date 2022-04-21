@@ -10,30 +10,6 @@ loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 
-const FRONTEND_ENV = {
-  "process.env.INTERNET_IDENTITY_CANISTER_ID": isExampleBuild
-    ? '"<INTERNET_IDENTITY_CANISTER_ID>"'
-    : JSON.stringify(
-        process.env[
-          `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-        ],
-      ),
-  "process.env.IDENTITY_MANAGER_CANISTER_ID": isExampleBuild
-    ? '"<IDENTITY_MANAGER_CANISTER_ID>"'
-    : JSON.stringify(
-        process.env[
-          `IDENTITY_MANAGER_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-        ],
-      ),
-  "process.env.PUB_SUB_CHANNEL_CANISTER_ID": isExampleBuild
-    ? '"<PUB_SUB_CHANNEL_CANISTER_ID>"'
-    : JSON.stringify(
-        process.env[
-          `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-        ],
-      ),
-}
-
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 
@@ -42,8 +18,42 @@ const config = {
     alias: {
       frontend: path.resolve(__dirname, "src"),
     },
+    optimization: {
+      minimize: !isExampleBuild,
+    },
     configure: (webpackConfig: any, { env, paths }: any) => {
-      webpackConfig.plugins.push(new webpack.DefinePlugin(FRONTEND_ENV))
+      const canisterEnv = {
+        ...(isExampleBuild
+          ? {}
+          : {
+              IC_HOST: JSON.stringify(process.env.IC_HOST),
+              II_ENV: JSON.stringify(process.env.II_MODE),
+              FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
+              USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
+              VERIFY_PHONE_NUMBER: JSON.stringify(
+                process.env.FRONTEND_MODE === "production"
+                  ? process.env.AWS_VERIFY_PHONENUMBER
+                  : "/verify",
+              ),
+              INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
+                process.env[
+                  `INTERNET_IDENTITY_CANISTER_ID_${process.env.BACKEND_MODE}`
+                ],
+              ),
+              IDENTITY_MANAGER_CANISTER_ID: JSON.stringify(
+                process.env[
+                  `IDENTITY_MANAGER_CANISTER_ID_${process.env.BACKEND_MODE}`
+                ],
+              ),
+              PUB_SUB_CHANNEL_CANISTER_ID: JSON.stringify(
+                process.env[
+                  `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.BACKEND_MODE}`
+                ],
+              ),
+            }),
+      }
+
+      webpackConfig.plugins.push(new webpack.DefinePlugin(canisterEnv))
       webpackConfig.plugins.push(
         new webpack.ProvidePlugin({
           Buffer: [require.resolve("buffer/"), "Buffer"],
@@ -93,7 +103,7 @@ const config = {
         target: `http://0.0.0.0:${DFX_PORT}`,
       },
       "/verify": {
-        target: process.env.REACT_APP_AWS_VERIFY_PHONENUMBER,
+        target: process.env.AWS_VERIFY_PHONENUMBER,
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify/, ""),

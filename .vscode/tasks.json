@@ -10,6 +10,17 @@
         "panel": "new",
         "group": "develop"
       }
+    },
+    {
+      "label": "NFID NGROK tunnel",
+      "type": "shell",
+      "command": "./scripts/tunnel.sh",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
     }
   ]
 }

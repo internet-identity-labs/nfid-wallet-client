@@ -1,11 +1,3 @@
-import { DotsIcon } from "@internet-identity-labs/nfid-sdk-react"
-import { LogoutIcon } from "@internet-identity-labs/nfid-sdk-react"
-import { PlusIcon } from "@internet-identity-labs/nfid-sdk-react"
-import { ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
-import {
-  ModalAdvanced,
-  ModalAdvancedProps,
-} from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -21,6 +13,7 @@ import {
 import React from "react"
 import { MdLaptopMac } from "react-icons/md"
 
+import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholders/list-item"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -91,12 +84,12 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
             <div className="col-span-12 md:col-span-6">
               <List>
                 <List.Header>
-                  <div className="mb-5">
+                  <div className="mb-9">
                     <H5>Applications</H5>
                   </div>
                 </List.Header>
                 <List.Items>
-                  {applications.length > 0 &&
+                  {applications.length > 0 ? (
                     applications.map((application, index) => (
                       <ListItem
                         key={index}
@@ -107,14 +100,32 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                           </span>
                         }
                       />
-                    ))}
+                    ))
+                  ) : (
+                    <div>
+                      <div>
+                        Applications you’ve created accounts with will be listed
+                        here.
+                      </div>
+
+                      <div>
+                        <div className="relative">
+                          {Array.from({ length: 3 }).map((_, index) => (
+                            <ListItemPlaceholder key={index} index={index} />
+                          ))}
+
+                          <div className="absolute left-0 top-8 w-full h-full bg-gradient-to-t from-white to-white/5"></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </List.Items>
               </List>
             </div>
             <div className="col-span-12 md:col-span-6">
               <List>
                 <List.Header>
-                  <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center justify-between mb-9">
                     <H5>Access points</H5>
 
                     <div className="hidden">

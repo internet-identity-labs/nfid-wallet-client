@@ -81,3 +81,5 @@ export const getBrowserName = () => {
 
   return browser.getBrowser().name
 }
+
+export const isOdd = (num: number) => num % 2 === 1

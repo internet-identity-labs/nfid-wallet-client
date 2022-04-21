@@ -19,6 +19,9 @@ import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholde
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { Device } from "frontend/services/identity-manager/devices/state"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { IIPersona } from "frontend/services/identity-manager/persona/types"
 
 import { ProfileHomeMenu } from "./profile-home-menu"
 
@@ -32,7 +35,33 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   children,
   className,
 }) => {
-  const applications: any[] = []
+  const { iiPersonas } = usePersona()
+
+  const myApplications = () => {
+    // Group iiPersonas by hostname and count the number of iiPersonas
+    const iiPersonasByHostname = iiPersonas.reduce((acc, iiPersona) => {
+      const hostname = new URL(iiPersona.domain).hostname.split(".")[0]
+      const applicationName =
+        hostname.charAt(0).toUpperCase() + hostname.slice(1)
+      const iiPersonas = acc[applicationName] || []
+      acc[applicationName] = [...iiPersonas, iiPersona]
+
+      return acc
+    }, {} as { [applicationName: string]: IIPersona[] })
+
+    // Map the iiPersonas by application to an array of objects
+    const iiPersonasByHostnameArray = Object.entries(iiPersonasByHostname).map(
+      ([applicationName, iiPersonas]) => {
+        return {
+          applicationName,
+          iiPersonas,
+          iiPersonasCount: iiPersonas.length,
+        }
+      },
+    )
+
+    return iiPersonasByHostnameArray
+  }
 
   const [showModal, setShowModal] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
@@ -53,6 +82,84 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
       setShowModal(false)
     },
     [deleteDevice, handleLoadDevices],
+  )
+
+  const handleDeleteDeviceDialog = React.useCallback(
+    (
+      e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+      toggle,
+      device: Device,
+    ) => {
+      e.stopPropagation()
+      toggle()
+      setShowModal(true)
+
+      setModalOptions({
+        title: "Delete access point",
+        children: (
+          <P>
+            Do you really want to delete{" "}
+            <span className="font-bold">{device.alias}</span> access point? This
+            process cannot be undone.
+          </P>
+        ),
+        primaryButton: {
+          text: "Delete",
+          type: "error",
+          onClick: handleDeleteDevice(device.pubkey),
+        },
+        secondaryButton: {
+          text: "Cancel",
+          onClick: () => {
+            console.log("cancel")
+            setShowModal(false)
+          },
+        },
+      })
+    },
+    [handleDeleteDevice],
+  )
+
+  const handleRenameDeviceDialog = React.useCallback(
+    (
+      e: React.MouseEvent<HTMLLIElement, MouseEvent>,
+      toggle,
+      device: Device,
+    ) => {
+      e.stopPropagation()
+      toggle()
+      setShowModal(true)
+
+      setModalOptions({
+        title: "Rename access point",
+        children: (
+          <>
+            <Input
+              autoFocus
+              labelText="Access point name"
+              defaultValue={device.alias}
+            />
+          </>
+        ),
+        primaryButton: {
+          text: "Rename",
+          type: "primary",
+          onClick: () => {
+            console.log("rename")
+            setShowModal(false)
+          },
+        },
+        secondaryButton: {
+          text: "Cancel",
+          type: "secondary",
+          onClick: () => {
+            console.log("cancel")
+            setShowModal(false)
+          },
+        },
+      })
+    },
+    [],
   )
 
   return (
@@ -90,14 +197,17 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                 </div>
               </List.Header>
               <List.Items>
-                {applications.length > 0 ? (
-                  applications.map((application, index) => (
+                {myApplications().length > 0 ? (
+                  myApplications().map((application, index) => (
                     <ListItem
                       key={index}
-                      title={application}
+                      title={application.applicationName}
+                      subtitle={`${application.iiPersonasCount} persona${
+                        application.iiPersonasCount > 1 ? "s" : ""
+                      }`}
                       icon={
                         <span className="text-xl font-medium text-blue-base">
-                          {application[0]}
+                          {application.applicationName[0]}
                         </span>
                       }
                     />
@@ -147,40 +257,9 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                           <>
                             <li
                               className="hover:bg-gray-200"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                toggle()
-                                setShowModal(true)
-
-                                setModalOptions({
-                                  title: "Rename access point",
-                                  children: (
-                                    <>
-                                      <Input
-                                        autoFocus
-                                        labelText="Access point name"
-                                        defaultValue={device.alias}
-                                      />
-                                    </>
-                                  ),
-                                  primaryButton: {
-                                    text: "Rename",
-                                    type: "primary",
-                                    onClick: () => {
-                                      console.log("rename")
-                                      setShowModal(false)
-                                    },
-                                  },
-                                  secondaryButton: {
-                                    text: "Cancel",
-                                    type: "secondary",
-                                    onClick: () => {
-                                      console.log("cancel")
-                                      setShowModal(false)
-                                    },
-                                  },
-                                })
-                              }}
+                              onClick={(e) =>
+                                handleRenameDeviceDialog(e, toggle, device)
+                              }
                             >
                               <div className="block px-4 py-2 text-sm">
                                 Rename
@@ -188,38 +267,9 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
                             </li>
                             <li
                               className="hover:bg-gray-200 text-red-base"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                toggle()
-                                setShowModal(true)
-
-                                setModalOptions({
-                                  title: "Delete access point",
-                                  children: (
-                                    <P>
-                                      Do you really want to delete{" "}
-                                      <span className="font-bold">
-                                        {device.alias}
-                                      </span>{" "}
-                                      access point? This process cannot be
-                                      undone.
-                                    </P>
-                                  ),
-                                  primaryButton: {
-                                    text: "Delete",
-                                    type: "error",
-                                    onClick: handleDeleteDevice(device.pubkey),
-                                  },
-                                  secondaryButton: {
-                                    text: "Cancel",
-                                    type: "secondary",
-                                    onClick: () => {
-                                      console.log("cancel")
-                                      setShowModal(false)
-                                    },
-                                  },
-                                })
-                              }}
+                              onClick={(e) =>
+                                handleDeleteDeviceDialog(e, toggle, device)
+                              }
                             >
                               <div className="block px-4 py-2 text-sm">
                                 Delete

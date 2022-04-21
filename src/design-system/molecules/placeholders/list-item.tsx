@@ -1,5 +1,7 @@
 import React from "react"
 
+import { isOdd } from "frontend/utils"
+
 interface ListItemPlaceholderProps {
   index?: number
 }
@@ -8,14 +10,8 @@ export const ListItemPlaceholder: React.FC<ListItemPlaceholderProps> = ({
   children,
   index,
 }) => {
-  const isOdd = () => {
-    if (!index) return false
-
-    return index % 2 === 1
-  }
-
   const getVariant = () => {
-    if (isOdd()) {
+    if (isOdd(index || 0)) {
       return (
         <div className="flex space-x-3">
           <div className="h-3 w-20 bg-gray-200 rounded-lg"></div>

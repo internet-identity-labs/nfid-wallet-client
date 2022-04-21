@@ -151,7 +151,6 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
           text: "Cancel",
           type: "secondary",
           onClick: () => {
-            console.log("cancel")
             setShowModal(false)
           },
         },

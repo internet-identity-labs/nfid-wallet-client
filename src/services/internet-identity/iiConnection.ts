@@ -15,7 +15,6 @@ import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
 import * as tweetnacl from "tweetnacl"
 
-import { CONFIG } from "frontend/config"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
@@ -46,30 +45,36 @@ import { hasOwnProperty } from "./utils"
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
 const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
 
-const canisterId: string = CONFIG.INTERNET_IDENTITY_CANISTER_ID as string
+declare const II_ENV: string
+declare const IC_HOST: string
+declare const INTERNET_IDENTITY_CANISTER_ID: string
+declare const IDENTITY_MANAGER_CANISTER_ID: string
+declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 
-if (!canisterId)
+if (!INTERNET_IDENTITY_CANISTER_ID)
   throw new Error(
-    "you need to add REACT_APP_II_CANISTER_ID to your environment",
+    "you need to add INTERNET_IDENTITY_CANISTER_ID to your environment",
   )
 
 const getAgent = () => {
   const agent = new HttpAgent({
-    host: CONFIG.IC_HOST,
+    host: IC_HOST,
   })
 
   // Only fetch the root key when we're not in prod
-  if (CONFIG.II_ENV === "development") {
+  if (II_ENV === "development") {
     agent.fetchRootKey()
   }
   return agent
 }
 
-export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
+export const canisterIdPrincipal: Principal = Principal.fromText(
+  INTERNET_IDENTITY_CANISTER_ID,
+)
 
 export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
   agent: getAgent(),
-  canisterId,
+  canisterId: INTERNET_IDENTITY_CANISTER_ID,
 })
 
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
@@ -177,12 +182,12 @@ export class IIConnection {
         identityManager: await this.createServiceActor<IdentityManagerService>(
           delegation.delegationIdentity,
           IdentityManagerIdlFactory,
-          CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+          IDENTITY_MANAGER_CANISTER_ID,
         ),
         pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
           delegation.delegationIdentity,
           PubsubChannelIdlFactory,
-          CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
+          PUB_SUB_CHANNEL_CANISTER_ID,
         ),
         userNumber,
       }
@@ -252,12 +257,12 @@ export class IIConnection {
       identityManager: await this.createServiceActor<IdentityManagerService>(
         delegationIdentity,
         IdentityManagerIdlFactory,
-        CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+        IDENTITY_MANAGER_CANISTER_ID,
       ),
       pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
         delegationIdentity,
         PubsubChannelIdlFactory,
-        CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
+        PUB_SUB_CHANNEL_CANISTER_ID,
       ),
     }
   }
@@ -300,12 +305,12 @@ export class IIConnection {
       identityManager: await this.createServiceActor<IdentityManagerService>(
         delegationIdentity.delegationIdentity,
         IdentityManagerIdlFactory,
-        CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+        IDENTITY_MANAGER_CANISTER_ID,
       ),
       pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
         delegationIdentity.delegationIdentity,
         PubsubChannelIdlFactory,
-        CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
+        PUB_SUB_CHANNEL_CANISTER_ID,
       ),
     }
   }
@@ -344,12 +349,12 @@ export class IIConnection {
       identityManager: await this.createServiceActor<IdentityManagerService>(
         delegationIdentity.delegationIdentity,
         IdentityManagerIdlFactory,
-        CONFIG.IDENTITY_MANAGER_CANISTER_ID as string,
+        IDENTITY_MANAGER_CANISTER_ID,
       ),
       pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
         delegationIdentity.delegationIdentity,
         PubsubChannelIdlFactory,
-        CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string,
+        PUB_SUB_CHANNEL_CANISTER_ID,
       ),
     }
   }
@@ -385,17 +390,17 @@ export class IIConnection {
     delegationIdentity?: DelegationIdentity,
   ): Promise<ActorSubclass<_SERVICE>> {
     const agent = new HttpAgent({
-      host: CONFIG.IC_HOST,
+      host: IC_HOST,
       identity: delegationIdentity,
     })
 
     // Only fetch the root key when we're not in prod
-    if (CONFIG.II_ENV === "development") {
+    if (II_ENV === "development") {
       await agent.fetchRootKey()
     }
     const actor = Actor.createActor<_SERVICE>(internet_identity_idl, {
       agent,
-      canisterId: canisterId,
+      canisterId: INTERNET_IDENTITY_CANISTER_ID,
     })
     return actor
   }
@@ -403,20 +408,20 @@ export class IIConnection {
   static async createServiceActor<T>(
     delegationIdentity: DelegationIdentity,
     factory: any,
-    canisterId: string,
+    INTERNET_IDENTITY_CANISTER_ID: string,
   ): Promise<ActorSubclass<T>> {
     const agent = new HttpAgent({
-      host: CONFIG.IC_HOST,
+      host: IC_HOST,
       identity: delegationIdentity,
     })
 
     // Only fetch the root key when we're not in prod
-    if (CONFIG.II_ENV === "development") {
+    if (II_ENV === "development") {
       await agent.fetchRootKey()
     }
     const actor = Actor.createActor<T>(factory, {
       agent,
-      canisterId,
+      canisterId: INTERNET_IDENTITY_CANISTER_ID,
     })
     return actor
   }
@@ -554,9 +559,9 @@ const requestFEDelegationChain = async (
     new Date(Date.now() + ttl),
     {
       targets: [
-        Principal.from(canisterId),
-        Principal.from(CONFIG.IDENTITY_MANAGER_CANISTER_ID),
-        Principal.from(CONFIG.PUB_SUB_CHANNEL_CANISTER_ID),
+        Principal.from(INTERNET_IDENTITY_CANISTER_ID),
+        Principal.from(IDENTITY_MANAGER_CANISTER_ID),
+        Principal.from(PUB_SUB_CHANNEL_CANISTER_ID),
       ],
     },
   )

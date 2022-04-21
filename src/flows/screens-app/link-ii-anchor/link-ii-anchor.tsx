@@ -14,7 +14,6 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
 
-import { CONFIG } from "frontend/config"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -26,6 +25,9 @@ import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import { anchorRules } from "frontend/utils/validations"
 
 import { LinkIIAnchorConstants as LIIAC } from "./routes"
+
+declare const II_ENV: string
+declare const INTERNET_IDENTITY_CANISTER_ID: string
 
 interface LinkIIAnchorProps
   extends React.DetailedHTMLProps<
@@ -83,8 +85,8 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
       const rawId = blobToHex(identity.rawId)
 
       const url = new URL(
-        CONFIG.II_ENV === "development"
-          ? `http://${CONFIG.INTERNET_IDENTITY_CANISTER_ID}.localhost:8000`
+        II_ENV === "development"
+          ? `http://${INTERNET_IDENTITY_CANISTER_ID}.localhost:8000`
           : "https://identity.ic0.app",
       )
       url.pathname = "/"

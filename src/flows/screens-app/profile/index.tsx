@@ -144,7 +144,6 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
           text: "Rename",
           type: "primary",
           onClick: () => {
-            console.log("rename")
             setShowModal(false)
           },
         },

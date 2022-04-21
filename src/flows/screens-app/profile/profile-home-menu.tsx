@@ -2,14 +2,11 @@ import clsx from "clsx"
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { ElementProps } from "frontend/types/react"
 import { DotsIcon } from "frontend/ui-kit/src/components/atoms/button/icons/dots"
 import { ButtonMenu } from "frontend/ui-kit/src/components/atoms/button/menu"
 
-interface ProfileHomeMenuProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+interface ProfileHomeMenuProps extends ElementProps<HTMLDivElement> {}
 
 export const ProfileHomeMenu: React.FC<ProfileHomeMenuProps> = ({
   className,

@@ -51,11 +51,9 @@ declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 
-const canisterId: string = INTERNET_IDENTITY_CANISTER_ID as string
-
-if (!canisterId)
+if (!INTERNET_IDENTITY_CANISTER_ID)
   throw new Error(
-    "you need to add REACT_APP_II_CANISTER_ID to your environment",
+    "you need to add INTERNET_IDENTITY_CANISTER_ID to your environment",
   )
 
 const getAgent = () => {
@@ -70,11 +68,13 @@ const getAgent = () => {
   return agent
 }
 
-export const canisterIdPrincipal: Principal = Principal.fromText(canisterId)
+export const canisterIdPrincipal: Principal = Principal.fromText(
+  INTERNET_IDENTITY_CANISTER_ID,
+)
 
 export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
   agent: getAgent(),
-  canisterId,
+  canisterId: INTERNET_IDENTITY_CANISTER_ID,
 })
 
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
@@ -400,7 +400,7 @@ export class IIConnection {
     }
     const actor = Actor.createActor<_SERVICE>(internet_identity_idl, {
       agent,
-      canisterId: canisterId,
+      canisterId: INTERNET_IDENTITY_CANISTER_ID,
     })
     return actor
   }
@@ -408,7 +408,7 @@ export class IIConnection {
   static async createServiceActor<T>(
     delegationIdentity: DelegationIdentity,
     factory: any,
-    canisterId: string,
+    INTERNET_IDENTITY_CANISTER_ID: string,
   ): Promise<ActorSubclass<T>> {
     const agent = new HttpAgent({
       host: IC_HOST,
@@ -421,7 +421,7 @@ export class IIConnection {
     }
     const actor = Actor.createActor<T>(factory, {
       agent,
-      canisterId,
+      canisterId: INTERNET_IDENTITY_CANISTER_ID,
     })
     return actor
   }
@@ -559,7 +559,7 @@ const requestFEDelegationChain = async (
     new Date(Date.now() + ttl),
     {
       targets: [
-        Principal.from(canisterId),
+        Principal.from(INTERNET_IDENTITY_CANISTER_ID),
         Principal.from(IDENTITY_MANAGER_CANISTER_ID),
         Principal.from(PUB_SUB_CHANNEL_CANISTER_ID),
       ],

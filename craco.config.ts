@@ -22,34 +22,34 @@ const config = {
       minimize: !isExampleBuild,
     },
     configure: (webpackConfig: any, { env, paths }: any) => {
-      webpackConfig.plugins.push(
-        new webpack.DefinePlugin({
-          ...(isExampleBuild
-            ? {}
-            : {
-                IC_HOST: JSON.stringify(process.env.REACT_APP_IC_HOST),
-                II_ENV: JSON.stringify(process.env.REACT_APP_II_MODE),
-                FRONTEND_MODE: JSON.stringify(
-                  process.env.REACT_APP_FRONTEND_MODE,
-                ),
-                INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
-                  process.env[
-                    `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-                  ],
-                ),
-                IDENTITY_MANAGER_CANISTER_ID: JSON.stringify(
-                  process.env[
-                    `IDENTITY_MANAGER_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-                  ],
-                ),
-                PUB_SUB_CHANNEL_CANISTER_ID: JSON.stringify(
-                  process.env[
-                    `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
-                  ],
-                ),
-              }),
-        }),
-      )
+      const canisterEnv = {
+        ...(isExampleBuild
+          ? {}
+          : {
+              IC_HOST: JSON.stringify(process.env.REACT_APP_IC_HOST),
+              II_ENV: JSON.stringify(process.env.REACT_APP_II_MODE),
+              FRONTEND_MODE: JSON.stringify(
+                process.env.REACT_APP_FRONTEND_MODE,
+              ),
+              INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
+                process.env[
+                  `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                ],
+              ),
+              IDENTITY_MANAGER_CANISTER_ID: JSON.stringify(
+                process.env[
+                  `IDENTITY_MANAGER_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                ],
+              ),
+              PUB_SUB_CHANNEL_CANISTER_ID: JSON.stringify(
+                process.env[
+                  `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                ],
+              ),
+            }),
+      }
+
+      webpackConfig.plugins.push(new webpack.DefinePlugin(canisterEnv))
       webpackConfig.plugins.push(
         new webpack.ProvidePlugin({
           Buffer: [require.resolve("buffer/"), "Buffer"],

@@ -14,9 +14,7 @@ declare const II_ENV: string
 declare const IC_HOST: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 
-const pubSubCanisterId: string = PUB_SUB_CHANNEL_CANISTER_ID as string
-
-if (!pubSubCanisterId)
+if (!PUB_SUB_CHANNEL_CANISTER_ID)
   throw new Error(
     "you need to add VITE_PUB_SUB_CHANNEL_CANISTER_ID to your environment",
   )
@@ -31,12 +29,13 @@ const getAgent = () => {
   }
   return agent
 }
-export const canisterIdPrincipal: Principal =
-  Principal.fromText(pubSubCanisterId)
+export const canisterIdPrincipal: Principal = Principal.fromText(
+  PUB_SUB_CHANNEL_CANISTER_ID,
+)
 
 export const baseActor = Actor.createActor<_SERVICE>(pub_sub_channel_idl, {
   agent: getAgent(),
-  canisterId: pubSubCanisterId,
+  canisterId: PUB_SUB_CHANNEL_CANISTER_ID,
 })
 
 export const usePubSubChannel = () => {

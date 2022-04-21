@@ -1,28 +1,22 @@
 import {
-  ButtonMenu,
-  DotsIcon,
   H3,
   H5,
   List,
   ListItem,
-  Loader,
-  ModalAdvanced,
-  ModalAdvancedProps,
   P,
   PlusIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
-import { MdLaptopMac } from "react-icons/md"
 
 import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholders/list-item"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import { Device } from "frontend/services/identity-manager/devices/state"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IIPersona } from "frontend/services/identity-manager/persona/types"
 import { getUrl } from "frontend/utils"
 
+import { DeviceListItem } from "./device-list-item"
 import { ProfileHomeMenu } from "./profile-home-menu"
 
 interface AuthenticateNFIDHomeProps
@@ -63,62 +57,8 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
     return iiPersonasByHostnameArray
   }, [iiPersonas])
 
-  const [showModal, setShowModal] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
-  const [modalOptions, setModalOptions] =
-    React.useState<ModalAdvancedProps | null>(null)
-
-  const { devices, deleteDevice, handleLoadDevices } = useDevices()
+  const { devices } = useDevices()
   const { account } = useAccount()
-
-  const handleDeleteDevice = React.useCallback(
-    (publicKey) => async () => {
-      setLoading(true)
-
-      await deleteDevice(publicKey)
-      await handleLoadDevices()
-
-      setLoading(false)
-      setShowModal(false)
-    },
-    [deleteDevice, handleLoadDevices],
-  )
-
-  const handleDeleteDeviceDialog = React.useCallback(
-    (
-      e: React.MouseEvent<HTMLLIElement, MouseEvent>,
-      toggle,
-      device: Device,
-    ) => {
-      e.stopPropagation()
-      toggle()
-      setShowModal(true)
-
-      setModalOptions({
-        title: "Delete access point",
-        children: (
-          <P>
-            Do you really want to delete{" "}
-            <span className="font-bold">{device.alias}</span> access point? This
-            process cannot be undone.
-          </P>
-        ),
-        primaryButton: {
-          text: "Delete",
-          type: "error",
-          onClick: handleDeleteDevice(device.pubkey),
-        },
-        secondaryButton: {
-          text: "Cancel",
-          type: "secondary",
-          onClick: () => {
-            setShowModal(false)
-          },
-        },
-      })
-    },
-    [handleDeleteDevice],
-  )
 
   const handleNavigateToApplication = React.useCallback(
     (applicationName: string) => {
@@ -221,47 +161,12 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
               </List.Header>
               <List.Items>
                 {devices.map((device, index) => (
-                  <ListItem
-                    key={device.alias}
-                    title={device.alias}
-                    subtitle={""}
-                    icon={<MdLaptopMac className="text-xl text-blue-base" />}
-                    action={
-                      <ButtonMenu buttonElement={<DotsIcon />}>
-                        {(toggle) => (
-                          <>
-                            <li
-                              className="hover:bg-gray-200 text-red-base"
-                              onClick={(e) =>
-                                handleDeleteDeviceDialog(e, toggle, device)
-                              }
-                            >
-                              <div className="block px-4 py-2 text-sm">
-                                Delete
-                              </div>
-                            </li>
-                          </>
-                        )}
-                      </ButtonMenu>
-                    }
-                  />
+                  <DeviceListItem device={device} />
                 ))}
               </List.Items>
             </List>
           </div>
         </div>
-
-        {showModal && modalOptions && (
-          <ModalAdvanced
-            title={modalOptions.title}
-            onClose={() => setShowModal(false)}
-            primaryButton={modalOptions.primaryButton}
-            secondaryButton={modalOptions.secondaryButton}
-          >
-            {modalOptions.children}
-            <Loader isLoading={loading} />
-          </ModalAdvanced>
-        )}
       </div>
     </AppScreen>
   )

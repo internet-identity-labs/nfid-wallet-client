@@ -10,7 +10,7 @@ exports.config = {
       acceptInsecureCerts: true,
       // extends some Chrome flags in order to tell Chrome to run headless
       'goog:chromeOptions': {
-        args: ['--headless', '--disable-gpu', '--disable-dev-shm-usage'],
+        args: ['--headless', '--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox', '--single-process'],
       },
     },
   ],

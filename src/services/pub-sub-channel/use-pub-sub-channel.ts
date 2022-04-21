@@ -2,7 +2,6 @@ import { Actor, HttpAgent } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import React from "react"
 
-import { CONFIG } from "frontend/config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import {
   Topic,
@@ -11,7 +10,11 @@ import {
 
 import { idlFactory as pub_sub_channel_idl } from "./pub_sub_channel_idl"
 
-const pubSubCanisterId: string = CONFIG.PUB_SUB_CHANNEL_CANISTER_ID as string
+declare const II_ENV: string
+declare const IC_HOST: string
+declare const PUB_SUB_CHANNEL_CANISTER_ID: string
+
+const pubSubCanisterId: string = PUB_SUB_CHANNEL_CANISTER_ID as string
 
 if (!pubSubCanisterId)
   throw new Error(
@@ -20,10 +23,10 @@ if (!pubSubCanisterId)
 
 const getAgent = () => {
   const agent = new HttpAgent({
-    host: CONFIG.IC_HOST,
+    host: IC_HOST,
   })
   // Only fetch the root key when we're not in prod
-  if (CONFIG.II_ENV === "development") {
+  if (II_ENV === "development") {
     agent.fetchRootKey()
   }
   return agent

@@ -5,7 +5,6 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { generatePath, useLocation } from "react-router-dom"
 
-import { CONFIG } from "frontend/config"
 import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
 import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -17,6 +16,8 @@ import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
 import { useMessageChannel } from "./use-message-channel"
+
+declare const FRONTEND_MODE: string
 
 type loadingState = "initial" | "loading" | "success"
 
@@ -125,9 +126,7 @@ export const useUnknownDeviceConfig = () => {
       const parsedSignedDelegation = buildDelegate(signedDelegation)
 
       const protocol =
-        CONFIG.FRONTEND_MODE === "development"
-          ? "http:"
-          : window.location.protocol
+        FRONTEND_MODE === "development" ? "http:" : window.location.protocol
       const hostname = `${protocol}//${domain}`
 
       postClientAuthorizeSuccessMessage(appWindow, {

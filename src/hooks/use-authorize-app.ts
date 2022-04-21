@@ -1,13 +1,14 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
 import React from "react"
 
-import { CONFIG } from "frontend/config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
+
+declare const FRONTEND_MODE: string
 
 // FIXME:
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -88,7 +89,7 @@ export const useAuthorizeApp = () => {
         throw new Error("Unauthorized")
       }
 
-      const protocol = CONFIG.FRONTEND_MODE === "production" ? "https" : "http"
+      const protocol = FRONTEND_MODE === "production" ? "https" : "http"
 
       const scope = persona_id
         ? `${persona_id}@${protocol}://${hostname}`

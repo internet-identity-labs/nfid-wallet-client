@@ -1,15 +1,11 @@
-const FRONTEND_MODE = process.env.REACT_APP_FRONTEND_MODE
+declare const FRONTEND_MODE: string
 
 export const CONFIG = {
-  FRONTEND_MODE,
   USERGEEK_API_KEY: process.env.REACT_APP_USERGEEK_API_KEY,
-  IC_HOST: process.env.REACT_APP_IC_HOST as string,
-  II_ENV: process.env.REACT_APP_II_MODE,
-  INTERNET_IDENTITY_CANISTER_ID: process.env.INTERNET_IDENTITY_CANISTER_ID,
-  IDENTITY_MANAGER_CANISTER_ID: process.env.IDENTITY_MANAGER_CANISTER_ID,
-  PUB_SUB_CHANNEL_CANISTER_ID: process.env.PUB_SUB_CHANNEL_CANISTER_ID,
   VERIFY_PHONE_NUMBER:
     FRONTEND_MODE === "production"
       ? process.env.REACT_APP_AWS_VERIFY_PHONENUMBER
       : "/verify",
 }
+
+console.log(">> ", { CONFIG })

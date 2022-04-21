@@ -83,3 +83,11 @@ export const getBrowserName = () => {
 }
 
 export const isOdd = (num: number) => num % 2 === 1
+
+export const getUrl = (url: string) => {
+  if (!/^(http|https):\/\//.test(url)) {
+    url = "http://" + url
+  }
+
+  return new URL(url)
+}

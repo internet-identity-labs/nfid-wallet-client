@@ -21,6 +21,7 @@ import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { Device } from "frontend/services/identity-manager/devices/state"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IIPersona } from "frontend/services/identity-manager/persona/types"
+import { getUrl } from "frontend/utils"
 
 import { ProfileHomeMenu } from "./profile-home-menu"
 
@@ -39,7 +40,7 @@ export const AuthenticateNFIDHome: React.FC<AuthenticateNFIDHomeProps> = ({
   const myApplications = React.useMemo(() => {
     // Group iiPersonas by hostname and count the number of iiPersonas
     const iiPersonasByHostname = iiPersonas.reduce((acc, iiPersona) => {
-      const hostname = new URL(iiPersona.domain).hostname.split(".")[0]
+      const hostname = getUrl(iiPersona.domain).hostname.split(".")[0]
       const applicationName =
         hostname.charAt(0).toUpperCase() + hostname.slice(1)
       const iiPersonas = acc[applicationName] || []

@@ -26,24 +26,28 @@ const config = {
         ...(isExampleBuild
           ? {}
           : {
-              IC_HOST: JSON.stringify(process.env.REACT_APP_IC_HOST),
-              II_ENV: JSON.stringify(process.env.REACT_APP_II_MODE),
-              FRONTEND_MODE: JSON.stringify(
-                process.env.REACT_APP_FRONTEND_MODE,
+              IC_HOST: JSON.stringify(process.env.IC_HOST),
+              II_ENV: JSON.stringify(process.env.II_MODE),
+              FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
+              USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
+              VERIFY_PHONE_NUMBER: JSON.stringify(
+                process.env.FRONTEND_MODE === "production"
+                  ? process.env.AWS_VERIFY_PHONENUMBER
+                  : "/verify",
               ),
               INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
                 process.env[
-                  `INTERNET_IDENTITY_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                  `INTERNET_IDENTITY_CANISTER_ID_${process.env.BACKEND_MODE}`
                 ],
               ),
               IDENTITY_MANAGER_CANISTER_ID: JSON.stringify(
                 process.env[
-                  `IDENTITY_MANAGER_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                  `IDENTITY_MANAGER_CANISTER_ID_${process.env.BACKEND_MODE}`
                 ],
               ),
               PUB_SUB_CHANNEL_CANISTER_ID: JSON.stringify(
                 process.env[
-                  `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.REACT_APP_BACKEND_MODE}`
+                  `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.BACKEND_MODE}`
                 ],
               ),
             }),
@@ -99,7 +103,7 @@ const config = {
         target: `http://0.0.0.0:${DFX_PORT}`,
       },
       "/verify": {
-        target: process.env.REACT_APP_AWS_VERIFY_PHONENUMBER,
+        target: process.env.AWS_VERIFY_PHONENUMBER,
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify/, ""),

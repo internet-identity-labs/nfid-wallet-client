@@ -5,9 +5,9 @@
   - 1.2. [Install dfx](#Installdfx)
   - 1.3. [Install ngrok (https tunnel for mobile device)](#Installngrokhttpstunnelformobiledevice)
   - 1.4. [configure environment](#configureenvironment)
-    - 1.4.1. [`REACT_APP_II_MODE`: used to decide if we need to fetch rootkeys](#REACT_APP_II_MODE:usedtodecideifweneedtofetchrootkeys)
-    - 1.4.2. [`REACT_APP_II_CANISTER_ID`: Multipass Frontend Canister ID](#REACT_APP_II_CANISTER_ID:MultipassFrontendCanisterID)
-    - 1.4.3. [`VITE_MULTIPASS_DOMAIN`: The domain which should be used for the qrcode](#VITE_MULTIPASS_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode)
+    - 1.4.1. [`II_MODE`: used to decide if we need to fetch rootkeys](#II_MODE:usedtodecideifweneedtofetchrootkeys)
+    - 1.4.2. [`INTERNET_IDENTITY_CANISTER_ID`: Internet Identity Frontend Canister ID](#INTERNET_IDENTITY_CANISTER_ID:MultipassFrontendCanisterID)
+    - 1.4.3. [`TUNNEL_DOMAIN`: The domain which should be used for the qrcode](#TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode)
 - 2. [Available scripts](#Availablescripts)
   - 2.1. [yarn dev](#yarndev)
   - 2.2. [yarn tunnel](#yarntunnel)
@@ -52,13 +52,13 @@ copy the env template:
 cp .env.local.template .env.local
 ```
 
-#### 1.4.1. <a name='REACT_APP_II_MODE:usedtodecideifweneedtofetchrootkeys'></a>`REACT_APP_II_MODE`: used to decide if we need to fetch rootkeys
+#### 1.4.1. <a name='II_MODE:usedtodecideifweneedtofetchrootkeys'></a>`II_MODE`: used to decide if we need to fetch rootkeys
 
 ```
-REACT_APP_II_MODE=development
+II_MODE=development
 ```
 
-#### 1.4.2. <a name='REACT_APP_II_CANISTER_ID:MultipassFrontendCanisterID'></a>`REACT_APP_II_CANISTER_ID`: Multipass Frontend Canister ID
+#### 1.4.2. <a name='INTERNET_IDENTITY_CANISTER_ID:MultipassFrontendCanisterID'></a>`INTERNET_IDENTITY_CANISTER_ID`: Multipass Frontend Canister ID
 
 get canister id (requires running dfx and deployed MultipassClone II)
 
@@ -69,17 +69,17 @@ dfx canister id internet_identity
 example
 
 ```
-REACT_APP_II_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
+INTERNET_IDENTITY_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
 ```
 
-#### 1.4.3. <a name='VITE_MULTIPASS_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode'></a>`VITE_MULTIPASS_DOMAIN`: The domain which should be used for the qrcode
+#### 1.4.3. <a name='TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode'></a>`TUNNEL_DOMAIN`: The domain which should be used for the qrcode
 
 > this is mainly for development purposes
 
 example
 
 ```
-VITE_MULTIPASS_DOMAIN=3540a630b330.ngrok.io
+TUNNEL_DOMAIN=3540a630b330.ngrok.io
 ```
 
 ## 2. <a name='Availablescripts'></a>Available scripts

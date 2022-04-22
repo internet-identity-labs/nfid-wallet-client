@@ -23,7 +23,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
-  const { registerRoute } = useRegisterQRCode()
+  const { registerRoute, status } = useRegisterQRCode()
 
   const classes = {
     navItem:
@@ -158,13 +158,13 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               Register
             </Button>
           )}
-          {isPopupVisible && (
+          {isPopupVisible || status === 'registerDecider' ? (
             <div>
               <NavigationPopup
-                className={clsx(window.scrollY < 500 && "hidden")}
+                className={clsx(window.scrollY < 500 && status === '' ? "hidden" : null)}
               />
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </>

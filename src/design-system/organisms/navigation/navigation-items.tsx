@@ -34,14 +34,17 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
     {
       label: "The Identity Layer",
       to: "home",
+      external: false,
     },
     {
       label: "Only with NFID",
       to: "only-with-nfid",
+      external: false,
     },
     {
       label: "Our mission",
       to: "our-mission",
+      external: false,
     },
     // {
     //   label: "Partners",
@@ -50,14 +53,22 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
     {
       label: "FAQ",
       to: "faq",
+      external: false,
+    },
+    {
+      label: "Docs",
+      to: "https://docs.nfid.one",
+      external: true,
     },
   ]
 
   const handleGoTo = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     item: string,
+    external: boolean,
   ) => {
     e.preventDefault()
+    if(external) window.open(item)
     if (window.location.pathname !== "/") navigate(`/#${item}`)
 
     const element = document.getElementById(item)
@@ -85,7 +96,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   className={classes.navItem}
                   onClick={(el) => {
                     el.stopPropagation()
-                    handleGoTo(el, item.to)
+                    handleGoTo(el, item.to, item.external)
                     toggleMenu()
                   }}
                   key={index}
@@ -103,7 +114,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     primary
                     onClick={() => navigate(registerRoute)}
                   >
-                    Register
+                    Register your NFID
                   </Button>
                   {/*<Link*/}
                   {/*  className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"*/}
@@ -117,7 +128,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     to={`${RAC.base}/${RAC.recoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
-                    Recover NFID
+                    Recover your NFID
                   </Link>
                 </>
               )}
@@ -130,7 +141,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         {items.map((item, index) => (
           <div
             className={classes.navItem}
-            onClick={(e) => handleGoTo(e, item.to)}
+            onClick={(e) => handleGoTo(e, item.to, item.external)}
             key={index}
           >
             {item.label}
@@ -155,7 +166,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               primary
               onClick={() => setIsPopupVisible(!isPopupVisible)}
             >
-              Register
+              Register your NFID
             </Button>
           )}
           {isPopupVisible || status === 'registerDecider' ? (

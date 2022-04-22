@@ -131,7 +131,7 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
             />
             <div className="z-20 mt-5 text-center">
-              Awaiting confirmation from your phone...
+              Waiting for verification on mobile...
             </div>
           </div>
         </div>

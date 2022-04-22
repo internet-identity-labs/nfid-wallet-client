@@ -11,21 +11,21 @@ export const PopupRegister: React.FC<PopupRegisterProps> = () => {
   return (
     <div>
       <h2 className="mt-5 text-xl font-bold text-center">
-        Register by scanning <br /> the code
+        Register your NFID
       </h2>
 
       <div className="mx-auto">
         <RegisterQRCode />
       </div>
       <p className="text-xs text-center text-gray-500">
-        Scan this code with your phone’s camera
+        Scan this code with your phone's camera
       </p>
       <Link
         className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
         to={`${RAC.base}/${RAC.recoveryPhrase}`}
         state={{ from: "loginWithRecovery" }}
       >
-        Recover NFID
+        Or recover an existing NFID
       </Link>
     </div>
   )

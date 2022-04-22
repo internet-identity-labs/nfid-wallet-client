@@ -27,13 +27,12 @@ import { questions } from "./questions"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface Props
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement> {
+}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const { account } = useAccount();
+  const { account } = useAccount()
   const { isMobile } = useDeviceInfo()
 
   return (
@@ -41,7 +40,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       bubbleOptions={{
         showBubbles: false,
       }}
-      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] overflow-clip"
+      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] overflow-hidden sm:overflow-clip scroll-smooth"
     >
       <ParallaxProvider>
         <div className="font-inter">
@@ -130,7 +129,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           </section>
           <section
             id="only-with-nfid"
-            className="mt-[20vh] md:mt-[40vh] py-[6rem] md:py-[120px] mb-[60px] md:mb-[120px] bg-[#3D3F56] only-with-nfid relative"
+            className="mt-[20vh] md:mt-[40vh] py-[6rem] md:py-[120px] mb-[60px] md:mb-[120px] bg-[#3D3F56] only-with-nfid relative scroll-mt-10"
           >
             <div className="relative z-10">
               <Fade left>
@@ -204,7 +203,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           </section>
           <section
             id="our-mission"
-            className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 md:pt-24"
+            className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 md:pt-24 scroll-mt-24"
           >
             <img
               src={Icon_pink}

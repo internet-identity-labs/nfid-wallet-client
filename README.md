@@ -52,27 +52,7 @@ copy the env template:
 cp .env.local.template .env.local
 ```
 
-#### 1.4.1. <a name='II_MODE:usedtodecideifweneedtofetchrootkeys'></a>`II_MODE`: used to decide if we need to fetch rootkeys
-
-```
-II_MODE=development
-```
-
-#### 1.4.2. <a name='INTERNET_IDENTITY_CANISTER_ID:MultipassFrontendCanisterID'></a>`INTERNET_IDENTITY_CANISTER_ID`: Multipass Frontend Canister ID
-
-get canister id (requires running dfx and deployed MultipassClone II)
-
-```
-dfx canister id internet_identity
-```
-
-example
-
-```
-INTERNET_IDENTITY_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
-```
-
-#### 1.4.3. <a name='TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode'></a>`TUNNEL_DOMAIN`: The domain which should be used for the qrcode
+#### 1.4.1. <a name='TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode'></a>`TUNNEL_DOMAIN`: The domain which should be used for the qrcode
 
 > this is mainly for development purposes
 
@@ -80,6 +60,7 @@ example
 
 ```
 TUNNEL_DOMAIN=3540a630b330.ngrok.io
+TUNNEL_REGION=<us or eu>
 ```
 
 ## 2. <a name='Availablescripts'></a>Available scripts

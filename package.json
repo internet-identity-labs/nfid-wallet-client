@@ -21,7 +21,7 @@
     "@dfinity/candid": "0.9.3",
     "@dfinity/identity": "0.9.3",
     "@dfinity/principal": "0.9.3",
-    "@internet-identity-labs/nfid-sdk-react": "^0.0.1-alpha.8",
+    "@internet-identity-labs/nfid-sdk-react": "^0.0.1-alpha.9",
     "@tailwindcss/forms": "^0.5.0",
     "@types/qrcode": "^1.4.2",
     "biguintle": "1.0.3",

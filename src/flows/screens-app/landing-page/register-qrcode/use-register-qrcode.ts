@@ -19,8 +19,7 @@ export const useRegisterQRCode = () => {
   )
 
   const registerRoute = useMemo(
-    () =>
-      `${AppScreenAuthorizeAppConstants.base}/${publicKey}/${window.location.host}/intro`,
+    () => `${AppScreenAuthorizeAppConstants.base}/${publicKey}/NFID/intro`,
     [publicKey],
   )
 
@@ -30,12 +29,15 @@ export const useRegisterQRCode = () => {
 
   const handleLoginFromRemoteDelegation = useCallback(
     async (nfidJsonDelegate, userNumber) => {
+      console.log(">> handleLoginFromRemoteDelegation", { userNumber })
+
       const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
         userNumber: BigInt(userNumber),
       })
       const result = apiResultToLoginResult(loginResult)
+      console.log(">> handleLoginFromRemoteDelegation", { result })
 
       if (result.tag === "ok") {
         setAuthenticatedActors(result)
@@ -60,6 +62,8 @@ export const useRegisterQRCode = () => {
         )
 
         if (registerMessage) {
+          console.log(">> handlePollForDelegate", { registerMessage })
+
           setUserNumber(BigInt(registerMessage.userNumber))
           handleLoginFromRemoteDelegation(
             registerMessage.nfid,

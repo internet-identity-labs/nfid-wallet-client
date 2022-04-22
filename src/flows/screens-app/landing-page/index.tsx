@@ -6,7 +6,9 @@ import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import Arrow from "./assets/arrow.svg"
 import Blur1 from "./assets/blur_1.svg"
@@ -24,14 +26,15 @@ import { Footer } from "./footer"
 import { HeroLeftSide } from "./hero-left-side"
 import { HeroRightSide } from "./hero-right-side"
 import { questions } from "./questions"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface Props
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement> {
-}
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
+  const { isAuthenticated } = useAuthentication()
   const { account } = useAccount()
   const { isMobile } = useDeviceInfo()
 
@@ -62,7 +65,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 src={Blur1}
                 alt="blur1"
               />
-              <HeroRightSide isQRCode={!account} />
+              <HeroRightSide isQRCode={!isAuthenticated && !account} />
               <Fade right>
                 <Parallax
                   className="relative font-bold"

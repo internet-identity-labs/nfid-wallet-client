@@ -82,12 +82,15 @@ export const useAuthorizeApp = () => {
       scope: string
       persona_id: string
     }) => {
+      console.log(">> remoteLogin")
       if (!userNumber) {
         throw new Error("Device not registered")
       }
       if (!internetIdentity) {
         throw new Error("Unauthorized")
       }
+
+      console.log(">> remoteLogin", { userNumber, hostname, persona_id })
 
       const protocol = FRONTEND_MODE === "production" ? "https" : "http"
 
@@ -109,6 +112,7 @@ export const useAuthorizeApp = () => {
       })
 
       const response = await postMessages(secret, [message])
+      console.log(">> remoteLogin", { response })
 
       return response
     },

@@ -38,7 +38,7 @@ export const AppScreen: React.FC<Props> = ({
         {title && <NavigationHeader title={title} description={description} />}
 
         <main className={clsx(classNameWrapper, "flex flex-1")}>
-          <div className="container px-6 py-4 mx-auto">{children}</div>
+          <div className="container px-6 sm:py-4 py-0 mx-auto">{children}</div>
         </main>
       </div>
     </Shell>

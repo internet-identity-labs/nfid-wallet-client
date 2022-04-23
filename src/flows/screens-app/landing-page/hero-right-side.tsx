@@ -11,16 +11,18 @@ import Group from "./assets/Group.svg"
 
 interface HeroRightSideProps extends ElementProps<HTMLDivElement> {
   isQRCode?: boolean
+  hasAccount?: boolean
 }
 
 export const HeroRightSide: React.FC<HeroRightSideProps> = ({
   children,
   className,
   isQRCode,
+  hasAccount,
 }) => {
   const { isMobile } = useDeviceInfo()
 
-  return isQRCode ? (
+  return isQRCode && !isMobile ? (
     <Fade>
       <Tilt className="mb-[20vh] sm:mb-[60vh] hidden sm:block">
         <RegisterQRCode
@@ -41,9 +43,9 @@ export const HeroRightSide: React.FC<HeroRightSideProps> = ({
         </p>
       </Tilt>
     </Fade>
-  ) : (
+  ) : hasAccount ? (
     <div className="mb-[75px] sm:mb-[87px]">
       <img src={Group} alt="Group" />
     </div>
-  )
+  ) : (<span></span>)
 }

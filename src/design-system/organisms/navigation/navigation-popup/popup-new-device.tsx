@@ -69,7 +69,10 @@ export const PopupNewDevice: React.FC<PopupNewDeviceProps> = () => {
       ) : (
         <div>
           <H2 className="mb-3">Success</H2>
-          <div className="mb-12">Now you can proceed to application.</div>
+          <div className="mb-12">
+            You are now able to securely log in without passwords on this
+            device.
+          </div>
           <Button
             onClick={() => setStatus("")}
             large

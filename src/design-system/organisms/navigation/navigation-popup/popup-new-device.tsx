@@ -57,8 +57,8 @@ export const PopupNewDevice: React.FC<PopupNewDeviceProps> = () => {
     <div>
       <img src={logo} alt="logo" className="w-20 my-8" />
       {!isSuccess ? (
-        <div className="relative">
-          <Loader isLoading={isLoading} iframe />
+        <div>
+          <Loader isLoading={isLoading} iframe fullscreen />
           <H2 className="mb-3">Trust this device</H2>
 
           <div>

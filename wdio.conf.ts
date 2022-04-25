@@ -1,8 +1,9 @@
 import allure from "@wdio/allure-reporter"
+import allureReporter from "@wdio/allure-reporter"
 import dotenv from "dotenv"
-import cucumberJson from 'wdio-cucumberjs-json-reporter'
 import fs from "fs"
-import allureReporter from '@wdio/allure-reporter'
+import cucumberJson from "wdio-cucumberjs-json-reporter"
+
 dotenv.config()
 export const config: WebdriverIO.Config = {
   //
@@ -122,7 +123,7 @@ export const config: WebdriverIO.Config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: "https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app",
+  baseUrl: "http://localhost:8000",
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -170,15 +171,22 @@ export const config: WebdriverIO.Config = {
         useCucumberStepReporter: true,
       },
     ],
-    ['json', { outputDir: 'test/report',
-         outputFileFormat: function() {
-         return `cucumber_report.json`
-       } }
+    [
+      "json",
+      {
+        outputDir: "test/report",
+        outputFileFormat: function () {
+          return `cucumber_report.json`
+        },
+      },
     ],
-    ['cucumberjs-json', {
-      jsonFolder: 'test/reporter/json',
-      language: 'en'
-      }],
+    [
+      "cucumberjs-json",
+      {
+        jsonFolder: "test/reporter/json",
+        language: "en",
+      },
+    ],
   ],
 
   //
@@ -305,7 +313,7 @@ export const config: WebdriverIO.Config = {
    * @param {Object}                 context  Cucumber World object
    */
   beforeScenario: async function (world) {
-    await allureReporter.addFeature(world.name);
+    await allureReporter.addFeature(world.name)
   },
   /**
    *
@@ -327,9 +335,9 @@ export const config: WebdriverIO.Config = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {Object}             context          Cucumber World object
    */
-    afterStep: async function (step, scenario, result) {
-      cucumberJson.attach(await browser.takeScreenshot(), 'image/png');
-    },
+  afterStep: async function (step, scenario, result) {
+    cucumberJson.attach(await browser.takeScreenshot(), "image/png")
+  },
   /**
    *
    * Runs after a Cucumber Scenario.

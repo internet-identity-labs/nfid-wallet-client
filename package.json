@@ -13,7 +13,8 @@
     "test:dev": "craco test",
     "test": "jest --passWithNoTests",
     "tunnel": "./scripts/tunnel.sh",
-    "wdio": "wdio run test/wdio.conf.ts"
+    "wdio": "wdio run test/wdio.conf.ts",
+    "generate-cucumber-html-report": "ts-node ./test/reporter/index.ts"
   },
   "dependencies": {
     "@dfinity/agent": "0.9.3",
@@ -45,6 +46,7 @@
     "swiper": "^8.0.7",
     "usergeek-ic-js": "git+https://github.com/usergeek/usergeek-ic-js",
     "uuid": "8.3.2",
+    "wdio-cucumberjs-json-reporter": "^4.4.1",
     "wdio-geckodriver-service": "^2.1.0"
   },
   "devDependencies": {
@@ -70,6 +72,7 @@
     "buffer": "6.0.3",
     "chai": "^4.3.6",
     "chromedriver": "^99.0.0",
+    "cucumber-html-reporter": "^5.5.0",
     "dotenv": "16.0.0",
     "eslint": "8.12.0",
     "eslint-config-prettier": "8.5.0",
@@ -84,7 +87,8 @@
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3",
     "util": "0.12.4",
-    "wdio-chromedriver-service": "^7.3.2"
+    "wdio-chromedriver-service": "^7.3.2",
+    "wdio-json-reporter": "^3.0.0"
   },
   "eslintConfig": {
     "extends": [

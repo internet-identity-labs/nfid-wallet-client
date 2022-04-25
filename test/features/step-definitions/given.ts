@@ -1,6 +1,13 @@
-import { Given } from "@cucumber/cucumber";
+import { Given } from "@cucumber/cucumber"
+
+// import DFX_JSON from "../../../.dfx/local/canister_ids.json"
 import basePage from "../../page-objects/basePage"
 
+const getUrl = (basePath: string) => {
+  // return `${basePath}?canisterId=${DFX_JSON.assets.local}`
+  return basePath
+}
+
 Given(/^User navigates to home page using$/, async function () {
-  await basePage.navigateTo('https://dq6kg-laaaa-aaaah-aaeaq-cai.raw.ic0.app/');
+  await basePage.navigateTo(getUrl("/"))
 })

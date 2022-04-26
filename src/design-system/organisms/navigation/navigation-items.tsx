@@ -115,7 +115,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   {/*</Link>*/}
                   <Link
                     className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
-                    to={`${RAC.base}/${RAC.base}`}
+                    to={`${RAC.base}/${RAC.recoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
                     Recover NFID

@@ -72,10 +72,10 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
 
   return (
     <AppScreen isFocused>
-      <H5 className="mt-8">This device is now equipped for Web 3.0</H5>
+      {/* <H5 className="mt-8">This device is now equipped for Web 3.0</H5> */}
       <Card className="grid grid-cols-12">
-        <CardBody className="col-span-12 md:col-span-11 lg:col-span-7">
-          <H2 className="leading-10">Your NFID is ready</H2>
+        <CardBody className="col-span-12 md:col-span-11 lg:col-span-7 py-0 sm:py-6">
+          <H2 className="leading-10 my-4">Your NFID is ready</H2>
 
           <P className="my-6">
             This recovery phrase is the only backup to access your NFID in case

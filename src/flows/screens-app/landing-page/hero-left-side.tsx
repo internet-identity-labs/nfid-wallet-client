@@ -29,7 +29,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
             {isQRCode && isMobile && (
               <img src={MobileHero} alt="" className="mb-8 min-h-[300px]" />
             )}
-            <h1 className="font-bold text-titleMobile sm:text-titleLarge">
+            <h1 className="font-bold text-3xl lg:text-4xl">
               <span
                 style={{
                   WebkitTextFillColor: "transparent",

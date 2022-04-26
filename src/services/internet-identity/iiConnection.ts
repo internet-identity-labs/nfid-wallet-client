@@ -17,6 +17,8 @@ import * as tweetnacl from "tweetnacl"
 
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
+import { _SERVICE as ImAdditionService } from "frontend/services/iiw/im_addition.did"
+import { idlFactory as ImAdditionIdlFactory } from "frontend/services/iiw/im_addition_idl"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 import { idlFactory as PubsubChannelIdlFactory } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"
 
@@ -50,6 +52,7 @@ declare const IC_HOST: string
 declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
+declare const IM_ADDITION_CANISTER_ID: string
 
 if (!INTERNET_IDENTITY_CANISTER_ID)
   throw new Error(
@@ -100,6 +103,7 @@ type LoginSuccess = {
   internetIdentity: IIConnection
   identityManager: ActorSubclass<IdentityManagerService>
   pubsubChannelActor: ActorSubclass<PubsubChannelService>
+  imAdditionActor: ActorSubclass<ImAdditionService>
   userNumber: bigint
 }
 
@@ -189,6 +193,11 @@ export class IIConnection {
           PubsubChannelIdlFactory,
           PUB_SUB_CHANNEL_CANISTER_ID,
         ),
+        imAdditionActor: await this.createServiceActor<ImAdditionService>(
+          delegation.delegationIdentity,
+          ImAdditionIdlFactory,
+          IM_ADDITION_CANISTER_ID,
+        ),
         userNumber,
       }
     } else if (hasOwnProperty(registerResponse, "bad_challenge")) {
@@ -264,6 +273,11 @@ export class IIConnection {
         PubsubChannelIdlFactory,
         PUB_SUB_CHANNEL_CANISTER_ID,
       ),
+      imAdditionActor: await this.createServiceActor<ImAdditionService>(
+        delegationIdentity,
+        ImAdditionIdlFactory,
+        IM_ADDITION_CANISTER_ID,
+      ),
     }
   }
 
@@ -312,6 +326,11 @@ export class IIConnection {
         PubsubChannelIdlFactory,
         PUB_SUB_CHANNEL_CANISTER_ID,
       ),
+      imAdditionActor: await this.createServiceActor<ImAdditionService>(
+        delegationIdentity.delegationIdentity,
+        ImAdditionIdlFactory,
+        IM_ADDITION_CANISTER_ID,
+      ),
     }
   }
 
@@ -355,6 +374,11 @@ export class IIConnection {
         delegationIdentity.delegationIdentity,
         PubsubChannelIdlFactory,
         PUB_SUB_CHANNEL_CANISTER_ID,
+      ),
+      imAdditionActor: await this.createServiceActor<ImAdditionService>(
+        delegationIdentity.delegationIdentity,
+        ImAdditionIdlFactory,
+        IM_ADDITION_CANISTER_ID,
       ),
     }
   }
@@ -562,6 +586,7 @@ const requestFEDelegationChain = async (
         Principal.from(INTERNET_IDENTITY_CANISTER_ID),
         Principal.from(IDENTITY_MANAGER_CANISTER_ID),
         Principal.from(PUB_SUB_CHANNEL_CANISTER_ID),
+        Principal.from(IM_ADDITION_CANISTER_ID),
       ],
     },
   )

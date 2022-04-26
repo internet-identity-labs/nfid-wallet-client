@@ -36,7 +36,7 @@ const Template: ComponentStory<typeof Profile> = (args) => {
 export const LoggedIn = Template.bind({})
 
 LoggedIn.args = {
-  account: { anchor: "10005" },
+  account: { anchor: "10005", name: "Test Account" },
   applications: ["NFID Demo"],
   devices: [{ alias: "My Device", pubkey: [123, 456, 789] }],
   loading: false,

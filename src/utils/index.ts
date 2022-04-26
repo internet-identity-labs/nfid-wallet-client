@@ -82,12 +82,12 @@ export const getBrowserName = () => {
   return browser.getBrowser().name
 }
 
-export const generateRandomString = (length: number = 8) => {
-  let text = ""
-  let possible = "abcdefghijklmnopqrstuvwxyz0123456789"
+export const isOdd = (num: number) => num % 2 === 1
 
-  for (let i = 0; i < length; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
+export const getUrl = (url: string) => {
+  if (!/^(http|https):\/\//.test(url)) {
+    url = "http://" + url
+  }
 
-  return text
+  return new URL(url)
 }

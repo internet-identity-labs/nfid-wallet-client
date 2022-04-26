@@ -27,7 +27,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
 
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
   const { account } = useAccount()
-  const { logout, imAddition } = useAuthentication()
+  const { imAddition } = useAuthentication()
 
   React.useEffect(() => {
     imAddition &&
@@ -51,7 +51,6 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
 
   return (
     <Profile
-      onLogout={logout}
       account={account}
       applications={applications}
       onDeleteDeviceFactory={handleDeleteDevice}
@@ -59,8 +58,10 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
       modalOptions={modalOptions}
       setModalOptions={setModalOptions}
       setShowModal={setShowModal}
+      hasPoa={hasPoa}
       devices={devices}
       loading={loading}
+      personas={[]}
     />
   )
 }

@@ -18,6 +18,7 @@ export const AppScreenAuthorizeRegisterDecider: React.FC<
       <Card className="grid grid-cols-12">
         <CardBody className="col-span-12 lg:col-span-10 xl:col-span-6">
           <AuthorizeRegisterDecider
+            iframe
             onRegister={() => {
               console.log("register me")
             }}

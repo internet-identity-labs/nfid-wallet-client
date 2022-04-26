@@ -2,7 +2,7 @@ import { PublicKey } from "@dfinity/agent"
 import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"
-import React from "react"
+import React, { useEffect } from "react"
 import { generatePath, useLocation } from "react-router-dom"
 
 import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
@@ -42,6 +42,7 @@ type StateProps = {
 }
 
 const registerAtom = atom<boolean>(false)
+const userNumberAtom = atom<bigint | undefined>(undefined)
 const loadingAtom = atom<loadingState>("initial")
 
 export const useUnknownDeviceConfig = () => {
@@ -49,7 +50,14 @@ export const useUnknownDeviceConfig = () => {
   const [showRegister, setShowRegister] = useAtom(registerAtom)
 
   const { state } = useLocation()
-  const [userNumber, setUserNumber] = React.useState<bigint | undefined>(
+  const [userNumber, setUserNumber] = useAtom(userNumberAtom)
+
+  useEffect(() => {
+    const number = (state as StateProps)?.userNumber
+    if (number) setUserNumber(number)
+  }, [setUserNumber, state])
+
+  React.useState<bigint | undefined>(
     (state as StateProps)?.userNumber,
   )
   const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
@@ -99,11 +107,10 @@ export const useUnknownDeviceConfig = () => {
       if (!userNumber) throw new Error("No anchor found")
 
       setNewDeviceKey(device.publicKey)
-      const response = await createDevice({
+      return await createDevice({
         ...device,
         userNumber: userNumber,
       })
-      return response
     },
     [createDevice, userNumber],
   )
@@ -206,6 +213,7 @@ export const useUnknownDeviceConfig = () => {
       pubKey,
       setShowRegister,
       setStatus,
+      setUserNumber,
     ],
   )
 

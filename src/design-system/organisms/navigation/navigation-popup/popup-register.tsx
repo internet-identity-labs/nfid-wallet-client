@@ -4,7 +4,8 @@ import { Link } from "react-router-dom"
 import { RegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode"
 import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
 
-interface PopupRegisterProps {}
+interface PopupRegisterProps {
+}
 
 export const PopupRegister: React.FC<PopupRegisterProps> = () => {
   return (

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import map_pin from "./map_pin.png"
+import { MapPinIcon } from "../icons/map-pin"
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -18,12 +18,8 @@ export const PoapLocation: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <div style={{ marginBottom: "1rem" }}>
-        <img
-          src={map_pin}
-          style={{ width: "24px", display: "inline" }}
-          alt=""
-        />
+      <div className="flex mb-2">
+        <MapPinIcon />
         <p
           style={{ display: "inline", paddingLeft: "10px", fontWeight: "700" }}
           className={clsx([

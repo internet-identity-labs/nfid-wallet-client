@@ -2,18 +2,17 @@ import {
   Button,
   Card,
   CardBody,
-  H5,
   Loader,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 
-import { PoapDescription } from "frontend/design-system/atoms/typography/poapDescription"
-import { PoapLocation } from "frontend/design-system/atoms/typography/poapLocation"
+import { CalendarIcon } from "frontend/design-system/atoms/icons/calendar"
+import { MapPinIcon } from "frontend/design-system/atoms/icons/map-pin"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
-import image_dog from "./image_dog.png"
+import image_dog from "./image_dog.svg"
 
 interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<
@@ -85,10 +84,47 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
       }}
     >
       <main className={clsx("flex flex-1")}>
-        <div className="container px-6 py-0 mx-auto sm:py-4">
-          <img src={image_dog} alt="anonymous dog" />
-          <Card className="offset-header" style={{ marginTop: "-3rem" }}>
-            <H5 className="mb-2 font-bold">April 22-28, 2022</H5>
+        <div
+          className={clsx(
+            // MOBILE
+            "container flex flex-col px-6 py-0 mx-auto sm:py-4",
+            // SMALL
+            "md:flex-row-reverse",
+            // MEDIUM
+            "",
+          )}
+        >
+          <div className="flex flex-grow w-60">
+            <img
+              src={image_dog}
+              className="object-contain object-top"
+              alt="anonymous dog"
+            />
+          </div>
+          <Card
+            className={clsx(
+              // MOBILE
+              "flex flex-col",
+              // SMALL
+              "md:pt-16",
+            )}
+          >
+            <div className="flex flex-col">
+              <div className="flex">
+                <div>
+                  <CalendarIcon />
+                </div>
+                <div className="mb-2 ml-2">April 22-28, 2022</div>
+              </div>
+              <div className="flex">
+                <div>
+                  <MapPinIcon />
+                </div>
+                <div className="mb-2 ml-2">
+                  Computer History Museum, Mountain View, CA
+                </div>
+              </div>
+            </div>
 
             <CardBody>
               <Swiper
@@ -123,18 +159,11 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
                       </span>{" "}
                       Workshop
                     </div>
-                    <PoapLocation className="pb-4">
-                      <div style={{ display: "inline" }}>
-                        Computer History Museum,{" "}
-                      </div>
-                      <div style={{ display: "inline" }}>Mountain View, CA</div>
-                    </PoapLocation>
 
-                    <PoapDescription>
-                      Add proof that you attended today's workshop as a
-                      verifiable credential to one of infinite DIDs, powered by
-                      NFID.
-                    </PoapDescription>
+                    <div className="font-bold">
+                      Create an NFID to add this proof of attendance badge to
+                      your identity
+                    </div>
                   </div>
                 </SwiperSlide>
               </Swiper>

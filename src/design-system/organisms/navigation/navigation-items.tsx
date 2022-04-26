@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom"
 import User from "frontend/assets/user.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import useClickOutside from "frontend/hooks/use-click-outside"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
@@ -13,13 +14,10 @@ import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 
-interface NavigationItemsProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
+  const { isAuthenticated } = useAuthentication()
   const { account } = useAccount()
   const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
@@ -94,7 +92,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   {item.label}
                 </div>
               ))}
-              {account ? (
+              {isAuthenticated || account ? (
                 <PopupLogin />
               ) : (
                 <>
@@ -138,7 +136,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           </div>
         ))}
         <div className="relative" ref={popupRef}>
-          {account ? (
+          {isAuthenticated || account ? (
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base">
               <img
                 src={User}

@@ -9,16 +9,24 @@ interface PopupLoginProps {}
 
 export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
   const { userNumber, readAccount, account } = useAccount()
-  const { login, isAuthenticated, logout, identityManager } =
+  const { login, isRemoteDelegate, isAuthenticated, logout, identityManager } =
     useAuthentication()
   const navigate = useNavigate()
 
   useEffect(() => {
-    isAuthenticated && readAccount(identityManager, userNumber)
-  }, [identityManager, isAuthenticated, readAccount, userNumber])
+    isAuthenticated &&
+      !isRemoteDelegate &&
+      readAccount(identityManager, userNumber)
+  }, [
+    identityManager,
+    isAuthenticated,
+    isRemoteDelegate,
+    readAccount,
+    userNumber,
+  ])
 
   return (
-    <div className="px-4">
+    <div className="px-4 mx-auto">
       <h2 className="mt-5 text-xl font-bold text-left">
         {!isAuthenticated ? "Welcome " : "Logged in "}
         {account?.name ?? account?.anchor ?? ""}

@@ -1,5 +1,6 @@
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import React, { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -10,10 +11,11 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
   const { userNumber, readAccount, account } = useAccount()
   const { login, isAuthenticated, logout, identityManager } =
     useAuthentication()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    readAccount(identityManager, userNumber)
-  }, [identityManager, readAccount, userNumber])
+    isAuthenticated && readAccount(identityManager, userNumber)
+  }, [identityManager, isAuthenticated, readAccount, userNumber])
 
   return (
     <div className="px-4">
@@ -24,10 +26,22 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
       <Button
         primary
         className="w-full mt-4"
-        onClick={!isAuthenticated ? () => login() : () => logout()}
+        onClick={
+          !isAuthenticated
+            ? () => login()
+            : () => navigate("/profile/authenticate")
+        }
       >
-        {!isAuthenticated ? "Log in" : "Log out"}
+        {!isAuthenticated ? "Log in" : "Profile"}
       </Button>
+      {isAuthenticated && (
+        <p
+          onClick={() => logout()}
+          className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+        >
+          Logout
+        </p>
+      )}
     </div>
   )
 }

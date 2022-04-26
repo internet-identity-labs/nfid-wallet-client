@@ -18,11 +18,15 @@ export const useRegisterQRCode = () => {
     [],
   )
 
-  const url = useMemo(() => {
-    const multipassDomain = process.env.REACT_APP_TUNNEL_DOMAIN
+  const registerRoute = useMemo(
+    () =>
+      `${AppScreenAuthorizeAppConstants.base}/${publicKey}/${window.location.host}/intro`,
+    [publicKey],
+  )
 
-    return `https://${multipassDomain}${AppScreenAuthorizeAppConstants.base}/${publicKey}/${window.location.host}/intro`
-  }, [publicKey])
+  const url = useMemo(() => {
+    return `https://${window.location.host}${registerRoute}`
+  }, [registerRoute])
 
   const handleLoginFromRemoteDelegation = useCallback(
     async (nfidJsonDelegate, userNumber) => {
@@ -69,6 +73,7 @@ export const useRegisterQRCode = () => {
 
   return {
     url,
+    registerRoute,
     handlePollForDelegate,
   }
 }

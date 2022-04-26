@@ -76,17 +76,14 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   }
 
   const handleCreateKeys = React.useCallback(async () => {
-    console.log(">> handleCreateKeys", {})
     setIsloading(true)
     const registerPayload = await createWebAuthNIdentity()
-    console.log(">> ", { registerPayload, secret })
 
     // TODO: fix url
     const path = generatePath(captchaPath, {
       secret,
       scope,
     })
-    console.log(">> ", { path })
 
     navigate(path, {
       state: {

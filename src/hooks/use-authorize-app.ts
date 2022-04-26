@@ -82,15 +82,12 @@ export const useAuthorizeApp = () => {
       scope: string
       persona_id: string
     }) => {
-      console.log(">> remoteLogin")
       if (!userNumber) {
         throw new Error("Device not registered")
       }
       if (!internetIdentity) {
         throw new Error("Unauthorized")
       }
-
-      console.log(">> remoteLogin", { userNumber, hostname, persona_id })
 
       const protocol = FRONTEND_MODE === "production" ? "https" : "http"
 
@@ -112,7 +109,6 @@ export const useAuthorizeApp = () => {
       })
 
       const response = await postMessages(secret, [message])
-      console.log(">> remoteLogin", { response })
 
       return response
     },
@@ -126,6 +122,24 @@ export const useAuthorizeApp = () => {
     ],
   )
 
+  const remoteNFIDLogin = React.useCallback(
+    async ({ secret }: { secret: string }) => {
+      if (!userNumber) {
+        throw new Error("Device not registered")
+      }
+      const message = JSON.stringify({
+        type: "remote-nfid-login-register",
+        userNumber: userNumber.toString(),
+        nfid: { chain, sessionKey },
+      })
+
+      const response = await postMessages(secret, [message])
+
+      return response
+    },
+    [chain, postMessages, sessionKey, userNumber],
+  )
+
   const sendWaitForUserInput = React.useCallback(
     async (secret) => {
       const message = JSON.stringify({
@@ -137,5 +151,5 @@ export const useAuthorizeApp = () => {
     [createTopic, postMessages],
   )
 
-  return { remoteLogin, sendWaitForUserInput }
+  return { remoteLogin, remoteNFIDLogin, sendWaitForUserInput }
 }

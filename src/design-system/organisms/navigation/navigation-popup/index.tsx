@@ -3,24 +3,22 @@ import React from "react"
 // @ts-ignore
 import { Fade } from "react-reveal"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
-
 import { PopupLogin } from "./popup-login"
 import { PopupRegister } from "./popup-register"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
-interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {
+}
 
 export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
-  const { isAuthenticated } = useAuthentication()
-  const { account } = useAccount();
+  const { account } = useAccount()
 
   return (
     <Fade>
       <div
         className={clsx(
           "absolute right-0 flex flex-col items-center pb-6 bg-white shadow-iframe rounded-xl top-14",
-          isAuthenticated ? "w-60" : "w-80",
+          account ? "w-60" : "w-80",
         )}
       >
         <div

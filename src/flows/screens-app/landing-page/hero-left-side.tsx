@@ -18,9 +18,7 @@ interface HeroLeftSideProps extends ElementProps<HTMLDivElement> {
 export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
   const { isMobile } = useDeviceInfo()
   const navigate = useNavigate()
-  const { url } = useRegisterQRCode()
-
-  console.log({ url })
+  const { registerRoute } = useRegisterQRCode()
 
   return (
     <div className="sticky z-30 sm:mt-40 top-28">
@@ -29,7 +27,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
           <div>
             {" "}
             {isQRCode && isMobile && (
-              <img src={MobileHero} alt="" className="mb-8" />
+              <img src={MobileHero} alt="" className="mb-8 min-h-[300px]" />
             )}
             <h1 className="font-bold text-titleMobile sm:text-titleLarge">
               <span
@@ -56,7 +54,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
               </h2>
               <div className="mt-8 pb-52">
                 <Button
-                  onClick={() => (window.location.href = url)}
+                  onClick={() => navigate(registerRoute)}
                   largeMax
                   secondary
                 >
@@ -64,10 +62,9 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                 </Button>
                 <Link
                   to={`${RAC.base}/${RAC.recoveryPhrase}`}
-                  state={{ from: "loginWithRecovery" }}
                   className="block w-8/12 mx-auto mt-4 text-center cursor-pointer text-blue-base hover:underline hover:text-blue-hove"
                 >
-                  Unlock NFID with Security Key or Recover NFID
+                  Recover NFID
                 </Link>
               </div>
             </>
@@ -83,7 +80,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                 }
                 className="cursor-pointer text-blue-base hover:underline hover:text-blue-hover"
               >
-                Unlock NFID with Security Key or Recover NFID
+                Recover NFID
               </span>
             </h2>
           )}

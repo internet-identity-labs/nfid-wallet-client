@@ -1,8 +1,11 @@
 import { Button, ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+import { Link, useNavigate } from "react-router-dom"
 
 import User from "frontend/assets/user.svg"
+import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
+import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
 import useClickOutside from "frontend/hooks/use-click-outside"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
@@ -18,9 +21,10 @@ interface NavigationItemsProps
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { account } = useAccount()
-
+  const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
+  const { registerRoute } = useRegisterQRCode()
 
   const classes = {
     navItem:
@@ -55,6 +59,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
     item: string,
   ) => {
     e.preventDefault()
+    if (window.location.pathname !== "/") navigate(`/#${item}`)
 
     const element = document.getElementById(item)
 
@@ -69,7 +74,11 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   return (
     <>
       <div className="md:hidden">
-        <ButtonMenu buttonElement={<img src={IconMenu} alt="menu" />}>
+        <ButtonMenu
+          buttonElement={
+            <img src={IconMenu} alt="menu" className="rotate-180" />
+          }
+        >
           {(toggleMenu) => (
             <div className="p-4 py-6 space-y-5 font-bold bg-white rounded w-[70vw] pt-28">
               {items.map((item, index) => (
@@ -88,16 +97,30 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               {account ? (
                 <PopupLogin />
               ) : (
-                <Button
-                  className={clsx(
-                    "h-full leading-none",
-                    window.scrollY < 500 && "hidden",
-                  )}
-                  primary
-                  onClick={() => setIsPopupVisible(!isPopupVisible)}
-                >
-                  Register
-                </Button>
+                <>
+                  <Button
+                    className={"leading-none"}
+                    largeMax
+                    primary
+                    onClick={() => navigate(registerRoute)}
+                  >
+                    Register
+                  </Button>
+                  {/*<Link*/}
+                  {/*  className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"*/}
+                  {/*  to={`${RAC.base}/${RAC.recoveryPhrase}`}*/}
+                  {/*  state={{ from: "loginWithRecovery" }}*/}
+                  {/*>*/}
+                  {/*  Unlock NFID with Security Key*/}
+                  {/*</Link>*/}
+                  <Link
+                    className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+                    to={`${RAC.base}/${RAC.base}`}
+                    state={{ from: "loginWithRecovery" }}
+                  >
+                    Recover NFID
+                  </Link>
+                </>
               )}
             </div>
           )}

@@ -5,7 +5,7 @@ import background from "./background.svg"
 
 interface PoaBannerProps {}
 
-export const PoaBanner: React.FC<PoaBannerProps> = ({ children }) => {
+export const PoaBanner: React.FC<PoaBannerProps> = () => {
   return (
     <div
       className={clsx([

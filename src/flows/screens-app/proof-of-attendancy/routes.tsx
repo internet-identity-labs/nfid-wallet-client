@@ -30,7 +30,7 @@ export const AppScreenProofOfAttendencyRoutes = (redirectTo: string) => (
       path={AppScreenProofOfAttendencyConstants.captcha}
       element={
         <Captcha
-          successPath={AppScreenProofOfAttendencyConstants.copyRecoveryPhrase}
+          successPath={`${AppScreenProofOfAttendencyConstants.base}/${AppScreenProofOfAttendencyConstants.copyRecoveryPhrase}`}
         />
       }
     />

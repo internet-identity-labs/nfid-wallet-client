@@ -248,13 +248,13 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 <div className="relative z-20 text-base md:text-xl">
                   <div className="text-base md:mt-5 md:text-lg md:leading-[26px]">
                     <p>
-                      Whether from compromised account credentials, unregulated selling of personal data, or the reuse of identifiers linking all our internet activity, the exposure of personal data makes us vulnerable to being targeted, manipulated, and coerced against our will.
+                      We are unblocking the next wave of digital innovation by protecting the world's internet accounts from breaches, personal data from exploitation, and applications from sybil attacks.
                     </p>{" "}
                     <p className="my-5">
-                      Our data should be ours to share with whomever we choose.
+                      Whether from compromised account credentials, unregulated selling of personal data, or the reuse of identifiers linking internet activity, the exposure of personal data makes us vulnerable to exploitation, manipulation, and coercion.
                     </p>{" "}
                     <p className="my-5">
-                      We are here to unblock the next wave of digital innovation by protecting the world's internet accounts from breaches and personal data from exploitation.
+                      And until applications can be guaranteed a particular user is unique and human, we cannot enjoy an Internet free from bots and spam, cannot enable democratic governance or capital allocations, and cannot create privacy-preserving reputation systems.
                     </p>
                   </div>
                   {/* <Link

@@ -38,19 +38,19 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                   WebkitBackgroundClip: "text",
                 }}
               >
-                The Identity Layer
+                Secure your data
               </span>{" "}
-              <br /> for the Internet
+              <br /> with one touch
             </h1>
             {!isQRCode && isMobile && (
-              <h2>Equip your Web 2.0 devices for Web 3.0 with NFID</h2>
+              <h2>The decentralized one-touch multi-factor identity provider and crypto wallet</h2>
             )}
           </div>
 
           {isQRCode && isMobile && (
             <>
               <h2 className="mt-2 text-lg">
-                Equip your Web 2.0 devices for <br /> Web 3.0 with NFID
+                The decentralized one-touch multi-factor <br /> identity provider and crypto wallet
               </h2>
               <div className="mt-8 pb-52">
                 <Button
@@ -64,14 +64,14 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                   to={`${RAC.base}/${RAC.recoveryPhrase}`}
                   className="block w-8/12 mx-auto mt-4 text-center cursor-pointer text-blue-base hover:underline hover:text-blue-hove"
                 >
-                  Recover NFID
+                  Recover your existing NFID
                 </Link>
               </div>
             </>
           )}
           {isQRCode && !isMobile && (
             <h2 className="mt-5 text-base sm:text-lg sm:leading-[26px]">
-              Register by scanning the code or <br />{" "}
+              Scan the QR code to register or <br />{" "}
               <span
                 onClick={() =>
                   navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
@@ -80,13 +80,13 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                 }
                 className="cursor-pointer text-blue-base hover:underline hover:text-blue-hover"
               >
-                Recover NFID
+                Recover your existing NFID
               </span>
             </h2>
           )}
           {!isQRCode && !isMobile && (
             <h2 className="mt-5 text-base sm:text-lg sm:leading-[26px]">
-              Equip your Web 2.0 devices for Web 3.0 with NFID
+              The decentralized one-touch multi-factor identity provider and crypto wallet
             </h2>
           )}
         </div>

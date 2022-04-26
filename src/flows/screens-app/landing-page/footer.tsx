@@ -13,7 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ children, className }) => {
     <footer className="flex flex-col items-center justify-between mt-[100px] md:flex-row">
       <small>© 2022 Internet Identity Labs, Inc</small>
       <div>
-        <img src={PoweredBy} alt="PoweredBy" />
+        <a href="https://smartcontracts.org" target="_blank" rel="noreferrer"><img src={PoweredBy} alt="PoweredBy" /></a>
       </div>
     </footer>
   )

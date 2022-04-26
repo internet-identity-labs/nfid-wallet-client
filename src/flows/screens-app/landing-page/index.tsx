@@ -12,15 +12,15 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import Arrow from "./assets/arrow.svg"
 import Blur1 from "./assets/blur_1.svg"
-import Blur2 from "./assets/blur_2.svg"
+import Blur2 from "./assets/blur_green.png"
 import Icon1 from "./assets/nfid_icon_1.svg"
 import Icon2 from "./assets/nfid_icon_2.svg"
 import Icon3 from "./assets/nfid_icon_3.svg"
 import Icon_pink from "./assets/nfid_pink.svg"
-import Icon_yellow from "./assets/nfid_yellow.svg"
-import Discord from "./assets/social/discord.svg"
-import Github from "./assets/social/github.svg"
-import Twitter from "./assets/social/twitter.svg"
+import Icon_yellow from "./assets/blur_pink.png"
+import Discord from "./assets/social/ds.svg"
+import Github from "./assets/social/gh.svg"
+import Twitter from "./assets/social/tw.svg"
 
 import { Footer } from "./footer"
 import { HeroLeftSide } from "./hero-left-side"
@@ -53,7 +53,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           >
             <div className="relative">
               <HeroLeftSide isQRCode={!account} />
-              <Parallax speed={isMobile ? undefined : -170}>
+              <Parallax speed={isMobile ? undefined : -300}>
                 <p className="absolute text-[25vw] opacity-[0.02] z-0 left-0 font-bold">
                   Identity
                 </p>
@@ -72,16 +72,14 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                   speed={isMobile ? undefined : -10}
                 >
                   <p className="flex justify-end text-[32px] text-black opacity-10 font-extralight mb-5">
-                    1/3
+                    1/4
                   </p>
                   <p className="leading-[34px] text-[28px] md:text-[32px] z-20 md:leading-[40px]">
-                    Digital wallets are a revolution in online identity
-                    management
+                    Authenticate with one touch
                   </p>
                   <p className="z-20 mt-5 text-base font-normal md:text-lg md:leading-[26px]">
-                    In today's surveillance society where everything about us is
-                    collected and sold between government and industry, digital
-                    wallets have the potential of offering us a way out.
+                    NFID is powered by the cryptographic vaults in your biometric devices and supported by Apple, Google, Microsoft and others. One touch from any of your devices authenticates you to all your online accounts.
+                    No more usernames, passwords, one-time security codes, failed logins, or passwords resets.
                   </p>
                 </Parallax>
               </Fade>
@@ -96,16 +94,15 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                   speed={isMobile ? undefined : -10}
                 >
                   <p className="flex justify-end text-[32px] text-black opacity-10 font-extralight mb-5">
-                    2/3
+                    2/4
                   </p>
                   <p className="text-[28px] md:text-[32px] leading-[34px] md:leading-[40px]">
-                    It's what we self-custody our identity credentials and
-                    digital assets with
+                    Security and anonymity by default
                   </p>
                   <p className="mt-5 text-base font-normal md:text-lg md:leading-[26px]">
-                    Like physical wallets, digital wallets keep our digital
-                    items — cryptocurrencies, NFTs, vaccine cards, diplomas,
-                    identity credentials, etc — away from thieves.
+                    When passwords are replaced with the biometrics on your devices, the security of our accounts is physically in your hands.
+                    Without usernames, the link that data brokers could use to bind your activity together is broken.
+                    No more data breaches and no more username tracking.
                   </p>
                 </Parallax>
               </Fade>
@@ -115,16 +112,33 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                   speed={isMobile ? undefined : -10}
                 >
                   <p className="flex justify-end text-[32px] text-black opacity-10 font-extralight mb-5">
-                    3/3
+                    3/4
                   </p>
                   <p className="text-[28px] md:text-[32px] leading-[34px] md:leading-[40px]">
-                    But today's wallets all suffer from the same problems
+                    Privacy, preserved
                   </p>
                   <p className="mt-5 text-base font-normal md:text-lg md:leading-[26px]">
-                    Online or software-based wallets can still be hacked,
-                    hardware wallets are hard to use, and no matter the type,
-                    all our online activity can still be tracked and associated
-                    to us personally.
+                    Each website asks for data like your contact and payment information because the internet wasn't built with an "identity locker" for your personal details.
+                    NFID is that identity locker.
+                    No more time wasted manually entering the same information over and over.
+                  </p>
+                </Parallax>
+              </Fade>
+              <Fade right>
+                <Parallax
+                  className="relative z-20 font-bold mt-[25vh] md:mt-[65vh]"
+                  speed={isMobile ? undefined : -10}
+                >
+                  <p className="flex justify-end text-[32px] text-black opacity-10 font-extralight mb-5">
+                    4/4
+                  </p>
+                  <p className="text-[28px] md:text-[32px] leading-[34px] md:leading-[40px]">
+                    Your hybrid-hardware crypto wallet
+                  </p>
+                  <p className="mt-5 text-base font-normal md:text-lg md:leading-[26px]">
+                    Ensuring your crypto is safe from takeover means locking it in a vault only you have the key for.
+                    With NFID, those keys are stored in your phones, tablets, and computers, which themselves can only be used after a successful native biometric scan.
+                    Access your crypto from any device, no app required.
                   </p>
                 </Parallax>
               </Fade>
@@ -158,46 +172,40 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               <div className="grid grid-cols-1 gap-24 mt-20 text-white md:grid-cols-2">
                 <Fade bottom>
                   <div className="">
+                    <div className="icon-background-blur private-background-blur big-background-blur"></div>
+                    <div className="icon-background-blur private-background-blur small-background-blur"></div>
                     <img src={Icon1} alt="Private" />
                     <p className="text-[28px] md:text-[32px] mt-5 font-bold leading-[34px] md:leading-10">
                       Private
                     </p>
                     <p className="mt-5 text-base md:text-lg md:leading-[26px]">
-                      Every account you create across any service that supports
-                      NFID will automatically create a new, untraceable hardware
-                      wallet. You are the only person in the world able to trace
-                      accounts to your NFID, providing you with the best
-                      possible privacy online.
+                      Every account you create across any service that supports NFID will automatically create a new, untraceable hybrid-hardware wallet. You are the only person in the world able to trace accounts to your NFID, providing you with the best possible privacy online.
                     </p>
                   </div>
                 </Fade>
                 <Fade bottom>
                   <div className="">
+                    <div className="icon-background-blur convenient-background-blur big-background-blur"></div>
+                    <div className="icon-background-blur convenient-background-blur small-background-blur"></div>
                     <img src={Icon2} alt="Convenient" />
                     <p className="text-[28px] md:text-[32px] mt-5 font-bold leading-[34px] md:leading-10">
                       Convenient
                     </p>
                     <p className="mt-5 text-base md:text-lg md:leading-[26px]">
-                      A hardware device for each online account used to be
-                      impractical. NFID stores private keys on the
-                      specially-designed cryptographic chips of your phones,
-                      tablets, and computers so that creating new accounts or
-                      authenticating is simply a face or touch scan away.
+                      A private key for each online account used to be impractical. NFID stores private keys on the specially-designed cryptographic chips of your phones, tablets, and computers so that creating new accounts or authenticating is simply a face or touch scan away.
                     </p>
                   </div>
                 </Fade>
                 <Fade bottom>
                   <div className="">
+                    <div className="icon-background-blur secure-background-blur big-background-blur"></div>
+                    <div className="icon-background-blur secure-background-blur small-background-blur"></div>
                     <img src={Icon3} alt="Secure" />
                     <p className="text-[28px] md:text-[32px] mt-5 font-bold leading-[34px] md:leading-10">
                       Secure
                     </p>
                     <p className="mt-5 text-base md:text-lg md:leading-[26px]">
-                      Hardware wallets offer the greatest security guarantees
-                      because their private keys can't be exported, making it a
-                      one-way vault that only you have the ability to access.
-                      NFID makes each of your internet accounts exactly this
-                      kind of vault.
+                      Part of what gives hardware wallets such unbreakable security guarantees is that their private keys can't be exported, making it a one-way vault that only you have the ability to access. NFID makes each of your internet accounts exactly this kind of vault.
                     </p>
                   </div>
                 </Fade>
@@ -240,30 +248,21 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 <div className="relative z-20 text-base md:text-xl">
                   <div className="text-base md:mt-5 md:text-lg md:leading-[26px]">
                     <p>
-                      At Internet Identity Labs, our mission is to provide every
-                      human with the freedom to move digital assets, freedom to
-                      speak our minds, and freedom from targeted manipulation,
-                      all with the security and simplicity of the native face or
-                      fingerprint scan of our personal devices. We see a future
-                      where we can’t be subject to targeted manipulation because
-                      our activity can’t be tracked across accounts, where we
-                      can speak our minds because creating an account reveals no
-                      personal information about ourselves, and where we can
-                      move our digital assets without revealing who we are or
-                      the accounts in which our assets were stored.
+                      Whether from compromised account credentials, unregulated selling of personal data, or the reuse of identifiers linking all our internet activity, the exposure of personal data makes us vulnerable to being targeted, manipulated, and coerced against our will.
                     </p>{" "}
                     <p className="my-5">
-                      What we believe is simple: The internet should be{" "}
-                      <span className="font-bold">our</span> internet, nobody
-                      else's.
+                      Our data should be ours to share with whomever we choose.
+                    </p>{" "}
+                    <p className="my-5">
+                      We are here to unblock the next wave of digital innovation by protecting the world's internet accounts from breaches and personal data from exploitation.
                     </p>
                   </div>
-                  <Link
+                  {/* <Link
                     to="/our-mission"
-                    className="flex font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+                    className="text-xl flex font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
                   >
                     Read more <img className="ml-2" src={Arrow} alt="" />
-                  </Link>
+                  </Link> */}
                 </div>
               </Fade>
             </div>
@@ -338,7 +337,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 ))}
                 <Link
                   to={"/faq"}
-                  className="flex mt-5 font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+                  className="text-xl flex mt-5 font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
                 >
                   Read more <img className="ml-2" src={Arrow} alt="" />
                 </Link>
@@ -365,34 +364,47 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             </div>
             <Fade>
               <div className="grid justify-between grid-cols-2 gap-5 md:flex">
-                <a href="#!" target="_blank" rel="noreferrer">
-                  <img
-                    src={Discord}
-                    alt="discord"
-                    className="duration-300 hover:shadow-lightBlue"
-                  />
+                <a className="transition-all social-button discord" href="#!" target="_blank" rel="noreferrer">
+                  <div className="display-table social-button-wrapper">
+                    <div className="display-table-cell">
+                      <div className="display-table">
+                        <img
+                          src={Discord}
+                          alt="discord"
+                          className="display-table-cell"
+                        />
+                        <span className="display-table-cell">Discord</span>
+                      </div>
+                    </div>
+                  </div>
                 </a>
-                <a
-                  href="https://twitter.com/IdentityMaxis"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img
-                    src={Twitter}
-                    alt="twitter"
-                    className="duration-300 hover:shadow-lightCyan"
-                  />
+                <a className="transition-all social-button twitter" href="https://twitter.com/IdentityMaxis" target="_blank" rel="noreferrer">
+                  <div className="display-table social-button-wrapper">
+                    <div className="display-table-cell">
+                      <div className="display-table">
+                        <img
+                          src={Twitter}
+                          alt="twitter"
+                          className="display-table-cell"
+                        />
+                        <span className="display-table-cell">Twitter</span>
+                      </div>
+                    </div>
+                  </div>
                 </a>
-                <a
-                  href="https://github.com/internet-identity-labs"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img
-                    src={Github}
-                    alt="github"
-                    className="duration-300 hover:shadow-lightGray"
-                  />
+                <a className="transition-all social-button github" href="https://github.com/internet-identity-labs" target="_blank" rel="noreferrer">
+                  <div className="display-table social-button-wrapper">
+                    <div className="display-table-cell">
+                      <div className="display-table">
+                        <img
+                          src={Github}
+                          alt="github"
+                          className="display-table-cell"
+                        />
+                        <span className="display-table-cell">Github</span>
+                      </div>
+                    </div>
+                  </div>
                 </a>
               </div>
             </Fade>

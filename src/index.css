@@ -1,3 +1,6 @@
+/*
+DON'T INTRODUCE ADDITIONAL CODE TO THIS FILE
+*/
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Inter:wght@400;600;700&display=swap");
 
 @tailwind base;
@@ -262,9 +265,9 @@ ul {
     margin-top: -72px;
   }
 
-  main.landing-page .container {
+  /* main.landing-page .container {
     margin-top: 72px;
-  }
+  } */
 
   main.landing-page .container .sm\:text-titleLarge {
     font-size: 34px;

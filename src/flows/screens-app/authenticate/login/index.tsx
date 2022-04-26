@@ -1,4 +1,5 @@
 import { CardBody } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
@@ -17,8 +18,12 @@ export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
   onLoginSuccess,
 }) => (
   <AppScreen className="flex flex-col h-full" isFocused>
-    <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
-      <NFIDLogin onLoginSuccess={onLoginSuccess} />
-    </CardBody>
+    <main className={clsx("flex flex-1")}>
+      <div className="container px-6 py-0 mx-auto sm:py-4">
+        <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
+          <NFIDLogin onLoginSuccess={onLoginSuccess} />
+        </CardBody>
+      </div>
+    </main>
   </AppScreen>
 )

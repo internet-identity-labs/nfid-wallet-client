@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import React from "react"
 
 import { NavigationBar } from "../organisms/navigation/navigation-bar"
@@ -37,9 +36,7 @@ export const AppScreen: React.FC<Props> = ({
         />
         {title && <NavigationHeader title={title} description={description} />}
 
-        <main className={clsx(classNameWrapper, "flex flex-1")}>
-          <div className="container px-6 sm:py-4 py-0 mx-auto">{children}</div>
-        </main>
+        {children}
       </div>
     </Shell>
   )

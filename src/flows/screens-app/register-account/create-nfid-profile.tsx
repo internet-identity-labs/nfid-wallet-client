@@ -7,6 +7,7 @@ import {
   Loader,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -88,82 +89,86 @@ export const RegisterAccountCreateNFIDProfile: React.FC<
 
   return (
     <AppScreen>
-      <Card className="grid grid-cols-12 offset-header">
-        <CardBody className="col-span-12 md:col-span-9 lg:col-span-7">
-          <H2>Your NFID profile</H2>
-          <div className="mt-5 mb-8">
-            <P className="mb-3">
-              Your name and phone number are the first level of verification
-              that you are an individual person, freeing the Internet from spam
-              and scam accounts.
-            </P>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card className="grid grid-cols-12 offset-header">
+            <CardBody className="col-span-12 md:col-span-9 lg:col-span-7">
+              <H2>Your NFID profile</H2>
+              <div className="mt-5 mb-8">
+                <P className="mb-3">
+                  Your name and phone number are the first level of verification
+                  that you are an individual person, freeing the Internet from
+                  spam and scam accounts.
+                </P>
 
-            <P>
-              All your NFID Profile data is encrypted such that only your
-              devices have access.
-            </P>
-          </div>
+                <P>
+                  All your NFID Profile data is encrypted such that only your
+                  devices have access.
+                </P>
+              </div>
 
-          <Input
-            small
-            className="my-3"
-            labelText="Full name"
-            errorText={errors.name?.message}
-            placeholder="Enter your full name"
-            {...register("name", {
-              required: nameRules.errorMessages.required,
-              pattern: {
-                value: nameRules.regex,
-                message: nameRules.errorMessages.pattern,
-              },
-              minLength: {
-                value: nameRules.minLength,
-                message: nameRules.errorMessages.length,
-              },
-              maxLength: {
-                value: nameRules.maxLength,
-                message: nameRules.errorMessages.length,
-              },
-            })}
-          />
+              <Input
+                small
+                className="my-3"
+                labelText="Full name"
+                errorText={errors.name?.message}
+                placeholder="Enter your full name"
+                {...register("name", {
+                  required: nameRules.errorMessages.required,
+                  pattern: {
+                    value: nameRules.regex,
+                    message: nameRules.errorMessages.pattern,
+                  },
+                  minLength: {
+                    value: nameRules.minLength,
+                    message: nameRules.errorMessages.length,
+                  },
+                  maxLength: {
+                    value: nameRules.maxLength,
+                    message: nameRules.errorMessages.length,
+                  },
+                })}
+              />
 
-          <Input
-            small
-            type="tel"
-            className="my-3"
-            placeholder="+XXXXXXXXXXX"
-            labelText="Phone number"
-            errorText={errors.phonenumber?.message}
-            helperText="Example: +31 6 123 45 678"
-            {...register("phonenumber", {
-              required: phoneRules.errorMessages.required,
-              pattern: {
-                value: phoneRules.regex,
-                message: phoneRules.errorMessages.pattern,
-              },
-              minLength: {
-                value: phoneRules.minLength,
-                message: phoneRules.errorMessages.length,
-              },
-              maxLength: {
-                value: phoneRules.maxLength,
-                message: phoneRules.errorMessages.length,
-              },
-            })}
-          />
-          <div className="mt-8 mb-3">
-            <Button
-              large
-              secondary
-              disabled={!isFormComplete || loading}
-              onClick={handleSubmit(handleVerifyPhonenumber)}
-            >
-              Verify phone number
-            </Button>
-            <Loader isLoading={loading} />
-          </div>
-        </CardBody>
-      </Card>
+              <Input
+                small
+                type="tel"
+                className="my-3"
+                placeholder="+XXXXXXXXXXX"
+                labelText="Phone number"
+                errorText={errors.phonenumber?.message}
+                helperText="Example: +31 6 123 45 678"
+                {...register("phonenumber", {
+                  required: phoneRules.errorMessages.required,
+                  pattern: {
+                    value: phoneRules.regex,
+                    message: phoneRules.errorMessages.pattern,
+                  },
+                  minLength: {
+                    value: phoneRules.minLength,
+                    message: phoneRules.errorMessages.length,
+                  },
+                  maxLength: {
+                    value: phoneRules.maxLength,
+                    message: phoneRules.errorMessages.length,
+                  },
+                })}
+              />
+              <div className="mt-8 mb-3">
+                <Button
+                  large
+                  secondary
+                  disabled={!isFormComplete || loading}
+                  onClick={handleSubmit(handleVerifyPhonenumber)}
+                >
+                  Verify phone number
+                </Button>
+                <Loader isLoading={loading} />
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+      </main>
     </AppScreen>
   )
 }

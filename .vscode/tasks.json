@@ -12,6 +12,16 @@
       }
     },
     {
+      "label": "DFX",
+      "type": "shell",
+      "command": "dfx start",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    },
+    {
       "label": "NFID Storybook",
       "type": "shell",
       "command": "yarn && yarn storybook",

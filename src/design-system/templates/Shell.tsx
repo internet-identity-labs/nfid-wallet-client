@@ -59,7 +59,7 @@ export const Shell: React.FC<ShellProps> = ({
   )
 
   return (
-    <div className={clsx("", className)}>
+    <div>
       {bubbleOptions.showBubbles ? bubbles : null}
 
       {children}

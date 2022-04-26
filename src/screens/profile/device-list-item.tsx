@@ -4,7 +4,6 @@ import {
   ModalAdvanced,
   ModalAdvancedProps,
   P,
-  PencilIcon,
   TrashIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
@@ -28,8 +27,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
   const [modalOptions, setModalOptions] =
     React.useState<ModalAdvancedProps | null>(null)
   const { deleteDevice, handleLoadDevices } = useDevices()
-
-  console.log(">> ", { showModal, loading })
 
   const handleDeleteDevice = React.useCallback(
     (publicKey) => async () => {
@@ -73,13 +70,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
       })
     },
     [device.alias, device.pubkey, handleDeleteDevice],
-  )
-
-  const handleEditDeviceDialog = React.useCallback(
-    (e: React.SyntheticEvent) => {
-      console.log(">> handleEditDeviceDialog", { device })
-    },
-    [device],
   )
 
   const handleEditDeviceIconDialog = React.useCallback(
@@ -128,12 +118,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
         }
         action={
           <div className="flex space-x-2">
-            <div
-              className="hover:bg-gray-200 text-red-base"
-              onClick={handleEditDeviceDialog}
-            >
-              <PencilIcon />
-            </div>
             <div
               className="hover:bg-gray-200 text-red-base"
               onClick={handleDeleteDeviceDialog}

@@ -107,15 +107,19 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
       {!showRegister && url && !iframe ? (
         <AppScreen isFocused bubbleOptions={{ showBubbles: false }}>
-          <AuthorizeAppUnknownDevice
-            applicationName={applicationName}
-            url={url}
-            onLogin={() =>
-              navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
-                state: { from: "loginWithRecovery" },
-              })
-            }
-          />
+          <main className={clsx("flex flex-1")}>
+            <div className="container px-6 py-0 mx-auto sm:py-4">
+              <AuthorizeAppUnknownDevice
+                applicationName={applicationName}
+                url={url}
+                onLogin={() =>
+                  navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
+                    state: { from: "loginWithRecovery" },
+                  })
+                }
+              />
+            </div>
+          </main>
         </AppScreen>
       ) : null}
 

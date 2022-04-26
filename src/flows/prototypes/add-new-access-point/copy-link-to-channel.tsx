@@ -7,6 +7,7 @@ import {
   Loader,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 import { v4 } from "uuid"
 
@@ -49,37 +50,46 @@ export const CopyLinkToChannel: React.FC<CopyLinkToChannelProps> = () => {
 
   return (
     <AppScreen isFocused>
-      <Card className="flex flex-col h-full">
-        <CardTitle>Link another Access Point?</CardTitle>
-        <CardBody className="w-full max-w-xl">
-          <P>
-            Each Access Point you want to use, needs to be connected to your
-            Multipass Account.
-          </P>
-        </CardBody>
-        <CardAction
-          bottom
-          className="justify-center md:flex-col md:items-center"
-        >
-          {!uuid ? (
-            <Loader isLoading={!uuid} />
-          ) : (
-            <div className="flex flex-col justify-center">
-              <Button
-                large
-                text
-                onClick={() => console.log(">> click")}
-                disabled={!uuid}
-              >
-                show QR Code to scan
-              </Button>
-              <Button large secondary onClick={handleCopyUrl} disabled={!uuid}>
-                copy link
-              </Button>
-            </div>
-          )}
-        </CardAction>
-      </Card>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card className="flex flex-col h-full">
+            <CardTitle>Link another Access Point?</CardTitle>
+            <CardBody className="w-full max-w-xl">
+              <P>
+                Each Access Point you want to use, needs to be connected to your
+                Multipass Account.
+              </P>
+            </CardBody>
+            <CardAction
+              bottom
+              className="justify-center md:flex-col md:items-center"
+            >
+              {!uuid ? (
+                <Loader isLoading={!uuid} />
+              ) : (
+                <div className="flex flex-col justify-center">
+                  <Button
+                    large
+                    text
+                    onClick={() => console.log(">> click")}
+                    disabled={!uuid}
+                  >
+                    show QR Code to scan
+                  </Button>
+                  <Button
+                    large
+                    secondary
+                    onClick={handleCopyUrl}
+                    disabled={!uuid}
+                  >
+                    copy link
+                  </Button>
+                </div>
+              )}
+            </CardAction>
+          </Card>
+        </div>
+      </main>
     </AppScreen>
   )
 }

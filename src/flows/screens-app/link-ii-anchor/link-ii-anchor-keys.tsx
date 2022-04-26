@@ -6,6 +6,7 @@ import {
   Modal,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 import { useLocation } from "react-router-dom"
 
@@ -75,43 +76,47 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
 
   return (
     <AppScreen>
-      <Card className="grid grid-cols-12 offset-header">
-        <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
-          <H2 className="my-4">Link anchor {userNumber}</H2>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card className="grid grid-cols-12 offset-header">
+            <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
+              <H2 className="my-4">Link anchor {userNumber}</H2>
 
-          <P className="mb-3">
-            Log in to Internet Identity with anchor {userNumber} to complete the
-            linking.
-          </P>
+              <P className="mb-3">
+                Log in to Internet Identity with anchor {userNumber} to complete
+                the linking.
+              </P>
 
-          <P>
-            <span className="font-bold">Do not</span> close or refresh this
-            screen.
-          </P>
+              <P>
+                <span className="font-bold">Do not</span> close or refresh this
+                screen.
+              </P>
 
-          <a
-            href={iiDeviceLink}
-            target="_blank"
-            className="block my-6"
-            rel="noreferrer"
-          >
-            <Button secondary largeMax>
-              Log in with Internet Identity
-            </Button>
-          </a>
-        </CardBody>
-      </Card>
-      {showModal ? (
-        <Modal
-          title={"Great job!"}
-          description={"You've successfully linked NFID"}
-          buttonText="Done"
-          onClick={() => {
-            setShowModal(false)
-            window.close()
-          }}
-        />
-      ) : null}
+              <a
+                href={iiDeviceLink}
+                target="_blank"
+                className="block my-6"
+                rel="noreferrer"
+              >
+                <Button secondary largeMax>
+                  Log in with Internet Identity
+                </Button>
+              </a>
+            </CardBody>
+          </Card>
+          {showModal ? (
+            <Modal
+              title={"Great job!"}
+              description={"You've successfully linked NFID"}
+              buttonText="Done"
+              onClick={() => {
+                setShowModal(false)
+                window.close()
+              }}
+            />
+          ) : null}
+        </div>
+      </main>
     </AppScreen>
   )
 }

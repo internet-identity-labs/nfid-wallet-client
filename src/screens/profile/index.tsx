@@ -7,6 +7,7 @@ import {
   ModalAdvancedProps,
   H3,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 
 import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholders/list-item"
@@ -90,106 +91,116 @@ export const Profile: React.FC<ProfileProps> = ({
           "top-[20vh] left-[27vw] md:top-[60vh] md:left-[10vw]",
         ],
       }}
-      classNameWrapper="relative mt-32 md:mt-0 md:absolute md:flex md:right-0 md:top-0 md:w-1/2 md:h-full md:overflow-y-auto bg-white md:z-[100]"
+      // classNameWrapper={clsx(
+      //   "md:mt-0 md:flex md:right-0 md:top-0 md:w-1/2 md:h-full md:overflow-y-auto md:z-[100]",
+      //   "relative ml-auto",
+      // )}
       navigationItems={<ProfileHomeMenu className="md:hidden" />}
     >
-      <div className="relative grid grid-cols-12 -mt-32 sm:mt-0 md:px-6">
-        <div className="w-full max-w-6xl col-span-12 mx-auto">
-          <div className="col-span-12 mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <H3 className="block py-2">
-                  {account?.name ? account.name : account?.anchor}
-                </H3>
-                <P>NFID number: {account?.anchor}</P>
-              </div>
-
-              <ProfileHomeMenu className="hidden md:block" />
+      <main
+        className={clsx(
+          "container flex flex-col flex-1 relative w-full max-w-6xl",
+          "sm:mt-0",
+          "md:px-6 md:ml-auto",
+        )}
+      >
+        <div className={clsx("px-5", "md:bg-white")}>
+          <div className="flex items-center justify-between">
+            <div>
+              <H3 className="block py-2">
+                {account?.name ? account.name : account?.anchor}
+              </H3>
+              <P className={clsx("text-xs")}>NFID number: {account?.anchor}</P>
             </div>
-          </div>
-          {hasPoa && (
-            <div className="mb-6 overflow-hidden rounded-lg">
-              <PoaBanner />
-            </div>
-          )}
-          <div className="col-span-12 mb-8">
-            <List>
-              <List.Header>
-                <div className="mb-3">
-                  <H5>Applications</H5>
-                </div>
-              </List.Header>
-              <List.Items>
-                {myApplications.length > 0 ? (
-                  myApplications.map((application, index) => (
-                    <ListItem
-                      key={index}
-                      title={application.applicationName}
-                      subtitle={`${application.iiPersonasCount} persona${
-                        application.iiPersonasCount > 1 ? "s" : ""
-                      }`}
-                      icon={
-                        <span className="text-xl font-medium text-blue-base">
-                          {application.applicationName[0]}
-                        </span>
-                      }
-                      defaultAction={false}
-                      onClick={() =>
-                        // handleNavigateToApplication(application.applicationName)
-                        console.log(">> onClick ", { application })
-                      }
-                    />
-                  ))
-                ) : (
-                  <div>
-                    <div>
-                      Applications you’ve created accounts with will be listed
-                      here.
-                    </div>
 
-                    <div>
-                      <div className="relative">
-                        {Array.from({ length: 3 }).map((_, index) => (
-                          <ListItemPlaceholder key={index} index={index} />
-                        ))}
-
-                        <div className="absolute left-0 w-full h-full top-8 bg-gradient-to-t from-white to-white/5"></div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </List.Items>
-            </List>
-          </div>
-          <div className="col-span-12">
-            <List>
-              <List.Header>
-                <div className="flex items-center justify-between mb-3">
-                  <H5>Devices</H5>
-
-                  <div className="hidden">
-                    <PlusIcon className="text-blue-base mr-[14px]" />
-                  </div>
-                </div>
-              </List.Header>
-              <List.Items>
-                {devices.map((device, index) => (
-                  <DeviceListItem
-                    device={device}
-                    onChangeIcon={async (device) =>
-                      console.log(">> onChangeIcon", { device })
-                    }
-                    onChangeLabel={async (device) =>
-                      console.log(">> onChangeLabel", { device })
-                    }
-                    onDelete={onDeleteDeviceFactory(device.pubkey)}
-                  />
-                ))}
-              </List.Items>
-            </List>
+            <ProfileHomeMenu className="hidden md:block" />
           </div>
         </div>
-      </div>
+        {hasPoa && (
+          <div
+            className={clsx("overflow-hidden", "sm:px-3 sm:pb-6 sm:bg-white")}
+          >
+            <PoaBanner />
+          </div>
+        )}
+        <div className={clsx("px-5 pt-5", "bg-white overflow-hidden")}>
+          <List>
+            <List.Header>
+              <div className="mb-3">
+                <H5>Applications</H5>
+              </div>
+            </List.Header>
+            <List.Items>
+              {myApplications.length > 0 ? (
+                myApplications.map((application, index) => (
+                  <ListItem
+                    key={index}
+                    title={application.applicationName}
+                    subtitle={`${application.iiPersonasCount} persona${
+                      application.iiPersonasCount > 1 ? "s" : ""
+                    }`}
+                    icon={
+                      <span className="text-xl font-medium text-blue-base">
+                        {application.applicationName[0]}
+                      </span>
+                    }
+                    defaultAction={false}
+                    onClick={() =>
+                      // handleNavigateToApplication(application.applicationName)
+                      console.log(">> onClick ", { application })
+                    }
+                  />
+                ))
+              ) : (
+                <div>
+                  <div>
+                    Applications you’ve created accounts with will be listed
+                    here.
+                  </div>
+
+                  <div>
+                    <div className="relative">
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <ListItemPlaceholder key={index} index={index} />
+                      ))}
+
+                      <div className="absolute left-0 w-full h-full top-8 bg-gradient-to-t from-white to-white/5"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </List.Items>
+          </List>
+        </div>
+        <div className={clsx("px-5 pt-4", "bg-white flex-1")}>
+          <List>
+            <List.Header>
+              <div className="flex items-center justify-between mb-3">
+                <H5>Devices</H5>
+
+                <div className="hidden">
+                  <PlusIcon className="text-blue-base mr-[14px]" />
+                </div>
+              </div>
+            </List.Header>
+            <List.Items>
+              {devices.map((device, index) => (
+                <DeviceListItem
+                  key={device.alias}
+                  device={device}
+                  onChangeIcon={async (device) =>
+                    console.log(">> onChangeIcon", { device })
+                  }
+                  onChangeLabel={async (device) =>
+                    console.log(">> onChangeLabel", { device })
+                  }
+                  onDelete={onDeleteDeviceFactory(device.pubkey)}
+                />
+              ))}
+            </List.Items>
+          </List>
+        </div>
+      </main>
     </AppScreen>
   )
 }

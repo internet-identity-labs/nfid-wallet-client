@@ -26,14 +26,15 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
     <AppScreen
       bubbleOptions={{
         showBubbles: true,
-        bubbleColors: ["#a69cff", "#4df1ffa8"],
+        bubbleColors: ["#FF9533", "rgba(181,123,255,0.4)"],
         bubbleClassNames: [
           "right-[-40vw] md:right-[13vw] md:top-[16vh]",
           "bottom-[-10vh] md:right-[20vw] md:top-[30vh]",
         ],
       }}
+      navigationItems={<div/>}
     >
-      <main className={clsx("flex flex-1")}>
+      <main className={clsx("flex flex-1 overflow-x-hidden")}>
         <div
           className={clsx(
             // MOBILE
@@ -44,7 +45,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
             "",
           )}
         >
-          <div className="flex flex-grow w-60">
+          <div className="relative flex flex-grow w-[100vw]">
             <img
               src={image_dog}
               className="object-contain object-center"

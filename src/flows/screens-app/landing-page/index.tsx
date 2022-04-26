@@ -43,7 +43,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       bubbleOptions={{
         showBubbles: false,
       }}
-      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] overflow-hidden sm:overflow-clip scroll-smooth"
+      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] overflow-hidden sm:overflow-clip scroll-smooth landing-page"
     >
       <ParallaxProvider>
         <div className="font-inter">
@@ -61,7 +61,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             </div>
             <div className="relative">
               <img
-                className="absolute z-0 w-[275%] -left-40 md:w-[210%] top-[-60rem] md:-top-40 max-w-none md:left-[-85%]"
+                className="absolute z-0 w-[275%] -left-40 md:w-[210%] top-[-60rem] md:-top-40 max-w-none md:left-[-85%] blur-blue"
                 src={Blur1}
                 alt="blur1"
               />
@@ -85,7 +85,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               </Fade>
               <Fade right>
                 <img
-                  className="absolute z-0 w-[200%] max-w-none left-[-100%] mt-80"
+                  className="absolute z-0 w-[200%] max-w-none left-[-100%] mt-80 blur-green"
                   src={Blur2}
                   alt="blur2"
                 />
@@ -224,7 +224,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             <img
               src={Icon_yellow}
               alt="Ellipse_yellow"
-              className="absolute right-8"
+              className="absolute right-8 blur-pink"
             />
             <div>
               <Fade left>
@@ -364,7 +364,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             </div>
             <Fade>
               <div className="grid justify-between grid-cols-2 gap-5 md:flex">
-                <a className="transition-all social-button discord" href="#!" target="_blank" rel="noreferrer">
+                <a className="transition-all social-button discord" href="https://discord.gg/a9BFNrYJ99" target="_blank" rel="noreferrer">
                   <div className="display-table social-button-wrapper">
                     <div className="display-table-cell">
                       <div className="display-table">

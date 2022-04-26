@@ -17,7 +17,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
       bubbleOptions={{
         showBubbles: false,
       }}
-      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE]"
+      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] landing-page"
     >
       <ParallaxProvider>
         <div className="font-inter">

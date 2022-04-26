@@ -17,7 +17,7 @@ export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
       bubbleOptions={{
         showBubbles: false,
       }}
-      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] overflow-x-hidden sm:overflow-auto"
+      classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] overflow-x-hidden sm:overflow-auto landing-page"
     >
       <ParallaxProvider>
         <div className="font-inter">

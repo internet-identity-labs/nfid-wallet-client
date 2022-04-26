@@ -1,15 +1,20 @@
 import { Button, H5, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
+
 import logo from "frontend/assets/logo.svg"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 interface PopupRegisterDeciderProps
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement> {
-}
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
-export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = ({ children, className }) => {
+export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = ({
+  children,
+  className,
+}) => {
   const {
     platform: { device, authenticator: platformAuth },
   } = useDeviceInfo()
@@ -31,7 +36,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = ({ chil
 
   return (
     <div>
-      <img src={logo} alt="logo" className="my-8 w-20" />
+      <img src={logo} alt="logo" className="w-20 my-8" />
       <H5 className="mb-4">Log in faster on this device</H5>
       <div>
         Trust this {device}? You can quickly and securely log in the next time

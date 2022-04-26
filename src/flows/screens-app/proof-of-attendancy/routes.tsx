@@ -1,9 +1,7 @@
 import React from "react"
 import { Route } from "react-router-dom"
 
-import { AuthWrapper } from "frontend/screens/auth-wrapper"
-
-import { AppScreenAuthorizeApp } from "../authorize-app"
+import { ClaimAttendency } from "./register-or-claim"
 
 export const AppScreenProofOfAttendencyConstants = {
   base: "/poa/:secret",
@@ -12,10 +10,6 @@ export const AppScreenProofOfAttendencyConstants = {
 export const AppScreenProofOfAttendencyRoutes = (redirectTo: string) => (
   <Route
     path={AppScreenProofOfAttendencyConstants.base}
-    element={
-      <AuthWrapper redirectTo={redirectTo}>
-        <AppScreenAuthorizeApp />
-      </AuthWrapper>
-    }
+    element={<ClaimAttendency />}
   />
 )

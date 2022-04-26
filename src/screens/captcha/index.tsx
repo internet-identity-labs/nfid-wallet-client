@@ -1,47 +1,37 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import {
-  Button,
   Card,
   CardBody,
   H2,
+  P,
+  Button,
+  RefreshIcon,
   Input,
   Loader,
-  P,
-  RefreshIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 import {
+  generatePath,
   useLocation,
   useNavigate,
   useParams,
-  generatePath,
 } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
+import { Challenge } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
-  Challenge,
-  ChallengeResult,
-} from "frontend/services/internet-identity/generated/internet_identity_types"
-import {
-  IC_DERIVATION_PATH,
   IIConnection,
+  ChallengeResult,
+  IC_DERIVATION_PATH,
 } from "frontend/services/internet-identity/iiConnection"
 import { captchaRules } from "frontend/utils/validations"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
-
-import { RemoteRegisterAccountConstants as RAC } from "./routes"
-
-interface RegisterAccountCaptchaProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
 
 interface RegisterPayload {
   identity: string
@@ -52,12 +42,13 @@ interface RegisterAccountCaptchaState {
   registerPayload: RegisterPayload
 }
 
-export const RegisterAccountCaptcha: React.FC<
-  RegisterAccountCaptchaProps
-> = () => {
-  const { secret, scope } = useParams()
-  const { isMobile } = useDeviceInfo()
+interface CaptchaProps {
+  successPath: string
+}
 
+export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
+  const params = useParams()
+  const { isMobile } = useDeviceInfo()
   const {
     register,
     formState: { errors, dirtyFields },
@@ -67,9 +58,7 @@ export const RegisterAccountCaptcha: React.FC<
   } = useForm({
     mode: "onTouched",
   })
-
   const isFormComplete = ["captcha"].every((field) => dirtyFields[field])
-
   const { state } = useLocation()
   const navigate = useNavigate()
   const { createAccount } = useAccount()
@@ -164,10 +153,7 @@ export const RegisterAccountCaptcha: React.FC<
           anchor: userNumber,
         })
 
-        const navPath = generatePath(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
-          secret,
-          scope,
-        })
+        const navPath = generatePath(successPath, params)
 
         return navigate(navPath, {
           state: {
@@ -193,20 +179,23 @@ export const RegisterAccountCaptcha: React.FC<
       registerAnchor,
       createRecoveryPhrase,
       createAccount,
-      secret,
-      scope,
+      successPath,
+      params,
       navigate,
       setValue,
       requestCaptcha,
       setError,
     ],
   )
-
   return (
     <AppScreen isFocused>
-      <Card className={`grid grid-cols-12 offset-header ${isMobile ? `mobile` : ``}`}>
-        <CardBody className="col-span-12 md:col-span-9 lg:col-span-6 xl:col-span-5 py-0 sm:py-6">
-          <H2 className="leading-10 my-4">Captcha protected</H2>
+      <Card
+        className={`grid grid-cols-12 offset-header ${
+          isMobile ? `mobile` : ``
+        }`}
+      >
+        <CardBody className="col-span-12 py-0 md:col-span-9 lg:col-span-6 xl:col-span-5 sm:py-6">
+          <H2 className="my-4 leading-10">Captcha protected</H2>
 
           <P>Type the characters you see in the image.</P>
 

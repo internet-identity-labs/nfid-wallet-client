@@ -1,7 +1,8 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { RegisterAccountCaptcha } from "./captcha"
+import { Captcha } from "frontend/screens/captcha"
+
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"
 
@@ -20,7 +21,11 @@ export const RemoteRegisterAccountRoutes = (
     />
     <Route
       path={RemoteRegisterAccountConstants.captcha}
-      element={<RegisterAccountCaptcha />}
+      element={
+        <Captcha
+          successPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.copyRecoveryPhrase}`}
+        />
+      }
     />
     <Route
       path={RemoteRegisterAccountConstants.copyRecoveryPhrase}
@@ -44,7 +49,11 @@ export const NFIDRegisterAccountRoutes = (
     />
     <Route
       path={NFIDRegisterAccountConstants.captcha}
-      element={<RegisterAccountCaptcha />}
+      element={
+        <Captcha
+          successPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.copyRecoveryPhrase}`}
+        />
+      }
     />
     <Route
       path={NFIDRegisterAccountConstants.copyRecoveryPhrase}

@@ -17,7 +17,7 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { AppScreenProofOfAttendencyConstants } from "frontend/flows/screens-app/proof-of-attendancy/routes"
 import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
 import { Device } from "frontend/services/identity-manager/devices/state"
-import { IIPersona } from "frontend/services/identity-manager/persona/types"
+import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 import { getUrl } from "frontend/utils"
 
@@ -41,7 +41,7 @@ interface ProfileProps {
   applications: Application[]
   loading?: boolean
   hasPoa?: boolean
-  personas: IIPersona[]
+  personas: NFIDPersona[]
 }
 
 export const Profile: React.FC<ProfileProps> = ({
@@ -55,11 +55,11 @@ export const Profile: React.FC<ProfileProps> = ({
   devices,
   loading,
   hasPoa,
-  personas: iiPersonas = [],
+  personas = [],
 }) => {
   const myApplications = React.useMemo(() => {
     // Group iiPersonas by hostname and count the number of iiPersonas
-    const iiPersonasByHostname = iiPersonas.reduce((acc, iiPersona) => {
+    const iiPersonasByHostname = personas.reduce((acc, iiPersona) => {
       const hostname = getUrl(iiPersona.domain).hostname.split(".")[0]
       const applicationName =
         hostname.charAt(0).toUpperCase() + hostname.slice(1)
@@ -67,7 +67,7 @@ export const Profile: React.FC<ProfileProps> = ({
       acc[applicationName] = [...iiPersonas, iiPersona]
 
       return acc
-    }, {} as { [applicationName: string]: IIPersona[] })
+    }, {} as { [applicationName: string]: NFIDPersona[] })
 
     // Map the iiPersonas by application to an array of objects
     const iiPersonasByHostnameArray = Object.entries(iiPersonasByHostname).map(
@@ -81,7 +81,9 @@ export const Profile: React.FC<ProfileProps> = ({
     )
 
     return iiPersonasByHostnameArray
-  }, [iiPersonas])
+  }, [personas])
+
+  console.log(">> Profile", { personas })
 
   return (
     <AppScreen

@@ -5,6 +5,7 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { Profile } from "frontend/screens/profile"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 
 interface AuthenticateNFIDHomeProps
@@ -26,6 +27,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
     React.useState<ModalAdvancedProps | null>(null)
 
   const { devices, deleteDevice, handleLoadDevices } = useDevices()
+  const { nfidPersonas } = usePersona()
   const { account } = useAccount()
   const { imAddition } = useAuthentication()
 
@@ -61,7 +63,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
       hasPoa={hasPoa}
       devices={devices}
       loading={loading}
-      personas={[]}
+      personas={nfidPersonas}
     />
   )
 }

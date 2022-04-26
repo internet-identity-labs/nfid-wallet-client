@@ -57,22 +57,18 @@ export const useUnknownDeviceConfig = () => {
     if (number) setUserNumber(number)
   }, [setUserNumber, state])
 
-  React.useState<bigint | undefined>(
-    (state as StateProps)?.userNumber,
-  )
+  React.useState<bigint | undefined>((state as StateProps)?.userNumber)
   const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
 
-  const [
-    signedDelegation,
-    setSignedDelegation,
-  ] = React.useState<SignedDelegation>()
+  const [signedDelegation, setSignedDelegation] =
+    React.useState<SignedDelegation>()
 
   const [appWindow, setAppWindow] = React.useState<Window | null>(null)
   const [domain, setDomain] = React.useState("")
   const [pubKey, setPubKey] = React.useState("")
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
 
-  const { createDevice } = useDevices()
+  const { createDevice, createWebAuthNDevice } = useDevices()
   const { applicationName } = useMultipass()
   const { getMessages } = usePubSubChannel()
   const { remoteLogin: setAuthenticatedActors } = useAuthentication()
@@ -84,23 +80,20 @@ export const useUnknownDeviceConfig = () => {
       : null
   }, [applicationName, domain, pubKey])
 
-  const {
-    isReady,
-    postClientReadyMessage,
-    postClientAuthorizeSuccessMessage,
-  } = useMessageChannel({
-    messageHandler: {
-      "authorize-client": (event: any) => {
-        const { sessionPublicKey } = event.data
-        const blog = blobFromUint8Array(sessionPublicKey)
-        const hex = blobToHex(blog)
+  const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
+    useMessageChannel({
+      messageHandler: {
+        "authorize-client": (event: any) => {
+          const { sessionPublicKey } = event.data
+          const blog = blobFromUint8Array(sessionPublicKey)
+          const hex = blobToHex(blog)
 
-        setAppWindow(event.source)
-        setPubKey(hex)
-        setDomain(new URL(event.origin).host)
+          setAppWindow(event.source)
+          setPubKey(hex)
+          setDomain(new URL(event.origin).host)
+        },
       },
-    },
-  })
+    })
 
   const handleStoreNewDevice = React.useCallback(
     async ({ device }) => {
@@ -118,18 +111,6 @@ export const useUnknownDeviceConfig = () => {
   React.useEffect(() => {
     isReady && postClientReadyMessage()
   }, [isReady, postClientReadyMessage])
-
-  const handleRegisterDevice = React.useCallback(async () => {
-    if (!userNumber) throw new Error("userNumber required")
-    setStatus("loading")
-
-    window.open(
-      generatePath(RegisterNewDeviceConstants.base, {
-        userNumber: userNumber.toString(),
-      }),
-      "_blank",
-    )
-  }, [setStatus, userNumber])
 
   const handleSendDelegate = React.useCallback(async () => {
     try {
@@ -150,6 +131,31 @@ export const useUnknownDeviceConfig = () => {
       console.error(">> not a valid delegate", { err })
     }
   }, [signedDelegation, domain, postClientAuthorizeSuccessMessage, appWindow])
+
+  const handleRegisterDevice = React.useCallback(async () => {
+    if (!userNumber) throw new Error("userNumber required")
+    setStatus("loading")
+
+    if (window.top !== window.self) {
+      return window.open(
+        generatePath(RegisterNewDeviceConstants.base, {
+          userNumber: userNumber.toString(),
+        }),
+        "_blank",
+      )
+    }
+    const { device } = await createWebAuthNDevice(BigInt(userNumber))
+
+    await handleStoreNewDevice({ device })
+    handleSendDelegate()
+    setStatus("loading")
+  }, [
+    createWebAuthNDevice,
+    handleSendDelegate,
+    handleStoreNewDevice,
+    setStatus,
+    userNumber,
+  ])
 
   const handleLoginFromRemoteDelegation = React.useCallback(
     async (nfidJsonDelegate, userNumber) => {
@@ -200,9 +206,12 @@ export const useUnknownDeviceConfig = () => {
           setStatus("success")
           setShowRegister(true)
           cancelPoll()
+          // FIXME: this is required because of a race condition
+          // when there is also a waitingMessage in the same response
+          return
         }
 
-        if (waitingMessage) {
+        if (waitingMessage && !registerMessage) {
           setStatus("loading")
         }
       }

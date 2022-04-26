@@ -123,6 +123,15 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
         </AppScreen>
       ) : null}
 
+      {showRegister && (
+        <IFrameScreen logo>
+          <AuthorizeRegisterDecider
+            onRegister={handleRegisterDevice}
+            onLogin={handleSendDelegate}
+            iframe
+          />
+        </IFrameScreen>
+      )}
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState)  */}
       {isLoading && (
         <div className="fixed top-0 bottom-0 w-full">
@@ -135,19 +144,10 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
             />
             <div className="z-20 mt-5 text-center">
-              Waiting for verification on mobile...
+              Waiting for verification ...
             </div>
           </div>
         </div>
-      )}
-      {showRegister && (
-        <IFrameScreen logo>
-          <AuthorizeRegisterDecider
-            onRegister={handleRegisterDevice}
-            onLogin={handleSendDelegate}
-            iframe
-          />
-        </IFrameScreen>
       )}
     </div>
   )

@@ -1,6 +1,6 @@
 import { ModalAdvancedProps } from "@internet-identity-labs/nfid-sdk-react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { within, userEvent } from "@storybook/testing-library"
+// import { within, userEvent } from "@storybook/testing-library"
 import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
@@ -44,8 +44,8 @@ LoggedIn.args = {
 }
 
 // More on interaction testing: https://storybook.js.org/docs/react/writing-tests/interaction-testing
-LoggedIn.play = async ({ canvasElement }) => {
-  const canvas = within(canvasElement)
-  const loginButton = await canvas.getByRole("button", { name: /Log in/i })
-  await userEvent.click(loginButton)
-}
+// LoggedIn.play = async ({ canvasElement }) => {
+//   const canvas = within(canvasElement)
+//   const loginButton = await canvas.getByRole("button", { name: /Log in/i })
+//   await userEvent.click(loginButton)
+// }

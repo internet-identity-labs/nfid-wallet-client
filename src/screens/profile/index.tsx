@@ -95,7 +95,7 @@ export const Profile: React.FC<ProfileProps> = ({
     >
       <div className="relative grid grid-cols-12 -mt-32 sm:mt-0 md:px-6">
         <div className="w-full max-w-6xl col-span-12 mx-auto">
-          <div className="col-span-12 mb-16 md:mb-12">
+          <div className="col-span-12 mb-6">
             <div className="flex items-center justify-between">
               <div>
                 <H3 className="block py-2">
@@ -107,6 +107,11 @@ export const Profile: React.FC<ProfileProps> = ({
               <ProfileHomeMenu className="hidden md:block" />
             </div>
           </div>
+          {hasPoa && (
+            <div className="mb-6 overflow-hidden rounded-lg">
+              <PoaBanner />
+            </div>
+          )}
           <div className="col-span-12 mb-8">
             <List>
               <List.Header>

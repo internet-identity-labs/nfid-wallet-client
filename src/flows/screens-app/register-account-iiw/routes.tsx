@@ -6,8 +6,8 @@ import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"
 
 export const RegisterAccountConstantsIIW = {
-  base: "/register-account-iiw/:secret/:scope",
-  account: "intro",
+  base: "/register-account/iiw/:secret",
+  intro: "intro",
   captcha: "captcha",
   copyRecoveryPhrase: "copy-recovery-phrase",
 }
@@ -15,7 +15,7 @@ export const RegisterAccountConstantsIIW = {
 export const RegisterAccountRoutesIIW = (
   <Route path={RegisterAccountConstantsIIW.base} element={<Outlet />}>
     <Route
-      path={RegisterAccountConstantsIIW.account}
+      path={RegisterAccountConstantsIIW.intro}
       element={<RegisterAccountIntro />}
     />
     <Route

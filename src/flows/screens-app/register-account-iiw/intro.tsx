@@ -29,15 +29,13 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   children,
   className,
 }) => {
-  const { secret, scope } = useParams()
+  const { secret } = useParams()
 
   const { isLoading, setIsloading } = useIsLoading()
   const navigate = useNavigate()
-  const { applicationName, createWebAuthNIdentity } = useMultipass()
+  const { createWebAuthNIdentity } = useMultipass()
   const [lastSlide, setLastSlide] = React.useState(false)
   const [firstSlide, setFirstSlide] = React.useState(true)
-
-  const appName = applicationName || "This application"
 
   const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
   const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)
@@ -84,7 +82,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       // TODO: fix url
       const captchaPath = generatePath(`${RACIIW.base}/${RACIIW.captcha}`, {
         secret,
-        scope,
       })
 
       navigate(captchaPath, {
@@ -95,7 +92,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     } catch (error) {
       setIsloading(false)
     }
-  }, [createWebAuthNIdentity, navigate, scope, secret, setIsloading])
+  }, [createWebAuthNIdentity, navigate, secret, setIsloading])
 
   return (
     <AppScreen
@@ -111,7 +108,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         ],
       }}
     >
-      <img src={image_dog}></img>
+      <img src={image_dog} alt="anonymous dog" />
       <Card className="offset-header" style={{ marginTop: "-3rem" }}>
         <H5 className="mb-2 font-bold">April 22-28, 2022</H5>
 

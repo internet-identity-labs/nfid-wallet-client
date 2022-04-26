@@ -1,6 +1,4 @@
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
-import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
-import React from "react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -10,21 +8,21 @@ import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/route
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
-import { AppScreenAuthorizeIIWAppRoutes } from "./flows/screens-app/authorize-app-iiw/routes"
 import { HomeScreen } from "./flows/screens-app/landing-page"
 import { Faq } from "./flows/screens-app/landing-page/faq"
 import { OurMission } from "./flows/screens-app/landing-page/our-mission"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
+import { AppScreenProofOfAttendencyRoutes } from "./flows/screens-app/proof-of-attendancy/routes"
+import {
+  RegisterAccountConstantsIIW as RACIIW,
+  RegisterAccountRoutesIIW,
+} from "./flows/screens-app/register-account-iiw/routes"
 import {
   NFIDRegisterAccountRoutes,
   RemoteRegisterAccountConstants as RAC,
   RemoteRegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
-import {
-  RegisterAccountConstantsIIW as RACIIW,
-  RegisterAccountRoutesIIW,
-} from "./flows/screens-app/register-account-iiw/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
@@ -63,7 +61,7 @@ export const App = () => {
       {RemoteRegisterAccountRoutes}
       {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
       {RegisterAccountRoutesIIW}
-      {AppScreenAuthorizeIIWAppRoutes(`${RACIIW.base}/${RACIIW.account}`)}
+      {AppScreenProofOfAttendencyRoutes(`${RACIIW.base}/${RACIIW.intro}`)}
       {UnknownDeviceRoutes}
       {RestoreAccessPointRoutes}
 

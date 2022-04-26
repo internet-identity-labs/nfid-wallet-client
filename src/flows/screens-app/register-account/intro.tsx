@@ -17,8 +17,6 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
 
-import { RemoteRegisterAccountConstants as RAC } from "./routes"
-
 interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,

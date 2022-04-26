@@ -14,7 +14,8 @@ import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 
-interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {
+}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { isAuthenticated } = useAuthentication()

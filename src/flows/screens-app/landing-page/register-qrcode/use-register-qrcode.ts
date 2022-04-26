@@ -6,10 +6,16 @@ import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/autho
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { setUserNumber } from "frontend/services/internet-identity/userNumber"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
+import { atom, useAtom } from "jotai"
+import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
+
+const statusAtom = atom<string>("")
 
 export const useRegisterQRCode = () => {
+  const [status, setStatus] = useAtom(statusAtom)
+  const { setUserNumber } = useUnknownDeviceConfig()
+
   const { getMessages } = usePubSubChannel()
   const { remoteLogin: setAuthenticatedActors } = useAuthentication()
 
@@ -41,11 +47,13 @@ export const useRegisterQRCode = () => {
 
       if (result.tag === "ok") {
         setAuthenticatedActors(result)
+        setStatus("registerDecider")
+        setUserNumber(BigInt(userNumber))
       }
       // TODO: handle this more gracefully
       if (result.tag !== "ok") throw new Error("login failed")
     },
-    [setAuthenticatedActors],
+    [setAuthenticatedActors, setStatus, setUserNumber],
   )
 
   const handlePollForDelegate = useCallback(
@@ -69,15 +77,18 @@ export const useRegisterQRCode = () => {
             registerMessage.nfid,
             registerMessage.userNumber,
           )
+          cancelPoll()
         }
       }
     },
-    [getMessages, handleLoginFromRemoteDelegation, publicKey],
+    [getMessages, handleLoginFromRemoteDelegation, publicKey, setUserNumber],
   )
 
   return {
     url,
     registerRoute,
     handlePollForDelegate,
+    status,
+    setStatus,
   }
 }

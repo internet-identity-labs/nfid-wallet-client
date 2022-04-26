@@ -1,8 +1,7 @@
 import { Card, CardBody, Loader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-import { Navigate } from "react-router-dom"
-import { useParams } from "react-router-dom"
+import { Navigate, useParams } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"

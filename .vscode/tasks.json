@@ -2,6 +2,21 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "NFID DEV ENV",
+      "type": "shell",
+      "dependsOn": [
+        "NFID Frontend",
+        "NFID Storybook",
+        "NFID NGROK tunnel",
+        "NFID DFX"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      }
+    },
+    {
       "label": "NFID Frontend",
       "type": "shell",
       "command": "yarn && yarn dev",
@@ -12,7 +27,7 @@
       }
     },
     {
-      "label": "DFX",
+      "label": "NFID DFX",
       "type": "shell",
       "command": "dfx start",
       "presentation": {

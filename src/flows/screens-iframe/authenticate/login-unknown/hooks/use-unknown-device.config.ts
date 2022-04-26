@@ -9,7 +9,9 @@ import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/autho
 import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { buildDelegate } from "frontend/services/internet-identity/build-delegate"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
@@ -71,7 +73,10 @@ export const useUnknownDeviceConfig = () => {
   const { createDevice, createWebAuthNDevice } = useDevices()
   const { applicationName } = useMultipass()
   const { getMessages } = usePubSubChannel()
-  const { remoteLogin: setAuthenticatedActors } = useAuthentication()
+  const { remoteLogin: setAuthenticatedActors, identityManager } =
+    useAuthentication()
+  const { readAccount } = useAccount()
+  const { getPersona } = usePersona()
 
   const url = React.useMemo(() => {
     // TODO: create custom hook to generate secret
@@ -147,12 +152,16 @@ export const useUnknownDeviceConfig = () => {
     const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
     await handleStoreNewDevice({ device })
+    await Promise.all([readAccount(identityManager, userNumber), getPersona()])
     handleSendDelegate()
     setStatus("loading")
   }, [
     createWebAuthNDevice,
+    getPersona,
     handleSendDelegate,
     handleStoreNewDevice,
+    identityManager,
+    readAccount,
     setStatus,
     userNumber,
   ])

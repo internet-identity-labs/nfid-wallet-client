@@ -37,7 +37,7 @@ export const HeroRightSide: React.FC<HeroRightSideProps> = ({
           }}
         />
         <p className="mt-4 text-xs text-center text-gray-500 tracking-[0.16px]">
-          Scan this code with your phone’s camera
+          Scan this code with your phone's camera to register your NFID
         </p>
       </Tilt>
     </Fade>

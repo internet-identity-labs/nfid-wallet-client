@@ -19,11 +19,10 @@ export const AuthorizeAppUnknownDevice: React.FC<
 > = ({ children, className, applicationName, url, onLogin }) => {
   return (
     <div className={clsx("", className)}>
-      <H5 className="mb-4">Log in to {applicationName} with your NFID</H5>
+      <H5 className="mb-4">Sign in to {applicationName} with NFID</H5>
       <div className="flex flex-col">
         <div>
-          This application uses NFID, the single sign-on protocol for the
-          internet.
+          Complete registration
         </div>
 
         <div className="py-5 m-auto">
@@ -32,11 +31,11 @@ export const AuthorizeAppUnknownDevice: React.FC<
           </a>
         </div>
         <p className="text-xs text-center text-gray-500">
-          Scan this code with your phone’s camera
+          Scan this code with your phone's camera to continue
         </p>
 
         <Button text className="mb-2" onClick={onLogin}>
-          Log in with Recovery Phrase
+          Recover an existing NFID
         </Button>
       </div>
     </div>

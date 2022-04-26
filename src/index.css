@@ -77,6 +77,128 @@ input[type="number"] {
   mix-blend-mode: lighten;
 }
 
+.qrcode canvas {
+  margin: auto;
+}
+
+ul {
+  list-style-type: '— ';
+  list-style-position: outside;
+  margin-left: 1.2em;
+}
+
+.display-table {
+  display: table;
+}
+
+.display-table-cell {
+  display: table-cell;
+}
+
+.social-button {
+  width: 192px;
+  height: 84px;
+
+  border-radius: 6px;
+}
+
+.social-button span {
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.01em;
+}
+
+.social-button .social-button-wrapper {
+  height: 100%;
+  margin: auto;
+}
+
+.social-button .display-table-cell {
+  vertical-align: middle;
+}
+
+.social-button img {
+  padding-right: 10px;
+}
+
+.social-button.discord {
+  background: #5865F2;
+}
+
+.social-button.discord:hover {
+  background: #667EFF;
+  box-shadow: 0px 2px 10px rgba(88, 101, 242, 0.6);
+}
+
+.social-button.twitter {
+  background: #1DA1F2;
+}
+
+.social-button.twitter:hover {
+  background: #00C2FF;
+  box-shadow: 0px 2px 10px rgba(29, 161, 242, 0.6);
+}
+
+.social-button.github {
+  background: #0F0C0D;
+}
+
+.social-button.github:hover {
+  background: #4A4748;
+  box-shadow: 0px 2px 10px rgba(15, 12, 13, 0.4);
+}
+
+.icon-background-blur {
+  z-index: -1;
+  position: absolute;
+}
+
+.big-background-blur {
+  left: -30px;
+  top: -22px;
+  height: 232px;
+  width: 232px;
+  opacity: 0.5;
+  filter: blur(61.6011px);
+  transform: matrix(0, 1, -1, 0, 0, 0);
+}
+
+.small-background-blur {
+  left: 0px;
+  top: -22px;
+  height: 143px;
+  width: 143px;
+  opacity: 0.3;
+  filter: blur(21.5604px);
+  transform: rotate(-180deg);
+}
+
+.private-background-blur.big-background-blur {
+  background: radial-gradient(50% 50% at 50% 50%, #923DFF 0%, rgba(21, 87, 255, 0) 100%);
+}
+
+.private-background-blur.small-background-blur {
+  background: radial-gradient(50% 50% at 50% 50%, #DF5EFF 0%, rgba(75, 115, 255, 0.15) 100%);
+}
+
+.convenient-background-blur.big-background-blur {
+  background: radial-gradient(50% 50% at 50% 50%, #A864FF 0%, rgba(255, 21, 204, 0) 100%);
+}
+
+.convenient-background-blur.small-background-blur {
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 211, 98, 0.74) 0%, rgba(226, 218, 17, 0) 100%);
+}
+
+.secure-background-blur.big-background-blur {
+  background: radial-gradient(50% 50% at 50% 50%, #008C95 0%, rgba(21, 255, 101, 0) 100%);
+}
+
+.secure-background-blur.small-background-blur {
+  background: radial-gradient(50% 50% at 50% 50%, #E0FF62 0%, rgba(253, 255, 168, 0) 100%);
+}
+
 .only-with-nfid::before {
   content: "123";
   display: block;

@@ -10,6 +10,7 @@ import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/route
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
+import { AppScreenAuthorizeIIWAppRoutes } from "./flows/screens-app/authorize-app-iiw/routes"
 import { HomeScreen } from "./flows/screens-app/landing-page"
 import { Faq } from "./flows/screens-app/landing-page/faq"
 import { OurMission } from "./flows/screens-app/landing-page/our-mission"
@@ -20,6 +21,10 @@ import {
   RemoteRegisterAccountConstants as RAC,
   RemoteRegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
+import {
+  RegisterAccountConstantsIIW as RACIIW,
+  RegisterAccountRoutesIIW,
+} from "./flows/screens-app/register-account-iiw/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
@@ -57,6 +62,8 @@ export const App = () => {
       {NFIDRegisterAccountRoutes}
       {RemoteRegisterAccountRoutes}
       {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
+      {RegisterAccountRoutesIIW}
+      {AppScreenAuthorizeIIWAppRoutes(`${RACIIW.base}/${RACIIW.account}`)}
       {UnknownDeviceRoutes}
       {RestoreAccessPointRoutes}
 

@@ -19,7 +19,7 @@ export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
 }) => (
   <AppScreen className="flex flex-col h-full" isFocused>
     <main className={clsx("flex flex-1")}>
-      <div className="container px-6 py-0 mx-auto sm:py-4">
+      <div className="container p-6 mx-auto">
         <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
           <NFIDLogin onLoginSuccess={onLoginSuccess} />
         </CardBody>

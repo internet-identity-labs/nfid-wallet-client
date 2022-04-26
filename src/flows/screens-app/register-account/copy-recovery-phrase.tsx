@@ -1,7 +1,6 @@
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"

@@ -9,10 +9,12 @@ import {
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+import { generatePath, Link } from "react-router-dom"
 
 import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholders/list-item"
 import { PoaBanner } from "frontend/design-system/molecules/poa-banner"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { AppScreenProofOfAttendencyConstants } from "frontend/flows/screens-app/proof-of-attendancy/routes"
 import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
 import { Device } from "frontend/services/identity-manager/devices/state"
 import { IIPersona } from "frontend/services/identity-manager/persona/types"
@@ -117,11 +119,15 @@ export const Profile: React.FC<ProfileProps> = ({
           </div>
         </div>
         {hasPoa && (
-          <div
+          <Link
+            to={generatePath(
+              `${AppScreenProofOfAttendencyConstants.base}/${AppScreenProofOfAttendencyConstants.award}`,
+              { secret: "iiw-april-22" },
+            )}
             className={clsx("overflow-hidden", "sm:px-3 sm:pb-6 sm:bg-white")}
           >
             <PoaBanner />
-          </div>
+          </Link>
         )}
         <div className={clsx("px-5 md:px-16 pt-5", "bg-white overflow-hidden")}>
           <List>

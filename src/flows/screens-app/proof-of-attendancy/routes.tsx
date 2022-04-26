@@ -2,6 +2,7 @@ import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
 import { Captcha } from "frontend/screens/captcha"
+import { ProofOfAttendencyAward } from "frontend/screens/proof-of-attendency-award"
 
 import { ProofOfAttendencyCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./register-account-intro"
@@ -12,6 +13,7 @@ export const AppScreenProofOfAttendencyConstants = {
   register: "register-account/intro",
   captcha: "register-account/captcha",
   copyRecoveryPhrase: "register-account/copy-recovery-phrase",
+  award: "award",
 }
 
 export const AppScreenProofOfAttendencyRoutes = (redirectTo: string) => (
@@ -35,6 +37,10 @@ export const AppScreenProofOfAttendencyRoutes = (redirectTo: string) => (
     <Route
       path={AppScreenProofOfAttendencyConstants.copyRecoveryPhrase}
       element={<ProofOfAttendencyCopyRecoveryPhrase />}
+    />
+    <Route
+      path={AppScreenProofOfAttendencyConstants.award}
+      element={<ProofOfAttendencyAward />}
     />
   </Route>
 )

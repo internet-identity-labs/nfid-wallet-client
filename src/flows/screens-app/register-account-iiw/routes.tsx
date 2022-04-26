@@ -1,9 +1,10 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { RegisterAccountCaptcha } from "./captcha"
+import { Captcha } from "frontend/screens/captcha"
+
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
-import { RegisterAccountIntro } from "./intro"
+import { RegisterAccountIntro } from "./register-account-intro"
 
 export const RegisterAccountConstantsIIW = {
   base: "/register-account/iiw/:secret",
@@ -20,7 +21,11 @@ export const RegisterAccountRoutesIIW = (
     />
     <Route
       path={RegisterAccountConstantsIIW.captcha}
-      element={<RegisterAccountCaptcha />}
+      element={
+        <Captcha
+          successPath={`${RegisterAccountConstantsIIW.base}/${RegisterAccountConstantsIIW.copyRecoveryPhrase}`}
+        />
+      }
     />
     <Route
       path={RegisterAccountConstantsIIW.copyRecoveryPhrase}

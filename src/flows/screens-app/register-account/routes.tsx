@@ -3,7 +3,6 @@ import { Outlet, Route } from "react-router-dom"
 
 import { Captcha } from "frontend/screens/captcha"
 
-import { ProofOfAttendencyCopyRecoveryPhrase } from "../proof-of-attendancy/copy-recovery-phrase"
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"
 
@@ -34,7 +33,7 @@ export const RemoteRegisterAccountRoutes = (
     />
     <Route
       path={RemoteRegisterAccountConstants.copyRecoveryPhrase}
-      element={<RegisterAccountCopyRecoveryPhrase />}
+      element={<RegisterAccountCopyRecoveryPhrase isRemoteRegistration />}
     />
   </Route>
 )
@@ -66,7 +65,9 @@ export const NFIDRegisterAccountRoutes = (
     />
     <Route
       path={NFIDRegisterAccountConstants.copyRecoveryPhrase}
-      element={<ProofOfAttendencyCopyRecoveryPhrase />}
+      element={
+        <RegisterAccountCopyRecoveryPhrase continueButtonText="Continue to NFID" />
+      }
     />
   </Route>
 )

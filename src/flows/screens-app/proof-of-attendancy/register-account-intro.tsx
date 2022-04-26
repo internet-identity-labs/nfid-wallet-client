@@ -1,10 +1,11 @@
 import React from "react"
 import { generatePath, useNavigate, useParams } from "react-router-dom"
 
-import { RegisterAccountConstantsIIW as RACIIW } from "frontend/flows/screens-app/register-account-iiw/routes"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { ProofOfAttendency } from "frontend/screens/proof-of-attendency"
+
+import { AppScreenProofOfAttendencyConstants } from "./routes"
 
 interface RegisterOrClaimProps {}
 
@@ -21,9 +22,12 @@ export const RegisterAccountIntro: React.FC<RegisterOrClaimProps> = ({
       setIsloading(true)
       const registerPayload = await createWebAuthNIdentity()
 
-      const captchaPath = generatePath(`${RACIIW.base}/${RACIIW.captcha}`, {
-        secret,
-      })
+      const captchaPath = generatePath(
+        `${AppScreenProofOfAttendencyConstants.base}/${AppScreenProofOfAttendencyConstants.captcha}`,
+        {
+          secret,
+        },
+      )
 
       navigate(captchaPath, {
         state: {

@@ -1,6 +1,7 @@
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -14,7 +15,10 @@ interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  isRemoteRegistration?: boolean
+  continueButtonText?: string
+}
 
 interface LocationState {
   recoveryPhrase: string
@@ -22,7 +26,7 @@ interface LocationState {
 
 export const RegisterAccountCopyRecoveryPhrase: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
-> = ({ children, className }) => {
+> = ({ isRemoteRegistration = false, continueButtonText }) => {
   const navigate = useNavigate()
   const { secret, scope } = useParams()
   const { isLoading, setIsloading } = useIsLoading()
@@ -52,15 +56,23 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
     console.error(response)
   }, [createPersona, nextPersonaId, remoteLogin, scope, secret, setIsloading])
 
+  const handleLogin = React.useCallback(() => {
+    navigate("/")
+  }, [navigate])
+
   return (
     <CopyRecoveryPhrase
       recoveryPhrase={recoveryPhrase}
-      continueButtonText={`Log in to ${applicationName || "NFID Demo"}.`}
+      continueButtonText={
+        continueButtonText || `Log in to ${applicationName || "NFID Demo"}.`
+      }
       showSuccessModal={successModal}
       showSuccessModalText={`You signed in to ${
         applicationName || "NFID Demo"
       }`}
-      onContinueButtonClick={handleAuthorizePersona}
+      onContinueButtonClick={
+        isRemoteRegistration ? handleAuthorizePersona : handleLogin
+      }
       onSuccessModalClick={() => {
         navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
       }}

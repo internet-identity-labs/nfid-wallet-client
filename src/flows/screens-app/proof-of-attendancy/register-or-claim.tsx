@@ -2,13 +2,13 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import { generatePath, Navigate, useParams } from "react-router-dom"
 
-import { RegisterAccountConstantsIIW as RACIIW } from "frontend/flows/screens-app/register-account-iiw/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { ProofOfAttendency } from "frontend/screens/proof-of-attendency"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import { ProfileConstants } from "../profile/routes"
+import { AppScreenProofOfAttendencyConstants } from "./routes"
 
 interface RegisterOrClaimProps {}
 
@@ -38,6 +38,11 @@ export const ClaimAttendency: React.FC<RegisterOrClaimProps> = () => {
       continueButtonContent={"get proof of attendance"}
     />
   ) : (
-    <Navigate to={generatePath(`${RACIIW.base}/${RACIIW.intro}`, { secret })} />
+    <Navigate
+      to={generatePath(
+        `${AppScreenProofOfAttendencyConstants.base}/${AppScreenProofOfAttendencyConstants.register}`,
+        { secret },
+      )}
+    />
   )
 }

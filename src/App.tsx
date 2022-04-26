@@ -13,11 +13,10 @@ import { Faq } from "./flows/screens-app/landing-page/faq"
 import { OurMission } from "./flows/screens-app/landing-page/our-mission"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
-import { AppScreenProofOfAttendencyRoutes } from "./flows/screens-app/proof-of-attendancy/routes"
 import {
-  RegisterAccountConstantsIIW as RACIIW,
-  RegisterAccountRoutesIIW,
-} from "./flows/screens-app/register-account-iiw/routes"
+  AppScreenProofOfAttendencyConstants as POAPC,
+  AppScreenProofOfAttendencyRoutes,
+} from "./flows/screens-app/proof-of-attendancy/routes"
 import {
   NFIDRegisterAccountRoutes,
   RemoteRegisterAccountConstants as RAC,
@@ -60,8 +59,7 @@ export const App = () => {
       {NFIDRegisterAccountRoutes}
       {RemoteRegisterAccountRoutes}
       {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
-      {RegisterAccountRoutesIIW}
-      {AppScreenProofOfAttendencyRoutes(`${RACIIW.base}/${RACIIW.intro}`)}
+      {AppScreenProofOfAttendencyRoutes(`${POAPC.base}/${POAPC.register}`)}
       {UnknownDeviceRoutes}
       {RestoreAccessPointRoutes}
 

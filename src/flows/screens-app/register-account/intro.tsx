@@ -23,11 +23,12 @@ interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  captchaPath: string
+}
 
 export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
-  children,
-  className,
+  captchaPath,
 }) => {
   const { secret, scope } = useParams()
 
@@ -77,25 +78,32 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   }
 
   const handleCreateKeys = React.useCallback(async () => {
-    try {
-      setIsloading(true)
-      const registerPayload = await createWebAuthNIdentity()
+    console.log(">> handleCreateKeys", {})
+    setIsloading(true)
+    const registerPayload = await createWebAuthNIdentity()
+    console.log(">> ", { registerPayload, secret })
 
-      // TODO: fix url
-      const captchaPath = generatePath(`${RAC.base}/${RAC.captcha}`, {
-        secret,
-        scope,
-      })
+    // TODO: fix url
+    const path = generatePath(captchaPath, {
+      secret,
+      scope,
+    })
+    console.log(">> ", { path })
 
-      navigate(captchaPath, {
-        state: {
-          registerPayload,
-        },
-      })
-    } catch (error) {
-      setIsloading(false)
-    }
-  }, [createWebAuthNIdentity, navigate, scope, secret, setIsloading])
+    navigate(path, {
+      state: {
+        registerPayload,
+      },
+    })
+    setIsloading(false)
+  }, [
+    captchaPath,
+    createWebAuthNIdentity,
+    navigate,
+    scope,
+    secret,
+    setIsloading,
+  ])
 
   return (
     <AppScreen

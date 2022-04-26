@@ -99,6 +99,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
   return (
     <AppScreen
+      isFocused
       bubbleOptions={{
         showBubbles: true,
         bubbleColors: [

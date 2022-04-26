@@ -54,10 +54,10 @@ export const AppScreenAuthorizeRegisterDecider: React.FC<
                     await readAccount(identityManager, userNumber)
 
                     setIsLoading(false)
-                    navigate('/profile')
+                    navigate('/profile/authenticate')
                 }}
                 onLogin={() => {
-                  navigate('/profile')
+                  navigate('/profile/authenticate')
                 }}
               />
 

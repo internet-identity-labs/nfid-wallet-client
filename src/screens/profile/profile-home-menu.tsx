@@ -18,7 +18,7 @@ export const ProfileHomeMenu: React.FC<MenuButtonProps> = ({ className }) => {
       style={{ zIndex: 1 }}
     >
       <div>
-        <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium bg-white rounded-md hover:bg-gray-50 focus:outline-none">
+        <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium sm:bg-white rounded-md hover:bg-gray-50 focus:outline-none">
           <DotsIcon className="rotate-90" />
         </Menu.Button>
       </div>

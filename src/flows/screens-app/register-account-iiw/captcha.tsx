@@ -1,4 +1,14 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  Input,
+  Loader,
+  RefreshIcon,
+  P,
+} from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -22,16 +32,6 @@ import {
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-import { RefreshIcon } from "frontend/ui-kit/src/components/atoms/button/icons/refresh"
-import {
-  Button,
-  Card,
-  CardBody,
-  H2,
-  Input,
-  Loader,
-  P,
-} from "frontend/ui-kit/src/index"
 import { captchaRules } from "frontend/utils/validations"
 
 import { RegisterAccountConstantsIIW as RACIIW } from "./routes"
@@ -51,7 +51,9 @@ interface RegisterAccountCaptchaState {
   registerPayload: RegisterPayload
 }
 
-export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = () => {
+export const RegisterAccountCaptcha: React.FC<
+  RegisterAccountCaptchaProps
+> = () => {
   const { secret, scope } = useParams()
 
   const {
@@ -160,10 +162,13 @@ export const RegisterAccountCaptcha: React.FC<RegisterAccountCaptchaProps> = () 
           anchor: userNumber,
         })
 
-        const navPath = generatePath(`${RACIIW.base}/${RACIIW.copyRecoveryPhrase}`, {
-          secret,
-          scope,
-        })
+        const navPath = generatePath(
+          `${RACIIW.base}/${RACIIW.copyRecoveryPhrase}`,
+          {
+            secret,
+            scope,
+          },
+        )
 
         return navigate(navPath, {
           state: {

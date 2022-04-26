@@ -1,18 +1,23 @@
-import clsx from "clsx"
+import {
+  Button,
+  Card,
+  CardBody,
+  H5,
+  Loader,
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
-import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
 import { useNavigate, useParams } from "react-router-dom"
 import { generatePath } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"
 
+import { PoapDescription } from "frontend/design-system/atoms/typography/poapDescription"
+import { PoapLocation } from "frontend/design-system/atoms/typography/poapLocation"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { Button, Card, CardBody, H5, Loader, P, PoapLocation, PoapDescription } from "frontend/ui-kit/src"
-
-import { RegisterAccountConstantsIIW as RACIIW } from "./routes"
 
 import image_dog from "./image_dog.png"
+import { RegisterAccountConstantsIIW as RACIIW } from "./routes"
 
 interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<
@@ -107,7 +112,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       }}
     >
       <img src={image_dog}></img>
-      <Card className="offset-header" style={{marginTop:'-3rem'}}>
+      <Card className="offset-header" style={{ marginTop: "-3rem" }}>
         <H5 className="mb-2 font-bold">April 22-28, 2022</H5>
 
         <CardBody>
@@ -142,12 +147,15 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   Workshop
                 </div>
                 <PoapLocation className="pb-4">
-                  <div style={{display:'inline'}}>Computer History Museum, </div>
-                  <div style={{display:'inline'}}>Mountain View, CA</div>
+                  <div style={{ display: "inline" }}>
+                    Computer History Museum,{" "}
+                  </div>
+                  <div style={{ display: "inline" }}>Mountain View, CA</div>
                 </PoapLocation>
 
                 <PoapDescription>
-                  Add proof that you attended today's workshop as a verifiable credential to one of infinite DIDs, powered by NFID.
+                  Add proof that you attended today's workshop as a verifiable
+                  credential to one of infinite DIDs, powered by NFID.
                 </PoapDescription>
               </div>
             </SwiperSlide>

@@ -1,7 +1,8 @@
 import { blobToHex } from "@dfinity/candid"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { useCallback, useMemo } from "react"
-
+// TODO get static QR code for IIW
+// import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app-iiw/routes"
 import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"

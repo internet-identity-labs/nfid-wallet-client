@@ -7,6 +7,7 @@ import { Usergeek } from "usergeek-ic-js"
 
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
+import { _SERVICE as ImAdditionsService } from "frontend/services/iiw/im_addition.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
@@ -17,6 +18,7 @@ interface Actors {
   internetIdentity: IIConnection
   identityManager: ActorSubclass<IdentityManagerService>
   pubsubChannelActor: ActorSubclass<PubsubChannelService>
+  imAdditionActor: ActorSubclass<ImAdditionsService>
 }
 
 const errorAtom = atom<any | null>(null)
@@ -152,6 +154,7 @@ export const useAuthentication = () => {
     internetIdentity: actors?.internetIdentity,
     identityManager: actors?.identityManager,
     pubsubChannel: actors?.pubsubChannelActor,
+    imAddition: actors?.imAdditionActor,
     error,
     isRemoteDelegate,
     login,

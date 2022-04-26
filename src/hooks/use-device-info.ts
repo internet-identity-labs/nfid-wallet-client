@@ -13,6 +13,11 @@ export const useDeviceInfo = () => {
       platform,
       browser,
       newDeviceName: `NFID ${browser.name} on ${platform.os}`,
+      isMobile: Boolean(
+        window.navigator.userAgent.match(
+          /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
+        ),
+      ),
     }
     return info
   }, [])

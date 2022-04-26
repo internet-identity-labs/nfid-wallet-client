@@ -50,6 +50,11 @@ const config = {
                   `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.BACKEND_MODE}`
                 ],
               ),
+              IM_ADDITION_CANISTER_ID: JSON.stringify(
+                process.env[
+                  `IM_ADDITION_CANISTER_ID_${process.env.BACKEND_MODE}`
+                ],
+              ),
             }),
       }
 

@@ -1,30 +1,73 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { RegisterAccountCaptcha } from "./captcha"
+import { Captcha } from "frontend/screens/captcha"
+
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"
 
-export const RegisterAccountConstants = {
+export const RemoteRegisterAccountConstants = {
   base: "/register-account/:secret/:scope",
   account: "intro",
   captcha: "captcha",
   copyRecoveryPhrase: "copy-recovery-phrase",
 }
 
-export const RegisterAccountRoutes = (
-  <Route path={RegisterAccountConstants.base} element={<Outlet />}>
+export const RemoteRegisterAccountRoutes = (
+  <Route path={RemoteRegisterAccountConstants.base} element={<Outlet />}>
     <Route
-      path={RegisterAccountConstants.account}
-      element={<RegisterAccountIntro />}
+      path={RemoteRegisterAccountConstants.account}
+      element={
+        <RegisterAccountIntro
+          captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}
+        />
+      }
     />
     <Route
-      path={RegisterAccountConstants.captcha}
-      element={<RegisterAccountCaptcha />}
+      path={RemoteRegisterAccountConstants.captcha}
+      element={
+        <Captcha
+          successPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.copyRecoveryPhrase}`}
+        />
+      }
     />
     <Route
-      path={RegisterAccountConstants.copyRecoveryPhrase}
-      element={<RegisterAccountCopyRecoveryPhrase />}
+      path={RemoteRegisterAccountConstants.copyRecoveryPhrase}
+      element={<RegisterAccountCopyRecoveryPhrase isRemoteRegistration />}
+    />
+  </Route>
+)
+
+export const NFIDRegisterAccountConstants = {
+  base: "/register-account",
+  account: "intro",
+  captcha: "captcha",
+  copyRecoveryPhrase: "copy-recovery-phrase",
+}
+
+export const NFIDRegisterAccountRoutes = (
+  <Route path={NFIDRegisterAccountConstants.base} element={<Outlet />}>
+    <Route
+      path={NFIDRegisterAccountConstants.account}
+      element={
+        <RegisterAccountIntro
+          captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
+        />
+      }
+    />
+    <Route
+      path={NFIDRegisterAccountConstants.captcha}
+      element={
+        <Captcha
+          successPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.copyRecoveryPhrase}`}
+        />
+      }
+    />
+    <Route
+      path={NFIDRegisterAccountConstants.copyRecoveryPhrase}
+      element={
+        <RegisterAccountCopyRecoveryPhrase continueButtonText="Continue to NFID" />
+      }
     />
   </Route>
 )

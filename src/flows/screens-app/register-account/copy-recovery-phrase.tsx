@@ -1,21 +1,10 @@
-import { CopyIcon } from "@internet-identity-labs/nfid-sdk-react"
-import {
-  Button,
-  Card,
-  CardBody,
-  H2,
-  H5,
-  Loader,
-  Modal,
-  P,
-} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { CopyRecoveryPhrase } from "frontend/screens/copy-recovery-phrase"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 
@@ -25,7 +14,10 @@ interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
-  > {}
+  > {
+  isRemoteRegistration?: boolean
+  continueButtonText?: string
+}
 
 interface LocationState {
   recoveryPhrase: string
@@ -33,7 +25,7 @@ interface LocationState {
 
 export const RegisterAccountCopyRecoveryPhrase: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
-> = ({ children, className }) => {
+> = ({ isRemoteRegistration = false, continueButtonText }) => {
   const navigate = useNavigate()
   const { secret, scope } = useParams()
   const { isLoading, setIsloading } = useIsLoading()
@@ -49,14 +41,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
 
   const { nextPersonaId, createPersona } = usePersona()
 
-  const [copied, setCopied] = React.useState(false)
   const [successModal, setShowSuccessModal] = React.useState(false)
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(recoveryPhrase).then(function () {
-      setCopied(true)
-    })
-  }
 
   const handleAuthorizePersona = React.useCallback(async () => {
     setIsloading(true)
@@ -70,57 +55,27 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
     console.error(response)
   }, [createPersona, nextPersonaId, remoteLogin, scope, secret, setIsloading])
 
+  const handleLogin = React.useCallback(() => {
+    navigate("/")
+  }, [navigate])
+
   return (
-    <AppScreen isFocused>
-      <H5 className="mt-8">This device is now equipped for Web 3.0</H5>
-      <Card className="grid grid-cols-12">
-        <CardBody className="col-span-12 md:col-span-11 lg:col-span-7">
-          <H2 className="leading-10">Your NFID is ready</H2>
-
-          <P className="my-6">
-            This recovery phrase is the only backup to access your NFID in case
-            all other access points are lost. Keep this secret, safe, and
-            offline!
-          </P>
-
-          <div className="p-4 border rounded-t border-black-base">
-            <P className="font-mono">{recoveryPhrase}</P>
-          </div>
-
-          <Button
-            secondary
-            className="!rounded-t-none w-full flex items-center justify-center space-x-3 focus:outline-none"
-            onClick={() => copyToClipboard()}
-          >
-            <CopyIcon />
-            <span>{copied ? "Copied" : "Copy"}</span>
-          </Button>
-
-          <Button
-            onClick={handleAuthorizePersona}
-            disabled={!copied}
-            secondary
-            large
-            className="mt-8"
-          >
-            Log in to {applicationName || "NFID Demo"}.
-          </Button>
-        </CardBody>
-      </Card>
-      <Loader isLoading={isLoading} />
-      {successModal ? (
-        <Modal
-          title={"Success!"}
-          description={`You signed in to ${applicationName || "NFID Demo"}`}
-          buttonText="Done"
-          iconType="success"
-          onClick={() => {
-            navigate(
-              `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-            )
-          }}
-        />
-      ) : null}
-    </AppScreen>
+    <CopyRecoveryPhrase
+      recoveryPhrase={recoveryPhrase}
+      continueButtonText={
+        continueButtonText || `Log in to ${applicationName || "NFID Demo"}.`
+      }
+      showSuccessModal={successModal}
+      showSuccessModalText={`You signed in to ${
+        applicationName || "NFID Demo"
+      }`}
+      onContinueButtonClick={
+        isRemoteRegistration ? handleAuthorizePersona : handleLogin
+      }
+      onSuccessModalClick={() => {
+        navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
+      }}
+      isLoading={isLoading}
+    />
   )
 }

@@ -1,7 +1,9 @@
 import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
+
+import { useScroll } from "frontend/hooks/use-scroll"
 
 import { NavigationItems as NavigationItemsDefault } from "./navigation-items"
 
@@ -20,53 +22,23 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   navigationItems,
   isFocused = false,
 }) => {
-  const [scrollDir, setScrollDir] = useState("")
-  const [scrollY, setScrollY] = useState(0)
-
-  useEffect(() => {
-    const threshold = 0
-
-    let lastScrollY = window.pageYOffset
-    let ticking = false
-
-    const updateScrollDir = () => {
-      const _scrollY = window.pageYOffset
-
-      if (Math.abs(_scrollY - lastScrollY) < threshold) {
-        ticking = false
-        return
-      }
-      setScrollDir(_scrollY > lastScrollY ? "down" : "up")
-      setScrollY(_scrollY)
-      lastScrollY = _scrollY > 0 ? _scrollY : 0
-      ticking = false
-    }
-
-    const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateScrollDir)
-        ticking = true
-      }
-    }
-
-    window.addEventListener("scroll", onScroll)
-
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [scrollDir])
+  const { scrollY } = useScroll()
 
   return (
     <header
       className={clsx(
-        "flex items-center flex-none z-1 sticky top-0 transition-all duration-300",
-        scrollDir === "down" && "shadow-md bg-white/70 backdrop-blur-md",
-        scrollDir === "up" && "opacity-0",
-        scrollY < 50 && "opacity-100",
+        "flex items-center flex-none sticky top-0 transition-all duration-300 z-40",
+        scrollY > 50 && "shadow-gray bg-white",
+        scrollY < 50 && "opacity-100 bg-transparent",
       )}
     >
-      <div className="container px-3 mx-auto">
-        <div className="flex items-center justify-between p-3 pr-3">
+      <div className={clsx("flex-1 p-4")}>
+        <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link to={"/"} className="flex items-center text-2xl font-black">
+            <Link
+              to={"/"}
+              className="flex items-center w-24 text-2xl font-black"
+            >
               <span>NF</span>
               <ImageOnlyLoader className="w-12 h-12" />
             </Link>

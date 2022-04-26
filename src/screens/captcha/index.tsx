@@ -1,46 +1,37 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { RefreshIcon } from "@internet-identity-labs/nfid-sdk-react"
 import {
-  Button,
   Card,
   CardBody,
   H2,
+  P,
+  Button,
+  RefreshIcon,
   Input,
   Loader,
-  P,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 import {
+  generatePath,
   useLocation,
   useNavigate,
   useParams,
-  generatePath,
 } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
+import { Challenge } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
-  Challenge,
-  ChallengeResult,
-} from "frontend/services/internet-identity/generated/internet_identity_types"
-import {
-  IC_DERIVATION_PATH,
   IIConnection,
+  ChallengeResult,
+  IC_DERIVATION_PATH,
 } from "frontend/services/internet-identity/iiConnection"
 import { captchaRules } from "frontend/utils/validations"
-
-import { RegisterAccountConstants as RAC } from "./routes"
-
-interface RegisterAccountCaptchaProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
 
 interface RegisterPayload {
   identity: string
@@ -51,11 +42,13 @@ interface RegisterAccountCaptchaState {
   registerPayload: RegisterPayload
 }
 
-export const RegisterAccountCaptcha: React.FC<
-  RegisterAccountCaptchaProps
-> = () => {
-  const { secret, scope } = useParams()
+interface CaptchaProps {
+  successPath: string
+}
 
+export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
+  const params = useParams()
+  const { isMobile } = useDeviceInfo()
   const {
     register,
     formState: { errors, dirtyFields },
@@ -65,9 +58,7 @@ export const RegisterAccountCaptcha: React.FC<
   } = useForm({
     mode: "onTouched",
   })
-
   const isFormComplete = ["captcha"].every((field) => dirtyFields[field])
-
   const { state } = useLocation()
   const navigate = useNavigate()
   const { createAccount } = useAccount()
@@ -162,10 +153,7 @@ export const RegisterAccountCaptcha: React.FC<
           anchor: userNumber,
         })
 
-        const navPath = generatePath(`${RAC.base}/${RAC.copyRecoveryPhrase}`, {
-          secret,
-          scope,
-        })
+        const navPath = generatePath(successPath, params)
 
         return navigate(navPath, {
           state: {
@@ -191,84 +179,91 @@ export const RegisterAccountCaptcha: React.FC<
       registerAnchor,
       createRecoveryPhrase,
       createAccount,
-      secret,
-      scope,
+      successPath,
+      params,
       navigate,
       setValue,
       requestCaptcha,
       setError,
     ],
   )
-
   return (
     <AppScreen isFocused>
-      <Card className="grid grid-cols-12 offset-header">
-        <CardBody className="col-span-12 md:col-span-9 lg:col-span-6 xl:col-span-5">
-          <H2 className="my-4">Captcha protected</H2>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card
+            className={`grid grid-cols-12 offset-header ${
+              isMobile ? `mobile` : ``
+            }`}
+          >
+            <CardBody className="col-span-12 py-0 md:col-span-9 lg:col-span-6 xl:col-span-5 sm:py-6">
+              <H2 className="my-4 leading-10">Captcha protected</H2>
 
-          <P>Type the characters you see in the image.</P>
+              <P>Type the characters you see in the image.</P>
 
-          <div>
-            <div
-              className={clsx(
-                "h-[150px] w-auto rounded-md my-4",
-                captchaResp ? "bg-white border border-gray-200" : "",
-              )}
-            >
-              {captchaResp && !loading && (
-                <img
-                  alt="captcha"
-                  src={`data:image/png;base64,${captchaResp.png_base64}`}
-                  className="object-contain w-full h-full"
+              <div>
+                <div
+                  className={clsx(
+                    "h-[150px] w-auto rounded-md my-4",
+                    captchaResp ? "bg-white border border-gray-200" : "",
+                  )}
+                >
+                  {captchaResp && !loading && (
+                    <img
+                      alt="captcha"
+                      src={`data:image/png;base64,${captchaResp.png_base64}`}
+                      className="object-contain w-full h-full"
+                    />
+                  )}
+                </div>
+
+                <Button
+                  text
+                  className="flex items-center space-x-2 !my-1 ml-auto"
+                  onClick={() => requestCaptcha()}
+                >
+                  <RefreshIcon />
+                  <span>Try a different image</span>
+                </Button>
+
+                <Input
+                  errorText={errors.captcha?.message}
+                  placeholder="Captcha"
+                  {...register("captcha", {
+                    required: captchaRules.errorMessages.required,
+                    minLength: {
+                      value: captchaRules.minLength,
+                      message: captchaRules.errorMessages.length,
+                    },
+                    maxLength: {
+                      value: captchaRules.maxLength,
+                      message: captchaRules.errorMessages.length,
+                    },
+                    pattern: {
+                      value: captchaRules.regex,
+                      message: captchaRules.errorMessages.pattern,
+                    },
+                  })}
                 />
-              )}
-            </div>
+              </div>
 
-            <Button
-              text
-              className="flex items-center space-x-2 !my-1 ml-auto"
-              onClick={() => requestCaptcha()}
-            >
-              <RefreshIcon />
-              <span>Try a different image</span>
-            </Button>
-
-            <Input
-              errorText={errors.captcha?.message}
-              placeholder="Captcha"
-              {...register("captcha", {
-                required: captchaRules.errorMessages.required,
-                minLength: {
-                  value: captchaRules.minLength,
-                  message: captchaRules.errorMessages.length,
-                },
-                maxLength: {
-                  value: captchaRules.maxLength,
-                  message: captchaRules.errorMessages.length,
-                },
-                pattern: {
-                  value: captchaRules.regex,
-                  message: captchaRules.errorMessages.pattern,
-                },
-              })}
-            />
-          </div>
-
-          <div className="my-3">
-            <Button
-              large
-              block
-              secondary
-              disabled={!isFormComplete || loading}
-              onClick={handleSubmit(completeNFIDProfile)}
-              data-captcha-key={captchaResp?.challenge_key}
-            >
-              <span>Verify</span>
-            </Button>
-            <Loader isLoading={loading} />
-          </div>
-        </CardBody>
-      </Card>
+              <div className="my-3">
+                <Button
+                  large
+                  block
+                  secondary
+                  disabled={!isFormComplete || loading}
+                  onClick={handleSubmit(completeNFIDProfile)}
+                  data-captcha-key={captchaResp?.challenge_key}
+                >
+                  <span>Verify</span>
+                </Button>
+                <Loader isLoading={loading} />
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+      </main>
     </AppScreen>
   )
 }

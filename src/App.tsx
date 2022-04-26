@@ -1,5 +1,4 @@
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
-import React from "react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -10,11 +9,18 @@ import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
 import { HomeScreen } from "./flows/screens-app/landing-page"
+import { Faq } from "./flows/screens-app/landing-page/faq"
+import { OurMission } from "./flows/screens-app/landing-page/our-mission"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import {
-  RegisterAccountConstants as RAC,
-  RegisterAccountRoutes,
+  AppScreenProofOfAttendencyConstants as POAPC,
+  AppScreenProofOfAttendencyRoutes,
+} from "./flows/screens-app/proof-of-attendancy/routes"
+import {
+  NFIDRegisterAccountRoutes,
+  RemoteRegisterAccountConstants as RAC,
+  RemoteRegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
@@ -42,14 +48,18 @@ export const App = () => {
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />
+      <Route path={"/faq"} element={<Faq />} />
+      <Route path={"/our-mission"} element={<OurMission />} />
       {DevScreensRoutes}
       {AccessPointRoutes}
       {CopyDevicesRoutes}
       {LinkIIAnchorRoutes}
       {ProfileRoutes}
       {RegisterNewDeviceRoutes}
-      {RegisterAccountRoutes}
+      {NFIDRegisterAccountRoutes}
+      {RemoteRegisterAccountRoutes}
       {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
+      {AppScreenProofOfAttendencyRoutes(`${POAPC.base}/${POAPC.register}`)}
       {UnknownDeviceRoutes}
       {RestoreAccessPointRoutes}
 

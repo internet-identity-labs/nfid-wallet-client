@@ -1,10 +1,10 @@
-import { IFrameWrapper } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
   CardBody,
   DropdownMenu,
   H5,
+  IFrameWrapper,
   Label,
   MenuItem,
 } from "@internet-identity-labs/nfid-sdk-react"
@@ -35,106 +35,110 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
   const [selectedItem, setSelectedItem] = React.useState(personas[0])
 
   return (
-    <AppScreen className={clsx("", className)}>
-      <Card>
-        <CardBody>
-          <div className="grid grid-flow-row grid-cols-12 gap-x-4 gap-y-12">
-            {/* IFrameNFIDLogin */}
-            <IFrameWrapper
-              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
-              fixedHeight={false}
-            >
-              <IFrameNFIDLogin />
-            </IFrameWrapper>
+    <AppScreen>
+      <main className={clsx(className, "flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card>
+            <CardBody>
+              <div className="grid grid-flow-row grid-cols-12 gap-x-4 gap-y-12">
+                {/* IFrameNFIDLogin */}
+                <IFrameWrapper
+                  className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+                  fixedHeight={false}
+                >
+                  <IFrameNFIDLogin />
+                </IFrameWrapper>
 
-            {/* IFrameAuthorizeApp */}
-            <IFrameWrapper
-              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
-              fixedHeight={false}
-            >
-              <IFrameScreen logo>
-                <H5 className="mb-4">Log in to {applicationName}</H5>
+                {/* IFrameAuthorizeApp */}
+                <IFrameWrapper
+                  className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+                  fixedHeight={false}
+                >
+                  <IFrameScreen logo>
+                    <H5 className="mb-4">Log in to {applicationName}</H5>
 
-                <div className="mb-5">
-                  <Label>Continue as</Label>
-                  <DropdownMenu title={`Continue as ${selectedItem}`}>
-                    {(toggle) => (
-                      <>
-                        <Label menuItem>Personas</Label>
-                        {personas.map((persona) => (
-                          <MenuItem
-                            key={persona}
-                            title={persona}
-                            onClick={() => {
-                              setSelectedItem(persona)
-                              toggle()
-                            }}
-                          />
-                        ))}
+                    <div className="mb-5">
+                      <Label>Continue as</Label>
+                      <DropdownMenu title={`Continue as ${selectedItem}`}>
+                        {(toggle) => (
+                          <>
+                            <Label menuItem>Personas</Label>
+                            {personas.map((persona) => (
+                              <MenuItem
+                                key={persona}
+                                title={persona}
+                                onClick={() => {
+                                  setSelectedItem(persona)
+                                  toggle()
+                                }}
+                              />
+                            ))}
 
-                        <Label menuItem>Anchors</Label>
-                        {anchors.map((anchor) => (
-                          <MenuItem
-                            key={anchor}
-                            title={anchor}
-                            onClick={() => {
-                              setSelectedItem(anchor)
-                              toggle()
-                            }}
-                          />
-                        ))}
-                      </>
-                    )}
-                  </DropdownMenu>
-                </div>
+                            <Label menuItem>Anchors</Label>
+                            {anchors.map((anchor) => (
+                              <MenuItem
+                                key={anchor}
+                                title={anchor}
+                                onClick={() => {
+                                  setSelectedItem(anchor)
+                                  toggle()
+                                }}
+                              />
+                            ))}
+                          </>
+                        )}
+                      </DropdownMenu>
+                    </div>
 
-                <Button secondary block>
-                  Log in
-                </Button>
-                <Button text block>
-                  Create a new persona
-                </Button>
-              </IFrameScreen>
-            </IFrameWrapper>
+                    <Button secondary block>
+                      Log in
+                    </Button>
+                    <Button text block>
+                      Create a new persona
+                    </Button>
+                  </IFrameScreen>
+                </IFrameWrapper>
 
-            {/* IFrameAuthorizeRegisterDecider */}
-            <IFrameWrapper
-              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
-              fixedHeight={false}
-            >
-              <IFrameScreen logo>
-                <AuthorizeRegisterDecider
-                  iframe
-                  onRegister={() => {
-                    console.log("Register")
-                  }}
-                  onLogin={() => {
-                    console.log("Login")
-                  }}
-                />
-              </IFrameScreen>
-            </IFrameWrapper>
+                {/* IFrameAuthorizeRegisterDecider */}
+                <IFrameWrapper
+                  className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+                  fixedHeight={false}
+                >
+                  <IFrameScreen logo>
+                    <AuthorizeRegisterDecider
+                      iframe
+                      onRegister={() => {
+                        console.log("Register")
+                      }}
+                      onLogin={() => {
+                        console.log("Login")
+                      }}
+                    />
+                  </IFrameScreen>
+                </IFrameWrapper>
 
-            {/* IFrameNFIDPersonalize */}
-            <IFrameWrapper
-              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
-              fixedHeight={false}
-            >
-              <IFrameNFIDPersonalize />
-            </IFrameWrapper>
+                {/* IFrameNFIDPersonalize */}
+                <IFrameWrapper
+                  className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+                  fixedHeight={false}
+                >
+                  <IFrameNFIDPersonalize />
+                </IFrameWrapper>
 
-            {/* IFrameRestoreAccessPoint */}
-            <IFrameWrapper
-              className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
-              fixedHeight={false}
-            >
-              <IFrameScreen logo>
-                <RestoreAccessPoint iframe />
-              </IFrameScreen>
-            </IFrameWrapper>
-          </div>
-        </CardBody>
-      </Card>
+                {/* IFrameRestoreAccessPoint */}
+                <IFrameWrapper
+                  className="relative inset-0 col-span-12 md:col-span-6 xl:col-span-4"
+                  fixedHeight={false}
+                >
+                  <IFrameScreen logo>
+                    <RestoreAccessPoint iframe />
+                  </IFrameScreen>
+                </IFrameWrapper>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+      </main>
     </AppScreen>
   )
 }

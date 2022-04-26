@@ -1,0 +1,6 @@
+
+service : () -> {
+  has_poap: () -> (bool) query;
+  ping: () -> (bool) query;
+  increment_poap: () -> ();
+}

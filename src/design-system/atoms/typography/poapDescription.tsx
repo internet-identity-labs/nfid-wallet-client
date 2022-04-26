@@ -11,22 +11,26 @@ interface Props
   small?: boolean
 }
 
-export const PoapDescription: React.FC<Props> = ({ children, className, small = false }) => {
+export const PoapDescription: React.FC<Props> = ({
+  children,
+  className,
+  small = false,
+}) => {
   return (
     <>
-    <div>
-      <img src={info} style={{width:'24px', display:'inline'}}></img>
-      <p
-        style={{display:'inline', paddingLeft:'10px'}}
-        className={clsx([
-          "text-black leading-6 mb-3",
-          small && "text-sm",
-          className,
-        ])}
+      <div>
+        <img src={info} style={{ width: "24px", display: "inline" }} alt="" />
+        <p
+          style={{ display: "inline", paddingLeft: "10px" }}
+          className={clsx([
+            "text-black leading-6 mb-3",
+            small && "text-sm",
+            className,
+          ])}
         >
           {children}
-      </p>
-    </div>
+        </p>
+      </div>
     </>
   )
 }

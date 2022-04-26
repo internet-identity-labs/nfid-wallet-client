@@ -1,8 +1,7 @@
-import { Menu, Transition } from "@headlessui/react"
+import { Menu } from "@headlessui/react"
 import { DotsIcon } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-import { Fragment } from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 

@@ -1,3 +1,14 @@
+import {
+  Button,
+  Card,
+  CardBody,
+  H2,
+  H5,
+  Loader,
+  Modal,
+  CopyIcon,
+  P,
+} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
@@ -7,17 +18,6 @@ import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
-import { CopyIcon } from "frontend/ui-kit/src/components/atoms/button/icons/copy"
-import {
-  Button,
-  Card,
-  CardBody,
-  H2,
-  H5,
-  Loader,
-  Modal,
-  P,
-} from "frontend/ui-kit/src/index"
 
 import { ProfileConstants } from "../profile/routes"
 
@@ -31,10 +31,9 @@ interface LocationState {
   recoveryPhrase: string
 }
 
-export const RegisterAccountCopyRecoveryPhrase: React.FC<RegisterAccountCopyRecoveryPhraseProps> = ({
-  children,
-  className,
-}) => {
+export const RegisterAccountCopyRecoveryPhrase: React.FC<
+  RegisterAccountCopyRecoveryPhraseProps
+> = ({ children, className }) => {
   const navigate = useNavigate()
   const { secret, scope } = useParams()
   const { isLoading, setIsloading } = useIsLoading()

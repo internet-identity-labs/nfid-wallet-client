@@ -1,46 +1,75 @@
-import { ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
+import { Button, ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
-import { HiMenu } from "react-icons/hi"
+import { Link, useNavigate } from "react-router-dom"
 
-interface NavigationItemsProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+import User from "frontend/assets/user.svg"
+import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
+import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import useClickOutside from "frontend/hooks/use-click-outside"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
-export const NavigationItems: React.FC<NavigationItemsProps> = ({
-  children,
-  className,
-}) => {
+import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.svg"
+import { NavigationPopup } from "./navigation-popup"
+import { PopupLogin } from "./navigation-popup/popup-login"
+
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {
+}
+
+export const NavigationItems: React.FC<NavigationItemsProps> = () => {
+  const { isAuthenticated } = useAuthentication()
+  const { account } = useAccount()
+  const navigate = useNavigate()
+  const [isPopupVisible, setIsPopupVisible] = React.useState(false)
+  const popupRef = useClickOutside(() => setIsPopupVisible(false))
+  const { registerRoute, status } = useRegisterQRCode()
+
   const classes = {
     navItem:
-      "text-gray-600 hover:text-gray-800 hover:underline decoration-dashed hover:underline-offset-4 cursor-pointer",
+      "text-black hover:underline cursor-pointer hover:text-blue-hover transition-all",
   }
 
   const items = [
     {
-      label: "Home",
+      label: "The Identity Layer",
       to: "home",
+      external: false,
+    },
+    {
+      label: "Only with NFID",
+      to: "only-with-nfid",
+      external: false,
     },
     {
       label: "Our mission",
       to: "our-mission",
+      external: false,
     },
+    // {
+    //   label: "Partners",
+    //   to: "partners",
+    // },
     {
-      label: "Partners",
-      to: "partners",
-    },
-    {
-      label: "F.A.Q.",
+      label: "FAQ",
       to: "faq",
+      external: false,
+    },
+    {
+      label: "Docs",
+      to: "https://docs.nfid.one",
+      external: true,
     },
   ]
 
   const handleGoTo = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     item: string,
+    external: boolean,
   ) => {
     e.preventDefault()
+    if(external) window.open(item)
+    if (window.location.pathname !== "/") navigate(`/#${item}`)
 
     const element = document.getElementById(item)
 
@@ -54,18 +83,20 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
 
   return (
     <>
-      <div className="md:hidden relative">
+      <div className="md:hidden">
         <ButtonMenu
-          buttonElement={<HiMenu className="w-6 h-6 text-gray-500" />}
+          buttonElement={
+            <img src={IconMenu} alt="menu" className="rotate-180" />
+          }
         >
           {(toggleMenu) => (
-            <div className="p-4 py-6 bg-white rounded shadow-lg w-48 space-y-2">
+            <div className="p-4 py-6 space-y-5 font-bold bg-white rounded w-[70vw] pt-28">
               {items.map((item, index) => (
                 <div
                   className={classes.navItem}
                   onClick={(el) => {
                     el.stopPropagation()
-                    handleGoTo(el, item.to)
+                    handleGoTo(el, item.to, item.external)
                     toggleMenu()
                   }}
                   key={index}
@@ -73,21 +104,79 @@ export const NavigationItems: React.FC<NavigationItemsProps> = ({
                   {item.label}
                 </div>
               ))}
+              {isAuthenticated || account ? (
+                <PopupLogin />
+              ) : (
+                <>
+                  <Button
+                    className={"leading-none"}
+                    largeMax
+                    primary
+                    onClick={() => navigate(registerRoute)}
+                  >
+                    Register your NFID
+                  </Button>
+                  {/*<Link*/}
+                  {/*  className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"*/}
+                  {/*  to={`${RAC.base}/${RAC.recoveryPhrase}`}*/}
+                  {/*  state={{ from: "loginWithRecovery" }}*/}
+                  {/*>*/}
+                  {/*  Unlock NFID with Security Key*/}
+                  {/*</Link>*/}
+                  <Link
+                    className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+                    to={`${RAC.base}/${RAC.recoveryPhrase}`}
+                    state={{ from: "loginWithRecovery" }}
+                  >
+                    Recover your NFID
+                  </Link>
+                </>
+              )}
             </div>
           )}
         </ButtonMenu>
       </div>
 
-      <div className="hidden md:flex items-center space-x-4">
+      <div className="items-center hidden space-x-10 md:flex">
         {items.map((item, index) => (
           <div
             className={classes.navItem}
-            onClick={(e) => handleGoTo(e, item.to)}
+            onClick={(e) => handleGoTo(e, item.to, item.external)}
             key={index}
           >
             {item.label}
           </div>
         ))}
+        <div className="relative" ref={popupRef}>
+          {isAuthenticated || account ? (
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base">
+              <img
+                src={User}
+                alt="user"
+                className="cursor-pointer"
+                onClick={() => setIsPopupVisible(!isPopupVisible)}
+              />
+            </div>
+          ) : (
+            <Button
+              className={clsx(
+                "h-full leading-none",
+                window.scrollY < 500 && "hidden",
+              )}
+              primary
+              onClick={() => setIsPopupVisible(!isPopupVisible)}
+            >
+              Register your NFID
+            </Button>
+          )}
+          {isPopupVisible || status === "registerDecider" ? (
+            <div>
+              <NavigationPopup
+                className={clsx(window.scrollY < 500 && status === "" ? "hidden" : null)}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </>
   )

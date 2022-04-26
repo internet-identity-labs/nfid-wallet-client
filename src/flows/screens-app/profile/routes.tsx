@@ -3,7 +3,7 @@ import { Outlet, Route } from "react-router-dom"
 
 import { AuthWrapper } from "frontend/screens/auth-wrapper"
 
-import { AuthenticateNFIDHome } from "."
+import { NFIDProfile } from "."
 import { NFIDPersonalize } from "./personalize"
 
 export const ProfileConstants = {
@@ -19,7 +19,7 @@ export const ProfileRoutes = (
       element={
         // TODO: redirect to general register flow
         <AuthWrapper redirectTo="/">
-          <AuthenticateNFIDHome />
+          <NFIDProfile />
         </AuthWrapper>
       }
     />

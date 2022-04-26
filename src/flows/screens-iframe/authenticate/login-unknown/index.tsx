@@ -107,18 +107,31 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
 
       {!showRegister && url && !iframe ? (
         <AppScreen isFocused bubbleOptions={{ showBubbles: false }}>
-          <AuthorizeAppUnknownDevice
-            applicationName={applicationName}
-            url={url}
-            onLogin={() =>
-              navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
-                state: { from: "loginWithRecovery" },
-              })
-            }
-          />
+          <main className={clsx("flex flex-1")}>
+            <div className="container px-6 py-0 mx-auto sm:py-4">
+              <AuthorizeAppUnknownDevice
+                applicationName={applicationName}
+                url={url}
+                onLogin={() =>
+                  navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
+                    state: { from: "loginWithRecovery" },
+                  })
+                }
+              />
+            </div>
+          </main>
         </AppScreen>
       ) : null}
 
+      {showRegister && (
+        <IFrameScreen logo>
+          <AuthorizeRegisterDecider
+            onRegister={handleRegisterDevice}
+            onLogin={handleSendDelegate}
+            iframe
+          />
+        </IFrameScreen>
+      )}
       {/* IFrameAuthorizeAppUnkownDevice(AwaitConfirmationState)  */}
       {isLoading && (
         <div className="fixed top-0 bottom-0 w-full">
@@ -131,19 +144,10 @@ export const UnknownDeviceScreen: React.FC<UnknownDeviceScreenProps> = ({
               imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
             />
             <div className="z-20 mt-5 text-center">
-              Awaiting confirmation from your phone...
+              Waiting for verification ...
             </div>
           </div>
         </div>
-      )}
-      {showRegister && (
-        <IFrameScreen logo>
-          <AuthorizeRegisterDecider
-            onRegister={handleRegisterDevice}
-            onLogin={handleSendDelegate}
-            iframe
-          />
-        </IFrameScreen>
       )}
     </div>
   )

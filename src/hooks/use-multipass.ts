@@ -7,7 +7,7 @@ import { creationOptions } from "frontend/services/internet-identity/iiConnectio
 
 import { useDeviceInfo } from "./use-device-info"
 
-const applicationNameAtom = atom<string | undefined>(undefined)
+const applicationNameAtom = atom<string>("NFID")
 
 export const useMultipass = () => {
   const [params] = useSearchParams()
@@ -32,7 +32,9 @@ export const useMultipass = () => {
       !applicationName &&
       (applicationNameFromParams || applicationNameFromPath)
     ) {
-      setApplicationName(applicationNameFromParams || applicationNameFromPath)
+      setApplicationName(
+        applicationNameFromParams || applicationNameFromPath || "NFID",
+      )
     }
   }, [applicationName, applicationNameFromPath, params, setApplicationName])
 

@@ -1,4 +1,5 @@
 import { Button, Card, H2, P } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -15,17 +16,26 @@ export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
 
   return (
     <AppScreen isFocused>
-      <Card className="flex flex-col items-center justify-center h-full text-center">
-        <H2 className="mb-4 capitalize">Page not found</H2>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card className="flex flex-col items-center justify-center h-full text-center">
+            <H2 className="mb-4 capitalize">Page not found</H2>
 
-        <div>
-          <P>The page you are looking for does not exist.</P>
+            <div>
+              <P>The page you are looking for does not exist.</P>
 
-          <Button large stroke onClick={() => navigate("/")} className="my-4">
-            Return to Home
-          </Button>
+              <Button
+                large
+                stroke
+                onClick={() => navigate("/")}
+                className="my-4"
+              >
+                Return to Home
+              </Button>
+            </div>
+          </Card>
         </div>
-      </Card>
+      </main>
     </AppScreen>
   )
 }

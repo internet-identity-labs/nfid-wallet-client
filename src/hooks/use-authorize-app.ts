@@ -122,6 +122,24 @@ export const useAuthorizeApp = () => {
     ],
   )
 
+  const remoteNFIDLogin = React.useCallback(
+    async ({ secret }: { secret: string }) => {
+      if (!userNumber) {
+        throw new Error("Device not registered")
+      }
+      const message = JSON.stringify({
+        type: "remote-nfid-login-register",
+        userNumber: userNumber.toString(),
+        nfid: { chain, sessionKey },
+      })
+
+      const response = await postMessages(secret, [message])
+
+      return response
+    },
+    [chain, postMessages, sessionKey, userNumber],
+  )
+
   const sendWaitForUserInput = React.useCallback(
     async (secret) => {
       const message = JSON.stringify({
@@ -133,5 +151,5 @@ export const useAuthorizeApp = () => {
     [createTopic, postMessages],
   )
 
-  return { remoteLogin, sendWaitForUserInput }
+  return { remoteLogin, remoteNFIDLogin, sendWaitForUserInput }
 }

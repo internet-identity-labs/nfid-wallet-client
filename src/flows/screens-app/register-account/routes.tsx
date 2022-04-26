@@ -5,25 +5,49 @@ import { RegisterAccountCaptcha } from "./captcha"
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"
 
-export const RegisterAccountConstants = {
+export const RemoteRegisterAccountConstants = {
   base: "/register-account/:secret/:scope",
   account: "intro",
   captcha: "captcha",
   copyRecoveryPhrase: "copy-recovery-phrase",
 }
 
-export const RegisterAccountRoutes = (
-  <Route path={RegisterAccountConstants.base} element={<Outlet />}>
+export const RemoteRegisterAccountRoutes = (
+  <Route path={RemoteRegisterAccountConstants.base} element={<Outlet />}>
     <Route
-      path={RegisterAccountConstants.account}
+      path={RemoteRegisterAccountConstants.account}
       element={<RegisterAccountIntro />}
     />
     <Route
-      path={RegisterAccountConstants.captcha}
+      path={RemoteRegisterAccountConstants.captcha}
       element={<RegisterAccountCaptcha />}
     />
     <Route
-      path={RegisterAccountConstants.copyRecoveryPhrase}
+      path={RemoteRegisterAccountConstants.copyRecoveryPhrase}
+      element={<RegisterAccountCopyRecoveryPhrase />}
+    />
+  </Route>
+)
+
+export const NFIDRegisterAccountConstants = {
+  base: "/register-account",
+  account: "intro",
+  captcha: "captcha",
+  copyRecoveryPhrase: "copy-recovery-phrase",
+}
+
+export const NFIDRegisterAccountRoutes = (
+  <Route path={NFIDRegisterAccountConstants.base} element={<Outlet />}>
+    <Route
+      path={NFIDRegisterAccountConstants.account}
+      element={<RegisterAccountIntro />}
+    />
+    <Route
+      path={NFIDRegisterAccountConstants.captcha}
+      element={<RegisterAccountCaptcha />}
+    />
+    <Route
+      path={NFIDRegisterAccountConstants.copyRecoveryPhrase}
       element={<RegisterAccountCopyRecoveryPhrase />}
     />
   </Route>

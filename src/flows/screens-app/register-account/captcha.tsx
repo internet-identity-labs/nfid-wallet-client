@@ -34,7 +34,7 @@ import {
 } from "frontend/services/internet-identity/iiConnection"
 import { captchaRules } from "frontend/utils/validations"
 
-import { RegisterAccountConstants as RAC } from "./routes"
+import { RemoteRegisterAccountConstants as RAC } from "./routes"
 
 interface RegisterAccountCaptchaProps
   extends React.DetailedHTMLProps<

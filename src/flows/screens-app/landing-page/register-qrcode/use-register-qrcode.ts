@@ -72,16 +72,16 @@ export const useRegisterQRCode = () => {
         if (registerMessage) {
           console.log(">> handlePollForDelegate", { registerMessage })
 
-          setUserNumber(BigInt(registerMessage.userNumber))
           handleLoginFromRemoteDelegation(
             registerMessage.nfid,
             registerMessage.userNumber,
           )
+
           cancelPoll()
         }
       }
     },
-    [getMessages, handleLoginFromRemoteDelegation, publicKey, setUserNumber],
+    [getMessages, handleLoginFromRemoteDelegation, publicKey],
   )
 
   return {

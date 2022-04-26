@@ -1,15 +1,17 @@
 import { blobToHex } from "@dfinity/candid"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { atom, useAtom } from "jotai"
 import { useCallback, useMemo } from "react"
+import { generatePath } from "react-router-dom"
+
 // TODO get static QR code for IIW
 // import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app-iiw/routes"
 import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
+import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
-import { atom, useAtom } from "jotai"
-import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 
 const statusAtom = atom<string>("")
 
@@ -26,7 +28,12 @@ export const useRegisterQRCode = () => {
   )
 
   const registerRoute = useMemo(
-    () => `${AppScreenAuthorizeAppConstants.base}/${publicKey}/NFID/intro`,
+    () =>
+      generatePath(
+        // SCOPE AND APPLCICATION NAME SET TO NFID
+        `${AppScreenAuthorizeAppConstants.base}/${AppScreenAuthorizeAppConstants.authorize}`,
+        { secret: publicKey, scope: "NFID", applicationName: "NFID" },
+      ),
     [publicKey],
   )
 
@@ -36,15 +43,12 @@ export const useRegisterQRCode = () => {
 
   const handleLoginFromRemoteDelegation = useCallback(
     async (nfidJsonDelegate, userNumber) => {
-      console.log(">> handleLoginFromRemoteDelegation", { userNumber })
-
       const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
         userNumber: BigInt(userNumber),
       })
       const result = apiResultToLoginResult(loginResult)
-      console.log(">> handleLoginFromRemoteDelegation", { result })
 
       if (result.tag === "ok") {
         setAuthenticatedActors(result)
@@ -67,12 +71,10 @@ export const useRegisterQRCode = () => {
         const parsedMessages = messages.map((m: string) => JSON.parse(m))
 
         const registerMessage = parsedMessages.find(
-          (m: { type: string }) => m.type === "remote-login-register",
+          (m: { type: string }) => m.type === "remote-nfid-login-register",
         )
 
         if (registerMessage) {
-          console.log(">> handlePollForDelegate", { registerMessage })
-
           handleLoginFromRemoteDelegation(
             registerMessage.nfid,
             registerMessage.userNumber,

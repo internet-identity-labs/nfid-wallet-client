@@ -106,11 +106,6 @@ export const Profile: React.FC<ProfileProps> = ({
           "top-[20vh] left-[27vw] md:top-[60vh] md:left-[10vw]",
         ],
       }}
-      // classNameWrapper={clsx(
-      //   "md:mt-0 md:flex md:right-0 md:top-0 md:w-1/2 md:h-full md:overflow-y-auto md:z-[100]",
-      //   "relative ml-auto",
-      // )}
-      navigationItems={<ProfileHomeMenu className="md:hidden" />}
     >
       <main
         className={clsx(
@@ -137,7 +132,10 @@ export const Profile: React.FC<ProfileProps> = ({
               `${AppScreenProofOfAttendencyConstants.base}/${AppScreenProofOfAttendencyConstants.award}`,
               { secret: "iiw-april-22" },
             )}
-            className={clsx("overflow-hidden", "sm:px-3 sm:pb-6 sm:bg-white")}
+            className={clsx(
+              "overflow-hidden",
+              "sm:px-3 sm:py-6 sm:bg-white md:px-12",
+            )}
           >
             <PoaBanner />
           </Link>

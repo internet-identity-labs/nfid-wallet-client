@@ -10,7 +10,7 @@ export const PoaBanner: React.FC<PoaBannerProps> = () => {
     <div
       className={clsx([
         "relative p-6 text-white",
-        "sm:px-3 sm:rounded-lg",
+        "px-3 md:px-6 sm:rounded-lg",
         "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500",
       ])}
     >

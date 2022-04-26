@@ -30,11 +30,11 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
   continueButtonContent,
   isLoading,
 }) => {
-  const [lastSlide, setLastSlide] = React.useState(false)
-  const [firstSlide, setFirstSlide] = React.useState(true)
+  const [, setLastSlide] = React.useState(false)
+  const [, setFirstSlide] = React.useState(true)
 
-  const [prevEl, setPrevEl] = React.useState<HTMLElement | null>(null)
-  const [nextEl, setNextEl] = React.useState<HTMLElement | null>(null)
+  const [prevEl] = React.useState<HTMLElement | null>(null)
+  const [nextEl] = React.useState<HTMLElement | null>(null)
   const [slide, setSlide] = React.useState<Number>()
 
   const gradientStyles = () => {

@@ -22,7 +22,7 @@ interface RestoreAccessPointRecoveryPhraseContentProps
 
 export const RestoreAccessPoint: React.FC<
   RestoreAccessPointRecoveryPhraseContentProps
-> = ({ children, className, iframe }) => {
+> = ({ className, iframe }) => {
   const { loginWithRecovery, error, isLoading, isAuthenticated } =
     useAuthentication()
   const { setLocalAccount } = useAccount()

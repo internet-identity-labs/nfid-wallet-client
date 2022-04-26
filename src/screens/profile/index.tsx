@@ -99,12 +99,12 @@ export const Profile: React.FC<ProfileProps> = ({
     >
       <main
         className={clsx(
-          "container flex flex-col flex-1 relative w-full max-w-6xl",
+          "container flex flex-col flex-1 relative max-w-6xl w-full",
           "sm:mt-0",
-          "md:px-6 md:ml-auto",
+          "md:px-20 md:ml-auto md:w-2/3",
         )}
       >
-        <div className={clsx("px-5", "md:bg-white")}>
+        <div className={clsx("px-5 md:px-16", "md:bg-white")}>
           <div className="flex items-center justify-between">
             <div>
               <H3 className="block py-2">
@@ -123,14 +123,14 @@ export const Profile: React.FC<ProfileProps> = ({
             <PoaBanner />
           </div>
         )}
-        <div className={clsx("px-5 pt-5", "bg-white overflow-hidden")}>
+        <div className={clsx("px-5 md:px-16 pt-5", "bg-white overflow-hidden")}>
           <List>
             <List.Header>
               <div className="mb-3">
                 <H5>Applications</H5>
               </div>
             </List.Header>
-            <List.Items>
+            <List.Items className="ml-0">
               {myApplications.length > 0 ? (
                 myApplications.map((application, index) => (
                   <ListItem
@@ -164,7 +164,7 @@ export const Profile: React.FC<ProfileProps> = ({
                         <ListItemPlaceholder key={index} index={index} />
                       ))}
 
-                      <div className="absolute left-0 w-full h-full top-8 bg-gradient-to-t from-white to-white/5"></div>
+                      <div className="absolute left-0 w-full h-full top-8 bg-gradient-to-t from-white to-white/5" />
                     </div>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export const Profile: React.FC<ProfileProps> = ({
             </List.Items>
           </List>
         </div>
-        <div className={clsx("px-5 pt-4", "bg-white flex-1")}>
+        <div className={clsx("px-5 md:px-16 pt-4", "bg-white flex-1")}>
           <List>
             <List.Header>
               <div className="flex items-center justify-between mb-3">
@@ -183,7 +183,7 @@ export const Profile: React.FC<ProfileProps> = ({
                 </div>
               </div>
             </List.Header>
-            <List.Items>
+            <List.Items className="ml-0">
               {devices.map((device, index) => (
                 <DeviceListItem
                   key={device.alias}

@@ -7,22 +7,29 @@ import React from "react"
 import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 
 interface AuthenticateNFIDLoginContentProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends React.HTMLAttributes<HTMLDivElement> {
   iframe?: boolean
+  onLoginSuccess?: (loginResult: void | LoginSuccess) => void
 }
 
 export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
   iframe,
+  onLoginSuccess,
 }) => {
   const { account } = useAccount()
   const { isLoading, error, login } = useAuthentication()
 
   const title = "Unlock your NFID"
+
+  const handleLogin = React.useCallback(async () => {
+    const result = await login()
+    if (onLoginSuccess) {
+      onLoginSuccess(result)
+    }
+  }, [login, onLoginSuccess])
 
   return (
     <>
@@ -42,7 +49,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
           block={iframe}
           secondary
           className="mt-8"
-          onClick={login}
+          onClick={handleLogin}
         >
           Unlock as {account?.name || account?.anchor}
         </Button>

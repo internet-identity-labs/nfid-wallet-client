@@ -307,6 +307,10 @@ ul {
     margin-top: 0;
   }
 
+  main.landing-page .container .mobile.has-account {
+    margin-top: 72px;
+  }
+
 }
 
 @media only screen and (max-width: 320px) {

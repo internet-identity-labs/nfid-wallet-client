@@ -33,6 +33,7 @@ import {
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 import { captchaRules } from "frontend/utils/validations"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 import { RemoteRegisterAccountConstants as RAC } from "./routes"
 
@@ -55,6 +56,7 @@ export const RegisterAccountCaptcha: React.FC<
   RegisterAccountCaptchaProps
 > = () => {
   const { secret, scope } = useParams()
+  const { isMobile } = useDeviceInfo()
 
   const {
     register,
@@ -202,9 +204,9 @@ export const RegisterAccountCaptcha: React.FC<
 
   return (
     <AppScreen isFocused>
-      <Card className="grid grid-cols-12 offset-header">
-        <CardBody className="col-span-12 md:col-span-9 lg:col-span-6 xl:col-span-5">
-          <H2 className="my-4">Captcha protected</H2>
+      <Card className={`grid grid-cols-12 offset-header ${isMobile ? `mobile` : ``}`}>
+        <CardBody className="col-span-12 md:col-span-9 lg:col-span-6 xl:col-span-5 py-0 sm:py-6">
+          <H2 className="leading-10 my-4">Captcha protected</H2>
 
           <P>Type the characters you see in the image.</P>
 

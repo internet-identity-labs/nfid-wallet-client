@@ -46,7 +46,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       classNameWrapper="bg-gradient-to-b from-white to-[#F3F8FE] overflow-hidden sm:overflow-clip scroll-smooth landing-page"
     >
       <ParallaxProvider>
-        <div className="font-inter">
+        <div className={`font-inner ${isMobile ? `mobile` : ``} ${account ? `has-account` : ``}`}>
           <section
             id="home"
             className="grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10"
@@ -65,7 +65,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 src={Blur1}
                 alt="blur1"
               />
-              <HeroRightSide isQRCode={!isAuthenticated && !account} />
+              <HeroRightSide isQRCode={!isAuthenticated && !account} hasAccount={!!account} />
               <Fade right>
                 <Parallax
                   className="relative font-bold"

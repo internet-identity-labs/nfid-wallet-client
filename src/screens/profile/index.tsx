@@ -59,18 +59,18 @@ export const Profile: React.FC<ProfileProps> = ({
 }) => {
   const myApplications = React.useMemo(() => {
     // Group iiPersonas by hostname and count the number of iiPersonas
-    const iiPersonasByHostname = personas.reduce((acc, iiPersona) => {
-      const hostname = getUrl(iiPersona.domain).hostname.split(".")[0]
+    const personasByHostname = personas.reduce((acc, persona) => {
+      const hostname = getUrl(persona.domain).hostname.split(".")[0]
       const applicationName =
         hostname.charAt(0).toUpperCase() + hostname.slice(1)
-      const iiPersonas = acc[applicationName] || []
-      acc[applicationName] = [...iiPersonas, iiPersona]
+      const personas = acc[applicationName] || []
+      acc[applicationName] = [...personas, persona]
 
       return acc
     }, {} as { [applicationName: string]: NFIDPersona[] })
 
     // Map the iiPersonas by application to an array of objects
-    const iiPersonasByHostnameArray = Object.entries(iiPersonasByHostname).map(
+    const personaByHostnameArray = Object.entries(personasByHostname).map(
       ([applicationName, iiPersonas]) => {
         return {
           applicationName,
@@ -80,10 +80,21 @@ export const Profile: React.FC<ProfileProps> = ({
       },
     )
 
-    return iiPersonasByHostnameArray
+    return personaByHostnameArray
   }, [personas])
 
-  console.log(">> Profile", { personas })
+  const handleNavigateToApplication = React.useCallback(
+    (applicationName: string) => {
+      const application = personas.find((persona) => {
+        return persona.domain.includes(applicationName.toLowerCase())
+      })
+
+      if (application) {
+        window.open(getUrl(application.domain), "_blank")
+      }
+    },
+    [personas],
+  )
 
   return (
     <AppScreen
@@ -154,8 +165,7 @@ export const Profile: React.FC<ProfileProps> = ({
                     }
                     defaultAction={false}
                     onClick={() =>
-                      // handleNavigateToApplication(application.applicationName)
-                      console.log(">> onClick ", { application })
+                      handleNavigateToApplication(application.applicationName)
                     }
                   />
                 ))

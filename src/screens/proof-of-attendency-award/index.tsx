@@ -40,7 +40,7 @@ export const ProofOfAttendencyAward: React.FC<ProofOfAttendencyAwardProps> = () 
           "md:flex-1",
         )}
       >
-        <div>
+        <div className="z-20">
           <Link
             to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
           >
@@ -52,7 +52,7 @@ export const ProofOfAttendencyAward: React.FC<ProofOfAttendencyAwardProps> = () 
         <div
           className={clsx(
             // MOBILE
-            "container flex flex-col mx-auto",
+            "container flex flex-col mx-auto z-10",
             // SMALL
             "md:flex-row-reverse",
             // MEDIUM

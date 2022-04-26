@@ -1,18 +1,21 @@
-import { Button, H5, Loader, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
+import {
+  Button,
+  H5,
+  Loader,
+  RadioButton,
+} from "@internet-identity-labs/nfid-sdk-react"
 import React, { useState } from "react"
 
 import logo from "frontend/assets/logo.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
-import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 
 interface PopupRegisterDeciderProps
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement> {
-}
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)

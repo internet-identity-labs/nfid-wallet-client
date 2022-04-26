@@ -6,12 +6,11 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 import { EventSummary } from "./event-summary"
 import image_dog from "./image_dog.svg"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 interface RegisterAccountIntroProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement> {
   continueButtonContent: string
   onContinueButtonClick: () => Promise<void>
   isLoading?: boolean
@@ -22,17 +21,18 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
   continueButtonContent,
   isLoading,
 }) => {
+  const { isMobile } = useDeviceInfo()
   return (
     <AppScreen
       bubbleOptions={{
         showBubbles: true,
-        bubbleColors: ["#FF9533", "rgba(181,123,255,0.4)"],
+        bubbleColors: ["#FF9533", "rgba(181,123,255,0.5)"],
         bubbleClassNames: [
           "right-[-40vw] md:right-[13vw] md:top-[16vh]",
-          "bottom-[-10vh] md:right-[20vw] md:top-[30vh]",
+          "bottom-[-40vh] md:right-[35vw] md:top-[30vh]",
         ],
       }}
-      navigationItems={<div/>}
+      navigationItems={<div />}
     >
       <main className={clsx("flex flex-1 overflow-x-hidden")}>
         <div
@@ -71,6 +71,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
                 secondary
                 onClick={onContinueButtonClick}
                 className="mt-8"
+                largeMax={isMobile}
               >
                 {continueButtonContent}
               </Button>

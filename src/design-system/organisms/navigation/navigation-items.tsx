@@ -169,10 +169,10 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               Register your NFID
             </Button>
           )}
-          {isPopupVisible || status === 'registerDecider' ? (
+          {isPopupVisible || status === "registerDecider" ? (
             <div>
               <NavigationPopup
-                className={clsx(window.scrollY < 500 && status === '' ? "hidden" : null)}
+                className={clsx(window.scrollY < 500 && status === "" ? "hidden" : null)}
               />
             </div>
           ) : null}

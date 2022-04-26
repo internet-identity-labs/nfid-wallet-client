@@ -13,14 +13,9 @@ export const PopupRegister: React.FC<PopupRegisterProps> = () => {
         Register by scanning <br /> the code
       </h2>
 
-      <a
-        href="/authenticate/?applicationName=NFID-Demo"
-        target="_blank"
-        rel="noreferrer"
-        className="mx-auto"
-      >
+      <div className="mx-auto">
         <RegisterQRCode />
-      </a>
+      </div>
       <p className="text-xs text-center text-gray-500">
         Scan this code with your phone’s camera
       </p>
@@ -29,7 +24,7 @@ export const PopupRegister: React.FC<PopupRegisterProps> = () => {
         to={`${RAC.base}/${RAC.recoveryPhrase}`}
         state={{ from: "loginWithRecovery" }}
       >
-        Unlock NFID with Security Key
+        Recover NFID
       </Link>
     </div>
   )

@@ -14,7 +14,7 @@ import { AccessPointConstants } from "../prototypes/add-new-access-point/routes"
 import { CopyDevicesConstants } from "../prototypes/copy-devices/routes"
 import { LinkIIAnchorConstants } from "../screens-app/link-ii-anchor/routes"
 import { ProfileConstants } from "../screens-app/profile/routes"
-import { RegisterAccountConstants } from "../screens-app/register-account/routes"
+import { RemoteRegisterAccountConstants } from "../screens-app/register-account/routes"
 import { DevScreensConstants } from "./routes"
 
 interface DevHomeScreenProps
@@ -68,12 +68,12 @@ export const DevHomeScreen: React.FC<DevHomeScreenProps> = ({
     },
     {
       title: "Register Account (NFID) Flow",
-      base: RegisterAccountConstants.base,
+      base: RemoteRegisterAccountConstants.base,
       items: [
-        { path: RegisterAccountConstants.account },
-        { path: RegisterAccountConstants.captcha },
+        { path: RemoteRegisterAccountConstants.account },
+        { path: RemoteRegisterAccountConstants.captcha },
         {
-          path: RegisterAccountConstants.copyRecoveryPhrase,
+          path: RemoteRegisterAccountConstants.copyRecoveryPhrase,
         },
       ],
     },

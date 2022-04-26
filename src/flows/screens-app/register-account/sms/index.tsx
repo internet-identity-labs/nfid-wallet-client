@@ -17,7 +17,7 @@ import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 
-import { RegisterAccountConstants as RAC } from "../routes"
+import { RemoteRegisterAccountConstants as RAC } from "../routes"
 import { ResendSMS } from "./resend-countdown"
 
 interface RegisterAccountState {

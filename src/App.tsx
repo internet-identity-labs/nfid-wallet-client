@@ -1,9 +1,9 @@
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
+import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 import React from "react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
-import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
@@ -16,8 +16,9 @@ import { OurMission } from "./flows/screens-app/landing-page/our-mission"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import {
-  RegisterAccountConstants as RAC,
-  RegisterAccountRoutes,
+  NFIDRegisterAccountRoutes,
+  RemoteRegisterAccountConstants as RAC,
+  RemoteRegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
@@ -53,7 +54,8 @@ export const App = () => {
       {LinkIIAnchorRoutes}
       {ProfileRoutes}
       {RegisterNewDeviceRoutes}
-      {RegisterAccountRoutes}
+      {NFIDRegisterAccountRoutes}
+      {RemoteRegisterAccountRoutes}
       {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
       {UnknownDeviceRoutes}
       {RestoreAccessPointRoutes}

@@ -28,6 +28,10 @@ export const AppScreenAuthorizeRegisterDecider: React.FC<
   const { userNumber } = useUnknownDeviceConfig()
   const { createWebAuthNDevice } = useDevices()
 
+  React.useEffect(() => {
+    if (!window.PublicKeyCredential) navigate('/')
+  }, [navigate])
+
   return (
     <AppScreen>
       <main className={clsx("flex flex-1")}>

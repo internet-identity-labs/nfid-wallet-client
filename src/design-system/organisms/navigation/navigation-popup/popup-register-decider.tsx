@@ -55,6 +55,10 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
     }
   }
 
+  React.useEffect(() => {
+    if (!window.PublicKeyCredential) setStatus("")
+  }, [setStatus])
+
   return (
     <div>
       <Loader isLoading={isLoading} fullscreen />

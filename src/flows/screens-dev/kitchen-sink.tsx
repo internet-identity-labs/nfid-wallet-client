@@ -1,4 +1,3 @@
-import { RadioButton } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -21,6 +20,7 @@ import {
   ListItemHead,
   MenuItem,
   P,
+  RadioButton,
   TextArea,
 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"

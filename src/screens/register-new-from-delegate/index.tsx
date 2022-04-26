@@ -1,8 +1,8 @@
 import {
-  Button,
   Card,
   CardBody,
   H2,
+  Button,
   Loader,
 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"

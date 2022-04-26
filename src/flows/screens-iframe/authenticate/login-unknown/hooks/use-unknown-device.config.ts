@@ -54,8 +54,10 @@ export const useUnknownDeviceConfig = () => {
   )
   const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
 
-  const [signedDelegation, setSignedDelegation] =
-    React.useState<SignedDelegation>()
+  const [
+    signedDelegation,
+    setSignedDelegation,
+  ] = React.useState<SignedDelegation>()
 
   const [appWindow, setAppWindow] = React.useState<Window | null>(null)
   const [domain, setDomain] = React.useState("")
@@ -74,20 +76,23 @@ export const useUnknownDeviceConfig = () => {
       : null
   }, [applicationName, domain, pubKey])
 
-  const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
-    useMessageChannel({
-      messageHandler: {
-        "authorize-client": (event: any) => {
-          const { sessionPublicKey } = event.data
-          const blog = blobFromUint8Array(sessionPublicKey)
-          const hex = blobToHex(blog)
+  const {
+    isReady,
+    postClientReadyMessage,
+    postClientAuthorizeSuccessMessage,
+  } = useMessageChannel({
+    messageHandler: {
+      "authorize-client": (event: any) => {
+        const { sessionPublicKey } = event.data
+        const blog = blobFromUint8Array(sessionPublicKey)
+        const hex = blobToHex(blog)
 
-          setAppWindow(event.source)
-          setPubKey(hex)
-          setDomain(new URL(event.origin).host)
-        },
+        setAppWindow(event.source)
+        setPubKey(hex)
+        setDomain(new URL(event.origin).host)
       },
-    })
+    },
+  })
 
   const handleStoreNewDevice = React.useCallback(
     async ({ device }) => {

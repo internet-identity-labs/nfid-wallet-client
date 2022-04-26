@@ -1,5 +1,4 @@
-import { Card } from "@internet-identity-labs/nfid-sdk-react"
-import { CardBody } from "@internet-identity-labs/nfid-sdk-react"
+import { Card, CardBody } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"

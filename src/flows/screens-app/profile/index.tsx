@@ -1,21 +1,19 @@
-import { DotsIcon } from "@internet-identity-labs/nfid-sdk-react"
-import { LogoutIcon } from "@internet-identity-labs/nfid-sdk-react"
-import { PlusIcon } from "@internet-identity-labs/nfid-sdk-react"
-import { ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
-import {
-  ModalAdvanced,
-  ModalAdvancedProps,
-} from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
+  ButtonMenu,
   Card,
   CardBody,
+  DotsIcon,
   H2,
   H5,
   Input,
   List,
   ListItem,
   Loader,
+  LogoutIcon,
+  ModalAdvanced,
+  ModalAdvancedProps,
+  PlusIcon,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"

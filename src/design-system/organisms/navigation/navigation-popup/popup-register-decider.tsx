@@ -1,31 +1,52 @@
-import { Button, H5, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
-import React from "react"
+import { Button, H5, Loader, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
+import React, { useState } from "react"
 
 import logo from "frontend/assets/logo.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 
 interface PopupRegisterDeciderProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement> {
+}
 
-export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = ({
-  children,
-  className,
-}) => {
+export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { setStatus } = useRegisterQRCode()
+  const { createDevice } = useDevices()
+  const { readAccount } = useAccount()
+  const { identityManager } = useAuthentication()
+
   const {
     platform: { device, authenticator: platformAuth },
   } = useDeviceInfo()
-  const { setStatus } = useRegisterQRCode()
+
+  const { userNumber } = useUnknownDeviceConfig()
+  const { createWebAuthNDevice } = useDevices()
 
   const [linkAccount, setLinkAccount] = React.useState(
     "rb_link_account_register",
   )
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (linkAccount === "rb_link_account_register") {
+      setIsLoading(true)
+      if (!userNumber) {
+        return console.error(`Missing userNumber: ${userNumber}`)
+      }
+
+      const { device } = await createWebAuthNDevice(BigInt(userNumber))
+      await createDevice({
+        ...device,
+        userNumber,
+      })
+      await readAccount(identityManager, userNumber)
+
+      setIsLoading(false)
       setStatus("registerDevice")
     }
 
@@ -36,6 +57,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = ({
 
   return (
     <div>
+      <Loader isLoading={isLoading} fullscreen />
       <img src={logo} alt="logo" className="w-20 my-8" />
       <H5 className="mb-4">Log in faster on this device</H5>
       <div>

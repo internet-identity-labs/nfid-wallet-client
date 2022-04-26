@@ -4,6 +4,7 @@ import {
   Divider,
   H4,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 import { HiChevronDoubleRight } from "react-icons/hi"
 import { Link } from "react-router-dom"
@@ -117,42 +118,46 @@ export const DevHomeScreen: React.FC<DevHomeScreenProps> = ({
         showBubbles: false,
       }}
     >
-      {process.env.NODE_ENV === "development" && (
-        <Card>
-          <CardBody>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {routes.map((routes, index) => (
-                <div
-                  className="col-span-1 sm:col-span-2 md:col-span-1"
-                  key={index}
-                >
-                  <H4>{routes.title}</H4>
-                  <small>{routes.base || "default"}</small>
-                  <Divider />
-                  <div className="space-y-3">
-                    {routes.items.map(({ path, state = {} }, index) => (
-                      <Link
-                        className="flex items-center justify-between w-full p-2 border rounded cursor-pointer group hover:border-indigo-500 hover:text-indigo-500"
-                        to={getFullRoute(path, routes.base)}
-                        key={index}
-                        state={state}
-                      >
-                        <span className="first-letter:capitalize">
-                          {getRouteToText(path)}
-                        </span>
-                        <div className="flex">
-                          <div className="border-l w-[10px] flex mr-1"></div>
-                          <HiChevronDoubleRight className="text-lg group-hover:text-indigo-500" />
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          {process.env.NODE_ENV === "development" && (
+            <Card>
+              <CardBody>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {routes.map((routes, index) => (
+                    <div
+                      className="col-span-1 sm:col-span-2 md:col-span-1"
+                      key={index}
+                    >
+                      <H4>{routes.title}</H4>
+                      <small>{routes.base || "default"}</small>
+                      <Divider />
+                      <div className="space-y-3">
+                        {routes.items.map(({ path, state = {} }, index) => (
+                          <Link
+                            className="flex items-center justify-between w-full p-2 border rounded cursor-pointer group hover:border-indigo-500 hover:text-indigo-500"
+                            to={getFullRoute(path, routes.base)}
+                            key={index}
+                            state={state}
+                          >
+                            <span className="first-letter:capitalize">
+                              {getRouteToText(path)}
+                            </span>
+                            <div className="flex">
+                              <div className="border-l w-[10px] flex mr-1"></div>
+                              <HiChevronDoubleRight className="text-lg group-hover:text-indigo-500" />
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </CardBody>
-        </Card>
-      )}
+              </CardBody>
+            </Card>
+          )}
+        </div>
+      </main>
     </AppScreen>
   )
 }

@@ -5,6 +5,7 @@ import {
   Button,
   Loader,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 import { useParams } from "react-router-dom"
 
@@ -52,31 +53,35 @@ export const RegisterNewFromDelegate = () => {
 
   return (
     <AppScreen>
-      <Card className="grid grid-cols-12 offset-header">
-        <CardBody className="col-span-12 md:col-span-9 lg:col-span-7">
-          <H2 className="mb-3">Trust this device</H2>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card className="grid grid-cols-12 offset-header">
+            <CardBody className="col-span-12 md:col-span-9 lg:col-span-7">
+              <H2 className="mb-3">Trust this device</H2>
 
-          <div>
-            Prove you own this {device} by successfully unlocking it to trust
-            this device.
-          </div>
+              <div>
+                Prove you own this {device} by successfully unlocking it to
+                trust this device.
+              </div>
 
-          <Button
-            onClick={handleRegisterNewDevice}
-            large
-            secondary
-            className="mt-8"
-          >
-            Prove I own this {device}
-          </Button>
-        </CardBody>
-      </Card>
+              <Button
+                onClick={handleRegisterNewDevice}
+                large
+                secondary
+                className="mt-8"
+              >
+                Prove I own this {device}
+              </Button>
+            </CardBody>
+          </Card>
 
-      {status === "success" && showModal ? (
-        <ModalSuccess onClick={() => setShowModal(false)} />
-      ) : null}
+          {status === "success" && showModal ? (
+            <ModalSuccess onClick={() => setShowModal(false)} />
+          ) : null}
 
-      <Loader isLoading={status === "loading"} />
+          <Loader isLoading={status === "loading"} />
+        </div>
+      </main>
     </AppScreen>
   )
 }

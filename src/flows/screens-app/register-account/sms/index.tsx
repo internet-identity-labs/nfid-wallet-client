@@ -8,6 +8,7 @@ import {
   Loader,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React, { useRef } from "react"
 import { useForm } from "react-hook-form"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -146,90 +147,96 @@ export const RegisterAccountSMSVerification: React.FC<
 
   return (
     <AppScreen>
-      <Card className="grid grid-cols-12 offset-header">
-        <CardBody className="col-span-12 md:col-span-8">
-          <H2>SMS verification</H2>
-          <div className="my-5">
-            <P className="pb-3">
-              Please enter the verification code to verify your phone number.{" "}
-              <br className="hidden sm:block" /> A code has been sent to{" "}
-              {phonenumber}.
-            </P>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card className="grid grid-cols-12 offset-header">
+            <CardBody className="col-span-12 md:col-span-8">
+              <H2>SMS verification</H2>
+              <div className="my-5">
+                <P className="pb-3">
+                  Please enter the verification code to verify your phone
+                  number. <br className="hidden sm:block" /> A code has been
+                  sent to {phonenumber}.
+                </P>
 
-            <ResendSMS defaultCounter={60} handleResend={resendSMS} />
+                <ResendSMS defaultCounter={60} handleResend={resendSMS} />
 
-            <div className="mt-6 mb-3">
-              <div className="flex space-x-3">
-                {list.map((_, index) => (
-                  <Input
-                    pin
-                    type="number"
-                    key={index}
-                    autoFocus={index === 0}
-                    data-pin-index={index}
-                    ref={(el) => (inputItemsRef.current[index] = el)}
-                    onChange={(e) => {
-                      const validRegex = inputItemsRef.current[
-                        index
-                      ]?.value.match(e.target.pattern)
+                <div className="mt-6 mb-3">
+                  <div className="flex space-x-3">
+                    {list.map((_, index) => (
+                      <Input
+                        pin
+                        type="number"
+                        key={index}
+                        autoFocus={index === 0}
+                        data-pin-index={index}
+                        ref={(el) => (inputItemsRef.current[index] = el)}
+                        onChange={(e) => {
+                          const validRegex = inputItemsRef.current[
+                            index
+                          ]?.value.match(e.target.pattern)
 
-                      if (isValidToken(getVerificationCode())) {
-                        clearErrors("verificationCode")
-                      } else {
-                        setError("verificationCode", {
-                          type: "manual",
-                          message: tokenRules.errorMessages.length,
-                        })
-                      }
+                          if (isValidToken(getVerificationCode())) {
+                            clearErrors("verificationCode")
+                          } else {
+                            setError("verificationCode", {
+                              type: "manual",
+                              message: tokenRules.errorMessages.length,
+                            })
+                          }
 
-                      if (validRegex) {
-                        if (index === list.length - 1) {
-                          inputItemsRef.current[index]?.blur()
-                        }
+                          if (validRegex) {
+                            if (index === list.length - 1) {
+                              inputItemsRef.current[index]?.blur()
+                            }
 
-                        inputItemsRef.current[index + 1]?.focus()
-                      } else {
-                        e.target.value = e.target.value[0]
-                      }
-                    }}
-                    maxLength={1}
-                    pattern="^[0-9]{1}$"
-                  />
-                ))}
+                            inputItemsRef.current[index + 1]?.focus()
+                          } else {
+                            e.target.value = e.target.value[0]
+                          }
+                        }}
+                        maxLength={1}
+                        pattern="^[0-9]{1}$"
+                      />
+                    ))}
+                  </div>
+
+                  <div className="py-1 text-sm text-red-base">
+                    {errors.verificationCode?.message ||
+                      errors.phonenumber?.message}
+                  </div>
+                </div>
               </div>
 
-              <div className="py-1 text-sm text-red-base">
-                {errors.verificationCode?.message ||
-                  errors.phonenumber?.message}
-              </div>
-            </div>
-          </div>
+              <Button
+                large
+                secondary
+                onClick={handleVerifySMSToken}
+                disabled={!isValidToken(getVerificationCode()) || loading}
+              >
+                <span>Complete</span>
+              </Button>
 
-          <Button
-            large
-            secondary
-            onClick={handleVerifySMSToken}
-            disabled={!isValidToken(getVerificationCode()) || loading}
-          >
-            <span>Complete</span>
-          </Button>
+              {showCheckNumberButton && (
+                <Button
+                  text
+                  large
+                  icon
+                  className="mt-4"
+                  onClick={() =>
+                    console.log(">> onClick check phone number", {})
+                  }
+                >
+                  <ButtonChevronIcon />
+                  <span>Check phone number</span>
+                </Button>
+              )}
 
-          {showCheckNumberButton && (
-            <Button
-              text
-              large
-              icon
-              className="mt-4"
-              onClick={() => console.log(">> onClick check phone number", {})}
-            >
-              <ButtonChevronIcon />
-              <span>Check phone number</span>
-            </Button>
-          )}
-
-          <Loader isLoading={loading} />
-        </CardBody>
-      </Card>
+              <Loader isLoading={loading} />
+            </CardBody>
+          </Card>
+        </div>
+      </main>
     </AppScreen>
   )
 }

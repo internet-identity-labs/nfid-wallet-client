@@ -189,77 +189,81 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
   )
   return (
     <AppScreen isFocused>
-      <Card
-        className={`grid grid-cols-12 offset-header ${
-          isMobile ? `mobile` : ``
-        }`}
-      >
-        <CardBody className="col-span-12 py-0 md:col-span-9 lg:col-span-6 xl:col-span-5 sm:py-6">
-          <H2 className="my-4 leading-10">Captcha protected</H2>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <Card
+            className={`grid grid-cols-12 offset-header ${
+              isMobile ? `mobile` : ``
+            }`}
+          >
+            <CardBody className="col-span-12 py-0 md:col-span-9 lg:col-span-6 xl:col-span-5 sm:py-6">
+              <H2 className="my-4 leading-10">Captcha protected</H2>
 
-          <P>Type the characters you see in the image.</P>
+              <P>Type the characters you see in the image.</P>
 
-          <div>
-            <div
-              className={clsx(
-                "h-[150px] w-auto rounded-md my-4",
-                captchaResp ? "bg-white border border-gray-200" : "",
-              )}
-            >
-              {captchaResp && !loading && (
-                <img
-                  alt="captcha"
-                  src={`data:image/png;base64,${captchaResp.png_base64}`}
-                  className="object-contain w-full h-full"
+              <div>
+                <div
+                  className={clsx(
+                    "h-[150px] w-auto rounded-md my-4",
+                    captchaResp ? "bg-white border border-gray-200" : "",
+                  )}
+                >
+                  {captchaResp && !loading && (
+                    <img
+                      alt="captcha"
+                      src={`data:image/png;base64,${captchaResp.png_base64}`}
+                      className="object-contain w-full h-full"
+                    />
+                  )}
+                </div>
+
+                <Button
+                  text
+                  className="flex items-center space-x-2 !my-1 ml-auto"
+                  onClick={() => requestCaptcha()}
+                >
+                  <RefreshIcon />
+                  <span>Try a different image</span>
+                </Button>
+
+                <Input
+                  errorText={errors.captcha?.message}
+                  placeholder="Captcha"
+                  {...register("captcha", {
+                    required: captchaRules.errorMessages.required,
+                    minLength: {
+                      value: captchaRules.minLength,
+                      message: captchaRules.errorMessages.length,
+                    },
+                    maxLength: {
+                      value: captchaRules.maxLength,
+                      message: captchaRules.errorMessages.length,
+                    },
+                    pattern: {
+                      value: captchaRules.regex,
+                      message: captchaRules.errorMessages.pattern,
+                    },
+                  })}
                 />
-              )}
-            </div>
+              </div>
 
-            <Button
-              text
-              className="flex items-center space-x-2 !my-1 ml-auto"
-              onClick={() => requestCaptcha()}
-            >
-              <RefreshIcon />
-              <span>Try a different image</span>
-            </Button>
-
-            <Input
-              errorText={errors.captcha?.message}
-              placeholder="Captcha"
-              {...register("captcha", {
-                required: captchaRules.errorMessages.required,
-                minLength: {
-                  value: captchaRules.minLength,
-                  message: captchaRules.errorMessages.length,
-                },
-                maxLength: {
-                  value: captchaRules.maxLength,
-                  message: captchaRules.errorMessages.length,
-                },
-                pattern: {
-                  value: captchaRules.regex,
-                  message: captchaRules.errorMessages.pattern,
-                },
-              })}
-            />
-          </div>
-
-          <div className="my-3">
-            <Button
-              large
-              block
-              secondary
-              disabled={!isFormComplete || loading}
-              onClick={handleSubmit(completeNFIDProfile)}
-              data-captcha-key={captchaResp?.challenge_key}
-            >
-              <span>Verify</span>
-            </Button>
-            <Loader isLoading={loading} />
-          </div>
-        </CardBody>
-      </Card>
+              <div className="my-3">
+                <Button
+                  large
+                  block
+                  secondary
+                  disabled={!isFormComplete || loading}
+                  onClick={handleSubmit(completeNFIDProfile)}
+                  data-captcha-key={captchaResp?.challenge_key}
+                >
+                  <span>Verify</span>
+                </Button>
+                <Loader isLoading={loading} />
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+      </main>
     </AppScreen>
   )
 }

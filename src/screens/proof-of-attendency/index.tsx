@@ -5,6 +5,7 @@ import {
   H5,
   Loader,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 
@@ -83,63 +84,74 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
         ],
       }}
     >
-      <img src={image_dog} alt="anonymous dog" />
-      <Card className="offset-header" style={{ marginTop: "-3rem" }}>
-        <H5 className="mb-2 font-bold">April 22-28, 2022</H5>
+      <main className={clsx("flex flex-1")}>
+        <div className="container px-6 py-0 mx-auto sm:py-4">
+          <img src={image_dog} alt="anonymous dog" />
+          <Card className="offset-header" style={{ marginTop: "-3rem" }}>
+            <H5 className="mb-2 font-bold">April 22-28, 2022</H5>
 
-        <CardBody>
-          <Swiper
-            autoHeight
-            navigation={{
-              prevEl,
-              nextEl,
-            }}
-            onSlideChange={(swiper) => setSlide(swiper.activeIndex + 1)}
-            pagination={{
-              el: ".swiper-pagination",
-              clickable: true,
-            }}
-            grabCursor={true}
-            onRealIndexChange={(swiper) => {
-              setFirstSlide(swiper.realIndex === 0 ? true : false)
-              setLastSlide(
-                swiper.realIndex === swiper.slides.length - 1 ? true : false,
-              )
-            }}
-          >
-            <SwiperSlide>
-              <div className="max-w-2xl">
-                <div className="swiper-title">
-                  <span
-                    className="clip-text whitespace-nowrap "
-                    style={gradientStyles().styles}
-                  >
-                    Internet Identity
-                  </span>{" "}
-                  Workshop
-                </div>
-                <PoapLocation className="pb-4">
-                  <div style={{ display: "inline" }}>
-                    Computer History Museum,{" "}
+            <CardBody>
+              <Swiper
+                autoHeight
+                navigation={{
+                  prevEl,
+                  nextEl,
+                }}
+                onSlideChange={(swiper) => setSlide(swiper.activeIndex + 1)}
+                pagination={{
+                  el: ".swiper-pagination",
+                  clickable: true,
+                }}
+                grabCursor={true}
+                onRealIndexChange={(swiper) => {
+                  setFirstSlide(swiper.realIndex === 0 ? true : false)
+                  setLastSlide(
+                    swiper.realIndex === swiper.slides.length - 1
+                      ? true
+                      : false,
+                  )
+                }}
+              >
+                <SwiperSlide>
+                  <div className="max-w-2xl">
+                    <div className="swiper-title">
+                      <span
+                        className="clip-text whitespace-nowrap "
+                        style={gradientStyles().styles}
+                      >
+                        Internet Identity
+                      </span>{" "}
+                      Workshop
+                    </div>
+                    <PoapLocation className="pb-4">
+                      <div style={{ display: "inline" }}>
+                        Computer History Museum,{" "}
+                      </div>
+                      <div style={{ display: "inline" }}>Mountain View, CA</div>
+                    </PoapLocation>
+
+                    <PoapDescription>
+                      Add proof that you attended today's workshop as a
+                      verifiable credential to one of infinite DIDs, powered by
+                      NFID.
+                    </PoapDescription>
                   </div>
-                  <div style={{ display: "inline" }}>Mountain View, CA</div>
-                </PoapLocation>
+                </SwiperSlide>
+              </Swiper>
 
-                <PoapDescription>
-                  Add proof that you attended today's workshop as a verifiable
-                  credential to one of infinite DIDs, powered by NFID.
-                </PoapDescription>
-              </div>
-            </SwiperSlide>
-          </Swiper>
+              <Button
+                secondary
+                onClick={onContinueButtonClick}
+                className="mt-8"
+              >
+                {continueButtonContent}
+              </Button>
 
-          <Button secondary onClick={onContinueButtonClick} className="mt-8">
-            {continueButtonContent}
-          </Button>
-
-          <Loader isLoading={!!isLoading} />
-        </CardBody>
-      </Card>
+              <Loader isLoading={!!isLoading} />
+            </CardBody>
+          </Card>
+        </div>
+      </main>
     </AppScreen>
   )
 }

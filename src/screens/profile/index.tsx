@@ -106,6 +106,7 @@ export const Profile: React.FC<ProfileProps> = ({
           "top-[20vh] left-[27vw] md:top-[60vh] md:left-[10vw]",
         ],
       }}
+      navigationItems={<ProfileHomeMenu className="md:hidden" />}
     >
       <main
         className={clsx(

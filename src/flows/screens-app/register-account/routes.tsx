@@ -3,6 +3,7 @@ import { Outlet, Route } from "react-router-dom"
 
 import { Captcha } from "frontend/screens/captcha"
 
+import { ProofOfAttendencyCopyRecoveryPhrase } from "../proof-of-attendancy/copy-recovery-phrase"
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./intro"
 
@@ -17,7 +18,11 @@ export const RemoteRegisterAccountRoutes = (
   <Route path={RemoteRegisterAccountConstants.base} element={<Outlet />}>
     <Route
       path={RemoteRegisterAccountConstants.account}
-      element={<RegisterAccountIntro />}
+      element={
+        <RegisterAccountIntro
+          captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}
+        />
+      }
     />
     <Route
       path={RemoteRegisterAccountConstants.captcha}
@@ -45,19 +50,23 @@ export const NFIDRegisterAccountRoutes = (
   <Route path={NFIDRegisterAccountConstants.base} element={<Outlet />}>
     <Route
       path={NFIDRegisterAccountConstants.account}
-      element={<RegisterAccountIntro />}
+      element={
+        <RegisterAccountIntro
+          captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
+        />
+      }
     />
     <Route
       path={NFIDRegisterAccountConstants.captcha}
       element={
         <Captcha
-          successPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.copyRecoveryPhrase}`}
+          successPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.copyRecoveryPhrase}`}
         />
       }
     />
     <Route
       path={NFIDRegisterAccountConstants.copyRecoveryPhrase}
-      element={<RegisterAccountCopyRecoveryPhrase />}
+      element={<ProofOfAttendencyCopyRecoveryPhrase />}
     />
   </Route>
 )

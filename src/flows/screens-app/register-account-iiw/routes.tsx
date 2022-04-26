@@ -3,7 +3,7 @@ import { Outlet, Route } from "react-router-dom"
 
 import { Captcha } from "frontend/screens/captcha"
 
-import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
+import { ProofOfAttendencyCopyRecoveryPhrase } from "../proof-of-attendancy/copy-recovery-phrase"
 import { RegisterAccountIntro } from "./register-account-intro"
 
 export const RegisterAccountConstantsIIW = {
@@ -29,7 +29,7 @@ export const RegisterAccountRoutesIIW = (
     />
     <Route
       path={RegisterAccountConstantsIIW.copyRecoveryPhrase}
-      element={<RegisterAccountCopyRecoveryPhrase />}
+      element={<ProofOfAttendencyCopyRecoveryPhrase />}
     />
   </Route>
 )

@@ -34,7 +34,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
       }}
       navigationItems={<div />}
     >
-      <main className={clsx("flex flex-1 overflow-x-hidden")}>
+      <main className={clsx("flex flex-1 overflow-x-hidden pb-10")}>
         <div
           className={clsx(
             // MOBILE
@@ -61,7 +61,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
             )}
           >
             <EventSummary />
-            <div className="font-bold">
+            <div className="font-bold text-md md:text-lg">
               Create an NFID to add this proof of attendance badge to your
               identity
             </div>

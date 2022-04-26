@@ -1,10 +1,10 @@
-import { IFrameWrapper } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
   CardBody,
   DropdownMenu,
   H5,
+  IFrameWrapper,
   Label,
   MenuItem,
 } from "@internet-identity-labs/nfid-sdk-react"

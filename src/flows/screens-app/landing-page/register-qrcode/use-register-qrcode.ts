@@ -1,0 +1,74 @@
+import { blobToHex } from "@dfinity/candid"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { useCallback, useMemo } from "react"
+
+import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
+import { useAuthentication } from "frontend/hooks/use-authentication"
+import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
+import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { setUserNumber } from "frontend/services/internet-identity/userNumber"
+import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
+
+export const useRegisterQRCode = () => {
+  const { getMessages } = usePubSubChannel()
+  const { remoteLogin: setAuthenticatedActors } = useAuthentication()
+
+  const publicKey = useMemo(
+    () => blobToHex(Ed25519KeyIdentity.generate().getPublicKey().toDer()),
+    [],
+  )
+
+  const url = useMemo(() => {
+    const multipassDomain = process.env.REACT_APP_TUNNEL_DOMAIN
+
+    return `https://${multipassDomain}${AppScreenAuthorizeAppConstants.base}/${publicKey}/${window.location.host}/intro`
+  }, [publicKey])
+
+  const handleLoginFromRemoteDelegation = useCallback(
+    async (nfidJsonDelegate, userNumber) => {
+      const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
+        chain: JSON.stringify(nfidJsonDelegate.chain),
+        sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
+        userNumber: BigInt(userNumber),
+      })
+      const result = apiResultToLoginResult(loginResult)
+
+      if (result.tag === "ok") {
+        setAuthenticatedActors(result)
+      }
+      // TODO: handle this more gracefully
+      if (result.tag !== "ok") throw new Error("login failed")
+    },
+    [setAuthenticatedActors],
+  )
+
+  const handlePollForDelegate = useCallback(
+    async (cancelPoll: () => void) => {
+      const {
+        body: [messages],
+      } = await getMessages(publicKey)
+
+      if (messages && messages.length > 0) {
+        const parsedMessages = messages.map((m: string) => JSON.parse(m))
+
+        const registerMessage = parsedMessages.find(
+          (m: { type: string }) => m.type === "remote-login-register",
+        )
+
+        if (registerMessage) {
+          setUserNumber(BigInt(registerMessage.userNumber))
+          handleLoginFromRemoteDelegation(
+            registerMessage.nfid,
+            registerMessage.userNumber,
+          )
+        }
+      }
+    },
+    [getMessages, handleLoginFromRemoteDelegation, publicKey],
+  )
+
+  return {
+    url,
+    handlePollForDelegate,
+  }
+}

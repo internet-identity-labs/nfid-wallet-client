@@ -10,6 +10,7 @@
     "^./flows",
     "^frontend/(.*)$",
     "^components/(.*)$",
+    "^./assets/(.*)$",
     "^./hooks/(.*)$",
     "^[./]"
   ],

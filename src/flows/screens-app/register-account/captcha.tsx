@@ -1,5 +1,4 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { RefreshIcon } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
   Card,
@@ -8,6 +7,7 @@ import {
   Input,
   Loader,
   P,
+  RefreshIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"

@@ -66,6 +66,24 @@ input[type="number"] {
   left: 0;
   bottom: 0;
   right: 0;
-  background: linear-gradient(319deg, #3DEDD7 0%, #02CDFE 10%, #3781F4 50.52%, #7063FF 66.04%, #CC5CDC 100%);
+  background: linear-gradient(
+    319deg,
+    #3dedd7 0%,
+    #02cdfe 10%,
+    #3781f4 50.52%,
+    #7063ff 66.04%,
+    #cc5cdc 100%
+  );
   mix-blend-mode: lighten;
+}
+
+.only-with-nfid::before {
+  content: "123";
+  display: block;
+  position: absolute;
+  left: -50vw;
+  top: 0;
+  width: 200vw;
+  height: 100%;
+  background: #3d3f56;
 }

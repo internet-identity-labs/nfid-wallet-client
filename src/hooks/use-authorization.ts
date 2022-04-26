@@ -35,24 +35,27 @@ export const useAuthorization = ({
     authorizationRequestAtom,
   )
 
-  const { opener, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
-    useMessageChannel({
-      messageHandler: {
-        "authorize-client": async (event: any) => {
-          if (internetIdentity !== null) {
-            const message = event.data
-            const { maxTimeToLive, sessionPublicKey } = message
+  const {
+    opener,
+    postClientReadyMessage,
+    postClientAuthorizeSuccessMessage,
+  } = useMessageChannel({
+    messageHandler: {
+      "authorize-client": async (event: any) => {
+        if (internetIdentity !== null) {
+          const message = event.data
+          const { maxTimeToLive, sessionPublicKey } = message
 
-            setAuthorizationRequest({
-              maxTimeToLive,
-              sessionPublicKey,
-              hostname: event.origin,
-              source: event.source,
-            })
-          }
-        },
+          setAuthorizationRequest({
+            maxTimeToLive,
+            sessionPublicKey,
+            hostname: event.origin,
+            source: event.source,
+          })
+        }
       },
-    })
+    },
+  })
 
   const authorizeApp = React.useCallback(
     async ({
@@ -71,8 +74,12 @@ export const useAuthorization = ({
       if (!authorizationRequest || !internetIdentityService)
         throw new Error("client not ready")
 
-      const { sessionPublicKey, hostname, maxTimeToLive, source } =
-        authorizationRequest
+      const {
+        sessionPublicKey,
+        hostname,
+        maxTimeToLive,
+        source,
+      } = authorizationRequest
 
       const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
       const scope = persona_id ? `${persona_id}@${hostname}` : hostname

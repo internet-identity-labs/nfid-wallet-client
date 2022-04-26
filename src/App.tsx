@@ -3,6 +3,7 @@ import React from "react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
+import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
@@ -10,6 +11,8 @@ import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
 import { HomeScreen } from "./flows/screens-app/landing-page"
+import { Faq } from "./flows/screens-app/landing-page/faq"
+import { OurMission } from "./flows/screens-app/landing-page/our-mission"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
 import {
@@ -42,6 +45,8 @@ export const App = () => {
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />
+      <Route path={"/faq"} element={<Faq />} />
+      <Route path={"/our-mission"} element={<OurMission />} />
       {DevScreensRoutes}
       {AccessPointRoutes}
       {CopyDevicesRoutes}

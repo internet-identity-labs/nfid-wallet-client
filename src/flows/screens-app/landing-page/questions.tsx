@@ -165,4 +165,18 @@ export const questions = [
     title: "How is my phone number used?",
     info: "Your phone number is encrypted and only accessible to you. Applications will sometimes want to know you're a unique human being before making some features available. When you share an obfuscated version of your phone number to applications, they will never be able to de-obfuscate it back to your actual number. We've received feedback from the community that this is a reasonable first step in qualifying a unique person, though we're already developing even more sybil-resistant credentials.",
   },
+  {
+    title: "Why is the URL some crazy string of numbers and letters?",
+    info: "When we navigate to a URL today, a domain name service (DNS) is responsible for routing our request for data to the appropriate server that contains it. Although we don't think of it as such, that DNS is a centralized organization with a substantial influence over how we navigate the Internet. The Internet Computer's aim is to build a decentralized cloud computing platform that doesn't rely on any centralized organization to run web-scale applications. The URLs you see can easily be replaced with the traditionally-named domains we're used to, but developers building on the Internet Computer have mostly chosen not to so that they may show their users the site runs on end-to-end decentralized architecture.",
+  },
+  {
+    title: "The Internet Computer sounds cool, where can I learn more about it?",
+    info: (
+      <>
+        <p>
+          We suggest starting with a look through their extensive documentation <a href="https://dfinity.org/howitworks/" target="_blank" rel="noreferrer">here</a>.
+        </p>
+      </>
+    ),
+  },
 ]

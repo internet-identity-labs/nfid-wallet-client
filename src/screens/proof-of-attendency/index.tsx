@@ -34,7 +34,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
       }}
       navigationItems={<div />}
     >
-      <main className={clsx("flex flex-1 overflow-x-hidden pb-10")}>
+      <main className={clsx("flex flex-1 overflow-x-hidden pb-4 sm:pb-10")}>
         <div
           className={clsx(
             // MOBILE
@@ -46,7 +46,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
           )}
         >
           <div/>
-          <div className="absolute sm:relative flex flex-grow left-0 sm:left-auto w-[100vw] z-10 top-[5vh] sm:top-0">
+          <div className="absolute sm:relative flex flex-grow left-0 sm:left-auto w-[100vw] z-10 -top-[5vh] sm:top-0">
             <img
               src={image_dog}
               className="object-contain object-center"

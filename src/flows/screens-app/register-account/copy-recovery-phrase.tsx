@@ -30,8 +30,10 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   const { secret, scope } = useParams()
   const { isLoading, setIsloading } = useIsLoading()
   const { applicationName } = useMultipass()
-  const { remoteLogin } = useAuthorizeApp()
+  const { remoteLogin, remoteNFIDLogin } = useAuthorizeApp()
   const { state } = useLocation()
+
+  const isNFID = React.useMemo(() => scope === "NFID", [scope])
 
   const recoveryPhrase = React.useMemo(() => {
     return (
@@ -55,6 +57,18 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
     console.error(response)
   }, [createPersona, nextPersonaId, remoteLogin, scope, secret, setIsloading])
 
+  const handleNavigateToProfile = React.useCallback(() => {
+    navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
+  }, [navigate])
+
+  const handleNFIDLogin = React.useCallback(async () => {
+    if (!secret) throw new Error("secret is missing from params")
+    setIsloading(true)
+    await remoteNFIDLogin({ secret })
+    setIsloading(false)
+    handleNavigateToProfile()
+  }, [handleNavigateToProfile, remoteNFIDLogin, secret, setIsloading])
+
   const handleLogin = React.useCallback(() => {
     navigate("/")
   }, [navigate])
@@ -70,11 +84,13 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
         applicationName || "NFID Demo"
       }`}
       onContinueButtonClick={
-        isRemoteRegistration ? handleAuthorizePersona : handleLogin
+        isRemoteRegistration
+          ? isNFID
+            ? handleNFIDLogin
+            : handleAuthorizePersona
+          : handleLogin
       }
-      onSuccessModalClick={() => {
-        navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
-      }}
+      onSuccessModalClick={handleNavigateToProfile}
       isLoading={isLoading}
     />
   )

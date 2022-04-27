@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
-interface PopupLoginProps {}
+interface PopupLoginProps {
+}
 
 export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
   const { userNumber, readAccount, account } = useAccount()
@@ -31,20 +32,26 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
         {!isAuthenticated ? "Welcome " : "Logged in "}
         {account?.name ?? account?.anchor ?? ""}
       </h2>
-      <Button
-        primary
-        className="w-full mt-4"
-        onClick={
-          !isAuthenticated
-            ? () => login()
-            : () => navigate("/profile/authenticate")
-        }
-      >
-        {!isAuthenticated ? "Log in" : "Profile"}
-      </Button>
-      {isAuthenticated && (
+      {isAuthenticated && account && (
+        <Button
+          primary
+          className="w-full mt-4"
+          onClick={() => navigate('/profile/authenticate')}
+        >
+          Profile
+        </Button>
+      )}
+      {!isAuthenticated ? (
+        <Button
+          primary
+          className="w-full mt-4"
+          onClick={login}
+        >
+          Log in
+        </Button>
+      ) : (
         <p
-          onClick={() => logout()}
+          onClick={logout}
           className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
         >
           Logout

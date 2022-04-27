@@ -34,7 +34,9 @@ export const useDevices = () => {
 
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber) {
-      const existingDevices = await IIConnection.lookupAll(userNumber)
+      const existingDevices = await IIConnection.lookupAuthenticators(
+        userNumber,
+      )
       setDevices(existingDevices)
     }
   }, [setDevices, userNumber])

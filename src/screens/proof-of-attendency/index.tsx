@@ -3,14 +3,16 @@ import clsx from "clsx"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 import { EventSummary } from "./event-summary"
 import image_dog from "./image_dog.svg"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 interface RegisterAccountIntroProps
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement> {
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   continueButtonContent: string
   onContinueButtonClick: () => Promise<void>
   isLoading?: boolean
@@ -24,6 +26,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
   const { isMobile } = useDeviceInfo()
   return (
     <AppScreen
+      isFocused
       bubbleOptions={{
         showBubbles: true,
         bubbleColors: ["#FF9533", "rgba(181,123,255,0.5)"],
@@ -32,38 +35,32 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
           "bottom-[-40vh] md:right-[35vw] md:top-[30vh]",
         ],
       }}
-      navigationItems={<div />}
     >
-      <main className={clsx("flex flex-1 overflow-x-hidden pb-10")}>
+      <main
+        className={clsx(
+          // MOBILE
+          "flex-1 flex flex-col -mt-[80px]",
+          "bg-poa-dog-screen bg-contain bg-no-repeat bg-top",
+          // MEDIUM
+          "md:flex-row-reverse",
+          "",
+        )}
+      >
+        {/* SPACER DON'T REMOVE */}
+        <div className="flex-grow max-h-[100vw]" />
         <div
           className={clsx(
             // MOBILE
-            "container flex flex-col px-6 py-0 mx-auto sm:py-4",
+            "flex flex-col flex-shrink z-10 p-4",
             // SMALL
-            "md:flex-row-reverse",
-            // MEDIUM
-            "",
+            "md:pt-16 md:max-w-md",
           )}
         >
-          <div className="relative flex flex-grow w-[100vw]">
-            <img
-              src={image_dog}
-              className="object-contain object-center"
-              alt="anonymous dog"
-            />
-          </div>
-          <div
-            className={clsx(
-              // MOBILE
-              "flex flex-col",
-              // SMALL
-              "md:pt-16 md:max-w-md",
-            )}
-          >
+          <div className={clsx()}>
             <EventSummary />
             <div className="font-bold text-md md:text-lg">
-              Create an NFID to add this proof of attendance badge to your
-              identity
+              Add this proof of IIW attendance to one of an infinite number of
+              your DIDs
             </div>
 
             <div>

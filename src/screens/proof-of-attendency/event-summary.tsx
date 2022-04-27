@@ -9,13 +9,13 @@ export const EventSummary: React.FC<EventSummaryProps> = ({ children }) => {
   return (
     <div>
       <div className="flex flex-col">
-        <div className="flex">
+        <div className="flex text-sm">
           <div>
             <CalendarIcon />
           </div>
           <div className="mb-2 ml-2">April 22-28, 2022</div>
         </div>
-        <div className="flex">
+        <div className="flex text-sm">
           <div>
             <MapPinIcon />
           </div>
@@ -28,7 +28,7 @@ export const EventSummary: React.FC<EventSummaryProps> = ({ children }) => {
       <div className="max-w-2xl">
         <div className="swiper-title">
           <span
-            className="clip-text whitespace-nowrap "
+            className="clip-text whitespace-nowrap"
             style={{
               background: `linear-gradient(90deg,#B649FF,#FF9029)`,
             }}

@@ -34,18 +34,19 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
       }}
       navigationItems={<div />}
     >
-      <main className={clsx("flex flex-1 overflow-x-hidden pb-10")}>
+      <main className={clsx("flex flex-1 overflow-x-hidden pb-4 sm:pb-10")}>
         <div
           className={clsx(
             // MOBILE
-            "container flex flex-col px-6 py-0 mx-auto sm:py-4",
+            "container flex flex-col px-6 py-0 mx-auto sm:py-4 justify-between",
             // SMALL
             "md:flex-row-reverse",
             // MEDIUM
             "",
           )}
         >
-          <div className="relative flex flex-grow w-[100vw]">
+          <div/>
+          <div className="absolute sm:relative flex flex-grow left-0 sm:left-auto w-[100vw] z-10 top-0 sm:top-0">
             <img
               src={image_dog}
               className="object-contain object-center"
@@ -55,15 +56,14 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
           <div
             className={clsx(
               // MOBILE
-              "flex flex-col",
+              "flex flex-col z-20",
               // SMALL
               "md:pt-16 md:max-w-md",
             )}
           >
             <EventSummary />
             <div className="font-bold text-md md:text-lg">
-              Create an NFID to add this proof of attendance badge to your
-              identity
+              Add this proof of IIW attendance to one of an infinite number of your DIDs
             </div>
 
             <div>

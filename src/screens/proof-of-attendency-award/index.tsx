@@ -12,11 +12,10 @@ import { EventSummary } from "../proof-of-attendency/event-summary"
 import image_dog from "./dog_image.svg"
 
 interface ProofOfAttendencyAwardProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLDivElement> {
+}
 
-export const ProofOfAttendencyAward: React.FC<
-  ProofOfAttendencyAwardProps
-> = () => {
+export const ProofOfAttendencyAward: React.FC<ProofOfAttendencyAwardProps> = () => {
   return (
     <AppScreen
       bubbleOptions={{
@@ -85,28 +84,18 @@ export const ProofOfAttendencyAward: React.FC<
         >
           <H5>IIWXXXIV Spring 2022</H5>
           <div className="mt-4">
-            The Internet Identity Workshop has been finding, probing and solving
-            identity problems twice every year since 2005. Every IIW moves
-            topics, code and projects downfield. Name an identity topic and it’s
-            likely that more substantial discussion and work has been done on it
-            at IIW than at any other conference. <br />
-            <br /> That’s because IIW is an un-conference. We have no speakers,
-            no keynotes, no panels. All sessions are breakouts, and the topics
-            are chosen and led by participants. <br />
-            <br /> And identity is just a starting point. Many other topics come
-            up and move forward as well. In the last few IIWs, hot topics have
-            included personal clouds, privacy, data liberation, verifiable
-            claims, decentralized identifiers, transparency, VRM, the Indie Web,
-            the Internet of Things, the Semantic Web, trust frameworks, free and
-            open devices and much more. We also make time and space available
-            for demos. <br />
-            <br /> IIW is cheap, as conferences go. ROI is also maximized by
-            absence of company-driven agendas. Corporate participation is by
-            humble sponsors who like what IIW does for the world — and to supply
-            free meals each day and an all-day espresso bar. <br />
-            <br /> IIW takes place over three days every Spring and Fall at the
-            Computer History Museum in Mountain View. Register now for IIW, and
-            do it soon because it’s likely to fill up.
+            Internet Identity Labs presents NFID at IIW XXXIV, an Identity provider with a lot of buzz words:
+            decentralized (inclusive of frontend), privacy-preserving one-touch MFA DID factory and crypto wallet.
+            Webauthn as a primary means of authentication means non-exportable private keys are securely stored in the
+            TPMs of your devices, and chain key cryptography on the Internet Computer means the same identifier is
+            generated when authenticating to the same account regardless of which of your devices was
+            used. <br /><br /> A new identifier is generated for every new account on every website, and is itself a new
+            blockchain address that resolves into a DID that only the NFID owner can link together. Verifiable
+            credentials issued to any of these DIDs, like this proof of attendance badge, can be presented while
+            authenticated as a different DID on another website without revealing the DID it was issued to.
+            <br /><br /> We believe a secure, privacy-preserving identity provider solving the key management problem
+            this way abstracts away the complexity and provides an experience that non-technical people will be able to
+            use.
           </div>
         </div>
         <Footer />

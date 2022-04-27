@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
-interface PopupLoginProps {}
+interface PopupLoginProps {
+}
 
 export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
   const { userNumber, readAccount, account } = useAccount()
@@ -15,8 +16,8 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
 
   useEffect(() => {
     isAuthenticated &&
-      !isRemoteDelegate &&
-      readAccount(identityManager, userNumber)
+    !isRemoteDelegate &&
+    readAccount(identityManager, userNumber)
   }, [
     identityManager,
     isAuthenticated,
@@ -35,21 +36,25 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
         <Button
           primary
           className="w-full mt-4"
-          onClick={
-            !isAuthenticated
-              ? () => login()
-              : () => navigate("/profile/authenticate")
-          }
+          onClick={() => navigate('/profile/authenticate')}
         >
           Profile
         </Button>
       )}
-      {isAuthenticated && (
+      {!isAuthenticated ? (
+        <Button
+          primary
+          className="w-full mt-4"
+          onClick={login}
+        >
+          Log in
+        </Button>
+      ) : (
         <p
-          onClick={() => logout()}
+          onClick={logout}
           className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
         >
-          {!isAuthenticated ? "Log in" : "Logout"}
+          Logout
         </p>
       )}
     </div>

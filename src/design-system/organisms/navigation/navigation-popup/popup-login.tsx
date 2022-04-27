@@ -31,23 +31,25 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
         {!isAuthenticated ? "Welcome " : "Logged in "}
         {account?.name ?? account?.anchor ?? ""}
       </h2>
-      <Button
-        primary
-        className="w-full mt-4"
-        onClick={
-          !isAuthenticated
-            ? () => login()
-            : () => navigate("/profile/authenticate")
-        }
-      >
-        {!isAuthenticated ? "Log in" : "Profile"}
-      </Button>
+      {isAuthenticated && account && (
+        <Button
+          primary
+          className="w-full mt-4"
+          onClick={
+            !isAuthenticated
+              ? () => login()
+              : () => navigate("/profile/authenticate")
+          }
+        >
+          Profile
+        </Button>
+      )}
       {isAuthenticated && (
         <p
           onClick={() => logout()}
           className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
         >
-          Logout
+          {!isAuthenticated ? "Log in" : "Logout"}
         </p>
       )}
     </div>

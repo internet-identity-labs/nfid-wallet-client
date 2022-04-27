@@ -23,7 +23,7 @@ const Template: ComponentStory<typeof ProofOfAttendency> = (args) => {
 export const Default = Template.bind({})
 
 Default.args = {
-  continueButtonContent: "Continue with POA",
+  continueButtonContent: "Register new NFID",
   isLoading: false,
 }
 

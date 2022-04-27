@@ -3,16 +3,14 @@ import clsx from "clsx"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 import { EventSummary } from "./event-summary"
 import image_dog from "./image_dog.svg"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 interface RegisterAccountIntroProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement> {
   continueButtonContent: string
   onContinueButtonClick: () => Promise<void>
   isLoading?: boolean
@@ -26,7 +24,6 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
   const { isMobile } = useDeviceInfo()
   return (
     <AppScreen
-      isFocused
       bubbleOptions={{
         showBubbles: true,
         bubbleColors: ["#FF9533", "rgba(181,123,255,0.5)"],
@@ -35,32 +32,38 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
           "bottom-[-40vh] md:right-[35vw] md:top-[30vh]",
         ],
       }}
+      navigationItems={<div />}
     >
-      <main
-        className={clsx(
-          // MOBILE
-          "flex-1 flex flex-col -mt-[80px]",
-          "bg-poa-dog-screen bg-contain bg-no-repeat bg-top",
-          // MEDIUM
-          "md:flex-row-reverse",
-          "",
-        )}
-      >
-        {/* SPACER DON'T REMOVE */}
-        <div className="flex-grow max-h-[100vw]" />
+      <main className={clsx("flex flex-1 overflow-x-hidden pb-10")}>
         <div
           className={clsx(
             // MOBILE
-            "flex flex-col flex-shrink z-10 p-4",
+            "container flex flex-col px-6 py-0 mx-auto sm:py-4 justify-between",
             // SMALL
-            "md:pt-16 md:max-w-md",
+            "md:flex-row-reverse",
+            // MEDIUM
+            "",
           )}
         >
-          <div className={clsx()}>
+          <div/>
+          <div className="absolute sm:relative flex flex-grow left-0 sm:left-auto w-[100vw] z-10 top-[5vh] sm:top-0">
+            <img
+              src={image_dog}
+              className="object-contain object-center"
+              alt="anonymous dog"
+            />
+          </div>
+          <div
+            className={clsx(
+              // MOBILE
+              "flex flex-col z-20",
+              // SMALL
+              "md:pt-16 md:max-w-md",
+            )}
+          >
             <EventSummary />
             <div className="font-bold text-md md:text-lg">
-              Add this proof of IIW attendance to one of an infinite number of
-              your DIDs
+              Add this proof of IIW attendance to one of an infinite number of your DIDs
             </div>
 
             <div>

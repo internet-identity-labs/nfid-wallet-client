@@ -15,8 +15,8 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
 
   useEffect(() => {
     isAuthenticated &&
-      !isRemoteDelegate &&
-      readAccount(identityManager, userNumber)
+    !isRemoteDelegate &&
+    readAccount(identityManager, userNumber)
   }, [
     identityManager,
     isAuthenticated,
@@ -31,25 +31,23 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
         {!isAuthenticated ? "Welcome " : "Logged in "}
         {account?.name ?? account?.anchor ?? ""}
       </h2>
-      {isAuthenticated && account && (
-        <Button
-          primary
-          className="w-full mt-4"
-          onClick={
-            !isAuthenticated
-              ? () => login()
-              : () => navigate("/profile/authenticate")
-          }
-        >
-          Profile
-        </Button>
-      )}
+      <Button
+        primary
+        className="w-full mt-4"
+        onClick={
+          !isAuthenticated
+            ? () => login()
+            : () => navigate("/profile/authenticate")
+        }
+      >
+        {!isAuthenticated ? "Log in" : "Profile"}
+      </Button>
       {isAuthenticated && (
         <p
           onClick={() => logout()}
           className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
         >
-          {!isAuthenticated ? "Log in" : "Logout"}
+          Logout
         </p>
       )}
     </div>

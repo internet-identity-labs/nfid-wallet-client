@@ -43,7 +43,7 @@ export const RegisterAccountIntro: React.FC<RegisterOrClaimProps> = ({
     <ProofOfAttendency
       isLoading={isLoading}
       onContinueButtonClick={handleCreateKeys}
-      continueButtonContent={"Create an NFID with biometric on this device"}
+      continueButtonContent={"Create new NFID"}
     />
   )
 }

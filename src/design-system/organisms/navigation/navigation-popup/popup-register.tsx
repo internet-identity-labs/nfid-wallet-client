@@ -11,7 +11,7 @@ export const PopupRegister: React.FC<PopupRegisterProps> = () => {
   return (
     <div>
       <h2 className="mt-5 text-xl font-bold text-center">
-        Register your NFID
+        Register
       </h2>
 
       <div className="mx-auto">
@@ -25,7 +25,7 @@ export const PopupRegister: React.FC<PopupRegisterProps> = () => {
         to={`${RAC.base}/${RAC.recoveryPhrase}`}
         state={{ from: "loginWithRecovery" }}
       >
-        Or recover an existing NFID
+        Recover NFID
       </Link>
     </div>
   )

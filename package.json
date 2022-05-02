@@ -14,7 +14,7 @@
     "test:dev": "craco test",
     "test": "jest --passWithNoTests",
     "tunnel": "./scripts/tunnel.sh",
-    "wdio": "wdio run test/wdio.conf.ts",
+    "wdio": "wdio run wdio.conf.ts",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },

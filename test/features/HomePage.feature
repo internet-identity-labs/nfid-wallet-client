@@ -16,7 +16,8 @@ Feature: Home page
       | The Identity Layer |
       | Only with NFID     |
       | Our mission        |
-      | Where you can use NFID today |
+      | FAQ                |
+      | Docs               |
 
 
 

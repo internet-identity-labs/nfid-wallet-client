@@ -20,7 +20,3 @@ Given(
   /^User opens third party application for the first time$/,
   async function () {},
 )
-
-Given(/^The user is on mobile device$/, () => {
-  console.log("implement me")
-})

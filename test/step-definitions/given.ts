@@ -1,7 +1,7 @@
 import { Given } from "@cucumber/cucumber"
 
-import DFX_JSON from "../../../.dfx/local/canister_ids.json"
-import basePage from "../../page-objects/basePage"
+import DFX_JSON from "../../.dfx/local/canister_ids.json"
+import basePage from "../step-definitions/basePage"
 
 const getUrl = (basePath: string) => {
   return `${basePath}?canisterId=${DFX_JSON.assets.local}`
@@ -17,3 +17,7 @@ Given(
   /^User opens third party application for the first time$/,
   async function () {},
 )
+
+Given(/^The user is on mobile device$/, () => {
+  console.log("implement me")
+})

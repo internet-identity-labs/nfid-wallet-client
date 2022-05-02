@@ -2,9 +2,6 @@ import { Given } from "@cucumber/cucumber"
 
 import DFX_JSON from "../../.dfx/local/canister_ids.json"
 import basePage from "../step-definitions/basePage"
-import isEnabled from "../page-objects/checks/isEnabled"
-import isDisplayed from "../page-objects/checks/isDisplayed"
-import isExisting from "../page-objects/checks/isEnabled"
 
 const getUrl = (basePath: string) => {
   return `${basePath}?canisterId=${DFX_JSON.assets.local}`

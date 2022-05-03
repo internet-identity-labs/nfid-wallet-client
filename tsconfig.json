@@ -28,6 +28,6 @@
       "expect-webdriverio"
     ]
   },
-  "include": ["src", "src/custom.d.ts"],
+  "include": ["src", "src/custom.d.ts", "test"],
   "exclude": ["node_modules"]
 }

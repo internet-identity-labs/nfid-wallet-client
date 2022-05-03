@@ -1,3 +1,4 @@
+@Pending
 Feature: Proof of attendency
 
   Scenario Outline: User wants to proof attendency

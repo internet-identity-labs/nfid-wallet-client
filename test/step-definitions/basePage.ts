@@ -6,13 +6,15 @@ class BasePage {
   async switches(section: string) {
     switch (section) {
       case "The Identity Layer":
-        return browser.$("/html//div[@id='root']/div/div//div[.='The Identity Layer for the Internet']")
+        return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[1]')
       case "Only with NFID":
-        return browser.$("div:nth-of-type(6) > .col-span-12 > .font-bold.py-12.text-4xl.text-center")
+        return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[2]')
       case "Our mission":
-        return browser.$("div:nth-of-type(7) > .col-span-12 > .font-bold.py-12.text-4xl.text-center")
-      case "Where you can use NFID today":
-        return browser.$("div:nth-of-type(8) > .col-span-12 > .font-bold.py-12.text-4xl.text-center")
+        return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[3]')
+      case "FAQ":
+        return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[4]')
+      case "Docs":
+        return browser.$('//*[@id="root"]/div/div/header/div/div/div[3]/div[5]')
     }
   }
 
@@ -47,4 +49,4 @@ class BasePage {
   }
 }
 
-export default new BasePage()
+export default new BasePage();

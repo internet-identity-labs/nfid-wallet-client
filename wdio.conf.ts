@@ -4,6 +4,7 @@ import { hooks } from "./test/hooks"
 
 dotenv.config()
 export const config: WebdriverIO.Config = {
+  // REFERENCE: https://webdriver.io/docs/configurationfile
   //
   // ====================
   // Runner Configuration

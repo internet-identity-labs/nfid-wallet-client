@@ -6,10 +6,10 @@ globals:
   _expect: true
 
 rules:
-  import/no-extraneous-dependencies: 'off'
+  import/no-extraneous-dependencies: "off"
   import/extensions:
-    - 'error'
-    - 'never'
-  import/no-unresolved: 'off'
-
-
+    - "error"
+    - "never"
+  import/no-unresolved: "off"
+  import/no-anonymous-default-export:
+    - allowArrowFunction: true

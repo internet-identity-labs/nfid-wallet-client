@@ -3,21 +3,20 @@ Feature: Home page
   To check if user navigation features on Home page
 
   Background: Background name
-    Given User navigates to home page using
+    Given I open the site "/"
 
   @uat
   @mission
-  Scenario Outline: HM_001 User navigation on Home page
-    When user clicks on <section> link on the navigation bar
-    Then user should be navigated to <section>
+  Scenario Outline: User navigates sections on home page
+    When I click on the link "<link>"
+    Then I expect that element "<element>" becomes displayed
 
     Examples:
-      | section            |
-      | The Identity Layer |
-      | Only with NFID     |
-      | Our mission        |
-      | FAQ                |
-      | Docs               |
+      | link               | element                                                                      |
+      | The Identity Layer | #home > div:nth-child(1) > div.sticky.z-30.sm\:mt-40.top-28 > div > div > h1 |
+      | Only with NFID     | #only-with-nfid > div > h1                                                   |
+      | Our mission        | #our-mission > div:nth-child(3) > h1                                         |
+      | FAQ                | #faq > div.top-28 > h1                                                       |
 
 
 

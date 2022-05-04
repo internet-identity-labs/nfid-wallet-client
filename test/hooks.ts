@@ -1,6 +1,7 @@
 import allure from "@wdio/allure-reporter"
 import allureReporter from "@wdio/allure-reporter"
 import fs from "fs"
+import path from "path"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 //
@@ -18,11 +19,13 @@ export const hooks = {
    * @param {Object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  onPrepare: () => {
-    if (process.env.RUNNER === "LOCAL" && fs.existsSync("./allure-results")) {
-      fs.rmdirSync("./allure-results", { recursive: true })
-    }
-  },
+  // onPrepare: () => {
+  //   if (process.env.RUNNER === "LOCAL" && fs.existsSync("./allure-results")) {
+  //     fs.rmdirSync(path.resolve(__dirname, "../allure-results"), {
+  //       recursive: true,
+  //     })
+  //   }
+  // },
   /**
    * Gets executed before a worker process is spawned & can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.

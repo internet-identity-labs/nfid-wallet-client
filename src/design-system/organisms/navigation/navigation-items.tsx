@@ -14,8 +14,7 @@ import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 
-interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {
-}
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { isAuthenticated } = useAuthentication()
@@ -63,12 +62,12 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   ]
 
   const handleGoTo = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
     item: string,
     external: boolean,
   ) => {
     e.preventDefault()
-    if(external) window.open(item)
+    if (external) window.open(item)
     if (window.location.pathname !== "/") navigate(`/#${item}`)
 
     const element = document.getElementById(item)
@@ -92,7 +91,8 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           {(toggleMenu) => (
             <div className="p-4 py-6 space-y-5 font-bold bg-white rounded w-[70vw] pt-28">
               {items.map((item, index) => (
-                <div
+                <a
+                  href={`/#${encodeURIComponent(item.label)}`}
                   className={classes.navItem}
                   onClick={(el) => {
                     el.stopPropagation()
@@ -102,7 +102,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   key={index}
                 >
                   {item.label}
-                </div>
+                </a>
               ))}
               {isAuthenticated || account ? (
                 <PopupLogin />
@@ -139,13 +139,14 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
       <div className="items-center hidden space-x-10 md:flex">
         {items.map((item, index) => (
-          <div
+          <a
+            href={`/#${encodeURIComponent(item.label)}`}
             className={classes.navItem}
             onClick={(e) => handleGoTo(e, item.to, item.external)}
             key={index}
           >
             {item.label}
-          </div>
+          </a>
         ))}
         <div className="relative" ref={popupRef}>
           {isAuthenticated || account ? (
@@ -172,7 +173,9 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           {isPopupVisible || status === "registerDecider" ? (
             <div>
               <NavigationPopup
-                className={clsx(window.scrollY < 500 && status === "" ? "hidden" : null)}
+                className={clsx(
+                  window.scrollY < 500 && status === "" ? "hidden" : null,
+                )}
               />
             </div>
           ) : null}

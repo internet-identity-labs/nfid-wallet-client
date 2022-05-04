@@ -15,7 +15,7 @@
     "prepare": "husky install",
     "storybook": "start-storybook -p 6006 -s public",
     "test:dev": "craco test",
-    "test:framework": "jest --config=jest.config.js --detectOpenHandles",
+    "test": "jest --passWithNoTests --config=jest.config.js --detectOpenHandles",
     "tunnel": "./scripts/tunnel.sh",
     "wdio": "wdio run wdio.conf.ts"
   },

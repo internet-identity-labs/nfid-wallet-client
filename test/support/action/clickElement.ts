@@ -1,6 +1,6 @@
 import { Selector } from 'webdriverio';
 
-import checkIfElementExists from '../checks/checkIfElementExists';
+import checkIfElementExists from '../check/checkIfElementExists';
 
 /**
  * Perform an click action on the given element

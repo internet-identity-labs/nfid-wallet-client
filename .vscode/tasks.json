@@ -56,6 +56,17 @@
         "panel": "new",
         "group": "develop"
       }
+    },
+    {
+      "label": "NFID E2E TEST",
+      "type": "shell",
+      "command": "yarn wdio",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "tests"
+      }
     }
   ]
 }

@@ -2,6 +2,7 @@
   "name": "@internet-identity-labs/multipass-frontend",
   "version": "0.0.0",
   "scripts": {
+    "build-storybook": "build-storybook -s public",
     "build:example": "export EXAMPLE_BUILD=1 && craco build",
     "build": "craco build",
     "dev": "craco start",
@@ -11,12 +12,12 @@
     "generate-cucumber-html-report": "ts-node ./test/reporter/index.ts",
     "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js",
     "generate:types": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t ts > frontend/generated/identity_manager.d.ts",
+    "prepare": "husky install",
+    "storybook": "start-storybook -p 6006 -s public",
     "test:dev": "craco test",
     "test": "jest --passWithNoTests",
     "tunnel": "./scripts/tunnel.sh",
-    "wdio": "wdio run wdio.conf.ts",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "wdio": "wdio run wdio.conf.ts"
   },
   "dependencies": {
     "@dfinity/agent": "0.9.3",

@@ -3,7 +3,7 @@
  * @param  {String}   expectedUrl The URL to check for
  */
 /* eslint-disable no-unused-vars */
-export default async (expectedUrl: string, obsolete: never) => {
+export default async (expectedUrl: string, obsolete: any) => {
   /* eslint-enable no-unused-vars */
   /**
    * All the current window handles

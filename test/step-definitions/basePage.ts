@@ -18,8 +18,11 @@ class BasePage {
     }
   }
 
+  // @ts-ignore
   async clickOnSection(sectionName) {
+    // @ts-ignore
     await (await this.switches(sectionName)).waitForDisplayed()
+    // @ts-ignore
     await (await this.switches(sectionName)).click()
     await browser.pause(3000)
     await (
@@ -30,6 +33,7 @@ class BasePage {
   async click(ele: WebdriverIO.Element) {
     await ele.waitForClickable({ timeout: 5000 })
     if (!ele.elementId) {
+      // @ts-ignore
       throw Error(ele.error.message)
     }
     await ele.click()
@@ -38,15 +42,19 @@ class BasePage {
   async typeInto(ele: WebdriverIO.Element, text: string) {
     await ele.waitForDisplayed({ timeout: 5000 })
     if (!ele.elementId) {
+      // @ts-ignore
       throw Error(ele.error.message)
     }
     await ele.setValue(text)
   }
 
+  // @ts-ignore
   async getSectionName(sectionName) {
+    // @ts-ignore
     await (await this.switches(sectionName)).waitForDisplayed()
+    // @ts-ignore
     return await (await this.switches(sectionName)).getText()
   }
 }
 
-export default new BasePage();
+export default new BasePage()

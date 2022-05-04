@@ -3,7 +3,7 @@
  * @param  {String}   obsolete Type of object to focus to (window or tab)
  */
 /* eslint-disable no-unused-vars */
-export default async (obsolete: never) => {
+export default async (obsolete: any) => {
   /* eslint-enable no-unused-vars */
   /**
    * The last opened window

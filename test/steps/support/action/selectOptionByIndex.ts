@@ -8,7 +8,7 @@ import { Selector } from "webdriverio"
  *
  * @todo  merge with selectOption
  */
-export default async (index: string, obsolete: never, selector: Selector) => {
+export default async (index: string, obsolete: any, selector: Selector) => {
   /**
    * The index of the option to select
    * @type {Int}

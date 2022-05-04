@@ -10,7 +10,7 @@ import checkIfElementExists from './checkIfElementExists';
  */
 export default async (isExisting: string, selector: Selector) => {
     /**
-     * False case assertion
+     * Falsecase assertion
      * @type {Boolean}
      */
     let falseCase = true;

@@ -30,7 +30,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
           "absolute right-0 flex flex-col items-center pb-6 bg-white shadow-iframe rounded-xl top-14",
           isAuthenticated ? "w-60" : "w-80",
           status !== "" && "w-[25rem] px-8",
-          status !== "" && isPopupLogin && window.scrollY < 500 && "hidden",
+          status === "" && !isPopupLogin && window.scrollY < 500 && "hidden",
         )}
       >
         <div

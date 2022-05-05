@@ -1,18 +1,15 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import clsx from "clsx"
 
 import { RegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode"
 import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
-import { useScroll } from "frontend/hooks/use-scroll"
 
 interface PopupRegisterProps {
 }
 
 export const PopupRegister: React.FC<PopupRegisterProps> = () => {
-  const { scrollY } = useScroll()
   return (
-    <div className={clsx(scrollY < 500 && "hidden")}>
+    <div>
       <h2 className="mt-5 text-xl font-bold text-center">
         Register your NFID
       </h2>

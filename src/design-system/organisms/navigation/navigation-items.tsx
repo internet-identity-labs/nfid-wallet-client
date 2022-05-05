@@ -89,7 +89,8 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           }
         >
           {(toggleMenu) => (
-            <div className="p-4 py-6 space-y-5 font-bold bg-white rounded w-[70vw] pt-28">
+            <div className={clsx('p-4 py-6 font-bold bg-white rounded w-[70vw]')}>
+              <div className="space-y-5 pt-24 pb-6">
               {items.map((item, index) => (
                 <a
                   href={`/#${encodeURIComponent(item.label)}`}
@@ -104,10 +105,11 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   {item.label}
                 </a>
               ))}
+              </div>
               {isAuthenticated || account ? (
                 <PopupLogin />
               ) : (
-                <>
+                <div className="flex justify-center flex-wrap">
                   <Button
                     className={"leading-none"}
                     largeMax
@@ -124,13 +126,13 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   {/*  Unlock NFID with Security Key*/}
                   {/*</Link>*/}
                   <Link
-                    className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+                    className="block w-full mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
                     to={`${RAC.base}/${RAC.recoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
                     Recover your NFID
                   </Link>
-                </>
+                </div>
               )}
             </div>
           )}

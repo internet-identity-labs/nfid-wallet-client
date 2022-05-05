@@ -8,7 +8,7 @@ interface SocialButtonsProps {}
 
 export const SocialButtons: React.FC<SocialButtonsProps> = ({ children }) => {
   return (
-    <div className="grid justify-between grid-cols-2 gap-5 md:flex">
+    <div className="justify-between gap-5 flex flex-wrap">
       <a
         className="transition-all social-button discord"
         href="https://discord.gg/a9BFNrYJ99"

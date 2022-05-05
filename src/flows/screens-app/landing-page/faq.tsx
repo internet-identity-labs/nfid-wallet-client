@@ -9,8 +9,10 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 import { Footer } from "./footer"
 import { questions } from "./questions"
+import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
 
-interface FaqProps {}
+interface FaqProps {
+}
 
 export const Faq: React.FC<FaqProps> = ({ children }) => {
   return (
@@ -19,6 +21,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
         showBubbles: false,
       }}
     >
+      <ScrollTopOnNavigate />
       <main
         className={clsx(
           "bg-gradient-to-b from-white to-[#F3F8FE] landing-page flex flex-1",

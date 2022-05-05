@@ -9,8 +9,10 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import Blur3 from "./assets/blur_3.png"
 
 import { Footer } from "./footer"
+import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
 
-interface OurMissionProps {}
+interface OurMissionProps {
+}
 
 export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
   return (
@@ -20,6 +22,7 @@ export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
       }}
       classNameWrapper=""
     >
+      <ScrollTopOnNavigate />
       <main
         className={clsx(
           "bg-gradient-to-b from-white to-[#F3F8FE] overflow-x-hidden sm:overflow-auto landing-page flex flex-1",

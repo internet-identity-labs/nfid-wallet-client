@@ -32,7 +32,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
         scrollY < 50 && "opacity-100 bg-transparent",
       )}
     >
-      <div className={clsx("flex-1 p-4")}>
+      <div className={clsx("container px-6 py-4 mx-auto")}>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Link

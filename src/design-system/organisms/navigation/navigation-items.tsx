@@ -8,6 +8,7 @@ import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/regis
 import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import useClickOutside from "frontend/hooks/use-click-outside"
+import { useScroll } from "frontend/hooks/use-scroll"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.svg"
@@ -23,6 +24,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
   const { registerRoute, status } = useRegisterQRCode()
+  const { scrollY } = useScroll()
 
   const classes = {
     navItem:
@@ -89,10 +91,12 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           }
         >
           {(toggleMenu) => (
-            <div className={clsx('p-4 py-6 font-bold bg-white rounded w-[70vw]')}>
-              <div className="space-y-5 pt-24 pb-6">
-              {items.map((item, index) => (
-                <a
+            <div
+              className={clsx("p-4 py-6 font-bold bg-white rounded w-[70vw]")}
+            >
+              <div className="pb-6 space-y-5 pt-14">
+                {items.map((item, index) => (
+                  <a
                   href={`/#${encodeURIComponent(item.label)}`}
                   className={classes.navItem}
                   onClick={(el) => {
@@ -104,12 +108,12 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                 >
                   {item.label}
                 </a>
-              ))}
+                ))}
               </div>
               {isAuthenticated || account ? (
                 <PopupLogin />
               ) : (
-                <div className="flex justify-center flex-wrap">
+                <div className="flex flex-wrap justify-center">
                   <Button
                     className={"leading-none"}
                     largeMax
@@ -130,7 +134,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     to={`${RAC.base}/${RAC.recoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
-                    Recover your NFID
+                    Recover NFID
                   </Link>
                 </div>
               )}
@@ -162,25 +166,14 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
             </div>
           ) : (
             <Button
-              className={clsx(
-                "h-full leading-none",
-                window.scrollY < 500 && "hidden",
-              )}
+              className={clsx("h-full leading-none", scrollY < 500 && "hidden")}
               primary
               onClick={() => setIsPopupVisible(!isPopupVisible)}
             >
               Register your NFID
             </Button>
           )}
-          {isPopupVisible || status === "registerDecider" ? (
-            <div>
-              <NavigationPopup
-                className={clsx(
-                  window.scrollY < 500 && status === "" ? "hidden" : null,
-                )}
-              />
-            </div>
-          ) : null}
+          {isPopupVisible || status !== "" ? <NavigationPopup /> : null}
         </div>
       </div>
     </>

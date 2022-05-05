@@ -3,24 +3,21 @@ import React from "react"
 // @ts-ignore
 import { Fade } from "react-reveal"
 
+import { PopupNewDevice } from "frontend/design-system/organisms/navigation/navigation-popup/popup-new-device"
+import { PopupRegisterDecider } from "frontend/design-system/organisms/navigation/navigation-popup/popup-register-decider"
+import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import { PopupLogin } from "./popup-login"
 import { PopupRegister } from "./popup-register"
-import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { PopupRegisterDecider } from "frontend/design-system/organisms/navigation/navigation-popup/popup-register-decider"
-import { PopupNewDevice } from "frontend/design-system/organisms/navigation/navigation-popup/popup-new-device"
-import { useScroll } from "frontend/hooks/use-scroll"
 
-interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {
-}
+interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
   const { account } = useAccount()
   const { isAuthenticated } = useAuthentication()
   const { status } = useRegisterQRCode()
-  const { scrollY } = useScroll();
 
   const isPopupLogin = React.useMemo(() => {
     return isAuthenticated || account
@@ -33,7 +30,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
           "absolute right-0 flex flex-col items-center pb-6 bg-white shadow-iframe rounded-xl top-14",
           isAuthenticated ? "w-60" : "w-80",
           status !== "" && "w-[25rem] px-8",
-          status !== '' ? null : isPopupLogin ? null : scrollY < 500 && 'hidden',
+          status !== "" && isPopupLogin && window.scrollY < 500 && "hidden",
         )}
       >
         <div
@@ -45,7 +42,11 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
         />
         {status === "registerDecider" && <PopupRegisterDecider />}
         {status === "registerDevice" && <PopupNewDevice />}
-        {status !== "" ? null : isPopupLogin ? <PopupLogin /> : <PopupRegister />}
+        {status !== "" ? null : isPopupLogin ? (
+          <PopupLogin />
+        ) : (
+          <PopupRegister />
+        )}
       </div>
     </Fade>
   )

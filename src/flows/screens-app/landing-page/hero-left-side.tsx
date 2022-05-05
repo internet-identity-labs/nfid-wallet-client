@@ -64,7 +64,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                   to={`${RAC.base}/${RAC.recoveryPhrase}`}
                   className="block w-8/12 mx-auto mt-4 text-center cursor-pointer text-blue-base hover:underline hover:text-blue-hove"
                 >
-                  Recover your existing NFID
+                  Recover NFID
                 </Link>
               </div>
             </>
@@ -80,7 +80,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                 }
                 className="cursor-pointer text-blue-base hover:underline hover:text-blue-hover"
               >
-                Recover your existing NFID
+                Recover NFID
               </span>
             </h2>
           )}

@@ -353,7 +353,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           </section> */}
               <section
                 id="faq"
-                className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72"
+                className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72 md:-scroll-mt-24"
               >
                 <div className="top-28">
                   <Fade left>

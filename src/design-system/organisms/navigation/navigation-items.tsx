@@ -28,7 +28,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
   const classes = {
     navItem:
-      "text-black hover:underline cursor-pointer hover:text-blue-hover transition-all",
+      "text-black hover:underline cursor-pointer hover:text-blue-hover transition-all font-bold",
   }
 
   const items = [
@@ -94,7 +94,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
             <div
               className={clsx("p-4 py-6 font-bold bg-white rounded w-[70vw]")}
             >
-              <div className="pb-6 space-y-5 pt-14">
+              <div className="flex flex-col pb-6 space-y-5 pt-14">
                 {items.map((item, index) => (
                   <a
                   href={`/#${encodeURIComponent(item.label)}`}

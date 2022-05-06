@@ -10,6 +10,8 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { Footer } from "./footer"
 import { questions } from "./questions"
 import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
+import { SocialButtons } from "./social-buttons"
+import Blur from "./assets/blur_green.png"
 
 interface FaqProps {
 }
@@ -34,6 +36,11 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
                 id="faq"
                 className="relative grid grid-cols-1 sm:grid-cols-[5fr,7fr] gap-10 mt-20"
               >
+                <img
+                  className="absolute z-0 w-50% top-36 -left-[30vw]"
+                  src={Blur}
+                  alt="blur"
+                />
                 <div className="top-28">
                   <Fade left>
                     <h1 className="font-bold text-titleMobile sm:text-titleLarge">
@@ -67,6 +74,28 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
               </section>
             </div>
           </ParallaxProvider>
+          <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
+                <div className=" top-28">
+                  <Fade left>
+                    <h1 className="font-bold text-titleMobile md:text-titleLarge">
+                      Our {""}
+                      <span
+                        style={{
+                          WebkitTextFillColor: "transparent",
+                          background:
+                            "linear-gradient(90.02deg, #0094FF -5.65%, #A400CD 99.96%)",
+                          WebkitBackgroundClip: "text",
+                        }}
+                      >
+                        socials
+                      </span>
+                    </h1>
+                  </Fade>
+                </div>
+                <Fade>
+                  <SocialButtons />
+                </Fade>
+              </section>
           <Footer />
         </div>
       </main>

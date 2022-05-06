@@ -19,7 +19,10 @@ jobs:
         uses: browser-actions/setup-chrome@latest
 
       - name: Chrome version
-        run: chrome --version
+        run: |
+          VERSION_STRING="99.1.842.32"
+          wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${VERSION_STRING}_amd64.deb"
+          sudo dpkg -i "google-chrome-stable_${VERSION_STRING}_amd64.deb"
 
       - uses: actions/checkout@v3
 

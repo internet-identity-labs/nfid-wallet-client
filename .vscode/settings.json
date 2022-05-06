@@ -1,7 +1,6 @@
 {
   "liveshare.launcherClient": "visualStudioCode",
   "cucumberautocomplete.steps": [
-    "./test/step-definitions/*.ts",
     "./test/steps/*.ts"
   ],
   "cucumberautocomplete.syncfeatures": "./test/features/**/*.feature",

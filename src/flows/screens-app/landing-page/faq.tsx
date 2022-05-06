@@ -1,4 +1,3 @@
-import { Accordion } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 // @ts-ignore
@@ -6,11 +5,13 @@ import { Fade } from "react-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
+import { Accordion } from "frontend/design-system/atoms/accordion"
 
 import { Footer } from "./footer"
-import { questions } from "./questions"
-import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
 import { SocialButtons } from "./social-buttons"
+
+import { questions } from "./questions"
 import Blur from "./assets/blur_green.png"
 
 interface FaqProps {

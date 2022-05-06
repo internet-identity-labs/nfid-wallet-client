@@ -1,4 +1,3 @@
-import { Accordion } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 // @ts-ignore
@@ -6,6 +5,7 @@ import { Fade } from "react-reveal"
 import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
+import { Accordion } from "frontend/design-system/atoms/accordion"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"

@@ -15,7 +15,7 @@ export const questions = [
     title: "How is this different than my  current cryptocurrency wallet?",
     info: (
       <p>
-        There are four major questions to ask about wallets: 
+        There are four major questions to ask about wallets:
         <ul className="mb-4 mt-1">
           <li>How much privacy do they provide?</li>
           <li>How secure are they from breaches?</li>
@@ -25,7 +25,7 @@ export const questions = [
         <div className="mb-3">
           <strong>Privacy</strong>
           <p className="mt-2">
-            When you sign in to applications with your current wallet, you're essentially introducing yourself to that application with your bank account number. The more applications you do this with and the more transacion history you create, the more you incentivize attackers to find your real-life identity. 
+            When you sign in to applications with your current wallet, you're essentially introducing yourself to that application with your bank account number. The more applications you do this with and the more transacion history you create, the more you incentivize attackers to find your real-life identity.
             NFID actually generates a new hybrid-hardware wallet for every account you create on every website and application that can only be linked to each other by you, the owner of those accounts.
           </p>
         </div>
@@ -61,7 +61,7 @@ export const questions = [
     info: (
       <div>
         <p>If you've lost any of your devices or think they've been stolen, follow these three safety measures to protect your Internet Identity.</p>
-        <ul>
+        <ul className="mt-1">
           <li>
             Use one of your registered
             devices to remove the lost or stolen device from your list of NFID{" "}

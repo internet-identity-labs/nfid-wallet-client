@@ -70,7 +70,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 </div>
                 <div className="relative">
                   <img
-                    className="absolute z-0 w-[275%] -left-40 md:w-[210%] top-[-60rem] md:-top-40 max-w-none md:left-[-85%] blur-blue"
+                    className="absolute z-0 w-[275%] -left-40 md:w-[210%] top-[-35rem] sm:top-[-60rem] md:-top-40 max-w-none md:left-[-85%] blur-blue"
                     src={Blur1}
                     alt="blur1"
                   />

@@ -17,6 +17,7 @@
     "test:dev": "craco test",
     "test": "jest --passWithNoTests --config=jest.config.js --detectOpenHandles",
     "tunnel": "./scripts/tunnel.sh",
+    "install-webdrivers": "selenium-standalone install --config ./selenium-standalone.config.js",
     "wdio": "wdio run wdio.conf.ts"
   },
   "dependencies": {

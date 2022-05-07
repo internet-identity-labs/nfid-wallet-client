@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: install selenium webdrivers
-      - run: |
+        run: |
           yarn run selenium-standalone install --config ./selenium-standalone.config.js
           sudo apt-get update
           sudo apt-get --only-upgrade install google-chrome-stable

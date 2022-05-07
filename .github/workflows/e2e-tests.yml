@@ -18,6 +18,9 @@ jobs:
       - name: Setup chrome browser
         uses: browser-actions/setup-chrome@latest
 
+      - name: Install drivers
+        run: ./node_modules/.bin/selenium-standalone install
+
       - name: Chrome version
         run: chrome --version
 

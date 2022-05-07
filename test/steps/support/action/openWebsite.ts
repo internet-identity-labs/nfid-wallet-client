@@ -1,13 +1,10 @@
-let DFX_JSON: any
+import dotenv from "dotenv"
+dotenv.config()
 
-try {
-  DFX_JSON = require("../../../../.dfx/local/canister_ids.json")
-} catch (e) {
-  DFX_JSON = { assets: { local: "deploy-to-local-dfx-first" } }
-}
+const ASSETS = process.env.DE || process.env.IC;
 
 const appendCanisterId = (basePath: string) => {
-  return `${basePath}?canisterId=${DFX_JSON.assets.local}`
+  return `${basePath}?canisterId=${ASSETS}`
 }
 /**
  * Open the given URL

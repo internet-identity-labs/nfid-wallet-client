@@ -16,6 +16,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: yarn
+
       - name: install selenium webdrivers
         run: |
           yarn run selenium-standalone install --config ./selenium-standalone.config.js
@@ -34,9 +38,6 @@ jobs:
           dfx-version: 0.9.3
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
-
-      - name: Install dependencies
-        run: yarn install --ignore-engines
 
       - name: Deploy to local replica
         run: |

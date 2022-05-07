@@ -1,10 +1,11 @@
-import dotenv from "dotenv"
-dotenv.config()
+require('dotenv').config()
+let DFX_IC = process.env.IC
+let DFX_DEV = process.env.DEV
 
-const ASSETS = process.env.DE || process.env.IC;
+console.log('env variables are ', DFX_IC, DFX_DEV)
 
 const appendCanisterId = (basePath: string) => {
-  return `${basePath}?canisterId=${ASSETS}`
+  return process.env.RUNNER==='LOCAL' ? `${basePath}?canisterId=${DFX_DEV}` :  `${basePath}?canisterId=${DFX_IC}`
 }
 /**
  * Open the given URL

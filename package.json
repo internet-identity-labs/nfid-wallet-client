@@ -123,7 +123,7 @@
     "wdio-cucumberjs-json-reporter": "^4.4.1",
     "wdio-geckodriver-service": "^2.1.0",
     "wdio-json-reporter": "^3.0.0",
-    "webdriverio": "^7.16.16",
+    "webdriverio": "^7.2.8",
     "webpack": "^5.72.0"
   },
   "eslintConfig": {

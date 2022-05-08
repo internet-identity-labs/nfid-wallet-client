@@ -28,7 +28,7 @@ jobs:
           google-chrome --version
 
       - name: Setup chrome browser
-        uses: browser-actions/setup-chrome@latest
+        uses: browser-actions/setup-chrome@99
 
       - name: Chrome version
         run: chrome --version

@@ -142,7 +142,7 @@ export const config: WebdriverIO.Config = {
     ['selenium-standalone', {
         logPath: './temp',
         args: {
-            seleniumArgs: ['-host', '127.0.0.1','-port', '9515']
+            seleniumArgs: ['-host', '127.0.0.1','-port', '4444']
         },
     }]
 ],

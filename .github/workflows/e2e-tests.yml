@@ -17,22 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: nanasess/setup-chromedriver@v1
-        with:
-          # Optional: do not specify to match Chrome's version
-          chromedriver-version: "102.0.5005.27"
-      - run: |
-          export DISPLAY=:99
-          chromedriver --url-base=http://localhost:9515/wd/hub &
-          sudo Xvfb -ac :99 -screen 0 1920x1080x24 > /dev/null 2>&1 & # optional
-          chromedriver --version
-
-      - name: Setup chrome browser
-        uses: browser-actions/setup-chrome@latest
-
-      - name: Chrome browser version
-        run: chrome --version
-
       - name: Install dependencies
         run: yarn
 

@@ -8,8 +8,9 @@ Feature: Home page
   @uat
   @mission
   Scenario Outline: User navigates sections on home page
-    When I click on the link "<link>"
-    Then I expect that element "<element>" becomes displayed
+    Given I click on the link "<link>"
+    And I pause for 2000ms
+    Then I wait on element "<element>" to be displayed
 
     Examples:
       | link               | element                                                                      |

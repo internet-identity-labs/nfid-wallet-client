@@ -4,12 +4,12 @@ Feature: Home page
 
   Background: Background name
     Given I open the site "/"
+    And I pause for 3000ms
 
   @uat
   @mission
   Scenario Outline: User navigates sections on home page
     Given I click on the link "<link>"
-    And I pause for 2000ms
     Then I wait on element "<element>" to be displayed
 
     Examples:

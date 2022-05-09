@@ -15,34 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - uses: nanasess/setup-chromedriver@v1
         with:
           # Optional: do not specify to match Chrome's version
-          chromedriver-version: '102.0.5005.27'
+          chromedriver-version: "102.0.5005.27"
       - run: |
           export DISPLAY=:99
           chromedriver --url-base=/wd/hub &
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
           chromedriver --version
 
-      - uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: yarn
-
-      - name: install selenium webdrivers
-        run: |
-          yarn run selenium-standalone install --config ./selenium-standalone.config.js
-          sudo apt-get update
-          sudo apt-get --only-upgrade install google-chrome-stable
-          google-chrome --version
-
       - name: Setup chrome browser
         uses: browser-actions/setup-chrome@latest
 
-      - name: Chrome version
+      - name: Chrome browser version
         run: chrome --version
+
+      - name: Install dependencies
+        run: yarn
 
       - uses: aviate-labs/setup-dfx@v0.2.3
         with:
@@ -63,7 +55,7 @@ jobs:
           IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.PROD_CANISTER_ID_PUB_SUB_CHANNEL}}
           INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.PROD_CANISTER_ID_INTERNET_IDENTITY}}
-          AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
+          AWS_VERIFY_PHONENUMBER: ${{secrets.PROD_AWS_VERIFY_PHONENUMBER}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
 
       - name: Running E2E test

@@ -119,7 +119,6 @@
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3",
     "util": "0.12.4",
-    "wdio-chromedriver-service": "^7.3.2",
     "wdio-cucumberjs-json-reporter": "^4.4.1",
     "wdio-geckodriver-service": "^2.1.0",
     "wdio-json-reporter": "^3.0.0",

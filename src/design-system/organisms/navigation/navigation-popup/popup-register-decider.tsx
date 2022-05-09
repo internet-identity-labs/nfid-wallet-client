@@ -13,9 +13,11 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import clsx from "clsx"
 
 interface PopupRegisterDeciderProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLDivElement> {
+}
 
 export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -63,9 +65,18 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   }, [setStatus])
 
   return (
-    <div>
-      <Loader isLoading={isLoading} fullscreen />
-      <img src={logo} alt="logo" className="w-20 my-8" />
+    <div className={clsx(isLoading && 'pointer-events-none')}>
+      <div
+        className={clsx(
+          "flex justify-center items-center",
+          "absolute top-0 right-0 bottom-0 left-0",
+          "w-full h-full bg-gray-900 opacity-[75%] rounded-xl",
+          !isLoading && 'hidden'
+        )}
+      >
+        <Loader imageClasses="w-1/4" isLoading={isLoading} iframe fullscreen={false} />
+      </div>
+      <img src={logo} alt="logo" className="my-8 w-20" />
       <H5 className="mb-4">Log in faster on this device</H5>
       <div>
         Trust this {device}? You can quickly and securely log in the next time

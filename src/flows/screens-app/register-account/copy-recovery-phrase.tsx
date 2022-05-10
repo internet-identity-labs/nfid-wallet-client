@@ -77,7 +77,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
     <CopyRecoveryPhrase
       recoveryPhrase={recoveryPhrase}
       continueButtonText={
-        continueButtonText || `Log in to ${applicationName || "NFID Demo"}.`
+        continueButtonText || `Log in to ${applicationName || "NFID Demo"}`
       }
       showSuccessModal={successModal}
       showSuccessModalText={`You signed in to ${

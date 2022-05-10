@@ -1,15 +1,16 @@
 {
   "recommendations": [
+    "alexkrechik.cucumberautocomplete",
+    "cschleiden.vscode-github-actions",
+    "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "heybourn.headwind",
     "joffreykern.markdown-toc",
     "mhutchie.git-graph",
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "rust-lang.rust",
-    "vadimcn.vscode-lldb",
     "ms-vsliveshare.vsliveshare",
-    "heybourn.headwind",
-    "alexkrechik.cucumberautocomplete",
-    "stevejpurves.cucumber"
+    "rust-lang.rust",
+    "stevejpurves.cucumber",
+    "vadimcn.vscode-lldb"
   ]
 }

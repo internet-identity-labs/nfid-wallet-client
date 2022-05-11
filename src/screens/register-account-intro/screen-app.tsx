@@ -82,7 +82,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     >
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="offset-header h-full overflow-hidden">
+          <Card className="h-full overflow-hidden offset-header">
             <H5 className="mb-2 font-bold">{appName} uses NFID</H5>
 
             <CardBody className="h-full md:h-auto flex flex-col justify-between pb-[10vh]">
@@ -111,19 +111,19 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   <SwiperSlide>
                     <div className="max-w-2xl">
                       <div className="swiper-title">
-                      <span
-                        className="clip-text whitespace-nowrap "
-                        style={gradientStyles().styles}
-                      >
-                        Privacy
-                      </span>{" "}
+                        <span
+                          className="clip-text whitespace-nowrap "
+                          style={gradientStyles().styles}
+                        >
+                          Privacy
+                        </span>{" "}
                         with NFID
                       </div>
                       <div>
                         <P className="pb-4">
-                          Every account you create across any service that supports
-                          NFID will automatically create a new, untraceable hardware
-                          wallet.
+                          Every account you create across any service that
+                          supports NFID will automatically create a new,
+                          untraceable hardware wallet.
                         </P>
 
                         <P>
@@ -137,19 +137,20 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   <SwiperSlide>
                     <div className="max-w-2xl">
                       <div className="swiper-title">
-                      <span
-                        className="clip-text whitespace-nowrap"
-                        style={gradientStyles().styles}
-                      >
-                        Security
-                      </span>{" "}
+                        <span
+                          className="clip-text whitespace-nowrap"
+                          style={gradientStyles().styles}
+                        >
+                          Security
+                        </span>{" "}
                         with NFID
                       </div>
                       <div>
                         <P className="pb-4">
-                          Hardware wallets offer the greatest security guarantees
-                          because their private keys can't be exported, making it a
-                          one-way vault that only you have the ability to access.
+                          Hardware wallets offer the greatest security
+                          guarantees because their private keys can't be
+                          exported, making it a one-way vault that only you have
+                          the ability to access.
                         </P>
 
                         <P>
@@ -162,12 +163,12 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   <SwiperSlide>
                     <div className="max-w-xl">
                       <div className="swiper-title">
-                      <span
-                        className="clip-text whitespace-nowrap"
-                        style={gradientStyles().styles}
-                      >
-                        Convenience
-                      </span>{" "}
+                        <span
+                          className="clip-text whitespace-nowrap"
+                          style={gradientStyles().styles}
+                        >
+                          Convenience
+                        </span>{" "}
                         with NFID
                       </div>
                       <div>
@@ -175,8 +176,8 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                           A hardware device for each online account used to be
                           impractical. NFID stores private keys on the
                           specially-designed cryptographic chips of your phones,
-                          tablets, and computers so that creating new accounts or
-                          authenticating is simply a face or touch scan away.
+                          tablets, and computers so that creating new accounts
+                          or authenticating is simply a face or touch scan away.
                         </P>
                       </div>
                     </div>

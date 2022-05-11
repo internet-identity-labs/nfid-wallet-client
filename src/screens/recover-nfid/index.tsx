@@ -136,7 +136,7 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
             onChange={toggle}
             checked={hasVerifiedDomain}
           />
-          <label for="has-verified-domain" className="ml-2">
+          <label htmlFor="has-verified-domain" className="ml-2">
             I got to this screen by first going to https://nfid.one, being
             redirected to this landing page, and following the link to recover
             my NFID.

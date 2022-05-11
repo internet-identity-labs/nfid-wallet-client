@@ -18,7 +18,6 @@ import { IFrameNFIDLogin } from "frontend/screens/nfid-login/screen-iframe"
 import { RecoverNFID } from "frontend/screens/recover-nfid"
 import { RegisterDeviceDecider } from "frontend/screens/register-device-decider"
 
-import { ProfileConstants } from "../screens-app/profile/routes"
 import { IFrameRecoverNFIDConstants } from "../screens-iframe/restore-access-point/routes"
 
 interface IFrameOverviewProps

@@ -1,6 +1,4 @@
 import {
-  Card,
-  CardBody,
   H2,
   P,
   Button,
@@ -11,6 +9,7 @@ import {
 import clsx from "clsx"
 import React from "react"
 
+import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 interface CopyRecoveryPhraseProps {
@@ -21,9 +20,11 @@ interface CopyRecoveryPhraseProps {
   showSuccessModal?: boolean
   onSuccessModalClick?: () => void
   isLoading?: boolean
+  applicationName?: string
 }
 
 export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
+  applicationName = "NFID",
   recoveryPhrase,
   continueButtonText,
   onContinueButtonClick,
@@ -39,19 +40,22 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
     })
   }
   return (
-    <AppScreen isFocused>
+    <AppScreen isFocused showLogo>
       {/* <H5 className="mt-8">This device is now equipped for Web 3.0</H5> */}
       <main className={clsx("flex flex-1")}>
-        <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="grid grid-cols-12">
-            <CardBody className="col-span-12 py-0 md:col-span-11 lg:col-span-7 sm:py-6">
-              <H2 className="my-4 leading-10">Your NFID is ready</H2>
+        <div className={clsx(CONTAINER_CLASSES)}>
+          <div className="grid h-full grid-cols-12">
+            <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
+              <div className="text-xl font-bold text-gray-400">
+                {applicationName}
+              </div>
+              <H2 className="mt-2 mb-1 leading-10">Recovery phrase</H2>
 
-              <P className="my-6">
-                This recovery phrase is the only backup to access your NFID in
-                case all other access points are lost. Keep this secret, safe,
-                and offline!
-              </P>
+              <div className="mb-6">
+                This recovery phrase restores your NFID in case the devices you
+                registered are lost. Keep this secret, safe, offline, and only
+                use it on https://nfid.one.
+              </div>
 
               <div className="p-4 border rounded-t border-black-base">
                 <P className="font-mono">{recoveryPhrase}</P>
@@ -75,8 +79,14 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
               >
                 {continueButtonText}
               </Button>
-            </CardBody>
-          </Card>
+              <div className="flex-grow" />
+              <div className="opacity-0.4 mb-6 mt-6 opacity-40 text-xs">
+                NFID is a privacy-preserving, one-touch multi-factor wallet
+                protocol used by {applicationName} and developed by Internet
+                Identity Labs.
+              </div>
+            </div>
+          </div>
           <Loader isLoading={isLoading} />
           {showSuccessModal ? (
             <Modal

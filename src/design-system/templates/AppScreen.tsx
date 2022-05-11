@@ -16,6 +16,8 @@ interface Props
   classNameWrapper?: string
   navigationItems?: React.ReactNode
   bubbleOptions?: BubbleOptions
+  showLogo?: boolean
+  showGradientBar?: boolean
 }
 
 export const AppScreen: React.FC<Props> = ({
@@ -25,17 +27,19 @@ export const AppScreen: React.FC<Props> = ({
   isFocused = false,
   navigationItems,
   bubbleOptions,
+  showLogo = false,
+  showGradientBar = false,
 }) => {
   return (
     <Shell bubbleOptions={bubbleOptions}>
       <div className="relative flex flex-col w-full min-h-screen mx-auto min-h-screen-ios overflow-clip">
-        <NFIDGradientBar />
+        {showGradientBar && <NFIDGradientBar />}
         <NavigationBar
           navigationItems={navigationItems}
           isFocused={isFocused}
+          showLogo={showLogo}
         />
         {title && <NavigationHeader title={title} description={description} />}
-
         {children}
       </div>
     </Shell>

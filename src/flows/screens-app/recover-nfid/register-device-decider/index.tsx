@@ -4,18 +4,18 @@ import { useNavigate } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { AppScreenRegisterDevice as AppScreenRegisterDeviceRaw } from "frontend/screens/register-device/screen-app"
+import { AppScreenRegisterDeviceDecider } from "frontend/screens/register-device-decider"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
-interface AppScreenRegisterDeviceProps
+interface AppScreenRegisterDeviceDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {
   registerSuccessPath: string
 }
 
-export const AppScreenRegisterDevice: React.FC<
-  AppScreenRegisterDeviceProps
+export const RouterRegisterDeviceDecider: React.FC<
+  AppScreenRegisterDeviceDeciderProps
 > = ({ registerSuccessPath }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { createDevice } = useDevices()
@@ -104,7 +104,8 @@ export const AppScreenRegisterDevice: React.FC<
   ])
 
   return (
-    <AppScreenRegisterDeviceRaw
+    <AppScreenRegisterDeviceDecider
+      onLogin={() => console.log(">> onLogin")}
       isLoading={isLoading}
       onRegister={handleRegister}
     />

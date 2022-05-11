@@ -1,4 +1,10 @@
-import DFX_JSON from "../../../../.dfx/local/canister_ids.json"
+let DFX_JSON: any
+
+try {
+  DFX_JSON = require("../../../../.dfx/local/canister_ids.json")
+} catch (e) {
+  DFX_JSON = { assets: { local: "deploy-to-local-dfx-first" } }
+}
 
 const appendCanisterId = (basePath: string) => {
   return `${basePath}?canisterId=${DFX_JSON.assets.local}`

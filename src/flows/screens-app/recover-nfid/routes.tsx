@@ -1,7 +1,7 @@
-import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { AppScreenRecoverNFID } from "../../../screens/recover-nfid/screen-app"
+import { AppScreenRecoverNFID } from "frontend/screens/recover-nfid/screen-app"
+
 import { ProfileConstants } from "../profile/routes"
 import { RouterRegisterDeviceDecider } from "./register-device-decider"
 
@@ -18,7 +18,6 @@ export const RecoverNFIDRoutes = (
       element={
         <AppScreenRecoverNFID
           registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
-          deviceAlreadyRegisteredPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
         />
       }
     />

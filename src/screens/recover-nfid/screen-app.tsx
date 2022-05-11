@@ -5,20 +5,14 @@ import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { RecoverNFID } from "frontend/screens/recover-nfid"
 
-interface RestoreAccessPointRecoveryPhraseProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface RestoreAccessPointRecoveryPhraseProps {
   registerDeviceDeciderPath: string
-  deviceAlreadyRegisteredPath: string
   hasVerifiedDomain?: boolean
 }
 
 export const AppScreenRecoverNFID: React.FC<
   RestoreAccessPointRecoveryPhraseProps
-> = ({
-  registerDeviceDeciderPath,
-  deviceAlreadyRegisteredPath,
-  hasVerifiedDomain,
-}) => (
+> = ({ registerDeviceDeciderPath, hasVerifiedDomain }) => (
   <AppScreen isFocused showLogo>
     <main className={clsx("flex flex-1")}>
       <div className={clsx(CONTAINER_CLASSES)}>
@@ -26,7 +20,6 @@ export const AppScreenRecoverNFID: React.FC<
           <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
             <RecoverNFID
               registerDevicePath={registerDeviceDeciderPath}
-              deviceAlreadyRegisteredPath={deviceAlreadyRegisteredPath}
               hasVerifiedDomain={hasVerifiedDomain}
             />
           </div>

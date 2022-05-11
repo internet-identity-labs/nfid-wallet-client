@@ -79,9 +79,9 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
         continueButtonText || `Log in to ${applicationName || "NFID Demo"}.`
       }
       showSuccessModal={successModal}
-      showSuccessModalText={`You signed in to ${
-        applicationName || "NFID Demo"
-      }`}
+      showSuccessModalText={
+        "Remember to keep your recovery phrase secret, safe, offline, and only use it on https://nfid.one"
+      }
       onContinueButtonClick={
         isRemoteRegistration
           ? isNFID

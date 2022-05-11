@@ -24,30 +24,31 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   return (
     <header
       className={clsx(
-        CONTAINER_CLASSES,
-        "flex items-center flex-none sticky top-0 z-40 pt-5 pb-9",
+        "flex-none sticky top-0 z-40 pt-5 pb-9",
         scrollY > 50 && "shadow-gray bg-white",
         scrollY < 50 && "opacity-100 bg-transparent",
       )}
     >
-      <div className="flex items-center justify-between">
-        {showLogo && (
-          <div className="flex items-center ">
-            <Link
-              to={"/"}
-              className="flex items-center w-24 text-2xl font-black"
-            >
-              <span>NF</span>
-              <ImageOnlyLoader className="w-12 h-12" />
-            </Link>
-          </div>
-        )}
+      <div className={clsx(CONTAINER_CLASSES)}>
+        <div className="flex items-center justify-between">
+          {showLogo && (
+            <div className="flex items-center ">
+              <Link
+                to={"/"}
+                className="flex items-center w-24 text-2xl font-black"
+              >
+                <span>NF</span>
+                <ImageOnlyLoader className="w-12 h-12" />
+              </Link>
+            </div>
+          )}
 
-        {isFocused ? null : navigationItems ? (
-          navigationItems
-        ) : (
-          <NavigationItemsDefault />
-        )}
+          {isFocused ? null : navigationItems ? (
+            navigationItems
+          ) : (
+            <NavigationItemsDefault />
+          )}
+        </div>
       </div>
     </header>
   )

@@ -81,7 +81,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                 className="cursor-pointer text-blue-base hover:underline hover:text-blue-hover"
               >
                 Recover NFID
-              </span>
+              </Link>
             </h2>
           )}
           {!isQRCode && !isMobile && (

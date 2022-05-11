@@ -16,8 +16,7 @@ import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 
-interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {
-}
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { isAuthenticated } = useAuthentication()
@@ -96,7 +95,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
             <div
               className={clsx("p-4 py-6 font-bold bg-white rounded w-[70vw]")}
             >
-              <div className="flex flex-col pb-6 space-y-5 pt-14 font-bold">
+              <div className="flex flex-col pb-6 space-y-5 font-bold pt-14">
                 {items.map((item, index) => (
                   <a
                     href={`/#${encodeURIComponent(item.label)}`}
@@ -124,16 +123,16 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   >
                     Register
                   </Button>
-                  <Link
+                  {/* <Link
                     className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
                     to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
                     Unlock NFID with Security Key
-                  </Link>
+                  </Link> */}
                   <Link
                     className="block w-full mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
-                    to={`${RAC.base}/${RAC.recoveryPhrase}`}
+                    to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
                     Recover NFID
@@ -144,14 +143,15 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           )}
         </ButtonMenu>
       </div>
-      <Scrollspy className="items-center hidden space-x-10 md:flex font-medium"
-                 currentClassName="text-black-base pointer-events-none"
-                 items={items.map(i => i.to)}
+      <Scrollspy
+        className="items-center hidden space-x-10 font-medium md:flex"
+        currentClassName="text-black-base pointer-events-none"
+        items={items.map((i) => i.to)}
       >
         {items.map((item, index) => (
           <NavLink
             to={`/#${encodeURIComponent(item.label)}`}
-            className={clsx(classes.navItem, 'text-blue-base')}
+            className={clsx(classes.navItem, "text-blue-base")}
             onClick={(e) => handleGoTo(e, item.to, item.external)}
             key={index}
           >

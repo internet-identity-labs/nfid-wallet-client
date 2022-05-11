@@ -39,6 +39,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
 
   return (
     <AppScreen
+      showLogo
       bubbleOptions={{
         showBubbles: false,
       }}

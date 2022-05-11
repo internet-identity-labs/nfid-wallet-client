@@ -46,10 +46,12 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
         <div className={clsx(CONTAINER_CLASSES)}>
           <div className="grid h-full grid-cols-12">
             <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
-              <div className="text-xl font-bold text-gray-400">
+              <div className="text-base font-bold text-gray-400 md:text-xl">
                 {applicationName}
               </div>
-              <H2 className="mt-2 mb-1 leading-10">Recovery phrase</H2>
+              <h1 className="mt-3 mb-3 text-5xl font-bold leading-10">
+                Recovery phrase
+              </h1>
 
               <div className="mb-6">
                 This recovery phrase restores your NFID in case the devices you

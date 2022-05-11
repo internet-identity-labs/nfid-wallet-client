@@ -7,9 +7,9 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { Navigate, useNavigate } from "react-router-dom"
 
-import { useMessageChannel } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-message-channel"
-import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useMessageChannel } from "frontend/screens/authorize-app-unknown-device/hooks/use-message-channel"
+import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 

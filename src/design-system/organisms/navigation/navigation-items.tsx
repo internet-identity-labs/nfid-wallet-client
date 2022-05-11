@@ -1,20 +1,23 @@
 import { Button, ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, NavLink, useNavigate } from "react-router-dom"
+import Scrollspy from "react-scrollspy"
 
 import User from "frontend/assets/user.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import useClickOutside from "frontend/hooks/use-click-outside"
+import { useScroll } from "frontend/hooks/use-scroll"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.svg"
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 
-interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {
+}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { isAuthenticated } = useAuthentication()
@@ -23,6 +26,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
   const { registerRoute, status } = useRegisterQRCode()
+  const { scrollY } = useScroll()
 
   const classes = {
     navItem:
@@ -89,32 +93,36 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           }
         >
           {(toggleMenu) => (
-            <div className="p-4 py-6 space-y-5 font-bold bg-white rounded w-[70vw] pt-28">
-              {items.map((item, index) => (
-                <a
-                  href={`/#${encodeURIComponent(item.label)}`}
-                  className={classes.navItem}
-                  onClick={(el) => {
-                    el.stopPropagation()
-                    handleGoTo(el, item.to, item.external)
-                    toggleMenu()
-                  }}
-                  key={index}
-                >
-                  {item.label}
-                </a>
-              ))}
+            <div
+              className={clsx("p-4 py-6 font-bold bg-white rounded w-[70vw]")}
+            >
+              <div className="flex flex-col pb-6 space-y-5 pt-14 font-bold">
+                {items.map((item, index) => (
+                  <a
+                    href={`/#${encodeURIComponent(item.label)}`}
+                    className={classes.navItem}
+                    onClick={(el) => {
+                      el.stopPropagation()
+                      handleGoTo(el, item.to, item.external)
+                      toggleMenu()
+                    }}
+                    key={index}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
               {isAuthenticated || account ? (
                 <PopupLogin />
               ) : (
-                <>
+                <div className="flex flex-wrap justify-center">
                   <Button
                     className={"leading-none"}
                     largeMax
                     primary
                     onClick={() => navigate(registerRoute)}
                   >
-                    Register your NFID
+                    Register
                   </Button>
                   {/*<Link*/}
                   {/*  className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"*/}
@@ -124,29 +132,31 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   {/*  Unlock NFID with Security Key*/}
                   {/*</Link>*/}
                   <Link
-                    className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+                    className="block w-full mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
                     to={`${RAC.base}/${RAC.recoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
-                    Recover your NFID
+                    Recover NFID
                   </Link>
-                </>
+                </div>
               )}
             </div>
           )}
         </ButtonMenu>
       </div>
-
-      <div className="items-center hidden space-x-10 md:flex">
+      <Scrollspy className="items-center hidden space-x-10 md:flex font-medium"
+                 currentClassName="text-black-base pointer-events-none"
+                 items={items.map(i => i.to)}
+      >
         {items.map((item, index) => (
-          <a
-            href={`/#${encodeURIComponent(item.label)}`}
-            className={classes.navItem}
+          <NavLink
+            to={`/#${encodeURIComponent(item.label)}`}
+            className={clsx(classes.navItem, 'text-blue-base')}
             onClick={(e) => handleGoTo(e, item.to, item.external)}
             key={index}
           >
             {item.label}
-          </a>
+          </NavLink>
         ))}
         <div className="relative" ref={popupRef}>
           {isAuthenticated || account ? (
@@ -160,27 +170,16 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
             </div>
           ) : (
             <Button
-              className={clsx(
-                "h-full leading-none",
-                window.scrollY < 500 && "hidden",
-              )}
+              className={clsx("h-full leading-none", scrollY < 500 && "hidden")}
               primary
               onClick={() => setIsPopupVisible(!isPopupVisible)}
             >
-              Register your NFID
+              Register
             </Button>
           )}
-          {isPopupVisible || status === "registerDecider" ? (
-            <div>
-              <NavigationPopup
-                className={clsx(
-                  window.scrollY < 500 && status === "" ? "hidden" : null,
-                )}
-              />
-            </div>
-          ) : null}
+          {isPopupVisible || status !== "" ? <NavigationPopup /> : null}
         </div>
-      </div>
+      </Scrollspy>
     </>
   )
 }

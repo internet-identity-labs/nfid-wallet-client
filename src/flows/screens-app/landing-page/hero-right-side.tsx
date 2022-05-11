@@ -44,7 +44,7 @@ export const HeroRightSide: React.FC<HeroRightSideProps> = ({
       </Tilt>
     </Fade>
   ) : hasAccount ? (
-    <div className="mb-[75px] sm:mb-[87px]">
+    <div className="mb-[75px] sm:mb-[87px] z-10 relative">
       <img src={Group} alt="Group" />
     </div>
   ) : (<span></span>)

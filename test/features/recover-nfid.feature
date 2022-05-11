@@ -6,5 +6,5 @@ Feature: Recover NFID Account from Recovery Phrase
     Given I open the site "/"
 
   Scenario:
-    When I click on the link "Recover your existing NFID"
+    When I click on the link "Recover NFID"
     Then I expect the url to contain "/recover-nfid/enter-recovery-phrase"

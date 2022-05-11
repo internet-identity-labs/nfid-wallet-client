@@ -15,18 +15,23 @@ import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-d
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 
-interface RestoreAccessPointRecoveryPhraseContentProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
   registerDevicePath: string
   onRecoverSuccess?: (result: LoginSuccess) => void
+  hasVerifiedDomain?: boolean
 }
 
-export const RecoverNFID: React.FC<
-  RestoreAccessPointRecoveryPhraseContentProps
-> = ({ className, registerDevicePath, onRecoverSuccess }) => {
+export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
+  className,
+  registerDevicePath,
+  hasVerifiedDomain: hasVerifiedDomainDefault,
+  onRecoverSuccess,
+}) => {
+  const [hasVerifiedDomain, toggle] = React.useReducer(
+    (state) => !state,
+    !!hasVerifiedDomainDefault,
+  )
+
   const { navigate } = useNFIDNavigate()
   const { loginWithRecovery, error, isLoading } = useAuthentication()
   const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
@@ -94,8 +99,6 @@ export const RecoverNFID: React.FC<
     ],
   )
 
-  const title = "Recover NFID"
-
   React.useEffect(() => {
     if (error) {
       setError("recoveryPhrase", {
@@ -109,7 +112,7 @@ export const RecoverNFID: React.FC<
   return (
     <div className={clsx("", className)}>
       <div>
-        <H2 className="mb-4">{title}</H2>
+        <H2 className="mb-4">Recover NFID</H2>
 
         <div className={clsx("mb-6")}>
           Paste your recovery phrase here to proceed:
@@ -125,12 +128,27 @@ export const RecoverNFID: React.FC<
             },
           })}
         />
+        <div>
+          <input
+            type="checkbox"
+            id="has-verified-domain"
+            className="rounded"
+            onChange={toggle}
+            checked={hasVerifiedDomain}
+          />
+          <label for="has-verified-domain" className="ml-2">
+            I got to this screen by first going to https://nfid.one, being
+            redirected to this landing page, and following the link to recover
+            my NFID.
+          </label>
+        </div>
 
         <Button
           secondary
           large
           className="my-4"
           onClick={handleSubmit(onRecover)}
+          disabled={!hasVerifiedDomain}
         >
           Recover
         </Button>

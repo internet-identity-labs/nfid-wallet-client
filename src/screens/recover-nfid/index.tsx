@@ -60,7 +60,8 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
 
   const onRecover = React.useCallback(
     async (data: any) => {
-      const { recoveryPhrase } = data
+      const { recoveryPhrase: recoveryPhraseRaw } = data
+      const recoveryPhrase = recoveryPhraseRaw.trim()
 
       const stringUserNumber = recoveryPhrase.split(" ")[0]
       const userNumber = parseUserNumber(stringUserNumber)

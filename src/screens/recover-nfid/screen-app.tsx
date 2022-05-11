@@ -11,18 +11,22 @@ interface RestoreAccessPointRecoveryPhraseProps
     HTMLDivElement
   > {
   registerDeviceDeciderPath: string
+  hasVerifiedDomain?: boolean
 }
 
 export const AppScreenRecoverNFID: React.FC<
   RestoreAccessPointRecoveryPhraseProps
-> = ({ registerDeviceDeciderPath }) => {
+> = ({ registerDeviceDeciderPath, hasVerifiedDomain }) => {
   return (
     <AppScreen isFocused showLogo>
       <main className={clsx("flex flex-1")}>
         <div className={clsx(CONTAINER_CLASSES)}>
           <div className="grid h-full grid-cols-12">
             <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
-              <RecoverNFID registerDevicePath={registerDeviceDeciderPath} />
+              <RecoverNFID
+                registerDevicePath={registerDeviceDeciderPath}
+                hasVerifiedDomain={hasVerifiedDomain}
+              />
             </div>
           </div>
         </div>

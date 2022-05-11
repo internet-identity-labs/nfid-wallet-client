@@ -92,10 +92,12 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 
   const handleCreatePersonaAndLogin = React.useCallback(async () => {
     setStatus("loading")
+    console.log(">> handleCreatePersonaAndLogin")
 
     const response = await createPersona({
       domain: scope || authorizationRequest?.hostname,
     })
+    console.log(">> handleCreatePersonaAndLogin", { response })
 
     if (response?.status_code === 200) {
       return handleAuthorizePersona({ persona_id: nextPersonaId })()

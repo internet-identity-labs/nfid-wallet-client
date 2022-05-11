@@ -1,32 +1,31 @@
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useGeneratePath } from "frontend/hooks/use-generate-path"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { AppScreenRegisterDevice as AppScreenRegisterDeviceRaw } from "frontend/screens/register-device"
+import { AppScreenRegisterDeviceDecider as AppScreenRegisterDeviceDeciderRaw } from "frontend/screens/register-device-decider"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface AppScreenRegisterDeviceProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  registerSuccessPath: string
-}
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const AppScreenRegisterDevice: React.FC<
+export const AppScreenRegisterDeviceDecider: React.FC<
   AppScreenRegisterDeviceProps
-> = ({ registerSuccessPath }) => {
+> = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { createDevice } = useDevices()
-  const { recoverAccount } = useAccount()
+  const { readAccount } = useAccount()
   const { getPersona } = usePersona()
   const { identityManager } = useAuthentication()
-  const { generatePath } = useGeneratePath()
-  const navigate = useNavigate()
 
-  const { userNumber } = useUnknownDeviceConfig()
+  const { userNumber, handleSendDelegate } = useUnknownDeviceConfig()
   const { createWebAuthNDevice } = useDevices()
+
+  const handleLogin = React.useCallback(() => {
+    console.log(">> handleLogin")
+    handleSendDelegate()
+  }, [handleSendDelegate])
 
   const handleCreateDevice = React.useCallback(
     async (userNumber) => {
@@ -58,6 +57,8 @@ export const AppScreenRegisterDevice: React.FC<
   )
 
   const handleRegister = React.useCallback(async () => {
+    console.log(">> handleRegister")
+
     setIsLoading(true)
     if (!userNumber) {
       return console.error(`Missing userNumber: ${userNumber}`)
@@ -65,26 +66,24 @@ export const AppScreenRegisterDevice: React.FC<
 
     await handleCreateDevice(userNumber)
 
-    await recoverAccount(userNumber, identityManager)
-    await getPersona()
+    await Promise.all([readAccount(identityManager), getPersona()])
 
-    navigate(generatePath(registerSuccessPath))
     setIsLoading(false)
+    handleSendDelegate()
   }, [
-    generatePath,
     getPersona,
     handleCreateDevice,
+    handleSendDelegate,
     identityManager,
-    navigate,
-    recoverAccount,
-    registerSuccessPath,
+    readAccount,
     userNumber,
   ])
 
   return (
-    <AppScreenRegisterDeviceRaw
+    <AppScreenRegisterDeviceDeciderRaw
       isLoading={isLoading}
       onRegister={handleRegister}
+      onLogin={handleLogin}
     />
   )
 }

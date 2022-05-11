@@ -2,7 +2,10 @@ import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
 import { Captcha } from "frontend/screens/captcha"
+import { RecoverNFID } from "frontend/screens/recover-nfid"
 
+import { AppScreenRegisterDevice } from "../authenticate/screen-app-register-device"
+import { AppScreenAuthorizeAppConstants } from "../authorize-app/routes"
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RouteRegisterAccountIntro } from "./intro"
 
@@ -11,6 +14,8 @@ export const RemoteRegisterAccountConstants = {
   account: "intro",
   captcha: "captcha",
   copyRecoveryPhrase: "copy-recovery-phrase",
+  recoverNFID: "recover-nfid",
+  registerDeviceDecider: "register-device-decider",
 }
 
 export const RemoteRegisterAccountRoutes = (
@@ -20,6 +25,22 @@ export const RemoteRegisterAccountRoutes = (
       element={
         <RouteRegisterAccountIntro
           captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}
+        />
+      }
+    />
+    <Route
+      path={RemoteRegisterAccountConstants.recoverNFID}
+      element={
+        <RecoverNFID
+          registerDeviceDeciderPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.registerDeviceDecider}`}
+        />
+      }
+    />
+    <Route
+      path={RemoteRegisterAccountConstants.registerDeviceDecider}
+      element={
+        <AppScreenRegisterDevice
+          registerSuccessPath={`${AppScreenAuthorizeAppConstants.base}/${AppScreenAuthorizeAppConstants.authorize}`}
         />
       }
     />

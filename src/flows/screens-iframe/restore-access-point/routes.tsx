@@ -2,23 +2,33 @@ import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
 import { IFrameRestoreAccessPointStart } from "."
-import { IFrameRestoreAccessPointRecoveryPhrase } from "./recovery-phrase"
+import { IFrameRecoverNFID } from "../../../screens/recover-nfid/screen-iframe"
+import { IFrameRegisterDeviceDecider } from "../../../screens/register-device-decider/screen-iframe"
 
-export const IFrameRestoreAccessPointConstants = {
-  base: "/restore-access-point-iframe",
-  nfid: "nfid",
+export const IFrameRecoverNFIDConstants = {
+  base: "/recover-nfid-iframe",
+  options: "options",
   recoveryPhrase: "recovery-phrase",
+  registerDevice: "register-device",
 }
 
-export const IFrameRestoreAccessPointRoutes = (
-  <Route path={IFrameRestoreAccessPointConstants.base} element={<Outlet />}>
+export const IFrameRecoverNFIDRoutes = (
+  <Route path={IFrameRecoverNFIDConstants.base} element={<Outlet />}>
     <Route
-      path={IFrameRestoreAccessPointConstants.nfid}
+      path={IFrameRecoverNFIDConstants.options}
       element={<IFrameRestoreAccessPointStart />}
     />
     <Route
-      path={IFrameRestoreAccessPointConstants.recoveryPhrase}
-      element={<IFrameRestoreAccessPointRecoveryPhrase />}
+      path={IFrameRecoverNFIDConstants.recoveryPhrase}
+      element={
+        <IFrameRecoverNFID
+          onRecoverSuccessPath={`${IFrameRecoverNFIDConstants.base}/${IFrameRecoverNFIDConstants.registerDevice}`}
+        />
+      }
+    />
+    <Route
+      path={IFrameRecoverNFIDConstants.registerDevice}
+      element={<IFrameRegisterDeviceDecider />}
     />
   </Route>
 )

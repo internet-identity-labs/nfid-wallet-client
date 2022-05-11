@@ -1,3 +1,4 @@
+import { NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { NavigationBar } from "../organisms/navigation/navigation-bar"
@@ -19,17 +20,16 @@ interface Props
 
 export const AppScreen: React.FC<Props> = ({
   children,
-  className,
   title,
   description,
   isFocused = false,
-  classNameWrapper,
   navigationItems,
   bubbleOptions,
 }) => {
   return (
     <Shell bubbleOptions={bubbleOptions}>
       <div className="relative flex flex-col w-full min-h-screen mx-auto min-h-screen-ios overflow-clip">
+        <NFIDGradientBar />
         <NavigationBar
           navigationItems={navigationItems}
           isFocused={isFocused}

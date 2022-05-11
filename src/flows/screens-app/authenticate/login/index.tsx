@@ -12,18 +12,21 @@ interface AppScreenNFIDLoginProps
     HTMLDivElement
   > {
   onLoginSuccess?: (loginResult: void | LoginSuccess) => void
+  unknownDevicePath: string
 }
 
 export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
   onLoginSuccess,
-}) => (
-  <AppScreen className="flex flex-col h-full" isFocused>
-    <main className={clsx("flex flex-1")}>
-      <div className="container p-6 mx-auto">
-        <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
-          <NFIDLogin onLoginSuccess={onLoginSuccess} />
-        </CardBody>
-      </div>
-    </main>
-  </AppScreen>
-)
+}) => {
+  return (
+    <AppScreen className="flex flex-col h-full" isFocused>
+      <main className={clsx("flex flex-1")}>
+        <div className="container p-6 mx-auto">
+          <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
+            <NFIDLogin onLoginSuccess={onLoginSuccess} />
+          </CardBody>
+        </div>
+      </main>
+    </AppScreen>
+  )
+}

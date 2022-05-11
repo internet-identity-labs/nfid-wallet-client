@@ -6,7 +6,7 @@ import Scrollspy from "react-scrollspy"
 
 import User from "frontend/assets/user.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/flows/screens-app/recover-nfid/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import useClickOutside from "frontend/hooks/use-click-outside"
 import { useScroll } from "frontend/hooks/use-scroll"
@@ -126,7 +126,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   </Button>
                   <Link
                     className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
-                    to={`${RAC.base}/${RAC.recoveryPhrase}`}
+                    to={`${RAC.base}/${RAC.enterSeedPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
                     Unlock NFID with Security Key

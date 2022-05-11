@@ -13,10 +13,12 @@ import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { IFrameNFIDLogin } from "frontend/flows/screens-iframe/authenticate/login"
 import { IFrameNFIDPersonalize } from "frontend/flows/screens-iframe/personalize"
-import { AuthorizeRegisterDecider } from "frontend/screens/authorize-register-decider"
-import { RestoreAccessPoint } from "frontend/screens/restore-access-point"
+import { IFrameNFIDLogin } from "frontend/screens/nfid-login/screen-iframe"
+import { RecoverNFID } from "frontend/screens/recover-nfid"
+import { RegisterDeviceDecider } from "frontend/screens/register-device-decider"
+
+import { IFrameRecoverNFIDConstants } from "../screens-iframe/restore-access-point/routes"
 
 interface IFrameOverviewProps
   extends React.DetailedHTMLProps<
@@ -105,7 +107,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
                   fixedHeight={false}
                 >
                   <IFrameScreen logo>
-                    <AuthorizeRegisterDecider
+                    <RegisterDeviceDecider
                       iframe
                       onRegister={() => {
                         console.log("Register")
@@ -131,7 +133,10 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
                   fixedHeight={false}
                 >
                   <IFrameScreen logo>
-                    <RestoreAccessPoint iframe />
+                    <RecoverNFID
+                      iframe
+                      registerDeviceDeciderPath={`${IFrameRecoverNFIDConstants.base}/${IFrameRecoverNFIDConstants.registerDevice}`}
+                    />
                   </IFrameScreen>
                 </IFrameWrapper>
               </div>

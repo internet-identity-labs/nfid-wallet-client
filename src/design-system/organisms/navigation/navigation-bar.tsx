@@ -14,6 +14,7 @@ interface NavigationBarProps
   > {
   navigationItems?: React.ReactNode
   isFocused?: boolean
+  showLogo?: boolean
 }
 
 export const NavigationBar: React.FC<NavigationBarProps> = ({
@@ -21,6 +22,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   className,
   navigationItems,
   isFocused = false,
+  showLogo,
 }) => {
   const { scrollY } = useScroll()
 
@@ -34,15 +36,17 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
     >
       <div className={clsx("container px-6 py-4 mx-auto")}>
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Link
-              to={"/"}
-              className="flex items-center w-24 text-2xl font-black"
-            >
-              <span>NF</span>
-              <ImageOnlyLoader className="w-12 h-12" />
-            </Link>
-          </div>
+          {showLogo && (
+            <div className="flex items-center">
+              <Link
+                to={"/"}
+                className="flex items-center w-24 text-2xl font-black"
+              >
+                <span>NF</span>
+                <ImageOnlyLoader className="w-12 h-12" />
+              </Link>
+            </div>
+          )}
 
           {isFocused ? null : navigationItems ? (
             navigationItems

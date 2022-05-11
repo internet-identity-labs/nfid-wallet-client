@@ -22,7 +22,6 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const { setStatus } = useRegisterQRCode()
   const { createDevice } = useDevices()
   const { readAccount } = useAccount()
-  const { identityManager } = useAuthentication()
 
   const {
     platform: { device, authenticator: platformAuth },
@@ -47,7 +46,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         ...device,
         userNumber,
       })
-      await readAccount(identityManager)
+      await readAccount()
 
       setIsLoading(false)
       setStatus("registerDevice")

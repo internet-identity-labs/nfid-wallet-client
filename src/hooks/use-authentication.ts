@@ -5,7 +5,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { userNumberAtom } from "frontend/services/identity-manager/account/state"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { _SERVICE as ImAdditionsService } from "frontend/services/iiw/im_addition.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
@@ -24,6 +24,7 @@ interface Actors {
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const remoteLoginAtom = atom<boolean>(false)
+const recoveryPhraseAtom = atom<boolean>(false)
 const actorsAtom = atom<Actors | null>(null)
 const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
 export const principalIdAtom = atom((get) =>
@@ -36,11 +37,12 @@ export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
   const [isAuthenticated] = useAtom(isAuthenticatedAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
+  const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
+  const [isRecoveryDelegate, setIsRecoveryDelegate] =
+    useAtom(recoveryPhraseAtom)
   const [actors, setActors] = useAtom(actorsAtom)
   const [principalId] = useAtom(principalIdAtom)
-
-  const { userNumber } = useAccount()
 
   const logout = React.useCallback(() => {
     setActors(null)
@@ -136,13 +138,14 @@ export const useAuthentication = () => {
         initUserGeek(
           result?.internetIdentity?.delegationIdentity.getPrincipal(),
         )
+        setIsRecoveryDelegate(true)
         setError(null)
       }
 
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setActors, setError, setIsLoading],
+    [initUserGeek, setActors, setError, setIsLoading, setIsRecoveryDelegate],
   )
 
   return {
@@ -156,6 +159,7 @@ export const useAuthentication = () => {
     pubsubChannel: actors?.pubsubChannelActor,
     imAddition: actors?.imAdditionActor,
     error,
+    isRecoveryDelegate,
     isRemoteDelegate,
     login,
     remoteLogin,

@@ -1,15 +1,10 @@
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Navigate } from "react-router-dom"
 
-import { useInterval } from "frontend/hooks/use-interval"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
-
-import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 
 export interface AuthorizeAppUnknownDeviceProps {
   registerDeviceDeciderPath: string

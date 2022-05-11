@@ -224,7 +224,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
                   Create new NFID
                 </Button>
 
-                <Button text onClick={onRecover}>
+                <Button className="hover:bg-opacity-0" text onClick={onRecover}>
                   Recover NFID
                 </Button>
               </div>

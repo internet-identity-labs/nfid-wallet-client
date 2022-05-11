@@ -1,32 +1,31 @@
-import { Button, Loader } from "@internet-identity-labs/nfid-sdk-react"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-import { Link, Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
-import { useGeneratePath } from "frontend/hooks/use-generate-path"
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 
 interface AuthorizeAppUnknownDeviceProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  recoverNFIDPath: string
   registerDeviceDeciderPath: string
 }
 
 export const AuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ recoverNFIDPath, registerDeviceDeciderPath }) => {
+> = ({ registerDeviceDeciderPath }) => {
   const { applicationName } = useMultipass()
   const { url, status, handlePollForDelegate, showRegister } =
     useUnknownDeviceConfig()
   const isLoading = status === "loading"
 
   useInterval(handlePollForDelegate, 2000)
-  const { generatePath } = useGeneratePath()
+  const { generatePath } = useNFIDNavigate()
 
   return url && !showRegister ? (
     <div className={clsx("text-center")}>

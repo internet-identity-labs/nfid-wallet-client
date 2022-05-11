@@ -47,5 +47,7 @@ export const HeroRightSide: React.FC<HeroRightSideProps> = ({
     <div className="mb-[75px] sm:mb-[87px] z-10 relative">
       <img src={Group} alt="Group" />
     </div>
-  ) : (<span></span>)
+  ) : (
+    <span></span>
+  )
 }

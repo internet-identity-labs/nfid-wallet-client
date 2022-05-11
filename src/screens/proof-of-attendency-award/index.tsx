@@ -12,10 +12,11 @@ import { EventSummary } from "../proof-of-attendency/event-summary"
 import image_dog from "./dog_image.svg"
 
 interface ProofOfAttendencyAwardProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-}
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const ProofOfAttendencyAward: React.FC<ProofOfAttendencyAwardProps> = () => {
+export const ProofOfAttendencyAward: React.FC<
+  ProofOfAttendencyAwardProps
+> = () => {
   return (
     <AppScreen
       bubbleOptions={{
@@ -84,18 +85,26 @@ export const ProofOfAttendencyAward: React.FC<ProofOfAttendencyAwardProps> = () 
         >
           <H5>IIWXXXIV Spring 2022</H5>
           <div className="mt-4">
-            Internet Identity Labs presents NFID at IIW XXXIV, an Identity provider with a lot of buzz words:
-            decentralized (inclusive of frontend), privacy-preserving one-touch MFA DID factory and crypto wallet.
-            Webauthn as a primary means of authentication means non-exportable private keys are securely stored in the
-            TPMs of your devices, and chain key cryptography on the Internet Computer means the same identifier is
-            generated when authenticating to the same account regardless of which of your devices was
-            used. <br /><br /> A new identifier is generated for every new account on every website, and is itself a new
-            blockchain address that resolves into a DID that only the NFID owner can link together. Verifiable
-            credentials issued to any of these DIDs, like this proof of attendance badge, can be presented while
-            authenticated as a different DID on another website without revealing the DID it was issued to.
-            <br /><br /> We believe a secure, privacy-preserving identity provider solving the key management problem
-            this way abstracts away the complexity and provides an experience that non-technical people will be able to
-            use.
+            Internet Identity Labs presents NFID at IIW XXXIV, an Identity
+            provider with a lot of buzz words: decentralized (inclusive of
+            frontend), privacy-preserving one-touch MFA DID factory and crypto
+            wallet. Webauthn as a primary means of authentication means
+            non-exportable private keys are securely stored in the TPMs of your
+            devices, and chain key cryptography on the Internet Computer means
+            the same identifier is generated when authenticating to the same
+            account regardless of which of your devices was used. <br />
+            <br /> A new identifier is generated for every new account on every
+            website, and is itself a new blockchain address that resolves into a
+            DID that only the NFID owner can link together. Verifiable
+            credentials issued to any of these DIDs, like this proof of
+            attendance badge, can be presented while authenticated as a
+            different DID on another website without revealing the DID it was
+            issued to.
+            <br />
+            <br /> We believe a secure, privacy-preserving identity provider
+            solving the key management problem this way abstracts away the
+            complexity and provides an experience that non-technical people will
+            be able to use.
           </div>
         </div>
         <Footer />

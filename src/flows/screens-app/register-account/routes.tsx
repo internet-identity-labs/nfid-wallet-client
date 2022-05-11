@@ -4,7 +4,7 @@ import { Outlet, Route } from "react-router-dom"
 import { Captcha } from "frontend/screens/captcha"
 
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
-import { RegisterAccountIntro } from "./intro"
+import { RouteRegisterAccountIntro } from "./intro"
 
 export const RemoteRegisterAccountConstants = {
   base: "/register-account/:secret/:scope",
@@ -18,7 +18,7 @@ export const RemoteRegisterAccountRoutes = (
     <Route
       path={RemoteRegisterAccountConstants.account}
       element={
-        <RegisterAccountIntro
+        <RouteRegisterAccountIntro
           captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}
         />
       }
@@ -50,7 +50,7 @@ export const NFIDRegisterAccountRoutes = (
     <Route
       path={NFIDRegisterAccountConstants.account}
       element={
-        <RegisterAccountIntro
+        <RouteRegisterAccountIntro
           captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
         />
       }

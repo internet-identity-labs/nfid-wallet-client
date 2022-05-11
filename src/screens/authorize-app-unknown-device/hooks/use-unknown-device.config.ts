@@ -46,10 +46,12 @@ type StateProps = {
 const registerAtom = atom<boolean>(false)
 const userNumberAtom = atom<bigint | undefined>(undefined)
 const loadingAtom = atom<loadingState>("initial")
+const delegationAtom = atom<SignedDelegation | undefined>(undefined)
 
 export const useUnknownDeviceConfig = () => {
   const [status, setStatus] = useAtom(loadingAtom)
   const [showRegister, setShowRegister] = useAtom(registerAtom)
+  const [signedDelegation, setSignedDelegation] = useAtom(delegationAtom)
 
   const { state } = useLocation()
   const [userNumber, setUserNumber] = useAtom(userNumberAtom)
@@ -61,9 +63,6 @@ export const useUnknownDeviceConfig = () => {
 
   React.useState<bigint | undefined>((state as StateProps)?.userNumber)
   const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
-
-  const [signedDelegation, setSignedDelegation] =
-    React.useState<SignedDelegation>()
 
   const [appWindow, setAppWindow] = React.useState<Window | null>(null)
   const [domain, setDomain] = React.useState("")
@@ -230,6 +229,7 @@ export const useUnknownDeviceConfig = () => {
       handleLoginFromRemoteDelegation,
       pubKey,
       setShowRegister,
+      setSignedDelegation,
       setStatus,
       setUserNumber,
     ],

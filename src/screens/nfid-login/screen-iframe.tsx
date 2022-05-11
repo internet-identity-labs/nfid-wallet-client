@@ -5,19 +5,22 @@ import { NFIDLogin } from "frontend/screens/nfid-login"
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 
 interface IFrameAuthenticateNFIDLoginProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends React.HTMLAttributes<HTMLDivElement> {
+  loginSuccessPath?: string
   onLoginSuccess?: (loginResult: void | LoginSuccess) => void
 }
 
 export const IFrameNFIDLogin: React.FC<IFrameAuthenticateNFIDLoginProps> = ({
+  loginSuccessPath,
   onLoginSuccess,
 }) => (
   <IFrameScreen logo>
     <div className="flex flex-col-reverse">
-      <NFIDLogin iframe onLoginSuccess={onLoginSuccess} />
+      <NFIDLogin
+        iframe
+        onLoginSuccess={onLoginSuccess}
+        loginSuccessPath={loginSuccessPath}
+      />
     </div>
   </IFrameScreen>
 )

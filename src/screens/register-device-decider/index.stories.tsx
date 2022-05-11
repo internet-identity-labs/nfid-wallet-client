@@ -2,7 +2,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { RegisterDeviceDecider } from "."
-import { AppScreenRegisterDevice } from "./screen-app"
+import { AppScreenRegisterDevice } from "../../flows/screens-app/authenticate/screen-app-register-device-decider"
 
 export default {
   title: "Screens/RegisterDeviceDecider",

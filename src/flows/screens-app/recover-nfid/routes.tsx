@@ -1,7 +1,7 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { AppScreenRegisterDevice } from "frontend/screens/register-device-decider/screen-app"
+import { AppScreenRegisterDevice } from "frontend/flows/screens-app/authenticate/screen-app-register-device-decider"
 
 import { AppScreenRecoverNFID } from "../../../screens/recover-nfid/screen-app"
 
@@ -23,12 +23,7 @@ export const RecoverNFIDRoutes = (
     />
     <Route
       path={RecoverNFIDRoutesConstants.registerDevice}
-      element={
-        <AppScreenRegisterDevice
-          loginSuccessPath={"/"}
-          registerDeviceSuccessPath={"/"}
-        />
-      }
+      element={<AppScreenRegisterDevice />}
     />
   </Route>
 )

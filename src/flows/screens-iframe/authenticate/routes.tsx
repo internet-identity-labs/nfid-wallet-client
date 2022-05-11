@@ -8,6 +8,7 @@ import { IFrameRegisterDeviceDecider } from "frontend/screens/register-device-de
 
 import {
   IFRAME_AUTHENTICATE_BASE,
+  SUB_PATH_AUTHORIZE_APP,
   SUB_PATH_LOGIN_NFID,
   SUB_PATH_LOGIN_UNKNOWN_DEVICE,
   SUB_PATH_RECOVER_NFID,
@@ -30,8 +31,8 @@ export const IFrameAuthenticateAccountRoutes = (
       path={SUB_PATH_LOGIN_NFID}
       element={
         <IFrameNFIDLogin
-          onLoginSuccess={() => console.log(">> onLoginSuccess")}
           unknownDevicePath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_LOGIN_UNKNOWN_DEVICE}`}
+          loginSuccessPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
         />
       }
     />

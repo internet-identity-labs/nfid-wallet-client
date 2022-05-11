@@ -39,5 +39,5 @@ const NFIDLoginDecider: React.FC<{
   iframe ? (
     <IFrameNFIDLogin onLoginSuccess={onLoginSuccess} />
   ) : (
-    <AppScreenNFIDLogin onLoginSuccess={onLoginSuccess} />
+    <AppScreenNFIDLogin unknownDevicePath="" onLoginSuccess={onLoginSuccess} />
   )

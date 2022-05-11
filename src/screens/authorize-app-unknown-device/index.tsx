@@ -3,7 +3,7 @@ import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-import { Link, Navigate, useSearchParams } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 
 import { useGeneratePath } from "frontend/hooks/use-generate-path"
 import { useInterval } from "frontend/hooks/use-interval"

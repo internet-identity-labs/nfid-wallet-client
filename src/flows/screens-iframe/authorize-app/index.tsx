@@ -23,7 +23,7 @@ export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
 
   return (
     <IFrameScreen logo>
-      <AuthorizeApp iframe />
+      <AuthorizeApp isRemoteAuthorisation />
     </IFrameScreen>
   )
 }

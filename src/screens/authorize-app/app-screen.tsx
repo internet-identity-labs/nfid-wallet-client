@@ -11,13 +11,15 @@ import { AuthWrapper } from "frontend/screens/auth-wrapper"
 import { AuthorizeApp } from "frontend/screens/authorize-app"
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 
-import { ProfileConstants } from "../profile/routes"
+import { ProfileConstants } from "../../flows/screens-app/profile/routes"
 
 interface AppScreenAuthorizeAppProps {
+  isRemoteAuthorisation?: boolean
   redirectTo: string
 }
 
 export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
+  isRemoteAuthorisation,
   redirectTo,
 }) => {
   const { isLoading, setIsloading } = useIsLoading()
@@ -62,7 +64,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
             <div className="container px-6 py-0 mx-auto sm:py-4">
               <Card className="grid grid-cols-12">
                 <CardBody className="col-span-12 md:col-span-4">
-                  <AuthorizeApp />
+                  <AuthorizeApp isRemoteAuthorisation={isRemoteAuthorisation} />
                 </CardBody>
               </Card>
             </div>

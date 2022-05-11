@@ -1,20 +1,29 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
+import {
+  Button,
+  Card,
+  CardBody,
+  Loader,
+} from "@internet-identity-labs/nfid-sdk-react"
 import { RadioButton } from "@internet-identity-labs/nfid-sdk-react"
 import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React from "react"
 
+import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
-interface AuthorizeRegisterDeciderContentProps
+interface RegisterDeviceDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {
   onRegister: () => void
   onLogin: () => void
   iframe?: boolean
 }
 
-export const RegisterDeviceDecider: React.FC<
-  AuthorizeRegisterDeciderContentProps
-> = ({ onRegister, onLogin, iframe }) => {
+export const RegisterDeviceDecider: React.FC<RegisterDeviceDeciderProps> = ({
+  onRegister,
+  onLogin,
+  iframe,
+}) => {
   const {
     platform: { device, authenticator: platformAuth },
   } = useDeviceInfo()
@@ -73,3 +82,26 @@ export const RegisterDeviceDecider: React.FC<
     </>
   )
 }
+
+interface AppScreenRegisterDeviceDeciderProps
+  extends RegisterDeviceDeciderProps {
+  isLoading: boolean
+}
+
+export const AppScreenRegisterDeviceDecider: React.FC<
+  AppScreenRegisterDeviceDeciderProps
+> = ({ onRegister, onLogin, isLoading }) => (
+  <AppScreen isFocused>
+    <main className={clsx("flex flex-1")}>
+      <div className="container px-6 py-0 mx-auto sm:py-4">
+        <Card className="grid grid-cols-12">
+          <CardBody className="col-span-12 lg:col-span-10 xl:col-span-6">
+            <RegisterDeviceDecider onRegister={onRegister} onLogin={onLogin} />
+
+            <Loader isLoading={isLoading} fullscreen />
+          </CardBody>
+        </Card>
+      </div>
+    </main>
+  </AppScreen>
+)

@@ -1,4 +1,3 @@
-import { Button, ButtonMenu } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
@@ -15,6 +14,8 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.svg"
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
+import { ButtonMenu } from "frontend/design-system/atoms/menu"
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
 interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -88,7 +89,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
       <div className="md:hidden">
         <ButtonMenu
           buttonElement={
-            <img src={IconMenu} alt="menu" className="rotate-180" />
+            <img src={IconMenu} alt="menu" className="rotate-180 focus:shadow-none" />
           }
         >
           {(toggleMenu) => (

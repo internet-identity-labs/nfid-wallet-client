@@ -43,10 +43,7 @@ export const IFrameRegisterDeviceDecider: React.FC<
       })
       if (!matchDevice) throw new Error("Device creation failed")
 
-      await Promise.all([
-        readAccount(identityManager, userNumber),
-        getPersona(),
-      ])
+      await Promise.all([readAccount(identityManager), getPersona()])
 
       handleSendDelegate()
     },

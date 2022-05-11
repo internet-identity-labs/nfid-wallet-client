@@ -151,7 +151,7 @@ export const useUnknownDeviceConfig = () => {
     const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
     await handleStoreNewDevice({ device })
-    await Promise.all([readAccount(identityManager, userNumber), getPersona()])
+    await Promise.all([readAccount(identityManager), getPersona()])
     handleSendDelegate()
     setStatus("loading")
   }, [

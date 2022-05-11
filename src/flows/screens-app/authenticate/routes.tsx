@@ -8,14 +8,16 @@ import {
   SUB_PATH_LOGIN_NFID,
   SUB_PATH_LOGIN_UNKNOWN_DEVICE,
   SUB_PATH_RECOVER_NFID,
+  SUB_PATH_REGISTER_DEVICE,
   SUB_PATH_REGISTER_DEVICE_DECIDER,
 } from "frontend/flows/screens-app/authenticate/constants"
-import { AppScreenRegisterDevice } from "frontend/flows/screens-app/authenticate/screen-app-register-device-decider"
+import { AppScreenRegisterDeviceDecider } from "frontend/flows/screens-app/authenticate/screen-app-register-device-decider"
 import { AppScreenAuthorizeAppUnknownDevice } from "frontend/screens/authorize-app-unknown-device/screen-app"
+import { AppScreenAuthorizeApp } from "frontend/screens/authorize-app/app-screen"
+import { AppScreenRecoverNFID } from "frontend/screens/recover-nfid/screen-app"
 
-import { AppScreenAuthorizeApp } from "../../../screens/authorize-app/app-screen"
-import { AppScreenRecoverNFID } from "../../../screens/recover-nfid/screen-app"
 import { AppScreenNFIDLogin } from "./login"
+import { AppScreenRegisterDevice } from "./screen-app-register-device"
 
 export const AppScreenAuthenticateAccountRoutes = (
   <Route
@@ -55,13 +57,21 @@ export const AppScreenAuthenticateAccountRoutes = (
       path={SUB_PATH_RECOVER_NFID}
       element={
         <AppScreenRecoverNFID
-          registerDeviceDeciderPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
+          registerDeviceDeciderPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE}`}
+        />
+      }
+    />
+    <Route
+      path={SUB_PATH_REGISTER_DEVICE}
+      element={
+        <AppScreenRegisterDevice
+          registerSuccessPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
         />
       }
     />
     <Route
       path={SUB_PATH_REGISTER_DEVICE_DECIDER}
-      element={<AppScreenRegisterDevice />}
+      element={<AppScreenRegisterDeviceDecider />}
     />
   </Route>
 )

@@ -11,22 +11,17 @@ import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 
 import { useUnknownDeviceConfig } from "./hooks/use-unknown-device.config"
 
-interface AuthorizeAppUnknownDeviceProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface AuthorizeAppUnknownDeviceProps {
   registerDeviceDeciderPath: string
+  url: string | null
+  showRegister: boolean
+  applicationName?: string
 }
 
 export const AuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ registerDeviceDeciderPath }) => {
-  const { applicationName } = useMultipass()
-  const { url, status, handlePollForDelegate, showRegister } =
-    useUnknownDeviceConfig()
-  const isLoading = status === "loading"
-
-  useInterval(handlePollForDelegate, 2000)
+> = ({ registerDeviceDeciderPath, url, showRegister, applicationName }) => {
   const { generatePath } = useNFIDNavigate()
-
   return url && !showRegister ? (
     <div className={clsx("text-center")}>
       <H5 className="mb-4">{applicationName}</H5>
@@ -41,22 +36,6 @@ export const AuthorizeAppUnknownDevice: React.FC<
           </a>
         </div>
       </div>
-      {isLoading && (
-        <div className="fixed top-0 bottom-0 w-full">
-          <div className="absolute top-0 left-0 z-10 w-full h-full bg-white bg-opacity-90 backdrop-blur-sm" />
-          <div className="z-20 flex flex-col items-center justify-center w-full h-full px-14">
-            <Loader
-              iframe
-              isLoading={isLoading}
-              fullscreen={false}
-              imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
-            />
-            <div className="z-20 mt-5 text-center">
-              Waiting for verification on mobile ...
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   ) : showRegister ? (
     <Navigate to={generatePath(registerDeviceDeciderPath)} />

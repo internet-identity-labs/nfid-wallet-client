@@ -1,10 +1,16 @@
-import { Logo, NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
+import {
+  Loader,
+  Logo,
+  NFIDGradientBar,
+} from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
 interface IFrameWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
   logo?: boolean
+  isLoading?: boolean
+  loadingMessage?: string
 }
 
 export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
@@ -12,6 +18,8 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
   className,
   title,
   logo,
+  isLoading,
+  loadingMessage,
 }) => {
   const ref = React.useRef(0)
 
@@ -34,6 +42,22 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
       {logo && <Logo className="px-5 pt-6" />}
 
       <div className={clsx("p-5 relative", className)}>{children}</div>
+      {isLoading && (
+        <div className="absolute top-0 bottom-0 w-full">
+          <div className="absolute top-0 left-0 z-10 w-full h-full bg-white bg-opacity-90 backdrop-blur-sm" />
+          <div className="z-20 flex flex-col items-center justify-center w-full h-full px-14">
+            <Loader
+              iframe
+              isLoading={isLoading}
+              fullscreen={false}
+              imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
+            />
+            {loadingMessage && (
+              <div className="z-20 mt-5 text-center">{loadingMessage}</div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

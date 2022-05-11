@@ -2,19 +2,24 @@ import React from "react"
 
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
 
-import { AuthorizeAppUnknownDevice } from "."
+import { AuthorizeAppUnknownDevice, AuthorizeAppUnknownDeviceProps } from "."
 
-interface IFrameAuthorizeAppUnknownDeviceProps {
-  registerDeviceDeciderPath: string
-}
+interface IFrameAuthorizeAppUnknownDeviceProps
+  extends AuthorizeAppUnknownDeviceProps {}
 
 export const IFrameAuthorizeAppUnknownDevice: React.FC<
   IFrameAuthorizeAppUnknownDeviceProps
-> = ({ registerDeviceDeciderPath }) => {
+> = ({ registerDeviceDeciderPath, url, showRegister, applicationName }) => {
   return (
-    <IFrameScreen>
+    <IFrameScreen
+      isLoading
+      loadingMessage="Waiting for verification on mobile ..."
+    >
       <AuthorizeAppUnknownDevice
         registerDeviceDeciderPath={registerDeviceDeciderPath}
+        applicationName={applicationName}
+        showRegister={showRegister}
+        url={url}
       />
     </IFrameScreen>
   )

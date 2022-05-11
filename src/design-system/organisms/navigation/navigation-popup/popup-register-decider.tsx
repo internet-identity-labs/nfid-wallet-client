@@ -8,9 +8,8 @@ import React, { useState } from "react"
 
 import logo from "frontend/assets/logo.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 
@@ -22,7 +21,6 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const { setStatus } = useRegisterQRCode()
   const { createDevice } = useDevices()
   const { readAccount } = useAccount()
-  const { identityManager } = useAuthentication()
 
   const {
     platform: { device, authenticator: platformAuth },
@@ -47,7 +45,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         ...device,
         userNumber,
       })
-      await readAccount(identityManager, userNumber)
+      await readAccount()
 
       setIsLoading(false)
       setStatus("registerDevice")

@@ -17,6 +17,7 @@ import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 
 interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
   registerDevicePath: string
+  deviceAlreadyRegisteredPath: string
   onRecoverSuccess?: (result: LoginSuccess) => void
   hasVerifiedDomain?: boolean
 }
@@ -24,6 +25,7 @@ interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
 export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
   className,
   registerDevicePath,
+  deviceAlreadyRegisteredPath,
   hasVerifiedDomain: hasVerifiedDomainDefault,
   onRecoverSuccess,
 }) => {
@@ -33,7 +35,7 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
   )
 
   const { navigate } = useNFIDNavigate()
-  const { loginWithRecovery, error, isLoading } = useAuthentication()
+  const { loginWithRecovery, login, error, isLoading } = useAuthentication()
   const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
 
   const handleNewDevice = React.useCallback(
@@ -73,6 +75,11 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
         })
       }
 
+      const loginResult = await login(userNumber)
+      if (loginResult?.tag === "ok") {
+        return navigate(deviceAlreadyRegisteredPath)
+      }
+
       const result = await loginWithRecovery(
         recoveryPhrase.split(`${userNumber} `)[1],
         userNumber,
@@ -91,12 +98,14 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
       }
     },
     [
+      login,
       loginWithRecovery,
       setError,
       setUserNumber,
       navigate,
-      registerDevicePath,
+      deviceAlreadyRegisteredPath,
       onRecoverSuccess,
+      registerDevicePath,
     ],
   )
 

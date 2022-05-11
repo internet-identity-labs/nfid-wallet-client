@@ -1,5 +1,4 @@
 import {
-  H2,
   P,
   Button,
   CopyIcon,

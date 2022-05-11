@@ -15,17 +15,15 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 interface RegisterAccountIntroProps {
   onRegister: () => void
-  onRecover: () => void
   applicationName?: string
   isLoading: boolean
 }
 
 export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
-                                                                            onRecover,
-                                                                            onRegister,
-                                                                            applicationName,
-                                                                            isLoading,
-                                                                          }) => {
+  onRegister,
+  applicationName,
+  isLoading,
+}) => {
   const [lastSlide, setLastSlide] = React.useState(false)
   const [firstSlide, setFirstSlide] = React.useState(true)
 
@@ -222,10 +220,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               <div className="flex flex-col max-w-xs mt-8 space-y-2">
                 <Button secondary onClick={onRegister}>
                   Create new NFID
-                </Button>
-
-                <Button className="hover:bg-opacity-0" text onClick={onRecover}>
-                  Recover NFID
                 </Button>
               </div>
 

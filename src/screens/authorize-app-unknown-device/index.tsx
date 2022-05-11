@@ -41,15 +41,6 @@ export const AuthorizeAppUnknownDevice: React.FC<
             <QRCode content={url} options={{ margin: 0 }} />
           </a>
         </div>
-
-        <Button
-          as={Link}
-          to={generatePath(recoverNFIDPath)}
-          text
-          className="mb-2"
-        >
-          Recover NFID
-        </Button>
       </div>
       {isLoading && (
         <div className="fixed top-0 bottom-0 w-full">

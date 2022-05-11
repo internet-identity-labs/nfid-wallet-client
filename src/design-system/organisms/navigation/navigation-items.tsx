@@ -145,7 +145,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
       </div>
       <Scrollspy
         className="items-center hidden space-x-10 font-medium md:flex"
-        currentClassName="text-black-base pointer-events-none"
+        currentClassName="text-black-base hover:text-black-base hover:no-underline"
         items={items.map((i) => i.to)}
       >
         {items.map((item, index) => (

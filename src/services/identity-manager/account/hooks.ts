@@ -14,7 +14,7 @@ declare const VERIFY_PHONE_NUMBER: string
 
 type AccountService = Pick<
   _IDENTITY_MANAGER_SERVICE,
-  "create_account" | "update_account" | "get_account"
+  "create_account" | "update_account" | "get_account" | "recover_account"
 >
 
 export const useAccount = () => {
@@ -39,6 +39,30 @@ export const useAccount = () => {
     [setAccount],
   )
 
+  const recoverAccount = React.useCallback(
+    async (userNumber: bigint, accountService?: AccountService) => {
+      console.log(">> readAccount", { accountService })
+
+      if (!accountService) throw new Error('"accountService" is required')
+
+      const response = await accountService.recover_account(userNumber)
+      console.log(">> readAccount", { response })
+
+      const newAccount = response.data[0]
+
+      if (newAccount) {
+        setAccount({
+          ...newAccount,
+          name: newAccount.name[0],
+          anchor: newAccount.anchor.toString(),
+          skipPersonalize: !!newAccount.name[0] || !!account?.skipPersonalize,
+        })
+      }
+
+      return response
+    },
+    [account?.skipPersonalize, setAccount],
+  )
   const readAccount = React.useCallback(
     async (accountService?: AccountService) => {
       console.log(">> readAccount", { accountService })
@@ -116,6 +140,7 @@ export const useAccount = () => {
     setLocalAccount: setAccount,
     createAccount,
     readAccount,
+    recoverAccount,
     resetLocalAccount,
     updateAccount,
     verifyPhonenumber,

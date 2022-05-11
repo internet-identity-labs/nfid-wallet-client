@@ -2,17 +2,14 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { RegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode"
-import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/flows/screens-app/recover-nfid/routes"
 
-interface PopupRegisterProps {
-}
+interface PopupRegisterProps {}
 
 export const PopupRegister: React.FC<PopupRegisterProps> = () => {
   return (
     <div>
-      <h2 className="mt-5 text-xl font-bold text-center">
-        Register your NFID
-      </h2>
+      <h2 className="mt-5 text-xl font-bold text-center">Register your NFID</h2>
 
       <div className="mx-auto">
         <RegisterQRCode />
@@ -22,7 +19,7 @@ export const PopupRegister: React.FC<PopupRegisterProps> = () => {
       </p>
       <Link
         className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
-        to={`${RAC.base}/${RAC.recoveryPhrase}`}
+        to={`${RAC.base}/${RAC.enterSeedPhrase}`}
         state={{ from: "loginWithRecovery" }}
       >
         Or recover an existing NFID

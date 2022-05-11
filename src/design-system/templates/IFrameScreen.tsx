@@ -2,11 +2,7 @@ import { Logo, NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
-interface IFrameWrapperProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+interface IFrameWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
   logo?: boolean
 }

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useNFIDNavigate } from "frontend/hooks/use-generate-path"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { AppScreenRegisterDevice as AppScreenRegisterDeviceRaw } from "frontend/screens/register-device/screen-app"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"

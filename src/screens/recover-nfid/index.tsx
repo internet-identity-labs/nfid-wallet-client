@@ -2,7 +2,6 @@ import {
   Button,
   Loader,
   H2,
-  H5,
   TextArea,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
@@ -10,7 +9,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useNFIDNavigate } from "frontend/hooks/use-generate-path"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { useMessageChannel } from "frontend/screens/authorize-app-unknown-device/hooks/use-message-channel"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"

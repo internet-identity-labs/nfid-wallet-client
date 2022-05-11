@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 
 import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useGeneratePath } from "frontend/hooks/use-generate-path"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 
@@ -25,7 +25,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
 }) => {
   const { account } = useAccount()
   const { isLoading, error, login } = useAuthentication()
-  const { generatePath } = useGeneratePath()
+  const { generatePath } = useNFIDNavigate()
   const navigate = useNavigate()
 
   const title = "Unlock your NFID"

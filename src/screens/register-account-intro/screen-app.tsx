@@ -21,11 +21,11 @@ interface RegisterAccountIntroProps {
 }
 
 export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
-  onRecover,
-  onRegister,
-  applicationName,
-  isLoading,
-}) => {
+                                                                            onRecover,
+                                                                            onRegister,
+                                                                            applicationName,
+                                                                            isLoading,
+                                                                          }) => {
   const [lastSlide, setLastSlide] = React.useState(false)
   const [firstSlide, setFirstSlide] = React.useState(true)
 
@@ -84,134 +84,141 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     >
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="offset-header">
+          <Card className="offset-header h-full overflow-hidden">
             <H5 className="mb-2 font-bold">{appName} uses NFID</H5>
 
-            <CardBody>
-              <Swiper
-                autoHeight
-                navigation={{
-                  prevEl,
-                  nextEl,
-                }}
-                onSlideChange={(swiper) => setSlide(swiper.activeIndex + 1)}
-                pagination={{
-                  el: ".swiper-pagination",
-                  clickable: true,
-                }}
-                grabCursor={true}
-                onRealIndexChange={(swiper) => {
-                  setFirstSlide(swiper.realIndex === 0 ? true : false)
-                  setLastSlide(
-                    swiper.realIndex === swiper.slides.length - 1
-                      ? true
-                      : false,
-                  )
-                }}
-              >
-                <SwiperSlide>
-                  <div className="max-w-2xl">
-                    <div className="swiper-title">
+            <CardBody className="h-full md:h-auto flex flex-col justify-between pb-[10vh]">
+              <div>
+                <Swiper
+                  autoHeight
+                  navigation={{
+                    prevEl,
+                    nextEl,
+                  }}
+                  onSlideChange={(swiper) => setSlide(swiper.activeIndex + 1)}
+                  pagination={{
+                    el: ".swiper-pagination",
+                    clickable: true,
+                  }}
+                  grabCursor={true}
+                  onRealIndexChange={(swiper) => {
+                    setFirstSlide(swiper.realIndex === 0 ? true : false)
+                    setLastSlide(
+                      swiper.realIndex === swiper.slides.length - 1
+                        ? true
+                        : false,
+                    )
+                  }}
+                >
+                  <SwiperSlide>
+                    <div className="max-w-2xl">
+                      <div className="swiper-title">
                       <span
                         className="clip-text whitespace-nowrap "
                         style={gradientStyles().styles}
                       >
                         Privacy
                       </span>{" "}
-                      with NFID
-                    </div>
-                    <P className="pb-4">
-                      Every account you create across any service that supports
-                      NFID will automatically create a new, untraceable hardware
-                      wallet.
-                    </P>
+                        with NFID
+                      </div>
+                      <div>
+                        <P className="pb-4">
+                          Every account you create across any service that supports
+                          NFID will automatically create a new, untraceable hardware
+                          wallet.
+                        </P>
 
-                    <P>
-                      You are the only person in the world able to trace
-                      accounts to your NFID, providing you with the best
-                      possible privacy online.
-                    </P>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="max-w-2xl">
-                    <div className="swiper-title">
+                        <P>
+                          You are the only person in the world able to trace
+                          accounts to your NFID, providing you with the best
+                          possible privacy online.
+                        </P>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <div className="max-w-2xl">
+                      <div className="swiper-title">
                       <span
                         className="clip-text whitespace-nowrap"
                         style={gradientStyles().styles}
                       >
                         Security
                       </span>{" "}
-                      with NFID
-                    </div>
-                    <P className="pb-4">
-                      Hardware wallets offer the greatest security guarantees
-                      because their private keys can't be exported, making it a
-                      one-way vault that only you have the ability to access.
-                    </P>
+                        with NFID
+                      </div>
+                      <div>
+                        <P className="pb-4">
+                          Hardware wallets offer the greatest security guarantees
+                          because their private keys can't be exported, making it a
+                          one-way vault that only you have the ability to access.
+                        </P>
 
-                    <P>
-                      NFID makes each of your internet accounts exactly this
-                      kind of vault.
-                    </P>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="max-w-xl">
-                    <div className="swiper-title">
+                        <P>
+                          NFID makes each of your internet accounts exactly this
+                          kind of vault.
+                        </P>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                  <SwiperSlide>
+                    <div className="max-w-xl">
+                      <div className="swiper-title">
                       <span
                         className="clip-text whitespace-nowrap"
                         style={gradientStyles().styles}
                       >
                         Convenience
                       </span>{" "}
-                      with NFID
+                        with NFID
+                      </div>
+                      <div>
+                        <P className="pb-4">
+                          A hardware device for each online account used to be
+                          impractical. NFID stores private keys on the
+                          specially-designed cryptographic chips of your phones,
+                          tablets, and computers so that creating new accounts or
+                          authenticating is simply a face or touch scan away.
+                        </P>
+                      </div>
                     </div>
-                    <P className="pb-4">
-                      A hardware device for each online account used to be
-                      impractical. NFID stores private keys on the
-                      specially-designed cryptographic chips of your phones,
-                      tablets, and computers so that creating new accounts or
-                      authenticating is simply a face or touch scan away.
-                    </P>
+                  </SwiperSlide>
+                </Swiper>
+
+                <div className="swiper-controls">
+                  <div
+                    ref={(node) => setPrevEl(node)}
+                    className={clsx(
+                      "swiper-button-prev",
+                      !firstSlide && "cursor-pointer",
+                    )}
+                  >
+                    <HiArrowLeft
+                      className={clsx(
+                        "text-lg",
+                        !firstSlide ? "text-black-base" : "text-gray-400",
+                      )}
+                    />
                   </div>
-                </SwiperSlide>
-              </Swiper>
 
-              <div className="swiper-controls">
-                <div
-                  ref={(node) => setPrevEl(node)}
-                  className={clsx(
-                    "swiper-button-prev",
-                    !firstSlide && "cursor-pointer",
-                  )}
-                >
-                  <HiArrowLeft
+                  <div className="swiper-pagination"></div>
+
+                  <div
                     className={clsx(
-                      "text-lg",
-                      !firstSlide ? "text-black-base" : "text-gray-400",
+                      "swiper-button-next",
+                      !lastSlide && "cursor-pointer",
                     )}
-                  />
-                </div>
-
-                <div className="swiper-pagination"></div>
-
-                <div
-                  className={clsx(
-                    "swiper-button-next",
-                    !lastSlide && "cursor-pointer",
-                  )}
-                  ref={(node) => setNextEl(node)}
-                >
-                  <HiArrowRight
-                    className={clsx(
-                      "text-lg",
-                      !lastSlide ? "text-black-base" : "text-gray-400",
-                    )}
-                  />
+                    ref={(node) => setNextEl(node)}
+                  >
+                    <HiArrowRight
+                      className={clsx(
+                        "text-lg",
+                        !lastSlide ? "text-black-base" : "text-gray-400",
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
-
               <div className="flex flex-col max-w-xs mt-8 space-y-2">
                 <Button secondary onClick={onRegister}>
                   Create new NFID

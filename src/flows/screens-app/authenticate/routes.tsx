@@ -16,7 +16,7 @@ import { AppScreenAuthorizeAppUnknownDevice } from "frontend/screens/authorize-a
 import { AppScreenAuthorizeApp } from "frontend/screens/authorize-app/app-screen"
 import { AppScreenRecoverNFID } from "frontend/screens/recover-nfid/screen-app"
 
-import { AppScreenNFIDLogin } from "./login"
+import { AppScreenNFIDLogin } from "./nfid-login"
 import { AppScreenRegisterDevice } from "./screen-app-register-device"
 
 export const AppScreenAuthenticateAccountRoutes = (

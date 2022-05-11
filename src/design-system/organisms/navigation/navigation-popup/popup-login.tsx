@@ -6,9 +6,10 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface PopupLoginProps {
+  menu?: boolean;
 }
 
-export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
+export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
   const { userNumber, readAccount, account } = useAccount()
   const { login, isRemoteDelegate, isAuthenticated, logout, identityManager } =
     useAuthentication()
@@ -28,10 +29,10 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ children }) => {
 
   return (
     <div className="px-4 mx-auto">
-      <h2 className="mt-5 text-xl font-bold text-left">
+      {!menu && <h2 className="mt-5 text-xl font-bold text-left">
         {!isAuthenticated ? "Welcome " : "Logged in "}
         {account?.name ?? account?.anchor ?? ""}
-      </h2>
+      </h2>}
       {isAuthenticated && account && (
         <Button
           primary

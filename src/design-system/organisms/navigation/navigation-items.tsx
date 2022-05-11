@@ -113,7 +113,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                 ))}
               </div>
               {isAuthenticated || account ? (
-                <PopupLogin />
+                <PopupLogin menu />
               ) : (
                 <div className="flex flex-wrap justify-center">
                   <Button
@@ -124,13 +124,13 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   >
                     Register
                   </Button>
-                  {/*<Link*/}
-                  {/*  className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"*/}
-                  {/*  to={`${RAC.base}/${RAC.recoveryPhrase}`}*/}
-                  {/*  state={{ from: "loginWithRecovery" }}*/}
-                  {/*>*/}
-                  {/*  Unlock NFID with Security Key*/}
-                  {/*</Link>*/}
+                  <Link
+                    className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+                    to={`${RAC.base}/${RAC.recoveryPhrase}`}
+                    state={{ from: "loginWithRecovery" }}
+                  >
+                    Unlock NFID with Security Key
+                  </Link>
                   <Link
                     className="block w-full mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
                     to={`${RAC.base}/${RAC.recoveryPhrase}`}

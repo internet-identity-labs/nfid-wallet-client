@@ -6,6 +6,7 @@ import {
   PlusIcon,
   ModalAdvancedProps,
   H3,
+  Logo,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
@@ -106,7 +107,12 @@ export const Profile: React.FC<ProfileProps> = ({
           "top-[20vh] left-[27vw] md:top-[60vh] md:left-[10vw]",
         ],
       }}
-      navigationItems={<ProfileHomeMenu className="md:hidden" />}
+      navigationItems={
+        <div className="flex items-center justify-between w-full">
+          <Logo className="md:hidden" />
+          <ProfileHomeMenu className="md:hidden" />
+        </div>
+      }
     >
       <main
         className={clsx(

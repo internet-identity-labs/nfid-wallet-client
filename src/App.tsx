@@ -6,7 +6,7 @@ import { Usergeek } from "usergeek-ic-js"
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
 import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
-import { UnknownDeviceRoutes } from "./flows/screens-app/authenticate/login-unknown/register-decider/routes"
+import { AppScreenAuthenticateAccountRoutes } from "./flows/screens-app/authenticate/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/authorize-app/routes"
 import { HomeScreen } from "./flows/screens-app/landing-page"
 import { Faq } from "./flows/screens-app/landing-page/faq"
@@ -17,22 +17,17 @@ import {
   AppScreenProofOfAttendencyConstants as POAPC,
   AppScreenProofOfAttendencyRoutes,
 } from "./flows/screens-app/proof-of-attendancy/routes"
+import { RecoverNFIDRoutes } from "./flows/screens-app/recover-nfid/routes"
 import {
   NFIDRegisterAccountRoutes,
   RemoteRegisterAccountConstants as RAC,
   RemoteRegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
-import { RestoreAccessPointRoutes } from "./flows/screens-app/restore-access-point/routes"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
-import { IFrameUnknownDeviceRoutes } from "./flows/screens-iframe/authenticate/login-unknown/routes"
-import {
-  AppScreenAuthenticateAccountRoutes,
-  IFrameAuthenticateAccountRoutes,
-} from "./flows/screens-iframe/authenticate/routes"
+import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
-import { IFrameRestoreAccessPointRoutes } from "./flows/screens-iframe/restore-access-point/routes"
 
 import { useStartUrl } from "./hooks/use-start-url"
 
@@ -60,15 +55,12 @@ export const App = () => {
       {RemoteRegisterAccountRoutes}
       {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
       {AppScreenProofOfAttendencyRoutes(`${POAPC.base}/${POAPC.register}`)}
-      {UnknownDeviceRoutes}
-      {RestoreAccessPointRoutes}
+      {RecoverNFIDRoutes}
 
-      {IFrameUnknownDeviceRoutes}
       {IFrameProfileRoutes}
       {IFrameAuthorizeAppRoutes}
       {IFrameAuthenticateAccountRoutes}
       {AppScreenAuthenticateAccountRoutes}
-      {IFrameRestoreAccessPointRoutes}
       <Route path={"*"} element={<NotFound />} />
     </Routes>
   )

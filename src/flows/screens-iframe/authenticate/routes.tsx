@@ -1,85 +1,47 @@
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-import React from "react"
-import { Navigate, Route } from "react-router-dom"
+import { Route } from "react-router-dom"
 
-import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { AuthWrapper } from "frontend/screens/auth-wrapper"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { AuthenticateDecider } from "frontend/design-system/templates/authenticate-decider"
+import { IFrameNFIDLogin } from "frontend/screens/nfid-login/screen-iframe"
+import { IFrameRegisterDeviceDecider } from "frontend/screens/register-device-decider/screen-iframe"
 
-import { IFrameAuthorizeApp } from "../authorize-app"
-import { IFrameProfileConstants } from "../personalize/routes"
-import { UnknownDeviceScreen } from "./login-unknown"
-
-const AuthenticateDecider = ({ iframe = true }: { iframe?: boolean }) => {
-  const { isLoading, setIsloading } = useIsLoading(true)
-  const { userNumber, account, readAccount } = useAccount()
-  const { getPersona } = usePersona()
-  const { isAuthenticated, isRemoteDelegate, identityManager } =
-    useAuthentication()
-
-  const handleLoadAccount = React.useCallback(async () => {
-    if (!isRemoteDelegate) {
-      await Promise.all([
-        readAccount(identityManager, userNumber),
-        getPersona(),
-      ])
-    }
-    setIsloading(false)
-  }, [
-    getPersona,
-    identityManager,
-    isRemoteDelegate,
-    readAccount,
-    setIsloading,
-    userNumber,
-  ])
-
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      handleLoadAccount()
-    }
-  }, [handleLoadAccount, isAuthenticated])
-
-  return userNumber ? (
-    <AuthWrapper iframe={iframe} redirectTo="/">
-      {isLoading ? (
-        <IFrameScreen logo>
-          <Loader isLoading={isLoading} iframe={iframe} />
-        </IFrameScreen>
-      ) : account?.skipPersonalize ? (
-        <IFrameAuthorizeApp />
-      ) : (
-        <Navigate
-          to={`${IFrameProfileConstants.base}/${IFrameProfileConstants.personalize}`}
-        />
-      )}
-    </AuthWrapper>
-  ) : (
-    <UnknownDeviceScreen iframe={iframe} />
-  )
-}
-
-export const IFrameAuthenticateAccountConstants = {
-  base: "/iframe-authenticate",
-}
+import {
+  IFRAME_AUTHENTICATE_BASE,
+  SUB_PATH_AUTHORIZE_APP,
+  SUB_PATH_LOGIN_NFID,
+  SUB_PATH_REGISTER_DEVICE_DECIDER,
+} from "./constants"
+import { LoginUnknownDevice } from "./login-unknown-device"
+import { PATH_LOGIN_UNKNOWN_DEVICE } from "./login-unknown-device/path"
 
 export const IFrameAuthenticateAccountRoutes = (
   <Route
-    path={IFrameAuthenticateAccountConstants.base}
-    element={<AuthenticateDecider iframe />}
-  />
-)
-
-export const AppScreenAuthenticateAccountConstants = {
-  base: "/authenticate",
-}
-
-export const AppScreenAuthenticateAccountRoutes = (
-  <Route
-    path={AppScreenAuthenticateAccountConstants.base}
-    element={<AuthenticateDecider iframe={false} />}
-  />
+    path={IFRAME_AUTHENTICATE_BASE}
+    element={
+      <AuthenticateDecider
+        rootPath={IFRAME_AUTHENTICATE_BASE}
+        loginNFIDPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_LOGIN_NFID}`}
+        loginUnknownDevicePath={`${IFRAME_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
+      />
+    }
+  >
+    <Route
+      path={SUB_PATH_LOGIN_NFID}
+      element={
+        <IFrameNFIDLogin
+          unknownDevicePath={`${IFRAME_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
+          loginSuccessPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
+        />
+      }
+    />
+    <Route path={PATH_LOGIN_UNKNOWN_DEVICE} element={<LoginUnknownDevice />} />
+    <Route
+      path={SUB_PATH_REGISTER_DEVICE_DECIDER}
+      element={
+        <IFrameRegisterDeviceDecider
+          registerDeviceSuccessPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
+          loginSuccessPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
+        />
+      }
+    />
+  </Route>
 )

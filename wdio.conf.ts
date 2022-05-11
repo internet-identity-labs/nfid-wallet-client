@@ -2,7 +2,10 @@ import dotenv from "dotenv"
 
 import { hooks } from "./test/hooks"
 
-dotenv.config()
+dotenv.config({ path: ".env.local" })
+
+const isDebug = process.env.DEBUG === "true"
+
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile
   //
@@ -74,7 +77,7 @@ export const config: WebdriverIO.Config = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: 10,
+  maxInstances: isDebug ? 1 : 10,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -86,7 +89,11 @@ export const config: WebdriverIO.Config = {
     {
       browserName: "chrome",
       "goog:chromeOptions": {
-        args: ["--no-sandbox", "headless", "headless", "disable-gpu"],
+        args: [
+          "--no-sandbox",
+          ...(isDebug ? [] : ["headless", "headless"]),
+          "disable-gpu",
+        ],
       },
       acceptInsecureCerts: true,
     },

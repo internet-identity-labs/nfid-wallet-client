@@ -97,11 +97,44 @@ export const useDevices = () => {
           blobFromHex(rawId),
         ),
         identityManager.create_access_point({
+          icon: "",
+          device: "",
+          browser: "",
           pub_key: Array.from(pub_key),
         }),
       ])
     },
     [internetIdentity, identityManager],
+  )
+
+  const recoverDevice = React.useCallback(
+    async (userNumber) => {
+      try {
+        if (!internetIdentity || !identityManager)
+          throw new Error("Unauthorized")
+        const { device } = await createWebAuthNDevice(BigInt(userNumber))
+
+        await createDevice({
+          ...device,
+          userNumber,
+        })
+
+        return {
+          message: "Device created successfully",
+        }
+      } catch (error) {
+        if (
+          (error as DOMException).message ===
+          "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party."
+        ) {
+          return {
+            message: "This device is already registered",
+          }
+        }
+        throw error
+      }
+    },
+    [createDevice, createWebAuthNDevice, identityManager, internetIdentity],
   )
 
   const getDevices = React.useCallback(async () => {
@@ -117,6 +150,7 @@ export const useDevices = () => {
     createWebAuthNDevice,
     getDevices,
     createDevice,
+    recoverDevice,
     updateDevices,
     handleLoadDevices,
     deleteDevice,

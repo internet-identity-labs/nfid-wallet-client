@@ -5,7 +5,7 @@ import { Slide } from "react-reveal"
 import { Link, useNavigate } from "react-router-dom"
 
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { RestoreAccessPointConstants as RAC } from "frontend/flows/screens-app/restore-access-point/routes"
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/flows/screens-app/recover-nfid/routes"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { ElementProps } from "frontend/types/react"
 
@@ -43,14 +43,18 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
               <br /> with one touch
             </h1>
             {!isQRCode && isMobile && (
-              <h2 className="leading-[1.5rem]">The decentralized one-touch multi-factor identity provider and crypto wallet</h2>
+              <h2 className="leading-[1.5rem]">
+                The decentralized one-touch multi-factor identity provider and
+                crypto wallet
+              </h2>
             )}
           </div>
 
           {isQRCode && isMobile && (
             <>
               <h2 className="mt-2 text-lg leading-[1.5rem]">
-                The decentralized one-touch multi-factor <br /> identity provider and crypto wallet
+                The decentralized one-touch multi-factor <br /> identity
+                provider and crypto wallet
               </h2>
               <div className="mt-8 pb-52">
                 <Button
@@ -61,7 +65,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                   Register your NFID
                 </Button>
                 <Link
-                  to={`${RAC.base}/${RAC.recoveryPhrase}`}
+                  to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
                   className="block w-8/12 mx-auto mt-4 text-center cursor-pointer text-blue-base hover:underline hover:text-blue-hove"
                 >
                   Recover NFID
@@ -72,21 +76,18 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
           {isQRCode && !isMobile && (
             <h2 className="mt-5 text-base sm:text-lg sm:leading-[150%] font-bold">
               Scan the QR code to register or <br />{" "}
-              <span
-                onClick={() =>
-                  navigate(`${RAC.base}/${RAC.recoveryPhrase}`, {
-                    state: { from: "loginWithRecovery" },
-                  })
-                }
+              <Link
+                to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
                 className="cursor-pointer text-blue-base hover:underline hover:text-blue-hover"
               >
                 Recover NFID
-              </span>
+              </Link>
             </h2>
           )}
           {!isQRCode && !isMobile && (
             <h2 className="mt-5 text-base sm:text-lg sm:leading-[26px]">
-              The decentralized one-touch multi-factor identity provider and crypto wallet
+              The decentralized one-touch multi-factor identity provider and
+              crypto wallet
             </h2>
           )}
         </div>

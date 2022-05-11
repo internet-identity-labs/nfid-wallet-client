@@ -119,59 +119,66 @@ export const questions = [
     title: "What if my device is lost or stolen?",
     info: (
       <div>
-        <p>
-          If you've lost any of your devices or think they've been stolen,
-          follow these three safety measures to protect your Internet Identity.
-        </p>
-        <ul className="mt-1">
-          <li>
-            Use one of your registered devices to remove the lost or stolen
-            device from your list of NFID{" "}
-            <Link
+        <div className="mb-6">
+          A - Use one of your registered devices to remove the lost or stolen
+          device from your list of NFID{" "}
+          <Link
+            className="text-blue-base hover:underline hover:text-blue-hover"
+            to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+          >
+            authorized devices
+          </Link>
+          .
+        </div>
+        <div className="mb-6">
+          B – remotely lock the lost or stolen device to prevent anyone from
+          using it. Follow the instructions for{" "}
+          <Link
+            to="https://support.apple.com/en-us/HT201472"
+            className="text-blue-base hover:underline hover:text-blue-hover"
+          >
+            Apple
+          </Link>
+          , for{" "}
+          <Link
+            to="https://support.google.com/accounts/answer/6160491"
+            className="text-blue-base hover:underline hover:text-blue-hover"
+          >
+            Google
+          </Link>
+          , for{" "}
+          <Link
+            to="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
+            className="text-blue-base hover:underline hover:text-blue-hover"
+          >
+            Microsoft
+          </Link>
+          .
+        </div>
+        <div className="mb-6">
+          C – if you have no other registered devices, use your recovery phrase{" "}
+          <span className="font-bold">
+            only on the{" "}
+            <a
               className="text-blue-base hover:underline hover:text-blue-hover"
-              to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+              href="https://nfid.one"
             >
-              authorized devices
-            </Link>
-            .
-          </li>
-          <li>
-            Follow the instructions from{" "}
-            <Link
-              to="https://support.apple.com/en-us/HT201472"
-              className="text-blue-base hover:underline hover:text-blue-hover"
-            >
-              Apple
-            </Link>
-            {", "}
-            <Link
-              to="https://support.google.com/accounts/answer/6160491"
-              className="text-blue-base hover:underline hover:text-blue-hover"
-            >
-              Google
-            </Link>
-            {", or "}
-            <Link
-              to="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
-              className="text-blue-base hover:underline hover:text-blue-hover"
-            >
-              Microsoft
-            </Link>{" "}
-            to remotely lock your lost or stolen device.
-          </li>
-          <li>
-            If you have no other registered devices, use your recovery phrase to
-            temporarily authenticate yourself and remove the lost device from
-            your list of NFID{" "}
-            <Link
-              className="text-blue-base hover:underline hover:text-blue-hover"
-              to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
-            >
-              authorized devices
-            </Link>
-            .
-          </li>
-        </ul>
+              https://nfid.one
+            </a>{" "}
+            landing page
+          </span>{" "}
+          to temporarily authenticate yourself and remove the lost device from
+          your list of NFID (
+          <Link
+            className="text-blue-base hover:underline hover:text-blue-hover"
+            to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+          >
+            authorized devices
+          </Link>
+          ). If you have no other registered devices, use your recovery phrase
+          to temporarily authenticate yourself and remove the lost device from
+          your list of NFID .
+        </div>
       </div>
     ),
   },

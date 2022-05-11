@@ -47,7 +47,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         ...device,
         userNumber,
       })
-      await readAccount(identityManager, userNumber)
+      await readAccount(identityManager)
 
       setIsLoading(false)
       setStatus("registerDevice")

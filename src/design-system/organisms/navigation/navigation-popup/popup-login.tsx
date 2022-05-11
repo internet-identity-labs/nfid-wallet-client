@@ -6,7 +6,7 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 interface PopupLoginProps {
-  menu?: boolean;
+  menu?: boolean
 }
 
 export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
@@ -16,9 +16,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    isAuthenticated &&
-    !isRemoteDelegate &&
-    readAccount(identityManager, userNumber)
+    isAuthenticated && !isRemoteDelegate && readAccount()
   }, [
     identityManager,
     isAuthenticated,
@@ -29,25 +27,23 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
 
   return (
     <div className="px-4 mx-auto">
-      {!menu && <h2 className="mt-5 text-xl font-bold text-left">
-        {!isAuthenticated ? "Welcome " : "Logged in "}
-        {account?.name ?? account?.anchor ?? ""}
-      </h2>}
+      {!menu && (
+        <h2 className="mt-5 text-xl font-bold text-left">
+          {!isAuthenticated ? "Welcome " : "Logged in "}
+          {account?.name ?? account?.anchor ?? ""}
+        </h2>
+      )}
       {isAuthenticated && account && (
         <Button
           primary
           className="w-full mt-4"
-          onClick={() => navigate('/profile/authenticate')}
+          onClick={() => navigate("/profile/authenticate")}
         >
           Profile
         </Button>
       )}
       {!isAuthenticated ? (
-        <Button
-          primary
-          className="w-full mt-4"
-          onClick={login}
-        >
+        <Button primary className="w-full mt-4" onClick={login}>
           Log in
         </Button>
       ) : (

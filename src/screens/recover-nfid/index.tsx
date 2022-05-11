@@ -32,7 +32,7 @@ export const RecoverNFID: React.FC<
 > = ({ className, iframe, registerDeviceDeciderPath, onRecoverSuccess }) => {
   const { generatePath } = useGeneratePath()
   const { loginWithRecovery, error, isLoading } = useAuthentication()
-  const { handleStoreNewDevice } = useUnknownDeviceConfig()
+  const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
   const navigate = useNavigate()
 
   const handleNewDevice = React.useCallback(
@@ -77,6 +77,7 @@ export const RecoverNFID: React.FC<
       )
 
       if (result?.tag === "ok") {
+        setUserNumber(userNumber)
         navigate(generatePath(registerDeviceDeciderPath))
         onRecoverSuccess && onRecoverSuccess(result)
       } else {
@@ -89,6 +90,7 @@ export const RecoverNFID: React.FC<
     [
       loginWithRecovery,
       setError,
+      setUserNumber,
       navigate,
       generatePath,
       registerDeviceDeciderPath,

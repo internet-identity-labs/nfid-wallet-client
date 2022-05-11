@@ -40,10 +40,13 @@ export const useAccount = () => {
   )
 
   const readAccount = React.useCallback(
-    async (accountService?: AccountService, anchor?: bigint) => {
+    async (accountService?: AccountService) => {
+      console.log(">> readAccount", { accountService })
+
       if (!accountService) throw new Error('"accountService" is required')
 
       const response = await accountService.get_account()
+      console.log(">> readAccount", { response })
 
       const newAccount = response.data[0]
 

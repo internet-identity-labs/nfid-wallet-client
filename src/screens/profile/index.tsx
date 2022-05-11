@@ -5,7 +5,7 @@ import {
   ListItem,
   PlusIcon,
   ModalAdvancedProps,
-  H3,
+  H3, Logo,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
@@ -45,18 +45,18 @@ interface ProfileProps {
 }
 
 export const Profile: React.FC<ProfileProps> = ({
-  onDeleteDeviceFactory,
-  setModalOptions,
-  setShowModal,
-  showModal,
-  modalOptions,
-  account,
-  applications,
-  devices,
-  loading,
-  hasPoa,
-  personas = [],
-}) => {
+                                                  onDeleteDeviceFactory,
+                                                  setModalOptions,
+                                                  setShowModal,
+                                                  showModal,
+                                                  modalOptions,
+                                                  account,
+                                                  applications,
+                                                  devices,
+                                                  loading,
+                                                  hasPoa,
+                                                  personas = [],
+                                                }) => {
   const myApplications = React.useMemo(() => {
     // Group iiPersonas by hostname and count the number of iiPersonas
     const personasByHostname = personas.reduce((acc, persona) => {
@@ -106,7 +106,12 @@ export const Profile: React.FC<ProfileProps> = ({
           "top-[20vh] left-[27vw] md:top-[60vh] md:left-[10vw]",
         ],
       }}
-      navigationItems={<ProfileHomeMenu className="md:hidden" />}
+      navigationItems={
+        <div className="flex justify-between items-center w-full">
+          <Logo className="md:hidden" />
+          <ProfileHomeMenu className="md:hidden" />
+        </div>
+      }
     >
       <main
         className={clsx(

@@ -1,9 +1,4 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  Loader,
-} from "@internet-identity-labs/nfid-sdk-react"
+import { Button, Loader } from "@internet-identity-labs/nfid-sdk-react"
 import { RadioButton } from "@internet-identity-labs/nfid-sdk-react"
 import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"

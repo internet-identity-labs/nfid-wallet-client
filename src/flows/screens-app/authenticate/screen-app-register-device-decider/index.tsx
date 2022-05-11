@@ -53,13 +53,12 @@ export const AppScreenRegisterDeviceDecider: React.FC<
       })
     }
     await getPersona()
-
-    await getPersona()
-
+    handleSendDelegate()
     setIsLoading(false)
   }, [
     createAccount,
     getPersona,
+    handleSendDelegate,
     identityManager,
     internetIdentity?.delegationIdentity,
     recoverAccount,

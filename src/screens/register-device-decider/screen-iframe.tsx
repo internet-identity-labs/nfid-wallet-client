@@ -2,7 +2,6 @@ import { blobFromHex } from "@dfinity/candid"
 import React from "react"
 
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { RegisterDeviceDecider } from "frontend/screens/register-device-decider"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
@@ -20,7 +19,6 @@ export const IFrameRegisterDeviceDecider: React.FC<
   const { handleRegisterDevice, userNumber, handleSendDelegate } =
     useUnknownDeviceConfig()
 
-  const { identityManager } = useAuthentication()
   const { createDevice } = useDevices()
   const { getPersona } = usePersona()
   const { readAccount } = useAccount()
@@ -43,18 +41,11 @@ export const IFrameRegisterDeviceDecider: React.FC<
       })
       if (!matchDevice) throw new Error("Device creation failed")
 
-      await Promise.all([readAccount(identityManager), getPersona()])
+      await Promise.all([readAccount(), getPersona()])
 
       handleSendDelegate()
     },
-    [
-      createDevice,
-      getPersona,
-      handleSendDelegate,
-      identityManager,
-      readAccount,
-      userNumber,
-    ],
+    [createDevice, getPersona, handleSendDelegate, readAccount, userNumber],
   )
   useMessageChannel({
     messageHandler: {

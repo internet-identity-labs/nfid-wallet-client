@@ -17,7 +17,7 @@ export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
 
   React.useEffect(() => {
     if (userNumber && identityManager) {
-      readAccount(identityManager)
+      readAccount()
     }
   }, [identityManager, readAccount, userNumber])
 

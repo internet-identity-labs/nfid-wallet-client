@@ -72,8 +72,7 @@ export const useUnknownDeviceConfig = () => {
   const { createDevice, createWebAuthNDevice } = useDevices()
   const { applicationName } = useMultipass()
   const { getMessages } = usePubSubChannel()
-  const { remoteLogin: setAuthenticatedActors, identityManager } =
-    useAuthentication()
+  const { remoteLogin: setAuthenticatedActors } = useAuthentication()
   const { readAccount } = useAccount()
   const { getPersona } = usePersona()
 
@@ -151,7 +150,7 @@ export const useUnknownDeviceConfig = () => {
     const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
     await handleStoreNewDevice({ device })
-    await Promise.all([readAccount(identityManager), getPersona()])
+    await Promise.all([readAccount(), getPersona()])
     handleSendDelegate()
     setStatus("loading")
   }, [
@@ -159,7 +158,6 @@ export const useUnknownDeviceConfig = () => {
     getPersona,
     handleSendDelegate,
     handleStoreNewDevice,
-    identityManager,
     readAccount,
     setStatus,
     userNumber,

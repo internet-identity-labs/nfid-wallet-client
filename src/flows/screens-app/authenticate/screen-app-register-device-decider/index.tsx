@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { AppScreenRegisterDeviceDecider as AppScreenRegisterDeviceDeciderRaw } from "frontend/screens/register-device-decider"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -17,7 +16,6 @@ export const AppScreenRegisterDeviceDecider: React.FC<
   const { createDevice } = useDevices()
   const { readAccount } = useAccount()
   const { getPersona } = usePersona()
-  const { identityManager } = useAuthentication()
 
   const { userNumber, handleSendDelegate } = useUnknownDeviceConfig()
   const { createWebAuthNDevice } = useDevices()
@@ -66,7 +64,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
 
     await handleCreateDevice(userNumber)
 
-    await Promise.all([readAccount(identityManager), getPersona()])
+    await Promise.all([readAccount(), getPersona()])
 
     setIsLoading(false)
     handleSendDelegate()
@@ -74,7 +72,6 @@ export const AppScreenRegisterDeviceDecider: React.FC<
     getPersona,
     handleCreateDevice,
     handleSendDelegate,
-    identityManager,
     readAccount,
     userNumber,
   ])

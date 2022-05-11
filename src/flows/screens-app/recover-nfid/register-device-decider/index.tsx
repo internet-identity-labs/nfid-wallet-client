@@ -66,7 +66,7 @@ export const RouterRegisterDeviceDecider: React.FC<
 
     await handleCreateDevice(userNumber)
 
-    const response = await recoverAccount(userNumber, identityManager)
+    const response = await recoverAccount(userNumber)
     if (response?.status_code === 404) {
       console.warn("account not found. Recreating")
       if (!identityManager) throw new Error("identityManager is missing")

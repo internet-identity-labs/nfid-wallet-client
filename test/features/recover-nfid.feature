@@ -7,4 +7,4 @@ Feature: Recover NFID Account from Recovery Phrase
 
   Scenario:
     When I click on the link "Recover your existing NFID"
-    Then I expect the url to contain "/recover-nfid/enter-seed-phrase"
+    Then I expect the url to contain "/recover-nfid/enter-recovery-phrase"

@@ -43,7 +43,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
         </Button>
       )}
       {!isAuthenticated ? (
-        <Button primary className="w-full mt-4" onClick={login}>
+        <Button primary className="w-full mt-4" onClick={() => login()}>
           Log in
         </Button>
       ) : (

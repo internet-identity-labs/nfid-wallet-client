@@ -1,14 +1,13 @@
 import React from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 
+import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { CopyRecoveryPhrase } from "frontend/screens/copy-recovery-phrase"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
-
-import { ProfileConstants } from "../profile/routes"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<

@@ -18,6 +18,7 @@ export const RecoverNFIDRoutes = (
       element={
         <AppScreenRecoverNFID
           registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
+          deviceAlreadyRegisteredPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
         />
       }
     />

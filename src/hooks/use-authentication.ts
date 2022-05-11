@@ -60,41 +60,45 @@ export const useAuthentication = () => {
     Usergeek.trackSession()
   }, [])
 
-  const login = React.useCallback(async () => {
-    try {
-      setIsLoading(true)
+  const login = React.useCallback(
+    async (userNumberOverwrite?: bigint) => {
+      try {
+        setIsLoading(true)
+        const anchor = userNumberOverwrite || userNumber
 
-      if (!userNumber) {
-        throw new Error("Register first")
-      }
+        if (!anchor) {
+          throw new Error("Register first")
+        }
 
-      const response = await IIConnection.login(userNumber)
-      if (response.kind === "authFail") return setIsLoading(false)
+        const response = await IIConnection.login(anchor)
+        if (response.kind === "authFail") return setIsLoading(false)
 
-      const result = apiResultToLoginResult(response)
+        const result = apiResultToLoginResult(response)
 
-      if (result.tag === "err") {
-        setError(result)
+        if (result.tag === "err") {
+          setError(result)
+          setIsLoading(false)
+          return
+        }
+
+        if (result.tag === "ok") {
+          setActors(result)
+          initUserGeek(
+            result?.internetIdentity?.delegationIdentity.getPrincipal(),
+          )
+          setError(null)
+        }
+
         setIsLoading(false)
-        return
-      }
-
-      if (result.tag === "ok") {
-        setActors(result)
-        initUserGeek(
-          result?.internetIdentity?.delegationIdentity.getPrincipal(),
-        )
+        return result
+      } catch {
+        setError("Failed to authenticate")
+        setIsLoading(false)
         setError(null)
       }
-
-      setIsLoading(false)
-      return result
-    } catch {
-      setError("Failed to authenticate")
-      setIsLoading(false)
-      setError(null)
-    }
-  }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
+    },
+    [initUserGeek, setActors, setError, setIsLoading, userNumber],
+  )
 
   const remoteLogin = React.useCallback(
     async (actors) => {

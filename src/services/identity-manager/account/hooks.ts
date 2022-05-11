@@ -41,8 +41,11 @@ export const useAccount = () => {
   const [account, setAccount] = useAtom(accountRegisteredAtom)
   const [accountRecovery, setAccountRecovery] = useAtom(accountRecoveryAtom)
   const [userNumber] = useAtom(userNumberAtom)
-  const { isRecoveryDelegate, identityManager: accountService } =
-    useAuthentication()
+  const {
+    isAuthenticated,
+    isRecoveryDelegate,
+    identityManager: accountService,
+  } = useAuthentication()
 
   const createAccount = React.useCallback(
     async (account: HTTPAccountRequest) => {
@@ -159,8 +162,9 @@ export const useAccount = () => {
   }
 
   return {
-    account: account || accountRecovery,
+    account: isAuthenticated ? account || accountRecovery : account,
     userNumber,
+    isRecoveryDelegate,
     setLocalAccount: setAccount,
     createAccount,
     readAccount,

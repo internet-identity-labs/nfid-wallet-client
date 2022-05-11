@@ -60,7 +60,7 @@
     {
       "label": "NFID E2E TEST",
       "type": "shell",
-      "command": "yarn wdio",
+      "command": "yarn test:e2e",
       "isBackground": true,
       "presentation": {
         "reveal": "always",

@@ -149,7 +149,7 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
           internetIdentity,
         )
 
-        await createAccount(responseRegisterAnchor.identityManager, {
+        await createAccount({
           anchor: userNumber,
         })
 

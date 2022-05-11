@@ -28,7 +28,6 @@ import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
 import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
-import { IFrameRecoverNFIDRoutes } from "./flows/screens-iframe/restore-access-point/routes"
 
 import { useStartUrl } from "./hooks/use-start-url"
 
@@ -62,7 +61,6 @@ export const App = () => {
       {IFrameAuthorizeAppRoutes}
       {IFrameAuthenticateAccountRoutes}
       {AppScreenAuthenticateAccountRoutes}
-      {IFrameRecoverNFIDRoutes}
       <Route path={"*"} element={<NotFound />} />
     </Routes>
   )

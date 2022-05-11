@@ -2,7 +2,6 @@ import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
 import { IFrameRestoreAccessPointStart } from "."
-import { IFrameRecoverNFID } from "../../../screens/recover-nfid/screen-iframe"
 import { IFrameRegisterDeviceDecider } from "../../../screens/register-device-decider/screen-iframe"
 
 export const IFrameRecoverNFIDConstants = {
@@ -17,14 +16,6 @@ export const IFrameRecoverNFIDRoutes = (
     <Route
       path={IFrameRecoverNFIDConstants.options}
       element={<IFrameRestoreAccessPointStart />}
-    />
-    <Route
-      path={IFrameRecoverNFIDConstants.recoveryPhrase}
-      element={
-        <IFrameRecoverNFID
-          onRecoverSuccessPath={`${IFrameRecoverNFIDConstants.base}/${IFrameRecoverNFIDConstants.registerDevice}`}
-        />
-      }
     />
     <Route
       path={IFrameRecoverNFIDConstants.registerDevice}

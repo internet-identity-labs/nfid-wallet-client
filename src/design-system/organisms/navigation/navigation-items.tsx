@@ -126,7 +126,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   </Button>
                   <Link
                     className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
-                    to={`${RAC.base}/${RAC.enterSeedPhrase}`}
+                    to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
                     Unlock NFID with Security Key

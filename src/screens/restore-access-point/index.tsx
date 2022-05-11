@@ -78,7 +78,8 @@ export const RestoreAccessPoint: React.FC<
       } else {
         setError("recoveryPhrase", {
           type: "manual",
-          message: "Invalid Recovery Phrase",
+          message:
+            "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         })
       }
     },
@@ -91,7 +92,8 @@ export const RestoreAccessPoint: React.FC<
     if (error) {
       setError("recoveryPhrase", {
         type: "manual",
-        message: "Invalid Recovery Phrase",
+        message:
+          "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
       })
     }
   }, [error, setError])

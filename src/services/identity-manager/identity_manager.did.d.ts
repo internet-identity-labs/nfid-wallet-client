@@ -38,13 +38,30 @@ export interface BoolHttpResponse {
   status_code: number
 }
 export interface ConfigurationRequest {
-  key: Array<number>
+  env: [] | [string]
   whitelisted_phone_numbers: [] | [Array<string>]
-  backup_canister_id: string
+  backup_canister_id: [] | [string]
+  ii_canister_id: [] | [Principal]
+  whitelisted_canisters: [] | [Array<Principal>]
+  git_branch: [] | [string]
   lambda: Principal
   token_refresh_ttl: bigint
-  heartbeat: number
+  heartbeat: [] | [number]
   token_ttl: bigint
+  commit_hash: [] | [string]
+}
+export interface ConfigurationResponse {
+  env: [] | [string]
+  whitelisted_phone_numbers: [] | [Array<string>]
+  backup_canister_id: [] | [string]
+  ii_canister_id: [] | [Principal]
+  whitelisted_canisters: [] | [Array<Principal>]
+  git_branch: [] | [string]
+  lambda: Principal
+  token_refresh_ttl: bigint
+  heartbeat: [] | [number]
+  token_ttl: bigint
+  commit_hash: [] | [string]
 }
 export type Credential = { phone_number: PhoneNumberCredential }
 export interface CredentialResponse {
@@ -110,17 +127,27 @@ export interface Response {
   error: [] | [Error]
   status_code: number
 }
+export interface StringHttpResponse {
+  data: [] | [string]
+  error: [] | [Error]
+  status_code: number
+}
 export type Token = string
 export interface TokenRequest {
   token: string
+  phone_number_hash: string
   principal_id: string
-  phone_number: string
+  phone_number_encrypted: string
 }
 export interface ValidatePhoneRequest {
+  phone_number_hash: string
   principal_id: string
-  phone_number: string
 }
 export interface _SERVICE {
+  certify_phone_number_sha2: (
+    arg_0: string,
+    arg_1: string,
+  ) => Promise<StringHttpResponse>
   configure: (arg_0: ConfigurationRequest) => Promise<undefined>
   create_access_point: (
     arg_0: AccessPointRequest,
@@ -132,12 +159,14 @@ export interface _SERVICE {
   delete_application: (arg_0: string) => Promise<BoolHttpResponse>
   get_account: () => Promise<HTTPAccountResponse>
   get_all_logs: () => Promise<Array<Log>>
+  get_config: () => Promise<ConfigurationResponse>
   get_logs: (arg_0: bigint) => Promise<Array<Log>>
   is_over_the_application_limit: (arg_0: string) => Promise<BoolHttpResponse>
   post_token: (arg_0: TokenRequest) => Promise<Response>
   read_access_points: () => Promise<HTTPAccessPointResponse>
   read_applications: () => Promise<HTTPApplicationResponse>
   read_personas: () => Promise<HTTPPersonasResponse>
+  recover_account: (arg_0: bigint) => Promise<HTTPAccountResponse>
   remove_access_point: (
     arg_0: AccessPointRequest,
   ) => Promise<HTTPAccessPointResponse>

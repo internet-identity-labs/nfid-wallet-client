@@ -1,16 +1,25 @@
 export const idlFactory = ({ IDL }) => {
+  const Error = IDL.Text
+  const StringHttpResponse = IDL.Record({
+    data: IDL.Opt(IDL.Text),
+    error: IDL.Opt(Error),
+    status_code: IDL.Nat16,
+  })
   const ConfigurationRequest = IDL.Record({
-    key: IDL.Vec(IDL.Nat8),
+    env: IDL.Opt(IDL.Text),
     whitelisted_phone_numbers: IDL.Opt(IDL.Vec(IDL.Text)),
-    backup_canister_id: IDL.Text,
+    backup_canister_id: IDL.Opt(IDL.Text),
+    ii_canister_id: IDL.Opt(IDL.Principal),
+    whitelisted_canisters: IDL.Opt(IDL.Vec(IDL.Principal)),
+    git_branch: IDL.Opt(IDL.Text),
     lambda: IDL.Principal,
     token_refresh_ttl: IDL.Nat64,
-    heartbeat: IDL.Nat32,
+    heartbeat: IDL.Opt(IDL.Nat32),
     token_ttl: IDL.Nat64,
+    commit_hash: IDL.Opt(IDL.Text),
   })
   const AccessPointRequest = IDL.Record({ pub_key: IDL.Vec(IDL.Nat8) })
   const AccessPoint = IDL.Record({ principal_id: IDL.Text })
-  const Error = IDL.Text
   const HTTPAccessPointResponse = IDL.Record({
     data: IDL.Opt(IDL.Vec(AccessPoint)),
     error: IDL.Opt(Error),
@@ -66,10 +75,24 @@ export const idlFactory = ({ IDL }) => {
     level: LogLevel,
     timestamp: IDL.Nat64,
   })
+  const ConfigurationResponse = IDL.Record({
+    env: IDL.Opt(IDL.Text),
+    whitelisted_phone_numbers: IDL.Opt(IDL.Vec(IDL.Text)),
+    backup_canister_id: IDL.Opt(IDL.Text),
+    ii_canister_id: IDL.Opt(IDL.Principal),
+    whitelisted_canisters: IDL.Opt(IDL.Vec(IDL.Principal)),
+    git_branch: IDL.Opt(IDL.Text),
+    lambda: IDL.Principal,
+    token_refresh_ttl: IDL.Nat64,
+    heartbeat: IDL.Opt(IDL.Nat32),
+    token_ttl: IDL.Nat64,
+    commit_hash: IDL.Opt(IDL.Text),
+  })
   const TokenRequest = IDL.Record({
     token: IDL.Text,
+    phone_number_hash: IDL.Text,
     principal_id: IDL.Text,
-    phone_number: IDL.Text,
+    phone_number_encrypted: IDL.Text,
   })
   const Response = IDL.Record({
     error: IDL.Opt(Error),
@@ -100,11 +123,16 @@ export const idlFactory = ({ IDL }) => {
   })
   const HTTPAccountUpdateRequest = IDL.Record({ name: IDL.Opt(IDL.Text) })
   const ValidatePhoneRequest = IDL.Record({
+    phone_number_hash: IDL.Text,
     principal_id: IDL.Text,
-    phone_number: IDL.Text,
   })
   const Token = IDL.Text
   return IDL.Service({
+    certify_phone_number_sha2: IDL.Func(
+      [IDL.Text, IDL.Text],
+      [StringHttpResponse],
+      ["query"],
+    ),
     configure: IDL.Func([ConfigurationRequest], [], []),
     create_access_point: IDL.Func(
       [AccessPointRequest],
@@ -118,6 +146,7 @@ export const idlFactory = ({ IDL }) => {
     delete_application: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     get_account: IDL.Func([], [HTTPAccountResponse], ["query"]),
     get_all_logs: IDL.Func([], [IDL.Vec(Log)], []),
+    get_config: IDL.Func([], [ConfigurationResponse], []),
     get_logs: IDL.Func([IDL.Nat64], [IDL.Vec(Log)], []),
     is_over_the_application_limit: IDL.Func(
       [IDL.Text],
@@ -128,6 +157,7 @@ export const idlFactory = ({ IDL }) => {
     read_access_points: IDL.Func([], [HTTPAccessPointResponse], []),
     read_applications: IDL.Func([], [HTTPApplicationResponse], ["query"]),
     read_personas: IDL.Func([], [HTTPPersonasResponse], ["query"]),
+    recover_account: IDL.Func([IDL.Nat64], [HTTPAccountResponse], []),
     remove_access_point: IDL.Func(
       [AccessPointRequest],
       [HTTPAccessPointResponse],

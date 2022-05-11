@@ -19,7 +19,7 @@ export const AppScreenRegisterDevice: React.FC<
 > = ({ registerSuccessPath }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { createDevice } = useDevices()
-  const { readAccount } = useAccount()
+  const { recoverAccount } = useAccount()
   const { getPersona } = usePersona()
   const { identityManager } = useAuthentication()
   const { generatePath } = useGeneratePath()
@@ -65,7 +65,8 @@ export const AppScreenRegisterDevice: React.FC<
 
     await handleCreateDevice(userNumber)
 
-    await Promise.all([readAccount(identityManager), getPersona()])
+    await recoverAccount(userNumber, identityManager)
+    await getPersona()
 
     navigate(generatePath(registerSuccessPath))
     setIsLoading(false)
@@ -75,7 +76,7 @@ export const AppScreenRegisterDevice: React.FC<
     handleCreateDevice,
     identityManager,
     navigate,
-    readAccount,
+    recoverAccount,
     registerSuccessPath,
     userNumber,
   ])

@@ -8,7 +8,6 @@ import React, { useState } from "react"
 
 import logo from "frontend/assets/logo.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"

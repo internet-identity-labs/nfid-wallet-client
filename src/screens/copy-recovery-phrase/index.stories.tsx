@@ -29,4 +29,6 @@ IFrameScreen.args = {
   recoveryPhrase:
     "1234567 dumb slender embrace pulp child immense draw sample tiger fix ozone salon social tenant word remain license boy practice tunnel enforce dice fence yard",
   continueButtonText: "Continue to OpenChat",
+  successModalText:
+    "Remember to keep your recovery phrase secret, safe, offline, and only use it on https://nfid.one",
 }

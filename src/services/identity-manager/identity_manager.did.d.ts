@@ -1,15 +1,25 @@
 import type { Principal } from "@dfinity/principal"
 
-export interface AccessPoint {
-  principal_id: string
+export interface AccessPointRemoveRequest {
+  pub_key: Array<number>
 }
 export interface AccessPointRequest {
+  icon: string
+  device: string
   pub_key: Array<number>
+  browser: string
+}
+export interface AccessPointResponse {
+  icon: string
+  device: string
+  browser: string
+  last_used: bigint
+  principal_id: string
 }
 export interface Account {
   name: [] | [string]
   anchor: bigint
-  access_points: Array<AccessPoint>
+  access_points: Array<AccessPointRequest>
   basic_entity: BasicEntity
   personas: Array<Persona>
   principal_id: string
@@ -18,7 +28,7 @@ export interface Account {
 export interface AccountResponse {
   name: [] | [string]
   anchor: bigint
-  access_points: Array<AccessPoint>
+  access_points: Array<AccessPointResponse>
   personas: Array<PersonaResponse>
   principal_id: string
   phone_number: [] | [string]
@@ -37,6 +47,35 @@ export interface BoolHttpResponse {
   error: [] | [Error]
   status_code: number
 }
+export type CanisterCyclesAggregatedData = Array<bigint>
+export type CanisterHeapMemoryAggregatedData = Array<bigint>
+export type CanisterLogFeature =
+  | { filterMessageByContains: null }
+  | { filterMessageByRegex: null }
+export interface CanisterLogMessages {
+  data: Array<LogMessagesData>
+  lastAnalyzedMessageTimeNanos: [] | [Nanos]
+}
+export interface CanisterLogMessagesInfo {
+  features: Array<[] | [CanisterLogFeature]>
+  lastTimeNanos: [] | [Nanos]
+  count: number
+  firstTimeNanos: [] | [Nanos]
+}
+export type CanisterLogRequest =
+  | { getMessagesInfo: null }
+  | { getMessages: GetLogMessagesParameters }
+  | { getLatestMessages: GetLatestLogMessagesParameters }
+export type CanisterLogResponse =
+  | { messagesInfo: CanisterLogMessagesInfo }
+  | { messages: CanisterLogMessages }
+export type CanisterMemoryAggregatedData = Array<bigint>
+export interface CanisterMetrics {
+  data: CanisterMetricsData
+}
+export type CanisterMetricsData =
+  | { hourly: Array<HourlyMetricsData> }
+  | { daily: Array<DailyMetricsData> }
 export interface ConfigurationRequest {
   env: [] | [string]
   whitelisted_phone_numbers: [] | [Array<string>]
@@ -69,14 +108,41 @@ export interface CredentialResponse {
   error: [] | [Error]
   status_code: number
 }
+export interface DailyMetricsData {
+  updateCalls: bigint
+  canisterHeapMemorySize: NumericEntity
+  canisterCycles: NumericEntity
+  canisterMemorySize: NumericEntity
+  timeMillis: bigint
+}
 export interface EmptyHttpResponse {
   data: [] | [string]
   error: [] | [Error]
   status_code: number
 }
 export type Error = string
+export interface GetLatestLogMessagesParameters {
+  upToTimeNanos: [] | [Nanos]
+  count: number
+  filter: [] | [GetLogMessagesFilter]
+}
+export interface GetLogMessagesFilter {
+  analyzeCount: number
+  messageRegex: [] | [string]
+  messageContains: [] | [string]
+}
+export interface GetLogMessagesParameters {
+  count: number
+  filter: [] | [GetLogMessagesFilter]
+  fromTimeNanos: [] | [Nanos]
+}
+export interface GetMetricsParameters {
+  dateToMillis: bigint
+  granularity: MetricsGranularity
+  dateFromMillis: bigint
+}
 export interface HTTPAccessPointResponse {
-  data: [] | [Array<AccessPoint>]
+  data: [] | [Array<AccessPointResponse>]
   error: [] | [Error]
   status_code: number
 }
@@ -101,12 +167,26 @@ export interface HTTPPersonasResponse {
   error: [] | [Error]
   status_code: number
 }
-export interface Log {
-  log: string
-  level: LogLevel
-  timestamp: bigint
+export interface HourlyMetricsData {
+  updateCalls: UpdateCallsAggregatedData
+  canisterHeapMemorySize: CanisterHeapMemoryAggregatedData
+  canisterCycles: CanisterCyclesAggregatedData
+  canisterMemorySize: CanisterMemoryAggregatedData
+  timeMillis: bigint
 }
-export type LogLevel = { INFO: null } | { ERROR: null }
+export interface LogMessagesData {
+  timeNanos: Nanos
+  message: string
+}
+export type MetricsGranularity = { hourly: null } | { daily: null }
+export type Nanos = bigint
+export interface NumericEntity {
+  avg: bigint
+  max: bigint
+  min: bigint
+  first: bigint
+  last: bigint
+}
 export interface Persona {
   domain: string
   basic_entity: BasicEntity
@@ -139,6 +219,7 @@ export interface TokenRequest {
   principal_id: string
   phone_number_encrypted: string
 }
+export type UpdateCallsAggregatedData = Array<bigint>
 export interface ValidatePhoneRequest {
   phone_number_hash: string
   principal_id: string
@@ -148,6 +229,7 @@ export interface _SERVICE {
     arg_0: string,
     arg_1: string,
   ) => Promise<StringHttpResponse>
+  collectCanisterMetrics: () => Promise<undefined>
   configure: (arg_0: ConfigurationRequest) => Promise<undefined>
   create_access_point: (
     arg_0: AccessPointRequest,
@@ -157,10 +239,15 @@ export interface _SERVICE {
   create_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
   credentials: () => Promise<CredentialResponse>
   delete_application: (arg_0: string) => Promise<BoolHttpResponse>
+  getCanisterLog: (
+    arg_0: [] | [CanisterLogRequest],
+  ) => Promise<[] | [CanisterLogResponse]>
+  getCanisterMetrics: (
+    arg_0: GetMetricsParameters,
+  ) => Promise<[] | [CanisterMetrics]>
   get_account: () => Promise<HTTPAccountResponse>
-  get_all_logs: () => Promise<Array<Log>>
+  get_account_by_anchor: (arg_0: bigint) => Promise<HTTPAccountResponse>
   get_config: () => Promise<ConfigurationResponse>
-  get_logs: (arg_0: bigint) => Promise<Array<Log>>
   is_over_the_application_limit: (arg_0: string) => Promise<BoolHttpResponse>
   post_token: (arg_0: TokenRequest) => Promise<Response>
   read_access_points: () => Promise<HTTPAccessPointResponse>
@@ -168,7 +255,7 @@ export interface _SERVICE {
   read_personas: () => Promise<HTTPPersonasResponse>
   recover_account: (arg_0: bigint) => Promise<HTTPAccountResponse>
   remove_access_point: (
-    arg_0: AccessPointRequest,
+    arg_0: AccessPointRemoveRequest,
   ) => Promise<HTTPAccessPointResponse>
   remove_account: () => Promise<BoolHttpResponse>
   restore_accounts: (arg_0: string) => Promise<BoolHttpResponse>
@@ -176,6 +263,7 @@ export interface _SERVICE {
   update_account: (
     arg_0: HTTPAccountUpdateRequest,
   ) => Promise<HTTPAccountResponse>
+  use_access_point: () => Promise<HTTPAccessPointResponse>
   validate_phone: (arg_0: ValidatePhoneRequest) => Promise<Response>
   verify_token: (arg_0: Token) => Promise<Response>
 }

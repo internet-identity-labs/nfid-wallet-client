@@ -18,10 +18,21 @@ export const idlFactory = ({ IDL }) => {
     token_ttl: IDL.Nat64,
     commit_hash: IDL.Opt(IDL.Text),
   })
-  const AccessPointRequest = IDL.Record({ pub_key: IDL.Vec(IDL.Nat8) })
-  const AccessPoint = IDL.Record({ principal_id: IDL.Text })
+  const AccessPointRequest = IDL.Record({
+    icon: IDL.Text,
+    device: IDL.Text,
+    pub_key: IDL.Vec(IDL.Nat8),
+    browser: IDL.Text,
+  })
+  const AccessPointResponse = IDL.Record({
+    icon: IDL.Text,
+    device: IDL.Text,
+    browser: IDL.Text,
+    last_used: IDL.Nat64,
+    principal_id: IDL.Text,
+  })
   const HTTPAccessPointResponse = IDL.Record({
-    data: IDL.Opt(IDL.Vec(AccessPoint)),
+    data: IDL.Opt(IDL.Vec(AccessPointResponse)),
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
@@ -33,7 +44,7 @@ export const idlFactory = ({ IDL }) => {
   const AccountResponse = IDL.Record({
     name: IDL.Opt(IDL.Text),
     anchor: IDL.Nat64,
-    access_points: IDL.Vec(AccessPoint),
+    access_points: IDL.Vec(AccessPointResponse),
     personas: IDL.Vec(PersonaResponse),
     principal_id: IDL.Text,
     phone_number: IDL.Opt(IDL.Text),
@@ -69,12 +80,88 @@ export const idlFactory = ({ IDL }) => {
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
-  const LogLevel = IDL.Variant({ INFO: IDL.Null, ERROR: IDL.Null })
-  const Log = IDL.Record({
-    log: IDL.Text,
-    level: LogLevel,
-    timestamp: IDL.Nat64,
+  const GetLogMessagesFilter = IDL.Record({
+    analyzeCount: IDL.Nat32,
+    messageRegex: IDL.Opt(IDL.Text),
+    messageContains: IDL.Opt(IDL.Text),
   })
+  const Nanos = IDL.Nat64
+  const GetLogMessagesParameters = IDL.Record({
+    count: IDL.Nat32,
+    filter: IDL.Opt(GetLogMessagesFilter),
+    fromTimeNanos: IDL.Opt(Nanos),
+  })
+  const GetLatestLogMessagesParameters = IDL.Record({
+    upToTimeNanos: IDL.Opt(Nanos),
+    count: IDL.Nat32,
+    filter: IDL.Opt(GetLogMessagesFilter),
+  })
+  const CanisterLogRequest = IDL.Variant({
+    getMessagesInfo: IDL.Null,
+    getMessages: GetLogMessagesParameters,
+    getLatestMessages: GetLatestLogMessagesParameters,
+  })
+  const CanisterLogFeature = IDL.Variant({
+    filterMessageByContains: IDL.Null,
+    filterMessageByRegex: IDL.Null,
+  })
+  const CanisterLogMessagesInfo = IDL.Record({
+    features: IDL.Vec(IDL.Opt(CanisterLogFeature)),
+    lastTimeNanos: IDL.Opt(Nanos),
+    count: IDL.Nat32,
+    firstTimeNanos: IDL.Opt(Nanos),
+  })
+  const LogMessagesData = IDL.Record({
+    timeNanos: Nanos,
+    message: IDL.Text,
+  })
+  const CanisterLogMessages = IDL.Record({
+    data: IDL.Vec(LogMessagesData),
+    lastAnalyzedMessageTimeNanos: IDL.Opt(Nanos),
+  })
+  const CanisterLogResponse = IDL.Variant({
+    messagesInfo: CanisterLogMessagesInfo,
+    messages: CanisterLogMessages,
+  })
+  const MetricsGranularity = IDL.Variant({
+    hourly: IDL.Null,
+    daily: IDL.Null,
+  })
+  const GetMetricsParameters = IDL.Record({
+    dateToMillis: IDL.Nat,
+    granularity: MetricsGranularity,
+    dateFromMillis: IDL.Nat,
+  })
+  const UpdateCallsAggregatedData = IDL.Vec(IDL.Nat64)
+  const CanisterHeapMemoryAggregatedData = IDL.Vec(IDL.Nat64)
+  const CanisterCyclesAggregatedData = IDL.Vec(IDL.Nat64)
+  const CanisterMemoryAggregatedData = IDL.Vec(IDL.Nat64)
+  const HourlyMetricsData = IDL.Record({
+    updateCalls: UpdateCallsAggregatedData,
+    canisterHeapMemorySize: CanisterHeapMemoryAggregatedData,
+    canisterCycles: CanisterCyclesAggregatedData,
+    canisterMemorySize: CanisterMemoryAggregatedData,
+    timeMillis: IDL.Int,
+  })
+  const NumericEntity = IDL.Record({
+    avg: IDL.Nat64,
+    max: IDL.Nat64,
+    min: IDL.Nat64,
+    first: IDL.Nat64,
+    last: IDL.Nat64,
+  })
+  const DailyMetricsData = IDL.Record({
+    updateCalls: IDL.Nat64,
+    canisterHeapMemorySize: NumericEntity,
+    canisterCycles: NumericEntity,
+    canisterMemorySize: NumericEntity,
+    timeMillis: IDL.Int,
+  })
+  const CanisterMetricsData = IDL.Variant({
+    hourly: IDL.Vec(HourlyMetricsData),
+    daily: IDL.Vec(DailyMetricsData),
+  })
+  const CanisterMetrics = IDL.Record({ data: CanisterMetricsData })
   const ConfigurationResponse = IDL.Record({
     env: IDL.Opt(IDL.Text),
     whitelisted_phone_numbers: IDL.Opt(IDL.Vec(IDL.Text)),
@@ -103,6 +190,9 @@ export const idlFactory = ({ IDL }) => {
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
+  const AccessPointRemoveRequest = IDL.Record({
+    pub_key: IDL.Vec(IDL.Nat8),
+  })
   const BasicEntity = IDL.Record({
     modified_date: IDL.Nat64,
     created_date: IDL.Nat64,
@@ -115,7 +205,7 @@ export const idlFactory = ({ IDL }) => {
   const Account = IDL.Record({
     name: IDL.Opt(IDL.Text),
     anchor: IDL.Nat64,
-    access_points: IDL.Vec(AccessPoint),
+    access_points: IDL.Vec(AccessPointRequest),
     basic_entity: BasicEntity,
     personas: IDL.Vec(Persona),
     principal_id: IDL.Text,
@@ -133,6 +223,7 @@ export const idlFactory = ({ IDL }) => {
       [StringHttpResponse],
       ["query"],
     ),
+    collectCanisterMetrics: IDL.Func([], [], []),
     configure: IDL.Func([ConfigurationRequest], [], []),
     create_access_point: IDL.Func(
       [AccessPointRequest],
@@ -144,22 +235,35 @@ export const idlFactory = ({ IDL }) => {
     create_persona: IDL.Func([PersonaRequest], [HTTPAccountResponse], []),
     credentials: IDL.Func([], [CredentialResponse], []),
     delete_application: IDL.Func([IDL.Text], [BoolHttpResponse], []),
+    getCanisterLog: IDL.Func(
+      [IDL.Opt(CanisterLogRequest)],
+      [IDL.Opt(CanisterLogResponse)],
+      ["query"],
+    ),
+    getCanisterMetrics: IDL.Func(
+      [GetMetricsParameters],
+      [IDL.Opt(CanisterMetrics)],
+      ["query"],
+    ),
     get_account: IDL.Func([], [HTTPAccountResponse], ["query"]),
-    get_all_logs: IDL.Func([], [IDL.Vec(Log)], []),
+    get_account_by_anchor: IDL.Func(
+      [IDL.Nat64],
+      [HTTPAccountResponse],
+      ["query"],
+    ),
     get_config: IDL.Func([], [ConfigurationResponse], []),
-    get_logs: IDL.Func([IDL.Nat64], [IDL.Vec(Log)], []),
     is_over_the_application_limit: IDL.Func(
       [IDL.Text],
       [BoolHttpResponse],
       ["query"],
     ),
     post_token: IDL.Func([TokenRequest], [Response], []),
-    read_access_points: IDL.Func([], [HTTPAccessPointResponse], []),
+    read_access_points: IDL.Func([], [HTTPAccessPointResponse], ["query"]),
     read_applications: IDL.Func([], [HTTPApplicationResponse], ["query"]),
     read_personas: IDL.Func([], [HTTPPersonasResponse], ["query"]),
     recover_account: IDL.Func([IDL.Nat64], [HTTPAccountResponse], []),
     remove_access_point: IDL.Func(
-      [AccessPointRequest],
+      [AccessPointRemoveRequest],
       [HTTPAccessPointResponse],
       [],
     ),
@@ -171,6 +275,7 @@ export const idlFactory = ({ IDL }) => {
       [HTTPAccountResponse],
       [],
     ),
+    use_access_point: IDL.Func([], [HTTPAccessPointResponse], []),
     validate_phone: IDL.Func([ValidatePhoneRequest], [Response], []),
     verify_token: IDL.Func([Token], [Response], []),
   })

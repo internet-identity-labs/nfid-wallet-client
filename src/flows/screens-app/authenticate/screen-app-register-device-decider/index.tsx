@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { AppScreenRegisterDeviceDecider as AppScreenRegisterDeviceDeciderRaw } from "frontend/screens/register-device-decider"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -13,66 +14,56 @@ export const AppScreenRegisterDeviceDecider: React.FC<
   AppScreenRegisterDeviceProps
 > = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { createDevice } = useDevices()
-  const { readAccount } = useAccount()
+  const { recoverDevice } = useDevices()
+  const { createAccount, recoverAccount } = useAccount()
   const { getPersona } = usePersona()
+  const { internetIdentity, identityManager } = useAuthentication()
 
   const { userNumber, handleSendDelegate } = useUnknownDeviceConfig()
-  const { createWebAuthNDevice } = useDevices()
 
   const handleLogin = React.useCallback(() => {
-    console.log(">> handleLogin")
     handleSendDelegate()
   }, [handleSendDelegate])
 
-  const handleCreateDevice = React.useCallback(
-    async (userNumber) => {
-      try {
-        const { device } = await createWebAuthNDevice(BigInt(userNumber))
-        await createDevice({
-          ...device,
-          userNumber,
-        })
-
-        return {
-          message: "Device created successfully",
-        }
-      } catch (error) {
-        if (
-          (error as DOMException).message ===
-          "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party."
-        ) {
-          console.log(">> existing device", {})
-
-          return {
-            message: "This device is already registered",
-          }
-        }
-        throw error
-      }
-    },
-    [createDevice, createWebAuthNDevice],
-  )
-
   const handleRegister = React.useCallback(async () => {
-    console.log(">> handleRegister")
-
     setIsLoading(true)
     if (!userNumber) {
       return console.error(`Missing userNumber: ${userNumber}`)
     }
+    if (!identityManager) throw new Error("Missing identityManager")
 
-    await handleCreateDevice(userNumber)
+    await recoverDevice(userNumber)
 
-    await Promise.all([readAccount(), getPersona()])
+    const response = await recoverAccount(userNumber)
+
+    if (response?.status_code === 404) {
+      console.warn("account not found. Recreating")
+      await createAccount({ anchor: userNumber })
+
+      // attach the current identity as access point
+      const pub_key = Array.from(
+        internetIdentity?.delegationIdentity.getPublicKey().toDer() ?? [],
+      )
+
+      await identityManager.create_access_point({
+        icon: "",
+        device: "",
+        browser: "",
+        pub_key,
+      })
+    }
+    await getPersona()
+
+    await getPersona()
 
     setIsLoading(false)
-    handleSendDelegate()
   }, [
+    createAccount,
     getPersona,
-    handleCreateDevice,
-    handleSendDelegate,
-    readAccount,
+    identityManager,
+    internetIdentity?.delegationIdentity,
+    recoverAccount,
+    recoverDevice,
     userNumber,
   ])
 

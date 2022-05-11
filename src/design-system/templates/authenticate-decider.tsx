@@ -24,13 +24,6 @@ export const AuthenticateDecider: React.FC<AuthenticateDeciderProps> = ({
   const params = useParams()
   const [query] = useSearchParams()
   const isRootPath = useMatch(rootPath)
-  const isLoginUnknownPath = useMatch(loginUnknownDevicePath)
-  const isLoginNFIDPath = useMatch(loginNFIDPath)
-  console.log(">> ", {
-    isRootPath,
-    isLoginUnknownPath,
-    isLoginNFIDPath,
-  })
 
   const navigate = useNavigate()
 

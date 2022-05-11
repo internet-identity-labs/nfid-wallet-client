@@ -8,10 +8,9 @@ import {
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useGeneratePath } from "frontend/hooks/use-generate-path"
+import { useNFIDNavigate } from "frontend/hooks/use-generate-path"
 import { useMessageChannel } from "frontend/screens/authorize-app-unknown-device/hooks/use-message-channel"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
@@ -22,18 +21,16 @@ interface RestoreAccessPointRecoveryPhraseContentProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  iframe?: boolean
-  registerDeviceDeciderPath: string
+  registerDevicePath: string
   onRecoverSuccess?: (result: LoginSuccess) => void
 }
 
 export const RecoverNFID: React.FC<
   RestoreAccessPointRecoveryPhraseContentProps
-> = ({ className, iframe, registerDeviceDeciderPath, onRecoverSuccess }) => {
-  const { generatePath } = useGeneratePath()
+> = ({ className, registerDevicePath, onRecoverSuccess }) => {
+  const { navigate } = useNFIDNavigate()
   const { loginWithRecovery, error, isLoading } = useAuthentication()
   const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
-  const navigate = useNavigate()
 
   const handleNewDevice = React.useCallback(
     async (event) => {
@@ -78,7 +75,7 @@ export const RecoverNFID: React.FC<
 
       if (result?.tag === "ok") {
         setUserNumber(userNumber)
-        navigate(generatePath(registerDeviceDeciderPath))
+        navigate(registerDevicePath)
         onRecoverSuccess && onRecoverSuccess(result)
       } else {
         setError("recoveryPhrase", {
@@ -92,13 +89,12 @@ export const RecoverNFID: React.FC<
       setError,
       setUserNumber,
       navigate,
-      generatePath,
-      registerDeviceDeciderPath,
+      registerDevicePath,
       onRecoverSuccess,
     ],
   )
 
-  const title = "Log in with Recovery Phrase"
+  const title = "Recover NFID"
 
   React.useEffect(() => {
     if (error) {
@@ -112,13 +108,9 @@ export const RecoverNFID: React.FC<
   return (
     <div className={clsx("", className)}>
       <div>
-        {iframe ? (
-          <H5 className="mb-4">{title}</H5>
-        ) : (
-          <H2 className="mb-4">{title}</H2>
-        )}
+        <H2 className="mb-4">{title}</H2>
 
-        <div className={clsx(iframe ? "mb-2" : "mb-6")}>
+        <div className={clsx("mb-6")}>
           Paste your recovery phrase here to proceed:
         </div>
 
@@ -135,15 +127,14 @@ export const RecoverNFID: React.FC<
 
         <Button
           secondary
-          block={iframe}
-          large={!iframe}
+          large
           className="my-4"
           onClick={handleSubmit(onRecover)}
         >
           Recover
         </Button>
 
-        <Loader isLoading={isLoading} iframe={iframe} />
+        <Loader isLoading={isLoading} />
       </div>
     </div>
   )

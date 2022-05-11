@@ -2,9 +2,9 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useGeneratePath } from "frontend/hooks/use-generate-path"
+import { useNFIDNavigate } from "frontend/hooks/use-generate-path"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { AppScreenRegisterDevice as AppScreenRegisterDeviceRaw } from "frontend/screens/register-device"
+import { AppScreenRegisterDevice as AppScreenRegisterDeviceRaw } from "frontend/screens/register-device/screen-app"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
@@ -22,7 +22,7 @@ export const AppScreenRegisterDevice: React.FC<
   const { recoverAccount, createAccount } = useAccount()
   const { getPersona } = usePersona()
   const { identityManager, internetIdentity } = useAuthentication()
-  const { generatePath } = useGeneratePath()
+  const { generatePath } = useNFIDNavigate()
   const navigate = useNavigate()
 
   const { userNumber } = useUnknownDeviceConfig()
@@ -79,6 +79,9 @@ export const AppScreenRegisterDevice: React.FC<
       console.log(">> handleRegister", { pub_key })
       const createAccessPointResponse =
         await identityManager.create_access_point({
+          icon: "",
+          device: "",
+          browser: "",
           pub_key,
         })
       console.log(">> handleRegister", { createAccessPointResponse })

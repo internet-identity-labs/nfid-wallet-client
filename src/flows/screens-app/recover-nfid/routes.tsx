@@ -1,20 +1,20 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { AppScreenRegisterDeviceDecider } from "frontend/flows/screens-app/authenticate/screen-app-register-device-decider"
-
 import { AppScreenRecoverNFID } from "../../../screens/recover-nfid/screen-app"
+import { ProfileConstants } from "../profile/routes"
+import { AppScreenRegisterDevice } from "./register-device"
 
 export const RecoverNFIDRoutesConstants = {
   base: "/recover-nfid",
-  enterSeedPhrase: "enter-seed-phrase",
+  enterRecoveryPhrase: "enter-recovery-phrase",
   registerDevice: "register-device",
 }
 
 export const RecoverNFIDRoutes = (
   <Route path={RecoverNFIDRoutesConstants.base} element={<Outlet />}>
     <Route
-      path={RecoverNFIDRoutesConstants.enterSeedPhrase}
+      path={RecoverNFIDRoutesConstants.enterRecoveryPhrase}
       element={
         <AppScreenRecoverNFID
           registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
@@ -23,7 +23,11 @@ export const RecoverNFIDRoutes = (
     />
     <Route
       path={RecoverNFIDRoutesConstants.registerDevice}
-      element={<AppScreenRegisterDeviceDecider />}
+      element={
+        <AppScreenRegisterDevice
+          registerSuccessPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+        />
+      }
     />
   </Route>
 )

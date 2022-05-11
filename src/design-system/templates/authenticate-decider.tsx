@@ -14,24 +14,20 @@ interface AuthenticateDeciderProps
   rootPath: string
   loginUnknownDevicePath: string
   loginNFIDPath: string
-  recoverNFIDPath: string
 }
 
 export const AuthenticateDecider: React.FC<AuthenticateDeciderProps> = ({
   rootPath,
   loginUnknownDevicePath,
   loginNFIDPath,
-  recoverNFIDPath,
 }) => {
   const params = useParams()
   const [query] = useSearchParams()
   const isRootPath = useMatch(rootPath)
-  const isRecoverNFIDPath = useMatch(recoverNFIDPath)
   const isLoginUnknownPath = useMatch(loginUnknownDevicePath)
   const isLoginNFIDPath = useMatch(loginNFIDPath)
   console.log(">> ", {
     isRootPath,
-    isRecoverNFIDPath,
     isLoginUnknownPath,
     isLoginNFIDPath,
   })
@@ -50,16 +46,12 @@ export const AuthenticateDecider: React.FC<AuthenticateDeciderProps> = ({
       )
     }
   }, [
-    isLoginNFIDPath,
-    isLoginUnknownPath,
-    isRecoverNFIDPath,
     isRootPath,
     loginNFIDPath,
     loginUnknownDevicePath,
     navigate,
     params,
     query,
-    rootPath,
     userNumber,
   ])
 

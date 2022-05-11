@@ -135,7 +135,7 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
                   <IFrameScreen logo>
                     <RecoverNFID
                       iframe
-                      registerDeviceDeciderPath={`${IFrameRecoverNFIDConstants.base}/${IFrameRecoverNFIDConstants.registerDevice}`}
+                      registerDevicePath={`${IFrameRecoverNFIDConstants.base}/${IFrameRecoverNFIDConstants.registerDevice}`}
                     />
                   </IFrameScreen>
                 </IFrameWrapper>

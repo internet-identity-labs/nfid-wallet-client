@@ -137,7 +137,6 @@ export const IFrameOverview: React.FC<IFrameOverviewProps> = ({
                     <RecoverNFID
                       iframe
                       registerDevicePath={`${IFrameRecoverNFIDConstants.base}/${IFrameRecoverNFIDConstants.registerDevice}`}
-                      deviceAlreadyRegisteredPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
                     />
                   </IFrameScreen>
                 </IFrameWrapper>

@@ -24,16 +24,15 @@ export interface LocalAccount
   skipPersonalize?: boolean
 }
 
-export const accountRegisteredAtom = atomWithStorage<LocalAccount | undefined>(
-  ACCOUNT_LOCAL_STORAGE_KEY,
-  undefined,
-)
+export const localStorageAccountAtom = atomWithStorage<
+  LocalAccount | undefined
+>(ACCOUNT_LOCAL_STORAGE_KEY, undefined)
 
-export const accountRecoveryAtom = atom<LocalAccount | undefined>(undefined)
+export const memoryAccountAtom = atom<LocalAccount | undefined>(undefined)
 
 export const userNumberAtom = atom((get) => {
-  const registeredAccount = get(accountRegisteredAtom)
-  const recoveryAccount = get(accountRecoveryAtom)
-  const account = registeredAccount || recoveryAccount
+  const localStorageAccount = get(localStorageAccountAtom)
+  const memoryAccount = get(memoryAccountAtom)
+  const account = localStorageAccount || memoryAccount
   return getUserNumber(account ? account.anchor : null)
 })

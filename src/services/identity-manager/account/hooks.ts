@@ -11,8 +11,8 @@ import {
 
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {
-  accountRecoveryAtom,
-  accountRegisteredAtom,
+  memoryAccountAtom,
+  localStorageAccountAtom,
   LocalAccount,
   userNumberAtom,
 } from "./state"
@@ -24,7 +24,6 @@ const normalizeLocalAccount = ({
   newAccount,
 }: {
   account?: LocalAccount
-  isRecoveryDelegate: Boolean
   newAccount: AccountResponse
 }) => ({
   name: newAccount.name[0],
@@ -38,12 +37,12 @@ type AccountService = Pick<
 >
 
 export const useAccount = () => {
-  const [account, setAccount] = useAtom(accountRegisteredAtom)
-  const [accountRecovery, setAccountRecovery] = useAtom(accountRecoveryAtom)
+  const [account, setAccount] = useAtom(localStorageAccountAtom)
+  const [memoryAccount, setMemoryAccount] = useAtom(memoryAccountAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const {
     isAuthenticated,
-    isRecoveryDelegate,
+    shouldStoreLocalAccount,
     identityManager: accountService,
   } = useAuthentication()
 
@@ -76,7 +75,6 @@ export const useAccount = () => {
 
       if (newAccount) {
         const normalizedAccount = normalizeLocalAccount({
-          isRecoveryDelegate,
           account,
           newAccount,
         })
@@ -85,7 +83,7 @@ export const useAccount = () => {
 
       return response
     },
-    [account, accountService, isRecoveryDelegate, setAccount],
+    [account, accountService, setAccount],
   )
 
   const readAccount = React.useCallback(async () => {
@@ -97,22 +95,21 @@ export const useAccount = () => {
 
     if (newAccount) {
       const normalizedAccount = normalizeLocalAccount({
-        isRecoveryDelegate,
         account,
         newAccount,
       })
-      isRecoveryDelegate
-        ? setAccountRecovery(normalizedAccount)
-        : setAccount(normalizedAccount)
+      shouldStoreLocalAccount
+        ? setAccount(normalizedAccount)
+        : setMemoryAccount(normalizedAccount)
     }
 
     return response
   }, [
     account,
     accountService,
-    isRecoveryDelegate,
+    shouldStoreLocalAccount,
     setAccount,
-    setAccountRecovery,
+    setMemoryAccount,
   ])
 
   const resetLocalAccount = React.useCallback(async () => {
@@ -162,9 +159,9 @@ export const useAccount = () => {
   }
 
   return {
-    account: isAuthenticated ? account || accountRecovery : account,
+    account: isAuthenticated ? account || memoryAccount : account,
     userNumber,
-    isRecoveryDelegate,
+    shouldStoreLocalAccount,
     setLocalAccount: setAccount,
     createAccount,
     readAccount,

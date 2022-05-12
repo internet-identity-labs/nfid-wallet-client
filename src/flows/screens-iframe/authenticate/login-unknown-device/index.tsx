@@ -17,12 +17,13 @@ export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = () => {
   const { url, status, handlePollForDelegate, showRegister } =
     useUnknownDeviceConfig()
   const isLoading = status === "loading"
+  console.log(">> ", { isLoading })
 
   useInterval(handlePollForDelegate, 2000)
   return (
     <IFrameAuthorizeAppUnknownDevice
       registerDeviceDeciderPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
-      registerSameDevicePath={"TODO: FIX PATH"}
+      registerSameDevicePath={url ?? ""}
       applicationName={applicationName}
       isLoading={isLoading}
       showRegister={showRegister}

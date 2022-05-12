@@ -36,13 +36,16 @@ export const AuthorizeAppUnknownDevice: React.FC<
         </div>
 
         <div className="py-5 m-auto">
-          <Link
-            to={generatePath(registerSameDevicePath)}
-            target={isIframe ? "_blank" : "_self"}
-            rel="noreferrer"
+          <LinkWrapper
+            isIframe={isIframe}
+            url={
+              isIframe
+                ? registerSameDevicePath
+                : generatePath(registerSameDevicePath)
+            }
           >
             <QRCode content={url} options={{ margin: 0 }} />
-          </Link>
+          </LinkWrapper>
         </div>
       </div>
     </div>
@@ -50,3 +53,16 @@ export const AuthorizeAppUnknownDevice: React.FC<
     <Navigate to={generatePath(registerDeviceDeciderPath)} />
   ) : null
 }
+
+const LinkWrapper: React.FC<{ isIframe: boolean; url: string }> = ({
+  url,
+  isIframe,
+  children,
+}) =>
+  isIframe ? (
+    <a href={url} target={isIframe ? "_blank" : "_self"} rel="noreferrer">
+      {children}
+    </a>
+  ) : (
+    <Link to={url}>{children}</Link>
+  )

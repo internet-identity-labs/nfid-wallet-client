@@ -7,7 +7,6 @@ import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-d
 import { CopyRecoveryPhrase } from "frontend/screens/copy-recovery-phrase"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 
 interface RouteCopyRecoveryPhraseProps {}
 

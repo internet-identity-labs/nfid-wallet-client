@@ -1,9 +1,11 @@
 import React from "react"
 
-interface RouteCaptchaProps {}
+import { Captcha } from "frontend/screens/captcha"
 
-export const RouteCaptcha: React.FC<RouteCaptchaProps> = () => {
-  console.log(">> RouteCaptcha", {})
-
-  return <div>RouteCaptcha</div>
+interface RouteCaptchaProps {
+  successPath: string
 }
+
+export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => (
+  <Captcha successPath={successPath} />
+)

@@ -1,1 +1,1 @@
-export const PATH_CAPTCHA = "register"
+export const PATH_CAPTCHA = "captcha"

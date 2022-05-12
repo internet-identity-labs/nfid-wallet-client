@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface PopupLoginProps {
   menu?: boolean
@@ -11,19 +12,17 @@ interface PopupLoginProps {
 
 export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
   const { userNumber, readAccount, account } = useAccount()
-  const { login, isRemoteDelegate, isAuthenticated, logout, identityManager } =
+  const { getPersona } = usePersona()
+  const { login, isAuthenticated, logout, identityManager } =
     useAuthentication()
   const navigate = useNavigate()
 
   useEffect(() => {
-    isAuthenticated && !isRemoteDelegate && readAccount()
-  }, [
-    identityManager,
-    isAuthenticated,
-    isRemoteDelegate,
-    readAccount,
-    userNumber,
-  ])
+    if (isAuthenticated) {
+      readAccount()
+      getPersona()
+    }
+  }, [getPersona, identityManager, isAuthenticated, readAccount, userNumber])
 
   return (
     <div className="px-4 mx-auto">

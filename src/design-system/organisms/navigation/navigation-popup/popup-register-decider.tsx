@@ -8,10 +8,12 @@ import React, { useState } from "react"
 
 import logo from "frontend/assets/logo.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface PopupRegisterDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {}
@@ -21,6 +23,8 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const { setStatus } = useRegisterQRCode()
   const { createDevice } = useDevices()
   const { readAccount } = useAccount()
+  const { setShouldStoreLocalAccount } = useAuthentication()
+  const { getPersona } = usePersona()
 
   const {
     platform: { device, authenticator: platformAuth },
@@ -45,13 +49,14 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         ...device,
         userNumber,
       })
-      await readAccount()
+      Promise.all([readAccount(), getPersona()])
 
       setIsLoading(false)
       setStatus("registerDevice")
     }
 
     if (linkAccount === "rb_link_account_login") {
+      setShouldStoreLocalAccount(false)
       setStatus("")
     }
   }

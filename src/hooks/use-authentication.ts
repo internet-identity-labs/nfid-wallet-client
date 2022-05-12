@@ -24,7 +24,7 @@ interface Actors {
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const remoteLoginAtom = atom<boolean>(false)
-const recoveryPhraseAtom = atom<boolean>(false)
+const shouldStoreLocalAccountAtom = atom<boolean>(true)
 const actorsAtom = atom<Actors | null>(null)
 const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
 export const principalIdAtom = atom((get) =>
@@ -39,8 +39,9 @@ export const useAuthentication = () => {
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
-  const [isRecoveryDelegate, setIsRecoveryDelegate] =
-    useAtom(recoveryPhraseAtom)
+  const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
+    shouldStoreLocalAccountAtom,
+  )
   const [actors, setActors] = useAtom(actorsAtom)
   const [principalId] = useAtom(principalIdAtom)
 
@@ -142,14 +143,20 @@ export const useAuthentication = () => {
         initUserGeek(
           result?.internetIdentity?.delegationIdentity.getPrincipal(),
         )
-        setIsRecoveryDelegate(true)
+        setShouldStoreLocalAccount(false)
         setError(null)
       }
 
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setActors, setError, setIsLoading, setIsRecoveryDelegate],
+    [
+      initUserGeek,
+      setActors,
+      setError,
+      setIsLoading,
+      setShouldStoreLocalAccount,
+    ],
   )
 
   return {
@@ -163,7 +170,8 @@ export const useAuthentication = () => {
     pubsubChannel: actors?.pubsubChannelActor,
     imAddition: actors?.imAdditionActor,
     error,
-    isRecoveryDelegate,
+    shouldStoreLocalAccount,
+    setShouldStoreLocalAccount,
     isRemoteDelegate,
     login,
     remoteLogin,

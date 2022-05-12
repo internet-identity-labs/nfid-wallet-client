@@ -4,6 +4,7 @@ import clsx from "clsx"
 import React from "react"
 import { Navigate } from "react-router-dom"
 
+import { useIsIframe } from "frontend/hooks/use-is-iframe"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 
 export interface AuthorizeAppUnknownDeviceProps {
@@ -17,6 +18,8 @@ export const AuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
 > = ({ registerDeviceDeciderPath, url, showRegister, applicationName }) => {
   const { generatePath } = useNFIDNavigate()
+  const isIframe = useIsIframe()
+
   return url && !showRegister ? (
     <div className={clsx("text-center")}>
       <H5 className="mb-4">{applicationName}</H5>
@@ -26,7 +29,7 @@ export const AuthorizeAppUnknownDevice: React.FC<
         </div>
 
         <div className="py-5 m-auto">
-          <a href={url} target="_blank" rel="noreferrer">
+          <a href={url} target={isIframe ? "_blank" : "_self"} rel="noreferrer">
             <QRCode content={url} options={{ margin: 0 }} />
           </a>
         </div>

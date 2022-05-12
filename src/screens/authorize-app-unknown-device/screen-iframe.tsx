@@ -17,6 +17,7 @@ export const IFrameAuthorizeAppUnknownDevice: React.FC<
     >
       <AuthorizeAppUnknownDevice
         registerDeviceDeciderPath={registerDeviceDeciderPath}
+        registerSameDevicePath={"TODO: FIX PATH"}
         applicationName={applicationName}
         showRegister={showRegister}
         url={url}

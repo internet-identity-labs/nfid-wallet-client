@@ -10,9 +10,13 @@ import {
   SUB_PATH_REGISTER_DEVICE_DECIDER,
 } from "../constants"
 
-interface LoginUnknownDeviceProps {}
+interface LoginUnknownDeviceProps {
+  registerSameDevicePath: string
+}
 
-export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = () => {
+export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = ({
+  registerSameDevicePath,
+}) => {
   const { applicationName } = useMultipass()
   const { url, status, handlePollForDelegate, showRegister } =
     useUnknownDeviceConfig()
@@ -22,6 +26,7 @@ export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = () => {
   return (
     <AppScreenAuthorizeAppUnknownDevice
       registerDeviceDeciderPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
+      registerSameDevicePath={registerSameDevicePath}
       applicationName={applicationName}
       isLoading={isLoading}
       showRegister={showRegister}

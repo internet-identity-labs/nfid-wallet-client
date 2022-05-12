@@ -48,6 +48,7 @@ const registerAtom = atom<boolean>(false)
 const userNumberAtom = atom<bigint | undefined>(undefined)
 const loadingAtom = atom<loadingState>("initial")
 const delegationAtom = atom<SignedDelegation | undefined>(undefined)
+const domainAtom = atom<string | undefined>(undefined)
 
 export const useUnknownDeviceConfig = () => {
   const [status, setStatus] = useAtom(loadingAtom)
@@ -68,7 +69,7 @@ export const useUnknownDeviceConfig = () => {
   const [fromPath, setFromPath] = React.useState((state as StateProps)?.from)
 
   const [appWindow, setAppWindow] = React.useState<Window | null>(null)
-  const [domain, setDomain] = React.useState("")
+  const [domain, setDomain] = useAtom(domainAtom)
   const [pubKey, setPubKey] = React.useState("")
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
 

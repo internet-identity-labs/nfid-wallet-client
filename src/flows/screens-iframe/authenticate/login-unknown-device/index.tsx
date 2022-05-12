@@ -22,6 +22,7 @@ export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = () => {
   return (
     <IFrameAuthorizeAppUnknownDevice
       registerDeviceDeciderPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
+      registerSameDevicePath={"TODO: FIX PATH"}
       applicationName={applicationName}
       isLoading={isLoading}
       showRegister={showRegister}

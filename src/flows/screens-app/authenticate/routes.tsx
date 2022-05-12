@@ -45,13 +45,34 @@ export const AppScreenAuthenticateAccountRoutes = (
       path={SUB_PATH_AUTHORIZE_APP}
       element={<AppScreenAuthorizeApp redirectTo="/" />}
     />
-    <Route path={PATH_LOGIN_UNKNOWN_DEVICE} element={<LoginUnknownDevice />} />
+    <Route
+      path={PATH_LOGIN_UNKNOWN_DEVICE}
+      element={
+        <LoginUnknownDevice
+          registerSameDevicePath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_REGISTER}`}
+        />
+      }
+    />
     <Route
       path={SUB_PATH_REGISTER_DEVICE_DECIDER}
       element={<AppScreenRegisterDeviceDecider />}
     />
-    <Route path={PATH_REGISTER} element={<RouteRegister />} />
-    <Route path={PATH_CAPTCHA} element={<RouteCaptcha />} />
+    <Route
+      path={PATH_REGISTER}
+      element={
+        <RouteRegister
+          captchaPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_CAPTCHA}`}
+        />
+      }
+    />
+    <Route
+      path={PATH_CAPTCHA}
+      element={
+        <RouteCaptcha
+          successPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_COPY_RECOVERY_PHRASE}`}
+        />
+      }
+    />
     <Route
       path={PATH_COPY_RECOVERY_PHRASE}
       element={<RouteCopyRecoveryPhrase />}

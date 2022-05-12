@@ -59,7 +59,6 @@ export const usePersona = ({ application }: UsePersona = {}) => {
       if (!account) throw new Error('"account" is required')
 
       const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
-
       const response = await personaService?.create_persona(persona)
 
       if (response?.status_code === 200) {

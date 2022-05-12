@@ -8,6 +8,7 @@ import { generatePath, useLocation } from "react-router-dom"
 import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app/routes"
 import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useIsIframe } from "frontend/hooks/use-is-iframe"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
@@ -52,6 +53,8 @@ export const useUnknownDeviceConfig = () => {
   const [status, setStatus] = useAtom(loadingAtom)
   const [showRegister, setShowRegister] = useAtom(registerAtom)
   const [signedDelegation, setSignedDelegation] = useAtom(delegationAtom)
+
+  const isIframe = useIsIframe()
 
   const { state } = useLocation()
   const [userNumber, setUserNumber] = useAtom(userNumberAtom)
@@ -139,7 +142,7 @@ export const useUnknownDeviceConfig = () => {
     if (!userNumber) throw new Error("userNumber required")
     setStatus("loading")
 
-    if (window.top !== window.self) {
+    if (isIframe) {
       return window.open(
         generatePath(RegisterNewDeviceConstants.base, {
           userNumber: userNumber.toString(),
@@ -158,6 +161,7 @@ export const useUnknownDeviceConfig = () => {
     getPersona,
     handleSendDelegate,
     handleStoreNewDevice,
+    isIframe,
     readAccount,
     setStatus,
     userNumber,

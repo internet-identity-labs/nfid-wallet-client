@@ -39,6 +39,7 @@ export const idlFactory = ({ IDL }) => {
   const HTTPAccountRequest = IDL.Record({ anchor: IDL.Nat64 })
   const PersonaResponse = IDL.Record({
     domain: IDL.Text,
+    persona_name: IDL.Text,
     persona_id: IDL.Text,
   })
   const AccountResponse = IDL.Record({
@@ -66,6 +67,7 @@ export const idlFactory = ({ IDL }) => {
   })
   const PersonaRequest = IDL.Record({
     domain: IDL.Text,
+    persona_name: IDL.Text,
     persona_id: IDL.Text,
   })
   const PhoneNumberCredential = IDL.Record({ phone_number: IDL.Text })
@@ -197,17 +199,12 @@ export const idlFactory = ({ IDL }) => {
     modified_date: IDL.Nat64,
     created_date: IDL.Nat64,
   })
-  const Persona = IDL.Record({
-    domain: IDL.Text,
-    basic_entity: BasicEntity,
-    persona_id: IDL.Text,
-  })
   const Account = IDL.Record({
     name: IDL.Opt(IDL.Text),
     anchor: IDL.Nat64,
     access_points: IDL.Vec(AccessPointRequest),
     basic_entity: BasicEntity,
-    personas: IDL.Vec(Persona),
+    personas: IDL.Vec(PersonaResponse),
     principal_id: IDL.Text,
     phone_number: IDL.Opt(IDL.Text),
   })

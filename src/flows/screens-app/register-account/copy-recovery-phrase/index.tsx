@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { useMultipass } from "frontend/hooks/use-multipass"
 import { CopyRecoveryPhrase } from "frontend/screens/copy-recovery-phrase"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
@@ -28,7 +27,6 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   const navigate = useNavigate()
   const { secret, scope } = useParams()
   const { isLoading, setIsloading } = useIsLoading()
-  const { applicationName } = useMultipass()
   const { remoteLogin, remoteNFIDLogin } = useAuthorizeApp()
   const { state } = useLocation()
 
@@ -75,9 +73,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   return (
     <CopyRecoveryPhrase
       recoveryPhrase={recoveryPhrase}
-      continueButtonText={
-        continueButtonText || `Log in to ${applicationName || "NFID Demo"}.`
-      }
+      continueButtonText={continueButtonText || `Continue`}
       showSuccessModal={successModal}
       showSuccessModalText={
         "Remember to keep your recovery phrase secret, safe, offline, and only use it on https://nfid.one"

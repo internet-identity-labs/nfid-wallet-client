@@ -58,7 +58,7 @@ export const usePersona = ({ application }: UsePersona = {}) => {
     async ({ domain }) => {
       if (!account) throw new Error('"account" is required')
 
-      const persona = { domain, persona_id: nextPersonaId }
+      const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
 
       const response = await personaService?.create_persona(persona)
 

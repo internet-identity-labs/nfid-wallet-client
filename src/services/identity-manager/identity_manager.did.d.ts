@@ -21,7 +21,7 @@ export interface Account {
   anchor: bigint
   access_points: Array<AccessPointRequest>
   basic_entity: BasicEntity
-  personas: Array<Persona>
+  personas: Array<PersonaResponse>
   principal_id: string
   phone_number: [] | [string]
 }
@@ -189,15 +189,18 @@ export interface NumericEntity {
 }
 export interface Persona {
   domain: string
+  persona_name: string
   basic_entity: BasicEntity
   persona_id: string
 }
 export interface PersonaRequest {
   domain: string
+  persona_name: string
   persona_id: string
 }
 export interface PersonaResponse {
   domain: string
+  persona_name: string
   persona_id: string
 }
 export interface PhoneNumberCredential {

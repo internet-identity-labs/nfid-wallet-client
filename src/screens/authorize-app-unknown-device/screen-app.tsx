@@ -14,6 +14,7 @@ export const AppScreenAuthorizeAppUnknownDevice: React.FC<
   AppScreenAuthorizeAppUnknownDeviceProps
 > = ({
   registerDeviceDeciderPath,
+  registerSameDevicePath,
   url,
   showRegister,
   applicationName,
@@ -30,6 +31,7 @@ export const AppScreenAuthorizeAppUnknownDevice: React.FC<
         <div className="container px-6 py-0 mx-auto sm:py-4">
           <AuthorizeAppUnknownDevice
             registerDeviceDeciderPath={registerDeviceDeciderPath}
+            registerSameDevicePath={registerSameDevicePath}
             url={url}
             showRegister={showRegister}
             applicationName={applicationName}

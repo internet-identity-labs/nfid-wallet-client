@@ -2,12 +2,14 @@ import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-import { Navigate } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 
+import { useIsIframe } from "frontend/hooks/use-is-iframe"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 
 export interface AuthorizeAppUnknownDeviceProps {
   registerDeviceDeciderPath: string
+  registerSameDevicePath: string
   url: string | null
   showRegister: boolean
   applicationName?: string
@@ -15,8 +17,16 @@ export interface AuthorizeAppUnknownDeviceProps {
 
 export const AuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ registerDeviceDeciderPath, url, showRegister, applicationName }) => {
+> = ({
+  registerDeviceDeciderPath,
+  registerSameDevicePath,
+  url,
+  showRegister,
+  applicationName,
+}) => {
   const { generatePath } = useNFIDNavigate()
+  const isIframe = useIsIframe()
+
   return url && !showRegister ? (
     <div className={clsx("text-center")}>
       <H5 className="mb-4">{applicationName}</H5>
@@ -26,9 +36,16 @@ export const AuthorizeAppUnknownDevice: React.FC<
         </div>
 
         <div className="py-5 m-auto">
-          <a href={url} target="_blank" rel="noreferrer">
+          <LinkWrapper
+            isIframe={isIframe}
+            url={
+              isIframe
+                ? registerSameDevicePath
+                : generatePath(registerSameDevicePath)
+            }
+          >
             <QRCode content={url} options={{ margin: 0 }} />
-          </a>
+          </LinkWrapper>
         </div>
       </div>
     </div>
@@ -36,3 +53,16 @@ export const AuthorizeAppUnknownDevice: React.FC<
     <Navigate to={generatePath(registerDeviceDeciderPath)} />
   ) : null
 }
+
+const LinkWrapper: React.FC<{ isIframe: boolean; url: string }> = ({
+  url,
+  isIframe,
+  children,
+}) =>
+  isIframe ? (
+    <a href={url} target={isIframe ? "_blank" : "_self"} rel="noreferrer">
+      {children}
+    </a>
+  ) : (
+    <Link to={url}>{children}</Link>
+  )

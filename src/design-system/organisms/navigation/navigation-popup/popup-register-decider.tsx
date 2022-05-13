@@ -21,7 +21,7 @@ interface PopupRegisterDeciderProps
 export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { setStatus } = useRegisterQRCode()
-  const { createDevice } = useDevices()
+  const { recoverDevice } = useDevices()
   const { readAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
   const { getPersona } = usePersona()
@@ -31,7 +31,6 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   } = useDeviceInfo()
 
   const { userNumber } = useUnknownDeviceConfig()
-  const { createWebAuthNDevice } = useDevices()
 
   const [linkAccount, setLinkAccount] = React.useState(
     "rb_link_account_register",
@@ -44,12 +43,8 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         return console.error(`Missing userNumber: ${userNumber}`)
       }
 
-      const { device } = await createWebAuthNDevice(BigInt(userNumber))
-      await createDevice({
-        ...device,
-        userNumber,
-      })
-      Promise.all([readAccount(), getPersona()])
+      await recoverDevice(userNumber)
+      await Promise.all([readAccount(), getPersona()])
 
       setIsLoading(false)
       setStatus("registerDevice")

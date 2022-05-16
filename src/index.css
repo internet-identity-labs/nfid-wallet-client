@@ -239,14 +239,6 @@ ul {
   background: #3d3f56;
 }
 
-main.landing-page {
-  margin-top: -80px;
-}
-
-main.landing-page .container {
-  margin-top: 80px;
-}
-
 @media only screen and (max-width: 820px) {
   .social-button {
     width: 156px;
@@ -269,13 +261,6 @@ main.landing-page .container {
     width: 310%;
   }
 
-  main.landing-page {
-    margin-top: -80px;
-  }
-
-  /* main.landing-page .container {
-    margin-top: 72px;
-  } */
 
   main.landing-page .container .sm\:text-titleLarge {
     font-size: 34px;
@@ -327,18 +312,6 @@ main.landing-page .container {
     width: 410%;
     top: -65em;
     left: -22em;
-  }
-
-  main.landing-page {
-    margin-top: -80px;
-  }
-
-  main.landing-page .container {
-    margin-top: 0;
-  }
-
-  main.landing-page .container .mobile.has-account {
-    margin-top: 80px;
   }
 }
 

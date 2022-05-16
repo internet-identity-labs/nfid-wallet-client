@@ -73,13 +73,7 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
   return (
     <CopyRecoveryPhrase
       recoveryPhrase={recoveryPhrase}
-<<<<<<< HEAD:src/flows/screens-app/register-account/copy-recovery-phrase.tsx
-      continueButtonText={
-        continueButtonText || `Log in to ${applicationName || "NFID Demo"}`
-      }
-=======
       continueButtonText={continueButtonText || `Continue`}
->>>>>>> main:src/flows/screens-app/register-account/copy-recovery-phrase/index.tsx
       showSuccessModal={successModal}
       showSuccessModalText={
         "Remember to keep your recovery phrase secret, safe, offline, and only use it on https://nfid.one"

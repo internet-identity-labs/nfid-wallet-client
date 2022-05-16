@@ -48,9 +48,12 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
       <main
         className={clsx(
           "bg-gradient-to-b from-white to-[#F3F8FE] overflow-hidden sm:overflow-clip scroll-smooth landing-page flex flex-1",
+          "-mt-[10vh]",
         )}
       >
-        <div className="container px-6 py-0 mx-auto sm:py-4">
+        <div
+          className={clsx("container px-6 py-0 mx-auto sm:py-4", "mt-[10vh]")}
+        >
           <ParallaxProvider>
             <div
               className={`font-inner ${isMobile ? `mobile` : ``} ${

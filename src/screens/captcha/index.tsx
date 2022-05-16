@@ -76,7 +76,7 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
   }, [account, navigate, recoveryPhrase, successPath])
   return (
     <AppScreen isFocused>
-      <main className={clsx("flex flex-1")}>
+      <main className={clsx("flex flex-1 overflow-hidden")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
           <Card
             className={`grid grid-cols-12 offset-header ${

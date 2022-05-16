@@ -4,34 +4,34 @@ import {
   Loader,
   RadioButton,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React, { useState } from "react"
 
 import logo from "frontend/assets/logo.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import clsx from "clsx"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface PopupRegisterDeciderProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-}
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { setStatus } = useRegisterQRCode()
-  const { createDevice } = useDevices()
+  const { recoverDevice } = useDevices()
   const { readAccount } = useAccount()
-  const { identityManager } = useAuthentication()
+  const { setShouldStoreLocalAccount } = useAuthentication()
+  const { getPersona } = usePersona()
 
   const {
     platform: { device, authenticator: platformAuth },
   } = useDeviceInfo()
 
   const { userNumber } = useUnknownDeviceConfig()
-  const { createWebAuthNDevice } = useDevices()
 
   const [linkAccount, setLinkAccount] = React.useState(
     "rb_link_account_register",
@@ -44,18 +44,15 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         return console.error(`Missing userNumber: ${userNumber}`)
       }
 
-      const { device } = await createWebAuthNDevice(BigInt(userNumber))
-      await createDevice({
-        ...device,
-        userNumber,
-      })
-      await readAccount(identityManager, userNumber)
+      await recoverDevice(userNumber)
+      await Promise.all([readAccount(), getPersona()])
 
       setIsLoading(false)
       setStatus("registerDevice")
     }
 
     if (linkAccount === "rb_link_account_login") {
+      setShouldStoreLocalAccount(false)
       setStatus("")
     }
   }
@@ -65,18 +62,23 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   }, [setStatus])
 
   return (
-    <div className={clsx(isLoading && 'pointer-events-none')}>
+    <div className={clsx(isLoading && "pointer-events-none")}>
       <div
         className={clsx(
           "flex justify-center items-center",
           "absolute top-0 right-0 bottom-0 left-0",
           "w-full h-full bg-gray-900 opacity-[75%] rounded-xl",
-          !isLoading && 'hidden'
+          !isLoading && "hidden",
         )}
       >
-        <Loader imageClasses="w-1/4" isLoading={isLoading} iframe fullscreen={false} />
+        <Loader
+          imageClasses="w-1/4"
+          isLoading={isLoading}
+          iframe
+          fullscreen={false}
+        />
       </div>
-      <img src={logo} alt="logo" className="my-8 w-20" />
+      <img src={logo} alt="logo" className="w-20 my-8" />
       <H5 className="mb-4">Log in faster on this device</H5>
       <div>
         Trust this {device}? You can quickly and securely log in the next time

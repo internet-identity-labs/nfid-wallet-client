@@ -1,43 +1,68 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+import { Link, Navigate } from "react-router-dom"
 
-interface AuthorizeAppUnknownDeviceProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+import { useIsIframe } from "frontend/hooks/use-is-iframe"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
+
+export interface AuthorizeAppUnknownDeviceProps {
+  registerDeviceDeciderPath: string
+  registerSameDevicePath: string
+  url: string | null
+  showRegister: boolean
   applicationName?: string
-  url: string
-  onLogin: () => void
 }
 
 export const AuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ children, className, applicationName, url, onLogin }) => {
-  return (
-    <div className={clsx("", className)}>
-      <H5 className="mb-4">Sign in to {applicationName} with NFID</H5>
+> = ({
+  registerDeviceDeciderPath,
+  registerSameDevicePath,
+  url,
+  showRegister,
+  applicationName,
+}) => {
+  const { generatePath } = useNFIDNavigate()
+  const isIframe = useIsIframe()
+
+  return url && !showRegister ? (
+    <div className={clsx("text-center")}>
+      <H5 className="mb-4">{applicationName}</H5>
       <div className="flex flex-col">
-        <div>
-          Complete registration
+        <div className="text-sm">
+          Verify it's you. Scan this code with your phone’s camera.
         </div>
 
         <div className="py-5 m-auto">
-          <a href={url} target="_blank" rel="noreferrer">
+          <LinkWrapper
+            isIframe={isIframe}
+            url={
+              isIframe
+                ? registerSameDevicePath
+                : generatePath(registerSameDevicePath)
+            }
+          >
             <QRCode content={url} options={{ margin: 0 }} />
-          </a>
+          </LinkWrapper>
         </div>
-        <p className="text-xs text-center text-gray-500">
-          Scan this code with your phone's camera to continue
-        </p>
-
-        <Button text className="mb-2" onClick={onLogin}>
-          Recover an existing NFID
-        </Button>
       </div>
     </div>
-  )
+  ) : showRegister ? (
+    <Navigate to={generatePath(registerDeviceDeciderPath)} />
+  ) : null
 }
+
+const LinkWrapper: React.FC<{ isIframe: boolean; url: string }> = ({
+  url,
+  isIframe,
+  children,
+}) =>
+  isIframe ? (
+    <a href={url} target={isIframe ? "_blank" : "_self"} rel="noreferrer">
+      {children}
+    </a>
+  ) : (
+    <Link to={url}>{children}</Link>
+  )

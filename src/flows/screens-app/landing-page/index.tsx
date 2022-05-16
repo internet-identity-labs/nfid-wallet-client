@@ -1,4 +1,3 @@
-import { Accordion } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 // @ts-ignore
@@ -6,6 +5,7 @@ import { Fade } from "react-reveal"
 import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
+import { Accordion } from "frontend/design-system/atoms/accordion"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
@@ -39,6 +39,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
 
   return (
     <AppScreen
+      showLogo
       bubbleOptions={{
         showBubbles: false,
       }}
@@ -70,7 +71,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 </div>
                 <div className="relative">
                   <img
-                    className="absolute z-0 w-[275%] -left-40 md:w-[210%] top-[-60rem] md:-top-40 max-w-none md:left-[-85%] blur-blue"
+                    className="absolute z-0 w-[275%] -left-40 md:w-[210%] top-[-35rem] sm:top-[-60rem] md:-top-40 max-w-none md:left-[-85%] blur-blue"
                     src={Blur1}
                     alt="blur1"
                   />
@@ -353,7 +354,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           </section> */}
               <section
                 id="faq"
-                className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72"
+                className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72 md:-scroll-mt-24"
               >
                 <div className="top-28">
                   <Fade left>

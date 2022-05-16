@@ -3,14 +3,16 @@ import clsx from "clsx"
 import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 import { EventSummary } from "./event-summary"
 import image_dog from "./image_dog.svg"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
 
 interface RegisterAccountIntroProps
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement> {
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   continueButtonContent: string
   onContinueButtonClick: () => Promise<void>
   isLoading?: boolean
@@ -45,7 +47,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
             "",
           )}
         >
-          <div/>
+          <div />
           <div className="absolute sm:relative flex flex-grow left-0 sm:left-auto w-[100vw] z-10 top-0 sm:top-0">
             <img
               src={image_dog}
@@ -63,7 +65,8 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
           >
             <EventSummary />
             <div className="font-bold text-md md:text-lg">
-              Add this proof of IIW attendance to one of an infinite number of your DIDs
+              Add this proof of IIW attendance to one of an infinite number of
+              your DIDs
             </div>
 
             <div>

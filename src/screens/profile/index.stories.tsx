@@ -41,7 +41,7 @@ LoggedIn.args = {
     { domain: "wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "1" },
     { domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "2" },
   ],
-  devices: [{ alias: "My Device", pubkey: [123, 456, 789] }],
+  devices: [{ alias: "My Device", pubkey: [123, 456, 789] }, { alias: "Recovery Phrase", pubkey: [0, 0, 0], recovery: true }],
   loading: false,
   showModal: false,
 }

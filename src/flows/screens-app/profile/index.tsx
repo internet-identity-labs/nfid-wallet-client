@@ -9,10 +9,7 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 
 interface AuthenticateNFIDHomeProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
   children,
@@ -23,12 +20,13 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
   const [hasPoa, setHasPoa] = React.useState(false)
   const [showModal, setShowModal] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
+  const [fetched, loadOnce] = React.useReducer(() => true, false)
   const [modalOptions, setModalOptions] =
     React.useState<ModalAdvancedProps | null>(null)
 
-  const { devices, deleteDevice, handleLoadDevices } = useDevices()
-  const { nfidPersonas } = usePersona()
-  const { account } = useAccount()
+  const { devices, getDevices, deleteDevice, handleLoadDevices } = useDevices()
+  const { nfidPersonas, getPersona } = usePersona()
+  const { account, readAccount } = useAccount()
   const { imAddition } = useAuthentication()
 
   React.useEffect(() => {
@@ -37,6 +35,15 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
         setHasPoa(response)
       })
   }, [imAddition])
+
+  React.useEffect(() => {
+    if (!fetched) {
+      loadOnce()
+      readAccount()
+      getDevices()
+      getPersona()
+    }
+  }, [fetched, getDevices, getPersona, readAccount])
 
   const handleDeleteDevice = React.useCallback(
     (publicKey: PublicKey) => async () => {

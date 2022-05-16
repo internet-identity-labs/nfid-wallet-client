@@ -117,7 +117,8 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
           />
         }
         action={
-          <div className="flex space-x-2">
+          <div className="flex space-x-2"
+          style={{display: (device as any).recovery ? 'none' : ''}}>
             <div
               className="hover:bg-gray-200 text-red-base"
               onClick={handleDeleteDeviceDialog}

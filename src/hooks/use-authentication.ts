@@ -5,7 +5,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { userNumberAtom } from "frontend/services/identity-manager/account/state"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { _SERVICE as ImAdditionsService } from "frontend/services/iiw/im_addition.did"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
@@ -24,6 +24,7 @@ interface Actors {
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const remoteLoginAtom = atom<boolean>(false)
+const shouldStoreLocalAccountAtom = atom<boolean>(true)
 const actorsAtom = atom<Actors | null>(null)
 const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
 export const principalIdAtom = atom((get) =>
@@ -36,11 +37,13 @@ export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
   const [isAuthenticated] = useAtom(isAuthenticatedAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
+  const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
+  const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
+    shouldStoreLocalAccountAtom,
+  )
   const [actors, setActors] = useAtom(actorsAtom)
   const [principalId] = useAtom(principalIdAtom)
-
-  const { userNumber } = useAccount()
 
   const logout = React.useCallback(() => {
     setActors(null)
@@ -58,41 +61,45 @@ export const useAuthentication = () => {
     Usergeek.trackSession()
   }, [])
 
-  const login = React.useCallback(async () => {
-    try {
-      setIsLoading(true)
+  const login = React.useCallback(
+    async (userNumberOverwrite?: bigint) => {
+      try {
+        setIsLoading(true)
+        const anchor = userNumberOverwrite || userNumber
 
-      if (!userNumber) {
-        throw new Error("Register first")
-      }
+        if (!anchor) {
+          throw new Error("Register first")
+        }
 
-      const response = await IIConnection.login(userNumber)
-      if (response.kind === "authFail") return setIsLoading(false)
+        const response = await IIConnection.login(anchor)
+        if (response.kind === "authFail") return setIsLoading(false)
 
-      const result = apiResultToLoginResult(response)
+        const result = apiResultToLoginResult(response)
 
-      if (result.tag === "err") {
-        setError(result)
+        if (result.tag === "err") {
+          setError(result)
+          setIsLoading(false)
+          return
+        }
+
+        if (result.tag === "ok") {
+          setActors(result)
+          initUserGeek(
+            result?.internetIdentity?.delegationIdentity.getPrincipal(),
+          )
+          setError(null)
+        }
+
         setIsLoading(false)
-        return
-      }
-
-      if (result.tag === "ok") {
-        setActors(result)
-        initUserGeek(
-          result?.internetIdentity?.delegationIdentity.getPrincipal(),
-        )
+        return result
+      } catch {
+        setError("Failed to authenticate")
+        setIsLoading(false)
         setError(null)
       }
-
-      setIsLoading(false)
-      return result
-    } catch {
-      setError("Failed to authenticate")
-      setIsLoading(false)
-      setError(null)
-    }
-  }, [initUserGeek, setActors, setError, setIsLoading, userNumber])
+    },
+    [initUserGeek, setActors, setError, setIsLoading, userNumber],
+  )
 
   const remoteLogin = React.useCallback(
     async (actors) => {
@@ -136,13 +143,20 @@ export const useAuthentication = () => {
         initUserGeek(
           result?.internetIdentity?.delegationIdentity.getPrincipal(),
         )
+        setShouldStoreLocalAccount(false)
         setError(null)
       }
 
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setActors, setError, setIsLoading],
+    [
+      initUserGeek,
+      setActors,
+      setError,
+      setIsLoading,
+      setShouldStoreLocalAccount,
+    ],
   )
 
   return {
@@ -156,6 +170,8 @@ export const useAuthentication = () => {
     pubsubChannel: actors?.pubsubChannelActor,
     imAddition: actors?.imAdditionActor,
     error,
+    shouldStoreLocalAccount,
+    setShouldStoreLocalAccount,
     isRemoteDelegate,
     login,
     remoteLogin,

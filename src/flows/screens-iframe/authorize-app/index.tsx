@@ -17,13 +17,13 @@ export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
 
   React.useEffect(() => {
     if (userNumber && identityManager) {
-      readAccount(identityManager, userNumber)
+      readAccount()
     }
   }, [identityManager, readAccount, userNumber])
 
   return (
     <IFrameScreen logo>
-      <AuthorizeApp iframe />
+      <AuthorizeApp isRemoteAuthorisation />
     </IFrameScreen>
   )
 }

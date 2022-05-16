@@ -4,6 +4,7 @@ import {
   Loader,
   RadioButton,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
 import React, { useState } from "react"
 
 import logo from "frontend/assets/logo.svg"
@@ -61,8 +62,22 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   }, [setStatus])
 
   return (
-    <div>
-      <Loader isLoading={isLoading} fullscreen />
+    <div className={clsx(isLoading && "pointer-events-none")}>
+      <div
+        className={clsx(
+          "flex justify-center items-center",
+          "absolute top-0 right-0 bottom-0 left-0",
+          "w-full h-full bg-gray-900 opacity-[75%] rounded-xl",
+          !isLoading && "hidden",
+        )}
+      >
+        <Loader
+          imageClasses="w-1/4"
+          isLoading={isLoading}
+          iframe
+          fullscreen={false}
+        />
+      </div>
       <img src={logo} alt="logo" className="w-20 my-8" />
       <H5 className="mb-4">Log in faster on this device</H5>
       <div>

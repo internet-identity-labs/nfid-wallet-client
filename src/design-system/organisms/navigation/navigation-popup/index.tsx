@@ -3,7 +3,6 @@ import React from "react"
 // @ts-ignore
 import { Fade } from "react-reveal"
 
-import { PopupNewDevice } from "frontend/design-system/organisms/navigation/navigation-popup/popup-new-device"
 import { PopupRegisterDecider } from "frontend/design-system/organisms/navigation/navigation-popup/popup-register-decider"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -28,8 +27,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
       <div
         className={clsx(
           "absolute right-0 flex flex-col items-center pb-6 bg-white shadow-iframe rounded-xl top-14",
-          isAuthenticated ? "w-60" : "w-80",
-          status !== "" && "w-[25rem] px-8",
+          isAuthenticated || status === "registerDevice" ? "w-60" : "w-80",
           status === "" && !isPopupLogin && window.scrollY < 500 && "hidden",
         )}
       >
@@ -41,8 +39,8 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
           }}
         />
         {status === "registerDecider" && <PopupRegisterDecider />}
-        {status === "registerDevice" && <PopupNewDevice />}
-        {status !== "" ? null : isPopupLogin ? (
+        {status === "registerDevice" && <PopupLogin />}
+        {status !== "" ? null : isAuthenticated || account ? (
           <PopupLogin />
         ) : (
           <PopupRegister />

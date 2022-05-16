@@ -5,7 +5,7 @@ Feature: Recover NFID Account from Recovery Phrase
   Background:
     Given I open the site "/"
 
-  @onlyOne
+  @runOnly
   Scenario:
     When I click on the link "Recover NFID"
     Then I expect the url to contain "/recover-nfid/enter-recovery-phrase"

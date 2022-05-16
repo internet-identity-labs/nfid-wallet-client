@@ -10,11 +10,11 @@ interface MenuButtonProps {
 
 export const MenuButton: React.FC<MenuButtonProps> = ({ items }) => {
   return (
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu as="div" className="inline-block relative text-left">
       <div>
-        <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+        <Menu.Button className="inline-flex justify-center px-4 py-2 w-full text-sm font-medium text-gray-700 bg-white rounded-md border hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
           <FaChevronCircleDown
-            className="w-5 h-5 ml-2 -mr-1"
+            className="-mr-1 ml-2 w-5 h-5"
             aria-hidden="true"
           />
         </Menu.Button>
@@ -29,7 +29,7 @@ export const MenuButton: React.FC<MenuButtonProps> = ({ items }) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 mt-2 w-56 bg-white rounded-md ring-1 ring-black ring-opacity-5 shadow-lg origin-top-right focus:outline-none">
           <div className="py-1">
             {items.map((item) => (
               <Menu.Item>

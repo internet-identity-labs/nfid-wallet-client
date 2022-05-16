@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react"
 
 interface MapPinIconProps extends React.HTMLAttributes<HTMLOrSVGElement> {
-  strokeColor?: string;
-  size?: string | number;
+  strokeColor?: string
+  size?: string | number
 }
 
 export const MapPinIcon: React.FC<MapPinIconProps> = ({
   onClick,
-  strokeColor = 'black',
+  strokeColor = "black",
   size = 24,
 }) => {
   return (
@@ -34,5 +34,5 @@ export const MapPinIcon: React.FC<MapPinIconProps> = ({
         strokeLinejoin="round"
       />
     </svg>
-  );
-};
+  )
+}

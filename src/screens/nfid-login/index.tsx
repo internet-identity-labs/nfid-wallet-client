@@ -3,24 +3,30 @@ import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+import { useNavigate } from "react-router-dom"
 
 import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 
 interface AuthenticateNFIDLoginContentProps
   extends React.HTMLAttributes<HTMLDivElement> {
   iframe?: boolean
+  loginSuccessPath?: string
   onLoginSuccess?: (loginResult: void | LoginSuccess) => void
 }
 
 export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
   iframe,
   onLoginSuccess,
+  loginSuccessPath,
 }) => {
   const { account } = useAccount()
   const { isLoading, error, login } = useAuthentication()
+  const { generatePath } = useNFIDNavigate()
+  const navigate = useNavigate()
 
   const title = "Unlock your NFID"
 
@@ -29,7 +35,10 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
     if (onLoginSuccess) {
       onLoginSuccess(result)
     }
-  }, [login, onLoginSuccess])
+    if (loginSuccessPath) {
+      navigate(generatePath(loginSuccessPath))
+    }
+  }, [generatePath, login, loginSuccessPath, navigate, onLoginSuccess])
 
   return (
     <>

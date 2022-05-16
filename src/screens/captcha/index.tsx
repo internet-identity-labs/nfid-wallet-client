@@ -1,4 +1,3 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
 import {
   Card,
   CardBody,
@@ -12,42 +11,20 @@ import {
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
-import {
-  generatePath,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
-import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
-import { Challenge } from "frontend/services/internet-identity/generated/internet_identity_types"
-import {
-  IIConnection,
-  ChallengeResult,
-  IC_DERIVATION_PATH,
-} from "frontend/services/internet-identity/iiConnection"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { captchaRules } from "frontend/utils/validations"
 
-interface RegisterPayload {
-  identity: string
-  deviceName: string
-}
-
-interface RegisterAccountCaptchaState {
-  registerPayload: RegisterPayload
-}
+import { useCaptcha } from "./hook"
 
 interface CaptchaProps {
   successPath: string
 }
 
 export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
-  const params = useParams()
+  const { navigate } = useNFIDNavigate()
   const { isMobile } = useDeviceInfo()
   const {
     register,
@@ -58,135 +35,45 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
   } = useForm({
     mode: "onTouched",
   })
+
+  const {
+    account,
+    loading,
+    setLoading,
+    captchaResp,
+    requestCaptcha,
+    recoveryPhrase,
+    registerAnchor,
+  } = useCaptcha({
+    onApiError: async () => {
+      setLoading(false)
+    },
+    onBadChallenge: async () => {
+      setValue("captcha", "")
+      await requestCaptcha()
+      setLoading(false)
+      setError("captcha", {
+        type: "manual",
+        message: "Wrong captcha! Please try again",
+      })
+    },
+  })
+
   const isFormComplete = ["captcha"].every((field) => dirtyFields[field])
-  const { state } = useLocation()
-  const navigate = useNavigate()
-  const { createAccount } = useAccount()
 
-  const [captchaResp, setCaptchaResp] = React.useState<Challenge | undefined>()
-
-  const [loading, setLoading] = React.useState(true)
-
-  const { onRegisterSuccess } = useAuthentication()
-
-  const requestCaptcha = React.useCallback(async () => {
-    setLoading(true)
-
-    const cha = await IIConnection.createChallenge()
-
-    setCaptchaResp(cha)
-    setLoading(false)
-  }, [])
+  // React.useEffect(() => {
+  //   !captchaResp && requestCaptcha()
+  // }, [captchaResp, requestCaptcha])
 
   React.useEffect(() => {
-    requestCaptcha()
-
-    return () => {
-      setCaptchaResp(undefined)
+    if (account && recoveryPhrase) {
+      navigate(successPath, {
+        state: {
+          recoveryPhrase,
+        },
+      })
     }
-  }, [requestCaptcha])
-
-  const registerAnchor = React.useCallback(
-    async (identity: string, deviceName: string, captcha: string) => {
-      if (!captchaResp) throw new Error("No challenge response")
-
-      const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
-
-      const challengeResult: ChallengeResult = {
-        chars: captcha,
-        key: captchaResp.challenge_key,
-      }
-
-      const response = await IIConnection.register(
-        webAuthnIdentity,
-        deviceName,
-        challengeResult,
-      )
-      onRegisterSuccess(response)
-
-      return response
-    },
-    [captchaResp, onRegisterSuccess],
-  )
-
-  const createRecoveryPhrase = React.useCallback(
-    async (userNumber: bigint, connection: IIConnection) => {
-      const recovery = generate().trim()
-      const recoverIdentity = await fromMnemonicWithoutValidation(
-        recovery,
-        IC_DERIVATION_PATH,
-      )
-
-      await connection.add(
-        userNumber,
-        "Recovery phrase",
-        { seed_phrase: null },
-        { recovery: null },
-        recoverIdentity.getPublicKey().toDer(),
-      )
-      return recovery
-    },
-    [],
-  )
-
-  const completeNFIDProfile = React.useCallback(
-    async ({ captcha }: any) => {
-      setLoading(true)
-
-      const { registerPayload } = state as RegisterAccountCaptchaState
-
-      const responseRegisterAnchor = await registerAnchor(
-        registerPayload.identity,
-        registerPayload.deviceName,
-        captcha,
-      )
-
-      if (responseRegisterAnchor.kind === "loginSuccess") {
-        const { userNumber, internetIdentity } = responseRegisterAnchor
-
-        const recoveryPhrase = await createRecoveryPhrase(
-          userNumber,
-          internetIdentity,
-        )
-
-        await createAccount(responseRegisterAnchor.identityManager, {
-          anchor: userNumber,
-        })
-
-        const navPath = generatePath(successPath, params)
-
-        return navigate(navPath, {
-          state: {
-            recoveryPhrase: `${userNumber} ${recoveryPhrase}`,
-          },
-        })
-      }
-      if (responseRegisterAnchor.kind === "badChallenge") {
-        setValue("captcha", "")
-        await requestCaptcha()
-        setLoading(false)
-        setError("captcha", {
-          type: "manual",
-          message: "Wrong captcha! Please try again",
-        })
-      }
-      if (responseRegisterAnchor.kind === "apiError") {
-        setLoading(false)
-      }
-    },
-    [
-      state,
-      registerAnchor,
-      createRecoveryPhrase,
-      createAccount,
-      successPath,
-      params,
-      navigate,
-      setValue,
-      requestCaptcha,
-      setError,
-    ],
-  )
+  }, [account, navigate, recoveryPhrase, successPath])
   return (
     <AppScreen isFocused>
       <main className={clsx("flex flex-1 overflow-hidden")}>
@@ -253,7 +140,7 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
                   block
                   secondary
                   disabled={!isFormComplete || loading}
-                  onClick={handleSubmit(completeNFIDProfile)}
+                  onClick={handleSubmit(registerAnchor)}
                   data-captcha-key={captchaResp?.challenge_key}
                 >
                   <span>Verify</span>

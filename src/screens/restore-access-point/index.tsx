@@ -5,27 +5,30 @@ import { TextArea } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from "react-router-dom"
 
-import { useMessageChannel } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-message-channel"
-import { useUnknownDeviceConfig } from "frontend/flows/screens-iframe/authenticate/login-unknown/hooks/use-unknown-device.config"
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useMessageChannel } from "frontend/screens/authorize-app-unknown-device/hooks/use-message-channel"
+import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement> {
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   iframe?: boolean
 }
 
-export const RestoreAccessPoint: React.FC<RestoreAccessPointRecoveryPhraseContentProps> = ({ className, iframe }) => {
+export const RestoreAccessPoint: React.FC<
+  RestoreAccessPointRecoveryPhraseContentProps
+> = ({ className, iframe }) => {
   const { loginWithRecovery, error, isLoading, isAuthenticated } =
     useAuthentication()
   const { setLocalAccount } = useAccount()
-  const { handleStoreNewDevice, setUserNumber } =
-    useUnknownDeviceConfig()
-  const navigate = useNavigate();
+  const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
+  const navigate = useNavigate()
 
   const handleNewDevice = React.useCallback(
     async (event) => {
@@ -71,11 +74,12 @@ export const RestoreAccessPoint: React.FC<RestoreAccessPointRecoveryPhraseConten
       if (result?.tag === "ok") {
         setUserNumber(userNumber)
         setLocalAccount({ anchor: userNumber.toString() })
-        navigate('/login-unknown-device')
+        navigate("/login-unknown-device")
       } else {
         setError("recoveryPhrase", {
           type: "manual",
-          message: "Invalid Recovery Phrase",
+          message:
+            "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         })
       }
     },
@@ -88,47 +92,50 @@ export const RestoreAccessPoint: React.FC<RestoreAccessPointRecoveryPhraseConten
     if (error) {
       setError("recoveryPhrase", {
         type: "manual",
-        message: "Invalid Recovery Phrase",
+        message:
+          "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
       })
     }
   }, [error, setError])
 
-  if (isAuthenticated) return <Navigate to={'/profile'} />
+  if (isAuthenticated) return <Navigate to={"/profile"} />
 
-  return <div className={clsx("", className)}>
-    <div>
-      {iframe ? (
-        <H5 className="mb-4">{title}</H5>
-      ) : (
-        <H2 className="mb-4">{title}</H2>
-      )}
+  return (
+    <div className={clsx("", className)}>
+      <div>
+        {iframe ? (
+          <H5 className="mb-4">{title}</H5>
+        ) : (
+          <H2 className="mb-4">{title}</H2>
+        )}
 
-      <div className={clsx(iframe ? "mb-2" : "mb-6")}>
-        Paste your recovery phrase here to proceed:
+        <div className={clsx(iframe ? "mb-2" : "mb-6")}>
+          Paste your recovery phrase here to proceed:
+        </div>
+
+        <TextArea
+          rows={6}
+          errorText={errors.recoveryPhrase?.message}
+          {...register("recoveryPhrase", {
+            required: {
+              value: true,
+              message: "Please enter your Recovery Phrase",
+            },
+          })}
+        />
+
+        <Button
+          secondary
+          block={iframe}
+          large={!iframe}
+          className="my-4"
+          onClick={handleSubmit(onLogin)}
+        >
+          Log in
+        </Button>
+
+        <Loader isLoading={isLoading} iframe={iframe} />
       </div>
-
-      <TextArea
-        rows={6}
-        errorText={errors.recoveryPhrase?.message}
-        {...register("recoveryPhrase", {
-          required: {
-            value: true,
-            message: "Please enter your Recovery Phrase",
-          },
-        })}
-      />
-
-      <Button
-        secondary
-        block={iframe}
-        large={!iframe}
-        className="my-4"
-        onClick={handleSubmit(onLogin)}
-      >
-        Log in
-      </Button>
-
-      <Loader isLoading={isLoading} iframe={iframe} />
     </div>
-  </div>
+  )
 }

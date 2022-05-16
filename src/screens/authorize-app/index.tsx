@@ -15,11 +15,11 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { ElementProps } from "frontend/types/react"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
-  iframe?: boolean
+  isRemoteAuthorisation?: boolean
 }
 
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
-  iframe = false,
+  isRemoteAuthorisation,
 }) => {
   const [status, setStatus] = React.useState<
     "initial" | "loading" | "success" | "error"
@@ -63,7 +63,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
       async () => {
         setStatus("loading")
 
-        if (iframe && persona_id) {
+        if (!isRemoteAuthorisation && persona_id) {
           await authorizeApp({ persona_id })
           return setStatus("success")
         }
@@ -77,7 +77,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
         )
       },
-    [iframe, secret, scope, remoteLogin, navigate, authorizeApp],
+    [isRemoteAuthorisation, secret, scope, remoteLogin, navigate, authorizeApp],
   )
 
   const handleAuthorizeIIPersona = React.useCallback(
@@ -131,7 +131,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 
   return status === "initial" || status === "loading" ? (
     <div>
-      {iframe ? (
+      {isRemoteAuthorisation ? (
         <H5 className="mb-4">{title}</H5>
       ) : (
         <H2 className="mb-4">{title}</H2>
@@ -194,7 +194,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 
       {/* Disabled for first version */}
       {/* <LinkIIAnchorHref onClick={handleIILink} /> */}
-      <Loader isLoading={status === "loading"} iframe={iframe} />
+      <Loader isLoading={status === "loading"} iframe={isRemoteAuthorisation} />
     </div>
   ) : null
 }

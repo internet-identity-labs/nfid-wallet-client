@@ -53,13 +53,12 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
 
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
-    console.log(">> requestCaptcha", { captchaResp })
 
     const cha = await IIConnection.createChallenge()
 
     setCaptchaResp(cha)
     setLoading(false)
-  }, [captchaResp, setCaptchaResp, setLoading])
+  }, [setCaptchaResp, setLoading])
 
   React.useEffect(() => {
     !captchaResp && requestCaptcha()
@@ -114,11 +113,9 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       responseRegisterAnchor.kind === "loginSuccess"
     ) {
       const { userNumber } = responseRegisterAnchor
-      console.log(">> handleCreateAccount", { userNumber })
-      const response = await createAccount({
+      await createAccount({
         anchor: userNumber,
       })
-      console.log(">> handleCreateAccount", { response })
     }
   }, [createAccount, responseRegisterAnchor])
 
@@ -135,6 +132,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         IC_DERIVATION_PATH,
       )
 
+      // TODO: store as access point
       await internetIdentity.add(
         userNumber,
         "Recovery phrase",
@@ -143,7 +141,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         recoverIdentity.getPublicKey().toDer(),
       )
       setRecoveryPhrase(`${userNumber} ${recovery}`)
-      console.log(">> handleCreateRecoveryPhrase", { userNumber, recovery })
     }
   }, [responseRegisterAnchor])
 

@@ -1,53 +1,146 @@
 import { blobFromHex, blobToHex, derBlobFromBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
-import produce from "immer"
+import { Principal } from "@dfinity/principal"
 import { useAtom } from "jotai"
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import {
+  DeviceData,
+  PublicKey,
+} from "frontend/services/internet-identity/generated/internet_identity_types"
+import {
   creationOptions,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 
 import { useAccount } from "../account/hooks"
-import { Device, devicesAtom } from "./state"
+import {
+  AccessPointRequest,
+  AccessPointResponse,
+} from "../identity_manager.did"
+import { Device, devicesAtom, Icon, recoveryDevicesAtom } from "./state"
+
+const getIcon = (device: DeviceData): Icon => {
+  switch (device.alias.split(" ")[3]) {
+    case "Android":
+    case "iOS":
+      return "mobile"
+    case "Mac OS":
+      return "desktop"
+    default:
+      return "laptop"
+  }
+}
+
+const getBrowser = (device: DeviceData): string => {
+  return device.alias.replace("NFID", "").split(" on ")[0]
+}
+
+const getDeviceName = (device: DeviceData): string => {
+  return device.alias.replace("NFID", "").split(" on ")[1]
+}
+
+const normalizeDevices = (
+  devices: DeviceData[],
+  accessPoints: AccessPointResponse[] = [],
+): Device[] => {
+  return devices.map((device) => {
+    const devicePrincipalId = Principal.selfAuthenticating(
+      new Uint8Array(device.pubkey),
+    ).toString()
+    const accessPoint = accessPoints.find(
+      (ap) => ap.principal_id === devicePrincipalId,
+    )
+    return {
+      isAccessPoint: !!accessPoint,
+      label: accessPoint?.device || getDeviceName(device),
+      icon: (accessPoint?.icon as Icon) || getIcon(device),
+      pubkey: device.pubkey,
+      lastUsed: accessPoint?.last_used
+        ? Number(BigInt(accessPoint.last_used) / BigInt(1000000))
+        : 0,
+      browser: accessPoint?.browser || getBrowser(device),
+    }
+  })
+}
+
+const normalizeDeviceRequest = (device: Device): AccessPointRequest => {
+  return {
+    icon: device.icon,
+    device: device.label,
+    pub_key: device.pubkey,
+    browser: device.browser,
+  }
+}
 
 export const useDevices = () => {
   const [devices, setDevices] = useAtom(devicesAtom)
-  const { newDeviceName } = useDeviceInfo()
+  const [recoveryDevices, setRecoveryDevices] = useAtom(recoveryDevicesAtom)
+
+  const {
+    newDeviceName,
+    browser: { name: browserName },
+  } = useDeviceInfo()
 
   const { userNumber } = useAccount()
   const { internetIdentity, identityManager } = useAuthentication()
 
-  const updateDevices = React.useCallback(
-    (partialDevices: Partial<Device[]>) => {
-      const newDevices = produce(devices, (draft: Device) => ({
-        ...draft,
-        ...partialDevices,
-      }))
-      setDevices(newDevices)
-    },
-    [devices, setDevices],
-  )
-
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber) {
-      const existingDevices = await IIConnection.lookupAuthenticators(
-        userNumber,
-      )
-      setDevices(existingDevices)
+      const [accessPoints, existingDevices] = await Promise.all([
+        identityManager?.read_access_points(),
+        IIConnection.lookupAuthenticators(userNumber),
+      ])
+
+      if (accessPoints?.status_code === 200) {
+        const normalizedDevices = normalizeDevices(
+          existingDevices,
+          accessPoints?.data[0],
+        )
+
+        setDevices(normalizedDevices)
+      }
     }
-  }, [setDevices, userNumber])
+  }, [identityManager, setDevices, userNumber])
+
+  const updateDevice = React.useCallback(
+    async (device: Device) => {
+      const normalizedDevice = normalizeDeviceRequest(device)
+
+      if (!device.isAccessPoint) {
+        const createAccessPointResponse =
+          await identityManager?.create_access_point(normalizedDevice)
+        handleLoadDevices()
+        return createAccessPointResponse
+      }
+      const updatedAccessPoint = await identityManager?.update_access_point(
+        normalizedDevice,
+      )
+      handleLoadDevices()
+      return updatedAccessPoint
+    },
+    [handleLoadDevices, identityManager],
+  )
+
+  const getRecoveryDevices = React.useCallback(async () => {
+    if (userNumber) {
+      const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
+      setRecoveryDevices(recoveryDevices)
+    }
+  }, [setRecoveryDevices, userNumber])
 
   const deleteDevice = React.useCallback(
-    async (pubkey) => {
+    async (pubkey: PublicKey) => {
       if (internetIdentity && userNumber) {
-        await internetIdentity.remove(userNumber, pubkey)
+        await Promise.all([
+          internetIdentity.remove(userNumber, pubkey),
+          identityManager?.remove_access_point({ pub_key: pubkey }),
+        ])
       }
     },
-    [internetIdentity, userNumber],
+    [identityManager, internetIdentity, userNumber],
   )
 
   const createWebAuthNDevice = React.useCallback(
@@ -98,13 +191,13 @@ export const useDevices = () => {
         ),
         identityManager.create_access_point({
           icon: "",
-          device: "",
-          browser: "",
+          device: deviceName,
+          browser: browserName ?? "",
           pub_key: Array.from(pub_key),
         }),
       ])
     },
-    [internetIdentity, identityManager],
+    [internetIdentity, identityManager, browserName],
   )
 
   const recoverDevice = React.useCallback(
@@ -147,11 +240,13 @@ export const useDevices = () => {
 
   return {
     devices,
+    recoveryDevices,
     createWebAuthNDevice,
     getDevices,
+    getRecoveryDevices,
     createDevice,
     recoverDevice,
-    updateDevices,
+    updateDevice,
     handleLoadDevices,
     deleteDevice,
   }

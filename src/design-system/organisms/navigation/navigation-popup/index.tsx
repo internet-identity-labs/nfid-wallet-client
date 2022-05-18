@@ -1,3 +1,4 @@
+import { NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 // @ts-ignore
@@ -27,17 +28,14 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
       <div
         className={clsx(
           "absolute right-0 flex flex-col items-center pb-6 bg-white shadow-iframe rounded-xl top-14",
-          isAuthenticated || status === "registerDevice" ? "w-60" : "w-80",
+          (isAuthenticated && status !== "registerDecider") ||
+            status === "registerDevice"
+            ? "w-60"
+            : "w-80",
           status === "" && !isPopupLogin && window.scrollY < 500 && "hidden",
         )}
       >
-        <div
-          className="absolute top-0 w-10/12 h-1 rounded-b-sm"
-          style={{
-            background:
-              "linear-gradient(90deg, #3DEDD7 0%, #02CDFE 25%, #3781F4 50.52%, #7063FF 76.04%, #CC5CDC 100%)",
-          }}
-        />
+        <NFIDGradientBar />
         {status === "registerDecider" && <PopupRegisterDecider />}
         {status === "registerDevice" && <PopupLogin />}
         {status !== "" ? null : isAuthenticated || account ? (

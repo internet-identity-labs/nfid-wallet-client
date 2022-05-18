@@ -1,102 +1,44 @@
-import {
-  P,
-  List,
-  H5,
-  ListItem,
-  PlusIcon,
-  ModalAdvancedProps,
-  H3,
-  Logo,
-} from "@internet-identity-labs/nfid-sdk-react"
+import { P, H3, Logo } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { generatePath, Link } from "react-router-dom"
 
-import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholders/list-item"
 import { PoaBanner } from "frontend/design-system/molecules/poa-banner"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { AppScreenProofOfAttendencyConstants } from "frontend/flows/screens-app/proof-of-attendancy/routes"
 import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
 import { Device } from "frontend/services/identity-manager/devices/state"
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
-import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
-import { getUrl } from "frontend/utils"
+import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 
-import { DeviceListItem } from "./device-list-item"
+import { ApplicationList } from "./application-list"
+import { DeviceList } from "./device-list"
+import { RecoveryPhraseSection } from "./recovery-phrase-section"
 
 interface Account {
   anchor: string
   name?: string
 }
 
-type Application = string
-
 interface ProfileProps {
-  onDeleteDeviceFactory: (publicKey: PublicKey) => () => Promise<void>
-  setModalOptions: (options: ModalAdvancedProps | null) => void
-  setShowModal: (state: boolean) => void
-  modalOptions: ModalAdvancedProps | null
-  showModal?: boolean
+  onDeviceDelete: (device: Device) => Promise<void>
+  onDeviceUpdate: (device: Device) => Promise<void>
   account?: Account
   devices: Device[]
-  applications: Application[]
-  loading?: boolean
   hasPoa?: boolean
   personas: NFIDPersona[]
+  recoveryPhrase?: DeviceData
 }
 
 export const Profile: React.FC<ProfileProps> = ({
-  onDeleteDeviceFactory,
-  setModalOptions,
-  setShowModal,
-  showModal,
-  modalOptions,
+  onDeviceDelete,
+  onDeviceUpdate,
   account,
-  applications,
   devices,
-  loading,
+  recoveryPhrase,
   hasPoa,
   personas = [],
 }) => {
-  const myApplications = React.useMemo(() => {
-    // Group iiPersonas by hostname and count the number of iiPersonas
-    const personasByHostname = personas.reduce((acc, persona) => {
-      const hostname = getUrl(persona.domain).hostname.split(".")[0]
-      const applicationName =
-        hostname.charAt(0).toUpperCase() + hostname.slice(1)
-      const personas = acc[applicationName] || []
-      acc[applicationName] = [...personas, persona]
-
-      return acc
-    }, {} as { [applicationName: string]: NFIDPersona[] })
-
-    // Map the iiPersonas by application to an array of objects
-    const personaByHostnameArray = Object.entries(personasByHostname).map(
-      ([applicationName, iiPersonas]) => {
-        return {
-          applicationName,
-          iiPersonas,
-          iiPersonasCount: iiPersonas.length,
-        }
-      },
-    )
-
-    return personaByHostnameArray
-  }, [personas])
-
-  const handleNavigateToApplication = React.useCallback(
-    (applicationName: string) => {
-      const application = personas.find((persona) => {
-        return persona.domain.includes(applicationName.toLowerCase())
-      })
-
-      if (application) {
-        window.open(getUrl(application.domain), "_blank")
-      }
-    },
-    [personas],
-  )
-
   return (
     <AppScreen
       bubbleOptions={{
@@ -147,82 +89,15 @@ export const Profile: React.FC<ProfileProps> = ({
             <PoaBanner />
           </Link>
         )}
-        <div className={clsx("px-5 md:px-16 pt-5", "bg-white overflow-hidden")}>
-          <List>
-            <List.Header>
-              <div className="mb-3">
-                <H5>Applications</H5>
-              </div>
-            </List.Header>
-            <List.Items className="ml-0">
-              {myApplications.length > 0 ? (
-                myApplications.map((application, index) => (
-                  <ListItem
-                    key={index}
-                    title={application.applicationName}
-                    subtitle={`${application.iiPersonasCount} persona${
-                      application.iiPersonasCount > 1 ? "s" : ""
-                    }`}
-                    icon={
-                      <span className="text-xl font-medium text-blue-base">
-                        {application.applicationName[0]}
-                      </span>
-                    }
-                    defaultAction={false}
-                    onClick={() =>
-                      handleNavigateToApplication(application.applicationName)
-                    }
-                  />
-                ))
-              ) : (
-                <div>
-                  <div>
-                    Applications you’ve created accounts with will be listed
-                    here.
-                  </div>
-
-                  <div>
-                    <div className="relative">
-                      {Array.from({ length: 3 }).map((_, index) => (
-                        <ListItemPlaceholder key={index} index={index} />
-                      ))}
-
-                      <div className="absolute left-0 w-full h-full top-8 bg-gradient-to-t from-white to-white/5" />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </List.Items>
-          </List>
-        </div>
-        <div className={clsx("px-5 md:px-16 pt-4", "bg-white flex-1")}>
-          <List>
-            <List.Header>
-              <div className="flex items-center justify-between mb-3">
-                <H5>Devices</H5>
-
-                <div className="hidden">
-                  <PlusIcon className="text-blue-base mr-[14px]" />
-                </div>
-              </div>
-            </List.Header>
-            <List.Items className="ml-0">
-              {devices.map((device, index) => (
-                <DeviceListItem
-                  key={device.alias}
-                  device={device}
-                  onChangeIcon={async (device) =>
-                    console.log(">> onChangeIcon", { device })
-                  }
-                  onChangeLabel={async (device) =>
-                    console.log(">> onChangeLabel", { device })
-                  }
-                  onDelete={onDeleteDeviceFactory(device.pubkey)}
-                />
-              ))}
-            </List.Items>
-          </List>
-        </div>
+        <ApplicationList personas={personas} />
+        <DeviceList
+          devices={devices}
+          onDeviceDelete={onDeviceDelete}
+          onDeviceUpdate={onDeviceUpdate}
+        />
+        {recoveryPhrase && (
+          <RecoveryPhraseSection recoveryPhrase={recoveryPhrase} />
+        )}
       </main>
     </AppScreen>
   )

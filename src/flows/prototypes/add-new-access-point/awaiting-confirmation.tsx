@@ -13,6 +13,7 @@ import { HiCheckCircle } from "react-icons/hi"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { DeviceItem } from "frontend/services/identity-manager/devices/device-item"
+import { Icon } from "frontend/services/identity-manager/devices/state"
 
 interface AwaitingConfirmationProps
   extends React.DetailedHTMLProps<
@@ -26,7 +27,13 @@ export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
   const [deviceLinked] = React.useState(false)
   const [loading] = React.useState(false)
 
-  const device = { alias: "iPhone X", pubkey: [] }
+  const device = {
+    label: "iPhone X",
+    browser: "Chrome",
+    lastUsed: 0,
+    pubkey: [],
+    icon: "mobile" as Icon,
+  }
 
   return (
     <AppScreen isFocused>
@@ -54,7 +61,7 @@ export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
               <H4 className="my-6 text-center">This device</H4>
               <DeviceItem
                 device={device}
-                key={device.alias}
+                key={device.label}
                 refresh={() => console.log(">> refresh")}
               />
             </CardBody>

@@ -112,6 +112,24 @@ export const useAccount = () => {
     setMemoryAccount,
   ])
 
+  const readAndStoreAccount = React.useCallback(async () => {
+    if (!accountService) throw new Error('"accountService" is required')
+
+    const response = await accountService.get_account()
+
+    const newAccount = response.data[0]
+
+    if (newAccount) {
+      const normalizedAccount = normalizeLocalAccount({
+        account,
+        newAccount,
+      })
+      setAccount(normalizedAccount)
+    }
+
+    return response
+  }, [account, accountService, setAccount])
+
   const resetLocalAccount = React.useCallback(async () => {
     const localAccount = JSON.parse(
       window.localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY) || "{}",
@@ -165,6 +183,7 @@ export const useAccount = () => {
     setLocalAccount: setAccount,
     createAccount,
     readAccount,
+    readAndStoreAccount,
     recoverAccount,
     resetLocalAccount,
     updateAccount,

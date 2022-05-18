@@ -267,6 +267,11 @@ export const idlFactory = ({ IDL }) => {
     remove_account: IDL.Func([], [BoolHttpResponse], []),
     restore_accounts: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     store_accounts: IDL.Func([IDL.Vec(Account)], [BoolHttpResponse], []),
+    update_access_point: IDL.Func(
+      [AccessPointRequest],
+      [HTTPAccessPointResponse],
+      [],
+    ),
     update_account: IDL.Func(
       [HTTPAccountUpdateRequest],
       [HTTPAccountResponse],

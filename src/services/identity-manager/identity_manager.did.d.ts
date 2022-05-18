@@ -263,6 +263,9 @@ export interface _SERVICE {
   remove_account: () => Promise<BoolHttpResponse>
   restore_accounts: (arg_0: string) => Promise<BoolHttpResponse>
   store_accounts: (arg_0: Array<Account>) => Promise<BoolHttpResponse>
+  update_access_point: (
+    arg_0: AccessPointRequest,
+  ) => Promise<HTTPAccessPointResponse>
   update_account: (
     arg_0: HTTPAccountUpdateRequest,
   ) => Promise<HTTPAccountResponse>

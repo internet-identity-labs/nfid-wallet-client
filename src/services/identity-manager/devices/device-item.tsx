@@ -31,7 +31,7 @@ export const DeviceItem: React.FC<DeviceItemProps> = ({ device, refresh }) => {
 
   return (
     <ListItem
-      title={device.alias}
+      title={device.label}
       subtitle={
         <div className="flex flex-row flex-wrap gap-x-1">
           <Chip icon={<FaKey />} dense>

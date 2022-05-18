@@ -12,8 +12,8 @@ export const IconCancel: React.FC<MapPinIconProps> = ({ onClick }) => {
         d="M17.304 6.697 6.697 17.304M6.696 6.697l10.607 10.607"
         stroke="#000"
         stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

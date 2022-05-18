@@ -12,8 +12,8 @@ export const IconCheckMark: React.FC<MapPinIconProps> = ({ onClick }) => {
         d="M18.666 7 9.5 16.167 5.333 12"
         stroke="#0E62FF"
         stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

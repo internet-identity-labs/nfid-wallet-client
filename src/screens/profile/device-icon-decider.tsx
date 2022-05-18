@@ -9,7 +9,7 @@ import { Icon } from "frontend/services/identity-manager/devices/state"
 
 interface DeviceIconDeciderProps {
   icon: Icon
-  onClick: (e: React.SyntheticEvent) => void
+  onClick?: (e: React.SyntheticEvent) => void
 }
 
 export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({

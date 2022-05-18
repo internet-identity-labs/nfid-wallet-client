@@ -20,7 +20,7 @@ export const DeviceList: React.FC<DeviceListProps> = ({
   onDeviceDelete,
 }) => {
   return (
-    <div className={clsx("px-5 md:px-16 pt-4", "bg-white flex-1")}>
+    <div className={clsx("px-5 md:px-16 pt-4", "bg-white")}>
       <List>
         <List.Header>
           <div className="flex items-center justify-between mb-3">

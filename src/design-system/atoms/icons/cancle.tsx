@@ -11,7 +11,7 @@ export const IconCancel: React.FC<MapPinIconProps> = ({ onClick }) => {
       <path
         d="M17.304 6.697 6.697 17.304M6.696 6.697l10.607 10.607"
         stroke="#000"
-        stroke-width="2"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

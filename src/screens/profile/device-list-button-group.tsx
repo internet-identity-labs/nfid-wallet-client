@@ -24,7 +24,12 @@ export const DeviceListButtonGroup: React.FC<DeviceListButtonGroupProps> = ({
   return (
     <div className="flex justify-center space-x-2">
       {ICONS.map((icon) => (
-        <Button icon onClick={handleSelect(icon)} isActive={selected === icon}>
+        <Button
+          key={icon}
+          icon
+          onClick={handleSelect(icon)}
+          isActive={selected === icon}
+        >
           <DeviceIconDecider icon={icon} />
         </Button>
       ))}

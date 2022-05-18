@@ -9,9 +9,11 @@ import { AppScreenProofOfAttendencyConstants } from "frontend/flows/screens-app/
 import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
 import { Device } from "frontend/services/identity-manager/devices/state"
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
+import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 
 import { ApplicationList } from "./application-list"
 import { DeviceList } from "./device-list"
+import { RecoveryPhraseSection } from "./recovery-phrase-section"
 
 interface Account {
   anchor: string
@@ -25,6 +27,7 @@ interface ProfileProps {
   devices: Device[]
   hasPoa?: boolean
   personas: NFIDPersona[]
+  recoveryPhrase?: DeviceData
 }
 
 export const Profile: React.FC<ProfileProps> = ({
@@ -32,6 +35,7 @@ export const Profile: React.FC<ProfileProps> = ({
   onDeviceUpdate,
   account,
   devices,
+  recoveryPhrase,
   hasPoa,
   personas = [],
 }) => {
@@ -91,6 +95,9 @@ export const Profile: React.FC<ProfileProps> = ({
           onDeviceDelete={onDeviceDelete}
           onDeviceUpdate={onDeviceUpdate}
         />
+        {recoveryPhrase && (
+          <RecoveryPhraseSection recoveryPhrase={recoveryPhrase} />
+        )}
       </main>
     </AppScreen>
   )

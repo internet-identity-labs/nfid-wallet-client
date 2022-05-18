@@ -51,6 +51,7 @@ LoggedIn.args = {
       label: "NFID Safari on iOS",
       icon: "mobile",
       browser: "Chrome",
+      lastUsed: Date.now(),
       pubkey: [
         48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
         165, 1, 2, 3, 38, 32, 1, 33, 88, 32, 29, 87, 106, 190, 28, 84, 72, 21,
@@ -72,6 +73,7 @@ LoggedIn.args = {
       label: "NFID Chrome on Mac OS",
       browser: "Chrome",
       icon: "desktop",
+      lastUsed: Date.now(),
       pubkey: [
         48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
         165, 1, 2, 3, 38, 32, 1, 33, 88, 32, 28, 236, 31, 91, 120, 30, 4, 110,

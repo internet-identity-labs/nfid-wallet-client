@@ -28,6 +28,7 @@ Default.args = {
     label: "My device",
     browser: "Chrome",
     icon: "desktop",
+    lastUsed: Date.now(),
     pubkey: [123, 123],
   },
 }

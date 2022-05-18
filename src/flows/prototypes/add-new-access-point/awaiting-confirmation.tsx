@@ -30,6 +30,7 @@ export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
   const device = {
     label: "iPhone X",
     browser: "Chrome",
+    lastUsed: 0,
     pubkey: [],
     icon: "mobile" as Icon,
   }

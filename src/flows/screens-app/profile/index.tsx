@@ -28,8 +28,6 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const { account, readAccount } = useAccount()
   const { imAddition } = useAuthentication()
 
-  console.debug(">> ", { recoveryDevices })
-
   React.useEffect(() => {
     imAddition &&
       imAddition.has_poap().then((response) => {
@@ -49,8 +47,6 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const handleDeleteDevice = React.useCallback(
     async (device: Device) => {
-      console.debug(">> handleDeleteDevice", { device })
-
       await deleteDevice(device.pubkey)
       await handleLoadDevices()
     },
@@ -59,8 +55,6 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const handleDeviceUpdate = React.useCallback(
     async (device: Device) => {
-      console.log(">> handleDeviceUpdate", { device })
-
       await updateDevice(device)
       await getDevices()
     },

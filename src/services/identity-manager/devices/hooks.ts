@@ -22,12 +22,30 @@ import {
 } from "../identity_manager.did"
 import { Device, devicesAtom, Icon, recoveryDevicesAtom } from "./state"
 
+const getIcon = (device: DeviceData): Icon => {
+  switch (device.alias.split(" ")[3]) {
+    case "Android":
+    case "iOS":
+      return "mobile"
+    case "Mac OS":
+      return "desktop"
+    default:
+      return "laptop"
+  }
+}
+
+const getBrowser = (device: DeviceData): string => {
+  return device.alias.replace("NFID", "").split(" on ")[0]
+}
+
+const getDeviceName = (device: DeviceData): string => {
+  return device.alias.replace("NFID", "").split(" on ")[1]
+}
+
 const normalizeDevices = (
   devices: DeviceData[],
   accessPoints: AccessPointResponse[] = [],
 ): Device[] => {
-  console.debug(">> normalizeDevices", { devices, accessPoints })
-
   return devices.map((device) => {
     const devicePrincipalId = Principal.selfAuthenticating(
       new Uint8Array(device.pubkey),
@@ -37,13 +55,13 @@ const normalizeDevices = (
     )
     return {
       isAccessPoint: !!accessPoint,
-      label: accessPoint?.device || device.alias,
-      icon: (accessPoint?.icon as Icon) || "desktop",
+      label: accessPoint?.device || getDeviceName(device),
+      icon: (accessPoint?.icon as Icon) || getIcon(device),
       pubkey: device.pubkey,
       lastUsed: accessPoint?.last_used
         ? Number(BigInt(accessPoint.last_used) / BigInt(1000000))
         : 0,
-      browser: accessPoint?.browser || "",
+      browser: accessPoint?.browser || getBrowser(device),
     }
   })
 }
@@ -75,14 +93,12 @@ export const useDevices = () => {
         identityManager?.read_access_points(),
         IIConnection.lookupAuthenticators(userNumber),
       ])
-      console.debug(">> handleLoadDevices", { accessPoints, existingDevices })
 
       if (accessPoints?.status_code === 200) {
         const normalizedDevices = normalizeDevices(
           existingDevices,
           accessPoints?.data[0],
         )
-        console.debug(">> handleLoadDevices", { normalizedDevices })
 
         setDevices(normalizedDevices)
       }
@@ -92,19 +108,16 @@ export const useDevices = () => {
   const updateDevice = React.useCallback(
     async (device: Device) => {
       const normalizedDevice = normalizeDeviceRequest(device)
-      console.debug(">> updateDevice", { normalizedDevice })
 
       if (!device.isAccessPoint) {
         const createAccessPointResponse =
           await identityManager?.create_access_point(normalizedDevice)
         handleLoadDevices()
-        console.debug(">> updateDevice", { createAccessPointResponse })
         return createAccessPointResponse
       }
       const updatedAccessPoint = await identityManager?.update_access_point(
         normalizedDevice,
       )
-      console.debug(">> updateDevice", { updatedAccessPoint })
       handleLoadDevices()
       return updatedAccessPoint
     },
@@ -120,8 +133,6 @@ export const useDevices = () => {
 
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
-      console.debug(">> deleteDevice", { pubkey })
-
       if (internetIdentity && userNumber) {
         await Promise.all([
           internetIdentity.remove(userNumber, pubkey),
@@ -168,7 +179,6 @@ export const useDevices = () => {
       if (!internetIdentity || !identityManager) throw new Error("Unauthorized")
 
       const pub_key = derBlobFromBlob(blobFromHex(publicKey))
-      console.log(">> createDevice", { pub_key })
 
       await Promise.all([
         internetIdentity.add(
@@ -210,10 +220,6 @@ export const useDevices = () => {
           (error as DOMException).message ===
           "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party."
         ) {
-          console.log(">> recoverDevice", {
-            message: "This device is already registered",
-          })
-
           return {
             message: "This device is already registered",
           }

@@ -20,7 +20,6 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
     className: "text-xl text-blue-base",
     onClick,
   }
-  console.log(">> ", { icon })
 
   switch (icon) {
     case "mobile":

@@ -1,18 +1,40 @@
 import { blobFromHex, blobToHex, derBlobFromBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   creationOptions,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 
 import { useAccount } from "../account/hooks"
-import { Device, devicesAtom } from "./state"
+import { AccessPointResponse } from "../identity_manager.did"
+import { Device, devicesAtom, Icon } from "./state"
+
+const normalizeDevices = (
+  devices: DeviceData[],
+  accessPoints: AccessPointResponse[] = [],
+): Device[] => {
+  return devices.map((device) => {
+    const devicePrincipalId = Principal.selfAuthenticating(
+      new Uint8Array(device.pubkey),
+    ).toString()
+    const accessPoint = accessPoints.find(
+      (ap) => ap.principal_id === devicePrincipalId,
+    )
+    return {
+      label: accessPoint?.device || device.alias,
+      icon: (accessPoint?.icon as Icon) || "desktop",
+      pubkey: device.pubkey,
+    }
+  })
+}
 
 export const useDevices = () => {
   const [devices, setDevices] = useAtom(devicesAtom)
@@ -34,12 +56,15 @@ export const useDevices = () => {
 
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber) {
-      const existingDevices = await IIConnection.lookupAuthenticators(
-        userNumber,
-      )
-      setDevices(existingDevices)
+      const [accessPoints, existingDevices] = await Promise.all([
+        identityManager?.read_access_points(),
+        IIConnection.lookupAuthenticators(userNumber),
+      ])
+      if (accessPoints?.status_code === 200) {
+        setDevices(normalizeDevices(existingDevices, accessPoints?.data[0]))
+      }
     }
-  }, [setDevices, userNumber])
+  }, [identityManager, setDevices, userNumber])
 
   const deleteDevice = React.useCallback(
     async (pubkey) => {

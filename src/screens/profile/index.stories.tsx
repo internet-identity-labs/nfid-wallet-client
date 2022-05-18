@@ -1,8 +1,9 @@
-import { ModalAdvancedProps } from "@internet-identity-labs/nfid-sdk-react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 // import { within, userEvent } from "@storybook/testing-library"
 import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
+
+import { Device } from "frontend/services/identity-manager/devices/state"
 
 import { Profile } from "."
 
@@ -16,19 +17,9 @@ export default {
 } as ComponentMeta<typeof Profile>
 
 const Template: ComponentStory<typeof Profile> = (args) => {
-  const [showModal, setShowModal] = React.useState(args.showModal)
-  const [modalOptions, setModalOptions] =
-    React.useState<ModalAdvancedProps | null>(args.modalOptions)
-
   return (
     <Router>
-      <Profile
-        {...args}
-        showModal={showModal}
-        modalOptions={modalOptions}
-        setModalOptions={setModalOptions}
-        setShowModal={setShowModal}
-      />
+      <Profile {...args} />
     </Router>
   )
 }
@@ -41,9 +32,12 @@ LoggedIn.args = {
     { domain: "wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "1" },
     { domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "2" },
   ],
+  onDeviceDelete: (device: Device) => Promise.resolve(),
+  onDeviceUpdateIcon: (device: Device) => Promise.resolve(),
+  onDeviceUpdateLabel: (device: Device) => Promise.resolve(),
   devices: [
     {
-      alias: "Recovery phrase",
+      label: "Recovery phrase",
       pubkey: [
         48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0, 211, 195, 205, 238, 99, 5,
         3, 191, 47, 93, 245, 228, 58, 72, 235, 116, 172, 62, 42, 93, 45, 45,
@@ -52,9 +46,11 @@ LoggedIn.args = {
       key_type: { seed_phrase: null },
       purpose: { recovery: null },
       credential_id: [],
+      icon: "key",
     },
     {
-      alias: "NFID Safari on iOS",
+      label: "NFID Safari on iOS",
+      icon: "mobile",
       pubkey: [
         48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
         165, 1, 2, 3, 38, 32, 1, 33, 88, 32, 29, 87, 106, 190, 28, 84, 72, 21,
@@ -73,7 +69,8 @@ LoggedIn.args = {
       ],
     },
     {
-      alias: "NFID Chrome on Mac OS",
+      label: "NFID Chrome on Mac OS",
+      icon: "desktop",
       pubkey: [
         48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
         165, 1, 2, 3, 38, 32, 1, 33, 88, 32, 28, 236, 31, 91, 120, 30, 4, 110,

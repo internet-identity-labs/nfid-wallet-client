@@ -141,7 +141,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         recoverIdentity.getPublicKey().toDer(),
       )
       setRecoveryPhrase(`${userNumber} ${recovery}`)
-      console.log(">> handleCreateRecoveryPhrase", { userNumber, recovery })
     }
   }, [responseRegisterAnchor])
 

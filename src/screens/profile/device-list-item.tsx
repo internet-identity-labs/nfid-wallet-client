@@ -28,7 +28,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   onDeviceUpdate,
 }) => {
   const [updatedDevice, setUpdatedDevice] = React.useState<Device | null>(null)
-  console.debug(">> DeviceListItem", { updatedDevice })
 
   const device = updatedDevice ?? initialDevice
 
@@ -148,7 +147,9 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               <div className="flex-1 flex-shrink">
                 <div className="text-gray-700">{device.label}</div>
                 <div className="my-1 text-sm text-gray-400">
-                  {new Date(device.lastUsed).toLocaleDateString()} with{" "}
+                  {device.lastUsed
+                    ? `${new Date(device.lastUsed).toLocaleDateString()} with `
+                    : null}
                   {device.browser}
                 </div>
               </div>

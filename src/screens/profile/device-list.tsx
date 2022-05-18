@@ -34,7 +34,7 @@ export const DeviceList: React.FC<DeviceListProps> = ({
         <List.Items className="ml-0">
           {devices.map((device) => (
             <DeviceListItem
-              key={device.label}
+              key={`${device.label}-${device.browser}-${device.lastUsed}`}
               device={device}
               onDeviceUpdate={onDeviceUpdate}
               onDelete={onDeviceDelete}

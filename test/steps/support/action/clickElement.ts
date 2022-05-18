@@ -10,7 +10,7 @@ import checkIfElementExists from "../check/checkIfElementExists"
  */
 export default async (
   action: "click" | "doubleClick",
-  type: "link" | "selector",
+  type: "selector",
   selector: Selector,
 ) => {
   /**
@@ -27,7 +27,7 @@ export default async (
 
   await checkIfElementExists(selector2)
 
-  console.log(`===================================> ${action} --> ${selector} --> ${type}`);
+  console.log(`===================================> ${action} --> ${type} --> on ${selector}`);
 
 
   await $(selector2)[method]()

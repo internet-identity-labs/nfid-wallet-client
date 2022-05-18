@@ -22,7 +22,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { setStatus } = useRegisterQRCode()
   const { recoverDevice } = useDevices()
-  const { readAccount } = useAccount()
+  const { readAndStoreAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
   const { getPersona } = usePersona()
 
@@ -45,7 +45,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
 
       try {
         await recoverDevice(userNumber)
-        await Promise.all([readAccount(), getPersona()])
+        await Promise.all([readAndStoreAccount(), getPersona()])
 
         setIsLoading(false)
         setStatus("registerDevice")

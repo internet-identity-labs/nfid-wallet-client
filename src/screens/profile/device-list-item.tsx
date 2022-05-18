@@ -28,6 +28,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   onDeviceUpdate,
 }) => {
   const [updatedDevice, setUpdatedDevice] = React.useState<Device | null>(null)
+  console.debug(">> DeviceListItem", { updatedDevice })
 
   const device = updatedDevice ?? initialDevice
 
@@ -48,10 +49,10 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   const [loading, setLoading] = React.useState(false)
 
   const handleDeleteDevice = React.useCallback(
-    async (publicKey) => {
+    async (device: Device) => {
       setLoading(true)
 
-      await onDelete(publicKey)
+      await onDelete(device)
 
       setLoading(false)
       toggleDeleteDeviceModal()
@@ -216,7 +217,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
             text: "Delete",
             type: "error",
             onClick: async () => {
-              await handleDeleteDevice(device.pubkey)
+              await handleDeleteDevice(device)
             },
           }}
           secondaryButton={{

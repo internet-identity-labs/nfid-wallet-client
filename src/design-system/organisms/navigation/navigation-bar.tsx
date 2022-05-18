@@ -24,7 +24,8 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   return (
     <header
       className={clsx(
-        "flex-none sticky top-0 z-40 pt-5 pb-9",
+        "flex-none sticky top-0 z-40 py-5",
+        "sm:pb-9",
         scrollY > 50 && "shadow-gray bg-white",
         scrollY < 50 && "opacity-100 bg-transparent",
       )}

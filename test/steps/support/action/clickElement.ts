@@ -27,5 +27,8 @@ export default async (
 
   await checkIfElementExists(selector2)
 
+  console.log(`===================================> ${action} --> ${selector} --> ${type}`);
+
+
   await $(selector2)[method]()
 }

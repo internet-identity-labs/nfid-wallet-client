@@ -17,7 +17,7 @@ import {
   AccessPointRequest,
   AccessPointResponse,
 } from "../identity_manager.did"
-import { Device, devicesAtom, Icon } from "./state"
+import { Device, devicesAtom, Icon, recoveryDevicesAtom } from "./state"
 
 const normalizeDevices = (
   devices: DeviceData[],
@@ -51,27 +51,33 @@ const normalizeDeviceRequest = (device: Device): AccessPointRequest => {
 
 export const useDevices = () => {
   const [devices, setDevices] = useAtom(devicesAtom)
+  const [recoveryDevices, setRecoveryDevices] = useAtom(recoveryDevicesAtom)
+
   const { newDeviceName } = useDeviceInfo()
 
   const { userNumber } = useAccount()
   const { internetIdentity, identityManager } = useAuthentication()
 
-  const updateDevices = React.useCallback(
+  const updateDevice = React.useCallback(
     async (device: Device) => {
       const normalizedDevice = normalizeDeviceRequest(device)
-      console.debug(">> updateDevices", { normalizedDevice })
+      console.debug(">> updateDevice", { normalizedDevice })
 
       if (!device.isAccessPoint) {
         const createAccessPointResponse =
           await identityManager?.create_access_point(normalizedDevice)
-        console.debug(">> updateDevices", { createAccessPointResponse })
+        console.debug(">> updateDevice", { createAccessPointResponse })
         return createAccessPointResponse
       }
-      const updateAccessPoint = await identityManager?.update_access_point(
+      const updatedAccessPoint = await identityManager?.update_access_point(
         normalizedDevice,
       )
-      console.debug(">> updateDevices", { updateAccessPoint })
-      return updateAccessPoint
+      const account = await identityManager?.get_account()
+      console.debug(">> updateDevice", {
+        account,
+        updatedAccessPoint,
+      })
+      return updatedAccessPoint
     },
     [identityManager],
   )
@@ -88,11 +94,19 @@ export const useDevices = () => {
           existingDevices,
           accessPoints?.data[0],
         )
+        console.log(">> handleLoadDevices", { normalizedDevices })
 
         setDevices(normalizedDevices)
       }
     }
   }, [identityManager, setDevices, userNumber])
+
+  const getRecoveryDevices = React.useCallback(async () => {
+    if (userNumber) {
+      const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
+      setRecoveryDevices(recoveryDevices)
+    }
+  }, [setRecoveryDevices, userNumber])
 
   const deleteDevice = React.useCallback(
     async (pubkey) => {
@@ -191,8 +205,7 @@ export const useDevices = () => {
   )
 
   const getDevices = React.useCallback(async () => {
-    const devices = await handleLoadDevices()
-    console.log(">> ", { devices })
+    await handleLoadDevices()
   }, [handleLoadDevices])
 
   React.useEffect(() => {
@@ -201,11 +214,13 @@ export const useDevices = () => {
 
   return {
     devices,
+    recoveryDevices,
     createWebAuthNDevice,
     getDevices,
+    getRecoveryDevices,
     createDevice,
     recoverDevice,
-    updateDevices,
+    updateDevice,
     handleLoadDevices,
     deleteDevice,
   }

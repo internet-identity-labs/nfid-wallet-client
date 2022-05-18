@@ -17,14 +17,18 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const {
     devices,
+    recoveryDevices,
     getDevices,
     deleteDevice,
     handleLoadDevices,
-    updateDevices,
+    updateDevice,
+    getRecoveryDevices,
   } = useDevices()
   const { nfidPersonas, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
   const { imAddition } = useAuthentication()
+
+  console.log(">> ", { recoveryDevices })
 
   React.useEffect(() => {
     imAddition &&
@@ -38,9 +42,10 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       loadOnce()
       readAccount()
       getDevices()
+      getRecoveryDevices()
       getPersona()
     }
-  }, [fetched, getDevices, getPersona, readAccount])
+  }, [fetched, getDevices, getPersona, getRecoveryDevices, readAccount])
 
   const handleDeleteDevice = React.useCallback(
     async (device: Device) => {
@@ -52,10 +57,10 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const handleDeviceUpdate = React.useCallback(
     async (device: Device) => {
-      await updateDevices(device)
+      await updateDevice(device)
       await getDevices()
     },
-    [getDevices, updateDevices],
+    [getDevices, updateDevice],
   )
 
   return (
@@ -67,6 +72,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       hasPoa={hasPoa}
       devices={devices}
       personas={nfidPersonas}
+      recoveryPhrase={recoveryDevices[0]}
     />
   )
 }

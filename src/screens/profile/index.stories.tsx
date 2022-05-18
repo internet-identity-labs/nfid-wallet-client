@@ -36,8 +36,7 @@ LoggedIn.args = {
   onDeviceUpdate: (device: Device) => Promise.resolve(),
   onDeviceUpdateLabel: (device: Device) => Promise.resolve(),
   recoveryPhrase: {
-    label: "Recovery phrase",
-    browser: "Chrome",
+    alias: "Recovery phrase",
     pubkey: [
       48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0, 211, 195, 205, 238, 99, 5, 3,
       191, 47, 93, 245, 228, 58, 72, 235, 116, 172, 62, 42, 93, 45, 45, 189, 61,
@@ -46,7 +45,6 @@ LoggedIn.args = {
     key_type: { seed_phrase: null },
     purpose: { recovery: null },
     credential_id: [],
-    icon: "key",
   },
   devices: [
     {

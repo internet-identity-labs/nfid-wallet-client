@@ -148,54 +148,7 @@ export const Profile: React.FC<ProfileProps> = ({
             <PoaBanner />
           </Link>
         )}
-        <div className={clsx("px-5 md:px-16 pt-5", "bg-white overflow-hidden")}>
-          <List>
-            <List.Header>
-              <div className="mb-3">
-                <H5>Applications</H5>
-              </div>
-            </List.Header>
-            <List.Items className="ml-0">
-              {myApplications.length > 0 ? (
-                myApplications.map((application, index) => (
-                  <ListItem
-                    key={index}
-                    title={application.applicationName}
-                    subtitle={`${application.iiPersonasCount} persona${
-                      application.iiPersonasCount > 1 ? "s" : ""
-                    }`}
-                    icon={
-                      <span className="text-xl font-medium text-blue-base">
-                        {application.applicationName[0]}
-                      </span>
-                    }
-                    defaultAction={false}
-                    onClick={() =>
-                      handleNavigateToApplication(application.applicationName)
-                    }
-                  />
-                ))
-              ) : (
-                <div>
-                  <div>
-                    Applications you’ve created accounts with will be listed
-                    here.
-                  </div>
-
-                  <div>
-                    <div className="relative">
-                      {Array.from({ length: 3 }).map((_, index) => (
-                        <ListItemPlaceholder key={index} index={index} />
-                      ))}
-
-                      <div className="absolute left-0 w-full h-full top-8 bg-gradient-to-t from-white to-white/5" />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </List.Items>
-          </List>
-        </div>
+        <ApplicationList personas={personas} />
         <div className={clsx("px-5 md:px-16 pt-4", "bg-white flex-1")}>
           <List>
             <List.Header>

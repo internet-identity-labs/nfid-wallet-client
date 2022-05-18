@@ -20,7 +20,8 @@ export const useRegisterQRCode = () => {
   const { setUserNumber } = useUnknownDeviceConfig()
 
   const { getMessages } = usePubSubChannel()
-  const { remoteLogin: setAuthenticatedActors } = useAuthentication()
+  const { remoteLogin: setAuthenticatedActors, setShouldStoreLocalAccount } =
+    useAuthentication()
 
   const publicKey = useMemo(
     () => blobToHex(Ed25519KeyIdentity.generate().getPublicKey().toDer()),
@@ -51,6 +52,7 @@ export const useRegisterQRCode = () => {
       const result = apiResultToLoginResult(loginResult)
 
       if (result.tag === "ok") {
+        setShouldStoreLocalAccount(false)
         setAuthenticatedActors(result)
         setStatus("registerDecider")
         setUserNumber(BigInt(userNumber))
@@ -58,7 +60,12 @@ export const useRegisterQRCode = () => {
       // TODO: handle this more gracefully
       if (result.tag !== "ok") throw new Error("login failed")
     },
-    [setAuthenticatedActors, setStatus, setUserNumber],
+    [
+      setAuthenticatedActors,
+      setShouldStoreLocalAccount,
+      setStatus,
+      setUserNumber,
+    ],
   )
 
   const handlePollForDelegate = useCallback(

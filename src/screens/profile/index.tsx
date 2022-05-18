@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import {
   P,
   List,
@@ -207,19 +208,27 @@ export const Profile: React.FC<ProfileProps> = ({
               </div>
             </List.Header>
             <List.Items className="ml-0">
-              {devices.map((device, index) => (
-                <DeviceListItem
-                  key={device.alias}
-                  device={device}
-                  onChangeIcon={async (device) =>
-                    console.log(">> onChangeIcon", { device })
-                  }
-                  onChangeLabel={async (device) =>
-                    console.log(">> onChangeLabel", { device })
-                  }
-                  onDelete={onDeleteDeviceFactory(device.pubkey)}
-                />
-              ))}
+              {devices.map((device, index) => {
+                console.log(">> device", {
+                  principal_id: Principal.selfAuthenticating(
+                    new Uint8Array(device.pubkey),
+                  ).toString(),
+                })
+
+                return (
+                  <DeviceListItem
+                    key={device.alias}
+                    device={device}
+                    onChangeIcon={async (device) =>
+                      console.log(">> onChangeIcon", { device })
+                    }
+                    onChangeLabel={async (device) =>
+                      console.log(">> onChangeLabel", { device })
+                    }
+                    onDelete={onDeleteDeviceFactory(device.pubkey)}
+                  />
+                )
+              })}
             </List.Items>
           </List>
         </div>

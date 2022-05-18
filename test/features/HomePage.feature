@@ -8,7 +8,7 @@ Feature: Home page
   @uat
   @mission
   Scenario Outline: User navigates sections on home page
-    When I click on the link "<link>"
+    When I clock on the link "<link>"
     Then I expect that element "<element>" becomes displayed
 
     Examples:

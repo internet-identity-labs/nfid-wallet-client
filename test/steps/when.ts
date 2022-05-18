@@ -18,7 +18,7 @@ import setInputField from "./support/action/setInputField"
 import setPromptText from "./support/action/setPromptText"
 
 When(
-  /^I (click|doubleclick) on the (link|button|element) "([^"]*)?"$/,
+  /^I (clock|doubleclick) on the (link|button|element) "([^"]*)?"$/,
   clickElement,
 )
 

@@ -7,11 +7,11 @@ import {
   TrashIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
-import { MdLaptopMac } from "react-icons/md"
 
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { Device } from "frontend/services/identity-manager/devices/state"
 
+import { DeviceIconDecider } from "./device-icon-decider"
 import { DeviceListButtonGroup } from "./device-list-button-group"
 
 interface DeviceListItemProps {
@@ -111,8 +111,8 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
         title={device.alias}
         subtitle={""}
         icon={
-          <MdLaptopMac
-            className="text-xl text-blue-base"
+          <DeviceIconDecider
+            icon={device.icon}
             onClick={handleEditDeviceIconDialog}
           />
         }

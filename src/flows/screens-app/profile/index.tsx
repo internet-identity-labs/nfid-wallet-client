@@ -28,7 +28,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const { account, readAccount } = useAccount()
   const { imAddition } = useAuthentication()
 
-  console.log(">> ", { recoveryDevices })
+  console.debug(">> ", { recoveryDevices })
 
   React.useEffect(() => {
     imAddition &&

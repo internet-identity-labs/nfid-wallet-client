@@ -26,6 +26,7 @@ export const RouterRegisterDeviceDecider: React.FC<
   const navigate = useNavigate()
 
   const { userNumber } = useUnknownDeviceConfig()
+  console.debug(">> RouterRegisterDeviceDecider", { userNumber })
 
   const handleRegister = React.useCallback(async () => {
     setIsLoading(true)
@@ -33,9 +34,13 @@ export const RouterRegisterDeviceDecider: React.FC<
       return console.error(`Missing userNumber: ${userNumber}`)
     }
 
+    console.debug(">> handleRegister", { userNumber })
+
     await recoverDevice(userNumber)
 
     const response = await recoverAccount(userNumber)
+    console.debug(">> handleRegister recoverAccount", { response })
+
     if (response?.status_code === 404) {
       console.warn("account not found. Recreating")
       if (!identityManager) throw new Error("identityManager is missing")

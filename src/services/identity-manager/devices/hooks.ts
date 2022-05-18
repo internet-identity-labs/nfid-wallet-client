@@ -23,6 +23,8 @@ const normalizeDevices = (
   devices: DeviceData[],
   accessPoints: AccessPointResponse[] = [],
 ): Device[] => {
+  console.debug(">> normalizeDevices", { devices, accessPoints })
+
   return devices.map((device) => {
     const devicePrincipalId = Principal.selfAuthenticating(
       new Uint8Array(device.pubkey),
@@ -53,27 +55,13 @@ export const useDevices = () => {
   const [devices, setDevices] = useAtom(devicesAtom)
   const [recoveryDevices, setRecoveryDevices] = useAtom(recoveryDevicesAtom)
 
-  const { newDeviceName } = useDeviceInfo()
+  const {
+    newDeviceName,
+    browser: { name: browserName },
+  } = useDeviceInfo()
 
   const { userNumber } = useAccount()
   const { internetIdentity, identityManager } = useAuthentication()
-
-  const updateDevice = React.useCallback(
-    async (device: Device) => {
-      const normalizedDevice = normalizeDeviceRequest(device)
-
-      if (!device.isAccessPoint) {
-        const createAccessPointResponse =
-          await identityManager?.create_access_point(normalizedDevice)
-        return createAccessPointResponse
-      }
-      const updatedAccessPoint = await identityManager?.update_access_point(
-        normalizedDevice,
-      )
-      return updatedAccessPoint
-    },
-    [identityManager],
-  )
 
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber) {
@@ -81,18 +69,41 @@ export const useDevices = () => {
         identityManager?.read_access_points(),
         IIConnection.lookupAuthenticators(userNumber),
       ])
+      console.debug(">> handleLoadDevices", { accessPoints, existingDevices })
 
       if (accessPoints?.status_code === 200) {
         const normalizedDevices = normalizeDevices(
           existingDevices,
           accessPoints?.data[0],
         )
-        console.log(">> handleLoadDevices", { normalizedDevices })
+        console.debug(">> handleLoadDevices", { normalizedDevices })
 
         setDevices(normalizedDevices)
       }
     }
   }, [identityManager, setDevices, userNumber])
+
+  const updateDevice = React.useCallback(
+    async (device: Device) => {
+      const normalizedDevice = normalizeDeviceRequest(device)
+      console.debug(">> updateDevice", { normalizedDevice })
+
+      if (!device.isAccessPoint) {
+        const createAccessPointResponse =
+          await identityManager?.create_access_point(normalizedDevice)
+        handleLoadDevices()
+        console.debug(">> updateDevice", { createAccessPointResponse })
+        return createAccessPointResponse
+      }
+      const updatedAccessPoint = await identityManager?.update_access_point(
+        normalizedDevice,
+      )
+      console.debug(">> updateDevice", { updatedAccessPoint })
+      handleLoadDevices()
+      return updatedAccessPoint
+    },
+    [handleLoadDevices, identityManager],
+  )
 
   const getRecoveryDevices = React.useCallback(async () => {
     if (userNumber) {
@@ -146,6 +157,7 @@ export const useDevices = () => {
       if (!internetIdentity || !identityManager) throw new Error("Unauthorized")
 
       const pub_key = derBlobFromBlob(blobFromHex(publicKey))
+      console.log(">> createDevice", { pub_key })
 
       await Promise.all([
         internetIdentity.add(
@@ -158,13 +170,13 @@ export const useDevices = () => {
         ),
         identityManager.create_access_point({
           icon: "",
-          device: "",
-          browser: "",
+          device: deviceName,
+          browser: browserName ?? "",
           pub_key: Array.from(pub_key),
         }),
       ])
     },
-    [internetIdentity, identityManager],
+    [internetIdentity, identityManager, browserName],
   )
 
   const recoverDevice = React.useCallback(
@@ -187,6 +199,10 @@ export const useDevices = () => {
           (error as DOMException).message ===
           "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party."
         ) {
+          console.log(">> recoverDevice", {
+            message: "This device is already registered",
+          })
+
           return {
             message: "This device is already registered",
           }

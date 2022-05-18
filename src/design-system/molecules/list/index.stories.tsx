@@ -2,7 +2,7 @@ import { Meta, Story } from "@storybook/react"
 import React from "react"
 
 import { List } from "."
-import { LaptopIcon } from "../../atoms/icons/laptop"
+import { IconDesktop } from "../../atoms/icons/laptop"
 import { H1 } from "../../atoms/typography"
 import { ListItem } from "./list-item"
 
@@ -24,7 +24,7 @@ const ListTemplate: Story = (args) => (
           subtitle="Item one subtitle"
           icon={
             <span className="text-xl font-medium text-blue-base">
-              <LaptopIcon />
+              <IconDesktop />
             </span>
           }
         />
@@ -33,7 +33,7 @@ const ListTemplate: Story = (args) => (
           subtitle="Item one subtitle"
           icon={
             <span className="text-xl font-medium text-blue-base">
-              <LaptopIcon />
+              <IconDesktop />
             </span>
           }
         />

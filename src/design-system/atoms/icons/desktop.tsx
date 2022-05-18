@@ -3,7 +3,7 @@ import React from "react"
 
 interface DesktopIconProps extends React.SVGProps<SVGSVGElement> {}
 
-export const DesktopIcon: React.FC<DesktopIconProps> = ({
+export const IconLaptop: React.FC<DesktopIconProps> = ({
   className,
   onClick,
 }) => {

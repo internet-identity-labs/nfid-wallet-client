@@ -20,8 +20,7 @@ interface Account {
 
 interface ProfileProps {
   onDeviceDelete: (device: Device) => Promise<void>
-  onDeviceUpdateLabel: (device: Device) => Promise<void>
-  onDeviceUpdateIcon: (device: Device) => Promise<void>
+  onDeviceUpdate: (device: Device) => Promise<void>
   account?: Account
   devices: Device[]
   hasPoa?: boolean
@@ -30,8 +29,7 @@ interface ProfileProps {
 
 export const Profile: React.FC<ProfileProps> = ({
   onDeviceDelete,
-  onDeviceUpdateLabel,
-  onDeviceUpdateIcon,
+  onDeviceUpdate,
   account,
   devices,
   hasPoa,
@@ -91,8 +89,7 @@ export const Profile: React.FC<ProfileProps> = ({
         <DeviceList
           devices={devices}
           onDeviceDelete={onDeviceDelete}
-          onDeviceUpdateIcon={onDeviceUpdateIcon}
-          onDeviceUpdateDevice={onDeviceUpdateLabel}
+          onDeviceUpdate={onDeviceUpdate}
         />
       </main>
     </AppScreen>

@@ -33,24 +33,26 @@ LoggedIn.args = {
     { domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "2" },
   ],
   onDeviceDelete: (device: Device) => Promise.resolve(),
-  onDeviceUpdateIcon: (device: Device) => Promise.resolve(),
+  onDeviceUpdate: (device: Device) => Promise.resolve(),
   onDeviceUpdateLabel: (device: Device) => Promise.resolve(),
+  recoveryPhrase: {
+    label: "Recovery phrase",
+    browser: "Chrome",
+    pubkey: [
+      48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0, 211, 195, 205, 238, 99, 5, 3,
+      191, 47, 93, 245, 228, 58, 72, 235, 116, 172, 62, 42, 93, 45, 45, 189, 61,
+      222, 0, 19, 85, 11, 253, 145, 59,
+    ],
+    key_type: { seed_phrase: null },
+    purpose: { recovery: null },
+    credential_id: [],
+    icon: "key",
+  },
   devices: [
-    {
-      label: "Recovery phrase",
-      pubkey: [
-        48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0, 211, 195, 205, 238, 99, 5,
-        3, 191, 47, 93, 245, 228, 58, 72, 235, 116, 172, 62, 42, 93, 45, 45,
-        189, 61, 222, 0, 19, 85, 11, 253, 145, 59,
-      ],
-      key_type: { seed_phrase: null },
-      purpose: { recovery: null },
-      credential_id: [],
-      icon: "key",
-    },
     {
       label: "NFID Safari on iOS",
       icon: "mobile",
+      browser: "Chrome",
       pubkey: [
         48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
         165, 1, 2, 3, 38, 32, 1, 33, 88, 32, 29, 87, 106, 190, 28, 84, 72, 21,
@@ -70,6 +72,7 @@ LoggedIn.args = {
     },
     {
       label: "NFID Chrome on Mac OS",
+      browser: "Chrome",
       icon: "desktop",
       pubkey: [
         48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,

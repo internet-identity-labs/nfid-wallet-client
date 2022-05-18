@@ -26,6 +26,7 @@ export const Default = Template.bind({})
 Default.args = {
   device: {
     label: "My device",
+    browser: "Chrome",
     icon: "desktop",
     pubkey: [123, 123],
   },

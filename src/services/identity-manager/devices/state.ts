@@ -13,6 +13,7 @@ export interface AccessPointRequest {
 export interface Device {
   label: string
   icon: Icon
+  browser: string
   pubkey: number[]
 }
 

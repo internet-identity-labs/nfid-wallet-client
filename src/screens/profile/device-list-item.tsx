@@ -46,7 +46,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   )
 
   const [loading, setLoading] = React.useState(false)
-  console.log(">> ", { loading })
 
   const handleDeleteDevice = React.useCallback(
     async (publicKey) => {
@@ -70,7 +69,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
 
   const handleSelectIcon = React.useCallback(
     (icon: Icon) => {
-      console.log(">> DeviceListButtonGroup.onSelect", { icon })
       setUpdatedDevice(
         produce(updatedDevice || initialDevice, (draft: Device) => ({
           ...draft,
@@ -105,10 +103,19 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
     setLoading(true)
     if (updatedDevice) {
       await onDeviceUpdate(updatedDevice)
-      toggleEditLabel()
     }
     setLoading(false)
   }, [onDeviceUpdate, updatedDevice])
+
+  const handleOnIconUpdate = React.useCallback(async () => {
+    await handleOnDeviceUpdate()
+    toggleIconModal()
+  }, [handleOnDeviceUpdate])
+
+  const handleOnLabelUpdate = React.useCallback(async () => {
+    await handleOnDeviceUpdate()
+    toggleEditLabel()
+  }, [handleOnDeviceUpdate])
 
   return (
     <>
@@ -153,7 +160,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 <div
                   className="hover:bg-gray-200 text-red-base"
                   onClick={
-                    isEditingLabel ? handleOnDeviceUpdate : toggleEditLabel
+                    isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }
                 >
                   {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
@@ -179,7 +186,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           primaryButton={{
             text: "Change",
             type: "primary",
-            onClick: updatedDevice ? handleOnDeviceUpdate : toggleIconModal,
+            onClick: updatedDevice ? handleOnIconUpdate : toggleIconModal,
           }}
           secondaryButton={{
             text: "Cancel",

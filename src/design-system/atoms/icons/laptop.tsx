@@ -3,7 +3,7 @@ import React from "react"
 
 interface LaptopIconProps extends React.SVGProps<SVGSVGElement> {}
 
-export const LaptopIcon: React.FC<LaptopIconProps> = ({
+export const IconDesktop: React.FC<LaptopIconProps> = ({
   className,
   onClick,
 }) => {

@@ -2,7 +2,7 @@ import { Meta, Story } from "@storybook/react"
 import React from "react"
 
 import { Button, ButtonProps } from "."
-import { DesktopIcon } from "../icons/desktop"
+import { IconLaptop } from "../icons/desktop"
 
 const meta: Meta = {
   title: "Atoms/Button",
@@ -26,7 +26,7 @@ const DefaultTemplate: Story<ButtonProps> = (args) => <Button {...args} />
 
 const IconTemplate: Story = (args) => (
   <Button {...args}>
-    <DesktopIcon />
+    <IconLaptop />
   </Button>
 )
 export const Default = DefaultTemplate.bind({})

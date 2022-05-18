@@ -40,6 +40,9 @@ const normalizeDevices = (
       label: accessPoint?.device || device.alias,
       icon: (accessPoint?.icon as Icon) || "desktop",
       pubkey: device.pubkey,
+      lastUsed: accessPoint?.last_used
+        ? Number(BigInt(accessPoint.last_used) / BigInt(1000000))
+        : 0,
       browser: accessPoint?.browser || "",
     }
   })

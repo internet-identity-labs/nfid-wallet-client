@@ -15,7 +15,13 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const [hasPoa, setHasPoa] = React.useState(false)
   const [fetched, loadOnce] = React.useReducer(() => true, false)
 
-  const { devices, getDevices, deleteDevice, handleLoadDevices } = useDevices()
+  const {
+    devices,
+    getDevices,
+    deleteDevice,
+    handleLoadDevices,
+    updateDevices,
+  } = useDevices()
   const { nfidPersonas, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
   const { imAddition } = useAuthentication()
@@ -44,21 +50,20 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     [deleteDevice, handleLoadDevices],
   )
 
-  const handleDeviceUpdateIcon = React.useCallback(async (device: Device) => {
-    console.log(">> handleDeviceUpdateIcon", { device })
-  }, [])
-
-  const handleDeviceUpdateLabel = React.useCallback(async (device: Device) => {
-    console.log(">> handleDeviceUpdateLabel", { device })
-  }, [])
+  const handleDeviceUpdate = React.useCallback(
+    async (device: Device) => {
+      await updateDevices(device)
+      await getDevices()
+    },
+    [getDevices, updateDevices],
+  )
 
   return (
     <Profile
       account={account}
       applications={applications}
       onDeviceDelete={handleDeleteDevice}
-      onDeviceUpdateIcon={handleDeviceUpdateIcon}
-      onDeviceUpdateLabel={handleDeviceUpdateLabel}
+      onDeviceUpdate={handleDeviceUpdate}
       hasPoa={hasPoa}
       devices={devices}
       personas={nfidPersonas}

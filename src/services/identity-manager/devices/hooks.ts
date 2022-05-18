@@ -14,7 +14,10 @@ import {
 } from "frontend/services/internet-identity/iiConnection"
 
 import { useAccount } from "../account/hooks"
-import { AccessPointResponse } from "../identity_manager.did"
+import {
+  AccessPointRequest,
+  AccessPointResponse,
+} from "../identity_manager.did"
 import { Device, devicesAtom, Icon } from "./state"
 
 const normalizeDevices = (
@@ -32,8 +35,18 @@ const normalizeDevices = (
       label: accessPoint?.device || device.alias,
       icon: (accessPoint?.icon as Icon) || "desktop",
       pubkey: device.pubkey,
+      browser: accessPoint?.browser || "",
     }
   })
+}
+
+const normalizeDeviceRequest = (device: Device): AccessPointRequest => {
+  return {
+    icon: device.icon,
+    device: device.label,
+    pub_key: device.pubkey,
+    browser: device.browser,
+  }
 }
 
 export const useDevices = () => {
@@ -44,14 +57,12 @@ export const useDevices = () => {
   const { internetIdentity, identityManager } = useAuthentication()
 
   const updateDevices = React.useCallback(
-    (partialDevices: Partial<Device[]>) => {
-      const newDevices = produce(devices, (draft: Device) => ({
-        ...draft,
-        ...partialDevices,
-      }))
-      setDevices(newDevices)
+    async (device: Device) => {
+      return await identityManager?.update_access_point(
+        normalizeDeviceRequest(device),
+      )
     },
-    [devices, setDevices],
+    [identityManager],
   )
 
   const handleLoadDevices = React.useCallback(async () => {
@@ -61,7 +72,12 @@ export const useDevices = () => {
         IIConnection.lookupAuthenticators(userNumber),
       ])
       if (accessPoints?.status_code === 200) {
-        setDevices(normalizeDevices(existingDevices, accessPoints?.data[0]))
+        const normalizedDevices = normalizeDevices(
+          existingDevices,
+          accessPoints?.data[0],
+        )
+
+        setDevices(normalizedDevices)
       }
     }
   }, [identityManager, setDevices, userNumber])
@@ -163,7 +179,8 @@ export const useDevices = () => {
   )
 
   const getDevices = React.useCallback(async () => {
-    await handleLoadDevices()
+    const devices = await handleLoadDevices()
+    console.log(">> ", { devices })
   }, [handleLoadDevices])
 
   React.useEffect(() => {

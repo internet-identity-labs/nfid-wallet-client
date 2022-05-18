@@ -27,7 +27,12 @@ export const AwaitingConfirmation: React.FC<AwaitingConfirmationProps> = ({
   const [deviceLinked] = React.useState(false)
   const [loading] = React.useState(false)
 
-  const device = { label: "iPhone X", pubkey: [], icon: "mobile" as Icon }
+  const device = {
+    label: "iPhone X",
+    browser: "Chrome",
+    pubkey: [],
+    icon: "mobile" as Icon,
+  }
 
   return (
     <AppScreen isFocused>

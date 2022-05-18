@@ -10,13 +10,13 @@ import { DeviceListItem } from "./device-list-item"
 
 interface DeviceListProps {
   devices: Device[]
-  onDeviceUpdateDevice: (device: Device) => Promise<void>
+  onDeviceUpdate: (device: Device) => Promise<void>
   onDeviceDelete: (device: Device) => Promise<void>
 }
 
 export const DeviceList: React.FC<DeviceListProps> = ({
   devices,
-  onDeviceUpdateDevice,
+  onDeviceUpdate,
   onDeviceDelete,
 }) => {
   return (
@@ -36,7 +36,7 @@ export const DeviceList: React.FC<DeviceListProps> = ({
             <DeviceListItem
               key={device.label}
               device={device}
-              onDeviceUpdate={onDeviceUpdateDevice}
+              onDeviceUpdate={onDeviceUpdate}
               onDelete={onDeviceDelete}
             />
           ))}

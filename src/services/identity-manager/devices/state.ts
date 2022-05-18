@@ -11,6 +11,7 @@ export interface AccessPointRequest {
 
 // TODO: update to backend api
 export interface Device {
+  isAccessPoint?: boolean // Indicates if this device is already stored as access point
   label: string
   icon: Icon
   browser: string

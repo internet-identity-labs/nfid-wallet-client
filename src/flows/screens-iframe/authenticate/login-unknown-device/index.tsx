@@ -17,7 +17,6 @@ export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = () => {
   const { url, status, handlePollForDelegate, showRegister } =
     useUnknownDeviceConfig()
   const isLoading = status === "loading"
-  console.log(">> ", { isLoading })
 
   useInterval(handlePollForDelegate, 2000)
   return (

@@ -9,7 +9,7 @@ import checkIfElementExists from "../check/checkIfElementExists"
  * @param  {String}   selector Element selector
  */
 export default async (
-  action: "click" | "doubleClick",
+  action:  "doubleClick",
   type: "selector",
   selector: Selector,
 ) => {

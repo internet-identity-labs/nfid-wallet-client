@@ -61,22 +61,15 @@ export const useDevices = () => {
   const updateDevice = React.useCallback(
     async (device: Device) => {
       const normalizedDevice = normalizeDeviceRequest(device)
-      console.debug(">> updateDevice", { normalizedDevice })
 
       if (!device.isAccessPoint) {
         const createAccessPointResponse =
           await identityManager?.create_access_point(normalizedDevice)
-        console.debug(">> updateDevice", { createAccessPointResponse })
         return createAccessPointResponse
       }
       const updatedAccessPoint = await identityManager?.update_access_point(
         normalizedDevice,
       )
-      const account = await identityManager?.get_account()
-      console.debug(">> updateDevice", {
-        account,
-        updatedAccessPoint,
-      })
       return updatedAccessPoint
     },
     [identityManager],

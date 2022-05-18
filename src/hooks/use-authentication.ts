@@ -143,6 +143,7 @@ export const useAuthentication = () => {
         initUserGeek(
           result?.internetIdentity?.delegationIdentity.getPrincipal(),
         )
+        result.identityManager.use_access_point()
         setShouldStoreLocalAccount(false)
         setError(null)
       }

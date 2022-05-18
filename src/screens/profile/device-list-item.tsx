@@ -148,7 +148,8 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               <div className="flex-1 flex-shrink">
                 <div className="text-gray-700">{device.label}</div>
                 <div className="my-1 text-sm text-gray-400">
-                  {/* TODO: LAST USED AND BROWSER */}
+                  {new Date(device.lastUsed).toLocaleDateString()} with{" "}
+                  {device.browser}
                 </div>
               </div>
             )}

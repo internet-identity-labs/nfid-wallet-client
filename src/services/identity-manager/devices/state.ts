@@ -17,6 +17,7 @@ export interface Device {
   label: string
   icon: Icon
   browser: string
+  lastUsed: number
   pubkey: number[]
 }
 

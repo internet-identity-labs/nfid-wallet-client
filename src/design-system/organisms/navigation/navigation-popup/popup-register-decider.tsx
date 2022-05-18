@@ -43,11 +43,16 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         return console.error(`Missing userNumber: ${userNumber}`)
       }
 
-      await recoverDevice(userNumber)
-      await Promise.all([readAccount(), getPersona()])
+      try {
+        await recoverDevice(userNumber)
+        await Promise.all([readAccount(), getPersona()])
 
-      setIsLoading(false)
-      setStatus("registerDevice")
+        setIsLoading(false)
+        setStatus("registerDevice")
+      } catch (e) {
+        console.error(e)
+        setIsLoading(false)
+      }
     }
 
     if (linkAccount === "rb_link_account_login") {

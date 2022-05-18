@@ -1,30 +1,29 @@
-import { ModalAdvancedProps } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { Profile } from "frontend/screens/profile"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { Device } from "frontend/services/identity-manager/devices/state"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 
-interface AuthenticateNFIDHomeProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+interface AuthenticateNFIDHomeProps {}
 
-export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
-  children,
-  className,
-}) => {
+export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const applications: any[] = ["NFID Demo"]
 
   const [hasPoa, setHasPoa] = React.useState(false)
-  const [showModal, setShowModal] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
   const [fetched, loadOnce] = React.useReducer(() => true, false)
-  const [modalOptions, setModalOptions] =
-    React.useState<ModalAdvancedProps | null>(null)
 
-  const { devices, getDevices, deleteDevice, handleLoadDevices } = useDevices()
+  const {
+    devices,
+    recoveryDevices,
+    getDevices,
+    deleteDevice,
+    handleLoadDevices,
+    updateDevice,
+    getRecoveryDevices,
+  } = useDevices()
   const { nfidPersonas, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
   const { imAddition } = useAuthentication()
@@ -41,36 +40,37 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = ({
       loadOnce()
       readAccount()
       getDevices()
+      getRecoveryDevices()
       getPersona()
     }
-  }, [fetched, getDevices, getPersona, readAccount])
+  }, [fetched, getDevices, getPersona, getRecoveryDevices, readAccount])
 
   const handleDeleteDevice = React.useCallback(
-    (publicKey: PublicKey) => async () => {
-      setLoading(true)
-
-      await deleteDevice(publicKey)
+    async (device: Device) => {
+      await deleteDevice(device.pubkey)
       await handleLoadDevices()
-
-      setLoading(false)
-      setShowModal(false)
     },
     [deleteDevice, handleLoadDevices],
+  )
+
+  const handleDeviceUpdate = React.useCallback(
+    async (device: Device) => {
+      await updateDevice(device)
+      await getDevices()
+    },
+    [getDevices, updateDevice],
   )
 
   return (
     <Profile
       account={account}
       applications={applications}
-      onDeleteDeviceFactory={handleDeleteDevice}
-      showModal={showModal}
-      modalOptions={modalOptions}
-      setModalOptions={setModalOptions}
-      setShowModal={setShowModal}
+      onDeviceDelete={handleDeleteDevice}
+      onDeviceUpdate={handleDeviceUpdate}
       hasPoa={hasPoa}
       devices={devices}
-      loading={loading}
       personas={nfidPersonas}
+      recoveryPhrase={recoveryDevices[0]}
     />
   )
 }

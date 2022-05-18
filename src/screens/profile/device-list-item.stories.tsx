@@ -25,7 +25,10 @@ const Template: ComponentStory<typeof DeviceListItem> = (args) => (
 export const Default = Template.bind({})
 Default.args = {
   device: {
-    alias: "My device",
+    label: "My device",
+    browser: "Chrome",
+    icon: "desktop",
+    lastUsed: Date.now(),
     pubkey: [123, 123],
   },
 }

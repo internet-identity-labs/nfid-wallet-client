@@ -1,144 +1,241 @@
 import {
-  ListItem,
   Loader,
   ModalAdvanced,
-  ModalAdvancedProps,
   P,
+  PencilIcon,
   TrashIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
+import clsx from "clsx"
+import produce from "immer"
 import React from "react"
-import { MdLaptopMac } from "react-icons/md"
 
-import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import { Device } from "frontend/services/identity-manager/devices/state"
+import { IconCancel } from "frontend/design-system/atoms/icons/cancle"
+import { IconCheckMark } from "frontend/design-system/atoms/icons/check-mark"
+import { Device, Icon } from "frontend/services/identity-manager/devices/state"
 
+import { DeviceIconDecider } from "./device-icon-decider"
 import { DeviceListButtonGroup } from "./device-list-button-group"
 
 interface DeviceListItemProps {
   device: Device
-  onChangeIcon: (device: Device) => Promise<void>
-  onChangeLabel: (device: Device) => Promise<void>
+  onDeviceUpdate: (device: Device) => Promise<void>
   onDelete: (device: Device) => Promise<void>
 }
 
-export const DeviceListItem: React.FC<DeviceListItemProps> = ({ device }) => {
-  const [showModal, setShowModal] = React.useState(false)
+export const DeviceListItem: React.FC<DeviceListItemProps> = ({
+  device: initialDevice,
+  onDelete,
+  onDeviceUpdate,
+}) => {
+  const [updatedDevice, setUpdatedDevice] = React.useState<Device | null>(null)
+
+  const device = updatedDevice ?? initialDevice
+
+  const [editIconModal, toggleIconModal] = React.useReducer(
+    (state) => !state,
+    false,
+  )
+  const [deleteDeviceModal, toggleDeleteDeviceModal] = React.useReducer(
+    (state) => !state,
+    false,
+  )
+
+  const [isEditingLabel, toggleEditLabel] = React.useReducer(
+    (state) => !state,
+    false,
+  )
+
   const [loading, setLoading] = React.useState(false)
-  const [modalOptions, setModalOptions] =
-    React.useState<ModalAdvancedProps | null>(null)
-  const { deleteDevice, handleLoadDevices } = useDevices()
 
   const handleDeleteDevice = React.useCallback(
-    (publicKey) => async () => {
+    async (device: Device) => {
       setLoading(true)
 
-      await deleteDevice(publicKey)
-      await handleLoadDevices()
+      await onDelete(device)
 
       setLoading(false)
-      setShowModal(false)
+      toggleDeleteDeviceModal()
     },
-    [deleteDevice, handleLoadDevices],
+    [onDelete],
   )
 
   const handleDeleteDeviceDialog = React.useCallback(
     (e: React.SyntheticEvent) => {
       e.stopPropagation()
-      setShowModal(true)
-
-      setModalOptions({
-        title: "Delete access point",
-        children: (
-          <P>
-            Do you really want to delete{" "}
-            <span className="font-bold">{device.alias}</span> access point? This
-            process cannot be undone.
-          </P>
-        ),
-        primaryButton: {
-          text: "Delete",
-          type: "error",
-          onClick: handleDeleteDevice(device.pubkey),
-        },
-        secondaryButton: {
-          text: "Cancel",
-          type: "secondary",
-          onClick: () => {
-            setShowModal(false)
-          },
-        },
-      })
+      toggleDeleteDeviceModal()
     },
-    [device.alias, device.pubkey, handleDeleteDevice],
+    [],
+  )
+
+  const handleSelectIcon = React.useCallback(
+    (icon: Icon) => {
+      setUpdatedDevice(
+        produce(updatedDevice || initialDevice, (draft: Device) => ({
+          ...draft,
+          icon,
+        })),
+      )
+    },
+    [initialDevice, updatedDevice],
   )
 
   const handleEditDeviceIconDialog = React.useCallback(
     (e: React.SyntheticEvent) => {
       e.stopPropagation()
-      setShowModal(true)
-
-      setModalOptions({
-        title: "Change icon",
-        children: (
-          <div>
-            <P>
-              Choose icon for <span className="font-bold">{device.alias}</span>
-            </P>
-            <DeviceListButtonGroup />
-          </div>
-        ),
-        primaryButton: {
-          text: "Change",
-          type: "primary",
-          onClick: handleDeleteDevice(device.pubkey),
-        },
-        secondaryButton: {
-          text: "Cancel",
-          type: "secondary",
-          onClick: () => {
-            setShowModal(false)
-          },
-        },
-      })
+      toggleIconModal()
     },
-    [device.alias, device.pubkey, handleDeleteDevice],
+    [],
   )
+
+  const handleOnChangeLabel = React.useCallback(
+    ({ target: { value } }) => {
+      setUpdatedDevice(
+        produce(updatedDevice || initialDevice, (draft: Device) => ({
+          ...draft,
+          label: value,
+        })),
+      )
+    },
+    [initialDevice, updatedDevice],
+  )
+
+  const handleOnDeviceUpdate = React.useCallback(async () => {
+    setLoading(true)
+    if (updatedDevice) {
+      await onDeviceUpdate(updatedDevice)
+    }
+    setLoading(false)
+  }, [onDeviceUpdate, updatedDevice])
+
+  const handleOnIconUpdate = React.useCallback(async () => {
+    await handleOnDeviceUpdate()
+    toggleIconModal()
+  }, [handleOnDeviceUpdate])
+
+  const handleOnLabelUpdate = React.useCallback(async () => {
+    await handleOnDeviceUpdate()
+    toggleEditLabel()
+  }, [handleOnDeviceUpdate])
 
   return (
     <>
-      <ListItem
-        key={device.alias}
-        title={device.alias}
-        subtitle={""}
-        icon={
-          <MdLaptopMac
-            className="text-xl text-blue-base"
-            onClick={handleEditDeviceIconDialog}
-          />
-        }
-        action={
-          <div className="flex space-x-2"
-          style={{display: (device as any).recovery ? 'none' : ''}}>
-            <div
-              className="hover:bg-gray-200 text-red-base"
-              onClick={handleDeleteDeviceDialog}
-            >
-              <TrashIcon />
+      <div
+        className={clsx(
+          "relative flex flex-row hover:bg-gray-200 hover:rounded transition-colors duration-100 -mx-3 mt-2",
+        )}
+      >
+        <div className="flex flex-wrap items-center flex-1 px-3 py-2 cursor-pointer select-none peer">
+          <div className="mr-4">
+            <div className="relative flex items-center justify-center bg-white rounded-full w-9 h-9">
+              <DeviceIconDecider
+                icon={device.icon}
+                onClick={
+                  isEditingLabel ? () => null : handleEditDeviceIconDialog
+                }
+              />
             </div>
           </div>
-        }
-      />
-      {showModal && modalOptions && (
+
+          <div className="relative flex items-center flex-1">
+            {isEditingLabel ? (
+              <input
+                className="flex-1 flex-shrink px-2 py-1 rounded"
+                defaultValue={device.label}
+                onChange={handleOnChangeLabel}
+              ></input>
+            ) : (
+              <div className="flex-1 flex-shrink">
+                <div className="text-gray-700">{device.label}</div>
+                <div className="my-1 text-sm text-gray-400">
+                  {device.lastUsed
+                    ? `${new Date(device.lastUsed).toLocaleDateString()} with `
+                    : null}
+                  {device.browser}
+                </div>
+              </div>
+            )}
+
+            <div className="pl-1 md:pl-4">
+              <div
+                className="flex space-x-2"
+                style={{ display: (device as any).recovery ? "none" : "" }}
+              >
+                <div
+                  className="hover:bg-gray-200 text-red-base"
+                  onClick={
+                    isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
+                  }
+                >
+                  {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
+                </div>
+                <div
+                  className="hover:bg-gray-200 text-red-base"
+                  onClick={
+                    isEditingLabel ? toggleEditLabel : handleDeleteDeviceDialog
+                  }
+                >
+                  {isEditingLabel ? <IconCancel /> : <TrashIcon />}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute left-0 w-full mx-3 border-b -bottom-1"></div>
+        </div>
+      </div>
+      {editIconModal && (
         <ModalAdvanced
-          title={modalOptions.title}
-          onClose={() => setShowModal(false)}
-          primaryButton={modalOptions.primaryButton}
-          secondaryButton={modalOptions.secondaryButton}
+          title="Change icon"
+          onClose={toggleIconModal}
+          primaryButton={{
+            text: "Change",
+            type: "primary",
+            onClick: updatedDevice ? handleOnIconUpdate : toggleIconModal,
+          }}
+          secondaryButton={{
+            text: "Cancel",
+            type: "secondary",
+            onClick: () => {
+              setUpdatedDevice(null)
+              toggleIconModal()
+            },
+          }}
         >
-          {modalOptions.children}
-          <Loader isLoading={loading} />
+          <div>
+            <P>
+              Choose icon for <span className="font-bold">{device.label}</span>
+            </P>
+            <DeviceListButtonGroup
+              onSelect={handleSelectIcon}
+              selected={device.icon}
+            />
+          </div>
         </ModalAdvanced>
       )}
+      {deleteDeviceModal && (
+        <ModalAdvanced
+          title="Delete access point"
+          onClose={toggleDeleteDeviceModal}
+          primaryButton={{
+            text: "Delete",
+            type: "error",
+            onClick: async () => {
+              await handleDeleteDevice(device)
+            },
+          }}
+          secondaryButton={{
+            text: "Cancel",
+            type: "secondary",
+            onClick: toggleDeleteDeviceModal,
+          }}
+        >
+          <P>
+            Do you really want to delete{" "}
+            <span className="font-bold">{device.label}</span> access point? This
+            process cannot be undone.
+          </P>
+        </ModalAdvanced>
+      )}
+      <Loader isLoading={loading} />
     </>
   )
 }

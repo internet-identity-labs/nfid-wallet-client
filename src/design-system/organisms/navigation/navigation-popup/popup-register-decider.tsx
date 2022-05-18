@@ -7,7 +7,6 @@ import {
 import clsx from "clsx"
 import React, { useState } from "react"
 
-import logo from "frontend/assets/logo.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
@@ -23,7 +22,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { setStatus } = useRegisterQRCode()
   const { recoverDevice } = useDevices()
-  const { readAccount } = useAccount()
+  const { readAndStoreAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
   const { getPersona } = usePersona()
 
@@ -44,11 +43,16 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         return console.error(`Missing userNumber: ${userNumber}`)
       }
 
-      await recoverDevice(userNumber)
-      await Promise.all([readAccount(), getPersona()])
+      try {
+        await recoverDevice(userNumber)
+        await Promise.all([readAndStoreAccount(), getPersona()])
 
-      setIsLoading(false)
-      setStatus("registerDevice")
+        setIsLoading(false)
+        setStatus("registerDevice")
+      } catch (e) {
+        console.error(e)
+        setIsLoading(false)
+      }
     }
 
     if (linkAccount === "rb_link_account_login") {
@@ -62,7 +66,9 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   }, [setStatus])
 
   return (
-    <div className={clsx(isLoading && "pointer-events-none")}>
+    <div
+      className={clsx(isLoading && "pointer-events-none", "pt-6 px-6 mx-auto")}
+    >
       <div
         className={clsx(
           "flex justify-center items-center",
@@ -78,7 +84,6 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
           fullscreen={false}
         />
       </div>
-      <img src={logo} alt="logo" className="w-20 my-8" />
       <H5 className="mb-4">Log in faster on this device</H5>
       <div>
         Trust this {device}? You can quickly and securely log in the next time

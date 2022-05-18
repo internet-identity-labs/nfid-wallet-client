@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { AppScreenRegisterDeviceDecider } from "frontend/screens/register-device-decider"
@@ -23,6 +24,10 @@ export const RouterRegisterDeviceDecider: React.FC<
   const { getPersona } = usePersona()
   const { identityManager, internetIdentity } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
+  const {
+    browser: { name: browserName },
+    platform: { os: deviceName },
+  } = useDeviceInfo()
   const navigate = useNavigate()
 
   const { userNumber } = useUnknownDeviceConfig()
@@ -36,6 +41,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     await recoverDevice(userNumber)
 
     const response = await recoverAccount(userNumber)
+
     if (response?.status_code === 404) {
       console.warn("account not found. Recreating")
       if (!identityManager) throw new Error("identityManager is missing")
@@ -47,9 +53,9 @@ export const RouterRegisterDeviceDecider: React.FC<
       )
       const createAccessPointResponse =
         await identityManager.create_access_point({
-          icon: "",
-          device: "",
-          browser: "",
+          icon: "laptop",
+          device: deviceName,
+          browser: browserName || "My Computer",
           pub_key,
         })
       if (createAccessPointResponse.status_code !== 200) {
@@ -63,7 +69,9 @@ export const RouterRegisterDeviceDecider: React.FC<
     navigate(generatePath(registerSuccessPath))
     setIsLoading(false)
   }, [
+    browserName,
     createAccount,
+    deviceName,
     generatePath,
     getPersona,
     identityManager,

@@ -1,5 +1,5 @@
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
-import React, { useEffect } from "react"
+import React from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -11,18 +11,17 @@ interface PopupLoginProps {
 }
 
 export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
-  const { userNumber, readAccount, account } = useAccount()
+  const { readAccount, account } = useAccount()
   const { getPersona } = usePersona()
-  const { login, isAuthenticated, logout, identityManager } =
-    useAuthentication()
+  const { login, isAuthenticated, logout } = useAuthentication()
   const navigate = useNavigate()
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isAuthenticated) {
       readAccount()
       getPersona()
     }
-  }, [getPersona, identityManager, isAuthenticated, readAccount, userNumber])
+  }, [getPersona, isAuthenticated, readAccount])
 
   return (
     <div className="px-4 mx-auto">

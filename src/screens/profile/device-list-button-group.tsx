@@ -1,24 +1,33 @@
-import {
-  MobileIcon,
-  TabletIcon,
-  DesktopIcon,
-  LaptopIcon,
-  KeyIcon,
-} from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
-interface DeviceListButtonGroupProps {}
+import { Button } from "frontend/design-system/atoms/button"
+import { Icon } from "frontend/services/identity-manager/devices/state"
 
-export const DeviceListButtonGroup: React.FC<
-  DeviceListButtonGroupProps
-> = () => {
+import { DeviceIconDecider } from "./device-icon-decider"
+
+interface DeviceListButtonGroupProps {
+  onSelect: (icon: Icon) => void
+  selected: Icon
+}
+
+const ICONS: Icon[] = ["mobile", "tablet", "desktop", "laptop", "key"]
+
+export const DeviceListButtonGroup: React.FC<DeviceListButtonGroupProps> = ({
+  onSelect,
+  selected,
+}) => {
+  const handleSelect = React.useCallback(
+    (icon: Icon) => () => onSelect(icon),
+    [onSelect],
+  )
+
   return (
     <div className="flex justify-center space-x-2">
-      <MobileIcon onClick={function noRefCheck() {}} />
-      <TabletIcon onClick={function noRefCheck() {}} />
-      <DesktopIcon onClick={() => {}} />
-      <LaptopIcon onClick={function noRefCheck() {}} />
-      <KeyIcon onClick={function noRefCheck() {}} />
+      {ICONS.map((icon) => (
+        <Button icon onClick={handleSelect(icon)} isActive={selected === icon}>
+          <DeviceIconDecider icon={icon} />
+        </Button>
+      ))}
     </div>
   )
 }

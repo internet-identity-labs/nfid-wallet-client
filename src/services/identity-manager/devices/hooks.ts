@@ -1,7 +1,6 @@
 import { blobFromHex, blobToHex, derBlobFromBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
 
@@ -32,6 +31,7 @@ const normalizeDevices = (
       (ap) => ap.principal_id === devicePrincipalId,
     )
     return {
+      isAccessPoint: !!accessPoint,
       label: accessPoint?.device || device.alias,
       icon: (accessPoint?.icon as Icon) || "desktop",
       pubkey: device.pubkey,
@@ -58,9 +58,12 @@ export const useDevices = () => {
 
   const updateDevices = React.useCallback(
     async (device: Device) => {
-      return await identityManager?.update_access_point(
-        normalizeDeviceRequest(device),
-      )
+      const normalizedDevice = normalizeDeviceRequest(device)
+
+      if (!device.isAccessPoint) {
+        return await identityManager?.create_access_point(normalizedDevice)
+      }
+      return await identityManager?.update_access_point(normalizedDevice)
     },
     [identityManager],
   )
@@ -71,6 +74,7 @@ export const useDevices = () => {
         identityManager?.read_access_points(),
         IIConnection.lookupAuthenticators(userNumber),
       ])
+
       if (accessPoints?.status_code === 200) {
         const normalizedDevices = normalizeDevices(
           existingDevices,

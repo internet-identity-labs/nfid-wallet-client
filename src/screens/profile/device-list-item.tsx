@@ -46,6 +46,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   )
 
   const [loading, setLoading] = React.useState(false)
+  console.log(">> ", { loading })
 
   const handleDeleteDevice = React.useCallback(
     async (publicKey) => {
@@ -198,7 +199,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               selected={device.icon}
             />
           </div>
-          <Loader isLoading={loading} />
         </ModalAdvanced>
       )}
       {deleteDeviceModal && (
@@ -223,9 +223,9 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
             <span className="font-bold">{device.label}</span> access point? This
             process cannot be undone.
           </P>
-          <Loader isLoading={loading} />
         </ModalAdvanced>
       )}
+      <Loader isLoading={loading} />
     </>
   )
 }

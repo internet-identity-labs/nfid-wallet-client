@@ -6,7 +6,10 @@ import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
-import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
+import {
+  DeviceData,
+  PublicKey,
+} from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   creationOptions,
   IIConnection,
@@ -113,12 +116,17 @@ export const useDevices = () => {
   }, [setRecoveryDevices, userNumber])
 
   const deleteDevice = React.useCallback(
-    async (pubkey) => {
+    async (pubkey: PublicKey) => {
+      console.debug(">> deleteDevice", { pubkey })
+
       if (internetIdentity && userNumber) {
-        await internetIdentity.remove(userNumber, pubkey)
+        await Promise.all([
+          internetIdentity.remove(userNumber, pubkey),
+          identityManager?.remove_access_point({ pub_key: pubkey }),
+        ])
       }
     },
-    [internetIdentity, userNumber],
+    [identityManager, internetIdentity, userNumber],
   )
 
   const createWebAuthNDevice = React.useCallback(

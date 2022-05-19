@@ -148,7 +148,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
                   {nfidPersonas.map((persona, index) => (
                     <MenuItem
                       key={index}
-                      title={String(persona.persona_id)}
+                      title={`${applicationName} account ${persona.persona_id}`}
                       onClick={() => {
                         setSelectedItem(String(persona.persona_id))
                         setIsPersonaSelected(true)
@@ -166,7 +166,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
                   {iiPersonas.map((persona, index) => (
                     <MenuItem
                       key={index}
-                      title={persona.anchor}
+                      title={`${applicationName} account ${persona.anchor}`}
                       onClick={() => {
                         setSelectedItem(persona.anchor)
                         setIsPersonaSelected(false)

@@ -1,5 +1,4 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { BrowserRouter as Router } from "react-router-dom"
 
 import { AuthorizeApp } from "."
 
@@ -15,13 +14,16 @@ export default {
 const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   typeof AuthorizeApp
 > = (args) => {
-  return (
-    <Router>
-      <AuthorizeApp {...args} />
-    </Router>
-  )
+  return <AuthorizeApp {...args} />
 }
 
 export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 
-AppScreen.args = {}
+AppScreen.args = {
+  applicationName: "My Application",
+  accounts: [
+    { persona_id: "1", domain: "https://my-app.ic0.app" },
+    { persona_id: "2", domain: "https://my-app.ic0.app" },
+    { persona_id: "3", domain: "https://my-app.ic0.app" },
+  ],
+}

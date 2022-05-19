@@ -24,7 +24,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 }) => {
   const [status, setStatus] = React.useState<
     "initial" | "loading" | "success" | "error"
-  >("loading")
+  >("initial")
 
   const hasNFIDPersonas = accounts.length > 0
 
@@ -48,7 +48,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 
   const title = `Log in to ${applicationName}`
 
-  return status === "initial" || status === "loading" ? (
+  return (
     <div>
       {isRemoteAuthorisation ? (
         <H5 className="mb-4">{title}</H5>
@@ -60,10 +60,10 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         {hasNFIDPersonas && (
           <>
             <Label>Continue as</Label>
-            <DropdownMenu title={selectedItem}>
+            <DropdownMenu title={`${applicationName} account ${selectedItem}`}>
               {(toggle) => (
                 <div className="h-40 overflow-y-auto">
-                  <Label menuItem>Personas</Label>
+                  <Label menuItem>Accounts</Label>
                   {accounts.map((persona, index) => (
                     <MenuItem
                       key={index}
@@ -96,5 +96,5 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
       {/* <LinkIIAnchorHref onClick={handleIILink} /> */}
       <Loader isLoading={status === "loading"} iframe={isRemoteAuthorisation} />
     </div>
-  ) : null
+  )
 }

@@ -1,11 +1,35 @@
 {
   "canisters": {
-    "assets": {
+    "nfid-frontend": {
       "frontend": {
         "entrypoint": "build/index.html"
       },
       "source": ["build/"],
       "type": "assets"
+    },
+    "internet_identity": {
+      "type": "custom",
+      "candid": "internet_identity.did",
+      "wasm": "internet_identity.wasm",
+
+      "NOTES": "this is the hack used by II team to make prebuild wasm files work",
+      "build": "curl -sSL https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm -o internet_identity.wasm"
+    },
+    "identity_manager": {
+      "type": "custom",
+      "candid": "canister/nfid_backend/identity_manager.did",
+      "wasm": "canister/nfid_backend/identity_manager.wasm",
+
+      "NOTES": "WE NEED TO DEFINE HOW TO GET THE PREBUILD WASM FILES",
+      "build": "curl -sSL https://github.com/internet-identity-labs/identity-manager/PATH_TO_WASM_FILES/identity_manager.wasm -o identity_manager.wasm"
+    },
+    "pub_sub_channel": {
+      "type": "custom",
+      "candid": "canister/nfid_backend/pub_sub_channel.did",
+      "wasm": "canister/nfid_backend/pub_sub_channel.wasm",
+
+      "NOTES": "WE NEED TO DEFINE HOW TO GET THE PREBUILD WASM FILES",
+      "build": "curl -sSL https://github.com/internet-identity-labs/identity-manager/PATH_TO_WASM_FILES/pub_sub_channel.wasm -o pub_sub_channel.wasm"
     }
   },
   "defaults": {

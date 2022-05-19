@@ -2,106 +2,49 @@ import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import { DropdownMenu } from "@internet-identity-labs/nfid-sdk-react"
 import { Label, Loader, MenuItem } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
 import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
 
-import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
-import { useAuthorization } from "frontend/hooks/use-authorization"
-import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { ElementProps } from "frontend/types/react"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   isRemoteAuthorisation?: boolean
+  applicationName: string
+  accounts: NFIDPersona[]
+  onLogin: (personaId: string) => Promise<void>
+  onCreateAccount: () => Promise<void>
 }
 
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   isRemoteAuthorisation,
+  applicationName,
+  accounts,
+  onLogin,
+  onCreateAccount,
 }) => {
   const [status, setStatus] = React.useState<
     "initial" | "loading" | "success" | "error"
   >("loading")
-  const { secret, scope } = useParams()
-  const { applicationName } = useMultipass()
 
-  const { userNumber } = useAccount()
-  const navigate = useNavigate()
-  const { remoteLogin, sendWaitForUserInput } = useAuthorizeApp()
-
-  const { opener, postClientReadyMessage, authorizeApp, authorizationRequest } =
-    useAuthorization({
-      userNumber,
-    })
-
-  React.useEffect(() => {
-    if (!authorizationRequest && opener) {
-      return postClientReadyMessage()
-    }
-    setStatus("initial")
-  }, [authorizationRequest, opener, postClientReadyMessage])
-
-  const { nextPersonaId, nfidPersonas, createPersona } = usePersona()
-
-  const hasNFIDPersonas = nfidPersonas.length > 0
-
-  React.useEffect(() => {
-    secret && sendWaitForUserInput(secret)
-  }, [secret, sendWaitForUserInput])
+  const hasNFIDPersonas = accounts.length > 0
 
   const [selectedItem, setSelectedItem] = React.useState<string>(
-    String(nfidPersonas[0]?.persona_id),
+    String(accounts[0]?.persona_id),
   )
-
-  const handleAuthorizePersona = React.useCallback(
-    ({ persona_id }: { persona_id?: string; anchor?: string }) =>
-      async () => {
-        setStatus("loading")
-
-        if (!isRemoteAuthorisation && persona_id) {
-          await authorizeApp({ persona_id })
-          return setStatus("success")
-        }
-
-        if (!secret || !scope || !persona_id)
-          throw new Error("missing secret, scope or persona_id")
-
-        await remoteLogin({ secret, scope, persona_id })
-
-        return navigate(
-          `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-        )
-      },
-    [isRemoteAuthorisation, secret, scope, remoteLogin, navigate, authorizeApp],
-  )
-
-  const handleCreatePersonaAndLogin = React.useCallback(async () => {
-    setStatus("loading")
-
-    const response = await createPersona({
-      domain: scope || authorizationRequest?.hostname,
-    })
-
-    if (response?.status_code === 200) {
-      return handleAuthorizePersona({ persona_id: nextPersonaId })()
-    }
-  }, [
-    authorizationRequest?.hostname,
-    createPersona,
-    handleAuthorizePersona,
-    nextPersonaId,
-    scope,
-  ])
 
   const handleLogin = React.useCallback(async () => {
     if (selectedItem) {
-      await handleAuthorizePersona({
-        persona_id: selectedItem,
-      })()
+      setStatus("loading")
+      await onLogin(selectedItem)
+      setStatus("success")
     }
-  }, [handleAuthorizePersona, selectedItem])
+  }, [selectedItem, onLogin])
+
+  const handleCreatePersonaAndLogin = React.useCallback(async () => {
+    setStatus("loading")
+    await onCreateAccount()
+    setStatus("success")
+  }, [onCreateAccount])
 
   const title = `Log in to ${applicationName}`
 
@@ -121,7 +64,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               {(toggle) => (
                 <div className="h-40 overflow-y-auto">
                   <Label menuItem>Personas</Label>
-                  {nfidPersonas.map((persona, index) => (
+                  {accounts.map((persona, index) => (
                     <MenuItem
                       key={index}
                       title={`${applicationName} account ${persona.persona_id}`}

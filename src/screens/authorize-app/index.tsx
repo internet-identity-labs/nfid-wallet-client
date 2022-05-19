@@ -43,8 +43,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     setStatus("initial")
   }, [authorizationRequest, opener, postClientReadyMessage])
 
-  const { nextPersonaId, nfidPersonas, iiPersonas, createPersona } =
-    usePersona()
+  const { nextPersonaId, nfidPersonas, createPersona } = usePersona()
 
   const hasNFIDPersonas = nfidPersonas.length > 0
 
@@ -55,8 +54,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   const [selectedItem, setSelectedItem] = React.useState<string>(
     String(nfidPersonas[0]?.persona_id),
   )
-
-  const [isPersonaSelected, setIsPersonaSelected] = React.useState(true)
 
   const handleAuthorizePersona = React.useCallback(
     ({ persona_id }: { persona_id?: string; anchor?: string }) =>
@@ -80,16 +77,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     [isRemoteAuthorisation, secret, scope, remoteLogin, navigate, authorizeApp],
   )
 
-  const handleAuthorizeIIPersona = React.useCallback(
-    ({ anchor }) =>
-      async () => {
-        setStatus("loading")
-        await authorizeApp({ anchor })
-        setStatus("success")
-      },
-    [authorizeApp],
-  )
-
   const handleCreatePersonaAndLogin = React.useCallback(async () => {
     setStatus("loading")
 
@@ -109,23 +96,12 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   ])
 
   const handleLogin = React.useCallback(async () => {
-    if (isPersonaSelected) {
+    if (selectedItem) {
       await handleAuthorizePersona({
         persona_id: selectedItem,
       })()
     }
-
-    if (!isPersonaSelected) {
-      await handleAuthorizeIIPersona({
-        anchor: selectedItem,
-      })()
-    }
-  }, [
-    handleAuthorizeIIPersona,
-    handleAuthorizePersona,
-    isPersonaSelected,
-    selectedItem,
-  ])
+  }, [handleAuthorizePersona, selectedItem])
 
   const title = `Log in to ${applicationName}`
 
@@ -151,25 +127,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
                       title={`${applicationName} account ${persona.persona_id}`}
                       onClick={() => {
                         setSelectedItem(String(persona.persona_id))
-                        setIsPersonaSelected(true)
-                        toggle()
-                      }}
-                    />
-                  ))}
-
-                  <Label
-                    menuItem
-                    className={clsx(iiPersonas?.length === 0 && "hidden")}
-                  >
-                    Anchors
-                  </Label>
-                  {iiPersonas.map((persona, index) => (
-                    <MenuItem
-                      key={index}
-                      title={`${applicationName} account ${persona.anchor}`}
-                      onClick={() => {
-                        setSelectedItem(persona.anchor)
-                        setIsPersonaSelected(false)
                         toggle()
                       }}
                     />

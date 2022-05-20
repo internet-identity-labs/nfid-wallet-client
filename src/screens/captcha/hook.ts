@@ -15,7 +15,7 @@ import {
   RegisterResult,
 } from "frontend/services/internet-identity/iiConnection"
 
-import { captchaStateAtom } from "./state"
+import { challengeAtom } from "./state"
 
 interface RegisterPayload {
   identity: string
@@ -36,7 +36,8 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   const { state } = useLocation()
   const { registerPayload } = state as RegisterAccountCaptchaState
 
-  const [captchaResp, setCaptchaResp] = useAtom(captchaStateAtom)
+  const { challenge, getChallenge } = useChallenge()
+
   const [responseRegisterAnchor, setResponseRegisterAnchor] = React.useState<
     RegisterResult | undefined
   >()
@@ -54,27 +55,22 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   const requestCaptcha = React.useCallback(async () => {
     setLoading(true)
 
-    const cha = await IIConnection.createChallenge()
+    await getChallenge()
 
-    setCaptchaResp(cha)
     setLoading(false)
-  }, [setCaptchaResp, setLoading])
-
-  React.useEffect(() => {
-    !captchaResp && requestCaptcha()
-  }, [captchaResp, requestCaptcha, setCaptchaResp])
+  }, [getChallenge, setLoading])
 
   const registerAnchor = React.useCallback(
     async ({ captcha }) => {
       setLoading(true)
-      if (!captchaResp) throw new Error("No challenge response")
+      if (!challenge) throw new Error("No challenge response")
       const { identity, deviceName } = registerPayload
 
       const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
 
       const challengeResult: ChallengeResult = {
         chars: captcha,
-        key: captchaResp.challenge_key,
+        key: challenge.challenge_key,
       }
 
       const response = await IIConnection.register(
@@ -98,7 +94,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       return response
     },
     [
-      captchaResp,
+      challenge,
       onApiError,
       onBadChallenge,
       onRegisterSuccess,
@@ -159,9 +155,20 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     recoveryPhrase,
     loading,
     setLoading,
-    captchaResp,
+    challenge,
     requestCaptcha,
     registerPayload,
     registerAnchor,
   }
+}
+
+export const useChallenge = () => {
+  const [challenge, setChallengeResponse] = useAtom(challengeAtom)
+
+  const getChallenge = React.useCallback(async () => {
+    const challenge = await IIConnection.createChallenge()
+    setChallengeResponse(challenge)
+  }, [setChallengeResponse])
+
+  return { challenge, getChallenge }
 }

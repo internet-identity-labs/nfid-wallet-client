@@ -64,7 +64,7 @@ export const NFIDRegisterAccountConstants = {
 }
 
 export const NFIDRegisterAccountRoutes = (
-  <Route path={NFIDRegisterAccountConstants.base} element={<Outlet />}>
+  <Route path={NFIDRegisterAccountConstants.base} element={<ChallengeLoader />}>
     <Route
       path={NFIDRegisterAccountConstants.account}
       element={

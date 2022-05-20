@@ -53,12 +53,8 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   const { onRegisterSuccess } = useAuthentication()
 
   const requestCaptcha = React.useCallback(async () => {
-    setLoading(true)
-
     await getChallenge()
-
-    setLoading(false)
-  }, [getChallenge, setLoading])
+  }, [getChallenge])
 
   const registerAnchor = React.useCallback(
     async ({ captcha }) => {
@@ -166,9 +162,13 @@ export const useChallenge = () => {
   const [challenge, setChallengeResponse] = useAtom(challengeAtom)
 
   const getChallenge = React.useCallback(async () => {
-    const challenge = await IIConnection.createChallenge()
-    setChallengeResponse(challenge)
-  }, [setChallengeResponse])
+    if (challenge) {
+      setChallengeResponse(undefined)
+    }
+    const challengeResponse = await IIConnection.createChallenge()
+
+    setChallengeResponse(challengeResponse)
+  }, [challenge, setChallengeResponse])
 
   return { challenge, getChallenge }
 }

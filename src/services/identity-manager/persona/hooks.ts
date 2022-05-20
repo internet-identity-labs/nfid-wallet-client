@@ -1,5 +1,6 @@
 import { useAtom } from "jotai"
 import React from "react"
+import { useParams } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorization } from "frontend/hooks/use-authorization"
@@ -9,12 +10,9 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { personaAtom } from "./state"
 import { isNFIDPersona } from "./types"
 
-interface UsePersona {
-  application?: string
-}
-
-export const usePersona = ({ application }: UsePersona = {}) => {
+export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
+  const { scope } = useParams()
   const { isLoading } = useIsLoading()
   const { identityManager: personaService } = useAuthentication()
   const { authorizationRequest } = useAuthorization()
@@ -27,12 +25,21 @@ export const usePersona = ({ application }: UsePersona = {}) => {
 
   const accounts = React.useMemo(() => {
     if (!allAccounts) return []
-    return allAccounts.filter(
-      ({ domain }) =>
+    return allAccounts.filter(({ domain }) => {
+      if (!authorizationRequest?.hostname && scope) {
+        const applicationDomain = `${window.location.protocol}//${scope}`
+        const isMatch = applicationDomain.indexOf(domain) > -1
+        console.log(">> usePersona", { applicationDomain, domain, isMatch })
+        return isMatch
+      }
+      return (
         authorizationRequest?.hostname &&
-        domain.includes(authorizationRequest?.hostname),
-    )
-  }, [authorizationRequest?.hostname, allAccounts])
+        authorizationRequest.hostname.indexOf(domain) > -1
+      )
+    })
+  }, [allAccounts, authorizationRequest?.hostname, scope])
+
+  console.log(">> ", { scope, authorizationRequest, accounts, allAccounts })
 
   const nextPersonaId = React.useMemo(() => {
     const highest = allAccounts.reduce((last, persona) => {

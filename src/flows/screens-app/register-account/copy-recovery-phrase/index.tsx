@@ -44,7 +44,9 @@ export const RegisterAccountCopyRecoveryPhrase: React.FC<
 
   const handleAuthorizePersona = React.useCallback(async () => {
     setIsloading(true)
-    const response = await createPersona({ domain: scope })
+    const response = await createPersona({
+      domain: `${window.location.protocol}//${scope}`,
+    })
     if (response?.status_code === 200) {
       if (!secret || !scope) throw new Error("missing secret or scope")
       await remoteLogin({ secret, scope, persona_id: nextPersonaId })

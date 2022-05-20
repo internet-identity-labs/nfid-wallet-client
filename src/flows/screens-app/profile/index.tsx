@@ -24,7 +24,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     updateDevice,
     getRecoveryDevices,
   } = useDevices()
-  const { nfidPersonas, getPersona } = usePersona()
+  const { allAccounts, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
   const { imAddition } = useAuthentication()
 
@@ -69,7 +69,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       onDeviceUpdate={handleDeviceUpdate}
       hasPoa={hasPoa}
       devices={devices}
-      personas={nfidPersonas}
+      accounts={allAccounts}
       recoveryPhrase={recoveryDevices[0]}
     />
   )

@@ -28,9 +28,13 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 
   const hasNFIDPersonas = accounts.length > 0
 
-  const [selectedItem, setSelectedItem] = React.useState<string>(
-    String(accounts[0]?.persona_id),
-  )
+  const [selectedItem, setSelectedItem] = React.useState<string>()
+
+  React.useEffect(() => {
+    if (!selectedItem && accounts.length > 0) {
+      setSelectedItem(accounts[0]?.persona_id)
+    }
+  }, [accounts, selectedItem])
 
   const handleLogin = React.useCallback(async () => {
     if (selectedItem) {

@@ -26,7 +26,7 @@ interface ProfileProps {
   account?: Account
   devices: Device[]
   hasPoa?: boolean
-  personas: NFIDPersona[]
+  accounts: NFIDPersona[]
   recoveryPhrase?: DeviceData
 }
 
@@ -37,7 +37,7 @@ export const Profile: React.FC<ProfileProps> = ({
   devices,
   recoveryPhrase,
   hasPoa,
-  personas = [],
+  accounts = [],
 }) => {
   return (
     <AppScreen
@@ -89,7 +89,7 @@ export const Profile: React.FC<ProfileProps> = ({
             <PoaBanner />
           </Link>
         )}
-        <ApplicationList personas={personas} />
+        <ApplicationList accounts={accounts} />
         <DeviceList
           devices={devices}
           onDeviceDelete={onDeviceDelete}

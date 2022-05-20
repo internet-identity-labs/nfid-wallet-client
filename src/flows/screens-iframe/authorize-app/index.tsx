@@ -17,7 +17,7 @@ interface IFrameAuthorizeAppProps
 
 export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
   const { readAccount, userNumber } = useAccount()
-  const { nextPersonaId, nfidPersonas, createPersona } = usePersona()
+  const { nextPersonaId, accounts, createPersona } = usePersona()
   const { identityManager } = useAuthentication()
   const { applicationName } = useMultipass()
   const { scope } = useParams()
@@ -64,7 +64,7 @@ export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
   return (
     <IFrameScreen logo>
       <AuthorizeApp
-        accounts={nfidPersonas}
+        accounts={accounts}
         applicationName={applicationName || ""}
         onLogin={handleLogin}
         onCreateAccount={handleCreateAccountAndLogin}

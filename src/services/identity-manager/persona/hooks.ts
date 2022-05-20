@@ -29,7 +29,6 @@ export const usePersona = () => {
       if (!authorizationRequest?.hostname && scope) {
         const applicationDomain = `${window.location.protocol}//${scope}`
         const isMatch = applicationDomain.indexOf(domain) > -1
-        console.log(">> usePersona", { applicationDomain, domain, isMatch })
         return isMatch
       }
       return (
@@ -38,8 +37,6 @@ export const usePersona = () => {
       )
     })
   }, [allAccounts, authorizationRequest?.hostname, scope])
-
-  console.log(">> ", { scope, authorizationRequest, accounts, allAccounts })
 
   const nextPersonaId = React.useMemo(() => {
     const highest = allAccounts.reduce((last, persona) => {

@@ -22,6 +22,26 @@ When(
   clickElement,
 )
 
+When(
+  /^I (click|doubleclick) on "([^"]*)?"$/,
+  clickElement,
+)
+
+When(
+  /^I (click|doubleclick) on continue button "([^"]*)?"$/,
+  clickElement,
+)
+
+When(
+  /^I (click|doubleclick) on just log me in radio button "([^"]*)?"$/,
+  clickElement,
+)
+
+When(
+  /^I (click|doubleclick) on submit button "([^"]*)?"$/,
+  clickElement,
+)
+
 When(/^I (add|set) "([^"]*)?" to the inputfield "([^"]*)?"$/, setInputField)
 
 When(/^I clear the inputfield "([^"]*)?"$/, clearInputField)

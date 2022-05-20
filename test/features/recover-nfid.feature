@@ -15,12 +15,12 @@ Feature: Recover NFID Account from Recovery Phrase
     When I click on the link "Recover NFID"
     And I expect the url to contain "/recover-nfid/enter-recovery-phrase"
     And I set recover phrase "<phrase>" into text field "<recoverphrasetext>"
-    # And I click on "<verifyCheckBox>"
-    # And I click on continue button "<recoverButton>"
-    # And I click on just log me in radio button "<justLogMeInRadioButton>"
-    # And I click on submit button "<submitButton>"
+    And I click on "<verifyCheckBox>"
+    And I click on continue button "<recoverButton>"
+    And I click on just log me in radio button "<justLogMeInRadioButton>"
+    And I click on submit button "<submitButton>"
     # Then user should be successfully logged in
 
     Examples:
-      | phrase                                                                                                                                                               | recoverphrasetext                                                                                                                                                      | verifyCheckBox             | recoverButton     | justLogMeInRadioButton       | submitButton       |
-      | 1974576 adapt account broom index virtual decade destroy mother later critic upgrade endless tissue card board toward fat riot soon escape nerve sea improve exhibit | #root > div > div.relative.flex.flex-col.w-full.min-h-screen.mx-auto.min-h-screen-ios.overflow-clip > main > div > div > div > div > div > div:nth-child(3) > textarea | [id="has-verified-domain"] | 'button*=Recover' | [id="rb_link_account_login"] | 'button*=Continue' |
+      | phrase                                                                                                                                                               | recoverphrasetext                                                                                                                                                      | verifyCheckBox       | recoverButton                                                                                                                                     | justLogMeInRadioButton       | submitButton       |
+      | 1974576 adapt account broom index virtual decade destroy mother later critic upgrade endless tissue card board toward fat riot soon escape nerve sea improve exhibit | #root > div > div.relative.flex.flex-col.w-full.min-h-screen.mx-auto.min-h-screen-ios.overflow-clip > main > div > div > div > div > div > div:nth-child(3) > textarea | #has-verified-domain | #root > div > div.relative.flex.flex-col.w-full.min-h-screen.mx-auto.min-h-screen-ios.overflow-clip > main > div > div > div > div > div > button | #rb_link_account_login       | #root > div > div.relative.flex.flex-col.w-full.min-h-screen.mx-auto.min-h-screen-ios.overflow-clip > main > div > div > div > div.mt-6 > button |

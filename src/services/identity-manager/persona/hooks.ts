@@ -7,7 +7,7 @@ import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import { personaAtom } from "./state"
-import { isNFIDPersona, isIIPersona } from "./types"
+import { isNFIDPersona } from "./types"
 
 interface UsePersona {
   application?: string
@@ -20,29 +20,27 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   const { authorizationRequest } = useAuthorization()
   const { account } = useAccount()
 
-  const nfidPersonas = React.useMemo(() => {
+  const allAccounts = React.useMemo(() => {
     if (!personas) return []
-    return personas
-      .filter(isNFIDPersona)
-      .filter(
-        ({ domain }) =>
-          authorizationRequest?.hostname &&
-          domain.includes(authorizationRequest?.hostname),
-      )
-  }, [authorizationRequest?.hostname, personas])
-
-  const iiPersonas = React.useMemo(() => {
-    if (!personas) return []
-    return personas.filter(isIIPersona)
+    return personas.filter(isNFIDPersona)
   }, [personas])
 
+  const accounts = React.useMemo(() => {
+    if (!allAccounts) return []
+    return allAccounts.filter(
+      ({ domain }) =>
+        authorizationRequest?.hostname &&
+        domain.includes(authorizationRequest?.hostname),
+    )
+  }, [authorizationRequest?.hostname, allAccounts])
+
   const nextPersonaId = React.useMemo(() => {
-    const highest = nfidPersonas.reduce((last, persona) => {
+    const highest = allAccounts.reduce((last, persona) => {
       const current = parseInt(persona.persona_id, 10)
       return last < current ? current : last
     }, 0)
     return `${highest + 1}`
-  }, [nfidPersonas])
+  }, [allAccounts])
 
   const getPersona = React.useCallback(async () => {
     if (!personaService) return
@@ -79,12 +77,8 @@ export const usePersona = ({ application }: UsePersona = {}) => {
 
   return {
     isLoadingPersonas: isLoading,
-    nfidPersonas,
-    iiPersonas,
-    personas:
-      application && personas
-        ? personas.filter((p) => p.domain === application)
-        : personas,
+    allAccounts,
+    accounts,
     nextPersonaId,
     createPersona,
     getPersona,

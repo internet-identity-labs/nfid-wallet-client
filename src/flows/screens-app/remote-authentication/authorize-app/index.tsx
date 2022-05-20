@@ -26,7 +26,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const { isLoading, setIsloading } = useIsLoading()
   const { secret, scope } = useParams()
   const { remoteNFIDLogin, sendWaitForUserInput } = useAuthorizeApp()
-  const { nextPersonaId, nfidPersonas, createPersona } = usePersona()
+  const { nextPersonaId, accounts, createPersona } = usePersona()
   const { isAuthenticated } = useAuthentication()
   const { applicationName } = useMultipass()
   const navigate = useNavigate()
@@ -100,7 +100,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
                     applicationName={applicationName || ""}
                     onLogin={handleLogin}
                     onCreateAccount={handleCreateAccountAndLogin}
-                    accounts={nfidPersonas}
+                    accounts={accounts}
                   />
                 </CardBody>
               </Card>

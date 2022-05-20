@@ -3,6 +3,7 @@ import React from "react"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
+import { useChallenge } from "frontend/screens/captcha/hook"
 import { RegisterAccountIntro } from "frontend/screens/register-account-intro/screen-app"
 
 interface RouteRegisterProps {
@@ -15,6 +16,17 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
   const { isLoading, setIsloading } = useIsLoading()
   const { applicationName, createWebAuthNIdentity } = useMultipass()
   const { navigate } = useNFIDNavigate()
+
+  // NOTE: the `getChallenge` gets called twice whithout this ref.
+  const loaderRef = React.useRef(false)
+
+  const { challenge, getChallenge } = useChallenge()
+  React.useEffect(() => {
+    if (!loaderRef.current && !challenge) {
+      loaderRef.current = true
+      getChallenge()
+    }
+  }, [challenge, getChallenge])
 
   const handleCreateKeys = React.useCallback(async () => {
     setIsloading(true)

@@ -12,6 +12,7 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { Challenge } from "frontend/design-system/molecules/challenge"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
@@ -40,7 +41,7 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
     account,
     loading,
     setLoading,
-    captchaResp,
+    challenge,
     requestCaptcha,
     recoveryPhrase,
     registerAnchor,
@@ -60,10 +61,6 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
   })
 
   const isFormComplete = ["captcha"].every((field) => dirtyFields[field])
-
-  // React.useEffect(() => {
-  //   !captchaResp && requestCaptcha()
-  // }, [captchaResp, requestCaptcha])
 
   React.useEffect(() => {
     if (account && recoveryPhrase) {
@@ -89,25 +86,17 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
               <P>Type the characters you see in the image.</P>
 
               <div>
-                <div
-                  className={clsx(
-                    "h-[150px] w-auto rounded-md my-4",
-                    captchaResp ? "bg-white border border-gray-200" : "",
-                  )}
-                >
-                  {captchaResp && !loading && (
-                    <img
-                      alt="captcha"
-                      src={`data:image/png;base64,${captchaResp.png_base64}`}
-                      className="object-contain w-full h-full"
-                    />
-                  )}
-                </div>
+                <Challenge
+                  src={
+                    challenge && `data:image/png;base64,${challenge.png_base64}`
+                  }
+                />
 
                 <Button
                   text
                   className="flex items-center space-x-2 !my-1 ml-auto"
-                  onClick={() => requestCaptcha()}
+                  disabled={loading || !challenge}
+                  onClick={requestCaptcha}
                 >
                   <RefreshIcon />
                   <span>Try a different image</span>
@@ -141,7 +130,7 @@ export const Captcha: React.FC<CaptchaProps> = ({ successPath }) => {
                   secondary
                   disabled={!isFormComplete || loading}
                   onClick={handleSubmit(registerAnchor)}
-                  data-captcha-key={captchaResp?.challenge_key}
+                  data-captcha-key={challenge?.challenge_key}
                 >
                   <span>Verify</span>
                 </Button>

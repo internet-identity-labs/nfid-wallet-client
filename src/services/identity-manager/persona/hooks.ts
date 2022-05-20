@@ -2,6 +2,7 @@ import { useAtom } from "jotai"
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
@@ -16,12 +17,19 @@ export const usePersona = ({ application }: UsePersona = {}) => {
   const [personas, setPersonas] = useAtom(personaAtom)
   const { isLoading } = useIsLoading()
   const { identityManager: personaService } = useAuthentication()
+  const { authorizationRequest } = useAuthorization()
   const { account } = useAccount()
 
   const nfidPersonas = React.useMemo(() => {
     if (!personas) return []
-    return personas.filter(isNFIDPersona)
-  }, [personas])
+    return personas
+      .filter(isNFIDPersona)
+      .filter(
+        ({ domain }) =>
+          authorizationRequest?.hostname &&
+          domain.includes(authorizationRequest?.hostname),
+      )
+  }, [authorizationRequest?.hostname, personas])
 
   const iiPersonas = React.useMemo(() => {
     if (!personas) return []

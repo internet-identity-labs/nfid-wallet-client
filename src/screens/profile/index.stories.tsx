@@ -28,7 +28,7 @@ export const LoggedIn = Template.bind({})
 
 LoggedIn.args = {
   account: { anchor: "10005", name: "Test Account" },
-  personas: [
+  accounts: [
     { domain: "wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "1" },
     { domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "2" },
   ],

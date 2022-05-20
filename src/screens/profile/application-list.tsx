@@ -9,15 +9,15 @@ import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { getUrl } from "frontend/utils"
 
 interface ApplicationListProps {
-  personas: NFIDPersona[]
+  accounts: NFIDPersona[]
 }
 
 export const ApplicationList: React.FC<ApplicationListProps> = ({
-  personas = [],
+  accounts = [],
 }) => {
   const myApplications = React.useMemo(() => {
     // Group iiPersonas by hostname and count the number of iiPersonas
-    const personasByHostname = personas.reduce((acc, persona) => {
+    const personasByHostname = accounts.reduce((acc, persona) => {
       const hostname = getUrl(persona.domain).hostname.split(".")[0]
       const applicationName =
         hostname.charAt(0).toUpperCase() + hostname.slice(1)
@@ -39,11 +39,11 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     )
 
     return personaByHostnameArray
-  }, [personas])
+  }, [accounts])
 
   const handleNavigateToApplication = React.useCallback(
     (applicationName: string) => {
-      const application = personas.find((persona) => {
+      const application = accounts.find((persona) => {
         return persona.domain.includes(applicationName.toLowerCase())
       })
 
@@ -51,7 +51,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
         window.open(getUrl(application.domain), "_blank")
       }
     },
-    [personas],
+    [accounts],
   )
 
   return (

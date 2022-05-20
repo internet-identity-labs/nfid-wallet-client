@@ -30,6 +30,8 @@ import isVisible from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
+import clearInputField from "./support/action/clearInputField"
+import setInputField from "./support/action/setInputField"
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
 
@@ -149,5 +151,15 @@ Then(
 
 Then(
   /^I expect that a (alertbox|confirmbox|prompt)( not)* contains the text "([^"]*)?"$/,
+  checkModalText,
+)
+
+Then(
+  /^I (add|set) recover phrase "([^"]*)?" into text field "([^"]*)?"$/,
+  setInputField,
+)
+
+Then(
+  /^I enter texting into "([^"]*)?"$/,
   checkModalText,
 )

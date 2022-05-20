@@ -9,8 +9,8 @@ import {
   SUB_PATH_REGISTER_DEVICE_DECIDER,
 } from "frontend/flows/screens-app/authenticate/constants"
 import { AppScreenRegisterDeviceDecider } from "frontend/flows/screens-app/authenticate/screen-app-register-device-decider"
-import { AppScreenAuthorizeApp } from "frontend/screens/authorize-app/app-screen"
 
+import { AppScreenAuthorizeApp } from "./authorize-app"
 import { RouteCaptcha } from "./captcha"
 import { PATH_CAPTCHA } from "./captcha/path"
 import { RouteCopyRecoveryPhrase } from "./copy-recovery-phrase"

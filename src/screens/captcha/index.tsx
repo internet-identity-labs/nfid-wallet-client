@@ -5,7 +5,6 @@ import {
   P,
   Button,
   RefreshIcon,
-  Input,
   Loader,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
@@ -13,6 +12,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 
 import { Challenge } from "frontend/design-system/molecules/challenge"
+import { Input } from "frontend/design-system/atoms/input"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"

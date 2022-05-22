@@ -20,7 +20,12 @@ export const RouterRegisterDeviceDecider: React.FC<
 > = ({ registerSuccessPath }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { recoverDevice } = useDevices()
-  const { readAccount, recoverAccount, createAccount } = useAccount()
+  const {
+    readAccount,
+    recoverAccount,
+    recoverAccountWithoutStoring,
+    createAccount,
+  } = useAccount()
   const { getPersona } = usePersona()
   const { identityManager, internetIdentity } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
@@ -85,15 +90,21 @@ export const RouterRegisterDeviceDecider: React.FC<
 
   const handleLogin = React.useCallback(async () => {
     if (!userNumber) throw new Error("unauthorized")
-    await recoverAccount(userNumber)
+    setIsLoading(true)
+    console.log(">> handleLogin", { userNumber })
+
+    const response = await recoverAccountWithoutStoring(userNumber)
+    console.log(">> handleLogin", { response })
+
     await Promise.all([readAccount(), getPersona()])
+    setIsLoading(false)
     navigate(generatePath(registerSuccessPath))
   }, [
     generatePath,
     getPersona,
     navigate,
     readAccount,
-    recoverAccount,
+    recoverAccountWithoutStoring,
     registerSuccessPath,
     userNumber,
   ])

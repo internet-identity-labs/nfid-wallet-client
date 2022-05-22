@@ -1,3 +1,4 @@
+import { DerEncodedBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { useAtom } from "jotai"
 import React from "react"
@@ -6,6 +7,7 @@ import { useLocation } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import {
@@ -41,6 +43,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   const [responseRegisterAnchor, setResponseRegisterAnchor] = React.useState<
     RegisterResult | undefined
   >()
+  const { createRecoveryDevice } = useDevices()
 
   // ACCOUNT
   const { account, createAccount } = useAccount()
@@ -99,17 +102,21 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     ],
   )
 
-  const handleCreateAccount = React.useCallback(async () => {
-    if (
-      responseRegisterAnchor &&
-      responseRegisterAnchor.kind === "loginSuccess"
-    ) {
-      const { userNumber } = responseRegisterAnchor
-      await createAccount({
-        anchor: userNumber,
-      })
-    }
-  }, [createAccount, responseRegisterAnchor])
+  const handleCreateAccount = React.useCallback(
+    async (recoverIdentity: DerEncodedBlob) => {
+      if (
+        responseRegisterAnchor &&
+        responseRegisterAnchor.kind === "loginSuccess"
+      ) {
+        const { userNumber } = responseRegisterAnchor
+        await createAccount({
+          anchor: userNumber,
+        })
+        await createRecoveryDevice(recoverIdentity)
+      }
+    },
+    [createAccount, createRecoveryDevice, responseRegisterAnchor],
+  )
 
   const handleCreateRecoveryPhrase = React.useCallback(async () => {
     if (
@@ -133,8 +140,10 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         recoverIdentity.getPublicKey().toDer(),
       )
       setRecoveryPhrase(`${userNumber} ${recovery}`)
+      handleCreateAccount(recoverIdentity.getPublicKey().toDer())
+      return recoverIdentity.getPublicKey()
     }
-  }, [responseRegisterAnchor])
+  }, [handleCreateAccount, responseRegisterAnchor])
 
   React.useEffect(() => {
     if (
@@ -142,7 +151,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       responseRegisterAnchor.kind === "loginSuccess"
     ) {
       handleCreateRecoveryPhrase()
-      handleCreateAccount()
     }
   }, [handleCreateAccount, handleCreateRecoveryPhrase, responseRegisterAnchor])
 

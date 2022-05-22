@@ -86,6 +86,26 @@ export const useAccount = () => {
     [account, accountService, setAccount],
   )
 
+  const recoverAccountWithoutStoring = React.useCallback(
+    async (userNumber: bigint) => {
+      if (!accountService) throw new Error('"accountService" is required')
+
+      const response = await accountService.recover_account(userNumber)
+      const newAccount = response.data[0]
+
+      if (newAccount) {
+        const normalizedAccount = normalizeLocalAccount({
+          account,
+          newAccount,
+        })
+        setMemoryAccount(normalizedAccount)
+      }
+
+      return response
+    },
+    [account, accountService, setMemoryAccount],
+  )
+
   const readAccount = React.useCallback(async () => {
     if (!accountService) throw new Error('"accountService" is required')
 
@@ -185,6 +205,7 @@ export const useAccount = () => {
     readAccount,
     readAndStoreAccount,
     recoverAccount,
+    recoverAccountWithoutStoring,
     resetLocalAccount,
     updateAccount,
     verifyPhonenumber,

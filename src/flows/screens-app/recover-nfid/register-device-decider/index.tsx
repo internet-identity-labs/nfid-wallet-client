@@ -84,9 +84,19 @@ export const RouterRegisterDeviceDecider: React.FC<
   ])
 
   const handleLogin = React.useCallback(async () => {
+    if (!userNumber) throw new Error("unauthorized")
+    await recoverAccount(userNumber)
     await Promise.all([readAccount(), getPersona()])
     navigate(generatePath(registerSuccessPath))
-  }, [generatePath, getPersona, navigate, readAccount, registerSuccessPath])
+  }, [
+    generatePath,
+    getPersona,
+    navigate,
+    readAccount,
+    recoverAccount,
+    registerSuccessPath,
+    userNumber,
+  ])
 
   return (
     <AppScreenRegisterDeviceDecider

@@ -39,7 +39,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {labelText && <Label>{labelText}</Label>}
         <div className={clsx('flex relative', small && 'md:max-w-[340px]')}>
           {icon && (
-            <div className="flex-shrink-0 absolute left-[10px] top-[12px] z-10">
+            <div className='flex-shrink-0 absolute left-[10px] top-[12px] z-10'>
               {icon}
             </div>
           )}
@@ -61,7 +61,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           />
 
           {errorText && (
-            <span className="absolute right-3 top-[14px]">
+            <span className='absolute -translate-y-1/2 right-3 top-1/2'>
               <ErrorIcon />
             </span>
           )}

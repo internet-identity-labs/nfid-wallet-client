@@ -1,8 +1,10 @@
 import React from "react"
 
-import Discord from "./ds.svg"
-import Github from "./gh.svg"
-import Twitter from "./tw.svg"
+import Discord from "./assets/ds.svg"
+import Github from "./assets/gh.svg"
+import Twitter from "./assets/tw.svg"
+
+import './index.css'
 
 interface SocialButtonsProps {}
 
@@ -15,11 +17,11 @@ export const SocialButtons: React.FC<SocialButtonsProps> = ({ children }) => {
         target="_blank"
         rel="noreferrer"
       >
-        <div className="display-table social-button-wrapper">
-          <div className="display-table-cell">
-            <div className="display-table">
-              <img src={Discord} alt="discord" className="display-table-cell" />
-              <span className="display-table-cell">Discord</span>
+        <div className="table social-button-wrapper">
+          <div className="table-cell">
+            <div className="table">
+              <img src={Discord} alt="discord" className="table-cell" />
+              <span className="table-cell">Discord</span>
             </div>
           </div>
         </div>
@@ -30,11 +32,11 @@ export const SocialButtons: React.FC<SocialButtonsProps> = ({ children }) => {
         target="_blank"
         rel="noreferrer"
       >
-        <div className="display-table social-button-wrapper">
-          <div className="display-table-cell">
-            <div className="display-table">
-              <img src={Twitter} alt="twitter" className="display-table-cell" />
-              <span className="display-table-cell">Twitter</span>
+        <div className="table social-button-wrapper">
+          <div className="table-cell">
+            <div className="table">
+              <img src={Twitter} alt="twitter" className="table-cell" />
+              <span className="table-cell">Twitter</span>
             </div>
           </div>
         </div>
@@ -45,11 +47,11 @@ export const SocialButtons: React.FC<SocialButtonsProps> = ({ children }) => {
         target="_blank"
         rel="noreferrer"
       >
-        <div className="display-table social-button-wrapper">
-          <div className="display-table-cell">
-            <div className="display-table">
-              <img src={Github} alt="github" className="display-table-cell" />
-              <span className="display-table-cell">Github</span>
+        <div className="table social-button-wrapper">
+          <div className="table-cell">
+            <div className="table">
+              <img src={Github} alt="github" className="table-cell" />
+              <span className="table-cell">Github</span>
             </div>
           </div>
         </div>

@@ -1,4 +1,9 @@
-import { blobFromHex, blobToHex, derBlobFromBlob } from "@dfinity/candid"
+import {
+  blobFromHex,
+  blobToHex,
+  derBlobFromBlob,
+  DerEncodedBlob,
+} from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { useAtom } from "jotai"
@@ -200,6 +205,20 @@ export const useDevices = () => {
     [internetIdentity, identityManager, browserName],
   )
 
+  const createRecoveryDevice = React.useCallback(
+    async (recoverIdentity: DerEncodedBlob) => {
+      if (!identityManager) throw new Error("Unauthorized")
+
+      await identityManager.create_access_point({
+        icon: "recovery",
+        device: "recovery",
+        browser: "",
+        pub_key: Array.from(recoverIdentity),
+      })
+    },
+    [identityManager],
+  )
+
   const recoverDevice = React.useCallback(
     async (userNumber) => {
       try {
@@ -245,6 +264,7 @@ export const useDevices = () => {
     getDevices,
     getRecoveryDevices,
     createDevice,
+    createRecoveryDevice,
     recoverDevice,
     updateDevice,
     handleLoadDevices,

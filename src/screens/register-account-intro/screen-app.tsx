@@ -12,7 +12,7 @@ import { HiArrowLeft, HiArrowRight } from "react-icons/hi"
 import { Swiper, SwiperSlide } from "swiper/react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-
+import './index.css'
 interface RegisterAccountIntroProps {
   onRegister: () => void
   applicationName?: string

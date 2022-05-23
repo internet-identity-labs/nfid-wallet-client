@@ -7,10 +7,6 @@ DON'T INTRODUCE ADDITIONAL CODE TO THIS FILE
 @tailwind components;
 @tailwind utilities;
 
-.offset-header {
-  @apply lg:mt-[56px];
-}
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

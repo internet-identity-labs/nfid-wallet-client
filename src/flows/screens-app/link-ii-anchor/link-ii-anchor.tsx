@@ -107,7 +107,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
     <AppScreen>
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="grid grid-cols-12 offset-header">
+          <Card className="grid grid-cols-12 lg:mt-[56px]">
             <CardBody className="col-span-12 lg:col-span-8 xl:col-span-6">
               <H2 className="my-4">
                 Understanding the Internet Identity linking feature for NFID

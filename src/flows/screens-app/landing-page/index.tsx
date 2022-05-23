@@ -25,6 +25,7 @@ import { HeroLeftSide } from "./hero-left-side"
 import { HeroRightSide } from "./hero-right-side"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
+import './index.css'
 
 interface Props
   extends React.DetailedHTMLProps<

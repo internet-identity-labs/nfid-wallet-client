@@ -55,7 +55,7 @@ export const RegisterNewFromDelegate = () => {
     <AppScreen>
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="grid grid-cols-12 offset-header">
+          <Card className="grid grid-cols-12 lg:mt-[56px]">
             <CardBody className="col-span-12 md:col-span-9 lg:col-span-7">
               <H2 className="mb-3">Trust this device</H2>
 

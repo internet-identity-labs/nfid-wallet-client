@@ -149,7 +149,7 @@ export const RegisterAccountSMSVerification: React.FC<
     <AppScreen>
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="grid grid-cols-12 offset-header">
+          <Card className="grid grid-cols-12 lg:mt-[56px]">
             <CardBody className="col-span-12 md:col-span-8">
               <H2>SMS verification</H2>
               <div className="my-5">

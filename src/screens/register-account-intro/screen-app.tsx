@@ -82,7 +82,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     >
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="h-full overflow-hidden offset-header">
+          <Card className="h-full overflow-hidden lg:mt-[56px]">
             <H5 className="mb-2 font-bold">{appName} uses NFID</H5>
 
             <CardBody className="h-full md:h-auto flex flex-col justify-between pb-[10vh]">

@@ -23,22 +23,22 @@ When(
 )
 
 When(
-  /^I (click|doubleclick) on "([^"]*)?"$/,
+  /^I (click|doubleclick) on (check) box "([^"]*)?"$/,
   clickElement,
 )
 
 When(
-  /^I (click|doubleclick) on continue button "([^"]*)?"$/,
+  /^I (click|doubleclick) on (continue) button "([^"]*)?"$/,
   clickElement,
 )
 
 When(
-  /^I (click|doubleclick) on just log me in radio button "([^"]*)?"$/,
+  /^I (click|doubleclick) on just log me in (radio) button "([^"]*)?"$/,
   clickElement,
 )
 
 When(
-  /^I (click|doubleclick) on submit button "([^"]*)?"$/,
+  /^I (click|doubleclick) on (submit) button "([^"]*)?"$/,
   clickElement,
 )
 

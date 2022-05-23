@@ -15,7 +15,7 @@ Feature: Recover NFID Account from Recovery Phrase
     When I click on the link "Recover NFID"
     And I expect the url to contain "/recover-nfid/enter-recovery-phrase"
     And I set recover phrase "<phrase>" into text field "<recoverphrasetext>"
-    And I click on "<verifyCheckBox>"
+    And I click on check box "<verifyCheckBox>"
     And I click on continue button "<recoverButton>"
     And I click on just log me in radio button "<justLogMeInRadioButton>"
     And I click on submit button "<submitButton>"

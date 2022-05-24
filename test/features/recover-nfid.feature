@@ -19,7 +19,7 @@ Feature: Recover NFID Account from Recovery Phrase
     And I click on continue button "<recoverButton>"
     And I click on just log me in radio button "<justLogMeInRadioButton>"
     And I click on submit button "<submitButton>"
-    # Then user should be successfully logged in
+    Then user should be successfully logged in
 
     Examples:
       | phrase                                                                                                                                                               | recoverphrasetext                                                                                                                                                      | verifyCheckBox       | recoverButton                                                                                                                                     | justLogMeInRadioButton       | submitButton       |

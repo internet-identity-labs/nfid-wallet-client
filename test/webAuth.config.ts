@@ -6,10 +6,10 @@ declare global {
 
     interface Browser {
       addVirtualWebAuth: (
-        protocol: "ctap2",
-        transport: "usb",
-        hasResidentKey: true,
-        isUserConsenting: true,
+        protocol: "string",
+        transport: "string",
+        hasResidentKey: boolean,
+        isUserConsenting: boolean,
       ) => Promise<string>;
       removeVirtualWebAuth: (authenticatorId: string) => Promise<void>;
     }

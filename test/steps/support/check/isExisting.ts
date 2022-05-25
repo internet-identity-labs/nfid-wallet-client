@@ -11,6 +11,9 @@ export default async (selector: Selector, falseCase: boolean) => {
    * @type {Object}
    */
   const elements = await $$(selector)
+  console.log(`==============================> ${falseCase}`);
+
+  // await browser.pause(3000)
 
   if (falseCase) {
     expect(elements).toHaveLength(

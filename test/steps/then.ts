@@ -163,3 +163,8 @@ Then(
   /^I enter texting into "([^"]*)?"$/,
   checkModalText,
 )
+
+Then(
+  /^I expect that user successfully logged into the app with element "([^"]*)?" (displayed)$/,
+  waitForVisible,
+)

@@ -15,7 +15,6 @@ export default async (selector: Selector, falseCase: any) => {
   const ms = 10000
 
   await $(selector).waitForDisplayed({
-    timeout: ms,
-    reverse: Boolean(falseCase),
+    timeout: ms
   })
 }

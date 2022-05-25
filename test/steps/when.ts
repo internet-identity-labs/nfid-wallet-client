@@ -62,8 +62,10 @@ When(
 )
 
 When(
-  /^I click the \"([^\"]*)\" attribute on the homePage$/,clickElement,
+  /^I (click|doubleclick) on the (link|button|element) QR code attribute on the homePage "([^"]*)?"$/,
+  clickElement,
 )
+
 When(
   /^I click the \"([^\"]*)\" button on create or register a new NFID account$/,clickElement
 )

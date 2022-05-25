@@ -4,7 +4,7 @@ import React, { ReactElement } from 'react';
 import { ErrorIcon } from './icons/error';
 import { Label } from './label';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   prependedText?: string;
   placeholder?: string;
   type?: string;

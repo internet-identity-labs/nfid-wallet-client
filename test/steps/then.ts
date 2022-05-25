@@ -165,6 +165,6 @@ Then(
 )
 
 Then(
-  /^I expect that user successfully logged into the app with element "([^"]*)?" (displayed)$/,
+  /^I expect that user successfully logged into the app with element "([^"]*)?" (displayed) in the user profile section$/,
   waitForVisible,
 )

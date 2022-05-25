@@ -5,12 +5,11 @@ Feature: Recover NFID Account from Recovery Phrase
   Background:
     Given I open the site "/"
 
-  @runOnly
   Scenario:
     When I click on the link "Recover NFID"
     Then I expect the url to contain "/recover-nfid/enter-recovery-phrase"
 
-  @runOnlyonce
+  @recoverNFID
   Scenario:
     When I click on the link "Recover NFID"
     And I expect the url to contain "/recover-nfid/enter-recovery-phrase"
@@ -19,7 +18,7 @@ Feature: Recover NFID Account from Recovery Phrase
     And I click on continue button "<recoverButton>"
     And I click on just log me in radio button "<justLogMeInRadioButton>"
     And I click on submit button "<submitButton>"
-    Then I expect that user successfully logged into the app with element "<element>" displayed
+    Then I expect that user successfully logged into the app with element "<element>" displayed in the user profile section
 
     Examples:
       | phrase                                                                                                                                                               | recoverphrasetext                                                                                                                                                      | verifyCheckBox       | recoverButton                                                                                                                                     | justLogMeInRadioButton | submitButton                                                                                                                                     | element                                                                                                                                                                             |

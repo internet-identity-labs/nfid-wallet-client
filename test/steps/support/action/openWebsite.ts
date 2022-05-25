@@ -21,7 +21,6 @@ export default async (type: "url" | "site", page: string) => {
    */
   const url =
     type === "url" ? page : browser.options.baseUrl + appendCanisterId(page)
-    console.log(`-----------------------------> ${url}`);
 
   await browser.url(url)
 }

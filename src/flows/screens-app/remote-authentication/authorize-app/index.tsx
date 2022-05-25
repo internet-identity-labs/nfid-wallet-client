@@ -55,8 +55,8 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   }, [isNFID, isAuthenticated, handleNFIDLogin])
 
   React.useEffect(() => {
-    secret && sendWaitForUserInput(secret)
-  }, [secret, sendWaitForUserInput])
+    secret && isAuthenticated && sendWaitForUserInput(secret)
+  }, [isAuthenticated, secret, sendWaitForUserInput])
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {

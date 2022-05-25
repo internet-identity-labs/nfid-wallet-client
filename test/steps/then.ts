@@ -85,6 +85,8 @@ Then(/^I expect that the path is( not)* "([^"]*)?"$/, checkURLPath)
 
 Then(/^I expect the url to( not)* contain "([^"]*)?"$/, checkInURLPath)
 
+Then(/^I expect the url to( not)* contain "([^"]*)?" on a new register page$/, checkInURLPath)
+
 Then(
   /^I expect that the( css)* attribute "([^"]*)?" from element "([^"]*)?" is( not)* "([^"]*)?"$/,
   checkProperty,
@@ -150,4 +152,7 @@ Then(
 Then(
   /^I expect that a (alertbox|confirmbox|prompt)( not)* contains the text "([^"]*)?"$/,
   checkModalText,
+)
+
+Then(/^I expect that \"([^\"]*)\" becomes displayed$/,waitForVisible
 )

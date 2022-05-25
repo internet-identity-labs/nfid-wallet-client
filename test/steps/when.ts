@@ -60,3 +60,14 @@ When(
   /^I move to element "([^"]*)?"(?: with an offset of (\d+),(\d+))*$/,
   moveTo,
 )
+
+When(
+  /^I click the \"([^\"]*)\" attribute on the homePage$/,clickElement,
+)
+When(
+  /^I click the \"([^\"]*)\" button on create or register a new NFID account$/,clickElement
+)
+
+When(
+  /^I authenticate with a \"([^\"]*)\" to register device$/,clickElement
+)

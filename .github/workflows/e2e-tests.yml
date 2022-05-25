@@ -49,7 +49,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
 
       - name: Running E2E test
-        run: npx wdio wdio.conf.ts
+        run: npx wdio wdio.conf.ts --cucumberOpts.tagExpression='@recoverNFID'
 
       - name: Shut down
         run: dfx stop

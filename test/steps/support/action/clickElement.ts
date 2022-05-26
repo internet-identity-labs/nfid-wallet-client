@@ -18,7 +18,7 @@ export default async (
    * Element to perform the action on
    * @type {String}
    */
-   isEnabled(selector, false);
+  //  isEnabled(selector, false);
 
   const selector2 = type === "link" ? `=${selector}` : selector
 

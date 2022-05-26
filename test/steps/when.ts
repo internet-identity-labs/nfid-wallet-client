@@ -1,7 +1,5 @@
 import { When } from "@cucumber/cucumber"
-import {
-  addVirtualAuthenticatorConfig,
-} from "../util";
+import addVirtualKey from './support/action/addVirtualKey';
 
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
@@ -75,5 +73,6 @@ When(
 )
 
 When(
-  /^I authenticate with a \"([^\"]*)\" to register device$/,addVirtualAuthenticatorConfig
+  /^I add a virtual key$/,
+  addVirtualKey
 )

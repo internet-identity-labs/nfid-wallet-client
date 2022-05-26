@@ -13,7 +13,8 @@ Feature: Register a new NFID device
     When I click on the element QR code attribute on the homePage "<qrcode>"
     Then I expect the url to contain "/register-account/intro" on a new register page
     When I click on the button "<create_nfid_button>" to create or register a new NFID account
-    When I authenticate with a "<biometric challenge>" to register device
+    When I add a virtual key
+    When I pause for 10000ms
     Then I expect the url to contain "/register-account/captcha"
     Then I expect that "<captcha_input_element>" becomes displayed
 

@@ -3,6 +3,7 @@ import allureReporter from "@wdio/allure-reporter"
 import fs from "fs"
 import path from "path"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
+import { addCustomCommands } from './util'
 
 //
 // =====
@@ -53,8 +54,9 @@ export const hooks = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  // before: function (capabilities, specs) {
-  // },
+  before: async function () {
+    await addCustomCommands(browser);
+  },
   /**
    * Gets executed before the suite starts.
    * @param {Object} suite suite details

@@ -16,12 +16,10 @@ export default async (
    * The number of elements found in the DOM
    * @type {Int}
    */
- 
+
   await (await browser.$(selector)).waitForDisplayed();
 
   const nrOfElements = await $$(selector)
-
-  await browser.waitUntil
 
   if (falseCase === true) {
     expect(nrOfElements).toHaveLength(

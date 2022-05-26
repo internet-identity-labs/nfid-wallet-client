@@ -12,7 +12,7 @@ import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 
 import { ApplicationList } from "./application-list"
-import { DeviceList } from "./device-list"
+import { DeviceList } from "./device-list/device-list"
 import { RecoveryPhraseSection } from "./recovery-phrase-section"
 
 interface Account {

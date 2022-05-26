@@ -15,7 +15,7 @@ export const RecoveryPhraseSection: React.FC<RecoveryPhraseSectionProps> = ({
   return (
     <div className={clsx("px-5 md:px-16 pt-8", "bg-white flex-1")}>
       <div className="flex items-center justify-between mb-3">
-        <H5>Recovery Phrase</H5>
+        <H5>Account recovery methods</H5>
       </div>
       <div
         className={clsx(

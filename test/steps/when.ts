@@ -2,6 +2,7 @@ import { When } from "@cucumber/cucumber"
 
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
+import clickElements from "./support/action/clickElements"
 import closeLastOpenedWindow from "./support/action/closeLastOpenedWindow"
 import deleteCookies from "./support/action/deleteCookies"
 import dragElement from "./support/action/dragElement"

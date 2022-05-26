@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import { NFIDRegisterAccountConstants } from "frontend/flows/screens-app/register-account/routes"
 import { useInterval } from "frontend/hooks/use-interval"
 
+import "./index.css"
 import { useRegisterQRCode } from "./use-register-qrcode"
 
 interface RegisterQRCodeProps {

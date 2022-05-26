@@ -6,8 +6,8 @@ declare global {
 
     interface Browser {
       addVirtualWebAuth: (
-        protocol: "string",
-        transport: "string",
+        protocol: string,
+        transport: string,
         hasResidentKey: boolean,
         isUserConsenting: boolean,
       ) => Promise<string>;
@@ -16,4 +16,5 @@ declare global {
   }
 }
 
-global.TextEncoder = textEncoding.TextEncoder;
+global.TextEncoder = textEncoding.TextEncoder
+

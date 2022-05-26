@@ -96,7 +96,7 @@ export async function addCustomCommands(
   );
 }
 
-export async function addVirtualAuthenticator(
+export async function addVirtualAuthenticatorConfig(
   browser: WebdriverIO.Browser
 ): Promise<string> {
   return await browser.addVirtualWebAuth("ctap2", "usb", true, true);
@@ -116,7 +116,7 @@ export async function switchToPopup(
   expect(handles.length).toBe(2);
   await browser.switchToWindow(handles[1]);
   // enable virtual authenticator in the new window
-  await addVirtualAuthenticator(browser);
+  await addVirtualAuthenticatorConfig(browser);
 }
 
 export async function waitToClose(browser: WebdriverIO.Browser): Promise<void> {

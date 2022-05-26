@@ -1,4 +1,7 @@
 import { When } from "@cucumber/cucumber"
+import {
+  addVirtualAuthenticatorConfig,
+} from "../util";
 
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
@@ -72,5 +75,5 @@ When(
 )
 
 When(
-  /^I authenticate with a \"([^\"]*)\" to register device$/,clickElement
+  /^I authenticate with a \"([^\"]*)\" to register device$/,addVirtualAuthenticatorConfig
 )

@@ -67,7 +67,8 @@ When(
 )
 
 When(
-  /^I click the \"([^\"]*)\" button on create or register a new NFID account$/,clickElement
+  /^I (click|doubleclick) on the (link|button|element) "([^"]*)?" to create or register a new NFID account$/,
+  clickElement,
 )
 
 When(

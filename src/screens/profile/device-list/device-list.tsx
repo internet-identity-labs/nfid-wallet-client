@@ -24,7 +24,7 @@ export const DeviceList: React.FC<DeviceListProps> = ({
       <List>
         <List.Header>
           <div className="flex items-center justify-between mb-3">
-            <H5>Devices</H5>
+            <H5>Authorized devices</H5>
 
             <div className="hidden">
               <PlusIcon className="text-blue-base mr-[14px]" />

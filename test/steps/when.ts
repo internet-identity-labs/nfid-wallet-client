@@ -30,7 +30,7 @@ When(
 
 When(
   /^I (click|doubleclick) on (continue) button "([^"]*)?"$/,
-  clickElement,
+  clickElements,
 )
 
 When(

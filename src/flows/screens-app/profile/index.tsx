@@ -1,7 +1,7 @@
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { Profile } from "frontend/screens/profile"
+import { Profile, recoveryMethod } from "frontend/screens/profile"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { Device } from "frontend/services/identity-manager/devices/state"
@@ -61,6 +61,24 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     [getDevices, updateDevice],
   )
 
+  const handleRecoveryDelete = React.useCallback(
+    async (method: recoveryMethod) => {
+      // await deleteDevice(device.pubkey)
+      // await handleLoadDevices()
+      // TODO logic
+    },
+    [],
+  )
+
+  const handleRecoveryUpdate = React.useCallback(
+    async (method: recoveryMethod) => {
+      // await updateDevice(device)
+      // await getDevices()
+      // TODO logic
+    },
+    [],
+  )
+
   return (
     <Profile
       account={account}
@@ -70,6 +88,9 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       hasPoa={hasPoa}
       devices={devices}
       accounts={allAccounts}
+      onRecoveryDelete={handleRecoveryDelete}
+      onRecoveryUpdate={handleRecoveryUpdate}
+      recoveryMethods={[]}
       recoveryPhrase={recoveryDevices[0]}
     />
   )

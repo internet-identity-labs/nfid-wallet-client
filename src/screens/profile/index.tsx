@@ -13,21 +13,29 @@ import { DeviceData } from "frontend/services/internet-identity/generated/intern
 
 import { ApplicationList } from "./application-list"
 import { DeviceList } from "./device-list/device-list"
-import { RecoveryPhraseSection } from "./recovery-phrase-section"
+import { RecoveryMethodsList } from "./recovery-methods"
 
 interface Account {
   anchor: string
   name?: string
 }
 
+export interface recoveryMethod extends DeviceData {
+  label: string
+  isSecurityKey: boolean
+  lastUsed: number
+}
+
 interface ProfileProps {
   onDeviceDelete: (device: Device) => Promise<void>
   onDeviceUpdate: (device: Device) => Promise<void>
-  account?: Account
+  onRecoveryDelete: (method: recoveryMethod) => Promise<void>
+  onRecoveryUpdate: (method: recoveryMethod) => Promise<void>
   devices: Device[]
-  hasPoa?: boolean
   accounts: NFIDPersona[]
-  recoveryPhrase?: DeviceData
+  recoveryMethods: recoveryMethod[]
+  account?: Account
+  hasPoa?: boolean
 }
 
 export const Profile: React.FC<ProfileProps> = ({
@@ -35,9 +43,11 @@ export const Profile: React.FC<ProfileProps> = ({
   onDeviceUpdate,
   account,
   devices,
-  recoveryPhrase,
   hasPoa,
   accounts = [],
+  onRecoveryDelete,
+  onRecoveryUpdate,
+  recoveryMethods,
 }) => {
   return (
     <AppScreen
@@ -95,9 +105,14 @@ export const Profile: React.FC<ProfileProps> = ({
           onDeviceDelete={onDeviceDelete}
           onDeviceUpdate={onDeviceUpdate}
         />
-        {recoveryPhrase && (
+        <RecoveryMethodsList
+          recoveryMethods={recoveryMethods}
+          onRecoveryUpdate={onRecoveryUpdate}
+          onRecoveryDelete={onRecoveryDelete}
+        />
+        {/* {recoveryPhrase && (
           <RecoveryPhraseSection recoveryPhrase={recoveryPhrase} />
-        )}
+        )} */}
       </main>
     </AppScreen>
   )

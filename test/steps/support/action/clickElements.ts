@@ -19,7 +19,9 @@ export default async (
    * @type {String}
    */
   //  browser.pause(3000);
-   isEnabled(selector, false);
+  //  isEnabled(selector, false);
+
+  await (await browser.$(selector)).isEnabled();
 
   const selector2 = type === "link" ? `=${selector}` : selector
 

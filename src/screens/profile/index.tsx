@@ -70,7 +70,8 @@ export const Profile: React.FC<ProfileProps> = ({
         className={clsx(
           "container flex flex-col flex-1 relative max-w-6xl w-full",
           "sm:mt-0",
-          "md:px-20 md:ml-auto md:w-2/3",
+          "md:pl-20 md:ml-auto md:w-2/3",
+          "lg:pr-20",
         )}
       >
         <div className={clsx("px-5 md:px-16", "md:bg-white")}>

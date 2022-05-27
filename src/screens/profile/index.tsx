@@ -12,22 +12,30 @@ import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 
 import { ApplicationList } from "./application-list"
-import { DeviceList } from "./device-list"
-import { RecoveryPhraseSection } from "./recovery-phrase-section"
+import { DeviceList } from "./device-list/device-list"
+import { RecoveryMethodsList } from "./recovery-methods"
 
 interface Account {
   anchor: string
   name?: string
 }
 
+export interface recoveryMethod extends DeviceData {
+  label: string
+  isSecurityKey: boolean
+  lastUsed: number
+}
+
 interface ProfileProps {
   onDeviceDelete: (device: Device) => Promise<void>
   onDeviceUpdate: (device: Device) => Promise<void>
-  account?: Account
+  onRecoveryDelete: (method: recoveryMethod) => Promise<void>
+  onRecoveryUpdate: (method: recoveryMethod) => Promise<void>
   devices: Device[]
-  hasPoa?: boolean
   accounts: NFIDPersona[]
-  recoveryPhrase?: DeviceData
+  recoveryMethods: recoveryMethod[]
+  account?: Account
+  hasPoa?: boolean
 }
 
 export const Profile: React.FC<ProfileProps> = ({
@@ -35,9 +43,11 @@ export const Profile: React.FC<ProfileProps> = ({
   onDeviceUpdate,
   account,
   devices,
-  recoveryPhrase,
   hasPoa,
   accounts = [],
+  onRecoveryDelete,
+  onRecoveryUpdate,
+  recoveryMethods,
 }) => {
   return (
     <AppScreen
@@ -60,7 +70,8 @@ export const Profile: React.FC<ProfileProps> = ({
         className={clsx(
           "container flex flex-col flex-1 relative max-w-6xl w-full",
           "sm:mt-0",
-          "md:px-20 md:ml-auto md:w-2/3",
+          "md:pl-20 md:ml-auto md:w-2/3",
+          "lg:pr-20",
         )}
       >
         <div className={clsx("px-5 md:px-16", "md:bg-white")}>
@@ -95,9 +106,14 @@ export const Profile: React.FC<ProfileProps> = ({
           onDeviceDelete={onDeviceDelete}
           onDeviceUpdate={onDeviceUpdate}
         />
-        {recoveryPhrase && (
+        <RecoveryMethodsList
+          recoveryMethods={recoveryMethods}
+          onRecoveryUpdate={onRecoveryUpdate}
+          onRecoveryDelete={onRecoveryDelete}
+        />
+        {/* {recoveryPhrase && (
           <RecoveryPhraseSection recoveryPhrase={recoveryPhrase} />
-        )}
+        )} */}
       </main>
     </AppScreen>
   )

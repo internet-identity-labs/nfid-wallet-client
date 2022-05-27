@@ -1,8 +1,14 @@
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
-interface NFIDGradientBarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface NFIDGradientBarProps extends React.HTMLAttributes<HTMLDivElement> {
+  rounded?: boolean
+}
 
-export const NFIDGradientBar: React.FC<NFIDGradientBarProps> = () => {
+export const NFIDGradientBar: React.FC<NFIDGradientBarProps> = ({
+  rounded = true,
+  className,
+}) => {
   const nfidGradientBar = {
     background: `linear-gradient(
       90deg,
@@ -12,12 +18,16 @@ export const NFIDGradientBar: React.FC<NFIDGradientBarProps> = () => {
       #7063ff 76.04%,
       #cc5cdc 100%
     )`,
-  };
+  }
 
   return (
     <div
-      className="absolute top-0 h-[4px] rounded-b w-[90%] inset-0 mx-auto"
+      className={clsx(
+        "absolute top-0 h-[4px] w-[90%] inset-0 mx-auto",
+        rounded && "rounded-b",
+        className,
+      )}
       style={nfidGradientBar}
     />
-  );
-};
+  )
+}

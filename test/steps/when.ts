@@ -1,4 +1,5 @@
 import { When } from "@cucumber/cucumber"
+import setWindowSize from "./support/action/setWindowSize";
 import addVirtualKey from './support/action/addVirtualKey';
 
 import clearInputField from "./support/action/clearInputField"
@@ -75,4 +76,8 @@ When(
 When(
   /^I add a virtual key$/,
   addVirtualKey
+)
+
+When(
+  /^I maximize the screen size$/,setWindowSize
 )

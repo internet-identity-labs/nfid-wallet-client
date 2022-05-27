@@ -20,11 +20,11 @@ export const DeviceList: React.FC<DeviceListProps> = ({
   onDeviceDelete,
 }) => {
   return (
-    <div className={clsx("px-5 md:px-16 pt-4", "bg-white")}>
+    <div className={clsx("px-5 md:px-16 pt-8", "bg-white md:pt-16")}>
       <List>
         <List.Header>
           <div className="flex items-center justify-between mb-3">
-            <H5>Devices</H5>
+            <H5>Authorized devices</H5>
 
             <div className="hidden">
               <PlusIcon className="text-blue-base mr-[14px]" />

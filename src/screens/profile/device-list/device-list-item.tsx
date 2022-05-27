@@ -6,6 +6,7 @@ import {
   TrashIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
+import { format } from "date-fns"
 import produce from "immer"
 import React from "react"
 
@@ -147,9 +148,8 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               <div className="flex-1 flex-shrink">
                 <div className="text-gray-700">{device.label}</div>
                 <div className="my-1 text-sm text-gray-400">
-                  {device.lastUsed
-                    ? `${new Date(device.lastUsed).toLocaleDateString()} with `
-                    : null}
+                  {device.lastUsed &&
+                    format(device.lastUsed, "eee d, yyyy 'on '")}
                   {device.browser}
                 </div>
               </div>

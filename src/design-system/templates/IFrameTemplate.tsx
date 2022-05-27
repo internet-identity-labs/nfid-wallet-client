@@ -25,7 +25,7 @@ export const IFrameTemplate: React.FC<IFrameTemplateProps> = ({
         "sm:left-1/2 sm:-translate-x-1/2 sm:top-1/2 sm:-translate-y-1/2",
       )}
     >
-      <NFIDGradientBar className="w-full h-0.5" rounded={false} />
+      <NFIDGradientBar className="w-full h-0.5 z-20" rounded={false} />
 
       <div
         className={clsx(

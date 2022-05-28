@@ -1,18 +1,15 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
-import { DropdownMenu } from "@internet-identity-labs/nfid-sdk-react"
-import { Label, Loader, MenuItem } from "@internet-identity-labs/nfid-sdk-react"
+import { Button, H5, P } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useState } from "react"
+import ReactTooltip from "react-tooltip"
 
 import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
-import { P } from "frontend/design-system/atoms/typography/paragraph"
-import { List } from "frontend/design-system/molecules/list"
-import { ListItem } from "frontend/design-system/molecules/list/list-item"
 import { IFrameTemplate } from "frontend/design-system/templates/IFrameTemplate"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { ElementProps } from "frontend/types/react"
+
+import alertIcon from "./assets/alert-triangle.svg"
 
 import { RawItem } from "./raw-item"
 
@@ -21,6 +18,7 @@ interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   applicationName: string
   applicationLogo: string
   accounts: NFIDPersona[]
+  accountsLimit: number
   onLogin: (personaId: string) => Promise<void>
   onCreateAccount: () => Promise<void>
 }
@@ -32,6 +30,7 @@ export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
   accounts,
   onLogin,
   onCreateAccount,
+  accountsLimit,
 }) => {
   const [loading, setLoading] = useState(false)
   const { login, isAuthenticated } = useAuthentication()
@@ -50,6 +49,10 @@ export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
     await onCreateAccount()
     setLoading(false)
   }, [onCreateAccount])
+
+  const isAccountsLimit = React.useMemo(() => {
+    return accounts.length > accountsLimit
+  }, [accounts.length, accountsLimit])
 
   return (
     <IFrameTemplate
@@ -70,16 +73,29 @@ export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
           )
         })}
         <div
-          className={clsx(
-            "h-12 hover:opacity-70 transition-all cursor-pointer",
-            "flex items-center px-[10px] text-blue-base space-x-3",
-          )}
+          className={clsx("h-12 flex items-center justify-between px-[10px]")}
           onClick={handleCreatePersonaAndLogin}
         >
-          <PlusIcon className="w-5 h-5" />
-          <p className="text-sm font-semibold">Create a new account</p>
+          <div
+            className={clsx(
+              "flex space-x-3 hover:opacity-70 transition-all cursor-pointer",
+              isAccountsLimit
+                ? "text-gray-400 pointer-events-none"
+                : "text-blue-base",
+            )}
+          >
+            <PlusIcon className="w-5 h-5" />
+            <p className="text-sm font-semibold">Create a new account</p>
+          </div>
+          {isAccountsLimit && (
+            <img
+              data-tip={`${applicationName} has limited the number of free accounts to ${accountsLimit}. Manage your accounts from your NFID Profile page.`}
+              src={alertIcon}
+              alt="alert"
+            />
+          )}
         </div>
-        {!isAuthenticated && (
+        {isAuthenticated && (
           <div
             className={clsx(
               "w-full h-full absolute left-0 top-0 z-10",
@@ -93,6 +109,7 @@ export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
           </div>
         )}
       </div>
+      <ReactTooltip className="w-72" />
     </IFrameTemplate>
   )
 }

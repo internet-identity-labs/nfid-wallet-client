@@ -46,4 +46,5 @@ IframeScreen.args = {
     { persona_id: "2", domain: "https://my-app.ic0.app" },
     { persona_id: "3", domain: "https://my-app.ic0.app" },
   ],
+  accountsLimit: 4,
 }

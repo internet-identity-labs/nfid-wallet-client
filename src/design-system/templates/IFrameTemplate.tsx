@@ -1,6 +1,6 @@
-import { Loader, Logo } from "@internet-identity-labs/nfid-sdk-react"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
-import React, { useEffect } from "react"
+import React from "react"
 
 import logo from "./assets/id.svg"
 

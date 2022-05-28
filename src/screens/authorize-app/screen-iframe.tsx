@@ -1,10 +1,12 @@
-import { Button, H5, P } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React, { useState } from "react"
 import ReactTooltip from "react-tooltip"
 
+import { Button, H5, P } from "@internet-identity-labs/nfid-sdk-react"
+
 import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
 import { IFrameTemplate } from "frontend/design-system/templates/IFrameTemplate"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { ElementProps } from "frontend/types/react"

@@ -14,7 +14,6 @@ import alertIcon from "./assets/alert-triangle.svg"
 import { RawItem } from "./raw-item"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
-  isRemoteAuthorisation?: boolean
   applicationName: string
   applicationLogo: string
   accounts: NFIDPersona[]
@@ -24,7 +23,6 @@ interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
 }
 
 export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
-  isRemoteAuthorisation,
   applicationName,
   applicationLogo,
   accounts,

@@ -14,7 +14,7 @@ Feature: Register a new NFID device
     Then I expect the url to contain "/register-account/intro" on a new register page
     When I click on the button "<create_nfid_button>" to create or register a new NFID account
     When I add a virtual key
-    When I pause for 60000ms
+    When I pause for 80000ms
     Then I expect the url to contain "/register-account/captcha"
     Then I expect that "<captcha_input_element>" becomes displayed
 

@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 
 import { RegisterDeviceDecider } from "."
 import { AppScreenRegisterDeviceDecider } from "../../flows/screens-app/authenticate/screen-app-register-device-decider"
+import { AuthorizeRegisterDecider } from "./screen-new-iframe"
 
 export default {
   title: "Screens/RegisterDeviceDecider",
@@ -29,8 +30,18 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   )
 }
 
+const AuthorizeRegisterDeciderNewTemplate: ComponentStory<
+  typeof AuthorizeRegisterDecider
+> = (args) => {
+  return (
+    <Router>
+      <AuthorizeRegisterDecider {...args} />
+    </Router>
+  )
+}
+
 export const Raw = RegisterDeviceDeciderTemplate.bind({})
+export const NewIframe = AuthorizeRegisterDeciderNewTemplate.bind({})
+export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 
 Raw.args = {}
-
-export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})

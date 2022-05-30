@@ -6,6 +6,7 @@ import { Link, Navigate } from "react-router-dom"
 
 import { useIsIframe } from "frontend/hooks/use-is-iframe"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
+import { useMultipass } from 'frontend/hooks/use-multipass'
 
 export interface AuthorizeAppUnknownDeviceProps {
   registerDeviceDeciderPath: string
@@ -22,13 +23,14 @@ export const AuthorizeAppUnknownDevice: React.FC<
   registerSameDevicePath,
   url,
   showRegister,
-  applicationName,
 }) => {
+  const { applicationLogo, applicationName } = useMultipass()
   const { generatePath } = useNFIDNavigate()
   const isIframe = useIsIframe()
 
   return url && !showRegister ? (
     <div className={clsx("text-center")}>
+      <img width="50" height="50" src={applicationLogo} alt={`${applicationName} logo`} />
       <H5 className="mb-4">{applicationName}</H5>
       <div className="flex flex-col">
         <div className="text-sm">

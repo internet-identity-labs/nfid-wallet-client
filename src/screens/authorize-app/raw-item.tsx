@@ -1,6 +1,5 @@
 import clsx from "clsx"
 
-import { PencilIcon } from "frontend/design-system/atoms/icons/pencil"
 import { ElementProps } from "frontend/types/react"
 
 interface RawItemProps extends ElementProps<HTMLDivElement> {
@@ -17,7 +16,7 @@ export const RawItem: React.FC<RawItemProps> = ({ className, title }) => {
       )}
     >
       <p className="text-sm">{title}</p>
-      <PencilIcon className="w-5 h-5" />
+      {/* <PencilIcon className="w-5 h-5" /> */}
     </div>
   )
 }

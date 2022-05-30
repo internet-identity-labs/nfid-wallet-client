@@ -51,7 +51,7 @@ export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
   }, [onCreateAccount])
 
   const isAccountsLimit = React.useMemo(() => {
-    return accounts.length > accountsLimit
+    return accounts.length > --accountsLimit
   }, [accounts.length, accountsLimit])
 
   return (

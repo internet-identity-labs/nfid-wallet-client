@@ -2,6 +2,7 @@ import React from "react"
 import { Route } from "react-router-dom"
 
 import { AuthenticateDecider } from "frontend/design-system/templates/authenticate-decider"
+
 import {
   APP_SCREEN_AUTHENTICATE_BASE,
   SUB_PATH_AUTHORIZE_APP,
@@ -28,7 +29,7 @@ export const AppScreenAuthenticateAccountRoutes = (
       <AuthenticateDecider
         rootPath={APP_SCREEN_AUTHENTICATE_BASE}
         loginUnknownDevicePath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
-        loginNFIDPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_LOGIN_NFID}`}
+        loginNFIDPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
       />
     }
   >

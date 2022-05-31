@@ -12,7 +12,7 @@ export const AppScreenAuthorizeAppRoutes = (redirectTo: string) => (
   <Route path={AppScreenAuthorizeAppConstants.base}>
     <Route
       path={AppScreenAuthorizeAppConstants.authorize}
-      element={<AppScreenAuthorizeApp />}
+      element={<AppScreenAuthorizeApp redirectTo={redirectTo} />}
     />
   </Route>
 )

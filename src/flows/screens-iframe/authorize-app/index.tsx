@@ -2,6 +2,7 @@ import React from "react"
 import { useParams } from "react-router-dom"
 
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -18,8 +19,8 @@ interface IFrameAuthorizeAppProps
 export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
   const { readAccount, userNumber } = useAccount()
   const { nextPersonaId, accounts, createPersona } = usePersona()
-  const { identityManager } = useAuthentication()
-  const { applicationName } = useMultipass()
+  const { login, isAuthenticated, identityManager } = useAuthentication()
+  const { applicationName, applicationLogo } = useMultipass()
   const { scope } = useParams()
   const { authorizeApp, opener, authorizationRequest, postClientReadyMessage } =
     useAuthorization({
@@ -39,7 +40,7 @@ export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
   }, [identityManager, readAccount, userNumber])
 
   const handleLogin = React.useCallback(
-    async (personaId: string) => {
+    async (personaId?: string) => {
       await authorizeApp({ persona_id: personaId })
     },
     [authorizeApp],
@@ -66,8 +67,11 @@ export const IFrameAuthorizeApp: React.FC<IFrameAuthorizeAppProps> = () => {
       <AuthorizeApp
         accounts={accounts}
         applicationName={applicationName || ""}
+        applicationLogo={applicationLogo}
+        onUnlockNFID={login}
         onLogin={handleLogin}
         onCreateAccount={handleCreateAccountAndLogin}
+        isAuthenticated={isAuthenticated}
       />
     </IFrameScreen>
   )

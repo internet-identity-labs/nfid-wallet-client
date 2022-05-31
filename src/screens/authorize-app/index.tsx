@@ -52,7 +52,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
       {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H5 className="mt-4">Choose an account</H5>
       <P className="mt-2">to continue to {applicationName}</P>
-      <div className={clsx("flex flex-col w-full mt-4 space-y-1 relative")}>
+      <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
         {displayAccounts.map((account) => {
           return (
             <AccountItem
@@ -87,10 +87,14 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         {!isAuthenticated && (
           <div
             className={clsx(
-              "w-full h-full absolute left-0 top-0 z-10",
-              "backdrop-blur-sm bg-white bg-opacity-10",
+              "-m-4 p-4",
+              "absolute left-0 top-0 bottom-0 right-0 z-10",
               "flex justify-center items-center",
             )}
+            style={{
+              background: "rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(8px)",
+            }}
           >
             <Button secondary large onClick={() => onUnlockNFID()}>
               Unlock NFID

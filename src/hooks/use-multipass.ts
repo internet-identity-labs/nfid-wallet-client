@@ -1,15 +1,14 @@
-import React from "react"
-import { useParams, useSearchParams } from "react-router-dom"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"
+import React from "react"
+import { useParams, useSearchParams } from "react-router-dom"
 
 import { creationOptions } from "frontend/services/internet-identity/iiConnection"
+
 import { useDeviceInfo } from "./use-device-info"
-import Logo from 'frontend/assets/logo.svg';
 
-
-const applicationNameAtom = atom<string | undefined>(undefined);
-const applicationLogoAtom = atom<string | undefined>(Logo as string);
+const applicationNameAtom = atom<string | undefined>(undefined)
+const applicationLogoAtom = atom<string | undefined>(undefined)
 
 export const useMultipass = () => {
   const [queryString] = useSearchParams()
@@ -42,9 +41,16 @@ export const useMultipass = () => {
       )
     }
     if (applicationLogoFromParams) {
-      setApplicationLogo(applicationLogoFromParams);
+      setApplicationLogo(applicationLogoFromParams)
     }
-  }, [applicationName, applicationLogo, applicationNameFromPath, queryString, setApplicationName, setApplicationLogo])
+  }, [
+    applicationName,
+    applicationLogo,
+    applicationNameFromPath,
+    queryString,
+    setApplicationName,
+    setApplicationLogo,
+  ])
 
   return {
     createWebAuthNIdentity,

@@ -1,6 +1,7 @@
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import logo from "./assets/id.svg"
 
@@ -11,7 +12,7 @@ interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   loadingMessage?: string
 }
 
-export const IFrameTemplate: React.FC<IFrameTemplateProps> = ({
+export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   children,
   className,
   isLoading,

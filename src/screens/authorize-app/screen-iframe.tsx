@@ -5,7 +5,7 @@ import ReactTooltip from "react-tooltip"
 import { Button, H5, P } from "@internet-identity-labs/nfid-sdk-react"
 
 import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
-import { IFrameTemplate } from "frontend/design-system/templates/IFrameTemplate"
+import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
@@ -55,7 +55,7 @@ export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
   }, [accounts.length, accountsLimit])
 
   return (
-    <IFrameTemplate
+    <ScreenResponsive
       isLoading={loading}
       loadingMessage=""
       className="flex flex-col items-center"
@@ -110,6 +110,6 @@ export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
         )}
       </div>
       <ReactTooltip className="w-72" />
-    </IFrameTemplate>
+    </ScreenResponsive>
   )
 }

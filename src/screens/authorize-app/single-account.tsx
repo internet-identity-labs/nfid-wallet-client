@@ -11,14 +11,23 @@ import MobileHero from "./assets/mobile_hero.svg"
 interface AuthorizeAppSingleAccountProps extends ElementProps<HTMLDivElement> {
   applicationLogo: string
   applicationName: string
+  isLoading: boolean
   onContinueButtonClick: () => Promise<void>
 }
 
 export const AuthorizeAppSingleAccount: React.FC<
   AuthorizeAppSingleAccountProps
-> = ({ applicationName, onContinueButtonClick, applicationLogo }) => {
+> = ({
+  applicationName,
+  onContinueButtonClick,
+  applicationLogo,
+  isLoading,
+}) => {
   return (
-    <ScreenResponsive className="flex flex-col items-center">
+    <ScreenResponsive
+      isLoading={isLoading}
+      className="flex flex-col items-center"
+    >
       <img src={applicationLogo} alt="logo" />
       <H4 className="mt-4">Unlock NFID</H4>
       <p className="mt-2 text-sm">to continue to {applicationName}</p>

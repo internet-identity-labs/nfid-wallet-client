@@ -1,7 +1,8 @@
-import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
+
+import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
 import { NotFound } from "./flows/404"
 import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
@@ -24,6 +25,7 @@ import {
 } from "./flows/screens-app/register-account/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/remote-authentication/routes"
+import { RemoteNFIDAuthenticationRoutes } from "./flows/screens-app/remote-nfid-authentication"
 import { DevScreensRoutes } from "./flows/screens-dev/routes"
 import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
 import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
@@ -53,6 +55,7 @@ export const App = () => {
       {RegisterNewDeviceRoutes}
       {NFIDRegisterAccountRoutes}
       {RemoteRegisterAccountRoutes}
+      {RemoteNFIDAuthenticationRoutes}
       {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
       {AppScreenProofOfAttendencyRoutes(`${POAPC.base}/${POAPC.register}`)}
       {RecoverNFIDRoutes}

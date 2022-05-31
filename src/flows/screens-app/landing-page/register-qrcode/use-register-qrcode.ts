@@ -13,6 +13,8 @@ import { apiResultToLoginResult } from "frontend/services/internet-identity/api-
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
+import { RemoteNFIDAuthenticationConstants } from "../../remote-nfid-authentication"
+
 const statusAtom = atom<string>("")
 
 export const useRegisterQRCode = () => {
@@ -30,11 +32,9 @@ export const useRegisterQRCode = () => {
 
   const registerRoute = useMemo(
     () =>
-      generatePath(
-        // SCOPE AND APPLCICATION NAME SET TO NFID
-        `${AppScreenAuthorizeAppConstants.base}/${AppScreenAuthorizeAppConstants.authorize}`,
-        { secret: publicKey, scope: "NFID", applicationName: "NFID" },
-      ),
+      generatePath(`${RemoteNFIDAuthenticationConstants.authorize}`, {
+        secret: publicKey,
+      }),
     [publicKey],
   )
 

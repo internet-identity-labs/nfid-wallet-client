@@ -1,9 +1,6 @@
-import { Button, H4, P } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
+import { Button, H4 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
-import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { IFrameTemplate } from "frontend/design-system/templates/IFrameTemplate"
 import { ElementProps } from "frontend/types/react"
 

@@ -30,7 +30,7 @@ export const AuthorizeAppUnknownDevice: React.FC<
 
   return url && !showRegister ? (
     <div className={clsx("text-center")}>
-      <img width="50" height="50" src={applicationLogo} alt={`${applicationName} logo`} />
+      <img width="50" height="50" className={clsx('inline-block')} src={applicationLogo} alt={`${applicationName} logo`} />
       <H5 className="mb-4">{applicationName}</H5>
       <div className="flex flex-col">
         <div className="text-sm">

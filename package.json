@@ -58,7 +58,7 @@
     "react-scroll-parallax": "^3.0.5",
     "react-scrollspy": "^3.4.3",
     "stream-browserify": "3.0.0",
-    "swiper": "^8.0.7",
+    "swiper": "^8.2.1",
     "usergeek-ic-js": "git+https://github.com/usergeek/usergeek-ic-js",
     "uuid": "8.3.2"
   },

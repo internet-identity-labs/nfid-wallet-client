@@ -44,7 +44,8 @@ export const SingleAccount = AuthorizeAppSingleAccountTemplate.bind({})
 export const IframeScreen = AuthorizeAppIframeTemplate.bind({})
 
 SingleAccount.args = {
-  applicationName: "{ApplicationName}",
+  applicationName: "Distrikt",
+  applicationLogo: logo,
 }
 
 AppScreen.args = {

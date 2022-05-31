@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { randomInt } from "crypto"
 import React from "react"
 import ReactTooltip from "react-tooltip"
 
@@ -39,13 +40,21 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     return accountsLimit && accounts.length > --accountsLimit
   }, [accounts.length, accountsLimit])
 
+  const displayAccounts = isAuthenticated
+    ? accounts
+    : // FAKE DISPLAY DATA FOR BLURRED BACKGROUND
+      new Array(4).fill(null).map((_, i) => ({
+        domain: "http://fake.com",
+        persona_id: i === 0 ? "longer" : `${i}`,
+      }))
+
   return (
     <>
       {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H5 className="mt-4">Choose an account</H5>
       <P className="mt-2">to continue to {applicationName}</P>
       <div className={clsx("flex flex-col w-full mt-4 space-y-1 relative")}>
-        {accounts.map((account) => {
+        {displayAccounts.map((account) => {
           return (
             <AccountItem
               title={`${applicationName} account ${account.persona_id}`}

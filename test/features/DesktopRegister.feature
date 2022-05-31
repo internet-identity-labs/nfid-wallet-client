@@ -16,9 +16,9 @@ Feature: Register a new NFID device
     When I add a virtual key
     When I pause for 80000ms
     Then I expect the url to contain "/register-account/captcha"
-    Then I expect that "<captcha_input_element>" becomes displayed
+    Then I expect that element "<captcha_input_element>" becomes displayed
 
 
     Examples:
-      | link               | element                                                                      | create_nfid_button | captcha_input_element                              | captcha_button_element                            | qrcode                                     |
-      | The Identity Layer | #home > div:nth-child(1) > div.sticky.z-30.sm\:mt-40.top-28 > div > div > h1 | .btn               | .col-span-12 > div > .rounded-md > .flex > .flex-1 | .flex > .container > .grid > .col-span-12 > .my-3 | //section[@id='home']/div[2]/div/div/a/div |
+      | link               | element                                                                      | create_nfid_button | captcha_input_element                              | captcha_button_element | qrcode                                     |
+      | The Identity Layer | #home > div:nth-child(1) > div.sticky.z-30.sm\:mt-40.top-28 > div > div > h1 | .btn               | .col-span-12 > div > .rounded-md > .flex > .flex-1 | .btn-text              | //section[@id='home']/div[2]/div/div/a/div |

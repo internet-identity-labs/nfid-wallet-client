@@ -1,21 +1,21 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { IFrameTemplate } from "./IFrameTemplate"
+import { ScreenResponsive } from "./screen-responsive"
 
 export default {
   title: "Templates/IFrame",
-  component: IFrameTemplate,
+  component: ScreenResponsive,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof IFrameTemplate>
+} as ComponentMeta<typeof ScreenResponsive>
 
-const IFrameScreen: ComponentStory<typeof IFrameTemplate> = (args) => {
+const IFrameScreen: ComponentStory<typeof ScreenResponsive> = (args) => {
   return (
     <Router>
-      <IFrameTemplate {...args} />
+      <ScreenResponsive {...args} />
     </Router>
   )
 }

@@ -4,9 +4,6 @@ import { atom, useAtom } from "jotai"
 import { useCallback, useMemo } from "react"
 import { generatePath } from "react-router-dom"
 
-// TODO get static QR code for IIW
-// import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app-iiw/routes"
-import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/remote-authentication/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"

@@ -28,6 +28,21 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
 
+  const hasRecoveryPhrase = React.useMemo(
+    () => recoveryMethods.filter((rm) => rm.isRecoveryPhrase).length > 0,
+    [recoveryMethods],
+  )
+
+  const hasSecurityKey = React.useMemo(
+    () => recoveryMethods.filter((rm) => rm.isSecurityKey).length > 0,
+    [recoveryMethods],
+  )
+
+  const canAddRecoveryMethod = React.useMemo(
+    () => !(hasRecoveryPhrase && hasSecurityKey),
+    [hasRecoveryPhrase, hasSecurityKey],
+  )
+
   return (
     <div className={clsx("px-5 md:px-16 pt-8", "bg-white flex-1 md:pt-16")}>
       {isModalVisible && (
@@ -41,18 +56,23 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
             case you lose your other devices.
           </p>
           <div className="mt-3 space-y-2">
-            <MethodRaw
-              onClick={onCreateRecoveryPhrase}
-              title="Secret recovery phrase"
-              subtitle="A “master password” to keep offline"
-              img={<IconRecovery />}
-            />
-            <MethodRaw
-              onClick={onRegisterRecoveryKey}
-              title="Security key"
-              subtitle="A special USB stick to keep safe"
-              img={<USBIcon />}
-            />
+            {!hasRecoveryPhrase && (
+              <MethodRaw
+                onClick={onCreateRecoveryPhrase}
+                title="Secret recovery phrase"
+                subtitle="A “master password” to keep offline"
+                img={<IconRecovery />}
+              />
+            )}
+            {!hasSecurityKey && (
+              <MethodRaw
+                onClick={onRegisterRecoveryKey}
+                title="Security key"
+                subtitle="A special USB stick to keep safe"
+                img={<USBIcon />}
+                isDisabled={hasSecurityKey}
+              />
+            )}
           </div>
         </ModalAdvanced>
       )}
@@ -61,9 +81,11 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
           <div className="flex items-center justify-between mb-3">
             <H5>Account recovery methods</H5>
 
-            <div className="" onClick={() => setIsModalVisible(true)}>
-              <PlusIcon className="w-6 h-6 text-gray-500" />
-            </div>
+            {canAddRecoveryMethod && (
+              <div className="" onClick={() => setIsModalVisible(true)}>
+                <PlusIcon className="w-6 h-6 text-gray-500" />
+              </div>
+            )}
           </div>
         </List.Header>
         <List.Items className="ml-0">

@@ -23,6 +23,7 @@ interface Account {
 export interface recoveryMethod extends DeviceData {
   label: string
   isSecurityKey: boolean
+  isRecoveryPhrase: boolean
   lastUsed: number
   icon: Icon
 }

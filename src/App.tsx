@@ -20,7 +20,6 @@ import {
 import { RecoverNFIDRoutes } from "./flows/screens-app/recover-nfid/routes"
 import {
   NFIDRegisterAccountRoutes,
-  RemoteRegisterAccountConstants as RAC,
   RemoteRegisterAccountRoutes,
 } from "./flows/screens-app/register-account/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
@@ -56,7 +55,7 @@ export const App = () => {
       {NFIDRegisterAccountRoutes}
       {RemoteRegisterAccountRoutes}
       {RemoteNFIDAuthenticationRoutes}
-      {AppScreenAuthorizeAppRoutes(`${RAC.base}/${RAC.account}`)}
+      {AppScreenAuthorizeAppRoutes}
       {AppScreenProofOfAttendencyRoutes(`${POAPC.base}/${POAPC.register}`)}
       {RecoverNFIDRoutes}
 

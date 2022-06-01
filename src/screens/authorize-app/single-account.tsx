@@ -9,8 +9,8 @@ import { ElementProps } from "frontend/types/react"
 import MobileHero from "./assets/mobile_hero.svg"
 
 interface AuthorizeAppSingleAccountProps extends ElementProps<HTMLDivElement> {
-  applicationLogo: string
-  applicationName: string
+  applicationLogo?: string
+  applicationName?: string
   isLoading: boolean
   onContinueButtonClick: () => Promise<void>
 }
@@ -28,9 +28,11 @@ export const AuthorizeAppSingleAccount: React.FC<
       isLoading={isLoading}
       className="flex flex-col items-center"
     >
-      <img src={applicationLogo} alt="logo" />
+      {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H4 className="mt-4">Unlock NFID</H4>
-      <p className="mt-2 text-sm">to continue to {applicationName}</p>
+      <p className="mt-2 text-sm">
+        to continue{applicationName && ` to ${applicationName}`}
+      </p>
       <img className="w-full max-w-max" src={MobileHero} alt="" />
       <Button className="my-6 " block secondary onClick={onContinueButtonClick}>
         Unlock to continue

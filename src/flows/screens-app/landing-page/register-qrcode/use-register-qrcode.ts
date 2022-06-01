@@ -29,8 +29,9 @@ export const useRegisterQRCode = () => {
 
   const registerRoute = useMemo(
     () =>
-      generatePath(`${RemoteNFIDAuthenticationConstants.authorize}`, {
+      generatePath(RemoteNFIDAuthenticationConstants.authorize, {
         secret: publicKey,
+        scope: "NFID",
       }),
     [publicKey],
   )

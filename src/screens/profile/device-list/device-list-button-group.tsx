@@ -10,7 +10,7 @@ interface DeviceListButtonGroupProps {
   selected: Icon
 }
 
-const ICONS: Icon[] = ["mobile", "tablet", "laptop", "desktop", "key"]
+const ICONS: Icon[] = ["mobile", "tablet", "laptop", "desktop", "key", "usb"]
 
 export const DeviceListButtonGroup: React.FC<DeviceListButtonGroupProps> = ({
   onSelect,

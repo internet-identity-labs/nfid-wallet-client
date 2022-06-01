@@ -76,7 +76,7 @@ export const RegisterNewFromDelegate = () => {
           </Card>
 
           {status === "success" && showModal ? (
-            <ModalSuccess onClick={() => setShowModal(false)} />
+            <ModalSuccess device={device} onClick={() => setShowModal(false)} />
           ) : null}
 
           <Loader isLoading={status === "loading"} />

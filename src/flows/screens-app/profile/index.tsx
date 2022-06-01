@@ -28,6 +28,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     updateDevice,
     getRecoveryDevices,
     createRecoveryPhrase,
+    createSecurityDevice,
   } = useDevices()
   const { allAccounts, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
@@ -96,6 +97,10 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     )
   }, [createRecoveryPhrase, navigate])
 
+  const handleRegisterRecoveryKey = React.useCallback(async () => {
+    await createSecurityDevice()
+  }, [createSecurityDevice])
+
   return (
     <Profile
       account={account}
@@ -110,14 +115,13 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       recoveryMethods={recoveryDevices.map((d) => ({
         ...d,
         label: d.alias,
-        isSecurityKey: false,
+        isSecurityKey: Object.keys(d.key_type).indexOf("cross_platform") > -1,
+        isRecoveryPhrase: Object.keys(d.key_type).indexOf("seed_phrase") > -1,
         icon: "document",
         lastUsed: 0,
       }))}
       onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
-      onRegisterRecoveryKey={(): Promise<void> => {
-        throw new Error("implement me.")
-      }}
+      onRegisterRecoveryKey={handleRegisterRecoveryKey}
     />
   )
 }

@@ -22,7 +22,7 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
   onRecoveryUpdate,
   onRecoveryDelete,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(true)
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
   return (
     <div className={clsx("px-5 md:px-16 pt-8", "bg-white flex-1 md:pt-16")}>

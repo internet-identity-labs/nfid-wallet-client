@@ -69,11 +69,10 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const handleRecoveryDelete = React.useCallback(
     async (method: recoveryMethod) => {
-      // await deleteDevice(device.pubkey)
-      // await handleLoadDevices()
-      // TODO logic
+      await deleteDevice(method.pubkey)
+      await getRecoveryDevices()
     },
-    [],
+    [deleteDevice, getRecoveryDevices],
   )
 
   const handleRecoveryUpdate = React.useCallback(

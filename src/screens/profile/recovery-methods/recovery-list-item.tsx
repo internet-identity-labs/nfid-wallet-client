@@ -14,16 +14,18 @@ import {
 import { IconCancel } from "frontend/design-system/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/design-system/atoms/icons/check-mark"
 
-import { Icon } from "frontend/services/identity-manager/devices/state"
+import {
+  Icon,
+  RecoveryDevice,
+} from "frontend/services/identity-manager/devices/state"
 
-import { recoveryMethod } from "../"
 import { DeviceIconDecider } from "../device-list/device-icon-decider"
 import { DeviceListButtonGroup } from "../device-list/device-list-button-group"
 
 interface recoveryMethodListItemProps {
-  recoveryMethod: recoveryMethod
-  onRecoveryUpdate: (recoveryMethod: recoveryMethod) => Promise<void>
-  onRecoveryDelete: (recoveryMethod: recoveryMethod) => Promise<void>
+  recoveryMethod: RecoveryDevice
+  onRecoveryUpdate: (recoveryMethod: RecoveryDevice) => Promise<void>
+  onRecoveryDelete: (recoveryMethod: RecoveryDevice) => Promise<void>
 }
 
 export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
@@ -32,7 +34,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   onRecoveryDelete,
 }) => {
   const [updatedRecovery, setUpdatedRecovery] =
-    React.useState<recoveryMethod | null>(null)
+    React.useState<RecoveryDevice | null>(null)
 
   const recoveryMethod = updatedRecovery ?? initialRecovery
 
@@ -53,7 +55,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   const [loading, setLoading] = React.useState(false)
 
   const handleDeleteRecovery = React.useCallback(
-    async (method: recoveryMethod) => {
+    async (method: RecoveryDevice) => {
       setLoading(true)
 
       await onRecoveryDelete(method)
@@ -77,7 +79,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
       setUpdatedRecovery(
         produce(
           updatedRecovery || initialRecovery,
-          (draft: recoveryMethod) => ({
+          (draft: RecoveryDevice) => ({
             ...draft,
             icon,
           }),
@@ -100,7 +102,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
       setUpdatedRecovery(
         produce(
           updatedRecovery || initialRecovery,
-          (draft: recoveryMethod) => ({
+          (draft: RecoveryDevice) => ({
             ...draft,
             label: value,
           }),

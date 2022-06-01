@@ -2,10 +2,13 @@ import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
-import { Profile, recoveryMethod } from "frontend/screens/profile"
+import { Profile } from "frontend/screens/profile"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import { Device } from "frontend/services/identity-manager/devices/state"
+import {
+  Device,
+  RecoveryDevice,
+} from "frontend/services/identity-manager/devices/state"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 import { ProfileConstants } from "./routes"
@@ -68,7 +71,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   )
 
   const handleRecoveryDelete = React.useCallback(
-    async (method: recoveryMethod) => {
+    async (method: RecoveryDevice) => {
       await deleteDevice(method.pubkey)
       await getRecoveryDevices()
     },
@@ -76,12 +79,11 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   )
 
   const handleRecoveryUpdate = React.useCallback(
-    async (method: recoveryMethod) => {
-      // await updateDevice(device)
-      // await getDevices()
-      // TODO logic
+    async (device: RecoveryDevice) => {
+      await updateDevice({ ...device, browser: "" })
+      await getDevices()
     },
-    [],
+    [getDevices, updateDevice],
   )
 
   const handleCreateRecoveryPhrase = React.useCallback(async () => {
@@ -111,14 +113,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       accounts={allAccounts}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
-      recoveryMethods={recoveryDevices.map((d) => ({
-        ...d,
-        label: d.alias,
-        isSecurityKey: Object.keys(d.key_type).indexOf("cross_platform") > -1,
-        isRecoveryPhrase: Object.keys(d.key_type).indexOf("seed_phrase") > -1,
-        icon: "document",
-        lastUsed: 0,
-      }))}
+      recoveryMethods={recoveryDevices}
       onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
       onRegisterRecoveryKey={handleRegisterRecoveryKey}
     />

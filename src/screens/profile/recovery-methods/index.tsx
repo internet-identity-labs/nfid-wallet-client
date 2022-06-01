@@ -10,13 +10,14 @@ import { H5 } from "frontend/design-system/atoms/typography"
 import { List } from "frontend/design-system/molecules/list"
 import { ModalAdvanced } from "frontend/design-system/molecules/modal/advanced"
 
-import { recoveryMethod } from "../"
+import { RecoveryDevice } from "frontend/services/identity-manager/devices/state"
+
 import { RecoveryMethodListItem } from "./recovery-list-item"
 
 interface RecoveryMethodsListProps {
-  recoveryMethods: recoveryMethod[]
-  onRecoveryUpdate: (recoveryMethod: recoveryMethod) => Promise<void>
-  onRecoveryDelete: (recoveryMethod: recoveryMethod) => Promise<void>
+  recoveryMethods: RecoveryDevice[]
+  onRecoveryUpdate: (recoveryMethod: RecoveryDevice) => Promise<void>
+  onRecoveryDelete: (recoveryMethod: RecoveryDevice) => Promise<void>
   onCreateRecoveryPhrase: () => Promise<void>
   onRegisterRecoveryKey: () => Promise<void>
 }

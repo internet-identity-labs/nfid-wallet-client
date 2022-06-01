@@ -1,11 +1,14 @@
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { Profile, recoveryMethod } from "frontend/screens/profile"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { Device } from "frontend/services/identity-manager/devices/state"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+
+import { ProfileConstants } from "./routes"
 
 interface AuthenticateNFIDHomeProps {}
 
@@ -14,6 +17,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const [hasPoa, setHasPoa] = React.useState(false)
   const [fetched, loadOnce] = React.useReducer(() => true, false)
+  const { navigate } = useNFIDNavigate()
 
   const {
     devices,
@@ -23,6 +27,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     handleLoadDevices,
     updateDevice,
     getRecoveryDevices,
+    createRecoveryPhrase,
   } = useDevices()
   const { allAccounts, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
@@ -79,6 +84,18 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     [],
   )
 
+  const handleCreateRecoveryPhrase = React.useCallback(async () => {
+    const recoveryPhrase = await createRecoveryPhrase()
+    navigate(
+      `${ProfileConstants.base}/${ProfileConstants.copyRecoveryPhrase}`,
+      {
+        state: {
+          recoveryPhrase,
+        },
+      },
+    )
+  }, [createRecoveryPhrase, navigate])
+
   return (
     <Profile
       account={account}
@@ -92,6 +109,10 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       onRecoveryUpdate={handleRecoveryUpdate}
       recoveryMethods={[]}
       recoveryPhrase={recoveryDevices[0]}
+      onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
+      onRegisterRecoveryKey={(): Promise<void> => {
+        throw new Error("implement me.")
+      }}
     />
   )
 }

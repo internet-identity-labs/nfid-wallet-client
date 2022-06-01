@@ -32,6 +32,8 @@ interface ProfileProps {
   onDeviceUpdate: (device: Device) => Promise<void>
   onRecoveryDelete: (method: recoveryMethod) => Promise<void>
   onRecoveryUpdate: (method: recoveryMethod) => Promise<void>
+  onCreateRecoveryPhrase: () => Promise<void>
+  onRegisterRecoveryKey: () => Promise<void>
   devices: Device[]
   accounts: NFIDPersona[]
   recoveryMethods: recoveryMethod[]
@@ -48,6 +50,8 @@ export const Profile: React.FC<ProfileProps> = ({
   accounts = [],
   onRecoveryDelete,
   onRecoveryUpdate,
+  onCreateRecoveryPhrase,
+  onRegisterRecoveryKey,
   recoveryMethods,
 }) => {
   return (
@@ -111,10 +115,9 @@ export const Profile: React.FC<ProfileProps> = ({
           recoveryMethods={recoveryMethods}
           onRecoveryUpdate={onRecoveryUpdate}
           onRecoveryDelete={onRecoveryDelete}
+          onCreateRecoveryPhrase={onCreateRecoveryPhrase}
+          onRegisterRecoveryKey={onRegisterRecoveryKey}
         />
-        {/* {recoveryPhrase && (
-          <RecoveryPhraseSection recoveryPhrase={recoveryPhrase} />
-        )} */}
       </main>
     </AppScreen>
   )

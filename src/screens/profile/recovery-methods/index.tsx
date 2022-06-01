@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React, { ReactElement, useState } from "react"
 
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
 import { IconRecovery } from "frontend/design-system/atoms/icons/recovery"
 import { USBIcon } from "frontend/design-system/atoms/icons/usb"
@@ -27,6 +29,7 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
   onRegisterRecoveryKey,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const hasRecoveryPhrase = React.useMemo(
     () => recoveryMethods.filter((rm) => rm.isRecoveryPhrase).length > 0,
@@ -43,6 +46,13 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
     [hasRecoveryPhrase, hasSecurityKey],
   )
 
+  const handleWithLoading = (cb: () => Promise<void>) => async () => {
+    setIsLoading(true)
+    await cb()
+    setIsLoading(false)
+    setIsModalVisible(false)
+  }
+
   return (
     <div className={clsx("px-5 md:px-16 pt-8", "bg-white flex-1 md:pt-16")}>
       {isModalVisible && (
@@ -58,7 +68,7 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
           <div className="mt-3 space-y-2">
             {!hasRecoveryPhrase && (
               <MethodRaw
-                onClick={onCreateRecoveryPhrase}
+                onClick={handleWithLoading(onCreateRecoveryPhrase)}
                 title="Secret recovery phrase"
                 subtitle="A “master password” to keep offline"
                 img={<IconRecovery />}
@@ -66,7 +76,7 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
             )}
             {!hasSecurityKey && (
               <MethodRaw
-                onClick={onRegisterRecoveryKey}
+                onClick={handleWithLoading(onRegisterRecoveryKey)}
                 title="Security key"
                 subtitle="A special USB stick to keep safe"
                 img={<USBIcon />}
@@ -109,6 +119,7 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
           )}
         </List.Items>
       </List>
+      <Loader isLoading={isLoading} />
     </div>
   )
 }

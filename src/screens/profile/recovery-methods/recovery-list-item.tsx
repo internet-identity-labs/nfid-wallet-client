@@ -1,3 +1,8 @@
+import clsx from "clsx"
+import { format } from "date-fns"
+import produce from "immer"
+import React from "react"
+
 import {
   Loader,
   ModalAdvanced,
@@ -5,13 +10,10 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import { format } from "date-fns"
-import produce from "immer"
-import React from "react"
 
 import { IconCancel } from "frontend/design-system/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/design-system/atoms/icons/check-mark"
+
 import { Icon } from "frontend/services/identity-manager/devices/state"
 
 import { recoveryMethod } from "../"
@@ -155,10 +157,11 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
             ) : (
               <div className="flex-1 flex-shrink">
                 <div className="text-gray-700">{recoveryMethod.label}</div>
-                <div className="my-1 text-sm text-gray-400">
-                  {recoveryMethod.lastUsed &&
-                    format(recoveryMethod.lastUsed, "eee d, yyyy")}
-                </div>
+                {recoveryMethod.lastUsed ? (
+                  <div className="my-1 text-sm text-gray-400">
+                    {format(recoveryMethod.lastUsed, "eee d, yyyy")}
+                  </div>
+                ) : null}
               </div>
             )}
           </div>

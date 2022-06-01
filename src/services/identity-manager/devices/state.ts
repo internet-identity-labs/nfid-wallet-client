@@ -2,7 +2,13 @@ import { atom } from "jotai"
 
 import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 
-export type Icon = "mobile" | "tablet" | "desktop" | "laptop" | "key" | "usb"
+export type Icon =
+  | "mobile"
+  | "tablet"
+  | "desktop"
+  | "laptop"
+  | "document"
+  | "usb"
 
 export interface AccessPointRequest {
   icon: string

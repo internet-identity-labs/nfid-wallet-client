@@ -253,6 +253,10 @@ export const useDevices = () => {
     await handleLoadDevices()
   }, [handleLoadDevices])
 
+  const createRecoveryPhrase = React.useCallback(async () => {
+    return "12345 MY PHRASE"
+  }, [])
+
   React.useEffect(() => {
     handleLoadDevices()
   }, [userNumber, handleLoadDevices])
@@ -261,6 +265,7 @@ export const useDevices = () => {
     devices,
     recoveryDevices,
     createWebAuthNDevice,
+    createRecoveryPhrase,
     getDevices,
     getRecoveryDevices,
     createDevice,

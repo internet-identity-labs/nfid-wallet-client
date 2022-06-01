@@ -15,12 +15,16 @@ interface RecoveryMethodsListProps {
   recoveryMethods: recoveryMethod[]
   onRecoveryUpdate: (recoveryMethod: recoveryMethod) => Promise<void>
   onRecoveryDelete: (recoveryMethod: recoveryMethod) => Promise<void>
+  onCreateRecoveryPhrase: () => Promise<void>
+  onRegisterRecoveryKey: () => Promise<void>
 }
 
 export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
   recoveryMethods,
   onRecoveryUpdate,
   onRecoveryDelete,
+  onCreateRecoveryPhrase,
+  onRegisterRecoveryKey,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -38,11 +42,13 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
           </p>
           <div className="mt-3 space-y-2">
             <MethodRaw
+              onClick={onCreateRecoveryPhrase}
               title="Secret recovery phrase"
               subtitle="A “master password” to keep offline"
               img={<IconRecovery />}
             />
             <MethodRaw
+              onClick={onRegisterRecoveryKey}
               title="Security key"
               subtitle="A special USB stick to keep safe"
               img={<USBIcon />}
@@ -88,10 +94,19 @@ interface MethodRawProps {
   img: ReactElement
   title: string
   subtitle: string
+  onClick: React.MouseEventHandler
 }
 
-const MethodRaw: React.FC<MethodRawProps> = ({ img, title, subtitle }) => (
-  <div className="flex items-center w-full px-3 py-2 border border-gray-200 rounded-md hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]">
+const MethodRaw: React.FC<MethodRawProps> = ({
+  img,
+  title,
+  subtitle,
+  onClick,
+}) => (
+  <div
+    onClick={onClick}
+    className="flex items-center w-full px-3 py-2 border border-gray-200 rounded-md hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]"
+  >
     <div className="w-[28px] mr-[9px]">{img}</div>
     <div>
       <p className="text-sm">{title}</p>

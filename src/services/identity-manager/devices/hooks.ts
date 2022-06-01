@@ -210,12 +210,12 @@ export const useDevices = () => {
   )
 
   const createRecoveryDevice = React.useCallback(
-    async (recoverIdentity: DerEncodedBlob, icon?: string) => {
+    async (recoverIdentity: DerEncodedBlob, icon?: string, device?: string) => {
       if (!identityManager) throw new Error("Unauthorized")
 
       await identityManager.create_access_point({
         icon: icon ?? "recovery",
-        device: "recovery",
+        device: device ?? "recovery",
         browser: "",
         pub_key: Array.from(recoverIdentity),
       })
@@ -280,6 +280,40 @@ export const useDevices = () => {
     return `${userNumber} ${recovery}`
   }, [createRecoveryDevice, getRecoveryDevices, internetIdentity, userNumber])
 
+  const createSecurityDevice = React.useCallback(async () => {
+    if (!userNumber) throw new Error("userNumber missing")
+    if (!internetIdentity) throw new Error("internetIdentity missing")
+
+    const devices = await IIConnection.lookupAll(userNumber)
+    const deviceName = "Security Key"
+
+    let recoverIdentity
+    try {
+      recoverIdentity = await WebAuthnIdentity.create({
+        publicKey: creationOptions(devices, "cross-platform"),
+      })
+    } catch (error) {
+      console.error(error)
+      return
+    }
+
+    await internetIdentity.add(
+      userNumber,
+      deviceName,
+      { cross_platform: null },
+      { recovery: null },
+      recoverIdentity.getPublicKey().toDer(),
+      recoverIdentity.rawId,
+    )
+
+    createRecoveryDevice(
+      recoverIdentity.getPublicKey().toDer(),
+      "key",
+      deviceName,
+    )
+    getRecoveryDevices()
+  }, [createRecoveryDevice, getRecoveryDevices, internetIdentity, userNumber])
+
   React.useEffect(() => {
     handleLoadDevices()
   }, [userNumber, handleLoadDevices])
@@ -289,6 +323,7 @@ export const useDevices = () => {
     recoveryDevices,
     createWebAuthNDevice,
     createRecoveryPhrase,
+    createSecurityDevice,
     getDevices,
     getRecoveryDevices,
     createDevice,

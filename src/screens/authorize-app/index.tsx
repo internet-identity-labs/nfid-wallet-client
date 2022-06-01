@@ -94,6 +94,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             style={{
               background: "rgba(255, 255, 255, 0.1)",
               backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
             }}
           >
             <Button secondary large onClick={() => onUnlockNFID()}>

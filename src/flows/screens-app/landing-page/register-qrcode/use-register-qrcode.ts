@@ -4,14 +4,13 @@ import { atom, useAtom } from "jotai"
 import { useCallback, useMemo } from "react"
 import { generatePath } from "react-router-dom"
 
-// TODO get static QR code for IIW
-// import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/authorize-app-iiw/routes"
-import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/remote-authentication/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
+
+import { RemoteNFIDAuthenticationConstants } from "../../remote-nfid-authentication"
 
 const statusAtom = atom<string>("")
 
@@ -30,11 +29,10 @@ export const useRegisterQRCode = () => {
 
   const registerRoute = useMemo(
     () =>
-      generatePath(
-        // SCOPE AND APPLCICATION NAME SET TO NFID
-        `${AppScreenAuthorizeAppConstants.base}/${AppScreenAuthorizeAppConstants.authorize}`,
-        { secret: publicKey, scope: "NFID", applicationName: "NFID" },
-      ),
+      generatePath(RemoteNFIDAuthenticationConstants.authorize, {
+        secret: publicKey,
+        scope: "NFID",
+      }),
     [publicKey],
   )
 

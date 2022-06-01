@@ -6,6 +6,8 @@
   "useTabs": false,
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
+    "^@internet-identity-labs/nfid-sdk-react",
+    "^frontend/design-system",
     "^./flows/(.*)$",
     "^./flows",
     "^frontend/(.*)$",

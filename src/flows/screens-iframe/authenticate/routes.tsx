@@ -1,6 +1,7 @@
 import { Route } from "react-router-dom"
 
-import { AuthenticateDecider } from "frontend/design-system/templates/authenticate-decider"
+import { AuthenticateRegisterDecider } from "frontend/design-system/templates/authenticate-register-decider"
+
 import { IFrameNFIDLogin } from "frontend/screens/nfid-login/screen-iframe"
 import { IFrameRegisterDeviceDecider } from "frontend/screens/register-device-decider/screen-iframe"
 
@@ -17,10 +18,10 @@ export const IFrameAuthenticateAccountRoutes = (
   <Route
     path={IFRAME_AUTHENTICATE_BASE}
     element={
-      <AuthenticateDecider
+      <AuthenticateRegisterDecider
         rootPath={IFRAME_AUTHENTICATE_BASE}
-        loginNFIDPath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_LOGIN_NFID}`}
-        loginUnknownDevicePath={`${IFRAME_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
+        registeredDevicePath={`${IFRAME_AUTHENTICATE_BASE}/${SUB_PATH_LOGIN_NFID}`}
+        unknownDevicePath={`${IFRAME_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
       />
     }
   >

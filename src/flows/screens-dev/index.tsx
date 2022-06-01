@@ -1,13 +1,14 @@
+import clsx from "clsx"
+import React from "react"
+import { HiChevronDoubleRight } from "react-icons/hi"
+import { Link } from "react-router-dom"
+
 import {
   Card,
   CardBody,
   Divider,
   H4,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React from "react"
-import { HiChevronDoubleRight } from "react-icons/hi"
-import { Link } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
@@ -71,7 +72,7 @@ export const DevHomeScreen: React.FC<DevHomeScreenProps> = ({
       title: "Register Account (NFID) Flow",
       base: RemoteRegisterAccountConstants.base,
       items: [
-        { path: RemoteRegisterAccountConstants.account },
+        { path: RemoteRegisterAccountConstants.intro },
         { path: RemoteRegisterAccountConstants.captcha },
         {
           path: RemoteRegisterAccountConstants.copyRecoveryPhrase,

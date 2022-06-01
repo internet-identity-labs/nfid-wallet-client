@@ -3,7 +3,7 @@ import { Route } from "react-router-dom"
 import { AuthorizeNFID } from "./authorize"
 
 export const RemoteNFIDAuthenticationConstants = {
-  authorize: "/remote-nfid-authentication/:secret",
+  authorize: "/remote-nfid-authentication/:secret/:scope",
 }
 
 export const RemoteNFIDAuthenticationRoutes = (

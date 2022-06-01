@@ -1,5 +1,5 @@
 import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
@@ -7,10 +7,13 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { AuthorizeApp } from "frontend/screens/authorize-app"
+import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 import { ProfileConstants } from "../../profile/routes"
+import { RemoteRegisterAccountConstants } from "../../register-account/routes"
 
 interface AppScreenAuthorizeAppProps {}
 
@@ -23,7 +26,7 @@ export const AppScreenAuthorizeApp: React.FC<
   const { nextPersonaId, accounts, createPersona, getPersona } = usePersona()
   const { isAuthenticated, login } = useAuthentication()
   const { applicationName, applicationLogo } = useMultipass()
-  const navigate = useNavigate()
+  const { navigate } = useNFIDNavigate()
 
   const { remoteLogin } = useAuthorizeApp()
 
@@ -57,6 +60,15 @@ export const AppScreenAuthorizeApp: React.FC<
       return handleLogin(nextPersonaId)
     }
   }, [createPersona, handleLogin, nextPersonaId, scope])
+
+  const { userNumber } = useAccount()
+  React.useEffect(() => {
+    if (!userNumber) {
+      navigate(
+        `${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.intro}`,
+      )
+    }
+  }, [navigate, userNumber])
 
   return (
     <ScreenResponsive

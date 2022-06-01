@@ -23,7 +23,7 @@ const ChallengeLoader = () => {
 
 export const RemoteRegisterAccountConstants = {
   base: "/register-account/:secret/:scope",
-  account: "intro",
+  intro: "intro",
   captcha: "captcha",
   copyRecoveryPhrase: "copy-recovery-phrase",
 }
@@ -34,7 +34,7 @@ export const RemoteRegisterAccountRoutes = (
     element={<ChallengeLoader />}
   >
     <Route
-      path={RemoteRegisterAccountConstants.account}
+      path={RemoteRegisterAccountConstants.intro}
       element={
         <RouteRegisterAccountIntro
           captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}

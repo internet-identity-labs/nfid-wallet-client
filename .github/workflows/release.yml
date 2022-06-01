@@ -42,6 +42,7 @@ jobs:
           FRONTEND_MODE: production
           BACKEND_MODE: PRODUCTION
           II_MODE: production
+          IC_HOST: https://ic0.app
           DFX_NETWORK: ic
           IDENTITY_MANAGER_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_IDENTITY_MANAGER}}
           PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_PUB_SUB_CHANNEL}}

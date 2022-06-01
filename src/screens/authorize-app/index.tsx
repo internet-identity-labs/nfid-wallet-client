@@ -6,6 +6,7 @@ import { Button } from "frontend/design-system/atoms/button"
 import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { P } from "frontend/design-system/atoms/typography/paragraph"
+import { BlurOverlay } from "frontend/design-system/molecules/blur-overlay"
 
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { ElementProps } from "frontend/types/react"
@@ -85,22 +86,17 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           )}
         </div>
         {!isAuthenticated && (
-          <div
+          <BlurOverlay
             className={clsx(
               "-m-4 p-4",
               "absolute left-0 top-0 bottom-0 right-0 z-10",
               "flex justify-center items-center",
             )}
-            style={{
-              background: "rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-            }}
           >
             <Button secondary large onClick={() => onUnlockNFID()}>
               Unlock NFID
             </Button>
-          </div>
+          </BlurOverlay>
         )}
       </div>
       <ReactTooltip className="w-72" />

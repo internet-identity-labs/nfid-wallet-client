@@ -7,6 +7,8 @@ import {
   NFIDGradientBar,
 } from "@internet-identity-labs/nfid-sdk-react"
 
+import { BlurOverlay } from "../molecules/blur-overlay"
+
 interface IFrameWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
   logo?: boolean
@@ -45,13 +47,7 @@ export const IFrameScreen: React.FC<IFrameWrapperProps> = ({
       <div className={clsx("p-5 relative", className)}>{children}</div>
       {isLoading && (
         <div className="absolute top-0 bottom-0 w-full">
-          <div
-            className="absolute top-0 left-0 z-10 w-full h-full"
-            style={{
-              background: "rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(8px)",
-            }}
-          />
+          <BlurOverlay className="absolute top-0 left-0 z-10 w-full h-full" />
           <div className="z-20 flex flex-col items-center justify-center w-full h-full px-14">
             <Loader
               iframe

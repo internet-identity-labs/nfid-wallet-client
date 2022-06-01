@@ -1,8 +1,6 @@
 import { Modal } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 
-import { useTimer } from "frontend/hooks/use-timer"
-
 interface ModalSuccessProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,

@@ -1,10 +1,12 @@
-import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
-import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Link, Navigate } from "react-router-dom"
 
+import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
+import { H5 } from "@internet-identity-labs/nfid-sdk-react"
+
 import { useIsIframe } from "frontend/hooks/use-is-iframe"
+import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 
 export interface AuthorizeAppUnknownDeviceProps {
@@ -22,13 +24,22 @@ export const AuthorizeAppUnknownDevice: React.FC<
   registerSameDevicePath,
   url,
   showRegister,
-  applicationName,
 }) => {
+  const { applicationLogo, applicationName } = useMultipass()
   const { generatePath } = useNFIDNavigate()
   const isIframe = useIsIframe()
 
   return url && !showRegister ? (
     <div className={clsx("text-center")}>
+      {applicationLogo && (
+        <img
+          width="50"
+          height="50"
+          className={clsx("inline-block")}
+          src={applicationLogo}
+          alt={`${applicationName} logo`}
+        />
+      )}
       <H5 className="mb-4">{applicationName}</H5>
       <div className="flex flex-col">
         <div className="text-sm">

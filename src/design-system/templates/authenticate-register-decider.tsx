@@ -12,15 +12,13 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 interface AuthenticateDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {
   rootPath: string
-  loginUnknownDevicePath: string
-  loginNFIDPath: string
+  unknownDevicePath: string
+  registeredDevicePath: string
 }
 
-export const AuthenticateDecider: React.FC<AuthenticateDeciderProps> = ({
-  rootPath,
-  loginUnknownDevicePath,
-  loginNFIDPath,
-}) => {
+export const AuthenticateRegisterDecider: React.FC<
+  AuthenticateDeciderProps
+> = ({ rootPath, unknownDevicePath, registeredDevicePath }) => {
   const params = useParams()
   const [query] = useSearchParams()
   const isRootPath = useMatch(rootPath)
@@ -33,15 +31,15 @@ export const AuthenticateDecider: React.FC<AuthenticateDeciderProps> = ({
     if (isRootPath) {
       navigate(
         `${generatePath(
-          userNumber ? loginNFIDPath : loginUnknownDevicePath,
+          userNumber ? registeredDevicePath : unknownDevicePath,
           params,
         )}?${query.toString()}`,
       )
     }
   }, [
     isRootPath,
-    loginNFIDPath,
-    loginUnknownDevicePath,
+    registeredDevicePath,
+    unknownDevicePath,
     navigate,
     params,
     query,

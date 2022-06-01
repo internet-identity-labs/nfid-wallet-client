@@ -1,21 +1,16 @@
-import { Card, CardBody, Loader } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
 import React from "react"
-import { Navigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useMultipass } from "frontend/hooks/use-multipass"
-import { AuthWrapper } from "frontend/screens/auth-wrapper"
 import { AuthorizeApp } from "frontend/screens/authorize-app"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
-
-import { ProfileConstants } from "../../profile/routes"
 
 interface AppScreenAuthorizeAppProps {
   isRemoteAuthorisation?: boolean
@@ -30,8 +25,8 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const { secret, scope } = useParams()
   const { nextPersonaId, accounts, createPersona } = usePersona()
   const { remoteNFIDLogin } = useAuthorizeApp()
-  const { isAuthenticated } = useAuthentication()
-  const { applicationName } = useMultipass()
+  const { isAuthenticated, login } = useAuthentication()
+  const { applicationName, applicationLogo } = useMultipass()
 
   const { authorizeApp, opener, authorizationRequest, postClientReadyMessage } =
     useAuthorization({
@@ -39,15 +34,6 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
     })
 
   const isNFID = React.useMemo(() => scope === "NFID", [scope])
-
-  const handleLoginResult = React.useCallback(
-    async (res: LoginSuccess | void) => {
-      if (res && res.tag === "ok") {
-        setIsloading(true)
-      }
-    },
-    [setIsloading],
-  )
 
   const handleNFIDLogin = React.useCallback(async () => {
     if (!secret) throw new Error("secret is missing from params")
@@ -67,12 +53,15 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {
+      setIsloading(true)
       await authorizeApp({ persona_id: personaId })
+      setIsloading(false)
     },
-    [authorizeApp],
+    [authorizeApp, setIsloading],
   )
 
   const handleCreateAccountAndLogin = React.useCallback(async () => {
+    setIsloading(true)
     const response = await createPersona({
       domain: scope || authorizationRequest?.hostname,
     })
@@ -80,43 +69,31 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
     if (response?.status_code === 200) {
       return handleLogin(nextPersonaId)
     }
+    setIsloading(false)
   }, [
     authorizationRequest?.hostname,
     createPersona,
     handleLogin,
     nextPersonaId,
     scope,
+    setIsloading,
   ])
 
   return (
-    <AuthWrapper redirectTo={redirectTo} onLoginSuccess={handleLoginResult}>
-      <AppScreen isFocused>
-        {isNFID ? (
-          isLoading ? (
-            <Loader isLoading={isLoading} />
-          ) : (
-            <Navigate
-              to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
-            />
-          )
-        ) : (
-          <main className={clsx("flex flex-1")}>
-            <div className="container px-6 py-0 mx-auto sm:py-4">
-              <Card className="grid grid-cols-12">
-                <CardBody className="col-span-12 md:col-span-4">
-                  <AuthorizeApp
-                    isRemoteAuthorisation
-                    applicationName={applicationName || ""}
-                    onLogin={handleLogin}
-                    onCreateAccount={handleCreateAccountAndLogin}
-                    accounts={accounts}
-                  />
-                </CardBody>
-              </Card>
-            </div>
-          </main>
-        )}
-      </AppScreen>
-    </AuthWrapper>
+    <ScreenResponsive
+      isLoading={isLoading}
+      className="flex flex-col items-center"
+    >
+      <AuthorizeApp
+        isRemoteAuthorisation
+        isAuthenticated={isAuthenticated}
+        applicationName={applicationName || ""}
+        applicationLogo={applicationLogo}
+        onUnlockNFID={login}
+        onLogin={handleLogin}
+        onCreateAccount={handleCreateAccountAndLogin}
+        accounts={accounts}
+      />
+    </ScreenResponsive>
   )
 }

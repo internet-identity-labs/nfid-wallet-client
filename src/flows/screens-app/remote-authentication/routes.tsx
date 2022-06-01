@@ -4,15 +4,12 @@ import { Route } from "react-router-dom"
 import { AppScreenAuthorizeApp } from "frontend/flows/screens-app/remote-authentication/authorize-app"
 
 export const AppScreenAuthorizeAppConstants = {
-  base: "/rdp",
-  authorize: ":secret/:scope/:applicationName",
+  authorize: "/rdp/:secret/:scope/:applicationName",
 }
 
-export const AppScreenAuthorizeAppRoutes = (redirectTo: string) => (
-  <Route path={AppScreenAuthorizeAppConstants.base}>
-    <Route
-      path={AppScreenAuthorizeAppConstants.authorize}
-      element={<AppScreenAuthorizeApp redirectTo={redirectTo} />}
-    />
-  </Route>
+export const AppScreenAuthorizeAppRoutes = (
+  <Route
+    path={AppScreenAuthorizeAppConstants.authorize}
+    element={<AppScreenAuthorizeApp />}
+  />
 )

@@ -8,11 +8,13 @@ import { creationOptions } from "frontend/services/internet-identity/iiConnectio
 import { useDeviceInfo } from "./use-device-info"
 
 const applicationNameAtom = atom<string | undefined>(undefined)
+const applicationLogoAtom = atom<string | undefined>(undefined)
 
 export const useMultipass = () => {
-  const [params] = useSearchParams()
+  const [queryString] = useSearchParams()
   const { applicationName: applicationNameFromPath } = useParams()
   const [applicationName, setApplicationName] = useAtom(applicationNameAtom)
+  const [applicationLogo, setApplicationLogo] = useAtom(applicationLogoAtom)
   const { newDeviceName } = useDeviceInfo()
 
   const createWebAuthNIdentity = React.useCallback(async () => {
@@ -27,7 +29,8 @@ export const useMultipass = () => {
   }, [newDeviceName])
 
   React.useEffect(() => {
-    const applicationNameFromParams = params.get("applicationName")
+    const applicationNameFromParams = queryString.get("applicationName")
+    const applicationLogoFromParams = queryString.get("applicationLogo")
 
     if (
       !applicationName &&
@@ -37,11 +40,22 @@ export const useMultipass = () => {
         applicationNameFromParams || applicationNameFromPath || "NFID",
       )
     }
-  }, [applicationName, applicationNameFromPath, params, setApplicationName])
+    if (applicationLogoFromParams) {
+      setApplicationLogo(applicationLogoFromParams)
+    }
+  }, [
+    applicationName,
+    applicationLogo,
+    applicationNameFromPath,
+    queryString,
+    setApplicationName,
+    setApplicationLogo,
+  ])
 
   return {
     createWebAuthNIdentity,
     applicationName,
+    applicationLogo,
     setApplicationName,
   }
 }

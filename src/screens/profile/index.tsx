@@ -7,7 +7,7 @@ import { PoaBanner } from "frontend/design-system/molecules/poa-banner"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { AppScreenProofOfAttendencyConstants } from "frontend/flows/screens-app/proof-of-attendancy/routes"
 import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
-import { Device } from "frontend/services/identity-manager/devices/state"
+import { Device, Icon } from "frontend/services/identity-manager/devices/state"
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 
@@ -24,6 +24,7 @@ export interface recoveryMethod extends DeviceData {
   label: string
   isSecurityKey: boolean
   lastUsed: number
+  icon: Icon
 }
 
 interface ProfileProps {

@@ -57,6 +57,7 @@ LoggedIn.args = {
       ],
       isSecurityKey: false,
       alias: "GDSFGDSFSD FDSFDSF",
+      icon: "usb",
     },
     {
       label: "Security Key",
@@ -79,6 +80,7 @@ LoggedIn.args = {
       ],
       isSecurityKey: true,
       alias: "GDSFGDSFSD FDSFDSF",
+      icon: "key",
     },
   ],
   devices: [

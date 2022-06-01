@@ -11,12 +11,15 @@ import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
+import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import {
   DeviceData,
   PublicKey,
 } from "frontend/services/internet-identity/generated/internet_identity_types"
 import {
   creationOptions,
+  IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 
@@ -132,6 +135,7 @@ export const useDevices = () => {
   const getRecoveryDevices = React.useCallback(async () => {
     if (userNumber) {
       const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
+
       setRecoveryDevices(recoveryDevices)
     }
   }, [setRecoveryDevices, userNumber])
@@ -206,11 +210,11 @@ export const useDevices = () => {
   )
 
   const createRecoveryDevice = React.useCallback(
-    async (recoverIdentity: DerEncodedBlob) => {
+    async (recoverIdentity: DerEncodedBlob, icon?: string) => {
       if (!identityManager) throw new Error("Unauthorized")
 
       await identityManager.create_access_point({
-        icon: "recovery",
+        icon: icon ?? "recovery",
         device: "recovery",
         browser: "",
         pub_key: Array.from(recoverIdentity),
@@ -254,8 +258,27 @@ export const useDevices = () => {
   }, [handleLoadDevices])
 
   const createRecoveryPhrase = React.useCallback(async () => {
-    return "12345 MY PHRASE"
-  }, [])
+    if (!userNumber) throw new Error("userNumber missing")
+    if (!internetIdentity) throw new Error("internetIdentity missing")
+
+    const recovery = generate().trim()
+    const recoverIdentity = await fromMnemonicWithoutValidation(
+      recovery,
+      IC_DERIVATION_PATH,
+    )
+
+    // TODO: store as access point
+    await internetIdentity.add(
+      userNumber,
+      "Recovery phrase",
+      { seed_phrase: null },
+      { recovery: null },
+      recoverIdentity.getPublicKey().toDer(),
+    )
+    createRecoveryDevice(recoverIdentity.getPublicKey().toDer())
+    getRecoveryDevices()
+    return `${userNumber} ${recovery}`
+  }, [createRecoveryDevice, getRecoveryDevices, internetIdentity, userNumber])
 
   React.useEffect(() => {
     handleLoadDevices()

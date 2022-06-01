@@ -107,8 +107,13 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       accounts={allAccounts}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
-      recoveryMethods={[]}
-      recoveryPhrase={recoveryDevices[0]}
+      recoveryMethods={recoveryDevices.map((d) => ({
+        ...d,
+        label: d.alias,
+        isSecurityKey: false,
+        icon: "document",
+        lastUsed: 0,
+      }))}
       onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
       onRegisterRecoveryKey={(): Promise<void> => {
         throw new Error("implement me.")

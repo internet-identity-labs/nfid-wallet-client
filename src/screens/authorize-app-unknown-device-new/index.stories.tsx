@@ -1,5 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
+
+import logo from "frontend/assets/dfinity.svg"
+
 import { AuthorizeAppUnknownDevice } from "./"
 
 export default {
@@ -25,6 +28,7 @@ export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 
 AppScreen.args = {
   applicationName: "My Application",
+  applicationLogo: logo,
   url: "https://nfid.one/secret/scope/my-application",
   isLoading: false,
   registerDeviceDeciderPath: "/register-device-decider",

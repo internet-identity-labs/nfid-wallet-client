@@ -12,16 +12,13 @@ import { ElementProps } from "frontend/types/react"
 import { captchaRules } from "frontend/utils/validations"
 
 import { useCaptcha } from "./hook"
+import { useMultipass } from 'frontend/hooks/use-multipass'
 
 interface CaptchaProps extends ElementProps<HTMLDivElement> {
-  applicationLogo: string
-  applicationName: string
 }
 
 export const Captcha: React.FC<CaptchaProps> = ({
   className,
-  applicationLogo,
-  applicationName,
 }) => {
   const {
     register,
@@ -49,6 +46,8 @@ export const Captcha: React.FC<CaptchaProps> = ({
         })
       },
     })
+  
+  const { applicationLogo, applicationName } = useMultipass();
 
   // TODO: after successfully registering the new account, show success modal
 

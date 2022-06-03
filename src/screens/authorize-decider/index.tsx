@@ -19,7 +19,6 @@ export interface AuthorizeAppUnknownDeviceProps {
   onToggleAdvancedOptions: () => void
   authError?: string
   isLoading?: boolean
-  isWebAuthNAvailable?: boolean
   showAdvancedOptions?: boolean
   applicationName?: string
   applicationLogo?: string
@@ -34,7 +33,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   applicationName,
   applicationLogo,
   showAdvancedOptions,
-  isWebAuthNAvailable,
   isLoading,
   authError,
 }) => {
@@ -113,22 +111,12 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             />
           </>
         ) : (
-          <>
-            <IconButton
-              title="iPhone, iPad, or Android device"
-              subtitle="Use passkey from a device with a camera"
-              img={<img src={QRCode} alt="qrcode" />}
-              onClick={onSelectRemoteAuthorization}
-            />
-            {isWebAuthNAvailable && (
-              <IconButton
-                title="Create a new NFID"
-                subtitle="Use passkey on this device"
-                img={<img src={TouchId} alt="passkey" />}
-                onClick={onSelectSameDeviceRegistration}
-              />
-            )}
-          </>
+          <IconButton
+            title="iPhone, iPad, or Android device"
+            subtitle="Use passkey from a device with a camera"
+            img={<img src={QRCode} alt="qrcode" />}
+            onClick={onSelectRemoteAuthorization}
+          />
         )}
         <p
           className="pt-4 text-sm text-center cursor-pointer text-blue-base"

@@ -32,7 +32,6 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
   )
   const { isAuthenticated, login, setShouldStoreLocalAccount } =
     useAuthentication()
-  const { isWebAuthNAvailable } = useDeviceInfo()
   const { getPersona } = usePersona()
   const { readAccount } = useAccount()
   const { getChallenge } = useChallenge()
@@ -84,7 +83,6 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       applicationName={applicationName}
       applicationLogo={applicationLogo}
       isLoading={isLoading}
-      isWebAuthNAvailable={isWebAuthNAvailable}
       onSelectSameDeviceRegistration={handleCreateKeys}
       onSelectRemoteAuthorization={navigateFactory(pathRemoteAuthorization)}
       onSelectSameDeviceAuthorization={handleAuthorization({

@@ -32,7 +32,7 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
           src={applicationLogo}
         />
       )}
-      {applicationName && <H5 className="mb-4">{applicationName}</H5>}
+      {applicationName && <H5>{applicationName}</H5>}
       <div className="flex flex-col">
         <div className="text-sm">
           Verify it's you. Scan this code with your phone’s camera.

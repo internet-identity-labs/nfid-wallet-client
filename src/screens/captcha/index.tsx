@@ -67,6 +67,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
           }}
         />
         <Input
+          autoFocus
           placeholder="Enter characters"
           errorText={errors.captcha?.message}
           {...register("captcha", {

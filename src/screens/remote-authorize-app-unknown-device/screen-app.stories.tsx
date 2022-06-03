@@ -1,30 +1,32 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { AppScreenAuthorizeAppUnknownDevice } from "./screen-app"
+import district from "frontend/assets/distrikt.svg"
+
+import { RemoteAuthorizeAppUnknownDevice } from "."
 
 export default {
   title: "Screens/AuthorizeAppUnknownDevice",
-  component: AppScreenAuthorizeAppUnknownDevice,
+  component: RemoteAuthorizeAppUnknownDevice,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof AppScreenAuthorizeAppUnknownDevice>
+} as ComponentMeta<typeof RemoteAuthorizeAppUnknownDevice>
 
 const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
-  typeof AppScreenAuthorizeAppUnknownDevice
+  typeof RemoteAuthorizeAppUnknownDevice
 > = (args) => {
   return (
     <Router>
-      <AppScreenAuthorizeAppUnknownDevice {...args} />
+      <RemoteAuthorizeAppUnknownDevice {...args} />
     </Router>
   )
 }
 
-export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
+export const ResponsiveScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 
-AppScreen.args = {
+ResponsiveScreen.args = {
   applicationName: "My Application",
   url: "https://nfid.one/secret/scope/my-application",
   isLoading: false,

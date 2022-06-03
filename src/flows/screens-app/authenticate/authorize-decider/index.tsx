@@ -1,7 +1,6 @@
 import React from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { AuthorizeDecider } from "frontend/screens/authorize-decider"

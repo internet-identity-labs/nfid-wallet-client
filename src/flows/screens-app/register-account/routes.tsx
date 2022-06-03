@@ -6,6 +6,7 @@ import { useChallenge } from "frontend/screens/captcha/hook"
 
 import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RouteRegisterAccountIntro } from "./intro"
+import { ProfileConstants } from '../profile/routes'
 
 const ChallengeLoader = () => {
   // NOTE: the `getChallenge` gets called twice whithout this ref.
@@ -78,7 +79,7 @@ export const NFIDRegisterAccountRoutes = (
       path={NFIDRegisterAccountConstants.captcha}
       element={
         <Captcha
-          successPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.copyRecoveryPhrase}`}
+          successPath={`${ProfileConstants.base}`}
         />
       }
     />

@@ -17,7 +17,7 @@ interface RegisterAccountIntroProps {
 
 export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   onRegister,
-  applicationName = "This application",
+  applicationName = "this application",
   applicationLogo,
   isLoading,
 }) => {

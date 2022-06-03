@@ -8,111 +8,54 @@ import { H5 } from "frontend/design-system/atoms/typography"
 import { Challenge } from "frontend/design-system/molecules/challenge"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
-import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useAuthorization } from "frontend/hooks/use-authorization"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { ElementProps } from "frontend/types/react"
 import { captchaRules } from "frontend/utils/validations"
 
-import { useUnknownDeviceConfig } from "../remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { useCaptcha } from "./hook"
-
 interface CaptchaProps extends ElementProps<HTMLDivElement> {
   successPath?: string
+  applicationName?: string
+  applicationLogo?: string
+  isLoading?: boolean
+  challengeBase64?: string
+  errorString?: string
+  onRegisterAnchor: ({ captcha }: { captcha: string }) => Promise<any>
+  onRequestNewCaptcha: () => Promise<void>
 }
 
 export const Captcha: React.FC<CaptchaProps> = ({
   className,
-  successPath = `${ProfileConstants.base}`,
+  challengeBase64,
+  applicationName,
+  applicationLogo,
+  isLoading,
+  onRequestNewCaptcha,
+  onRegisterAnchor,
+  errorString,
 }) => {
-  const { scope } = useUnknownDeviceConfig()
   const {
     register,
     formState: { errors, dirtyFields },
     handleSubmit,
     setError,
     setValue,
-  } = useForm({
+  } = useForm<{ captcha: string }>({
     mode: "onTouched",
   })
 
-  const isFormComplete = ["captcha"].every((field) => dirtyFields[field])
-
-  const { setLoading, loading, challenge, requestCaptcha, registerAnchor } =
-    useCaptcha({
-      onApiError: async () => {
-        setLoading(false)
-      },
-      onBadChallenge: async () => {
-        setValue("captcha", "")
-        await requestCaptcha()
-        setLoading(false)
-        setError("captcha", {
-          type: "manual",
-          message: "Wrong captcha! Please try again",
-        })
-      },
-    })
-
-  const { navigate } = useNFIDNavigate()
-
-  const { userNumber } = useAccount()
-
-  const { isAuthenticated } = useAuthentication()
-  const { isLoading: isPreparingDelegate, authorizeApp } = useAuthorization({
-    userNumber,
-  })
-
-  const { nextPersonaId, createPersona } = usePersona()
-
-  // TODO: as soon as we have global singleton auth state,
-  // we can get rid of these eval side effects
-  const authorizationStateRef = React.useRef<{
-    delegateRequested: boolean
-    personaRequested: boolean
-  }>({ delegateRequested: false, personaRequested: false })
-
   React.useEffect(() => {
-    if (isAuthenticated && userNumber) {
-      if (!authorizationStateRef.current.personaRequested) {
-        authorizationStateRef.current.personaRequested = true
-        createPersona({ domain: scope })
-      }
-      if (!authorizationStateRef.current.delegateRequested) {
-        authorizationStateRef.current.delegateRequested = true
-        authorizeApp({ persona_id: nextPersonaId, domain: scope })
-      }
-    }
-  }, [
-    authorizeApp,
-    createPersona,
-    isAuthenticated,
-    loading,
-    nextPersonaId,
-    scope,
-    userNumber,
-  ])
+    errorString &&
+      setError("captcha", {
+        type: "manual",
+        message: errorString,
+      })
+  }, [errorString, setError])
 
-  React.useEffect(() => {
-    if (
-      isAuthenticated &&
-      authorizationStateRef.current.delegateRequested &&
-      !isPreparingDelegate
-    ) {
-      navigate(successPath)
-    }
-  }, [isAuthenticated, isPreparingDelegate, navigate, successPath])
-
-  const { applicationLogo, applicationName } = useMultipass()
+  const isFormComplete = !!dirtyFields.captcha
 
   return (
     <ScreenResponsive
       className={clsx("flex flex-col items-center", className)}
-      isLoading={loading}
+      isLoading={isLoading}
     >
       {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H5 className="mt-4">Complete NFID registration</H5>
@@ -121,11 +64,10 @@ export const Captcha: React.FC<CaptchaProps> = ({
       </p>
       <form className="flex flex-col w-full mt-5">
         <Challenge
-          src={challenge && `data:image/png;base64,${challenge.png_base64}`}
+          src={challengeBase64 && `data:image/png;base64,${challengeBase64}`}
           refresh={async () => {
             setValue("captcha", "")
-            await requestCaptcha()
-            setLoading(false)
+            onRequestNewCaptcha()
           }}
         />
         <Input
@@ -152,9 +94,8 @@ export const Captcha: React.FC<CaptchaProps> = ({
           secondary
           className="mt-4"
           block
-          disabled={!isFormComplete || loading}
-          onClick={handleSubmit(registerAnchor)}
-          data-captcha-key={challenge?.challenge_key}
+          disabled={!isFormComplete || isLoading}
+          onClick={handleSubmit(onRegisterAnchor)}
         >
           Create NFID
         </Button>

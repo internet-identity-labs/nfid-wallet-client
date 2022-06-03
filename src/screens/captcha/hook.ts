@@ -52,7 +52,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   }, [getChallenge])
 
   const registerAnchor = React.useCallback(
-    async ({ captcha }) => {
+    async ({ captcha }: { captcha: string }) => {
       setLoading(true)
       if (!challenge) throw new Error("No challenge response")
       const { identity, deviceName } = registerPayload

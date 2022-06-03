@@ -4,7 +4,7 @@ import { Route } from "react-router-dom"
 import { AppScreenAuthorizeApp } from "frontend/flows/screens-app/remote-authentication/authorize-app"
 
 export const AppScreenAuthorizeAppConstants = {
-  authorize: "/rdp/:secret/:scope/:applicationName",
+  authorize: "/rdp/:secret/:scope/:applicationName/:applicationLogo",
 }
 
 export const AppScreenAuthorizeAppRoutes = (

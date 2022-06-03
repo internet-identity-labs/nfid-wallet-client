@@ -21,7 +21,7 @@ const ChallengeLoader = () => {
 }
 
 export const RemoteRegisterAccountConstants = {
-  base: "/register-account/:secret/:scope",
+  base: "/register-account/:secret/:scope/:applicationName/:applicationLogo",
   intro: "intro",
   captcha: "captcha",
   copyRecoveryPhrase: "copy-recovery-phrase",

@@ -12,9 +12,19 @@ export const useNFIDNavigate = () => {
   const [query] = useSearchParams()
   const rrNavigate = useNavigate()
 
+  const urlParams = React.useMemo(() => {
+    return Object.keys(params).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: encodeURIComponent(params[key] as string),
+      }),
+      {},
+    )
+  }, [params])
+
   const generatePath = React.useCallback(
-    (path: string) => `${rrGeneratePath(path, params)}?${query.toString()}`,
-    [params, query],
+    (path: string) => `${rrGeneratePath(path, urlParams)}?${query.toString()}`,
+    [urlParams, query],
   )
 
   const navigate = React.useCallback(

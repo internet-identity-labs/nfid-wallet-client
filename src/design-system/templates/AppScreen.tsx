@@ -22,6 +22,7 @@ interface Props
   showGradientBar?: boolean
   isLoading?: boolean
   loadingMessage?: string
+  profileScreen?: boolean
 }
 
 export const AppScreen: React.FC<Props> = ({
@@ -35,6 +36,7 @@ export const AppScreen: React.FC<Props> = ({
   showGradientBar = false,
   isLoading,
   loadingMessage,
+  profileScreen = false,
 }) => {
   return (
     <Shell bubbleOptions={bubbleOptions}>
@@ -44,6 +46,7 @@ export const AppScreen: React.FC<Props> = ({
           navigationItems={navigationItems}
           isFocused={isFocused}
           showLogo={showLogo}
+          profileScreen={profileScreen}
         />
         {title && <NavigationHeader title={title} description={description} />}
         {children}

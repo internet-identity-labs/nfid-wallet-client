@@ -56,7 +56,9 @@ LoggedIn.args = {
         ],
       ],
       isSecurityKey: false,
+      isRecoveryPhrase: true,
       alias: "GDSFGDSFSD FDSFDSF",
+      icon: "document",
     },
     {
       label: "Security Key",
@@ -78,7 +80,9 @@ LoggedIn.args = {
         ],
       ],
       isSecurityKey: true,
+      isRecoveryPhrase: false,
       alias: "GDSFGDSFSD FDSFDSF",
+      icon: "usb",
     },
   ],
   devices: [

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-export const CONTAINER_CLASSES = "container mx-auto px-5"
+export const CONTAINER_CLASSES = "container mx-auto md:px-5"
 
 interface ContainerProps {}
 

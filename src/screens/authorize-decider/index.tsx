@@ -1,6 +1,7 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { IconButton } from "frontend/design-system/atoms/button/icon-button"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
 import { Input } from "frontend/design-system/atoms/input"
@@ -71,7 +72,12 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
       className="flex flex-col items-center"
       isLoading={isLoading}
     >
-      <img src={applicationLogo} alt="" />
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
+      )}
       <H5 className="mt-4">Sign in</H5>
       <p className="mt-3 text-center">
         Choose how you’d like to sign in to {applicationName}

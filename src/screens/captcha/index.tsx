@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 
 import { Button, Input } from "@internet-identity-labs/nfid-sdk-react"
 
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { Challenge } from "frontend/design-system/molecules/challenge"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
@@ -57,7 +58,12 @@ export const Captcha: React.FC<CaptchaProps> = ({
       className={clsx("flex flex-col items-center", className)}
       isLoading={isLoading}
     >
-      {applicationLogo && <img src={applicationLogo} alt="logo" />}
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
+      )}
       <H5 className="mt-4">Complete NFID registration</H5>
       <p className="mt-1 text-center">
         to continue {applicationName && `to ${applicationName}`}

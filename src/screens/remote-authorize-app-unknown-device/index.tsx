@@ -5,6 +5,8 @@ import { Navigate } from "react-router-dom"
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
+
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 
@@ -25,12 +27,9 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
   return url && !showRegister ? (
     <div className={clsx("text-center")}>
       {applicationLogo && (
-        <img
-          width="50"
-          height="50"
-          className={clsx("inline-block")}
+        <ApplicationLogo
+          applicationName={applicationName}
           src={applicationLogo}
-          alt={`${applicationName} logo`}
         />
       )}
       {applicationName && <H5 className="mb-4">{applicationName}</H5>}

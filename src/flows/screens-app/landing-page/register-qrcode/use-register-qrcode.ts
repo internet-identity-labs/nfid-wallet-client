@@ -5,7 +5,7 @@ import { useCallback, useMemo } from "react"
 import { generatePath } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"

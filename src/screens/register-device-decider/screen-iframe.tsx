@@ -2,14 +2,15 @@ import { blobFromHex } from "@dfinity/candid"
 import React from "react"
 
 import { IFrameScreen } from "frontend/design-system/templates/IFrameScreen"
+
 import { RegisterDeviceDecider } from "frontend/screens/register-device-decider"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
-import { useMessageChannel } from "../authorize-app-unknown-device/hooks/use-message-channel"
-import { useUnknownDeviceConfig } from "../authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { useMessageChannel } from "../remote-authorize-app-unknown-device/hooks/use-message-channel"
+import { useUnknownDeviceConfig } from "../remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 interface RegisterDeviceDeciderProps {}
 

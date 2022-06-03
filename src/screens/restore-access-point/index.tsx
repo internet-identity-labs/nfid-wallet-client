@@ -1,15 +1,16 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
-import { TextArea } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { Navigate, useNavigate } from "react-router-dom"
 
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
+import { TextArea } from "@internet-identity-labs/nfid-sdk-react"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useMessageChannel } from "frontend/screens/authorize-app-unknown-device/hooks/use-message-channel"
-import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { useMessageChannel } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-message-channel"
+import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 

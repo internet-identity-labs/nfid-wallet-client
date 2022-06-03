@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { AppScreenRegisterDeviceDecider as AppScreenRegisterDeviceDeciderRaw } from "frontend/screens/register-device-decider"
+import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"

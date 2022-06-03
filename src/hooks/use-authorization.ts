@@ -6,7 +6,7 @@ import { useAuthentication } from "frontend/hooks/use-authentication"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
-import { useMessageChannel } from "../screens/authorize-app-unknown-device/hooks/use-message-channel"
+import { useMessageChannel } from "../screens/remote-authorize-app-unknown-device/hooks/use-message-channel"
 
 interface UseAuthenticationProps {
   userNumber?: bigint

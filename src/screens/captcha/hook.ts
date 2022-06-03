@@ -36,7 +36,10 @@ interface UseCaptcha {
 export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   const { isLoading: loading, setIsloading: setLoading } = useIsLoading()
   const { state } = useLocation()
-  const { registerPayload } = state as RegisterAccountCaptchaState
+  const { registerPayload } = (state as RegisterAccountCaptchaState) ?? {
+    identity: "identity",
+    deviceName: "deviceName",
+  }
 
   const { challenge, getChallenge } = useChallenge()
 

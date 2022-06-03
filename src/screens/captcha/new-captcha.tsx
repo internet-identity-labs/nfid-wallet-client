@@ -3,6 +3,7 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { RefreshIcon } from "frontend/design-system/atoms/icons/refresh"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { Challenge } from "frontend/design-system/molecules/challenge"
 import { IFrameTemplate } from "frontend/design-system/templates/IFrameTemplate"
@@ -56,6 +57,11 @@ export const Captcha: React.FC<CaptchaProps> = ({
       <form className="flex flex-col w-full mt-5">
         <Challenge
           src={challenge && `data:image/png;base64,${challenge.png_base64}`}
+          refresh={async () => {
+            setValue("captcha", "")
+            await requestCaptcha()
+            setLoading(false)
+          }}
         />
         <Input
           placeholder="Enter characters"

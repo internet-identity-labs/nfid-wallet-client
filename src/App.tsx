@@ -5,8 +5,6 @@ import { Usergeek } from "usergeek-ic-js"
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
 import { NotFound } from "./flows/404"
-import { AccessPointRoutes } from "./flows/prototypes/add-new-access-point/routes"
-import { CopyDevicesRoutes } from "./flows/prototypes/copy-devices/routes"
 import { AppScreenAuthenticateAccountRoutes } from "./flows/screens-app/authenticate"
 import { HomeScreen } from "./flows/screens-app/landing-page"
 import { Faq } from "./flows/screens-app/landing-page/faq"
@@ -25,10 +23,6 @@ import {
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/remote-authentication/routes"
 import { RemoteNFIDAuthenticationRoutes } from "./flows/screens-app/remote-nfid-authentication"
-import { DevScreensRoutes } from "./flows/screens-dev/routes"
-import { IFrameAuthenticateAccountRoutes } from "./flows/screens-iframe/authenticate/routes"
-import { IFrameAuthorizeAppRoutes } from "./flows/screens-iframe/authorize-app/routes"
-import { IFrameProfileRoutes } from "./flows/screens-iframe/personalize/routes"
 
 import { useStartUrl } from "./hooks/use-start-url"
 
@@ -46,9 +40,6 @@ export const App = () => {
       <Route path={"/"} element={<HomeScreen />} />
       <Route path={"/faq"} element={<Faq />} />
       <Route path={"/our-mission"} element={<OurMission />} />
-      {DevScreensRoutes}
-      {AccessPointRoutes}
-      {CopyDevicesRoutes}
       {LinkIIAnchorRoutes}
       {ProfileRoutes}
       {RegisterNewDeviceRoutes}
@@ -59,9 +50,6 @@ export const App = () => {
       {AppScreenProofOfAttendencyRoutes(`${POAPC.base}/${POAPC.register}`)}
       {RecoverNFIDRoutes}
 
-      {IFrameProfileRoutes}
-      {IFrameAuthorizeAppRoutes}
-      {IFrameAuthenticateAccountRoutes}
       {AppScreenAuthenticateAccountRoutes}
       <Route path={"*"} element={<NotFound />} />
     </Routes>

@@ -2,8 +2,8 @@ import React from "react"
 
 import { useInterval } from "frontend/hooks/use-interval"
 import { useMultipass } from "frontend/hooks/use-multipass"
+import { RemoteAuthorizeAppUnknownDevice } from "frontend/screens/remote-authorize-app-unknown-device"
 import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { AppScreenAuthorizeAppUnknownDevice } from "frontend/screens/remote-authorize-app-unknown-device/screen-app"
 
 import {
   APP_SCREEN_AUTHENTICATE_BASE,
@@ -24,7 +24,7 @@ export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = ({
 
   useInterval(handlePollForDelegate, 2000)
   return (
-    <AppScreenAuthorizeAppUnknownDevice
+    <RemoteAuthorizeAppUnknownDevice
       registerDeviceDeciderPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
       registerSameDevicePath={registerSameDevicePath}
       applicationName={applicationName}

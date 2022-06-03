@@ -1,11 +1,12 @@
 import clsx from "clsx"
 import React from "react"
-import { Navigate } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 
-import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
+import { P } from "frontend/design-system/atoms/typography/paragraph"
+import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
@@ -16,33 +17,42 @@ export interface AuthorizeAppUnknownDeviceProps {
   url: string | null
   showRegister: boolean
   applicationName?: string
+  isLoading?: boolean
 }
 
 export const RemoteAuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ registerDeviceDeciderPath, url, showRegister }) => {
+> = ({ registerDeviceDeciderPath, url, showRegister, isLoading }) => {
   const { applicationLogo, applicationName } = useMultipass()
   const { generatePath } = useNFIDNavigate()
 
   return url && !showRegister ? (
-    <div className={clsx("text-center")}>
-      {applicationLogo && (
-        <ApplicationLogo
-          applicationName={applicationName}
-          src={applicationLogo}
-        />
-      )}
-      {applicationName && <H5>{applicationName}</H5>}
-      <div className="flex flex-col">
-        <div className="text-sm">
-          Verify it's you. Scan this code with your phone’s camera.
-        </div>
-
-        <div className="py-5 m-auto">
-          <QRCode content={url} options={{ margin: 0 }} />
-        </div>
+    <ScreenResponsive
+      isLoading={isLoading}
+      loadingMessage="Waiting for verification on mobile..."
+    >
+      <div
+        className={clsx("flex flex-col items-center font-inter")}
+        style={{
+          backdropFilter: "blur(0px)",
+          WebkitBackdropFilter: "blur(0px)",
+        }}
+      >
+        {applicationLogo ? <img src={applicationLogo} alt="logo" /> : null}
+        <H5 className="mt-4">Sign in</H5>
+        <P className="mt-2 text-center max-w-[320px]">
+          Use passkey from a device with a camera to sign in to{" "}
+          {applicationName}
+        </P>
+        <Link to={url}>
+          <QRCode
+            className="p-6 rounded-[10px] w-48 h-48 mt-8"
+            content={url}
+            options={{ width: 192 }}
+          />
+        </Link>
       </div>
-    </div>
+    </ScreenResponsive>
   ) : showRegister ? (
     <Navigate to={generatePath(registerDeviceDeciderPath)} />
   ) : null

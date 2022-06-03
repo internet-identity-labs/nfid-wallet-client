@@ -40,7 +40,7 @@ export const AppScreenAuthenticateAccountRoutes = (
       element={
         <AppScreenAuthorizeDecider
           pathRemoteAuthorization={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
-          pathSameDeviceAuthorization=""
+          pathAuthorizeApp={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
         />
       }
     />

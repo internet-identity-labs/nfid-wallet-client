@@ -16,13 +16,13 @@ import { AppScreenAuthorizeApp } from "./authorize-app"
 import { AppScreenAuthorizeDecider } from "./authorize-decider"
 import { RouteCaptcha } from "./captcha"
 import { PATH_CAPTCHA } from "./captcha/path"
-import { RouteCopyRecoveryPhrase } from "./copy-recovery-phrase"
-import { PATH_COPY_RECOVERY_PHRASE } from "./copy-recovery-phrase/path"
 import { LoginUnknownDevice } from "./login-unknown-device"
 import { PATH_LOGIN_UNKNOWN_DEVICE } from "./login-unknown-device/path"
 import { AppScreenNFIDLogin } from "./nfid-login"
 import { RouteRegister } from "./register"
 import { PATH_REGISTER } from "./register/path"
+import { PATH_VERIFICATION_CHALLENGE } from './verification-challenge/path'
+import { RouteVerificationChallenge } from './verification-challenge'
 
 export const AppScreenAuthenticateAccountRoutes = (
   <Route
@@ -81,13 +81,13 @@ export const AppScreenAuthenticateAccountRoutes = (
       path={PATH_CAPTCHA}
       element={
         <RouteCaptcha
-          successPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_COPY_RECOVERY_PHRASE}`}
+          successPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_VERIFICATION_CHALLENGE}`}
         />
       }
     />
     <Route
-      path={PATH_COPY_RECOVERY_PHRASE}
-      element={<RouteCopyRecoveryPhrase />}
+      path={PATH_VERIFICATION_CHALLENGE}
+      element={<RouteVerificationChallenge />}
     />
   </Route>
 )

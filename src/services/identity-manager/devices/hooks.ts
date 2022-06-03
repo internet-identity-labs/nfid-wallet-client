@@ -283,7 +283,7 @@ export const useDevices = () => {
         pub_key: Array.from(recoverIdentity),
       }
 
-      await identityManager.create_access_point(newDevice)
+      return await identityManager.create_access_point(newDevice)
     },
     [identityManager],
   )
@@ -382,6 +382,7 @@ export const useDevices = () => {
         deviceName,
       ),
     ])
+
     getRecoveryDevices()
   }, [createRecoveryDevice, getRecoveryDevices, internetIdentity, userNumber])
 

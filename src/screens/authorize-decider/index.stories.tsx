@@ -1,4 +1,5 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
+import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import logo from "frontend/assets/dfinity.svg"
@@ -16,10 +17,23 @@ export default {
 
 const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   typeof AuthorizeDecider
-> = (args) => {
+> = ({
+  onToggleAdvancedOptions,
+  showAdvancedOptions: defaultShowAdvancedOptions,
+  ...args
+}) => {
+  const [showAdvancedOptions, toggleShowAdvancedOptions] = React.useReducer(
+    (state) => !state,
+    !!defaultShowAdvancedOptions,
+  )
+
   return (
     <Router>
-      <AuthorizeDecider {...args} />
+      <AuthorizeDecider
+        onToggleAdvancedOptions={toggleShowAdvancedOptions}
+        showAdvancedOptions={showAdvancedOptions}
+        {...args}
+      />
     </Router>
   )
 }
@@ -32,4 +46,5 @@ AppScreen.args = {
   url: "https://nfid.one/secret/scope/my-application",
   isLoading: false,
   registerDeviceDeciderPath: "/register-device-decider",
+  showAdvancedOptions: false,
 }

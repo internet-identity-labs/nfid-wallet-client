@@ -115,6 +115,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         await createAccount({
           anchor: userNumber,
         })
+        // TODO: remove recovery phrase creation
         await createRecoveryDevice(recoverIdentity)
       }
     },
@@ -128,6 +129,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     ) {
       const { userNumber, internetIdentity } = responseRegisterAnchor
 
+      // TODO: remove recovery phrase creation
       const recovery = generate().trim()
       const recoverIdentity = await fromMnemonicWithoutValidation(
         recovery,

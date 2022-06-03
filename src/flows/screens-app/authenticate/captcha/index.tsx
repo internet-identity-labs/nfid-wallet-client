@@ -7,5 +7,6 @@ interface RouteCaptchaProps {
 }
 
 export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => (
+  // TODO: handle the final state transition
   <Captcha successPath={successPath} />
 )

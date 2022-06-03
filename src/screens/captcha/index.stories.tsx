@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 
 import logo from "frontend/assets/distrikt.svg"
 
-import { Captcha } from "./new-captcha"
+import { Captcha } from "."
 
 export default {
   title: "Screens/Captcha",

@@ -45,6 +45,7 @@ export const RemoteRegisterAccountRoutes = (
       path={RemoteRegisterAccountConstants.captcha}
       element={
         <Captcha
+          // TODO: handle the final state transition
           successPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.copyRecoveryPhrase}`}
         />
       }

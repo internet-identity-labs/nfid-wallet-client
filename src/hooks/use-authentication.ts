@@ -79,7 +79,6 @@ export const useAuthentication = () => {
       const response = await IIConnection.login(anchor, withSecurityDevices)
 
       const result = apiResultToLoginResult(response)
-      console.log(">> login", { result, response })
 
       if (result.tag === "err") {
         setError(result)

@@ -100,6 +100,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       responseRegisterAnchor.kind === "loginSuccess"
     ) {
       const { userNumber } = responseRegisterAnchor
+
       await createAccount({
         anchor: userNumber,
       })

@@ -63,49 +63,49 @@ export const Captcha: React.FC<CaptchaProps> = ({
   const { userNumber } = useAccount()
 
   const { isAuthenticated } = useAuthentication()
-  const { authorizeApp } = useAuthorization({
+  const { isLoading: isPreparingDelegate, authorizeApp } = useAuthorization({
     userNumber,
   })
 
   const { nextPersonaId, createPersona } = usePersona()
 
-  const handleAuthorizePersona = React.useCallback(async () => {
-    setLoading(true)
-    console.log(">> handleAuthorizePersona", { scope })
-
-    const response = await createPersona({ domain: scope })
-
-    if (response?.status_code === 200) {
-      await authorizeApp({ persona_id: nextPersonaId, domain: scope })
-      navigate(successPath)
-      setLoading(false)
-    }
-    console.error(response)
-  }, [
-    authorizeApp,
-    createPersona,
-    navigate,
-    nextPersonaId,
-    scope,
-    setLoading,
-    successPath,
-  ])
-
-  const onSubmit = React.useCallback(
-    async (form: any) => {
-      const result = await registerAnchor(form)
-      if (result.kind === "loginSuccess") {
-      }
-      console.log(">> onSubmit", { result })
-    },
-    [registerAnchor],
-  )
+  // TODO: as soon as we have global singleton auth state,
+  // we can get rid of these eval side effects
+  const authorizationStateRef = React.useRef<{
+    delegateRequested: boolean
+    personaRequested: boolean
+  }>({ delegateRequested: false, personaRequested: false })
 
   React.useEffect(() => {
     if (isAuthenticated && userNumber) {
-      handleAuthorizePersona()
+      if (!authorizationStateRef.current.personaRequested) {
+        authorizationStateRef.current.personaRequested = true
+        createPersona({ domain: scope })
+      }
+      if (!authorizationStateRef.current.delegateRequested) {
+        authorizationStateRef.current.delegateRequested = true
+        authorizeApp({ persona_id: nextPersonaId, domain: scope })
+      }
     }
-  }, [handleAuthorizePersona, isAuthenticated, userNumber])
+  }, [
+    authorizeApp,
+    createPersona,
+    isAuthenticated,
+    loading,
+    nextPersonaId,
+    scope,
+    userNumber,
+  ])
+
+  React.useEffect(() => {
+    if (
+      isAuthenticated &&
+      authorizationStateRef.current.delegateRequested &&
+      !isPreparingDelegate
+    ) {
+      navigate(successPath)
+    }
+  }, [isAuthenticated, isPreparingDelegate, navigate, successPath])
 
   const { applicationLogo, applicationName } = useMultipass()
 
@@ -153,7 +153,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
           className="mt-4"
           block
           disabled={!isFormComplete || loading}
-          onClick={handleSubmit(onSubmit)}
+          onClick={handleSubmit(registerAnchor)}
           data-captcha-key={challenge?.challenge_key}
         >
           Create NFID

@@ -83,16 +83,15 @@ export const useUnknownDeviceConfig = () => {
 
   const url = React.useMemo(() => {
     // TODO: create custom hook to generate secret
+    const query = new URLSearchParams({
+      applicationName: applicationName || "",
+      applicationLogo: encodeURIComponent(applicationLogo || ""),
+    }).toString()
     return domain && pubKey
       ? `${window.location.origin}${generatePath(
           AppScreenAuthorizeAppConstants.authorize,
-          {
-            secret: uuid(),
-            scope: domain,
-            applicationName,
-            applicationLogo: encodeURIComponent(applicationLogo || ""),
-          },
-        )}`
+          { secret: uuid(), scope: domain },
+        )}?${query.toString()}`
       : null
   }, [applicationLogo, applicationName, domain, pubKey])
 

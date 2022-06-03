@@ -1,10 +1,12 @@
 import React from "react"
 
 import { IconLaptop } from "frontend/design-system/atoms/icons/desktop"
-import { KeyIcon } from "frontend/design-system/atoms/icons/key"
+import { DocumentIcon } from "frontend/design-system/atoms/icons/document"
 import { IconDesktop } from "frontend/design-system/atoms/icons/laptop"
 import { MobileIcon } from "frontend/design-system/atoms/icons/mobile"
 import { TabletIcon } from "frontend/design-system/atoms/icons/tablet"
+import { USBIcon } from "frontend/design-system/atoms/icons/usb"
+
 import { Icon } from "frontend/services/identity-manager/devices/state"
 
 interface DeviceIconDeciderProps {
@@ -30,8 +32,10 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
       return <IconLaptop {...props} />
     case "desktop":
       return <IconDesktop {...props} />
-    case "key":
-      return <KeyIcon {...props} />
+    case "document":
+      return <DocumentIcon {...props} />
+    case "usb":
+      return <USBIcon {...props} />
     default:
       return null
   }

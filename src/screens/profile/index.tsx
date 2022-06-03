@@ -1,15 +1,19 @@
-import { P, H3, Logo } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { generatePath, Link } from "react-router-dom"
 
+import { P, H3, Logo } from "@internet-identity-labs/nfid-sdk-react"
+
 import { PoaBanner } from "frontend/design-system/molecules/poa-banner"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+
 import { AppScreenProofOfAttendencyConstants } from "frontend/flows/screens-app/proof-of-attendancy/routes"
 import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
-import { Device } from "frontend/services/identity-manager/devices/state"
+import {
+  Device,
+  RecoveryDevice,
+} from "frontend/services/identity-manager/devices/state"
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
-import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
 
 import { ApplicationList } from "./application-list"
 import { DeviceList } from "./device-list/device-list"
@@ -20,20 +24,16 @@ interface Account {
   name?: string
 }
 
-export interface recoveryMethod extends DeviceData {
-  label: string
-  isSecurityKey: boolean
-  lastUsed: number
-}
-
 interface ProfileProps {
   onDeviceDelete: (device: Device) => Promise<void>
   onDeviceUpdate: (device: Device) => Promise<void>
-  onRecoveryDelete: (method: recoveryMethod) => Promise<void>
-  onRecoveryUpdate: (method: recoveryMethod) => Promise<void>
+  onRecoveryDelete: (method: RecoveryDevice) => Promise<void>
+  onRecoveryUpdate: (method: RecoveryDevice) => Promise<void>
+  onCreateRecoveryPhrase: () => Promise<void>
+  onRegisterRecoveryKey: () => Promise<void>
   devices: Device[]
   accounts: NFIDPersona[]
-  recoveryMethods: recoveryMethod[]
+  recoveryMethods: RecoveryDevice[]
   account?: Account
   hasPoa?: boolean
 }
@@ -47,6 +47,8 @@ export const Profile: React.FC<ProfileProps> = ({
   accounts = [],
   onRecoveryDelete,
   onRecoveryUpdate,
+  onCreateRecoveryPhrase,
+  onRegisterRecoveryKey,
   recoveryMethods,
 }) => {
   return (
@@ -110,10 +112,9 @@ export const Profile: React.FC<ProfileProps> = ({
           recoveryMethods={recoveryMethods}
           onRecoveryUpdate={onRecoveryUpdate}
           onRecoveryDelete={onRecoveryDelete}
+          onCreateRecoveryPhrase={onCreateRecoveryPhrase}
+          onRegisterRecoveryKey={onRegisterRecoveryKey}
         />
-        {/* {recoveryPhrase && (
-          <RecoveryPhraseSection recoveryPhrase={recoveryPhrase} />
-        )} */}
       </main>
     </AppScreen>
   )

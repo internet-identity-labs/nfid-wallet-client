@@ -12,12 +12,14 @@ interface NavigationBarProps extends React.HTMLAttributes<HTMLDivElement> {
   navigationItems?: React.ReactNode
   isFocused?: boolean
   showLogo?: boolean
+  profileScreen?: boolean
 }
 
 export const NavigationBar: React.FC<NavigationBarProps> = ({
   navigationItems,
   isFocused = false,
   showLogo,
+  profileScreen = false,
 }) => {
   const { scrollY } = useScroll()
 
@@ -26,6 +28,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       className={clsx(
         "flex-none sticky top-0 z-40 py-5",
         "sm:pb-9",
+        profileScreen && "md:p-0 md:absolute",
         scrollY > 50 && "shadow-gray bg-white",
         scrollY < 50 && "opacity-100 bg-transparent",
       )}

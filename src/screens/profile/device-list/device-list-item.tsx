@@ -1,3 +1,8 @@
+import clsx from "clsx"
+import { format } from "date-fns"
+import produce from "immer"
+import React from "react"
+
 import {
   Loader,
   ModalAdvanced,
@@ -5,13 +10,10 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import { format } from "date-fns"
-import produce from "immer"
-import React from "react"
 
 import { IconCancel } from "frontend/design-system/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/design-system/atoms/icons/check-mark"
+
 import { Device, Icon } from "frontend/services/identity-manager/devices/state"
 
 import { DeviceIconDecider } from "./device-icon-decider"
@@ -148,8 +150,9 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               <div className="flex-1 flex-shrink">
                 <div className="text-gray-700">{device.label}</div>
                 <div className="my-1 text-sm text-gray-400">
-                  {device.lastUsed &&
-                    format(device.lastUsed, "eee d, yyyy 'on '")}
+                  {device.lastUsed
+                    ? format(device.lastUsed, "eee d, yyyy 'on '")
+                    : null}
                   {device.browser}
                 </div>
               </div>

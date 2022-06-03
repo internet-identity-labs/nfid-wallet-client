@@ -12,6 +12,7 @@ import {
 } from "frontend/flows/screens-app/authenticate/constants"
 import { AppScreenRegisterDeviceDecider } from "frontend/flows/screens-app/authenticate/screen-app-register-device-decider"
 
+import { ProfileConstants } from "../profile/routes"
 import { AppScreenAuthorizeApp } from "./authorize-app"
 import { AppScreenAuthorizeDecider } from "./authorize-decider"
 import { RouteCaptcha } from "./captcha"
@@ -21,7 +22,6 @@ import { PATH_LOGIN_UNKNOWN_DEVICE } from "./login-unknown-device/path"
 import { AppScreenNFIDLogin } from "./nfid-login"
 import { RouteRegister } from "./register"
 import { PATH_REGISTER } from "./register/path"
-import { ProfileConstants } from '../profile/routes'
 
 export const AppScreenAuthenticateAccountRoutes = (
   <Route
@@ -38,8 +38,10 @@ export const AppScreenAuthenticateAccountRoutes = (
       path={SUB_PATH_AUTHORIZE_DECIDER}
       element={
         <AppScreenAuthorizeDecider
+          pathRegisterSameDevice={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_REGISTER}`}
           pathRemoteAuthorization={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
           pathAuthorizeApp={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
+          pathCaptcha={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_CAPTCHA}`}
         />
       }
     />
@@ -78,11 +80,7 @@ export const AppScreenAuthenticateAccountRoutes = (
     />
     <Route
       path={PATH_CAPTCHA}
-      element={
-        <RouteCaptcha
-          successPath={`${ProfileConstants.base}`}
-        />
-      }
+      element={<RouteCaptcha successPath={`${ProfileConstants.base}`} />}
     />
   </Route>
 )

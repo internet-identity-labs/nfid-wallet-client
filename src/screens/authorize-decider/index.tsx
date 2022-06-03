@@ -12,10 +12,13 @@ import SecurityKey from "./assets/security-key.svg"
 
 export interface AuthorizeAppUnknownDeviceProps {
   onSelectRemoteAuthorization: () => Promise<void> | void
+  onSelectSameDeviceRegistration: () => Promise<void> | void
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
   onToggleAdvancedOptions: () => void
   authError?: string
+  isLoading?: boolean
+  isWebAuthNAvailable?: boolean
   showAdvancedOptions?: boolean
   applicationName?: string
   applicationLogo?: string
@@ -23,15 +26,17 @@ export interface AuthorizeAppUnknownDeviceProps {
 
 export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   onSelectRemoteAuthorization,
+  onSelectSameDeviceRegistration,
   onSelectSameDeviceAuthorization,
   onSelectSecurityKeyAuthorization,
+  onToggleAdvancedOptions,
   applicationName,
   applicationLogo,
   showAdvancedOptions,
-  onToggleAdvancedOptions,
+  isWebAuthNAvailable,
+  isLoading,
   authError,
 }) => {
-  const [isLoading, toggleLoading] = React.useReducer((state) => !state, false)
   const {
     register,
     handleSubmit,
@@ -49,18 +54,14 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
 
   const handleSelectSameDeviceAuthorization = React.useCallback(
     async ({ userNumber }) => {
-      toggleLoading()
       await onSelectSameDeviceAuthorization(userNumber)
-      toggleLoading()
     },
     [onSelectSameDeviceAuthorization],
   )
 
   const handleSelectSecurityKeyAuthorization = React.useCallback(
     async ({ userNumber }) => {
-      toggleLoading()
       await onSelectSecurityKeyAuthorization(userNumber)
-      toggleLoading()
     },
     [onSelectSecurityKeyAuthorization],
   )
@@ -106,12 +107,22 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             />
           </>
         ) : (
-          <IconButton
-            title="iPhone, iPad, or Android device"
-            subtitle="Use passkey from a device with a camera"
-            img={<img src={QRCode} alt="qrcode" />}
-            onClick={onSelectRemoteAuthorization}
-          />
+          <>
+            <IconButton
+              title="iPhone, iPad, or Android device"
+              subtitle="Use passkey from a device with a camera"
+              img={<img src={QRCode} alt="qrcode" />}
+              onClick={onSelectRemoteAuthorization}
+            />
+            {isWebAuthNAvailable && (
+              <IconButton
+                title="Create a new NFID"
+                subtitle="Use passkey on this device"
+                img={<img src={TouchId} alt="passkey" />}
+                onClick={onSelectSameDeviceRegistration}
+              />
+            )}
+          </>
         )}
         <p
           className="pt-4 text-sm text-center cursor-pointer text-blue-base"

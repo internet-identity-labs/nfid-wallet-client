@@ -1,4 +1,3 @@
-import { DerEncodedBlob } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { useAtom } from "jotai"
 import React from "react"
@@ -44,7 +43,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   >()
 
   // ACCOUNT
-  const { account } = useAccount()
+  const { account, createAccount } = useAccount()
 
   const { onRegisterSuccess } = useAuthentication()
 
@@ -94,6 +93,27 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       setLoading,
     ],
   )
+
+  const handleCreateAccount = React.useCallback(async () => {
+    if (
+      responseRegisterAnchor &&
+      responseRegisterAnchor.kind === "loginSuccess"
+    ) {
+      const { userNumber } = responseRegisterAnchor
+      await createAccount({
+        anchor: userNumber,
+      })
+    }
+  }, [createAccount, responseRegisterAnchor])
+
+  React.useEffect(() => {
+    if (
+      responseRegisterAnchor &&
+      responseRegisterAnchor.kind === "loginSuccess"
+    ) {
+      handleCreateAccount()
+    }
+  }, [handleCreateAccount, responseRegisterAnchor])
 
   return {
     account,

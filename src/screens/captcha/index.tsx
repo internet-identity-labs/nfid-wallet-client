@@ -13,12 +13,17 @@ import { captchaRules } from "frontend/utils/validations"
 
 import { useCaptcha } from "./hook"
 import { useMultipass } from 'frontend/hooks/use-multipass'
+import { useNavigate } from 'react-router-dom'
+import { ProfileConstants } from 'frontend/flows/screens-app/profile/routes'
+import { ModalSuccess } from '../register-new-from-delegate/modal-success'
 
 interface CaptchaProps extends ElementProps<HTMLDivElement> {
+  successPath?: string;
 }
 
 export const Captcha: React.FC<CaptchaProps> = ({
   className,
+  successPath = `${ProfileConstants.base}`,
 }) => {
   const {
     register,
@@ -29,6 +34,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
   } = useForm({
     mode: "onTouched",
   })
+
   const isFormComplete = ["captcha"].every((field) => dirtyFields[field])
 
   const { setLoading, loading, challenge, requestCaptcha, registerAnchor } =
@@ -47,13 +53,41 @@ export const Captcha: React.FC<CaptchaProps> = ({
       },
     })
   
+  const navigate = useNavigate()
+  const [showModal, setShowModal] = React.useState(false);
+
+  const onSubmit = React.useMemo(() => (form : any) => {
+    registerAnchor(form)
+    .then((result) => {
+      if (result.kind === "loginSuccess") {
+        // If we are creating new keys, we must perform a second challenge. However, when using existing keys, we do not. So, we redirect to the profile
+        // TODO: "is key creation" boolean
+        if (true) {
+          setShowModal(true);
+        } else {
+          navigate(successPath);
+        }
+      } else {
+        console.error(result)
+      }
+    })
+    .catch((result) => {
+      console.error(result)
+    })
+  }, [registerAnchor]);
+  
   const { applicationLogo, applicationName } = useMultipass();
 
-  // TODO: after successfully registering the new account, show success modal
+  const handleModalClick = React.useMemo(() => () => {
+    navigate(successPath);
+  }, []);
 
   return (
-    // TODO: handle loading state
-    <ScreenResponsive className={clsx("flex flex-col items-center", className)}>
+    <ScreenResponsive
+      className={clsx("flex flex-col items-center", className)}
+      isLoading={loading}
+    >
+      {showModal && <ModalSuccess onClick={handleModalClick} device='device' />}
       {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H5 className="mt-4">Complete NFID registration</H5>
       <p className="mt-1 text-center">to continue {applicationName && `to ${applicationName}`}</p>
@@ -91,7 +125,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
           className="mt-4"
           block
           disabled={!isFormComplete || loading}
-          onClick={handleSubmit(registerAnchor)}
+          onClick={handleSubmit(onSubmit)}
           data-captcha-key={challenge?.challenge_key}
         >
           Create NFID

@@ -8,6 +8,9 @@ import {
 } from "react-router-dom"
 
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { APP_SCREEN_AUTHENTICATE_BASE } from 'frontend/flows/screens-app/authenticate/constants'
+import { PATH_REGISTER } from 'frontend/flows/screens-app/authenticate/register/path'
+import { useDeviceInfo } from 'frontend/hooks/use-device-info'
 
 interface AuthenticateDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -27,11 +30,15 @@ export const AuthenticateRegisterDecider: React.FC<
 
   const { userNumber } = useAccount()
 
+  const { isMobile, isWebAuthNAvailable } = useDeviceInfo()
+
   React.useEffect(() => {
-    if (isRootPath) {
+    const newDevicePath = isMobile && isWebAuthNAvailable ? `${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_REGISTER}` : unknownDevicePath
+
+    if (isRootPath && isWebAuthNAvailable !== undefined) {
       navigate(
         `${generatePath(
-          userNumber ? registeredDevicePath : unknownDevicePath,
+          userNumber ? registeredDevicePath : newDevicePath,
           params,
         )}?${query.toString()}`,
       )
@@ -44,6 +51,8 @@ export const AuthenticateRegisterDecider: React.FC<
     params,
     query,
     userNumber,
+    isMobile,
+    isWebAuthNAvailable,
   ])
 
   return <Outlet />

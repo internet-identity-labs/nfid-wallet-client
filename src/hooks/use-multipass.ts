@@ -12,7 +12,10 @@ const applicationLogoAtom = atom<string | undefined>(undefined)
 
 export const useMultipass = () => {
   const [queryString] = useSearchParams()
-  const { applicationName: applicationNameFromPath } = useParams()
+  const {
+    applicationName: applicationNameFromPath,
+    applicationLogo: applicationLogoFromPath,
+  } = useParams()
   const [applicationName, setApplicationName] = useAtom(applicationNameAtom)
   const [applicationLogo, setApplicationLogo] = useAtom(applicationLogoAtom)
   const { newDeviceName } = useDeviceInfo()
@@ -40,8 +43,8 @@ export const useMultipass = () => {
         applicationNameFromParams || applicationNameFromPath || "NFID",
       )
     }
-    if (applicationLogoFromParams) {
-      setApplicationLogo(applicationLogoFromParams)
+    if (applicationLogoFromParams || applicationLogoFromPath) {
+      setApplicationLogo(applicationLogoFromParams || applicationLogoFromPath)
     }
   }, [
     applicationName,
@@ -50,6 +53,7 @@ export const useMultipass = () => {
     queryString,
     setApplicationName,
     setApplicationLogo,
+    applicationLogoFromPath,
   ])
 
   return {

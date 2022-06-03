@@ -4,6 +4,7 @@ import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"
 import React, { useEffect } from "react"
 import { generatePath, useLocation } from "react-router-dom"
+import { v4 as uuid } from "uuid"
 
 import { RegisterNewDeviceConstants } from "frontend/flows/screens-app/register-new-from-delegate/routes"
 import { AppScreenAuthorizeAppConstants } from "frontend/flows/screens-app/remote-authentication/routes"
@@ -74,7 +75,7 @@ export const useUnknownDeviceConfig = () => {
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
 
   const { createDevice, createWebAuthNDevice } = useDevices()
-  const { applicationName } = useMultipass()
+  const { applicationName, applicationLogo } = useMultipass()
   const { getMessages } = usePubSubChannel()
   const { remoteLogin: setAuthenticatedActors } = useAuthentication()
   const { readAccount } = useAccount()
@@ -82,13 +83,17 @@ export const useUnknownDeviceConfig = () => {
 
   const url = React.useMemo(() => {
     // TODO: create custom hook to generate secret
+    const query = new URLSearchParams({
+      applicationName: applicationName || "",
+      applicationLogo: encodeURIComponent(applicationLogo || ""),
+    }).toString()
     return domain && pubKey
       ? `${window.location.origin}${generatePath(
           AppScreenAuthorizeAppConstants.authorize,
-          { secret: pubKey, scope: domain, applicationName },
-        )}`
+          { secret: uuid(), scope: domain },
+        )}?${query.toString()}`
       : null
-  }, [applicationName, domain, pubKey])
+  }, [applicationLogo, applicationName, domain, pubKey])
 
   const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({

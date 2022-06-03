@@ -6,16 +6,17 @@ import { AuthenticateRegisterDecider } from "frontend/design-system/templates/au
 import {
   APP_SCREEN_AUTHENTICATE_BASE,
   SUB_PATH_AUTHORIZE_APP,
+  SUB_PATH_AUTHORIZE_DECIDER,
   SUB_PATH_LOGIN_NFID,
   SUB_PATH_REGISTER_DEVICE_DECIDER,
 } from "frontend/flows/screens-app/authenticate/constants"
 import { AppScreenRegisterDeviceDecider } from "frontend/flows/screens-app/authenticate/screen-app-register-device-decider"
 
+import { ProfileConstants } from "../profile/routes"
 import { AppScreenAuthorizeApp } from "./authorize-app"
+import { AppScreenAuthorizeDecider } from "./authorize-decider"
 import { RouteCaptcha } from "./captcha"
 import { PATH_CAPTCHA } from "./captcha/path"
-import { RouteCopyRecoveryPhrase } from "./copy-recovery-phrase"
-import { PATH_COPY_RECOVERY_PHRASE } from "./copy-recovery-phrase/path"
 import { LoginUnknownDevice } from "./login-unknown-device"
 import { PATH_LOGIN_UNKNOWN_DEVICE } from "./login-unknown-device/path"
 import { AppScreenNFIDLogin } from "./nfid-login"
@@ -28,11 +29,22 @@ export const AppScreenAuthenticateAccountRoutes = (
     element={
       <AuthenticateRegisterDecider
         rootPath={APP_SCREEN_AUTHENTICATE_BASE}
-        unknownDevicePath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
+        unknownDevicePath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_DECIDER}`}
         registeredDevicePath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
       />
     }
   >
+    <Route
+      path={SUB_PATH_AUTHORIZE_DECIDER}
+      element={
+        <AppScreenAuthorizeDecider
+          pathRegisterSameDevice={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_REGISTER}`}
+          pathRemoteAuthorization={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_LOGIN_UNKNOWN_DEVICE}`}
+          pathAuthorizeApp={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
+          pathCaptcha={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_CAPTCHA}`}
+        />
+      }
+    />
     <Route
       path={SUB_PATH_LOGIN_NFID}
       element={
@@ -68,15 +80,7 @@ export const AppScreenAuthenticateAccountRoutes = (
     />
     <Route
       path={PATH_CAPTCHA}
-      element={
-        <RouteCaptcha
-          successPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_COPY_RECOVERY_PHRASE}`}
-        />
-      }
-    />
-    <Route
-      path={PATH_COPY_RECOVERY_PHRASE}
-      element={<RouteCopyRecoveryPhrase />}
+      element={<RouteCaptcha successPath={`${ProfileConstants.base}`} />}
     />
   </Route>
 )

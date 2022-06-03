@@ -2,6 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import ReactTooltip from "react-tooltip"
 
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { Button } from "frontend/design-system/atoms/button"
 import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
 import { H5 } from "frontend/design-system/atoms/typography"
@@ -50,9 +51,16 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 
   return (
     <>
-      {applicationLogo && <img src={applicationLogo} alt="logo" />}
-      <H5 className="mt-4">Choose an account</H5>
-      <P className="mt-2">to continue to {applicationName}</P>
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
+      )}
+      <H5>Choose an account</H5>
+      <P className="mt-2">
+        to continue {applicationName && `to ${applicationName}`}
+      </P>
       <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
         {displayAccounts.map((account) => {
           return (

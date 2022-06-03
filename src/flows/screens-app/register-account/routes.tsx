@@ -1,10 +1,9 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { Captcha } from "frontend/screens/captcha"
 import { useChallenge } from "frontend/screens/captcha/hook"
 
-import { RegisterAccountCopyRecoveryPhrase } from "./copy-recovery-phrase"
+import { RegisterAccountCaptcha } from "./captcha"
 import { RouteRegisterAccountIntro } from "./intro"
 
 const ChallengeLoader = () => {
@@ -43,15 +42,7 @@ export const RemoteRegisterAccountRoutes = (
     />
     <Route
       path={RemoteRegisterAccountConstants.captcha}
-      element={
-        <Captcha
-          successPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.copyRecoveryPhrase}`}
-        />
-      }
-    />
-    <Route
-      path={RemoteRegisterAccountConstants.copyRecoveryPhrase}
-      element={<RegisterAccountCopyRecoveryPhrase isRemoteRegistration />}
+      element={<RegisterAccountCaptcha isRemoteRegistration />}
     />
   </Route>
 )
@@ -75,17 +66,7 @@ export const NFIDRegisterAccountRoutes = (
     />
     <Route
       path={NFIDRegisterAccountConstants.captcha}
-      element={
-        <Captcha
-          successPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.copyRecoveryPhrase}`}
-        />
-      }
-    />
-    <Route
-      path={NFIDRegisterAccountConstants.copyRecoveryPhrase}
-      element={
-        <RegisterAccountCopyRecoveryPhrase continueButtonText="Continue to NFID" />
-      }
+      element={<RegisterAccountCaptcha />}
     />
   </Route>
 )

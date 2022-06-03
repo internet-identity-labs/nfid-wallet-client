@@ -1,17 +1,18 @@
+import clsx from "clsx"
+import React from "react"
+import { useForm } from "react-hook-form"
+
 import {
   Button,
   Loader,
   H2,
   TextArea,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React from "react"
-import { useForm } from "react-hook-form"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
-import { useMessageChannel } from "frontend/screens/authorize-app-unknown-device/hooks/use-message-channel"
-import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { useMessageChannel } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-message-channel"
+import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 

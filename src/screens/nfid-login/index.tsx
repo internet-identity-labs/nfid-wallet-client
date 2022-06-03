@@ -1,9 +1,10 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
-import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
+
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
+import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
+import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 
 import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -32,11 +33,12 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
 
   const handleLogin = React.useCallback(async () => {
     const result = await login()
-    if (onLoginSuccess) {
-      onLoginSuccess(result)
-    }
-    if (loginSuccessPath) {
-      navigate(generatePath(loginSuccessPath))
+    if (result.tag === "ok") {
+      onLoginSuccess && onLoginSuccess(result)
+
+      if (loginSuccessPath) {
+        navigate(generatePath(loginSuccessPath))
+      }
     }
   }, [generatePath, login, loginSuccessPath, navigate, onLoginSuccess])
 

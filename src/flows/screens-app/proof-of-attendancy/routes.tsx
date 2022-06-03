@@ -1,9 +1,9 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { Captcha } from "frontend/screens/captcha"
 import { ProofOfAttendencyAward } from "frontend/screens/proof-of-attendency-award"
 
+import { RegisterAccountCaptcha } from "../register-account/captcha"
 import { ProofOfAttendencyCopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { RegisterAccountIntro } from "./register-account-intro"
 import { ClaimAttendency } from "./register-or-claim"
@@ -28,12 +28,7 @@ export const AppScreenProofOfAttendencyRoutes = (redirectTo: string) => (
     />
     <Route
       path={AppScreenProofOfAttendencyConstants.captcha}
-      element={
-        <Captcha
-          // TODO: handle the final state transition
-          successPath={`${AppScreenProofOfAttendencyConstants.base}/${AppScreenProofOfAttendencyConstants.copyRecoveryPhrase}`}
-        />
-      }
+      element={<RegisterAccountCaptcha />}
     />
     <Route
       path={AppScreenProofOfAttendencyConstants.copyRecoveryPhrase}

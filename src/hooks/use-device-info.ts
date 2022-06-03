@@ -4,7 +4,7 @@ import React from "react"
 import { getPlatformInfo } from "frontend/utils"
 
 export const useDeviceInfo = () => {
-  const [isWebAuthNAvailable, setHasWebAuthN] = React.useState(false)
+  const [isWebAuthNAvailable, setHasWebAuthN] = React.useState<boolean>()
 
   React.useEffect(() => {
     try {

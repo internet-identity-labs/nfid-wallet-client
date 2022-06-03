@@ -3,7 +3,10 @@ import React from "react"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
-import { AuthorizeAppUnknownDevice, AuthorizeAppUnknownDeviceProps } from "."
+import {
+  RemoteAuthorizeAppUnknownDevice,
+  AuthorizeAppUnknownDeviceProps,
+} from "."
 
 interface AppScreenAuthorizeAppUnknownDeviceProps
   extends AuthorizeAppUnknownDeviceProps {
@@ -29,7 +32,7 @@ export const AppScreenAuthorizeAppUnknownDevice: React.FC<
     >
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <AuthorizeAppUnknownDevice
+          <RemoteAuthorizeAppUnknownDevice
             registerDeviceDeciderPath={registerDeviceDeciderPath}
             registerSameDevicePath={registerSameDevicePath}
             url={url}

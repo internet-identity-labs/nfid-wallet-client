@@ -17,7 +17,7 @@ export interface AuthorizeAppUnknownDeviceProps {
   applicationName?: string
 }
 
-export const AuthorizeAppUnknownDevice: React.FC<
+export const RemoteAuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
 > = ({
   registerDeviceDeciderPath,

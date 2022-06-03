@@ -3,8 +3,8 @@ import { useLocation } from "react-router-dom"
 
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { useUnknownDeviceConfig } from "frontend/screens/authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { CopyRecoveryPhrase } from "frontend/screens/copy-recovery-phrase"
+import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 

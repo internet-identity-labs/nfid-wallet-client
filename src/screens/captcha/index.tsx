@@ -56,7 +56,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
     <ScreenResponsive className={clsx("flex flex-col items-center", className)}>
       {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H5 className="mt-4">Complete NFID registration</H5>
-      <p className="mt-1 text-center">to continue to {applicationName}</p>
+      <p className="mt-1 text-center">to continue {applicationName && `to ${applicationName}`}</p>
       <form className="flex flex-col w-full mt-5">
         <Challenge
           src={challenge && `data:image/png;base64,${challenge.png_base64}`}

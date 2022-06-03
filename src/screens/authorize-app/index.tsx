@@ -52,7 +52,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     <>
       {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H5 className="mt-4">Choose an account</H5>
-      <P className="mt-2">to continue to {applicationName}</P>
+      <P className="mt-2">to continue {applicationName && `to ${applicationName}`}</P>
       <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
         {displayAccounts.map((account) => {
           return (

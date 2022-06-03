@@ -21,8 +21,7 @@ import { PATH_LOGIN_UNKNOWN_DEVICE } from "./login-unknown-device/path"
 import { AppScreenNFIDLogin } from "./nfid-login"
 import { RouteRegister } from "./register"
 import { PATH_REGISTER } from "./register/path"
-import { PATH_VERIFICATION_CHALLENGE } from './verification-challenge/path'
-import { RouteVerificationChallenge } from './verification-challenge'
+import { ProfileConstants } from '../profile/routes'
 
 export const AppScreenAuthenticateAccountRoutes = (
   <Route
@@ -81,13 +80,9 @@ export const AppScreenAuthenticateAccountRoutes = (
       path={PATH_CAPTCHA}
       element={
         <RouteCaptcha
-          successPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_VERIFICATION_CHALLENGE}`}
+          successPath={`${ProfileConstants.base}`}
         />
       }
-    />
-    <Route
-      path={PATH_VERIFICATION_CHALLENGE}
-      element={<RouteVerificationChallenge />}
     />
   </Route>
 )

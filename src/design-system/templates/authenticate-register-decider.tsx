@@ -51,6 +51,8 @@ export const AuthenticateRegisterDecider: React.FC<
     params,
     query,
     userNumber,
+    isMobile,
+    isWebAuthNAvailable,
   ])
 
   return <Outlet />

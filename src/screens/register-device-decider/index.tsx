@@ -35,8 +35,9 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
     >
       <H5>Sign in faster on this device</H5>
       <p className="mt-2 text-center">
-        Trust this {device}? You can quickly and securely sign in next time
-        using this device's {platformAuth}.
+        {isWebAuthNAvailable
+          ? `Trust this ${device}? You can quickly and securely sign in next time using this device's ${platformAuth}.`
+          : "You can quickly and securely sign in next time with a security key if you register one now."}
       </p>
       <div className="flex flex-col w-full space-y-1 mt-7">
         {isWebAuthNAvailable ? (

@@ -35,7 +35,7 @@ export const AuthorizeAppSingleAccount: React.FC<
           applicationName={applicationName}
         />
       )}
-      <H4 className="mt-4">Unlock NFID</H4>
+      <H4>Unlock NFID</H4>
       <p className="mt-2 text-sm">
         to continue{applicationName && ` to ${applicationName}`}
       </p>

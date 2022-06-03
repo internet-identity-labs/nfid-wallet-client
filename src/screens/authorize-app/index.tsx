@@ -57,7 +57,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           applicationName={applicationName}
         />
       )}
-      <H5 className="mt-4">Choose an account</H5>
+      <H5>Choose an account</H5>
       <P className="mt-2">
         to continue {applicationName && `to ${applicationName}`}
       </P>

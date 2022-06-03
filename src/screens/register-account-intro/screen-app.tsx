@@ -33,7 +33,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           appliactionName={applicationName}
         />
       )}
-      <H5 className="mt-4">Sign in</H5>
+      <H5>Sign in</H5>
       <p className="mt-3 text-center">
         Choose how you’d like to sign in to {applicationName}
       </p>

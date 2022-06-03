@@ -64,7 +64,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
           applicationName={applicationName}
         />
       )}
-      <H5 className="mt-4">Complete NFID registration</H5>
+      <H5>Complete NFID registration</H5>
       <p className="mt-1 text-center">
         to continue {applicationName && `to ${applicationName}`}
       </p>

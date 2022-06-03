@@ -1,50 +1,27 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { RegisterDeviceDecider } from "."
-import { AppScreenRegisterDeviceDecider } from "../../flows/screens-app/authenticate/screen-app-register-device-decider"
-import { AuthorizeRegisterDecider } from "./screen-new-iframe"
+import { AuthorizeRegisterDeciderScreen } from "."
 
 export default {
-  title: "Screens/RegisterDeviceDecider",
-  component: RegisterDeviceDecider,
+  title: "Screens/AuthorizeRegisterDecider",
+  component: AuthorizeRegisterDeciderScreen,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof RegisterDeviceDecider>
+} as ComponentMeta<typeof AuthorizeRegisterDeciderScreen>
 
 const RegisterDeviceDeciderTemplate: ComponentStory<
-  typeof RegisterDeviceDecider
-> = (args) => {
-  return <RegisterDeviceDecider {...args} />
-}
-
-const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
-  typeof AppScreenRegisterDeviceDecider
+  typeof AuthorizeRegisterDeciderScreen
 > = (args) => {
   return (
     <Router>
-      <AppScreenRegisterDeviceDecider {...args} />
+      <AuthorizeRegisterDeciderScreen {...args} />
     </Router>
   )
 }
 
-const AuthorizeRegisterDeciderNewTemplate: ComponentStory<
-  typeof AuthorizeRegisterDecider
-> = (args) => {
-  return (
-    <Router>
-      <AuthorizeRegisterDecider {...args} />
-    </Router>
-  )
-}
+export const ResponsiveScreen = RegisterDeviceDeciderTemplate.bind({})
 
-export const Raw = RegisterDeviceDeciderTemplate.bind({})
-export const NewIframe = AuthorizeRegisterDeciderNewTemplate.bind({})
-export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
-
-Raw.args = {}
-NewIframe.args = {
-  hasPlatformAuthenticator: true,
-}
+ResponsiveScreen.args = {}

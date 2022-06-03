@@ -2,6 +2,7 @@ import React from "react"
 
 import { Button, H4 } from "@internet-identity-labs/nfid-sdk-react"
 
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
 import { ElementProps } from "frontend/types/react"
@@ -28,7 +29,12 @@ export const AuthorizeAppSingleAccount: React.FC<
       isLoading={isLoading}
       className="flex flex-col items-center"
     >
-      {applicationLogo && <img src={applicationLogo} alt="logo" />}
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
+      )}
       <H4 className="mt-4">Unlock NFID</H4>
       <p className="mt-2 text-sm">
         to continue{applicationName && ` to ${applicationName}`}

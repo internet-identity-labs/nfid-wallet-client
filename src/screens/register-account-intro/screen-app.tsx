@@ -2,6 +2,7 @@ import React from "react"
 
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { IconButton } from "frontend/design-system/atoms/button/icon-button"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
@@ -26,7 +27,12 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       className="flex flex-col items-center"
       isLoading={isLoading}
     >
-      {applicationLogo && <img src={applicationLogo} alt="" />}
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          appliactionName={applicationName}
+        />
+      )}
       <H5 className="mt-4">Sign in</H5>
       <p className="mt-3 text-center">
         Choose how you’d like to sign in to {applicationName}

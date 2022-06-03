@@ -50,11 +50,21 @@ const userNumberAtom = atom<bigint | undefined>(undefined)
 const loadingAtom = atom<loadingState>("initial")
 const delegationAtom = atom<SignedDelegation | undefined>(undefined)
 const domainAtom = atom<string | undefined>(undefined)
+const secretAtom = atom<string | undefined>(undefined)
 
+const useSecret = () => {
+  const [secret, setSecret] = useAtom(secretAtom)
+  React.useEffect(() => {
+    !secret && setSecret(uuid())
+  }, [secret, setSecret])
+
+  return secret
+}
 export const useUnknownDeviceConfig = () => {
   const [status, setStatus] = useAtom(loadingAtom)
   const [showRegister, setShowRegister] = useAtom(registerAtom)
   const [signedDelegation, setSignedDelegation] = useAtom(delegationAtom)
+  const secret = useSecret()
 
   const isIframe = useIsIframe()
 
@@ -87,13 +97,13 @@ export const useUnknownDeviceConfig = () => {
       applicationName: applicationName || "",
       applicationLogo: encodeURIComponent(applicationLogo || ""),
     }).toString()
-    return domain && pubKey
+    return domain && secret
       ? `${window.location.origin}${generatePath(
           AppScreenAuthorizeAppConstants.authorize,
-          { secret: uuid(), scope: domain },
+          { secret, scope: domain },
         )}?${query.toString()}`
       : null
-  }, [applicationLogo, applicationName, domain, pubKey])
+  }, [applicationLogo, applicationName, domain, secret])
 
   const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({
@@ -196,9 +206,11 @@ export const useUnknownDeviceConfig = () => {
 
   const handlePollForDelegate = React.useCallback(
     async (cancelPoll: () => void) => {
+      if (!secret) return
+
       const {
         body: [messages],
-      } = await getMessages(pubKey)
+      } = await getMessages(secret)
 
       if (messages && messages.length > 0) {
         const parsedMessages = messages.map((m: string) => JSON.parse(m))
@@ -238,7 +250,7 @@ export const useUnknownDeviceConfig = () => {
     [
       getMessages,
       handleLoginFromRemoteDelegation,
-      pubKey,
+      secret,
       setShowRegister,
       setSignedDelegation,
       setStatus,

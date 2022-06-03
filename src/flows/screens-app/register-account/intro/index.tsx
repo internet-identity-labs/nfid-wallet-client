@@ -17,7 +17,8 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   captchaPath,
 }) => {
   const { isLoading, setIsloading } = useIsLoading()
-  const { applicationName, createWebAuthNIdentity } = useMultipass()
+  const { applicationName, applicationLogo, createWebAuthNIdentity } =
+    useMultipass()
   const { navigate } = useNFIDNavigate()
 
   const handleCreateKeys = React.useCallback(async () => {
@@ -36,6 +37,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     <RegisterAccountIntro
       isLoading={isLoading}
       applicationName={applicationName}
+      applicationLogo={applicationLogo}
       onRegister={handleCreateKeys}
     />
   )

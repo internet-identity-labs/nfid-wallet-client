@@ -30,15 +30,21 @@ export class MultiWebAuthnIdentity extends SignIdentity {
    */
   public static fromCredentials(
     credentialData: CredentialData[],
+    withSecurityDevices?: boolean,
   ): MultiWebAuthnIdentity {
-    return new this(credentialData)
+    return new this(credentialData, withSecurityDevices)
   }
 
   public _actualIdentity?: WebAuthnIdentity
+  public _withSecurityDevices?: boolean
 
-  protected constructor(readonly credentialData: CredentialData[]) {
+  protected constructor(
+    readonly credentialData: CredentialData[],
+    withSecurityDevices?: boolean,
+  ) {
     super()
     this._actualIdentity = undefined
+    this._withSecurityDevices = withSecurityDevices
   }
 
   public getPublicKey(): PublicKey {
@@ -55,7 +61,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
         allowCredentials: this.credentialData.map((cd) => ({
           type: "public-key",
           id: cd.credentialId,
-          transports: ["internal"],
+          transports: [this._withSecurityDevices ? "usb" : "internal"],
         })),
         challenge: blob,
         userVerification: "discouraged",

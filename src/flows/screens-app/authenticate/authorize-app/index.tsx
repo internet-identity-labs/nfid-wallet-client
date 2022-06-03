@@ -23,7 +23,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const { userNumber } = useAccount()
   const { isLoading, setIsloading } = useIsLoading()
   const { secret, scope } = useParams()
-  const { nextPersonaId, accounts, createPersona } = usePersona()
+  const { nextPersonaId, accounts, createPersona, getPersona } = usePersona()
   const { remoteNFIDLogin } = useAuthorizeApp()
   const { isAuthenticated, login } = useAuthentication()
   const { applicationName, applicationLogo } = useMultipass()
@@ -32,6 +32,10 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
     useAuthorization({
       userNumber,
     })
+
+  React.useEffect(() => {
+    getPersona()
+  }, [getPersona])
 
   const isNFID = React.useMemo(() => scope === "NFID", [scope])
 

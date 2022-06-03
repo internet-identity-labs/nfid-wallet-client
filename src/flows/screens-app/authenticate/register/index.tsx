@@ -14,7 +14,8 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
   captchaPath,
 }) => {
   const { isLoading, setIsloading } = useIsLoading()
-  const { applicationName, createWebAuthNIdentity } = useMultipass()
+  const { applicationName, applicationLogo, createWebAuthNIdentity } =
+    useMultipass()
   const { navigate } = useNFIDNavigate()
 
   // NOTE: the `getChallenge` gets called twice whithout this ref.
@@ -44,6 +45,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     <RegisterAccountIntro
       isLoading={isLoading}
       applicationName={applicationName}
+      applicationLogo={applicationLogo}
       onRegister={handleCreateKeys}
     />
   )

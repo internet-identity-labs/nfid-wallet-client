@@ -22,9 +22,9 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   )
 }
 
-export const IFrameScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
+export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 
-IFrameScreen.args = {
+AppScreen.args = {
   applicationName: "OpenChat",
   recoveryPhrase:
     "1234567 dumb slender embrace pulp child immense draw sample tiger fix ozone salon social tenant word remain license boy practice tunnel enforce dice fence yard",

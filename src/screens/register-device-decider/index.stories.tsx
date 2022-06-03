@@ -45,3 +45,6 @@ export const NewIframe = AuthorizeRegisterDeciderNewTemplate.bind({})
 export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 
 Raw.args = {}
+NewIframe.args = {
+  hasPlatformAuthenticator: true,
+}

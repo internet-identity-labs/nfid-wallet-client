@@ -15,7 +15,6 @@ import { useCaptcha } from "./hook"
 import { useMultipass } from 'frontend/hooks/use-multipass'
 import { useNavigate } from 'react-router-dom'
 import { ProfileConstants } from 'frontend/flows/screens-app/profile/routes'
-import { ModalSuccess } from '../register-new-from-delegate/modal-success'
 
 interface CaptchaProps extends ElementProps<HTMLDivElement> {
   successPath?: string;
@@ -54,19 +53,12 @@ export const Captcha: React.FC<CaptchaProps> = ({
     })
   
   const navigate = useNavigate()
-  const [showModal, setShowModal] = React.useState(false);
 
   const onSubmit = React.useMemo(() => (form : any) => {
     registerAnchor(form)
     .then((result) => {
       if (result.kind === "loginSuccess") {
-        // If we are creating new keys, we must perform a second challenge. However, when using existing keys, we do not. So, we redirect to the profile
-        // TODO: "is key creation" boolean
-        if (true) {
-          setShowModal(true);
-        } else {
-          navigate(successPath);
-        }
+        navigate(successPath);
       } else {
         console.error(result)
       }
@@ -78,16 +70,11 @@ export const Captcha: React.FC<CaptchaProps> = ({
   
   const { applicationLogo, applicationName } = useMultipass();
 
-  const handleModalClick = React.useMemo(() => () => {
-    navigate(successPath);
-  }, []);
-
   return (
     <ScreenResponsive
       className={clsx("flex flex-col items-center", className)}
       isLoading={loading}
     >
-      {showModal && <ModalSuccess onClick={handleModalClick} device='device' />}
       {applicationLogo && <img src={applicationLogo} alt="logo" />}
       <H5 className="mt-4">Complete NFID registration</H5>
       <p className="mt-1 text-center">to continue {applicationName && `to ${applicationName}`}</p>

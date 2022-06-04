@@ -66,12 +66,19 @@ export const AppScreenRegisterDeviceDecider: React.FC<
     userNumber,
   ])
 
+  const handleCreateSecurityDevice = React.useCallback(async () => {
+    setIsLoading(true)
+    await createSecurityDevice(userNumber, "authentication")
+    handleSendDelegate()
+    setIsLoading(false)
+  }, [createSecurityDevice, handleSendDelegate, userNumber])
+
   return (
     <AuthorizeRegisterDeciderScreen
       onLogin={handleLogin}
       isLoading={isLoading}
       onRegisterPlatformDevice={handleRegister}
-      onRegisterSecurityDevice={createSecurityDevice}
+      onRegisterSecurityDevice={handleCreateSecurityDevice}
     />
   )
 }

@@ -8,8 +8,6 @@ import { Input } from "frontend/design-system/atoms/input"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
-import { anchorRules } from "frontend/utils/validations"
-
 import QRCode from "./assets/qrcode.svg"
 import SecurityKey from "./assets/security-key.svg"
 
@@ -89,13 +87,9 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           className="w-full mt-8"
           {...register("userNumber", {
             required: "userNumber is required",
-            pattern: {
-              value: anchorRules.regex,
-              message: anchorRules.errorMessages.pattern,
-            },
             minLength: {
-              value: anchorRules.minLength,
-              message: anchorRules.errorMessages.length,
+              value: 5,
+              message: "invalid userNumber",
             },
           })}
         />

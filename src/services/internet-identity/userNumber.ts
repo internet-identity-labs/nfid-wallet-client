@@ -1,7 +1,7 @@
 export const getUserNumber = (
   userNumber: string | null,
 ): bigint | undefined => {
-  return userNumber !== null ? BigInt(userNumber) : undefined
+  return userNumber ? BigInt(userNumber) : undefined
 }
 
 export const setUserNumber = (userNumber: bigint | undefined): void => {

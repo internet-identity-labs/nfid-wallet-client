@@ -2,7 +2,9 @@ import { Menu } from "@headlessui/react"
 import { DotsIcon } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+import { Link } from "react-router-dom"
 
+import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 
 interface MenuButtonProps {
@@ -18,7 +20,7 @@ export const ProfileHomeMenu: React.FC<MenuButtonProps> = ({ className }) => {
       style={{ zIndex: 1 }}
     >
       <div>
-        <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium sm:bg-white rounded-md hover:bg-gray-50 focus:outline-none">
+        <Menu.Button className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium rounded-md sm:bg-white hover:bg-gray-50 focus:outline-none">
           <DotsIcon className="rotate-90" />
         </Menu.Button>
       </div>
@@ -27,11 +29,24 @@ export const ProfileHomeMenu: React.FC<MenuButtonProps> = ({ className }) => {
         <div>
           <Menu.Item>
             {({ active }) => (
+              <Link
+                to={`${ProfileConstants.base}/${ProfileConstants.edit}`}
+                className={clsx(
+                  active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                  "block px-4 py-2 text-sm cursor-pointer",
+                )}
+              >
+                Edit profile
+              </Link>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
               <div
                 onClick={logout}
                 className={clsx(
                   active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                  "text-red-600 block px-4 py-2 text-sm",
+                  "text-red-600 block px-4 py-2 text-sm cursor-pointer",
                 )}
               >
                 Log out

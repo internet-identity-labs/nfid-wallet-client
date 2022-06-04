@@ -5,6 +5,7 @@ import { Link, Navigate } from "react-router-dom"
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { P } from "frontend/design-system/atoms/typography/paragraph"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
@@ -38,8 +39,13 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
           WebkitBackdropFilter: "blur(0px)",
         }}
       >
-        {applicationLogo ? <img src={applicationLogo} alt="logo" /> : null}
-        <H5 className="mt-4">Sign in</H5>
+        {applicationLogo ? (
+          <ApplicationLogo
+            src={applicationLogo}
+            applicationName={applicationName}
+          />
+        ) : null}
+        <H5>Sign in</H5>
         <P className="mt-2 text-center max-w-[320px]">
           Use passkey from a device with a camera to sign in to{" "}
           {applicationName}

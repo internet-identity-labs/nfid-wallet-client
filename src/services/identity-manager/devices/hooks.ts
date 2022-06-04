@@ -350,41 +350,57 @@ export const useDevices = () => {
     return `${userNumber} ${recovery}`
   }, [createRecoveryDevice, getRecoveryDevices, internetIdentity, userNumber])
 
-  const createSecurityDevice = React.useCallback(async () => {
-    if (!userNumber) throw new Error("userNumber missing")
-    if (!internetIdentity) throw new Error("internetIdentity missing")
+  const createSecurityDevice = React.useCallback(
+    async (
+      userNumberOverwrite?: bigint,
+      purpose: "recover" | "authentication" = "recover",
+    ) => {
+      const actualUserNumber = userNumber || userNumberOverwrite
+      if (!actualUserNumber) throw new Error("userNumber missing")
+      if (!internetIdentity) throw new Error("internetIdentity missing")
 
-    const devices = await IIConnection.lookupAll(userNumber)
-    const deviceName = "Security Key"
+      const devices = await IIConnection.lookupAll(actualUserNumber)
+      const deviceName = "Security Key"
 
-    let recoverIdentity
-    try {
-      recoverIdentity = await WebAuthnIdentity.create({
-        publicKey: creationOptions(devices, "cross-platform"),
-      })
-    } catch (error) {
-      console.error(error)
-      return
-    }
+      let recoverIdentity
+      try {
+        recoverIdentity = await WebAuthnIdentity.create({
+          publicKey: creationOptions(devices, "cross-platform"),
+        })
+      } catch (error) {
+        console.error(error)
+        return
+      }
 
-    await Promise.all([
-      internetIdentity.add(
-        userNumber,
-        deviceName,
-        { cross_platform: null },
-        { recovery: null },
-        recoverIdentity.getPublicKey().toDer(),
-        recoverIdentity.rawId,
-      ),
-      createRecoveryDevice(
-        recoverIdentity.getPublicKey().toDer(),
-        "usb",
-        deviceName,
-      ),
-    ])
+      await Promise.all([
+        internetIdentity.add(
+          actualUserNumber,
+          deviceName,
+          { cross_platform: null },
+          purpose && purpose === "recover"
+            ? { recovery: null }
+            : { authentication: null },
+          recoverIdentity.getPublicKey().toDer(),
+          recoverIdentity.rawId,
+        ),
+        createRecoveryDevice(
+          recoverIdentity.getPublicKey().toDer(),
+          "usb",
+          deviceName,
+        ),
+      ])
 
-    getRecoveryDevices()
-  }, [createRecoveryDevice, getRecoveryDevices, internetIdentity, userNumber])
+      getRecoveryDevices()
+      getDevices()
+    },
+    [
+      createRecoveryDevice,
+      getDevices,
+      getRecoveryDevices,
+      internetIdentity,
+      userNumber,
+    ],
+  )
 
   React.useEffect(() => {
     handleLoadDevices()

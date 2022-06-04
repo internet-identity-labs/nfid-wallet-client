@@ -21,13 +21,13 @@ export const phoneRules: IValidationRules = {
 }
 
 export const nameRules = {
-  regex: /^[a-zA-Z0-9 ]{1,30}$/,
-  minLength: 1,
+  regex: /^[a-zA-Z0-9 ]{5,30}$/,
+  minLength: 5,
   maxLength: 30,
   errorMessages: {
     pattern: "Full name must only contain letters and numbers",
     required: "Full name is required",
-    length: "Full name must be between 1 and 30 characters long",
+    length: "Full name must be between 5 and 30 characters long",
   },
 }
 

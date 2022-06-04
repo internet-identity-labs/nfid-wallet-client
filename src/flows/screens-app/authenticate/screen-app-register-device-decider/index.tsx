@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { AppScreenRegisterDeviceDecider as AppScreenRegisterDeviceDeciderRaw } from "frontend/screens/register-device-decider"
+import { AuthorizeRegisterDeciderScreen } from "frontend/screens/register-device-decider"
 import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
@@ -14,7 +14,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
   AppScreenRegisterDeviceProps
 > = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { recoverDevice } = useDevices()
+  const { recoverDevice, createSecurityDevice } = useDevices()
   const { createAccount, recoverAccount } = useAccount()
   const { getPersona } = usePersona()
   const { internetIdentity, identityManager } = useAuthentication()
@@ -66,11 +66,19 @@ export const AppScreenRegisterDeviceDecider: React.FC<
     userNumber,
   ])
 
+  const handleCreateSecurityDevice = React.useCallback(async () => {
+    setIsLoading(true)
+    await createSecurityDevice(userNumber, "authentication")
+    handleSendDelegate()
+    setIsLoading(false)
+  }, [createSecurityDevice, handleSendDelegate, userNumber])
+
   return (
-    <AppScreenRegisterDeviceDeciderRaw
-      isLoading={isLoading}
-      onRegister={handleRegister}
+    <AuthorizeRegisterDeciderScreen
       onLogin={handleLogin}
+      isLoading={isLoading}
+      onRegisterPlatformDevice={handleRegister}
+      onRegisterSecurityDevice={handleCreateSecurityDevice}
     />
   )
 }

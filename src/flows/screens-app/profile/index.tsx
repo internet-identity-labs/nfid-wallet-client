@@ -105,17 +105,17 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   return (
     <Profile
       account={account}
+      accounts={allAccounts}
       applications={applications}
+      devices={devices}
+      hasPoa={hasPoa}
+      onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
       onDeviceDelete={handleDeleteDevice}
       onDeviceUpdate={handleDeviceUpdate}
-      hasPoa={hasPoa}
-      devices={devices}
-      accounts={allAccounts}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
-      recoveryMethods={recoveryDevices}
-      onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
       onRegisterRecoveryKey={handleRegisterRecoveryKey}
+      recoveryMethods={recoveryDevices}
     />
   )
 }

@@ -1,103 +1,98 @@
-import { Button, Loader } from "@internet-identity-labs/nfid-sdk-react"
-import { RadioButton } from "@internet-identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 
-import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
-import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { H5 } from "frontend/design-system/atoms/typography"
+import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
+
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { ElementProps } from "frontend/types/react"
 
-interface RegisterDeviceDeciderProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  onRegister: () => void
-  onLogin: () => void
-  iframe?: boolean
-}
-
-export const RegisterDeviceDecider: React.FC<RegisterDeviceDeciderProps> = ({
-  onRegister,
-  onLogin,
-  iframe,
-}) => {
-  const {
-    platform: { device, authenticator: platformAuth },
-  } = useDeviceInfo()
-
-  const [linkAccount, setLinkAccount] = React.useState(
-    "rb_link_account_register",
-  )
-
-  const handleClick = () => {
-    if (linkAccount === "rb_link_account_register") {
-      onRegister()
-    }
-
-    if (linkAccount === "rb_link_account_login") {
-      onLogin()
-    }
-  }
-
-  const title = "Log in faster on this device"
-
-  return (
-    <>
-      {iframe ? (
-        <H5 className="mb-4">{title}</H5>
-      ) : (
-        <H2 className="mb-4">{title}</H2>
-      )}
-
-      <div>
-        Trust this {device}? You can quickly and securely log in the next time
-        using this device's {platformAuth}.
-      </div>
-
-      <div className="py-5">
-        <RadioButton
-          checked={linkAccount === "rb_link_account_register"}
-          name={"rb_link_account_register"}
-          text={"Yes, I trust this device"}
-          value={"rb_link_account_register"}
-          onChange={() => setLinkAccount("rb_link_account_register")}
-        />
-        <RadioButton
-          checked={linkAccount === "rb_link_account_login"}
-          name={"rb_link_account_login"}
-          text={"Just log me in"}
-          value={"rb_link_account_login"}
-          onChange={() => setLinkAccount("rb_link_account_login")}
-        />
-      </div>
-
-      <div className="mt-6">
-        <Button secondary block={iframe} large={!iframe} onClick={handleClick}>
-          Continue
-        </Button>
-      </div>
-    </>
-  )
-}
-
-interface AppScreenRegisterDeviceDeciderProps
-  extends RegisterDeviceDeciderProps {
+interface AuthorizeRegisterDeciderProps extends ElementProps<HTMLDivElement> {
+  onLogin: () => Promise<void> | void
+  onRegisterPlatformDevice: () => Promise<void>
+  onRegisterSecurityDevice: () => Promise<void>
   isLoading: boolean
 }
 
-export const AppScreenRegisterDeviceDecider: React.FC<
-  AppScreenRegisterDeviceDeciderProps
-> = ({ onRegister, onLogin, isLoading }) => (
-  <AppScreen showLogo isFocused>
-    <main className={clsx("flex flex-1")}>
-      <div className={clsx(CONTAINER_CLASSES)}>
-        <div className="grid h-full grid-cols-12">
-          <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
-            <RegisterDeviceDecider onRegister={onRegister} onLogin={onLogin} />
+export const AuthorizeRegisterDeciderScreen: React.FC<
+  AuthorizeRegisterDeciderProps
+> = ({
+  isLoading,
+  className,
+  onLogin,
+  onRegisterPlatformDevice,
+  onRegisterSecurityDevice,
+}) => {
+  const {
+    platform: { device, authenticator: platformAuth },
+    isWebAuthNAvailable,
+  } = useDeviceInfo()
 
-            <Loader isLoading={isLoading} fullscreen />
-          </div>
-        </div>
+  return (
+    <ScreenResponsive
+      className={clsx("flex flex-col items-center", className)}
+      isLoading={isLoading}
+    >
+      <H5>Sign in faster on this device</H5>
+      <p className="mt-2 text-center">
+        {isWebAuthNAvailable
+          ? `Trust this ${device}? You can quickly and securely sign in next time using this device's ${platformAuth}.`
+          : "You can quickly and securely sign in next time with a security key if you register one now."}
+      </p>
+      <div className="flex flex-col w-full space-y-1 mt-7">
+        {isWebAuthNAvailable ? (
+          <>
+            <DeviceRaw
+              title={"Trust this device"}
+              subtitle={`Use ${platformAuth} to continue`}
+              handler={onRegisterPlatformDevice}
+            />
+            <DeviceRaw
+              title={"Don’t trust this device"}
+              subtitle={"This device is public or someone else’s"}
+              handler={onLogin}
+            />
+          </>
+        ) : (
+          <>
+            <DeviceRaw
+              title={"Register my security key"}
+              subtitle={"Sign in faster with your security key"}
+              handler={onRegisterSecurityDevice}
+            />
+            <DeviceRaw
+              title={"Just log me in"}
+              subtitle={"I don’t want to register a security key now"}
+              handler={onLogin}
+            />
+          </>
+        )}
       </div>
-    </main>
-  </AppScreen>
-)
+    </ScreenResponsive>
+  )
+}
+
+interface DeviceRawProps {
+  title: string
+  subtitle: string
+  handler: () => Promise<void> | void
+}
+
+export const DeviceRaw: React.FC<DeviceRawProps> = ({
+  title,
+  subtitle,
+  handler,
+}) => {
+  return (
+    <div
+      className={clsx(
+        "w-full py-[10px] px-4 border border-gray-200 rounded-md",
+        "hover:bg-blue-50 hover:border-blue-500 cursor-pointer transition-all",
+      )}
+      onClick={handler}
+    >
+      <p className="text-sm">{title}</p>
+      <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>
+    </div>
+  )
+}

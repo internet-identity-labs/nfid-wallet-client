@@ -67,6 +67,7 @@ export const Profile: React.FC<ProfileProps> = ({
           <ProfileHomeMenu className="md:hidden" />
         </div>
       }
+      profileScreen
     >
       <main
         className={clsx(

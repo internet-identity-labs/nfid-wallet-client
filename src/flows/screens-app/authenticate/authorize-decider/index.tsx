@@ -42,6 +42,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     async (userNumber: number) => {
       setIsLoading(true)
       const response = await login(BigInt(userNumber), withSecurityDevices)
+
       if (response.tag === "ok") {
         withSecurityDevices && setShouldStoreLocalAccount(false)
         setIsLoading(false)

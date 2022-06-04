@@ -52,9 +52,9 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
         </P>
         <Link to={url}>
           <QRCode
-            className="p-6 rounded-[10px] w-48 h-48 mt-8"
+            className="p-6 rounded-[10px] w-48 h-48 mt-8 bg-red-300"
             content={url}
-            options={{ width: 192 }}
+            options={{ width: 143 }}
           />
         </Link>
       </div>

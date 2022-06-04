@@ -1,8 +1,8 @@
-import { P, Button, CopyIcon, H4 } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 
-import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
+import { P, Button, CopyIcon, H4 } from "@internet-identity-labs/nfid-sdk-react"
+
 import { Input } from "frontend/design-system/atoms/input"
 import { ProfileScreen } from "frontend/design-system/templates/ProfileScreen"
 
@@ -26,7 +26,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
 
   return (
     <ProfileScreen>
-      <div className={clsx("md:max-w-[80%]", CONTAINER_CLASSES)}>
+      <div className={clsx("md:max-w-[80%] px-5")}>
         <H4 className="mt-5 md:mt-0">Recovery phrase</H4>
         <p className="mt-4 text-sm md:mt-14">
           This recovery phrase restores your NFID in case the devices you

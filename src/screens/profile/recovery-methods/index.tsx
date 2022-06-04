@@ -55,7 +55,9 @@ export const RecoveryMethodsList: React.FC<RecoveryMethodsListProps> = ({
   }
 
   return (
-    <div className={clsx("px-5 md:px-16 pt-8", "bg-white flex-1 md:pt-16")}>
+    <div
+      className={clsx("px-5 md:px-16 pt-8", "bg-white flex-1 md:pt-16 pb-8")}
+    >
       {isModalVisible && (
         <ModalAdvanced
           onClose={() => setIsModalVisible(false)}

@@ -1,9 +1,11 @@
-import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
+
 import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
+
 import { useScroll } from "frontend/hooks/use-scroll"
 
 import { NavigationItems as NavigationItemsDefault } from "./navigation-items"
@@ -33,7 +35,9 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
         scrollY < 50 && "opacity-100 bg-transparent",
       )}
     >
-      <div className={clsx(CONTAINER_CLASSES)}>
+      <div
+        className={clsx(!profileScreen ? CONTAINER_CLASSES : "px-5 md:px-16")}
+      >
         <div className="flex items-center justify-between">
           {showLogo && (
             <div className="flex items-center ">

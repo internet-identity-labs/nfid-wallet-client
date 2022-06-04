@@ -92,6 +92,7 @@ export const useAuthentication = () => {
           result?.internetIdentity?.delegationIdentity.getPrincipal(),
         )
         setError(null)
+        setIsLoading(false)
         return result
       }
 

@@ -56,12 +56,17 @@ export class MultiWebAuthnIdentity extends SignIdentity {
   }
 
   public async sign(blob: BinaryBlob): Promise<BinaryBlob> {
+    const transports = this._withSecurityDevices
+      ? ["usb", "nfc", "ble"]
+      : ["internal"]
+
     const result = (await navigator.credentials.get({
       publicKey: {
+        // @ts-ignore
         allowCredentials: this.credentialData.map((cd) => ({
           type: "public-key",
           id: cd.credentialId,
-          transports: [this._withSecurityDevices ? "usb" : "internal"],
+          transports: [...transports],
         })),
         challenge: blob,
         userVerification: "discouraged",

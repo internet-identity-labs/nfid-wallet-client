@@ -151,7 +151,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 <div className="text-gray-700">{device.label}</div>
                 <div className="my-1 text-sm text-gray-400">
                   {device.lastUsed
-                    ? format(device.lastUsed, "eee d, yyyy 'on '")
+                    ? format(device.lastUsed, "MMM d, yyyy 'on '")
                     : null}
                   {device.browser}
                 </div>

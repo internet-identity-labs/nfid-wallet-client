@@ -22,6 +22,7 @@ interface Props
   showGradientBar?: boolean
   isLoading?: boolean
   loadingMessage?: string
+  navigationBar?: boolean
   profileScreen?: boolean
 }
 
@@ -36,18 +37,20 @@ export const AppScreen: React.FC<Props> = ({
   showGradientBar = false,
   isLoading,
   loadingMessage,
+  navigationBar = true,
   profileScreen = false,
 }) => {
   return (
     <Shell bubbleOptions={bubbleOptions}>
       <div className="relative flex flex-col w-full min-h-screen mx-auto min-h-screen-ios overflow-clip">
         {showGradientBar && <NFIDGradientBar />}
-        <NavigationBar
-          navigationItems={navigationItems}
-          isFocused={isFocused}
-          showLogo={showLogo}
-          profileScreen={profileScreen}
-        />
+        {navigationBar && (
+          <NavigationBar
+            navigationItems={navigationItems}
+            isFocused={isFocused}
+            showLogo={showLogo}
+          />
+        )}
         {title && <NavigationHeader title={title} description={description} />}
         {children}
         {isLoading && (

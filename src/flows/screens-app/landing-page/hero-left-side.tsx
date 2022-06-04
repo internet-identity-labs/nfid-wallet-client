@@ -36,7 +36,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
             {isQRCode && isMobile && (
               <img src={MobileHero} alt="" className="mb-8 min-h-[300px]" />
             )}
-            <h1 className="font-bold text-3xl lg:text-[54px] lg:leading-[110%]">
+            <h2 className="font-bold text-3xl lg:text-[54px] lg:leading-[110%]">
               <span
                 style={{
                   WebkitTextFillColor: "transparent",
@@ -48,7 +48,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                 Secure your data
               </span>{" "}
               <br /> with one touch
-            </h1>
+            </h2>
             {!isQRCode && isMobile && (
               <h2 className="leading-[1.5rem]">
                 The decentralized one-touch multi-factor identity provider and

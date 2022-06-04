@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
-import { AppScreenRegisterDeviceDecider } from "frontend/screens/register-device-decider"
+import { AuthorizeRegisterDeciderScreen } from "frontend/screens/register-device-decider"
 import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
@@ -19,11 +19,12 @@ export const RouterRegisterDeviceDecider: React.FC<
   AppScreenRegisterDeviceDeciderProps
 > = ({ registerSuccessPath }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { recoverDevice } = useDevices()
+  const { recoverDevice, createSecurityDevice } = useDevices()
   const { readAccount, recoverAccount, createAccount } = useAccount()
   const { getPersona } = usePersona()
   const { identityManager, internetIdentity } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
+
   const {
     browser: { name: browserName },
     platform: { os: deviceName },
@@ -99,10 +100,11 @@ export const RouterRegisterDeviceDecider: React.FC<
   ])
 
   return (
-    <AppScreenRegisterDeviceDecider
+    <AuthorizeRegisterDeciderScreen
       onLogin={handleLogin}
       isLoading={isLoading}
-      onRegister={handleRegister}
+      onRegisterPlatformDevice={handleRegister}
+      onRegisterSecurityDevice={createSecurityDevice}
     />
   )
 }

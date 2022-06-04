@@ -153,11 +153,9 @@ export const useAccount = () => {
         name: newAccount.name ? [newAccount.name] : [],
       })
 
-      shouldStoreLocalAccount
-        ? setAccount(newAccount)
-        : setMemoryAccount(newAccount)
+      setAccount(newAccount)
     },
-    [account, setAccount, setMemoryAccount, shouldStoreLocalAccount],
+    [account, setAccount],
   )
 
   const verifyPhonenumber = async (phoneNumber: string) => {

@@ -21,7 +21,7 @@ export const phoneRules: IValidationRules = {
 }
 
 export const nameRules = {
-  regex: /^[a-zA-Z0-9 ]{5,30}$/,
+  regex: /^[a-zA-Z0-9 ]{1,30}$/,
   minLength: 1,
   maxLength: 30,
   errorMessages: {

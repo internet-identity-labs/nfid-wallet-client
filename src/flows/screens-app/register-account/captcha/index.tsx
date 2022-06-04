@@ -74,21 +74,28 @@ export const RegisterAccountCaptcha: React.FC<
     if (isAuthenticated && userNumber) {
       if (!authorizationStateRef.current.personaRequested) {
         authorizationStateRef.current.personaRequested = true
-        createPersona({
-          domain: `${window.location.protocol}//${scope}`,
-        })
+        !isNFID &&
+          createPersona({
+            domain: `${window.location.protocol}//${scope}`,
+          })
       }
       if (!authorizationStateRef.current.delegateRequested) {
         authorizationStateRef.current.delegateRequested = true
-        isNFID ? handleNFIDLogin() : handleAuthorizePersona()
+        isRemoteRegistration
+          ? isNFID
+            ? handleNFIDLogin()
+            : handleAuthorizePersona()
+          : handleNavigateToProfile()
       }
     }
   }, [
     createPersona,
     handleAuthorizePersona,
     handleNFIDLogin,
+    handleNavigateToProfile,
     isAuthenticated,
     isNFID,
+    isRemoteRegistration,
     scope,
     userNumber,
   ])

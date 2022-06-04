@@ -57,6 +57,7 @@
     "react-scripts": "5.0.1",
     "react-scroll-parallax": "^3.0.5",
     "react-scrollspy": "^3.4.3",
+    "react-verification-code-input": "^1.2.9",
     "react-tooltip": "^4.2.21",
     "stream-browserify": "3.0.0",
     "swiper": "^8.0.7",

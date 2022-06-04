@@ -572,6 +572,7 @@ const requestFEDelegation = async (
 ): Promise<FrontendDelegation> => {
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
 
+  // TODO: CHECK IF THIS IS SAVE TO DO
   return {
     delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
     chain,
@@ -598,7 +599,6 @@ const requestFEDelegationChain = async (
       ],
     },
   )
-
   return { chain, sessionKey }
 }
 

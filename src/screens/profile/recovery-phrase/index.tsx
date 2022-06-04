@@ -3,7 +3,6 @@ import React from "react"
 
 import { P, Button, CopyIcon, H4 } from "@internet-identity-labs/nfid-sdk-react"
 
-import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
 import { Input } from "frontend/design-system/atoms/input"
 import { ProfileScreen } from "frontend/design-system/templates/ProfileScreen"
 

@@ -50,8 +50,8 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
           Use passkey from a device with a camera to sign in to{" "}
           {applicationName}
         </P>
-        <Link to={url} className="bg-gray-50 p-6 rounded-[10px] w-48 h-48 mt-8">
-          <QRCode content={url} options={{ width: 143 }} />
+        <Link to={url} className="bg-gray-50 p-6 rounded-[10px] mt-8">
+          <QRCode content={url} options={{ width: 192 }} />
         </Link>
       </div>
     </ScreenResponsive>

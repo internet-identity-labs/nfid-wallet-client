@@ -2,9 +2,10 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { AuthorizeRegisterDeciderScreen } from "."
+import { AppScreenRegisterDeviceDecider } from "../../flows/screens-app/authenticate/screen-app-register-device-decider"
 
 export default {
-  title: "Screens/AuthorizeRegisterDecider",
+  title: "Screens/AuthorizeRegisterDeciderScreen",
   component: AuthorizeRegisterDeciderScreen,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
@@ -15,13 +16,21 @@ export default {
 const RegisterDeviceDeciderTemplate: ComponentStory<
   typeof AuthorizeRegisterDeciderScreen
 > = (args) => {
+  return <AuthorizeRegisterDeciderScreen {...args} />
+}
+
+const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
+  typeof AppScreenRegisterDeviceDecider
+> = (args) => {
   return (
     <Router>
-      <AuthorizeRegisterDeciderScreen {...args} />
+      <AppScreenRegisterDeviceDecider {...args} />
     </Router>
   )
 }
 
-export const ResponsiveScreen = RegisterDeviceDeciderTemplate.bind({})
+export const Raw = RegisterDeviceDeciderTemplate.bind({})
 
-ResponsiveScreen.args = {}
+Raw.args = {}
+
+export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})

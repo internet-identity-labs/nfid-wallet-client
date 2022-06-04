@@ -16,6 +16,8 @@ import {
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
+import { nameRules } from "frontend/utils/validations"
+
 interface Account {
   anchor: string
   name?: string
@@ -33,7 +35,11 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
   onSubmit,
   isLoading = false,
 }) => {
-  const { register, handleSubmit } = useForm({
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = useForm({
     defaultValues: {
       name: account?.name,
     },
@@ -99,7 +105,22 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
             <div className="space-y-2">
               <Input
                 type="text"
-                {...register("name")}
+                errorText={errors.name?.message}
+                {...register("name", {
+                  required: nameRules.errorMessages.required,
+                  pattern: {
+                    value: nameRules.regex,
+                    message: nameRules.errorMessages.pattern,
+                  },
+                  minLength: {
+                    value: nameRules.minLength,
+                    message: nameRules.errorMessages.length,
+                  },
+                  maxLength: {
+                    value: nameRules.maxLength,
+                    message: nameRules.errorMessages.length,
+                  },
+                })}
                 labelText="Full name"
                 pattern="[A-Za-z]"
                 onChange={(e) => {

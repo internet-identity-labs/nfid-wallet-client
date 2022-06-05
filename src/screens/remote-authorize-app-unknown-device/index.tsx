@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import React from "react"
-import { Link, Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
@@ -50,9 +50,9 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
           Use passkey from a device with a camera to sign in to{" "}
           {applicationName}
         </P>
-        <Link to={url} className="bg-gray-50 p-6 rounded-[10px] mt-8">
+        <div className="bg-gray-50 p-6 rounded-[10px] mt-8">
           <QRCode content={url} options={{ width: 192 }} />
-        </Link>
+        </div>
       </div>
     </ScreenResponsive>
   ) : showRegister ? (

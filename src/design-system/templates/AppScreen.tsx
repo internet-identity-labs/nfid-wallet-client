@@ -1,4 +1,5 @@
 import React from "react"
+import sticky from "stickyfilljs"
 
 import { Loader, NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -40,9 +41,15 @@ export const AppScreen: React.FC<Props> = ({
   profileScreen = false,
   navigationBar = true,
 }) => {
+  React.useEffect(() => {
+    // Needed to enable position: sticky polyfills in all browsers
+    // @ts-ignore
+    sticky.forceSticky()
+  }, [])
+
   return (
     <Shell bubbleOptions={bubbleOptions}>
-      <div className="relative flex flex-col w-full min-h-screen mx-auto min-h-screen-ios overflow-clip">
+      <div className="relative flex flex-col w-full min-h-screen mx-auto overflow-hidden min-h-screen-ios">
         {showGradientBar && <NFIDGradientBar />}
         {navigationBar && (
           <NavigationBar

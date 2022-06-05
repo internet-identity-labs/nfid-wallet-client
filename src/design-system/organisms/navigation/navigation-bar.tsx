@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 import { Link } from "react-router-dom"
+import sticky from "stickyfilljs"
 
 import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -24,12 +25,17 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
   profileScreen = false,
 }) => {
   const { scrollY } = useScroll()
+  const navbar = React.useRef(null)
+
+  React.useEffect(() => {
+    navbar.current && sticky.add(navbar.current)
+  }, [navbar])
 
   return (
     <header
+      ref={navbar}
       className={clsx(
         "flex-none sticky top-0 z-40 py-5",
-        "sm:pb-9",
         profileScreen && "md:p-0 md:absolute",
         scrollY > 50 && "shadow-gray bg-white",
         scrollY < 50 && "opacity-100 bg-transparent",

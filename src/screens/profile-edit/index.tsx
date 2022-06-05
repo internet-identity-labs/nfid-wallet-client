@@ -57,6 +57,7 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
       }}
       navigationBar={false}
       isLoading={isLoading}
+      profileScreen
     >
       <main
         className={clsx(

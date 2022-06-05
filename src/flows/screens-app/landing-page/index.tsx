@@ -7,6 +7,7 @@ import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
 import { Accordion } from "frontend/design-system/atoms/accordion"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -23,9 +24,9 @@ import Icon_pink from "./assets/nfid_pink.svg"
 import { Footer } from "./footer"
 import { HeroLeftSide } from "./hero-left-side"
 import { HeroRightSide } from "./hero-right-side"
+import "./index.css"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
-import './index.css'
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -63,7 +64,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
             >
               <section
                 id="home"
-                className="grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10"
+                className="grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 scroll-mt-20"
               >
                 <div className="relative">
                   <HeroLeftSide isQRCode={!account} />

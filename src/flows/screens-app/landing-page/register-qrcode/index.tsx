@@ -1,9 +1,8 @@
-import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { QRCodeRenderersOptions } from "qrcode"
 import React, { CSSProperties } from "react"
-import { Link } from "react-router-dom"
 
-import { NFIDRegisterAccountConstants } from "frontend/flows/screens-app/register-account/routes"
+import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
+
 import { useInterval } from "frontend/hooks/use-interval"
 
 import "./index.css"
@@ -25,13 +24,8 @@ export const RegisterQRCode: React.FC<RegisterQRCodeProps> = ({
   useInterval(handlePollForDelegate, 2000)
 
   return (
-    <Link
-      to={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.account}`}
-      rel="noreferrer"
-      className={className}
-      style={style}
-    >
+    <div className={className} style={style}>
       <QRCode options={options} content={url} />
-    </Link>
+    </div>
   )
 }

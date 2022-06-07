@@ -30,5 +30,6 @@ export default async (
 
   await checkIfElementExists(selector2)
 
+  await browser.pause(4000);
   await $(selector2)[method]()
 }

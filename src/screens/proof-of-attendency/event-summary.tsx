@@ -26,7 +26,7 @@ export const EventSummary: React.FC<EventSummaryProps> = ({ children }) => {
       </div>
 
       <div className="max-w-2xl">
-        <div className="swiper-title">
+        <div className="mb-5 font-bold sm:text-title text-titleMobile">
           <span
             className="clip-text whitespace-nowrap"
             style={{

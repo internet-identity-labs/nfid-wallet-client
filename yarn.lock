@@ -2279,6 +2279,81 @@
   version "1.1.0"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.1.0.tgz"
 
+"@sentry/browser@6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-6.19.7.tgz#a40b6b72d911b5f1ed70ed3b4e7d4d4e625c0b5f"
+  integrity sha512-oDbklp4O3MtAM4mtuwyZLrgO1qDVYIujzNJQzXmi9YzymJCuzMLSRDvhY83NNDCRxf0pds4DShgYeZdbSyKraA==
+  dependencies:
+    "@sentry/core" "6.19.7"
+    "@sentry/types" "6.19.7"
+    "@sentry/utils" "6.19.7"
+    tslib "^1.9.3"
+
+"@sentry/core@6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-6.19.7.tgz#156aaa56dd7fad8c89c145be6ad7a4f7209f9785"
+  integrity sha512-tOfZ/umqB2AcHPGbIrsFLcvApdTm9ggpi/kQZFkej7kMphjT+SGBiQfYtjyg9jcRW+ilAR4JXC9BGKsdEQ+8Vw==
+  dependencies:
+    "@sentry/hub" "6.19.7"
+    "@sentry/minimal" "6.19.7"
+    "@sentry/types" "6.19.7"
+    "@sentry/utils" "6.19.7"
+    tslib "^1.9.3"
+
+"@sentry/hub@6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/hub/-/hub-6.19.7.tgz#58ad7776bbd31e9596a8ec46365b45cd8b9cfd11"
+  integrity sha512-y3OtbYFAqKHCWezF0EGGr5lcyI2KbaXW2Ik7Xp8Mu9TxbSTuwTe4rTntwg8ngPjUQU3SUHzgjqVB8qjiGqFXCA==
+  dependencies:
+    "@sentry/types" "6.19.7"
+    "@sentry/utils" "6.19.7"
+    tslib "^1.9.3"
+
+"@sentry/minimal@6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/minimal/-/minimal-6.19.7.tgz#b3ee46d6abef9ef3dd4837ebcb6bdfd01b9aa7b4"
+  integrity sha512-wcYmSJOdvk6VAPx8IcmZgN08XTXRwRtB1aOLZm+MVHjIZIhHoBGZJYTVQS/BWjldsamj2cX3YGbGXNunaCfYJQ==
+  dependencies:
+    "@sentry/hub" "6.19.7"
+    "@sentry/types" "6.19.7"
+    tslib "^1.9.3"
+
+"@sentry/react@^6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/react/-/react-6.19.7.tgz#58cc2d6da20f7d3b0df40638dfbbbc86c9c85caf"
+  integrity sha512-VzJeBg/v41jfxUYPkH2WYrKjWc4YiMLzDX0f4Zf6WkJ4v3IlDDSkX6DfmWekjTKBho6wiMkSNy2hJ1dHfGZ9jA==
+  dependencies:
+    "@sentry/browser" "6.19.7"
+    "@sentry/minimal" "6.19.7"
+    "@sentry/types" "6.19.7"
+    "@sentry/utils" "6.19.7"
+    hoist-non-react-statics "^3.3.2"
+    tslib "^1.9.3"
+
+"@sentry/tracing@^6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-6.19.7.tgz#54bb99ed5705931cd33caf71da347af769f02a4c"
+  integrity sha512-ol4TupNnv9Zd+bZei7B6Ygnr9N3Gp1PUrNI761QSlHtPC25xXC5ssSD3GMhBgyQrcvpuRcCFHVNNM97tN5cZiA==
+  dependencies:
+    "@sentry/hub" "6.19.7"
+    "@sentry/minimal" "6.19.7"
+    "@sentry/types" "6.19.7"
+    "@sentry/utils" "6.19.7"
+    tslib "^1.9.3"
+
+"@sentry/types@6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-6.19.7.tgz#c6b337912e588083fc2896eb012526cf7cfec7c7"
+  integrity sha512-jH84pDYE+hHIbVnab3Hr+ZXr1v8QABfhx39KknxqKWr2l0oEItzepV0URvbEhB446lk/S/59230dlUUIBGsXbg==
+
+"@sentry/utils@6.19.7":
+  version "6.19.7"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-6.19.7.tgz#6edd739f8185fd71afe49cbe351c1bbf5e7b7c79"
+  integrity sha512-z95ECmE3i9pbWoXQrD/7PgkBAzJYR+iXtPuTkpBjDKs86O3mT+PXOT3BAn79w2wkn7/i3vOGD2xVr1uiMl26dA==
+  dependencies:
+    "@sentry/types" "6.19.7"
+    tslib "^1.9.3"
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -4020,6 +4095,13 @@
   integrity sha512-VIOi9i2Oj5XsmWWoB72p3KlZoEbdRAcechJa8Ztebw7bDl2YmR+odxIqhtJGp1q2EozHs02US+gzxJ9nuf56qg==
   dependencies:
     "@types/react" "*"
+
+"@types/react-tooltip@^4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@types/react-tooltip/-/react-tooltip-4.2.4.tgz#d0acad2a3061806e10aab91dd26a95a77fd35125"
+  integrity sha512-UzjzmgY/VH3Str6DcAGTLMA1mVVhGOyARNTANExrirtp+JgxhaIOVDxq4TIRmpSi4voLv+w4HA9CC5GvhhCA0A==
+  dependencies:
+    react-tooltip "*"
 
 "@types/react@*", "@types/react@^17.0.42":
   version "17.0.42"
@@ -7482,6 +7564,11 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
+date-fns@^2.28.0:
+  version "2.28.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.28.0.tgz#9570d656f5fc13143e50c975a3b6bbeb46cd08b2"
+  integrity sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -10106,7 +10193,7 @@ hmac-drbg@^1.0.1:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hoist-non-react-statics@^3.3.0:
+hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -14849,6 +14936,19 @@ react-syntax-highlighter@^15.4.5:
     prismjs "^1.27.0"
     refractor "^3.6.0"
 
+react-tooltip@*, react-tooltip@^4.2.21:
+  version "4.2.21"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.2.21.tgz#840123ed86cf33d50ddde8ec8813b2960bfded7f"
+  integrity sha512-zSLprMymBDowknr0KVDiJ05IjZn9mQhhg4PRsqln0OZtURAJ1snt1xi5daZfagsh6vfsziZrc9pErPTDY1ACig==
+  dependencies:
+    prop-types "^15.7.2"
+    uuid "^7.0.3"
+
+react-verification-code-input@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/react-verification-code-input/-/react-verification-code-input-1.2.9.tgz#16051396f0c75752aab0cd9f37cb7be7084b98d0"
+  integrity sha512-Fg0B3SGGRoZtZFiQ/8FGSK5MQby9k5ssIUupPLvb8/U++Yxvc0T8ps/7CClLnvN+wowS5oL8xS7vqUTR9fRH6Q==
+
 react@18.0.0:
   version "18.0.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.0.0.tgz#b468736d1f4a5891f38585ba8e8fb29f91c3cb96"
@@ -16088,6 +16188,11 @@ statuses@2.0.1:
 "statuses@>= 1.4.0 < 2", "statuses@>= 1.5.0 < 2", statuses@~1.5.0:
   version "1.5.0"
   resolved "https://registry.npmjs.org/statuses/-/statuses-1.5.0.tgz"
+
+stickyfilljs@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/stickyfilljs/-/stickyfilljs-2.1.0.tgz#46dabb599d8275d185bdb97db597f86a2e3afa7b"
+  integrity sha512-LkG0BXArL5HbW2O09IAXfnBQfpScgGqJuUDUrI3Ire5YKjRz/EhakIZEJogHwgXeQ4qnTicM9sK9uYfWN11qKg==
 
 store2@^2.12.0:
   version "2.13.2"
@@ -17376,6 +17481,11 @@ uuid@^3.0.0, uuid@^3.3.2, uuid@^3.3.3:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+
+uuid@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
+  integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
 v8-compile-cache-lib@^3.0.0:
   version "3.0.0"

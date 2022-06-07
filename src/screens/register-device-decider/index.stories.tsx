@@ -1,22 +1,22 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { RegisterDeviceDecider } from "."
+import { AuthorizeRegisterDeciderScreen } from "."
 import { AppScreenRegisterDeviceDecider } from "../../flows/screens-app/authenticate/screen-app-register-device-decider"
 
 export default {
-  title: "Screens/RegisterDeviceDecider",
-  component: RegisterDeviceDecider,
+  title: "Screens/AuthorizeRegisterDeciderScreen",
+  component: AuthorizeRegisterDeciderScreen,
   parameters: {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof RegisterDeviceDecider>
+} as ComponentMeta<typeof AuthorizeRegisterDeciderScreen>
 
 const RegisterDeviceDeciderTemplate: ComponentStory<
-  typeof RegisterDeviceDecider
+  typeof AuthorizeRegisterDeciderScreen
 > = (args) => {
-  return <RegisterDeviceDecider {...args} />
+  return <AuthorizeRegisterDeciderScreen {...args} />
 }
 
 const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<

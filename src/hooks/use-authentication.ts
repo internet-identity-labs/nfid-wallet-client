@@ -8,7 +8,10 @@ import { Usergeek } from "usergeek-ic-js"
 import { userNumberAtom } from "frontend/services/identity-manager/account/state"
 import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
 import { _SERVICE as ImAdditionsService } from "frontend/services/iiw/im_addition.did"
-import { apiResultToLoginResult } from "frontend/services/internet-identity/api-result-to-login-result"
+import {
+  apiResultToLoginResult,
+  LoginResult,
+} from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 
@@ -62,41 +65,39 @@ export const useAuthentication = () => {
   }, [])
 
   const login = React.useCallback(
-    async (userNumberOverwrite?: bigint) => {
-      try {
-        setIsLoading(true)
-        const anchor = userNumberOverwrite || userNumber
+    async (
+      userNumberOverwrite?: bigint,
+      withSecurityDevices?: boolean,
+    ): Promise<LoginResult> => {
+      setIsLoading(true)
+      const anchor = userNumberOverwrite || userNumber
 
-        if (!anchor) {
-          throw new Error("Register first")
-        }
+      if (!anchor) {
+        throw new Error("Register first")
+      }
 
-        const response = await IIConnection.login(anchor)
-        if (response.kind === "authFail") return setIsLoading(false)
+      const response = await IIConnection.login(anchor, withSecurityDevices)
 
-        const result = apiResultToLoginResult(response)
+      const result = apiResultToLoginResult(response)
 
-        if (result.tag === "err") {
-          setError(result)
-          setIsLoading(false)
-          return
-        }
-
-        if (result.tag === "ok") {
-          setActors(result)
-          initUserGeek(
-            result?.internetIdentity?.delegationIdentity.getPrincipal(),
-          )
-          setError(null)
-        }
-
+      if (result.tag === "err") {
+        setError(result)
         setIsLoading(false)
         return result
-      } catch {
-        setError("Failed to authenticate")
-        setIsLoading(false)
-        setError(null)
       }
+
+      if (result.tag === "ok") {
+        setActors(result)
+        initUserGeek(
+          result?.internetIdentity?.delegationIdentity.getPrincipal(),
+        )
+        setError(null)
+        setIsLoading(false)
+        return result
+      }
+
+      setIsLoading(false)
+      return result
     },
     [initUserGeek, setActors, setError, setIsLoading, userNumber],
   )

@@ -83,7 +83,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
               <div className="flex-grow" />
               <div className="opacity-0.4 mb-6 mt-6 opacity-40 text-xs">
                 NFID is a privacy-preserving, one-touch multi-factor wallet
-                protocol used by {applicationName} and developed by Internet
+                protocol {applicationName && `used by ${applicationName} and`} developed by Internet
                 Identity Labs.
               </div>
             </div>

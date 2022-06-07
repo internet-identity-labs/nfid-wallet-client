@@ -1,8 +1,12 @@
 import { atom } from "jotai"
 
-import { DeviceData } from "frontend/services/internet-identity/generated/internet_identity_types"
-
-export type Icon = "mobile" | "tablet" | "desktop" | "laptop" | "key"
+export type Icon =
+  | "mobile"
+  | "tablet"
+  | "desktop"
+  | "laptop"
+  | "document"
+  | "usb"
 
 export interface AccessPointRequest {
   icon: string
@@ -21,5 +25,15 @@ export interface Device {
   pubkey: number[]
 }
 
+export interface RecoveryDevice {
+  icon: Icon
+  isAccessPoint?: boolean // Indicates if this device is already stored as access point
+  label: string
+  lastUsed: number
+  pubkey: number[]
+  isRecoveryPhrase: boolean
+  isSecurityKey: boolean
+}
+
 export const devicesAtom = atom<Device[]>([])
-export const recoveryDevicesAtom = atom<DeviceData[]>([])
+export const recoveryDevicesAtom = atom<RecoveryDevice[]>([])

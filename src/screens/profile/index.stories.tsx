@@ -28,24 +28,63 @@ export const LoggedIn = Template.bind({})
 
 LoggedIn.args = {
   account: { anchor: "10005", name: "Test Account" },
-  personas: [
+  accounts: [
     { domain: "wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "1" },
     { domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "2" },
   ],
   onDeviceDelete: (device: Device) => Promise.resolve(),
   onDeviceUpdate: (device: Device) => Promise.resolve(),
   onDeviceUpdateLabel: (device: Device) => Promise.resolve(),
-  recoveryPhrase: {
-    alias: "Recovery phrase",
-    pubkey: [
-      48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0, 211, 195, 205, 238, 99, 5, 3,
-      191, 47, 93, 245, 228, 58, 72, 235, 116, 172, 62, 42, 93, 45, 45, 189, 61,
-      222, 0, 19, 85, 11, 253, 145, 59,
-    ],
-    key_type: { seed_phrase: null },
-    purpose: { recovery: null },
-    credential_id: [],
-  },
+  recoveryMethods: [
+    {
+      label: "Recovery phrase",
+      lastUsed: Date.now(),
+      pubkey: [
+        48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
+        165, 1, 2, 3, 38, 32, 1, 33, 88, 32, 29, 87, 106, 190, 28, 84, 72, 21,
+        114, 212, 197, 213, 226, 247, 65, 93, 96, 14, 77, 220, 194, 6, 141, 132,
+        33, 161, 209, 30, 225, 229, 235, 5, 34, 88, 32, 151, 83, 89, 66, 106,
+        253, 8, 101, 83, 178, 40, 26, 144, 250, 167, 147, 198, 98, 172, 250,
+        249, 102, 63, 98, 11, 158, 38, 120, 210, 78, 170, 141,
+      ],
+      key_type: { unknown: null },
+      purpose: { authentication: null },
+      credential_id: [
+        [
+          35, 186, 164, 34, 5, 38, 220, 148, 94, 156, 248, 99, 18, 201, 180, 63,
+          107, 150, 162, 231,
+        ],
+      ],
+      isSecurityKey: false,
+      isRecoveryPhrase: true,
+      alias: "GDSFGDSFSD FDSFDSF",
+      icon: "document",
+    },
+    {
+      label: "Security Key",
+      lastUsed: Date.now(),
+      pubkey: [
+        48, 94, 48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1, 3, 78, 0,
+        165, 1, 2, 3, 38, 32, 1, 33, 88, 32, 29, 87, 106, 190, 28, 84, 72, 21,
+        114, 212, 197, 213, 226, 247, 65, 93, 96, 14, 77, 220, 194, 6, 141, 132,
+        33, 161, 209, 30, 225, 229, 235, 5, 34, 88, 32, 151, 83, 89, 66, 106,
+        253, 8, 101, 83, 178, 40, 26, 144, 250, 167, 147, 198, 98, 172, 250,
+        249, 102, 63, 98, 11, 158, 38, 120, 210, 78, 170, 141,
+      ],
+      key_type: { unknown: null },
+      purpose: { authentication: null },
+      credential_id: [
+        [
+          35, 186, 164, 34, 5, 38, 220, 148, 94, 156, 248, 99, 18, 201, 180, 63,
+          107, 150, 162, 231,
+        ],
+      ],
+      isSecurityKey: true,
+      isRecoveryPhrase: false,
+      alias: "GDSFGDSFSD FDSFDSF",
+      icon: "usb",
+    },
+  ],
   devices: [
     {
       label: "NFID Safari on iOS",

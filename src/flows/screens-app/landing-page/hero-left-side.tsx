@@ -1,8 +1,10 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 // @ts-ignore
 import { Slide } from "react-reveal"
 import { Link, useNavigate } from "react-router-dom"
+import sticky from "stickyfilljs"
+
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { RecoverNFIDRoutesConstants as RAC } from "frontend/flows/screens-app/recover-nfid/routes"
@@ -19,9 +21,14 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
   const { isMobile } = useDeviceInfo()
   const navigate = useNavigate()
   const { registerRoute } = useRegisterQRCode()
+  const text = React.useRef(null)
+
+  React.useEffect(() => {
+    text.current && sticky.add(text.current)
+  }, [text])
 
   return (
-    <div className="sticky z-30 sm:mt-40 top-28">
+    <div ref={text} className="z-30 sm:mt-40 top-28">
       <Slide left>
         <div>
           <div>

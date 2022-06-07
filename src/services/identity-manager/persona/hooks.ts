@@ -1,40 +1,50 @@
 import { useAtom } from "jotai"
 import React from "react"
+import { useParams } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import { personaAtom } from "./state"
-import { isNFIDPersona, isIIPersona } from "./types"
+import { isNFIDPersona } from "./types"
 
-interface UsePersona {
-  application?: string
-}
-
-export const usePersona = ({ application }: UsePersona = {}) => {
+export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
+  const { scope } = useParams()
   const { isLoading } = useIsLoading()
   const { identityManager: personaService } = useAuthentication()
+  const { authorizationRequest } = useAuthorization()
   const { account } = useAccount()
 
-  const nfidPersonas = React.useMemo(() => {
+  const allAccounts = React.useMemo(() => {
     if (!personas) return []
     return personas.filter(isNFIDPersona)
   }, [personas])
 
-  const iiPersonas = React.useMemo(() => {
-    if (!personas) return []
-    return personas.filter(isIIPersona)
-  }, [personas])
+  const accounts = React.useMemo(() => {
+    if (!allAccounts) return []
+    return allAccounts.filter(({ domain }) => {
+      if (!authorizationRequest?.hostname && scope) {
+        const applicationDomain = `${window.location.protocol}//${scope}`
+        const isMatch = applicationDomain.indexOf(domain) > -1
+        return isMatch
+      }
+      return (
+        authorizationRequest?.hostname &&
+        authorizationRequest.hostname.indexOf(domain) > -1
+      )
+    })
+  }, [allAccounts, authorizationRequest?.hostname, scope])
 
   const nextPersonaId = React.useMemo(() => {
-    const highest = nfidPersonas.reduce((last, persona) => {
+    const highest = allAccounts.reduce((last, persona) => {
       const current = parseInt(persona.persona_id, 10)
       return last < current ? current : last
     }, 0)
     return `${highest + 1}`
-  }, [nfidPersonas])
+  }, [allAccounts])
 
   const getPersona = React.useCallback(async () => {
     if (!personaService) return
@@ -71,12 +81,8 @@ export const usePersona = ({ application }: UsePersona = {}) => {
 
   return {
     isLoadingPersonas: isLoading,
-    nfidPersonas,
-    iiPersonas,
-    personas:
-      application && personas
-        ? personas.filter((p) => p.domain === application)
-        : personas,
+    allAccounts,
+    accounts,
     nextPersonaId,
     createPersona,
     getPersona,

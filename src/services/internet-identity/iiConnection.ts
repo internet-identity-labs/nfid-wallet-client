@@ -208,10 +208,13 @@ export class IIConnection {
     }
   }
 
-  static async login(userNumber: bigint): Promise<LoginResult> {
+  static async login(
+    userNumber: bigint,
+    withSecurityDevices?: boolean,
+  ): Promise<LoginResult> {
     let devices: DeviceData[]
     try {
-      devices = await this.lookupAuthenticators(userNumber)
+      devices = await this.lookupAuthenticators(userNumber, withSecurityDevices)
     } catch (e: unknown) {
       if (e instanceof Error) {
         return { kind: "apiError", error: e }
@@ -227,7 +230,7 @@ export class IIConnection {
       return { kind: "unknownUser", userNumber }
     }
 
-    return this.fromWebauthnDevices(userNumber, devices)
+    return this.fromWebauthnDevices(userNumber, devices, withSecurityDevices)
   }
 
   static async loginFromRemoteFrontendDelegation({
@@ -284,8 +287,9 @@ export class IIConnection {
   static async fromWebauthnDevices(
     userNumber: bigint,
     devices: DeviceData[],
+    withSecurityDevices?: boolean,
   ): Promise<LoginResult> {
-    const multiIdent = getMultiIdent(devices)
+    const multiIdent = getMultiIdent(devices, withSecurityDevices)
 
     let delegationIdentity: FrontendDelegation
     try {
@@ -395,10 +399,14 @@ export class IIConnection {
 
   static async lookupAuthenticators(
     userNumber: UserNumber,
+    withSecurityDevices?: boolean,
   ): Promise<DeviceData[]> {
     const allDevices = await baseActor.lookup(userNumber)
+
     return allDevices.filter((device) =>
-      hasOwnProperty(device.purpose, "authentication"),
+      withSecurityDevices
+        ? true
+        : hasOwnProperty(device.purpose, "authentication"),
     )
   }
 
@@ -563,7 +571,7 @@ const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
-  // TODO: CHECK IF THIS IS SAVE TO DO
+
   return {
     delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
     chain,
@@ -590,6 +598,7 @@ const requestFEDelegationChain = async (
       ],
     },
   )
+
   return { chain, sessionKey }
 }
 
@@ -654,7 +663,10 @@ export const creationOptions = (
 export const derFromPubkey = (pubkey: DeviceKey): DerEncodedBlob =>
   derBlobFromBlob(blobFromUint8Array(Buffer.from(pubkey)))
 
-const getMultiIdent = (devices: DeviceData[]) => {
+const getMultiIdent = (
+  devices: DeviceData[],
+  withSecurityDevices?: boolean,
+) => {
   return MultiWebAuthnIdentity.fromCredentials(
     devices.flatMap((device) =>
       device.credential_id.map((credentialId: CredentialId) => ({
@@ -662,5 +674,6 @@ const getMultiIdent = (devices: DeviceData[]) => {
         credentialId: blobFromUint8Array(Buffer.from(credentialId)),
       })),
     ),
+    withSecurityDevices,
   )
 }

@@ -42,6 +42,7 @@ jobs:
           FRONTEND_MODE: production
           BACKEND_MODE: PRODUCTION
           II_MODE: production
+          IC_HOST: https://ic0.app
           DFX_NETWORK: ic
           IDENTITY_MANAGER_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_IDENTITY_MANAGER}}
           PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_PUB_SUB_CHANNEL}}
@@ -49,3 +50,13 @@ jobs:
           IM_ADDITION_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_IM_ADDITION}}
           AWS_VERIFY_PHONENUMBER: ${{secrets.PROD_AWS_VERIFY_PHONENUMBER}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
+          # SENTRY_URL: https://sentry.io/
+        with:
+          environment: production

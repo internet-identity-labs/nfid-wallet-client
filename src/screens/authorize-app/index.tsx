@@ -1,200 +1,113 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
-import { DropdownMenu } from "@internet-identity-labs/nfid-sdk-react"
-import { Label, Loader, MenuItem } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import ReactTooltip from "react-tooltip"
 
-import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
-import { useAuthorization } from "frontend/hooks/use-authorization"
-import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
-import { useMultipass } from "frontend/hooks/use-multipass"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
+import { Button } from "frontend/design-system/atoms/button"
+import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
+import { H5 } from "frontend/design-system/atoms/typography"
+import { P } from "frontend/design-system/atoms/typography/paragraph"
+import { BlurOverlay } from "frontend/design-system/molecules/blur-overlay"
+
+import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { ElementProps } from "frontend/types/react"
 
+import alertIcon from "./assets/alert-triangle.svg"
+
+import { AccountItem } from "./raw-item"
+
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
-  isRemoteAuthorisation?: boolean
+  isAuthenticated: boolean
+  applicationName: string
+  applicationLogo?: string
+  accounts: NFIDPersona[]
+  accountsLimit?: number
+  onUnlockNFID: () => Promise<any>
+  onLogin: (personaId: string) => Promise<void>
+  onCreateAccount: () => Promise<void>
 }
 
 export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
-  isRemoteAuthorisation,
+  isAuthenticated,
+  applicationName,
+  applicationLogo,
+  accounts,
+  accountsLimit,
+  onUnlockNFID,
+  onLogin,
+  onCreateAccount,
 }) => {
-  const [status, setStatus] = React.useState<
-    "initial" | "loading" | "success" | "error"
-  >("loading")
-  const { secret, scope } = useParams()
-  const { applicationName } = useMultipass()
+  const isAccountsLimit = React.useMemo(() => {
+    return accountsLimit && accounts.length > --accountsLimit
+  }, [accounts.length, accountsLimit])
 
-  const { userNumber } = useAccount()
-  const navigate = useNavigate()
-  const { remoteLogin, sendWaitForUserInput } = useAuthorizeApp()
+  const displayAccounts = isAuthenticated
+    ? accounts
+    : // FAKE DISPLAY DATA FOR BLURRED BACKGROUND
+      new Array(4).fill(null).map((_, i) => ({
+        domain: "http://fake.com",
+        persona_id: i === 0 ? "longer" : `${i}`,
+      }))
 
-  const { opener, postClientReadyMessage, authorizeApp, authorizationRequest } =
-    useAuthorization({
-      userNumber,
-    })
-
-  React.useEffect(() => {
-    if (!authorizationRequest && opener) {
-      return postClientReadyMessage()
-    }
-    setStatus("initial")
-  }, [authorizationRequest, opener, postClientReadyMessage])
-
-  const { nextPersonaId, nfidPersonas, iiPersonas, createPersona } =
-    usePersona()
-
-  const hasNFIDPersonas = nfidPersonas.length > 0
-
-  React.useEffect(() => {
-    secret && sendWaitForUserInput(secret)
-  }, [secret, sendWaitForUserInput])
-
-  const [selectedItem, setSelectedItem] = React.useState<string>(
-    String(nfidPersonas[0]?.persona_id),
-  )
-
-  const [isPersonaSelected, setIsPersonaSelected] = React.useState(true)
-
-  const handleAuthorizePersona = React.useCallback(
-    ({ persona_id }: { persona_id?: string; anchor?: string }) =>
-      async () => {
-        setStatus("loading")
-
-        if (!isRemoteAuthorisation && persona_id) {
-          await authorizeApp({ persona_id })
-          return setStatus("success")
-        }
-
-        if (!secret || !scope || !persona_id)
-          throw new Error("missing secret, scope or persona_id")
-
-        await remoteLogin({ secret, scope, persona_id })
-
-        return navigate(
-          `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-        )
-      },
-    [isRemoteAuthorisation, secret, scope, remoteLogin, navigate, authorizeApp],
-  )
-
-  const handleAuthorizeIIPersona = React.useCallback(
-    ({ anchor }) =>
-      async () => {
-        setStatus("loading")
-        await authorizeApp({ anchor })
-        setStatus("success")
-      },
-    [authorizeApp],
-  )
-
-  const handleCreatePersonaAndLogin = React.useCallback(async () => {
-    setStatus("loading")
-
-    const response = await createPersona({
-      domain: scope || authorizationRequest?.hostname,
-    })
-
-    if (response?.status_code === 200) {
-      return handleAuthorizePersona({ persona_id: nextPersonaId })()
-    }
-  }, [
-    authorizationRequest?.hostname,
-    createPersona,
-    handleAuthorizePersona,
-    nextPersonaId,
-    scope,
-  ])
-
-  const handleLogin = React.useCallback(async () => {
-    if (isPersonaSelected) {
-      await handleAuthorizePersona({
-        persona_id: selectedItem,
-      })()
-    }
-
-    if (!isPersonaSelected) {
-      await handleAuthorizeIIPersona({
-        anchor: selectedItem,
-      })()
-    }
-  }, [
-    handleAuthorizeIIPersona,
-    handleAuthorizePersona,
-    isPersonaSelected,
-    selectedItem,
-  ])
-
-  const title = `Log in to ${applicationName}`
-
-  return status === "initial" || status === "loading" ? (
-    <div>
-      {isRemoteAuthorisation ? (
-        <H5 className="mb-4">{title}</H5>
-      ) : (
-        <H2 className="mb-4">{title}</H2>
+  return (
+    <>
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
       )}
-
-      <div>
-        {hasNFIDPersonas && (
-          <>
-            <Label>Continue as</Label>
-            <DropdownMenu title={selectedItem}>
-              {(toggle) => (
-                <div className="h-40 overflow-y-auto">
-                  <Label menuItem>Personas</Label>
-                  {nfidPersonas.map((persona, index) => (
-                    <MenuItem
-                      key={index}
-                      title={String(persona.persona_id)}
-                      onClick={() => {
-                        setSelectedItem(String(persona.persona_id))
-                        setIsPersonaSelected(true)
-                        toggle()
-                      }}
-                    />
-                  ))}
-
-                  <Label
-                    menuItem
-                    className={clsx(iiPersonas?.length === 0 && "hidden")}
-                  >
-                    Anchors
-                  </Label>
-                  {iiPersonas.map((persona, index) => (
-                    <MenuItem
-                      key={index}
-                      title={persona.anchor}
-                      onClick={() => {
-                        setSelectedItem(persona.anchor)
-                        setIsPersonaSelected(false)
-                        toggle()
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-            </DropdownMenu>
-            <Button secondary block onClick={handleLogin}>
-              Log in
+      <H5>Choose an account</H5>
+      <P className="mt-2">
+        to continue {applicationName && `to ${applicationName}`}
+      </P>
+      <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
+        {displayAccounts.map((account) => {
+          return (
+            <AccountItem
+              title={`${applicationName} account ${account.persona_id}`}
+              onClick={() => onLogin(account.persona_id)}
+            />
+          )
+        })}
+        <div
+          className={clsx("h-12 flex items-center justify-between px-[10px]")}
+          onClick={onCreateAccount}
+        >
+          <div
+            className={clsx(
+              "flex space-x-3 hover:opacity-70 transition-all cursor-pointer",
+              isAccountsLimit
+                ? "text-gray-400 pointer-events-none"
+                : "text-blue-base",
+            )}
+          >
+            <PlusIcon className="w-5 h-5" />
+            <p className="text-sm font-semibold">Create a new account</p>
+          </div>
+          {isAccountsLimit && (
+            <img
+              data-tip={`${applicationName} has limited the number of free accounts to ${accountsLimit}. Manage your accounts from your NFID Profile page.`}
+              src={alertIcon}
+              alt="alert"
+            />
+          )}
+        </div>
+        {!isAuthenticated && (
+          <BlurOverlay
+            className={clsx(
+              "-m-4 p-4",
+              "absolute left-0 top-0 bottom-0 right-0 z-10",
+              "flex justify-center items-center",
+            )}
+          >
+            <Button secondary large onClick={() => onUnlockNFID()}>
+              Unlock NFID
             </Button>
-          </>
+          </BlurOverlay>
         )}
       </div>
-      <Button
-        text={hasNFIDPersonas ? true : false}
-        secondary={hasNFIDPersonas ? false : true}
-        block
-        onClick={handleCreatePersonaAndLogin}
-      >
-        Create a new account
-      </Button>
-
-      {/* Disabled for first version */}
-      {/* <LinkIIAnchorHref onClick={handleIILink} /> */}
-      <Loader isLoading={status === "loading"} iframe={isRemoteAuthorisation} />
-    </div>
-  ) : null
+      <ReactTooltip className="w-72" />
+    </>
+  )
 }

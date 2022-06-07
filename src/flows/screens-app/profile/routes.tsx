@@ -4,12 +4,16 @@ import { Outlet, Route } from "react-router-dom"
 import { AuthWrapper } from "frontend/screens/auth-wrapper"
 
 import { NFIDProfile } from "."
+import { NFIDProfileEdit } from "./edit"
+import { CopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { NFIDPersonalize } from "./personalize"
 
 export const ProfileConstants = {
   base: "/profile",
+  edit: "edit",
   authenticate: "authenticate",
   personalize: "personalize",
+  copyRecoveryPhrase: "copy-recovery-phrase",
 }
 
 export const ProfileRoutes = (
@@ -24,5 +28,17 @@ export const ProfileRoutes = (
       }
     />
     <Route path={ProfileConstants.personalize} element={<NFIDPersonalize />} />
+    <Route
+      path={ProfileConstants.edit}
+      element={
+        <AuthWrapper redirectTo="/">
+          <NFIDProfileEdit />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.copyRecoveryPhrase}
+      element={<CopyRecoveryPhrase />}
+    />
   </Route>
 )

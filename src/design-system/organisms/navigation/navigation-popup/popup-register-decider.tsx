@@ -58,7 +58,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
 
     if (linkAccount === "rb_link_account_login") {
       setShouldStoreLocalAccount(false)
-      setStatus("")
+      setStatus("registerDevice")
     }
   }
 

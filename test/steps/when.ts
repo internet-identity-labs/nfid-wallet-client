@@ -29,7 +29,7 @@ When(
 )
 
 When(
-  /^I (click|doubleclick) on (continue) button "([^"]*)?"$/,
+  /^I (click|doubleclick) on (recover) button "([^"]*)?"$/,
   clickElements,
 )
 

@@ -24,5 +24,7 @@ export default async (method: string, value: string, selector: Selector) => {
     checkValue = ""
   }
 
+  await (await browser.$(selector)).click()
+
   await $(selector)[command](checkValue)
 }

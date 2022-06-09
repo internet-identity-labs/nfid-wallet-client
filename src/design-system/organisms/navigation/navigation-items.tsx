@@ -26,9 +26,10 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { account } = useAccount()
   const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
-  const popupRef = useClickOutside(() => setIsPopupVisible(false))
   const { registerRoute, status } = useRegisterQRCode()
   const { scrollY } = useScroll()
+
+  const popupRef = useClickOutside(() => setIsPopupVisible(false))
 
   const classes = {
     navItem:
@@ -150,21 +151,23 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           )}
         </ButtonMenu>
       </div>
-      <Scrollspy
-        className="items-center hidden space-x-10 font-medium md:flex"
-        currentClassName="text-black-base hover:text-black-base hover:no-underline"
-        items={items.map((i) => i.to)}
-      >
-        {items.map((item, index) => (
-          <NavLink
-            to={`/#${encodeURIComponent(item.label)}`}
-            className={clsx(classes.navItem, "text-blue-base")}
-            onClick={(e) => handleGoTo(e, item.to, item.external)}
-            key={index}
-          >
-            {item.label}
-          </NavLink>
-        ))}
+      <div className="flex space-x-10">
+        <Scrollspy
+          className="items-center hidden space-x-10 font-medium md:flex"
+          currentClassName="text-black-base hover:text-black-base hover:no-underline"
+          items={items.map((i) => i.to)}
+        >
+          {items.map((item, index) => (
+            <NavLink
+              to={`/#${encodeURIComponent(item.label)}`}
+              className={clsx(classes.navItem, "text-blue-base")}
+              onClick={(e) => handleGoTo(e, item.to, item.external)}
+              key={index}
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </Scrollspy>
         <div className="relative" ref={popupRef}>
           {isAuthenticated || account ? (
             <div
@@ -184,7 +187,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           )}
           {isPopupVisible || status !== "" ? <NavigationPopup /> : null}
         </div>
-      </Scrollspy>
+      </div>
     </>
   )
 }

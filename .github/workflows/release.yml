@@ -52,7 +52,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
 
       - name: Create Sentry release
-        if: ${{ github.ref == 'ref/head/main' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

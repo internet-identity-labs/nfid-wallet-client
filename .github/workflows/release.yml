@@ -57,6 +57,6 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          # SENTRY_URL: https://sentry.io/
+          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
         with:
           environment: production

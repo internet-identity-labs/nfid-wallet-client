@@ -5,14 +5,13 @@ import { Fade } from "react-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
 
 import Blur3 from "./assets/blur_3.png"
 
 import { Footer } from "./footer"
-import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
 
-interface OurMissionProps {
-}
+interface OurMissionProps {}
 
 export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
   return (
@@ -42,7 +41,7 @@ export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
                 />
                 <div className="top-28">
                   <Fade left>
-                    <h1 className="font-bold text-titleMobile sm:text-titleLarge">
+                    <h2 className="font-bold text-titleMobile sm:text-titleLarge">
                       Our{" "}
                       <span
                         style={{
@@ -54,7 +53,7 @@ export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
                       >
                         mission
                       </span>
-                    </h1>
+                    </h2>
                   </Fade>
                 </div>
                 <div className="relative">

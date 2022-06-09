@@ -16548,9 +16548,10 @@ svgo@^2.7.0:
     picocolors "^1.0.0"
     stable "^0.1.8"
 
-swiper@^8.0.7:
-  version "8.0.7"
-  resolved "https://registry.npmjs.org/swiper/-/swiper-8.0.7.tgz"
+swiper@^8.2.2:
+  version "8.2.2"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-8.2.2.tgz#d16e9d92ec9b5548399c06f2cda9c400f9f32352"
+  integrity sha512-t7Tts4ZD2ahM3InsHDlZ6YY4gi47zepGHx25cACd6fzgcVdAtYLbUihnEmck0HsDzqtkhciyfKsoUEhummZDEA==
   dependencies:
     dom7 "^4.0.4"
     ssr-window "^4.0.2"

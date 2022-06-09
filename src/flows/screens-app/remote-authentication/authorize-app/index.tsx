@@ -52,7 +52,6 @@ export const AppScreenAuthorizeApp: React.FC<
   )
 
   const handleCreateAccountAndLogin = React.useCallback(async () => {
-    setIsloading(true)
     const response = await createPersona({
       domain: scope,
     })
@@ -60,8 +59,7 @@ export const AppScreenAuthorizeApp: React.FC<
     if (response?.status_code === 200) {
       return handleLogin(nextPersonaId)
     }
-    setIsloading(false)
-  }, [createPersona, handleLogin, nextPersonaId, scope, setIsloading])
+  }, [createPersona, handleLogin, nextPersonaId, scope])
 
   const { userNumber } = useAccount()
   React.useEffect(() => {

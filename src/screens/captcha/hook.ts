@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { localStorageAccountAtom } from "frontend/services/identity-manager/account/state"
 import {
   ChallengeResult,
   IIConnection,
@@ -29,6 +30,7 @@ interface UseCaptcha {
 }
 
 export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
+  const [_account, setAccount] = useAtom(localStorageAccountAtom)
   const { isLoading: loading, setIsloading: setLoading } = useIsLoading()
   const { state } = useLocation()
   const { registerPayload } = (state as RegisterAccountCaptchaState) ?? {
@@ -72,6 +74,10 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       onRegisterSuccess(response)
       if (response.kind === "loginSuccess") {
         setResponseRegisterAnchor(response)
+        setAccount({
+          ..._account,
+          anchor: String(response.userNumber),
+        })
       }
       if (response.kind === "badChallenge") {
         setLoading(false)
@@ -91,30 +97,28 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       onRegisterSuccess,
       registerPayload,
       setLoading,
+      _account,
+      setAccount,
     ],
   )
 
-  const handleCreateAccount = React.useCallback(async () => {
+  const handleCreateAccount = React.useCallback(() => {
     if (
       responseRegisterAnchor &&
       responseRegisterAnchor.kind === "loginSuccess"
     ) {
       const { userNumber } = responseRegisterAnchor
 
-      await createAccount({
+      createAccount({
         anchor: userNumber,
       })
     }
   }, [createAccount, responseRegisterAnchor])
 
-  React.useEffect(() => {
-    if (
-      responseRegisterAnchor &&
-      responseRegisterAnchor.kind === "loginSuccess"
-    ) {
-      handleCreateAccount()
-    }
-  }, [handleCreateAccount, responseRegisterAnchor])
+  React.useEffect(handleCreateAccount, [
+    handleCreateAccount,
+    responseRegisterAnchor,
+  ])
 
   return {
     account,

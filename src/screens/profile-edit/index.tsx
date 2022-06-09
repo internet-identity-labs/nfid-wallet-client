@@ -19,7 +19,7 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 import { nameRules } from "frontend/utils/validations"
 
 interface Account {
-  anchor: string
+  anchor?: string
   name?: string
   phone?: string
 }

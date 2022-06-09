@@ -13,7 +13,7 @@ Feature: Home page
 
     Examples:
       | link               | element                                                                      |
-      | The Identity Layer | #home > div:nth-child(2) > div:nth-child(3)|
-      # | Only with NFID     | //*[@id="only-with-nfid"]/div/h1                                                   |
+      | The Identity Layer | #home > div:nth-child(1) > div.z-30.sm\:mt-40.top-28 > div > h2 > a|
+      | Only with NFID     | #only-with-nfid > div > h2 > span                                                   |
       | Our mission        | #our-mission > div:nth-child(3) > h1                                         |
       | FAQ                | #faq > div.top-28 > h1                                                       |

@@ -60,3 +60,4 @@ jobs:
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
         with:
           environment: production
+          sourcemaps: ./build/static/js

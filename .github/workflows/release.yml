@@ -51,6 +51,12 @@ jobs:
           AWS_VERIFY_PHONENUMBER: ${{secrets.PROD_AWS_VERIFY_PHONENUMBER}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
 
+  sentry:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'ref/head/main' }}
+    steps:
+      - uses: actions/checkout@v2
+
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:

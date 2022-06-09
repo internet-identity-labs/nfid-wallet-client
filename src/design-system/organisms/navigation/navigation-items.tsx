@@ -1,11 +1,13 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
 
-import User from "frontend/assets/user.svg"
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
+
 import { ButtonMenu } from "frontend/design-system/atoms/menu"
+
+import User from "frontend/assets/user.svg"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { RecoverNFIDRoutesConstants as RAC } from "frontend/flows/screens-app/recover-nfid/routes"
 import { useAuthentication } from "frontend/hooks/use-authentication"
@@ -165,13 +167,11 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         ))}
         <div className="relative" ref={popupRef}>
           {isAuthenticated || account ? (
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base">
-              <img
-                src={User}
-                alt="user"
-                className="cursor-pointer"
-                onClick={() => setIsPopupVisible(!isPopupVisible)}
-              />
+            <div
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
+              onClick={() => setIsPopupVisible(!isPopupVisible)}
+            >
+              <img src={User} alt="user" className="cursor-pointer" />
             </div>
           ) : (
             <Button

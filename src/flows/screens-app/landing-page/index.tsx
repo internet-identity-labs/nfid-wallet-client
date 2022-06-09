@@ -180,7 +180,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               >
                 <div className="relative z-10">
                   <Fade left>
-                    <h1 className="z-10 font-bold text-white text-titleMobile md:text-titleLarge">
+                    <h2 className="z-10 font-bold text-white text-titleMobile md:text-titleLarge">
                       Only with{" "}
                       <span
                         style={{
@@ -192,7 +192,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       >
                         NFID
                       </span>
-                    </h1>
+                    </h2>
                   </Fade>
                   <Parallax speed={isMobile ? undefined : 15}>
                     <p className="absolute text-[25vw] opacity-[0.03] z-30 -right-[15vw] font-bold top-[420px]">
@@ -271,7 +271,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 />
                 <div>
                   <Fade left>
-                    <h1 className="font-bold text-titleMobile md:text-titleLarge">
+                    <h2 className="font-bold text-titleMobile md:text-titleLarge">
                       Our{" "}
                       <span
                         style={{
@@ -283,7 +283,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       >
                         mission
                       </span>
-                    </h1>
+                    </h2>
                   </Fade>
                 </div>
                 <div className="relative">
@@ -324,7 +324,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               {/* <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
             <div>
               <Fade left>
-                <h1 className="font-bold text-titleMobile md:text-titleLarge lg:whitespace-nowrap">
+                <h2 className="font-bold text-titleMobile md:text-titleLarge lg:whitespace-nowrap">
                   Where you can <br />{" "}
                   <span
                     style={{
@@ -337,7 +337,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     {" "}
                     use NFID today
                   </span>
-                </h1>
+                </h2>
               </Fade>
             </div>
             <div className="w-full">
@@ -363,7 +363,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               >
                 <div className="top-28">
                   <Fade left>
-                    <h1 className="font-bold text-titleMobile md:text-titleLarge">
+                    <h2 className="font-bold text-titleMobile md:text-titleLarge">
                       Frequently <br />
                       asked {""}
                       <span
@@ -376,7 +376,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       >
                         questions
                       </span>
-                    </h1>
+                    </h2>
                   </Fade>
                 </div>
                 <Fade>
@@ -401,7 +401,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
                 <div className=" top-28">
                   <Fade left>
-                    <h1 className="font-bold text-titleMobile md:text-titleLarge">
+                    <h2 className="font-bold text-titleMobile md:text-titleLarge">
                       Our {""}
                       <span
                         style={{
@@ -413,7 +413,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       >
                         socials
                       </span>
-                    </h1>
+                    </h2>
                   </Fade>
                 </div>
                 <Fade>

@@ -12,11 +12,11 @@ Feature: Home page
     Then I expect that element "<element>" becomes displayed
 
     Examples:
-      | link               | element                                                                      |
-      | The Identity Layer | #home > div:nth-child(1) > div.sticky.z-30.sm\:mt-40.top-28 > div > div > h1 |
-      | Only with NFID     | #only-with-nfid > div > h1                                                   |
-      | Our mission        | #our-mission > div:nth-child(3) > h1                                         |
-      | FAQ                | #faq > div.top-28 > h1                                                       |
+      | link               | element         |
+      | The Identity Layer | #home           |
+      | Only with NFID     | #only-with-nfid |
+      | Our mission        | #our-mission    |
+      | FAQ                | #faq            |
 
 
 

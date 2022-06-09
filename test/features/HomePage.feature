@@ -1,4 +1,4 @@
-@homePage @smoke @regression
+@homePage @smoke @regression @reg
 Feature: Home page
   To check if user navigation features on Home page
 

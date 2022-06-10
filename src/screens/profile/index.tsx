@@ -20,7 +20,7 @@ import { DeviceList } from "./device-list/device-list"
 import { RecoveryMethodsList } from "./recovery-methods"
 
 interface Account {
-  anchor?: string
+  anchor: string
   name?: string
 }
 

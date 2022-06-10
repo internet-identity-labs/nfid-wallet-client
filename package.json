@@ -61,7 +61,7 @@
     "react-verification-code-input": "^1.2.9",
     "stickyfilljs": "^2.1.0",
     "stream-browserify": "3.0.0",
-    "swiper": "^8.0.7",
+    "swiper": "^8.2.3",
     "usergeek-ic-js": "git+https://github.com/usergeek/usergeek-ic-js",
     "uuid": "8.3.2"
   },
@@ -109,7 +109,7 @@
     "cross-env": "7.0.3",
     "cucumber-html-reporter": "^5.5.0",
     "dotenv": "16.0.0",
-    "eslint": "8.12.0",
+    "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "4.0.0",

@@ -12,8 +12,8 @@ Feature: Home page
     Then I expect that element "<element>" becomes displayed
 
     Examples:
-      | link               | element                                                                      |
-      | The Identity Layer | #home > div:nth-child(1) > div.z-30.sm\:mt-40.top-28 > div > h2 > a|
-      | Only with NFID     | #only-with-nfid > div > h2 > span                                                   |
-      | Our mission        | #our-mission > div:nth-child(3) > h1                                         |
-      | FAQ                | #faq > div.top-28 > h1                                                       |
+      | link               | element                                                             |
+      | The Identity Layer | #home > div:nth-child(1) > div.z-30.sm\:mt-40.top-28 > div > h2 > a |
+      | Only with NFID     | #only-with-nfid > div > h2 > span                                   |
+      | Our mission        | #our-mission > div:nth-child(3) > h1                                |
+      | FAQ                | #faq > div.top-28 > h1                                              |

@@ -87,7 +87,7 @@ export const useUnknownDeviceConfig = () => {
   const { createDevice, createWebAuthNDevice } = useDevices()
   const { applicationName, applicationLogo } = useMultipass()
   const { getMessages } = usePubSubChannel()
-  const { remoteLogin: setAuthenticatedActors } = useAuthentication()
+  const { remoteLogin } = useAuthentication()
   const { readAccount } = useAccount()
   const { getPersona } = usePersona()
 
@@ -196,12 +196,12 @@ export const useUnknownDeviceConfig = () => {
       const result = apiResultToLoginResult(loginResult)
 
       if (result.tag === "ok") {
-        setAuthenticatedActors(result)
+        remoteLogin(result)
       }
       // TODO: handle this more gracefully
       if (result.tag !== "ok") throw new Error("login failed")
     },
-    [setAuthenticatedActors],
+    [remoteLogin],
   )
 
   const handlePollForDelegate = React.useCallback(

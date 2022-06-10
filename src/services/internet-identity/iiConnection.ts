@@ -38,6 +38,8 @@ import {
   DeviceKey,
   ChallengeResult,
 } from "frontend/api/idl/internet_identity_types"
+
+import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { hasOwnProperty } from "./utils"
 

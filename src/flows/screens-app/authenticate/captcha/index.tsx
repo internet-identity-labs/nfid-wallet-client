@@ -37,7 +37,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const { userNumber } = useAccount()
 
-  const { isAuthenticated } = useAuthentication()
+  const { user } = useAuthentication()
   const { isLoading: isPreparingDelegate, authorizeApp } = useAuthorization({
     userNumber,
   })
@@ -52,7 +52,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   }>({ delegateRequested: false, personaRequested: false })
 
   React.useEffect(() => {
-    if (isAuthenticated && userNumber) {
+    if (user && userNumber) {
       if (!authorizationStateRef.current.personaRequested) {
         authorizationStateRef.current.personaRequested = true
         createPersona({ domain: scope })
@@ -65,7 +65,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   }, [
     authorizeApp,
     createPersona,
-    isAuthenticated,
+    user,
     loading,
     nextPersonaId,
     scope,
@@ -74,13 +74,13 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   React.useEffect(() => {
     if (
-      isAuthenticated &&
+      user &&
       authorizationStateRef.current.delegateRequested &&
       !isPreparingDelegate
     ) {
       navigate(successPath)
     }
-  }, [isAuthenticated, isPreparingDelegate, navigate, successPath])
+  }, [user, isPreparingDelegate, navigate, successPath])
 
   const { applicationLogo, applicationName } = useMultipass()
   return (

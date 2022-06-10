@@ -16,8 +16,8 @@ import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
   > {
   iframe?: boolean
 }
@@ -25,7 +25,7 @@ interface RestoreAccessPointRecoveryPhraseContentProps
 export const RestoreAccessPoint: React.FC<
   RestoreAccessPointRecoveryPhraseContentProps
 > = ({ className, iframe }) => {
-  const { loginWithRecovery, error, isLoading, isAuthenticated } =
+  const { loginWithRecovery, error, isLoading, user } =
     useAuthentication()
   const { setLocalAccount } = useAccount()
   const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
@@ -99,7 +99,7 @@ export const RestoreAccessPoint: React.FC<
     }
   }, [error, setError])
 
-  if (isAuthenticated) return <Navigate to={"/profile"} />
+  if (!!user) return <Navigate to={"/profile"} />
 
   return (
     <div className={clsx("", className)}>

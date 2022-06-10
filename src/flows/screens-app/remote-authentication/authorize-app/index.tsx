@@ -15,7 +15,7 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { ProfileConstants } from "../../profile/routes"
 import { RemoteRegisterAccountConstants } from "../../register-account/routes"
 
-interface AppScreenAuthorizeAppProps {}
+interface AppScreenAuthorizeAppProps { }
 
 export const AppScreenAuthorizeApp: React.FC<
   AppScreenAuthorizeAppProps
@@ -24,19 +24,19 @@ export const AppScreenAuthorizeApp: React.FC<
   const { secret, scope } = useParams()
   const { sendWaitForUserInput } = useAuthorizeApp()
   const { nextPersonaId, accounts, createPersona, getPersona } = usePersona()
-  const { isAuthenticated, login } = useAuthentication()
+  const { user, login } = useAuthentication()
   const { applicationName, applicationLogo } = useMultipass()
   const { navigate } = useNFIDNavigate()
 
   const { remoteLogin } = useAuthorizeApp()
 
   React.useEffect(() => {
-    isAuthenticated && getPersona()
-  }, [isAuthenticated, getPersona])
+    user && getPersona()
+  }, [user, getPersona])
 
   React.useEffect(() => {
-    secret && isAuthenticated && sendWaitForUserInput(secret)
-  }, [isAuthenticated, secret, sendWaitForUserInput])
+    secret && user && sendWaitForUserInput(secret)
+  }, [user, secret, sendWaitForUserInput])
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {
@@ -80,7 +80,7 @@ export const AppScreenAuthorizeApp: React.FC<
     >
       <AuthorizeApp
         isRemoteAuthorisation
-        isAuthenticated={isAuthenticated}
+        isAuthenticated={!!user}
         applicationName={applicationName || ""}
         applicationLogo={applicationLogo}
         onUnlockNFID={login}

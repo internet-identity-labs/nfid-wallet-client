@@ -8,6 +8,7 @@ import {
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
+import { arrayBufferEqual } from "ictool/dist/bits"
 import * as tweetnacl from "tweetnacl"
 
 import {

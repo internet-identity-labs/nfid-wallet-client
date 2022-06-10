@@ -90,6 +90,7 @@ export class IIConnection {
     try {
       delegation = await requestFEDelegation(identity)
     } catch (error: unknown) {
+      console.error(`Error when requesting delegation`, error)
       if (error instanceof Error) {
         return { kind: "authFail", error }
       } else {
@@ -102,6 +103,8 @@ export class IIConnection {
 
     const credential_id = Array.from(new Uint8Array(identity.rawId))
     const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
+
+    replaceIdentity(delegation.delegationIdentity)
 
     let registerResponse: RegisterResponse
     try {
@@ -116,6 +119,7 @@ export class IIConnection {
         challengeResult,
       )
     } catch (error: unknown) {
+      console.error(`Error when registering`, error)
       if (error instanceof Error) {
         return { kind: "apiError", error }
       } else {
@@ -159,6 +163,7 @@ export class IIConnection {
     try {
       devices = await this.lookupAuthenticators(userNumber, withSecurityDevices)
     } catch (e: unknown) {
+      console.error(`Error when looking up authenticators`, e)
       if (e instanceof Error) {
         return { kind: "apiError", error: e }
       } else {
@@ -224,6 +229,7 @@ export class IIConnection {
     try {
       delegationIdentity = await requestFEDelegation(multiIdent)
     } catch (e: unknown) {
+      console.error(`Error when requesting delegation`, e)
       if (e instanceof Error) {
         return { kind: "authFail", error: e }
       } else {

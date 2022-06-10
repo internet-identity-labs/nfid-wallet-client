@@ -3,25 +3,22 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
-import { H2, H5 } from "@internet-identity-labs/nfid-sdk-react"
+import { H2 } from "@internet-identity-labs/nfid-sdk-react"
 import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 
 import { ImageNFIDLogin } from "frontend/flows/screens-app/authenticate/image"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { LoginSuccess } from "frontend/services/internet-identity/api-result-to-login-result"
 
 interface AuthenticateNFIDLoginContentProps
   extends React.HTMLAttributes<HTMLDivElement> {
   iframe?: boolean
   loginSuccessPath?: string
-  onLoginSuccess?: (loginResult: void | LoginSuccess) => void
 }
 
 export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
   iframe,
-  onLoginSuccess,
   loginSuccessPath,
 }) => {
   const { account } = useAccount()
@@ -31,25 +28,20 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
 
   const title = "Unlock your NFID"
 
-  const handleLogin = React.useCallback(async () => {
+  const handleLogin = async () => {
     const result = await login()
-    if (result.tag === "ok") {
-      onLoginSuccess && onLoginSuccess(result)
 
+    if (result.tag === "ok") {
       if (loginSuccessPath) {
         navigate(generatePath(loginSuccessPath))
       }
     }
-  }, [generatePath, login, loginSuccessPath, navigate, onLoginSuccess])
+  }
 
   return (
     <>
       <div>
-        {iframe ? (
-          <H5 className="mb-3">{title}</H5>
-        ) : (
-          <H2 className="my-6">{title}</H2>
-        )}
+        <H2 className="my-6">{title}</H2>
 
         <P>
           The NFID on this device can only be unlocked by{" "}
@@ -61,12 +53,15 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
           secondary
           className="mt-8"
           onClick={handleLogin}
+          onTouchStart={handleLogin}
         >
           Unlock as {account?.name || account?.anchor}
         </Button>
 
         {error && (
-          <div className={clsx("text-sm mt-2 text-red-base")}>{error}</div>
+          <div className={clsx("text-sm mt-2 text-red-base")}>
+            {error.message}
+          </div>
         )}
 
         <Loader isLoading={isLoading} iframe={iframe} />

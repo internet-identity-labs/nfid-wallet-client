@@ -1,10 +1,5 @@
 import { Actor, ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
-import {
-  BinaryBlob,
-  blobFromUint8Array,
-  derBlobFromBlob,
-  DerEncodedBlob,
-} from "@dfinity/candid"
+import { BinaryBlob, derBlobFromBlob, DerEncodedBlob } from "@dfinity/candid"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -508,7 +503,7 @@ export const creationOptions = (
 }
 
 export const derFromPubkey = (pubkey: DeviceKey): DerEncodedBlob =>
-  derBlobFromBlob(blobFromUint8Array(Buffer.from(pubkey)))
+  derBlobFromBlob(new Blob([Buffer.from(pubkey)]))
 
 const getMultiIdent = (
   devices: DeviceData[],
@@ -518,7 +513,7 @@ const getMultiIdent = (
     devices.flatMap((device) =>
       device.credential_id.map((credentialId: CredentialId) => ({
         pubkey: derFromPubkey(device.pubkey),
-        credentialId: blobFromUint8Array(Buffer.from(credentialId)),
+        credentialId: new Blob([Buffer.from(credentialId)]),
       })),
     ),
     withSecurityDevices,

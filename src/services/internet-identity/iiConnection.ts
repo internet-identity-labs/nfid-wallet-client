@@ -108,7 +108,7 @@ export class IIConnection {
 
     let registerResponse: RegisterResponse
     try {
-      registerResponse = await actor.register(
+      registerResponse = await ii.register(
         {
           alias,
           pubkey,

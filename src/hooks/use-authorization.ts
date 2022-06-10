@@ -38,17 +38,14 @@ export const useAuthorization = ({
     useMessageChannel({
       messageHandler: {
         "authorize-client": async (event: any) => {
-          if (!!user?.internetIdentity) {
-            const message = event.data
-            const { maxTimeToLive, sessionPublicKey } = message
-
-            setAuthorizationRequest({
-              maxTimeToLive,
-              sessionPublicKey,
-              hostname: event.origin,
-              source: event.source,
-            })
-          }
+          const message = event.data
+          const { maxTimeToLive, sessionPublicKey } = message
+          setAuthorizationRequest({
+            maxTimeToLive,
+            sessionPublicKey,
+            hostname: event.origin,
+            source: event.source,
+          })
         },
       },
     })

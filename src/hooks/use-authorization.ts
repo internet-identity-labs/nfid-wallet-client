@@ -73,7 +73,7 @@ export const useAuthorization = ({
       const { sessionPublicKey, hostname, maxTimeToLive, source } =
         authorizationRequest
 
-      const sessionKey = Array.from(new Blob([sessionPublicKey]))
+      const sessionKey = Array.from(new Uint8Array(sessionPublicKey))
       const scope = persona_id ? `${persona_id}@${hostname}` : hostname
 
       const anchor = rawAnchor && BigInt(rawAnchor)

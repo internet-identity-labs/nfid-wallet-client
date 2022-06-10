@@ -1,4 +1,4 @@
-import { blobFromHex } from "@dfinity/candid"
+import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import React from "react"
 
 import { PublicKey } from "frontend/api/idl/internet_identity_types"
@@ -34,8 +34,8 @@ export const useAuthorizeApp = () => {
       if (!userNumber) {
         throw new Error("Device not registered")
       }
-      const blobReverse = blobFromHex(secret)
-      const sessionKey = Array.from(new Blob([blobReverse]))
+      const blobReverse = fromHexString(secret)
+      const sessionKey = Array.from(new Uint8Array(blobReverse))
       const prepRes = await connection.prepareDelegation(
         userNumber,
         scope,

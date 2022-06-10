@@ -42,7 +42,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
 
       // attach the current identity as access point
       const pub_key = Array.from(
-        user?.internetIdentity.delegationIdentity.getPublicKey().toDer() ?? [],
+        new Uint8Array(user?.internetIdentity.delegationIdentity.getPublicKey().toDer() ?? []),
       )
 
       await im.create_access_point({

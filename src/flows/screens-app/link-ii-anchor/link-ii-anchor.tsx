@@ -1,4 +1,3 @@
-import { blobToHex } from "@dfinity/candid"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import {
   Button,
@@ -27,6 +26,7 @@ import { anchorRules } from "frontend/utils/validations"
 
 import { LinkIIAnchorConstants as LIIAC } from "./routes"
 import { im } from 'frontend/api/actors'
+import { toHexString } from '@dfinity/candid/lib/cjs/utils/buffer'
 
 declare const II_ENV: string
 declare const INTERNET_IDENTITY_CANISTER_ID: string
@@ -82,7 +82,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
         return
       }
       const publicKey = identity.getPublicKey().toDer()
-      const rawId = blobToHex(identity.rawId)
+      const rawId = toHexString(identity.rawId)
 
       const url = new URL(
         II_ENV === "development"
@@ -90,7 +90,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           : "https://identity.ic0.app",
       )
       url.pathname = "/"
-      url.hash = `#device=${userNumber};${blobToHex(publicKey)};${rawId}`
+      url.hash = `#device=${userNumber};${toHexString(publicKey)};${rawId}`
       const link = encodeURI(url.toString())
 
       navigate(`${LIIAC.base}/${LIIAC.keys}`, {

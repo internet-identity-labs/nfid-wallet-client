@@ -16,7 +16,7 @@ export interface LocalAccount
     | "principal_id"
     | "access_points"
   > {
-  anchor?: string
+  anchor: string
   name?: string
   iiAnchors?: string[]
 

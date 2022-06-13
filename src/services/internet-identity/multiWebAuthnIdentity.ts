@@ -7,7 +7,12 @@
  *   then we know which one the user is actually using
  * - It doesn't support creating credentials; use `WebAuthnIdentity` for that
  */
-import { PublicKey, Signature, SignIdentity } from "@dfinity/agent"
+import {
+  DerEncodedPublicKey,
+  PublicKey,
+  Signature,
+  SignIdentity,
+} from "@dfinity/agent"
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
@@ -15,7 +20,7 @@ import { arrayBufferEqual } from "ictool/dist/bits"
 
 export type CredentialId = ArrayBuffer
 export type CredentialData = {
-  pubkey: Blob
+  pubkey: DerEncodedPublicKey
   credentialId: CredentialId
 }
 
@@ -73,23 +78,18 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       },
     })) as PublicKeyCredential
 
-    await Promise.all(
-      this.credentialData.map(async (cd) => {
-        if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
-          const strippedKey = unwrapDER(
-            await cd.pubkey.arrayBuffer(),
-            DER_COSE_OID,
-          )
-          // would be nice if WebAuthnIdentity had a directly usable constructor
-          this._actualIdentity = WebAuthnIdentity.fromJSON(
-            JSON.stringify({
-              rawId: Buffer.from(cd.credentialId).toString("hex"),
-              publicKey: Buffer.from(strippedKey).toString("hex"),
-            }),
-          )
-        }
-      }),
-    )
+    this.credentialData.forEach((cd) => {
+      if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
+        const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
+        // would be nice if WebAuthnIdentity had a directly usable constructor
+        this._actualIdentity = WebAuthnIdentity.fromJSON(
+          JSON.stringify({
+            rawId: Buffer.from(cd.credentialId).toString("hex"),
+            publicKey: Buffer.from(strippedKey).toString("hex"),
+          }),
+        )
+      }
+    })
 
     if (this._actualIdentity === undefined) {
       // Odd, user logged in with a credential we didn't provide?
@@ -97,27 +97,17 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     }
 
     const response = result.response as AuthenticatorAssertionResponse
-    if (
-      response.signature instanceof ArrayBuffer &&
-      response.authenticatorData instanceof ArrayBuffer
-    ) {
-      const cbor = borc.encode(
-        new borc.Tagged(55799, {
-          authenticator_data: new Uint8Array(response.authenticatorData),
-          client_data_json: new TextDecoder().decode(response.clientDataJSON),
-          signature: new Uint8Array(response.signature),
-        }),
-      )
-      // eslint-disable-next-line
-      if (!cbor) {
-        throw new Error("failed to encode cbor")
-      }
-      return {
-        ...new Uint8Array(cbor).buffer,
-        __signature__: undefined,
-      }
-    } else {
-      throw new Error("Invalid response from WebAuthn.")
+    const cbor = borc.encode(
+      new borc.Tagged(55799, {
+        authenticator_data: new Uint8Array(response.authenticatorData),
+        client_data_json: new TextDecoder().decode(response.clientDataJSON),
+        signature: new Uint8Array(response.signature),
+      }),
+    )
+    // eslint-disable-next-line
+    if (!cbor) {
+      throw new Error("failed to encode cbor")
     }
+    return new Uint8Array(cbor).buffer as Signature
   }
 }

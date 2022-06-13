@@ -19,6 +19,7 @@ import { fromMnemonicWithoutValidation } from "frontend/services/internet-identi
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import {
   creationOptions,
+  derFromPubkey,
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
@@ -247,7 +248,6 @@ export const useDevices = () => {
       if (!user?.internetIdentity) throw new Error("Unauthorized")
 
       const pub_key = fromHexString(publicKey)
-      const pubKeyBlob = new Blob([pub_key])
 
       await Promise.all([
         user?.internetIdentity.add(
@@ -255,7 +255,7 @@ export const useDevices = () => {
           deviceName,
           { unknown: null },
           { authentication: null },
-          pubKeyBlob,
+          derFromPubkey(Array.from(new Uint8Array(pub_key))),
           fromHexString(rawId),
         ),
         im.create_access_point({
@@ -335,7 +335,7 @@ export const useDevices = () => {
       deviceName,
       { seed_phrase: null },
       { recovery: null },
-      new Blob([recoverIdentity.getPublicKey().toDer()]),
+      recoverIdentity.getPublicKey().toDer(),
     )
     createRecoveryDevice(
       new Blob([recoverIdentity.getPublicKey().toDer()]),
@@ -376,7 +376,7 @@ export const useDevices = () => {
           purpose && purpose === "recover"
             ? { recovery: null }
             : { authentication: null },
-          new Blob([recoverIdentity.getPublicKey().toDer()]),
+          recoverIdentity.getPublicKey().toDer(),
           recoverIdentity.rawId,
         ),
         createRecoveryDevice(

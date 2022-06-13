@@ -1,4 +1,8 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent"
+import {
+  ActorSubclass,
+  DerEncodedPublicKey,
+  SignIdentity,
+} from "@dfinity/agent"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -268,7 +272,7 @@ export class IIConnection {
     if (
       !arrayBufferEqual(
         identity.getPublicKey().toDer(),
-        await derFromPubkey(expected.pubkey).arrayBuffer(),
+        derFromPubkey(expected.pubkey),
       )
     ) {
       return {
@@ -356,13 +360,13 @@ export class IIConnection {
     alias: string,
     keyType: KeyType,
     purpose: Purpose,
-    newPublicKey: Blob,
+    newPublicKey: DerEncodedPublicKey,
     credentialId?: ArrayBuffer,
   ): Promise<void> => {
     await this.renewDelegation()
     return await ii.add(userNumber, {
       alias,
-      pubkey: Array.from(new Uint8Array(await newPublicKey.arrayBuffer())),
+      pubkey: Array.from(new Uint8Array(newPublicKey)),
       credential_id: credentialId
         ? [Array.from(new Uint8Array(credentialId))]
         : [],
@@ -513,9 +517,6 @@ export const creationOptions = (
   }
 }
 
-export const derFromPubkey = (pubkey: DeviceKey) =>
-  new Blob([Buffer.from(pubkey)])
-
 const getMultiIdent = (
   devices: DeviceData[],
   withSecurityDevices?: boolean,
@@ -530,3 +531,6 @@ const getMultiIdent = (
     withSecurityDevices,
   )
 }
+
+export const derFromPubkey = (pubkey: DeviceKey): DerEncodedPublicKey =>
+  new Uint8Array(pubkey).buffer as DerEncodedPublicKey

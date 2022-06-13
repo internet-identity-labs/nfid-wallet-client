@@ -1,0 +1,62 @@
+import React from "react"
+
+import { Button, P, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
+
+import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
+
+interface CredentialRequesterVerifiedProps {
+  applicationLogo?: string
+  applicationName?: string
+  onPresent: () => void
+  onSkip: () => void
+}
+
+export const CredentialRequesterVerified: React.FC<
+  CredentialRequesterVerifiedProps
+> = ({ applicationLogo, applicationName, onPresent, onSkip }) => {
+  const [radioValue, setRadioValue] = React.useState("rb_present")
+
+  const handleClick = () => {
+    if (radioValue === "rb_present") onPresent()
+    else onSkip()
+  }
+
+  return (
+    <ScreenResponsive
+      applicationLogo={applicationLogo}
+      applicationName={applicationName}
+      title="Verification request"
+      subTitle={`to continue to ${applicationName}`}
+    >
+      <P className="mt-5 text-sm">
+        You already have a verified phone credential from Internet Identity
+        Labs.
+      </P>
+      <P className="mt-2 text-sm">Would you like to present it now?</P>
+      <div className="py-3">
+        <RadioButton
+          onChange={() => setRadioValue("rb_present")}
+          checked={radioValue === "rb_present"}
+          value={"rb_present"}
+          name={"rb_present"}
+          text={"Yes, present it anonymously"}
+        />
+        <RadioButton
+          onChange={() => setRadioValue("rb_skip")}
+          checked={radioValue === "rb_skip"}
+          value={"rb_skip"}
+          name={"rb_skip"}
+          text={"Skip for now"}
+        />
+      </div>
+      <Button
+        primary
+        className="px-10 mb-6 sm:mt-2"
+        block
+        onClick={handleClick}
+      >
+        Continue
+      </Button>
+    </ScreenResponsive>
+  )
+}

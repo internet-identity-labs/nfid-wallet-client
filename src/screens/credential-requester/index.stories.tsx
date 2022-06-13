@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import logo from "frontend/assets/distrikt.svg"
 
 import { CredentialRequesterNotVerified } from "./not-verified"
+import { CredentialRequesterVerified } from "./verified"
 
 export default {
   title: "Screens/Credential Requester",
@@ -11,17 +12,23 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
+  args: {
+    applicationName: "Distrikt",
+    applicationLogo: logo,
+  },
 } as ComponentMeta<typeof CredentialRequesterNotVerified>
 
-const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
+const CredentialRequesterVerifiedTemplate: ComponentStory<
+  typeof CredentialRequesterVerified
+> = (args) => {
+  return <CredentialRequesterVerified {...args} />
+}
+
+const CredentialRequesterNotVerifiedTemplate: ComponentStory<
   typeof CredentialRequesterNotVerified
 > = (args) => {
   return <CredentialRequesterNotVerified {...args} />
 }
 
-export const NotVerifiedScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
-
-NotVerifiedScreen.args = {
-  applicationName: "Distrikt",
-  applicationLogo: logo,
-}
+export const VerifiedScreen = CredentialRequesterVerifiedTemplate.bind({})
+export const NotVerifiedScreen = CredentialRequesterNotVerifiedTemplate.bind({})

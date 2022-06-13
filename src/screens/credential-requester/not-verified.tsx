@@ -65,7 +65,12 @@ export const CredentialRequesterNotVerified: React.FC<
             })}
           />
         </div>
-        <Button primary className="px-10 sm:mt-2" block>
+        <Button
+          primary
+          className="px-10 sm:mt-2"
+          block
+          onClick={handleSubmit(onSubmit)}
+        >
           Verify phone number
         </Button>
       </form>

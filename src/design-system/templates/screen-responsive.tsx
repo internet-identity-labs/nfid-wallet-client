@@ -1,16 +1,21 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+import { H5, Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 
 import logo from "./assets/id.svg"
 
+import { ApplicationLogo } from "../atoms/application-logo"
 import { NFIDGradientBar } from "../atoms/gradient-bar"
 import { BlurOverlay } from "../molecules/blur-overlay"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   isLoading?: boolean
   loadingMessage?: string
+  applicationLogo?: string
+  applicationName?: string
+  title?: string
+  subTitle?: string
 }
 
 export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
@@ -18,6 +23,10 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   className,
   isLoading,
   loadingMessage,
+  applicationLogo,
+  applicationName,
+  title,
+  subTitle,
 }) => {
   return (
     <div
@@ -46,6 +55,16 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
           className,
         )}
       >
+        <div className="flex flex-col items-center">
+          {applicationLogo && (
+            <ApplicationLogo
+              src={applicationLogo}
+              applicationName={applicationName}
+            />
+          )}
+          <H5>{title}</H5>
+          <P className="mt-2">{subTitle}</P>
+        </div>
         {children}
       </div>
 

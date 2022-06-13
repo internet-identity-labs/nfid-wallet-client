@@ -62,7 +62,7 @@
     "react-verification-code-input": "^1.2.9",
     "stickyfilljs": "^2.1.0",
     "stream-browserify": "3.0.0",
-    "swiper": "^8.0.7",
+    "swiper": "^8.2.4",
     "usergeek-ic-js": "git+https://github.com/usergeek/usergeek-ic-js",
     "uuid": "8.3.2"
   },

@@ -13,6 +13,7 @@ export default {
     layout: "fullscreen",
   },
   args: {
+    onPresent: () => {},
     applicationName: "Distrikt",
     applicationLogo: logo,
   },

@@ -15,11 +15,10 @@ jobs:
 
       - name: INSTALL NVM VERSION
         shell: bash -l {0}
-        run: nvm install 17.9.0 && nvm use 17.9.0
+        run: nvm install 17.9.0 && nvm use 17.9.0 && nvm alias default v17.9.0
 
       - name: MULTIPASS FRONTEND | install & tests
         run: |
-          nvm alias default v17.9.0
           yarn install
           # yarn test
 

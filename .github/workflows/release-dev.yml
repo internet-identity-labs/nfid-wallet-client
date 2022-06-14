@@ -15,7 +15,7 @@ jobs:
 
       - name: INSTALL NVM VERSION
         shell: bash -l {0}
-        run: nvm install 17.9.0
+        run: nvm install 17.9.0 | echo nvm version
 
       - name: MULTIPASS FRONTEND | install & tests
         run: |

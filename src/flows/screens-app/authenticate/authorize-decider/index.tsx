@@ -1,4 +1,7 @@
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
+
+import { GoogleCredential } from "frontend/design-system/atoms/button/signin-with-google"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -6,6 +9,7 @@ import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { AuthorizeDecider } from "frontend/screens/authorize-decider"
 import { useChallenge } from "frontend/screens/captcha/hook"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface AuthorizeDeciderProps {
@@ -29,8 +33,8 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     (state) => !state,
     false,
   )
-  const { user, login, setShouldStoreLocalAccount } =
-    useAuthentication()
+  const { user, login, setShouldStoreLocalAccount } = useAuthentication()
+  const { getGoolgeDevice } = useDevices()
   const { getPersona } = usePersona()
   const { readAccount } = useAccount()
   const { getChallenge } = useChallenge()
@@ -39,19 +43,19 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
 
   const handleAuthorization =
     ({ withSecurityDevices }: { withSecurityDevices: boolean }) =>
-      async (userNumber: number) => {
-        setIsLoading(true)
-        const response = await login(BigInt(userNumber), withSecurityDevices)
+    async (userNumber: number) => {
+      setIsLoading(true)
+      const response = await login(BigInt(userNumber), withSecurityDevices)
 
-        if (response.tag === "ok") {
-          withSecurityDevices && setShouldStoreLocalAccount(false)
-          setIsLoading(false)
-        }
-        if (response.tag === "err") {
-          setAuthError(response.title)
-          setIsLoading(false)
-        }
+      if (response.tag === "ok") {
+        withSecurityDevices && setShouldStoreLocalAccount(false)
+        setIsLoading(false)
       }
+      if (response.tag === "err") {
+        setAuthError(response.title)
+        setIsLoading(false)
+      }
+    }
 
   const handleCreateKeys = React.useCallback(async () => {
     getChallenge()
@@ -65,6 +69,26 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     })
     setIsLoading(false)
   }, [createWebAuthNIdentity, getChallenge, navigate, pathCaptcha])
+
+  const handleGetGoogleKey = React.useCallback(
+    async ({ credential }: GoogleCredential) => {
+      getChallenge()
+      setIsLoading(true)
+      const response = await getGoolgeDevice({ token: credential })
+
+      navigate(pathCaptcha, {
+        state: {
+          registerPayload: {
+            isGoogle: true,
+            identity: response.identity,
+            deviceName: "Google Device",
+          },
+        },
+      })
+      setIsLoading(false)
+    },
+    [getChallenge, getGoolgeDevice, navigate, pathCaptcha],
+  )
 
   // TODO: we need to find a better way to store the actors.
   // This is because we currently store them with a setState on jotai atom.
@@ -91,6 +115,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       onSelectSecurityKeyAuthorization={handleAuthorization({
         withSecurityDevices: true,
       })}
+      onSelectGoogleAuthorization={handleGetGoogleKey}
       onToggleAdvancedOptions={toggleAdvancedOptions}
       showAdvancedOptions={showAdvancedOptions}
       authError={authError}

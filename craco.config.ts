@@ -35,6 +35,11 @@ const config = {
                   ? process.env.AWS_VERIFY_PHONENUMBER
                   : "/verify",
               ),
+              SIGNIN_GOOGLE: JSON.stringify(
+                process.env.FRONTEND_MODE === "production"
+                  ? process.env.AWS_SIGNIN_GOOGLE
+                  : "/signin",
+              ),
               INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
                 process.env[
                   `INTERNET_IDENTITY_CANISTER_ID_${process.env.BACKEND_MODE}`
@@ -112,6 +117,12 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify/, ""),
+      },
+      "/signin": {
+        target: process.env.AWS_SIGNIN_GOOGLE,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/signin/, ""),
       },
     },
   },

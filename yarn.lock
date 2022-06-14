@@ -10457,10 +10457,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   version "5.1.0"
   resolved "https://registry.npmjs.org/icss-utils/-/icss-utils-5.1.0.tgz"
 
-ictool@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.npmjs.org/ictool/-/ictool-0.0.4.tgz"
-  integrity sha512-YPEdxLn9hZRXbUAOgbdscHuILy4SK8CBfQLRcVkaXqLVMEDBLcCBYgRkA7gyJAsDthCw0q8nXzGDMaMj0ZFT2g==
+ictool@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/ictool/-/ictool-0.0.6.tgz#978fb26cf02b2d442724f79e3e251ee2235b359f"
+  integrity sha512-inDKS+0Mj2QIw8AKSiasIkeSEXetPmPVhCWJTzRo2DTgHHltom1ls3qzzo4IhRXFaTDso6zhhzMowDYB+lWrlg==
   dependencies:
     "@dfinity/principal" "^0.11.0"
     crc-32 "^1.2.2"

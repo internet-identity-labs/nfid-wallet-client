@@ -117,7 +117,12 @@ export const StepInput: React.FC<StepInputProps> = ({
 
   return (
     <div>
-      <div className={clsx("flex space-x-3", className)}>
+      <div
+        className={clsx(
+          "flex space-x-3 justify-between sm:justify-start",
+          className,
+        )}
+      >
         {list.map((_, index) => (
           <Input
             pin
@@ -129,6 +134,9 @@ export const StepInput: React.FC<StepInputProps> = ({
             onChange={(e) => handleInput(e, index)}
             maxLength={1}
             pattern="^[0-9]{1}$"
+            onKeyDown={(e) =>
+              ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
+            }
           />
         ))}
       </div>
@@ -136,8 +144,8 @@ export const StepInput: React.FC<StepInputProps> = ({
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button
-        secondary
-        className="px-10 sm:mt-5"
+        primary
+        className="block w-full px-10 my-3 sm:w-auto sm:my-5 sm:inline-block"
         onClick={() => {
           validateToken()
           handleSubmit()

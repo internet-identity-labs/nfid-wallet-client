@@ -68,6 +68,24 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
     [onSelectSecurityKeyAuthorization],
   )
 
+  const handleFetchKey = React.useCallback(async ({ credential }) => {
+    console.log(">> ", { credential })
+
+    debugger
+    const rawResponse = await fetch(
+      "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin",
+      {
+        method: "POST",
+        body: JSON.stringify({ token: credential }),
+      },
+    )
+    console.log(">> ", { rawResponse })
+
+    debugger
+    const response = await rawResponse.json()
+    console.log(">> ", { response })
+  }, [])
+
   return (
     <ScreenResponsive
       className="flex flex-col items-center"
@@ -102,9 +120,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         />
       )}
 
-      <SignInWithGoogle
-        onLogin={(credential) => console.log(">> ", { credential })}
-      />
+      <SignInWithGoogle onLogin={handleFetchKey} />
 
       <div className="flex flex-col w-full mt-8 space-y-1">
         {showAdvancedOptions ? (

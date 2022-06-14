@@ -19,7 +19,8 @@ jobs:
 
       - name: MULTIPASS FRONTEND | install & tests
         run: |
-          yarn
+          nvm alias default v17.9.0
+          yarn install
           # yarn test
 
       - name: MULTIPASS FRONTEND | deploy

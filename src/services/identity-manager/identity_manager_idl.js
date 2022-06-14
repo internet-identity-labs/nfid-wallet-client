@@ -1,5 +1,10 @@
 export const idlFactory = ({ IDL }) => {
   const Error = IDL.Text
+  const HTTPAnchorsResponse = IDL.Record({
+    data: IDL.Opt(IDL.Vec(IDL.Nat64)),
+    error: IDL.Opt(Error),
+    status_code: IDL.Nat16,
+  })
   const StringHttpResponse = IDL.Record({
     data: IDL.Opt(IDL.Text),
     error: IDL.Opt(Error),
@@ -12,10 +17,10 @@ export const idlFactory = ({ IDL }) => {
     ii_canister_id: IDL.Opt(IDL.Principal),
     whitelisted_canisters: IDL.Opt(IDL.Vec(IDL.Principal)),
     git_branch: IDL.Opt(IDL.Text),
-    lambda: IDL.Principal,
-    token_refresh_ttl: IDL.Nat64,
+    lambda: IDL.Opt(IDL.Principal),
+    token_refresh_ttl: IDL.Opt(IDL.Nat64),
     heartbeat: IDL.Opt(IDL.Nat32),
-    token_ttl: IDL.Nat64,
+    token_ttl: IDL.Opt(IDL.Nat64),
     commit_hash: IDL.Opt(IDL.Text),
   })
   const AccessPointRequest = IDL.Record({
@@ -171,10 +176,10 @@ export const idlFactory = ({ IDL }) => {
     ii_canister_id: IDL.Opt(IDL.Principal),
     whitelisted_canisters: IDL.Opt(IDL.Vec(IDL.Principal)),
     git_branch: IDL.Opt(IDL.Text),
-    lambda: IDL.Principal,
-    token_refresh_ttl: IDL.Nat64,
+    lambda: IDL.Opt(IDL.Principal),
+    token_refresh_ttl: IDL.Opt(IDL.Nat64),
     heartbeat: IDL.Opt(IDL.Nat32),
-    token_ttl: IDL.Nat64,
+    token_ttl: IDL.Opt(IDL.Nat64),
     commit_hash: IDL.Opt(IDL.Text),
   })
   const TokenRequest = IDL.Record({
@@ -215,6 +220,7 @@ export const idlFactory = ({ IDL }) => {
   })
   const Token = IDL.Text
   return IDL.Service({
+    anchors: IDL.Func([], [HTTPAnchorsResponse], ["query"]),
     certify_phone_number_sha2: IDL.Func(
       [IDL.Text, IDL.Text],
       [StringHttpResponse],
@@ -267,6 +273,7 @@ export const idlFactory = ({ IDL }) => {
     remove_account: IDL.Func([], [BoolHttpResponse], []),
     restore_accounts: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     store_accounts: IDL.Func([IDL.Vec(Account)], [BoolHttpResponse], []),
+    sync_recovery_phrases: IDL.Func([], [], []),
     update_access_point: IDL.Func(
       [AccessPointRequest],
       [HTTPAccessPointResponse],

@@ -1,3 +1,4 @@
+import type { ActorMethod } from "@dfinity/agent"
 import type { Principal } from "@dfinity/principal"
 
 export interface AccessPointRemoveRequest {
@@ -83,10 +84,10 @@ export interface ConfigurationRequest {
   ii_canister_id: [] | [Principal]
   whitelisted_canisters: [] | [Array<Principal>]
   git_branch: [] | [string]
-  lambda: Principal
-  token_refresh_ttl: bigint
+  lambda: [] | [Principal]
+  token_refresh_ttl: [] | [bigint]
   heartbeat: [] | [number]
-  token_ttl: bigint
+  token_ttl: [] | [bigint]
   commit_hash: [] | [string]
 }
 export interface ConfigurationResponse {
@@ -96,10 +97,10 @@ export interface ConfigurationResponse {
   ii_canister_id: [] | [Principal]
   whitelisted_canisters: [] | [Array<Principal>]
   git_branch: [] | [string]
-  lambda: Principal
-  token_refresh_ttl: bigint
+  lambda: [] | [Principal]
+  token_refresh_ttl: [] | [bigint]
   heartbeat: [] | [number]
-  token_ttl: bigint
+  token_ttl: [] | [bigint]
   commit_hash: [] | [string]
 }
 export type Credential = { phone_number: PhoneNumberCredential }
@@ -114,11 +115,6 @@ export interface DailyMetricsData {
   canisterCycles: NumericEntity
   canisterMemorySize: NumericEntity
   timeMillis: bigint
-}
-export interface EmptyHttpResponse {
-  data: [] | [string]
-  error: [] | [Error]
-  status_code: number
 }
 export type Error = string
 export interface GetLatestLogMessagesParameters {
@@ -157,6 +153,11 @@ export interface HTTPAccountResponse {
 export interface HTTPAccountUpdateRequest {
   name: [] | [string]
 }
+export interface HTTPAnchorsResponse {
+  data: [] | [Array<bigint>]
+  error: [] | [Error]
+  status_code: number
+}
 export interface HTTPApplicationResponse {
   data: [] | [Array<Application>]
   error: [] | [Error]
@@ -186,12 +187,6 @@ export interface NumericEntity {
   min: bigint
   first: bigint
   last: bigint
-}
-export interface Persona {
-  domain: string
-  persona_name: string
-  basic_entity: BasicEntity
-  persona_id: string
 }
 export interface PersonaRequest {
   domain: string
@@ -228,48 +223,50 @@ export interface ValidatePhoneRequest {
   principal_id: string
 }
 export interface _SERVICE {
-  certify_phone_number_sha2: (
-    arg_0: string,
-    arg_1: string,
-  ) => Promise<StringHttpResponse>
-  collectCanisterMetrics: () => Promise<undefined>
-  configure: (arg_0: ConfigurationRequest) => Promise<undefined>
-  create_access_point: (
-    arg_0: AccessPointRequest,
-  ) => Promise<HTTPAccessPointResponse>
-  create_account: (arg_0: HTTPAccountRequest) => Promise<HTTPAccountResponse>
-  create_application: (arg_0: Application) => Promise<HTTPApplicationResponse>
-  create_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
-  credentials: () => Promise<CredentialResponse>
-  delete_application: (arg_0: string) => Promise<BoolHttpResponse>
-  getCanisterLog: (
-    arg_0: [] | [CanisterLogRequest],
-  ) => Promise<[] | [CanisterLogResponse]>
-  getCanisterMetrics: (
-    arg_0: GetMetricsParameters,
-  ) => Promise<[] | [CanisterMetrics]>
-  get_account: () => Promise<HTTPAccountResponse>
-  get_account_by_anchor: (arg_0: bigint) => Promise<HTTPAccountResponse>
-  get_config: () => Promise<ConfigurationResponse>
-  is_over_the_application_limit: (arg_0: string) => Promise<BoolHttpResponse>
-  post_token: (arg_0: TokenRequest) => Promise<Response>
-  read_access_points: () => Promise<HTTPAccessPointResponse>
-  read_applications: () => Promise<HTTPApplicationResponse>
-  read_personas: () => Promise<HTTPPersonasResponse>
-  recover_account: (arg_0: bigint) => Promise<HTTPAccountResponse>
-  remove_access_point: (
-    arg_0: AccessPointRemoveRequest,
-  ) => Promise<HTTPAccessPointResponse>
-  remove_account: () => Promise<BoolHttpResponse>
-  restore_accounts: (arg_0: string) => Promise<BoolHttpResponse>
-  store_accounts: (arg_0: Array<Account>) => Promise<BoolHttpResponse>
-  update_access_point: (
-    arg_0: AccessPointRequest,
-  ) => Promise<HTTPAccessPointResponse>
-  update_account: (
-    arg_0: HTTPAccountUpdateRequest,
-  ) => Promise<HTTPAccountResponse>
-  use_access_point: () => Promise<HTTPAccessPointResponse>
-  validate_phone: (arg_0: ValidatePhoneRequest) => Promise<Response>
-  verify_token: (arg_0: Token) => Promise<Response>
+  anchors: ActorMethod<[], HTTPAnchorsResponse>
+  certify_phone_number_sha2: ActorMethod<[string, string], StringHttpResponse>
+  collectCanisterMetrics: ActorMethod<[], undefined>
+  configure: ActorMethod<[ConfigurationRequest], undefined>
+  create_access_point: ActorMethod<
+    [AccessPointRequest],
+    HTTPAccessPointResponse
+  >
+  create_account: ActorMethod<[HTTPAccountRequest], HTTPAccountResponse>
+  create_application: ActorMethod<[Application], HTTPApplicationResponse>
+  create_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
+  credentials: ActorMethod<[], CredentialResponse>
+  delete_application: ActorMethod<[string], BoolHttpResponse>
+  getCanisterLog: ActorMethod<
+    [[] | [CanisterLogRequest]],
+    [] | [CanisterLogResponse]
+  >
+  getCanisterMetrics: ActorMethod<
+    [GetMetricsParameters],
+    [] | [CanisterMetrics]
+  >
+  get_account: ActorMethod<[], HTTPAccountResponse>
+  get_account_by_anchor: ActorMethod<[bigint], HTTPAccountResponse>
+  get_config: ActorMethod<[], ConfigurationResponse>
+  is_over_the_application_limit: ActorMethod<[string], BoolHttpResponse>
+  post_token: ActorMethod<[TokenRequest], Response>
+  read_access_points: ActorMethod<[], HTTPAccessPointResponse>
+  read_applications: ActorMethod<[], HTTPApplicationResponse>
+  read_personas: ActorMethod<[], HTTPPersonasResponse>
+  recover_account: ActorMethod<[bigint], HTTPAccountResponse>
+  remove_access_point: ActorMethod<
+    [AccessPointRemoveRequest],
+    HTTPAccessPointResponse
+  >
+  remove_account: ActorMethod<[], BoolHttpResponse>
+  restore_accounts: ActorMethod<[string], BoolHttpResponse>
+  store_accounts: ActorMethod<[Array<Account>], BoolHttpResponse>
+  sync_recovery_phrases: ActorMethod<[], undefined>
+  update_access_point: ActorMethod<
+    [AccessPointRequest],
+    HTTPAccessPointResponse
+  >
+  update_account: ActorMethod<[HTTPAccountUpdateRequest], HTTPAccountResponse>
+  use_access_point: ActorMethod<[], HTTPAccessPointResponse>
+  validate_phone: ActorMethod<[ValidatePhoneRequest], Response>
+  verify_token: ActorMethod<[Token], Response>
 }

@@ -5,11 +5,9 @@ import { useLocation } from "react-router-dom"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import {
   ChallengeResult,
   IIConnection,
-  RegisterResult,
 } from "frontend/services/internet-identity/iiConnection"
 
 import { challengeAtom } from "./state"
@@ -39,13 +37,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
 
   const { challenge, getChallenge } = useChallenge()
 
-  const [responseRegisterAnchor, setResponseRegisterAnchor] = React.useState<
-    RegisterResult | undefined
-  >()
-
-  // ACCOUNT
-  const { account, createAccount } = useAccount()
-
   const { onRegisterSuccess } = useAuthentication()
 
   const requestCaptcha = React.useCallback(async () => {
@@ -71,9 +62,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         challengeResult,
       )
       onRegisterSuccess(response)
-      if (response.kind === "loginSuccess") {
-        setResponseRegisterAnchor(response)
-      }
       if (response.kind === "badChallenge") {
         setLoading(false)
         onBadChallenge()
@@ -95,36 +83,52 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     ],
   )
 
-  const handleCreateAccount = React.useCallback(async () => {
-    if (
-      responseRegisterAnchor &&
-      responseRegisterAnchor.kind === "loginSuccess"
-    ) {
-      const { userNumber } = responseRegisterAnchor
+  const registerAnchorFromGoogle = React.useCallback(
+    async ({ captcha }: { captcha: string }) => {
+      setLoading(true)
+      if (!challenge) throw new Error("No challenge response")
+      const { identity, deviceName } = registerPayload
 
-      await createAccount({
-        anchor: userNumber,
-      })
-    }
-  }, [createAccount, responseRegisterAnchor])
+      const challengeResult: ChallengeResult = {
+        chars: captcha,
+        key: challenge.challenge_key,
+      }
 
-  React.useEffect(() => {
-    if (
-      responseRegisterAnchor &&
-      responseRegisterAnchor.kind === "loginSuccess"
-    ) {
-      handleCreateAccount()
-    }
-  }, [handleCreateAccount, responseRegisterAnchor])
+      const response = await IIConnection.registerFromGoogle(
+        identity,
+        deviceName,
+        challengeResult,
+      )
+      onRegisterSuccess(response)
+      if (response.kind === "badChallenge") {
+        setLoading(false)
+        onBadChallenge()
+      }
+      if (response.kind === "apiError") {
+        setLoading(false)
+        onApiError()
+      }
+
+      return response
+    },
+    [
+      challenge,
+      onApiError,
+      onBadChallenge,
+      onRegisterSuccess,
+      registerPayload,
+      setLoading,
+    ],
+  )
 
   return {
-    account,
     loading,
     setLoading,
     challenge,
     requestCaptcha,
     registerPayload,
     registerAnchor,
+    registerAnchorFromGoogle,
   }
 }
 

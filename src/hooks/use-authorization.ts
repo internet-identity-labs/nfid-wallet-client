@@ -3,8 +3,6 @@ import React from "react"
 
 import { ii } from "frontend/api/actors"
 import { useAuthentication } from "frontend/hooks/use-authentication"
-import { retryGetDelegation } from "frontend/services/internet-identity/auth"
-import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { hasOwnProperty } from "frontend/services/internet-identity/utils"
 
 import { useMessageChannel } from "../screens/remote-authorize-app-unknown-device/hooks/use-message-channel"

@@ -6,7 +6,6 @@ export type LoginSuccess = {
   tag: "ok"
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
-  userNumber: bigint
   internetIdentity: IIConnection
 }
 export type LoginError = {
@@ -25,7 +24,6 @@ export const apiResultToLoginResult = (result: ApiResult): LoginResult => {
         tag: "ok",
         chain: result.chain,
         sessionKey: result.sessionKey,
-        userNumber: result.userNumber,
         internetIdentity: result.internetIdentity,
       }
     }

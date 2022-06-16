@@ -33,10 +33,11 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     (state) => !state,
     false,
   )
-  const { user, login, setShouldStoreLocalAccount } = useAuthentication()
+  const { user, login, setShouldStoreLocalAccount, loginWithGoogleDevice } =
+    useAuthentication()
   const { getGoolgeDevice } = useDevices()
   const { getPersona } = usePersona()
-  const { readAccount } = useAccount()
+  const { readAccount, readMemoryAccount } = useAccount()
   const { getChallenge } = useChallenge()
 
   const { navigateFactory, navigate } = useNFIDNavigate()
@@ -75,7 +76,20 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       getChallenge()
       setIsLoading(true)
       const response = await getGoolgeDevice({ token: credential })
+      // TODO:
 
+      // Given: user is returning (response.is_existing)
+      // Then: we need to authenticate with the google device
+      // And: navigate to the authorize app screen
+      if (response.is_existing) {
+        await loginWithGoogleDevice(response.identity)
+        await readMemoryAccount()
+        return navigate(pathAuthorizeApp)
+      }
+
+      // Given: user new
+      // Then: we need to navigate to captcha screen
+      // And: register a new account
       navigate(pathCaptcha, {
         state: {
           registerPayload: {
@@ -87,7 +101,15 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       })
       setIsLoading(false)
     },
-    [getChallenge, getGoolgeDevice, navigate, pathCaptcha],
+    [
+      getChallenge,
+      getGoolgeDevice,
+      loginWithGoogleDevice,
+      navigate,
+      pathAuthorizeApp,
+      pathCaptcha,
+      readMemoryAccount,
+    ],
   )
 
   // TODO: we need to find a better way to store the actors.

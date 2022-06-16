@@ -370,12 +370,25 @@ export class IIConnection {
     }
   }
 
-  static async fromGoogleDevice(identity: string): Promise<Ed25519KeyIdentity> {
+  static async loginfromGoogleDevice(identity: string): Promise<{
+    chain: DelegationChain
+    sessionKey: Ed25519KeyIdentity
+    internetIdentity: IIConnection
+  }> {
     const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
     const delegationIdentity = await requestFEDelegation(googleIdentity)
 
     replaceIdentity(delegationIdentity.delegationIdentity)
-    return googleIdentity
+    // return googleIdentity
+    return {
+      chain: delegationIdentity.chain,
+      sessionKey: delegationIdentity.sessionKey,
+      internetIdentity: new IIConnection(
+        googleIdentity,
+        delegationIdentity.delegationIdentity,
+        ii,
+      ),
+    }
   }
 
   static async lookupAll(userNumber: UserNumber): Promise<DeviceData[]> {

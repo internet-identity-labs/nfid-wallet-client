@@ -1,3 +1,9 @@
+import clsx from "clsx"
+import React from "react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { IoMdArrowBack } from "react-icons/io"
+import { Link } from "react-router-dom"
+
 import {
   P,
   Logo,
@@ -5,11 +11,6 @@ import {
   Input,
   Button,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React from "react"
-import { SubmitHandler, useForm } from "react-hook-form"
-import { IoMdArrowBack } from "react-icons/io"
-import { Link } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
@@ -89,7 +90,11 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
                 labelText="Phone number"
               />
             </div>
-            <Button secondary className="px-10 sm:mt-5">
+            <Button
+              secondary
+              className="px-10 sm:mt-5"
+              onClick={handleSubmit(onSubmit)}
+            >
               Verify phone number
             </Button>
           </form>

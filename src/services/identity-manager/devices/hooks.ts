@@ -405,6 +405,8 @@ export const useDevices = () => {
       },
     })
 
+    console.log(">> getGoolgeDevice", { response })
+
     return await response.json()
   }, [])
 

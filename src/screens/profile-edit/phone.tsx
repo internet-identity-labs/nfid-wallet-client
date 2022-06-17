@@ -4,15 +4,12 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { IoMdArrowBack } from "react-icons/io"
 import { Link } from "react-router-dom"
 
-import {
-  P,
-  Logo,
-  H4,
-  Input,
-  Button,
-} from "@internet-identity-labs/nfid-sdk-react"
+import { P, Logo, H4, Button } from "@internet-identity-labs/nfid-sdk-react"
 
+import { Input } from "frontend/design-system/atoms/input"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+
+import { phoneRules } from "frontend/utils/validations"
 
 interface Account {
   anchor: string
@@ -85,16 +82,26 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
           >
             <div className="space-y-2">
               <Input
-                type="tel"
-                {...register("phone")}
+                type="number"
+                {...register("phone", {
+                  required: phoneRules.errorMessages.required,
+                  pattern: {
+                    value: phoneRules.regex,
+                    message: phoneRules.errorMessages.pattern,
+                  },
+                  minLength: {
+                    value: phoneRules.minLength,
+                    message: phoneRules.errorMessages.length,
+                  },
+                  maxLength: {
+                    value: phoneRules.maxLength,
+                    message: phoneRules.errorMessages.length,
+                  },
+                })}
                 labelText="Phone number"
               />
             </div>
-            <Button
-              secondary
-              className="px-10 sm:mt-5"
-              onClick={handleSubmit(onSubmit)}
-            >
+            <Button primary className="px-10 sm:mt-5" type="submit">
               Verify phone number
             </Button>
           </form>

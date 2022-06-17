@@ -3,7 +3,6 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { IoMdArrowBack } from "react-icons/io"
 import { Link } from "react-router-dom"
-import ReactCodeInput from "react-verification-code-input"
 
 import {
   P,
@@ -26,7 +25,7 @@ interface Account {
 interface ProfileEditPhoneSmsProps {
   account?: Account
   onResendCode: () => void
-  onSubmit: () => void
+  onSubmit: () => boolean
   phone: string | number
 }
 
@@ -131,7 +130,13 @@ export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
   }
 
   const handleSubmit = () => {
-    if (!errors) onSubmit()
+    if (errors) return
+    if (!onSubmit()) {
+      setError("verificationCode", {
+        type: "manual",
+        message: "Incorrect verification code, please try again.",
+      })
+    }
   }
 
   return (

@@ -1,7 +1,9 @@
+import clsx from "clsx"
 import React from "react"
 import { Helmet } from "react-helmet-async"
 
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useMutationObserver } from "frontend/hooks/use-mutation-observer"
 
 import "./styles.css"
 
@@ -33,6 +35,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
 }) => {
   const [isReady, setIsReady] = React.useState(false)
   const { isMobile } = useDeviceInfo()
+  const oneTapRef = React.useRef<HTMLDivElement | null>(null)
 
   React.useEffect(() => {
     window.handleLogin = onLogin
@@ -42,8 +45,19 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
     }
   }, [onLogin])
 
+  const [isOneTapVisible, setIsOneTapVisible] = React.useState(false)
+  // const isOneTapVisible = React.useMemo(() => {
+  //   console.log(oneTapRef.current?.offsetHeight)
+  //   return oneTapRef.current && oneTapRef.current?.offsetHeight > 1
+  // }, [oneTapRef.current])
+
+  useMutationObserver(oneTapRef, (e: any) => {
+    const value = e[0].target.clientHeight > 1
+    setIsOneTapVisible(value)
+  })
+
   return (
-    <div>
+    <>
       <Helmet>
         <script
           src="https://accounts.google.com/gsi/client"
@@ -51,34 +65,8 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
           defer
         ></script>
       </Helmet>
-      {/* <div
-        id="g_id_onload"
-        data-client_id="339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com"
-        data-context="use"
-        data-ux_mode="redirect"
-        data-login_uri="https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/googlecallback"
-        data-auto_prompt="false"
-      />
-      */}
-      {/* <div
-        className="g_id_signin"
-        data-type="standard"
-        data-shape="rectangular"
-        data-theme="outline"
-        data-text="signin_with"
-        data-size="large"
-        data-logo_alignment="left"
-      /> */}
-      {/* <div
-        id="g_id_onload"
-        data-client_id="339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com"
-        data-context="use"
-        data-ux_mode="redirect"
-        data-login_uri="https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/googlecallback"
-        data-auto_prompt="false"
-      /> */}
       <div
-        className="g_id_signin"
+        className={clsx("g_id_signin", isOneTapVisible && "hidden")}
         data-type="standard"
         data-size="large"
         data-theme="outline"
@@ -86,9 +74,10 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
         data-shape="rectangular"
         data-logo_alignment="left"
         data-width={isMobile ? buttonWidth : "400"}
-      ></div>
+      />
       {isReady && (
         <div
+          ref={oneTapRef}
           id="g_id_onload"
           data-client_id={GOOGLE_CLIENT_ID}
           data-context="use"
@@ -98,12 +87,9 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
           data-prompt_parent_id="g_id_onload"
           style={{
             width: isMobile ? buttonWidth ?? "" : "416px",
-            position: "absolute",
-            marginLeft: "-8px",
-            background: "red",
           }}
-        ></div>
+        />
       )}
-    </div>
+    </>
   )
 }

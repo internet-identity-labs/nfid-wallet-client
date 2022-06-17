@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import logo from "frontend/assets/distrikt.svg"
 
 import { CredentialRequesterNotVerified } from "./not-verified"
+import { CredentialRequesterSMSVerify } from "./sms-verify"
 import { CredentialRequesterVerified } from "./verified"
 
 export default {
@@ -16,6 +17,7 @@ export default {
     onPresent: () => {},
     applicationName: "Distrikt",
     applicationLogo: logo,
+    phone: "+380977118615",
   },
 } as ComponentMeta<typeof CredentialRequesterNotVerified>
 
@@ -31,5 +33,12 @@ const CredentialRequesterNotVerifiedTemplate: ComponentStory<
   return <CredentialRequesterNotVerified {...args} />
 }
 
+const CredentialRequesterSMSVerifyTemplate: ComponentStory<
+  typeof CredentialRequesterSMSVerify
+> = (args) => {
+  return <CredentialRequesterSMSVerify {...args} />
+}
+
 export const VerifiedScreen = CredentialRequesterVerifiedTemplate.bind({})
 export const NotVerifiedScreen = CredentialRequesterNotVerifiedTemplate.bind({})
+export const SMSVerifyScreen = CredentialRequesterSMSVerifyTemplate.bind({})

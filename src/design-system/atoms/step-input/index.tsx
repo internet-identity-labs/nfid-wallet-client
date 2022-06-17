@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { P } from "@internet-identity-labs/nfid-sdk-react"
+
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 
 import { Button } from "../button"
@@ -9,12 +11,16 @@ import { Input } from "../input"
 
 interface StepInputProps {
   className?: string
+  errorClasses?: string
   onSubmit: (value: string) => boolean
+  onChangePhoneNumber: () => void
 }
 
 export const StepInput: React.FC<StepInputProps> = ({
   className,
   onSubmit,
+  errorClasses,
+  onChangePhoneNumber,
 }) => {
   const list = [...Array(6).keys()]
   const inputItemsRef = React.useRef<Array<HTMLInputElement | null>>([])
@@ -129,16 +135,17 @@ export const StepInput: React.FC<StepInputProps> = ({
             onChange={(e) => handleInput(e, index)}
             maxLength={1}
             pattern="^[0-9]{1}$"
+            isErrorStyles={!isValid}
           />
         ))}
       </div>
-      <div className="py-1 text-sm text-red-base">
+      <div className={clsx("py-1 text-sm text-red-base", errorClasses)}>
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button
         primary
         block
-        className="px-10 my-3 sm:my-5"
+        className="px-10 mt-3 sm:mt-5"
         onClick={() => {
           validateToken()
           handleSubmit()
@@ -146,6 +153,12 @@ export const StepInput: React.FC<StepInputProps> = ({
       >
         Complete
       </Button>
+      <P
+        onClick={onChangePhoneNumber}
+        className="mt-4 mb-8 text-sm text-center text-blue-base"
+      >
+        Change phone number
+      </P>
     </div>
   )
 }

@@ -68,16 +68,13 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
           >
             <IoMdArrowBack className="w-5 h-5 text-black" />
           </Link>
-          <H4 className="mt-5 sm:mt-0">Phone number</H4>
+          <H4 className="mt-5 sm:mt-0">Add phone number</H4>
           <P className="mt-3 text-sm sm:mt-14">
             Verify your phone number with NFID. Standard text messaging rates
             may apply.
           </P>
           <form
-            className={clsx(
-              "mt-5 flex flex-col justify-between flex-1",
-              "sm:block",
-            )}
+            className={clsx("mt-5 flex flex-col flex-1", "sm:block")}
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="space-y-2">
@@ -101,7 +98,7 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
                 labelText="Phone number"
               />
             </div>
-            <Button primary className="px-10 sm:mt-5" type="submit">
+            <Button primary className="px-10 mt-3 sm:mt-5" type="submit">
               Verify phone number
             </Button>
           </form>

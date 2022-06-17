@@ -60,6 +60,7 @@ export const CredentialRequesterSMSVerify: React.FC<
           className="justify-between"
           onSubmit={onSubmit}
           errorClasses="text-center"
+          buttonText="Verify phone number"
         />
       </div>
     </ScreenResponsive>

@@ -14,6 +14,7 @@ interface StepInputProps {
   errorClasses?: string
   onSubmit: (value: string) => boolean
   onChangePhoneNumber?: () => void
+  buttonText?: string
 }
 
 export const StepInput: React.FC<StepInputProps> = ({
@@ -21,6 +22,7 @@ export const StepInput: React.FC<StepInputProps> = ({
   onSubmit,
   errorClasses,
   onChangePhoneNumber,
+  buttonText,
 }) => {
   const list = [...Array(6).keys()]
   const inputItemsRef = React.useRef<Array<HTMLInputElement | null>>([])
@@ -151,7 +153,7 @@ export const StepInput: React.FC<StepInputProps> = ({
           handleSubmit()
         }}
       >
-        Complete
+        {buttonText}
       </Button>
       <P
         onClick={onChangePhoneNumber}

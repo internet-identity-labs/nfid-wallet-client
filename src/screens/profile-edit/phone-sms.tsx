@@ -95,7 +95,7 @@ export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
               "sm:block",
             )}
           >
-            <StepInput onSubmit={onSubmit} />
+            <StepInput onSubmit={onSubmit} buttonText="Complete" />
           </div>
         </div>
       </main>

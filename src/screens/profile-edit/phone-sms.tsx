@@ -1,24 +1,37 @@
-import { P, Logo, H4, Button } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { IoMdArrowBack } from "react-icons/io"
 import { Link } from "react-router-dom"
 import ReactCodeInput from "react-verification-code-input"
 
+import { P, Logo, H4, Button } from "@internet-identity-labs/nfid-sdk-react"
+
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+
+import { useTimer } from "frontend/hooks/use-timer"
 
 interface Account {
   anchor: string
   name?: string
 }
 
-interface ProfileEditProps {
+interface ProfileEditPhoneSmsProps {
   account?: Account
+  onResendCode: () => void
 }
 
-export const ProfileEditPhoneSms: React.FC<ProfileEditProps> = ({
+export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
   account,
+  onResendCode,
 }) => {
+  console.log(account)
+  const { counter, setCounter } = useTimer({ defaultCounter: 3 })
+
+  const handleResend = () => {
+    onResendCode && onResendCode()
+    setCounter(60)
+  }
+
   return (
     <AppScreen
       bubbleOptions={{
@@ -59,7 +72,19 @@ export const ProfileEditPhoneSms: React.FC<ProfileEditProps> = ({
           <P className="mt-3 text-sm sm:mt-14">
             Please enter the verification code that was sent to +1 234 856 7890.
             <br />
-            <P className="mt-3">Code can be resent in 60 sec</P>
+            {counter > 0 ? (
+              <P className="mt-3">Code can be resent in {counter} sec</P>
+            ) : (
+              <P className="mt-3">
+                Didn’t receive a code?{" "}
+                <span
+                  className="cursor-pointer text-blue-base"
+                  onClick={handleResend}
+                >
+                  Resend
+                </span>
+              </P>
+            )}
           </P>
           <form
             className={clsx(

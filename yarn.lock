@@ -3847,6 +3847,11 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/google-one-tap@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/google-one-tap/-/google-one-tap-1.2.0.tgz#4c36fe6796882a27d8fa71278f53e8c879913f04"
+  integrity sha512-now7U24Mqe7MLvBUBaYN1YJiKN4ghT76pS2OzVZS66mG6llZP+MvXxPICiK1ejHvAlEV1poDm6sQSB6lr/Jj+w==
+
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
   resolved "https://registry.npmjs.org/@types/graceful-fs/-/graceful-fs-4.1.5.tgz"

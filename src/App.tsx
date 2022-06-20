@@ -1,4 +1,3 @@
-import GoogleLogin from "react-google-login"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"

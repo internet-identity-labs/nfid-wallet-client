@@ -81,7 +81,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
       )}
       <H5>Sign in</H5>
       <p className="mt-3 text-center">
-        Choose how you’d like to sign in to {applicationName}
+        Choose how you'd like to sign in to {applicationName}
       </p>
       {showAdvancedOptions && (
         <Input
@@ -102,7 +102,10 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         />
       )}
 
-      <SignInWithGoogle />
+      <SignInWithGoogle
+        onLogin={(credential) => console.log(">> ", { credential })}
+      />
+
       <div className="flex flex-col w-full mt-8 space-y-1">
         {showAdvancedOptions ? (
           <>

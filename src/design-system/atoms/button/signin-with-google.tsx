@@ -1,17 +1,34 @@
 import React from "react"
 import { Helmet } from "react-helmet-async"
 
-interface SignInWithGoogleProps {}
+type LoginEventHandler = ({ credential }: GoogleCredential) => void
 
-export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = () => {
-  const handleLogin = React.useCallback((response) => {
-    console.log(">> ", { response })
-  }, [])
+declare global {
+  interface Window {
+    handleLogin?: LoginEventHandler
+  }
+}
 
+interface GoogleCredential {
+  clientId: string
+  credential: string
+  select_by: string
+}
+
+interface SignInWithGoogleProps {
+  onLogin: LoginEventHandler
+}
+
+export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
+  onLogin,
+}) => {
   React.useEffect(() => {
-    // @ts-ignore
-    window.handleLogin = handleLogin
-  }, [handleLogin])
+    window.handleLogin = onLogin
+    return () => {
+      delete window.handleLogin
+    }
+  }, [onLogin])
+
   return (
     <div>
       <Helmet>

@@ -44,6 +44,13 @@ export const useAuthentication = () => {
   const logout = React.useCallback(() => {
     invalidateIdentity()
     setUser(undefined)
+    // TODO: this is a quick fix after the auth state refactor.
+    // The problem is that after we invalidate the identity, the
+    // frontend throws the error:
+    // This identity has expired due this application's security policy. Please refresh your authentication.
+    // SENTRY: https://sentry.io/organizations/internet-identity-labs/issues/3364199030/?project=6424378&referrer=slack
+    // TICKET: https://app.shortcut.com/the-internet-portal/story/2695/log-out-when-delegate-expires
+    window.location.reload()
     // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(Principal.anonymous())
   }, [setUser])

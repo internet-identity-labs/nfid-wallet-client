@@ -29,7 +29,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     (state) => !state,
     false,
   )
-  const { isAuthenticated, login, setShouldStoreLocalAccount } =
+  const { user, login, setShouldStoreLocalAccount } =
     useAuthentication()
   const { getPersona } = usePersona()
   const { readAccount } = useAccount()
@@ -39,19 +39,19 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
 
   const handleAuthorization =
     ({ withSecurityDevices }: { withSecurityDevices: boolean }) =>
-    async (userNumber: number) => {
-      setIsLoading(true)
-      const response = await login(BigInt(userNumber), withSecurityDevices)
+      async (userNumber: number) => {
+        setIsLoading(true)
+        const response = await login(BigInt(userNumber), withSecurityDevices)
 
-      if (response.tag === "ok") {
-        withSecurityDevices && setShouldStoreLocalAccount(false)
-        setIsLoading(false)
+        if (response.tag === "ok") {
+          withSecurityDevices && setShouldStoreLocalAccount(false)
+          setIsLoading(false)
+        }
+        if (response.tag === "err") {
+          setAuthError(response.title)
+          setIsLoading(false)
+        }
       }
-      if (response.tag === "err") {
-        setAuthError(response.title)
-        setIsLoading(false)
-      }
-    }
 
   const handleCreateKeys = React.useCallback(async () => {
     getChallenge()
@@ -71,12 +71,12 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
   // And this means when we await the login response and call the readAccount
   // or getPersona directly within the same handler, the actors will be undefined.
   React.useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       readAccount()
       getPersona()
       navigate(pathAuthorizeApp)
     }
-  }, [getPersona, isAuthenticated, navigate, pathAuthorizeApp, readAccount])
+  }, [getPersona, user, navigate, pathAuthorizeApp, readAccount])
 
   return (
     <AuthorizeDecider

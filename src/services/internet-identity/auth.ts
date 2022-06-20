@@ -1,7 +1,8 @@
 import {
   PublicKey,
   SignedDelegation,
-} from "./generated/internet_identity_types"
+} from "frontend/api/idl/internet_identity_types"
+
 import { IIConnection } from "./iiConnection"
 import { hasOwnProperty } from "./utils"
 

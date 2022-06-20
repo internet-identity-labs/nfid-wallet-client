@@ -29,7 +29,7 @@ export const useAuthorization = ({
   // the isLoading state is used to display the astronaut
   const [isLoading, setLoading] = React.useState(false)
   // the authResult state is used to store the II
-  const { internetIdentity } = useAuthentication()
+  const { user } = useAuthentication()
 
   const [authorizationRequest, setAuthorizationRequest] = useAtom(
     authorizationRequestAtom,
@@ -39,7 +39,7 @@ export const useAuthorization = ({
     useMessageChannel({
       messageHandler: {
         "authorize-client": async (event: any) => {
-          if (internetIdentity !== null) {
+          if (!!user?.internetIdentity) {
             const message = event.data
             const { maxTimeToLive, sessionPublicKey } = message
 
@@ -65,7 +65,7 @@ export const useAuthorization = ({
       internetIdentityForAnchor?: IIConnection
     }) => {
       const internetIdentityService =
-        internetIdentityForAnchor || internetIdentity
+        internetIdentityForAnchor || user?.internetIdentity
       setLoading(true)
 
       if (!authorizationRequest || !internetIdentityService)
@@ -117,12 +117,7 @@ export const useAuthorization = ({
       })
       setLoading(false)
     },
-    [
-      authorizationRequest,
-      internetIdentity,
-      postClientAuthorizeSuccessMessage,
-      userNumber,
-    ],
+    [authorizationRequest, user, postClientAuthorizeSuccessMessage, userNumber],
   )
 
   // return the hooks props

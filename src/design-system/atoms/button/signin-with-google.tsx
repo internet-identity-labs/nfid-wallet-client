@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet-async"
 
 export type LoginEventHandler = ({ credential }: GoogleCredential) => void
 
+declare const GOOGLE_CLIENT_ID: string
+
 declare global {
   interface Window {
     handleLogin?: LoginEventHandler
@@ -62,7 +64,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
         <div
           className="-mx-4"
           id="g_id_onload"
-          data-client_id="339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com"
+          data-client_id={GOOGLE_CLIENT_ID}
           data-context="use"
           data-ux_mode="popup"
           data-callback="handleLogin"

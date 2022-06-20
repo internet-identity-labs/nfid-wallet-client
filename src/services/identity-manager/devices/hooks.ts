@@ -33,6 +33,8 @@ import {
   recoveryDevicesAtom,
 } from "./state"
 
+declare const SIGNIN_GOOGLE: string
+
 const getIcon = (device: DeviceData): Icon => {
   switch (device.alias.split(" ")[3]) {
     case "Android":
@@ -392,6 +394,20 @@ export const useDevices = () => {
     [createRecoveryDevice, getDevices, getRecoveryDevices, user, userNumber],
   )
 
+  const getGoolgeDevice = React.useCallback(async ({ token }) => {
+    console.log(">> ", { token })
+
+    const response = await fetch(SIGNIN_GOOGLE, {
+      method: "POST",
+      body: JSON.stringify({ token }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    return await response.json()
+  }, [])
+
   React.useEffect(() => {
     handleLoadDevices()
   }, [userNumber, handleLoadDevices])
@@ -402,6 +418,7 @@ export const useDevices = () => {
     createWebAuthNDevice,
     createRecoveryPhrase,
     createSecurityDevice,
+    getGoolgeDevice,
     getDevices,
     getRecoveryDevices,
     createDevice,

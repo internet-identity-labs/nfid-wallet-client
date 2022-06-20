@@ -296,6 +296,15 @@ export class IIConnection {
     }
   }
 
+  static async fromGoogleDevice(
+    googleIdentity: Ed25519KeyIdentity,
+  ): Promise<void> {
+    const delegationIdentity = await requestFEDelegation(googleIdentity)
+    console.log(">> fromGoogleDevice", { delegationIdentity })
+
+    replaceIdentity(delegationIdentity.delegationIdentity)
+  }
+
   static async lookupAll(userNumber: UserNumber): Promise<DeviceData[]> {
     return await ii.lookup(userNumber)
   }

@@ -15,6 +15,7 @@ import {
 import { challengeAtom } from "./state"
 
 interface RegisterPayload {
+  isGoogle?: boolean
   identity: string
   deviceName: string
 }
@@ -131,10 +132,13 @@ export const useChallenge = () => {
   const [challenge, setChallengeResponse] = useAtom(challengeAtom)
 
   const getChallenge = React.useCallback(async () => {
+    console.log(">> getChallenge", {})
+
     if (challenge) {
       setChallengeResponse(undefined)
     }
     const challengeResponse = await IIConnection.createChallenge()
+    console.log(">> getChallenge", { challengeResponse })
 
     setChallengeResponse(challengeResponse)
   }, [challenge, setChallengeResponse])

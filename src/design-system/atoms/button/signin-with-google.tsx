@@ -1,7 +1,7 @@
 import React from "react"
 import { Helmet } from "react-helmet-async"
 
-type LoginEventHandler = ({ credential }: GoogleCredential) => void
+export type LoginEventHandler = ({ credential }: GoogleCredential) => void
 
 declare global {
   interface Window {
@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-interface GoogleCredential {
+export interface GoogleCredential {
   clientId: string
   credential: string
   select_by: string

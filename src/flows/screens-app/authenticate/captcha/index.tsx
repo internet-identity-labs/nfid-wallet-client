@@ -1,8 +1,6 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
 
-import { ii } from "frontend/api/actors"
-import { ChallengeResult } from "frontend/api/idl/internet_identity_types"
+import { im } from "frontend/api/actors"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
@@ -11,7 +9,6 @@ import { useCaptcha } from "frontend/screens/captcha/hook"
 import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
-import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
 interface RouteCaptchaProps {
   successPath: string
@@ -84,12 +81,19 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      if (!challenge) throw new Error("No challenge")
+      if (!scope) throw new Error("scope is required")
+
       const response = await registerAnchorFromGoogle({ captcha })
       if (response.kind === "loginSuccess") {
-        await createAccount({ anchor: response.userNumber })
+        await im.create_account({
+          anchor: response.userNumber,
+        })
         await Promise.all([
-          createPersona({ domain: scope }),
+          im.create_persona({
+            domain: scope,
+            persona_id: nextPersonaId,
+            persona_name: "",
+          }),
           authorizeApp({
             persona_id: nextPersonaId,
             domain: scope,
@@ -102,9 +106,6 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     },
     [
       authorizeApp,
-      challenge,
-      createAccount,
-      createPersona,
       navigate,
       nextPersonaId,
       registerAnchorFromGoogle,

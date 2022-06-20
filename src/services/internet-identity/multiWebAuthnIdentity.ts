@@ -73,25 +73,27 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       },
     })) as PublicKeyCredential
 
-    this.credentialData.forEach(async (cd) => {
-      if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
-        const strippedKey = unwrapDER(
-          await cd.pubkey.arrayBuffer(),
-          DER_COSE_OID,
-        )
-        // would be nice if WebAuthnIdentity had a directly usable constructor
-        this._actualIdentity = WebAuthnIdentity.fromJSON(
-          JSON.stringify({
-            rawId: Buffer.from(cd.credentialId).toString("hex"),
-            publicKey: Buffer.from(strippedKey).toString("hex"),
-          }),
-        )
-      }
-    })
+    await Promise.all(
+      this.credentialData.map(async (cd) => {
+        if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
+          const strippedKey = unwrapDER(
+            await cd.pubkey.arrayBuffer(),
+            DER_COSE_OID,
+          )
+          // would be nice if WebAuthnIdentity had a directly usable constructor
+          this._actualIdentity = WebAuthnIdentity.fromJSON(
+            JSON.stringify({
+              rawId: Buffer.from(cd.credentialId).toString("hex"),
+              publicKey: Buffer.from(strippedKey).toString("hex"),
+            }),
+          )
+        }
+      }),
+    )
 
     if (this._actualIdentity === undefined) {
       // Odd, user logged in with a credential we didn't provide?
-      throw new Error("internal error")
+      throw new Error("Internal error: could not recover identity")
     }
 
     const response = result.response as AuthenticatorAssertionResponse

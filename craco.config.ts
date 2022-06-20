@@ -30,6 +30,7 @@ const config = {
               II_ENV: JSON.stringify(process.env.II_MODE),
               FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
               USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
+              GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
               VERIFY_PHONE_NUMBER: JSON.stringify(
                 process.env.FRONTEND_MODE === "production"
                   ? process.env.AWS_VERIFY_PHONENUMBER

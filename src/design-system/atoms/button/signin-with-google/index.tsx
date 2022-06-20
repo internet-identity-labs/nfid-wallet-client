@@ -71,7 +71,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
             data-text="continue_with"
             data-shape="rectangular"
             data-logo_alignment="left"
-            data-width={isMobile ? window.screen.availWidth - 40 : "400"}
+            data-width={isMobile ? window.screen.width - 40 : "400"}
           />
           <div
             ref={oneTapRef}

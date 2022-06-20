@@ -9,6 +9,7 @@ import {
   SignInWithGoogle,
 } from "frontend/design-system/atoms/button/signin-with-google"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
+import { Separator } from "frontend/design-system/atoms/separator"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
 import "./index.css"
@@ -41,16 +42,19 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       )}
       <H5>Sign in</H5>
       <p className="mt-3 text-center">
-        Choose how you’d like to sign in to {applicationName}
+        Choose how you'd like to sign in to {applicationName}
       </p>
       <div className="flex flex-col w-full mt-8 space-y-1">
+        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+
+        <Separator className="max-w-[400px]" />
+
         <IconButton
           title="Create a new NFID"
           subtitle="Use passkey on this device"
           img={<img src={TouchId} alt="passkey" />}
           onClick={onRegister}
         />
-        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
       </div>
     </ScreenResponsive>
   )

@@ -1,5 +1,5 @@
 import { Actor, ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
-import { BinaryBlob, derBlobFromBlob, DerEncodedBlob } from "@dfinity/candid"
+import { derBlobFromBlob, DerEncodedBlob } from "@dfinity/candid"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -348,7 +348,7 @@ export class IIConnection {
     keyType: KeyType,
     purpose: Purpose,
     newPublicKey: DerEncodedBlob,
-    credentialId?: BinaryBlob,
+    credentialId?: ArrayBuffer,
   ): Promise<void> => {
     await this.renewDelegation()
     return await ii.add(userNumber, {

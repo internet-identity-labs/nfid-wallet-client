@@ -1,6 +1,5 @@
 import React from "react"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
@@ -37,50 +36,31 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const { userNumber } = useAccount()
 
-  const { user } = useAuthentication()
-  const { isLoading: isPreparingDelegate, authorizeApp } = useAuthorization({
+  const { authorizeApp } = useAuthorization({
     userNumber,
   })
 
   const { nextPersonaId, createPersona } = usePersona()
 
-  // TODO: as soon as we have global singleton auth state,
-  // we can get rid of these eval side effects
-  const authorizationStateRef = React.useRef<{
-    delegateRequested: boolean
-    personaRequested: boolean
-  }>({ delegateRequested: false, personaRequested: false })
-
-  React.useEffect(() => {
-    if (user && userNumber) {
-      if (!authorizationStateRef.current.personaRequested) {
-        authorizationStateRef.current.personaRequested = true
-        createPersona({ domain: scope })
-      }
-      if (!authorizationStateRef.current.delegateRequested) {
-        authorizationStateRef.current.delegateRequested = true
-        authorizeApp({ persona_id: nextPersonaId, domain: scope })
-      }
-    }
-  }, [
-    authorizeApp,
-    createPersona,
-    user,
-    loading,
-    nextPersonaId,
-    scope,
-    userNumber,
-  ])
-
-  React.useEffect(() => {
-    if (
-      user &&
-      authorizationStateRef.current.delegateRequested &&
-      !isPreparingDelegate
-    ) {
+  const handleRegisterAnchor = React.useCallback(
+    async ({ captcha }: { captcha: string }) => {
+      await registerAnchor({ captcha })
+      await Promise.all([
+        createPersona({ domain: scope }),
+        authorizeApp({ persona_id: nextPersonaId, domain: scope }),
+      ])
       navigate(successPath)
-    }
-  }, [user, isPreparingDelegate, navigate, successPath])
+    },
+    [
+      authorizeApp,
+      createPersona,
+      navigate,
+      nextPersonaId,
+      registerAnchor,
+      scope,
+      successPath,
+    ],
+  )
 
   const { applicationLogo, applicationName } = useMultipass()
   return (
@@ -89,7 +69,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       successPath={successPath}
-      onRegisterAnchor={registerAnchor}
+      onRegisterAnchor={handleRegisterAnchor}
       onRequestNewCaptcha={requestCaptcha}
       challengeBase64={challenge?.png_base64}
       errorString={captchaError}

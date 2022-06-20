@@ -1,6 +1,5 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
-import { Identity } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 
 import { _SERVICE as IdentityManager } from "./idl/identity_manager.did"

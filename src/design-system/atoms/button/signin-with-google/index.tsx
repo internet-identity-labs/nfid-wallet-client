@@ -33,8 +33,10 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   onLogin,
   buttonWidth,
 }) => {
+  const [isOneTapVisible, setIsOneTapVisible] = React.useState(false)
   const [isReady, setIsReady] = React.useState(false)
   const { isMobile } = useDeviceInfo()
+
   const oneTapRef = React.useRef<HTMLDivElement | null>(null)
 
   React.useEffect(() => {
@@ -44,12 +46,6 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
       delete window.handleLogin
     }
   }, [onLogin])
-
-  const [isOneTapVisible, setIsOneTapVisible] = React.useState(false)
-  // const isOneTapVisible = React.useMemo(() => {
-  //   console.log(oneTapRef.current?.offsetHeight)
-  //   return oneTapRef.current && oneTapRef.current?.offsetHeight > 1
-  // }, [oneTapRef.current])
 
   useMutationObserver(oneTapRef, (e: any) => {
     const value = e[0].target.clientHeight > 1

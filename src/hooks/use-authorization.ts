@@ -1,4 +1,3 @@
-import { blobFromUint8Array } from "@dfinity/candid"
 import { atom, useAtom } from "jotai"
 import React from "react"
 
@@ -74,7 +73,7 @@ export const useAuthorization = ({
       const { sessionPublicKey, hostname, maxTimeToLive, source } =
         authorizationRequest
 
-      const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
+      const sessionKey = Array.from(new Blob([sessionPublicKey]))
       const scope = persona_id ? `${persona_id}@${hostname}` : hostname
 
       const anchor = rawAnchor && BigInt(rawAnchor)

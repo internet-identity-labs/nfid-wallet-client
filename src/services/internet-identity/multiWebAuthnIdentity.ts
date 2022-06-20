@@ -8,7 +8,7 @@
  * - It doesn't support creating credentials; use `WebAuthnIdentity` for that
  */
 import { PublicKey, SignIdentity } from "@dfinity/agent"
-import { BinaryBlob, blobFromUint8Array, DerEncodedBlob } from "@dfinity/candid"
+import { BinaryBlob, DerEncodedBlob } from "@dfinity/candid"
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
@@ -74,9 +74,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     })) as PublicKeyCredential
 
     this.credentialData.forEach((cd) => {
-      if (
-        cd.credentialId.equals(blobFromUint8Array(Buffer.from(result.rawId)))
-      ) {
+      if (cd.credentialId.equals(new Blob([Buffer.from(result.rawId)]))) {
         const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
         // would be nice if WebAuthnIdentity had a directly usable constructor
         this._actualIdentity = WebAuthnIdentity.fromJSON(
@@ -109,7 +107,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       if (!cbor) {
         throw new Error("failed to encode cbor")
       }
-      return blobFromUint8Array(new Uint8Array(cbor))
+      return new Blob([new Uint8Array(cbor)])
     } else {
       throw new Error("Invalid response from WebAuthn.")
     }

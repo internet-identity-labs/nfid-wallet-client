@@ -17,7 +17,6 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import {
   creationOptions,
@@ -27,21 +26,21 @@ import { parseUserNumber } from "frontend/services/internet-identity/userNumber"
 import { anchorRules } from "frontend/utils/validations"
 
 import { LinkIIAnchorConstants as LIIAC } from "./routes"
+import { im } from 'frontend/api/actors'
 
 declare const II_ENV: string
 declare const INTERNET_IDENTITY_CANISTER_ID: string
 
 interface LinkIIAnchorProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+  > { }
 
 export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
   const [showErrorModal, setShowErrorModal] = React.useState(false)
   const [showAlreadyLinkedModal, setShowAlreadyLinkedModal] =
     React.useState(false)
-  const { identityManager } = useAuthentication()
   const { account, updateAccount } = useAccount()
 
   const {
@@ -76,9 +75,8 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
           account.iiAnchors = Array.from(
             new Set([...(account.iiAnchors || []), userNumber.toString()]),
           )
-          if (!identityManager) throw new Error("identityManager required")
 
-          updateAccount(identityManager, account)
+          updateAccount(im, account)
           setShowAlreadyLinkedModal(true)
         }
         return
@@ -100,7 +98,7 @@ export const LinkIIAnchor: React.FC<LinkIIAnchorProps> = ({ className }) => {
         state: { iiDeviceLink: link, userNumber },
       })
     },
-    [account, identityManager, navigate, updateAccount],
+    [account, navigate, updateAccount],
   )
 
   return (

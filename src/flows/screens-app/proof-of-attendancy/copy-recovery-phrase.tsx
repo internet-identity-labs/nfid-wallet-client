@@ -1,18 +1,18 @@
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { CopyRecoveryPhrase } from "frontend/screens/copy-recovery-phrase"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 
 import { ProfileConstants } from "../profile/routes"
+import { ima } from 'frontend/api/actors'
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+  > { }
 
 interface LocationState {
   recoveryPhrase: string
@@ -22,7 +22,6 @@ export const ProofOfAttendencyCopyRecoveryPhrase: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
 > = ({ children, className }) => {
   const navigate = useNavigate()
-  const { imAddition } = useAuthentication()
   const { isLoading, setIsloading } = useIsLoading()
   const { state } = useLocation()
 
@@ -33,14 +32,13 @@ export const ProofOfAttendencyCopyRecoveryPhrase: React.FC<
   }, [state])
 
   const handlePoap = React.useCallback(async () => {
-    if (!imAddition) throw new Error("unauthorized")
     setIsloading(true)
 
-    const hasPoap = await imAddition.has_poap()
-    !hasPoap && (await imAddition.increment_poap())
+    const hasPoap = await ima.has_poap()
+    !hasPoap && (await ima.increment_poap())
     setIsloading(false)
     navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
-  }, [imAddition, navigate, setIsloading])
+  }, [navigate, setIsloading])
 
   return (
     <CopyRecoveryPhrase

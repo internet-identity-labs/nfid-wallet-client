@@ -11,9 +11,9 @@ import React from "react"
 import { useLocation } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { im } from 'frontend/api/actors'
 
 interface LocationState {
   iiDeviceLink: string
@@ -22,9 +22,9 @@ interface LocationState {
 
 interface LinkIIAnchorKeysProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+  > { }
 
 export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
   className,
@@ -33,7 +33,6 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
   const [numDevices, setNumDevices] = React.useState(0)
 
   const { state } = useLocation()
-  const { identityManager } = useAuthentication()
   const { account, updateAccount } = useAccount()
 
   const { iiDeviceLink, userNumber } = state as LocationState
@@ -45,17 +44,16 @@ export const LinkIIAnchorKeys: React.FC<LinkIIAnchorKeysProps> = ({
 
       if (devices.length > numDevices) {
         if (!account) throw new Error("No account found")
-        if (!identityManager) throw new Error("identityManager required")
 
         account.iiAnchors = Array.from(
           new Set([...(account.iiAnchors || []), userNumber.toString()]),
         )
 
-        updateAccount(identityManager, account)
+        updateAccount(im, account)
         setShowModal(true)
       }
     },
-    [account, identityManager, numDevices, updateAccount, userNumber],
+    [account, numDevices, updateAccount, userNumber],
   )
 
   const fetchDevices = React.useCallback(async () => {

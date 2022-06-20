@@ -1,6 +1,5 @@
 import React from "react"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { Profile } from "frontend/screens/profile"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -12,8 +11,9 @@ import {
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 import { ProfileConstants } from "./routes"
+import { ima } from 'frontend/api/actors'
 
-interface AuthenticateNFIDHomeProps {}
+interface AuthenticateNFIDHomeProps { }
 
 export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const applications: any[] = ["NFID Demo"]
@@ -35,14 +35,12 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   } = useDevices()
   const { allAccounts, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
-  const { imAddition } = useAuthentication()
 
   React.useEffect(() => {
-    imAddition &&
-      imAddition.has_poap().then((response) => {
-        setHasPoa(response)
-      })
-  }, [imAddition])
+    ima.has_poap().then((response) => {
+      setHasPoa(response)
+    })
+  }, [])
 
   React.useEffect(() => {
     if (!fetched) {

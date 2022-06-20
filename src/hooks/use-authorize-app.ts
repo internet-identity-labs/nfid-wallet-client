@@ -1,10 +1,10 @@
 import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
 import React from "react"
 
+import { PublicKey } from "frontend/api/idl/internet_identity_types"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
-import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
@@ -26,7 +26,7 @@ type RemoteLoginMessage = {
 // Alias: useRegisterDevicePrompt
 export const useAuthorizeApp = () => {
   const { userNumber } = useAccount()
-  const { internetIdentity, chain, sessionKey } = useAuthentication()
+  const { user } = useAuthentication()
   const { createTopic, postMessages } = usePubSubChannel()
 
   const createRemoteDelegate = React.useCallback(
@@ -85,7 +85,7 @@ export const useAuthorizeApp = () => {
       if (!userNumber) {
         throw new Error("Device not registered")
       }
-      if (!internetIdentity) {
+      if (!user?.internetIdentity) {
         throw new Error("Unauthorized")
       }
 
@@ -98,13 +98,13 @@ export const useAuthorizeApp = () => {
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,
         scope,
-        internetIdentity,
+        user.internetIdentity,
       )
 
       const message = JSON.stringify({
         type: "remote-login-register",
         userNumber: userNumber.toString(),
-        nfid: { chain, sessionKey },
+        nfid: { chain: user.chain, sessionKey: user.sessionKey },
         ...parsedSignedDelegation,
       })
 
@@ -112,14 +112,7 @@ export const useAuthorizeApp = () => {
 
       return response
     },
-    [
-      userNumber,
-      internetIdentity,
-      createRemoteDelegate,
-      chain,
-      sessionKey,
-      postMessages,
-    ],
+    [userNumber, user, createRemoteDelegate, postMessages],
   )
 
   const remoteNFIDLogin = React.useCallback(
@@ -130,14 +123,14 @@ export const useAuthorizeApp = () => {
       const message = JSON.stringify({
         type: "remote-nfid-login-register",
         userNumber: userNumber.toString(),
-        nfid: { chain, sessionKey },
+        nfid: { chain: user?.chain, sessionKey: user?.sessionKey },
       })
 
       const response = await postMessages(secret, [message])
 
       return response
     },
-    [chain, postMessages, sessionKey, userNumber],
+    [user, postMessages, userNumber],
   )
 
   const sendWaitForUserInput = React.useCallback(

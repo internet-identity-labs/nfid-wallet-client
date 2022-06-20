@@ -11,13 +11,13 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { ProfileConstants } from "../../profile/routes"
 import { RemoteRegisterAccountConstants } from "../../register-account/routes"
 
-interface AppScreenAuthorizeAppProps {}
+interface AppScreenAuthorizeAppProps { }
 
 export const AuthorizeNFID: React.FC<AppScreenAuthorizeAppProps> = () => {
   const { isLoading, setIsloading } = useIsLoading()
   const { secret } = useParams()
   const { sendWaitForUserInput, remoteNFIDLogin } = useAuthorizeApp()
-  const { isAuthenticated, login } = useAuthentication()
+  const { user, login } = useAuthentication()
   const { navigate } = useNFIDNavigate()
 
   const handleNFIDLogin = React.useCallback(async () => {
@@ -37,10 +37,10 @@ export const AuthorizeNFID: React.FC<AppScreenAuthorizeAppProps> = () => {
   }, [login, secret, setIsloading])
 
   React.useEffect(() => {
-    secret && isAuthenticated && handleNFIDLogin()
+    secret && user && handleNFIDLogin()
   }, [
     handleNFIDLogin,
-    isAuthenticated,
+    user,
     remoteNFIDLogin,
     secret,
     sendWaitForUserInput,

@@ -25,7 +25,7 @@ export const RegisterAccountCaptcha: React.FC<
   )
   const [isPreparingDelegate, setIsPreparingDelegate] = React.useState(false)
   const { remoteLogin, remoteNFIDLogin } = useAuthorizeApp()
-  const { isAuthenticated } = useAuthentication()
+  const { user } = useAuthentication()
   const { userNumber } = useAccount()
 
   const isNFID = React.useMemo(() => scope === "NFID", [scope])
@@ -71,7 +71,7 @@ export const RegisterAccountCaptcha: React.FC<
   }>({ delegateRequested: false, personaRequested: false })
 
   React.useEffect(() => {
-    if (isAuthenticated && userNumber) {
+    if (user && userNumber) {
       if (!authorizationStateRef.current.personaRequested) {
         authorizationStateRef.current.personaRequested = true
         !isNFID &&
@@ -93,7 +93,7 @@ export const RegisterAccountCaptcha: React.FC<
     handleAuthorizePersona,
     handleNFIDLogin,
     handleNavigateToProfile,
-    isAuthenticated,
+    user,
     isNFID,
     isRemoteRegistration,
     scope,
@@ -102,13 +102,13 @@ export const RegisterAccountCaptcha: React.FC<
 
   React.useEffect(() => {
     if (
-      isAuthenticated &&
+      user &&
       authorizationStateRef.current.delegateRequested &&
       !isPreparingDelegate
     ) {
       navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
     }
-  }, [isAuthenticated, isPreparingDelegate, navigate])
+  }, [user, isPreparingDelegate, navigate])
 
   const { applicationLogo, applicationName } = useMultipass()
   return (

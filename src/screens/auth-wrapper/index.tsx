@@ -15,10 +15,10 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({
 }) => {
   const params = useParams()
 
-  const { isAuthenticated } = useAuthentication()
+  const { user } = useAuthentication()
   const { account } = useAccount()
 
-  return isAuthenticated ? (
+  return user ? (
     <>{children}</>
   ) : account ? (
     <AppScreenNFIDLogin />

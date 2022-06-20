@@ -73,7 +73,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           registerPayload: {
             isGoogle: true,
             identity: response.identity,
-            deviceName: "Google Device",
+            deviceName: "Google account",
           },
         },
       })

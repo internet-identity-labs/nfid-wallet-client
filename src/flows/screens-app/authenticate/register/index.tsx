@@ -55,7 +55,6 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: GoogleCredential) => {
       console.log(">> handleGetGoogleKey", { credential })
-      debugger
 
       getChallenge()
       setIsloading(true)
@@ -79,7 +78,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
           registerPayload: {
             isGoogle: true,
             identity: response.identity,
-            deviceName: "Google Device",
+            deviceName: "Google account",
           },
         },
       })

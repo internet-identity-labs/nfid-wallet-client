@@ -15,7 +15,7 @@ import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 import { ProfileConstants } from "../../profile/routes"
 import { RemoteRegisterAccountConstants } from "../../register-account/routes"
 
-interface AppScreenAuthorizeAppProps { }
+interface AppScreenAuthorizeAppProps {}
 
 export const AppScreenAuthorizeApp: React.FC<
   AppScreenAuthorizeAppProps
@@ -40,15 +40,33 @@ export const AppScreenAuthorizeApp: React.FC<
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {
-      if (!secret || !scope)
-        throw new Error("missing secret, scope or persona_id")
+      if (!secret) throw new Error("missing secret")
+      if (!scope) throw new Error("missing scope")
+      if (!user?.chain) throw new Error("missing user.chain")
+      if (!user?.sessionKey) throw new Error("missing user.sessionKey")
 
       setIsloading(true)
-      await remoteLogin({ secret, scope, persona_id: personaId })
+      await remoteLogin({
+        secret,
+        scope,
+        persona_id: personaId,
+        chain: user?.chain,
+        sessionKey: user?.sessionKey,
+        connection: user?.internetIdentity,
+      })
       setIsloading(false)
       navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
     },
-    [navigate, remoteLogin, scope, secret, setIsloading],
+    [
+      navigate,
+      remoteLogin,
+      scope,
+      secret,
+      setIsloading,
+      user?.chain,
+      user?.internetIdentity,
+      user?.sessionKey,
+    ],
   )
 
   const handleCreateAccountAndLogin = React.useCallback(async () => {

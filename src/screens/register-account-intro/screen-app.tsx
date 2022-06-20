@@ -4,6 +4,10 @@ import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 
 import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { IconButton } from "frontend/design-system/atoms/button/icon-button"
+import {
+  LoginEventHandler,
+  SignInWithGoogle,
+} from "frontend/design-system/atoms/button/signin-with-google"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
@@ -11,6 +15,7 @@ import "./index.css"
 
 interface RegisterAccountIntroProps {
   onRegister: () => void
+  onSelectGoogleAuthorization: LoginEventHandler
   applicationName?: string
   applicationLogo?: string
   isLoading: boolean
@@ -18,6 +23,7 @@ interface RegisterAccountIntroProps {
 
 export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   onRegister,
+  onSelectGoogleAuthorization,
   applicationName = "this application",
   applicationLogo,
   isLoading,
@@ -44,6 +50,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           img={<img src={TouchId} alt="passkey" />}
           onClick={onRegister}
         />
+        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
       </div>
     </ScreenResponsive>
   )

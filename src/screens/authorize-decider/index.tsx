@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form"
 
 import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { IconButton } from "frontend/design-system/atoms/button/icon-button"
-import { SignInWithGoogle } from "frontend/design-system/atoms/button/signin-with-google"
+import {
+  LoginEventHandler,
+  SignInWithGoogle,
+} from "frontend/design-system/atoms/button/signin-with-google"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
 import { Input } from "frontend/design-system/atoms/input"
 import { H5 } from "frontend/design-system/atoms/typography"
@@ -19,6 +22,7 @@ export interface AuthorizeAppUnknownDeviceProps {
   onSelectSameDeviceRegistration: () => Promise<void> | void
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
+  onSelectGoogleAuthorization: LoginEventHandler
   onToggleAdvancedOptions: () => void
   authError?: string
   isLoading?: boolean
@@ -32,6 +36,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   onSelectSameDeviceRegistration,
   onSelectSameDeviceAuthorization,
   onSelectSecurityKeyAuthorization,
+  onSelectGoogleAuthorization,
   onToggleAdvancedOptions,
   applicationName,
   applicationLogo,
@@ -68,24 +73,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
     [onSelectSecurityKeyAuthorization],
   )
 
-  const handleFetchKey = React.useCallback(async ({ credential }) => {
-    console.log(">> ", { credential })
-
-    debugger
-    const rawResponse = await fetch(
-      "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin",
-      {
-        method: "POST",
-        body: JSON.stringify({ token: credential }),
-      },
-    )
-    console.log(">> ", { rawResponse })
-
-    debugger
-    const response = await rawResponse.json()
-    console.log(">> ", { response })
-  }, [])
-
   return (
     <ScreenResponsive
       className="flex flex-col items-center"
@@ -120,7 +107,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         />
       )}
 
-      <SignInWithGoogle onLogin={handleFetchKey} />
+      <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
 
       <div className="flex flex-col w-full mt-8 space-y-1">
         {showAdvancedOptions ? (

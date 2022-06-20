@@ -83,7 +83,8 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
             data-nonce=""
             data-prompt_parent_id="g_id_onload"
             style={{
-              width: isMobile ? window.screen.availWidth - 56 ?? "" : "416px",
+              width: "100%",
+              maxWidth: "416px",
             }}
           />
         </>

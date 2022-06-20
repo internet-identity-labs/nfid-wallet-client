@@ -1,4 +1,3 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
 
 import { GoogleCredential } from "frontend/design-system/atoms/button/signin-with-google"

@@ -75,6 +75,7 @@ export const AppScreenAuthenticateAccountRoutes = (
       element={
         <RouteRegister
           captchaPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${PATH_CAPTCHA}`}
+          pathAuthorizeApp={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`}
         />
       }
     />

@@ -107,8 +107,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         />
       )}
 
-      <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
-
       <div className="flex flex-col w-full mt-8 space-y-1">
         {showAdvancedOptions ? (
           <>
@@ -133,6 +131,11 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             onClick={onSelectRemoteAuthorization}
           />
         )}
+
+        <div className="flex flex-col">
+          <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+        </div>
+
         <p
           className="pt-4 text-sm text-center cursor-pointer text-blue-base"
           onClick={onToggleAdvancedOptions}

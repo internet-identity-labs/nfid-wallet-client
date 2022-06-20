@@ -2,7 +2,6 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 
 import { ii } from "frontend/api/actors"
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { hasOwnProperty } from "frontend/services/internet-identity/utils"
 
 import { useMessageChannel } from "../screens/remote-authorize-app-unknown-device/hooks/use-message-channel"

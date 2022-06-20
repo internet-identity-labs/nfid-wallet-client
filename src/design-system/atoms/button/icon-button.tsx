@@ -16,7 +16,7 @@ export const IconButton: React.FC<MethodRawProps> = ({
   <div
     onClick={onClick}
     className={clsx(
-      "flex items-center px-3 py-2 border border-gray-200 rounded-md hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]",
+      "flex items-center px-3 py-2 border border-gray-300 rounded-md hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]",
       "w-full max-w-[400px]",
     )}
   >

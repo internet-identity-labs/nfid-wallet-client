@@ -122,7 +122,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           buttonWidth={calculateButtonWidth}
         />
 
-        <Separator />
+        <Separator className="max-w-[400px]" />
 
         {showAdvancedOptions ? (
           <>

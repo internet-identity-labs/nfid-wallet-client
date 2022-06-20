@@ -13,6 +13,10 @@ jobs:
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
+      - name: INSTALL NVM VERSION
+        shell: bash -l {0}
+        run: nvm install 17.9.0
+
       - name: MULTIPASS FRONTEND | install & tests
         run: |
           yarn

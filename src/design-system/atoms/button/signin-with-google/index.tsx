@@ -1,6 +1,8 @@
 import React from "react"
 import { Helmet } from "react-helmet-async"
 
+import "./styles.css"
+
 export type LoginEventHandler = ({ credential }: GoogleCredential) => void
 
 declare const GOOGLE_CLIENT_ID: string
@@ -34,7 +36,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   }, [onLogin])
 
   return (
-    <div className="m-auto">
+    <div className="-mx-[8px]">
       <Helmet>
         <script
           src="https://accounts.google.com/gsi/client"
@@ -62,7 +64,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
       /> */}
       {isReady && (
         <div
-          className="-mx-4"
+          className="w-full"
           id="g_id_onload"
           data-client_id={GOOGLE_CLIENT_ID}
           data-context="use"

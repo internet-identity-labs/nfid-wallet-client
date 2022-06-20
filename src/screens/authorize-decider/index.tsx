@@ -9,6 +9,7 @@ import {
 } from "frontend/design-system/atoms/button/signin-with-google"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
 import { Input } from "frontend/design-system/atoms/input"
+import { Separator } from "frontend/design-system/atoms/separator"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
@@ -116,6 +117,13 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}
       >
+        <SignInWithGoogle
+          onLogin={onSelectGoogleAuthorization}
+          buttonWidth={calculateButtonWidth}
+        />
+
+        <Separator />
+
         {showAdvancedOptions ? (
           <>
             <IconButton
@@ -140,13 +148,8 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           />
         )}
 
-        <SignInWithGoogle
-          onLogin={onSelectGoogleAuthorization}
-          buttonWidth={calculateButtonWidth}
-        />
-
         <p
-          className="pt-4 text-sm text-center cursor-pointer text-blue-base"
+          className="py-4 text-sm text-center cursor-pointer text-blue-base"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

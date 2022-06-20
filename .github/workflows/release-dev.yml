@@ -19,7 +19,7 @@ jobs:
 
       - name: MULTIPASS FRONTEND | install & tests
         run: |
-          yarn install
+          yarn --ignore-engines
           # yarn test
 
       - name: MULTIPASS FRONTEND | deploy

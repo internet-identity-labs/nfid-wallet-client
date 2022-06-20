@@ -25,11 +25,12 @@ import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/remote-authenti
 import { RemoteNFIDAuthenticationRoutes } from "./flows/screens-app/remote-nfid-authentication"
 
 import { useStartUrl } from "./hooks/use-start-url"
+import { ic } from './api/actors'
 
 declare const USERGEEK_API_KEY: string
 
 if (USERGEEK_API_KEY) {
-  Usergeek.init({ apiKey: USERGEEK_API_KEY as string })
+  Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
 }
 
 export const App = () => {

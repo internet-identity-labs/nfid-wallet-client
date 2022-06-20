@@ -16,10 +16,7 @@ import {
   AppScreenProofOfAttendencyRoutes,
 } from "./flows/screens-app/proof-of-attendancy/routes"
 import { RecoverNFIDRoutes } from "./flows/screens-app/recover-nfid/routes"
-import {
-  NFIDRegisterAccountRoutes,
-  RemoteRegisterAccountRoutes,
-} from "./flows/screens-app/register-account/routes"
+import { RemoteRegisterAccountRoutes } from "./flows/screens-app/register-account/routes"
 import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
 import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/remote-authentication/routes"
 import { RemoteNFIDAuthenticationRoutes } from "./flows/screens-app/remote-nfid-authentication"
@@ -45,7 +42,6 @@ export const App = () => {
       {LinkIIAnchorRoutes}
       {ProfileRoutes}
       {RegisterNewDeviceRoutes}
-      {NFIDRegisterAccountRoutes}
       {RemoteRegisterAccountRoutes}
       {RemoteNFIDAuthenticationRoutes}
       {AppScreenAuthorizeAppRoutes}

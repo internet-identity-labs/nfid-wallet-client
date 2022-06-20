@@ -75,10 +75,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
     [onSelectSecurityKeyAuthorization],
   )
 
-  const calculateButtonWidth = React.useMemo(() => {
-    return containerRef.current && containerRef.current?.offsetWidth
-  }, [containerRef])
-
   return (
     <ScreenResponsive
       className="flex flex-col items-center"
@@ -117,10 +113,9 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}
       >
-        <SignInWithGoogle
-          onLogin={onSelectGoogleAuthorization}
-          buttonWidth={calculateButtonWidth}
-        />
+        <div className="max-w-[400px]">
+          <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+        </div>
 
         <Separator className="max-w-[400px]" />
 

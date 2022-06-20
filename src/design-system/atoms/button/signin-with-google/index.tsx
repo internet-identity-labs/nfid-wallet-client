@@ -61,30 +61,32 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
           defer
         ></script>
       </Helmet>
-      <div
-        className={clsx("g_id_signin", isOneTapVisible && "hidden")}
-        data-type="standard"
-        data-size="large"
-        data-theme="outline"
-        data-text="continue_with"
-        data-shape="rectangular"
-        data-logo_alignment="left"
-        data-width={isMobile ? buttonWidth : "400"}
-      />
       {isReady && (
-        <div
-          ref={oneTapRef}
-          id="g_id_onload"
-          data-client_id={GOOGLE_CLIENT_ID}
-          data-context="use"
-          data-ux_mode="popup"
-          data-callback="handleLogin"
-          data-nonce=""
-          data-prompt_parent_id="g_id_onload"
-          style={{
-            width: isMobile ? buttonWidth ?? "" : "416px",
-          }}
-        />
+        <>
+          <div
+            className={clsx("g_id_signin", isOneTapVisible && "hidden")}
+            data-type="standard"
+            data-size="large"
+            data-theme="outline"
+            data-text="continue_with"
+            data-shape="rectangular"
+            data-logo_alignment="left"
+            data-width={isMobile ? window.screen.availWidth - 40 : "400"}
+          />
+          <div
+            ref={oneTapRef}
+            id="g_id_onload"
+            data-client_id={GOOGLE_CLIENT_ID}
+            data-context="use"
+            data-ux_mode="popup"
+            data-callback="handleLogin"
+            data-nonce=""
+            data-prompt_parent_id="g_id_onload"
+            style={{
+              width: isMobile ? window.screen.availWidth - 40 ?? "" : "416px",
+            }}
+          />
+        </>
       )}
     </>
   )

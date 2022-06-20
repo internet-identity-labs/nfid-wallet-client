@@ -1,3 +1,4 @@
+import GoogleLogin from "react-google-login"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -25,7 +26,8 @@ import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/remote-authenti
 import { RemoteNFIDAuthenticationRoutes } from "./flows/screens-app/remote-nfid-authentication"
 
 import { useStartUrl } from "./hooks/use-start-url"
-import { ic } from './api/actors'
+
+import { ic } from "./api/actors"
 
 declare const USERGEEK_API_KEY: string
 

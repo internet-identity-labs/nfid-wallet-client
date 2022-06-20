@@ -4,7 +4,12 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
-import { agent, im, invalidateIdentity } from "frontend/api/actors"
+import {
+  agent,
+  im,
+  invalidateIdentity,
+  replaceIdentity,
+} from "frontend/api/actors"
 import { userNumberAtom } from "frontend/services/identity-manager/account/state"
 import {
   apiResultToLoginResult,
@@ -78,6 +83,7 @@ export const useAuthentication = () => {
 
       if (result.tag === "ok") {
         initUserGeek(principal)
+        replaceIdentity(result.internetIdentity.delegationIdentity)
         setUser({
           principal: principal.toText(),
           chain: result.chain,
@@ -98,6 +104,7 @@ export const useAuthentication = () => {
   const remoteLogin = React.useCallback(
     async (actors: LoginSuccess) => {
       setIsRemoteDelegate(true)
+      replaceIdentity(actors.internetIdentity.delegationIdentity)
       setUser({
         principal: (await agent.getPrincipal()).toText(),
         chain: actors.chain,
@@ -110,6 +117,7 @@ export const useAuthentication = () => {
 
   const onRegisterSuccess = React.useCallback(
     async (actors) => {
+      replaceIdentity(actors.internetIdentity.delegationIdentity)
       setUser({
         principal: (await agent.getPrincipal()).toText(),
         chain: actors.chain,
@@ -143,6 +151,7 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
+        replaceIdentity(result.internetIdentity.delegationIdentity)
         setUser({
           principal: (await agent.getPrincipal()).toText(),
           chain: result.chain,

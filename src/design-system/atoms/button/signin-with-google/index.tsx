@@ -1,11 +1,14 @@
 import React from "react"
 import { Helmet } from "react-helmet-async"
 
+import { useDeviceInfo } from "frontend/hooks/use-device-info"
+
 import "./styles.css"
 
 export type LoginEventHandler = ({ credential }: GoogleCredential) => void
 
-declare const GOOGLE_CLIENT_ID: string
+const GOOGLE_CLIENT_ID: string =
+  "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com"
 
 declare global {
   interface Window {
@@ -21,12 +24,16 @@ export interface GoogleCredential {
 
 interface SignInWithGoogleProps {
   onLogin: LoginEventHandler
+  buttonWidth?: number | null
 }
 
 export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   onLogin,
+  buttonWidth,
 }) => {
   const [isReady, setIsReady] = React.useState(false)
+  const { isMobile } = useDeviceInfo()
+
   React.useEffect(() => {
     window.handleLogin = onLogin
     setIsReady(true)
@@ -36,7 +43,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   }, [onLogin])
 
   return (
-    <div className="-mx-[8px]">
+    <div>
       <Helmet>
         <script
           src="https://accounts.google.com/gsi/client"
@@ -52,8 +59,8 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
         data-login_uri="https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/googlecallback"
         data-auto_prompt="false"
       />
-
-      <div
+      */}
+      {/* <div
         className="g_id_signin"
         data-type="standard"
         data-shape="rectangular"
@@ -62,9 +69,26 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
         data-size="large"
         data-logo_alignment="left"
       /> */}
+      {/* <div
+        id="g_id_onload"
+        data-client_id="339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com"
+        data-context="use"
+        data-ux_mode="redirect"
+        data-login_uri="https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/googlecallback"
+        data-auto_prompt="false"
+      /> */}
+      <div
+        className="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="continue_with"
+        data-shape="rectangular"
+        data-logo_alignment="left"
+        data-width={isMobile ? buttonWidth : "400"}
+      ></div>
       {isReady && (
         <div
-          className="w-full"
           id="g_id_onload"
           data-client_id={GOOGLE_CLIENT_ID}
           data-context="use"
@@ -72,6 +96,12 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
           data-callback="handleLogin"
           data-nonce=""
           data-prompt_parent_id="g_id_onload"
+          style={{
+            width: isMobile ? buttonWidth ?? "" : "416px",
+            position: "absolute",
+            marginLeft: "-8px",
+            background: "red",
+          }}
         ></div>
       )}
     </div>

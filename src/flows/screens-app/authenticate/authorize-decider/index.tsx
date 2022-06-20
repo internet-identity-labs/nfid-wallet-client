@@ -94,7 +94,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
           registerPayload: {
             isGoogle: true,
             identity: response.identity,
-            deviceName: "Google Device",
+            deviceName: "Google account",
           },
         },
       })

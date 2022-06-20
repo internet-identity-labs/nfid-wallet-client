@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 
 import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { IconButton } from "frontend/design-system/atoms/button/icon-button"
+import { SignInWithGoogle } from "frontend/design-system/atoms/button/signin-with-google"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
 import { Input } from "frontend/design-system/atoms/input"
 import { H5 } from "frontend/design-system/atoms/typography"
@@ -100,6 +101,8 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           })}
         />
       )}
+
+      <SignInWithGoogle />
       <div className="flex flex-col w-full mt-8 space-y-1">
         {showAdvancedOptions ? (
           <>

@@ -2,6 +2,7 @@ import * as Sentry from "@sentry/react"
 import { BrowserTracing } from "@sentry/tracing"
 import React from "react"
 import { createRoot } from "react-dom/client"
+import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"
 import SwiperCore, { Pagination, Navigation } from "swiper"
 import "swiper/css"
@@ -32,8 +33,10 @@ const root = createRoot(container)
 
 root.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <App />
+      </Router>
+    </HelmetProvider>
   </React.StrictMode>,
 )

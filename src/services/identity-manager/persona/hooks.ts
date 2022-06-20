@@ -64,8 +64,6 @@ export const usePersona = () => {
 
   const createPersona = React.useCallback(
     async ({ domain }) => {
-      if (!account) throw new Error('"account" is required')
-
       const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
       const response = await im.create_persona(persona)
 
@@ -74,7 +72,7 @@ export const usePersona = () => {
       }
       return response
     },
-    [account, nextPersonaId, setPersonas],
+    [nextPersonaId, setPersonas],
   )
 
   return {

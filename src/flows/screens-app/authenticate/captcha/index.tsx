@@ -26,11 +26,12 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const {
     setLoading,
-    registerPayload: { deviceName, identity, isGoogle },
+    registerPayload: { isGoogle },
     loading,
     challenge,
     requestCaptcha,
     registerAnchor,
+    registerAnchorFromGoogle,
   } = useCaptcha({
     onApiError: async () => {
       setLoading(false)
@@ -44,7 +45,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const { navigate } = useNFIDNavigate()
 
-  const { userNumber } = useAccount()
+  const { userNumber, createAccount } = useAccount()
 
   const { authorizeApp } = useAuthorization({
     userNumber,
@@ -54,15 +55,24 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      await registerAnchor({ captcha })
-      await Promise.all([
-        createPersona({ domain: scope }),
-        authorizeApp({ persona_id: nextPersonaId, domain: scope }),
-      ])
-      navigate(successPath)
+      const response = await registerAnchor({ captcha })
+      if (response.kind === "loginSuccess") {
+        await createAccount({ anchor: response.userNumber })
+        await Promise.all([
+          createPersona({ domain: scope }),
+          authorizeApp({
+            persona_id: nextPersonaId,
+            domain: scope,
+            anchor: response.userNumber,
+          }),
+        ])
+        return navigate(successPath)
+      }
+      console.error(">> handleRegisterAnchor", response)
     },
     [
       authorizeApp,
+      createAccount,
       createPersona,
       navigate,
       nextPersonaId,
@@ -75,29 +85,32 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
       if (!challenge) throw new Error("No challenge")
-      const challengeResult: ChallengeResult = {
-        chars: captcha,
-        key: challenge.challenge_key,
+      const response = await registerAnchorFromGoogle({ captcha })
+      if (response.kind === "loginSuccess") {
+        await createAccount({ anchor: response.userNumber })
+        await Promise.all([
+          createPersona({ domain: scope }),
+          authorizeApp({
+            persona_id: nextPersonaId,
+            domain: scope,
+            anchor: response.userNumber,
+          }),
+        ])
+        return navigate(successPath)
       }
-      const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
-
-      await IIConnection.fromGoogleDevice(googleIdentity)
-
-      const registerResponse = await ii.register(
-        {
-          alias: deviceName,
-          pubkey: Array.from(
-            new Uint8Array(googleIdentity.getPublicKey().toDer()),
-          ),
-          credential_id: [],
-          key_type: { unknown: null },
-          purpose: { authentication: null },
-        },
-        challengeResult,
-      )
-      console.log(">> ", { registerResponse })
+      console.error(">> handleRegisterAnchor", response)
     },
-    [challenge, deviceName, identity],
+    [
+      authorizeApp,
+      challenge,
+      createAccount,
+      createPersona,
+      navigate,
+      nextPersonaId,
+      registerAnchorFromGoogle,
+      scope,
+      successPath,
+    ],
   )
 
   const { applicationLogo, applicationName } = useMultipass()

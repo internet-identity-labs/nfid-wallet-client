@@ -1,9 +1,7 @@
 import {
-  blobFromHex,
-  blobToHex,
-  derBlobFromBlob,
-  DerEncodedBlob,
-} from "@dfinity/candid"
+  fromHexString,
+  toHexString,
+} from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { useAtom } from "jotai"
@@ -220,8 +218,8 @@ export const useDevices = () => {
       const identity = await WebAuthnIdentity.create({
         publicKey: creationOptions(existingDevices),
       })
-      const publicKey = blobToHex(identity.getPublicKey().toDer())
-      const rawId = blobToHex(identity.rawId)
+      const publicKey = toHexString(identity.getPublicKey().toDer())
+      const rawId = toHexString(identity.rawId)
 
       const device = {
         publicKey,
@@ -248,7 +246,8 @@ export const useDevices = () => {
     }) => {
       if (!user?.internetIdentity) throw new Error("Unauthorized")
 
-      const pub_key = derBlobFromBlob(blobFromHex(publicKey))
+      const pub_key = fromHexString(publicKey)
+      const pubKeyBlob = new Blob([pub_key])
 
       await Promise.all([
         user?.internetIdentity.add(
@@ -256,14 +255,14 @@ export const useDevices = () => {
           deviceName,
           { unknown: null },
           { authentication: null },
-          pub_key,
-          blobFromHex(rawId),
+          pubKeyBlob,
+          fromHexString(rawId),
         ),
         im.create_access_point({
           icon: "",
           device: deviceName,
           browser: browserName ?? "",
-          pub_key: Array.from(pub_key),
+          pub_key: Array.from(new Uint8Array(pub_key)),
         }),
       ])
     },
@@ -271,12 +270,14 @@ export const useDevices = () => {
   )
 
   const createRecoveryDevice = React.useCallback(
-    async (recoverIdentity: DerEncodedBlob, icon?: string, device?: string) => {
+    async (recoverIdentity: Blob, icon?: string, device?: string) => {
       const newDevice = {
         icon: icon ?? "document",
         device: device ?? "Recovery Phrase",
         browser: "",
-        pub_key: Array.from(recoverIdentity),
+        pub_key: Array.from(
+          new Uint8Array(await recoverIdentity.arrayBuffer()),
+        ),
       }
 
       return await im.create_access_point(newDevice)
@@ -334,10 +335,10 @@ export const useDevices = () => {
       deviceName,
       { seed_phrase: null },
       { recovery: null },
-      recoverIdentity.getPublicKey().toDer(),
+      new Blob([recoverIdentity.getPublicKey().toDer()]),
     )
     createRecoveryDevice(
-      recoverIdentity.getPublicKey().toDer(),
+      new Blob([recoverIdentity.getPublicKey().toDer()]),
       "document",
       deviceName,
     )
@@ -375,11 +376,11 @@ export const useDevices = () => {
           purpose && purpose === "recover"
             ? { recovery: null }
             : { authentication: null },
-          recoverIdentity.getPublicKey().toDer(),
+          new Blob([recoverIdentity.getPublicKey().toDer()]),
           recoverIdentity.rawId,
         ),
         createRecoveryDevice(
-          recoverIdentity.getPublicKey().toDer(),
+          new Blob([recoverIdentity.getPublicKey().toDer()]),
           "usb",
           deviceName,
         ),

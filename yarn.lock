@@ -1955,10 +1955,12 @@
     "simple-cbor" "^0.4.1"
 
 "@dfinity/auth-client@0.10.4":
+  "integrity" "sha512-SHWamx9PcD3vl21rmRCnWr4wk6Iotyd9h0UZOLFdKL0AruZ9m9BD7nxRs9u7dJ+FuRwZRkWjONaDuNZemMlQ8w=="
   "resolved" "https://registry.npmjs.org/@dfinity/auth-client/-/auth-client-0.10.4.tgz"
   "version" "0.10.4"
 
 "@dfinity/authentication@^0.10.4", "@dfinity/authentication@0.10.4":
+  "integrity" "sha512-IP1zepm9YnXATV6lXVMqObmETKuBtkDMbWW6rgUvEekulaxITTHJppgzdMD8E7Hh5SVajVHLJm14kDa3FXwMnA=="
   "resolved" "https://registry.npmjs.org/@dfinity/authentication/-/authentication-0.10.4.tgz"
   "version" "0.10.4"
 
@@ -1985,6 +1987,11 @@
   "integrity" "sha512-qwzpmq5wfyeKMBspRZmuYvTxu1dqN+IY0ThACHTRh6D58QjnVQNCD3Hq9d5eEDu0qyNcY22cJEWwzrzZaaoVmw=="
   "resolved" "https://registry.npmjs.org/@dfinity/principal/-/principal-0.10.4.tgz"
   "version" "0.10.4"
+
+"@dfinity/principal@^0.11.0":
+  "integrity" "sha512-+AJGDJ+RsveybSdxuTQFr2DPNZFpPfXnyixAOFWWdElVniSwnO/SwqQChR0AWvJdy/fKqoAXK+ZzyLG0uqSetA=="
+  "resolved" "https://registry.npmjs.org/@dfinity/principal/-/principal-0.11.3.tgz"
+  "version" "0.11.3"
 
 "@dfinity/principal@0.11.0":
   "resolved" "https://registry.npmjs.org/@dfinity/principal/-/principal-0.11.0.tgz"
@@ -6272,6 +6279,7 @@
   "version" "1.0.0"
 
 "borc@^2.1.1":
+  "integrity" "sha512-Sy9eoUi4OiKzq7VovMn246iTo17kzuyHJKomCfpWMlI6RpfN1gk95w7d7gH264nApVLg0HZfcpz62/g4VH1Y4w=="
   "resolved" "https://registry.npmjs.org/borc/-/borc-2.1.2.tgz"
   "version" "2.1.2"
   dependencies:
@@ -6518,6 +6526,7 @@
     "ieee754" "^1.1.13"
 
 "buffer@^5.5.0":
+  "integrity" "sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ=="
   "resolved" "https://registry.npmjs.org/buffer/-/buffer-5.7.1.tgz"
   "version" "5.7.1"
   dependencies:
@@ -7505,7 +7514,7 @@
     "p-filter" "^2.1.0"
     "p-map" "^3.0.0"
 
-"crc-32@^1.2.0":
+"crc-32@^1.2.0", "crc-32@^1.2.2":
   "integrity" "sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ=="
   "resolved" "https://registry.npmjs.org/crc-32/-/crc-32-1.2.2.tgz"
   "version" "1.2.2"
@@ -7616,6 +7625,11 @@
     "public-encrypt" "^4.0.0"
     "randombytes" "^2.0.0"
     "randomfill" "^1.0.3"
+
+"crypto-js@^4.1.1":
+  "integrity" "sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw=="
+  "resolved" "https://registry.npmjs.org/crypto-js/-/crypto-js-4.1.1.tgz"
+  "version" "4.1.1"
 
 "crypto-random-string@^2.0.0":
   "resolved" "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-2.0.0.tgz"
@@ -10869,6 +10883,15 @@
   "resolved" "https://registry.npmjs.org/icss-utils/-/icss-utils-5.1.0.tgz"
   "version" "5.1.0"
 
+"ictool@^0.0.4":
+  "integrity" "sha512-YPEdxLn9hZRXbUAOgbdscHuILy4SK8CBfQLRcVkaXqLVMEDBLcCBYgRkA7gyJAsDthCw0q8nXzGDMaMj0ZFT2g=="
+  "resolved" "https://registry.npmjs.org/ictool/-/ictool-0.0.4.tgz"
+  "version" "0.0.4"
+  dependencies:
+    "@dfinity/principal" "^0.11.0"
+    "crc-32" "^1.2.2"
+    "crypto-js" "^4.1.1"
+
 "idb@^6.1.4":
   "resolved" "https://registry.npmjs.org/idb/-/idb-6.1.5.tgz"
   "version" "6.1.5"
@@ -11579,6 +11602,7 @@
   "version" "1.2.1"
 
 "iso-url@~0.4.7":
+  "integrity" "sha512-27fFRDnPAMnHGLq36bWTpKET+eiXct3ENlCcdcMdk+mjXrb2kw3mhBUg1B7ewAC0kVzlOPhADzQgz1SE6Tglog=="
   "resolved" "https://registry.npmjs.org/iso-url/-/iso-url-0.4.7.tgz"
   "version" "0.4.7"
 
@@ -12311,6 +12335,7 @@
   "version" "1.0.1"
 
 "json-text-sequence@~0.1.0":
+  "integrity" "sha512-L3mEegEWHRekSHjc7+sc8eJhba9Clq1PZ8kMkzf8OxElhXc8O4TS5MwcVlj9aEbm5dr81N90WHC5nAz3UO971w=="
   "resolved" "https://registry.npmjs.org/json-text-sequence/-/json-text-sequence-0.1.1.tgz"
   "version" "0.1.1"
   dependencies:
@@ -15615,6 +15640,7 @@
     "util-deprecate" "^1.0.1"
 
 "readable-stream@^3.6.0":
+  "integrity" "sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA=="
   "resolved" "https://registry.npmjs.org/readable-stream/-/readable-stream-3.6.0.tgz"
   "version" "3.6.0"
   dependencies:
@@ -17822,6 +17848,7 @@
   "version" "0.0.6"
 
 "tweetnacl@^1.0.1":
+  "integrity" "sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw=="
   "resolved" "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz"
   "version" "1.0.3"
 

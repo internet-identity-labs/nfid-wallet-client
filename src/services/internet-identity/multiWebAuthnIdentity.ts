@@ -7,15 +7,15 @@
  *   then we know which one the user is actually using
  * - It doesn't support creating credentials; use `WebAuthnIdentity` for that
  */
-import { PublicKey, SignIdentity } from "@dfinity/agent"
-import { BinaryBlob, DerEncodedBlob } from "@dfinity/candid"
+import { PublicKey, Signature, SignIdentity } from "@dfinity/agent"
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
 import borc from "borc"
 import { Buffer } from "buffer"
+import { arrayBufferEqual } from "ictool/dist/bits"
 
-export type CredentialId = BinaryBlob
+export type CredentialId = ArrayBuffer
 export type CredentialData = {
-  pubkey: DerEncodedBlob
+  pubkey: Blob
   credentialId: CredentialId
 }
 
@@ -55,7 +55,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     }
   }
 
-  public async sign(blob: BinaryBlob): Promise<BinaryBlob> {
+  public async sign(blob: ArrayBuffer): Promise<Signature> {
     const transports = this._withSecurityDevices
       ? ["usb", "nfc", "ble"]
       : ["internal"]
@@ -73,9 +73,12 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       },
     })) as PublicKeyCredential
 
-    this.credentialData.forEach((cd) => {
-      if (cd.credentialId.equals(new Blob([Buffer.from(result.rawId)]))) {
-        const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
+    this.credentialData.forEach(async (cd) => {
+      if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
+        const strippedKey = unwrapDER(
+          await cd.pubkey.arrayBuffer(),
+          DER_COSE_OID,
+        )
         // would be nice if WebAuthnIdentity had a directly usable constructor
         this._actualIdentity = WebAuthnIdentity.fromJSON(
           JSON.stringify({
@@ -107,7 +110,10 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       if (!cbor) {
         throw new Error("failed to encode cbor")
       }
-      return new Blob([new Uint8Array(cbor)])
+      return {
+        ...new Uint8Array(cbor).buffer,
+        __signature__: undefined,
+      }
     } else {
       throw new Error("Invalid response from WebAuthn.")
     }

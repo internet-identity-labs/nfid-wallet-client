@@ -1,5 +1,4 @@
-import { Actor, ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
-import { derBlobFromBlob, DerEncodedBlob } from "@dfinity/candid"
+import { ActorSubclass, SignIdentity } from "@dfinity/agent"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -101,8 +100,8 @@ export class IIConnection {
       }
     }
 
-    const credential_id = Array.from(identity.rawId)
-    const pubkey = Array.from(identity.getPublicKey().toDer())
+    const credential_id = Array.from(new Uint8Array(identity.rawId))
+    const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
     let registerResponse: RegisterResponse
     try {
@@ -261,7 +260,10 @@ export class IIConnection {
       IC_DERIVATION_PATH,
     )
     if (
-      !identity.getPublicKey().toDer().equals(derFromPubkey(expected.pubkey))
+      !arrayBufferEqual(
+        identity.getPublicKey().toDer(),
+        await derFromPubkey(expected.pubkey).arrayBuffer(),
+      )
     ) {
       return {
         kind: "seedPhraseFail",
@@ -348,14 +350,16 @@ export class IIConnection {
     alias: string,
     keyType: KeyType,
     purpose: Purpose,
-    newPublicKey: DerEncodedBlob,
+    newPublicKey: Blob,
     credentialId?: ArrayBuffer,
   ): Promise<void> => {
     await this.renewDelegation()
     return await ii.add(userNumber, {
       alias,
-      pubkey: Array.from(newPublicKey),
-      credential_id: credentialId ? [Array.from(credentialId)] : [],
+      pubkey: Array.from(new Uint8Array(await newPublicKey.arrayBuffer())),
+      credential_id: credentialId
+        ? [Array.from(new Uint8Array(credentialId))]
+        : [],
       key_type: keyType,
       purpose,
     })
@@ -503,8 +507,8 @@ export const creationOptions = (
   }
 }
 
-export const derFromPubkey = (pubkey: DeviceKey): DerEncodedBlob =>
-  derBlobFromBlob(new Blob([Buffer.from(pubkey)]))
+export const derFromPubkey = (pubkey: DeviceKey) =>
+  new Blob([Buffer.from(pubkey)])
 
 const getMultiIdent = (
   devices: DeviceData[],
@@ -514,7 +518,7 @@ const getMultiIdent = (
     devices.flatMap((device) =>
       device.credential_id.map((credentialId: CredentialId) => ({
         pubkey: derFromPubkey(device.pubkey),
-        credentialId: new Blob([Buffer.from(credentialId)]),
+        credentialId: Buffer.from(credentialId),
       })),
     ),
     withSecurityDevices,

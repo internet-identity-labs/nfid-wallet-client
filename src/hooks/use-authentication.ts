@@ -170,6 +170,23 @@ export const useAuthentication = () => {
     [initUserGeek, setUser, setError, setIsLoading, setShouldStoreLocalAccount],
   )
 
+  const loginWithGoogleDevice = React.useCallback(
+    async (identity: string) => {
+      const result = await IIConnection.loginfromGoogleDevice(identity)
+      setUser({
+        principal: (await agent.getPrincipal()).toText(),
+        chain: result.chain,
+        sessionKey: result.sessionKey,
+        internetIdentity: result.internetIdentity,
+      })
+      initUserGeek(await agent.getPrincipal())
+      im.use_access_point()
+      setShouldStoreLocalAccount(false)
+      setError(null)
+    },
+    [initUserGeek, setError, setShouldStoreLocalAccount, setUser],
+  )
+
   return {
     isLoading,
     user,
@@ -182,5 +199,6 @@ export const useAuthentication = () => {
     logout,
     onRegisterSuccess,
     loginWithRecovery,
+    loginWithGoogleDevice,
   }
 }

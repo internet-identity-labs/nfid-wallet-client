@@ -141,8 +141,9 @@ export const useChallenge = () => {
     if (challenge) {
       setChallengeResponse(undefined)
     }
+    console.time(">> getChallenge")
     const challengeResponse = await IIConnection.createChallenge()
-    console.log(">> getChallenge", { challengeResponse })
+    console.timeEnd(">> getChallenge")
 
     setChallengeResponse(challengeResponse)
   }, [challenge, setChallengeResponse])

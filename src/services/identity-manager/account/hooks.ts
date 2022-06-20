@@ -98,6 +98,22 @@ export const useAccount = () => {
     return response
   }, [account, shouldStoreLocalAccount, setAccount, setMemoryAccount])
 
+  const readMemoryAccount = React.useCallback(async () => {
+    const response = await im.get_account()
+
+    const newAccount = response.data[0]
+
+    if (newAccount) {
+      const normalizedAccount = normalizeLocalAccount({
+        account,
+        newAccount,
+      })
+      setMemoryAccount(normalizedAccount)
+    }
+
+    return response
+  }, [account, setMemoryAccount])
+
   const readAndStoreAccount = React.useCallback(async () => {
     const response = await im.get_account()
 
@@ -170,6 +186,7 @@ export const useAccount = () => {
     createAccount,
     readAccount,
     readAndStoreAccount,
+    readMemoryAccount,
     recoverAccount,
     resetLocalAccount,
     updateAccount,

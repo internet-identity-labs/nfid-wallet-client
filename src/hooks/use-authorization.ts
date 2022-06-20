@@ -27,8 +27,6 @@ export const useAuthorization = ({
 }: UseAuthenticationProps = {}) => {
   // the isLoading state is used to display the astronaut
   const [isLoading, setLoading] = React.useState(false)
-  // the authResult state is used to store the II
-  const { user } = useAuthentication()
 
   const [authorizationRequest, setAuthorizationRequest] = useAtom(
     authorizationRequestAtom,

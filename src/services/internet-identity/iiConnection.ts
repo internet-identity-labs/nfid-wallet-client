@@ -159,6 +159,80 @@ export class IIConnection {
     }
   }
 
+  static async registerFromGoogle(
+    jsonIdentity: string,
+    alias: string,
+    challengeResult: ChallengeResult,
+  ): Promise<RegisterResult> {
+    let delegation: FrontendDelegation
+    const identity = Ed25519KeyIdentity.fromJSON(jsonIdentity)
+    try {
+      delegation = await requestFEDelegation(identity)
+    } catch (error: unknown) {
+      console.error(`Error when requesting delegation`, error)
+      if (error instanceof Error) {
+        return { kind: "authFail", error }
+      } else {
+        return {
+          kind: "authFail",
+          error: new Error("Unknown error when requesting delegation"),
+        }
+      }
+    }
+
+    const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
+
+    replaceIdentity(delegation.delegationIdentity)
+
+    let registerResponse: RegisterResponse
+    try {
+      registerResponse = await ii.register(
+        {
+          alias,
+          pubkey,
+          credential_id: [],
+          key_type: { unknown: null },
+          purpose: { authentication: null },
+        },
+        challengeResult,
+      )
+    } catch (error: unknown) {
+      console.error(`Error when registering`, error)
+      if (error instanceof Error) {
+        return { kind: "apiError", error }
+      } else {
+        return {
+          kind: "apiError",
+          error: new Error("Unknown error when registering"),
+        }
+      }
+    }
+
+    if (hasOwnProperty(registerResponse, "canister_full")) {
+      return { kind: "registerNoSpace" }
+    } else if (hasOwnProperty(registerResponse, "registered")) {
+      const userNumber = registerResponse["registered"].user_number
+      console.log(`registered Identity Anchor ${userNumber}`)
+      replaceIdentity(delegation.delegationIdentity)
+      return {
+        kind: "loginSuccess",
+        chain: delegation.chain,
+        sessionKey: delegation.sessionKey,
+        internetIdentity: new IIConnection(
+          identity,
+          delegation.delegationIdentity,
+          ii,
+        ),
+        userNumber,
+      }
+    } else if (hasOwnProperty(registerResponse, "bad_challenge")) {
+      return { kind: "badChallenge" }
+    } else {
+      console.error("unexpected register response", registerResponse)
+      throw Error("unexpected register response")
+    }
+  }
+
   static async login(
     userNumber: bigint,
     withSecurityDevices?: boolean,
@@ -296,13 +370,12 @@ export class IIConnection {
     }
   }
 
-  static async fromGoogleDevice(
-    googleIdentity: Ed25519KeyIdentity,
-  ): Promise<void> {
+  static async fromGoogleDevice(identity: string): Promise<Ed25519KeyIdentity> {
+    const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
     const delegationIdentity = await requestFEDelegation(googleIdentity)
-    console.log(">> fromGoogleDevice", { delegationIdentity })
 
     replaceIdentity(delegationIdentity.delegationIdentity)
+    return googleIdentity
   }
 
   static async lookupAll(userNumber: UserNumber): Promise<DeviceData[]> {

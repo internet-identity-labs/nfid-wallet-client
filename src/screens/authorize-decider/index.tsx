@@ -113,9 +113,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}
       >
-        <div className="max-w-[400px]">
-          <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
-        </div>
+        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
 
         <Separator className="max-w-[400px]" />
 

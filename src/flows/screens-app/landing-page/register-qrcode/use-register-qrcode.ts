@@ -1,4 +1,4 @@
-import { blobToHex } from "@dfinity/candid"
+import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"
 import { useCallback, useMemo } from "react"
@@ -23,7 +23,7 @@ export const useRegisterQRCode = () => {
     useAuthentication()
 
   const publicKey = useMemo(
-    () => blobToHex(Ed25519KeyIdentity.generate().getPublicKey().toDer()),
+    () => toHexString(Ed25519KeyIdentity.generate().getPublicKey().toDer()),
     [],
   )
 

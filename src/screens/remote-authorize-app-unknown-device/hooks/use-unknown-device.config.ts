@@ -1,5 +1,5 @@
 import { PublicKey } from "@dfinity/agent"
-import { blobToHex } from "@dfinity/candid"
+import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"
 import React, { useEffect } from "react"
@@ -108,10 +108,10 @@ export const useUnknownDeviceConfig = () => {
   const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({
       messageHandler: {
-        "authorize-client": (event: any) => {
+        "authorize-client": async (event: any) => {
           const { sessionPublicKey } = event.data
-          const blog = new Blob([sessionPublicKey])
-          const hex = blobToHex(blog)
+          const blob = new Blob([sessionPublicKey])
+          const hex = toHexString(await blob.arrayBuffer())
 
           setAppWindow(event.source)
           setPubKey(hex)

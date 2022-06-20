@@ -1,3 +1,5 @@
+import clsx from "clsx"
+
 interface MethodRawProps {
   img: React.ReactElement
   title: string
@@ -13,7 +15,10 @@ export const IconButton: React.FC<MethodRawProps> = ({
 }) => (
   <div
     onClick={onClick}
-    className="flex items-center w-full px-3 py-2 border border-gray-200 rounded-md hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]"
+    className={clsx(
+      "flex items-center px-3 py-2 border border-gray-200 rounded-md hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]",
+      "w-full max-w-[400px]",
+    )}
   >
     <div className="w-[28px] mr-[9px]">{img}</div>
     <div>

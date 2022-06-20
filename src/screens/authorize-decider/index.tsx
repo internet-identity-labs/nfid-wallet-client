@@ -44,6 +44,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   isLoading,
   authError,
 }) => {
+  const containerRef = React.useRef<HTMLDivElement | null>(null)
   const {
     register,
     handleSubmit,
@@ -72,6 +73,10 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
     },
     [onSelectSecurityKeyAuthorization],
   )
+
+  const calculateButtonWidth = React.useMemo(() => {
+    return containerRef.current && containerRef.current?.offsetWidth
+  }, [containerRef])
 
   return (
     <ScreenResponsive
@@ -107,7 +112,10 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         />
       )}
 
-      <div className="flex flex-col w-full mt-8 space-y-1">
+      <div
+        className="flex flex-col items-center w-full mt-8 space-y-1"
+        ref={containerRef}
+      >
         {showAdvancedOptions ? (
           <>
             <IconButton
@@ -132,7 +140,10 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           />
         )}
 
-        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+        <SignInWithGoogle
+          onLogin={onSelectGoogleAuthorization}
+          buttonWidth={calculateButtonWidth}
+        />
 
         <p
           className="pt-4 text-sm text-center cursor-pointer text-blue-base"

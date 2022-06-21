@@ -56,7 +56,11 @@ export const CredentialRequesterSMSVerify: React.FC<
           "sm:block",
         )}
       >
-        <StepInput className="justify-between" onSubmit={onSubmit} />
+        <StepInput
+          className="justify-between"
+          onSubmit={onSubmit}
+          errorClasses="text-center"
+        />
       </div>
     </ScreenResponsive>
   )

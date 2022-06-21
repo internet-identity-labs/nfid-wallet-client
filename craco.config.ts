@@ -10,6 +10,12 @@ loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 
+let sentryRelease = require("child_process")
+  .execSync("git rev-parse HEAD")
+  .toString()
+  .trim()
+  .slice(0, 12)
+
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 
@@ -26,6 +32,7 @@ const config = {
         ...(isExampleBuild
           ? {}
           : {
+              SENTRY_RELEASE: JSON.stringify(sentryRelease),
               IC_HOST: JSON.stringify(process.env.IC_HOST),
               II_ENV: JSON.stringify(process.env.II_MODE),
               FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
@@ -63,6 +70,7 @@ const config = {
               ),
             }),
       }
+      console.log(">> ", { canisterEnv })
 
       webpackConfig.plugins.push(new webpack.DefinePlugin(canisterEnv))
       webpackConfig.plugins.push(

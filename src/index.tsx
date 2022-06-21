@@ -11,6 +11,8 @@ import "swiper/css/pagination"
 import { App } from "./App"
 import "./index.css"
 
+declare const SENTRY_RELEASE: string
+
 process.env.NODE_ENV === "production" &&
   Sentry.init({
     dsn: "https://***REMOVED***@o1255710.ingest.sentry.io/6424378",
@@ -20,7 +22,8 @@ process.env.NODE_ENV === "production" &&
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 0.25,
+    ...(SENTRY_RELEASE ? { release: SENTRY_RELEASE } : {}),
   })
 
 SwiperCore.use([Pagination, Navigation])

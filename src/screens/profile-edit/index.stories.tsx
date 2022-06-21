@@ -14,9 +14,6 @@ export default {
     // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
     layout: "fullscreen",
   },
-  args: {
-    account: { anchor: "10005", name: "Test Account", phone: "" },
-  },
 } as ComponentMeta<typeof ProfileEdit>
 
 const Template: ComponentStory<typeof ProfileEdit> = (args) => {
@@ -43,9 +40,16 @@ const TemplateSMS: ComponentStory<typeof ProfileEditPhoneSms> = (args) => {
   )
 }
 
-export const Edit = Template.bind({})
-export const EditPhone = TemplateEditPhone.bind({})
-export const EditPhoneSms = TemplateSMS.bind({})
+export const Edit = Template.bind({
+  account: { anchor: "10005", name: "Test Account", phone: "" },
+})
+export const EditPhone = TemplateEditPhone.bind({
+  account: { anchor: "10005", name: "Test Account", phone: "" },
+})
+export const EditPhoneSms = TemplateSMS.bind({
+  account: { anchor: "10005", name: "Test Account", phone: "" },
+  onResendCode: () => console.log("resend"),
+})
 
 // More on interaction testing: https://storybook.js.org/docs/react/writing-tests/interaction-testing
 // LoggedIn.play = async ({ canvasElement }) => {

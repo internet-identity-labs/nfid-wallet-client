@@ -85,6 +85,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
             data-callback="handleLogin"
             data-nonce=""
             data-prompt_parent_id="g_id_onload"
+            data-close_on_tap_outside="false"
             style={{
               width: "100%",
               maxWidth: "416px",

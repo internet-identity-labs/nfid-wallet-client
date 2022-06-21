@@ -1,10 +1,8 @@
-import { blobFromUint8Array } from "@dfinity/candid"
 import { atom, useAtom } from "jotai"
 import React from "react"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { retryGetDelegation } from "frontend/services/internet-identity/auth"
-import { IIConnection } from "frontend/services/internet-identity/iiConnection"
+import { ii } from "frontend/api/actors"
+import { hasOwnProperty } from "frontend/services/internet-identity/utils"
 
 import { useMessageChannel } from "../screens/remote-authorize-app-unknown-device/hooks/use-message-channel"
 
@@ -28,8 +26,6 @@ export const useAuthorization = ({
 }: UseAuthenticationProps = {}) => {
   // the isLoading state is used to display the astronaut
   const [isLoading, setLoading] = React.useState(false)
-  // the authResult state is used to store the II
-  const { internetIdentity } = useAuthentication()
 
   const [authorizationRequest, setAuthorizationRequest] = useAtom(
     authorizationRequestAtom,
@@ -39,17 +35,14 @@ export const useAuthorization = ({
     useMessageChannel({
       messageHandler: {
         "authorize-client": async (event: any) => {
-          if (internetIdentity !== null) {
-            const message = event.data
-            const { maxTimeToLive, sessionPublicKey } = message
-
-            setAuthorizationRequest({
-              maxTimeToLive,
-              sessionPublicKey,
-              hostname: event.origin,
-              source: event.source,
-            })
-          }
+          const message = event.data
+          const { maxTimeToLive, sessionPublicKey } = message
+          setAuthorizationRequest({
+            maxTimeToLive,
+            sessionPublicKey,
+            hostname: event.origin,
+            source: event.source,
+          })
         },
       },
     })
@@ -58,33 +51,29 @@ export const useAuthorization = ({
     async ({
       persona_id,
       anchor: rawAnchor,
-      internetIdentityForAnchor,
     }: {
       persona_id?: string
-      anchor?: string
-      internetIdentityForAnchor?: IIConnection
+      anchor?: string | bigint
     }) => {
-      const internetIdentityService =
-        internetIdentityForAnchor || internetIdentity
       setLoading(true)
 
-      if (!authorizationRequest || !internetIdentityService)
-        throw new Error("client not ready")
+      if (!authorizationRequest) throw new Error("authorizationRequest missing")
 
       const { sessionPublicKey, hostname, maxTimeToLive, source } =
         authorizationRequest
 
-      const sessionKey = Array.from(blobFromUint8Array(sessionPublicKey))
+      const sessionKey = Array.from(new Uint8Array(sessionPublicKey))
       const scope = persona_id ? `${persona_id}@${hostname}` : hostname
 
       const anchor = rawAnchor && BigInt(rawAnchor)
 
-      const prepRes = await internetIdentityService.prepareDelegation(
+      const prepRes = await ii.prepare_delegation(
         anchor || userNumber,
         scope,
         sessionKey,
-        maxTimeToLive,
+        maxTimeToLive !== undefined ? [maxTimeToLive] : [],
       )
+
       // TODO: move to error handler
       if (prepRes.length !== 2) {
         throw new Error(
@@ -93,36 +82,32 @@ export const useAuthorization = ({
       }
       const [userKey, timestamp] = prepRes
 
-      const signedDelegation = await retryGetDelegation(
-        internetIdentityService,
+      const res = await ii.get_delegation(
         anchor || userNumber,
         scope,
         sessionKey,
         timestamp,
       )
-
-      // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
-      const parsedSignedDelegation = {
-        delegation: {
-          pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
-          expiration: BigInt(signedDelegation.delegation.expiration),
-          targets: undefined,
-        },
-        signature: Uint8Array.from(signedDelegation.signature),
+      if (hasOwnProperty(res, "signed_delegation")) {
+        const signedDelegation = res.signed_delegation
+        // Parse the candid SignedDelegation into a format that `DelegationChain` understands.
+        const parsedSignedDelegation = {
+          delegation: {
+            pubkey: Uint8Array.from(signedDelegation.delegation.pubkey),
+            expiration: BigInt(signedDelegation.delegation.expiration),
+            targets: undefined,
+          },
+          signature: Uint8Array.from(signedDelegation.signature),
+        }
+        postClientAuthorizeSuccessMessage(source, {
+          parsedSignedDelegation,
+          userKey,
+          hostname,
+        })
+        setLoading(false)
       }
-      postClientAuthorizeSuccessMessage(source, {
-        parsedSignedDelegation,
-        userKey,
-        hostname,
-      })
-      setLoading(false)
     },
-    [
-      authorizationRequest,
-      internetIdentity,
-      postClientAuthorizeSuccessMessage,
-      userNumber,
-    ],
+    [authorizationRequest, postClientAuthorizeSuccessMessage, userNumber],
   )
 
   // return the hooks props

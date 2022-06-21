@@ -1,58 +1,59 @@
-import { ActorSubclass } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
+import {
+  agent,
+  im,
+  invalidateIdentity,
+  replaceIdentity,
+} from "frontend/api/actors"
 import { userNumberAtom } from "frontend/services/identity-manager/account/state"
-import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
-import { _SERVICE as ImAdditionsService } from "frontend/services/iiw/im_addition.did"
 import {
   apiResultToLoginResult,
   LoginResult,
+  LoginSuccess,
 } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
-import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
 
-interface Actors {
+interface User {
+  principal: string
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
   internetIdentity: IIConnection
-  identityManager: ActorSubclass<IdentityManagerService>
-  pubsubChannelActor: ActorSubclass<PubsubChannelService>
-  imAdditionActor: ActorSubclass<ImAdditionsService>
 }
 
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const remoteLoginAtom = atom<boolean>(false)
 const shouldStoreLocalAccountAtom = atom<boolean>(true)
-const actorsAtom = atom<Actors | null>(null)
-const isAuthenticatedAtom = atom((get) => get(actorsAtom) !== null)
-export const principalIdAtom = atom((get) =>
-  get(actorsAtom)
-    ?.internetIdentity?.delegationIdentity.getPrincipal()
-    .toString(),
-)
+const userAtom = atom<User | undefined>(undefined)
 
 export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom)
+  const [user, setUser] = useAtom(userAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
   const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
     shouldStoreLocalAccountAtom,
   )
-  const [actors, setActors] = useAtom(actorsAtom)
-  const [principalId] = useAtom(principalIdAtom)
 
   const logout = React.useCallback(() => {
-    setActors(null)
+    invalidateIdentity()
+    setUser(undefined)
+    // TODO: this is a quick fix after the auth state refactor.
+    // The problem is that after we invalidate the identity, the
+    // frontend throws the error:
+    // This identity has expired due this application's security policy. Please refresh your authentication.
+    // SENTRY: https://sentry.io/organizations/internet-identity-labs/issues/3364199030/?project=6424378&referrer=slack
+    // TICKET: https://app.shortcut.com/the-internet-portal/story/2695/log-out-when-delegate-expires
+    window.location.reload()
     // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(Principal.anonymous())
-  }, [setActors])
+  }, [setUser])
 
   const initUserGeek = React.useCallback((principal: Principal) => {
     // TODO: create pull request removing the requirement of
@@ -79,6 +80,7 @@ export const useAuthentication = () => {
       const response = await IIConnection.login(anchor, withSecurityDevices)
 
       const result = apiResultToLoginResult(response)
+      const principal = await agent.getPrincipal()
 
       if (result.tag === "err") {
         setError(result)
@@ -87,10 +89,14 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
-        setActors(result)
-        initUserGeek(
-          result?.internetIdentity?.delegationIdentity.getPrincipal(),
-        )
+        initUserGeek(principal)
+        replaceIdentity(result.internetIdentity.delegationIdentity)
+        setUser({
+          principal: principal.toText(),
+          chain: result.chain,
+          sessionKey: result.sessionKey,
+          internetIdentity: result.internetIdentity,
+        })
         setError(null)
         setIsLoading(false)
         return result
@@ -99,22 +105,34 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setActors, setError, setIsLoading, userNumber],
+    [initUserGeek, setError, setIsLoading, setUser, userNumber],
   )
 
   const remoteLogin = React.useCallback(
-    async (actors) => {
+    async (actors: LoginSuccess) => {
       setIsRemoteDelegate(true)
-      setActors(actors)
+      replaceIdentity(actors.internetIdentity.delegationIdentity)
+      setUser({
+        principal: (await agent.getPrincipal()).toText(),
+        chain: actors.chain,
+        sessionKey: actors.sessionKey,
+        internetIdentity: actors.internetIdentity,
+      })
     },
-    [setActors, setIsRemoteDelegate],
+    [setUser, setIsRemoteDelegate],
   )
 
   const onRegisterSuccess = React.useCallback(
-    (actors) => {
-      setActors(actors)
+    async (actors) => {
+      replaceIdentity(actors.internetIdentity.delegationIdentity)
+      setUser({
+        principal: (await agent.getPrincipal()).toText(),
+        chain: actors.chain,
+        sessionKey: actors.sessionKey,
+        internetIdentity: actors.internetIdentity,
+      })
     },
-    [setActors],
+    [setUser],
   )
 
   const loginWithRecovery = React.useCallback(
@@ -140,11 +158,15 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
-        setActors(result)
-        initUserGeek(
-          result?.internetIdentity?.delegationIdentity.getPrincipal(),
-        )
-        result.identityManager.use_access_point()
+        replaceIdentity(result.internetIdentity.delegationIdentity)
+        setUser({
+          principal: (await agent.getPrincipal()).toText(),
+          chain: result.chain,
+          sessionKey: result.sessionKey,
+          internetIdentity: result.internetIdentity,
+        })
+        initUserGeek(await agent.getPrincipal())
+        im.use_access_point()
         setShouldStoreLocalAccount(false)
         setError(null)
       }
@@ -152,25 +174,29 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [
-      initUserGeek,
-      setActors,
-      setError,
-      setIsLoading,
-      setShouldStoreLocalAccount,
-    ],
+    [initUserGeek, setUser, setError, setIsLoading, setShouldStoreLocalAccount],
+  )
+
+  const loginWithGoogleDevice = React.useCallback(
+    async (identity: string) => {
+      const result = await IIConnection.loginfromGoogleDevice(identity)
+      setUser({
+        principal: (await agent.getPrincipal()).toText(),
+        chain: result.chain,
+        sessionKey: result.sessionKey,
+        internetIdentity: result.internetIdentity,
+      })
+      initUserGeek(await agent.getPrincipal())
+      im.use_access_point()
+      setShouldStoreLocalAccount(false)
+      setError(null)
+    },
+    [initUserGeek, setError, setShouldStoreLocalAccount, setUser],
   )
 
   return {
     isLoading,
-    principalId,
-    isAuthenticated,
-    chain: actors?.chain,
-    sessionKey: actors?.sessionKey,
-    internetIdentity: actors?.internetIdentity,
-    identityManager: actors?.identityManager,
-    pubsubChannel: actors?.pubsubChannelActor,
-    imAddition: actors?.imAdditionActor,
+    user,
     error,
     shouldStoreLocalAccount,
     setShouldStoreLocalAccount,
@@ -180,5 +206,6 @@ export const useAuthentication = () => {
     logout,
     onRegisterSuccess,
     loginWithRecovery,
+    loginWithGoogleDevice,
   }
 }

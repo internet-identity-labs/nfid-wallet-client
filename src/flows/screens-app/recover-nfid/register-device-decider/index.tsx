@@ -9,6 +9,7 @@ import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-un
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { im } from 'frontend/api/actors'
 
 interface AppScreenRegisterDeviceDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -22,7 +23,7 @@ export const RouterRegisterDeviceDecider: React.FC<
   const { recoverDevice, createSecurityDevice } = useDevices()
   const { readAccount, recoverAccount, createAccount } = useAccount()
   const { getPersona } = usePersona()
-  const { identityManager, internetIdentity } = useAuthentication()
+  const { user } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
 
   const {
@@ -45,15 +46,14 @@ export const RouterRegisterDeviceDecider: React.FC<
 
     if (response?.status_code === 404) {
       console.warn("account not found. Recreating")
-      if (!identityManager) throw new Error("identityManager is missing")
       await createAccount({ anchor: userNumber })
 
       // attach the current identity as access point
       const pub_key = Array.from(
-        internetIdentity?.delegationIdentity.getPublicKey().toDer() ?? [],
+        new Uint8Array(user?.internetIdentity.delegationIdentity.getPublicKey().toDer() ?? []),
       )
       const createAccessPointResponse =
-        await identityManager.create_access_point({
+        await im.create_access_point({
           icon: "laptop",
           device: deviceName,
           browser: browserName || "My Computer",
@@ -75,8 +75,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     deviceName,
     generatePath,
     getPersona,
-    identityManager,
-    internetIdentity?.delegationIdentity,
+    user,
     navigate,
     recoverAccount,
     recoverDevice,

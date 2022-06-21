@@ -37,35 +37,12 @@ export const RemoteRegisterAccountRoutes = (
       element={
         <RouteRegisterAccountIntro
           captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}
+          pathAuthorizeApp={"/rdp/:secret/:scope"}
         />
       }
     />
     <Route
       path={RemoteRegisterAccountConstants.captcha}
-      element={<RegisterAccountCaptcha isRemoteRegistration />}
-    />
-  </Route>
-)
-
-export const NFIDRegisterAccountConstants = {
-  base: "/register-account",
-  account: "intro",
-  captcha: "captcha",
-  copyRecoveryPhrase: "copy-recovery-phrase",
-}
-
-export const NFIDRegisterAccountRoutes = (
-  <Route path={NFIDRegisterAccountConstants.base} element={<ChallengeLoader />}>
-    <Route
-      path={NFIDRegisterAccountConstants.account}
-      element={
-        <RouteRegisterAccountIntro
-          captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
-        />
-      }
-    />
-    <Route
-      path={NFIDRegisterAccountConstants.captcha}
       element={<RegisterAccountCaptcha />}
     />
   </Route>

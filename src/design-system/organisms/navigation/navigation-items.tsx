@@ -19,10 +19,10 @@ import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 
-interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
-  const { isAuthenticated } = useAuthentication()
+  const { user } = useAuthentication()
   const { account } = useAccount()
   const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
@@ -119,7 +119,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   </a>
                 ))}
               </div>
-              {isAuthenticated || account ? (
+              {user || account ? (
                 <PopupLogin menu />
               ) : (
                 <div className="flex flex-wrap justify-center">
@@ -169,7 +169,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           ))}
         </Scrollspy>
         <div className="relative" ref={popupRef}>
-          {isAuthenticated || account ? (
+          {user || account ? (
             <div
               className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
               onClick={() => setIsPopupVisible(!isPopupVisible)}

@@ -3,8 +3,13 @@ import { useForm } from "react-hook-form"
 
 import { ApplicationLogo } from "frontend/design-system/atoms/application-logo"
 import { IconButton } from "frontend/design-system/atoms/button/icon-button"
+import {
+  LoginEventHandler,
+  SignInWithGoogle,
+} from "frontend/design-system/atoms/button/signin-with-google"
 import TouchId from "frontend/design-system/atoms/icons/touch-id.svg"
 import { Input } from "frontend/design-system/atoms/input"
+import { Separator } from "frontend/design-system/atoms/separator"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
@@ -18,6 +23,7 @@ export interface AuthorizeAppUnknownDeviceProps {
   onSelectSameDeviceRegistration: () => Promise<void> | void
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
+  onSelectGoogleAuthorization: LoginEventHandler
   onToggleAdvancedOptions: () => void
   authError?: string
   isLoading?: boolean
@@ -31,6 +37,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   onSelectSameDeviceRegistration,
   onSelectSameDeviceAuthorization,
   onSelectSecurityKeyAuthorization,
+  onSelectGoogleAuthorization,
   onToggleAdvancedOptions,
   applicationName,
   applicationLogo,
@@ -38,6 +45,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   isLoading,
   authError,
 }) => {
+  const containerRef = React.useRef<HTMLDivElement | null>(null)
   const {
     register,
     handleSubmit,
@@ -80,7 +88,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
       )}
       <H5>Sign in</H5>
       <p className="mt-3 text-center">
-        Choose how you’d like to sign in to {applicationName}
+        Choose how you'd like to sign in to {applicationName}
       </p>
       {showAdvancedOptions && (
         <Input
@@ -100,7 +108,15 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           })}
         />
       )}
-      <div className="flex flex-col w-full mt-8 space-y-1">
+
+      <div
+        className="flex flex-col items-center w-full mt-8 space-y-1"
+        ref={containerRef}
+      >
+        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+
+        <Separator className="max-w-[400px]" />
+
         {showAdvancedOptions ? (
           <>
             <IconButton
@@ -124,8 +140,9 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             onClick={onSelectRemoteAuthorization}
           />
         )}
+
         <p
-          className="pt-4 text-sm text-center cursor-pointer text-blue-base"
+          className="py-4 text-sm text-center cursor-pointer text-blue-base"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

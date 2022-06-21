@@ -1,10 +1,8 @@
-import { Actor, ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
 import {
-  BinaryBlob,
-  blobFromUint8Array,
-  derBlobFromBlob,
-  DerEncodedBlob,
-} from "@dfinity/candid"
+  ActorSubclass,
+  DerEncodedPublicKey,
+  SignIdentity,
+} from "@dfinity/agent"
 import {
   DelegationChain,
   DelegationIdentity,
@@ -13,19 +11,17 @@ import {
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
+import { arrayBufferEqual } from "ictool/dist/bits"
 import * as tweetnacl from "tweetnacl"
 
-import { _SERVICE as IdentityManagerService } from "frontend/services/identity-manager/identity_manager.did"
-import { idlFactory as IdentityManagerIdlFactory } from "frontend/services/identity-manager/identity_manager_idl"
-import { _SERVICE as ImAdditionService } from "frontend/services/iiw/im_addition.did"
-import { idlFactory as ImAdditionIdlFactory } from "frontend/services/iiw/im_addition_idl"
-import { _SERVICE as PubsubChannelService } from "frontend/services/pub-sub-channel/pub_sub_channel.did"
-import { idlFactory as PubsubChannelIdlFactory } from "frontend/services/pub-sub-channel/pub_sub_channel_idl"
-
-import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
-import { idlFactory as internet_identity_idl } from "./generated/internet_identity_idl"
 import {
-  _SERVICE,
+  accessList,
+  ii,
+  InternetIdentity,
+  invalidateIdentity,
+  replaceIdentity,
+} from "frontend/api/actors"
+import {
   PublicKey,
   SessionKey,
   CredentialId,
@@ -40,45 +36,14 @@ import {
   KeyType,
   DeviceKey,
   ChallengeResult,
-} from "./generated/internet_identity_types"
+} from "frontend/api/idl/internet_identity_types"
+
+import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { hasOwnProperty } from "./utils"
 
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
 const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
-
-declare const II_ENV: string
-declare const IC_HOST: string
-declare const INTERNET_IDENTITY_CANISTER_ID: string
-declare const IDENTITY_MANAGER_CANISTER_ID: string
-declare const PUB_SUB_CHANNEL_CANISTER_ID: string
-declare const IM_ADDITION_CANISTER_ID: string
-
-if (!INTERNET_IDENTITY_CANISTER_ID)
-  throw new Error(
-    "you need to add INTERNET_IDENTITY_CANISTER_ID to your environment",
-  )
-
-const getAgent = () => {
-  const agent = new HttpAgent({
-    host: IC_HOST,
-  })
-
-  // Only fetch the root key when we're not in prod
-  if (II_ENV === "development") {
-    agent.fetchRootKey()
-  }
-  return agent
-}
-
-export const canisterIdPrincipal: Principal = Principal.fromText(
-  INTERNET_IDENTITY_CANISTER_ID,
-)
-
-export const baseActor = Actor.createActor<_SERVICE>(internet_identity_idl, {
-  agent: getAgent(),
-  canisterId: INTERNET_IDENTITY_CANISTER_ID,
-})
 
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
@@ -101,9 +66,6 @@ type LoginSuccess = {
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
   internetIdentity: IIConnection
-  identityManager: ActorSubclass<IdentityManagerService>
-  pubsubChannelActor: ActorSubclass<PubsubChannelService>
-  imAdditionActor: ActorSubclass<ImAdditionService>
   userNumber: bigint
 }
 
@@ -114,13 +76,13 @@ type ApiError = { kind: "apiError"; error: Error }
 type RegisterNoSpace = { kind: "registerNoSpace" }
 type SeedPhraseFail = { kind: "seedPhraseFail" }
 
-export type { ChallengeResult } from "./generated/internet_identity_types"
+export type { ChallengeResult } from "frontend/api/idl/internet_identity_types"
 
 export class IIConnection {
   protected constructor(
     public identity: SignIdentity,
     public delegationIdentity: DelegationIdentity,
-    public actor?: ActorSubclass<_SERVICE>,
+    public actor?: ActorSubclass<InternetIdentity>,
   ) {}
 
   static async register(
@@ -132,6 +94,7 @@ export class IIConnection {
     try {
       delegation = await requestFEDelegation(identity)
     } catch (error: unknown) {
+      console.error(`Error when requesting delegation`, error)
       if (error instanceof Error) {
         return { kind: "authFail", error }
       } else {
@@ -142,13 +105,14 @@ export class IIConnection {
       }
     }
 
-    const actor = await IIConnection.createActor(delegation.delegationIdentity)
-    const credential_id = Array.from(identity.rawId)
-    const pubkey = Array.from(identity.getPublicKey().toDer())
+    const credential_id = Array.from(new Uint8Array(identity.rawId))
+    const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
+
+    replaceIdentity(delegation.delegationIdentity)
 
     let registerResponse: RegisterResponse
     try {
-      registerResponse = await actor.register(
+      registerResponse = await ii.register(
         {
           alias,
           pubkey,
@@ -159,6 +123,7 @@ export class IIConnection {
         challengeResult,
       )
     } catch (error: unknown) {
+      console.error(`Error when registering`, error)
       if (error instanceof Error) {
         return { kind: "apiError", error }
       } else {
@@ -174,6 +139,7 @@ export class IIConnection {
     } else if (hasOwnProperty(registerResponse, "registered")) {
       const userNumber = registerResponse["registered"].user_number
       console.log(`registered Identity Anchor ${userNumber}`)
+      replaceIdentity(delegation.delegationIdentity)
       return {
         kind: "loginSuccess",
         chain: delegation.chain,
@@ -181,22 +147,81 @@ export class IIConnection {
         internetIdentity: new IIConnection(
           identity,
           delegation.delegationIdentity,
-          actor,
+          ii,
         ),
-        identityManager: await this.createServiceActor<IdentityManagerService>(
+        userNumber,
+      }
+    } else if (hasOwnProperty(registerResponse, "bad_challenge")) {
+      return { kind: "badChallenge" }
+    } else {
+      console.error("unexpected register response", registerResponse)
+      throw Error("unexpected register response")
+    }
+  }
+
+  static async registerFromGoogle(
+    jsonIdentity: string,
+    alias: string,
+    challengeResult: ChallengeResult,
+  ): Promise<RegisterResult> {
+    let delegation: FrontendDelegation
+    const identity = Ed25519KeyIdentity.fromJSON(jsonIdentity)
+    try {
+      delegation = await requestFEDelegation(identity)
+    } catch (error: unknown) {
+      console.error(`Error when requesting delegation`, error)
+      if (error instanceof Error) {
+        return { kind: "authFail", error }
+      } else {
+        return {
+          kind: "authFail",
+          error: new Error("Unknown error when requesting delegation"),
+        }
+      }
+    }
+
+    const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
+
+    replaceIdentity(delegation.delegationIdentity)
+
+    let registerResponse: RegisterResponse
+    try {
+      registerResponse = await ii.register(
+        {
+          alias,
+          pubkey,
+          credential_id: [],
+          key_type: { unknown: null },
+          purpose: { authentication: null },
+        },
+        challengeResult,
+      )
+    } catch (error: unknown) {
+      console.error(`Error when registering`, error)
+      if (error instanceof Error) {
+        return { kind: "apiError", error }
+      } else {
+        return {
+          kind: "apiError",
+          error: new Error("Unknown error when registering"),
+        }
+      }
+    }
+
+    if (hasOwnProperty(registerResponse, "canister_full")) {
+      return { kind: "registerNoSpace" }
+    } else if (hasOwnProperty(registerResponse, "registered")) {
+      const userNumber = registerResponse["registered"].user_number
+      console.log(`registered Identity Anchor ${userNumber}`)
+      replaceIdentity(delegation.delegationIdentity)
+      return {
+        kind: "loginSuccess",
+        chain: delegation.chain,
+        sessionKey: delegation.sessionKey,
+        internetIdentity: new IIConnection(
+          identity,
           delegation.delegationIdentity,
-          IdentityManagerIdlFactory,
-          IDENTITY_MANAGER_CANISTER_ID,
-        ),
-        pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
-          delegation.delegationIdentity,
-          PubsubChannelIdlFactory,
-          PUB_SUB_CHANNEL_CANISTER_ID,
-        ),
-        imAdditionActor: await this.createServiceActor<ImAdditionService>(
-          delegation.delegationIdentity,
-          ImAdditionIdlFactory,
-          IM_ADDITION_CANISTER_ID,
+          ii,
         ),
         userNumber,
       }
@@ -216,6 +241,7 @@ export class IIConnection {
     try {
       devices = await this.lookupAuthenticators(userNumber, withSecurityDevices)
     } catch (e: unknown) {
+      console.error(`Error when looking up authenticators`, e)
       if (e instanceof Error) {
         return { kind: "apiError", error: e }
       } else {
@@ -250,10 +276,11 @@ export class IIConnection {
       sessionKey,
       chain,
     )
-    const actor = await IIConnection.createActor(delegationIdentity)
 
     const devices = await IIConnection.lookupAuthenticators(userNumber)
     const multiIdent = getMultiIdent(devices)
+
+    replaceIdentity(delegationIdentity)
 
     return {
       kind: "loginSuccess",
@@ -264,22 +291,7 @@ export class IIConnection {
         // eslint-disable-next-line
         multiIdent._actualIdentity!,
         delegationIdentity,
-        actor,
-      ),
-      identityManager: await this.createServiceActor<IdentityManagerService>(
-        delegationIdentity,
-        IdentityManagerIdlFactory,
-        IDENTITY_MANAGER_CANISTER_ID,
-      ),
-      pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
-        delegationIdentity,
-        PubsubChannelIdlFactory,
-        PUB_SUB_CHANNEL_CANISTER_ID,
-      ),
-      imAdditionActor: await this.createServiceActor<ImAdditionService>(
-        delegationIdentity,
-        ImAdditionIdlFactory,
-        IM_ADDITION_CANISTER_ID,
+        ii,
       ),
     }
   }
@@ -295,6 +307,7 @@ export class IIConnection {
     try {
       delegationIdentity = await requestFEDelegation(multiIdent)
     } catch (e: unknown) {
+      console.error(`Error when requesting delegation`, e)
       if (e instanceof Error) {
         return { kind: "authFail", error: e }
       } else {
@@ -305,9 +318,7 @@ export class IIConnection {
       }
     }
 
-    const actor = await IIConnection.createActor(
-      delegationIdentity.delegationIdentity,
-    )
+    replaceIdentity(delegationIdentity.delegationIdentity)
 
     return {
       kind: "loginSuccess",
@@ -318,22 +329,7 @@ export class IIConnection {
         // eslint-disable-next-line
         multiIdent._actualIdentity!,
         delegationIdentity.delegationIdentity,
-        actor,
-      ),
-      identityManager: await this.createServiceActor<IdentityManagerService>(
-        delegationIdentity.delegationIdentity,
-        IdentityManagerIdlFactory,
-        IDENTITY_MANAGER_CANISTER_ID,
-      ),
-      pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
-        delegationIdentity.delegationIdentity,
-        PubsubChannelIdlFactory,
-        PUB_SUB_CHANNEL_CANISTER_ID,
-      ),
-      imAdditionActor: await this.createServiceActor<ImAdditionService>(
-        delegationIdentity.delegationIdentity,
-        ImAdditionIdlFactory,
-        IM_ADDITION_CANISTER_ID,
+        ii,
       ),
     }
   }
@@ -348,16 +344,18 @@ export class IIConnection {
       IC_DERIVATION_PATH,
     )
     if (
-      !identity.getPublicKey().toDer().equals(derFromPubkey(expected.pubkey))
+      !arrayBufferEqual(
+        identity.getPublicKey().toDer(),
+        derFromPubkey(expected.pubkey),
+      )
     ) {
       return {
         kind: "seedPhraseFail",
       }
     }
     const delegationIdentity = await requestFEDelegation(identity)
-    const actor = await IIConnection.createActor(
-      delegationIdentity.delegationIdentity,
-    )
+
+    replaceIdentity(delegationIdentity.delegationIdentity)
 
     return {
       kind: "loginSuccess",
@@ -367,33 +365,38 @@ export class IIConnection {
       internetIdentity: new IIConnection(
         identity,
         delegationIdentity.delegationIdentity,
-        actor,
+        ii,
       ),
-      identityManager: await this.createServiceActor<IdentityManagerService>(
+    }
+  }
+
+  static async loginfromGoogleDevice(identity: string): Promise<{
+    chain: DelegationChain
+    sessionKey: Ed25519KeyIdentity
+    internetIdentity: IIConnection
+  }> {
+    const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
+    const delegationIdentity = await requestFEDelegation(googleIdentity)
+
+    replaceIdentity(delegationIdentity.delegationIdentity)
+    // return googleIdentity
+    return {
+      chain: delegationIdentity.chain,
+      sessionKey: delegationIdentity.sessionKey,
+      internetIdentity: new IIConnection(
+        googleIdentity,
         delegationIdentity.delegationIdentity,
-        IdentityManagerIdlFactory,
-        IDENTITY_MANAGER_CANISTER_ID,
-      ),
-      pubsubChannelActor: await this.createServiceActor<PubsubChannelService>(
-        delegationIdentity.delegationIdentity,
-        PubsubChannelIdlFactory,
-        PUB_SUB_CHANNEL_CANISTER_ID,
-      ),
-      imAdditionActor: await this.createServiceActor<ImAdditionService>(
-        delegationIdentity.delegationIdentity,
-        ImAdditionIdlFactory,
-        IM_ADDITION_CANISTER_ID,
+        ii,
       ),
     }
   }
 
   static async lookupAll(userNumber: UserNumber): Promise<DeviceData[]> {
-    return await baseActor.lookup(userNumber)
+    return await ii.lookup(userNumber)
   }
 
   static async createChallenge(): Promise<Challenge> {
-    const actor = await this.createActor()
-    const challenge = await actor.create_challenge()
+    const challenge = await ii.create_challenge()
     return challenge
   }
 
@@ -401,7 +404,7 @@ export class IIConnection {
     userNumber: UserNumber,
     withSecurityDevices?: boolean,
   ): Promise<DeviceData[]> {
-    const allDevices = await baseActor.lookup(userNumber)
+    const allDevices = await ii.lookup(userNumber)
 
     return allDevices.filter((device) =>
       withSecurityDevices
@@ -411,59 +414,18 @@ export class IIConnection {
   }
 
   static async lookupRecovery(userNumber: UserNumber): Promise<DeviceData[]> {
-    const allDevices = await baseActor.lookup(userNumber)
+    const allDevices = await ii.lookup(userNumber)
     return allDevices.filter((device) =>
       hasOwnProperty(device.purpose, "recovery"),
     )
   }
 
-  // Create an actor representing the backend
-  static async createActor(
-    delegationIdentity?: DelegationIdentity,
-  ): Promise<ActorSubclass<_SERVICE>> {
-    const agent = new HttpAgent({
-      host: IC_HOST,
-      identity: delegationIdentity,
-    })
-
-    // Only fetch the root key when we're not in prod
-    if (II_ENV === "development") {
-      await agent.fetchRootKey()
-    }
-    const actor = Actor.createActor<_SERVICE>(internet_identity_idl, {
-      agent,
-      canisterId: INTERNET_IDENTITY_CANISTER_ID,
-    })
-    return actor
-  }
-
-  static async createServiceActor<T>(
-    delegationIdentity: DelegationIdentity,
-    factory: any,
-    INTERNET_IDENTITY_CANISTER_ID: string,
-  ): Promise<ActorSubclass<T>> {
-    const agent = new HttpAgent({
-      host: IC_HOST,
-      identity: delegationIdentity,
-    })
-
-    // Only fetch the root key when we're not in prod
-    if (II_ENV === "development") {
-      await agent.fetchRootKey()
-    }
-    const actor = Actor.createActor<T>(factory, {
-      agent,
-      canisterId: INTERNET_IDENTITY_CANISTER_ID,
-    })
-    return actor
-  }
-
-  async getActor(): Promise<ActorSubclass<_SERVICE>> {
+  async renewDelegation() {
     for (const { delegation } of this.delegationIdentity.getDelegation()
       .delegations) {
       // prettier-ignore
       if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
-        this.actor = undefined;
+        invalidateIdentity();
         break;
       }
     }
@@ -473,10 +435,8 @@ export class IIConnection {
       this.delegationIdentity = (
         await requestFEDelegation(this.identity)
       ).delegationIdentity
-      this.actor = await IIConnection.createActor(this.delegationIdentity)
+      replaceIdentity(this.delegationIdentity)
     }
-
-    return this.actor
   }
 
   async getRemoteFEDelegation(): Promise<any> {
@@ -495,14 +455,16 @@ export class IIConnection {
     alias: string,
     keyType: KeyType,
     purpose: Purpose,
-    newPublicKey: DerEncodedBlob,
-    credentialId?: BinaryBlob,
+    newPublicKey: DerEncodedPublicKey,
+    credentialId?: ArrayBuffer,
   ): Promise<void> => {
-    const actor = await this.getActor()
-    return await actor.add(userNumber, {
+    await this.renewDelegation()
+    return await ii.add(userNumber, {
       alias,
-      pubkey: Array.from(newPublicKey),
-      credential_id: credentialId ? [Array.from(credentialId)] : [],
+      pubkey: Array.from(new Uint8Array(newPublicKey)),
+      credential_id: credentialId
+        ? [Array.from(new Uint8Array(credentialId))]
+        : [],
       key_type: keyType,
       purpose,
     })
@@ -512,16 +474,16 @@ export class IIConnection {
     userNumber: UserNumber,
     publicKey: PublicKey,
   ): Promise<void> => {
-    const actor = await this.getActor()
-    await actor.remove(userNumber, publicKey)
+    await this.renewDelegation()
+    await ii.remove(userNumber, publicKey)
   }
 
   getPrincipal = async (
     userNumber: UserNumber,
     frontend: FrontendHostname,
   ): Promise<Principal> => {
-    const actor = await this.getActor()
-    return await actor.get_principal(userNumber, frontend)
+    await this.renewDelegation()
+    return await ii.get_principal(userNumber, frontend)
   }
 
   prepareDelegation = async (
@@ -533,8 +495,8 @@ export class IIConnection {
     console.log(
       `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
     )
-    const actor = await this.getActor()
-    return await actor.prepare_delegation(
+    await this.renewDelegation()
+    return await ii.prepare_delegation(
       userNumber,
       hostname,
       sessionKey,
@@ -551,13 +513,8 @@ export class IIConnection {
     console.log(
       `get_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey}, timestamp: ${timestamp})`,
     )
-    const actor = await this.getActor()
-    return await actor.get_delegation(
-      userNumber,
-      hostname,
-      sessionKey,
-      timestamp,
-    )
+    await this.renewDelegation()
+    return await ii.get_delegation(userNumber, hostname, sessionKey, timestamp)
   }
 }
 
@@ -590,12 +547,7 @@ const requestFEDelegationChain = async (
     sessionKey.getPublicKey(),
     new Date(Date.now() + ttl),
     {
-      targets: [
-        Principal.from(INTERNET_IDENTITY_CANISTER_ID),
-        Principal.from(IDENTITY_MANAGER_CANISTER_ID),
-        Principal.from(PUB_SUB_CHANNEL_CANISTER_ID),
-        Principal.from(IM_ADDITION_CANISTER_ID),
-      ],
+      targets: accessList.map((x) => Principal.fromText(x)),
     },
   )
 
@@ -660,9 +612,6 @@ export const creationOptions = (
   }
 }
 
-export const derFromPubkey = (pubkey: DeviceKey): DerEncodedBlob =>
-  derBlobFromBlob(blobFromUint8Array(Buffer.from(pubkey)))
-
 const getMultiIdent = (
   devices: DeviceData[],
   withSecurityDevices?: boolean,
@@ -671,9 +620,12 @@ const getMultiIdent = (
     devices.flatMap((device) =>
       device.credential_id.map((credentialId: CredentialId) => ({
         pubkey: derFromPubkey(device.pubkey),
-        credentialId: blobFromUint8Array(Buffer.from(credentialId)),
+        credentialId: Buffer.from(credentialId),
       })),
     ),
     withSecurityDevices,
   )
 }
+
+export const derFromPubkey = (pubkey: DeviceKey): DerEncodedPublicKey =>
+  new Uint8Array(pubkey).buffer as DerEncodedPublicKey

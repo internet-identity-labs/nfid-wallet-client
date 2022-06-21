@@ -2,7 +2,7 @@ import { useAtom } from "jotai"
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
+import { im } from "frontend/api/actors"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -14,7 +14,6 @@ export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
   const { scope } = useParams()
   const { isLoading } = useIsLoading()
-  const { identityManager: personaService } = useAuthentication()
   const { authorizationRequest } = useAuthorization()
   const { account } = useAccount()
 
@@ -39,16 +38,15 @@ export const usePersona = () => {
   }, [allAccounts, authorizationRequest?.hostname, scope])
 
   const nextPersonaId = React.useMemo(() => {
-    const highest = allAccounts.reduce((last, persona) => {
+    const highest = accounts.reduce((last, persona) => {
       const current = parseInt(persona.persona_id, 10)
       return last < current ? current : last
     }, 0)
     return `${highest + 1}`
-  }, [allAccounts])
+  }, [accounts])
 
   const getPersona = React.useCallback(async () => {
-    if (!personaService) return
-    const response = await personaService.read_personas()
+    const response = await im.read_personas()
 
     if (response.status_code === 200) {
       setPersonas(response.data[0])
@@ -56,27 +54,25 @@ export const usePersona = () => {
     // NOTE: this is only for dev purposes
     if (response.status_code === 404 && account?.anchor) {
       const anchor = BigInt(account?.anchor)
-      await personaService.create_account({
+      await im.create_account({
         anchor,
       })
 
       getPersona()
     }
-  }, [account?.anchor, personaService, setPersonas])
+  }, [account?.anchor, setPersonas])
 
   const createPersona = React.useCallback(
     async ({ domain }) => {
-      if (!account) throw new Error('"account" is required')
-
       const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
-      const response = await personaService?.create_persona(persona)
+      const response = await im.create_persona(persona)
 
       if (response?.status_code === 200) {
         setPersonas(response.data[0]?.personas)
       }
       return response
     },
-    [account, nextPersonaId, personaService, setPersonas],
+    [nextPersonaId, setPersonas],
   )
 
   return {

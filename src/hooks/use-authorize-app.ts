@@ -1,10 +1,11 @@
-import { blobFromHex, blobFromUint8Array } from "@dfinity/candid"
+import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
 
+import { PublicKey } from "frontend/api/idl/internet_identity_types"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
-import { PublicKey } from "frontend/services/internet-identity/generated/internet_identity_types"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/services/pub-sub-channel/use-pub-sub-channel"
 
@@ -26,16 +27,18 @@ type RemoteLoginMessage = {
 // Alias: useRegisterDevicePrompt
 export const useAuthorizeApp = () => {
   const { userNumber } = useAccount()
-  const { internetIdentity, chain, sessionKey } = useAuthentication()
+  const { user } = useAuthentication()
   const { createTopic, postMessages } = usePubSubChannel()
 
   const createRemoteDelegate = React.useCallback(
-    async (secret: string, scope: string, connection: IIConnection) => {
-      if (!userNumber) {
-        throw new Error("Device not registered")
-      }
-      const blobReverse = blobFromHex(secret)
-      const sessionKey = Array.from(blobFromUint8Array(blobReverse))
+    async (
+      secret: string,
+      scope: string,
+      connection: IIConnection,
+      userNumber: bigint,
+    ) => {
+      const blobReverse = fromHexString(secret)
+      const sessionKey = Array.from(new Uint8Array(blobReverse))
       const prepRes = await connection.prepareDelegation(
         userNumber,
         scope,
@@ -69,7 +72,7 @@ export const useAuthorizeApp = () => {
       }
       return parsedSignedDelegation
     },
-    [userNumber],
+    [],
   )
 
   const remoteLogin = React.useCallback(
@@ -77,16 +80,22 @@ export const useAuthorizeApp = () => {
       secret,
       scope: hostname,
       persona_id,
+      connection,
+      userNumberOverwrite,
+      chain,
+      sessionKey,
     }: {
       secret: string
       scope: string
       persona_id: string
+      connection: IIConnection
+      chain: DelegationChain
+      sessionKey: Ed25519KeyIdentity
+      userNumberOverwrite?: bigint
     }) => {
-      if (!userNumber) {
-        throw new Error("Device not registered")
-      }
-      if (!internetIdentity) {
-        throw new Error("Unauthorized")
+      const anchor = userNumber || userNumberOverwrite
+      if (!anchor) {
+        throw new Error("userNumber missing")
       }
 
       const protocol = FRONTEND_MODE === "production" ? "https" : "http"
@@ -98,12 +107,13 @@ export const useAuthorizeApp = () => {
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,
         scope,
-        internetIdentity,
+        connection,
+        anchor,
       )
 
       const message = JSON.stringify({
         type: "remote-login-register",
-        userNumber: userNumber.toString(),
+        userNumber: anchor.toString(),
         nfid: { chain, sessionKey },
         ...parsedSignedDelegation,
       })
@@ -112,32 +122,32 @@ export const useAuthorizeApp = () => {
 
       return response
     },
-    [
-      userNumber,
-      internetIdentity,
-      createRemoteDelegate,
-      chain,
-      sessionKey,
-      postMessages,
-    ],
+    [userNumber, createRemoteDelegate, postMessages],
   )
 
   const remoteNFIDLogin = React.useCallback(
-    async ({ secret }: { secret: string }) => {
-      if (!userNumber) {
-        throw new Error("Device not registered")
+    async ({
+      secret,
+      userNumberOverwrite,
+    }: {
+      secret: string
+      userNumberOverwrite?: bigint
+    }) => {
+      const anchor = userNumber || userNumberOverwrite
+      if (!anchor) {
+        throw new Error("userNumber missing")
       }
       const message = JSON.stringify({
         type: "remote-nfid-login-register",
-        userNumber: userNumber.toString(),
-        nfid: { chain, sessionKey },
+        userNumber: anchor.toString(),
+        nfid: { chain: user?.chain, sessionKey: user?.sessionKey },
       })
 
       const response = await postMessages(secret, [message])
 
       return response
     },
-    [chain, postMessages, sessionKey, userNumber],
+    [user, postMessages, userNumber],
   )
 
   const sendWaitForUserInput = React.useCallback(

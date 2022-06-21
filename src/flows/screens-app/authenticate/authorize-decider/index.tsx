@@ -1,11 +1,14 @@
 import React from "react"
 
+import { GoogleCredential } from "frontend/design-system/atoms/button/signin-with-google"
+
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { AuthorizeDecider } from "frontend/screens/authorize-decider"
 import { useChallenge } from "frontend/screens/captcha/hook"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface AuthorizeDeciderProps {
@@ -29,10 +32,11 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     (state) => !state,
     false,
   )
-  const { isAuthenticated, login, setShouldStoreLocalAccount } =
+  const { user, login, setShouldStoreLocalAccount, loginWithGoogleDevice } =
     useAuthentication()
+  const { getGoolgeDevice } = useDevices()
   const { getPersona } = usePersona()
-  const { readAccount } = useAccount()
+  const { readAccount, readMemoryAccount } = useAccount()
   const { getChallenge } = useChallenge()
 
   const { navigateFactory, navigate } = useNFIDNavigate()
@@ -66,17 +70,59 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     setIsLoading(false)
   }, [createWebAuthNIdentity, getChallenge, navigate, pathCaptcha])
 
+  const handleGetGoogleKey = React.useCallback(
+    async ({ credential }: GoogleCredential) => {
+      getChallenge()
+      setIsLoading(true)
+      const response = await getGoolgeDevice({ token: credential })
+
+      console.log(">> handleGetGoogleKey", { response })
+
+      // Given: user is returning (response.is_existing)
+      // Then: we need to authenticate with the google device
+      // And: navigate to the authorize app screen
+      if (response.is_existing) {
+        await loginWithGoogleDevice(response.identity)
+        await readMemoryAccount()
+        return navigate(pathAuthorizeApp)
+      }
+
+      // Given: user new
+      // Then: we need to navigate to captcha screen
+      // And: register a new account
+      navigate(pathCaptcha, {
+        state: {
+          registerPayload: {
+            isGoogle: true,
+            identity: response.identity,
+            deviceName: "Google account",
+          },
+        },
+      })
+      setIsLoading(false)
+    },
+    [
+      getChallenge,
+      getGoolgeDevice,
+      loginWithGoogleDevice,
+      navigate,
+      pathAuthorizeApp,
+      pathCaptcha,
+      readMemoryAccount,
+    ],
+  )
+
   // TODO: we need to find a better way to store the actors.
   // This is because we currently store them with a setState on jotai atom.
   // And this means when we await the login response and call the readAccount
   // or getPersona directly within the same handler, the actors will be undefined.
   React.useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       readAccount()
       getPersona()
       navigate(pathAuthorizeApp)
     }
-  }, [getPersona, isAuthenticated, navigate, pathAuthorizeApp, readAccount])
+  }, [getPersona, user, navigate, pathAuthorizeApp, readAccount])
 
   return (
     <AuthorizeDecider
@@ -91,6 +137,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       onSelectSecurityKeyAuthorization={handleAuthorization({
         withSecurityDevices: true,
       })}
+      onSelectGoogleAuthorization={handleGetGoogleKey}
       onToggleAdvancedOptions={toggleAdvancedOptions}
       showAdvancedOptions={showAdvancedOptions}
       authError={authError}

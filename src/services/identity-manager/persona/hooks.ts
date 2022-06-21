@@ -38,12 +38,12 @@ export const usePersona = () => {
   }, [allAccounts, authorizationRequest?.hostname, scope])
 
   const nextPersonaId = React.useMemo(() => {
-    const highest = allAccounts.reduce((last, persona) => {
+    const highest = accounts.reduce((last, persona) => {
       const current = parseInt(persona.persona_id, 10)
       return last < current ? current : last
     }, 0)
     return `${highest + 1}`
-  }, [allAccounts])
+  }, [accounts])
 
   const getPersona = React.useCallback(async () => {
     const response = await im.read_personas()

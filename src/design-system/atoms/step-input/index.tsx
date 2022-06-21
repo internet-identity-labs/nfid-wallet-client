@@ -136,8 +136,9 @@ export const StepInput: React.FC<StepInputProps> = ({
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button
-        secondary
-        className="px-10 sm:mt-5"
+        primary
+        block
+        className="px-10 my-3 sm:my-5"
         onClick={() => {
           validateToken()
           handleSubmit()

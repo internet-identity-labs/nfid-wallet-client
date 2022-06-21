@@ -8,8 +8,9 @@ import "./styles.css"
 
 export type LoginEventHandler = ({ credential }: GoogleCredential) => void
 
-const GOOGLE_CLIENT_ID: string =
-  "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com"
+declare const GOOGLE_CLIENT_ID: string
+
+if (!GOOGLE_CLIENT_ID) throw new Error("GOOGLE_CLIENT_ID is not defined")
 
 declare global {
   interface Window {

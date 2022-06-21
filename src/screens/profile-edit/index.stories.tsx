@@ -49,6 +49,7 @@ export const EditPhone = TemplateEditPhone.bind({
 export const EditPhoneSms = TemplateSMS.bind({
   account: { anchor: "10005", name: "Test Account", phone: "" },
   onResendCode: () => console.log("resend"),
+  phone: "+380977118615",
 })
 
 // More on interaction testing: https://storybook.js.org/docs/react/writing-tests/interaction-testing

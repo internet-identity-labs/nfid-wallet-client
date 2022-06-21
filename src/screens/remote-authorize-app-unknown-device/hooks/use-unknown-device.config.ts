@@ -1,5 +1,5 @@
 import { PublicKey } from "@dfinity/agent"
-import { blobFromUint8Array, blobToHex } from "@dfinity/candid"
+import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"
 import React, { useEffect } from "react"
@@ -87,7 +87,7 @@ export const useUnknownDeviceConfig = () => {
   const { createDevice, createWebAuthNDevice } = useDevices()
   const { applicationName, applicationLogo } = useMultipass()
   const { getMessages } = usePubSubChannel()
-  const { remoteLogin: setAuthenticatedActors } = useAuthentication()
+  const { remoteLogin } = useAuthentication()
   const { readAccount } = useAccount()
   const { getPersona } = usePersona()
 
@@ -108,10 +108,10 @@ export const useUnknownDeviceConfig = () => {
   const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({
       messageHandler: {
-        "authorize-client": (event: any) => {
+        "authorize-client": async (event: any) => {
           const { sessionPublicKey } = event.data
-          const blog = blobFromUint8Array(sessionPublicKey)
-          const hex = blobToHex(blog)
+          const blob = new Blob([sessionPublicKey])
+          const hex = toHexString(await blob.arrayBuffer())
 
           setAppWindow(event.source)
           setPubKey(hex)
@@ -196,12 +196,12 @@ export const useUnknownDeviceConfig = () => {
       const result = apiResultToLoginResult(loginResult)
 
       if (result.tag === "ok") {
-        setAuthenticatedActors(result)
+        remoteLogin(result)
       }
       // TODO: handle this more gracefully
       if (result.tag !== "ok") throw new Error("login failed")
     },
-    [setAuthenticatedActors],
+    [remoteLogin],
   )
 
   const handlePollForDelegate = React.useCallback(

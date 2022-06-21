@@ -1,5 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import React from "react"
+import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import logo from "frontend/assets/dfinity.svg"
@@ -28,13 +29,15 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   )
 
   return (
-    <Router>
-      <AuthorizeDecider
-        onToggleAdvancedOptions={toggleShowAdvancedOptions}
-        showAdvancedOptions={showAdvancedOptions}
-        {...args}
-      />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <AuthorizeDecider
+          onToggleAdvancedOptions={toggleShowAdvancedOptions}
+          showAdvancedOptions={showAdvancedOptions}
+          {...args}
+        />
+      </Router>
+    </HelmetProvider>
   )
 }
 

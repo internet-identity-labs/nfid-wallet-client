@@ -1,4 +1,4 @@
-import { blobFromUint32Array } from "@dfinity/candid"
+import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { entropyToMnemonic, validateMnemonic } from "bip39"
 
 // TODO: find a better way to do this
@@ -2059,10 +2059,7 @@ const ENGLISH_WORDS = [
 export function generate(): string {
   const entropy = new Uint32Array(32)
   crypto.getRandomValues(entropy)
-  return entropyToMnemonic(
-    blobFromUint32Array(entropy).toString("hex"),
-    ENGLISH_WORDS,
-  )
+  return entropyToMnemonic(toHexString(entropy), ENGLISH_WORDS)
 }
 
 /**

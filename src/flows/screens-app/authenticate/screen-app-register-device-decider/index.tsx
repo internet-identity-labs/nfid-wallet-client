@@ -6,9 +6,10 @@ import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-un
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { im } from 'frontend/api/actors'
 
 interface AppScreenRegisterDeviceProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLDivElement> { }
 
 export const AppScreenRegisterDeviceDecider: React.FC<
   AppScreenRegisterDeviceProps
@@ -17,7 +18,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
   const { recoverDevice, createSecurityDevice } = useDevices()
   const { createAccount, recoverAccount } = useAccount()
   const { getPersona } = usePersona()
-  const { internetIdentity, identityManager } = useAuthentication()
+  const { user } = useAuthentication()
 
   const { userNumber, handleSendDelegate } = useUnknownDeviceConfig()
 
@@ -30,7 +31,6 @@ export const AppScreenRegisterDeviceDecider: React.FC<
     if (!userNumber) {
       return console.error(`Missing userNumber: ${userNumber}`)
     }
-    if (!identityManager) throw new Error("Missing identityManager")
 
     await recoverDevice(userNumber)
 
@@ -42,10 +42,10 @@ export const AppScreenRegisterDeviceDecider: React.FC<
 
       // attach the current identity as access point
       const pub_key = Array.from(
-        internetIdentity?.delegationIdentity.getPublicKey().toDer() ?? [],
+        new Uint8Array(user?.internetIdentity.delegationIdentity.getPublicKey().toDer() ?? []),
       )
 
-      await identityManager.create_access_point({
+      await im.create_access_point({
         icon: "",
         device: "",
         browser: "",
@@ -59,8 +59,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
     createAccount,
     getPersona,
     handleSendDelegate,
-    identityManager,
-    internetIdentity?.delegationIdentity,
+    user,
     recoverAccount,
     recoverDevice,
     userNumber,

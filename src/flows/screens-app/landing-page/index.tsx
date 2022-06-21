@@ -30,12 +30,12 @@ import { SocialButtons } from "./social-buttons"
 
 interface Props
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+  > { }
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const { isAuthenticated } = useAuthentication()
+  const { user } = useAuthentication()
   const { account } = useAccount()
   const { isMobile } = useDeviceInfo()
 
@@ -58,9 +58,8 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         >
           <ParallaxProvider>
             <div
-              className={`font-inner ${isMobile ? `mobile` : ``} ${
-                account ? `has-account` : ``
-              }`}
+              className={`font-inner ${isMobile ? `mobile` : ``} ${account ? `has-account` : ``
+                }`}
             >
               <section
                 id="home"
@@ -81,7 +80,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     alt="blur1"
                   />
                   <HeroRightSide
-                    isQRCode={!isAuthenticated && !account}
+                    isQRCode={!user && !account}
                     hasAccount={!!account}
                   />
                   <Fade right>

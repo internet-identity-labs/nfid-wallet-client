@@ -11,15 +11,15 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { nameRules } from "frontend/utils/validations"
+import { im } from 'frontend/api/actors'
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
   > {
   iframe?: boolean
 }
@@ -39,16 +39,14 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
 
   const { isLoading, setIsloading } = useIsLoading()
   const isFormComplete = ["name"].every((field) => dirtyFields[field])
-  const { identityManager } = useAuthentication()
   const { updateAccount } = useAccount()
 
   const handlePersonalize = React.useCallback(
     async (data: any) => {
-      if (!identityManager) throw new Error("identityManager required")
       setIsloading(true)
       const { name } = data
 
-      await updateAccount(identityManager, {
+      await updateAccount(im, {
         name,
         skipPersonalize: true,
       })
@@ -56,20 +54,19 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
       setIsloading(false)
       window.history.back()
     },
-    [identityManager, setIsloading, updateAccount],
+    [setIsloading, updateAccount],
   )
 
   const handleSkipPersonalize = React.useCallback(async () => {
-    if (!identityManager) throw new Error("identityManager required")
     setIsloading(true)
 
-    await updateAccount(identityManager, {
+    await updateAccount(im, {
       skipPersonalize: true,
     })
 
     setIsloading(false)
     window.history.back()
-  }, [identityManager, setIsloading, updateAccount])
+  }, [setIsloading, updateAccount])
 
   const title = "Personalize your experience"
 

@@ -25,7 +25,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const { secret, scope } = useParams()
   const { nextPersonaId, accounts, createPersona, getPersona } = usePersona()
   const { remoteNFIDLogin } = useAuthorizeApp()
-  const { isAuthenticated, login } = useAuthentication()
+  const { user, login } = useAuthentication()
   const { applicationName, applicationLogo } = useMultipass()
 
   const { authorizeApp, opener, authorizationRequest, postClientReadyMessage } =
@@ -52,8 +52,8 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   }, [authorizationRequest, opener, postClientReadyMessage])
 
   React.useEffect(() => {
-    isNFID && isAuthenticated && handleNFIDLogin()
-  }, [isNFID, isAuthenticated, handleNFIDLogin])
+    isNFID && user && handleNFIDLogin()
+  }, [isNFID, user, handleNFIDLogin])
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {
@@ -90,7 +90,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
     >
       <AuthorizeApp
         isRemoteAuthorisation
-        isAuthenticated={isAuthenticated}
+        isAuthenticated={!!user}
         applicationName={applicationName || ""}
         applicationLogo={applicationLogo}
         onUnlockNFID={login}

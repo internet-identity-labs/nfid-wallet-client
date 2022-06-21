@@ -1,6 +1,6 @@
 import React from "react"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
+import { im } from "frontend/api/actors"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
@@ -21,66 +21,98 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     undefined,
   )
 
-  const { setLoading, loading, challenge, requestCaptcha, registerAnchor } =
-    useCaptcha({
-      onApiError: async () => {
-        setLoading(false)
-      },
-      onBadChallenge: async () => {
-        await requestCaptcha()
-        setLoading(false)
-        setCaptchaError("Wrong captcha! Please try again")
-      },
-    })
+  const {
+    setLoading,
+    registerPayload: { isGoogle },
+    loading,
+    challenge,
+    requestCaptcha,
+    registerAnchor,
+    registerAnchorFromGoogle,
+  } = useCaptcha({
+    onApiError: async () => {
+      setLoading(false)
+    },
+    onBadChallenge: async () => {
+      await requestCaptcha()
+      setLoading(false)
+      setCaptchaError("Wrong captcha! Please try again")
+    },
+  })
 
   const { navigate } = useNFIDNavigate()
 
-  const { userNumber } = useAccount()
+  const { userNumber, createAccount } = useAccount()
 
-  const { isAuthenticated } = useAuthentication()
-  const { isLoading: isPreparingDelegate, authorizeApp } = useAuthorization({
+  const { authorizeApp } = useAuthorization({
     userNumber,
   })
 
   const { nextPersonaId, createPersona } = usePersona()
 
-  // TODO: as soon as we have global singleton auth state,
-  // we can get rid of these eval side effects
-  const authorizationStateRef = React.useRef<{
-    delegateRequested: boolean
-    personaRequested: boolean
-  }>({ delegateRequested: false, personaRequested: false })
-
-  React.useEffect(() => {
-    if (isAuthenticated && userNumber) {
-      if (!authorizationStateRef.current.personaRequested) {
-        authorizationStateRef.current.personaRequested = true
-        createPersona({ domain: scope })
+  const handleRegisterAnchor = React.useCallback(
+    async ({ captcha }: { captcha: string }) => {
+      const response = await registerAnchor({ captcha })
+      if (response.kind === "loginSuccess") {
+        await createAccount({ anchor: response.userNumber })
+        await Promise.all([
+          createPersona({ domain: scope }),
+          authorizeApp({
+            persona_id: nextPersonaId,
+            domain: scope,
+            anchor: response.userNumber,
+          }),
+        ])
+        return navigate(successPath)
       }
-      if (!authorizationStateRef.current.delegateRequested) {
-        authorizationStateRef.current.delegateRequested = true
-        authorizeApp({ persona_id: nextPersonaId, domain: scope })
-      }
-    }
-  }, [
-    authorizeApp,
-    createPersona,
-    isAuthenticated,
-    loading,
-    nextPersonaId,
-    scope,
-    userNumber,
-  ])
+      console.error(">> handleRegisterAnchor", response)
+    },
+    [
+      authorizeApp,
+      createAccount,
+      createPersona,
+      navigate,
+      nextPersonaId,
+      registerAnchor,
+      scope,
+      successPath,
+    ],
+  )
 
-  React.useEffect(() => {
-    if (
-      isAuthenticated &&
-      authorizationStateRef.current.delegateRequested &&
-      !isPreparingDelegate
-    ) {
-      navigate(successPath)
-    }
-  }, [isAuthenticated, isPreparingDelegate, navigate, successPath])
+  const handleRegisterAnchorWithGoogle = React.useCallback(
+    async ({ captcha }: { captcha: string }) => {
+      if (!scope) throw new Error("scope is required")
+
+      const response = await registerAnchorFromGoogle({ captcha })
+      if (response.kind === "loginSuccess") {
+        await im.create_account({
+          anchor: response.userNumber,
+        })
+        await Promise.all([
+          im.create_persona({
+            domain: scope,
+            persona_id: nextPersonaId,
+            persona_name: "",
+          }),
+          authorizeApp({
+            persona_id: nextPersonaId,
+            domain: scope,
+            anchor: response.userNumber,
+          }),
+        ])
+        return navigate(successPath)
+      }
+      console.error(">> handleRegisterAnchor", response)
+    },
+    [
+      authorizeApp,
+      navigate,
+      nextPersonaId,
+      registerAnchorFromGoogle,
+      scope,
+      successPath,
+    ],
+  )
 
   const { applicationLogo, applicationName } = useMultipass()
   return (
@@ -89,7 +121,9 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       successPath={successPath}
-      onRegisterAnchor={registerAnchor}
+      onRegisterAnchor={
+        isGoogle ? handleRegisterAnchorWithGoogle : handleRegisterAnchor
+      }
       onRequestNewCaptcha={requestCaptcha}
       challengeBase64={challenge?.png_base64}
       errorString={captchaError}

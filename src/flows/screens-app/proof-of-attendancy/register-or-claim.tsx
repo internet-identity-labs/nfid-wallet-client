@@ -9,8 +9,9 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 
 import { ProfileConstants } from "../profile/routes"
 import { AppScreenProofOfAttendencyConstants } from "./routes"
+import { ima } from 'frontend/api/actors'
 
-interface RegisterOrClaimProps {}
+interface RegisterOrClaimProps { }
 
 export const ClaimAttendency: React.FC<RegisterOrClaimProps> = () => {
   const { secret } = useParams()
@@ -23,8 +24,8 @@ export const ClaimAttendency: React.FC<RegisterOrClaimProps> = () => {
     setIsloading(true)
     const response = await login()
     if (response && response.tag === "ok") {
-      const hasPoap = await response.imAdditionActor.has_poap()
-      !hasPoap && (await response.imAdditionActor.increment_poap())
+      const hasPoap = await ima.has_poap()
+      !hasPoap && (await ima.increment_poap())
       navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
 
       setIsloading(false)

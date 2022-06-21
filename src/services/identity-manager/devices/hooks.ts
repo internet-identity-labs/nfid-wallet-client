@@ -1,33 +1,30 @@
 import {
-  blobFromHex,
-  blobToHex,
-  derBlobFromBlob,
-  DerEncodedBlob,
-} from "@dfinity/candid"
+  fromHexString,
+  toHexString,
+} from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { useAtom } from "jotai"
 import React from "react"
 
+import { im } from "frontend/api/actors"
+import {
+  AccessPointRequest,
+  AccessPointResponse,
+} from "frontend/api/idl/identity_manager.did"
+import { DeviceData, PublicKey } from "frontend/api/idl/internet_identity_types"
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
 import { fromMnemonicWithoutValidation } from "frontend/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/services/internet-identity/crypto/mnemonic"
 import {
-  DeviceData,
-  PublicKey,
-} from "frontend/services/internet-identity/generated/internet_identity_types"
-import {
   creationOptions,
+  derFromPubkey,
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
 
 import { useAccount } from "../account/hooks"
-import {
-  AccessPointRequest,
-  AccessPointResponse,
-} from "../identity_manager.did"
 import {
   Device,
   devicesAtom,
@@ -35,6 +32,8 @@ import {
   RecoveryDevice,
   recoveryDevicesAtom,
 } from "./state"
+
+declare const SIGNIN_GOOGLE: string
 
 const getIcon = (device: DeviceData): Icon => {
   switch (device.alias.split(" ")[3]) {
@@ -147,12 +146,12 @@ export const useDevices = () => {
   } = useDeviceInfo()
 
   const { userNumber } = useAccount()
-  const { internetIdentity, identityManager } = useAuthentication()
+  const { user } = useAuthentication()
 
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber) {
       const [accessPoints, existingDevices] = await Promise.all([
-        identityManager?.read_access_points(),
+        im.read_access_points(),
         IIConnection.lookupAuthenticators(userNumber),
       ])
 
@@ -165,31 +164,30 @@ export const useDevices = () => {
         setDevices(normalizedDevices)
       }
     }
-  }, [identityManager, setDevices, userNumber])
+  }, [setDevices, userNumber])
 
   const updateDevice = React.useCallback(
     async (device: Device) => {
       const normalizedDevice = normalizeDeviceRequest(device)
 
       if (!device.isAccessPoint) {
-        const createAccessPointResponse =
-          await identityManager?.create_access_point(normalizedDevice)
+        const createAccessPointResponse = await im.create_access_point(
+          normalizedDevice,
+        )
         handleLoadDevices()
         return createAccessPointResponse
       }
-      const updatedAccessPoint = await identityManager?.update_access_point(
-        normalizedDevice,
-      )
+      const updatedAccessPoint = await im.update_access_point(normalizedDevice)
       handleLoadDevices()
       return updatedAccessPoint
     },
-    [handleLoadDevices, identityManager],
+    [handleLoadDevices],
   )
 
   const getRecoveryDevices = React.useCallback(async () => {
     if (userNumber) {
       const [accessPoints, existingRecoveryDevices] = await Promise.all([
-        identityManager?.read_access_points(),
+        im.read_access_points(),
         IIConnection.lookupRecovery(userNumber),
       ])
 
@@ -202,18 +200,18 @@ export const useDevices = () => {
         setRecoveryDevices(normalizedDevices)
       }
     }
-  }, [identityManager, setRecoveryDevices, userNumber])
+  }, [setRecoveryDevices, userNumber])
 
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
-      if (internetIdentity && userNumber) {
+      if (user?.internetIdentity && userNumber) {
         await Promise.all([
-          internetIdentity.remove(userNumber, pubkey),
-          identityManager?.remove_access_point({ pub_key: pubkey }),
+          user?.internetIdentity.remove(userNumber, pubkey),
+          im.remove_access_point({ pub_key: pubkey }),
         ])
       }
     },
-    [identityManager, internetIdentity, userNumber],
+    [user, userNumber],
   )
 
   const createWebAuthNDevice = React.useCallback(
@@ -223,8 +221,8 @@ export const useDevices = () => {
       const identity = await WebAuthnIdentity.create({
         publicKey: creationOptions(existingDevices),
       })
-      const publicKey = blobToHex(identity.getPublicKey().toDer())
-      const rawId = blobToHex(identity.rawId)
+      const publicKey = toHexString(identity.getPublicKey().toDer())
+      const rawId = toHexString(identity.rawId)
 
       const device = {
         publicKey,
@@ -249,50 +247,50 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      if (!internetIdentity || !identityManager) throw new Error("Unauthorized")
+      if (!user?.internetIdentity) throw new Error("Unauthorized")
 
-      const pub_key = derBlobFromBlob(blobFromHex(publicKey))
+      const pub_key = fromHexString(publicKey)
 
       await Promise.all([
-        internetIdentity.add(
+        user?.internetIdentity.add(
           userNumber,
           deviceName,
           { unknown: null },
           { authentication: null },
-          pub_key,
-          blobFromHex(rawId),
+          derFromPubkey(Array.from(new Uint8Array(pub_key))),
+          fromHexString(rawId),
         ),
-        identityManager.create_access_point({
+        im.create_access_point({
           icon: "",
           device: deviceName,
           browser: browserName ?? "",
-          pub_key: Array.from(pub_key),
+          pub_key: Array.from(new Uint8Array(pub_key)),
         }),
       ])
     },
-    [internetIdentity, identityManager, browserName],
+    [user, browserName],
   )
 
   const createRecoveryDevice = React.useCallback(
-    async (recoverIdentity: DerEncodedBlob, icon?: string, device?: string) => {
-      if (!identityManager) throw new Error("Unauthorized")
+    async (recoverIdentity: Blob, icon?: string, device?: string) => {
       const newDevice = {
         icon: icon ?? "document",
         device: device ?? "Recovery Phrase",
         browser: "",
-        pub_key: Array.from(recoverIdentity),
+        pub_key: Array.from(
+          new Uint8Array(await recoverIdentity.arrayBuffer()),
+        ),
       }
 
-      return await identityManager.create_access_point(newDevice)
+      return await im.create_access_point(newDevice)
     },
-    [identityManager],
+    [],
   )
 
   const recoverDevice = React.useCallback(
     async (userNumber) => {
       try {
-        if (!internetIdentity || !identityManager)
-          throw new Error("Unauthorized")
+        if (!user?.internetIdentity) throw new Error("Unauthorized")
         const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
         await createDevice({
@@ -315,7 +313,7 @@ export const useDevices = () => {
         throw error
       }
     },
-    [createDevice, createWebAuthNDevice, identityManager, internetIdentity],
+    [createDevice, createWebAuthNDevice, user],
   )
 
   const getDevices = React.useCallback(async () => {
@@ -324,7 +322,7 @@ export const useDevices = () => {
 
   const createRecoveryPhrase = React.useCallback(async () => {
     if (!userNumber) throw new Error("userNumber missing")
-    if (!internetIdentity) throw new Error("internetIdentity missing")
+    if (!user?.internetIdentity) throw new Error("internetIdentity missing")
 
     const recovery = generate().trim()
     const recoverIdentity = await fromMnemonicWithoutValidation(
@@ -334,7 +332,7 @@ export const useDevices = () => {
     const deviceName = "Recovery phrase"
 
     // TODO: store as access point
-    await internetIdentity.add(
+    await user?.internetIdentity.add(
       userNumber,
       deviceName,
       { seed_phrase: null },
@@ -342,13 +340,13 @@ export const useDevices = () => {
       recoverIdentity.getPublicKey().toDer(),
     )
     createRecoveryDevice(
-      recoverIdentity.getPublicKey().toDer(),
+      new Blob([recoverIdentity.getPublicKey().toDer()]),
       "document",
       deviceName,
     )
     getRecoveryDevices()
     return `${userNumber} ${recovery}`
-  }, [createRecoveryDevice, getRecoveryDevices, internetIdentity, userNumber])
+  }, [createRecoveryDevice, getRecoveryDevices, user, userNumber])
 
   const createSecurityDevice = React.useCallback(
     async (
@@ -357,7 +355,7 @@ export const useDevices = () => {
     ) => {
       const actualUserNumber = userNumber || userNumberOverwrite
       if (!actualUserNumber) throw new Error("userNumber missing")
-      if (!internetIdentity) throw new Error("internetIdentity missing")
+      if (!user?.internetIdentity) throw new Error("internetIdentity missing")
 
       const devices = await IIConnection.lookupAll(actualUserNumber)
       const deviceName = "Security Key"
@@ -373,7 +371,7 @@ export const useDevices = () => {
       }
 
       await Promise.all([
-        internetIdentity.add(
+        user.internetIdentity.add(
           actualUserNumber,
           deviceName,
           { cross_platform: null },
@@ -384,7 +382,7 @@ export const useDevices = () => {
           recoverIdentity.rawId,
         ),
         createRecoveryDevice(
-          recoverIdentity.getPublicKey().toDer(),
+          new Blob([recoverIdentity.getPublicKey().toDer()]),
           "usb",
           deviceName,
         ),
@@ -393,14 +391,24 @@ export const useDevices = () => {
       getRecoveryDevices()
       getDevices()
     },
-    [
-      createRecoveryDevice,
-      getDevices,
-      getRecoveryDevices,
-      internetIdentity,
-      userNumber,
-    ],
+    [createRecoveryDevice, getDevices, getRecoveryDevices, user, userNumber],
   )
+
+  const getGoolgeDevice = React.useCallback(async ({ token }) => {
+    console.log(">> ", { token })
+
+    const response = await fetch(SIGNIN_GOOGLE, {
+      method: "POST",
+      body: JSON.stringify({ token }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    console.log(">> getGoolgeDevice", { response })
+
+    return await response.json()
+  }, [])
 
   React.useEffect(() => {
     handleLoadDevices()
@@ -412,6 +420,7 @@ export const useDevices = () => {
     createWebAuthNDevice,
     createRecoveryPhrase,
     createSecurityDevice,
+    getGoolgeDevice,
     getDevices,
     getRecoveryDevices,
     createDevice,

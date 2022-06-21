@@ -24,31 +24,49 @@ export const AppScreenAuthorizeApp: React.FC<
   const { secret, scope } = useParams()
   const { sendWaitForUserInput } = useAuthorizeApp()
   const { nextPersonaId, accounts, createPersona, getPersona } = usePersona()
-  const { isAuthenticated, login } = useAuthentication()
+  const { user, login } = useAuthentication()
   const { applicationName, applicationLogo } = useMultipass()
   const { navigate } = useNFIDNavigate()
 
   const { remoteLogin } = useAuthorizeApp()
 
   React.useEffect(() => {
-    isAuthenticated && getPersona()
-  }, [isAuthenticated, getPersona])
+    user && getPersona()
+  }, [user, getPersona])
 
   React.useEffect(() => {
-    secret && isAuthenticated && sendWaitForUserInput(secret)
-  }, [isAuthenticated, secret, sendWaitForUserInput])
+    secret && user && sendWaitForUserInput(secret)
+  }, [user, secret, sendWaitForUserInput])
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {
-      if (!secret || !scope)
-        throw new Error("missing secret, scope or persona_id")
+      if (!secret) throw new Error("missing secret")
+      if (!scope) throw new Error("missing scope")
+      if (!user?.chain) throw new Error("missing user.chain")
+      if (!user?.sessionKey) throw new Error("missing user.sessionKey")
 
       setIsloading(true)
-      await remoteLogin({ secret, scope, persona_id: personaId })
+      await remoteLogin({
+        secret,
+        scope,
+        persona_id: personaId,
+        chain: user?.chain,
+        sessionKey: user?.sessionKey,
+        connection: user?.internetIdentity,
+      })
       setIsloading(false)
       navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
     },
-    [navigate, remoteLogin, scope, secret, setIsloading],
+    [
+      navigate,
+      remoteLogin,
+      scope,
+      secret,
+      setIsloading,
+      user?.chain,
+      user?.internetIdentity,
+      user?.sessionKey,
+    ],
   )
 
   const handleCreateAccountAndLogin = React.useCallback(async () => {
@@ -80,7 +98,7 @@ export const AppScreenAuthorizeApp: React.FC<
     >
       <AuthorizeApp
         isRemoteAuthorisation
-        isAuthenticated={isAuthenticated}
+        isAuthenticated={!!user}
         applicationName={applicationName || ""}
         applicationLogo={applicationLogo}
         onUnlockNFID={login}

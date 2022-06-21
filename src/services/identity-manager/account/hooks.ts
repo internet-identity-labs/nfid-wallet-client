@@ -2,12 +2,13 @@ import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
 
-import { useAuthentication } from "frontend/hooks/use-authentication"
+import { im } from "frontend/api/actors"
 import {
   AccountResponse,
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/services/identity-manager/identity_manager.did"
+} from "frontend/api/idl/identity_manager.did"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {
@@ -40,16 +41,11 @@ export const useAccount = () => {
   const [account, setAccount] = useAtom(localStorageAccountAtom)
   const [memoryAccount, setMemoryAccount] = useAtom(memoryAccountAtom)
   const [userNumber] = useAtom(userNumberAtom)
-  const {
-    isAuthenticated,
-    shouldStoreLocalAccount,
-    identityManager: accountService,
-  } = useAuthentication()
+  const { user, shouldStoreLocalAccount } = useAuthentication()
 
   const createAccount = React.useCallback(
     async (account: HTTPAccountRequest) => {
-      if (!accountService) throw new Error('"accountService" is required')
-      const response = await accountService.create_account(account)
+      const response = await im.create_account(account)
       const newAccount = response.data[0]
 
       if (newAccount) {
@@ -62,14 +58,12 @@ export const useAccount = () => {
       }
       return response
     },
-    [accountService, setAccount],
+    [setAccount],
   )
 
   const recoverAccount = React.useCallback(
     async (userNumber: bigint) => {
-      if (!accountService) throw new Error('"accountService" is required')
-
-      const response = await accountService.recover_account(userNumber)
+      const response = await im.recover_account(userNumber)
 
       const newAccount = response.data[0]
 
@@ -83,13 +77,11 @@ export const useAccount = () => {
 
       return response
     },
-    [account, accountService, setAccount],
+    [account, setAccount],
   )
 
   const readAccount = React.useCallback(async () => {
-    if (!accountService) throw new Error('"accountService" is required')
-
-    const response = await accountService.get_account()
+    const response = await im.get_account()
 
     const newAccount = response.data[0]
 
@@ -104,18 +96,26 @@ export const useAccount = () => {
     }
 
     return response
-  }, [
-    account,
-    accountService,
-    shouldStoreLocalAccount,
-    setAccount,
-    setMemoryAccount,
-  ])
+  }, [account, shouldStoreLocalAccount, setAccount, setMemoryAccount])
+
+  const readMemoryAccount = React.useCallback(async () => {
+    const response = await im.get_account()
+
+    const newAccount = response.data[0]
+
+    if (newAccount) {
+      const normalizedAccount = normalizeLocalAccount({
+        account,
+        newAccount,
+      })
+      setMemoryAccount(normalizedAccount)
+    }
+
+    return response
+  }, [account, setMemoryAccount])
 
   const readAndStoreAccount = React.useCallback(async () => {
-    if (!accountService) throw new Error('"accountService" is required')
-
-    const response = await accountService.get_account()
+    const response = await im.get_account()
 
     const newAccount = response.data[0]
 
@@ -128,7 +128,7 @@ export const useAccount = () => {
     }
 
     return response
-  }, [account, accountService, setAccount])
+  }, [account, setAccount])
 
   const resetLocalAccount = React.useCallback(async () => {
     const localAccount = JSON.parse(
@@ -149,7 +149,7 @@ export const useAccount = () => {
       }))
       if (!newAccount) throw new Error("account undefined")
       // NOTE: looks silly? `name` is an optional parameter :/
-      await accountService.update_account({
+      await im.update_account({
         name: newAccount.name ? [newAccount.name] : [],
       })
 
@@ -179,13 +179,14 @@ export const useAccount = () => {
   }
 
   return {
-    account: isAuthenticated ? account || memoryAccount : account,
+    account: user ? account || memoryAccount : account,
     userNumber,
     shouldStoreLocalAccount,
     setLocalAccount: setAccount,
     createAccount,
     readAccount,
     readAndStoreAccount,
+    readMemoryAccount,
     recoverAccount,
     resetLocalAccount,
     updateAccount,

@@ -12,23 +12,23 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { PopupLogin } from "./popup-login"
 import { PopupRegister } from "./popup-register"
 
-interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
   const { account } = useAccount()
-  const { isAuthenticated } = useAuthentication()
+  const { user } = useAuthentication()
   const { status } = useRegisterQRCode()
 
   const isPopupLogin = React.useMemo(() => {
-    return isAuthenticated || account
-  }, [isAuthenticated, account])
+    return user || account
+  }, [user, account])
 
   return (
     <Fade>
       <div
         className={clsx(
           "absolute right-0 flex flex-col items-center pb-6 bg-white shadow-iframe rounded-xl top-14",
-          (isAuthenticated && status !== "registerDecider") ||
+          (user && status !== "registerDecider") ||
             status === "registerDevice"
             ? "w-60"
             : "w-80",
@@ -38,7 +38,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
         <NFIDGradientBar />
         {status === "registerDecider" && <PopupRegisterDecider />}
         {status === "registerDevice" && <PopupLogin />}
-        {status !== "" ? null : isAuthenticated || account ? (
+        {status !== "" ? null : user || account ? (
           <PopupLogin />
         ) : (
           <PopupRegister />

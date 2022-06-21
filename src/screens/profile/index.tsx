@@ -63,7 +63,9 @@ export const Profile: React.FC<ProfileProps> = ({
       }}
       navigationItems={
         <div className="flex items-center justify-between w-full">
-          <Logo className="md:hidden" />
+          <Link to="/" className="md:mt-6">
+            <Logo />
+          </Link>
           <ProfileHomeMenu className="md:hidden" />
         </div>
       }

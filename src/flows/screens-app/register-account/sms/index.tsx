@@ -1,3 +1,8 @@
+import clsx from "clsx"
+import React, { useRef } from "react"
+import { useForm } from "react-hook-form"
+import { useLocation, useNavigate } from "react-router-dom"
+
 import { ButtonChevronIcon } from "@internet-identity-labs/nfid-sdk-react"
 import {
   Button,
@@ -8,12 +13,9 @@ import {
   Loader,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React, { useRef } from "react"
-import { useForm } from "react-hook-form"
-import { useLocation, useNavigate } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { isValidToken, tokenRules } from "frontend/utils/validations"

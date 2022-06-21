@@ -13,7 +13,7 @@ interface StepInputProps {
   className?: string
   errorClasses?: string
   onSubmit: (value: string) => boolean
-  onChangePhoneNumber: () => void
+  onChangePhoneNumber?: () => void
 }
 
 export const StepInput: React.FC<StepInputProps> = ({

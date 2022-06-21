@@ -1,24 +1,40 @@
-import { P, Logo, H4, Button } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { IoMdArrowBack } from "react-icons/io"
 import { Link } from "react-router-dom"
-import ReactCodeInput from "react-verification-code-input"
 
+import { P, Logo, H4 } from "@internet-identity-labs/nfid-sdk-react"
+
+import { StepInput } from "frontend/design-system/atoms/step-input"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
+
+import { useTimer } from "frontend/hooks/use-timer"
 
 interface Account {
   anchor: string
   name?: string
 }
 
-interface ProfileEditProps {
+interface ProfileEditPhoneSmsProps {
   account?: Account
+  onResendCode: () => void
+  onSubmit: () => boolean
+  phone: string | number
 }
 
-export const ProfileEditPhoneSms: React.FC<ProfileEditProps> = ({
+export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
   account,
+  onResendCode,
+  onSubmit,
+  phone,
 }) => {
+  const { counter, setCounter } = useTimer({ defaultCounter: 3 })
+
+  const handleResend = () => {
+    onResendCode && onResendCode()
+    setCounter(60)
+  }
+
   return (
     <AppScreen
       bubbleOptions={{
@@ -57,23 +73,30 @@ export const ProfileEditPhoneSms: React.FC<ProfileEditProps> = ({
           </Link>
           <H4 className="mt-5 sm:mt-0">SMS verification</H4>
           <P className="mt-3 text-sm sm:mt-14">
-            Please enter the verification code that was sent to +1 234 856 7890.
+            Please enter the verification code that was sent to {phone}.
             <br />
-            <P className="mt-3">Code can be resent in 60 sec</P>
+            {counter > 0 ? (
+              <P className="mt-3">Code can be resent in {counter} sec</P>
+            ) : (
+              <P className="mt-3">
+                Didn’t receive a code?{" "}
+                <span
+                  className="cursor-pointer text-blue-base"
+                  onClick={handleResend}
+                >
+                  Resend
+                </span>
+              </P>
+            )}
           </P>
-          <form
+          <div
             className={clsx(
               "mt-5 flex flex-col justify-between flex-1",
               "sm:block",
             )}
           >
-            <div className="flex flex-row space-x-2.5">
-              <ReactCodeInput />
-            </div>
-            <Button secondary className="px-10 sm:mt-5">
-              Complete
-            </Button>
-          </form>
+            <StepInput onSubmit={onSubmit} buttonText="Complete" />
+          </div>
         </div>
       </main>
     </AppScreen>

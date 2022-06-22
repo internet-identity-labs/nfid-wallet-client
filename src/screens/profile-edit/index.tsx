@@ -20,7 +20,7 @@ import { nameRules } from "frontend/utils/validations"
 interface Account {
   anchor: string
   name?: string
-  phone?: string
+  phoneNumber?: string
 }
 
 interface ProfileEditProps {
@@ -131,8 +131,13 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
                 }}
               />
               {/* Commented phone input field */}
-              {account?.phone ? (
-                <Input type="tel" labelText="Phone number" disabled />
+              {account?.phoneNumber ? (
+                <Input
+                  type="tel"
+                  labelText="Hashed phone number"
+                  disabled
+                  value={account.phoneNumber}
+                />
               ) : (
                 <div
                   className="flex items-center py-2 space-x-2 font-semibold transition-all cursor-pointer text-blue-base hover:opacity-50"

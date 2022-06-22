@@ -4,9 +4,12 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { IoMdArrowBack } from "react-icons/io"
 import { Link } from "react-router-dom"
 
-import { P, Logo, H4, Button } from "@internet-identity-labs/nfid-sdk-react"
+import { Logo } from "@internet-identity-labs/nfid-sdk-react"
 
+import { Button } from "frontend/design-system/atoms/button"
 import { Input } from "frontend/design-system/atoms/input"
+import { H4 } from "frontend/design-system/atoms/typography"
+import { P } from "frontend/design-system/atoms/typography/paragraph"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 import { phoneRules } from "frontend/utils/validations"
@@ -19,25 +22,37 @@ interface Account {
 
 interface ProfileEditProps {
   account?: Account
-  onSubmit: SubmitHandler<{ phone: string | undefined }>
+  responseError?: string
+  isLoading?: boolean
+  onSubmit: SubmitHandler<{ phone: string }>
 }
 
 export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
   account,
+  isLoading,
   onSubmit,
+  responseError,
 }) => {
   const {
     formState: { errors },
     register,
     handleSubmit,
-  } = useForm({
+    setError,
+  } = useForm<{ phone: string }>({
     defaultValues: {
       phone: account?.phone,
     },
   })
 
+  React.useEffect(() => {
+    if (responseError && errors.phone?.message !== responseError) {
+      setError("phone", { message: responseError })
+    }
+  }, [errors.phone, responseError, setError])
+
   return (
     <AppScreen
+      isLoading={isLoading}
       bubbleOptions={{
         showBubbles: true,
         bubbleColors: ["#a69cff", "#4df1ffa8"],
@@ -83,6 +98,7 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
           >
             <div className="space-y-2">
               <Input
+                errorText={errors.phone?.message}
                 {...register("phone", {
                   required: phoneRules.errorMessages.required,
                   pattern: {
@@ -98,10 +114,13 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
                     message: phoneRules.errorMessages.length,
                   },
                 })}
-                errorText={errors.phone?.message}
               />
             </div>
-            <Button primary className="px-10 mt-3 sm:mt-5" type="submit">
+            <Button
+              primary
+              className="px-10 mt-3 sm:mt-5"
+              onClick={handleSubmit(onSubmit)}
+            >
               Verify phone number
             </Button>
           </form>

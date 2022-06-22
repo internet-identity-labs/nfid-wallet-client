@@ -11,14 +11,22 @@ import { useTimer } from "frontend/hooks/use-timer"
 interface CredentialRequesterSMSVerifyProps {
   applicationLogo?: string
   applicationName?: string
-  onSubmit: (value: string) => boolean
+  onSubmit: (value: string) => Promise<void>
   onResendCode: () => void
   phone?: string | number
+  responseError?: string
 }
 
 export const CredentialRequesterSMSVerify: React.FC<
   CredentialRequesterSMSVerifyProps
-> = ({ applicationLogo, applicationName, onResendCode, phone, onSubmit }) => {
+> = ({
+  applicationLogo,
+  applicationName,
+  onResendCode,
+  phone,
+  onSubmit,
+  responseError,
+}) => {
   const { counter, setCounter } = useTimer({ defaultCounter: 3 })
 
   const handleResend = () => {
@@ -61,6 +69,7 @@ export const CredentialRequesterSMSVerify: React.FC<
           onSubmit={onSubmit}
           errorClasses="text-center"
           buttonText="Verify phone number"
+          responseError={responseError}
         />
       </div>
     </ScreenResponsive>

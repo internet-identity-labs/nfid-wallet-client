@@ -30,6 +30,9 @@ const normalizeLocalAccount = ({
   name: newAccount.name[0],
   anchor: newAccount.anchor.toString(),
   skipPersonalize: !!newAccount.name[0] || !!account?.skipPersonalize,
+  phoneNumber: newAccount.phone_number.length
+    ? newAccount.phone_number[0]
+    : undefined,
 })
 
 type AccountService = Pick<
@@ -160,23 +163,25 @@ export const useAccount = () => {
     [account, setAccount, setMemoryAccount, shouldStoreLocalAccount],
   )
 
-  const verifyPhonenumber = async (phoneNumber: string) => {
-    const response = await fetch(`${VERIFY_PHONE_NUMBER}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        phoneNumber: phoneNumber,
-      }),
-    })
+  const verifyPhonenumber = React.useCallback(
+    async (phoneNumber: string, principalId: string) => {
+      const response = await fetch(`${VERIFY_PHONE_NUMBER}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber.replace(/\s/g, ""),
+          principalId,
+        }),
+      })
 
-    const data = await response.json()
+      const data = await response.json()
 
-    const validPhonenumber = response.status === 200
-
-    return { response: data, validPhonenumber }
-  }
+      return { body: data, status: response.status }
+    },
+    [],
+  )
 
   return {
     account: user ? account || memoryAccount : account,

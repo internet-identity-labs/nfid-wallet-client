@@ -52,26 +52,16 @@ export const RegisterAccountCaptcha: React.FC<
       if (!secret) throw new Error("secret is missing from params")
       if (!scope) throw new Error("scope is missing from params")
       const response = await registerAnchor({ captcha })
-      console.log(">> handleRegisterAnchor", {
-        response,
-        isNFID,
-        nextPersonaId,
-        scope,
-      })
 
       if (response.kind === "loginSuccess") {
-        console.log(">> createAccount")
-
         await createAccount({ anchor: response.userNumber })
 
         if (isNFID) {
-          console.log(">> remoteNFIDLogin")
           return await remoteNFIDLogin({
             secret,
             userNumberOverwrite: response.userNumber,
           })
         }
-        console.log(">> createPersona and remoteLogin")
         await Promise.all([
           createPersona({
             domain: `${window.location.protocol}//${scope}`,
@@ -86,7 +76,6 @@ export const RegisterAccountCaptcha: React.FC<
             sessionKey: response.sessionKey,
           }),
         ])
-        console.log(">> let's navigate to profile")
 
         navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
       }

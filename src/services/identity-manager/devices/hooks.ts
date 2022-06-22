@@ -395,8 +395,6 @@ export const useDevices = () => {
   )
 
   const getGoolgeDevice = React.useCallback(async ({ token }) => {
-    console.log(">> ", { token })
-
     const response = await fetch(SIGNIN_GOOGLE, {
       method: "POST",
       body: JSON.stringify({ token }),
@@ -404,8 +402,6 @@ export const useDevices = () => {
         "Content-Type": "application/json",
       },
     })
-
-    console.log(">> getGoolgeDevice", { response })
 
     return await response.json()
   }, [])

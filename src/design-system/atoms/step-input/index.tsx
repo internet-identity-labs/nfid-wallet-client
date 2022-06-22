@@ -12,7 +12,8 @@ import { Input } from "../input"
 interface StepInputProps {
   className?: string
   errorClasses?: string
-  onSubmit: (value: string) => boolean
+  responseError?: string
+  onSubmit: (value: string) => Promise<void>
   onChangePhoneNumber?: () => void
   buttonText?: string
 }
@@ -22,6 +23,7 @@ export const StepInput: React.FC<StepInputProps> = ({
   onSubmit,
   errorClasses,
   onChangePhoneNumber,
+  responseError,
   buttonText,
 }) => {
   const list = [...Array(6).keys()]
@@ -93,6 +95,15 @@ export const StepInput: React.FC<StepInputProps> = ({
     }
   }, [handleKeydown, handlePaste])
 
+  React.useEffect(() => {
+    if (responseError && errors.verificationCode.message !== responseError) {
+      setError("verificationCode", {
+        type: "manual",
+        message: "Incorrect verification code, please try again.",
+      })
+    }
+  }, [errors.verificationCode.message, responseError, setError])
+
   const validateToken = () => {
     const verificationCode = getVerificationCode()
 
@@ -113,15 +124,10 @@ export const StepInput: React.FC<StepInputProps> = ({
     clearErrors("verificationCode")
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = React.useCallback(() => {
     if (!isValid) return
-    if (!onSubmit(getVerificationCode())) {
-      setError("verificationCode", {
-        type: "manual",
-        message: "Incorrect verification code, please try again.",
-      })
-    }
-  }
+    onSubmit(getVerificationCode())
+  }, [getVerificationCode, isValid, onSubmit])
 
   return (
     <div>

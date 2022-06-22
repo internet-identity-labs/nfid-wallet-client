@@ -22,6 +22,7 @@ export interface LocalAccount
 
   // temporary front-end hack to skip personalization process
   skipPersonalize?: boolean
+  phoneNumber?: string
 }
 
 export const localStorageAccountAtom = atomWithStorage<

@@ -102,7 +102,7 @@ export const RegisterAccountSMSVerification: React.FC<
   const resendSMS = React.useCallback(async () => {
     setLoading(true)
 
-    await verifyPhonenumber(phonenumber)
+    // await verifyPhonenumber(phonenumber)
 
     inputItemsRef.current.forEach((item) => {
       item && (item.value = "")
@@ -112,7 +112,7 @@ export const RegisterAccountSMSVerification: React.FC<
 
     setShowCheckNumberButton(true)
     setLoading(false)
-  }, [phonenumber, verifyPhonenumber])
+  }, [])
 
   const handleVerifySMSToken = async () => {
     setLoading(true)

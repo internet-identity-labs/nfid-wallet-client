@@ -1,5 +1,6 @@
 import React from "react"
 
+import { ima } from "frontend/api/actors"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { Profile } from "frontend/screens/profile"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -11,9 +12,8 @@ import {
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 import { ProfileConstants } from "./routes"
-import { ima } from 'frontend/api/actors'
 
-interface AuthenticateNFIDHomeProps { }
+interface AuthenticateNFIDHomeProps {}
 
 export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const applications: any[] = ["NFID Demo"]

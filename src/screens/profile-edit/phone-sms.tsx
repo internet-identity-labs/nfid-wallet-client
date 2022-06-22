@@ -10,22 +10,19 @@ import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
 import { useTimer } from "frontend/hooks/use-timer"
 
-interface Account {
-  anchor: string
-  name?: string
-}
-
 interface ProfileEditPhoneSmsProps {
-  account?: Account
-  onResendCode: () => void
-  onSubmit: () => boolean
+  onResendCode: () => Promise<void>
+  onSubmit: (token: string) => Promise<void>
+  responseError?: string
+  isLoading: boolean
   phone: string | number
 }
 
 export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
-  account,
   onResendCode,
   onSubmit,
+  responseError,
+  isLoading,
   phone,
 }) => {
   const { counter, setCounter } = useTimer({ defaultCounter: 3 })
@@ -37,6 +34,7 @@ export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
 
   return (
     <AppScreen
+      isLoading={isLoading}
       bubbleOptions={{
         showBubbles: true,
         bubbleColors: ["#a69cff", "#4df1ffa8"],
@@ -79,7 +77,7 @@ export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
               <P className="mt-3">Code can be resent in {counter} sec</P>
             ) : (
               <P className="mt-3">
-                Didn’t receive a code?{" "}
+                Didn't receive a code?{" "}
                 <span
                   className="cursor-pointer text-blue-base"
                   onClick={handleResend}
@@ -95,7 +93,11 @@ export const ProfileEditPhoneSms: React.FC<ProfileEditPhoneSmsProps> = ({
               "sm:block",
             )}
           >
-            <StepInput onSubmit={onSubmit} buttonText="Complete" />
+            <StepInput
+              onSubmit={onSubmit}
+              buttonText="Complete"
+              responseError={responseError}
+            />
           </div>
         </div>
       </main>

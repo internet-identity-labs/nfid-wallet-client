@@ -26,7 +26,11 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
   account,
   onSubmit,
 }) => {
-  const { register, handleSubmit } = useForm({
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = useForm({
     defaultValues: {
       phone: account?.phone,
     },
@@ -79,7 +83,6 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
           >
             <div className="space-y-2">
               <Input
-                type="number"
                 {...register("phone", {
                   required: phoneRules.errorMessages.required,
                   pattern: {
@@ -95,7 +98,7 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
                     message: phoneRules.errorMessages.length,
                   },
                 })}
-                labelText="Phone number"
+                errorText={errors.phone?.message}
               />
             </div>
             <Button primary className="px-10 mt-3 sm:mt-5" type="submit">

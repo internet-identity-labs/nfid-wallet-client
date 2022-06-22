@@ -1,8 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
-// phone edit
-// import { BsPlusLg } from "react-icons/bs"
+import { BsPlusLg } from "react-icons/bs"
 import { IoMdArrowBack } from "react-icons/io"
 import { Link } from "react-router-dom"
 
@@ -27,12 +26,14 @@ interface Account {
 interface ProfileEditProps {
   account?: Account
   onSubmit: SubmitHandler<{ name: string | undefined }>
+  onAddPhoneNumber: () => Promise<void> | void
   isLoading?: boolean
 }
 
 export const ProfileEdit: React.FC<ProfileEditProps> = ({
   account,
   onSubmit,
+  onAddPhoneNumber,
   isLoading = false,
 }) => {
   const {
@@ -130,14 +131,17 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
                 }}
               />
               {/* Commented phone input field */}
-              {/* {account?.phone ? (
+              {account?.phone ? (
                 <Input type="tel" labelText="Phone number" disabled />
               ) : (
-                <div className="flex items-center py-2 space-x-2 font-semibold transition-all cursor-pointer text-blue-base hover:opacity-50">
+                <div
+                  className="flex items-center py-2 space-x-2 font-semibold transition-all cursor-pointer text-blue-base hover:opacity-50"
+                  onClick={onAddPhoneNumber}
+                >
                   <BsPlusLg />
                   <span>Add phone number</span>
                 </div>
-              )} */}
+              )}
             </div>
             <Button
               secondary

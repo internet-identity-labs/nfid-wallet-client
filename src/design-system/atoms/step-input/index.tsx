@@ -96,13 +96,13 @@ export const StepInput: React.FC<StepInputProps> = ({
   }, [handleKeydown, handlePaste])
 
   React.useEffect(() => {
-    if (responseError && errors.verificationCode.message !== responseError) {
+    if (responseError && errors?.verificationCode?.message !== responseError) {
       setError("verificationCode", {
         type: "manual",
-        message: "Incorrect verification code, please try again.",
+        message: responseError,
       })
     }
-  }, [errors.verificationCode.message, responseError, setError])
+  }, [errors?.verificationCode?.message, responseError, setError])
 
   const validateToken = () => {
     const verificationCode = getVerificationCode()

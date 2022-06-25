@@ -19,7 +19,7 @@ import IconMenu from "../../../flows/screens-app/landing-page/assets/menu_close.
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 
-interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { user } = useAuthentication()
@@ -151,7 +151,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           )}
         </ButtonMenu>
       </div>
-      <div className="flex space-x-10">
+      <div className={clsx("hidden space-x-10 sm:flex")}>
         <Scrollspy
           className="items-center hidden space-x-10 font-medium md:flex"
           currentClassName="text-black-base hover:text-black-base hover:no-underline"

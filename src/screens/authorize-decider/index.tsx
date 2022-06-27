@@ -94,7 +94,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         <Input
           errorText={errors.userNumber?.message}
           labelText="Your NFID number"
-          className="w-full mt-8"
+          className="w-full mt-8 max-w-[400px]"
           {...register("userNumber", {
             required: "userNumber is required",
             pattern: {
@@ -113,9 +113,12 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}
       >
-        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
-
-        <Separator className="max-w-[400px]" />
+        {!showAdvancedOptions && (
+          <>
+            <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+            <Separator className="max-w-[400px]" />
+          </>
+        )}
 
         {showAdvancedOptions ? (
           <>

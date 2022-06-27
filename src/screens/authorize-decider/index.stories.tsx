@@ -49,5 +49,5 @@ AppScreen.args = {
   url: "https://nfid.one/secret/scope/my-application",
   isLoading: false,
   registerDeviceDeciderPath: "/register-device-decider",
-  showAdvancedOptions: false,
+  showAdvancedOptions: true,
 }

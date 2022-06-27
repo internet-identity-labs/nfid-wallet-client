@@ -97,6 +97,7 @@ export const useAuthentication = () => {
           sessionKey: result.sessionKey,
           internetIdentity: result.internetIdentity,
         })
+        im.use_access_point()
         setError(null)
         setIsLoading(false)
         return result
@@ -118,6 +119,7 @@ export const useAuthentication = () => {
         sessionKey: actors.sessionKey,
         internetIdentity: actors.internetIdentity,
       })
+      im.use_access_point()
     },
     [setUser, setIsRemoteDelegate],
   )

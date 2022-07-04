@@ -40,15 +40,18 @@ export const Captcha: React.FC<CaptchaProps> = ({
     formState: { errors, dirtyFields },
     handleSubmit,
     setError,
+    setValue,
   } = useForm<{ captcha: string }>()
 
   React.useEffect(() => {
-    errorString &&
+    if (errorString) {
+      setValue("captcha", "")
       setError("captcha", {
         type: "manual",
         message: errorString,
       })
-  }, [errorString, setError])
+    }
+  }, [errorString, setError, setValue])
 
   const isFormComplete = !!dirtyFields.captcha
 

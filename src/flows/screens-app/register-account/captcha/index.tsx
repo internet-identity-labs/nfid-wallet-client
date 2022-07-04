@@ -11,11 +11,14 @@ import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface RegisterAccountCopyRecoveryPhraseProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLDivElement> {
+  isRemoteRegiser?: boolean
+  isNFIDProp?: boolean
+}
 
 export const RegisterAccountCaptcha: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
-> = () => {
+> = ({ isRemoteRegiser, isNFIDProp }) => {
   const { secret, scope } = useParams()
   const [captchaError, setCaptchaError] = React.useState<string | undefined>(
     undefined,
@@ -25,7 +28,10 @@ export const RegisterAccountCaptcha: React.FC<
 
   const { navigate } = useNFIDNavigate()
 
-  const isNFID = React.useMemo(() => scope === "NFID", [scope])
+  const isNFID = React.useMemo(
+    () => scope === "NFID" || isNFIDProp,
+    [isNFIDProp, scope],
+  )
 
   const { nextPersonaId, createPersona } = usePersona()
 
@@ -49,29 +55,27 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      if (!secret) throw new Error("secret is missing from params")
-      if (!scope) throw new Error("scope is missing from params")
       const response = await registerAnchor({ captcha })
-      console.log(">> handleRegisterAnchor", {
-        response,
-        isNFID,
-        nextPersonaId,
-        scope,
-      })
 
       if (response.kind === "loginSuccess") {
-        console.log(">> createAccount")
-
         await createAccount({ anchor: response.userNumber })
 
         if (isNFID) {
-          console.log(">> remoteNFIDLogin")
-          return await remoteNFIDLogin({
-            secret,
-            userNumberOverwrite: response.userNumber,
-          })
+          if (isRemoteRegiser) {
+            if (!secret) throw new Error("secret is missing from params")
+            return await remoteNFIDLogin({
+              secret,
+              userNumberOverwrite: response.userNumber,
+            })
+          }
+          return navigate(
+            `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
+          )
         }
-        console.log(">> createPersona and remoteLogin")
+
+        if (!secret) throw new Error("secret is missing from params")
+        if (!scope) throw new Error("scope is missing from params")
+
         await Promise.all([
           createPersona({
             domain: `${window.location.protocol}//${scope}`,
@@ -86,7 +90,6 @@ export const RegisterAccountCaptcha: React.FC<
             sessionKey: response.sessionKey,
           }),
         ])
-        console.log(">> let's navigate to profile")
 
         navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
       }
@@ -95,6 +98,7 @@ export const RegisterAccountCaptcha: React.FC<
       createAccount,
       createPersona,
       isNFID,
+      isRemoteRegiser,
       navigate,
       nextPersonaId,
       registerAnchor,

@@ -48,7 +48,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       setLoading(true)
       if (!challenge) throw new Error("No challenge response")
       const { identity, deviceName } = registerPayload
-      console.log(">> registerAnchor", { identity, deviceName })
 
       const webAuthnIdentity = WebAuthnIdentity.fromJSON(identity)
 
@@ -62,7 +61,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         deviceName,
         challengeResult,
       )
-      console.log(">> registerAnchor", { response })
 
       onRegisterSuccess(response)
       if (response.kind === "badChallenge") {
@@ -139,8 +137,6 @@ export const useChallenge = () => {
   const [challenge, setChallengeResponse] = useAtom(challengeAtom)
 
   const getChallenge = React.useCallback(async () => {
-    console.log(">> getChallenge", {})
-
     if (challenge) {
       setChallengeResponse(undefined)
     }

@@ -70,7 +70,6 @@ const config = {
               ),
             }),
       }
-      console.log(">> ", { canisterEnv })
 
       webpackConfig.plugins.push(new webpack.DefinePlugin(canisterEnv))
       webpackConfig.plugins.push(

@@ -53,7 +53,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
   const { readMemoryAccount } = useAccount()
 
   const handleGetGoogleKey = React.useCallback(
-    async (credential: CredentialResponse) => {
+    async ({ credential }: CredentialResponse) => {
       getChallenge()
       setIsloading(true)
       const response = await getGoolgeDevice({ token: credential })

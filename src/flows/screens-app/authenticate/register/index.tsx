@@ -1,6 +1,6 @@
 import React from "react"
 
-import { GoogleCredential } from "frontend/design-system/atoms/button/signin-with-google"
+import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
@@ -53,7 +53,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
   const { readMemoryAccount } = useAccount()
 
   const handleGetGoogleKey = React.useCallback(
-    async ({ credential }: GoogleCredential) => {
+    async (credential: CredentialResponse) => {
       getChallenge()
       setIsloading(true)
       const response = await getGoolgeDevice({ token: credential })

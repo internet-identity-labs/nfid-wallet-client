@@ -25,7 +25,8 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     useMultipass()
   const { navigate } = useNFIDNavigate()
 
-  useChallenge()
+  const { isLoading: isChallengeLoading } = useChallenge()
+  console.log(">> RouteRegister", { isChallengeLoading })
 
   const handleCreateKeys = React.useCallback(async () => {
     setIsloading(true)

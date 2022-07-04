@@ -50,7 +50,9 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     setIsloading(false)
   }, [captchaPath, createWebAuthNIdentity, navigate, setIsloading])
 
-  useChallenge()
+  const { isLoading: isChallengeLoading } = useChallenge()
+  console.log(">> RouteRegisterAccountIntro", { isChallengeLoading })
+
   const { getGoolgeDevice } = useDevices()
   const { loginWithGoogleDevice } = useAuthentication()
   const { readMemoryAccount } = useAccount()

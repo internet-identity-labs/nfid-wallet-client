@@ -8,7 +8,9 @@ import { RegisterAccountCaptcha } from "./captcha"
 import { RouteRegisterAccountIntro } from "./intro"
 
 const ChallengeLoader = () => {
-  useChallenge()
+  const { isLoading } = useChallenge()
+  console.log(">> ChallengeLoader", { isLoading })
+
   return <Outlet />
 }
 

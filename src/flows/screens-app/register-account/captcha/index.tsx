@@ -42,6 +42,7 @@ export const RegisterAccountCaptcha: React.FC<
     isLoading: isChallengeLoading,
     loadNewChallenge,
   } = useChallenge()
+  console.log(">> RegisterAccountCaptcha", { isChallengeLoading })
 
   const {
     setLoading,

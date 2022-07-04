@@ -37,7 +37,8 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
   const { getGoolgeDevice } = useDevices()
   const { getPersona } = usePersona()
   const { readAccount, readMemoryAccount } = useAccount()
-  useChallenge()
+  const { isLoading: isChallengeLoading } = useChallenge()
+  console.log(">> AppScreenAuthorizeDecider", { isChallengeLoading })
 
   const { navigateFactory, navigate } = useNFIDNavigate()
 

@@ -62,9 +62,10 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      const { user, ...response } = await registerAnchor({ captcha })
+      const response = await registerAnchor({ captcha })
 
-      if (response.kind === "loginSuccess") {
+      if (response && response.kind === "loginSuccess") {
+        const { user } = response
         await createAccount({ anchor: response.userNumber })
 
         if (isRemoteRegiser) {
@@ -122,8 +123,9 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      const { user, ...response } = await registerAnchorFromGoogle({ captcha })
-      if (response.kind === "loginSuccess") {
+      const response = await registerAnchorFromGoogle({ captcha })
+      if (response && response.kind === "loginSuccess") {
+        const { user } = response
         await im.create_account({
           anchor: response.userNumber,
         })

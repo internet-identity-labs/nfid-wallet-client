@@ -37,6 +37,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   } = useCaptcha({
     onApiError: async () => {
       setLoading(false)
+      setCaptchaError("API Error, please try again")
     },
     onBadChallenge: async () => {
       setLoading(false)
@@ -57,7 +58,8 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
       const response = await registerAnchor({ captcha })
-      if (response.kind === "loginSuccess") {
+
+      if (response && response.kind === "loginSuccess") {
         await createAccount({ anchor: response.userNumber })
         await Promise.all([
           createPersona({ domain: scope }),
@@ -90,7 +92,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       const response = await registerAnchorFromGoogle({ captcha })
       console.debug(">> handleRegisterAnchorWithGoogle", { response })
 
-      if (response.kind === "loginSuccess") {
+      if (response && response.kind === "loginSuccess") {
         await im.create_account({
           anchor: response.userNumber,
         })

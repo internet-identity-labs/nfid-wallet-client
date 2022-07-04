@@ -60,11 +60,11 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
 
       if (response.kind === "badChallenge") {
         setLoading(false)
-        onBadChallenge()
+        return onBadChallenge()
       }
       if (response.kind === "apiError") {
         setLoading(false)
-        onApiError()
+        return onApiError()
       }
 
       const user = await onRegisterSuccess(response)
@@ -98,15 +98,16 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         challengeResult,
       )
       console.log(">> registerAnchorFromGoogle", { response })
-      const user = await onRegisterSuccess(response)
       if (response.kind === "badChallenge") {
         setLoading(false)
-        onBadChallenge()
+        return onBadChallenge()
       }
       if (response.kind === "apiError") {
         setLoading(false)
-        onApiError()
+        return onApiError()
       }
+
+      const user = await onRegisterSuccess(response)
 
       return { ...response, user }
     },

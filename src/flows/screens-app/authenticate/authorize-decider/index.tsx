@@ -37,7 +37,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
   const { getGoolgeDevice } = useDevices()
   const { getPersona } = usePersona()
   const { readAccount, readMemoryAccount } = useAccount()
-  const { getChallenge } = useChallenge()
+  useChallenge()
 
   const { navigateFactory, navigate } = useNFIDNavigate()
 
@@ -58,7 +58,6 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     }
 
   const handleCreateKeys = React.useCallback(async () => {
-    getChallenge()
     setIsLoading(true)
     const registerPayload = await createWebAuthNIdentity()
 
@@ -68,11 +67,10 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       },
     })
     setIsLoading(false)
-  }, [createWebAuthNIdentity, getChallenge, navigate, pathCaptcha])
+  }, [createWebAuthNIdentity, navigate, pathCaptcha])
 
   const handleGetGoogleKey = React.useCallback(
-    async ({ credential }: CredentialResponse) => {
-      getChallenge()
+    async (credential: CredentialResponse) => {
       setIsLoading(true)
       const response = await getGoolgeDevice({ token: credential })
 
@@ -100,7 +98,6 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       setIsLoading(false)
     },
     [
-      getChallenge,
       getGoolgeDevice,
       loginWithGoogleDevice,
       navigate,

@@ -63,6 +63,7 @@
     "stickyfilljs": "^2.1.0",
     "stream-browserify": "3.0.0",
     "swiper": "^8.0.7",
+    "swr": "1.3.0",
     "usergeek-ic-js": "git+https://github.com/usergeek/usergeek-ic-js",
     "uuid": "8.3.2"
   },

@@ -1,7 +1,7 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { useAtom } from "jotai"
 import React from "react"
 import { useLocation } from "react-router-dom"
+import useSWR, { mutate } from "swr"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
@@ -9,8 +9,6 @@ import {
   ChallengeResult,
   IIConnection,
 } from "frontend/services/internet-identity/iiConnection"
-
-import { challengeAtom } from "./state"
 
 interface RegisterPayload {
   isGoogle?: boolean
@@ -35,13 +33,9 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     deviceName: "deviceName",
   }
 
-  const { challenge, getChallenge } = useChallenge()
+  const { challenge } = useChallenge()
 
   const { onRegisterSuccess } = useAuthentication()
-
-  const requestCaptcha = React.useCallback(async () => {
-    await getChallenge()
-  }, [getChallenge])
 
   const registerAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
@@ -126,7 +120,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     loading,
     setLoading,
     challenge,
-    requestCaptcha,
     registerPayload,
     registerAnchor,
     registerAnchorFromGoogle,
@@ -134,18 +127,23 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
 }
 
 export const useChallenge = () => {
-  const [challenge, setChallengeResponse] = useAtom(challengeAtom)
-
-  const getChallenge = React.useCallback(async () => {
-    if (challenge) {
-      setChallengeResponse(undefined)
-    }
+  const key = "challenge"
+  const { data, error } = useSWR(key, async () => {
     console.time(">> getChallenge")
     const challengeResponse = await IIConnection.createChallenge()
     console.timeEnd(">> getChallenge")
+    return challengeResponse
+  })
 
-    setChallengeResponse(challengeResponse)
-  }, [challenge, setChallengeResponse])
+  const loadNewChallenge = React.useCallback(() => mutate(key), [])
 
-  return { challenge, getChallenge }
+  const state = {
+    challenge: data,
+    error,
+    isLoading: !error && !data,
+    loadNewChallenge,
+  }
+  console.log(">> useChallenge", state)
+
+  return state
 }

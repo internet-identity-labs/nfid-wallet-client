@@ -5,7 +5,7 @@ import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { Captcha } from "frontend/screens/captcha"
-import { useCaptcha } from "frontend/screens/captcha/hook"
+import { useCaptcha, useChallenge } from "frontend/screens/captcha/hook"
 import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/services/identity-manager/persona/hooks"
@@ -21,12 +21,12 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     undefined,
   )
 
+  const { challenge, loadNewChallenge } = useChallenge()
+
   const {
     setLoading,
     registerPayload: { isGoogle },
     loading,
-    challenge,
-    requestCaptcha,
     registerAnchor,
     registerAnchorFromGoogle,
   } = useCaptcha({
@@ -34,7 +34,6 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       setLoading(false)
     },
     onBadChallenge: async () => {
-      await requestCaptcha()
       setLoading(false)
       setCaptchaError("Wrong captcha! Please try again")
     },
@@ -115,6 +114,8 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   )
 
   const { applicationLogo, applicationName } = useMultipass()
+  console.log(">> ", { isGoogle })
+
   return (
     <Captcha
       isLoading={loading}
@@ -124,7 +125,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       onRegisterAnchor={
         isGoogle ? handleRegisterAnchorWithGoogle : handleRegisterAnchor
       }
-      onRequestNewCaptcha={requestCaptcha}
+      onRequestNewCaptcha={loadNewChallenge}
       challengeBase64={challenge?.png_base64}
       errorString={captchaError}
     />

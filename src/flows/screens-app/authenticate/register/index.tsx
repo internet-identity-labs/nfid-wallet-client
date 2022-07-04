@@ -25,16 +25,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     useMultipass()
   const { navigate } = useNFIDNavigate()
 
-  // NOTE: the `getChallenge` gets called twice whithout this ref.
-  const loaderRef = React.useRef(false)
-
-  const { challenge, getChallenge } = useChallenge()
-  React.useEffect(() => {
-    if (!loaderRef.current && !challenge) {
-      loaderRef.current = true
-      getChallenge()
-    }
-  }, [challenge, getChallenge])
+  useChallenge()
 
   const handleCreateKeys = React.useCallback(async () => {
     setIsloading(true)
@@ -54,10 +45,10 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
-      getChallenge()
+      console.log(">> handleGetGoogleKey", { credential })
+
       setIsloading(true)
       const response = await getGoolgeDevice({ token: credential })
-      // TODO:
 
       // Given: user is returning (response.is_existing)
       // Then: we need to authenticate with the google device
@@ -84,7 +75,6 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     },
     [
       captchaPath,
-      getChallenge,
       getGoolgeDevice,
       loginWithGoogleDevice,
       navigate,

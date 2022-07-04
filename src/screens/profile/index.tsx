@@ -1,13 +1,11 @@
 import clsx from "clsx"
 import React from "react"
-import { generatePath, Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import { P, H3, Logo } from "@internet-identity-labs/nfid-sdk-react"
 
-import { PoaBanner } from "frontend/design-system/molecules/poa-banner"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
 
-import { AppScreenProofOfAttendencyConstants } from "frontend/flows/screens-app/proof-of-attendancy/routes"
 import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
 import {
   Device,
@@ -91,20 +89,6 @@ export const Profile: React.FC<ProfileProps> = ({
             <ProfileHomeMenu className="hidden md:block" />
           </div>
         </div>
-        {hasPoa && (
-          <Link
-            to={generatePath(
-              `${AppScreenProofOfAttendencyConstants.base}/${AppScreenProofOfAttendencyConstants.award}`,
-              { secret: "iiw-april-22" },
-            )}
-            className={clsx(
-              "overflow-hidden",
-              "sm:px-3 sm:py-6 sm:bg-white md:px-12",
-            )}
-          >
-            <PoaBanner />
-          </Link>
-        )}
         <ApplicationList accounts={accounts} />
         <DeviceList
           devices={devices}

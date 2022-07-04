@@ -41,6 +41,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     },
     onBadChallenge: async () => {
       setLoading(false)
+      loadNewChallenge()
       setCaptchaError("Wrong captcha! Please try again")
     },
   })
@@ -113,7 +114,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
         ])
         return navigate(successPath)
       }
-      console.error(">> handleRegisterAnchor", response)
+      console.error(">> handleRegisterAnchorWithGoogle", response)
     },
     [
       authorizeApp,

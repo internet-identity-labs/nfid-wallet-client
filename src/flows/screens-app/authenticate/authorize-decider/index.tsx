@@ -71,8 +71,9 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
   }, [createWebAuthNIdentity, navigate, pathCaptcha])
 
   const handleGetGoogleKey = React.useCallback(
-    async (credential: CredentialResponse) => {
+    async ({ credential }: CredentialResponse) => {
       setIsLoading(true)
+
       const response = await getGoolgeDevice({ token: credential })
 
       // Given: user is returning (response.is_existing)

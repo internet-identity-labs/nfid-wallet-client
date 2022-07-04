@@ -76,6 +76,9 @@ export const RegisterAccountCaptcha: React.FC<
               userNumberOverwrite: response.userNumber,
               userOverwrite: user,
             })
+            return navigate(
+              `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
+            )
           }
 
           if (!scope) throw new Error("scope is missing from params")
@@ -119,15 +122,24 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      if (!scope) throw new Error("scope is required")
-
-      const response = await registerAnchorFromGoogle({ captcha })
+      const { user, ...response } = await registerAnchorFromGoogle({ captcha })
       if (response.kind === "loginSuccess") {
         await im.create_account({
           anchor: response.userNumber,
         })
         if (isRemoteRegiser) {
           if (!secret) throw new Error("secret is missing from params")
+
+          if (isNFID) {
+            await remoteNFIDLogin({
+              secret,
+              userNumberOverwrite: response.userNumber,
+              userOverwrite: user,
+            })
+            return navigate(successPath)
+          }
+
+          if (!scope) throw new Error("scope is required")
           await Promise.all([
             im.create_persona({
               domain: scope,
@@ -147,29 +159,34 @@ export const RegisterAccountCaptcha: React.FC<
           return navigate(successPath)
         }
 
-        await Promise.all([
-          im.create_persona({
-            domain: scope,
-            persona_id: nextPersonaId,
-            persona_name: "",
-          }),
-          authorizeApp({
-            persona_id: nextPersonaId,
-            domain: scope,
-            anchor: response.userNumber,
-          }),
-        ])
+        if (!isNFID) {
+          if (!scope) throw new Error("scope is required")
+          await Promise.all([
+            im.create_persona({
+              domain: scope,
+              persona_id: nextPersonaId,
+              persona_name: "",
+            }),
+            authorizeApp({
+              persona_id: nextPersonaId,
+              domain: scope,
+              anchor: response.userNumber,
+            }),
+          ])
+        }
         return navigate(successPath)
       }
       console.error(">> handleRegisterAnchor", response)
     },
     [
       authorizeApp,
+      isNFID,
       isRemoteRegiser,
       navigate,
       nextPersonaId,
       registerAnchorFromGoogle,
       remoteLogin,
+      remoteNFIDLogin,
       scope,
       secret,
       successPath,

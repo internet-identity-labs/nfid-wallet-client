@@ -111,7 +111,7 @@ export const useAuthentication = () => {
   const remoteLogin = React.useCallback(
     async (actors: LoginSuccess) => {
       setIsRemoteDelegate(true)
-      replaceIdentity(actors.internetIdentity.delegationIdentity)
+      replaceIdentity(actors?.internetIdentity?.delegationIdentity)
       setUser({
         principal: (await agent.getPrincipal()).toText(),
         chain: actors.chain,
@@ -124,7 +124,7 @@ export const useAuthentication = () => {
 
   const onRegisterSuccess = React.useCallback(
     async (actors) => {
-      replaceIdentity(actors.internetIdentity.delegationIdentity)
+      replaceIdentity(actors?.internetIdentity?.delegationIdentity)
       const user = {
         principal: (await agent.getPrincipal()).toText(),
         chain: actors.chain,

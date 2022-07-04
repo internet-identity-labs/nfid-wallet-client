@@ -3,6 +3,7 @@ import { Outlet, Route } from "react-router-dom"
 
 import { useChallenge } from "frontend/screens/captcha/hook"
 
+import { ProfileConstants } from "../profile/routes"
 import { RegisterAccountCaptcha } from "./captcha"
 import { RouteRegisterAccountIntro } from "./intro"
 
@@ -37,7 +38,7 @@ export const RemoteRegisterAccountRoutes = (
       element={
         <RouteRegisterAccountIntro
           captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}
-          pathAuthorizeApp={"/rdp/:secret/:scope"}
+          pathOnAuthenticated={"/rdp/:secret/:scope"}
         />
       }
     />
@@ -61,7 +62,7 @@ export const NFIDRegisterAccountRoutes = (
       element={
         <RouteRegisterAccountIntro
           captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
-          pathAuthorizeApp={"/rdp/:secret/:scope"}
+          pathOnAuthenticated={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
         />
       }
     />

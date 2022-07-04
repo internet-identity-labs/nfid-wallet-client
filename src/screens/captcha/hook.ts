@@ -62,7 +62,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         challengeResult,
       )
 
-      onRegisterSuccess(response)
+      const user = await onRegisterSuccess(response)
       if (response.kind === "badChallenge") {
         setLoading(false)
         onBadChallenge()
@@ -72,7 +72,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         onApiError()
       }
 
-      return response
+      return { ...response, user }
     },
     [
       challenge,
@@ -100,7 +100,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         deviceName,
         challengeResult,
       )
-      onRegisterSuccess(response)
+      const user = onRegisterSuccess(response)
       if (response.kind === "badChallenge") {
         setLoading(false)
         onBadChallenge()
@@ -110,7 +110,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         onApiError()
       }
 
-      return response
+      return { ...response, user }
     },
     [
       challenge,

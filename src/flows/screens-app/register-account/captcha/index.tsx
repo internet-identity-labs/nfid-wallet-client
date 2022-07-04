@@ -55,7 +55,7 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      const response = await registerAnchor({ captcha })
+      const { user, ...response } = await registerAnchor({ captcha })
 
       if (response.kind === "loginSuccess") {
         await createAccount({ anchor: response.userNumber })
@@ -66,6 +66,7 @@ export const RegisterAccountCaptcha: React.FC<
             return await remoteNFIDLogin({
               secret,
               userNumberOverwrite: response.userNumber,
+              userOverwrite: user,
             })
           }
           return navigate(

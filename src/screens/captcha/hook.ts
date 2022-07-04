@@ -56,8 +56,8 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         deviceName,
         challengeResult,
       )
+      console.log(">> registerAnchor", { response })
 
-      const user = await onRegisterSuccess(response)
       if (response.kind === "badChallenge") {
         setLoading(false)
         onBadChallenge()
@@ -67,6 +67,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         onApiError()
       }
 
+      const user = await onRegisterSuccess(response)
       return { ...response, user }
     },
     [
@@ -97,7 +98,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         challengeResult,
       )
       console.log(">> registerAnchorFromGoogle", { response })
-      const user = onRegisterSuccess(response)
+      const user = await onRegisterSuccess(response)
       if (response.kind === "badChallenge") {
         setLoading(false)
         onBadChallenge()

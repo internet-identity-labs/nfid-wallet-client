@@ -85,7 +85,6 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
-      if (!scope) throw new Error("scope is required")
       console.debug(">> handleRegisterAnchorWithGoogle", { captcha })
 
       const response = await registerAnchorFromGoogle({ captcha })
@@ -95,6 +94,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
         await im.create_account({
           anchor: response.userNumber,
         })
+        if (!scope) throw new Error("scope is required")
         await Promise.all([
           im.create_persona({
             domain: scope,

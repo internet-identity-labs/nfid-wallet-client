@@ -394,7 +394,7 @@ export const useDevices = () => {
     [createRecoveryDevice, getDevices, getRecoveryDevices, user, userNumber],
   )
 
-  const getGoolgeDevice = React.useCallback(async ({ token }) => {
+  const getGoogleDevice = React.useCallback(async ({ token }) => {
     const response = await fetch(SIGNIN_GOOGLE, {
       method: "POST",
       body: JSON.stringify({ token }),
@@ -416,7 +416,7 @@ export const useDevices = () => {
     createWebAuthNDevice,
     createRecoveryPhrase,
     createSecurityDevice,
-    getGoolgeDevice,
+    getGoogleDevice,
     getDevices,
     getRecoveryDevices,
     createDevice,

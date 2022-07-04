@@ -9,8 +9,6 @@ export const ApplicationLogo: React.FC<ApplicationLogoProps> = ({
   src: url,
   applicationName = "unknown-application",
 }) => {
-  console.log(">> ", { url })
-
   return (
     <img
       src={decodeURIComponent(url)}

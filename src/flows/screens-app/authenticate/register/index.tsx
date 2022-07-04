@@ -40,7 +40,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     setIsloading(false)
   }, [captchaPath, createWebAuthNIdentity, navigate, setIsloading])
 
-  const { getGoolgeDevice } = useDevices()
+  const { getGoogleDevice } = useDevices()
   const { loginWithGoogleDevice } = useAuthentication()
   const { readMemoryAccount } = useAccount()
 
@@ -49,7 +49,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
       console.log(">> handleGetGoogleKey", { credential })
 
       setIsloading(true)
-      const response = await getGoolgeDevice({ token: credential })
+      const response = await getGoogleDevice({ token: credential })
 
       // Given: user is returning (response.is_existing)
       // Then: we need to authenticate with the google device
@@ -76,7 +76,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     },
     [
       captchaPath,
-      getGoolgeDevice,
+      getGoogleDevice,
       loginWithGoogleDevice,
       navigate,
       pathAuthorizeApp,

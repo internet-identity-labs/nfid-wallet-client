@@ -34,7 +34,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
   )
   const { user, login, setShouldStoreLocalAccount, loginWithGoogleDevice } =
     useAuthentication()
-  const { getGoolgeDevice } = useDevices()
+  const { getGoogleDevice } = useDevices()
   const { getPersona } = usePersona()
   const { readAccount, readMemoryAccount } = useAccount()
   const { isLoading: isChallengeLoading } = useChallenge()
@@ -74,7 +74,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     async ({ credential }: CredentialResponse) => {
       setIsLoading(true)
 
-      const response = await getGoolgeDevice({ token: credential })
+      const response = await getGoogleDevice({ token: credential })
 
       // Given: user is returning (response.is_existing)
       // Then: we need to authenticate with the google device
@@ -100,7 +100,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       setIsLoading(false)
     },
     [
-      getGoolgeDevice,
+      getGoogleDevice,
       loginWithGoogleDevice,
       navigate,
       pathAuthorizeApp,

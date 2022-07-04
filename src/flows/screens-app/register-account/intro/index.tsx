@@ -58,7 +58,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   const { isLoading: isChallengeLoading } = useChallenge()
   console.log(">> RouteRegisterAccountIntro", { isChallengeLoading })
 
-  const { getGoolgeDevice } = useDevices()
+  const { getGoogleDevice } = useDevices()
   const { loginWithGoogleDevice } = useAuthentication()
   const { readMemoryAccount } = useAccount()
 
@@ -67,7 +67,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       console.log(">> handleGetGoogleKey", { credential })
 
       setIsloading(true)
-      const response = await getGoolgeDevice({ token: credential })
+      const response = await getGoogleDevice({ token: credential })
 
       // Given: user is returning (response.is_existing)
       // Then: we need to authenticate with the google device
@@ -109,7 +109,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     },
     [
       captchaPath,
-      getGoolgeDevice,
+      getGoogleDevice,
       isNFID,
       loginWithGoogleDevice,
       navigate,

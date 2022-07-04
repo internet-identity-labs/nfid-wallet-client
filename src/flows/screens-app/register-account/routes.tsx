@@ -8,16 +8,7 @@ import { RegisterAccountCaptcha } from "./captcha"
 import { RouteRegisterAccountIntro } from "./intro"
 
 const ChallengeLoader = () => {
-  // NOTE: the `getChallenge` gets called twice whithout this ref.
-  const loaderRef = React.useRef(false)
-
-  const { challenge, getChallenge } = useChallenge()
-  React.useEffect(() => {
-    if (!loaderRef.current && !challenge) {
-      loaderRef.current = true
-      getChallenge()
-    }
-  }, [challenge, getChallenge])
+  useChallenge()
   return <Outlet />
 }
 
@@ -44,7 +35,12 @@ export const RemoteRegisterAccountRoutes = (
     />
     <Route
       path={RemoteRegisterAccountConstants.captcha}
-      element={<RegisterAccountCaptcha isRemoteRegiser />}
+      element={
+        <RegisterAccountCaptcha
+          isRemoteRegiser
+          successPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+        />
+      }
     />
   </Route>
 )
@@ -68,7 +64,12 @@ export const NFIDRegisterAccountRoutes = (
     />
     <Route
       path={NFIDRegisterAccountConstants.captcha}
-      element={<RegisterAccountCaptcha isNFIDProp />}
+      element={
+        <RegisterAccountCaptcha
+          isNFIDProp
+          successPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+        />
+      }
     />
   </Route>
 )

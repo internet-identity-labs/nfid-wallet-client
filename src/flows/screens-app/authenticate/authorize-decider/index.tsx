@@ -82,7 +82,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       // And: navigate to the authorize app screen
       if (response.is_existing) {
         await loginWithGoogleDevice(response.identity)
-        await readMemoryAccount()
+        await Promise.all([readMemoryAccount(), getPersona()])
         return navigate(pathAuthorizeApp)
       }
 
@@ -102,6 +102,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
     },
     [
       getGoogleDevice,
+      getPersona,
       loginWithGoogleDevice,
       navigate,
       pathAuthorizeApp,

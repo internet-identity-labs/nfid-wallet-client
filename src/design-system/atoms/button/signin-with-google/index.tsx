@@ -3,7 +3,7 @@ import React from "react"
 import { CredentialResponse } from "./types"
 import useLoadGsiScript from "./useLoadGsiScript"
 
-export type LoginEventHandler = (credential: CredentialResponse) => void
+export type LoginEventHandler = ({ credential }: CredentialResponse) => void
 
 declare const GOOGLE_CLIENT_ID: string
 

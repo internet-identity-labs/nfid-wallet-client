@@ -17,12 +17,12 @@ interface RegisterAccountIntroProps
     HTMLDivElement
   > {
   captchaPath: string
-  pathAuthorizeApp: string
+  pathOnAuthenticated: string
 }
 
 export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   captchaPath,
-  pathAuthorizeApp,
+  pathOnAuthenticated,
 }) => {
   const { isLoading, setIsloading } = useIsLoading()
   const { applicationName, applicationLogo, createWebAuthNIdentity } =
@@ -51,7 +51,6 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       getChallenge()
       setIsloading(true)
       const response = await getGoolgeDevice({ token: credential })
-      // TODO:
 
       // Given: user is returning (response.is_existing)
       // Then: we need to authenticate with the google device
@@ -59,7 +58,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       if (response.is_existing) {
         await loginWithGoogleDevice(response.identity)
         await readMemoryAccount()
-        return navigate(pathAuthorizeApp)
+        return navigate(pathOnAuthenticated)
       }
 
       // Given: user new
@@ -82,7 +81,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       getGoolgeDevice,
       loginWithGoogleDevice,
       navigate,
-      pathAuthorizeApp,
+      pathOnAuthenticated,
       readMemoryAccount,
       setIsloading,
     ],

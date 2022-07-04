@@ -63,7 +63,7 @@ export const RegisterAccountCaptcha: React.FC<
         if (isNFID) {
           if (isRemoteRegiser) {
             if (!secret) throw new Error("secret is missing from params")
-            return await remoteNFIDLogin({
+            await remoteNFIDLogin({
               secret,
               userNumberOverwrite: response.userNumber,
               userOverwrite: user,

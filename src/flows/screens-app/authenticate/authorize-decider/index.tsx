@@ -1,6 +1,6 @@
 import React from "react"
 
-import { GoogleCredential } from "frontend/design-system/atoms/button/signin-with-google"
+import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -71,7 +71,7 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
   }, [createWebAuthNIdentity, getChallenge, navigate, pathCaptcha])
 
   const handleGetGoogleKey = React.useCallback(
-    async ({ credential }: GoogleCredential) => {
+    async (credential: CredentialResponse) => {
       getChallenge()
       setIsLoading(true)
       const response = await getGoolgeDevice({ token: credential })

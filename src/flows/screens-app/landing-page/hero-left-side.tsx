@@ -9,9 +9,12 @@ import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
 import { RecoverNFIDRoutesConstants as RAC } from "frontend/flows/screens-app/recover-nfid/routes"
 import { useDeviceInfo } from "frontend/hooks/use-device-info"
+import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
 import { ElementProps } from "frontend/types/react"
 
 import MobileHero from "./assets/mobile_hero.svg"
+
+import { NFIDRegisterAccountConstants } from "../register-account/routes"
 
 interface HeroLeftSideProps extends ElementProps<HTMLDivElement> {
   isQRCode?: boolean
@@ -19,7 +22,7 @@ interface HeroLeftSideProps extends ElementProps<HTMLDivElement> {
 
 export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
   const { isMobile } = useDeviceInfo()
-  const navigate = useNavigate()
+  const { navigate } = useNFIDNavigate()
   const { registerRoute } = useRegisterQRCode()
   const text = React.useRef(null)
 
@@ -65,7 +68,11 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
               </h2>
               <div className="mt-8 pb-52">
                 <Button
-                  onClick={() => navigate(registerRoute)}
+                  onClick={() =>
+                    navigate(
+                      `${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.account}`,
+                    )
+                  }
                   largeMax
                   secondary
                 >

@@ -43,7 +43,31 @@ export const RemoteRegisterAccountRoutes = (
     />
     <Route
       path={RemoteRegisterAccountConstants.captcha}
-      element={<RegisterAccountCaptcha />}
+      element={<RegisterAccountCaptcha isRemoteRegiser />}
+    />
+  </Route>
+)
+
+export const NFIDRegisterAccountConstants = {
+  base: "/register-nfid-account",
+  account: "intro",
+  captcha: "captcha",
+}
+
+export const NFIDRegisterAccountRoutes = (
+  <Route path={NFIDRegisterAccountConstants.base} element={<ChallengeLoader />}>
+    <Route
+      path={NFIDRegisterAccountConstants.account}
+      element={
+        <RouteRegisterAccountIntro
+          captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
+          pathAuthorizeApp={"/rdp/:secret/:scope"}
+        />
+      }
+    />
+    <Route
+      path={NFIDRegisterAccountConstants.captcha}
+      element={<RegisterAccountCaptcha isNFIDProp />}
     />
   </Route>
 )

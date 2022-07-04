@@ -76,8 +76,6 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
       setIsLoading(true)
       const response = await getGoolgeDevice({ token: credential })
 
-      console.log(">> handleGetGoogleKey", { response })
-
       // Given: user is returning (response.is_existing)
       // Then: we need to authenticate with the google device
       // And: navigate to the authorize app screen

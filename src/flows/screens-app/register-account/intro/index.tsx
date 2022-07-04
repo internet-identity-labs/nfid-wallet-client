@@ -48,9 +48,6 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: GoogleCredential) => {
-      console.log(">> handleGetGoogleKey", { credential })
-      debugger
-
       getChallenge()
       setIsloading(true)
       const response = await getGoolgeDevice({ token: credential })

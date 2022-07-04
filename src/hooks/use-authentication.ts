@@ -18,7 +18,7 @@ import {
 } from "frontend/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
 
-interface User {
+export interface User {
   principal: string
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
@@ -180,16 +180,18 @@ export const useAuthentication = () => {
   const loginWithGoogleDevice = React.useCallback(
     async (identity: string) => {
       const result = await IIConnection.loginfromGoogleDevice(identity)
-      setUser({
+      const user = {
         principal: (await agent.getPrincipal()).toText(),
         chain: result.chain,
         sessionKey: result.sessionKey,
         internetIdentity: result.internetIdentity,
-      })
+      }
+      setUser(user)
       initUserGeek(await agent.getPrincipal())
       im.use_access_point()
       setShouldStoreLocalAccount(false)
       setError(null)
+      return user
     },
     [initUserGeek, setError, setShouldStoreLocalAccount, setUser],
   )

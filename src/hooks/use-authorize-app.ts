@@ -3,7 +3,7 @@ import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
 
 import { PublicKey } from "frontend/api/idl/internet_identity_types"
-import { useAuthentication } from "frontend/hooks/use-authentication"
+import { useAuthentication, User } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { retryGetDelegation } from "frontend/services/internet-identity/auth"
 import { IIConnection } from "frontend/services/internet-identity/iiConnection"
@@ -128,26 +128,32 @@ export const useAuthorizeApp = () => {
   const remoteNFIDLogin = React.useCallback(
     async ({
       secret,
+      userOverwrite,
       userNumberOverwrite,
     }: {
       secret: string
+      userOverwrite?: User
       userNumberOverwrite?: bigint
     }) => {
       const anchor = userNumber || userNumberOverwrite
       if (!anchor) {
         throw new Error("userNumber missing")
       }
+      const userState = userOverwrite || user
+      if (!userState) throw Error("user missing")
+      console.log(">> ", { userState })
+
       const message = JSON.stringify({
         type: "remote-nfid-login-register",
         userNumber: anchor.toString(),
-        nfid: { chain: user?.chain, sessionKey: user?.sessionKey },
+        nfid: { chain: userState.chain, sessionKey: userState.sessionKey },
       })
 
       const response = await postMessages(secret, [message])
 
       return response
     },
-    [user, postMessages, userNumber],
+    [postMessages, user, userNumber],
   )
 
   const sendWaitForUserInput = React.useCallback(

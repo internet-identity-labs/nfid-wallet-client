@@ -98,6 +98,12 @@ export const useAccount = () => {
     return response
   }, [account, shouldStoreLocalAccount, setAccount, setMemoryAccount])
 
+  // Used when we do not want to use the local storage version of the account.
+  // The account object is used as a flag to kickoff certain flows that do not make sense in particular use cases (recovery phrases, google, etc.)
+  // Connection methods:
+  // - just log me in (remote device)
+  // - google
+  // - recovery phrase (just log me in)
   const readMemoryAccount = React.useCallback(async () => {
     const response = await im.get_account()
 

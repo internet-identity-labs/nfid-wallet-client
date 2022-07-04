@@ -25,8 +25,8 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     useMultipass()
   const { navigate } = useNFIDNavigate()
 
-  const { isLoading: isChallengeLoading } = useChallenge()
-  console.log(">> RouteRegister", { isChallengeLoading })
+  // NOTE: this will start loading the challenge
+  useChallenge()
 
   const handleCreateKeys = React.useCallback(async () => {
     setIsloading(true)
@@ -46,8 +46,6 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
-      console.log(">> handleGetGoogleKey", { credential })
-
       setIsloading(true)
       const response = await getGoogleDevice({ token: credential })
 

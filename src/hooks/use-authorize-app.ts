@@ -141,7 +141,6 @@ export const useAuthorizeApp = () => {
       }
       const userState = userOverwrite || user
       if (!userState) throw Error("user missing")
-      console.log(">> ", { userState })
 
       const message = JSON.stringify({
         type: "remote-nfid-login-register",

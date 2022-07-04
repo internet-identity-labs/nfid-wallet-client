@@ -42,7 +42,6 @@ export const RegisterAccountCaptcha: React.FC<
     isLoading: isChallengeLoading,
     loadNewChallenge,
   } = useChallenge()
-  console.log(">> RegisterAccountCaptcha", { isChallengeLoading })
 
   const {
     setLoading,
@@ -196,7 +195,6 @@ export const RegisterAccountCaptcha: React.FC<
   )
 
   const { applicationLogo, applicationName } = useMultipass()
-  console.log(">> ", { isGoogle, isChallengeLoading })
 
   // https://philipp.eu.ngrok.io/register-account/29e9258e-78b3-4a85-90dc-8b01938384c5/localhost%3A3000/captcha
   return (

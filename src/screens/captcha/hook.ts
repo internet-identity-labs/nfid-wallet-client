@@ -33,8 +33,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     deviceName: "deviceName",
   }
 
-  const { challenge, isLoading } = useChallenge()
-  console.log(">> useCaptcha", { isLoading })
+  const { challenge } = useChallenge()
 
   const { onRegisterSuccess } = useAuthentication()
 
@@ -56,7 +55,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         deviceName,
         challengeResult,
       )
-      console.log(">> registerAnchor", { response })
 
       if (response.kind === "badChallenge") {
         setLoading(false)
@@ -85,7 +83,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       setLoading(true)
       if (!challenge) throw new Error("No challenge response")
       const { identity, deviceName } = registerPayload
-      console.log(">> registerAnchorFromGoogle", { identity, deviceName })
 
       const challengeResult: ChallengeResult = {
         chars: captcha,
@@ -97,7 +94,6 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         deviceName,
         challengeResult,
       )
-      console.log(">> registerAnchorFromGoogle", { response })
       if (response.kind === "badChallenge") {
         setLoading(false)
         return onBadChallenge()
@@ -138,10 +134,9 @@ export const useChallenge = () => {
   const { data, error, mutate } = useSWR(
     key,
     async () => {
-      console.log(">> useChallenge fetch")
-      console.time(">> getChallenge")
+      console.time("getChallenge")
       const challengeResponse = await IIConnection.createChallenge()
-      console.timeEnd(">> getChallenge")
+      console.timeEnd("getChallenge")
       return challengeResponse
     },
     {

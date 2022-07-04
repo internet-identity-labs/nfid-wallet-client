@@ -55,8 +55,8 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     setIsloading(false)
   }, [captchaPath, createWebAuthNIdentity, navigate, setIsloading])
 
-  const { isLoading: isChallengeLoading } = useChallenge()
-  console.log(">> RouteRegisterAccountIntro", { isChallengeLoading })
+  // NOTE: this will start loading the challenge
+  useChallenge()
 
   const { getGoogleDevice } = useDevices()
   const { loginWithGoogleDevice } = useAuthentication()
@@ -64,8 +64,6 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
-      console.log(">> handleGetGoogleKey", { credential })
-
       setIsloading(true)
       const response = await getGoogleDevice({ token: credential })
 
@@ -90,8 +88,6 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         }
         return navigate(pathOnAuthenticated)
       }
-
-      console.log(">> ", { response })
 
       // Given: user new
       // Then: we need to navigate to captcha screen

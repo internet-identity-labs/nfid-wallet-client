@@ -42,8 +42,6 @@ export const useRegisterQRCode = () => {
 
   const handleLoginFromRemoteDelegation = useCallback(
     async (nfidJsonDelegate, userNumber) => {
-      console.log(">> ", { nfidJsonDelegate })
-
       const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
@@ -82,8 +80,6 @@ export const useRegisterQRCode = () => {
         )
 
         if (registerMessage) {
-          console.log(">> ", { registerMessage })
-
           handleLoginFromRemoteDelegation(
             registerMessage.nfid,
             registerMessage.userNumber,

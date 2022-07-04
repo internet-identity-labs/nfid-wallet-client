@@ -33,7 +33,8 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
     deviceName: "deviceName",
   }
 
-  const { challenge } = useChallenge()
+  const { challenge, isLoading } = useChallenge()
+  console.log(">> useCaptcha", { isLoading })
 
   const { onRegisterSuccess } = useAuthentication()
 
@@ -128,14 +129,24 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
   }
 }
 
+const THREE_MIN_IN_MS = 1000 * 60 * 3
 export const useChallenge = () => {
   const key = "challenge"
-  const { data, error, mutate } = useSWR(key, async () => {
-    console.time(">> getChallenge")
-    const challengeResponse = await IIConnection.createChallenge()
-    console.timeEnd(">> getChallenge")
-    return challengeResponse
-  })
+
+  const { data, error, mutate } = useSWR(
+    key,
+    async () => {
+      console.log(">> useChallenge fetch")
+      console.time(">> getChallenge")
+      const challengeResponse = await IIConnection.createChallenge()
+      console.timeEnd(">> getChallenge")
+      return challengeResponse
+    },
+    {
+      focusThrottleInterval: THREE_MIN_IN_MS,
+      dedupingInterval: THREE_MIN_IN_MS,
+    },
+  )
 
   const loadNewChallenge = React.useCallback(() => {
     mutate(undefined)

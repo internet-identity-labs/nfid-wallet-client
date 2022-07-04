@@ -1,7 +1,7 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import React from "react"
 import { useLocation } from "react-router-dom"
-import useSWR, { mutate } from "swr"
+import useSWR from "swr"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useIsLoading } from "frontend/hooks/use-is-loading"
@@ -83,6 +83,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       setLoading(true)
       if (!challenge) throw new Error("No challenge response")
       const { identity, deviceName } = registerPayload
+      console.log(">> registerAnchorFromGoogle", { identity, deviceName })
 
       const challengeResult: ChallengeResult = {
         chars: captcha,
@@ -94,6 +95,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         deviceName,
         challengeResult,
       )
+      console.log(">> registerAnchorFromGoogle", { response })
       const user = onRegisterSuccess(response)
       if (response.kind === "badChallenge") {
         setLoading(false)
@@ -128,22 +130,21 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
 
 export const useChallenge = () => {
   const key = "challenge"
-  const { data, error } = useSWR(key, async () => {
+  const { data, error, mutate } = useSWR(key, async () => {
     console.time(">> getChallenge")
     const challengeResponse = await IIConnection.createChallenge()
     console.timeEnd(">> getChallenge")
     return challengeResponse
   })
 
-  const loadNewChallenge = React.useCallback(() => mutate(key), [])
+  const loadNewChallenge = React.useCallback(() => {
+    mutate(undefined)
+  }, [mutate])
 
-  const state = {
+  return {
     challenge: data,
     error,
     isLoading: !error && !data,
     loadNewChallenge,
   }
-  console.log(">> useChallenge", state)
-
-  return state
 }

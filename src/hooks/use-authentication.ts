@@ -125,12 +125,14 @@ export const useAuthentication = () => {
   const onRegisterSuccess = React.useCallback(
     async (actors) => {
       replaceIdentity(actors.internetIdentity.delegationIdentity)
-      setUser({
+      const user = {
         principal: (await agent.getPrincipal()).toText(),
         chain: actors.chain,
         sessionKey: actors.sessionKey,
         internetIdentity: actors.internetIdentity,
-      })
+      }
+      setUser(user)
+      return user
     },
     [setUser],
   )

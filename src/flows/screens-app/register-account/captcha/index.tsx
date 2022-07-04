@@ -37,7 +37,11 @@ export const RegisterAccountCaptcha: React.FC<
   )
 
   const { nextPersonaId, createPersona } = usePersona()
-  const { challenge, loadNewChallenge } = useChallenge()
+  const {
+    challenge,
+    isLoading: isChallengeLoading,
+    loadNewChallenge,
+  } = useChallenge()
 
   const {
     setLoading,
@@ -62,37 +66,33 @@ export const RegisterAccountCaptcha: React.FC<
       if (response.kind === "loginSuccess") {
         await createAccount({ anchor: response.userNumber })
 
-        if (isNFID) {
-          if (isRemoteRegiser) {
-            if (!secret) throw new Error("secret is missing from params")
+        if (isRemoteRegiser) {
+          if (!secret) throw new Error("secret is missing from params")
+
+          if (isNFID) {
             await remoteNFIDLogin({
               secret,
               userNumberOverwrite: response.userNumber,
               userOverwrite: user,
             })
           }
-          return navigate(
-            `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-          )
+
+          if (!scope) throw new Error("scope is missing from params")
+          await Promise.all([
+            createPersona({
+              domain: `${window.location.protocol}//${scope}`,
+            }),
+            remoteLogin({
+              secret,
+              scope,
+              persona_id: nextPersonaId,
+              userNumberOverwrite: response.userNumber,
+              connection: response.internetIdentity,
+              chain: response.chain,
+              sessionKey: response.sessionKey,
+            }),
+          ])
         }
-
-        if (!secret) throw new Error("secret is missing from params")
-        if (!scope) throw new Error("scope is missing from params")
-
-        await Promise.all([
-          createPersona({
-            domain: `${window.location.protocol}//${scope}`,
-          }),
-          remoteLogin({
-            secret,
-            scope,
-            persona_id: nextPersonaId,
-            userNumberOverwrite: response.userNumber,
-            connection: response.internetIdentity,
-            chain: response.chain,
-            sessionKey: response.sessionKey,
-          }),
-        ])
 
         navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
       }
@@ -125,6 +125,27 @@ export const RegisterAccountCaptcha: React.FC<
         await im.create_account({
           anchor: response.userNumber,
         })
+        if (isRemoteRegiser) {
+          if (!secret) throw new Error("secret is missing from params")
+          await Promise.all([
+            im.create_persona({
+              domain: scope,
+              persona_id: nextPersonaId,
+              persona_name: "",
+            }),
+            remoteLogin({
+              secret,
+              scope,
+              persona_id: nextPersonaId,
+              userNumberOverwrite: response.userNumber,
+              connection: response.internetIdentity,
+              chain: response.chain,
+              sessionKey: response.sessionKey,
+            }),
+          ])
+          return navigate(successPath)
+        }
+
         await Promise.all([
           im.create_persona({
             domain: scope,
@@ -143,20 +164,25 @@ export const RegisterAccountCaptcha: React.FC<
     },
     [
       authorizeApp,
+      isRemoteRegiser,
       navigate,
       nextPersonaId,
       registerAnchorFromGoogle,
+      remoteLogin,
       scope,
+      secret,
       successPath,
     ],
   )
 
   const { applicationLogo, applicationName } = useMultipass()
-  console.log(">> ", { isGoogle })
+  console.log(">> ", { isGoogle, isChallengeLoading })
 
+  // https://philipp.eu.ngrok.io/register-account/29e9258e-78b3-4a85-90dc-8b01938384c5/localhost%3A3000/captcha
   return (
     <Captcha
       isLoading={loading}
+      isChallengeLoading={isChallengeLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       successPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}

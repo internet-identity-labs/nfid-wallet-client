@@ -6,11 +6,16 @@ import { RefreshIcon } from "frontend/design-system/atoms/icons/refresh"
 import spinner from "./spinner.png"
 
 interface ChallengeProps {
+  isLoading?: boolean
   src?: string
   refresh?: () => void
 }
 
-export const Challenge: React.FC<ChallengeProps> = ({ src, refresh }) => {
+export const Challenge: React.FC<ChallengeProps> = ({
+  isLoading,
+  src,
+  refresh,
+}) => {
   return (
     <div
       className={clsx(
@@ -18,7 +23,7 @@ export const Challenge: React.FC<ChallengeProps> = ({ src, refresh }) => {
         "bg-white border border-gray-200",
       )}
     >
-      {!src ? (
+      {isLoading || !src ? (
         <div className="flex flex-col w-full h-full my-auto text-center animate-pulse center">
           <div className="h-5 m-auto">
             <img

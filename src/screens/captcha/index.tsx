@@ -17,10 +17,11 @@ interface CaptchaProps extends ElementProps<HTMLDivElement> {
   applicationName?: string
   applicationLogo?: string
   isLoading?: boolean
+  isChallengeLoading?: boolean
   challengeBase64?: string
   errorString?: string
   onRegisterAnchor: ({ captcha }: { captcha: string }) => Promise<any>
-  onRequestNewCaptcha: () => Promise<void>
+  onRequestNewCaptcha: () => void
 }
 
 export const Captcha: React.FC<CaptchaProps> = ({
@@ -29,6 +30,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
   applicationName,
   applicationLogo,
   isLoading,
+  isChallengeLoading,
   onRequestNewCaptcha,
   onRegisterAnchor,
   errorString,
@@ -38,10 +40,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
     formState: { errors, dirtyFields },
     handleSubmit,
     setError,
-    setValue,
-  } = useForm<{ captcha: string }>({
-    mode: "onTouched",
-  })
+  } = useForm<{ captcha: string }>()
 
   React.useEffect(() => {
     errorString &&
@@ -70,11 +69,9 @@ export const Captcha: React.FC<CaptchaProps> = ({
       </p>
       <form className="flex flex-col w-full mt-5">
         <Challenge
+          isLoading={isChallengeLoading}
           src={challengeBase64 && `data:image/png;base64,${challengeBase64}`}
-          refresh={async () => {
-            setValue("captcha", "")
-            onRequestNewCaptcha()
-          }}
+          refresh={onRequestNewCaptcha}
         />
         <Input
           autoFocus

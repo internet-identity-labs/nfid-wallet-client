@@ -11,12 +11,10 @@ if (!GOOGLE_CLIENT_ID) throw new Error("GOOGLE_CLIENT_ID is not defined")
 
 interface SignInWithGoogleProps {
   onLogin: LoginEventHandler
-  buttonWidth?: number | null
 }
 
 export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   onLogin,
-  buttonWidth,
 }) => {
   const buttonRef = React.useRef<HTMLDivElement>(null)
   const isScriptLoaded = useLoadGsiScript()

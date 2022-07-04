@@ -11,10 +11,6 @@ import { Faq } from "./flows/screens-app/landing-page/faq"
 import { OurMission } from "./flows/screens-app/landing-page/our-mission"
 import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
 import { ProfileRoutes } from "./flows/screens-app/profile/routes"
-import {
-  AppScreenProofOfAttendencyConstants as POAPC,
-  AppScreenProofOfAttendencyRoutes,
-} from "./flows/screens-app/proof-of-attendancy/routes"
 import { RecoverNFIDRoutes } from "./flows/screens-app/recover-nfid/routes"
 import {
   NFIDRegisterAccountRoutes,

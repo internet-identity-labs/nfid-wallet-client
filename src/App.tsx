@@ -49,7 +49,6 @@ export const App = () => {
       {NFIDRegisterAccountRoutes}
       {RemoteNFIDAuthenticationRoutes}
       {AppScreenAuthorizeAppRoutes}
-      {AppScreenProofOfAttendencyRoutes(`${POAPC.base}/${POAPC.register}`)}
       {RecoverNFIDRoutes}
 
       {AppScreenAuthenticateAccountRoutes}

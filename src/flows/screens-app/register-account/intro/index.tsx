@@ -50,14 +50,15 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     setIsloading(false)
   }, [captchaPath, createWebAuthNIdentity, navigate, setIsloading])
 
-  const { getChallenge } = useChallenge()
+  useChallenge()
   const { getGoolgeDevice } = useDevices()
   const { loginWithGoogleDevice } = useAuthentication()
   const { readMemoryAccount } = useAccount()
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
-      getChallenge()
+      console.log(">> handleGetGoogleKey", { credential })
+
       setIsloading(true)
       const response = await getGoolgeDevice({ token: credential })
 
@@ -99,7 +100,6 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     },
     [
       captchaPath,
-      getChallenge,
       getGoolgeDevice,
       isNFID,
       loginWithGoogleDevice,

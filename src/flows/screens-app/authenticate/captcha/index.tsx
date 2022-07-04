@@ -21,7 +21,11 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     undefined,
   )
 
-  const { challenge, loadNewChallenge } = useChallenge()
+  const {
+    challenge,
+    isLoading: isChallengeLoading,
+    loadNewChallenge,
+  } = useChallenge()
 
   const {
     setLoading,
@@ -81,8 +85,11 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
       if (!scope) throw new Error("scope is required")
+      console.debug(">> handleRegisterAnchorWithGoogle", { captcha })
 
       const response = await registerAnchorFromGoogle({ captcha })
+      console.debug(">> handleRegisterAnchorWithGoogle", { response })
+
       if (response.kind === "loginSuccess") {
         await im.create_account({
           anchor: response.userNumber,
@@ -114,11 +121,12 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   )
 
   const { applicationLogo, applicationName } = useMultipass()
-  console.log(">> ", { isGoogle })
+  console.log(">> ", { isGoogle, isChallengeLoading })
 
   return (
     <Captcha
       isLoading={loading}
+      isChallengeLoading={isChallengeLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       successPath={successPath}

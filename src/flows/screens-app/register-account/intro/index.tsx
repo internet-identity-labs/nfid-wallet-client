@@ -84,6 +84,8 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         return navigate(pathOnAuthenticated)
       }
 
+      console.log(">> ", { response })
+
       // Given: user new
       // Then: we need to navigate to captcha screen
       // And: register a new account

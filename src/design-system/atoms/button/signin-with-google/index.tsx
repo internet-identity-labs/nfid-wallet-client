@@ -30,6 +30,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
     window.google?.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: onLogin,
+      itp_support: true,
     })
 
     window.google?.accounts.id.renderButton(buttonRef.current, {

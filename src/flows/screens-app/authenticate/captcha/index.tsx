@@ -26,7 +26,6 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     isLoading: isChallengeLoading,
     loadNewChallenge,
   } = useChallenge()
-  console.log(">> RouteCaptcha", { isChallengeLoading })
 
   const {
     setLoading,
@@ -124,7 +123,6 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   )
 
   const { applicationLogo, applicationName } = useMultipass()
-  console.log(">> ", { isGoogle, isChallengeLoading })
 
   return (
     <Captcha

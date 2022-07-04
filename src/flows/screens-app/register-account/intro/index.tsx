@@ -65,13 +65,17 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       // Then: we need to authenticate with the google device
       // And: navigate to the authorize app screen
       if (response.is_existing) {
-        await loginWithGoogleDevice(response.identity)
+        const userOverwrite = await loginWithGoogleDevice(response.identity)
         const {
           data: [account],
         } = await readMemoryAccount()
         if (isNFID && account) {
           if (!secret) throw new Error("secret missing")
-          await remoteNFIDLogin({ secret, userNumberOverwrite: account.anchor })
+          await remoteNFIDLogin({
+            secret,
+            userNumberOverwrite: account.anchor,
+            userOverwrite,
+          })
           return navigate(
             `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
           )

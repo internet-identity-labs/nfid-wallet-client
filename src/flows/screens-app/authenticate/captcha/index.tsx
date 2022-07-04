@@ -26,6 +26,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     isLoading: isChallengeLoading,
     loadNewChallenge,
   } = useChallenge()
+  console.log(">> RouteCaptcha", { isChallengeLoading })
 
   const {
     setLoading,

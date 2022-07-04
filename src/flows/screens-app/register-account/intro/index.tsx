@@ -22,11 +22,13 @@ interface RegisterAccountIntroProps
   > {
   captchaPath: string
   pathOnAuthenticated: string
+  isNFID?: boolean
 }
 
 export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   captchaPath,
   pathOnAuthenticated,
+  isNFID: isNFIDProp,
 }) => {
   const { isLoading, setIsloading } = useIsLoading()
   const { applicationName, applicationLogo, createWebAuthNIdentity } =
@@ -35,7 +37,10 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
   const { secret, scope } = useParams()
 
-  const isNFID = React.useMemo(() => scope === "NFID", [scope])
+  const isNFID = React.useMemo(
+    () => scope === "NFID" || isNFIDProp,
+    [isNFIDProp, scope],
+  )
   const { remoteNFIDLogin } = useAuthorizeApp()
 
   const handleCreateKeys = React.useCallback(async () => {

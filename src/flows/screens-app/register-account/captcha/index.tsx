@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 
 import { im } from "frontend/api/actors"
 import { ProfileConstants } from "frontend/flows/screens-app/profile/routes"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useAuthorizeApp } from "frontend/hooks/use-authorize-app"
 import { useMultipass } from "frontend/hooks/use-multipass"
@@ -26,6 +27,7 @@ export const RegisterAccountCaptcha: React.FC<
   const [captchaError, setCaptchaError] = React.useState<string | undefined>(
     undefined,
   )
+  const { setShouldStoreLocalAccount } = useAuthentication()
   const { remoteLogin, remoteNFIDLogin } = useAuthorizeApp()
   const { createAccount } = useAccount()
 
@@ -55,6 +57,7 @@ export const RegisterAccountCaptcha: React.FC<
     },
     onBadChallenge: async () => {
       setLoading(false)
+      loadNewChallenge()
       setCaptchaError("Wrong captcha! Please try again")
     },
   })
@@ -124,6 +127,7 @@ export const RegisterAccountCaptcha: React.FC<
     async ({ captcha }: { captcha: string }) => {
       const response = await registerAnchorFromGoogle({ captcha })
       if (response && response.kind === "loginSuccess") {
+        setShouldStoreLocalAccount(false)
         const { user } = response
         await im.create_account({
           anchor: response.userNumber,
@@ -190,6 +194,7 @@ export const RegisterAccountCaptcha: React.FC<
       remoteNFIDLogin,
       scope,
       secret,
+      setShouldStoreLocalAccount,
       successPath,
     ],
   )

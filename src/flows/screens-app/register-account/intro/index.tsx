@@ -23,12 +23,14 @@ interface RegisterAccountIntroProps
   captchaPath: string
   pathOnAuthenticated: string
   isNFID?: boolean
+  isRemoteRegiser?: boolean
 }
 
 export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   captchaPath,
   pathOnAuthenticated,
   isNFID: isNFIDProp,
+  isRemoteRegiser,
 }) => {
   const { isLoading, setIsloading } = useIsLoading()
   const { applicationName, applicationLogo, createWebAuthNIdentity } =
@@ -41,6 +43,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     () => scope === "NFID" || isNFIDProp,
     [isNFIDProp, scope],
   )
+
   const { remoteNFIDLogin } = useAuthorizeApp()
 
   const handleCreateKeys = React.useCallback(async () => {
@@ -67,31 +70,33 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       setIsloading(true)
       const response = await getGoogleDevice({ token: credential })
 
-      // Given: user is returning (response.is_existing)
-      // Then: we need to authenticate with the google device
-      // And: navigate to the authorize app screen
+      // Returning user has a key pair
       if (response.is_existing) {
         const userOverwrite = await loginWithGoogleDevice(response.identity)
+
         const {
           data: [account],
         } = await readMemoryAccount()
+
         if (isNFID && account) {
-          if (!secret) throw new Error("secret missing")
-          await remoteNFIDLogin({
-            secret,
-            userNumberOverwrite: account.anchor,
-            userOverwrite,
-          })
+          if (isRemoteRegiser) {
+            if (!secret) throw new Error("secret missing")
+            await remoteNFIDLogin({
+              secret,
+              userNumberOverwrite: account.anchor,
+              userOverwrite,
+            })
+          }
           return navigate(
             `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
           )
         }
+        // when we're not on NFID we're handling the authorization on
+        // the next page
         return navigate(pathOnAuthenticated)
       }
 
-      // Given: user new
-      // Then: we need to navigate to captcha screen
-      // And: register a new account
+      // new google user send to register
       navigate(captchaPath, {
         state: {
           registerPayload: {
@@ -107,6 +112,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       captchaPath,
       getGoogleDevice,
       isNFID,
+      isRemoteRegiser,
       loginWithGoogleDevice,
       navigate,
       pathOnAuthenticated,

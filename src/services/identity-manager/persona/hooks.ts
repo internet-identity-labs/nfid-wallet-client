@@ -24,10 +24,10 @@ export const usePersona = () => {
 
   const accounts = React.useMemo(() => {
     if (!allAccounts) return []
-    return allAccounts.filter(({ domain }) => {
+
+    const filteredAccounts = allAccounts.filter(({ domain }) => {
       if (!authorizationRequest?.hostname && scope) {
-        const applicationDomain = `${window.location.protocol}//${scope}`
-        const isMatch = applicationDomain.indexOf(domain) > -1
+        const isMatch = domain.indexOf(scope) > -1
         return isMatch
       }
       return (
@@ -35,6 +35,7 @@ export const usePersona = () => {
         authorizationRequest.hostname.indexOf(domain) > -1
       )
     })
+    return filteredAccounts
   }, [allAccounts, authorizationRequest?.hostname, scope])
 
   const nextPersonaId = React.useMemo(() => {

@@ -10,6 +10,7 @@ import { useChallenge } from "frontend/screens/captcha/hook"
 import { RegisterAccountIntro } from "frontend/screens/register-account-intro/screen-app"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/services/identity-manager/persona/hooks"
 
 interface RouteRegisterProps {
   captchaPath: string
@@ -43,6 +44,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
   const { getGoogleDevice } = useDevices()
   const { loginWithGoogleDevice } = useAuthentication()
   const { readMemoryAccount } = useAccount()
+  const { getPersona } = usePersona()
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
@@ -54,7 +56,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
       // And: navigate to the authorize app screen
       if (response.is_existing) {
         await loginWithGoogleDevice(response.identity)
-        await readMemoryAccount()
+        await Promise.all([readMemoryAccount(), getPersona()])
         return navigate(pathAuthorizeApp)
       }
 
@@ -75,6 +77,7 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
     [
       captchaPath,
       getGoogleDevice,
+      getPersona,
       loginWithGoogleDevice,
       navigate,
       pathAuthorizeApp,

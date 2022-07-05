@@ -32,7 +32,7 @@ export const Challenge: React.FC<ChallengeProps> = ({
               src={spinner}
             />
             <span className="inline-block ml-2 text-xs font-normal align-middle opacity-40">
-              Generating captcha, this might take a few seconds
+              Fetching captcha from blockchain
             </span>
           </div>
         </div>

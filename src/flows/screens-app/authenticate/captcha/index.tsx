@@ -1,6 +1,7 @@
 import React from "react"
 
 import { im } from "frontend/api/actors"
+import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAuthorization } from "frontend/hooks/use-authorization"
 import { useMultipass } from "frontend/hooks/use-multipass"
 import { useNFIDNavigate } from "frontend/hooks/use-nfid-navigate"
@@ -40,6 +41,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
     },
     onBadChallenge: async () => {
       setLoading(false)
+      loadNewChallenge()
       setCaptchaError("Wrong captcha! Please try again")
     },
   })
@@ -48,6 +50,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
   const { userNumber, createAccount } = useAccount()
 
+  const { setShouldStoreLocalAccount } = useAuthentication()
   const { authorizeApp } = useAuthorization({
     userNumber,
   })
@@ -92,6 +95,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       console.debug(">> handleRegisterAnchorWithGoogle", { response })
 
       if (response && response.kind === "loginSuccess") {
+        setShouldStoreLocalAccount(false)
         await im.create_account({
           anchor: response.userNumber,
         })
@@ -110,7 +114,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
         ])
         return navigate(successPath)
       }
-      console.error(">> handleRegisterAnchor", response)
+      console.error(">> handleRegisterAnchorWithGoogle", response)
     },
     [
       authorizeApp,
@@ -118,6 +122,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       nextPersonaId,
       registerAnchorFromGoogle,
       scope,
+      setShouldStoreLocalAccount,
       successPath,
     ],
   )

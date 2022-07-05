@@ -57,6 +57,7 @@ export const RegisterAccountCaptcha: React.FC<
     },
     onBadChallenge: async () => {
       setLoading(false)
+      loadNewChallenge()
       setCaptchaError("Wrong captcha! Please try again")
     },
   })

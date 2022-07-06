@@ -119,6 +119,7 @@ export class IIConnection {
           credential_id: [credential_id],
           key_type: { unknown: null },
           purpose: { authentication: null },
+          protection: { unprotected: null },
         },
         challengeResult,
       )
@@ -193,6 +194,7 @@ export class IIConnection {
           credential_id: [],
           key_type: { unknown: null },
           purpose: { authentication: null },
+          protection: { unprotected: null },
         },
         challengeResult,
       )
@@ -467,6 +469,7 @@ export class IIConnection {
         : [],
       key_type: keyType,
       purpose,
+      protection: { unprotected: null },
     })
   }
 

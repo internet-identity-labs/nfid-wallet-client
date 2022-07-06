@@ -1,5 +1,9 @@
 export const idlFactory = ({ IDL }) => {
   const UserNumber = IDL.Nat64
+  const DeviceProtection = IDL.Variant({
+    unprotected: IDL.Null,
+    protected: IDL.Null,
+  })
   const PublicKey = IDL.Vec(IDL.Nat8)
   const DeviceKey = PublicKey
   const KeyType = IDL.Variant({
@@ -15,6 +19,7 @@ export const idlFactory = ({ IDL }) => {
   const CredentialId = IDL.Vec(IDL.Nat8)
   const DeviceData = IDL.Record({
     alias: IDL.Text,
+    protection: DeviceProtection,
     pubkey: DeviceKey,
     key_type: KeyType,
     purpose: Purpose,
@@ -133,6 +138,7 @@ export const idlFactory = ({ IDL }) => {
     register: IDL.Func([DeviceData, ChallengeResult], [RegisterResponse], []),
     remove: IDL.Func([UserNumber, DeviceKey], [], []),
     stats: IDL.Func([], [InternetIdentityStats], ["query"]),
+    update: IDL.Func([UserNumber, DeviceKey, DeviceData], [], []),
     verify_tentative_device: IDL.Func(
       [UserNumber, IDL.Text],
       [VerifyTentativeDeviceResponse],

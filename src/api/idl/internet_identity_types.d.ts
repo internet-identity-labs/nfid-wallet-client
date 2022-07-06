@@ -1,3 +1,4 @@
+import type { ActorMethod } from "@dfinity/agent"
 import type { Principal } from "@dfinity/principal"
 
 export type AddTentativeDeviceResponse =
@@ -28,12 +29,14 @@ export interface Delegation {
 }
 export interface DeviceData {
   alias: string
+  protection: DeviceProtection
   pubkey: DeviceKey
   key_type: KeyType
   purpose: Purpose
   credential_id: [] | [CredentialId]
 }
 export type DeviceKey = PublicKey
+export type DeviceProtection = { unprotected: null } | { protected: null }
 export interface DeviceRegistrationInfo {
   tentative_device: [] | [DeviceData]
   expiration: Timestamp
@@ -101,42 +104,33 @@ export type VerifyTentativeDeviceResponse =
   | { wrong_code: { retries_left: number } }
   | { no_device_to_verify: null }
 export interface _SERVICE {
-  add: (arg_0: UserNumber, arg_1: DeviceData) => Promise<undefined>
-  add_tentative_device: (
-    arg_0: UserNumber,
-    arg_1: DeviceData,
-  ) => Promise<AddTentativeDeviceResponse>
-  create_challenge: () => Promise<Challenge>
-  enter_device_registration_mode: (arg_0: UserNumber) => Promise<Timestamp>
-  exit_device_registration_mode: (arg_0: UserNumber) => Promise<undefined>
-  get_anchor_info: (arg_0: UserNumber) => Promise<IdentityAnchorInfo>
-  get_delegation: (
-    arg_0: UserNumber,
-    arg_1: FrontendHostname,
-    arg_2: SessionKey,
-    arg_3: Timestamp,
-  ) => Promise<GetDelegationResponse>
-  get_principal: (
-    arg_0: UserNumber,
-    arg_1: FrontendHostname,
-  ) => Promise<Principal>
-  http_request: (arg_0: HttpRequest) => Promise<HttpResponse>
-  init_salt: () => Promise<undefined>
-  lookup: (arg_0: UserNumber) => Promise<Array<DeviceData>>
-  prepare_delegation: (
-    arg_0: UserNumber,
-    arg_1: FrontendHostname,
-    arg_2: SessionKey,
-    arg_3: [] | [bigint],
-  ) => Promise<[UserKey, Timestamp]>
-  register: (
-    arg_0: DeviceData,
-    arg_1: ChallengeResult,
-  ) => Promise<RegisterResponse>
-  remove: (arg_0: UserNumber, arg_1: DeviceKey) => Promise<undefined>
-  stats: () => Promise<InternetIdentityStats>
-  verify_tentative_device: (
-    arg_0: UserNumber,
-    arg_1: string,
-  ) => Promise<VerifyTentativeDeviceResponse>
+  add: ActorMethod<[UserNumber, DeviceData], undefined>
+  add_tentative_device: ActorMethod<
+    [UserNumber, DeviceData],
+    AddTentativeDeviceResponse
+  >
+  create_challenge: ActorMethod<[], Challenge>
+  enter_device_registration_mode: ActorMethod<[UserNumber], Timestamp>
+  exit_device_registration_mode: ActorMethod<[UserNumber], undefined>
+  get_anchor_info: ActorMethod<[UserNumber], IdentityAnchorInfo>
+  get_delegation: ActorMethod<
+    [UserNumber, FrontendHostname, SessionKey, Timestamp],
+    GetDelegationResponse
+  >
+  get_principal: ActorMethod<[UserNumber, FrontendHostname], Principal>
+  http_request: ActorMethod<[HttpRequest], HttpResponse>
+  init_salt: ActorMethod<[], undefined>
+  lookup: ActorMethod<[UserNumber], Array<DeviceData>>
+  prepare_delegation: ActorMethod<
+    [UserNumber, FrontendHostname, SessionKey, [] | [bigint]],
+    [UserKey, Timestamp]
+  >
+  register: ActorMethod<[DeviceData, ChallengeResult], RegisterResponse>
+  remove: ActorMethod<[UserNumber, DeviceKey], undefined>
+  stats: ActorMethod<[], InternetIdentityStats>
+  update: ActorMethod<[UserNumber, DeviceKey, DeviceData], undefined>
+  verify_tentative_device: ActorMethod<
+    [UserNumber, string],
+    VerifyTentativeDeviceResponse
+  >
 }

@@ -1,13 +1,15 @@
-import { Logo } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 
-import { ProfileHomeMenu } from "frontend/screens/profile/profile-home-menu"
+import { Logo } from "@internet-identity-labs/nfid-sdk-react"
+
+import { ProfileHomeMenu } from "frontend/design-system/pages/profile/profile-home-menu"
+
 import { ElementProps } from "frontend/types/react"
 
-import { AppScreen } from "./AppScreen"
+import { AppScreen } from "./app-screen/AppScreen"
 
-interface ProfileScreenProps extends ElementProps<HTMLDivElement> {}
+interface ProfileScreenProps extends ElementProps<HTMLDivElement> { }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   children,

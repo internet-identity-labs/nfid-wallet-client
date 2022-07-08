@@ -8,16 +8,17 @@ import {
   RadioButton,
 } from "@internet-identity-labs/nfid-sdk-react"
 
-import { useRegisterQRCode } from "frontend/flows/screens-app/landing-page/register-qrcode/use-register-qrcode"
-import { useAuthentication } from "frontend/hooks/use-authentication"
-import { useDeviceInfo } from "frontend/hooks/use-device-info"
-import { useUnknownDeviceConfig } from "frontend/screens/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { useAccount } from "frontend/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/services/identity-manager/persona/hooks"
+import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+
+import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { useDeviceInfo } from "frontend/apps/device/use-device-info"
+import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 
 interface PopupRegisterDeciderProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLDivElement> { }
 
 export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)

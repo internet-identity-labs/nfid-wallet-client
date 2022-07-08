@@ -2,8 +2,6 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { P } from "@internet-identity-labs/nfid-sdk-react"
-
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 
 import { Button } from "../button"
@@ -12,8 +10,8 @@ import { Input } from "../input"
 interface StepInputProps {
   className?: string
   errorClasses?: string
-  onSubmit: (value: string) => boolean
-  onChangePhoneNumber?: () => void
+  responseError?: string
+  onSubmit: (value: string) => Promise<void>
   buttonText?: string
 }
 
@@ -21,7 +19,7 @@ export const StepInput: React.FC<StepInputProps> = ({
   className,
   onSubmit,
   errorClasses,
-  onChangePhoneNumber,
+  responseError,
   buttonText,
 }) => {
   const list = [...Array(6).keys()]
@@ -93,6 +91,15 @@ export const StepInput: React.FC<StepInputProps> = ({
     }
   }, [handleKeydown, handlePaste])
 
+  React.useEffect(() => {
+    if (responseError && errors?.verificationCode?.message !== responseError) {
+      setError("verificationCode", {
+        type: "manual",
+        message: responseError,
+      })
+    }
+  }, [errors?.verificationCode?.message, responseError, setError])
+
   const validateToken = () => {
     const verificationCode = getVerificationCode()
 
@@ -113,15 +120,10 @@ export const StepInput: React.FC<StepInputProps> = ({
     clearErrors("verificationCode")
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = React.useCallback(() => {
     if (!isValid) return
-    if (!onSubmit(getVerificationCode())) {
-      setError("verificationCode", {
-        type: "manual",
-        message: "Incorrect verification code, please try again.",
-      })
-    }
-  }
+    onSubmit(getVerificationCode())
+  }, [getVerificationCode, isValid, onSubmit])
 
   return (
     <div>
@@ -155,12 +157,6 @@ export const StepInput: React.FC<StepInputProps> = ({
       >
         {buttonText}
       </Button>
-      <P
-        onClick={onChangePhoneNumber}
-        className="mt-4 mb-8 text-sm text-center text-blue-base"
-      >
-        Change phone number
-      </P>
     </div>
   )
 }

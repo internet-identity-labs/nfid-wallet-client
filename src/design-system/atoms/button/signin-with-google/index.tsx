@@ -7,7 +7,7 @@ export type LoginEventHandler = ({ credential }: CredentialResponse) => void
 
 declare const GOOGLE_CLIENT_ID: string
 
-if (!GOOGLE_CLIENT_ID) throw new Error("GOOGLE_CLIENT_ID is not defined")
+if (!GOOGLE_CLIENT_ID) console.error("GOOGLE_CLIENT_ID is not defined")
 
 interface SignInWithGoogleProps {
   onLogin: LoginEventHandler

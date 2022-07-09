@@ -76,7 +76,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
                 Number(account.persona_id) + 1
               }`}
               onClick={() => onLogin(account.persona_id)}
-              key={`account${account.persona_id}${i}`}
+              key={`account${account.persona_id}`}
             />
           )
         })}

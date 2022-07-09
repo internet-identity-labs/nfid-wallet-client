@@ -68,6 +68,9 @@ const config = {
                   `IM_ADDITION_CANISTER_ID_${process.env.BACKEND_MODE}`
                 ],
               ),
+              VERIFIER_CANISTER_ID: JSON.stringify(
+                process.env[`VERIFIER_CANISTER_ID_${process.env.BACKEND_MODE}`],
+              ),
             }),
       }
 

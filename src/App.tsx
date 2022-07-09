@@ -4,25 +4,20 @@ import { Usergeek } from "usergeek-ic-js"
 
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
-import { NotFound } from "./flows/404"
-import { AppScreenAuthenticateAccountRoutes } from "./flows/screens-app/authenticate"
-import { HomeScreen } from "./flows/screens-app/landing-page"
-import { Faq } from "./flows/screens-app/landing-page/faq"
-import { OurMission } from "./flows/screens-app/landing-page/our-mission"
-import { LinkIIAnchorRoutes } from "./flows/screens-app/link-ii-anchor/routes"
-import { ProfileRoutes } from "./flows/screens-app/profile/routes"
-import { RecoverNFIDRoutes } from "./flows/screens-app/recover-nfid/routes"
-import {
-  NFIDRegisterAccountRoutes,
-  RemoteRegisterAccountRoutes,
-} from "./flows/screens-app/register-account/routes"
-import { RegisterNewDeviceRoutes } from "./flows/screens-app/register-new-from-delegate/routes"
-import { AppScreenAuthorizeAppRoutes } from "./flows/screens-app/remote-authentication/routes"
-import { RemoteNFIDAuthenticationRoutes } from "./flows/screens-app/remote-nfid-authentication"
+import { NotFound } from "./design-system/pages/404"
+import { AppScreenAuthenticateAccountRoutes } from "./apps/authentication/authenticate"
+import { HomeScreen } from "./apps/marketing/landing-page"
+import { Faq } from "./apps/marketing/landing-page/faq"
+import { OurMission } from "./apps/marketing/landing-page/our-mission"
+import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
+import { RecoverNFIDRoutes } from "./apps/registration/recover-nfid/routes"
+import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
+import { NFIDRegisterAccountRoutes } from './apps/registration/register-account/routes'
+import { AppScreenAuthorizeAppRoutes } from "./apps/authentication/remote-authentication/routes"
+import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
+import { CredentialRoutes } from "./apps/credential-provider/verify-phone-number"
 
-import { useStartUrl } from "./hooks/use-start-url"
-
-import { ic } from "./api/actors"
+import { ic } from "./comm/actors"
 
 declare const USERGEEK_API_KEY: string
 
@@ -31,16 +26,13 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
-  useStartUrl()
 
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />
       <Route path={"/faq"} element={<Faq />} />
       <Route path={"/our-mission"} element={<OurMission />} />
-      {LinkIIAnchorRoutes}
       {ProfileRoutes}
-      {RegisterNewDeviceRoutes}
       {RemoteRegisterAccountRoutes}
       {NFIDRegisterAccountRoutes}
       {RemoteNFIDAuthenticationRoutes}
@@ -48,6 +40,7 @@ export const App = () => {
       {RecoverNFIDRoutes}
 
       {AppScreenAuthenticateAccountRoutes}
+      {CredentialRoutes}
       <Route path={"*"} element={<NotFound />} />
     </Routes>
   )

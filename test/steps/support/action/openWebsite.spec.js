@@ -25,7 +25,7 @@ describe("openWebsite", () => {
 
       expect(global.browser.url).toHaveBeenCalledTimes(1)
       expect(global.browser.url).toHaveBeenCalledWith(
-        "http://mysite.com/path/to/page",
+        "http://mysite.com/path/to/page?canisterId=ai7t5-aibaq-aaaaa-aaaaa-c",
       )
     },
   )

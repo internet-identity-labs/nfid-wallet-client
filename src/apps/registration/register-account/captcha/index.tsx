@@ -30,6 +30,7 @@ export const RegisterAccountCaptcha: React.FC<
   const [captchaError, setCaptchaError] = React.useState<string | undefined>(
     undefined,
   )
+  const { setShouldStoreLocalAccount } = useAuthentication()
   const { remoteLogin, remoteNFIDLogin } = useAuthorizeApp()
   const { createAccount } = useAccount()
 
@@ -122,7 +123,6 @@ export const RegisterAccountCaptcha: React.FC<
   const { authorizeApp } = useAuthorization({
     userNumber,
   })
-  const { setShouldStoreLocalAccount } = useAuthentication()
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {

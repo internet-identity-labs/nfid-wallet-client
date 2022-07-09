@@ -67,6 +67,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             <AccountItem
               title={`${applicationName} account ${account.persona_id}`}
               onClick={() => onLogin(account.persona_id)}
+              key={`account${account.persona_id}`}
             />
           )
         })}

@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { P } from "@internet-identity-labs/nfid-sdk-react"
+
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 
 import { Button } from "../button"

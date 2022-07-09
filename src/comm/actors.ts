@@ -1,16 +1,17 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
+import { DelegationIdentity } from "@dfinity/identity"
 
 import { _SERVICE as IdentityManager } from "./idl/identity_manager.did"
 import { idlFactory as imIDL } from "./idl/identity_manager_idl"
-import { _SERVICE as ImAddition } from "./idl/im_addition.did"
+import { _SERVICE as ImAddition } from "./idl/im_addition.did.d"
 import { idlFactory as imaIDL } from "./idl/im_addition_idl"
 import { idlFactory as iiIDL } from "./idl/internet_identity_idl"
-import { _SERVICE as InternetIdentity } from "./idl/internet_identity_types"
-import { _SERVICE as PubSub } from "./idl/pub_sub_channel.did"
+import { _SERVICE as InternetIdentity } from "./idl/internet_identity_types.d"
+import { _SERVICE as PubSub } from "./idl/pub_sub_channel.did.d"
 import { idlFactory as pubsubIDL } from "./idl/pub_sub_channel_idl"
-import { _SERVICE as Verifier } from "./idl/verifier.did"
+import { _SERVICE as Verifier } from "./idl/verifier.did.d"
 import { idlFactory as verifierIDL } from "./idl/verifier_idl"
 
 /////////////
@@ -51,12 +52,22 @@ export const ic = {
 // We share the same agent across all actors, and replace the identity when identity connection events occur.
 
 export const agent = new Agent.HttpAgent({ host: ic.host })
+export let rawId: DelegationIdentity | undefined
+
+/**
+ * Retrieve the current principal.
+ */
+export async function fetchPrincipal() {
+  const principal = await agent.getPrincipal()
+  return principal
+}
 
 /**
  * When user connects an identity, we update our agent.
  */
-export function replaceIdentity(identity: Agent.Identity) {
+export function replaceIdentity(identity: DelegationIdentity) {
   agent.replaceIdentity(identity)
+  rawId = identity
 }
 
 /**
@@ -64,6 +75,7 @@ export function replaceIdentity(identity: Agent.Identity) {
  */
 export function invalidateIdentity() {
   agent.invalidateIdentity()
+  rawId = undefined
 }
 
 // When working locally (or !mainnet) we need to retrieve the root key of the replica.

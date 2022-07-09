@@ -1,5 +1,6 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
+import useSWR from "swr"
 
 import { unpackLegacyResponse, unpackResponse } from "./.common"
 import { im } from "./actors"
@@ -72,6 +73,25 @@ function mapAccount(account: AccountResponse): Account {
 }
 
 /**
+ * Generate an account stub.
+ * @returns {@link Account}
+ */
+export function factoryAccount(principal?: Principal): Account {
+  return {
+    anchor: Math.floor(100_000 * Math.random()),
+    accessPoints: new Array(Math.floor(Math.random() * 5)).fill(
+      factoryAccessPoint(),
+    ),
+    personas: new Array(Math.floor(Math.random() * 5)).fill(
+      factoryAccessPoint(),
+    ),
+    principalId: principal?.toText() || "",
+    name: undefined,
+    phoneNumber: undefined,
+  }
+}
+
+/**
  * Sanitize persona response from canister into our internal representation
  * @param persona {@link PersonaResponse} Persona response from canister
  * @returns {@link Persona}
@@ -81,6 +101,18 @@ function mapPersona(persona: PersonaResponse): Persona {
     domain: persona.domain,
     personaName: persona.persona_name,
     personaId: persona.persona_id,
+  }
+}
+
+/**
+ * Generate a persona stub.
+ * @returns {@link Persona}
+ */
+export function factoryPersona(principal?: Principal): Persona {
+  return {
+    domain: "",
+    personaName: "",
+    personaId: "",
   }
 }
 
@@ -100,15 +132,36 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
 }
 
 /**
+ * Generate an access point stub.
+ * @returns {@link AccessPoint}
+ */
+export function factoryAccessPoint(principal?: Principal): AccessPoint {
+  return {
+    icon: "string",
+    device: "string",
+    browser: "string",
+    lastUsed: new Date().getTime(),
+    principalId: "string",
+  }
+}
+
+/**
  * Fetch account for the currently connected principal.
  */
 export async function fetchAccount() {
   return im.get_account().then((r) => mapAccount(unpackResponse(r)))
 }
 
+export function useAccount() {
+  return useSWR("account/fetch", fetchAccount, {
+    dedupingInterval: 60_000,
+    focusThrottleInterval: 60_000,
+  })
+}
+
 /**
- * ?
+ * Verify SMS token that was issued to current user's phone number. Returns true or throws error.
  */
-export async function verifyToken(token: string, principal: Principal) {
-  return im.verify_token(token).then(unpackLegacyResponse)
+export async function verifyToken(token: string) {
+  return await im.verify_token(token).then(unpackLegacyResponse)
 }

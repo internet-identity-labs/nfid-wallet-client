@@ -1,3 +1,4 @@
+import { useAtom } from "jotai"
 import React from "react"
 import { useParams } from "react-router-dom"
 
@@ -13,6 +14,7 @@ import { useAccount } from "frontend/comm/services/identity-manager/account/hook
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 
 export const Authenticate: React.FC<{ machine: any }> = ({ machine }) => {
+  const [, send] = useAtom(machine)
   const { userNumber } = useAccount()
   const { isLoading, setIsloading } = useIsLoading()
   const { secret, scope } = useParams()

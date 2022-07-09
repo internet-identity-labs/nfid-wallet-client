@@ -381,7 +381,7 @@ export class IIConnection {
     const delegationIdentity = await requestFEDelegation(googleIdentity)
 
     replaceIdentity(delegationIdentity.delegationIdentity)
-    // return googleIdentity
+
     return {
       chain: delegationIdentity.chain,
       sessionKey: delegationIdentity.sessionKey,

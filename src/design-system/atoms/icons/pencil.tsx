@@ -1,8 +1,8 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface PencilIconProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export const PencilIcon: React.FC<PencilIconProps> = ({
@@ -15,8 +15,8 @@ export const PencilIcon: React.FC<PencilIconProps> = ({
       fill="none"
       viewBox="0 0 24 24"
       className={clsx(
-        'text-gray-400 hover:text-black-base cursor-pointer',
-        className
+        "text-gray-900 hover:text-black cursor-pointer",
+        className,
       )}
       onClick={onClick}
     >
@@ -29,5 +29,5 @@ export const PencilIcon: React.FC<PencilIconProps> = ({
         d="M14 5.25L17.75 9 8 18.75H4.25V15L14 5.25z"
       ></path>
     </svg>
-  );
-};
+  )
+}

@@ -78,7 +78,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                 </Button>
                 <Link
                   to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
-                  className="block w-8/12 mx-auto mt-4 text-center cursor-pointer text-blue-base hover:underline hover:text-blue-hove"
+                  className="block w-8/12 mx-auto mt-4 text-center cursor-pointer text-blue-600 hover:underline hover:text-blue-hove"
                 >
                   Recover NFID
                 </Link>
@@ -90,7 +90,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
               Scan the QR code to register or <br />{" "}
               <Link
                 to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
-                className="cursor-pointer text-blue-base hover:underline hover:text-blue-hover"
+                className="cursor-pointer text-blue-600 hover:underline hover:text-blue-500"
               >
                 Recover NFID
               </Link>

@@ -141,7 +141,7 @@ export const StepInput: React.FC<StepInputProps> = ({
           />
         ))}
       </div>
-      <div className={clsx("py-1 text-sm text-red-base", errorClasses)}>
+      <div className={clsx("py-1 text-sm text-red-600", errorClasses)}>
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button
@@ -157,7 +157,7 @@ export const StepInput: React.FC<StepInputProps> = ({
       </Button>
       <P
         onClick={onChangePhoneNumber}
-        className="mt-4 mb-8 text-sm text-center text-blue-base"
+        className="mt-4 mb-8 text-sm text-center text-blue-600"
       >
         Change phone number
       </P>

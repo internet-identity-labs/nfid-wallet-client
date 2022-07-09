@@ -1,3 +1,6 @@
+import clsx from "clsx"
+import React from "react"
+
 import {
   P,
   Button,
@@ -5,8 +8,6 @@ import {
   Loader,
   Modal,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React from "react"
 
 import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
 import { AppScreen } from "frontend/design-system/templates/AppScreen"
@@ -45,7 +46,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
         <div className={clsx(CONTAINER_CLASSES)}>
           <div className="grid h-full grid-cols-12">
             <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
-              <div className="text-base font-bold text-gray-400 md:text-xl">
+              <div className="text-base font-bold text-gray-900 md:text-xl">
                 {applicationName}
               </div>
               <h1 className="mt-3 mb-3 text-5xl font-bold leading-10">
@@ -58,7 +59,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
                 use it on https://nfid.one.
               </div>
 
-              <div className="p-4 border rounded-t border-black-base">
+              <div className="p-4 border rounded-t border-black">
                 <P className="font-mono">{recoveryPhrase}</P>
               </div>
 
@@ -83,8 +84,8 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
               <div className="flex-grow" />
               <div className="opacity-0.4 mb-6 mt-6 opacity-40 text-xs">
                 NFID is a privacy-preserving, one-touch multi-factor wallet
-                protocol {applicationName && `used by ${applicationName} and`} developed by Internet
-                Identity Labs.
+                protocol {applicationName && `used by ${applicationName} and`}{" "}
+                developed by Internet Identity Labs.
               </div>
             </div>
           </div>

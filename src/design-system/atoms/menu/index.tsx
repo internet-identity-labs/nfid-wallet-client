@@ -1,6 +1,7 @@
-import { Button, ButtonProps } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+
+import { Button, ButtonProps } from "@internet-identity-labs/nfid-sdk-react"
 
 export interface ButtonMenuProps extends React.HTMLAttributes<HTMLDivElement> {
   children: (toggle: () => void) => React.ReactNode
@@ -42,17 +43,14 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
       <Button
         {...buttonProps}
         onClick={(e) => handleMenuToggle(e)}
-        className={clsx(
-          "relative !p-1 transition-all duration-500",
-          className,
-        )}
+        className={clsx("relative !p-1 transition-all duration-500", className)}
       >
         {buttonElement}
       </Button>
 
       {toggleMenu && (
         <div
-          className="absolute top-0 left-0 z-[1] block w-full h-screen bg-black-base bg-opacity-25 overflow-hidden"
+          className="absolute top-0 left-0 z-[1] block w-full h-screen bg-black bg-opacity-25 overflow-hidden"
           onClick={() => setToggleMenu(false)}
         />
       )}

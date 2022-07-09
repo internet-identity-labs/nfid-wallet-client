@@ -41,7 +41,7 @@ export const ListItem: React.FC<Props> = ({
           <div className="flex-1 flex-shrink">
             <div className="text-gray-700">{title}</div>
             {subtitle && (
-              <div className="my-1 text-sm text-gray-400">{subtitle}</div>
+              <div className="my-1 text-sm text-gray-900">{subtitle}</div>
             )}
           </div>
 

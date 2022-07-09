@@ -1,4 +1,3 @@
-
 .swiper {
   @apply w-full overflow-hidden rounded-lg;
 }
@@ -20,7 +19,7 @@
 }
 
 .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  @apply !rounded-full !w-[20px] !bg-black-base !h-[2px];
+  @apply !rounded-full !w-[20px] !bg-black !h-[2px];
 }
 
 .swiper-pagination-bullet {

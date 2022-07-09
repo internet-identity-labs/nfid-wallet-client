@@ -45,7 +45,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
         )}
       >
         <img src={logo} alt="logo" />
-        <span className="text-xs text-gray-400">Sign in with NFID</span>
+        <span className="text-xs text-gray-900">Sign in with NFID</span>
       </div>
 
       <div
@@ -70,7 +70,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
 
       <div
         className={clsx(
-          "px-5 mb-5 text-xs text-gray-400",
+          "px-5 mb-5 text-xs text-gray-900",
           "sm:mt-4 sm:text-center",
         )}
       >

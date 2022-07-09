@@ -92,7 +92,7 @@ export const DeviceRaw: React.FC<DeviceRawProps> = ({
       onClick={handler}
     >
       <p className="text-sm">{title}</p>
-      <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>
+      <p className="mt-0.5 text-xs text-gray-900">{subtitle}</p>
     </div>
   )
 }

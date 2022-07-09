@@ -55,11 +55,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             type={type}
             className={clsx(
-              "flex-1 block w-full placeholder:text-sm border-black-base bg-transparent py-[10px]",
-              "disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none disabled:ring-transparent disabled:drop-shadow-none shadow-none placeholder:text-base",
+              "flex-1 block w-full placeholder:text-sm border-black bg-transparent py-[10px]",
+              "disabled:bg-gray-200 disabled:text-gray-900 disabled:border-none disabled:ring-transparent disabled:drop-shadow-none shadow-none placeholder:text-base",
               errorText || isErrorStyles
-                ? "active:ring-4 active:ring-red-200 active:border-red-base border-red-base focus:border-red-base focus:ring-red-base active:bg-red-50"
-                : "active:border-blue-base active:ring-4 active:ring-blue-200 active:outline-none active:bg-blue-50",
+                ? "active:ring-4 active:ring-red-200 active:border-red-600 border-red-600 focus:border-red-600 focus:ring-red-600 active:bg-red-50"
+                : "active:border-blue-600 active:ring-4 active:ring-blue-200 active:outline-none active:bg-blue-50",
               prependedText ? "rounded-r-md" : "rounded-md",
               icon && "pl-10",
               pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",
@@ -78,8 +78,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div
           className={clsx(
-            "text-sm py-1 text-gray-400",
-            errorText && "!text-red-base",
+            "text-sm py-1 text-gray-900",
+            errorText && "!text-red-600",
           )}
         >
           {errorText ?? helperText}

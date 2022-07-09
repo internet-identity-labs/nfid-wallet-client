@@ -160,7 +160,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
               <div className="flex-1 flex-shrink">
                 <div className="text-gray-700">{recoveryMethod.label}</div>
                 {recoveryMethod.lastUsed ? (
-                  <div className="my-1 text-sm text-gray-400">
+                  <div className="my-1 text-sm text-gray-900">
                     {format(recoveryMethod.lastUsed, "MMM d, yyyy")}
                   </div>
                 ) : null}
@@ -174,13 +174,13 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
             style={{ display: !recoveryMethod.isSecurityKey ? "none" : "" }}
           >
             <div
-              className="hover:bg-gray-200 text-red-base"
+              className="hover:bg-gray-200 text-red-600"
               onClick={isEditingLabel ? handleOnLabelUpdate : toggleEditLabel}
             >
               {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
             </div>
             <div
-              className="hover:bg-gray-200 text-red-base"
+              className="hover:bg-gray-200 text-red-600"
               onClick={
                 isEditingLabel ? toggleEditLabel : handleDeleteRecoveryDialog
               }

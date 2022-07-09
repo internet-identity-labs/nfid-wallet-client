@@ -142,7 +142,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         )}
 
         <p
-          className="py-4 text-sm text-center cursor-pointer text-blue-base"
+          className="py-4 text-sm text-center cursor-pointer text-blue-600"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

@@ -30,9 +30,9 @@ import { SocialButtons } from "./social-buttons"
 
 interface Props
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
-  > { }
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   const { user } = useAuthentication()
@@ -58,8 +58,9 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         >
           <ParallaxProvider>
             <div
-              className={`font-inner ${isMobile ? `mobile` : ``} ${account ? `has-account` : ``
-                }`}
+              className={`font-inner ${isMobile ? `mobile` : ``} ${
+                account ? `has-account` : ``
+              }`}
             >
               <section
                 id="home"
@@ -312,7 +313,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       </div>
                       {/* <Link
                     to="/our-mission"
-                    className="flex text-xl font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+                    className="flex text-xl font-semibold transition-all text-blue-600 hover:opacity-50 hover:underline hover:text-blue-500"
                   >
                     Read more <img className="ml-2" src={Arrow} alt="" />
                   </Link> */}
@@ -390,7 +391,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     ))}
                     <Link
                       to={"/faq"}
-                      className="flex mt-5 text-xl font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+                      className="flex mt-5 text-xl font-semibold transition-all text-blue-600 hover:opacity-50 hover:underline hover:text-blue-500"
                     >
                       Read more <img className="ml-2" src={Arrow} alt="" />
                     </Link>

@@ -18,7 +18,7 @@ export const PopupRegister: React.FC<PopupRegisterProps> = () => {
         Scan this code with your phone's camera
       </p>
       <Link
-        className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+        className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-600"
         to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
         state={{ from: "loginWithRecovery" }}
       >

@@ -55,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         </div>
       </div>
-      <div className="fixed inset-0 z-40 opacity-30 bg-black-base"></div>
+      <div className="fixed inset-0 z-40 opacity-30 bg-black"></div>
     </>
   )
 }

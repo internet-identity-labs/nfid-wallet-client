@@ -1,6 +1,7 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
+
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useAuthentication } from "frontend/hooks/use-authentication"
 import { useAccount } from "frontend/services/identity-manager/account/hooks"
@@ -47,7 +48,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
       ) : (
         <p
           onClick={logout}
-          className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+          className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-600"
         >
           Logout
         </p>

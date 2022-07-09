@@ -4,6 +4,7 @@ import React from "react"
 import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { List } from "frontend/design-system/molecules/list"
+
 import { Device } from "frontend/services/identity-manager/devices/state"
 
 import { DeviceListItem } from "./device-list-item"
@@ -27,7 +28,7 @@ export const DeviceList: React.FC<DeviceListProps> = ({
             <H5>Authorized devices</H5>
 
             <div className="hidden">
-              <PlusIcon className="text-blue-base mr-[14px]" />
+              <PlusIcon className="text-blue-600 mr-[14px]" />
             </div>
           </div>
         </List.Header>

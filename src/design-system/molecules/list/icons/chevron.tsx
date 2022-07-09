@@ -1,8 +1,8 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface ListItemChevronProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export const ListItemChevron: React.FC<ListItemChevronProps> = ({
@@ -10,7 +10,7 @@ export const ListItemChevron: React.FC<ListItemChevronProps> = ({
   onClick,
 }) => {
   return (
-    <div className={clsx('text-black-base p-1', className)} onClick={onClick}>
+    <div className={clsx("text-black p-1", className)} onClick={onClick}>
       <svg
         width="16"
         height="16"
@@ -27,5 +27,5 @@ export const ListItemChevron: React.FC<ListItemChevronProps> = ({
         />
       </svg>
     </div>
-  );
-};
+  )
+}

@@ -75,7 +75,7 @@ export const CredentialRequesterNotVerified: React.FC<
         </Button>
       </form>
       <p
-        className="my-6 text-sm text-center cursor-pointer text-blue-base"
+        className="my-6 text-sm text-center cursor-pointer text-blue-600"
         onClick={onSkip}
       >
         Skip for now

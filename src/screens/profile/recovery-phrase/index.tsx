@@ -43,7 +43,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
           .
         </p>
 
-        <div className="p-4 mt-6 border rounded-t border-black-base">
+        <div className="p-4 mt-6 border rounded-t border-black">
           <P className="font-mono">{recoveryPhrase}</P>
         </div>
 

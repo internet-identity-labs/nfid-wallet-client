@@ -149,7 +149,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
             ) : (
               <div className="flex-1 flex-shrink">
                 <div className="text-gray-700">{device.label}</div>
-                <div className="my-1 text-sm text-gray-400">
+                <div className="my-1 text-sm text-gray-900">
                   {device.lastUsed
                     ? format(device.lastUsed, "MMM d, yyyy 'on '")
                     : null}
@@ -164,7 +164,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div
-                  className="hover:bg-gray-200 text-red-base"
+                  className="hover:bg-gray-200 text-red-600"
                   onClick={
                     isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }
@@ -172,7 +172,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
                 </div>
                 <div
-                  className="hover:bg-gray-200 text-red-base"
+                  className="hover:bg-gray-200 text-red-600"
                   onClick={
                     isEditingLabel ? toggleEditLabel : handleDeleteDeviceDialog
                   }

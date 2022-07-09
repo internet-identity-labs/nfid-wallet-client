@@ -33,7 +33,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
   const classes = {
     navItem:
-      "text-black hover:underline cursor-pointer hover:text-blue-hover transition-all",
+      "text-black hover:underline cursor-pointer hover:text-blue-500 transition-all",
   }
 
   const items = [
@@ -132,14 +132,14 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     Register
                   </Button>
                   {/* <Link
-                    className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+                    className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-600"
                     to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
                     Unlock NFID with Security Key
                   </Link> */}
                   <Link
-                    className="block w-full mt-4 text-sm font-light text-center cursor-pointer text-blue-base"
+                    className="block w-full mt-4 text-sm font-light text-center cursor-pointer text-blue-600"
                     to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
                     state={{ from: "loginWithRecovery" }}
                   >
@@ -154,13 +154,13 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
       <div className={clsx("hidden space-x-10 sm:flex")}>
         <Scrollspy
           className="items-center hidden space-x-10 font-medium md:flex"
-          currentClassName="text-black-base hover:text-black-base hover:no-underline"
+          currentClassName="text-black hover:text-black hover:no-underline"
           items={items.map((i) => i.to)}
         >
           {items.map((item, index) => (
             <NavLink
               to={`/#${encodeURIComponent(item.label)}`}
-              className={clsx(classes.navItem, "text-blue-base")}
+              className={clsx(classes.navItem, "text-blue-600")}
               onClick={(e) => handleGoTo(e, item.to, item.external)}
               key={index}
             >
@@ -171,7 +171,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         <div className="relative" ref={popupRef}>
           {user || account ? (
             <div
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600"
               onClick={() => setIsPopupVisible(!isPopupVisible)}
             >
               <img src={User} alt="user" className="cursor-pointer" />

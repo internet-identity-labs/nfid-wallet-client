@@ -78,8 +78,8 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             className={clsx(
               "flex space-x-3 hover:opacity-70 transition-all cursor-pointer",
               isAccountsLimit
-                ? "text-gray-400 pointer-events-none"
-                : "text-blue-base",
+                ? "text-gray-900 pointer-events-none"
+                : "text-blue-600",
             )}
           >
             <PlusIcon className="w-5 h-5" />

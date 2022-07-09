@@ -5,6 +5,7 @@ import { H5 } from "frontend/design-system/atoms/typography"
 import { List } from "frontend/design-system/molecules/list"
 import { ListItem } from "frontend/design-system/molecules/list/list-item"
 import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholders/list-item"
+
 import { NFIDPersona } from "frontend/services/identity-manager/persona/types"
 import { getUrl } from "frontend/utils"
 
@@ -72,7 +73,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
                   application.iiPersonasCount > 1 ? "s" : ""
                 }`}
                 icon={
-                  <span className="text-xl font-medium text-blue-base">
+                  <span className="text-xl font-medium text-blue-600">
                     {application.applicationName[0]}
                   </span>
                 }

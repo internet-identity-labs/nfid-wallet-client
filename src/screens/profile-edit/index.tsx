@@ -88,7 +88,7 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
             Only you and your devices have access to this data. Read more about
             your privacy in our{" "}
             <a
-              className="text-blue-base hover:underline"
+              className="text-blue-600 hover:underline"
               href="/faq"
               target="_blank"
             >
@@ -133,7 +133,7 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
               {/* {account?.phone ? (
                 <Input type="tel" labelText="Phone number" disabled />
               ) : (
-                <div className="flex items-center py-2 space-x-2 font-semibold transition-all cursor-pointer text-blue-base hover:opacity-50">
+                <div className="flex items-center py-2 space-x-2 font-semibold transition-all cursor-pointer text-blue-600 hover:opacity-50">
                   <BsPlusLg />
                   <span>Add phone number</span>
                 </div>

@@ -18,8 +18,8 @@
   @apply mb-5 font-bold sm:text-title text-titleMobile;
 }
 
-.swiper-pagination-bullet.swiper-pagination-bullet-active {
-  @apply !rounded-full !w-[20px] !bg-black !h-[2px];
+.swiper-pagination-bullet .swiper-pagination-bullet-active {
+  @apply !rounded-full !w-[20px] bg-[#000] !h-[2px];
 }
 
 .swiper-pagination-bullet {

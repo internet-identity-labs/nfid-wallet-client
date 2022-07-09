@@ -7,7 +7,7 @@ import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
 
-import { useScroll } from "frontend/hooks/use-scroll"
+import { useScroll } from "frontend/utils/use-scroll"
 
 import { NavigationItems as NavigationItemsDefault } from "./navigation-items"
 

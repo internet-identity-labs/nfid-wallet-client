@@ -10,7 +10,7 @@ interface IValidationRules {
 }
 
 export const phoneRules: IValidationRules = {
-  regex: /^\+[0-9 ]{4,20}$/,
+  regex: /^\+[0-9 ]{4,14}$/,
   minLength: 4,
   maxLength: 20,
   errorMessages: {

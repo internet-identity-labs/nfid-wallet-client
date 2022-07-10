@@ -2,6 +2,8 @@ import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
 
+import { SignedDelegation } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+
 import {
   useAuthentication,
   User,
@@ -26,6 +28,15 @@ type RemoteLoginMessage = {
   userNumber?: number
 }
 
+export interface RemoteLoginEvent extends SignedDelegation {
+  type: "remote-login-register"
+  userNumber: string
+  nfid: {
+    chain: DelegationChain
+    sessionKey: Ed25519KeyIdentity
+  }
+}
+
 // Alias: useRegisterDevicePrompt
 export const useAuthorizeApp = () => {
   const { userNumber } = useAccount()
@@ -38,7 +49,7 @@ export const useAuthorizeApp = () => {
       scope: string,
       connection: IIConnection,
       userNumber: bigint,
-    ) => {
+    ): Promise<SignedDelegation> => {
       const blobReverse = fromHexString(secret)
       const sessionKey = Array.from(new Uint8Array(blobReverse))
       const prepRes = await connection.prepareDelegation(
@@ -116,7 +127,7 @@ export const useAuthorizeApp = () => {
         userNumber: anchor.toString(),
         nfid: { chain, sessionKey },
         ...parsedSignedDelegation,
-      })
+      } as RemoteLoginEvent)
 
       const response = await postMessages(secret, [message])
 
@@ -156,7 +167,7 @@ export const useAuthorizeApp = () => {
   )
 
   const sendWaitForUserInput = React.useCallback(
-    async (secret) => {
+    async (secret: string) => {
       const message = JSON.stringify({
         type: "remote-login-wait-for-user",
       })

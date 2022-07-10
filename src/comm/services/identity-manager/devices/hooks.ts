@@ -38,6 +38,12 @@ import {
 
 declare const SIGNIN_GOOGLE: string
 
+export interface WebAuthnDevice {
+  publicKey: string
+  rawId: string
+  deviceName: string
+}
+
 const getIcon = (device: DeviceData): Icon => {
   switch (device.alias.split(" ")[3]) {
     case "Android":
@@ -218,7 +224,7 @@ export const useDevices = () => {
   )
 
   const createWebAuthNDevice = React.useCallback(
-    async (userNumber: bigint) => {
+    async (userNumber: bigint): Promise<{ device: WebAuthnDevice }> => {
       const existingDevices = await IIConnection.lookupAll(userNumber)
 
       const identity = await WebAuthnIdentity.create({
@@ -291,14 +297,14 @@ export const useDevices = () => {
   )
 
   const recoverDevice = React.useCallback(
-    async (userNumber) => {
+    async (userNumber: number) => {
       try {
         if (!user?.internetIdentity) throw new Error("Unauthorized")
         const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
         await createDevice({
           ...device,
-          userNumber,
+          userNumber: BigInt(userNumber),
         })
 
         return {
@@ -397,17 +403,20 @@ export const useDevices = () => {
     [createRecoveryDevice, getDevices, getRecoveryDevices, user, userNumber],
   )
 
-  const getGoogleDevice = React.useCallback(async ({ token }) => {
-    const response = await fetch(SIGNIN_GOOGLE, {
-      method: "POST",
-      body: JSON.stringify({ token }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+  const getGoogleDevice = React.useCallback(
+    async ({ token }: { token?: string }) => {
+      const response = await fetch(SIGNIN_GOOGLE, {
+        method: "POST",
+        body: JSON.stringify({ token }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
 
-    return await response.json()
-  }, [])
+      return await response.json()
+    },
+    [],
+  )
 
   React.useEffect(() => {
     handleLoadDevices()

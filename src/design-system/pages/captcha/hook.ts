@@ -60,8 +60,13 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       if (response.kind === "badChallenge") {
         setLoading(false)
         return onBadChallenge()
-      }
-      if (response.kind === "apiError") {
+      } else if (response.kind === "apiError") {
+        setLoading(false)
+        return onApiError()
+      } else if (
+        response.kind === "authFail" ||
+        response.kind === "registerNoSpace"
+      ) {
         setLoading(false)
         return onApiError()
       }
@@ -98,8 +103,13 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
       if (response.kind === "badChallenge") {
         setLoading(false)
         return onBadChallenge()
-      }
-      if (response.kind === "apiError") {
+      } else if (response.kind === "apiError") {
+        setLoading(false)
+        return onApiError()
+      } else if (
+        response.kind === "authFail" ||
+        response.kind === "registerNoSpace"
+      ) {
         setLoading(false)
         return onApiError()
       }

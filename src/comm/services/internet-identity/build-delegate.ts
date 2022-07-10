@@ -1,3 +1,12 @@
+export interface BuiltDelegate {
+  delegation: {
+    pubkey: Uint8Array
+    expiration: bigint
+    targets: undefined
+  }
+  signature: Uint8Array
+}
+
 export const buildDelegate = (receivedDelegation: any) => ({
   delegation: {
     pubkey: Uint8Array.from(receivedDelegation.delegation.pubkey),

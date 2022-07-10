@@ -56,7 +56,7 @@ export const usePersona = () => {
   }, [account?.anchor, setPersonas])
 
   const createPersona = React.useCallback(
-    async ({ domain }) => {
+    async ({ domain }: { domain: string }) => {
       const persona: Persona = createAccount(
         accounts,
         domain,

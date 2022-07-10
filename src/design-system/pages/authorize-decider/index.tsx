@@ -62,14 +62,14 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   }, [authError, errors.userNumber, setError])
 
   const handleSelectSameDeviceAuthorization = React.useCallback(
-    async ({ userNumber }) => {
+    async ({ userNumber }: { userNumber: number }) => {
       await onSelectSameDeviceAuthorization(userNumber)
     },
     [onSelectSameDeviceAuthorization],
   )
 
   const handleSelectSecurityKeyAuthorization = React.useCallback(
-    async ({ userNumber }) => {
+    async ({ userNumber }: { userNumber: number }) => {
       await onSelectSecurityKeyAuthorization(userNumber)
     },
     [onSelectSecurityKeyAuthorization],

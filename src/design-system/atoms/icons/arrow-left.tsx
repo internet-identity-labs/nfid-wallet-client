@@ -1,8 +1,6 @@
 import React from "react"
 
-interface ArrowLeftProps {}
-
-export const ArrowLeft: React.FC<ArrowLeftProps> = ({ children }) => {
+export const ArrowLeft = () => {
   return (
     <svg
       width="24"

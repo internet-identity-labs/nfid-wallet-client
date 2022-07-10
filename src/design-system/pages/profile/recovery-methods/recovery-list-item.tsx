@@ -98,7 +98,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   )
 
   const handleOnChangeLabel = React.useCallback(
-    ({ target: { value } }) => {
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       setUpdatedRecovery(
         produce(
           updatedRecovery || initialRecovery,

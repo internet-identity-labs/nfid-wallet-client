@@ -6,9 +6,7 @@ import Twitter from "./assets/tw.svg"
 
 import "./index.css"
 
-interface SocialButtonsProps {}
-
-export const SocialButtons: React.FC<SocialButtonsProps> = ({ children }) => {
+export const SocialButtons = () => {
   return (
     <div className="grid grid-cols-2 sm:flex sm:justify-between gap-5 sm:flex-wrap">
       <a

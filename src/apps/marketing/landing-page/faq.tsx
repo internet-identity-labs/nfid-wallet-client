@@ -13,9 +13,7 @@ import { Footer } from "./footer"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
 
-interface FaqProps {}
-
-export const Faq: React.FC<FaqProps> = ({ children }) => {
+export const Faq = () => {
   return (
     <AppScreen
       bubbleOptions={{
@@ -42,6 +40,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
                   alt="blur"
                 />
                 <div className="top-28">
+                  {/* @ts-ignore */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile sm:text-titleLarge">
                       Frequently <br />
@@ -59,6 +58,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
                     </h2>
                   </Fade>
                 </div>
+                {/* @ts-ignore */}
                 <Fade>
                   <div className="relative">
                     {questions.map((question, i) => (
@@ -76,6 +76,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
           </ParallaxProvider>
           <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
             <div className=" top-28">
+              {/* @ts-ignore */}
               <Fade left>
                 <h2 className="font-bold text-titleMobile md:text-titleLarge">
                   Our {""}
@@ -92,6 +93,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
                 </h2>
               </Fade>
             </div>
+            {/* @ts-ignore */}
             <Fade>
               <SocialButtons />
             </Fade>

@@ -73,7 +73,7 @@ export const AppScreenAuthorizeApp: React.FC<
   const handleCreateAccountAndLogin = React.useCallback(async () => {
     setIsloading(true)
     const response = await createPersona({
-      domain: scope,
+      domain: scope || window.location.hostname as string,
     })
 
     if (response?.status_code === 200) {

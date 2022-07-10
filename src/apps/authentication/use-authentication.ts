@@ -123,7 +123,7 @@ export const useAuthentication = () => {
   )
 
   const onRegisterSuccess = React.useCallback(
-    async (actors) => {
+    async (actors: LoginSuccess) => {
       replaceIdentity(actors?.internetIdentity?.delegationIdentity)
       const user = {
         principal: (await agent.getPrincipal()).toText(),

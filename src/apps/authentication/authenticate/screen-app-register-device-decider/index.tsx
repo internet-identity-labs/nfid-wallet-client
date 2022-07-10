@@ -33,7 +33,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
       return console.error(`Missing userNumber: ${userNumber}`)
     }
 
-    await recoverDevice(userNumber)
+    await recoverDevice(Number(userNumber))
 
     const response = await recoverAccount(userNumber)
 

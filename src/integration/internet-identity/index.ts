@@ -255,10 +255,11 @@ export async function renewDelegation() {
   if (actor === undefined) {
     // Create our actor with a DelegationIdentity to avoid re-prompting auth
 
-    authState.setDelegationIdentity(
+    authState.set(
+      identity,
       (await requestFEDelegation(identity)).delegationIdentity,
+      ii,
     )
-    replaceIdentity(delegationIdentity)
   }
 }
 
@@ -488,7 +489,7 @@ export async function register(
   const credential_id = Array.from(new Uint8Array(identity.rawId))
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
-  replaceIdentity(delegation.delegationIdentity)
+  authState.set(identity, delegation.delegationIdentity, ii)
 
   let registerResponse: RegisterResponse
   try {
@@ -515,7 +516,6 @@ export async function register(
   } else if (hasOwnProperty(registerResponse, "registered")) {
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
-    replaceIdentity(delegation.delegationIdentity)
     authState.set(identity, delegation.delegationIdentity, ii)
     return {
       kind: "loginSuccess",

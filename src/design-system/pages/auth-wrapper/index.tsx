@@ -8,6 +8,7 @@ import { useAccount } from "frontend/comm/services/identity-manager/account/hook
 interface AuthWrapperProps {
   redirectTo: string
   iframe?: boolean
+  children?: React.ReactNode
 }
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({
   children,

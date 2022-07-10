@@ -94,7 +94,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   )
 
   const handleOnChangeLabel = React.useCallback(
-    ({ target: { value } }) => {
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       setUpdatedDevice(
         produce(updatedDevice || initialDevice, (draft: Device) => ({
           ...draft,

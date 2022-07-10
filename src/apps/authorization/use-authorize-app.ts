@@ -1,6 +1,8 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
 
+import { SignedDelegation } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+
 import {
   useAuthentication,
   User,
@@ -21,6 +23,15 @@ import {
 } from "frontend/integration/pubsub"
 
 declare const FRONTEND_MODE: string
+
+export interface RemoteLoginEvent extends SignedDelegation {
+  type: "remote-login-register"
+  userNumber: string
+  nfid: {
+    chain: DelegationChain
+    sessionKey: Ed25519KeyIdentity
+  }
+}
 
 // Alias: useRegisterDevicePrompt
 export const useAuthorizeApp = () => {
@@ -102,7 +113,7 @@ export const useAuthorizeApp = () => {
     [user, userNumber],
   )
 
-  const sendWaitForUserInput = React.useCallback(async (secret) => {
+  const sendWaitForUserInput = React.useCallback(async (secret: string) => {
     const message = JSON.stringify(WAIT_FOR_CONFIRMATION_MESSAGE)
     await createTopic(secret)
     await postMessages(secret, [message])

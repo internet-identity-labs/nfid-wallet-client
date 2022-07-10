@@ -32,7 +32,7 @@ export const RestoreAccessPoint: React.FC<
   const navigate = useNavigate()
 
   const handleNewDevice = React.useCallback(
-    async (event) => {
+    async (event: MessageEvent) => {
       await handleStoreNewDevice(event.data)
     },
     [handleStoreNewDevice],

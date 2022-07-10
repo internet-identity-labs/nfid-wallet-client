@@ -8,9 +8,13 @@ import { v4 as uuid } from "uuid"
 
 import { AppScreenAuthorizeAppConstants } from "frontend/apps/authentication/remote-authentication/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { RemoteLoginEvent } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import {
+  useDevices,
+  WebAuthnDevice,
+} from "frontend/comm/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
 import { apiResultToLoginResult } from "frontend/integration/internet-identity/api-result-to-login-result"
@@ -30,12 +34,12 @@ export type NfidJsonDelegate = {
 
 export type SignedDelegation = {
   delegation: {
-    pubkey: PublicKey
+    pubkey: number[]
     expiration: string
     targets: undefined
   }
   signature: number[]
-  userKey: PublicKey
+  userKey: number[]
 }
 
 type StateProps = {
@@ -135,7 +139,7 @@ export const useUnknownDeviceConfig = () => {
     })
 
   const handleStoreNewDevice = React.useCallback(
-    async ({ device }) => {
+    async ({ device }: { device: WebAuthnDevice }) => {
       if (!userNumber) throw new Error("No anchor found")
 
       setNewDeviceKey(device.publicKey)
@@ -161,7 +165,7 @@ export const useUnknownDeviceConfig = () => {
         FRONTEND_MODE === "development" ? "http:" : window.location.protocol
       const hostname = `${protocol}//${domain}`
 
-      postClientAuthorizeSuccessMessage(appWindow, {
+      postClientAuthorizeSuccessMessage(appWindow as Window, {
         parsedSignedDelegation,
         userKey: signedDelegation.userKey,
         hostname,
@@ -192,7 +196,7 @@ export const useUnknownDeviceConfig = () => {
   ])
 
   const handleLoginFromRemoteDelegation = React.useCallback(
-    async (nfidJsonDelegate, userNumber) => {
+    async (nfidJsonDelegate: RemoteLoginEvent["nfid"], userNumber: string) => {
       const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
@@ -222,7 +226,7 @@ export const useUnknownDeviceConfig = () => {
         )
         const registerMessage = parsedMessages.find(
           (m: { type: string }) => m.type === "remote-login-register",
-        )
+        ) as RemoteLoginEvent | undefined
 
         if (registerMessage) {
           setUserNumber(BigInt(registerMessage.userNumber))

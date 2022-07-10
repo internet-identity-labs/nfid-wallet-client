@@ -1,6 +1,7 @@
 import React from "react"
 
 import { usePostMessage } from "frontend/apps/identity-provider/use-post-message"
+import { BuiltDelegate } from "frontend/integration/internet-identity/build-delegate"
 
 const READY_MESSAGE = {
   kind: "authorize-ready",
@@ -10,6 +11,10 @@ type MessageKinds = "authorize-client" | "new-device"
 
 interface Message {
   kind: MessageKinds
+}
+
+export interface MessageEvent {
+  data: Message
 }
 
 interface UseMessageChannelProps {
@@ -22,7 +27,7 @@ export const useMessageChannel = ({
   messageHandler,
 }: UseMessageChannelProps) => {
   const handleAuthMessage = React.useCallback(
-    async (event: { data: Message }) => {
+    async (event: MessageEvent) => {
       const { kind } = event.data
       const eventHandler = messageHandler[kind]
       if (eventHandler && typeof eventHandler === "function") {
@@ -49,7 +54,18 @@ export const useMessageChannel = ({
   }, [opener])
 
   const postClientAuthorizeSuccessMessage = React.useCallback(
-    (opener, { parsedSignedDelegation, userKey, hostname }) => {
+    (
+      opener: Window,
+      {
+        parsedSignedDelegation,
+        userKey,
+        hostname,
+      }: {
+        userKey: number[]
+        hostname: string
+        parsedSignedDelegation: BuiltDelegate
+      },
+    ) => {
       opener.postMessage(
         {
           kind: "authorize-client-success",

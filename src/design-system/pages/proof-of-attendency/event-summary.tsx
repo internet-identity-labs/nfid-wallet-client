@@ -3,9 +3,7 @@ import React from "react"
 import { CalendarIcon } from "frontend/design-system/atoms/icons/calendar"
 import { MapPinIcon } from "frontend/design-system/atoms/icons/map-pin"
 
-interface EventSummaryProps {}
-
-export const EventSummary: React.FC<EventSummaryProps> = ({ children }) => {
+export const EventSummary = () => {
   return (
     <div>
       <div className="flex flex-col">

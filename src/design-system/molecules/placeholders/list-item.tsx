@@ -9,7 +9,6 @@ interface ListItemPlaceholderProps {
 }
 
 export const ListItemPlaceholder: React.FC<ListItemPlaceholderProps> = ({
-  children,
   index,
 }) => {
   return (

@@ -3,7 +3,7 @@ import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { ApiResult } from "frontend/integration/internet-identity"
 
 export type LoginSuccess = {
-  tag: "ok"
+  tag?: "ok"
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
 }

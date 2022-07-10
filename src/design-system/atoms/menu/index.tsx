@@ -1,9 +1,10 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Button, ButtonProps } from "@internet-identity-labs/nfid-sdk-react"
+import { Button, ButtonProps } from "../button"
 
-export interface ButtonMenuProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ButtonMenuProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: (toggle: () => void) => React.ReactNode
   buttonProps?: ButtonProps
   buttonElement?: React.ReactElement | string
@@ -19,7 +20,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   const ref = React.useRef<HTMLDivElement | null>(null)
 
   const handleMenuToggle = React.useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.stopPropagation()
       setToggleMenu(!toggleMenu)
     },

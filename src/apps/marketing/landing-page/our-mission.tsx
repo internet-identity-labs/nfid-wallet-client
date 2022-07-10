@@ -10,9 +10,7 @@ import Blur3 from "./assets/blur_3.png"
 
 import { Footer } from "./footer"
 
-interface OurMissionProps {}
-
-export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
+export const OurMission = () => {
   return (
     <AppScreen
       bubbleOptions={{

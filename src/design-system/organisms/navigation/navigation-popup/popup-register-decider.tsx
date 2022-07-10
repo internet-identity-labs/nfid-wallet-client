@@ -46,7 +46,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
       }
 
       try {
-        await recoverDevice(userNumber)
+        await recoverDevice(Number(userNumber))
         await Promise.all([readAndStoreAccount(), getPersona()])
 
         setIsLoading(false)

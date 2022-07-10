@@ -2,7 +2,9 @@ import clsx from "clsx"
 import React from "react"
 import ReactDOM from "react-dom"
 
-export const Header: React.FC = ({ children }) => <div>{children}</div>
+export const Header: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => <div>{children}</div>
 
 const useModalRoot = (id: string) => {
   const modalRoot = React.useRef<HTMLDivElement | null>(null)
@@ -47,7 +49,7 @@ export const Modal: React.FC<ModalProps> = ({
   }, [onModalMounted])
 
   const escFunction = React.useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       if (event.keyCode === 27) {
         onClose()
       }

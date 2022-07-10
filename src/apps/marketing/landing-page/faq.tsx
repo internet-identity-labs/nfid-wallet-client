@@ -13,9 +13,7 @@ import { Footer } from "./footer"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
 
-interface FaqProps {}
-
-export const Faq: React.FC<FaqProps> = ({ children }) => {
+export const Faq = () => {
   return (
     <AppScreen
       bubbleOptions={{

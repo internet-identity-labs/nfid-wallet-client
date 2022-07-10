@@ -10,6 +10,7 @@ import { ScreenResponsive } from "frontend/design-system/templates/screen-respon
 import { phoneRules } from "frontend/utils/validations"
 
 interface CredentialRequesterNotVerifiedProps {
+  children?: React.ReactNode
   applicationLogo?: string
   applicationName?: string
   onSubmit: (values: { phone: string }) => void

@@ -14,3 +14,11 @@ export const normalizePersonas = (personas?: PersonaResponse[]): Persona[] => {
     })
     .filter(Boolean)
 }
+
+export function getAccounts(
+  personas: NFIDPersona[],
+  scope: string,
+  derivationOrigin?: string,
+) {
+  return []
+}

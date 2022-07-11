@@ -1,12 +1,4 @@
-import { NFIDPersona } from "./types"
-
-function getAccounts(
-  personas: NFIDPersona[],
-  scope: string,
-  derivateOrigin?: string,
-) {
-  return []
-}
+import { getAccounts, getNextPersonaId } from "./utils"
 
 describe("utils test suite", () => {
   describe("getAccounts", () => {
@@ -24,13 +16,13 @@ describe("utils test suite", () => {
       // The user has also personas created on other domains which should be excluded
       const excludedPersonas = [{ persona_id: "1", domain: "excluded-url.com" }]
 
-      // Then dscvr.one implements the new derivateOrigin feature and hosts
+      // Then dscvr.one implements the new derivationOrigin feature and hosts
       // the app on the new scope:
       const scope = "dscvr.one"
 
-      // dscvr.one will send the derivateOrigin parameter within the authorize-client message
+      // dscvr.one will send the derivationOrigin parameter within the authorize-client message
       // which will be the original canister domain
-      const derivateOrigin = originalCanisterDomain
+      const derivationOrigin = originalCanisterDomain
 
       // The list of personas we'll receive from IM will include
       // the excludedPersonas from other domains and the actuall
@@ -38,7 +30,7 @@ describe("utils test suite", () => {
       const personas = [...excludedPersonas, ...canisterPersonas]
 
       // the getAccounts selector should filter the personas
-      let accounts = getAccounts(personas, scope, derivateOrigin)
+      let accounts = getAccounts(personas, scope, derivationOrigin)
 
       // so that it only includes the canisterPersonas
       expect(accounts.length).toBe(canisterPersonas.length)
@@ -53,7 +45,7 @@ describe("utils test suite", () => {
       // and additional the personas with the new domain
       const allPersonas = [...personas, ...newPersonas]
 
-      accounts = getAccounts(allPersonas, scope, derivateOrigin)
+      accounts = getAccounts(allPersonas, scope, derivationOrigin)
 
       // now we need to include the canisterPersonas and the newPersonas
       expect(accounts.length).toBe(canisterPersonas.length + newPersonas.length)

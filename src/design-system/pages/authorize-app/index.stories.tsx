@@ -40,10 +40,10 @@ const AuthorizeAppSingleAccountTemplate: ComponentStory<
 }
 
 export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
-export const SingleAccount = AuthorizeAppSingleAccountTemplate.bind({})
-export const IframeScreen = AuthorizeAppIframeTemplate.bind({})
+export const SingleAccountAllowed = AuthorizeAppSingleAccountTemplate.bind({})
+export const MultipleAccountAllowed = AuthorizeAppIframeTemplate.bind({})
 
-SingleAccount.args = {
+SingleAccountAllowed.args = {
   applicationName: "Distrikt",
   applicationLogo: logo,
 }
@@ -57,7 +57,7 @@ AppScreen.args = {
   ],
 }
 
-IframeScreen.args = {
+MultipleAccountAllowed.args = {
   applicationName: "Distrikt",
   applicationLogo: logo,
   accounts: [

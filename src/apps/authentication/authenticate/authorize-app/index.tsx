@@ -7,8 +7,8 @@ import { ScreenResponsive } from "frontend/design-system/templates/screen-respon
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
+import { useApplicationConfig } from "frontend/comm/im"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 
@@ -21,7 +21,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   redirectTo,
 }) => {
   const { userNumber } = useAccount()
-  const { isLoading, setIsloading } = useIsLoading()
+  const [isLoading, setLoading] = React.useState(true)
   const { secret, scope } = useParams()
   const { nextPersonaId, accounts, createPersona, getPersona } = usePersona()
   const { remoteNFIDLogin } = useAuthorizeApp()
@@ -32,6 +32,10 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
     useAuthorization({
       userNumber,
     })
+  const { application, isLoading: isLoadingApplications } =
+    useApplicationConfig(authorizationRequest?.hostname)
+
+  console.log(">> ", { application, isLoadingApplications })
 
   React.useEffect(() => {
     getPersona()
@@ -42,8 +46,8 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const handleNFIDLogin = React.useCallback(async () => {
     if (!secret) throw new Error("secret is missing from params")
     await remoteNFIDLogin({ secret })
-    setIsloading(false)
-  }, [remoteNFIDLogin, secret, setIsloading])
+    setLoading(false)
+  }, [remoteNFIDLogin, secret, setLoading])
 
   React.useEffect(() => {
     if (!authorizationRequest && opener) {
@@ -57,15 +61,15 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {
-      setIsloading(true)
+      setLoading(true)
       await authorizeApp({ persona_id: personaId })
-      setIsloading(false)
+      setLoading(false)
     },
-    [authorizeApp, setIsloading],
+    [authorizeApp, setLoading],
   )
 
   const handleCreateAccountAndLogin = React.useCallback(async () => {
-    setIsloading(true)
+    setLoading(true)
     const response = await createPersona({
       domain: scope || authorizationRequest?.hostname,
     })
@@ -73,19 +77,50 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
     if (response?.status_code === 200) {
       return handleLogin(nextPersonaId)
     }
-    setIsloading(false)
+    setLoading(false)
   }, [
     authorizationRequest?.hostname,
     createPersona,
     handleLogin,
     nextPersonaId,
     scope,
-    setIsloading,
+    setLoading,
   ])
+
+  const handleSingleAccountLogin = React.useCallback(() => {
+    // If we already have an account for this application, we authorize with this account
+    if (accounts.length > 0) {
+      console.log(">> handleSingleAccountLogin", {
+        personaId: accounts[0].persona_id,
+      })
+
+      handleLogin(accounts[0].persona_id)
+    } else {
+      // Otherwise we create an account and log in
+      console.log(">> handleSingleAccountLogin create account and log in")
+      handleCreateAccountAndLogin()
+    }
+  }, [accounts, handleCreateAccountAndLogin, handleLogin])
+
+  // Determins application configuration
+  React.useEffect(() => {
+    if (application && application.userLimit === 1) {
+      handleSingleAccountLogin()
+    }
+
+    if (application && application.userLimit > 1) {
+      setLoading(false)
+    }
+  }, [application, handleSingleAccountLogin, isLoadingApplications, setLoading])
 
   return (
     <ScreenResponsive
-      isLoading={isLoading}
+      isLoading={isLoading || isLoadingApplications}
+      loadingMessage={
+        application?.userLimit === 1
+          ? "Application allows only one account. Logging in..."
+          : ""
+      }
       className="flex flex-col items-center"
     >
       <AuthorizeApp

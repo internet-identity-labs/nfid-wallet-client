@@ -1,5 +1,7 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
+import React from "react"
+import useSWR from "swr"
 
 import { unpackLegacyResponse, unpackResponse } from "./.common"
 import { im } from "./actors"
@@ -149,4 +151,33 @@ export async function verifyToken(token: string, principal: Principal) {
  */
 export async function fetchApplications() {
   return im.read_applications().then((r) => mapApplications(unpackResponse(r)))
+}
+
+/**
+ * Returns
+ *
+ * @export
+ * @param {string} applicationDomain - The domain of the third party application
+ * @return {*}
+ */
+export function useApplicationConfig(applicationDomain?: string) {
+  const { data: applications, error } = useSWR(
+    "applications",
+    fetchApplications,
+    {
+      dedupingInterval: 60_000,
+      focusThrottleInterval: 60_000,
+    },
+  )
+  const application = React.useMemo(() => {
+    if (applications) {
+      return applications.find((a) => a.domain === applicationDomain)
+    }
+  }, [applicationDomain, applications])
+
+  return {
+    application,
+    error,
+    isLoading: !applications && !error,
+  }
 }

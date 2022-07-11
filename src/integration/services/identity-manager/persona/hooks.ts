@@ -15,15 +15,11 @@ import { PersonaRequest } from "frontend/integration/idl/identity_manager.did"
 import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 >>>>>>> f6fa3cda (feat: phone credential verification):src/integration/services/identity-manager/persona/hooks.ts
 
-import { Account } from ".."
+import { Persona } from ".."
 import { personaAtom } from "./state"
 import { isNFIDPersona } from "./types"
-import { createAccount, getNextAccountId, selectAccounts } from "./utils"
+import { createAccount, getNextPersonaId, selectAccounts } from "./utils"
 
-/**
- *
- * @deprecated FIXME: move to integration layer
- * */
 export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
   const { scope } = useParams()
@@ -44,14 +40,12 @@ export const usePersona = () => {
   }, [allAccounts, authorizationRequest, scope])
 
   const nextPersonaId = React.useMemo(
-    () => getNextAccountId(accounts),
+    () => getNextPersonaId(accounts),
     [accounts],
   )
 
   const getPersona = React.useCallback(async () => {
-    const response = await im.read_personas().catch((e) => {
-      throw new Error(`usePersona.getPersona im.read_personas: ${e.message}`)
-    })
+    const response = await im.read_personas()
 
     if (response.status_code === 200) {
       setPersonas(response.data[0])
@@ -59,15 +53,9 @@ export const usePersona = () => {
     // NOTE: this is only for dev purposes
     if (response.status_code === 404 && account?.anchor) {
       const anchor = BigInt(account?.anchor)
-      await im
-        .create_account({
-          anchor,
-        })
-        .catch((e) => {
-          throw new Error(
-            `usePersona.getPersona im.create_account: ${e.message}`,
-          )
-        })
+      await im.create_account({
+        anchor,
+      })
 
       getPersona()
     }
@@ -75,23 +63,19 @@ export const usePersona = () => {
 
   const createPersona = React.useCallback(
     async ({ domain }: { domain: string }) => {
-      const newAccount: Account = createAccount(
+      const persona: Persona = createAccount(
         accounts,
         domain,
         authorizationRequest?.derivationOrigin,
       )
 
-      const accountParams: PersonaRequest = {
-        persona_name: newAccount.label,
-        persona_id: newAccount.accountId,
-        domain: newAccount.domain,
+      const personaCredentials: PersonaRequest = {
+        persona_name: persona.personaName,
+        persona_id: persona.personaId,
+        domain: persona.domain,
       }
 
-      const response = await im.create_persona(accountParams).catch((e) => {
-        throw new Error(
-          `usePersona.createPersona im.create_access_point: ${e.message}`,
-        )
-      })
+      const response = await im.create_persona(personaCredentials)
 
       if (response?.status_code === 200) {
         setPersonas(response.data[0]?.personas)

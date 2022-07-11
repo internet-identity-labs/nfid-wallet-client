@@ -32,7 +32,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   applicationName,
   applicationLogo,
   accounts,
-  accountsLimit,
+  accountsLimit = 5,
   onUnlockNFID,
   onLogin,
   onCreateAccount,

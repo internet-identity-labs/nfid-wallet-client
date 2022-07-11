@@ -23,7 +23,7 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
   const handleSubmitPhoneNumber = React.useCallback(
     async ({ phone }: { phone: string }) => {
       toggleLoading()
-      const response = await verifyPhonenumber(phone, user?.principal as string)
+      const response = await verifyPhonenumber(phone)
       toggleLoading()
       if (response.status >= 200 && response.status < 400) {
         setPhoneNumber(phone)

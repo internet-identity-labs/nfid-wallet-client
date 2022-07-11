@@ -36,10 +36,7 @@ export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const handleResendToken = React.useCallback(async () => {
     toggleLoading()
-    const response = await verifyPhonenumber(
-      phone as string,
-      user?.principal as string,
-    )
+    const response = await verifyPhonenumber(phone as string)
     toggleLoading()
     if (response.status >= 200 && response.status < 400) {
       return navigate("/profile/authenticate")

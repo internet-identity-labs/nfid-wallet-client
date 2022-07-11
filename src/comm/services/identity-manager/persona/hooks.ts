@@ -10,6 +10,7 @@ import { useAccount } from "frontend/comm/services/identity-manager/account/hook
 
 import { personaAtom } from "./state"
 import { isNFIDPersona } from "./types"
+import { getNextPersonaId } from "./utils"
 
 export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
@@ -39,13 +40,10 @@ export const usePersona = () => {
     return filteredAccounts
   }, [allAccounts, authorizationRequest?.hostname, scope])
 
-  const nextPersonaId = React.useMemo(() => {
-    const highest = accounts.reduce((last, persona) => {
-      const current = parseInt(persona.persona_id, 10)
-      return last < current ? current : last
-    }, 0)
-    return `${highest + 1}`
-  }, [accounts])
+  const nextPersonaId = React.useMemo(
+    () => getNextPersonaId(accounts),
+    [accounts],
+  )
 
   const getPersona = React.useCallback(async () => {
     const response = await im.read_personas()

@@ -3,14 +3,14 @@ import { selectAccounts, getNextPersonaId } from "./utils"
 describe("persona utils test suite", () => {
   describe("selectAccounts", () => {
     it("selects personas/accounts for given domain", () => {
-      const result = { persona_id: "1", domain: `test.com` };
+      const result = { persona_id: "1", domain: `test.com` }
       const personas = [
         result,
         { persona_id: "2", domain: `canister-id.ic0.app` },
         { persona_id: "3", domain: `canister-id-2.ic0.app` },
         { persona_id: "4", domain: `canister-id-3.ic0.app` },
-      ];
-      expect(selectAccounts(personas, 'test.com')[0]).toBe(result);
+      ]
+      expect(selectAccounts(personas, "test.com")[0]).toBe(result)
     })
 
     it("should return personas filtered by new scope and derivationOrigin canister domains", () => {
@@ -62,6 +62,17 @@ describe("persona utils test suite", () => {
       expect(accounts.length).toBe(canisterPersonas.length + newPersonas.length)
     })
   })
+  describe("getNextPersonaId(filteredPersonas)", () => {
+    it("should increment correctly", () => {
+      const scope = "dscvr.one"
+      const personas = [
+        { persona_id: "1", domain: scope },
+        { persona_id: "2", domain: `https://${scope}` },
+      ]
+      expect(getNextPersonaId(personas)).toBe("3")
+    })
+  })
+  describe("getScope(persona)", () => {})
 })
 
 export {}

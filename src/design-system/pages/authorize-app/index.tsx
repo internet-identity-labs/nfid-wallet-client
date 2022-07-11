@@ -72,7 +72,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         })}
         <div
           className={clsx("h-12 flex items-center justify-between px-[10px]")}
-          onClick={onCreateAccount}
+          onClick={isAccountsLimit ? () => {} : onCreateAccount}
         >
           <div
             className={clsx(

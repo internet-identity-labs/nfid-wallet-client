@@ -4,7 +4,7 @@ import React from "react"
 import { ProfileEditPhone } from "frontend/design-system/pages/profile-edit/phone"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"

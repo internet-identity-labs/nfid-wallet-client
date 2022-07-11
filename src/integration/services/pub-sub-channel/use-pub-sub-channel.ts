@@ -1,7 +1,7 @@
 import React from "react"
 
-import { pubsub } from "frontend/comm/actors"
-import { Topic } from "frontend/comm/idl/pub_sub_channel.did"
+import { pubsub } from "frontend/integration/actors"
+import { Topic } from "frontend/integration/idl/pub_sub_channel.did"
 
 export const usePubSubChannel = () => {
   const createTopic = React.useCallback(async (key: Topic) => {

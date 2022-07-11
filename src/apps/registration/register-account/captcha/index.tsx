@@ -11,9 +11,9 @@ import { useAuthentication } from "frontend/apps/authentication/use-authenticati
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/services/identity-manager/persona/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RegisterAccountCopyRecoveryPhraseProps

@@ -17,7 +17,7 @@ import { IconCheckMark } from "frontend/design-system/atoms/icons/check-mark"
 import {
   Icon,
   RecoveryDevice,
-} from "frontend/comm/services/identity-manager/devices/state"
+} from "frontend/integration/services/identity-manager/devices/state"
 
 import { DeviceIconDecider } from "../device-list/device-icon-decider"
 import { DeviceListButtonGroup } from "../device-list/device-list-button-group"

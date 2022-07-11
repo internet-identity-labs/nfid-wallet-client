@@ -14,8 +14,8 @@ import {
 
 import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 import { nameRules } from "frontend/utils/validations"
 
 interface NFIDPersonalizeContentProps

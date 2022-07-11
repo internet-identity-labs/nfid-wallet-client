@@ -2,7 +2,7 @@ import React from "react"
 
 import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
 
-import { NFIDPersona } from "frontend/comm/services/identity-manager/persona/types"
+import { NFIDPersona } from "frontend/integration/services/identity-manager/persona/types"
 import { ElementProps } from "frontend/types/react"
 
 import { AuthorizeApp } from "."

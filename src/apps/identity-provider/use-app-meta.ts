@@ -3,7 +3,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { useParams, useSearchParams } from "react-router-dom"
 
-import { creationOptions } from "frontend/comm/services/internet-identity/iiConnection"
+import { creationOptions } from "frontend/integration/services/internet-identity/iiConnection"
 
 import { useDeviceInfo } from "../device/use-device-info"
 

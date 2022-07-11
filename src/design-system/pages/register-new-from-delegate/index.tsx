@@ -14,7 +14,7 @@ import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { usePostMessage } from "frontend/apps/identity-provider/use-post-message"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import { useDevices } from "frontend/integration/services/identity-manager/devices/hooks"
 
 import { ModalSuccess } from "./modal-success"
 

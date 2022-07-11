@@ -13,9 +13,9 @@ import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-auth
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/integration/services/identity-manager/persona/hooks"
 
 interface PopupRegisterDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {}

@@ -5,7 +5,7 @@ import { PlusIcon } from "frontend/design-system/atoms/icons/plus"
 import { H5 } from "frontend/design-system/atoms/typography"
 import { List } from "frontend/design-system/molecules/list"
 
-import { Device } from "frontend/comm/services/identity-manager/devices/state"
+import { Device } from "frontend/integration/services/identity-manager/devices/state"
 
 import { DeviceListItem } from "./device-list-item"
 

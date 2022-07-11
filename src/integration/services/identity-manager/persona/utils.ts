@@ -1,5 +1,5 @@
-import { PersonaResponse } from "frontend/comm/idl/identity_manager.did"
-import { Persona } from "frontend/comm/im"
+import { Persona } from "frontend/integration/actors/im"
+import { PersonaResponse } from "frontend/integration/idl/identity_manager.did"
 
 import { IIPersona, NFIDPersona, Persona as LegacyPersonas } from "./types"
 

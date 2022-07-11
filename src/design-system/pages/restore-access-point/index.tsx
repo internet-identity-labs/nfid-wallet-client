@@ -12,8 +12,8 @@ import { useMessageChannel } from "frontend/design-system/pages/remote-authorize
 import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { parseUserNumber } from "frontend/comm/services/internet-identity/userNumber"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { parseUserNumber } from "frontend/integration/services/internet-identity/userNumber"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<

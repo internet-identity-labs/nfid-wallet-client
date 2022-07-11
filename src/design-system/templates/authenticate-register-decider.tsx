@@ -10,7 +10,7 @@ import {
 import { APP_SCREEN_AUTHENTICATE_BASE } from "frontend/apps/authentication/authenticate/constants"
 import { PATH_REGISTER } from "frontend/apps/authentication/authenticate/register/path"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 
 interface AuthenticateDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {

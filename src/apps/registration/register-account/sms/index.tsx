@@ -17,7 +17,7 @@ import {
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 import { isValidToken, tokenRules } from "frontend/utils/validations"
 
 import { RemoteRegisterAccountConstants as RAC } from "../routes"

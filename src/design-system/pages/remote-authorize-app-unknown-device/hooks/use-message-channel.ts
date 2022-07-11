@@ -1,7 +1,7 @@
 import React from "react"
 
 import { usePostMessage } from "frontend/apps/identity-provider/use-post-message"
-import { BuiltDelegate } from "frontend/comm/services/internet-identity/build-delegate"
+import { BuiltDelegate } from "frontend/integration/services/internet-identity/build-delegate"
 
 const READY_MESSAGE = {
   kind: "authorize-ready",

@@ -8,7 +8,7 @@ import { PopupRegisterDecider } from "frontend/design-system/organisms/navigatio
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 
 import { PopupLogin } from "./popup-login"
 import { PopupRegister } from "./popup-register"
@@ -25,6 +25,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
   }, [user, account])
 
   return (
+    // @ts-ignore
     <Fade>
       <div
         className={clsx(

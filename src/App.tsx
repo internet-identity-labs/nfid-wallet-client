@@ -16,10 +16,12 @@ import { HomeScreen } from "./apps/marketing/landing-page"
 import { Faq } from "./apps/marketing/landing-page/faq"
 import { OurMission } from "./apps/marketing/landing-page/our-mission"
 import { RecoverNFIDRoutes } from "./apps/registration/recover-nfid/routes"
-import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
-import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
-import { ic } from "./comm/actors"
+import {
+  NFIDRegisterAccountRoutes,
+  RemoteRegisterAccountRoutes,
+} from "./apps/registration/register-account/routes"
 import { NotFound } from "./design-system/pages/404"
+import { ic } from "./integration/actors"
 
 declare const USERGEEK_API_KEY: string
 

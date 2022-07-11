@@ -3,12 +3,12 @@ import { useAtom } from "jotai"
 import React from "react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { im } from "frontend/comm/actors"
+import { im } from "frontend/integration/actors"
 import {
   AccountResponse,
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
-} from "frontend/comm/idl/identity_manager.did"
+} from "frontend/integration/idl/identity_manager.did"
 
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {

@@ -8,25 +8,13 @@ import {
   useAuthentication,
   User,
 } from "frontend/apps/authentication/use-authentication"
-import { PublicKey } from "frontend/comm/idl/internet_identity_types"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
-import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { getScope } from "frontend/integration/services/identity-manager/persona/utils"
+import { retryGetDelegation } from "frontend/integration/services/internet-identity/auth"
+import { IIConnection } from "frontend/integration/services/internet-identity/iiConnection"
+import { usePubSubChannel } from "frontend/integration/services/pub-sub-channel/use-pub-sub-channel"
 
-// FIXME:
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type RemoteLoginMessage = {
-  delegation: {
-    pubkey: PublicKey
-    expiration: string
-    target?: string
-  }
-  signature: number[]
-  userKey: PublicKey
-  userNumber?: number
-}
+declare const FRONTEND_MODE: string
 
 export interface RemoteLoginEvent extends SignedDelegation {
   type: "remote-login-register"

@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { Device } from "frontend/comm/services/identity-manager/devices/state"
+import { Device } from "frontend/integration/services/identity-manager/devices/state"
 
 import { Profile } from "."
 

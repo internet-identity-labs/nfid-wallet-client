@@ -2,7 +2,7 @@ import React from "react"
 
 import { Button } from "frontend/design-system/atoms/button"
 
-import { Icon } from "frontend/comm/services/identity-manager/devices/state"
+import { Icon } from "frontend/integration/services/identity-manager/devices/state"
 
 import { DeviceIconDecider } from "./device-icon-decider"
 

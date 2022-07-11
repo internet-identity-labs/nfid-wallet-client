@@ -8,9 +8,9 @@ import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-auth
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { RemoteLoginEvent } from "frontend/apps/authorization/use-authorize-app"
-import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
+import { apiResultToLoginResult } from "frontend/integration/services/internet-identity/api-result-to-login-result"
+import { IIConnection } from "frontend/integration/services/internet-identity/iiConnection"
+import { usePubSubChannel } from "frontend/integration/services/pub-sub-channel/use-pub-sub-channel"
 
 import { RemoteNFIDAuthenticationConstants } from "../../../authentication/remote-nfid-authentication"
 

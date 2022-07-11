@@ -3,7 +3,7 @@ import { generatePath, Navigate, useParams } from "react-router-dom"
 
 import { AppScreenNFIDLogin } from "frontend/apps/authentication/authenticate/nfid-login"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 
 interface AuthWrapperProps {
   redirectTo: string

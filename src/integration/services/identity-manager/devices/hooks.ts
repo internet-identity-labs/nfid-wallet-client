@@ -9,23 +9,23 @@ import React from "react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
-import { im } from "frontend/comm/actors"
+import { im } from "frontend/integration/actors"
 import {
   AccessPointRequest,
   AccessPointResponse,
-} from "frontend/comm/idl/identity_manager.did"
+} from "frontend/integration/idl/identity_manager.did"
 import {
   DeviceData,
   PublicKey,
-} from "frontend/comm/idl/internet_identity_types"
-import { fromMnemonicWithoutValidation } from "frontend/comm/services/internet-identity/crypto/ed25519"
-import { generate } from "frontend/comm/services/internet-identity/crypto/mnemonic"
+} from "frontend/integration/idl/internet_identity_types"
+import { fromMnemonicWithoutValidation } from "frontend/integration/services/internet-identity/crypto/ed25519"
+import { generate } from "frontend/integration/services/internet-identity/crypto/mnemonic"
 import {
   creationOptions,
   derFromPubkey,
   IC_DERIVATION_PATH,
   IIConnection,
-} from "frontend/comm/services/internet-identity/iiConnection"
+} from "frontend/integration/services/internet-identity/iiConnection"
 
 import { useAccount } from "../account/hooks"
 import {

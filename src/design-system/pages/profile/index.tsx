@@ -10,8 +10,8 @@ import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen
 import {
   Device,
   RecoveryDevice,
-} from "frontend/comm/services/identity-manager/devices/state"
-import { NFIDPersona } from "frontend/comm/services/identity-manager/persona/types"
+} from "frontend/integration/services/identity-manager/devices/state"
+import { NFIDPersona } from "frontend/integration/services/identity-manager/persona/types"
 
 import { ApplicationList } from "./application-list"
 import { DeviceList } from "./device-list/device-list"

@@ -8,7 +8,7 @@ import {
 import { Principal } from "@dfinity/principal"
 import nacl_util from "tweetnacl-util"
 
-import { verifyPhoneNumber, verifySignature } from "./lambda"
+import { verifyPhoneNumber, verifySignature } from "../actors/lambda"
 
 const buffer_1 = require("@dfinity/identity/lib/cjs/buffer")
 const der_1 = require("@dfinity/identity/lib/cjs/identity/der")

@@ -5,7 +5,7 @@ import { State, TypegenDisabled } from "xstate"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 
 import { Authenticate } from "./authenticate"
 import { EnterPhoneNumber } from "./enter-phone-number"

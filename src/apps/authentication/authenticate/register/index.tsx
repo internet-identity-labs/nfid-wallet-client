@@ -7,9 +7,9 @@ import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/integration/services/identity-manager/persona/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RouteRegisterProps {

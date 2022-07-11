@@ -9,7 +9,7 @@ import { useAuthentication } from "frontend/apps/authentication/use-authenticati
 import {
   ChallengeResult,
   IIConnection,
-} from "frontend/comm/services/internet-identity/iiConnection"
+} from "frontend/integration/services/internet-identity/iiConnection"
 
 interface RegisterPayload {
   isGoogle?: boolean

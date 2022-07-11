@@ -4,8 +4,8 @@ import React from "react"
 import { ProfileEditPhoneSms } from "frontend/design-system/pages/profile-edit/phone-sms"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { phoneNumberAtom } from "../state"

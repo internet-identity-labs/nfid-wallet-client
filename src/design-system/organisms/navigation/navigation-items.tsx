@@ -12,7 +12,7 @@ import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
 import User from "frontend/assets/user.svg"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 import useClickOutside from "frontend/utils/use-click-outside"
 import { useScroll } from "frontend/utils/use-scroll"
 

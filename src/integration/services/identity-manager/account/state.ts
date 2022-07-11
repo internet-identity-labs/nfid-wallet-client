@@ -1,8 +1,8 @@
 import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
-import { AccountResponse } from "frontend/comm/idl/identity_manager.did"
-import { getUserNumber } from "frontend/comm/services/internet-identity/userNumber"
+import { AccountResponse } from "frontend/integration/idl/identity_manager.did"
+import { getUserNumber } from "frontend/integration/services/internet-identity/userNumber"
 
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 

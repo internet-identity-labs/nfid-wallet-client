@@ -8,6 +8,7 @@ import { Loader } from '@internet-identity-labs/nfid-sdk-react';
 
 export default function PhoneCredentialFlow() {
 
+  // @ts-ignore: second param is supposed to optional
   const [state, send] = useMachine(machine)
 
   if (state.matches('AuthenticateUser')) {

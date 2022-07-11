@@ -9,14 +9,14 @@ import {
   im,
   invalidateIdentity,
   replaceIdentity,
-} from "frontend/comm/actors"
-import { userNumberAtom } from "frontend/comm/services/identity-manager/account/state"
+} from "frontend/integration/actors"
+import { userNumberAtom } from "frontend/integration/services/identity-manager/account/state"
 import {
   apiResultToLoginResult,
   LoginResult,
   LoginSuccess,
-} from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
+} from "frontend/integration/services/internet-identity/api-result-to-login-result"
+import { IIConnection } from "frontend/integration/services/internet-identity/iiConnection"
 
 export interface User {
   principal: string

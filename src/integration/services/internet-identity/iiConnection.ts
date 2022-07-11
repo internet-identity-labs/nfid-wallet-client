@@ -20,7 +20,7 @@ import {
   InternetIdentity,
   invalidateIdentity,
   replaceIdentity,
-} from "frontend/comm/actors"
+} from "frontend/integration/actors"
 import {
   PublicKey,
   SessionKey,
@@ -36,7 +36,7 @@ import {
   KeyType,
   DeviceKey,
   ChallengeResult,
-} from "frontend/comm/idl/internet_identity_types"
+} from "frontend/integration/idl/internet_identity_types"
 
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
@@ -76,7 +76,7 @@ type ApiError = { kind: "apiError"; error: Error }
 type RegisterNoSpace = { kind: "registerNoSpace" }
 type SeedPhraseFail = { kind: "seedPhraseFail" }
 
-export type { ChallengeResult } from "frontend/comm/idl/internet_identity_types"
+export type { ChallengeResult } from "frontend/integration/idl/internet_identity_types"
 
 export class IIConnection {
   protected constructor(

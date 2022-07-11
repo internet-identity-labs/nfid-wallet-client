@@ -7,9 +7,9 @@ import { List } from "frontend/design-system/molecules/list"
 import { ListItem } from "frontend/design-system/molecules/list/list-item"
 import { ListItemPlaceholder } from "frontend/design-system/molecules/placeholders/list-item"
 
-import { usePrincipals } from "frontend/comm/ii"
-import { userNumberAtom } from "frontend/comm/services/identity-manager/account/state"
-import { NFIDPersona } from "frontend/comm/services/identity-manager/persona/types"
+import { usePrincipals } from "frontend/integration/hooks/ii"
+import { userNumberAtom } from "frontend/integration/services/identity-manager/account/state"
+import { NFIDPersona } from "frontend/integration/services/identity-manager/persona/types"
 import { getUrl } from "frontend/utils"
 
 interface ApplicationListProps {

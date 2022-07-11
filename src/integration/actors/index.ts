@@ -1,18 +1,19 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
+import { ActorSubclass, Identity } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { _SERVICE as IdentityManager } from "./idl/identity_manager.did"
-import { idlFactory as imIDL } from "./idl/identity_manager_idl"
-import { _SERVICE as ImAddition } from "./idl/im_addition.did.d"
-import { idlFactory as imaIDL } from "./idl/im_addition_idl"
-import { idlFactory as iiIDL } from "./idl/internet_identity_idl"
-import { _SERVICE as InternetIdentity } from "./idl/internet_identity_types.d"
-import { _SERVICE as PubSub } from "./idl/pub_sub_channel.did.d"
-import { idlFactory as pubsubIDL } from "./idl/pub_sub_channel_idl"
-import { _SERVICE as Verifier } from "./idl/verifier.did.d"
-import { idlFactory as verifierIDL } from "./idl/verifier_idl"
+import { _SERVICE as IdentityManager } from "../idl/identity_manager.did.d"
+import { idlFactory as imIDL } from "../idl/identity_manager_idl"
+import { _SERVICE as ImAddition } from "../idl/im_addition.did.d"
+import { idlFactory as imaIDL } from "../idl/im_addition_idl"
+import { idlFactory as iiIDL } from "../idl/internet_identity_idl"
+import { _SERVICE as InternetIdentity } from "../idl/internet_identity_types.d"
+import { _SERVICE as PubSub } from "../idl/pub_sub_channel.did.d"
+import { idlFactory as pubsubIDL } from "../idl/pub_sub_channel_idl"
+import { _SERVICE as Verifier } from "../idl/verifier.did.d"
+import { idlFactory as verifierIDL } from "../idl/verifier_idl"
 
 /////////////
 // Config //
@@ -101,3 +102,15 @@ export const ima = actor<ImAddition>(IM_ADDITION_CANISTER_ID, imaIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 
 export type { InternetIdentity, IdentityManager, ImAddition, Verifier }
+
+/**
+ * Allows calling a method with an alternate identity. Temporarily switches the agent identity, then switches it back.
+ * @param method the fetch method you wish to call
+ * @param actor the identity you wish to call with
+ */
+export function callWithIdentity<T>(method: () => T, identity: Identity) {
+  agent.replaceIdentity(identity)
+  const result = method()
+  rawId && agent.replaceIdentity(rawId)
+  return result
+}

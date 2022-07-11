@@ -8,8 +8,8 @@ import { ScreenResponsive } from "frontend/design-system/templates/screen-respon
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/services/identity-manager/persona/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
@@ -73,7 +73,7 @@ export const AppScreenAuthorizeApp: React.FC<
   const handleCreateAccountAndLogin = React.useCallback(async () => {
     setIsloading(true)
     const response = await createPersona({
-      domain: scope || window.location.hostname as string,
+      domain: scope || (window.location.hostname as string),
     })
 
     if (response?.status_code === 200) {

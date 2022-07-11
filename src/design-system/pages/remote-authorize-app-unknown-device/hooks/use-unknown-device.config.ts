@@ -10,16 +10,16 @@ import { AppScreenAuthorizeAppConstants } from "frontend/apps/authentication/rem
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { RemoteLoginEvent } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 import {
   useDevices,
   WebAuthnDevice,
-} from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import { buildDelegate } from "frontend/comm/services/internet-identity/build-delegate"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
+} from "frontend/integration/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/integration/services/identity-manager/persona/hooks"
+import { apiResultToLoginResult } from "frontend/integration/services/internet-identity/api-result-to-login-result"
+import { buildDelegate } from "frontend/integration/services/internet-identity/build-delegate"
+import { IIConnection } from "frontend/integration/services/internet-identity/iiConnection"
+import { usePubSubChannel } from "frontend/integration/services/pub-sub-channel/use-pub-sub-channel"
 
 import { useMessageChannel } from "./use-message-channel"
 

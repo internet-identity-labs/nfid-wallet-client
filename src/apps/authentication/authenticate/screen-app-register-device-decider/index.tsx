@@ -4,10 +4,10 @@ import { AuthorizeRegisterDeciderScreen } from "frontend/design-system/pages/reg
 import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/integration/services/identity-manager/persona/hooks"
 
 interface AppScreenRegisterDeviceProps
   extends React.HTMLAttributes<HTMLDivElement> {}

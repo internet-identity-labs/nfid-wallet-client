@@ -9,7 +9,7 @@ import { H5 } from "frontend/design-system/atoms/typography"
 import { P } from "frontend/design-system/atoms/typography/paragraph"
 import { BlurOverlay } from "frontend/design-system/molecules/blur-overlay"
 
-import { NFIDPersona } from "frontend/comm/services/identity-manager/persona/types"
+import { NFIDPersona } from "frontend/integration/services/identity-manager/persona/types"
 import { ElementProps } from "frontend/types/react"
 
 import alertIcon from "./assets/alert-triangle.svg"

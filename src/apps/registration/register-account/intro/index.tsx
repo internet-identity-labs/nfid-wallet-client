@@ -9,8 +9,8 @@ import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/services/identity-manager/devices/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RegisterAccountIntroProps

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/services/identity-manager/persona/hooks"
 
 interface PopupLoginProps {
   menu?: boolean

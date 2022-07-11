@@ -9,7 +9,7 @@ import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
 
 import Arrow from "./assets/arrow.svg"
 import Blur1 from "./assets/blur_1.svg"

@@ -10,7 +10,7 @@ import { H5 } from "frontend/design-system/atoms/typography"
 import { List } from "frontend/design-system/molecules/list"
 import { ModalAdvanced } from "frontend/design-system/molecules/modal/advanced"
 
-import { RecoveryDevice } from "frontend/comm/services/identity-manager/devices/state"
+import { RecoveryDevice } from "frontend/integration/services/identity-manager/devices/state"
 
 import { RecoveryMethodListItem } from "./recovery-list-item"
 

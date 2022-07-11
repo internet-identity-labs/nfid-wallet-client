@@ -4,7 +4,7 @@ import { Principal } from "@dfinity/principal"
 import nacl from "tweetnacl"
 import nacl_util from "tweetnacl-util"
 
-import { rawId } from "./actors"
+import { rawId } from "."
 
 declare const VERIFY_PHONE_NUMBER: string
 

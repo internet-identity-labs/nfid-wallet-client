@@ -7,7 +7,7 @@ import { MobileIcon } from "frontend/design-system/atoms/icons/mobile"
 import { TabletIcon } from "frontend/design-system/atoms/icons/tablet"
 import { USBIcon } from "frontend/design-system/atoms/icons/usb"
 
-import { Icon } from "frontend/comm/services/identity-manager/devices/state"
+import { Icon } from "frontend/integration/services/identity-manager/devices/state"
 
 interface DeviceIconDeciderProps {
   icon: Icon

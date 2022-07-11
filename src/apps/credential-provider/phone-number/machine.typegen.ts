@@ -9,8 +9,10 @@ export interface Typegen0 {
       | "ENTER_PHONE_NUMBER"
     ingestSMSToken: "ENTER_SMS_TOKEN"
     ingestError: "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-    ingestCredential: "INGEST_CREDENTIAL"
+    ingestAppDelegate: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
+    ingestCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
     clearError: "xstate.init"
+    presentCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
   }
   internalEvents: {
     "done.invoke.PhoneNumberCredentialProvider.AuthenticateUser.IngestPrincipal:invocation[0]": {
@@ -27,6 +29,16 @@ export interface Typegen0 {
       type: "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
       data: unknown
     }
+    "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]": {
+      type: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]": {
+      type: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]": {
       type: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
       data: unknown
@@ -39,7 +51,8 @@ export interface Typegen0 {
     fetchPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
     verifyPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.EnterSMSToken:invocation[0]"
     verifySMSToken: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-    resolveCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential:invocation[0]"
+    fetchAppDelegate: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
+    resolveToken: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
   }
   missingImplementations: {
     actions: never
@@ -50,13 +63,14 @@ export interface Typegen0 {
   eventsCausingServices: {
     fetchPrincipal: "LOGIN_COMPLETE"
     fetchPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.AuthenticateUser.IngestPrincipal:invocation[0]"
-    resolveCredential:
+    fetchAppDelegate:
       | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
       | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
     verifyPhoneNumber:
       | "ENTER_PHONE_NUMBER"
       | "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
     verifySMSToken: "ENTER_SMS_TOKEN"
+    resolveToken: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
@@ -71,6 +85,8 @@ export interface Typegen0 {
     | "GetPhoneNumber.ValidateSMSToken"
     | "HandleCredential"
     | "HandleCredential.ResolveCredential"
+    | "HandleCredential.ResolveCredential.RetrieveDelegate"
+    | "HandleCredential.ResolveCredential.ResolveToken"
     | "HandleCredential.PresentCredential"
     | {
         AuthenticateUser?: "Login" | "IngestPrincipal"
@@ -79,7 +95,10 @@ export interface Typegen0 {
           | "EnterPhoneNumber"
           | "EnterSMSToken"
           | "ValidateSMSToken"
-        HandleCredential?: "ResolveCredential" | "PresentCredential"
+        HandleCredential?:
+          | "ResolveCredential"
+          | "PresentCredential"
+          | { ResolveCredential?: "RetrieveDelegate" | "ResolveToken" }
       }
   tags: never
 }

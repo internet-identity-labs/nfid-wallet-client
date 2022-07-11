@@ -1,8 +1,11 @@
 import { PersonaResponse } from "frontend/comm/idl/identity_manager.did"
+import { Persona } from "frontend/comm/im"
 
-import { IIPersona, NFIDPersona, Persona } from "./types"
+import { IIPersona, NFIDPersona, Persona as LegacyPersonas } from "./types"
 
-export const normalizePersonas = (personas?: PersonaResponse[]): Persona[] => {
+export const normalizePersonas = (
+  personas?: PersonaResponse[],
+): LegacyPersonas[] => {
   if (!personas) return []
 
   return personas
@@ -16,7 +19,7 @@ export const normalizePersonas = (personas?: PersonaResponse[]): Persona[] => {
 }
 
 /**
- *
+ * Select accounts which pertain to given hostName. Uses dervitationOrigin exclusively if present.
  * @param personas List of personas to be filtered, retrieved from identity manager
  * @param hostName Host name of the connecting application i.e. "dscvr.one"
  * @param derivationOrigin Domain used to derive the delegation, allowing apps to use an alternate origin from the host name
@@ -36,4 +39,23 @@ export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {
     return last < current ? current : last
   }, 0)
   return `${highest + 1}`
+}
+
+/**
+ * Create a new persona/account, incrementing id based on # of existing accounts. Uses dervitationOrigin exclusively if present.
+ * @param personas
+ * @param hostName
+ * @param derivationOrigin
+ */
+export function createAccount(
+  personas: NFIDPersona[],
+  hostName: string,
+  derivationOrigin?: string,
+): Persona {
+  return {}
+}
+
+export function getScope(hostName: string, personaId?: string) {
+  // TODO: add https if no protocol is present
+  return `${personaId && personaId !== "0" ? `${personaId}@` : ``}${hostName}`
 }

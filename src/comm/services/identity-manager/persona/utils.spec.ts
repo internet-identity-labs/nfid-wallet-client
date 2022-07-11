@@ -1,4 +1,9 @@
-import { selectAccounts, getNextPersonaId } from "./utils"
+import {
+  selectAccounts,
+  getNextPersonaId,
+  createAccount,
+  getScope,
+} from "./utils"
 
 describe("persona utils test suite", () => {
   describe("selectAccounts", () => {
@@ -13,15 +18,15 @@ describe("persona utils test suite", () => {
       expect(selectAccounts(personas, "test.com")[0]).toBe(result)
     })
 
-    it("should return personas filtered by new scope and derivationOrigin canister domains", () => {
+    it("should return personas filtered by derivationOrigin if present", () => {
       // Example:
       // dscvr.one is hosted on canister url: https://h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app
-      const originalCanisterDomain = "h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app"
+      const derivationOrigin = "h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app"
 
       // The user has created two personas on this
       const canisterPersonas = [
-        { persona_id: "1", domain: originalCanisterDomain },
-        { persona_id: "2", domain: `https://${originalCanisterDomain}` },
+        { persona_id: "1", domain: derivationOrigin },
+        { persona_id: "2", domain: `https://${derivationOrigin}` },
       ]
 
       // The user has also personas created on other domains which should be excluded
@@ -30,10 +35,6 @@ describe("persona utils test suite", () => {
       // Then dscvr.one implements the new derivationOrigin feature and hosts
       // the app on the new scope:
       const scope = "dscvr.one"
-
-      // dscvr.one will send the derivationOrigin parameter within the authorize-client message
-      // which will be the original canister domain
-      const derivationOrigin = originalCanisterDomain
 
       // The list of personas we'll receive from IM will include
       // the excludedPersonas from other domains and the actuall
@@ -45,26 +46,12 @@ describe("persona utils test suite", () => {
 
       // so that it only includes the canisterPersonas
       expect(accounts.length).toBe(canisterPersonas.length)
-
-      // When the user creates new personas on the new domain:
-      const newPersonas = [
-        { persona_id: "3", domain: scope },
-        { persona_id: "4", domain: `https://${scope}` },
-      ]
-
-      // The backend will now return all personas from before
-      // and additional the personas with the new domain
-      const allPersonas = [...personas, ...newPersonas]
-
-      accounts = selectAccounts(allPersonas, scope, derivationOrigin)
-
-      // now we need to include the canisterPersonas and the newPersonas
-      expect(accounts.length).toBe(canisterPersonas.length + newPersonas.length)
     })
   })
+
   describe("getNextPersonaId(filteredPersonas)", () => {
     it("should increment correctly", () => {
-      const scope = "dscvr.one"
+      const scope = "h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app"
       const personas = [
         { persona_id: "1", domain: scope },
         { persona_id: "2", domain: `https://${scope}` },
@@ -72,7 +59,38 @@ describe("persona utils test suite", () => {
       expect(getNextPersonaId(personas)).toBe("3")
     })
   })
-  describe("getScope(persona)", () => {})
+
+  describe("getScope", () => {
+    it("does not include a persona salt for the zero persona", () => {
+      expect(getScope("https://test.com", "0")).toBe("https://test.com")
+    })
+    it("does not include a persona salt for a null persona", () => {
+      expect(getScope("https://test.com")).toBe("https://test.com")
+    })
+    it("includes persona salt for a 1+ persona", () => {
+      expect(getScope("https://test.com", "1")).toBe("1@https://test.com")
+    })
+    it("adds https protocol if no protocol is present", () => {
+      expect(getScope("test.com", "1")).toBe("1@https://test.com")
+    })
+  })
+
+  describe("createAccount", () => {
+    it("uses derivationOrigin to create persona if present", () => {
+      const personas = [
+        { persona_id: "1", domain: `somepage.com` },
+        { persona_id: "2", domain: `somepage.com` },
+        { persona_id: "1", domain: `test-canister-id.ic0.app` },
+      ]
+      const account1 = createAccount(
+        personas,
+        "test.com",
+        "test-canister-id.ic0.app",
+      )
+      expect(account1.domain).toBe("test-canister-id.ic0.app")
+      expect(account1.personaId).toBe("2")
+    })
+  })
 })
 
 export {}

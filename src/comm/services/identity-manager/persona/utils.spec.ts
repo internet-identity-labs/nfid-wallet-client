@@ -1,8 +1,19 @@
-import { getAccounts, getNextPersonaId } from "./utils"
+import { selectAccounts, getNextPersonaId } from "./utils"
 
-describe("utils test suite", () => {
-  describe("getAccounts", () => {
-    it("should return personas filtered by new scope and drivateOrigin canister domains", () => {
+describe("persona utils test suite", () => {
+  describe("selectAccounts", () => {
+    it("selects personas/accounts for given domain", () => {
+      const result = { persona_id: "1", domain: `test.com` };
+      const personas = [
+        result,
+        { persona_id: "2", domain: `canister-id.ic0.app` },
+        { persona_id: "3", domain: `canister-id-2.ic0.app` },
+        { persona_id: "4", domain: `canister-id-3.ic0.app` },
+      ];
+      expect(selectAccounts(personas, 'test.com')[0]).toBe(result);
+    })
+
+    it("should return personas filtered by new scope and derivationOrigin canister domains", () => {
       // Example:
       // dscvr.one is hosted on canister url: https://h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app
       const originalCanisterDomain = "h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app"
@@ -29,8 +40,8 @@ describe("utils test suite", () => {
       // canisterPersonas
       const personas = [...excludedPersonas, ...canisterPersonas]
 
-      // the getAccounts selector should filter the personas
-      let accounts = getAccounts(personas, scope, derivationOrigin)
+      // the selectAccounts selector should filter the personas
+      let accounts = selectAccounts(personas, scope, derivationOrigin)
 
       // so that it only includes the canisterPersonas
       expect(accounts.length).toBe(canisterPersonas.length)
@@ -45,7 +56,7 @@ describe("utils test suite", () => {
       // and additional the personas with the new domain
       const allPersonas = [...personas, ...newPersonas]
 
-      accounts = getAccounts(allPersonas, scope, derivationOrigin)
+      accounts = selectAccounts(allPersonas, scope, derivationOrigin)
 
       // now we need to include the canisterPersonas and the newPersonas
       expect(accounts.length).toBe(canisterPersonas.length + newPersonas.length)

@@ -15,10 +15,19 @@ export const normalizePersonas = (personas?: PersonaResponse[]): Persona[] => {
     .filter(Boolean)
 }
 
-export function getAccounts(
+/**
+ * 
+ * @param personas List of personas to be filtered, retrieved from identity manager
+ * @param hostName Host name of the connecting application i.e. "dscvr.one"
+ * @param derivationOrigin Domain used to derive the delegation, allowing apps to use an alternate origin from the host name
+ * @returns List of personas usable for the given domain
+ */
+export function selectAccounts(
   personas: NFIDPersona[],
-  scope: string,
+  hostName: string,
   derivationOrigin?: string,
 ) {
   return []
 }
+
+export function getNextPersonaId () {}

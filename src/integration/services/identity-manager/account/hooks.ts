@@ -1,6 +1,10 @@
+import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { DelegationIdentity, unwrapDER } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
+import nacl_util from "tweetnacl-util"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 <<<<<<< HEAD:src/integration/identity-manager/account/hooks.ts
@@ -25,6 +29,8 @@ import {
   localStorageAccountAtom,
   userNumberAtom,
 } from "./state"
+
+const der_1 = require("@dfinity/identity/lib/cjs/identity/der")
 
 declare const VERIFY_PHONE_NUMBER: string
 
@@ -177,25 +183,38 @@ export const useAccount = () => {
     [account, setAccount, setMemoryAccount, shouldStoreLocalAccount],
   )
 
-  const verifyPhonenumber = React.useCallback(
-    async (phoneNumber: string, principalId: string) => {
-      const response = await fetch(`${VERIFY_PHONE_NUMBER}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phoneNumber: phoneNumber.replace(/\s/g, ""),
-          principalId,
-        }),
-      })
+  const verifyPhonenumber = React.useCallback(async (phoneNumber: string) => {
+    if (!user?.sessionKey || user.chain)
+      throw new Error("sessionKey and chain are required")
 
-      const data = await response.json()
+    const identity = DelegationIdentity.fromDelegation(
+      user?.sessionKey,
+      user?.chain,
+    )
 
-      return { body: data, status: response.status }
-    },
-    [],
-  )
+    const msg = nacl_util.decodeUTF8(phoneNumber)
+    let signature = await identity.sign(msg)
+
+    let deref = identity.getDelegation().delegations[0].delegation.pubkey
+    let der = unwrapDER(deref, der_1.ED25519_OID)
+    let principal = Principal.fromUint8Array(der)
+
+    const response = await fetch(`${VERIFY_PHONE_NUMBER}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber: phoneNumber.replace(/\s/g, ""),
+        publicKey: principal,
+        signature: toHexString(signature),
+      }),
+    })
+
+    const data = await response.json()
+
+    return { body: data, status: response.status }
+  }, [])
 
   return {
     account: user ? account || memoryAccount : account,

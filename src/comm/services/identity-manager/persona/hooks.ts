@@ -64,6 +64,7 @@ export const usePersona = () => {
 
   const createPersona = React.useCallback(
     async ({ domain }) => {
+      // TODO: use createAccount to create the persona object
       const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
       const response = await im.create_persona(persona)
 

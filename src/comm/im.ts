@@ -7,6 +7,7 @@ import {
   AccessPointResponse,
   AccountResponse,
   PersonaResponse,
+  Application as BEApplication,
 } from "./idl/identity_manager.did"
 
 /**
@@ -31,6 +32,12 @@ import {
 //  - [] | [value] to optional
 //  - bigint to number
 //  - removing extra date decimals
+
+export interface Application {
+  name: string
+  domain: string
+  userLimit: number
+}
 
 export interface Account {
   name?: string
@@ -100,6 +107,30 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
 }
 
 /**
+ * Sanitizes BE application data type to FE data type
+ *
+ * @param {BEApplication} application
+ * @return {*}  {Application}
+ */
+function mapApplication(application: BEApplication): Application {
+  return {
+    name: application.name,
+    domain: application.domain,
+    userLimit: application.user_limit,
+  }
+}
+
+/**
+ * Sanitizes BE applications data type to FE data type
+ *
+ * @param {BEApplication[]} applications
+ * @return {*}  {Application[]}
+ */
+function mapApplications(applications: BEApplication[]): Application[] {
+  return applications.map(mapApplication)
+}
+
+/**
  * Fetch account for the currently connected principal.
  */
 export async function fetchAccount() {
@@ -111,4 +142,11 @@ export async function fetchAccount() {
  */
 export async function verifyToken(token: string, principal: Principal) {
   return im.verify_token(token).then(unpackLegacyResponse)
+}
+
+/**
+ * Fetch applications known to Identity Manager
+ */
+export async function fetchApplications() {
+  return im.read_applications().then((r) => mapApplications(unpackResponse(r)))
 }

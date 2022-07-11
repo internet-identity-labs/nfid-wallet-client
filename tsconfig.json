@@ -25,7 +25,8 @@
       "node",
       "webdriverio/async",
       "@wdio/cucumber-framework",
-      "expect-webdriverio"
+      "expect-webdriverio",
+      "jest"
     ]
   },
   "include": ["src", "src/types/custom.d.ts", "test"],

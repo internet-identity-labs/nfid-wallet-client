@@ -155,6 +155,24 @@ export function getSessionKey(secret: string) {
   return sessionKey
 }
 
+async function prepareDelegation(
+  userNumber: UserNumber,
+  hostname: FrontendHostname,
+  sessionKey: SessionKey,
+  maxTimeToLive?: bigint,
+): Promise<[PublicKey, bigint]> {
+  console.log(
+    `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
+  )
+  await renewDelegation()
+  return await ii.prepare_delegation(
+    userNumber,
+    hostname,
+    sessionKey,
+    maxTimeToLive !== undefined ? [maxTimeToLive] : [],
+  )
+}
+
 /**
  * fetches the third party delegation
  *
@@ -171,7 +189,7 @@ export async function fetchDelegation(
   scope: string,
   sessionKey: SessionKey,
 ): Promise<[PublicKey, SignedDelegation]> {
-  const prepRes = await connection.prepareDelegation(anchor, scope, sessionKey)
+  const prepRes = await prepareDelegation(anchor, scope, sessionKey)
   // TODO: move to error handler
   if (prepRes.length !== 2) {
     throw new Error(

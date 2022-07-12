@@ -404,24 +404,6 @@ export class IIConnection {
     return await ii.get_principal(userNumber, frontend)
   }
 
-  prepareDelegation = async (
-    userNumber: UserNumber,
-    hostname: FrontendHostname,
-    sessionKey: SessionKey,
-    maxTimeToLive?: bigint,
-  ): Promise<[PublicKey, bigint]> => {
-    console.log(
-      `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
-    )
-    await renewDelegation()
-    return await ii.prepare_delegation(
-      userNumber,
-      hostname,
-      sessionKey,
-      maxTimeToLive !== undefined ? [maxTimeToLive] : [],
-    )
-  }
-
   getDelegation = async (
     userNumber: UserNumber,
     hostname: FrontendHostname,

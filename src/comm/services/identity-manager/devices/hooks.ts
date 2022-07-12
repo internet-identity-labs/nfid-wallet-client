@@ -26,7 +26,10 @@ import {
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/comm/services/internet-identity/iiConnection"
-import { fetchRecoveryDevices } from "frontend/integration/internet-identity/devices"
+import {
+  fetchAllDevices,
+  fetchRecoveryDevices,
+} from "frontend/integration/internet-identity/devices"
 
 import { useAccount } from "../account/hooks"
 import {
@@ -220,7 +223,7 @@ export const useDevices = () => {
 
   const createWebAuthNDevice = React.useCallback(
     async (userNumber: bigint) => {
-      const existingDevices = await IIConnection.lookupAll(userNumber)
+      const existingDevices = await fetchAllDevices(userNumber)
 
       const identity = await WebAuthnIdentity.create({
         publicKey: creationOptions(existingDevices),
@@ -361,7 +364,7 @@ export const useDevices = () => {
       if (!actualUserNumber) throw new Error("userNumber missing")
       if (!user?.internetIdentity) throw new Error("internetIdentity missing")
 
-      const devices = await IIConnection.lookupAll(actualUserNumber)
+      const devices = await fetchAllDevices(actualUserNumber)
       const deviceName = "Security Key"
 
       let recoverIdentity

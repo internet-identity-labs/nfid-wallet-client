@@ -15,7 +15,7 @@ import { usePersona } from "frontend/comm/services/identity-manager/persona/hook
 import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
 import { buildDelegate } from "frontend/comm/services/internet-identity/build-delegate"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
+import { getMessages } from "frontend/integration/pubsub"
 
 import { useMessageChannel } from "./use-message-channel"
 
@@ -83,7 +83,6 @@ export const useUnknownDeviceConfig = () => {
   const { createDevice, createWebAuthNDevice } = useDevices()
   const { applicationName, applicationLogo, applicationDerivationOrigin } =
     useMultipass()
-  const { getMessages } = usePubSubChannel()
   const { remoteLogin } = useAuthentication()
   const { readAccount } = useAccount()
   const { getPersona } = usePersona()
@@ -214,9 +213,7 @@ export const useUnknownDeviceConfig = () => {
     async (cancelPoll: () => void) => {
       if (!secret) return
 
-      const {
-        body: [messages],
-      } = await getMessages(secret)
+      const messages = await getMessages(secret)
 
       if (messages && messages.length > 0) {
         const parsedMessages = messages.map((m: string) => JSON.parse(m))
@@ -254,7 +251,6 @@ export const useUnknownDeviceConfig = () => {
       }
     },
     [
-      getMessages,
       handleLoginFromRemoteDelegation,
       secret,
       setShowRegister,

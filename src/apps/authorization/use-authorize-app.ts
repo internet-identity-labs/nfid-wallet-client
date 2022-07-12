@@ -11,8 +11,7 @@ import { useAccount } from "frontend/comm/services/identity-manager/account/hook
 import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
 import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
-import { createTopic } from "frontend/integration/pubsub"
+import { createTopic, postMessages } from "frontend/integration/pubsub"
 
 // FIXME:
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,7 +30,6 @@ type RemoteLoginMessage = {
 export const useAuthorizeApp = () => {
   const { userNumber } = useAccount()
   const { user } = useAuthentication()
-  const { postMessages } = usePubSubChannel()
 
   const createRemoteDelegate = React.useCallback(
     async (
@@ -123,7 +121,7 @@ export const useAuthorizeApp = () => {
 
       return response
     },
-    [userNumber, createRemoteDelegate, postMessages],
+    [userNumber, createRemoteDelegate],
   )
 
   const remoteNFIDLogin = React.useCallback(
@@ -153,19 +151,16 @@ export const useAuthorizeApp = () => {
 
       return response
     },
-    [postMessages, user, userNumber],
+    [user, userNumber],
   )
 
-  const sendWaitForUserInput = React.useCallback(
-    async (secret) => {
-      const message = JSON.stringify({
-        type: "remote-login-wait-for-user",
-      })
-      await createTopic(secret)
-      await postMessages(secret, [message])
-    },
-    [postMessages],
-  )
+  const sendWaitForUserInput = React.useCallback(async (secret) => {
+    const message = JSON.stringify({
+      type: "remote-login-wait-for-user",
+    })
+    await createTopic(secret)
+    await postMessages(secret, [message])
+  }, [])
 
   return { remoteLogin, remoteNFIDLogin, sendWaitForUserInput }
 }

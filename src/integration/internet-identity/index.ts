@@ -89,9 +89,17 @@ function authStateClosure() {
   let _delegationIdentity: DelegationIdentity
   let _actor: ActorSubclass<InternetIdentity> | undefined
   return {
-    setIdentity: (identity: SignIdentity) => (_identity = identity),
-    setDelegationIdentity: (_delegationIdentity: DelegationIdentity) => {},
-    setActor: (actor: ActorSubclass<InternetIdentity>) => {},
+    setDelegationIdentity: (delegationIdentity: DelegationIdentity) =>
+      (_delegationIdentity = delegationIdentity),
+    set: (
+      identity: SignIdentity,
+      delegationIdentity: DelegationIdentity,
+      actor: ActorSubclass<InternetIdentity>,
+    ) => {
+      _actor = actor
+      _identity = identity
+      _delegationIdentity = delegationIdentity
+    },
     get: () => ({
       identity: _identity,
       delegationIdentity: _delegationIdentity,

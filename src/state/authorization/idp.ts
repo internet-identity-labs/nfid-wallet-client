@@ -1,8 +1,12 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { createMachine } from "xstate"
+import { assign, createMachine } from "xstate"
+
+import AuthorizationMachine from "."
+import AuthenticationMachine from "../authentication"
 
 interface Context {
   signIdentity?: DelegationIdentity
+  delegationChain?: DelegationIdentity
 }
 
 type Events =
@@ -43,15 +47,23 @@ const IDPMachine =
           },
         },
         AuthenticationMachine: {
-          onDone: {
-            actions: "ingestSignIdentity",
-            target: "AuthorizationMachine",
+          invoke: {
+            src: "AuthenticationMachine",
+            id: "authenticate",
+            onDone: {
+              actions: "ingestSignIdentity",
+              target: "AuthorizationMachine",
+            },
           },
         },
         AuthorizationMachine: {
-          onDone: {
-            actions: "ingestDelegationChain",
-            target: "End",
+          invoke: {
+            src: "AuthorizationMachine",
+            id: "authorize",
+            onDone: {
+              actions: "ingestDelegationChain",
+              target: "End",
+            },
           },
         },
         End: {
@@ -67,6 +79,16 @@ const IDPMachine =
       services: {
         postReady,
         postDelegation,
+        AuthenticationMachine,
+        AuthorizationMachine,
+      },
+      actions: {
+        ingestSignIdentity: assign({
+          signIdentity: (context, event) => event.data,
+        }),
+        ingestDelegationChain: assign({
+          delegationChain: (context, event) => event.data,
+        }),
       },
     },
   )

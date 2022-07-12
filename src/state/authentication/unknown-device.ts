@@ -4,12 +4,12 @@ import { assign, createMachine } from "xstate"
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
-interface Context {
+export interface Context {
   signIdentity?: DelegationIdentity
   googleIdentityExists?: boolean
 }
 
-type Events =
+export type Events =
   | {
       type: "AUTH_WITH_GOOGLE"
       data: { identity: DelegationIdentity; isExisting: boolean }
@@ -22,18 +22,23 @@ type Events =
   | { type: "DONT_TRUST_DEVICE" }
   | { type: "INGEST_SIGN_IDENTITY"; data: DelegationIdentity }
 
+export interface Schema {
+  events: Events
+  context: Context
+}
+
 function isMobileWithWebAuthn() {
   // Integration layer note: run async capability check initially and capture to memory.
   // Maybe make this an invokation to deal with async, while Philipp is sleeping.
-  return true
+  return false
 }
 
 const UnknownDeviceMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFmAduglgMbLpgC0qOA1jgPYDuOZEYAbkWAHQDK6yATugDEiUAAdasfAVo5RIAB6IATAGYAHJwAsqgOxaDAVkNb1ABkO7DAGhABPRAE4znR27eHVh5coCMANnUtAF9g2zQsXAJiUgpqOkZmNg5OACUwKHxYdH4SfFkAWWRCTHwcMCEIWS4y1loqLn4MrJy82XkJKRk5JEVEX0N1TV1dMzUNIMdTWwcEX19dR21HdV8zR39HX1Nlf1DwjGw8IhJyShoGJhZ2Qi4AQUPuMAAbMEJuoTuAVQAVAAkAPoAdQAkv8AQBxADyUIhABkAKIdSTSfI9UBKBCGMacMZbVT+LQrXx+MyqGYqfScPTzIlmXyTDYhMIgCJHaKnOIXRLXFIPLBPV7vNGfX6A0Hg1IIgpQn5I3qdVHtXqY5RTTi6fxmIaqebKLT6oIUhBaemcYzqUb6wwBYn7VmHKInWLnBJXZK3Tj8zCCt4fb7giWA2V-BGpZFdNHyTEbVxDVb+fw29RTGz2RCm3zmwbmUy+PSEpP2tlOmJneKXJI3e6HIHSTAQ2i0KCvEQKlHdaNOVTKTiWpOqHYLUxp2Zq1R93TzDSmLSa1RmZkHSLHMtct1VlLpAC2tFI3tLbRwlWqnFq9UaYF3pAjSvRfQQ-l1Gvpc+UZJWQ1HiGxmkchlTMxdGUSwtS0PYWRLVdOVdSteU9dJMmyMB+AAEQ9MB0MIfAWH4IRUKhAA5H4AR+VIvm4EjUIRAA1EEAGF5XEDsoxVRBLSWbVHBGRwCS0NYLGNLVNDMJNAmUIIxl8Rxi0daCXQrHkMLSZpkLQjCsJwlChDIiiqNohimJARVOzYuZ838bQQP4m0zCk9RjW8TQtAAlySUMRN1C8WSVw5BTuXdasVKQ0h1OrE9yjPHA6gaTgoL88sAs3BDVNC9DqwQc8YjRABtMwAF1b1MjF+jJLN+NE-x9CGA0FmNKwlh0AxdQZDyPNUHz2WdRKN3grhEJaFD0o4IQUP4Wh+E4MRnhIAAzCbtziuSEvXODlIGtThtuTLotobLZDywr20jZUSrmVQvE4AZ1AA4D9EXEZjTWG7XE1elvCffRdA6yDlu61alKCja0owhF+HGvDdMogFqLoxiitYs75m+3FBxJf9tlNfVjS8rQruxZxB1Exx3wg5curXWDAa3VKhtB8GJqEBFCNQhHTofXjGoWZxvt0VZ1DUJ7tUMV6tQGXY9DnH7ycPfzeuUhEFBaMooDuHASkZkFCIhBFoe4EEIUIgEQWo4iwQATTZ+9MUzTgQIZIYSa1DRPCE3ZzUHRZF3zOyZPtOgWHgXp4v+qnApSXgBHQK2uwQKlpJJgI+MCOr0wQIJzTsuz+LVLPFk62WerWoKERwCAY7Mt7qUWLZ8x1dZdCe6TeyJVZtQZAx+N0Av5KL6mUpC3JuiKEoyjACukaJFvvr0fVTF1fwm6zLO7L8C7nG1MmHV80PFPDz1vV9YV2ZMxGHwXFwDAsf8tg8oJyTTiTdGr2lgP8AZwL9mXe4B-eaywOsWBGzNleBPB8U5n6akTNsTYLlByL0fpaF+2w34f27r9HelM97JX6lePcYADzyTPqfdmqogLUjUKaAkVg5wjAcmnIklkXJTBaticCehpbbwpjBbBfVgqDTChwTSuEwGYhukw9w3hpIDGxN+LEfhXCuQugsPwTse4rTDjg-hm0MKiP6LqPGup1hzgsD4acxpGHaFcp4G0wEDDoO-ho3h61aaCNuGDCGei5iiWchJcCKCEwpiFosbQDVuLcxAoSdRu8kp8MVsrHAqt1aYAml43iGpZGDmUFOd+ehHBCVUEsTwc5HbXxTtErBsTdHHTvLHbEV03B+CfIWVYjc07zGWO4DhGw-DMNCKEIAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3QGJFQAHYrFrpaxPHxAAPRAEYATAE4AbEwDMAVlkbl8jQBoQAT0Ty1ABgC+lw2iy5CJcpRoNmAJTBRasdB2Si4gCyyPSYtHhg3BDizBHUxATMHF4+fgFiEkgggsKBWaAyCLKKGuZMACzK5opqAOwGxqZ1skwa1rYYOPhEZBRUdIxMAIJdLGAANmD0+dzDAKoAKgASAPoA6gCSK6sA4gDy+7sAMgCikrkimZJFZgAclfWNJggVGvIdIHbdjn0ug8xRlhxlMZpk5ks1lsdu5TkF9otztlLvkbqY1A8Kk9DC9lHcNEw7mpiSTSWoKp9vg5es4Bm4RmNJtNZgsdtC1gjlqd3BchFdxGiEPdHg0cXJZOV2jYvl1qU5+q4hkDMOsRJhdsRiFAprxkXzUdkihKLExzPjaqKmq8JW1KbKevL-vTPABbYjoMDKsB4UT0DLiaKxJjxRLJMBuj28vLXQ2IO7yeRMeTmNQKZ6IZSZ9RknMU6VUh1-OlDTzeXxgDgAEUVYGr9FoVA43Er+wAcotVot3PMWB3K6cAGqbADCSIE+pjhTkSlUmm0unTCA0ilkdvshdpNaYpbSFerALrDYr3C7Pb7g5HY5yE4FseKM-UWh0ejFCGUijznXXv03AO3qXLKsa0DSJgzwBIkiYAsfwVP8d0A-c3AQEM-XyABtcwAF0o35AppDkUpyiqGpsStOoKg+fN7Rgp0SwAj0gIBbgKw4YgOCYfgJgCAAzNiXSg6iaVg516L3GtkPA4hUMyDDsL1aNbynYoMUlNRFHMBdX3Iyivx+ITaI8UTGLcU4OFYptT17VZ+yHUccINJSFBUR95xfK07gqT8ZW-fTi0MssGMQxhTPM7hTlbSt7MnfD72cudn0XO5FB07y9MdPymFOKQ0giKBhjwMI2O4TZW12U4rJYTZdlbVZNn7dttgATSixSYruWQ6iTFM01fFdrGlEgqHgbJoN8rc2E4dAWrwo1tEUdQFAqZL6g08wNEXeR8TXNKiy3U48AgabBXkDq1CYZLZDuS0Xg0dqmFkCj8RaR6NBaba5V2uD6P8fIQjCCIwCOu9tDucpFAuq6NuXW0qJ89Kt2VEFmWilFoqKCjX0zTrbpzUkvNG+G-2VVUsA1LUpiBpT40TZNUzcl4qgJKVdI+38RIjT0um9X1-Tw1HWvRzy2jpxdlA0Cps1xkl8cEwmRICsSD2mI8OEpmLjQJM1l1I3E6nmokpeJGW4c++Xd2Mxg1aNZQFEJBN5DFzSyJtZnUtZ4S6IVi2wBCtirbkNaCU8jQRdfK7E1dgnTaGLKcrwPKCswP35NwwUQ8Tcwqkh18JQlyPZejwGU4c9W7hzu5+ssIA */
   createMachine(
     {
       tsTypes: {} as import("./unknown-device.typegen").Typegen0,
-      schema: { events: {} as Events, context: {} as Context },
+      schema: { events: {}, context: {} } as Schema,
       id: "auth-unknown-device",
       initial: "Start",
       states: {

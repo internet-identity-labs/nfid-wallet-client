@@ -25,8 +25,8 @@ import {
   Purpose,
   UserNumber,
   KeyType,
+  Challenge,
 } from "frontend/comm/idl/internet_identity_types"
-import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
 import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
 
@@ -66,6 +66,11 @@ export const authState = authStateClosure()
 
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
 const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
+
+export async function createChallenge(): Promise<Challenge> {
+  const challenge = await ii.create_challenge()
+  return challenge
+}
 
 export async function fetchAllDevices(anchor: UserNumber) {
   return await ii.lookup(anchor)

@@ -34,10 +34,13 @@ import {
   GetDelegationResponse,
   Purpose,
   KeyType,
-  DeviceKey,
   ChallengeResult,
 } from "frontend/comm/idl/internet_identity_types"
-import { fetchAuthenticatorDevices } from "frontend/integration/internet-identity/devices"
+import {
+  addDevice,
+  fetchAuthenticatorDevices,
+} from "frontend/integration/internet-identity/devices"
+import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
@@ -438,16 +441,14 @@ export class IIConnection {
     credentialId?: ArrayBuffer,
   ): Promise<void> => {
     await this.renewDelegation()
-    return await ii.add(userNumber, {
+    return await addDevice(
+      userNumber,
       alias,
-      pubkey: Array.from(new Uint8Array(newPublicKey)),
-      credential_id: credentialId
-        ? [Array.from(new Uint8Array(credentialId))]
-        : [],
-      key_type: keyType,
+      keyType,
       purpose,
-      protection: { unprotected: null },
-    })
+      newPublicKey,
+      credentialId,
+    )
   }
 
   remove = async (
@@ -606,6 +607,3 @@ const getMultiIdent = (
     withSecurityDevices,
   )
 }
-
-export const derFromPubkey = (pubkey: DeviceKey): DerEncodedPublicKey =>
-  new Uint8Array(pubkey).buffer as DerEncodedPublicKey

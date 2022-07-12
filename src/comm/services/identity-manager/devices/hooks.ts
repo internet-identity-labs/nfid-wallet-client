@@ -22,7 +22,6 @@ import { fromMnemonicWithoutValidation } from "frontend/comm/services/internet-i
 import { generate } from "frontend/comm/services/internet-identity/crypto/mnemonic"
 import {
   creationOptions,
-  derFromPubkey,
   IC_DERIVATION_PATH,
 } from "frontend/comm/services/internet-identity/iiConnection"
 import {
@@ -30,6 +29,7 @@ import {
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
 } from "frontend/integration/internet-identity/devices"
+import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { useAccount } from "../account/hooks"
 import {

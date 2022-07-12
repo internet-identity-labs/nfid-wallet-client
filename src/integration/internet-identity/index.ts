@@ -7,6 +7,7 @@ import {
   DelegationIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { Buffer } from "buffer"
 
 import {
   accessList,
@@ -17,18 +18,55 @@ import { InternetIdentity } from "frontend/comm/actors"
 import { ii } from "frontend/comm/actors"
 import {
   ChallengeResult,
+  DeviceData,
   PublicKey,
   SessionKey,
   SignedDelegation,
-} from "frontend/comm/idl/internet_identity_types"
-import {
   Purpose,
   UserNumber,
   KeyType,
+  CredentialId,
+  FrontendHostname,
+  Timestamp,
+  GetDelegationResponse,
   Challenge,
 } from "frontend/comm/idl/internet_identity_types"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
+import { MultiWebAuthnIdentity } from "frontend/comm/services/internet-identity/multiWebAuthnIdentity"
 import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
+
+import { derFromPubkey } from "./utils"
+
+export type ApiResult = LoginResult | RegisterResult
+export type LoginResult =
+  | LoginSuccess
+  | UnknownUser
+  | AuthFail
+  | ApiError
+  | SeedPhraseFail
+export type RegisterResult =
+  | LoginSuccess
+  | AuthFail
+  | ApiError
+  | RegisterNoSpace
+  | BadChallenge
+
+type LoginSuccess = {
+  kind: "loginSuccess"
+  chain: DelegationChain
+  sessionKey: Ed25519KeyIdentity
+  internetIdentity: IIConnection
+  userNumber: bigint
+}
+
+type BadChallenge = { kind: "badChallenge" }
+type UnknownUser = { kind: "unknownUser"; userNumber: bigint }
+type AuthFail = { kind: "authFail"; error: Error }
+type ApiError = { kind: "apiError"; error: Error }
+type RegisterNoSpace = { kind: "registerNoSpace" }
+type SeedPhraseFail = { kind: "seedPhraseFail" }
+
+export type { ChallengeResult } from "frontend/comm/idl/internet_identity_types"
 
 interface FrontendDelegation {
   delegationIdentity: DelegationIdentity

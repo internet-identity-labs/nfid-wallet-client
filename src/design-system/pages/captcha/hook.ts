@@ -6,6 +6,7 @@ import useSWR from "swr"
 import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
 import {
   ChallengeResult,
   createChallenge,

@@ -396,14 +396,6 @@ export class IIConnection {
     }
   }
 
-  remove = async (
-    userNumber: UserNumber,
-    publicKey: PublicKey,
-  ): Promise<void> => {
-    await renewDelegation()
-    await ii.remove(userNumber, publicKey)
-  }
-
   getPrincipal = async (
     userNumber: UserNumber,
     frontend: FrontendHostname,

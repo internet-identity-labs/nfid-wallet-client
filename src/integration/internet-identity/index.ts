@@ -245,6 +245,14 @@ export async function addDevice(
   })
 }
 
+export async function removeDevice(
+  userNumber: UserNumber,
+  publicKey: PublicKey,
+): Promise<void> {
+  await renewDelegation()
+  await ii.remove(userNumber, publicKey)
+}
+
 export async function registerAnchor(
   alias: string,
   challengeResult: ChallengeResult,

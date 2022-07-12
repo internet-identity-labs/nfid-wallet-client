@@ -16,6 +16,7 @@ import {
 } from "frontend/integration/internet-identity/identity"
 import {
   buildRemoteLoginRegisterMessage,
+  buildRemoteNFIDLoginRegisterMessage,
   createTopic,
   postMessages,
   WAIT_FOR_CONFIRMATION_MESSAGE,
@@ -93,11 +94,11 @@ export const useAuthorizeApp = () => {
       const userState = userOverwrite || user
       if (!userState) throw Error("user missing")
 
-      const message = JSON.stringify({
-        type: "remote-nfid-login-register",
-        userNumber: anchor.toString(),
-        nfid: { chain: userState.chain, sessionKey: userState.sessionKey },
-      })
+      const message = buildRemoteNFIDLoginRegisterMessage(
+        anchor,
+        userState.chain,
+        userState.sessionKey,
+      )
 
       const response = await postMessages(secret, [message])
 

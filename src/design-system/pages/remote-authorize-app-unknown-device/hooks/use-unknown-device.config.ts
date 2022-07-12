@@ -14,7 +14,7 @@ import { useDevices } from "frontend/comm/services/identity-manager/devices/hook
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
 import { buildDelegate } from "frontend/comm/services/internet-identity/build-delegate"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
+import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
 import { getMessages } from "frontend/integration/pubsub"
 
 import { useMessageChannel } from "./use-message-channel"
@@ -193,7 +193,7 @@ export const useUnknownDeviceConfig = () => {
 
   const handleLoginFromRemoteDelegation = React.useCallback(
     async (nfidJsonDelegate, userNumber) => {
-      const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
+      const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
         userNumber: BigInt(userNumber),

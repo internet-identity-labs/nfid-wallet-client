@@ -16,8 +16,12 @@ import {
   LoginResult,
   LoginSuccess,
 } from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { fetchRecoveryDevices } from "frontend/integration/internet-identity"
+import {
+  fetchRecoveryDevices,
+  fromSeedPhrase,
+  login as iiLogin,
+  loginfromGoogleDevice,
+} from "frontend/integration/internet-identity"
 
 export interface User {
   principal: string
@@ -81,7 +85,7 @@ export const useAuthentication = () => {
         throw new Error("Register first")
       }
 
-      const response = await IIConnection.login(anchor, withSecurityDevices)
+      const response = await iiLogin(anchor, withSecurityDevices)
 
       const result = apiResultToLoginResult(response)
       const principal = await agent.getPrincipal()
@@ -144,7 +148,7 @@ export const useAuthentication = () => {
         throw new Error("No devices found")
       }
 
-      const response = await IIConnection.fromSeedPhrase(
+      const response = await fromSeedPhrase(
         userNumber,
         seedPhrase,
         recoveryDevices[0],
@@ -176,7 +180,7 @@ export const useAuthentication = () => {
 
   const loginWithGoogleDevice = React.useCallback(
     async (identity: string) => {
-      const result = await IIConnection.loginfromGoogleDevice(identity)
+      const result = await loginfromGoogleDevice(identity)
       const user = {
         principal: (await agent.getPrincipal()).toText(),
         chain: result.chain,

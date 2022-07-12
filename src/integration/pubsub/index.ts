@@ -18,3 +18,9 @@ export async function createTopic(topic: Topic) {
     .create_topic(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
 }
+
+export async function postMessages(topic: Topic, messages: string[]) {
+  return pubsub
+    .post_messages(topic, messages)
+    .then((r) => unpackResponse(sanitizeResponse(r)))
+}

@@ -18,8 +18,6 @@ import {
   DeviceData,
   PublicKey,
 } from "frontend/comm/idl/internet_identity_types"
-import { fromMnemonicWithoutValidation } from "frontend/comm/services/internet-identity/crypto/ed25519"
-import { generate } from "frontend/comm/services/internet-identity/crypto/mnemonic"
 import {
   addDevice,
   authState,
@@ -30,6 +28,8 @@ import {
   IC_DERIVATION_PATH,
   removeDevice,
 } from "frontend/integration/internet-identity"
+import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
+import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { useAccount } from "../account/hooks"

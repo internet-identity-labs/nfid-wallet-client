@@ -12,16 +12,16 @@ import {
 } from "frontend/comm/actors"
 import { userNumberAtom } from "frontend/comm/services/identity-manager/account/state"
 import {
-  apiResultToLoginResult,
-  LoginResult,
-  LoginSuccess,
-} from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import {
   fetchRecoveryDevices,
   fromSeedPhrase,
   login as iiLogin,
   loginfromGoogleDevice,
 } from "frontend/integration/internet-identity"
+import {
+  apiResultToLoginResult,
+  LoginResult,
+  LoginSuccess,
+} from "frontend/integration/internet-identity/api-result-to-login-result"
 
 export interface User {
   principal: string

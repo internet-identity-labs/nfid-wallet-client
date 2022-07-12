@@ -35,11 +35,10 @@ import {
   Challenge,
   RegisterResponse,
 } from "frontend/comm/idl/internet_identity_types"
-import { fromMnemonicWithoutValidation } from "frontend/comm/services/internet-identity/crypto/ed25519"
-import { MultiWebAuthnIdentity } from "frontend/comm/services/internet-identity/multiWebAuthnIdentity"
-import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
+import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 
-import { derFromPubkey } from "./utils"
+import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
+import { derFromPubkey, hasOwnProperty } from "./utils"
 
 export type ApiResult = LoginResult | RegisterResult
 export type LoginResult =

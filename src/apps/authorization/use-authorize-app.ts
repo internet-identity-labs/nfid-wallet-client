@@ -11,7 +11,11 @@ import { useAccount } from "frontend/comm/services/identity-manager/account/hook
 import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
 import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { createTopic, postMessages } from "frontend/integration/pubsub"
+import {
+  createTopic,
+  postMessages,
+  WAIT_FOR_CONFIRMATION_MESSAGE,
+} from "frontend/integration/pubsub"
 
 // FIXME:
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -155,9 +159,7 @@ export const useAuthorizeApp = () => {
   )
 
   const sendWaitForUserInput = React.useCallback(async (secret) => {
-    const message = JSON.stringify({
-      type: "remote-login-wait-for-user",
-    })
+    const message = JSON.stringify(WAIT_FOR_CONFIRMATION_MESSAGE)
     await createTopic(secret)
     await postMessages(secret, [message])
   }, [])

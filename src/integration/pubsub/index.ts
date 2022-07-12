@@ -5,6 +5,10 @@ import {
   Topic,
 } from "frontend/comm/idl/pub_sub_channel.did"
 
+export const WAIT_FOR_CONFIRMATION_MESSAGE = {
+  type: "remote-login-wait-for-user",
+}
+
 function sanitizeResponse(message: MessageHttpResponse) {
   return {
     data: message.body,

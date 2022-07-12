@@ -5,25 +5,18 @@ interface Context {
   signIdentity?: DelegationIdentity
 }
 
-interface Services {}
-
-type Events = {
-  type: "done.invoke.authentivate-known-device"
-  data: DelegationIdentity
-}
-
-const services: Services = {}
+type Events = { type: "X" }
 
 const RegistrationMachine = createMachine({
   tsTypes: {} as import("./registration.typegen").Typegen0,
   schema: { events: {} as Events, context: {} as Context },
-  id: "authenticate-known-device",
+  id: "auth-registration",
   initial: "Start",
   states: {
     Start: {},
     End: {
       type: "final",
-      data: (context, event) => {
+      data: (context) => {
         if (!context.signIdentity) throw new Error("No sign identity")
         return context.signIdentity
       },

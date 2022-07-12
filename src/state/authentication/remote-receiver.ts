@@ -5,19 +5,15 @@ interface Context {
   signIdentity?: DelegationIdentity
 }
 
-interface Services {}
-
 type Events =
   | { type: "AWAIT_CONFIRMATION" }
   | { type: "RECEIVE_DELEGATION"; data: DelegationIdentity }
-
-const services: Services = {}
 
 const RemoteReceiverMachine = createMachine(
   {
     tsTypes: {} as import("./remote-receiver.typegen").Typegen0,
     schema: { events: {} as Events, context: {} as Context },
-    id: "authenticate-known-device",
+    id: "auth-remote-receiver",
     initial: "QrCode",
     states: {
       QrCode: {

@@ -415,13 +415,6 @@ export class IIConnection {
     )
   }
 
-  static async lookupRecovery(userNumber: UserNumber): Promise<DeviceData[]> {
-    const allDevices = await ii.lookup(userNumber)
-    return allDevices.filter((device) =>
-      hasOwnProperty(device.purpose, "recovery"),
-    )
-  }
-
   async renewDelegation() {
     for (const { delegation } of this.delegationIdentity.getDelegation()
       .delegations) {

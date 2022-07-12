@@ -17,6 +17,7 @@ import {
   LoginSuccess,
 } from "frontend/comm/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
+import { fetchRecoveryDevices } from "frontend/integration/internet-identity/devices"
 
 export interface User {
   principal: string
@@ -141,7 +142,7 @@ export const useAuthentication = () => {
     async (seedPhrase: string, userNumber: bigint) => {
       setIsLoading(true)
 
-      const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
+      const recoveryDevices = await fetchRecoveryDevices(userNumber)
 
       if (recoveryDevices.length === 0) {
         throw new Error("No devices found")

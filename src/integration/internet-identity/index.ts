@@ -326,3 +326,12 @@ export async function registerAnchor(
     challengeResult,
   )
 }
+
+export async function getPrincipal(
+  userNumber: UserNumber,
+  frontend: FrontendHostname,
+): Promise<Principal> {
+  await renewDelegation()
+  return await ii.get_principal(userNumber, frontend)
+}
+

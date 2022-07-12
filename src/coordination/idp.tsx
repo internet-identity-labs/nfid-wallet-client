@@ -8,48 +8,46 @@ import { UnknownDeviceActor } from 'frontend/state/authentication/unknown-device
 import { KnownDeviceActor } from 'frontend/state/authentication/known-device'
 import { AuthorizeDecider } from 'frontend/design-system/pages/authorize-decider'
 
+interface Actor<T> {
+    actor: T
+}
+
 export default function IDPCoordinator() {
 
     const machine = useMachine(IDPMachine)
 
-    const [state, send, interpreter] = machine
-
-    React.useEffect(() => {
-        interpreter
-            .onTransition((state) => console.info('PARENT TRANSITION', state.value))
-            .onEvent((event) => console.info('PARENT EVENT', event.type))
-    }, [interpreter])
+    const [state] = machine
 
     return <>
         {state.matches('Start') && <>Loading</>}
         {state.matches('AuthenticationMachine') && <AuthenticationCoordinator
-            machine={interpreter.children.get('authenticate') as AuthenticationActor}
+            actor={state.children.authenticate as AuthenticationActor}
         />}
         {state.matches('AuthorizationMachine') && <AuthorizationCoordinator
-            machine={interpreter.children.get('authorize') as AuthorizationActor}
+            actor={state.children.authorize as AuthorizationActor}
         />}
     </>
 
 }
 
-function AuthenticationCoordinator({ machine }: { machine: AuthenticationActor }) {
-    const [state] = useActor(machine)
+function AuthenticationCoordinator({ actor }: Actor<AuthenticationActor>) {
+    const [state] = useActor(actor)
 
     React.useEffect(() => console.log('AuthenticationMachine', state.value), [state.value])
 
     return <>
         {state.matches('KnownDevice') && <KnownDeviceCoordinator
-            machine={state.children['unknown-device'] as KnownDeviceActor}
+            actor={state.children['unknown-device'] as KnownDeviceActor}
         />}
         {state.matches('UnknownDevice') && <UnknownDeviceCoordinator
-            machine={state.children['unknown-device'] as UnknownDeviceActor}
+            actor={state.children['unknown-device'] as UnknownDeviceActor}
         />}
         {state.matches('IsDeviceRegistered') && <>Loading</>}
     </>
 }
 
-function UnknownDeviceCoordinator({ machine }: { machine: UnknownDeviceActor }) {
-    const [state, send] = useActor(machine)
+function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
+    const [state, send] = useActor(actor)
 
     React.useEffect(() => console.log('UnknownDeviceMachine', state.value), [state.value])
 
@@ -73,8 +71,8 @@ function UnknownDeviceCoordinator({ machine }: { machine: UnknownDeviceActor }) 
     </>
 }
 
-function KnownDeviceCoordinator({ machine }: { machine: KnownDeviceActor }) {
-    const [state] = useActor(machine)
+function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
+    const [state] = useActor(actor)
 
     React.useEffect(() => console.log('KnownDeviceMachine', state.value), [state.value])
 
@@ -83,8 +81,8 @@ function KnownDeviceCoordinator({ machine }: { machine: KnownDeviceActor }) {
     </>
 }
 
-function AuthorizationCoordinator({ machine }: { machine: AuthorizationActor }) {
-    const [state] = useActor(machine)
+function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
+    const [state] = useActor(actor)
 
     React.useEffect(() => console.log('AuthorizationMachine', state.value), [state.value])
 

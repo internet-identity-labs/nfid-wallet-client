@@ -17,7 +17,7 @@ import {
   LoginSuccess,
 } from "frontend/comm/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { fetchRecoveryDevices } from "frontend/integration/internet-identity/devices"
+import { fetchRecoveryDevices } from "frontend/integration/internet-identity"
 
 export interface User {
   principal: string

@@ -232,6 +232,7 @@ export async function addDevice(
   newPublicKey: DerEncodedPublicKey,
   credentialId?: ArrayBuffer,
 ) {
+  await renewDelegation()
   return await ii.add(anchor, {
     alias,
     pubkey: Array.from(new Uint8Array(newPublicKey)),

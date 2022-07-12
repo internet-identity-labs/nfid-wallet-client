@@ -25,10 +25,11 @@ import {
   IC_DERIVATION_PATH,
 } from "frontend/comm/services/internet-identity/iiConnection"
 import {
+  addDevice,
   fetchAllDevices,
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
-} from "frontend/integration/internet-identity/devices"
+} from "frontend/integration/internet-identity"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { useAccount } from "../account/hooks"
@@ -259,7 +260,7 @@ export const useDevices = () => {
       const pub_key = fromHexString(publicKey)
 
       await Promise.all([
-        user?.internetIdentity.add(
+        addDevice(
           userNumber,
           deviceName,
           { unknown: null },
@@ -339,7 +340,7 @@ export const useDevices = () => {
     const deviceName = "Recovery phrase"
 
     // TODO: store as access point
-    await user?.internetIdentity.add(
+    await addDevice(
       userNumber,
       deviceName,
       { seed_phrase: null },
@@ -378,7 +379,7 @@ export const useDevices = () => {
       }
 
       await Promise.all([
-        user.internetIdentity.add(
+        addDevice(
           actualUserNumber,
           deviceName,
           { cross_platform: null },

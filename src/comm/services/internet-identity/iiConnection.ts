@@ -31,7 +31,6 @@ import {
   ChallengeResult,
 } from "frontend/comm/idl/internet_identity_types"
 import {
-  addDevice,
   fetchAuthenticatorDevices,
   authState,
   getDelegationFromJson,
@@ -395,25 +394,6 @@ export class IIConnection {
       chain: chain.toJSON(),
       sessionKey: sessionKey.toJSON(),
     }
-  }
-
-  add = async (
-    userNumber: UserNumber,
-    alias: string,
-    keyType: KeyType,
-    purpose: Purpose,
-    newPublicKey: DerEncodedPublicKey,
-    credentialId?: ArrayBuffer,
-  ): Promise<void> => {
-    await renewDelegation()
-    return await addDevice(
-      userNumber,
-      alias,
-      keyType,
-      purpose,
-      newPublicKey,
-      credentialId,
-    )
   }
 
   remove = async (

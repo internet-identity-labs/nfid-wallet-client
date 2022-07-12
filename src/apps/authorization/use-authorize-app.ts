@@ -12,6 +12,7 @@ import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
 import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
+import { createTopic } from "frontend/integration/pubsub"
 
 // FIXME:
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -30,7 +31,7 @@ type RemoteLoginMessage = {
 export const useAuthorizeApp = () => {
   const { userNumber } = useAccount()
   const { user } = useAuthentication()
-  const { createTopic, postMessages } = usePubSubChannel()
+  const { postMessages } = usePubSubChannel()
 
   const createRemoteDelegate = React.useCallback(
     async (
@@ -163,7 +164,7 @@ export const useAuthorizeApp = () => {
       await createTopic(secret)
       await postMessages(secret, [message])
     },
-    [createTopic, postMessages],
+    [postMessages],
   )
 
   return { remoteLogin, remoteNFIDLogin, sendWaitForUserInput }

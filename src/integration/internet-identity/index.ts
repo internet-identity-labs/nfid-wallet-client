@@ -173,18 +173,51 @@ async function prepareDelegation(
   )
 }
 
+const retryGetDelegation = async (
+  userNumber: bigint,
+  hostname: string,
+  sessionKey: PublicKey,
+  timestamp: bigint,
+  maxRetries = 5,
+): Promise<SignedDelegation> => {
+  for (let i = 0; i < maxRetries; i++) {
+    // Linear backoff
+    await new Promise((resolve) => {
+      setInterval(resolve, 1000 * i)
+    })
+    const res = await getDelegation(userNumber, hostname, sessionKey, timestamp)
+    if (hasOwnProperty(res, "signed_delegation")) {
+      return res.signed_delegation
+    }
+  }
+  throw new Error(
+    `Failed to retrieve a delegation after ${maxRetries} retries.`,
+  )
+}
+
+export async function getDelegation(
+  userNumber: UserNumber,
+  hostname: FrontendHostname,
+  sessionKey: SessionKey,
+  timestamp: Timestamp,
+): Promise<GetDelegationResponse> {
+  console.log(
+    `get_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey}, timestamp: ${timestamp})`,
+  )
+  await renewDelegation()
+  return await ii.get_delegation(userNumber, hostname, sessionKey, timestamp)
+}
+
 /**
  * fetches the third party delegation
  *
  * @export
- * @param {IIConnection} connection
  * @param {bigint} anchor
  * @param {string} scope
  * @param {SessionKey} sessionKey
  * @return {*}
  */
 export async function fetchDelegation(
-  connection: IIConnection,
   anchor: bigint,
   scope: string,
   sessionKey: SessionKey,
@@ -199,7 +232,6 @@ export async function fetchDelegation(
   const [userKey, timestamp] = prepRes
 
   const signedDelegation = await retryGetDelegation(
-    connection,
     anchor,
     scope,
     sessionKey,

@@ -51,7 +51,6 @@ export const AppScreenAuthorizeApp: React.FC<
         persona_id: personaId,
         chain: user?.chain,
         sessionKey: user?.sessionKey,
-        connection: user?.internetIdentity,
         derivationOrigin,
       })
       setIsloading(false)
@@ -65,7 +64,6 @@ export const AppScreenAuthorizeApp: React.FC<
       secret,
       setIsloading,
       user?.chain,
-      user?.internetIdentity,
       user?.sessionKey,
     ],
   )

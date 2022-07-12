@@ -35,7 +35,6 @@ export const useAuthorizeApp = () => {
       scope: hostname,
       derivationOrigin,
       persona_id,
-      connection,
       userNumberOverwrite,
       chain,
       sessionKey,
@@ -44,7 +43,6 @@ export const useAuthorizeApp = () => {
       scope: string
       derivationOrigin?: string
       persona_id: string
-      connection: IIConnection
       chain: DelegationChain
       sessionKey: Ed25519KeyIdentity
       userNumberOverwrite?: bigint
@@ -57,7 +55,6 @@ export const useAuthorizeApp = () => {
       const scope = getScope(derivationOrigin ?? hostname, persona_id)
 
       const delegation = await fetchDelegation(
-        connection,
         anchor,
         scope,
         getSessionKey(secret),

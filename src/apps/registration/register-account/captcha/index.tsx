@@ -94,7 +94,6 @@ export const RegisterAccountCaptcha: React.FC<
               scope,
               persona_id: nextPersonaId,
               userNumberOverwrite: response.userNumber,
-              connection: response.internetIdentity,
               chain: response.chain,
               sessionKey: response.sessionKey,
             }),

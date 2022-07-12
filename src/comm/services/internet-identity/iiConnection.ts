@@ -403,19 +403,6 @@ export class IIConnection {
     await renewDelegation()
     return await ii.get_principal(userNumber, frontend)
   }
-
-  getDelegation = async (
-    userNumber: UserNumber,
-    hostname: FrontendHostname,
-    sessionKey: SessionKey,
-    timestamp: Timestamp,
-  ): Promise<GetDelegationResponse> => {
-    console.log(
-      `get_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey}, timestamp: ${timestamp})`,
-    )
-    await renewDelegation()
-    return await ii.get_delegation(userNumber, hostname, sessionKey, timestamp)
-  }
 }
 
 interface FrontendDelegation {

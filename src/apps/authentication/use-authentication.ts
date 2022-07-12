@@ -30,11 +30,15 @@ const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const remoteLoginAtom = atom<boolean>(false)
 const shouldStoreLocalAccountAtom = atom<boolean>(true)
-const userAtom = atom<User | undefined>(undefined)
+
+let user: User | undefined = undefined
+
+export function setUser(userState: User | undefined) {
+  user = userState
+}
 
 export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
-  const [user, setUser] = useAtom(userAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
@@ -54,7 +58,7 @@ export const useAuthentication = () => {
     window.location.reload()
     // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(Principal.anonymous())
-  }, [setUser])
+  }, [])
 
   const initUserGeek = React.useCallback((principal: Principal) => {
     // TODO: create pull request removing the requirement of
@@ -106,7 +110,7 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setError, setIsLoading, setUser, userNumber],
+    [initUserGeek, setError, setIsLoading, userNumber],
   )
 
   const remoteLogin = React.useCallback(
@@ -120,23 +124,20 @@ export const useAuthentication = () => {
         internetIdentity: actors.internetIdentity,
       })
     },
-    [setUser, setIsRemoteDelegate],
+    [setIsRemoteDelegate],
   )
 
-  const onRegisterSuccess = React.useCallback(
-    async (actors) => {
-      replaceIdentity(actors?.internetIdentity?.delegationIdentity)
-      const user = {
-        principal: (await agent.getPrincipal()).toText(),
-        chain: actors.chain,
-        sessionKey: actors.sessionKey,
-        internetIdentity: actors.internetIdentity,
-      }
-      setUser(user)
-      return user
-    },
-    [setUser],
-  )
+  const onRegisterSuccess = React.useCallback(async (actors) => {
+    replaceIdentity(actors?.internetIdentity?.delegationIdentity)
+    const user = {
+      principal: (await agent.getPrincipal()).toText(),
+      chain: actors.chain,
+      sessionKey: actors.sessionKey,
+      internetIdentity: actors.internetIdentity,
+    }
+    setUser(user)
+    return user
+  }, [])
 
   const loginWithRecovery = React.useCallback(
     async (seedPhrase: string, userNumber: bigint) => {
@@ -177,7 +178,7 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setUser, setError, setIsLoading, setShouldStoreLocalAccount],
+    [initUserGeek, setError, setIsLoading, setShouldStoreLocalAccount],
   )
 
   const loginWithGoogleDevice = React.useCallback(
@@ -196,7 +197,7 @@ export const useAuthentication = () => {
       setError(null)
       return user
     },
-    [initUserGeek, setError, setShouldStoreLocalAccount, setUser],
+    [initUserGeek, setError, setShouldStoreLocalAccount],
   )
 
   return {

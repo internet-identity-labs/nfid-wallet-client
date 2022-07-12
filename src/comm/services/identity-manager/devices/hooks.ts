@@ -24,10 +24,10 @@ import {
   creationOptions,
   derFromPubkey,
   IC_DERIVATION_PATH,
-  IIConnection,
 } from "frontend/comm/services/internet-identity/iiConnection"
 import {
   fetchAllDevices,
+  fetchAuthenticatorDevices,
   fetchRecoveryDevices,
 } from "frontend/integration/internet-identity/devices"
 
@@ -159,7 +159,7 @@ export const useDevices = () => {
     if (userNumber) {
       const [accessPoints, existingDevices] = await Promise.all([
         im.read_access_points(),
-        IIConnection.lookupAuthenticators(userNumber),
+        fetchAuthenticatorDevices(userNumber),
       ])
 
       if (accessPoints?.status_code === 200) {

@@ -6,6 +6,19 @@ export async function fetchAllDevices(anchor: UserNumber) {
   return await ii.lookup(anchor)
 }
 
+export async function fetchAuthenticatorDevices(
+  anchor: UserNumber,
+  withSecurityDevices?: boolean,
+) {
+  const allDevices = await ii.lookup(anchor)
+
+  return allDevices.filter((device) =>
+    withSecurityDevices
+      ? true
+      : hasOwnProperty(device.purpose, "authentication"),
+  )
+}
+
 export async function fetchRecoveryDevices(anchor: UserNumber) {
   const allDevices = await ii.lookup(anchor)
   return allDevices.filter((device) =>

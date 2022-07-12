@@ -37,6 +37,7 @@ import {
   DeviceKey,
   ChallengeResult,
 } from "frontend/comm/idl/internet_identity_types"
+import { fetchAuthenticatorDevices } from "frontend/integration/internet-identity/devices"
 
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
@@ -241,7 +242,7 @@ export class IIConnection {
   ): Promise<LoginResult> {
     let devices: DeviceData[]
     try {
-      devices = await this.lookupAuthenticators(userNumber, withSecurityDevices)
+      devices = await fetchAuthenticatorDevices(userNumber, withSecurityDevices)
     } catch (e: unknown) {
       console.error(`Error when looking up authenticators`, e)
       if (e instanceof Error) {
@@ -279,7 +280,7 @@ export class IIConnection {
       chain,
     )
 
-    const devices = await IIConnection.lookupAuthenticators(userNumber)
+    const devices = await fetchAuthenticatorDevices(userNumber)
     const multiIdent = getMultiIdent(devices)
 
     replaceIdentity(delegationIdentity)
@@ -396,19 +397,6 @@ export class IIConnection {
   static async createChallenge(): Promise<Challenge> {
     const challenge = await ii.create_challenge()
     return challenge
-  }
-
-  static async lookupAuthenticators(
-    userNumber: UserNumber,
-    withSecurityDevices?: boolean,
-  ): Promise<DeviceData[]> {
-    const allDevices = await ii.lookup(userNumber)
-
-    return allDevices.filter((device) =>
-      withSecurityDevices
-        ? true
-        : hasOwnProperty(device.purpose, "authentication"),
-    )
   }
 
   async renewDelegation() {

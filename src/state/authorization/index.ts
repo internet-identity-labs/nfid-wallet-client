@@ -12,10 +12,10 @@ export interface Schema {
   context: Context
 }
 
-const KnownDeviceMachine = createMachine({
-  tsTypes: {} as import("./known-device.typegen").Typegen0,
+const AuthorizationMachine = createMachine({
+  tsTypes: {} as import("./index.typegen").Typegen0,
   schema: { events: {}, context: {} } as Schema,
-  id: "auth-known-device",
+  id: "authorize",
   initial: "Start",
   states: {
     Start: {},
@@ -29,4 +29,4 @@ const KnownDeviceMachine = createMachine({
   },
 })
 
-export default KnownDeviceMachine
+export default AuthorizationMachine

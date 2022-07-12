@@ -1,10 +1,6 @@
 import { PersonaResponse } from "frontend/comm/idl/identity_manager.did"
 import { Persona } from "frontend/comm/im"
 
-import {
-  validateDerivationOrigin,
-  ValidationResult,
-} from "../../internet-identity/validateDerivationOrigin"
 import { IIPersona, NFIDPersona, Persona as LegacyPersonas } from "./types"
 
 export const normalizePersonas = (
@@ -34,7 +30,13 @@ export function selectAccounts(
   hostName: string,
   derivationOrigin?: string,
 ) {
-  return []
+  const filteredPersonasByDomain = personas.filter(
+    (persona) =>
+      persona.domain === derivationOrigin ||
+      persona.domain === `https://${derivationOrigin}` ||
+      persona.domain === hostName,
+  )
+  return filteredPersonasByDomain
 }
 
 export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {
@@ -56,11 +58,9 @@ export function createAccount(
   hostName: string,
   derivationOrigin?: string,
 ): Persona {
-  const filterPersonasByDomain = personas.filter(
-    (persona) =>
-      persona.domain === derivationOrigin || persona.domain === hostName,
+  const newPersonaId = getNextPersonaId(
+    selectAccounts(personas, hostName, derivationOrigin),
   )
-  const newPersonaId = getNextPersonaId(filterPersonasByDomain)
 
   const newPersona: Persona = {
     personaId: newPersonaId,
@@ -72,6 +72,9 @@ export function createAccount(
 }
 
 export function getScope(hostName: string, personaId?: string) {
-  // TODO: add https if no protocol is present
-  return `${personaId && personaId !== "0" ? `${personaId}@` : ``}${hostName}`
+  const isProtocolExist =
+    hostName.includes("https") || hostName.includes("http")
+  const origin = isProtocolExist ? hostName : `https://${hostName}`
+
+  return `${personaId && personaId !== "0" ? `${personaId}@` : ``}${origin}`
 }

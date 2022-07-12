@@ -1,18 +1,12 @@
 import React from 'react'
 import { useMachine, useActor } from '@xstate/react'
-import { ActorRef, State } from 'xstate'
 
 import IDPMachine from 'frontend/state/authorization/idp'
-import { Events as AuthEvents, Context as AuthContext, Schema as AuthSchema } from 'frontend/state/authentication'
-import { Events as AuthoEvents, Context as AuthoContext, Schema as AuthoSchema } from 'frontend/state/authorization'
-import { Events as UnknownEvents, Context as UnknownContext, Schema as UnknownSchema } from 'frontend/state/authentication/unknown-device'
-import { Events as KnownEvents, Context as KnownContext, Schema as KnownSchema } from 'frontend/state/authentication/known-device'
+import { AuthenticationActor } from 'frontend/state/authentication'
+import { AuthorizationActor } from 'frontend/state/authorization'
+import { UnknownDeviceActor } from 'frontend/state/authentication/unknown-device'
+import { KnownDeviceActor } from 'frontend/state/authentication/known-device'
 import { AuthorizeDecider } from 'frontend/design-system/pages/authorize-decider'
-
-type AuthStates = import("frontend/state/authentication/index.typegen").Typegen0['matchesStates']
-type AuthoStates = import("frontend/state/authorization/index.typegen").Typegen0['matchesStates']
-type UnknownStates = import("frontend/state/authentication/unknown-device.typegen").Typegen0['matchesStates']
-type KnownStates = import("frontend/state/authentication/known-device.typegen").Typegen0['matchesStates']
 
 export default function IDPCoordinator() {
 
@@ -29,43 +23,40 @@ export default function IDPCoordinator() {
     return <>
         {state.matches('Start') && <>Loading</>}
         {state.matches('AuthenticationMachine') && <AuthenticationCoordinator
-            machine={interpreter.children.get('authenticate') as ActorRef<AuthEvents, AuthContext>}
+            machine={interpreter.children.get('authenticate') as AuthenticationActor}
         />}
         {state.matches('AuthorizationMachine') && <AuthorizationCoordinator
-            machine={interpreter.children.get('authorize') as ActorRef<AuthoEvents, AuthoContext>}
+            machine={interpreter.children.get('authorize') as AuthorizationActor}
         />}
     </>
 
 }
 
-function AuthenticationCoordinator({ machine }: { machine: ActorRef<AuthEvents, AuthContext> }) {
-    const actor = useActor<AuthEvents, AuthContext>(machine)
-    const state = actor[0] as State<AuthContext, AuthEvents, AuthSchema>;
+function AuthenticationCoordinator({ machine }: { machine: AuthenticationActor }) {
+    const [state] = useActor(machine)
 
     React.useEffect(() => console.log('AuthenticationMachine', state.value), [state.value])
 
     return <>
-        {state.matches<AuthStates>('KnownDevice') && <KnownDeviceCoordinator
-            machine={state.children['unknown-device']}
+        {state.matches('KnownDevice') && <KnownDeviceCoordinator
+            machine={state.children['unknown-device'] as KnownDeviceActor}
         />}
-        {state.matches<AuthStates>('UnknownDevice') && <UnknownDeviceCoordinator
-            machine={state.children['unknown-device']}
+        {state.matches('UnknownDevice') && <UnknownDeviceCoordinator
+            machine={state.children['unknown-device'] as UnknownDeviceActor}
         />}
-        {state.matches<AuthStates>('IsDeviceRegistered') && <>Loading</>}
+        {state.matches('IsDeviceRegistered') && <>Loading</>}
     </>
 }
 
-function UnknownDeviceCoordinator({ machine }: { machine: ActorRef<UnknownEvents, UnknownContext> }) {
-    const actor = useActor<UnknownEvents, UnknownContext>(machine)
-    const state = actor[0] as State<UnknownContext, UnknownEvents, UnknownSchema>;
-    const send = actor[1]
+function UnknownDeviceCoordinator({ machine }: { machine: UnknownDeviceActor }) {
+    const [state, send] = useActor(machine)
 
     React.useEffect(() => console.log('UnknownDeviceMachine', state.value), [state.value])
 
     return <>
-        {state.matches<UnknownStates>('Start') && <>Loading unknown device...</>}
-        {state.matches<UnknownStates>('RegistrationMachine') && <>TODO: Registration Coordinator</>}
-        {state.matches<UnknownStates>('AuthSelection') && <AuthorizeDecider
+        {state.matches('Start') && <>Loading unknown device...</>}
+        {state.matches('RegistrationMachine') && <>TODO: Registration Coordinator</>}
+        {state.matches('AuthSelection') && <AuthorizeDecider
             onSelectRemoteAuthorization={() => send('AUTH_WITH_REMOTE')}
             onSelectSameDeviceRegistration={() => console.log('VOID: SAME DEVICE')}
             onSelectSameDeviceAuthorization={() => console.log('VOID: SAME DEVICE AUTHO')}
@@ -73,18 +64,17 @@ function UnknownDeviceCoordinator({ machine }: { machine: ActorRef<UnknownEvents
             onSelectSecurityKeyAuthorization={() => console.log('VOID: SECURITY KEY')}
             onToggleAdvancedOptions={() => send('AUTH_WITH_OTHER')}
         />}
-        {state.matches<UnknownStates>('AuthWithGoogle') && <>Loading google auth...</>}
-        {state.matches<UnknownStates>('RemoteAuthentication') && <>TODO: Remote Auth Coordinator</>}
-        {state.matches<UnknownStates>('RegisterDeviceDecider') && <>Trust this device?</>}
-        {state.matches<UnknownStates>('RegisterDevice') && <>Registering...</>}
-        {state.matches<UnknownStates>('RegisterDeviceError') && <>There was an error registering your device</>}
-        {state.matches<UnknownStates>('ExistingAnchor') && <>Existing anchor things. AuthorizeDecider handles this in a weird way</>}
+        {state.matches('AuthWithGoogle') && <>Loading google auth...</>}
+        {state.matches('RemoteAuthentication') && <>TODO: Remote Auth Coordinator</>}
+        {state.matches('RegisterDeviceDecider') && <>Trust this device?</>}
+        {state.matches('RegisterDevice') && <>Registering...</>}
+        {state.matches('RegisterDeviceError') && <>There was an error registering your device</>}
+        {state.matches('ExistingAnchor') && <>Existing anchor things. AuthorizeDecider handles this in a weird way</>}
     </>
 }
 
-function KnownDeviceCoordinator({ machine }: { machine: ActorRef<KnownEvents, KnownContext> }) {
-    const actor = useActor<KnownEvents, KnownContext>(machine)
-    const state = actor[0] as State<KnownContext, KnownEvents, KnownSchema>;
+function KnownDeviceCoordinator({ machine }: { machine: KnownDeviceActor }) {
+    const [state] = useActor(machine)
 
     React.useEffect(() => console.log('KnownDeviceMachine', state.value), [state.value])
 
@@ -93,9 +83,8 @@ function KnownDeviceCoordinator({ machine }: { machine: ActorRef<KnownEvents, Kn
     </>
 }
 
-function AuthorizationCoordinator({ machine }: { machine: ActorRef<AuthoEvents, AuthoContext> }) {
-    const actor = useActor<AuthoEvents, AuthoContext>(machine)
-    const state = actor[0] as State<AuthoContext, AuthoEvents, AuthoSchema>;
+function AuthorizationCoordinator({ machine }: { machine: AuthorizationActor }) {
+    const [state] = useActor(machine)
 
     React.useEffect(() => console.log('AuthorizationMachine', state.value), [state.value])
 

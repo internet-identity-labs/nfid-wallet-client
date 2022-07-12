@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import AuthorizationMachine from "."
 import AuthenticationMachine from "../authentication"
@@ -92,5 +92,7 @@ const IDPMachine =
       },
     },
   )
+
+export type IDPActor = ActorRefFrom<typeof IDPMachine>
 
 export default IDPMachine

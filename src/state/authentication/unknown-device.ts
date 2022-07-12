@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
@@ -173,4 +173,5 @@ const UnknownDeviceMachine =
     },
   )
 
+export type UnknownDeviceActor = ActorRefFrom<typeof UnknownDeviceMachine>
 export default UnknownDeviceMachine

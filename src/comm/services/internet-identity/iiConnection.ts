@@ -390,14 +390,6 @@ export class IIConnection {
       sessionKey: sessionKey.toJSON(),
     }
   }
-
-  getPrincipal = async (
-    userNumber: UserNumber,
-    frontend: FrontendHostname,
-  ): Promise<Principal> => {
-    await renewDelegation()
-    return await ii.get_principal(userNumber, frontend)
-  }
 }
 
 interface FrontendDelegation {

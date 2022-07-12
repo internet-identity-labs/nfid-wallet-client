@@ -29,6 +29,7 @@ import {
   fetchAllDevices,
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
+  removeDevice,
 } from "frontend/integration/internet-identity"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
@@ -214,7 +215,7 @@ export const useDevices = () => {
     async (pubkey: PublicKey) => {
       if (user?.internetIdentity && userNumber) {
         await Promise.all([
-          user?.internetIdentity.remove(userNumber, pubkey),
+          removeDevice(userNumber, pubkey),
           im.remove_access_point({ pub_key: pubkey }),
         ])
       }

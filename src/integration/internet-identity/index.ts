@@ -335,3 +335,17 @@ export async function getPrincipal(
   return await ii.get_principal(userNumber, frontend)
 }
 
+export const getMultiIdent = (
+  devices: DeviceData[],
+  withSecurityDevices?: boolean,
+) => {
+  return MultiWebAuthnIdentity.fromCredentials(
+    devices.flatMap((device) =>
+      device.credential_id.map((credentialId: CredentialId) => ({
+        pubkey: derFromPubkey(device.pubkey),
+        credentialId: Buffer.from(credentialId),
+      })),
+    ),
+    withSecurityDevices,
+  )
+}

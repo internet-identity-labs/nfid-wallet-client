@@ -455,18 +455,3 @@ export const creationOptions = (
     },
   }
 }
-
-const getMultiIdent = (
-  devices: DeviceData[],
-  withSecurityDevices?: boolean,
-) => {
-  return MultiWebAuthnIdentity.fromCredentials(
-    devices.flatMap((device) =>
-      device.credential_id.map((credentialId: CredentialId) => ({
-        pubkey: derFromPubkey(device.pubkey),
-        credentialId: Buffer.from(credentialId),
-      })),
-    ),
-    withSecurityDevices,
-  )
-}

@@ -8,8 +8,8 @@ import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
   ChallengeResult,
-  IIConnection,
-} from "frontend/comm/services/internet-identity/iiConnection"
+  createChallenge,
+} from "frontend/integration/internet-identity"
 
 interface RegisterPayload {
   isGoogle?: boolean
@@ -136,7 +136,7 @@ export const useChallenge = () => {
     key,
     async () => {
       console.time("getChallenge")
-      const challengeResponse = await IIConnection.createChallenge()
+      const challengeResponse = await createChallenge()
       console.timeEnd("getChallenge")
       return challengeResponse
     },

@@ -379,11 +379,6 @@ export class IIConnection {
     }
   }
 
-  static async createChallenge(): Promise<Challenge> {
-    const challenge = await ii.create_challenge()
-    return challenge
-  }
-
   async getRemoteFEDelegation(): Promise<any> {
     const { identity } = authState.get()
     const { chain, sessionKey } = await requestFEDelegationChain(

@@ -393,10 +393,6 @@ export class IIConnection {
     }
   }
 
-  static async lookupAll(userNumber: UserNumber): Promise<DeviceData[]> {
-    return await ii.lookup(userNumber)
-  }
-
   static async createChallenge(): Promise<Challenge> {
     const challenge = await ii.create_challenge()
     return challenge

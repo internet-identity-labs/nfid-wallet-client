@@ -27,6 +27,18 @@ export function buildRemoteLoginRegisterMessage(
   })
 }
 
+export function buildRemoteNFIDLoginRegisterMessage(
+  anchor: bigint,
+  chain: DelegationChain,
+  sessionKey: Ed25519KeyIdentity,
+) {
+  return JSON.stringify({
+    type: "remote-nfid-login-register",
+    userNumber: anchor.toString(),
+    nfid: { chain, sessionKey },
+  })
+}
+
 function sanitizeResponse(message: MessageHttpResponse) {
   return {
     data: message.body,

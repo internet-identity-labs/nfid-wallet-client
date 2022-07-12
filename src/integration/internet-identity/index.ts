@@ -31,7 +31,6 @@ import {
   GetDelegationResponse,
   Challenge,
 } from "frontend/comm/idl/internet_identity_types"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
 import { MultiWebAuthnIdentity } from "frontend/comm/services/internet-identity/multiWebAuthnIdentity"
 import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
 
@@ -55,7 +54,6 @@ type LoginSuccess = {
   kind: "loginSuccess"
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
-  internetIdentity: IIConnection
   userNumber: bigint
 }
 
@@ -85,26 +83,33 @@ export interface JSONSerialisableSignedDelegation {
 }
 
 function authStateClosure() {
-  let _identity: SignIdentity
-  let _delegationIdentity: DelegationIdentity
+  let _identity: SignIdentity | undefined
+  let _delegationIdentity: DelegationIdentity | undefined
   let _actor: ActorSubclass<InternetIdentity> | undefined
   return {
-    setDelegationIdentity: (delegationIdentity: DelegationIdentity) =>
-      (_delegationIdentity = delegationIdentity),
-    set: (
+    setDelegationIdentity(delegationIdentity: DelegationIdentity) {
+      _delegationIdentity = delegationIdentity
+    },
+    set(
       identity: SignIdentity,
       delegationIdentity: DelegationIdentity,
       actor: ActorSubclass<InternetIdentity>,
-    ) => {
+    ) {
       _actor = actor
       _identity = identity
       _delegationIdentity = delegationIdentity
+      replaceIdentity(delegationIdentity)
     },
     get: () => ({
       identity: _identity,
       delegationIdentity: _delegationIdentity,
       actor: _actor,
     }),
+    reset() {
+      _identity = undefined
+      _delegationIdentity = undefined
+      _actor = undefined
+    },
   }
 }
 
@@ -174,6 +179,7 @@ export const requestFEDelegation = async (
 
 export async function renewDelegation() {
   const { delegationIdentity, actor, identity } = authState.get()
+  if (!delegationIdentity || !identity) throw new Error("unauthorized")
 
   for (const { delegation } of delegationIdentity.getDelegation().delegations) {
     // prettier-ignore

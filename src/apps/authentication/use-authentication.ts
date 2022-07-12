@@ -23,7 +23,6 @@ export interface User {
   principal: string
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
-  internetIdentity: IIConnection
 }
 
 const errorAtom = atom<any | null>(null)
@@ -95,12 +94,10 @@ export const useAuthentication = () => {
 
       if (result.tag === "ok") {
         initUserGeek(principal)
-        replaceIdentity(result.internetIdentity.delegationIdentity)
         setUser({
           principal: principal.toText(),
           chain: result.chain,
           sessionKey: result.sessionKey,
-          internetIdentity: result.internetIdentity,
         })
         setError(null)
         setIsLoading(false)
@@ -116,12 +113,10 @@ export const useAuthentication = () => {
   const remoteLogin = React.useCallback(
     async (actors: LoginSuccess) => {
       setIsRemoteDelegate(true)
-      replaceIdentity(actors?.internetIdentity?.delegationIdentity)
       setUser({
         principal: (await agent.getPrincipal()).toText(),
         chain: actors.chain,
         sessionKey: actors.sessionKey,
-        internetIdentity: actors.internetIdentity,
       })
     },
     [setIsRemoteDelegate],
@@ -162,12 +157,10 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
-        replaceIdentity(result.internetIdentity.delegationIdentity)
         setUser({
           principal: (await agent.getPrincipal()).toText(),
           chain: result.chain,
           sessionKey: result.sessionKey,
-          internetIdentity: result.internetIdentity,
         })
         initUserGeek(await agent.getPrincipal())
         im.use_access_point()
@@ -188,7 +181,6 @@ export const useAuthentication = () => {
         principal: (await agent.getPrincipal()).toText(),
         chain: result.chain,
         sessionKey: result.sessionKey,
-        internetIdentity: result.internetIdentity,
       }
       setUser(user)
       initUserGeek(await agent.getPrincipal())

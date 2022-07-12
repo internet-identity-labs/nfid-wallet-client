@@ -2,6 +2,8 @@
 import * as Agent from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 
+import { authState } from "frontend/integration/internet-identity"
+
 import { _SERVICE as IdentityManager } from "./idl/identity_manager.did"
 import { idlFactory as imIDL } from "./idl/identity_manager_idl"
 import { _SERVICE as ImAddition } from "./idl/im_addition.did"
@@ -63,6 +65,7 @@ export function replaceIdentity(identity: Agent.Identity) {
  * When user disconnects an identity, we update our agent.
  */
 export function invalidateIdentity() {
+  authState.reset()
   agent.invalidateIdentity()
 }
 

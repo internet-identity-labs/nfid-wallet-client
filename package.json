@@ -21,6 +21,7 @@
     "test": "jest --passWithNoTests --config=jest.config.js --detectOpenHandles",
     "tunnel": "./scripts/tunnel.sh"
   },
+  "cracoConfig": "craco.config.ts",
   "dependencies": {
     "@dfinity/agent": "0.10.4",
     "@dfinity/auth-client": "0.10.4",

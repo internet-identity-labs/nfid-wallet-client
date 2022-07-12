@@ -26,6 +26,7 @@ import {
   IC_DERIVATION_PATH,
   IIConnection,
 } from "frontend/comm/services/internet-identity/iiConnection"
+import { fetchRecoveryDevices } from "frontend/integration/internet-identity/devices"
 
 import { useAccount } from "../account/hooks"
 import {
@@ -191,7 +192,7 @@ export const useDevices = () => {
     if (userNumber) {
       const [accessPoints, existingRecoveryDevices] = await Promise.all([
         im.read_access_points(),
-        IIConnection.lookupRecovery(userNumber),
+        fetchRecoveryDevices(userNumber),
       ])
 
       if (accessPoints?.status_code === 200) {

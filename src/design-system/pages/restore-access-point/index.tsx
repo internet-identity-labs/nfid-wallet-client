@@ -13,7 +13,7 @@ import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-auth
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { parseUserNumber } from "frontend/comm/services/internet-identity/userNumber"
+import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<

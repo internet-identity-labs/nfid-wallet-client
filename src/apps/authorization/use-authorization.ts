@@ -3,8 +3,8 @@ import React from "react"
 
 import { ii } from "frontend/comm/actors"
 import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
-import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
 import { validateDerivationOrigin } from "frontend/comm/services/internet-identity/validateDerivationOrigin"
+import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
 import { useMessageChannel } from "../../design-system/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
 

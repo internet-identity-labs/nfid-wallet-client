@@ -7,8 +7,8 @@ import { generatePath } from "react-router-dom"
 import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
 import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
+import { apiResultToLoginResult } from "frontend/integration/internet-identity/api-result-to-login-result"
 import { getMessages } from "frontend/integration/pubsub"
 
 import { RemoteNFIDAuthenticationConstants } from "../../../authentication/remote-nfid-authentication"

@@ -28,3 +28,9 @@ export async function postMessages(topic: Topic, messages: string[]) {
     .post_messages(topic, messages)
     .then((r) => unpackResponse(sanitizeResponse(r)))
 }
+
+export async function getMessages(topic: Topic) {
+  return pubsub
+    .get_messages(topic)
+    .then((r) => unpackResponse(sanitizeResponse(r)))
+}

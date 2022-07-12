@@ -9,7 +9,7 @@ import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-auth
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
+import { getMessages } from "frontend/integration/pubsub"
 
 import { RemoteNFIDAuthenticationConstants } from "../../../authentication/remote-nfid-authentication"
 
@@ -19,7 +19,6 @@ export const useRegisterQRCode = () => {
   const [status, setStatus] = useAtom(statusAtom)
   const { setUserNumber } = useUnknownDeviceConfig()
 
-  const { getMessages } = usePubSubChannel()
   const { remoteLogin: setAuthenticatedActors, setShouldStoreLocalAccount } =
     useAuthentication()
 
@@ -69,9 +68,7 @@ export const useRegisterQRCode = () => {
 
   const handlePollForDelegate = useCallback(
     async (cancelPoll: () => void) => {
-      const {
-        body: [messages],
-      } = await getMessages(publicKey)
+      const messages = await getMessages(publicKey)
 
       if (messages && messages.length > 0) {
         const parsedMessages = messages.map((m: string) => JSON.parse(m))

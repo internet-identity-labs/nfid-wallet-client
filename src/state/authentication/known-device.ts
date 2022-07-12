@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { createMachine } from "xstate"
+import { ActorRefFrom, createMachine } from "xstate"
 
 export interface Context {
   signIdentity?: DelegationIdentity
@@ -28,5 +28,7 @@ const KnownDeviceMachine = createMachine({
     },
   },
 })
+
+export type KnownDeviceActor = ActorRefFrom<typeof KnownDeviceMachine>
 
 export default KnownDeviceMachine

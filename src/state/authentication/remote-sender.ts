@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import RegistrationMachine from "./registration"
 
@@ -19,7 +19,7 @@ async function postDelegate(): Promise<void> {
   return undefined
 }
 
-const KnownDeviceMachine =
+const RemoteSenderMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QCcwFsD2AXMBaWYAdhGMgHQCSsAImAG4CWAxmAEphQOw6oQDEiUAAcMsBlgYZCgkAA9EAVgBsZJQA4AzAE4FABgBMugCwBGE8q0AaEAE9EJpbrJazSkzrVa1Adk-eAvv7WqJg4+EQk5ADShBgA7oS0jCx8EFJgZAyEdBgA1hm5sQm4JMlgMiJiElIy8ghqRgpkuiZqDfpG3t66SkZq1nYI7hpkpg7uCp4+noHB6Nh4BMSkZOyc3MgAhtWEALKbTAAWWWCp6ZnZeRmo61hbOxWi4pLSSHKKulqjbSb6HVoAnomAaIbQjXQtNoKBRabwKP5GQJBECxEjwN4hBbhZbkKhJZhsDhcHiQR5VF61UFqMj6OG-DR-LRgtxGEEIJRfBRdExw3QaPmmBSzECYsJLSJkGLxRL0Alk541N51DRqEzOFpafQmDSNJQabwaDRshzUlzjDxeXxaRHI0WLCIrNbE+4vfZHE7yh5KxDeFRMpS+Qz6AGTNRKNkqpx6VpqaGw+EdYV27ESgCixE9FO9CC6IzUEMh+gDbgZEfzZGjUJhcIRSfmYodyEzitAdRMRhpdP0DODzPbbNwIyMf003mDJl0ygcWiR-iAA */
   createMachine(
     {
@@ -85,4 +85,6 @@ const KnownDeviceMachine =
     },
   )
 
-export default KnownDeviceMachine
+export type RemoteSenderActor = ActorRefFrom<typeof RemoteSenderMachine>
+
+export default RemoteSenderMachine

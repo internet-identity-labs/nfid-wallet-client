@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, createMachine } from "xstate"
 
 export interface Context {
   signIdentity?: DelegationIdentity
@@ -46,5 +46,7 @@ const RemoteReceiverMachine =
       },
     },
   )
+
+export type RemoteReceiverActor = ActorRefFrom<typeof RemoteReceiverMachine>
 
 export default RemoteReceiverMachine

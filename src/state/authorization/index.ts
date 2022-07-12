@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { createMachine } from "xstate"
+import { ActorRefFrom, createMachine } from "xstate"
 
 export interface Context {
   signIdentity?: DelegationIdentity
@@ -28,5 +28,7 @@ const AuthorizationMachine = createMachine({
     },
   },
 })
+
+export type AuthorizationActor = ActorRefFrom<typeof AuthorizationMachine>
 
 export default AuthorizationMachine

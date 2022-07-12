@@ -1,5 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { assign, createMachine, DoneInvokeEvent } from "xstate"
+import { ActorRefFrom, assign, createMachine, DoneInvokeEvent } from "xstate"
 
 import KnownDeviceMachine from "./known-device"
 import UnknownDeviceMachine from "./unknown-device"
@@ -85,5 +85,7 @@ const AuthenticationMachine = createMachine(
     },
   },
 )
+
+export type AuthenticationActor = ActorRefFrom<typeof AuthenticationMachine>
 
 export default AuthenticationMachine

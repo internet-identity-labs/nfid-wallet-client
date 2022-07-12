@@ -94,5 +94,6 @@ const IDPMachine =
   )
 
 export type IDPActor = ActorRefFrom<typeof IDPMachine>
+export type IDPMachineType = typeof IDPMachine
 
 export default IDPMachine

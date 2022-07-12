@@ -1,7 +1,7 @@
 import React from 'react'
 import { useMachine, useActor } from '@xstate/react'
 
-import IDPMachine from 'frontend/state/authorization/idp'
+import IDPMachine, { IDPMachineType } from 'frontend/state/authorization/idp'
 import { AuthenticationActor } from 'frontend/state/authentication'
 import { AuthorizationActor } from 'frontend/state/authorization'
 import { UnknownDeviceActor } from 'frontend/state/authentication/unknown-device'
@@ -12,11 +12,13 @@ interface Actor<T> {
     actor: T
 }
 
-export default function IDPCoordinator() {
+interface Props {
+    machine?: IDPMachineType
+}
 
-    const machine = useMachine(IDPMachine)
+export default function IDPCoordinator({ machine }: Props) {
 
-    const [state] = machine
+    const [state] = useMachine(machine || IDPMachine)
 
     return <>
         {state.matches('Start') && <>Loading</>}
@@ -51,23 +53,31 @@ function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
 
     React.useEffect(() => console.log('UnknownDeviceMachine', state.value), [state.value])
 
+    switch (true) {
+        case state.matches('End'):
+        case state.matches('Start'):
+            return <>Loading unknown device...</>
+        case state.matches('ExistingAnchor'):
+        case state.matches('AuthSelection'):
+            return <AuthorizeDecider
+                onSelectRemoteAuthorization={() => send('AUTH_WITH_REMOTE')}
+                onSelectSameDeviceRegistration={() => console.log('VOID: SAME DEVICE')}
+                onSelectSameDeviceAuthorization={() => console.log('VOID: SAME DEVICE AUTHO')}
+                onSelectGoogleAuthorization={() => console.log('VOID: GOOGLE')}
+                onSelectSecurityKeyAuthorization={() => console.log('VOID: SECURITY KEY')}
+                onToggleAdvancedOptions={() => send('AUTH_WITH_OTHER')}
+                showAdvancedOptions={state.matches('ExistingAnchor')}
+            />
+        default:
+            return <div>loading</div>
+    }
     return <>
-        {state.matches('Start') && <>Loading unknown device...</>}
         {state.matches('RegistrationMachine') && <>TODO: Registration Coordinator</>}
-        {state.matches('AuthSelection') && <AuthorizeDecider
-            onSelectRemoteAuthorization={() => send('AUTH_WITH_REMOTE')}
-            onSelectSameDeviceRegistration={() => console.log('VOID: SAME DEVICE')}
-            onSelectSameDeviceAuthorization={() => console.log('VOID: SAME DEVICE AUTHO')}
-            onSelectGoogleAuthorization={() => console.log('VOID: GOOGLE')}
-            onSelectSecurityKeyAuthorization={() => console.log('VOID: SECURITY KEY')}
-            onToggleAdvancedOptions={() => send('AUTH_WITH_OTHER')}
-        />}
         {state.matches('AuthWithGoogle') && <>Loading google auth...</>}
         {state.matches('RemoteAuthentication') && <>TODO: Remote Auth Coordinator</>}
         {state.matches('RegisterDeviceDecider') && <>Trust this device?</>}
         {state.matches('RegisterDevice') && <>Registering...</>}
         {state.matches('RegisterDeviceError') && <>There was an error registering your device</>}
-        {state.matches('ExistingAnchor') && <>Existing anchor things. AuthorizeDecider handles this in a weird way</>}
     </>
 }
 

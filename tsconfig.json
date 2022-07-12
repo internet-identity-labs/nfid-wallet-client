@@ -30,6 +30,6 @@
       "jest"
     ]
   },
-  "include": ["src", "src/types/custom.d.ts", "test"],
+  "include": ["src", "src/types/custom.d.ts", "test", "mocks"],
   "exclude": ["node_modules"]
 }

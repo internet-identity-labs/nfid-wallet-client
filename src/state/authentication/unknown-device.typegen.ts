@@ -3,10 +3,18 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
+    ingestSignIdentity:
+      | "done.invoke.registration"
+      | "done.invoke.remote"
+      | "INGEST_SIGN_IDENTITY"
     ingestGoogle: "AUTH_WITH_GOOGLE"
-    ingestSignIdentity: "done.invoke.remote"
   }
   internalEvents: {
+    "done.invoke.registration": {
+      type: "done.invoke.registration"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.remote": {
       type: "done.invoke.remote"
       data: unknown
@@ -14,11 +22,6 @@ export interface Typegen0 {
     }
     "": { type: "" }
     "xstate.init": { type: "xstate.init" }
-    "done.invoke.registration": {
-      type: "done.invoke.registration"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "error.platform.registration": {
       type: "error.platform.registration"
       data: unknown
@@ -28,7 +31,7 @@ export interface Typegen0 {
   invokeSrcNameMap: {
     RegistrationMachine: "done.invoke.registration"
     RemoteReceiverMachine: "done.invoke.remote"
-    registerDevice: "done.invoke.authenticate-unknown-device.RegisterDevice:invocation[0]"
+    registerDevice: "done.invoke.auth-unknown-device.RegisterDevice:invocation[0]"
   }
   missingImplementations: {
     actions: never
@@ -56,5 +59,6 @@ export interface Typegen0 {
     | "RegisterDeviceDecider"
     | "RegisterDevice"
     | "RegisterDeviceError"
+    | "ExistingAnchor"
   tags: never
 }

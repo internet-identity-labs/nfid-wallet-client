@@ -8,21 +8,21 @@ interface Context {
   signIdentity?: DelegationIdentity
 }
 
-function isDeviceRegistered() {
+export function isDeviceRegistered() {
   // Pull from integration layer: either existing local storage, or refactored device service
-  return true
+  return false
 }
 
 type Events =
   | { type: "done.invoke.known-device"; data: DelegationIdentity }
   | { type: "done.invoke.unknown-device"; data: DelegationIdentity }
 
-/** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFmAduglgMbIED2OAtAE6mnoB0AkrACJgBuRYASmFPrHRgqkAMSJQAB1Kx8ZHBJAAPRBQBMABgBs9AOy6AHLoAsAVmPGtATgNWtWgDQgAnqoDMbq-QPa3aq2pqbgCMwaZqAL4RTmhYuATE8tS0DADSOKQA7jhsnIRgohDkYPT4OOykANYllRnZFBAcXIrSsvKKKggUbgYG9Bq65sZqwbraulpqTq4IAfRuGhp2wVamISZuplExGNh4RCT45Ml09ACqOLVZOU35hcWl5VUlqJd1lI15YC0yckcKSGUiFMXi0xiMa1sulWfl000QcwWSy0KzWo2Mmyi0RAGUa8EBsT2CUOxxop2YuS4vH4gmEkB+bX+HVUKzU9C0ulhEOCGlMJnhXWGXlWE2GxlGVgmdm2IEJ8QOSTJaXelPyDL+5GZgts7OCZkCpgM-gM5gFFB5fQ0bk5Fisww0YXCMrl+0S-xODAuV2yqu+gNaGoBoE63Tc-VCbmsfjWpkmxjNFv61rctvtjsi2JdxMVKXoLGK6vagJDetM9HFjoC0N0alsBgFfmM7JTNaswWthq2md28rdpJShaZxdUpnbuv1akNxtNLhHGjZIq0PX8wy0BiXWIiQA */
+/** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgOgJKwBEwA3ASwGMwAlMKU2dMAJ0gGJFQAHAe1lPVLcAdhxAAPRACYAbAGZsk2QBZZAdgCsAGhABPKQEZV2dQAYz0gBwmlJgJy2l6gL5PtaLNgDSQ7gHchRGSUrBDCYNikQsTcANbhMT7+ALQQJBRgojx8AsKiEgi2htjSqraWGtp6CJLqtthm5lY29o4ubhg4AKpCCX4BacGhQuGR0XHYqD2JQikDGUggWfyCIgv5hUYlZRYVuoj6+ur1DWrqikr6cqouriA+qfAL7jj4gek0dAzMkJm8y7lrRBKSSVKSqSTGBqWax2BzOW7PLzTN6UX7ZFZ5RDqIpbcpaPbVWRHBomaHNOFtECI7q9fwo+ZcP45VagfLYzalPGggr6Y4NVRmdQWWQWSRKSmIgCiQggaP+LPE+30amwRNsp25yqMpjMp3OlxFEo6cuZmIQ+gsmosNycQA */
 const authenticationMachine = createMachine(
   {
     tsTypes: {} as import("./index.typegen").Typegen0,
     schema: { events: {} as Events, context: {} as Context },
-    id: "authentication-root",
+    id: "auth",
     initial: "IsDeviceRegistered",
     states: {
       IsDeviceRegistered: {
@@ -43,7 +43,7 @@ const authenticationMachine = createMachine(
           onDone: [
             {
               actions: "ingestSignIdentity",
-              target: "Done",
+              target: "End",
             },
           ],
         },
@@ -55,17 +55,13 @@ const authenticationMachine = createMachine(
           onDone: [
             {
               actions: "ingestSignIdentity",
-              target: "Done",
+              target: "End",
             },
           ],
         },
       },
-      Done: {
+      End: {
         type: "final",
-        data: (context) => {
-          if (!context.signIdentity) throw new Error("No sign identity")
-          return context.signIdentity
-        },
       },
     },
   },
@@ -77,6 +73,10 @@ const authenticationMachine = createMachine(
     },
     guards: {
       isDeviceRegistered,
+    },
+    services: {
+      KnownDeviceMachine,
+      UnknownDeviceMachine,
     },
   },
 )

@@ -1,12 +1,11 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { ApiResult, IIConnection } from "./iiConnection"
+import { ApiResult } from "frontend/integration/internet-identity"
 
 export type LoginSuccess = {
   tag: "ok"
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
-  internetIdentity: IIConnection
 }
 export type LoginError = {
   tag: "err"
@@ -24,7 +23,6 @@ export const apiResultToLoginResult = (result: ApiResult): LoginResult => {
         tag: "ok",
         chain: result.chain,
         sessionKey: result.sessionKey,
-        internetIdentity: result.internetIdentity,
       }
     }
     case "authFail": {

@@ -10,6 +10,7 @@ import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { authState } from "frontend/integration/internet-identity"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface AppScreenRegisterDeviceDeciderProps
@@ -24,7 +25,6 @@ export const RouterRegisterDeviceDecider: React.FC<
   const { recoverDevice, createSecurityDevice } = useDevices()
   const { readAccount, recoverAccount, createAccount } = useAccount()
   const { getPersona } = usePersona()
-  const { user } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
 
   const {
@@ -52,8 +52,7 @@ export const RouterRegisterDeviceDecider: React.FC<
       // attach the current identity as access point
       const pub_key = Array.from(
         new Uint8Array(
-          user?.internetIdentity.delegationIdentity.getPublicKey().toDer() ??
-            [],
+          authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
         ),
       )
       const createAccessPointResponse = await im.create_access_point({
@@ -78,7 +77,6 @@ export const RouterRegisterDeviceDecider: React.FC<
     deviceName,
     generatePath,
     getPersona,
-    user,
     navigate,
     recoverAccount,
     recoverDevice,

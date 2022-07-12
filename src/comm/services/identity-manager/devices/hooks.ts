@@ -26,6 +26,7 @@ import {
 } from "frontend/comm/services/internet-identity/iiConnection"
 import {
   addDevice,
+  authState,
   fetchAllDevices,
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
@@ -213,14 +214,14 @@ export const useDevices = () => {
 
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
-      if (user?.internetIdentity && userNumber) {
+      if (authState.get().actor && userNumber) {
         await Promise.all([
           removeDevice(userNumber, pubkey),
           im.remove_access_point({ pub_key: pubkey }),
         ])
       }
     },
-    [user, userNumber],
+    [userNumber],
   )
 
   const createWebAuthNDevice = React.useCallback(
@@ -256,7 +257,7 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      if (!user?.internetIdentity) throw new Error("Unauthorized")
+      if (!authState.get().actor) throw new Error("Unauthorized")
 
       const pub_key = fromHexString(publicKey)
 
@@ -277,7 +278,7 @@ export const useDevices = () => {
         }),
       ])
     },
-    [user, browserName],
+    [browserName],
   )
 
   const createRecoveryDevice = React.useCallback(
@@ -299,7 +300,7 @@ export const useDevices = () => {
   const recoverDevice = React.useCallback(
     async (userNumber) => {
       try {
-        if (!user?.internetIdentity) throw new Error("Unauthorized")
+        if (!authState.get().actor) throw new Error("Unauthorized")
         const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
         await createDevice({
@@ -322,7 +323,7 @@ export const useDevices = () => {
         throw error
       }
     },
-    [createDevice, createWebAuthNDevice, user],
+    [createDevice, createWebAuthNDevice],
   )
 
   const getDevices = React.useCallback(async () => {
@@ -331,7 +332,7 @@ export const useDevices = () => {
 
   const createRecoveryPhrase = React.useCallback(async () => {
     if (!userNumber) throw new Error("userNumber missing")
-    if (!user?.internetIdentity) throw new Error("internetIdentity missing")
+    if (!authState.get().actor) throw new Error("internetIdentity missing")
 
     const recovery = generate().trim()
     const recoverIdentity = await fromMnemonicWithoutValidation(
@@ -355,7 +356,7 @@ export const useDevices = () => {
     )
     getRecoveryDevices()
     return `${userNumber} ${recovery}`
-  }, [createRecoveryDevice, getRecoveryDevices, user, userNumber])
+  }, [createRecoveryDevice, getRecoveryDevices, userNumber])
 
   const createSecurityDevice = React.useCallback(
     async (
@@ -364,7 +365,7 @@ export const useDevices = () => {
     ) => {
       const actualUserNumber = userNumber || userNumberOverwrite
       if (!actualUserNumber) throw new Error("userNumber missing")
-      if (!user?.internetIdentity) throw new Error("internetIdentity missing")
+      if (!authState.get().actor) throw new Error("internetIdentity missing")
 
       const devices = await fetchAllDevices(actualUserNumber)
       const deviceName = "Security Key"
@@ -400,7 +401,7 @@ export const useDevices = () => {
       getRecoveryDevices()
       getDevices()
     },
-    [createRecoveryDevice, getDevices, getRecoveryDevices, user, userNumber],
+    [createRecoveryDevice, getDevices, getRecoveryDevices, userNumber],
   )
 
   const getGoogleDevice = React.useCallback(async ({ token }) => {

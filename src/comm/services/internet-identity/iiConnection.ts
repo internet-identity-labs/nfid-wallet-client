@@ -92,15 +92,11 @@ export class IIConnection {
       const userNumber = registerResponse["registered"].user_number
       console.log(`registered Identity Anchor ${userNumber}`)
       replaceIdentity(delegation.delegationIdentity)
+      authState.set(identity, delegation.delegationIdentity, ii)
       return {
         kind: "loginSuccess",
         chain: delegation.chain,
         sessionKey: delegation.sessionKey,
-        internetIdentity: new IIConnection(
-          identity,
-          delegation.delegationIdentity,
-          ii,
-        ),
         userNumber,
       }
     } else if (hasOwnProperty(registerResponse, "bad_challenge")) {
@@ -162,11 +158,6 @@ export class IIConnection {
         kind: "loginSuccess",
         chain: delegation.chain,
         sessionKey: delegation.sessionKey,
-        internetIdentity: new IIConnection(
-          identity,
-          delegation.delegationIdentity,
-          ii,
-        ),
         userNumber,
       }
     } else if (hasOwnProperty(registerResponse, "bad_challenge")) {
@@ -223,18 +214,13 @@ export class IIConnection {
     const multiIdent = getMultiIdent(devices)
 
     replaceIdentity(delegationIdentity)
+    authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
 
     return {
       kind: "loginSuccess",
       userNumber,
       chain,
       sessionKey,
-      internetIdentity: new IIConnection(
-        // eslint-disable-next-line
-        multiIdent._actualIdentity!,
-        delegationIdentity,
-        ii,
-      ),
     }
   }
 
@@ -261,18 +247,17 @@ export class IIConnection {
     }
 
     replaceIdentity(delegation.delegationIdentity)
+    authState.set(
+      multiIdent._actualIdentity!,
+      delegation.delegationIdentity,
+      ii,
+    )
 
     return {
       kind: "loginSuccess",
       userNumber,
       chain: delegation.chain,
       sessionKey: delegation.sessionKey,
-      internetIdentity: new IIConnection(
-        // eslint-disable-next-line
-        multiIdent._actualIdentity!,
-        delegation.delegationIdentity,
-        ii,
-      ),
     }
   }
 
@@ -298,43 +283,35 @@ export class IIConnection {
     const delegationIdentity = await requestFEDelegation(identity)
 
     replaceIdentity(delegationIdentity.delegationIdentity)
+    authState.set(identity, delegationIdentity.delegationIdentity, ii)
 
     return {
       kind: "loginSuccess",
       userNumber,
       chain: delegationIdentity.chain,
       sessionKey: delegationIdentity.sessionKey,
-      internetIdentity: new IIConnection(
-        identity,
-        delegationIdentity.delegationIdentity,
-        ii,
-      ),
     }
   }
 
   static async loginfromGoogleDevice(identity: string): Promise<{
     chain: DelegationChain
     sessionKey: Ed25519KeyIdentity
-    internetIdentity: IIConnection
   }> {
     const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
     const frontendDelegation = await requestFEDelegation(googleIdentity)
 
     replaceIdentity(frontendDelegation.delegationIdentity)
-    // return googleIdentity
+    authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
     return {
       chain: frontendDelegation.chain,
       sessionKey: frontendDelegation.sessionKey,
-      internetIdentity: new IIConnection(
-        googleIdentity,
-        frontendDelegation.delegationIdentity,
-        ii,
-      ),
     }
   }
 
   async getRemoteFEDelegation(): Promise<any> {
     const { identity } = authState.get()
+    if (!identity) throw new Error("unauthorized")
+
     const { chain, sessionKey } = await requestFEDelegationChain(
       identity,
       ONE_MINUTE_IN_M_SEC,

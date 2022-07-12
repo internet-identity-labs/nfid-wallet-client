@@ -1,36 +1,13 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
 
-import { unpackLegacyResponse, unpackResponse } from "./.common"
-import { im } from "./actors"
+import { unpackLegacyResponse, unpackResponse } from "../../comm/.common"
+import { im } from "../../comm/actors"
 import {
   AccessPointResponse,
   AccountResponse,
   PersonaResponse,
-} from "./idl/identity_manager.did"
-
-/**
- * - [ ] Each task applies to all participants in the phone credential flow
- *      - [ ] Identity Manager
- *      - [ ] Internet Identity
- *      - [ ] NFID Verifier
- *      - [ ] Lambda
- * - [ ] Create fetch methods to wrap all api/canister calls in phone credential flow
- * - [ ] Create map methods to sanitize canister calls into idiomatic data objects
- * - [ ] Create map methods for common data types (dates, etc)
- *      - [ ] Create unwrapper for the backend guys' http response paradigm into properly typed code
- * - [ ] Architect ui and control flow pattern
- * - [ ] Build the authentication flow
- * - [ ] Add the delegate parameter to the SDK
- * - [ ]
- */
-
-// NOTE: Most of the mapping involves predictable updates. Automate?
-// - idiomatic naming (snake_case to camelCase)
-// - recasting as a new type
-//  - [] | [value] to optional
-//  - bigint to number
-//  - removing extra date decimals
+} from "../../comm/idl/identity_manager.did"
 
 export interface Account {
   name?: string

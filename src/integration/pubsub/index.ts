@@ -7,7 +7,7 @@ import {
   Topic,
 } from "frontend/comm/idl/pub_sub_channel.did"
 
-import { JSONSerialisableSignedDelegation } from "../internet-identity/identity"
+import { JSONSerialisableSignedDelegation } from "../internet-identity"
 
 export const WAIT_FOR_CONFIRMATION_MESSAGE = {
   type: "remote-login-wait-for-user",

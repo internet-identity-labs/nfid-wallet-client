@@ -68,17 +68,21 @@ function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
                 onToggleAdvancedOptions={() => send('AUTH_WITH_OTHER')}
                 showAdvancedOptions={state.matches('ExistingAnchor')}
             />
+        case state.matches('RegistrationMachine'):
+            return <>TODO: RegistrationCoordinator</>
+        case state.matches('AuthWithGoogle'):
+            return <>Loading google auth...</>
+        case state.matches('RemoteAuthentication'):
+            return <>TODO: Remote Auth Coordinator</>
+        case state.matches('RegisterDeviceDecider'):
+            return <>Trust this device?</>
+        case state.matches('RegisterDevice'):
+            return <>Registering...</>
+        case state.matches('RegisterDeviceError'):
+            return <>There was an error registering your device</>
         default:
             return <div>loading</div>
     }
-    return <>
-        {state.matches('RegistrationMachine') && <>TODO: Registration Coordinator</>}
-        {state.matches('AuthWithGoogle') && <>Loading google auth...</>}
-        {state.matches('RemoteAuthentication') && <>TODO: Remote Auth Coordinator</>}
-        {state.matches('RegisterDeviceDecider') && <>Trust this device?</>}
-        {state.matches('RegisterDevice') && <>Registering...</>}
-        {state.matches('RegisterDeviceError') && <>There was an error registering your device</>}
-    </>
 }
 
 function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {

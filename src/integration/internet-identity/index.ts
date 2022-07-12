@@ -1,0 +1,264 @@
+import { ActorSubclass, SignIdentity } from "@dfinity/agent"
+import { DerEncodedPublicKey } from "@dfinity/agent"
+import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import {
+  Ed25519KeyIdentity,
+  DelegationChain,
+  DelegationIdentity,
+} from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+
+import {
+  accessList,
+  invalidateIdentity,
+  replaceIdentity,
+} from "frontend/comm/actors"
+import { InternetIdentity } from "frontend/comm/actors"
+import { ii } from "frontend/comm/actors"
+import {
+  ChallengeResult,
+  PublicKey,
+  SessionKey,
+  SignedDelegation,
+} from "frontend/comm/idl/internet_identity_types"
+import {
+  Purpose,
+  UserNumber,
+  KeyType,
+} from "frontend/comm/idl/internet_identity_types"
+import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
+import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
+import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
+
+interface FrontendDelegation {
+  delegationIdentity: DelegationIdentity
+  chain: DelegationChain
+  sessionKey: Ed25519KeyIdentity
+}
+
+export interface JSONSerialisableSignedDelegation {
+  delegation: {
+    pubkey: PublicKey
+    expiration: string
+    targets: undefined
+  }
+  signature: number[]
+  userKey: PublicKey
+}
+
+function authStateClosure() {
+  let _identity: SignIdentity
+  let _delegationIdentity: DelegationIdentity
+  let _actor: ActorSubclass<InternetIdentity> | undefined
+  return {
+    setIdentity: (identity: SignIdentity) => (_identity = identity),
+    setDelegationIdentity: (_delegationIdentity: DelegationIdentity) => {},
+    setActor: (actor: ActorSubclass<InternetIdentity>) => {},
+    get: () => ({
+      identity: _identity,
+      delegationIdentity: _delegationIdentity,
+      actor: _actor,
+    }),
+  }
+}
+
+export const authState = authStateClosure()
+
+const ONE_MINUTE_IN_M_SEC = 60 * 1000
+const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
+
+export async function fetchAllDevices(anchor: UserNumber) {
+  return await ii.lookup(anchor)
+}
+
+export async function fetchAuthenticatorDevices(
+  anchor: UserNumber,
+  withSecurityDevices?: boolean,
+) {
+  const allDevices = await ii.lookup(anchor)
+
+  return allDevices.filter((device) =>
+    withSecurityDevices
+      ? true
+      : hasOwnProperty(device.purpose, "authentication"),
+  )
+}
+
+export async function fetchRecoveryDevices(anchor: UserNumber) {
+  const allDevices = await ii.lookup(anchor)
+  return allDevices.filter((device) =>
+    hasOwnProperty(device.purpose, "recovery"),
+  )
+}
+
+export const requestFEDelegationChain = async (
+  identity: SignIdentity,
+  ttl: number = TEN_MINUTES_IN_M_SEC,
+) => {
+  const sessionKey = Ed25519KeyIdentity.generate()
+  // Here the security device is used. Besides creating new keys, this is the only place.
+  const chain = await DelegationChain.create(
+    identity,
+    sessionKey.getPublicKey(),
+    new Date(Date.now() + ttl),
+    {
+      targets: accessList.map((x) => Principal.fromText(x)),
+    },
+  )
+
+  return { chain, sessionKey }
+}
+
+export const requestFEDelegation = async (
+  identity: SignIdentity,
+): Promise<FrontendDelegation> => {
+  const { sessionKey, chain } = await requestFEDelegationChain(identity)
+
+  return {
+    delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
+    chain,
+    sessionKey,
+  }
+}
+
+export async function renewDelegation() {
+  const { delegationIdentity, actor, identity } = authState.get()
+
+  for (const { delegation } of delegationIdentity.getDelegation().delegations) {
+    // prettier-ignore
+    if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
+        invalidateIdentity();
+        break;
+      }
+  }
+
+  if (actor === undefined) {
+    // Create our actor with a DelegationIdentity to avoid re-prompting auth
+
+    authState.setDelegationIdentity(
+      (await requestFEDelegation(identity)).delegationIdentity,
+    )
+    replaceIdentity(delegationIdentity)
+  }
+}
+
+/**
+ * @deprecated: no need to use the session key as secret
+ *
+ * @export
+ * @param {string} secret
+ * @return {*}
+ */
+export function getSessionKey(secret: string) {
+  const blobReverse = fromHexString(secret)
+  const sessionKey = Array.from(new Uint8Array(blobReverse))
+  return sessionKey
+}
+
+/**
+ * fetches the third party delegation
+ *
+ * @export
+ * @param {IIConnection} connection
+ * @param {bigint} anchor
+ * @param {string} scope
+ * @param {SessionKey} sessionKey
+ * @return {*}
+ */
+export async function fetchDelegation(
+  connection: IIConnection,
+  anchor: bigint,
+  scope: string,
+  sessionKey: SessionKey,
+): Promise<[PublicKey, SignedDelegation]> {
+  const prepRes = await connection.prepareDelegation(anchor, scope, sessionKey)
+  // TODO: move to error handler
+  if (prepRes.length !== 2) {
+    throw new Error(
+      `Error preparing the delegation. Result received: ${prepRes}`,
+    )
+  }
+  const [userKey, timestamp] = prepRes
+
+  const signedDelegation = await retryGetDelegation(
+    connection,
+    anchor,
+    scope,
+    sessionKey,
+    timestamp,
+  )
+  return [userKey, signedDelegation]
+}
+
+/**
+ * Builds a json serializable SignedDelegation to send
+ * over the pubsub channel
+ *
+ * @export
+ * @param {PublicKey} publicKey
+ * @param {SignedDelegation} signedDelegation
+ * @return {*}
+ */
+export function buildSerializableSignedDelegation(
+  publicKey: PublicKey,
+  signedDelegation: SignedDelegation,
+): JSONSerialisableSignedDelegation {
+  return {
+    delegation: {
+      pubkey: signedDelegation.delegation.pubkey,
+      expiration: signedDelegation.delegation.expiration.toString(),
+      targets: undefined,
+    },
+    signature: signedDelegation.signature,
+    userKey: publicKey,
+  }
+}
+
+export function getDelegationFromJson(
+  chain: string,
+  sessionKey: string,
+): [DelegationChain, Ed25519KeyIdentity] {
+  return [
+    DelegationChain.fromJSON(chain),
+    Ed25519KeyIdentity.fromJSON(sessionKey),
+  ]
+}
+
+export async function addDevice(
+  anchor: UserNumber,
+  alias: string,
+  keyType: KeyType,
+  purpose: Purpose,
+  newPublicKey: DerEncodedPublicKey,
+  credentialId?: ArrayBuffer,
+) {
+  return await ii.add(anchor, {
+    alias,
+    pubkey: Array.from(new Uint8Array(newPublicKey)),
+    credential_id: credentialId
+      ? [Array.from(new Uint8Array(credentialId))]
+      : [],
+    key_type: keyType,
+    purpose,
+    protection: { unprotected: null },
+  })
+}
+
+export async function registerAnchor(
+  alias: string,
+  challengeResult: ChallengeResult,
+  pubkey: number[],
+  credentialId?: number[],
+) {
+  return await ii.register(
+    {
+      alias,
+      pubkey,
+      credential_id: credentialId ? [credentialId] : [],
+      key_type: { unknown: null },
+      purpose: { authentication: null },
+      protection: { unprotected: null },
+    },
+    challengeResult,
+  )
+}

@@ -14,13 +14,7 @@ import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
 import * as tweetnacl from "tweetnacl"
 
-import {
-  accessList,
-  ii,
-  InternetIdentity,
-  invalidateIdentity,
-  replaceIdentity,
-} from "frontend/comm/actors"
+import { ii, InternetIdentity, replaceIdentity } from "frontend/comm/actors"
 import {
   PublicKey,
   SessionKey,
@@ -39,7 +33,13 @@ import {
 import {
   addDevice,
   fetchAuthenticatorDevices,
-} from "frontend/integration/internet-identity/devices"
+  authState,
+  getDelegationFromJson,
+  renewDelegation,
+  requestFEDelegation,
+  requestFEDelegationChain,
+  registerAnchor,
+} from "frontend/integration/internet-identity"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
@@ -47,7 +47,6 @@ import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { hasOwnProperty } from "./utils"
 
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
-const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
 
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
@@ -116,16 +115,11 @@ export class IIConnection {
 
     let registerResponse: RegisterResponse
     try {
-      registerResponse = await ii.register(
-        {
-          alias,
-          pubkey,
-          credential_id: [credential_id],
-          key_type: { unknown: null },
-          purpose: { authentication: null },
-          protection: { unprotected: null },
-        },
+      registerResponse = await registerAnchor(
+        alias,
         challengeResult,
+        pubkey,
+        credential_id,
       )
     } catch (error: unknown) {
       console.error(`Error when registering`, error)
@@ -169,8 +163,9 @@ export class IIConnection {
     alias: string,
     challengeResult: ChallengeResult,
   ): Promise<RegisterResult> {
-    let delegation: FrontendDelegation
     const identity = Ed25519KeyIdentity.fromJSON(jsonIdentity)
+
+    let delegation: FrontendDelegation
     try {
       delegation = await requestFEDelegation(identity)
     } catch (error: unknown) {
@@ -191,17 +186,7 @@ export class IIConnection {
 
     let registerResponse: RegisterResponse
     try {
-      registerResponse = await ii.register(
-        {
-          alias,
-          pubkey,
-          credential_id: [],
-          key_type: { unknown: null },
-          purpose: { authentication: null },
-          protection: { unprotected: null },
-        },
-        challengeResult,
-      )
+      registerResponse = await registerAnchor(alias, challengeResult, pubkey)
     } catch (error: unknown) {
       console.error(`Error when registering`, error)
       if (error instanceof Error) {
@@ -265,6 +250,7 @@ export class IIConnection {
     return this.fromWebauthnDevices(userNumber, devices, withSecurityDevices)
   }
 
+  // NOTE: CURRENT SCOPE
   static async loginFromRemoteFrontendDelegation({
     userNumber,
     chain: chainJSON,
@@ -274,10 +260,7 @@ export class IIConnection {
     chain: string
     sessionKey: string
   }): Promise<LoginResult> {
-    const { chain, sessionKey } = {
-      chain: DelegationChain.fromJSON(chainJSON),
-      sessionKey: Ed25519KeyIdentity.fromJSON(sessionKeyJSON),
-    }
+    const [chain, sessionKey] = getDelegationFromJson(chainJSON, sessionKeyJSON)
     const delegationIdentity = DelegationIdentity.fromDelegation(
       sessionKey,
       chain,
@@ -309,13 +292,13 @@ export class IIConnection {
   ): Promise<LoginResult> {
     const multiIdent = getMultiIdent(devices, withSecurityDevices)
 
-    let delegationIdentity: FrontendDelegation
+    let delegation: FrontendDelegation
     try {
-      delegationIdentity = await requestFEDelegation(multiIdent)
-    } catch (e: unknown) {
-      console.error(`Error when requesting delegation`, e)
-      if (e instanceof Error) {
-        return { kind: "authFail", error: e }
+      delegation = await requestFEDelegation(multiIdent)
+    } catch (error: unknown) {
+      console.error(`Error when requesting delegation`, error)
+      if (error instanceof Error) {
+        return { kind: "authFail", error }
       } else {
         return {
           kind: "authFail",
@@ -324,17 +307,17 @@ export class IIConnection {
       }
     }
 
-    replaceIdentity(delegationIdentity.delegationIdentity)
+    replaceIdentity(delegation.delegationIdentity)
 
     return {
       kind: "loginSuccess",
       userNumber,
-      chain: delegationIdentity.chain,
-      sessionKey: delegationIdentity.sessionKey,
+      chain: delegation.chain,
+      sessionKey: delegation.sessionKey,
       internetIdentity: new IIConnection(
         // eslint-disable-next-line
         multiIdent._actualIdentity!,
-        delegationIdentity.delegationIdentity,
+        delegation.delegationIdentity,
         ii,
       ),
     }
@@ -382,16 +365,16 @@ export class IIConnection {
     internetIdentity: IIConnection
   }> {
     const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
-    const delegationIdentity = await requestFEDelegation(googleIdentity)
+    const frontendDelegation = await requestFEDelegation(googleIdentity)
 
-    replaceIdentity(delegationIdentity.delegationIdentity)
+    replaceIdentity(frontendDelegation.delegationIdentity)
     // return googleIdentity
     return {
-      chain: delegationIdentity.chain,
-      sessionKey: delegationIdentity.sessionKey,
+      chain: frontendDelegation.chain,
+      sessionKey: frontendDelegation.sessionKey,
       internetIdentity: new IIConnection(
         googleIdentity,
-        delegationIdentity.delegationIdentity,
+        frontendDelegation.delegationIdentity,
         ii,
       ),
     }
@@ -402,28 +385,10 @@ export class IIConnection {
     return challenge
   }
 
-  async renewDelegation() {
-    for (const { delegation } of this.delegationIdentity.getDelegation()
-      .delegations) {
-      // prettier-ignore
-      if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
-        invalidateIdentity();
-        break;
-      }
-    }
-
-    if (this.actor === undefined) {
-      // Create our actor with a DelegationIdentity to avoid re-prompting auth
-      this.delegationIdentity = (
-        await requestFEDelegation(this.identity)
-      ).delegationIdentity
-      replaceIdentity(this.delegationIdentity)
-    }
-  }
-
   async getRemoteFEDelegation(): Promise<any> {
+    const { identity } = authState.get()
     const { chain, sessionKey } = await requestFEDelegationChain(
-      this.identity,
+      identity,
       ONE_MINUTE_IN_M_SEC,
     )
     return {
@@ -440,7 +405,7 @@ export class IIConnection {
     newPublicKey: DerEncodedPublicKey,
     credentialId?: ArrayBuffer,
   ): Promise<void> => {
-    await this.renewDelegation()
+    await renewDelegation()
     return await addDevice(
       userNumber,
       alias,
@@ -455,7 +420,7 @@ export class IIConnection {
     userNumber: UserNumber,
     publicKey: PublicKey,
   ): Promise<void> => {
-    await this.renewDelegation()
+    await renewDelegation()
     await ii.remove(userNumber, publicKey)
   }
 
@@ -463,7 +428,7 @@ export class IIConnection {
     userNumber: UserNumber,
     frontend: FrontendHostname,
   ): Promise<Principal> => {
-    await this.renewDelegation()
+    await renewDelegation()
     return await ii.get_principal(userNumber, frontend)
   }
 
@@ -476,7 +441,7 @@ export class IIConnection {
     console.log(
       `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
     )
-    await this.renewDelegation()
+    await renewDelegation()
     return await ii.prepare_delegation(
       userNumber,
       hostname,
@@ -494,7 +459,7 @@ export class IIConnection {
     console.log(
       `get_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey}, timestamp: ${timestamp})`,
     )
-    await this.renewDelegation()
+    await renewDelegation()
     return await ii.get_delegation(userNumber, hostname, sessionKey, timestamp)
   }
 }
@@ -503,36 +468,6 @@ interface FrontendDelegation {
   delegationIdentity: DelegationIdentity
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
-}
-
-const requestFEDelegation = async (
-  identity: SignIdentity,
-): Promise<FrontendDelegation> => {
-  const { sessionKey, chain } = await requestFEDelegationChain(identity)
-
-  return {
-    delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
-    chain,
-    sessionKey,
-  }
-}
-
-const requestFEDelegationChain = async (
-  identity: SignIdentity,
-  ttl: number = TEN_MINUTES_IN_M_SEC,
-) => {
-  const sessionKey = Ed25519KeyIdentity.generate()
-  // Here the security device is used. Besides creating new keys, this is the only place.
-  const chain = await DelegationChain.create(
-    identity,
-    sessionKey.getPublicKey(),
-    new Date(Date.now() + ttl),
-    {
-      targets: accessList.map((x) => Principal.fromText(x)),
-    },
-  )
-
-  return { chain, sessionKey }
 }
 
 // The options sent to the browser when creating the credentials.

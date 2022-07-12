@@ -1,84 +1,38 @@
-import {
-  ActorSubclass,
-  DerEncodedPublicKey,
-  SignIdentity,
-} from "@dfinity/agent"
+import { ActorSubclass, SignIdentity } from "@dfinity/agent"
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
   WebAuthnIdentity,
 } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
 import * as tweetnacl from "tweetnacl"
 
 import { ii, InternetIdentity, replaceIdentity } from "frontend/comm/actors"
 import {
-  PublicKey,
-  SessionKey,
-  CredentialId,
-  Challenge,
-  UserNumber,
-  FrontendHostname,
-  Timestamp,
   DeviceData,
   RegisterResponse,
-  GetDelegationResponse,
-  Purpose,
-  KeyType,
   ChallengeResult,
 } from "frontend/comm/idl/internet_identity_types"
 import {
   fetchAuthenticatorDevices,
   authState,
   getDelegationFromJson,
-  renewDelegation,
   requestFEDelegation,
   requestFEDelegationChain,
   registerAnchor,
+  getMultiIdent,
+  LoginResult,
+  RegisterResult,
 } from "frontend/integration/internet-identity"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { fromMnemonicWithoutValidation } from "./crypto/ed25519"
-import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { hasOwnProperty } from "./utils"
 
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
 
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
-
-export type ApiResult = LoginResult | RegisterResult
-export type LoginResult =
-  | LoginSuccess
-  | UnknownUser
-  | AuthFail
-  | ApiError
-  | SeedPhraseFail
-export type RegisterResult =
-  | LoginSuccess
-  | AuthFail
-  | ApiError
-  | RegisterNoSpace
-  | BadChallenge
-
-type LoginSuccess = {
-  kind: "loginSuccess"
-  chain: DelegationChain
-  sessionKey: Ed25519KeyIdentity
-  internetIdentity: IIConnection
-  userNumber: bigint
-}
-
-type BadChallenge = { kind: "badChallenge" }
-type UnknownUser = { kind: "unknownUser"; userNumber: bigint }
-type AuthFail = { kind: "authFail"; error: Error }
-type ApiError = { kind: "apiError"; error: Error }
-type RegisterNoSpace = { kind: "registerNoSpace" }
-type SeedPhraseFail = { kind: "seedPhraseFail" }
-
-export type { ChallengeResult } from "frontend/comm/idl/internet_identity_types"
 
 export class IIConnection {
   protected constructor(

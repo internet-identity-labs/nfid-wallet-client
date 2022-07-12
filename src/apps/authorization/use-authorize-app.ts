@@ -7,13 +7,11 @@ import {
 } from "frontend/apps/authentication/use-authentication"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
-import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
 import {
   buildSerializableSignedDelegation,
   fetchDelegation,
   getSessionKey,
-} from "frontend/integration/internet-identity/identity"
+} from "frontend/integration/internet-identity"
 import {
   buildRemoteLoginRegisterMessage,
   buildRemoteNFIDLoginRegisterMessage,

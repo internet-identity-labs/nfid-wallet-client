@@ -1,3 +1,5 @@
+import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+
 import { unpackResponse } from "frontend/comm/.common"
 import { pubsub } from "frontend/comm/actors"
 import {
@@ -5,8 +7,24 @@ import {
   Topic,
 } from "frontend/comm/idl/pub_sub_channel.did"
 
+import { JSONSerialisableSignedDelegation } from "../internet-identity/identity"
+
 export const WAIT_FOR_CONFIRMATION_MESSAGE = {
   type: "remote-login-wait-for-user",
+}
+
+export function buildRemoteLoginRegisterMessage(
+  anchor: bigint,
+  chain: DelegationChain,
+  sessionKey: Ed25519KeyIdentity,
+  jsonSerialisableDelegation: JSONSerialisableSignedDelegation,
+): string {
+  return JSON.stringify({
+    type: "remote-login-register",
+    userNumber: anchor.toString(),
+    nfid: { chain, sessionKey },
+    ...jsonSerialisableDelegation,
+  })
 }
 
 function sanitizeResponse(message: MessageHttpResponse) {

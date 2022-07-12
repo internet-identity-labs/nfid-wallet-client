@@ -9,12 +9,12 @@ import {
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/comm/idl/identity_manager.did"
+import { Profile } from "frontend/integration/identity-manager/profile"
 
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {
   memoryAccountAtom,
   localStorageAccountAtom,
-  LocalAccount,
   userNumberAtom,
 } from "./state"
 
@@ -24,7 +24,7 @@ const normalizeLocalAccount = ({
   account,
   newAccount,
 }: {
-  account?: LocalAccount
+  account?: Profile
   newAccount: AccountResponse
 }) => ({
   name: newAccount.name[0],
@@ -142,7 +142,7 @@ export const useAccount = () => {
   const resetLocalAccount = React.useCallback(async () => {
     const localAccount = JSON.parse(
       window.localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY) || "{}",
-    ) as LocalAccount
+    ) as Profile
 
     setAccount(localAccount)
   }, [setAccount])
@@ -150,9 +150,9 @@ export const useAccount = () => {
   const updateAccount = React.useCallback(
     async (
       accountService: AccountService,
-      partialAccount: Partial<LocalAccount>,
+      partialAccount: Partial<Profile>,
     ) => {
-      const newAccount = produce(account, (draft: LocalAccount) => ({
+      const newAccount = produce(account, (draft: Profile) => ({
         ...draft,
         ...partialAccount,
       }))

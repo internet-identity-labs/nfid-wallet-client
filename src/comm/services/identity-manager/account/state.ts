@@ -1,35 +1,17 @@
 import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
-import { AccountResponse } from "frontend/comm/idl/identity_manager.did"
 import { getUserNumber } from "frontend/comm/services/internet-identity/userNumber"
+import { Profile } from "frontend/integration/identity-manager/profile"
 
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 
-export interface LocalAccount
-  extends Omit<
-    AccountResponse,
-    | "anchor"
-    | "name"
-    | "personas"
-    | "phone_number"
-    | "principal_id"
-    | "access_points"
-  > {
-  anchor: string
-  name?: string
-  iiAnchors?: string[]
+export const localStorageAccountAtom = atomWithStorage<Profile | undefined>(
+  ACCOUNT_LOCAL_STORAGE_KEY,
+  undefined,
+)
 
-  // temporary front-end hack to skip personalization process
-  skipPersonalize?: boolean
-  phoneNumber?: string
-}
-
-export const localStorageAccountAtom = atomWithStorage<
-  LocalAccount | undefined
->(ACCOUNT_LOCAL_STORAGE_KEY, undefined)
-
-export const memoryAccountAtom = atom<LocalAccount | undefined>(undefined)
+export const memoryAccountAtom = atom<Profile | undefined>(undefined)
 
 export const userNumberAtom = atom((get) => {
   const localStorageAccount = get(localStorageAccountAtom)

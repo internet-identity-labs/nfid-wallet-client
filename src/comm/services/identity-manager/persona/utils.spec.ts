@@ -77,18 +77,18 @@ describe("persona utils test suite", () => {
 
   describe("createAccount", () => {
     it("uses derivationOrigin to create persona if present", () => {
-      const personas = [
+      const accounts = [
         { persona_id: "1", domain: `somepage.com` },
         { persona_id: "2", domain: `somepage.com` },
         { persona_id: "1", domain: `test-canister-id.ic0.app` },
       ]
-      const account1 = createAccount(
-        personas,
+      const newAccount = createAccount(
+        accounts,
         "test.com",
         "test-canister-id.ic0.app",
       )
-      expect(account1.domain).toBe("test-canister-id.ic0.app")
-      expect(account1.personaId).toBe("2")
+      expect(newAccount.domain).toBe("test-canister-id.ic0.app")
+      expect(newAccount.personaId).toBe("2")
     })
   })
 })

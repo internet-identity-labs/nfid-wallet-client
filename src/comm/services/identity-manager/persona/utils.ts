@@ -1,6 +1,10 @@
 import { PersonaResponse } from "frontend/comm/idl/identity_manager.did"
 import { Persona } from "frontend/comm/im"
 
+import {
+  validateDerivationOrigin,
+  ValidationResult,
+} from "../../internet-identity/validateDerivationOrigin"
 import { IIPersona, NFIDPersona, Persona as LegacyPersonas } from "./types"
 
 export const normalizePersonas = (
@@ -52,7 +56,19 @@ export function createAccount(
   hostName: string,
   derivationOrigin?: string,
 ): Persona {
-  return {}
+  const filterPersonasByDomain = personas.filter(
+    (persona) =>
+      persona.domain === derivationOrigin || persona.domain === hostName,
+  )
+  const newPersonaId = getNextPersonaId(filterPersonasByDomain)
+
+  const newPersona: Persona = {
+    personaId: newPersonaId,
+    personaName: `Account ${newPersonaId}`,
+    domain: derivationOrigin ?? hostName,
+  }
+
+  return newPersona
 }
 
 export function getScope(hostName: string, personaId?: string) {

@@ -6,10 +6,11 @@ import useSWR from "swr"
 import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
 import {
   ChallengeResult,
   createChallenge,
+  register,
+  registerFromGoogle,
 } from "frontend/integration/internet-identity"
 
 interface RegisterPayload {
@@ -52,7 +53,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         key: challenge.challenge_key,
       }
 
-      const response = await IIConnection.register(
+      const response = await register(
         webAuthnIdentity,
         deviceName,
         challengeResult,
@@ -91,7 +92,7 @@ export const useCaptcha = ({ onBadChallenge, onApiError }: UseCaptcha) => {
         key: challenge.challenge_key,
       }
 
-      const response = await IIConnection.registerFromGoogle(
+      const response = await registerFromGoogle(
         identity,
         deviceName,
         challengeResult,

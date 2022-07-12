@@ -8,7 +8,7 @@ import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-auth
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
+import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
 import { getMessages } from "frontend/integration/pubsub"
 
 import { RemoteNFIDAuthenticationConstants } from "../../../authentication/remote-nfid-authentication"
@@ -42,7 +42,7 @@ export const useRegisterQRCode = () => {
 
   const handleLoginFromRemoteDelegation = useCallback(
     async (nfidJsonDelegate, userNumber) => {
-      const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
+      const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
         userNumber: BigInt(userNumber),
@@ -87,7 +87,7 @@ export const useRegisterQRCode = () => {
         }
       }
     },
-    [getMessages, handleLoginFromRemoteDelegation, publicKey],
+    [handleLoginFromRemoteDelegation, publicKey],
   )
 
   return {

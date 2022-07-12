@@ -21,15 +21,13 @@ import {
 import { fromMnemonicWithoutValidation } from "frontend/comm/services/internet-identity/crypto/ed25519"
 import { generate } from "frontend/comm/services/internet-identity/crypto/mnemonic"
 import {
-  creationOptions,
-  IC_DERIVATION_PATH,
-} from "frontend/comm/services/internet-identity/iiConnection"
-import {
   addDevice,
   authState,
+  creationOptions,
   fetchAllDevices,
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
+  IC_DERIVATION_PATH,
   removeDevice,
 } from "frontend/integration/internet-identity"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
@@ -156,7 +154,6 @@ export const useDevices = () => {
   } = useDeviceInfo()
 
   const { userNumber } = useAccount()
-  const { user } = useAuthentication()
 
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber) {

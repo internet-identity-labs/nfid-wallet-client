@@ -303,6 +303,7 @@ export const useDevices = () => {
   const recoverDevice = React.useCallback(
     async (userNumber: number) => {
       try {
+        if (!authState.get().actor) throw new Error("Unauthorized")
         const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
         await createDevice({
@@ -334,6 +335,7 @@ export const useDevices = () => {
 
   const createRecoveryPhrase = React.useCallback(async () => {
     if (!userNumber) throw new Error("userNumber missing")
+    if (!authState.get().actor) throw new Error("internetIdentity missing")
 
     const recovery = generate().trim()
     const recoverIdentity = await fromMnemonicWithoutValidation(
@@ -366,6 +368,7 @@ export const useDevices = () => {
     ) => {
       const actualUserNumber = userNumber || userNumberOverwrite
       if (!actualUserNumber) throw new Error("userNumber missing")
+      if (!authState.get().actor) throw new Error("internetIdentity missing")
 
       const devices = await fetchAllDevices(actualUserNumber)
       const deviceName = "Security Key"

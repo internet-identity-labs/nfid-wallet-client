@@ -67,7 +67,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const handleCreateAccountAndLogin = React.useCallback(async () => {
     setIsloading(true)
     const response = await createPersona({
-      domain: scope || authorizationRequest?.hostname as string,
+      domain: scope || (authorizationRequest?.hostname as string),
     })
 
     if (response?.status_code === 200) {

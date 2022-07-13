@@ -1,5 +1,6 @@
 import React from "react"
-interface LaptopIconProps extends React.SVGProps<SVGSVGElement> { }
+
+interface LaptopIconProps extends React.SVGProps<SVGSVGElement> {}
 
 export const DocumentIcon: React.FC<LaptopIconProps> = () => {
   return (

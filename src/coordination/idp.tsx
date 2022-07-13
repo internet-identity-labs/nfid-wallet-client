@@ -17,9 +17,7 @@ import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
-interface Actor<T> {
-  actor: T
-}
+import { KnownDeviceCoordinator } from "./known-device"
 
 interface Props {
   machine?: IDPMachineType
@@ -139,17 +137,6 @@ function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
     default:
       return <Loader isLoading={true} />
   }
-}
-
-function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
-  const [state] = useActor(actor)
-
-  React.useEffect(
-    () => console.log(`KnownDeviceMachine: ${state.value}`),
-    [state.value],
-  )
-
-  return <>{state.value}</>
 }
 
 function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {

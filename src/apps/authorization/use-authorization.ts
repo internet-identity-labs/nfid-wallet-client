@@ -10,6 +10,13 @@ interface UseAuthenticationProps {
   userNumber?: bigint
 }
 
+export interface AuthRequestEvent {
+  kind: "authorize-client"
+  sessionPublicKey: Uint8Array
+  maxTimeToLive?: bigint
+  derivationOrigin?: string
+}
+
 interface AuthorizationRequest {
   maxTimeToLive: any
   sessionPublicKey: any
@@ -34,12 +41,13 @@ export const useAuthorization = ({
   const { opener, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({
       messageHandler: {
-        "authorize-client": async (event: any) => {
+        "authorize-client": async (event: MessageEvent<AuthRequestEvent>) => {
           const message = event.data
-          const { maxTimeToLive, sessionPublicKey } = message
+          const { maxTimeToLive, sessionPublicKey, derivationOrigin } = message
           setAuthorizationRequest({
             maxTimeToLive,
             sessionPublicKey,
+            derivationOrigin,
             hostname: event.origin,
             source: event.source,
           })

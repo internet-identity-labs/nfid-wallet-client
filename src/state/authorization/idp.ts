@@ -2,6 +2,14 @@ import { SignIdentity } from "@dfinity/agent"
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import {
+  awaitMessageFromClient,
+  IdentityClientAuthEvent,
+  postMessageToClient,
+  prepareClientDelegate,
+} from "frontend/integration/idp"
+import { SignedDelegation } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+
 import AuthorizationMachine from "."
 import AuthenticationMachine from "../authentication"
 
@@ -13,22 +21,41 @@ export interface User {
   anchor?: string
 }
 
-interface Context extends User {}
+interface Context extends User {
+  maxTimeToLive?: number
+}
 
 type Events =
-  | { type: "done.invoke.await"; data: void }
+  | {
+      type: "done.invoke.handshake"
+      data: {
+        maxTimeToLive: number
+        sessionPublicKey: Uint8Array
+        hostname: string
+      }
+    }
   | { type: "done.invoke.authenticate"; data: User }
   | { type: "done.invoke.authorize"; data: User }
   | { type: "done.invoke.done"; data: void }
 
-async function postReady() {
-  console.log("Post ready message to pubsub...")
-  console.log("Await request message from pubsub...")
-  return new Promise<void>((res) => setTimeout(() => res(undefined), 100))
+async function handshake() {
+  postMessageToClient({ kind: "ready" })
+  return awaitMessageFromClient<IdentityClientAuthEvent>(
+    "authorize-client",
+  ).then((event) => ({
+    maxTimeToLive: Number(event.data.maxTimeToLive),
+    sessionPublicKey: event.data.sessionPublicKey,
+    hostname: event.origin,
+  }))
 }
 
-async function postDelegation() {
-  console.log("Post delegation chain to pubsub")
+async function postDelegation(context: Context) {
+  // const prepared = prepareClientDelegate(context)
+  // postMessageToClient({
+  //   kind: "authorize-client-success",
+  //   userPublicKey: prepared.delegation.pubkey,
+  //   delegations: prepared,
+  // })
   return undefined
 }
 
@@ -43,11 +70,12 @@ const IDPMachine =
       states: {
         Start: {
           invoke: {
-            src: "postReady",
-            id: "await",
+            src: "handshake",
+            id: "handshake",
             onDone: [
               {
                 target: "AuthenticationMachine",
+                actions: "ingestRequest",
               },
             ],
           },
@@ -84,7 +112,7 @@ const IDPMachine =
     },
     {
       services: {
-        postReady,
+        handshake,
         postDelegation,
         AuthenticationMachine,
         AuthorizationMachine,

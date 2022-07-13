@@ -17,6 +17,7 @@ import { RecoverNFIDRoutes } from "./apps/registration/recover-nfid/routes"
 import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import IDPCoordinator from "./coordination/idp"
+import RemoteIDPCoordinator from "./coordination/remote-idp"
 import { ic } from "./integration/actors"
 import { NotFound } from "./ui/pages/404"
 
@@ -46,6 +47,7 @@ export const App = () => {
 
       {/* Temporary routes for new machine based flows */}
       <Route path="/idp" element={<IDPCoordinator />} />
+      <Route path="/remote-idp" element={<RemoteIDPCoordinator />} />
     </Routes>
   )
 }

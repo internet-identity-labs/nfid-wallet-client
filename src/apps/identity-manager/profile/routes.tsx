@@ -1,7 +1,7 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { AuthWrapper } from "frontend/design-system/pages/auth-wrapper"
+import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 
 import { NFIDProfile } from "."
 import { AddPhoneNumber } from "./add-phone-number"

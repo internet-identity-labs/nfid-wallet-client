@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 
-import { CredentialRequesterSMSVerify } from "frontend/design-system/pages/credential-requester/sms-verify"
+import { CredentialRequesterSMSVerify } from "frontend/ui/pages/credential-requester/sms-verify"
 
 export const EnterSMSToken: React.FC<{ machine: any }> = ({ machine }) => {
   const [, send] = useAtom(machine)

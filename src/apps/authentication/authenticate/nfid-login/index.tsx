@@ -3,8 +3,8 @@ import React from "react"
 
 import { CardBody } from "@internet-identity-labs/nfid-sdk-react"
 
-import { NFIDLogin } from "frontend/design-system/pages/nfid-login"
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+import { NFIDLogin } from "frontend/ui/pages/nfid-login"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
 interface AppScreenNFIDLoginProps extends React.HTMLAttributes<HTMLDivElement> {
   loginSuccessPath?: string

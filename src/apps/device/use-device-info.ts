@@ -1,7 +1,7 @@
 import bowser from "bowser"
 import React from "react"
 
-import { getPlatformInfo } from "frontend/utils"
+import { getPlatformInfo } from "frontend/ui/utils"
 
 export const useDeviceInfo = () => {
   const [isWebAuthNAvailable, setHasWebAuthN] = React.useState<boolean>()

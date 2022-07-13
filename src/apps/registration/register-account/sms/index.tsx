@@ -14,11 +14,10 @@ import {
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
 
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
-
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { isValidToken, tokenRules } from "frontend/utils/validations"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
+import { isValidToken, tokenRules } from "frontend/ui/utils/validations"
 
 import { RemoteRegisterAccountConstants as RAC } from "../routes"
 import { ResendSMS } from "./resend-countdown"

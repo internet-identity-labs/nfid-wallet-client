@@ -1,11 +1,11 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { unpackResponse } from "frontend/comm/.common"
-import { pubsub } from "frontend/comm/actors"
+import { unpackResponse } from "frontend/integration/_common"
 import {
   MessageHttpResponse,
   Topic,
-} from "frontend/comm/idl/pub_sub_channel.did"
+} from "frontend/integration/_ic_api/pub_sub_channel.did"
+import { pubsub } from "frontend/integration/actors"
 
 import { JSONSerialisableSignedDelegation } from "../internet-identity"
 

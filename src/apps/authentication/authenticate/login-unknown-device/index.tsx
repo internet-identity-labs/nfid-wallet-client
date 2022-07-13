@@ -1,10 +1,9 @@
 import React from "react"
 
-import { RemoteAuthorizeAppUnknownDevice } from "frontend/design-system/pages/remote-authorize-app-unknown-device"
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useInterval } from "frontend/apps/inter-device/use-interval"
+import { RemoteAuthorizeAppUnknownDevice } from "frontend/ui/pages/remote-authorize-app-unknown-device"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import {
   APP_SCREEN_AUTHENTICATE_BASE,

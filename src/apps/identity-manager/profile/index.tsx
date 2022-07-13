@@ -1,16 +1,15 @@
 import React from "react"
 
-import { Profile } from "frontend/design-system/pages/profile"
-
-import { ima } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import { ima } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import {
   Device,
   RecoveryDevice,
-} from "frontend/comm/services/identity-manager/devices/state"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+} from "frontend/integration/identity-manager/devices/state"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { Profile } from "frontend/ui/pages/profile"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "./routes"
 

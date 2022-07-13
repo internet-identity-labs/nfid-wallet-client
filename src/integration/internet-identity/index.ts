@@ -13,13 +13,6 @@ import { arrayBufferEqual } from "ictool/dist/bits"
 import * as tweetnacl from "tweetnacl"
 
 import {
-  accessList,
-  invalidateIdentity,
-  replaceIdentity,
-} from "frontend/comm/actors"
-import { InternetIdentity } from "frontend/comm/actors"
-import { ii } from "frontend/comm/actors"
-import {
   ChallengeResult,
   DeviceData,
   PublicKey,
@@ -34,7 +27,14 @@ import {
   GetDelegationResponse,
   Challenge,
   RegisterResponse,
-} from "frontend/comm/idl/internet_identity_types"
+} from "frontend/integration/_ic_api/internet_identity_types"
+import {
+  accessList,
+  invalidateIdentity,
+  replaceIdentity,
+} from "frontend/integration/actors"
+import { InternetIdentity } from "frontend/integration/actors"
+import { ii } from "frontend/integration/actors"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
@@ -68,7 +68,7 @@ type ApiError = { kind: "apiError"; error: Error }
 type RegisterNoSpace = { kind: "registerNoSpace" }
 type SeedPhraseFail = { kind: "seedPhraseFail" }
 
-export type { ChallengeResult } from "frontend/comm/idl/internet_identity_types"
+export type { ChallengeResult } from "frontend/integration/_ic_api/internet_identity_types"
 
 interface FrontendDelegation {
   delegationIdentity: DelegationIdentity

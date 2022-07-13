@@ -1,14 +1,12 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import React from "react"
 
-import { SignedDelegation } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
 import {
   useAuthentication,
   User,
 } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import {
   buildSerializableSignedDelegation,
   fetchDelegation,
@@ -21,6 +19,7 @@ import {
   postMessages,
   WAIT_FOR_CONFIRMATION_MESSAGE,
 } from "frontend/integration/pubsub"
+import { SignedDelegation } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 declare const FRONTEND_MODE: string
 

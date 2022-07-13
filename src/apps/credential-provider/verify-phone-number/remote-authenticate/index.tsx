@@ -1,12 +1,11 @@
 import { useAtom } from "jotai"
 
-import { RemoteAuthorizeAppUnknownDevice } from "frontend/design-system/pages/remote-authorize-app-unknown-device"
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
 import {
   APP_SCREEN_AUTHENTICATE_BASE,
   SUB_PATH_REGISTER_DEVICE_DECIDER,
 } from "frontend/apps/authentication/authenticate/constants"
+import { RemoteAuthorizeAppUnknownDevice } from "frontend/ui/pages/remote-authorize-app-unknown-device"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 export const RemoteAuthenticate: React.FC<{ machine: any }> = ({ machine }) => {
   const [, send] = useAtom(machine)

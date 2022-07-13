@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 import { render, waitFor, screen } from "@testing-library/react"
+import { useInterpret } from "@xstate/react"
+import { spawn } from "xstate"
 
 import KnownDeviceMachine, {
   KnownDeviceActor,
@@ -18,8 +20,9 @@ describe("KnownDevice Coordinator", () => {
         },
       },
     })
-    render(<KnownDeviceCoordinator actor={testMachine as KnownDeviceActor} />)
-    await waitFor(() => screen.getByText("Start"))
-    expect(screen.getByText("Start")).toBeDefined()
+
+    render(<KnownDeviceCoordinator actor={spawn(testMachine)} />)
+    await waitFor(() => screen.getByText("KnownDeviceCoordinator"))
+    expect(screen.getByText("KnownDeviceCoordinator")).toBeDefined()
   })
 })

@@ -210,7 +210,7 @@ export async function fetchRecoveryDevices(anchor: UserNumber) {
   )
 }
 
-export const requestFEDelegationChain = async (
+const requestFEDelegationChain = async (
   identity: SignIdentity,
   ttl: number = TEN_MINUTES_IN_M_SEC,
 ) => {
@@ -228,7 +228,7 @@ export const requestFEDelegationChain = async (
   return { chain, sessionKey }
 }
 
-export const requestFEDelegation = async (
+const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
@@ -240,7 +240,7 @@ export const requestFEDelegation = async (
   }
 }
 
-export async function renewDelegation() {
+async function renewDelegation() {
   const { delegationIdentity, actor, identity } = authState.get()
   if (!delegationIdentity || !identity) throw new Error("unauthorized")
 
@@ -316,7 +316,17 @@ const retryGetDelegation = async (
   )
 }
 
-export async function getDelegation(
+/**
+ *
+ *
+ * @export
+ * @param {UserNumber} userNumber
+ * @param {FrontendHostname} hostname
+ * @param {SessionKey} sessionKey
+ * @param {Timestamp} timestamp
+ * @return {*}  {Promise<GetDelegationResponse>}
+ */
+async function getDelegation(
   userNumber: UserNumber,
   hostname: FrontendHostname,
   sessionKey: SessionKey,
@@ -424,7 +434,7 @@ export async function removeDevice(
   await ii.remove(userNumber, publicKey)
 }
 
-export async function registerAnchor(
+async function registerAnchor(
   alias: string,
   challengeResult: ChallengeResult,
   pubkey: number[],
@@ -443,7 +453,7 @@ export async function registerAnchor(
   )
 }
 
-export async function getPrincipal(
+async function getPrincipal(
   userNumber: UserNumber,
   frontend: FrontendHostname,
 ): Promise<Principal> {
@@ -451,7 +461,7 @@ export async function getPrincipal(
   return await ii.get_principal(userNumber, frontend)
 }
 
-export const getMultiIdent = (
+const getMultiIdent = (
   devices: DeviceData[],
   withSecurityDevices?: boolean,
 ) => {

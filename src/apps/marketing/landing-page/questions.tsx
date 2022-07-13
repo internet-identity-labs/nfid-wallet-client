@@ -37,7 +37,7 @@ export const questions = [
   {
     title: "How is this different than my  current cryptocurrency wallet?",
     info: (
-      <p>
+      <div>
         There are four major questions to ask about wallets:
         <ul className="mt-1 mb-4">
           <li>How much privacy do they provide?</li>
@@ -112,7 +112,7 @@ export const questions = [
             application. No download required.
           </p>
         </div>
-      </p>
+      </div>
     ),
   },
   {

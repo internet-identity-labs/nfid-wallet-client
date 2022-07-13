@@ -30,16 +30,19 @@ export function selectAccounts(
   hostName: string,
   derivationOrigin?: string,
 ) {
-  const filteredPersonasByDomain = personas.filter(
+  const filteredByDerivationOrigin = personas.filter(
     (persona) =>
       persona.domain === derivationOrigin ||
-      persona.domain === `https://${derivationOrigin}` ||
-      persona.domain === hostName,
+      persona.domain === `https://${derivationOrigin}`,
   )
-  return filteredPersonasByDomain
+
+  if (filteredByDerivationOrigin.length) return filteredByDerivationOrigin
+
+  return personas.filter((persona) => persona.domain === hostName)
 }
 
 export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {
+  console.log({ filteredPersonas })
   const highest = filteredPersonas.reduce((last, persona) => {
     const current = parseInt(persona.persona_id, 10)
     return last < current ? current : last

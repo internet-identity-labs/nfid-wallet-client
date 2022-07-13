@@ -3,7 +3,7 @@ import React from "react"
 
 import { Card, CardBody } from "@internet-identity-labs/nfid-sdk-react"
 
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
 import { NFIDPersonalizeContent } from "./content"
 

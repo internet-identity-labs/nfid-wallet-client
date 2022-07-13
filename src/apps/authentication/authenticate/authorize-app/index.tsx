@@ -1,16 +1,15 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { AuthorizeApp } from "frontend/design-system/pages/authorize-app"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
+import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 interface AppScreenAuthorizeAppProps {
   isRemoteAuthorisation?: boolean

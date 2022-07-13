@@ -1,17 +1,15 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { AuthorizeRegisterDeciderScreen } from "frontend/design-system/pages/register-device-decider"
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
 import { authState } from "frontend/integration/internet-identity"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface AppScreenRegisterDeviceDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {

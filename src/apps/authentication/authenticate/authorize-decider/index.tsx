@@ -1,15 +1,14 @@
 import React from "react"
 
-import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
-import { AuthorizeDecider } from "frontend/design-system/pages/authorize-decider"
-import { useChallenge } from "frontend/design-system/pages/captcha/hook"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { CredentialResponse } from "frontend/ui/atoms/button/signin-with-google/types"
+import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
+import { useChallenge } from "frontend/ui/pages/captcha/hook"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface AuthorizeDeciderProps {
   pathRegisterSameDevice: string

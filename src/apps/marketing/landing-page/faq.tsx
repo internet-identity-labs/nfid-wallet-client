@@ -3,9 +3,9 @@ import React from "react"
 import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
-import { Accordion } from "frontend/design-system/atoms/accordion"
-import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+import { Accordion } from "frontend/ui/atoms/accordion"
+import { ScrollTopOnNavigate } from "frontend/ui/templates/ScrollTopOnNavigate"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
 import Blur from "./assets/blur_green.png"
 

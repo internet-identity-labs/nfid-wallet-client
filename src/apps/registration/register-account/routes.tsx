@@ -1,9 +1,7 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { useChallenge } from "frontend/design-system/pages/captcha/hook"
-
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { useChallenge } from "frontend/ui/pages/captcha/hook"
 
 import { RegisterAccountCaptcha } from "./captcha"
 import { RouteRegisterAccountIntro } from "./intro"

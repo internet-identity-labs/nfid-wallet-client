@@ -3,8 +3,8 @@ import React from "react"
 import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
-import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+import { ScrollTopOnNavigate } from "frontend/ui/templates/ScrollTopOnNavigate"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
 import Blur3 from "./assets/blur_3.png"
 

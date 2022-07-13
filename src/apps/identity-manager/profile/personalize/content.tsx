@@ -12,11 +12,10 @@ import {
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
 
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { nameRules } from "frontend/utils/validations"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
+import { nameRules } from "frontend/ui/utils/validations"
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<

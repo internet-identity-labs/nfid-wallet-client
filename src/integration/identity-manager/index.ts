@@ -1,15 +1,15 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
 
-import { NFIDPersona } from "frontend/comm/services/identity-manager/persona/types"
+import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
-import { unpackLegacyResponse, unpackResponse } from "../../comm/.common"
-import { im } from "../../comm/actors"
+import { unpackLegacyResponse, unpackResponse } from "../_common"
 import {
   AccessPointResponse,
   AccountResponse,
   PersonaResponse,
-} from "../../comm/idl/identity_manager.did"
+} from "../_ic_api/identity_manager.did"
+import { im } from "../actors"
 
 export interface Account {
   name?: string

@@ -1,12 +1,12 @@
 import { atom, useAtom } from "jotai"
 import React from "react"
 
-import { ii } from "frontend/comm/actors"
-import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
-import { validateDerivationOrigin } from "frontend/comm/services/internet-identity/validateDerivationOrigin"
+import { ii } from "frontend/integration/actors"
+import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
+import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
 
-import { useMessageChannel } from "../../design-system/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
+import { useMessageChannel } from "../../ui/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
 
 interface UseAuthenticationProps {
   userNumber?: bigint

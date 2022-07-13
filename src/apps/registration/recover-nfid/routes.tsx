@@ -1,9 +1,8 @@
 import { Outlet, Route } from "react-router-dom"
 
-import { AppScreenRecoverNFID } from "frontend/design-system/pages/recover-nfid/screen-app"
+import { AppScreenRecoverNFID } from "frontend/ui/pages/recover-nfid/screen-app"
 
 import { RouterRegisterDeviceDecider } from "../../device/register-device-decider"
-import { ProfileConstants } from "../../identity-manager/profile/routes"
 
 export const RecoverNFIDRoutesConstants = {
   base: "/recover-nfid",

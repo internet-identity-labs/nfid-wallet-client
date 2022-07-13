@@ -9,8 +9,8 @@ import {
   im,
   invalidateIdentity,
   replaceIdentity,
-} from "frontend/comm/actors"
-import { userNumberAtom } from "frontend/comm/services/identity-manager/account/state"
+} from "frontend/integration/actors"
+import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {
   fetchRecoveryDevices,
   fromSeedPhrase,

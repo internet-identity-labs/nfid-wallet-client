@@ -1,8 +1,6 @@
 import React from "react"
 import { Route } from "react-router-dom"
 
-import { AuthenticateRegisterDecider } from "frontend/design-system/templates/authenticate-register-decider"
-
 import {
   APP_SCREEN_AUTHENTICATE_BASE,
   SUB_PATH_AUTHORIZE_APP,
@@ -11,6 +9,7 @@ import {
   SUB_PATH_REGISTER_DEVICE_DECIDER,
 } from "frontend/apps/authentication/authenticate/constants"
 import { AppScreenRegisterDeviceDecider } from "frontend/apps/authentication/authenticate/screen-app-register-device-decider"
+import { AuthenticateRegisterDecider } from "frontend/ui/templates/authenticate-register-decider"
 
 import { ProfileConstants } from "../../identity-manager/profile/routes"
 import { AppScreenAuthorizeApp } from "./authorize-app"

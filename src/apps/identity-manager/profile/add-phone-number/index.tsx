@@ -1,11 +1,10 @@
 import { useAtom } from "jotai"
 import React from "react"
 
-import { ProfileEditPhone } from "frontend/design-system/pages/profile-edit/phone"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { ProfileEditPhone } from "frontend/ui/pages/profile-edit/phone"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"
 import { phoneNumberAtom } from "../state"

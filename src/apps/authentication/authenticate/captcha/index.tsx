@@ -1,18 +1,14 @@
 import React from "react"
 
-import { Captcha } from "frontend/design-system/pages/captcha"
-import {
-  useCaptcha,
-  useChallenge,
-} from "frontend/design-system/pages/captcha/hook"
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { Captcha } from "frontend/ui/pages/captcha"
+import { useCaptcha, useChallenge } from "frontend/ui/pages/captcha/hook"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { useAuthentication } from "../../use-authentication"
 

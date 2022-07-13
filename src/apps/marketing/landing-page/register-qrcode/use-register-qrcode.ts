@@ -4,13 +4,12 @@ import { atom, useAtom } from "jotai"
 import { useCallback, useMemo } from "react"
 import { generatePath } from "react-router-dom"
 
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { RemoteLoginEvent } from "frontend/apps/authorization/use-authorize-app"
 import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
 import { apiResultToLoginResult } from "frontend/integration/internet-identity/api-result-to-login-result"
 import { getMessages } from "frontend/integration/pubsub"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import { RemoteNFIDAuthenticationConstants } from "../../../authentication/remote-nfid-authentication"
 

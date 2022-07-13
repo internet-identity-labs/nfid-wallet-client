@@ -3,10 +3,6 @@ import React from "react"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
-import { AuthorizeApp } from "frontend/design-system/pages/authorize-app"
-import { AuthorizeDecider } from "frontend/design-system/pages/authorize-decider"
-import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
-
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { mapPersonaToLegacy } from "frontend/integration/identity-manager"
 import { AuthenticationActor } from "frontend/state/authentication"
@@ -14,7 +10,10 @@ import { KnownDeviceActor } from "frontend/state/authentication/known-device"
 import { UnknownDeviceActor } from "frontend/state/authentication/unknown-device"
 import { AuthorizationActor } from "frontend/state/authorization"
 import IDPMachine, { IDPMachineType } from "frontend/state/authorization/idp"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
+import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface Actor<T> {
   actor: T

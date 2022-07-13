@@ -1,5 +1,11 @@
 # Integration Layer
 
+- Modules in this directory:
+  - provide functions to enable data fetching across networks,
+  - provide functions to map or "normalize" data from external resources into an idiomatic format,
+  - contain definitions for internet computer canister actors,
+  - provide integration testing for our external communication layer.
+
 ## Directory structure
 
 - `service-directory`

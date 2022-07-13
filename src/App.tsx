@@ -16,9 +16,9 @@ import { OurMission } from "./apps/marketing/landing-page/our-mission"
 import { RecoverNFIDRoutes } from "./apps/registration/recover-nfid/routes"
 import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
-import { ic } from "./comm/actors"
 import IDPCoordinator from "./coordination/idp"
-import { NotFound } from "./design-system/pages/404"
+import { ic } from "./integration/actors"
+import { NotFound } from "./ui/pages/404"
 
 declare const USERGEEK_API_KEY: string
 

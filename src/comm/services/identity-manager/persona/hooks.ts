@@ -12,7 +12,7 @@ import { useAccount } from "frontend/comm/services/identity-manager/account/hook
 
 import { personaAtom } from "./state"
 import { isNFIDPersona } from "./types"
-import { createAccount, getNextPersonaId } from "./utils"
+import { createAccount, getNextPersonaId, selectAccounts } from "./utils"
 
 export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
@@ -27,19 +27,8 @@ export const usePersona = () => {
   }, [personas])
 
   const accounts = React.useMemo(() => {
-    if (!allAccounts) return []
-
-    const filteredAccounts = allAccounts.filter(({ domain }) => {
-      if (!authorizationRequest?.hostname && scope) {
-        const isMatch = domain.indexOf(scope) > -1
-        return isMatch
-      }
-      return (
-        authorizationRequest?.hostname &&
-        authorizationRequest.hostname.indexOf(domain) > -1
-      )
-    })
-    return filteredAccounts
+    if (!allAccounts || !authorizationRequest?.hostname) return []
+    return selectAccounts(allAccounts, authorizationRequest.hostname, scope)
   }, [allAccounts, authorizationRequest?.hostname, scope])
 
   const nextPersonaId = React.useMemo(
@@ -66,9 +55,12 @@ export const usePersona = () => {
 
   const createPersona = React.useCallback(
     async ({ domain }) => {
-      // TODO: use createAccount to create the persona object
-      // const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
-      const persona: Persona = createAccount(accounts, scope as string)
+      const persona: Persona = createAccount(
+        accounts,
+        domain,
+        authorizationRequest?.hostname,
+      )
+
       const personaCredentials: PersonaRequest = {
         persona_name: persona.personaName,
         persona_id: persona.personaId,
@@ -82,7 +74,7 @@ export const usePersona = () => {
       }
       return response
     },
-    [accounts, scope, setPersonas],
+    [accounts, authorizationRequest?.hostname, setPersonas],
   )
 
   return {

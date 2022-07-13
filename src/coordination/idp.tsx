@@ -34,23 +34,8 @@ export default function IDPCoordinator({
   // Handle the completion of the flow
   React.useEffect(() => {
     const watcher = from(interpreter)
-    watcher.subscribe((state) => console.log("rxjs", state))
-    if (state.done) navigate(successPath)
-    // if (state.matches("End")) {
-    //     console.log(state.context)
-    //     if (!state.context.delegationIdentity || !state.context.sessionKey) {
-    //         throw new Error('No sign identity')
-    //     }
-    //     // Capture user output to global state
-    //     setUser({
-    //         principal: state.context.delegationIdentity.getPrincipal().toText(),
-    //         chain: state.context.delegationIdentity.getDelegation(),
-    //         sessionKey: state.context.sessionKey
-    //     })
-    //     // Go to success page
-    //     navigate(successPath)
-    // }
-  }, [state])
+    watcher.subscribe((state) => state.done && navigate(successPath))
+  }, [])
 
   switch (true) {
     case state.matches("AuthenticationMachine"):

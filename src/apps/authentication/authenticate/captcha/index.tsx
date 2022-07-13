@@ -65,7 +65,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       if (response && response.kind === "loginSuccess") {
         await createAccount({ anchor: response.userNumber })
         await Promise.all([
-          createPersona({ domain: scope || window.location.hostname }),
+          createPersona({ domain: scope as string }),
           authorizeApp({
             persona_id: nextPersonaId,
             domain: scope,

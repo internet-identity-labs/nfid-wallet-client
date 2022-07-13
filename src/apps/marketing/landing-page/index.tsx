@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 // @ts-ignore
-import { Fade } from "react-reveal"
+import { Fade } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
@@ -30,9 +30,9 @@ import { SocialButtons } from "./social-buttons"
 
 interface Props
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
-  > { }
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
   const { user } = useAuthentication()
@@ -58,8 +58,9 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
         >
           <ParallaxProvider>
             <div
-              className={`font-inner ${isMobile ? `mobile` : ``} ${account ? `has-account` : ``
-                }`}
+              className={`font-inner ${isMobile ? `mobile` : ``} ${
+                account ? `has-account` : ``
+              }`}
             >
               <section
                 id="home"

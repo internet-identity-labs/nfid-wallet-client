@@ -1,20 +1,20 @@
 import clsx from "clsx"
 import React from "react"
 // @ts-ignore
-import { Fade } from "react-reveal"
+import { Fade } from "react-awesome-reveal"
 
 import { NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 
 import { PopupRegisterDecider } from "frontend/design-system/organisms/navigation/navigation-popup/popup-register-decider"
 
-import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 
 import { PopupLogin } from "./popup-login"
 import { PopupRegister } from "./popup-register"
 
-interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> { }
+interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
   const { account } = useAccount()

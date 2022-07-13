@@ -1,6 +1,6 @@
 import React from "react"
 // @ts-ignore
-import { Slide } from "react-reveal"
+import { Slide } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import sticky from "stickyfilljs"
 

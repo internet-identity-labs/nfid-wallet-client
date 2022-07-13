@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import React from "react"
-// @ts-ignore
 import { Fade } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"

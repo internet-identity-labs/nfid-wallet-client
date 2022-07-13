@@ -13,7 +13,7 @@ import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
 
-interface AppScreenAuthorizeAppProps {}
+interface AppScreenAuthorizeAppProps { }
 
 export const AppScreenAuthorizeApp: React.FC<
   AppScreenAuthorizeAppProps
@@ -70,7 +70,7 @@ export const AppScreenAuthorizeApp: React.FC<
   const handleCreateAccountAndLogin = React.useCallback(async () => {
     setIsloading(true)
     const response = await createPersona({
-      domain: scope || (window.location.hostname as string),
+      domain: scope as string,
     })
 
     if (response?.status_code === 200) {

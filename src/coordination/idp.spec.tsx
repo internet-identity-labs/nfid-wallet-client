@@ -29,51 +29,51 @@ describe("IDP coordinator", () => {
 
   describe("authentication", () => {
     describe("known device authentication", () => {
-      it("renders known device flow when local device data is available", () => {})
+      it("renders known device flow when local device data is available", () => { })
 
-      it("returns sign identity to parent upon completion", () => {})
+      it("returns sign identity to parent upon completion", () => { })
     })
 
     describe("unknown device authentication", () => {
-      it("renders unknown device flow when no local device data exists", () => {})
+      it("renders unknown device flow when no local device data exists", () => { })
 
       describe("google authentication", () => {
-        it("opens google oauth window when user selects sign in with google", () => {})
+        it("opens google oauth window when user selects sign in with google", () => { })
 
-        it("ingests jwt into context upon completion of google sign in", () => {})
+        it("ingests jwt on google callback and calls signin lambda", () => { })
 
-        it("invokes registration flow if no google account existed", () => {})
+        it("invokes registration flow if no google account existed", () => { })
 
-        it("does not invoke registration flow if google account already exists", () => {})
+        it("does not invoke registration flow if google account already exists", () => { })
 
-        it("returns a sign identity back to parent machine upon completion", () => {})
+        it("returns a sign identity back to parent machine upon completion", () => { })
       })
 
       describe("remote device authentication", () => {
-        it("navigates to remote device authentication flow", () => {})
+        it("navigates to remote device authentication flow", () => { })
 
-        it("displays qr code with secret channel for remote device", () => {})
+        it("displays qr code with secret channel for remote device", () => { })
 
-        it("polls pubsub channel for messages", () => {})
+        it("polls pubsub channel for messages", () => { })
 
-        it("displays loading indicator when it receives mobile is preparing message", () => {})
+        it("displays loading indicator when it receives mobile is preparing message", () => { })
 
-        it("receives sign identity/delegate from pubsub channel", () => {})
+        it("receives sign identity/delegate from pubsub channel", () => { })
 
-        it("returns sign identity to parent upon completion", () => {})
+        it("returns sign identity to parent upon completion", () => { })
       })
 
       describe("existing anchor authentication", () => {
-        it("navigates to existing anchor authentication flow", () => {})
+        it("navigates to existing anchor authentication flow", () => { })
 
         // TODO: more detail here?
 
-        it("navigates back to unknown device flow", () => {})
+        it("navigates back to unknown device flow", () => { })
 
-        it("returns sign identity to parent upon completion", () => {})
+        it("returns sign identity to parent upon completion", () => { })
       })
 
-      it("returns sign identity to parent upon completion", () => {})
+      it("returns sign identity to parent upon completion", () => { })
     })
   })
 
@@ -89,5 +89,5 @@ describe("IDP coordinator", () => {
     // TODO: probably in another module
   })
 
-  it("posts delegation upon completion", () => {})
+  it("posts delegation upon completion", () => { })
 })

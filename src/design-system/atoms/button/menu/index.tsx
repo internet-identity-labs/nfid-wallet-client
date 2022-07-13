@@ -3,7 +3,8 @@ import React from "react"
 
 import { Button, ButtonProps } from ".."
 
-export interface ButtonMenuProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface ButtonMenuProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: (toggle: () => void) => React.ReactNode
   buttonProps?: ButtonProps
   buttonElement?: React.ReactElement | string

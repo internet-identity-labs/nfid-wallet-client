@@ -1,5 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, createMachine, send } from "xstate"
+
+import { fetchGoogleDevice } from "frontend/integration/lambda-google"
 
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
@@ -12,15 +14,21 @@ export interface Context {
 export type Events =
   | {
       type: "AUTH_WITH_GOOGLE"
-      data: { identity: DelegationIdentity; isExisting: boolean }
+      data: string
     }
   | { type: "done.invoke.remote"; data: DelegationIdentity }
   | { type: "done.invoke.registration"; data: DelegationIdentity }
+  | {
+      type: "done.invoke.fetchGoogle"
+      data: { isExisting: boolean; identity: DelegationIdentity }
+    }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
   | { type: "TRUST_DEVICE" }
   | { type: "DONT_TRUST_DEVICE" }
   | { type: "INGEST_SIGN_IDENTITY"; data: DelegationIdentity }
+  | { type: "DONE"; data: DelegationIdentity }
+  | { type: "REGISTER"; data: DelegationIdentity }
 
 export interface Schema {
   events: Events
@@ -34,11 +42,12 @@ function isMobileWithWebAuthn() {
 }
 
 const UnknownDeviceMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3QGJFQAHYrFrpaxPHxAAPRAEYATAE4AbEwDMAVlkbl8jQBoQAT0Ty1ABgC+lw2iy5CJcpRoNmAJTBRasdB2Si4gCyyPSYtHhg3BDizBHUxATMHF4+fgFiEkgggsKBWaAyCLKKGuZMACzK5opqAOwGxqZ1skwa1rYYOPhEZBRUdIxMAIJdLGAANmD0+dzDAKoAKgASAPoA6gCSK6sA4gDy+7sAMgCikrkimZJFZgAclfWNJggVGvIdIHbdjn0ug8xRlhxlMZpk5ks1lsdu5TkF9otztlLvkbqY1A8Kk9DC9lHcNEw7mpiSTSWoKp9vg5es4Bm4RmNJtNZgsdtC1gjlqd3BchFdxGiEPdHg0cXJZOV2jYvl1qU5+q4hkDMOsRJhdsRiFAprxkXzUdkihKLExzPjaqKmq8JW1KbKevL-vTPABbYjoMDKsB4UT0DLiaKxJjxRLJMBuj28vLXQ2IO7yeRMeTmNQKZ6IZSZ9RknMU6VUh1-OlDTzeXxgDgAEUVYGr9FoVA43Er+wAcotVot3PMWB3K6cAGqbADCSIE+pjhTkSlUmm0unTCA0ilkdvshdpNaYpbSFerALrDYr3C7Pb7g5HY5yE4FseKM-UWh0ejFCGUijznXXv03AO3qXLKsa0DSJgzwBIkiYAsfwVP8d0A-c3AQEM-XyABtcwAF0o35AppDkUpyiqGpsStOoKg+fN7Rgp0SwAj0gIBbgKw4YgOCYfgJgCAAzNiXSg6iaVg516L3GtkPA4hUMyDDsL1aNbynYoMUlNRFHMBdX3Iyivx+ITaI8UTGLcU4OFYptT17VZ+yHUccINJSFBUR95xfK07gqT8ZW-fTi0MssGMQxhTPM7hTlbSt7MnfD72cudn0XO5FB07y9MdPymFOKQ0giKBhjwMI2O4TZW12U4rJYTZdlbVZNn7dttgATSixSYruWQ6iTFM01fFdrGlEgqHgbJoN8rc2E4dAWrwo1tEUdQFAqZL6g08wNEXeR8TXNKiy3U48AgabBXkDq1CYZLZDuS0Xg0dqmFkCj8RaR6NBaba5V2uD6P8fIQjCCIwCOu9tDucpFAuq6NuXW0qJ89Kt2VEFmWilFoqKCjX0zTrbpzUkvNG+G-2VVUsA1LUpiBpT40TZNUzcl4qgJKVdI+38RIjT0um9X1-Tw1HWvRzy2jpxdlA0Cps1xkl8cEwmRICsSD2mI8OEpmLjQJM1l1I3E6nmokpeJGW4c++Xd2Mxg1aNZQFEJBN5DFzSyJtZnUtZ4S6IVi2wBCtirbkNaCU8jQRdfK7E1dgnTaGLKcrwPKCswP35NwwUQ8Tcwqkh18JQlyPZejwGU4c9W7hzu5+ssIA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3QGJFQAHYrFrpaxPHxAAPRABYAzAA4migAwBWAGyrtAdgCMuzet2yANCACeiAEzqbTY6vnzNATn03Vs9QF9fFmhYuIQk5JQ0DMwASmBQtLDoHMii4gCyyPSYtHhg3BDizDnUxATMHHEJSSliEkgggsKpdaAyCPpusm5M8gq6ippdmko28hbWCDYGTOqqc6r6C-JTiop+ASBBOPhEZBRUdIxMAIIYmCxgADZg9M3cxwCqACoAEgD6AOoAkq9vAOIAeQBfwAMgBRSSNES1SRtUbKPrqHz6RSdNw6TTjOSafRMeaqGyKBT6WT6dTrQJnEK7cIHKInM4Xa63Wr3Z7vb6-aJgtIAp4Q+pQ5qw2xKJiI5GoroYrEITSDFQueQmLRdfTyNz+SnBHZhfaRI6nLBMm53R6-TnvPkvMHRSFCaHiEWTMUS9QotEyqyIfSLGb4myaXRuDyDLWbKm6vYRQ7MI2YD4iTB-YjEKDXfKFJjFUrMKCp9Nge1NGH1NqKQxMLzydWyRTyBYV8zehCyUn+uY2dGqDw2LyycNbal6mP0lNp66xeKJMAcAAiN1oVA4vEFDuFZZ9XfUVd6CmJnh06llsjmePxWl6bhr8kHkdC0bpR1iAFtiOgwPGwHhRPQauJM1ybM8BKMomAqN8P2LR0WmkRAK10KtnFretGxJWVBh3JVXBrU8bFPTQ7x1B9aQNGJKhnecyIXegl1nbg5wBAA5J43ieaIHhYVi5zBAA1L4AGEBQEddS1aLc3B3UY216GtD2MWUTFUc85jrTRRmGewiO2Ej9VjJgpyqWcF1jGi6JXdjOO4vjBOEhpRKdTd2m3XcZIPLwFJbIN5BUgkPNMXRlW04dHzIgyKI-KjY0AooQNzJghyjUj9MMyiTKiBAcz-ZoAG1VAAXWgjdxPaNEej6AYhhGMYW10GxcXxDUfFcVFNQ2RLdNHZ8IuMsjuFnDhiA4Jh+EuFIADMhpfBL7xpPT6VSyL0sYTK4uy2o8sKtcS0ckrFncGYkSMNtArWYNZTq3FZjmGsphxBsB3a2aRyfcjpyWsiwQ4QaLI4ri3h4-ihKKsS4OcyTXP3OSPOPFtFFGXzllWNQe30YKkvm7r3t62Mvp+7gwSYucQd2sHPAh6Sod9GHZUUaZ8UWLtlmGXR0c616mDBKQqhyKBjjwLIhu4L4mL+MF-pYL4-iYt4vh4lifgATRJ2Dy0rasUIbFF0JbDxfIJOZ4cMNxCPDEgqHgeoOrmrrmDYTh0BV51+mUnt6zcIk3EJAZYYmFEsKJJR+lkHEjHkVmnuIm2ObBPAICdpz6rqlRvDq4YFGR5sJi0ZSSUJYNvEDd0I+1HTo7CxbkmaDIshyIttpg50yWDFRdFmcPTCvLpZTsbprpuhsTGMGw2fL-T4xNFlSaFUG2lkGwMJDmZ63D9QQycR7S5C5L6XjRMsHHQsE5KkOHEWa90VkfoBl0UwTy7DtnHUkM+zWCkIyjl6wsPyceqo2jlzHzJs4Hcqg1idDql4POJ5yS+XVMMam4dR5fxSmASCn4zjfl-P+WCM9SZzzbDMW6BhehhymL7RAwwfLYXJH0NS79rYoIWn-ZaYAzKAIbsVYByo8TgKvn2BY88MLqGUCvcO5DnD7mQaFVB2MopRCAW0fQOJcS6A0IsckOIr7DAwqiR+4dmaBjsNIneWMjLyMYHjIaiifQaFkD0QkKJehBhMGSWm7pH753wmsJQJjMbMC5jzPAfMBaYGsZw2eiB1DLDxCHVYgU3C33lPoWUix7H9wWOpBsagph+NtjY9oihUmIRDCGeGqh+jh0Zv4fwQA */
   createMachine(
     {
       tsTypes: {} as import("./unknown-device.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
+      context: {},
       id: "auth-unknown-device",
       initial: "Start",
       states: {
@@ -55,6 +64,7 @@ const UnknownDeviceMachine =
         },
         End: {
           type: "final",
+          data: (context) => context.signIdentity,
         },
         RegistrationMachine: {
           invoke: {
@@ -71,7 +81,6 @@ const UnknownDeviceMachine =
         AuthSelection: {
           on: {
             AUTH_WITH_GOOGLE: {
-              actions: "ingestGoogle",
               target: "AuthWithGoogle",
             },
             AUTH_WITH_REMOTE: {
@@ -83,15 +92,18 @@ const UnknownDeviceMachine =
           },
         },
         AuthWithGoogle: {
-          always: [
-            {
-              cond: "googleIdentityExists",
-              target: "End",
+          invoke: {
+            src: "fetchGoogleDevice",
+            id: "fetchGoogle",
+            onExit: "ingestGoogle",
+            onDone: {
+              actions: ["ingestGoogle", "handleGoogle"],
             },
-            {
-              target: "RegistrationMachine",
-            },
-          ],
+          },
+          on: {
+            DONE: "End",
+            REGISTER: "RegistrationMachine",
+          },
         },
         RemoteAuthentication: {
           invoke: {
@@ -146,6 +158,7 @@ const UnknownDeviceMachine =
               actions: "ingestSignIdentity",
               target: "End",
             },
+            AUTH_WITH_OTHER: "AuthSelection",
           },
         },
       },
@@ -158,10 +171,14 @@ const UnknownDeviceMachine =
         },
       },
       actions: {
-        ingestGoogle: assign({
-          signIdentity: (context, event) => event.data.identity,
-          googleIdentityExists: (context, event) => event.data.isExisting,
-        }),
+        ingestGoogle: assign((context, event) => ({
+          signIdentity: event.data.identity,
+          googleIdentityExists: event.data.isExisting,
+        })),
+        handleGoogle: send((context, event) => ({
+          type: event.data.isExisting ? "DONE" : "REGISTER",
+          data: event.data.identity,
+        })),
         ingestSignIdentity: assign({
           signIdentity: (context, event) => event.data,
         }),
@@ -169,6 +186,7 @@ const UnknownDeviceMachine =
       services: {
         RegistrationMachine,
         RemoteReceiverMachine,
+        fetchGoogleDevice: (context, event) => fetchGoogleDevice(event.data),
       },
     },
   )

@@ -1,6 +1,8 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
 
+import { NFIDPersona } from "frontend/comm/services/identity-manager/persona/types"
+
 import { unpackLegacyResponse, unpackResponse } from "../../comm/.common"
 import { im } from "../../comm/actors"
 import {
@@ -45,6 +47,17 @@ function mapAccount(account: AccountResponse): Account {
     personas: account.personas.map(mapPersona),
     principalId: account.principal_id,
     phoneNumber: account.name.length ? account.name[0] : undefined,
+  }
+}
+
+/**
+ * Map a persona to a legacy persona type.
+ * @deprecated
+ */
+export function mapPersonaToLegacy(persona: Persona): NFIDPersona {
+  return {
+    persona_id: persona.personaId,
+    domain: persona.domain,
   }
 }
 

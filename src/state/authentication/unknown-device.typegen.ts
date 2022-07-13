@@ -7,7 +7,8 @@ export interface Typegen0 {
       | "done.invoke.registration"
       | "done.invoke.remote"
       | "INGEST_SIGN_IDENTITY"
-    ingestGoogle: "AUTH_WITH_GOOGLE"
+    ingestGoogle: "done.invoke.fetchGoogle"
+    handleGoogle: "done.invoke.fetchGoogle"
   }
   internalEvents: {
     "done.invoke.registration": {
@@ -20,16 +21,26 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.fetchGoogle": {
+      type: "done.invoke.fetchGoogle"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "": { type: "" }
     "xstate.init": { type: "xstate.init" }
     "error.platform.registration": {
       type: "error.platform.registration"
       data: unknown
     }
+    "error.platform.fetchGoogle": {
+      type: "error.platform.fetchGoogle"
+      data: unknown
+    }
     "error.platform.remote": { type: "error.platform.remote"; data: unknown }
   }
   invokeSrcNameMap: {
     RegistrationMachine: "done.invoke.registration"
+    fetchGoogleDevice: "done.invoke.fetchGoogle"
     RemoteReceiverMachine: "done.invoke.remote"
     registerDevice: "done.invoke.auth-unknown-device.RegisterDevice:invocation[0]"
   }
@@ -40,13 +51,13 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    RegistrationMachine: ""
+    RegistrationMachine: "" | "REGISTER"
+    fetchGoogleDevice: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     registerDevice: "TRUST_DEVICE"
   }
   eventsCausingGuards: {
     isMobileWithWebAuthn: ""
-    googleIdentityExists: ""
   }
   eventsCausingDelays: {}
   matchesStates:

@@ -85,7 +85,6 @@ export const VerifyPhoneNumberRoute: React.FC = () => {
           actions: {
             presentCredential() {
               // Retrieve credential from react state?
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               credentialResult = {
                 result: true,
                 credential: "asdf",

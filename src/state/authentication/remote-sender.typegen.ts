@@ -43,8 +43,8 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: "KnownDeviceMachine"
-    guards: "isDeviceRegistered"
+    services: never
+    guards: never
     delays: never
   }
   eventsCausingServices: {

@@ -2,6 +2,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { User } from "../authorization/idp"
+import KnownDeviceMachine from "./known-device"
 import RegistrationMachine from "./registration"
 
 interface Context extends User {
@@ -74,7 +75,11 @@ const RemoteSenderMachine =
       },
     },
     {
+      guards: {
+        isDeviceRegistered: () => true,
+      },
       services: {
+        KnownDeviceMachine,
         RegistrationMachine,
         postDelegate,
       },
@@ -85,5 +90,6 @@ const RemoteSenderMachine =
   )
 
 export type RemoteSenderActor = ActorRefFrom<typeof RemoteSenderMachine>
+export type RemoteSenderMachineType = typeof RemoteSenderMachine
 
 export default RemoteSenderMachine

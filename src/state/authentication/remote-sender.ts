@@ -1,17 +1,17 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { User } from "../authorization/idp"
 import RegistrationMachine from "./registration"
 
-interface Context {
+interface Context extends User {
   pubsubChannel: string
-  signIdentity?: DelegationIdentity
 }
 
 type Events =
-  | { type: "done.invoke.known-device"; data: DelegationIdentity }
-  | { type: "done.invoke.unknown-device"; data: DelegationIdentity }
-  | { type: "done.invoke.registration"; data: DelegationIdentity }
+  | { type: "done.invoke.known-device"; data: User }
+  | { type: "done.invoke.unknown-device"; data: User }
+  | { type: "done.invoke.registration"; data: User }
   | { type: "done.invoke.post-delegate"; data: void }
 
 async function postDelegate(): Promise<void> {
@@ -45,7 +45,7 @@ const RemoteSenderMachine =
             id: "known-device",
             onDone: [
               {
-                actions: "ingestSignIdentity",
+                actions: "ingestUser",
                 target: "End",
               },
             ],
@@ -57,7 +57,7 @@ const RemoteSenderMachine =
             id: "registration",
             onDone: [
               {
-                actions: "ingestSignIdentity",
+                actions: "ingestUser",
                 target: "End",
               },
             ],
@@ -69,6 +69,7 @@ const RemoteSenderMachine =
             id: "post-delegate",
           },
           type: "final",
+          data: (context) => context,
         },
       },
     },
@@ -78,9 +79,7 @@ const RemoteSenderMachine =
         postDelegate,
       },
       actions: {
-        ingestSignIdentity: assign({
-          signIdentity: (context, event) => event.data,
-        }),
+        ingestUser: assign((context, event) => ({ ...event.data })),
       },
     },
   )

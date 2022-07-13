@@ -3,8 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestSignIdentity: "done.invoke.authenticate"
-    ingestDelegationChain: "done.invoke.authorize"
+    ingestUser: "done.invoke.authenticate" | "done.invoke.authorize"
   }
   internalEvents: {
     "done.invoke.authenticate": {

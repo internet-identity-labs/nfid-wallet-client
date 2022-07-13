@@ -1,13 +1,16 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine, send } from "xstate"
 
-import { fetchGoogleDevice } from "frontend/integration/lambda-google"
+import {
+  fetchGoogleDevice,
+  GoogleDeviceResult,
+} from "frontend/integration/lambda-google"
 
+import { User } from "../authorization/idp"
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
-export interface Context {
-  signIdentity?: DelegationIdentity
+export interface Context extends User {
   googleIdentityExists?: boolean
 }
 
@@ -16,19 +19,16 @@ export type Events =
       type: "AUTH_WITH_GOOGLE"
       data: string
     }
-  | { type: "done.invoke.remote"; data: DelegationIdentity }
-  | { type: "done.invoke.registration"; data: DelegationIdentity }
-  | {
-      type: "done.invoke.fetchGoogle"
-      data: { isExisting: boolean; identity: DelegationIdentity }
-    }
+  | { type: "done.invoke.remote"; data: User }
+  | { type: "done.invoke.registration"; data: User }
+  | { type: "done.invoke.fetchGoogle"; data: GoogleDeviceResult }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
   | { type: "TRUST_DEVICE" }
   | { type: "DONT_TRUST_DEVICE" }
-  | { type: "INGEST_SIGN_IDENTITY"; data: DelegationIdentity }
-  | { type: "DONE"; data: DelegationIdentity }
-  | { type: "REGISTER"; data: DelegationIdentity }
+  | { type: "INGEST_SIGN_IDENTITY"; data: User }
+  | { type: "GOOGLE_DONE"; data: User }
+  | { type: "GOOGLE_REGISTER"; data: User }
 
 export interface Schema {
   events: Events
@@ -62,17 +62,13 @@ const UnknownDeviceMachine =
             },
           ],
         },
-        End: {
-          type: "final",
-          data: (context) => context.signIdentity,
-        },
         RegistrationMachine: {
           invoke: {
             src: "RegistrationMachine",
             id: "registration",
             onDone: [
               {
-                actions: "ingestSignIdentity",
+                actions: "ingestUser",
                 target: "End",
               },
             ],
@@ -101,8 +97,8 @@ const UnknownDeviceMachine =
             },
           },
           on: {
-            DONE: "End",
-            REGISTER: "RegistrationMachine",
+            GOOGLE_DONE: "End",
+            GOOGLE_REGISTER: "RegistrationMachine",
           },
         },
         RemoteAuthentication: {
@@ -111,7 +107,7 @@ const UnknownDeviceMachine =
             id: "remote",
             onDone: [
               {
-                actions: "ingestSignIdentity",
+                actions: "ingestUser",
                 target: "RegisterDeviceDecider",
               },
             ],
@@ -155,33 +151,35 @@ const UnknownDeviceMachine =
         ExistingAnchor: {
           on: {
             INGEST_SIGN_IDENTITY: {
-              actions: "ingestSignIdentity",
+              actions: "ingestUser",
               target: "End",
             },
             AUTH_WITH_OTHER: "AuthSelection",
           },
+        },
+        End: {
+          type: "final",
+          data: (context) => context,
         },
       },
     },
     {
       guards: {
         isMobileWithWebAuthn,
-        googleIdentityExists(context) {
-          return context.googleIdentityExists === true
-        },
       },
       actions: {
         ingestGoogle: assign((context, event) => ({
-          signIdentity: event.data.identity,
+          delegationIdentity: event.data.identity,
+          sessionKey: event.data.sessionKey,
           googleIdentityExists: event.data.isExisting,
         })),
         handleGoogle: send((context, event) => ({
-          type: event.data.isExisting ? "DONE" : "REGISTER",
-          data: event.data.identity,
+          type: event.data.isExisting ? "GOOGLE_DONE" : "GOOGLE_REGISTER",
+          data: event.data,
         })),
-        ingestSignIdentity: assign({
-          signIdentity: (context, event) => event.data,
-        }),
+        ingestUser: assign((context, event) => ({
+          ...event.data,
+        })),
       },
       services: {
         RegistrationMachine,

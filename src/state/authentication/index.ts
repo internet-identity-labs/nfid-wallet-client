@@ -1,16 +1,15 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { ActorRefFrom, assign, createMachine, DoneInvokeEvent } from "xstate"
+import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { User } from "../authorization/idp"
 import KnownDeviceMachine from "./known-device"
 import UnknownDeviceMachine from "./unknown-device"
 
-export interface Context {
-  signIdentity?: DelegationIdentity
-}
+export interface Context extends User {}
 
 export type Events =
-  | { type: "done.invoke.known-device"; data: DelegationIdentity }
-  | { type: "done.invoke.unknown-device"; data: DelegationIdentity }
+  | { type: "done.invoke.known-device"; data: User }
+  | { type: "done.invoke.unknown-device"; data: User }
 
 export interface Schema {
   events: Events
@@ -48,7 +47,7 @@ const AuthenticationMachine = createMachine(
           id: "known-device",
           onDone: [
             {
-              actions: "ingestSignIdentity",
+              actions: "ingestUser",
               target: "End",
             },
           ],
@@ -60,7 +59,7 @@ const AuthenticationMachine = createMachine(
           id: "unknown-device",
           onDone: [
             {
-              actions: "ingestSignIdentity",
+              actions: "ingestUser",
               target: "End",
             },
           ],
@@ -68,15 +67,13 @@ const AuthenticationMachine = createMachine(
       },
       End: {
         type: "final",
-        data: (context) => context.signIdentity,
+        data: (context) => context,
       },
     },
   },
   {
     actions: {
-      ingestSignIdentity: assign({
-        signIdentity: (context, event) => event.data,
-      }),
+      ingestUser: assign((context, event) => ({ ...event.data })),
     },
     guards: {
       isDeviceRegistered,

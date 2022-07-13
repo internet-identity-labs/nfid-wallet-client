@@ -1,21 +1,22 @@
-import { DelegationChain, DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@dfinity/identity"
 import { assign, ActorRefFrom, createMachine, send } from "xstate"
 
 import { Persona } from "frontend/integration/identity-manager"
 import { getDelegationFromJson } from "frontend/integration/internet-identity"
 import { NFID_SIGNED_DELEGATION } from "frontend/integration/internet-identity/__mocks"
 
-export interface Context {
+import { User } from "./idp"
+
+export interface Context extends User {
   userLimit?: number
   accounts: Persona[]
-  signIdentity?: DelegationIdentity
 }
 
 export type Events =
   | { type: "done.invoke.fetchAppUserLimit"; data: number }
   | { type: "done.invoke.fetchAccounts"; data: Persona[] }
-  | { type: "done.invoke.fetchDelegation"; data: DelegationIdentity }
-  | { type: "done.invoke.login"; data: DelegationIdentity }
+  | { type: "done.invoke.fetchDelegation"; data: User }
+  | { type: "done.invoke.login"; data: User }
   | { type: "done.invoke.createAccount"; data: Persona["personaId"] }
   | { type: "SINGLE_ACCOUNT" }
   | { type: "MULTI_ACCOUNT" }
@@ -69,7 +70,7 @@ const AuthorizationMachine =
             src: "login",
             id: "login",
             onDone: {
-              actions: "ingestSignIdentity",
+              actions: "ingestUser",
               target: "FetchAccounts",
             },
           },
@@ -119,7 +120,7 @@ const AuthorizationMachine =
             id: "fetchDelegation",
             onDone: [
               {
-                actions: "ingestSignIdentity",
+                actions: "ingestUser",
                 target: "End",
               },
             ],
@@ -132,9 +133,7 @@ const AuthorizationMachine =
     },
     {
       actions: {
-        ingestSignIdentity: assign({
-          signIdentity: (context, event) => event.data,
-        }),
+        ingestUser: assign((context, event) => ({ ...event.data })),
         ingestUserLimit: assign({ userLimit: (context, event) => event.data }),
         ingestAccounts: assign({ accounts: (context, event) => event.data }),
         handleAccounts: send((context, event) => ({
@@ -162,9 +161,16 @@ const AuthorizationMachine =
             JSON.stringify(NFID_SIGNED_DELEGATION.chain),
             JSON.stringify(NFID_SIGNED_DELEGATION.sessionKey),
           )
-          return new Promise<DelegationIdentity>((res) =>
+          return new Promise<User>((res) =>
             setTimeout(
-              () => res(DelegationIdentity.fromDelegation(key, chain)),
+              () =>
+                res({
+                  delegationIdentity: DelegationIdentity.fromDelegation(
+                    key,
+                    chain,
+                  ),
+                  sessionKey: key,
+                }),
               3000,
             ),
           )
@@ -175,9 +181,16 @@ const AuthorizationMachine =
             JSON.stringify(NFID_SIGNED_DELEGATION.chain),
             JSON.stringify(NFID_SIGNED_DELEGATION.sessionKey),
           )
-          return new Promise<DelegationIdentity>((res) =>
+          return new Promise<User>((res) =>
             setTimeout(
-              () => res(DelegationIdentity.fromDelegation(key, chain)),
+              () =>
+                res({
+                  delegationIdentity: DelegationIdentity.fromDelegation(
+                    key,
+                    chain,
+                  ),
+                  sessionKey: key,
+                }),
               3000,
             ),
           )
@@ -187,7 +200,9 @@ const AuthorizationMachine =
         },
       },
       guards: {
-        authenticated: (context) => !!context.signIdentity,
+        authenticated: (context) =>
+          context.delegationIdentity !== undefined ||
+          context.signIdentity !== undefined,
       },
     },
   )

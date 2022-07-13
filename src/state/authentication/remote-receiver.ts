@@ -1,13 +1,12 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-export interface Context {
-  signIdentity?: DelegationIdentity
-}
+import { User } from "../authorization/idp"
+
+export interface Context extends User {}
 
 export type Events =
   | { type: "AWAIT_CONFIRMATION" }
-  | { type: "RECEIVE_DELEGATION"; data: DelegationIdentity }
+  | { type: "RECEIVE_DELEGATION"; data: User }
 
 const RemoteReceiverMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5gFsB7dMPMAYzAEsA3MXAOgEVcBhIiMAYgEEB1XgEkAKgH02AeQByAMSEAlALK8RQmYlAAHIrGrpqRAHaaQAD0QBGABwA2RgHYHAZgAstgKy2HABh8OAJksAGhAATytLH0YPPz8PAOsba2sEgF800LQscmJScio6BkYAGSJkCGojKG4FAFE2OqEANTqxABE6krqAcVV1aVMdPQNjUwsED1jGfyTrJwBODwdU61CIhAXLGbifW1cp-csPZwzMkCNOOFNsnHw8snxC+iZWDi4h3X1DEyRzRFcAXWVh8rkYrgWkMhUwW1kBtgCGSyGDuhBIj0oNBepXKlWqnxGP3GAJ8HhmqQWtmcCx8C1c8OBCCiYIhUKWHlh8MR51uuXRBSxxTqRggBO+Yz+Ewc+0cgICQROKWcgUZzPBbPZnICCKRIF5935T0FuDFo1+oAmNlV1jOaSAA */
@@ -28,7 +27,7 @@ const RemoteReceiverMachine =
         Loading: {
           on: {
             RECEIVE_DELEGATION: {
-              actions: "ingestDelegation",
+              actions: "ingestUser",
               target: "End",
             },
           },
@@ -40,9 +39,9 @@ const RemoteReceiverMachine =
     },
     {
       actions: {
-        ingestDelegation: assign({
-          signIdentity: (context, event) => event.data,
-        }),
+        ingestUser: assign((context, event) => ({
+          ...event.data,
+        })),
       },
     },
   )

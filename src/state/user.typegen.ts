@@ -2,9 +2,7 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    ingestUser: "RECEIVE_DELEGATION"
-  }
+  eventsCausingActions: {}
   internalEvents: {
     "xstate.init": { type: "xstate.init" }
   }
@@ -18,6 +16,6 @@ export interface Typegen0 {
   eventsCausingServices: {}
   eventsCausingGuards: {}
   eventsCausingDelays: {}
-  matchesStates: "QrCode" | "Loading" | "End"
+  matchesStates: undefined
   tags: never
 }

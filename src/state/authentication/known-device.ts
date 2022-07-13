@@ -1,9 +1,8 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, createMachine } from "xstate"
 
-export interface Context {
-  signIdentity?: DelegationIdentity
-}
+import { User } from "../authorization/idp"
+
+export interface Context extends User {}
 
 export type Events = { type: "X" }
 
@@ -21,10 +20,7 @@ const KnownDeviceMachine = createMachine({
     Start: {},
     End: {
       type: "final",
-      data: (context) => {
-        if (!context.signIdentity) throw new Error("No sign identity")
-        return context.signIdentity
-      },
+      data: (context) => context,
     },
   },
 })

@@ -1,18 +1,24 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { SignIdentity } from "@dfinity/agent"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import AuthorizationMachine, { AuthorizationActor } from "."
+import AuthorizationMachine from "."
 import AuthenticationMachine from "../authentication"
 
-interface Context {
-  signIdentity?: DelegationIdentity
-  delegationChain?: DelegationIdentity
+// TODO: Where should this live?
+export interface User {
+  signIdentity?: SignIdentity
+  delegationIdentity?: DelegationIdentity
+  sessionKey?: Ed25519KeyIdentity
+  anchor?: string
 }
+
+interface Context extends User {}
 
 type Events =
   | { type: "done.invoke.await"; data: void }
-  | { type: "done.invoke.authenticate"; data: DelegationIdentity }
-  | { type: "done.invoke.authorize"; data: DelegationIdentity }
+  | { type: "done.invoke.authenticate"; data: User }
+  | { type: "done.invoke.authorize"; data: User }
   | { type: "done.invoke.done"; data: void }
 
 async function postReady() {
@@ -51,7 +57,7 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: {
-              actions: ["ingestSignIdentity"],
+              actions: "ingestUser",
               target: "AuthorizationMachine",
             },
           },
@@ -60,9 +66,9 @@ const IDPMachine =
           invoke: {
             src: "AuthorizationMachine",
             id: "authorize",
-            data: { signIdentity: (context: any) => context.signIdentity },
+            data: (context) => context,
             onDone: {
-              actions: "ingestDelegationChain",
+              actions: "ingestUser",
               target: "End",
             },
           },
@@ -84,12 +90,7 @@ const IDPMachine =
         AuthorizationMachine,
       },
       actions: {
-        ingestSignIdentity: assign({
-          signIdentity: (context, event) => event.data,
-        }),
-        ingestDelegationChain: assign({
-          delegationChain: (context, event) => event.data,
-        }),
+        ingestUser: assign((context, event) => ({ ...event.data })),
       },
     },
   )

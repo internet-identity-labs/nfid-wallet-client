@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { loginfromGoogleDevice } from "../internet-identity"
 
@@ -7,9 +7,10 @@ declare const SIGNIN_GOOGLE: string
 if (!SIGNIN_GOOGLE)
   throw new Error("Google lambda proxy SIGNIN_GOOGLE is not defined")
 
-interface GoogleDeviceResult {
+export interface GoogleDeviceResult {
   identity: DelegationIdentity
   isExisting: boolean
+  sessionKey: Ed25519KeyIdentity
 }
 
 interface GoogleDeviceResultExternal {
@@ -24,6 +25,7 @@ async function mapGoogleDeviceResult(
   const { sessionKey, chain } = await loginfromGoogleDevice(external.identity)
   return {
     identity: DelegationIdentity.fromDelegation(sessionKey, chain),
+    sessionKey,
     isExisting: external.is_existing,
   }
 }

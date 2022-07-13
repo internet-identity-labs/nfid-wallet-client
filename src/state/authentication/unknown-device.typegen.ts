@@ -3,7 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestSignIdentity:
+    ingestUser:
       | "done.invoke.registration"
       | "done.invoke.remote"
       | "INGEST_SIGN_IDENTITY"
@@ -51,7 +51,7 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    RegistrationMachine: "" | "REGISTER"
+    RegistrationMachine: "" | "GOOGLE_REGISTER"
     fetchGoogleDevice: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     registerDevice: "TRUST_DEVICE"
@@ -62,7 +62,6 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   matchesStates:
     | "Start"
-    | "End"
     | "RegistrationMachine"
     | "AuthSelection"
     | "AuthWithGoogle"
@@ -71,5 +70,6 @@ export interface Typegen0 {
     | "RegisterDevice"
     | "RegisterDeviceError"
     | "ExistingAnchor"
+    | "End"
   tags: never
 }

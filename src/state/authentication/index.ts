@@ -29,6 +29,7 @@ const AuthenticationMachine = createMachine(
     schema: { events: {}, context: {} } as Schema,
     id: "auth",
     initial: "IsDeviceRegistered",
+    context: {},
     states: {
       IsDeviceRegistered: {
         always: [
@@ -67,6 +68,7 @@ const AuthenticationMachine = createMachine(
       },
       End: {
         type: "final",
+        data: (context) => context.signIdentity,
       },
     },
   },

@@ -62,11 +62,12 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         to continue {applicationName && `to ${applicationName}`}
       </P>
       <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
-        {displayAccounts.map((account) => {
+        {displayAccounts.map((account, i) => {
           return (
             <AccountItem
               title={`${applicationName} account ${account.persona_id}`}
               onClick={() => onLogin(account.persona_id)}
+              key={`account${account.persona_id}${i}`}
             />
           )
         })}

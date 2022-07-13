@@ -69,6 +69,8 @@ describe('IDP coordinator', () => {
 
                 // TODO: more detail here?
 
+                it('navigates back to unknown device flow', () => { })
+
                 it('returns sign identity to parent upon completion', () => { })
             })
 
@@ -78,6 +80,10 @@ describe('IDP coordinator', () => {
 
     describe('authorization', () => {
         // TODO: more detail
+
+        it('does not require unlock when provided with a sign identity')
+
+        it('requires unlock when not provided with a sign identity')
     })
 
     describe('registration', () => {

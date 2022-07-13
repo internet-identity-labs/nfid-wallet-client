@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import AuthorizationMachine from "."
+import AuthorizationMachine, { AuthorizationActor } from "."
 import AuthenticationMachine from "../authentication"
 
 interface Context {
@@ -18,7 +18,7 @@ type Events =
 async function postReady() {
   console.log("Post ready message to pubsub...")
   console.log("Await request message from pubsub...")
-  return new Promise<void>((res) => setTimeout(() => res(undefined), 3000))
+  return new Promise<void>((res) => setTimeout(() => res(undefined), 100))
 }
 
 async function postDelegation() {
@@ -51,7 +51,7 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: {
-              actions: "ingestSignIdentity",
+              actions: ["ingestSignIdentity"],
               target: "AuthorizationMachine",
             },
           },
@@ -60,6 +60,7 @@ const IDPMachine =
           invoke: {
             src: "AuthorizationMachine",
             id: "authorize",
+            data: { signIdentity: (context: any) => context.signIdentity },
             onDone: {
               actions: "ingestDelegationChain",
               target: "End",

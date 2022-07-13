@@ -1,5 +1,4 @@
 import React from "react"
-// @ts-ignore
 import { Fade } from "react-awesome-reveal"
 import Tilt from "react-parallax-tilt"
 

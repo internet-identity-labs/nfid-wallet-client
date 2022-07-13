@@ -149,12 +149,15 @@ const AuthorizationMachine =
       },
       services: {
         async fetchAppUserLimit() {
+          // TODO: get application context.
           return 5
         },
         async fetchAccounts(): Promise<Persona[]> {
           return new Promise((res) => setTimeout(() => res([]), 1000))
         },
         async fetchDelegation() {
+          // TODO: use fetchDelegation(anchor, scope, sessionKey)
+          // sessionKey: from authorizationRequest
           const [chain, key] = getDelegationFromJson(
             JSON.stringify(NFID_SIGNED_DELEGATION.chain),
             JSON.stringify(NFID_SIGNED_DELEGATION.sessionKey),
@@ -167,6 +170,7 @@ const AuthorizationMachine =
           )
         },
         async login() {
+          // TODO: use login(userNumber: bigint, withSecurityDevices?: boolean)
           const [chain, key] = getDelegationFromJson(
             JSON.stringify(NFID_SIGNED_DELEGATION.chain),
             JSON.stringify(NFID_SIGNED_DELEGATION.sessionKey),

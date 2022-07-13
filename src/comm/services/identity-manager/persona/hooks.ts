@@ -6,11 +6,13 @@ import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is
 
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { im } from "frontend/comm/actors"
+import { PersonaRequest } from "frontend/comm/idl/identity_manager.did"
+import { Persona } from "frontend/comm/im"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 
 import { personaAtom } from "./state"
 import { isNFIDPersona } from "./types"
-import { getNextPersonaId } from "./utils"
+import { createAccount, getNextPersonaId } from "./utils"
 
 export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
@@ -65,15 +67,22 @@ export const usePersona = () => {
   const createPersona = React.useCallback(
     async ({ domain }) => {
       // TODO: use createAccount to create the persona object
-      const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
-      const response = await im.create_persona(persona)
+      // const persona = { domain, persona_id: nextPersonaId, persona_name: "" }
+      const persona: Persona = createAccount(accounts, scope as string)
+      const personaCredentials: PersonaRequest = {
+        persona_name: persona.personaName,
+        persona_id: persona.personaId,
+        domain: persona.domain,
+      }
+
+      const response = await im.create_persona(personaCredentials)
 
       if (response?.status_code === 200) {
         setPersonas(response.data[0]?.personas)
       }
       return response
     },
-    [nextPersonaId, setPersonas],
+    [accounts, scope, setPersonas],
   )
 
   return {

@@ -171,6 +171,7 @@
       "last 2 edge version"
     ]
   },
+  "cracoConfig": "craco.config.ts",
   "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
   "license": "MIT"
 }

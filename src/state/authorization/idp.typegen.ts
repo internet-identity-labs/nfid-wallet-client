@@ -3,9 +3,15 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
+    ingestRequest: "done.invoke.handshake"
     ingestUser: "done.invoke.authenticate" | "done.invoke.authorize"
   }
   internalEvents: {
+    "done.invoke.handshake": {
+      type: "done.invoke.handshake"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.authenticate": {
       type: "done.invoke.authenticate"
       data: unknown
@@ -16,13 +22,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.await": {
-      type: "done.invoke.await"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "xstate.init": { type: "xstate.init" }
-    "error.platform.await": { type: "error.platform.await"; data: unknown }
+    "error.platform.handshake": {
+      type: "error.platform.handshake"
+      data: unknown
+    }
     "error.platform.authenticate": {
       type: "error.platform.authenticate"
       data: unknown
@@ -39,20 +43,20 @@ export interface Typegen0 {
     "error.platform.done": { type: "error.platform.done"; data: unknown }
   }
   invokeSrcNameMap: {
-    postReady: "done.invoke.await"
+    handshake: "done.invoke.handshake"
     AuthenticationMachine: "done.invoke.authenticate"
     AuthorizationMachine: "done.invoke.authorize"
     postDelegation: "done.invoke.done"
   }
   missingImplementations: {
-    actions: never
+    actions: "ingestRequest"
     services: never
     guards: never
     delays: never
   }
   eventsCausingServices: {
-    postReady: "xstate.init"
-    AuthenticationMachine: "done.invoke.await"
+    handshake: "xstate.init"
+    AuthenticationMachine: "done.invoke.handshake"
     AuthorizationMachine: "done.invoke.authenticate"
     postDelegation: "done.invoke.authorize"
   }

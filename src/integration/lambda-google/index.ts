@@ -18,7 +18,6 @@ interface GoogleDeviceResultExternal {
   is_existing: boolean
 }
 
-// NOTE: Discussion point! In referencing code to create this method, I noticed that we tend to capture global profile/authentication state when a "login" event like this one occurs. While the state machine will not play nicely with existing global react state patterns, we could consider sending a message to an actor dedicated to profile/auth state. In any event, that logic should exist in the state layer, not here in the integration layer.
 async function mapGoogleDeviceResult(
   external: GoogleDeviceResultExternal,
 ): Promise<GoogleDeviceResult> {

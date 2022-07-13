@@ -76,10 +76,11 @@ describe("persona utils test suite", () => {
   })
 
   describe("createAccount", () => {
-    it("uses derivationOrigin to create persona if present", () => {
+    it("exclusively uses derivationOrigin to create persona if present", () => {
       const accounts = [
         { persona_id: "1", domain: `somepage.com` },
         { persona_id: "2", domain: `somepage.com` },
+        { persona_id: "2", domain: `test.com` },
         { persona_id: "1", domain: `test-canister-id.ic0.app` },
       ]
       const newAccount = createAccount(

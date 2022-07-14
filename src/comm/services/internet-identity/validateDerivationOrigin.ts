@@ -48,6 +48,7 @@ export const validateDerivationOrigin = async (
     const alternativeOriginsObj = (await response.json()) as {
       alternativeOrigins: string[]
     }
+    console.log(">> ", { alternativeOriginsObj })
 
     // check for expected property
     if (!Array.isArray(alternativeOriginsObj?.alternativeOrigins)) {

@@ -8,12 +8,34 @@ const mockDerivationOrigin = "https://rrkah-fqaaa-aaaaa-aaaaq-cai.ic0.app"
 const mockDerivationInvalidOrigin = "https://rrkah-fqaaa-aaaaa-aaaaq-cai"
 
 describe("validate derivation origin test suite", () => {
-  it("correct mockData should return invalid", async () => {
-    // Can't mock request
+  it("should return valid when requestOrigin included in alternativeOrigins", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({ alternativeOrigins: [mockRequestOrigin] }),
+      }),
+    ) as jest.Mock
     const response = await validateDerivationOrigin(
       mockRequestOrigin,
       mockDerivationOrigin,
     )
+
+    expect(response.result).toBe("valid")
+  })
+
+  it("should return invalid when requestOrigin not included in alternativeOrigins", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        status: 200,
+        json: () => Promise.resolve({ alternativeOrigins: [] }),
+      }),
+    ) as jest.Mock
+    const response = await validateDerivationOrigin(
+      mockRequestOrigin,
+      mockDerivationOrigin,
+    )
+
     expect(response.result).toBe("invalid")
   })
 

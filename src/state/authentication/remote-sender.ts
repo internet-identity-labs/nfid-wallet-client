@@ -1,18 +1,20 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { User } from "../authorization/idp"
+import { AuthSession } from "frontend/state/authorization"
+
 import KnownDeviceMachine from "./known-device"
 import RegistrationMachine from "./registration"
 
-interface Context extends User {
+interface Context {
   pubsubChannel: string
+  user?: AuthSession
 }
 
 type Events =
-  | { type: "done.invoke.known-device"; data: User }
-  | { type: "done.invoke.unknown-device"; data: User }
-  | { type: "done.invoke.registration"; data: User }
+  | { type: "done.invoke.known-device"; data: AuthSession }
+  | { type: "done.invoke.unknown-device"; data: AuthSession }
+  | { type: "done.invoke.registration"; data: AuthSession }
   | { type: "done.invoke.post-delegate"; data: void }
 
 async function postDelegate(): Promise<void> {
@@ -84,7 +86,7 @@ const RemoteSenderMachine =
         postDelegate,
       },
       actions: {
-        ingestUser: assign((context, event) => ({ ...event.data })),
+        ingestUser: assign((context, event) => ({ user: event.data })),
       },
     },
   )

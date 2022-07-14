@@ -1,6 +1,6 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { loginfromGoogleDevice } from "../internet-identity"
+import { loginfromGoogleDevice } from "../../internet-identity"
 
 declare const SIGNIN_GOOGLE: string
 

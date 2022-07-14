@@ -3,7 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestUser:
+    ingestSession:
       | "done.invoke.registration"
       | "done.invoke.remote"
       | "INGEST_SIGN_IDENTITY"

@@ -1,22 +1,46 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { SignIdentity } from "@dfinity/agent"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { assign, ActorRefFrom, createMachine, send } from "xstate"
 
+import { AppMeta } from "frontend/integration/app-config"
+import { fetchAppUserLimit } from "frontend/integration/app-config/services"
 import { Persona } from "frontend/integration/identity-manager"
-import { getDelegationFromJson } from "frontend/integration/internet-identity"
-import { NFID_SIGNED_DELEGATION } from "frontend/integration/internet-identity/__mocks"
+import {
+  createAccount,
+  fetchAccounts,
+} from "frontend/integration/identity-manager/services"
+import {
+  fetchDelegate,
+  login,
+} from "frontend/integration/internet-identity/services"
 
-import { User } from "./idp"
-
-export interface Context extends User {
-  userLimit?: number
-  accounts: Persona[]
+export interface AuthSession {
+  signIdentity: SignIdentity
+  delegationIdentity: DelegationIdentity
+  sessionKey: Ed25519KeyIdentity
+  anchor: string
+  // sessionType: "nfid/device" | "app/scoped"
+  // sessionSource: "google" | "remote" | "self"
+  // scope
 }
 
-export type Events =
+export interface AuthorizationMachineContext {
+  appMeta?: AppMeta
+  session?: AuthSession
+  userLimit?: number
+  accounts: Persona[]
+  authRequest?: {
+    maxTimeToLive: number
+    sessionPublicKey: Uint8Array
+    hostname: string
+  }
+}
+
+export type AuthorizationMachineEvents =
   | { type: "done.invoke.fetchAppUserLimit"; data: number }
   | { type: "done.invoke.fetchAccounts"; data: Persona[] }
-  | { type: "done.invoke.fetchDelegation"; data: User }
-  | { type: "done.invoke.login"; data: User }
+  | { type: "done.invoke.fetchDelegate"; data: AuthSession }
+  | { type: "done.invoke.login"; data: AuthSession }
   | { type: "done.invoke.createAccount"; data: Persona["personaId"] }
   | { type: "SINGLE_ACCOUNT" }
   | { type: "MULTI_ACCOUNT" }
@@ -27,8 +51,8 @@ export type Events =
   | { type: "LOGIN" }
 
 export interface Schema {
-  events: Events
-  context: Context
+  events: AuthorizationMachineEvents
+  context: AuthorizationMachineContext
 }
 
 const AuthorizationMachine =
@@ -70,7 +94,7 @@ const AuthorizationMachine =
             src: "login",
             id: "login",
             onDone: {
-              actions: "ingestUser",
+              actions: "ingestSession",
               target: "FetchAccounts",
             },
           },
@@ -116,11 +140,11 @@ const AuthorizationMachine =
         },
         GetDelegation: {
           invoke: {
-            src: "fetchDelegation",
-            id: "fetchDelegation",
+            src: "fetchDelegate",
+            id: "fetchDelegate",
             onDone: [
               {
-                actions: "ingestUser",
+                actions: "ingestSession",
                 target: "End",
               },
             ],
@@ -133,7 +157,7 @@ const AuthorizationMachine =
     },
     {
       actions: {
-        ingestUser: assign((context, event) => ({ ...event.data })),
+        ingestSession: assign((context, event) => ({ session: event.data })),
         ingestUserLimit: assign({ userLimit: (context, event) => event.data }),
         ingestAccounts: assign({ accounts: (context, event) => event.data }),
         handleAccounts: send((context, event) => ({
@@ -147,62 +171,14 @@ const AuthorizationMachine =
         })),
       },
       services: {
-        async fetchAppUserLimit() {
-          // TODO: get application context.
-          return 5
-        },
-        async fetchAccounts(): Promise<Persona[]> {
-          return new Promise((res) => setTimeout(() => res([]), 1000))
-        },
-        async fetchDelegation() {
-          // TODO: use fetchDelegation(anchor, scope, sessionKey)
-          // sessionKey: from authorizationRequest
-          const [chain, key] = getDelegationFromJson(
-            JSON.stringify(NFID_SIGNED_DELEGATION.chain),
-            JSON.stringify(NFID_SIGNED_DELEGATION.sessionKey),
-          )
-          return new Promise<User>((res) =>
-            setTimeout(
-              () =>
-                res({
-                  delegationIdentity: DelegationIdentity.fromDelegation(
-                    key,
-                    chain,
-                  ),
-                  sessionKey: key,
-                }),
-              3000,
-            ),
-          )
-        },
-        async login() {
-          // TODO: use login(userNumber: bigint, withSecurityDevices?: boolean)
-          const [chain, key] = getDelegationFromJson(
-            JSON.stringify(NFID_SIGNED_DELEGATION.chain),
-            JSON.stringify(NFID_SIGNED_DELEGATION.sessionKey),
-          )
-          return new Promise<User>((res) =>
-            setTimeout(
-              () =>
-                res({
-                  delegationIdentity: DelegationIdentity.fromDelegation(
-                    key,
-                    chain,
-                  ),
-                  sessionKey: key,
-                }),
-              3000,
-            ),
-          )
-        },
-        async createAccount(): Promise<Persona["personaId"]> {
-          return new Promise((res) => setTimeout(() => res("0"), 1000))
-        },
+        fetchAppUserLimit,
+        fetchAccounts,
+        fetchDelegate,
+        login,
+        createAccount,
       },
       guards: {
-        authenticated: (context) =>
-          context.delegationIdentity !== undefined ||
-          context.signIdentity !== undefined,
+        authenticated: (context) => !!context.session,
       },
     },
   )

@@ -1,31 +1,27 @@
-import { SignIdentity } from "@dfinity/agent"
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { SignedDelegate } from "frontend/integration/internet-identity"
 import {
-  awaitMessageFromClient,
-  IdentityClientAuthEvent,
-  postMessageToClient,
-  prepareClientDelegate,
-} from "frontend/integration/idp"
-import { SignedDelegation } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+  handshake,
+  postDelegation,
+} from "frontend/integration/windows/services"
+import AuthenticationMachine from "frontend/state/authentication"
+import AuthorizationMachine, { AuthSession } from "frontend/state/authorization"
 
-import AuthorizationMachine from "."
-import AuthenticationMachine from "../authentication"
-
-// TODO: Where should this live?
-export interface User {
-  signIdentity?: SignIdentity
-  delegationIdentity?: DelegationIdentity
-  sessionKey?: Ed25519KeyIdentity
-  anchor?: string
+export interface IDPMachineContext {
+  session?: AuthSession
+  iiResponse?: {
+    userKey: Uint8Array
+    signedDelegate: SignedDelegate
+  }
+  authRequest?: {
+    maxTimeToLive: number
+    sessionPublicKey: Uint8Array
+    hostname: string
+  }
 }
 
-interface Context extends User {
-  maxTimeToLive?: number
-}
-
-type Events =
+export type IDPMachineEvents =
   | {
       type: "done.invoke.handshake"
       data: {
@@ -34,37 +30,23 @@ type Events =
         hostname: string
       }
     }
-  | { type: "done.invoke.authenticate"; data: User }
-  | { type: "done.invoke.authorize"; data: User }
+  | { type: "done.invoke.authenticate"; data: AuthSession }
+  | { type: "done.invoke.authorize"; data: AuthSession }
   | { type: "done.invoke.done"; data: void }
 
-async function handshake() {
-  postMessageToClient({ kind: "ready" })
-  return awaitMessageFromClient<IdentityClientAuthEvent>(
-    "authorize-client",
-  ).then((event) => ({
-    maxTimeToLive: Number(event.data.maxTimeToLive),
-    sessionPublicKey: event.data.sessionPublicKey,
-    hostname: event.origin,
-  }))
+interface Schema {
+  context: IDPMachineContext
+  events: IDPMachineEvents
 }
-
-async function postDelegation(context: Context) {
-  // const prepared = prepareClientDelegate(context)
-  // postMessageToClient({
-  //   kind: "authorize-client-success",
-  //   userPublicKey: prepared.delegation.pubkey,
-  //   delegations: prepared,
-  // })
-  return undefined
-}
-
 const IDPMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFmAduglgMbLpgC0A1jgPYDuOZEYAbkWAHQDK6yATugGII1HB3w5m1Ch2S1k+dIlAAHarAX4RSkAA9EAZgAMARnYBOfQHYArABoQAT0TGATC-bWAvp-tosuAmJSShp6RhY2dgBBDGw8IhJNHABZZEJMcTAhEQ5YHlJ2PzjAknIqOgYmVkIOGP94oKTU9MztVXUCLSRdRAA2M3cXO0dnQ31vX1iAhODysKrIusxqXnwAL0SRZozRbNF2PNLCqYbSkIrw6trYlfXNlLSdsDa1DS7QPQRjb8N2XutekN7E4vmNvD4QDQmPBukVpkEyqFKhEalwePwXh0ktpPgAWFzAxBmYwTEBw06zJGXRYnEqdB4tUSYt44HGIXH49guYyGCw2QlfYy9Dyk8l0xEXBaopa3Db07atbrtFlshAADkspkMljGrmGIO+wq8ELFMwl8xRHAAojgIMz6arjPpjGquS5-oD9USSSbaWbzharvbsd1Pi6BS7wZ4gA */
   createMachine(
     {
       tsTypes: {} as import("./idp.typegen").Typegen0,
-      schema: { events: {} as Events, context: {} as Context },
+      schema: {
+        events: {},
+        context: {},
+      } as Schema,
       id: "idp",
       initial: "Start",
       states: {
@@ -85,7 +67,7 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: {
-              actions: "ingestUser",
+              actions: "ingestSession",
               target: "AuthorizationMachine",
             },
           },
@@ -96,7 +78,7 @@ const IDPMachine =
             id: "authorize",
             data: (context) => context,
             onDone: {
-              actions: "ingestUser",
+              actions: "ingestSession",
               target: "End",
             },
           },
@@ -118,7 +100,10 @@ const IDPMachine =
         AuthorizationMachine,
       },
       actions: {
-        ingestUser: assign((context, event) => ({ ...event.data })),
+        ingestSession: assign((context, event) => ({ session: event.data })),
+        ingestRequest: assign((context, event) => ({
+          authRequest: event.data,
+        })),
       },
     },
   )

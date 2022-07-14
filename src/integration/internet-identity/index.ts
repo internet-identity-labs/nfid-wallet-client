@@ -10,6 +10,7 @@ import {
 import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import { timestamp } from "rxjs"
 import * as tweetnacl from "tweetnacl"
 
 import {
@@ -37,6 +38,7 @@ import { InternetIdentity } from "frontend/integration/actors"
 import { ii } from "frontend/integration/actors"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 
+import { mapOptional, reverseMapOptional } from "../_common"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 import { derFromPubkey, hasOwnProperty } from "./utils"
 
@@ -711,7 +713,6 @@ export async function loginFromRemoteFrontendDelegation({
   const devices = await fetchAuthenticatorDevices(userNumber)
   const multiIdent = getMultiIdent(devices)
 
-  replaceIdentity(delegationIdentity)
   authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
 
   return {
@@ -729,10 +730,92 @@ export async function loginfromGoogleDevice(identity: string): Promise<{
   const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
   const frontendDelegation = await requestFEDelegation(googleIdentity)
 
-  replaceIdentity(frontendDelegation.delegationIdentity)
   authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
   return {
     chain: frontendDelegation.chain,
     sessionKey: frontendDelegation.sessionKey,
+  }
+}
+
+// --
+
+// This whole file is a big nightmare. I'm starting again down here. 😂
+
+export interface SignedDelegate {
+  delegation: {
+    expiration: number
+    pubkey: Uint8Array
+    targets: Principal[] | undefined
+  }
+  signature: Uint8Array
+}
+
+export async function prepareDelegate(
+  userNumber: number,
+  scope: string,
+  sessionKey: PublicKey,
+  maxTimeToLive: number,
+) {
+  return ii
+    .prepare_delegation(
+      BigInt(userNumber),
+      scope,
+      sessionKey,
+      reverseMapOptional(BigInt(maxTimeToLive)),
+    )
+    .then(([userKey, timestamp]) => ({
+      userKey: new Uint8Array(userKey),
+      timestamp: Number(timestamp),
+    }))
+}
+
+export async function getDelegate(
+  userNumber: number,
+  scope: string,
+  sessionKey: PublicKey,
+  timestamp: number,
+): Promise<SignedDelegate> {
+  return ii
+    .get_delegation(BigInt(userNumber), scope, sessionKey, BigInt(timestamp))
+    .then((r) => {
+      if ("no_such_delegation" in r) {
+        throw new Error("No such delegation")
+      }
+      return {
+        delegation: {
+          expiration: Number(r.signed_delegation.delegation.expiration),
+          pubkey: new Uint8Array(r.signed_delegation.delegation.pubkey),
+          targets: mapOptional(r.signed_delegation.delegation.targets),
+        },
+        signature: new Uint8Array(r.signed_delegation.signature),
+      }
+    })
+}
+
+export async function fetchDelegate(
+  userNumber: number,
+  scope: string,
+  sessionKey: PublicKey,
+  maxTimeToLive: number,
+): Promise<{
+  signedDelegate: SignedDelegate
+  userKey: Uint8Array
+}> {
+  const prepare = await prepareDelegate(
+    userNumber,
+    scope,
+    sessionKey,
+    maxTimeToLive,
+  )
+  // TODO: retry. tan query?
+  const get = await getDelegate(
+    userNumber,
+    scope,
+    sessionKey,
+    prepare.timestamp,
+  )
+  return {
+    signedDelegate: get,
+    userKey: prepare.userKey,
   }
 }

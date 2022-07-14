@@ -97,6 +97,20 @@ export async function fetchAccount() {
 }
 
 /**
+ * Fetch personas for the currently connected principal.
+ */
+export async function fetchPersonas() {
+  return im
+    .read_personas()
+    .then(unpackResponse)
+    .then((r) => r.map(mapPersona))
+}
+
+export function selectPersonas(personas: Persona[], domain: string) {
+  return personas.filter((p) => p.domain === domain)
+}
+
+/**
  * ?
  */
 export async function verifyToken(token: string, principal: Principal) {

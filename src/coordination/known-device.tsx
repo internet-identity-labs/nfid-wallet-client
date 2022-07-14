@@ -3,9 +3,7 @@ import React from "react"
 
 import { KnownDeviceActor } from "frontend/state/authentication/known-device"
 
-type NewType = Actor<KnownDeviceActor>
-
-export function KnownDeviceCoordinator({ actor }: NewType) {
+export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
   const [state] = useActor(actor)
 
   React.useEffect(

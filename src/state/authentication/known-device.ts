@@ -1,8 +1,10 @@
 import { ActorRefFrom, createMachine } from "xstate"
 
-import { User } from "../authorization/idp"
+import { AuthSession } from "frontend/state/authorization"
 
-export interface Context extends User {}
+export interface Context {
+  user?: AuthSession
+}
 
 export type Events = { type: "X" }
 
@@ -17,7 +19,9 @@ const KnownDeviceMachine = createMachine({
   id: "auth-known-device",
   initial: "Start",
   states: {
-    Start: {},
+    Start: {
+      entry: () => console.log("ENTRY!"),
+    },
     End: {
       type: "final",
       data: (context) => context,

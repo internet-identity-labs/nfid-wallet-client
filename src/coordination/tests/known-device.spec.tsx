@@ -9,7 +9,7 @@ import KnownDeviceMachine, {
   KnownDeviceActor,
 } from "frontend/state/authentication/known-device"
 
-import { KnownDeviceCoordinator } from "./known-device"
+import { KnownDeviceCoordinator } from "../known-device"
 
 describe("KnownDevice Coordinator", () => {
   it("should render", async () => {

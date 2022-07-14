@@ -1,11 +1,7 @@
 import { useMachine, useActor } from "@xstate/react"
-import React from "react"
-import { from } from "rxjs"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
-import { setUser } from "frontend/apps/authentication/use-authentication"
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { mapPersonaToLegacy } from "frontend/integration/identity-manager"
 import { AuthenticationActor } from "frontend/state/authentication"
 import { KnownDeviceActor } from "frontend/state/authentication/known-device"
@@ -15,7 +11,6 @@ import IDPMachine, { IDPMachineType } from "frontend/state/authorization/idp"
 import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { KnownDeviceCoordinator } from "./known-device"
 
@@ -24,18 +19,8 @@ interface Props {
   successPath?: string
 }
 
-export default function IDPCoordinator({
-  machine,
-  successPath = `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-}: Props) {
-  const [state, , interpreter] = useMachine(machine || IDPMachine)
-  const { navigate } = useNFIDNavigate()
-
-  // Handle the completion of the flow
-  React.useEffect(() => {
-    const watcher = from(interpreter)
-    watcher.subscribe((state) => state.done && navigate(successPath))
-  }, [])
+export default function IDPCoordinator({ machine }: Props) {
+  const [state] = useMachine(machine || IDPMachine)
 
   switch (true) {
     case state.matches("AuthenticationMachine"):
@@ -51,7 +36,6 @@ export default function IDPCoordinator({
         />
       )
     case state.matches("End"):
-      return <Loader isLoading={true} />
     case state.matches("Start"):
     default:
       return <Loader isLoading={true} />
@@ -146,9 +130,7 @@ function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
         >
           <AuthorizeApp
             applicationName=""
-            isAuthenticated={
-              !!state.context.delegationIdentity || !!state.context.signIdentity
-            }
+            isAuthenticated={!!state.context.session}
             accounts={state.context?.accounts?.map(mapPersonaToLegacy) || []}
             onUnlockNFID={async () => send("UNLOCK")}
             onLogin={async (persona) =>

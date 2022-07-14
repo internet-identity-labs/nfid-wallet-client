@@ -10,7 +10,6 @@ import {
 import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
-import { timestamp } from "rxjs"
 import * as tweetnacl from "tweetnacl"
 
 import {
@@ -230,7 +229,7 @@ const requestFEDelegationChain = async (
   return { chain, sessionKey }
 }
 
-const requestFEDelegation = async (
+export const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
@@ -723,14 +722,30 @@ export async function loginFromRemoteFrontendDelegation({
   }
 }
 
-export async function loginfromGoogleDevice(identity: string): Promise<{
-  chain: DelegationChain
-  sessionKey: Ed25519KeyIdentity
-}> {
+/**
+ *
+ * @param identity ed25519 key identity as json string (returned from google lambda)
+ * @returns
+ */
+export async function loginfromGoogleDevice(identity: string): Promise<void> {
   const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
   const frontendDelegation = await requestFEDelegation(googleIdentity)
 
   authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
+}
+
+/**
+ * Cast an identity into a reconstructable form for transmission purposes (i.e. sending authenticated delegate from remote device).
+ * @param identity a delegation identity
+ * @returns javascript object that can be reconstructed into a delegation identity
+ */
+export async function getReconstructableIdentity(
+  identity: SignIdentity,
+): Promise<{
+  chain: DelegationChain
+  sessionKey: Ed25519KeyIdentity
+}> {
+  const frontendDelegation = await requestFEDelegation(identity)
   return {
     chain: frontendDelegation.chain,
     sessionKey: frontendDelegation.sessionKey,

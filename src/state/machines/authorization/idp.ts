@@ -5,15 +5,12 @@ import {
   handshake,
   postDelegation,
 } from "frontend/integration/windows/services"
-import AuthenticationMachine from "frontend/state/authentication"
-import AuthorizationMachine, { AuthSession } from "frontend/state/authorization"
+import { AuthSession } from "frontend/state/authentication"
+import AuthenticationMachine from "frontend/state/machines/authentication"
+import AuthorizationMachine from "frontend/state/machines/authorization"
 
 export interface IDPMachineContext {
-  session?: AuthSession
-  iiResponse?: {
-    userKey: Uint8Array
-    signedDelegate: SignedDelegate
-  }
+  authSession?: AuthSession
   authRequest?: {
     maxTimeToLive: number
     sessionPublicKey: Uint8Array
@@ -67,7 +64,7 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: {
-              actions: "ingestSession",
+              actions: "ingestAuthSession",
               target: "AuthorizationMachine",
             },
           },
@@ -76,9 +73,11 @@ const IDPMachine =
           invoke: {
             src: "AuthorizationMachine",
             id: "authorize",
-            data: (context) => context,
+            data: (context) => ({
+              authRequest: context.authRequest,
+            }),
             onDone: {
-              actions: "ingestSession",
+              actions: "ingestAuthSession",
               target: "End",
             },
           },
@@ -100,7 +99,9 @@ const IDPMachine =
         AuthorizationMachine,
       },
       actions: {
-        ingestSession: assign((context, event) => ({ session: event.data })),
+        ingestAuthSession: assign((context, event) => ({
+          authSession: event.data,
+        })),
         ingestRequest: assign((context, event) => ({
           authRequest: event.data,
         })),

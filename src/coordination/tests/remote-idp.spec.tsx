@@ -3,7 +3,7 @@
  */
 import { render, screen, waitFor } from "@testing-library/react"
 
-import RemoteSenderMachine from "frontend/state/authentication/remote-sender"
+import RemoteSenderMachine from "frontend/state/machines/authentication/remote-sender"
 
 import RemoteIDPCoordinator from "../remote-idp"
 

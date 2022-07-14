@@ -1,7 +1,7 @@
 import { useActor } from "@xstate/react"
 import React from "react"
 
-import { KnownDeviceActor } from "frontend/state/authentication/known-device"
+import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
 
 export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
   const [state] = useActor(actor)

@@ -3,12 +3,12 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 import { ii } from "frontend/integration/actors"
 import { isDeviceRegistered } from "frontend/integration/identity-manager/services"
 import { authState } from "frontend/integration/internet-identity"
-import KnownDeviceMachine from "frontend/state/authentication/known-device"
-import UnknownDeviceMachine from "frontend/state/authentication/unknown-device"
-import { AuthSession } from "frontend/state/authorization"
+import { AuthSession } from "frontend/state/authentication"
+import KnownDeviceMachine from "frontend/state/machines/authentication/known-device"
+import UnknownDeviceMachine from "frontend/state/machines/authentication/unknown-device"
 
 export interface Context {
-  session?: AuthSession
+  authSession?: AuthSession
 }
 
 export type Events =
@@ -46,7 +46,7 @@ const AuthenticationMachine = createMachine(
           id: "known-device",
           onDone: [
             {
-              actions: "ingestSession",
+              actions: "ingestAuthSession",
               target: "End",
             },
           ],
@@ -58,7 +58,7 @@ const AuthenticationMachine = createMachine(
           id: "unknown-device",
           onDone: [
             {
-              actions: "ingestSession",
+              actions: "ingestAuthSession",
               target: "End",
             },
           ],
@@ -67,11 +67,8 @@ const AuthenticationMachine = createMachine(
       End: {
         type: "final",
         entry: (context, event) => {
-          authState.set(
-            event.data.signIdentity,
-            event.data.delegationIdentity,
-            ii,
-          )
+          console.log(context, event)
+          authState.set(event.data.identity, event.data.delegationIdentity, ii)
         },
         data: (context) => context,
       },
@@ -79,7 +76,9 @@ const AuthenticationMachine = createMachine(
   },
   {
     actions: {
-      ingestSession: assign((context, event) => ({ session: event.data })),
+      ingestAuthSession: assign((context, event) => ({
+        authSession: event.data,
+      })),
     },
     guards: {
       isDeviceRegistered,

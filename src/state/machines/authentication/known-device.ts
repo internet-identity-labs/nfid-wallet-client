@@ -1,9 +1,9 @@
 import { ActorRefFrom, createMachine } from "xstate"
 
-import { AuthSession } from "frontend/state/authorization"
+import { AuthSession } from "frontend/state/authentication"
 
 export interface Context {
-  user?: AuthSession
+  authSession?: AuthSession
 }
 
 export type Events = { type: "X" }

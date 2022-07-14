@@ -1,9 +1,9 @@
 import { useMachine } from "@xstate/react"
 
-import { KnownDeviceActor } from "frontend/state/authentication/known-device"
+import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
 import RemoteSenderMachine, {
   RemoteSenderMachineType,
-} from "frontend/state/authentication/remote-sender"
+} from "frontend/state/machines/authentication/remote-sender"
 
 import { KnownDeviceCoordinator } from "./known-device"
 

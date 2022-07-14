@@ -3,7 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestUser: "RECEIVE_DELEGATION"
+    ingestAuthSession: "RECEIVE_DELEGATION"
   }
   internalEvents: {
     "xstate.init": { type: "xstate.init" }

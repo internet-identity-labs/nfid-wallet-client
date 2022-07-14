@@ -2,12 +2,11 @@
  * @jest-environment jsdom
  */
 import { render, waitFor, screen } from "@testing-library/react"
-import { useInterpret } from "@xstate/react"
 import { spawn } from "xstate"
 
 import KnownDeviceMachine, {
   KnownDeviceActor,
-} from "frontend/state/authentication/known-device"
+} from "frontend/state/machines/authentication/known-device"
 
 import { KnownDeviceCoordinator } from "../known-device"
 

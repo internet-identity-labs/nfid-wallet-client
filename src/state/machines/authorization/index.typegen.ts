@@ -4,7 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     ingestUserLimit: "done.invoke.fetchAppUserLimit"
-    ingestSession: "done.invoke.login" | "done.invoke.fetchDelegate"
+    ingestAuthSession: "done.invoke.login" | "done.invoke.fetchDelegate"
     ingestAccounts: "done.invoke.fetchAccounts"
     handleAccounts: "done.invoke.fetchAccounts"
   }

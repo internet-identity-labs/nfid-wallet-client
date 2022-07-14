@@ -1,3 +1,4 @@
+import { SignIdentity } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { atom, useAtom } from "jotai"
@@ -12,8 +13,10 @@ import {
 } from "frontend/integration/actors"
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {
+  authState,
   fetchRecoveryDevices,
   fromSeedPhrase,
+  getReconstructableIdentity,
   login as iiLogin,
   loginfromGoogleDevice,
 } from "frontend/integration/internet-identity"
@@ -178,7 +181,10 @@ export const useAuthentication = () => {
 
   const loginWithGoogleDevice = React.useCallback(
     async (identity: string) => {
-      const result = await loginfromGoogleDevice(identity)
+      await loginfromGoogleDevice(identity)
+      const result = await getReconstructableIdentity(
+        authState.get().identity as SignIdentity,
+      )
       const user = {
         principal: (await agent.getPrincipal()).toText(),
         chain: result.chain,

@@ -4,7 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     ingestRequest: "done.invoke.handshake"
-    ingestSession: "done.invoke.authenticate" | "done.invoke.authorize"
+    ingestAuthSession: "done.invoke.authenticate" | "done.invoke.authorize"
   }
   internalEvents: {
     "done.invoke.handshake": {

@@ -3,7 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestUser: "done.invoke.known-device" | "done.invoke.registration"
+    ingestAuthSession: "done.invoke.known-device" | "done.invoke.registration"
   }
   internalEvents: {
     "done.invoke.known-device": {

@@ -2,45 +2,48 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    ingestSession:
-      | "done.invoke.registration"
-      | "done.invoke.remote"
-      | "INGEST_SIGN_IDENTITY"
-    ingestGoogle: "done.invoke.fetchGoogle"
-    handleGoogle: "done.invoke.fetchGoogle"
-  }
+  eventsCausingActions: {}
   internalEvents: {
+    "": { type: "" }
+    "done.invoke.fetchGoogleDevice": {
+      type: "done.invoke.fetchGoogleDevice"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.registration": {
       type: "done.invoke.registration"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.registration": {
+      type: "error.platform.registration"
+      data: unknown
+    }
+    "done.invoke.signInWithGoogle": {
+      type: "done.invoke.signInWithGoogle"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.signInWithGoogle": {
+      type: "error.platform.signInWithGoogle"
+      data: unknown
+    }
+    "error.platform.fetchGoogleDevice": {
+      type: "error.platform.fetchGoogleDevice"
+      data: unknown
     }
     "done.invoke.remote": {
       type: "done.invoke.remote"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.fetchGoogle": {
-      type: "done.invoke.fetchGoogle"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "": { type: "" }
-    "xstate.init": { type: "xstate.init" }
-    "error.platform.registration": {
-      type: "error.platform.registration"
-      data: unknown
-    }
-    "error.platform.fetchGoogle": {
-      type: "error.platform.fetchGoogle"
-      data: unknown
-    }
     "error.platform.remote": { type: "error.platform.remote"; data: unknown }
   }
   invokeSrcNameMap: {
     RegistrationMachine: "done.invoke.registration"
-    fetchGoogleDevice: "done.invoke.fetchGoogle"
+    signInWithGoogle: "done.invoke.signInWithGoogle"
+    fetchGoogleDevice: "done.invoke.fetchGoogleDevice"
     RemoteReceiverMachine: "done.invoke.remote"
     registerDevice: "done.invoke.auth-unknown-device.RegisterDevice:invocation[0]"
   }
@@ -51,13 +54,15 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    RegistrationMachine: "" | "GOOGLE_REGISTER"
+    RegistrationMachine: "" | "done.invoke.fetchGoogleDevice"
     fetchGoogleDevice: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
+    signInWithGoogle: "done.invoke.fetchGoogleDevice"
     registerDevice: "TRUST_DEVICE"
   }
   eventsCausingGuards: {
     isMobileWithWebAuthn: ""
+    isExistingGoogleAccount: "done.invoke.fetchGoogleDevice"
   }
   eventsCausingDelays: {}
   matchesStates:
@@ -65,11 +70,13 @@ export interface Typegen0 {
     | "RegistrationMachine"
     | "AuthSelection"
     | "AuthWithGoogle"
+    | "AuthWithGoogle.SignIn"
+    | "AuthWithGoogle.Fetch"
     | "RemoteAuthentication"
-    | "RegisterDeviceDecider"
     | "RegisterDevice"
     | "RegisterDeviceError"
     | "ExistingAnchor"
     | "End"
+    | { AuthWithGoogle?: "SignIn" | "Fetch" }
   tags: never
 }

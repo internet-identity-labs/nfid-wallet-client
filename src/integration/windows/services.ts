@@ -1,4 +1,4 @@
-import { IDPMachineContext } from "frontend/state/authorization/idp"
+import { IDPMachineContext } from "frontend/state/machines/authorization/idp"
 
 import {
   awaitMessageFromClient,

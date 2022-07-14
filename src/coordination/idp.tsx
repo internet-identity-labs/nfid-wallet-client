@@ -3,11 +3,13 @@ import { useMachine, useActor } from "@xstate/react"
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { mapPersonaToLegacy } from "frontend/integration/identity-manager"
-import { AuthenticationActor } from "frontend/state/authentication"
-import { KnownDeviceActor } from "frontend/state/authentication/known-device"
-import { UnknownDeviceActor } from "frontend/state/authentication/unknown-device"
-import { AuthorizationActor } from "frontend/state/authorization"
-import IDPMachine, { IDPMachineType } from "frontend/state/authorization/idp"
+import { AuthenticationActor } from "frontend/state/machines/authentication"
+import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
+import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
+import { AuthorizationActor } from "frontend/state/machines/authorization"
+import IDPMachine, {
+  IDPMachineType,
+} from "frontend/state/machines/authorization/idp"
 import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
@@ -95,8 +97,8 @@ function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
       return <>TODO: RegistrationCoordinator</>
     case state.matches("RemoteAuthentication"):
       return <>TODO: Remote Auth Coordinator</>
-    case state.matches("RegisterDeviceDecider"):
-      return <>Trust this device?</>
+    // case state.matches("RegisterDeviceDecider"):
+    //   return <>Trust this device?</>
     case state.matches("RegisterDevice"):
       return <>Registering...</>
     case state.matches("RegisterDeviceError"):
@@ -130,7 +132,7 @@ function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
         >
           <AuthorizeApp
             applicationName=""
-            isAuthenticated={!!state.context.session}
+            isAuthenticated={!!state.context.authSession}
             accounts={state.context?.accounts?.map(mapPersonaToLegacy) || []}
             onUnlockNFID={async () => send("UNLOCK")}
             onLogin={async (persona) =>

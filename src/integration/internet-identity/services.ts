@@ -1,7 +1,5 @@
-import {
-  AuthorizationMachineContext,
-  AuthSession,
-} from "frontend/state/authorization"
+import { AuthSession } from "frontend/state/authentication"
+import { AuthorizationMachineContext } from "frontend/state/machines/authorization"
 
 import { fetchDelegate as _fetchDelegate } from "."
 

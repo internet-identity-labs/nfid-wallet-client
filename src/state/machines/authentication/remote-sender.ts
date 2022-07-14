@@ -1,14 +1,13 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { AuthSession } from "frontend/state/authorization"
+import { AuthSession } from "frontend/state/authentication"
 
 import KnownDeviceMachine from "./known-device"
 import RegistrationMachine from "./registration"
 
 interface Context {
   pubsubChannel: string
-  user?: AuthSession
+  authSession?: AuthSession
 }
 
 type Events =
@@ -48,7 +47,7 @@ const RemoteSenderMachine =
             id: "known-device",
             onDone: [
               {
-                actions: "ingestUser",
+                actions: "ingestAuthSession",
                 target: "End",
               },
             ],
@@ -60,7 +59,7 @@ const RemoteSenderMachine =
             id: "registration",
             onDone: [
               {
-                actions: "ingestUser",
+                actions: "ingestAuthSession",
                 target: "End",
               },
             ],
@@ -86,7 +85,9 @@ const RemoteSenderMachine =
         postDelegate,
       },
       actions: {
-        ingestUser: assign((context, event) => ({ user: event.data })),
+        ingestAuthSession: assign((context, event) => ({
+          authSession: event.data,
+        })),
       },
     },
   )

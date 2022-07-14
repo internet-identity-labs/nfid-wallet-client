@@ -1,4 +1,4 @@
-import { AuthorizationMachineContext } from "frontend/state/authorization"
+import { AuthorizationMachineContext } from "frontend/state/machines/authorization"
 
 import { fetchPersonas as _fetchPersonas, selectPersonas } from "."
 import { profile } from "./profile"

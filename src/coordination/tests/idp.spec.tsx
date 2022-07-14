@@ -6,7 +6,7 @@ import { render, fireEvent, waitFor, screen, act } from "@testing-library/react"
 import React from "react"
 
 import { mockIdentityClientAuthEvent } from "frontend/integration/windows/__mock"
-import IDPMachine from "frontend/state/authorization/idp"
+import IDPMachine from "frontend/state/machines/authorization/idp"
 
 import IDPCoordinator from "../idp"
 

@@ -1,7 +1,7 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
-const HttpProxyMiddlware = require("http-proxy-middleware");
+const path = require("path")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const webpack = require("webpack")
+const HttpProxyMiddlware = require("http-proxy-middleware")
 
 module.exports = {
   entry: {
@@ -29,25 +29,25 @@ module.exports = {
     // Set up a proxy that redirects API calls and /index.html to the
     // replica; the rest we serve from here.
     setupMiddlewares: (middlewares, devServer) => {
-      const dfxJson = "./dfx.json";
-      let replicaHost;
+      const dfxJson = "./dfx.json"
+      let replicaHost
 
       try {
-        replicaHost = require(dfxJson).networks.local.bind;
+        replicaHost = require(dfxJson).networks.local.bind
       } catch (e) {
-        throw Error(`Could get host from ${dfxJson}: ${e}`);
+        throw Error(`Could get host from ${dfxJson}: ${e}`)
       }
       // If the replicaHost lacks protocol (e.g. 'localhost:8000') the
       // requests are not forwarded properly
       if (!replicaHost.startsWith("http://")) {
-        replicaHost = `http://${replicaHost}`;
+        replicaHost = `http://${replicaHost}`
       }
-      const canisterIdsJson = "./.dfx/local/canister_ids.json";
-      let canisterId;
+      const canisterIdsJson = "./.dfx/local/canister_ids.json"
+      let canisterId
       try {
-        canisterId = require(canisterIdsJson).selenium_test_app.local;
+        canisterId = require(canisterIdsJson).test_app.local
       } catch (e) {
-        throw Error(`Could get canister ID from ${canisterIdsJson}: ${e}`);
+        throw Error(`Could get canister ID from ${canisterIdsJson}: ${e}`)
       }
 
       devServer.app.get(
@@ -60,21 +60,21 @@ module.exports = {
         HttpProxyMiddlware.createProxyMiddleware({
           target: replicaHost,
           pathRewrite: (pathAndParams, req) => {
-            let queryParamsString = `?`;
+            let queryParamsString = `?`
 
-            const [path, params] = pathAndParams.split("?");
+            const [path, params] = pathAndParams.split("?")
 
             if (params) {
-              queryParamsString += `${params}&`;
+              queryParamsString += `${params}&`
             }
 
-            queryParamsString += `canisterId=${canisterId}`;
+            queryParamsString += `canisterId=${canisterId}`
 
-            return path + queryParamsString;
+            return path + queryParamsString
           },
-        })
-      );
-      return middlewares;
+        }),
+      )
+      return middlewares
     },
     port: 8080,
     proxy: {
@@ -93,4 +93,4 @@ module.exports = {
       process: require.resolve("process/browser"),
     }),
   ],
-};
+}

@@ -3,6 +3,7 @@ import React from "react"
 
 import { ii } from "frontend/comm/actors"
 import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
+import { validateDerivationOrigin } from "frontend/comm/services/internet-identity/validateDerivationOrigin"
 
 import { useMessageChannel } from "../../design-system/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
 
@@ -44,6 +45,12 @@ export const useAuthorization = ({
         "authorize-client": async (event: MessageEvent<AuthRequestEvent>) => {
           const message = event.data
           const { maxTimeToLive, sessionPublicKey, derivationOrigin } = message
+          const validation = await validateDerivationOrigin(
+            event.origin,
+            derivationOrigin,
+          )
+          if (validation.result !== "valid") throw new Error(validation.message)
+          console.log({ validation, derivationOrigin })
           setAuthorizationRequest({
             maxTimeToLive,
             sessionPublicKey,

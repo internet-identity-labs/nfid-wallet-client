@@ -42,7 +42,6 @@ export function selectAccounts(
 }
 
 export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {
-  console.log({ filteredPersonas })
   const highest = filteredPersonas.reduce((last, persona) => {
     const current = parseInt(persona.persona_id, 10)
     return last < current ? current : last

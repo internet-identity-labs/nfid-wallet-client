@@ -1,7 +1,6 @@
 import React from "react"
+import { Fade } from "react-awesome-reveal"
 import Tilt from "react-parallax-tilt"
-// @ts-ignore
-import { Fade } from "react-reveal"
 
 import { RegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"

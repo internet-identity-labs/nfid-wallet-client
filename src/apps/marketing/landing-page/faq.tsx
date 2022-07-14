@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React from "react"
-// @ts-ignore
-import { Fade } from "react-reveal"
+import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
 import { Accordion } from "frontend/design-system/atoms/accordion"

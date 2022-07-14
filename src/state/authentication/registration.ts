@@ -1,9 +1,10 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, createMachine } from "xstate"
 
-import { User } from "../authorization/idp"
+import { AuthSession } from "frontend/state/authorization"
 
-interface Context extends User {}
+interface Context {
+  user?: AuthSession
+}
 
 type Events = { type: "X" }
 

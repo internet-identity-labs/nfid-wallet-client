@@ -1,8 +1,7 @@
-import { SignedDelegation } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
+import { SignedDelegate } from "../internet-identity"
 import { BuiltDelegate } from "../internet-identity/build-delegate"
 
-type IdentityProviderReadyEvent = { kind: "ready" }
+type IdentityProviderReadyEvent = { kind: "authorize-ready" }
 type IdentityProviderAuthResponseEvent = {
   kind: "authorize-client-success"
   delegations: BuiltDelegate
@@ -20,7 +19,7 @@ export type IdentityClientAuthEvent = {
 type IdentityClientDeviceEvent = { kind: "new-device" }
 type IdentityClientEvents = IdentityClientAuthEvent | IdentityClientDeviceEvent
 
-export interface ClientIdentityDelegate {
+export interface DfinityAuthClientDelegate {
   delegation: {
     pubkey: Uint8Array
     expiration: bigint
@@ -44,7 +43,7 @@ export function awaitMessageFromClient<T extends IdentityClientEvents>(
   event: T["kind"],
 ) {
   return new Promise<MessageEvent<T>>((res) => {
-    opener().addEventListener("message", (message: MessageEvent<T>) => {
+    window.addEventListener("message", (message: MessageEvent<T>) => {
       if (message.data.kind === event) {
         res(message)
       }
@@ -53,8 +52,8 @@ export function awaitMessageFromClient<T extends IdentityClientEvents>(
 }
 
 export const prepareClientDelegate = (
-  receivedDelegation: SignedDelegation,
-): ClientIdentityDelegate => ({
+  receivedDelegation: SignedDelegate,
+): DfinityAuthClientDelegate => ({
   delegation: {
     pubkey: Uint8Array.from(receivedDelegation.delegation.pubkey),
     expiration: BigInt(receivedDelegation.delegation.expiration),

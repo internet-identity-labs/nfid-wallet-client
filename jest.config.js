@@ -14,6 +14,7 @@ module.exports = {
     II_ENV: "dev",
     GOOGLE_CLIENT_ID:
       "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
+    SIGNIN_GOOGLE: "/signin",
     fetch: () => {},
   },
   testMatch: ["**/*.spec.(js|ts|tsx)"],

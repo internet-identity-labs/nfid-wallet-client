@@ -1,17 +1,18 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine, send } from "xstate"
 
+import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import {
   fetchGoogleDevice,
   GoogleDeviceResult,
-} from "frontend/integration/lambda-google"
+} from "frontend/integration/lambda/google"
+import { AuthSession } from "frontend/state/authorization"
 
-import { User } from "../authorization/idp"
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
-export interface Context extends User {
+export interface Context {
   googleIdentityExists?: boolean
+  session?: AuthSession
 }
 
 export type Events =
@@ -19,26 +20,20 @@ export type Events =
       type: "AUTH_WITH_GOOGLE"
       data: string
     }
-  | { type: "done.invoke.remote"; data: User }
-  | { type: "done.invoke.registration"; data: User }
+  | { type: "done.invoke.remote"; data: AuthSession }
+  | { type: "done.invoke.registration"; data: AuthSession }
   | { type: "done.invoke.fetchGoogle"; data: GoogleDeviceResult }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
   | { type: "TRUST_DEVICE" }
   | { type: "DONT_TRUST_DEVICE" }
-  | { type: "INGEST_SIGN_IDENTITY"; data: User }
-  | { type: "GOOGLE_DONE"; data: User }
-  | { type: "GOOGLE_REGISTER"; data: User }
+  | { type: "INGEST_SIGN_IDENTITY"; data: AuthSession }
+  | { type: "GOOGLE_DONE"; data: AuthSession }
+  | { type: "GOOGLE_REGISTER"; data: AuthSession }
 
 export interface Schema {
   events: Events
   context: Context
-}
-
-function isMobileWithWebAuthn() {
-  // Integration layer note: run async capability check initially and capture to memory.
-  // Maybe make this an invokation to deal with async, while Philipp is sleeping.
-  return false
 }
 
 const UnknownDeviceMachine =
@@ -68,7 +63,7 @@ const UnknownDeviceMachine =
             id: "registration",
             onDone: [
               {
-                actions: "ingestUser",
+                actions: "ingestSession",
                 target: "End",
               },
             ],
@@ -107,7 +102,7 @@ const UnknownDeviceMachine =
             id: "remote",
             onDone: [
               {
-                actions: "ingestUser",
+                actions: "ingestSession",
                 target: "RegisterDeviceDecider",
               },
             ],
@@ -151,7 +146,7 @@ const UnknownDeviceMachine =
         ExistingAnchor: {
           on: {
             INGEST_SIGN_IDENTITY: {
-              actions: "ingestUser",
+              actions: "ingestSession",
               target: "End",
             },
             AUTH_WITH_OTHER: "AuthSelection",
@@ -177,14 +172,15 @@ const UnknownDeviceMachine =
           type: event.data.isExisting ? "GOOGLE_DONE" : "GOOGLE_REGISTER",
           data: event.data,
         })),
-        ingestUser: assign((context, event) => ({
-          ...event.data,
+        ingestSession: assign((context, event) => ({
+          session: event.data,
         })),
       },
       services: {
         RegistrationMachine,
         RemoteReceiverMachine,
         fetchGoogleDevice: (context, event) => fetchGoogleDevice(event.data),
+        // registerDevice,
       },
     },
   )

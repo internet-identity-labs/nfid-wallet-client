@@ -1,12 +1,14 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { User } from "../authorization/idp"
+import { AuthSession } from "frontend/state/authorization"
 
-export interface Context extends User {}
+export interface Context {
+  user?: AuthSession
+}
 
 export type Events =
   | { type: "AWAIT_CONFIRMATION" }
-  | { type: "RECEIVE_DELEGATION"; data: User }
+  | { type: "RECEIVE_DELEGATION"; data: AuthSession }
 
 const RemoteReceiverMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5gFsB7dMPMAYzAEsA3MXAOgEVcBhIiMAYgEEB1XgEkAKgH02AeQByAMSEAlALK8RQmYlAAHIrGrpqRAHaaQAD0QBGABwA2RgHYHAZgAstgKy2HABh8OAJksAGhAATytLH0YPPz8PAOsba2sEgF800LQscmJScio6BkYAGSJkCGojKG4FAFE2OqEANTqxABE6krqAcVV1aVMdPQNjUwsED1jGfyTrJwBODwdU61CIhAXLGbifW1cp-csPZwzMkCNOOFNsnHw8snxC+iZWDi4h3X1DEyRzRFcAXWVh8rkYrgWkMhUwW1kBtgCGSyGDuhBIj0oNBepXKlWqnxGP3GAJ8HhmqQWtmcCx8C1c8OBCCiYIhUKWHlh8MR51uuXRBSxxTqRggBO+Yz+Ewc+0cgICQROKWcgUZzPBbPZnICCKRIF5935T0FuDFo1+oAmNlV1jOaSAA */
@@ -40,7 +42,7 @@ const RemoteReceiverMachine =
     {
       actions: {
         ingestUser: assign((context, event) => ({
-          ...event.data,
+          user: event.data,
         })),
       },
     },

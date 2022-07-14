@@ -1,24 +1,23 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { User } from "../authorization/idp"
-import KnownDeviceMachine from "./known-device"
-import UnknownDeviceMachine from "./unknown-device"
+import { ii } from "frontend/integration/actors"
+import { isDeviceRegistered } from "frontend/integration/identity-manager/services"
+import { authState } from "frontend/integration/internet-identity"
+import KnownDeviceMachine from "frontend/state/authentication/known-device"
+import UnknownDeviceMachine from "frontend/state/authentication/unknown-device"
+import { AuthSession } from "frontend/state/authorization"
 
-export interface Context extends User {}
+export interface Context {
+  session?: AuthSession
+}
 
 export type Events =
-  | { type: "done.invoke.known-device"; data: User }
-  | { type: "done.invoke.unknown-device"; data: User }
+  | { type: "done.invoke.known-device"; data: AuthSession }
+  | { type: "done.invoke.unknown-device"; data: AuthSession }
 
 export interface Schema {
   events: Events
   context: Context
-}
-
-export function isDeviceRegistered() {
-  // Pull from integration layer: either existing local storage, or refactored device service
-  return false
 }
 
 /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgOgJKwBEwA3ASwGMwAlMKU2dMAJ0gGJFQAHAe1lPVLcAdhxAAPRACYAbAGZsk2QBZZAdgCsAGhABPKQEZV2dQAYz0gBwmlJgJy2l6gL5PtaLNgDSQ7gHchRGSUrBDCYNikQsTcANbhMT7+ALQQJBRgojx8AsKiEgi2htjSqraWGtp6CJLqtthm5lY29o4ubhg4AKpCCX4BacGhQuGR0XHYqD2JQikDGUggWfyCIgv5hUYlZRYVuoj6+ur1DWrqikr6cqouriA+qfAL7jj4gek0dAzMkJm8y7lrRBKSSVKSqSTGBqWax2BzOW7PLzTN6UX7ZFZ5RDqIpbcpaPbVWRHBomaHNOFtECI7q9fwo+ZcP45VagfLYzalPGggr6Y4NVRmdQWWQWSRKSmIgCiQggaP+LPE+30amwRNsp25yqMpjMp3OlxFEo6cuZmIQ+gsmosNycQA */
@@ -47,7 +46,7 @@ const AuthenticationMachine = createMachine(
           id: "known-device",
           onDone: [
             {
-              actions: "ingestUser",
+              actions: "ingestSession",
               target: "End",
             },
           ],
@@ -59,7 +58,7 @@ const AuthenticationMachine = createMachine(
           id: "unknown-device",
           onDone: [
             {
-              actions: "ingestUser",
+              actions: "ingestSession",
               target: "End",
             },
           ],
@@ -67,13 +66,20 @@ const AuthenticationMachine = createMachine(
       },
       End: {
         type: "final",
+        entry: (context, event) => {
+          authState.set(
+            event.data.signIdentity,
+            event.data.delegationIdentity,
+            ii,
+          )
+        },
         data: (context) => context,
       },
     },
   },
   {
     actions: {
-      ingestUser: assign((context, event) => ({ ...event.data })),
+      ingestSession: assign((context, event) => ({ session: event.data })),
     },
     guards: {
       isDeviceRegistered,

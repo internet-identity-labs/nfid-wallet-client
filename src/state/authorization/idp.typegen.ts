@@ -4,7 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     ingestRequest: "done.invoke.handshake"
-    ingestUser: "done.invoke.authenticate" | "done.invoke.authorize"
+    ingestSession: "done.invoke.authenticate" | "done.invoke.authorize"
   }
   internalEvents: {
     "done.invoke.handshake": {
@@ -49,7 +49,7 @@ export interface Typegen0 {
     postDelegation: "done.invoke.done"
   }
   missingImplementations: {
-    actions: "ingestRequest"
+    actions: never
     services: never
     guards: never
     delays: never

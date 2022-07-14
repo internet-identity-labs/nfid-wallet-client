@@ -5,7 +5,7 @@ import { render, screen, waitFor } from "@testing-library/react"
 
 import RemoteSenderMachine from "frontend/state/authentication/remote-sender"
 
-import RemoteIDPCoordinator from "./remote-idp"
+import RemoteIDPCoordinator from "../remote-idp"
 
 const config = {
   guards: {

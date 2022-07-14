@@ -4,15 +4,15 @@ import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 
 import { authState } from "frontend/integration/internet-identity"
 
-import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.did"
+import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.did.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager_idl"
-import { _SERVICE as ImAddition } from "./_ic_api/im_addition.did"
+import { _SERVICE as ImAddition } from "./_ic_api/im_addition.did.d"
 import { idlFactory as imaIDL } from "./_ic_api/im_addition_idl"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity_idl"
-import { _SERVICE as InternetIdentity } from "./_ic_api/internet_identity_types"
-import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.did"
+import { _SERVICE as InternetIdentity } from "./_ic_api/internet_identity_types.d"
+import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.did.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel_idl"
-import { _SERVICE as Verifier } from "./_ic_api/verifier.did"
+import { _SERVICE as Verifier } from "./_ic_api/verifier.did.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier_idl"
 
 /////////////

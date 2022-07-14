@@ -8,14 +8,21 @@ import {
 describe("persona utils test suite", () => {
   describe("selectAccounts", () => {
     it("selects personas/accounts for given domain", () => {
-      const result = { persona_id: "1", domain: `test.com` }
+      const expectedResult = [
+        // NOTE: we currently have accounts, where the domain field
+        // includes AND misses the protocol. Both needs to
+        // be included in the filtered list
+        { persona_id: "1", domain: "test.com" },
+        { persona_id: "2", domain: "https://test.com" },
+      ]
       const personas = [
-        result,
+        ...expectedResult,
         { persona_id: "2", domain: `canister-id.ic0.app` },
         { persona_id: "3", domain: `canister-id-2.ic0.app` },
         { persona_id: "4", domain: `canister-id-3.ic0.app` },
       ]
-      expect(selectAccounts(personas, "test.com")[0]).toBe(result)
+      const result = selectAccounts(personas, "test.com")
+      expect(result).toEqual(expectedResult)
     })
 
     it("should return personas filtered by derivationOrigin if present", () => {

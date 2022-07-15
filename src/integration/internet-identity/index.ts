@@ -765,6 +765,14 @@ export interface SignedDelegate {
   signature: Uint8Array
 }
 
+/**
+ *
+ * @param userNumber
+ * @param scope
+ * @param sessionKey session key generated and provided by 3rd party connecting app
+ * @param maxTimeToLive
+ * @returns
+ */
 export async function prepareDelegate(
   userNumber: number,
   scope: string,
@@ -778,8 +786,8 @@ export async function prepareDelegate(
       sessionKey,
       reverseMapOptional(BigInt(maxTimeToLive)),
     )
-    .then(([userKey, timestamp]) => ({
-      userKey: new Uint8Array(userKey),
+    .then(([userPublicKey, timestamp]) => ({
+      userPublicKey: new Uint8Array(userPublicKey),
       timestamp: Number(timestamp),
     }))
 }
@@ -814,7 +822,7 @@ export async function fetchDelegate(
   maxTimeToLive: number,
 ): Promise<{
   signedDelegate: SignedDelegate
-  userKey: Uint8Array
+  userPublicKey: Uint8Array
 }> {
   const prepare = await prepareDelegate(
     userNumber,
@@ -831,6 +839,68 @@ export async function fetchDelegate(
   )
   return {
     signedDelegate: get,
-    userKey: prepare.userKey,
+    userPublicKey: prepare.userPublicKey,
   }
+}
+
+export function mapChallenge(challenge: Challenge) {
+  return {
+    pngBase64: challenge.png_base64,
+    challengeKey: challenge.challenge_key,
+  }
+}
+
+export async function fetchChallenge() {
+  return await ii.create_challenge().then(mapChallenge)
+}
+
+function mapRegisterResponse(response: RegisterResponse) {
+  if ("canister_full" in response) {
+    throw new Error(
+      "Internet Identity canister is out of space, ping Dominic Williams",
+    )
+  } else if ("bad_challenge" in response) {
+    throw new Error(
+      `There was a problem with your captcha response, please try again.`,
+    )
+  } else if ("registered" in response) {
+    return Number(response.registered.user_number)
+  } else {
+    console.error(`Unexpected response from internet identity`, response)
+    throw new Error(`Something went wrong, please try again later.`)
+  }
+}
+
+/**
+ * Register a new internet identity anchor.
+ * @param identity user's webauthn identity
+ * @param alias device name
+ * @param challengeResult completed captcha
+ * @returns registered anchor number
+ */
+export async function registerInternetIdentity(
+  identity: WebAuthnIdentity,
+  alias: string,
+  challengeResult: ChallengeResult,
+) {
+  const delegation = await requestFEDelegation(identity)
+
+  const credentialId = Array.from(new Uint8Array(identity.rawId))
+  const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
+
+  authState.set(identity, delegation.delegationIdentity, ii)
+
+  return ii
+    .register(
+      {
+        alias,
+        pubkey,
+        credential_id: credentialId ? [credentialId] : [],
+        key_type: { unknown: null },
+        purpose: { authentication: null },
+        protection: { unprotected: null },
+      },
+      challengeResult,
+    )
+    .then(mapRegisterResponse)
 }

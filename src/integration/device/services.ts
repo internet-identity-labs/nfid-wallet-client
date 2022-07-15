@@ -1,8 +1,7 @@
-import { fetchWebAuthnCapabilitySync, isMobile } from "."
+import { fetchWebAuthnCapability, isMobile } from "."
 
-export function isMobileWithWebAuthn() {
-  const hasWebAuthn = fetchWebAuthnCapabilitySync()
-  if (hasWebAuthn === undefined)
-    throw new Error("Cannot call fetch web authn sync too early")
-  return hasWebAuthn && isMobile
+export async function isMobileWithWebAuthn() {
+  const hasWebAuthn = await fetchWebAuthnCapability()
+  if (!(hasWebAuthn && isMobile)) throw new Error()
+  return hasWebAuthn
 }

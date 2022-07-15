@@ -4,13 +4,21 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {}
   internalEvents: {
-    "": { type: "" }
+    "done.invoke.isMobileWithWebAuthn": {
+      type: "done.invoke.isMobileWithWebAuthn"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.fetchGoogleDevice": {
       type: "done.invoke.fetchGoogleDevice"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "xstate.init": { type: "xstate.init" }
+    "error.platform.isMobileWithWebAuthn": {
+      type: "error.platform.isMobileWithWebAuthn"
+      data: unknown
+    }
     "done.invoke.registration": {
       type: "done.invoke.registration"
       data: unknown
@@ -41,6 +49,7 @@ export interface Typegen0 {
     "error.platform.remote": { type: "error.platform.remote"; data: unknown }
   }
   invokeSrcNameMap: {
+    isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
     RegistrationMachine: "done.invoke.registration"
     signInWithGoogle: "done.invoke.signInWithGoogle"
     fetchGoogleDevice: "done.invoke.fetchGoogleDevice"
@@ -54,19 +63,22 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    RegistrationMachine: "" | "done.invoke.fetchGoogleDevice"
+    isMobileWithWebAuthn: "xstate.init"
+    RegistrationMachine:
+      | "done.invoke.isMobileWithWebAuthn"
+      | "done.invoke.fetchGoogleDevice"
     fetchGoogleDevice: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     signInWithGoogle: "done.invoke.fetchGoogleDevice"
     registerDevice: "TRUST_DEVICE"
   }
   eventsCausingGuards: {
-    isMobileWithWebAuthn: ""
     isExistingGoogleAccount: "done.invoke.fetchGoogleDevice"
   }
   eventsCausingDelays: {}
   matchesStates:
     | "Start"
+    | "Start.checkCapability"
     | "RegistrationMachine"
     | "AuthSelection"
     | "AuthWithGoogle"
@@ -77,6 +89,6 @@ export interface Typegen0 {
     | "RegisterDeviceError"
     | "ExistingAnchor"
     | "End"
-    | { AuthWithGoogle?: "SignIn" | "Fetch" }
+    | { Start?: "checkCapability"; AuthWithGoogle?: "SignIn" | "Fetch" }
   tags: never
 }

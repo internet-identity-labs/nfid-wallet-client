@@ -3,9 +3,9 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestUserLimit: "done.invoke.fetchAppUserLimit"
-    ingestAuthSession: "done.invoke.login" | "done.invoke.fetchDelegate"
-    ingestAccounts: "done.invoke.fetchAccounts"
+    assignUserLimit: "done.invoke.fetchAppUserLimit"
+    assignAuthSession: "done.invoke.login" | "done.invoke.fetchDelegate"
+    assignAccounts: "done.invoke.fetchAccounts"
     handleAccounts: "done.invoke.fetchAccounts"
   }
   internalEvents: {

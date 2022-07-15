@@ -2,20 +2,83 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {}
-  internalEvents: {
-    "xstate.init": { type: "xstate.init" }
+  eventsCausingActions: {
+    assignChallenge: "done.invoke.fetchChallenge"
   }
-  invokeSrcNameMap: {}
+  internalEvents: {
+    "done.invoke.fetchChallenge": {
+      type: "done.invoke.fetchChallenge"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.challengeTimer": {
+      type: "done.invoke.challengeTimer"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "": { type: "" }
+    "xstate.init": { type: "xstate.init" }
+    "error.platform.fetchChallenge": {
+      type: "error.platform.fetchChallenge"
+      data: unknown
+    }
+    "error.platform.challengeTimer": {
+      type: "error.platform.challengeTimer"
+      data: unknown
+    }
+    "done.invoke.register": {
+      type: "done.invoke.register"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.register": {
+      type: "error.platform.register"
+      data: unknown
+    }
+  }
+  invokeSrcNameMap: {
+    fetchChallenge: "done.invoke.fetchChallenge"
+    challengeTimer: "done.invoke.challengeTimer"
+    register: "done.invoke.register"
+  }
   missingImplementations: {
     actions: never
     services: never
     guards: never
     delays: never
   }
-  eventsCausingServices: {}
-  eventsCausingGuards: {}
+  eventsCausingServices: {
+    fetchChallenge: "done.invoke.challengeTimer"
+    challengeTimer: "done.invoke.fetchChallenge"
+    register: "SUBMIT_CAPTCHA"
+  }
+  eventsCausingGuards: {
+    authenticated: ""
+  }
   eventsCausingDelays: {}
-  matchesStates: "Start" | "End"
+  matchesStates:
+    | "Start"
+    | "Start.Challenge"
+    | "Start.Challenge.Fetch"
+    | "Start.Challenge.Wait"
+    | "Start.Register"
+    | "Start.Register.CheckAuth"
+    | "Start.Register.InitialChallenge"
+    | "Start.Register.Captcha"
+    | "Start.Register.Register"
+    | "End"
+    | {
+        Start?:
+          | "Challenge"
+          | "Register"
+          | {
+              Challenge?: "Fetch" | "Wait"
+              Register?:
+                | "CheckAuth"
+                | "InitialChallenge"
+                | "Captcha"
+                | "Register"
+            }
+      }
   tags: never
 }

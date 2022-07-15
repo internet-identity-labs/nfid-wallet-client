@@ -5,6 +5,7 @@ import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import { mapPersonaToLegacy } from "frontend/integration/identity-manager"
 import { AuthenticationActor } from "frontend/state/machines/authentication"
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
+import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
 import { AuthorizationActor } from "frontend/state/machines/authorization"
 import IDPMachine, {
@@ -94,7 +95,11 @@ function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
         />
       )
     case state.matches("RegistrationMachine"):
-      return <>TODO: RegistrationCoordinator</>
+      return (
+        <RegistrationCoordinator
+          actor={state.children.registration as RegistrationActor}
+        />
+      )
     case state.matches("RemoteAuthentication"):
       return <>TODO: Remote Auth Coordinator</>
     // case state.matches("RegisterDeviceDecider"):
@@ -144,5 +149,18 @@ function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
       )
     default:
       return <Loader isLoading={true} />
+  }
+}
+
+function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
+  const [state, send] = useActor(actor)
+
+  switch (true) {
+    case state.matches("Start"):
+      return <>Start</>
+    case state.matches("End"):
+      return <>End</>
+    default:
+      return <>Loading...</>
   }
 }

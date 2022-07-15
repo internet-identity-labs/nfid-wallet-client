@@ -1,0 +1,142 @@
+# Will Build and Deploy the Internet identity test application
+# https://github.com/dfinity/internet-identity/tree/main/demos/test-app
+
+name: II test app
+on: 
+  workflow_dispatch:
+
+env:
+  NETWORK_NAME: 'ic'
+  CANISTER_NAME: 'test_app'
+  CANISTER_ID: '3l2cj-5aaaa-aaaag-aaecq-cai'
+  PROJECT_PATH: 'demos/test-app/'
+  DEBUG: 'true'
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: identitylabs/dfxctl:0.10.1-compiled
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: DFX => Write identity.
+        run: |
+          mkdir -p "${ID_PATH}"
+          echo "${GH_MP_ADMIN_PEM}" | base64 --decode > "${ID_PATH}/identity.pem"
+        env:
+          GH_MP_ADMIN_PEM: ${{secrets.GH_MP_ADMIN_PEM}}
+          ID_PATH: /root/.config/dfx/identity/gh_mp_admin
+
+      - name: DFX => Start.
+        run: |
+          dfx_run &
+          sleep 60
+        working-directory: /default_project
+        env:
+          HOME: /root
+
+      - name: Checkout CI repo.
+        uses: actions/checkout@v3
+
+      - name: Checkout target repo.
+        uses: actions/checkout@v3
+        with:
+          repository:  dfinity/internet-identity
+          ref: main
+          path: generic-project
+
+      - name: Cache Cargo dependencies.
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            /cargo
+            /cargo_target
+            target/
+          key: ${{ runner.os }}-cargo-dev-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: PRE-BUILD => Populate env vars.
+        run: |
+          source .github/workflows/CI_LIBS.sh
+          export HOME=/root
+
+          echo_debug "Installing jq"
+          apt-get update && apt-get install -y --no-install-recommends jq
+
+          pushd ./generic-project/${PROJECT_PATH} || exit 1
+
+          echo_debug "Getting values from dfx.json"
+          if ! canister_data=$(cat dfx.json | jq -er ".canisters.${CANISTER_NAME}"); then
+            echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
+            exit 1
+          fi
+
+          echo_debug "Setting destination canister id to '${CANISTER_ID}' in canister_ids.json" >&2
+          tmpfile="$(mktemp /tmp/XXXXXX.json)"
+          if ! jq --arg canister_id "${CANISTER_ID}" '.test_app.ic = $canister_id' canister_ids.json > "${tmpfile}"; then
+            echo_error "Can't setting canister id '${CANISTER_ID}'" >&2
+            exit 1
+          fi
+
+          mv -f "${tmpfile}" canister_ids.json
+          echo_debug "canister_ids.json" >&2
+          cat canister_ids.json
+          
+          CANISTER_DID="$(cat dfx.json | jq -er ".canisters.${CANISTER_NAME}.candid")"
+          CANISTER_WASM="$(cat dfx.json | jq -er ".canisters.${CANISTER_NAME}.wasm")"
+            
+          echo "CANISTER_DID=${CANISTER_DID}" >> $GITHUB_ENV
+          echo "CANISTER_WASM=${CANISTER_WASM}" >> $GITHUB_ENV
+          
+          echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
+          echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
+          echo_info "CANISTER_DID=${CANISTER_DID}" >&2
+          echo_info "CANISTER_WASM=${CANISTER_WASM}" >&2
+        env:
+          DEBIAN_FRONTEND: noninteractive
+
+      - name: BUILD => Build the canister.
+        run: |
+          source .github/workflows/CI_LIBS.sh
+          export HOME=/root
+
+          pushd ./generic-project/${PROJECT_PATH} || exit 1
+
+          dfx identity use gh_mp_admin
+
+          ln -s /cargo_target target
+
+          rm -rf .dfx;
+          echo_debug "dfx build --network '${NETWORK_NAME}' '${CANISTER_NAME}'" >&2
+          dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
+
+      - name: DEPLOY => Upgrade the canister.
+        run: |
+          source .github/workflows/CI_LIBS.sh
+          export HOME=/root
+
+          pushd ./generic-project/${PROJECT_PATH} || exit 1
+
+          dfx identity use gh_mp_admin
+
+          echo_debug "dfx canister --network '${NETWORK_NAME}' install --mode upgrade '${CANISTER_NAME}'" >&2
+          if ! result=$(dfx canister --network "${NETWORK_NAME}" install --mode upgrade "${CANISTER_NAME}"); then
+            echo_error "Upgrade failed ${result}" >&2
+            exit 1
+          fi
+
+          echo_debug "Command output was '${result}'" >&2
+
+          # If hash the same - than fail deploy
+          if echo "${result}" | grep -q 'Module hash [[:alnum:]]+ is already installed'; then
+            echo_error "${result}" >&2
+            exit 1
+          else
+            echo_success "Canister '${CANISTER_NAME}' was upgraded" >&2
+          fi

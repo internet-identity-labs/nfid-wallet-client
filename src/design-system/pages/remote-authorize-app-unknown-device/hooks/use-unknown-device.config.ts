@@ -96,7 +96,7 @@ export const useUnknownDeviceConfig = () => {
     return domain && secret
       ? `${window.location.origin}${generatePath(
           AppScreenAuthorizeAppConstants.authorize,
-          { secret, scope: domain },
+          { secret, scope: domain  },
         )}?${query.toString()}`
       : null
   }, [applicationLogo, applicationName, domain, secret])

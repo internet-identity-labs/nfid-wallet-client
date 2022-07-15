@@ -2,6 +2,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 
 import { ii } from "frontend/comm/actors"
+import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
 import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
 import { validateDerivationOrigin } from "frontend/comm/services/internet-identity/validateDerivationOrigin"
 
@@ -22,6 +23,7 @@ interface AuthorizationRequest {
   maxTimeToLive: any
   sessionPublicKey: any
   hostname: string
+  derivationOrigin?: string
   source: any
 }
 
@@ -74,11 +76,16 @@ export const useAuthorization = ({
 
       if (!authorizationRequest) throw new Error("authorizationRequest missing")
 
-      const { sessionPublicKey, hostname, maxTimeToLive, source } =
-        authorizationRequest
+      const {
+        sessionPublicKey,
+        hostname,
+        derivationOrigin,
+        maxTimeToLive,
+        source,
+      } = authorizationRequest
 
       const sessionKey = Array.from(new Uint8Array(sessionPublicKey))
-      const scope = persona_id ? `${persona_id}@${hostname}` : hostname
+      const scope = getScope(derivationOrigin ?? hostname, persona_id)
 
       const anchor = rawAnchor && BigInt(rawAnchor)
 

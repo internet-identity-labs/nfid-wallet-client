@@ -58,7 +58,7 @@ export const usePersona = () => {
       const persona: Persona = createAccount(
         accounts,
         domain,
-        authorizationRequest?.hostname,
+        authorizationRequest?.derivationOrigin,
       )
 
       const personaCredentials: PersonaRequest = {
@@ -74,7 +74,7 @@ export const usePersona = () => {
       }
       return response
     },
-    [accounts, authorizationRequest?.hostname, setPersonas],
+    [accounts, authorizationRequest?.derivationOrigin, setPersonas],
   )
 
   return {

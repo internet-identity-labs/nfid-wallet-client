@@ -46,7 +46,7 @@ describe("IDP coordinator", () => {
       describe("google authentication", () => {
         it("opens google oauth window when user selects sign in with google", () => {})
 
-        it("ingests jwt on google callback and calls signin lambda", () => {})
+        it("assigns jwt on google callback and calls signin lambda", () => {})
 
         it("invokes registration flow if no google account existed", () => {})
 

@@ -1,7 +1,10 @@
+import { WebAuthnIdentity } from "@dfinity/identity"
+
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization"
 
-import { fetchDelegate as _fetchDelegate } from "."
+import { fetchDelegate as _fetchDelegate, registerInternetIdentity } from "."
+import { deviceInfo } from "../device"
 
 export async function fetchDelegate(
   context: AuthorizationMachineContext,
@@ -20,4 +23,18 @@ export async function fetchDelegate(
 
 export async function login(): Promise<AuthSession> {
   throw new Error("Not implemented")
+}
+
+export function register(
+  context: { authSession?: AuthSession; challengeKey?: string },
+  event: { data: string },
+): Promise<number> {
+  if (!context.authSession || !context.challengeKey) {
+    throw new Error(`Missing require registration context.`)
+  }
+  return registerInternetIdentity(
+    context.authSession.identity as WebAuthnIdentity,
+    deviceInfo.newDeviceName,
+    { key: context.challengeKey, chars: event.data },
+  )
 }

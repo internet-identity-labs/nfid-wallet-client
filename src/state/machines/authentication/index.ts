@@ -46,7 +46,7 @@ const AuthenticationMachine = createMachine(
           id: "known-device",
           onDone: [
             {
-              actions: "ingestAuthSession",
+              actions: "assignAuthSession",
               target: "End",
             },
           ],
@@ -58,7 +58,7 @@ const AuthenticationMachine = createMachine(
           id: "unknown-device",
           onDone: [
             {
-              actions: "ingestAuthSession",
+              actions: "assignAuthSession",
               target: "End",
             },
           ],
@@ -67,7 +67,6 @@ const AuthenticationMachine = createMachine(
       End: {
         type: "final",
         entry: (context, event) => {
-          console.log(context, event)
           authState.set(event.data.identity, event.data.delegationIdentity, ii)
         },
         data: (context) => context,
@@ -76,7 +75,7 @@ const AuthenticationMachine = createMachine(
   },
   {
     actions: {
-      ingestAuthSession: assign((context, event) => ({
+      assignAuthSession: assign((context, event) => ({
         authSession: event.data,
       })),
     },

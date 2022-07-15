@@ -2,6 +2,6 @@ import { fetchAppUserLimit as _fetchAppUserLimit } from "frontend/integration/ap
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization"
 
 export function fetchAppUserLimit(context: AuthorizationMachineContext) {
-  if (!context.appMeta?.hostname) throw new Error("No application meta")
-  return _fetchAppUserLimit(context.appMeta?.hostname)
+  if (!context.authRequest?.hostname) throw new Error("No application meta")
+  return _fetchAppUserLimit(context.authRequest?.hostname)
 }

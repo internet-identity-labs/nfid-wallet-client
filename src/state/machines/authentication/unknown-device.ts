@@ -24,6 +24,7 @@ export type Events =
   | { type: "done.invoke.registerDevice"; data: AuthSession }
   | { type: "done.invoke.fetchGoogleDevice"; data: GoogleDeviceResult }
   | { type: "done.invoke.signInWithGoogle"; data: GoogleAuthSession }
+  | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }
   | { type: "AUTH_WITH_GOOGLE"; data: string }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
@@ -35,7 +36,7 @@ export interface Schema {
 }
 
 const UnknownDeviceMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3QGJFQAHYrFrpaxPHxAAPRAEYAbABYmABgDMAThUAOAEzbFAVhWHdsgDQgAnoi1MNDx9tna1igOzv5AX2+W0WLiEJOSUNAzMAEpgULSw6BzIouIAssj0mLR4YNwQ4sxZ1MQEzBwxcQlJYhJIIILCyTWgMgjO2kyyigZuhhpqhkqWNgiyhrL2Ts4auvLq8u6+-hg4+ERkFFR0jEwAgsssYAA2YPSN3DsAqgAqABIA+gDqAJK3dwDiAPIfbwAyAKKSeoiaqSFq6RRqJgQ9yKDSKFzuWS6dwabRDRCaeRMVxqNTOXT6DReBZ+EABFbBdZhLbMPZYA7HU7Vc7Xe7PV6RP4pD5XAG1IGNUGIXS4qFqGFwhFIlFo6yIeSGZS43FKMbyDTqklLQKrEIbcLbOmYBknM6XV7s+48m5-SKAoTA8RChC6QyQ6Gw+HaRHI1HohBqFQaVQqUOKeERjXaHyk8lBNahTYRXbLB4iTBvYjEKDHVi0KB4J54XL5JiFYrMYQFotprCZ7PHe0NEG1FoKFTuJjyNT6dTubQqdW6f0eSE48X6dy6Ik9xZk5bxvXU5NG2sZrM55gAMTA6AyJeyZbwRRKTAAZruMvXNwARA1gJuOprSRDe4NupFjIw9lwjpHY5V3EVBRZBUDw5zjXUqSTbZogAW2IdAwCNMA8FEegqnEA8CmPCsmDKBCkMfQVW1fHR7EHGYRVMfo1AsOUEAVJVlVVBQNSJCCFygxN7yYaJYniMAODvGlsKPE9mEgykeJpPjykE4T7wQcsMMaABtFQAF1iJbZpECnFQmGMTwHEUMx1FlYZPGYlUjDYzVOJ1aT9Vk-iKiEkSIm4ISOGIDgmH4Q4kjPPy4KYKSExc5M3IUzzGGU3DVOqDTtP5B0SL0l09Ao+RwSRAch3Uf0gMMCYHEMbRTGRNQY21ClIuXWD5KQxSaT+DhfI4bgrkiC4WCuO4bz+AA1J4AGE+QEdLdJfLLdByvLe0KtR-QHZRQ1DaYzDfGZHPqpcYKiZqPPvdrOu4P4ADkbx0p1SJdKcFvhJbpiKhjphsmq7PVBzYy45zGuYP4pAqLIoB2PAMj8i7rtu58Wm7TtwTMPo6MnMx-WRQzx3cFROjaOE9sXaDeOB0G8HByHMGh802ReK1bltOHnVdd1xU9KVfUs4V5HGDa+1mXQ8Yq3xSRIKh4FqCKDt4thOHQZn7rM-1Oixfm3HVQxDBlInuKipqBMqRo0gyLIHzS5s7sy8N2nmdiPHkWYtBMFWhaMjapTx5wUV1gHDpTekjlNGaBRmlplYYmZ2iF0NNCcV0td9hr-dXdNr1zFh80LZ9Q6t2bZFkGF7HFUx1CMEwCRHMymGVGrcdmUCkSTmXZNTusN1zHc90wRXrZRIy0Zq6ZQPFPoR0DGuWK6AdkXhNRm5J1vUzTjvzamy34cQIxSo-EUhxHlEVoY3Fgxx0CBnLrV5yc5PePgxDkOWVD0MwnPprz8OaqYEVoW1mZZm0Bqf0uV5rjgqrjRQQZPALxktFY6rUIi91ml0SE-Q+iKiYnCbmCAYSgOVOAsCUCr7S0XnAw2J02odT8kg8Ow4GJeD5h7MYqIRSuBgfrIGIN4hgwhlDDgNCt7hi7MLJig4ITyExkoACuIgImUgRoUY7DAZMD+HgCAAiRiVVKrjOiuV+w1XkAYEciIuxaFhOCfseiNBKMOho38DEXAhn5s4jaJJfBAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SfszHoIBhZAAdkAI1oAbWugCeAYgjE8zWnmrECa2AFlikqWADqszMbDiAghkx5EoEcVizaKhyAAeiAKwAGAHYmPxC-ABYARj8ADgiAZh8fCIA2ABoQOUQIgE4AJiZouKK4sOTs8OifXLiAXxr0tCxcQhJyShoGZjZObl5+IVEJaVlFMA4OYg4mESlkdAAzSYBbJlo9A2kTMwtrW3skECcXdDd90G8EXIimeNzYq+SwgOyIiNz0zIQ4wqY4mIjorkAsD-LkfAE6g1bM0iGQKFQ6IwmAAlMBQNboDhzU66ZC8dRgJQqNQaLTMDhojFYk7uA5HVy086IMJxZJMUrRaJhXJ+bLgpLRD6+aJBfwhaoxMLRbLJCH1ECNHD4WFtBGdJg2LAsMBGeg0vAKKwAVQAKgAJAD6xgAkuaLQBxADyjvtABkAKIeen6jwXMHRdlxAJhPm5K5hDk+IUIQrZYKhPxxKIAnzJXKQhXQ5WteEdJGazDa3X6w2my02u3I926R0mz105wMs5eRC5KWB4Oh8Mc94ZLK8tlivz+MJVbLBjOKmE59qI5gFov8EvGu0Vy21s3u5Fexs+g5+5IBlmdqrdw9RvsIAJJG7JO8+EXJIoBROTrMtOGz9UF0xYe3EYgoCMVhaCgPBrQNZRVFWUltCYFwwIg39MH-QCjB3Y5Tl9LI03yJ9cjvPlgVibJoxeNkEyuEoAjbCI3yabNPzVfNbGQ1CgOYAAxMB0F4IloPUTQ4PmHjeHYowABE8zADCm2wmNsjCJgfCTAERSeJ872jSolOyPS9MKao-iTeilQ-VVpJRMAlmIdAwALMA8BOehsRUfiSSE8lrNsmSG0wxkWxjaomHKNNU3+Z4Q2jKIZWU0IRzHCd5SnRiLLnKz0VgOyOCkud3JgzymBS8zc3S1FMuy3LOgQQTiBc-UAG0-AAXVkvcmSvHk4oCaJHhyKpU0FS83hSOKQhoiIAlZOUoQYkqvyRcqMTGKrGAUMYJimGY5kWDgVmKlVSvVJaspW6SatJerTia1q-Lk-dW0BEK-Fw5IfEiR5YminIAxSWUEjDPxAZmzM5sOhbmBOyrpPdcZJgUE1kSNFgTQtCT3QANWtQR60cXcsIey4ntCsM3o+qUImits2T+mjUyfV5uVM6cmMsqGzrnWHNoUd0ADkJLagmOqBfISYI96Ugp6LWUHUJCkTMI-ABdNkvfcHmOYd1PAxdQoCsPBeHhvmBbu9rAre-I2zDBIAhyRT3ujW3Rf08psm+Ai3uZ1KjqRLWdbwPWDcweGV3LW113NLdBYCg8jyDENTwiCNz0dxNbzvQ84h5DTkjqeUSCoeADgOmcNdYdguB4PgBGEMRDBGaPmwuGjopfeM5azhnE1z1WwdLyzui4Rv5KlMiggTJWRRew8uS9+ay6h6kcTxTACWHwnZWjRIKITYNRz0xI5-VyyFx1JchcOfGY98AJHaiX4M-e2VshFRSj-79KfzMcSulA8Dm29BfC4rxpQhXjqmPSfxwzaS5GNEI4IYhFBfu-Vmn9WLfwAhxJg3FeKYHXh1EMSkVKvDdrySaAQ0iXhFPkIcBE9KlDDHRXuZlj5oKwGxTB6FTZAOZG3YhOQ-gvGBJQz4PVrgu3ekrP4gJsgoLSsdbydkHJOQYK5ABV8m7MhvNUY8EQqgcl6tFF6Ph24K1iIrGiIMS6oIURVDmnR8GBSlHEX4Pg3aqVom7LSw0UymNTCpDS0o5E+0hpSU6OUYZww4I4i43IqZp1pqUJIIZATRGCRDJgfssq631obaJ3Dr4IH3kwZISsHyvGeM8Qxl4Xzj1CACP4T4WQ91miwj+6p3R4AgDErIU8mAvlyO47kJQ3FhDIvEAo4Ik7hBtqyMI6SNY9IQNgfIvVbYikKFUGInJKaXjbKY8ID4Qw0TemkvOQA */
   createMachine(
     {
       context: {},
@@ -45,28 +46,48 @@ const UnknownDeviceMachine =
       initial: "Start",
       states: {
         Start: {
-          always: [
-            {
-              cond: "isMobileWithWebAuthn",
-              target: "RegistrationMachine",
+          initial: "checkCapability",
+          states: {
+            checkCapability: {
+              invoke: {
+                src: "isMobileWithWebAuthn",
+                id: "isMobileWithWebAuthn",
+                onDone: [
+                  {
+                    target: "#auth-unknown-device.RegistrationMachine",
+                  },
+                ],
+                onError: [
+                  {
+                    target: "#auth-unknown-device.AuthSelection",
+                  },
+                ],
+              },
             },
-            {
-              target: "AuthSelection",
-            },
-          ],
+          },
         },
         RegistrationMachine: {
           invoke: {
             src: "RegistrationMachine",
             id: "registration",
-            onDone: "End",
+            onDone: [
+              {
+                target: "End",
+              },
+            ],
           },
         },
         AuthSelection: {
           on: {
-            AUTH_WITH_GOOGLE: "AuthWithGoogle",
-            AUTH_WITH_REMOTE: "RemoteAuthentication",
-            AUTH_WITH_OTHER: "ExistingAnchor",
+            AUTH_WITH_GOOGLE: {
+              target: "AuthWithGoogle",
+            },
+            AUTH_WITH_REMOTE: {
+              target: "RemoteAuthentication",
+            },
+            AUTH_WITH_OTHER: {
+              target: "ExistingAnchor",
+            },
           },
         },
         AuthWithGoogle: {
@@ -104,38 +125,57 @@ const UnknownDeviceMachine =
           invoke: {
             src: "RemoteReceiverMachine",
             id: "remote",
-            onDone: "End",
+            onDone: [
+              {
+                target: "End",
+              },
+            ],
           },
         },
         RegisterDevice: {
           invoke: {
             src: "registerDevice",
-            onDone: "End",
-            onError: "RegisterDeviceError",
+            onDone: [
+              {
+                target: "End",
+              },
+            ],
+            onError: [
+              {
+                target: "RegisterDeviceError",
+              },
+            ],
           },
         },
         RegisterDeviceError: {
           on: {
-            TRUST_DEVICE: "RegisterDevice",
-            END: "End",
+            TRUST_DEVICE: {
+              target: "RegisterDevice",
+            },
+            END: {
+              target: "End",
+            },
           },
         },
         ExistingAnchor: {
           on: {
-            END: "End",
-            AUTH_WITH_OTHER: "AuthSelection",
+            END: {
+              target: "End",
+            },
+            AUTH_WITH_OTHER: {
+              target: "AuthSelection",
+            },
           },
         },
         End: {
           type: "final",
-          // @ts-ignore: xstate typegen isn't identifying that AUTH_WITH_REMOTE will never lead to final state
-          data: (context, event) => event.data,
+          // @ts-ignore: xstate typegen not identifying ingress transitions properly
+          data: (context, event) => event.data as AuthSession,
         },
       },
     },
     {
       guards: {
-        isMobileWithWebAuthn,
         isExistingGoogleAccount,
       },
       services: {
@@ -143,6 +183,10 @@ const UnknownDeviceMachine =
         RemoteReceiverMachine,
         fetchGoogleDevice,
         signInWithGoogle,
+        // isMobileWithWebAuthn,
+        async isMobileWithWebAuthn() {
+          return true
+        },
         // registerDevice,
       },
     },

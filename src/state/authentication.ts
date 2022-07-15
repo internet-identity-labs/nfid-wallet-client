@@ -6,9 +6,12 @@ import { DelegationIdentity } from "@dfinity/identity"
  * be thought of as an "NFID session". It is created by signing a key pair from a device
  * that is authorized on behalf of a given anchor by II.
  *
- * The sign identity is: X
+ * The sign identity is the device key pair, which will become the root of the delegation
+ * chain in the delegation identity. This gives the session key pair authority to sign
+ * on behalf of the device key pair via the delegation chain.
  *
- * The delegation identity is: Y
+ * The delegation identity is a delegation chain that links your biometric device key pair
+ * (stored deep in the browser) to your session key pair (a generated Ed25519 key pair).
  */
 export interface AbstractAuthSession {
   identity: SignIdentity

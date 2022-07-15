@@ -3,12 +3,17 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestRequest: "done.invoke.handshake"
-    ingestAuthSession: "done.invoke.authenticate" | "done.invoke.authorize"
+    assignAuthRequest: "done.invoke.handshake"
+    assignAppMeta: "done.invoke.getAppMeta"
   }
   internalEvents: {
     "done.invoke.handshake": {
       type: "done.invoke.handshake"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.getAppMeta": {
+      type: "done.invoke.getAppMeta"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -25,6 +30,10 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
     "error.platform.handshake": {
       type: "error.platform.handshake"
+      data: unknown
+    }
+    "error.platform.getAppMeta": {
+      type: "error.platform.getAppMeta"
       data: unknown
     }
     "error.platform.authenticate": {
@@ -44,6 +53,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     handshake: "done.invoke.handshake"
+    getAppMeta: "done.invoke.getAppMeta"
     AuthenticationMachine: "done.invoke.authenticate"
     AuthorizationMachine: "done.invoke.authorize"
     postDelegation: "done.invoke.done"
@@ -55,8 +65,9 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
+    AuthenticationMachine: "done.state.idp.Start"
     handshake: "xstate.init"
-    AuthenticationMachine: "done.invoke.handshake"
+    getAppMeta: "xstate.init"
     AuthorizationMachine: "done.invoke.authenticate"
     postDelegation: "done.invoke.authorize"
   }
@@ -64,8 +75,20 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   matchesStates:
     | "Start"
+    | "Start.Handshake"
+    | "Start.Handshake.Fetch"
+    | "Start.Handshake.Done"
+    | "Start.GetAppMeta"
+    | "Start.GetAppMeta.Fetch"
+    | "Start.GetAppMeta.Done"
     | "AuthenticationMachine"
     | "AuthorizationMachine"
     | "End"
+    | {
+        Start?:
+          | "Handshake"
+          | "GetAppMeta"
+          | { Handshake?: "Fetch" | "Done"; GetAppMeta?: "Fetch" | "Done" }
+      }
   tags: never
 }

@@ -116,3 +116,13 @@ export function selectPersonas(personas: Persona[], domain: string) {
 export async function verifyToken(token: string, principal: Principal) {
   return im.verify_token(token).then(unpackLegacyResponse)
 }
+
+/**
+ * TODO: I don't really know what this does!
+ */
+export async function useAccessPoint() {
+  return im
+    .use_access_point()
+    .then(unpackResponse)
+    .then((r) => r.map(mapAccessPoint))
+}

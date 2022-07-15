@@ -1,6 +1,5 @@
 import { assign, ActorRefFrom, createMachine, send } from "xstate"
 
-import { AppMeta } from "frontend/integration/app-config"
 import { fetchAppUserLimit } from "frontend/integration/app-config/services"
 import { Persona } from "frontend/integration/identity-manager"
 import {
@@ -12,17 +11,17 @@ import {
   login,
 } from "frontend/integration/internet-identity/services"
 import { AuthSession } from "frontend/state/authentication"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 
 export interface AuthorizationMachineContext {
-  appMeta?: AppMeta
+  appMeta: AuthorizingAppMeta
+  authRequest?: AuthorizationRequest
   authSession?: AuthSession
   userLimit?: number
   accounts?: Persona[]
-  authRequest: {
-    maxTimeToLive: number
-    sessionPublicKey: Uint8Array
-    hostname: string
-  }
 }
 
 export type AuthorizationMachineEvents =
@@ -45,7 +44,7 @@ export interface Schema {
 }
 
 const AuthorizationMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgewE4EsAvMAOgGV1ld0BiCbAO1PwYDdsBrUgMzHQGNMAQQAOIgKqwwuADL4AtvnSJQI7LCX5GKkAA9EAWgAMJIwE4AjAA4AbAFYA7ABY7VgExvHAZgdmANCAAnohuRlYkXl5OXkZGDlbWdh5WAL4pAWhYeESk4gwANtj8HDTiAHIyAPIAwgDSOmoa6FoMOvoIXmZuJGY2Tr79Vg4OXhY2AcEISU4RPjZuTlaOoTZpGRg4BMQkAGJ8gkL8-NioDOiwdIzMbJw8+8JHJ2fwSCCNmtqv7VHhbgmhFl8Fk8bjGE0QFjiJCSZncXjsgPMVjMXjWIEymxyu3uh2Op3ONGqACUAKJCAAqJIA+kJqtVKuVyQ11B9Wl9EDYbOFel07JEuaDYeCEG5fD0vH8lksEZ07GiMdltnsBA88c8aGQSTISdVyTS6QyykzXu9mp9QO0EdzzDEzHarEYfF5hU5ARFbEk7PMjHYnDZUel0RtFaRlQdHviLgAFUmao36+mMsjMpotNocmwmSGZow2eJGMZGJzCyLhBJRSEOqVWWzy4NbUjVXBgZDoMC4p60TXa3UJw3G1Qss1si0QovdTl+hz+sxOJzmF1urweiwWJxdR2+OtZBskKPNqRnDuRjVanV62mJo0p1nphDOGbmRZuCWxeF9RcOd32Tze33+7dMW2fc4DAI8I3VYkyUpPtGRvYc70sL8UX-BxYmRNwUWFNx5mhN9cw8YZ30AkMSAAcT4AARMB8jAKBWxaS4mBIFh2C4EheBVajaPohCTSHNN2QQeYv2BAs7TMEYC18YU+jsHoHDsBFJysaJczSQMGGwCA4B0BVdwoKhlH41NzT0Qx4hIDw4h-NcLGXJThQcboX0iGJPAcMYEQsEjdzyQpingwTRymLxTHMNDbXMWEEmFBEvysOZPE6SFXTcXysTDVVOxeQdTJHcyRWcqzlxfPkC3LOxsP6cVJQSCxHHQuVA30rEmxbNtjzOIKzPaSEfAiSwPFnRT5y8cYgghNCej5WE+kk3NIgcDLgIPMD0C684eoK9ozChedHXMTxrBrKrJo6CUIns10GvmSEURW0gKPQbi6IYszTWCwr-xIddlLCY7xzi6wSDXZdeiU11VIDdYdyxEkGAgba70WcJnJcWFxsk9w11k1wFN9FElpEpxHuRoSDEhFzQmnJI7Ics7JmMEhp05PMjD+PlIQfDSUiAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgewE4EsAvMAOgGV1ld0BiCbAO1PwYDdsBrUgMzHQGNMAQQAOIgKqwwuADL4AtvnSJQI7LCX5GKkAA9EAWgDsAFhIBWEwAYAbEYCMAZkcmjNkwE57AGhABPRAAmG0CLKytHW0DAoyNHcyMAX0TfNCw8IlJxBgAbbH4OGnEAORkAeQBhAGkdNQ10LQYdfQRHI3MLIy9zcwAOG3tzexMbG18AhFGOmMcbZw8jXqNAkxNk1IwcAmISGWwoFjpGZjZOUjyDpqQQOs1ta5aXUMWQq3t3WY9XccQTQN6SI4nPFeuEXPMbOsQGktpkSAAxPiCIT8fjYVAMdCwI5MEgsdhcEi8ATCVHozHwa63Br3UCPSIkXoeHrLf7Wax2H4Id7TcwRN7-QbRKEwjI7REklFojFYmgVABKAFEhAAVRUAfSEFQqZRKKtq6juVzpiBCjhINl69hWMV6MQ+XJW9gsIxG7V65g8ViWaxS0M2YtIEuRZJl2LIipkioqKs12t1xX1VMNNONelNKwtHktNisQ1GphMXL+NhIJgS-16vRM9iM4XsIoD2yDSNJ0opNAACkqI4m4zq9WQDfVGs1TcNGbWPIFvSXc44uc4zOF+VYayZ+rNIX7Rc2SBVcGBkOgwFLybR6Lj8WcSPxD8fT6HMcOjWPuYE+SRa113oEPB5HECewPEXFwSBXSI12GTdRkbdI907Q8pExM8wxoCMoxjfsEyTVQU1HB5EGrMxHA8JkHFIusXBA-xfmCMsKyrata3rODYR2RC4DAFCn1lBVlTVbC9RfVM33sPNQhWcwQhnGdaxGUDlzBcJ1xg7cNnguEAHE+AAETAHIwCgY9GhxE4CR4Vt9MM4yTxEgiTQQXo2gsfo+WcOxnPsHxaMmGwPBILw3lzKx3WA5I-QYbAIDgHRdzhCgqGUZMR1pdMEGMAFolCmxzCAmtHA9cwuWWEhAmcZwrA-Bxcu8tjAxIbI8gKey0paAwgLLUjrWCaxnE9TlfNygEFksADnDcGJzHqvc9kuVq00eTqegSaxBgWas3C5cx4lcvpRhnaTgmmncmzhYM23PSk8NSxagksRk8rmax83sKtFyq8Dwj-EY3n-d5fQ09jSAPI8T1Q58UtfQiEGzIwLRZOY4i6L4i18mcAssdwyPElx+gAma4U45D0AhrEFrfZzQmrO1gTIvKgUXGIwiq0wP380iTqBhqdPQayjJMtLqQc9K3HNG0qOZZj3t8naOj6fbXiO3LCZ2RUGAgCmYfEgYyrcAYgr-HouUtUIgqcBZIjcJJTs04gtccgxxMkmc3Dy4YnCKrkDCsEh9YLKqPSBWw4gixIgA */
   createMachine(
     {
       tsTypes: {} as import("./index.typegen").Typegen0,
@@ -54,19 +53,17 @@ const AuthorizationMachine =
       initial: "Start",
       states: {
         Start: {
-          entry: (context, event) =>
-            console.log("Invoke authorization", context, event),
           invoke: {
             src: "fetchAppUserLimit",
             id: "fetchAppUserLimit",
             onDone: [
               {
-                actions: "ingestUserLimit",
+                actions: "assignUserLimit",
                 cond: "authenticated",
                 target: "FetchAccounts",
               },
               {
-                actions: "ingestUserLimit",
+                actions: "assignUserLimit",
                 target: "Unlock",
               },
             ],
@@ -83,10 +80,12 @@ const AuthorizationMachine =
           invoke: {
             src: "login",
             id: "login",
-            onDone: {
-              actions: "ingestAuthSession",
-              target: "FetchAccounts",
-            },
+            onDone: [
+              {
+                actions: "assignAuthSession",
+                target: "FetchAccounts",
+              },
+            ],
           },
         },
         FetchAccounts: {
@@ -95,7 +94,7 @@ const AuthorizationMachine =
             id: "fetchAccounts",
             onDone: [
               {
-                actions: ["ingestAccounts", "handleAccounts"],
+                actions: ["assignAccounts", "handleAccounts"],
               },
             ],
           },
@@ -115,7 +114,11 @@ const AuthorizationMachine =
           invoke: {
             src: "createAccount",
             id: "createAccount",
-            onDone: "GetDelegation",
+            onDone: [
+              {
+                target: "GetDelegation",
+              },
+            ],
           },
         },
         PresentAccounts: {
@@ -134,7 +137,7 @@ const AuthorizationMachine =
             id: "fetchDelegate",
             onDone: [
               {
-                actions: "ingestAuthSession",
+                actions: "assignAuthSession",
                 target: "End",
               },
             ],
@@ -147,11 +150,11 @@ const AuthorizationMachine =
     },
     {
       actions: {
-        ingestAuthSession: assign((context, event) => ({
+        assignAuthSession: assign((context, event) => ({
           authSession: event.data,
         })),
-        ingestUserLimit: assign({ userLimit: (context, event) => event.data }),
-        ingestAccounts: assign({ accounts: (context, event) => event.data }),
+        assignUserLimit: assign({ userLimit: (context, event) => event.data }),
+        assignAccounts: assign({ accounts: (context, event) => event.data }),
         handleAccounts: send((context, event) => ({
           type:
             context.userLimit && context?.userLimit <= 1

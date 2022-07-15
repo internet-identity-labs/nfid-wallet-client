@@ -47,7 +47,7 @@ const RemoteSenderMachine =
             id: "known-device",
             onDone: [
               {
-                actions: "ingestAuthSession",
+                actions: "assignAuthSession",
                 target: "End",
               },
             ],
@@ -59,7 +59,7 @@ const RemoteSenderMachine =
             id: "registration",
             onDone: [
               {
-                actions: "ingestAuthSession",
+                actions: "assignAuthSession",
                 target: "End",
               },
             ],
@@ -85,7 +85,7 @@ const RemoteSenderMachine =
         postDelegate,
       },
       actions: {
-        ingestAuthSession: assign((context, event) => ({
+        assignAuthSession: assign((context, event) => ({
           authSession: event.data,
         })),
       },

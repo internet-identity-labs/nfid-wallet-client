@@ -30,7 +30,7 @@ const RemoteReceiverMachine =
         Loading: {
           on: {
             RECEIVE_DELEGATION: {
-              actions: "ingestAuthSession",
+              actions: "assignAuthSession",
               target: "End",
             },
           },
@@ -42,7 +42,7 @@ const RemoteReceiverMachine =
     },
     {
       actions: {
-        ingestAuthSession: assign((context, event) => ({
+        assignAuthSession: assign((context, event) => ({
           authSession: event.data,
         })),
       },

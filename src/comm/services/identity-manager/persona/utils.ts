@@ -38,7 +38,10 @@ export function selectAccounts(
 
   if (filteredByDerivationOrigin.length) return filteredByDerivationOrigin
 
-  return personas.filter((persona) => persona.domain === hostName)
+  return personas.filter(
+    (persona) =>
+      persona.domain === hostName || persona.domain === `https://${hostName}`,
+  )
 }
 
 export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {

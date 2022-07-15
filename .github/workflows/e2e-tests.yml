@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Running Yarn prettier
+        run: yarn prettier --check "src/**/*.{ts,tsx}"
+
       - name: Setup chrome browser
         uses: browser-actions/setup-chrome@latest
 

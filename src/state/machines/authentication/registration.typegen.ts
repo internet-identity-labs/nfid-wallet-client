@@ -4,10 +4,21 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     assignChallenge: "done.invoke.fetchChallenge"
+    assignError: "error.platform.register"
+    assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
   }
   internalEvents: {
     "done.invoke.fetchChallenge": {
       type: "done.invoke.fetchChallenge"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.register": {
+      type: "error.platform.register"
+      data: unknown
+    }
+    "done.invoke.createWebAuthnIdentity": {
+      type: "done.invoke.createWebAuthnIdentity"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -31,8 +42,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.register": {
-      type: "error.platform.register"
+    "error.platform.createWebAuthnIdentity": {
+      type: "error.platform.createWebAuthnIdentity"
       data: unknown
     }
   }
@@ -40,6 +51,7 @@ export interface Typegen0 {
     fetchChallenge: "done.invoke.fetchChallenge"
     challengeTimer: "done.invoke.challengeTimer"
     register: "done.invoke.register"
+    createWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
   }
   missingImplementations: {
     actions: never
@@ -48,8 +60,9 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    fetchChallenge: "done.invoke.challengeTimer"
+    fetchChallenge: "done.invoke.challengeTimer" | "FETCH_CAPTCHA"
     challengeTimer: "done.invoke.fetchChallenge"
+    createWebAuthnIdentity: "CREATE_IDENTITY"
     register: "SUBMIT_CAPTCHA"
   }
   eventsCausingGuards: {
@@ -66,6 +79,7 @@ export interface Typegen0 {
     | "Start.Register.InitialChallenge"
     | "Start.Register.Captcha"
     | "Start.Register.Register"
+    | "Start.Register.CreateIdentity"
     | "End"
     | {
         Start?:
@@ -78,6 +92,7 @@ export interface Typegen0 {
                 | "InitialChallenge"
                 | "Captcha"
                 | "Register"
+                | "CreateIdentity"
             }
       }
   tags: never

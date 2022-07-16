@@ -54,6 +54,13 @@ function typeResponse<T>(
   throw new Error(`Unknown response type ${Object.keys(response)[0]}`)
 }
 
+class NfidHttpError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = "NfidHttpError"
+  }
+}
+
 /**
  * Identity labs canisters use this uniform interface for message responses.
  * @param response {@link NFIDResponse} a standard NFID canister response
@@ -64,8 +71,17 @@ export function unpackResponse<T>(response: NFIDResponse<T>) {
   if (r.ok) {
     return r.data
   } else {
-    throw new Error(`${r.code} error: ${r.error}`)
+    throw new NfidHttpError(`${r.code} error: ${r.error}`)
   }
+}
+
+/**
+ * Map candid variant (union type) into string.
+ * @param variant a candid variant type
+ * @returns string as keyof variant
+ */
+export function mapVariant<T>(variant: T): keyof T {
+  return Object.keys(variant)[0] as keyof T
 }
 
 // Some older NFID canister methods do not use the above response pattern. The following methods deal with these older patterns.

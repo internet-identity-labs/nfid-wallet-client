@@ -9,7 +9,8 @@ import {
   AccountResponse,
   PersonaResponse,
 } from "../_ic_api/identity_manager.did"
-import { im } from "../actors"
+import { agent, im } from "../actors"
+import { authState } from "../internet-identity"
 
 export interface Account {
   name?: string
@@ -93,21 +94,43 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
  * Fetch account for the currently connected principal.
  */
 export async function fetchAccount() {
-  return im.get_account().then((r) => mapAccount(unpackResponse(r)))
+  return await im.get_account().then((r) => mapAccount(unpackResponse(r)))
 }
 
 /**
  * Fetch personas for the currently connected principal.
  */
 export async function fetchPersonas() {
-  return im
-    .read_personas()
-    .then(unpackResponse)
-    .then((r) => r.map(mapPersona))
+  try {
+    return await im
+      .read_personas()
+      .then(unpackResponse)
+      .then((r) => r.map(mapPersona))
+  } catch (e: any) {
+    // This endpoint throws an error if there are no personas. Weird.
+    if (e.name === "NfidHttpError") {
+      return []
+    }
+    throw e
+  }
 }
 
 export function selectPersonas(personas: Persona[], domain: string) {
   return personas.filter((p) => p.domain === domain)
+}
+
+export async function createPersona(
+  domain: string,
+  personaId: string,
+  personaName: string,
+) {
+  return await im
+    .create_persona({
+      domain,
+      persona_id: personaId,
+      persona_name: personaName,
+    })
+    .then((r) => mapAccount(unpackResponse(r)))
 }
 
 /**
@@ -121,8 +144,12 @@ export async function verifyToken(token: string, principal: Principal) {
  * TODO: I don't really know what this does!
  */
 export async function useAccessPoint() {
-  return im
+  return await im
     .use_access_point()
     .then(unpackResponse)
     .then((r) => r.map(mapAccessPoint))
+}
+
+export async function registerAccount(anchor: number) {
+  return im.create_account({ anchor: BigInt(anchor) }).then(unpackResponse)
 }

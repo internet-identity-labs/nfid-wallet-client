@@ -27,8 +27,10 @@ export const usePersona = () => {
   }, [personas])
 
   const accounts = React.useMemo(() => {
-   if (!allAccounts || !authorizationRequest?.hostname) return []
-    return selectAccounts(allAccounts, authorizationRequest.hostname, scope)
+    if (!allAccounts || !authorizationRequest) return []
+
+    const { hostname, derivationOrigin } = authorizationRequest
+    return selectAccounts(allAccounts, scope || hostname, derivationOrigin)
   }, [allAccounts, authorizationRequest, scope])
 
   const nextPersonaId = React.useMemo(

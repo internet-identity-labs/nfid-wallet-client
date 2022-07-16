@@ -15,7 +15,7 @@ declare const SENTRY_RELEASE: string
 
 process.env.NODE_ENV === "production" &&
   Sentry.init({
-    dsn: "https://bc3728222f594cad84d5e0a4b014487a@o1255710.assign.sentry.io/6424378",
+    dsn: "https://bc3728222f594cad84d5e0a4b014487a@o1255710.ingest.sentry.io/6424378",
     integrations: [new BrowserTracing()],
 
     // TODO: let's get some experience with it and decide later.

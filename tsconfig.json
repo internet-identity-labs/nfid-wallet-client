@@ -20,6 +20,7 @@
     "paths": {
       "frontend/*": ["./src/*"]
     },
+    "sourceMap": true,
     "suppressExcessPropertyErrors": true,
     "types": [
       "node",

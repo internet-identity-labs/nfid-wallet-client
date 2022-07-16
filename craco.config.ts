@@ -73,7 +73,6 @@ const config = {
               ),
             }),
       }
-
       webpackConfig.plugins.push(new webpack.DefinePlugin(canisterEnv))
       webpackConfig.plugins.push(
         new webpack.ProvidePlugin({
@@ -89,16 +88,16 @@ const config = {
       )
       return {
         ...webpackConfig,
-        // FIXME: configure source map parser
         // module: {
         //   rules: [
         //     {
-        //       test: /\.js$/,
+        //       test: /\.tsx$/,
         //       enforce: "pre",
         //       use: ["source-map-loader"],
         //     },
         //   ],
         // },
+        devtool: process.env.FRONTEND_MODE !== "production" && "source-map",
         ignoreWarnings: [/Failed to parse source map from/],
         resolve: {
           ...webpackConfig.resolve,

@@ -21,7 +21,7 @@ export const AppScreenAuthorizeApp: React.FC<
   AppScreenAuthorizeAppProps
 > = () => {
   const { isLoading, setIsloading } = useIsLoading()
-  const { secret, scope } = useParams()
+  const { secret, scope, derivationOrigin } = useParams()
   const { sendWaitForUserInput } = useAuthorizeApp()
   const { nextPersonaId, accounts, createPersona, getPersona } = usePersona()
   const { user, login } = useAuthentication()
@@ -53,11 +53,13 @@ export const AppScreenAuthorizeApp: React.FC<
         chain: user?.chain,
         sessionKey: user?.sessionKey,
         connection: user?.internetIdentity,
+        derivationOrigin,
       })
       setIsloading(false)
       navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
     },
     [
+      derivationOrigin,
       navigate,
       remoteLogin,
       scope,

@@ -82,6 +82,7 @@ export const useAuthorizeApp = () => {
     async ({
       secret,
       scope: hostname,
+      derivationOrigin,
       persona_id,
       connection,
       userNumberOverwrite,
@@ -90,6 +91,7 @@ export const useAuthorizeApp = () => {
     }: {
       secret: string
       scope: string
+      derivationOrigin?: string
       persona_id: string
       connection: IIConnection
       chain: DelegationChain
@@ -104,8 +106,8 @@ export const useAuthorizeApp = () => {
       const protocol = FRONTEND_MODE === "production" ? "https" : "http"
 
       const scope = persona_id
-        ? `${persona_id}@${protocol}://${hostname}`
-        : hostname
+        ? `${persona_id}@${protocol}://${derivationOrigin ?? hostname}`
+        : derivationOrigin ?? hostname
 
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,

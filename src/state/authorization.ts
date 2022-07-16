@@ -28,3 +28,14 @@ export interface AuthorizingAppMeta {
   name?: string
   logo?: string
 }
+
+/**
+ * Generate scope string with host and persona. Omits persona salt for null or zero personas for parity with legacy II.
+ * @param host the domain being connected to
+ * @param persona number or null specifying the users persona
+ * @returns
+ */
+export function getScope(host: string, persona?: number) {
+  const withProtocol = !!host.match(/^http(s)?:\/\//) ? host : `https://${host}`
+  return `${persona ? `${persona}@` : ""}${withProtocol}`
+}

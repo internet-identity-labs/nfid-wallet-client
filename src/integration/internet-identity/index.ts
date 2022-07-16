@@ -36,9 +36,10 @@ import {
 import { InternetIdentity } from "frontend/integration/actors"
 import { ii } from "frontend/integration/actors"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
+import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
-import { mapOptional, reverseMapOptional } from "../_common"
-import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
+import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
+import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { derFromPubkey, hasOwnProperty } from "./utils"
 
 export type ApiResult = LoginResult | RegisterResult
@@ -766,12 +767,12 @@ export interface SignedDelegate {
 }
 
 /**
- *
+ * Prepare a third party auth session.
  * @param userNumber
  * @param scope
  * @param sessionKey session key generated and provided by 3rd party connecting app
  * @param maxTimeToLive
- * @returns
+ * @returns public key and timestamp (for lookup)
  */
 export async function prepareDelegate(
   userNumber: number,
@@ -792,6 +793,14 @@ export async function prepareDelegate(
     }))
 }
 
+/**
+ * Retrieve prepared third party auth session.
+ * @param userNumber
+ * @param scope
+ * @param sessionKey
+ * @param timestamp
+ * @returns signed delegate
+ */
 export async function getDelegate(
   userNumber: number,
   scope: string,
@@ -820,10 +829,7 @@ export async function fetchDelegate(
   scope: string,
   sessionKey: PublicKey,
   maxTimeToLive: number,
-): Promise<{
-  signedDelegate: SignedDelegate
-  userPublicKey: Uint8Array
-}> {
+): Promise<ThirdPartyAuthSession> {
   const prepare = await prepareDelegate(
     userNumber,
     scope,
@@ -838,18 +844,27 @@ export async function fetchDelegate(
     prepare.timestamp,
   )
   return {
-    signedDelegate: get,
+    delegations: [get],
     userPublicKey: prepare.userPublicKey,
   }
 }
 
-export function mapChallenge(challenge: Challenge) {
+export interface CaptchaChallenge {
+  pngBase64: string
+  challengeKey: string
+}
+
+export function mapChallenge(challenge: Challenge): CaptchaChallenge {
   return {
     pngBase64: challenge.png_base64,
     challengeKey: challenge.challenge_key,
   }
 }
 
+/**
+ * Get a captcha from internet identity.
+ * @returns
+ */
 export async function fetchChallenge() {
   return await ii.create_challenge().then(mapChallenge)
 }
@@ -903,4 +918,42 @@ export async function registerInternetIdentity(
       challengeResult,
     )
     .then(mapRegisterResponse)
+}
+
+function mapDeviceData(data: DeviceData): Device {
+  const credential = mapOptional(data.credential_id)
+  return {
+    alias: data.alias,
+    protected: "protected" in data.protection,
+    pubkey: data.pubkey,
+    keyType: mapVariant(data.key_type),
+    purpose: mapVariant(data.purpose),
+    credentialId: credential ? new Uint8Array(credential) : credential,
+  }
+}
+
+/**
+ * Retrieve devices on internet identity anchor.
+ * @param anchor II user number
+ * @param withSecurityDevices flag to include recovery devices
+ * @returns list of devices on the II anchor
+ */
+export async function lookup(anchor: number, withSecurityDevices: boolean) {
+  return await ii
+    .lookup(BigInt(anchor))
+    .then((r) => r.map(mapDeviceData))
+    .then((r) =>
+      r.filter((device) =>
+        withSecurityDevices ? true : device.purpose === "authentication",
+      ),
+    )
+}
+
+export interface Device {
+  alias: string
+  protected: boolean
+  pubkey: PublicKey
+  keyType: "platform" | "seed_phrase" | "cross_platform" | "unknown"
+  purpose: "authentication" | "recovery"
+  credentialId?: Uint8Array
 }

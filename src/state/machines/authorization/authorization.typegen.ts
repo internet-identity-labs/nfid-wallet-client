@@ -4,7 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     assignUserLimit: "done.invoke.fetchAppUserLimit"
-    assignAuthSession: "done.invoke.login" | "done.invoke.fetchDelegate"
+    assignAuthSession: "done.invoke.login"
     assignAccounts: "done.invoke.fetchAccounts"
     handleAccounts: "done.invoke.fetchAccounts"
   }
@@ -16,11 +16,6 @@ export interface Typegen0 {
     }
     "done.invoke.login": {
       type: "done.invoke.login"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "done.invoke.fetchDelegate": {
-      type: "done.invoke.fetchDelegate"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -47,6 +42,11 @@ export interface Typegen0 {
     "error.platform.createAccount": {
       type: "error.platform.createAccount"
       data: unknown
+    }
+    "done.invoke.fetchDelegate": {
+      type: "done.invoke.fetchDelegate"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "error.platform.fetchDelegate": {
       type: "error.platform.fetchDelegate"

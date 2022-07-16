@@ -11,10 +11,10 @@ import {
   AuthorizingAppMeta,
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
-import AuthenticationMachine from "frontend/state/machines/authentication"
+import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import AuthorizationMachine, {
   AuthorizationMachineContext,
-} from "frontend/state/machines/authorization"
+} from "frontend/state/machines/authorization/authorization"
 
 export interface IDPMachineContext {
   authRequest?: {

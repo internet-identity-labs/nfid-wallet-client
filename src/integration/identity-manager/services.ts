@@ -1,6 +1,11 @@
-import { AuthorizationMachineContext } from "frontend/state/machines/authorization"
+import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
-import { fetchPersonas as _fetchPersonas, selectPersonas } from "."
+import {
+  createPersona,
+  fetchAccount,
+  fetchPersonas as _fetchPersonas,
+  selectPersonas,
+} from "."
 import { profile } from "./profile"
 
 export function isDeviceRegistered() {
@@ -18,5 +23,12 @@ export async function fetchAccounts(context: AuthorizationMachineContext) {
 export async function createAccount(
   context: AuthorizationMachineContext,
 ): Promise<string> {
-  throw new Error("Not implemented")
+  if (!context.authRequest) throw new Error("Missing auth request")
+  console.log(await fetchAccount())
+  await createPersona(
+    context.authRequest?.hostname,
+    `${context.accounts?.length || "0"}`,
+    "Account #1",
+  )
+  return `${context.accounts?.length || "0"}`
 }

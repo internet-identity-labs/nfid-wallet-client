@@ -81,7 +81,8 @@ export const useUnknownDeviceConfig = () => {
   const [newDeviceKey, setNewDeviceKey] = React.useState<any | null>(null)
 
   const { createDevice, createWebAuthNDevice } = useDevices()
-  const { applicationName, applicationLogo } = useMultipass()
+  const { applicationName, applicationLogo, applicationDerivationOrigin } =
+    useMultipass()
   const { getMessages } = usePubSubChannel()
   const { remoteLogin } = useAuthentication()
   const { readAccount } = useAccount()
@@ -91,15 +92,26 @@ export const useUnknownDeviceConfig = () => {
     // TODO: create custom hook to generate secret
     const query = new URLSearchParams({
       applicationName: applicationName || "",
+      applicationDerivationOrigin: applicationDerivationOrigin || "",
       applicationLogo: encodeURIComponent(applicationLogo || ""),
     }).toString()
     return domain && secret
       ? `${window.location.origin}${generatePath(
           AppScreenAuthorizeAppConstants.authorize,
-          { secret, scope: domain  },
+          {
+            secret,
+            scope: domain,
+            derivationOrigin: applicationDerivationOrigin,
+          },
         )}?${query.toString()}`
       : null
-  }, [applicationLogo, applicationName, domain, secret])
+  }, [
+    applicationDerivationOrigin,
+    applicationLogo,
+    applicationName,
+    domain,
+    secret,
+  ])
 
   const { isReady, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({

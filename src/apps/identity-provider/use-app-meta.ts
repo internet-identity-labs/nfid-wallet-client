@@ -16,6 +16,7 @@ export const useMultipass = () => {
   const {
     applicationName: applicationNameFromPath,
     applicationLogo: applicationLogoFromPath,
+    applicationDerivationOrigin: applicationDerivationOriginFromPath,
   } = useParams()
   const [applicationName, setApplicationName] = useAtom(applicationNameAtom)
   const [applicationLogo, setApplicationLogo] = useAtom(applicationLogoAtom)
@@ -43,7 +44,9 @@ export const useMultipass = () => {
       queryString.get("derivationOrigin")
 
     setApplicationDerivationOrigin(
-      applicationDerivationOriginFromParams ?? undefined,
+      applicationDerivationOriginFromParams ??
+        applicationDerivationOriginFromPath ??
+        undefined,
     )
 
     if (
@@ -66,6 +69,7 @@ export const useMultipass = () => {
     setApplicationLogo,
     applicationLogoFromPath,
     setApplicationDerivationOrigin,
+    applicationDerivationOriginFromPath,
   ])
 
   return {

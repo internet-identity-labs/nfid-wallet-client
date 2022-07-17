@@ -8,13 +8,12 @@ import { ArrowLeft } from "frontend/design-system/atoms/icons/arrow-left"
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
 import { Footer } from "frontend/apps/marketing/landing-page/footer"
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
 import { EventSummary } from "../proof-of-attendency/event-summary"
 import image_dog from "./dog_image.svg"
 
 interface ProofOfAttendencyAwardProps
-  extends React.HTMLAttributes<HTMLDivElement> { }
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const ProofOfAttendencyAward: React.FC<
   ProofOfAttendencyAwardProps
@@ -41,9 +40,7 @@ export const ProofOfAttendencyAward: React.FC<
         )}
       >
         <div className="z-20">
-          <Link
-            to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
-          >
+          <Link to={"/profile/authenticate"}>
             <Button icon>
               <ArrowLeft />
             </Button>

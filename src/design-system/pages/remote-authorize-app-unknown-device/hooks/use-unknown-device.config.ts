@@ -6,6 +6,8 @@ import React, { useEffect } from "react"
 import { generatePath, useLocation } from "react-router-dom"
 import { v4 as uuid } from "uuid"
 
+import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
+
 import { AppScreenAuthorizeAppConstants } from "frontend/apps/authentication/remote-authentication/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
@@ -88,6 +90,7 @@ export const useUnknownDeviceConfig = () => {
   const { readAccount } = useAccount()
   const { getPersona } = usePersona()
 
+  // https://philipp.eu.ngrok.io/rdp/6e8f055d-11cb-42b2-8f2d-0566dbd4c9bf/localhost:3000/?applicationName=NFID-Demo&applicationDerivationOrigin=&applicationLogo=https%253A%252F%252Flogo.clearbit.com%252Fclearbit.com
   const url = React.useMemo(() => {
     // TODO: create custom hook to generate secret
     const query = new URLSearchParams({
@@ -95,16 +98,22 @@ export const useUnknownDeviceConfig = () => {
       applicationDerivationOrigin: applicationDerivationOrigin || "",
       applicationLogo: encodeURIComponent(applicationLogo || ""),
     }).toString()
-    return domain && secret
-      ? `${window.location.origin}${generatePath(
-          AppScreenAuthorizeAppConstants.authorize,
-          {
-            secret,
-            scope: domain,
-            derivationOrigin: applicationDerivationOrigin || "",
-          },
-        )}?${query.toString()}`
-      : null
+
+    if (!domain || !secret) return null
+
+    const qrcodePath = applicationDerivationOrigin
+      ? AppScreenAuthorizeAppConstants.authorizeDerivationOrigin
+      : AppScreenAuthorizeAppConstants.authorize
+
+    const path = generatePath(qrcodePath, {
+      secret,
+      scope: domain,
+      ...(applicationDerivationOrigin
+        ? { derivationOrigin: applicationDerivationOrigin }
+        : {}),
+    })
+
+    return `${window.location.origin}${path}?${query.toString()}`
   }, [
     applicationDerivationOrigin,
     applicationLogo,

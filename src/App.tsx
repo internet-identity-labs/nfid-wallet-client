@@ -4,20 +4,22 @@ import { Usergeek } from "usergeek-ic-js"
 
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
-import { NotFound } from "./design-system/pages/404"
 import { AppScreenAuthenticateAccountRoutes } from "./apps/authentication/authenticate"
+import {
+  AppScreenAuthorizeAppRoutes,
+  AppScreenAuthorizeDerivationOriginAppRoutes,
+} from "./apps/authentication/remote-authentication/routes"
+import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
+import { CredentialRoutes } from "./apps/credential-provider/verify-phone-number"
+import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"
 import { Faq } from "./apps/marketing/landing-page/faq"
 import { OurMission } from "./apps/marketing/landing-page/our-mission"
-import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { RecoverNFIDRoutes } from "./apps/registration/recover-nfid/routes"
 import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
-import { NFIDRegisterAccountRoutes } from './apps/registration/register-account/routes'
-import { AppScreenAuthorizeAppRoutes } from "./apps/authentication/remote-authentication/routes"
-import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
-import { CredentialRoutes } from "./apps/credential-provider/verify-phone-number"
-
+import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import { ic } from "./comm/actors"
+import { NotFound } from "./design-system/pages/404"
 
 declare const USERGEEK_API_KEY: string
 
@@ -26,7 +28,6 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
-
   return (
     <Routes>
       <Route path={"/"} element={<HomeScreen />} />
@@ -37,6 +38,7 @@ export const App = () => {
       {NFIDRegisterAccountRoutes}
       {RemoteNFIDAuthenticationRoutes}
       {AppScreenAuthorizeAppRoutes}
+      {AppScreenAuthorizeDerivationOriginAppRoutes}
       {RecoverNFIDRoutes}
 
       {AppScreenAuthenticateAccountRoutes}

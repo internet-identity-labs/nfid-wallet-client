@@ -5,7 +5,6 @@ import { useChallenge } from "frontend/design-system/pages/captcha/hook"
 
 import { RegisterAccountCaptcha } from "./captcha"
 import { RouteRegisterAccountIntro } from "./intro"
-import { ProfileConstants } from 'frontend/apps/identity-manager/profile/routes'
 
 const ChallengeLoader = () => {
   // NOTE: this will start loading the challenge
@@ -41,7 +40,7 @@ export const RemoteRegisterAccountRoutes = (
       element={
         <RegisterAccountCaptcha
           isRemoteRegiser
-          successPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+          successPath={"/profile/authenticate"}
         />
       }
     />
@@ -62,7 +61,7 @@ export const NFIDRegisterAccountRoutes = (
         <RouteRegisterAccountIntro
           isNFID
           captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
-          pathOnAuthenticated={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+          pathOnAuthenticated={`/profile/authenticate`}
         />
       }
     />
@@ -71,7 +70,7 @@ export const NFIDRegisterAccountRoutes = (
       element={
         <RegisterAccountCaptcha
           isNFIDProp
-          successPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+          successPath={`/profile/authenticate`}
         />
       }
     />

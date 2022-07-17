@@ -2,17 +2,20 @@ import React from "react"
 import { useParams } from "react-router-dom"
 
 import { Captcha } from "frontend/design-system/pages/captcha"
-import { useCaptcha, useChallenge } from "frontend/design-system/pages/captcha/hook"
+import {
+  useCaptcha,
+  useChallenge,
+} from "frontend/design-system/pages/captcha/hook"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useAuthentication } from 'frontend/apps/authentication/use-authentication'
-import { im } from 'frontend/comm/actors'
-import { useAuthorization } from 'frontend/apps/authorization/use-authorization'
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -79,9 +82,7 @@ export const RegisterAccountCaptcha: React.FC<
               userNumberOverwrite: response.userNumber,
               userOverwrite: user,
             })
-            return navigate(
-              `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-            )
+            return navigate("/profile/authenticate")
           }
 
           if (!scope) throw new Error("scope is missing from params")
@@ -101,7 +102,7 @@ export const RegisterAccountCaptcha: React.FC<
           ])
         }
 
-        navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
+        navigate("/profile/authenticate")
       }
     },
     [
@@ -119,10 +120,10 @@ export const RegisterAccountCaptcha: React.FC<
     ],
   )
   const { userNumber } = useAccount()
-  const { authorizeApp, } = useAuthorization({
+  const { authorizeApp } = useAuthorization({
     userNumber,
   })
-  const { setShouldStoreLocalAccount } = useAuthentication();
+  const { setShouldStoreLocalAccount } = useAuthentication()
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
@@ -208,7 +209,7 @@ export const RegisterAccountCaptcha: React.FC<
       isChallengeLoading={isChallengeLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}
-      successPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+      successPath={"/profile/authenticate"}
       onRegisterAnchor={
         isGoogle ? handleRegisterAnchorWithGoogle : handleRegisterAnchor
       }

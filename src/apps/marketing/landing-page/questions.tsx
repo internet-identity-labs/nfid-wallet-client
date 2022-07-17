@@ -124,7 +124,7 @@ export const questions = [
           device from your list of NFID{" "}
           <Link
             className="text-blue-base hover:underline hover:text-blue-hover"
-            to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+            to={"/profile/authenticate"}
           >
             authorized devices
           </Link>
@@ -171,7 +171,7 @@ export const questions = [
           your list of NFID (
           <Link
             className="text-blue-base hover:underline hover:text-blue-hover"
-            to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+            to={"/profile/authenticate"}
           >
             authorized devices
           </Link>

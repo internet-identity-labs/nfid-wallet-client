@@ -5,13 +5,11 @@ import { CopyRecoveryPhrase as CopyRecoveryPhraseRaw } from "frontend/design-sys
 
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
-import { ProfileConstants } from "../routes"
-
 interface CopyRecoveryPhraseLocationState {
   recoveryPhrase: string
 }
 
-interface CopyRecoveryPhraseProps { }
+interface CopyRecoveryPhraseProps {}
 
 export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = () => {
   const { state } = useLocation()
@@ -20,9 +18,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = () => {
   return (
     <CopyRecoveryPhraseRaw
       recoveryPhrase={(state as CopyRecoveryPhraseLocationState).recoveryPhrase}
-      onContinueButtonClick={navigateFactory(
-        `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-      )}
+      onContinueButtonClick={navigateFactory("/profile/authenticate")}
     />
   )
 }

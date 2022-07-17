@@ -102,7 +102,7 @@ export const useAuthorizeApp = () => {
         throw new Error("userNumber missing")
       }
 
-      const scope = getScope(hostname)
+      const scope = getScope(derivationOrigin ?? hostname, persona_id)
 
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,

@@ -88,7 +88,7 @@ export const RegisterAccountCaptcha: React.FC<
           if (!scope) throw new Error("scope is missing from params")
           await Promise.all([
             createPersona({
-              domain: `${window.location.protocol}//${scope}`,
+              domain: scope,
             }),
             remoteLogin({
               secret,

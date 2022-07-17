@@ -101,7 +101,7 @@ export const useUnknownDeviceConfig = () => {
           {
             secret,
             scope: domain,
-            derivationOrigin: applicationDerivationOrigin,
+            derivationOrigin: applicationDerivationOrigin || "",
           },
         )}?${query.toString()}`
       : null

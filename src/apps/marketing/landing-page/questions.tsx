@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom"
 
-import { ProfileConstants } from "../../identity-manager/profile/routes"
-
 export const questions = [
   {
     title: "What is NFID?",

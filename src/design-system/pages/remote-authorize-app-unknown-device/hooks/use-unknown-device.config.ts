@@ -6,8 +6,6 @@ import React, { useEffect } from "react"
 import { generatePath, useLocation } from "react-router-dom"
 import { v4 as uuid } from "uuid"
 
-import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
-
 import { AppScreenAuthorizeAppConstants } from "frontend/apps/authentication/remote-authentication/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"

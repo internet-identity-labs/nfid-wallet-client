@@ -8,11 +8,10 @@ import {
 } from "frontend/apps/authentication/use-authentication"
 import { PublicKey } from "frontend/comm/idl/internet_identity_types"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
 import { retryGetDelegation } from "frontend/comm/services/internet-identity/auth"
 import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
 import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
-
-declare const FRONTEND_MODE: string
 
 // FIXME:
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -103,11 +102,7 @@ export const useAuthorizeApp = () => {
         throw new Error("userNumber missing")
       }
 
-      const protocol = FRONTEND_MODE === "production" ? "https" : "http"
-
-      const scope = persona_id
-        ? `${persona_id}@${protocol}://${derivationOrigin ?? hostname}`
-        : derivationOrigin ?? hostname
+      const scope = getScope(hostname)
 
       const parsedSignedDelegation = await createRemoteDelegate(
         secret,

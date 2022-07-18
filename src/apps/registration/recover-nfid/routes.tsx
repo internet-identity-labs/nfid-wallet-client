@@ -3,7 +3,6 @@ import { Outlet, Route } from "react-router-dom"
 import { AppScreenRecoverNFID } from "frontend/design-system/pages/recover-nfid/screen-app"
 
 import { RouterRegisterDeviceDecider } from "../../device/register-device-decider"
-import { ProfileConstants } from "../../identity-manager/profile/routes"
 
 export const RecoverNFIDRoutesConstants = {
   base: "/recover-nfid",
@@ -25,7 +24,7 @@ export const RecoverNFIDRoutes = (
       path={RecoverNFIDRoutesConstants.registerDevice}
       element={
         <RouterRegisterDeviceDecider
-          registerSuccessPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+          registerSuccessPath={"/profile/authenticate"}
         />
       }
     />

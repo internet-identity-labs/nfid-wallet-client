@@ -8,7 +8,6 @@ import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
-import { ProfileConstants } from "../routes"
 import { phoneNumberAtom } from "../state"
 
 interface AuthenticateNFIDHomeProps {}
@@ -28,9 +27,7 @@ export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
       const response = await im.verify_token(token)
       toggleLoading()
       if (response.status_code >= 200 && response.status_code < 400) {
-        return navigate(
-          `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-        )
+        return navigate("/profile/authenticate")
       }
       if (response.error.length) setError(response.error[0])
     },
@@ -45,9 +42,7 @@ export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
     )
     toggleLoading()
     if (response.status >= 200 && response.status < 400) {
-      return navigate(
-        `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-      )
+      return navigate("/profile/authenticate")
     }
     setError(response.body.error)
   }, [navigate, phone, user?.principal, verifyPhonenumber])

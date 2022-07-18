@@ -1,10 +1,15 @@
-import { eventNames } from "process"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
 import { Device } from "frontend/integration/internet-identity"
-import { fetchAuthenticatorDevicesService } from "frontend/integration/internet-identity/services"
-import { AuthSession } from "frontend/state/authentication"
+import {
+  fetchAuthenticatorDevicesService,
+  loginService,
+} from "frontend/integration/internet-identity/services"
+import {
+  AuthSession,
+  LocalDeviceAuthSession,
+} from "frontend/state/authentication"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
 export interface Context {
@@ -18,7 +23,7 @@ export interface Context {
 
 export type Events =
   | { type: "UNLOCK" }
-  | { type: "done.invoke.login"; data: AuthSession }
+  | { type: "done.invoke.loginService"; data: LocalDeviceAuthSession }
   | { type: "done.invoke.fetchAccountLimit"; data: number }
   | { type: "done.invoke.fetchAuthenticatorDevicesService"; data: Device[] }
 
@@ -28,7 +33,7 @@ export interface Schema {
 }
 
 const KnownDeviceMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QGkB2B7A7qgImAbgJYDGYAsgIbEAWhqYAdAMoAuFATiwwGJgs14ipWDz40AxBHT0GdfOgDWjAGZjqgknESgADuliEWhadpAAPRABYAzACYGANgCsD204CcADku2A7NYAGAEYnABoQAE9EWwcAhncErz93B09nd0sAX0zwtCxcAk1KGjpGVg4uXn5qAEFiYnQAV1QWABlCAFtDUWrJaUY5RRU1Oobmts7DUz0DIxMkc0QnAPsAteCA63cgkKDfcKiEZaD4xN93J09Pa1Sg7NyMbA1SYtoZcs4+mVg2FkY8p6FF5UN5lNicab6QzGVCmCwIdy2OJBWyWDKWHyeS6Ig6IayXBjrNa+IJXfwxLI5EAAgpCcgg0oMGqNFjUMAtEgUP7iACqADlWgB5ADCyEhsxhcKWtlxCKClgYaLOQWsvk8vls92pj1pRQZMla6CgdC+A1Q8iUDAANka6OLofNQPCnDLIogUQF3KcElsnH6Ar41dkqRgIFoFjTnvSSu9wZU1FGRFUaPa5rCFvCgitZajPN73L4HDtUQXPJqqZGgdHQcw4z0BFWRDh+qnJRnEK5fAwkdYUb4AyrtmE3Qg-AqlV4XJ53KqfFrK3TXoyPvHqonW47Fgg1bK9k584inL3-CT5zqo0vYxV67V6k0Wu0uquUwsZg70073dmR5Y1YT1iqQSpD21hnvkF76mC17JreYwPpMXDNvQG4flu-jWIq8oBA4gRASqTj7COTghIqiRlpYngBOqDiUg84FVpeUGcDeoz3hMT4oVK26eLKlgBAqiSlt4-Y7JYThgYCi6QbWFSce2RyWLumz-us07LAWOG0dq9FSTGjDMqy7JGMQXJgHJn4IFm1gYRRNi9kB-HysOhz4qsRIET4v5YhJurAnpDCGsaqFvmmXFAXmISuKiDg0RqaIOLKVz2IJaSib4ljyj5EH+QAoqgEDmVuQTuHEZabDEewOOlZaEYcHoYSlVxom4FFZQxkGFfCtg8SOgTBpkQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QGkB2B7A7qgImAbgJYDGYAsgIbEAWhqYAdAMoAuFATiwwGJgs14ipWDz40AxBHT0GdfOgDWjAGZjqAQQCuLamFQsSFFunaCScJmHZCwiUAAd0sQgel2QAD0QBWAAwBmBn8ARgAmABZQkP9fcIAObwBOAHYAGhAAT0RQ5MDwxILkgDYI0Ljg4NiAXyr0tCxcAnNKGjpGVg4uXn4NYmJ0TX0AGUIAWxdRHslpRjlFFTV1PoHhsZdLa3N3R2dXVHcvBG8Qhm9vBNDfXzCrxND0rKPfUNOr6-9QxITgov8imrqGGwZlILVoMg6nGmMlgbBYjHqwKaoKo4PabE42ycLkIbiQnkQlWSyQY4X8CWS4V8lKKsX8D0Q-nOrzewT8oRyZP+tRAiMaNjBbQYWh0egMxCMYHEAFUAHJDADyAGFkFjdrj9vjDt57plEIlguFSQVCsF-Mk4slQgDeUD+c1UUKhugoHRobNUPIlAwADYuuhqnF40Da3WPG6JBgmxL+RJnPzEuI1HkYCBwdx8kHkR0QjFdNRZkTdGiBvYHQnPBkICJxKMm4oVCIpOLWnmZ5HZ1q5zqTAQdkQ4GaljXlhBxc0MXxFcLeZJXXL5ZLeKtlIrGgrlYr+cL5cI29sCnPonvF6iF4fBgkIC1V4JLuuFGe-Nm+RJ7tt2rOC7ucXu9fqDCwIzjPmPQXpqIYVmGiDhBak6siERQtgE-j7p+Hbfsev6nksAGrCBDCDvQ4GjuOJJTjOc7UtuKTLnqRxsiy1xxOUBrePEaENF+R7MHmf64SsQFrCwJFaogN70VS3jwVc5rHNOSTvoCXEYTxkIifiOxBhBV7sbezwPikMRmnEsRhJxSKHl2jAiro+iGPComQQgYRIacwR3Mc45MkUvlVkywSGV8lIeWcrbKZZDrWQwzqujpWllmJLluWyJQRL5sFNkUVYsS80ZxEUFSweEhoWfaKLRQAoqgEBOVeHm+AwyEfIVxSUi2aT0TcgT5Sx+ShOxSYfipVlonVhxlCukbRskhrTpRnzJlUQA */
   createMachine(
     {
       tsTypes: {} as import("./known-device.typegen").Typegen0,
@@ -93,8 +98,8 @@ const KnownDeviceMachine =
         },
         Login: {
           invoke: {
-            src: "login",
-            id: "login",
+            src: "loginService",
+            id: "loginService",
             onDone: [
               {
                 target: "End",
@@ -104,6 +109,7 @@ const KnownDeviceMachine =
         },
         End: {
           type: "final",
+          data: (context, event: { data: AuthSession }) => event.data,
         },
       },
     },
@@ -111,6 +117,7 @@ const KnownDeviceMachine =
       services: {
         fetchAuthenticatorDevicesService,
         fetchAccountLimitService,
+        loginService,
       },
       actions: {
         assignDevices: assign({ devices: (_, event) => event.data }),

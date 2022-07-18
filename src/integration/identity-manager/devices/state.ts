@@ -16,7 +16,10 @@ export interface AccessPointRequest {
 }
 
 // TODO: update to backend api
-export interface Device {
+/**
+ * @deprecated
+ */
+export interface LegacyDevice {
   isAccessPoint?: boolean // Indicates if this device is already stored as access point
   label: string
   icon: Icon
@@ -35,5 +38,5 @@ export interface RecoveryDevice {
   isSecurityKey: boolean
 }
 
-export const devicesAtom = atom<Device[]>([])
+export const devicesAtom = atom<LegacyDevice[]>([])
 export const recoveryDevicesAtom = atom<RecoveryDevice[]>([])

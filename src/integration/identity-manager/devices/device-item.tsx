@@ -8,10 +8,10 @@ import { Chip } from "@internet-identity-labs/nfid-sdk-react"
 import { DeleteButton } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useDevices } from "./hooks"
-import { Device } from "./state"
+import { LegacyDevice } from "./state"
 
 interface DeviceItemProps {
-  device: Device
+  device: LegacyDevice
   refresh: () => void
 }
 

@@ -34,7 +34,7 @@ import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { useAccount } from "../account/hooks"
 import {
-  Device,
+  LegacyDevice,
   devicesAtom,
   Icon,
   RecoveryDevice,
@@ -72,7 +72,7 @@ const getDeviceName = (device: DeviceData): string => {
 const normalizeDevices = (
   devices: DeviceData[],
   accessPoints: AccessPointResponse[] = [],
-): Device[] => {
+): LegacyDevice[] => {
   return devices.map((device) => {
     const devicePrincipalId = Principal.selfAuthenticating(
       new Uint8Array(device.pubkey),
@@ -93,7 +93,7 @@ const normalizeDevices = (
   })
 }
 
-const normalizeDeviceRequest = (device: Device): AccessPointRequest => {
+const normalizeDeviceRequest = (device: LegacyDevice): AccessPointRequest => {
   return {
     icon: device.icon,
     device: device.label,
@@ -180,7 +180,7 @@ export const useDevices = () => {
   }, [setDevices, userNumber])
 
   const updateDevice = React.useCallback(
-    async (device: Device) => {
+    async (device: LegacyDevice) => {
       const normalizedDevice = normalizeDeviceRequest(device)
 
       if (!device.isAccessPoint) {

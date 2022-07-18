@@ -24,12 +24,10 @@ export interface GoogleAuthSession extends AbstractAuthSession {
 
 export interface RemoteDeviceAuthSession extends AbstractAuthSession {
   sessionSource: "remoteDevice"
-  anchor: number
 }
 
 export interface LocalDeviceAuthSession extends AbstractAuthSession {
   sessionSource: "localDevice"
-  anchor: number
 }
 
 export type AuthSession =

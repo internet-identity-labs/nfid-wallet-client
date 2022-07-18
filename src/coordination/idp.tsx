@@ -121,16 +121,13 @@ function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
   const [state, send] = useActor(actor)
 
   switch (true) {
-    case state.matches("Unlock"):
     case state.matches("PresentAccounts"):
-    case state.matches("Login"):
     case state.matches("FetchAccounts"):
     case state.matches("CreateAccount"):
     case state.matches("GetDelegation"):
       return (
         <ScreenResponsive
           isLoading={
-            state.matches("Login") ||
             state.matches("FetchAccounts") ||
             state.matches("CreateAccount") ||
             state.matches("GetDelegation")
@@ -141,7 +138,7 @@ function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
             applicationName=""
             isAuthenticated={!!state.context.authSession}
             accounts={state.context?.accounts?.map(mapPersonaToLegacy) || []}
-            onUnlockNFID={async () => send("UNLOCK")}
+            onUnlockNFID={async () => {}}
             onLogin={async (persona) =>
               send({ type: "SELECT_ACCOUNT", data: persona })
             }

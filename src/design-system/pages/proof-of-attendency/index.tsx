@@ -1,8 +1,10 @@
-import { Button, Loader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 
+import { Button, Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 
 import { EventSummary } from "./event-summary"
@@ -10,8 +12,8 @@ import image_dog from "./image_dog.svg"
 
 interface RegisterAccountIntroProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
   > {
   continueButtonContent: string
   onContinueButtonClick: () => Promise<void>

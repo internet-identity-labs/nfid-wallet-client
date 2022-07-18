@@ -1,3 +1,6 @@
+import clsx from "clsx"
+import React from "react"
+
 import {
   P,
   Button,
@@ -5,8 +8,6 @@ import {
   Loader,
   Modal,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React from "react"
 
 import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
@@ -83,8 +84,8 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
               <div className="flex-grow" />
               <div className="opacity-0.4 mb-6 mt-6 opacity-40 text-xs">
                 NFID is a privacy-preserving, one-touch multi-factor wallet
-                protocol {applicationName && `used by ${applicationName} and`} developed by Internet
-                Identity Labs.
+                protocol {applicationName && `used by ${applicationName} and`}{" "}
+                developed by Internet Identity Labs.
               </div>
             </div>
           </div>

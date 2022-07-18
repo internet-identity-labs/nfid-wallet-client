@@ -1,8 +1,8 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface TrashIconProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export const TrashIcon: React.FC<TrashIconProps> = ({ className, onClick }) => {
@@ -14,8 +14,8 @@ export const TrashIcon: React.FC<TrashIconProps> = ({ className, onClick }) => {
       fill="none"
       viewBox="0 0 24 24"
       className={clsx(
-        'text-gray-400 hover:text-red-base cursor-pointer',
-        className
+        "text-gray-400 hover:text-red-base cursor-pointer",
+        className,
       )}
       onClick={onClick}
     >
@@ -27,5 +27,5 @@ export const TrashIcon: React.FC<TrashIconProps> = ({ className, onClick }) => {
         clipRule="evenodd"
       ></path>
     </svg>
-  );
-};
+  )
+}

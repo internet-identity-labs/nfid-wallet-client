@@ -25,7 +25,7 @@ const CaptchaTemplate: ComponentStory<typeof Captcha> = (args) => {
 export const CaptchaScreen = CaptchaTemplate.bind({})
 
 CaptchaScreen.args = {
-  successPath: '#',
+  successPath: "#",
   applicationName: "Distrikt",
   applicationLogo: logo,
 }

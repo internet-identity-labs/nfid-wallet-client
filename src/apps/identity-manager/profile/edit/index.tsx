@@ -1,15 +1,15 @@
 import React from "react"
 
 import { ProfileEdit } from "frontend/design-system/pages/profile-edit"
+import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
 import { im } from "frontend/comm/actors"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"
 
-interface AuthenticateNFIDHomeProps { }
+interface AuthenticateNFIDHomeProps {}
 
 export const NFIDProfileEdit: React.FC<AuthenticateNFIDHomeProps> = () => {
   const { updateAccount, account } = useAccount()

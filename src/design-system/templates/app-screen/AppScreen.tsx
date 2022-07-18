@@ -10,8 +10,8 @@ import { BubbleOptions, Shell } from "../Shell"
 
 interface Props
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
   > {
   title?: string
   description?: string

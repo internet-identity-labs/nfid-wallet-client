@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Running Yarn prettier
-        run: yarn prettier --check "src/**/*.{ts,tsx}"
+        run:
 
       - uses: aviate-labs/setup-dfx@v0.2.3
         with:
@@ -23,12 +23,12 @@ jobs:
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
-      - name: MULTIPASS FRONTEND | install & tests
+      - name: NFID FRONTEND | install & format check
         run: |
           yarn
-          # yarn test
+          yarn prettier --check "src/**/*.{ts,tsx}"
 
-      - name: MULTIPASS FRONTEND | deploy
+      - name: NFID FRONTEND | deploy
         run: |
 
           # install local to generate the types

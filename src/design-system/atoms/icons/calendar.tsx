@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"
 
 interface CalendarIconProps extends React.HTMLAttributes<HTMLOrSVGElement> {}
 
@@ -41,5 +41,5 @@ export const CalendarIcon: React.FC<CalendarIconProps> = ({ onClick }) => {
         strokeLinejoin="round"
       />
     </svg>
-  );
-};
+  )
+}

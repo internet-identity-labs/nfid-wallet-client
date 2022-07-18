@@ -3,47 +3,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-secrets:
-    defaults:
-      run:
-        shell: bash
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout CI repo.
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.PAT }}
-          repository: internet-identity-labs/ci_libs
-          ref: main
-          path: ci_libs
-
-      - name: Check secrets
-        run: |
-          source ./ci_libs/CI_LIBS.sh
-          JSON='${{ toJSON(env) }}'
-          ci_check_secrets "${JSON}"
-        env:
-          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
-          PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
-          VERIFIER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_VERIFIER}}
-          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY}}
-          IM_ADDITION_CANISTER_ID_DEV: ${{secrets.PROD_CANISTER_ID_IM_ADDITION}}
-          AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
-          AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
-          GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
-          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
-          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
-          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
-          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-
   deploy:
-    needs: check-secrets
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+
+      - name: Running Yarn prettier
+        run: prettier --check "src/**/*.{ts,tsx}"
 
       - uses: aviate-labs/setup-dfx@v0.2.3
         with:

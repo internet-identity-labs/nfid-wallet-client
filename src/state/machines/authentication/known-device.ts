@@ -64,8 +64,8 @@ const KnownDeviceMachine =
               states: {
                 Fetch: {
                   invoke: {
-                    src: "fetchAccountLimit",
-                    id: "fetchAccountLimit",
+                    src: "fetchAccountLimitService",
+                    id: "fetchAccountLimitService",
                     onDone: [
                       {
                         actions: "assignAccountLimit",
@@ -110,7 +110,7 @@ const KnownDeviceMachine =
     {
       services: {
         fetchAuthenticatorDevicesService,
-        fetchAccountLimit: fetchAccountLimitService,
+        fetchAccountLimitService,
       },
       actions: {
         assignDevices: assign({ devices: (_, event) => event.data }),

@@ -4,7 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
-    assignAccountLimit: "done.invoke.fetchAccountLimit"
+    assignAccountLimit: "done.invoke.fetchAccountLimitService"
   }
   internalEvents: {
     "done.invoke.fetchAuthenticatorDevicesService": {
@@ -12,8 +12,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.fetchAccountLimit": {
-      type: "done.invoke.fetchAccountLimit"
+    "done.invoke.fetchAccountLimitService": {
+      type: "done.invoke.fetchAccountLimitService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -22,8 +22,8 @@ export interface Typegen0 {
       type: "error.platform.fetchAuthenticatorDevicesService"
       data: unknown
     }
-    "error.platform.fetchAccountLimit": {
-      type: "error.platform.fetchAccountLimit"
+    "error.platform.fetchAccountLimitService": {
+      type: "error.platform.fetchAccountLimitService"
       data: unknown
     }
     "done.invoke.login": {
@@ -35,7 +35,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     fetchAuthenticatorDevicesService: "done.invoke.fetchAuthenticatorDevicesService"
-    fetchAccountLimit: "done.invoke.fetchAccountLimit"
+    fetchAccountLimitService: "done.invoke.fetchAccountLimitService"
     login: "done.invoke.login"
   }
   missingImplementations: {
@@ -46,7 +46,7 @@ export interface Typegen0 {
   }
   eventsCausingServices: {
     fetchAuthenticatorDevicesService: "xstate.init"
-    fetchAccountLimit: "xstate.init"
+    fetchAccountLimitService: "xstate.init"
     login: "UNLOCK"
   }
   eventsCausingGuards: {}

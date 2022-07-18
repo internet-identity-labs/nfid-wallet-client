@@ -45,6 +45,12 @@ const RemoteSenderMachine =
           invoke: {
             src: "KnownDeviceMachine",
             id: "known-device",
+            data: () => ({
+              anchor: 10042,
+              authRequest: {
+                hostname: "application.com",
+              },
+            }),
             onDone: [
               {
                 actions: "assignAuthSession",

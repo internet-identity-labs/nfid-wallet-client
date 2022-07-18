@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { render, waitFor, screen } from "@testing-library/react"
+import { act } from "react-dom/test-utils"
 
 import { AuthorizationRequest } from "frontend/state/authorization"
 import KnownDeviceMachine, {
@@ -17,9 +18,9 @@ import { makeInvokedActor } from "./_util"
 describe("KnownDevice Coordinator", () => {
   it("should render Authenticate state", async () => {
     // @ts-ignore
-    II.lookup = jest.fn()
+    II.lookup = jest.fn(() => Promise.resolve([]))
     // @ts-ignore
-    IM.fetchApplications = jest.fn()
+    IM.fetchApplications = jest.fn(() => Promise.resolve([]))
 
     const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
       anchor: 11111,
@@ -31,8 +32,7 @@ describe("KnownDevice Coordinator", () => {
       },
     })
     render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
-    await waitFor(() => screen.getByText("Authenticate"))
-    expect(screen.getByText("Authenticate")).toBeDefined()
+    await waitFor(() => screen.getByText("Authenticate MultiAccount"))
     expect(II.lookup).toHaveBeenCalledWith(11111, false)
     expect(IM.fetchApplications).toHaveBeenCalledWith()
   })

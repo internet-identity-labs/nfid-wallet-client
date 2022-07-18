@@ -17,8 +17,8 @@ import { parseUserNumber } from "frontend/comm/services/internet-identity/userNu
 
 interface RestoreAccessPointRecoveryPhraseContentProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
   > {
   iframe?: boolean
 }

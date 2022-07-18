@@ -8,8 +8,8 @@ import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 
 import { ImageNFIDLogin } from "frontend/apps/authentication/authenticate/image"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface AuthenticateNFIDLoginContentProps
   extends React.HTMLAttributes<HTMLDivElement> {

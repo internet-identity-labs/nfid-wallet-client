@@ -1,44 +1,45 @@
-import { Meta, Story } from '@storybook/react';
-import React from 'react';
-import { Button } from '../../atoms/button';
-import { ModalAdvanced, ModalAdvancedProps } from './advanced';
-import { Modal, ModalProps } from './index-v1';
+import { Meta, Story } from "@storybook/react"
+import React from "react"
+
+import { Button } from "../../atoms/button"
+import { ModalAdvanced, ModalAdvancedProps } from "./advanced"
+import { Modal, ModalProps } from "./index-v1"
 
 const meta: Meta = {
-  title: 'Molecules/Modal',
+  title: "Molecules/Modal",
   component: Modal,
   subcomponents: { ModalAdvanced },
   argTypes: {
     children: {
       control: {
-        type: 'text',
+        type: "text",
       },
     },
   },
   parameters: {
     controls: { expanded: true },
   },
-};
+}
 
-export default meta;
+export default meta
 
 const Template: Story<ModalProps> = ({ isVisible, ...args }) => {
-  const [visible, setVisible] = React.useState(isVisible);
+  const [visible, setVisible] = React.useState(isVisible)
   return (
     <>
       <Button onClick={() => setVisible(true)}>Open Modal</Button>
       <Modal {...args} isVisible={visible} onClose={() => setVisible(false)} />
     </>
-  );
-};
+  )
+}
 
 const AdvancedModal: Story<ModalAdvancedProps> = ({ ...args }) => {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = React.useState(false)
 
   const toggleVisibility = React.useCallback(
     () => setVisible((prev) => !prev),
-    [setVisible]
-  );
+    [setVisible],
+  )
 
   return (
     <>
@@ -49,7 +50,7 @@ const AdvancedModal: Story<ModalAdvancedProps> = ({ ...args }) => {
       {visible && (
         <ModalAdvanced
           {...args}
-          title={'Delete access point'}
+          title={"Delete access point"}
           onClose={toggleVisibility}
           children={
             <div>
@@ -58,32 +59,32 @@ const AdvancedModal: Story<ModalAdvancedProps> = ({ ...args }) => {
             </div>
           }
           primaryButton={{
-            type: 'error',
-            text: 'Delete',
+            type: "error",
+            text: "Delete",
             onClick: toggleVisibility,
           }}
           secondaryButton={{
-            type: 'secondary',
-            text: 'Cancel',
+            type: "secondary",
+            text: "Cancel",
             onClick: toggleVisibility,
           }}
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export const Default = Template.bind({});
-export const Advanced = AdvancedModal.bind({});
+export const Default = Template.bind({})
+export const Advanced = AdvancedModal.bind({})
 
 Default.args = {
-  children: 'Button',
+  children: "Button",
   onClose: () => {},
-  id: 'default-modal',
-};
+  id: "default-modal",
+}
 
 Advanced.args = {
-  id: 'advanced-modal',
-  title: 'Delete access point',
+  id: "advanced-modal",
+  title: "Delete access point",
   large: false,
-};
+}

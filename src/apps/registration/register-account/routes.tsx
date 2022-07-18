@@ -3,9 +3,10 @@ import { Outlet, Route } from "react-router-dom"
 
 import { useChallenge } from "frontend/design-system/pages/captcha/hook"
 
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+
 import { RegisterAccountCaptcha } from "./captcha"
 import { RouteRegisterAccountIntro } from "./intro"
-import { ProfileConstants } from 'frontend/apps/identity-manager/profile/routes'
 
 const ChallengeLoader = () => {
   // NOTE: this will start loading the challenge

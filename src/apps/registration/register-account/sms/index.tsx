@@ -30,9 +30,9 @@ interface RegisterAccountState {
 
 interface RegisterAccountSMSVerificationProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
-  > { }
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 export const RegisterAccountSMSVerification: React.FC<
   RegisterAccountSMSVerificationProps

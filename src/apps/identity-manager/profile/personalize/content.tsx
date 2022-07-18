@@ -1,3 +1,8 @@
+import clsx from "clsx"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { Link } from "react-router-dom"
+
 import {
   Button,
   H2,
@@ -6,20 +11,17 @@ import {
   Loader,
   P,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React from "react"
-import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
 
 import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
+
+import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { nameRules } from "frontend/utils/validations"
-import { im } from 'frontend/comm/actors'
 
 interface NFIDPersonalizeContentProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
   > {
   iframe?: boolean
 }

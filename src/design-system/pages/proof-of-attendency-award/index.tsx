@@ -7,14 +7,14 @@ import { Button, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import { ArrowLeft } from "frontend/design-system/atoms/icons/arrow-left"
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
-import { Footer } from "frontend/apps/marketing/landing-page/footer"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { Footer } from "frontend/apps/marketing/landing-page/footer"
 
 import { EventSummary } from "../proof-of-attendency/event-summary"
 import image_dog from "./dog_image.svg"
 
 interface ProofOfAttendencyAwardProps
-  extends React.HTMLAttributes<HTMLDivElement> { }
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const ProofOfAttendencyAward: React.FC<
   ProofOfAttendencyAwardProps

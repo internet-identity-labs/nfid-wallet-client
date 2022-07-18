@@ -2,17 +2,20 @@ import React from "react"
 import { useParams } from "react-router-dom"
 
 import { Captcha } from "frontend/design-system/pages/captcha"
-import { useCaptcha, useChallenge } from "frontend/design-system/pages/captcha/hook"
+import {
+  useCaptcha,
+  useChallenge,
+} from "frontend/design-system/pages/captcha/hook"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useAuthentication } from 'frontend/apps/authentication/use-authentication'
-import { im } from 'frontend/comm/actors'
-import { useAuthorization } from 'frontend/apps/authorization/use-authorization'
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -119,10 +122,10 @@ export const RegisterAccountCaptcha: React.FC<
     ],
   )
   const { userNumber } = useAccount()
-  const { authorizeApp, } = useAuthorization({
+  const { authorizeApp } = useAuthorization({
     userNumber,
   })
-  const { setShouldStoreLocalAccount } = useAuthentication();
+  const { setShouldStoreLocalAccount } = useAuthentication()
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {

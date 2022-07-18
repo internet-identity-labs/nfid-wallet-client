@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import { RegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode"
 import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
 
-interface PopupRegisterProps { }
+interface PopupRegisterProps {}
 
 export const PopupRegister: React.FC<PopupRegisterProps> = () => {
   return (

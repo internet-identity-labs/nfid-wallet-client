@@ -1,5 +1,6 @@
-import { Button, P } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
+
+import { Button, P } from "@internet-identity-labs/nfid-sdk-react"
 
 interface ResendSMSProps {
   handleResend: () => void

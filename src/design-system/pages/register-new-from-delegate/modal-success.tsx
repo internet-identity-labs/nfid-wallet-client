@@ -1,5 +1,6 @@
-import { Modal } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
+
+import { Modal } from "@internet-identity-labs/nfid-sdk-react"
 
 interface ModalSuccessProps
   extends React.DetailedHTMLProps<

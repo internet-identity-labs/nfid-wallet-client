@@ -2,17 +2,17 @@ import React from "react"
 import { useParams } from "react-router-dom"
 
 import { AuthorizeAppSingleAccount } from "frontend/design-system/pages/authorize-app/single-account"
+import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../../../identity-manager/profile/routes"
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
 
-interface AppScreenAuthorizeAppProps { }
+interface AppScreenAuthorizeAppProps {}
 
 export const AuthorizeNFID: React.FC<AppScreenAuthorizeAppProps> = () => {
   const { isLoading, setIsloading } = useIsLoading()

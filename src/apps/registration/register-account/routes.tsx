@@ -61,7 +61,7 @@ export const NFIDRegisterAccountRoutes = (
         <RouteRegisterAccountIntro
           isNFID
           captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
-          pathOnAuthenticated={`/profile/authenticate`}
+          pathOnAuthenticated={"/profile/authenticate"}
         />
       }
     />
@@ -70,7 +70,7 @@ export const NFIDRegisterAccountRoutes = (
       element={
         <RegisterAccountCaptcha
           isNFIDProp
-          successPath={`/profile/authenticate`}
+          successPath={"/profile/authenticate"}
         />
       }
     />

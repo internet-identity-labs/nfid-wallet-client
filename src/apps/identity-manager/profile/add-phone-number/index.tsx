@@ -4,13 +4,13 @@ import React from "react"
 import { ProfileEditPhone } from "frontend/design-system/pages/profile-edit/phone"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"
 import { phoneNumberAtom } from "../state"
 
-interface AuthenticateNFIDHomeProps { }
+interface AuthenticateNFIDHomeProps {}
 
 export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
   const [, setPhoneNumber] = useAtom(phoneNumberAtom)

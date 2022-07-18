@@ -7,8 +7,6 @@ import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
-import { ProfileConstants } from "../routes"
-
 interface AuthenticateNFIDHomeProps {}
 
 export const NFIDProfileEdit: React.FC<AuthenticateNFIDHomeProps> = () => {
@@ -30,9 +28,7 @@ export const NFIDProfileEdit: React.FC<AuthenticateNFIDHomeProps> = () => {
   }
   return (
     <ProfileEdit
-      onAddPhoneNumber={navigateFactory(
-        `${ProfileConstants.base}/${ProfileConstants.addPhoneNumber}`,
-      )}
+      onAddPhoneNumber={navigateFactory("/profile/add-phone-number")}
       onSubmit={async (data: { name: string | undefined }) => onSubmit(data)}
       account={account}
       isLoading={isLoading}

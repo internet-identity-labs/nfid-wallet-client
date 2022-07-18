@@ -7,15 +7,15 @@ import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
 import { ButtonMenu } from "frontend/design-system/atoms/menu"
 
-import User from "frontend/assets/user.svg"
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import User from "frontend/assets/user.svg"
+import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import useClickOutside from "frontend/utils/use-click-outside"
 import { useScroll } from "frontend/utils/use-scroll"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 
-import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
 import { NavigationPopup } from "./navigation-popup"
 import { PopupLogin } from "./navigation-popup/popup-login"
 

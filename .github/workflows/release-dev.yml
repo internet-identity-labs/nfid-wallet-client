@@ -7,18 +7,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: aviate-labs/setup-dfx@v0.2.3
         with:
           dfx-version: 0.9.3
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
-      - name: MULTIPASS FRONTEND | install & tests
+      - name: NFID FRONTEND | install & format check
         run: |
           yarn
+          yarn prettier --check "src/**/*.{ts,tsx}"
           # yarn test
 
-      - name: MULTIPASS FRONTEND | deploy
+      - name: NFID FRONTEND | deploy
         run: |
           dfx identity use action
           dfx deploy --network dev  --no-wallet

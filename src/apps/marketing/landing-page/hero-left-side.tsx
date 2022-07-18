@@ -1,19 +1,18 @@
 import React from "react"
 // @ts-ignore
-import { Slide } from "react-reveal"
+import { Slide } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import sticky from "stickyfilljs"
 
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
-import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
+import { NFIDRegisterAccountConstants } from "frontend/apps/registration/register-account/routes"
 import { ElementProps } from "frontend/types/react"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import MobileHero from "./assets/mobile_hero.svg"
-
-import { useNFIDNavigate } from 'frontend/utils/use-nfid-navigate'
-import { NFIDRegisterAccountConstants } from 'frontend/apps/registration/register-account/routes'
 
 interface HeroLeftSideProps extends ElementProps<HTMLDivElement> {
   isQRCode?: boolean

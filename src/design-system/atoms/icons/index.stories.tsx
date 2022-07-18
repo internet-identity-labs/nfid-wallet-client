@@ -1,6 +1,7 @@
-import { DesktopIcon } from "@internet-identity-labs/nfid-sdk-react"
 import { Meta, Story } from "@storybook/react"
 import React from "react"
+
+import { DesktopIcon } from "@internet-identity-labs/nfid-sdk-react"
 
 import { CalendarIcon } from "./calendar"
 import { ButtonChevronIcon } from "./chevron"

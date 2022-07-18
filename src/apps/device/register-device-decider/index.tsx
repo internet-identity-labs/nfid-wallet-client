@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom"
 import { AuthorizeRegisterDeciderScreen } from "frontend/design-system/pages/register-device-decider"
 import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
-import { im } from "frontend/comm/actors"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface AppScreenRegisterDeviceDeciderProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -53,7 +53,7 @@ export const RouterRegisterDeviceDecider: React.FC<
       const pub_key = Array.from(
         new Uint8Array(
           user?.internetIdentity.delegationIdentity.getPublicKey().toDer() ??
-          [],
+            [],
         ),
       )
       const createAccessPointResponse = await im.create_access_point({

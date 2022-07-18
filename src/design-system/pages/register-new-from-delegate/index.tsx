@@ -1,3 +1,7 @@
+import clsx from "clsx"
+import React from "react"
+import { useParams } from "react-router-dom"
+
 import {
   Card,
   CardBody,
@@ -5,11 +9,9 @@ import {
   Button,
   Loader,
 } from "@internet-identity-labs/nfid-sdk-react"
-import clsx from "clsx"
-import React from "react"
-import { useParams } from "react-router-dom"
 
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { usePostMessage } from "frontend/apps/identity-provider/use-post-message"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
@@ -23,7 +25,7 @@ export const RegisterNewFromDelegate = () => {
   const [showModal, setShowModal] = React.useState(false)
   const { opener } = usePostMessage({
     // @ts-ignore TODO: fix this
-    onMessage: () => { },
+    onMessage: () => {},
   })
 
   const {

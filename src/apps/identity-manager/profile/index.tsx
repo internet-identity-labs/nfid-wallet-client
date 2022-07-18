@@ -3,7 +3,6 @@ import React from "react"
 import { Profile } from "frontend/design-system/pages/profile"
 
 import { ima } from "frontend/comm/actors"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
 import {
@@ -11,10 +10,11 @@ import {
   RecoveryDevice,
 } from "frontend/comm/services/identity-manager/devices/state"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "./routes"
 
-interface AuthenticateNFIDHomeProps { }
+interface AuthenticateNFIDHomeProps {}
 
 export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const applications: any[] = ["NFID Demo"]

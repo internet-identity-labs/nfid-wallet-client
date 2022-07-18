@@ -1,12 +1,13 @@
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
+
+import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 
 interface NFIDPersonasProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
   > {
   personas: { persona_id: string }[]
   onClickPersona: ({ persona_id }: { persona_id: string }) => () => void

@@ -1,12 +1,11 @@
 import clsx from "clsx"
 import React from "react"
-// @ts-ignore
-import { Fade } from "react-reveal"
+import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
 import { Accordion } from "frontend/design-system/atoms/accordion"
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
+import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
 import Blur from "./assets/blur_green.png"
 
@@ -14,7 +13,7 @@ import { Footer } from "./footer"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
 
-interface FaqProps { }
+interface FaqProps {}
 
 export const Faq: React.FC<FaqProps> = ({ children }) => {
   return (

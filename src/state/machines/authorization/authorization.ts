@@ -6,10 +6,7 @@ import {
   createAccount,
   fetchAccounts,
 } from "frontend/integration/identity-manager/services"
-import {
-  fetchDelegate,
-  login,
-} from "frontend/integration/internet-identity/services"
+import { fetchDelegate } from "frontend/integration/internet-identity/services"
 import { AuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
@@ -19,8 +16,8 @@ import {
 
 export interface AuthorizationMachineContext {
   appMeta: AuthorizingAppMeta
-  authRequest?: AuthorizationRequest
-  authSession?: AuthSession
+  authSession: AuthSession
+  authRequest: AuthorizationRequest
   userLimit?: number
   accounts?: Persona[]
 }
@@ -29,15 +26,12 @@ export type AuthorizationMachineEvents =
   | { type: "done.invoke.fetchAppUserLimit"; data: number }
   | { type: "done.invoke.fetchAccounts"; data: Persona[] }
   | { type: "done.invoke.fetchDelegate"; data: ThirdPartyAuthSession }
-  | { type: "done.invoke.login"; data: AuthSession }
   | { type: "done.invoke.createAccount"; data: Persona["personaId"] }
   | { type: "SINGLE_ACCOUNT" }
   | { type: "MULTI_ACCOUNT" }
-  | { type: "UNLOCK" }
   | { type: "CREATE_ACCOUNT" }
   | { type: "SELECT_ACCOUNT"; data: Persona["personaId"] }
   | { type: "PRESENT_ACCOUNTS" }
-  | { type: "LOGIN" }
 
 export interface Schema {
   events: AuthorizationMachineEvents
@@ -60,28 +54,6 @@ const AuthorizationMachine =
             onDone: [
               {
                 actions: "assignUserLimit",
-                cond: "authenticated",
-                target: "FetchAccounts",
-              },
-              {
-                actions: "assignUserLimit",
-                target: "Unlock",
-              },
-            ],
-          },
-        },
-        Unlock: {
-          on: {
-            UNLOCK: "Login",
-          },
-        },
-        Login: {
-          invoke: {
-            src: "login",
-            id: "login",
-            onDone: [
-              {
-                actions: "assignAuthSession",
                 target: "FetchAccounts",
               },
             ],
@@ -138,9 +110,6 @@ const AuthorizationMachine =
     },
     {
       actions: {
-        assignAuthSession: assign((context, event) => ({
-          authSession: event.data,
-        })),
         assignUserLimit: assign({ userLimit: (context, event) => event.data }),
         assignAccounts: assign({ accounts: (context, event) => event.data }),
         handleAccounts: send((context, event) => ({
@@ -157,11 +126,7 @@ const AuthorizationMachine =
         fetchAppUserLimit,
         fetchAccounts,
         fetchDelegate,
-        login,
         createAccount,
-      },
-      guards: {
-        authenticated: (context) => !!context.authSession,
       },
     },
   )

@@ -7,10 +7,10 @@ import { unpackLegacyResponse, unpackResponse } from "../_common"
 import {
   AccessPointResponse,
   AccountResponse,
+  Application as BEApplication,
   PersonaResponse,
 } from "../_ic_api/identity_manager.did"
-import { agent, im } from "../actors"
-import { authState } from "../internet-identity"
+import { im } from "../actors"
 
 export interface Account {
   name?: string
@@ -141,7 +141,7 @@ export async function verifyToken(token: string, principal: Principal) {
 }
 
 /**
- * TODO: I don't really know what this does!
+ * Updates the last used timestamp on the used device from the actor
  */
 export async function useAccessPoint() {
   return await im
@@ -152,4 +152,31 @@ export async function useAccessPoint() {
 
 export async function registerAccount(anchor: number) {
   return im.create_account({ anchor: BigInt(anchor) }).then(unpackResponse)
+}
+
+export interface Application {
+  accountLimit: number
+  domain: string
+  name: string
+}
+
+function mapApplication(application: BEApplication): Application {
+  if (application.user_limit < 1)
+    throw new Error("user_limit has to be greater or equal to 1")
+
+  return {
+    accountLimit: application.user_limit,
+    domain: application.domain,
+    name: application.name,
+  }
+}
+
+/**
+ * Fetches 3rd party application meta data
+ */
+export async function fetchApplications() {
+  return im
+    .read_applications()
+    .then(unpackResponse)
+    .then((r) => r.map(mapApplication))
 }

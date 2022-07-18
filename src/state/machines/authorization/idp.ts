@@ -49,10 +49,6 @@ const IDPMachine =
           type: "parallel",
           states: {
             Handshake: {
-              invoke: {
-                src: "handshake",
-                id: "handshake",
-              },
               initial: "Fetch",
               states: {
                 Fetch: {
@@ -73,10 +69,6 @@ const IDPMachine =
               },
             },
             GetAppMeta: {
-              invoke: {
-                src: "getAppMeta",
-                id: "getAppMeta",
-              },
               initial: "Fetch",
               states: {
                 Fetch: {

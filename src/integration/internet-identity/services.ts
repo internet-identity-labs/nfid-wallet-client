@@ -95,3 +95,9 @@ export async function register(
     sessionSource: "localDevice",
   }
 }
+
+export async function fetchAuthenticatorDevicesService(context: {
+  anchor: number
+}) {
+  return await lookup(context.anchor, false)
+}

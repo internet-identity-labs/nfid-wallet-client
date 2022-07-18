@@ -4,18 +4,12 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     assignUserLimit: "done.invoke.fetchAppUserLimit"
-    assignAuthSession: "done.invoke.login"
     assignAccounts: "done.invoke.fetchAccounts"
     handleAccounts: "done.invoke.fetchAccounts"
   }
   internalEvents: {
     "done.invoke.fetchAppUserLimit": {
       type: "done.invoke.fetchAppUserLimit"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "done.invoke.login": {
-      type: "done.invoke.login"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -34,7 +28,6 @@ export interface Typegen0 {
       type: "error.platform.fetchAppUserLimit"
       data: unknown
     }
-    "error.platform.login": { type: "error.platform.login"; data: unknown }
     "error.platform.fetchAccounts": {
       type: "error.platform.fetchAccounts"
       data: unknown
@@ -55,7 +48,6 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     fetchAppUserLimit: "done.invoke.fetchAppUserLimit"
-    login: "done.invoke.login"
     fetchAccounts: "done.invoke.fetchAccounts"
     createAccount: "done.invoke.createAccount"
     fetchDelegate: "done.invoke.fetchDelegate"
@@ -68,19 +60,14 @@ export interface Typegen0 {
   }
   eventsCausingServices: {
     fetchAppUserLimit: "xstate.init"
-    fetchAccounts: "done.invoke.fetchAppUserLimit" | "done.invoke.login"
-    login: "UNLOCK"
+    fetchAccounts: "done.invoke.fetchAppUserLimit"
     createAccount: "CREATE_ACCOUNT"
     fetchDelegate: "SELECT_ACCOUNT" | "done.invoke.createAccount"
   }
-  eventsCausingGuards: {
-    authenticated: "done.invoke.fetchAppUserLimit"
-  }
+  eventsCausingGuards: {}
   eventsCausingDelays: {}
   matchesStates:
     | "Start"
-    | "Unlock"
-    | "Login"
     | "FetchAccounts"
     | "CreateAccount"
     | "PresentAccounts"

@@ -3,9 +3,12 @@
  */
 import { render, screen, waitFor } from "@testing-library/react"
 
-import RemoteSenderMachine from "frontend/state/machines/authentication/remote-sender"
+import RemoteSenderMachine, {
+  RemoteSenderActor,
+} from "frontend/state/machines/authentication/remote-sender"
 
 import RemoteIDPCoordinator from "../remote-idp"
+import { makeInvokedActor } from "./_util"
 
 const config = {
   guards: {

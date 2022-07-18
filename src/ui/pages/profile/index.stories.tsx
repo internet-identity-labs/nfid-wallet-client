@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { Device } from "frontend/integration/identity-manager/devices/state"
+import { LegacyDevice } from "frontend/integration/identity-manager/devices/state"
 
 import { Profile } from "."
 
@@ -32,9 +32,9 @@ LoggedIn.args = {
     { domain: "wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "1" },
     { domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "2" },
   ],
-  onDeviceDelete: (device: Device) => Promise.resolve(),
-  onDeviceUpdate: (device: Device) => Promise.resolve(),
-  onDeviceUpdateLabel: (device: Device) => Promise.resolve(),
+  onDeviceDelete: (device: LegacyDevice) => Promise.resolve(),
+  onDeviceUpdate: (device: LegacyDevice) => Promise.resolve(),
+  onDeviceUpdateLabel: (device: LegacyDevice) => Promise.resolve(),
   recoveryMethods: [
     {
       label: "Recovery phrase",

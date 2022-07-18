@@ -17,6 +17,7 @@ import {
 import {
   authState,
   CaptchaChallenge,
+  Device,
   fetchDelegate as _fetchDelegate,
   lookup,
   registerInternetIdentity,
@@ -24,6 +25,7 @@ import {
 } from "."
 import { ii } from "../actors"
 import { deviceInfo } from "../device"
+import { identityFromDeviceList } from "../identity"
 
 export async function fetchDelegate(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
@@ -45,8 +47,15 @@ export async function fetchDelegate(
   )
 }
 
-export async function login(): Promise<AuthSession> {
-  throw new Error("Not implemented")
+export async function loginService(context: {
+  devices?: Device[]
+}): Promise<LocalDeviceAuthSession> {
+  if (!context.devices) throw new Error("devices missing")
+
+  return {
+    sessionSource: "localDevice",
+    identity: identityFromDeviceList(context.devices),
+  }
 }
 
 export async function register(
@@ -99,5 +108,7 @@ export async function register(
 export async function fetchAuthenticatorDevicesService(context: {
   anchor: number
 }) {
-  return await lookup(context.anchor, false)
+  const devices = await lookup(context.anchor, false)
+  console.log(">> ", { devices })
+  return devices
 }

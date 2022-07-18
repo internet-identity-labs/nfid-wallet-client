@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { P, H3, Logo } from "@internet-identity-labs/nfid-sdk-react"
 
 import {
-  Device,
+  LegacyDevice,
   RecoveryDevice,
 } from "frontend/integration/identity-manager/devices/state"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
@@ -22,13 +22,13 @@ interface Account {
 }
 
 interface ProfileProps {
-  onDeviceDelete: (device: Device) => Promise<void>
-  onDeviceUpdate: (device: Device) => Promise<void>
+  onDeviceDelete: (device: LegacyDevice) => Promise<void>
+  onDeviceUpdate: (device: LegacyDevice) => Promise<void>
   onRecoveryDelete: (method: RecoveryDevice) => Promise<void>
   onRecoveryUpdate: (method: RecoveryDevice) => Promise<void>
   onCreateRecoveryPhrase: () => Promise<void>
   onRegisterRecoveryKey: () => Promise<void>
-  devices: Device[]
+  devices: LegacyDevice[]
   accounts: NFIDPersona[]
   recoveryMethods: RecoveryDevice[]
   account?: Account

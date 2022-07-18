@@ -26,28 +26,31 @@ export interface Typegen0 {
       type: "error.platform.fetchAccountLimitService"
       data: unknown
     }
-    "done.invoke.login": {
-      type: "done.invoke.login"
+    "done.invoke.loginService": {
+      type: "done.invoke.loginService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.login": { type: "error.platform.login"; data: unknown }
+    "error.platform.loginService": {
+      type: "error.platform.loginService"
+      data: unknown
+    }
   }
   invokeSrcNameMap: {
     fetchAuthenticatorDevicesService: "done.invoke.fetchAuthenticatorDevicesService"
     fetchAccountLimitService: "done.invoke.fetchAccountLimitService"
-    login: "done.invoke.login"
+    loginService: "done.invoke.loginService"
   }
   missingImplementations: {
     actions: never
-    services: "login"
+    services: never
     guards: never
     delays: never
   }
   eventsCausingServices: {
     fetchAuthenticatorDevicesService: "xstate.init"
     fetchAccountLimitService: "xstate.init"
-    login: "UNLOCK"
+    loginService: "UNLOCK"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}

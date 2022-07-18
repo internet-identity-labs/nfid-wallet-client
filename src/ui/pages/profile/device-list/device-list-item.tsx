@@ -12,7 +12,7 @@ import {
 } from "@internet-identity-labs/nfid-sdk-react"
 
 import {
-  Device,
+  LegacyDevice,
   Icon,
 } from "frontend/integration/identity-manager/devices/state"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
@@ -22,9 +22,9 @@ import { DeviceIconDecider } from "./device-icon-decider"
 import { DeviceListButtonGroup } from "./device-list-button-group"
 
 interface DeviceListItemProps {
-  device: Device
-  onDeviceUpdate: (device: Device) => Promise<void>
-  onDelete: (device: Device) => Promise<void>
+  device: LegacyDevice
+  onDeviceUpdate: (device: LegacyDevice) => Promise<void>
+  onDelete: (device: LegacyDevice) => Promise<void>
 }
 
 export const DeviceListItem: React.FC<DeviceListItemProps> = ({
@@ -32,7 +32,9 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   onDelete,
   onDeviceUpdate,
 }) => {
-  const [updatedDevice, setUpdatedDevice] = React.useState<Device | null>(null)
+  const [updatedDevice, setUpdatedDevice] = React.useState<LegacyDevice | null>(
+    null,
+  )
 
   const device = updatedDevice ?? initialDevice
 
@@ -53,7 +55,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   const [loading, setLoading] = React.useState(false)
 
   const handleDeleteDevice = React.useCallback(
-    async (device: Device) => {
+    async (device: LegacyDevice) => {
       setLoading(true)
 
       await onDelete(device)
@@ -75,7 +77,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   const handleSelectIcon = React.useCallback(
     (icon: Icon) => {
       setUpdatedDevice(
-        produce(updatedDevice || initialDevice, (draft: Device) => ({
+        produce(updatedDevice || initialDevice, (draft: LegacyDevice) => ({
           ...draft,
           icon,
         })),
@@ -95,7 +97,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   const handleOnChangeLabel = React.useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       setUpdatedDevice(
-        produce(updatedDevice || initialDevice, (draft: Device) => ({
+        produce(updatedDevice || initialDevice, (draft: LegacyDevice) => ({
           ...draft,
           label: value,
         })),

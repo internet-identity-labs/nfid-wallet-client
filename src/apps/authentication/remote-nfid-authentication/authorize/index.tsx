@@ -9,7 +9,6 @@ import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
-import { ProfileConstants } from "../../../identity-manager/profile/routes"
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
 
 interface AppScreenAuthorizeAppProps {}
@@ -25,7 +24,7 @@ export const AuthorizeNFID: React.FC<AppScreenAuthorizeAppProps> = () => {
     if (!secret) throw new Error("missing secret")
 
     await remoteNFIDLogin({ secret })
-    navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
+    navigate("/profile/authenticate")
   }, [navigate, remoteNFIDLogin, secret])
 
   const handleUnlockNFID = React.useCallback(async () => {

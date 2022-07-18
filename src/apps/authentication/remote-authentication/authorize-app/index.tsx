@@ -12,7 +12,6 @@ import { useAccount } from "frontend/comm/services/identity-manager/account/hook
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
-import { ProfileConstants } from "../../../identity-manager/profile/routes"
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
 
 interface AppScreenAuthorizeAppProps {}
@@ -55,7 +54,7 @@ export const AppScreenAuthorizeApp: React.FC<
         connection: user?.internetIdentity,
       })
       setIsloading(false)
-      navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
+      navigate("/profile/authenticate")
     },
     [
       navigate,

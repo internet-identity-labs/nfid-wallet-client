@@ -10,7 +10,6 @@ import {
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
@@ -82,9 +81,7 @@ export const RegisterAccountCaptcha: React.FC<
               userNumberOverwrite: response.userNumber,
               userOverwrite: user,
             })
-            return navigate(
-              `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-            )
+            return navigate("/profile/authenticate")
           }
 
           if (!scope) throw new Error("scope is missing from params")
@@ -104,7 +101,7 @@ export const RegisterAccountCaptcha: React.FC<
           ])
         }
 
-        navigate(`${ProfileConstants.base}/${ProfileConstants.authenticate}`)
+        navigate("/profile/authenticate")
       }
     },
     [
@@ -211,7 +208,7 @@ export const RegisterAccountCaptcha: React.FC<
       isChallengeLoading={isChallengeLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}
-      successPath={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
+      successPath={"/profile/authenticate"}
       onRegisterAnchor={
         isGoogle ? handleRegisterAnchorWithGoogle : handleRegisterAnchor
       }

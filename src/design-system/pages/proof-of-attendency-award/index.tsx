@@ -7,7 +7,6 @@ import { Button, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import { ArrowLeft } from "frontend/design-system/atoms/icons/arrow-left"
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { Footer } from "frontend/apps/marketing/landing-page/footer"
 
 import { EventSummary } from "../proof-of-attendency/event-summary"
@@ -41,9 +40,7 @@ export const ProofOfAttendencyAward: React.FC<
         )}
       >
         <div className="z-20">
-          <Link
-            to={`${ProfileConstants.base}/${ProfileConstants.authenticate}`}
-          >
+          <Link to={"/profile/authenticate"}>
             <Button icon>
               <ArrowLeft />
             </Button>

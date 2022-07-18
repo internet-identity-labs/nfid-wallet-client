@@ -8,7 +8,6 @@ import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
@@ -86,9 +85,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               userOverwrite,
             })
           }
-          return navigate(
-            `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
-          )
+          return navigate("/profile/authenticate")
         }
         // when we're not on NFID we're handling the authorization on
         // the next page

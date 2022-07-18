@@ -1,4 +1,5 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { Buffer } from "buffer"
 
 import { creationOptions, Device } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
@@ -15,15 +16,13 @@ export function identityFromDeviceList(
   devices: Device[],
   withSecurityDevices?: boolean,
 ): MultiWebAuthnIdentity {
-  return MultiWebAuthnIdentity.fromCredentials(
-    devices
-      .filter((device) => !!device.credentialId)
-      .map((device) => ({
-        pubkey: derFromPubkey(device.pubkey),
-        credentialId: (device.credentialId as Uint8Array).buffer,
-      })),
-    withSecurityDevices,
-  )
+  const credential = devices
+    .filter((device) => !!device.credentialId)
+    .map((device) => ({
+      pubkey: derFromPubkey(device.pubkey),
+      credentialId: Buffer.from(device.credentialId!),
+    }))
+  return MultiWebAuthnIdentity.fromCredentials(credential, withSecurityDevices)
 }
 
 /**

@@ -1,5 +1,6 @@
-import { Button, H5 } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
+
+import { Button, H5 } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 

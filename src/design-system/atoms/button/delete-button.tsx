@@ -1,9 +1,9 @@
-import React from 'react';
-import { HiTrash } from 'react-icons/hi';
+import React from "react"
+import { HiTrash } from "react-icons/hi"
 
 interface DeleteButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-  disabled?: boolean;
-  onClick?: () => void;
+  disabled?: boolean
+  onClick?: () => void
 }
 
 export const DeleteButton: React.FC<DeleteButtonProps> = ({
@@ -21,5 +21,5 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({
     >
       <HiTrash className="text-xl" />
     </div>
-  );
-};
+  )
+}

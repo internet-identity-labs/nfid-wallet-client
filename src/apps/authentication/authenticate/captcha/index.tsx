@@ -1,16 +1,20 @@
 import React from "react"
 
 import { Captcha } from "frontend/design-system/pages/captcha"
-import { useCaptcha, useChallenge } from "frontend/design-system/pages/captcha/hook"
+import {
+  useCaptcha,
+  useChallenge,
+} from "frontend/design-system/pages/captcha/hook"
 import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
-import { im } from "frontend/comm/actors"
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useAuthentication } from '../../use-authentication'
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+
+import { useAuthentication } from "../../use-authentication"
 
 interface RouteCaptchaProps {
   successPath: string

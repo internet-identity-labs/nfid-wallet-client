@@ -13,9 +13,9 @@ import { useMessageChannel } from "frontend/design-system/pages/remote-authorize
 import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { LoginSuccess } from "frontend/comm/services/internet-identity/api-result-to-login-result"
 import { parseUserNumber } from "frontend/comm/services/internet-identity/userNumber"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
   registerDevicePath: string

@@ -1,6 +1,7 @@
-import { Card, CardBody } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
+
+import { Card, CardBody } from "@internet-identity-labs/nfid-sdk-react"
 
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
@@ -8,9 +9,9 @@ import { NFIDPersonalizeContent } from "./content"
 
 interface NFIDPersonalizeProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
-  > { }
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 export const NFIDPersonalize: React.FC<NFIDPersonalizeProps> = ({
   children,

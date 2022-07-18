@@ -1,11 +1,11 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface SuccessProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Success: React.FC<SuccessProps> = ({ className }) => {
   return (
-    <div className={clsx('', className)}>
+    <div className={clsx("", className)}>
       <svg
         width="53"
         height="37"
@@ -19,5 +19,5 @@ export const Success: React.FC<SuccessProps> = ({ className }) => {
         />
       </svg>
     </div>
-  );
-};
+  )
+}

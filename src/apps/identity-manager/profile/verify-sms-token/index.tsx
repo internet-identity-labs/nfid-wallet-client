@@ -3,15 +3,15 @@ import React from "react"
 
 import { ProfileEditPhoneSms } from "frontend/design-system/pages/profile-edit/phone-sms"
 
-import { im } from "frontend/comm/actors"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/comm/actors"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"
 import { phoneNumberAtom } from "../state"
 
-interface AuthenticateNFIDHomeProps { }
+interface AuthenticateNFIDHomeProps {}
 
 export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
   const [phone] = useAtom(phoneNumberAtom)

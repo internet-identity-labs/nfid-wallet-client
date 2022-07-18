@@ -1,16 +1,16 @@
 import React from "react"
 
+import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
 import { useChallenge } from "frontend/design-system/pages/captcha/hook"
 import { RegisterAccountIntro } from "frontend/design-system/pages/register-account-intro/screen-app"
+import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from 'frontend/comm/services/identity-manager/persona/hooks'
-import { CredentialResponse } from 'frontend/design-system/atoms/button/signin-with-google/types'
+import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RouteRegisterProps {
   captchaPath: string

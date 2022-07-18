@@ -1,15 +1,15 @@
 import React from "react"
 
+import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
 import { AuthorizeDecider } from "frontend/design-system/pages/authorize-decider"
 import { useChallenge } from "frontend/design-system/pages/captcha/hook"
-import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
 import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface AuthorizeDeciderProps {
   pathRegisterSameDevice: string
@@ -45,19 +45,19 @@ export const AppScreenAuthorizeDecider: React.FC<AuthorizeDeciderProps> = ({
 
   const handleAuthorization =
     ({ withSecurityDevices }: { withSecurityDevices: boolean }) =>
-      async (userNumber: number) => {
-        setIsLoading(true)
-        const response = await login(BigInt(userNumber), withSecurityDevices)
+    async (userNumber: number) => {
+      setIsLoading(true)
+      const response = await login(BigInt(userNumber), withSecurityDevices)
 
-        if (response.tag === "ok") {
-          withSecurityDevices && setShouldStoreLocalAccount(false)
-          setIsLoading(false)
-        }
-        if (response.tag === "err") {
-          setAuthError(response.title)
-          setIsLoading(false)
-        }
+      if (response.tag === "ok") {
+        withSecurityDevices && setShouldStoreLocalAccount(false)
+        setIsLoading(false)
       }
+      if (response.tag === "err") {
+        setAuthError(response.title)
+        setIsLoading(false)
+      }
+    }
 
   const handleCreateKeys = React.useCallback(async () => {
     setIsLoading(true)

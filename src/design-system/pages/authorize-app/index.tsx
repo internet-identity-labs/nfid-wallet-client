@@ -44,10 +44,10 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   const displayAccounts = isAuthenticated
     ? accounts
     : // FAKE DISPLAY DATA FOR BLURRED BACKGROUND
-    new Array(4).fill(null).map((_, i) => ({
-      domain: "http://fake.com",
-      persona_id: i === 0 ? "longer" : `${i}`,
-    }))
+      new Array(4).fill(null).map((_, i) => ({
+        domain: "http://fake.com",
+        persona_id: i === 0 ? "longer" : `${i}`,
+      }))
 
   return (
     <>

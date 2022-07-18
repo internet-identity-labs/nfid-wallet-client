@@ -1,5 +1,6 @@
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
+
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { CONTAINER_CLASSES } from "frontend/design-system/atoms/container"
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"

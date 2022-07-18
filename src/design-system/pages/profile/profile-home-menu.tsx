@@ -5,8 +5,8 @@ import { Link } from "react-router-dom"
 
 import { DotsIcon } from "@internet-identity-labs/nfid-sdk-react"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
 interface MenuButtonProps {
   className?: string

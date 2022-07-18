@@ -11,7 +11,7 @@ interface CopyRecoveryPhraseLocationState {
   recoveryPhrase: string
 }
 
-interface CopyRecoveryPhraseProps { }
+interface CopyRecoveryPhraseProps {}
 
 export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = () => {
   const { state } = useLocation()

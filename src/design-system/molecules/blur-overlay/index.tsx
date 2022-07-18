@@ -4,7 +4,7 @@ import React from "react"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { ElementProps } from "frontend/types/react"
 
-interface BlurOverlayProps extends ElementProps<HTMLDivElement> { }
+interface BlurOverlayProps extends ElementProps<HTMLDivElement> {}
 
 export const BlurOverlay: React.FC<BlurOverlayProps> = ({
   children,

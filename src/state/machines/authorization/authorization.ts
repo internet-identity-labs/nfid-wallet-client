@@ -1,6 +1,6 @@
 import { assign, ActorRefFrom, createMachine, send } from "xstate"
 
-import { fetchAppUserLimit } from "frontend/integration/app-config/services"
+import { fetchAccountLimitService } from "frontend/integration/app-config/services"
 import { Persona } from "frontend/integration/identity-manager"
 import {
   createAccount,
@@ -123,7 +123,7 @@ const AuthorizationMachine =
         })),
       },
       services: {
-        fetchAppUserLimit,
+        fetchAppUserLimit: fetchAccountLimitService,
         fetchAccounts,
         fetchDelegate,
         createAccount,

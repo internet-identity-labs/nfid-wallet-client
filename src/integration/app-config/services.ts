@@ -1,7 +1,9 @@
-import { fetchAppUserLimit as _fetchAppUserLimit } from "frontend/integration/app-config"
-import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
+import { fetchAccountLimit } from "frontend/integration/app-config"
+import { AuthorizationRequest } from "frontend/state/authorization"
 
-export function fetchAppUserLimit(context: AuthorizationMachineContext) {
+export function fetchAccountLimitService(context: {
+  authRequest: AuthorizationRequest
+}) {
   if (!context.authRequest?.hostname) throw new Error("No application meta")
-  return _fetchAppUserLimit(context.authRequest?.hostname)
+  return fetchAccountLimit(context.authRequest.hostname)
 }

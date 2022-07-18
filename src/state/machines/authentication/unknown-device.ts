@@ -185,7 +185,7 @@ const UnknownDeviceMachine =
         signInWithGoogle,
         // isMobileWithWebAuthn,
         async isMobileWithWebAuthn() {
-          return true
+          return false
         },
         // registerDevice,
       },

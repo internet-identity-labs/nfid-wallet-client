@@ -212,7 +212,7 @@ export async function fetchRecoveryDevices(anchor: UserNumber) {
   )
 }
 
-const requestFEDelegationChain = async (
+export const requestFEDelegationChain = async (
   identity: SignIdentity,
   ttl: number = TEN_MINUTES_IN_M_SEC,
 ) => {
@@ -463,16 +463,20 @@ async function getPrincipal(
   return await ii.get_principal(userNumber, frontend)
 }
 
-const getMultiIdent = (
+export const getMultiIdent = (
   devices: DeviceData[],
   withSecurityDevices?: boolean,
 ) => {
   return MultiWebAuthnIdentity.fromCredentials(
     devices.flatMap((device) =>
-      device.credential_id.map((credentialId: CredentialId) => ({
-        pubkey: derFromPubkey(device.pubkey),
-        credentialId: Buffer.from(credentialId),
-      })),
+      device.credential_id.map((credentialId: CredentialId) => {
+        console.log(">> ", { device: JSON.stringify(device) })
+
+        return {
+          pubkey: derFromPubkey(device.pubkey),
+          credentialId: Buffer.from(credentialId),
+        }
+      }),
     ),
     withSecurityDevices,
   )
@@ -922,13 +926,15 @@ export async function registerInternetIdentity(
 
 function mapDeviceData(data: DeviceData): Device {
   const credential = mapOptional(data.credential_id)
+  console.log(">> ", { credential })
+
   return {
     alias: data.alias,
     protected: "protected" in data.protection,
     pubkey: data.pubkey,
     keyType: mapVariant(data.key_type),
     purpose: mapVariant(data.purpose),
-    credentialId: credential ? new Uint8Array(credential) : credential,
+    credentialId: credential,
   }
 }
 
@@ -955,5 +961,5 @@ export interface Device {
   pubkey: PublicKey
   keyType: "platform" | "seed_phrase" | "cross_platform" | "unknown"
   purpose: "authentication" | "recovery"
-  credentialId?: Uint8Array
+  credentialId?: CredentialId
 }

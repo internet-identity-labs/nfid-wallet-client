@@ -1,4 +1,4 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 
 import {
   fetchAccount,
@@ -22,6 +22,7 @@ import {
   lookup,
   registerInternetIdentity,
   requestFEDelegation,
+  requestFEDelegationChain,
 } from "."
 import { ii } from "../actors"
 import { deviceInfo } from "../device"
@@ -52,9 +53,13 @@ export async function loginService(context: {
 }): Promise<LocalDeviceAuthSession> {
   if (!context.devices) throw new Error("devices missing")
 
+  const multiIdent = identityFromDeviceList(context.devices)
+  const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
+
   return {
     sessionSource: "localDevice",
-    identity: identityFromDeviceList(context.devices),
+    identity: multiIdent,
+    delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
   }
 }
 

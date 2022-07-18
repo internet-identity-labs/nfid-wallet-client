@@ -93,15 +93,15 @@ export const useUnknownDeviceConfig = () => {
     // TODO: create custom hook to generate secret
     const query = new URLSearchParams({
       applicationName: applicationName || "",
-      applicationDerivationOrigin: applicationDerivationOrigin || "",
       applicationLogo: encodeURIComponent(applicationLogo || ""),
     }).toString()
 
     if (!domain || !secret) return null
 
-    const qrcodePath = applicationDerivationOrigin
-      ? AppScreenAuthorizeAppConstants.authorizeDerivationOrigin
-      : AppScreenAuthorizeAppConstants.authorize
+    const qrcodePath =
+      applicationDerivationOrigin && applicationDerivationOrigin.length > 1
+        ? AppScreenAuthorizeAppConstants.authorizeDerivationOrigin
+        : AppScreenAuthorizeAppConstants.authorize
 
     const path = generatePath(qrcodePath, {
       secret,

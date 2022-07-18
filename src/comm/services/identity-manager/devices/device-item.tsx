@@ -1,10 +1,11 @@
-import { ListItem } from "@internet-identity-labs/nfid-sdk-react"
-import { Chip } from "@internet-identity-labs/nfid-sdk-react"
-import { DeleteButton } from "@internet-identity-labs/nfid-sdk-react"
 import React from "react"
 import { BiLoaderCircle } from "react-icons/bi"
 import { FaKey } from "react-icons/fa"
 import { MdLaptopMac } from "react-icons/md"
+
+import { ListItem } from "@internet-identity-labs/nfid-sdk-react"
+import { Chip } from "@internet-identity-labs/nfid-sdk-react"
+import { DeleteButton } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useDevices } from "./hooks"
 import { Device } from "./state"

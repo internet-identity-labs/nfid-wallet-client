@@ -1,8 +1,8 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface RefreshIconProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export const RefreshIcon: React.FC<RefreshIconProps> = ({
@@ -15,7 +15,7 @@ export const RefreshIcon: React.FC<RefreshIconProps> = ({
       height="16"
       viewBox="0 0 16 16"
       fill="none"
-      className={clsx('cursor-pointer', className)}
+      className={clsx("cursor-pointer", className)}
       onClick={onClick}
     >
       <g clipPath="url(#clip0_863_1530)">
@@ -47,5 +47,5 @@ export const RefreshIcon: React.FC<RefreshIconProps> = ({
         </clipPath>
       </defs>
     </svg>
-  );
-};
+  )
+}

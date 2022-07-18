@@ -1,15 +1,16 @@
-import { Button, Card, H2, P } from "@internet-identity-labs/nfid-sdk-react"
 import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
+
+import { Button, Card, H2, P } from "@internet-identity-labs/nfid-sdk-react"
 
 import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
 interface NotFoundProps
   extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
-  > { }
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {}
 
 export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
   const navigate = useNavigate()

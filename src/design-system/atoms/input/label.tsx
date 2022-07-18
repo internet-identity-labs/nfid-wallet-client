@@ -1,8 +1,8 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface Props extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  menuItem?: boolean;
+  menuItem?: boolean
 }
 
 export const Label: React.FC<Props> = ({
@@ -14,13 +14,13 @@ export const Label: React.FC<Props> = ({
   return (
     <label
       className={clsx(
-        'text-sm text-black-base leading-4 mb-[6px] block',
-        menuItem && 'px-3 font-bold pt-2',
-        className
+        "text-sm text-black-base leading-4 mb-[6px] block",
+        menuItem && "px-3 font-bold pt-2",
+        className,
       )}
       {...props}
     >
       {children}
     </label>
-  );
-};
+  )
+}

@@ -9,7 +9,7 @@ import { ElementProps } from "frontend/types/react"
 
 import { AppScreen } from "./app-screen/AppScreen"
 
-interface ProfileScreenProps extends ElementProps<HTMLDivElement> { }
+interface ProfileScreenProps extends ElementProps<HTMLDivElement> {}
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   children,

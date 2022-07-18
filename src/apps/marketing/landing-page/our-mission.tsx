@@ -3,14 +3,14 @@ import React from "react"
 import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
+import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
 
 import Blur3 from "./assets/blur_3.png"
 
 import { Footer } from "./footer"
 
-interface OurMissionProps { }
+interface OurMissionProps {}
 
 export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
   return (

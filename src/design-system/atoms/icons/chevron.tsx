@@ -1,8 +1,8 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface ButtonChevronIconProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export const ButtonChevronIcon: React.FC<ButtonChevronIconProps> = ({
@@ -14,7 +14,7 @@ export const ButtonChevronIcon: React.FC<ButtonChevronIconProps> = ({
       viewBox="0 0 17 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('cursor-pointer w-4 h-4', className)}
+      className={clsx("cursor-pointer w-4 h-4", className)}
       onClick={onClick}
     >
       <g clipPath="url(#clip0_1582_8147)">
@@ -44,5 +44,5 @@ export const ButtonChevronIcon: React.FC<ButtonChevronIconProps> = ({
         </clipPath>
       </defs>
     </svg>
-  );
-};
+  )
+}

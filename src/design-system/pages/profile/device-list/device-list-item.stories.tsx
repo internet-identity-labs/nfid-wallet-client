@@ -1,6 +1,7 @@
-import { List } from "@internet-identity-labs/nfid-sdk-react"
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import React from "react"
+
+import { List } from "@internet-identity-labs/nfid-sdk-react"
 
 import { DeviceListItem } from "./device-list-item"
 

@@ -5,7 +5,10 @@ import { Usergeek } from "usergeek-ic-js"
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
 import { AppScreenAuthenticateAccountRoutes } from "./apps/authentication/authenticate"
-import { AppScreenAuthorizeAppRoutes } from "./apps/authentication/remote-authentication/routes"
+import {
+  AppScreenAuthorizeAppRoutes,
+  AppScreenAuthorizeDerivationOriginAppRoutes,
+} from "./apps/authentication/remote-authentication/routes"
 import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
 import { CredentialRoutes } from "./apps/credential-provider/verify-phone-number"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
@@ -35,6 +38,7 @@ export const App = () => {
       {NFIDRegisterAccountRoutes}
       {RemoteNFIDAuthenticationRoutes}
       {AppScreenAuthorizeAppRoutes}
+      {AppScreenAuthorizeDerivationOriginAppRoutes}
       {RecoverNFIDRoutes}
 
       {AppScreenAuthenticateAccountRoutes}

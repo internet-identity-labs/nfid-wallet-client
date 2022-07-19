@@ -2,7 +2,9 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 
 import { ii } from "frontend/comm/actors"
+import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
 import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
+import { validateDerivationOrigin } from "frontend/comm/services/internet-identity/validateDerivationOrigin"
 
 import { useMessageChannel } from "../../design-system/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
 
@@ -10,10 +12,18 @@ interface UseAuthenticationProps {
   userNumber?: bigint
 }
 
+export interface AuthRequestEvent {
+  kind: "authorize-client"
+  sessionPublicKey: Uint8Array
+  maxTimeToLive?: bigint
+  derivationOrigin?: string
+}
+
 interface AuthorizationRequest {
   maxTimeToLive: any
   sessionPublicKey: any
   hostname: string
+  derivationOrigin?: string
   source: any
 }
 
@@ -34,12 +44,19 @@ export const useAuthorization = ({
   const { opener, postClientReadyMessage, postClientAuthorizeSuccessMessage } =
     useMessageChannel({
       messageHandler: {
-        "authorize-client": async (event: any) => {
+        "authorize-client": async (event: MessageEvent<AuthRequestEvent>) => {
           const message = event.data
-          const { maxTimeToLive, sessionPublicKey } = message
+          const { maxTimeToLive, sessionPublicKey, derivationOrigin } = message
+          const validation = await validateDerivationOrigin(
+            event.origin,
+            derivationOrigin,
+          )
+          if (validation.result !== "valid") throw new Error(validation.message)
+          console.log({ validation, derivationOrigin })
           setAuthorizationRequest({
             maxTimeToLive,
             sessionPublicKey,
+            derivationOrigin,
             hostname: event.origin,
             source: event.source,
           })
@@ -59,11 +76,16 @@ export const useAuthorization = ({
 
       if (!authorizationRequest) throw new Error("authorizationRequest missing")
 
-      const { sessionPublicKey, hostname, maxTimeToLive, source } =
-        authorizationRequest
+      const {
+        sessionPublicKey,
+        hostname,
+        derivationOrigin,
+        maxTimeToLive,
+        source,
+      } = authorizationRequest
 
       const sessionKey = Array.from(new Uint8Array(sessionPublicKey))
-      const scope = persona_id ? `${persona_id}@${hostname}` : hostname
+      const scope = getScope(derivationOrigin ?? hostname, persona_id)
 
       const anchor = rawAnchor && BigInt(rawAnchor)
 

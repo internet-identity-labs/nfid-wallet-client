@@ -70,20 +70,25 @@ describe("KnownDevice Coordinator", () => {
 
   const AUTH_SESSION_TEST_PLAN = [
     {
-      description: "should produce an authSession when user clicks unlock",
-      screenDetector: "Unlock NFID",
+      description:
+        "MultiAccount should produce an authSession when user clicks unlock",
+      screenDetector: "Choose an account",
+      unlockTarget: "Unlock NFID",
       lookupMock: AUTHENTICATOR_DEVICES,
       hostNameMock: "https://my-application.com",
       fetchApplicationsMock: [],
     },
-    // {
-    //   description: "should render SingleAccount Authentication state",
-    //   screenDetector: "Unlock NFID",
-    //   hostNameMock: "https://my-application.com",
-    //   fetchApplicationsMock: [
-    //     { accountLimit: 1, domain: "https://my-application.com" },
-    //   ],
-    // },
+    {
+      description:
+        "SingleAccount should produce an authSession when user clicks unlock",
+      screenDetector: "Unlock NFID",
+      unlockTarget: "Unlock to continue",
+      lookupMock: AUTHENTICATOR_DEVICES,
+      hostNameMock: "https://my-application.com",
+      fetchApplicationsMock: [
+        { accountLimit: 1, domain: "https://my-application.com" },
+      ],
+    },
   ]
 
   AUTH_SESSION_TEST_PLAN.map((plan) => {
@@ -113,9 +118,11 @@ describe("KnownDevice Coordinator", () => {
       })
 
       await waitFor(() => screen.getByText(plan.screenDetector))
+
       act(() => {
-        screen.getByText(plan.screenDetector).click()
+        screen.getByText(plan.unlockTarget).click()
       })
+
       await waitFor(() => screen.getByText("End"))
       expect(MultiWebAuthnIdentity.fromCredentials).toHaveBeenCalledWith(
         [

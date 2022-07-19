@@ -25,10 +25,8 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
         case state.context.isSingleAccountApplication:
           return (
             <AuthorizeAppSingleAccount
-              isLoading={false}
-              onContinueButtonClick={function (): Promise<void> {
-                throw new Error("Function not implemented.")
-              }}
+              isLoading={state.matches("Login")}
+              onContinueButtonClick={async () => send("UNLOCK")}
             />
           )
         default:

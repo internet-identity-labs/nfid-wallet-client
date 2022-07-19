@@ -12,7 +12,7 @@ interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   accounts: NFIDPersona[]
   accountsLimit?: number
   isLoading: boolean
-  isAuthenticated: boolean
+  isAuthenticated?: boolean
   onLogin: (personaId?: string) => Promise<void>
   onUnlockNFID: () => Promise<any>
   onCreateAccount: () => Promise<void>
@@ -40,7 +40,7 @@ export const AuthorizeAppMultiAccount: React.FC<AuthorizeAppProps> = ({
         accountsLimit={accountsLimit}
         applicationLogo={applicationLogo}
         applicationName={applicationName}
-        isAuthenticated={isAuthenticated}
+        isAuthenticated={!!isAuthenticated}
         onCreateAccount={onCreateAccount}
         onLogin={onLogin}
         onUnlockNFID={onUnlockNFID}

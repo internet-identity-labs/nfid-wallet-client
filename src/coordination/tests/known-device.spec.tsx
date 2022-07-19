@@ -7,7 +7,6 @@ import { act } from "react-dom/test-utils"
 
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
-import { AuthorizationRequest } from "frontend/state/authorization"
 import KnownDeviceMachine, {
   Context as KnownDeviceContext,
   KnownDeviceActor,
@@ -22,13 +21,13 @@ describe("KnownDevice Coordinator", () => {
   const RENDER_AUTH_STATE_TEST_PLAN = [
     {
       description: "should render MultiAccount Authentication state",
-      screenDetector: "Choose an account",
+      detectOnScreen: ["Choose an account", "to continue to MyApp"],
       hostNameMock: "https://my-application.com",
       fetchApplicationsMock: [],
     },
     {
       description: "should render SingleAccount Authentication state",
-      screenDetector: "Unlock NFID",
+      detectOnScreen: ["Unlock NFID", "to continue to MyApp"],
       hostNameMock: "https://my-application.com",
       fetchApplicationsMock: [
         { accountLimit: 1, domain: "https://my-application.com" },
@@ -44,15 +43,23 @@ describe("KnownDevice Coordinator", () => {
         Promise.resolve(plan.fetchApplicationsMock),
       )
 
-      const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
+      const context = {
         anchor: 11111,
         isNFID: false,
+        authAppMeta: {
+          name: "MyApp",
+          logo: "https://my-app.com/logo.svg",
+        },
         authRequest: {
           maxTimeToLive: 10,
           sessionPublicKey: new Uint8Array([]),
           hostname: plan.hostNameMock,
         },
-      })
+      }
+      const actor = makeInvokedActor<KnownDeviceContext>(
+        KnownDeviceMachine,
+        context,
+      )
 
       render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
       await waitFor(() => {
@@ -60,8 +67,11 @@ describe("KnownDevice Coordinator", () => {
       })
 
       await waitFor(() => {
-        screen.getByText("Sign in with NFID")
-        screen.getByText(plan.screenDetector)
+        plan.detectOnScreen.map((ele) => screen.getByText(ele))
+        const appLogo = screen.getByAltText(
+          `application-logo-${context.authAppMeta.name}`,
+        )
+        expect(appLogo.getAttribute("src")).toBe("https://my-app.com/logo.svg")
       })
       expect(IM.fetchApplications).toHaveBeenCalledWith()
       expect(II.lookup).toHaveBeenCalledWith(11111, false)
@@ -72,7 +82,7 @@ describe("KnownDevice Coordinator", () => {
     {
       description:
         "MultiAccount should produce an authSession when user clicks unlock",
-      screenDetector: "Choose an account",
+      detectOnScreen: ["Choose an account", "to continue to MyApp"],
       unlockTarget: "Unlock NFID",
       lookupMock: AUTHENTICATOR_DEVICES,
       hostNameMock: "https://my-application.com",
@@ -81,7 +91,7 @@ describe("KnownDevice Coordinator", () => {
     {
       description:
         "SingleAccount should produce an authSession when user clicks unlock",
-      screenDetector: "Unlock NFID",
+      detectOnScreen: ["Unlock NFID", "to continue to MyApp"],
       unlockTarget: "Unlock to continue",
       lookupMock: AUTHENTICATOR_DEVICES,
       hostNameMock: "https://my-application.com",
@@ -102,22 +112,33 @@ describe("KnownDevice Coordinator", () => {
       MultiWebAuthnIdentity.fromCredentials = jest.fn()
       DelegationChain.create = jest.fn()
 
-      const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
+      const context = {
         anchor: 11111,
         isNFID: false,
+        authAppMeta: {
+          name: "MyApp",
+          logo: "https://my-app.com/logo.svg",
+        },
         authRequest: {
           maxTimeToLive: 10,
           sessionPublicKey: new Uint8Array([]),
           hostname: plan.hostNameMock,
         },
-      })
+      }
+
+      const actor = makeInvokedActor<KnownDeviceContext>(
+        KnownDeviceMachine,
+        context,
+      )
       render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
 
       await waitFor(() => {
         screen.getByText("Loading Configuration")
       })
 
-      await waitFor(() => screen.getByText(plan.screenDetector))
+      await waitFor(() =>
+        plan.detectOnScreen.map((ele) => screen.getByText(ele)),
+      )
 
       act(() => {
         screen.getByText(plan.unlockTarget).click()

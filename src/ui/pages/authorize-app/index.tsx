@@ -17,7 +17,7 @@ import { AccountItem } from "./raw-item"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   isAuthenticated: boolean
-  applicationName: string
+  applicationName?: string
   applicationLogo?: string
   accounts: NFIDPersona[]
   accountsLimit?: number

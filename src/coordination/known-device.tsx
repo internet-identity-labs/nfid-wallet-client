@@ -26,19 +26,21 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
           return (
             <AuthorizeAppSingleAccount
               isLoading={state.matches("Login")}
+              applicationName={state.context.authAppMeta.name}
+              applicationLogo={state.context.authAppMeta.logo}
               onContinueButtonClick={async () => send("UNLOCK")}
             />
           )
         default:
           return (
             <AuthorizeAppMultiAccount
-              applicationName={""}
+              applicationName={state.context.authAppMeta.name}
+              applicationLogo={state.context.authAppMeta.logo}
               accounts={[]}
               onUnlockNFID={async () => send("UNLOCK")}
               onCreateAccount={function (): Promise<void> {
                 throw new Error("Function not implemented.")
               }}
-              applicationLogo={""}
               isLoading={state.matches("Login")}
               onLogin={function (
                 personaId?: string | undefined,

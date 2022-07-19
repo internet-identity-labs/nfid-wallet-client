@@ -10,12 +10,16 @@ import {
   AuthSession,
   LocalDeviceAuthSession,
 } from "frontend/state/authentication"
-import { AuthorizationRequest } from "frontend/state/authorization"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 
 export interface Context {
   isNFID: boolean
   anchor: number
   authRequest: AuthorizationRequest
+  authAppMeta: AuthorizingAppMeta
   isSingleAccountApplication?: boolean
   authSession?: AuthSession
   devices?: Device[]

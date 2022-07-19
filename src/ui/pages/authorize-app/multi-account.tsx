@@ -7,8 +7,8 @@ import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { AuthorizeApp } from "."
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
-  applicationName: string
-  applicationLogo: string
+  applicationName?: string
+  applicationLogo?: string
   accounts: NFIDPersona[]
   accountsLimit?: number
   isLoading: boolean

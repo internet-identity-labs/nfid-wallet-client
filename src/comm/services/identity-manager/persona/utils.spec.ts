@@ -12,8 +12,16 @@ describe("persona utils test suite", () => {
         // NOTE: we currently have accounts, where the domain field
         // includes AND misses the protocol. Both needs to
         // be included in the filtered list
-        { persona_id: "1", domain: "test.com" },
-        { persona_id: "2", domain: "https://test.com" },
+        {
+          domain: "3l2cj-5aaaa-aaaag-aaecq-cai.ic0.app",
+          persona_name: "Account 1",
+          persona_id: "1",
+        },
+        {
+          domain: "https://3l2cj-5aaaa-aaaag-aaecq-cai.ic0.app",
+          persona_name: "Account 2",
+          persona_id: "2",
+        },
       ]
       const personas = [
         ...expectedResult,
@@ -21,8 +29,26 @@ describe("persona utils test suite", () => {
         { persona_id: "3", domain: `canister-id-2.ic0.app` },
         { persona_id: "4", domain: `canister-id-3.ic0.app` },
       ]
-      const result = selectAccounts(personas, "test.com")
-      expect(result).toEqual(expectedResult)
+      expect(
+        selectAccounts(personas, "https://3l2cj-5aaaa-aaaag-aaecq-cai.ic0.app"),
+      ).toEqual(expectedResult)
+      expect(
+        selectAccounts(personas, "3l2cj-5aaaa-aaaag-aaecq-cai.ic0.app"),
+      ).toEqual(expectedResult)
+      expect(
+        selectAccounts(
+          personas,
+          "https://3l2cj-5aaaa-aaaag-aaecq-cai.raw.ic0.app",
+          "https://3l2cj-5aaaa-aaaag-aaecq-cai.ic0.app",
+        ),
+      ).toEqual(expectedResult)
+      expect(
+        selectAccounts(
+          personas,
+          "3l2cj-5aaaa-aaaag-aaecq-cai.raw.ic0.app",
+          "3l2cj-5aaaa-aaaag-aaecq-cai.ic0.app",
+        ),
+      ).toEqual(expectedResult)
     })
 
     it("should return personas filtered by derivationOrigin if present", () => {

@@ -30,17 +30,12 @@ export function selectAccounts(
   hostName: string,
   derivationOrigin?: string,
 ) {
-  const filteredByDerivationOrigin = personas.filter(
-    (persona) =>
-      persona.domain === derivationOrigin ||
-      persona.domain === `https://${derivationOrigin}`,
-  )
-
-  if (filteredByDerivationOrigin.length) return filteredByDerivationOrigin
+  const filterByRaw = derivationOrigin ?? hostName
+  const filterBy = filterByRaw.replace("https://", "")
 
   return personas.filter(
     (persona) =>
-      persona.domain === hostName || persona.domain === `https://${hostName}`,
+      persona.domain === filterBy || persona.domain === `https://${filterBy}`,
   )
 }
 

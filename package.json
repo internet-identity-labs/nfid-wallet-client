@@ -88,7 +88,7 @@
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/chai": "^4.3.1",
     "@types/google-one-tap": "^1.2.0",
-    "@types/jest": "^27.4.1",
+    "@types/jest": "28.1.4",
     "@types/node": "17.0.29",
     "@types/react": "^17.0.42",
     "@types/react-dom": "^18.0.1",
@@ -171,6 +171,7 @@
       "last 2 edge version"
     ]
   },
+  "cracoConfig": "craco.config.ts",
   "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
   "license": "MIT"
 }

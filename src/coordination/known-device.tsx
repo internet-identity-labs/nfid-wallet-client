@@ -39,7 +39,7 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
                 throw new Error("Function not implemented.")
               }}
               applicationLogo={""}
-              isLoading={false}
+              isLoading={state.matches("Login")}
               onLogin={function (
                 personaId?: string | undefined,
               ): Promise<void> {

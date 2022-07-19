@@ -18,24 +18,23 @@ import * as II from "../../integration/internet-identity"
 import { KnownDeviceCoordinator } from "../known-device"
 import { makeInvokedActor } from "./_util"
 
-const RENDER_AUTH_STATE_TEST_PLAN = [
-  {
-    description: "should render MultiAccount Authentication state",
-    screenDetector: "Choose an account",
-    hostNameMock: "https://my-application.com",
-    fetchApplicationsMock: [],
-  },
-  {
-    description: "should render SingleAccount Authentication state",
-    screenDetector: "Unlock NFID",
-    hostNameMock: "https://my-application.com",
-    fetchApplicationsMock: [
-      { accountLimit: 1, domain: "https://my-application.com" },
-    ],
-  },
-]
-
 describe("KnownDevice Coordinator", () => {
+  const RENDER_AUTH_STATE_TEST_PLAN = [
+    {
+      description: "should render MultiAccount Authentication state",
+      screenDetector: "Choose an account",
+      hostNameMock: "https://my-application.com",
+      fetchApplicationsMock: [],
+    },
+    {
+      description: "should render SingleAccount Authentication state",
+      screenDetector: "Unlock NFID",
+      hostNameMock: "https://my-application.com",
+      fetchApplicationsMock: [
+        { accountLimit: 1, domain: "https://my-application.com" },
+      ],
+    },
+  ]
   RENDER_AUTH_STATE_TEST_PLAN.map((plan) => {
     it(plan.description, async () => {
       // @ts-ignore
@@ -54,7 +53,12 @@ describe("KnownDevice Coordinator", () => {
           hostname: plan.hostNameMock,
         },
       })
+
       render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
+      await waitFor(() => {
+        screen.getByText("Loading Configuration")
+      })
+
       await waitFor(() => {
         screen.getByText("Sign in with NFID")
         screen.getByText(plan.screenDetector)
@@ -64,42 +68,69 @@ describe("KnownDevice Coordinator", () => {
     })
   })
 
-  it("should produce an authSession when user clicks unlock", async () => {
-    // @ts-ignore
-    II.lookup = jest.fn(() => Promise.resolve(AUTHENTICATOR_DEVICES))
-    // @ts-ignore
-    IM.fetchApplications = jest.fn(() => Promise.resolve([]))
-    MultiWebAuthnIdentity.fromCredentials = jest.fn()
-    DelegationChain.create = jest.fn()
+  const AUTH_SESSION_TEST_PLAN = [
+    {
+      description: "should produce an authSession when user clicks unlock",
+      screenDetector: "Unlock NFID",
+      lookupMock: AUTHENTICATOR_DEVICES,
+      hostNameMock: "https://my-application.com",
+      fetchApplicationsMock: [],
+    },
+    // {
+    //   description: "should render SingleAccount Authentication state",
+    //   screenDetector: "Unlock NFID",
+    //   hostNameMock: "https://my-application.com",
+    //   fetchApplicationsMock: [
+    //     { accountLimit: 1, domain: "https://my-application.com" },
+    //   ],
+    // },
+  ]
 
-    const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
-      anchor: 11111,
-      isNFID: false,
-      authRequest: {
-        maxTimeToLive: 10,
-        sessionPublicKey: new Uint8Array([]),
-        hostname: "https://my-application.com",
-      },
-    })
-    render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
-    await waitFor(() => screen.getByText("Unlock NFID"))
-    act(() => {
-      screen.getByText("Unlock NFID").click()
-    })
-    await waitFor(() => screen.getByText("End"))
-    expect(MultiWebAuthnIdentity.fromCredentials).toHaveBeenCalledWith(
-      [
-        {
-          credentialId: Buffer.from(AUTHENTICATOR_DEVICES[0].credentialId),
-          pubkey: new ArrayBuffer(1),
+  AUTH_SESSION_TEST_PLAN.map((plan) => {
+    it(plan.description, async () => {
+      // @ts-ignore
+      II.lookup = jest.fn(() => Promise.resolve(plan.lookupMock))
+      // @ts-ignore
+      IM.fetchApplications = jest.fn(() =>
+        Promise.resolve(plan.fetchApplicationsMock),
+      )
+      MultiWebAuthnIdentity.fromCredentials = jest.fn()
+      DelegationChain.create = jest.fn()
+
+      const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
+        anchor: 11111,
+        isNFID: false,
+        authRequest: {
+          maxTimeToLive: 10,
+          sessionPublicKey: new Uint8Array([]),
+          hostname: plan.hostNameMock,
         },
-        {
-          credentialId: Buffer.from(AUTHENTICATOR_DEVICES[1].credentialId),
-          pubkey: new ArrayBuffer(1),
-        },
-      ],
-      undefined,
-    )
-    expect(DelegationChain.create).toHaveBeenCalled()
+      })
+      render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
+
+      await waitFor(() => {
+        screen.getByText("Loading Configuration")
+      })
+
+      await waitFor(() => screen.getByText(plan.screenDetector))
+      act(() => {
+        screen.getByText(plan.screenDetector).click()
+      })
+      await waitFor(() => screen.getByText("End"))
+      expect(MultiWebAuthnIdentity.fromCredentials).toHaveBeenCalledWith(
+        [
+          {
+            credentialId: Buffer.from(AUTHENTICATOR_DEVICES[0].credentialId),
+            pubkey: new ArrayBuffer(1),
+          },
+          {
+            credentialId: Buffer.from(AUTHENTICATOR_DEVICES[1].credentialId),
+            pubkey: new ArrayBuffer(1),
+          },
+        ],
+        undefined,
+      )
+      expect(DelegationChain.create).toHaveBeenCalled()
+    })
   })
 })

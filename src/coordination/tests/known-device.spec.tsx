@@ -18,54 +18,53 @@ import * as II from "../../integration/internet-identity"
 import { KnownDeviceCoordinator } from "../known-device"
 import { makeInvokedActor } from "./_util"
 
+const RENDER_AUTH_STATE_TEST_PLAN = [
+  {
+    description: "should render MultiAccount Authentication state",
+    screenDetector: "Choose an account",
+    hostNameMock: "https://my-application.com",
+    fetchApplicationsMock: [],
+  },
+  {
+    description: "should render SingleAccount Authentication state",
+    screenDetector: "Unlock NFID",
+    hostNameMock: "https://my-application.com",
+    fetchApplicationsMock: [
+      { accountLimit: 1, domain: "https://my-application.com" },
+    ],
+  },
+]
+
 describe("KnownDevice Coordinator", () => {
-  it("should render MultiAccount Authenticate state", async () => {
-    // @ts-ignore
-    II.lookup = jest.fn(() => Promise.resolve([]))
-    // @ts-ignore
-    IM.fetchApplications = jest.fn(() => Promise.resolve([]))
+  RENDER_AUTH_STATE_TEST_PLAN.map((plan) => {
+    it(plan.description, async () => {
+      // @ts-ignore
+      II.lookup = jest.fn(() => Promise.resolve([]))
+      // @ts-ignore
+      IM.fetchApplications = jest.fn(() =>
+        Promise.resolve(plan.fetchApplicationsMock),
+      )
 
-    const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
-      anchor: 11111,
-      isNFID: false,
-      authRequest: {
-        maxTimeToLive: 10,
-        sessionPublicKey: new Uint8Array([]),
-        hostname: "https://my-application.com",
-      },
+      const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
+        anchor: 11111,
+        isNFID: false,
+        authRequest: {
+          maxTimeToLive: 10,
+          sessionPublicKey: new Uint8Array([]),
+          hostname: plan.hostNameMock,
+        },
+      })
+      render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
+      await waitFor(() => {
+        screen.getByText("Sign in with NFID")
+        screen.getByText(plan.screenDetector)
+      })
+      expect(IM.fetchApplications).toHaveBeenCalledWith()
+      expect(II.lookup).toHaveBeenCalledWith(11111, false)
     })
-    render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
-    await waitFor(() => screen.getByText("Authenticate MultiAccount"))
-    expect(IM.fetchApplications).toHaveBeenCalledWith()
-    expect(II.lookup).toHaveBeenCalledWith(11111, false)
   })
 
-  it("should render SingleAccount Authenticate state", async () => {
-    // @ts-ignore
-    II.lookup = jest.fn(() => Promise.resolve([]))
-    // @ts-ignore
-    IM.fetchApplications = jest.fn(() =>
-      Promise.resolve([
-        { accountLimit: 1, domain: "https://my-application.com" },
-      ]),
-    )
-
-    const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
-      anchor: 11111,
-      isNFID: false,
-      authRequest: {
-        maxTimeToLive: 10,
-        sessionPublicKey: new Uint8Array([]),
-        hostname: "https://my-application.com",
-      },
-    })
-    render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
-    await waitFor(() => screen.getByText("Authenticate SingleAccount"))
-    expect(IM.fetchApplications).toHaveBeenCalledWith()
-    expect(II.lookup).toHaveBeenCalledWith(11111, false)
-  })
-
-  it.only("should produce an authSession when user clicks unlock", async () => {
+  it("should produce an authSession when user clicks unlock", async () => {
     // @ts-ignore
     II.lookup = jest.fn(() => Promise.resolve(AUTHENTICATOR_DEVICES))
     // @ts-ignore
@@ -83,9 +82,9 @@ describe("KnownDevice Coordinator", () => {
       },
     })
     render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
-    await waitFor(() => screen.getByText("Login"))
+    await waitFor(() => screen.getByText("Unlock NFID"))
     act(() => {
-      screen.getByText("Login").click()
+      screen.getByText("Unlock NFID").click()
     })
     await waitFor(() => screen.getByText("End"))
     expect(MultiWebAuthnIdentity.fromCredentials).toHaveBeenCalledWith(

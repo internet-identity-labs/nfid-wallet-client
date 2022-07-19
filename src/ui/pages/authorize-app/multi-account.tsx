@@ -18,7 +18,7 @@ interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   onCreateAccount: () => Promise<void>
 }
 
-export const AuthorizeAppIframe: React.FC<AuthorizeAppProps> = ({
+export const AuthorizeAppMultiAccount: React.FC<AuthorizeAppProps> = ({
   accounts,
   accountsLimit,
   applicationLogo,

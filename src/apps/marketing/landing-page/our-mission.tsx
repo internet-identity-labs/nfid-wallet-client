@@ -37,6 +37,7 @@ export const OurMission = () => {
                   alt="blur3"
                 />
                 <div className="top-28">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile sm:text-titleLarge">
                       Our{" "}
@@ -54,6 +55,7 @@ export const OurMission = () => {
                   </Fade>
                 </div>
                 <div className="relative">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade>
                     <div className="relative z-20 text-base sm:text-lg sm:leading-[26px] tracking-[0.01em]">
                       <div className="sm:mt-5">

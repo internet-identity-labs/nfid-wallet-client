@@ -29,6 +29,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
 
   return (
     <div ref={text} className="z-30 sm:mt-40 top-28">
+      {/* @ts-ignore: TODO: Pasha fix */}
       <Slide left>
         <div>
           <div>

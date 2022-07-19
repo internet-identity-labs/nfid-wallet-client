@@ -40,6 +40,7 @@ export const Faq = () => {
                   alt="blur"
                 />
                 <div className="top-28">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile sm:text-titleLarge">
                       Frequently <br />
@@ -57,6 +58,7 @@ export const Faq = () => {
                     </h2>
                   </Fade>
                 </div>
+                {/* @ts-ignore: TODO: Pasha fix */}
                 <Fade>
                   <div className="relative">
                     {questions.map((question, i) => (
@@ -74,6 +76,7 @@ export const Faq = () => {
           </ParallaxProvider>
           <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
             <div className=" top-28">
+              {/* @ts-ignore: TODO: Pasha fix */}
               <Fade left>
                 <h2 className="font-bold text-titleMobile md:text-titleLarge">
                   Our {""}
@@ -90,6 +93,7 @@ export const Faq = () => {
                 </h2>
               </Fade>
             </div>
+            {/* @ts-ignore: TODO: Pasha fix */}
             <Fade>
               <SocialButtons />
             </Fade>

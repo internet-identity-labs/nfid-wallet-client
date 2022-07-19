@@ -22,6 +22,7 @@ export const HeroRightSide: React.FC<HeroRightSideProps> = ({
   const { isMobile } = useDeviceInfo()
 
   return isQRCode && !isMobile ? (
+    // @ts-ignore TODO: Pasha fix
     <Fade>
       <Tilt className="mb-[20vh] sm:mb-[60vh] hidden sm:block">
         <RegisterQRCode

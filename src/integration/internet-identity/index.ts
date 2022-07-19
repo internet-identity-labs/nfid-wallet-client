@@ -469,14 +469,10 @@ export const getMultiIdent = (
 ) => {
   return MultiWebAuthnIdentity.fromCredentials(
     devices.flatMap((device) =>
-      device.credential_id.map((credentialId: CredentialId) => {
-        console.log(">> ", { device: JSON.stringify(device) })
-
-        return {
-          pubkey: derFromPubkey(device.pubkey),
-          credentialId: Buffer.from(credentialId),
-        }
-      }),
+      device.credential_id.map((credentialId: CredentialId) => ({
+        pubkey: derFromPubkey(device.pubkey),
+        credentialId: Buffer.from(credentialId),
+      })),
     ),
     withSecurityDevices,
   )

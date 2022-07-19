@@ -91,9 +91,16 @@ const RemoteSenderMachine =
         postDelegate,
       },
       actions: {
-        assignAuthSession: assign((context, event) => ({
-          authSession: event.data,
-        })),
+        assignAuthSession: assign((context, event) => {
+          const authSession = event.data
+          console.log(">> RemoteSenderMachine action assignAuthSession", {
+            authSession,
+          })
+
+          return {
+            authSession,
+          }
+        }),
       },
     },
   )

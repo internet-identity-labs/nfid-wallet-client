@@ -1,9 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+import { DelegationChain } from "@dfinity/identity"
 import { render, waitFor, screen } from "@testing-library/react"
 import { act } from "react-dom/test-utils"
 
+import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
 import { AuthorizationRequest } from "frontend/state/authorization"
 import KnownDeviceMachine, {
@@ -68,6 +70,8 @@ describe("KnownDevice Coordinator", () => {
     II.lookup = jest.fn(() => Promise.resolve(AUTHENTICATOR_DEVICES))
     // @ts-ignore
     IM.fetchApplications = jest.fn(() => Promise.resolve([]))
+    MultiWebAuthnIdentity.fromCredentials = jest.fn()
+    DelegationChain.create = jest.fn()
 
     const actor = makeInvokedActor<KnownDeviceContext>(KnownDeviceMachine, {
       anchor: 11111,
@@ -83,5 +87,20 @@ describe("KnownDevice Coordinator", () => {
     act(() => {
       screen.getByText("Login").click()
     })
+    await waitFor(() => screen.getByText("End"))
+    expect(MultiWebAuthnIdentity.fromCredentials).toHaveBeenCalledWith(
+      [
+        {
+          credentialId: Buffer.from(AUTHENTICATOR_DEVICES[0].credentialId),
+          pubkey: new ArrayBuffer(1),
+        },
+        {
+          credentialId: Buffer.from(AUTHENTICATOR_DEVICES[1].credentialId),
+          pubkey: new ArrayBuffer(1),
+        },
+      ],
+      undefined,
+    )
+    expect(DelegationChain.create).toHaveBeenCalled()
   })
 })

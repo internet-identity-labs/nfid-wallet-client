@@ -4,7 +4,7 @@ import { ima } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import {
-  Device,
+  LegacyDevice,
   RecoveryDevice,
 } from "frontend/integration/identity-manager/devices/state"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
@@ -53,7 +53,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   }, [fetched, getDevices, getPersona, getRecoveryDevices, readAccount])
 
   const handleDeleteDevice = React.useCallback(
-    async (device: Device) => {
+    async (device: LegacyDevice) => {
       await deleteDevice(device.pubkey)
       await handleLoadDevices()
     },
@@ -61,7 +61,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   )
 
   const handleDeviceUpdate = React.useCallback(
-    async (device: Device) => {
+    async (device: LegacyDevice) => {
       await updateDevice(device)
       await getDevices()
     },

@@ -21,6 +21,8 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
           <button onClick={() => send("UNLOCK")}>Login</button>
         </div>
       )
+    case state.matches("End"):
+      return <div>End</div>
     default:
       return <div>KnownDeviceCoordinator</div>
   }

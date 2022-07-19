@@ -113,7 +113,8 @@ export async function register(
 export async function fetchAuthenticatorDevicesService(context: {
   anchor: number
 }) {
+  console.debug(">> fetchAuthenticatorDevicesService", context)
   const devices = await lookup(context.anchor, false)
-  console.log(">> ", { devices })
+  console.debug(">> fetchAuthenticatorDevicesService lookup", { devices })
   return devices
 }

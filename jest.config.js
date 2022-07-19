@@ -1,7 +1,7 @@
 module.exports = {
   globals: {
     "ts-jest": {
-      isolatedModules: true,
+      preserveSymlinks: true,
     },
     INTERNET_IDENTITY_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     IDENTITY_MANAGER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",

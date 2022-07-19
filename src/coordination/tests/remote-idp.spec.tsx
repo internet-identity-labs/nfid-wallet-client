@@ -35,8 +35,8 @@ describe("Remote IDP coordinator", () => {
       },
     })
     render(<RemoteIDPCoordinator machine={testMachine} />)
-    await waitFor(() => screen.getByText("Start"))
-    expect(screen.getByText("Start")).toBeDefined()
+    await waitFor(() => screen.getByText("Loading Devices"))
+    expect(screen.getByText("Loading Devices")).toBeDefined()
   })
   describe("posts delegation message upon completion into pubsub channel", () => {})
 })

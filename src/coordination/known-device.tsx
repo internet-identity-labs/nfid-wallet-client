@@ -32,7 +32,6 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
         default:
           return (
             <AuthorizeAppMultiAccount
-              isAuthenticated={false}
               applicationName={""}
               accounts={[]}
               onUnlockNFID={async () => send("UNLOCK")}

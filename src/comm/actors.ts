@@ -36,7 +36,6 @@ export const accessList = [
 
 // NOTE: Might be nice to have the canister named in this exception
 for (const canister of accessList) {
-  console.log(accessList)
   if (!canister) throw new Error(`Missing canister id, please check envars.`)
 }
 

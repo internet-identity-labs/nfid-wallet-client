@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 import logo from "frontend/assets/distrikt.svg"
 
 import { AuthorizeApp } from "."
-import { AuthorizeAppIframe } from "./screen-iframe"
+import { AuthorizeAppMultiAccount } from "./multi-account"
 import { AuthorizeAppSingleAccount } from "./single-account"
 
 export default {
@@ -23,10 +23,10 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   return <AuthorizeApp {...args} />
 }
 
-const AuthorizeAppIframeTemplate: ComponentStory<typeof AuthorizeAppIframe> = (
-  args,
-) => {
-  return <AuthorizeAppIframe {...args} />
+const AuthorizeAppIframeTemplate: ComponentStory<
+  typeof AuthorizeAppMultiAccount
+> = (args) => {
+  return <AuthorizeAppMultiAccount {...args} />
 }
 
 const AuthorizeAppSingleAccountTemplate: ComponentStory<

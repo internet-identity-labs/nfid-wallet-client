@@ -82,6 +82,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     isQRCode={!user && !account}
                     hasAccount={!!account}
                   />
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>
                     <Parallax
                       className="relative font-bold"
@@ -103,6 +104,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       </p>
                     </Parallax>
                   </Fade>
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>
                     <img
                       className="absolute z-0 w-[200%] max-w-none left-[-100%] mt-80 blur-green"
@@ -129,6 +131,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       </p>
                     </Parallax>
                   </Fade>
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>
                     <Parallax
                       className="relative z-20 font-bold mt-[25vh] md:mt-[65vh]"
@@ -149,6 +152,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       </p>
                     </Parallax>
                   </Fade>
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>
                     <Parallax
                       className="relative z-20 font-bold mt-[25vh] md:mt-[65vh]"
@@ -177,6 +181,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 className="mt-[20vh] md:mt-[40vh] py-[6rem] md:py-[120px] mb-[60px] md:mb-[120px] bg-[#3D3F56] only-with-nfid relative scroll-mt-10"
               >
                 <div className="relative z-10">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="z-10 font-bold text-white text-titleMobile md:text-titleLarge">
                       Only with{" "}
@@ -198,6 +203,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     </p>
                   </Parallax>
                   <div className="grid grid-cols-1 gap-24 mt-20 text-white md:grid-cols-2">
+                    {/* @ts-ignore: TODO: Pasha fix */}
                     <Fade bottom>
                       <div className="">
                         <div className="icon-background-blur private-background-blur big-background-blur"></div>
@@ -216,6 +222,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                         </p>
                       </div>
                     </Fade>
+                    {/* @ts-ignore: TODO: Pasha fix */}
                     <Fade bottom>
                       <div className="">
                         <div className="icon-background-blur convenient-background-blur big-background-blur"></div>
@@ -233,6 +240,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                         </p>
                       </div>
                     </Fade>
+                    {/* @ts-ignore: TODO: Pasha fix */}
                     <Fade bottom>
                       <div className="">
                         <div className="icon-background-blur secure-background-blur big-background-blur"></div>
@@ -268,6 +276,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                   className="absolute right-8 blur-pink"
                 />
                 <div>
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile md:text-titleLarge">
                       Our{" "}
@@ -285,6 +294,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                   </Fade>
                 </div>
                 <div className="relative">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade>
                     <div className="relative z-20 text-base md:text-xl">
                       <div className="text-base md:mt-5 md:text-lg md:leading-[26px]">
@@ -360,6 +370,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72 md:-scroll-mt-24"
               >
                 <div className="top-28">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile md:text-titleLarge">
                       Frequently <br />
@@ -377,6 +388,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     </h2>
                   </Fade>
                 </div>
+                {/* @ts-ignore: TODO: Pasha fix */}
                 <Fade>
                   <div className="relative">
                     {questions.slice(0, 5).map((question, i) => (
@@ -398,6 +410,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
               </section>
               <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
                 <div className=" top-28">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile md:text-titleLarge">
                       Our {""}
@@ -414,6 +427,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     </h2>
                   </Fade>
                 </div>
+                {/* @ts-ignore: TODO: Pasha fix */}
                 <Fade>
                   <SocialButtons />
                 </Fade>

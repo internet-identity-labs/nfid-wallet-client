@@ -24,6 +24,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
   }, [user, account])
 
   return (
+    // @ts-ignore: TODO: Pasha fix
     <Fade>
       <div
         className={clsx(

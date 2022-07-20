@@ -18,7 +18,7 @@ import { KnownDeviceCoordinator } from "../known-device"
 import { makeInvokedActor } from "./_util"
 
 describe("KnownDevice Coordinator", () => {
-  describe("NFID TEST PLAN", () => {
+  describe("NFID Auth State rendering", () => {
     const NFID_TEST_PLAN = [
       {
         description:
@@ -92,7 +92,7 @@ describe("KnownDevice Coordinator", () => {
       })
     })
   })
-  describe("RENDER_AUTH_STATE_TEST_PLAN", () => {
+  describe("3rd Party App Auth State rendering", () => {
     const RENDER_AUTH_STATE_TEST_PLAN = [
       {
         description: "should render MultiAccount Authentication state",
@@ -153,7 +153,7 @@ describe("KnownDevice Coordinator", () => {
       })
     })
   })
-  describe("AUTH_SESSION_TEST_PLAN", () => {
+  describe("Authsession output", () => {
     const AUTH_SESSION_TEST_PLAN = [
       {
         description:

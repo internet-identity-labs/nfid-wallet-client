@@ -928,9 +928,8 @@ export async function registerInternetIdentity(
   }
 }
 
-function mapDeviceData(data: DeviceData): Device {
+export function mapDeviceData(data: DeviceData): Device {
   const credential = mapOptional(data.credential_id)
-  console.log(">> ", { credential })
 
   return {
     alias: data.alias,

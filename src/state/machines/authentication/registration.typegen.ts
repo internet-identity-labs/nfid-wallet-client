@@ -4,6 +4,11 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     assignChallenge: "done.invoke.fetchChallenge"
+    logServiceError:
+      | "error.platform.fetchChallenge"
+      | "error.platform.challengeTimer"
+      | "error.platform.registerService"
+      | "error.platform.createWebAuthnIdentity"
     assignError: "error.platform.registerService"
     assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
   }
@@ -13,8 +18,20 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.fetchChallenge": {
+      type: "error.platform.fetchChallenge"
+      data: unknown
+    }
+    "error.platform.challengeTimer": {
+      type: "error.platform.challengeTimer"
+      data: unknown
+    }
     "error.platform.registerService": {
       type: "error.platform.registerService"
+      data: unknown
+    }
+    "error.platform.createWebAuthnIdentity": {
+      type: "error.platform.createWebAuthnIdentity"
       data: unknown
     }
     "done.invoke.createWebAuthnIdentity": {
@@ -29,22 +46,10 @@ export interface Typegen0 {
     }
     "": { type: "" }
     "xstate.init": { type: "xstate.init" }
-    "error.platform.fetchChallenge": {
-      type: "error.platform.fetchChallenge"
-      data: unknown
-    }
-    "error.platform.challengeTimer": {
-      type: "error.platform.challengeTimer"
-      data: unknown
-    }
     "done.invoke.registerService": {
       type: "done.invoke.registerService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "error.platform.createWebAuthnIdentity": {
-      type: "error.platform.createWebAuthnIdentity"
-      data: unknown
     }
   }
   invokeSrcNameMap: {

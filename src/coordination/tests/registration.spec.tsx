@@ -11,12 +11,15 @@ import {
   getByPlaceholderText,
 } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { interpret } from "xstate"
 
 import { ii, im } from "frontend/integration/actors"
+import { mockExternalAccountResponse } from "frontend/integration/identity-manager/__mocks"
 import {
   factoryDelegationChain,
   mockWebAuthnCreate,
 } from "frontend/integration/identity/__mocks"
+import { II_DEVICES_DATA } from "frontend/integration/internet-identity/__mocks"
 import RegistrationMachine, {
   RegistrationActor,
   RegistrationContext,
@@ -35,13 +38,18 @@ describe("Registration Coordinator", () => {
       }),
     )
 
-    WebAuthnIdentity.create = jest.fn(mockWebAuthnCreate)
-
     // @ts-ignore: actor class has additional things to mock
     ii.register = jest.fn(async () => ({
       registered: { user_number: BigInt(10_000) },
     }))
 
+    // @ts-ignore: actor class has additional things to mock
+    ii.lookup = jest.fn(async () => II_DEVICES_DATA)
+
+    // @ts-ignore: actor class has additional things to mock
+    im.create_account = jest.fn(mockExternalAccountResponse)
+
+    WebAuthnIdentity.create = jest.fn(mockWebAuthnCreate)
     DelegationChain.create = jest.fn(factoryDelegationChain)
 
     const actor = makeInvokedActor<RegistrationContext>(RegistrationMachine, {})
@@ -77,8 +85,14 @@ describe("Registration Coordinator", () => {
       await waitFor(() => CreateNFIDButton.click())
     })
 
-    // await waitFor(() => {
-    //   screen.getByText("Registering NFID")
-    // })
+    expect(DelegationChain.create).toHaveBeenCalled()
+    expect(im.create_account).toHaveBeenCalled()
+    expect(ii.register).toHaveBeenCalled()
+
+    await waitFor(() => {
+      screen.getByText("RegistrationCoordinator")
+    })
+
+    expect(actor?.getSnapshot().value).toBe("End")
   })
 })

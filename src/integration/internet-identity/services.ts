@@ -72,11 +72,7 @@ export async function registerService(
   },
   event: { data: string },
 ): Promise<LocalDeviceAuthSession> {
-  console.debug("registerService", { context, event })
-
   const identity = context.authSession?.identity || context.webAuthnIdentity
-
-  console.debug("registerService", { identity })
 
   if (!identity) {
     const error = new Error("Missing identity.")
@@ -95,20 +91,14 @@ export async function registerService(
     deviceInfo.newDeviceName,
     { key: context.challenge.challengeKey, chars: event.data },
   )
-  console.debug("registerService", { anchor })
 
   const delegationIdentity = (await requestFEDelegation(identity))
     .delegationIdentity
 
-  console.debug("registerService", { delegationIdentity })
-
   authState.set(identity, delegationIdentity, ii)
-
-  console.log(delegationIdentity, await lookup(anchor, true))
 
   try {
     // Register the account with identity manager.
-    console.log(await identity.getPrincipal().toText())
     await registerAccount(anchor)
   } catch (e) {
     console.error(e)

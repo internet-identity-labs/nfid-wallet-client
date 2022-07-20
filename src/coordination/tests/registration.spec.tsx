@@ -85,9 +85,9 @@ describe("Registration Coordinator", () => {
       await waitFor(() => CreateNFIDButton.click())
     })
 
-    expect(DelegationChain.create).toHaveBeenCalled()
-    expect(im.create_account).toHaveBeenCalled()
-    expect(ii.register).toHaveBeenCalled()
+    expect(DelegationChain.create).toHaveBeenCalledTimes(1)
+    expect(im.create_account).toHaveBeenCalledTimes(1)
+    expect(ii.register).toHaveBeenCalledTimes(1)
 
     await waitFor(() => {
       screen.getByText("RegistrationCoordinator")

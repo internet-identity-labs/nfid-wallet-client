@@ -1,6 +1,7 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
+import { Profile } from "frontend/integration/identity-manager/profile"
 import { Device } from "frontend/integration/internet-identity"
 import {
   fetchAuthenticatorDevicesService,
@@ -17,7 +18,7 @@ import {
 
 export interface Context {
   isNFID: boolean
-  anchor: number
+  profile: Profile
   authRequest: AuthorizationRequest
   authAppMeta: AuthorizingAppMeta
   isSingleAccountApplication?: boolean

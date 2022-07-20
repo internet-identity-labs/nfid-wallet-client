@@ -1,47 +1,27 @@
 import clsx from "clsx"
 import React from "react"
-import { useNavigate } from "react-router-dom"
-
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
-import { H2 } from "@internet-identity-labs/nfid-sdk-react"
-import { Loader, P } from "@internet-identity-labs/nfid-sdk-react"
 
 import { ImageNFIDLogin } from "frontend/apps/authentication/authenticate/image"
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
+import { Profile } from "frontend/integration/identity-manager/profile"
+import { Button } from "frontend/ui/atoms/button"
+import { H2 } from "frontend/ui/atoms/typography"
+import { P } from "frontend/ui/atoms/typography/paragraph"
 
 interface AuthenticateNFIDLoginContentProps
   extends React.HTMLAttributes<HTMLDivElement> {
+  account?: Profile
   iframe?: boolean
-  loginSuccessPath?: string
-  onLoginSuccess?: () => void
+  errorMessage?: string
+  onLogin?: () => void
 }
 
 export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
   iframe,
-  loginSuccessPath,
-  onLoginSuccess,
+  account,
+  errorMessage,
+  onLogin,
 }) => {
-  const { account } = useAccount()
-  const { isLoading, error, login } = useAuthentication()
-  const { generatePath } = useNFIDNavigate()
-  const navigate = useNavigate()
-
   const title = "Unlock your NFID"
-
-  const handleLogin = async () => {
-    const result = await login()
-
-    if (result.tag === "ok") {
-      if (loginSuccessPath) {
-        navigate(generatePath(loginSuccessPath))
-      }
-      if (typeof onLoginSuccess === "function") {
-        onLoginSuccess()
-      }
-    }
-  }
 
   return (
     <>
@@ -57,19 +37,17 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
           block={iframe}
           secondary
           className="mt-8"
-          onClick={handleLogin}
-          onTouchStart={handleLogin}
+          onClick={onLogin}
+          onTouchStart={onLogin}
         >
           Unlock as {account?.name || account?.anchor}
         </Button>
 
-        {error && (
+        {errorMessage && (
           <div className={clsx("text-sm mt-2 text-red-base")}>
-            {error.message}
+            {errorMessage}
           </div>
         )}
-
-        <Loader isLoading={isLoading} iframe={iframe} />
       </div>
 
       <ImageNFIDLogin />

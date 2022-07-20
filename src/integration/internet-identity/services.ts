@@ -27,6 +27,7 @@ import {
 import { ii } from "../actors"
 import { deviceInfo } from "../device"
 import { identityFromDeviceList } from "../identity"
+import { Profile } from "../identity-manager/profile"
 
 export async function fetchDelegate(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
@@ -111,10 +112,10 @@ export async function register(
 }
 
 export async function fetchAuthenticatorDevicesService(context: {
-  anchor: number
+  profile: Profile
 }) {
   console.debug(">> fetchAuthenticatorDevicesService", context)
-  const devices = await lookup(context.anchor, false)
+  const devices = await lookup(Number(context.profile.anchor), false)
   console.debug(">> fetchAuthenticatorDevicesService lookup", { devices })
   return devices
 }

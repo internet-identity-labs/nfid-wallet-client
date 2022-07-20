@@ -4,13 +4,17 @@ import { useParams } from "react-router-dom"
 import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
 import { useChallenge } from "frontend/design-system/pages/captcha/hook"
 import { RegisterAccountIntro } from "frontend/design-system/pages/register-account-intro/screen-app"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
+import {
+  APP_SCREEN_AUTHENTICATE_BASE,
+  SUB_PATH_AUTHORIZE_APP,
+} from "frontend/apps/authentication/authenticate/constants"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RegisterAccountIntroProps
@@ -21,16 +25,17 @@ interface RegisterAccountIntroProps
   captchaPath: string
   pathOnAuthenticated: string
   isNFID?: boolean
-  isRemoteRegiser?: boolean
+  isRemoteRegister?: boolean
 }
 
 export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   captchaPath,
   pathOnAuthenticated,
   isNFID: isNFIDProp,
-  isRemoteRegiser,
+  isRemoteRegister,
 }) => {
-  const { isLoading, setIsloading } = useIsLoading()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [authError, setAuthError] = React.useState<string | undefined>()
   const { applicationName, applicationLogo, createWebAuthNIdentity } =
     useMultipass()
   const { navigate } = useNFIDNavigate()
@@ -43,9 +48,10 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   )
 
   const { remoteNFIDLogin } = useAuthorizeApp()
+  const { getPersona } = usePersona()
 
   const handleCreateKeys = React.useCallback(async () => {
-    setIsloading(true)
+    setIsLoading(true)
     const registerPayload = await createWebAuthNIdentity()
 
     navigate(captchaPath, {
@@ -53,19 +59,20 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         registerPayload,
       },
     })
-    setIsloading(false)
-  }, [captchaPath, createWebAuthNIdentity, navigate, setIsloading])
+    setIsLoading(false)
+  }, [captchaPath, createWebAuthNIdentity, navigate, setIsLoading])
 
   // NOTE: this will start loading the challenge
   useChallenge()
 
   const { getGoogleDevice } = useDevices()
-  const { loginWithGoogleDevice } = useAuthentication()
-  const { readMemoryAccount } = useAccount()
+  const { user, loginWithGoogleDevice, login, setShouldStoreLocalAccount } =
+    useAuthentication()
+  const { readMemoryAccount, readAccount } = useAccount()
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
-      setIsloading(true)
+      setIsLoading(true)
       const response = await getGoogleDevice({ token: credential })
 
       // Returning user has a key pair
@@ -77,7 +84,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         } = await readMemoryAccount()
 
         if (isNFID && account) {
-          if (isRemoteRegiser) {
+          if (isRemoteRegister) {
             if (!secret) throw new Error("secret missing")
             await remoteNFIDLogin({
               secret,
@@ -102,22 +109,45 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           },
         },
       })
-      setIsloading(false)
+      setIsLoading(false)
     },
     [
       captchaPath,
       getGoogleDevice,
       isNFID,
-      isRemoteRegiser,
+      isRemoteRegister,
       loginWithGoogleDevice,
       navigate,
       pathOnAuthenticated,
       readMemoryAccount,
       remoteNFIDLogin,
       secret,
-      setIsloading,
     ],
   )
+
+  const handleAuthorization =
+    ({ withSecurityDevices }: { withSecurityDevices: boolean }) =>
+    async (userNumber: number) => {
+      setIsLoading(true)
+      const response = await login(BigInt(userNumber), withSecurityDevices)
+
+      if (response.tag === "ok") {
+        withSecurityDevices && setShouldStoreLocalAccount(false)
+        setIsLoading(false)
+      }
+      if (response.tag === "err") {
+        setAuthError(response.title)
+        setIsLoading(false)
+      }
+    }
+
+  React.useEffect(() => {
+    if (user) {
+      readAccount()
+      getPersona()
+      navigate(`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`)
+    }
+  }, [getPersona, user, navigate, readAccount])
 
   return (
     <RegisterAccountIntro
@@ -126,6 +156,13 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       applicationLogo={applicationLogo}
       onRegister={handleCreateKeys}
       onSelectGoogleAuthorization={handleGetGoogleKey}
+      onSelectSameDeviceAuthorization={handleAuthorization({
+        withSecurityDevices: false,
+      })}
+      onSelectSecurityKeyAuthorization={handleAuthorization({
+        withSecurityDevices: true,
+      })}
+      authError={authError}
     />
   )
 }

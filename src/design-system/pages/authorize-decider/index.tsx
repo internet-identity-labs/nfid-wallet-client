@@ -90,35 +90,42 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
       <p className="mt-3 text-center">
         Choose how you'd like to sign in to {applicationName}
       </p>
-      {showAdvancedOptions && (
-        <Input
-          errorText={errors.userNumber?.message}
-          labelText="Your NFID number"
-          className="w-full mt-8"
-          {...register("userNumber", {
-            required: "userNumber is required",
-            pattern: {
-              value: anchorRules.regex,
-              message: anchorRules.errorMessages.pattern,
-            },
-            minLength: {
-              value: anchorRules.minLength,
-              message: anchorRules.errorMessages.length,
-            },
-          })}
-        />
-      )}
 
       <div
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}
       >
-        <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
-
-        <Separator className="max-w-[400px]" />
-
-        {showAdvancedOptions ? (
+        {!showAdvancedOptions ? (
           <>
+            <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+            <Separator className="max-w-[400px]" />
+
+            <IconButton
+              title="iPhone, iPad, or Android device"
+              subtitle="Use passkey from a device with a camera"
+              img={<img src={QRCode} alt="qrcode" />}
+              onClick={onSelectRemoteAuthorization}
+            />
+          </>
+        ) : (
+          <>
+            <Input
+              errorText={errors.userNumber?.message}
+              labelText="Your NFID number"
+              className="w-full my-4"
+              {...register("userNumber", {
+                required: "userNumber is required",
+                pattern: {
+                  value: anchorRules.regex,
+                  message: anchorRules.errorMessages.pattern,
+                },
+                minLength: {
+                  value: anchorRules.minLength,
+                  message: anchorRules.errorMessages.length,
+                },
+              })}
+            />
+
             <IconButton
               title="Platform auth on this device"
               subtitle="Use this device if previously registered"
@@ -132,13 +139,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
               onClick={handleSubmit(handleSelectSecurityKeyAuthorization)}
             />
           </>
-        ) : (
-          <IconButton
-            title="iPhone, iPad, or Android device"
-            subtitle="Use passkey from a device with a camera"
-            img={<img src={QRCode} alt="qrcode" />}
-            onClick={onSelectRemoteAuthorization}
-          />
         )}
 
         <p

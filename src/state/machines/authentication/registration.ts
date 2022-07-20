@@ -3,7 +3,7 @@ import { assign, ActorRefFrom, createMachine } from "xstate"
 
 import { createWebAuthnIdentity } from "frontend/integration/identity"
 import { fetchChallenge } from "frontend/integration/internet-identity"
-import { register } from "frontend/integration/internet-identity/services"
+import { registerService } from "frontend/integration/internet-identity/services"
 import {
   AuthSession,
   LocalDeviceAuthSession,
@@ -30,15 +30,15 @@ type Events =
       }
     }
   | { type: "done.invoke.challengeTimer"; data: void }
-  | { type: "done.invoke.register"; data: LocalDeviceAuthSession }
-  | { type: "error.platform.register"; data: Error }
+  | { type: "done.invoke.registerService"; data: LocalDeviceAuthSession }
+  | { type: "error.platform.registerService"; data: Error }
   | { type: "done.invoke.createWebAuthnIdentity"; data: WebAuthnIdentity }
   | { type: "CREATE_IDENTITY" }
   | { type: "FETCH_CAPTCHA" }
   | { type: "SUBMIT_CAPTCHA"; data: string }
 
 const RegistrationMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5igEtZ1dl1CB7AOwDoBldZXdWgYU2QBsuxqZaAMTDoAxpgDEEGmFqFqAN0oBrWQDMR4jt178wiUAAdKsQhRoGQAD0QAWABwAGWgHYAnADZ7Dt09suXWwAaEABPRAAmB1o3WNjHAFZ7ey8AZlsAXwyQtCw8AmJScio6RmZWbR4+AQB1ZDMpGTlFFVlxHWqwABVCAFswXEtjU3NqSxsEB2cPW0cPDwiZhMWPVJDwhFTvWkddx1tYj0dUhJcErJyMHHwiEjJRhiYWdk4qvVo6hsEAUS62AAkAPpsACCAAU-v8QUMTGYSuM7E5aDM5gslis1mFEKlUh4dnsAIz2RZuRyLVIXEC5a4FO7FGiPcq0ABKtPQAxeYFEyhBVwkMJG8KQ1kQ9nctAJbmWbn83iSiXWiASCQJ+McBOVBNsCXmjnslOp+VuRQeZWerONHIAktQ4dxKroYBI2MzviCut9AVaACLfAByXStXQAmgK4RZhRMIr5aKl9l5lvZlS4IglMRtAs4ErstV5bBrTvrslSrkbCvcSozzWyOWxkIYxJwJPQAKoAIQAskHgeDIdDhcNw2NI4hPC4dkm3JKXHKnAlFQgnPY1QT0gS9R4DaWbuX6aUnqwLYUOUeSANGtRZPIlKpaDuz4MB7DRgiEKvSbQIi50rZ87ZUhExIRAu65arQ2bqicEQavYq5FpceT3ialZmoeNa4Cy6ESAMuCUBhhhcOQah4b0d7oWGL4jou4qStKsranOC5Jniex6o4ngRGu5zFoaSEVgyqGYZaGFsPg5BgFaEB8BQ6ChBeV4tLeohieyNRgAARryWDUJJ0lmBsRjPkKoATGKbgSlK0b0fK85YggKaqoScy2IBqYuFkxbUJQUnwMKvFsvx+5Mg6nRCJomAUcZIoIB4U7Iu4sV-gBQELnG46sR4BLuNm6RuFuiEBXuVYVK8jqyJ86CRRGJmIOuwF2YszhnDmxKxWSMz5TSxqBcVLwdHoVXDjV9n2CBZwxHEbg4mSvgppkPHboVpoHkJx4iZgXI8lcg2vi4jjjgSqxSgs+0OOmiBHCxOakmSgFuNGnVlnSy1Mqe7IYTadpcCFA1PoK1XRXVC7frY4E5uucYnIkj18UVglvbW9aNsgO1UQSWWqjOpIuac6ppguCyqhEOaLE47H2J4MNLShK0IxhdOo8NmXmdmARaiqMFJEx+Zg+qERRMSSYJHlC0Fd1cO0+h7AqRJUnUDJBkgIOlHDf45m0QBywAVKAQuATbjpXsni2KsOK4lT4svdWwmM9FM4LrKK5Jrivi7O5otdbuVuVX9Q6vgkwR2XVE1xEcWXRuu3EIZ7z2Vt81AQLbEynCBqQaiuG4uXm83R09yEA8rUUTHGC7RiHsR-vM-PE+7WRAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5igEtZ1dl1CB7AOwDoBldZXdWgYU2QBsuxqZaAMTDoAxpgDEEGmFqFqAN0oBrWQDMR4jt178wiUAAdKsQhRoGQAD0QAWABwAGWgHYAnADZ7Dt09suXWwAaEABPRAAmB1o3WNjHAFZ7ey8AZlsAXwyQtCw8AmJScio6RmZWbR4+AQB1ZDMpGTlFFVlxHWqwABVCAFswXEtjU3NqSxsEB2cPW0cPDwiZhMWPVJDwhFTvWkddx1tYj0dUhJcErJyMHHwiEjJRhiYWdk4qvVo6hsEAUS62AAkAPpsACCAAU-v8QUMTGYSuM7E5aDM5gslis1mFEKlUh4dnsAIz2RZuRyLVIXEC5a4FO7FGiPcq0ABKtPQAxeYFEyhBVwkMJG8KQ1kQ9nctAJbmWbn83iSiXWiASCQJ+McBOVBNsCXmjnslOp+VuRQeZWerONHIAktQ4dxKroYBI2MzviCut9AVaACLfAByXStXQAmgK4RZhRMIr5aLYIvtFmTVgScYqEAFbLRFot7Ak40T9i4DVcjYV7iVGea2Ry2MhDGJOBJ6ABVABCAFkg8DwZDocLhuGxpHEASNXiCe4jhEXB4XKkZQk02LUrQErsCeqtnH7Oli3kbmX6aUnqwLYUOWeSANGtRZPIlKpaAer4N+7DRgiECnSVm57Z-1qqQRMSERphuWqruuJwRBq9gpvq2RUiWz4mhWZqntWuAsphEgDLglBYYYXDkGoBG9E+mFhh+w4IGKbgSlK0aytqTiLlitE6mqeqOJ4ETpBqe40sa5YMuh2GWlhbD4OQYBWhAfAUOgoQ3neLSPqI0nsjUYAAEa8lg1ByQpZgbEY75CqAEx0Qx0rMfKbEbC4MFqhuMzAREpxZIh1CUPJ8DCoaKEiceTIOp0QiaJgVEWSKCAeG4qqzp4MqAe5oHsakjguFxHgTlKxwHIJpZ0qaJ4vB07yfOg0URpZI5kmmiauGu6rEvFSaZIhgVssFlYVK8jr6G+gq1bFLj2GBZwxHEYqnLYRwEgsRVBUefXieekmYFyPJXDVQ51emWUSqsUoLFlDiYhsRx4oSpJksBbjRstPWrWJl7slhNp2lwYV6Htn4buljnpJB6obplJyJM9wmvWV701nWDbIP9NGji4qrjaScanOqCSXYgCyqvG6o5rsvieNDh6lUy8NYbTKMHbl9FrgEWoqrBSRLrYqotQSERRMSuYJG4lMlWhcOYewmmyfJ1CKaZIADtRB3+PRkp4x5fHRqcARpvF2V7DxMyrDiuKi6hokSxJDNjRN7Gyi5ywphq7jm716E2xMeZgWS01xPO7jLHmBJu6t3zUBAntKi4YGpBqLl6m5Xj-qHyuK+Zo0TJljX0XE8SeHmti4hSXlAA */
   createMachine(
     {
       context: {},
@@ -113,8 +113,8 @@ const RegistrationMachine =
                 },
                 Register: {
                   invoke: {
-                    src: "register",
-                    id: "register",
+                    src: "registerService",
+                    id: "registerService",
                     onDone: [
                       {
                         target: "#auth-registration.End",
@@ -153,7 +153,7 @@ const RegistrationMachine =
     },
     {
       services: {
-        register,
+        registerService,
         async challengeTimer(): Promise<void> {
           return new Promise((res) => setTimeout(res, 240_000))
         },

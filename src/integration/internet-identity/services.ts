@@ -64,7 +64,7 @@ export async function loginService(context: {
   }
 }
 
-export async function register(
+export async function registerService(
   context: {
     authSession?: AuthSession
     webAuthnIdentity?: WebAuthnIdentity
@@ -72,12 +72,21 @@ export async function register(
   },
   event: { data: string },
 ): Promise<LocalDeviceAuthSession> {
+  console.debug("registerService", { context, event })
+
   const identity = context.authSession?.identity || context.webAuthnIdentity
+
+  console.debug("registerService", { identity })
+
   if (!identity) {
-    throw new Error("Missing identity.")
+    const error = new Error("Missing identity.")
+    console.error("registerService", error)
+    throw error
   }
   if (!context.challenge?.challengeKey) {
-    throw new Error(`Missing required challenge context.`)
+    const error = new Error(`Missing required challenge context.`)
+    console.error("registerService", error)
+    throw error
   }
 
   // Create account with internet identity.
@@ -86,9 +95,12 @@ export async function register(
     deviceInfo.newDeviceName,
     { key: context.challenge.challengeKey, chars: event.data },
   )
+  console.debug("registerService", { anchor })
 
   const delegationIdentity = (await requestFEDelegation(identity))
     .delegationIdentity
+
+  console.debug("registerService", { delegationIdentity })
 
   authState.set(identity, delegationIdentity, ii)
 

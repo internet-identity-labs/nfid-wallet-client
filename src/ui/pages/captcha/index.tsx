@@ -15,6 +15,7 @@ interface CaptchaProps extends ElementProps<HTMLDivElement> {
   successPath?: string
   applicationName?: string
   applicationLogo?: string
+  loadingMessage?: string
   isLoading?: boolean
   isChallengeLoading?: boolean
   challengeBase64?: string
@@ -28,6 +29,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
   challengeBase64,
   applicationName,
   applicationLogo,
+  loadingMessage,
   isLoading,
   isChallengeLoading,
   onRequestNewCaptcha,
@@ -58,6 +60,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
     <ScreenResponsive
       className={clsx("flex flex-col items-center", className)}
       isLoading={isLoading}
+      loadingMessage={loadingMessage}
     >
       {applicationLogo && (
         <ApplicationLogo

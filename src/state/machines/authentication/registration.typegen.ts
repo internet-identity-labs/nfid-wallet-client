@@ -4,7 +4,7 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
     assignChallenge: "done.invoke.fetchChallenge"
-    assignError: "error.platform.register"
+    assignError: "error.platform.registerService"
     assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
   }
   internalEvents: {
@@ -13,8 +13,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.register": {
-      type: "error.platform.register"
+    "error.platform.registerService": {
+      type: "error.platform.registerService"
       data: unknown
     }
     "done.invoke.createWebAuthnIdentity": {
@@ -37,8 +37,8 @@ export interface Typegen0 {
       type: "error.platform.challengeTimer"
       data: unknown
     }
-    "done.invoke.register": {
-      type: "done.invoke.register"
+    "done.invoke.registerService": {
+      type: "done.invoke.registerService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -50,7 +50,7 @@ export interface Typegen0 {
   invokeSrcNameMap: {
     fetchChallenge: "done.invoke.fetchChallenge"
     challengeTimer: "done.invoke.challengeTimer"
-    register: "done.invoke.register"
+    registerService: "done.invoke.registerService"
     createWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
   }
   missingImplementations: {
@@ -63,7 +63,7 @@ export interface Typegen0 {
     fetchChallenge: "done.invoke.challengeTimer" | "FETCH_CAPTCHA"
     challengeTimer: "done.invoke.fetchChallenge"
     createWebAuthnIdentity: "CREATE_IDENTITY"
-    register: "SUBMIT_CAPTCHA"
+    registerService: "SUBMIT_CAPTCHA"
   }
   eventsCausingGuards: {
     authenticated: ""

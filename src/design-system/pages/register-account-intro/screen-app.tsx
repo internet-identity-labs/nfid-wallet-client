@@ -24,6 +24,7 @@ interface RegisterAccountIntroProps {
   onRegister: () => void
   onSelectGoogleAuthorization: LoginEventHandler
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
+  onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   applicationName?: string
   applicationLogo?: string
   isLoading: boolean
@@ -34,6 +35,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   onRegister,
   onSelectGoogleAuthorization,
   onSelectSecurityKeyAuthorization,
+  onSelectSameDeviceAuthorization,
   applicationName = "this application",
   applicationLogo,
   isLoading,
@@ -66,6 +68,13 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     [onSelectSecurityKeyAuthorization],
   )
 
+  const handleSelectSameDeviceAuthorization = useCallback(
+    async ({ userNumber }) => {
+      await onSelectSameDeviceAuthorization(userNumber)
+    },
+    [onSelectSameDeviceAuthorization],
+  )
+
   return (
     <ScreenResponsive
       className="flex flex-col items-center"
@@ -86,34 +95,39 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           <>
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
             <Separator className="max-w-[400px]" />
+
+            <IconButton
+              title="Create a new NFID"
+              subtitle="Use passkey on this device"
+              img={<img src={TouchId} alt="passkey" />}
+              onClick={onRegister}
+            />
           </>
         ) : (
-          <Input
-            errorText={errors.userNumber?.message}
-            labelText="Your NFID number"
-            className="w-full my-4"
-            {...register("userNumber", {
-              required: "userNumber is required",
-              pattern: {
-                value: anchorRules.regex,
-                message: anchorRules.errorMessages.pattern,
-              },
-              minLength: {
-                value: anchorRules.minLength,
-                message: anchorRules.errorMessages.length,
-              },
-            })}
-          />
-        )}
-
-        <IconButton
-          title="Create a new NFID"
-          subtitle="Use passkey on this device"
-          img={<img src={TouchId} alt="passkey" />}
-          onClick={onRegister}
-        />
-        {showAdvancedOptions ? (
           <>
+            <Input
+              errorText={errors.userNumber?.message}
+              labelText="Your NFID number"
+              className="w-full my-4"
+              {...register("userNumber", {
+                required: "userNumber is required",
+                pattern: {
+                  value: anchorRules.regex,
+                  message: anchorRules.errorMessages.pattern,
+                },
+                minLength: {
+                  value: anchorRules.minLength,
+                  message: anchorRules.errorMessages.length,
+                },
+              })}
+            />
+
+            <IconButton
+              title="Platform auth on this device"
+              subtitle="Use this device if previously registered"
+              img={<img src={TouchId} alt="touch-id" />}
+              onClick={handleSubmit(handleSelectSameDeviceAuthorization)}
+            />
             <IconButton
               title="Security key"
               subtitle="Use a previously registered security key"
@@ -121,7 +135,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               onClick={handleSubmit(handleSelectSecurityKeyAuthorization)}
             />
           </>
-        ) : null}
+        )}
 
         <p
           className="py-4 text-sm text-center cursor-pointer text-blue-base"

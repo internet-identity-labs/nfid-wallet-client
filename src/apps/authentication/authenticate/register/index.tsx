@@ -148,6 +148,9 @@ export const RouteRegister: React.FC<RegisterProps> = ({
       onSelectSecurityKeyAuthorization={handleAuthorization({
         withSecurityDevices: true,
       })}
+      onSelectSameDeviceAuthorization={handleAuthorization({
+        withSecurityDevices: false,
+      })}
       authError={authError}
     />
   )

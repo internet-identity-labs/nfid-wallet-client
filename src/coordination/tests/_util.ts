@@ -19,6 +19,10 @@ export const makeInvokedActor = <T>(machine: any, context: T) => {
       },
     },
   }).withContext(context)
+
   const service = interpret(invokerMachine).start()
+  service.children
+    .get("invoked")
+    ?.subscribe((state) => console.log("Actor State Changed:", state.value))
   return service.children.get("invoked")
 }

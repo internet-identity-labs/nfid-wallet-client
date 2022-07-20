@@ -216,6 +216,7 @@ export const requestFEDelegationChain = async (
   identity: SignIdentity,
   ttl: number = TEN_MINUTES_IN_M_SEC,
 ) => {
+  console.debug("Request FE Delegation Chain.")
   const sessionKey = Ed25519KeyIdentity.generate()
   // Here the security device is used. Besides creating new keys, this is the only place.
   const chain = await DelegationChain.create(
@@ -233,6 +234,7 @@ export const requestFEDelegationChain = async (
 export const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
+  console.debug("Request FE Delegation.")
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
 
   return {
@@ -898,6 +900,7 @@ export async function registerInternetIdentity(
   alias: string,
   challengeResult: ChallengeResult,
 ) {
+  console.debug("Register new internet identity")
   const delegation = await requestFEDelegation(identity)
 
   const credentialId = Array.from(new Uint8Array(identity.rawId))
@@ -905,7 +908,7 @@ export async function registerInternetIdentity(
 
   authState.set(identity, delegation.delegationIdentity, ii)
 
-  return ii
+  const anchor = await ii
     .register(
       {
         alias,
@@ -918,6 +921,11 @@ export async function registerInternetIdentity(
       challengeResult,
     )
     .then(mapRegisterResponse)
+
+  return {
+    anchor,
+    delegationIdentity: delegation.delegationIdentity,
+  }
 }
 
 function mapDeviceData(data: DeviceData): Device {

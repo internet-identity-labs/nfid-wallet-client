@@ -86,14 +86,11 @@ export async function registerService(
   }
 
   // Create account with internet identity.
-  const anchor = await registerInternetIdentity(
+  const { anchor, delegationIdentity } = await registerInternetIdentity(
     identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
     deviceInfo.newDeviceName,
     { key: context.challenge.challengeKey, chars: event.data },
   )
-
-  const delegationIdentity = (await requestFEDelegation(identity))
-    .delegationIdentity
 
   authState.set(identity, delegationIdentity, ii)
 

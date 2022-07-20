@@ -10,6 +10,8 @@ import {
 } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
+import { logServiceError } from "../actions"
+
 export interface RegistrationContext {
   authSession?: AuthSession
   challenge?: {
@@ -63,6 +65,9 @@ const RegistrationMachine =
                         target: "Wait",
                       },
                     ],
+                    onError: {
+                      actions: ["logServiceError"],
+                    },
                   },
                 },
                 Wait: {
@@ -74,6 +79,9 @@ const RegistrationMachine =
                         target: "Fetch",
                       },
                     ],
+                    onError: {
+                      actions: ["logServiceError"],
+                    },
                   },
                   on: {
                     FETCH_CAPTCHA: {
@@ -122,7 +130,7 @@ const RegistrationMachine =
                     ],
                     onError: [
                       {
-                        actions: "assignError",
+                        actions: ["assignError", "logServiceError"],
                         target: "Captcha",
                       },
                     ],
@@ -138,6 +146,9 @@ const RegistrationMachine =
                         target: "Captcha",
                       },
                     ],
+                    onError: {
+                      actions: ["logServiceError"],
+                    },
                   },
                 },
               },
@@ -161,6 +172,7 @@ const RegistrationMachine =
         createWebAuthnIdentity,
       },
       actions: {
+        logServiceError,
         assignChallenge: assign({ challenge: (context, event) => event.data }),
         assignWebAuthnIdentity: assign({
           webAuthnIdentity: (context, event) => event.data,

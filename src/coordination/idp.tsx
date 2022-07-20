@@ -13,11 +13,10 @@ import IDPMachine, {
 } from "frontend/state/machines/authorization/idp"
 import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
-import { Captcha } from "frontend/ui/pages/captcha"
-import { RegisterAccountIntro } from "frontend/ui/pages/register-account-intro/screen-app"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { KnownDeviceCoordinator } from "./known-device"
+import { RegistrationCoordinator } from "./registration"
 
 interface Props {
   machine?: IDPMachineType
@@ -146,48 +145,6 @@ function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
           />
         </ScreenResponsive>
       )
-    default:
-      return <Loader isLoading={true} />
-  }
-}
-
-function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
-  const [state, send] = useActor(actor)
-
-  switch (true) {
-    case state.matches("Start.Register.CheckAuth"):
-    case state.matches("Start.Register.InitialChallenge"):
-    case state.matches("Start.Register.CreateIdentity"):
-      return (
-        <RegisterAccountIntro
-          isLoading={
-            state.matches("Start.Register.CheckAuth") ||
-            state.matches("Start.Register.CreateIdentity")
-          }
-          applicationName={state.context.appMeta?.name}
-          applicationLogo={state.context.appMeta?.logo}
-          onRegister={() => send("CREATE_IDENTITY")}
-          onSelectGoogleAuthorization={() => console.error("NOT IMPLEMENTED")}
-        />
-      )
-    case state.matches("Start.Register.Register"):
-    case state.matches("Start.Register.Captcha"):
-      return (
-        <Captcha
-          isLoading={state.matches("Start.Register.Register")}
-          isChallengeLoading={state.matches("Start.Challenge.Fetch")}
-          applicationLogo={state.context.appMeta?.name}
-          applicationName={state.context.appMeta?.logo}
-          successPath={undefined}
-          onRegisterAnchor={async ({ captcha }) =>
-            send({ type: "SUBMIT_CAPTCHA", data: captcha })
-          }
-          onRequestNewCaptcha={() => send("FETCH_CAPTCHA")}
-          challengeBase64={state.context.challenge?.pngBase64}
-          errorString={state.context.error}
-        />
-      )
-    case state.matches("End"):
     default:
       return <Loader isLoading={true} />
   }

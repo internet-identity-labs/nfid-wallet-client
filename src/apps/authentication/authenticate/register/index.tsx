@@ -1,36 +1,52 @@
 import React from "react"
+import { useParams } from "react-router-dom"
 
 import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
 import { useChallenge } from "frontend/design-system/pages/captcha/hook"
 import { RegisterAccountIntro } from "frontend/design-system/pages/register-account-intro/screen-app"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
-interface RouteRegisterProps {
+interface RegisterProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   captchaPath: string
   pathAuthorizeApp: string
+  isNFID?: boolean
+  isRemoteRegister?: boolean
 }
 
-export const RouteRegister: React.FC<RouteRegisterProps> = ({
+export const RouteRegister: React.FC<RegisterProps> = ({
   captchaPath,
   pathAuthorizeApp,
+  isNFID: isNFIDProp,
+  isRemoteRegister,
 }) => {
-  const { isLoading, setIsloading } = useIsLoading()
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [authError, setAuthError] = React.useState<string | undefined>()
   const { applicationName, applicationLogo, createWebAuthNIdentity } =
     useMultipass()
   const { navigate } = useNFIDNavigate()
 
-  // NOTE: this will start loading the challenge
-  useChallenge()
+  const { secret, scope } = useParams()
+
+  const isNFID = React.useMemo(
+    () => scope === "NFID" || isNFIDProp,
+    [isNFIDProp, scope],
+  )
+
+  const { remoteNFIDLogin } = useAuthorizeApp()
 
   const handleCreateKeys = React.useCallback(async () => {
-    setIsloading(true)
+    setIsLoading(true)
     const registerPayload = await createWebAuthNIdentity()
 
     navigate(captchaPath, {
@@ -38,31 +54,49 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
         registerPayload,
       },
     })
-    setIsloading(false)
-  }, [captchaPath, createWebAuthNIdentity, navigate, setIsloading])
+    setIsLoading(false)
+  }, [captchaPath, createWebAuthNIdentity, navigate, setIsLoading])
+
+  // NOTE: this will start loading the challenge
+  useChallenge()
 
   const { getGoogleDevice } = useDevices()
-  const { loginWithGoogleDevice } = useAuthentication()
+  const { loginWithGoogleDevice, login, setShouldStoreLocalAccount } =
+    useAuthentication()
   const { readMemoryAccount } = useAccount()
-  const { getPersona } = usePersona()
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
-      setIsloading(true)
+      setIsLoading(true)
       const response = await getGoogleDevice({ token: credential })
 
-      // Given: user is returning (response.is_existing)
-      // Then: we need to authenticate with the google device
-      // And: navigate to the authorize app screen
+      // Returning user has a key pair
       if (response.is_existing) {
-        await loginWithGoogleDevice(response.identity)
-        await Promise.all([readMemoryAccount(), getPersona()])
+        const userOverwrite = await loginWithGoogleDevice(response.identity)
+
+        const {
+          data: [account],
+        } = await readMemoryAccount()
+
+        if (isNFID && account) {
+          if (isRemoteRegister) {
+            if (!secret) throw new Error("secret missing")
+            await remoteNFIDLogin({
+              secret,
+              userNumberOverwrite: account.anchor,
+              userOverwrite,
+            })
+          }
+          return navigate(
+            `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
+          )
+        }
+        // when we're not on NFID we're handling the authorization on
+        // the next page
         return navigate(pathAuthorizeApp)
       }
 
-      // Given: user new
-      // Then: we need to navigate to captcha screen
-      // And: register a new account
+      // new google user send to register
       navigate(captchaPath, {
         state: {
           registerPayload: {
@@ -72,19 +106,37 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
           },
         },
       })
-      setIsloading(false)
+      setIsLoading(false)
     },
     [
       captchaPath,
       getGoogleDevice,
-      getPersona,
+      isNFID,
+      isRemoteRegister,
       loginWithGoogleDevice,
       navigate,
       pathAuthorizeApp,
       readMemoryAccount,
-      setIsloading,
+      remoteNFIDLogin,
+      secret,
     ],
   )
+
+  const handleAuthorization =
+    ({ withSecurityDevices }: { withSecurityDevices: boolean }) =>
+    async (userNumber: number) => {
+      setIsLoading(true)
+      const response = await login(BigInt(userNumber), withSecurityDevices)
+
+      if (response.tag === "ok") {
+        withSecurityDevices && setShouldStoreLocalAccount(false)
+        setIsLoading(false)
+      }
+      if (response.tag === "err") {
+        setAuthError(response.title)
+        setIsLoading(false)
+      }
+    }
 
   return (
     <RegisterAccountIntro
@@ -93,6 +145,10 @@ export const RouteRegister: React.FC<RouteRegisterProps> = ({
       applicationLogo={applicationLogo}
       onRegister={handleCreateKeys}
       onSelectGoogleAuthorization={handleGetGoogleKey}
+      onSelectSecurityKeyAuthorization={handleAuthorization({
+        withSecurityDevices: true,
+      })}
+      authError={authError}
     />
   )
 }

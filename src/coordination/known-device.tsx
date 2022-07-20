@@ -5,6 +5,7 @@ import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
 import { AuthorizeAppMultiAccount } from "frontend/ui/pages/authorize-app/multi-account"
 import { AuthorizeAppSingleAccount } from "frontend/ui/pages/authorize-app/single-account"
+import { NFIDLogin } from "frontend/ui/pages/nfid-login"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
@@ -22,6 +23,13 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
     case state.matches("Authenticate"):
     case state.matches("Login"):
       switch (true) {
+        case state.context.isNFID:
+          return (
+            <NFIDLogin
+              account={state.context.profile}
+              onLogin={() => send("UNLOCK")}
+            />
+          )
         case state.context.isSingleAccountApplication:
           return (
             <AuthorizeAppSingleAccount

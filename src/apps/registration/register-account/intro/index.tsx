@@ -145,6 +145,9 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       onSelectSecurityKeyAuthorization={handleAuthorization({
         withSecurityDevices: true,
       })}
+      onSelectSameDeviceAuthorization={handleAuthorization({
+        withSecurityDevices: false,
+      })}
       authError={authError}
     />
   )

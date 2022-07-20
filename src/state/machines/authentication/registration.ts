@@ -10,7 +10,7 @@ import {
 } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-interface Context {
+export interface RegistrationContext {
   authSession?: AuthSession
   challenge?: {
     pngBase64: string
@@ -43,7 +43,7 @@ const RegistrationMachine =
     {
       context: {},
       tsTypes: {} as import("./registration.typegen").Typegen0,
-      schema: { events: {} as Events, context: {} as Context },
+      schema: { events: {} as Events, context: {} as RegistrationContext },
       id: "auth-registration",
       initial: "Start",
       states: {

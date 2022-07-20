@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { DelegationChain, WebAuthnIdentity } from "@dfinity/identity"
 import {
   render,
   waitFor,
@@ -13,6 +13,10 @@ import {
 import userEvent from "@testing-library/user-event"
 
 import { ii, im } from "frontend/integration/actors"
+import {
+  factoryDelegationChain,
+  mockWebAuthnCreate,
+} from "frontend/integration/identity/__mocks"
 import RegistrationMachine, {
   RegistrationActor,
   RegistrationContext,
@@ -23,14 +27,22 @@ import { makeInvokedActor } from "./_util"
 
 describe("Registration Coordinator", () => {
   it("should render registration intro", async () => {
-    // @ts-ignore
+    // @ts-ignore: actor class has additional things to mock
     ii.create_challenge = jest.fn(() =>
       Promise.resolve({
         png_base64: "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
         challenge_key: "challenge_key",
       }),
     )
-    WebAuthnIdentity.create = jest.fn()
+
+    WebAuthnIdentity.create = jest.fn(mockWebAuthnCreate)
+
+    // @ts-ignore: actor class has additional things to mock
+    ii.register = jest.fn(async () => ({
+      registered: { user_number: BigInt(10_000) },
+    }))
+
+    DelegationChain.create = jest.fn(factoryDelegationChain)
 
     const actor = makeInvokedActor<RegistrationContext>(RegistrationMachine, {})
     const { container } = render(

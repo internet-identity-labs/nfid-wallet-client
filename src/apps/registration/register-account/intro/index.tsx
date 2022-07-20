@@ -5,11 +5,16 @@ import { CredentialResponse } from "frontend/design-system/atoms/button/signin-w
 import { useChallenge } from "frontend/design-system/pages/captcha/hook"
 import { RegisterAccountIntro } from "frontend/design-system/pages/register-account-intro/screen-app"
 
+import {
+  APP_SCREEN_AUTHENTICATE_BASE,
+  SUB_PATH_AUTHORIZE_APP,
+} from "frontend/apps/authentication/authenticate/constants"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
 import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
 import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
 
 interface RegisterAccountIntroProps
@@ -43,6 +48,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   )
 
   const { remoteNFIDLogin } = useAuthorizeApp()
+  const { getPersona } = usePersona()
 
   const handleCreateKeys = React.useCallback(async () => {
     setIsLoading(true)
@@ -60,9 +66,9 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   useChallenge()
 
   const { getGoogleDevice } = useDevices()
-  const { loginWithGoogleDevice, login, setShouldStoreLocalAccount } =
+  const { user, loginWithGoogleDevice, login, setShouldStoreLocalAccount } =
     useAuthentication()
-  const { readMemoryAccount } = useAccount()
+  const { readMemoryAccount, readAccount } = useAccount()
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
@@ -135,6 +141,14 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       }
     }
 
+  React.useEffect(() => {
+    if (user) {
+      readAccount()
+      getPersona()
+      navigate(`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`)
+    }
+  }, [getPersona, user, navigate, readAccount])
+
   return (
     <RegisterAccountIntro
       isLoading={isLoading}
@@ -142,11 +156,11 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       applicationLogo={applicationLogo}
       onRegister={handleCreateKeys}
       onSelectGoogleAuthorization={handleGetGoogleKey}
-      onSelectSecurityKeyAuthorization={handleAuthorization({
-        withSecurityDevices: true,
-      })}
       onSelectSameDeviceAuthorization={handleAuthorization({
         withSecurityDevices: false,
+      })}
+      onSelectSecurityKeyAuthorization={handleAuthorization({
+        withSecurityDevices: true,
       })}
       authError={authError}
     />

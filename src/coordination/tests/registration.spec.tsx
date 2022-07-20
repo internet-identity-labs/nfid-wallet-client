@@ -73,10 +73,9 @@ describe("Registration Coordinator", () => {
 
     expect(CreateNFIDButton.getAttribute("class")).not.toContain("btn-disabled")
 
-    // NOTE: mock outgoing calls to make this work
-    // act(() => {
-    //   CreateNFIDButton.click()
-    // })
+    await act(async () => {
+      await waitFor(() => CreateNFIDButton.click())
+    })
 
     // await waitFor(() => {
     //   screen.getByText("Registering NFID")

@@ -11,7 +11,37 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-secrets:
+    defaults:
+      run:
+        shell: bash
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout CI repo.
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Check secrets
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+          JSON='${{ toJSON(env) }}'
+          ci_check_secrets "${JSON}"
+        env:
+          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
+          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
+          PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.PROD_CANISTER_ID_PUB_SUB_CHANNEL}}
+          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.PROD_CANISTER_ID_INTERNET_IDENTITY}}
+          AWS_VERIFY_PHONENUMBER: ${{secrets.PROD_AWS_VERIFY_PHONENUMBER}}
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+
   build:
+    needs: check-secrets
     runs-on: ubuntu-latest
 
     steps:

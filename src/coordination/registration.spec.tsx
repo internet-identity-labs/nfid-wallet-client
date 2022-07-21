@@ -23,8 +23,8 @@ import RegistrationMachine, {
   RegistrationContext,
 } from "frontend/state/machines/authentication/registration"
 
-import { RegistrationCoordinator } from "../registration"
-import { makeInvokedActor } from "./_util"
+import { RegistrationCoordinator } from "./registration"
+import { makeInvokedActor } from "./test-utils"
 
 describe("Registration Coordinator", () => {
   it("should render registration intro", async () => {

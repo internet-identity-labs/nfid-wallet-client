@@ -12,10 +12,10 @@ import KnownDeviceMachine, {
   KnownDeviceActor,
 } from "frontend/state/machines/authentication/known-device"
 
-import * as IM from "../../integration/identity-manager"
-import * as II from "../../integration/internet-identity"
-import { KnownDeviceCoordinator } from "../device-known"
-import { makeInvokedActor } from "./_util"
+import * as IM from "../integration/identity-manager"
+import * as II from "../integration/internet-identity"
+import { KnownDeviceCoordinator } from "./device-known"
+import { makeInvokedActor } from "./test-utils"
 
 describe("KnownDevice Coordinator", () => {
   describe("NFID Auth State rendering", () => {

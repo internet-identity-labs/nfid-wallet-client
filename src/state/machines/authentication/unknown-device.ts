@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid"
-import { ActorRefFrom, assign, createMachine, send } from "xstate"
+import { ActorRefFrom, createMachine } from "xstate"
 
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { GoogleDeviceResult } from "frontend/integration/lambda/google"
@@ -21,7 +21,7 @@ import {
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
-export interface Context {
+export interface UnknownDeviceContext {
   authRequest: AuthorizationRequest
   appMeta?: AuthorizingAppMeta
 }
@@ -40,7 +40,7 @@ export type Events =
 
 export interface Schema {
   events: Events
-  context: Context
+  context: UnknownDeviceContext
 }
 
 const UnknownDeviceMachine =

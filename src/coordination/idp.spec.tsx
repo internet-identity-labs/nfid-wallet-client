@@ -8,7 +8,7 @@ import React from "react"
 import { mockIdentityClientAuthEvent } from "frontend/integration/windows/__mock"
 import IDPMachine from "frontend/state/machines/authorization/idp"
 
-import IDPCoordinator from "../idp"
+import IDPCoordinator from "./idp"
 
 const handshake = jest.fn(mockIdentityClientAuthEvent)
 const isDeviceRegisteredFalse = jest.fn(() => false)

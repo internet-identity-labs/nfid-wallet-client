@@ -4,6 +4,9 @@
   "cucumberautocomplete.syncfeatures": "./test/features/**/*.feature",
   "cucumberautocomplete.strictGherkinCompletion": true,
   "explorer.fileNesting.patterns": {
-    "*.ts": "${capture}.js, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx"
-  }
+    "*.ts": "${capture}.js, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx",
+    "*.tsx": "${capture}.ts, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx"
+  },
+  "explorer.fileNesting.expand": true,
+  "explorer.fileNesting.enabled": true
 }

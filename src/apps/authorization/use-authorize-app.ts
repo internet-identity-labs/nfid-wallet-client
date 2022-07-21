@@ -25,7 +25,7 @@ declare const FRONTEND_MODE: string
 
 export interface RemoteLoginEvent extends SignedDelegation {
   type: "remote-login-register"
-  userNumber: string
+  anchor: string
   nfid: {
     chain: DelegationChain
     sessionKey: Ed25519KeyIdentity

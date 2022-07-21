@@ -12,6 +12,7 @@ import {
 import userEvent from "@testing-library/user-event"
 
 import { ii, im } from "frontend/integration/actors"
+import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import { mockExternalAccountResponse } from "frontend/integration/identity-manager/__mocks"
 import {
   factoryDelegationChain,
@@ -29,12 +30,7 @@ import { makeInvokedActor } from "./test-utils"
 describe("Registration Coordinator", () => {
   it("should render registration intro", async () => {
     // @ts-ignore: actor class has additional things to mock
-    ii.create_challenge = jest.fn(() =>
-      Promise.resolve({
-        png_base64: "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
-        challenge_key: "challenge_key",
-      }),
-    )
+    ii.create_challenge = jest.fn(iiCreateChallengeMock)
 
     // @ts-ignore: actor class has additional things to mock
     ii.register = jest.fn(async () => ({

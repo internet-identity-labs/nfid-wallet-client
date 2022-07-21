@@ -5,7 +5,7 @@ import {
 
 export const REMOTE_LOGIN_REGISTER_MESSAGE = {
   type: "remote-login-register",
-  userNumber: "10064",
-  nfid: NFID_SIGNED_DELEGATION,
+  anchor: 10064,
+  reconstructableIdentity: NFID_SIGNED_DELEGATION,
   ...JSON_SERIALISABLE_SIGNED_DELEGATION,
 }

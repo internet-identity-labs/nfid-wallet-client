@@ -1,5 +1,5 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
-import useSWR, { Fetcher, Key, SWRConfiguration, SWRHook } from "swr"
+import useSWR, { SWRConfiguration } from "swr"
 
 import { unpackResponse } from "frontend/integration/_common"
 import {
@@ -8,10 +8,36 @@ import {
 } from "frontend/integration/_ic_api/pub_sub_channel.did"
 import { pubsub } from "frontend/integration/actors"
 
-import { JSONSerialisableSignedDelegation } from "../internet-identity"
+import {
+  JSONSerialisableSignedDelegation,
+  ReconstructableIdentity,
+} from "../internet-identity"
 
-export const WAIT_FOR_CONFIRMATION_MESSAGE = {
+interface BaseMessage {
+  type:
+    | "remote-login-wait-for-user"
+    | "remote-nfid-login-register"
+    | "remote-login-register"
+}
+
+export const WAIT_FOR_CONFIRMATION_MESSAGE: BaseMessage = {
   type: "remote-login-wait-for-user",
+}
+
+export interface WaitForConfirmationMessage extends BaseMessage {
+  type: "remote-login-wait-for-user"
+}
+
+export function isWaitForConfigramtionMessage(
+  message: BaseMessage,
+): message is WaitForConfirmationMessage {
+  return message.type === "remote-login-wait-for-user"
+}
+
+export interface RemoteLoginRegisterMessage extends BaseMessage {
+  anchor: number
+  reconstructableIdentity: ReconstructableIdentity
+  signedDelegation: JSONSerialisableSignedDelegation
 }
 
 export function buildRemoteLoginRegisterMessage(
@@ -19,25 +45,42 @@ export function buildRemoteLoginRegisterMessage(
   chain: DelegationChain,
   sessionKey: Ed25519KeyIdentity,
   jsonSerialisableDelegation: JSONSerialisableSignedDelegation,
-): string {
-  return JSON.stringify({
+): RemoteLoginRegisterMessage {
+  return {
     type: "remote-login-register",
-    userNumber: anchor.toString(),
-    nfid: { chain, sessionKey },
-    ...jsonSerialisableDelegation,
-  })
+    anchor: Number(anchor),
+    reconstructableIdentity: { chain, sessionKey },
+    signedDelegation: jsonSerialisableDelegation,
+  }
+}
+
+export function isRemoteLoginRegisterMessage(
+  message: BaseMessage,
+): message is RemoteLoginRegisterMessage {
+  return (message as BaseMessage).type === "remote-login-register"
+}
+
+export interface NFIDLoginRegisterMessage extends BaseMessage {
+  anchor: number
+  reconstructableIdentity: ReconstructableIdentity
+}
+
+export function isNFIDLoginRegisterMessage(
+  message: BaseMessage,
+): message is NFIDLoginRegisterMessage {
+  return message.type === "remote-nfid-login-register"
 }
 
 export function buildRemoteNFIDLoginRegisterMessage(
   anchor: bigint,
   chain: DelegationChain,
   sessionKey: Ed25519KeyIdentity,
-) {
-  return JSON.stringify({
+): NFIDLoginRegisterMessage {
+  return {
     type: "remote-nfid-login-register",
-    userNumber: anchor.toString(),
-    nfid: { chain, sessionKey },
-  })
+    anchor: Number(anchor),
+    reconstructableIdentity: { chain, sessionKey },
+  }
 }
 
 function sanitizeResponse(message: MessageHttpResponse) {
@@ -54,9 +97,12 @@ export async function createTopic(topic: Topic) {
     .then((r) => unpackResponse(sanitizeResponse(r)))
 }
 
-export async function postMessages(topic: Topic, messages: string[]) {
+export async function postMessages(topic: Topic, messages: any[]) {
   return pubsub
-    .post_messages(topic, messages)
+    .post_messages(
+      topic,
+      messages.map((m) => JSON.stringify(m)),
+    )
     .then((r) => unpackResponse(sanitizeResponse(r)))
 }
 
@@ -71,7 +117,11 @@ export const useMessages = (
     refreshInterval: 2000,
   },
 ) => {
-  const { data, error, mutate } = useSWR("messages", getMessages, options)
+  const { data, error, mutate } = useSWR<string[]>(
+    "messages",
+    getMessages,
+    options,
+  )
   return {
     messages: data,
     error,

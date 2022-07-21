@@ -56,12 +56,8 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           actor={state.children.remote as RemoteReceiverActor}
         />
       )
-    // case state.matches("RegisterDeviceDecider"):
-    //   return <>Trust this device?</>
-    case state.matches("RegisterDevice"):
-      return <>Registering...</>
-    case state.matches("RegisterDeviceError"):
-      return <>There was an error registering your device</>
+    case state.matches("TrustDevice"):
+      return <div>TODO: TrustDevice</div>
     case state.matches("End"):
     case state.matches("Start"):
     default:

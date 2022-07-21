@@ -737,6 +737,11 @@ export async function loginfromGoogleDevice(identity: string): Promise<void> {
   authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
 }
 
+export interface ReconstructableIdentity {
+  chain: DelegationChain
+  sessionKey: Ed25519KeyIdentity
+}
+
 /**
  * Cast an identity into a reconstructable form for transmission purposes (i.e. sending authenticated delegate from remote device).
  * @param identity a delegation identity
@@ -753,6 +758,17 @@ export async function getReconstructableIdentity(
     chain: frontendDelegation.chain,
     sessionKey: frontendDelegation.sessionKey,
   }
+}
+
+export function reconstructIdentity({
+  chain: jsonAbleChain,
+  sessionKey: jsonAbleSessionKey,
+}: ReconstructableIdentity): DelegationIdentity {
+  const [chain, sessionKey] = getDelegationFromJson(
+    JSON.stringify(jsonAbleChain),
+    JSON.stringify(jsonAbleSessionKey),
+  )
+  return DelegationIdentity.fromDelegation(sessionKey, chain)
 }
 
 // --

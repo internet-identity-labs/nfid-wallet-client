@@ -7,6 +7,8 @@ import QR from "qrcode"
 import { ii, pubsub } from "frontend/integration/actors"
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import * as device from "frontend/integration/device"
+import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
+import { WAIT_FOR_CONFIRMATION_MESSAGE } from "frontend/integration/pubsub"
 import { REMOTE_LOGIN_REGISTER_MESSAGE } from "frontend/integration/pubsub/__mocks"
 import UnknownDeviceMachine, {
   UnknownDeviceActor,
@@ -85,7 +87,7 @@ describe("UnknownDeviceCoordinator", () => {
         expect(pubsub.get_messages).toHaveBeenCalled()
       },
     )
-    it("should render RegisterDevice on %s when receiving remote delegate messages", async () => {
+    it("should render loading state when receiving await confirmation messages", async () => {
       setupCoordinator("DesktopBrowser", false)
       await waitFor(() => {
         screen.getByText("Use passkey from a device with a camera")
@@ -93,16 +95,40 @@ describe("UnknownDeviceCoordinator", () => {
       QR.toCanvas = jest.fn()
       pubsub.get_messages = jest.fn(() =>
         Promise.resolve({
-          body: [[JSON.stringify(REMOTE_LOGIN_REGISTER_MESSAGE)]] as [
-            Array<string>,
-          ],
+          body: [[JSON.stringify(WAIT_FOR_CONFIRMATION_MESSAGE)]],
           error: [],
           status_code: 200,
         }),
       )
 
-      waitFor(() => {
-        screen.getByText("RegisterDevice").click()
+      act(() => {
+        screen.getByText("Use passkey from a device with a camera").click()
+      })
+      await waitFor(() => {
+        screen.getByText("Waiting for verification on mobile...")
+      })
+    })
+    it("should render TrustDevice state when receiving register messages", async () => {
+      setupCoordinator("DesktopBrowser", false)
+      await waitFor(() => {
+        screen.getByText("Use passkey from a device with a camera")
+      })
+      QR.toCanvas = jest.fn()
+      pubsub.get_messages = jest.fn(() =>
+        Promise.resolve({
+          body: [[JSON.stringify(REMOTE_LOGIN_REGISTER_MESSAGE)]],
+          error: [],
+          status_code: 200,
+        }),
+      )
+      // @ts-ignore FIXME: some mock configuration missing
+      ii.lookup = jest.fn(() => Promise.resolve(AUTHENTICATOR_DEVICES))
+
+      act(() => {
+        screen.getByText("Use passkey from a device with a camera").click()
+      })
+      await waitFor(() => {
+        screen.getByText("TODO: TrustDevice")
       })
     })
   })

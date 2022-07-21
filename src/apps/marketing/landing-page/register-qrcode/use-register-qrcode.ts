@@ -43,12 +43,12 @@ export const useRegisterQRCode = () => {
   const handleLoginFromRemoteDelegation = useCallback(
     async (
       nfidJsonDelegate: RemoteLoginEvent["nfid"],
-      userNumber: RemoteLoginEvent["userNumber"],
+      anchor: RemoteLoginEvent["anchor"],
     ) => {
       const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
-        userNumber: BigInt(userNumber),
+        userNumber: BigInt(anchor),
       })
       const result = apiResultToLoginResult(loginResult)
 
@@ -56,7 +56,7 @@ export const useRegisterQRCode = () => {
         setShouldStoreLocalAccount(false)
         setAuthenticatedActors(result)
         setStatus("registerDecider")
-        setUserNumber(BigInt(userNumber))
+        setUserNumber(BigInt(anchor))
       }
       // TODO: handle this more gracefully
       if (result.tag !== "ok") throw new Error("login failed")
@@ -83,7 +83,7 @@ export const useRegisterQRCode = () => {
         if (registerMessage) {
           handleLoginFromRemoteDelegation(
             registerMessage.nfid,
-            registerMessage.userNumber,
+            registerMessage.anchor,
           )
 
           cancelPoll()

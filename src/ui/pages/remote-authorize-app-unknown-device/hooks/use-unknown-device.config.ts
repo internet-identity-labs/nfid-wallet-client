@@ -229,7 +229,7 @@ export const useUnknownDeviceConfig = () => {
         ) as RemoteLoginEvent | undefined
 
         if (registerMessage) {
-          setUserNumber(BigInt(registerMessage.userNumber))
+          setUserNumber(BigInt(registerMessage.anchor))
           setSignedDelegation({
             delegation: registerMessage.delegation,
             signature: registerMessage.signature,
@@ -238,7 +238,7 @@ export const useUnknownDeviceConfig = () => {
 
           handleLoginFromRemoteDelegation(
             registerMessage.nfid,
-            registerMessage.userNumber,
+            registerMessage.anchor,
           )
 
           setStatus("success")

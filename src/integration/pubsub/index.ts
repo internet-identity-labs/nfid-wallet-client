@@ -1,4 +1,5 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+import useSWR, { Fetcher, Key, SWRConfiguration, SWRHook } from "swr"
 
 import { unpackResponse } from "frontend/integration/_common"
 import {
@@ -63,4 +64,17 @@ export async function getMessages(topic: Topic) {
   return pubsub
     .get_messages(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
+}
+
+export const useMessages = (
+  options: SWRConfiguration = {
+    refreshInterval: 2000,
+  },
+) => {
+  const { data, error, mutate } = useSWR("messages", getMessages, options)
+  return {
+    messages: data,
+    error,
+    isLoading: !error && !data,
+  }
 }

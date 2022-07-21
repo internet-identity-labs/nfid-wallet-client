@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { act, render, screen, waitFor } from "@testing-library/react"
+import QR from "qrcode"
 
 import { ii } from "frontend/integration/actors"
 import * as device from "frontend/integration/device"
@@ -59,9 +60,18 @@ describe("UnknownDeviceCoordinator", () => {
           screen.getByText("Use passkey from a device with a camera")
         })
 
+        QR.toCanvas = jest.fn()
+
         act(() => {
           screen.getByText("Use passkey from a device with a camera").click()
         })
+
+        expect(QR.toCanvas).toHaveBeenCalledWith(
+          expect.anything(),
+          "http://localhost/remote-idp?applicationName=MyApp&applicationLogo=https%253A%252F%252Fmy-app.com%252Flogo.svg",
+          { width: 192 },
+          expect.anything(),
+        )
       },
     )
   })

@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { render, screen, waitFor } from "@testing-library/react"
+import { act, render, screen, waitFor } from "@testing-library/react"
 
 import { ii } from "frontend/integration/actors"
 import * as device from "frontend/integration/device"
@@ -13,7 +13,12 @@ import UnknownDeviceMachine, {
 import { UnknownDeviceCoordinator } from "./device-unknown"
 import { makeInvokedActor } from "./test-utils"
 
-const setupCoordinator = () => {
+const setupCoordinator = (userAgent: string, WebAuthNCapability: boolean) => {
+  // @ts-ignore
+  global.navigator.userAgent = userAgent
+  jest
+    .spyOn(device, "fetchWebAuthnCapability")
+    .mockImplementation(() => Promise.resolve(WebAuthNCapability))
   const actor = makeInvokedActor<UnknownDeviceContext>(UnknownDeviceMachine, {
     appMeta: {
       name: "MyApp",
@@ -33,15 +38,9 @@ const setupCoordinator = () => {
 describe("UnknownDeviceCoordinator", () => {
   describe("Desktop or no support for WebAuthN", () => {
     it.each(["DesktopBrowser", ...device.MobileBrowser])(
-      "should render AuthSelection when on %(userAgent)s",
+      "should render AuthSelection when on %s",
       async (userAgent) => {
-        // @ts-ignore
-        global.navigator.userAgent = userAgent
-        jest
-          .spyOn(device, "fetchWebAuthnCapability")
-          .mockImplementation(() => Promise.resolve(false))
-
-        setupCoordinator()
+        setupCoordinator(userAgent, false)
 
         await waitFor(() => {
           screen.getByText("Choose how you'd like to sign in to MyApp")
@@ -51,14 +50,25 @@ describe("UnknownDeviceCoordinator", () => {
         expect(device.fetchWebAuthnCapability).toHaveBeenCalled()
       },
     )
+    it.each(["DesktopBrowser", ...device.MobileBrowser])(
+      "should render RemoteAuthentication on %s",
+      async (userAgent) => {
+        setupCoordinator(userAgent, false)
+
+        await waitFor(() => {
+          screen.getByText("Use passkey from a device with a camera")
+        })
+
+        act(() => {
+          screen.getByText("Use passkey from a device with a camera").click()
+        })
+      },
+    )
   })
   describe("Mobile with WebAuthN support", () => {
     it.each(device.MobileBrowser.map<[string, boolean]>((b) => [b, true]))(
       "should render RegistrationMachine on Mobile %s",
       async (userAgent, hasWebAuthN) => {
-        // @ts-ignore
-        window.navigator.userAgent = userAgent
-
         // @ts-ignore
         ii.create_challenge = jest.fn(() =>
           Promise.resolve({
@@ -66,12 +76,8 @@ describe("UnknownDeviceCoordinator", () => {
             challenge_key: "challenge_key",
           }),
         )
-        jest
-          .spyOn(device, "fetchWebAuthnCapability")
-          // TODO: Add device list with WebAuthN capability
-          .mockImplementation(() => Promise.resolve(hasWebAuthN))
 
-        setupCoordinator()
+        setupCoordinator(userAgent, hasWebAuthN)
 
         await waitFor(() => {
           screen.getByText("Choose how you'd like to sign in to MyApp")

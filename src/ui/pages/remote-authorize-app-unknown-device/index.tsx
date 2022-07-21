@@ -5,28 +5,23 @@ import { Navigate } from "react-router-dom"
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 
-import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 export interface AuthorizeAppUnknownDeviceProps {
-  registerDeviceDeciderPath: string
   registerSameDevicePath: string
   url: string | null
-  showRegister: boolean
-  applicationName?: string
+  applicationName: string
+  applicationLogo: string
   isLoading?: boolean
 }
 
 export const RemoteAuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ registerDeviceDeciderPath, url, showRegister, isLoading }) => {
-  const { applicationLogo, applicationName } = useMultipass()
-  const { generatePath } = useNFIDNavigate()
-
-  return url && !showRegister ? (
+> = ({ url, isLoading, applicationLogo, applicationName }) => {
+  return url ? (
     <ScreenResponsive
       isLoading={isLoading}
       loadingMessage="Waiting for verification on mobile..."
@@ -54,7 +49,5 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
         </div>
       </div>
     </ScreenResponsive>
-  ) : showRegister ? (
-    <Navigate to={generatePath(registerDeviceDeciderPath)} />
   ) : null
 }

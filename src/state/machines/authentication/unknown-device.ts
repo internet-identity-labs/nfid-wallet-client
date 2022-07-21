@@ -20,6 +20,7 @@ import {
 
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
+import { TrustDeviceMachine } from "./trust-device"
 
 export interface UnknownDeviceContext {
   authRequest: AuthorizationRequest
@@ -135,41 +136,12 @@ const UnknownDeviceMachine =
           invoke: {
             src: "RemoteReceiverMachine",
             id: "remote",
-            onDone: [
-              {
-                target: "End",
-              },
-            ],
+            onDone: "TrustDevice",
             data: (context, event) => ({
               secret: uuid(),
               authRequest: context.authRequest,
               appMeta: context.appMeta,
             }),
-          },
-        },
-        RegisterDevice: {
-          invoke: {
-            src: "registerDevice",
-            onDone: [
-              {
-                target: "End",
-              },
-            ],
-            onError: [
-              {
-                target: "RegisterDeviceError",
-              },
-            ],
-          },
-        },
-        RegisterDeviceError: {
-          on: {
-            TRUST_DEVICE: {
-              target: "RegisterDevice",
-            },
-            END: {
-              target: "End",
-            },
           },
         },
         ExistingAnchor: {
@@ -180,6 +152,13 @@ const UnknownDeviceMachine =
             AUTH_WITH_OTHER: {
               target: "AuthSelection",
             },
+          },
+        },
+        TrustDevice: {
+          invoke: {
+            src: "TrustDeviceMachine",
+            id: "trustDeviceMachine",
+            onDone: "End",
           },
         },
         End: {
@@ -199,7 +178,7 @@ const UnknownDeviceMachine =
         fetchGoogleDevice,
         signInWithGoogle,
         isMobileWithWebAuthn,
-        // registerDevice,
+        TrustDeviceMachine,
       },
     },
   )

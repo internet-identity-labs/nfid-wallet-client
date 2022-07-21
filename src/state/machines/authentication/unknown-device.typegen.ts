@@ -14,6 +14,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.remote": {
+      type: "done.invoke.remote"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
     "error.platform.isMobileWithWebAuthn": {
       type: "error.platform.isMobileWithWebAuthn"
@@ -41,12 +46,16 @@ export interface Typegen0 {
       type: "error.platform.fetchGoogleDevice"
       data: unknown
     }
-    "done.invoke.remote": {
-      type: "done.invoke.remote"
+    "error.platform.remote": { type: "error.platform.remote"; data: unknown }
+    "done.invoke.trustDeviceMachine": {
+      type: "done.invoke.trustDeviceMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.remote": { type: "error.platform.remote"; data: unknown }
+    "error.platform.trustDeviceMachine": {
+      type: "error.platform.trustDeviceMachine"
+      data: unknown
+    }
   }
   invokeSrcNameMap: {
     isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
@@ -54,11 +63,11 @@ export interface Typegen0 {
     signInWithGoogle: "done.invoke.signInWithGoogle"
     fetchGoogleDevice: "done.invoke.fetchGoogleDevice"
     RemoteReceiverMachine: "done.invoke.remote"
-    registerDevice: "done.invoke.auth-unknown-device.RegisterDevice:invocation[0]"
+    TrustDeviceMachine: "done.invoke.trustDeviceMachine"
   }
   missingImplementations: {
     actions: never
-    services: "registerDevice"
+    services: never
     guards: never
     delays: never
   }
@@ -70,7 +79,7 @@ export interface Typegen0 {
     fetchGoogleDevice: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     signInWithGoogle: "done.invoke.fetchGoogleDevice"
-    registerDevice: "TRUST_DEVICE"
+    TrustDeviceMachine: "done.invoke.remote"
   }
   eventsCausingGuards: {
     isExistingGoogleAccount: "done.invoke.fetchGoogleDevice"
@@ -85,9 +94,8 @@ export interface Typegen0 {
     | "AuthWithGoogle.SignIn"
     | "AuthWithGoogle.Fetch"
     | "RemoteAuthentication"
-    | "RegisterDevice"
-    | "RegisterDeviceError"
     | "ExistingAnchor"
+    | "TrustDevice"
     | "End"
     | { Start?: "checkCapability"; AuthWithGoogle?: "SignIn" | "Fetch" }
   tags: never

@@ -49,6 +49,7 @@ export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {
     const current = parseInt(persona.persona_id, 10)
     return last < current ? current : last
   }, 0)
+  if (highest === 0) return "0"
   return `${highest + 1}`
 }
 

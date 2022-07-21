@@ -1,10 +1,9 @@
 import { useAtom } from "jotai"
 import { useCallback, useReducer } from "react"
 
-import { CredentialRequesterNotVerified } from "frontend/ui/pages/credential-requester/not-verified"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { CredentialRequesterNotVerified } from "frontend/ui/pages/credential-requester/not-verified"
 
 export const EnterPhoneNumber: React.FC<{ machine: any }> = ({ machine }) => {
   const [, send] = useAtom(machine)
@@ -15,7 +14,7 @@ export const EnterPhoneNumber: React.FC<{ machine: any }> = ({ machine }) => {
   const handleSubmitPhoneNumber = useCallback(
     async ({ phone }: { phone: string }) => {
       toggleLoading()
-      const response = await verifyPhonenumber(phone)
+      const response = await verifyPhonenumber(phone, user?.principal as string)
       toggleLoading()
       if (response.status >= 200 && response.status < 400) {
         console.log("success")

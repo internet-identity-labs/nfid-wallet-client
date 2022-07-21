@@ -1,8 +1,4 @@
-<<<<<<< HEAD:src/integration/_common.ts
 import { Response } from "./_ic_api/identity_manager.did.d"
-=======
-import { Response } from "../idl/identity_manager.did"
->>>>>>> f6fa3cda (feat: phone credential verification):src/integration/actors/.common.ts
 
 /**
  * Sanitize dfinity date object into js Date.

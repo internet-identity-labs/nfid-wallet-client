@@ -8,11 +8,7 @@ import {
 import { Principal } from "@dfinity/principal"
 import nacl_util from "tweetnacl-util"
 
-<<<<<<< HEAD:src/integration/lambda/phone/index.spec.ts
 import { verifyPhoneNumber, verifySignature } from "."
-=======
-import { verifyPhoneNumber, verifySignature } from "../actors/lambda"
->>>>>>> f6fa3cda (feat: phone credential verification):src/integration/tests/lambda.spec.ts
 
 const buffer_1 = require("@dfinity/identity/lib/cjs/buffer")
 const der_1 = require("@dfinity/identity/lib/cjs/identity/der")

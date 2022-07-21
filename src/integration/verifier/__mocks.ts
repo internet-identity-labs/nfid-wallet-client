@@ -1,4 +1,4 @@
-import { Certificate } from "../actors/verifier"
+import { Certificate } from "."
 
 export function factoryCertificate(): Certificate {
   return {

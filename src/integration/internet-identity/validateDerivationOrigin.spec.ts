@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { validateDerivationOrigin } from "./validateDerivationOrigin"
 
 const mockRequestOrigin = "http://localhost:8080"

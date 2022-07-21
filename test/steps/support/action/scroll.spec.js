@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import scroll from "./scroll"
 
 let scrollIntoViewMock

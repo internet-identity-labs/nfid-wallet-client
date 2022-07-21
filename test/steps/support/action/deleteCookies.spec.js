@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import deleteCookies from "./deleteCookies"
 
 describe("deleteCookies", () => {

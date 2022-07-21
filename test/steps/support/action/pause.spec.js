@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import pause from "./pause"
 
 describe("pause", () => {

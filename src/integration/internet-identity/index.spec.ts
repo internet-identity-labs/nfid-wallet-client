@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { getMultiIdent } from "."
 import { DeviceData } from "../_ic_api/internet_identity_types"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"

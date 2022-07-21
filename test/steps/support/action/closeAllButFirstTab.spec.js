@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import closeAllButFirstTab from "./closeAllButFirstTab"
 
 describe("closeAllButFirstTab", () => {

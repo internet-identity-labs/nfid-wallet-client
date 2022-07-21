@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { identityFromDeviceList } from "."
 import { ii } from "../actors"
 import { getMultiIdent, lookup } from "../internet-identity"

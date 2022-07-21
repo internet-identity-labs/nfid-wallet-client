@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkSelected from "./checkSelected"
 
 let isSelectedMock

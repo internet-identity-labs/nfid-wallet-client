@@ -4,7 +4,7 @@
 import { act, render, screen, waitFor } from "@testing-library/react"
 import QR from "qrcode"
 
-import { ii } from "frontend/integration/actors"
+import { ii, pubsub } from "frontend/integration/actors"
 import * as device from "frontend/integration/device"
 import UnknownDeviceMachine, {
   UnknownDeviceActor,
@@ -62,6 +62,8 @@ describe("UnknownDeviceCoordinator", () => {
 
         QR.toCanvas = jest.fn()
 
+        pubsub.get_messages = jest.fn()
+
         act(() => {
           screen.getByText("Use passkey from a device with a camera").click()
         })
@@ -78,6 +80,7 @@ describe("UnknownDeviceCoordinator", () => {
           { width: 192 },
           expect.anything(),
         )
+        expect(pubsub.get_messages).toHaveBeenCalled()
       },
     )
   })

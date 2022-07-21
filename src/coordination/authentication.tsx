@@ -6,8 +6,8 @@ import { AuthenticationActor } from "frontend/state/machines/authentication/auth
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
 
-import { KnownDeviceCoordinator } from "./known-device"
-import { UnknownDeviceCoordinator } from "./unkown-device"
+import { KnownDeviceCoordinator } from "./device-known"
+import { UnknownDeviceCoordinator } from "./device-unknown"
 
 export function AuthenticationCoordinator({
   actor,

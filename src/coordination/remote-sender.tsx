@@ -5,7 +5,7 @@ import RemoteSenderMachine, {
   RemoteSenderMachineType,
 } from "frontend/state/machines/authentication/remote-sender"
 
-import { KnownDeviceCoordinator } from "./known-device"
+import { KnownDeviceCoordinator } from "./device-known"
 
 interface Props {
   machine?: RemoteSenderMachineType

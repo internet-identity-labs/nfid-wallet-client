@@ -7,11 +7,9 @@ import {
   waitFor,
   screen,
   act,
-  fireEvent,
   getByPlaceholderText,
 } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { interpret } from "xstate"
 
 import { ii, im } from "frontend/integration/actors"
 import { mockExternalAccountResponse } from "frontend/integration/identity-manager/__mocks"

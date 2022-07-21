@@ -1,7 +1,5 @@
 import { useActor } from "@xstate/react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
 import { AuthorizeAppMultiAccount } from "frontend/ui/pages/authorize-app/multi-account"
 import { AuthorizeAppSingleAccount } from "frontend/ui/pages/authorize-app/single-account"

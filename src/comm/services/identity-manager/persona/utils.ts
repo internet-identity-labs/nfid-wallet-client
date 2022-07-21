@@ -19,6 +19,13 @@ export const normalizePersonas = (
 }
 
 /**
+ * Removes http:// or https:// from input string
+ *
+ * @param {string} input
+ */
+const rmProto = (input: string) => input.replace(/https?:\/\//, "")
+
+/**
  * Select accounts which pertain to given hostName. Uses dervitationOrigin exclusively if present.
  * @param personas List of personas to be filtered, retrieved from identity manager
  * @param hostName Host name of the connecting application i.e. "dscvr.one"
@@ -30,13 +37,9 @@ export function selectAccounts(
   hostName: string,
   derivationOrigin?: string,
 ) {
-  const filterByRaw = derivationOrigin ?? hostName
-  const filterBy = filterByRaw.replace("https://", "")
+  const filterBy = derivationOrigin ?? hostName
 
-  return personas.filter(
-    (persona) =>
-      persona.domain === filterBy || persona.domain === `https://${filterBy}`,
-  )
+  return personas.filter(({ domain }) => rmProto(domain) === rmProto(filterBy))
 }
 
 export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {

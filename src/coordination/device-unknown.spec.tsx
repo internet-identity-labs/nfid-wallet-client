@@ -13,6 +13,23 @@ import UnknownDeviceMachine, {
 import { UnknownDeviceCoordinator } from "./device-unknown"
 import { makeInvokedActor } from "./test-utils"
 
+const setupCoordinator = () => {
+  const actor = makeInvokedActor<UnknownDeviceContext>(UnknownDeviceMachine, {
+    appMeta: {
+      name: "MyApp",
+      logo: "https://my-app.com/logo.svg",
+    },
+    authRequest: {
+      maxTimeToLive: 10,
+      sessionPublicKey: new Uint8Array([]),
+      hostname: "myhost.com",
+    },
+  })
+  return render(
+    <UnknownDeviceCoordinator actor={actor as UnknownDeviceActor} />,
+  )
+}
+
 describe("Unknown Device Coordinator test suite", () => {
   it.each(["DesktopBrowser", ...device.MobileBrowser])(
     "should render AuthSelection when on %(userAgent)s without WebAuthN Support",
@@ -23,23 +40,7 @@ describe("Unknown Device Coordinator test suite", () => {
         .spyOn(device, "fetchWebAuthnCapability")
         .mockImplementation(() => Promise.resolve(false))
 
-      const actor = makeInvokedActor<UnknownDeviceContext>(
-        UnknownDeviceMachine,
-        {
-          appMeta: {
-            name: "MyApp",
-            logo: "https://my-app.com/logo.svg",
-          },
-          authRequest: {
-            maxTimeToLive: 10,
-            sessionPublicKey: new Uint8Array([]),
-            hostname: "myhost.com",
-          },
-        },
-      )
-      const { container } = render(
-        <UnknownDeviceCoordinator actor={actor as UnknownDeviceActor} />,
-      )
+      setupCoordinator()
 
       await waitFor(() => {
         screen.getByText("Choose how you'd like to sign in to MyApp")
@@ -67,23 +68,7 @@ describe("Unknown Device Coordinator test suite", () => {
         // TODO: Add device list with WebAuthN capability
         .mockImplementation(() => Promise.resolve(hasWebAuthN))
 
-      const actor = makeInvokedActor<UnknownDeviceContext>(
-        UnknownDeviceMachine,
-        {
-          appMeta: {
-            name: "MyApp",
-            logo: "https://my-app.com/logo.svg",
-          },
-          authRequest: {
-            maxTimeToLive: 10,
-            sessionPublicKey: new Uint8Array([]),
-            hostname: "myhost.com",
-          },
-        },
-      )
-      const { container } = render(
-        <UnknownDeviceCoordinator actor={actor as UnknownDeviceActor} />,
-      )
+      setupCoordinator()
 
       await waitFor(() => {
         screen.getByText("Choose how you'd like to sign in to MyApp")

@@ -13,6 +13,8 @@ export const RemoteAuthenticate: React.FC<{ machine: any }> = ({ machine }) => {
 
   return (
     <RemoteAuthorizeAppUnknownDevice
+      applicationLogo="FIXME: pull from context"
+      applicationName="FIXME: pull from context"
       onLoginSuccess={() => send("AUTHENTICATED")}
       registerDeviceDeciderPath={`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_REGISTER_DEVICE_DECIDER}`}
       registerSameDevicePath={"/register-device-decider"}

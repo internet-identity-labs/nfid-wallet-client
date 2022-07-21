@@ -14,6 +14,8 @@ export function RemoteReceiverCoordinator({
     case state.matches("Loading"):
       return (
         <RemoteAuthorizeAppUnknownDevice
+          applicationLogo={state.context.appMeta?.logo || ""}
+          applicationName={state.context.appMeta?.name || ""}
           registerDeviceDeciderPath={""}
           registerSameDevicePath={""}
           isLoading={state.matches("Loading")}

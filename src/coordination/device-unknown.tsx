@@ -13,12 +13,19 @@ import { RemoteReceiverCoordinator } from "./remote-receiver"
 export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
   const [state, send] = useActor(actor)
 
+  console.debug("UnknownDeviceCoordinator", {
+    context: state.context,
+    state: state.value,
+  })
+
   switch (true) {
     case state.matches("ExistingAnchor"):
     case state.matches("AuthSelection"):
     case state.matches("AuthWithGoogle"):
       return (
         <AuthorizeDecider
+          applicationName={state.context.appMeta?.name}
+          applicationLogo={state.context.appMeta?.logo}
           onSelectRemoteAuthorization={() => send("AUTH_WITH_REMOTE")}
           onSelectSameDeviceRegistration={() =>
             console.log("VOID: SAME DEVICE")

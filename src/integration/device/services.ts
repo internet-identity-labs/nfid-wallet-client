@@ -1,9 +1,11 @@
-import { fetchWebAuthnCapability, isMobile } from "."
+import { fetchWebAuthnCapability, getIsMobileDeviceMatch } from "."
 
 export async function isMobileWithWebAuthn() {
-  console.debug(">> isMobileWithWebAuthn")
+  console.debug("isMobileWithWebAuthn call fetchWebAuthnCapability")
   const hasWebAuthn = await fetchWebAuthnCapability()
-  console.debug(">> isMobileWithWebAuthn", { hasWebAuthn, isMobile })
-  if (!(hasWebAuthn && isMobile)) throw new Error()
+  console.debug("isMobileWithWebAuthn", {
+    hasWebAuthn,
+  })
+  if (!(hasWebAuthn && getIsMobileDeviceMatch())) throw new Error()
   return hasWebAuthn
 }

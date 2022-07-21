@@ -16,11 +16,29 @@ export async function fetchWebAuthnCapability() {
   }
 }
 
-export const isMobile = Boolean(
-  window.navigator.userAgent.match(
-    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i,
-  ),
-)
+export const MobileBrowser = [
+  "Android",
+  "BlackBerry",
+  "iPhone",
+  "iPad",
+  "iPod",
+  "Opera Mini",
+  "IEMobile",
+  "WPDesktop",
+]
+export const IsMobileRegEx = new RegExp(MobileBrowser.join("|"), "i")
+
+// NOTE: needed to turn this into a function. Otherwise within tests its not
+// picking up the mocked userAgent.
+export const getIsMobileDeviceMatch = (): boolean => {
+  const isMobile = Boolean(window.navigator.userAgent.match(IsMobileRegEx))
+  console.debug("isMobile", {
+    userAgent: window.navigator.userAgent,
+    returnValue: Boolean(window.navigator.userAgent.match(IsMobileRegEx)),
+  })
+
+  return isMobile
+}
 
 export function getPlatformInfo() {
   var userAgent = window.navigator.userAgent,
@@ -71,7 +89,7 @@ export const deviceInfo = {
   platform,
   browser,
   newDeviceName: `NFID ${browser.name} on ${platform.os}`,
-  isMobile,
+  isMobile: getIsMobileDeviceMatch,
   hasWebAuthn: fetchWebAuthnCapability(),
 }
 

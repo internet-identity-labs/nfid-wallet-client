@@ -66,6 +66,12 @@ describe("UnknownDeviceCoordinator", () => {
           screen.getByText("Use passkey from a device with a camera").click()
         })
 
+        await waitFor(() => {
+          screen.getByText(
+            "Use passkey from a device with a camera to sign in to MyApp",
+          )
+        })
+
         expect(QR.toCanvas).toHaveBeenCalledWith(
           expect.anything(),
           "http://localhost/remote-idp?applicationName=MyApp&applicationLogo=https%253A%252F%252Fmy-app.com%252Flogo.svg",

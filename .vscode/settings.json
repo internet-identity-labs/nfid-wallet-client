@@ -2,5 +2,8 @@
   "liveshare.launcherClient": "visualStudioCode",
   "cucumberautocomplete.steps": ["./test/steps/*.ts"],
   "cucumberautocomplete.syncfeatures": "./test/features/**/*.feature",
-  "cucumberautocomplete.strictGherkinCompletion": true
+  "cucumberautocomplete.strictGherkinCompletion": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx"
+  }
 }

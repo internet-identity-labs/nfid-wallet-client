@@ -5,7 +5,9 @@ import { act, render, screen, waitFor } from "@testing-library/react"
 import QR from "qrcode"
 
 import { ii, pubsub } from "frontend/integration/actors"
+import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import * as device from "frontend/integration/device"
+import { REMOTE_LOGIN_REGISTER_MESSAGE } from "frontend/integration/pubsub/__mocks"
 import UnknownDeviceMachine, {
   UnknownDeviceActor,
   UnknownDeviceContext,
@@ -52,7 +54,7 @@ describe("UnknownDeviceCoordinator", () => {
       },
     )
     it.each(["DesktopBrowser", ...device.MobileBrowser])(
-      "should render RemoteAuthentication on %s",
+      "should render RemoteAuthentication on %s and query for messages",
       async (userAgent) => {
         setupCoordinator(userAgent, false)
 
@@ -83,18 +85,33 @@ describe("UnknownDeviceCoordinator", () => {
         expect(pubsub.get_messages).toHaveBeenCalled()
       },
     )
+    it("should render RegisterDevice on %s when receiving remote delegate messages", async () => {
+      setupCoordinator("DesktopBrowser", false)
+      await waitFor(() => {
+        screen.getByText("Use passkey from a device with a camera")
+      })
+      QR.toCanvas = jest.fn()
+      pubsub.get_messages = jest.fn(() =>
+        Promise.resolve({
+          body: [[JSON.stringify(REMOTE_LOGIN_REGISTER_MESSAGE)]] as [
+            Array<string>,
+          ],
+          error: [],
+          status_code: 200,
+        }),
+      )
+
+      waitFor(() => {
+        screen.getByText("RegisterDevice").click()
+      })
+    })
   })
   describe("Mobile with WebAuthN support", () => {
     it.each(device.MobileBrowser.map<[string, boolean]>((b) => [b, true]))(
       "should render RegistrationMachine on Mobile %s",
       async (userAgent, hasWebAuthN) => {
         // @ts-ignore
-        ii.create_challenge = jest.fn(() =>
-          Promise.resolve({
-            png_base64: "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
-            challenge_key: "challenge_key",
-          }),
-        )
+        ii.create_challenge = jest.fn(iiCreateChallengeMock)
 
         setupCoordinator(userAgent, hasWebAuthN)
 

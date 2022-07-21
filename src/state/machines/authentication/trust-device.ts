@@ -76,6 +76,6 @@ export const TrustDeviceMachine =
     {},
   )
 
-export type RemoteReceiverActor = ActorRefFrom<typeof RemoteReceiverMachine>
+export type RemoteReceiverActor = ActorRefFrom<typeof TrustDeviceMachine>
 
-export default RemoteReceiverMachine
+export default TrustDeviceMachine

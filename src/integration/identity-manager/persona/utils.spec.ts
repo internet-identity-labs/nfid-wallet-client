@@ -62,15 +62,17 @@ describe("persona utils test suite", () => {
   describe("getNextPersonaId(filteredPersonas)", () => {
     it("should increment correctly", () => {
       const scope = "h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app"
+
+      expect(getNextPersonaId([])).toBe("0")
+
+      expect(getNextPersonaId([{ persona_id: "0", domain: scope }])).toBe("1")
+
       const personas = [
+        { persona_id: "0", domain: scope },
         { persona_id: "1", domain: scope },
         { persona_id: "2", domain: `https://${scope}` },
       ]
       expect(getNextPersonaId(personas)).toBe("3")
-    })
-
-    it("first persona should have id 0", () => {
-      expect(getNextPersonaId([])).toBe("0")
     })
   })
 

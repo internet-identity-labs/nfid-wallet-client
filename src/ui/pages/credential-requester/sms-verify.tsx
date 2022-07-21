@@ -43,23 +43,6 @@ export const CredentialRequesterSMSVerify: React.FC<
       title="SMS verification"
       subTitle={`to continue to ${applicationName}`}
     >
-      <P className="mt-3 text-sm sm:mt-14">
-        Please enter the verification code that was sent to {phone}.
-        <br />
-        {counter > 0 ? (
-          <P className="mt-3">Code can be resent in {counter} sec</P>
-        ) : (
-          <P className="mt-3">
-            Didn’t receive a code?{" "}
-            <span
-              className="cursor-pointer text-blue-base"
-              onClick={handleResend}
-            >
-              Resend
-            </span>
-          </P>
-        )}
-      </P>
       <div
         className={clsx(
           "mt-5 flex flex-col justify-between flex-1",

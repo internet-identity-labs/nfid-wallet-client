@@ -1,5 +1,6 @@
 import { Route } from "react-router-dom"
-import PhoneCredentialFlow from '../phone-number'
+
+import PhoneCredentialCoordinator from "frontend/coordination/phone-credential"
 
 export const CredentialConstants = {
   credentialVerifiedPhoneNumber: "/credential/verified-phone-number",
@@ -8,6 +9,6 @@ export const CredentialConstants = {
 export const CredentialRoutes = (
   <Route
     path={CredentialConstants.credentialVerifiedPhoneNumber}
-    element={<PhoneCredentialFlow />}
+    element={<PhoneCredentialCoordinator />}
   />
 )

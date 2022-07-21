@@ -68,6 +68,10 @@ describe("persona utils test suite", () => {
       ]
       expect(getNextPersonaId(personas)).toBe("3")
     })
+
+    it("first persona should have id 0", () => {
+      expect(getNextPersonaId([])).toBe("0")
+    })
   })
 
   describe("getScope", () => {

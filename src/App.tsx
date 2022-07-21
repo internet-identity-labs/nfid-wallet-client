@@ -17,7 +17,7 @@ import { RecoverNFIDRoutes } from "./apps/registration/recover-nfid/routes"
 import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import IDPCoordinator from "./coordination/idp"
-import RemoteIDPCoordinator from "./coordination/remote-idp"
+import RemoteIDPCoordinator from "./coordination/remote-sender"
 import { ic } from "./integration/actors"
 import { NotFound } from "./ui/pages/404"
 

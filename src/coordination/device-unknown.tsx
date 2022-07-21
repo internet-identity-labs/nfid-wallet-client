@@ -3,10 +3,12 @@ import { useActor } from "@xstate/react"
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
+import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 
 import { RegistrationCoordinator } from "./registration"
+import { RemoteReceiverCoordinator } from "./remote-receiver"
 
 export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
   const [state, send] = useActor(actor)
@@ -42,7 +44,11 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
         />
       )
     case state.matches("RemoteAuthentication"):
-      return <>TODO: Remote Auth Coordinator</>
+      return (
+        <RemoteReceiverCoordinator
+          actor={state.children.remote as RemoteReceiverActor}
+        />
+      )
     // case state.matches("RegisterDeviceDecider"):
     //   return <>Trust this device?</>
     case state.matches("RegisterDevice"):

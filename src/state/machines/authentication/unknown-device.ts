@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid"
 import { ActorRefFrom, assign, createMachine, send } from "xstate"
 
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
@@ -12,11 +13,18 @@ import {
   GoogleAuthSession,
   RemoteDeviceAuthSession,
 } from "frontend/state/authentication"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
-export interface Context {}
+export interface Context {
+  authRequest: AuthorizationRequest
+  appMeta?: AuthorizingAppMeta
+}
 
 export type Events =
   | { type: "done.invoke.remote"; data: RemoteDeviceAuthSession }
@@ -39,7 +47,6 @@ const UnknownDeviceMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SfszHoIBhZAAdkAI1oAbWugCeAYgjE8zWnmrECa2AFlikqWADqszMbDiAghkx5EoEcVizaKhyAAeiAKwAGAHYmPxC-ABYARj8ADgiAZh8fCIA2ABoQOUQIgE4AJiZouKK4sOTs8OifXLiAXxr0tCxcQhJyShoGZjZObl5+IVEJaVlFMA4OYg4mESlkdAAzSYBbJlo9A2kTMwtrW3skECcXdDd90G8EXIimeNzYq+SwgOyIiNz0zIQ4wqY4mIjorkAsD-LkfAE6g1bM0iGQKFQ6IwmAAlMBQNboDhzU66ZC8dRgJQqNQaLTMDhojFYk7uA5HVy086IMJxZJMUrRaJhXJ+bLgpLRD6+aJBfwhaoxMLRbLJCH1ECNHD4WFtBGdJg2LAsMBGeg0vAKKwAVQAKgAJAD6xgAkuaLQBxADyjvtABkAKIeen6jwXMHRdlxAJhPm5K5hDk+IUIQrZYKhPxxKIAnzJXKQhXQ5WteEdJGazDa3X6w2my02u3I926R0mz105wMs5eRC5KWB4Oh8Mc94ZLK8tlivz+MJVbLBjOKmE59qI5gFov8EvGu0Vy21s3u5Fexs+g5+5IBlmdqrdw9RvsIAJJG7JO8+EXJIoBROTrMtOGz9UF0xYe3EYgoCMVhaCgPBrQNZRVFWUltCYFwwIg39MH-QCjB3Y5Tl9LI03yJ9cjvPlgVibJoxeNkEyuEoAjbCI3yabNPzVfNbGQ1CgOYAAxMB0F4IloPUTQ4PmHjeHYowABE8zADCm2wmNsjCJgfCTAERSeJ872jSolOyPS9MKao-iTeilQ-VVpJRMAlmIdAwALMA8BOehsRUfiSSE8lrNsmSG0wxkWxjaomHKNNU3+Z4Q2jKIZWU0IRzHCd5SnRiLLnKz0VgOyOCkud3JgzymBS8zc3S1FMuy3LOgQQTiBc-UAG0-AAXVkvcmSvHk4oCaJHhyKpU0FS83hSOKQhoiIAlZOUoQYkqvyRcqMTGKrGAUMYJimGY5kWDgVmKlVSvVJaspW6SatJerTia1q-Lk-dW0BEK-Fw5IfEiR5YminIAxSWUEjDPxAZmzM5sOhbmBOyrpPdcZJgUE1kSNFgTQtCT3QANWtQR60cXcsIey4ntCsM3o+qUImits2T+mjUyfV5uVM6cmMsqGzrnWHNoUd0ADkJLagmOqBfISYI96Ugp6LWUHUJCkTMI-ABdNkvfcHmOYd1PAxdQoCsPBeHhvmBbu9rAre-I2zDBIAhyRT3ujW3Rf08psm+Ai3uZ1KjqRLWdbwPWDcweGV3LW113NLdBYCg8jyDENTwiCNz0dxNbzvQ84h5DTkjqeUSCoeADgOmcNdYdguB4PgBGEMRDBGaPmwuGjopfeM5azhnE1z1WwdLyzui4Rv5KlMiggTJWRRew8uS9+ay6h6kcTxTACWHwnZWjRIKITYNRz0xI5-VyyFx1JchcOfGY98AJHaiX4M-e2VshFRSj-79KfzMcSulA8Dm29BfC4rxpQhXjqmPSfxwzaS5GNEI4IYhFBfu-Vmn9WLfwAhxJg3FeKYHXh1EMSkVKvDdrySaAQ0iXhFPkIcBE9KlDDHRXuZlj5oKwGxTB6FTZAOZG3YhOQ-gvGBJQz4PVrgu3ekrP4gJsgoLSsdbydkHJOQYK5ABV8m7MhvNUY8EQqgcl6tFF6Ph24K1iIrGiIMS6oIURVDmnR8GBSlHEX4Pg3aqVom7LSw0UymNTCpDS0o5E+0hpSU6OUYZww4I4i43IqZp1pqUJIIZATRGCRDJgfssq631obaJ3Dr4IH3kwZISsHyvGeM8Qxl4Xzj1CACP4T4WQ91miwj+6p3R4AgDErIU8mAvlyO47kJQ3FhDIvEAo4Ik7hBtqyMI6SNY9IQNgfIvVbYikKFUGInJKaXjbKY8ID4Qw0TemkvOQA */
   createMachine(
     {
-      context: {},
       tsTypes: {} as import("./unknown-device.typegen").Typegen0,
       schema: { events: {}, context: {} } as Schema,
       id: "auth-unknown-device",
@@ -75,6 +82,9 @@ const UnknownDeviceMachine =
                 target: "End",
               },
             ],
+            data: (context, event) => ({
+              appMeta: context.appMeta,
+            }),
           },
         },
         AuthSelection: {
@@ -130,6 +140,11 @@ const UnknownDeviceMachine =
                 target: "End",
               },
             ],
+            data: (context, event) => ({
+              secret: uuid(),
+              authRequest: context.authRequest,
+              appMeta: context.appMeta,
+            }),
           },
         },
         RegisterDevice: {
@@ -183,10 +198,7 @@ const UnknownDeviceMachine =
         RemoteReceiverMachine,
         fetchGoogleDevice,
         signInWithGoogle,
-        // isMobileWithWebAuthn,
-        async isMobileWithWebAuthn() {
-          return false
-        },
+        isMobileWithWebAuthn,
         // registerDevice,
       },
     },

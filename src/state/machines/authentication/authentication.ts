@@ -4,11 +4,17 @@ import { ii } from "frontend/integration/actors"
 import { isDeviceRegistered } from "frontend/integration/identity-manager/services"
 import { authState } from "frontend/integration/internet-identity"
 import { AuthSession } from "frontend/state/authentication"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 import KnownDeviceMachine from "frontend/state/machines/authentication/known-device"
 import UnknownDeviceMachine from "frontend/state/machines/authentication/unknown-device"
 
 export interface Context {
   authSession?: AuthSession
+  authRequest?: AuthorizationRequest
+  appMeta: AuthorizingAppMeta
 }
 
 export type Events =
@@ -27,7 +33,6 @@ const AuthenticationMachine = createMachine(
     schema: { events: {}, context: {} } as Schema,
     id: "auth",
     initial: "IsDeviceRegistered",
-    context: {},
     states: {
       IsDeviceRegistered: {
         always: [
@@ -50,6 +55,7 @@ const AuthenticationMachine = createMachine(
               target: "End",
             },
           ],
+          data: (context) => context,
         },
       },
       UnknownDevice: {
@@ -62,6 +68,7 @@ const AuthenticationMachine = createMachine(
               target: "End",
             },
           ],
+          data: (context) => context,
         },
       },
       End: {

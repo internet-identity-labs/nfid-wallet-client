@@ -14,7 +14,7 @@ import KnownDeviceMachine, {
 
 import * as IM from "../../integration/identity-manager"
 import * as II from "../../integration/internet-identity"
-import { KnownDeviceCoordinator } from "../known-device"
+import { KnownDeviceCoordinator } from "../device-known"
 import { makeInvokedActor } from "./_util"
 
 describe("KnownDevice Coordinator", () => {

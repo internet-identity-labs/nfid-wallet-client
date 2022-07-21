@@ -7,7 +7,7 @@ import RemoteSenderMachine, {
   RemoteSenderActor,
 } from "frontend/state/machines/authentication/remote-sender"
 
-import RemoteIDPCoordinator from "../remote-idp"
+import RemoteIDPCoordinator from "../remote-sender"
 import { makeInvokedActor } from "./_util"
 
 const config = {

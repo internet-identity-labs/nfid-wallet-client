@@ -1,7 +1,6 @@
 import { useActor } from "@xstate/react"
 
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
-import { CredentialResponse } from "frontend/ui/atoms/button/signin-with-google/types"
 import { Captcha } from "frontend/ui/pages/captcha"
 import { RegisterAccountIntro } from "frontend/ui/pages/register-account-intro/screen-app"
 

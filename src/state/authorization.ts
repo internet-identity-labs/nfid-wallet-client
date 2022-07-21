@@ -18,6 +18,7 @@ export interface AuthorizationRequest {
   maxTimeToLive: number
   sessionPublicKey: Uint8Array
   hostname: string
+  derivationOrigin?: string
 }
 
 /**

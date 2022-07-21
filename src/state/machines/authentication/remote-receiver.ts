@@ -1,9 +1,16 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { RemoteDeviceAuthSession } from "frontend/state/authentication"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 
 export interface Context {
+  secret: string
   authSession?: RemoteDeviceAuthSession
+  authRequest?: AuthorizationRequest
+  appMeta?: AuthorizingAppMeta
 }
 
 export type Events =

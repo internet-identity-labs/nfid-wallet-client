@@ -31,7 +31,7 @@ const setupCoordinator = () => {
 }
 
 describe("UnknownDeviceCoordinator", () => {
-  describe("No WebAuthN support", () => {
+  describe("Desktop or no support for WebAuthN", () => {
     it.each(["DesktopBrowser", ...device.MobileBrowser])(
       "should render AuthSelection when on %(userAgent)s",
       async (userAgent) => {
@@ -52,7 +52,7 @@ describe("UnknownDeviceCoordinator", () => {
       },
     )
   })
-  describe("WebAuthN support", () => {
+  describe("Mobile with WebAuthN support", () => {
     it.each(device.MobileBrowser.map<[string, boolean]>((b) => [b, true]))(
       "should render RegistrationMachine on Mobile %s",
       async (userAgent, hasWebAuthN) => {

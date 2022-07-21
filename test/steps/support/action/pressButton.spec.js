@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import pressButton from "./pressButton"
 
 describe("pressButton", () => {

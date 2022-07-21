@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import setPromptText from "./setPromptText"
 
 describe("setPromptText", () => {

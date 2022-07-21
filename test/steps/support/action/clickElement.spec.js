@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import clickElement from "./clickElement"
 
 let clickMock

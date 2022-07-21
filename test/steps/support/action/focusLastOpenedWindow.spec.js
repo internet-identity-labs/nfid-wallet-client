@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import focusLastOpenedWindow from "./focusLastOpenedWindow"
 
 describe("focusLastOpenedWindow", () => {

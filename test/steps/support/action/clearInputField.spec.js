@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import clearInputField from "./clearInputField"
 
 let clearElementMock

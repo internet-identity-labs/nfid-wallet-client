@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkModalText from "./checkModalText"
 
 describe("checkModalText", () => {

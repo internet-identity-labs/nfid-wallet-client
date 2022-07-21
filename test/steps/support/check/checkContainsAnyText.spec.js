@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkContent from "./checkContainsAnyText"
 
 describe("checkContent", () => {

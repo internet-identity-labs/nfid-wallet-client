@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { getScope } from "./authorization"
 
 describe("internet identity integration layer", () => {

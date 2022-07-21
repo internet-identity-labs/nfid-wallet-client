@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkFocus from "./checkFocus"
 
 let hasFocusMock

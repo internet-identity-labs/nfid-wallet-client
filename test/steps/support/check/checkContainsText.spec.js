@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkContainsText from "./checkContainsText"
 
 describe("checkContainsText", () => {
@@ -10,6 +13,7 @@ describe("checkContainsText", () => {
 
   beforeEach(() => {
     getTextMock = jest.fn(() => Promise.resolve("text"))
+
     getValueMock = jest.fn(() => Promise.resolve("value"))
     getPropertyMock = jest.fn(() => Promise.resolve(""))
     waitForDisplayedMock = jest.fn(() => true)

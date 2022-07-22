@@ -103,8 +103,7 @@ const AuthorizationMachine =
         },
         End: {
           type: "final",
-          // @ts-ignore: typegen problems
-          data: (context, event) => event.data as ThirdPartyAuthSession,
+          data: (context, event: { data: ThirdPartyAuthSession }) => event.data,
         },
       },
     },

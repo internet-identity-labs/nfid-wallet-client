@@ -3,6 +3,7 @@ import { useActor } from "@xstate/react"
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { Captcha } from "frontend/ui/pages/captcha"
 import { RegisterAccountIntro } from "frontend/ui/pages/register-account-intro/screen-app"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
   const [state, send] = useActor(actor)
@@ -40,7 +41,11 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
           challengeBase64={state.context.challenge?.pngBase64}
         />
       )
+    case state.matches("End"):
+      return (
+        <ScreenResponsive isLoading loadingMessage="Registered successful" />
+      )
     default:
-      return <div>RegistrationCoordinator</div>
+      return <></>
   }
 }

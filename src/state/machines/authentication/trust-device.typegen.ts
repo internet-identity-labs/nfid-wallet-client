@@ -46,8 +46,8 @@ export interface Typegen0 {
   matchesStates:
     | "Select"
     | "IsMobileWebAuthn"
-    | "End"
     | "RegisterWithWebAuthn"
     | "RegisterWithSecurityKey"
+    | "End"
   tags: never
 }

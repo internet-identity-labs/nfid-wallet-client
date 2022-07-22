@@ -46,9 +46,14 @@ const RemoteSenderMachine =
             src: "KnownDeviceMachine",
             id: "known-device",
             data: () => ({
-              anchor: 10042,
+              // FIXME: replace mock
+              profile: { anchor: 10042 },
               authRequest: {
                 hostname: "application.com",
+              },
+              authAppMeta: {
+                name: "myapp",
+                logo: "whatever",
               },
             }),
             onDone: [
@@ -83,7 +88,7 @@ const RemoteSenderMachine =
     },
     {
       guards: {
-        isDeviceRegistered: () => true,
+        isDeviceRegistered: () => false,
       },
       services: {
         KnownDeviceMachine,

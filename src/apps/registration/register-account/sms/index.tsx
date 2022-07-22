@@ -202,7 +202,7 @@ export const RegisterAccountSMSVerification: React.FC<
                     ))}
                   </div>
 
-                  <div className="py-1 text-sm text-red-base">
+                  <div className="py-1 text-sm text-red-600">
                     {errors.verificationCode?.message ||
                       errors.phonenumber?.message}
                   </div>

@@ -48,7 +48,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
       ) : (
         <p
           onClick={logout}
-          className="block mt-4 text-sm font-light text-center cursor-pointer text-blue-600"
+          className="block mt-4 text-sm font-light text-center text-blue-600 cursor-pointer"
         >
           Logout
         </p>

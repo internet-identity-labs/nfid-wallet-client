@@ -88,7 +88,7 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
             Only you and your devices have access to this data. Read more about
             your privacy in our{" "}
             <a
-              className="text-blue-base hover:underline"
+              className="text-blue-600 hover:underline"
               href="/faq"
               target="_blank"
             >
@@ -139,7 +139,7 @@ export const ProfileEdit: React.FC<ProfileEditProps> = ({
                 />
               ) : (
                 <div
-                  className="flex items-center py-2 space-x-2 font-semibold transition-all cursor-pointer text-blue-base hover:opacity-50"
+                  className="flex items-center py-2 space-x-2 font-semibold transition-all cursor-pointer text-blue-600 hover:opacity-50"
                   onClick={onAddPhoneNumber}
                 >
                   <BsPlusLg />

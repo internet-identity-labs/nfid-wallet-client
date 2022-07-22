@@ -44,7 +44,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
         </Button>
 
         {errorMessage && (
-          <div className={clsx("text-sm mt-2 text-red-base")}>
+          <div className={clsx("text-sm mt-2 text-red-600")}>
             {errorMessage}
           </div>
         )}

@@ -22,7 +22,7 @@ export default meta
 
 const classes = {
   navItem:
-    "text-black hover:underline cursor-pointer hover:text-blue-hover transition-all",
+    "text-black hover:underline cursor-pointer hover:text-blue-500 transition-all",
 }
 
 const items = [

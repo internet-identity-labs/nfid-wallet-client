@@ -109,7 +109,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
         </Button>
         <p className="py-6 text-sm text-center">
           Already have an account?{" "}
-          {/* <a href="#" className="text-blue-base">
+          {/* <a href="#" className="text-blue-600">
             Sign in
           </a> */}
         </p>

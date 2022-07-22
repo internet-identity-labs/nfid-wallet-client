@@ -1,7 +1,10 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
 
-import { ButtonMenu, ButtonMenuProps } from "./index"
+import {
+  ButtonMenu,
+  ButtonMenuProps,
+} from "@internet-identity-labs/nfid-sdk-react"
 
 const meta: Meta = {
   title: "Atoms/ButtonMenu",

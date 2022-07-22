@@ -85,7 +85,7 @@ export const NFIDPersonalizeContent: React.FC<NFIDPersonalizeContentProps> = ({
 
           <P>
             Privacy and security questions? Visit our{" "}
-            <Link to={"/"} className="text-blue-base">
+            <Link to={"/"} className="text-blue-600">
               FAQ page
             </Link>
             .

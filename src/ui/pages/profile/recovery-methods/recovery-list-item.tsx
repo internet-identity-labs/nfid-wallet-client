@@ -173,13 +173,13 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
             style={{ display: !recoveryMethod.isSecurityKey ? "none" : "" }}
           >
             <div
-              className="hover:bg-gray-200 text-red-base"
+              className="hover:bg-gray-200 text-red-600"
               onClick={isEditingLabel ? handleOnLabelUpdate : toggleEditLabel}
             >
               {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
             </div>
             <div
-              className="hover:bg-gray-200 text-red-base"
+              className="hover:bg-gray-200 text-red-600"
               onClick={
                 isEditingLabel ? toggleEditLabel : handleDeleteRecoveryDialog
               }

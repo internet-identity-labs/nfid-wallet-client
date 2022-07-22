@@ -72,7 +72,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
                   application.iiPersonasCount > 1 ? "s" : ""
                 }`}
                 icon={
-                  <span className="text-xl font-medium text-blue-base">
+                  <span className="text-xl font-medium text-blue-600">
                     {application.applicationName[0]}
                   </span>
                 }

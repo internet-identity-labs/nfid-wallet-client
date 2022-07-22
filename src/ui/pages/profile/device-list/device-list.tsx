@@ -27,7 +27,7 @@ export const DeviceList: React.FC<DeviceListProps> = ({
             <H5>Authorized devices</H5>
 
             <div className="hidden">
-              <PlusIcon className="text-blue-base mr-[14px]" />
+              <PlusIcon className="text-blue-600 mr-[14px]" />
             </div>
           </div>
         </List.Header>

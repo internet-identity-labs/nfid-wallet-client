@@ -79,7 +79,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             "text-sm py-1 text-gray-400",
-            errorText && "!text-red-base",
+            errorText && "!text-red-600",
           )}
         >
           {errorText ?? helperText}

@@ -16,7 +16,7 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({
     </div>
   ) : (
     <div
-      className="p-1 text-gray-500 rounded-full hover:bg-red-50 hover:text-red-500 w-min"
+      className="p-1 text-gray-500 rounded-full hover:bg-red-50 hover:text-red-600 w-min"
       onClick={onClick}
     >
       <HiTrash className="text-xl" />

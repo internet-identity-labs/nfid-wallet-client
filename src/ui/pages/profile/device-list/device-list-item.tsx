@@ -168,7 +168,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div
-                  className="hover:bg-gray-200 text-red-base"
+                  className="hover:bg-gray-200 text-red-600"
                   onClick={
                     isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }
@@ -176,7 +176,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
                 </div>
                 <div
-                  className="hover:bg-gray-200 text-red-base"
+                  className="hover:bg-gray-200 text-red-600"
                   onClick={
                     isEditingLabel ? toggleEditLabel : handleDeleteDeviceDialog
                   }

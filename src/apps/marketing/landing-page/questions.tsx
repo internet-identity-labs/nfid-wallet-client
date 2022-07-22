@@ -8,7 +8,7 @@ export const questions = [
         NFID is an app-less, strong portable authenticator built on Dfinity
         Foundation's{" "}
         <a
-          className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+          className="font-semibold transition-all text-blue-600 hover:opacity-50 hover:underline hover:text-blue-500"
           href="https://smartcontracts.org"
           target="_blank"
           rel="noreferrer"
@@ -17,7 +17,7 @@ export const questions = [
         </a>{" "}
         and leverages Dfinity's{" "}
         <a
-          className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+          className="font-semibold transition-all text-blue-600 hover:opacity-50 hover:underline hover:text-blue-500"
           href="https://smartcontracts.org/docs/ic-identity-guide/what-is-ic-identity.html#id-overview"
           target="_blank"
           rel="noreferrer"
@@ -121,7 +121,7 @@ export const questions = [
           A - Use one of your registered devices to remove the lost or stolen
           device from your list of NFID{" "}
           <Link
-            className="text-blue-base hover:underline hover:text-blue-hover"
+            className="text-blue-600 hover:underline hover:text-blue-500"
             to={"/profile/authenticate"}
           >
             authorized devices
@@ -133,21 +133,21 @@ export const questions = [
           using it. Follow the instructions for{" "}
           <Link
             to="https://support.apple.com/en-us/HT201472"
-            className="text-blue-base hover:underline hover:text-blue-hover"
+            className="text-blue-600 hover:underline hover:text-blue-500"
           >
             Apple
           </Link>
           , for{" "}
           <Link
             to="https://support.google.com/accounts/answer/6160491"
-            className="text-blue-base hover:underline hover:text-blue-hover"
+            className="text-blue-600 hover:underline hover:text-blue-500"
           >
             Google
           </Link>
           , for{" "}
           <Link
             to="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
-            className="text-blue-base hover:underline hover:text-blue-hover"
+            className="text-blue-600 hover:underline hover:text-blue-500"
           >
             Microsoft
           </Link>
@@ -158,7 +158,7 @@ export const questions = [
           <span className="font-bold">
             only on the{" "}
             <a
-              className="text-blue-base hover:underline hover:text-blue-hover"
+              className="text-blue-600 hover:underline hover:text-blue-500"
               href="https://nfid.one"
             >
               https://nfid.one
@@ -168,7 +168,7 @@ export const questions = [
           to temporarily authenticate yourself and remove the lost device from
           your list of NFID (
           <Link
-            className="text-blue-base hover:underline hover:text-blue-hover"
+            className="text-blue-600 hover:underline hover:text-blue-500"
             to={"/profile/authenticate"}
           >
             authorized devices
@@ -192,7 +192,7 @@ export const questions = [
         Please email us at{" "}
         <a
           href="mailto:hello@identitylabs.ooo"
-          className="text-blue-base hover:underline hover:text-blue-hover"
+          className="text-blue-600 hover:underline hover:text-blue-500"
         >
           hello@identitylabs.ooo
         </a>{" "}
@@ -210,7 +210,7 @@ export const questions = [
         No. This data never leaves your device. Apple wrote a{" "}
         <a
           href="https://support.apple.com/en-us/HT208108"
-          className="text-blue-base hover:underline hover:text-blue-hover"
+          className="text-blue-600 hover:underline hover:text-blue-500"
         >
           support article
         </a>{" "}

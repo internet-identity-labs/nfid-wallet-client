@@ -163,8 +163,7 @@ const UnknownDeviceMachine =
         },
         End: {
           type: "final",
-          // @ts-ignore: xstate typegen not identifying ingress transitions properly
-          data: (context, event) => event.data as AuthSession,
+          data: (context, event: { data: AuthSession }) => event.data,
         },
       },
     },
@@ -173,11 +172,11 @@ const UnknownDeviceMachine =
         isExistingGoogleAccount,
       },
       services: {
-        RegistrationMachine,
-        RemoteReceiverMachine,
         fetchGoogleDevice,
         signInWithGoogle,
         isMobileWithWebAuthn,
+        RegistrationMachine,
+        RemoteReceiverMachine,
         TrustDeviceMachine,
       },
     },

@@ -24,7 +24,6 @@ export async function createAccount(
   context: AuthorizationMachineContext,
 ): Promise<string> {
   if (!context.authRequest) throw new Error("Missing auth request")
-  console.log(await fetchAccount())
   await createPersona(
     context.authRequest?.hostname,
     `${context.accounts?.length || "0"}`,

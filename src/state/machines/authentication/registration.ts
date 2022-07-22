@@ -157,8 +157,8 @@ const RegistrationMachine =
         },
         End: {
           type: "final",
-          // @ts-ignore: typegen sux a bit
-          data: (context, event) => event.data as LocalDeviceAuthSession,
+          data: (context, event: { data: LocalDeviceAuthSession }) =>
+            event.data,
         },
       },
     },

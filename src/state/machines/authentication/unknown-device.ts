@@ -54,18 +54,17 @@ const UnknownDeviceMachine =
       initial: "Start",
       states: {
         Start: {
-          initial: "checkCapability",
+          initial: "CheckCapability",
           states: {
-            checkCapability: {
+            CheckCapability: {
               invoke: {
                 src: "isMobileWithWebAuthn",
                 id: "isMobileWithWebAuthn",
                 onDone: [
                   {
                     target: "#auth-unknown-device.RegistrationMachine",
+                    cond: "bool",
                   },
-                ],
-                onError: [
                   {
                     target: "#auth-unknown-device.AuthSelection",
                   },
@@ -170,6 +169,7 @@ const UnknownDeviceMachine =
     {
       guards: {
         isExistingGoogleAccount,
+        bool: (context, event) => event.data,
       },
       services: {
         fetchGoogleDevice,

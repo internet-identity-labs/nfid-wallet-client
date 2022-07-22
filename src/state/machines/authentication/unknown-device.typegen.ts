@@ -82,12 +82,13 @@ export interface Typegen0 {
     TrustDeviceMachine: "done.invoke.remote"
   }
   eventsCausingGuards: {
+    bool: "done.invoke.isMobileWithWebAuthn"
     isExistingGoogleAccount: "done.invoke.fetchGoogleDevice"
   }
   eventsCausingDelays: {}
   matchesStates:
     | "Start"
-    | "Start.checkCapability"
+    | "Start.CheckCapability"
     | "RegistrationMachine"
     | "AuthSelection"
     | "AuthWithGoogle"
@@ -97,6 +98,6 @@ export interface Typegen0 {
     | "ExistingAnchor"
     | "TrustDevice"
     | "End"
-    | { Start?: "checkCapability"; AuthWithGoogle?: "SignIn" | "Fetch" }
+    | { Start?: "CheckCapability"; AuthWithGoogle?: "SignIn" | "Fetch" }
   tags: never
 }

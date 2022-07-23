@@ -826,18 +826,18 @@ export async function prepareDelegate(
   userNumber: number,
   scope: string,
   sessionKey: PublicKey,
-  maxTimeToLive: number,
+  maxTimeToLive?: number,
 ) {
   return ii
     .prepare_delegation(
       BigInt(userNumber),
       scope,
       sessionKey,
-      reverseMapOptional(BigInt(maxTimeToLive)),
+      reverseMapOptional(maxTimeToLive ? BigInt(maxTimeToLive) : undefined),
     )
     .then(([userPublicKey, timestamp]) => ({
       userPublicKey: new Uint8Array(userPublicKey),
-      timestamp: Number(timestamp),
+      timestamp: timestamp,
     }))
 }
 
@@ -853,37 +853,52 @@ export async function getDelegate(
   userNumber: number,
   scope: string,
   sessionKey: PublicKey,
-  timestamp: number,
+  timestamp: bigint,
 ): Promise<SignedDelegate> {
   return ii
-    .get_delegation(BigInt(userNumber), scope, sessionKey, BigInt(timestamp))
+    .get_delegation(BigInt(userNumber), scope, sessionKey, timestamp)
     .then((r) => {
-      if ("no_such_delegation" in r) {
-        throw new Error("No such delegation")
+      if ("signed_delegation" in r) {
+        return {
+          delegation: {
+            expiration: Number(r.signed_delegation.delegation.expiration),
+            pubkey: new Uint8Array(r.signed_delegation.delegation.pubkey),
+            targets: mapOptional(r.signed_delegation.delegation.targets),
+          },
+          signature: new Uint8Array(r.signed_delegation.signature),
+        }
       }
-      return {
-        delegation: {
-          expiration: Number(r.signed_delegation.delegation.expiration),
-          pubkey: new Uint8Array(r.signed_delegation.delegation.pubkey),
-          targets: mapOptional(r.signed_delegation.delegation.targets),
-        },
-        signature: new Uint8Array(r.signed_delegation.signature),
-      }
+      throw new Error("No such delegation")
     })
+}
+
+export async function getDelegateRetry(
+  userNumber: number,
+  scope: string,
+  sessionKey: PublicKey,
+  timestamp: bigint,
+): Promise<SignedDelegate> {
+  for (let i = 0; i < 10; i++) {
+    try {
+      // Linear backoff
+      await new Promise((resolve) => {
+        setInterval(resolve, 1000 * i)
+      })
+      return await getDelegate(userNumber, scope, sessionKey, timestamp)
+    } catch (e) {
+      console.warn("Failed to retrieve delegation.", e)
+    }
+  }
+  throw new Error(`Failed to retrieve a delegation after ${10} retries.`)
 }
 
 export async function fetchDelegate(
   userNumber: number,
   scope: string,
   sessionKey: PublicKey,
-  maxTimeToLive: number,
+  maxTimeToLive?: number,
 ): Promise<ThirdPartyAuthSession> {
-  console.debug("fetchDelegate", {
-    userNumber,
-    scope,
-    sessionKey,
-    maxTimeToLive,
-  })
+  await renewDelegation()
   const prepare = await prepareDelegate(
     userNumber,
     scope,
@@ -892,8 +907,8 @@ export async function fetchDelegate(
   )
   console.debug("fetchDelegate prepareDelegate", { prepare })
 
-  // TODO: retry. tan query?
-  const get = await getDelegate(
+  await renewDelegation()
+  const get = await getDelegateRetry(
     userNumber,
     scope,
     sessionKey,

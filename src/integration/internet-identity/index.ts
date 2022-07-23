@@ -92,6 +92,10 @@ function authStateClosure() {
   let _identity: SignIdentity | undefined
   let _delegationIdentity: DelegationIdentity | undefined
   let _actor: ActorSubclass<InternetIdentity> | undefined
+  // NOTE: NOT SURE IF WE NEED THOSE
+  let _chain: DelegationChain | undefined
+  let _sessionKey: Ed25519KeyIdentity | undefined
+
   return {
     setDelegationIdentity(delegationIdentity: DelegationIdentity) {
       _delegationIdentity = delegationIdentity
@@ -234,11 +238,19 @@ export const requestFEDelegationChain = async (
 export const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
-  console.debug("Request FE Delegation.")
+  console.debug("requestFEDelegation")
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
+  console.debug("requestFEDelegation", { sessionKey, chain })
+
+  const delegationIdentity = DelegationIdentity.fromDelegation(
+    sessionKey,
+    chain,
+  )
+
+  console.debug("requestFEDelegation", { delegationIdentity })
 
   return {
-    delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
+    delegationIdentity,
     chain,
     sessionKey,
   }
@@ -669,7 +681,17 @@ async function fromWebauthnDevices(
   devices: DeviceData[],
   withSecurityDevices?: boolean,
 ): Promise<LoginResult> {
+  console.debug("fromWebauthnDevices", {
+    userNumber,
+    devices,
+    withSecurityDevices,
+  })
+
   const multiIdent = getMultiIdent(devices, withSecurityDevices)
+  // console.debug("fromWebauthnDevices", {
+  //   multiIdent,
+  //   multiIdentPrincipalId: multiIdent.getPrincipal().toText(),
+  // })
 
   let delegation: FrontendDelegation
   try {
@@ -685,6 +707,12 @@ async function fromWebauthnDevices(
       }
     }
   }
+  console.debug("fromWebauthnDevices", {
+    delegation,
+    delegationPrincipalId: delegation.delegationIdentity
+      .getPrincipal()
+      .toText(),
+  })
 
   replaceIdentity(delegation.delegationIdentity)
   authState.set(multiIdent._actualIdentity!, delegation.delegationIdentity, ii)
@@ -848,12 +876,20 @@ export async function fetchDelegate(
   sessionKey: PublicKey,
   maxTimeToLive: number,
 ): Promise<ThirdPartyAuthSession> {
+  console.debug("fetchDelegate", {
+    userNumber,
+    scope,
+    sessionKey,
+    maxTimeToLive,
+  })
   const prepare = await prepareDelegate(
     userNumber,
     scope,
     sessionKey,
     maxTimeToLive,
   )
+  console.debug("fetchDelegate prepareDelegate", { prepare })
+
   // TODO: retry. tan query?
   const get = await getDelegate(
     userNumber,
@@ -861,6 +897,8 @@ export async function fetchDelegate(
     sessionKey,
     prepare.timestamp,
   )
+  console.debug("fetchDelegate getDelegate", { get })
+
   return {
     delegations: [get],
     userPublicKey: prepare.userPublicKey,

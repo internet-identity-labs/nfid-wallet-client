@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import React from "react"
-import { Navigate } from "react-router-dom"
 
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
@@ -8,7 +7,6 @@ import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 export interface AuthorizeAppUnknownDeviceProps {
   registerSameDevicePath: string

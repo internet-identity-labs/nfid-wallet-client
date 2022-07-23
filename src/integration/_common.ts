@@ -43,7 +43,7 @@ type DiscriminatedNFIDResponse<T> =
  * @param response
  * @returns
  */
-function typeResponse<T>(
+export function typeResponse<T>(
   response: NFIDResponse<T>,
 ): DiscriminatedNFIDResponse<T> {
   if (response.data.length) {

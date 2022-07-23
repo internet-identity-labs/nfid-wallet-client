@@ -21,7 +21,6 @@ import {
   fetchDelegate as _fetchDelegate,
   lookup,
   registerInternetIdentity,
-  requestFEDelegation,
   requestFEDelegationChain,
 } from "."
 import { ii } from "../actors"
@@ -56,11 +55,19 @@ export async function loginService(context: {
 
   const multiIdent = identityFromDeviceList(context.devices)
   const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
+  console.debug("loginService", { multiIdent, sessionKey, chain })
+
+  const delegationIdentity = DelegationIdentity.fromDelegation(
+    sessionKey,
+    chain,
+  )
+
+  authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
 
   return {
     sessionSource: "localDevice",
     identity: multiIdent,
-    delegationIdentity: DelegationIdentity.fromDelegation(sessionKey, chain),
+    delegationIdentity,
   }
 }
 

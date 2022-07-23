@@ -19,6 +19,11 @@ interface Props {
 export default function IDPCoordinator({ machine }: Props) {
   const [state] = useMachine(machine || IDPMachine)
 
+  console.debug("IDPCoordinator", {
+    context: state.context,
+    state: state.value,
+  })
+
   switch (true) {
     case state.matches("AuthenticationMachine"):
       return (

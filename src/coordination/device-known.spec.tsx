@@ -8,7 +8,7 @@ import { act } from "react-dom/test-utils"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
 import KnownDeviceMachine, {
-  Context as KnownDeviceContext,
+  KnownDeviceMachineContext,
   KnownDeviceActor,
 } from "frontend/state/machines/authentication/known-device"
 
@@ -77,7 +77,7 @@ describe("KnownDevice Coordinator", () => {
             hostname: plan.hostNameMock,
           },
         }
-        const actor = makeInvokedActor<KnownDeviceContext>(
+        const actor = makeInvokedActor<KnownDeviceMachineContext>(
           KnownDeviceMachine,
           context,
         )
@@ -132,7 +132,7 @@ describe("KnownDevice Coordinator", () => {
             hostname: plan.hostNameMock,
           },
         }
-        const actor = makeInvokedActor<KnownDeviceContext>(
+        const actor = makeInvokedActor<KnownDeviceMachineContext>(
           KnownDeviceMachine,
           context,
         )
@@ -216,7 +216,7 @@ describe("KnownDevice Coordinator", () => {
           },
         }
 
-        const actor = makeInvokedActor<KnownDeviceContext>(
+        const actor = makeInvokedActor<KnownDeviceMachineContext>(
           KnownDeviceMachine,
           context,
         )

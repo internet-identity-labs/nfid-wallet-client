@@ -13,6 +13,10 @@ export function AuthenticationCoordinator({
   actor,
 }: Actor<AuthenticationActor>) {
   const [state] = useActor(actor)
+  console.debug("AuthenticationCoordinator", {
+    context: state.context,
+    state: state.value,
+  })
 
   switch (true) {
     case state.matches("KnownDevice"):

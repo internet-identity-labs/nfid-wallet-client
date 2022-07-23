@@ -1,10 +1,9 @@
 import { useActor } from "@xstate/react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { KnownDeviceCoordinator } from "./device-known"
 import { UnknownDeviceCoordinator } from "./device-unknown"
@@ -33,6 +32,6 @@ export function AuthenticationCoordinator({
       )
     case state.matches("IsDeviceRegistered"):
     default:
-      return <Loader isLoading={true} />
+      return <ScreenResponsive isLoading />
   }
 }

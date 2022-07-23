@@ -82,9 +82,6 @@ const AuthenticationMachine = createMachine(
       },
       End: {
         type: "final",
-        entry: (context, event) => {
-          authState.set(event.data.identity, event.data.delegationIdentity, ii)
-        },
         data: (context) => context,
       },
     },

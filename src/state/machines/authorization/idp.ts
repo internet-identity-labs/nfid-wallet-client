@@ -11,7 +11,9 @@ import {
   AuthorizingAppMeta,
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
-import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
+import AuthenticationMachine, {
+  AuthenticationMachineContext,
+} from "frontend/state/machines/authentication/authentication"
 import AuthorizationMachine, {
   AuthorizationMachineContext,
 } from "frontend/state/machines/authorization/authorization"
@@ -96,10 +98,14 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: "AuthorizationMachine",
-            data: (context, event) => ({
-              appMeta: context.appMeta,
-              authRequest: context.authRequest,
-            }),
+            data: (context, event) =>
+              ({
+                appMeta: context.appMeta,
+                authRequest: context.authRequest,
+              } as Pick<
+                AuthenticationMachineContext,
+                "appMeta" | "authRequest"
+              >),
           },
         },
         AuthorizationMachine: {

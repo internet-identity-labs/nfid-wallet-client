@@ -8,10 +8,12 @@ import {
   AuthorizationRequest,
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
-import KnownDeviceMachine from "frontend/state/machines/authentication/known-device"
+import KnownDeviceMachine, {
+  KnownDeviceMachineContext,
+} from "frontend/state/machines/authentication/known-device"
 import UnknownDeviceMachine from "frontend/state/machines/authentication/unknown-device"
 
-export interface Context {
+export interface AuthenticationMachineContext {
   authSession?: AuthSession
   authRequest?: AuthorizationRequest
   appMeta: AuthorizingAppMeta
@@ -23,7 +25,7 @@ export type Events =
 
 export interface Schema {
   events: Events
-  context: Context
+  context: AuthenticationMachineContext
 }
 
 /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgOgJKwBEwA3ASwGMwAlMKU2dMAJ0gGJFQAHAe1lPVLcAdhxAAPRACYAbAGZsk2QBZZAdgCsAGhABPKQEZV2dQAYz0gBwmlJgJy2l6gL5PtaLNgDSQ7gHchRGSUrBDCYNikQsTcANbhMT7+ALQQJBRgojx8AsKiEgi2htjSqraWGtp6CJLqtthm5lY29o4ubhg4AKpCCX4BacGhQuGR0XHYqD2JQikDGUggWfyCIgv5hUYlZRYVuoj6+ur1DWrqikr6cqouriA+qfAL7jj4gek0dAzMkJm8y7lrRBKSSVKSqSTGBqWax2BzOW7PLzTN6UX7ZFZ5RDqIpbcpaPbVWRHBomaHNOFtECI7q9fwo+ZcP45VagfLYzalPGggr6Y4NVRmdQWWQWSRKSmIgCiQggaP+LPE+30amwRNsp25yqMpjMp3OlxFEo6cuZmIQ+gsmosNycQA */
@@ -55,7 +57,14 @@ const AuthenticationMachine = createMachine(
               target: "End",
             },
           ],
-          data: (context) => context,
+          data: (context) =>
+            ({
+              authAppMeta: context.appMeta,
+              authRequest: context.authRequest,
+            } as Pick<
+              KnownDeviceMachineContext,
+              "authAppMeta" | "authRequest"
+            >),
         },
       },
       UnknownDevice: {

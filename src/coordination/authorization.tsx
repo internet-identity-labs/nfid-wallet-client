@@ -37,6 +37,6 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
         </ScreenResponsive>
       )
     default:
-      return <Loader isLoading={true} />
+      return <ScreenResponsive isLoading />
   }
 }

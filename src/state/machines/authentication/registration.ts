@@ -123,11 +123,7 @@ const RegistrationMachine =
                   invoke: {
                     src: "registerService",
                     id: "registerService",
-                    onDone: [
-                      {
-                        target: "#auth-registration.End",
-                      },
-                    ],
+                    onDone: "#auth-registration.End",
                     onError: [
                       {
                         actions: ["assignError", "logServiceError"],

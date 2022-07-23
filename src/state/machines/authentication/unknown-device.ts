@@ -45,7 +45,7 @@ export interface Schema {
 }
 
 const UnknownDeviceMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SfszHoIBhZAAdkAI1oAbWugCeAYgjE8zWnmrECa2AFlikqWADqszMbDiAghkx5EoEcVizaKhyAAeiAKwAGAHYmPxC-ABYARj8ADgiAZh8fCIA2ABoQOUQIgE4AJiZouKK4sOTs8OifXLiAXxr0tCxcQhJyShoGZjZObl5+IVEJaVlFMA4OYg4mESlkdAAzSYBbJlo9A2kTMwtrW3skECcXdDd90G8EXIimeNzYq+SwgOyIiNz0zIQ4wqY4mIjorkAsD-LkfAE6g1bM0iGQKFQ6IwmAAlMBQNboDhzU66ZC8dRgJQqNQaLTMDhojFYk7uA5HVy086IMJxZJMUrRaJhXJ+bLgpLRD6+aJBfwhaoxMLRbLJCH1ECNHD4WFtBGdJg2LAsMBGeg0vAKKwAVQAKgAJAD6xgAkuaLQBxADyjvtABkAKIeen6jwXMHRdlxAJhPm5K5hDk+IUIQrZYKhPxxKIAnzJXKQhXQ5WteEdJGazDa3X6w2my02u3I926R0mz105wMs5eRC5KWB4Oh8Mc94ZLK8tlivz+MJVbLBjOKmE59qI5gFov8EvGu0Vy21s3u5Fexs+g5+5IBlmdqrdw9RvsIAJJG7JO8+EXJIoBROTrMtOGz9UF0xYe3EYgoCMVhaCgPBrQNZRVFWUltCYFwwIg39MH-QCjB3Y5Tl9LI03yJ9cjvPlgVibJoxeNkEyuEoAjbCI3yabNPzVfNbGQ1CgOYAAxMB0F4IloPUTQ4PmHjeHYowABE8zADCm2wmNsjCJgfCTAERSeJ872jSolOyPS9MKao-iTeilQ-VVpJRMAlmIdAwALMA8BOehsRUfiSSE8lrNsmSG0wxkWxjaomHKNNU3+Z4Q2jKIZWU0IRzHCd5SnRiLLnKz0VgOyOCkud3JgzymBS8zc3S1FMuy3LOgQQTiBc-UAG0-AAXVkvcmSvHk4oCaJHhyKpU0FS83hSOKQhoiIAlZOUoQYkqvyRcqMTGKrGAUMYJimGY5kWDgVmKlVSvVJaspW6SatJerTia1q-Lk-dW0BEK-Fw5IfEiR5YminIAxSWUEjDPxAZmzM5sOhbmBOyrpPdcZJgUE1kSNFgTQtCT3QANWtQR60cXcsIey4ntCsM3o+qUImits2T+mjUyfV5uVM6cmMsqGzrnWHNoUd0ADkJLagmOqBfISYI96Ugp6LWUHUJCkTMI-ABdNkvfcHmOYd1PAxdQoCsPBeHhvmBbu9rAre-I2zDBIAhyRT3ujW3Rf08psm+Ai3uZ1KjqRLWdbwPWDcweGV3LW113NLdBYCg8jyDENTwiCNz0dxNbzvQ84h5DTkjqeUSCoeADgOmcNdYdguB4PgBGEMRDBGaPmwuGjopfeM5azhnE1z1WwdLyzui4Rv5KlMiggTJWRRew8uS9+ay6h6kcTxTACWHwnZWjRIKITYNRz0xI5-VyyFx1JchcOfGY98AJHaiX4M-e2VshFRSj-79KfzMcSulA8Dm29BfC4rxpQhXjqmPSfxwzaS5GNEI4IYhFBfu-Vmn9WLfwAhxJg3FeKYHXh1EMSkVKvDdrySaAQ0iXhFPkIcBE9KlDDHRXuZlj5oKwGxTB6FTZAOZG3YhOQ-gvGBJQz4PVrgu3ekrP4gJsgoLSsdbydkHJOQYK5ABV8m7MhvNUY8EQqgcl6tFF6Ph24K1iIrGiIMS6oIURVDmnR8GBSlHEX4Pg3aqVom7LSw0UymNTCpDS0o5E+0hpSU6OUYZww4I4i43IqZp1pqUJIIZATRGCRDJgfssq631obaJ3Dr4IH3kwZISsHyvGeM8Qxl4Xzj1CACP4T4WQ91miwj+6p3R4AgDErIU8mAvlyO47kJQ3FhDIvEAo4Ik7hBtqyMI6SNY9IQNgfIvVbYikKFUGInJKaXjbKY8ID4Qw0TemkvOQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SYGFMx6BHsgAOyAEa0ANrXQBPAMQRieZrTzViBNbACyxSVLAB1WZmNhxAQQyY8iUCOKxZtFQ5AAPRAEYATABsTACcABw+wQDMAAwALJEA7D4ArP6hADQgcoiRkX5MscHBCcGxyQnRoWEBsQC+tZloWLiEJOSUNAzMAEpgULSw6BzI6G54usj0mOpgSipqGlrMHH0DQyNjHk4uo+5IXojxQbEBoaGxftHB5akZWYjJoQlMydFvfjHnVQEJ9Y22LSIZAoVDojCYNiwLDARnouzwCisAFUACoACQA+sYAJLojEAcQA8oT8QAZACiW2crj2oG8CD8jwKiUKyT8fh8sROoWSmWyCFCkWCTDeosiPmiPh5AT8fxATRw+CB7VBXQhtmhsPhiNRmJxeO65N0hJRlP22xp9n29L8sVCzISrPZnO5fj5viuQVeb1eZT8xTqDXlAKVbRBnXBkMwmoE2uReP1mJNaPJ3SpO021sQgXt8Ud12dXNOvPuCASqSYPgC1ceCQCuQqkTlCsBYY6YOYUdMWHxxGIUCMrFoUDw2IRylUTHUmm0TBcI7H3cwvf7RnTlo89Kr7KY9cCAWuCQS4WC7oQwSrItFHMisQStp8zZDrWB7bVXbMK4HzAAYmB0FMcyTtOSxMAAZv+UxfkYAAiEZgOu8KbogVSxC84pSk8d71tWZ48mhRSEYKHwxOKT7NKGr6quCvQALbEOgYBRmAeCjPQGwqEBCwzssYD0YxiGZnSKEfCE0QyskASVD4JSFGeErBF6oq+myAbkYqL4qvBTDkp4azqFAVh4FMxAcAo5IAHIwYJtIHAgARskwtrspE5QRKUySxGeST5IRRRXJEoT7sk6mtlR2m6fpeCGcZmCmTqCa4km6KpjZVrCQypwOk6HJFjy3nRJElbVtWxFxHWAShZRWkdkwKIcKggxwR2XFToss5DI16DNV0ExTDMaXIQgKRSi8qRRFJMpSlE8kSva0T+kk4Q1BEoSVXKJBUPA+wttV4a1WwnDcHwAhCKIEjSLI-KONSSFZmWbqlv4PhXqKUoVKV5xVZp+1qodXCDfddpnnaV4ygEKSlDJtrBN9yq-TRqyDMM8J9dMqiAxlPxnskkmvW8jplEUuNw221GdhqMKxkJIAWndGXlN5EpMJEJWeT8YSyaT4W1R+PZ9t+Q4LultO3TTW7TSELKSUUMS5Xh5wvKK0TlJUuRhNzNXvrYS7Qb+kGYJjdmFGhyQYVEVwyXWeH3kr7wHqUMocprCMU1gusC2u5pi7Z9J3tE6E+BEMQXkeATeUFYPsoEuOlFyLtvoj-FMbYLFsRxIt0+LhwVh8eYpLapxrfJ4nJPjt7hLE0T3r8Qa7T9ifMJFgwGUZJkcEbfvJMKUkpOEMnFNUBXPMrUoxPWRwJ+TdUNU18Gdx6o3FMejKCokNReU9KtFW8dqVAFQVBVPEV4BAC-DU8AcVP6uQXLe3eb-yF5FTySRV-E5Ss4G-wUQ35Pn7aM82BbQhCwqUcShUPjlHqPUIAA */
   createMachine(
     {
       tsTypes: {} as import("./unknown-device.typegen").Typegen0,
@@ -62,8 +62,8 @@ const UnknownDeviceMachine =
                 id: "isMobileWithWebAuthn",
                 onDone: [
                   {
-                    target: "#auth-unknown-device.RegistrationMachine",
                     cond: "bool",
+                    target: "#auth-unknown-device.RegistrationMachine",
                   },
                   {
                     target: "#auth-unknown-device.AuthSelection",
@@ -77,14 +77,8 @@ const UnknownDeviceMachine =
           invoke: {
             src: "RegistrationMachine",
             id: "registration",
-            onDone: [
-              {
-                target: "End",
-              },
-            ],
-            data: (context, event) => ({
-              appMeta: context.appMeta,
-            }),
+            onDone: "End",
+            data: (context) => ({ appMeta: context.appMeta }),
           },
         },
         AuthSelection: {
@@ -157,7 +151,11 @@ const UnknownDeviceMachine =
           invoke: {
             src: "TrustDeviceMachine",
             id: "trustDeviceMachine",
-            onDone: "End",
+            onDone: [
+              {
+                target: "End",
+              },
+            ],
           },
         },
         End: {

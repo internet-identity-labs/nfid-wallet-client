@@ -2,6 +2,7 @@ import { AuthorizationMachineContext } from "frontend/state/machines/authorizati
 
 import {
   createPersona,
+  fetchAccount,
   fetchPersonas as _fetchPersonas,
   selectPersonas,
 } from "."
@@ -29,11 +30,18 @@ export async function fetchAccounts(context: AuthorizationMachineContext) {
 export async function createAccount(
   context: AuthorizationMachineContext,
 ): Promise<string> {
+  console.debug("createAccount", { context })
   if (!context.authRequest) throw new Error("Missing auth request")
-  await createPersona(
+  const createPersonaReposne = await createPersona(
     context.authRequest?.hostname,
     `${context.accounts?.length || "0"}`,
     "Account #1",
   )
+  console.debug("createAccount", { createPersonaReposne })
   return `${context.accounts?.length || "0"}`
+}
+
+export async function fetchProfileService() {
+  console.debug("fetchProfileService")
+  return await fetchAccount()
 }

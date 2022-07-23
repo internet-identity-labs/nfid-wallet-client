@@ -105,6 +105,7 @@ function authStateClosure() {
       delegationIdentity: DelegationIdentity,
       actor: ActorSubclass<InternetIdentity>,
     ) {
+      console.debug("authState.set", { identity, delegationIdentity })
       _actor = actor
       _identity = identity
       _delegationIdentity = delegationIdentity
@@ -116,6 +117,7 @@ function authStateClosure() {
       actor: _actor,
     }),
     reset() {
+      console.debug("authState.reset")
       _identity = undefined
       _delegationIdentity = undefined
       _actor = undefined

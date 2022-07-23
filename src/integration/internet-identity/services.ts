@@ -61,6 +61,10 @@ export async function loginService(context: {
     sessionKey,
     chain,
   )
+  console.debug("loginService", {
+    delegationIdentity,
+    principalId: delegationIdentity.getPrincipal().toText(),
+  })
 
   authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
 

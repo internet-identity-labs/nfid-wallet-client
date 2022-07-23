@@ -10,6 +10,11 @@ import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
   const [state, send] = useActor(actor)
 
+  console.debug("AuthorizationCoordinator", {
+    context: state.context,
+    state: state.value,
+  })
+
   switch (true) {
     case state.matches("PresentAccounts"):
     case state.matches("FetchAccounts"):

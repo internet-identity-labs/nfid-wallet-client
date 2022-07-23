@@ -4,7 +4,7 @@ import { AuthorizationRequest } from "frontend/state/authorization"
 export async function fetchAccountLimitService(context: {
   authRequest: AuthorizationRequest
 }) {
-  console.debug("fetchAccountLimitService", context)
+  console.debug("fetchAccountLimitService", { context })
   if (!context.authRequest?.hostname)
     throw new Error("missing context.authReques.hostname")
 

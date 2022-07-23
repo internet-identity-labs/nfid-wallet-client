@@ -3,54 +3,54 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    assignUserLimit: "done.invoke.fetchAppUserLimit"
-    assignAccounts: "done.invoke.fetchAccounts"
-    handleAccounts: "done.invoke.fetchAccounts"
+    assignUserLimit: "done.invoke.fetchAccountLimitService"
+    assignAccounts: "done.invoke.fetchAccountsService"
+    handleAccounts: "done.invoke.fetchAccountsService"
   }
   internalEvents: {
-    "done.invoke.fetchAppUserLimit": {
-      type: "done.invoke.fetchAppUserLimit"
+    "done.invoke.fetchAccountLimitService": {
+      type: "done.invoke.fetchAccountLimitService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.fetchAccounts": {
-      type: "done.invoke.fetchAccounts"
+    "done.invoke.fetchAccountsService": {
+      type: "done.invoke.fetchAccountsService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.createAccount": {
-      type: "done.invoke.createAccount"
+    "done.invoke.createAccountService": {
+      type: "done.invoke.createAccountService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "xstate.init": { type: "xstate.init" }
-    "error.platform.fetchAppUserLimit": {
-      type: "error.platform.fetchAppUserLimit"
+    "error.platform.fetchAccountLimitService": {
+      type: "error.platform.fetchAccountLimitService"
       data: unknown
     }
-    "error.platform.fetchAccounts": {
-      type: "error.platform.fetchAccounts"
+    "error.platform.fetchAccountsService": {
+      type: "error.platform.fetchAccountsService"
       data: unknown
     }
-    "error.platform.createAccount": {
-      type: "error.platform.createAccount"
+    "error.platform.createAccountService": {
+      type: "error.platform.createAccountService"
       data: unknown
     }
-    "done.invoke.fetchDelegate": {
-      type: "done.invoke.fetchDelegate"
+    "done.invoke.fetchDelegateService": {
+      type: "done.invoke.fetchDelegateService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.fetchDelegate": {
-      type: "error.platform.fetchDelegate"
+    "error.platform.fetchDelegateService": {
+      type: "error.platform.fetchDelegateService"
       data: unknown
     }
   }
   invokeSrcNameMap: {
-    fetchAppUserLimit: "done.invoke.fetchAppUserLimit"
-    fetchAccounts: "done.invoke.fetchAccounts"
-    createAccount: "done.invoke.createAccount"
-    fetchDelegate: "done.invoke.fetchDelegate"
+    fetchAccountLimitService: "done.invoke.fetchAccountLimitService"
+    fetchAccountsService: "done.invoke.fetchAccountsService"
+    createAccountService: "done.invoke.createAccountService"
+    fetchDelegateService: "done.invoke.fetchDelegateService"
   }
   missingImplementations: {
     actions: never
@@ -59,10 +59,10 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    fetchAppUserLimit: "xstate.init"
-    fetchAccounts: "done.invoke.fetchAppUserLimit"
-    createAccount: "CREATE_ACCOUNT"
-    fetchDelegate: "SELECT_ACCOUNT" | "done.invoke.createAccount"
+    fetchAccountLimitService: "xstate.init"
+    fetchAccountsService: "done.invoke.fetchAccountLimitService"
+    createAccountService: "CREATE_ACCOUNT"
+    fetchDelegateService: "SELECT_ACCOUNT" | "done.invoke.createAccountService"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}

@@ -23,6 +23,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.loginService": {
+      type: "done.invoke.loginService"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
     "error.platform.getProfileService": {
       type: "error.platform.getProfileService"
@@ -36,13 +41,17 @@ export interface Typegen0 {
       type: "error.platform.fetchAccountLimitService"
       data: unknown
     }
-    "done.invoke.loginService": {
-      type: "done.invoke.loginService"
+    "error.platform.loginService": {
+      type: "error.platform.loginService"
+      data: unknown
+    }
+    "done.invoke.fetchProfileService": {
+      type: "done.invoke.fetchProfileService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.loginService": {
-      type: "error.platform.loginService"
+    "error.platform.fetchProfileService": {
+      type: "error.platform.fetchProfileService"
       data: unknown
     }
   }
@@ -51,6 +60,7 @@ export interface Typegen0 {
     fetchAuthenticatorDevicesService: "done.invoke.fetchAuthenticatorDevicesService"
     fetchAccountLimitService: "done.invoke.fetchAccountLimitService"
     loginService: "done.invoke.loginService"
+    fetchProfileService: "done.invoke.fetchProfileService"
   }
   missingImplementations: {
     actions: never
@@ -63,6 +73,7 @@ export interface Typegen0 {
     fetchAuthenticatorDevicesService: "done.invoke.getProfileService"
     fetchAccountLimitService: "done.state.KnownDeviceMachine.Start.FetchDevices"
     loginService: "UNLOCK"
+    fetchProfileService: "done.invoke.loginService"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
@@ -78,6 +89,7 @@ export interface Typegen0 {
     | "Start.Done"
     | "Authenticate"
     | "Login"
+    | "UpdateProfile"
     | "End"
     | {
         Start?:

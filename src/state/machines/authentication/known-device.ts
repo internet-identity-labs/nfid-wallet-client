@@ -2,7 +2,10 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
 import { Profile } from "frontend/integration/identity-manager/profile"
-import { getProfileService } from "frontend/integration/identity-manager/services"
+import {
+  fetchProfileService,
+  getProfileService,
+} from "frontend/integration/identity-manager/services"
 import { Device } from "frontend/integration/internet-identity"
 import {
   fetchAuthenticatorDevicesService,
@@ -121,6 +124,17 @@ const KnownDeviceMachine =
             id: "loginService",
             onDone: [
               {
+                target: "UpdateProfile",
+              },
+            ],
+          },
+        },
+        UpdateProfile: {
+          invoke: {
+            src: "fetchProfileService",
+            id: "fetchProfileService",
+            onDone: [
+              {
                 target: "End",
               },
             ],
@@ -137,6 +151,7 @@ const KnownDeviceMachine =
         fetchAuthenticatorDevicesService,
         fetchAccountLimitService,
         loginService,
+        fetchProfileService,
         getProfileService,
       },
       actions: {

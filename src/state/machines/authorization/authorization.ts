@@ -3,10 +3,10 @@ import { assign, ActorRefFrom, createMachine, send } from "xstate"
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
 import { Persona } from "frontend/integration/identity-manager"
 import {
-  createAccount,
-  fetchAccounts,
+  createAccountService,
+  fetchAccountsService,
 } from "frontend/integration/identity-manager/services"
-import { fetchDelegate } from "frontend/integration/internet-identity/services"
+import { fetchDelegateService } from "frontend/integration/internet-identity/services"
 import { AuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
@@ -23,10 +23,10 @@ export interface AuthorizationMachineContext {
 }
 
 export type AuthorizationMachineEvents =
-  | { type: "done.invoke.fetchAppUserLimit"; data: number }
-  | { type: "done.invoke.fetchAccounts"; data: Persona[] }
-  | { type: "done.invoke.fetchDelegate"; data: ThirdPartyAuthSession }
-  | { type: "done.invoke.createAccount"; data: Persona["personaId"] }
+  | { type: "done.invoke.fetchAccountLimitService"; data: number }
+  | { type: "done.invoke.fetchAccountsService"; data: Persona[] }
+  | { type: "done.invoke.fetchDelegateService"; data: ThirdPartyAuthSession }
+  | { type: "done.invoke.createAccountService"; data: Persona["personaId"] }
   | { type: "SINGLE_ACCOUNT" }
   | { type: "MULTI_ACCOUNT" }
   | { type: "CREATE_ACCOUNT" }
@@ -49,8 +49,8 @@ const AuthorizationMachine =
       states: {
         Start: {
           invoke: {
-            src: "fetchAppUserLimit",
-            id: "fetchAppUserLimit",
+            src: "fetchAccountLimitService",
+            id: "fetchAccountLimitService",
             onDone: [
               {
                 actions: "assignUserLimit",
@@ -61,8 +61,8 @@ const AuthorizationMachine =
         },
         FetchAccounts: {
           invoke: {
-            src: "fetchAccounts",
-            id: "fetchAccounts",
+            src: "fetchAccountsService",
+            id: "fetchAccountsService",
             onDone: [
               {
                 actions: ["assignAccounts", "handleAccounts"],
@@ -77,8 +77,8 @@ const AuthorizationMachine =
         },
         CreateAccount: {
           invoke: {
-            src: "createAccount",
-            id: "createAccount",
+            src: "createAccountService",
+            id: "createAccountService",
             onDone: [
               {
                 target: "GetDelegation",
@@ -96,8 +96,8 @@ const AuthorizationMachine =
         },
         GetDelegation: {
           invoke: {
-            src: "fetchDelegate",
-            id: "fetchDelegate",
+            src: "fetchDelegateService",
+            id: "fetchDelegateService",
             onDone: "End",
           },
         },
@@ -122,10 +122,10 @@ const AuthorizationMachine =
         })),
       },
       services: {
-        fetchAppUserLimit: fetchAccountLimitService,
-        fetchAccounts,
-        fetchDelegate,
-        createAccount,
+        fetchAccountLimitService,
+        fetchAccountsService,
+        fetchDelegateService,
+        createAccountService,
       },
     },
   )

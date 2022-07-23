@@ -18,7 +18,7 @@ import {
   authState,
   CaptchaChallenge,
   Device,
-  fetchDelegate as _fetchDelegate,
+  fetchDelegate,
   lookup,
   registerInternetIdentity,
   requestFEDelegationChain,
@@ -28,7 +28,7 @@ import { deviceInfo } from "../device"
 import { identityFromDeviceList } from "../identity"
 import { Profile } from "../identity-manager/profile"
 
-export async function fetchDelegate(
+export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
   event: { data: string },
 ): Promise<ThirdPartyAuthSession> {
@@ -40,7 +40,7 @@ export async function fetchDelegate(
   }
   const account = await fetchAccount()
   const scope = getScope(context.authRequest.hostname, Number(event.data))
-  return await _fetchDelegate(
+  return await fetchDelegate(
     account.anchor,
     scope,
     Array.from(context.authRequest.sessionPublicKey),

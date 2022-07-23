@@ -2,11 +2,17 @@ import { AuthorizationMachineContext } from "frontend/state/machines/authorizati
 
 import {
   createPersona,
-  fetchAccount,
   fetchPersonas as _fetchPersonas,
   selectPersonas,
 } from "."
-import { profile } from "./profile"
+import { fetchProfile, profile } from "./profile"
+
+export function getProfileService() {
+  const profile = fetchProfile()
+  if (!profile) throw new Error("getProfileService unregistered device")
+
+  return Promise.resolve(profile)
+}
 
 export function isDeviceRegistered() {
   return !!profile

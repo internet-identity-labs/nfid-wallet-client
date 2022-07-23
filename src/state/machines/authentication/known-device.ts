@@ -2,6 +2,7 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
 import { Profile } from "frontend/integration/identity-manager/profile"
+import { getProfileService } from "frontend/integration/identity-manager/services"
 import { Device } from "frontend/integration/internet-identity"
 import {
   fetchAuthenticatorDevicesService,
@@ -16,7 +17,7 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
-export interface Context {
+export interface KnownDeviceMachineContext {
   isNFID: boolean
   profile: Profile
   authRequest: AuthorizationRequest
@@ -29,12 +30,13 @@ export interface Context {
 export type Events =
   | { type: "UNLOCK" }
   | { type: "done.invoke.loginService"; data: LocalDeviceAuthSession }
+  | { type: "done.invoke.getProfileService"; data: Profile }
   | { type: "done.invoke.fetchAccountLimit"; data: number }
   | { type: "done.invoke.fetchAuthenticatorDevicesService"; data: Device[] }
 
 export interface Schema {
   events: Events
-  context: Context
+  context: KnownDeviceMachineContext
 }
 
 const KnownDeviceMachine =
@@ -47,8 +49,15 @@ const KnownDeviceMachine =
       initial: "Start",
       states: {
         Start: {
-          type: "parallel",
+          initial: "LoadProfile",
           states: {
+            LoadProfile: {
+              invoke: {
+                src: "getProfileService",
+                id: "getProfileService",
+                onDone: [{ actions: "assignProfile", target: "FetchDevices" }],
+              },
+            },
             FetchDevices: {
               initial: "Fetch",
               states: {
@@ -68,6 +77,7 @@ const KnownDeviceMachine =
                   type: "final",
                 },
               },
+              onDone: "FetchAccountLimit",
             },
             FetchAccountLimit: {
               initial: "Fetch",
@@ -88,6 +98,10 @@ const KnownDeviceMachine =
                   type: "final",
                 },
               },
+              onDone: "Done",
+            },
+            Done: {
+              type: "final",
             },
           },
           onDone: {
@@ -123,8 +137,10 @@ const KnownDeviceMachine =
         fetchAuthenticatorDevicesService,
         fetchAccountLimitService,
         loginService,
+        getProfileService,
       },
       actions: {
+        assignProfile: assign({ profile: (_, event) => event.data }),
         assignDevices: assign({ devices: (_, event) => event.data }),
         assignAccountLimit: assign({
           isSingleAccountApplication: (_context, event) => event.data === 1,

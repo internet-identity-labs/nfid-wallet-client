@@ -19,7 +19,9 @@ export function isDeviceRegistered() {
   return !!profile
 }
 
-export async function fetchAccounts(context: AuthorizationMachineContext) {
+export async function fetchAccountsService(
+  context: AuthorizationMachineContext,
+) {
   if (!context.authRequest?.hostname) {
     throw new Error("Cannot filter personas without hostname")
   }
@@ -27,7 +29,7 @@ export async function fetchAccounts(context: AuthorizationMachineContext) {
   return selectPersonas(personas, context.authRequest.hostname)
 }
 
-export async function createAccount(
+export async function createAccountService(
   context: AuthorizationMachineContext,
 ): Promise<string> {
   console.debug("createAccount", { context })

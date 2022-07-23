@@ -1,3 +1,5 @@
+import { CredentialId } from "../_ic_api/internet_identity_types"
+
 export const NFID_SIGNED_DELEGATION = {
   chain: {
     delegations: [
@@ -176,7 +178,7 @@ export const II_DEVICES_DATA = [
         131, 84, 120, 48, 98, 178, 173, 10, 16, 175, 102, 122, 247, 163, 82,
         204, 200, 46, 103, 246,
       ],
-    ],
+    ] as [CredentialId],
   },
   {
     alias: "NFID Chrome on Mac OS",
@@ -206,7 +208,7 @@ export const II_DEVICES_DATA = [
         35, 168, 27, 25, 103, 236, 162, 122, 46, 180, 9, 55, 197, 158, 78, 166,
         235, 211, 103, 135,
       ],
-    ],
+    ] as [CredentialId],
   },
 ]
 

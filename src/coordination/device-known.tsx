@@ -9,6 +9,11 @@ import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
   const [state, send] = useActor(actor)
 
+  console.debug("KnownDeviceCoordinator", {
+    context: state.context,
+    state: state.value,
+  })
+
   switch (true) {
     case state.matches("Start"):
       return (

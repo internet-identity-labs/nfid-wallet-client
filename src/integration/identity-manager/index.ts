@@ -175,6 +175,7 @@ function mapApplication(application: BEApplication): Application {
  * Fetches 3rd party application meta data
  */
 export async function fetchApplications() {
+  console.debug("fetchApplications")
   return im
     .read_applications()
     .then(unpackResponse)

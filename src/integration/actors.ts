@@ -59,6 +59,9 @@ export const agent = new Agent.HttpAgent({ host: ic.host })
  */
 export function replaceIdentity(identity: Agent.Identity) {
   agent.replaceIdentity(identity)
+  agent.getPrincipal().then((principal) => {
+    console.debug("replaceIdentity", { principalId: principal.toText() })
+  })
 }
 
 /**

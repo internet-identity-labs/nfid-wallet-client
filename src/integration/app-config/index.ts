@@ -11,6 +11,8 @@ function selectApplication(
 }
 
 export async function fetchAccountLimit(hostname: string): Promise<number> {
+  console.debug("fetchAccountLimit", { hostname })
   const applications = await fetchApplications()
+  console.debug("fetchAccountLimit", { applications })
   return selectApplication(hostname, applications)?.accountLimit ?? 5
 }

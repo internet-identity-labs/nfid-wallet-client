@@ -1,20 +1,33 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { AuthSession } from "frontend/state/authentication"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+  ThirdPartyAuthSession,
+} from "frontend/state/authorization"
 
-import KnownDeviceMachine from "./known-device"
-import RegistrationMachine from "./registration"
+import AuthorizationMachine, {
+  AuthorizationMachineContext,
+} from "../authorization/authorization"
+import AuthenticationMachine from "./authentication"
 
 interface Context {
   pubsubChannel: string
   authSession?: AuthSession
+  appMeta: AuthorizingAppMeta
+  authRequest?: {
+    hostname: string
+  }
 }
 
 type Events =
   | { type: "done.invoke.known-device"; data: AuthSession }
-  | { type: "done.invoke.unknown-device"; data: AuthSession }
-  | { type: "done.invoke.registration"; data: AuthSession }
-  | { type: "done.invoke.post-delegate"; data: void }
+  | { type: "done.invoke.getAuhtRequest"; data: { hostname: string } }
+  | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
+  | { type: "done.invoke.authenticate"; data: AuthSession }
+  | { type: "done.invoke.authorize"; data: ThirdPartyAuthSession }
+  | { type: "done.invoke.done"; data: void }
 
 async function postDelegate(): Promise<void> {
   console.log("TODO: Push delegate to pubsub channel")
@@ -28,84 +41,109 @@ const RemoteSenderMachine =
       tsTypes: {} as import("./remote-sender.typegen").Typegen0,
       schema: { events: {} as Events, context: {} as Context },
       id: "auth-remote-sender",
-      initial: "IsDeviceRegistered",
+      initial: "Start",
       states: {
-        IsDeviceRegistered: {
-          always: [
-            {
-              cond: "isDeviceRegistered",
-              target: "KnownDevice",
+        Start: {
+          type: "parallel",
+          states: {
+            GetAuthRequest: {
+              initial: "Fetch",
+              states: {
+                Fetch: {
+                  invoke: {
+                    src: "getAuhtRequest",
+                    id: "getAuhtRequest",
+                    onDone: [
+                      {
+                        actions: "assignAuthRequest",
+                        target: "Done",
+                      },
+                    ],
+                  },
+                },
+                Done: {
+                  type: "final",
+                },
+              },
             },
-            {
-              target: "RegistrationMachine",
+            GetAppMeta: {
+              initial: "Fetch",
+              states: {
+                Fetch: {
+                  invoke: {
+                    src: "getAppMeta",
+                    id: "getAppMeta",
+                    onDone: [
+                      {
+                        actions: "assignAppMeta",
+                        target: "Done",
+                      },
+                    ],
+                  },
+                },
+                Done: {
+                  type: "final",
+                },
+              },
             },
-          ],
+          },
+          onDone: "AuthenticationMachine",
         },
-        KnownDevice: {
+        AuthenticationMachine: {
           invoke: {
-            src: "KnownDeviceMachine",
-            id: "known-device",
-            data: () => ({
-              // FIXME: replace mock
-              profile: { anchor: 10042 },
-              authRequest: {
-                hostname: "application.com",
-              },
-              authAppMeta: {
-                name: "myapp",
-                logo: "whatever",
-              },
+            src: "AuthenticationMachine",
+            id: "authenticate",
+            onDone: "AuthorizationMachine",
+            data: (context, event) => ({
+              appMeta: context.appMeta,
             }),
-            onDone: [
-              {
-                actions: "assignAuthSession",
-                target: "End",
-              },
-            ],
           },
         },
-        RegistrationMachine: {
+        AuthorizationMachine: {
           invoke: {
-            src: "RegistrationMachine",
-            id: "registration",
-            onDone: [
-              {
-                actions: "assignAuthSession",
-                target: "End",
-              },
-            ],
+            src: "AuthorizationMachine",
+            id: "authorize",
+            onDone: "End",
+            data: (context, event) =>
+              ({
+                authSession: event.data as AuthSession,
+                appMeta: context.appMeta,
+                authRequest: context.authRequest,
+              } as AuthorizationMachineContext),
           },
         },
         End: {
           invoke: {
             src: "postDelegate",
-            id: "post-delegate",
+            id: "done",
           },
           type: "final",
-          data: (context) => context,
         },
       },
     },
     {
-      guards: {
-        isDeviceRegistered: () => false,
-      },
+      guards: {},
       services: {
-        KnownDeviceMachine,
-        RegistrationMachine,
+        AuthenticationMachine,
+        AuthorizationMachine,
         postDelegate,
+        getAppMeta: () =>
+          Promise.resolve({
+            name: "MyApp",
+            logo: "http://localhost:3000/favicon.ico",
+          }),
+        getAuhtRequest: () =>
+          Promise.resolve({
+            hostname: "http://localhost:3000",
+          }),
       },
       actions: {
-        assignAuthSession: assign((context, event) => {
-          const authSession = event.data
-          console.log(">> RemoteSenderMachine action assignAuthSession", {
-            authSession,
-          })
-
-          return {
-            authSession,
-          }
-        }),
+        assignAppMeta: assign((context, event) => ({
+          appMeta: event.data,
+        })),
+        assignAuthRequest: assign((context, event) => ({
+          authRequest: event.data,
+        })),
       },
     },
   )

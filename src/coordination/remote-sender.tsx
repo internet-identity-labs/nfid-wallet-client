@@ -1,13 +1,15 @@
 import { useMachine } from "@xstate/react"
 
-import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
-import { RegistrationActor } from "frontend/state/machines/authentication/registration"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
+import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import RemoteSenderMachine, {
   RemoteSenderMachineType,
 } from "frontend/state/machines/authentication/remote-sender"
+import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
 
-import { KnownDeviceCoordinator } from "./device-known"
-import { RegistrationCoordinator } from "./registration"
+import { AuthenticationCoordinator } from "./authentication"
+import { AuthorizationCoordinator } from "./authorization"
 
 interface Props {
   machine?: RemoteSenderMachineType
@@ -16,23 +18,26 @@ interface Props {
 
 export default function RemoteIDPCoordinator({ machine }: Props) {
   const [state] = useMachine(machine || RemoteSenderMachine)
-  console.log(">> ", { state })
+  console.log(">> RemoteIDPCoordinator", {
+    state: state.value,
+    context: state.context,
+  })
 
   switch (true) {
-    case state.matches("KnownDevice"):
+    case state.matches("AuthenticationMachine"):
       return (
-        <KnownDeviceCoordinator
-          actor={state.children["known-device"] as KnownDeviceActor}
+        <AuthenticationCoordinator
+          actor={state.children.authenticate as AuthenticationActor}
         />
       )
-    case state.matches("RegistrationMachine"):
+    case state.matches("AuthorizationMachine"):
       return (
-        <RegistrationCoordinator
-          actor={state.children["registration"] as RegistrationActor}
+        <AuthorizationCoordinator
+          actor={state.children.authorize as AuthorizationActor}
         />
       )
-
+    case state.matches("End"):
     default:
-      return <div>RemoteIDPCoordinator</div>
+      return <Loader isLoading={true} />
   }
 }

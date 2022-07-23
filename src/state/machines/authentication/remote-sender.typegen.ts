@@ -3,43 +3,60 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    assignAuthSession: "done.invoke.known-device" | "done.invoke.registration"
+    assignAuthRequest: "done.invoke.getAuhtRequest"
+    assignAppMeta: "done.invoke.getAppMeta"
   }
   internalEvents: {
-    "done.invoke.known-device": {
-      type: "done.invoke.known-device"
+    "done.invoke.getAuhtRequest": {
+      type: "done.invoke.getAuhtRequest"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.registration": {
-      type: "done.invoke.registration"
+    "done.invoke.getAppMeta": {
+      type: "done.invoke.getAppMeta"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "": { type: "" }
+    "done.invoke.authenticate": {
+      type: "done.invoke.authenticate"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.authorize": {
+      type: "done.invoke.authorize"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
-    "error.platform.known-device": {
-      type: "error.platform.known-device"
+    "error.platform.getAuhtRequest": {
+      type: "error.platform.getAuhtRequest"
       data: unknown
     }
-    "error.platform.registration": {
-      type: "error.platform.registration"
+    "error.platform.getAppMeta": {
+      type: "error.platform.getAppMeta"
       data: unknown
     }
-    "done.invoke.post-delegate": {
-      type: "done.invoke.post-delegate"
+    "error.platform.authenticate": {
+      type: "error.platform.authenticate"
+      data: unknown
+    }
+    "error.platform.authorize": {
+      type: "error.platform.authorize"
+      data: unknown
+    }
+    "done.invoke.done": {
+      type: "done.invoke.done"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.post-delegate": {
-      type: "error.platform.post-delegate"
-      data: unknown
-    }
+    "error.platform.done": { type: "error.platform.done"; data: unknown }
   }
   invokeSrcNameMap: {
-    KnownDeviceMachine: "done.invoke.known-device"
-    RegistrationMachine: "done.invoke.registration"
-    postDelegate: "done.invoke.post-delegate"
+    getAuhtRequest: "done.invoke.getAuhtRequest"
+    getAppMeta: "done.invoke.getAppMeta"
+    AuthenticationMachine: "done.invoke.authenticate"
+    AuthorizationMachine: "done.invoke.authorize"
+    postDelegate: "done.invoke.done"
   }
   missingImplementations: {
     actions: never
@@ -48,18 +65,30 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    KnownDeviceMachine: ""
-    RegistrationMachine: ""
-    postDelegate: "done.invoke.known-device" | "done.invoke.registration"
+    AuthenticationMachine: "done.state.auth-remote-sender.Start"
+    getAuhtRequest: "xstate.init"
+    getAppMeta: "xstate.init"
+    AuthorizationMachine: "done.invoke.authenticate"
+    postDelegate: "done.invoke.authorize"
   }
-  eventsCausingGuards: {
-    isDeviceRegistered: ""
-  }
+  eventsCausingGuards: {}
   eventsCausingDelays: {}
   matchesStates:
-    | "IsDeviceRegistered"
-    | "KnownDevice"
-    | "RegistrationMachine"
+    | "Start"
+    | "Start.GetAuthRequest"
+    | "Start.GetAuthRequest.Fetch"
+    | "Start.GetAuthRequest.Done"
+    | "Start.GetAppMeta"
+    | "Start.GetAppMeta.Fetch"
+    | "Start.GetAppMeta.Done"
+    | "AuthenticationMachine"
+    | "AuthorizationMachine"
     | "End"
+    | {
+        Start?:
+          | "GetAuthRequest"
+          | "GetAppMeta"
+          | { GetAuthRequest?: "Fetch" | "Done"; GetAppMeta?: "Fetch" | "Done" }
+      }
   tags: never
 }

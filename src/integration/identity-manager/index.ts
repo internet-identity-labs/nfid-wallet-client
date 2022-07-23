@@ -11,6 +11,7 @@ import {
   PersonaResponse,
 } from "../_ic_api/identity_manager.did"
 import { im } from "../actors"
+import { authState } from "../internet-identity"
 
 export interface Account {
   name?: string
@@ -41,6 +42,7 @@ export interface Persona {
  * @returns {@link Account}
  */
 function mapAccount(account: AccountResponse): Account {
+  console.debug("mapAccount", { account })
   return {
     name: account.name.length ? account.name[0] : undefined,
     anchor: Number(account.anchor),
@@ -94,7 +96,14 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
  * Fetch account for the currently connected principal.
  */
 export async function fetchAccount() {
-  return await im.get_account().then((r) => mapAccount(unpackResponse(r)))
+  console.debug("fetchAccount")
+  return await im
+    .get_account()
+    .then((response) => {
+      console.debug("fetchAccount", { response })
+      return response
+    })
+    .then((r) => mapAccount(unpackResponse(r)))
 }
 
 /**
@@ -124,11 +133,16 @@ export async function createPersona(
   personaId: string,
   personaName: string,
 ) {
+  console.debug("createPersona", { domain, personaId, personaName })
   return await im
     .create_persona({
       domain,
       persona_id: personaId,
       persona_name: personaName,
+    })
+    .then((response) => {
+      console.debug("createPersona", { response })
+      return response
     })
     .then((r) => mapAccount(unpackResponse(r)))
 }

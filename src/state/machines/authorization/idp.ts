@@ -98,6 +98,7 @@ const IDPMachine =
             onDone: "AuthorizationMachine",
             data: (context, event) => ({
               appMeta: context.appMeta,
+              authRequest: context.authRequest,
             }),
           },
         },

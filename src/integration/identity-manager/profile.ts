@@ -9,13 +9,13 @@ export interface Profile {
 }
 
 export function fetchProfile(): Profile | undefined {
-  const local = window.localStorage.getItem("profile")
+  const local = window.localStorage.getItem("account")
   if (!local) return
   return JSON.parse(local) as Profile
 }
 
 export function setProfile(profile: Profile) {
-  window.localStorage.setItem("profile", JSON.stringify(profile))
+  window.localStorage.setItem("account", JSON.stringify(profile))
 }
 
 export let profile: Profile | undefined = fetchProfile()

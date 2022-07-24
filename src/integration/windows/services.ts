@@ -32,17 +32,25 @@ export async function handshake(): Promise<AuthorizationRequest> {
 /**
  * xstate service posting third party auth session to the client via window message channel
  * @param context
+ * @param event
  * @returns
  */
 export async function postDelegation(
-  context: unknown,
+  context: { authRequest?: { hostname: string } },
   event: { data: ThirdPartyAuthSession },
 ) {
-  postMessageToClient({
-    kind: "authorize-client-success",
-    delegations: event.data.delegations.map(prepareClientDelegate),
-    userPublicKey: event.data.userPublicKey,
-  })
+  console.debug(postDelegation.name, { context, event })
+  if (!context.authRequest?.hostname)
+    throw new Error("postDelegation context.authRequest.hostname missing")
+
+  postMessageToClient(
+    {
+      kind: "authorize-client-success",
+      delegations: event.data.delegations.map(prepareClientDelegate),
+      userPublicKey: event.data.userPublicKey,
+    },
+    context.authRequest.hostname,
+  )
   window.close()
   return undefined
 }

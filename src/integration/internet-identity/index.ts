@@ -1,4 +1,4 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent"
+import { ActorSubclass, Signature, SignIdentity } from "@dfinity/agent"
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
@@ -17,7 +17,7 @@ import {
   DeviceData,
   PublicKey,
   SessionKey,
-  SignedDelegation,
+  SignedDelegation as IISignedDelegation,
   Purpose,
   UserNumber,
   KeyType,
@@ -104,17 +104,23 @@ function authStateClosure() {
       identity: SignIdentity,
       delegationIdentity: DelegationIdentity,
       actor: ActorSubclass<InternetIdentity>,
+      chain?: DelegationChain | undefined,
+      sessionKey?: Ed25519KeyIdentity | undefined,
     ) {
       console.debug("authState.set", { identity, delegationIdentity })
       _actor = actor
       _identity = identity
       _delegationIdentity = delegationIdentity
+      _chain = chain
+      _sessionKey = sessionKey
       replaceIdentity(delegationIdentity)
     },
     get: () => ({
       identity: _identity,
       delegationIdentity: _delegationIdentity,
       actor: _actor,
+      chain: _chain,
+      sessionKey: _sessionKey,
     }),
     reset() {
       console.debug("authState.reset")
@@ -318,7 +324,7 @@ const retryGetDelegation = async (
   sessionKey: PublicKey,
   timestamp: bigint,
   maxRetries = 5,
-): Promise<SignedDelegation> => {
+): Promise<IISignedDelegation> => {
   for (let i = 0; i < maxRetries; i++) {
     // Linear backoff
     await new Promise((resolve) => {
@@ -370,7 +376,7 @@ export async function fetchDelegation(
   anchor: bigint,
   scope: string,
   sessionKey: SessionKey,
-): Promise<[PublicKey, SignedDelegation]> {
+): Promise<[PublicKey, IISignedDelegation]> {
   const prepRes = await prepareDelegation(anchor, scope, sessionKey)
   // TODO: move to error handler
   if (prepRes.length !== 2) {
@@ -400,7 +406,7 @@ export async function fetchDelegation(
  */
 export function buildSerializableSignedDelegation(
   publicKey: PublicKey,
-  signedDelegation: SignedDelegation,
+  signedDelegation: IISignedDelegation,
 ): JSONSerialisableSignedDelegation {
   return {
     delegation: {
@@ -805,13 +811,13 @@ export function reconstructIdentity({
 
 // This whole file is a big nightmare. I'm starting again down here. 😂
 
-export interface SignedDelegate {
+export interface SignedDelegation {
   delegation: {
-    expiration: number
-    pubkey: Uint8Array
+    expiration: bigint
+    pubkey: PublicKey
     targets: Principal[] | undefined
   }
-  signature: Uint8Array
+  signature: Array<number>
 }
 
 /**
@@ -860,7 +866,7 @@ export async function getDelegate(
   scope: string,
   sessionKey: PublicKey,
   timestamp: bigint,
-): Promise<SignedDelegate> {
+): Promise<SignedDelegation> {
   console.log(">> getDelegate", { userNumber, scope, sessionKey, timestamp })
 
   return ii
@@ -869,11 +875,11 @@ export async function getDelegate(
       if ("signed_delegation" in r) {
         return {
           delegation: {
-            expiration: Number(r.signed_delegation.delegation.expiration),
-            pubkey: new Uint8Array(r.signed_delegation.delegation.pubkey),
+            expiration: r.signed_delegation.delegation.expiration,
+            pubkey: r.signed_delegation.delegation.pubkey,
             targets: mapOptional(r.signed_delegation.delegation.targets),
           },
-          signature: new Uint8Array(r.signed_delegation.signature),
+          signature: r.signed_delegation.signature,
         }
       }
       throw new Error("No such delegation")
@@ -885,7 +891,7 @@ export async function getDelegateRetry(
   scope: string,
   sessionKey: PublicKey,
   timestamp: bigint,
-): Promise<SignedDelegate> {
+): Promise<SignedDelegation> {
   for (let i = 0; i < 10; i++) {
     try {
       // Linear backoff
@@ -920,16 +926,16 @@ export async function fetchDelegate(
   )
   console.debug(`${fetchDelegate.name} prepareDelegate`, { response: prepare })
 
-  const get = await getDelegateRetry(
+  const signedDelegation = await getDelegateRetry(
     userNumber,
     scope,
     sessionKey,
     prepare.timestamp,
   )
-  console.debug(`${fetchDelegate.name} getDelegate`, { response: get })
+  console.debug(`${fetchDelegate.name} getDelegate`, { signedDelegation })
 
   return {
-    delegations: [get],
+    signedDelegation,
     userPublicKey: prepare.userPublicKey,
   }
 }

@@ -1,6 +1,6 @@
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { SignedDelegate } from "../internet-identity"
+import { SignedDelegation } from "../internet-identity"
 import { BuiltDelegate } from "../internet-identity/build-delegate"
 
 /**
@@ -73,11 +73,11 @@ export function awaitMessageFromClient<T extends IdentityClientEvents>(
  * Prepare third party auth delegation for transmission via window message channel.
  */
 export const prepareClientDelegate = (
-  receivedDelegation: SignedDelegate,
+  receivedDelegation: SignedDelegation,
 ): DfinityAuthClientDelegate => ({
   delegation: {
     pubkey: Uint8Array.from(receivedDelegation.delegation.pubkey),
-    expiration: BigInt(receivedDelegation.delegation.expiration),
+    expiration: receivedDelegation.delegation.expiration,
     targets: undefined,
   },
   signature: Uint8Array.from(receivedDelegation.signature),

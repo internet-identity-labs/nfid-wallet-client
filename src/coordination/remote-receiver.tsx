@@ -20,9 +20,9 @@ import { RemoteAuthorizeAppUnknownDevice } from "frontend/ui/pages/remote-author
 export function RemoteReceiverCoordinator({
   actor,
 }: Actor<RemoteReceiverActor>) {
-  // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
-  const { messages } = useMessages()
   const [state, send] = useActor(actor)
+  // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
+  const { messages } = useMessages(state.context.secret)
   console.debug(">> RemoteReceiverCoordinator", { messages })
 
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES

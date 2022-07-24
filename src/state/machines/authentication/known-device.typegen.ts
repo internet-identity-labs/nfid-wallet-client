@@ -3,13 +3,13 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    assignProfile: "done.invoke.getProfileService"
+    assignProfile: "done.invoke.getLocalStorageProfileService"
     assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
     assignAccountLimit: "done.invoke.fetchAccountLimitService"
   }
   internalEvents: {
-    "done.invoke.getProfileService": {
-      type: "done.invoke.getProfileService"
+    "done.invoke.getLocalStorageProfileService": {
+      type: "done.invoke.getLocalStorageProfileService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -29,8 +29,8 @@ export interface Typegen0 {
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "xstate.init": { type: "xstate.init" }
-    "error.platform.getProfileService": {
-      type: "error.platform.getProfileService"
+    "error.platform.getLocalStorageProfileService": {
+      type: "error.platform.getLocalStorageProfileService"
       data: unknown
     }
     "error.platform.fetchAuthenticatorDevicesService": {
@@ -56,7 +56,7 @@ export interface Typegen0 {
     }
   }
   invokeSrcNameMap: {
-    getProfileService: "done.invoke.getProfileService"
+    getLocalStorageProfileService: "done.invoke.getLocalStorageProfileService"
     fetchAuthenticatorDevicesService: "done.invoke.fetchAuthenticatorDevicesService"
     fetchAccountLimitService: "done.invoke.fetchAccountLimitService"
     loginService: "done.invoke.loginService"
@@ -69,8 +69,8 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    getProfileService: "xstate.init"
-    fetchAuthenticatorDevicesService: "done.invoke.getProfileService"
+    getLocalStorageProfileService: "xstate.init"
+    fetchAuthenticatorDevicesService: "done.invoke.getLocalStorageProfileService"
     fetchAccountLimitService: "done.state.KnownDeviceMachine.Start.FetchDevices"
     loginService: "UNLOCK"
     fetchProfileService: "done.invoke.loginService"

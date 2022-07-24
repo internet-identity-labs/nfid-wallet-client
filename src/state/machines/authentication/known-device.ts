@@ -4,7 +4,7 @@ import { fetchAccountLimitService } from "frontend/integration/app-config/servic
 import { Profile } from "frontend/integration/identity-manager/profile"
 import {
   fetchProfileService,
-  getProfileService,
+  getLocalStorageProfileService,
 } from "frontend/integration/identity-manager/services"
 import { Device } from "frontend/integration/internet-identity"
 import {
@@ -33,7 +33,7 @@ export interface KnownDeviceMachineContext {
 export type Events =
   | { type: "UNLOCK" }
   | { type: "done.invoke.loginService"; data: LocalDeviceAuthSession }
-  | { type: "done.invoke.getProfileService"; data: Profile }
+  | { type: "done.invoke.getLocalStorageProfileService"; data: Profile }
   | { type: "done.invoke.fetchAccountLimit"; data: number }
   | { type: "done.invoke.fetchAuthenticatorDevicesService"; data: Device[] }
 
@@ -56,8 +56,8 @@ const KnownDeviceMachine =
           states: {
             LoadProfile: {
               invoke: {
-                src: "getProfileService",
-                id: "getProfileService",
+                src: "getLocalStorageProfileService",
+                id: "getLocalStorageProfileService",
                 onDone: [{ actions: "assignProfile", target: "FetchDevices" }],
               },
             },
@@ -152,7 +152,7 @@ const KnownDeviceMachine =
         fetchAccountLimitService,
         loginService,
         fetchProfileService,
-        getProfileService,
+        getLocalStorageProfileService,
       },
       actions: {
         assignProfile: assign({ profile: (_, event) => event.data }),

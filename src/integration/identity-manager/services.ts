@@ -6,10 +6,10 @@ import {
   fetchPersonas as _fetchPersonas,
   selectPersonas,
 } from "."
-import { fetchProfile, profile } from "./profile"
+import { loadProfileFromLocalStorage, profile } from "./profile"
 
-export function getProfileService() {
-  const profile = fetchProfile()
+export function getLocalStorageProfileService() {
+  const profile = loadProfileFromLocalStorage()
   if (!profile) throw new Error("getProfileService unregistered device")
 
   return Promise.resolve(profile)

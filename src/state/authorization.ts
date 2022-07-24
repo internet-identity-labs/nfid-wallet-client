@@ -15,7 +15,7 @@ export interface ThirdPartyAuthSession {
  * behalf of the user for a given scope.
  */
 export interface AuthorizationRequest {
-  maxTimeToLive: number
+  maxTimeToLive: bigint
   sessionPublicKey: Uint8Array
   hostname: string
   derivationOrigin?: string

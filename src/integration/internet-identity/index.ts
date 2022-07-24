@@ -826,9 +826,9 @@ export async function prepareDelegate(
   userNumber: number,
   scope: string,
   sessionKey: PublicKey,
-  maxTimeToLive?: number,
+  maxTimeToLive?: bigint,
 ) {
-  console.debug("prepareDelegate", {
+  console.debug(prepareDelegate.name, {
     userNumber,
     scope,
     sessionKey,
@@ -839,7 +839,7 @@ export async function prepareDelegate(
       BigInt(userNumber),
       scope,
       sessionKey,
-      reverseMapOptional(maxTimeToLive ? BigInt(maxTimeToLive) : undefined),
+      reverseMapOptional(maxTimeToLive ? maxTimeToLive : undefined),
     )
     .then(([userPublicKey, timestamp]) => ({
       userPublicKey: new Uint8Array(userPublicKey),
@@ -904,25 +904,29 @@ export async function fetchDelegate(
   userNumber: number,
   scope: string,
   sessionKey: PublicKey,
-  maxTimeToLive?: number,
+  maxTimeToLive?: bigint,
 ): Promise<ThirdPartyAuthSession> {
-  await renewDelegation()
+  console.debug(fetchDelegate.name, {
+    userNumber,
+    scope,
+    sessionKey,
+    maxTimeToLive,
+  })
   const prepare = await prepareDelegate(
     userNumber,
     scope,
     sessionKey,
     maxTimeToLive,
   )
-  console.debug("fetchDelegate prepareDelegate", { prepare })
+  console.debug(`${fetchDelegate.name} prepareDelegate`, { response: prepare })
 
-  await renewDelegation()
   const get = await getDelegateRetry(
     userNumber,
     scope,
     sessionKey,
     prepare.timestamp,
   )
-  console.debug("fetchDelegate getDelegate", { get })
+  console.debug(`${fetchDelegate.name} getDelegate`, { response: get })
 
   return {
     delegations: [get],

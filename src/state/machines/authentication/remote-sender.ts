@@ -1,5 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { getAuthRequestFromPath } from "frontend/apps/inter-device/services"
 import { AuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
@@ -16,14 +17,12 @@ interface Context {
   pubsubChannel: string
   authSession?: AuthSession
   appMeta: AuthorizingAppMeta
-  authRequest?: {
-    hostname: string
-  }
+  authRequest?: AuthorizationRequest
 }
 
 type Events =
   | { type: "done.invoke.known-device"; data: AuthSession }
-  | { type: "done.invoke.getAuhtRequest"; data: { hostname: string } }
+  | { type: "done.invoke.getAuthRequestFromPath"; data: AuthorizationRequest }
   | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
   | { type: "done.invoke.authenticate"; data: AuthSession }
   | { type: "done.invoke.authorize"; data: ThirdPartyAuthSession }
@@ -51,8 +50,8 @@ const RemoteSenderMachine =
               states: {
                 Fetch: {
                   invoke: {
-                    src: "getAuhtRequest",
-                    id: "getAuhtRequest",
+                    src: "getAuthRequestFromPath",
+                    id: "getAuthRequestFromPath",
                     onDone: [
                       {
                         actions: "assignAuthRequest",
@@ -96,6 +95,7 @@ const RemoteSenderMachine =
             onDone: "AuthorizationMachine",
             data: (context, event) => ({
               appMeta: context.appMeta,
+              authRequest: context.authRequest,
             }),
           },
         },
@@ -132,10 +132,7 @@ const RemoteSenderMachine =
             name: "MyApp",
             logo: "http://localhost:3000/favicon.ico",
           }),
-        getAuhtRequest: () =>
-          Promise.resolve({
-            hostname: "http://localhost:3000",
-          }),
+        getAuthRequestFromPath,
       },
       actions: {
         assignAppMeta: assign((context, event) => ({

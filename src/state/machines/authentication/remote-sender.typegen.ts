@@ -3,12 +3,12 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    assignAuthRequest: "done.invoke.getAuhtRequest"
+    assignAuthRequest: "done.invoke.getAuthRequestFromPath"
     assignAppMeta: "done.invoke.getAppMeta"
   }
   internalEvents: {
-    "done.invoke.getAuhtRequest": {
-      type: "done.invoke.getAuhtRequest"
+    "done.invoke.getAuthRequestFromPath": {
+      type: "done.invoke.getAuthRequestFromPath"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -28,8 +28,8 @@ export interface Typegen0 {
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "xstate.init": { type: "xstate.init" }
-    "error.platform.getAuhtRequest": {
-      type: "error.platform.getAuhtRequest"
+    "error.platform.getAuthRequestFromPath": {
+      type: "error.platform.getAuthRequestFromPath"
       data: unknown
     }
     "error.platform.getAppMeta": {
@@ -52,7 +52,7 @@ export interface Typegen0 {
     "error.platform.done": { type: "error.platform.done"; data: unknown }
   }
   invokeSrcNameMap: {
-    getAuhtRequest: "done.invoke.getAuhtRequest"
+    getAuthRequestFromPath: "done.invoke.getAuthRequestFromPath"
     getAppMeta: "done.invoke.getAppMeta"
     AuthenticationMachine: "done.invoke.authenticate"
     AuthorizationMachine: "done.invoke.authorize"
@@ -66,7 +66,7 @@ export interface Typegen0 {
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.state.auth-remote-sender.Start"
-    getAuhtRequest: "xstate.init"
+    getAuthRequestFromPath: "xstate.init"
     getAppMeta: "xstate.init"
     AuthorizationMachine: "done.invoke.authenticate"
     postDelegate: "done.invoke.authorize"

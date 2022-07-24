@@ -3,7 +3,6 @@ import {
   AuthorizingAppMeta,
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
-import { IDPMachineContext } from "frontend/state/machines/authorization/idp"
 
 import {
   awaitMessageFromClient,
@@ -21,7 +20,7 @@ export async function handshake(): Promise<AuthorizationRequest> {
   const response = awaitMessageFromClient<IdentityClientAuthEvent>(
     "authorize-client",
   ).then((event) => ({
-    maxTimeToLive: Number(event.data.maxTimeToLive),
+    maxTimeToLive: event.data.maxTimeToLive,
     sessionPublicKey: event.data.sessionPublicKey,
     hostname: event.origin,
   }))

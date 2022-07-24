@@ -30,7 +30,7 @@ const setupCoordinator = (userAgent: string, WebAuthNCapability: boolean) => {
       logo: "https://my-app.com/logo.svg",
     },
     authRequest: {
-      maxTimeToLive: 10,
+      maxTimeToLive: BigInt(10),
       sessionPublicKey: new Uint8Array([]),
       hostname: "myhost.com",
     },
@@ -80,7 +80,7 @@ describe("UnknownDeviceCoordinator", () => {
 
         expect(QR.toCanvas).toHaveBeenCalledWith(
           expect.anything(),
-          "http://localhost/remote-idp?applicationName=MyApp&applicationLogo=https%253A%252F%252Fmy-app.com%252Flogo.svg",
+          "http://localhost/ridp?applicationName=MyApp&applicationLogo=https%253A%252F%252Fmy-app.com%252Flogo.svg",
           { width: 192 },
           expect.anything(),
         )

@@ -88,6 +88,12 @@ export const useAuthorization = ({
       const scope = getScope(derivationOrigin ?? hostname, persona_id)
 
       const anchor = rawAnchor && BigInt(rawAnchor)
+      console.log(">> authorizeApp", {
+        anchor: anchor || userNumber,
+        scope,
+        sessionKey,
+        maxTimeToLive,
+      })
 
       const prepRes = await ii.prepare_delegation(
         anchor || userNumber,
@@ -95,6 +101,7 @@ export const useAuthorization = ({
         sessionKey,
         maxTimeToLive !== undefined ? [maxTimeToLive] : [],
       )
+      console.log(">> authorizeApp", { prepRes })
 
       // TODO: move to error handler
       if (prepRes.length !== 2) {
@@ -110,6 +117,8 @@ export const useAuthorization = ({
         sessionKey,
         timestamp,
       )
+      console.log(">> authorizeApp", { res })
+
       if (hasOwnProperty(res, "signed_delegation")) {
         const signedDelegation = res.signed_delegation
         // Parse the candid SignedDelegation into a format that `DelegationChain` understands.

@@ -32,14 +32,17 @@ export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
   event: { data: string },
 ): Promise<ThirdPartyAuthSession> {
+  console.debug("fetchDelegateService", { context, event })
   if (!context.authSession) {
     throw new Error("AuthSession missing in context.")
   }
   if (!context.authRequest) {
     throw new Error("AuthorizationRequest missing in context.")
   }
+  // FIXME: profile needs to be updated before this.
   const account = await fetchAccount()
   const scope = getScope(context.authRequest.hostname, Number(event.data))
+  console.debug("fetchDelegateService", { scope })
   return await fetchDelegate(
     account.anchor,
     scope,

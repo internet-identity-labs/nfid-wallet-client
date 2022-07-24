@@ -30,7 +30,7 @@ import { Profile } from "../identity-manager/profile"
 
 export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
-  event: { data: string },
+  event: { data: { accountId: string } },
 ): Promise<ThirdPartyAuthSession> {
   console.debug("fetchDelegateService", { context, event })
   if (!context.authSession) {
@@ -41,7 +41,10 @@ export async function fetchDelegateService(
   }
   // FIXME: profile needs to be updated before this.
   const account = await fetchProfile()
-  const scope = getScope(context.authRequest.hostname, Number(event.data))
+  const scope = getScope(
+    context.authRequest.hostname,
+    Number(event.data.accountId),
+  )
   console.debug("fetchDelegateService", { scope })
   return await fetchDelegate(
     account.anchor,

@@ -1,22 +1,5 @@
-import { PersonaResponse } from "frontend/integration/_ic_api/identity_manager.did"
-
-import { Persona } from ".."
-import { IIPersona, NFIDPersona, Persona as LegacyPersonas } from "./types"
-
-export const normalizePersonas = (
-  personas?: PersonaResponse[],
-): LegacyPersonas[] => {
-  if (!personas) return []
-
-  return personas
-    .map((persona: any) => {
-      if (typeof persona.ii_persona !== "undefined") {
-        return persona.ii_persona as IIPersona
-      }
-      return persona.nfid_persona as NFIDPersona
-    })
-    .filter(Boolean)
-}
+import { Account } from ".."
+import { NFIDPersona } from "./types"
 
 /**
  * Select accounts which pertain to given hostName. Uses dervitationOrigin exclusively if present.
@@ -44,11 +27,11 @@ export function selectAccounts(
   )
 }
 
-export function getNextPersonaId(filteredPersonas: NFIDPersona[]) {
+export function getNextAccountId(filteredPersonas: NFIDPersona[]) {
   const highest = filteredPersonas.reduce((last, persona) => {
     const current = parseInt(persona.persona_id, 10)
     return last < current ? current : last
-  }, 0)
+  }, -1)
   return `${highest + 1}`
 }
 
@@ -62,14 +45,14 @@ export function createAccount(
   personas: NFIDPersona[],
   hostName: string,
   derivationOrigin?: string,
-): Persona {
-  const newPersonaId = getNextPersonaId(
+): Account {
+  const newAccountId = getNextAccountId(
     selectAccounts(personas, hostName, derivationOrigin),
   )
 
-  const newPersona: Persona = {
-    personaId: newPersonaId,
-    personaName: `Account ${newPersonaId}`,
+  const newPersona: Account = {
+    accountId: newAccountId,
+    label: `Account ${newAccountId}`,
     domain: derivationOrigin ?? hostName,
   }
 

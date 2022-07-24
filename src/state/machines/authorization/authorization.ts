@@ -1,7 +1,7 @@
 import { assign, ActorRefFrom, createMachine, send } from "xstate"
 
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
-import { Persona } from "frontend/integration/identity-manager"
+import { Account } from "frontend/integration/identity-manager"
 import {
   createAccountService,
   fetchAccountsService,
@@ -19,18 +19,21 @@ export interface AuthorizationMachineContext {
   authSession: AuthSession
   authRequest: AuthorizationRequest
   userLimit?: number
-  accounts?: Persona[]
+  accounts?: Account[]
 }
 
 export type AuthorizationMachineEvents =
   | { type: "done.invoke.fetchAccountLimitService"; data: number }
-  | { type: "done.invoke.fetchAccountsService"; data: Persona[] }
+  | { type: "done.invoke.fetchAccountsService"; data: Account[] }
   | { type: "done.invoke.fetchDelegateService"; data: ThirdPartyAuthSession }
-  | { type: "done.invoke.createAccountService"; data: Persona["personaId"] }
+  | {
+      type: "done.invoke.createAccountService"
+      data: { accountId: Account["accountId"] }
+    }
   | { type: "SINGLE_ACCOUNT" }
   | { type: "MULTI_ACCOUNT" }
   | { type: "CREATE_ACCOUNT" }
-  | { type: "SELECT_ACCOUNT"; data: Persona["personaId"] }
+  | { type: "SELECT_ACCOUNT"; data: { accountId: Account["accountId"] } }
   | { type: "PRESENT_ACCOUNTS" }
 
 export interface Schema {
@@ -99,6 +102,7 @@ const AuthorizationMachine =
             src: "fetchDelegateService",
             id: "fetchDelegateService",
             onDone: "End",
+            onError: "PresentAccounts",
           },
         },
         End: {
@@ -118,7 +122,7 @@ const AuthorizationMachine =
                 ? "SELECT_ACCOUNT"
                 : "CREATE_ACCOUNT"
               : "PRESENT_ACCOUNTS",
-          data: event.data[0]?.personaId,
+          data: event.data[0]?.accountId,
         })),
       },
       services: {

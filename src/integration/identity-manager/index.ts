@@ -17,7 +17,7 @@ export interface Profile {
   name?: string
   anchor: number
   accessPoints: AccessPoint[]
-  personas: Persona[]
+  accounts: Account[]
   principalId: string
   phoneNumber?: string
 }
@@ -30,10 +30,10 @@ export interface AccessPoint {
   principalId: string
 }
 
-export interface Persona {
+export interface Account {
   domain: string
-  personaName: string
-  personaId: string
+  label: string
+  accountId: string
 }
 
 /**
@@ -47,7 +47,7 @@ function mapProfile(profile: AccountResponse): Profile {
     name: profile.name.length ? profile.name[0] : undefined,
     anchor: Number(profile.anchor),
     accessPoints: profile.access_points.map(mapAccessPoint),
-    personas: profile.personas.map(mapPersona),
+    accounts: profile.personas.map(mapAccount),
     principalId: profile.principal_id,
     phoneNumber: profile.name.length ? profile.name[0] : undefined,
   }
@@ -57,9 +57,9 @@ function mapProfile(profile: AccountResponse): Profile {
  * Map a persona to a legacy persona type.
  * @deprecated
  */
-export function mapPersonaToLegacy(persona: Persona): NFIDPersona {
+export function mapPersonaToLegacy(persona: Account): NFIDPersona {
   return {
-    persona_id: persona.personaId,
+    persona_id: persona.accountId,
     domain: persona.domain,
   }
 }
@@ -69,11 +69,11 @@ export function mapPersonaToLegacy(persona: Persona): NFIDPersona {
  * @param persona {@link PersonaResponse} Persona response from canister
  * @returns {@link Persona}
  */
-function mapPersona(persona: PersonaResponse): Persona {
+function mapAccount(persona: PersonaResponse): Account {
   return {
     domain: persona.domain,
-    personaName: persona.persona_name,
-    personaId: persona.persona_id,
+    label: persona.persona_name,
+    accountId: persona.persona_id,
   }
 }
 
@@ -107,14 +107,15 @@ export async function fetchProfile() {
 }
 
 /**
- * Fetch personas for the currently connected principal.
+ * Fetch accounts for the currently connected principal.
  */
-export async function fetchPersonas() {
+export async function fetchAccounts() {
+  console.debug("fetchAccounts im.read_personas")
   try {
     return await im
       .read_personas()
       .then(unpackResponse)
-      .then((r) => r.map(mapPersona))
+      .then((r) => r.map(mapAccount))
   } catch (e: any) {
     // This endpoint throws an error if there are no personas. Weird.
     if (e.name === "NfidHttpError") {
@@ -124,7 +125,10 @@ export async function fetchPersonas() {
   }
 }
 
-export function selectPersonas(personas: Persona[], domain: string) {
+/**
+ * selects all accounts by 3rd party app domain
+ */
+export function selectAccounts(personas: Account[], domain: string) {
   return personas.filter((p) => p.domain === domain)
 }
 

@@ -22,7 +22,7 @@ interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   accounts: NFIDPersona[]
   accountsLimit?: number
   onUnlockNFID: () => Promise<any>
-  onLogin: (personaId: string) => Promise<void>
+  onLogin: (accountId: string) => Promise<void>
   onCreateAccount: () => Promise<void>
 }
 
@@ -36,6 +36,13 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   onLogin,
   onCreateAccount,
 }) => {
+  console.debug("AuthorizeApp", {
+    isAuthenticated,
+    applicationName,
+    applicationLogo,
+    accounts,
+    accountsLimit,
+  })
   const isAccountsLimit = React.useMemo(() => {
     return accountsLimit && accounts.length > --accountsLimit
   }, [accounts.length, accountsLimit])

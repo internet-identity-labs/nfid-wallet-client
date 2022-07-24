@@ -828,6 +828,12 @@ export async function prepareDelegate(
   sessionKey: PublicKey,
   maxTimeToLive?: number,
 ) {
+  console.debug("prepareDelegate", {
+    userNumber,
+    scope,
+    sessionKey,
+    maxTimeToLive,
+  })
   return ii
     .prepare_delegation(
       BigInt(userNumber),
@@ -855,6 +861,8 @@ export async function getDelegate(
   sessionKey: PublicKey,
   timestamp: bigint,
 ): Promise<SignedDelegate> {
+  console.log(">> getDelegate", { userNumber, scope, sessionKey, timestamp })
+
   return ii
     .get_delegation(BigInt(userNumber), scope, sessionKey, timestamp)
     .then((r) => {

@@ -1,7 +1,7 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 
 import {
-  fetchAccount,
+  fetchProfile,
   registerAccount,
 } from "frontend/integration/identity-manager"
 import {
@@ -40,7 +40,7 @@ export async function fetchDelegateService(
     throw new Error("AuthorizationRequest missing in context.")
   }
   // FIXME: profile needs to be updated before this.
-  const account = await fetchAccount()
+  const account = await fetchProfile()
   const scope = getScope(context.authRequest.hostname, Number(event.data))
   console.debug("fetchDelegateService", { scope })
   return await fetchDelegate(

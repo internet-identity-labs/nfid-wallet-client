@@ -3,7 +3,7 @@
  */
 import {
   selectAccounts,
-  getNextPersonaId,
+  getNextAccountId,
   createAccount,
   getScope,
 } from "./utils"
@@ -62,11 +62,11 @@ describe("persona utils test suite", () => {
   describe("getNextPersonaId(filteredPersonas)", () => {
     it("should increment correctly", () => {
       const scope = "h5aet-waaaa-aaaab-qaamq-cai.raw.ic0.app"
-      const personas = [
+      const accounts = [
         { persona_id: "1", domain: scope },
         { persona_id: "2", domain: `https://${scope}` },
       ]
-      expect(getNextPersonaId(personas)).toBe("3")
+      expect(getNextAccountId(accounts)).toBe("3")
     })
   })
 
@@ -99,7 +99,7 @@ describe("persona utils test suite", () => {
         "test-canister-id.ic0.app",
       )
       expect(newAccount.domain).toBe("test-canister-id.ic0.app")
-      expect(newAccount.personaId).toBe("2")
+      expect(newAccount.accountId).toBe("2")
     })
   })
 })

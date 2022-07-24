@@ -34,8 +34,8 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
             isAuthenticated={!!state.context.authSession}
             accounts={state.context?.accounts?.map(mapPersonaToLegacy) || []}
             onUnlockNFID={async () => {}}
-            onLogin={async (persona) =>
-              send({ type: "SELECT_ACCOUNT", data: persona })
+            onLogin={async (accountId) =>
+              send({ type: "SELECT_ACCOUNT", data: { accountId } })
             }
             onCreateAccount={async () => send("CREATE_ACCOUNT")}
           />

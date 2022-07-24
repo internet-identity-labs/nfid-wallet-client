@@ -3,9 +3,11 @@ import { AuthorizationMachineContext } from "frontend/state/machines/authorizati
 import {
   createPersona,
   fetchProfile,
-  fetchPersonas as _fetchPersonas,
-  selectPersonas,
+  fetchAccounts,
+  selectAccounts,
+  mapPersonaToLegacy,
 } from "."
+import { getNextAccountId } from "./persona/utils"
 import { loadProfileFromLocalStorage, profile } from "./profile"
 
 export function getLocalStorageProfileService() {
@@ -25,22 +27,24 @@ export async function fetchAccountsService(
   if (!context.authRequest?.hostname) {
     throw new Error("Cannot filter personas without hostname")
   }
-  const personas = await _fetchPersonas()
-  return selectPersonas(personas, context.authRequest.hostname)
+  const personas = await fetchAccounts()
+  return selectAccounts(personas, context.authRequest.hostname)
 }
 
 export async function createAccountService(
   context: AuthorizationMachineContext,
-): Promise<string> {
+): Promise<{ accountId: string }> {
   console.debug("createAccount", { context })
-  if (!context.authRequest) throw new Error("Missing auth request")
+  if (!context.authRequest) throw new Error("context.authRequest missing")
+  if (!context.accounts) throw new Error("context.accounts missing")
+  const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
   const createPersonaReposne = await createPersona(
     context.authRequest?.hostname,
-    `${context.accounts?.length || "0"}`,
-    "Account #1",
+    accountId,
+    `Account #${accountId}`,
   )
   console.debug("createAccount", { createPersonaReposne })
-  return `${context.accounts?.length || "0"}`
+  return { accountId }
 }
 
 export async function fetchProfileService() {

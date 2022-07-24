@@ -29,11 +29,10 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
 
     // Map the iiPersonas by application to an array of objects
     const personaByHostnameArray = Object.entries(personasByHostname).map(
-      ([applicationName, iiPersonas]) => {
+      ([applicationName, accounts]) => {
         return {
           applicationName,
-          iiPersonas,
-          iiPersonasCount: iiPersonas.length,
+          accountsCount: accounts.length,
         }
       },
     )
@@ -68,8 +67,8 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
               <ListItem
                 key={index}
                 title={application.applicationName}
-                subtitle={`${application.iiPersonasCount} persona${
-                  application.iiPersonasCount > 1 ? "s" : ""
+                subtitle={`${application.accountsCount} persona${
+                  application.accountsCount > 1 ? "s" : ""
                 }`}
                 icon={
                   <span className="text-xl font-medium text-blue-base">

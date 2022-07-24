@@ -20,8 +20,7 @@ export interface Typegen0 {
     | "Receive"
     | "Receive.Await"
     | "Receive.AwaitDelegation"
-    | "Receive.End"
     | "End"
-    | { Receive?: "Await" | "AwaitDelegation" | "End" }
+    | { Receive?: "Await" | "AwaitDelegation" }
   tags: never
 }

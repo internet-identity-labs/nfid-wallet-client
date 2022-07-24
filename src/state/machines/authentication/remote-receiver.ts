@@ -35,28 +35,23 @@ const RemoteReceiverMachine =
                   target: "AwaitDelegation",
                 },
                 RECEIVE_DELEGATION: {
-                  target: "End",
+                  target: "#auth-remote-receiver.End",
                 },
               },
             },
             AwaitDelegation: {
               on: {
                 RECEIVE_DELEGATION: {
-                  target: "End",
+                  target: "#auth-remote-receiver.End",
                 },
               },
             },
-            End: {
-              type: "final",
-            },
-          },
-          onDone: {
-            target: "End",
           },
         },
         End: {
           type: "final",
-          data: (context) => context.authSession,
+          data: (context, event: { data: RemoteDeviceAuthSession }) =>
+            event.data,
         },
       },
     },

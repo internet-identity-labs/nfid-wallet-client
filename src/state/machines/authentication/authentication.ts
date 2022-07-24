@@ -1,8 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { ii } from "frontend/integration/actors"
 import { isDeviceRegistered } from "frontend/integration/identity-manager/services"
-import { authState } from "frontend/integration/internet-identity"
 import { AuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,

@@ -156,6 +156,13 @@ const UnknownDeviceMachine =
                 target: "End",
               },
             ],
+            data: (context, event) => {
+              console.debug("TrustDevice invoker", { context, event })
+              return {
+                // @ts-ignore leck mich am Arsch event.data
+                authSession: event.data as RemoteDeviceAuthSession,
+              }
+            },
           },
         },
         End: {

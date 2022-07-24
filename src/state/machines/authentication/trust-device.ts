@@ -1,4 +1,4 @@
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { ActorRefFrom, createMachine } from "xstate"
 
 import { RemoteDeviceAuthSession } from "frontend/state/authentication"
 import {
@@ -21,7 +21,7 @@ export const TrustDeviceMachine =
     {
       tsTypes: {} as import("./trust-device.typegen").Typegen0,
       schema: { events: {} as Events, context: {} as Context },
-      id: "auth-trust-device",
+      id: "TrustDeviceMachine",
       initial: "Select",
       states: {
         Select: {
@@ -75,6 +75,6 @@ export const TrustDeviceMachine =
     {},
   )
 
-export type RemoteReceiverActor = ActorRefFrom<typeof TrustDeviceMachine>
+export type TrustDeviceActor = ActorRefFrom<typeof TrustDeviceMachine>
 
 export default TrustDeviceMachine

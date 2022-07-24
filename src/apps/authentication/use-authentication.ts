@@ -5,12 +5,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
-import {
-  agent,
-  im,
-  invalidateIdentity,
-  replaceIdentity,
-} from "frontend/integration/actors"
+import { agent, im, invalidateIdentity } from "frontend/integration/actors"
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {
   authState,

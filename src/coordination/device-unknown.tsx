@@ -4,11 +4,13 @@ import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
+import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 
 import { RegistrationCoordinator } from "./registration"
 import { RemoteReceiverCoordinator } from "./remote-receiver"
+import { TrustDeviceCoordinator } from "./trust-device"
 
 export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
   const [state, send] = useActor(actor)
@@ -57,7 +59,11 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
         />
       )
     case state.matches("TrustDevice"):
-      return <div>TODO: TrustDevice</div>
+      return (
+        <TrustDeviceCoordinator
+          actor={state.children.trustDeviceMachine as TrustDeviceActor}
+        />
+      )
     case state.matches("End"):
     case state.matches("Start"):
     default:

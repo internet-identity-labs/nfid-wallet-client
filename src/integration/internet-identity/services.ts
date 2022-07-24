@@ -34,25 +34,38 @@ export async function fetchDelegateService(
 ): Promise<ThirdPartyAuthSession> {
   console.debug(fetchDelegateService.name, { context, event })
   if (!context.authSession) {
-    throw new Error("AuthSession missing in context.")
+    const message = "context.authSession missing"
+    console.error(fetchDelegateService.name, { message })
+    throw new Error(message)
   }
   if (!context.authRequest) {
-    throw new Error("AuthorizationRequest missing in context.")
+    const message = "AuthorizationRequest missing in context."
+    console.error(fetchDelegateService.name, { message })
+    throw new Error(message)
   }
   // FIXME: profile needs to be updated before this.
   const account = await fetchProfile()
+  console.debug(`${fetchDelegateService.name} ${fetchProfile.name}`, {
+    account,
+  })
   const scope = getScope(
     context.authRequest.hostname,
     Number(event.data.accountId),
     context.authRequest.derivationOrigin,
   )
-  console.debug(fetchDelegateService.name, { scope })
-  return await fetchDelegate(
+  console.debug(`${fetchDelegateService.name} ${getScope.name}`, {
+    scope,
+  })
+  const delegate = await fetchDelegate(
     account.anchor,
     scope,
     Array.from(context.authRequest.sessionPublicKey),
     context.authRequest.maxTimeToLive,
   )
+  console.debug(`${fetchDelegateService.name} ${fetchDelegate.name}`, {
+    delegate,
+  })
+  return delegate
 }
 
 export async function loginService(context: {

@@ -19,7 +19,7 @@ const testMachine = IDPMachine.withConfig({
     async handshake() {
       const r = handshake()
       return {
-        maxTimeToLive: Number(r.maxTimeToLive),
+        maxTimeToLive: r.maxTimeToLive,
         sessionPublicKey: r.sessionPublicKey,
         hostname: "test.com",
       }

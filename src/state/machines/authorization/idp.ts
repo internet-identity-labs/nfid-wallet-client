@@ -20,7 +20,7 @@ import AuthorizationMachine, {
 
 export interface IDPMachineContext {
   authRequest?: {
-    maxTimeToLive: number
+    maxTimeToLive: bigint
     sessionPublicKey: Uint8Array
     hostname: string
   }

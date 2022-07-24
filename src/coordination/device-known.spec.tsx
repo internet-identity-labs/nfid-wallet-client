@@ -72,7 +72,7 @@ describe("KnownDevice Coordinator", () => {
             logo: "https://my-app.com/logo.svg",
           },
           authRequest: {
-            maxTimeToLive: 10,
+            maxTimeToLive: BigInt(10),
             sessionPublicKey: new Uint8Array([]),
             hostname: plan.hostNameMock,
           },
@@ -127,7 +127,7 @@ describe("KnownDevice Coordinator", () => {
             logo: "https://my-app.com/logo.svg",
           },
           authRequest: {
-            maxTimeToLive: 10,
+            maxTimeToLive: BigInt(10),
             sessionPublicKey: new Uint8Array([]),
             hostname: plan.hostNameMock,
           },
@@ -210,7 +210,7 @@ describe("KnownDevice Coordinator", () => {
             logo: "https://my-app.com/logo.svg",
           },
           authRequest: {
-            maxTimeToLive: 10,
+            maxTimeToLive: BigInt(10),
             sessionPublicKey: new Uint8Array([]),
             hostname: plan.hostNameMock,
           },
@@ -230,7 +230,6 @@ describe("KnownDevice Coordinator", () => {
           screen.getByText(plan.unlockTarget).click()
         })
 
-        await waitFor(() => screen.getByText("End"))
         expect(MultiWebAuthnIdentity.fromCredentials).toHaveBeenCalledWith(
           [
             {
@@ -244,6 +243,7 @@ describe("KnownDevice Coordinator", () => {
           ],
           undefined,
         )
+        await waitFor(() => screen.getByText("End"))
         expect(DelegationChain.create).toHaveBeenCalled()
       })
     })

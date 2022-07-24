@@ -1,4 +1,4 @@
-import { SignedDelegate } from "frontend/integration/internet-identity"
+import { SignedDelegation } from "frontend/integration/internet-identity"
 
 /**
  * An auth session, signed by the private keys in II, delegating signing authority for a
@@ -6,7 +6,7 @@ import { SignedDelegate } from "frontend/integration/internet-identity"
  * session keys which the client has generated and provided to the identity provider.
  */
 export interface ThirdPartyAuthSession {
-  delegations: SignedDelegate[]
+  signedDelegation: SignedDelegation
   userPublicKey: Uint8Array
 }
 

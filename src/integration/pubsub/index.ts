@@ -98,6 +98,7 @@ export async function createTopic(topic: Topic) {
 }
 
 export async function postMessages(topic: Topic, messages: any[]) {
+  console.debug(postMessages.name, { topic, messages })
   return pubsub
     .post_messages(
       topic,
@@ -107,19 +108,21 @@ export async function postMessages(topic: Topic, messages: any[]) {
 }
 
 export async function getMessages(topic: Topic) {
+  console.debug(getMessages.name, { topic })
   return pubsub
     .get_messages(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
 }
 
 export const useMessages = (
+  topic: string,
   options: SWRConfiguration = {
     refreshInterval: 2000,
   },
 ) => {
   const { data, error, mutate } = useSWR<string[]>(
     "messages",
-    getMessages,
+    () => getMessages(topic),
     options,
   )
   return {

@@ -86,7 +86,13 @@ export async function loginService(context: {
     principalId: delegationIdentity.getPrincipal().toText(),
   })
 
-  authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
+  authState.set(
+    multiIdent._actualIdentity!,
+    delegationIdentity,
+    ii,
+    chain,
+    sessionKey,
+  )
 
   return {
     sessionSource: "localDevice",

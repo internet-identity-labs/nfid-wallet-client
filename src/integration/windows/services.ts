@@ -45,7 +45,7 @@ export async function postDelegation(
   postMessageToClient(
     {
       kind: "authorize-client-success",
-      delegations: event.data.delegations.map(prepareClientDelegate),
+      delegations: [prepareClientDelegate(event.data.signedDelegation)],
       userPublicKey: event.data.userPublicKey,
     },
     context.authRequest.hostname,

@@ -50,8 +50,11 @@ function opener() {
 
 export function postMessageToClient<T extends IdentityProviderEvents>(
   event: T,
+  hostname: string = "*",
 ) {
-  opener().postMessage(event, "*")
+  console.debug(postMessageToClient.name, { event, hostname })
+  const origin = opener()
+  origin.postMessage(event, hostname)
 }
 
 export function awaitMessageFromClient<T extends IdentityClientEvents>(

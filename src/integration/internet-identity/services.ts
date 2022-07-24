@@ -32,7 +32,7 @@ export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
   event: { data: { accountId: string } },
 ): Promise<ThirdPartyAuthSession> {
-  console.debug("fetchDelegateService", { context, event })
+  console.debug(fetchDelegateService.name, { context, event })
   if (!context.authSession) {
     throw new Error("AuthSession missing in context.")
   }
@@ -46,7 +46,7 @@ export async function fetchDelegateService(
     Number(event.data.accountId),
     context.authRequest.derivationOrigin,
   )
-  console.debug("fetchDelegateService", { scope })
+  console.debug(fetchDelegateService.name, { scope })
   return await fetchDelegate(
     account.anchor,
     scope,

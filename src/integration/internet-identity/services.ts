@@ -44,6 +44,7 @@ export async function fetchDelegateService(
   const scope = getScope(
     context.authRequest.hostname,
     Number(event.data.accountId),
+    context.authRequest.derivationOrigin,
   )
   console.debug("fetchDelegateService", { scope })
   return await fetchDelegate(

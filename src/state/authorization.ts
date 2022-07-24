@@ -31,12 +31,25 @@ export interface AuthorizingAppMeta {
 }
 
 /**
- * Generate scope string with host and persona. Omits persona salt for null or zero personas for parity with legacy II.
- * @param host the domain being connected to
- * @param persona number or null specifying the users persona
- * @returns
+ * Generate scope string with host and persona. Omits persona salt for zero account for parity with legacy II.
+ * @param aliasDomain the domain being connected to
+ * @param accountId number or null specifying the users persona
+ * @param derivationOrigin the derivation origin which should be used instead of alias domain
  */
-export function getScope(host: string, persona?: number) {
-  const withProtocol = !!host.match(/^http(s)?:\/\//) ? host : `https://${host}`
-  return `${persona ? `${persona}@` : ""}${withProtocol}`
+export function getScope(
+  aliasDomain: string,
+  accountId: number,
+  derivationOrigin?: string,
+) {
+  console.debug("getScope", {
+    aliasDomain,
+    persona: accountId,
+    derivationOrigin,
+  })
+  const host = derivationOrigin || aliasDomain
+  console.debug("getScope", { host })
+  const hostWithProtocoll = !!host.match(/^http(s)?:\/\//)
+    ? host
+    : `https://${host}`
+  return `${accountId ? `${accountId}@` : ""}${hostWithProtocoll}`
 }

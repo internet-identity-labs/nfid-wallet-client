@@ -2,7 +2,7 @@ import { AuthorizationMachineContext } from "frontend/state/machines/authorizati
 
 import {
   createPersona,
-  fetchAccount,
+  fetchProfile,
   fetchPersonas as _fetchPersonas,
   selectPersonas,
 } from "."
@@ -45,5 +45,5 @@ export async function createAccountService(
 
 export async function fetchProfileService() {
   console.debug("fetchProfileService")
-  return await fetchAccount()
+  return await fetchProfile()
 }

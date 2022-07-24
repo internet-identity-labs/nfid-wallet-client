@@ -13,7 +13,7 @@ import {
 import { im } from "../actors"
 import { authState } from "../internet-identity"
 
-export interface Account {
+export interface Profile {
   name?: string
   anchor: number
   accessPoints: AccessPoint[]
@@ -37,19 +37,19 @@ export interface Persona {
 }
 
 /**
- * Sanitize account response from canister into our internal representation
- * @param account {@link AccountResponse} Account response from canister
+ * Sanitize im.get_account response from canister into our internal profile representation
+ * @param profile {@link AccountResponse} Account response from canister
  * @returns {@link Account}
  */
-function mapAccount(account: AccountResponse): Account {
-  console.debug("mapAccount", { account })
+function mapProfile(profile: AccountResponse): Profile {
+  console.debug("mapAccount", { account: profile })
   return {
-    name: account.name.length ? account.name[0] : undefined,
-    anchor: Number(account.anchor),
-    accessPoints: account.access_points.map(mapAccessPoint),
-    personas: account.personas.map(mapPersona),
-    principalId: account.principal_id,
-    phoneNumber: account.name.length ? account.name[0] : undefined,
+    name: profile.name.length ? profile.name[0] : undefined,
+    anchor: Number(profile.anchor),
+    accessPoints: profile.access_points.map(mapAccessPoint),
+    personas: profile.personas.map(mapPersona),
+    principalId: profile.principal_id,
+    phoneNumber: profile.name.length ? profile.name[0] : undefined,
   }
 }
 
@@ -95,15 +95,15 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
 /**
  * Fetch account for the currently connected principal.
  */
-export async function fetchAccount() {
-  console.debug("fetchAccount")
+export async function fetchProfile() {
+  console.debug("fetchProfile im.get_account")
   return await im
     .get_account()
     .then((response) => {
-      console.debug("fetchAccount", { response })
+      console.debug("fetchProfile im.get_account", { response })
       return response
     })
-    .then((r) => mapAccount(unpackResponse(r)))
+    .then((r) => mapProfile(unpackResponse(r)))
 }
 
 /**
@@ -144,7 +144,7 @@ export async function createPersona(
       console.debug("createPersona", { response })
       return response
     })
-    .then((r) => mapAccount(unpackResponse(r)))
+    .then((r) => mapProfile(unpackResponse(r)))
 }
 
 /**

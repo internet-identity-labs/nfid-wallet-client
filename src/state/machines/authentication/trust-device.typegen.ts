@@ -5,7 +5,16 @@ export interface Typegen0 {
   eventsCausingActions: {}
   internalEvents: {
     "": { type: "" }
+    "done.invoke.canBeTrusted": {
+      type: "done.invoke.canBeTrusted"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
+    "error.platform.canBeTrusted": {
+      type: "error.platform.canBeTrusted"
+      data: unknown
+    }
     "done.invoke.registerWithWebAuthn": {
       type: "done.invoke.registerWithWebAuthn"
       data: unknown
@@ -26,6 +35,7 @@ export interface Typegen0 {
     }
   }
   invokeSrcNameMap: {
+    canBeTrusted: "done.invoke.canBeTrusted"
     registerWithWebAuthn: "done.invoke.registerWithWebAuthn"
     registerWithSecurityKey: "done.invoke.regsiterWithSecurityKey"
   }
@@ -36,14 +46,17 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
+    canBeTrusted: "xstate.init"
     registerWithWebAuthn: ""
     registerWithSecurityKey: ""
   }
   eventsCausingGuards: {
+    bool: "done.invoke.canBeTrusted"
     isMobileWebAuthn: ""
   }
   eventsCausingDelays: {}
   matchesStates:
+    | "CheckCapability"
     | "Select"
     | "IsMobileWebAuthn"
     | "RegisterWithWebAuthn"

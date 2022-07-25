@@ -22,11 +22,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.authorize": {
-      type: "done.invoke.authorize"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "xstate.init": { type: "xstate.init" }
     "error.platform.getDataFromPath": {
       type: "error.platform.getDataFromPath"
@@ -38,10 +33,6 @@ export interface Typegen0 {
     }
     "error.platform.authenticate": {
       type: "error.platform.authenticate"
-      data: unknown
-    }
-    "error.platform.authorize": {
-      type: "error.platform.authorize"
       data: unknown
     }
     "done.invoke.postRemoteDelegationService": {
@@ -58,7 +49,6 @@ export interface Typegen0 {
     getDataFromPath: "done.invoke.getDataFromPath"
     getAppMeta: "done.invoke.getAppMeta"
     AuthenticationMachine: "done.invoke.authenticate"
-    AuthorizationMachine: "done.invoke.authorize"
     postRemoteDelegationService: "done.invoke.postRemoteDelegationService"
   }
   missingImplementations: {
@@ -71,8 +61,7 @@ export interface Typegen0 {
     AuthenticationMachine: "done.state.auth-remote-sender.Start"
     getDataFromPath: "xstate.init"
     getAppMeta: "xstate.init"
-    AuthorizationMachine: "done.invoke.authenticate"
-    postRemoteDelegationService: "done.invoke.authorize"
+    postRemoteDelegationService: "done.invoke.authenticate"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
@@ -85,7 +74,6 @@ export interface Typegen0 {
     | "Start.GetAppMeta.Fetch"
     | "Start.GetAppMeta.Done"
     | "AuthenticationMachine"
-    | "AuthorizationMachine"
     | "End"
     | {
         Start?:

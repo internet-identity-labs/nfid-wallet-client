@@ -35,18 +35,23 @@ export async function handshake(): Promise<AuthorizationRequest> {
  * @returns
  */
 export async function postDelegation(
-  context: { authRequest?: { hostname: string } },
-  event: { data: ThirdPartyAuthSession },
+  context: {
+    authRequest?: { hostname: string },
+    thirdPartyAuthoSession?: ThirdPartyAuthSession
+  },
 ) {
   console.debug(postDelegation.name, { context, event })
   if (!context.authRequest?.hostname)
     throw new Error("postDelegation context.authRequest.hostname missing")
+  if (!context.thirdPartyAuthoSession) {
+    throw new Error("Missing third party auth session")
+  }
 
   postMessageToClient(
     {
       kind: "authorize-client-success",
-      delegations: [prepareClientDelegate(event.data.signedDelegation)],
-      userPublicKey: event.data.userPublicKey,
+      delegations: [prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation)],
+      userPublicKey: context.thirdPartyAuthoSession.userPublicKey,
     },
     context.authRequest.hostname,
   )

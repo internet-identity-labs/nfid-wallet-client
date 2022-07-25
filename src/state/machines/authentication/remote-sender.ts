@@ -33,94 +33,82 @@ type Events =
   | { type: "done.invoke.postRemoteDelegationService"; data: void }
 
 const RemoteSenderMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5gFsB7dMbWMAOwjFwDoBJWAETADcBLAYzACUwoHWKXwQAxIlAAHIrA7oORSpJAAPRACYAbAGY6ARgAcAdgCsG4wE4Np6zYA0IAJ6J9lvaYAMAFi1mv3oaGWjYAvqGOaFh4hCRkFNS0dADSlEQA7pSsnDxiEEpgdByUbEQA1oVlaZnYNDlgKjJyCkoq6giW+sZ0pqY6GhqdOt6WXvqOLggaw3SWZp59njaeOsbepuGRGDj4xKTkVDT0-ILCuMgtlACyyFyYxWB5BUUl5YX4p+jnl42y8orKJBqRCdbq9fqDfTDUaecbOVwrOieHxaQymLSmeZjcIREBpGjwIFRHaxfYJI6MFjsbh8ARCESQX7NAFtRDeDQTTSBOjrXyWYKDXxafQbXHEmJ7eKHJKpDJZak8Jn-VpA9qmLo9dE6HRaXQ2LSjTlTfSeWao4yGTzGAYabzGHSirbRXZxA6JY50s4XAE3O4PJU-VWIUzc-R8wI6TwG3w6I2WU2WdxWMOJ9b6AabEDil1k6X0ACi1ADLKDCH05csPI0bgCier5iNJsMPMMlhCkZ1pkMOksmezpKl7uLKtA7SMjcMONCQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5gFsB7dMbWMAOwjFwDoBldZXdOgcTHQEENMAlMAEdUcNgDEuAY0wBiCEUpg6AS0oA3IgGtlMdABFkzcbiIEACkcyJQAByKwV6FYpsgAHogAsATgBMdABsAIzBPj4A7MGBfoEArKGBADQgAJ6IsQAMdD6ZEXGBmV5hfl5xPgC+FSloWHiEJGQU1LSMzKwcXNy2tgCyXMh0kugy8orKapo6dHrdfQNu9o7Orkge3qV0CX4+ABzRexEAzH5xKekIXrs+dLuZmXc+wZlHEfuBgVU1fPXEpORUGj0JgsdBjJR0WDMUh0Wo4fB-JqA1og1iLBxOFyUNyeBC5G5+WKBJ5vOJ+XYxc6II5lW6BXZXI67a4RLwRQIRL4gOG-RoAlr0XhYKjOKRGLG9ZAyNRgcETDTaZRwkUqMWkdHLLE4xDBLx+YJ0I5HQpeF4RcJPKkIGlxOm7OL3D6BPVRTnVbk-BF85pAuhCzBEXAqABe4sUkulSjlqgV0zhgZDYA1mNWoFxeoCupOET8eUKudOVtyAVzRVyRz2gQrfiq7soRBo8DWPK9-x9KPabE4PD4ghEYiG0msayWKexa1xzz8VtKuxyuryrNNfhOK65LYabeRwM7nR7WD7oihdH042TK3HacQrromSepWCxuCcS8TJnrMN1yOcQdwXtr9iddPU3JEBTaUE939Q8xHPLUJ2vXYrWCfIchdY0mReLxnRrd0N0RflfVRLsuh6fpmEHEZhzsDEL21BApytNkIluPITntfVX3iIC6lbUDCN3bs5jIwZTyUWDU3WBAQi8VCiUyZ0Cn1CIrQdI46HJU4cxfKtmTibj4RAgiOwgwTSIWEcaLgq8EDeRiiluY1MlzXYV2QmJ9N5LcwKI8TL0kl8kKcnIogrOITiKQpPlw4D8PbQU+BVNUJSlTAZV8uipwCbTwleQonjiZS0mpXVPx8I4It0op8g83ijPirAE1DC8I1SsSLM1CTcQKq1dgibIc0fQoTiee4vBqwy4roABRah0vghByn60oXmucJcxOHq4jnHMngUo0q2fcbYu3ObrPKq1ytve5MhfLICquWsKiAA */
   createMachine(
     {
-      tsTypes: {} as import("./remote-sender.typegen").Typegen0,
-      schema: { events: {} as Events, context: {} as Context },
-      id: "auth-remote-sender",
-      initial: "Start",
+  tsTypes: {} as import("./remote-sender.typegen").Typegen0,
+  schema: { events: {} as Events, context: {} as Context },
+  id: "auth-remote-sender",
+  initial: "Start",
+  states: {
+    Start: {
+      type: "parallel",
       states: {
-        Start: {
-          type: "parallel",
+        GetAuthRequest: {
+          initial: "Fetch",
           states: {
-            GetAuthRequest: {
-              initial: "Fetch",
-              states: {
-                Fetch: {
-                  invoke: {
-                    src: "getDataFromPath",
-                    id: "getDataFromPath",
-                    onDone: [
-                      {
-                        actions: "assignAuthRequest",
-                        target: "Done",
-                      },
-                    ],
+            Fetch: {
+              invoke: {
+                src: "getDataFromPath",
+                id: "getDataFromPath",
+                onDone: [
+                  {
+                    actions: "assignAuthRequest",
+                    target: "Done",
                   },
-                },
-                Done: {
-                  type: "final",
-                },
+                ],
               },
             },
-            GetAppMeta: {
-              initial: "Fetch",
-              states: {
-                Fetch: {
-                  invoke: {
-                    src: "getAppMeta",
-                    id: "getAppMeta",
-                    onDone: [
-                      {
-                        actions: "assignAppMeta",
-                        target: "Done",
-                      },
-                    ],
-                  },
-                },
-                Done: {
-                  type: "final",
-                },
-              },
+            Done: {
+              type: "final",
             },
           },
-          onDone: "AuthenticationMachine",
         },
-        AuthenticationMachine: {
-          invoke: {
-            src: "AuthenticationMachine",
-            id: "authenticate",
-            onDone: "AuthorizationMachine",
-            data: (context, event) => ({
-              appMeta: context.appMeta,
-              authRequest: context.authRequest,
-            }),
+        GetAppMeta: {
+          initial: "Fetch",
+          states: {
+            Fetch: {
+              invoke: {
+                src: "getAppMeta",
+                id: "getAppMeta",
+                onDone: [
+                  {
+                    actions: "assignAppMeta",
+                    target: "Done",
+                  },
+                ],
+              },
+            },
+            Done: {
+              type: "final",
+            },
           },
-        },
-        AuthorizationMachine: {
-          invoke: {
-            src: "AuthorizationMachine",
-            id: "authorize",
-            onDone: "End",
-            data: (context, event) =>
-              ({
-                authSession: event.data as AuthSession,
-                appMeta: context.appMeta,
-                authRequest: context.authRequest,
-              } as AuthorizationMachineContext),
-          },
-        },
-        End: {
-          invoke: {
-            src: "postRemoteDelegationService",
-            id: "postRemoteDelegationService",
-            data: (context) => context,
-          },
-          type: "final",
         },
       },
+      onDone: {
+        target: "AuthenticationMachine",
+      },
     },
+    AuthenticationMachine: {
+      invoke: {
+        src: "AuthenticationMachine",
+        id: "authenticate",
+        onDone: [
+          {
+            target: "End",
+          },
+        ],
+      },
+    },
+    End: {
+      invoke: {
+        src: "postRemoteDelegationService",
+        id: "postRemoteDelegationService",
+      },
+      type: "final",
+    },
+  },
+},
     {
       guards: {},
       services: {

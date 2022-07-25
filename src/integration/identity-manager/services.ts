@@ -8,7 +8,7 @@ import {
   mapPersonaToLegacy,
 } from "."
 import { getNextAccountId } from "./persona/utils"
-import { loadProfileFromLocalStorage, profile } from "./profile"
+import { loadProfileFromLocalStorage } from "./profile"
 
 export function getLocalStorageProfileService() {
   const profile = loadProfileFromLocalStorage()
@@ -18,7 +18,7 @@ export function getLocalStorageProfileService() {
 }
 
 export function isDeviceRegistered() {
-  return !!profile
+  return !!loadProfileFromLocalStorage()
 }
 
 export async function fetchAccountsService(

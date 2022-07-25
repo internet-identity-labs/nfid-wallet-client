@@ -23,12 +23,7 @@ export function RemoteReceiverCoordinator({
   const [state, send] = useActor(actor)
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
   const { messages } = useMessages(state.context.secret)
-  console.debug(">> RemoteReceiverCoordinator", { messages })
-
-  // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
-  const handleAwaitConfirmation = React.useCallback(() => {
-    send("AWAIT_DELEGATION")
-  }, [])
+  console.debug(RemoteReceiverCoordinator.name, { messages })
 
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
   const handleRemoteRegister = React.useCallback(
@@ -41,10 +36,7 @@ export function RemoteReceiverCoordinator({
         type: "RECEIVE_DELEGATION",
         data: {
           sessionSource: "remoteDevice",
-          delegationIdentity: reconstructIdentity({
-            chain: message.reconstructableIdentity.chain,
-            sessionKey: message.reconstructableIdentity.sessionKey,
-          }),
+          delegationIdentity: reconstructIdentity(message.reconstructableIdentity),
           identity: multiIdent._actualIdentity as SignIdentity,
         },
       })
@@ -59,31 +51,25 @@ export function RemoteReceiverCoordinator({
     const awaitConfirmation = jMessages?.find(isWaitForConfigramtionMessage)
 
     if (remoteRegister) handleRemoteRegister(remoteRegister)
-    if (awaitConfirmation) handleAwaitConfirmation()
   }, [messages])
 
-  switch (true) {
-    case state.matches("Receive"):
-      return (
-        <RemoteAuthorizeAppUnknownDevice
-          applicationLogo={state.context.appMeta?.logo || ""}
-          applicationName={state.context.appMeta?.name || ""}
-          registerDeviceDeciderPath={""}
-          registerSameDevicePath={""}
-          isLoading={state.matches("Receive.AwaitDelegation")}
-          showRegister={false}
-          url={remoteReceiverUrl({
-            applicationDerivationOrigin:
-              state.context.authRequest?.derivationOrigin,
-            domain: state.context.authRequest?.hostname || "", // what goes here?
-            secret: state.context.secret,
-            maxTimeToLive: state.context.authRequest?.maxTimeToLive,
-            applicationName: state.context.appMeta?.name,
-            applicationLogo: state.context.appMeta?.logo,
-          })}
-        />
-      )
-    default:
-      return <div>RegistrationCoordinator</div>
-  }
+
+  return (
+    <RemoteAuthorizeAppUnknownDevice
+      applicationLogo={state.context.appMeta?.logo || ""}
+      applicationName={state.context.appMeta?.name || ""}
+      registerDeviceDeciderPath={""}
+      registerSameDevicePath={""}
+      showRegister={false}
+      url={remoteReceiverUrl({
+        applicationDerivationOrigin:
+          state.context.authRequest?.derivationOrigin,
+        domain: state.context.authRequest?.hostname as string,
+        secret: state.context.secret,
+        maxTimeToLive: state.context.authRequest?.maxTimeToLive,
+        applicationName: state.context.appMeta?.name,
+        applicationLogo: state.context.appMeta?.logo,
+      })}
+    />
+  )
 }

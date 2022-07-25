@@ -37,20 +37,17 @@ export function isWaitForConfigramtionMessage(
 export interface RemoteLoginRegisterMessage extends BaseMessage {
   anchor: number
   reconstructableIdentity: ReconstructableIdentity
-  signedDelegation: JSONSerialisableSignedDelegation
 }
 
 export function buildRemoteLoginRegisterMessage(
   anchor: bigint,
   chain: DelegationChain,
   sessionKey: Ed25519KeyIdentity,
-  jsonSerialisableDelegation: JSONSerialisableSignedDelegation,
 ): RemoteLoginRegisterMessage {
   return {
     type: "remote-login-register",
     anchor: Number(anchor),
     reconstructableIdentity: { chain, sessionKey },
-    signedDelegation: jsonSerialisableDelegation,
   }
 }
 

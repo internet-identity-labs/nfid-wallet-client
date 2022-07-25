@@ -72,7 +72,6 @@ export const useAuthorizeApp = () => {
         anchor,
         chain,
         sessionKey,
-        buildSerializableSignedDelegation(...delegation),
       )
 
       const response = await postMessages(secret, [message])

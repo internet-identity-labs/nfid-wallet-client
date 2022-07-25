@@ -24,16 +24,6 @@ export const WAIT_FOR_CONFIRMATION_MESSAGE: BaseMessage = {
   type: "remote-login-wait-for-user",
 }
 
-export interface WaitForConfirmationMessage extends BaseMessage {
-  type: "remote-login-wait-for-user"
-}
-
-export function isWaitForConfigramtionMessage(
-  message: BaseMessage,
-): message is WaitForConfirmationMessage {
-  return message.type === "remote-login-wait-for-user"
-}
-
 export interface RemoteLoginRegisterMessage extends BaseMessage {
   anchor: number
   reconstructableIdentity: ReconstructableIdentity

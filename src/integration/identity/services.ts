@@ -1,11 +1,8 @@
-import { reverseMapOptional } from "../_common"
-import { loadProfileFromLocalStorage } from "../identity-manager/profile"
-import {
-  authState,
-  buildSerializableSignedDelegation,
-} from "../internet-identity"
-import { buildRemoteLoginRegisterMessage, postMessages } from "../pubsub"
 import { AuthSession } from "frontend/state/authentication"
+
+import { loadProfileFromLocalStorage } from "../identity-manager/profile"
+import { authState } from "../internet-identity"
+import { buildRemoteLoginRegisterMessage, postMessages } from "../pubsub"
 
 export async function postRemoteDelegationService(
   context: { pubsubChannel?: string },

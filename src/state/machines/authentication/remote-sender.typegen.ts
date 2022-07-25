@@ -74,6 +74,7 @@ export interface Typegen0 {
     | "Start.GetAppMeta.Fetch"
     | "Start.GetAppMeta.Done"
     | "AuthenticationMachine"
+    | "PostDelegation"
     | "End"
     | {
         Start?:

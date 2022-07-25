@@ -10,7 +10,6 @@ import {
 } from "frontend/integration/internet-identity"
 import {
   isRemoteLoginRegisterMessage,
-  isWaitForConfigramtionMessage,
   RemoteLoginRegisterMessage,
   useMessages,
 } from "frontend/integration/pubsub"
@@ -36,7 +35,9 @@ export function RemoteReceiverCoordinator({
         type: "RECEIVE_DELEGATION",
         data: {
           sessionSource: "remoteDevice",
-          delegationIdentity: reconstructIdentity(message.reconstructableIdentity),
+          delegationIdentity: reconstructIdentity(
+            message.reconstructableIdentity,
+          ),
           identity: multiIdent._actualIdentity as SignIdentity,
         },
       })
@@ -46,13 +47,12 @@ export function RemoteReceiverCoordinator({
 
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
   React.useEffect(() => {
-    const jMessages = messages?.map((m) => JSON.parse(m))
-    const remoteRegister = jMessages?.find(isRemoteLoginRegisterMessage)
-    const awaitConfirmation = jMessages?.find(isWaitForConfigramtionMessage)
+    const remoteRegister = messages
+      ?.map((m) => JSON.parse(m))
+      ?.find(isRemoteLoginRegisterMessage)
 
     if (remoteRegister) handleRemoteRegister(remoteRegister)
   }, [messages])
-
 
   return (
     <RemoteAuthorizeAppUnknownDevice

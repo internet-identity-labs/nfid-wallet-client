@@ -9,15 +9,13 @@ import {
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
 
-import AuthorizationMachine, {
-  AuthorizationMachineContext,
-} from "../authorization/authorization"
 import AuthenticationMachine from "./authentication"
+import { getAppMeta } from "frontend/integration/windows/services"
 
 interface Context {
-  pubsubChannel: string
+  pubsubChannel?: string
   authSession?: AuthSession
-  appMeta: AuthorizingAppMeta
+  appMeta?: AuthorizingAppMeta
   authRequest?: AuthorizationRequest
 }
 
@@ -93,11 +91,11 @@ const RemoteSenderMachine =
       invoke: {
         src: "AuthenticationMachine",
         id: "authenticate",
-        onDone: [
-          {
-            target: "End",
-          },
-        ],
+        onDone: "End",
+        data: (context) => ({
+          appMeta: context.appMeta,
+          authRequest: context.authRequest
+        })
       },
     },
     End: {
@@ -113,13 +111,8 @@ const RemoteSenderMachine =
       guards: {},
       services: {
         AuthenticationMachine,
-        AuthorizationMachine,
         postRemoteDelegationService,
-        getAppMeta: () =>
-          Promise.resolve({
-            name: "MyApp",
-            logo: "http://localhost:3000/favicon.ico",
-          }),
+        getAppMeta,
         getDataFromPath,
       },
       actions: {

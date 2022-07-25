@@ -2,16 +2,38 @@
  * @jest-environment jsdom
  */
 import "@testing-library/jest-dom"
-import { render, fireEvent, waitFor, screen, act } from "@testing-library/react"
-import React from "react"
+import { interpret } from "xstate"
 
+import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
 import { mockIdentityClientAuthEvent } from "frontend/integration/windows/__mock"
 import IDPMachine from "frontend/state/machines/authorization/idp"
+import { im } from "frontend/integration/actors"
+import { ii } from 'frontend/integration/actors' 
 
-import IDPCoordinator from "./idp"
-import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
-import { interpret } from "xstate"
-import { done } from "xstate/lib/actions"
+const challengeMock = jest.fn(async () => ({
+    png_base64: 'string',
+    challenge_key: 'ChallengeKey',
+  }))
+
+// @ts-ignore: with options
+ii.create_challenge = challengeMock
+
+const readApplicationsMock = jest.fn(async () => ({
+  data: [
+    [
+      {
+        user_limit: 5,
+        domain: 'test.com',
+        name: 'string'
+      }
+    ]
+  ],
+  error: [],
+  status_code: 200
+}))
+
+// @ts-ignore: withoptions
+im.read_applications = readApplicationsMock
 
 const handshake = jest.fn(mockIdentityClientAuthEvent)
 const getAppMeta = jest.fn(async () => ({
@@ -33,8 +55,21 @@ const testMachine = IDPMachine.withConfig({
   },
 }).withContext({})
 
-describe("IDP coordinator", () => {
-  const { container } = render(<IDPCoordinator machine={testMachine} />)
+const testMachineMockAuthn = testMachine.withConfig({
+  services: {
+    AuthenticationMachine: async () => {
+      return {
+        identity: await factoryDelegationIdentity(),
+        delegationIdentity: await factoryDelegationIdentity(),
+        sessionSource: "remoteDevice"
+      }
+    }
+  }
+})
+
+describe("IDP Machine", () => {
+
+  interpret(testMachine).start()
 
   it("posts ready message upon initialization", () => {
     expect(handshake.mock.calls.length).toBe(1)
@@ -55,12 +90,36 @@ describe("IDP coordinator", () => {
       }).start()
     })
 
-    it("invokes authentication machine with correct ontext", (done) => {
+    it("invokes authentication machine with correct context", (done) => {
       interpret(testMachine).onTransition((state) => {
         if (state.matches("AuthenticationMachine")) {
           const context = state.children.authenticate.getSnapshot().context
           expect(Object.keys(context)).toContain("appMeta")
           expect(Object.keys(context)).toContain("authRequest")
+          done()
+        }
+      }).start()
+    })
+  })
+
+  describe("authorization", () => {
+
+    it("invokes authorization machine after authentication", (done) => {
+      interpret(testMachineMockAuthn).onTransition((state) => {
+        if (state.matches("AuthorizationMachine")) {
+          expect(state.matches("AuthorizationMachine")).toBeTruthy()
+          done()
+        }
+      }).start()
+    })
+
+    it("invokes authorization machine with correct context", (done) => {
+      interpret(testMachineMockAuthn).onTransition((state) => {
+        if (state.matches("AuthorizationMachine")) {
+          const context = state.children.authorize.getSnapshot().context
+          expect(Object.keys(context)).toContain("appMeta")
+          expect(Object.keys(context)).toContain("authRequest")
+          expect(Object.keys(context)).toContain("authSession")
           done()
         }
       }).start()

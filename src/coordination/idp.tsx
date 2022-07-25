@@ -1,4 +1,5 @@
 import { useMachine } from "@xstate/react"
+import React from "react"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -19,10 +20,14 @@ interface Props {
 export default function IDPCoordinator({ machine }: Props) {
   const [state] = useMachine(machine || IDPMachine)
 
-  console.debug("IDPCoordinator", {
-    context: state.context,
-    state: state.value,
-  })
+  React.useEffect(
+    () =>
+      console.debug("IDPCoordinator", {
+        context: state.context,
+        state: state.value,
+      }),
+    [state.value, state.context],
+  )
 
   switch (true) {
     case state.matches("AuthenticationMachine"):

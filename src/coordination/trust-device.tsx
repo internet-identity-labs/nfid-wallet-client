@@ -1,19 +1,25 @@
 import { useActor } from "@xstate/react"
+import React from "react"
 
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
 
 export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
   const [state, send] = useActor(actor)
-  console.debug(TrustDeviceCoordinator.name, {
-    context: state.context,
-    state: state.value,
-  })
+  React.useEffect(
+    () =>
+      console.debug(TrustDeviceCoordinator.name, {
+        context: state.context,
+        state: state.value,
+      }),
+    [state.value, state.context],
+  )
   switch (true) {
     case state.matches("Select"):
     case state.matches("IsMobileWebAuthn"):
     case state.matches("RegisterWithWebAuthn"):
     case state.matches("RegisterWithSecurityKey"):
+    case state.matches("CheckCapability"):
     case state.matches("End"):
       return (
         <AuthorizeRegisterDeciderScreen
@@ -24,6 +30,7 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
             state.matches("IsMobileWebAuthn") ||
             state.matches("RegisterWithSecurityKey") ||
             state.matches("RegisterWithWebAuthn") ||
+            state.matches("CheckCapability") ||
             state.matches("End")
           }
         />

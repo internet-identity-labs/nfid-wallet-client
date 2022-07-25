@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import React from "react"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -15,10 +16,14 @@ import { TrustDeviceCoordinator } from "./trust-device"
 export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
   const [state, send] = useActor(actor)
 
-  console.debug("UnknownDeviceCoordinator", {
-    context: state.context,
-    state: state.value,
-  })
+  React.useEffect(
+    () =>
+      console.debug("UnknownDeviceCoordinator", {
+        context: state.context,
+        state: state.value,
+      }),
+    [state.value, state.context],
+  )
 
   switch (true) {
     case state.matches("ExistingAnchor"):

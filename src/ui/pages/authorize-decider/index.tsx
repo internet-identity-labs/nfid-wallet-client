@@ -44,13 +44,23 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   isLoading,
   authError,
 }) => {
-  console.debug("AuthorizeDecider", {
-    applicationName,
-    applicationLogo,
-    showAdvancedOptions,
-    isLoading,
-    authError,
-  })
+  React.useEffect(
+    () =>
+      console.debug("AuthorizeDecider", {
+        applicationName,
+        applicationLogo,
+        showAdvancedOptions,
+        isLoading,
+        authError,
+      }),
+    [
+      applicationName,
+      applicationLogo,
+      showAdvancedOptions,
+      isLoading,
+      authError,
+    ],
+  )
 
   const containerRef = React.useRef<HTMLDivElement | null>(null)
   const {

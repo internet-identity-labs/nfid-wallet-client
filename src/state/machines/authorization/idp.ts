@@ -101,26 +101,23 @@ createMachine(
       invoke: {
         src: "AuthenticationMachine",
         id: "authenticate",
-        onDone: [
-          {
-            target: "AuthorizationMachine",
-          },
-        ],
-        data: (context, event) => ({
+        onDone: "AuthorizationMachine",
+        data: (context) => ({
           appMeta: context.appMeta,
           authRequest: context.authRequest
-        })
+        } as AuthenticationMachineContext)
       },
     },
     AuthorizationMachine: {
       invoke: {
         src: "AuthorizationMachine",
         id: "authorize",
-        onDone: [
-          {
-            target: "TrustDevice",
-          },
-        ],
+        onDone:"TrustDevice",
+        data: (context, event) => ({
+          appMeta: context.appMeta,
+          authRequest: context.authRequest,
+          authSession: event.data,
+        } as AuthorizationMachineContext)
       },
     },
     TrustDevice: {

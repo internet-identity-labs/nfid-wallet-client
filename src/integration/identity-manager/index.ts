@@ -117,6 +117,7 @@ export async function fetchAccounts() {
       .then(unpackResponse)
       .then((r) => r.map(mapAccount))
   } catch (e: any) {
+    // TODO: This note based on an incorrect assumption. Remove.
     // This endpoint throws an error if there are no personas. Weird.
     if (e.name === "NfidHttpError") {
       return []

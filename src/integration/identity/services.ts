@@ -8,7 +8,7 @@ import { buildRemoteLoginRegisterMessage, postMessages } from "../pubsub"
 import { AuthSession } from "frontend/state/authentication"
 
 export async function postRemoteDelegationService(
-  context: { pubsubChannel: string },
+  context: { pubsubChannel?: string },
   event: { data: AuthSession },
 ): Promise<void> {
   console.debug("postRemoteDelegationService", { context, event })
@@ -17,6 +17,7 @@ export async function postRemoteDelegationService(
     throw new Error("postRemoteDelegationService authState missing chain")
   if (!sessionKey)
     throw new Error("postRemoteDelegationService authState missing sessionKey")
+  if (!context.pubsubChannel) throw new Error("Missing pubsub channel")
 
   const profile = loadProfileFromLocalStorage()
   if (!profile)

@@ -151,11 +151,7 @@ const UnknownDeviceMachine =
           invoke: {
             src: "TrustDeviceMachine",
             id: "trustDeviceMachine",
-            onDone: [
-              {
-                target: "End",
-              },
-            ],
+            onDone: "End",
             data: (context, event) => {
               console.debug("TrustDevice invoker", { context, event })
               return {

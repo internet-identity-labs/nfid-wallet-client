@@ -152,13 +152,9 @@ const UnknownDeviceMachine =
             src: "TrustDeviceMachine",
             id: "trustDeviceMachine",
             onDone: "End",
-            data: (context, event) => {
-              console.debug("TrustDevice invoker", { context, event })
-              return {
-                // @ts-ignore leck mich am Arsch event.data
-                authSession: event.data as RemoteDeviceAuthSession,
-              }
-            },
+            data: (context, event: { data: RemoteDeviceAuthSession }) => ({
+              authSession: event.data,
+            }),
           },
         },
         End: {

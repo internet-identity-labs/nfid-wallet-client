@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import React from "react"
 
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
@@ -12,10 +13,15 @@ export function AuthenticationCoordinator({
   actor,
 }: Actor<AuthenticationActor>) {
   const [state] = useActor(actor)
-  console.debug("AuthenticationCoordinator", {
-    context: state.context,
-    state: state.value,
-  })
+
+  React.useEffect(
+    () =>
+      console.debug("AuthenticationCoordinator", {
+        context: state.context,
+        state: state.value,
+      }),
+    [state.value, state.context],
+  )
 
   switch (true) {
     case state.matches("KnownDevice"):

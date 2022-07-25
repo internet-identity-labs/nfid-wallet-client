@@ -1,16 +1,13 @@
 import { useMachine } from "@xstate/react"
 import {  Navigate} from "react-router-dom"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import RemoteSenderMachine, {
   RemoteSenderMachineType,
 } from "frontend/state/machines/authentication/remote-sender"
-import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
 
 import { AuthenticationCoordinator } from "./authentication"
-import { AuthorizationCoordinator } from "./authorization"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 interface Props {
   machine?: RemoteSenderMachineType
@@ -25,6 +22,8 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
   })
 
   switch (true) {
+    case state.matches("Start"):
+      return <ScreenResponsive isLoading />
     case state.matches("AuthenticationMachine"):
       return (
         <AuthenticationCoordinator

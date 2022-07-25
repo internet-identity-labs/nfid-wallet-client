@@ -26,7 +26,7 @@ export interface IDPMachineContext {
     hostname: string
   }
   thirdPartyAuthoSession?: ThirdPartyAuthSession
-  appMeta: AuthorizingAppMeta
+  appMeta?: AuthorizingAppMeta
 }
 
 export type IDPMachineEvents =
@@ -106,6 +106,10 @@ createMachine(
             target: "AuthorizationMachine",
           },
         ],
+        data: (context, event) => ({
+          appMeta: context.appMeta,
+          authRequest: context.authRequest
+        })
       },
     },
     AuthorizationMachine: {

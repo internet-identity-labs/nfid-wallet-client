@@ -1,13 +1,13 @@
 import { useMachine } from "@xstate/react"
-import {  Navigate} from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import RemoteSenderMachine, {
   RemoteSenderMachineType,
 } from "frontend/state/machines/authentication/remote-sender"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 interface Props {
   machine?: RemoteSenderMachineType
@@ -30,8 +30,10 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
           actor={state.children.authenticate as AuthenticationActor}
         />
       )
+    // NOTE: I dislike having routing logic in a coordinator
     case state.matches("End"):
-    default:
       return <Navigate to="/profile/authenticate" />
+    default:
+      return <ScreenResponsive isLoading />
   }
 }

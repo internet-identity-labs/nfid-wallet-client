@@ -14,6 +14,7 @@ import { DelegationIdentity } from "@dfinity/identity"
  * (stored deep in the browser) to your session key pair (a generated Ed25519 key pair).
  */
 export interface AbstractAuthSession {
+  // Note: how do we transport these identities?
   identity: SignIdentity
   delegationIdentity: DelegationIdentity
 }

@@ -4,7 +4,11 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {}
   internalEvents: {
-    "": { type: "" }
+    "done.invoke.fetchWebAuthnCapability": {
+      type: "done.invoke.fetchWebAuthnCapability"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.canBeTrusted": {
       type: "done.invoke.canBeTrusted"
       data: unknown
@@ -15,13 +19,17 @@ export interface Typegen0 {
       type: "error.platform.canBeTrusted"
       data: unknown
     }
-    "done.invoke.registerWithWebAuthn": {
-      type: "done.invoke.registerWithWebAuthn"
+    "error.platform.fetchWebAuthnCapability": {
+      type: "error.platform.fetchWebAuthnCapability"
+      data: unknown
+    }
+    "done.invoke.registerDeviceWithWebAuthn": {
+      type: "done.invoke.registerDeviceWithWebAuthn"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.registerWithWebAuthn": {
-      type: "error.platform.registerWithWebAuthn"
+    "error.platform.registerDeviceWithWebAuthn": {
+      type: "error.platform.registerDeviceWithWebAuthn"
       data: unknown
     }
     "done.invoke.regsiterWithSecurityKey": {
@@ -36,31 +44,32 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     canBeTrusted: "done.invoke.canBeTrusted"
-    registerWithWebAuthn: "done.invoke.registerWithWebAuthn"
-    registerWithSecurityKey: "done.invoke.regsiterWithSecurityKey"
+    fetchWebAuthnCapability: "done.invoke.fetchWebAuthnCapability"
+    registerDeviceWithWebAuthn: "done.invoke.registerDeviceWithWebAuthn"
+    registerDeviceWithSecurityKey: "done.invoke.regsiterWithSecurityKey"
   }
   missingImplementations: {
     actions: never
-    services: "registerWithWebAuthn" | "registerWithSecurityKey"
-    guards: "isMobileWebAuthn"
+    services: never
+    guards: never
     delays: never
   }
   eventsCausingServices: {
     canBeTrusted: "xstate.init"
-    registerWithWebAuthn: ""
-    registerWithSecurityKey: ""
+    fetchWebAuthnCapability: "TRUST"
+    registerDeviceWithWebAuthn: "done.invoke.fetchWebAuthnCapability"
+    registerDeviceWithSecurityKey: "done.invoke.fetchWebAuthnCapability"
   }
   eventsCausingGuards: {
-    bool: "done.invoke.canBeTrusted"
-    isMobileWebAuthn: ""
+    bool: "done.invoke.canBeTrusted" | "done.invoke.fetchWebAuthnCapability"
   }
   eventsCausingDelays: {}
   matchesStates:
     | "CheckCapability"
     | "Select"
-    | "IsMobileWebAuthn"
-    | "RegisterWithWebAuthn"
-    | "RegisterWithSecurityKey"
+    | "Register"
+    | "RegisterDeviceWithWebAuthn"
+    | "RegisterDeviceWithSecurityKey"
     | "End"
   tags: never
 }

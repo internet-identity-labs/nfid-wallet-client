@@ -14,28 +14,12 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
       }),
     [state.value, state.context],
   )
-  switch (true) {
-    case state.matches("Select"):
-    case state.matches("IsMobileWebAuthn"):
-    case state.matches("RegisterWithWebAuthn"):
-    case state.matches("RegisterWithSecurityKey"):
-    case state.matches("CheckCapability"):
-    case state.matches("End"):
-      return (
-        <AuthorizeRegisterDeciderScreen
-          onLogin={() => send("DONT_TRUST")}
-          onRegisterPlatformDevice={async () => send("TRUST")}
-          onRegisterSecurityDevice={async () => send("TRUST")}
-          isLoading={
-            state.matches("IsMobileWebAuthn") ||
-            state.matches("RegisterWithSecurityKey") ||
-            state.matches("RegisterWithWebAuthn") ||
-            state.matches("CheckCapability") ||
-            state.matches("End")
-          }
-        />
-      )
-    default:
-      return <div>{TrustDeviceCoordinator.name}</div>
-  }
+  return (
+    <AuthorizeRegisterDeciderScreen
+      onLogin={() => send("DONT_TRUST")}
+      onRegisterPlatformDevice={async () => send("TRUST")}
+      onRegisterSecurityDevice={async () => send("TRUST")}
+      isLoading={!state.matches("Select")}
+    />
+  )
 }

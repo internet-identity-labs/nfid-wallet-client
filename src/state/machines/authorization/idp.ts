@@ -17,6 +17,7 @@ import AuthenticationMachine, {
 import AuthorizationMachine, {
   AuthorizationMachineContext,
 } from "frontend/state/machines/authorization/authorization"
+import TrustDeviceMachine from "../authentication/trust-device"
 
 export interface IDPMachineContext {
   authRequest?: {
@@ -24,6 +25,7 @@ export interface IDPMachineContext {
     sessionPublicKey: Uint8Array
     hostname: string
   }
+  thirdPartyAuthoSession?: ThirdPartyAuthSession
   appMeta: AuthorizingAppMeta
 }
 
@@ -39,97 +41,105 @@ interface Schema {
   events: IDPMachineEvents
 }
 const IDPMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEsIAcB0BlALgQwCccMAJPAOwlgAs8BrMDAMTBwGNqBiCAe3MeTkAbjwYZalGvTCJQaHrGQ5kfWSAAeiACwAGAMwYAjAA4A7AFY9ew+a3GAnPdMAaEAE9E1gEwYdfv4bWxgBswTrGAL4RrqiYuITEAOKsAIJoaACyrHjMrBzcfALCoowwOGmZ2WryisqqSBraXloYloZeXubGZnpa5sEu7ojm9j7+fqY6wfbB3XpRMejY+EQF-Biw+DgCS-FE1QpKKuRqmgjGOoYYpl7B5jpOlv0hrh4IejMYjt8XpiZe4VMCxAsQwKQArjhqGByMo2Hg6uQMngOIIwGsiiIxHhIdDYch4dsDrVjqdhl5XohDJcdBgtN8nHcpsZOsDQRCoTwCMgAF4I47I1H8DEYQRYxg4zncnkyBo1I71UBncwUoYIQL0unfLRWJxeanmKLREDkHgQOBqUF7YhkSS0MQsdjUYkKk4NM7U1VvPR+XzjQImULhNm7FY2ihUe2MAAihRdiLJCC69gwDimD1G9hGhkp706WoZxkMhmChkcIbiYdIEakDHjpPdiFMxlzhlMwT9-gDITCkWNVqryXK6Sy+FyTvrisa6p0XuGphTDMZ91mtwrywSGCHFVHOVj-EnbqViFL5l8Ni67SzRa0ubCZ-u-nM-VuWlMWnX1q3qRHVTlhwTRsEGbXM+g7cZLiCIM+0WSsEkPRNbFbfROz8H1DF0Isi3XDk8Thfk+EFag0QQoD7BsXxjGTewWQ+Ux21zXpTALRxfn+QEcNxLleQIpEUWIg9-xJKczmaAwWRvMIaPMG4VVzGZaSXdsVxZYJ1wAUUoUjjwQDpaWCTpZxCKx6MGN4A2Yhlgi0ekZOMeZ+3QbTpy8Fs1R9VCIPGByoiAA */
-  createMachine(
+/** @xstate-layout N4IgpgJg5mDOIC5QEsIAcB0BlALgQwCccMAJPAOwlgAs8BrMDAMTBwGNqBiCAe3MeTkAbjwYZalGvTCJQaHrGQ5kfWSAAeiACwAGAMwYAjAA4A7AFY9ew+a3GAnPdMAaEAE9E1gEwYdfv4bWxgBswTrGAL4RrqiYuITEAOKsAIJoaACyrHjMrBzcfALCoowwOGmZ2WryisqqSBraXloYloZeXubGZnpa5sEu7ojm9j7+fqY6wfbB3XpRMejY+EQF-Biw+DgCS-FE1QpKKuRqmgjGOoYYpl7B5jpOlv0hrh4IejMYjt8XpiZe4VMCxAsQwKQArjhqGByMo2Hg6uQMngOIIwGsiiIxHhIdDYch4dsDrVjqdEIYdF4ruFjFpOjo+vY9F5Bm87AYdDdbqYtEzzBZgsDQRCoTwCMgAF4I47I1H8DEYQRYxg40XiiUyBo1I71UBnCksoy6D7mbmGWbmV6IWY+fm84z9Tmm3pCpYAFQI4M2ABEwEICejeOtNgidpgPV6cL7-WxNXJDoiyQg7MEjKatFY9M7bg6rQhzXcMCFOlndMb7JFoiD3Z6fX6AwqlSUMBG6zGwLLqGjiTqTg0ziMOVpTBc7KbDFpJ3nabamcEOsZmmZ51Eq+QeBA4GpQXtiGRJLQxCx2NQe4n++TKXm9H5fONAiZQuFXXEVnuKFRD4xvYUz6SLwgXT2EW9hTA8oz2CMhjXp0GC8t8FaGOahiOC+ywJKQH5SAwf66o0CAjnmHSmL4XhmOESEUn8IRobuGDJOU6RZPguQnrhfZ6peXh5vywEIU4dxTIugpVjub70akTHZBgP78OxSbBDYvg2F07SQcYE55mE5itOM5j9Lcw5aLR4kMRUzF4PJAGmMBi50lmjh+AC5o8ZypE9GRnS3L08yibsb5WZxgFaHmNgtDo-IOSMDIoS6fmYCKeJwtKfCdt2WoJv+QX2Ep4RARWXgfKYpjBNew5wQhvz-ICaGJWKkopUiKJdnJGUknhZxMlcoFmE4MyKUh9g8XYGA3jZkymHotIhIYaGtlG9axoF+FmDpsxaKEXkRYVpVDARhbBHYWjtJcswMmhACilDLWchU6Rmq0ApN1gVsY04UhgimTkZxphL5ixoDdng6O9vghH4swTjlkWrhEQA */
+createMachine(
     {
-      tsTypes: {} as import("./idp.typegen").Typegen0,
-      schema: { events: {}, context: {} } as Schema,
-      id: "idp",
-      initial: "Start",
+  tsTypes: {} as import("./idp.typegen").Typegen0,
+  schema: { events: {}, context: {} } as Schema,
+  id: "idp",
+  initial: "Start",
+  states: {
+    Start: {
+      type: "parallel",
       states: {
-        Start: {
-          type: "parallel",
+        Handshake: {
+          initial: "Fetch",
           states: {
-            Handshake: {
-              initial: "Fetch",
-              states: {
-                Fetch: {
-                  invoke: {
-                    src: "handshake",
-                    id: "handshake",
-                    onDone: [
-                      {
-                        actions: "assignAuthRequest",
-                        target: "Done",
-                      },
-                    ],
+            Fetch: {
+              invoke: {
+                src: "handshake",
+                id: "handshake",
+                onDone: [
+                  {
+                    actions: "assignAuthRequest",
+                    target: "Done",
                   },
-                },
-                Done: {
-                  type: "final",
-                },
+                ],
               },
             },
-            GetAppMeta: {
-              initial: "Fetch",
-              states: {
-                Fetch: {
-                  invoke: {
-                    src: "getAppMeta",
-                    id: "getAppMeta",
-                    onDone: [
-                      {
-                        actions: "assignAppMeta",
-                        target: "Done",
-                      },
-                    ],
-                  },
-                },
-                Done: {
-                  type: "final",
-                },
-              },
+            Done: {
+              type: "final",
             },
           },
-          onDone: "AuthenticationMachine",
         },
-        AuthenticationMachine: {
-          invoke: {
-            src: "AuthenticationMachine",
-            id: "authenticate",
-            onDone: "AuthorizationMachine",
-            data: (context, event) =>
-              ({
-                appMeta: context.appMeta,
-                authRequest: context.authRequest,
-              } as Pick<
-                AuthenticationMachineContext,
-                "appMeta" | "authRequest"
-              >),
+        GetAppMeta: {
+          initial: "Fetch",
+          states: {
+            Fetch: {
+              invoke: {
+                src: "getAppMeta",
+                id: "getAppMeta",
+                onDone: [
+                  {
+                    actions: "assignAppMeta",
+                    target: "Done",
+                  },
+                ],
+              },
+            },
+            Done: {
+              type: "final",
+            },
           },
-        },
-        AuthorizationMachine: {
-          invoke: {
-            src: "AuthorizationMachine",
-            id: "authorize",
-            onDone: "End",
-            data: (context, event) =>
-              ({
-                authSession: event.data as AuthSession,
-                appMeta: context.appMeta,
-                authRequest: context.authRequest,
-              } as AuthorizationMachineContext),
-          },
-        },
-        End: {
-          invoke: {
-            src: "postDelegation",
-            id: "done",
-          },
-          type: "final",
         },
       },
+      onDone: {
+        target: "AuthenticationMachine",
+      },
     },
+    AuthenticationMachine: {
+      invoke: {
+        src: "AuthenticationMachine",
+        id: "authenticate",
+        onDone: [
+          {
+            target: "AuthorizationMachine",
+          },
+        ],
+      },
+    },
+    AuthorizationMachine: {
+      invoke: {
+        src: "AuthorizationMachine",
+        id: "authorize",
+        onDone: [
+          {
+            target: "TrustDevice",
+          },
+        ],
+      },
+    },
+    TrustDevice: {
+      entry: "assignAuthoSession",
+      invoke: {
+        src: "TrustDeviceMachine",
+        id: "TrustDeviceMachine",
+        onDone: [
+          {
+            target: "End",
+          },
+        ],
+      },
+    },
+    End: {
+      invoke: {
+        src: "postDelegation",
+        id: "done",
+      },
+      type: "final",
+    },
+  },
+},
     {
       services: {
         handshake,
@@ -137,6 +147,7 @@ const IDPMachine =
         postDelegation,
         AuthenticationMachine,
         AuthorizationMachine,
+        TrustDeviceMachine,
       },
       actions: {
         assignAuthRequest: assign((context, event) => ({
@@ -145,7 +156,10 @@ const IDPMachine =
         assignAppMeta: assign((context, event) => ({
           appMeta: event.data,
         })),
-      },
+        assignAuthoSession: assign({
+          thirdPartyAuthoSession: (context, event) => event.data
+        })
+      }
     },
   )
 

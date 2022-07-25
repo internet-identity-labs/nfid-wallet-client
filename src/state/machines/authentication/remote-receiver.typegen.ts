@@ -16,11 +16,6 @@ export interface Typegen0 {
   eventsCausingServices: {}
   eventsCausingGuards: {}
   eventsCausingDelays: {}
-  matchesStates:
-    | "Receive"
-    | "Receive.Await"
-    | "Receive.AwaitDelegation"
-    | "End"
-    | { Receive?: "Await" | "AwaitDelegation" }
+  matchesStates: "Receive" | "End"
   tags: never
 }

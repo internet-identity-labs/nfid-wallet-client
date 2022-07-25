@@ -7,6 +7,8 @@ export interface Profile {
    * */
   skipPersonalize?: boolean
 }
+// TODO: Write a migration for existing users to go from account => profile as local key
+// remove personas key from localstorage and use profile.accounts instead
 
 export function loadProfileFromLocalStorage(): Profile | undefined {
   const local = window.localStorage.getItem("account")
@@ -17,5 +19,3 @@ export function loadProfileFromLocalStorage(): Profile | undefined {
 export function setProfile(profile: Profile) {
   window.localStorage.setItem("account", JSON.stringify(profile))
 }
-
-export let profile: Profile | undefined = loadProfileFromLocalStorage()

@@ -5,6 +5,7 @@ export interface Typegen0 {
   eventsCausingActions: {
     assignAuthRequest: "done.invoke.handshake"
     assignAppMeta: "done.invoke.getAppMeta"
+    assignAuthoSession: "done.invoke.authorize"
   }
   internalEvents: {
     "done.invoke.handshake": {
@@ -17,13 +18,18 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.authorize": {
+      type: "done.invoke.authorize"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.authenticate": {
       type: "done.invoke.authenticate"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.authorize": {
-      type: "done.invoke.authorize"
+    "done.invoke.TrustDeviceMachine": {
+      type: "done.invoke.TrustDeviceMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -44,6 +50,10 @@ export interface Typegen0 {
       type: "error.platform.authorize"
       data: unknown
     }
+    "error.platform.TrustDeviceMachine": {
+      type: "error.platform.TrustDeviceMachine"
+      data: unknown
+    }
     "done.invoke.done": {
       type: "done.invoke.done"
       data: unknown
@@ -56,6 +66,7 @@ export interface Typegen0 {
     getAppMeta: "done.invoke.getAppMeta"
     AuthenticationMachine: "done.invoke.authenticate"
     AuthorizationMachine: "done.invoke.authorize"
+    TrustDeviceMachine: "done.invoke.TrustDeviceMachine"
     postDelegation: "done.invoke.done"
   }
   missingImplementations: {
@@ -69,7 +80,8 @@ export interface Typegen0 {
     handshake: "xstate.init"
     getAppMeta: "xstate.init"
     AuthorizationMachine: "done.invoke.authenticate"
-    postDelegation: "done.invoke.authorize"
+    TrustDeviceMachine: "done.invoke.authorize"
+    postDelegation: "done.invoke.TrustDeviceMachine"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
@@ -83,6 +95,7 @@ export interface Typegen0 {
     | "Start.GetAppMeta.Done"
     | "AuthenticationMachine"
     | "AuthorizationMachine"
+    | "TrustDevice"
     | "End"
     | {
         Start?:

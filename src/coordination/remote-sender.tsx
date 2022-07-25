@@ -1,4 +1,5 @@
 import { useMachine } from "@xstate/react"
+import {  Navigate} from "react-router-dom"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -18,7 +19,7 @@ interface Props {
 
 export default function RemoteIDPCoordinator({ machine }: Props) {
   const [state] = useMachine(machine || RemoteSenderMachine)
-  console.log(">> RemoteIDPCoordinator", {
+  console.log(RemoteIDPCoordinator.name, {
     state: state.value,
     context: state.context,
   })
@@ -30,14 +31,8 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
           actor={state.children.authenticate as AuthenticationActor}
         />
       )
-    case state.matches("AuthorizationMachine"):
-      return (
-        <AuthorizationCoordinator
-          actor={state.children.authorize as AuthorizationActor}
-        />
-      )
     case state.matches("End"):
     default:
-      return <Loader isLoading={true} />
+      return <Navigate to="/profile/authenticate" />
   }
 }

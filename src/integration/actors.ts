@@ -28,17 +28,19 @@ declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 declare const IM_ADDITION_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
 
-export const accessList = [
-  INTERNET_IDENTITY_CANISTER_ID,
-  IDENTITY_MANAGER_CANISTER_ID,
-  PUB_SUB_CHANNEL_CANISTER_ID,
-  IM_ADDITION_CANISTER_ID,
-  VERIFIER_CANISTER_ID,
+const canisterConfig = [
+  ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
+  ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],
+  ["Pubsub", PUB_SUB_CHANNEL_CANISTER_ID],
+  ["IM Addition", IM_ADDITION_CANISTER_ID],
+  ["Verifier", VERIFIER_CANISTER_ID],
 ]
 
+export const accessList = canisterConfig.map(x => x[1])
+
 // NOTE: Might be nice to have the canister named in this exception
-for (const canister of accessList) {
-  if (!canister) throw new Error(`Missing canister id, please check envars.`)
+for (const [label, canister] of canisterConfig) {
+  if (!canister) throw new Error(`Missing canister id for "${label}", please check envars.`)
 }
 
 export const ic = {

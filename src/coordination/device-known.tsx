@@ -62,8 +62,7 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
           )
       }
     case state.matches("End"):
-      return <div>End</div>
     default:
-      return <div>KnownDeviceCoordinator</div>
+      return <ScreenResponsive isLoading />
   }
 }

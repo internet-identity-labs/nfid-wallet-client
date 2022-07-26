@@ -97,7 +97,7 @@ export const TrustDeviceMachine =
           // FIXME:
           // Given: device doesn't support webauthn
           // Then: we fetch security devices
-          // When: no security device is registered on users anchor
+          // When: no security device (as recover or authenticator) is registered on users anchor
           // Then: we should ask for RegisterSecurityDevice (currently integrated in TrustDeviceCoordinator)
           //
           // return !isDeviceRegistered() && (await fetchWebAuthnCapability())

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 
 import { Logo } from "@internet-identity-labs/nfid-sdk-react"
 
+import { Profile } from "frontend/integration/identity-manager"
 import { Button } from "frontend/ui/atoms/button"
 import { Input } from "frontend/ui/atoms/input"
 import { H4 } from "frontend/ui/atoms/typography"
@@ -13,14 +14,8 @@ import { P } from "frontend/ui/atoms/typography/paragraph"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 import { phoneRules } from "frontend/ui/utils/validations"
 
-interface Account {
-  anchor: string
-  name?: string
-  phone?: string
-}
-
 interface ProfileEditProps {
-  account?: Account
+  account?: Profile
   responseError?: string
   isLoading?: boolean
   onSubmit: SubmitHandler<{ phone: string }>
@@ -39,7 +34,7 @@ export const ProfileEditPhone: React.FC<ProfileEditProps> = ({
     setError,
   } = useForm<{ phone: string }>({
     defaultValues: {
-      phone: account?.phone,
+      phone: account?.phoneNumber,
     },
   })
 

@@ -1,5 +1,5 @@
 export const getUserNumber = (
-  userNumber: string | null,
+  userNumber: number | null,
 ): bigint | undefined => {
   return userNumber ? BigInt(userNumber) : undefined
 }

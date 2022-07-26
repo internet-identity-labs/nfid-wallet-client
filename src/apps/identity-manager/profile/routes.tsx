@@ -7,7 +7,6 @@ import { NFIDProfile } from "."
 import { AddPhoneNumber } from "./add-phone-number"
 import { CopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { NFIDProfileEdit } from "./edit"
-import { NFIDPersonalize } from "./personalize"
 import { VerifySMSToken } from "./verify-sms-token"
 
 export const ProfileConstants = {
@@ -31,7 +30,6 @@ export const ProfileRoutes = (
         </AuthWrapper>
       }
     />
-    <Route path={ProfileConstants.personalize} element={<NFIDPersonalize />} />
     <Route
       path={ProfileConstants.edit}
       element={

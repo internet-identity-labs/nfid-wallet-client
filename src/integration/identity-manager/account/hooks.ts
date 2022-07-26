@@ -3,14 +3,15 @@ import { useAtom } from "jotai"
 import React from "react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { unpackResponse } from "frontend/integration/_common"
 import {
   AccountResponse,
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/integration/_ic_api/identity_manager.did"
 import { im } from "frontend/integration/actors"
-import { Profile } from "frontend/integration/identity-manager/profile"
 
+import { mapProfile, Profile } from ".."
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {
   memoryAccountAtom,
@@ -19,21 +20,6 @@ import {
 } from "./state"
 
 declare const VERIFY_PHONE_NUMBER: string
-
-const normalizeLocalAccount = ({
-  account,
-  newAccount,
-}: {
-  account?: Profile
-  newAccount: AccountResponse
-}) => ({
-  name: newAccount.name[0],
-  anchor: newAccount.anchor.toString(),
-  skipPersonalize: !!newAccount.name[0] || !!account?.skipPersonalize,
-  phoneNumber: newAccount.phone_number.length
-    ? newAccount.phone_number[0]
-    : undefined,
-})
 
 type AccountService = Pick<
   _IDENTITY_MANAGER_SERVICE,
@@ -48,57 +34,43 @@ export const useAccount = () => {
 
   const createAccount = React.useCallback(
     async (account: HTTPAccountRequest) => {
-      const response = await im.create_account(account)
-      const newAccount = response.data[0]
-
-      if (newAccount) {
-        setAccount({
-          ...newAccount,
-          name: newAccount.name[0],
-          anchor: newAccount.anchor.toString(),
-          skipPersonalize: false,
-        })
-      }
-      return response
+      const newAccount = await im
+        .create_account(account)
+        .then(unpackResponse)
+        .then(mapProfile)
+      setAccount(newAccount)
+      return newAccount
     },
     [setAccount],
   )
 
   const recoverAccount = React.useCallback(
     async (userNumber: bigint) => {
-      const response = await im.recover_account(userNumber)
+      const newAccount = await im
+        .recover_account(userNumber)
+        .then(unpackResponse)
+        .then(mapProfile)
 
-      const newAccount = response.data[0]
+      setAccount(newAccount)
 
-      if (newAccount) {
-        const normalizedAccount = normalizeLocalAccount({
-          account,
-          newAccount,
-        })
-        setAccount(normalizedAccount)
-      }
-
-      return response
+      return newAccount
     },
     [account, setAccount],
   )
 
   const readAccount = React.useCallback(async () => {
-    const response = await im.get_account()
-
-    const newAccount = response.data[0]
+    const newAccount = await im
+      .get_account()
+      .then(unpackResponse)
+      .then(mapProfile)
 
     if (newAccount) {
-      const normalizedAccount = normalizeLocalAccount({
-        account,
-        newAccount,
-      })
       shouldStoreLocalAccount
-        ? setAccount(normalizedAccount)
-        : setMemoryAccount(normalizedAccount)
+        ? setAccount(newAccount)
+        : setMemoryAccount(newAccount)
     }
 
-    return response
+    return newAccount
   }, [account, shouldStoreLocalAccount, setAccount, setMemoryAccount])
 
   // Used when we do not want to use the local storage version of the account.
@@ -108,35 +80,27 @@ export const useAccount = () => {
   // - google
   // - recovery phrase (just log me in)
   const readMemoryAccount = React.useCallback(async () => {
-    const response = await im.get_account()
-
-    const newAccount = response.data[0]
+    const newAccount = await im
+      .get_account()
+      .then(unpackResponse)
+      .then(mapProfile)
 
     if (newAccount) {
-      const normalizedAccount = normalizeLocalAccount({
-        account,
-        newAccount,
-      })
-      setMemoryAccount(normalizedAccount)
+      setMemoryAccount(newAccount)
     }
 
-    return response
+    return newAccount
   }, [account, setMemoryAccount])
 
   const readAndStoreAccount = React.useCallback(async () => {
-    const response = await im.get_account()
+    const newAccount = await im
+      .get_account()
+      .then(unpackResponse)
+      .then(mapProfile)
 
-    const newAccount = response.data[0]
+    setAccount(newAccount)
 
-    if (newAccount) {
-      const normalizedAccount = normalizeLocalAccount({
-        account,
-        newAccount,
-      })
-      setAccount(normalizedAccount)
-    }
-
-    return response
+    return newAccount
   }, [account, setAccount])
 
   const resetLocalAccount = React.useCallback(async () => {

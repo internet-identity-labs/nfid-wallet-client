@@ -33,9 +33,9 @@ export const AppScreenRegisterDeviceDecider: React.FC<
 
     await recoverDevice(Number(userNumber))
 
-    const response = await recoverAccount(userNumber)
-
-    if (response?.status_code === 404) {
+    try {
+      await recoverAccount(userNumber)
+    } catch (e) {
       console.warn("account not found. Recreating")
       await createAccount({ anchor: userNumber })
 
@@ -53,6 +53,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
         pub_key,
       })
     }
+
     await getPersona()
     handleSendDelegate()
     setIsLoading(false)

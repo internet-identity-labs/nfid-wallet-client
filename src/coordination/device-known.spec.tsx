@@ -13,6 +13,7 @@ import KnownDeviceMachine, {
 } from "frontend/state/machines/authentication/known-device"
 
 import * as IM from "../integration/identity-manager"
+import { Profile } from "../integration/identity-manager"
 import * as II from "../integration/internet-identity"
 import { KnownDeviceCoordinator } from "./device-known"
 import { makeInvokedActor } from "./test-utils"
@@ -30,8 +31,8 @@ describe("KnownDevice Coordinator", () => {
         ],
         hostNameMock: "https://my-application.com",
         profile: {
-          anchor: "11111",
-        },
+          anchor: 11111,
+        } as Profile,
         fetchApplicationsMock: [
           { accountLimit: 1, domain: "https://my-application.com" },
         ],
@@ -45,9 +46,9 @@ describe("KnownDevice Coordinator", () => {
           "Unlock as The Dude",
         ],
         profile: {
-          anchor: "11111",
+          anchor: 11111,
           name: "The Dude",
-        },
+        } as Profile,
         hostNameMock: "https://my-application.com",
         fetchApplicationsMock: [
           { accountLimit: 1, domain: "https://my-application.com" },
@@ -119,8 +120,8 @@ describe("KnownDevice Coordinator", () => {
         )
         const context = {
           profile: {
-            anchor: "11111",
-          },
+            anchor: 11111,
+          } as Profile,
           isNFID: false,
           authAppMeta: {
             name: "MyApp",
@@ -202,8 +203,8 @@ describe("KnownDevice Coordinator", () => {
 
         const context = {
           profile: {
-            anchor: "11111",
-          },
+            anchor: 11111,
+          } as Profile,
           isNFID: plan.isNFID,
           authAppMeta: {
             name: "MyApp",

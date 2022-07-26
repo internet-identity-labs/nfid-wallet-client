@@ -13,17 +13,12 @@ import {
   Button,
 } from "@internet-identity-labs/nfid-sdk-react"
 
+import { Profile } from "frontend/integration/identity-manager"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 import { nameRules } from "frontend/ui/utils/validations"
 
-interface Account {
-  anchor: string
-  name?: string
-  phoneNumber?: string
-}
-
 interface ProfileEditProps {
-  account?: Account
+  account?: Profile
   onSubmit: SubmitHandler<{ name: string | undefined }>
   onAddPhoneNumber: () => Promise<void> | void
   isLoading?: boolean

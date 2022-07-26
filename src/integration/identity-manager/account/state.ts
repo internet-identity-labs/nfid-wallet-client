@@ -1,9 +1,9 @@
 import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
-import { Profile } from "frontend/integration/identity-manager/profile"
 import { getUserNumber } from "frontend/integration/internet-identity/userNumber"
 
+import { Profile } from ".."
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 
 export const localStorageAccountAtom = atomWithStorage<Profile | undefined>(

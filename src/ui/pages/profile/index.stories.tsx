@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
+import { Profile as ProfileT } from "frontend/integration/identity-manager"
 import { LegacyDevice } from "frontend/integration/identity-manager/devices/state"
 
 import { Profile } from "."
@@ -27,7 +28,7 @@ const Template: ComponentStory<typeof Profile> = (args) => {
 export const LoggedIn = Template.bind({})
 
 LoggedIn.args = {
-  account: { anchor: "10005", name: "Test Account" },
+  account: { anchor: 10005, name: "Test Account" } as ProfileT,
   accounts: [
     { domain: "wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "1" },
     { domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app", persona_id: "2" },

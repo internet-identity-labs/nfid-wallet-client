@@ -99,7 +99,9 @@ export const TrustDeviceMachine =
           // Then: we fetch security devices
           // When: no security device is registered on users anchor
           // Then: we should ask for RegisterSecurityDevice (currently integrated in TrustDeviceCoordinator)
-          return !isDeviceRegistered() && (await fetchWebAuthnCapability())
+          //
+          // return !isDeviceRegistered() && (await fetchWebAuthnCapability())
+          return !isDeviceRegistered()
         },
         fetchWebAuthnCapability,
         registerDeviceWithWebAuthn,

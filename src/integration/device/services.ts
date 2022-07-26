@@ -3,10 +3,7 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { deviceInfo, fetchWebAuthnCapability, getIsMobileDeviceMatch } from "."
 import { ii, im } from "../actors"
 import { fetchProfile } from "../identity-manager"
-import {
-  loadProfileFromLocalStorage,
-  setProfile,
-} from "../identity-manager/profile"
+import { setProfile } from "../identity-manager/profile"
 import {
   creationOptions,
   fetchAuthenticatorDevices,
@@ -20,13 +17,8 @@ export async function isMobileWithWebAuthn() {
 // NOTE: Maybe this should live somewhere else?
 export async function registerDeviceWithWebAuthn() {
   const profile = await fetchProfile()
-  if (!profile)
-    throw new Error(
-      `${registerDeviceWithWebAuthn.name}: profile missing from localStorage`,
-    )
-  const { anchor } = profile
   const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
-    BigInt(anchor),
+    BigInt(profile.anchor),
   )
   const identity = await WebAuthnIdentity.create({
     publicKey: creationOptions(usersAuthenticatorDevices),
@@ -34,7 +26,7 @@ export async function registerDeviceWithWebAuthn() {
   const credential_id = Array.from(new Uint8Array(identity.rawId))
   const pubKey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
   await Promise.all([
-    ii.add(BigInt(anchor), {
+    ii.add(BigInt(profile.anchor), {
       alias: deviceInfo.newDeviceName,
       // pubkey: Array.from(new Uint8Array(newPublicKey)),
       pubkey: pubKey,
@@ -50,11 +42,42 @@ export async function registerDeviceWithWebAuthn() {
       pub_key: pubKey,
     }),
   ])
-  // TODO: use same Profile type
+  // FIXME: define Interface
   setProfile({ ...profile, anchor: profile.anchor.toString() })
 }
 
 // NOTE: Maybe this should live somewhere else?
 export async function registerDeviceWithSecurityKey() {
-  throw new Error("Not implemented")
+  const profile = await fetchProfile()
+  const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
+    BigInt(profile.anchor),
+  )
+  const identity = await WebAuthnIdentity.create({
+    publicKey: creationOptions(usersAuthenticatorDevices, "cross-platform"),
+  })
+  const credential_id = Array.from(new Uint8Array(identity.rawId))
+  const pubKey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
+  await Promise.all([
+    ii.add(BigInt(profile.anchor), {
+      alias: deviceInfo.newDeviceName,
+      // pubkey: Array.from(new Uint8Array(newPublicKey)),
+      pubkey: pubKey,
+      credential_id: [credential_id],
+      key_type: { cross_platform: null },
+      purpose: { authentication: null },
+      protection: { unprotected: null },
+    }),
+    im.create_access_point({
+      icon: "usb",
+      device: "Security Key",
+      browser: "",
+      pub_key: pubKey,
+    }),
+  ])
+  // FIXME: define Interface
+  setProfile({
+    ...profile,
+    anchor: profile.anchor.toString(),
+    useSecurityKey: true,
+  })
 }

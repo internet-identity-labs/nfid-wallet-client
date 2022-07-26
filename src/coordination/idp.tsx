@@ -9,6 +9,7 @@ import { AuthorizationActor } from "frontend/state/machines/authorization/author
 import IDPMachine, {
   IDPMachineType,
 } from "frontend/state/machines/authorization/idp"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
 import { AuthorizationCoordinator } from "./authorization"
@@ -53,6 +54,6 @@ export default function IDPCoordinator({ machine }: Props) {
     case state.matches("End"):
     case state.matches("Start"):
     default:
-      return <Loader isLoading={true} />
+      return <ScreenResponsive isLoading />
   }
 }

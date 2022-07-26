@@ -36,11 +36,12 @@ const canisterConfig = [
   ["Verifier", VERIFIER_CANISTER_ID],
 ]
 
-export const accessList = canisterConfig.map(x => x[1])
+export const accessList = canisterConfig.map((x) => x[1])
 
 // NOTE: Might be nice to have the canister named in this exception
 for (const [label, canister] of canisterConfig) {
-  if (!canister) throw new Error(`Missing canister id for "${label}", please check envars.`)
+  if (!canister)
+    throw new Error(`Missing canister id for "${label}", please check envars.`)
 }
 
 export const ic = {

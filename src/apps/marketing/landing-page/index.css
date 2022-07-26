@@ -1,4 +1,3 @@
-
 .icon-background-blur {
   z-index: -1;
   position: absolute;
@@ -98,7 +97,6 @@
   .blur-blue.md\:left-\[-85\%\] {
     width: 310%;
   }
-
 
   main.landing-page .container .sm\:text-titleLarge {
     font-size: 34px;

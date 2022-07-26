@@ -4,16 +4,16 @@
 import "@testing-library/jest-dom"
 import { interpret } from "xstate"
 
+import { im } from "frontend/integration/actors"
+import { ii } from "frontend/integration/actors"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
 import { mockIdentityClientAuthEvent } from "frontend/integration/windows/__mock"
 import IDPMachine from "frontend/state/machines/authorization/idp"
-import { im } from "frontend/integration/actors"
-import { ii } from 'frontend/integration/actors' 
 
 const challengeMock = jest.fn(async () => ({
-    png_base64: 'string',
-    challenge_key: 'ChallengeKey',
-  }))
+  png_base64: "string",
+  challenge_key: "ChallengeKey",
+}))
 
 // @ts-ignore: with options
 ii.create_challenge = challengeMock
@@ -23,13 +23,13 @@ const readApplicationsMock = jest.fn(async () => ({
     [
       {
         user_limit: 5,
-        domain: 'test.com',
-        name: 'string'
-      }
-    ]
+        domain: "test.com",
+        name: "string",
+      },
+    ],
   ],
   error: [],
-  status_code: 200
+  status_code: 200,
 }))
 
 // @ts-ignore: withoptions
@@ -38,7 +38,7 @@ im.read_applications = readApplicationsMock
 const handshake = jest.fn(mockIdentityClientAuthEvent)
 const getAppMeta = jest.fn(async () => ({
   name: "",
-  logo: ""
+  logo: "",
 }))
 
 const testMachine = IDPMachine.withConfig({
@@ -61,14 +61,13 @@ const testMachineMockAuthn = testMachine.withConfig({
       return {
         identity: await factoryDelegationIdentity(),
         delegationIdentity: await factoryDelegationIdentity(),
-        sessionSource: "remoteDevice"
+        sessionSource: "remoteDevice",
       }
-    }
-  }
+    },
+  },
 })
 
 describe("IDP Machine", () => {
-
   interpret(testMachine).start()
 
   it("posts ready message upon initialization", () => {
@@ -80,49 +79,55 @@ describe("IDP Machine", () => {
   })
 
   describe("authentication", () => {
-
     it("invokes authentication machine after initialization", (done) => {
-      interpret(testMachine).onTransition((state) => {
-        if (state.matches("AuthenticationMachine")) {
-          expect(state.matches("AuthenticationMachine")).toBeTruthy()
-          done()
-        }
-      }).start()
+      interpret(testMachine)
+        .onTransition((state) => {
+          if (state.matches("AuthenticationMachine")) {
+            expect(state.matches("AuthenticationMachine")).toBeTruthy()
+            done()
+          }
+        })
+        .start()
     })
 
     it("invokes authentication machine with correct context", (done) => {
-      interpret(testMachine).onTransition((state) => {
-        if (state.matches("AuthenticationMachine")) {
-          const context = state.children.authenticate.getSnapshot().context
-          expect(Object.keys(context)).toContain("appMeta")
-          expect(Object.keys(context)).toContain("authRequest")
-          done()
-        }
-      }).start()
+      interpret(testMachine)
+        .onTransition((state) => {
+          if (state.matches("AuthenticationMachine")) {
+            const context = state.children.authenticate.getSnapshot().context
+            expect(Object.keys(context)).toContain("appMeta")
+            expect(Object.keys(context)).toContain("authRequest")
+            done()
+          }
+        })
+        .start()
     })
   })
 
   describe("authorization", () => {
-
     it("invokes authorization machine after authentication", (done) => {
-      interpret(testMachineMockAuthn).onTransition((state) => {
-        if (state.matches("AuthorizationMachine")) {
-          expect(state.matches("AuthorizationMachine")).toBeTruthy()
-          done()
-        }
-      }).start()
+      interpret(testMachineMockAuthn)
+        .onTransition((state) => {
+          if (state.matches("AuthorizationMachine")) {
+            expect(state.matches("AuthorizationMachine")).toBeTruthy()
+            done()
+          }
+        })
+        .start()
     })
 
     it("invokes authorization machine with correct context", (done) => {
-      interpret(testMachineMockAuthn).onTransition((state) => {
-        if (state.matches("AuthorizationMachine")) {
-          const context = state.children.authorize.getSnapshot().context
-          expect(Object.keys(context)).toContain("appMeta")
-          expect(Object.keys(context)).toContain("authRequest")
-          expect(Object.keys(context)).toContain("authSession")
-          done()
-        }
-      }).start()
+      interpret(testMachineMockAuthn)
+        .onTransition((state) => {
+          if (state.matches("AuthorizationMachine")) {
+            const context = state.children.authorize.getSnapshot().context
+            expect(Object.keys(context)).toContain("appMeta")
+            expect(Object.keys(context)).toContain("authRequest")
+            expect(Object.keys(context)).toContain("authSession")
+            done()
+          }
+        })
+        .start()
     })
   })
 

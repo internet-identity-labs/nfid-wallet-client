@@ -68,11 +68,7 @@ export const useAuthorizeApp = () => {
         getSessionKey(secret),
       )
 
-      const message = buildRemoteLoginRegisterMessage(
-        anchor,
-        chain,
-        sessionKey,
-      )
+      const message = buildRemoteLoginRegisterMessage(anchor, chain, sessionKey)
 
       const response = await postMessages(secret, [message])
 

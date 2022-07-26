@@ -34,12 +34,10 @@ export async function handshake(): Promise<AuthorizationRequest> {
  * @param event
  * @returns
  */
-export async function postDelegation(
-  context: {
-    authRequest?: { hostname: string },
-    thirdPartyAuthoSession?: ThirdPartyAuthSession
-  },
-) {
+export async function postDelegation(context: {
+  authRequest?: { hostname: string }
+  thirdPartyAuthoSession?: ThirdPartyAuthSession
+}) {
   console.debug(postDelegation.name, { context, event })
   if (!context.authRequest?.hostname)
     throw new Error("postDelegation context.authRequest.hostname missing")
@@ -50,7 +48,9 @@ export async function postDelegation(
   postMessageToClient(
     {
       kind: "authorize-client-success",
-      delegations: [prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation)],
+      delegations: [
+        prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation),
+      ],
       userPublicKey: context.thirdPartyAuthoSession.userPublicKey,
     },
     context.authRequest.hostname,

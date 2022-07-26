@@ -44,7 +44,7 @@ export async function registerDeviceWithWebAuthn() {
     }),
   ])
   // FIXME: define Interface
-  setProfile({ ...profile, anchor: profile.anchor.toString() })
+  setProfile(profile)
 }
 
 // NOTE: Maybe this should live somewhere else?

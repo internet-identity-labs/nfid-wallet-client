@@ -41,7 +41,7 @@ export interface Account {
  * @param profile {@link AccountResponse} Account response from canister
  * @returns {@link Account}
  */
-function mapProfile(profile: AccountResponse): Profile {
+export function mapProfile(profile: AccountResponse): Profile {
   console.debug("mapAccount", { account: profile })
   return {
     name: profile.name.length ? profile.name[0] : undefined,
@@ -170,7 +170,10 @@ export async function useAccessPoint() {
 }
 
 export async function registerAccount(anchor: number) {
-  return im.create_account({ anchor: BigInt(anchor) }).then(unpackResponse)
+  return im
+    .create_account({ anchor: BigInt(anchor) })
+    .then(unpackResponse)
+    .then(mapProfile)
 }
 
 export interface Application {

@@ -8,12 +8,13 @@ export async function postRemoteDelegationService(
   context: { pubsubChannel?: string },
   event: { data: AuthSession },
 ): Promise<void> {
-  console.debug("postRemoteDelegationService", { context, event })
+  console.debug(postRemoteDelegationService.name, { context, event })
   const { chain, sessionKey } = authState.get()
   if (!chain)
     throw new Error("postRemoteDelegationService authState missing chain")
   if (!sessionKey)
     throw new Error("postRemoteDelegationService authState missing sessionKey")
+
   if (!context.pubsubChannel) throw new Error("Missing pubsub channel")
 
   const profile = loadProfileFromLocalStorage()

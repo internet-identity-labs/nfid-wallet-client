@@ -1,7 +1,7 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
-import { Profile } from "frontend/integration/identity-manager/profile"
+import { Profile } from "frontend/integration/identity-manager"
 import {
   fetchProfileService,
   getLocalStorageProfileService,

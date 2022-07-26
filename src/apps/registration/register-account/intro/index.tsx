@@ -71,16 +71,14 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       if (response.is_existing) {
         const userOverwrite = await loginWithGoogleDevice(response.identity)
 
-        const {
-          data: [account],
-        } = await readMemoryAccount()
+        const account = await readMemoryAccount()
 
         if (isNFID && account) {
           if (isRemoteRegiser) {
             if (!secret) throw new Error("secret missing")
             await remoteNFIDLogin({
               secret,
-              userNumberOverwrite: account.anchor,
+              userNumberOverwrite: BigInt(account.anchor),
               userOverwrite,
             })
           }

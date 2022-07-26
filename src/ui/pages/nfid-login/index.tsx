@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import { ImageNFIDLogin } from "frontend/apps/authentication/authenticate/image"
-import { Profile } from "frontend/integration/identity-manager/profile"
+import { Profile } from "frontend/integration/identity-manager"
 import { Button } from "frontend/ui/atoms/button"
 import { H2 } from "frontend/ui/atoms/typography"
 import { P } from "frontend/ui/atoms/typography/paragraph"

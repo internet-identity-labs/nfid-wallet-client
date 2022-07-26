@@ -2,6 +2,7 @@ import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 
 import {
   fetchProfile,
+  Profile,
   registerAccount,
 } from "frontend/integration/identity-manager"
 import {
@@ -26,7 +27,7 @@ import {
 import { ii } from "../actors"
 import { deviceInfo } from "../device"
 import { identityFromDeviceList } from "../identity"
-import { Profile } from "../identity-manager/profile"
+import { setProfile } from "../identity-manager/profile"
 
 export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
@@ -129,11 +130,9 @@ export async function registerService(
     { key: context.challenge.challengeKey, chars: event.data },
   )
 
-  authState.set(identity, delegationIdentity, ii)
-
   try {
     // Register the account with identity manager.
-    await registerAccount(anchor)
+    setProfile(await registerAccount(anchor))
   } catch (e) {
     console.error(e)
     throw new Error("Could not register new account, please try again.")

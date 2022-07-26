@@ -246,7 +246,7 @@ export const requestFEDelegationChain = async (
 export const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
-  console.debug("requestFEDelegation")
+  console.debug(requestFEDelegation.name)
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
   console.debug("requestFEDelegation", { sessionKey, chain })
 
@@ -995,7 +995,13 @@ export async function registerInternetIdentity(
   const credentialId = Array.from(new Uint8Array(identity.rawId))
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
-  authState.set(identity, delegation.delegationIdentity, ii)
+  authState.set(
+    identity,
+    delegation.delegationIdentity,
+    ii,
+    delegation.chain,
+    delegation.sessionKey,
+  )
 
   const anchor = await ii
     .register(

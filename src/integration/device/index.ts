@@ -90,6 +90,7 @@ export const deviceInfo = {
   browser,
   newDeviceName: `NFID ${browser.name} on ${platform.os}`,
   isMobile: getIsMobileDeviceMatch,
+  // NOTE: don't like this 👇
   hasWebAuthn: fetchWebAuthnCapability(),
 }
 

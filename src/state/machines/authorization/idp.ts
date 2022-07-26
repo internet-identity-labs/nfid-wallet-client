@@ -127,7 +127,7 @@ const IDPMachine =
           entry: "assignAuthoSession",
           invoke: {
             src: "TrustDeviceMachine",
-            id: "TrustDeviceMachine",
+            id: "trustDeviceMachine",
             onDone: "End",
           },
         },

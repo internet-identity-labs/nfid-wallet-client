@@ -4,6 +4,7 @@ import React from "react"
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
+import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
 import IDPMachine, {
   IDPMachineType,
@@ -11,6 +12,7 @@ import IDPMachine, {
 
 import { AuthenticationCoordinator } from "./authentication"
 import { AuthorizationCoordinator } from "./authorization"
+import { TrustDeviceCoordinator } from "./trust-device"
 
 interface Props {
   machine?: IDPMachineType
@@ -40,6 +42,12 @@ export default function IDPCoordinator({ machine }: Props) {
       return (
         <AuthorizationCoordinator
           actor={state.children.authorize as AuthorizationActor}
+        />
+      )
+    case state.matches("TrustDevice"):
+      return (
+        <TrustDeviceCoordinator
+          actor={state.children.trustDeviceMachine as TrustDeviceActor}
         />
       )
     case state.matches("End"):

@@ -1,5 +1,7 @@
 import { ActorRefFrom, createMachine } from "xstate"
 
+import { ii } from "frontend/integration/actors"
+import { authState } from "frontend/integration/internet-identity"
 import { RemoteDeviceAuthSession } from "frontend/state/authentication"
 import {
   AuthorizationRequest,
@@ -22,25 +24,32 @@ const RemoteReceiverMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5gFsB7dMPMAYzAEsA3MXAOgCVKb6BiZgUQGFuAkgDVuAfQAi3ADLcA4gEEAKgIDyAOUSgADkVjV01IgDtNIAB6IAjAA4AbIwCsAFicAmAOwBmAAxOAnE7u3n6uADQgAJ6IfvZ+7g6uTt62fsFOlu6uAL454UZEEHCmaFjkxKTkVHQMLGzVpjp6BsamFghu4VEIqYxxlp4D7tbWQUnuuSAlOPjlZPhV9EzcRhANuvqGJkjmiEmWjBkxIa5+DrbucZ6d0d697v2Dw6PenhNTZSRzdYtrTZutVms1wQNhyOSAA */
   createMachine(
     {
-  tsTypes: {} as import("./remote-receiver.typegen").Typegen0,
-  schema: { events: {} as Events, context: {} as Context },
-  initial: "Receive",
-  id: "auth-remote-receiver",
-  states: {
-    Receive: {
-      on: {
-        RECEIVE_DELEGATION: {
-          target: "End",
+      tsTypes: {} as import("./remote-receiver.typegen").Typegen0,
+      schema: { events: {} as Events, context: {} as Context },
+      initial: "Receive",
+      id: "auth-remote-receiver",
+      states: {
+        Receive: {
+          on: {
+            RECEIVE_DELEGATION: {
+              target: "End",
+            },
+          },
+        },
+        End: {
+          type: "final",
+          data: (context, event: { data: RemoteDeviceAuthSession }) => {
+            // NOTE: where should this ideally live?
+            authState.set(
+              event.data.identity,
+              event.data.delegationIdentity,
+              ii,
+            )
+            return event.data
+          },
         },
       },
     },
-    End: {
-      type: "final",
-      data: (context, event: { data: RemoteDeviceAuthSession }) =>
-        event.data,
-    },
-  },
-},
     {},
   )
 

@@ -14,11 +14,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.remote": {
-      type: "done.invoke.remote"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "xstate.init": { type: "xstate.init" }
     "error.platform.isMobileWithWebAuthn": {
       type: "error.platform.isMobileWithWebAuthn"
@@ -46,16 +41,12 @@ export interface Typegen0 {
       type: "error.platform.fetchGoogleDevice"
       data: unknown
     }
-    "error.platform.remote": { type: "error.platform.remote"; data: unknown }
-    "done.invoke.trustDeviceMachine": {
-      type: "done.invoke.trustDeviceMachine"
+    "done.invoke.remote": {
+      type: "done.invoke.remote"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.trustDeviceMachine": {
-      type: "error.platform.trustDeviceMachine"
-      data: unknown
-    }
+    "error.platform.remote": { type: "error.platform.remote"; data: unknown }
   }
   invokeSrcNameMap: {
     isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
@@ -63,7 +54,6 @@ export interface Typegen0 {
     signInWithGoogle: "done.invoke.signInWithGoogle"
     fetchGoogleDevice: "done.invoke.fetchGoogleDevice"
     RemoteReceiverMachine: "done.invoke.remote"
-    TrustDeviceMachine: "done.invoke.trustDeviceMachine"
   }
   missingImplementations: {
     actions: never
@@ -79,7 +69,6 @@ export interface Typegen0 {
     fetchGoogleDevice: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     signInWithGoogle: "done.invoke.fetchGoogleDevice"
-    TrustDeviceMachine: "done.invoke.remote"
   }
   eventsCausingGuards: {
     bool: "done.invoke.isMobileWithWebAuthn"
@@ -96,7 +85,6 @@ export interface Typegen0 {
     | "AuthWithGoogle.Fetch"
     | "RemoteAuthentication"
     | "ExistingAnchor"
-    | "TrustDevice"
     | "End"
     | { Start?: "CheckCapability"; AuthWithGoogle?: "SignIn" | "Fetch" }
   tags: never

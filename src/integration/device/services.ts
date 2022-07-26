@@ -20,6 +20,8 @@ export async function registerDeviceWithWebAuthn() {
   const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
     BigInt(profile.anchor),
   )
+  // TODO: this could fail if the device is already registered but
+  // lost profile form localStorage
   const identity = await WebAuthnIdentity.create({
     publicKey: creationOptions(usersAuthenticatorDevices),
   })
@@ -28,7 +30,6 @@ export async function registerDeviceWithWebAuthn() {
   await Promise.all([
     ii.add(BigInt(profile.anchor), {
       alias: deviceInfo.newDeviceName,
-      // pubkey: Array.from(new Uint8Array(newPublicKey)),
       pubkey: pubKey,
       credential_id: [credential_id],
       key_type: { platform: null },
@@ -52,6 +53,8 @@ export async function registerDeviceWithSecurityKey() {
   const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
     BigInt(profile.anchor),
   )
+  // TODO: this could fail if the device is already registered but
+  // lost profile form localStorage
   const identity = await WebAuthnIdentity.create({
     publicKey: creationOptions(usersAuthenticatorDevices, "cross-platform"),
   })
@@ -74,10 +77,4 @@ export async function registerDeviceWithSecurityKey() {
       pub_key: pubKey,
     }),
   ])
-  // FIXME: define Interface
-  setProfile({
-    ...profile,
-    anchor: profile.anchor.toString(),
-    useSecurityKey: true,
-  })
 }

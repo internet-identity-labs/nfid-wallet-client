@@ -13,7 +13,7 @@ import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
 
-interface AppScreenAuthorizeAppProps { }
+interface AppScreenAuthorizeAppProps {}
 
 export const AppScreenAuthorizeApp: React.FC<
   AppScreenAuthorizeAppProps

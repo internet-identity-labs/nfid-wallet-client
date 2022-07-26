@@ -15,14 +15,16 @@ const config = {
     },
   },
   services: {
-    getDataFromPath
-  }
+    getDataFromPath,
+  },
 }
 
 describe("Remote IDP coordinator", () => {
   it("should render", async () => {
     const testMachine = RemoteSenderMachine.withConfig({ ...config })
-    await waitFor(async () => void render(<RemoteIDPCoordinator machine={testMachine} />))
+    await waitFor(
+      async () => void render(<RemoteIDPCoordinator machine={testMachine} />),
+    )
     await waitFor(async () => screen.getByText("Sign in with NFID"))
     expect(screen.getByText("Sign in with NFID")).toBeDefined()
   })

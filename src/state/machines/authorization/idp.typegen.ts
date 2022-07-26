@@ -28,8 +28,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.TrustDeviceMachine": {
-      type: "done.invoke.TrustDeviceMachine"
+    "done.invoke.trustDeviceMachine": {
+      type: "done.invoke.trustDeviceMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -50,8 +50,8 @@ export interface Typegen0 {
       type: "error.platform.authorize"
       data: unknown
     }
-    "error.platform.TrustDeviceMachine": {
-      type: "error.platform.TrustDeviceMachine"
+    "error.platform.trustDeviceMachine": {
+      type: "error.platform.trustDeviceMachine"
       data: unknown
     }
     "done.invoke.done": {
@@ -66,7 +66,7 @@ export interface Typegen0 {
     getAppMeta: "done.invoke.getAppMeta"
     AuthenticationMachine: "done.invoke.authenticate"
     AuthorizationMachine: "done.invoke.authorize"
-    TrustDeviceMachine: "done.invoke.TrustDeviceMachine"
+    TrustDeviceMachine: "done.invoke.trustDeviceMachine"
     postDelegation: "done.invoke.done"
   }
   missingImplementations: {
@@ -81,7 +81,7 @@ export interface Typegen0 {
     getAppMeta: "xstate.init"
     AuthorizationMachine: "done.invoke.authenticate"
     TrustDeviceMachine: "done.invoke.authorize"
-    postDelegation: "done.invoke.TrustDeviceMachine"
+    postDelegation: "done.invoke.trustDeviceMachine"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}

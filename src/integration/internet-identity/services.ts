@@ -75,13 +75,13 @@ export async function loginService(context: {
 
   const multiIdent = identityFromDeviceList(context.devices)
   const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
-  console.debug("loginService", { multiIdent, sessionKey, chain })
+  console.debug(loginService.name, { multiIdent, sessionKey, chain })
 
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,
     chain,
   )
-  console.debug("loginService", {
+  console.debug(loginService.name, {
     delegationIdentity,
     principalId: delegationIdentity.getPrincipal().toText(),
   })

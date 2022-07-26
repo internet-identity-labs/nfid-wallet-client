@@ -63,12 +63,6 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           actor={state.children.remote as RemoteReceiverActor}
         />
       )
-    case state.matches("TrustDevice"):
-      return (
-        <TrustDeviceCoordinator
-          actor={state.children.trustDeviceMachine as TrustDeviceActor}
-        />
-      )
     case state.matches("End"):
     case state.matches("Start"):
     default:

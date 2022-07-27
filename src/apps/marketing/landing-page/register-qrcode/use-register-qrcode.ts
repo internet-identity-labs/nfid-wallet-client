@@ -5,10 +5,12 @@ import { useCallback, useMemo } from "react"
 import { generatePath } from "react-router-dom"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { RemoteLoginEvent } from "frontend/apps/authorization/use-authorize-app"
 import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
 import { apiResultToLoginResult } from "frontend/integration/internet-identity/api-result-to-login-result"
-import { getMessages } from "frontend/integration/pubsub"
+import {
+  getMessages,
+  NFIDLoginRegisterMessage,
+} from "frontend/integration/pubsub"
 import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import { RemoteNFIDAuthenticationConstants } from "../../../authentication/remote-nfid-authentication"
@@ -42,8 +44,8 @@ export const useRegisterQRCode = () => {
 
   const handleLoginFromRemoteDelegation = useCallback(
     async (
-      nfidJsonDelegate: RemoteLoginEvent["nfid"],
-      anchor: RemoteLoginEvent["anchor"],
+      nfidJsonDelegate: NFIDLoginRegisterMessage["reconstructableIdentity"],
+      anchor: NFIDLoginRegisterMessage["anchor"],
     ) => {
       const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
@@ -76,13 +78,13 @@ export const useRegisterQRCode = () => {
       if (messages && messages.length > 0) {
         const parsedMessages = messages.map((m: string) => JSON.parse(m))
 
-        const registerMessage: RemoteLoginEvent = parsedMessages.find(
+        const registerMessage: NFIDLoginRegisterMessage = parsedMessages.find(
           (m: { type: string }) => m.type === "remote-nfid-login-register",
         )
 
         if (registerMessage) {
           handleLoginFromRemoteDelegation(
-            registerMessage.nfid,
+            registerMessage.reconstructableIdentity,
             registerMessage.anchor,
           )
 

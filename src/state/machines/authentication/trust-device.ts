@@ -138,14 +138,19 @@ export const TrustDeviceMachine =
         registerDeviceWithSecurityKey,
         async hasSecurityKey() {
           const profile = await fetchProfile()
+          console.debug("hasSecurityKey", { profile })
           const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
             BigInt(profile.anchor),
           )
-          return (
+          const hasSecurityKey =
             usersAuthenticatorDevices.findIndex(
               (x) => "cross_platform" in x.key_type,
             ) >= 0
-          )
+          console.debug("hasSecurityKey", {
+            usersAuthenticatorDevices,
+            hasSecurityKey,
+          })
+          return hasSecurityKey
         },
       },
       guards: {

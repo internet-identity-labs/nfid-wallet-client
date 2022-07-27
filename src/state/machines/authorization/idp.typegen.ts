@@ -2,11 +2,6 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    assignAuthRequest: "done.invoke.handshake"
-    assignAppMeta: "done.invoke.getAppMeta"
-    assignAuthoSession: "done.invoke.authorize"
-  }
   internalEvents: {
     "done.invoke.handshake": {
       type: "done.invoke.handshake"
@@ -23,6 +18,7 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.authenticate": {
       type: "done.invoke.authenticate"
       data: unknown
@@ -33,7 +29,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
     "error.platform.handshake": {
       type: "error.platform.handshake"
       data: unknown
@@ -75,10 +70,15 @@ export interface Typegen0 {
     guards: never
     delays: never
   }
+  eventsCausingActions: {
+    assignAuthRequest: "done.invoke.handshake"
+    assignAppMeta: "done.invoke.getAppMeta"
+    assignAuthoSession: "done.invoke.authorize"
+  }
   eventsCausingServices: {
-    AuthenticationMachine: "done.state.idp.Start"
     handshake: "xstate.init"
     getAppMeta: "xstate.init"
+    AuthenticationMachine: "done.state.idp.Start"
     AuthorizationMachine: "done.invoke.authenticate"
     TrustDeviceMachine: "done.invoke.authorize"
     postDelegation: "done.invoke.trustDeviceMachine"

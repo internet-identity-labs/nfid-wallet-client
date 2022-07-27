@@ -95,13 +95,16 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             <PlusIcon className="w-5 h-5" />
             <p className="text-sm font-semibold">Create a new account</p>
           </div>
-          {isAccountsLimit ? (
-            <img
-              data-tip={`${applicationName} has limited the number of free accounts to ${accountsLimit}. Manage your accounts from your NFID Profile page.`}
-              src={alertIcon}
-              alt="alert"
-            />
-          ) : null}
+          {isAccountsLimit && (
+            <>
+              <img
+                data-tip={`${applicationName} has limited the number of free accounts to ${accountsLimit}. Manage your accounts from your NFID Profile page.`}
+                src={alertIcon}
+                alt="alert"
+              />
+              <ReactTooltip className="w-72" />
+            </>
+          )}
         </div>
         {!isAuthenticated && (
           <BlurOverlay
@@ -117,7 +120,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           </BlurOverlay>
         )}
       </div>
-      <ReactTooltip className="w-72" />
     </>
   )
 }

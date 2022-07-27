@@ -52,7 +52,10 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
           }
           accounts={state.context?.accounts?.map(mapPersonaToLegacy) || []}
           onLogin={async (accountId) =>
-            send({ type: "SELECT_ACCOUNT", data: { accountId } })
+            send({
+              type: "SELECT_ACCOUNT",
+              data: { accountId: accountId ?? "" },
+            })
           }
           onUnlockNFID={function (): Promise<any> {
             throw new Error("Function not implemented.")

@@ -43,6 +43,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     accounts,
     accountsLimit,
   })
+
   const isAccountsLimit = React.useMemo(() => {
     return accountsLimit && accounts.length > --accountsLimit
   }, [accounts.length, accountsLimit])
@@ -92,13 +93,13 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             <PlusIcon className="w-5 h-5" />
             <p className="text-sm font-semibold">Create a new account</p>
           </div>
-          {isAccountsLimit && (
+          {isAccountsLimit ? (
             <img
               data-tip={`${applicationName} has limited the number of free accounts to ${accountsLimit}. Manage your accounts from your NFID Profile page.`}
               src={alertIcon}
               alt="alert"
             />
-          )}
+          ) : null}
         </div>
         {!isAuthenticated && (
           <BlurOverlay
@@ -114,7 +115,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           </BlurOverlay>
         )}
       </div>
-      <ReactTooltip />
+      <ReactTooltip className="w-72" />
     </>
   )
 }

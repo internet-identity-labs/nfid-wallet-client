@@ -138,7 +138,9 @@ const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
 export async function createChallenge(): Promise<Challenge> {
-  const challenge = await ii.create_challenge()
+  const challenge = await ii.create_challenge().catch((e) => {
+    throw new Error(`${createChallenge.name}: ${e.message}`)
+  })
   return challenge
 }
 
@@ -201,14 +203,16 @@ export const creationOptions = (
 }
 
 export async function fetchAllDevices(anchor: UserNumber) {
-  return await ii.lookup(anchor)
+  return await ii.lookup(anchor).catch((e) => {
+    throw new Error(`${fetchAllDevices.name}: ${e.message}`)
+  })
 }
 
 export async function fetchAuthenticatorDevices(
   anchor: UserNumber,
   withSecurityDevices?: boolean,
 ) {
-  const allDevices = await ii.lookup(anchor)
+  const allDevices = await fetchAllDevices(anchor)
 
   return allDevices.filter((device) =>
     withSecurityDevices
@@ -218,7 +222,7 @@ export async function fetchAuthenticatorDevices(
 }
 
 export async function fetchRecoveryDevices(anchor: UserNumber) {
-  const allDevices = await ii.lookup(anchor)
+  const allDevices = await fetchAllDevices(anchor)
   return allDevices.filter((device) =>
     hasOwnProperty(device.purpose, "recovery"),
   )
@@ -310,12 +314,16 @@ async function prepareDelegation(
     `prepare_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey})`,
   )
   await renewDelegation()
-  return await ii.prepare_delegation(
-    userNumber,
-    hostname,
-    sessionKey,
-    maxTimeToLive !== undefined ? [maxTimeToLive] : [],
-  )
+  return await ii
+    .prepare_delegation(
+      userNumber,
+      hostname,
+      sessionKey,
+      maxTimeToLive !== undefined ? [maxTimeToLive] : [],
+    )
+    .catch((e) => {
+      throw new Error(`${prepareDelegation.name}: ${e.message}`)
+    })
 }
 
 const retryGetDelegation = async (
@@ -360,7 +368,11 @@ async function getDelegation(
     `get_delegation(user: ${userNumber}, hostname: ${hostname}, session_key: ${sessionKey}, timestamp: ${timestamp})`,
   )
   await renewDelegation()
-  return await ii.get_delegation(userNumber, hostname, sessionKey, timestamp)
+  return await ii
+    .get_delegation(userNumber, hostname, sessionKey, timestamp)
+    .catch((e) => {
+      throw new Error(`${getDelegation.name}: ${e.message}`)
+    })
 }
 
 /**
@@ -438,16 +450,20 @@ export async function addDevice(
   credentialId?: ArrayBuffer,
 ) {
   await renewDelegation()
-  return await ii.add(anchor, {
-    alias,
-    pubkey: Array.from(new Uint8Array(newPublicKey)),
-    credential_id: credentialId
-      ? [Array.from(new Uint8Array(credentialId))]
-      : [],
-    key_type: keyType,
-    purpose,
-    protection: { unprotected: null },
-  })
+  return await ii
+    .add(anchor, {
+      alias,
+      pubkey: Array.from(new Uint8Array(newPublicKey)),
+      credential_id: credentialId
+        ? [Array.from(new Uint8Array(credentialId))]
+        : [],
+      key_type: keyType,
+      purpose,
+      protection: { unprotected: null },
+    })
+    .catch((e) => {
+      throw new Error(`${addDevice.name}: ${e.message}`)
+    })
 }
 
 export async function removeDevice(
@@ -455,7 +471,9 @@ export async function removeDevice(
   publicKey: PublicKey,
 ): Promise<void> {
   await renewDelegation()
-  await ii.remove(userNumber, publicKey)
+  await ii.remove(userNumber, publicKey).catch((e) => {
+    throw new Error(`${removeDevice.name}: ${e.message}`)
+  })
 }
 
 async function registerAnchor(
@@ -464,17 +482,21 @@ async function registerAnchor(
   pubkey: number[],
   credentialId?: number[],
 ) {
-  return await ii.register(
-    {
-      alias,
-      pubkey,
-      credential_id: credentialId ? [credentialId] : [],
-      key_type: { unknown: null },
-      purpose: { authentication: null },
-      protection: { unprotected: null },
-    },
-    challengeResult,
-  )
+  return await ii
+    .register(
+      {
+        alias,
+        pubkey,
+        credential_id: credentialId ? [credentialId] : [],
+        key_type: { unknown: null },
+        purpose: { authentication: null },
+        protection: { unprotected: null },
+      },
+      challengeResult,
+    )
+    .catch((e) => {
+      throw new Error(`${registerAnchor.name}: ${e.message}`)
+    })
 }
 
 async function getPrincipal(
@@ -482,7 +504,9 @@ async function getPrincipal(
   frontend: FrontendHostname,
 ): Promise<Principal> {
   await renewDelegation()
-  return await ii.get_principal(userNumber, frontend)
+  return await ii.get_principal(userNumber, frontend).catch((e) => {
+    throw new Error(`${getPrincipal.name}: ${e.message}`)
+  })
 }
 
 export const getMultiIdent = (
@@ -867,7 +891,7 @@ export async function getDelegate(
   sessionKey: PublicKey,
   timestamp: bigint,
 ): Promise<SignedDelegation> {
-  console.log(">> getDelegate", { userNumber, scope, sessionKey, timestamp })
+  console.debug(getDelegate.name, { userNumber, scope, sessionKey, timestamp })
 
   return ii
     .get_delegation(BigInt(userNumber), scope, sessionKey, timestamp)
@@ -957,7 +981,12 @@ export function mapChallenge(challenge: Challenge): CaptchaChallenge {
  * @returns
  */
 export async function fetchChallenge() {
-  return await ii.create_challenge().then(mapChallenge)
+  return await ii
+    .create_challenge()
+    .then(mapChallenge)
+    .catch((e) => {
+      throw new Error(`${fetchChallenge.name}: ${e.message}`)
+    })
 }
 
 function mapRegisterResponse(response: RegisterResponse) {

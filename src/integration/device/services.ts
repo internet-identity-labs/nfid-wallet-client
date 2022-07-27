@@ -28,20 +28,32 @@ export async function registerDeviceWithWebAuthn() {
     const credential_id = Array.from(new Uint8Array(identity.rawId))
     const pubKey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
     await Promise.all([
-      ii.add(BigInt(profile.anchor), {
-        alias: deviceInfo.newDeviceName,
-        pubkey: pubKey,
-        credential_id: [credential_id],
-        key_type: { platform: null },
-        purpose: { authentication: null },
-        protection: { unprotected: null },
-      }),
-      im.create_access_point({
-        icon: "",
-        device: deviceInfo.newDeviceName,
-        browser: deviceInfo.browser.name ?? "",
-        pub_key: pubKey,
-      }),
+      ii
+        .add(BigInt(profile.anchor), {
+          alias: deviceInfo.newDeviceName,
+          pubkey: pubKey,
+          credential_id: [credential_id],
+          key_type: { platform: null },
+          purpose: { authentication: null },
+          protection: { unprotected: null },
+        })
+        .catch((e) => {
+          throw new Error(
+            `${registerDeviceWithWebAuthn.name} ii.add: ${e.message}`,
+          )
+        }),
+      im
+        .create_access_point({
+          icon: "",
+          device: deviceInfo.newDeviceName,
+          browser: deviceInfo.browser.name ?? "",
+          pub_key: pubKey,
+        })
+        .catch((e) => {
+          throw new Error(
+            `${registerDeviceWithWebAuthn.name} im.create_access_point: ${e.message}`,
+          )
+        }),
     ])
   } catch (e: any) {
     if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
@@ -67,21 +79,33 @@ export async function registerDeviceWithSecurityKey() {
     const credential_id = Array.from(new Uint8Array(identity.rawId))
     const pubKey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
     await Promise.all([
-      ii.add(BigInt(profile.anchor), {
-        alias: deviceInfo.newDeviceName,
-        // pubkey: Array.from(new Uint8Array(newPublicKey)),
-        pubkey: pubKey,
-        credential_id: [credential_id],
-        key_type: { cross_platform: null },
-        purpose: { authentication: null },
-        protection: { unprotected: null },
-      }),
-      im.create_access_point({
-        icon: "usb",
-        device: "Security Key",
-        browser: "",
-        pub_key: pubKey,
-      }),
+      ii
+        .add(BigInt(profile.anchor), {
+          alias: deviceInfo.newDeviceName,
+          // pubkey: Array.from(new Uint8Array(newPublicKey)),
+          pubkey: pubKey,
+          credential_id: [credential_id],
+          key_type: { cross_platform: null },
+          purpose: { authentication: null },
+          protection: { unprotected: null },
+        })
+        .catch((e) => {
+          throw new Error(
+            `${registerDeviceWithSecurityKey.name} ii.add: ${e.message}`,
+          )
+        }),
+      im
+        .create_access_point({
+          icon: "usb",
+          device: "Security Key",
+          browser: "",
+          pub_key: pubKey,
+        })
+        .catch((e) => {
+          throw new Error(
+            `${registerDeviceWithSecurityKey.name} im.create_access_point: ${e.message}`,
+          )
+        }),
     ])
   } catch (e: any) {
     if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {

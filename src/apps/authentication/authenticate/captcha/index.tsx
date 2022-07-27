@@ -97,16 +97,28 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
       if (response && response.kind === "loginSuccess") {
         setShouldStoreLocalAccount(false)
-        await im.create_account({
-          anchor: response.userNumber,
-        })
+        await im
+          .create_account({
+            anchor: response.userNumber,
+          })
+          .catch((e) => {
+            throw new Error(
+              `${handleRegisterAnchorWithGoogle.name} im.create_account: ${e.message}`,
+            )
+          })
         if (!scope) throw new Error("scope is required")
         await Promise.all([
-          im.create_persona({
-            domain: scope,
-            persona_id: nextPersonaId,
-            persona_name: "",
-          }),
+          im
+            .create_persona({
+              domain: scope,
+              persona_id: nextPersonaId,
+              persona_name: "",
+            })
+            .catch((e) => {
+              throw new Error(
+                `${handleRegisterAnchorWithGoogle.name} im.create_persona: ${e.message}`,
+              )
+            }),
           authorizeApp({
             persona_id: nextPersonaId,
             domain: scope,

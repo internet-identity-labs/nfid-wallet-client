@@ -165,7 +165,11 @@ export const useDevices = () => {
   const handleLoadDevices = React.useCallback(async () => {
     if (userNumber) {
       const [accessPoints, existingDevices] = await Promise.all([
-        im.read_access_points(),
+        im.read_access_points().catch((e) => {
+          throw new Error(
+            `${handleLoadDevices.name} im.read_access_points: ${e.message}`,
+          )
+        }),
         fetchAuthenticatorDevices(userNumber),
       ])
 
@@ -185,13 +189,23 @@ export const useDevices = () => {
       const normalizedDevice = normalizeDeviceRequest(device)
 
       if (!device.isAccessPoint) {
-        const createAccessPointResponse = await im.create_access_point(
-          normalizedDevice,
-        )
+        const createAccessPointResponse = await im
+          .create_access_point(normalizedDevice)
+          .catch((e) => {
+            throw new Error(
+              `${updateDevice.name} im.create_access_point: ${e.message}`,
+            )
+          })
         handleLoadDevices()
         return createAccessPointResponse
       }
-      const updatedAccessPoint = await im.update_access_point(normalizedDevice)
+      const updatedAccessPoint = await im
+        .update_access_point(normalizedDevice)
+        .catch((e) => {
+          throw new Error(
+            `${updateDevice.name} im.update_access_point: ${e.message}`,
+          )
+        })
       handleLoadDevices()
       return updatedAccessPoint
     },
@@ -201,7 +215,11 @@ export const useDevices = () => {
   const getRecoveryDevices = React.useCallback(async () => {
     if (userNumber) {
       const [accessPoints, existingRecoveryDevices] = await Promise.all([
-        im.read_access_points(),
+        im.read_access_points().catch((e) => {
+          throw new Error(
+            `${getRecoveryDevices.name} im.read_access_points: ${e.message}`,
+          )
+        }),
         fetchRecoveryDevices(userNumber),
       ])
 
@@ -221,7 +239,11 @@ export const useDevices = () => {
       if (authState.get().actor && userNumber) {
         await Promise.all([
           removeDevice(userNumber, pubkey),
-          im.remove_access_point({ pub_key: pubkey }),
+          im.remove_access_point({ pub_key: pubkey }).catch((e) => {
+            throw new Error(
+              `${deleteDevice.name} im.remove_access_point: ${e.message}`,
+            )
+          }),
         ])
       }
     },
@@ -274,12 +296,18 @@ export const useDevices = () => {
           derFromPubkey(Array.from(new Uint8Array(pub_key))),
           fromHexString(rawId),
         ),
-        im.create_access_point({
-          icon: "",
-          device: deviceName,
-          browser: browserName ?? "",
-          pub_key: Array.from(new Uint8Array(pub_key)),
-        }),
+        im
+          .create_access_point({
+            icon: "",
+            device: deviceName,
+            browser: browserName ?? "",
+            pub_key: Array.from(new Uint8Array(pub_key)),
+          })
+          .catch((e) => {
+            throw new Error(
+              `${createDevice.name} im.create_access_point: ${e.message}`,
+            )
+          }),
       ])
     },
     [browserName],
@@ -296,7 +324,11 @@ export const useDevices = () => {
         ),
       }
 
-      return await im.create_access_point(newDevice)
+      return await im.create_access_point(newDevice).catch((e) => {
+        throw new Error(
+          `${createRecoveryDevice.name} im.create_access_point: ${e.message}`,
+        )
+      })
     },
     [],
   )

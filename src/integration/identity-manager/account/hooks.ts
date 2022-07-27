@@ -122,9 +122,15 @@ export const useAccount = () => {
       }))
       if (!newAccount) throw new Error("account undefined")
       // NOTE: looks silly? `name` is an optional parameter :/
-      await im.update_account({
-        name: newAccount.name ? [newAccount.name] : [],
-      })
+      await im
+        .update_account({
+          name: newAccount.name ? [newAccount.name] : [],
+        })
+        .catch((e) => {
+          throw new Error(
+            `${updateAccount.name} im.update_account: ${e.message}`,
+          )
+        })
 
       shouldStoreLocalAccount
         ? setAccount(newAccount)

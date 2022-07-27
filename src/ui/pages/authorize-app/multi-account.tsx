@@ -13,7 +13,7 @@ interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   accountsLimit?: number
   isLoading: boolean
   isAuthenticated?: boolean
-  onLogin: (personaId?: string) => Promise<void>
+  onLogin: (personaId: string) => Promise<void>
   onUnlockNFID: () => Promise<any>
   onCreateAccount: () => Promise<void>
 }

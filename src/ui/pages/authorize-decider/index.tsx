@@ -19,7 +19,6 @@ import SecurityKey from "./assets/security-key.svg"
 
 export interface AuthorizeAppUnknownDeviceProps {
   onSelectRemoteAuthorization: () => Promise<void> | void
-  onSelectSameDeviceRegistration: () => Promise<void> | void
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
   onSelectGoogleAuthorization: LoginEventHandler
@@ -33,7 +32,6 @@ export interface AuthorizeAppUnknownDeviceProps {
 
 export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   onSelectRemoteAuthorization,
-  onSelectSameDeviceRegistration,
   onSelectSameDeviceAuthorization,
   onSelectSecurityKeyAuthorization,
   onSelectGoogleAuthorization,

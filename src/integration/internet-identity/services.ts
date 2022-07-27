@@ -33,10 +33,16 @@ import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(
   _: unknown,
-  event: { data: string },
+  event: { data: { anchor: string; withSecurityDevices?: boolean } },
 ): Promise<LocalDeviceAuthSession> {
-  const authResult = apiResultToLoginResult(await login(BigInt(event.data)))
-  console.debug("loginWithAnchor", { authResult })
+  console.debug(loginWithAnchor.name, {
+    anchor: event.data.anchor,
+    withSecurityDevices: event.data.withSecurityDevices,
+  })
+  const authResult = apiResultToLoginResult(
+    await login(BigInt(event.data.anchor), event.data.withSecurityDevices),
+  )
+  console.debug(loginWithAnchor.name, { authResult })
 
   if (authResult.tag === "ok") {
     return {

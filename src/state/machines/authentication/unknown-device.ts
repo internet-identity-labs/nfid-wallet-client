@@ -39,7 +39,10 @@ export type Events =
   | { type: "AUTH_WITH_GOOGLE"; data: string }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
-  | { type: "AUTH_WITH_EXISTING_ANCHOR"; data: string }
+  | {
+      type: "AUTH_WITH_EXISTING_ANCHOR"
+      data: { anchor: string; withSecurityDevices?: boolean }
+    }
   | { type: "END"; data: AuthSession }
 
 export interface Schema {

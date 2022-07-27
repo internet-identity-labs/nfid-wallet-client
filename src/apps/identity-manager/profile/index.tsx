@@ -18,7 +18,6 @@ interface AuthenticateNFIDHomeProps {}
 export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const applications: any[] = ["NFID Demo"]
 
-  const [hasPoa, setHasPoa] = React.useState(false)
   const [fetched, loadOnce] = React.useReducer(() => true, false)
   const { navigate } = useNFIDNavigate()
 
@@ -35,12 +34,6 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   } = useDevices()
   const { allAccounts, getPersona } = usePersona()
   const { account, readAccount } = useAccount()
-
-  React.useEffect(() => {
-    ima.has_poap().then((response) => {
-      setHasPoa(response)
-    })
-  }, [])
 
   React.useEffect(() => {
     if (!fetched) {
@@ -106,7 +99,6 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
       applications={applications}
       onDeviceDelete={handleDeleteDevice}
       onDeviceUpdate={handleDeviceUpdate}
-      hasPoa={hasPoa}
       devices={devices}
       accounts={allAccounts}
       onRecoveryDelete={handleRecoveryDelete}

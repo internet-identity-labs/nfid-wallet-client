@@ -6,7 +6,6 @@ module.exports = {
     INTERNET_IDENTITY_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     IDENTITY_MANAGER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
-    IM_ADDITION_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     VERIFY_PHONE_NUMBER:
       "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",

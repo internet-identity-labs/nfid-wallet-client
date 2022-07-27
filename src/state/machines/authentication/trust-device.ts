@@ -141,6 +141,7 @@ export const TrustDeviceMachine =
           console.debug("hasSecurityKey", { profile })
           const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
             BigInt(profile.anchor),
+            true,
           )
           const hasSecurityKey =
             usersAuthenticatorDevices.findIndex(

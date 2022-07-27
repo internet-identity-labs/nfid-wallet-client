@@ -28,7 +28,6 @@ interface ProfileProps {
   accounts: NFIDPersona[]
   recoveryMethods: RecoveryDevice[]
   account?: ProfileT
-  hasPoa?: boolean
 }
 
 export const Profile: React.FC<ProfileProps> = ({
@@ -36,7 +35,6 @@ export const Profile: React.FC<ProfileProps> = ({
   onDeviceUpdate,
   account,
   devices,
-  hasPoa,
   accounts = [],
   onRecoveryDelete,
   onRecoveryUpdate,

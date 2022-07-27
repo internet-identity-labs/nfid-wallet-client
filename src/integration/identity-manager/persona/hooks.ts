@@ -38,7 +38,9 @@ export const usePersona = () => {
   )
 
   const getPersona = React.useCallback(async () => {
-    const response = await im.read_personas()
+    const response = await im.read_personas().catch((e) => {
+      throw new Error(`${getPersona.name} im.read_personas: ${e.message}`)
+    })
 
     if (response.status_code === 200) {
       setPersonas(response.data[0])
@@ -46,9 +48,13 @@ export const usePersona = () => {
     // NOTE: this is only for dev purposes
     if (response.status_code === 404 && account?.anchor) {
       const anchor = BigInt(account?.anchor)
-      await im.create_account({
-        anchor,
-      })
+      await im
+        .create_account({
+          anchor,
+        })
+        .catch((e) => {
+          throw new Error(`${getPersona.name} im.create_account: ${e.message}`)
+        })
 
       getPersona()
     }
@@ -68,7 +74,11 @@ export const usePersona = () => {
         domain: newAccount.domain,
       }
 
-      const response = await im.create_persona(accountParams)
+      const response = await im.create_persona(accountParams).catch((e) => {
+        throw new Error(
+          `${createPersona.name} im.create_access_point: ${e.message}`,
+        )
+      })
 
       if (response?.status_code === 200) {
         setPersonas(response.data[0]?.personas)

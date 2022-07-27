@@ -82,6 +82,9 @@ export async function createTopic(topic: Topic) {
   return pubsub
     .create_topic(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
+    .catch((e) => {
+      throw new Error(`${createTopic.name} pubsub.create_topic: ${e.message}`)
+    })
 }
 
 export async function postMessages(topic: Topic, messages: any[]) {
@@ -92,6 +95,9 @@ export async function postMessages(topic: Topic, messages: any[]) {
       messages.map((m) => JSON.stringify(m)),
     )
     .then((r) => unpackResponse(sanitizeResponse(r)))
+    .catch((e) => {
+      throw new Error(`${postMessages.name} pubsub.post_messages: ${e.message}`)
+    })
 }
 
 export async function getMessages(topic: Topic) {
@@ -99,6 +105,9 @@ export async function getMessages(topic: Topic) {
   return pubsub
     .get_messages(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
+    .catch((e) => {
+      throw new Error(`${getMessages.name} pubsub.get_messages: ${e.message}`)
+    })
 }
 
 export const useMessages = (

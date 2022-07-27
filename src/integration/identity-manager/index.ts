@@ -104,18 +104,24 @@ export async function fetchProfile() {
       return response
     })
     .then((r) => mapProfile(unpackResponse(r)))
+    .catch((e) => {
+      throw new Error(`${fetchProfile.name} im.get_account: ${e.message}`)
+    })
 }
 
 /**
  * Fetch accounts for the currently connected principal.
  */
 export async function fetchAccounts() {
-  console.debug("fetchAccounts im.read_personas")
+  console.debug(`${fetchAccounts.name} im.read_personas`)
   try {
     return await im
       .read_personas()
       .then(unpackResponse)
       .then((r) => r.map(mapAccount))
+      .catch((e) => {
+        throw new Error(`${fetchAccounts.name} im.get_account: ${e.message}`)
+      })
   } catch (e: any) {
     // TODO: This note based on an incorrect assumption. Remove.
     // This endpoint throws an error if there are no personas. Weird.
@@ -156,7 +162,12 @@ export async function createPersona(
  * ?
  */
 export async function verifyToken(token: string, principal: Principal) {
-  return im.verify_token(token).then(unpackLegacyResponse)
+  return im
+    .verify_token(token)
+    .then(unpackLegacyResponse)
+    .catch((e) => {
+      throw new Error(`${verifyToken.name} im.verify_token: ${e.message}`)
+    })
 }
 
 /**

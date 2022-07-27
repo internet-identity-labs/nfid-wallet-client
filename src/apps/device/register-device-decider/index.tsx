@@ -53,12 +53,18 @@ export const RouterRegisterDeviceDecider: React.FC<
           authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
         ),
       )
-      const createAccessPointResponse = await im.create_access_point({
-        icon: "laptop",
-        device: deviceName,
-        browser: browserName || "My Computer",
-        pub_key,
-      })
+      const createAccessPointResponse = await im
+        .create_access_point({
+          icon: "laptop",
+          device: deviceName,
+          browser: browserName || "My Computer",
+          pub_key,
+        })
+        .catch((e) => {
+          throw new Error(
+            `${handleRegister.name} im.create_access_point: ${e.message}`,
+          )
+        })
       if (createAccessPointResponse.status_code !== 200) {
         console.error("failed to create access point", {
           error: createAccessPointResponse.error[0],

@@ -46,12 +46,18 @@ export const AppScreenRegisterDeviceDecider: React.FC<
         ),
       )
 
-      await im.create_access_point({
-        icon: "",
-        device: "",
-        browser: "",
-        pub_key,
-      })
+      await im
+        .create_access_point({
+          icon: "",
+          device: "",
+          browser: "",
+          pub_key,
+        })
+        .catch((e) => {
+          throw new Error(
+            `${handleRegister.name} im.create_access_point: ${e.message}`,
+          )
+        })
     }
 
     await getPersona()

@@ -2,8 +2,8 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {}
   internalEvents: {
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.isDeviceRegistered": {
       type: "done.invoke.isDeviceRegistered"
       data: unknown
@@ -14,12 +14,15 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.registerDeviceWithWebAuthn": {
+      type: "error.platform.registerDeviceWithWebAuthn"
+      data: unknown
+    }
     "done.invoke.hasSecurityKey": {
       type: "done.invoke.hasSecurityKey"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
     "error.platform.isDeviceRegistered": {
       type: "error.platform.isDeviceRegistered"
       data: unknown
@@ -36,10 +39,6 @@ export interface Typegen0 {
       type: "done.invoke.registerDeviceWithWebAuthn"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "error.platform.registerDeviceWithWebAuthn": {
-      type: "error.platform.registerDeviceWithWebAuthn"
-      data: unknown
     }
     "done.invoke.regsiterWithSecurityKey": {
       type: "done.invoke.regsiterWithSecurityKey"
@@ -64,11 +63,14 @@ export interface Typegen0 {
     guards: never
     delays: never
   }
+  eventsCausingActions: {}
   eventsCausingServices: {
     isDeviceRegistered: "xstate.init"
     fetchWebAuthnCapability: "done.invoke.isDeviceRegistered" | "TRUST"
     hasSecurityKey: "done.invoke.fetchWebAuthnCapability"
-    registerDeviceWithWebAuthn: "done.invoke.fetchWebAuthnCapability"
+    registerDeviceWithWebAuthn:
+      | "done.invoke.fetchWebAuthnCapability"
+      | "error.platform.registerDeviceWithWebAuthn"
     registerDeviceWithSecurityKey: "done.invoke.fetchWebAuthnCapability"
   }
   eventsCausingGuards: {

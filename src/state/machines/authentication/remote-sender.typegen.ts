@@ -2,10 +2,6 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    assignAuthRequest: "done.invoke.getDataFromPath"
-    assignAppMeta: "done.invoke.getAppMeta"
-  }
   internalEvents: {
     "done.invoke.getDataFromPath": {
       type: "done.invoke.getDataFromPath"
@@ -17,12 +13,12 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.authenticate": {
       type: "done.invoke.authenticate"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
     "error.platform.getDataFromPath": {
       type: "error.platform.getDataFromPath"
       data: unknown
@@ -57,10 +53,14 @@ export interface Typegen0 {
     guards: never
     delays: never
   }
+  eventsCausingActions: {
+    assignAuthRequest: "done.invoke.getDataFromPath"
+    assignAppMeta: "done.invoke.getAppMeta"
+  }
   eventsCausingServices: {
-    AuthenticationMachine: "done.state.auth-remote-sender.Start"
     getDataFromPath: "xstate.init"
     getAppMeta: "xstate.init"
+    AuthenticationMachine: "done.state.auth-remote-sender.Start"
     postRemoteDelegationService: "done.invoke.authenticate"
   }
   eventsCausingGuards: {}

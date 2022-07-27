@@ -2,11 +2,6 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    assignProfile: "done.invoke.getLocalStorageProfileService"
-    assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
-    assignAccountLimit: "done.invoke.fetchAccountLimitService"
-  }
   internalEvents: {
     "done.invoke.getLocalStorageProfileService": {
       type: "done.invoke.getLocalStorageProfileService"
@@ -23,12 +18,12 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.loginService": {
       type: "done.invoke.loginService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
     "error.platform.getLocalStorageProfileService": {
       type: "error.platform.getLocalStorageProfileService"
       data: unknown
@@ -67,6 +62,11 @@ export interface Typegen0 {
     services: never
     guards: never
     delays: never
+  }
+  eventsCausingActions: {
+    assignProfile: "done.invoke.getLocalStorageProfileService"
+    assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
+    assignAccountLimit: "done.invoke.fetchAccountLimitService"
   }
   eventsCausingServices: {
     getLocalStorageProfileService: "xstate.init"

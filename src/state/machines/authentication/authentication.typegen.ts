@@ -2,9 +2,6 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    assignAuthSession: "done.invoke.known-device" | "done.invoke.unknown-device"
-  }
   internalEvents: {
     "done.invoke.known-device": {
       type: "done.invoke.known-device"
@@ -36,6 +33,9 @@ export interface Typegen0 {
     services: never
     guards: never
     delays: never
+  }
+  eventsCausingActions: {
+    assignAuthSession: "done.invoke.known-device" | "done.invoke.unknown-device"
   }
   eventsCausingServices: {
     KnownDeviceMachine: ""

@@ -45,7 +45,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   })
 
   const isAccountsLimit = React.useMemo(() => {
-    return accountsLimit && accounts.length > --accountsLimit
+    return accountsLimit && accounts.length >= accountsLimit
   }, [accounts.length, accountsLimit])
 
   const displayAccounts = isAuthenticated

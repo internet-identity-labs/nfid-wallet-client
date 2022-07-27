@@ -41,14 +41,23 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           onSelectSameDeviceAuthorization={(userNumber) =>
             send({
               type: "AUTH_WITH_EXISTING_ANCHOR",
-              data: userNumber.toString(),
+              data: {
+                anchor: userNumber.toString(),
+                withSecurityDevices: false,
+              },
+            })
+          }
+          onSelectSecurityKeyAuthorization={(userNumber) =>
+            send({
+              type: "AUTH_WITH_EXISTING_ANCHOR",
+              data: {
+                anchor: userNumber.toString(),
+                withSecurityDevices: true,
+              },
             })
           }
           onSelectGoogleAuthorization={({ credential }) =>
             send({ type: "AUTH_WITH_GOOGLE", data: credential as string })
-          }
-          onSelectSecurityKeyAuthorization={() =>
-            console.log("VOID: SECURITY KEY")
           }
           onToggleAdvancedOptions={() => send("AUTH_WITH_OTHER")}
           showAdvancedOptions={state.matches("ExistingAnchor")}

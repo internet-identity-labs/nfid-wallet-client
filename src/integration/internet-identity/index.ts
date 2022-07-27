@@ -654,6 +654,7 @@ export async function login(
   userNumber: bigint,
   withSecurityDevices?: boolean,
 ): Promise<LoginResult> {
+  console.debug(login.name, { userNumber, withSecurityDevices })
   let devices: DeviceData[]
   try {
     devices = await fetchAuthenticatorDevices(userNumber, withSecurityDevices)

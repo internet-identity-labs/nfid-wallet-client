@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { AccessPoint, Account, Persona } from "."
+import { AccessPoint, Account, Profile } from "."
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.did"
 
 export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse> {
@@ -24,7 +24,7 @@ export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse
  * Generate an account stub.
  * @returns {@link Account}
  */
-export function factoryAccount(principal?: Principal): Account {
+export function factoryAccount(principal?: Principal): Profile {
   return {
     anchor: Math.floor(100_000 * Math.random()),
     accessPoints: new Array(Math.floor(Math.random() * 5)).fill(
@@ -33,6 +33,7 @@ export function factoryAccount(principal?: Principal): Account {
     personas: new Array(Math.floor(Math.random() * 5)).fill(
       factoryAccessPoint(),
     ),
+    accounts: [],
     principalId: principal?.toText() || "",
     name: undefined,
     phoneNumber: undefined,
@@ -43,11 +44,11 @@ export function factoryAccount(principal?: Principal): Account {
  * Generate a persona stub.
  * @returns {@link Persona}
  */
-export function factoryPersona(principal?: Principal): Persona {
+export function factoryPersona(principal?: Principal): Account {
   return {
     domain: "",
-    personaName: "",
-    personaId: "",
+    label: "",
+    accountId: "",
   }
 }
 

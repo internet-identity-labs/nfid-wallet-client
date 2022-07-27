@@ -29,6 +29,7 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
     case state.matches("ExistingAnchor"):
     case state.matches("AuthSelection"):
     case state.matches("AuthWithGoogle"):
+    case state.matches("AuthenticateSameDevice"):
       return (
         <AuthorizeDecider
           applicationName={state.context.appMeta?.name}
@@ -37,8 +38,11 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           onSelectSameDeviceRegistration={() =>
             console.log("VOID: SAME DEVICE")
           }
-          onSelectSameDeviceAuthorization={() =>
-            console.log("VOID: SAME DEVICE AUTHO")
+          onSelectSameDeviceAuthorization={(userNumber) =>
+            send({
+              type: "AUTH_WITH_EXISTING_ANCHOR",
+              data: userNumber.toString(),
+            })
           }
           onSelectGoogleAuthorization={({ credential }) =>
             send({ type: "AUTH_WITH_GOOGLE", data: credential as string })
@@ -48,7 +52,16 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           }
           onToggleAdvancedOptions={() => send("AUTH_WITH_OTHER")}
           showAdvancedOptions={state.matches("ExistingAnchor")}
-          isLoading={state.matches("AuthWithGoogle")}
+          isLoading={
+            state.matches("AuthWithGoogle") ||
+            state.matches("AuthenticateSameDevice")
+          }
+          authError={
+            // TODO cleanup types
+            "data" in state.event && state.event.data
+              ? state.event.data.toString()
+              : undefined
+          }
         />
       )
     case state.matches("RegistrationMachine"):

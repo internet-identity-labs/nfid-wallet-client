@@ -20,6 +20,7 @@ import {
   CaptchaChallenge,
   Device,
   fetchDelegate,
+  login,
   lookup,
   registerInternetIdentity,
   requestFEDelegationChain,
@@ -28,6 +29,30 @@ import { ii } from "../actors"
 import { deviceInfo } from "../device"
 import { identityFromDeviceList } from "../identity"
 import { setProfile } from "../identity-manager/profile"
+import { apiResultToLoginResult } from "./api-result-to-login-result"
+
+export async function loginWithAnchor(
+  _: unknown,
+  event: { data: string },
+): Promise<LocalDeviceAuthSession> {
+  const authResult = apiResultToLoginResult(await login(BigInt(event.data)))
+  console.debug("loginWithAnchor", { authResult })
+
+  if (authResult.tag === "ok") {
+    return {
+      sessionSource: "localDevice",
+      delegationIdentity: DelegationIdentity.fromDelegation(
+        authResult.sessionKey,
+        authResult.chain,
+      ),
+      identity: authResult.sessionKey,
+    }
+  } else if ("message" in authResult) {
+    throw new Error(authResult.message)
+  }
+
+  throw new Error("Unreachable")
+}
 
 export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },

@@ -8,7 +8,6 @@ import {
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import {
-  buildSerializableSignedDelegation,
   fetchDelegation,
   getSessionKey,
 } from "frontend/integration/internet-identity"
@@ -19,18 +18,8 @@ import {
   postMessages,
   WAIT_FOR_CONFIRMATION_MESSAGE,
 } from "frontend/integration/pubsub"
-import { SignedDelegation } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 declare const FRONTEND_MODE: string
-
-export interface RemoteLoginEvent extends SignedDelegation {
-  type: "remote-login-register"
-  anchor: string
-  nfid: {
-    chain: DelegationChain
-    sessionKey: Ed25519KeyIdentity
-  }
-}
 
 // Alias: useRegisterDevicePrompt
 export const useAuthorizeApp = () => {

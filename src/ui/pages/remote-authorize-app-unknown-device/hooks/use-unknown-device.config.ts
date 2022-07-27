@@ -8,7 +8,6 @@ import { v4 as uuid } from "uuid"
 
 import { AppScreenAuthorizeAppConstants } from "frontend/apps/authentication/remote-authentication/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { RemoteLoginEvent } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
@@ -20,7 +19,10 @@ import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
 import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
 import { apiResultToLoginResult } from "frontend/integration/internet-identity/api-result-to-login-result"
 import { buildDelegate } from "frontend/integration/internet-identity/build-delegate"
-import { getMessages } from "frontend/integration/pubsub"
+import {
+  getMessages,
+  NFIDLoginRegisterMessage,
+} from "frontend/integration/pubsub"
 
 import { useMessageChannel } from "./use-message-channel"
 
@@ -204,7 +206,10 @@ export const useUnknownDeviceConfig = () => {
   ])
 
   const handleLoginFromRemoteDelegation = React.useCallback(
-    async (nfidJsonDelegate: RemoteLoginEvent["nfid"], userNumber: string) => {
+    async (
+      nfidJsonDelegate: NFIDLoginRegisterMessage["reconstructableIdentity"],
+      userNumber: number,
+    ) => {
       const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
@@ -234,18 +239,20 @@ export const useUnknownDeviceConfig = () => {
         )
         const registerMessage = parsedMessages.find(
           (m: { type: string }) => m.type === "remote-login-register",
-        ) as RemoteLoginEvent | undefined
+        ) as NFIDLoginRegisterMessage | undefined
 
         if (registerMessage) {
           setUserNumber(BigInt(registerMessage.anchor))
-          setSignedDelegation({
-            delegation: registerMessage.delegation,
-            signature: registerMessage.signature,
-            userKey: registerMessage.userKey,
-          })
+
+          // NOTE: WE MOVED THE AUTHORIZATION TO THE INVOKING DEVICE (DESKTOP)
+          // setSignedDelegation({
+          //   delegation: registerMessage.delegation,
+          //   signature: registerMessage.signature,
+          //   userKey: registerMessage.userKey,
+          // })
 
           handleLoginFromRemoteDelegation(
-            registerMessage.nfid,
+            registerMessage.reconstructableIdentity,
             registerMessage.anchor,
           )
 

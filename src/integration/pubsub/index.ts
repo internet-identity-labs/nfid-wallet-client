@@ -8,10 +8,7 @@ import {
 } from "frontend/integration/_ic_api/pub_sub_channel.did"
 import { pubsub } from "frontend/integration/actors"
 
-import {
-  JSONSerialisableSignedDelegation,
-  ReconstructableIdentity,
-} from "../internet-identity"
+import { ReconstructableIdentity } from "../internet-identity"
 
 interface BaseMessage {
   type:

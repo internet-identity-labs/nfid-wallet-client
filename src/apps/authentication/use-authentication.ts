@@ -43,9 +43,17 @@ export const useAuthentication = () => {
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
     shouldStoreLocalAccountAtom,
   )
+
+  React.useEffect(() => {
+    const { identity, delegationIdentity } = authState.get()
+    if (identity && delegationIdentity) {
+      setIsAuthenticated(true)
+    }
+  }, [])
 
   const logout = React.useCallback(() => {
     invalidateIdentity()
@@ -201,6 +209,7 @@ export const useAuthentication = () => {
 
   return {
     isLoading,
+    isAuthenticated,
     user,
     error,
     shouldStoreLocalAccount,

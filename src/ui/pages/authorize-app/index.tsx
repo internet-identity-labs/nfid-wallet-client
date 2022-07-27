@@ -79,7 +79,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         })}
         <div
           className={clsx("h-12 flex items-center justify-between px-[10px]")}
-          onClick={onCreateAccount}
+          onClick={!isAccountsLimit ? onCreateAccount : undefined}
         >
           <div
             className={clsx(
@@ -114,7 +114,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           </BlurOverlay>
         )}
       </div>
-      <ReactTooltip className="w-72" />
+      <ReactTooltip />
     </>
   )
 }

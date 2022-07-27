@@ -1,6 +1,5 @@
 import React from "react"
 
-import { ima } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import {

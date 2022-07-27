@@ -109,6 +109,9 @@ export const TrustDeviceMachine =
                 target: "End",
               },
             ],
+            onError: {
+              target: "RegisterDeviceWithWebAuthn",
+            },
           },
         },
         RegisterDeviceWithSecurityKey: {

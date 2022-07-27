@@ -18,6 +18,7 @@ import {
   PublicKey,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { im } from "frontend/integration/actors"
+import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import {
   addDevice,
   authState,
@@ -314,11 +315,8 @@ export const useDevices = () => {
         return {
           message: "Device created successfully",
         }
-      } catch (error) {
-        if (
-          (error as DOMException).message ===
-          "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party."
-        ) {
+      } catch (error: any) {
+        if (error.message === ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
           return {
             message: "This device is already registered",
           }
@@ -378,28 +376,29 @@ export const useDevices = () => {
         recoverIdentity = await WebAuthnIdentity.create({
           publicKey: creationOptions(devices, "cross-platform"),
         })
-      } catch (error) {
-        console.error(error)
-        return
+        await Promise.all([
+          addDevice(
+            actualUserNumber,
+            deviceName,
+            { cross_platform: null },
+            purpose && purpose === "recover"
+              ? { recovery: null }
+              : { authentication: null },
+            recoverIdentity.getPublicKey().toDer(),
+            recoverIdentity.rawId,
+          ),
+          createRecoveryDevice(
+            new Blob([recoverIdentity.getPublicKey().toDer()]),
+            "usb",
+            deviceName,
+          ),
+        ])
+      } catch (error: any) {
+        if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+          throw error
+        }
+        console.debug(createSecurityDevice.name, "device already registered")
       }
-
-      await Promise.all([
-        addDevice(
-          actualUserNumber,
-          deviceName,
-          { cross_platform: null },
-          purpose && purpose === "recover"
-            ? { recovery: null }
-            : { authentication: null },
-          recoverIdentity.getPublicKey().toDer(),
-          recoverIdentity.rawId,
-        ),
-        createRecoveryDevice(
-          new Blob([recoverIdentity.getPublicKey().toDer()]),
-          "usb",
-          deviceName,
-        ),
-      ])
 
       getRecoveryDevices()
       getDevices()

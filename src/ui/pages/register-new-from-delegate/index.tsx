@@ -12,6 +12,7 @@ import {
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { usePostMessage } from "frontend/apps/identity-provider/use-post-message"
+import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
@@ -41,8 +42,15 @@ export const RegisterNewFromDelegate = () => {
         return console.error(`Missing userNumber: ${userNumber} from url`)
       }
 
-      const { device } = await createWebAuthNDevice(BigInt(userNumber))
-      opener?.postMessage({ kind: "new-device", device }, opener.origin)
+      try {
+        const { device } = await createWebAuthNDevice(BigInt(userNumber))
+        opener?.postMessage({ kind: "new-device", device }, opener.origin)
+      } catch (error: any) {
+        if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+          throw error
+        }
+        console.debug(handleRegisterNewDevice.name, "device already registered")
+      }
 
       setStatus("success")
       setShowModal(true)

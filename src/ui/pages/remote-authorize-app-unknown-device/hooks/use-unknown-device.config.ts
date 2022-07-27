@@ -10,6 +10,7 @@ import { AppScreenAuthorizeAppConstants } from "frontend/apps/authentication/rem
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { RemoteLoginEvent } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
+import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import {
   useDevices,
@@ -179,9 +180,16 @@ export const useUnknownDeviceConfig = () => {
     if (!userNumber) throw new Error("userNumber required")
     setStatus("loading")
 
-    const { device } = await createWebAuthNDevice(BigInt(userNumber))
+    try {
+      const { device } = await createWebAuthNDevice(BigInt(userNumber))
+      await handleStoreNewDevice({ device })
+    } catch (e: any) {
+      if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+        throw e
+      }
+      console.debug(handleRegisterDevice.name, "device already registered")
+    }
 
-    await handleStoreNewDevice({ device })
     await Promise.all([readAccount(), getPersona()])
     handleSendDelegate()
     setStatus("loading")

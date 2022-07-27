@@ -18,7 +18,7 @@ export interface AuthorizationMachineContext {
   appMeta: AuthorizingAppMeta
   authSession: AuthSession
   authRequest: AuthorizationRequest
-  userLimit?: number
+  accountsLimit?: number
   accounts?: Account[]
 }
 
@@ -113,11 +113,13 @@ const AuthorizationMachine =
     },
     {
       actions: {
-        assignUserLimit: assign({ userLimit: (context, event) => event.data }),
+        assignUserLimit: assign({
+          accountsLimit: (context, event) => event.data,
+        }),
         assignAccounts: assign({ accounts: (context, event) => event.data }),
         handleAccounts: send((context, event) => ({
           type:
-            context.userLimit && context?.userLimit <= 1
+            context.accountsLimit && context?.accountsLimit <= 1
               ? event.data.length
                 ? "SELECT_ACCOUNT"
                 : "CREATE_ACCOUNT"

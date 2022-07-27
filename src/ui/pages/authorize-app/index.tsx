@@ -72,7 +72,9 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         {displayAccounts.map((account, i) => {
           return (
             <AccountItem
-              title={`${applicationName} account ${account.persona_id}`}
+              title={`${applicationName} account ${
+                Number(account.persona_id) + 1
+              }`}
               onClick={() => onLogin(account.persona_id)}
               key={`account${account.persona_id}${i}`}
             />

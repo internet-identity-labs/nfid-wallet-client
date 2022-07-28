@@ -109,7 +109,8 @@ const getRecoveryDeviceLabel = (accessPoint?: AccessPointResponse) => {
   if (accessPoint?.device) {
     return accessPoint.device
   }
-  return "Unknown Device"
+
+  return "Security key"
 }
 
 const getRecoveryDeviceIcon = (accessPoint?: AccessPointResponse): Icon => {

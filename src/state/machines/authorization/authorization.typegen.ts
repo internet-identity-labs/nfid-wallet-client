@@ -2,11 +2,6 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    assignUserLimit: "done.invoke.fetchAccountLimitService"
-    assignAccounts: "done.invoke.fetchAccountsService"
-    handleAccounts: "done.invoke.fetchAccountsService"
-  }
   internalEvents: {
     "done.invoke.fetchAccountLimitService": {
       type: "done.invoke.fetchAccountLimitService"
@@ -18,12 +13,12 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.createAccountService": {
       type: "done.invoke.createAccountService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
     "error.platform.fetchAccountLimitService": {
       type: "error.platform.fetchAccountLimitService"
       data: unknown
@@ -57,6 +52,11 @@ export interface Typegen0 {
     services: never
     guards: never
     delays: never
+  }
+  eventsCausingActions: {
+    assignUserLimit: "done.invoke.fetchAccountLimitService"
+    assignAccounts: "done.invoke.fetchAccountsService"
+    handleAccounts: "done.invoke.fetchAccountsService"
   }
   eventsCausingServices: {
     fetchAccountLimitService: "xstate.init"

@@ -126,7 +126,6 @@ export const RouterRegisterDeviceDecider: React.FC<
   ])
 
   useEffect(() => {
-    console.log({ deuser: user })
     if (!user)
       navigate(
         `${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.enterRecoveryPhrase}`,

@@ -14,6 +14,25 @@ import {
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
 
+type AccountAction = "CREATE_ACCOUNT" | "SELECT_ACCOUNT" | "PRESENT_ACCOUNTS"
+
+export const selectAccountAction = (
+  accountsAmount: number,
+  accountsLimit?: number,
+): AccountAction => {
+  console.debug("selectAccountAction", { accountsAmount, accountsLimit })
+  if (accountsAmount === 0) {
+    console.debug("selectAccountAction CREATE_ACCOUNT")
+    return "CREATE_ACCOUNT"
+  }
+  if (accountsAmount === 1 && accountsLimit && accountsLimit <= 1) {
+    console.debug("selectAccountAction SELECT_ACCOUNT")
+    return "SELECT_ACCOUNT"
+  }
+  console.debug("selectAccountAction PRESENT_ACCOUNTS")
+  return "PRESENT_ACCOUNTS"
+}
+
 export interface AuthorizationMachineContext {
   appMeta: AuthorizingAppMeta
   authSession: AuthSession
@@ -118,12 +137,7 @@ const AuthorizationMachine =
         }),
         assignAccounts: assign({ accounts: (context, event) => event.data }),
         handleAccounts: send((context, event) => ({
-          type:
-            context.accountsLimit && context?.accountsLimit <= 1
-              ? event.data.length
-                ? "SELECT_ACCOUNT"
-                : "CREATE_ACCOUNT"
-              : "PRESENT_ACCOUNTS",
+          type: selectAccountAction(event.data.length, context.accountsLimit),
           data: event.data[0]?.accountId,
         })),
       },

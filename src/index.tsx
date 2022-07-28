@@ -7,6 +7,7 @@ import {
   BrowserRouter as Router,
   createRoutesFromChildren,
   matchRoutes,
+  Routes,
   useLocation,
   useNavigationType,
 } from "react-router-dom"
@@ -42,6 +43,8 @@ process.env.NODE_ENV === "production" &&
     ...(SENTRY_RELEASE ? { release: SENTRY_RELEASE } : {}),
   })
 
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
+
 SwiperCore.use([Pagination, Navigation])
 
 const container = document.getElementById("root")
@@ -54,7 +57,9 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Router>
-        <App />
+        <SentryRoutes>
+          <App />
+        </SentryRoutes>
       </Router>
     </HelmetProvider>
   </React.StrictMode>,

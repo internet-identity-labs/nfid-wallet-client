@@ -6,8 +6,10 @@ import { AuthenticationActor } from "frontend/state/machines/authentication/auth
 import PhoneCredentialMachine, {
   PhoneCredentialType,
 } from "frontend/state/machines/credentials/phone-credential"
+import { Button } from "frontend/ui/atoms/button"
 import { CredentialRequesterNotVerified } from "frontend/ui/pages/credential-requester/not-verified"
 import { CredentialRequesterSMSVerify } from "frontend/ui/pages/credential-requester/sms-verify"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
 
@@ -26,9 +28,17 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           actor={state.children.AuthenticationMachine as AuthenticationActor}
         />
       )
+    case state.matches("DevClearData"):
+      return (
+        <ScreenResponsive>
+          Would you like to wipe this account for testing purposes?
+          <Button onClick={() => send("CLEAR_DATA")}>Yes</Button>
+          <Button onClick={() => send("END")}>No</Button>
+        </ScreenResponsive>
+      )
     case state.matches("GetPhoneNumber.GetExistingPhoneNumber"):
-    case state.matches("GetPhoneNumber.EnterPhoneNumber"):
     case state.matches("GetPhoneNumber.VerifyPhoneNumber"):
+    case state.matches("GetPhoneNumber.EnterPhoneNumber"):
       return (
         <CredentialRequesterNotVerified
           onSubmit={(e) => send({ type: "ENTER_PHONE_NUMBER", data: e.phone })}

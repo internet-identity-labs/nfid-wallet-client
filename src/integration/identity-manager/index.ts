@@ -188,6 +188,10 @@ export async function registerAccount(anchor: number) {
     .then(mapProfile)
 }
 
+export async function removeAccount() {
+  im.remove_account()
+}
+
 export interface Application {
   accountLimit: number
   domain: string

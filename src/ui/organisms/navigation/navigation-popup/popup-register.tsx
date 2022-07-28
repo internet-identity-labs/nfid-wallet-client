@@ -1,8 +1,8 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/authentication/recover-nfid/routes"
 import { RegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode"
-import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
 
 interface PopupRegisterProps {}
 

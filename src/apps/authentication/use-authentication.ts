@@ -148,8 +148,9 @@ export const useAuthentication = () => {
       setIsLoading(true)
 
       const recoveryDevices = await fetchRecoveryDevices(userNumber)
-
+      console.log({ recoveryDevices })
       if (recoveryDevices.length === 0) {
+        setIsLoading(false)
         throw new Error("useAuthentication.loginWithRecovery No devices found")
       }
 

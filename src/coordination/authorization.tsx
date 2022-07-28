@@ -1,10 +1,7 @@
 import { useActor } from "@xstate/react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { mapPersonaToLegacy } from "frontend/integration/identity-manager"
 import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
-import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
 import { AuthorizeAppMultiAccount } from "frontend/ui/pages/authorize-app/multi-account"
 import { AuthorizeAppSingleAccount } from "frontend/ui/pages/authorize-app/single-account"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"

@@ -1,4 +1,4 @@
-import { ActorSubclass, Signature, SignIdentity } from "@dfinity/agent"
+import { ActorSubclass, SignIdentity } from "@dfinity/agent"
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {

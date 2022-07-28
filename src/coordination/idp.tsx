@@ -1,8 +1,6 @@
 import { useMachine } from "@xstate/react"
 import React from "react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"

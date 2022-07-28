@@ -6,8 +6,6 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { useAtom } from "jotai"
 import React from "react"
-
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import {
   AccessPointRequest,

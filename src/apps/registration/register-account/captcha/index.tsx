@@ -70,7 +70,10 @@ export const RegisterAccountCaptcha: React.FC<
         await createAccount({ anchor: response.userNumber })
 
         if (isRemoteRegiser) {
-          if (!secret) throw new Error("secret is missing from params")
+          if (!secret)
+            throw new Error(
+              `RegisterAccountCaptcha.handleRegisterAnchor secret is missing from params`,
+            )
 
           if (isNFID) {
             await remoteNFIDLogin({
@@ -81,7 +84,10 @@ export const RegisterAccountCaptcha: React.FC<
             return navigate("/profile/authenticate")
           }
 
-          if (!scope) throw new Error("scope is missing from params")
+          if (!scope)
+            throw new Error(
+              `RegisterAccountCaptcha.handleRegisterAnchor scope is missing from params`,
+            )
           await Promise.all([
             createPersona({
               domain: scope,
@@ -136,7 +142,10 @@ export const RegisterAccountCaptcha: React.FC<
             )
           })
         if (isRemoteRegiser) {
-          if (!secret) throw new Error("secret is missing from params")
+          if (!secret)
+            throw new Error(
+              `RegisterAccountCaptcha.handleRegisterAnchorWithGoogle secret is missing from params`,
+            )
 
           if (isNFID) {
             await remoteNFIDLogin({
@@ -147,7 +156,10 @@ export const RegisterAccountCaptcha: React.FC<
             return navigate(successPath)
           }
 
-          if (!scope) throw new Error("scope is required")
+          if (!scope)
+            throw new Error(
+              `RegisterAccountCaptcha.handleRegisterAnchorWithGoogle scope is required`,
+            )
           await Promise.all([
             im
               .create_persona({
@@ -157,7 +169,7 @@ export const RegisterAccountCaptcha: React.FC<
               })
               .catch((e) => {
                 throw new Error(
-                  `${handleRegisterAnchorWithGoogle.name} im.create_persona: ${e.message}`,
+                  `RegisterAccountCaptcha.handleRegisterAnchorWithGoogle im.create_persona: ${e.message}`,
                 )
               }),
             remoteLogin({
@@ -173,7 +185,10 @@ export const RegisterAccountCaptcha: React.FC<
         }
 
         if (!isNFID) {
-          if (!scope) throw new Error("scope is required")
+          if (!scope)
+            throw new Error(
+              "RegisterAccountCaptcha.handleRegisterAnchorWithGoogle scope is required",
+            )
           await Promise.all([
             im
               .create_persona({
@@ -183,7 +198,7 @@ export const RegisterAccountCaptcha: React.FC<
               })
               .catch((e) => {
                 throw new Error(
-                  `${handleRegisterAnchorWithGoogle.name} im.create_persona: ${e.message}`,
+                  `RegisterAccountCaptcha.handleRegisterAnchorWithGoogle im.create_persona: ${e.message}`,
                 )
               }),
             authorizeApp({
@@ -195,7 +210,10 @@ export const RegisterAccountCaptcha: React.FC<
         }
         return navigate(successPath)
       }
-      console.error(">> handleRegisterAnchor", response)
+      console.error(
+        "RegisterAccountCaptcha.handleRegisterAnchorWithGoogle",
+        response,
+      )
     },
     [
       authorizeApp,

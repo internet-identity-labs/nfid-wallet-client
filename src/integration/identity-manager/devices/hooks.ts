@@ -151,6 +151,7 @@ const normalizeRecoveryDevices = (
   })
 }
 
+/** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
   const [devices, setDevices] = useAtom(devicesAtom)
   const [recoveryDevices, setRecoveryDevices] = useAtom(recoveryDevicesAtom)
@@ -167,7 +168,7 @@ export const useDevices = () => {
       const [accessPoints, existingDevices] = await Promise.all([
         im.read_access_points().catch((e) => {
           throw new Error(
-            `${handleLoadDevices.name} im.read_access_points: ${e.message}`,
+            `useDevices.handleLoadDevices im.read_access_points: ${e.message}`,
           )
         }),
         fetchAuthenticatorDevices(userNumber),
@@ -193,7 +194,7 @@ export const useDevices = () => {
           .create_access_point(normalizedDevice)
           .catch((e) => {
             throw new Error(
-              `${updateDevice.name} im.create_access_point: ${e.message}`,
+              `useDevices.updateDevice im.create_access_point: ${e.message}`,
             )
           })
         handleLoadDevices()
@@ -203,7 +204,7 @@ export const useDevices = () => {
         .update_access_point(normalizedDevice)
         .catch((e) => {
           throw new Error(
-            `${updateDevice.name} im.update_access_point: ${e.message}`,
+            `useDevices.updateDevice im.update_access_point: ${e.message}`,
           )
         })
       handleLoadDevices()
@@ -217,7 +218,7 @@ export const useDevices = () => {
       const [accessPoints, existingRecoveryDevices] = await Promise.all([
         im.read_access_points().catch((e) => {
           throw new Error(
-            `${getRecoveryDevices.name} im.read_access_points: ${e.message}`,
+            `useDevices.getRecoveryDevices im.read_access_points: ${e.message}`,
           )
         }),
         fetchRecoveryDevices(userNumber),
@@ -241,7 +242,7 @@ export const useDevices = () => {
           removeDevice(userNumber, pubkey),
           im.remove_access_point({ pub_key: pubkey }).catch((e) => {
             throw new Error(
-              `${deleteDevice.name} im.remove_access_point: ${e.message}`,
+              `useDevices.deleteDevice im.remove_access_point: ${e.message}`,
             )
           }),
         ])
@@ -283,7 +284,8 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      if (!authState.get().actor) throw new Error("Unauthorized")
+      if (!authState.get().actor)
+        throw new Error("useDevices.createDevice Unauthorized")
 
       const pub_key = fromHexString(publicKey)
 
@@ -305,7 +307,7 @@ export const useDevices = () => {
           })
           .catch((e) => {
             throw new Error(
-              `${createDevice.name} im.create_access_point: ${e.message}`,
+              `useDevices.createDevice im.create_access_point: ${e.message}`,
             )
           }),
       ])
@@ -326,7 +328,7 @@ export const useDevices = () => {
 
       return await im.create_access_point(newDevice).catch((e) => {
         throw new Error(
-          `${createRecoveryDevice.name} im.create_access_point: ${e.message}`,
+          `useDevices.createRecoveryDevice im.create_access_point: ${e.message}`,
         )
       })
     },
@@ -336,7 +338,10 @@ export const useDevices = () => {
   const recoverDevice = React.useCallback(
     async (userNumber: number) => {
       try {
-        if (!authState.get().actor) throw new Error("Unauthorized")
+        if (!authState.get().actor)
+          throw new Error(
+            "useDevices.recoverDevice Unauthorized authState.get().actor is undefined",
+          )
         const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
         await createDevice({
@@ -364,8 +369,10 @@ export const useDevices = () => {
   }, [handleLoadDevices])
 
   const createRecoveryPhrase = React.useCallback(async () => {
-    if (!userNumber) throw new Error("userNumber missing")
-    if (!authState.get().actor) throw new Error("internetIdentity missing")
+    if (!userNumber)
+      throw new Error("useDevice.createRecoveryPhrase userNumber missing")
+    if (!authState.get().actor)
+      throw new Error("useDevice.createRecoveryPhrase internetIdentity missing")
 
     const recovery = generate().trim()
     const recoverIdentity = await fromMnemonicWithoutValidation(
@@ -397,8 +404,12 @@ export const useDevices = () => {
       purpose: "recover" | "authentication" = "recover",
     ) => {
       const actualUserNumber = userNumber || userNumberOverwrite
-      if (!actualUserNumber) throw new Error("userNumber missing")
-      if (!authState.get().actor) throw new Error("internetIdentity missing")
+      if (!actualUserNumber)
+        throw new Error("useDevice.createSecurityDevice userNumber missing")
+      if (!authState.get().actor)
+        throw new Error(
+          "useDevice.createSecurityDevice internetIdentity missing",
+        )
 
       const devices = await fetchAllDevices(actualUserNumber)
       const deviceName = "Security Key"

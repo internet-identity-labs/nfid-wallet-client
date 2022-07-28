@@ -12,7 +12,10 @@ import { loadProfileFromLocalStorage } from "./profile"
 
 export function getLocalStorageProfileService() {
   const profile = loadProfileFromLocalStorage()
-  if (!profile) throw new Error("getProfileService unregistered device")
+  if (!profile)
+    throw new Error(
+      `${getLocalStorageProfileService.name} getProfileService unregistered device`,
+    )
 
   return Promise.resolve(profile)
 }
@@ -25,7 +28,9 @@ export async function fetchAccountsService(
   context: AuthorizationMachineContext,
 ) {
   if (!context.authRequest?.hostname) {
-    throw new Error("Cannot filter personas without hostname")
+    throw new Error(
+      `${fetchAccountsService.name} Cannot filter personas without hostname`,
+    )
   }
   const personas = await fetchAccounts()
   return selectAccounts(personas, context.authRequest.hostname)
@@ -34,20 +39,22 @@ export async function fetchAccountsService(
 export async function createAccountService(
   context: AuthorizationMachineContext,
 ): Promise<{ accountId: string }> {
-  console.debug("createAccount", { context })
-  if (!context.authRequest) throw new Error("context.authRequest missing")
-  if (!context.accounts) throw new Error("context.accounts missing")
+  console.debug(`${createAccountService.name}`, { context })
+  if (!context.authRequest)
+    throw new Error(`${createAccountService.name} context.authRequest missing`)
+  if (!context.accounts)
+    throw new Error(`${createAccountService.name} context.accounts missing`)
   const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
   const createPersonaReposne = await createPersona(
     context.authRequest?.hostname,
     accountId,
     `Account #${accountId}`,
   )
-  console.debug("createAccount", { createPersonaReposne })
+  console.debug(`${createAccountService.name}`, { createPersonaReposne })
   return { accountId }
 }
 
 export async function fetchProfileService() {
-  console.debug("fetchProfileService")
+  console.debug(`${fetchProfileService.name}`)
   return await fetchProfile()
 }

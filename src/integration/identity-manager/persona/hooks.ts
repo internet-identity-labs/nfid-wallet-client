@@ -13,6 +13,10 @@ import { personaAtom } from "./state"
 import { isNFIDPersona } from "./types"
 import { createAccount, getNextAccountId, selectAccounts } from "./utils"
 
+/**
+ *
+ * @deprecated FIXME: move to integration layer
+ * */
 export const usePersona = () => {
   const [personas, setPersonas] = useAtom(personaAtom)
   const { scope } = useParams()
@@ -39,7 +43,7 @@ export const usePersona = () => {
 
   const getPersona = React.useCallback(async () => {
     const response = await im.read_personas().catch((e) => {
-      throw new Error(`${getPersona.name} im.read_personas: ${e.message}`)
+      throw new Error(`usePersona.getPersona im.read_personas: ${e.message}`)
     })
 
     if (response.status_code === 200) {
@@ -53,7 +57,9 @@ export const usePersona = () => {
           anchor,
         })
         .catch((e) => {
-          throw new Error(`${getPersona.name} im.create_account: ${e.message}`)
+          throw new Error(
+            `usePersona.getPersona im.create_account: ${e.message}`,
+          )
         })
 
       getPersona()
@@ -76,7 +82,7 @@ export const usePersona = () => {
 
       const response = await im.create_persona(accountParams).catch((e) => {
         throw new Error(
-          `${createPersona.name} im.create_access_point: ${e.message}`,
+          `usePersona.createPersona im.create_access_point: ${e.message}`,
         )
       })
 

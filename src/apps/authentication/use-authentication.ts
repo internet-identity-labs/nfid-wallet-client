@@ -38,6 +38,7 @@ export function setUser(userState: User | undefined) {
   user = userState
 }
 
+/** @deprecated FIXME: move to integration layer */
 export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
@@ -88,7 +89,7 @@ export const useAuthentication = () => {
       const anchor = userNumberOverwrite || userNumber
 
       if (!anchor) {
-        throw new Error("Register first")
+        throw new Error("useAuthentication.login Register first")
       }
 
       const response = await iiLogin(anchor, withSecurityDevices)
@@ -149,7 +150,7 @@ export const useAuthentication = () => {
       const recoveryDevices = await fetchRecoveryDevices(userNumber)
 
       if (recoveryDevices.length === 0) {
-        throw new Error("No devices found")
+        throw new Error("useAuthentication.loginWithRecovery No devices found")
       }
 
       const response = await fromSeedPhrase(
@@ -173,7 +174,7 @@ export const useAuthentication = () => {
         initUserGeek(await agent.getPrincipal())
         im.use_access_point().catch((e) => {
           throw new Error(
-            `${loginWithRecovery.name} im.use_access_point: ${e.message}`,
+            `useAuthentication.loginWithRecovery im.use_access_point: ${e.message}`,
           )
         })
         setShouldStoreLocalAccount(false)

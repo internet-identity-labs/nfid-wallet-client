@@ -51,7 +51,9 @@ export function typeResponse<T>(
   } else if (response.error.length) {
     return { ok: false, code: response.status_code, error: response.error[0] }
   }
-  throw new Error(`Unknown response type ${Object.keys(response)[0]}`)
+  throw new Error(
+    `${typeResponse.name} Unknown response type ${Object.keys(response)[0]}`,
+  )
 }
 
 class NfidHttpError extends Error {
@@ -107,6 +109,6 @@ export function unpackLegacyResponse(response: Response) {
   if (r.ok) {
     return true
   } else {
-    throw new Error(`${r.code} error: ${r.error}`)
+    throw new Error(`${unpackLegacyResponse.name} ${r.code} error: ${r.error}`)
   }
 }

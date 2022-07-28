@@ -270,7 +270,8 @@ export const requestFEDelegation = async (
 
 async function renewDelegation() {
   const { delegationIdentity, actor, identity } = authState.get()
-  if (!delegationIdentity || !identity) throw new Error("unauthorized")
+  if (!delegationIdentity || !identity)
+    throw new Error(`${renewDelegation.name} unauthorized`)
 
   for (const { delegation } of delegationIdentity.getDelegation().delegations) {
     // prettier-ignore

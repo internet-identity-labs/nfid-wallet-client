@@ -74,7 +74,10 @@ export const useAuthorization = ({
     }) => {
       setLoading(true)
 
-      if (!authorizationRequest) throw new Error("authorizationRequest missing")
+      if (!authorizationRequest)
+        throw new Error(
+          "useAuthorization.authorizeApp authorizationRequest missing",
+        )
 
       const {
         sessionPublicKey,

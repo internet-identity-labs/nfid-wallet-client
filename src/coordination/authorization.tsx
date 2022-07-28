@@ -35,7 +35,9 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
             state.matches("GetDelegation")
           }
           onContinueButtonClick={function (): Promise<void> {
-            throw new Error("Function not implemented.")
+            throw new Error(
+              `${AuthorizationCoordinator.name} onContinueButtonClick not implemented.`,
+            )
           }}
         />
       ) : (
@@ -55,7 +57,9 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
             send({ type: "SELECT_ACCOUNT", data: { accountId: accountId } })
           }
           onUnlockNFID={function (): Promise<any> {
-            throw new Error("Function not implemented.")
+            throw new Error(
+              `${AuthorizationCoordinator.name} onUnlockNFID not implemented.`,
+            )
           }}
           onCreateAccount={async () => send("CREATE_ACCOUNT")}
         />

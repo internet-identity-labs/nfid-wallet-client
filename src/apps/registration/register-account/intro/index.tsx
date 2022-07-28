@@ -75,7 +75,10 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
         if (isNFID && account) {
           if (isRemoteRegiser) {
-            if (!secret) throw new Error("secret missing")
+            if (!secret)
+              throw new Error(
+                "RouteRegisterAccountIntro.handleGetGoogleKey secret missing",
+              )
             await remoteNFIDLogin({
               secret,
               userNumberOverwrite: BigInt(account.anchor),

@@ -39,7 +39,10 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const isNFID = React.useMemo(() => scope === "NFID", [scope])
 
   const handleNFIDLogin = React.useCallback(async () => {
-    if (!secret) throw new Error("secret is missing from params")
+    if (!secret)
+      throw new Error(
+        `${AppScreenAuthorizeApp.name}.handleNFIDLogin secret is missing from params`,
+      )
     await remoteNFIDLogin({ secret })
     setIsloading(false)
   }, [remoteNFIDLogin, secret, setIsloading])

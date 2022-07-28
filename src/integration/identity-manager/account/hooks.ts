@@ -26,6 +26,7 @@ type AccountService = Pick<
   "create_account" | "update_account" | "get_account" | "recover_account"
 >
 
+/** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {
   const [account, setAccount] = useAtom(localStorageAccountAtom)
   const [memoryAccount, setMemoryAccount] = useAtom(memoryAccountAtom)
@@ -120,7 +121,8 @@ export const useAccount = () => {
         ...draft,
         ...partialAccount,
       }))
-      if (!newAccount) throw new Error("account undefined")
+      if (!newAccount)
+        throw new Error("useAccount.updateAccount account undefined")
       // NOTE: looks silly? `name` is an optional parameter :/
       await im
         .update_account({
@@ -128,7 +130,7 @@ export const useAccount = () => {
         })
         .catch((e) => {
           throw new Error(
-            `${updateAccount.name} im.update_account: ${e.message}`,
+            `useAccount.updateAccount im.update_account: ${e.message}`,
           )
         })
 

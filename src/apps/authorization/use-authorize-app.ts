@@ -46,7 +46,7 @@ export const useAuthorizeApp = () => {
     }) => {
       const anchor = userNumber || userNumberOverwrite
       if (!anchor) {
-        throw new Error("userNumber missing")
+        throw new Error("useAuthorizeApp.remoteLogin userNumber missing")
       }
 
       const scope = getScope(derivationOrigin ?? hostname, persona_id)
@@ -78,10 +78,11 @@ export const useAuthorizeApp = () => {
     }) => {
       const anchor = userNumber || userNumberOverwrite
       if (!anchor) {
-        throw new Error("userNumber missing")
+        throw new Error("useAuthorizeApp.remoteNFIDLogin userNumber missing")
       }
       const userState = userOverwrite || user
-      if (!userState) throw Error("user missing")
+      if (!userState)
+        throw Error("useAuthorizeApp.remoteNFIDLogin user missing")
 
       const message = buildRemoteNFIDLoginRegisterMessage(
         anchor,

@@ -3,6 +3,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { Button, H5 } from "@internet-identity-labs/nfid-sdk-react"
+
 import { Footer } from "frontend/apps/marketing/landing-page/footer"
 import { ArrowLeft } from "frontend/ui/atoms/icons/arrow-left"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"

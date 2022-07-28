@@ -49,7 +49,7 @@ export const RegisterNewFromDelegate = () => {
         if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
           throw error
         }
-        console.debug(handleRegisterNewDevice.name, "device already registered")
+        console.debug("handleRegisterNewDevice", "device already registered")
       }
 
       setStatus("success")

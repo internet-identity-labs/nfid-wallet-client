@@ -14,7 +14,7 @@ export function getDataFromPath(): Promise<{
   const [_, _path, secret, maxTimeToLive, aliasDomain, derivationOrigin] =
     window.location.pathname.split("/")
   const sessionPublicKey = new Uint8Array(fromHexString(secret))
-  console.debug(getDataFromPath.name, {
+  console.debug("getDataFromPath", {
     _path,
     secret,
     maxTimeToLive,

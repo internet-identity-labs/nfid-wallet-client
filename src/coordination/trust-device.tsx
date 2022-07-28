@@ -8,7 +8,7 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
   const [state, send] = useActor(actor)
   React.useEffect(
     () =>
-      console.debug(TrustDeviceCoordinator.name, {
+      console.debug("TrustDeviceCoordinator", {
         context: state.context,
         state: state.value,
       }),

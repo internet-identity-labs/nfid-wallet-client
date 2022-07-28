@@ -85,7 +85,7 @@ export async function createTopic(topic: Topic) {
 }
 
 export async function postMessages(topic: Topic, messages: any[]) {
-  console.debug(postMessages.name, { topic, messages })
+  console.debug("postMessages", { topic, messages })
   return pubsub
     .post_messages(
       topic,
@@ -98,7 +98,7 @@ export async function postMessages(topic: Topic, messages: any[]) {
 }
 
 export async function getMessages(topic: Topic) {
-  console.debug(getMessages.name, { topic })
+  console.debug("getMessages", { topic })
   return pubsub
     .get_messages(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))

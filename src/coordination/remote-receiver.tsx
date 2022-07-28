@@ -66,7 +66,7 @@ export function RemoteReceiverCoordinator({
       url={remoteReceiverUrl({
         applicationDerivationOrigin:
           state.context.authRequest?.derivationOrigin,
-        domain: state.context.authRequest?.hostname as string,
+        domain: state.context.authRequest?.hostname,
         secret: state.context.secret,
         maxTimeToLive: state.context.authRequest?.maxTimeToLive,
         applicationName: state.context.appMeta?.name,

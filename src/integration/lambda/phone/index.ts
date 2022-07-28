@@ -1,12 +1,21 @@
-import { Signature } from "@dfinity/agent"
+import {
+  Cbor,
+  Endpoint,
+  Expiry,
+  QueryFields,
+  ReadRequest,
+} from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import nacl from "tweetnacl"
 import nacl_util from "tweetnacl-util"
 
-import { rawId } from "frontend/integration/actors"
+import { authState } from "frontend/integration/internet-identity"
 
 declare const VERIFY_PHONE_NUMBER: string
+declare const VERIFIER_CANISTER_ID: string
 
 if (!VERIFY_PHONE_NUMBER) {
   throw new Error(`Phone verification lambda is not defined.`)
@@ -33,30 +42,70 @@ export function verifySignature(
  * @param principal
  * @returns Empty object on success
  */
-export async function verifyPhoneNumber(
-  phoneNumber: string,
-  principal: Principal,
-): Promise<{}> {
+export async function verifyPhoneNumber(phoneNumber: string): Promise<string> {
+  const delegationIdentity = authState.get().delegationIdentity
+  if (!delegationIdentity) throw new Error("No delegation identity.")
   const isLocal = true
   const url = isLocal ? "/verify" : VERIFY_PHONE_NUMBER
   const trimmed = phoneNumber.replace(/\s/g, "")
-  const message = nacl_util.decodeUTF8(trimmed)
-  const signature = (await rawId?.sign(message)) as Signature
+  const fields: QueryFields = {
+    methodName: "validate_signature",
+    arg: IDL.encode([IDL.Opt(IDL.Text)], [[trimmed]]),
+  }
+
+  const request: any = await getTransformedRequest(
+    delegationIdentity,
+    VERIFIER_CANISTER_ID,
+    fields,
+  )
+
+  let body = Cbor.encode(request.body)
+  let str = toHexString(body)
 
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      phoneNumber: trimmed,
-      publicKey: rawId?.getPrincipal().toHex(),
-      signature: toHexString(signature),
-      delegation: rawId?.getDelegation().toJSON(),
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: str }),
   })
+
+  console.debug("verifyPhoneNumber", {
+    phoneNumber,
+    fields,
+    canister: VERIFIER_CANISTER_ID,
+    response,
+  })
+
+  if (!response.ok) throw new Error(await response.text())
 
   const data = await response.json()
 
-  return { body: data, status: response.status }
+  return data.phoneNumberEncrypted
+}
+
+const DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS = 5 * 60 * 1000
+
+export async function getTransformedRequest(
+  identity: DelegationIdentity,
+  canisterId: string,
+  fields: QueryFields,
+) {
+  const canister =
+    typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId
+  const sender = identity.getPrincipal()
+  const request = {
+    request_type: "query",
+    canister_id: canister,
+    method_name: fields.methodName,
+    arg: fields.arg,
+    sender,
+    ingress_expiry: new Expiry(DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS),
+  } as ReadRequest
+  return await identity.transformRequest({
+    request: {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/cbor" }),
+    },
+    endpoint: "query" as Endpoint.Query,
+    body: request,
+  })
 }

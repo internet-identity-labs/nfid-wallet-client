@@ -7,12 +7,10 @@ export interface Typegen0 {
     assignPhoneNumber:
       | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
       | "ENTER_PHONE_NUMBER"
-    assignSMSToken: "ENTER_SMS_TOKEN"
-    assignError: "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-    assignAppDelegate: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
-    assignCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
-    clearError: "xstate.init"
-    presentCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
+    assignCredential: "done.invoke.verifyPhoneNumberService"
+    presentCredential:
+      | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
+      | "done.invoke.verifySmsService"
   }
   internalEvents: {
     "done.invoke.AuthenticationMachine": {
@@ -25,22 +23,13 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]": {
-      type: "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-      data: unknown
-    }
-    "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]": {
-      type: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
+    "done.invoke.verifyPhoneNumberService": {
+      type: "done.invoke.verifyPhoneNumberService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]": {
-      type: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]": {
-      type: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
+    "done.invoke.verifySmsService": {
+      type: "done.invoke.verifySmsService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -49,14 +38,20 @@ export interface Typegen0 {
       type: "error.platform.AuthenticationMachine"
       data: unknown
     }
+    "error.platform.verifyPhoneNumberService": {
+      type: "error.platform.verifyPhoneNumberService"
+      data: unknown
+    }
+    "error.platform.verifySmsService": {
+      type: "error.platform.verifySmsService"
+      data: unknown
+    }
   }
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.AuthenticationMachine"
     fetchPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
-    verifyPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.EnterSMSToken:invocation[0]"
-    verifySMSToken: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-    fetchAppDelegate: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
-    resolveToken: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
+    verifyPhoneNumberService: "done.invoke.verifyPhoneNumberService"
+    verifySmsService: "done.invoke.verifySmsService"
   }
   missingImplementations: {
     actions: never
@@ -67,39 +62,32 @@ export interface Typegen0 {
   eventsCausingServices: {
     AuthenticationMachine: "xstate.init"
     fetchPhoneNumber: "done.invoke.AuthenticationMachine"
-    fetchAppDelegate:
-      | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
-      | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-    verifyPhoneNumber:
-      | "ENTER_PHONE_NUMBER"
-      | "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-    verifySMSToken: "ENTER_SMS_TOKEN"
-    resolveToken: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
+    verifyPhoneNumberService: "ENTER_PHONE_NUMBER" | "RESEND"
+    verifySmsService: "ENTER_SMS_TOKEN"
   }
-  eventsCausingGuards: {}
+  eventsCausingGuards: {
+    defined: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
+    bool: "done.invoke.verifySmsService"
+  }
   eventsCausingDelays: {}
   matchesStates:
     | "Authenticate"
     | "GetPhoneNumber"
     | "GetPhoneNumber.GetExistingPhoneNumber"
     | "GetPhoneNumber.EnterPhoneNumber"
+    | "GetPhoneNumber.VerifyPhoneNumber"
     | "GetPhoneNumber.EnterSMSToken"
     | "GetPhoneNumber.ValidateSMSToken"
     | "HandleCredential"
-    | "HandleCredential.ResolveCredential"
-    | "HandleCredential.ResolveCredential.RetrieveDelegate"
-    | "HandleCredential.ResolveCredential.ResolveToken"
     | "HandleCredential.PresentCredential"
     | {
         GetPhoneNumber?:
           | "GetExistingPhoneNumber"
           | "EnterPhoneNumber"
+          | "VerifyPhoneNumber"
           | "EnterSMSToken"
           | "ValidateSMSToken"
-        HandleCredential?:
-          | "ResolveCredential"
-          | "PresentCredential"
-          | { ResolveCredential?: "RetrieveDelegate" | "ResolveToken" }
+        HandleCredential?: "PresentCredential"
       }
   tags: never
 }

@@ -8,7 +8,6 @@ import PhoneCredentialMachine, {
 } from "frontend/state/machines/credentials/phone-credential"
 import { CredentialRequesterNotVerified } from "frontend/ui/pages/credential-requester/not-verified"
 import { CredentialRequesterSMSVerify } from "frontend/ui/pages/credential-requester/sms-verify"
-import { NFIDLogin } from "frontend/ui/pages/nfid-login"
 
 import { AuthenticationCoordinator } from "./authentication"
 
@@ -27,22 +26,47 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           actor={state.children.AuthenticationMachine as AuthenticationActor}
         />
       )
+    case state.matches("GetPhoneNumber.GetExistingPhoneNumber"):
     case state.matches("GetPhoneNumber.EnterPhoneNumber"):
+    case state.matches("GetPhoneNumber.VerifyPhoneNumber"):
       return (
         <CredentialRequesterNotVerified
           onSubmit={(e) => send({ type: "ENTER_PHONE_NUMBER", data: e.phone })}
+          isLoading={
+            state.matches("GetPhoneNumber.GetExistingPhoneNumber") ||
+            state.matches("GetPhoneNumber.VerifyPhoneNumber")
+          }
+          error={
+            // TODO: Fix horrible type handling
+            "data" in state.event &&
+            typeof state.event.data === "object" &&
+            "error" in state.event.data
+              ? state.event.data.error
+              : undefined
+          }
+          phoneNumber={state.context.phone}
         />
       )
     case state.matches("GetPhoneNumber.EnterSMSToken"):
+    case state.matches("GetPhoneNumber.ValidateSMSToken"):
       return (
         <CredentialRequesterSMSVerify
           onSubmit={(val) =>
             send({ type: "ENTER_SMS_TOKEN", data: val }) as any
           }
           onChangePhone={() => send("CHANGE_PHONE_NUMBER") as any}
-          onResendCode={() => send("RESEND")}
+          // @ts-ignore
+          onResendCode={() => send("RESEND", state.event.data)}
           phone={state.context.phone}
-          responseError={state.context.error}
+          responseError={
+            // TODO: Fix horrible type handling
+            "data" in state.event &&
+            typeof state.event.data === "object" &&
+            "error" in state.event.data
+              ? state.event.data.error
+              : undefined
+          }
+          isLoading={state.matches("GetPhoneNumber.ValidateSMSToken")}
         />
       )
     default:

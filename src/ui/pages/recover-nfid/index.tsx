@@ -12,7 +12,6 @@ import {
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
-
 interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
   onRecover: (data: FieldValues) => {}
   toggle: () => void

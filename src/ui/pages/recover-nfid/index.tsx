@@ -63,7 +63,7 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
     formState: { errors },
     setError,
     handleSubmit,
-  } = useForm({
+  } = useForm<{ recoveryPhrase: string }>({
     mode: "all",
   })
 

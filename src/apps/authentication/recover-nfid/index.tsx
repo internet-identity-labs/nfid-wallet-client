@@ -52,8 +52,6 @@ export const AppScreenRecoverNFID: React.FC<
       const userNumber = parseUserNumber(stringUserNumber)
       const seedPhrase = recoveryPhrase.split(`${userNumber} `)[1]
 
-      console.log({ recoveryPhrase, stringUserNumber, userNumber, seedPhrase })
-
       if (!userNumber) {
         return setResponseError("Invalid Recovery Phrase (missing Anchor)")
       }
@@ -71,8 +69,6 @@ export const AppScreenRecoverNFID: React.FC<
           "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
       }
-
-      console.log({ result })
 
       if (result?.tag !== "ok") {
         setResponseError(
@@ -96,7 +92,6 @@ export const AppScreenRecoverNFID: React.FC<
   }
 
   useEffect(() => {
-    console.log({ user })
     if (!!user) handleOnAuthenticated()
   }, [user])
 

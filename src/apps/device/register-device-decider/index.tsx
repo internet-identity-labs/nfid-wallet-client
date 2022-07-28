@@ -101,13 +101,11 @@ export const RouterRegisterDeviceDecider: React.FC<
     setIsLoading(true)
 
     const account = await readAccount()
-    console.log(account.error)
+
     if (account.error.length) {
       setShouldStoreLocalAccount(false)
-      const newAccount = await createAccount({ anchor: userNumber })
-      console.log({ newAccount })
-      const persona = await getPersona()
-      console.log({ persona })
+      await createAccount({ anchor: userNumber })
+      await getPersona()
     }
 
     try {

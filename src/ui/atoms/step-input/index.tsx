@@ -28,7 +28,7 @@ export const StepInput: React.FC<StepInputProps> = ({
     formState: { errors, isValid },
     setError,
     clearErrors,
-  } = useForm({
+  } = useForm<{ verificationCode: string; phonenumber: string }>({
     mode: "all",
   })
 

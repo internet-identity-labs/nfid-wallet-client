@@ -142,23 +142,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           </>
         ) : (
           <>
-            <Input
-              errorText={errors.userNumber?.message}
-              labelText="Your NFID number"
-              className="w-full my-4"
-              {...register("userNumber", {
-                required: "userNumber is required",
-                pattern: {
-                  value: anchorRules.regex,
-                  message: anchorRules.errorMessages.pattern,
-                },
-                minLength: {
-                  value: anchorRules.minLength,
-                  message: anchorRules.errorMessages.length,
-                },
-              })}
-            />
-
             <IconButton
               title="Platform auth on this device"
               subtitle="Use this device if previously registered"

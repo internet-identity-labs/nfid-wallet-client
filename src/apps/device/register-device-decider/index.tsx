@@ -43,11 +43,6 @@ export const RouterRegisterDeviceDecider: React.FC<
     if (!userNumber) {
       return console.error(`Missing userNumber: ${userNumber}`)
     }
-    try {
-      await recoverDevice(Number(userNumber))
-    } catch (e) {
-      console.error(e)
-    }
 
     try {
       await recoverAccount(userNumber)
@@ -78,6 +73,12 @@ export const RouterRegisterDeviceDecider: React.FC<
           error: createAccessPointResponse.error[0],
         })
       }
+    }
+
+    try {
+      await recoverDevice(Number(userNumber))
+    } catch (e) {
+      console.error(e)
     }
 
     await getPersona()

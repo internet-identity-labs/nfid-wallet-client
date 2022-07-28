@@ -16,6 +16,7 @@ import { OurMission } from "./apps/marketing/landing-page/our-mission"
 import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import IDPCoordinator from "./coordination/idp"
+import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
 import { ic } from "./integration/actors"
 import { NotFound } from "./ui/pages/404"
@@ -41,6 +42,10 @@ export const App = () => {
       {RecoverNFIDRoutes}
 
       {AppScreenAuthenticateAccountRoutes}
+      <Route
+        path="/credential/verified-phone-number"
+        element={<PhoneCredentialCoordinator />}
+      />
       <Route path={"*"} element={<NotFound />} />
 
       {/* Temporary routes for new machine based flows */}

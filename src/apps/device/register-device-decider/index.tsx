@@ -105,11 +105,9 @@ export const RouterRegisterDeviceDecider: React.FC<
 
     const account = await readAccount()
 
-    if (account.error.length) {
-      setShouldStoreLocalAccount(false)
-      await createAccount({ anchor: userNumber })
-      await getPersona()
-    }
+    setShouldStoreLocalAccount(false)
+    await createAccount({ anchor: userNumber })
+    await getPersona()
 
     try {
       await useAccessPoint()

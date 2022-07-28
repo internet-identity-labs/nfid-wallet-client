@@ -173,14 +173,12 @@ export const useDevices = () => {
         fetchAuthenticatorDevices(userNumber),
       ])
 
-      if (accessPoints?.status_code === 200) {
-        const normalizedDevices = normalizeDevices(
-          existingDevices,
-          accessPoints?.data[0],
-        )
+      const normalizedDevices = normalizeDevices(
+        existingDevices,
+        accessPoints?.data[0],
+      )
 
-        setDevices(normalizedDevices)
-      }
+      setDevices(normalizedDevices)
     }
   }, [setDevices, userNumber])
 
@@ -223,14 +221,12 @@ export const useDevices = () => {
         fetchRecoveryDevices(userNumber),
       ])
 
-      if (accessPoints?.status_code === 200) {
-        const normalizedDevices = normalizeRecoveryDevices(
-          existingRecoveryDevices,
-          accessPoints?.data[0],
-        )
+      const normalizedDevices = normalizeRecoveryDevices(
+        existingRecoveryDevices,
+        accessPoints?.data[0],
+      )
 
-        setRecoveryDevices(normalizedDevices)
-      }
+      setRecoveryDevices(normalizedDevices)
     }
   }, [setRecoveryDevices, userNumber])
 

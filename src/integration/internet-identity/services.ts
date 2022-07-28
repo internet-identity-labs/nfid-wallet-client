@@ -77,7 +77,7 @@ export async function fetchDelegateService(
   }
   // FIXME: profile needs to be updated before this.
   const account = await fetchProfile()
-  console.debug(`fetchDelegateService.name} ${fetchProfile`, {
+  console.debug(`fetchDelegateService fetchProfile`, {
     account,
   })
   const scope = getScope(
@@ -85,7 +85,7 @@ export async function fetchDelegateService(
     Number(event.data.accountId),
     context.authRequest.derivationOrigin,
   )
-  console.debug(`fetchDelegateService.name} ${getScope`, {
+  console.debug(`fetchDelegateService getScope`, {
     scope,
   })
   const delegate = await fetchDelegate(
@@ -94,7 +94,7 @@ export async function fetchDelegateService(
     Array.from(context.authRequest.sessionPublicKey),
     context.authRequest.maxTimeToLive,
   )
-  console.debug(`fetchDelegateService.name} ${fetchDelegate`, {
+  console.debug(`fetchDelegateService fetchDelegate`, {
     delegate,
   })
   return delegate

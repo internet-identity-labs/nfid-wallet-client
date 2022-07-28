@@ -5,10 +5,10 @@ import Scrollspy from "react-scrollspy"
 
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
-import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
 import User from "frontend/assets/user.svg"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { ButtonMenu } from "frontend/ui/atoms/menu"

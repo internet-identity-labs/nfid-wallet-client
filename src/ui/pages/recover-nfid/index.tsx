@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import React from "react"
-import { useForm } from "react-hook-form"
+import { FieldValues, useForm } from "react-hook-form"
 
 import {
   Button,
@@ -9,55 +9,26 @@ import {
   TextArea,
 } from "@internet-identity-labs/nfid-sdk-react"
 
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { WebAuthnDevice } from "frontend/integration/identity-manager/devices/hooks"
-import { LoginSuccess } from "frontend/integration/internet-identity/api-result-to-login-result"
-import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
-import { useMessageChannel } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
-import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
+import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
+
 
 interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {
-  registerDevicePath: string
-  onRecoverSuccess?: (result: LoginSuccess) => void
-  hasVerifiedDomain?: boolean
-}
-
-export interface NewDeviceEvent {
-  data: {
-    kind: "new-device"
-    device: WebAuthnDevice
-  }
+  onRecover: (data: FieldValues) => {}
+  toggle: () => void
+  isVerifiedDomain?: boolean
+  isLoading: boolean
+  responseError?: any
 }
 
 export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
   className,
-  registerDevicePath,
-  hasVerifiedDomain: hasVerifiedDomainDefault,
-  onRecoverSuccess,
+  toggle,
+  isVerifiedDomain,
+  onRecover,
+  isLoading,
+  responseError,
 }) => {
-  const [hasVerifiedDomain, toggle] = React.useReducer(
-    (state) => !state,
-    !!hasVerifiedDomainDefault,
-  )
-
-  const { navigate } = useNFIDNavigate()
-  const { loginWithRecovery, error, isLoading } = useAuthentication()
-  const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
-
-  const handleNewDevice = React.useCallback(
-    async (event: NewDeviceEvent) => {
-      await handleStoreNewDevice(event.data)
-    },
-    [handleStoreNewDevice],
-  )
-
-  useMessageChannel({
-    messageHandler: {
-      "new-device": handleNewDevice,
-    },
-  })
-
   const {
     register,
     formState: { errors },
@@ -67,104 +38,71 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
     mode: "all",
   })
 
-  const onRecover = React.useCallback(
-    async (data: any) => {
-      const { recoveryPhrase: recoveryPhraseRaw } = data
-      const recoveryPhrase = recoveryPhraseRaw.trim()
-
-      const stringUserNumber = recoveryPhrase.split(" ")[0]
-      const userNumber = parseUserNumber(stringUserNumber)
-
-      if (!userNumber) {
-        return setError("recoveryPhrase", {
-          type: "manual",
-          message: "Invalid Recovery Phrase (missing Anchor)",
-        })
-      }
-
-      const result = await loginWithRecovery(
-        recoveryPhrase.split(`${userNumber} `)[1],
-        userNumber,
-      )
-
-      if (result?.tag === "ok") {
-        setUserNumber(userNumber)
-        navigate(registerDevicePath)
-        onRecoverSuccess && onRecoverSuccess(result)
-      } else {
-        setError("recoveryPhrase", {
-          type: "manual",
-          message:
-            "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
-        })
-      }
-    },
-    [
-      loginWithRecovery,
-      setError,
-      setUserNumber,
-      navigate,
-      onRecoverSuccess,
-      registerDevicePath,
-    ],
-  )
-
   React.useEffect(() => {
-    if (error) {
+    if (responseError) {
       setError("recoveryPhrase", {
         type: "manual",
-        message:
-          "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
+        message: responseError,
       })
     }
-  }, [error, setError])
+  }, [responseError, setError])
 
   return (
-    <div className={clsx("", className)}>
-      <div>
-        <H2 className="mb-4">Recover NFID</H2>
+    <AppScreen isFocused showLogo>
+      <main className={clsx("flex flex-1")}>
+        <div className={clsx(CONTAINER_CLASSES)}>
+          <div className="grid h-full grid-cols-12">
+            <div className="flex flex-col col-span-12 md:col-span-11 lg:col-span-7">
+              <div className={clsx("", className)}>
+                <div>
+                  <H2 className="mb-4">Recover NFID</H2>
 
-        <div className={clsx("mb-6")}>
-          Paste your recovery phrase here to proceed:
+                  <div className={clsx("mb-6")}>
+                    Paste your recovery phrase here to proceed:
+                  </div>
+
+                  <TextArea
+                    rows={6}
+                    errorText={errors?.recoveryPhrase?.message}
+                    {...register("recoveryPhrase", {
+                      required: {
+                        value: true,
+                        message: "Please enter your Recovery Phrase",
+                      },
+                    })}
+                  />
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="has-verified-domain"
+                      className="rounded"
+                      onChange={toggle}
+                      checked={isVerifiedDomain}
+                    />
+                    <label htmlFor="has-verified-domain" className="ml-2">
+                      I got to this screen by first going to https://nfid.one,
+                      being redirected to this landing page, and following the
+                      link to recover my NFID.
+                    </label>
+                  </div>
+
+                  <Button
+                    secondary
+                    large
+                    className="my-4"
+                    onClick={handleSubmit(onRecover)}
+                    disabled={!isVerifiedDomain}
+                  >
+                    Recover
+                  </Button>
+
+                  <Loader isLoading={isLoading} />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <TextArea
-          rows={6}
-          errorText={errors.recoveryPhrase?.message}
-          {...register("recoveryPhrase", {
-            required: {
-              value: true,
-              message: "Please enter your Recovery Phrase",
-            },
-          })}
-        />
-        <div>
-          <input
-            type="checkbox"
-            id="has-verified-domain"
-            className="rounded"
-            onChange={toggle}
-            checked={hasVerifiedDomain}
-          />
-          <label htmlFor="has-verified-domain" className="ml-2">
-            I got to this screen by first going to https://nfid.one, being
-            redirected to this landing page, and following the link to recover
-            my NFID.
-          </label>
-        </div>
-
-        <Button
-          secondary
-          large
-          className="my-4"
-          onClick={handleSubmit(onRecover)}
-          disabled={!hasVerifiedDomain}
-        >
-          Recover
-        </Button>
-
-        <Loader isLoading={isLoading} />
-      </div>
-    </div>
+      </main>
+    </AppScreen>
   )
 }

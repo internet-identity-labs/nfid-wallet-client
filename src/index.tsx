@@ -3,14 +3,7 @@ import { BrowserTracing } from "@sentry/tracing"
 import React from "react"
 import { createRoot } from "react-dom/client"
 import { HelmetProvider } from "react-helmet-async"
-import {
-  BrowserRouter as Router,
-  createRoutesFromChildren,
-  matchRoutes,
-  Routes,
-  useLocation,
-  useNavigationType,
-} from "react-router-dom"
+import { BrowserRouter as Router } from "react-router-dom"
 import SwiperCore, { Pagination, Navigation } from "swiper"
 import "swiper/css"
 import "swiper/css/pagination"
@@ -23,17 +16,7 @@ declare const SENTRY_RELEASE: string
 process.env.NODE_ENV === "production" &&
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_CONNECTION,
-    integrations: [
-      new BrowserTracing({
-        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-          React.useEffect,
-          useLocation,
-          useNavigationType,
-          createRoutesFromChildren,
-          matchRoutes,
-        ),
-      }),
-    ],
+    integrations: [new BrowserTracing()],
 
     // TODO: let's get some experience with it and decide later.
     // Set tracesSampleRate to 1.0 to capture 100%
@@ -42,8 +25,6 @@ process.env.NODE_ENV === "production" &&
     tracesSampleRate: 0.25,
     ...(SENTRY_RELEASE ? { release: SENTRY_RELEASE } : {}),
   })
-
-const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
 
 SwiperCore.use([Pagination, Navigation])
 
@@ -57,9 +38,7 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Router>
-        <SentryRoutes>
-          <App />
-        </SentryRoutes>
+        <App />
       </Router>
     </HelmetProvider>
   </React.StrictMode>,

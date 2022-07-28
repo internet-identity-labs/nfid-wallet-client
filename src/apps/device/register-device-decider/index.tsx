@@ -62,7 +62,7 @@ export const RouterRegisterDeviceDecider: React.FC<
         })
         .catch((e) => {
           throw new Error(
-            `${handleRegister.name} im.create_access_point: ${e.message}`,
+            `${RouterRegisterDeviceDecider.name}.handleRegister im.create_access_point: ${e.message}`,
           )
         })
       if (createAccessPointResponse.status_code !== 200) {

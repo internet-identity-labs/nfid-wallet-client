@@ -195,7 +195,9 @@ export interface Application {
 
 function mapApplication(application: BEApplication): Application {
   if (application.user_limit < 1)
-    throw new Error("user_limit has to be greater or equal to 1")
+    throw new Error(
+      `${mapApplication.name} user_limit has to be greater or equal to 1`,
+    )
 
   return {
     accountLimit: application.user_limit,
@@ -208,7 +210,7 @@ function mapApplication(application: BEApplication): Application {
  * Fetches 3rd party application meta data
  */
 export async function fetchApplications() {
-  console.debug("fetchApplications")
+  console.debug(`${fetchApplications.name}`)
   return im
     .read_applications()
     .then(unpackResponse)

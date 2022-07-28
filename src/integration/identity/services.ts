@@ -11,16 +11,23 @@ export async function postRemoteDelegationService(
   console.debug(postRemoteDelegationService.name, { context, event })
   const { chain, sessionKey } = authState.get()
   if (!chain)
-    throw new Error("postRemoteDelegationService authState missing chain")
+    throw new Error(
+      `${postRemoteDelegationService.name} authState missing chain`,
+    )
   if (!sessionKey)
-    throw new Error("postRemoteDelegationService authState missing sessionKey")
+    throw new Error(
+      `${postRemoteDelegationService.name} authState missing sessionKey`,
+    )
 
-  if (!context.pubsubChannel) throw new Error("Missing pubsub channel")
+  if (!context.pubsubChannel)
+    throw new Error(
+      `${postRemoteDelegationService.name} context.pubsubChannel missing`,
+    )
 
   const profile = loadProfileFromLocalStorage()
   if (!profile)
     throw new Error(
-      "postRemoteDelegationService profile missing from localstorage",
+      `${postRemoteDelegationService.name} profile missing from localstorage`,
     )
 
   const message = buildRemoteLoginRegisterMessage(

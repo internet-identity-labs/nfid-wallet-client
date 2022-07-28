@@ -54,10 +54,10 @@ export async function loginWithAnchor(
       identity: authResult.sessionKey,
     }
   } else if ("message" in authResult) {
-    throw new Error(authResult.message)
+    throw new Error(`${loginWithAnchor.name} ${authResult.message}`)
   }
 
-  throw new Error("Unreachable")
+  throw new Error(`${loginWithAnchor.name} Unreachable`)
 }
 
 export async function fetchDelegateService(
@@ -68,12 +68,12 @@ export async function fetchDelegateService(
   if (!context.authSession) {
     const message = "context.authSession missing"
     console.error(fetchDelegateService.name, { message })
-    throw new Error(message)
+    throw new Error(`${fetchDelegateService.name} ${message}`)
   }
   if (!context.authRequest) {
     const message = "AuthorizationRequest missing in context."
     console.error(fetchDelegateService.name, { message })
-    throw new Error(message)
+    throw new Error(`${fetchDelegateService.name} ${message}`)
   }
   // FIXME: profile needs to be updated before this.
   const account = await fetchProfile()
@@ -103,7 +103,7 @@ export async function fetchDelegateService(
 export async function loginService(context: {
   devices?: Device[]
 }): Promise<LocalDeviceAuthSession> {
-  if (!context.devices) throw new Error("devices missing")
+  if (!context.devices) throw new Error(`${loginService.name} devices missing`)
 
   const multiIdent = identityFromDeviceList(context.devices)
   const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
@@ -145,12 +145,14 @@ export async function registerService(
 
   if (!identity) {
     const error = new Error("Missing identity.")
-    console.error("registerService", error)
+    console.error(`${registerService.name}`, error)
     throw error
   }
   if (!context.challenge?.challengeKey) {
-    const error = new Error(`Missing required challenge context.`)
-    console.error("registerService", error)
+    const error = new Error(
+      `${registerService.name} Missing required challenge context.`,
+    )
+    console.error(`${registerService.name}`, error)
     throw error
   }
 
@@ -166,7 +168,9 @@ export async function registerService(
     setProfile(await registerAccount(anchor))
   } catch (e) {
     console.error(e)
-    throw new Error("Could not register new account, please try again.")
+    throw new Error(
+      `${registerService.name} Could not register new account, please try again.`,
+    )
   }
 
   return {
@@ -180,8 +184,8 @@ export async function registerService(
 export async function fetchAuthenticatorDevicesService(context: {
   profile: Profile
 }) {
-  console.debug(">> fetchAuthenticatorDevicesService", context)
+  console.debug(fetchAuthenticatorDevicesService.name, context)
   const devices = await lookup(Number(context.profile.anchor), false)
-  console.debug(">> fetchAuthenticatorDevicesService lookup", { devices })
+  console.debug(`${fetchAuthenticatorDevicesService.name} lookup`, { devices })
   return devices
 }

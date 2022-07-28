@@ -50,13 +50,15 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
               accounts={[]}
               onUnlockNFID={async () => send("UNLOCK")}
               onCreateAccount={function (): Promise<void> {
-                throw new Error("Function not implemented.")
+                throw new Error(
+                  `${KnownDeviceCoordinator.name} onCreateAccount not implemented.`,
+                )
               }}
               isLoading={state.matches("Login")}
-              onLogin={function (
-                personaId?: string | undefined,
-              ): Promise<void> {
-                throw new Error("Function not implemented.")
+              onLogin={function (): Promise<void> {
+                throw new Error(
+                  `${KnownDeviceCoordinator.name} onLogin not implemented.`,
+                )
               }}
             />
           )

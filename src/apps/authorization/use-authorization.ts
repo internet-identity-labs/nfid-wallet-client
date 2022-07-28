@@ -106,9 +106,7 @@ export const useAuthorization = ({
           maxTimeToLive !== undefined ? [maxTimeToLive] : [],
         )
         .catch((e) => {
-          throw new Error(
-            `${authorizeApp.name} ii.prepare_delegation: ${e.message}`,
-          )
+          throw new Error(`authorizeApp ii.prepare_delegation: ${e.message}`)
         })
       console.log(">> authorizeApp", { prepRes })
 
@@ -123,9 +121,7 @@ export const useAuthorization = ({
       const res = await ii
         .get_delegation(anchor || userNumber, scope, sessionKey, timestamp)
         .catch((e) => {
-          throw new Error(
-            `${authorizeApp.name} ii.get_delegation: ${e.message}`,
-          )
+          throw new Error(`authorizeApp ii.get_delegation: ${e.message}`)
         })
 
       if (hasOwnProperty(res, "signed_delegation")) {

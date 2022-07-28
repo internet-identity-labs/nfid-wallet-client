@@ -51,13 +51,13 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
               onUnlockNFID={async () => send("UNLOCK")}
               onCreateAccount={function (): Promise<void> {
                 throw new Error(
-                  `${KnownDeviceCoordinator.name} onCreateAccount not implemented.`,
+                  `KnownDeviceCoordinator onCreateAccount not implemented.`,
                 )
               }}
               isLoading={state.matches("Login")}
               onLogin={function (): Promise<void> {
                 throw new Error(
-                  `${KnownDeviceCoordinator.name} onLogin not implemented.`,
+                  `KnownDeviceCoordinator onLogin not implemented.`,
                 )
               }}
             />

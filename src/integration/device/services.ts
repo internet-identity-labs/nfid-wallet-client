@@ -38,9 +38,7 @@ export async function registerDeviceWithWebAuthn() {
           protection: { unprotected: null },
         })
         .catch((e) => {
-          throw new Error(
-            `${registerDeviceWithWebAuthn.name} ii.add: ${e.message}`,
-          )
+          throw new Error(`registerDeviceWithWebAuthn ii.add: ${e.message}`)
         }),
       im
         .create_access_point({
@@ -51,7 +49,7 @@ export async function registerDeviceWithWebAuthn() {
         })
         .catch((e) => {
           throw new Error(
-            `${registerDeviceWithWebAuthn.name} im.create_access_point: ${e.message}`,
+            `registerDeviceWithWebAuthn im.create_access_point: ${e.message}`,
           )
         }),
     ])
@@ -90,9 +88,7 @@ export async function registerDeviceWithSecurityKey() {
           protection: { unprotected: null },
         })
         .catch((e) => {
-          throw new Error(
-            `${registerDeviceWithSecurityKey.name} ii.add: ${e.message}`,
-          )
+          throw new Error(`registerDeviceWithSecurityKey ii.add: ${e.message}`)
         }),
       im
         .create_access_point({
@@ -103,7 +99,7 @@ export async function registerDeviceWithSecurityKey() {
         })
         .catch((e) => {
           throw new Error(
-            `${registerDeviceWithSecurityKey.name} im.create_access_point: ${e.message}`,
+            `registerDeviceWithSecurityKey im.create_access_point: ${e.message}`,
           )
         }),
     ])

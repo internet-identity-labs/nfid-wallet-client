@@ -52,7 +52,7 @@ export function typeResponse<T>(
     return { ok: false, code: response.status_code, error: response.error[0] }
   }
   throw new Error(
-    `${typeResponse.name} Unknown response type ${Object.keys(response)[0]}`,
+    `typeResponse Unknown response type ${Object.keys(response)[0]}`,
   )
 }
 
@@ -109,6 +109,6 @@ export function unpackLegacyResponse(response: Response) {
   if (r.ok) {
     return true
   } else {
-    throw new Error(`${unpackLegacyResponse.name} ${r.code} error: ${r.error}`)
+    throw new Error(`unpackLegacyResponse ${r.code} error: ${r.error}`)
   }
 }

@@ -20,7 +20,7 @@ export const AuthorizeNFID: React.FC<AppScreenAuthorizeAppProps> = () => {
   const { navigate } = useNFIDNavigate()
 
   const handleNFIDLogin = React.useCallback(async () => {
-    if (!secret) throw new Error(`${AuthorizeNFID.name} missing secret`)
+    if (!secret) throw new Error(`AuthorizeNFID missing secret`)
 
     await remoteNFIDLogin({ secret })
     navigate("/profile/authenticate")
@@ -28,9 +28,7 @@ export const AuthorizeNFID: React.FC<AppScreenAuthorizeAppProps> = () => {
 
   const handleUnlockNFID = React.useCallback(async () => {
     if (!secret)
-      throw new Error(
-        `${AuthorizeNFID.name} missing secret, scope or persona_id`,
-      )
+      throw new Error(`AuthorizeNFID missing secret, scope or persona_id`)
 
     const result = await login()
     if (result && result.tag === "ok") {

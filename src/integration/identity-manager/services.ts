@@ -14,7 +14,7 @@ export function getLocalStorageProfileService() {
   const profile = loadProfileFromLocalStorage()
   if (!profile)
     throw new Error(
-      `${getLocalStorageProfileService.name} getProfileService unregistered device`,
+      `getLocalStorageProfileService getProfileService unregistered device`,
     )
 
   return Promise.resolve(profile)
@@ -29,7 +29,7 @@ export async function fetchAccountsService(
 ) {
   if (!context.authRequest?.hostname) {
     throw new Error(
-      `${fetchAccountsService.name} Cannot filter personas without hostname`,
+      `fetchAccountsService Cannot filter personas without hostname`,
     )
   }
   const personas = await fetchAccounts()
@@ -39,22 +39,22 @@ export async function fetchAccountsService(
 export async function createAccountService(
   context: AuthorizationMachineContext,
 ): Promise<{ accountId: string }> {
-  console.debug(`${createAccountService.name}`, { context })
+  console.debug(`createAccountService`, { context })
   if (!context.authRequest)
-    throw new Error(`${createAccountService.name} context.authRequest missing`)
+    throw new Error(`createAccountService context.authRequest missing`)
   if (!context.accounts)
-    throw new Error(`${createAccountService.name} context.accounts missing`)
+    throw new Error(`createAccountService context.accounts missing`)
   const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
   const createPersonaReposne = await createPersona(
     context.authRequest?.hostname,
     accountId,
     `Account #${accountId}`,
   )
-  console.debug(`${createAccountService.name}`, { createPersonaReposne })
+  console.debug(`createAccountService`, { createPersonaReposne })
   return { accountId }
 }
 
 export async function fetchProfileService() {
-  console.debug(`${fetchProfileService.name}`)
+  console.debug(`fetchProfileService`)
   return await fetchProfile()
 }

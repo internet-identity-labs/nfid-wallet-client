@@ -139,7 +139,7 @@ export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
 export async function createChallenge(): Promise<Challenge> {
   const challenge = await ii.create_challenge().catch((e) => {
-    throw new Error(`${createChallenge.name}: ${e.message}`)
+    throw new Error(`createChallenge: ${e.message}`)
   })
   return challenge
 }
@@ -204,7 +204,7 @@ export const creationOptions = (
 
 export async function fetchAllDevices(anchor: UserNumber) {
   return await ii.lookup(anchor).catch((e) => {
-    throw new Error(`${fetchAllDevices.name}: ${e.message}`)
+    throw new Error(`fetchAllDevices: ${e.message}`)
   })
 }
 
@@ -271,7 +271,7 @@ export const requestFEDelegation = async (
 async function renewDelegation() {
   const { delegationIdentity, actor, identity } = authState.get()
   if (!delegationIdentity || !identity)
-    throw new Error(`${renewDelegation.name} unauthorized`)
+    throw new Error(`renewDelegation unauthorized`)
 
   for (const { delegation } of delegationIdentity.getDelegation().delegations) {
     // prettier-ignore
@@ -323,7 +323,7 @@ async function prepareDelegation(
       maxTimeToLive !== undefined ? [maxTimeToLive] : [],
     )
     .catch((e) => {
-      throw new Error(`${prepareDelegation.name}: ${e.message}`)
+      throw new Error(`prepareDelegation: ${e.message}`)
     })
 }
 
@@ -372,7 +372,7 @@ async function getDelegation(
   return await ii
     .get_delegation(userNumber, hostname, sessionKey, timestamp)
     .catch((e) => {
-      throw new Error(`${getDelegation.name}: ${e.message}`)
+      throw new Error(`getDelegation: ${e.message}`)
     })
 }
 
@@ -463,7 +463,7 @@ export async function addDevice(
       protection: { unprotected: null },
     })
     .catch((e) => {
-      throw new Error(`${addDevice.name}: ${e.message}`)
+      throw new Error(`addDevice: ${e.message}`)
     })
 }
 
@@ -473,7 +473,7 @@ export async function removeDevice(
 ): Promise<void> {
   await renewDelegation()
   await ii.remove(userNumber, publicKey).catch((e) => {
-    throw new Error(`${removeDevice.name}: ${e.message}`)
+    throw new Error(`removeDevice: ${e.message}`)
   })
 }
 
@@ -496,7 +496,7 @@ async function registerAnchor(
       challengeResult,
     )
     .catch((e) => {
-      throw new Error(`${registerAnchor.name}: ${e.message}`)
+      throw new Error(`registerAnchor: ${e.message}`)
     })
 }
 
@@ -506,7 +506,7 @@ async function getPrincipal(
 ): Promise<Principal> {
   await renewDelegation()
   return await ii.get_principal(userNumber, frontend).catch((e) => {
-    throw new Error(`${getPrincipal.name}: ${e.message}`)
+    throw new Error(`getPrincipal: ${e.message}`)
   })
 }
 
@@ -950,7 +950,7 @@ export async function fetchDelegate(
     sessionKey,
     maxTimeToLive,
   )
-  console.debug(`${fetchDelegate.name} prepareDelegate`, { response: prepare })
+  console.debug(`fetchDelegate prepareDelegate`, { response: prepare })
 
   const signedDelegation = await getDelegateRetry(
     userNumber,
@@ -958,7 +958,7 @@ export async function fetchDelegate(
     sessionKey,
     prepare.timestamp,
   )
-  console.debug(`${fetchDelegate.name} getDelegate`, { signedDelegation })
+  console.debug(`fetchDelegate getDelegate`, { signedDelegation })
 
   return {
     signedDelegation,
@@ -987,7 +987,7 @@ export async function fetchChallenge() {
     .create_challenge()
     .then(mapChallenge)
     .catch((e) => {
-      throw new Error(`${fetchChallenge.name}: ${e.message}`)
+      throw new Error(`fetchChallenge: ${e.message}`)
     })
 }
 

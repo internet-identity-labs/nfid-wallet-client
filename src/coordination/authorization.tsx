@@ -36,7 +36,7 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
           }
           onContinueButtonClick={function (): Promise<void> {
             throw new Error(
-              `${AuthorizationCoordinator.name} onContinueButtonClick not implemented.`,
+              `AuthorizationCoordinator onContinueButtonClick not implemented.`,
             )
           }}
         />
@@ -58,7 +58,7 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
           }
           onUnlockNFID={function (): Promise<any> {
             throw new Error(
-              `${AuthorizationCoordinator.name} onUnlockNFID not implemented.`,
+              `AuthorizationCoordinator onUnlockNFID not implemented.`,
             )
           }}
           onCreateAccount={async () => send("CREATE_ACCOUNT")}

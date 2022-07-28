@@ -7,11 +7,11 @@ export async function fetchAccountLimitService(context: {
   console.debug(fetchAccountLimitService.name, { context })
   if (!context.authRequest?.hostname)
     throw new Error(
-      `${fetchAccountLimitService.name} missing context.authReques.hostname`,
+      `fetchAccountLimitService missing context.authReques.hostname`,
     )
 
   const response = await fetchAccountLimit(context.authRequest.hostname)
-  console.debug(`${fetchAccountLimitService.name} fetchAccountLimit`, {
+  console.debug(`fetchAccountLimitService fetchAccountLimit`, {
     response,
   })
   return response

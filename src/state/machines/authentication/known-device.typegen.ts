@@ -67,6 +67,7 @@ export interface Typegen0 {
     assignProfile: "done.invoke.getLocalStorageProfileService"
     assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
     assignAccountLimit: "done.invoke.fetchAccountLimitService"
+    assignAuthSession: "done.invoke.loginService"
   }
   eventsCausingServices: {
     getLocalStorageProfileService: "xstate.init"

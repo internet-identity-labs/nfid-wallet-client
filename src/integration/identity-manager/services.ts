@@ -67,8 +67,8 @@ export async function verifyPhoneNumberService(context: {
   authSession?: AuthSession
   phone?: string
 }) {
-  const principal = context.authSession?.delegationIdentity.getPrincipal()
   try {
+  const principal = context.authSession?.delegationIdentity.getPrincipal()
     if (!context.phone) throw new Error("Missing phone number")
     if (!principal) throw new Error("Missing principal")
     const res = await verifyPhoneNumber(context.phone)

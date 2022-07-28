@@ -18,9 +18,6 @@ interface RestoreAccessPointRecoveryPhraseProps {
 export const AppScreenRecoverNFID: React.FC<
   RestoreAccessPointRecoveryPhraseProps
 > = ({ registerDeviceDeciderPath, isVerifiedDomainDefault }) => {
-  const [isUseAccessPointLoading, toggleUseAccessPointLoading] =
-    React.useReducer((state) => !state, false)
-
   const [responseError, setResponseError] = useState<any>(null)
   const [isVerifiedDomain, toggleIsVerifiedDomain] = React.useReducer(
     (state) => !state,
@@ -28,9 +25,8 @@ export const AppScreenRecoverNFID: React.FC<
   )
 
   const { navigate } = useNFIDNavigate()
-  const { loginWithRecovery, error, isLoading, user } = useAuthentication()
-  const { handleStoreNewDevice, setUserNumber, userNumber } =
-    useUnknownDeviceConfig()
+  const { loginWithRecovery, isLoading, user } = useAuthentication()
+  const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
   const handleNewDevice = React.useCallback(
     async (event: NewDeviceEvent) => {
       await handleStoreNewDevice(event.data)
@@ -59,10 +55,7 @@ export const AppScreenRecoverNFID: React.FC<
       let result = null
 
       try {
-        result = await loginWithRecovery(
-          recoveryPhrase.split(`${userNumber} `)[1],
-          userNumber,
-        )
+        result = await loginWithRecovery(seedPhrase, userNumber)
       } catch (e) {
         console.error(e)
         setResponseError(
@@ -101,7 +94,7 @@ export const AppScreenRecoverNFID: React.FC<
       toggle={toggleIsVerifiedDomain}
       isVerifiedDomain={isVerifiedDomain}
       responseError={responseError}
-      isLoading={isLoading || isUseAccessPointLoading}
+      isLoading={isLoading}
     />
   )
 }

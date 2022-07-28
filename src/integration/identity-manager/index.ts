@@ -105,7 +105,7 @@ export async function fetchProfile() {
     })
     .then((r) => mapProfile(unpackResponse(r)))
     .catch((e) => {
-      throw new Error(`${fetchProfile.name} im.get_account: ${e.message}`)
+      throw new Error(`fetchProfile im.get_account: ${e.message}`)
     })
 }
 
@@ -113,14 +113,14 @@ export async function fetchProfile() {
  * Fetch accounts for the currently connected principal.
  */
 export async function fetchAccounts() {
-  console.debug(`${fetchAccounts.name} im.read_personas`)
+  console.debug(`fetchAccounts im.read_personas`)
   try {
     return await im
       .read_personas()
       .then(unpackResponse)
       .then((r) => r.map(mapAccount))
       .catch((e) => {
-        throw new Error(`${fetchAccounts.name} im.get_account: ${e.message}`)
+        throw new Error(`fetchAccounts im.get_account: ${e.message}`)
       })
   } catch (e: any) {
     // TODO: This note based on an incorrect assumption. Remove.
@@ -166,7 +166,7 @@ export async function verifyToken(token: string, principal: Principal) {
     .verify_token(token)
     .then(unpackLegacyResponse)
     .catch((e) => {
-      throw new Error(`${verifyToken.name} im.verify_token: ${e.message}`)
+      throw new Error(`verifyToken im.verify_token: ${e.message}`)
     })
 }
 
@@ -195,9 +195,7 @@ export interface Application {
 
 function mapApplication(application: BEApplication): Application {
   if (application.user_limit < 1)
-    throw new Error(
-      `${mapApplication.name} user_limit has to be greater or equal to 1`,
-    )
+    throw new Error(`mapApplication user_limit has to be greater or equal to 1`)
 
   return {
     accountLimit: application.user_limit,
@@ -210,7 +208,7 @@ function mapApplication(application: BEApplication): Application {
  * Fetches 3rd party application meta data
  */
 export async function fetchApplications() {
-  console.debug(`${fetchApplications.name}`)
+  console.debug(`fetchApplications`)
   return im
     .read_applications()
     .then(unpackResponse)

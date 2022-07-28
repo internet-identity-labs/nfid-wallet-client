@@ -24,7 +24,7 @@ export const useDeviceInfo = () => {
     const info = {
       platform,
       browser,
-      newDeviceName: `NFID ${browser.name} on ${platform.os}`,
+      newDeviceName: `NFID browser on ${platform.os}`,
       isWebAuthNAvailable,
       isMobile: Boolean(
         window.navigator.userAgent.match(

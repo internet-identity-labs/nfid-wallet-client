@@ -55,7 +55,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
         })
         .catch((e) => {
           throw new Error(
-            `${AppScreenRegisterDeviceDecider.name}.handleRegister im.create_access_point: ${e.message}`,
+            `AppScreenRegisterDeviceDecider.handleRegister im.create_access_point: ${e.message}`,
           )
         })
     }

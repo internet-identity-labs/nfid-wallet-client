@@ -39,20 +39,14 @@ export const AppScreenAuthorizeApp: React.FC<
   const handleLogin = React.useCallback(
     async (personaId: string) => {
       if (!secret)
-        throw new Error(
-          `${AppScreenAuthorizeApp.name}.handleLogin missing secret`,
-        )
+        throw new Error(`AppScreenAuthorizeApp.handleLogin missing secret`)
       if (!scope)
-        throw new Error(
-          `${AppScreenAuthorizeApp.name}.handleLogin missing scope`,
-        )
+        throw new Error(`AppScreenAuthorizeApp.handleLogin missing scope`)
       if (!user?.chain)
-        throw new Error(
-          `${AppScreenAuthorizeApp.name}.handleLogin missing user.chain`,
-        )
+        throw new Error(`AppScreenAuthorizeApp.handleLogin missing user.chain`)
       if (!user?.sessionKey)
         throw new Error(
-          `${AppScreenAuthorizeApp.name}.handleLogin missing user.sessionKey`,
+          `AppScreenAuthorizeApp.handleLogin missing user.sessionKey`,
         )
 
       setIsloading(true)

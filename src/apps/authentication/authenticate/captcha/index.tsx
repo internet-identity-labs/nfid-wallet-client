@@ -103,7 +103,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
           })
           .catch((e) => {
             throw new Error(
-              `${RouteCaptcha.name}.handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
+              `RouteCaptcha.handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
             )
           })
         if (!scope) throw new Error("scope is required")
@@ -116,7 +116,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
             })
             .catch((e) => {
               throw new Error(
-                `${RouteCaptcha.name}.handleRegisterAnchorWithGoogle im.create_persona: ${e.message}`,
+                `RouteCaptcha.handleRegisterAnchorWithGoogle im.create_persona: ${e.message}`,
               )
             }),
           authorizeApp({
@@ -127,10 +127,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
         ])
         return navigate(successPath)
       }
-      console.error(
-        `${RouteCaptcha.name} handleRegisterAnchorWithGoogle`,
-        response,
-      )
+      console.error(`RouteCaptcha handleRegisterAnchorWithGoogle`, response)
     },
     [
       authorizeApp,

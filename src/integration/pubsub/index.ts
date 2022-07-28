@@ -80,7 +80,7 @@ export async function createTopic(topic: Topic) {
     .create_topic(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
     .catch((e) => {
-      throw new Error(`${createTopic.name} pubsub.create_topic: ${e.message}`)
+      throw new Error(`createTopic pubsub.create_topic: ${e.message}`)
     })
 }
 
@@ -93,7 +93,7 @@ export async function postMessages(topic: Topic, messages: any[]) {
     )
     .then((r) => unpackResponse(sanitizeResponse(r)))
     .catch((e) => {
-      throw new Error(`${postMessages.name} pubsub.post_messages: ${e.message}`)
+      throw new Error(`postMessages pubsub.post_messages: ${e.message}`)
     })
 }
 
@@ -103,7 +103,7 @@ export async function getMessages(topic: Topic) {
     .get_messages(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
     .catch((e) => {
-      throw new Error(`${getMessages.name} pubsub.get_messages: ${e.message}`)
+      throw new Error(`getMessages pubsub.get_messages: ${e.message}`)
     })
 }
 

@@ -143,7 +143,7 @@ describe("KnownDevice Coordinator", () => {
         await waitFor(() => {
           plan.detectOnScreen.map((ele) => screen.getByText(ele))
           const appLogo = screen.getByAltText(
-            `application-logo-${context.authAppMeta.name}`,
+            `application-logo-context.authAppMeta`,
           )
           expect(appLogo.getAttribute("src")).toBe(
             "https://my-app.com/logo.svg",

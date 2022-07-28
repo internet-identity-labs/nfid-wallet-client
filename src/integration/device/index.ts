@@ -88,7 +88,7 @@ export function getPlatformInfo() {
 export const deviceInfo = {
   platform,
   browser,
-  newDeviceName: `NFID ${browser.name} on ${platform.os}`,
+  newDeviceName: `NFID browser on ${platform.os}`,
   isMobile: getIsMobileDeviceMatch,
   // NOTE: don't like this 👇
   hasWebAuthn: fetchWebAuthnCapability(),

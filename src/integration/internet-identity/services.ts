@@ -54,10 +54,10 @@ export async function loginWithAnchor(
       identity: authResult.sessionKey,
     }
   } else if ("message" in authResult) {
-    throw new Error(`${loginWithAnchor.name} ${authResult.message}`)
+    throw new Error(`loginWithAnchor ${authResult.message}`)
   }
 
-  throw new Error(`${loginWithAnchor.name} Unreachable`)
+  throw new Error(`loginWithAnchor Unreachable`)
 }
 
 export async function fetchDelegateService(
@@ -68,16 +68,16 @@ export async function fetchDelegateService(
   if (!context.authSession) {
     const message = "context.authSession missing"
     console.error(fetchDelegateService.name, { message })
-    throw new Error(`${fetchDelegateService.name} ${message}`)
+    throw new Error(`fetchDelegateService ${message}`)
   }
   if (!context.authRequest) {
     const message = "AuthorizationRequest missing in context."
     console.error(fetchDelegateService.name, { message })
-    throw new Error(`${fetchDelegateService.name} ${message}`)
+    throw new Error(`fetchDelegateService ${message}`)
   }
   // FIXME: profile needs to be updated before this.
   const account = await fetchProfile()
-  console.debug(`${fetchDelegateService.name} ${fetchProfile.name}`, {
+  console.debug(`fetchDelegateService.name} ${fetchProfile`, {
     account,
   })
   const scope = getScope(
@@ -85,7 +85,7 @@ export async function fetchDelegateService(
     Number(event.data.accountId),
     context.authRequest.derivationOrigin,
   )
-  console.debug(`${fetchDelegateService.name} ${getScope.name}`, {
+  console.debug(`fetchDelegateService.name} ${getScope`, {
     scope,
   })
   const delegate = await fetchDelegate(
@@ -94,7 +94,7 @@ export async function fetchDelegateService(
     Array.from(context.authRequest.sessionPublicKey),
     context.authRequest.maxTimeToLive,
   )
-  console.debug(`${fetchDelegateService.name} ${fetchDelegate.name}`, {
+  console.debug(`fetchDelegateService.name} ${fetchDelegate`, {
     delegate,
   })
   return delegate
@@ -103,7 +103,7 @@ export async function fetchDelegateService(
 export async function loginService(context: {
   devices?: Device[]
 }): Promise<LocalDeviceAuthSession> {
-  if (!context.devices) throw new Error(`${loginService.name} devices missing`)
+  if (!context.devices) throw new Error(`loginService devices missing`)
 
   const multiIdent = identityFromDeviceList(context.devices)
   const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
@@ -145,14 +145,14 @@ export async function registerService(
 
   if (!identity) {
     const error = new Error("Missing identity.")
-    console.error(`${registerService.name}`, error)
+    console.error(`registerService`, error)
     throw error
   }
   if (!context.challenge?.challengeKey) {
     const error = new Error(
-      `${registerService.name} Missing required challenge context.`,
+      `registerService Missing required challenge context.`,
     )
-    console.error(`${registerService.name}`, error)
+    console.error(`registerService`, error)
     throw error
   }
 
@@ -169,7 +169,7 @@ export async function registerService(
   } catch (e) {
     console.error(e)
     throw new Error(
-      `${registerService.name} Could not register new account, please try again.`,
+      `registerService Could not register new account, please try again.`,
     )
   }
 
@@ -186,6 +186,6 @@ export async function fetchAuthenticatorDevicesService(context: {
 }) {
   console.debug(fetchAuthenticatorDevicesService.name, context)
   const devices = await lookup(Number(context.profile.anchor), false)
-  console.debug(`${fetchAuthenticatorDevicesService.name} lookup`, { devices })
+  console.debug(`fetchAuthenticatorDevicesService lookup`, { devices })
   return devices
 }

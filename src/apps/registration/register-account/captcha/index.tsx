@@ -138,7 +138,7 @@ export const RegisterAccountCaptcha: React.FC<
           })
           .catch((e) => {
             throw new Error(
-              `${handleRegisterAnchorWithGoogle.name} im.create_account: ${e.message}`,
+              `handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
             )
           })
         if (isRemoteRegiser) {

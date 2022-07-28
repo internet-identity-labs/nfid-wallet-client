@@ -21,7 +21,23 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
           applicationName={state.context.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
           onRegister={() => send("CREATE_IDENTITY")}
-          onSelectGoogleAuthorization={() => console.error("NOT IMPLEMENTED")}
+          onSelectGoogleAuthorization={({ credential }) => {
+            // send({ type: "AUTH_WITH_GOOGLE", data: credential as string })
+          }}
+          onSelectSecurityKeyAuthorization={function (
+            userNumber: number,
+          ): void | Promise<void> {
+            throw new Error(
+              "onSelectSecurityKeyAuthorization Function not implemented.",
+            )
+          }}
+          onSelectSameDeviceAuthorization={function (
+            userNumber: number,
+          ): void | Promise<void> {
+            throw new Error(
+              "onSelectSameDeviceAuthorization Function not implemented.",
+            )
+          }}
         />
       )
     case state.matches("Start.Register.Captcha"):

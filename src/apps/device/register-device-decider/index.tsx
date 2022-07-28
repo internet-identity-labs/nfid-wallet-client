@@ -43,8 +43,11 @@ export const RouterRegisterDeviceDecider: React.FC<
     if (!userNumber) {
       return console.error(`Missing userNumber: ${userNumber}`)
     }
-
-    await recoverDevice(Number(userNumber))
+    try {
+      await recoverDevice(Number(userNumber))
+    } catch (e) {
+      console.error(e)
+    }
 
     try {
       await recoverAccount(userNumber)

@@ -2,6 +2,13 @@ import { Account } from ".."
 import { NFIDPersona } from "./types"
 
 /**
+ * Removes http:// or https:// from input string
+ *
+ * @param {string} input
+ */
+const rmProto = (input: string) => input.replace(/https?:\/\//, "")
+
+/**
  * Select accounts which pertain to given hostName. Uses dervitationOrigin exclusively if present.
  * @param personas List of personas to be filtered, retrieved from identity manager
  * @param hostName Host name of the connecting application i.e. "dscvr.one"
@@ -13,18 +20,9 @@ export function selectAccounts(
   hostName: string,
   derivationOrigin?: string,
 ) {
-  const filteredByDerivationOrigin = personas.filter(
-    (persona) =>
-      persona.domain === derivationOrigin ||
-      persona.domain === `https://${derivationOrigin}`,
-  )
+  const filterBy = derivationOrigin ?? hostName
 
-  if (filteredByDerivationOrigin.length) return filteredByDerivationOrigin
-
-  return personas.filter(
-    (persona) =>
-      persona.domain === hostName || persona.domain === `https://${hostName}`,
-  )
+  return personas.filter(({ domain }) => rmProto(domain) === rmProto(filterBy))
 }
 
 export function getNextAccountId(filteredPersonas: NFIDPersona[]) {

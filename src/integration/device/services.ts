@@ -57,7 +57,7 @@ export async function registerDeviceWithWebAuthn() {
     if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
       throw e
     }
-    console.debug(registerDeviceWithWebAuthn.name, "device already registered")
+    console.debug("registerDeviceWithWebAuthn", "device already registered")
   }
   setProfile(profile)
 }

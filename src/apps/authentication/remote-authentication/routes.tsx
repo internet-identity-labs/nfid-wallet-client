@@ -1,4 +1,3 @@
-
 import React from "react"
 import { generatePath, Route } from "react-router-dom"
 
@@ -56,7 +55,7 @@ export function remoteReceiverUrl({
       ? { derivationOrigin: encodeURI(applicationDerivationOrigin) }
       : {}),
   })
-  console.debug(remoteReceiverUrl.name, { path: encodeURI(path) })
+  console.debug("remoteReceiverUrl", { path: encodeURI(path) })
 
   return `${window.location.origin}${path}?${query.toString()}`
 }

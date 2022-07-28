@@ -38,7 +38,7 @@ export async function postDelegation(context: {
   authRequest?: { hostname: string }
   thirdPartyAuthoSession?: ThirdPartyAuthSession
 }) {
-  console.debug(postDelegation.name, { context, event })
+  console.debug("postDelegation", { context, event })
   if (!context.authRequest?.hostname)
     throw new Error("postDelegation context.authRequest.hostname missing")
   if (!context.thirdPartyAuthoSession) {

@@ -22,7 +22,7 @@ export function RemoteReceiverCoordinator({
   const [state, send] = useActor(actor)
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
   const { messages } = useMessages(state.context.secret)
-  console.debug(RemoteReceiverCoordinator.name, { messages })
+  console.debug("RemoteReceiverCoordinator", { messages })
 
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
   const handleRemoteRegister = React.useCallback(

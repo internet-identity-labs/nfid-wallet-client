@@ -35,14 +35,14 @@ export async function loginWithAnchor(
   _: unknown,
   event: { data: { anchor: string; withSecurityDevices?: boolean } },
 ): Promise<LocalDeviceAuthSession> {
-  console.debug(loginWithAnchor.name, {
+  console.debug("loginWithAnchor", {
     anchor: event.data.anchor,
     withSecurityDevices: event.data.withSecurityDevices,
   })
   const authResult = apiResultToLoginResult(
     await login(BigInt(event.data.anchor), event.data.withSecurityDevices),
   )
-  console.debug(loginWithAnchor.name, { authResult })
+  console.debug("loginWithAnchor", { authResult })
 
   if (authResult.tag === "ok") {
     return {
@@ -64,7 +64,7 @@ export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
   event: { data: { accountId: string } },
 ): Promise<ThirdPartyAuthSession> {
-  console.debug(fetchDelegateService.name, { context, event })
+  console.debug("fetchDelegateService", { context, event })
   if (!context.authSession) {
     const message = "context.authSession missing"
     console.error(fetchDelegateService.name, { message })
@@ -107,13 +107,13 @@ export async function loginService(context: {
 
   const multiIdent = identityFromDeviceList(context.devices)
   const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
-  console.debug(loginService.name, { multiIdent, sessionKey, chain })
+  console.debug("loginService", { multiIdent, sessionKey, chain })
 
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,
     chain,
   )
-  console.debug(loginService.name, {
+  console.debug("loginService", {
     delegationIdentity,
     principalId: delegationIdentity.getPrincipal().toText(),
   })
@@ -184,7 +184,7 @@ export async function registerService(
 export async function fetchAuthenticatorDevicesService(context: {
   profile: Profile
 }) {
-  console.debug(fetchAuthenticatorDevicesService.name, context)
+  console.debug("fetchAuthenticatorDevicesService", context)
   const devices = await lookup(Number(context.profile.anchor), false)
   console.debug(`fetchAuthenticatorDevicesService lookup`, { devices })
   return devices

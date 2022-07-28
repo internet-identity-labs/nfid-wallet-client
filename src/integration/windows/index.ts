@@ -52,7 +52,7 @@ export function postMessageToClient<T extends IdentityProviderEvents>(
   event: T,
   hostname: string = "*",
 ) {
-  console.debug(postMessageToClient.name, { event, hostname })
+  console.debug("postMessageToClient", { event, hostname })
   const origin = opener()
   origin.postMessage(event, hostname)
 }

@@ -250,7 +250,7 @@ export const requestFEDelegationChain = async (
 export const requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
-  console.debug(requestFEDelegation.name)
+  console.debug("requestFEDelegation")
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
   console.debug("requestFEDelegation", { sessionKey, chain })
 
@@ -655,7 +655,7 @@ export async function login(
   userNumber: bigint,
   withSecurityDevices?: boolean,
 ): Promise<LoginResult> {
-  console.debug(login.name, { userNumber, withSecurityDevices })
+  console.debug("login", { userNumber, withSecurityDevices })
   let devices: DeviceData[]
   try {
     devices = await fetchAuthenticatorDevices(userNumber, withSecurityDevices)
@@ -860,7 +860,7 @@ export async function prepareDelegate(
   sessionKey: PublicKey,
   maxTimeToLive?: bigint,
 ) {
-  console.debug(prepareDelegate.name, {
+  console.debug("prepareDelegate", {
     userNumber,
     scope,
     sessionKey,
@@ -893,7 +893,7 @@ export async function getDelegate(
   sessionKey: PublicKey,
   timestamp: bigint,
 ): Promise<SignedDelegation> {
-  console.debug(getDelegate.name, { userNumber, scope, sessionKey, timestamp })
+  console.debug("getDelegate", { userNumber, scope, sessionKey, timestamp })
 
   return ii
     .get_delegation(BigInt(userNumber), scope, sessionKey, timestamp)
@@ -938,7 +938,7 @@ export async function fetchDelegate(
   sessionKey: PublicKey,
   maxTimeToLive?: bigint,
 ): Promise<ThirdPartyAuthSession> {
-  console.debug(fetchDelegate.name, {
+  console.debug("fetchDelegate", {
     userNumber,
     scope,
     sessionKey,

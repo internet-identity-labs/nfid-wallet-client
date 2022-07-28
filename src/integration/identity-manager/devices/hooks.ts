@@ -6,6 +6,7 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { useAtom } from "jotai"
 import React from "react"
+
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import {
   AccessPointRequest,
@@ -438,7 +439,7 @@ export const useDevices = () => {
         if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
           throw error
         }
-        console.debug(createSecurityDevice.name, "device already registered")
+        console.debug("createSecurityDevice", "device already registered")
       }
 
       getRecoveryDevices()

@@ -1,4 +1,3 @@
-
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"
@@ -189,7 +188,7 @@ export const useUnknownDeviceConfig = () => {
       if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
         throw e
       }
-      console.debug(handleRegisterDevice.name, "device already registered")
+      console.debug("handleRegisterDevice", "device already registered")
     }
 
     await Promise.all([readAccount(), getPersona()])

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -27,35 +28,40 @@ if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
 }
 
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes)
+
 export const App = () => {
+  console.debug("App")
   return (
-    <Routes>
-      <Route path={"/"} element={<HomeScreen />} />
-      <Route path={"/faq"} element={<Faq />} />
-      <Route path={"/our-mission"} element={<OurMission />} />
-      {ProfileRoutes}
-      {RemoteRegisterAccountRoutes}
-      {NFIDRegisterAccountRoutes}
-      {RemoteNFIDAuthenticationRoutes}
-      {AppScreenAuthorizeAppRoutes}
-      {AppScreenAuthorizeDerivationOriginAppRoutes}
-      {RecoverNFIDRoutes}
+    <SentryRoutes>
+      <Routes>
+        <Route path={"/"} element={<HomeScreen />} />
+        <Route path={"/faq"} element={<Faq />} />
+        <Route path={"/our-mission"} element={<OurMission />} />
+        {ProfileRoutes}
+        {RemoteRegisterAccountRoutes}
+        {NFIDRegisterAccountRoutes}
+        {RemoteNFIDAuthenticationRoutes}
+        {AppScreenAuthorizeAppRoutes}
+        {AppScreenAuthorizeDerivationOriginAppRoutes}
+        {RecoverNFIDRoutes}
 
-      {AppScreenAuthenticateAccountRoutes}
-      {CredentialRoutes}
-      <Route path={"*"} element={<NotFound />} />
+        {AppScreenAuthenticateAccountRoutes}
+        {CredentialRoutes}
+        <Route path={"*"} element={<NotFound />} />
 
-      {/* Temporary routes for new machine based flows */}
-      <Route path="/idp" element={<IDPCoordinator />} />
-      <Route
-        path="/ridp/:secret/:maxTimeToLive/:scope"
-        element={<RemoteIDPCoordinator />}
-      />
-      <Route
-        path="/ridp/:secret/:maxTimeToLive/:scope/:derivationOrigin"
-        element={<RemoteIDPCoordinator />}
-      />
-    </Routes>
+        {/* Temporary routes for new machine based flows */}
+        <Route path="/idp" element={<IDPCoordinator />} />
+        <Route
+          path="/ridp/:secret/:maxTimeToLive/:scope"
+          element={<RemoteIDPCoordinator />}
+        />
+        <Route
+          path="/ridp/:secret/:maxTimeToLive/:scope/:derivationOrigin"
+          element={<RemoteIDPCoordinator />}
+        />
+      </Routes>
+    </SentryRoutes>
   )
 }
 

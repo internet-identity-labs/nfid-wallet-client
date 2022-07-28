@@ -3,11 +3,6 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.AuthenticationMachine": {
-      type: "done.invoke.AuthenticationMachine"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.fetchPhoneNumber": {
       type: "done.invoke.fetchPhoneNumber"
       data: unknown
@@ -19,12 +14,17 @@ export interface Typegen0 {
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "xstate.init": { type: "xstate.init" }
+    "": { type: "" }
+    "done.invoke.AuthenticationMachine": {
+      type: "done.invoke.AuthenticationMachine"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.verifySmsService": {
       type: "done.invoke.verifySmsService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "": { type: "" }
     "error.platform.AuthenticationMachine": {
       type: "error.platform.AuthenticationMachine"
       data: unknown
@@ -49,20 +49,17 @@ export interface Typegen0 {
     verifySmsService: "done.invoke.verifySmsService"
   }
   missingImplementations: {
-    actions: "assignAuthSession"
+    actions: never
     services: never
     guards: never
     delays: never
   }
   eventsCausingActions: {
-    assignAuthSession: "done.invoke.AuthenticationMachine"
     assignEncryptedPN:
       | "done.invoke.fetchPhoneNumber"
       | "done.invoke.verifyPhoneNumberService"
     assignPhoneNumber: "ENTER_PHONE_NUMBER"
-    presentCredential:
-      | "done.invoke.fetchPhoneNumber"
-      | "done.invoke.verifySmsService"
+    presentCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
   }
   eventsCausingServices: {
     AuthenticationMachine: ""
@@ -84,6 +81,7 @@ export interface Typegen0 {
     | "GetPhoneNumber.VerifyPhoneNumber"
     | "GetPhoneNumber.EnterSMSToken"
     | "GetPhoneNumber.ValidateSMSToken"
+    | "GetPhoneNumber.End"
     | "PresentCredential"
     | {
         GetPhoneNumber?:
@@ -92,6 +90,7 @@ export interface Typegen0 {
           | "VerifyPhoneNumber"
           | "EnterSMSToken"
           | "ValidateSMSToken"
+          | "End"
       }
   tags: never
 }

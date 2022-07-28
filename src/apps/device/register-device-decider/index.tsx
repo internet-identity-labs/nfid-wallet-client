@@ -1,8 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { im } from "frontend/integration/actors"
+import { useAccessPoint } from "frontend/integration/identity-manager"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
@@ -22,8 +25,10 @@ export const RouterRegisterDeviceDecider: React.FC<
   const [isLoading, setIsLoading] = useState(false)
   const { recoverDevice, createSecurityDevice } = useDevices()
   const { readAccount, recoverAccount, createAccount } = useAccount()
+  const { setShouldStoreLocalAccount } = useAuthentication()
   const { getPersona } = usePersona()
   const { generatePath } = useNFIDNavigate()
+  const { user } = useAuthentication()
 
   const {
     browser: { name: browserName },
@@ -90,11 +95,29 @@ export const RouterRegisterDeviceDecider: React.FC<
   ])
 
   const handleLogin = React.useCallback(async () => {
-    if (!userNumber) throw new Error("unauthorized")
+    if (!userNumber)
+      throw new Error("userNumber is not defined. Not authorized.")
+
     setIsLoading(true)
-    await Promise.all([readAccount(), getPersona()])
-    setIsLoading(false)
-    navigate(generatePath(registerSuccessPath))
+
+    const account = await readAccount()
+    console.log(account.error)
+    if (account.error.length) {
+      setShouldStoreLocalAccount(false)
+      const newAccount = await createAccount({ anchor: userNumber })
+      console.log({ newAccount })
+      const persona = await getPersona()
+      console.log({ persona })
+    }
+
+    try {
+      await useAccessPoint()
+    } catch {
+      console.error("useAccessPoint failed")
+    } finally {
+      setIsLoading(false)
+      navigate(generatePath(registerSuccessPath))
+    }
   }, [
     generatePath,
     getPersona,
@@ -103,6 +126,14 @@ export const RouterRegisterDeviceDecider: React.FC<
     registerSuccessPath,
     userNumber,
   ])
+
+  useEffect(() => {
+    console.log({ deuser: user })
+    if (!user)
+      navigate(
+        `${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.enterRecoveryPhrase}`,
+      )
+  }, [user])
 
   return (
     <AuthorizeRegisterDeciderScreen

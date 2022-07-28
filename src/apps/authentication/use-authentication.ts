@@ -149,20 +149,29 @@ export const useAuthentication = () => {
 
       const recoveryDevices = await fetchRecoveryDevices(userNumber)
       console.log({ recoveryDevices })
-      if (recoveryDevices.length === 0) {
+
+      const recoveryPhraseDevice = recoveryDevices.find(
+        (device) => device.alias === "Recovery phrase",
+      )
+
+      if (!recoveryPhraseDevice) {
         setIsLoading(false)
         throw new Error("useAuthentication.loginWithRecovery No devices found")
       }
 
+      console.log({ recoveryDevices, recoveryPhraseDevice })
+
       const response = await fromSeedPhrase(
         userNumber,
         seedPhrase,
-        recoveryDevices[0],
+        recoveryPhraseDevice,
       )
+
+      console.log({ fromSeedPhraseResponse: response })
 
       const result = apiResultToLoginResult(response)
 
-      if (result.tag === "err") {
+      if (result.tag !== "ok") {
         setError(result)
       }
 

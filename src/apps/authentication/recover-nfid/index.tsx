@@ -1,13 +1,10 @@
-import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 import { FieldValues } from "react-hook-form"
 
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
-import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
 import { RecoverNFID } from "frontend/ui/pages/recover-nfid"
 import { useMessageChannel } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
 import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { useAuthentication } from "../use-authentication"
@@ -21,6 +18,9 @@ interface RestoreAccessPointRecoveryPhraseProps {
 export const AppScreenRecoverNFID: React.FC<
   RestoreAccessPointRecoveryPhraseProps
 > = ({ registerDeviceDeciderPath, isVerifiedDomainDefault }) => {
+  const [isUseAccessPointLoading, toggleUseAccessPointLoading] =
+    React.useReducer((state) => !state, false)
+
   const [responseError, setResponseError] = useState<any>(null)
   const [isVerifiedDomain, toggleIsVerifiedDomain] = React.useReducer(
     (state) => !state,
@@ -29,8 +29,8 @@ export const AppScreenRecoverNFID: React.FC<
 
   const { navigate } = useNFIDNavigate()
   const { loginWithRecovery, error, isLoading, user } = useAuthentication()
-  const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
-
+  const { handleStoreNewDevice, setUserNumber, userNumber } =
+    useUnknownDeviceConfig()
   const handleNewDevice = React.useCallback(
     async (event: NewDeviceEvent) => {
       await handleStoreNewDevice(event.data)
@@ -65,7 +65,8 @@ export const AppScreenRecoverNFID: React.FC<
           recoveryPhrase.split(`${userNumber} `)[1],
           userNumber,
         )
-      } catch {
+      } catch (e) {
+        console.error(e)
         setResponseError(
           "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
@@ -80,7 +81,6 @@ export const AppScreenRecoverNFID: React.FC<
       }
 
       setUserNumber(userNumber)
-      navigate(registerDeviceDeciderPath)
     },
     [
       loginWithRecovery,
@@ -91,8 +91,13 @@ export const AppScreenRecoverNFID: React.FC<
     ],
   )
 
+  const handleOnAuthenticated = async () => {
+    navigate(registerDeviceDeciderPath)
+  }
+
   useEffect(() => {
     console.log({ user })
+    if (!!user) handleOnAuthenticated()
   }, [user])
 
   return (
@@ -101,7 +106,7 @@ export const AppScreenRecoverNFID: React.FC<
       toggle={toggleIsVerifiedDomain}
       isVerifiedDomain={isVerifiedDomain}
       responseError={responseError}
-      isLoading={isLoading}
+      isLoading={isLoading || isUseAccessPointLoading}
     />
   )
 }

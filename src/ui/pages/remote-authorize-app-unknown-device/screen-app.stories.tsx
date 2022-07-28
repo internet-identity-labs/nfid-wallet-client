@@ -1,8 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import district from "frontend/assets/distrikt.svg"
-
 import { RemoteAuthorizeAppUnknownDevice } from "."
 
 export default {

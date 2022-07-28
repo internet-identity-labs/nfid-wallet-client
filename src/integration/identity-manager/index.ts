@@ -11,7 +11,6 @@ import {
   PersonaResponse,
 } from "../_ic_api/identity_manager.did"
 import { im } from "../actors"
-import { authState } from "../internet-identity"
 
 export interface Profile {
   name?: string

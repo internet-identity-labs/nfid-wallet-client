@@ -5,7 +5,6 @@ import React from "react"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { unpackResponse } from "frontend/integration/_common"
 import {
-  AccountResponse,
   HTTPAccountRequest,
   _SERVICE as _IDENTITY_MANAGER_SERVICE,
 } from "frontend/integration/_ic_api/identity_manager.did"

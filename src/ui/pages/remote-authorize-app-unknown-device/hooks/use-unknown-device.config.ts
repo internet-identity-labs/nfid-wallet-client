@@ -1,4 +1,4 @@
-import { PublicKey } from "@dfinity/agent"
+
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { atom, useAtom } from "jotai"

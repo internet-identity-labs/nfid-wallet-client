@@ -40,6 +40,8 @@ export const RouterRegisterDeviceDecider: React.FC<
 
   const handleRegister = React.useCallback(async () => {
     setIsLoading(true)
+    setShouldStoreLocalAccount(true)
+
     if (!userNumber) {
       return console.error(`Missing userNumber: ${userNumber}`)
     }

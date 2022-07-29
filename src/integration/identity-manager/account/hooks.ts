@@ -30,7 +30,7 @@ export const useAccount = () => {
   const [account, setAccount] = useAtom(localStorageAccountAtom)
   const [memoryAccount, setMemoryAccount] = useAtom(memoryAccountAtom)
   const [userNumber] = useAtom(userNumberAtom)
-  const { user, shouldStoreLocalAccount } = useAuthentication()
+  const { isAuthenticated, shouldStoreLocalAccount } = useAuthentication()
 
   const createAccount = React.useCallback(
     async (account: HTTPAccountRequest) => {
@@ -161,7 +161,7 @@ export const useAccount = () => {
   )
 
   return {
-    account: user ? account || memoryAccount : account,
+    account: isAuthenticated ? account || memoryAccount : account,
     userNumber,
     shouldStoreLocalAccount,
     setLocalAccount: setAccount,

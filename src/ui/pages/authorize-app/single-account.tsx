@@ -12,6 +12,7 @@ interface AuthorizeAppSingleAccountProps extends ElementProps<HTMLDivElement> {
   applicationLogo?: string
   applicationName?: string
   isLoading: boolean
+  loadingMessage?: string | boolean
   onContinueButtonClick: () => Promise<void>
 }
 
@@ -22,10 +23,12 @@ export const AuthorizeAppSingleAccount: React.FC<
   onContinueButtonClick,
   applicationLogo,
   isLoading,
+  loadingMessage,
 }) => {
   return (
     <ScreenResponsive
       isLoading={isLoading}
+      loadingMessage={loadingMessage}
       className="flex flex-col items-center"
     >
       {applicationLogo && (

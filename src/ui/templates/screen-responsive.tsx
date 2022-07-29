@@ -11,7 +11,7 @@ import { BlurOverlay } from "../molecules/blur-overlay"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   isLoading?: boolean
-  loadingMessage?: string
+  loadingMessage?: string | boolean
   applicationLogo?: string
   applicationName?: string
   title?: string

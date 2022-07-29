@@ -31,6 +31,7 @@ export interface User {
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const remoteLoginAtom = atom<boolean>(false)
+const authenticationAtom = atom<boolean>(false)
 const shouldStoreLocalAccountAtom = atom<boolean>(true)
 
 let user: User | undefined = undefined
@@ -45,7 +46,7 @@ export const useAuthentication = () => {
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useAtom(authenticationAtom)
   const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
     shouldStoreLocalAccountAtom,
   )
@@ -107,6 +108,7 @@ export const useAuthentication = () => {
 
       if (result.tag === "ok") {
         Sentry.setUser({ id: anchor.toString() })
+        setIsAuthenticated(true)
         initUserGeek(principal)
         setUser({
           principal: principal.toText(),
@@ -126,6 +128,7 @@ export const useAuthentication = () => {
 
   const remoteLogin = React.useCallback(
     async (actors: LoginSuccess) => {
+      setIsAuthenticated(true)
       setIsRemoteDelegate(true)
       setUser({
         principal: (await agent.getPrincipal()).toText(),

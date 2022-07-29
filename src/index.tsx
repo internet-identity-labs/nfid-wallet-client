@@ -17,7 +17,7 @@ process.env.NODE_ENV === "production" &&
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_CONNECTION,
     integrations: [new BrowserTracing()],
-    normalizeDepth: 5,
+    normalizeDepth: 10,
 
     // TODO: let's get some experience with it and decide later.
     // Set tracesSampleRate to 1.0 to capture 100%

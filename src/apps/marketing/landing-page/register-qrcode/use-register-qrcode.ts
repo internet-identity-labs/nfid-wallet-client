@@ -1,5 +1,6 @@
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import { useCallback, useMemo } from "react"
 import { generatePath } from "react-router-dom"
@@ -58,6 +59,7 @@ export const useRegisterQRCode = () => {
         setShouldStoreLocalAccount(false)
         setAuthenticatedActors(result)
         setStatus("registerDecider")
+        Sentry.setUser({ id: anchor.toString() })
         setUserNumber(BigInt(anchor))
       }
       // TODO: handle this more gracefully

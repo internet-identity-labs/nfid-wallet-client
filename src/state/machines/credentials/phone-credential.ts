@@ -10,6 +10,7 @@ import {
   fetchProfile,
   removeAccount,
 } from "frontend/integration/identity-manager"
+import { clearProfile } from "frontend/integration/identity-manager/profile"
 import {
   verifyPhoneNumberService,
   verifySmsService,
@@ -217,6 +218,7 @@ const PhoneCredentialMachine = createMachine(
       },
       async clearAccountData() {
         await removeAccount()
+        clearProfile()
       },
       verifyPhoneNumberService,
       verifySmsService,

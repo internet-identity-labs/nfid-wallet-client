@@ -103,21 +103,13 @@ export const RouterRegisterDeviceDecider: React.FC<
       throw new Error("userNumber is not defined. Not authorized.")
 
     setIsLoading(true)
-
-    const account = await readAccount()
-
     setShouldStoreLocalAccount(false)
-    await createAccount({ anchor: userNumber })
+
+    await recoverAccount(userNumber)
     await getPersona()
 
-    try {
-      await useAccessPoint()
-    } catch {
-      console.error("useAccessPoint failed")
-    } finally {
-      setIsLoading(false)
-      navigate(generatePath(registerSuccessPath))
-    }
+    setIsLoading(false)
+    navigate(generatePath(registerSuccessPath))
   }, [
     generatePath,
     getPersona,

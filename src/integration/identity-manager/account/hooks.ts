@@ -51,7 +51,11 @@ export const useAccount = () => {
         .then(unpackResponse)
         .then(mapProfile)
 
-      setAccount(newAccount)
+      if (newAccount) {
+        shouldStoreLocalAccount
+          ? setAccount(newAccount)
+          : setMemoryAccount(newAccount)
+      }
 
       return newAccount
     },

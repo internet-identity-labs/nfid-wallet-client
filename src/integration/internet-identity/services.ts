@@ -67,12 +67,12 @@ export async function fetchDelegateService(
   console.debug("fetchDelegateService", { context, event })
   if (!context.authSession) {
     const message = "context.authSession missing"
-    console.error(fetchDelegateService.name, { message })
+    console.error("fetchDelegateService", { message })
     throw new Error(`fetchDelegateService ${message}`)
   }
   if (!context.authRequest) {
     const message = "AuthorizationRequest missing in context."
-    console.error(fetchDelegateService.name, { message })
+    console.error("fetchDelegateService", { message })
     throw new Error(`fetchDelegateService ${message}`)
   }
   // FIXME: profile needs to be updated before this.

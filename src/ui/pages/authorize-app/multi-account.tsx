@@ -13,6 +13,7 @@ interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   accountsLimit?: number
   isLoading: boolean
   isAuthenticated?: boolean
+  loadingMessage?: string | boolean
   onLogin: (personaId: string) => Promise<void>
   onUnlockNFID: () => Promise<any>
   onCreateAccount: () => Promise<void>
@@ -25,6 +26,7 @@ export const AuthorizeAppMultiAccount: React.FC<AuthorizeAppProps> = ({
   applicationName,
   isAuthenticated,
   isLoading,
+  loadingMessage,
   onCreateAccount,
   onUnlockNFID,
   onLogin,
@@ -32,7 +34,7 @@ export const AuthorizeAppMultiAccount: React.FC<AuthorizeAppProps> = ({
   return (
     <ScreenResponsive
       isLoading={isLoading}
-      loadingMessage=""
+      loadingMessage={loadingMessage}
       className="flex flex-col items-center"
     >
       <AuthorizeApp

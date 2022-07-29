@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import React from "react"
 
 import { mapPersonaToLegacy } from "frontend/integration/identity-manager"
 import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
@@ -13,6 +14,17 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
     context: state.context,
     state: state.value,
   })
+
+  const loadingMessage = React.useMemo(
+    () =>
+      ((state.matches("FetchAccounts") || state.matches("Start")) &&
+        `Loading your ${state.context.appMeta.name} accounts `) ||
+      (state.matches("CreateAccount") &&
+        `Creating your ${state.context.appMeta.name} account`) ||
+      (state.matches("GetDelegation") &&
+        `Signing in to ${state.context.appMeta.name}`),
+    [state.context.appMeta.name, state.value],
+  )
 
   switch (true) {
     case state.matches("Start"):
@@ -31,6 +43,7 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
             state.matches("CreateAccount") ||
             state.matches("GetDelegation")
           }
+          loadingMessage={loadingMessage}
           onContinueButtonClick={function (): Promise<void> {
             throw new Error(
               `AuthorizationCoordinator onContinueButtonClick not implemented.`,
@@ -49,6 +62,7 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
             state.matches("CreateAccount") ||
             state.matches("GetDelegation")
           }
+          loadingMessage={loadingMessage}
           accounts={state.context?.accounts?.map(mapPersonaToLegacy) || []}
           onLogin={async (accountId) =>
             send({ type: "SELECT_ACCOUNT", data: { accountId: accountId } })

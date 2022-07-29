@@ -28,15 +28,22 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
       switch (true) {
         case state.context.isNFID:
           return (
-            <NFIDLogin
-              account={state.context.profile}
-              onLogin={() => send("UNLOCK")}
-            />
+            <ScreenResponsive
+              isLoading={state.matches("Login")}
+              loadingMessage={"Unlocking your NFID"}
+              className="flex flex-col items-center"
+            >
+              <NFIDLogin
+                account={state.context.profile}
+                onLogin={() => send("UNLOCK")}
+              />
+            </ScreenResponsive>
           )
         case state.context.isSingleAccountApplication:
           return (
             <AuthorizeAppSingleAccount
               isLoading={state.matches("Login")}
+              loadingMessage={"Unlocking your NFID"}
               applicationName={state.context.authAppMeta.name}
               applicationLogo={state.context.authAppMeta.logo}
               onContinueButtonClick={async () => send("UNLOCK")}
@@ -45,6 +52,8 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
         default:
           return (
             <AuthorizeAppMultiAccount
+              isLoading={state.matches("Login")}
+              loadingMessage={"Unlocking your NFID"}
               applicationName={state.context.authAppMeta.name}
               applicationLogo={state.context.authAppMeta.logo}
               accounts={[]}
@@ -54,7 +63,6 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
                   `KnownDeviceCoordinator onCreateAccount not implemented.`,
                 )
               }}
-              isLoading={state.matches("Login")}
               onLogin={function (): Promise<void> {
                 throw new Error(
                   `KnownDeviceCoordinator onLogin not implemented.`,

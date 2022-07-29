@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser"
 import React, { useEffect, useState } from "react"
 import { FieldValues } from "react-hook-form"
 
@@ -69,6 +70,7 @@ export const AppScreenRecoverNFID: React.FC<
         )
       }
 
+      Sentry.setUser({ id: userNumber.toString() })
       setUserNumber(userNumber)
     },
     [

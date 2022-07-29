@@ -1,4 +1,5 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
+import * as Sentry from "@sentry/browser"
 
 import {
   fetchProfile,
@@ -45,6 +46,7 @@ export async function loginWithAnchor(
   console.debug("loginWithAnchor", { authResult })
 
   if (authResult.tag === "ok") {
+    Sentry.setUser({ id: event.data.anchor })
     return {
       sessionSource: "localDevice",
       delegationIdentity: DelegationIdentity.fromDelegation(

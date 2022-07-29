@@ -1,5 +1,6 @@
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import React, { useEffect } from "react"
 import { generatePath, useLocation } from "react-router-dom"
@@ -75,7 +76,10 @@ export const useUnknownDeviceConfig = () => {
 
   useEffect(() => {
     const number = (state as StateProps)?.userNumber
-    if (number) setUserNumber(number)
+    if (number) {
+      Sentry.setUser({ id: number.toString() })
+      setUserNumber(number)
+    }
   }, [setUserNumber, state])
 
   React.useState<bigint | undefined>((state as StateProps)?.userNumber)

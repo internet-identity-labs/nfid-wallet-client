@@ -1,6 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
@@ -59,6 +60,7 @@ export const useAuthentication = () => {
   const logout = React.useCallback(() => {
     invalidateIdentity()
     setUser(undefined)
+    Sentry.setUser(null)
     // TODO: this is a quick fix after the auth state refactor.
     // The problem is that after we invalidate the identity, the
     // frontend throws the error:
@@ -104,6 +106,7 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
+        Sentry.setUser({ id: anchor.toString() })
         initUserGeek(principal)
         setUser({
           principal: principal.toText(),

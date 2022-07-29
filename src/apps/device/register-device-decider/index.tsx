@@ -84,7 +84,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     await getPersona()
     await im.use_access_point().catch((e) => {
       throw new Error(
-        `useAuthentication.loginWithRecovery im.use_access_point: ${e.message}`,
+        `RouterRegisterDeviceDecider.handleRegister im.use_access_point: ${e.message}`,
       )
     })
 

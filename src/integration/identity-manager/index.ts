@@ -104,6 +104,10 @@ export async function fetchProfile() {
     })
     .then((r) => mapProfile(unpackResponse(r)))
     .catch((e) => {
+      // expected 404 handled upstream
+      if (e.code === 404) {
+        throw e
+      }
       throw new Error(`fetchProfile im.get_account: ${e.message}`)
     })
 }

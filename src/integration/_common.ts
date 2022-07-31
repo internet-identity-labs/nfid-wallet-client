@@ -57,9 +57,11 @@ export function typeResponse<T>(
 }
 
 class NfidHttpError extends Error {
-  constructor(message: string) {
+  code: number
+  constructor(message: string, code: number) {
     super(message)
     this.name = "NfidHttpError"
+    this.code = code
   }
 }
 
@@ -73,7 +75,7 @@ export function unpackResponse<T>(response: NFIDResponse<T>) {
   if (r.ok) {
     return r.data
   } else {
-    throw new NfidHttpError(`${r.code} error: ${r.error}`)
+    throw new NfidHttpError(`${r.code} error: ${r.error}`, r.code)
   }
 }
 

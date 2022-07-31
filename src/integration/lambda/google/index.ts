@@ -1,7 +1,6 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { ii } from "frontend/integration/actors"
-import { useAccessPoint } from "frontend/integration/identity-manager"
 import {
   authState,
   requestFEDelegation,
@@ -58,23 +57,20 @@ export async function fetchGoogleDevice(
 
 /**
  * Create an auth session from a google device retrieved from the lambda.
- * @param response response from the google lambda
+ * @param deviceResult response from the google lambda
  * @returns a google powered auth session that can be used to sign messages to II / NFID
  */
-export async function signInWithGoogle(
-  response: GoogleDeviceResult,
+export async function getGoogleAuthSession(
+  deviceResult: GoogleDeviceResult,
 ): Promise<GoogleAuthSession> {
-  if (!response.isExisting) {
-    throw new Error("Cannot sign in with device before creating an account.")
-  }
-  const delegationIdentity = await requestFEDelegation(response.identity)
+  console.debug("signInWithGoogle", { deviceResult })
+  const delegationIdentity = await requestFEDelegation(deviceResult.identity)
   const session = {
-    identity: response.identity,
+    identity: deviceResult.identity,
     delegationIdentity: delegationIdentity.delegationIdentity,
     sessionSource: "google",
   } as GoogleAuthSession
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
   authState.set(session.identity, session.delegationIdentity, ii)
-  useAccessPoint()
   return session
 }

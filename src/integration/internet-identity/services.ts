@@ -167,7 +167,12 @@ export async function registerService(
 
   try {
     // Register the account with identity manager.
-    setProfile(await registerAccount(anchor))
+    const profile = await registerAccount(anchor)
+
+    // Only in case this device has registered, we set the config in localStorage
+    if (context.authSession?.sessionSource === "localDevice") {
+      setProfile(profile)
+    }
   } catch (e) {
     console.error(e)
     throw new Error(

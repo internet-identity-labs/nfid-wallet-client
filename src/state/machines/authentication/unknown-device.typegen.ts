@@ -3,14 +3,14 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "xstate.init": { type: "xstate.init" }
-    "done.invoke.isMobileWithWebAuthn": {
-      type: "done.invoke.isMobileWithWebAuthn"
+    "done.invoke.AuthWithGoogleMachine": {
+      type: "done.invoke.AuthWithGoogleMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.fetchGoogleDevice": {
-      type: "done.invoke.fetchGoogleDevice"
+    "xstate.init": { type: "xstate.init" }
+    "done.invoke.isMobileWithWebAuthn": {
+      type: "done.invoke.isMobileWithWebAuthn"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -27,17 +27,8 @@ export interface Typegen0 {
       type: "error.platform.registration"
       data: unknown
     }
-    "done.invoke.signInWithGoogle": {
-      type: "done.invoke.signInWithGoogle"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "error.platform.signInWithGoogle": {
-      type: "error.platform.signInWithGoogle"
-      data: unknown
-    }
-    "error.platform.fetchGoogleDevice": {
-      type: "error.platform.fetchGoogleDevice"
+    "error.platform.AuthWithGoogleMachine": {
+      type: "error.platform.AuthWithGoogleMachine"
       data: unknown
     }
     "done.invoke.remote": {
@@ -59,8 +50,7 @@ export interface Typegen0 {
   invokeSrcNameMap: {
     isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
     RegistrationMachine: "done.invoke.registration"
-    signInWithGoogle: "done.invoke.signInWithGoogle"
-    fetchGoogleDevice: "done.invoke.fetchGoogleDevice"
+    AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     RemoteReceiverMachine: "done.invoke.remote"
     loginWithAnchor: "done.invoke.loginWithAnchor"
   }
@@ -70,20 +60,21 @@ export interface Typegen0 {
     guards: never
     delays: never
   }
-  eventsCausingActions: {}
+  eventsCausingActions: {
+    assignAuthSession: "done.invoke.AuthWithGoogleMachine"
+  }
   eventsCausingServices: {
     isMobileWithWebAuthn: "xstate.init"
     RegistrationMachine:
       | "done.invoke.isMobileWithWebAuthn"
-      | "done.invoke.fetchGoogleDevice"
-    signInWithGoogle: "done.invoke.fetchGoogleDevice"
-    fetchGoogleDevice: "AUTH_WITH_GOOGLE"
+      | "done.invoke.AuthWithGoogleMachine"
+    AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
   eventsCausingGuards: {
     bool: "done.invoke.isMobileWithWebAuthn"
-    isExistingGoogleAccount: "done.invoke.fetchGoogleDevice"
+    isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
   }
   eventsCausingDelays: {}
   matchesStates:
@@ -92,12 +83,10 @@ export interface Typegen0 {
     | "RegistrationMachine"
     | "AuthSelection"
     | "AuthWithGoogle"
-    | "AuthWithGoogle.SignIn"
-    | "AuthWithGoogle.Fetch"
     | "RemoteAuthentication"
     | "ExistingAnchor"
-    | "End"
     | "AuthenticateSameDevice"
-    | { Start?: "CheckCapability"; AuthWithGoogle?: "SignIn" | "Fetch" }
+    | "End"
+    | { Start?: "CheckCapability" }
   tags: never
 }

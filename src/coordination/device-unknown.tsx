@@ -55,7 +55,10 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
             })
           }
           onSelectGoogleAuthorization={({ credential }) =>
-            send({ type: "AUTH_WITH_GOOGLE", data: credential as string })
+            send({
+              type: "AUTH_WITH_GOOGLE",
+              data: { jwt: credential },
+            })
           }
           onToggleAdvancedOptions={() => send("AUTH_WITH_OTHER")}
           showAdvancedOptions={state.matches("ExistingAnchor")}

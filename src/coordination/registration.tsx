@@ -22,7 +22,11 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
           applicationLogo={state.context.appMeta?.logo}
           onRegister={() => send("CREATE_IDENTITY")}
           onSelectGoogleAuthorization={({ credential }) => {
-            // send({ type: "AUTH_WITH_GOOGLE", data: credential as string })
+            send({
+              type: "AUTH_WITH_GOOGLE",
+              to: "auth-unknown-device",
+              data: credential as string,
+            })
           }}
           onSelectSecurityKeyAuthorization={function (
             userNumber: number,

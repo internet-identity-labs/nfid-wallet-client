@@ -4,7 +4,7 @@ type UxMode = "popup" | "redirect"
 
 export interface CredentialResponse {
   /** This field is the returned ID token */
-  credential?: string
+  credential: string
   /** This field sets how the credential is selected */
   select_by?:
     | "auto"

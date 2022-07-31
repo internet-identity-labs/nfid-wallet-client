@@ -35,6 +35,7 @@ type Events =
   | { type: "done.invoke.registerService"; data: LocalDeviceAuthSession }
   | { type: "error.platform.registerService"; data: Error }
   | { type: "done.invoke.createWebAuthnIdentity"; data: WebAuthnIdentity }
+  | { type: "AUTH_WITH_GOOGLE" }
   | { type: "CREATE_IDENTITY" }
   | { type: "FETCH_CAPTCHA" }
   | { type: "SUBMIT_CAPTCHA"; data: string }

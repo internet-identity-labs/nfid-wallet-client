@@ -2,16 +2,6 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true
-  eventsCausingActions: {
-    assignChallenge: "done.invoke.fetchChallenge"
-    logServiceError:
-      | "error.platform.fetchChallenge"
-      | "error.platform.challengeTimer"
-      | "error.platform.registerService"
-      | "error.platform.createWebAuthnIdentity"
-    assignError: "error.platform.registerService"
-    assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
-  }
   internalEvents: {
     "done.invoke.fetchChallenge": {
       type: "done.invoke.fetchChallenge"
@@ -39,13 +29,13 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.challengeTimer": {
       type: "done.invoke.challengeTimer"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "": { type: "" }
-    "xstate.init": { type: "xstate.init" }
     "done.invoke.registerService": {
       type: "done.invoke.registerService"
       data: unknown
@@ -64,11 +54,24 @@ export interface Typegen0 {
     guards: never
     delays: never
   }
+  eventsCausingActions: {
+    assignChallenge: "done.invoke.fetchChallenge"
+    logServiceError:
+      | "error.platform.fetchChallenge"
+      | "error.platform.challengeTimer"
+      | "error.platform.registerService"
+      | "error.platform.createWebAuthnIdentity"
+    assignError: "error.platform.registerService"
+    assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
+  }
   eventsCausingServices: {
-    fetchChallenge: "done.invoke.challengeTimer" | "FETCH_CAPTCHA"
+    fetchChallenge:
+      | "xstate.init"
+      | "done.invoke.challengeTimer"
+      | "FETCH_CAPTCHA"
     challengeTimer: "done.invoke.fetchChallenge"
-    createWebAuthnIdentity: "CREATE_IDENTITY"
     registerService: "SUBMIT_CAPTCHA"
+    createWebAuthnIdentity: "CREATE_IDENTITY"
   }
   eventsCausingGuards: {
     authenticated: ""

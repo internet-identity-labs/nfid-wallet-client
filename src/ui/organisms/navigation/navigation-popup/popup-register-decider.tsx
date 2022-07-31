@@ -11,9 +11,9 @@ import {
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
+import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
-import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { authState } from "frontend/integration/internet-identity"
 import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 interface PopupRegisterDeciderProps
@@ -22,13 +22,11 @@ interface PopupRegisterDeciderProps
 export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { setStatus } = useRegisterQRCode()
-  const { recoverDevice } = useDevices()
-  const { readAndStoreAccount } = useAccount()
+  const { recoverAccount, createAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
-  const { getPersona } = usePersona()
-
   const {
-    platform: { device, authenticator: platformAuth },
+    platform: { device, authenticator: platformAuth, os: deviceName },
+    browser: { name: browserName },
   } = useDeviceInfo()
 
   const { userNumber } = useUnknownDeviceConfig()
@@ -45,17 +43,38 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
       }
 
       try {
-        await recoverDevice(Number(userNumber))
-        await Promise.all([readAndStoreAccount(), getPersona()])
-
-        setIsLoading(false)
-        setStatus("registerDevice")
+        await recoverAccount(userNumber)
       } catch (e) {
-        console.error(e)
-        setIsLoading(false)
+        console.warn("account not found. Recreating")
+        await createAccount({ anchor: userNumber })
+
+        // attach the current identity as access point
+        const pub_key = Array.from(
+          new Uint8Array(
+            authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
+          ),
+        )
+        const createAccessPointResponse = await im
+          .create_access_point({
+            icon: "laptop",
+            device: deviceName,
+            browser: browserName || "My Computer",
+            pub_key,
+          })
+          .catch((e) => {
+            throw new Error(
+              `RouterRegisterDeviceDecider.handleRegister im.create_access_point: ${e.message}`,
+            )
+          })
+        if (createAccessPointResponse.status_code !== 200) {
+          console.error("failed to create access point", {
+            error: createAccessPointResponse.error[0],
+          })
+        }
+
+        setStatus("registerDevice")
       }
     }
-
     if (linkAccount === "rb_link_account_login") {
       setShouldStoreLocalAccount(false)
       setStatus("registerDevice")

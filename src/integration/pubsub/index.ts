@@ -105,9 +105,6 @@ export async function getMessages(topic: Topic) {
   return pubsub
     .get_messages(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
-    .catch((e) => {
-      throw new Error(`getMessages pubsub.get_messages: ${e.message}`)
-    })
 }
 
 export const useMessages = (

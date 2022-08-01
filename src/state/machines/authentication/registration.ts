@@ -11,6 +11,7 @@ import {
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { logServiceError } from "../actions"
+import AuthWithGoogleMachine from "./auth-with-google"
 
 export interface RegistrationContext {
   authSession?: AuthSession
@@ -35,7 +36,11 @@ type Events =
   | { type: "done.invoke.registerService"; data: LocalDeviceAuthSession }
   | { type: "error.platform.registerService"; data: Error }
   | { type: "done.invoke.createWebAuthnIdentity"; data: WebAuthnIdentity }
-  | { type: "AUTH_WITH_GOOGLE" }
+  | {
+      type: "done.invoke.AuthWithGoogleMachine"
+      data: AuthSession
+    }
+  | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "CREATE_IDENTITY" }
   | { type: "FETCH_CAPTCHA" }
   | { type: "SUBMIT_CAPTCHA"; data: string }
@@ -111,6 +116,9 @@ const RegistrationMachine =
                     CREATE_IDENTITY: {
                       target: "CreateIdentity",
                     },
+                    AUTH_WITH_GOOGLE: {
+                      target: "#auth-registration.AuthWithGoogle",
+                    },
                   },
                 },
                 Captcha: {
@@ -152,10 +160,36 @@ const RegistrationMachine =
             },
           },
         },
+        AuthWithGoogle: {
+          invoke: {
+            src: "AuthWithGoogleMachine",
+            id: "AuthWithGoogleMachine",
+            // FIXME: type the event
+            data: (_, event: { data: { jwt: string } }) => {
+              console.debug("AuthWithGoogle RegistrationMachine", { event })
+              return { jwt: event.data.jwt }
+            },
+            onDone: [
+              {
+                cond: "isExistingGoogleAccount",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                target: "Start",
+                actions: "assignAuthSession",
+              },
+            ],
+          },
+        },
         End: {
           type: "final",
-          data: (context, event: { data: LocalDeviceAuthSession }) =>
-            event.data,
+          data: (context, event: { data: AuthSession }) => {
+            console.debug("RegistrationMachine End", {
+              authSession: event.data,
+            })
+            return event.data
+          },
         },
       },
     },
@@ -167,6 +201,7 @@ const RegistrationMachine =
         },
         fetchChallenge,
         createWebAuthnIdentity,
+        AuthWithGoogleMachine,
       },
       actions: {
         logServiceError,
@@ -174,10 +209,20 @@ const RegistrationMachine =
         assignWebAuthnIdentity: assign({
           webAuthnIdentity: (context, event) => event.data,
         }),
+        assignAuthSession: assign({
+          authSession: (_, event) => event.data,
+        }),
         assignError: assign({ error: (context, event) => event.data.message }),
       },
       guards: {
         authenticated: (context) => !!context.authSession,
+        isExistingGoogleAccount: (context, event) => {
+          console.debug("RegistrationMachine guards isExistingGoogleAccount", {
+            context,
+            event,
+          })
+          return !!event.data.anchor
+        },
       },
     },
   )

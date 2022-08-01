@@ -3,8 +3,18 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "done.invoke.registration": {
+      type: "done.invoke.registration"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.AuthWithGoogleMachine": {
       type: "done.invoke.AuthWithGoogleMachine"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.remote": {
+      type: "done.invoke.remote"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -18,11 +28,6 @@ export interface Typegen0 {
       type: "error.platform.isMobileWithWebAuthn"
       data: unknown
     }
-    "done.invoke.registration": {
-      type: "done.invoke.registration"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "error.platform.registration": {
       type: "error.platform.registration"
       data: unknown
@@ -30,11 +35,6 @@ export interface Typegen0 {
     "error.platform.AuthWithGoogleMachine": {
       type: "error.platform.AuthWithGoogleMachine"
       data: unknown
-    }
-    "done.invoke.remote": {
-      type: "done.invoke.remote"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "error.platform.remote": { type: "error.platform.remote"; data: unknown }
     "done.invoke.loginWithAnchor": {
@@ -61,7 +61,10 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
-    assignAuthSession: "done.invoke.AuthWithGoogleMachine"
+    assignAuthSession:
+      | "done.invoke.registration"
+      | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.remote"
   }
   eventsCausingServices: {
     isMobileWithWebAuthn: "xstate.init"

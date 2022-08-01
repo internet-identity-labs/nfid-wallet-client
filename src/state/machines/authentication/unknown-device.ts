@@ -33,14 +33,14 @@ export type Events =
   | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
-      data: AuthWithGoogleMachineContext
+      data: AuthSession
     }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
-      data: { anchor: string; withSecurityDevices?: boolean }
+      data: { anchor: number; withSecurityDevices?: boolean }
     }
   | { type: "END"; data: AuthSession }
 
@@ -50,7 +50,7 @@ export interface Schema {
 }
 
 const UnknownDeviceMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SYGFMx6BHsgAOyAEa0ANrXQBPAMQRieZrTzViBNbACyxSVLAB1WZmNhxAQQyY8iUCOKxZtFQ5AAPRAEYATABsTACcABw+wQDMAAwALJEA7D4ArP6hADQgcoiRkX5MscHBCcGxyQnRoWEBsQC+tZloWLiEJOSUNAzMAEpgULSw6BzI6G54usj0mOpgSipqGlrMHH0DQyNjHk4uo+5IXojxQbEBoaGxftHB5akZWYjJoQlMydFvfjHnVQEJ9Y22LSIZAoVDojCYNiwLDARnouzwCisAFUACoACQA+sYAJLojEAcQA8oT8QAZACiW2crj2oG8CD8jwKiUKyT8fh8sROoWSmWyCFCkWCTDeosiPmiPh5AT8fxATRw+CB7VBXQhtmhsPhiNRmJxeO65N0hJRlP22xp9n29L8sVCzISrPZnO5fj5viuQVeb1eZT8xTqDXlAKVbRBnXBkMwmoE2uReP1mJNaPJ3SpO021sQgXt8Ud12dXNOvPuCASqSYPgC1ceCQCuQqkTlCsBYY6YOYUdMWHxxGIUCMc1UTHUmm06qw3cwvf7RgmUxm6ctHnpEo5BViCQ5yVKRTesXdAolIVi+9iPir5d+QZboeB7bVvQAtsR0GAo2A8KN6BsVEOFmOyxgC+b5LvCK6IKEHwhNEMrJAElQ+CUhSHhKwReqKvpsgGzYhq096quC5KeGs6hQFYeBTMQHA6gmuJJuiqZgZmdLZqcDpOhyRY8oejaVtW1aCpcm7VrhzR3iqEbMMRpF4ORlGYNRtF6vRGLkgAGtiLAotiABy+IYlYuk8GihJpua1LgVmCCnD4LxPPE5SelBCSHvWsRMC5fjhMUPxFMEYmKvhkkdhO-BfgwIxgCwyBPmAAAiUn-iOizjlI-bqFOFFURwzG0gcCApFulbisE7LBJ6kp3PyNR2cEUoyt5JQBBEgWtgRUlhZ+35RTFcWJR2ChgBwHDUUwIhSCMABm1FPkw6X9HgWUKdReVWqxhWVJETA-G8ZxVHklRuqWCRCkwjoyohp5FQE9RBiQVDwPst7BeGoVsJw3B8AIQiiBI0iyPyjiWSxBVbqh66im8UoVIJ5xtRJb1qh9XBrRBCB2oedohP51wIT8kTJIG-zia9D7gr0-SDMM8LztMqho9ZARsudiTROUpxQUKPiHpEATCh8SR2qUVSPITCNk4RnYajCsagxaVkbex0Sw9cp2hC1UQljV0T5Ah3PwQdkRlBLypI5GthTjOA5gIzG2vMcxSJJEVT1YTASHuEHmskT-P1vVMqm22UtMM+r7vrY3WRYrIAK6D9JlHZHx5iktqcx7pYSszIpinanIq3414k0FZvk9JJGDGR2WKblFkZvl9JsvkuuFIX8Qa6krknSrOfQ4KsHG3zQcdaFH4RT+b59QlUl2wVa75Ke8HXGUTuE25MQvBVUqfIT56hMPIVquSeAQLPq7nNtpw-OeO8pJEnvnOdZXCzEUTecTwak6XUtn9mB6ltgaCUNojigiMkNmso7pAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SYGFMx6BHsgAOyAEa0ANrXQBPAMQRieZrTzViBNbACyxSVLAB1WZmNhxAQQyY8iUCOKxZtFQ5AAPRAEYATABsTACcABw+wQDMAAwALJEA7D4ArP6hADQgcoiRkX5MscHBCcGxyQnRoWEBsQC+tZloWLiEJOSUNAzMAEpgULSw6BzI6G54usj0mOpgSipqGlrMHH0DQyNjHk4uo+5IXojxQbEBoaGxftHB5akZWYjJoQlMydFvfjHnVQEJ9Y22LSIZAoVDojCYNiwLDARnouzwCisAFUACoACQA+sYAJLojEAcQA8oT8QAZACiW2crj2oG8CD8jwKiUKyT8fh8sROoWSmWyCFCkWCTDeosiPmiPh5AT8fxATRw+CB7VBXQhtmhsPhiNRmJxeO65N0hJRlP22xp9n29L8sVCzISrPZnO5fj5viuQVeb1eZT8xTqDXlAKVbRBnXBkMwmoE2uReP1mJNaPJ3SpO021sQgXt8Ud12dXNOvPuCASqSYPgC1ceCQCuQqkTlCsBYY6YOYUdMWHxxGIUCMc1UTHUmm06qw3cwvf7RgmUxm6ctHnpPh84qYkXKkXCkTt0T8CXdAsCTCSyTCoUue8qPmbIdawPbat6AFtiOgwFGwHhRvQNioQ4LGOyxgO+n5LvCK6IFekQhNEMrJAEt4lIUx4SsEXqir6bIBvezShk+qrguSnhrOoUBWHgUzEBwOoJriSboqmkGZnS2anA6TockWPLHo2lbVtWgqXLEdYBPhiqPiqEbMKR5F4JR1GYLR9F6oxGLkgAGtiLAotiABy+IYlYBk8GihJpua1JQVmCCnD4LxPPE5SeleR6lvWsRMO5fjhMUPxFMEkmtkRskTvwv4MCMYAsMgr5gAAIrJQEjos45SP26hTlRNEcKxtIHAgKQJPk64ROywSepKdz8jUjnBFKMp+SUAQRCFhEyR2EU-n+MVxQlyUdgoYAcBwtFMCIUgjAAZrRr5MJl-R4Dlym0QVVrscVlRwT8bxnFUeSVG6pYJEKZ4nJc4SxJK5QSXKJBUPA+wtp14bdWwnDcHwAhCKIEjSLI-KODZbFFaV6EciKoo1RUwnnB10nvWqn1cBt0EIHax52iEQWYaVdpiRUySI8qyPgr0-SDMM8LztMqjo3ZzVnj8JTJEK4rlD42MVEwh6RPWVYJKV1zJCTQavUjz6RhqMKxmDFq2VtnHRHD1xnaEbVRCWdUHkwyFCikpxRHu4v-ARUvEZ2thTjOA5gIzW2vMcxSJDuRTrkhx7XQUosnJhhsyqTbZW0wb4fl+ti9dFSsgIrYP0mUjkfHmKS2qcmvoQhyTQ28e7Xarh7B2F3XyYMFG5Sp+XWRmhX0my+QHoUh7xJrqQefyFTPDDUoxF5AvF11arflF-6fgNSWyY7RUSuyBTREh1xlK7W7HvW0QvFVvc7cksRSoP5NyXgEDT6u5y7ZrjrrjtKSRN75xnsEtqHVceQIxLD5k9LDs18udm2sebAc88ZVTFlud2A96i1CAA */
   createMachine(
     {
       tsTypes: {} as import("./unknown-device.typegen").Typegen0,
@@ -89,6 +89,7 @@ const UnknownDeviceMachine =
             onDone: [
               {
                 target: "End",
+                actions: "assignAuthSession",
               },
             ],
           },
@@ -110,15 +111,18 @@ const UnknownDeviceMachine =
           invoke: {
             src: "AuthWithGoogleMachine",
             id: "AuthWithGoogleMachine",
-            data: (_, event) => ({ jwt: event.data.jwt }),
+            data: (_, event: { data: { jwt: string } }) => {
+              return { jwt: event.data.jwt }
+            },
             onDone: [
               {
                 cond: "isExistingGoogleAccount",
+                actions: "assignAuthSession",
                 target: "End",
               },
               {
-                target: "RegistrationMachine",
                 actions: "assignAuthSession",
+                target: "RegistrationMachine",
               },
             ],
           },
@@ -135,6 +139,7 @@ const UnknownDeviceMachine =
             onDone: [
               {
                 target: "End",
+                actions: "assignAuthSession",
               },
             ],
           },
@@ -167,7 +172,14 @@ const UnknownDeviceMachine =
         },
         End: {
           type: "final",
-          data: (_, event: { data: AuthSession }) => event.data,
+          data: (context, event) => {
+            console.debug("UnknownDeviceMachine End", {
+              authSession: context.authSession,
+              context,
+              event,
+            })
+            return context.authSession
+          },
         },
       },
     },
@@ -175,13 +187,16 @@ const UnknownDeviceMachine =
       guards: {
         isExistingGoogleAccount: (context, event) => {
           console.debug("isExistingGoogleAccount", { context, event })
-          return !!event.data.isRegistered
+          return !!event.data.anchor
         },
         bool: (context, event) => event.data,
       },
       actions: {
         assignAuthSession: assign({
-          authSession: (_, event) => event.data.authSession,
+          authSession: (_, event) => {
+            console.debug("UnknownDeviceMachine assignAuthSession", { event })
+            return event.data
+          },
         }),
       },
       services: {

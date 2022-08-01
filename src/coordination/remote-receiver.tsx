@@ -27,6 +27,7 @@ export function RemoteReceiverCoordinator({
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
   const handleRemoteRegister = React.useCallback(
     async (message: RemoteLoginRegisterMessage) => {
+      console.debug("handleRemoteRegister", { message })
       // FIXME: Not sure if we need to reconstruct the multiIdent.
       // My guess is, that it's required to call renewDelegation
       const devices = await fetchAuthenticatorDevices(BigInt(message.anchor))
@@ -35,6 +36,7 @@ export function RemoteReceiverCoordinator({
         type: "RECEIVE_DELEGATION",
         data: {
           sessionSource: "remoteDevice",
+          anchor: message.anchor,
           delegationIdentity: reconstructIdentity(
             message.reconstructableIdentity,
           ),

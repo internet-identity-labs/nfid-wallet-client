@@ -29,6 +29,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.AuthWithGoogleMachine": {
+      type: "done.invoke.AuthWithGoogleMachine"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
     "done.invoke.challengeTimer": {
       type: "done.invoke.challengeTimer"
@@ -41,12 +46,17 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.AuthWithGoogleMachine": {
+      type: "error.platform.AuthWithGoogleMachine"
+      data: unknown
+    }
   }
   invokeSrcNameMap: {
     fetchChallenge: "done.invoke.fetchChallenge"
     challengeTimer: "done.invoke.challengeTimer"
     registerService: "done.invoke.registerService"
     createWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
+    AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
   }
   missingImplementations: {
     actions: never
@@ -63,18 +73,22 @@ export interface Typegen0 {
       | "error.platform.createWebAuthnIdentity"
     assignError: "error.platform.registerService"
     assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
+    assignAuthSession: "done.invoke.AuthWithGoogleMachine"
   }
   eventsCausingServices: {
     fetchChallenge:
       | "xstate.init"
+      | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.challengeTimer"
       | "FETCH_CAPTCHA"
     challengeTimer: "done.invoke.fetchChallenge"
     registerService: "SUBMIT_CAPTCHA"
     createWebAuthnIdentity: "CREATE_IDENTITY"
+    AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
   }
   eventsCausingGuards: {
     authenticated: ""
+    isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
   }
   eventsCausingDelays: {}
   matchesStates:
@@ -88,6 +102,7 @@ export interface Typegen0 {
     | "Start.Register.Captcha"
     | "Start.Register.Register"
     | "Start.Register.CreateIdentity"
+    | "AuthWithGoogle"
     | "End"
     | {
         Start?:

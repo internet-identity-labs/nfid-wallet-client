@@ -29,12 +29,15 @@ import {
 import { ii } from "../actors"
 import { deviceInfo } from "../device"
 import { identityFromDeviceList } from "../identity"
-import { setProfile } from "../identity-manager/profile"
+import {
+  loadProfileFromLocalStorage,
+  setProfile,
+} from "../identity-manager/profile"
 import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(
   _: unknown,
-  event: { data: { anchor: string; withSecurityDevices?: boolean } },
+  event: { data: { anchor: number; withSecurityDevices?: boolean } },
 ): Promise<LocalDeviceAuthSession> {
   console.debug("loginWithAnchor", {
     anchor: event.data.anchor,
@@ -46,9 +49,10 @@ export async function loginWithAnchor(
   console.debug("loginWithAnchor", { authResult })
 
   if (authResult.tag === "ok") {
-    Sentry.setUser({ id: event.data.anchor })
+    Sentry.setUser({ id: event.data.anchor.toString() })
     return {
       sessionSource: "localDevice",
+      anchor: Number(event.data.anchor),
       delegationIdentity: DelegationIdentity.fromDelegation(
         authResult.sessionKey,
         authResult.chain,
@@ -128,8 +132,13 @@ export async function loginService(context: {
     sessionKey,
   )
 
+  const profile = loadProfileFromLocalStorage()
+  if (!profile?.anchor)
+    throw new Error("loginService cannot load profile from localStorage")
+
   return {
     sessionSource: "localDevice",
+    anchor: profile?.anchor,
     identity: multiIdent,
     delegationIdentity,
   }

@@ -12,6 +12,7 @@ import KnownDeviceMachine, {
 import UnknownDeviceMachine from "frontend/state/machines/authentication/unknown-device"
 
 export interface AuthenticationMachineContext {
+  anchor: number
   authSession?: AuthSession
   authRequest?: AuthorizationRequest
   appMeta: AuthorizingAppMeta
@@ -80,15 +81,20 @@ const AuthenticationMachine = createMachine(
       },
       End: {
         type: "final",
-        data: (context) => context,
+        data: (context) => context.authSession,
       },
     },
   },
   {
     actions: {
-      assignAuthSession: assign((context, event) => ({
-        authSession: event.data,
-      })),
+      assignAuthSession: assign((context, event) => {
+        console.debug("AuthenticationMachine assignAuthSession", {
+          authSession: event.data,
+        })
+        return {
+          authSession: event.data,
+        }
+      }),
     },
     guards: {
       isDeviceRegistered,

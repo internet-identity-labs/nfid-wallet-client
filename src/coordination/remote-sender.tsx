@@ -1,4 +1,5 @@
 import { useMachine } from "@xstate/react"
+import React from "react"
 import { Navigate } from "react-router-dom"
 
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
@@ -16,10 +17,12 @@ interface Props {
 
 export default function RemoteIDPCoordinator({ machine }: Props) {
   const [state] = useMachine(machine || RemoteSenderMachine)
-  console.log(RemoteIDPCoordinator.name, {
-    state: state.value,
-    context: state.context,
-  })
+  React.useEffect(() => {
+    console.debug("RemoteIDPCoordinator", {
+      state: state.value,
+      context: state.context,
+    })
+  }, [state.value, state.context])
 
   switch (true) {
     case state.matches("Start"):

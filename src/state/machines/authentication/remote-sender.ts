@@ -91,7 +91,7 @@ const RemoteSenderMachine =
           invoke: {
             src: "AuthenticationMachine",
             id: "authenticate",
-            onDone: "PostDelegation",
+            onDone: { target: "PostDelegation", actions: "assignAuthSession" },
             data: (context) => ({
               appMeta: context.appMeta,
               authRequest: context.authRequest,
@@ -103,6 +103,16 @@ const RemoteSenderMachine =
             src: "postRemoteDelegationService",
             id: "postRemoteDelegationService",
             onDone: "End",
+            data: (context) => {
+              console.debug("RemoteSenderMachine PostDelegation", {
+                context,
+              })
+              return {
+                appMeta: context.appMeta,
+                authRequest: context.authRequest,
+                auhtSession: context.authSession,
+              }
+            },
           },
         },
         End: {
@@ -126,6 +136,14 @@ const RemoteSenderMachine =
           authRequest: event.data.authRequest,
           pubsubChannel: event.data.pubsubChannel,
         })),
+        assignAuthSession: assign((context, event) => {
+          console.debug("RemoteSenderMachine assignAuthSession", {
+            authSession: event.data,
+          })
+          return {
+            authSession: event.data,
+          }
+        }),
       },
     },
   )

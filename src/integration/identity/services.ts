@@ -1,11 +1,14 @@
 import { AuthSession } from "frontend/state/authentication"
 
-import { loadProfileFromLocalStorage } from "../identity-manager/profile"
 import { authState } from "../internet-identity"
-import { buildRemoteLoginRegisterMessage, postMessages } from "../pubsub"
+import {
+  buildRemoteLoginRegisterMessage,
+  createTopic,
+  postMessages,
+} from "../pubsub"
 
 export async function postRemoteDelegationService(
-  context: { pubsubChannel?: string },
+  context: { pubsubChannel?: string; authSession?: AuthSession },
   event: { data: AuthSession },
 ): Promise<void> {
   console.debug("postRemoteDelegationService", { context, event })
@@ -18,18 +21,19 @@ export async function postRemoteDelegationService(
   if (!context.pubsubChannel)
     throw new Error(`postRemoteDelegationService context.pubsubChannel missing`)
 
-  const profile = loadProfileFromLocalStorage()
-  if (!profile)
+  if (!context.authSession?.anchor)
     throw new Error(
-      `postRemoteDelegationService profile missing from localstorage`,
+      "postRemoteDelegationService context.authSession.anchor missing",
     )
 
   const message = buildRemoteLoginRegisterMessage(
-    BigInt(profile.anchor),
+    BigInt(context.authSession?.anchor),
     chain,
     sessionKey,
   )
 
+  // FIXME: create topic earlier.
+  await createTopic(context.pubsubChannel)
   const response = await postMessages(context.pubsubChannel, [message])
   console.debug(`postRemoteDelegationService postMessage`, { response })
   return undefined

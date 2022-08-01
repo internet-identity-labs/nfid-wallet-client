@@ -65,8 +65,8 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
           loadingMessage={"Registering NFID"}
           isLoading={state.matches("Start.Register.Register")}
           isChallengeLoading={state.matches("Start.Challenge.Fetch")}
-          applicationLogo={state.context.appMeta?.name}
-          applicationName={state.context.appMeta?.logo}
+          applicationLogo={state.context.appMeta?.logo}
+          applicationName={state.context.appMeta?.name}
           onRegisterAnchor={async ({ captcha }) =>
             send({ type: "SUBMIT_CAPTCHA", data: captcha })
           }

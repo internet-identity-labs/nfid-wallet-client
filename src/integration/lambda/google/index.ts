@@ -1,6 +1,9 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { profile } from "console"
 
+import { NfidHttpError } from "frontend/integration/_common"
 import { ii } from "frontend/integration/actors"
+import { fetchProfile } from "frontend/integration/identity-manager"
 import {
   authState,
   requestFEDelegation,
@@ -63,14 +66,33 @@ export async function fetchGoogleDevice(
 export async function getGoogleAuthSession(
   deviceResult: GoogleDeviceResult,
 ): Promise<GoogleAuthSession> {
-  console.debug("signInWithGoogle", { deviceResult })
+  console.debug("getGoogleAuthSession", { deviceResult })
   const delegationIdentity = await requestFEDelegation(deviceResult.identity)
+  // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
+  authState.set(
+    deviceResult.identity,
+    delegationIdentity.delegationIdentity,
+    ii,
+    delegationIdentity.chain,
+    delegationIdentity.sessionKey,
+  )
+  let profile
+  try {
+    profile = await fetchProfile()
+  } catch (fetchProfileError: any) {
+    if (fetchProfileError.code !== 404) {
+      throw fetchProfileError
+    }
+  }
+
   const session = {
+    sessionSource: "google",
+    anchor: profile?.anchor,
     identity: deviceResult.identity,
     delegationIdentity: delegationIdentity.delegationIdentity,
-    sessionSource: "google",
   } as GoogleAuthSession
-  // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
-  authState.set(session.identity, session.delegationIdentity, ii)
+
+  console.debug("getGoogleAuthSession", { session })
+
   return session
 }

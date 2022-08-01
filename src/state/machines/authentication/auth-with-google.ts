@@ -64,14 +64,22 @@ const AuthWithGoogleMachine =
         },
         End: {
           type: "final",
-          data: (context) => context,
+          data: (context) => {
+            console.debug("AuthWithGoogleMachine End", { context })
+            return context.authSession
+          },
         },
       },
     },
     {
       actions: {
         assignAuthSession: assign({
-          authSession: (_, event) => event.data,
+          authSession: (_, event) => {
+            console.debug("AuthWithGoogleMachine assignAuthSession", {
+              authSession: event.data,
+            })
+            return event.data
+          },
         }),
         assignRegistrationStatus: assign({
           isRegistered: (_, event) => event.data,

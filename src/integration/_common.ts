@@ -56,7 +56,7 @@ export function typeResponse<T>(
   )
 }
 
-class NfidHttpError extends Error {
+export class NfidHttpError extends Error {
   code: number
   constructor(message: string, code: number) {
     super(message)

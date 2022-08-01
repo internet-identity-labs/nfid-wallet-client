@@ -40,7 +40,7 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
             send({
               type: "AUTH_WITH_EXISTING_ANCHOR",
               data: {
-                anchor: userNumber.toString(),
+                anchor: userNumber,
                 withSecurityDevices: false,
               },
             })
@@ -49,17 +49,22 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
             send({
               type: "AUTH_WITH_EXISTING_ANCHOR",
               data: {
-                anchor: userNumber.toString(),
+                anchor: userNumber,
                 withSecurityDevices: true,
               },
             })
           }
-          onSelectGoogleAuthorization={({ credential }) =>
+          onSelectGoogleAuthorization={({ credential }) => {
+            console.debug(
+              "UnknownDeviceCoordinator onSelectGoogleAuthorization",
+              { credential },
+            )
             send({
               type: "AUTH_WITH_GOOGLE",
+              to: "auth-unknown-device",
               data: { jwt: credential },
             })
-          }
+          }}
           onToggleAdvancedOptions={() => send("AUTH_WITH_OTHER")}
           showAdvancedOptions={state.matches("ExistingAnchor")}
           isLoading={

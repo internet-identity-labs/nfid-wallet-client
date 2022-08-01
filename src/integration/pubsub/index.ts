@@ -78,7 +78,10 @@ function sanitizeResponse(message: MessageHttpResponse) {
 export async function createTopic(topic: Topic) {
   return pubsub
     .create_topic(topic)
-    .then((r) => unpackResponse(sanitizeResponse(r)))
+    .then((r) => {
+      console.debug("createTopic", { response: r })
+      return r
+    })
     .catch((e) => {
       throw new Error(`createTopic pubsub.create_topic: ${e.message}`)
     })

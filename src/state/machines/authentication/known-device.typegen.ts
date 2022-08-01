@@ -18,12 +18,12 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
     "done.invoke.loginService": {
       type: "done.invoke.loginService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "xstate.init": { type: "xstate.init" }
     "error.platform.getLocalStorageProfileService": {
       type: "error.platform.getLocalStorageProfileService"
       data: unknown

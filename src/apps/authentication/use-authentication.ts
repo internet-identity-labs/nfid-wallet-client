@@ -58,9 +58,11 @@ export const useAuthentication = () => {
     }
   }, [])
 
+  /**@deprecated will be refactored with wallet on profile */
   const logout = React.useCallback(() => {
     invalidateIdentity()
     setUser(undefined)
+    setIsAuthenticated(false)
     Sentry.setUser(null)
     // TODO: this is a quick fix after the auth state refactor.
     // The problem is that after we invalidate the identity, the

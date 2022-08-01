@@ -14,11 +14,11 @@ interface PopupLoginProps {
 export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
   const { readAccount, account } = useAccount()
   const { getPersona } = usePersona()
-  const { login, user, logout } = useAuthentication()
+  const { login, isAuthenticated, logout } = useAuthentication()
   const navigate = useNavigate()
 
   React.useEffect(() => {
-    if (user) {
+    if (isAuthenticated) {
       readAccount()
       getPersona()
     }
@@ -28,11 +28,11 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
     <div className="px-4 mx-auto">
       {!menu && (
         <h2 className="mt-5 text-xl font-bold text-left">
-          {!user ? "Welcome " : "Logged in "}
+          {!isAuthenticated ? "Welcome " : "Logged in "}
           {account?.name ?? account?.anchor ?? ""}
         </h2>
       )}
-      {user && account && (
+      {isAuthenticated && account && (
         <Button
           primary
           className="w-full mt-4"
@@ -41,7 +41,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
           Profile
         </Button>
       )}
-      {!user ? (
+      {!isAuthenticated ? (
         <Button primary className="w-full mt-4" onClick={() => login()}>
           Log in
         </Button>

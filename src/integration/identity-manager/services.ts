@@ -1,4 +1,7 @@
-import { AuthSession } from "frontend/state/authentication"
+import { SignIdentity } from "@dfinity/agent"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+
+import { AuthorizationRequest } from "frontend/state/authorization"
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
 import {
@@ -9,7 +12,6 @@ import {
   mapPersonaToLegacy,
   verifyToken,
 } from "."
-import { verifyPhoneNumber } from "../lambda/phone"
 import { getNextAccountId } from "./persona/utils"
 import { loadProfileFromLocalStorage } from "./profile"
 
@@ -62,26 +64,6 @@ export async function fetchProfileService() {
   return await fetchProfile()
 }
 
-/** xstate service to send sms verification code */
-export async function verifyPhoneNumberService(context: {
-  authSession?: AuthSession
-  phone?: string
-}) {
-  try {
-  const principal = context.authSession?.delegationIdentity.getPrincipal()
-    if (!context.phone) throw new Error("Missing phone number")
-    if (!principal) throw new Error("Missing principal")
-    const res = await verifyPhoneNumber(context.phone)
-    return await res
-  } catch (e) {
-    console.error("Error in verifyPhoneNumberService", e)
-    throw {
-      error:
-        "There was an issue verifying your phone number, please try again.",
-    }
-  }
-}
-
 /** xstate service to verify sms verification code */
 export async function verifySmsService(
   context: unknown,
@@ -94,5 +76,28 @@ export async function verifySmsService(
     throw {
       error: "There was a problem with your submission. Please try again.",
     }
+  }
+}
+
+/**
+ * We need a session key and authRequest to perform authorization in the pn cred flow.
+ * Normally, the third part app would pass us a session key, but in this case we generate a third
+ * party app delegation, which simplifies the client api a bit, but might be a bad call.
+ */
+export async function createAuthoRequest(context: {
+  hostname?: string
+}): Promise<{
+  authRequest: AuthorizationRequest
+  sessionKey: SignIdentity
+}> {
+  const sessionKey = Ed25519KeyIdentity.generate()
+  if (!context.hostname) throw new Error("Missing hostname")
+  return {
+    sessionKey,
+    authRequest: {
+      hostname: context.hostname,
+      maxTimeToLive: BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
+      sessionPublicKey: new Uint8Array(sessionKey.getPublicKey().toDer()),
+    },
   }
 }

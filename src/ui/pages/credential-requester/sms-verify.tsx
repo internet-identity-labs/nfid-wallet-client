@@ -66,11 +66,17 @@ export const CredentialRequesterSMSVerify: React.FC<
             </P>
           )}
         </div>
+        <StepInput
+          className="justify-between"
+          onSubmit={onSubmit}
+          errorClasses="text-center"
+          buttonText="Verify phone number"
+          responseError={responseError}
+        />
         <Button
-          className={clsx(
-            "mt-5 flex flex-col justify-between flex-1",
-            "sm:block",
-          )}
+          text
+          onClick={onChangePhone}
+          className="w-full mt-4 mb-8 text-sm text-center cursor-pointer text-blue-base hover:text-blue-hover"
         >
           Change phone number
         </Button>

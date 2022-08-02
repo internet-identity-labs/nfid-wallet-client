@@ -31,7 +31,7 @@ export function remoteReceiverUrl({
   applicationLogo,
   applicationDerivationOrigin,
 }: {
-  domain: string
+  domain: string | undefined
   secret: string
   maxTimeToLive?: bigint
   applicationName?: string
@@ -39,23 +39,18 @@ export function remoteReceiverUrl({
   applicationDerivationOrigin?: string
 }) {
   const query = new URLSearchParams({
+    secret,
+    scope: domain || "",
+    derivationOrigin: applicationDerivationOrigin || "",
+    maxTimeToLive: maxTimeToLive.toString() || "",
     applicationName: applicationName || "",
     applicationLogo: encodeURIComponent(applicationLogo || ""),
   }).toString()
 
-  const pathPattern = applicationDerivationOrigin
-    ? "/ridp/:secret/:maxTimeToLive/:scope/:derivationOrigin"
-    : "/ridp/:secret/:maxTimeToLive/:scope"
-
-  const path = generatePath(pathPattern, {
-    secret,
-    scope: domain.replace(/https?:\/\//, ""),
-    maxTimeToLive: maxTimeToLive.toString(),
-    ...(applicationDerivationOrigin
-      ? { derivationOrigin: encodeURI(applicationDerivationOrigin) }
-      : {}),
+  const path = `/ridp/`
+  console.debug(remoteReceiverUrl.name, {
+    path: encodeURI(`${path}?${query.toString()}`),
   })
-  console.debug("remoteReceiverUrl", { path: encodeURI(path) })
 
   return `${window.location.origin}${path}?${query.toString()}`
 }

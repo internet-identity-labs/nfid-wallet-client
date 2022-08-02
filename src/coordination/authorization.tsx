@@ -34,9 +34,9 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
     case state.matches("GetDelegation"):
       return state.context.accountsLimit === 1 ? (
         <AuthorizeAppSingleAccount
-          isAuthenticated
-          applicationName={state.context.appMeta.name}
-          applicationLogo={state.context.appMeta.logo}
+          isAuthenticated={!!state.context.authSession}
+          applicationName={state.context.appMeta?.name}
+          applicationLogo={state.context.appMeta?.logo}
           isLoading={
             state.matches("Start") ||
             state.matches("FetchAccounts") ||
@@ -52,9 +52,9 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
         />
       ) : (
         <AuthorizeAppMultiAccount
-          isAuthenticated
-          applicationName={state.context.appMeta.name}
-          applicationLogo={state.context.appMeta.logo}
+          isAuthenticated={!!state.context.authSession}
+          applicationName={state.context.appMeta?.name}
+          applicationLogo={state.context.appMeta?.logo}
           accountsLimit={state.context.accountsLimit}
           isLoading={
             state.matches("Start") ||

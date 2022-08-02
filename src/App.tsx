@@ -47,14 +47,7 @@ export const App = () => {
 
       {/* Temporary routes for new machine based flows */}
       <Route path="/idp" element={<IDPCoordinator />} />
-      <Route
-        path="/ridp/:secret/:maxTimeToLive/:scope"
-        element={<RemoteIDPCoordinator />}
-      />
-      <Route
-        path="/ridp/:secret/:maxTimeToLive/:scope/:derivationOrigin"
-        element={<RemoteIDPCoordinator />}
-      />
+      <Route path="/ridp" element={<RemoteIDPCoordinator />} />
     </Routes>
   )
 }

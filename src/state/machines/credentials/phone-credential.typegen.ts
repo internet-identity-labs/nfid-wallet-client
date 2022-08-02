@@ -3,20 +3,20 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   eventsCausingActions: {
-    ingestPrincipal: "done.invoke.PhoneNumberCredentialProvider.AuthenticateUser.IngestPrincipal:invocation[0]"
-    ingestPhoneNumber:
+    assignAuthSession: "done.invoke.AuthenticationMachine"
+    assignPhoneNumber:
       | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
       | "ENTER_PHONE_NUMBER"
-    ingestSMSToken: "ENTER_SMS_TOKEN"
-    ingestError: "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
-    ingestAppDelegate: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
-    ingestCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
+    assignSMSToken: "ENTER_SMS_TOKEN"
+    assignError: "error.platform.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
+    assignAppDelegate: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.RetrieveDelegate:invocation[0]"
+    assignCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
     clearError: "xstate.init"
     presentCredential: "done.invoke.PhoneNumberCredentialProvider.HandleCredential.ResolveCredential.ResolveToken:invocation[0]"
   }
   internalEvents: {
-    "done.invoke.PhoneNumberCredentialProvider.AuthenticateUser.IngestPrincipal:invocation[0]": {
-      type: "done.invoke.PhoneNumberCredentialProvider.AuthenticateUser.IngestPrincipal:invocation[0]"
+    "done.invoke.AuthenticationMachine": {
+      type: "done.invoke.AuthenticationMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -45,9 +45,13 @@ export interface Typegen0 {
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "xstate.init": { type: "xstate.init" }
+    "error.platform.AuthenticationMachine": {
+      type: "error.platform.AuthenticationMachine"
+      data: unknown
+    }
   }
   invokeSrcNameMap: {
-    fetchPrincipal: "done.invoke.PhoneNumberCredentialProvider.AuthenticateUser.IngestPrincipal:invocation[0]"
+    AuthenticationMachine: "done.invoke.AuthenticationMachine"
     fetchPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
     verifyPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.EnterSMSToken:invocation[0]"
     verifySMSToken: "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
@@ -61,8 +65,8 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingServices: {
-    fetchPrincipal: "LOGIN_COMPLETE"
-    fetchPhoneNumber: "done.invoke.PhoneNumberCredentialProvider.AuthenticateUser.IngestPrincipal:invocation[0]"
+    AuthenticationMachine: "xstate.init"
+    fetchPhoneNumber: "done.invoke.AuthenticationMachine"
     fetchAppDelegate:
       | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.GetExistingPhoneNumber:invocation[0]"
       | "done.invoke.PhoneNumberCredentialProvider.GetPhoneNumber.ValidateSMSToken:invocation[0]"
@@ -75,9 +79,7 @@ export interface Typegen0 {
   eventsCausingGuards: {}
   eventsCausingDelays: {}
   matchesStates:
-    | "AuthenticateUser"
-    | "AuthenticateUser.Login"
-    | "AuthenticateUser.IngestPrincipal"
+    | "Authenticate"
     | "GetPhoneNumber"
     | "GetPhoneNumber.GetExistingPhoneNumber"
     | "GetPhoneNumber.EnterPhoneNumber"
@@ -89,7 +91,6 @@ export interface Typegen0 {
     | "HandleCredential.ResolveCredential.ResolveToken"
     | "HandleCredential.PresentCredential"
     | {
-        AuthenticateUser?: "Login" | "IngestPrincipal"
         GetPhoneNumber?:
           | "GetExistingPhoneNumber"
           | "EnterPhoneNumber"

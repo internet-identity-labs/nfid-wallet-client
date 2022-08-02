@@ -18,6 +18,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.loginWithAnchor": {
+      type: "done.invoke.loginWithAnchor"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
     "done.invoke.isMobileWithWebAuthn": {
       type: "done.invoke.isMobileWithWebAuthn"
@@ -37,11 +42,6 @@ export interface Typegen0 {
       data: unknown
     }
     "error.platform.remote": { type: "error.platform.remote"; data: unknown }
-    "done.invoke.loginWithAnchor": {
-      type: "done.invoke.loginWithAnchor"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "error.platform.loginWithAnchor": {
       type: "error.platform.loginWithAnchor"
       data: unknown
@@ -65,6 +65,7 @@ export interface Typegen0 {
       | "done.invoke.registration"
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.remote"
+      | "done.invoke.loginWithAnchor"
   }
   eventsCausingServices: {
     isMobileWithWebAuthn: "xstate.init"

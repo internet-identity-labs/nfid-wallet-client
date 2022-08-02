@@ -1,20 +1,34 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
-import { Identity, SubmitResponse } from "@dfinity/agent"
+import { ActorSubclass, Identity } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
 
+<<<<<<< HEAD:src/integration/actors.ts
 import { authState } from "frontend/integration/internet-identity"
 
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.did.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager_idl"
+import { _SERVICE as ImAddition } from "./_ic_api/im_addition.did.d"
+import { idlFactory as imaIDL } from "./_ic_api/im_addition_idl"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity_idl"
 import { _SERVICE as InternetIdentity } from "./_ic_api/internet_identity_types.d"
 import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.did.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel_idl"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.did.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier_idl"
+=======
+import { _SERVICE as IdentityManager } from "../idl/identity_manager.did.d"
+import { idlFactory as imIDL } from "../idl/identity_manager_idl"
+import { _SERVICE as ImAddition } from "../idl/im_addition.did.d"
+import { idlFactory as imaIDL } from "../idl/im_addition_idl"
+import { idlFactory as iiIDL } from "../idl/internet_identity_idl"
+import { _SERVICE as InternetIdentity } from "../idl/internet_identity_types.d"
+import { _SERVICE as PubSub } from "../idl/pub_sub_channel.did.d"
+import { idlFactory as pubsubIDL } from "../idl/pub_sub_channel_idl"
+import { _SERVICE as Verifier } from "../idl/verifier.did.d"
+import { idlFactory as verifierIDL } from "../idl/verifier_idl"
+>>>>>>> f6fa3cda (feat: phone credential verification):src/integration/actors/index.ts
 
 /////////////
 // Config //
@@ -26,21 +40,20 @@ declare const IC_HOST: string
 declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
+declare const IM_ADDITION_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
 
-const canisterConfig = [
-  ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
-  ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],
-  ["Pubsub", PUB_SUB_CHANNEL_CANISTER_ID],
-  ["Verifier", VERIFIER_CANISTER_ID],
+export const accessList = [
+  INTERNET_IDENTITY_CANISTER_ID,
+  IDENTITY_MANAGER_CANISTER_ID,
+  PUB_SUB_CHANNEL_CANISTER_ID,
+  IM_ADDITION_CANISTER_ID,
+  VERIFIER_CANISTER_ID,
 ]
 
-export const accessList = canisterConfig.map((x) => x[1])
-
 // NOTE: Might be nice to have the canister named in this exception
-for (const [label, canister] of canisterConfig) {
-  if (!canister)
-    throw new Error(`Missing canister id for "${label}", please check envars.`)
+for (const canister of accessList) {
+  if (!canister) throw new Error(`Missing canister id, please check envars.`)
 }
 
 export const ic = {
@@ -52,43 +65,9 @@ export const ic = {
 // Agent //
 //////////
 
-/** Agent which retries all failed calls in order to mitigate "certified state unavailable" and "service overload" 5XX errors. */
-class AgentWithRetry extends Agent.HttpAgent {
-  RETRY_LIMIT = 5
-  call(
-    canisterId: Principal | string,
-    options: {
-      methodName: string
-      arg: ArrayBuffer
-      effectiveCanisterId?: Principal | string
-    },
-    identity?: Identity | Promise<Identity>,
-    attempt: number = 1,
-  ) {
-    try {
-      return super.call(canisterId, options, identity)
-    } catch (e: unknown) {
-      if (attempt < this.RETRY_LIMIT) {
-        console.warn(
-          `Failed to fetch "${options.methodName}" from "${canisterId}" (attempt #${attempt})`,
-          e,
-        )
-        return new Promise<SubmitResponse>((res) => {
-          setTimeout(
-            () => res(this.call(canisterId, options, identity, attempt + 1)),
-            1000 * attempt,
-          )
-        })
-      }
-      console.error(`Failed to fetch after ${attempt} attempts`)
-      throw e
-    }
-  }
-}
+// We share the same agent across all actors, and replace the identity when identity connection events occur.
 
-/** We share the same agent across all actors, and replace the identity when identity connection events occur. */
-export const agent = new AgentWithRetry({ host: ic.host })
-
+export const agent = new Agent.HttpAgent({ host: ic.host })
 export let rawId: DelegationIdentity | undefined
 
 /**
@@ -104,9 +83,6 @@ export async function fetchPrincipal() {
  */
 export function replaceIdentity(identity: DelegationIdentity) {
   agent.replaceIdentity(identity)
-  agent.getPrincipal().then((principal) => {
-    console.debug("replaceIdentity", { principalId: principal.toText() })
-  })
   rawId = identity
 }
 
@@ -138,7 +114,10 @@ function actor<T>(
 export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)
 export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
+export const ima = actor<ImAddition>(IM_ADDITION_CANISTER_ID, imaIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
+
+export type { InternetIdentity, IdentityManager, ImAddition, Verifier }
 
 /**
  * Allows calling a method with an alternate identity. Temporarily switches the agent identity, then switches it back.

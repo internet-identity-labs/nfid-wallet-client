@@ -1,18 +1,33 @@
 // State machine controlling the phone number credential flow.
+import { DerEncodedPublicKey } from "@dfinity/agent"
+import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { assign, createMachine } from "xstate"
 
-import { fetchPrincipal } from "frontend/comm/actors"
-import { fetchAccount, verifyToken } from "frontend/comm/im"
-import { verifyPhoneNumber } from "frontend/comm/lambda"
+import {
+  callWithIdentity,
+  fetchPrincipal,
+  rawId,
+} from "frontend/integration/actors"
+import { fetchDelegation } from "frontend/integration/actors/ii"
+import { fetchAccount } from "frontend/integration/actors/im"
+import { verifyPhoneNumber } from "frontend/integration/actors/lambda"
+import {
+  Certificate,
+  generatePNToken,
+  resolveToken,
+} from "frontend/integration/actors/verifier"
+import { ACCOUNT_LOCAL_STORAGE_KEY } from "frontend/integration/services/identity-manager/account/constants"
+import { LocalAccount } from "frontend/integration/services/identity-manager/account/state"
 
 // State local to the machine.
 interface Context {
   phone?: string
   principal?: Principal
-  credential?: string
+  credential?: Certificate
   smsToken?: string
   error?: string | undefined
+  appDelegate?: DelegationIdentity
 }
 
 // Definition of events usable in the machine.
@@ -21,7 +36,7 @@ type Events =
   | { type: "HAS_PHONE_NUMBER"; data: string }
   | { type: "INGEST_PRINCIPAL"; data: Principal }
   | { type: "ENTER_PHONE_NUMBER"; data: string }
-  | { type: "INGEST_CREDENTIAL"; data: string }
+  | { type: "INGEST_CREDENTIAL"; data: Certificate }
   | { type: "ENTER_SMS_TOKEN"; data: string }
   | { type: "VERIFIED" }
   | { type: "CHANGE_PHONE_NUMBER" }
@@ -34,10 +49,12 @@ type Services = {
   fetchPhoneNumber: { data: string }
   verifyPhoneNumber: { data: boolean }
   verifySMSToken: { data: boolean }
+  resolveToken: { data: Certificate }
+  fetchAppDelegate: { data: DelegationIdentity }
 }
 
 // The machine. Install xstate vscode extension for best results.
-/** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoBBPLVQ0GAY0a0wAVVh8AMuij1MAYnkB5AOIBJHAH1yGgLLJ5AUQAq5xKAAO6WPQZZbIAB6IATAAYfvAE4ggIB2AEYfADYAFi8AVi9QgBoQAE9vMLDeaJ8AZjCADkiCnzifIpCAX0qUtCxcQhIKKh46JlZ2Lh5SASERNokpWT4dTBhYWjYVMXo7FlUIet4VDnQAazBeOux8YjJKajaWNk5uPkFhUXpBmTke0fHJ0mnZlgQV9EH6LABtHwBdNwOJwuTBuTwIEK5XhhEIFTIBeFFXJQyIpdIIWJxXgFAq5XKRBIJApxMIBaq1DA7Rr7FpXY6dM49LRgSZUhp7Zms8zuegTFRQbYcpoLJYfDZbdm7JoHVoMBmnbq8Fls+rSvgqnl8hhjIXq0jvTCrL6-AFAxzOb5gpAeRCE6LZaKEmIBaIBSIe6Lou25Ly8SK+fGRAJxcLhaIUkB6mnNQ7yjqKjWs6Oc5Xc3n83VSmOqMjsHp2ZiSABm6FIBElapjsvpCa6SdV1NTmozOsF2c5huNkitf0BNuBltcNohXjCftyPmiISCcQKIbhuQK3shxV4k4CBKnZTiATCkUjKZldKOdaZacbwr45joZCPZFU5hw1gASvpkAAJDQ4cz6HDSYwACFzBfc0QStcFEFyUl13iMkwmiacimiOIvTSRAAh8LIvHyD1fRQt0IxqKMO2PON2hOesuUvfVeBvKRSAAZWMRjLHWGhVHID9+BwLRf0-b9f3-ICQLAodrVACEChCXhwnKXdIhCVFcliFcAl8WScIKaJtLKTdXUPUjaXIhUqIve8enoshmNY9i1CfV99Bs-RLA0ABpJ8xNBSCEGg6Eik3Lx4UKTIEJCFcEQKXg5xQ0MiShQyq05GtT0o88VQs3gADUWG4SQwBstiNjURZsGWI12MrJsyLlCjGSVDKjJ6HLmDyqRCrsrtPh7U1+3sC1vJHO01wiMcAxyVCPQilS-SiEJogQxSSg9ApEuq4zatM9Lkya7LcogfKOuK3NSHzXhCxLMsKwslL4zShqdqSpo9tag72pYoqaC6k1MD7LyIKGhAIgdOFEOgvJYnHBIIrJKKYtJKE5LHVbiJuk87vqvgP0YTAIGYMBbvaXgXzgdBmA4An0faVQ9D41jDBfcwABEHJ0fh5H+4dJLtEI-V3aJfSncIQzRdCgbyGSfERdTEKdaDx2qYjMHQHh4BtNGTLPJULn6cR8uGHpFGUCSQEHQbuYQOJoV8XwZ0JMJ+d5ldfAded1MwnxfChtar1jTatfOPorhuA3eAeOAnheOZmE5k2IStnEvC8QlpLdYIA2d7TooJUNyiRRSCR9-VCa27Wg4GfW7ljnzEl4G2fDt0lHZw6askw7SoibucEtRpqS4D6jMpbbUBQs6vAfgx0rfdYoQhT8KxYDfxMhCcpCkReJfSL6sqdLhtMqs0gx4HAaAYtsdsXyOdSVieaygXjF4T9BapYSENkQd7fkt3gfzN2w+jo0HHhbMk-hFLhACvCKc+4H6IFGg6SI0EPTFCKL4A8vcnobVrPdfeu0WptQKh9OywDbQIF8NiCIo1MgoThISOIrd-ANzJFCUMEQVJfxqtgzGg8mokIhIg2SEQSTuiUgSFS+4VyoRkuOSIsJmGxCXERSkmC-ZcMTD0bGuN8b92JqTcmlNNZ8OGtiPwM8xxsJ0vQsW7p-AqTKItMcc8pwcKwalbhvBNF4wMf7LYVA5B0H7kYhAHpsTaRDHYvCsjcgwxQrJJcKctwwKUSRFR-ccEaJxl4wJJ9wJc1ITELIpiPTmIhiSFceJIjrjkqGJEYRJxeBcaotx6ignYnro3B2rpebxEkVFPcIRJq7j8CpGcitKhAA */
+/** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoBBPLVQ0GAY0a0wAVVh8AMuij1MAYnkB5AOIBJHAH1yGgLLJ5AUQAq5xKAAO6WPQZZbIAB6IATAAYfvAE4ggIB2AEYfADYAFi8AVi9QgBoQAE9vMLDeaJ8AZjCADkiCnzifIpCAX0qUtCxcQhIKKh46JlZ2Lh5SASERNokpWT4dTBhYWjYVMXo7FlUIet4VDnQAazBeOux8YjJKajaWNk5uPkFhUXpBmTke0fHJ0mnZlgQV9EH6LABtHwBdNwOJwuTBuTwIEK5XhhEIFTIBeFFXJQyIpdIIWJxXgFAq5XKRBIJApxMIBaq1DA7Rr7FpXY6dM49LRgSZUhp7Zms8zuegTFRQbYcpoLJYfDZbdm7JoHVoMBmnbq8Fls+rSvgqnl8hhjIXq0jvTCrL6-AFAxzOb5gpAeRAhe28XJeEJlHxhLzFVHoxCRQqOiK5EoBaKwsLRSIUkB6mnNQ7yjqKjWs6Oc5Xc3n83VSmOqMjsHp2ZiSABm6FIBElapjsvpCa6SdV1NTmozOsF2c5huNkitf0BNuBltcNohhWivB8Hty5UJ0QKUPn3sh+N4IWKcRJkRRga8XkjKZldKOdaZacbwr45joZAPZFU5hw1gASvpkAAJDQ4cz6HDSYwAIXMJ9zRBK1wUQJ1oVKApojnEIvGiFFfDRNJEFxEIJyRIofGiOE4g3fcO0PON2hOesuXPfVeCvKRSAAZWMOjLHWGhVHIN9+BwLRv3fT9v1-ACgJAodrVACE4gCbJYMySIAjiQMQh8AJciXAIol4OIQhycJ4nxN09xqKMiNpEiFXIs9bx6GiyAYpiWLUB9n30Wz9EsDQAGkH2E0FwIQJ1sUiScN3k4NfQCJdMhg7JclwkonSDMII0Myya2PMjTxVSzeAANRYbhJDAWzmI2NRFmwZYjRYysm2IuVSMZJVMuMnpcuYfKpCK+yu0+HtTX7ewLR8kc7TUwI8XgwkwyhRIIqdDC1wSXS1K8MJA0IqtOVS+N0sa5NmpyvKIAKzqStzUh814QsSzLCsUqPbaGobLLWvawrGOKmhupNTA+28sDhshSINNhWSvHyHx4L8aIIrHaLcJyWF8TxOJ1pqky6rM0830YTAIGYMAtvaXgnzgdBmA4An7qJknaGeMAKYAETAfGoAK0VyvFTY7tMk8lWx3H8cJlhidJ8nKZ5kXafoemwCZlmCq+3qfrNAdBv+sTEACBCJ13KE4ThAplOh1CEGUgpAlgkIgiiGD8iSykNtq2sdr4fm8fFjHmBF2AyYpoWvZJn2xY+0qxUqiVuc9l2ejdwWqeFwPfY92tvaTkPFdBX7VdA4cNYQSI11XQlyhWiGElyOIIpwjC5whnCVpij0ksMzB0B4eAbUj53Hp6C5+nEArhh6RRlFEkBByGvP5N4XxfCtyaJNwrwl18cdDa1tTJ30lHkua-3o96S4BkHu5eAeOAnheOZmD+3PbQQaeCl3Ql52iYIAkiZeTa8KL5MJRTcSFALgSVGF5YxRx7offu1wT5kFvmPCEiQZ5b3nqSRe8EVIm1WlkdeiRQz4XDKA-U+9IFNUdg2LUmZ2zkNIPA3yiVoSwiKCFGIiVP5fwxIFbEH8oTVz8L6HeDs0bgO7omCiWVrKkEsnQgGhQMI4QCBEeceQ5JPyXFbc2HpMgujXEpZSuQiHVnjrzJ6+1JEnRoDIvOiUvDZAiLBLELo34cMQBECI2QSS4g-riOIBdyS7xoSQsRFl9ovSOh1d69krH3xBjiRucJYi7mDFECKiRuG7jJFuKEuRVGGM2sYg+ZDhHRIhBXKSIZEpyQUkpTBGJ5K2J4dOLcH88i+jyU7NKkDY7J2PKnMW-tJZ00ZszMArMpAlJ9Dk3ghIP4RHCP-LWqk-RwlCL6D0qJ5ztPRqI8y3SBmJ36cYvpFMQ4TNNruKSURERhFJAbWpri8jjkRFELSRQWkGSEWAoJuycbu32aLP2xizkCOmRJX0ENEqaUWSbGC2IVlrkSJ-eFWyRGdOCXso5bA4CiH9sCxCq4ohvz0TBPxMM4TZDSSSTIkK1wou+VjX5cceZnIklkGZ4L5lQpcZCeCq5DZrnDBuUuVQAnCPpd0FlyC54fzQcGeC8QlwbhxEEJuWs-CrSttUaoQA */
 const machine = createMachine(
   {
     context: {} as Context,
@@ -130,20 +147,40 @@ const machine = createMachine(
         },
       },
       HandleCredential: {
-        invoke: {
-          src: "resolveCredential",
-        },
         initial: "ResolveCredential",
         states: {
           ResolveCredential: {
-            on: {
-              INGEST_CREDENTIAL: {
-                actions: "ingestCredential",
-                target: "PresentCredential",
+            initial: "RetrieveDelegate",
+            states: {
+              RetrieveDelegate: {
+                invoke: {
+                  src: "fetchAppDelegate",
+                  onDone: [
+                    {
+                      actions: "ingestAppDelegate",
+                      target: "ResolveToken",
+                    },
+                  ],
+                },
+              },
+              ResolveToken: {
+                invoke: {
+                  src: "resolveToken",
+                  onDone: [
+                    {
+                      actions: "ingestCredential",
+                      target:
+                        "#PhoneNumberCredentialProvider.HandleCredential.PresentCredential",
+                    },
+                  ],
+                },
               },
             },
           },
-          PresentCredential: {},
+          PresentCredential: {
+            entry: "presentCredential",
+            type: "final",
+          },
         },
       },
     },
@@ -154,10 +191,12 @@ const machine = createMachine(
       ingestPrincipal: assign((_, { data }) => ({ principal: data })),
       ingestCredential: assign((_, { data }) => ({ credential: data })),
       ingestSMSToken: assign((_, { data }) => ({ smsToken: data })),
+      ingestAppDelegate: assign((_, { data }) => ({ appDelegate: data })),
       ingestError: assign((_, { data }) => ({
         error: (data as Error).message,
       })),
       clearError: assign((context) => ({ ...context, error: undefined })),
+      presentCredential: () => {},
     },
     services: {
       fetchPrincipal,
@@ -176,22 +215,43 @@ const machine = createMachine(
         return true
       },
       async verifySMSToken(context) {
-        if (!context.smsToken)
-          throw new Error("Please input your complete SMS token.")
-        try {
-          await verifyToken(context.smsToken)
-          return true
-        } catch (e) {
-          console.error("SMS verification failure details", e)
-          throw new Error("SMS verification failed, please try again.")
-        }
+        // if (!context.smsToken)
+        //   throw new Error("Please input your complete SMS token.")
+        // try {
+        //   await verifyToken(context.smsToken)
+        //   return true
+        // } catch (e) {
+        //   console.error("SMS verification failure details", e)
+        //   throw new Error("SMS verification failed, please try again.")
+        // }
+        return true
       },
-      resolveCredential: () => async (callback) => {
-        // TODO
-        callback({
-          type: "INGEST_CREDENTIAL",
-          data: "TODO",
-        })
+      async fetchAppDelegate() {
+        // TODO: How to get account data
+        const localAccount = JSON.parse(
+          window.localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY) || "{}",
+        ) as LocalAccount
+        return fetchDelegation(
+          Number(localAccount.anchor),
+          // TODO: How to get scope data
+          { host: "test.com" },
+          Array.from(
+            new Uint8Array(
+              rawId?.getPublicKey().toDer() as DerEncodedPublicKey,
+            ),
+          ),
+        )
+      },
+      async resolveToken(context) {
+        if (!context.appDelegate) throw new Error("No app delegate")
+        const blob = await callWithIdentity(async () => {
+          if (!context.phone) throw new Error("No phone number")
+          return await generatePNToken(context.phone)
+        }, context.appDelegate)
+        console.log("generated phone token", blob)
+        const token = await resolveToken(blob)
+        if (!token) throw new Error("Failed to resolve token")
+        return token
       },
     },
   },

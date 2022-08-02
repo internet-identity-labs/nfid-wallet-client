@@ -47,7 +47,7 @@ type DiscriminatedNFIDResponse<T> =
  * @param response
  * @returns
  */
-export function typeResponse<T>(
+function typeResponse<T>(
   response: NFIDResponse<T>,
 ): DiscriminatedNFIDResponse<T> {
   if (response.data.length) {
@@ -55,17 +55,13 @@ export function typeResponse<T>(
   } else if (response.error.length) {
     return { ok: false, code: response.status_code, error: response.error[0] }
   }
-  throw new Error(
-    `typeResponse Unknown response type ${Object.keys(response)[0]}`,
-  )
+  throw new Error(`Unknown response type ${Object.keys(response)[0]}`)
 }
 
-export class NfidHttpError extends Error {
-  code: number
-  constructor(message: string, code: number) {
+class NfidHttpError extends Error {
+  constructor(message: string) {
     super(message)
     this.name = "NfidHttpError"
-    this.code = code
   }
 }
 
@@ -79,7 +75,7 @@ export function unpackResponse<T>(response: NFIDResponse<T>) {
   if (r.ok) {
     return r.data
   } else {
-    throw new NfidHttpError(`${r.code} error: ${r.error}`, r.code)
+    throw new NfidHttpError(`${r.code} error: ${r.error}`)
   }
 }
 
@@ -115,6 +111,6 @@ export function unpackLegacyResponse(response: Response) {
   if (r.ok) {
     return true
   } else {
-    throw new Error(`unpackLegacyResponse ${r.code} error: ${r.error}`)
+    throw new Error(`${r.code} error: ${r.error}`)
   }
 }

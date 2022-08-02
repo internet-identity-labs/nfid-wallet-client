@@ -67,7 +67,6 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
       )
     case state.matches("GetPhoneNumber.EnterSMSToken"):
     case state.matches("GetPhoneNumber.ValidateSMSToken"):
-    case state.matches("GenerateCredential"):
       return (
         <CredentialRequesterSMSVerify
           onSubmit={(val) =>
@@ -85,10 +84,14 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
               ? state.event.data.error
               : undefined
           }
-          isLoading={
-            state.matches("GetPhoneNumber.ValidateSMSToken") ||
-            state.matches("GenerateCredential")
-          }
+          isLoading={state.matches("GetPhoneNumber.ValidateSMSToken")}
+        />
+      )
+    case state.matches("GenerateCredential"):
+      return (
+        <ScreenResponsive
+          isLoading={true}
+          loadingMessage="Creating verifiable credential"
         />
       )
     default:

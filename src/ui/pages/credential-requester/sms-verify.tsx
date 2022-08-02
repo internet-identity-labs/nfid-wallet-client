@@ -16,6 +16,7 @@ interface CredentialRequesterSMSVerifyProps {
   phone?: string | number
   responseError?: string
   onChangePhone: () => void
+  isLoading?: boolean
 }
 
 export const CredentialRequesterSMSVerify: React.FC<
@@ -28,6 +29,7 @@ export const CredentialRequesterSMSVerify: React.FC<
   onSubmit,
   responseError,
   onChangePhone,
+  isLoading,
 }) => {
   const { counter, setCounter } = useTimer({ defaultCounter: 3 })
 
@@ -41,7 +43,8 @@ export const CredentialRequesterSMSVerify: React.FC<
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       title="SMS verification"
-      subTitle={`to continue to ${applicationName}`}
+      // subTitle={`to continue to ${applicationName}`}
+      isLoading={isLoading}
     >
       <div
         className={clsx(

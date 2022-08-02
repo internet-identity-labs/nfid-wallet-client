@@ -1,6 +1,4 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
-import { Principal } from "@dfinity/principal"
-
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
 import { unpackLegacyResponse, unpackResponse } from "../_common"
@@ -164,7 +162,7 @@ export async function createPersona(
 /**
  * Verify SMS token that was issued to current user's phone number. Returns true or throws error.
  */
-export async function verifyToken(token: string, principal: Principal) {
+export async function verifyToken(token: string) {
   return im
     .verify_token(token)
     .then(unpackLegacyResponse)

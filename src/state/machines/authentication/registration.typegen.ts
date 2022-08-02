@@ -29,11 +29,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.AuthWithGoogleMachine": {
-      type: "done.invoke.AuthWithGoogleMachine"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "xstate.init": { type: "xstate.init" }
     "done.invoke.challengeTimer": {
       type: "done.invoke.challengeTimer"

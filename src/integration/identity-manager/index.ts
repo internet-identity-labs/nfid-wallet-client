@@ -162,7 +162,7 @@ export async function createPersona(
 }
 
 /**
- * ?
+ * Verify SMS token that was issued to current user's phone number. Returns true or throws error.
  */
 export async function verifyToken(token: string, principal: Principal) {
   return im

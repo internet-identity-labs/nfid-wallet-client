@@ -1,3 +1,4 @@
+import { useAtom } from "jotai"
 import React from "react"
 import { useParams } from "react-router-dom"
 
@@ -12,6 +13,7 @@ import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 export const Authenticate: React.FC<{ machine: any }> = ({ machine }) => {
+  const [, send] = useAtom(machine)
   const { userNumber } = useAccount()
   const { isLoading, setIsloading } = useIsLoading()
   const { secret, scope } = useParams()

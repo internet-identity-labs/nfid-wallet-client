@@ -158,7 +158,7 @@ export const useAuthentication = () => {
       const recoveryDevices = await fetchRecoveryDevices(userNumber)
       const recoveryPhraseDevice = recoveryDevices.find(
         (device) => device.alias === "Recovery phrase",
-        )
+      )
 
       if (!recoveryPhraseDevice) {
         setIsLoading(false)

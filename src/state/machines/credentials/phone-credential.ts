@@ -27,9 +27,7 @@ import {
   AuthorizingAppMeta,
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
-import AuthenticationMachine, {
-  AuthenticationMachineContext,
-} from "frontend/state/machines/authentication/authentication"
+import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import AuthorizationMachine from "frontend/state/machines/authorization/authorization"
 
 import { bool, defined, isDev } from "../common"
@@ -54,7 +52,7 @@ let credentialResolved = false
 type Events =
   | {
       type: "done.invoke.AuthenticationMachine"
-      data: AuthenticationMachineContext
+      data: AuthSession
     }
   | {
       type: "done.invoke.createAuthoRequest"
@@ -293,7 +291,7 @@ const PhoneCredentialMachine = createMachine(
         },
       }),
       assignAuthSession: assign((_, event) => ({
-        authSession: event.data.authSession,
+        authSession: event.data,
       })),
       assignHostname: assign({
         hostname: (_, event) => event.data,

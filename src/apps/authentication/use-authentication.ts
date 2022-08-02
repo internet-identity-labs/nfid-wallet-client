@@ -156,10 +156,9 @@ export const useAuthentication = () => {
       setIsLoading(true)
 
       const recoveryDevices = await fetchRecoveryDevices(userNumber)
-
       const recoveryPhraseDevice = recoveryDevices.find(
         (device) => device.alias === "Recovery phrase",
-      )
+        )
 
       if (!recoveryPhraseDevice) {
         setIsLoading(false)
@@ -185,11 +184,6 @@ export const useAuthentication = () => {
           sessionKey: result.sessionKey,
         })
         initUserGeek(await agent.getPrincipal())
-        im.use_access_point().catch((e) => {
-          throw new Error(
-            `useAuthentication.loginWithRecovery im.use_access_point: ${e.message}`,
-          )
-        })
         setShouldStoreLocalAccount(false)
         setError(null)
       }

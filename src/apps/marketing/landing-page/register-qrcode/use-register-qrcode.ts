@@ -48,6 +48,10 @@ export const useRegisterQRCode = () => {
       nfidJsonDelegate: NFIDLoginRegisterMessage["reconstructableIdentity"],
       anchor: NFIDLoginRegisterMessage["anchor"],
     ) => {
+      console.debug("useRegisterQRCode.handleLoginFromRemoteDelegation", {
+        nfidJsonDelegate,
+        anchor,
+      })
       const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),

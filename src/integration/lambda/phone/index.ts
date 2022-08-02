@@ -12,6 +12,7 @@ import { Principal } from "@dfinity/principal"
 import nacl from "tweetnacl"
 import nacl_util from "tweetnacl-util"
 
+import { ic } from "frontend/integration/actors"
 import { authState } from "frontend/integration/internet-identity"
 
 declare const VERIFY_PHONE_NUMBER: string
@@ -45,8 +46,7 @@ export function verifySignature(
 export async function verifyPhoneNumber(phoneNumber: string): Promise<string> {
   const delegationIdentity = authState.get().delegationIdentity
   if (!delegationIdentity) throw new Error("No delegation identity.")
-  const isLocal = true
-  const url = isLocal ? "/verify" : VERIFY_PHONE_NUMBER
+  const url = ic.isLocal ? "/verify" : VERIFY_PHONE_NUMBER
   const trimmed = phoneNumber.replace(/\s/g, "")
   const fields: QueryFields = {
     methodName: "validate_signature",

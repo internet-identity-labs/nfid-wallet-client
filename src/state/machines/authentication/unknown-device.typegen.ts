@@ -73,7 +73,6 @@ export interface Typegen0 {
       | "done.invoke.AuthWithGoogleMachine"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
-    signInWithGoogle: "done.invoke.fetchGoogleDevice"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
   eventsCausingGuards: {

@@ -33,24 +33,28 @@ export const App = () => {
       <Route path={"/"} element={<HomeScreen />} />
       <Route path={"/faq"} element={<Faq />} />
       <Route path={"/our-mission"} element={<OurMission />} />
-      {ProfileRoutes}
-      {RemoteRegisterAccountRoutes}
-      {NFIDRegisterAccountRoutes}
-      {RemoteNFIDAuthenticationRoutes}
-      {AppScreenAuthorizeAppRoutes}
-      {AppScreenAuthorizeDerivationOriginAppRoutes}
-      {RecoverNFIDRoutes}
 
-      {AppScreenAuthenticateAccountRoutes}
       <Route
         path="/credential/verified-phone-number"
         element={<PhoneCredentialCoordinator />}
       />
-      <Route path={"*"} element={<NotFound />} />
 
-      {/* Temporary routes for new machine based flows */}
-      <Route path="/idp" element={<IDPCoordinator />} />
+      <Route path="/authenticate" element={<IDPCoordinator />} />
       <Route path="/ridp" element={<RemoteIDPCoordinator />} />
+
+      {ProfileRoutes}
+      {RecoverNFIDRoutes}
+
+      {/* Legacy routes that we still need */}
+      {NFIDRegisterAccountRoutes}
+      {RemoteNFIDAuthenticationRoutes}
+
+      {/* Legacy routes */}
+      {/* {RemoteRegisterAccountRoutes} */}
+      {/* {AppScreenAuthorizeAppRoutes} */}
+      {/* {AppScreenAuthorizeDerivationOriginAppRoutes} */}
+
+      <Route path={"*"} element={<NotFound />} />
     </Routes>
   )
 }

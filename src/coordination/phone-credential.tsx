@@ -3,6 +3,7 @@ import { useMachine } from "@xstate/react"
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
+import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
 import PhoneCredentialMachine, {
   PhoneCredentialType,
 } from "frontend/state/machines/credentials/phone-credential"
@@ -12,6 +13,7 @@ import { CredentialRequesterSMSVerify } from "frontend/ui/pages/credential-reque
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
+import { AuthorizationCoordinator } from "./authorization"
 
 interface Props {
   machine?: PhoneCredentialType
@@ -26,6 +28,12 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
       return (
         <AuthenticationCoordinator
           actor={state.children.AuthenticationMachine as AuthenticationActor}
+        />
+      )
+    case state.matches("Authorize"):
+      return (
+        <AuthorizationCoordinator
+          actor={state.children.AuthorizationMachine as AuthorizationActor}
         />
       )
     case state.matches("DevClearData"):
@@ -59,6 +67,7 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
       )
     case state.matches("GetPhoneNumber.EnterSMSToken"):
     case state.matches("GetPhoneNumber.ValidateSMSToken"):
+    case state.matches("GenerateCredential"):
       return (
         <CredentialRequesterSMSVerify
           onSubmit={(val) =>
@@ -76,7 +85,10 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
               ? state.event.data.error
               : undefined
           }
-          isLoading={state.matches("GetPhoneNumber.ValidateSMSToken")}
+          isLoading={
+            state.matches("GetPhoneNumber.ValidateSMSToken") ||
+            state.matches("GenerateCredential")
+          }
         />
       )
     default:

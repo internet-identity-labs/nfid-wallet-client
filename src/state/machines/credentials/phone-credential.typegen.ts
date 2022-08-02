@@ -3,8 +3,23 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "done.invoke.registerCredentialHandler": {
+      type: "done.invoke.registerCredentialHandler"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.AuthenticationMachine": {
       type: "done.invoke.AuthenticationMachine"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.createAuthoRequest": {
+      type: "done.invoke.createAuthoRequest"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.AuthorizationMachine": {
+      type: "done.invoke.AuthorizationMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -18,15 +33,31 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.generateCredential": {
+      type: "done.invoke.generateCredential"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
-    "": { type: "" }
     "done.invoke.verifySmsService": {
       type: "done.invoke.verifySmsService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.registerCredentialHandler": {
+      type: "error.platform.registerCredentialHandler"
+      data: unknown
+    }
     "error.platform.AuthenticationMachine": {
       type: "error.platform.AuthenticationMachine"
+      data: unknown
+    }
+    "error.platform.createAuthoRequest": {
+      type: "error.platform.createAuthoRequest"
+      data: unknown
+    }
+    "error.platform.AuthorizationMachine": {
+      type: "error.platform.AuthorizationMachine"
       data: unknown
     }
     "done.invoke.clearAccountData": {
@@ -50,13 +81,21 @@ export interface Typegen0 {
       type: "error.platform.verifySmsService"
       data: unknown
     }
+    "error.platform.generateCredential": {
+      type: "error.platform.generateCredential"
+      data: unknown
+    }
   }
   invokeSrcNameMap: {
+    registerCredentialHandler: "done.invoke.registerCredentialHandler"
     AuthenticationMachine: "done.invoke.AuthenticationMachine"
+    createAuthoRequest: "done.invoke.createAuthoRequest"
+    AuthorizationMachine: "done.invoke.AuthorizationMachine"
     clearAccountData: "done.invoke.clearAccountData"
     fetchPhoneNumber: "done.invoke.fetchPhoneNumber"
     verifyPhoneNumberService: "done.invoke.verifyPhoneNumberService"
     verifySmsService: "done.invoke.verifySmsService"
+    generateCredential: "done.invoke.generateCredential"
   }
   missingImplementations: {
     actions: never
@@ -65,21 +104,28 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
+    assignHostname: "done.invoke.registerCredentialHandler"
     assignAuthSession: "done.invoke.AuthenticationMachine"
+    assignAuthoRequest: "done.invoke.createAuthoRequest"
+    assignAuthoSession: "done.invoke.AuthorizationMachine"
     assignEncryptedPN:
       | "done.invoke.fetchPhoneNumber"
       | "done.invoke.verifyPhoneNumberService"
     assignPhoneNumber: "ENTER_PHONE_NUMBER"
-    presentCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
+    presentCredential: "done.invoke.generateCredential"
   }
   eventsCausingServices: {
-    AuthenticationMachine: ""
-    clearAccountData: "CLEAR_DATA"
-    fetchPhoneNumber:
+    registerCredentialHandler: "xstate.init"
+    AuthenticationMachine: "done.invoke.registerCredentialHandler"
+    createAuthoRequest:
       | "done.invoke.AuthenticationMachine"
       | "done.state.PhoneNumberCredentialProvider.DevClearData"
+    AuthorizationMachine: "done.invoke.createAuthoRequest"
+    clearAccountData: "CLEAR_DATA"
+    fetchPhoneNumber: "done.invoke.AuthorizationMachine"
     verifyPhoneNumberService: "ENTER_PHONE_NUMBER" | "RESEND"
     verifySmsService: "ENTER_SMS_TOKEN"
+    generateCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
   }
   eventsCausingGuards: {
     isLocal: "done.invoke.AuthenticationMachine"
@@ -90,6 +136,8 @@ export interface Typegen0 {
   matchesStates:
     | "Ready"
     | "Authenticate"
+    | "CreateAuthoRequest"
+    | "Authorize"
     | "DevClearData"
     | "DevClearData.Start"
     | "DevClearData.Clear"
@@ -101,7 +149,8 @@ export interface Typegen0 {
     | "GetPhoneNumber.EnterSMSToken"
     | "GetPhoneNumber.ValidateSMSToken"
     | "GetPhoneNumber.End"
-    | "PresentCredential"
+    | "GenerateCredential"
+    | "End"
     | {
         DevClearData?: "Start" | "Clear" | "End"
         GetPhoneNumber?:

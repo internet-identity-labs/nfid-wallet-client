@@ -125,10 +125,10 @@ if (ic.isLocal) agent.fetchRootKey()
 /**
  * Create an actor.
  */
-function actor<T>(
+export function actor<T>(
   canisterId: string,
   factory: InterfaceFactory,
-  config?: Agent.ActorConfig,
+  config?: Partial<Agent.ActorConfig>,
 ): Agent.ActorSubclass<T> {
   return Agent.Actor.createActor(factory, { canisterId, agent, ...config })
 }
@@ -139,15 +139,3 @@ export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)
 export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
-
-/**
- * Allows calling a method with an alternate identity. Temporarily switches the agent identity, then switches it back.
- * @param method the fetch method you wish to call
- * @param actor the identity you wish to call with
- */
-export function callWithIdentity<T>(method: () => T, identity: Identity) {
-  agent.replaceIdentity(identity)
-  const result = method()
-  rawId && agent.replaceIdentity(rawId)
-  return result
-}

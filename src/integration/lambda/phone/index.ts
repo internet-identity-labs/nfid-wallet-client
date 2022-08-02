@@ -43,9 +43,10 @@ export function verifySignature(
  * @param principal
  * @returns Empty object on success
  */
-export async function verifyPhoneNumber(phoneNumber: string): Promise<string> {
-  const delegationIdentity = authState.get().delegationIdentity
-  if (!delegationIdentity) throw new Error("No delegation identity.")
+export async function verifyPhoneNumber(
+  phoneNumber: string,
+  identity: DelegationIdentity,
+): Promise<string> {
   const url = ic.isLocal ? "/verify" : VERIFY_PHONE_NUMBER
   const trimmed = phoneNumber.replace(/\s/g, "")
   const fields: QueryFields = {
@@ -54,7 +55,7 @@ export async function verifyPhoneNumber(phoneNumber: string): Promise<string> {
   }
 
   const request: any = await getTransformedRequest(
-    delegationIdentity,
+    identity,
     IDENTITY_MANAGER_CANISTER_ID,
     fields,
   )
@@ -73,6 +74,7 @@ export async function verifyPhoneNumber(phoneNumber: string): Promise<string> {
     fields,
     canister: IDENTITY_MANAGER_CANISTER_ID,
     response,
+    principal: identity.getPrincipal().toText(),
   })
 
   if (!response.ok) throw new Error(await response.text())

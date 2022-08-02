@@ -150,6 +150,18 @@
     "webdriverio": "^7.16.16",
     "webpack": "^5.72.0"
   },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
+  },
   "browserslist": {
     "production": [
       "last 2 chrome version",

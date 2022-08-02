@@ -2,6 +2,9 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { interpret } from "xstate"
 
+import { factoryDelegationIdentity } from "frontend/integration/factories/ii"
+import { factoryCertificate } from "frontend/integration/factories/verifier"
+
 import machine from "./machine"
 
 const testIdentity = Ed25519KeyIdentity.generate()
@@ -14,6 +17,19 @@ const testMachine = machine.withConfig({
     },
     async verifyPhoneNumber() {
       return true
+    },
+    async fetchPhoneNumber() {
+      return "+12508675309"
+    },
+    async resolveToken() {
+      return factoryCertificate()
+    },
+    async fetchAppDelegate() {
+      const delegation = await factoryDelegationIdentity()
+      return delegation
+    },
+    async resolveCredential() {
+      return
     },
   },
 })
@@ -80,23 +96,17 @@ describe("phone credential flow", () => {
       .send("LOGIN_COMPLETE")
   })
 
-  const testMachineWithPhoneNumber = testMachine.withConfig({
-    services: {
-      async fetchPhoneNumber() {
-        return "+12508675309"
-      },
-    },
-  })
-
+  let d0 = false // todo this done flag sucks
   it("activates ResolveCredential flow when user has phone number", (done) => {
-    interpret(testMachineWithPhoneNumber)
+    interpret(testMachine)
       .onTransition((state) => {
         expect(state.matches("GetPhoneNumber.EnterPhoneNumber")).toBeFalsy()
         if (state.matches("HandleCredential.ResolveCredential")) {
           expect(
             state.matches("HandleCredential.ResolveCredential"),
           ).toBeTruthy()
-          done()
+          !d0 && done()
+          d0 = true
         }
       })
       .start()

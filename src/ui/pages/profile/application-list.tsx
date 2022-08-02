@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { useAtom } from "jotai"
 import React from "react"
 
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
@@ -15,6 +16,8 @@ interface ApplicationListProps {
 export const ApplicationList: React.FC<ApplicationListProps> = ({
   accounts = [],
 }) => {
+  const [userNumber] = useAtom(userNumberAtom)
+
   const myApplications = React.useMemo(() => {
     // Group iiPersonas by hostname and count the number of iiPersonas
     const personasByHostname = accounts.reduce((acc, persona) => {
@@ -52,6 +55,17 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     },
     [accounts],
   )
+
+  const accts: { anchor: number; salt: string }[] = myApplications.map((x) => {
+    const account = accounts.find((y) =>
+      y.domain.includes(x.applicationName.toLowerCase()),
+    ) as NFIDPersona
+    return {
+      anchor: Number(userNumber),
+      salt: `${account.persona_id}@${account.domain}`,
+    }
+  })
+  const principals = usePrincipals(accts)
 
   return (
     <div className={clsx("px-5 md:px-16 pt-5", "bg-white overflow-hidden")}>

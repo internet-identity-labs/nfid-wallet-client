@@ -66,17 +66,28 @@ export const CredentialRequesterSMSVerify: React.FC<
           "sm:block",
         )}
       >
-        <StepInput
-          className="justify-between"
-          onSubmit={onSubmit}
-          errorClasses="text-center"
-          buttonText="Verify phone number"
-          responseError={responseError}
-        />
+        <div className="mt-3 text-sm sm:mt-14">
+          Please enter the verification code that was sent to {phone}.
+          <br />
+          {counter > 0 ? (
+            <P className="mt-3">Code can be resent in {counter} sec</P>
+          ) : (
+            <P className="mt-3">
+              Didn’t receive a code?{" "}
+              <span
+                className="cursor-pointer text-blue-base"
+                onClick={handleResend}
+              >
+                Resend
+              </span>
+            </P>
+          )}
+        </div>
         <Button
-          text
-          onClick={onChangePhone}
-          className="w-full mt-4 mb-8 text-sm text-center cursor-pointer text-blue-base hover:text-blue-hover"
+          className={clsx(
+            "mt-5 flex flex-col justify-between flex-1",
+            "sm:block",
+          )}
         >
           Change phone number
         </Button>

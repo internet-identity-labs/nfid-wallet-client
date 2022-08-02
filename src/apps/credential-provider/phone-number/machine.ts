@@ -9,16 +9,9 @@ import {
   fetchPrincipal,
   rawId,
 } from "frontend/integration/actors"
-import { fetchDelegation } from "frontend/integration/actors/ii"
-import { fetchAccount } from "frontend/integration/actors/im"
-import { verifyPhoneNumber } from "frontend/integration/actors/lambda"
-import {
-  Certificate,
-  generatePNToken,
-  resolveToken,
-} from "frontend/integration/actors/verifier"
-import { ACCOUNT_LOCAL_STORAGE_KEY } from "frontend/integration/services/identity-manager/account/constants"
-import { LocalAccount } from "frontend/integration/services/identity-manager/account/state"
+import { ACCOUNT_LOCAL_STORAGE_KEY } from "frontend/integration/identity-manager/account/constants"
+import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
+import { Certificate } from "frontend/integration/verifier"
 
 // State local to the machine.
 interface Context {
@@ -201,11 +194,12 @@ const machine = createMachine(
     services: {
       fetchPrincipal,
       async fetchPhoneNumber() {
-        const account = await fetchAccount()
-        if (!account.phoneNumber) {
-          throw new Error("User has no phone number.")
-        }
-        return account.phoneNumber
+        // const account = await fetchAccount()
+        // if (!account.phoneNumber) {
+        //   throw new Error("User has no phone number.")
+        // }
+        // return account.phoneNumber
+        throw new Error("Not implemented")
       },
       async verifyPhoneNumber(context) {
         if (!context.phone) throw new Error("Missing phone number")
@@ -224,34 +218,37 @@ const machine = createMachine(
         //   console.error("SMS verification failure details", e)
         //   throw new Error("SMS verification failed, please try again.")
         // }
-        return true
+        // return true
+        throw new Error("Not implemented")
       },
       async fetchAppDelegate() {
-        // TODO: How to get account data
-        const localAccount = JSON.parse(
-          window.localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY) || "{}",
-        ) as LocalAccount
-        return fetchDelegation(
-          Number(localAccount.anchor),
-          // TODO: How to get scope data
-          { host: "test.com" },
-          Array.from(
-            new Uint8Array(
-              rawId?.getPublicKey().toDer() as DerEncodedPublicKey,
-            ),
-          ),
-        )
+        // // TODO: How to get account data
+        // const localAccount = JSON.parse(
+        //   window.localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY) || "{}",
+        // )
+        // return fetchDelegation(
+        //   Number(localAccount.anchor),
+        //   // TODO: How to get scope data
+        //   { host: "test.com" },
+        //   Array.from(
+        //     new Uint8Array(
+        //       rawId?.getPublicKey().toDer() as DerEncodedPublicKey,
+        //     ),
+        //   ),
+        // )
+        throw new Error("Not implemented")
       },
       async resolveToken(context) {
-        if (!context.appDelegate) throw new Error("No app delegate")
-        const blob = await callWithIdentity(async () => {
-          if (!context.phone) throw new Error("No phone number")
-          return await generatePNToken(context.phone)
-        }, context.appDelegate)
-        console.log("generated phone token", blob)
-        const token = await resolveToken(blob)
-        if (!token) throw new Error("Failed to resolve token")
-        return token
+        // if (!context.appDelegate) throw new Error("No app delegate")
+        // const blob = await callWithIdentity(async () => {
+        //   if (!context.phone) throw new Error("No phone number")
+        //   return await generatePNToken(context.phone)
+        // }, context.appDelegate)
+        // console.log("generated phone token", blob)
+        // const token = await resolveToken(blob)
+        // if (!token) throw new Error("Failed to resolve token")
+        // return token
+        throw new Error("Not implemented")
       },
     },
   },

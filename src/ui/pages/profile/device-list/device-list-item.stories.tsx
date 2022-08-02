@@ -1,5 +1,4 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
-import { List } from 'frontend/design-system/molecules/list'
 import React from "react"
 
 import { List } from "frontend/ui/molecules/list"

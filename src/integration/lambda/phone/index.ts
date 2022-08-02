@@ -4,11 +4,7 @@ import { Principal } from "@dfinity/principal"
 import nacl from "tweetnacl"
 import nacl_util from "tweetnacl-util"
 
-<<<<<<< HEAD:src/integration/lambda/phone/index.ts
 import { rawId } from "frontend/integration/actors"
-=======
-import { rawId } from "."
->>>>>>> f6fa3cda (feat: phone credential verification):src/integration/actors/lambda.ts
 
 declare const VERIFY_PHONE_NUMBER: string
 

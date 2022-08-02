@@ -70,11 +70,18 @@ export const RouterRegisterDeviceDecider: React.FC<
             `RouterRegisterDeviceDecider.handleRegister im.create_access_point: ${e.message}`,
           )
         })
+        
       if (createAccessPointResponse.status_code !== 200) {
         console.error("failed to create access point", {
           error: createAccessPointResponse.error[0],
         })
       }
+
+      im.use_access_point().catch((e) => {
+        throw new Error(
+          `useAuthentication.loginWithRecovery im.use_access_point: ${e.message}`,
+        )
+      })
     }
 
     try {

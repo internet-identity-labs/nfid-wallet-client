@@ -1,21 +1,14 @@
 // State machine controlling the phone number credential flow.
-import { DerEncodedPublicKey } from "@dfinity/agent"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import {
-  callWithIdentity,
-  fetchPrincipal,
-  rawId,
-} from "frontend/integration/actors"
-import { ACCOUNT_LOCAL_STORAGE_KEY } from "frontend/integration/identity-manager/account/constants"
-import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
+import { verifyPhoneNumber as _verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import { Certificate } from "frontend/integration/verifier"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import AuthenticationMachine, {
-  Context as AuthenticationMachineContext,
+  AuthenticationMachineContext,
 } from "frontend/state/machines/authentication/authentication"
 
 // State local to the machine.
@@ -206,7 +199,7 @@ const PhoneCredentialMachine = createMachine(
         const principal = context.authSession?.delegationIdentity.getPrincipal()
         if (!context.phone) throw new Error("Missing phone number")
         if (!principal) throw new Error("Missing principal")
-        const res = await verifyPhoneNumber(context.phone, principal)
+        const res = await _verifyPhoneNumber(context.phone, principal)
         if (!res) throw new Error("Failed to verify phone number")
         return true
       },

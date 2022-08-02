@@ -57,7 +57,7 @@ type Events =
   | { type: "RESEND"; data: string }
 
 // The machine. Install xstate vscode extension for best results.
-/** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoBBPLVQ0GAY0a0wAYghYwvepg7oA1gsHDR9CQywBZRmNRKwiUAAd0senszmQAD0QBGAAwAWXi4DsAZgA2Pz8ATgC3NwCAJiiQgBoQAE9EDxco3gAOEJcAkOyfDOCAVgyAX1KEtHl8YjJKajomVnYuHlJeAHEwWirsGpJ2rtoAUUd6WAZMKF7cQgHZeUVlNQUZ-rqqHkaWNk5uPiG1uYPu0fHJ6Yw+49IEJRVdeiwAbTcAXQcrGzsHZwQXQq8KKpAIBIpRHw+DwZSEJZIIHxRNxAjwBNI+FwuPxRYJ+cqVK6zWoUTbaHYtfaDbpHYm8YZ0Mg0+bDHAAFWGACUAPrIAASAHkcMMuTgAKr6ABCnM+1lsT3sSCciGCXhCWSKbhKLg8bghRSKcNcuq8mKKIVRwI8ULcLnxICZGwaDHJezanWphPW7XpUlIAGV9H7WStMNIyOx2hZmJIAGboUgEXgOklOpq7VonHqem50hn+wPB9SYO7LR4vd4y77yhzwzFRAK8VF+Io+Er1twhHwJP7QlzeGIBLIhY0du3J+pbZ3NV2Z5O530BoMh6TkXn8HAdYV8wXCsWS6WKr5yrC-FINwJQtVFaIZDzmvweQ3-Tx+XjhMHAh9uDJRDIBMfZsSE5ktOGZUlm1Q5j6ZCLoWNDSCy7LcouXKsvyADSLKVseCqgH8vh9kUaR3u4OppMCGRPmk17eFCHhWhiBTDh4AGQUBpLbKBlLuhB1y0gAaiw3CSGAsHLnI2BLCo6i8BwZD0DGiR+gQsB+mQXBiGYh6yj8ip-NeDYhNeGSFDiaKagaSSuHePiZD+ITNp4171j4rF8QMwGcem3GHIBAy8IJzDCVIYlFmGpARrwUaxvGiZyaQClKSpamkBpWmWDp1Z6a4r5qg5AIuMxviRAEVGBBkvCthqaLZAE-gAm5RIeRxU7eW6vKMJgEDMGAnlTrwHJwOgzByX1TQDd0CVgHJAAiYA9VAIkLJJ9wrEmfmOpOaYUu1nXdb1LXjYNsDDaNh0sBNtBTbN81gItUglg8kjyq8HzaVWJ7Zf87jIi20QxNCt5gqVVkINkyI-iZmqxKEGp4hU9obSmW0umBvAdV1PVjRdx2nQdqY40NI1gHBoYSQoq0yeO51cbtmP4yjzATSdxPY0zuPE6Tj3oGWmCvdhul4Ygf7Ih4OI5FELZuM2t5UTaIS8IEVqkX4WQeEULF2pg6A8PAirUwTtN8JoIiNLo6UgEegtKggfi2bEPjSyZqJ-tifhPpLCtQxrjv1RiRSNV6bNtbOSM8WcExKJcbEDALWVC-8GJvhr2qeFiMIgk+4SvhEkShMCaLZ4HNzBztocx3w0GkMmcefQnUTaorPjZ9LkRmhElnwkZ6Ri+EELtlirkIwbjMh+Bc5V6FNC17hNvFZVORBD+oIr83VFpA2TYtm24SdsX7GG2PPFzoFwWiQWIYz6e-yAg5wIxL4Dk+1EVEkbwER+J4v7anVIRRPvzVD5l3HkjK+X0AC07h37uEHACDsbYHKPlBkUPwfYbQfwKMELImIAGbRAkfDG+02bMzxsQwaV16DTTAHNBaIkwEJx-K+VBzdsiP1SEg+EWRkR1TtnVO8v4YQB2HkjUuM52iEKxjTEhrMpEczkqTehc8YHvzVJCP8P9xZy0iJkAILt3BGTSG4IeBIK7I3wcA9Ge1JGG2kWdQ2ii-g+DyIrXwuRMROPYU+DIAI3yFExNiXUsNjGI1MaItGEiGYgSTFQWAog2YOOFhCRWuiWw-yxLqLsoNTTIlQc2bIwRGK6NwWYryFiInxPejha+kIiguJYe4802onxQgbLkYEw4bR8NHMI0JNMx4JIQOAh80DIjeIyPA+yD4qIwjsnkHEJlWyL3huUIAA */
+/** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoAlMIwgBPAMSJQAB3Sx6DLJJAAPRAEYAHGt4AWNQHYtAViMAGHRv2mATABoQI9UYCcO3mYDMpo-o-PNvjoAvkH2aFi4hCQUVDx0TKzsXDykvACCeLSoNAwAxoy0YGIQEbz0mBzoANZg6ZnZ8fkKmACyjLmo5WBKMnLNSqoIHgBs1rymw0Y6HnrOGhoeGs72jggGBrwapmomaqb6JjrbIWEY2PjEZJTU8SxsnNx8AOJgtOHnUc+vAKLK9LAMTBQd6RS6kYqlcqVGq8ABmrw6IIu0R6snk9EUSBUiD0Gl4gQ8Oxcw1Gww8RhWiGspg0Yw0OmsHl8RnJTI0wxOICRnxiNwYdySj1SLzeZ1B0V43zoZG5YLE3xwABVvvwAPrIAASAHkcN9VTgAKotABCKtRfQxmAGOI8Hk2fn0zn01mcpgmrkpCGsemGvGGmnpajUzhdk05sui1zi-MSDxSvBFEb4ADUyPRYSIk+CStgyhVqrUOGmM1mAMpkLi5bpY3rozGgQZ+ZzuJ3DN1LbY+fSe6zMzZGSwWdlePwc0JcsXIq6xHIJe7JL6iiJT1Kp0jpzOTnliMjsVJSZgFWHoUgEXhF9clrdg8ukSvV6Ro-pYwZqHRuPx6czDWnmObDHsLDtd9TGcIx-QOPYNHDa9IxnW5YwXYVXizSVpVIUsWlLRUC0wMRyA1NIcCePVNR1PVDRNM0ayfS1rTWbRnC8XtJkdNRqSDDQe2GfR9D9SxrB8Ix2JDXwYOXHko1nAU40XVCpUKDCsJwmo8IVZU1Uw0tVUVLUAGkFXNOsrRfHFhM2fQ9m2HjaQHZYHCpZwf10LRTBHIxvV7aDxyzKSEPnIUExQ2C+AUsgtJUmgxH4b5SwVAARIznwbKkpnxBl-F8QTvQmLiHK9fQdCMdwNDMXw1CZYkPHEj4wT8mMAvjRMQtXFhuAKMAItwiFcyhAtz2LERSwIWBb3vJK6NMhB6VMdwZi2LZhlcFkdB7fRRk2Ax5msLR2SDIwavFac+TnQUmuCiSwV4ZM2ogDqutUndSD3XgDyPE8zwvDdhtGit6CrCb62xL1rG0eYbDA70RjfHQAPyl1ePxQlvBcZ0eLmQ6V3q07ZOQpdauiHragBDreF8+CGrOuSWsBkyUoQOZtEmW09jbRYys9AxGV4W0HSc6xBJMA7OUwdAeHgLFyZOmSkIEIRRFp+iAFo9nGVndtAgcXRmTnwLtN0vAZLRYcdaxMckimcdljIslnJoHxAWtkuBrxZrbPWyRMb93118yDZR3saUEsdTkuuDpcQwLmrDxdfn+QFgRpmiLSBxtYd4ZbA6WSYnPs1Zg00XgBZMKwQymNyQ4nGPeWjK2o4ugnQvQrNFam99m0seY7Nmck8tWRlrF9H8jltFx2eqnyWuxmX6-xo7V0Glvk+M+iZl9TOrGz1HzB7cDfTUEkmPmZwnKWc26stmfzrnlc0MUh6aFb+nYbcL2luDKZ2Rsbt4csO0BaWK6L8zonTn3DrXK+1Nq7XVuvdZSuEn4ux0M2f0Hhg7bF4vtVa+UvBLTmhMaky0eLrTAcdCBkdr7yUwBARBr5QL7y3gyEw3oGQ9gqs2cCbkQy2mdDoMSk9q7TwoVAxupBaGIBVmMd0zoZjUksHMWknN6S+mLuBEMewPLC1DqIoRjU+BsDgDkIR4iGbeAzoPXibpvBHF7LrDang3KCxGHMYIAidGX2EWI5eztBhKxGOMJaMiGQ0kdPMTmfDmz+y0NSN0jJXEhCAA */
 const PhoneCredentialMachine = createMachine(
   {
     context: {} as Context,
@@ -83,12 +83,7 @@ const PhoneCredentialMachine = createMachine(
         invoke: {
           src: "AuthenticationMachine",
           id: "AuthenticationMachine",
-          onDone: [
-            {
-              actions: "assignAuthSession",
-              target: "GetPhoneNumber",
-            },
-          ],
+          onDone: "GetPhoneNumber",
           data: (context) => ({
             appMeta: context.appMeta,
           }),
@@ -105,7 +100,7 @@ const PhoneCredentialMachine = createMachine(
                 {
                   actions: "assignEncryptedPN",
                   cond: "defined",
-                  target: "#PhoneNumberCredentialProvider.PresentCredential",
+                  target: "End",
                 },
                 { target: "EnterPhoneNumber" },
               ],
@@ -144,13 +139,19 @@ const PhoneCredentialMachine = createMachine(
               onDone: [
                 {
                   cond: "bool",
-                  target: "#PhoneNumberCredentialProvider.PresentCredential",
+                  target: "End",
                 },
                 { target: "EnterSMSToken" },
               ],
               onError: "EnterSMSToken",
             },
           },
+          End: {
+            type: "final",
+          },
+        },
+        onDone: {
+          target: "PresentCredential",
         },
       },
       PresentCredential: {

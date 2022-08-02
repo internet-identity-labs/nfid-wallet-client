@@ -10,17 +10,14 @@ export function getDataFromPath(): Promise<{
   authRequest: AuthorizationRequest
   pubsubChannel: string
 }> {
-  const [_, _path, secret, maxTimeToLive, aliasDomain, derivationOrigin] =
-    window.location.pathname.split("/")
+  const params = Object.fromEntries(
+    new URLSearchParams(window.location.search).entries(),
+  )
+  const { secret, maxTimeToLive, aliasDomain, derivationOrigin } = params
+
+  console.debug(getDataFromPath.name, { ...params })
+
   const sessionPublicKey = new Uint8Array(fromHexString(secret))
-  console.debug("getDataFromPath", {
-    _path,
-    secret,
-    maxTimeToLive,
-    aliasDomain,
-    derivationOrigin,
-    sessionPublicKey,
-  })
   return Promise.resolve({
     authRequest: {
       hostname: aliasDomain,

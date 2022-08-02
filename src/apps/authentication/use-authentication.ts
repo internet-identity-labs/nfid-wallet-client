@@ -155,7 +155,12 @@ export const useAuthentication = () => {
     async (seedPhrase: string, userNumber: bigint) => {
       setIsLoading(true)
 
-      const recoveryDevices = await fetchRecoveryDevices(userNumber)
+      // TODO improve refetch. once in 20 times not fetching correctly
+      let recoveryDevices = await fetchRecoveryDevices(userNumber)
+      if (!recoveryDevices.length) {
+        recoveryDevices = await fetchRecoveryDevices(userNumber)
+      }
+
       const recoveryPhraseDevice = recoveryDevices.find(
         (device) => device.alias === "Recovery phrase",
       )

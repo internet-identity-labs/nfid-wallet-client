@@ -13,18 +13,29 @@ interface CredentialRequesterNotVerifiedProps {
   applicationLogo?: string
   applicationName?: string
   onSubmit: (values: { phone: string }) => void
+  isLoading?: boolean
+  error?: string
+  phoneNumber?: string
 }
 
 export const CredentialRequesterNotVerified: React.FC<
   CredentialRequesterNotVerifiedProps
-> = ({ children, applicationLogo, applicationName, onSubmit }) => {
+> = ({
+  children,
+  applicationLogo,
+  applicationName,
+  onSubmit,
+  isLoading,
+  error,
+  phoneNumber,
+}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      phone: "",
+      phone: phoneNumber || "",
     },
   })
   return (
@@ -32,7 +43,8 @@ export const CredentialRequesterNotVerified: React.FC<
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       title="Verification request"
-      subTitle={`to continue to ${applicationName}`}
+      isLoading={isLoading}
+      // subTitle={`to continue ${applicationName ? `to ${applicationName}` : ""}`}
     >
       <P className="text-sm mt-7">
         You haven't yet verified your phone number. Would you like to do it now?
@@ -51,7 +63,7 @@ export const CredentialRequesterNotVerified: React.FC<
             type="text"
             labelText="Phone number"
             placeholder="+XX XXX XXX XX XX"
-            errorText={errors.phone?.message}
+            errorText={error || errors.phone?.message}
             {...register("phone", {
               required: phoneRules.errorMessages.required,
               pattern: {

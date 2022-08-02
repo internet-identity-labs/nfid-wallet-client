@@ -1,8 +1,17 @@
 // State machine controlling the phone number credential flow.
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import {
+  CredentialResult,
+  registerPhoneNumberCredentialHandler,
+} from "@nfid/credentials"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { fetchProfile } from "frontend/integration/identity-manager"
+import {
+  verifyPhoneNumberService,
+  verifySmsService,
+} from "frontend/integration/identity-manager/services"
 import { verifyPhoneNumber as _verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import { Certificate } from "frontend/integration/verifier"
 import { AuthSession } from "frontend/state/authentication"
@@ -15,13 +24,19 @@ import AuthenticationMachine, {
 interface Context {
   phone?: string
   principal?: Principal
-  credential?: Certificate
-  smsToken?: string
-  error?: string | undefined
+  credential?: string
   appDelegate?: DelegationIdentity
   appMeta: AuthorizingAppMeta
   authSession?: AuthSession
 }
+
+let credentialResult: CredentialResult
+
+registerPhoneNumberCredentialHandler(function () {
+  return new Promise((resolve) => {
+    setInterval(() => credentialResult && resolve(credentialResult), 1000)
+  })
+})
 
 // Definition of events usable in the machine.
 type Events =
@@ -29,28 +44,39 @@ type Events =
       type: "done.invoke.AuthenticationMachine"
       data: AuthenticationMachineContext
     }
-  | { type: "HAS_PHONE_NUMBER"; data: string }
-  | { type: "INGEST_PRINCIPAL"; data: Principal }
+  | {
+      type: "done.invoke.verifySmsService"
+      data: boolean
+    }
+  | {
+      type: "error.platform.verifySmsService"
+      data: { error: string }
+    }
+  | {
+      type: "done.invoke.verifyPhoneNumberService"
+      data: string
+    }
+  | {
+      type: "error.platform.verifyPhoneNumberService"
+      data: { error: string }
+    }
   | { type: "ENTER_PHONE_NUMBER"; data: string }
-  | { type: "INGEST_CREDENTIAL"; data: Certificate }
   | { type: "ENTER_SMS_TOKEN"; data: string }
-  | { type: "VERIFIED" }
   | { type: "CHANGE_PHONE_NUMBER" }
-  | { type: "HAS_NO_PHONE_NUMBER" }
-  | { type: "RESEND" }
+  | { type: "RESEND"; data: string }
 
 // Definition of services used by the machine.
 type Services = {
   fetchPrincipal: { data: Principal }
-  fetchPhoneNumber: { data: string }
+  fetchPhoneNumber: { data: string | undefined }
   verifyPhoneNumber: { data: boolean }
-  verifySMSToken: { data: boolean }
+  verifySmsService: { data: boolean }
   resolveToken: { data: Certificate }
   fetchAppDelegate: { data: DelegationIdentity }
 }
 
 // The machine. Install xstate vscode extension for best results.
-/** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoBBPLVQ0GAY0a0wAYghYwvepg7oA1gsHDR9CVICyjMaiVhEoAA7pY9BljMgAHogCMAdgAcvAJyuvAFgAGZ3cAjy8vZwAaEABPRD8ANgBmXiTnBL93ZySvAFZ3POcAXyLotHl8YjJKajomVnYuHlJeAHEwWnLsSpIW9toAUQd6WAZMKC7cQl7ZeUVlNQVJnuqqHjqWNk5uPn7l6d2OoZGxiYxug9IEJRVdeiwAbQCAXXtLa1tMeycEVz-UgBMrlyASCAIS7lcSQS0TiCASwVSzgCSRC-jczkSJTK5ymVQoa20m0aOz6HX2+LaR2GoyUZwql2kZHYLXMzEkADN0KQCLwKb0ausGMTts0qZ1cSsyYMaad+WRrgs7o8Xm8rDZ7l8kI4XO4-LwAuCkgF3AlcpkoZDYYgoSlXBD8rlkpaAQDsSB5QTasKGqLDhKGZSBnQyJ7pAMcAAVAYAJQA+sgABIAeRwAzjOAAqnoAEKxtUfTXfRBJAEpAL5PwWgF+JKuAEBGGxRDuSEGrKthIBPweXL5d2ewVE31Nf2e3jBqSkADKemnkcWmGk5ET-BwrXTSdT6azufz2veGrs2p+uS8vCrfmc6TyqNcAS8SWtCC8jd4uVcgVczgBuSSxp-AdJUuIcNhHUlxXHScyFnedF3DKNYzjWC40jZMAGkIwLI8tVAH5S1yXgu1-dw-38BEvGfa89QvJIexCUs0XSIDAwFQkwK2UdpXHAA1FhuEkMBYIXdQlzkbB5hUdQ+WA-FQJ9TiIL2WTel4PjmAEqRhMXRVbkkTUnleA91U+Ytflfbx3DrcFckxKEAUo5sEGyIFeHtXJXTIw1sncFiLjk9iFJJMVlNYvh1M0oS5xEmgmVIFleDZTluV5QdAvqRSQvJFTwv4iBBO00TdPQZVMEM7DTJPG0EnfNwEi8MtkXrUE-Co4J9VrHtAjcf8rNyPy8TY70MuCvhE0YTAIGYMB5PqXgYzgdBmA4Gb0pYeaOlIegwBWgARMBpqgQTZgkm5FhksKvSFEa-RacbJum2b1oW2AlpWp7mA22gtp2sB9sOwTitK8rjMLY88MQBr9UNIE60hVtH1apzH08fwe3CRs9TSBIBqlD7MrGiaptW4bnsW5aSeusnXopmKxLmM7pLS0nwLFe7iY+jaafetbPpet6wDpoH9JVIyLBMosqvhe03LNE0ASajyklyKju1cC8QnvPwFbo8EcfdTB0B4eBtWZqnWb4TQRDqXRTFBnCzORAFeEhNIARCdxXUNb9n2Nc9UWve8-ysgp9ZxS78dG7iculY5aXGT0KsliHnOSXg3FNMiMnSBJXWfLtCK8BIoTV0EEX60oPRjyPbsgmOJxDUhE-tyqU+CdXuwiE17xyfIAWfXxPHBQOPy7cJ-1xkDeYJ6PLobqdCpoJPwZ1VPnavbsq1-YE-Aa1XkQ1-JQ9bJ1fEngKWZnuu54i-KtOixdl9w1e6pd3WPG111-EbKiHML11nBFzrP+PIvlK5m2HFfUK-lehPzMsrC8VZrz1WDveR8z4-zOx8MrNIJdGJunAdXaeUdeDs0erzLmAtOYLW+ttPaB0wBHSkHAqWyRzxmiLk1dIH497I0RGEe0P5i7QkhOfIa5sr5kMpsOShFNqHkxWnTFhKcGrr0CPVLItkPBWVVnRSyjZPymiLoaMRqxL4kKkfI7m0iwLKNXuXIiZ4EShG4b4fuTk9SEV8GeVsDl7xZC8KYq6kCLFE3ISzPkVBYCiA+nYn4GQ7SNl3g+Lwepi6OThIHTw2tQG2WQaPIJNcuKkLCTYn0cTEBnmcI4zhLizRuIHvWF2MNPEFFAQQ8OMCzESKjhU5y1TLzINvJCB8pZnxlhqnebWHlbQQhMSUIoQA */
+/** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoBBPLVQ0GAY0a0wAYghYwvepg7oA1gsHDR9CQywBZRmNRKwiUAAd0senszmQAD0QBGAAwAWXi4DsAZgA2Pz8ATgC3NwCAJiiQgBoQAE9EDxco3gAOEJcAkOyfDOCAVgyAX1KEtHl8YjJKajomVnYuHlJeAHEwWirsGpJ2rtoAUUd6WAZMKF7cQgHZeUVlNQUZ-rqqHkaWNk5uPiG1uYPu0fHJ6Yw+49IEJRVdeiwAbTcAXQcrGzsHZwQXQq8KKpAIBIpRHw+DwZSEJZIIHxRNxAjwBNI+FwuPxRYJ+cqVK6zWoUTbaHYtfaDbpHYm8YZ0Mg0+bDHAAFWGACUAPrIAASAHkcMMuTgAKr6ABCnM+1lsT3sSCciGCXhCWSKbhKLg8bghRSKcNcuq8mKKIVRwI8ULcLnxICZGwaDHJezanWphPW7XpUlIAGV9H7WStMNIyOx2hZmJIAGboUgEXgOklOpq7VonHqem50hn+wPB9SYO7LR4vd4y77yhzwzFRAK8VF+Io+Er1twhHwJP7QlzeGIBLIhY0du3J+pbZ3NV2Z5O530BoMh6TkXn8HAdYV8wXCsWS6WKr5yrC-FINwJQtVFaIZDzmvweQ3-Tx+XjhMHAh9uDJRDIBMfZsSE5ktOGZUlm1Q5j6ZCLoWNDSCy7LcouXKsvyADSLKVseCqgH8vh9kUaR3u4OppMCGRPmk17eFCHhWhiBTDh4AGQUBpLbKBlLuhB1y0gAaiw3CSGAsHLnI2BLCo6i8BwZD0DGiR+gQsB+mQXBiGYh6yj8ip-NeDYhNeGSFDiaKagaSSuHePiZD+ITNp4171j4rF8QMwGcem3GHIBAy8IJzDCVIYlFmGpARrwUaxvGiZyaQClKSpamkBpWmWDp1Z6a4r5qg5AIuMxviRAEVGBBkvCthqaLZAE-gAm5RIeRxU7eW6vKMJgEDMGAnlTrwHJwOgzByX1TQDd0CVgHJAAiYA9VAIkLJJ9wrEmfmOpOaYUu1nXdb1LXjYNsDDaNh0sBNtBTbN81gItUglg8kjyq8HzaVWJ7Zf87jIi20QxNCt5gqVVkINkyI-iZmqxKEGp4hU9obSmW0umBvAdV1PVjRdx2nQdqY40NI1gHBoYSQoq0yeO51cbtmP4yjzATSdxPY0zuPE6Tj3oGWmCvdhul4Ygf7Ih4OI5FELZuM2t5UTaIS8IEVqkX4WQeEULF2pg6A8PAirUwTtN8JoIiNLo6UgEegtKggfi2bEPjSyZqJ-tifhPpLCtQxrjv1RiRSNV6bNtbOSM8WcExKJcbEDALWVC-8GJvhr2qeFiMIgk+4SvhEkShMCaLZ4HNzBztocx3w0GkMmcefQnUTaorPjZ9LkRmhElnwkZ6Ri+EELtlirkIwbjMh+Bc5V6FNC17hNvFZVORBD+oIr83VFpA2TYtm24SdsX7GG2PPFzoFwWiQWIYz6e-yAg5wIxL4Dk+1EVEkbwER+J4v7anVIRRPvzVD5l3HkjK+X0AC07h37uEHACDsbYHKPlBkUPwfYbQfwKMELImIAGbRAkfDG+02bMzxsQwaV16DTTAHNBaIkwEJx-K+VBzdsiP1SEg+EWRkR1TtnVO8v4YQB2HkjUuM52iEKxjTEhrMpEczkqTehc8YHvzVJCP8P9xZy0iJkAILt3BGTSG4IeBIK7I3wcA9Ge1JGG2kWdQ2ii-g+DyIrXwuRMROPYU+DIAI3yFExNiXUsNjGI1MaItGEiGYgSTFQWAog2YOOFhCRWuiWw-yxLqLsoNTTIlQc2bIwRGK6NwWYryFiInxPejha+kIiguJYe4802onxQgbLkYEw4bR8NHMI0JNMx4JIQOAh80DIjeIyPA+yD4qIwjsnkHEJlWyL3huUIAA */
 const PhoneCredentialMachine = createMachine(
   {
     context: {} as Context,
@@ -63,10 +89,12 @@ const PhoneCredentialMachine = createMachine(
         invoke: {
           src: "AuthenticationMachine",
           id: "AuthenticationMachine",
-          onDone: {
-            target: "GetPhoneNumber",
-            actions: "assignAuthSession",
-          },
+          onDone: [
+            {
+              actions: "assignAuthSession",
+              target: "GetPhoneNumber",
+            },
+          ],
           data: (context) => ({
             appMeta: context.appMeta,
           }),
@@ -81,10 +109,9 @@ const PhoneCredentialMachine = createMachine(
               onDone: [
                 {
                   actions: "assignPhoneNumber",
+                  cond: "defined",
                   target: "#PhoneNumberCredentialProvider.HandleCredential",
                 },
-              ],
-              onError: [
                 {
                   target: "EnterPhoneNumber",
                 },
@@ -95,36 +122,43 @@ const PhoneCredentialMachine = createMachine(
             on: {
               ENTER_PHONE_NUMBER: {
                 actions: "assignPhoneNumber",
+                target: "VerifyPhoneNumber",
+              },
+            },
+          },
+          VerifyPhoneNumber: {
+            invoke: {
+              src: "verifyPhoneNumberService",
+              id: "verifyPhoneNumberService",
+              onError: "EnterPhoneNumber",
+              onDone: {
                 target: "EnterSMSToken",
+                actions: "assignCredential",
               },
             },
           },
           EnterSMSToken: {
-            exit: "clearError",
-            invoke: {
-              src: "verifyPhoneNumber",
-            },
             on: {
-              CHANGE_PHONE_NUMBER: {
-                target: "EnterPhoneNumber",
-              },
-              ENTER_SMS_TOKEN: {
-                actions: "assignSMSToken",
-                target: "ValidateSMSToken",
-              },
+              CHANGE_PHONE_NUMBER: "EnterPhoneNumber",
+              ENTER_SMS_TOKEN: "ValidateSMSToken",
+              RESEND: "VerifyPhoneNumber",
             },
           },
           ValidateSMSToken: {
             invoke: {
-              src: "verifySMSToken",
+              src: "verifySmsService",
+              id: "verifySmsService",
               onDone: [
                 {
+                  cond: "bool",
                   target: "#PhoneNumberCredentialProvider.HandleCredential",
+                },
+                {
+                  target: "EnterSMSToken",
                 },
               ],
               onError: [
                 {
-                  actions: "assignError",
                   target: "EnterSMSToken",
                 },
               ],
@@ -133,36 +167,37 @@ const PhoneCredentialMachine = createMachine(
         },
       },
       HandleCredential: {
-        initial: "ResolveCredential",
+        initial: "PresentCredential",
         states: {
-          ResolveCredential: {
-            initial: "RetrieveDelegate",
-            states: {
-              RetrieveDelegate: {
-                invoke: {
-                  src: "fetchAppDelegate",
-                  onDone: [
-                    {
-                      actions: "assignAppDelegate",
-                      target: "ResolveToken",
-                    },
-                  ],
-                },
-              },
-              ResolveToken: {
-                invoke: {
-                  src: "resolveToken",
-                  onDone: [
-                    {
-                      actions: "assignCredential",
-                      target:
-                        "#PhoneNumberCredentialProvider.HandleCredential.PresentCredential",
-                    },
-                  ],
-                },
-              },
-            },
-          },
+          // Let's do all this client side with the SDK instead
+          // ResolveCredential: {
+          //   initial: "RetrieveDelegate",
+          //   states: {
+          //     RetrieveDelegate: {
+          //       invoke: {
+          //         src: "fetchAppDelegate",
+          //         onDone: [
+          //           {
+          //             actions: "assignAppDelegate",
+          //             target: "ResolveToken",
+          //           },
+          //         ],
+          //       },
+          //     },
+          //     ResolveToken: {
+          //       invoke: {
+          //         src: "resolveToken",
+          //         onDone: [
+          //           {
+          //             actions: "assignCredential",
+          //             target:
+          //               "#PhoneNumberCredentialProvider.HandleCredential.PresentCredential",
+          //           },
+          //         ],
+          //       },
+          //     },
+          //   },
+          // },
           PresentCredential: {
             entry: "presentCredential",
             type: "final",
@@ -178,44 +213,22 @@ const PhoneCredentialMachine = createMachine(
       }),
       assignPhoneNumber: assign((_, { data }) => ({ phone: data })),
       assignCredential: assign((_, { data }) => ({ credential: data })),
-      assignSMSToken: assign((_, { data }) => ({ smsToken: data })),
       assignAppDelegate: assign((_, { data }) => ({ appDelegate: data })),
-      assignError: assign((_, { data }) => ({
-        error: (data as Error).message,
-      })),
-      clearError: assign((context) => ({ ...context, error: undefined })),
-      presentCredential: () => {},
+      presentCredential: (context) => {
+        if (!context.credential) throw new Error("Missing credential")
+        credentialResult = {
+          credential: "",
+          result: true,
+        }
+      },
     },
     services: {
       async fetchPhoneNumber() {
-        // const account = await fetchAccount()
-        // if (!account.phoneNumber) {
-        //   throw new Error("User has no phone number.")
-        // }
-        // return account.phoneNumber
-        throw new Error("Not implemented")
+        const account = await fetchProfile()
+        return account.phoneNumber
       },
-      async verifyPhoneNumber(context) {
-        const principal = context.authSession?.delegationIdentity.getPrincipal()
-        if (!context.phone) throw new Error("Missing phone number")
-        if (!principal) throw new Error("Missing principal")
-        const res = await _verifyPhoneNumber(context.phone, principal)
-        if (!res) throw new Error("Failed to verify phone number")
-        return true
-      },
-      async verifySMSToken(context) {
-        // if (!context.smsToken)
-        //   throw new Error("Please input your complete SMS token.")
-        // try {
-        //   await verifyToken(context.smsToken)
-        //   return true
-        // } catch (e) {
-        //   console.error("SMS verification failure details", e)
-        //   throw new Error("SMS verification failed, please try again.")
-        // }
-        // return true
-        throw new Error("Not implemented")
-      },
+      verifyPhoneNumberService,
+      verifySmsService,
       async fetchAppDelegate() {
         // // TODO: How to get account data
         // const localAccount = JSON.parse(
@@ -246,6 +259,14 @@ const PhoneCredentialMachine = createMachine(
         throw new Error("Not implemented")
       },
       AuthenticationMachine,
+    },
+    guards: {
+      defined(_, { data }: { data: unknown | undefined }) {
+        return data !== undefined
+      },
+      bool(_, { data }: { data: boolean }) {
+        return data
+      },
     },
   },
 )

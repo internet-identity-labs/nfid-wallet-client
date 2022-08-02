@@ -205,9 +205,11 @@ const PhoneCredentialMachine = createMachine(
       assignEncryptedPN: assign((_, event) => ({ encryptedPN: event.data })),
       presentCredential: (context) => {
         if (!context.encryptedPN) throw new Error("Missing credential")
+        if (!context.authSession) throw new Error("Missing auth session")
         credentialResult = {
-          credential: context.encryptedPN,
-          result: true,
+          ownerPrincipal: context.authSession?.identity.getPrincipal().toText(),
+          hashedPhoneNumber: context.encryptedPN,
+          createdDate: new Date(),
         }
       },
     },

@@ -3,17 +3,10 @@ import React from "react"
 import { useParams } from "react-router-dom"
 
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
-<<<<<<< HEAD:src/integration/identity-manager/persona/hooks.ts
 import { PersonaRequest } from "frontend/integration/_ic_api/identity_manager.did"
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
-=======
-import { im } from "frontend/integration/actors"
-import { Persona } from "frontend/integration/actors/im"
-import { PersonaRequest } from "frontend/integration/idl/identity_manager.did"
-import { useAccount } from "frontend/integration/services/identity-manager/account/hooks"
->>>>>>> f6fa3cda (feat: phone credential verification):src/integration/services/identity-manager/persona/hooks.ts
 
 import { Account } from ".."
 import { personaAtom } from "./state"

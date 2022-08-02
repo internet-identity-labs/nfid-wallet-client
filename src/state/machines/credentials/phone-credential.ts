@@ -1,6 +1,4 @@
 // State machine controlling the phone number credential flow.
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
 import {
   CredentialResult,
   registerPhoneNumberCredentialHandler,
@@ -13,8 +11,6 @@ import {
   verifySmsService,
 } from "frontend/integration/identity-manager/services"
 import { verifyPhoneNumber as _verifyPhoneNumber } from "frontend/integration/lambda/phone"
-import { Certificate } from "frontend/integration/verifier"
-import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import AuthenticationMachine, {
   AuthenticationMachineContext,
@@ -23,26 +19,21 @@ import AuthenticationMachine, {
 // State local to the machine.
 interface Context {
   phone?: string
-  principal?: Principal
-  credential?: string
-  appDelegate?: DelegationIdentity
+  encryptedPN?: string
   appMeta: AuthorizingAppMeta
-  authSession?: AuthSession
 }
 
 let credentialResult: CredentialResult
-
-registerPhoneNumberCredentialHandler(function () {
-  return new Promise((resolve) => {
-    setInterval(() => credentialResult && resolve(credentialResult), 1000)
-  })
-})
 
 // Definition of events usable in the machine.
 type Events =
   | {
       type: "done.invoke.AuthenticationMachine"
       data: AuthenticationMachineContext
+    }
+  | {
+      type: "done.invoke.fetchPhoneNumber"
+      data: string | undefined
     }
   | {
       type: "done.invoke.verifySmsService"
@@ -65,26 +56,29 @@ type Events =
   | { type: "CHANGE_PHONE_NUMBER" }
   | { type: "RESEND"; data: string }
 
-// Definition of services used by the machine.
-type Services = {
-  fetchPrincipal: { data: Principal }
-  fetchPhoneNumber: { data: string | undefined }
-  verifyPhoneNumber: { data: boolean }
-  verifySmsService: { data: boolean }
-  resolveToken: { data: Certificate }
-  fetchAppDelegate: { data: DelegationIdentity }
-}
-
 // The machine. Install xstate vscode extension for best results.
 /** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoBBPLVQ0GAY0a0wAYghYwvepg7oA1gsHDR9CQywBZRmNRKwiUAAd0senszmQAD0QBGAAwAWXi4DsAZgA2Pz8ATgC3NwCAJiiQgBoQAE9EDxco3gAOEJcAkOyfDOCAVgyAX1KEtHl8YjJKajomVnYuHlJeAHEwWirsGpJ2rtoAUUd6WAZMKF7cQgHZeUVlNQUZ-rqqHkaWNk5uPiG1uYPu0fHJ6Yw+49IEJRVdeiwAbTcAXQcrGzsHZwQXQq8KKpAIBIpRHw+DwZSEJZIIHxRNxAjwBNI+FwuPxRYJ+cqVK6zWoUTbaHYtfaDbpHYm8YZ0Mg0+bDHAAFWGACUAPrIAASAHkcMMuTgAKr6ABCnM+1lsT3sSCciGCXhCWSKbhKLg8bghRSKcNcuq8mKKIVRwI8ULcLnxICZGwaDHJezanWphPW7XpUlIAGV9H7WStMNIyOx2hZmJIAGboUgEXgOklOpq7VonHqem50hn+wPB9SYO7LR4vd4y77yhzwzFRAK8VF+Io+Er1twhHwJP7QlzeGIBLIhY0du3J+pbZ3NV2Z5O530BoMh6TkXn8HAdYV8wXCsWS6WKr5yrC-FINwJQtVFaIZDzmvweQ3-Tx+XjhMHAh9uDJRDIBMfZsSE5ktOGZUlm1Q5j6ZCLoWNDSCy7LcouXKsvyADSLKVseCqgH8vh9kUaR3u4OppMCGRPmk17eFCHhWhiBTDh4AGQUBpLbKBlLuhB1y0gAaiw3CSGAsHLnI2BLCo6i8BwZD0DGiR+gQsB+mQXBiGYh6yj8ip-NeDYhNeGSFDiaKagaSSuHePiZD+ITNp4171j4rF8QMwGcem3GHIBAy8IJzDCVIYlFmGpARrwUaxvGiZyaQClKSpamkBpWmWDp1Z6a4r5qg5AIuMxviRAEVGBBkvCthqaLZAE-gAm5RIeRxU7eW6vKMJgEDMGAnlTrwHJwOgzByX1TQDd0CVgHJAAiYA9VAIkLJJ9wrEmfmOpOaYUu1nXdb1LXjYNsDDaNh0sBNtBTbN81gItUglg8kjyq8HzaVWJ7Zf87jIi20QxNCt5gqVVkINkyI-iZmqxKEGp4hU9obSmW0umBvAdV1PVjRdx2nQdqY40NI1gHBoYSQoq0yeO51cbtmP4yjzATSdxPY0zuPE6Tj3oGWmCvdhul4Ygf7Ih4OI5FELZuM2t5UTaIS8IEVqkX4WQeEULF2pg6A8PAirUwTtN8JoIiNLo6UgEegtKggfi2bEPjSyZqJ-tifhPpLCtQxrjv1RiRSNV6bNtbOSM8WcExKJcbEDALWVC-8GJvhr2qeFiMIgk+4SvhEkShMCaLZ4HNzBztocx3w0GkMmcefQnUTaorPjZ9LkRmhElnwkZ6Ri+EELtlirkIwbjMh+Bc5V6FNC17hNvFZVORBD+oIr83VFpA2TYtm24SdsX7GG2PPFzoFwWiQWIYz6e-yAg5wIxL4Dk+1EVEkbwER+J4v7anVIRRPvzVD5l3HkjK+X0AC07h37uEHACDsbYHKPlBkUPwfYbQfwKMELImIAGbRAkfDG+02bMzxsQwaV16DTTAHNBaIkwEJx-K+VBzdsiP1SEg+EWRkR1TtnVO8v4YQB2HkjUuM52iEKxjTEhrMpEczkqTehc8YHvzVJCP8P9xZy0iJkAILt3BGTSG4IeBIK7I3wcA9Ge1JGG2kWdQ2ii-g+DyIrXwuRMROPYU+DIAI3yFExNiXUsNjGI1MaItGEiGYgSTFQWAog2YOOFhCRWuiWw-yxLqLsoNTTIlQc2bIwRGK6NwWYryFiInxPejha+kIiguJYe4802onxQgbLkYEw4bR8NHMI0JNMx4JIQOAh80DIjeIyPA+yD4qIwjsnkHEJlWyL3huUIAA */
 const PhoneCredentialMachine = createMachine(
   {
     context: {} as Context,
     tsTypes: {} as import("./phone-credential.typegen").Typegen0,
-    schema: { events: {} as Events, services: {} as Services },
+    schema: { events: {} as Events },
     id: "PhoneNumberCredentialProvider",
-    initial: "Authenticate",
+    initial: "Ready",
     states: {
+      Ready: {
+        entry: () => {
+          registerPhoneNumberCredentialHandler(function () {
+            return new Promise((resolve) => {
+              setInterval(
+                () => credentialResult && resolve(credentialResult),
+                1000,
+              )
+            })
+          })
+        },
+        always: "Authenticate",
+      },
       Authenticate: {
         invoke: {
           src: "AuthenticationMachine",
@@ -106,15 +100,14 @@ const PhoneCredentialMachine = createMachine(
           GetExistingPhoneNumber: {
             invoke: {
               src: "fetchPhoneNumber",
+              id: "fetchPhoneNumber",
               onDone: [
                 {
-                  actions: "assignPhoneNumber",
+                  actions: "assignEncryptedPN",
                   cond: "defined",
-                  target: "#PhoneNumberCredentialProvider.HandleCredential",
+                  target: "#PhoneNumberCredentialProvider.PresentCredential",
                 },
-                {
-                  target: "EnterPhoneNumber",
-                },
+                { target: "EnterPhoneNumber" },
               ],
             },
           },
@@ -133,7 +126,7 @@ const PhoneCredentialMachine = createMachine(
               onError: "EnterPhoneNumber",
               onDone: {
                 target: "EnterSMSToken",
-                actions: "assignCredential",
+                actions: "assignEncryptedPN",
               },
             },
           },
@@ -151,73 +144,29 @@ const PhoneCredentialMachine = createMachine(
               onDone: [
                 {
                   cond: "bool",
-                  target: "#PhoneNumberCredentialProvider.HandleCredential",
+                  target: "#PhoneNumberCredentialProvider.PresentCredential",
                 },
-                {
-                  target: "EnterSMSToken",
-                },
+                { target: "EnterSMSToken" },
               ],
-              onError: [
-                {
-                  target: "EnterSMSToken",
-                },
-              ],
+              onError: "EnterSMSToken",
             },
           },
         },
       },
-      HandleCredential: {
-        initial: "PresentCredential",
-        states: {
-          // Let's do all this client side with the SDK instead
-          // ResolveCredential: {
-          //   initial: "RetrieveDelegate",
-          //   states: {
-          //     RetrieveDelegate: {
-          //       invoke: {
-          //         src: "fetchAppDelegate",
-          //         onDone: [
-          //           {
-          //             actions: "assignAppDelegate",
-          //             target: "ResolveToken",
-          //           },
-          //         ],
-          //       },
-          //     },
-          //     ResolveToken: {
-          //       invoke: {
-          //         src: "resolveToken",
-          //         onDone: [
-          //           {
-          //             actions: "assignCredential",
-          //             target:
-          //               "#PhoneNumberCredentialProvider.HandleCredential.PresentCredential",
-          //           },
-          //         ],
-          //       },
-          //     },
-          //   },
-          // },
-          PresentCredential: {
-            entry: "presentCredential",
-            type: "final",
-          },
-        },
+      PresentCredential: {
+        entry: "presentCredential",
+        type: "final",
       },
     },
   },
   {
     actions: {
-      assignAuthSession: assign({
-        authSession: (_, { data }) => data.authSession,
-      }),
       assignPhoneNumber: assign((_, { data }) => ({ phone: data })),
-      assignCredential: assign((_, { data }) => ({ credential: data })),
-      assignAppDelegate: assign((_, { data }) => ({ appDelegate: data })),
+      assignEncryptedPN: assign((_, event) => ({ encryptedPN: event.data })),
       presentCredential: (context) => {
-        if (!context.credential) throw new Error("Missing credential")
+        if (!context.encryptedPN) throw new Error("Missing credential")
         credentialResult = {
-          credential: "",
+          credential: context.encryptedPN,
           result: true,
         }
       },
@@ -229,35 +178,6 @@ const PhoneCredentialMachine = createMachine(
       },
       verifyPhoneNumberService,
       verifySmsService,
-      async fetchAppDelegate() {
-        // // TODO: How to get account data
-        // const localAccount = JSON.parse(
-        //   window.localStorage.getItem(ACCOUNT_LOCAL_STORAGE_KEY) || "{}",
-        // )
-        // return fetchDelegation(
-        //   Number(localAccount.anchor),
-        //   // TODO: How to get scope data
-        //   { host: "test.com" },
-        //   Array.from(
-        //     new Uint8Array(
-        //       rawId?.getPublicKey().toDer() as DerEncodedPublicKey,
-        //     ),
-        //   ),
-        // )
-        throw new Error("Not implemented")
-      },
-      async resolveToken(context) {
-        // if (!context.appDelegate) throw new Error("No app delegate")
-        // const blob = await callWithIdentity(async () => {
-        //   if (!context.phone) throw new Error("No phone number")
-        //   return await generatePNToken(context.phone)
-        // }, context.appDelegate)
-        // console.log("generated phone token", blob)
-        // const token = await resolveToken(blob)
-        // if (!token) throw new Error("Failed to resolve token")
-        // return token
-        throw new Error("Not implemented")
-      },
       AuthenticationMachine,
     },
     guards: {

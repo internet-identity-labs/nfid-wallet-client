@@ -67,21 +67,19 @@ export async function verifyPhoneNumberService(context: {
   authSession?: AuthSession
   phone?: string
 }) {
-  // const principal = context.authSession?.delegationIdentity.getPrincipal()
-  // try {
-  //   if (!context.phone) throw new Error("Missing phone number")
-  //   if (!principal) throw new Error("Missing principal")
-  //   // TODO: This maybe shouldn't be a boolean, perhaps we need to capture something...
-  //   const res = await verifyPhoneNumber(context.phone)
-  //   return await res
-  // } catch (e) {
-  //   console.error("Error in verifyPhoneNumberService", e)
-  //   throw {
-  //     error:
-  //       "There was an issue verifying your phone number, please try again.",
-  //   }
-  // }
-  return "somehashedencryptedphonenumbesaltedbydomain"
+  const principal = context.authSession?.delegationIdentity.getPrincipal()
+  try {
+    if (!context.phone) throw new Error("Missing phone number")
+    if (!principal) throw new Error("Missing principal")
+    const res = await verifyPhoneNumber(context.phone)
+    return await res
+  } catch (e) {
+    console.error("Error in verifyPhoneNumberService", e)
+    throw {
+      error:
+        "There was an issue verifying your phone number, please try again.",
+    }
+  }
 }
 
 /** xstate service to verify sms verification code */
@@ -89,13 +87,12 @@ export async function verifySmsService(
   context: unknown,
   { data }: { data: string },
 ) {
-  // try {
-  //   return await verifyToken(data)
-  // } catch (e) {
-  //   console.error("Error in verifySmsService", e)
-  //   throw {
-  //     error: "There was a problem with your submission. Please try again.",
-  //   }
-  // }
-  return true
+  try {
+    return await verifyToken(data)
+  } catch (e) {
+    console.error("Error in verifySmsService", e)
+    throw {
+      error: "There was a problem with your submission. Please try again.",
+    }
+  }
 }

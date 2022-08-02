@@ -1,7 +1,7 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
-import { unpackLegacyResponse, unpackResponse } from "../_common"
+import { mapOptional, unpackLegacyResponse, unpackResponse } from "../_common"
 import {
   AccessPointResponse,
   AccountResponse,
@@ -41,12 +41,12 @@ export interface Account {
 export function mapProfile(profile: AccountResponse): Profile {
   console.debug("mapAccount", { account: profile })
   return {
-    name: profile.name.length ? profile.name[0] : undefined,
+    name: mapOptional(profile.name),
     anchor: Number(profile.anchor),
     accessPoints: profile.access_points.map(mapAccessPoint),
     accounts: profile.personas.map(mapAccount),
     principalId: profile.principal_id,
-    phoneNumber: profile.name.length ? profile.name[0] : undefined,
+    phoneNumber: mapOptional(profile.phone_number),
   }
 }
 

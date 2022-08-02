@@ -61,6 +61,7 @@ jobs:
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV
+          IS_DEV: true
           II_MODE: production
           IC_HOST: https://ic0.app
           DFX_NETWORK: dev

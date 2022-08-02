@@ -1,9 +1,7 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
-import { Principal } from "@dfinity/principal"
-
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
-import { unpackLegacyResponse, unpackResponse } from "../_common"
+import { mapOptional, unpackLegacyResponse, unpackResponse } from "../_common"
 import {
   AccessPointResponse,
   AccountResponse,
@@ -43,12 +41,12 @@ export interface Account {
 export function mapProfile(profile: AccountResponse): Profile {
   console.debug("mapAccount", { account: profile })
   return {
-    name: profile.name.length ? profile.name[0] : undefined,
+    name: mapOptional(profile.name),
     anchor: Number(profile.anchor),
     accessPoints: profile.access_points.map(mapAccessPoint),
     accounts: profile.personas.map(mapAccount),
     principalId: profile.principal_id,
-    phoneNumber: profile.name.length ? profile.name[0] : undefined,
+    phoneNumber: mapOptional(profile.phone_number),
   }
 }
 
@@ -162,9 +160,9 @@ export async function createPersona(
 }
 
 /**
- * ?
+ * Verify SMS token that was issued to current user's phone number. Returns true or throws error.
  */
-export async function verifyToken(token: string, principal: Principal) {
+export async function verifyToken(token: string) {
   return im
     .verify_token(token)
     .then(unpackLegacyResponse)
@@ -188,6 +186,10 @@ export async function registerAccount(anchor: number) {
     .create_account({ anchor: BigInt(anchor) })
     .then(unpackResponse)
     .then(mapProfile)
+}
+
+export async function removeAccount() {
+  im.remove_account()
 }
 
 export interface Application {

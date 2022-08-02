@@ -34,7 +34,7 @@ export const selectAccountAction = (
 }
 
 export interface AuthorizationMachineContext {
-  appMeta: AuthorizingAppMeta
+  appMeta?: AuthorizingAppMeta
   authSession: AuthSession
   authRequest: AuthorizationRequest
   accountsLimit?: number

@@ -11,3 +11,7 @@ export function loadProfileFromLocalStorage(): Profile | undefined {
 export function setProfile(profile: Profile) {
   window.localStorage.setItem("account", JSON.stringify(profile))
 }
+
+export function clearProfile() {
+  window.localStorage.removeItem("account")
+}

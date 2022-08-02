@@ -12,6 +12,7 @@ import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
 import * as tweetnacl from "tweetnacl"
 
+import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
 import {
   ChallengeResult,
   DeviceData,
@@ -33,7 +34,6 @@ import {
   invalidateIdentity,
   replaceIdentity,
 } from "frontend/integration/actors"
-import { InternetIdentity } from "frontend/integration/actors"
 import { ii } from "frontend/integration/actors"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
@@ -1091,4 +1091,13 @@ export interface Device {
   keyType: "platform" | "seed_phrase" | "cross_platform" | "unknown"
   purpose: "authentication" | "recovery"
   credentialId?: CredentialId
+}
+
+/**
+ * Retrieve user's principal for a domain + persona hash.
+ * @param anchor
+ * @param salt
+ */
+export function fetchPrincipal(anchor: number, salt: string) {
+  return ii.get_principal(BigInt(anchor), salt)
 }

@@ -13,12 +13,12 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "xstate.init": { type: "xstate.init" }
     "done.invoke.authenticate": {
       type: "done.invoke.authenticate"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
     "error.platform.getDataFromPath": {
       type: "error.platform.getDataFromPath"
       data: unknown

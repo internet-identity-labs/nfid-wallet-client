@@ -2,6 +2,7 @@
 import * as Agent from "@dfinity/agent"
 import { Identity, SubmitResponse } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
+import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { authState } from "frontend/integration/internet-identity"
@@ -21,6 +22,7 @@ import { idlFactory as verifierIDL } from "./_ic_api/verifier_idl"
 
 // Envars
 declare const II_ENV: string
+declare const IS_DEV: string
 declare const IC_HOST: string
 declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
@@ -44,7 +46,9 @@ for (const [label, canister] of canisterConfig) {
 
 export const ic = {
   host: IC_HOST || "https://ic0.app",
+  // NOTE: not sure if this is the right envar for islocal
   isLocal: II_ENV === "development",
+  isDev: IS_DEV,
 }
 
 ////////////
@@ -88,14 +92,25 @@ class AgentWithRetry extends Agent.HttpAgent {
 /** We share the same agent across all actors, and replace the identity when identity connection events occur. */
 export const agent = new AgentWithRetry({ host: ic.host })
 
+export let rawId: DelegationIdentity | undefined
+
+/**
+ * Retrieve the current principal.
+ */
+export async function fetchPrincipal() {
+  const principal = await agent.getPrincipal()
+  return principal
+}
+
 /**
  * When user connects an identity, we update our agent.
  */
-export function replaceIdentity(identity: Agent.Identity) {
+export function replaceIdentity(identity: DelegationIdentity) {
   agent.replaceIdentity(identity)
   agent.getPrincipal().then((principal) => {
     console.debug("replaceIdentity", { principalId: principal.toText() })
   })
+  rawId = identity
 }
 
 /**
@@ -104,6 +119,7 @@ export function replaceIdentity(identity: Agent.Identity) {
 export function invalidateIdentity() {
   authState.reset()
   agent.invalidateIdentity()
+  rawId = undefined
 }
 
 // When working locally (or !mainnet) we need to retrieve the root key of the replica.
@@ -112,10 +128,10 @@ if (ic.isLocal) agent.fetchRootKey()
 /**
  * Create an actor.
  */
-function actor<T>(
+export function actor<T>(
   canisterId: string,
   factory: InterfaceFactory,
-  config?: Agent.ActorConfig,
+  config?: Partial<Agent.ActorConfig>,
 ): Agent.ActorSubclass<T> {
   return Agent.Actor.createActor(factory, { canisterId, agent, ...config })
 }
@@ -126,5 +142,3 @@ export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)
 export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
-
-export type { InternetIdentity, IdentityManager, Verifier }

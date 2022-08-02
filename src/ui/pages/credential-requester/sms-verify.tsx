@@ -16,6 +16,7 @@ interface CredentialRequesterSMSVerifyProps {
   phone?: string | number
   responseError?: string
   onChangePhone: () => void
+  isLoading?: boolean
 }
 
 export const CredentialRequesterSMSVerify: React.FC<
@@ -28,6 +29,7 @@ export const CredentialRequesterSMSVerify: React.FC<
   onSubmit,
   responseError,
   onChangePhone,
+  isLoading,
 }) => {
   const { counter, setCounter } = useTimer({ defaultCounter: 3 })
 
@@ -41,31 +43,32 @@ export const CredentialRequesterSMSVerify: React.FC<
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       title="SMS verification"
-      subTitle={`to continue to ${applicationName}`}
+      // subTitle={`to continue to ${applicationName}`}
+      isLoading={isLoading}
     >
-      <P className="mt-3 text-sm sm:mt-14">
-        Please enter the verification code that was sent to {phone}.
-        <br />
-        {counter > 0 ? (
-          <P className="mt-3">Code can be resent in {counter} sec</P>
-        ) : (
-          <P className="mt-3">
-            Didn’t receive a code?{" "}
-            <span
-              className="cursor-pointer text-blue-base"
-              onClick={handleResend}
-            >
-              Resend
-            </span>
-          </P>
-        )}
-      </P>
       <div
         className={clsx(
           "mt-5 flex flex-col justify-between flex-1",
           "sm:block",
         )}
       >
+        <div className="mt-3 text-sm sm:mt-14">
+          Please enter the verification code that was sent to {phone}.
+          <br />
+          {counter > 0 ? (
+            <P className="mt-3">Code can be resent in {counter} sec</P>
+          ) : (
+            <P className="mt-3">
+              Didn’t receive a code?{" "}
+              <span
+                className="cursor-pointer text-blue-base"
+                onClick={handleResend}
+              >
+                Resend
+              </span>
+            </P>
+          )}
+        </div>
         <StepInput
           className="justify-between"
           onSubmit={onSubmit}

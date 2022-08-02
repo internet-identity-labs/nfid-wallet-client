@@ -9,7 +9,6 @@ import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { AppScreenAuthorizeDerivationOriginAppRoutes } from "./apps/authentication/remote-authentication/routes"
 import { AppScreenAuthorizeAppRoutes } from "./apps/authentication/remote-authentication/routes"
 import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
-import { CredentialRoutes } from "./apps/credential-provider/verify-phone-number"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"
 import { Faq } from "./apps/marketing/landing-page/faq"
@@ -17,6 +16,7 @@ import { OurMission } from "./apps/marketing/landing-page/our-mission"
 import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import IDPCoordinator from "./coordination/idp"
+import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
 import { ic } from "./integration/actors"
 import { NotFound } from "./ui/pages/404"
@@ -42,19 +42,15 @@ export const App = () => {
       {RecoverNFIDRoutes}
 
       {AppScreenAuthenticateAccountRoutes}
-      {CredentialRoutes}
+      <Route
+        path="/credential/verified-phone-number"
+        element={<PhoneCredentialCoordinator />}
+      />
       <Route path={"*"} element={<NotFound />} />
 
       {/* Temporary routes for new machine based flows */}
       <Route path="/idp" element={<IDPCoordinator />} />
-      <Route
-        path="/ridp/:secret/:maxTimeToLive/:scope"
-        element={<RemoteIDPCoordinator />}
-      />
-      <Route
-        path="/ridp/:secret/:maxTimeToLive/:scope/:derivationOrigin"
-        element={<RemoteIDPCoordinator />}
-      />
+      <Route path="/ridp" element={<RemoteIDPCoordinator />} />
     </Routes>
   )
 }

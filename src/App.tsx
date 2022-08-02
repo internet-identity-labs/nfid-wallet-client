@@ -9,7 +9,6 @@ import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { AppScreenAuthorizeDerivationOriginAppRoutes } from "./apps/authentication/remote-authentication/routes"
 import { AppScreenAuthorizeAppRoutes } from "./apps/authentication/remote-authentication/routes"
 import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
-import { CredentialRoutes } from "./apps/credential-provider/verify-phone-number"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"
 import { Faq } from "./apps/marketing/landing-page/faq"
@@ -42,7 +41,6 @@ export const App = () => {
       {RecoverNFIDRoutes}
 
       {AppScreenAuthenticateAccountRoutes}
-      {CredentialRoutes}
       <Route path={"*"} element={<NotFound />} />
 
       {/* Temporary routes for new machine based flows */}

@@ -13,6 +13,7 @@ interface AuthenticateNFIDLoginContentProps
   iframe?: boolean
   errorMessage?: string
   onLogin?: () => void
+  children?: React.ReactNode
 }
 
 export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({

@@ -13,9 +13,7 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
-import AuthWithGoogleMachine, {
-  AuthWithGoogleMachineContext,
-} from "./auth-with-google"
+import AuthWithGoogleMachine from "./auth-with-google"
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
@@ -33,6 +31,10 @@ export type Events =
   | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
+      data: AuthSession
+    }
+  | {
+      type: "done.invoke.loginWithAnchor"
       data: AuthSession
     }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
@@ -161,6 +163,7 @@ const UnknownDeviceMachine =
             onDone: [
               {
                 target: "End",
+                actions: "assignAuthSession",
               },
             ],
             onError: [

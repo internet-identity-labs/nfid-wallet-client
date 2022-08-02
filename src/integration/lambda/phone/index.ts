@@ -15,7 +15,7 @@ import nacl_util from "tweetnacl-util"
 import { authState } from "frontend/integration/internet-identity"
 
 declare const VERIFY_PHONE_NUMBER: string
-declare const VERIFIER_CANISTER_ID: string
+declare const IDENTITY_MANAGER_CANISTER_ID: string
 
 if (!VERIFY_PHONE_NUMBER) {
   throw new Error(`Phone verification lambda is not defined.`)
@@ -55,7 +55,7 @@ export async function verifyPhoneNumber(phoneNumber: string): Promise<string> {
 
   const request: any = await getTransformedRequest(
     delegationIdentity,
-    VERIFIER_CANISTER_ID,
+    IDENTITY_MANAGER_CANISTER_ID,
     fields,
   )
 
@@ -71,7 +71,7 @@ export async function verifyPhoneNumber(phoneNumber: string): Promise<string> {
   console.debug("verifyPhoneNumber", {
     phoneNumber,
     fields,
-    canister: VERIFIER_CANISTER_ID,
+    canister: IDENTITY_MANAGER_CANISTER_ID,
     response,
   })
 

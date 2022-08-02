@@ -32,7 +32,7 @@ import AuthenticationMachine, {
 } from "frontend/state/machines/authentication/authentication"
 import AuthorizationMachine from "frontend/state/machines/authorization/authorization"
 
-import { bool, defined, isLocal } from "../common"
+import { bool, defined, isDev } from "../common"
 
 // State local to the machine.
 interface Context {
@@ -125,7 +125,7 @@ const PhoneCredentialMachine = createMachine(
           id: "AuthenticationMachine",
           onDone: [
             {
-              cond: "isLocal",
+              cond: "isDev",
               target: "DevClearData",
               actions: "assignAuthSession",
             },
@@ -334,7 +334,7 @@ const PhoneCredentialMachine = createMachine(
     guards: {
       defined,
       bool,
-      isLocal,
+      isDev,
     },
   },
 )

@@ -13,3 +13,7 @@ export function bool(context: any, event: { data: boolean }) {
 export function isLocal() {
   return ic.isLocal
 }
+
+export function isDev() {
+  return ic.isDev === "true"
+}

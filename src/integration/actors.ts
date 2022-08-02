@@ -22,6 +22,7 @@ import { idlFactory as verifierIDL } from "./_ic_api/verifier_idl"
 
 // Envars
 declare const II_ENV: string
+declare const IS_DEV: string
 declare const IC_HOST: string
 declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
@@ -45,7 +46,9 @@ for (const [label, canister] of canisterConfig) {
 
 export const ic = {
   host: IC_HOST || "https://ic0.app",
+  // NOTE: not sure if this is the right envar for islocal
   isLocal: II_ENV === "development",
+  isDev: IS_DEV,
 }
 
 ////////////

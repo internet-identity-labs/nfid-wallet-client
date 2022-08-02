@@ -128,7 +128,7 @@ export interface Typegen0 {
     generateCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
   }
   eventsCausingGuards: {
-    isLocal: "done.invoke.AuthenticationMachine"
+    isDev: "done.invoke.AuthenticationMachine"
     defined: "done.invoke.fetchPhoneNumber"
     bool: "done.invoke.verifySmsService"
   }

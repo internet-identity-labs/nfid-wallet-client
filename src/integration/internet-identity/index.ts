@@ -270,6 +270,7 @@ export const requestFEDelegation = async (
 
 async function renewDelegation() {
   const { delegationIdentity, actor, identity } = authState.get()
+  console.debug("renewDelegation", { identity, delegationIdentity })
   if (!delegationIdentity || !identity)
     throw new Error(`renewDelegation unauthorized`)
 
@@ -450,7 +451,10 @@ export async function addDevice(
   newPublicKey: DerEncodedPublicKey,
   credentialId?: ArrayBuffer,
 ) {
-  await renewDelegation()
+  // NOTE: removed the call to renewDelegation. It was failing because
+  // of missing identity from authState. We'll replace this entire logic within
+  // the following refactor and need to take care of the authState in
+  // a better way.
   return await ii
     .add(anchor, {
       alias,
@@ -768,6 +772,11 @@ export async function loginFromRemoteFrontendDelegation({
   chain: string
   sessionKey: string
 }): Promise<LoginResult> {
+  console.debug("loginFromRemoteFrontendDelegation", {
+    userNumber,
+    chainJSON,
+    sessionKeyJSON,
+  })
   const [chain, sessionKey] = getDelegationFromJson(chainJSON, sessionKeyJSON)
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,
@@ -776,6 +785,7 @@ export async function loginFromRemoteFrontendDelegation({
 
   const devices = await fetchAuthenticatorDevices(userNumber)
   const multiIdent = getMultiIdent(devices)
+  console.debug("loginFromRemoteFrontendDelegation", { devices, multiIdent })
 
   authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
 

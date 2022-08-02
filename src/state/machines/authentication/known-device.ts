@@ -24,7 +24,7 @@ export interface KnownDeviceMachineContext {
   isNFID: boolean
   profile: Profile
   authRequest: AuthorizationRequest
-  authAppMeta: AuthorizingAppMeta
+  authAppMeta?: AuthorizingAppMeta
   isSingleAccountApplication?: boolean
   authSession?: AuthSession
   devices?: Device[]
@@ -36,6 +36,7 @@ export type Events =
   | { type: "done.invoke.getLocalStorageProfileService"; data: Profile }
   | { type: "done.invoke.fetchAccountLimit"; data: number }
   | { type: "done.invoke.fetchAuthenticatorDevicesService"; data: Device[] }
+  | { type: "done.invoke.fetchProfileService"; data: Profile }
 
 export interface Schema {
   events: Events
@@ -125,6 +126,7 @@ const KnownDeviceMachine =
             onDone: [
               {
                 target: "UpdateProfile",
+                actions: "assignAuthSession",
               },
             ],
           },
@@ -133,16 +135,12 @@ const KnownDeviceMachine =
           invoke: {
             src: "fetchProfileService",
             id: "fetchProfileService",
-            onDone: [
-              {
-                target: "End",
-              },
-            ],
+            onDone: "End",
           },
         },
         End: {
           type: "final",
-          data: (context, event: { data: AuthSession }) => event.data,
+          data: (context, event) => context.authSession,
         },
       },
     },
@@ -155,6 +153,7 @@ const KnownDeviceMachine =
         getLocalStorageProfileService,
       },
       actions: {
+        assignAuthSession: assign({ authSession: (_, event) => event.data }),
         assignProfile: assign({ profile: (_, event) => event.data }),
         assignDevices: assign({ devices: (_, event) => event.data }),
         assignAccountLimit: assign({

@@ -45,10 +45,12 @@ export const App = () => {
       {ProfileRoutes}
       {RecoverNFIDRoutes}
 
+      {/* Legacy routes that we still need */}
+      {NFIDRegisterAccountRoutes}
+      {RemoteNFIDAuthenticationRoutes}
+
       {/* Legacy routes */}
       {/* {RemoteRegisterAccountRoutes} */}
-      {/* {NFIDRegisterAccountRoutes} */}
-      {/* {RemoteNFIDAuthenticationRoutes} */}
       {/* {AppScreenAuthorizeAppRoutes} */}
       {/* {AppScreenAuthorizeDerivationOriginAppRoutes} */}
 

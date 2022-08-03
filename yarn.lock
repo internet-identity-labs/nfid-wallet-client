@@ -1744,7 +1744,7 @@
 
 "@dfinity/agent@^0.11.3":
   version "0.11.3"
-  resolved "https://registry.npmjs.org/@dfinity/agent/-/agent-0.11.3.tgz"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.11.3.tgz#3363b1dbaa10a6e5cfe25e269316e2416fd3d11d"
   integrity sha512-pqiogLey6S83SG5BS93hBCtXfGRW6tkxa8Y0c9HwxOP/wRoVEuKHdTcOn7rL/HN4mDTwxkdqK4EC1Kv24S1q4Q==
   dependencies:
     base64-arraybuffer "^0.2.0"
@@ -1775,7 +1775,7 @@
 
 "@dfinity/candid@^0.11.3":
   version "0.11.3"
-  resolved "https://registry.npmjs.org/@dfinity/candid/-/candid-0.11.3.tgz"
+  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.11.3.tgz#aed66124751545522acf9bde7cdc22b5d9ce31df"
   integrity sha512-xX7xNj2lLt7SIlvy0sqNp4fpcTD/xnwEu9APj0tnIF64cnsxIiS12T1Z8jl9g80jCQ1CbRPQf4cfsOfS3Cd2OA==
 
 "@dfinity/identity@0.10.4":
@@ -1783,6 +1783,17 @@
   resolved "https://registry.npmjs.org/@dfinity/identity/-/identity-0.10.4.tgz"
   integrity sha512-b4WsaD70Ts75JlJcf4+E04B140hQN5u/GnCvjhaHqN2++bwWO56Paxtv0UfAc58LMwJZj4iOyZoahnT56LhC9A==
   dependencies:
+    borc "^2.1.1"
+    js-sha256 "^0.9.0"
+    secp256k1 "^4.0.2"
+    tweetnacl "^1.0.1"
+
+"@dfinity/identity@^0.11.3":
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/@dfinity/identity/-/identity-0.11.3.tgz#b7ae0d049159f98bb3b693683824b7315124c4bb"
+  integrity sha512-AXgrG6a7PxJmiZOC12ooKvPeOfh4+v3dR7D6jynLlN4qMy0ry+BMZhWkyjWrlRR3p8oMznzfjoMuKN5pOrBKDg==
+  dependencies:
+    "@types/webappsec-credential-management" "^0.6.2"
     borc "^2.1.1"
     js-sha256 "^0.9.0"
     secp256k1 "^4.0.2"
@@ -2316,13 +2327,14 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/credentials@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.npmjs.org/@nfid/credentials/-/credentials-0.0.11.tgz"
-  integrity sha512-E6SIJP6oLnn/IGyWgEZ0Lb6cbBVaFUkUt9Nw0B58dQmFLimcnEENiUwOPzvAl+Wtr4iNnMAYp7FIzGimlVdA/g==
+"@nfid/credentials@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@nfid/credentials/-/credentials-0.0.12.tgz#bea93e2d57ace5879c8a6caf7e50e469c992e260"
+  integrity sha512-6tWI90WVCO1pkoXS+DFYveMLRwPhN170VXlO6taaDn8vI6GZDBLqJZ8C0kwiXlGLEnv0r/4bKBALjQHsptKznw==
   dependencies:
     "@dfinity/agent" "^0.11.3"
     "@dfinity/candid" "^0.11.3"
+    "@dfinity/identity" "^0.11.3"
     "@dfinity/principal" "^0.11.3"
     ictool "^0.0.6"
     luxon "^2.4.0"
@@ -4396,6 +4408,11 @@
   version "8.3.4"
   resolved "https://registry.npmjs.org/@types/uuid/-/uuid-8.3.4.tgz"
   integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
+
+"@types/webappsec-credential-management@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@types/webappsec-credential-management/-/webappsec-credential-management-0.6.2.tgz#93491de1ffcf57f6558c78949cc8e6c5d826b94e"
+  integrity sha512-/6w8wmKQOFh+1CL99fcFhH7lli1/ExBdAawXsVPXFC5MBOS6ww/4cmK4crpCw51RaG6sTr477N17Y84l0G69IA==
 
 "@types/webpack-env@^1.16.0":
   version "1.17.0"
@@ -13143,7 +13160,7 @@ lru-cache@^6.0.0:
 
 luxon@^2.4.0:
   version "2.5.0"
-  resolved "https://registry.npmjs.org/luxon/-/luxon-2.5.0.tgz"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.5.0.tgz#098090f67d690b247e83c090267a60b1aa8ea96c"
   integrity sha512-IDkEPB80Rb6gCAU+FEib0t4FeJ4uVOuX1CQ9GsvU3O+JAGIgu0J7sf1OarXKaKDygTZIoJyU6YdZzTFRu+YR0A==
 
 lz-string@^1.4.4:

@@ -3,7 +3,6 @@ import { useMachine } from "@xstate/react"
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
-import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
 import PhoneCredentialMachine, {
   PhoneCredentialType,
 } from "frontend/state/machines/credentials/phone-credential"
@@ -13,7 +12,6 @@ import { CredentialRequesterSMSVerify } from "frontend/ui/pages/credential-reque
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
-import { AuthorizationCoordinator } from "./authorization"
 
 interface Props {
   machine?: PhoneCredentialType
@@ -24,16 +22,19 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
   const [state, send] = useMachine(machine || PhoneCredentialMachine)
 
   switch (true) {
+    case state.matches("Ready"):
+      return (
+        <ScreenResponsive
+          isLoading
+          loadingMessage={`Connecting to ${
+            state.context.appMeta?.name || "app"
+          }`}
+        />
+      )
     case state.matches("Authenticate"):
       return (
         <AuthenticationCoordinator
           actor={state.children.AuthenticationMachine as AuthenticationActor}
-        />
-      )
-    case state.matches("Authorize"):
-      return (
-        <AuthorizationCoordinator
-          actor={state.children.AuthorizationMachine as AuthorizationActor}
         />
       )
     case state.matches("DevClearData"):
@@ -90,7 +91,7 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
     case state.matches("GenerateCredential"):
       return (
         <ScreenResponsive
-          isLoading={true}
+          isLoading
           loadingMessage="Creating verifiable credential"
         />
       )
@@ -100,6 +101,6 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           state.value,
         )}`,
       )
-      return <Loader isLoading />
+      return <ScreenResponsive isLoading />
   }
 }

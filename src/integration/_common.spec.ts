@@ -1,12 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-import { typeResponse } from "./_common"
+import { unpackResponse } from "./_common"
 
 describe("_common test suite", () => {
-  describe("typeResponse", () => {
+  describe("unpackResponse", () => {
     it("should return empty array in success state", () => {
-      const response = typeResponse<Array<string>>({
+      const response = unpackResponse<Array<string>>({
         data: [[]],
         error: [],
         status_code: 200,

@@ -65,3 +65,16 @@ export function factoryAccessPoint(principal?: Principal): AccessPoint {
     principalId: "string",
   }
 }
+
+export function factoryProfile(): Profile {
+  return {
+    anchor: 42069,
+    accessPoints: Array(Math.floor(Math.random() * 4))
+      .fill(null)
+      .map(factoryAccessPoint),
+    accounts: Array(Math.floor(Math.random() * 4))
+      .fill(null)
+      .map(factoryPersona),
+    principalId: "aaaaa-aa",
+  }
+}

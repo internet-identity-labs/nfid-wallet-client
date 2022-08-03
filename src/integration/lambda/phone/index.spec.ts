@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   DelegationChain,

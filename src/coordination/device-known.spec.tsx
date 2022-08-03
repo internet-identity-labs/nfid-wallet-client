@@ -5,6 +5,7 @@ import { DelegationChain } from "@dfinity/identity"
 import { render, waitFor, screen } from "@testing-library/react"
 import { act } from "react-dom/test-utils"
 
+// import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
 import KnownDeviceMachine, {
@@ -57,6 +58,13 @@ describe("KnownDevice Coordinator", () => {
       },
     ]
     NFID_TEST_PLAN.map((plan) => {
+      // const mockLocalStorage = {
+      //   ...window.localStorage,
+      //   getItem: () => JSON.stringify({ ...factoryProfile(), ...plan.profile }),
+      // }
+      // jest
+      //   .spyOn(window, "localStorage", "get")
+      //   .mockImplementation(() => mockLocalStorage)
       it(plan.description, async () => {
         // @ts-ignore
         II.lookup = jest.fn(() => Promise.resolve([]))
@@ -244,7 +252,7 @@ describe("KnownDevice Coordinator", () => {
           ],
           undefined,
         )
-        await waitFor(() => screen.getByText("End"))
+        await waitFor(() => screen.getAllByAltText("loader"))
         expect(DelegationChain.create).toHaveBeenCalled()
       })
     })

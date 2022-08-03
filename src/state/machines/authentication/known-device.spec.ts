@@ -3,7 +3,16 @@
  */
 import { interpret } from "xstate"
 
+// import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 import KnownDeviceMachine from "./known-device"
+
+// const mockLocalStorage = {
+//   ...window.localStorage,
+//   getItem: () => JSON.stringify(factoryProfile()),
+// }
+// jest
+//   .spyOn(window, "localStorage", "get")
+//   .mockImplementation(() => mockLocalStorage)
 
 describe("KnownDevice machine", () => {
   it("should transition to Authenticate state", (done) => {

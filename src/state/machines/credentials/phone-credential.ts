@@ -1,10 +1,4 @@
 // State machine controlling the phone number credential flow.
-import { DerEncodedPublicKey, Signature, SignIdentity } from "@dfinity/agent"
-import {
-  Delegation,
-  DelegationChain,
-  DelegationIdentity,
-} from "@dfinity/identity"
 import { registerPhoneNumberCredentialHandler } from "@nfid/credentials"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
@@ -13,36 +7,24 @@ import {
   removeAccount,
 } from "frontend/integration/identity-manager"
 import { clearProfile } from "frontend/integration/identity-manager/profile"
-import {
-  createAuthoRequest,
-  verifySmsService,
-} from "frontend/integration/identity-manager/services"
+import { verifySmsService } from "frontend/integration/identity-manager/services"
 import { verifyPhoneNumber as _verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import { verifyPhoneNumberService } from "frontend/integration/lambda/phone/services"
 import { Certificate } from "frontend/integration/verifier"
 import { generateCredential } from "frontend/integration/verifier/services"
 import { AuthSession } from "frontend/state/authentication"
-import {
-  AuthorizationRequest,
-  AuthorizingAppMeta,
-  ThirdPartyAuthSession,
-} from "frontend/state/authorization"
+import { AuthorizingAppMeta } from "frontend/state/authorization"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
-import AuthorizationMachine from "frontend/state/machines/authorization/authorization"
 
 import { bool, defined, isDev } from "../common"
 
 // State local to the machine.
 interface Context {
-  appMeta: AuthorizingAppMeta
+  appMeta?: AuthorizingAppMeta
   phone?: string
   encryptedPN?: string
   authSession?: AuthSession
-  authoRequest?: AuthorizationRequest
-  authoIdentity?: DelegationIdentity
-  authoSession?: ThirdPartyAuthSession
-  authoSessionKey?: SignIdentity
-  hostname?: string
+  token?: number[]
 }
 
 let credentialResult: Certificate | undefined
@@ -53,13 +35,6 @@ type Events =
   | {
       type: "done.invoke.AuthenticationMachine"
       data: AuthSession
-    }
-  | {
-      type: "done.invoke.createAuthoRequest"
-      data: {
-        authRequest: AuthorizationRequest
-        sessionKey: SignIdentity
-      }
     }
   | {
       type: "done.invoke.fetchPhoneNumber"
@@ -82,14 +57,10 @@ type Events =
       data: { error: string }
     }
   | {
-      type: "done.invoke.AuthorizationMachine"
-      data: ThirdPartyAuthSession
-    }
-  | {
       type: "done.invoke.generateCredential"
       data: Certificate | undefined
     }
-  | { type: "done.invoke.registerCredentialHandler"; data: string }
+  | { type: "done.invoke.registerCredentialHandler"; data: number[] }
   | { type: "ENTER_PHONE_NUMBER"; data: string }
   | { type: "ENTER_SMS_TOKEN"; data: string }
   | { type: "CHANGE_PHONE_NUMBER" }
@@ -113,7 +84,7 @@ const PhoneCredentialMachine = createMachine(
           id: "registerCredentialHandler",
           onDone: {
             target: "Authenticate",
-            actions: "assignHostname",
+            actions: "assignCredentialRequest",
           },
         },
       },
@@ -127,39 +98,15 @@ const PhoneCredentialMachine = createMachine(
               target: "DevClearData",
               actions: "assignAuthSession",
             },
-            { target: "CreateAuthoRequest", actions: "assignAuthSession" },
+            { target: "GetPhoneNumber", actions: "assignAuthSession" },
           ],
           data: (context) => ({
             appMeta: context.appMeta,
           }),
         },
       },
-      CreateAuthoRequest: {
-        invoke: {
-          src: "createAuthoRequest",
-          id: "createAuthoRequest",
-          onDone: {
-            actions: "assignAuthoRequest",
-            target: "Authorize",
-          },
-        },
-      },
-      Authorize: {
-        invoke: {
-          src: "AuthorizationMachine",
-          id: "AuthorizationMachine",
-          data: (context) => ({
-            authRequest: context.authoRequest,
-            authSession: context.authSession,
-          }),
-          onDone: {
-            actions: "assignAuthoSession",
-            target: "GetPhoneNumber",
-          },
-        },
-      },
       DevClearData: {
-        onDone: "CreateAuthoRequest",
+        onDone: "GetPhoneNumber",
         initial: "Start",
         states: {
           Start: {
@@ -258,43 +205,11 @@ const PhoneCredentialMachine = createMachine(
   },
   {
     actions: {
-      assignAuthoRequest: assign({
-        authoRequest: (context, event) => event.data.authRequest,
-        authoSessionKey: (context, event) => event.data.sessionKey,
-      }),
-      assignAuthoSession: assign({
-        authoSession: (context, event) => event.data,
-        authoIdentity: (context, event) => {
-          const { authoSessionKey: key } = context
-          const session = event.data
-          if (!key) throw new Error("Missing session key")
-          if (!session) throw new Error("Missing session")
-          const delegationChain = DelegationChain.fromDelegations(
-            [
-              {
-                delegation: new Delegation(
-                  key.getPublicKey().toDer(),
-                  session.signedDelegation.delegation.expiration,
-                  session.signedDelegation.delegation.targets,
-                ),
-                signature: new Uint8Array(session.signedDelegation.signature)
-                  .buffer as Signature,
-              },
-            ],
-            session.userPublicKey.buffer as DerEncodedPublicKey,
-          )
-          const identity = DelegationIdentity.fromDelegation(
-            key,
-            delegationChain,
-          )
-          return identity
-        },
-      }),
       assignAuthSession: assign((_, event) => ({
         authSession: event.data,
       })),
-      assignHostname: assign({
-        hostname: (_, event) => event.data,
+      assignCredentialRequest: assign({
+        token: (_, event) => event.data,
       }),
       assignPhoneNumber: assign((_, { data }) => ({ phone: data })),
       assignEncryptedPN: assign((_, event) => ({ encryptedPN: event.data })),
@@ -313,7 +228,7 @@ const PhoneCredentialMachine = createMachine(
         clearProfile()
       },
       async registerCredentialHandler() {
-        return await registerPhoneNumberCredentialHandler(function () {
+        const token = await registerPhoneNumberCredentialHandler(() => {
           return new Promise((resolve) => {
             setInterval(
               () => credentialResolved && resolve(credentialResult),
@@ -321,12 +236,19 @@ const PhoneCredentialMachine = createMachine(
             )
           })
         })
+        console.debug(registerPhoneNumberCredentialHandler.name, { token })
+        if (
+          !Array.isArray(token) ||
+          !!token.find((x) => typeof x !== "number")
+        ) {
+          console.error(token)
+          throw new Error("Received an invalid token.")
+        }
+        return token
       },
-      createAuthoRequest,
       verifyPhoneNumberService,
       verifySmsService,
       AuthenticationMachine,
-      AuthorizationMachine,
       generateCredential,
     },
     guards: {

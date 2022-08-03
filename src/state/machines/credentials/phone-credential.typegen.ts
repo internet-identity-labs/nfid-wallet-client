@@ -13,16 +13,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.createAuthoRequest": {
-      type: "done.invoke.createAuthoRequest"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "done.invoke.AuthorizationMachine": {
-      type: "done.invoke.AuthorizationMachine"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.fetchPhoneNumber": {
       type: "done.invoke.fetchPhoneNumber"
       data: unknown
@@ -50,14 +40,6 @@ export interface Typegen0 {
     }
     "error.platform.AuthenticationMachine": {
       type: "error.platform.AuthenticationMachine"
-      data: unknown
-    }
-    "error.platform.createAuthoRequest": {
-      type: "error.platform.createAuthoRequest"
-      data: unknown
-    }
-    "error.platform.AuthorizationMachine": {
-      type: "error.platform.AuthorizationMachine"
       data: unknown
     }
     "done.invoke.clearAccountData": {
@@ -89,8 +71,6 @@ export interface Typegen0 {
   invokeSrcNameMap: {
     registerCredentialHandler: "done.invoke.registerCredentialHandler"
     AuthenticationMachine: "done.invoke.AuthenticationMachine"
-    createAuthoRequest: "done.invoke.createAuthoRequest"
-    AuthorizationMachine: "done.invoke.AuthorizationMachine"
     clearAccountData: "done.invoke.clearAccountData"
     fetchPhoneNumber: "done.invoke.fetchPhoneNumber"
     verifyPhoneNumberService: "done.invoke.verifyPhoneNumberService"
@@ -104,10 +84,8 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
-    assignHostname: "done.invoke.registerCredentialHandler"
+    assignCredentialRequest: "done.invoke.registerCredentialHandler"
     assignAuthSession: "done.invoke.AuthenticationMachine"
-    assignAuthoRequest: "done.invoke.createAuthoRequest"
-    assignAuthoSession: "done.invoke.AuthorizationMachine"
     assignEncryptedPN:
       | "done.invoke.fetchPhoneNumber"
       | "done.invoke.verifyPhoneNumberService"
@@ -117,12 +95,10 @@ export interface Typegen0 {
   eventsCausingServices: {
     registerCredentialHandler: "xstate.init"
     AuthenticationMachine: "done.invoke.registerCredentialHandler"
-    createAuthoRequest:
+    clearAccountData: "CLEAR_DATA"
+    fetchPhoneNumber:
       | "done.invoke.AuthenticationMachine"
       | "done.state.PhoneNumberCredentialProvider.DevClearData"
-    AuthorizationMachine: "done.invoke.createAuthoRequest"
-    clearAccountData: "CLEAR_DATA"
-    fetchPhoneNumber: "done.invoke.AuthorizationMachine"
     verifyPhoneNumberService: "ENTER_PHONE_NUMBER" | "RESEND"
     verifySmsService: "ENTER_SMS_TOKEN"
     generateCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
@@ -136,8 +112,6 @@ export interface Typegen0 {
   matchesStates:
     | "Ready"
     | "Authenticate"
-    | "CreateAuthoRequest"
-    | "Authorize"
     | "DevClearData"
     | "DevClearData.Start"
     | "DevClearData.Clear"

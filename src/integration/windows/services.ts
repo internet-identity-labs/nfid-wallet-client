@@ -19,11 +19,15 @@ import {
 export async function handshake(): Promise<AuthorizationRequest> {
   const response = awaitMessageFromClient<IdentityClientAuthEvent>(
     "authorize-client",
-  ).then((event) => ({
-    maxTimeToLive: event.data.maxTimeToLive,
-    sessionPublicKey: event.data.sessionPublicKey,
-    hostname: event.origin,
-  }))
+  ).then((event) => {
+    console.debug("handshake", { event })
+    return {
+      maxTimeToLive: event.data.maxTimeToLive,
+      sessionPublicKey: event.data.sessionPublicKey,
+      derivationOrigin: event.data.derivationOrigin,
+      hostname: event.origin,
+    }
+  })
   postMessageToClient({ kind: "authorize-ready" })
   return response
 }

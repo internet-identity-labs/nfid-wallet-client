@@ -1,7 +1,7 @@
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
 import {
-  createPersona,
+  createAccount,
   fetchProfile,
   fetchAccounts,
   selectAccounts,
@@ -47,8 +47,11 @@ export async function createAccountService(
   if (!context.accounts)
     throw new Error(`createAccountService context.accounts missing`)
   const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
-  const createPersonaReposne = await createPersona(
-    context.authRequest?.hostname,
+  const domain =
+    context.authRequest?.derivationOrigin || context.authRequest?.hostname
+
+  const createPersonaReposne = await createAccount(
+    domain,
     accountId,
     `Account #${accountId}`,
   )

@@ -29,6 +29,7 @@ export type IdentityClientAuthEvent = {
   kind: "authorize-client"
   maxTimeToLive: bigint
   sessionPublicKey: Uint8Array
+  derivationOrigin?: string
 }
 type IdentityClientDeviceEvent = { kind: "new-device" }
 type IdentityClientEvents = IdentityClientAuthEvent | IdentityClientDeviceEvent

@@ -134,10 +134,23 @@ export async function fetchAccounts() {
 }
 
 /**
+ * Removes http:// or https:// from input string
+ *
+ * @param {string} input
+ */
+const rmProto = (input: string) => input.replace(/https?:\/\//, "")
+
+/**
  * selects all accounts by 3rd party app domain
  */
-export function selectAccounts(personas: Account[], domain: string) {
-  return personas.filter((p) => p.domain === domain)
+export function selectAccounts(
+  personas: Account[],
+  domain: string,
+  derivationOrigin?: string,
+) {
+  const filterBy = derivationOrigin ?? domain
+
+  return personas.filter(({ domain }) => rmProto(domain) === rmProto(filterBy))
 }
 
 export async function createAccount(

@@ -2,7 +2,10 @@ import { useAtom } from "jotai"
 import React from "react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { authState } from "frontend/integration/internet-identity"
+import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import { ProfileEditPhone } from "frontend/ui/pages/profile-edit/phone"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
@@ -16,24 +19,30 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
   const [isLoading, toggleLoading] = React.useReducer((s) => !s, false)
   const [error, setError] = React.useState("")
   const { user } = useAuthentication()
-  const { account, verifyPhonenumber } = useAccount()
+  const { account } = useAccount()
   const { navigate } = useNFIDNavigate()
+  const { delegationIdentity } = authState.get()
 
   const handleSubmitPhoneNumber = React.useCallback(
     async ({ phone }: { phone: string }) => {
+      if (!delegationIdentity) throw new Error("User delegation is undefined")
+      let response
       toggleLoading()
-      const response = await verifyPhonenumber(phone, user?.principal as string)
-      toggleLoading()
-      if (response.status >= 200 && response.status < 400) {
+      try {
+        response = await verifyPhoneNumber(phone, delegationIdentity)
         setPhoneNumber(phone)
         return navigate(
           `${ProfileConstants.base}/${ProfileConstants.verifySMSToken}`,
         )
+      } catch (e: any) {
+        setError(e.error)
+        console.debug("handleSubmitPhoneNumber", e)
+      } finally {
+        toggleLoading()
       }
-      setError(response.body.error)
       return response
     },
-    [navigate, setPhoneNumber, user?.principal, verifyPhonenumber],
+    [navigate, setPhoneNumber, user?.principal, verifyPhoneNumber],
   )
   return (
     <ProfileEditPhone

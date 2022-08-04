@@ -6,8 +6,10 @@ import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
 import { AppScreenAuthenticateAccountRoutes } from "./apps/authentication/authenticate"
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
-import { AppScreenAuthorizeDerivationOriginAppRoutes } from "./apps/authentication/remote-authentication/routes"
-import { AppScreenAuthorizeAppRoutes } from "./apps/authentication/remote-authentication/routes"
+import {
+  AppScreenAuthorizeAppRoutes,
+  AppScreenAuthorizeDerivationOriginAppRoutes,
+} from "./apps/authentication/remote-authentication/routes"
 import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"
@@ -27,36 +29,33 @@ if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
 }
 
-export const App = () => {
-  return (
-    <Routes>
-      <Route path={"/"} element={<HomeScreen />} />
-      <Route path={"/faq"} element={<Faq />} />
-      <Route path={"/our-mission"} element={<OurMission />} />
+export const App = () => (
+  <Routes>
+    <Route path={"/"} element={<HomeScreen />} />
+    <Route path={"/faq"} element={<Faq />} />
+    <Route path={"/our-mission"} element={<OurMission />} />
 
-      <Route
-        path="/credential/verified-phone-number"
-        element={<PhoneCredentialCoordinator />}
-      />
+    <Route
+      path="/credential/verified-phone-number"
+      element={<PhoneCredentialCoordinator />}
+    />
 
-      <Route path="/authenticate" element={<IDPCoordinator />} />
-      <Route path="/ridp" element={<RemoteIDPCoordinator />} />
+    <Route path="/authenticate" element={<IDPCoordinator />} />
+    <Route path="/ridp" element={<RemoteIDPCoordinator />} />
 
-      {ProfileRoutes}
-      {RecoverNFIDRoutes}
+    {ProfileRoutes}
+    {RecoverNFIDRoutes}
 
-      {/* Legacy routes that we still need */}
-      {NFIDRegisterAccountRoutes}
-      {RemoteNFIDAuthenticationRoutes}
-      {RemoteRegisterAccountRoutes}
+    {/* Legacy routes that we still need */}
+    {AppScreenAuthenticateAccountRoutes}
+    {NFIDRegisterAccountRoutes}
+    {RemoteNFIDAuthenticationRoutes}
+    {RemoteRegisterAccountRoutes}
+    {AppScreenAuthorizeAppRoutes}
+    {AppScreenAuthorizeDerivationOriginAppRoutes}
 
-      {/* Legacy routes */}
-      {/* {AppScreenAuthorizeAppRoutes} */}
-      {/* {AppScreenAuthorizeDerivationOriginAppRoutes} */}
-
-      <Route path={"*"} element={<NotFound />} />
-    </Routes>
-  )
-}
+    <Route path={"*"} element={<NotFound />} />
+  </Routes>
+)
 
 export default App

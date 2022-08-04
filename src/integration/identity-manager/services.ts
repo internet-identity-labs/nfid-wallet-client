@@ -35,7 +35,11 @@ export async function fetchAccountsService(
     )
   }
   const personas = await fetchAccounts()
-  return selectAccounts(personas, context.authRequest.hostname)
+  return selectAccounts(
+    personas,
+    context.authRequest.hostname,
+    context.authRequest.derivationOrigin,
+  )
 }
 
 export async function createAccountService(

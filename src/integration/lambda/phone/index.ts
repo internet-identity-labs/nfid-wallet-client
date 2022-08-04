@@ -60,6 +60,8 @@ export async function verifyPhoneNumber(
     fields,
   )
 
+  console.log({ request })
+
   let body = Cbor.encode(request.body)
   let str = toHexString(body)
 

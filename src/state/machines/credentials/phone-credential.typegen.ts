@@ -3,13 +3,13 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.registerCredentialHandler": {
-      type: "done.invoke.registerCredentialHandler"
+    "done.invoke.AuthenticationMachine": {
+      type: "done.invoke.AuthenticationMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.AuthenticationMachine": {
-      type: "done.invoke.AuthenticationMachine"
+    "done.invoke.clearAccountData": {
+      type: "done.invoke.clearAccountData"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -18,34 +18,29 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.verifyPhoneNumberService": {
-      type: "done.invoke.verifyPhoneNumberService"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.generateCredential": {
       type: "done.invoke.generateCredential"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
+    "done.invoke.registerCredentialHandler": {
+      type: "done.invoke.registerCredentialHandler"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.verifyPhoneNumberService": {
+      type: "done.invoke.verifyPhoneNumberService"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.verifySmsService": {
       type: "done.invoke.verifySmsService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.registerCredentialHandler": {
-      type: "error.platform.registerCredentialHandler"
-      data: unknown
-    }
     "error.platform.AuthenticationMachine": {
       type: "error.platform.AuthenticationMachine"
       data: unknown
-    }
-    "done.invoke.clearAccountData": {
-      type: "done.invoke.clearAccountData"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
     }
     "error.platform.clearAccountData": {
       type: "error.platform.clearAccountData"
@@ -53,6 +48,14 @@ export interface Typegen0 {
     }
     "error.platform.fetchPhoneNumber": {
       type: "error.platform.fetchPhoneNumber"
+      data: unknown
+    }
+    "error.platform.generateCredential": {
+      type: "error.platform.generateCredential"
+      data: unknown
+    }
+    "error.platform.registerCredentialHandler": {
+      type: "error.platform.registerCredentialHandler"
       data: unknown
     }
     "error.platform.verifyPhoneNumberService": {
@@ -63,19 +66,16 @@ export interface Typegen0 {
       type: "error.platform.verifySmsService"
       data: unknown
     }
-    "error.platform.generateCredential": {
-      type: "error.platform.generateCredential"
-      data: unknown
-    }
+    "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    registerCredentialHandler: "done.invoke.registerCredentialHandler"
     AuthenticationMachine: "done.invoke.AuthenticationMachine"
     clearAccountData: "done.invoke.clearAccountData"
     fetchPhoneNumber: "done.invoke.fetchPhoneNumber"
+    generateCredential: "done.invoke.generateCredential"
+    registerCredentialHandler: "done.invoke.registerCredentialHandler"
     verifyPhoneNumberService: "done.invoke.verifyPhoneNumberService"
     verifySmsService: "done.invoke.verifySmsService"
-    generateCredential: "done.invoke.generateCredential"
   }
   missingImplementations: {
     actions: never
@@ -84,8 +84,8 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
-    assignCredentialRequest: "done.invoke.registerCredentialHandler"
     assignAuthSession: "done.invoke.AuthenticationMachine"
+    assignCredentialRequest: "done.invoke.registerCredentialHandler"
     assignEncryptedPN:
       | "done.invoke.fetchPhoneNumber"
       | "done.invoke.verifyPhoneNumberService"
@@ -93,47 +93,47 @@ export interface Typegen0 {
     presentCredential: "done.invoke.generateCredential"
   }
   eventsCausingServices: {
-    registerCredentialHandler: "xstate.init"
     AuthenticationMachine: "done.invoke.registerCredentialHandler"
     clearAccountData: "CLEAR_DATA"
     fetchPhoneNumber:
       | "done.invoke.AuthenticationMachine"
       | "done.state.PhoneNumberCredentialProvider.DevClearData"
+    generateCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
+    registerCredentialHandler: "xstate.init"
     verifyPhoneNumberService: "ENTER_PHONE_NUMBER" | "RESEND"
     verifySmsService: "ENTER_SMS_TOKEN"
-    generateCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
   }
   eventsCausingGuards: {
-    isDev: "done.invoke.AuthenticationMachine"
-    defined: "done.invoke.fetchPhoneNumber"
     bool: "done.invoke.verifySmsService"
+    defined: "done.invoke.fetchPhoneNumber"
+    isDev: "done.invoke.AuthenticationMachine"
   }
   eventsCausingDelays: {}
   matchesStates:
-    | "Ready"
     | "Authenticate"
     | "DevClearData"
-    | "DevClearData.Start"
     | "DevClearData.Clear"
     | "DevClearData.End"
-    | "GetPhoneNumber"
-    | "GetPhoneNumber.GetExistingPhoneNumber"
-    | "GetPhoneNumber.EnterPhoneNumber"
-    | "GetPhoneNumber.VerifyPhoneNumber"
-    | "GetPhoneNumber.EnterSMSToken"
-    | "GetPhoneNumber.ValidateSMSToken"
-    | "GetPhoneNumber.End"
-    | "GenerateCredential"
+    | "DevClearData.Start"
     | "End"
+    | "GenerateCredential"
+    | "GetPhoneNumber"
+    | "GetPhoneNumber.End"
+    | "GetPhoneNumber.EnterPhoneNumber"
+    | "GetPhoneNumber.EnterSMSToken"
+    | "GetPhoneNumber.GetExistingPhoneNumber"
+    | "GetPhoneNumber.ValidateSMSToken"
+    | "GetPhoneNumber.VerifyPhoneNumber"
+    | "Ready"
     | {
-        DevClearData?: "Start" | "Clear" | "End"
+        DevClearData?: "Clear" | "End" | "Start"
         GetPhoneNumber?:
-          | "GetExistingPhoneNumber"
-          | "EnterPhoneNumber"
-          | "VerifyPhoneNumber"
-          | "EnterSMSToken"
-          | "ValidateSMSToken"
           | "End"
+          | "EnterPhoneNumber"
+          | "EnterSMSToken"
+          | "GetExistingPhoneNumber"
+          | "ValidateSMSToken"
+          | "VerifyPhoneNumber"
       }
   tags: never
 }

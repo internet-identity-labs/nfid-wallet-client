@@ -104,3 +104,54 @@ jobs:
         with:
           environment: production
           sourcemaps: ./build/static/js
+
+  update_sdk:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout CI repo.
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Checkout nfid-frontend repo.
+        uses: actions/checkout@v3
+        with:
+          path: nfid-frontend
+
+      - name: Building example.
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          pushd ./nfid-frontend > /dev/null
+
+          ci_echo_info "Building example" >&2
+          yarn build:example
+
+      - name: Checkout nfid-sdk repo.
+        uses: actions/checkout@v3
+        with:
+          repository: internet-identity-labs/NFID-SDK
+          ref: main
+          path: nfid-sdk
+
+      - name: Updating files for PR.
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+
+          ci_echo_info "Cleaning data in nfid-sdk/build/nfid/build/" >&2
+          rm -rf  nfid-sdk/build/nfid/build/
+
+          ci_echo_info "Put new data to nfid-sdk/build/nfid/build/" >&2
+          cp -Rf ./nfid-frontend/build/ nfid-sdk/build/nfid/
+
+      - name: Creating PR.
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: "chore: update nfid-frontend build"
+          title: "chore: update nfid-frontend build"
+          branch: chore/update-nfid-frontend-build
+          path: nfid-sdk

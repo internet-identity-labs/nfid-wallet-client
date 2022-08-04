@@ -8,6 +8,7 @@ import {
   mapPersonaToLegacy,
   verifyToken,
 } from "."
+import { fetchPrincipal } from "../actors"
 import { getNextAccountId } from "./persona/utils"
 import { loadProfileFromLocalStorage } from "./profile"
 
@@ -65,6 +66,10 @@ export async function verifySmsService(
   context: unknown,
   { data }: { data: string },
 ) {
+  console.debug(verifySmsService.name, {
+    caller: (await fetchPrincipal()).toText(),
+    token: data,
+  })
   try {
     return await verifyToken(data)
   } catch (e) {

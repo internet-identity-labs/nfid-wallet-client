@@ -140,12 +140,12 @@ export function selectAccounts(personas: Account[], domain: string) {
   return personas.filter((p) => p.domain === domain)
 }
 
-export async function createPersona(
+export async function createAccount(
   domain: string,
   personaId: string,
   personaName: string,
 ) {
-  console.debug("createPersona", { domain, personaId, personaName })
+  console.debug("createAccount", { domain, personaId, personaName })
   return await im
     .create_persona({
       domain,
@@ -153,10 +153,13 @@ export async function createPersona(
       persona_name: personaName,
     })
     .then((response) => {
-      console.debug("createPersona", { response })
+      console.debug("createAccount", { response })
       return response
     })
     .then((r) => mapProfile(unpackResponse(r)))
+    .catch((e) => {
+      throw new Error(`createAccount im.create_persona: ${e.message}`)
+    })
 }
 
 /**

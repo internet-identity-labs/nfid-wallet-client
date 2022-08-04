@@ -55,6 +55,13 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
             state.matches("GetPhoneNumber.GetExistingPhoneNumber") ||
             state.matches("GetPhoneNumber.VerifyPhoneNumber")
           }
+          loadingMessage={
+            state.matches("GetPhoneNumber.VerifyPhoneNumber")
+              ? "Generating SMS token"
+              : state.matches("GetPhoneNumber.GetExistingPhoneNumber")
+              ? "Checking for phone number"
+              : ""
+          }
           error={
             // TODO: Fix horrible type handling
             "data" in state.event &&
@@ -86,6 +93,7 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
               : undefined
           }
           isLoading={state.matches("GetPhoneNumber.ValidateSMSToken")}
+          loadingMessage="Validating token"
         />
       )
     case state.matches("GenerateCredential"):

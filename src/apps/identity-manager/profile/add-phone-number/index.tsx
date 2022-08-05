@@ -36,7 +36,7 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
         )
       } catch (e: any) {
         if (e.error.length) setError(e.error)
-        else setError("Your phone number is already registered in NFID")
+        else setError("This phone number is already registered")
         console.debug("handleSubmitPhoneNumber", e)
       } finally {
         toggleLoading()

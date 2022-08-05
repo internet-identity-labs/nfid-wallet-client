@@ -4,10 +4,7 @@ import { assign, ActorRefFrom, createMachine } from "xstate"
 import { createWebAuthnIdentity } from "frontend/integration/identity"
 import { fetchChallenge } from "frontend/integration/internet-identity"
 import { registerService } from "frontend/integration/internet-identity/services"
-import {
-  AuthSession,
-  LocalDeviceAuthSession,
-} from "frontend/state/authentication"
+import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { logServiceError } from "../actions"
@@ -33,7 +30,7 @@ type Events =
       }
     }
   | { type: "done.invoke.challengeTimer"; data: void }
-  | { type: "done.invoke.registerService"; data: LocalDeviceAuthSession }
+  | { type: "done.invoke.registerService"; data: AuthSession }
   | { type: "error.platform.registerService"; data: Error }
   | { type: "done.invoke.createWebAuthnIdentity"; data: WebAuthnIdentity }
   | {

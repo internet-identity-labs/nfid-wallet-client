@@ -25,7 +25,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.authenticate}
       element={
         // TODO: redirect to general register flow
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <NFIDProfile />
         </AuthWrapper>
       }
@@ -33,7 +33,7 @@ export const ProfileRoutes = (
     <Route
       path={ProfileConstants.edit}
       element={
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <NFIDProfileEdit />
         </AuthWrapper>
       }
@@ -41,7 +41,7 @@ export const ProfileRoutes = (
     <Route
       path={ProfileConstants.addPhoneNumber}
       element={
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <AddPhoneNumber />
         </AuthWrapper>
       }
@@ -49,7 +49,7 @@ export const ProfileRoutes = (
     <Route
       path={ProfileConstants.verifySMSToken}
       element={
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <VerifySMSToken />
         </AuthWrapper>
       }

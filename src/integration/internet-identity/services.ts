@@ -151,7 +151,15 @@ export async function registerService(
     challenge?: CaptchaChallenge
   },
   event: { data: string },
-): Promise<LocalDeviceAuthSession> {
+): Promise<AuthSession> {
+  console.debug("registerService", { context, event })
+  const sessionSource = context.webAuthnIdentity
+    ? "localDevice"
+    : context.authSession?.sessionSource
+  if (!sessionSource)
+    throw new Error("registerService cannot determine sessionSource")
+
+  console.debug("registerService", { sessionSource })
   const identity = context.authSession?.identity || context.webAuthnIdentity
 
   if (!identity) {
@@ -179,7 +187,7 @@ export async function registerService(
     const profile = await registerAccount(anchor)
 
     // Only in case this device has registered, we set the config in localStorage
-    if (context.authSession?.sessionSource === "localDevice") {
+    if (sessionSource === "localDevice") {
       setProfile(profile)
     }
   } catch (e) {
@@ -193,7 +201,7 @@ export async function registerService(
     anchor,
     identity,
     delegationIdentity,
-    sessionSource: "localDevice",
+    sessionSource,
   }
 }
 

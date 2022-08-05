@@ -3,6 +3,11 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "done.invoke.createAccountService": {
+      type: "done.invoke.createAccountService"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.fetchAccountLimitService": {
       type: "done.invoke.fetchAccountLimitService"
       data: unknown
@@ -13,11 +18,14 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
-    "done.invoke.createAccountService": {
-      type: "done.invoke.createAccountService"
+    "done.invoke.fetchDelegateService": {
+      type: "done.invoke.fetchDelegateService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.createAccountService": {
+      type: "error.platform.createAccountService"
+      data: unknown
     }
     "error.platform.fetchAccountLimitService": {
       type: "error.platform.fetchAccountLimitService"
@@ -27,24 +35,16 @@ export interface Typegen0 {
       type: "error.platform.fetchAccountsService"
       data: unknown
     }
-    "error.platform.createAccountService": {
-      type: "error.platform.createAccountService"
-      data: unknown
-    }
-    "done.invoke.fetchDelegateService": {
-      type: "done.invoke.fetchDelegateService"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "error.platform.fetchDelegateService": {
       type: "error.platform.fetchDelegateService"
       data: unknown
     }
+    "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
+    createAccountService: "done.invoke.createAccountService"
     fetchAccountLimitService: "done.invoke.fetchAccountLimitService"
     fetchAccountsService: "done.invoke.fetchAccountsService"
-    createAccountService: "done.invoke.createAccountService"
     fetchDelegateService: "done.invoke.fetchDelegateService"
   }
   missingImplementations: {
@@ -54,24 +54,24 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
-    assignUserLimit: "done.invoke.fetchAccountLimitService"
     assignAccounts: "done.invoke.fetchAccountsService"
+    assignUserLimit: "done.invoke.fetchAccountLimitService"
     handleAccounts: "done.invoke.fetchAccountsService"
   }
   eventsCausingServices: {
+    createAccountService: "CREATE_ACCOUNT"
     fetchAccountLimitService: "xstate.init"
     fetchAccountsService: "done.invoke.fetchAccountLimitService"
-    createAccountService: "CREATE_ACCOUNT"
     fetchDelegateService: "SELECT_ACCOUNT" | "done.invoke.createAccountService"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
   matchesStates:
-    | "Start"
-    | "FetchAccounts"
     | "CreateAccount"
-    | "PresentAccounts"
-    | "GetDelegation"
     | "End"
+    | "FetchAccounts"
+    | "GetDelegation"
+    | "PresentAccounts"
+    | "Start"
   tags: never
 }

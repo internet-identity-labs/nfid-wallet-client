@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "": { type: "" }
     "done.invoke.known-device": {
       type: "done.invoke.known-device"
       data: unknown
@@ -13,8 +14,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "": { type: "" }
-    "xstate.init": { type: "xstate.init" }
     "error.platform.known-device": {
       type: "error.platform.known-device"
       data: unknown
@@ -23,6 +22,7 @@ export interface Typegen0 {
       type: "error.platform.unknown-device"
       data: unknown
     }
+    "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
     KnownDeviceMachine: "done.invoke.known-device"
@@ -45,6 +45,6 @@ export interface Typegen0 {
     isDeviceRegistered: ""
   }
   eventsCausingDelays: {}
-  matchesStates: "IsDeviceRegistered" | "KnownDevice" | "UnknownDevice" | "End"
+  matchesStates: "End" | "IsDeviceRegistered" | "KnownDevice" | "UnknownDevice"
   tags: never
 }

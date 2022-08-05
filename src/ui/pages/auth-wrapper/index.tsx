@@ -1,29 +1,20 @@
 import React from "react"
-import { generatePath, Navigate, useParams } from "react-router-dom"
 
 import { AppScreenNFIDLogin } from "frontend/apps/authentication/authenticate/nfid-login"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 interface AuthWrapperProps {
-  redirectTo: string
   iframe?: boolean
   children?: React.ReactNode
 }
-export const AuthWrapper: React.FC<AuthWrapperProps> = ({
-  children,
-  redirectTo,
-}) => {
-  const params = useParams()
-
+export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const { isAuthenticated } = useAuthentication()
-  const { account } = useAccount()
+  const { isLoading } = useAccount()
+  console.debug("AuthWrapper", { isAuthenticated })
 
-  return isAuthenticated ? (
-    <>{children}</>
-  ) : account ? (
-    <AppScreenNFIDLogin />
-  ) : (
-    <Navigate to={generatePath(redirectTo, params)} />
-  )
+  if (isLoading) return <ScreenResponsive isLoading />
+
+  return isAuthenticated ? <>{children}</> : <AppScreenNFIDLogin />
 }

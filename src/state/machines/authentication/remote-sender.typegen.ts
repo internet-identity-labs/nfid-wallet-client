@@ -3,8 +3,8 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.getDataFromPath": {
-      type: "done.invoke.getDataFromPath"
+    "done.invoke.authenticate": {
+      type: "done.invoke.authenticate"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -13,38 +13,38 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
-    "done.invoke.authenticate": {
-      type: "done.invoke.authenticate"
+    "done.invoke.getDataFromPath": {
+      type: "done.invoke.getDataFromPath"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "error.platform.getDataFromPath": {
-      type: "error.platform.getDataFromPath"
-      data: unknown
-    }
-    "error.platform.getAppMeta": {
-      type: "error.platform.getAppMeta"
-      data: unknown
-    }
-    "error.platform.authenticate": {
-      type: "error.platform.authenticate"
-      data: unknown
     }
     "done.invoke.postRemoteDelegationService": {
       type: "done.invoke.postRemoteDelegationService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.authenticate": {
+      type: "error.platform.authenticate"
+      data: unknown
+    }
+    "error.platform.getAppMeta": {
+      type: "error.platform.getAppMeta"
+      data: unknown
+    }
+    "error.platform.getDataFromPath": {
+      type: "error.platform.getDataFromPath"
+      data: unknown
+    }
     "error.platform.postRemoteDelegationService": {
       type: "error.platform.postRemoteDelegationService"
       data: unknown
     }
+    "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    getDataFromPath: "done.invoke.getDataFromPath"
-    getAppMeta: "done.invoke.getAppMeta"
     AuthenticationMachine: "done.invoke.authenticate"
+    getAppMeta: "done.invoke.getAppMeta"
+    getDataFromPath: "done.invoke.getDataFromPath"
     postRemoteDelegationService: "done.invoke.postRemoteDelegationService"
   }
   missingImplementations: {
@@ -54,34 +54,34 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
-    assignAuthRequest: "done.invoke.getDataFromPath"
     assignAppMeta: "done.invoke.getAppMeta"
+    assignAuthRequest: "done.invoke.getDataFromPath"
     assignAuthSession: "done.invoke.authenticate"
   }
   eventsCausingServices: {
-    getDataFromPath: "xstate.init"
-    getAppMeta: "xstate.init"
     AuthenticationMachine: "done.state.auth-remote-sender.Start"
+    getAppMeta: "xstate.init"
+    getDataFromPath: "xstate.init"
     postRemoteDelegationService: "done.invoke.authenticate"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
   matchesStates:
-    | "Start"
-    | "Start.GetAuthRequest"
-    | "Start.GetAuthRequest.Fetch"
-    | "Start.GetAuthRequest.Done"
-    | "Start.GetAppMeta"
-    | "Start.GetAppMeta.Fetch"
-    | "Start.GetAppMeta.Done"
     | "AuthenticationMachine"
-    | "PostDelegation"
     | "End"
+    | "PostDelegation"
+    | "Start"
+    | "Start.GetAppMeta"
+    | "Start.GetAppMeta.Done"
+    | "Start.GetAppMeta.Fetch"
+    | "Start.GetAuthRequest"
+    | "Start.GetAuthRequest.Done"
+    | "Start.GetAuthRequest.Fetch"
     | {
         Start?:
-          | "GetAuthRequest"
           | "GetAppMeta"
-          | { GetAuthRequest?: "Fetch" | "Done"; GetAppMeta?: "Fetch" | "Done" }
+          | "GetAuthRequest"
+          | { GetAppMeta?: "Done" | "Fetch"; GetAuthRequest?: "Done" | "Fetch" }
       }
   tags: never
 }

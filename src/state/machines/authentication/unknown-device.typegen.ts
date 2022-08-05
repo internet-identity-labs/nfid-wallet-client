@@ -3,18 +3,13 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.registration": {
-      type: "done.invoke.registration"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.AuthWithGoogleMachine": {
       type: "done.invoke.AuthWithGoogleMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.remote": {
-      type: "done.invoke.remote"
+    "done.invoke.isMobileWithWebAuthn": {
+      type: "done.invoke.isMobileWithWebAuthn"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -23,35 +18,40 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
-    "done.invoke.isMobileWithWebAuthn": {
-      type: "done.invoke.isMobileWithWebAuthn"
+    "done.invoke.registration": {
+      type: "done.invoke.registration"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.remote": {
+      type: "done.invoke.remote"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.AuthWithGoogleMachine": {
+      type: "error.platform.AuthWithGoogleMachine"
+      data: unknown
+    }
     "error.platform.isMobileWithWebAuthn": {
       type: "error.platform.isMobileWithWebAuthn"
+      data: unknown
+    }
+    "error.platform.loginWithAnchor": {
+      type: "error.platform.loginWithAnchor"
       data: unknown
     }
     "error.platform.registration": {
       type: "error.platform.registration"
       data: unknown
     }
-    "error.platform.AuthWithGoogleMachine": {
-      type: "error.platform.AuthWithGoogleMachine"
-      data: unknown
-    }
     "error.platform.remote": { type: "error.platform.remote"; data: unknown }
-    "error.platform.loginWithAnchor": {
-      type: "error.platform.loginWithAnchor"
-      data: unknown
-    }
+    "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
-    RegistrationMachine: "done.invoke.registration"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
+    RegistrationMachine: "done.invoke.registration"
     RemoteReceiverMachine: "done.invoke.remote"
+    isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
     loginWithAnchor: "done.invoke.loginWithAnchor"
   }
   missingImplementations: {
@@ -62,18 +62,18 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignAuthSession:
-      | "done.invoke.registration"
       | "done.invoke.AuthWithGoogleMachine"
-      | "done.invoke.remote"
       | "done.invoke.loginWithAnchor"
+      | "done.invoke.registration"
+      | "done.invoke.remote"
   }
   eventsCausingServices: {
-    isMobileWithWebAuthn: "xstate.init"
-    RegistrationMachine:
-      | "done.invoke.isMobileWithWebAuthn"
-      | "done.invoke.AuthWithGoogleMachine"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
+    RegistrationMachine:
+      | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.isMobileWithWebAuthn"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
+    isMobileWithWebAuthn: "xstate.init"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
   eventsCausingGuards: {
@@ -82,15 +82,15 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   matchesStates:
-    | "Start"
-    | "Start.CheckCapability"
-    | "RegistrationMachine"
     | "AuthSelection"
     | "AuthWithGoogle"
-    | "RemoteAuthentication"
-    | "ExistingAnchor"
     | "AuthenticateSameDevice"
     | "End"
+    | "ExistingAnchor"
+    | "RegistrationMachine"
+    | "RemoteAuthentication"
+    | "Start"
+    | "Start.CheckCapability"
     | { Start?: "CheckCapability" }
   tags: never
 }

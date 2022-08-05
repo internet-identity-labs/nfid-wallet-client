@@ -32,17 +32,16 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     createSecurityDevice,
   } = useDevices()
   const { allAccounts, getPersona } = usePersona()
-  const { account, readAccount } = useAccount()
+  const { profile } = useAccount()
 
   React.useEffect(() => {
     if (!fetched) {
       loadOnce()
-      readAccount()
       getDevices()
       getRecoveryDevices()
       getPersona()
     }
-  }, [fetched, getDevices, getPersona, getRecoveryDevices, readAccount])
+  }, [fetched, getDevices, getPersona, getRecoveryDevices])
 
   const handleDeleteDevice = React.useCallback(
     async (device: LegacyDevice) => {
@@ -94,7 +93,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   return (
     <Profile
-      account={account}
+      account={profile}
       applications={applications}
       onDeviceDelete={handleDeleteDevice}
       onDeviceUpdate={handleDeviceUpdate}

@@ -1,6 +1,7 @@
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
+import useSWR from "swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { unpackResponse } from "frontend/integration/_common"
@@ -10,7 +11,7 @@ import {
 } from "frontend/integration/_ic_api/identity_manager.did"
 import { im } from "frontend/integration/actors"
 
-import { mapProfile, Profile } from ".."
+import { fetchProfile, mapProfile, Profile } from ".."
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {
   memoryAccountAtom,
@@ -27,6 +28,8 @@ type AccountService = Pick<
 
 /** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {
+  const { data: profile, error, mutate } = useSWR("account", fetchProfile)
+  console.debug("useAccount", { profile, error })
   const [account, setAccount] = useAtom(localStorageAccountAtom)
   const [memoryAccount, setMemoryAccount] = useAtom(memoryAccountAtom)
   const [userNumber] = useAtom(userNumberAtom)
@@ -39,9 +42,10 @@ export const useAccount = () => {
         .then(unpackResponse)
         .then(mapProfile)
       setAccount(newAccount)
+      mutate()
       return newAccount
     },
-    [setAccount],
+    [mutate, setAccount],
   )
 
   const recoverAccount = React.useCallback(
@@ -55,11 +59,12 @@ export const useAccount = () => {
         shouldStoreLocalAccount
           ? setAccount(newAccount)
           : setMemoryAccount(newAccount)
+        mutate()
       }
 
       return newAccount
     },
-    [account, setAccount],
+    [mutate, setAccount, setMemoryAccount, shouldStoreLocalAccount],
   )
 
   const readAccount = React.useCallback(async () => {
@@ -73,9 +78,10 @@ export const useAccount = () => {
         ? setAccount(newAccount)
         : setMemoryAccount(newAccount)
     }
+    mutate()
 
     return newAccount
-  }, [account, shouldStoreLocalAccount, setAccount, setMemoryAccount])
+  }, [shouldStoreLocalAccount, setAccount, setMemoryAccount, mutate])
 
   // Used when we do not want to use the local storage version of the account.
   // The account object is used as a flag to kickoff certain flows that do not make sense in particular use cases (recovery phrases, google, etc.)
@@ -94,7 +100,7 @@ export const useAccount = () => {
     }
 
     return newAccount
-  }, [account, setMemoryAccount])
+  }, [setMemoryAccount])
 
   const readAndStoreAccount = React.useCallback(async () => {
     const newAccount = await im
@@ -105,7 +111,7 @@ export const useAccount = () => {
     setAccount(newAccount)
 
     return newAccount
-  }, [account, setAccount])
+  }, [setAccount])
 
   const resetLocalAccount = React.useCallback(async () => {
     const localAccount = JSON.parse(
@@ -165,6 +171,9 @@ export const useAccount = () => {
   )
 
   return {
+    isLoading: !profile && !error,
+    profile,
+    /**@deprecated */
     account: isAuthenticated ? account || memoryAccount : account,
     userNumber,
     shouldStoreLocalAccount,

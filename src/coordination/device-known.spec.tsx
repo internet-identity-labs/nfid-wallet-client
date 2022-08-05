@@ -4,7 +4,9 @@
 import { DelegationChain } from "@dfinity/identity"
 import { render, waitFor, screen } from "@testing-library/react"
 import { act } from "react-dom/test-utils"
+import { timeout } from "rxjs"
 
+import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 // import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
@@ -58,14 +60,15 @@ describe("KnownDevice Coordinator", () => {
       },
     ]
     NFID_TEST_PLAN.map((plan) => {
-      // const mockLocalStorage = {
-      //   ...window.localStorage,
-      //   getItem: () => JSON.stringify({ ...factoryProfile(), ...plan.profile }),
-      // }
-      // jest
-      //   .spyOn(window, "localStorage", "get")
-      //   .mockImplementation(() => mockLocalStorage)
       it(plan.description, async () => {
+        const mockLocalStorage = {
+          ...window.localStorage,
+          getItem: () =>
+            JSON.stringify({ ...factoryProfile(), ...plan.profile }),
+        }
+        jest
+          .spyOn(window, "localStorage", "get")
+          .mockImplementation(() => mockLocalStorage)
         // @ts-ignore
         II.lookup = jest.fn(() => Promise.resolve([]))
         // @ts-ignore
@@ -90,9 +93,7 @@ describe("KnownDevice Coordinator", () => {
           KnownDeviceMachine,
           context,
         )
-
         render(<KnownDeviceCoordinator actor={actor as KnownDeviceActor} />)
-
         await waitFor(() => {
           plan.detectOnScreen.map((ele) => screen.getByText(ele))
         })
@@ -108,6 +109,9 @@ describe("KnownDevice Coordinator", () => {
         detectOnScreen: ["Choose an account", "to continue to MyApp"],
         hostNameMock: "https://my-application.com",
         fetchApplicationsMock: [],
+        profile: {
+          anchor: 11111,
+        } as Profile,
       },
       {
         description: "should render SingleAccount Authentication state",
@@ -116,10 +120,21 @@ describe("KnownDevice Coordinator", () => {
         fetchApplicationsMock: [
           { accountLimit: 1, domain: "https://my-application.com" },
         ],
+        profile: {
+          anchor: 11111,
+        } as Profile,
       },
     ]
     RENDER_AUTH_STATE_TEST_PLAN.map((plan) => {
       it(plan.description, async () => {
+        const mockLocalStorage = {
+          ...window.localStorage,
+          getItem: () =>
+            JSON.stringify({ ...factoryProfile(), ...plan.profile }),
+        }
+        jest
+          .spyOn(window, "localStorage", "get")
+          .mockImplementation(() => mockLocalStorage)
         // @ts-ignore
         II.lookup = jest.fn(() => Promise.resolve([]))
         // @ts-ignore
@@ -150,9 +165,7 @@ describe("KnownDevice Coordinator", () => {
 
         await waitFor(() => {
           plan.detectOnScreen.map((ele) => screen.getByText(ele))
-          const appLogo = screen.getByAltText(
-            `application-logo-context.authAppMeta`,
-          )
+          const appLogo = screen.getByAltText(`application-logo-MyApp`)
           expect(appLogo.getAttribute("src")).toBe(
             "https://my-app.com/logo.svg",
           )
@@ -173,6 +186,9 @@ describe("KnownDevice Coordinator", () => {
         hostNameMock: "https://my-application.com",
         fetchApplicationsMock: [],
         isNFID: true,
+        profile: {
+          anchor: 11111,
+        } as Profile,
       },
       {
         description:

@@ -35,7 +35,7 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
           `${ProfileConstants.base}/${ProfileConstants.verifySMSToken}`,
         )
       } catch (e: any) {
-        if (e.error.length) setError(e.error)
+        if (e.error) setError(e.error)
         else setError("This phone number is already registered")
         console.debug("handleSubmitPhoneNumber", e)
       } finally {

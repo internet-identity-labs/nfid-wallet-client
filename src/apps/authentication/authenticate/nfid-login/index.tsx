@@ -21,7 +21,7 @@ export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
   const { account } = useAccount()
   if (!account) throw new Error("unknown device")
 
-  const { isLoading, error, login } = useAuthentication()
+  const { isLoading, login } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
   const navigate = useNavigate()
 

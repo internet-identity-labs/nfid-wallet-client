@@ -1,6 +1,14 @@
 name: DEV Deployment
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release*
+  pull_request:
+    branches:
+      - main
+      - release*
 
 jobs:
   check-secrets:
@@ -51,7 +59,7 @@ jobs:
         run: |
           yarn
           yarn prettier --check "src/**/*.{ts,tsx}"
-          # yarn test
+          yarn test
 
       - name: NFID FRONTEND | deploy
         run: |

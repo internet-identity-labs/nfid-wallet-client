@@ -124,6 +124,7 @@
     "dotenv": "16.0.0",
     "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
+    "eslint-config-react-app": "7.0.1",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.29.4",
@@ -151,6 +152,7 @@
     "webpack": "^5.72.0"
   },
   "eslintConfig": {
+    "extends": "react-app",
     "overrides": [
       {
         "files": [

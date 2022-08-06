@@ -29,6 +29,8 @@ export async function fromSeedWithSlip0010(
 }
 
 /**
+ * NEVER LOG THE RECOVERY PHRASE KEY IDENTITY TO CONSOLE OR SEND
+ * TO EXTERNAL SERVICE
  * Create an Ed25519 based on a mnemonic phrase according to SLIP 0010:
  * https://github.com/satoshilabs/slips/blob/master/slip-0010.md
  *

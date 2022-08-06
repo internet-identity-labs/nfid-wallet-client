@@ -5,7 +5,6 @@ import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { im } from "frontend/integration/actors"
-import { useAccessPoint } from "frontend/integration/identity-manager"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
@@ -24,7 +23,7 @@ export const RouterRegisterDeviceDecider: React.FC<
 > = ({ registerSuccessPath }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { recoverDevice, createSecurityDevice } = useDevices()
-  const { readAccount, recoverAccount, createAccount } = useAccount()
+  const { recoverAccount, createAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
   const { getPersona } = usePersona()
   const { generatePath } = useNFIDNavigate()
@@ -104,6 +103,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     recoverAccount,
     recoverDevice,
     registerSuccessPath,
+    setShouldStoreLocalAccount,
     userNumber,
   ])
 
@@ -123,8 +123,9 @@ export const RouterRegisterDeviceDecider: React.FC<
     generatePath,
     getPersona,
     navigate,
-    readAccount,
+    recoverAccount,
     registerSuccessPath,
+    setShouldStoreLocalAccount,
     userNumber,
   ])
 
@@ -133,7 +134,7 @@ export const RouterRegisterDeviceDecider: React.FC<
       navigate(
         `${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.enterRecoveryPhrase}`,
       )
-  }, [user])
+  }, [navigate, user])
 
   return (
     <AuthorizeRegisterDeciderScreen

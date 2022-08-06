@@ -13,7 +13,6 @@ import nacl from "tweetnacl"
 import nacl_util from "tweetnacl-util"
 
 import { ic } from "frontend/integration/actors"
-import { authState } from "frontend/integration/internet-identity"
 
 declare const VERIFY_PHONE_NUMBER: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string

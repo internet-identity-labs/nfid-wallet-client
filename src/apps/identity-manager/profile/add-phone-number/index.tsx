@@ -1,8 +1,6 @@
 import { useAtom } from "jotai"
 import React from "react"
 
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { authState } from "frontend/integration/internet-identity"
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
@@ -18,7 +16,6 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
   const [, setPhoneNumber] = useAtom(phoneNumberAtom)
   const [isLoading, toggleLoading] = React.useReducer((s) => !s, false)
   const [error, setError] = React.useState("")
-  const { user } = useAuthentication()
   const { account } = useAccount()
   const { navigate } = useNFIDNavigate()
   const { delegationIdentity } = authState.get()
@@ -43,7 +40,7 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
       }
       return response
     },
-    [navigate, setPhoneNumber, user?.principal, verifyPhoneNumber],
+    [delegationIdentity, navigate, setPhoneNumber],
   )
   return (
     <ProfileEditPhone

@@ -45,7 +45,7 @@ export function RemoteReceiverCoordinator({
         },
       })
     },
-    [],
+    [send],
   )
 
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
@@ -55,7 +55,7 @@ export function RemoteReceiverCoordinator({
       ?.find(isRemoteLoginRegisterMessage)
 
     if (remoteRegister) handleRemoteRegister(remoteRegister)
-  }, [messages])
+  }, [handleRemoteRegister, messages])
 
   return (
     <RemoteAuthorizeAppUnknownDevice

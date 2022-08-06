@@ -73,22 +73,16 @@ export const AppScreenRecoverNFID: React.FC<
       Sentry.setUser({ id: userNumber.toString() })
       setUserNumber(userNumber)
     },
-    [
-      loginWithRecovery,
-      setResponseError,
-      setUserNumber,
-      navigate,
-      registerDeviceDeciderPath,
-    ],
+    [loginWithRecovery, setResponseError, setUserNumber],
   )
 
-  const handleOnAuthenticated = async () => {
+  const handleOnAuthenticated = React.useCallback(async () => {
     navigate(registerDeviceDeciderPath)
-  }
+  }, [navigate, registerDeviceDeciderPath])
 
   useEffect(() => {
     if (!!user) handleOnAuthenticated()
-  }, [user])
+  }, [handleOnAuthenticated, user])
 
   return (
     <RecoverNFID

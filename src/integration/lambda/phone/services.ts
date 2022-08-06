@@ -21,9 +21,8 @@ export async function verifyPhoneNumberService(context: {
     return await verifyPhoneNumber(phone, identity)
   } catch (e) {
     console.error("Error in verifyPhoneNumberService", e)
-    throw {
-      error:
-        "There was an issue verifying your phone number, please try again.",
-    }
+    throw new Error(
+      "There was an issue verifying your phone number, please try again.",
+    )
   }
 }

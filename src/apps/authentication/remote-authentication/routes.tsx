@@ -1,5 +1,5 @@
 import React from "react"
-import { generatePath, Route } from "react-router-dom"
+import { Route } from "react-router-dom"
 
 import { AppScreenAuthorizeApp } from "frontend/apps/authentication/remote-authentication/authorize-app"
 

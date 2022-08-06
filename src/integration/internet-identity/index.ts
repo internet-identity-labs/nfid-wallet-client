@@ -672,7 +672,9 @@ export async function login(
 
   return fromWebauthnDevices(userNumber, devices, withSecurityDevices)
 }
-
+/**
+ * @param {string} seedPhrase NEVER LOG THE RECOVERY PHRASE KEY IDENTITY TO CONSOLE OR SEND TO EXTERNAL SERVICE
+ */
 export async function fromSeedPhrase(
   userNumber: bigint,
   seedPhrase: string,

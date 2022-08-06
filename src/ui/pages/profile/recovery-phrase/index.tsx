@@ -7,6 +7,10 @@ import { Input } from "frontend/ui/atoms/input"
 import { ProfileScreen } from "frontend/ui/templates/ProfileScreen"
 
 interface CopyRecoveryPhraseProps {
+  /**
+   * NEVER LOG THE RECOVERY PHRASE TO CONSOLE OR SEND
+   * TO EXTERNAL SERVICE
+   */
   recoveryPhrase: string
   onContinueButtonClick: () => void
 }

@@ -160,17 +160,17 @@ export const useDevices = () => {
     browser: { name: browserName },
   } = useDeviceInfo()
 
-  const { userNumber } = useAccount()
+  const { profile } = useAccount()
 
   const handleLoadDevices = React.useCallback(async () => {
-    if (userNumber) {
+    if (profile?.anchor) {
       const [accessPoints, existingDevices] = await Promise.all([
         im.read_access_points().catch((e) => {
           throw new Error(
             `useDevices.handleLoadDevices im.read_access_points: ${e.message}`,
           )
         }),
-        fetchAuthenticatorDevices(userNumber),
+        fetchAuthenticatorDevices(BigInt(profile?.anchor)),
       ])
 
       const normalizedDevices = normalizeDevices(
@@ -180,7 +180,7 @@ export const useDevices = () => {
 
       setDevices(normalizedDevices)
     }
-  }, [setDevices, userNumber])
+  }, [profile?.anchor, setDevices])
 
   const updateDevice = React.useCallback(
     async (device: LegacyDevice) => {
@@ -211,14 +211,14 @@ export const useDevices = () => {
   )
 
   const getRecoveryDevices = React.useCallback(async () => {
-    if (userNumber) {
+    if (profile?.anchor) {
       const [accessPoints, existingRecoveryDevices] = await Promise.all([
         im.read_access_points().catch((e) => {
           throw new Error(
             `useDevices.getRecoveryDevices im.read_access_points: ${e.message}`,
           )
         }),
-        fetchRecoveryDevices(userNumber),
+        fetchRecoveryDevices(BigInt(profile?.anchor)),
       ])
 
       const normalizedDevices = normalizeRecoveryDevices(
@@ -228,13 +228,13 @@ export const useDevices = () => {
 
       setRecoveryDevices(normalizedDevices)
     }
-  }, [setRecoveryDevices, userNumber])
+  }, [profile?.anchor, setRecoveryDevices])
 
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
-      if (authState.get().actor && userNumber) {
+      if (authState.get().actor && profile?.anchor) {
         await Promise.all([
-          removeDevice(userNumber, pubkey),
+          removeDevice(BigInt(profile?.anchor), pubkey),
           im.remove_access_point({ pub_key: pubkey }).catch((e) => {
             throw new Error(
               `useDevices.deleteDevice im.remove_access_point: ${e.message}`,
@@ -243,7 +243,7 @@ export const useDevices = () => {
         ])
       }
     },
-    [userNumber],
+    [profile?.anchor],
   )
 
   const createWebAuthNDevice = React.useCallback(
@@ -364,8 +364,8 @@ export const useDevices = () => {
   }, [handleLoadDevices])
 
   const createRecoveryPhrase = React.useCallback(async () => {
-    if (!userNumber)
-      throw new Error("useDevice.createRecoveryPhrase userNumber missing")
+    if (!profile?.anchor)
+      throw new Error("useDevice.createRecoveryPhrase profile?.anchor missing")
     if (!authState.get().actor)
       throw new Error("useDevice.createRecoveryPhrase internetIdentity missing")
 
@@ -378,7 +378,7 @@ export const useDevices = () => {
 
     // TODO: store as access point
     await addDevice(
-      userNumber,
+      BigInt(profile.anchor),
       deviceName,
       { seed_phrase: null },
       { recovery: null },
@@ -390,15 +390,15 @@ export const useDevices = () => {
       deviceName,
     )
     getRecoveryDevices()
-    return `${userNumber} ${recovery}`
-  }, [createRecoveryDevice, getRecoveryDevices, userNumber])
+    return `${profile.anchor} ${recovery}`
+  }, [createRecoveryDevice, getRecoveryDevices, profile?.anchor])
 
   const createSecurityDevice = React.useCallback(
     async (
       userNumberOverwrite?: bigint,
       purpose: "recover" | "authentication" = "recover",
     ) => {
-      const actualUserNumber = userNumber || userNumberOverwrite
+      const actualUserNumber = profile?.anchor || userNumberOverwrite
       if (!actualUserNumber)
         throw new Error("useDevice.createSecurityDevice userNumber missing")
       if (!authState.get().actor)
@@ -406,7 +406,7 @@ export const useDevices = () => {
           "useDevice.createSecurityDevice internetIdentity missing",
         )
 
-      const devices = await fetchAllDevices(actualUserNumber)
+      const devices = await fetchAllDevices(BigInt(actualUserNumber))
       const deviceName = "Security Key"
 
       let recoverIdentity
@@ -416,7 +416,7 @@ export const useDevices = () => {
         })
         await Promise.all([
           addDevice(
-            actualUserNumber,
+            BigInt(actualUserNumber),
             deviceName,
             { cross_platform: null },
             purpose && purpose === "recover"
@@ -441,7 +441,7 @@ export const useDevices = () => {
       getRecoveryDevices()
       getDevices()
     },
-    [createRecoveryDevice, getDevices, getRecoveryDevices, userNumber],
+    [createRecoveryDevice, getDevices, getRecoveryDevices, profile?.anchor],
   )
 
   const getGoogleDevice = React.useCallback(
@@ -461,7 +461,7 @@ export const useDevices = () => {
 
   React.useEffect(() => {
     handleLoadDevices()
-  }, [userNumber, handleLoadDevices])
+  }, [profile?.anchor, handleLoadDevices])
 
   return {
     devices,

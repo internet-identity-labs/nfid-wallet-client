@@ -76,6 +76,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   )
 
   const handleCreateRecoveryPhrase = React.useCallback(async () => {
+    // NOTE: NEVER LOG RECOVERY PHRASE
     const recoveryPhrase = await createRecoveryPhrase()
     navigate(
       `${ProfileConstants.base}/${ProfileConstants.copyRecoveryPhrase}`,

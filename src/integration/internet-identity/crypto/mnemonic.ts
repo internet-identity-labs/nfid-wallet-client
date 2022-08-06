@@ -2054,6 +2054,8 @@ const ENGLISH_WORDS = [
 ]
 
 /**
+ * NEVER LOG THE RECOVERY PHRASE TO CONSOLE OR SEND
+ * TO EXTERNAL SERVICE
  * @returns A random BIP39 mnemonic with 256 bits of entropy.
  */
 export function generate(): string {

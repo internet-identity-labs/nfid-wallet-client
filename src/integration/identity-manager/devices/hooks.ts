@@ -363,12 +363,17 @@ export const useDevices = () => {
     await handleLoadDevices()
   }, [handleLoadDevices])
 
+  /**
+   * NEVER LOG THE RECOVERY PHRASE TO CONSOLE OR SEND
+   * TO EXTERNAL SERVICE
+   */
   const createRecoveryPhrase = React.useCallback(async () => {
     if (!profile?.anchor)
       throw new Error("useDevice.createRecoveryPhrase profile?.anchor missing")
     if (!authState.get().actor)
       throw new Error("useDevice.createRecoveryPhrase internetIdentity missing")
 
+    // NOTE: NEVER LOG RECOVERY PHRASE
     const recovery = generate().trim()
     const recoverIdentity = await fromMnemonicWithoutValidation(
       recovery,
@@ -376,22 +381,24 @@ export const useDevices = () => {
     )
     const deviceName = "Recovery phrase"
 
-    // TODO: store as access point
-    await addDevice(
-      BigInt(profile.anchor),
-      deviceName,
-      { seed_phrase: null },
-      { recovery: null },
-      recoverIdentity.getPublicKey().toDer(),
-    )
-    createRecoveryDevice(
-      new Blob([recoverIdentity.getPublicKey().toDer()]),
-      "document",
-      deviceName,
-    )
-    getRecoveryDevices()
+    await Promise.all([
+      addDevice(
+        BigInt(profile?.anchor),
+        deviceName,
+        { seed_phrase: null },
+        { recovery: null },
+        recoverIdentity.getPublicKey().toDer(),
+      ),
+      createRecoveryDevice(
+        new Blob([recoverIdentity.getPublicKey().toDer()]),
+        "document",
+        deviceName,
+      ),
+      getRecoveryDevices(),
+      getDevices(),
+    ])
     return `${profile.anchor} ${recovery}`
-  }, [createRecoveryDevice, getRecoveryDevices, profile?.anchor])
+  }, [createRecoveryDevice, getDevices, getRecoveryDevices, profile?.anchor])
 
   const createSecurityDevice = React.useCallback(
     async (
@@ -430,6 +437,8 @@ export const useDevices = () => {
             "usb",
             deviceName,
           ),
+          getRecoveryDevices(),
+          getDevices(),
         ])
       } catch (error: any) {
         if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
@@ -437,9 +446,6 @@ export const useDevices = () => {
         }
         console.debug("createSecurityDevice", "device already registered")
       }
-
-      getRecoveryDevices()
-      getDevices()
     },
     [createRecoveryDevice, getDevices, getRecoveryDevices, profile?.anchor],
   )

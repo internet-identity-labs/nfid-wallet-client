@@ -46,7 +46,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     }
 
     try {
-      await recoverAccount(userNumber)
+      await recoverAccount(userNumber, true)
     } catch (e) {
       console.warn("account not found. Recreating")
       await createAccount({ anchor: userNumber })
@@ -114,7 +114,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     setIsLoading(true)
     setShouldStoreLocalAccount(false)
 
-    await recoverAccount(userNumber)
+    await recoverAccount(userNumber, false)
     await getPersona()
 
     setIsLoading(false)

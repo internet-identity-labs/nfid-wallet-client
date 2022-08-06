@@ -619,6 +619,7 @@ export async function registerFromGoogle(
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
   replaceIdentity(delegation.delegationIdentity)
+  authState.set(identity, delegation.delegationIdentity, ii)
 
   let registerResponse: RegisterResponse
   try {

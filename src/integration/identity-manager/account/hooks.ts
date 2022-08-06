@@ -29,11 +29,14 @@ type AccountService = Pick<
 /** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {
   const { data: profile, error, mutate } = useSWR("account", fetchProfile)
-  console.debug("useAccount", { profile, error })
   const [account, setAccount] = useAtom(localStorageAccountAtom)
   const [memoryAccount, setMemoryAccount] = useAtom(memoryAccountAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const { isAuthenticated, shouldStoreLocalAccount } = useAuthentication()
+
+  React.useEffect(() => {
+    console.debug("useAccount", { profile, error })
+  }, [profile, error])
 
   const createAccount = React.useCallback(
     async (account: HTTPAccountRequest) => {
@@ -49,7 +52,7 @@ export const useAccount = () => {
   )
 
   const recoverAccount = React.useCallback(
-    async (userNumber: bigint) => {
+    async (userNumber: bigint, shouldStoreLocalAccount: boolean) => {
       const newAccount = await im
         .recover_account(userNumber)
         .then(unpackResponse)
@@ -64,7 +67,7 @@ export const useAccount = () => {
 
       return newAccount
     },
-    [mutate, setAccount, setMemoryAccount, shouldStoreLocalAccount],
+    [mutate, setAccount, setMemoryAccount],
   )
 
   const readAccount = React.useCallback(async () => {

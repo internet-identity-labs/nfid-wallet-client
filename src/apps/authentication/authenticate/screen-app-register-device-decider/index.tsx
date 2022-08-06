@@ -34,7 +34,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
     await recoverDevice(Number(userNumber))
 
     try {
-      await recoverAccount(userNumber)
+      await recoverAccount(userNumber, true)
     } catch (e) {
       console.warn("account not found. Recreating")
       await createAccount({ anchor: userNumber })

@@ -1,16 +1,11 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import {
-  APP_SCREEN_AUTHENTICATE_BASE,
-  SUB_PATH_AUTHORIZE_APP,
-} from "frontend/apps/authentication/authenticate/constants"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
-import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
 import { CredentialResponse } from "frontend/ui/atoms/button/signin-with-google/types"
 import { useChallenge } from "frontend/ui/pages/captcha/hook"
 import { RegisterAccountIntro } from "frontend/ui/pages/register-account-intro/screen-app"
@@ -23,14 +18,11 @@ interface RegisterAccountIntroProps
   > {
   captchaPath: string
   pathOnAuthenticated: string
-  isNFID?: boolean
   isRemoteRegister?: boolean
 }
 
 export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   captchaPath,
-  pathOnAuthenticated,
-  isNFID: isNFIDProp,
   isRemoteRegister,
 }) => {
   const [isLoading, setIsLoading] = React.useState(false)
@@ -39,15 +31,9 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     useMultipass()
   const { navigate } = useNFIDNavigate()
 
-  const { secret, scope } = useParams()
-
-  const isNFID = React.useMemo(
-    () => scope === "NFID" || isNFIDProp,
-    [isNFIDProp, scope],
-  )
+  const { secret } = useParams()
 
   const { remoteNFIDLogin } = useAuthorizeApp()
-  const { getPersona } = usePersona()
 
   const handleCreateKeys = React.useCallback(async () => {
     setIsLoading(true)
@@ -65,9 +51,9 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   useChallenge()
 
   const { getGoogleDevice } = useDevices()
-  const { user, loginWithGoogleDevice, login, setShouldStoreLocalAccount } =
+  const { loginWithGoogleDevice, login, setShouldStoreLocalAccount } =
     useAuthentication()
-  const { readMemoryAccount, readAccount } = useAccount()
+  const { readMemoryAccount } = useAccount()
 
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
@@ -80,23 +66,18 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
         const account = await readMemoryAccount()
 
-        if (isNFID && account) {
-          if (isRemoteRegister) {
-            if (!secret)
-              throw new Error(
-                "RouteRegisterAccountIntro.handleGetGoogleKey secret missing",
-              )
-            await remoteNFIDLogin({
-              secret,
-              userNumberOverwrite: BigInt(account.anchor),
-              userOverwrite,
-            })
-          }
-          return navigate("/profile/authenticate")
+        if (isRemoteRegister) {
+          if (!secret)
+            throw new Error(
+              "RouteRegisterAccountIntro.handleGetGoogleKey secret missing",
+            )
+          await remoteNFIDLogin({
+            secret,
+            userNumberOverwrite: BigInt(account.anchor),
+            userOverwrite,
+          })
         }
-        // when we're not on NFID we're handling the authorization on
-        // the next page
-        return navigate(pathOnAuthenticated)
+        return navigate("/profile/authenticate")
       }
 
       // new google user send to register
@@ -114,11 +95,9 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     [
       captchaPath,
       getGoogleDevice,
-      isNFID,
       isRemoteRegister,
       loginWithGoogleDevice,
       navigate,
-      pathOnAuthenticated,
       readMemoryAccount,
       remoteNFIDLogin,
       secret,
@@ -140,14 +119,6 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         setIsLoading(false)
       }
     }
-
-  React.useEffect(() => {
-    if (user) {
-      readAccount()
-      getPersona()
-      navigate(`${APP_SCREEN_AUTHENTICATE_BASE}/${SUB_PATH_AUTHORIZE_APP}`)
-    }
-  }, [getPersona, user, navigate, readAccount])
 
   return (
     <RegisterAccountIntro

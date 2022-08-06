@@ -1,30 +1,12 @@
-import { ActorSubclass, HttpAgent } from "@dfinity/agent"
-import { DelegationIdentity } from "@dfinity/identity"
-
 import { mapDate, mapOptional } from "../_common"
 import { Certificate as ExternalCertificate } from "../_ic_api/verifier.did"
-import { _SERVICE as Verifier } from "../_ic_api/verifier.did.d"
-import { idlFactory as verifierIDL } from "../_ic_api/verifier_idl"
-import { actor, fetchPrincipal, ic, verifier } from "../actors"
+import { verifier } from "../actors"
 
 export interface Certificate {
   domain: string
   clientPrincipal: string
   phoneNumberSha2?: string
   createdDate: Date
-}
-
-declare const VERIFIER_CANISTER_ID: string
-
-/**
- * First step to create a phone credential. Must be called with the application scoped delegation identity.
- * @param domain The domain of the client app requesting the credential. Credentials are restricted such that 1) a phone number can only be linked to one NFID, 2) a phone number can only be linked to one persona per domain. This parameter provides the data to power the second constraint.
- */
-async function generatePhoneToken(
-  domain: string,
-  verifier: ActorSubclass<Verifier>,
-) {
-  return verifier.generate_pn_token(domain)
 }
 
 /**

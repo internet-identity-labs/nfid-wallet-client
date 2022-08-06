@@ -1,7 +1,5 @@
 import { useMachine } from "@xstate/react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import PhoneCredentialMachine, {
   PhoneCredentialType,

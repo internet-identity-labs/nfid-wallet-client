@@ -1,7 +1,5 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { profile } from "console"
 
-import { NfidHttpError } from "frontend/integration/_common"
 import { ii } from "frontend/integration/actors"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import {

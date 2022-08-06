@@ -22,7 +22,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
       readAccount()
       getPersona()
     }
-  }, [])
+  }, [getPersona, isAuthenticated, readAccount])
 
   return (
     <div className="px-4 mx-auto">

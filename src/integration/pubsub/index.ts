@@ -117,7 +117,7 @@ export const useMessages = (
     refreshInterval: 2000,
   },
 ) => {
-  const { data, error, mutate } = useSWR<string[]>(
+  const { data, error } = useSWR<string[]>(
     "messages",
     () => getMessages(topic),
     options,

@@ -56,7 +56,7 @@ export const useAuthentication = () => {
     if (identity && delegationIdentity) {
       setIsAuthenticated(true)
     }
-  }, [])
+  }, [setIsAuthenticated])
 
   /**@deprecated will be refactored with wallet on profile */
   const logout = React.useCallback(() => {
@@ -73,7 +73,7 @@ export const useAuthentication = () => {
     window.location.reload()
     // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(Principal.anonymous())
-  }, [])
+  }, [setIsAuthenticated])
 
   const initUserGeek = React.useCallback((principal: Principal) => {
     // TODO: create pull request removing the requirement of
@@ -125,7 +125,7 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setError, setIsLoading, userNumber],
+    [initUserGeek, setError, setIsAuthenticated, setIsLoading, userNumber],
   )
 
   const remoteLogin = React.useCallback(
@@ -138,7 +138,7 @@ export const useAuthentication = () => {
         sessionKey: actors.sessionKey,
       })
     },
-    [setIsRemoteDelegate],
+    [setIsAuthenticated, setIsRemoteDelegate],
   )
 
   const onRegisterSuccess = React.useCallback(async (actors: LoginSuccess) => {

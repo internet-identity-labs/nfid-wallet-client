@@ -68,7 +68,7 @@ const useSecret = () => {
 export const useUnknownDeviceConfig = () => {
   const [status, setStatus] = useAtom(loadingAtom)
   const [showRegister, setShowRegister] = useAtom(registerAtom)
-  const [signedDelegation, setSignedDelegation] = useAtom(delegationAtom)
+  const [signedDelegation] = useAtom(delegationAtom)
   const secret = useSecret()
 
   const { state } = useLocation()
@@ -276,7 +276,6 @@ export const useUnknownDeviceConfig = () => {
       handleLoginFromRemoteDelegation,
       secret,
       setShowRegister,
-      setSignedDelegation,
       setStatus,
       setUserNumber,
     ],

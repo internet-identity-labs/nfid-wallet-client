@@ -81,8 +81,8 @@ export async function verifySmsService(
     return await verifyToken(data)
   } catch (e) {
     console.error("Error in verifySmsService", e)
-    throw {
-      error: "There was a problem with your submission. Please try again.",
-    }
+    throw new Error(
+      "verifySmsService: There was a problem with your submission. Please try again.",
+    )
   }
 }

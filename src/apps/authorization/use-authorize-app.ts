@@ -6,11 +6,6 @@ import {
   User,
 } from "frontend/apps/authentication/use-authentication"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { getScope } from "frontend/integration/identity-manager/persona/utils"
-import {
-  fetchDelegation,
-  getSessionKey,
-} from "frontend/integration/internet-identity"
 import {
   buildRemoteLoginRegisterMessage,
   buildRemoteNFIDLoginRegisterMessage,
@@ -18,8 +13,6 @@ import {
   postMessages,
   WAIT_FOR_CONFIRMATION_MESSAGE,
 } from "frontend/integration/pubsub"
-
-declare const FRONTEND_MODE: string
 
 // Alias: useRegisterDevicePrompt
 export const useAuthorizeApp = () => {
@@ -29,17 +22,11 @@ export const useAuthorizeApp = () => {
   const remoteLogin = React.useCallback(
     async ({
       secret,
-      scope: hostname,
-      derivationOrigin,
-      persona_id,
       userNumberOverwrite,
       chain,
       sessionKey,
     }: {
       secret: string
-      scope: string
-      derivationOrigin?: string
-      persona_id: string
       chain: DelegationChain
       sessionKey: Ed25519KeyIdentity
       userNumberOverwrite?: bigint
@@ -48,14 +35,6 @@ export const useAuthorizeApp = () => {
       if (!anchor) {
         throw new Error("useAuthorizeApp.remoteLogin userNumber missing")
       }
-
-      const scope = getScope(derivationOrigin ?? hostname, persona_id)
-
-      const delegation = await fetchDelegation(
-        anchor,
-        scope,
-        getSessionKey(secret),
-      )
 
       const message = buildRemoteLoginRegisterMessage(anchor, chain, sessionKey)
 

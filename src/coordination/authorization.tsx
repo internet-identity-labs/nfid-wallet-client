@@ -25,7 +25,7 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
         `Creating your ${state.context.appMeta?.name || ""} account`) ||
       (state.matches("GetDelegation") &&
         `Signing in to ${state.context.appMeta?.name || "app"}`),
-    [state.context.appMeta, state.value],
+    [state],
   )
 
   switch (true) {

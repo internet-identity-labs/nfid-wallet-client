@@ -32,7 +32,7 @@ export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = ({
         ),
       )
     }
-  }, [showRegister])
+  }, [generatePath, navigate, showRegister])
 
   useInterval(handlePollForDelegate, 2000)
   return (

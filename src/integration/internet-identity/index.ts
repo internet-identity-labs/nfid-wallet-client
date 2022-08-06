@@ -504,16 +504,6 @@ async function registerAnchor(
     })
 }
 
-async function getPrincipal(
-  userNumber: UserNumber,
-  frontend: FrontendHostname,
-): Promise<Principal> {
-  await renewDelegation()
-  return await ii.get_principal(userNumber, frontend).catch((e) => {
-    throw new Error(`getPrincipal: ${e.message}`)
-  })
-}
-
 export const getMultiIdent = (
   devices: DeviceData[],
   withSecurityDevices?: boolean,

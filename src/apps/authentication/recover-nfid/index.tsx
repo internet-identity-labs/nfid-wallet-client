@@ -1,7 +1,9 @@
 import * as Sentry from "@sentry/browser"
 import React, { useEffect, useState } from "react"
 import { FieldValues } from "react-hook-form"
+import { toast } from "react-toastify"
 
+import { errorMessages } from "frontend/errors"
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { RecoverNFID } from "frontend/ui/pages/recover-nfid"
 import { useMessageChannel } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
@@ -50,6 +52,7 @@ export const AppScreenRecoverNFID: React.FC<
       const seedPhrase = recoveryPhrase.split(`${userNumber} `)[1]
 
       if (!userNumber) {
+        toast.error(errorMessages.userNumberUndefined)
         return setResponseError("Invalid Recovery Phrase (missing Anchor)")
       }
 

@@ -1,5 +1,7 @@
 import React, { useState } from "react"
+import { toast } from "react-toastify"
 
+import { errorMessages } from "frontend/errors"
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
@@ -28,6 +30,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
   const handleRegister = React.useCallback(async () => {
     setIsLoading(true)
     if (!userNumber) {
+      toast.error(errorMessages.userNumberUndefined)
       return console.error(`Missing userNumber: ${userNumber}`)
     }
 
@@ -54,6 +57,7 @@ export const AppScreenRegisterDeviceDecider: React.FC<
           pub_key,
         })
         .catch((e) => {
+          toast.error(errorMessages.createAccessPoint)
           throw new Error(
             `AppScreenRegisterDeviceDecider.handleRegister im.create_access_point: ${e.message}`,
           )

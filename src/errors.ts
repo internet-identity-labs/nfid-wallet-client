@@ -14,6 +14,8 @@ export const errorMessages = {
   delegationUndefined: "User delegation is undefined",
   // derivationOrigin
   derivationOriginInvalid: "Derivation origin is invalid",
+  // verify phone credentials
+  verifyToken: "We couldn't verify your token",
   // other
   nfidAccountRegister: "Your NFID account has not been registered",
   scopeUndefined: "The scope was not found",

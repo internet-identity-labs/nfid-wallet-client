@@ -1,7 +1,9 @@
 import { useAtom } from "jotai"
 import React from "react"
+import { toast } from "react-toastify"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { errorMessages } from "frontend/errors"
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { ProfileEditPhoneSms } from "frontend/ui/pages/profile-edit/phone-sms"
@@ -24,6 +26,7 @@ export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
     async (token: string) => {
       toggleLoading()
       const response = await im.verify_token(token).catch((e) => {
+        toast.error(errorMessages.verifyToken)
         throw new Error(`handleSubmitSMSToken im.verify_token: ${e.message}`)
       })
       toggleLoading()

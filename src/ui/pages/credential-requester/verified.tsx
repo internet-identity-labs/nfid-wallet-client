@@ -26,7 +26,7 @@ export const CredentialRequesterVerified: React.FC<
       applicationLogo={applicationLogo}
       applicationName={applicationName}
       title="Verification request"
-      subTitle={`to continue to ${applicationName}`}
+      subTitle={`to continue to ${applicationName ?? "the application"}`}
     >
       <P className="mt-5 text-sm">
         You already have a verified phone credential from Internet Identity

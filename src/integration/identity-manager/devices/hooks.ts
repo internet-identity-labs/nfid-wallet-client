@@ -361,6 +361,9 @@ export const useDevices = () => {
           userNumber: BigInt(userNumber),
         })
 
+        refreshRecoveryDevices()
+        refreshDevices()
+
         return {
           message: "Device created successfully",
         }
@@ -373,7 +376,12 @@ export const useDevices = () => {
         throw error
       }
     },
-    [createDevice, createWebAuthNDevice],
+    [
+      createDevice,
+      createWebAuthNDevice,
+      refreshDevices,
+      refreshRecoveryDevices,
+    ],
   )
 
   /**

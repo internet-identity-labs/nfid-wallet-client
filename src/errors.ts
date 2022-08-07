@@ -21,6 +21,7 @@ export const errorMessages = {
   deviceAlreadyRegistered: "Device already registered",
   // account
   getAccount: "We couldn't fetch your account",
+  updateAccount: "We couldn't update your account",
   //application
   applicationsUserLimit: "You've reached your users limit for this application",
   // other

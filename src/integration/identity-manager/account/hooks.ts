@@ -1,9 +1,11 @@
 import produce from "immer"
 import { useAtom } from "jotai"
 import React from "react"
+import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { errorMessages } from "frontend/errors"
 import { unpackResponse } from "frontend/integration/_common"
 import {
   HTTPAccountRequest,
@@ -133,14 +135,18 @@ export const useAccount = () => {
         ...draft,
         ...partialAccount,
       }))
-      if (!newAccount)
+      if (!newAccount) {
+        toast.error(errorMessages.updateAccount)
+
         throw new Error("useAccount.updateAccount account undefined")
+      }
       // NOTE: looks silly? `name` is an optional parameter :/
       await im
         .update_account({
           name: newAccount.name ? [newAccount.name] : [],
         })
         .catch((e) => {
+          toast.error(errorMessages.updateAccount)
           throw new Error(
             `useAccount.updateAccount im.update_account: ${e.message}`,
           )

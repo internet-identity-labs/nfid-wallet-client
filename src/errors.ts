@@ -19,6 +19,10 @@ export const errorMessages = {
   // device
   deviceRegister: "Device registration failed",
   deviceAlreadyRegistered: "Device already registered",
+  // account
+  getAccount: "We couldn't fetch your account",
+  //application
+  applicationsUserLimit: "You've reached your users limit for this application",
   // other
   nfidAccountRegister: "Your NFID account has not been registered",
   scopeUndefined: "The scope was not found",

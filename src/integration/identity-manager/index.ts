@@ -1,4 +1,7 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
+import { toast } from "react-toastify"
+
+import { errorMessages } from "frontend/errors"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
 import { mapOptional, unpackLegacyResponse, unpackResponse } from "../_common"
@@ -102,6 +105,7 @@ export async function fetchProfile() {
     })
     .then((r) => mapProfile(unpackResponse(r)))
     .catch((e) => {
+      toast.error(errorMessages.getAccount)
       // expected 404 handled upstream
       if (e.code === 404) {
         throw e
@@ -121,6 +125,7 @@ export async function fetchAccounts() {
       .then(unpackResponse)
       .then((r) => r.map(mapAccount))
       .catch((e) => {
+        toast.error(errorMessages.getAccount)
         throw new Error(`fetchAccounts im.get_account: ${e.message}`)
       })
   } catch (e: any) {
@@ -171,6 +176,8 @@ export async function createAccount(
     })
     .then((r) => mapProfile(unpackResponse(r)))
     .catch((e) => {
+      toast.error(errorMessages.createPersona)
+
       throw new Error(`createAccount im.create_persona: ${e.message}`)
     })
 }
@@ -183,6 +190,8 @@ export async function verifyToken(token: string) {
     .verify_token(token)
     .then(unpackLegacyResponse)
     .catch((e) => {
+      toast.error(errorMessages.verifyToken)
+
       throw new Error(`verifyToken im.verify_token: ${e.message}`)
     })
 }
@@ -215,8 +224,10 @@ export interface Application {
 }
 
 function mapApplication(application: BEApplication): Application {
-  if (application.user_limit < 1)
+  if (application.user_limit < 1) {
+    toast.error(errorMessages.applicationsUserLimit)
     throw new Error(`mapApplication user_limit has to be greater or equal to 1`)
+  }
 
   return {
     accountLimit: application.user_limit,

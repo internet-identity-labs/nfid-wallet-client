@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
+import { errorMessages } from "frontend/errors"
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
@@ -42,6 +44,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     setShouldStoreLocalAccount(true)
 
     if (!userNumber) {
+      toast.error(errorMessages.userNumberUndefined)
       return console.error(`Missing userNumber: ${userNumber}`)
     }
 
@@ -65,18 +68,22 @@ export const RouterRegisterDeviceDecider: React.FC<
           pub_key,
         })
         .catch((e) => {
+          toast.error(errorMessages.createAccessPoint)
           throw new Error(
             `RouterRegisterDeviceDecider.handleRegister im.create_access_point: ${e.message}`,
           )
         })
 
       if (createAccessPointResponse.status_code !== 200) {
+        toast.error(errorMessages.createAccessPoint)
         console.error("failed to create access point", {
           error: createAccessPointResponse.error[0],
         })
       }
 
       im.use_access_point().catch((e) => {
+        toast.error(errorMessages.useAccessPoint)
+
         throw new Error(
           `useAuthentication.loginWithRecovery im.use_access_point: ${e.message}`,
         )
@@ -108,8 +115,10 @@ export const RouterRegisterDeviceDecider: React.FC<
   ])
 
   const handleLogin = React.useCallback(async () => {
-    if (!userNumber)
+    if (!userNumber) {
+      toast.error(errorMessages.userNumberUndefined)
       throw new Error("userNumber is not defined. Not authorized.")
+    }
 
     setIsLoading(true)
     setShouldStoreLocalAccount(false)

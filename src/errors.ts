@@ -5,6 +5,7 @@ export const errorMessages = {
   userNumberUndefined: "Anchor was not found",
   // persona
   createPersona: "Your persona has not been created",
+  readPersonas: "We couldn't read your personas",
   // access point
   createAccessPoint: "Access point has not been created",
   useAccessPoint: "We couldn't use your access point",

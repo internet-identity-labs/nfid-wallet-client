@@ -1,8 +1,10 @@
 import { useAtom } from "jotai"
 import React from "react"
 import { useParams } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
+import { errorMessages } from "frontend/errors"
 import { PersonaRequest } from "frontend/integration/_ic_api/identity_manager.did"
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
@@ -43,6 +45,8 @@ export const usePersona = () => {
 
   const getPersona = React.useCallback(async () => {
     const response = await im.read_personas().catch((e) => {
+      toast.error(errorMessages.readPersonas)
+
       throw new Error(`usePersona.getPersona im.read_personas: ${e.message}`)
     })
 
@@ -57,6 +61,8 @@ export const usePersona = () => {
           anchor,
         })
         .catch((e) => {
+          toast.error(errorMessages.nfidAccountRegister)
+
           throw new Error(
             `usePersona.getPersona im.create_account: ${e.message}`,
           )
@@ -81,6 +87,8 @@ export const usePersona = () => {
       }
 
       const response = await im.create_persona(accountParams).catch((e) => {
+        toast.error(errorMessages.createPersona)
+
         throw new Error(
           `usePersona.createPersona im.create_access_point: ${e.message}`,
         )

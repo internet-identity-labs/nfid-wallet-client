@@ -1,6 +1,8 @@
 import { atom, useAtom } from "jotai"
 import React from "react"
+import { toast } from "react-toastify"
 
+import { errorMessages } from "frontend/errors"
 import { ii } from "frontend/integration/actors"
 import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
@@ -51,7 +53,10 @@ export const useAuthorization = ({
             event.origin,
             derivationOrigin,
           )
-          if (validation.result !== "valid") throw new Error(validation.message)
+          if (validation.result !== "valid") {
+            toast.error(errorMessages.derivationOriginInvalid)
+            throw new Error(validation.message)
+          }
           console.log({ validation, derivationOrigin })
           setAuthorizationRequest({
             maxTimeToLive,
@@ -74,10 +79,12 @@ export const useAuthorization = ({
     }) => {
       setLoading(true)
 
-      if (!authorizationRequest)
+      if (!authorizationRequest) {
+        toast.error(errorMessages.authorizationRequestUndefined)
         throw new Error(
           "useAuthorization.authorizeApp authorizationRequest missing",
         )
+      }
 
       const {
         sessionPublicKey,
@@ -106,12 +113,14 @@ export const useAuthorization = ({
           maxTimeToLive !== undefined ? [maxTimeToLive] : [],
         )
         .catch((e) => {
+          toast.error(errorMessages.prepareDelegation)
           throw new Error(`authorizeApp ii.prepare_delegation: ${e.message}`)
         })
       console.log(">> authorizeApp", { prepRes })
 
       // TODO: move to error handler
       if (prepRes.length !== 2) {
+        toast.error(errorMessages.prepareDelegation)
         throw new Error(
           `Error preparing the delegation. Result received: ${prepRes}`,
         )
@@ -121,6 +130,7 @@ export const useAuthorization = ({
       const res = await ii
         .get_delegation(anchor || userNumber, scope, sessionKey, timestamp)
         .catch((e) => {
+          toast.error(errorMessages.getDelegation)
           throw new Error(`authorizeApp ii.get_delegation: ${e.message}`)
         })
 

@@ -96,7 +96,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             <Separator className="max-w-[400px]" />
 
             <IconButton
-              title="Create a new NFID"
+              title="Continue with enhanced security"
               subtitle="Use passkey on this device"
               img={<img src={TouchId} alt="passkey" />}
               onClick={onRegister}

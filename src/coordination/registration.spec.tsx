@@ -58,7 +58,7 @@ describe("Registration Coordinator", () => {
     expect(ii.create_challenge).toHaveBeenCalled()
 
     act(() => {
-      screen.getByText("Create a new NFID").click()
+      screen.getByText("Continue with enhanced security").click()
     })
     expect(WebAuthnIdentity.create).toHaveBeenCalled()
 

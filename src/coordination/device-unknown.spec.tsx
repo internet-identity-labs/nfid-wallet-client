@@ -74,7 +74,7 @@ describe("UnknownDeviceCoordinator", () => {
 
         await waitFor(() => {
           screen.getByText(
-            "Use passkey from a device with a camera to sign in to MyApp",
+            "Scan this code from a device with a camera to sign in to MyApp",
           )
         })
 
@@ -152,7 +152,7 @@ describe("UnknownDeviceCoordinator", () => {
 
         await waitFor(() => {
           screen.getByText("Choose how you'd like to sign in to MyApp")
-          screen.getByText("Create a new NFID")
+          screen.getByText("Continue with enhanced security")
         })
 
         expect(device.fetchWebAuthnCapability).toHaveBeenCalled()

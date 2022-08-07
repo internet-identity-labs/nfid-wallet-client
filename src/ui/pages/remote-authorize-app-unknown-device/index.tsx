@@ -39,7 +39,7 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
         ) : null}
         <H5>Sign in</H5>
         <P className="mt-2 text-center max-w-[320px]">
-          Use passkey from a device with a camera to sign in to{" "}
+          Scan this code from a device with a camera to sign in to{" "}
           {applicationName}
         </P>
         <div className="bg-gray-50 p-6 rounded-[10px] mt-8">

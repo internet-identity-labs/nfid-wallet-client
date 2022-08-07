@@ -5,7 +5,10 @@ import { useAuthentication } from "frontend/apps/authentication/use-authenticati
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { im } from "frontend/integration/actors"
+import { deviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { getIcon } from "frontend/integration/identity-manager/devices/hooks"
+import { authState } from "frontend/integration/internet-identity"
 import { Captcha } from "frontend/ui/pages/captcha"
 import { useCaptcha, useChallenge } from "frontend/ui/pages/captcha/hook"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
@@ -40,7 +43,7 @@ export const RegisterAccountCaptcha: React.FC<
 
   const {
     setLoading,
-    registerPayload: { isGoogle },
+    registerPayload: { isGoogle, deviceName },
     loading,
     registerAnchorFromGoogle,
     registerAnchor,
@@ -69,6 +72,18 @@ export const RegisterAccountCaptcha: React.FC<
               `RegisterAccountCaptcha.handleRegisterAnchor secret is missing from params`,
             )
 
+          await im.create_access_point({
+            icon: "mobile",
+            device: deviceName,
+            browser: deviceInfo.browser.name ?? "Mobile",
+            pub_key: Array.from(
+              new Uint8Array(
+                authState.get()?.delegationIdentity?.getPublicKey().toDer() ??
+                  [],
+              ),
+            ),
+          })
+
           await remoteNFIDLogin({
             secret,
             userNumberOverwrite: response.userNumber,
@@ -82,6 +97,7 @@ export const RegisterAccountCaptcha: React.FC<
     },
     [
       createAccount,
+      deviceName,
       isRemoteRegiser,
       navigate,
       registerAnchor,

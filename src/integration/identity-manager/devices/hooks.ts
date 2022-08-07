@@ -4,7 +4,6 @@ import {
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { useAtom } from "jotai"
 import React from "react"
 import useSWR from "swr"
 
@@ -34,13 +33,7 @@ import { generate } from "frontend/integration/internet-identity/crypto/mnemonic
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 
 import { useAccount } from "../account/hooks"
-import {
-  LegacyDevice,
-  devicesAtom,
-  Icon,
-  RecoveryDevice,
-  recoveryDevicesAtom,
-} from "./state"
+import { LegacyDevice, Icon, RecoveryDevice } from "./state"
 
 declare const SIGNIN_GOOGLE: string
 

@@ -11,6 +11,7 @@ export const errorMessages = {
   // delegation
   prepareDelegation: "We couldn't prepare your delegation",
   getDelegation: "We couldn't get you delegation",
+  delegationUndefined: "User delegation is undefined",
   // derivationOrigin
   derivationOriginInvalid: "Derivation origin is invalid",
   // other

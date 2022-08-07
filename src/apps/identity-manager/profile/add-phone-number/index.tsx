@@ -1,6 +1,8 @@
 import { useAtom } from "jotai"
 import React from "react"
+import { toast } from "react-toastify"
 
+import { errorMessages } from "frontend/errors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { authState } from "frontend/integration/internet-identity"
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
@@ -22,7 +24,10 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   const handleSubmitPhoneNumber = React.useCallback(
     async ({ phone }: { phone: string }) => {
-      if (!delegationIdentity) throw new Error("User delegation is undefined")
+      if (!delegationIdentity) {
+        toast.error(errorMessages.delegationUndefined)
+        throw new Error("User delegation is undefined")
+      }
       let response
       toggleLoading()
       try {

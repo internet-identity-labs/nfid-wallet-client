@@ -407,9 +407,9 @@ export const useDevices = () => {
         "document",
         deviceName,
       ),
-      refreshRecoveryDevices(),
-      refreshDevices(),
     ])
+    refreshRecoveryDevices()
+    refreshDevices()
     return `${profile.anchor} ${recovery}`
   }, [
     createRecoveryDevice,

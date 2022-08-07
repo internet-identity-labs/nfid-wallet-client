@@ -20,4 +20,5 @@ export const errorMessages = {
   nfidAccountRegister: "Your NFID account has not been registered",
   scopeUndefined: "The scope was not found",
   authorizationRequestUndefined: "Authorization request is missing",
+  secretUndefined: "Secret is missing from params",
 }

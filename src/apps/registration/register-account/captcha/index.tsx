@@ -1,9 +1,11 @@
 import React from "react"
 import { useParams } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
+import { errorMessages } from "frontend/errors"
 import { im } from "frontend/integration/actors"
 import { deviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
@@ -66,10 +68,12 @@ export const RegisterAccountCaptcha: React.FC<
         await createAccount({ anchor: response.userNumber })
 
         if (isRemoteRegiser) {
-          if (!secret)
+          if (!secret) {
+            toast.error(errorMessages.secretUndefined)
             throw new Error(
               `RegisterAccountCaptcha.handleRegisterAnchor secret is missing from params`,
             )
+          }
 
           await im.create_access_point({
             icon: "mobile",
@@ -92,6 +96,8 @@ export const RegisterAccountCaptcha: React.FC<
         }
 
         navigate("/profile/authenticate")
+      } else {
+        toast.error(errorMessages.registerAnchor)
       }
     },
     [
@@ -116,15 +122,18 @@ export const RegisterAccountCaptcha: React.FC<
             anchor: response.userNumber,
           })
           .catch((e) => {
+            toast.error(errorMessages.nfidAccountRegister)
             throw new Error(
               `handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
             )
           })
         if (isRemoteRegiser) {
-          if (!secret)
+          if (!secret) {
+            toast.error(errorMessages.secretUndefined)
             throw new Error(
               `RegisterAccountCaptcha.handleRegisterAnchorWithGoogle secret is missing from params`,
             )
+          }
 
           await remoteNFIDLogin({
             secret,
@@ -135,6 +144,7 @@ export const RegisterAccountCaptcha: React.FC<
 
         return navigate("/profile/authenticate")
       }
+      toast.error(errorMessages.registerAnchorWithGoogle)
       console.error(
         "RegisterAccountCaptcha.handleRegisterAnchorWithGoogle",
         response,

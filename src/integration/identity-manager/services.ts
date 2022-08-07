@@ -1,3 +1,6 @@
+import { toast } from "react-toastify"
+
+import { errorMessages } from "frontend/errors"
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
 import {
@@ -80,6 +83,7 @@ export async function verifySmsService(
   try {
     return await verifyToken(data)
   } catch (e) {
+    toast.error(errorMessages.verifyToken)
     console.error("Error in verifySmsService", e)
     throw new Error(
       "verifySmsService: There was a problem with your submission. Please try again.",

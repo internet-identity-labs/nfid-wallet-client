@@ -4,6 +4,8 @@ import React from "react"
 import { createRoot } from "react-dom/client"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 import SwiperCore, { Pagination, Navigation } from "swiper"
 import "swiper/css"
 import "swiper/css/pagination"
@@ -41,6 +43,7 @@ root.render(
       <Router>
         <App />
       </Router>
+      <ToastContainer />
     </HelmetProvider>
   </React.StrictMode>,
 )

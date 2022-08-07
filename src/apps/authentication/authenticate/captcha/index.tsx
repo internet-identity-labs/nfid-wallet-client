@@ -1,7 +1,9 @@
 import React from "react"
+import { toast } from "react-toastify"
 
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
+import { errorMessages } from "frontend/errors"
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
@@ -61,7 +63,6 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
       const response = await registerAnchor({ captcha })
-
       if (response && response.kind === "loginSuccess") {
         await createAccount({ anchor: response.userNumber })
         await Promise.all([
@@ -74,6 +75,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
         ])
         return navigate(successPath)
       }
+      toast.error(errorMessages.registerAnchor)
       console.error(">> handleRegisterAnchor", response)
     },
     [
@@ -102,11 +104,15 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
             anchor: response.userNumber,
           })
           .catch((e) => {
+            toast.error(errorMessages.nfidAccountRegister)
             throw new Error(
               `RouteCaptcha.handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
             )
           })
-        if (!scope) throw new Error("scope is required")
+        if (!scope) {
+          toast.error(errorMessages.scopeUndefined)
+          throw new Error("scope is required")
+        }
         await Promise.all([
           im
             .create_persona({
@@ -115,6 +121,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
               persona_name: "",
             })
             .catch((e) => {
+              toast.error(errorMessages.createPersona)
               throw new Error(
                 `RouteCaptcha.handleRegisterAnchorWithGoogle im.create_persona: ${e.message}`,
               )
@@ -127,6 +134,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
         ])
         return navigate(successPath)
       }
+      toast.error(errorMessages.registerAnchorWithGoogle)
       console.error(`RouteCaptcha handleRegisterAnchorWithGoogle`, response)
     },
     [

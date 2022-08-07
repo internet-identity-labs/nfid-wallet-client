@@ -6,6 +6,7 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { useAtom } from "jotai"
 import React from "react"
+import useSWR from "swr"
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import {
@@ -150,37 +151,73 @@ const normalizeRecoveryDevices = (
   })
 }
 
+async function fetchDevices({ anchor }: { anchor: string }) {
+  console.log(">> fetchDevices", { anchor })
+
+  const [accessPoints, existingDevices] = await Promise.all([
+    im.read_access_points().catch((e) => {
+      throw new Error(
+        `useDevices.handleLoadDevices im.read_access_points: ${e.message}`,
+      )
+    }),
+    fetchAuthenticatorDevices(BigInt(anchor)),
+  ])
+  console.debug("fetchDevices", { accessPoints, existingDevices })
+
+  const normalizedDevices = normalizeDevices(
+    existingDevices,
+    accessPoints?.data[0],
+  )
+  return normalizedDevices
+}
+
+async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
+  console.debug("fetchAccountRecoveryMethods", { anchor })
+  const [accessPoints, existingRecoveryDevices] = await Promise.all([
+    im.read_access_points().catch((e) => {
+      throw new Error(
+        `useDevices.getRecoveryDevices im.read_access_points: ${e.message}`,
+      )
+    }),
+    fetchRecoveryDevices(BigInt(anchor)),
+  ])
+  console.debug("fetchAccountRecoveryMethods", {
+    accessPoints,
+    existingRecoveryDevices,
+  })
+
+  const normalizedRecoveryDevices = normalizeRecoveryDevices(
+    existingRecoveryDevices,
+    accessPoints?.data[0],
+  )
+  console.debug("fetchAccountRecoveryMethods", {
+    normalizedDevices: normalizedRecoveryDevices,
+  })
+  return normalizedRecoveryDevices
+}
+
 /** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
-  const [devices, setDevices] = useAtom(devicesAtom)
-  const [recoveryDevices, setRecoveryDevices] = useAtom(recoveryDevicesAtom)
+  const { profile } = useAccount()
+  const {
+    data: devices,
+    error: fetchDevicesError,
+    mutate: refreshDevices,
+  } = useSWR({ anchor: profile?.anchor, type: "authenticator" }, fetchDevices)
+
+  const {
+    data: recoveryDevices,
+    error: fetchRecoveryDevicesError,
+    mutate: refreshRecoveryDevices,
+  } = useSWR(
+    { anchor: profile?.anchor, type: "recovery" },
+    fetchAccountRecoveryMethods,
+  )
 
   const {
     newDeviceName,
     browser: { name: browserName },
   } = useDeviceInfo()
-
-  const { profile } = useAccount()
-
-  const handleLoadDevices = React.useCallback(async () => {
-    if (profile?.anchor) {
-      const [accessPoints, existingDevices] = await Promise.all([
-        im.read_access_points().catch((e) => {
-          throw new Error(
-            `useDevices.handleLoadDevices im.read_access_points: ${e.message}`,
-          )
-        }),
-        fetchAuthenticatorDevices(BigInt(profile?.anchor)),
-      ])
-
-      const normalizedDevices = normalizeDevices(
-        existingDevices,
-        accessPoints?.data[0],
-      )
-
-      setDevices(normalizedDevices)
-    }
-  }, [profile?.anchor, setDevices])
 
   const updateDevice = React.useCallback(
     async (device: LegacyDevice) => {
@@ -194,7 +231,7 @@ export const useDevices = () => {
               `useDevices.updateDevice im.create_access_point: ${e.message}`,
             )
           })
-        handleLoadDevices()
+        refreshDevices()
         return createAccessPointResponse
       }
       const updatedAccessPoint = await im
@@ -204,31 +241,11 @@ export const useDevices = () => {
             `useDevices.updateDevice im.update_access_point: ${e.message}`,
           )
         })
-      handleLoadDevices()
+      refreshDevices()
       return updatedAccessPoint
     },
-    [handleLoadDevices],
+    [refreshDevices],
   )
-
-  const getRecoveryDevices = React.useCallback(async () => {
-    if (profile?.anchor) {
-      const [accessPoints, existingRecoveryDevices] = await Promise.all([
-        im.read_access_points().catch((e) => {
-          throw new Error(
-            `useDevices.getRecoveryDevices im.read_access_points: ${e.message}`,
-          )
-        }),
-        fetchRecoveryDevices(BigInt(profile?.anchor)),
-      ])
-
-      const normalizedDevices = normalizeRecoveryDevices(
-        existingRecoveryDevices,
-        accessPoints?.data[0],
-      )
-
-      setRecoveryDevices(normalizedDevices)
-    }
-  }, [profile?.anchor, setRecoveryDevices])
 
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
@@ -359,10 +376,6 @@ export const useDevices = () => {
     [createDevice, createWebAuthNDevice],
   )
 
-  const getDevices = React.useCallback(async () => {
-    await handleLoadDevices()
-  }, [handleLoadDevices])
-
   /**
    * NEVER LOG THE RECOVERY PHRASE TO CONSOLE OR SEND
    * TO EXTERNAL SERVICE
@@ -394,11 +407,16 @@ export const useDevices = () => {
         "document",
         deviceName,
       ),
-      getRecoveryDevices(),
-      getDevices(),
+      refreshRecoveryDevices(),
+      refreshDevices(),
     ])
     return `${profile.anchor} ${recovery}`
-  }, [createRecoveryDevice, getDevices, getRecoveryDevices, profile?.anchor])
+  }, [
+    createRecoveryDevice,
+    refreshDevices,
+    refreshRecoveryDevices,
+    profile?.anchor,
+  ])
 
   const createSecurityDevice = React.useCallback(
     async (
@@ -437,8 +455,6 @@ export const useDevices = () => {
             "usb",
             deviceName,
           ),
-          getRecoveryDevices(),
-          getDevices(),
         ])
       } catch (error: any) {
         if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
@@ -446,8 +462,15 @@ export const useDevices = () => {
         }
         console.debug("createSecurityDevice", "device already registered")
       }
+      refreshRecoveryDevices()
+      refreshDevices()
     },
-    [createRecoveryDevice, getDevices, getRecoveryDevices, profile?.anchor],
+    [
+      createRecoveryDevice,
+      refreshDevices,
+      refreshRecoveryDevices,
+      profile?.anchor,
+    ],
   )
 
   const getGoogleDevice = React.useCallback(
@@ -465,24 +488,23 @@ export const useDevices = () => {
     [],
   )
 
-  React.useEffect(() => {
-    handleLoadDevices()
-  }, [profile?.anchor, handleLoadDevices])
-
   return {
-    devices,
-    recoveryDevices,
+    loadingDevices: !devices && !fetchDevicesError,
+    devices: devices || [],
+    loadingRecoveryDevices: !recoveryDevices && !fetchRecoveryDevicesError,
+    recoveryDevices: recoveryDevices || [],
     createWebAuthNDevice,
     createRecoveryPhrase,
     createSecurityDevice,
     getGoogleDevice,
-    getDevices,
-    getRecoveryDevices,
+    getDevices: refreshDevices,
+    getRecoveryDevices: refreshRecoveryDevices,
     createDevice,
     createRecoveryDevice,
     recoverDevice,
     updateDevice,
-    handleLoadDevices,
+    /**@deprecated */
+    handleLoadDevices: refreshDevices,
     deleteDevice,
   }
 }

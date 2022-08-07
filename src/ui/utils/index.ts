@@ -22,7 +22,7 @@ export const getPlatformInfo = () => {
         make: "Apple",
         os: "iOS",
         device: "iPhone",
-        authenticator: "Face Id",
+        authenticator: "Face ID",
       }
     case PLATFORMS_WINDOWS.indexOf(platform) !== -1:
       return {

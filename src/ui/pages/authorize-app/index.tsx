@@ -102,7 +102,11 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           {isAccountsLimit && (
             <>
               <img
-                data-tip={`${applicationName} has limited the number of free accounts to ${accountsLimit}. Manage your accounts from your NFID Profile page.`}
+                data-tip={`${
+                  applicationName ?? "The application"
+                } has limited the number of free accounts${
+                  accountsLimit ? ` to ${accountsLimit}` : ""
+                }. Manage your accounts from your NFID Profile page.`}
                 src={alertIcon}
                 alt="alert"
               />

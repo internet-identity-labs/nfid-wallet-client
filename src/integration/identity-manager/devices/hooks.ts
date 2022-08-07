@@ -5,9 +5,11 @@ import {
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import React from "react"
+import { toast } from "react-toastify"
 import useSWR from "swr"
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
+import { errorMessages } from "frontend/errors"
 import {
   AccessPointRequest,
   AccessPointResponse,
@@ -149,6 +151,7 @@ async function fetchDevices({ anchor }: { anchor: string }) {
 
   const [accessPoints, existingDevices] = await Promise.all([
     im.read_access_points().catch((e) => {
+      toast.error(errorMessages.readAccessPoints)
       throw new Error(
         `useDevices.handleLoadDevices im.read_access_points: ${e.message}`,
       )
@@ -168,6 +171,7 @@ async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
   console.debug("fetchAccountRecoveryMethods", { anchor })
   const [accessPoints, existingRecoveryDevices] = await Promise.all([
     im.read_access_points().catch((e) => {
+      toast.error(errorMessages.readAccessPoints)
       throw new Error(
         `useDevices.getRecoveryDevices im.read_access_points: ${e.message}`,
       )
@@ -220,6 +224,8 @@ export const useDevices = () => {
         const createAccessPointResponse = await im
           .create_access_point(normalizedDevice)
           .catch((e) => {
+            toast.error(errorMessages.createAccessPoint)
+
             throw new Error(
               `useDevices.updateDevice im.create_access_point: ${e.message}`,
             )
@@ -230,6 +236,8 @@ export const useDevices = () => {
       const updatedAccessPoint = await im
         .update_access_point(normalizedDevice)
         .catch((e) => {
+          toast.error(errorMessages.updateAccessPoint)
+
           throw new Error(
             `useDevices.updateDevice im.update_access_point: ${e.message}`,
           )
@@ -246,6 +254,8 @@ export const useDevices = () => {
         await Promise.all([
           removeDevice(BigInt(profile?.anchor), pubkey),
           im.remove_access_point({ pub_key: pubkey }).catch((e) => {
+            toast.error(errorMessages.deleteAccessPoint)
+
             throw new Error(
               `useDevices.deleteDevice im.remove_access_point: ${e.message}`,
             )
@@ -311,6 +321,8 @@ export const useDevices = () => {
             pub_key: Array.from(new Uint8Array(pub_key)),
           })
           .catch((e) => {
+            toast.error(errorMessages.createAccessPoint)
+
             throw new Error(
               `useDevices.createDevice im.create_access_point: ${e.message}`,
             )
@@ -332,6 +344,8 @@ export const useDevices = () => {
       }
 
       return await im.create_access_point(newDevice).catch((e) => {
+        toast.error(errorMessages.createAccessPoint)
+
         throw new Error(
           `useDevices.createRecoveryDevice im.create_access_point: ${e.message}`,
         )
@@ -362,6 +376,8 @@ export const useDevices = () => {
         }
       } catch (error: any) {
         if (error.message === ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+          toast.error(errorMessages.deviceAlreadyRegistered)
+
           return {
             message: "This device is already registered",
           }
@@ -459,8 +475,12 @@ export const useDevices = () => {
         ])
       } catch (error: any) {
         if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+          toast.error(errorMessages.deviceRegister)
+
           throw error
         }
+        toast.error(errorMessages.deviceAlreadyRegistered)
+
         console.debug("createSecurityDevice", "device already registered")
       }
       refreshRecoveryDevices()

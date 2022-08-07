@@ -8,6 +8,9 @@ export const errorMessages = {
   // access point
   createAccessPoint: "Access point has not been created",
   useAccessPoint: "We couldn't use your access point",
+  readAccessPoints: "We couldn't read your access points",
+  updateAccessPoint: "We couldn't update your access point",
+  deleteAccessPoint: "We couldn't delete your access point",
   // delegation
   prepareDelegation: "We couldn't prepare your delegation",
   getDelegation: "We couldn't get you delegation",

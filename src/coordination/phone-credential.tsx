@@ -25,7 +25,7 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
         <ScreenResponsive
           isLoading
           loadingMessage={`Connecting to ${
-            state.context.appMeta?.name || "app"
+            state.context.appMeta?.name ?? "the application"
           }`}
         />
       )

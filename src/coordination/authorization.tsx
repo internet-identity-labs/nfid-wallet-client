@@ -20,11 +20,11 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
   const loadingMessage = React.useMemo(
     () =>
       ((state.matches("FetchAccounts") || state.matches("Start")) &&
-        `Loading your ${state.context.appMeta?.name || ""} accounts `) ||
+        `Loading your ${state.context.appMeta?.name ?? ""} accounts `) ||
       (state.matches("CreateAccount") &&
-        `Creating your ${state.context.appMeta?.name || ""} account`) ||
+        `Creating your ${state.context.appMeta?.name ?? ""} account`) ||
       (state.matches("GetDelegation") &&
-        `Signing in to ${state.context.appMeta?.name || "app"}`),
+        `Signing in to ${state.context.appMeta?.name ?? "the application"}`),
     [state],
   )
 

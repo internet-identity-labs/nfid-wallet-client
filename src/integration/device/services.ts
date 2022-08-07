@@ -1,4 +1,7 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { toast } from "react-toastify"
+
+import { errorMessages } from "frontend/errors"
 
 import { deviceInfo, fetchWebAuthnCapability, getIsMobileDeviceMatch } from "."
 import { ii, im } from "../actors"
@@ -38,6 +41,7 @@ export async function registerDeviceWithWebAuthn() {
           protection: { unprotected: null },
         })
         .catch((e) => {
+          toast.error(errorMessages.deviceRegister)
           throw new Error(`registerDeviceWithWebAuthn ii.add: ${e.message}`)
         }),
       im
@@ -48,6 +52,8 @@ export async function registerDeviceWithWebAuthn() {
           pub_key: pubKey,
         })
         .catch((e) => {
+          toast.error(errorMessages.createAccessPoint)
+
           throw new Error(
             `registerDeviceWithWebAuthn im.create_access_point: ${e.message}`,
           )
@@ -55,8 +61,11 @@ export async function registerDeviceWithWebAuthn() {
     ])
   } catch (e: any) {
     if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+      toast.error(e)
       throw e
     }
+
+    toast.error(errorMessages.deviceAlreadyRegistered)
     console.debug("registerDeviceWithWebAuthn", "device already registered")
   }
   setProfile(profile)
@@ -88,6 +97,8 @@ export async function registerDeviceWithSecurityKey() {
           protection: { unprotected: null },
         })
         .catch((e) => {
+          toast.error(errorMessages.deviceRegister)
+
           throw new Error(`registerDeviceWithSecurityKey ii.add: ${e.message}`)
         }),
       im
@@ -98,6 +109,8 @@ export async function registerDeviceWithSecurityKey() {
           pub_key: pubKey,
         })
         .catch((e) => {
+          toast.error(errorMessages.createAccessPoint)
+
           throw new Error(
             `registerDeviceWithSecurityKey im.create_access_point: ${e.message}`,
           )
@@ -105,8 +118,10 @@ export async function registerDeviceWithSecurityKey() {
     ])
   } catch (e: any) {
     if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+      toast.error(e)
       throw e
     }
+    toast.error(errorMessages.deviceAlreadyRegistered)
     console.debug(
       registerDeviceWithSecurityKey.name,
       "device already registered",

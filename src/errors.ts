@@ -24,13 +24,34 @@ export const errorMessages = {
   deviceRegister: "Device registration failed",
   deviceAlreadyRegistered: "Device already registered",
   // account
+  nfidAccountRegister: "Your NFID account has not been registered",
   getAccount: "We couldn't fetch your account",
   updateAccount: "We couldn't update your account",
   //application
   applicationsUserLimit: "You've reached your users limit for this application",
   // other
-  nfidAccountRegister: "Your NFID account has not been registered",
   scopeUndefined: "The scope was not found",
   authorizationRequestUndefined: "Authorization request is missing",
   secretUndefined: "Secret is missing from params",
+  // challenge
+  createChallenge: "Something went wrong",
+  fetchChallenge: "Something went wrong",
+  challengeBad:
+    "There was a problem with your captcha response, please try again",
+  fetchAllDevices: "Something went wrong",
+  deviceRemove: "Something went wrong",
+  login: "Login failed",
+  iiCanisterFull:
+    "Internet Identity canister is out of space, ping Dominic Williams",
+  unexpectedIIError: "Something went wrong",
+  parseUserNumber: "Something went wrong",
+  fetchProfile: "Something went wrong",
+  verifyPhoneService: "Something went wrong",
+  resolveToken: "Something went wrong",
+  // pubsub
+  createTopic: "Something went wrong",
+  postMessage: "Something went wrong",
+  getMessage: "Something went wrong",
+  checkRegistration: "Something went wrong",
+  invalidDelegate: "Something went wrong",
 }

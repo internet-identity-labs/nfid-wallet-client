@@ -1,4 +1,7 @@
 import { Principal } from "@dfinity/principal"
+import { toast } from "react-toastify"
+
+import { errorMessages } from "frontend/errors"
 
 export type ValidationResult =
   | { result: "valid" }
@@ -39,6 +42,8 @@ export const validateDerivationOrigin = async (
     )
 
     if (response.status !== 200) {
+      toast.error(errorMessages.derivationOriginInvalid)
+
       return {
         result: "invalid",
         message: `resource ${alternativeOriginsUrl} returned invalid status: ${response.status}`,
@@ -52,6 +57,8 @@ export const validateDerivationOrigin = async (
 
     // check for expected property
     if (!Array.isArray(alternativeOriginsObj?.alternativeOrigins)) {
+      toast.error(errorMessages.derivationOriginInvalid)
+
       return {
         result: "invalid",
         message: `resource ${alternativeOriginsUrl} has invalid format: received ${alternativeOriginsObj}`,
@@ -60,12 +67,16 @@ export const validateDerivationOrigin = async (
 
     // check allowed alternative origins
     if (!alternativeOriginsObj.alternativeOrigins.includes(authRequestOrigin)) {
+      toast.error(errorMessages.derivationOriginInvalid)
+
       return {
         result: "invalid",
         message: `"${authRequestOrigin}" is not listed in the list of allowed alternative origins. Allowed alternative origins: ${alternativeOriginsObj.alternativeOrigins}`,
       }
     }
   } catch (e: any) {
+    toast.error(errorMessages.derivationOriginInvalid)
+
     return {
       result: "invalid",
       message: `An error occurred while validation the derivationOrigin "${derivationOrigin}": ${e?.message}`,

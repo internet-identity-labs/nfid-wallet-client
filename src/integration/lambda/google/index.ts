@@ -1,5 +1,7 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { toast } from "react-toastify"
 
+import { errorMessages } from "frontend/errors"
 import { ii } from "frontend/integration/actors"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import {
@@ -79,6 +81,7 @@ export async function getGoogleAuthSession(
     profile = await fetchProfile()
   } catch (fetchProfileError: any) {
     if (fetchProfileError.code !== 404) {
+      toast.error(errorMessages.fetchProfile)
       throw fetchProfileError
     }
   }

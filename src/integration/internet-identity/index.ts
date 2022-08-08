@@ -10,8 +10,10 @@ import {
 import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import { toast } from "react-toastify"
 import * as tweetnacl from "tweetnacl"
 
+import { errorMessages } from "frontend/errors"
 import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
 import {
   ChallengeResult,
@@ -139,6 +141,7 @@ export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
 export async function createChallenge(): Promise<Challenge> {
   const challenge = await ii.create_challenge().catch((e) => {
+    toast.error(errorMessages.createChallenge)
     throw new Error(`createChallenge: ${e.message}`)
   })
   return challenge
@@ -204,6 +207,7 @@ export const creationOptions = (
 
 export async function fetchAllDevices(anchor: UserNumber) {
   return await ii.lookup(anchor).catch((e) => {
+    toast.error(errorMessages.fetchAllDevices)
     throw new Error(`fetchAllDevices: ${e.message}`)
   })
 }
@@ -324,6 +328,8 @@ async function prepareDelegation(
       maxTimeToLive !== undefined ? [maxTimeToLive] : [],
     )
     .catch((e) => {
+      toast.error(errorMessages.prepareDelegation)
+
       throw new Error(`prepareDelegation: ${e.message}`)
     })
 }
@@ -345,6 +351,8 @@ const retryGetDelegation = async (
       return res.signed_delegation
     }
   }
+  toast.error(errorMessages.getDelegation)
+
   throw new Error(
     `Failed to retrieve a delegation after ${maxRetries} retries.`,
   )
@@ -373,6 +381,8 @@ async function getDelegation(
   return await ii
     .get_delegation(userNumber, hostname, sessionKey, timestamp)
     .catch((e) => {
+      toast.error(errorMessages.getDelegation)
+
       throw new Error(`getDelegation: ${e.message}`)
     })
 }
@@ -467,6 +477,8 @@ export async function addDevice(
       protection: { unprotected: null },
     })
     .catch((e) => {
+      toast.error(errorMessages.deviceRegister)
+
       throw new Error(`addDevice: ${e.message}`)
     })
 }
@@ -477,6 +489,8 @@ export async function removeDevice(
 ): Promise<void> {
   await renewDelegation()
   await ii.remove(userNumber, publicKey).catch((e) => {
+    toast.error(errorMessages.deviceRemove)
+
     throw new Error(`removeDevice: ${e.message}`)
   })
 }
@@ -500,6 +514,8 @@ async function registerAnchor(
       challengeResult,
     )
     .catch((e) => {
+      toast.error(errorMessages.registerAnchor)
+
       throw new Error(`registerAnchor: ${e.message}`)
     })
 }
@@ -529,6 +545,7 @@ export async function register(
     delegation = await requestFEDelegation(identity)
   } catch (error: unknown) {
     console.error(`Error when requesting delegation`, error)
+    toast.error(errorMessages.getDelegation)
     if (error instanceof Error) {
       return { kind: "authFail", error }
     } else {
@@ -595,6 +612,8 @@ export async function registerFromGoogle(
   try {
     delegation = await requestFEDelegation(identity)
   } catch (error: unknown) {
+    toast.error(errorMessages.getDelegation)
+
     console.error(`Error when requesting delegation`, error)
     if (error instanceof Error) {
       return { kind: "authFail", error }
@@ -615,6 +634,8 @@ export async function registerFromGoogle(
   try {
     registerResponse = await registerAnchor(alias, challengeResult, pubkey)
   } catch (error: unknown) {
+    toast.error(errorMessages.registerAnchorWithGoogle)
+
     console.error(`Error when registering`, error)
     if (error instanceof Error) {
       return { kind: "apiError", error }
@@ -655,6 +676,8 @@ export async function login(
   try {
     devices = await fetchAuthenticatorDevices(userNumber, withSecurityDevices)
   } catch (e: unknown) {
+    toast.error(errorMessages.login)
+
     console.error(`Error when looking up authenticators`, e)
     if (e instanceof Error) {
       return { kind: "apiError", error: e }
@@ -728,6 +751,8 @@ async function fromWebauthnDevices(
   try {
     delegation = await requestFEDelegation(multiIdent)
   } catch (error: unknown) {
+    toast.error(errorMessages.getDelegation)
+
     console.error(`Error when requesting delegation`, error)
     if (error instanceof Error) {
       return { kind: "authFail", error }
@@ -929,6 +954,8 @@ export async function getDelegateRetry(
       })
       return await getDelegate(userNumber, scope, sessionKey, timestamp)
     } catch (e) {
+      toast.error(errorMessages.getDelegation)
+
       console.warn("Failed to retrieve delegation.", e)
     }
   }
@@ -990,22 +1017,27 @@ export async function fetchChallenge() {
     .create_challenge()
     .then(mapChallenge)
     .catch((e) => {
+      toast.error(errorMessages.fetchChallenge)
+
       throw new Error(`fetchChallenge: ${e.message}`)
     })
 }
 
 function mapRegisterResponse(response: RegisterResponse) {
   if ("canister_full" in response) {
+    toast.error(errorMessages.iiCanisterFull)
     throw new Error(
       "Internet Identity canister is out of space, ping Dominic Williams",
     )
   } else if ("bad_challenge" in response) {
+    toast.error(errorMessages.challengeBad)
     throw new Error(
       `There was a problem with your captcha response, please try again.`,
     )
   } else if ("registered" in response) {
     return Number(response.registered.user_number)
   } else {
+    toast.error(errorMessages.unexpectedIIError)
     console.error(`Unexpected response from internet identity`, response)
     throw new Error(`Something went wrong, please try again later.`)
   }

@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React, { useState } from "react"
+import { toast } from "react-toastify"
 
 import {
   Button,
@@ -11,6 +12,7 @@ import {
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
+import { errorMessages } from "frontend/errors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
@@ -52,6 +54,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         setIsLoading(false)
         setStatus("registerDevice")
       } catch (e) {
+        toast.error(errorMessages.deviceRegister)
         console.error(e)
         setIsLoading(false)
       }

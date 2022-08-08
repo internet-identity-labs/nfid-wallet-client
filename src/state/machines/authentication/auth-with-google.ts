@@ -1,5 +1,7 @@
+import { toast } from "react-toastify"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { errorMessages } from "frontend/errors"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import {
   fetchGoogleDevice,
@@ -106,6 +108,7 @@ const AuthWithGoogleMachine =
             if (error.code === 404) {
               return false
             }
+            toast.error(errorMessages.checkRegistration)
             throw error
           }
         },

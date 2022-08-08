@@ -1,6 +1,8 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+import { toast } from "react-toastify"
 import useSWR, { SWRConfiguration } from "swr"
 
+import { errorMessages } from "frontend/errors"
 import { unpackResponse } from "frontend/integration/_common"
 import {
   MessageHttpResponse,
@@ -83,6 +85,7 @@ export async function createTopic(topic: Topic) {
       return r
     })
     .catch((e) => {
+      toast.error(errorMessages.createTopic)
       throw new Error(`createTopic pubsub.create_topic: ${e.message}`)
     })
 }
@@ -96,6 +99,8 @@ export async function postMessages(topic: Topic, messages: any[]) {
     )
     .then((r) => unpackResponse(sanitizeResponse(r)))
     .catch((e) => {
+      toast.error(errorMessages.postMessage)
+
       throw new Error(`postMessages pubsub.post_messages: ${e.message}`)
     })
 }
@@ -106,6 +111,8 @@ export async function getMessages(topic: Topic) {
     .get_messages(topic)
     .then((r) => unpackResponse(sanitizeResponse(r)))
     .catch((e) => {
+      toast.error(errorMessages.getMessage)
+
       console.warn(`getMessages pubsub.get_messages: ${e.message}`)
       return []
     })

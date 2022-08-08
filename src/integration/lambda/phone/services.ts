@@ -1,3 +1,6 @@
+import { toast } from "react-toastify"
+
+import { errorMessages } from "frontend/errors"
 import { AuthSession } from "frontend/state/authentication"
 
 import { verifyPhoneNumber } from "."
@@ -20,6 +23,7 @@ export async function verifyPhoneNumberService(context: {
     })
     return await verifyPhoneNumber(phone, identity)
   } catch (e) {
+    toast.error(errorMessages.verifyPhoneService)
     console.error("Error in verifyPhoneNumberService", e)
     throw new Error(
       "There was an issue verifying your phone number, please try again.",

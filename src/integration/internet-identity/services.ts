@@ -1,6 +1,8 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 import * as Sentry from "@sentry/browser"
+import { toast } from "react-toastify"
 
+import { errorMessages } from "frontend/errors"
 import {
   fetchProfile,
   Profile,
@@ -192,6 +194,8 @@ export async function registerService(
     }
   } catch (e) {
     console.error(e)
+    toast.error(errorMessages.registerAnchor)
+
     throw new Error(
       `registerService Could not register new account, please try again.`,
     )

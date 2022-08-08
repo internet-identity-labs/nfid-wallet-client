@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 import { useParams } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import {
   Card,
@@ -12,6 +13,7 @@ import {
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { usePostMessage } from "frontend/apps/identity-provider/use-post-message"
+import { errorMessages } from "frontend/errors"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
@@ -47,14 +49,18 @@ export const RegisterNewFromDelegate = () => {
         opener?.postMessage({ kind: "new-device", device }, opener.origin)
       } catch (error: any) {
         if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+          toast.error(errorMessages.deviceRegister)
           throw error
         }
+        toast.error(errorMessages.deviceAlreadyRegistered)
         console.debug("handleRegisterNewDevice", "device already registered")
       }
 
       setStatus("success")
       setShowModal(true)
     } catch {
+      toast.error(errorMessages.deviceRegister)
+
       setStatus("initial")
       setShowModal(false)
     }

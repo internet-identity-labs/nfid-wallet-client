@@ -4,11 +4,13 @@ import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import React, { useEffect } from "react"
 import { generatePath, useLocation } from "react-router-dom"
+import { toast } from "react-toastify"
 import { v4 as uuid } from "uuid"
 
 import { AppScreenAuthorizeAppConstants } from "frontend/apps/authentication/remote-authentication/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
+import { errorMessages } from "frontend/errors"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import {
@@ -177,6 +179,7 @@ export const useUnknownDeviceConfig = () => {
         hostname,
       })
     } catch (err) {
+      toast.error(errorMessages.invalidDelegate)
       console.error(">> not a valid delegate", { err })
     }
   }, [signedDelegation, domain, postClientAuthorizeSuccessMessage, appWindow])
@@ -190,8 +193,10 @@ export const useUnknownDeviceConfig = () => {
       await handleStoreNewDevice({ device })
     } catch (e: any) {
       if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+        toast.error(errorMessages.deviceRegister)
         throw e
       }
+      toast.error(errorMessages.deviceAlreadyRegistered)
       console.debug("handleRegisterDevice", "device already registered")
     }
 

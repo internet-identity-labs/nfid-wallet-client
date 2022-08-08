@@ -1,3 +1,7 @@
+import { toast } from "react-toastify"
+
+import { errorMessages } from "frontend/errors"
+
 export const getUserNumber = (
   userNumber: number | null,
 ): bigint | undefined => {
@@ -23,6 +27,8 @@ export const parseUserNumber = (s: string): bigint | null => {
     try {
       return BigInt(s)
     } catch (err) {
+      toast.error(errorMessages.parseUserNumber)
+
       return null
     }
   } else {

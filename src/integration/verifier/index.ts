@@ -1,3 +1,7 @@
+import { toast } from "react-toastify"
+
+import { errorMessages } from "frontend/errors"
+
 import { mapDate, mapOptional } from "../_common"
 import { Certificate as ExternalCertificate } from "../_ic_api/verifier.did"
 import { verifier } from "../actors"
@@ -40,6 +44,8 @@ export async function getPhoneCredential(token: number[]) {
     })
     try {
       const credential = await resolveToken(token).catch((r) => {
+        toast.error(errorMessages.resolveToken)
+
         console.error("Error with token resolution", r)
         throw r
       })

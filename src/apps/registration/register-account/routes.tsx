@@ -29,7 +29,7 @@ export const RemoteRegisterAccountRoutes = (
       path={RemoteRegisterAccountConstants.intro}
       element={
         <RouteRegisterAccountIntro
-          isRemoteRegiser
+          isRemoteRegister
           captchaPath={`${RemoteRegisterAccountConstants.base}/${RemoteRegisterAccountConstants.captcha}`}
           pathOnAuthenticated={"/rdp/:secret/:scope"}
         />
@@ -39,7 +39,7 @@ export const RemoteRegisterAccountRoutes = (
       path={RemoteRegisterAccountConstants.captcha}
       element={
         <RegisterAccountCaptcha
-          isRemoteRegiser
+          isRemoteRegister
           successPath={"/profile/authenticate"}
         />
       }

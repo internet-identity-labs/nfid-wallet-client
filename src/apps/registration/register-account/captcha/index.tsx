@@ -14,12 +14,12 @@ import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  isRemoteRegiser?: boolean
+  isRemoteRegister?: boolean
 }
 
 export const RegisterAccountCaptcha: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
-> = ({ isRemoteRegiser }) => {
+> = ({ isRemoteRegister }) => {
   const { secret } = useParams()
   const [captchaError, setCaptchaError] = React.useState<string | undefined>(
     undefined,
@@ -29,10 +29,6 @@ export const RegisterAccountCaptcha: React.FC<
   const { createAccount } = useAccount()
 
   const { navigate } = useNFIDNavigate()
-
-  console.debug("RegisterAccountCaptcha", {
-    isRemoteRegiser,
-  })
 
   const {
     challenge,
@@ -59,19 +55,24 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
+      console.debug("RegisterAccountCaptcha handleRegisterAnchor", { captcha })
       const response = await registerAnchor({ captcha })
+      console.debug("RegisterAccountCaptcha handleRegisterAnchor", { response })
 
       if (response && response.kind === "loginSuccess") {
         const { user } = response
-        await createAccount({ anchor: response.userNumber })
+        const profile = await createAccount({ anchor: response.userNumber })
+        console.debug("RegisterAccountCaptcha handleRegisterAnchor", {
+          profile,
+        })
 
-        if (isRemoteRegiser) {
+        if (isRemoteRegister) {
           if (!secret)
             throw new Error(
               `RegisterAccountCaptcha.handleRegisterAnchor secret is missing from params`,
             )
 
-          await im.create_access_point({
+          const accessPointResponse = await im.create_access_point({
             icon: "mobile",
             device: deviceName,
             browser: deviceInfo.browser.name ?? "Mobile",
@@ -82,6 +83,12 @@ export const RegisterAccountCaptcha: React.FC<
               ),
             ),
           })
+          console.debug(
+            "RegisterAccountCaptcha handleRegisterAnchor im.create_access_point",
+            {
+              accessPointResponse,
+            },
+          )
 
           await remoteNFIDLogin({
             secret,
@@ -97,7 +104,7 @@ export const RegisterAccountCaptcha: React.FC<
     [
       createAccount,
       deviceName,
-      isRemoteRegiser,
+      isRemoteRegister,
       navigate,
       registerAnchor,
       remoteNFIDLogin,
@@ -107,11 +114,13 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
+      console.debug("handleRegisterAnchorWithGoogle", { captcha })
       const response = await registerAnchorFromGoogle({ captcha })
+      console.debug("handleRegisterAnchorWithGoogle", { response })
       if (response && response.kind === "loginSuccess") {
         setShouldStoreLocalAccount(false)
         const { user } = response
-        await im
+        const createAccountResponse = await im
           .create_account({
             anchor: response.userNumber,
           })
@@ -120,17 +129,23 @@ export const RegisterAccountCaptcha: React.FC<
               `handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
             )
           })
-        if (isRemoteRegiser) {
+        console.debug("handleRegisterAnchorWithGoogle", {
+          createAccountResponse,
+          isRemoteRegister,
+          secret,
+        })
+        if (isRemoteRegister) {
           if (!secret)
             throw new Error(
               `RegisterAccountCaptcha.handleRegisterAnchorWithGoogle secret is missing from params`,
             )
 
-          await remoteNFIDLogin({
+          const loginResponse = await remoteNFIDLogin({
             secret,
             userNumberOverwrite: response.userNumber,
             userOverwrite: user,
           })
+          console.debug("loginResponse", { loginResponse })
         }
 
         return navigate("/profile/authenticate")
@@ -141,7 +156,7 @@ export const RegisterAccountCaptcha: React.FC<
       )
     },
     [
-      isRemoteRegiser,
+      isRemoteRegister,
       navigate,
       registerAnchorFromGoogle,
       remoteNFIDLogin,

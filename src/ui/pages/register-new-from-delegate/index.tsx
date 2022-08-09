@@ -46,7 +46,7 @@ export const RegisterNewFromDelegate = () => {
         const { device } = await createWebAuthNDevice(BigInt(userNumber))
         opener?.postMessage({ kind: "new-device", device }, opener.origin)
       } catch (error: any) {
-        if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+        if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(error.message)) {
           throw error
         }
         console.debug("handleRegisterNewDevice", "device already registered")

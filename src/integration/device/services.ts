@@ -54,7 +54,8 @@ export async function registerDeviceWithWebAuthn() {
         }),
     ])
   } catch (e: any) {
-    if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+    console.error("registerDeviceWithWebAuthn", { message: e.message })
+    if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)) {
       throw e
     }
     console.debug("registerDeviceWithWebAuthn", "device already registered")
@@ -104,12 +105,10 @@ export async function registerDeviceWithSecurityKey() {
         }),
     ])
   } catch (e: any) {
-    if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+    console.error("registerDeviceWithSecurityKey", { message: e.message })
+    if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)) {
       throw e
     }
-    console.debug(
-      registerDeviceWithSecurityKey.name,
-      "device already registered",
-    )
+    console.debug("registerDeviceWithSecurityKey", "device already registered")
   }
 }

@@ -25,8 +25,10 @@ export function identityFromDeviceList(
   return MultiWebAuthnIdentity.fromCredentials(credential, withSecurityDevices)
 }
 
-export const ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST =
-  "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party."
+export const ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST = [
+  "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party.",
+  "At least one credential matches an entry of the excludeCredentials list in the platform attached authenticator.",
+]
 
 /**
  * Create a new WebAuthnIdentity. Used during registration of a new NFID.

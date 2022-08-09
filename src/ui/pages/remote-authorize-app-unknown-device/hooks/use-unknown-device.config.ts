@@ -189,7 +189,7 @@ export const useUnknownDeviceConfig = () => {
       const { device } = await createWebAuthNDevice(BigInt(userNumber))
       await handleStoreNewDevice({ device })
     } catch (e: any) {
-      if (e.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+      if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)) {
         throw e
       }
       console.debug("handleRegisterDevice", "device already registered")

@@ -361,7 +361,7 @@ export const useDevices = () => {
           message: "Device created successfully",
         }
       } catch (error: any) {
-        if (error.message === ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+        if (ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(error.message)) {
           return {
             message: "This device is already registered",
           }
@@ -458,7 +458,7 @@ export const useDevices = () => {
           ),
         ])
       } catch (error: any) {
-        if (error.message !== ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST) {
+        if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(error.message)) {
           throw error
         }
         console.debug("createSecurityDevice", "device already registered")

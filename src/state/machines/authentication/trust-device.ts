@@ -13,13 +13,14 @@ export interface Context {}
 
 export type Events =
   | { type: "TRUST" }
+  | { type: "END" }
   | { type: "DONT_TRUST" }
   | { type: "done.invoke.isDeviceRegistered"; data: boolean }
   | { type: "done.invoke.fetchWebAuthnCapability"; data: boolean }
   | { type: "done.invoke.hasSecurityKey"; data: boolean }
 
 export const TrustDeviceMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QBUBOBXWAXAImAbgJYDGYAsgIbEAWhAdmAHQDC1YxA1sxQA4UBGhADaEsAT0ZpMWSAGIIAewaN6+BRyaFYeIqQBKYKFpmpIiUDwWxRhJeZAAPRAFYAjADZGATi-uvABgAWV2CAdgBmACZXABoQMUQvAA5I7yD3Z3dw51Ckr2cAXwK4qWwdEnIqWmVWdi5eAWFRCQBldnRUZoBpMDF5JU06NQ1GagpYNuIO7t77S2ssWzp7JwQ3Tx8-IJDXCOi4hIRXV2dU0OTAy8DnJP9-L1CikowyggrKGnomNqF2LFlkHoAKotZBzKw2OxIRyIXaBNLhVyRJLOfI5SI3A6ISKhVyMS7+dwnDwhS4eJ4gUq4N6kD7Vb5gX7Ef44ADyADlkAB9QEgsHQ+aQ5bQ1ZwhFIlFo0IYpJYhABbxecKhQJJdwqyI48JeClU8q0qpfRgGIzYMCofrKVTqJgAMzAWBoAHUwPwAILoLDUOjcPiCETicELJYrRDq5zeVHXHEpc6ouXRfz485+RG5XaFYqUl7U3SVT7KE3Gc36sBO0TUF3uz3ey2DYZMUymkyl8teqser3CiwQxZQ0Cra4bXwBYJhKIeOUnHKMVx5adz5zhbK6nOlulGotm1CtiuTabiHp9RRWoY2xhNhbmtvUfedQ+zAW9kMixDXPGbUc7PaT+Jh66MEkoT+DiwThEENyPBSdAKBAcD2HqNL5vSLBsJwvqNAGEhUmYT7Bv2MIICkU7+OESSMJEXjRLcuL+Dc4TuKu0jroaNRofUfpNOIjAdjW3YgIKfb8asxF-kRXjwlEGSuOBNyBBkjFZoheYbmxdQYf6zSMHeMyHD2+HCbC0T4qiDHAf40rZJiYnHCkFE5CkPhAYEGpMa8KmsUwtToQ0mncQAonQEBBkKoYIJqqSBOkVFuMczhjnKKQRsuoHuHcATHK4bm5u8nmoepvlcXpAnPgRqzWYcoSnIwy4BP4rhUZKdHZSxBYMkyWAhUJYWBJECYzpE7hRVkRK7LkhItUhqlMFuJhdS+A7YlV3juBiqpDa4hLKuECY4t4gTKjK2opREk0eW1xqGMWO5ITevFdvNZUuKEU5uOEjB+JqUTODcSLXGduUXbNJa3Xu7T3mIR6PYZax9WJaWpNtvVEqcaVJOEAMGhdgXBXhoWvggoS5N4c5E0NDybIEU6RBZjAqkk1yBMky7akkmPIV80NhXOU7kXc-MCwLGNFAUQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QBUBOBXWAXAImAbgJYDGYAsgIbEAWhAdmAHQDC1YxA1sxQA4UBGhADaEsAT0ZpMWSAGIIAewaN6+BRyaFYeIqQBKYKFpmpIiUDwWxRhJeZAAPRAFYAjADZGATi-uvABgAWV2CAdgBmACZXABoQMUQvAA5I7yD3Z3dw51Ckr2cAXwK4qWwdEnIqWmVWdi5eAWFRCQB1MH4AQXQsajp5JU06NQ1GADMwLBo2zu7e7j5BEXF7S2ssWzp7BIQ8wMYojNdw-2ckwIz3OKcEQPDQ71CfJPSk0MLikFLcAgrKGnomLVOPNGksJABldjoVDNADSYDE-WUqnUTGoFFgkOI0LhCJWVhsdiQjhcHm8vgCwTCUVi8UQrlczlSjzOgTZp38-i8oSKJQwZR+pD+1SYkKE7CwsmQegAquDkPi1ht7NdXKE9gFwq5IklnPkcpFTnFtpFQq5GGz-O5GR4QmyPLzPvzvrpKv9lGKJbIcAB5AByyAA+tK5QriatCZtiar1WktTq9c4DUa6QgAuS7oEku51ZFTeEvI6vuUhVUAYxPcRJQBRP04RWRlWIAC0+X2kSCOVcyTZOdCxsQoQijA7SVc-htAUZRedJbdIsYBiM2DAqCRg2GTHGk2o0y6PToIMWzQb6yJoGuOec3j1gSZuVN+S8A4Q0X8Fsefi1uTV7z50jnYVyyXYxVznFpRF3dp916dcVCGVFGFMZcTHAyC91mKMLAJM8sJJG5MnJPwghCNUaUuVNGRyRhXDyKjaOccJshnADBXnYDDFA1A0J6DCD1kVdUAUVBGB4IQKCwUZhIAWyQziV24tiIN46DMNPZVo0QYJUmSTlx2SLIdVpbYPH8cJGGcO8GTzDxTj-J1WNdIDlBAhSeOoLEcXEeFEUUZEEJGZC1lXZSPKhGFvLxcMcI0i8tLcIjKVIiJogo7Z3DvRhXn8U1gmOO9XiKD46AUCA4HsYs2OcwE2GBBpj3ESRnTMaKlXPfCUhfcdwiSEcvGiZ4zROJJwncFiBScssalq+oFiaRq+N6dT2uuTrU12dtDmOU5zkycaXV+KaarqI95ohcLcW2bC2rw1VogtPVRtCTlQkibIUxM2jUkNB8nnVXN9sAo6WBm06wUYas6AgZbbsQPNUkCdJ+rcBlLJCF8UmvJjcvcTkpwZQGquBoFZtBE9WsbTSEA+wdGP2KJXpSNUsmSQnJvdUUwHFKsYabG5IhfH6Rwyq1RoZIdnjGj5KvZhdXJMXmqdNa9fENLMMvHLIIkF01vFuV7TgLbGIjZw6OcXeTUKU9DVIPRW4up-tKLccy-DzKIkzHSI71N0tzflsDrZ6TyIrEHz7fwpkX1x1I7nCQJImtJlcZG332OUSHoYp3C+Yl7xaKHDLuR8DKuo7e51TOSzkiYgskjT6qI+uZsGS8dtOzNHtziHLrep8TMImcTkcqCIqCiAA */
   createMachine(
     {
       tsTypes: {} as import("./trust-device.typegen").Typegen0,
@@ -50,8 +51,13 @@ export const TrustDeviceMachine =
                 src: "fetchWebAuthnCapability",
                 id: "fetchWebAuthnCapability",
                 onDone: [
-                  { cond: "bool", target: "#TrustDeviceMachine.Select" },
-                  { target: "SecurityKey" },
+                  {
+                    cond: "bool",
+                    target: "#TrustDeviceMachine.Select",
+                  },
+                  {
+                    target: "SecurityKey",
+                  },
                 ],
               },
             },
@@ -83,6 +89,9 @@ export const TrustDeviceMachine =
             DONT_TRUST: {
               target: "End",
             },
+            END: {
+              target: "End",
+            },
           },
         },
         Register: {
@@ -109,9 +118,12 @@ export const TrustDeviceMachine =
                 target: "End",
               },
             ],
-            onError: {
-              target: "RegisterDeviceWithWebAuthn",
-            },
+            onError: [
+              {
+                target: "RegisterDeviceWithWebAuthn",
+                internal: false,
+              },
+            ],
           },
         },
         RegisterDeviceWithSecurityKey: {

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkClass from "./checkClass"
 
 describe("checkClass", () => {

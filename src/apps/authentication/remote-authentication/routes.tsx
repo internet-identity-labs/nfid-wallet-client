@@ -22,3 +22,35 @@ export const AppScreenAuthorizeDerivationOriginAppRoutes = (
     element={<AppScreenAuthorizeApp />}
   />
 )
+
+export function remoteReceiverUrl({
+  domain,
+  secret,
+  maxTimeToLive = BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
+  applicationName,
+  applicationLogo,
+  applicationDerivationOrigin,
+}: {
+  domain: string | undefined
+  secret: string
+  maxTimeToLive?: bigint
+  applicationName?: string
+  applicationLogo?: string
+  applicationDerivationOrigin?: string
+}) {
+  const query = new URLSearchParams({
+    secret,
+    scope: domain || "",
+    derivationOrigin: applicationDerivationOrigin || "",
+    maxTimeToLive: maxTimeToLive.toString() || "",
+    applicationName: applicationName || "",
+    applicationLogo: encodeURIComponent(applicationLogo || ""),
+  }).toString()
+
+  const path = `/ridp/`
+  console.debug(remoteReceiverUrl.name, {
+    path: encodeURI(`${path}?${query.toString()}`),
+  })
+
+  return `${window.location.origin}${path}?${query.toString()}`
+}

@@ -1,12 +1,11 @@
 import { useAtom } from "jotai"
 import React from "react"
 
-import { ProfileEditPhoneSms } from "frontend/design-system/pages/profile-edit/phone-sms"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { ProfileEditPhoneSms } from "frontend/ui/pages/profile-edit/phone-sms"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { phoneNumberAtom } from "../state"
 
@@ -20,18 +19,22 @@ export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
   const { user } = useAuthentication()
   const { verifyPhonenumber } = useAccount()
   const { navigate } = useNFIDNavigate()
+  const { refreshProfile } = useAccount()
 
   const handleSubmitSMSToken = React.useCallback(
     async (token: string) => {
       toggleLoading()
-      const response = await im.verify_token(token)
+      const response = await im.verify_token(token).catch((e) => {
+        throw new Error(`handleSubmitSMSToken im.verify_token: ${e.message}`)
+      })
       toggleLoading()
       if (response.status_code >= 200 && response.status_code < 400) {
+        refreshProfile()
         return navigate("/profile/authenticate")
       }
       if (response.error.length) setError(response.error[0])
     },
-    [navigate],
+    [navigate, refreshProfile],
   )
 
   const handleResendToken = React.useCallback(async () => {

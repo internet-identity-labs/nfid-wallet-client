@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import isDisplayed from "./isDisplayed"
 
 let isDisplayedMock

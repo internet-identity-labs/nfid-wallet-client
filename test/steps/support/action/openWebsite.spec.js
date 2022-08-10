@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import openWebsite from "./openWebsite"
 
 describe("openWebsite", () => {

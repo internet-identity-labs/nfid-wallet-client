@@ -1,16 +1,15 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { AuthorizeApp } from "frontend/design-system/pages/authorize-app"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
+import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 interface AppScreenAuthorizeAppProps {
   isRemoteAuthorisation?: boolean
@@ -40,7 +39,10 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const isNFID = React.useMemo(() => scope === "NFID", [scope])
 
   const handleNFIDLogin = React.useCallback(async () => {
-    if (!secret) throw new Error("secret is missing from params")
+    if (!secret)
+      throw new Error(
+        `AppScreenAuthorizeApp.handleNFIDLogin secret is missing from params`,
+      )
     await remoteNFIDLogin({ secret })
     setIsloading(false)
   }, [remoteNFIDLogin, secret, setIsloading])
@@ -67,7 +69,7 @@ export const AppScreenAuthorizeApp: React.FC<AppScreenAuthorizeAppProps> = ({
   const handleCreateAccountAndLogin = React.useCallback(async () => {
     setIsloading(true)
     const response = await createPersona({
-      domain: scope || authorizationRequest?.hostname,
+      domain: scope || (authorizationRequest?.hostname as string),
     })
 
     if (response?.status_code === 200) {

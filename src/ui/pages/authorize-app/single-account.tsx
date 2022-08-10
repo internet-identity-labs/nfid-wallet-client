@@ -1,0 +1,50 @@
+import React from "react"
+
+import { Button, H4 } from "@internet-identity-labs/nfid-sdk-react"
+
+import { ElementProps } from "frontend/types/react"
+import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+
+import MobileHero from "./assets/mobile_hero.svg"
+
+interface AuthorizeAppSingleAccountProps extends ElementProps<HTMLDivElement> {
+  applicationLogo?: string
+  applicationName?: string
+  isLoading: boolean
+  loadingMessage?: string | boolean
+  onContinueButtonClick: () => Promise<void>
+}
+
+export const AuthorizeAppSingleAccount: React.FC<
+  AuthorizeAppSingleAccountProps
+> = ({
+  applicationName,
+  onContinueButtonClick,
+  applicationLogo,
+  isLoading,
+  loadingMessage,
+}) => {
+  return (
+    <ScreenResponsive
+      isLoading={isLoading}
+      loadingMessage={loadingMessage}
+      className="flex flex-col items-center"
+    >
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
+      )}
+      <H4>Unlock NFID</H4>
+      <p className="mt-2 text-sm">
+        to continue{applicationName && ` to ${applicationName}`}
+      </p>
+      <img className="w-full max-w-max" src={MobileHero} alt="" />
+      <Button className="my-6 " block secondary onClick={onContinueButtonClick}>
+        Unlock to continue
+      </Button>
+    </ScreenResponsive>
+  )
+}

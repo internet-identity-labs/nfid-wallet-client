@@ -1,16 +1,14 @@
 import React from "react"
 
-import { Profile } from "frontend/design-system/pages/profile"
-
-import { ima } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import {
-  Device,
+  LegacyDevice,
   RecoveryDevice,
-} from "frontend/comm/services/identity-manager/devices/state"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+} from "frontend/integration/identity-manager/devices/state"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { Profile } from "frontend/ui/pages/profile"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "./routes"
 
@@ -19,7 +17,6 @@ interface AuthenticateNFIDHomeProps {}
 export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   const applications: any[] = ["NFID Demo"]
 
-  const [hasPoa, setHasPoa] = React.useState(false)
   const [fetched, loadOnce] = React.useReducer(() => true, false)
   const { navigate } = useNFIDNavigate()
 
@@ -35,26 +32,19 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     createSecurityDevice,
   } = useDevices()
   const { allAccounts, getPersona } = usePersona()
-  const { account, readAccount } = useAccount()
-
-  React.useEffect(() => {
-    ima.has_poap().then((response) => {
-      setHasPoa(response)
-    })
-  }, [])
+  const { profile } = useAccount()
 
   React.useEffect(() => {
     if (!fetched) {
       loadOnce()
-      readAccount()
       getDevices()
       getRecoveryDevices()
       getPersona()
     }
-  }, [fetched, getDevices, getPersona, getRecoveryDevices, readAccount])
+  }, [fetched, getDevices, getPersona, getRecoveryDevices])
 
   const handleDeleteDevice = React.useCallback(
-    async (device: Device) => {
+    async (device: LegacyDevice) => {
       await deleteDevice(device.pubkey)
       await handleLoadDevices()
     },
@@ -62,7 +52,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   )
 
   const handleDeviceUpdate = React.useCallback(
-    async (device: Device) => {
+    async (device: LegacyDevice) => {
       await updateDevice(device)
       await getDevices()
     },
@@ -86,6 +76,7 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   )
 
   const handleCreateRecoveryPhrase = React.useCallback(async () => {
+    // NOTE: NEVER LOG RECOVERY PHRASE
     const recoveryPhrase = await createRecoveryPhrase()
     navigate(
       `${ProfileConstants.base}/${ProfileConstants.copyRecoveryPhrase}`,
@@ -103,11 +94,10 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
 
   return (
     <Profile
-      account={account}
+      account={profile}
       applications={applications}
       onDeviceDelete={handleDeleteDevice}
       onDeviceUpdate={handleDeviceUpdate}
-      hasPoa={hasPoa}
       devices={devices}
       accounts={allAccounts}
       onRecoveryDelete={handleRecoveryDelete}

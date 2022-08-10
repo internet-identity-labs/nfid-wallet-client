@@ -1,12 +1,12 @@
 import { atom, useAtom } from "jotai"
 import React from "react"
 
-import { ii } from "frontend/comm/actors"
-import { getScope } from "frontend/comm/services/identity-manager/persona/utils"
-import { hasOwnProperty } from "frontend/comm/services/internet-identity/utils"
-import { validateDerivationOrigin } from "frontend/comm/services/internet-identity/validateDerivationOrigin"
+import { ii } from "frontend/integration/actors"
+import { getScope } from "frontend/integration/identity-manager/persona/utils"
+import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
+import { validateDerivationOrigin } from "frontend/integration/internet-identity/validateDerivationOrigin"
 
-import { useMessageChannel } from "../../design-system/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
+import { useMessageChannel } from "../../ui/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
 
 interface UseAuthenticationProps {
   userNumber?: bigint
@@ -74,7 +74,10 @@ export const useAuthorization = ({
     }) => {
       setLoading(true)
 
-      if (!authorizationRequest) throw new Error("authorizationRequest missing")
+      if (!authorizationRequest)
+        throw new Error(
+          "useAuthorization.authorizeApp authorizationRequest missing",
+        )
 
       const {
         sessionPublicKey,
@@ -88,13 +91,24 @@ export const useAuthorization = ({
       const scope = getScope(derivationOrigin ?? hostname, persona_id)
 
       const anchor = rawAnchor && BigInt(rawAnchor)
-
-      const prepRes = await ii.prepare_delegation(
-        anchor || userNumber,
+      console.log(">> authorizeApp", {
+        anchor: anchor || userNumber,
         scope,
         sessionKey,
-        maxTimeToLive !== undefined ? [maxTimeToLive] : [],
-      )
+        maxTimeToLive,
+      })
+
+      const prepRes = await ii
+        .prepare_delegation(
+          anchor || userNumber,
+          scope,
+          sessionKey,
+          maxTimeToLive !== undefined ? [maxTimeToLive] : [],
+        )
+        .catch((e) => {
+          throw new Error(`authorizeApp ii.prepare_delegation: ${e.message}`)
+        })
+      console.log(">> authorizeApp", { prepRes })
 
       // TODO: move to error handler
       if (prepRes.length !== 2) {
@@ -104,12 +118,12 @@ export const useAuthorization = ({
       }
       const [userKey, timestamp] = prepRes
 
-      const res = await ii.get_delegation(
-        anchor || userNumber,
-        scope,
-        sessionKey,
-        timestamp,
-      )
+      const res = await ii
+        .get_delegation(anchor || userNumber, scope, sessionKey, timestamp)
+        .catch((e) => {
+          throw new Error(`authorizeApp ii.get_delegation: ${e.message}`)
+        })
+
       if (hasOwnProperty(res, "signed_delegation")) {
         const signedDelegation = res.signed_delegation
         // Parse the candid SignedDelegation into a format that `DelegationChain` understands.

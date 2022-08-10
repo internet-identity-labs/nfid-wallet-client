@@ -1,9 +1,8 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import { CopyRecoveryPhrase as CopyRecoveryPhraseRaw } from "frontend/design-system/pages/profile/recovery-phrase"
-
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { CopyRecoveryPhrase as CopyRecoveryPhraseRaw } from "frontend/ui/pages/profile/recovery-phrase"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface CopyRecoveryPhraseLocationState {
   recoveryPhrase: string

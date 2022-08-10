@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import selectOptionByIndex from "./selectOptionByIndex"
 
 let selectByIndexMock

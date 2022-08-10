@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkOffset from "./checkOffset"
 
 let getLocationMock

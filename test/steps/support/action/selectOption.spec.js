@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import selectOption from "./selectOption"
 
 describe("selectOption", () => {

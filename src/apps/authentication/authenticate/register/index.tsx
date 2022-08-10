@@ -1,17 +1,16 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { CredentialResponse } from "frontend/design-system/atoms/button/signin-with-google/types"
-import { useChallenge } from "frontend/design-system/pages/captcha/hook"
-import { RegisterAccountIntro } from "frontend/design-system/pages/register-account-intro/screen-app"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
+import { CredentialResponse } from "frontend/ui/atoms/button/signin-with-google/types"
+import { useChallenge } from "frontend/ui/pages/captcha/hook"
+import { RegisterAccountIntro } from "frontend/ui/pages/register-account-intro/screen-app"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface RegisterProps
   extends React.DetailedHTMLProps<
@@ -74,16 +73,14 @@ export const RouteRegister: React.FC<RegisterProps> = ({
       if (response.is_existing) {
         const userOverwrite = await loginWithGoogleDevice(response.identity)
 
-        const {
-          data: [account],
-        } = await readMemoryAccount()
+        const account = await readMemoryAccount()
 
         if (isNFID && account) {
           if (isRemoteRegister) {
             if (!secret) throw new Error("secret missing")
             await remoteNFIDLogin({
               secret,
-              userNumberOverwrite: account.anchor,
+              userNumberOverwrite: BigInt(account.anchor),
               userOverwrite,
             })
           }

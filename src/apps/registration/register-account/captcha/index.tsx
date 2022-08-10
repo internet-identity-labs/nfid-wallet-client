@@ -1,46 +1,35 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { Captcha } from "frontend/design-system/pages/captcha"
-import {
-  useCaptcha,
-  useChallenge,
-} from "frontend/design-system/pages/captcha/hook"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/integration/actors"
+import { deviceInfo } from "frontend/integration/device"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { authState } from "frontend/integration/internet-identity"
+import { Captcha } from "frontend/ui/pages/captcha"
+import { useCaptcha, useChallenge } from "frontend/ui/pages/captcha/hook"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface RegisterAccountCopyRecoveryPhraseProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  isRemoteRegiser?: boolean
-  isNFIDProp?: boolean
-  successPath: string
+  isRemoteRegister?: boolean
 }
 
 export const RegisterAccountCaptcha: React.FC<
   RegisterAccountCopyRecoveryPhraseProps
-> = ({ isRemoteRegiser, isNFIDProp, successPath }) => {
-  const { secret, scope } = useParams()
+> = ({ isRemoteRegister }) => {
+  const { secret } = useParams()
   const [captchaError, setCaptchaError] = React.useState<string | undefined>(
     undefined,
   )
-  const { remoteLogin, remoteNFIDLogin } = useAuthorizeApp()
+  const { setShouldStoreLocalAccount } = useAuthentication()
+  const { remoteNFIDLogin } = useAuthorizeApp()
   const { createAccount } = useAccount()
 
   const { navigate } = useNFIDNavigate()
 
-  const isNFID = React.useMemo(
-    () => scope === "NFID" || isNFIDProp,
-    [isNFIDProp, scope],
-  )
-
-  const { nextPersonaId, createPersona } = usePersona()
   const {
     challenge,
     isLoading: isChallengeLoading,
@@ -49,7 +38,7 @@ export const RegisterAccountCaptcha: React.FC<
 
   const {
     setLoading,
-    registerPayload: { isGoogle },
+    registerPayload: { isGoogle, deviceName },
     loading,
     registerAnchorFromGoogle,
     registerAnchor,
@@ -66,39 +55,47 @@ export const RegisterAccountCaptcha: React.FC<
 
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
+      console.debug("RegisterAccountCaptcha handleRegisterAnchor", { captcha })
       const response = await registerAnchor({ captcha })
+      console.debug("RegisterAccountCaptcha handleRegisterAnchor", { response })
 
       if (response && response.kind === "loginSuccess") {
         const { user } = response
-        await createAccount({ anchor: response.userNumber })
+        const profile = await createAccount({ anchor: response.userNumber })
+        console.debug("RegisterAccountCaptcha handleRegisterAnchor", {
+          profile,
+        })
 
-        if (isRemoteRegiser) {
-          if (!secret) throw new Error("secret is missing from params")
+        if (isRemoteRegister) {
+          if (!secret)
+            throw new Error(
+              `RegisterAccountCaptcha.handleRegisterAnchor secret is missing from params`,
+            )
 
-          if (isNFID) {
-            await remoteNFIDLogin({
-              secret,
-              userNumberOverwrite: response.userNumber,
-              userOverwrite: user,
-            })
-            return navigate("/profile/authenticate")
-          }
+          const accessPointResponse = await im.create_access_point({
+            icon: "mobile",
+            device: deviceName,
+            browser: deviceInfo.browser.name ?? "Mobile",
+            pub_key: Array.from(
+              new Uint8Array(
+                authState.get()?.delegationIdentity?.getPublicKey().toDer() ??
+                  [],
+              ),
+            ),
+          })
+          console.debug(
+            "RegisterAccountCaptcha handleRegisterAnchor im.create_access_point",
+            {
+              accessPointResponse,
+            },
+          )
 
-          if (!scope) throw new Error("scope is missing from params")
-          await Promise.all([
-            createPersona({
-              domain: scope,
-            }),
-            remoteLogin({
-              secret,
-              scope,
-              persona_id: nextPersonaId,
-              userNumberOverwrite: response.userNumber,
-              connection: response.internetIdentity,
-              chain: response.chain,
-              sessionKey: response.sessionKey,
-            }),
-          ])
+          await remoteNFIDLogin({
+            secret,
+            userNumberOverwrite: response.userNumber,
+            userOverwrite: user,
+          })
+          return navigate("/profile/authenticate")
         }
 
         navigate("/profile/authenticate")
@@ -106,97 +103,65 @@ export const RegisterAccountCaptcha: React.FC<
     },
     [
       createAccount,
-      createPersona,
-      isNFID,
-      isRemoteRegiser,
+      deviceName,
+      isRemoteRegister,
       navigate,
-      nextPersonaId,
       registerAnchor,
-      remoteLogin,
       remoteNFIDLogin,
-      scope,
       secret,
     ],
   )
-  const { userNumber } = useAccount()
-  const { authorizeApp } = useAuthorization({
-    userNumber,
-  })
-  const { setShouldStoreLocalAccount } = useAuthentication()
 
   const handleRegisterAnchorWithGoogle = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
+      console.debug("handleRegisterAnchorWithGoogle", { captcha })
       const response = await registerAnchorFromGoogle({ captcha })
+      console.debug("handleRegisterAnchorWithGoogle", { response })
       if (response && response.kind === "loginSuccess") {
         setShouldStoreLocalAccount(false)
         const { user } = response
-        await im.create_account({
-          anchor: response.userNumber,
+        const createAccountResponse = await im
+          .create_account({
+            anchor: response.userNumber,
+          })
+          .catch((e) => {
+            throw new Error(
+              `handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
+            )
+          })
+        console.debug("handleRegisterAnchorWithGoogle", {
+          createAccountResponse,
+          isRemoteRegister,
+          secret,
         })
-        if (isRemoteRegiser) {
-          if (!secret) throw new Error("secret is missing from params")
+        if (isRemoteRegister) {
+          if (!secret)
+            throw new Error(
+              `RegisterAccountCaptcha.handleRegisterAnchorWithGoogle secret is missing from params`,
+            )
 
-          if (isNFID) {
-            await remoteNFIDLogin({
-              secret,
-              userNumberOverwrite: response.userNumber,
-              userOverwrite: user,
-            })
-            return navigate(successPath)
-          }
-
-          if (!scope) throw new Error("scope is required")
-          await Promise.all([
-            im.create_persona({
-              domain: scope,
-              persona_id: nextPersonaId,
-              persona_name: "",
-            }),
-            remoteLogin({
-              secret,
-              scope,
-              persona_id: nextPersonaId,
-              userNumberOverwrite: response.userNumber,
-              connection: response.internetIdentity,
-              chain: response.chain,
-              sessionKey: response.sessionKey,
-            }),
-          ])
-          return navigate(successPath)
+          const loginResponse = await remoteNFIDLogin({
+            secret,
+            userNumberOverwrite: response.userNumber,
+            userOverwrite: user,
+          })
+          console.debug("loginResponse", { loginResponse })
         }
 
-        if (!isNFID) {
-          if (!scope) throw new Error("scope is required")
-          await Promise.all([
-            im.create_persona({
-              domain: scope,
-              persona_id: nextPersonaId,
-              persona_name: "",
-            }),
-            authorizeApp({
-              persona_id: nextPersonaId,
-              domain: scope,
-              anchor: response.userNumber,
-            }),
-          ])
-        }
-        return navigate(successPath)
+        return navigate("/profile/authenticate")
       }
-      console.error(">> handleRegisterAnchor", response)
+      console.error(
+        "RegisterAccountCaptcha.handleRegisterAnchorWithGoogle",
+        response,
+      )
     },
     [
-      authorizeApp,
-      isNFID,
-      isRemoteRegiser,
+      isRemoteRegister,
       navigate,
-      nextPersonaId,
       registerAnchorFromGoogle,
-      remoteLogin,
       remoteNFIDLogin,
-      scope,
       secret,
       setShouldStoreLocalAccount,
-      successPath,
     ],
   )
 

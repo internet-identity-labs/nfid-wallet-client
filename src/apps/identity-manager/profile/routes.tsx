@@ -1,13 +1,12 @@
 import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { AuthWrapper } from "frontend/design-system/pages/auth-wrapper"
+import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 
 import { NFIDProfile } from "."
 import { AddPhoneNumber } from "./add-phone-number"
 import { CopyRecoveryPhrase } from "./copy-recovery-phrase"
 import { NFIDProfileEdit } from "./edit"
-import { NFIDPersonalize } from "./personalize"
 import { VerifySMSToken } from "./verify-sms-token"
 
 export const ProfileConstants = {
@@ -26,16 +25,15 @@ export const ProfileRoutes = (
       path={ProfileConstants.authenticate}
       element={
         // TODO: redirect to general register flow
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <NFIDProfile />
         </AuthWrapper>
       }
     />
-    <Route path={ProfileConstants.personalize} element={<NFIDPersonalize />} />
     <Route
       path={ProfileConstants.edit}
       element={
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <NFIDProfileEdit />
         </AuthWrapper>
       }
@@ -43,7 +41,7 @@ export const ProfileRoutes = (
     <Route
       path={ProfileConstants.addPhoneNumber}
       element={
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <AddPhoneNumber />
         </AuthWrapper>
       }
@@ -51,7 +49,7 @@ export const ProfileRoutes = (
     <Route
       path={ProfileConstants.verifySMSToken}
       element={
-        <AuthWrapper redirectTo="/">
+        <AuthWrapper>
           <VerifySMSToken />
         </AuthWrapper>
       }

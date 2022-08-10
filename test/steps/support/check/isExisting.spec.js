@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import isExisting from "./isExisting"
 
 describe("isExisting", () => {

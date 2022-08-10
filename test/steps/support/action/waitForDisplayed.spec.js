@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import waitForDisplayed from "./waitForDisplayed"
 
 let waitForDisplayedMock

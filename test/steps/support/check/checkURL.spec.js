@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkURL from "./checkURL"
 
 describe("checkURL", () => {

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkInURLPath from "./checkInURLPath"
 
 describe("checkInURLPath", () => {

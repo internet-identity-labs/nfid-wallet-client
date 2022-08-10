@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import setWindowSize from "./setWindowSize"
 
 describe("setWindowSize", () => {

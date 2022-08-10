@@ -6,11 +6,11 @@ import sticky from "stickyfilljs"
 
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/authentication/recover-nfid/routes"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
-import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/registration/recover-nfid/routes"
 import { NFIDRegisterAccountConstants } from "frontend/apps/registration/register-account/routes"
 import { ElementProps } from "frontend/types/react"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import MobileHero from "./assets/mobile_hero.svg"
 
@@ -29,6 +29,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
 
   return (
     <div ref={text} className="z-30 sm:mt-40 top-28">
+      {/* @ts-ignore: TODO: Pasha fix */}
       <Slide left>
         <div>
           <div>

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import dragElement from "./dragElement"
 
 let dragElementMock

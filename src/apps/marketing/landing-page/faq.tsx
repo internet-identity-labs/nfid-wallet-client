@@ -3,9 +3,9 @@ import React from "react"
 import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
-import { Accordion } from "frontend/design-system/atoms/accordion"
-import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+import { Accordion } from "frontend/ui/atoms/accordion"
+import { ScrollTopOnNavigate } from "frontend/ui/templates/ScrollTopOnNavigate"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
 import Blur from "./assets/blur_green.png"
 
@@ -13,9 +13,7 @@ import { Footer } from "./footer"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
 
-interface FaqProps {}
-
-export const Faq: React.FC<FaqProps> = ({ children }) => {
+export const Faq = () => {
   return (
     <AppScreen
       bubbleOptions={{
@@ -42,6 +40,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
                   alt="blur"
                 />
                 <div className="top-28">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile sm:text-titleLarge">
                       Frequently <br />
@@ -59,6 +58,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
                     </h2>
                   </Fade>
                 </div>
+                {/* @ts-ignore: TODO: Pasha fix */}
                 <Fade>
                   <div className="relative">
                     {questions.map((question, i) => (
@@ -76,6 +76,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
           </ParallaxProvider>
           <section className="relative grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 pt-36 md:pt-72">
             <div className=" top-28">
+              {/* @ts-ignore: TODO: Pasha fix */}
               <Fade left>
                 <h2 className="font-bold text-titleMobile md:text-titleLarge">
                   Our {""}
@@ -92,6 +93,7 @@ export const Faq: React.FC<FaqProps> = ({ children }) => {
                 </h2>
               </Fade>
             </div>
+            {/* @ts-ignore: TODO: Pasha fix */}
             <Fade>
               <SocialButtons />
             </Fade>

@@ -1,16 +1,15 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { AuthorizeApp } from "frontend/design-system/pages/authorize-app"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-import { ScreenResponsive } from "frontend/design-system/templates/screen-responsive"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
+import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
 
@@ -39,10 +38,16 @@ export const AppScreenAuthorizeApp: React.FC<
 
   const handleLogin = React.useCallback(
     async (personaId: string) => {
-      if (!secret) throw new Error("missing secret")
-      if (!scope) throw new Error("missing scope")
-      if (!user?.chain) throw new Error("missing user.chain")
-      if (!user?.sessionKey) throw new Error("missing user.sessionKey")
+      if (!secret)
+        throw new Error(`AppScreenAuthorizeApp.handleLogin missing secret`)
+      if (!scope)
+        throw new Error(`AppScreenAuthorizeApp.handleLogin missing scope`)
+      if (!user?.chain)
+        throw new Error(`AppScreenAuthorizeApp.handleLogin missing user.chain`)
+      if (!user?.sessionKey)
+        throw new Error(
+          `AppScreenAuthorizeApp.handleLogin missing user.sessionKey`,
+        )
 
       setIsloading(true)
       await remoteLogin({
@@ -51,7 +56,6 @@ export const AppScreenAuthorizeApp: React.FC<
         persona_id: personaId,
         chain: user?.chain,
         sessionKey: user?.sessionKey,
-        connection: user?.internetIdentity,
         derivationOrigin,
       })
       setIsloading(false)
@@ -65,7 +69,6 @@ export const AppScreenAuthorizeApp: React.FC<
       secret,
       setIsloading,
       user?.chain,
-      user?.internetIdentity,
       user?.sessionKey,
     ],
   )
@@ -73,7 +76,7 @@ export const AppScreenAuthorizeApp: React.FC<
   const handleCreateAccountAndLogin = React.useCallback(async () => {
     setIsloading(true)
     const response = await createPersona({
-      domain: scope,
+      domain: scope as string,
     })
 
     if (response?.status_code === 200) {

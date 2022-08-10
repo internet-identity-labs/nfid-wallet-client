@@ -1,13 +1,12 @@
 import React, { useState } from "react"
 
-import { AuthorizeRegisterDeciderScreen } from "frontend/design-system/pages/register-device-decider"
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useDevices } from "frontend/comm/services/identity-manager/devices/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { authState } from "frontend/integration/internet-identity"
+import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 interface AppScreenRegisterDeviceProps
   extends React.HTMLAttributes<HTMLDivElement> {}
@@ -19,7 +18,6 @@ export const AppScreenRegisterDeviceDecider: React.FC<
   const { recoverDevice, createSecurityDevice } = useDevices()
   const { createAccount, recoverAccount } = useAccount()
   const { getPersona } = usePersona()
-  const { user } = useAuthentication()
 
   const { userNumber, handleSendDelegate } = useUnknownDeviceConfig()
 
@@ -33,29 +31,35 @@ export const AppScreenRegisterDeviceDecider: React.FC<
       return console.error(`Missing userNumber: ${userNumber}`)
     }
 
-    await recoverDevice(userNumber)
+    await recoverDevice(Number(userNumber))
 
-    const response = await recoverAccount(userNumber)
-
-    if (response?.status_code === 404) {
+    try {
+      await recoverAccount(userNumber, true)
+    } catch (e) {
       console.warn("account not found. Recreating")
       await createAccount({ anchor: userNumber })
 
       // attach the current identity as access point
       const pub_key = Array.from(
         new Uint8Array(
-          user?.internetIdentity.delegationIdentity.getPublicKey().toDer() ??
-            [],
+          authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
         ),
       )
 
-      await im.create_access_point({
-        icon: "",
-        device: "",
-        browser: "",
-        pub_key,
-      })
+      await im
+        .create_access_point({
+          icon: "",
+          device: "",
+          browser: "",
+          pub_key,
+        })
+        .catch((e) => {
+          throw new Error(
+            `AppScreenRegisterDeviceDecider.handleRegister im.create_access_point: ${e.message}`,
+          )
+        })
     }
+
     await getPersona()
     handleSendDelegate()
     setIsLoading(false)
@@ -63,7 +67,6 @@ export const AppScreenRegisterDeviceDecider: React.FC<
     createAccount,
     getPersona,
     handleSendDelegate,
-    user,
     recoverAccount,
     recoverDevice,
     userNumber,

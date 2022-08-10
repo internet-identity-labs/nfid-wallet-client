@@ -3,6 +3,7 @@ import React from "react"
 import ReactTooltip from "react-tooltip"
 
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
+import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
 import { ElementProps } from "frontend/types/react"
 import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { Button } from "frontend/ui/atoms/button"
@@ -44,6 +45,11 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     accountsLimit,
   })
 
+  const accountOffset = React.useMemo(
+    () => getAccountDisplayOffset(accounts),
+    [accounts],
+  )
+
   const isAccountsLimit = React.useMemo(() => {
     return accountsLimit && accounts.length >= accountsLimit
   }, [accounts.length, accountsLimit])
@@ -75,9 +81,9 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               title={
                 applicationName
                   ? `${applicationName} account ${
-                      Number(account.persona_id) + 1
+                      Number(account.persona_id) + accountOffset
                     }`
-                  : `Account ${Number(account.persona_id) + 1}`
+                  : `Account ${Number(account.persona_id) + accountOffset}`
               }
               onClick={() => onLogin(account.persona_id)}
               key={`account${account.persona_id}${i}`}

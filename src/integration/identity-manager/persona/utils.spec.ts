@@ -6,6 +6,7 @@ import {
   getNextAccountId,
   createAccount,
   getScope,
+  getAccountDisplayOffset,
 } from "./utils"
 
 describe("persona utils test suite", () => {
@@ -126,6 +127,14 @@ describe("persona utils test suite", () => {
       )
       expect(newAccount.domain).toBe("test-canister-id.ic0.app")
       expect(newAccount.accountId).toBe("2")
+    })
+  })
+
+  describe("getAccountDisplayOffset", () => {
+    it("should return 1 for existing accounts when first account has id 1 otherwise 0", () => {
+      expect(getAccountDisplayOffset([])).toBe(1)
+      expect(getAccountDisplayOffset([{ persona_id: "0" }])).toBe(1)
+      expect(getAccountDisplayOffset([{ persona_id: "1" }])).toBe(0)
     })
   })
 })

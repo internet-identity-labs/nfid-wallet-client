@@ -9,7 +9,7 @@ import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 interface AuthenticateNFIDHomeProps {}
 
 export const NFIDProfileEdit: React.FC<AuthenticateNFIDHomeProps> = () => {
-  const { updateAccount, account } = useAccount()
+  const { updateAccount, profile } = useAccount()
   const { navigate, navigateFactory } = useNFIDNavigate()
   const { isLoading, setIsloading } = useIsLoading()
 
@@ -29,7 +29,7 @@ export const NFIDProfileEdit: React.FC<AuthenticateNFIDHomeProps> = () => {
     <ProfileEdit
       onAddPhoneNumber={navigateFactory("/profile/add-phone-number")}
       onSubmit={async (data: { name: string | undefined }) => onSubmit(data)}
-      account={account}
+      account={profile}
       isLoading={isLoading}
     />
   )

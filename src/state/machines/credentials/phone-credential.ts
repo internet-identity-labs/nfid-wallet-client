@@ -65,6 +65,8 @@ type Events =
   | { type: "CHANGE_PHONE_NUMBER" }
   | { type: "RESEND"; data: string }
   | { type: "CLEAR_DATA" }
+  | { type: "PRESENT" }
+  | { type: "SKIP" }
   | { type: "END" }
 
 // The machine. Install xstate vscode extension for best results.
@@ -135,7 +137,7 @@ const PhoneCredentialMachine = createMachine(
                 {
                   actions: "assignEncryptedPN",
                   cond: "defined",
-                  target: "End",
+                  target: "PresentCredential",
                 },
                 { target: "EnterPhoneNumber" },
               ],
@@ -179,6 +181,12 @@ const PhoneCredentialMachine = createMachine(
                 { target: "EnterSMSToken" },
               ],
               onError: "EnterSMSToken",
+            },
+          },
+          PresentCredential: {
+            on: {
+              PRESENT: "End",
+              SKIP: "#PhoneNumberCredentialProvider.End",
             },
           },
           End: {

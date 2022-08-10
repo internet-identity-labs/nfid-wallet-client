@@ -44,6 +44,10 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     accountsLimit,
   })
 
+  const accountOffset = React.useMemo(() => {
+    return accounts[0]?.persona_id === "0" ? 1 : 0
+  }, [accounts])
+
   const isAccountsLimit = React.useMemo(() => {
     return accountsLimit && accounts.length >= accountsLimit
   }, [accounts.length, accountsLimit])
@@ -75,9 +79,9 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               title={
                 applicationName
                   ? `${applicationName} account ${
-                      Number(account.persona_id) + 1
+                      Number(account.persona_id) + accountOffset
                     }`
-                  : `Account ${Number(account.persona_id) + 1}`
+                  : `Account ${Number(account.persona_id) + accountOffset}`
               }
               onClick={() => onLogin(account.persona_id)}
               key={`account${account.persona_id}${i}`}

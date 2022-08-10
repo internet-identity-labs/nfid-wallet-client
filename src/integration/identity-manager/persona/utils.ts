@@ -64,3 +64,9 @@ export function getScope(hostName: string, personaId?: string) {
 
   return `${personaId && personaId !== "0" ? `${personaId}@` : ``}${origin}`
 }
+
+export function getAccountDisplayOffset(
+  accounts: Array<{ persona_id: string }>,
+): number {
+  return accounts[0]?.persona_id === "1" ? 0 : 1
+}

@@ -15,8 +15,9 @@ declare const SENTRY_RELEASE: string
 
 process.env.NODE_ENV === "production" &&
   Sentry.init({
-    dsn: "https://bc3728222f594cad84d5e0a4b014487a@o1255710.ingest.sentry.io/6424378",
+    dsn: process.env.REACT_APP_SENTRY_CONNECTION,
     integrations: [new BrowserTracing()],
+    normalizeDepth: 10,
 
     // TODO: let's get some experience with it and decide later.
     // Set tracesSampleRate to 1.0 to capture 100%

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkDimension from "./checkDimension"
 
 let getSizeMock

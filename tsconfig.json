@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -30,6 +30,6 @@
       "jest"
     ]
   },
-  "include": ["src", "src/types/custom.d.ts", "test"],
+  "include": ["src", "src/types/custom.d.ts", "test", "mocks"],
   "exclude": ["node_modules"]
 }

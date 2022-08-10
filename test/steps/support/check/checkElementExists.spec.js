@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkElementExists from "./checkElementExists"
 
 describe("checkElementExists", () => {

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import waitFor from "./waitFor"
 
 let waitForExist

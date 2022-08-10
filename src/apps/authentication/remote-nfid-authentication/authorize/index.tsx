@@ -1,13 +1,12 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { AuthorizeAppSingleAccount } from "frontend/design-system/pages/authorize-app/single-account"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { AuthorizeAppSingleAccount } from "frontend/ui/pages/authorize-app/single-account"
+import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { RemoteRegisterAccountConstants } from "../../../registration/register-account/routes"
 
@@ -21,14 +20,15 @@ export const AuthorizeNFID: React.FC<AppScreenAuthorizeAppProps> = () => {
   const { navigate } = useNFIDNavigate()
 
   const handleNFIDLogin = React.useCallback(async () => {
-    if (!secret) throw new Error("missing secret")
+    if (!secret) throw new Error(`AuthorizeNFID missing secret`)
 
     await remoteNFIDLogin({ secret })
     navigate("/profile/authenticate")
   }, [navigate, remoteNFIDLogin, secret])
 
   const handleUnlockNFID = React.useCallback(async () => {
-    if (!secret) throw new Error("missing secret, scope or persona_id")
+    if (!secret)
+      throw new Error(`AuthorizeNFID missing secret, scope or persona_id`)
 
     const result = await login()
     if (result && result.tag === "ok") {

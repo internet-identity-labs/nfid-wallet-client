@@ -3,16 +3,14 @@ import React from "react"
 import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
-import { ScrollTopOnNavigate } from "frontend/design-system/templates/ScrollTopOnNavigate"
-import { AppScreen } from "frontend/design-system/templates/app-screen/AppScreen"
+import { ScrollTopOnNavigate } from "frontend/ui/templates/ScrollTopOnNavigate"
+import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
 import Blur3 from "./assets/blur_3.png"
 
 import { Footer } from "./footer"
 
-interface OurMissionProps {}
-
-export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
+export const OurMission = () => {
   return (
     <AppScreen
       bubbleOptions={{
@@ -39,6 +37,7 @@ export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
                   alt="blur3"
                 />
                 <div className="top-28">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade left>
                     <h2 className="font-bold text-titleMobile sm:text-titleLarge">
                       Our{" "}
@@ -56,6 +55,7 @@ export const OurMission: React.FC<OurMissionProps> = ({ children }) => {
                   </Fade>
                 </div>
                 <div className="relative">
+                  {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade>
                     <div className="relative z-20 text-base sm:text-lg sm:leading-[26px] tracking-[0.01em]">
                       <div className="sm:mt-5">

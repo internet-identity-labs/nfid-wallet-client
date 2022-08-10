@@ -1,7 +1,7 @@
 import bowser from "bowser"
 import React from "react"
 
-import { getPlatformInfo } from "frontend/utils"
+import { getPlatformInfo } from "frontend/ui/utils"
 
 export const useDeviceInfo = () => {
   const [isWebAuthNAvailable, setHasWebAuthN] = React.useState<boolean>()
@@ -24,7 +24,7 @@ export const useDeviceInfo = () => {
     const info = {
       platform,
       browser,
-      newDeviceName: `NFID ${browser.name} on ${platform.os}`,
+      newDeviceName: `NFID browser on ${platform.os}`,
       isWebAuthNAvailable,
       isMobile: Boolean(
         window.navigator.userAgent.match(

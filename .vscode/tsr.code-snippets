@@ -1,4 +1,8 @@
 {
+  "Generate console.debug": {
+    "prefix": "il-cd",
+    "body": "console.debug(\"${1}\", {${0}})"
+  },
   "Generate React Typescript Component with simple props": {
     "prefix": "il-fcs",
     "body": [

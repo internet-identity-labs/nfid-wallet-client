@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkTitle from "./checkTitle"
 
 describe("checkTitle", () => {

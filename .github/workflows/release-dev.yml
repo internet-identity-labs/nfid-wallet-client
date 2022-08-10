@@ -1,6 +1,14 @@
 name: DEV Deployment
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release*
+  pull_request:
+    branches:
+      - main
+      - release*
 
 jobs:
   check-secrets:
@@ -35,7 +43,6 @@ jobs:
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
 
-
   deploy:
     needs: check-secrets
     runs-on: ubuntu-latest
@@ -52,7 +59,7 @@ jobs:
         run: |
           yarn
           yarn prettier --check "src/**/*.{ts,tsx}"
-          # yarn test
+          yarn test
 
       - name: NFID FRONTEND | deploy
         run: |
@@ -62,14 +69,15 @@ jobs:
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV
+          IS_DEV: true
           II_MODE: production
           IC_HOST: https://ic0.app
           DFX_NETWORK: dev
+          REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
           VERIFIER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_VERIFIER}}
-          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY_TEST_DEV}}
-          IM_ADDITION_CANISTER_ID_DEV: ${{secrets.PROD_CANISTER_ID_IM_ADDITION}}
+          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY}}
           AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
           AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}

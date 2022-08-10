@@ -1,18 +1,14 @@
 import React from "react"
 
-import { Captcha } from "frontend/design-system/pages/captcha"
-import {
-  useCaptcha,
-  useChallenge,
-} from "frontend/design-system/pages/captcha/hook"
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { usePersona } from "frontend/comm/services/identity-manager/persona/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { Captcha } from "frontend/ui/pages/captcha"
+import { useCaptcha, useChallenge } from "frontend/ui/pages/captcha/hook"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { useAuthentication } from "../../use-authentication"
 
@@ -69,7 +65,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       if (response && response.kind === "loginSuccess") {
         await createAccount({ anchor: response.userNumber })
         await Promise.all([
-          createPersona({ domain: scope }),
+          createPersona({ domain: scope as string }),
           authorizeApp({
             persona_id: nextPersonaId,
             domain: scope,
@@ -101,16 +97,28 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
 
       if (response && response.kind === "loginSuccess") {
         setShouldStoreLocalAccount(false)
-        await im.create_account({
-          anchor: response.userNumber,
-        })
+        await im
+          .create_account({
+            anchor: response.userNumber,
+          })
+          .catch((e) => {
+            throw new Error(
+              `RouteCaptcha.handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
+            )
+          })
         if (!scope) throw new Error("scope is required")
         await Promise.all([
-          im.create_persona({
-            domain: scope,
-            persona_id: nextPersonaId,
-            persona_name: "",
-          }),
+          im
+            .create_persona({
+              domain: scope,
+              persona_id: nextPersonaId,
+              persona_name: "",
+            })
+            .catch((e) => {
+              throw new Error(
+                `RouteCaptcha.handleRegisterAnchorWithGoogle im.create_persona: ${e.message}`,
+              )
+            }),
           authorizeApp({
             persona_id: nextPersonaId,
             domain: scope,
@@ -119,7 +127,7 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
         ])
         return navigate(successPath)
       }
-      console.error(">> handleRegisterAnchorWithGoogle", response)
+      console.error(`RouteCaptcha handleRegisterAnchorWithGoogle`, response)
     },
     [
       authorizeApp,

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkCookieExists from "./checkCookieExists"
 
 describe("checkCookieExists", () => {

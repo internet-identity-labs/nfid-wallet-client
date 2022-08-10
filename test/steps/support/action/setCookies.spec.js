@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import setCookie from "./setCookie"
 
 describe("setCookie", () => {

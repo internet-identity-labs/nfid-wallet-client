@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkWithinViewport from "./checkWithinViewport"
 
 let isDisplayedInViewportMock

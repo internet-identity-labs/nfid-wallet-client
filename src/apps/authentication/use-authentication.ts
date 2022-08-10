@@ -1,49 +1,69 @@
+import { SignIdentity } from "@dfinity/agent"
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
+import { agent, im, invalidateIdentity } from "frontend/integration/actors"
+import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {
-  agent,
-  im,
-  invalidateIdentity,
-  replaceIdentity,
-} from "frontend/comm/actors"
-import { userNumberAtom } from "frontend/comm/services/identity-manager/account/state"
+  authState,
+  fetchRecoveryDevices,
+  fromSeedPhrase,
+  getReconstructableIdentity,
+  login as iiLogin,
+  loginfromGoogleDevice,
+} from "frontend/integration/internet-identity"
 import {
   apiResultToLoginResult,
   LoginResult,
   LoginSuccess,
-} from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
+} from "frontend/integration/internet-identity/api-result-to-login-result"
 
 export interface User {
   principal: string
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
-  internetIdentity: IIConnection
 }
 
 const errorAtom = atom<any | null>(null)
 const loadingAtom = atom<boolean>(false)
 const remoteLoginAtom = atom<boolean>(false)
+const authenticationAtom = atom<boolean>(false)
 const shouldStoreLocalAccountAtom = atom<boolean>(true)
-const userAtom = atom<User | undefined>(undefined)
 
+let user: User | undefined = undefined
+
+export function setUser(userState: User | undefined) {
+  user = userState
+}
+
+/** @deprecated FIXME: move to integration layer */
 export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
-  const [user, setUser] = useAtom(userAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
   const [userNumber] = useAtom(userNumberAtom)
   const [isRemoteDelegate, setIsRemoteDelegate] = useAtom(remoteLoginAtom)
+  const [isAuthenticated, setIsAuthenticated] = useAtom(authenticationAtom)
   const [shouldStoreLocalAccount, setShouldStoreLocalAccount] = useAtom(
     shouldStoreLocalAccountAtom,
   )
 
+  React.useEffect(() => {
+    const { identity, delegationIdentity } = authState.get()
+    if (identity && delegationIdentity) {
+      setIsAuthenticated(true)
+    }
+  }, [setIsAuthenticated])
+
+  /**@deprecated will be refactored with wallet on profile */
   const logout = React.useCallback(() => {
     invalidateIdentity()
     setUser(undefined)
+    setIsAuthenticated(false)
+    Sentry.setUser(null)
     // TODO: this is a quick fix after the auth state refactor.
     // The problem is that after we invalidate the identity, the
     // frontend throws the error:
@@ -53,7 +73,7 @@ export const useAuthentication = () => {
     window.location.reload()
     // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(Principal.anonymous())
-  }, [setUser])
+  }, [setIsAuthenticated])
 
   const initUserGeek = React.useCallback((principal: Principal) => {
     // TODO: create pull request removing the requirement of
@@ -74,10 +94,10 @@ export const useAuthentication = () => {
       const anchor = userNumberOverwrite || userNumber
 
       if (!anchor) {
-        throw new Error("Register first")
+        throw new Error("useAuthentication.login Register first")
       }
 
-      const response = await IIConnection.login(anchor, withSecurityDevices)
+      const response = await iiLogin(anchor, withSecurityDevices)
 
       const result = apiResultToLoginResult(response)
       const principal = await agent.getPrincipal()
@@ -89,13 +109,13 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
+        Sentry.setUser({ id: anchor.toString() })
+        setIsAuthenticated(true)
         initUserGeek(principal)
-        replaceIdentity(result.internetIdentity.delegationIdentity)
         setUser({
           principal: principal.toText(),
           chain: result.chain,
           sessionKey: result.sessionKey,
-          internetIdentity: result.internetIdentity,
         })
         setError(null)
         setIsLoading(false)
@@ -105,70 +125,70 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setError, setIsLoading, setUser, userNumber],
+    [initUserGeek, setError, setIsAuthenticated, setIsLoading, userNumber],
   )
 
   const remoteLogin = React.useCallback(
     async (actors: LoginSuccess) => {
+      setIsAuthenticated(true)
       setIsRemoteDelegate(true)
-      replaceIdentity(actors?.internetIdentity?.delegationIdentity)
       setUser({
         principal: (await agent.getPrincipal()).toText(),
         chain: actors.chain,
         sessionKey: actors.sessionKey,
-        internetIdentity: actors.internetIdentity,
       })
     },
-    [setUser, setIsRemoteDelegate],
+    [setIsAuthenticated, setIsRemoteDelegate],
   )
 
-  const onRegisterSuccess = React.useCallback(
-    async (actors) => {
-      replaceIdentity(actors?.internetIdentity?.delegationIdentity)
-      const user = {
-        principal: (await agent.getPrincipal()).toText(),
-        chain: actors.chain,
-        sessionKey: actors.sessionKey,
-        internetIdentity: actors.internetIdentity,
-      }
-      setUser(user)
-      return user
-    },
-    [setUser],
-  )
+  const onRegisterSuccess = React.useCallback(async (actors: LoginSuccess) => {
+    const user = {
+      principal: (await agent.getPrincipal()).toText(),
+      chain: actors.chain,
+      sessionKey: actors.sessionKey,
+    }
+    setUser(user)
+    return user
+  }, [])
 
   const loginWithRecovery = React.useCallback(
     async (seedPhrase: string, userNumber: bigint) => {
       setIsLoading(true)
 
-      const recoveryDevices = await IIConnection.lookupRecovery(userNumber)
-
-      if (recoveryDevices.length === 0) {
-        throw new Error("No devices found")
+      // TODO improve refetch. once in 20 times not fetching correctly
+      let recoveryDevices = await fetchRecoveryDevices(userNumber)
+      if (!recoveryDevices.length) {
+        recoveryDevices = await fetchRecoveryDevices(userNumber)
       }
 
-      const response = await IIConnection.fromSeedPhrase(
+      const recoveryPhraseDevice = recoveryDevices.find(
+        (device) => device.alias === "Recovery phrase",
+      )
+
+      if (!recoveryPhraseDevice) {
+        setIsLoading(false)
+        throw new Error("useAuthentication.loginWithRecovery No devices found")
+      }
+
+      const response = await fromSeedPhrase(
         userNumber,
         seedPhrase,
-        recoveryDevices[0],
+        recoveryPhraseDevice,
       )
 
       const result = apiResultToLoginResult(response)
 
-      if (result.tag === "err") {
+      if (result.tag !== "ok") {
         setError(result)
       }
 
       if (result.tag === "ok") {
-        replaceIdentity(result.internetIdentity.delegationIdentity)
         setUser({
           principal: (await agent.getPrincipal()).toText(),
           chain: result.chain,
           sessionKey: result.sessionKey,
-          internetIdentity: result.internetIdentity,
         })
         initUserGeek(await agent.getPrincipal())
-        im.use_access_point()
         setShouldStoreLocalAccount(false)
         setError(null)
       }
@@ -176,17 +196,19 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setUser, setError, setIsLoading, setShouldStoreLocalAccount],
+    [initUserGeek, setError, setIsLoading, setShouldStoreLocalAccount],
   )
 
   const loginWithGoogleDevice = React.useCallback(
     async (identity: string) => {
-      const result = await IIConnection.loginfromGoogleDevice(identity)
+      await loginfromGoogleDevice(identity)
+      const result = await getReconstructableIdentity(
+        authState.get().identity as SignIdentity,
+      )
       const user = {
         principal: (await agent.getPrincipal()).toText(),
         chain: result.chain,
         sessionKey: result.sessionKey,
-        internetIdentity: result.internetIdentity,
       }
       setUser(user)
       initUserGeek(await agent.getPrincipal())
@@ -195,11 +217,12 @@ export const useAuthentication = () => {
       setError(null)
       return user
     },
-    [initUserGeek, setError, setShouldStoreLocalAccount, setUser],
+    [initUserGeek, setError, setShouldStoreLocalAccount],
   )
 
   return {
     isLoading,
+    isAuthenticated,
     user,
     error,
     shouldStoreLocalAccount,

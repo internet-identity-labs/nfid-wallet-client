@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import handleModal from "./handleModal"
 
 describe("handleModal", () => {

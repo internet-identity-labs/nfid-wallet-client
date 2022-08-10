@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import closeLastOpenedWindow from "./closeLastOpenedWindow"
 
 describe("closeLastOpenedWindow", () => {

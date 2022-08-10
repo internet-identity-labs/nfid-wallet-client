@@ -1,15 +1,18 @@
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import { useCallback, useMemo } from "react"
 import { generatePath } from "react-router-dom"
 
-import { useUnknownDeviceConfig } from "frontend/design-system/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { apiResultToLoginResult } from "frontend/comm/services/internet-identity/api-result-to-login-result"
-import { IIConnection } from "frontend/comm/services/internet-identity/iiConnection"
-import { usePubSubChannel } from "frontend/comm/services/pub-sub-channel/use-pub-sub-channel"
+import { loginFromRemoteFrontendDelegation } from "frontend/integration/internet-identity"
+import { apiResultToLoginResult } from "frontend/integration/internet-identity/api-result-to-login-result"
+import {
+  getMessages,
+  NFIDLoginRegisterMessage,
+} from "frontend/integration/pubsub"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 
 import { RemoteNFIDAuthenticationConstants } from "../../../authentication/remote-nfid-authentication"
 
@@ -19,7 +22,6 @@ export const useRegisterQRCode = () => {
   const [status, setStatus] = useAtom(statusAtom)
   const { setUserNumber } = useUnknownDeviceConfig()
 
-  const { getMessages } = usePubSubChannel()
   const { remoteLogin: setAuthenticatedActors, setShouldStoreLocalAccount } =
     useAuthentication()
 
@@ -42,11 +44,18 @@ export const useRegisterQRCode = () => {
   }, [registerRoute])
 
   const handleLoginFromRemoteDelegation = useCallback(
-    async (nfidJsonDelegate, userNumber) => {
-      const loginResult = await IIConnection.loginFromRemoteFrontendDelegation({
+    async (
+      nfidJsonDelegate: NFIDLoginRegisterMessage["reconstructableIdentity"],
+      anchor: NFIDLoginRegisterMessage["anchor"],
+    ) => {
+      console.debug("useRegisterQRCode.handleLoginFromRemoteDelegation", {
+        nfidJsonDelegate,
+        anchor,
+      })
+      const loginResult = await loginFromRemoteFrontendDelegation({
         chain: JSON.stringify(nfidJsonDelegate.chain),
         sessionKey: JSON.stringify(nfidJsonDelegate.sessionKey),
-        userNumber: BigInt(userNumber),
+        userNumber: BigInt(anchor),
       })
       const result = apiResultToLoginResult(loginResult)
 
@@ -54,7 +63,8 @@ export const useRegisterQRCode = () => {
         setShouldStoreLocalAccount(false)
         setAuthenticatedActors(result)
         setStatus("registerDecider")
-        setUserNumber(BigInt(userNumber))
+        Sentry.setUser({ id: anchor.toString() })
+        setUserNumber(BigInt(anchor))
       }
       // TODO: handle this more gracefully
       if (result.tag !== "ok") throw new Error("login failed")
@@ -69,28 +79,26 @@ export const useRegisterQRCode = () => {
 
   const handlePollForDelegate = useCallback(
     async (cancelPoll: () => void) => {
-      const {
-        body: [messages],
-      } = await getMessages(publicKey)
+      const messages = await getMessages(publicKey)
 
       if (messages && messages.length > 0) {
         const parsedMessages = messages.map((m: string) => JSON.parse(m))
 
-        const registerMessage = parsedMessages.find(
+        const registerMessage: NFIDLoginRegisterMessage = parsedMessages.find(
           (m: { type: string }) => m.type === "remote-nfid-login-register",
         )
 
         if (registerMessage) {
           handleLoginFromRemoteDelegation(
-            registerMessage.nfid,
-            registerMessage.userNumber,
+            registerMessage.reconstructableIdentity,
+            registerMessage.anchor,
           )
 
           cancelPoll()
         }
       }
     },
-    [getMessages, handleLoginFromRemoteDelegation, publicKey],
+    [handleLoginFromRemoteDelegation, publicKey],
   )
 
   return {

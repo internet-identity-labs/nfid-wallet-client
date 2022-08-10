@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkURLPath from "./checkURLPath"
 
 describe("checkURLPath", () => {

@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import checkModal from "./checkModal"
 
 describe("checkModal", () => {

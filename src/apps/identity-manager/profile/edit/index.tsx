@@ -1,16 +1,15 @@
 import React from "react"
 
-import { ProfileEdit } from "frontend/design-system/pages/profile-edit"
-import { useIsLoading } from "frontend/design-system/templates/app-screen/use-is-loading"
-
-import { im } from "frontend/comm/actors"
-import { useAccount } from "frontend/comm/services/identity-manager/account/hooks"
-import { useNFIDNavigate } from "frontend/utils/use-nfid-navigate"
+import { im } from "frontend/integration/actors"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { ProfileEdit } from "frontend/ui/pages/profile-edit"
+import { useIsLoading } from "frontend/ui/templates/app-screen/use-is-loading"
+import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface AuthenticateNFIDHomeProps {}
 
 export const NFIDProfileEdit: React.FC<AuthenticateNFIDHomeProps> = () => {
-  const { updateAccount, account } = useAccount()
+  const { updateAccount, profile } = useAccount()
   const { navigate, navigateFactory } = useNFIDNavigate()
   const { isLoading, setIsloading } = useIsLoading()
 
@@ -30,7 +29,7 @@ export const NFIDProfileEdit: React.FC<AuthenticateNFIDHomeProps> = () => {
     <ProfileEdit
       onAddPhoneNumber={navigateFactory("/profile/add-phone-number")}
       onSubmit={async (data: { name: string | undefined }) => onSubmit(data)}
-      account={account}
+      account={profile}
       isLoading={isLoading}
     />
   )

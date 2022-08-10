@@ -1,7 +1,5 @@
 import allure from "@wdio/allure-reporter"
 import allureReporter from "@wdio/allure-reporter"
-import fs from "fs"
-import path from "path"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 //

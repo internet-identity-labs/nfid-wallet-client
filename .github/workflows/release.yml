@@ -129,6 +129,7 @@ jobs:
           pushd ./nfid-frontend > /dev/null
 
           ci_echo_info "Building example" >&2
+          yarn
           yarn build:example
 
       - name: Checkout nfid-sdk repo.

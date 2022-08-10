@@ -19,6 +19,7 @@ export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
   const { user } = useAuthentication()
   const { verifyPhonenumber } = useAccount()
   const { navigate } = useNFIDNavigate()
+  const { refreshProfile } = useAccount()
 
   const handleSubmitSMSToken = React.useCallback(
     async (token: string) => {
@@ -28,11 +29,12 @@ export const VerifySMSToken: React.FC<AuthenticateNFIDHomeProps> = () => {
       })
       toggleLoading()
       if (response.status_code >= 200 && response.status_code < 400) {
+        refreshProfile()
         return navigate("/profile/authenticate")
       }
       if (response.error.length) setError(response.error[0])
     },
-    [navigate],
+    [navigate, refreshProfile],
   )
 
   const handleResendToken = React.useCallback(async () => {

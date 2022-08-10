@@ -177,6 +177,7 @@ export const useAccount = () => {
     isLoading: !profile && !error,
     error,
     profile,
+    refreshProfile: mutate,
     /**@deprecated */
     account: isAuthenticated ? account || memoryAccount : account,
     userNumber,

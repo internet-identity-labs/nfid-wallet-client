@@ -30,7 +30,7 @@ function mapCertificate(
 }
 
 export async function getPhoneCredential(token: number[]) {
-  console.debug(resolveToken.name, {
+  console.debug("getPhoneCredential", {
     token,
   })
   for (let i = 0; i < 10; i++) {

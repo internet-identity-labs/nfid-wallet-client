@@ -186,7 +186,10 @@ const PhoneCredentialMachine = createMachine(
           PresentCredential: {
             on: {
               PRESENT: "End",
-              SKIP: "#PhoneNumberCredentialProvider.End",
+              SKIP: {
+                target: "#PhoneNumberCredentialProvider.End",
+                actions: "rejectCredential",
+              },
             },
           },
           End: {
@@ -222,6 +225,9 @@ const PhoneCredentialMachine = createMachine(
       assignEncryptedPN: assign((_, event) => ({ encryptedPN: event.data })),
       presentCredential: (context, event) => {
         credentialResult = event.data
+        credentialResolved = true
+      },
+      rejectCredential: () => {
         credentialResolved = true
       },
     },

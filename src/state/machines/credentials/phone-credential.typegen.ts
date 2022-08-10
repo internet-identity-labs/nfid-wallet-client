@@ -91,6 +91,7 @@ export interface Typegen0 {
       | "done.invoke.verifyPhoneNumberService"
     assignPhoneNumber: "ENTER_PHONE_NUMBER"
     presentCredential: "done.invoke.generateCredential"
+    rejectCredential: "SKIP"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerCredentialHandler"

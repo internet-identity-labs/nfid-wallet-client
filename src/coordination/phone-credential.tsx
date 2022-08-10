@@ -7,6 +7,7 @@ import PhoneCredentialMachine, {
 import { Button } from "frontend/ui/atoms/button"
 import { CredentialRequesterNotVerified } from "frontend/ui/pages/credential-requester/not-verified"
 import { CredentialRequesterSMSVerify } from "frontend/ui/pages/credential-requester/sms-verify"
+import { CredentialRequesterVerified } from "frontend/ui/pages/credential-requester/verified"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
@@ -42,6 +43,15 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           <Button onClick={() => send("CLEAR_DATA")}>Yes</Button>
           <Button onClick={() => send("END")}>No</Button>
         </ScreenResponsive>
+      )
+    case state.matches("GetPhoneNumber.PresentCredential"):
+      return (
+        <CredentialRequesterVerified
+          applicationLogo={state.context.appMeta?.logo}
+          applicationName={state.context.appMeta?.name}
+          onPresent={() => send("PRESENT")}
+          onSkip={() => send("SKIP")}
+        />
       )
     case state.matches("GetPhoneNumber.GetExistingPhoneNumber"):
     case state.matches("GetPhoneNumber.VerifyPhoneNumber"):

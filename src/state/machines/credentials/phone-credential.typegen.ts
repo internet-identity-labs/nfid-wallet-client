@@ -122,6 +122,7 @@ export interface Typegen0 {
     | "GetPhoneNumber.EnterPhoneNumber"
     | "GetPhoneNumber.EnterSMSToken"
     | "GetPhoneNumber.GetExistingPhoneNumber"
+    | "GetPhoneNumber.PresentCredential"
     | "GetPhoneNumber.ValidateSMSToken"
     | "GetPhoneNumber.VerifyPhoneNumber"
     | "Ready"
@@ -132,6 +133,7 @@ export interface Typegen0 {
           | "EnterPhoneNumber"
           | "EnterSMSToken"
           | "GetExistingPhoneNumber"
+          | "PresentCredential"
           | "ValidateSMSToken"
           | "VerifyPhoneNumber"
       }

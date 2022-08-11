@@ -7,6 +7,7 @@ module.exports = {
     IDENTITY_MANAGER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
+    LEDGER_CANISTER_ID: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     VERIFY_PHONE_NUMBER:
       "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",
     IC_HOST: "https://ic0.app",
@@ -15,7 +16,7 @@ module.exports = {
     GOOGLE_CLIENT_ID:
       "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
     SIGNIN_GOOGLE: "/signin",
-    fetch: () => {},
+    // fetch: () => {},
   },
   testMatch: ["**/*.spec.(js|ts|tsx)"],
   transform: {

@@ -15,6 +15,9 @@ import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.did.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel_idl"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.did.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier_idl"
+import { _SERVICE as Ledger } from "./_ic_api/ledger.did.d"
+import { idlFactory as ledgerIDL } from "./_ic_api/ledger_idl"
+
 
 /////////////
 // Config //
@@ -28,12 +31,14 @@ declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
+declare const LEDGER_CANISTER_ID: string
 
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
   ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],
   ["Pubsub", PUB_SUB_CHANNEL_CANISTER_ID],
   ["Verifier", VERIFIER_CANISTER_ID],
+  ["Ledger", LEDGER_CANISTER_ID],
 ]
 
 export const accessList = canisterConfig.map((x) => x[1])
@@ -142,3 +147,4 @@ export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)
 export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
+export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)

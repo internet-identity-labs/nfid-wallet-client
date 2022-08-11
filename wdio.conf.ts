@@ -91,8 +91,8 @@ export const config: WebdriverIO.Config = {
       "goog:chromeOptions": {
         args: [
           "--no-sandbox",
-          ...(isDebug ? [] : ["headless", "headless"]),
-          "disable-gpu",
+          // ...(isDebug ? [] : ["headless", "headless"]),
+          // "disable-gpu",
         ],
       },
       acceptInsecureCerts: true,
@@ -129,7 +129,7 @@ export const config: WebdriverIO.Config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: "http://127.0.0.1:8000",
+  baseUrl: "https://nfid.dev",
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,

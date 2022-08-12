@@ -2,12 +2,9 @@
  * @jest-environment jsdom
  */
 import { expect } from "chai";
-import { getBalance, getTransactionHistory, transfer } from "."
+import { exchangeRate, getBalance, getTransactionHistory, transfer } from "."
 import { Principal } from "@dfinity/principal"
 import "whatwg-fetch"
-import { ii } from "frontend/integration/actors"
-import { Balance, RosettaBalance } from "frontend/integration/rosetta/rosetta_interface"
-import { principalToAddress } from "ictool"
 
 describe("ssss", () => {
 
@@ -28,13 +25,18 @@ describe("ssss", () => {
     console.log(response)
   })
 
-
-  describe("test suite", () => {
-    it("should fetch", async () => {
-      const response = await ii.lookup(BigInt(10130))
-      console.log(">> ", { response })
-    })
+  it("exchange", async function() {
+    let response = await exchangeRate()
+    console.log(response)
   })
+
+
+  // describe("test suite", () => {
+  //   it("should fetch", async () => {
+  //     const response = await ii.lookup(BigInt(10130))
+  //     console.log(">> ", { response })
+  //   })
+  // })
 
   //  async function createActor(identity: any): Promise<Record<string, ActorMethod>> {
   //   const agent: Agent = await new HttpAgent({ host: "https://ic0.app", identity });

@@ -1,9 +1,11 @@
-import { Balance, RosettaBalance } from "frontend/integration/rosetta/rosetta_interface"
+import { Balance, RosettaBalance, XdrUsd } from "frontend/integration/rosetta/rosetta_interface"
 import { principalToAddress } from "ictool"
 import { Principal } from "@dfinity/principal"
-import { ledger } from "frontend/integration/actors"
+import { ledger, progenitus } from "frontend/integration/actors"
+import { IcpXdrConversionResponse } from "frontend/integration/_ic_api/progenitus.did"
 
 const rosetta = "https://rosetta-api.internetcomputer.org"
+const converter = "https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7"
 
 export async function getBalance(principal: Principal): Promise<Balance> {
   let request = rosettaData(principalToAddress(principal as any))
@@ -43,8 +45,27 @@ export async function getTransactionHistory(principal: Principal): Promise<any> 
     })
 }
 
-export async function transfer(){
+export async function transfer() {//todo
   return (await ledger.symbol())
+}
+
+export async function exchangeRate() {
+  let icpXdrConversionResponse = (await progenitus.get_icp_xdr_conversion_rate()) as IcpXdrConversionResponse
+  let xdrRate = icpXdrConversionResponse.data.xdr_permyriad_per_icp
+  let xdrToUsd = await fetch(converter, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(async (response: Response) => {
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
+
+      return response.json().then(data => data as XdrUsd)
+    })
+  return parseFloat(xdrToUsd.XDR_USD) * Number(xdrRate) / 10000
 }
 
 function rosettaData(account: string) {

@@ -33,6 +33,10 @@ export interface Balance {
   }
 }
 
+export interface XdrUsd {
+  "XDR_USD": string,
+}
+
 export interface TransactionHistory {
 
 }

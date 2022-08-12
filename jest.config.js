@@ -8,6 +8,7 @@ module.exports = {
     PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
     LEDGER_CANISTER_ID: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    PROGENITUS_CANISTER_ID: "rkp4c-7iaaa-aaaaa-aaaca-cai",
     VERIFY_PHONE_NUMBER:
       "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",
     IC_HOST: "https://ic0.app",

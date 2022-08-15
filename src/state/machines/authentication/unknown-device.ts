@@ -25,7 +25,7 @@ export interface UnknownDeviceContext {
 
 export type Events =
   | { type: "done.invoke.remote"; data: RemoteDeviceAuthSession }
-  | { type: "done.invoke.registration"; data: AuthSession }
+  | { type: "done.invoke.registration"; data?: AuthSession }
   | { type: "done.invoke.registerDevice"; data: AuthSession }
   | { type: "done.invoke.signInSameDevice"; data: LocalDeviceAuthSession }
   | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }

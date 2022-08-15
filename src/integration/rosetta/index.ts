@@ -1,8 +1,7 @@
 import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
-
+import { principalToAddress, fromHexString } from "ictool"
 import { IcpXdrConversionResponse } from "frontend/integration/_ic_api/progenitus.did"
-import { ledger, progenitus } from "frontend/integration/actors"
+import { ii, ledger, progenitus } from "frontend/integration/actors"
 import {
   Balance,
   RosettaBalance,
@@ -10,7 +9,9 @@ import {
   XdrUsd,
 } from "frontend/integration/rosetta/rosetta_interface"
 
+//todo move to env variables
 const rosetta = "https://rosetta-api.internetcomputer.org"
+const nfidDomain = "nfid.dev"
 const converter =
   "https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7"
 
@@ -39,9 +40,22 @@ export async function getExchangeRate(): Promise<number> {
   return (parseFloat(xdrToUsd.XDR_USD) * Number(xdrToIcp)) / 10000
 }
 
-export async function transfer() {
-  //todo
-  return await ledger.symbol()
+//todo not properly tested. blocked by e2e
+export async function transfer(amount: number, to: string) {
+  return ledger.transfer({
+    to: fromHexString(to),
+    amount: { e8s: BigInt(amount.toFixed()) },
+    memo: BigInt(0),
+    fee: { e8s: BigInt(10_000) },
+    from_subaccount: [],
+    created_at_time: [],
+  }).catch(e => {
+    throw Error(`Transfer failed!: ${e}`, e)
+  })
+}
+
+export async function getWalletPrincipal(anchor: number) {
+  return await ii.get_principal(BigInt(anchor), nfidDomain)
 }
 
 async function restCall<T>(

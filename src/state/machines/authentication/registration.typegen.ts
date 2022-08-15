@@ -92,7 +92,7 @@ export interface Typegen0 {
     challengeTimer: "done.invoke.fetchChallenge"
     createWebAuthnIdentity: "CREATE_IDENTITY"
     fetchChallenge:
-      | "AUTH_WITH_OTHER"
+      | "BACK"
       | "FETCH_CAPTCHA"
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.challengeTimer"

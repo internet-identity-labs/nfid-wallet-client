@@ -33,9 +33,10 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
           applicationName={state.context.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
           onToggleAdvancedOptions={() => {
-            console.debug("onToggleAdvancedOptions", { state: state.value })
+            // When we're on state ExistingAnchor
+            // then the user has clicked back if this method is called
             state.matches("ExistingAnchor")
-              ? send("AUTH_WITH_OTHER")
+              ? send("BACK")
               : send("OTHER_SIGNIN_OPTIONS")
           }}
           showAdvancedOptions={

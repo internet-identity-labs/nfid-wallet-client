@@ -213,7 +213,8 @@ const RegistrationMachine =
             ],
             onError: [
               {
-                target: "AuthenticateSameDevice",
+                target: "ExistingAnchor",
+                actions: "assignError",
               },
             ],
           },

@@ -73,6 +73,7 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
               },
             })
           }
+          authError={state.context.error}
         />
       )
     case state.matches("Start.Register.Captcha"):

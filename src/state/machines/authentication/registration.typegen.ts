@@ -79,7 +79,9 @@ export interface Typegen0 {
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.loginWithAnchor"
     assignChallenge: "done.invoke.fetchChallenge"
-    assignError: "error.platform.registerService"
+    assignError:
+      | "error.platform.loginWithAnchor"
+      | "error.platform.registerService"
     assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
     logServiceError:
       | "error.platform.challengeTimer"
@@ -97,9 +99,7 @@ export interface Typegen0 {
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.challengeTimer"
       | "xstate.init"
-    loginWithAnchor:
-      | "AUTH_WITH_EXISTING_ANCHOR"
-      | "error.platform.loginWithAnchor"
+    loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
     registerService: "SUBMIT_CAPTCHA"
   }
   eventsCausingGuards: {

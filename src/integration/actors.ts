@@ -11,15 +11,14 @@ import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.did.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager_idl"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity_idl"
 import { _SERVICE as InternetIdentity } from "./_ic_api/internet_identity_types.d"
+import { _SERVICE as Ledger } from "./_ic_api/ledger.did.d"
+import { idlFactory as ledgerIDL } from "./_ic_api/ledger_idl"
+import { _SERVICE as Progenitus } from "./_ic_api/progenitus.did.d"
+import { idlFactory as progenitusIDL } from "./_ic_api/progenitus_idl"
 import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.did.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel_idl"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.did.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier_idl"
-import { _SERVICE as Ledger } from "./_ic_api/ledger.did.d"
-import { _SERVICE as Progenitus } from "./_ic_api/progenitus.did.d"
-import { idlFactory as ledgerIDL } from "./_ic_api/ledger_idl"
-import { idlFactory as progenitusIDL } from "./_ic_api/progenitus_idl"
-
 
 /////////////
 // Config //
@@ -152,4 +151,7 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
-export const progenitus = actor<Progenitus>(PROGENITUS_CANISTER_ID, progenitusIDL)
+export const progenitus = actor<Progenitus>(
+  PROGENITUS_CANISTER_ID,
+  progenitusIDL,
+)

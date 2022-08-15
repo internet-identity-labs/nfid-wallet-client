@@ -44,10 +44,6 @@ export const idlFactory = ({ IDL }) => {
       [],
       [],
     ),
-    transaction_notification: IDL.Func(
-      [TransactionNotification],
-      [Result],
-      [],
-    ),
+    transaction_notification: IDL.Func([TransactionNotification], [Result], []),
   })
 }

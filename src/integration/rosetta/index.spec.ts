@@ -31,7 +31,6 @@ describe("rosetta suite", () => {
           "qykh3-evj5u-oahns-httff-2bp7z-vaqp4-smkrh-gdkqc-kfsyr-zkw5p-5ae",
         ),
       )
-      console.log(JSON.stringify(response))
       expect(JSON.stringify(response)).to.be.eq(
         TRANSACTION_HISTORY,
       )
@@ -39,31 +38,30 @@ describe("rosetta suite", () => {
   })
 
   describe("getExchangeRate", () => {
-
     it("should return correct exchange rate.", async function() {
       let response = await getExchangeRate()
       expect(response).to.be.a("number")
     })
-
   })
 
   describe("getWalletPrincipal", () => {
-    let expected = Principal.anonymous()
-    // @ts-ignore
-    ii.get_principal = jest.fn(async () => expected)
     it("should return correct exchange rate.", async function() {
+      let expected = Principal.anonymous()
+      // @ts-ignore
+      ii.get_principal = jest.fn(async () => expected)
       let response = await getWalletPrincipal(10000)
       expect(response).to.be.eq(expected)
     })
+  })
 
-    describe("transfer", () => {
+  describe("transfer", () => {
+    it("should return correct exchange rate.", async function() {
       let expected = { "Ok": BigInt(1) }
       // @ts-ignore
       ledger.transfer = jest.fn(async () => expected)
-      it("should return correct exchange rate.", async function() {
-        let response = await transfer(1, "ad19832ac19044e892262b9b492a13c0b6310dccdceea99e27adf271829f3ea8")
-        expect(response).to.be.eq(expected)
-      })
+      let response = await transfer(1, "ad19832ac19044e892262b9b492a13c0b6310dccdceea99e27adf271829f3ea8")
+      expect(response).to.be.eq(expected)
     })
   })
+
 })

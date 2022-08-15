@@ -4,16 +4,17 @@ import { IcpXdrConversionResponse } from "frontend/integration/_ic_api/progenitu
 import { ii, ledger, progenitus } from "frontend/integration/actors"
 import {
   Balance,
-  RosettaBalance,
   RosettaRequest,
   XdrUsd,
 } from "frontend/integration/rosetta/rosetta_interface"
+import { restCall } from "./util"
+import { mapToBalance, mapToTransactionHistory, mapToXdrUsd } from "./mapper"
+import { TransferResult } from "../_ic_api/ledger.did"
 
 //todo move to env variables
 const rosetta = "https://rosetta-api.internetcomputer.org"
 const nfidDomain = "nfid.dev"
-const converter =
-  "https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7"
+const converter ="https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7"
 
 export async function getBalance(principal: Principal): Promise<Balance> {
   let request: RosettaRequest = getRosettaRequest(principal)
@@ -36,12 +37,19 @@ export async function getExchangeRate(): Promise<number> {
     .get_icp_xdr_conversion_rate()
     .then((x) => x as IcpXdrConversionResponse)
     .then((x) => x.data.xdr_permyriad_per_icp)
-  let xdrToUsd: XdrUsd = await restCall("GET", converter).then(mapToXdrUsd)
+    .catch(e => {
+      throw Error(`Progenitus failed!: ${e}`, e)
+    })
+  let xdrToUsd: XdrUsd = await restCall("GET", converter)
+    .then(mapToXdrUsd)
+    .catch(e => {
+      throw Error(`free.currconv.com failed!: ${e}`, e)
+    })
   return (parseFloat(xdrToUsd.XDR_USD) * Number(xdrToIcp)) / 10000
 }
 
 //todo not properly tested. blocked by e2e
-export async function transfer(amount: number, to: string) {
+export async function transfer(amount: number, to: string): Promise<TransferResult> {
   return ledger.transfer({
     to: fromHexString(to),
     amount: { e8s: BigInt(amount.toFixed()) },
@@ -54,51 +62,11 @@ export async function transfer(amount: number, to: string) {
   })
 }
 
-export async function getWalletPrincipal(anchor: number) {
-  return await ii.get_principal(BigInt(anchor), nfidDomain)
-}
-
-async function restCall<T>(
-  method: string,
-  url: string,
-  request?: T,
-): Promise<Response> {
-  let metadata = {
-    method: method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }
-
-  if (request) {
-    metadata = { ...metadata, ...{ body: JSON.stringify(request) } }
-  }
-
-  return await fetch(url, metadata)
-    .then(async (response: Response) => {
-      if (!response.ok) {
-        throw Error(response.statusText)
-      }
-      return response
-    })
-    .catch((e: Error) => {
-      throw e
-    })
-}
-
-async function mapToXdrUsd(response: Response): Promise<XdrUsd> {
-  return response.json().then((data) => data as XdrUsd)
-}
-
-async function mapToTransactionHistory(response: Response): Promise<any> {
-  return await response.json().then((data) => data)
-}
-
-async function mapToBalance(response: Response): Promise<Balance> {
-  return await response
-    .json()
-    .then((data) => data as RosettaBalance)
-    .then((balance: RosettaBalance) => balance.balances[0])
+export async function getWalletPrincipal(anchor: number): Promise<Principal> {
+  return ii.get_principal(BigInt(anchor), nfidDomain)
+  .catch(e => {
+    throw Error(`Getting of Wallet Principal failed!: ${e}`, e)
+  })
 }
 
 function getRosettaRequest(principal: Principal): RosettaRequest {

@@ -110,3 +110,78 @@ export interface TransactionHistoryResponse {
   ],
   "total_count": number
 }
+
+export interface TransactionHistory {
+  "transactions": [
+      {
+          "blockIdentifier": {
+              "index": number,
+              "hash": string
+          },
+          "transaction": {
+              "transactionIdentifier": {
+                  "hash": string
+              },
+              "operations": [
+                  {
+                      "operationIdentifier": {
+                          "index": number
+                      },
+                      "type": string,
+                      "status": string,
+                      "account": {
+                          "address": string
+                      },
+                      "amount": {
+                          "value": string,
+                          "currency": {
+                              "symbol": string,
+                              "decimals": number
+                          }
+                      }
+                  },
+                  {
+                      "operationIdentifier": {
+                          "index": number
+                      },
+                      "type": string,
+                      "status": string,
+                      "account": {
+                          "address": string
+                      },
+                      "amount": {
+                          "value": string,
+                          "currency": {
+                              "symbol": string,
+                              "decimals": number
+                          }
+                      }
+                  },
+                  {
+                      "operationIdentifier": {
+                          "index": number
+                      },
+                      "type": string,
+                      "status": string,
+                      "account": {
+                          "address": string
+                      },
+                      "amount": {
+                          "value": string,
+                          "currency": {
+                              "symbol": string,
+                              "decimals": number
+                          }
+                      }
+                  }
+              ],
+              "metadata": {
+                  "blockHeight": number,
+                  "memo": number,
+                  "timestamp": number
+              }
+          }
+      }
+  ],
+  "totalCount": number
+}

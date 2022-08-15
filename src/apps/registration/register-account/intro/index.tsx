@@ -29,6 +29,10 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   const [authError, setAuthError] = React.useState<string | undefined>()
   const { applicationName, applicationLogo, createWebAuthNIdentity } =
     useMultipass()
+  const [showAdvancedOptions, toggleAdvancedOptions] = React.useReducer(
+    (state) => !state,
+    false,
+  )
   const { navigate } = useNFIDNavigate()
 
   const { secret } = useParams()
@@ -125,6 +129,8 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
       isLoading={isLoading}
       applicationName={applicationName}
       applicationLogo={applicationLogo}
+      onToggleAdvancedOptions={toggleAdvancedOptions}
+      showAdvancedOptions={showAdvancedOptions}
       onRegister={handleCreateKeys}
       onSelectGoogleAuthorization={handleGetGoogleKey}
       onSelectSameDeviceAuthorization={handleAuthorization({

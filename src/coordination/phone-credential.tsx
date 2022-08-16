@@ -44,13 +44,19 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           <Button onClick={() => send("END")}>No</Button>
         </ScreenResponsive>
       )
-    case state.matches("GetPhoneNumber.PresentCredential"):
+    case state.matches("Consent"):
+      const error =
+        state.event.type === "error.platform.generateCredential"
+          ? "There was a problem generating your credential. Please try again."
+          : undefined
+      console.log(state.event.type)
       return (
         <CredentialRequesterVerified
           applicationLogo={state.context.appMeta?.logo}
           applicationName={state.context.appMeta?.name}
-          onPresent={() => send("PRESENT")}
-          onSkip={() => send("SKIP")}
+          onPresent={() => send("CONSENT")}
+          onSkip={() => send("REJECT")}
+          error={error}
         />
       )
     case state.matches("GetPhoneNumber.GetExistingPhoneNumber"):

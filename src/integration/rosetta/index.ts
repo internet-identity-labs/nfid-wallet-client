@@ -4,6 +4,7 @@ import { ii, ledger, cyclesMinter } from "frontend/integration/actors"
 import {
   Balance,
   RosettaRequest,
+  TransactionHistory,
   XdrUsd,
 } from "frontend/integration/rosetta/rosetta_interface"
 
@@ -26,7 +27,7 @@ export async function getBalance(principal: Principal): Promise<Balance> {
 
 export async function getTransactionHistory(
   principal: Principal,
-): Promise<any> {
+): Promise<TransactionHistory> {
   let request: RosettaRequest = getRosettaRequest(principal)
   return await restCall("POST", `${rosetta}/search/transactions`, request).then(
     mapToTransactionHistory,

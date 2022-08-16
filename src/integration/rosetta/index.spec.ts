@@ -3,7 +3,6 @@
  */
 import { Principal } from "@dfinity/principal"
 import {expect} from '@jest/globals'
-import "whatwg-fetch"
 
 import { ii, ledger } from "frontend/integration/actors"
 import { TRANSACTION_HISTORY } from "frontend/integration/internet-identity/__mocks"

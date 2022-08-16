@@ -18,7 +18,6 @@ module.exports = {
       "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
     SIGNIN_GOOGLE: "/signin",
     CURRCONV_TOKEN: "***REMOVED***"
-    // fetch: () => {},
   },
   testMatch: ["**/*.spec.(js|ts|tsx)"],
   transform: {

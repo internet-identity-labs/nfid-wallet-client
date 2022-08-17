@@ -16,11 +16,37 @@ export async function mapToTransactionHistory(
   return await response
     .json()
     .then((data) => camelizeKeys(data) as TransactionHistory)
+    .then((data) => {
+      // PASHUNYA REFACTOR. LOOKS WEIRD
+      return {
+        totalCount: data.totalCount,
+        transactions: data.transactions.map((transaction) => ({
+          blockIdentifier: transaction.blockIdentifier,
+          transaction: {
+            metadata: transaction.transaction.metadata,
+            transactionIdentifier:
+              transaction.transaction.transactionIdentifier,
+            operations: transaction.transaction.operations.map((operation) => ({
+              ...operation,
+              amount: {
+                currency: operation.amount.currency,
+                value: (Number(operation.amount.value) / 100000000).toString(),
+              },
+            })),
+          },
+        })),
+      } as TransactionHistory
+    })
 }
 
 export async function mapToBalance(response: Response): Promise<Balance> {
   return await response
     .json()
     .then((data) => data as RosettaBalance)
-    .then((balance: RosettaBalance) => balance.balances[0])
+    .then((balance: RosettaBalance) => {
+      return {
+        ...balance.balances[0],
+        value: (Number(balance.balances[0].value) / 100000000).toString(),
+      }
+    })
 }

@@ -1104,3 +1104,15 @@ export interface Device {
 export function fetchPrincipal(anchor: number, salt: string) {
   return ii.get_principal(BigInt(anchor), salt)
 }
+
+export const delegationIdentityFromSignedIdentity = async (
+  sessionKey: Pick<SignIdentity, "sign">,
+  chain: DelegationChain,
+): Promise<DelegationIdentity> => {
+  const delegationIdentity = DelegationIdentity.fromDelegation(
+    sessionKey,
+    chain,
+  )
+
+  return delegationIdentity
+}

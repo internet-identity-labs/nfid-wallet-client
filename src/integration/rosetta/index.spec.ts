@@ -3,6 +3,7 @@
  */
 import { Principal } from "@dfinity/principal"
 import { expect } from "@jest/globals"
+import { identity } from "lodash"
 
 import { ii, ledger } from "frontend/integration/actors"
 import { TRANSACTION_HISTORY } from "frontend/integration/internet-identity/__mocks"
@@ -23,6 +24,7 @@ describe("rosetta suite", () => {
           "qykh3-evj5u-oahns-httff-2bp7z-vaqp4-smkrh-gdkqc-kfsyr-zkw5p-5ae",
         ),
       )
+      // TODO Code review. Update GET_BALANCE
       expect(JSON.stringify(response)).toBe(
         '{"value":"10000","currency":{"symbol":"ICP","decimals":8}}',
       )
@@ -36,6 +38,7 @@ describe("rosetta suite", () => {
           "qykh3-evj5u-oahns-httff-2bp7z-vaqp4-smkrh-gdkqc-kfsyr-zkw5p-5ae",
         ),
       )
+      // TODO Code review. Update TRANSACTION_HISTORY
       expect(JSON.stringify(response)).toBe(TRANSACTION_HISTORY)
     })
   })
@@ -57,6 +60,12 @@ describe("rosetta suite", () => {
     })
   })
 
+  describe("getWalletDelegation", () => {
+    it("should expire in expected time", () => {
+      // TODO Wallet code review. Write test
+    })
+  })
+
   describe("transfer", () => {
     it("should return correct exchange rate.", async function () {
       let expected = { Ok: BigInt(1) }
@@ -65,6 +74,7 @@ describe("rosetta suite", () => {
       let response = await transfer(
         1,
         "ad19832ac19044e892262b9b492a13c0b6310dccdceea99e27adf271829f3ea8",
+        identity as any,
       )
       expect(response).toBe(expected)
     })

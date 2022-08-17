@@ -1,21 +1,45 @@
-import React from "react"
+import { format } from "date-fns"
+import { useMemo } from "react"
 
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 
+import { useWallet } from "./wallet/hooks"
+
+interface ITransaction {
+  type: "send" | "receive"
+  date: string
+  asset: string
+  quantity: number
+  from: string
+  to: string
+  note?: string
+}
+
 const ProfileTransactions = () => {
+  const { walletTransactions, walletAddress } = useWallet()
+
+  const transactions: ITransaction[] | undefined = useMemo(() => {
+    return walletTransactions?.transactions.map(({ transaction }) => {
+      const isSend = transaction.operations[0].account.address === walletAddress
+
+      return {
+        type: isSend ? "send" : "receive",
+        asset: transaction.operations[0].amount.currency.symbol,
+        quantity: Math.abs(Number(transaction.operations[0].amount.value)),
+        date: format(
+          new Date(transaction.metadata.timestamp / 1000000),
+          "MMM dd, yyyy - hh:mm:ss aaa",
+        ),
+        from: transaction.operations[0].account.address,
+        to: transaction.operations[1].account.address,
+      }
+    })
+  }, [walletAddress, walletTransactions?.transactions])
+
   return (
     <ProfileTransactionsPage
-      sentData={Array(21)
-        .fill({
-          datetime: "Jul 22, 2022 - 09:15:08 am",
-          asset: "RCP",
-          quantity: 100,
-          from: "10hdi02jqd0912edjc98h9281ejd09fj09j09ejc09jx019j0jd",
-          to: "44hdi02jqd0912edjc98h928234d09fj09j09ejc09jx019j24",
-          note: "Hello world",
-        })
-        .map((a, index) => ({ ...a, quantity: 200 + index }))}
-      receivedData={[]}
+      sentData={transactions?.filter((t) => t.type === "send") ?? []}
+      receivedData={transactions?.filter((t) => t.type === "receive") ?? []}
     />
   )
 }

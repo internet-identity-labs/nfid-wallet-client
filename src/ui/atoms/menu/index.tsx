@@ -58,7 +58,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
 
       <div
         className={clsx(
-          "z-30 h-screen text-base list-none bg-white shadow-md rounded absolute right-0 top-0 transition-all ease-in duration-500",
+          "z-30 h-screen text-base list-none bg-white shadow-md rounded fixed right-0 top-0 transition-all ease-in duration-500",
           toggleMenu ? "translate-x-0" : "translate-x-[120%]",
           className,
         )}

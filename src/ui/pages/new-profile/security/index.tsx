@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React from "react"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
@@ -88,7 +89,12 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
       >
         {canAddRecoveryMethod && (
           <div className="" onClick={() => setIsModalVisible(true)}>
-            <PlusIcon className="absolute top-[30px] right-[30px] w-6 h-6 text-gray-500" />
+            <PlusIcon
+              className={clsx(
+                "absolute w-6 h-6 text-gray-500",
+                "top-4 right-5 sm:top-[30px] sm:right-[30px]",
+              )}
+            />
           </div>
         )}
         {recoveryMethods?.map((method) => (

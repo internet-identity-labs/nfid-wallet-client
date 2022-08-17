@@ -1,5 +1,4 @@
 import React from "react"
-import ReactTooltip from "react-tooltip"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 

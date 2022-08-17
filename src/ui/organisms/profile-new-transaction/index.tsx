@@ -7,7 +7,6 @@ import ArrowSend from "./assets/arrowSend.svg"
 import TabsSwitcher from "../tabs-switcher"
 import TransactionReceive from "./receive"
 import TransactionSendForm, { ITransactionSendForm } from "./send"
-import TransactionSuccess from "./sucess"
 
 interface IProfileNewTransaction extends ITransactionSendForm {
   account: string

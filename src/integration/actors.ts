@@ -1,6 +1,6 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
-import { Identity, SubmitResponse } from "@dfinity/agent"
+import { HttpAgent, Identity, SubmitResponse } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
@@ -142,6 +142,13 @@ export function actor<T>(
   config?: Partial<Agent.ActorConfig>,
 ): Agent.ActorSubclass<T> {
   return Agent.Actor.createActor(factory, { canisterId, agent, ...config })
+}
+
+export function ledgerWithIdentity(identity: DelegationIdentity) {
+  return actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL, {
+    // TODO WALLET CODE REVIEW MAKE CONFIGURABLYAT
+    agent: new HttpAgent({ identity, host: "https://ic0.app" }),
+  })
 }
 
 // All of the actor definitions needed in our app should go here.

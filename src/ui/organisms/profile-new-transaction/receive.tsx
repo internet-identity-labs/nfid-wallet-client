@@ -12,7 +12,7 @@ const TransactionReceive: React.FC<ITransactionReceive> = ({ account }) => {
   return (
     <div>
       <div className="w-[220px] my-8 mx-auto">
-        <QRCode options={{ width: 220, margin: 0 }} content={`/${account}`} />
+        <QRCode options={{ width: 220, margin: 0 }} content={account} />
       </div>
       <div className="px-5 pt-4 border border-gray-200 rounded-md">
         <div className="flex justify-between">

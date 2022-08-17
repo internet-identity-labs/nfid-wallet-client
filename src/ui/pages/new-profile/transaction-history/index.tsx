@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React, { useState } from "react"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { SendReceiveButton } from "frontend/ui/atoms/send-receive-button"
+import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import Pagination from "frontend/ui/molecules/pagination"
 import TabsSwitcher from "frontend/ui/organisms/tabs-switcher"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -58,11 +58,12 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
               </tr>
             </thead>
             <tbody className={clsx("text-sm text-[#0B0E13] border-b")}>
-              {filteredData.map((transaction) => (
+              {filteredData.map((transaction, index) => (
                 <tr
                   className={clsx(
                     "hover:bg-[#F3F4F6] hover:cursor-pointer h-16",
                   )}
+                  key={`transaction_${index}`}
                 >
                   <td className="pl-4">{transaction.datetime}</td>
                   <td>{transaction.asset}</td>

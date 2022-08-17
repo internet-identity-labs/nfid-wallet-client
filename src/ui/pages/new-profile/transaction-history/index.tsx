@@ -101,7 +101,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
           <SendReceiveButton />
         </div>
       )}
-      <div className={clsx("mt-[30px] fixed right-4")}>
+      <div className={clsx("mt-2 fixed right-4")}>
         <Pagination
           data={activeTab === "Sent" ? sentData : receivedData}
           sliceData={setFilteredData}

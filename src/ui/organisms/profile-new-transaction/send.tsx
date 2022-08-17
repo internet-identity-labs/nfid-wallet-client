@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import Logo from "frontend/assets/dfinity.svg"
@@ -30,6 +30,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
   isSuccess,
   onClose,
 }) => {
+  const [sumLength, setSumLength] = useState(0)
   const {
     register,
     formState: { errors, dirtyFields },
@@ -55,17 +56,18 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
 
   return (
     <div>
-      <div className="flex items-center justify-center w-full mt-14">
+      <div className="grid grid-cols-2 mt-14">
         <input
           className={clsx(
             "text-black-base placeholder:text-gray-400 text-4xl",
             "p-0 border-none outline-none resize-none focus:ring-0",
-            "w-12",
+            "text-right block mr-2",
           )}
           autoFocus
           placeholder="0"
           type="number"
           id="input"
+          onKeyUp={(e) => setSumLength(e.target.value.length)}
           {...register("sum", {
             required: sumRules.errorMessages.required,
             minLength: {
@@ -78,7 +80,14 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
             },
           })}
         />
-        <label htmlFor="input" className={clsx("text-4xl text-gray-400")}>
+
+        <label
+          htmlFor="input"
+          className={clsx(
+            "text-4xl text-gray-400",
+            sumLength > 0 && "text-black-base",
+          )}
+        >
           ICP
         </label>
       </div>
@@ -100,13 +109,13 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
           <div className={clsx(rowStyles, "items-start")}>
             <p className="w-24 pl-5 ">To</p>
             <div>
-              <input
+              <textarea
                 className={clsx(
                   "p-0 border-none shadow-none outline-none resize-none focus:ring-0",
                   "text-black-base placeholder:text-gray-400 text-sm",
                   "resize-none",
                 )}
-                rows={1}
+                rows={2}
                 placeholder="Principal or account ID"
                 {...register("anchor", {
                   required: anchorRules.errorMessages.required,

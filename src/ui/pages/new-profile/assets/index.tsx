@@ -27,14 +27,14 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               <th>Price</th>
             </tr>
           </thead>
-          <tbody className={clsx("h-16 text-sm text-[#0B0E13]")}>
+          <tbody className="h-16 text-sm text-[#0B0E13]">
             {tokens.map((token, index) => (
               <tr key={`token_${index}`}>
-                <td className={clsx("flex h-16 items-center")}>
+                <td className="flex items-center h-16">
                   <img
                     src={token.icon}
                     alt="icon"
-                    className={clsx("w-6 h-6 mr-[18px]")}
+                    className="w-6 h-6 mr-[18px]"
                   />
                   <div>
                     <p className="text-sm">{token.title}</p>
@@ -51,33 +51,32 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         </table>
         <div className="sm:hidden">
           {tokens.map((token, index) => (
-            <div className={clsx("flex h-16 items-center justify-between")}>
-              <div className={clsx("flex items-center text-[#0B0E13]")}>
+            <div
+              key={`token_${index}`}
+              className="flex items-center justify-between h-16"
+            >
+              <div className="flex items-center text-[#0B0E13]">
                 <img
                   src={token.icon}
                   alt="icon"
-                  className={clsx("w-6 h-6 mr-[13px]")}
+                  className="w-6 h-6 mr-[13px]"
                 />
                 <div>
-                  <p className={clsx("leading-5 text-sm")}>{token.title}</p>
-                  <p
-                    className={
-                      "text-[#9CA3AF] text-xs items-left flex leading-3"
-                    }
-                  >
+                  <p className="text-sm leading-5">{token.title}</p>
+                  <p className="text-[#9CA3AF] text-xs items-left flex leading-3">
                     ICP
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <div className={clsx("leading-5 text-sm")}>{token.balance}</div>
-                <div className={clsx("leading-3 text-sm")}>{token.price}</div>
+                <div className="text-sm leading-5">{token.balance}</div>
+                <div className="text-sm leading-3">{token.price}</div>
               </div>
             </div>
           ))}
         </div>
       </ProfileContainer>
-      <div className={clsx("w-full mt-[30px] mb-12")}>
+      <div className="w-full mt-[30px] mb-12">
         <img src={WithoutNFT} alt="noIcons" className="w-full" />
       </div>
     </ProfileTemplate>

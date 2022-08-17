@@ -30,7 +30,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
 }) => {
   const { navigate } = useNFIDNavigate()
   return (
-    <div className={clsx("relative overflow-hidden")}>
+    <div className={clsx("relative overflow-hidden min-h-screen")}>
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
       <div
         className={clsx(

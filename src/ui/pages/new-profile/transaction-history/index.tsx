@@ -65,7 +65,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
                   )}
                   key={`transaction_${index}`}
                 >
-                  <td className="pl-4">{transaction.datetime}</td>
+                  <td className="pl-4">{transaction.date}</td>
                   <td>{transaction.asset}</td>
                   <td>{transaction.quantity}</td>
                   <td>

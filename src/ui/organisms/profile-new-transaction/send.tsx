@@ -4,15 +4,15 @@ import { SubmitHandler, useForm } from "react-hook-form"
 
 import Logo from "frontend/assets/dfinity.svg"
 import { Button } from "frontend/ui/atoms/button"
-import { anchorRules, sumRules } from "frontend/ui/utils/validations"
+import { sumRules } from "frontend/ui/utils/validations"
 
 import ArrowWhite from "./assets/arrowWhite.svg"
 
 import TransactionSuccess from "./sucess"
 
 interface ISendForm {
-  anchor: string
-  sum: number
+  address: string
+  sum: string
 }
 
 export interface ITransactionSendForm {
@@ -20,6 +20,7 @@ export interface ITransactionSendForm {
   onSendTransaction: SubmitHandler<ISendForm>
   isSuccess?: boolean
   onClose: () => void
+  balance: string | number
 }
 
 const rowStyles = "flex py-2 border-b border-gray-200"
@@ -29,6 +30,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
   onSendTransaction,
   isSuccess,
   onClose,
+  balance,
 }) => {
   const [sumLength, setSumLength] = useState(0)
   const {
@@ -42,14 +44,14 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
 
   React.useEffect(() => {
     if (errorString) {
-      setError("anchor", {
+      setError("address", {
         type: "manual",
         message: errorString,
       })
     }
   }, [errorString, setError, setValue])
 
-  const isFormComplete = !!dirtyFields.anchor && !errors.anchor
+  const isFormComplete = !!dirtyFields.address && !errors.address
 
   if (isSuccess)
     return <TransactionSuccess sum={getValues().sum} onClose={onClose} />
@@ -70,14 +72,6 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
           onKeyUp={(e) => setSumLength(e.target.value.length)}
           {...register("sum", {
             required: sumRules.errorMessages.required,
-            minLength: {
-              value: sumRules.minLength,
-              message: sumRules.errorMessages.length,
-            },
-            pattern: {
-              value: sumRules.regex,
-              message: sumRules.errorMessages.pattern,
-            },
           })}
         />
 
@@ -92,7 +86,9 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
         </label>
       </div>
       <p className="mt-5 text-xs text-center ">
-        You don't have any ICP to send.
+        {Number(balance) === 0
+          ? "You don't have any ICP to send."
+          : `Transfer fee: 0.0001 ICP`}
       </p>
       <form>
         <div
@@ -112,30 +108,21 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
               <textarea
                 className={clsx(
                   "p-0 border-none shadow-none outline-none resize-none focus:ring-0",
-                  "text-black-base placeholder:text-gray-400 text-sm",
-                  "resize-none",
+                  "text-black-base placeholder:text-gray-400 text-sm w-[220px]",
                 )}
-                rows={2}
+                rows={3}
                 placeholder="Principal or account ID"
-                {...register("anchor", {
-                  required: anchorRules.errorMessages.required,
-                  minLength: {
-                    value: anchorRules.minLength,
-                    message: anchorRules.errorMessages.length,
-                  },
-                  pattern: {
-                    value: anchorRules.regex,
-                    message: anchorRules.errorMessages.pattern,
-                  },
+                {...register("address", {
+                  required: "Principal or account ID is required",
                 })}
               />
               <div
                 className={clsx(
                   "text-sm py-1 text-gray-400",
-                  errors.anchor?.message && "!text-red-base",
+                  errors.address?.message && "!text-red-base",
                 )}
               >
-                {errors.anchor?.message ?? ""}
+                {errors.address?.message ?? ""}
               </div>
             </div>
           </div>

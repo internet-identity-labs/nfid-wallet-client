@@ -50,17 +50,31 @@ export async function loginWithAnchor(
 
   if (authResult.tag === "ok") {
     Sentry.setUser({ id: event.data.anchor.toString() })
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      authResult.sessionKey,
+      authResult.chain,
+    )
+    authState.set(
+      authResult.sessionKey,
+      delegationIdentity,
+      ii,
+      authResult.chain,
+      authResult.sessionKey,
+    )
+    // When used platform authenticator
+    // Then write profile to localStorage
+    if (!event.data.withSecurityDevices) {
+      const profile = await fetchProfile()
+      setProfile(profile)
+    }
     return {
       sessionSource: "localDevice",
       anchor: Number(event.data.anchor),
-      delegationIdentity: DelegationIdentity.fromDelegation(
-        authResult.sessionKey,
-        authResult.chain,
-      ),
+      delegationIdentity,
       identity: authResult.sessionKey,
     }
   } else if ("message" in authResult) {
-    throw new Error(`loginWithAnchor ${authResult.message}`)
+    throw new Error(authResult.message)
   }
 
   throw new Error(`loginWithAnchor Unreachable`)

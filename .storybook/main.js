@@ -18,6 +18,7 @@ module.exports = {
   },
   webpackFinal: async (config) => {
     const canisterEnv = {
+      CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
       IC_HOST: JSON.stringify(process.env.IC_HOST),
       II_ENV: JSON.stringify(process.env.II_MODE),
       FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),

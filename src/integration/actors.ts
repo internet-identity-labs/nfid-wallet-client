@@ -7,10 +7,14 @@ import { Principal } from "@dfinity/principal"
 
 import { authState } from "frontend/integration/internet-identity"
 
+import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.did"
+import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter_idl"
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.did.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager_idl"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity_idl"
 import { _SERVICE as InternetIdentity } from "./_ic_api/internet_identity_types.d"
+import { _SERVICE as Ledger } from "./_ic_api/ledger.did.d"
+import { idlFactory as ledgerIDL } from "./_ic_api/ledger_idl"
 import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.did.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel_idl"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.did.d"
@@ -28,12 +32,16 @@ declare const INTERNET_IDENTITY_CANISTER_ID: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
+declare const LEDGER_CANISTER_ID: string
+declare const CYCLES_MINTER_CANISTER_ID: string
 
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
   ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],
   ["Pubsub", PUB_SUB_CHANNEL_CANISTER_ID],
   ["Verifier", VERIFIER_CANISTER_ID],
+  ["Ledger", LEDGER_CANISTER_ID],
+  ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
 ]
 
 export const accessList = canisterConfig.map((x) => x[1])
@@ -142,3 +150,8 @@ export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)
 export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
+export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
+export const cyclesMinter = actor<CyclesMinter>(
+  CYCLES_MINTER_CANISTER_ID,
+  cyclesMinterIDL,
+)

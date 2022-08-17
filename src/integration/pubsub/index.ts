@@ -95,8 +95,12 @@ export async function postMessages(topic: Topic, messages: any[]) {
       messages.map((m) => JSON.stringify(m)),
     )
     .then((r) => unpackResponse(sanitizeResponse(r)))
-    .catch((e) => {
-      throw new Error(`postMessages pubsub.post_messages: ${e.message}`)
+    .catch(async (e) => {
+      await createTopic(topic)
+        .then(() => postMessages(topic, messages))
+        .catch((e) => {
+          throw new Error(`postMessages pubsub.post_messages: ${e.message}`)
+        })
     })
 }
 

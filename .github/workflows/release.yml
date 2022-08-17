@@ -45,6 +45,9 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
+          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
+          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
 
   deploy:
     needs: check-secrets
@@ -83,6 +86,7 @@ jobs:
           II_MODE: production
           IC_HOST: https://ic0.app
           DFX_NETWORK: ic
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           REACT_APP_SENTRY_CONNECTION: ${{secrets.PROD_SENTRY_CONNECTION}}
           IDENTITY_MANAGER_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_IDENTITY_MANAGER}}
           PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_PUB_SUB_CHANNEL}}
@@ -92,6 +96,8 @@ jobs:
           AWS_SIGNIN_GOOGLE: ${{secrets.PROD_AWS_SIGNIN_GOOGLE}}
           GOOGLE_CLIENT_ID: ${{secrets.PROD_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
+          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
 
       - name: Create Sentry release
         if: ${{ github.ref == 'refs/heads/main' }}

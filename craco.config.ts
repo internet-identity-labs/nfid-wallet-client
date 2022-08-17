@@ -40,6 +40,12 @@ const config = {
               IS_DEV: JSON.stringify(process.env.IS_DEV),
               USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
               GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
+              LEDGER_CANISTER_ID: JSON.stringify(
+                process.env.LEDGER_CANISTER_ID,
+              ),
+              CYCLES_MINTER_CANISTER_ID: JSON.stringify(
+                process.env.CYCLES_MINTER_CANISTER_ID,
+              ),
               VERIFY_PHONE_NUMBER: JSON.stringify(
                 process.env.FRONTEND_MODE === "production"
                   ? process.env.AWS_VERIFY_PHONENUMBER

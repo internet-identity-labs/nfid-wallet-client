@@ -78,7 +78,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       </ProfileContainer>
       <ProfileContainer
         title="Your NFTs"
-        className={clsx("pb-52", "sm:pb-0 mt-[30px] relative")}
+        className={clsx("pb-52", "sm:pb-[26px] mt-[30px] relative")}
       >
         <div className="text-neutral-900 text-sm leading-5 max-w-[320px] z-20 relative">
           <p>

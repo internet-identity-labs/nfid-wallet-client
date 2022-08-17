@@ -5,9 +5,9 @@ import { Link } from "react-router-dom"
 import { Logo } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAccount } from "frontend/integration/identity-manager/queries"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
-import { SendReceiveButton } from "frontend/ui/atoms/send-receive-button"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import MenuIcon from "./assets/menu.svg"

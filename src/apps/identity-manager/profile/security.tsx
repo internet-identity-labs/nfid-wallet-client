@@ -1,22 +1,16 @@
 import React from "react"
 
-import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import {
   LegacyDevice,
   RecoveryDevice,
 } from "frontend/integration/identity-manager/devices/state"
-import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
-import { Profile } from "frontend/ui/pages/profile"
+import ProfileSecurityPage from "frontend/ui/pages/new-profile/security"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "./routes"
 
-interface AuthenticateNFIDHomeProps {}
-
-export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
-  const applications: any[] = ["NFID Demo"]
-
+const ProfileSecurity = () => {
   const [fetched, loadOnce] = React.useReducer(() => true, false)
   const { navigate } = useNFIDNavigate()
 
@@ -31,17 +25,14 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
     createRecoveryPhrase,
     createSecurityDevice,
   } = useDevices()
-  const { allAccounts, getPersona } = usePersona()
-  const { profile } = useAccount()
 
   React.useEffect(() => {
     if (!fetched) {
       loadOnce()
       getDevices()
       getRecoveryDevices()
-      getPersona()
     }
-  }, [fetched, getDevices, getPersona, getRecoveryDevices])
+  }, [fetched, getDevices, getRecoveryDevices])
 
   const handleDeleteDevice = React.useCallback(
     async (device: LegacyDevice) => {
@@ -93,18 +84,17 @@ export const NFIDProfile: React.FC<AuthenticateNFIDHomeProps> = () => {
   }, [createSecurityDevice])
 
   return (
-    <Profile
-      account={profile}
-      applications={applications}
+    <ProfileSecurityPage
       onDeviceDelete={handleDeleteDevice}
       onDeviceUpdate={handleDeviceUpdate}
       devices={devices}
-      accounts={allAccounts}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
-      recoveryMethods={recoveryDevices}
       onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
       onRegisterRecoveryKey={handleRegisterRecoveryKey}
+      recoveryMethods={recoveryDevices}
     />
   )
 }
+
+export default ProfileSecurity

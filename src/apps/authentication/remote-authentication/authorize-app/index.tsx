@@ -59,7 +59,7 @@ export const AppScreenAuthorizeApp: React.FC<
         derivationOrigin,
       })
       setIsloading(false)
-      navigate("/profile/authenticate")
+      navigate("/profile/security")
     },
     [
       derivationOrigin,

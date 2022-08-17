@@ -1,22 +1,18 @@
 import { useAtom } from "jotai"
 import React from "react"
 
-import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { authState } from "frontend/integration/internet-identity"
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
-import { ProfileEditPhone } from "frontend/ui/pages/profile-edit/phone"
+import ProfileAddPhoneNumber from "frontend/ui/pages/new-profile/credentials/add-phone-number"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"
 import { phoneNumberAtom } from "../state"
 
-interface AuthenticateNFIDHomeProps {}
-
-export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
+const ProfilePhone = () => {
   const [, setPhoneNumber] = useAtom(phoneNumberAtom)
   const [isLoading, toggleLoading] = React.useReducer((s) => !s, false)
   const [error, setError] = React.useState("")
-  const { account } = useAccount()
   const { navigate } = useNFIDNavigate()
   const { delegationIdentity } = authState.get()
 
@@ -29,7 +25,7 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
         response = await verifyPhoneNumber(phone, delegationIdentity)
         setPhoneNumber(phone)
         return navigate(
-          `${ProfileConstants.base}/${ProfileConstants.verifySMSToken}`,
+          `${ProfileConstants.base}/${ProfileConstants.credentials}/${ProfileConstants.verifySMS}`,
         )
       } catch (e: any) {
         if (e.error) setError(e.error)
@@ -42,12 +38,14 @@ export const AddPhoneNumber: React.FC<AuthenticateNFIDHomeProps> = () => {
     },
     [delegationIdentity, navigate, setPhoneNumber],
   )
+
   return (
-    <ProfileEditPhone
-      account={account}
+    <ProfileAddPhoneNumber
       onSubmit={handleSubmitPhoneNumber}
-      isLoading={isLoading}
       responseError={error}
+      isLoading={isLoading}
     />
   )
 }
+
+export default ProfilePhone

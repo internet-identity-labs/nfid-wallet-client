@@ -77,7 +77,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             userOverwrite,
           })
         }
-        return navigate("/profile/authenticate")
+        return navigate("/profile/security")
       }
 
       // new google user send to register

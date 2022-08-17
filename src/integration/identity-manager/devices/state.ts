@@ -7,6 +7,7 @@ export type Icon =
   | "laptop"
   | "document"
   | "usb"
+  | "unknown"
 
 export interface AccessPointRequest {
   icon: string

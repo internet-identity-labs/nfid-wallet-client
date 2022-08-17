@@ -148,7 +148,6 @@ export const StepInput: React.FC<StepInputProps> = ({
       </div>
       <Button
         primary
-        block
         className="px-10 mt-3 sm:mt-5"
         onClick={() => {
           validateToken()

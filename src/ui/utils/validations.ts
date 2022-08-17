@@ -62,6 +62,16 @@ export const anchorRules = {
   },
 }
 
+export const sumRules = {
+  regex: /^[0-9]$/,
+  minLength: 1,
+  errorMessages: {
+    pattern: "Sum must only contain numbers",
+    required: "Sum is required",
+    length: "Sum must be 1 or more digits long",
+  },
+}
+
 export const isValidPhonenumber = (phonenumber: string) => {
   return phoneRules.regex.test(phonenumber)
 }

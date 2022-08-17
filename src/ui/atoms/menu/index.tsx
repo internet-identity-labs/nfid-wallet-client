@@ -51,14 +51,14 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
 
       {toggleMenu && (
         <div
-          className="absolute top-0 left-0 z-[1] block w-full h-screen bg-black-base bg-opacity-25 overflow-hidden"
+          className="fixed top-0 left-0 z-[11] block w-full h-screen bg-black-base bg-opacity-25 overflow-hidden"
           onClick={() => setToggleMenu(false)}
         />
       )}
 
       <div
         className={clsx(
-          "z-10 h-screen text-base list-none bg-white shadow-md rounded absolute right-0 top-0 transition-all ease-in duration-500",
+          "z-30 h-screen text-base list-none bg-white shadow-md rounded absolute right-0 top-0 transition-all ease-in duration-500",
           toggleMenu ? "translate-x-0" : "translate-x-[120%]",
           className,
         )}

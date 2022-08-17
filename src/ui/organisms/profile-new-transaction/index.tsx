@@ -89,6 +89,7 @@ const ProfileNewTransaction: React.FC<IProfileNewTransaction> = ({
           errorString={errorString}
           onClose={onClose}
           isSuccess={isSuccess}
+          balance={balance}
         />
       ) : (
         <TransactionReceive account={account} />

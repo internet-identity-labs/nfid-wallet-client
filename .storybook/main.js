@@ -43,6 +43,7 @@ module.exports = {
       VERIFIER_CANISTER_ID: JSON.stringify(
         process.env[`VERIFIER_CANISTER_ID_${process.env.BACKEND_MODE}`],
       ),
+      IS_DEV: JSON.stringify(process.env[`IS_DEV`]),
     }
 
     config.plugins.push(new webpack.DefinePlugin(canisterEnv))

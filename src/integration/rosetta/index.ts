@@ -36,6 +36,7 @@ export async function getTransactionHistory(
 }
 
 export async function getExchangeRate(): Promise<number> {
+  console.log("URLCONV", converter)
   let xdrToIcp = await cyclesMinter
     .get_icp_xdr_conversion_rate()
     .then((x) => x.data.xdr_permyriad_per_icp)

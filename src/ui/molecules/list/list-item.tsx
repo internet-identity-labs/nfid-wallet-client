@@ -10,6 +10,7 @@ interface Props {
   subtitle?: string | React.ReactNode
   icon?: React.ReactNode
   action?: React.ReactNode
+  disabled?: boolean
 }
 
 export const ListItem: React.FC<Props> = ({
@@ -19,6 +20,7 @@ export const ListItem: React.FC<Props> = ({
   icon,
   action,
   onClick,
+  disabled,
 }) => {
   return (
     <div
@@ -26,6 +28,7 @@ export const ListItem: React.FC<Props> = ({
       className={clsx(
         "relative flex flex-row hover:bg-gray-200 hover:rounded transition-colors duration-100 -mx-3 mt-2",
         className,
+        disabled && "pointer-events-none",
       )}
     >
       <div className="flex flex-wrap items-center flex-1 px-3 py-2 cursor-pointer select-none peer">
@@ -39,13 +42,15 @@ export const ListItem: React.FC<Props> = ({
 
         <div className="relative flex items-center flex-1">
           <div className="flex-1 flex-shrink">
-            <div className="text-gray-700">{title}</div>
+            <div className={clsx(disabled ? "text-gray-400" : "text-gray-700")}>
+              {title}
+            </div>
             {subtitle && (
               <div className="my-1 text-sm text-gray-400">{subtitle}</div>
             )}
           </div>
 
-          <div className="pl-1 md:pl-4">
+          <div className={clsx("pl-1 md:pl-4", disabled && "hidden")}>
             {action ? (
               action
             ) : (

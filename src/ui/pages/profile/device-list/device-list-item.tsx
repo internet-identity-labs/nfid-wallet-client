@@ -152,19 +152,26 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               ></input>
             ) : (
               <div className="flex-1 flex-shrink">
-                <div className="text-gray-700">{device.label}</div>
+                <div className="text-gray-700">
+                  {device.isAccessPoint ? device.label : device.browser}
+                </div>
                 <div className="my-1 text-sm text-gray-400">
-                  {device.lastUsed
-                    ? format(device.lastUsed, "MMM d, yyyy 'on '")
-                    : null}
-                  {device.browser}
+                  {device.isAccessPoint
+                    ? `${
+                        format(device.lastUsed, "MMM d, yyyy 'on '") +
+                          device.browser ?? null
+                      }`
+                    : "This is not an NFID device"}
                 </div>
               </div>
             )}
 
             <div className="pl-1 md:pl-4">
               <div
-                className="flex space-x-2"
+                className={clsx(
+                  "flex space-x-2",
+                  !device.isAccessPoint && "hidden",
+                )}
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div

@@ -45,6 +45,7 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
 
   deploy:
     needs: check-secrets

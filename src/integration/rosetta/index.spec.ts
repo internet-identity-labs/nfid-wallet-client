@@ -48,7 +48,7 @@ describe("rosetta suite", () => {
   })
 
   describe("getWalletPrincipal", () => {
-    it("should return correct exchange rate.", async function () {
+    it("should return correct wallet principal.", async function () {
       let expected = Principal.anonymous()
       // @ts-ignore
       ii.get_principal = jest.fn(async () => expected)
@@ -58,7 +58,7 @@ describe("rosetta suite", () => {
   })
 
   describe("transfer", () => {
-    it("should return correct exchange rate.", async function () {
+    it("should execute correct transfer.", async function () {
       let expected = { Ok: BigInt(1) }
       // @ts-ignore
       ledger.transfer = jest.fn(async () => expected)

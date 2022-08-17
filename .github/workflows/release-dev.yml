@@ -42,6 +42,7 @@ jobs:
           AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
 
   deploy:
     needs: check-secrets

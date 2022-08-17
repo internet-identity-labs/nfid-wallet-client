@@ -4,7 +4,7 @@ import React from "react"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
-import WithoutNFT from "./NFTsoon.png"
+import WithoutNFT from "./NFTComing.png"
 import Icon from "./book-open.svg"
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
@@ -76,9 +76,30 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
           ))}
         </div>
       </ProfileContainer>
-      <div className="w-full mt-[30px] mb-12">
-        <img src={WithoutNFT} alt="noIcons" className="w-full" />
-      </div>
+      <ProfileContainer
+        title="Your NFTs"
+        className={clsx("pb-52", "sm:pb-0 mt-[30px] relative")}
+      >
+        <div className="text-neutral-900 text-sm leading-5 max-w-[320px] z-20 relative">
+          <p>
+            Have NFTs in DSCVR, Distrikt, Stoic, Plug, InfinitySwap, and
+            elsewhere on the IC and want to manage them from one place?
+            Accidentally sent NFTs to the NNS and want them back?
+          </p>
+          <p className="mt-4 font-semibold">
+            That and more coming soon to NFID!
+          </p>
+        </div>
+        <img
+          src={WithoutNFT}
+          alt="Coming soon"
+          className={clsx(
+            "bottom-0 -right-[80px] w-[100vw]",
+            "sm:top-0 sm:-right-[30px] sm:w-2/3",
+            "absolute z-10",
+          )}
+        />
+      </ProfileContainer>
     </ProfileTemplate>
   )
 }

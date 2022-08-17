@@ -16,7 +16,7 @@ import { restCall } from "./util"
 declare const CURRCONV_TOKEN: string
 
 const rosetta = "https://rosetta-api.internetcomputer.org"
-const nfidDomain = "nfid.dev"
+const nfidDomain = "nfid.one"
 const converter = `https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=${CURRCONV_TOKEN}`
 
 export async function getBalance(principal: Principal): Promise<Balance> {

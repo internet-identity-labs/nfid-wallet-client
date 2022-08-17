@@ -35,7 +35,7 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
       )
     // NOTE: I dislike having routing logic in a coordinator
     case state.matches("End"):
-      return <Navigate to="/profile/authenticate" />
+      return <Navigate to="/profile/security" />
     default:
       return <ScreenResponsive isLoading />
   }

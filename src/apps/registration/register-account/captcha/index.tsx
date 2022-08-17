@@ -95,10 +95,10 @@ export const RegisterAccountCaptcha: React.FC<
             userNumberOverwrite: response.userNumber,
             userOverwrite: user,
           })
-          return navigate("/profile/authenticate")
+          return navigate("/profile/security")
         }
 
-        navigate("/profile/authenticate")
+        navigate("/profile/security")
       }
     },
     [
@@ -148,7 +148,7 @@ export const RegisterAccountCaptcha: React.FC<
           console.debug("loginResponse", { loginResponse })
         }
 
-        return navigate("/profile/authenticate")
+        return navigate("/profile/security")
       }
       console.error(
         "RegisterAccountCaptcha.handleRegisterAnchorWithGoogle",
@@ -173,7 +173,7 @@ export const RegisterAccountCaptcha: React.FC<
       isChallengeLoading={isChallengeLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}
-      successPath={"/profile/authenticate"}
+      successPath={"/profile/security"}
       onRegisterAnchor={
         isGoogle ? handleRegisterAnchorWithGoogle : handleRegisterAnchor
       }

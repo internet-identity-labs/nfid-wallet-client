@@ -32,7 +32,9 @@ declare const CURRCONV_TOKEN: string
 
 const rosetta = "https://rosetta-api.internetcomputer.org"
 const nfidDomain = "nfid.dev"
-const converter = `https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=${CURRCONV_TOKEN}`
+const converter = `https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=${
+  CURRCONV_TOKEN ?? "***REMOVED***"
+}`
 
 export async function getBalance(principal: Principal): Promise<Balance> {
   let request: RosettaRequest = getRosettaRequest(principal)

@@ -15,6 +15,7 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   onBack?: string
   onIconClick?: () => void
   headerClassName?: string
+  containerClassName?: string
   isLoading?: boolean
 }
 
@@ -26,16 +27,18 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   children,
   className,
   headerClassName,
+  containerClassName,
   isLoading = false,
 }) => {
   const { navigate } = useNFIDNavigate()
   return (
-    <div className={clsx("relative overflow-hidden min-h-screen")}>
+    <div className={clsx("relative min-h-screen overflow-hidden")}>
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
       <div
         className={clsx(
           "block relative z-1 px-4 sm:px-[30px]",
           "sm:grid sm:grid-cols-[256px,1fr] sm:gap-[30px]",
+          containerClassName,
         )}
       >
         <div className={clsx("hidden mt-5 -ml-3 sm:block relative")}>

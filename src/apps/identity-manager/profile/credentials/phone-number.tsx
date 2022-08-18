@@ -1,6 +1,7 @@
 import { useAtom } from "jotai"
 import React from "react"
 
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { authState } from "frontend/integration/internet-identity"
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import ProfileAddPhoneNumber from "frontend/ui/pages/new-profile/credentials/add-phone-number"
@@ -13,6 +14,7 @@ const ProfilePhone = () => {
   const [, setPhoneNumber] = useAtom(phoneNumberAtom)
   const [isLoading, toggleLoading] = React.useReducer((s) => !s, false)
   const [error, setError] = React.useState("")
+  const { account } = useAccount()
   const { navigate } = useNFIDNavigate()
   const { delegationIdentity } = authState.get()
 
@@ -25,7 +27,7 @@ const ProfilePhone = () => {
         response = await verifyPhoneNumber(phone, delegationIdentity)
         setPhoneNumber(phone)
         return navigate(
-          `${ProfileConstants.base}/${ProfileConstants.credentials}/${ProfileConstants.verifySMS}`,
+          `${ProfileConstants.base}/${ProfileConstants.verifySMS}`,
         )
       } catch (e: any) {
         if (e.error) setError(e.error)
@@ -38,12 +40,12 @@ const ProfilePhone = () => {
     },
     [delegationIdentity, navigate, setPhoneNumber],
   )
-
   return (
     <ProfileAddPhoneNumber
+      account={account}
       onSubmit={handleSubmitPhoneNumber}
-      responseError={error}
       isLoading={isLoading}
+      responseError={error}
     />
   )
 }

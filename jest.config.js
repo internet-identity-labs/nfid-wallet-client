@@ -1,3 +1,7 @@
+const dotenv = require("dotenv")
+
+dotenv.config({ path: ".env.local" })
+
 module.exports = {
   globals: {
     "ts-jest": {
@@ -17,7 +21,7 @@ module.exports = {
     GOOGLE_CLIENT_ID:
       "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
     SIGNIN_GOOGLE: "/signin",
-    CURRCONV_TOKEN: "***REMOVED***"
+    CURRCONV_TOKEN: process.env.CURRCONV_TOKEN,
   },
   testMatch: ["**/*.spec.(js|ts|tsx)"],
   transform: {

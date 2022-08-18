@@ -18,8 +18,7 @@ interface AppScreenNFIDLoginProps extends React.HTMLAttributes<HTMLDivElement> {
 export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
   loginSuccessPath,
 }) => {
-  const { account } = useAccount()
-  if (!account) throw new Error("unknown device")
+  const { profile } = useAccount()
 
   const { isLoading, login } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
@@ -41,7 +40,7 @@ export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
           <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
             <NFIDLogin
               loginSuccessPath={loginSuccessPath}
-              account={account}
+              account={profile}
               onLogin={handleLogin}
             />
           </CardBody>

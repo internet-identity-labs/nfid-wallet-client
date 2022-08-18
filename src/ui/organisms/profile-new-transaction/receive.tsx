@@ -1,4 +1,5 @@
 import React from "react"
+import { toast } from "react-toastify"
 
 import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -9,6 +10,10 @@ interface ITransactionReceive extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const TransactionReceive: React.FC<ITransactionReceive> = ({ account }) => {
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(account)
+    toast.success("Copied to clipboard")
+  }
   return (
     <div>
       <div className="w-[220px] my-8 mx-auto">
@@ -21,7 +26,7 @@ const TransactionReceive: React.FC<ITransactionReceive> = ({ account }) => {
             src={copy}
             alt="copy"
             className="transition-all cursor-pointer hover:opacity-70"
-            onClick={() => navigator.clipboard.writeText(account)}
+            onClick={copyToClipboard}
           />
         </div>
         <div className="flex flex-wrap w-[300px] h-16 mt-4">

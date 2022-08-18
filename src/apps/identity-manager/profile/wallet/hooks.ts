@@ -41,19 +41,23 @@ export const useTransfer = () => {
 export const useWallet = () => {
   const { data: account } = useAccount()
 
-  const { data: principal } = useSWR("walletPrinciple", () =>
-    getWalletPrincipal(account?.anchor as number),
+  const { data: principal, isValidating: isWalletPrincipalLoading } = useSWR(
+    "walletPrincipal",
+    () => getWalletPrincipal(account?.anchor as number),
   )
 
-  const { data: balance } = useSWR("walletBalance", () =>
-    getBalance(principal as Principal),
+  const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(
+    "walletBalance",
+    () => getBalance(principal as Principal),
   )
 
-  const { data: transactions } = useSWR("walletTransactions", () =>
-    getTransactionHistory(principal as Principal),
-  )
+  const { data: transactions, isValidating: isWalletTransactionsLoading } =
+    useSWR("walletTransactions", () =>
+      getTransactionHistory(principal as Principal),
+    )
 
-  const { data: exchangeRate } = useSWR("walletExchangeRate", getExchangeRate)
+  const { data: exchangeRate, isValidating: isWalletExchangeRateLoading } =
+    useSWR("walletExchangeRate", getExchangeRate)
 
   const address = useMemo(() => {
     if (!principal) return ""
@@ -61,7 +65,7 @@ export const useWallet = () => {
   }, [principal])
 
   useEffect(() => {
-    if (account?.anchor) mutate("walletPrinciple")
+    if (account?.anchor) mutate("walletPrincipal")
   }, [account])
 
   useEffect(() => {
@@ -76,5 +80,10 @@ export const useWallet = () => {
     walletExchangeRate: exchangeRate,
     walletTransactions: transactions,
     walletAddress: address,
+    isWalletLoading:
+      isWalletPrincipalLoading ||
+      isWalletBalanceLoading ||
+      isWalletTransactionsLoading ||
+      isWalletExchangeRateLoading,
   }
 }

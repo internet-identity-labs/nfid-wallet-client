@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import React from "react"
-import { Link } from "react-router-dom"
 
 import { Logo } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -34,9 +33,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
         className,
       )}
     >
-      <Link to="/">
-        <Logo />
-      </Link>
+      <Logo />
       <div className={clsx("hidden", "sm:flex sm:space-x-5 sm:h-10")}>
         <SendReceiveButton />
         <div className={clsx("relative")} ref={popupRef}>

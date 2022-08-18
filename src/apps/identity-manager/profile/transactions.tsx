@@ -1,6 +1,8 @@
 import { format } from "date-fns"
 import { useMemo } from "react"
 
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 
 import { useWallet } from "./wallet/hooks"
@@ -16,7 +18,7 @@ interface ITransaction {
 }
 
 const ProfileTransactions = () => {
-  const { walletTransactions, walletAddress } = useWallet()
+  const { walletTransactions, walletAddress, isWalletLoading } = useWallet()
 
   const transactions: ITransaction[] | undefined = useMemo(() => {
     return walletTransactions?.transactions.map(({ transaction }) => {
@@ -37,10 +39,13 @@ const ProfileTransactions = () => {
   }, [walletAddress, walletTransactions?.transactions])
 
   return (
-    <ProfileTransactionsPage
-      sentData={transactions?.filter((t) => t.type === "send") ?? []}
-      receivedData={transactions?.filter((t) => t.type === "receive") ?? []}
-    />
+    <>
+      <Loader isLoading={isWalletLoading} />
+      <ProfileTransactionsPage
+        sentData={transactions?.filter((t) => t.type === "send") ?? []}
+        receivedData={transactions?.filter((t) => t.type === "receive") ?? []}
+      />
+    </>
   )
 }
 

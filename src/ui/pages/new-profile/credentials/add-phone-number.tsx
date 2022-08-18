@@ -3,6 +3,7 @@ import React from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { Profile } from "frontend/integration/identity-manager"
 import { Button } from "frontend/ui/atoms/button"
 import { Input } from "frontend/ui/atoms/input"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -10,15 +11,17 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { phoneRules } from "frontend/ui/utils/validations"
 
 interface IProfileAddPhoneNumber {
+  account?: Profile
   responseError?: string
   isLoading?: boolean
   onSubmit: SubmitHandler<{ phone: string }>
 }
 
 const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
-  responseError,
-  onSubmit,
+  account,
   isLoading,
+  onSubmit,
+  responseError,
 }) => {
   const {
     formState: { errors },
@@ -27,7 +30,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
     setError,
   } = useForm<{ phone: string }>({
     defaultValues: {
-      phone: "",
+      phone: account?.phoneNumber,
     },
   })
 
@@ -36,7 +39,6 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
       setError("phone", { message: responseError })
     }
   }, [errors.phone, responseError, setError])
-
   return (
     <ProfileTemplate
       pageTitle="Add phone number"

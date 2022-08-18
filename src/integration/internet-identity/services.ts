@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/browser"
 import {
   fetchProfile,
   Profile,
-  registerAccount,
+  registerProfileWithAccessPoint,
 } from "frontend/integration/identity-manager"
 import {
   AuthSession,
@@ -29,6 +29,7 @@ import {
 import { ii } from "../actors"
 import { deviceInfo } from "../device"
 import { identityFromDeviceList } from "../identity"
+import { Icon } from "../identity-manager/devices/state"
 import {
   loadProfileFromLocalStorage,
   setProfile,
@@ -198,7 +199,22 @@ export async function registerService(
 
   try {
     // Register the account with identity manager.
-    const profile = await registerAccount(anchor)
+    const account = { anchor }
+    const accessPoint = {
+      icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
+      device: deviceInfo.newDeviceName,
+      browser: deviceInfo.browser.name ?? "Mobile",
+      pubKey: Array.from(
+        new Uint8Array(
+          authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
+        ),
+      ),
+    }
+    console.debug("RouterRegisterDeviceDecider handleRegister", {
+      account,
+      accessPoint,
+    })
+    const profile = await registerProfileWithAccessPoint(anchor, accessPoint)
 
     // Only in case this device has registered, we set the config in localStorage
     if (sessionSource === "localDevice") {

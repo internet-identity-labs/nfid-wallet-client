@@ -1,5 +1,7 @@
 import clsx from "clsx"
 import { useState } from "react"
+import { toast } from "react-toastify"
+import { mutate } from "swr"
 
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -22,20 +24,24 @@ export const SendReceiveButton = () => {
       setIsLoading(true)
       await transfer(values.address, values.sum)
       setIsSuccess(true)
-    } catch (e) {
-      console.log({ e })
+      mutate("walletBalance")
+    } catch (e: any) {
+      if (e.message === "InsufficientFunds")
+        toast.error("You don't have enough ICP for this transaction")
+      else toast.error("Unexpected error. ICP haven't been  sent")
+      console.error({ e })
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <>
+    <div>
       <Loader isLoading={isLoading} />
       <Button
         className={clsx(
           "px-[10px] py-[11px] space-x-2.5 items-center",
-          "hidden sm:flex",
+          "hidden sm:flex z-10",
         )}
         onClick={() => setIsModalVisible(true)}
         primary
@@ -48,7 +54,7 @@ export const SendReceiveButton = () => {
           "sm:hidden fixed bottom-3 right-3 w-12 h-12",
           "bg-blue-600 flex items-center justify-center",
           "rounded-full shadow-blueLight shadow-blue-600",
-          "cursor-pointer z-50",
+          "cursor-pointer z-40",
         )}
         onClick={() => setIsModalVisible(true)}
       >
@@ -76,6 +82,6 @@ export const SendReceiveButton = () => {
           />
         </div>
       )}
-    </>
+    </div>
   )
 }

@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -19,6 +21,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   return (
     <ProfileTemplate pageTitle="Assets" icon={Icon} onIconClick={onIconClick}>
       <ProfileContainer title="Your tokens">
+        <Loader isLoading={!tokens.length} />
         <table className={clsx("text-left w-full hidden sm:table")}>
           <thead className={clsx("border-b border-black-base h-16")}>
             <tr className={clsx("font-bold text-sm leading-5")}>
@@ -80,7 +83,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       </ProfileContainer>
       <ProfileContainer
         title="Your NFTs"
-        className={clsx("pb-52", "sm:pb-[26px] mt-[30px] relative")}
+        className={clsx("pb-40", "sm:pb-[26px] mt-[30px] relative")}
       >
         <div className="text-neutral-900 text-sm leading-5 max-w-[320px] z-20 relative">
           <p>
@@ -96,9 +99,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
           src={WithoutNFT}
           alt="Coming soon"
           className={clsx(
-            "bottom-0 -right-[80px] w-[100vw]",
+            "-bottom-32 -right-[80px] w-[110vw]",
             "sm:top-0 sm:-right-[30px] sm:w-2/3",
-            "absolute z-10",
+            "absolute z-10 max-w-none",
           )}
         />
       </ProfileContainer>

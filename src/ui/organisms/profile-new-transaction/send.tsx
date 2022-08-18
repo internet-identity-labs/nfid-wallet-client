@@ -51,7 +51,8 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
     }
   }, [errorString, setError, setValue])
 
-  const isFormComplete = !!dirtyFields.address && !errors.address
+  const isFormComplete =
+    !!dirtyFields.address && !errors.address && !!dirtyFields.sum && !errors.sum
 
   if (isSuccess)
     return <TransactionSuccess sum={getValues().sum} onClose={onClose} />

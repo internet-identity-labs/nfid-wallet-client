@@ -71,7 +71,7 @@ const ProfileNewTransaction: React.FC<IProfileNewTransaction> = ({
     <div
       className={clsx(
         "rounded-xl shadow-lg pt-8 px-5 max-w-[380px] text-gray-400",
-        "w-[95vw] z-50 bg-white absolute",
+        "w-[95vw] z-20 bg-white absolute",
         "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
       )}
       onClick={(e) => e.stopPropagation()}

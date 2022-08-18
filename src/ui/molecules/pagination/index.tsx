@@ -35,7 +35,12 @@ const Pagination: React.FC<IPagination> = ({
   }, [currentPage, data, sliceData])
 
   return (
-    <div className={clsx("flex items-center", !data.length && "hidden")}>
+    <div
+      className={clsx(
+        "flex items-center",
+        data.length < perPage + 1 && "hidden",
+      )}
+    >
       <Box
         disabled={currentPage === 1}
         onClick={() => setCurrentPage(currentPage - 1)}

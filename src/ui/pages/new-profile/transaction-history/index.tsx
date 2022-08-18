@@ -37,6 +37,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
       onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
       className="w-full mt-32 min-w-fit sm:mt-0 z-[1]"
       headerClassName="fixed z-20 left-0 top-0 sm:relative"
+      containerClassName="overflow-x-auto"
     >
       <TabsSwitcher
         className="mt-2"

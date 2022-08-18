@@ -13,7 +13,11 @@ import userEvent from "@testing-library/user-event"
 
 import { ii, im } from "frontend/integration/actors"
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
-import { mockExternalAccountResponse } from "frontend/integration/identity-manager/__mocks"
+import {
+  mockCreateAccessPointResponse,
+  mockExternalAccountResponse,
+  mockGetAccountResponse,
+} from "frontend/integration/identity-manager/__mocks"
 import {
   factoryDelegationChain,
   mockWebAuthnCreate,
@@ -42,6 +46,10 @@ describe("Registration Coordinator", () => {
 
     // @ts-ignore: actor class has additional things to mock
     im.create_account = jest.fn(mockExternalAccountResponse)
+    // @ts-ignore: actor class has additional things to mock
+    im.create_access_point = jest.fn(mockCreateAccessPointResponse)
+    // @ts-ignore: actor class has additional things to mock
+    im.get_account = jest.fn(mockGetAccountResponse)
 
     WebAuthnIdentity.create = jest.fn(mockWebAuthnCreate)
     DelegationChain.create = jest.fn(factoryDelegationChain)
@@ -84,8 +92,9 @@ describe("Registration Coordinator", () => {
     })
 
     expect(DelegationChain.create).toHaveBeenCalledTimes(1)
-    expect(im.create_account).toHaveBeenCalledTimes(1)
     expect(ii.register).toHaveBeenCalledTimes(1)
+    expect(im.create_account).toHaveBeenCalledTimes(1)
+    expect(im.create_access_point).toHaveBeenCalledTimes(1)
 
     expect(actor?.getSnapshot().value).toBe("End")
   })

@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { im } from "frontend/integration/actors"
 import { deviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { Icon } from "frontend/integration/identity-manager/devices/state"
@@ -118,17 +117,24 @@ export const RegisterAccountCaptcha: React.FC<
       if (response && response.kind === "loginSuccess") {
         setShouldStoreLocalAccount(false)
         const { user } = response
-        const createAccountResponse = await im
-          .create_account({
-            anchor: response.userNumber,
-          })
-          .catch((e) => {
-            throw new Error(
-              `handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
-            )
-          })
+        const account = { anchor: response.userNumber }
+        const accessPoint = {
+          // TODO: we need to create a google icon
+          icon: "mobile" as Icon,
+          device: "NFID Google device",
+          browser: "cross platform",
+          pubKey: Array.from(
+            new Uint8Array(
+              authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
+            ),
+          ),
+        }
+        await createAccount(account, accessPoint, false)
+        console.debug("RouterRegisterDeviceDecider handleRegister", {
+          account,
+          accessPoint,
+        })
         console.debug("handleRegisterAnchorWithGoogle", {
-          createAccountResponse,
           isRemoteRegister,
           secret,
         })
@@ -154,6 +160,7 @@ export const RegisterAccountCaptcha: React.FC<
       )
     },
     [
+      createAccount,
       isRemoteRegister,
       navigate,
       registerAnchorFromGoogle,

@@ -18,6 +18,7 @@ import {
   Profile,
   registerProfileWithAccessPoint,
 } from ".."
+import { setProfile } from "../profile"
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {
   memoryAccountAtom,
@@ -45,16 +46,20 @@ export const useAccount = () => {
   }, [profile, error])
 
   const createAccount = React.useCallback(
-    async (account: HTTPAccountRequest, accessPoint: CreateAccessPoint) => {
+    async (
+      account: HTTPAccountRequest,
+      accessPoint: CreateAccessPoint,
+      shouldStoreLocalAccount?: boolean,
+    ) => {
       const newAccount = await registerProfileWithAccessPoint(
         Number(account.anchor),
         accessPoint,
       )
-      setAccount(newAccount)
+      shouldStoreLocalAccount && setProfile(newAccount)
       mutate()
       return newAccount
     },
-    [mutate, setAccount],
+    [mutate],
   )
 
   const recoverAccount = React.useCallback(

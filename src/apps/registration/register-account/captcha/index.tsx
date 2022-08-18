@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
-import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { im } from "frontend/integration/actors"
 import { deviceInfo } from "frontend/integration/device"

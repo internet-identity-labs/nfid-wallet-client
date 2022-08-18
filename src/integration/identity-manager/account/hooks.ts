@@ -49,7 +49,7 @@ export const useAccount = () => {
     async (
       account: HTTPAccountRequest,
       accessPoint: CreateAccessPoint,
-      shouldStoreLocalAccount?: boolean,
+      shouldStoreLocalAccount: boolean = true,
     ) => {
       const newAccount = await registerProfileWithAccessPoint(
         Number(account.anchor),

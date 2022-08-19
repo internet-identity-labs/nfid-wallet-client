@@ -24,6 +24,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.loginWithAnchor": {
+      type: "done.invoke.loginWithAnchor"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.registerService": {
       type: "done.invoke.registerService"
       data: unknown
@@ -45,6 +50,10 @@ export interface Typegen0 {
       type: "error.platform.fetchChallenge"
       data: unknown
     }
+    "error.platform.loginWithAnchor": {
+      type: "error.platform.loginWithAnchor"
+      data: unknown
+    }
     "error.platform.registerService": {
       type: "error.platform.registerService"
       data: unknown
@@ -56,6 +65,7 @@ export interface Typegen0 {
     challengeTimer: "done.invoke.challengeTimer"
     createWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
     fetchChallenge: "done.invoke.fetchChallenge"
+    loginWithAnchor: "done.invoke.loginWithAnchor"
     registerService: "done.invoke.registerService"
   }
   missingImplementations: {
@@ -65,9 +75,13 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
-    assignAuthSession: "done.invoke.AuthWithGoogleMachine"
+    assignAuthSession:
+      | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.loginWithAnchor"
     assignChallenge: "done.invoke.fetchChallenge"
-    assignError: "error.platform.registerService"
+    assignError:
+      | "error.platform.loginWithAnchor"
+      | "error.platform.registerService"
     assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"
     logServiceError:
       | "error.platform.challengeTimer"
@@ -80,10 +94,12 @@ export interface Typegen0 {
     challengeTimer: "done.invoke.fetchChallenge"
     createWebAuthnIdentity: "CREATE_IDENTITY"
     fetchChallenge:
+      | "BACK"
       | "FETCH_CAPTCHA"
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.challengeTimer"
       | "xstate.init"
+    loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
     registerService: "SUBMIT_CAPTCHA"
   }
   eventsCausingGuards: {
@@ -93,7 +109,9 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   matchesStates:
     | "AuthWithGoogle"
+    | "AuthenticateSameDevice"
     | "End"
+    | "ExistingAnchor"
     | "Start"
     | "Start.Challenge"
     | "Start.Challenge.Fetch"

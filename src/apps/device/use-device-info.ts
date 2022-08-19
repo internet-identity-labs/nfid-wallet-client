@@ -3,6 +3,7 @@ import React from "react"
 
 import { getPlatformInfo } from "frontend/ui/utils"
 
+/** @deprecated */
 export const useDeviceInfo = () => {
   const [isWebAuthNAvailable, setHasWebAuthN] = React.useState<boolean>()
 
@@ -24,7 +25,7 @@ export const useDeviceInfo = () => {
     const info = {
       platform,
       browser,
-      newDeviceName: `NFID browser on ${platform.os}`,
+      newDeviceName: `NFID ${browser.name} on ${platform.os}`,
       isWebAuthNAvailable,
       isMobile: Boolean(
         window.navigator.userAgent.match(

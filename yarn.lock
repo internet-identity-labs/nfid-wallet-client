@@ -2327,10 +2327,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/credentials@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@nfid/credentials/-/credentials-0.0.12.tgz#bea93e2d57ace5879c8a6caf7e50e469c992e260"
-  integrity sha512-6tWI90WVCO1pkoXS+DFYveMLRwPhN170VXlO6taaDn8vI6GZDBLqJZ8C0kwiXlGLEnv0r/4bKBALjQHsptKznw==
+"@nfid/credentials@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@nfid/credentials/-/credentials-1.1.0.tgz#def90f363c2a0c7c9844bbc8c0c4f04b6ebf8ce4"
+  integrity sha512-P0KCNGxtbKoCzy62kGyvyzkJ0L6F095hevw6bigBw4TW5SmcUkvd+mMw38yzk2rI3+dj8xkT57c/0KEPUmTS0A==
   dependencies:
     "@dfinity/agent" "^0.11.3"
     "@dfinity/candid" "^0.11.3"

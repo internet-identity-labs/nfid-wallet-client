@@ -33,10 +33,10 @@ export async function getPhoneCredential(token: number[]) {
   console.debug("getPhoneCredential", {
     token,
   })
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 3; i++) {
     // Linear backoff
     await new Promise((resolve) => {
-      setInterval(resolve, 1000 * i)
+      setInterval(resolve, 100 * i)
     })
     try {
       const credential = await resolveToken(token).catch((r) => {

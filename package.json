@@ -51,7 +51,7 @@
     "ictool": "^0.0.6",
     "immer": "9.0.12",
     "jest-environment-jsdom": "^27.1.5",
-    "jotai": "1.6.4",
+    "jotai": "1.8.0",
     "process": "0.11.10",
     "react": "^18.2.0",
     "react-awesome-reveal": "^3.8.1",

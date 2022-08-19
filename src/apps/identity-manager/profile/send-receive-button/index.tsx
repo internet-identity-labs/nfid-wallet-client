@@ -54,7 +54,7 @@ export const SendReceiveButton = () => {
           "sm:hidden fixed bottom-3 right-3 w-12 h-12",
           "bg-blue-600 flex items-center justify-center",
           "rounded-full shadow-blueLight shadow-blue-600",
-          "cursor-pointer z-40",
+          "cursor-pointer z-30",
         )}
         onClick={() => setIsModalVisible(true)}
       >
@@ -65,7 +65,7 @@ export const SendReceiveButton = () => {
           onClick={() => setIsModalVisible(false)}
           className={clsx([
             "transition ease-in-out delay-150 duration-300",
-            "z-30 top-0 left-0 w-full h-screen",
+            "z-40 top-0 left-0 w-full h-screen",
             "fixed bg-opacity-75 bg-gray-600",
           ])}
           style={{ margin: 0 }}

@@ -72,6 +72,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
           id="input"
           onKeyUp={(e) => setSumLength(e.target.value.length)}
           {...register("sum", {
+            valueAsNumber: true,
             required: sumRules.errorMessages.required,
           })}
         />

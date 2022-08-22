@@ -4140,20 +4140,20 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*", "@types/node@17.0.29":
-  version "17.0.29"
-  resolved "https://registry.npmjs.org/@types/node/-/node-17.0.29.tgz"
-  integrity sha512-tx5jMmMFwx7wBwq/V7OohKDVb/JwJU5qCVkeLMh1//xycAJ/ESuw9aJ9SEtlCZDYi2pBfe4JkisSoAtbOsBNAA==
+"@types/node@*", "@types/node@>=12", "@types/node@^18.0.0":
+  version "18.6.1"
+  resolved "https://registry.npmjs.org/@types/node/-/node-18.6.1.tgz"
+  integrity sha512-z+2vB6yDt1fNwKOeGbckpmirO+VBDuQqecXkgeIqDlaOtmKn6hPR/viQ8cxCfqLU4fTlvM3+YjM367TukWdxpg==
 
 "@types/node@11.11.6":
   version "11.11.6"
   resolved "https://registry.npmjs.org/@types/node/-/node-11.11.6.tgz"
   integrity sha512-Exw4yUWMBXM3X+8oqzJNRqZSwUAaS4+7NdvHqQuFi/d+synz++xmX3QIf+BFqneW8N31R8Ky+sikfZUXq07ggQ==
 
-"@types/node@>=12", "@types/node@^18.0.0":
-  version "18.6.1"
-  resolved "https://registry.npmjs.org/@types/node/-/node-18.6.1.tgz"
-  integrity sha512-z+2vB6yDt1fNwKOeGbckpmirO+VBDuQqecXkgeIqDlaOtmKn6hPR/viQ8cxCfqLU4fTlvM3+YjM367TukWdxpg==
+"@types/node@17.0.29":
+  version "17.0.29"
+  resolved "https://registry.npmjs.org/@types/node/-/node-17.0.29.tgz"
+  integrity sha512-tx5jMmMFwx7wBwq/V7OohKDVb/JwJU5qCVkeLMh1//xycAJ/ESuw9aJ9SEtlCZDYi2pBfe4JkisSoAtbOsBNAA==
 
 "@types/node@^14.0.10 || ^16.0.0", "@types/node@^14.14.20 || ^16.0.0":
   version "16.11.45"
@@ -4719,6 +4719,17 @@
     deepmerge "^4.0.0"
     glob "^8.0.3"
 
+"@wdio/config@7.23.0":
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/@wdio/config/-/config-7.23.0.tgz#3c8d2b2731f5e2a01c83bd9dbd1f207457f25e54"
+  integrity sha512-jLf1yUqu5EUyzCUxsZzDDGurkA2/8LKBv/4W55jYkRqnw4dqwx/kvOLDGIBJnNFOWF/enhvJwNuxEGf3dWNynQ==
+  dependencies:
+    "@wdio/logger" "7.19.0"
+    "@wdio/types" "7.23.0"
+    "@wdio/utils" "7.23.0"
+    deepmerge "^4.0.0"
+    glob "^8.0.3"
+
 "@wdio/cucumber-framework@^7.19.1":
   version "7.20.7"
   resolved "https://registry.npmjs.org/@wdio/cucumber-framework/-/cucumber-framework-7.20.7.tgz"
@@ -4784,6 +4795,11 @@
   resolved "https://registry.npmjs.org/@wdio/protocols/-/protocols-7.20.6.tgz"
   integrity sha512-+G7zAw7MsjohFU+xVJO9unc4eUuTX3UdVT3mQGDHQLuSGNGVL5QrtgEGYx8x32OMkFX4zs6ncObVAf0kR6H4Mg==
 
+"@wdio/protocols@7.22.0":
+  version "7.22.0"
+  resolved "https://registry.yarnpkg.com/@wdio/protocols/-/protocols-7.22.0.tgz#d89faef687cb08981d734bbc5e5dffc6fb5a064c"
+  integrity sha512-8EXRR+Ymdwousm/VGtW3H1hwxZ/1g1H99A1lF0U4GuJ5cFWHCd0IVE5H31Z52i8ZruouW8jueMkGZPSo2IIUSQ==
+
 "@wdio/repl@7.16.14":
   version "7.16.14"
   resolved "https://registry.npmjs.org/@wdio/repl/-/repl-7.16.14.tgz"
@@ -4797,6 +4813,13 @@
   integrity sha512-9FXLyRWX7arYScEf9wFqkDuttVAPMJ91WA3C0FDf3vqbTxv1/4V5etkds/b7nH6SHq1FHdlcN4LCZ7lIfbu72Q==
   dependencies:
     "@wdio/utils" "7.20.7"
+
+"@wdio/repl@7.23.0":
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/@wdio/repl/-/repl-7.23.0.tgz#959f963ffe9ffea7e6047583f50ca70cdc92f933"
+  integrity sha512-AZwNnS2r+6fAjp9JonmZEM6kN1mWNGN4xOxOgRp/MJUK3XAK0HJ4ZoWqeMeEMlPmu1nlm/1oUyeQYThFEj5n2Q==
+  dependencies:
+    "@wdio/utils" "7.23.0"
 
 "@wdio/reporter@7.20.7", "@wdio/reporter@^7.16.3":
   version "7.20.7"
@@ -4844,17 +4867,17 @@
     webdriver "7.20.7"
     webdriverio "7.20.7"
 
-"@wdio/sauce-service@^7.19.1":
-  version "7.20.7"
-  resolved "https://registry.npmjs.org/@wdio/sauce-service/-/sauce-service-7.20.7.tgz"
-  integrity sha512-eneXIWB4tmSctNTJC64H3fxEzK0eBdWhbOXqRivp8zPetvuLE1pce5+n2i73IX1mWlk3MACQGLU0Qokw7x0WNg==
+"@wdio/sauce-service@^7.23.0":
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/@wdio/sauce-service/-/sauce-service-7.23.0.tgz#b26a81500cd2a54be24fcfb21a76121cf4d933b1"
+  integrity sha512-b+TnbrHGyvb6fQp1pO5TaZ+pQujuljy4eZtmCa9sPnEn8JYQK99VctXqGcLJbb1bq6HmtsA+MVTrqTUhZWMn8A==
   dependencies:
     "@types/node" "^18.0.0"
     "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.20.7"
-    "@wdio/utils" "7.20.7"
+    "@wdio/types" "7.23.0"
+    "@wdio/utils" "7.23.0"
     saucelabs "^7.1.3"
-    webdriverio "7.20.7"
+    webdriverio "7.23.0"
 
 "@wdio/selenium-standalone-service@^7.16.16":
   version "7.20.7"
@@ -4912,6 +4935,14 @@
     "@types/node" "^18.0.0"
     got "^11.8.1"
 
+"@wdio/types@7.23.0":
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-7.23.0.tgz#4d2a1099f9d0c6f68372d6ea06a40cb50ee2dc6d"
+  integrity sha512-9I00r/AkitiDbOX0swYo6r3t1jzEHd6DD3opH5Zz/pMGQbwMenqvmACH+HwnRA7QKbcRVb1bY66yogMxvfQYAQ==
+  dependencies:
+    "@types/node" "^18.0.0"
+    got "^11.8.1"
+
 "@wdio/utils@7.16.14":
   version "7.16.14"
   resolved "https://registry.npmjs.org/@wdio/utils/-/utils-7.16.14.tgz"
@@ -4928,6 +4959,15 @@
   dependencies:
     "@wdio/logger" "7.19.0"
     "@wdio/types" "7.20.7"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@7.23.0":
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-7.23.0.tgz#04056cea87c5f94fb3dc0cc7951beb6161120e9a"
+  integrity sha512-kFnUOkU2IUQXORCOzZ4QcSPA1Dk+QdUMwWYB04jtfYle1Wyzbbs9c+7PeIe03oRHBHHCYOkd6+YcnwcZAxWmOQ==
+  dependencies:
+    "@wdio/logger" "7.19.0"
+    "@wdio/types" "7.23.0"
     p-iteration "^1.1.8"
 
 "@webassemblyjs/ast@1.11.1":
@@ -8326,6 +8366,11 @@ devtools-protocol@^0.0.1022601:
   resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.1022601.tgz"
   integrity sha512-yA+q2/ZAsLjBEIgAUxKlAvbNxvpIcL/H18/7tAJj1cnifevVcAr/gQAL4NaNkwrdfPMsWd8/2tUXv+1zWv95KQ==
 
+devtools-protocol@^0.0.1034970:
+  version "0.0.1034970"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.1034970.tgz#edbbdfee461def49bff61fa8780138ce4a1e105f"
+  integrity sha512-kC7Wo+7z+Bo202DVB7qVqccreL+RpcGk/6eCrpM1qj2azag6UCMg05GL3ty2adg8CXWFpUGdMeyFJfIN8lQtgw==
+
 devtools-protocol@^0.0.973690:
   version "0.0.973690"
   resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.973690.tgz"
@@ -8362,6 +8407,25 @@ devtools@7.20.7:
     "@wdio/protocols" "7.20.6"
     "@wdio/types" "7.20.7"
     "@wdio/utils" "7.20.7"
+    chrome-launcher "^0.15.0"
+    edge-paths "^2.1.0"
+    puppeteer-core "^13.1.3"
+    query-selector-shadow-dom "^1.0.0"
+    ua-parser-js "^1.0.1"
+    uuid "^8.0.0"
+
+devtools@7.23.0:
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/devtools/-/devtools-7.23.0.tgz#5bb0a37c5c36aa9eebb58c5314d6f2fd23f6c0a1"
+  integrity sha512-mu9ovRS0sfLP9bjtC20bCy8DF9kCtH9Xg1XmII6Vk+Icc2z/IMbm05QO0ScFDRrr3KdzldmfUOud5KfsLY4W/w==
+  dependencies:
+    "@types/node" "^18.0.0"
+    "@types/ua-parser-js" "^0.7.33"
+    "@wdio/config" "7.23.0"
+    "@wdio/logger" "7.19.0"
+    "@wdio/protocols" "7.22.0"
+    "@wdio/types" "7.23.0"
+    "@wdio/utils" "7.23.0"
     chrome-launcher "^0.15.0"
     edge-paths "^2.1.0"
     puppeteer-core "^13.1.3"
@@ -19141,7 +19205,22 @@ webdriver@7.20.7:
     ky "0.30.0"
     lodash.merge "^4.6.1"
 
-webdriverio@7.20.7, webdriverio@^7.16.16:
+webdriver@7.23.0:
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/webdriver/-/webdriver-7.23.0.tgz#b096eae7adc5a24a54ebf8fa13128778fe8207c2"
+  integrity sha512-riIQ77PVWnuyGsI/Kt13jDjWnatrFme2OWm9In9sKvKTaJBz5WU1ae1pYO8H/SQVIxMyys2y9UYGOLJnQ3XM8A==
+  dependencies:
+    "@types/node" "^18.0.0"
+    "@wdio/config" "7.23.0"
+    "@wdio/logger" "7.19.0"
+    "@wdio/protocols" "7.22.0"
+    "@wdio/types" "7.23.0"
+    "@wdio/utils" "7.23.0"
+    got "^11.0.2"
+    ky "0.30.0"
+    lodash.merge "^4.6.1"
+
+webdriverio@7.20.7:
   version "7.20.7"
   resolved "https://registry.npmjs.org/webdriverio/-/webdriverio-7.20.7.tgz"
   integrity sha512-8Vc9+Jp91cG89dXtVDhlrUxigaaixWly8hXOtMf3sp5mAJ5hYSJtthTXcoNWK0HRf6yo/SYKziCRr91B9JCT1Q==
@@ -19173,6 +19252,39 @@ webdriverio@7.20.7, webdriverio@^7.16.16:
     rgb2hex "0.2.5"
     serialize-error "^8.0.0"
     webdriver "7.20.7"
+
+webdriverio@7.23.0, webdriverio@^7.16.16:
+  version "7.23.0"
+  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-7.23.0.tgz#a19135dffea1a00b866cffcfb0add314e05c38e7"
+  integrity sha512-xQwVrT27Ly23r95heFTumwZmkW5Sw2PwOrXpII4GMRfAY5tIQlkutlCJgf4sEfPCD6mxbW40Oniun/VwL2bkSw==
+  dependencies:
+    "@types/aria-query" "^5.0.0"
+    "@types/node" "^18.0.0"
+    "@wdio/config" "7.23.0"
+    "@wdio/logger" "7.19.0"
+    "@wdio/protocols" "7.22.0"
+    "@wdio/repl" "7.23.0"
+    "@wdio/types" "7.23.0"
+    "@wdio/utils" "7.23.0"
+    archiver "^5.0.0"
+    aria-query "^5.0.0"
+    css-shorthand-properties "^1.1.1"
+    css-value "^0.0.1"
+    devtools "7.23.0"
+    devtools-protocol "^0.0.1034970"
+    fs-extra "^10.0.0"
+    grapheme-splitter "^1.0.2"
+    lodash.clonedeep "^4.5.0"
+    lodash.isobject "^3.0.2"
+    lodash.isplainobject "^4.0.6"
+    lodash.zip "^4.2.0"
+    minimatch "^5.0.0"
+    puppeteer-core "^13.1.3"
+    query-selector-shadow-dom "^1.0.0"
+    resq "^1.9.1"
+    rgb2hex "0.2.5"
+    serialize-error "^8.0.0"
+    webdriver "7.23.0"
 
 webdriverio@~7.16.13:
   version "7.16.16"

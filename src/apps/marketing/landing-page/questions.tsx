@@ -173,9 +173,7 @@ export const questions = [
           >
             authorized devices
           </Link>
-          ). If you have no other registered devices, use your recovery phrase
-          to temporarily authenticate yourself and remove the lost device from
-          your list of NFID .
+          )
         </div>
       </div>
     ),

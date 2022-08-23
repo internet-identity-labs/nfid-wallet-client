@@ -1,42 +1,21 @@
 import React from "react"
 
-import { Account } from "frontend/integration/identity-manager"
 import { List } from "frontend/ui/molecules/list"
 import { ListItem } from "frontend/ui/molecules/list/list-item"
 import { getUrl } from "frontend/ui/utils"
 
+interface IAccount {
+  applicationName: string
+  accountsCount: number
+  domain: string
+}
 interface ApplicationListProps {
-  accounts: Account[]
+  accounts: IAccount[]
 }
 
 export const ApplicationList: React.FC<ApplicationListProps> = ({
   accounts = [],
 }) => {
-  const myApplications = React.useMemo(() => {
-    // Group iiPersonas by hostname and count the number of iiPersonas
-    const personasByHostname = accounts.reduce((acc, persona) => {
-      const hostname = getUrl(persona.domain).hostname.split(".")[0]
-      const applicationName =
-        hostname.charAt(0).toUpperCase() + hostname.slice(1)
-      const personas = acc[applicationName] || []
-      acc[applicationName] = [...personas, persona]
-
-      return acc
-    }, {} as { [applicationName: string]: Account[] })
-
-    // Map the iiPersonas by application to an array of objects
-    const personaByHostnameArray = Object.entries(personasByHostname).map(
-      ([applicationName, accounts]) => {
-        return {
-          applicationName,
-          accountsCount: accounts.length,
-        }
-      },
-    )
-
-    return personaByHostnameArray
-  }, [accounts])
-
   const handleNavigateToApplication = React.useCallback(
     (applicationName: string) => {
       const application = accounts.find((persona) => {
@@ -52,7 +31,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
 
   return (
     <List.Items className="ml-0">
-      {myApplications.map((application, index) => (
+      {accounts.map((application, index) => (
         <ListItem
           key={index}
           title={application.applicationName}

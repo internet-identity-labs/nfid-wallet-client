@@ -25,14 +25,14 @@ const Pagination: React.FC<IPagination> = ({
 
   React.useEffect(() => {
     const result = data.slice(
-      (currentPage - 1) * 10,
-      (currentPage - 1) * 10 + 10,
+      (currentPage - 1) * perPage,
+      (currentPage - 1) * perPage + perPage,
     )
     if (!result.length) {
       setCurrentPage(1)
       sliceData([])
     } else sliceData(result)
-  }, [currentPage, data, sliceData])
+  }, [currentPage, data, perPage, sliceData])
 
   return (
     <div
@@ -52,6 +52,7 @@ const Pagination: React.FC<IPagination> = ({
         .fill(null)
         .map((_, index) => (
           <Box
+            key={`pagination_box_${index}`}
             onClick={() => setCurrentPage(index + 1)}
             isActive={index === currentPage - 1}
           >

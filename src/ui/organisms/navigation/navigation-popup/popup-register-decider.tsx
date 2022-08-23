@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 import {
   Button,
@@ -10,6 +11,7 @@ import {
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
@@ -26,6 +28,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const { readAndStoreAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
   const { getPersona } = usePersona()
+  const navigate = useNavigate()
 
   const {
     platform: { device, authenticator: platformAuth },
@@ -51,6 +54,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
 
         setIsLoading(false)
         setStatus("registerDevice")
+        navigate(`${ProfileConstants.base}/${ProfileConstants.security}`)
       } catch (e) {
         console.error(e)
         setIsLoading(false)
@@ -60,6 +64,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
     if (linkAccount === "rb_link_account_login") {
       setShouldStoreLocalAccount(false)
       setStatus("registerDevice")
+      navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
     }
   }
 

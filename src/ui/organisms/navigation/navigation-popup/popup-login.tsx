@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
 
@@ -16,6 +17,13 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
   const { getPersona } = usePersona()
   const { login, isAuthenticated, logout } = useAuthentication()
   const navigate = useNavigate()
+
+  const handleLogin = async () => {
+    await login()
+    await readAccount()
+    await getPersona()
+    navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
+  }
 
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -42,7 +50,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
         </Button>
       )}
       {!isAuthenticated ? (
-        <Button primary className="w-full mt-4" onClick={() => login()}>
+        <Button primary className="w-full mt-4" onClick={handleLogin}>
           Log in
         </Button>
       ) : (

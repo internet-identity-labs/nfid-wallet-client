@@ -34,7 +34,9 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
       },
     )
 
-    return personaByHostnameArray
+    return personaByHostnameArray.sort((a, b) =>
+      a.applicationName.localeCompare(b.applicationName),
+    )
   }, [accounts])
 
   const handleNavigateToApplication = React.useCallback(

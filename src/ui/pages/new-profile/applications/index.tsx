@@ -28,7 +28,7 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
         <Pagination
           data={applications}
           sliceData={setFilteredData}
-          perPage={1}
+          perPage={20}
         />
       </div>
     </ProfileTemplate>

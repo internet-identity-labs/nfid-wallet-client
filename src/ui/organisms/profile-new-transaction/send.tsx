@@ -56,11 +56,12 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
   const onAddressChange = (e: any) => {
     const value = e.target.value
 
-    if (isHex(value))
+    if (isHex(value) && value.length === 64)
       return setError("address", { type: "manual", message: "" })
+
     try {
-      if (!!Principal.fromText(value))
-        setError("address", { type: "manual", message: "" })
+      if (!!Principal.fromText(value) && value.length === 63)
+        return setError("address", { type: "manual", message: "" })
     } catch {
       setError("address", {
         type: "manual",

@@ -79,4 +79,3 @@ export async function verifyPhoneNumber(
 
   return data.phoneNumberEncrypted
 }
-

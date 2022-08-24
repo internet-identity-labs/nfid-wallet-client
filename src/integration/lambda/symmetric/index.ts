@@ -1,15 +1,19 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { Cbor, QueryFields } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
-import { ic } from "frontend/integration/actors"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { DelegationIdentity } from "@dfinity/identity"
 import { createDecipheriv } from "crypto"
+
+import { ic } from "frontend/integration/actors"
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
 declare const SYMMETRIC: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 
-export async function decryptStringForIdentity(encrypted: string, identity: DelegationIdentity) {
+export async function decryptStringForIdentity(
+  encrypted: string,
+  identity: DelegationIdentity,
+) {
   let key = await symmetric(identity)
   return decrypt(encrypted, key)
 }
@@ -18,9 +22,7 @@ export async function symmetric(identity: DelegationIdentity) {
   try {
     return await getSymmetricKey(identity)
   } catch (e) {
-    throw new Error(
-      "There was an issue getting symmetric key."
-    )
+    throw new Error("There was an issue getting symmetric key.")
   }
 }
 
@@ -62,5 +64,3 @@ function decrypt(encrypted: string, key: string) {
   decryptedString += cipher.final("utf8")
   return decryptedString
 }
-
-

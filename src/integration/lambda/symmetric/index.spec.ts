@@ -1,9 +1,15 @@
 /**
  * @jest-environment jsdom
  */
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 import { expect } from "@jest/globals"
-import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { decryptStringForIdentity, symmetric } from "frontend/integration/lambda/symmetric"
+import { createCipheriv } from "crypto"
+
+import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.did"
 import {
   Challenge,
   ChallengeResult,
@@ -11,17 +17,20 @@ import {
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { ii, im, replaceIdentity } from "frontend/integration/actors"
-import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.did"
-import { createCipheriv } from "crypto"
+import {
+  decryptStringForIdentity,
+  symmetric,
+} from "frontend/integration/lambda/symmetric"
 
 describe("symmetric suite", () => {
   jest.setTimeout(50000)
 
   describe("Symmetric Key Service Test", () => {
-
-    it("Create account and retrieve same key + encrypt/decrypt", async function() {
+    it("Create account and retrieve same key + encrypt/decrypt", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity = await generateIdentity(mockedIdentity)
+      const delegationIdentity: DelegationIdentity = await generateIdentity(
+        mockedIdentity,
+      )
       replaceIdentity(delegationIdentity)
       await register(mockedIdentity)
       let key = await symmetric(delegationIdentity)
@@ -34,7 +43,10 @@ describe("symmetric suite", () => {
       let encrypted = encrypt(phoneNumber, key)
       console.log(encrypted)
 
-      let decrypted = await decryptStringForIdentity(encrypted, delegationIdentity)
+      let decrypted = await decryptStringForIdentity(
+        encrypted,
+        delegationIdentity,
+      )
       console.log(decrypted)
 
       expect(phoneNumber).toEqual(decrypted)
@@ -42,9 +54,13 @@ describe("symmetric suite", () => {
 
     it("Catch error if not registered account", async () => {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity = await generateIdentity(mockedIdentity)
+      const delegationIdentity: DelegationIdentity = await generateIdentity(
+        mockedIdentity,
+      )
       replaceIdentity(delegationIdentity)
-      await expect(symmetric(delegationIdentity)).rejects.toThrow("There was an issue getting symmetric key.")
+      await expect(symmetric(delegationIdentity)).rejects.toThrow(
+        "There was an issue getting symmetric key.",
+      )
     })
   })
 
@@ -57,7 +73,7 @@ describe("symmetric suite", () => {
   }
 
   async function register(identity: Ed25519KeyIdentity) {
-    const challenge: Challenge = await ii.create_challenge() as Challenge
+    const challenge: Challenge = (await ii.create_challenge()) as Challenge
     const challenageResult: ChallengeResult = {
       key: challenge.challenge_key,
       chars: "a",
@@ -76,7 +92,10 @@ describe("symmetric suite", () => {
       },
       credential_id: [],
     }
-    const registerResponse = (await ii.register(deviceData, challenageResult)) as { "registered": { "user_number": UserNumber } }
+    const registerResponse = (await ii.register(
+      deviceData,
+      challenageResult,
+    )) as { registered: { user_number: UserNumber } }
     let anchor: UserNumber = registerResponse.registered.user_number
     let req: HTTPAccountRequest = {
       anchor: anchor,
@@ -94,5 +113,4 @@ describe("symmetric suite", () => {
     )
     return DelegationIdentity.fromDelegation(sessionKey, chain)
   }
-
 })

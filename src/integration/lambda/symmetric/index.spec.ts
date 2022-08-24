@@ -40,15 +40,11 @@ describe("symmetric suite", () => {
       expect(phoneNumber).toEqual(decrypted)
     })
 
-    it("Catch error if not registered account", async function() {
+    it("Catch error if not registered account", async () => {
       let mockedIdentity = Ed25519KeyIdentity.generate()
       const delegationIdentity: DelegationIdentity = await generateIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
-      try {
-        await symmetric(delegationIdentity)
-      } catch (e) {
-        expect((e as Error).message).toEqual("There was an issue getting symmetric key.")
-      }
+      await expect(symmetric(delegationIdentity)).rejects.toThrow("There was an issue getting symmetric key.")
     })
   })
 

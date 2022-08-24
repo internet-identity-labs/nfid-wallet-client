@@ -1,5 +1,5 @@
-import { DelegationIdentity } from "@dfinity/identity"
 import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
+import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 const DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS = 5 * 60 * 1000

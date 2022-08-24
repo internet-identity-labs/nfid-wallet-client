@@ -1,9 +1,11 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import React, { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import Logo from "frontend/assets/dfinity.svg"
 import { Button } from "frontend/ui/atoms/button"
+import { isHex } from "frontend/ui/utils"
 import { sumRules } from "frontend/ui/utils/validations"
 
 import ArrowWhite from "./assets/arrowWhite.svg"
@@ -50,6 +52,23 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
       })
     }
   }, [errorString, setError, setValue])
+
+  const onAddressChange = (e: any) => {
+    const value = e.target.value
+
+    if (isHex(value) && value.length === 64)
+      return setError("address", { type: "manual", message: "" })
+
+    try {
+      if (!!Principal.fromText(value) && value.length === 63)
+        return setError("address", { type: "manual", message: "" })
+    } catch {
+      setError("address", {
+        type: "manual",
+        message: "This is not a valid account identifier",
+      })
+    }
+  }
 
   const isFormComplete =
     !!dirtyFields.address && !errors.address && !!dirtyFields.sum && !errors.sum
@@ -117,6 +136,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
                 {...register("address", {
                   required: "Principal or account ID is required",
                 })}
+                onChange={onAddressChange}
               />
               <div
                 className={clsx(

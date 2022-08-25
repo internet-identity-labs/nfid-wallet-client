@@ -61,6 +61,12 @@ export async function loginWithAnchor(
       authResult.chain,
       authResult.sessionKey,
     )
+    // When used platform authenticator
+    // Then write profile to localStorage
+    if (!event.data.withSecurityDevices) {
+      const profile = await fetchProfile()
+      setProfile(profile)
+    }
     return {
       sessionSource: "localDevice",
       anchor: Number(event.data.anchor),

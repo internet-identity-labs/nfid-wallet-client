@@ -452,7 +452,7 @@ export async function addDevice(
   credentialId?: ArrayBuffer,
 ) {
   //register only protected recovery phrase
-  let protectionType = await hasOwnProperty(purpose, "recovery") ? { protected: null } : { unprotected: null }
+  let protectionType = hasOwnProperty(purpose, "recovery") ? { protected: null } : { unprotected: null }
   // NOTE: removed the call to renewDelegation. It was failing because
   // of missing identity from authState. We'll replace this entire logic within
   // the following refactor and need to take care of the authState in

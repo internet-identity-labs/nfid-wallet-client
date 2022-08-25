@@ -28,5 +28,6 @@ Feature: Registration from landing page
     When I click on the selector "#create-nfid"
     # And My browser stores the credential
     Then I wait on element "#loader" for 10000ms to not be displayed
+    Then I expect "account" key to be present in localStorage
 
-# Then I expect the url to contain "/profile/authenticate"
+# Then I expect the url to contain "/profile/security"

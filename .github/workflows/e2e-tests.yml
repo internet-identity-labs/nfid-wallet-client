@@ -62,8 +62,8 @@ jobs:
       - name: Install dependencies
         run: |
           yarn
-          (yarn dev&)
-          sleep 10
+          yarn build
+          yarn serve -s build &
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV

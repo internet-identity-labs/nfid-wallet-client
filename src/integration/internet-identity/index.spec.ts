@@ -15,6 +15,7 @@ import { FrontendDelegation, getMultiIdent } from "frontend/integration/internet
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { II_DEVICES_DATA } from "frontend/integration/internet-identity/__mocks"
+import { generateDelegationIdentity, registerIIAccount } from "frontend/integration/test/test-util"
 
 
 describe("ii suite", () => {
@@ -23,7 +24,7 @@ describe("ii suite", () => {
   describe("II Service Test", () => {
     it("should create MultiWebAuthnIdentity", async function() {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity = await generateIdentity(mockedIdentity)
+      const delegationIdentity: DelegationIdentity = await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -33,7 +34,7 @@ describe("ii suite", () => {
         purpose: { authentication: null },
         credential_id: [],
       }
-      let anchor = await register(mockedIdentity, deviceData)
+      let anchor = await registerIIAccount(mockedIdentity, deviceData)
       let recoveryDevice = Ed25519KeyIdentity.generate()
       await iiIndexMock.addDevice(anchor,
         "DeviceRecoveryTest",
@@ -56,7 +57,7 @@ describe("ii suite", () => {
 
     it("should protect Unprotect Recovery Device", async function() {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity1: DelegationIdentity = await generateIdentity(mockedIdentity)
+      const delegationIdentityDummy: DelegationIdentity = await generateDelegationIdentity(mockedIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
         protection: { unprotected: null },
@@ -65,18 +66,18 @@ describe("ii suite", () => {
         purpose: { recovery: null },
         credential_id: [],
       }
-      replaceIdentity(delegationIdentity1)
-      let anchor = await register(mockedIdentity, deviceData)
+      replaceIdentity(delegationIdentityDummy)
+      let anchor = await registerIIAccount(mockedIdentity, deviceData)
       let recoveryPhraseDeviceData = await ii.lookup(anchor)
         .then((x) => x.find((d) => hasOwnProperty(d.purpose, "recovery"))) as DeviceData
 
       expect(hasOwnProperty(recoveryPhraseDeviceData.protection, "unprotected")).toEqual(true)
 
-      let chain = await DelegationChain.create(delegationIdentity1, mockedIdentity.getPublicKey(), new Date(Date.now() + 3_600_000 * 44))
+      let chain = await DelegationChain.create(delegationIdentityDummy, mockedIdentity.getPublicKey(), new Date(Date.now() + 3_600_000 * 44))
       let feDelegation: FrontendDelegation = {
         chain: chain,
         sessionKey: mockedIdentity,
-        delegationIdentity: delegationIdentity1,
+        delegationIdentity: delegationIdentityDummy,
       }
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() => Promise.resolve(mockedIdentity))
@@ -109,30 +110,6 @@ describe("ii suite", () => {
       })
     })
   })
-
-  async function register(identity: Ed25519KeyIdentity, deviceData: DeviceData) {
-    const challenge: Challenge = (await ii.create_challenge()) as Challenge
-    const challenageResult: ChallengeResult = {
-      key: challenge.challenge_key,
-      chars: "a",
-    }
-    const registerResponse = (await ii.register(
-      deviceData,
-      challenageResult,
-    )) as { registered: { user_number: UserNumber } }
-    return registerResponse.registered.user_number
-  }
-
-  async function generateIdentity(identity: Ed25519KeyIdentity) {
-    const sessionKey = Ed25519KeyIdentity.generate()
-    const chain = await DelegationChain.create(
-      identity,
-      sessionKey.getPublicKey(),
-      new Date(Date.now() + 3_600_000 * 44),
-      {},
-    )
-    return DelegationIdentity.fromDelegation(sessionKey, chain)
-  }
 
 
 })

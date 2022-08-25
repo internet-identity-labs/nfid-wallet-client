@@ -33,7 +33,6 @@ describe("symmetric suite", () => {
         encrypted,
         delegationIdentity,
       )
-      console.log(decrypted)
 
       expect(phoneNumber).toEqual(decrypted)
     })

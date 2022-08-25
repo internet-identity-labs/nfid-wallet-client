@@ -6380,6 +6380,11 @@ browser-assert@^1.2.1:
   resolved "https://registry.npmjs.org/browser-assert/-/browser-assert-1.2.1.tgz"
   integrity sha512-nfulgvOR6S4gt9UKCeGJOuSGBPGiFT6oQ/2UBnvTY/5aQ1PnksW72fhZkM30DzoRRv2WpwZf1vHHEr3mtuXIWQ==
 
+browser-crypto@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/browser-crypto/-/browser-crypto-1.4.0.tgz#2c83ff4474c2a97b2b2b2510b3b798e44b8beda5"
+  integrity sha512-hmKX0D17SXMQSbgyWTRcsRO02tLGcaXHhHudjK0TfPR1ZPLMAQISyuiYQoKSKq2eHmamoxnkzks+MTx4LslBLA==
+
 browser-process-hrtime@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz"

@@ -1,4 +1,4 @@
-@registration @current
+@registration
 Feature: Registration from landing page
 
   Background: Background name
@@ -9,6 +9,7 @@ Feature: Registration from landing page
   @mission
   Scenario Outline: User wants to register with WebAuthN
 
+    Then I wait on element "#continue-with-enhanced-security" for 20000ms to not be displayed
     When I click on the selector "#continue-with-enhanced-security"
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then I expect the url to contain "/register-nfid-account/captcha"

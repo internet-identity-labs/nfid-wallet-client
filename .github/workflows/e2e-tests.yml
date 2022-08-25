@@ -53,12 +53,6 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - uses: aviate-labs/setup-dfx@v0.2.3
-        with:
-          dfx-version: 0.9.3
-        env:
-          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
-
       - name: Install dependencies
         run: |
           yarn
@@ -80,10 +74,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
 
       - name: Running E2E test
-        run: npx wdio wdio.conf.ts
-
-      - name: Shut down
-        run: dfx stop
+        run: yarn test:e2e
 
       - name: Generate HTML Report
         if: always()

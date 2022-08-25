@@ -26,8 +26,10 @@ Feature: Registration from landing page
     And  I expect that element "#create-nfid" does not have the class "btn-disabled"
 
     When I click on the selector "#create-nfid"
-    # And My browser stores the credential
     Then I wait on element "#loader" for 10000ms to not be displayed
+
+    # And My browser stores the credential
+
     Then I expect "account" key to be present in localStorage
 
 # Then I expect the url to contain "/profile/security"

@@ -502,11 +502,16 @@ export async function protectRecoveryPhrase(
     IC_DERIVATION_PATH,
   )
   const frontendDelegation = await requestFEDelegation(identity)
+  let { delegationIdentity } = authState.get()
+  if (!delegationIdentity) {
+    throw Error('Unauthenticated')
+  }
   replaceIdentity(frontendDelegation.delegationIdentity)
   let recoveryPhraseDeviceData = await ii.lookup(userNumber)
     .then((x) => x.find((d) => hasOwnProperty(d.purpose, "recovery"))) as DeviceData
   recoveryPhraseDeviceData.protection = { protected: null }
   await updateDevice(userNumber, recoveryPhraseDeviceData.pubkey, recoveryPhraseDeviceData)
+  replaceIdentity(delegationIdentity)
 }
 
 async function registerAnchor(

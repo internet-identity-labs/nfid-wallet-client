@@ -11,7 +11,13 @@ import {
 } from "frontend/integration/_ic_api/identity_manager.did"
 import { im } from "frontend/integration/actors"
 
-import { fetchProfile, mapProfile, Profile } from ".."
+import {
+  CreateAccessPoint,
+  fetchProfile,
+  mapProfile,
+  Profile,
+  registerProfileWithAccessPoint,
+} from ".."
 import { ACCOUNT_LOCAL_STORAGE_KEY } from "./constants"
 import {
   memoryAccountAtom,
@@ -39,11 +45,11 @@ export const useAccount = () => {
   }, [profile, error])
 
   const createAccount = React.useCallback(
-    async (account: HTTPAccountRequest) => {
-      const newAccount = await im
-        .create_account(account)
-        .then(unpackResponse)
-        .then(mapProfile)
+    async (account: HTTPAccountRequest, accessPoint: CreateAccessPoint) => {
+      const newAccount = await registerProfileWithAccessPoint(
+        Number(account.anchor),
+        accessPoint,
+      )
       setAccount(newAccount)
       mutate()
       return newAccount

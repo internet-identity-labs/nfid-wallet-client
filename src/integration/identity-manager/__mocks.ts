@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 
 import { AccessPoint, Account, Profile } from "."
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.did"
+import { Icon } from "./devices/state"
 
 export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse> {
   return {
@@ -58,7 +59,7 @@ export function factoryPersona(principal?: Principal): Account {
  */
 export function factoryAccessPoint(principal?: Principal): AccessPoint {
   return {
-    icon: "string",
+    icon: "mobile",
     device: "string",
     browser: "string",
     lastUsed: new Date().getTime(),

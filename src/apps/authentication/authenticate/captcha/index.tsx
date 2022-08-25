@@ -3,8 +3,12 @@ import React from "react"
 import { useAuthorization } from "frontend/apps/authorization/use-authorization"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { im } from "frontend/integration/actors"
+import { deviceInfo } from "frontend/integration/device"
+import { CreateAccessPoint } from "frontend/integration/identity-manager"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { Icon } from "frontend/integration/identity-manager/devices/state"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { authState } from "frontend/integration/internet-identity"
 import { Captcha } from "frontend/ui/pages/captcha"
 import { useCaptcha, useChallenge } from "frontend/ui/pages/captcha/hook"
 import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
@@ -63,7 +67,22 @@ export const RouteCaptcha: React.FC<RouteCaptchaProps> = ({ successPath }) => {
       const response = await registerAnchor({ captcha })
 
       if (response && response.kind === "loginSuccess") {
-        await createAccount({ anchor: response.userNumber })
+        const account = { anchor: response.userNumber }
+        const accessPoint = {
+          icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
+          device: deviceInfo.newDeviceName,
+          browser: deviceInfo.browser.name ?? "Mobile",
+          pubKey: Array.from(
+            new Uint8Array(
+              authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
+            ),
+          ),
+        }
+        console.debug("RouteCaptcha handleRegisterAnchor", {
+          account,
+          accessPoint,
+        })
+        await createAccount(account, accessPoint)
         await Promise.all([
           createPersona({ domain: scope as string }),
           authorizeApp({

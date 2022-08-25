@@ -33,6 +33,7 @@ const config = {
           ? {}
           : {
               SENTRY_RELEASE: JSON.stringify(sentryRelease),
+              IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
               IC_HOST: JSON.stringify(process.env.IC_HOST),
               II_ENV: JSON.stringify(process.env.II_MODE),
               CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),

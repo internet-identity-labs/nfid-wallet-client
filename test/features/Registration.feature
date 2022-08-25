@@ -1,4 +1,4 @@
-@registration
+@registration @current
 Feature: Registration from landing page
 
   Background: Background name
@@ -8,7 +8,9 @@ Feature: Registration from landing page
   @uat
   @mission
   Scenario Outline: User wants to register with WebAuthN
+
     When I click on the selector "#continue-with-enhanced-security"
+    Then I wait on element "#loader" for 10000ms to not be displayed
     Then I expect the url to contain "/register-nfid-account/captcha"
     And  I expect that element "#captcha-spinner" is displayed
 
@@ -23,6 +25,7 @@ Feature: Registration from landing page
     And  I expect that element "#create-nfid" does not have the class "btn-disabled"
 
     When I click on the selector "#create-nfid"
-    And My browser stores the credential
+    # And My browser stores the credential
+    Then I wait on element "#loader" for 10000ms to not be displayed
 
     Then I expect the url to contain "/profile/authenticate"

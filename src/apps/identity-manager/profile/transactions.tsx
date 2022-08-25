@@ -40,7 +40,7 @@ const ProfileTransactions = () => {
 
   return (
     <>
-      <Loader isLoading={isWalletLoading} />
+      <Loader isLoading={isWalletLoading && !transactions?.length} />
       <ProfileTransactionsPage
         sentData={transactions?.filter((t) => t.type === "send") ?? []}
         receivedData={transactions?.filter((t) => t.type === "receive") ?? []}

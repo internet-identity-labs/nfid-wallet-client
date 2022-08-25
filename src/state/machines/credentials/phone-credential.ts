@@ -1,5 +1,8 @@
 // State machine controlling the phone number credential flow.
-import { registerPhoneNumberCredentialHandler } from "@nfid/credentials"
+import {
+  registerPhoneNumberCredentialHandler,
+  CredentialResult,
+} from "@nfid/credentials"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import {
@@ -26,7 +29,7 @@ interface Context {
   token?: number[]
 }
 
-let credentialResult: Certificate | undefined
+let credentialResult: CredentialResult
 let credentialResolved = false
 
 // Definition of events usable in the machine.
@@ -56,6 +59,9 @@ type Events =
       data: { error: string }
     }
   | {
+      type: "error.platform.generateCredential"
+    }
+  | {
       type: "done.invoke.generateCredential"
       data: Certificate | undefined
     }
@@ -65,8 +71,8 @@ type Events =
   | { type: "CHANGE_PHONE_NUMBER" }
   | { type: "RESEND"; data: string }
   | { type: "CLEAR_DATA" }
-  | { type: "PRESENT" }
-  | { type: "SKIP" }
+  | { type: "CONSENT" }
+  | { type: "REJECT" }
   | { type: "END" }
 
 // The machine. Install xstate vscode extension for best results.
@@ -137,7 +143,7 @@ const PhoneCredentialMachine = createMachine(
                 {
                   actions: "assignEncryptedPN",
                   cond: "defined",
-                  target: "PresentCredential",
+                  target: "End",
                 },
                 { target: "EnterPhoneNumber" },
               ],
@@ -183,20 +189,20 @@ const PhoneCredentialMachine = createMachine(
               onError: "EnterSMSToken",
             },
           },
-          PresentCredential: {
-            on: {
-              PRESENT: "End",
-              SKIP: {
-                target: "#PhoneNumberCredentialProvider.End",
-                actions: "rejectCredential",
-              },
-            },
-          },
           End: {
             type: "final",
           },
         },
-        onDone: "GenerateCredential",
+        onDone: "Consent",
+      },
+      Consent: {
+        on: {
+          CONSENT: "GenerateCredential",
+          REJECT: {
+            target: "End",
+            actions: "rejectCredential",
+          },
+        },
       },
       GenerateCredential: {
         invoke: {
@@ -205,6 +211,9 @@ const PhoneCredentialMachine = createMachine(
           onDone: {
             actions: "presentCredential",
             target: "End",
+          },
+          onError: {
+            target: "Consent",
           },
         },
       },
@@ -223,11 +232,17 @@ const PhoneCredentialMachine = createMachine(
       }),
       assignPhoneNumber: assign((_, { data }) => ({ phone: data })),
       assignEncryptedPN: assign((_, event) => ({ encryptedPN: event.data })),
-      presentCredential: (context, event) => {
-        credentialResult = event.data
+      presentCredential: () => {
+        credentialResult = {
+          status: "SUCCESS",
+        }
         credentialResolved = true
       },
       rejectCredential: () => {
+        credentialResult = {
+          status: "REJECTED",
+          message: "User declined to provide credential",
+        }
         credentialResolved = true
       },
     },

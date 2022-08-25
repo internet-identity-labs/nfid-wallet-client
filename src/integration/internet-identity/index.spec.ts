@@ -2,16 +2,11 @@
  * @jest-environment jsdom
  */
 import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import {
-  Challenge,
-  ChallengeResult,
-  DeviceData,
-  UserNumber,
-} from "frontend/integration/_ic_api/internet_identity_types"
+import { DeviceData } from "frontend/integration/_ic_api/internet_identity_types"
 import { ii, replaceIdentity } from "frontend/integration/actors"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
-import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import { FrontendDelegation, getMultiIdent } from "frontend/integration/internet-identity/index"
+import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { II_DEVICES_DATA } from "frontend/integration/internet-identity/__mocks"

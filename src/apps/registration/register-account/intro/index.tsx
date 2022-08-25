@@ -91,7 +91,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         const userOverwrite = await loginWithGoogleDevice(response.identity)
 
         const account = await readMemoryAccount()
-        handleRemoteLogin(userOverwrite, BigInt(account.anchor))
+        await handleRemoteLogin(userOverwrite, BigInt(account.anchor))
       }
 
       // new google user send to register
@@ -125,7 +125,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
       if (response.tag === "ok") {
         withSecurityDevices && setShouldStoreLocalAccount(false)
-        handleRemoteLogin(
+        await handleRemoteLogin(
           { ...response, principal: (await agent.getPrincipal()).toText() },
           BigInt(userNumber),
         )

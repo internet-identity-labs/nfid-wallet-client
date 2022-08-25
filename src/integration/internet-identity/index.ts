@@ -452,7 +452,9 @@ export async function addDevice(
   credentialId?: ArrayBuffer,
 ) {
   //register only protected recovery phrase
-  let protectionType = hasOwnProperty(purpose, "recovery") ? { protected: null } : { unprotected: null }
+  let protectionType = hasOwnProperty(purpose, "recovery")
+    ? { protected: null }
+    : { unprotected: null }
   // NOTE: removed the call to renewDelegation. It was failing because
   // of missing identity from authState. We'll replace this entire logic within
   // the following refactor and need to take care of the authState in
@@ -504,13 +506,20 @@ export async function protectRecoveryPhrase(
   const frontendDelegation = await requestFEDelegation(identity)
   let { delegationIdentity } = authState.get()
   if (!delegationIdentity) {
-    throw Error('Unauthenticated')
+    throw Error("Unauthenticated")
   }
   replaceIdentity(frontendDelegation.delegationIdentity)
-  let recoveryPhraseDeviceData = await ii.lookup(userNumber)
-    .then((x) => x.find((d) => hasOwnProperty(d.purpose, "recovery"))) as DeviceData
+  let recoveryPhraseDeviceData = (await ii
+    .lookup(userNumber)
+    .then((x) =>
+      x.find((d) => hasOwnProperty(d.purpose, "recovery")),
+    )) as DeviceData
   recoveryPhraseDeviceData.protection = { protected: null }
-  await updateDevice(userNumber, recoveryPhraseDeviceData.pubkey, recoveryPhraseDeviceData)
+  await updateDevice(
+    userNumber,
+    recoveryPhraseDeviceData.pubkey,
+    recoveryPhraseDeviceData,
+  )
   replaceIdentity(delegationIdentity)
 }
 

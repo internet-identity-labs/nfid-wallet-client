@@ -92,7 +92,7 @@ export const config: WebdriverIO.Config = {
       "goog:chromeOptions": {
         args: [
           "--no-sandbox",
-          ...(isDebug ? [] : ["--headless"]),
+          ...(isDebug ? [] : ["--headless", "--disable-dev-shm-usage"]),
           "disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
         ],

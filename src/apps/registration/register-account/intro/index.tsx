@@ -119,7 +119,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         setIsLoading(false)
       }
       if (response.tag === "err") {
-        setAuthError(response.title)
+        setAuthError(response.message)
         setIsLoading(false)
       }
     }

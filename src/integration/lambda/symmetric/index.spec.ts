@@ -6,7 +6,7 @@ import { expect } from "@jest/globals"
 import { createCipheriv } from "crypto"
 import { replaceIdentity } from "frontend/integration/actors"
 import { decryptStringForIdentity, symmetric } from "frontend/integration/lambda/symmetric"
-import { generateDelegationIdentity, registerIIAndIM } from "frontend/integration/test/test-util"
+import { generateDelegationIdentity, registerIIAndIM } from "../../../../test/steps/support/integration/test-util"
 
 describe("symmetric suite", () => {
   jest.setTimeout(50000)

@@ -10,7 +10,7 @@ import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { II_DEVICES_DATA } from "frontend/integration/internet-identity/__mocks"
-import { generateDelegationIdentity, registerIIAccount } from "frontend/integration/test/test-util"
+import { generateDelegationIdentity, registerIIAccount } from "../../../test/steps/support/integration/test-util"
 
 
 describe("ii suite", () => {

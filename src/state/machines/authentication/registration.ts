@@ -45,7 +45,7 @@ type Events =
   | { type: "FETCH_CAPTCHA" }
   | { type: "SUBMIT_CAPTCHA"; data: string }
   | { type: "OTHER_SIGNIN_OPTIONS" }
-  | { type: "AUTH_WITH_OTHER" }
+  | { type: "BACK" }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
       data: { anchor: number; withSecurityDevices?: boolean }
@@ -193,7 +193,7 @@ const RegistrationMachine =
         },
         ExistingAnchor: {
           on: {
-            AUTH_WITH_OTHER: {
+            BACK: {
               target: "Start",
             },
             AUTH_WITH_EXISTING_ANCHOR: {

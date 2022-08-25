@@ -4,19 +4,26 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { expect } from "@jest/globals"
 import { createCipheriv } from "crypto"
+
 import { replaceIdentity } from "frontend/integration/actors"
-import { decryptStringForIdentity, symmetric } from "frontend/integration/lambda/symmetric"
-import { generateDelegationIdentity, registerIIAndIM } from "../../../../test/steps/support/integration/test-util"
+import {
+  decryptStringForIdentity,
+  symmetric,
+} from "frontend/integration/lambda/symmetric"
+
+import {
+  generateDelegationIdentity,
+  registerIIAndIM,
+} from "../../../../test/steps/support/integration/test-util"
 
 describe("symmetric suite", () => {
   jest.setTimeout(50000)
 
   describe("Symmetric Key Service Test", () => {
-    it("Create account and retrieve same key + encrypt/decrypt", async function() {
+    it("Create account and retrieve same key + encrypt/decrypt", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const delegationIdentity: DelegationIdentity =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       await registerIIAndIM(mockedIdentity)
       let key = await symmetric(delegationIdentity)
@@ -39,9 +46,8 @@ describe("symmetric suite", () => {
 
     it("Catch error if not registered account", async () => {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const delegationIdentity: DelegationIdentity = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const delegationIdentity: DelegationIdentity =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       await expect(symmetric(delegationIdentity)).rejects.toThrow(
         "There was an issue getting symmetric key.",
@@ -56,5 +62,4 @@ describe("symmetric suite", () => {
     cipherText += cipher.final("hex")
     return cipherText
   }
-
 })

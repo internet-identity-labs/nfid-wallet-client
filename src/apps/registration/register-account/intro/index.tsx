@@ -77,7 +77,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           userOverwrite,
         })
       }
-      return navigate("/profile/security")
+      return navigate("/profile/assets")
     },
     [isRemoteRegister, navigate, remoteNFIDLogin, secret],
   )

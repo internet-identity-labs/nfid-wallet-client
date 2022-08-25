@@ -143,6 +143,12 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/signin/, ""),
       },
+      "/symmetric": {
+        target: process.env.AWS_SYMMETRIC,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/symmetric/, ""),
+      },
     },
   },
 }

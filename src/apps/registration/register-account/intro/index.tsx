@@ -1,9 +1,13 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import {
+  useAuthentication,
+  User,
+} from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
+import { agent } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { CredentialResponse } from "frontend/ui/atoms/button/signin-with-google/types"
@@ -59,6 +63,24 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     useAuthentication()
   const { readMemoryAccount } = useAccount()
 
+  const handleRemoteLogin = React.useCallback(
+    async (userOverwrite: User, userNumberOverwrite: bigint) => {
+      if (isRemoteRegister) {
+        if (!secret)
+          throw new Error(
+            "RouteRegisterAccountIntro.handleGetGoogleKey secret missing",
+          )
+        await remoteNFIDLogin({
+          secret,
+          userNumberOverwrite,
+          userOverwrite,
+        })
+      }
+      return navigate("/profile/security")
+    },
+    [isRemoteRegister, navigate, remoteNFIDLogin, secret],
+  )
+
   const handleGetGoogleKey = React.useCallback(
     async ({ credential }: CredentialResponse) => {
       setIsLoading(true)
@@ -69,19 +91,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         const userOverwrite = await loginWithGoogleDevice(response.identity)
 
         const account = await readMemoryAccount()
-
-        if (isRemoteRegister) {
-          if (!secret)
-            throw new Error(
-              "RouteRegisterAccountIntro.handleGetGoogleKey secret missing",
-            )
-          await remoteNFIDLogin({
-            secret,
-            userNumberOverwrite: BigInt(account.anchor),
-            userOverwrite,
-          })
-        }
-        return navigate("/profile/security")
+        handleRemoteLogin(userOverwrite, BigInt(account.anchor))
       }
 
       // new google user send to register
@@ -99,12 +109,10 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     [
       captchaPath,
       getGoogleDevice,
-      isRemoteRegister,
+      handleRemoteLogin,
       loginWithGoogleDevice,
       navigate,
       readMemoryAccount,
-      remoteNFIDLogin,
-      secret,
     ],
   )
 
@@ -113,9 +121,14 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     async (userNumber: number) => {
       setIsLoading(true)
       const response = await login(BigInt(userNumber), withSecurityDevices)
+      console.debug("handleAuthorization", { response })
 
       if (response.tag === "ok") {
         withSecurityDevices && setShouldStoreLocalAccount(false)
+        handleRemoteLogin(
+          { ...response, principal: (await agent.getPrincipal()).toText() },
+          BigInt(userNumber),
+        )
         setIsLoading(false)
       }
       if (response.tag === "err") {

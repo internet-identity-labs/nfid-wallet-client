@@ -100,19 +100,13 @@ export const Captcha: React.FC<CaptchaProps> = ({
         />
         <Button
           secondary
-          className="mt-4"
+          className="mt-4 mb-6"
           block
           disabled={!isFormComplete || isLoading}
           onClick={handleSubmit(onRegisterAnchor)}
         >
           Create NFID
         </Button>
-        <p className="py-6 text-sm text-center">
-          Already have an account?{" "}
-          {/* <a href="#" className="text-blue-base">
-            Sign in
-          </a> */}
-        </p>
       </form>
     </ScreenResponsive>
   )

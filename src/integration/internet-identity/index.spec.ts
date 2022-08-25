@@ -22,7 +22,7 @@ describe("ii suite", () => {
   jest.setTimeout(50000)
 
   describe("II Service Test", () => {
-    it("should create MultiWebAuthnIdentity", async function() {
+    it("Should create protected Recovery device", async function() {
       let mockedIdentity = Ed25519KeyIdentity.generate()
       const delegationIdentity: DelegationIdentity = await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)

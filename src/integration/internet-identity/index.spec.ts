@@ -14,6 +14,7 @@ import { II_DEVICES_DATA } from "frontend/integration/internet-identity/__mocks"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
+  authState as authStateMock,
   FrontendDelegation,
   getMultiIdent,
 } from "frontend/integration/internet-identity/index"
@@ -113,6 +114,7 @@ describe("ii suite", () => {
         sessionKey: mockedIdentity,
         delegationIdentity: delegationIdentityDummy,
       }
+      authStateMock.set(mockedIdentity, delegationIdentityDummy, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
         Promise.resolve(mockedIdentity),

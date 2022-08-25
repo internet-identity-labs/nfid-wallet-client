@@ -170,12 +170,16 @@ export async function addCustomCommands(
   )
 }
 
+// NOTE: there is also a native webdriverio implementation for this
+// https://webdriver.io/docs/api/webdriver/#addvirtualauthenticator
 export async function addVirtualAuthenticator(
   browser: WebdriverIO.Browser,
 ): Promise<string> {
   return await browser.addVirtualWebAuth("ctap2", "usb", true, true)
 }
 
+// NOTE: there is also a native webdriverio implementation for this
+// https://webdriver.io/docs/api/webdriver/#removecredential
 export async function removeVirtualAuthenticator(
   browser: WebdriverIO.Browser,
   authenticatorId: string,
@@ -183,13 +187,17 @@ export async function removeVirtualAuthenticator(
   return await browser.removeVirtualWebAuth(authenticatorId)
 }
 
+// NOTE: there is also a native webdriverio implementation for this
+// https://webdriver.io/docs/api/webdriver/#getcredentials
 export async function getWebAuthnCredentials(
   browser: WebdriverIO.Browser,
-  authId: string,
+  authenticatorId: string,
 ): Promise<WebAuthnCredential[]> {
-  return await browser.getWebauthnCredentials(authId)
+  return await browser.getWebauthnCredentials(authenticatorId)
 }
 
+// NOTE: there is also a native webdriverio implementation for this
+// https://webdriver.io/docs/api/webdriver/#addcredential
 export async function addWebAuthnCredential(
   browser: WebdriverIO.Browser,
   authId: string,
@@ -223,6 +231,7 @@ export const setupVirtualAuthenticator = async () => {
 
 export const storeWebAuthnCredential = async (authenticator: string) => {
   const credentials = await getWebAuthnCredentials(browser, authenticator)
+  debugger
   const rpId = originToRelyingPartyId(NFID_URL)
   await addWebAuthnCredential(browser, authenticator, credentials[0], rpId)
 }

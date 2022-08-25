@@ -29,6 +29,7 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   captchaPath,
   isRemoteRegister,
 }) => {
+  console.debug("RouteRegisterAccountIntro")
   const [isLoading, setIsLoading] = React.useState(false)
   const [authError, setAuthError] = React.useState<string | undefined>()
   const { applicationName, applicationLogo, createWebAuthNIdentity } =

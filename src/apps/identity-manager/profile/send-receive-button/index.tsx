@@ -28,7 +28,7 @@ export const SendReceiveButton = () => {
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction")
-      else toast.error("Unexpected error. ICP haven't been  sent")
+      else toast.error("Unexpected error: The transaction has been cancelled")
       console.error({ e })
     } finally {
       setIsLoading(false)

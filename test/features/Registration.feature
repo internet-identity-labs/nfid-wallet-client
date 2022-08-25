@@ -29,4 +29,4 @@ Feature: Registration from landing page
     # And My browser stores the credential
     Then I wait on element "#loader" for 10000ms to not be displayed
 
-    Then I expect the url to contain "/profile/authenticate"
+# Then I expect the url to contain "/profile/authenticate"

@@ -63,7 +63,7 @@ jobs:
         run: |
           yarn
           (yarn dev&)
-          sleep 10s
+          sleep 10
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV

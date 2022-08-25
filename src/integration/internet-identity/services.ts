@@ -74,7 +74,7 @@ export async function loginWithAnchor(
       identity: authResult.sessionKey,
     }
   } else if ("message" in authResult) {
-    throw new Error(`loginWithAnchor ${authResult.message}`)
+    throw new Error(authResult.message)
   }
 
   throw new Error(`loginWithAnchor Unreachable`)

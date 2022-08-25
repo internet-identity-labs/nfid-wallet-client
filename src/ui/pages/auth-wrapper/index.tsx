@@ -12,7 +12,7 @@ interface AuthWrapperProps {
 }
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const { isAuthenticated } = useAuthentication()
-  const { isLoading, error, account } = useAccount()
+  const { isLoading, error, profile } = useAccount()
   console.debug("AuthWrapper", {
     isAuthenticated,
     errorMessage: error && error.message,
@@ -26,7 +26,7 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   // we're not able to retrieve account with unauthenticated actor.
   // For the time we're transitioning to
   if (
-    !account &&
+    !profile &&
     error &&
     error.message === "404 error: Unable to find Account"
   ) {

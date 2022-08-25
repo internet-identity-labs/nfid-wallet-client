@@ -1,4 +1,4 @@
-import { useCallback, useReducer, useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 import { H5 } from "@internet-identity-labs/nfid-sdk-react"
@@ -24,6 +24,8 @@ interface RegisterAccountIntroProps {
   onSelectGoogleAuthorization: LoginEventHandler
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
+  onToggleAdvancedOptions: () => void
+  showAdvancedOptions?: Boolean
   applicationName?: string
   applicationLogo?: string
   isLoading: boolean
@@ -35,16 +37,13 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   onSelectGoogleAuthorization,
   onSelectSecurityKeyAuthorization,
   onSelectSameDeviceAuthorization,
+  onToggleAdvancedOptions,
+  showAdvancedOptions,
   applicationName = "this application",
   applicationLogo,
   isLoading,
   authError,
 }) => {
-  const [showAdvancedOptions, toggleAdvancedOptions] = useReducer(
-    (state) => !state,
-    false,
-  )
-
   const {
     register,
     handleSubmit,
@@ -138,7 +137,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
 
         <p
           className="py-4 text-sm text-center cursor-pointer text-blue-base"
-          onClick={toggleAdvancedOptions}
+          onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}
         </p>

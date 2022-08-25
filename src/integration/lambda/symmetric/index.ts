@@ -2,7 +2,7 @@ import { Cbor, QueryFields } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationIdentity } from "@dfinity/identity"
-import { createDecipheriv } from "crypto"
+import { createDecipheriv } from "browser-crypto"
 
 import { ic } from "frontend/integration/actors"
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"

@@ -16,6 +16,6 @@ export interface Typegen0 {
   eventsCausingServices: {}
   eventsCausingGuards: {}
   eventsCausingDelays: {}
-  matchesStates: "Receive" | "End"
+  matchesStates: "End" | "Receive"
   tags: never
 }

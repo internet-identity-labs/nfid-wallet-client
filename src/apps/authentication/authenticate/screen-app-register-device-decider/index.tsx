@@ -1,8 +1,10 @@
 import React, { useState } from "react"
 
 import { im } from "frontend/integration/actors"
+import { deviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
+import { Icon } from "frontend/integration/identity-manager/devices/state"
 import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
 import { authState } from "frontend/integration/internet-identity"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
@@ -37,7 +39,22 @@ export const AppScreenRegisterDeviceDecider: React.FC<
       await recoverAccount(userNumber, true)
     } catch (e) {
       console.warn("account not found. Recreating")
-      await createAccount({ anchor: userNumber })
+      const account = { anchor: userNumber }
+      const accessPoint = {
+        icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
+        device: deviceInfo.newDeviceName,
+        browser: deviceInfo.browser.name ?? "Mobile",
+        pubKey: Array.from(
+          new Uint8Array(
+            authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
+          ),
+        ),
+      }
+      console.debug("AppScreenRegisterDeviceDecider handleRegister", {
+        account,
+        accessPoint,
+      })
+      await createAccount(account, accessPoint)
 
       // attach the current identity as access point
       const pub_key = Array.from(

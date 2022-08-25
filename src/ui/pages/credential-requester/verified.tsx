@@ -2,6 +2,7 @@ import React from "react"
 
 import { Button, P, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
 
+import ErrorDisplay from "frontend/ui/atoms/error"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 interface CredentialRequesterVerifiedProps {
@@ -9,11 +10,12 @@ interface CredentialRequesterVerifiedProps {
   applicationName?: string
   onPresent: () => void
   onSkip: () => void
+  error?: string
 }
 
 export const CredentialRequesterVerified: React.FC<
   CredentialRequesterVerifiedProps
-> = ({ applicationLogo, applicationName, onPresent, onSkip }) => {
+> = ({ applicationLogo, applicationName, onPresent, onSkip, error }) => {
   const [radioValue, setRadioValue] = React.useState("rb_present")
 
   const handleClick = () => {
@@ -57,6 +59,7 @@ export const CredentialRequesterVerified: React.FC<
       >
         Continue
       </Button>
+      {error && <ErrorDisplay>{error}</ErrorDisplay>}
     </ScreenResponsive>
   )
 }

@@ -9,7 +9,9 @@ export async function fetchAccountLimitService(context: {
     // throw new Error("missing context.authRequest.hostname")
     return 5
 
-  const response = await fetchAccountLimit(context.authRequest.hostname)
+  const domain =
+    context.authRequest.derivationOrigin || context.authRequest.hostname
+  const response = await fetchAccountLimit(domain)
   console.debug(`fetchAccountLimitService fetchAccountLimit`, {
     response,
   })

@@ -62,7 +62,7 @@ jobs:
       - name: Install dependencies
         run: |
           yarn
-          yarn dev
+          (yarn dev&)
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV

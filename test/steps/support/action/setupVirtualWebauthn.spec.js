@@ -9,7 +9,7 @@ describe("setupVirtualWebauthn", () => {
       addVirtualWebAuth: jest.fn(),
     }
   })
-  it("should work", async () => {
+  it("should call addVirtualWebAuth", async () => {
     const authenticatorId1 = await addVirtualAuthenticator(global.browser)
     console.debug("setupVirtualWebauthn", { authenticatorId1 })
     expect(global.browser.addVirtualWebAuth).toHaveBeenCalled()

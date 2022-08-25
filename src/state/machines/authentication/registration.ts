@@ -36,6 +36,7 @@ type Events =
   | { type: "done.invoke.registerService"; data: AuthSession }
   | { type: "error.platform.registerService"; data: Error }
   | { type: "done.invoke.createWebAuthnIdentity"; data: WebAuthnIdentity }
+  | { type: "error.platform.loginWithAnchor"; data: Error }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
       data: AuthSession

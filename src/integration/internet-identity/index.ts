@@ -72,7 +72,7 @@ type SeedPhraseFail = { kind: "seedPhraseFail" }
 
 export type { ChallengeResult } from "frontend/integration/_ic_api/internet_identity_types"
 
-interface FrontendDelegation {
+export interface FrontendDelegation {
   delegationIdentity: DelegationIdentity
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
@@ -247,7 +247,7 @@ export const requestFEDelegationChain = async (
   return { chain, sessionKey }
 }
 
-export const requestFEDelegation = async (
+export let requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
   console.debug("requestFEDelegation")
@@ -451,6 +451,8 @@ export async function addDevice(
   newPublicKey: DerEncodedPublicKey,
   credentialId?: ArrayBuffer,
 ) {
+  //register only protected recovery phrase
+  let protectionType = hasOwnProperty(purpose, "recovery") ? { protected: null } : { unprotected: null }
   // NOTE: removed the call to renewDelegation. It was failing because
   // of missing identity from authState. We'll replace this entire logic within
   // the following refactor and need to take care of the authState in
@@ -464,7 +466,7 @@ export async function addDevice(
         : [],
       key_type: keyType,
       purpose,
-      protection: { unprotected: null },
+      protection: protectionType,
     })
     .catch((e) => {
       throw new Error(`addDevice: ${e.message}`)
@@ -479,6 +481,37 @@ export async function removeDevice(
   await ii.remove(userNumber, publicKey).catch((e) => {
     throw new Error(`removeDevice: ${e.message}`)
   })
+}
+
+export async function updateDevice(
+  userNumber: UserNumber,
+  publicKey: PublicKey,
+  deviceData: DeviceData,
+): Promise<void> {
+  await ii.update(userNumber, publicKey, deviceData).catch((e) => {
+    throw new Error(`Failed to update device: ${e.message}`)
+  })
+}
+
+export async function protectRecoveryPhrase(
+  userNumber: UserNumber,
+  seedPhrase: string,
+): Promise<void> {
+  const identity = await fromMnemonicWithoutValidation(
+    seedPhrase,
+    IC_DERIVATION_PATH,
+  )
+  const frontendDelegation = await requestFEDelegation(identity)
+  let { delegationIdentity } = authState.get()
+  if (!delegationIdentity) {
+    throw Error('Unauthenticated')
+  }
+  replaceIdentity(frontendDelegation.delegationIdentity)
+  let recoveryPhraseDeviceData = await ii.lookup(userNumber)
+    .then((x) => x.find((d) => hasOwnProperty(d.purpose, "recovery"))) as DeviceData
+  recoveryPhraseDeviceData.protection = { protected: null }
+  await updateDevice(userNumber, recoveryPhraseDeviceData.pubkey, recoveryPhraseDeviceData)
+  replaceIdentity(delegationIdentity)
 }
 
 async function registerAnchor(
@@ -672,6 +705,7 @@ export async function login(
 
   return fromWebauthnDevices(userNumber, devices, withSecurityDevices)
 }
+
 /**
  * @param {string} seedPhrase NEVER LOG THE RECOVERY PHRASE KEY IDENTITY TO CONSOLE OR SEND TO EXTERNAL SERVICE
  */

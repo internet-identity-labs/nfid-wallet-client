@@ -247,7 +247,7 @@ export const requestFEDelegationChain = async (
   return { chain, sessionKey }
 }
 
-export const requestFEDelegation = async (
+export let requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
   console.debug("requestFEDelegation")

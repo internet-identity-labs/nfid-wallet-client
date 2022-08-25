@@ -63,7 +63,7 @@ jobs:
         run: |
           yarn
           yarn build
-          yarn serve -s build &
+          yarn serve -l 9090 -s build &
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV

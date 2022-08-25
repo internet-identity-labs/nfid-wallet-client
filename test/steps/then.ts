@@ -14,6 +14,7 @@ import checkFontProperty from "./support/check/checkFontProperty"
 import checkInURLPath from "./support/check/checkInURLPath"
 import checkIsEmpty from "./support/check/checkIsEmpty"
 import checkIsOpenedInNewWindow from "./support/check/checkIsOpenedInNewWindow"
+import checkLocalStorageKey from "./support/check/checkLocalStorageKey"
 import checkModal from "./support/check/checkModal"
 import checkModalText from "./support/check/checkModalText"
 import checkNewWindow from "./support/check/checkNewWindow"
@@ -150,4 +151,9 @@ Then(
 Then(
   /^I expect that a (alertbox|confirmbox|prompt)( not)* contains the text "([^"]*)?"$/,
   checkModalText,
+)
+
+Then(
+  /^I expect "([^"]*)?" key to( not)* be present in localStorage/,
+  checkLocalStorageKey,
 )

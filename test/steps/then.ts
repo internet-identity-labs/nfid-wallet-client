@@ -1,5 +1,6 @@
 import { Then } from "@cucumber/cucumber"
 
+import { checkCredentialAmount } from "./support/action/setupVirtualWebauthn"
 import waitFor from "./support/action/waitFor"
 import waitForVisible from "./support/action/waitForDisplayed"
 import checkClass from "./support/check/checkClass"
@@ -157,3 +158,7 @@ Then(
   /^I expect "([^"]*)?" key to( not)* be present in localStorage/,
   checkLocalStorageKey,
 )
+
+Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
+  await checkCredentialAmount(this.authenticator, Number(amount))
+})

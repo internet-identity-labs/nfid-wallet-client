@@ -1,4 +1,4 @@
-@registration @current
+@current @registration
 Feature: Registration from landing page
 
   Background: Background name
@@ -12,6 +12,8 @@ Feature: Registration from landing page
     Then I wait on element "#continue-with-enhanced-security" for 20000ms to be displayed
     When I click on the selector "#continue-with-enhanced-security"
     Then I wait on element "#loader" for 10000ms to not be displayed
+    Then My browser has 1 credentials
+
     Then I expect the url to contain "/register-nfid-account/captcha"
     And  I expect that element "#captcha-spinner" is displayed
 
@@ -27,8 +29,6 @@ Feature: Registration from landing page
 
     When I click on the selector "#create-nfid"
     Then I wait on element "#loader" for 10000ms to not be displayed
-
-    # And My browser stores the credential
 
     Then I expect "account" key to be present in localStorage
 

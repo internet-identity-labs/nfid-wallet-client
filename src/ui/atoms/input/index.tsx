@@ -6,6 +6,7 @@ import { Label } from "./label"
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
+  id?: string
   prependedText?: string
   placeholder?: string
   type?: string
@@ -21,6 +22,7 @@ export interface InputProps
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
+      id,
       children,
       className,
       prependedText,
@@ -53,6 +55,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
           <input
+            id={id}
             type={type}
             className={clsx(
               "flex-1 block w-full placeholder:text-sm border-black-base bg-transparent py-[10px]",

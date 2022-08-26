@@ -1,4 +1,4 @@
-@Pending @homePage @smoke @regression
+@pending @homePage @smoke @regression
 Feature: Mobile device user registration
   To check if user can register on NFID
 

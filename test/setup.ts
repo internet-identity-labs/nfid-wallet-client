@@ -1,5 +1,5 @@
 /* eslint-disable no-var, no-unused-vars, no-underscore-dangle */
-import { TextEncoder } from "util"
+import { TextEncoder, TextDecoder } from "util"
 
 export type WebAuthnCredential = {
   credentialId: string
@@ -37,6 +37,8 @@ declare global {
 }
 
 global.TextEncoder = TextEncoder
+// @ts-ignore
+global.TextDecoder = TextDecoder
 
 // Make a proxy of the global Jest expect function so we can test the global
 // expect-webdriverio version

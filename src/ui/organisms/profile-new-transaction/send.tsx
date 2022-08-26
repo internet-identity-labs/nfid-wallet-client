@@ -42,6 +42,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
     handleSubmit,
     setError,
     setValue,
+    clearErrors,
   } = useForm<ISendForm>()
 
   React.useEffect(() => {
@@ -56,12 +57,11 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
   const onAddressChange = (e: any) => {
     const value = e.target.value
 
-    if (isHex(value) && value.length === 64)
-      return setError("address", { type: "manual", message: "" })
+    if (isHex(value) && value.length === 64) return clearErrors("address")
 
     try {
       if (!!Principal.fromText(value) && value.length === 63)
-        return setError("address", { type: "manual", message: "" })
+        return clearErrors("address")
     } catch {
       setError("address", {
         type: "manual",
@@ -70,8 +70,9 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
     }
   }
 
-  const isFormComplete =
-    !!dirtyFields.address && !errors.address && !!dirtyFields.sum && !errors.sum
+  const isFormComplete = React.useMemo(() => {
+    return !errors.address && !dirtyFields.address && sumLength > 0
+  }, [dirtyFields.address, errors.address, sumLength])
 
   if (isSuccess)
     return <TransactionSuccess sum={getValues().sum} onClose={onClose} />
@@ -89,6 +90,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
           placeholder="0"
           type="number"
           id="input"
+          min={0}
           onKeyUp={(e) => setSumLength(e.target.value.length)}
           {...register("sum", {
             valueAsNumber: true,

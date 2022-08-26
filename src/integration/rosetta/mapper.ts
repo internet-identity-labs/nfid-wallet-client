@@ -30,7 +30,7 @@ export async function mapToTransactionHistory(
               ...operation,
               amount: {
                 currency: operation.amount.currency,
-                value: (Number(operation.amount.value) / 100000000).toString(),
+                value: (Number(operation.amount.value) / 10 ** 8).toString(),
               },
             })),
           },
@@ -44,9 +44,10 @@ export async function mapToBalance(response: Response): Promise<Balance> {
     .json()
     .then((data) => data as RosettaBalance)
     .then((balance: RosettaBalance) => {
+      console.log({ balanceFromRosetta: balance })
       return {
         ...balance.balances[0],
-        value: (Number(balance.balances[0].value) / 100000000).toString(),
+        value: (Number(balance.balances[0].value) / 10 ** 8).toString(),
       }
     })
 }

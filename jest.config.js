@@ -40,7 +40,7 @@ module.exports = {
     },
   },
   collectCoverageFrom: ["src/**/*.ts", "!**/node_modules/**"],
-  setupFilesAfterEnv: ["./test/setup.js", "./src/setupTests.ts"],
+  setupFilesAfterEnv: ["./test/setup.ts", "./src/setupTests.ts"],
   roots: ["test/", "src/"],
   moduleDirectories: ["node_modules"],
   moduleNameMapper: {

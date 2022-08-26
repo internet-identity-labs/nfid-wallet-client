@@ -17,10 +17,7 @@ import setCookie from "./support/action/setCookie"
 import setInputField from "./support/action/setInputField"
 import setPromptText from "./support/action/setPromptText"
 
-When(
-  /^I (click|doubleclick) on the (link|button|element) "([^"]*)?"$/,
-  clickElement,
-)
+When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)
 
 When(/^I (add|set) "([^"]*)?" to the inputfield "([^"]*)?"$/, setInputField)
 

@@ -2,7 +2,7 @@ import assert from "assert"
 import { WebAuthnCredential } from "test/setup"
 import { command } from "webdriver"
 
-const NFID_URL = "https://philipp.eu.ngrok.io"
+const NFID_URL = "http://localhost:9090"
 
 export function originToRelyingPartyId(origin: string): string {
   return origin.replace(/https?:\/\/([.\w]+).*/, "$1")
@@ -229,9 +229,10 @@ export const setupVirtualAuthenticator = async () => {
   }
 }
 
-export const storeWebAuthnCredential = async (authenticator: string) => {
+export const checkCredentialAmount = async (
+  authenticator: string,
+  amount: number,
+) => {
   const credentials = await getWebAuthnCredentials(browser, authenticator)
-  debugger
-  const rpId = originToRelyingPartyId(NFID_URL)
-  await addWebAuthnCredential(browser, authenticator, credentials[0], rpId)
+  expect(credentials.length).toBe(amount)
 }

@@ -17,8 +17,10 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
   return (
     <ModalAdvanced
       title="Remove recovery phrase"
+      subTitle="Enter your recovery phrase to confirm removal."
       onClose={onClose}
       onBgClick={onClose}
+      buttonsClassNames="py-3"
     >
       <div>
         <textarea

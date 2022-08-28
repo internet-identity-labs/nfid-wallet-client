@@ -20,7 +20,7 @@ import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 
 import { DeviceIconDecider } from "../device-list/device-icon-decider"
 import { DeviceListButtonGroup } from "../device-list/device-list-button-group"
-import RecoveryPhraseDeleteModal from "./phrase-delete-modal"
+import RecoveryPhraseDeleteModal from "./delete-phrase/phrase-delete-modal"
 
 interface recoveryMethodListItemProps {
   recoveryMethod: RecoveryDevice

@@ -11,7 +11,9 @@ export default {
   },
 } as ComponentMeta<typeof RecoveryPhraseDeleteModal>
 
-const Template: ComponentStory<typeof RecoveryPhraseDeleteModal> = (args) => {
+const DeleteModal: ComponentStory<typeof RecoveryPhraseDeleteModal> = (
+  args,
+) => {
   return (
     <Router>
       <RecoveryPhraseDeleteModal {...args} />
@@ -19,6 +21,6 @@ const Template: ComponentStory<typeof RecoveryPhraseDeleteModal> = (args) => {
   )
 }
 
-export const AppScreen = Template.bind({})
+export const DeleteAppScreen = DeleteModal.bind({})
 
-AppScreen.args = {}
+DeleteAppScreen.args = {}

@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useState } from "react"
 
 import { Button } from "frontend/ui/atoms/button"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
@@ -7,13 +7,15 @@ import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 interface IRecoveryPhraseDeleteModal
   extends React.HTMLAttributes<HTMLDivElement> {
   onClose: () => void
-  onDelete: (a: any) => void
+  onDelete: (a: string) => void
 }
 
 const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
   onClose,
   onDelete,
 }) => {
+  const [phrase, setPhrase] = useState("")
+
   return (
     <ModalAdvanced
       title="Remove recovery phrase"
@@ -32,8 +34,14 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
           )}
           rows={5}
           placeholder="lorem ipsum dolor ..."
+          onChange={(e) => setPhrase(e.target.value)}
         />
-        <Button error block className="rounded-t-none" onClick={onDelete}>
+        <Button
+          error
+          block
+          className="rounded-t-none"
+          onClick={() => onDelete(phrase)}
+        >
           Remove recovery phrase
         </Button>
       </div>

@@ -91,7 +91,12 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
           type="number"
           id="input"
           min={0}
-          onKeyUp={(e) => setSumLength(e.target.value.length)}
+          onKeyUp={(e) => {
+            const value = e.target.value
+            if (Number(value) < 0)
+              setValue("sum", (Number(value) * -1).toString())
+            setSumLength(e.target.value.length)
+          }}
           {...register("sum", {
             valueAsNumber: true,
             required: sumRules.errorMessages.required,

@@ -15,6 +15,7 @@ export interface ModalButtonProps {
 export interface ModalAdvancedProps
   extends React.HTMLAttributes<HTMLDivElement> {
   title: string
+  subTitle?: string
   onClose?: () => void
   primaryButton?: ModalButtonProps
   secondaryButton?: ModalButtonProps
@@ -27,6 +28,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
   children,
   className,
   title,
+  subTitle,
   onClose,
   primaryButton,
   secondaryButton,
@@ -45,8 +47,8 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
         >
           <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none">
             <div className="relative flex-auto px-6 ">
-              <H5 className="my-4">{title}</H5>
-
+              <H5 className="mt-4">{title}</H5>
+              <p className="my-4 text-sm">{subTitle}</p>
               <div className={clsx("", className)}>{children}</div>
             </div>
 

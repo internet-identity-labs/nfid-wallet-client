@@ -48,6 +48,11 @@ module.exports = {
       VERIFIER_CANISTER_ID: JSON.stringify(
         process.env[`VERIFIER_CANISTER_ID_${process.env.BACKEND_MODE}`],
       ),
+      LEDGER_CANISTER_ID: JSON.stringify(process.env[`LEDGER_CANISTER_ID`]),
+      CYCLES_MINTER_CANISTER_ID: JSON.stringify(
+        process.env[`LEDGER_CANISTER_ID`],
+      ),
+      CURRCONV_TOKEN: JSON.stringify(process.env[`CURRCONV_TOKEN`]),
       IS_DEV: JSON.stringify(process.env[`IS_DEV`]),
     }
 

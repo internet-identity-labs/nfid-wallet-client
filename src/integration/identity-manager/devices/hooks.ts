@@ -4,7 +4,7 @@ import {
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import React from "react"
+import React, { useState } from "react"
 import useSWR from "swr"
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
@@ -191,12 +191,29 @@ async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
 
 /** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
+  const [socialDevices, setSocialDevices] = useState<LegacyDevice[]>([])
   const { profile } = useAccount()
   const {
-    data: devices,
+    data: fetchedDevices,
     error: fetchDevicesError,
     mutate: refreshDevices,
   } = useSWR({ anchor: profile?.anchor, type: "authenticator" }, fetchDevices)
+
+  // TODO replace by having social device like separate device type (as recover)
+  const devices = React.useMemo(() => {
+    setSocialDevices(
+      fetchedDevices
+        ?.filter((d) => d.browser === "Google account")
+        .map((socialDevice) => ({
+          ...socialDevice,
+          icon: "google",
+          label: "Google",
+          isAccessPoint: true,
+          isSocialDevice: true,
+        })) ?? [],
+    )
+    return fetchedDevices?.filter((d) => d.browser !== "Google account")
+  }, [fetchedDevices])
 
   const {
     data: recoveryDevices,
@@ -492,6 +509,7 @@ export const useDevices = () => {
   return {
     loadingDevices: !devices && !fetchDevicesError,
     devices: devices || [],
+    socialDevices,
     loadingRecoveryDevices: !recoveryDevices && !fetchRecoveryDevicesError,
     recoveryDevices: recoveryDevices || [],
     createWebAuthNDevice,

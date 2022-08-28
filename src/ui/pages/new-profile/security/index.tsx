@@ -26,6 +26,7 @@ interface IProfileSecurityPage extends React.HTMLAttributes<HTMLDivElement> {
   onRegisterRecoveryKey: () => Promise<void>
   devices: LegacyDevice[]
   recoveryMethods: RecoveryDevice[]
+  socialDevices?: LegacyDevice[]
 }
 
 const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
@@ -37,7 +38,9 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
   onCreateRecoveryPhrase,
   onRegisterRecoveryKey,
   recoveryMethods,
+  socialDevices,
 }) => {
+  console.log({ devices, socialDevices })
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
 
@@ -106,6 +109,22 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
           />
         ))}
       </ProfileContainer>
+      {socialDevices?.length ? (
+        <ProfileContainer
+          title="Social logins"
+          subTitle="Social accounts you can sign in from"
+          className="mt-[30px] relative mb-12 sm:mb-0"
+        >
+          {socialDevices.map((device) => (
+            <DeviceListItem
+              key={`${device.label}-${device.browser}-${device.lastUsed}`}
+              device={device}
+              onDeviceUpdate={onDeviceUpdate}
+              onDelete={onDeviceDelete}
+            />
+          ))}
+        </ProfileContainer>
+      ) : null}
       {isModalVisible && (
         <ModalAdvanced
           onClose={() => setIsModalVisible(false)}

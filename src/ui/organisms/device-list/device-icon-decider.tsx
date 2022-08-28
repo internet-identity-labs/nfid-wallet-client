@@ -3,6 +3,7 @@ import React from "react"
 import { Icon } from "frontend/integration/identity-manager/devices/state"
 import { IconLaptop } from "frontend/ui/atoms/icons/desktop"
 import { DocumentIcon } from "frontend/ui/atoms/icons/document"
+import { GoogleIcon } from "frontend/ui/atoms/icons/google"
 import { IconDesktop } from "frontend/ui/atoms/icons/laptop"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
 import { TabletIcon } from "frontend/ui/atoms/icons/tablet"
@@ -36,6 +37,8 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
       return <DocumentIcon {...props} />
     case "usb":
       return <USBIcon {...props} />
+    case "google":
+      return <GoogleIcon {...props} />
     case "unknown":
       return <UnknownIcon {...props} />
     default:

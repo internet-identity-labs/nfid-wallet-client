@@ -72,7 +72,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({ isQRCode }) => {
                     )
                   }
                   largeMax
-                  secondary
+                  primary
                 >
                   Register your NFID
                 </Button>

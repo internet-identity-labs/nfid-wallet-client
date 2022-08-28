@@ -64,7 +64,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
               </div>
 
               <Button
-                secondary
+                primary
                 className="!rounded-t-none w-full flex items-center justify-center space-x-3 focus:outline-none"
                 onClick={() => copyToClipboard()}
               >
@@ -75,7 +75,7 @@ export const CopyRecoveryPhrase: React.FC<CopyRecoveryPhraseProps> = ({
               <Button
                 onClick={onContinueButtonClick}
                 disabled={!copied}
-                secondary
+                primary
                 large
                 className="mt-8"
               >

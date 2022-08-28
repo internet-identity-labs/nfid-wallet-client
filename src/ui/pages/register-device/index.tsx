@@ -21,7 +21,7 @@ export const RegisterDevice: React.FC<RegisterDeviceProps> = ({
         Trust this {device}? You can quickly and securely log in the next time
         using this device's {authenticator}.
       </div>
-      <Button secondary onClick={onRegister}>
+      <Button primary onClick={onRegister}>
         Register device
       </Button>
     </div>

@@ -72,7 +72,7 @@ export const ProofOfAttendency: React.FC<RegisterAccountIntroProps> = ({
 
             <div>
               <Button
-                secondary
+                primary
                 onClick={onContinueButtonClick}
                 className="mt-8"
                 largeMax={isMobile}

@@ -42,7 +42,7 @@ export const AuthorizeAppSingleAccount: React.FC<
         to continue{applicationName && ` to ${applicationName}`}
       </p>
       <img className="w-full max-w-max" src={MobileHero} alt="" />
-      <Button className="my-6 " block secondary onClick={onContinueButtonClick}>
+      <Button className="my-6 " block primary onClick={onContinueButtonClick}>
         Unlock to continue
       </Button>
     </ScreenResponsive>

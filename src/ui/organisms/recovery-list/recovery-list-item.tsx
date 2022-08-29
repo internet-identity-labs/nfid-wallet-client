@@ -199,7 +199,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           }}
           secondaryButton={{
             text: "Cancel",
-            type: "secondary",
+            type: "primary",
             onClick: () => {
               setUpdatedRecovery(null)
               toggleIconModal()
@@ -231,7 +231,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           }}
           secondaryButton={{
             text: "Cancel",
-            type: "secondary",
+            type: "primary",
             onClick: toggleDeleteRecoveryModal,
           }}
         >

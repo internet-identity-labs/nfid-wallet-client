@@ -99,7 +99,7 @@ export async function getWalletPrincipal(anchor: number): Promise<Principal> {
 }
 
 // TODO WALLET. Code review delegation. Test should be written
-const WALLET_SCOPE = "nfid.dev"
+const WALLET_SCOPE = "nfid.one"
 const WALLET_SESSION_TTL = BigInt(2 * 60 * 1e9)
 
 export async function getWalletDelegation(

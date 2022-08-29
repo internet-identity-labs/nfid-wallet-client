@@ -128,7 +128,12 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               "flex justify-center items-center",
             )}
           >
-            <Button secondary large onClick={() => onUnlockNFID()}>
+            <Button
+              className="mt-[50vh]"
+              primary
+              large
+              onClick={() => onUnlockNFID()}
+            >
               Unlock NFID
             </Button>
           </BlurOverlay>

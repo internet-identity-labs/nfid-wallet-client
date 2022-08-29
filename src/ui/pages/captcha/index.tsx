@@ -101,7 +101,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
         />
         <Button
           id="create-nfid"
-          secondary
+          primary
           className="mt-4 mb-6"
           block
           disabled={!isFormComplete || isLoading}

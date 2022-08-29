@@ -31,7 +31,7 @@ import { restCall } from "./util"
 declare const CURRCONV_TOKEN: string
 
 const rosetta = "https://rosetta-api.internetcomputer.org"
-const nfidDomain = "nfid.one"
+const WALLET_SCOPE = "nfid.one"
 const converter = `https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=${
   CURRCONV_TOKEN ?? "***REMOVED***"
 }`
@@ -93,13 +93,12 @@ export async function transfer(
 }
 
 export async function getWalletPrincipal(anchor: number): Promise<Principal> {
-  return ii.get_principal(BigInt(anchor), nfidDomain).catch((e) => {
+  return ii.get_principal(BigInt(anchor), WALLET_SCOPE).catch((e) => {
     throw Error(`Getting of Wallet Principal failed!: ${e}`, e)
   })
 }
 
 // TODO WALLET. Code review delegation. Test should be written
-const WALLET_SCOPE = "nfid.one"
 const WALLET_SESSION_TTL = BigInt(2 * 60 * 1e9)
 
 export async function getWalletDelegation(

@@ -13,10 +13,10 @@ import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
 import { generateDelegationIdentity, registerIIAccount } from "../../../test/steps/support/integration/test-util"
 
-describe("ii suite", () => {
+describe("Facade suite", () => {
   jest.setTimeout(50000)
 
-  describe("II Service Test", () => {
+  describe("Facade Service Test", () => {
     it("Should create and remove protected Recovery device", async function() {
       let mockedIdentity = Ed25519KeyIdentity.generate()
       const delegationIdentity: DelegationIdentity =

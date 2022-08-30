@@ -1,4 +1,5 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
+import { DeviceKey } from "frontend/integration/_ic_api/internet_identity_types"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
 import { mapOptional, unpackLegacyResponse, unpackResponse } from "../_common"
@@ -206,6 +207,12 @@ export async function registerAccount(anchor: number) {
 
 export async function removeAccount() {
   im.remove_account()
+}
+
+export async function removeAccessPoint(pubkey: DeviceKey) {
+  await im.remove_access_point({ pub_key: pubkey }).catch((e) => {
+    throw new Error(`Not able to remove ap: ${e.message}`)
+  })
 }
 
 export interface Application {

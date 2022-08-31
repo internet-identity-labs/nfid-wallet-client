@@ -33,6 +33,27 @@ export const questions = [
     ),
   },
   {
+    title:
+      "How can I use NFID to access applications I've been using with my Internet Identity?",
+    info: (
+      <div>
+        NFID is built on top of Internet Identity and because of this, signing
+        in with NFID will sign you into the same accounts as those you've
+        created with Internet Identity! All you need to do is enter your
+        Internet Identity recovery phrase in the{" "}
+        <a
+          className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+          href="https://nfid.one/recover-nfid/enter-recovery-phrase"
+          target="_blank"
+          rel="noreferrer"
+        >
+          NFID recovery screen
+        </a>{" "}
+        from your phone and tap on the button to trust the device.
+      </div>
+    ),
+  },
+  {
     title: "How is this different than my  current cryptocurrency wallet?",
     info: (
       <div>
@@ -154,26 +175,18 @@ export const questions = [
           .
         </div>
         <div className="mb-6">
-          C – if you have no other registered devices, use your recovery phrase{" "}
-          <span className="font-bold">
-            only on the{" "}
-            <a
-              className="text-blue-base hover:underline hover:text-blue-hover"
-              href="https://nfid.one"
-            >
-              https://nfid.one
-            </a>{" "}
-            landing page
-          </span>{" "}
-          to temporarily authenticate yourself and remove the lost device from
-          your list of NFID (
-          <Link
+          C - if you have no other registered devices, use your recovery phrase
+          only at{" "}
+          <a
             className="text-blue-base hover:underline hover:text-blue-hover"
-            to={"/profile/security"}
+            href="https://nfid.one"
+            target="_blank"
+            rel="noreferrer"
           >
-            authorized devices
-          </Link>
-          )
+            https://nfid.one/recover-nfid/enter-recovery-phrase
+          </a>{" "}
+          to temporarily authenticate yourself and remove the lost device from
+          your list of NFID authorized devices.
         </div>
       </div>
     ),
@@ -233,10 +246,6 @@ export const questions = [
     info: "Your phone number is encrypted and only accessible to you. Applications will sometimes want to know you're a unique human being before making some features available. When you share an obfuscated version of your phone number to applications, they will never be able to de-obfuscate it back to your actual number. We've received feedback from the community that this is a reasonable first step in qualifying a unique person, though we're already developing even more sybil-resistant credentials.",
   },
   {
-    title: "Why is the URL some crazy string of numbers and letters?",
-    info: "When we navigate to a URL today, a domain name service (DNS) is responsible for routing our request for data to the appropriate server that contains it. Although we don't think of it as such, that DNS is a centralized organization with a substantial influence over how we navigate the Internet. The Internet Computer's aim is to build a decentralized cloud computing platform that doesn't rely on any centralized organization to run web-scale applications. The URLs you see can easily be replaced with the traditionally-named domains we're used to, but developers building on the Internet Computer have mostly chosen not to so that they may show their users the site runs on end-to-end decentralized architecture.",
-  },
-  {
     title:
       "The Internet Computer sounds cool, where can I learn more about it?",
     info: (
@@ -244,6 +253,7 @@ export const questions = [
         <p>
           We suggest starting with a look through their extensive documentation{" "}
           <a
+            className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
             href="https://dfinity.org/howitworks/"
             target="_blank"
             rel="noreferrer"

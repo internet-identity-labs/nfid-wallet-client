@@ -26,12 +26,14 @@ interface recoveryMethodListItemProps {
   recoveryMethod: RecoveryDevice
   onRecoveryUpdate: (recoveryMethod: RecoveryDevice) => Promise<void>
   onRecoveryDelete: (recoveryMethod: RecoveryDevice) => Promise<void>
+  onDeleteRecoveryPhrase: (phrase: string) => Promise<void>
 }
 
 export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   recoveryMethod: initialRecovery,
   onRecoveryUpdate,
   onRecoveryDelete,
+  onDeleteRecoveryPhrase,
 }) => {
   const [updatedRecovery, setUpdatedRecovery] =
     React.useState<RecoveryDevice | null>(null)
@@ -222,9 +224,8 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
       {deleteRecoveryModal && recoveryMethod.isRecoveryPhrase && (
         <RecoveryPhraseDeleteModal
           onClose={toggleDeleteRecoveryModal}
-          onDelete={async () => {
-            // TODO validate phrase
-            await handleDeleteRecovery(recoveryMethod)
+          onDelete={async (phrase) => {
+            onDeleteRecoveryPhrase(phrase)
           }}
         />
       )}

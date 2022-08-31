@@ -139,7 +139,11 @@ describe("Facade suite", () => {
       try {
         await removeRecoveryDeviceFacade(anchor, "seedPhrase")
       } catch (e) {
-        expect((e as Error).message).toEqual("Incorrect seed phrase")
+        expect(
+          (e as Error).message.includes(
+            "Device is protected. Must be authenticated with this device to mutate",
+          ),
+        ).toBe(true)
       }
     }
   })

@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import Logo from "frontend/assets/dfinity.svg"
+import { walletFee } from "frontend/constants/wallet"
 import { Button } from "frontend/ui/atoms/button"
 import { isHex } from "frontend/ui/utils"
 import { sumRules } from "frontend/ui/utils/validations"
@@ -75,7 +76,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
   const onSumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSumLength(value.length)
-    if (Number(value) + 0.0001 > balance)
+    if (Number(value) + walletFee > balance)
       setError("sum", {
         type: "manual",
         message: "Insufficient funds",
@@ -121,7 +122,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
       <p className="mt-5 text-xs text-center ">
         {Number(balance) === 0
           ? "You don't have any ICP to send."
-          : `Transfer fee: 0.0001 ICP`}
+          : `Transfer fee: ${walletFee} ICP`}
       </p>
       <p className="mt-2 text-xs text-center text-red-500">
         {errors.sum?.message ?? ""}

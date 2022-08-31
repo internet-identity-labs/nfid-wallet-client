@@ -209,7 +209,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           }}
           secondaryButton={{
             text: "Cancel",
-            type: "secondary",
+            type: "primary",
             onClick: () => {
               setUpdatedDevice(null)
               toggleIconModal()
@@ -240,7 +240,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           }}
           secondaryButton={{
             text: "Cancel",
-            type: "secondary",
+            type: "primary",
             onClick: toggleDeleteDeviceModal,
           }}
         >

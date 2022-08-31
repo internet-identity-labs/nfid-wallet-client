@@ -86,7 +86,7 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
                   </div>
 
                   <Button
-                    secondary
+                    primary
                     large
                     className="my-4"
                     onClick={handleSubmit(onRecover)}

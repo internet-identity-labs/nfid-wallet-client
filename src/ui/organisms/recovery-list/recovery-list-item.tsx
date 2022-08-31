@@ -20,6 +20,7 @@ import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 
 import { DeviceIconDecider } from "../device-list/device-icon-decider"
 import { DeviceListButtonGroup } from "../device-list/device-list-button-group"
+import RecoveryPhraseDeleteModal from "./delete-phrase/phrase-delete-modal"
 
 interface recoveryMethodListItemProps {
   recoveryMethod: RecoveryDevice
@@ -199,7 +200,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           }}
           secondaryButton={{
             text: "Cancel",
-            type: "secondary",
+            type: "primary",
             onClick: () => {
               setUpdatedRecovery(null)
               toggleIconModal()
@@ -218,7 +219,16 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           </div>
         </ModalAdvanced>
       )}
-      {deleteRecoveryModal && (
+      {deleteRecoveryModal && recoveryMethod.isRecoveryPhrase && (
+        <RecoveryPhraseDeleteModal
+          onClose={toggleDeleteRecoveryModal}
+          onDelete={async () => {
+            // TODO validate phrase
+            await handleDeleteRecovery(recoveryMethod)
+          }}
+        />
+      )}
+      {deleteRecoveryModal && !recoveryMethod.isRecoveryPhrase && (
         <ModalAdvanced
           title="Delete access point"
           onClose={toggleDeleteRecoveryModal}
@@ -231,7 +241,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           }}
           secondaryButton={{
             text: "Cancel",
-            type: "secondary",
+            type: "primary",
             onClick: toggleDeleteRecoveryModal,
           }}
         >

@@ -44,7 +44,7 @@ export const Modal: React.FC<ModalProps> = ({
             </div>
 
             <div className="flex items-center justify-end p-6">
-              <Button secondary className="w-full" onClick={onClick}>
+              <Button primary className="w-full" onClick={onClick}>
                 {buttonText}
               </Button>
             </div>

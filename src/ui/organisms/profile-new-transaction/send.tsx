@@ -72,6 +72,17 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
     return !errors.address && !dirtyFields.address && sumLength > 0
   }, [dirtyFields.address, errors.address, sumLength])
 
+  const onSumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSumLength(value.length)
+    if (Number(value) + 0.0001 > balance)
+      setError("sum", {
+        type: "manual",
+        message: "Insufficient funds",
+      })
+    else clearErrors("sum")
+  }
+
   if (isSuccess)
     return <TransactionSuccess sum={getValues().sum} onClose={onClose} />
 
@@ -90,7 +101,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
           id="input"
           min={0}
           style={{ width: `${sumLength * 22}px` }}
-          onKeyUp={(e) => setSumLength(e.target.value.length)}
+          onKeyUp={onSumChange}
           {...register("sum", {
             valueAsNumber: true,
             required: sumRules.errorMessages.required,
@@ -111,6 +122,9 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
         {Number(balance) === 0
           ? "You don't have any ICP to send."
           : `Transfer fee: 0.0001 ICP`}
+      </p>
+      <p className="mt-2 text-xs text-center text-red-500">
+        {errors.sum?.message ?? ""}
       </p>
       <form>
         <div className={clsx("rounded-md text-sm mb-5 mt-7")}>

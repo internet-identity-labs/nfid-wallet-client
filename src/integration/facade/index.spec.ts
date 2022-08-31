@@ -1,23 +1,33 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 
 import { DeviceData } from "frontend/integration/_ic_api/internet_identity_types"
 import { ii, im, replaceIdentity } from "frontend/integration/actors"
 import { removeRecoveryDeviceFacade } from "frontend/integration/facade/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
-import { authState as authStateMock, FrontendDelegation } from "frontend/integration/internet-identity/index"
+import {
+  authState as authStateMock,
+  FrontendDelegation,
+} from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
-import { generateDelegationIdentity, registerIIAccount } from "../../../test/steps/support/integration/test-util"
+import {
+  generateDelegationIdentity,
+  registerIIAccount,
+} from "../../../test/steps/support/integration/test-util"
 
 describe("Facade suite", () => {
   jest.setTimeout(50000)
 
   describe("Facade Service Test", () => {
-    it("Should create and remove protected Recovery device", async function() {
+    it("Should create and remove protected Recovery device", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
       const delegationIdentity: DelegationIdentity =
         await generateDelegationIdentity(mockedIdentity)

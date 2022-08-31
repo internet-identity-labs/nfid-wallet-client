@@ -75,6 +75,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
 
   const onSumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
+    if (Number(value) < 0) return setValue("sum", (Number(value) * -1).toString())
     setSumLength(value.length)
     if (Number(value) + walletFee > balance)
       setError("sum", {

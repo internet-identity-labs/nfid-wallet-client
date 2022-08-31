@@ -98,17 +98,8 @@
     width: 310%;
   }
 
-  main.landing-page .container .sm\:text-titleLarge {
-    font-size: 34px;
-    line-height: 44px;
-  }
-
   main.landing-page .container button.btn-large-max {
     width: 100%;
-  }
-
-  main.landing-page .container h2.text-lg {
-    font-size: 0.9rem;
   }
 }
 

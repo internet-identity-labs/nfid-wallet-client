@@ -44,6 +44,7 @@ export const PopupLogin: React.FC<PopupLoginProps> = ({ menu = false }) => {
         <Button
           primary
           className="w-full mt-4"
+          id="profileButton"
           onClick={() => navigate("/profile/security")}
         >
           Profile

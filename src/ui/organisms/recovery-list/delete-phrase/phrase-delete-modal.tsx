@@ -1,5 +1,8 @@
 import clsx from "clsx"
 import React, { useState } from "react"
+import { toast } from "react-toastify"
+
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { Button } from "frontend/ui/atoms/button"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
@@ -7,7 +10,7 @@ import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 interface IRecoveryPhraseDeleteModal
   extends React.HTMLAttributes<HTMLDivElement> {
   onClose: () => void
-  onDelete: (a: string) => void
+  onDelete: (a: string) => Promise<void>
 }
 
 const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
@@ -15,6 +18,17 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
   onDelete,
 }) => {
   const [phrase, setPhrase] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const handleDelete = React.useCallback(async () => {
+    setIsLoading(true)
+    try {
+      await onDelete(phrase)
+    } catch {
+      toast.error("Incorrect seed phrase")
+    } finally {
+      setIsLoading(false)
+    }
+  }, [onDelete, phrase])
 
   return (
     <ModalAdvanced
@@ -24,23 +38,25 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
       onBgClick={onClose}
       buttonsClassNames="py-3"
     >
+      <Loader isLoading={isLoading} />
       <div>
         <textarea
           name="recoveryPhrase"
           className={clsx(
-            "border border-black-base rounded-t-md",
+            "border border-black-base rounded-t-md border-b-0",
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 font-mono leading-[26px]",
           )}
-          rows={5}
-          placeholder="lorem ipsum dolor ..."
+          rows={6}
+          placeholder="worry cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo "
           onChange={(e) => setPhrase(e.target.value)}
         />
         <Button
           error
           block
           className="rounded-t-none"
-          onClick={() => onDelete(phrase)}
+          onClick={handleDelete}
+          disabled={phrase.split(" ").length < 11}
         >
           Remove recovery phrase
         </Button>

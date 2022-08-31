@@ -56,7 +56,7 @@ export const config: WebdriverIO.Config = {
   // then the current working directory is where your `package.json` resides, so `wdio`
   // will be called from there.
   //
-  specs: ["./test/features/**/*.feature"],
+  specs: ["./test/features/**/RegistrationGoogle.feature"],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -91,6 +91,10 @@ export const config: WebdriverIO.Config = {
       browserName: "chrome",
       "goog:chromeOptions": {
         args: [
+          'disable-web-security',
+          'allow-running-insecure-content',
+          `user-data-dir=${process.env.USER_DATA_DIR}`,
+          `profile-directory=${process.env.PROFILE_DIRECTORY}`,
           "--no-sandbox",
           ...(isDebug ? [] : ["--headless", "--disable-dev-shm-usage"]),
           "disable-gpu",

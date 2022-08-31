@@ -495,14 +495,20 @@ export async function removeRecoveryDeviceII(
   if (!delegationIdentity) {
     throw Error("Unauthenticated")
   }
-  await asRecoveryIdentity(seedPhrase)
+  let seedIdentity = await asRecoveryIdentity(seedPhrase)
 
   let recoveryPhraseDeviceData = (await ii
     .lookup(userNumber)
     .then((x) =>
       x.find((d) => hasOwnProperty(d.purpose, "recovery")),
     )) as DeviceData
-  if (!recoveryPhraseDeviceData) {
+  if (
+    !recoveryPhraseDeviceData ||
+    JSON.stringify(recoveryPhraseDeviceData.pubkey) !==
+      JSON.stringify(
+        Array.from(new Uint8Array(seedIdentity.getPublicKey().toDer())),
+      )
+  ) {
     throw Error("Incorrect seed phrase")
   }
   await removeDevice(userNumber, recoveryPhraseDeviceData.pubkey)
@@ -550,6 +556,7 @@ async function asRecoveryIdentity(seedPhrase: string) {
   )
   const frontendDelegation = await requestFEDelegation(identity)
   replaceIdentity(frontendDelegation.delegationIdentity)
+  return identity
 }
 
 async function registerAnchor(

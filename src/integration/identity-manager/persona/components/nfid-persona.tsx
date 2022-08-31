@@ -27,7 +27,7 @@ export const NFIDPersonas: React.FC<NFIDPersonasProps> = ({
         <Button
           key={persona_id}
           block
-          secondary
+          primary
           onClick={onClickPersona({ persona_id })}
           className="mt-1"
         >

@@ -17,6 +17,7 @@ import {
   PublicKey,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { im } from "frontend/integration/actors"
+import { removeAccessPointFacade } from "frontend/integration/facade"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import {
   addDevice,
@@ -26,7 +27,6 @@ import {
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
   IC_DERIVATION_PATH,
-  removeDevice,
 } from "frontend/integration/internet-identity"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
@@ -243,14 +243,8 @@ export const useDevices = () => {
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
       if (authState.get().actor && profile?.anchor) {
-        await Promise.all([
-          removeDevice(BigInt(profile?.anchor), pubkey),
-          im.remove_access_point({ pub_key: pubkey }).catch((e) => {
-            throw new Error(
-              `useDevices.deleteDevice im.remove_access_point: ${e.message}`,
-            )
-          }),
-        ])
+        await removeAccessPointFacade(BigInt(profile?.anchor), pubkey)
+        refreshDevices()
       }
     },
     [profile?.anchor],

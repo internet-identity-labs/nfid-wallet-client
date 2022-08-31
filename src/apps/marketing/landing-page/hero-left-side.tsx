@@ -2,8 +2,10 @@ import clsx from "clsx"
 import React from "react"
 // @ts-ignore
 import { Slide } from "react-awesome-reveal"
+import { Link } from "react-router-dom"
 import sticky from "stickyfilljs"
 
+import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/authentication/recover-nfid/routes"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { ElementProps } from "frontend/types/react"
 
@@ -27,7 +29,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({
     <div ref={text} className="z-30 sm:mt-40 top-28">
       {/* @ts-ignore: TODO: Pasha fix */}
       <Slide left>
-        <div>
+        <div className="flex flex-wrap justify-start">
           <h1
             className={clsx(
               "font-bold text-[32px] leading-10 mt-2",
@@ -53,7 +55,13 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({
             )}
           >
             NFID is the digital identity for connecting to applications
-            privately and securely
+            privately and securely <br /> <br />
+            <Link
+              to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
+              className="mt-4 text-left cursor-pointer text-blue-base hover:underline hover:text-blue-hove"
+            >
+              Recover NFID
+            </Link>
           </h2>
           {isUnregistered && isMobile && (
             <img src={MobileHero} alt="" className="mb-8 min-h-[300px]" />

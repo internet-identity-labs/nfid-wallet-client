@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import Logo from "frontend/assets/dfinity.svg"
+import { walletFee } from "frontend/constants/wallet"
 import { Button } from "frontend/ui/atoms/button"
 import { isHex } from "frontend/ui/utils"
 import { sumRules } from "frontend/ui/utils/validations"
@@ -72,6 +73,17 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
     return !errors.address && !dirtyFields.address && sumLength > 0
   }, [dirtyFields.address, errors.address, sumLength])
 
+  const onSumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSumLength(value.length)
+    if (Number(value) + walletFee > balance)
+      setError("sum", {
+        type: "manual",
+        message: "Insufficient funds",
+      })
+    else clearErrors("sum")
+  }
+
   if (isSuccess)
     return <TransactionSuccess sum={getValues().sum} onClose={onClose} />
 
@@ -90,7 +102,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
           id="input"
           min={0}
           style={{ width: `${sumLength * 22}px` }}
-          onKeyUp={(e) => setSumLength(e.target.value.length)}
+          onKeyUp={onSumChange}
           {...register("sum", {
             valueAsNumber: true,
             required: sumRules.errorMessages.required,
@@ -110,7 +122,10 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
       <p className="mt-5 text-xs text-center ">
         {Number(balance) === 0
           ? "You don't have any ICP to send."
-          : `Transfer fee: 0.0001 ICP`}
+          : `Transfer fee: ${walletFee} ICP`}
+      </p>
+      <p className="mt-2 text-xs text-center text-red-500">
+        {errors.sum?.message ?? ""}
       </p>
       <form>
         <div className={clsx("rounded-md text-sm mb-5 mt-7")}>

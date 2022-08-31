@@ -247,7 +247,7 @@ export const useDevices = () => {
         refreshDevices()
       }
     },
-    [profile?.anchor],
+    [profile?.anchor, refreshDevices],
   )
 
   const createWebAuthNDevice = React.useCallback(

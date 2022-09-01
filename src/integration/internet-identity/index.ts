@@ -505,6 +505,7 @@ export async function removeRecoveryDeviceII(
   if (!recoveryPhraseDeviceData) {
     throw Error("Seed phrase not registered")
   }
+
   await removeDevice(userNumber, recoveryPhraseDeviceData.pubkey)
   replaceIdentity(delegationIdentity)
   return recoveryPhraseDeviceData.pubkey

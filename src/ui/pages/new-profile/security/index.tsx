@@ -12,6 +12,7 @@ import { IconRecovery } from "frontend/ui/atoms/icons/recovery"
 import { USBIcon } from "frontend/ui/atoms/icons/usb"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 import { DeviceListItem } from "frontend/ui/organisms/device-list/device-list-item"
+import AddRecoveryPhraseModal from "frontend/ui/organisms/recovery-list/add-phrase"
 import { MethodRaw } from "frontend/ui/organisms/recovery-list/method-raw-item"
 import { RecoveryMethodListItem } from "frontend/ui/organisms/recovery-list/recovery-list-item"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -22,7 +23,7 @@ interface IProfileSecurityPage extends React.HTMLAttributes<HTMLDivElement> {
   onDeviceUpdate: (device: LegacyDevice) => Promise<void>
   onRecoveryDelete: (method: RecoveryDevice) => Promise<void>
   onRecoveryUpdate: (method: RecoveryDevice) => Promise<void>
-  onCreateRecoveryPhrase: () => Promise<void>
+  onCreateRecoveryPhrase: () => Promise<string>
   onDeleteRecoveryPhrase: (phrase: string) => Promise<void>
   onRegisterRecoveryKey: () => Promise<void>
   devices: LegacyDevice[]
@@ -42,6 +43,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
+  const [phrase, setPhrase] = React.useState("")
 
   const hasRecoveryPhrase = React.useMemo(
     () => recoveryMethods.filter((rm) => rm.isRecoveryPhrase).length > 0,
@@ -58,12 +60,15 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
     [hasRecoveryPhrase, hasSecurityKey],
   )
 
-  const handleWithLoading = (cb: () => Promise<void>) => async () => {
-    setIsLoading(true)
-    await cb()
-    setIsLoading(false)
-    setIsModalVisible(false)
-  }
+  const handleWithLoading =
+    (cb: () => Promise<void | string>, callback?: (res: any) => void) =>
+    async () => {
+      setIsLoading(true)
+      const res = await cb()
+      callback && callback(res)
+      setIsLoading(false)
+      setIsModalVisible(false)
+    }
 
   return (
     <ProfileTemplate pageTitle="Security">
@@ -122,7 +127,9 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
           <div className="mt-3 space-y-2">
             {!hasRecoveryPhrase && (
               <MethodRaw
-                onClick={handleWithLoading(onCreateRecoveryPhrase)}
+                onClick={handleWithLoading(onCreateRecoveryPhrase, (value) =>
+                  setPhrase(value),
+                )}
                 title="Secret recovery phrase"
                 subtitle="A “master password” to keep offline"
                 img={<IconRecovery />}
@@ -140,6 +147,9 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
           </div>
         </ModalAdvanced>
       )}
+      {phrase.length ? (
+        <AddRecoveryPhraseModal onClose={() => setPhrase("")} phrase={phrase} />
+      ) : null}
       <Loader isLoading={isLoading} />
     </ProfileTemplate>
   )

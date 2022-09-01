@@ -56,12 +56,6 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({
           >
             NFID is the digital identity for connecting to applications
             privately and securely <br /> <br />
-            <Link
-              to={`${RAC.base}/${RAC.enterRecoveryPhrase}`}
-              className="mt-4 text-left cursor-pointer text-blue-base hover:underline hover:text-blue-hove"
-            >
-              Recover NFID
-            </Link>
           </h2>
           {isUnregistered && isMobile && (
             <img src={MobileHero} alt="" className="mb-8 min-h-[300px]" />

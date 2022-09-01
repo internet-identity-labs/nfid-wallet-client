@@ -11,6 +11,7 @@ import {
   postMessageToClient,
   prepareClientDelegate,
 } from "."
+import { validateDerivationOrigin } from "../internet-identity/validateDerivationOrigin"
 
 /**
  * xstate service initiating the idp flow via window message channel with the client
@@ -19,8 +20,14 @@ import {
 export async function handshake(): Promise<AuthorizationRequest> {
   const response = awaitMessageFromClient<IdentityClientAuthEvent>(
     "authorize-client",
-  ).then((event) => {
+  ).then(async (event) => {
     console.debug("handshake", { event })
+    const validation = await validateDerivationOrigin(
+      event.origin,
+      event.data.derivationOrigin,
+    )
+    if (validation.result !== "valid") throw new Error(validation.message)
+    console.log({ validation, derivationOrigin: event.data.derivationOrigin })
     return {
       maxTimeToLive: event.data.maxTimeToLive,
       sessionPublicKey: event.data.sessionPublicKey,

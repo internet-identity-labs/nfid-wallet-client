@@ -2,10 +2,10 @@
  * Remove user E2E.
  */
 export default async () => {
-  let env = process.env.BACKEND_MODE;
-  if(env === "DEV") {
-    await fetch("https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/userE2E", { method: "DELETE", body: "{}"})
+  let userUrlE2E = process.env.URL_AWS_USER_E2E_GOOGLE;
+  if(userUrlE2E) {
+    await fetch(userUrlE2E, { method: "DELETE", body: "{}"})
   } else {
-    throw Error(`${env} is not supported.`);
+    throw Error(`URL_AWS_USER_E2E_GOOGLE is not defined.`);
   }
 }

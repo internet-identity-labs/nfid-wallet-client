@@ -11,7 +11,8 @@ Feature: Registration and login using Google
     Then I wait on element "iframe" for 20000ms to be displayed
     When I click on the selector "iframe"
     When I focus the last opened window
-    When I click on the selector "div.fFW7wc-ibnC6b:first-child"
+    Then I wait on element "[role='link']:first-child" for 5000ms to exist
+    When I click on the selector "[role='link']:first-child"
     When I focus the previously opened window
     Then I wait on element "#captcha-img" for 10000ms to be displayed
     And  I expect that element "#enter-captcha" not contains any text
@@ -29,7 +30,8 @@ Feature: Registration and login using Google
     Then I wait on element "iframe" for 20000ms to be displayed
     When I click on the selector "iframe"
     When I focus the last opened window
-    When I click on the selector "div.fFW7wc-ibnC6b:first-child"
+    Then I wait on element "[role='link']:first-child" for 5000ms to exist
+    When I click on the selector "[role='link']:first-child"
     When I focus the previously opened window
     Then I wait on element "#profile-icon" for 5000ms to be displayed
     When I click on the selector "#profile-icon"

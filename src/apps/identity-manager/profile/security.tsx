@@ -1,4 +1,5 @@
 import React from "react"
+import { toast } from "react-toastify"
 
 import { removeRecoveryDeviceFacade } from "frontend/integration/facade"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
@@ -84,9 +85,15 @@ const ProfileSecurity = () => {
   const handleDeleteRecoveryPhrase = React.useCallback(
     async (seedPhrase: string) => {
       if (!user?.anchor) return
+      const firstElement = parseInt(seedPhrase.split(" ")[0])
+      if (!isNaN(firstElement) && Number(user.anchor) !== firstElement) {
+        toast.error("Incorrect seed phrase")
+        return
+      }
       await removeRecoveryDeviceFacade(BigInt(user?.anchor), seedPhrase)
+      await getDevices()
     },
-    [user?.anchor],
+    [getDevices, user?.anchor],
   )
 
   const handleRegisterRecoveryKey = React.useCallback(async () => {

@@ -224,9 +224,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
       {deleteRecoveryModal && recoveryMethod.isRecoveryPhrase && (
         <RecoveryPhraseDeleteModal
           onClose={toggleDeleteRecoveryModal}
-          onDelete={async (phrase) => {
-            onDeleteRecoveryPhrase(phrase)
-          }}
+          onDelete={onDeleteRecoveryPhrase}
         />
       )}
       {deleteRecoveryModal && !recoveryMethod.isRecoveryPhrase && (

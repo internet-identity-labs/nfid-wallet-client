@@ -1,14 +1,18 @@
 import React from "react"
+import { toast } from "react-toastify"
 
+import { removeRecoveryDeviceFacade } from "frontend/integration/facade"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import {
   LegacyDevice,
   RecoveryDevice,
 } from "frontend/integration/identity-manager/devices/state"
+import { useAccount } from "frontend/integration/identity-manager/queries"
 import ProfileSecurityPage from "frontend/ui/pages/new-profile/security"
 
 const ProfileSecurity = () => {
   const [fetched, loadOnce] = React.useReducer(() => true, false)
+  const { data: user } = useAccount()
 
   const {
     devices,
@@ -65,15 +69,30 @@ const ProfileSecurity = () => {
   const handleCreateRecoveryPhrase = React.useCallback(async () => {
     // NOTE: NEVER LOG RECOVERY PHRASE
     return await createRecoveryPhrase()
-    // navigate(
-    //   `${ProfileConstants.base}/${ProfileConstants.copyRecoveryPhrase}`,
-    //   {
-    //     state: {
-    //       recoveryPhrase,
-    //     },
-    //   },
-    // )
   }, [createRecoveryPhrase])
+
+  const handleDeleteRecoveryPhrase = React.useCallback(
+    async (seedPhrase: string) => {
+      if (!user?.anchor) return
+
+      let phrase = seedPhrase.split(" ")
+      const possibleUserNumber = parseInt(phrase[0])
+
+      if (
+        !isNaN(possibleUserNumber) &&
+        Number(user.anchor) !== possibleUserNumber
+      ) {
+        toast.error("Incorrect seed phrase")
+        return
+      }
+
+      if (!isNaN(possibleUserNumber)) phrase.shift()
+
+      await removeRecoveryDeviceFacade(BigInt(user?.anchor), phrase.join(" "))
+      await getRecoveryDevices()
+    },
+    [getRecoveryDevices, user?.anchor],
+  )
 
   const handleRegisterRecoveryKey = React.useCallback(async () => {
     await createSecurityDevice()
@@ -86,8 +105,9 @@ const ProfileSecurity = () => {
       devices={devices}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
-      onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
       onRegisterRecoveryKey={handleRegisterRecoveryKey}
+      onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
+      onDeleteRecoveryPhrase={handleDeleteRecoveryPhrase}
       recoveryMethods={recoveryDevices}
     />
   )

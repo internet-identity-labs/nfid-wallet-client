@@ -87,14 +87,17 @@ const ProfileSecurity = () => {
       if (!user?.anchor) return
 
       let phrase = seedPhrase.split(" ")
-      const firstElement = parseInt(phrase[0])
+      const possibleUserNumber = parseInt(phrase[0])
 
-      if (!isNaN(firstElement) && Number(user.anchor) !== firstElement) {
+      if (
+        !isNaN(possibleUserNumber) &&
+        Number(user.anchor) !== possibleUserNumber
+      ) {
         toast.error("Incorrect seed phrase")
         return
       }
 
-      if (!isNaN(firstElement)) phrase.shift()
+      if (!isNaN(possibleUserNumber)) phrase.shift()
 
       await removeRecoveryDeviceFacade(BigInt(user?.anchor), phrase.join(" "))
       await getRecoveryDevices()

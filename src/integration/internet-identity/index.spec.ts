@@ -64,16 +64,16 @@ describe("ii suite", () => {
       ).toEqual(true)
       await iiIndexMock.addDevice(
         anchor,
-        "DeviceNotRecovery",
+        "DeviceRecoveryNotSeedPhrase",
         { platform: null },
-        { authentication: null },
+        { recovery: null },
         Ed25519KeyIdentity.generate().getPublicKey().toDer(),
       )
       //verify auth device unprotected
       let authDevice = (await ii
         .lookup(anchor)
         .then((x) =>
-          x.find((d) => d.alias === "DeviceNotRecovery"),
+          x.find((d) => d.alias === "DeviceRecoveryNotSeedPhrase"),
         )) as DeviceData
       expect(hasOwnProperty(authDevice.protection, "unprotected")).toEqual(true)
     })

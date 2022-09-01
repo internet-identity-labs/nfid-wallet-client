@@ -503,8 +503,9 @@ export async function removeRecoveryDeviceII(
       x.find((d) => hasOwnProperty(d.purpose, "recovery")),
     )) as DeviceData
   if (!recoveryPhraseDeviceData) {
-    throw Error("Incorrect seed phrase")
+    throw Error("Seed phrase not registered")
   }
+
   await removeDevice(userNumber, recoveryPhraseDeviceData.pubkey)
   replaceIdentity(delegationIdentity)
   return recoveryPhraseDeviceData.pubkey

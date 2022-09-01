@@ -7,7 +7,10 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
-import { DeviceData } from "frontend/integration/_ic_api/internet_identity_types"
+import {
+  DeviceData,
+  UserNumber,
+} from "frontend/integration/_ic_api/internet_identity_types"
 import { ii, im, replaceIdentity } from "frontend/integration/actors"
 import { removeRecoveryDeviceFacade } from "frontend/integration/facade/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
@@ -24,7 +27,7 @@ import {
 } from "../../../test/steps/support/integration/test-util"
 
 describe("Facade suite", () => {
-  jest.setTimeout(50000)
+  jest.setTimeout(80000)
 
   describe("Facade Service Test", () => {
     it("Should create and remove protected Recovery device", async function () {
@@ -72,20 +75,28 @@ describe("Facade suite", () => {
       expect(hasOwnProperty(recoveryDeviceII.protection, "protected")).toEqual(
         true,
       )
+
+      //decrease test time. validate incorrect seed phrase
+      await getErrorOnIncorrectSeedPhrase(
+        mockedIdentity,
+        delegationIdentity,
+        anchor,
+      )
+
       let chain = await DelegationChain.create(
-        recoveryIdentity,
-        mockedIdentity.getPublicKey(),
+        recoveryDevice,
+        recoveryIdentity.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
       )
       let feDelegation: FrontendDelegation = {
         chain: chain,
-        sessionKey: mockedIdentity,
+        sessionKey: recoveryDevice,
         delegationIdentity: recoveryIdentity,
       }
       authStateMock.set(recoveryDevice, recoveryIdentity, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
-        Promise.resolve(mockedIdentity),
+        Promise.resolve(recoveryDevice),
       )
       // @ts-ignore
       iiIndexMock.requestFEDelegation = jest
@@ -100,5 +111,40 @@ describe("Facade suite", () => {
       expect(removedDevice).toBe(undefined)
       expect((await im.read_access_points()).data[0]).toEqual([])
     })
+
+    async function getErrorOnIncorrectSeedPhrase(
+      mockedIdentity: Ed25519KeyIdentity,
+      delegationIdentity: DelegationIdentity,
+      anchor: UserNumber,
+    ) {
+      let chain = await DelegationChain.create(
+        mockedIdentity,
+        mockedIdentity.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+      )
+      let feDelegation: FrontendDelegation = {
+        chain: chain,
+        sessionKey: mockedIdentity,
+        delegationIdentity: delegationIdentity,
+      }
+      authStateMock.set(mockedIdentity, delegationIdentity, ii)
+      // @ts-ignore
+      ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
+        Promise.resolve(mockedIdentity),
+      )
+      // @ts-ignore
+      iiIndexMock.requestFEDelegation = jest
+        .fn()
+        .mockReturnValue(Promise.resolve(feDelegation))
+      try {
+        await removeRecoveryDeviceFacade(anchor, "seedPhrase")
+      } catch (e) {
+        expect(
+          (e as Error).message.includes(
+            "Device is protected. Must be authenticated with this device to mutate",
+          ),
+        ).toBe(true)
+      }
+    }
   })
 })

@@ -1,5 +1,6 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useState } from "react"
+import { toast } from "react-toastify"
 
 import { Button } from "frontend/ui/atoms/button"
 import { CopyIcon } from "frontend/ui/atoms/icons/copy"
@@ -7,13 +8,21 @@ import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 interface IAddRecoveryPhraseModal extends React.HTMLAttributes<HTMLDivElement> {
   onClose: () => void
-  onCopy: () => void
+  phrase: string
 }
 
 const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
   onClose,
-  onCopy,
+  phrase,
 }) => {
+  const [copied, setCopied] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(phrase)
+    toast.success("Copied to clipboard")
+    setCopied(true)
+  }
   return (
     <ModalAdvanced
       title="Add recovery phrase"
@@ -31,22 +40,47 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
       <div>
         <div
           className={clsx(
-            "border border-black-base rounded-t-md",
+            "border-2 border-black-base rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
             "w-full font-mono leading-[26px] p-2",
           )}
         >
-          worry cute good fence purity play despair worth year layer install
-          drastic vote skirt noble sadness miss gadget kitten ladder traffic
-          risk phone bamboo{" "}
+          {phrase}{" "}
         </div>
         <Button
           block
-          className="flex justify-center space-x-2 rounded-t-none"
-          onClick={onCopy}
+          className="flex justify-center space-x-2 border-2 border-t-0 rounded-t-none border-black-base"
+          onClick={copyToClipboard}
+          id="copyButton"
         >
-          <CopyIcon className="text-black-base" />
-          <span>Copy</span>
+          <CopyIcon className="text-black-base stroke-black-base" />
+          <span>{copied ? "Copied" : "Copy"}</span>
+        </Button>
+
+        <div className="mt-5">
+          <input
+            type="checkbox"
+            id="savedCheckbox"
+            className="w-5 h-5 border-2 rounded cursor-pointer border-black-base"
+            onChange={() => setIsSaved(!isSaved)}
+            checked={isSaved}
+          />
+          <label
+            htmlFor="savedCheckbox"
+            className="ml-2 text-sm cursor-pointer"
+          >
+            I’ve saved this phrase in a safe place
+          </label>
+        </div>
+
+        <Button
+          block
+          primary
+          disabled={!copied || !isSaved}
+          className="mt-5"
+          onClick={onClose}
+        >
+          Done
         </Button>
       </div>
     </ModalAdvanced>

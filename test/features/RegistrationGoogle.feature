@@ -21,8 +21,9 @@ Feature: Registration and login using Google
     And  I expect that element "#create-nfid" does not have the class "btn-disabled"
     When I click on the selector "#create-nfid"
     Then I wait on element "#loader" for 60000ms to not be displayed
+    Then I wait on element "#profile-icon" for 5000ms to be displayed
     When I click on the selector "#profile-icon"
-    Then I wait on element "h2.mt-5.text-xl.font-bold.text-left" for 20000ms to be displayed
+    Then I wait on element "#logout" for 20000ms to exist
 
     Given I open the site "/register-nfid-account/intro"
     Then I wait on element "iframe" for 20000ms to be displayed
@@ -30,6 +31,6 @@ Feature: Registration and login using Google
     When I focus the last opened window
     When I click on the selector "div.fFW7wc-ibnC6b:first-child"
     When I focus the previously opened window
-    Then I wait on element "#profile-icon" for 20000ms to be displayed
+    Then I wait on element "#profile-icon" for 5000ms to be displayed
     When I click on the selector "#profile-icon"
-    Then I wait on element "h2.mt-5.text-xl.font-bold.text-left" for 20000ms to be displayed
+    Then I wait on element "#logout" for 20000ms to exist

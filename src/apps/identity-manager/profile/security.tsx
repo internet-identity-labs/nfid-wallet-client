@@ -97,9 +97,9 @@ const ProfileSecurity = () => {
       if (!isNaN(firstElement)) phrase.shift()
 
       await removeRecoveryDeviceFacade(BigInt(user?.anchor), phrase.join(" "))
-      await getDevices()
+      await getRecoveryDevices()
     },
-    [getDevices, user?.anchor],
+    [getRecoveryDevices, user?.anchor],
   )
 
   const handleRegisterRecoveryKey = React.useCallback(async () => {

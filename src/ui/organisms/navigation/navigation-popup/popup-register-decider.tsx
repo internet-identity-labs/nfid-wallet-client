@@ -113,7 +113,7 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
         />
       </div>
       <div className="mt-8">
-        <Button secondary block large={false} onClick={handleClick}>
+        <Button primary block large={false} onClick={handleClick}>
           Continue
         </Button>
       </div>

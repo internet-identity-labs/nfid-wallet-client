@@ -36,7 +36,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
         <Button
           large={!iframe}
           block={iframe}
-          secondary
+          primary
           className="mt-8"
           onClick={onLogin}
           onTouchStart={onLogin}

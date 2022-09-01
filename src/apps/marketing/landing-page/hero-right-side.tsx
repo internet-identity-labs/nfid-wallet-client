@@ -9,19 +9,19 @@ import { ElementProps } from "frontend/types/react"
 import Group from "./assets/Group.svg"
 
 interface HeroRightSideProps extends ElementProps<HTMLDivElement> {
-  isQRCode?: boolean
+  isUnregistered?: boolean
   hasAccount?: boolean
 }
 
 export const HeroRightSide: React.FC<HeroRightSideProps> = ({
   children,
   className,
-  isQRCode,
+  isUnregistered,
   hasAccount,
 }) => {
   const { isMobile } = useDeviceInfo()
 
-  return isQRCode && !isMobile ? (
+  return isUnregistered && !isMobile ? (
     // @ts-ignore TODO: Pasha fix
     <Fade>
       <Tilt className="mb-[20vh] sm:mb-[60vh] hidden sm:block">

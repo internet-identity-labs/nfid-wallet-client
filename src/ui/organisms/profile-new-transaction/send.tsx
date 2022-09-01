@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import Logo from "frontend/assets/dfinity.svg"
+import { walletFee } from "frontend/constants/wallet"
 import { Button } from "frontend/ui/atoms/button"
 import { isHex } from "frontend/ui/utils"
 import { sumRules } from "frontend/ui/utils/validations"
@@ -24,8 +25,6 @@ export interface ITransactionSendForm {
   onClose: () => void
   balance: string | number
 }
-
-const rowStyles = "flex py-2 border-b border-gray-200"
 
 const TransactionSendForm: React.FC<ITransactionSendForm> = ({
   errorString,
@@ -74,24 +73,38 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
     return !errors.address && !dirtyFields.address && sumLength > 0
   }, [dirtyFields.address, errors.address, sumLength])
 
+  const onSumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (Number(value) < 0)
+      return setValue("sum", (Number(value) * -1).toString())
+    setSumLength(value.length)
+    if (Number(value) + walletFee > balance)
+      setError("sum", {
+        type: "manual",
+        message: "Insufficient funds",
+      })
+    else clearErrors("sum")
+  }
+
   if (isSuccess)
     return <TransactionSuccess sum={getValues().sum} onClose={onClose} />
 
   return (
     <div>
-      <div className="grid grid-cols-2 mt-14">
+      <div className="flex justify-center mt-14">
         <input
           className={clsx(
             "text-black-base placeholder:text-gray-400 text-4xl",
             "p-0 border-none outline-none resize-none focus:ring-0",
-            "text-right block mr-2",
+            "block mr-2 min-w-[22px]",
           )}
           autoFocus
           placeholder="0"
           type="number"
           id="input"
           min={0}
-          onKeyUp={(e) => setSumLength(e.target.value.length)}
+          style={{ width: `${sumLength * 22}px` }}
+          onKeyUp={onSumChange}
           {...register("sum", {
             valueAsNumber: true,
             required: sumRules.errorMessages.required,
@@ -111,21 +124,23 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
       <p className="mt-5 text-xs text-center ">
         {Number(balance) === 0
           ? "You don't have any ICP to send."
-          : `Transfer fee: 0.0001 ICP`}
+          : `Transfer fee: ${walletFee} ICP`}
+      </p>
+      <p className="mt-2 text-xs text-center text-red-500">
+        {errors.sum?.message ?? ""}
       </p>
       <form>
-        <div
-          className={clsx(
-            "rounded-md border border-gray-200 mb-5 mt-7",
-            "text-sm",
-          )}
-        >
-          <div className={clsx(rowStyles, "items-center")}>
+        <div className={clsx("rounded-md text-sm mb-5 mt-7")}>
+          <div className={clsx("flex py-2 items-center")}>
             <p className="w-24 pl-5 ">Token</p>
             <img src={Logo} alt="" className={clsx("w-6 h-6")} />
             <p className="ml-2 text-black-base">ICP</p>
           </div>
-          <div className={clsx(rowStyles, "items-start")}>
+          <div className="flex py-1">
+            <div className="w-24 pl-5" />
+            <div className="w-full h-0 ml-5 border-t" />
+          </div>
+          <div className={clsx("flex py-2 items-start")}>
             <p className="w-24 pl-5 ">To</p>
             <div>
               <textarea
@@ -137,6 +152,7 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
                 placeholder="Principal or account ID"
                 {...register("address", {
                   required: "Principal or account ID is required",
+                  maxLength: 65,
                 })}
                 onChange={onAddressChange}
               />
@@ -149,16 +165,6 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
                 {errors.address?.message ?? ""}
               </div>
             </div>
-          </div>
-          <div className="flex h-[90px] py-2">
-            <p className="w-24 pl-5">Note</p>
-            <textarea
-              className={clsx(
-                "p-0 border-none shadow-none outline-none resize-none focus:ring-0",
-                "text-black-base placeholder:text-gray-400 text-sm",
-              )}
-              placeholder="Optional message"
-            />
           </div>
         </div>
         <Button

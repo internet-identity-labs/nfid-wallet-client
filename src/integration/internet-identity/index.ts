@@ -487,6 +487,29 @@ export async function removeDevice(
   })
 }
 
+export async function removeRecoveryDeviceII(
+  userNumber: UserNumber,
+  seedPhrase: string,
+) {
+  let { delegationIdentity } = authState.get()
+  if (!delegationIdentity) {
+    throw Error("Unauthenticated")
+  }
+  await asRecoveryIdentity(seedPhrase)
+
+  let recoveryPhraseDeviceData = (await ii
+    .lookup(userNumber)
+    .then((x) =>
+      x.find((d) => hasOwnProperty(d.purpose, "recovery")),
+    )) as DeviceData
+  if (!recoveryPhraseDeviceData) {
+    throw Error("Incorrect seed phrase")
+  }
+  await removeDevice(userNumber, recoveryPhraseDeviceData.pubkey)
+  replaceIdentity(delegationIdentity)
+  return recoveryPhraseDeviceData.pubkey
+}
+
 export async function updateDevice(
   userNumber: UserNumber,
   publicKey: PublicKey,
@@ -501,16 +524,11 @@ export async function protectRecoveryPhrase(
   userNumber: UserNumber,
   seedPhrase: string,
 ): Promise<void> {
-  const identity = await fromMnemonicWithoutValidation(
-    seedPhrase,
-    IC_DERIVATION_PATH,
-  )
-  const frontendDelegation = await requestFEDelegation(identity)
   let { delegationIdentity } = authState.get()
   if (!delegationIdentity) {
     throw Error("Unauthenticated")
   }
-  replaceIdentity(frontendDelegation.delegationIdentity)
+  await asRecoveryIdentity(seedPhrase)
   let recoveryPhraseDeviceData = (await ii
     .lookup(userNumber)
     .then((x) =>
@@ -523,6 +541,15 @@ export async function protectRecoveryPhrase(
     recoveryPhraseDeviceData,
   )
   replaceIdentity(delegationIdentity)
+}
+
+async function asRecoveryIdentity(seedPhrase: string) {
+  const identity = await fromMnemonicWithoutValidation(
+    seedPhrase,
+    IC_DERIVATION_PATH,
+  )
+  const frontendDelegation = await requestFEDelegation(identity)
+  replaceIdentity(frontendDelegation.delegationIdentity)
 }
 
 async function registerAnchor(

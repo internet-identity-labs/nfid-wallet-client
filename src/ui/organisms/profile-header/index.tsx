@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React from "react"
+import User from "src/assets/userpics/userpic_6.svg"
 
 import { Logo } from "@internet-identity-labs/nfid-sdk-react"
 
@@ -10,7 +11,6 @@ import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import MenuIcon from "./assets/menu.svg"
-import ProfileIcon from "./assets/profile_img_light.svg"
 
 import ProfileSidebar from "../profile-sidebar"
 import ProfileHeaderPopup from "./popup"
@@ -38,8 +38,8 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
         <SendReceiveButton />
         <div className={clsx("relative")} ref={popupRef}>
           <img
-            className={clsx("cursor-pointer")}
-            src={ProfileIcon}
+            className={clsx("cursor-pointer w-10")}
+            src={User}
             alt="profile icon"
             onClick={() => setIsPopupVisible(!isPopupVisible)}
           />

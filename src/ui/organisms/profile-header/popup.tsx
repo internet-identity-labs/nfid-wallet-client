@@ -1,9 +1,8 @@
 import clsx from "clsx"
 import React from "react"
+import User from "src/assets/userpics/userpic_6.svg"
 
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
-
-import ProfileIcon from "./assets/profile_img_dark.svg"
 
 interface IProfileHeaderPopup extends React.HTMLAttributes<HTMLDivElement> {
   onSignOut: () => void
@@ -26,7 +25,7 @@ const ProfileHeaderPopup: React.FC<IProfileHeaderPopup> = ({
       <div>
         <img
           className={clsx("w-20 h-20 mx-auto mt-[30px]")}
-          src={ProfileIcon}
+          src={User}
           alt="profile icon"
         />
         <p className={clsx("text-xs text-gray-400 text-center mt-5")}>

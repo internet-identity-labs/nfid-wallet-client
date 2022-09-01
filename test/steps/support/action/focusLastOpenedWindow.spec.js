@@ -11,11 +11,19 @@ describe("focusLastOpenedWindow", () => {
     }
   })
 
-  it("should call focusLastOpenedWindow on the browser", async () => {
-    await focusLastOpenedWindow("")
+  it("should call focusLastOpenedWindow and open last window on the browser", async () => {
+    await focusLastOpenedWindow("last", "")
 
     expect(global.browser.getWindowHandles).toHaveBeenCalledTimes(1)
     expect(global.browser.switchToWindow).toHaveBeenCalledTimes(1)
     expect(global.browser.switchToWindow).toHaveBeenCalledWith("three")
+  })
+
+  it("should call focusLastOpenedWindow and open previous window on the browser", async () => {
+    await focusLastOpenedWindow("previously", "")
+
+    expect(global.browser.getWindowHandles).toHaveBeenCalledTimes(1)
+    expect(global.browser.switchToWindow).toHaveBeenCalledTimes(1)
+    expect(global.browser.switchToWindow).toHaveBeenCalledWith("two")
   })
 })

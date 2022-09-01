@@ -88,7 +88,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
         }
       >
         {canAddRecoveryMethod && (
-          <div className="" onClick={() => setIsModalVisible(true)}>
+          <div id="addRecovery" className="" onClick={() => setIsModalVisible(true)}>
             <PlusIcon
               className={clsx(
                 "absolute w-6 h-6 text-gray-500",
@@ -121,6 +121,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
               <MethodRaw
                 onClick={handleWithLoading(onCreateRecoveryPhrase)}
                 title="Secret recovery phrase"
+                id="recoveryKey"
                 subtitle="A “master password” to keep offline"
                 img={<IconRecovery />}
               />
@@ -129,6 +130,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
               <MethodRaw
                 onClick={handleWithLoading(onRegisterRecoveryKey)}
                 title="Security key"
+                id="securityKey"
                 subtitle="A special USB stick to keep safe"
                 img={<USBIcon />}
                 isDisabled={hasSecurityKey}

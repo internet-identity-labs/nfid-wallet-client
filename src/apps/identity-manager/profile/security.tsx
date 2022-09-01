@@ -8,6 +8,7 @@ import {
   RecoveryDevice,
 } from "frontend/integration/identity-manager/devices/state"
 import { useAccount } from "frontend/integration/identity-manager/queries"
+import { protectRecoveryPhrase } from "frontend/integration/internet-identity"
 import ProfileSecurityPage from "frontend/ui/pages/new-profile/security"
 
 const ProfileSecurity = () => {
@@ -94,6 +95,36 @@ const ProfileSecurity = () => {
     [getRecoveryDevices, user?.anchor],
   )
 
+  const handleProtectRecovery = React.useCallback(
+    async (seedPhrase: string) => {
+      if (!user?.anchor) return
+
+      let phrase = seedPhrase.split(" ")
+      const possibleUserNumber = parseInt(phrase[0])
+
+      if (
+        !isNaN(possibleUserNumber) &&
+        Number(user.anchor) !== possibleUserNumber
+      ) {
+        toast.error("Incorrect seed phrase")
+        return
+      }
+
+      if (!isNaN(possibleUserNumber)) phrase.shift()
+
+      try {
+        return await protectRecoveryPhrase(
+          BigInt(user?.anchor ?? 0),
+          phrase.join(" "),
+        )
+      } catch {
+        toast.error("Incorrect seed phrase")
+        return
+      }
+    },
+    [user?.anchor],
+  )
+
   const handleRegisterRecoveryKey = React.useCallback(async () => {
     await createSecurityDevice()
   }, [createSecurityDevice])
@@ -105,6 +136,7 @@ const ProfileSecurity = () => {
       devices={devices}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
+      onRecoveryProtect={handleProtectRecovery}
       onRegisterRecoveryKey={handleRegisterRecoveryKey}
       onCreateRecoveryPhrase={handleCreateRecoveryPhrase}
       onDeleteRecoveryPhrase={handleDeleteRecoveryPhrase}

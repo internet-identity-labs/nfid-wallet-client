@@ -23,6 +23,7 @@ interface IProfileSecurityPage extends React.HTMLAttributes<HTMLDivElement> {
   onDeviceUpdate: (device: LegacyDevice) => Promise<void>
   onRecoveryDelete: (method: RecoveryDevice) => Promise<void>
   onRecoveryUpdate: (method: RecoveryDevice) => Promise<void>
+  onRecoveryProtect: (phrase: string) => Promise<void>
   onCreateRecoveryPhrase: () => Promise<string>
   onDeleteRecoveryPhrase: (phrase: string) => Promise<void>
   onRegisterRecoveryKey: () => Promise<void>
@@ -36,6 +37,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
   devices,
   onRecoveryDelete,
   onRecoveryUpdate,
+  onRecoveryProtect,
   onCreateRecoveryPhrase,
   onDeleteRecoveryPhrase,
   onRegisterRecoveryKey,
@@ -110,6 +112,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
             recoveryMethod={method}
             onRecoveryUpdate={onRecoveryUpdate}
             onRecoveryDelete={onRecoveryDelete}
+            onRecoveryProtect={onRecoveryProtect}
             onDeleteRecoveryPhrase={onDeleteRecoveryPhrase}
           />
         ))}

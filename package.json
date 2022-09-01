@@ -155,7 +155,8 @@
     "wdio-json-reporter": "3.0.0",
     "webdriverio": "7.23.0",
     "webpack": "^5.72.0",
-    "whatwg-fetch": "3.6.2"
+    "whatwg-fetch": "3.6.2",
+    "node-fetch": "2.6.1"
   },
   "eslintConfig": {
     "extends": "react-app",

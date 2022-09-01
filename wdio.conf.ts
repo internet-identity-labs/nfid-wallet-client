@@ -1,7 +1,6 @@
 import dotenv from "dotenv"
 
 import { hooks } from "./test/hooks"
-import "whatwg-fetch"
 
 dotenv.config({ path: ".env.local" })
 

@@ -9,14 +9,11 @@ import {
 } from "frontend/integration/identity-manager/devices/state"
 import { useAccount } from "frontend/integration/identity-manager/queries"
 import ProfileSecurityPage from "frontend/ui/pages/new-profile/security"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
-
-import { ProfileConstants } from "./routes"
 
 const ProfileSecurity = () => {
   const [fetched, loadOnce] = React.useReducer(() => true, false)
-  const { navigate } = useNFIDNavigate()
   const { data: user } = useAccount()
+
   const {
     devices,
     recoveryDevices,
@@ -71,16 +68,8 @@ const ProfileSecurity = () => {
 
   const handleCreateRecoveryPhrase = React.useCallback(async () => {
     // NOTE: NEVER LOG RECOVERY PHRASE
-    const recoveryPhrase = await createRecoveryPhrase()
-    navigate(
-      `${ProfileConstants.base}/${ProfileConstants.copyRecoveryPhrase}`,
-      {
-        state: {
-          recoveryPhrase,
-        },
-      },
-    )
-  }, [createRecoveryPhrase, navigate])
+    return await createRecoveryPhrase()
+  }, [createRecoveryPhrase])
 
   const handleDeleteRecoveryPhrase = React.useCallback(
     async (seedPhrase: string) => {

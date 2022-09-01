@@ -32,7 +32,7 @@ AppScreen.args = {
   onDeviceUpdateLabel: (device: LegacyDevice) => Promise.resolve(),
   onRecoveryUpdate: (device: RecoveryDevice) => Promise.resolve(),
   onRecoveryDelete: (device: RecoveryDevice) => Promise.resolve(),
-  onCreateRecoveryPhrase: () => Promise.resolve(),
+  onCreateRecoveryPhrase: () => Promise.resolve("phrase"),
   onRegisterRecoveryKey: () => Promise.resolve(),
   devices: [
     {

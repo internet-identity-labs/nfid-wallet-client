@@ -85,12 +85,18 @@ const ProfileSecurity = () => {
   const handleDeleteRecoveryPhrase = React.useCallback(
     async (seedPhrase: string) => {
       if (!user?.anchor) return
-      const firstElement = parseInt(seedPhrase.split(" ")[0])
+
+      let phrase = seedPhrase.split(" ")
+      const firstElement = parseInt(phrase[0])
+
       if (!isNaN(firstElement) && Number(user.anchor) !== firstElement) {
         toast.error("Incorrect seed phrase")
         return
       }
-      await removeRecoveryDeviceFacade(BigInt(user?.anchor), seedPhrase)
+
+      if (!isNaN(firstElement)) phrase.shift()
+
+      await removeRecoveryDeviceFacade(BigInt(user?.anchor), phrase.join(" "))
       await getDevices()
     },
     [getDevices, user?.anchor],

@@ -454,7 +454,7 @@ export async function addDevice(
   credentialId?: ArrayBuffer,
 ) {
   //register only protected recovery phrase
-  let protectionType = hasOwnProperty(purpose, "recovery")
+  let protectionType = hasOwnProperty(keyType, "seed_phrase")
     ? { protected: null }
     : { unprotected: null }
   // NOTE: removed the call to renewDelegation. It was failing because

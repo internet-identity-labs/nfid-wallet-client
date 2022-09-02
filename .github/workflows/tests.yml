@@ -114,14 +114,18 @@ jobs:
         run: |
           mkdir -p ~/.config/google-chrome/
           cp -r './userGoogleE2E/Profile 1' ~/.config/google-chrome
-          ls -la ~/.config/google-chrome/
+          ls -la -R ~/.config/
 
       - name: Running E2E test
-        run: yarn test:e2e
+        run: yarn test:e2e &
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PROFILE_DIRECTORY: ${{secrets.PROFILE_DIRECTORY}}
+
+      - name: Chrome
+        run: |
+          ls -la -R ~/.config/
 
       # - name: Generate HTML Report
       #   if: always()

@@ -54,8 +54,8 @@ const TransactionSendForm: React.FC<ITransactionSendForm> = ({
   }, [errorString, setError, setValue])
 
   const onAddressChange = (e: any) => {
-    const value = e.target.value
-
+    let value = e.target.value.replace(/\s/g, "")
+    setValue("address", value)
     if (isHex(value) && value.length === 64) return clearErrors("address")
 
     try {

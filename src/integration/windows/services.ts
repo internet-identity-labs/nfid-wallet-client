@@ -26,8 +26,8 @@ export async function handshake(): Promise<AuthorizationRequest> {
       event.origin,
       event.data.derivationOrigin,
     )
-    if (validation.result !== "valid") throw new Error(validation.message)
     console.log({ validation, derivationOrigin: event.data.derivationOrigin })
+    if (validation.result !== "valid") throw new Error(validation.message)
     return {
       maxTimeToLive: event.data.maxTimeToLive,
       sessionPublicKey: event.data.sessionPublicKey,

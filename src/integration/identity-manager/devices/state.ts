@@ -7,6 +7,7 @@ export type Icon =
   | "laptop"
   | "document"
   | "usb"
+  | "google"
   | "unknown"
 
 export interface AccessPointRequest {
@@ -22,6 +23,7 @@ export interface AccessPointRequest {
  */
 export interface LegacyDevice {
   isAccessPoint?: boolean // Indicates if this device is already stored as access point
+  isSocialDevice?: boolean // Indicates if this device is social method
   label: string
   icon: Icon
   browser: string

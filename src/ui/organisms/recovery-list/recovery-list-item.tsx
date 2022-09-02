@@ -163,6 +163,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
                 <div className="text-gray-700">{recoveryMethod.label}</div>
                 {recoveryMethod.lastUsed ? (
                   <div className="my-1 text-sm text-gray-400">
+                    Last activity:{" "}
                     {format(recoveryMethod.lastUsed, "MMM d, yyyy")}
                   </div>
                 ) : null}

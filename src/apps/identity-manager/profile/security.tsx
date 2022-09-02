@@ -16,6 +16,7 @@ const ProfileSecurity = () => {
 
   const {
     devices,
+    socialDevices,
     recoveryDevices,
     getDevices,
     deleteDevice,
@@ -103,6 +104,7 @@ const ProfileSecurity = () => {
       onDeviceDelete={handleDeleteDevice}
       onDeviceUpdate={handleDeviceUpdate}
       devices={devices}
+      socialDevices={socialDevices}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
       onRegisterRecoveryKey={handleRegisterRecoveryKey}

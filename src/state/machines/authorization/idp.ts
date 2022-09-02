@@ -28,10 +28,12 @@ export interface IDPMachineContext {
   }
   thirdPartyAuthoSession?: ThirdPartyAuthSession
   appMeta?: AuthorizingAppMeta
+  error?: Error
 }
 
 export type IDPMachineEvents =
   | { type: "done.invoke.handshake"; data: AuthorizationRequest }
+  | { type: "error.platform.handshake"; data: Error }
   | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
   | { type: "done.invoke.authenticate"; data: AuthSession }
   | { type: "done.invoke.authorize"; data: ThirdPartyAuthSession }
@@ -66,7 +68,11 @@ const IDPMachine =
                         target: "Done",
                       },
                     ],
+                    onError: "Error",
                   },
+                },
+                Error: {
+                  onEntry: "assignError",
                 },
                 Done: {
                   type: "final",
@@ -159,6 +165,7 @@ const IDPMachine =
         assignAuthoSession: assign({
           thirdPartyAuthoSession: (context, event) => event.data,
         }),
+        assignError: assign({ error: (context, event) => event.data }),
       },
     },
   )

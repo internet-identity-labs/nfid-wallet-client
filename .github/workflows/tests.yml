@@ -116,7 +116,7 @@ jobs:
 
       - name: Chrome
         run: |
-          chrome
+          chrome --headless --disable-gpu --screenshot https://www.chromestatus.com/
 
       - name: Chrome
         run: |

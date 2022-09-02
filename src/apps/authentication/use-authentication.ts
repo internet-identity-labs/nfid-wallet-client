@@ -51,10 +51,10 @@ export const useAuthentication = () => {
   )
 
   React.useEffect(() => {
-    const subscriber = authState.subscribe(({ delegationIdentity }) => {
+    const observer = authState.subscribe(({ delegationIdentity }) => {
       setIsAuthenticated(!!delegationIdentity)
     })
-    return () => subscriber.unsubscribe()
+    return () => observer.unsubscribe()
   }, [setIsAuthenticated])
 
   /**@deprecated will be refactored with wallet on profile */

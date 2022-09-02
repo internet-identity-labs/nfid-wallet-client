@@ -34,6 +34,7 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
           {account?.name || account?.anchor}.
         </P>
         <Button
+          id="unlock-nfid"
           large={!iframe}
           block={iframe}
           primary

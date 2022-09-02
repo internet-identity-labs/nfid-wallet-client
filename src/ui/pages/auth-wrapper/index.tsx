@@ -13,10 +13,8 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const { isAuthenticated } = useAuthentication()
   const navigate = useNavigate()
 
-  React.useEffect(() => {
-    const profile = loadProfileFromLocalStorage()
-    if (!isAuthenticated && !profile) navigate("/")
-  }, [isAuthenticated, navigate])
+  const profile = React.useMemo(() => loadProfileFromLocalStorage(), [])
+  if (!isAuthenticated && !profile) navigate("/")
 
   return isAuthenticated ? <>{children}</> : <AppScreenNFIDLogin />
 }

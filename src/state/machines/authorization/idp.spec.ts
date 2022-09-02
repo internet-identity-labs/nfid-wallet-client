@@ -68,6 +68,36 @@ const testMachineMockAuthn = testMachine.withConfig({
 })
 
 describe("IDP Machine", () => {
+  describe("error in handshake service", () => {
+    it("transitions to error state", (done) => {
+      interpret(
+        IDPMachine.withConfig({
+          services: {
+            async handshake() {
+              throw new Error("Invalid derivation origin")
+            },
+            getAppMeta: jest.fn(async () => ({
+              name: "",
+              logo: "",
+            })),
+          },
+        }).withContext({}),
+      )
+        .onTransition((state) => {
+          if (
+            state.matches("Start.Handshake.Error") &&
+            state.matches("Start.GetAppMeta.Done")
+          ) {
+            debugger
+            expect(state.context.error?.message).toBe(
+              "Invalid derivation origin",
+            )
+            done()
+          }
+        })
+        .start()
+    })
+  })
   interpret(testMachine).start()
 
   it("posts ready message upon initialization", () => {

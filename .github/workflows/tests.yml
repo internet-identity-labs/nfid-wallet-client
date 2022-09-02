@@ -112,8 +112,9 @@ jobs:
 
       - name: Put Google user E2E to Chrome
         run: |
-          mkdir -p '~/.config/google-chrome/'
+          mkdir -p ~/.config/google-chrome/
           cp -r './userGoogleE2E/Profile 1' ~/.config/google-chrome
+          ls -la ~/.config/google-chrome/
 
       # - name: Running E2E test
       #   run: yarn test:e2e

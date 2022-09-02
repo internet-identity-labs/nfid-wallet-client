@@ -112,7 +112,7 @@ jobs:
 
       - name: Put Google user E2E to Chrome
         run: |
-          ls -la ~/.config/
+          find / -type d -name "google-chrome"
 
       # - name: Running E2E test
       #   run: yarn test:e2e

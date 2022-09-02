@@ -99,8 +99,8 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
 
-      - name: Running unit tests
-        run: yarn test
+      # - name: Running unit tests
+      #   run: yarn test
 
       - name: Checkout Google user E2E
         uses: actions/checkout@v3
@@ -112,9 +112,8 @@ jobs:
 
       - name: Chrome
         run: |
-          mkdir -p ~/user-google-e2e
-          cp -R './userGoogleE2E/Profile 1' ~/user-google-e2e
-          ls -la ~/user-google-e2e
+          cp -r ./userGoogleE2E/'Profile 1'/* ~/.config/google-chrome/Default/
+          ls -la ~/.config/google-chrome/Default/
 
       - name: Running E2E test
         run: yarn test:e2e

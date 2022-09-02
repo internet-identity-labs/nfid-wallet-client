@@ -112,7 +112,7 @@ jobs:
 
       - name: Put Google user E2E to Chrome
         run: |
-          find / -type d -name "google-chrome"
+          ls -la -R /opt/hostedtoolcache/chromium/latest/x64/
 
       # - name: Running E2E test
       #   run: yarn test:e2e

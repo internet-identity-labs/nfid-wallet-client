@@ -22,6 +22,9 @@ export const SendReceiveButton = () => {
     if (Number(values.sum) === 0) return toast.error("You can't send 0 ICP")
     if (Number(values.sum) < 0)
       return toast.error("Transfer amount can't be negative value")
+    if (values.address === walletAddress)
+      return toast.error("You can't transfer ICP to yourself")
+
     try {
       if (!transfer) throw new Error("Transfer doesn't exist")
       setIsLoading(true)

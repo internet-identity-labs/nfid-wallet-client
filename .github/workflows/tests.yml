@@ -107,7 +107,7 @@ jobs:
         with:
           repository: internet-identity-labs/user-google-e2e
           path: userGoogleE2E
-          branch: main
+          ref: main
 
       - name: Put Google user E2E to Chrome
         run: |

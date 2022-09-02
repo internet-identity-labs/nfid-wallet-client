@@ -158,7 +158,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 </div>
                 <div className="my-1 text-sm text-gray-400">
                   {device.isAccessPoint
-                    ? `${
+                    ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +
                           device.browser ?? null
                       }`
@@ -172,6 +172,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 className={clsx(
                   "flex space-x-2",
                   !device.isAccessPoint && "hidden",
+                  device.isSocialDevice && "hidden",
                 )}
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >

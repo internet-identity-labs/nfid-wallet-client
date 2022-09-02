@@ -112,12 +112,7 @@ jobs:
 
       - name: Put Google user E2E to Chrome
         run: |
-          ls -la ~/.config/google-chrome/
-          ls -la '~/.config/google-chrome/Profile 1/'
-          ls -la ./userGoogleE2E/
-
-          rm -rf '~/.config/google-chrome/Profile 1/'
-          cp -r './userGoogleE2E/Profile 1' ~/.config/google-chrome
+          ls -la ~/.config/
 
       # - name: Running E2E test
       #   run: yarn test:e2e
@@ -125,6 +120,9 @@ jobs:
       #     URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
       #     USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
       #     PROFILE_DIRECTORY: ${{secrets.PROFILE_DIRECTORY}}
+
+          #       rm -rf '~/.config/google-chrome/Profile 1/'
+          # cp -r './userGoogleE2E/Profile 1' ~/.config/google-chrome
 
       # - name: Generate HTML Report
       #   if: always()

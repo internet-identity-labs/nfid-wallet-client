@@ -53,6 +53,10 @@ export const RegisterAccountCaptcha: React.FC<
     },
   })
 
+  const navigateToProfile = React.useCallback(() => {
+    navigate("/profile/security")
+  }, [navigate])
+
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
       console.debug("RegisterAccountCaptcha handleRegisterAnchor", { captcha })
@@ -93,16 +97,16 @@ export const RegisterAccountCaptcha: React.FC<
             userNumberOverwrite: response.userNumber,
             userOverwrite: user,
           })
-          return navigate("/profile/security")
+          return navigateToProfile()
         }
 
-        navigate("/profile/security")
+        navigateToProfile()
       }
     },
     [
       createAccount,
       isRemoteRegister,
-      navigate,
+      navigateToProfile,
       registerAnchor,
       remoteNFIDLogin,
       secret,

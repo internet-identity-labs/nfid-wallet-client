@@ -40,7 +40,6 @@ export function setUser(userState: User | undefined) {
   user = userState
 }
 
-/** @deprecated FIXME: move to integration layer */
 export const useAuthentication = () => {
   const [error, setError] = useAtom(errorAtom)
   const [isLoading, setIsLoading] = useAtom(loadingAtom)
@@ -52,10 +51,10 @@ export const useAuthentication = () => {
   )
 
   React.useEffect(() => {
-    const { identity, delegationIdentity } = authState.get()
-    if (identity && delegationIdentity) {
-      setIsAuthenticated(true)
-    }
+    const subscriber = authState.subscribe(({ delegationIdentity }) => {
+      setIsAuthenticated(!!delegationIdentity)
+    })
+    return () => subscriber.unsubscribe()
   }, [setIsAuthenticated])
 
   /**@deprecated will be refactored with wallet on profile */

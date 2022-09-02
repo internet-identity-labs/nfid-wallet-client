@@ -32,12 +32,14 @@ export const CredentialRequesterNotVerified: React.FC<
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
+    mode: "all",
     defaultValues: {
       phone: phoneNumber || "",
     },
   })
+
   return (
     <ScreenResponsive
       applicationLogo={applicationLogo}
@@ -86,6 +88,7 @@ export const CredentialRequesterNotVerified: React.FC<
           className="px-10 sm:mt-2"
           block
           onClick={handleSubmit(onSubmit)}
+          disabled={!isDirty || !!errors.phone}
         >
           Verify phone number
         </Button>

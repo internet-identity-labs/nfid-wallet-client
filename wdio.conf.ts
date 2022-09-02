@@ -94,7 +94,6 @@ export const config: WebdriverIO.Config = {
           'disable-web-security',
           'allow-running-insecure-content',
           `user-data-dir=${process.env.USER_DATA_DIR}`,
-          `profile-directory=${process.env.PROFILE_DIRECTORY}`,
           "--no-sandbox",
           ...(isDebug ? [] : ["--headless", "--disable-dev-shm-usage"]),
           "disable-gpu",

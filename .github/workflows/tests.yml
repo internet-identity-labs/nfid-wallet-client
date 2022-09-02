@@ -107,6 +107,8 @@ jobs:
         with:
           repository: internet-identity-labs/user-google-e2e
           path: 'userGoogleE2E'
+
+      - name: Put Google user E2E to Chrome
         run: |
           ls -la ~/.config/google-chrome/
           ls -la '~/.config/google-chrome/Profile 1/'

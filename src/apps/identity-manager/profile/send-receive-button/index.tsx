@@ -20,18 +20,20 @@ export const SendReceiveButton = () => {
 
   const sendTransfer = async (values: { address: string; sum: string }) => {
     if (Number(values.sum) === 0) return toast.error("You can't send 0 ICP")
+    if (Number(values.sum) < 0)
+      return toast.error("Transfer amount can't be negative value")
     try {
       if (!transfer) throw new Error("Transfer doesn't exist")
       setIsLoading(true)
       await transfer(values.address, values.sum)
       setIsSuccess(true)
-      mutate("walletBalance")
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction")
       else toast.error("Unexpected error: The transaction has been cancelled")
       console.error({ e })
     } finally {
+      mutate("walletBalance")
       setIsLoading(false)
     }
   }
@@ -77,6 +79,7 @@ export const SendReceiveButton = () => {
             isSuccess={isSuccess}
             onSendTransaction={sendTransfer}
             onClose={() => {
+              mutate("walletBalance")
               setIsModalVisible(false)
               setIsSuccess(false)
             }}

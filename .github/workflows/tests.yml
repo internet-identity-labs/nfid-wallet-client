@@ -113,7 +113,7 @@ jobs:
       - name: Chrome
         run: |
           mkdir -p ~/user-google-e2e
-          cp -R ./userGoogleE2E ~/user-google-e2e
+          cp -R './userGoogleE2E/Profile 1' ~/user-google-e2e
           ls -la ~/user-google-e2e
 
       # - name: Running E2E test

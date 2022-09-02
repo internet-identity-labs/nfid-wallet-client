@@ -19,6 +19,7 @@ export const SendReceiveButton = () => {
   const { data: transfer } = useTransfer()
 
   const sendTransfer = async (values: { address: string; sum: string }) => {
+    if (Number(values.sum) === 0) return toast.error("You can't send 0 ICP")
     try {
       if (!transfer) throw new Error("Transfer doesn't exist")
       setIsLoading(true)

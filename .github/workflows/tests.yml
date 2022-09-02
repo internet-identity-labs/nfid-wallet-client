@@ -52,7 +52,6 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
-          PROFILE_DIRECTORY: ${{secrets.PROFILE_DIRECTORY}}
 
   build:
     needs: check-secrets
@@ -115,7 +114,6 @@ jobs:
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
-          PROFILE_DIRECTORY: ${{secrets.PROFILE_DIRECTORY}}
 
       # - name: Generate HTML Report
       #   if: always()

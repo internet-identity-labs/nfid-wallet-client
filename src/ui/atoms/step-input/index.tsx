@@ -28,13 +28,15 @@ export const StepInput: React.FC<StepInputProps> = ({
     formState: { errors, isValid },
     setError,
     clearErrors,
+    getFieldState,
   } = useForm<{ verificationCode: string; phonenumber: string }>({
     mode: "all",
   })
 
   const getVerificationCode = React.useCallback(
     () => inputItemsRef.current.map((item) => item?.value).join(""),
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getFieldState("verificationCode")],
   )
 
   const handleKeydown = React.useCallback((event: KeyboardEvent) => {
@@ -153,6 +155,7 @@ export const StepInput: React.FC<StepInputProps> = ({
           validateToken()
           handleSubmit()
         }}
+        disabled={getVerificationCode().length !== 6}
       >
         {buttonText}
       </Button>

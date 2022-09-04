@@ -59,6 +59,7 @@ describe("ii suite", () => {
         .then((x) =>
           x.find((d) => hasOwnProperty(d.purpose, "recovery")),
         )) as DeviceData
+
       expect(
         hasOwnProperty(recoveryPhraseDeviceData.protection, "protected"),
       ).toEqual(true)

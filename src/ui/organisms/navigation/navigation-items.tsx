@@ -34,8 +34,8 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const handleLogin = async () => {
     await login()
     await readAccount()
-    navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
     await getPersona()
+    navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
   }
 
   const popupRef = useClickOutside(() => setIsPopupVisible(false))

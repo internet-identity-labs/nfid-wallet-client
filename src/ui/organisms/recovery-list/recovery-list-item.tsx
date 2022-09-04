@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { format } from "date-fns"
 import produce from "immer"
 import React from "react"
-import "tippy.js/dist/tippy.css"
+import ReactTooltip from "react-tooltip"
 
 import {
   Loader,
@@ -40,6 +40,8 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   onRecoveryDelete,
   onDeleteRecoveryPhrase,
 }) => {
+  const [isProtectTooltipVisible, setIsProtectTooltipVisible] =
+    React.useState(true)
   const [updatedRecovery, setUpdatedRecovery] =
     React.useState<RecoveryDevice | null>(null)
 
@@ -197,10 +199,23 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
               </div>
             )}
           </div>
-
           <div className="pl-1 md:pl-4">
             <div className="flex space-x-2">
-              <div onClick={toggleProtectVisible}>
+              {isProtectTooltipVisible && <ReactTooltip html />}
+              <div
+                onClick={toggleProtectVisible}
+                className={
+                  recoveryMethod.isProtected
+                    ? "hidden"
+                    : "hover:opacity-70 transition-opacity"
+                }
+                data-tip="Recovery phrase can be removed without proving you know what it is.<br/> Click to protect this recovery phrase"
+                onMouseEnter={() => setIsProtectTooltipVisible(true)}
+                onMouseLeave={() => {
+                  setIsProtectTooltipVisible(false)
+                  setTimeout(() => setIsProtectTooltipVisible(true), 50)
+                }}
+              >
                 <IconWarning />
               </div>
               <div

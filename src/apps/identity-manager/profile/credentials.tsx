@@ -1,7 +1,4 @@
 import React from "react"
-import useSWR from "swr"
-
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import { useAccount } from "frontend/integration/identity-manager/queries"
 import { authState } from "frontend/integration/internet-identity"
@@ -10,21 +7,26 @@ import ProfileCredentialsPage from "frontend/ui/pages/new-profile/credentials"
 
 const ProfileCredentials = () => {
   const { data } = useAccount()
-  const { data: decryptedPhone, isValidating } = useSWR(
-    "decryptPhoneNumber",
-    async () => {
-      const phone = data?.phoneNumber
-      const delegation = authState.get().delegationIdentity
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [decryptedPhone, setDecryptedPhone] = React.useState("")
 
-      if (!phone || !delegation) return ""
-      return await decryptStringForIdentity(phone, delegation)
-    },
-  )
+  const decryptPhone = React.useCallback(async (phone?: string) => {
+    setIsLoading(true)
+    const delegation = authState.get().delegationIdentity
 
-  if (isValidating) return <Loader isLoading={true} />
-  return (
-    <ProfileCredentialsPage phone={decryptedPhone ?? data?.phoneNumber ?? ""} />
-  )
+    if (!phone || !delegation) return ""
+
+    const result = await decryptStringForIdentity(phone, delegation)
+    setDecryptedPhone(result)
+
+    setIsLoading(false)
+  }, [])
+
+  React.useEffect(() => {
+    decryptPhone(data?.phoneNumber)
+  }, [data?.phoneNumber, decryptPhone])
+
+  return <ProfileCredentialsPage phone={decryptedPhone} isLoading={isLoading} />
 }
 
 export default ProfileCredentials

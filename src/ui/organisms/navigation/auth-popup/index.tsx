@@ -24,7 +24,13 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
   }, [user, account])
 
   if (status === "" && isAuthenticated && account?.anchor)
-    return <AuthenticatedPopup onSignOut={logout} anchor={account.anchor} />
+    return (
+      <AuthenticatedPopup
+        isLanding
+        onSignOut={logout}
+        anchor={account.anchor}
+      />
+    )
 
   return (
     // @ts-ignore: TODO: Pasha fix

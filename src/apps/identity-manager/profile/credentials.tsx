@@ -22,7 +22,9 @@ const ProfileCredentials = () => {
   )
 
   if (isValidating) return <Loader isLoading={true} />
-  return <ProfileCredentialsPage phone={decryptedPhone} />
+  return (
+    <ProfileCredentialsPage phone={decryptedPhone ?? data?.phoneNumber ?? ""} />
+  )
 }
 
 export default ProfileCredentials

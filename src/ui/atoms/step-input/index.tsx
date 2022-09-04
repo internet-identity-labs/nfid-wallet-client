@@ -22,6 +22,7 @@ export const StepInput: React.FC<StepInputProps> = ({
   responseError,
   buttonText,
 }) => {
+  const [isFormValid, setIsFormValid] = React.useState(false)
   const list = [...Array(6).keys()]
   const inputItemsRef = React.useRef<Array<HTMLInputElement | null>>([])
   const {
@@ -82,6 +83,8 @@ export const StepInput: React.FC<StepInputProps> = ({
     } else {
       e.target.value = e.target.value[0]
     }
+
+    setIsFormValid(getVerificationCode().length === 6)
   }
 
   React.useEffect(() => {
@@ -155,7 +158,7 @@ export const StepInput: React.FC<StepInputProps> = ({
           validateToken()
           handleSubmit()
         }}
-        disabled={getVerificationCode().length !== 6}
+        disabled={!isFormValid}
       >
         {buttonText}
       </Button>

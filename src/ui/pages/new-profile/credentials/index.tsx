@@ -28,7 +28,7 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
         <ListItem
           disabled={!!phone?.length}
           icon={<MobileIcon />}
-          title={phone ?? "Connect mobile phone number"}
+          title={phone?.length ? phone : "Connect mobile phone number"}
           onClick={() => navigate(`${ProfileConstants.addPhoneNumber}`)}
         />
         <ListItem

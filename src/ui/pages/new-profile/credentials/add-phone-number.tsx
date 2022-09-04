@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { Dispatch, SetStateAction } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -15,6 +15,7 @@ interface IProfileAddPhoneNumber {
   responseError?: string
   isLoading?: boolean
   onSubmit: SubmitHandler<{ phone: string }>
+  setResponseError?: Dispatch<SetStateAction<string>>
 }
 
 const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
@@ -22,6 +23,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
   isLoading,
   onSubmit,
   responseError,
+  setResponseError,
 }) => {
   const {
     formState: { errors },
@@ -32,6 +34,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
     defaultValues: {
       phone: account?.phoneNumber,
     },
+    mode: "all",
   })
 
   React.useEffect(() => {
@@ -39,10 +42,11 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
       setError("phone", { message: responseError })
     }
   }, [errors.phone, responseError, setError])
+
   return (
     <ProfileTemplate
       pageTitle="Add phone number"
-      onBack={`${ProfileConstants.credentials}`}
+      onBack={`${ProfileConstants.base}/${ProfileConstants.credentials}`}
       isLoading={isLoading}
     >
       <ProfileContainer subTitle="Verify your phone number with NFID. Standard text messaging rates may apply.">
@@ -55,6 +59,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
               className="max-w-[350px]"
               labelText="Phone number"
               errorText={errors.phone?.message}
+              onKeyUp={() => setResponseError && setResponseError("")}
               {...register("phone", {
                 required: phoneRules.errorMessages.required,
                 pattern: {

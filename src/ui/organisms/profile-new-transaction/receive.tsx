@@ -7,9 +7,13 @@ import copy from "./assets/copy.svg"
 
 interface ITransactionReceive extends React.HTMLAttributes<HTMLDivElement> {
   account: string
+  accountPrincipal: string
 }
 
-const TransactionReceive: React.FC<ITransactionReceive> = ({ account }) => {
+const TransactionReceive: React.FC<ITransactionReceive> = ({
+  account,
+  accountPrincipal,
+}) => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(account)
     toast.success("Copied to clipboard")
@@ -31,6 +35,9 @@ const TransactionReceive: React.FC<ITransactionReceive> = ({ account }) => {
         </div>
         <div className="flex flex-wrap w-[300px] h-16 mt-4">
           <p className="text-sm break-all text-black-base">{account}</p>
+          <p className="absolute w-0 h-0 overflow-hidden opacity-0 ">
+            {accountPrincipal}
+          </p>
         </div>
       </div>
     </div>

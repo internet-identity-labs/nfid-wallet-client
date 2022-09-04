@@ -10,6 +10,7 @@ import TransactionSendForm, { ITransactionSendForm } from "./send"
 
 interface IProfileNewTransaction extends ITransactionSendForm {
   account: string
+  accountPrincipal: string
   balance: string | number
   isSuccess?: boolean
   onClose: () => void
@@ -19,6 +20,7 @@ const ProfileNewTransaction: React.FC<IProfileNewTransaction> = ({
   onSendTransaction,
   errorString,
   account,
+  accountPrincipal,
   balance,
   isSuccess,
   onClose,
@@ -92,7 +94,10 @@ const ProfileNewTransaction: React.FC<IProfileNewTransaction> = ({
           balance={balance}
         />
       ) : (
-        <TransactionReceive account={account} />
+        <TransactionReceive
+          account={account}
+          accountPrincipal={accountPrincipal}
+        />
       )}
       <div
         className={clsx(

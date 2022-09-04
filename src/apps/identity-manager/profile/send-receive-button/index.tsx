@@ -1,4 +1,6 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { principalToAddress } from "ictool"
 import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
@@ -6,6 +8,7 @@ import { mutate } from "swr"
 import { Loader } from "@internet-identity-labs/nfid-sdk-react"
 
 import ProfileNewTransaction from "frontend/ui/organisms/profile-new-transaction"
+import { isHex } from "frontend/ui/utils"
 
 import { Button } from "../../../../ui/atoms/button"
 import { useTransfer, useWallet } from "../wallet/hooks"
@@ -15,7 +18,7 @@ export const SendReceiveButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const { walletAddress, walletBalance } = useWallet()
+  const { walletAddress, walletBalance, walletPrincipal } = useWallet()
   const { data: transfer } = useTransfer()
 
   const sendTransfer = async (values: { address: string; sum: string }) => {
@@ -25,16 +28,21 @@ export const SendReceiveButton = () => {
     if (values.address === walletAddress)
       return toast.error("You can't transfer ICP to yourself")
 
+    if (!transfer) throw new Error("Transfer doesn't exist")
+
+    let validAddress = isHex(values.address)
+      ? values.address
+      : principalToAddress(Principal.fromText(values.address) as any)
+
     try {
-      if (!transfer) throw new Error("Transfer doesn't exist")
       setIsLoading(true)
-      await transfer(values.address, values.sum)
+      await transfer(validAddress, values.sum)
       setIsSuccess(true)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction")
       else toast.error("Unexpected error: The transaction has been cancelled")
-      console.error({ e })
+      console.log({ e })
     } finally {
       mutate("walletBalance")
       setIsLoading(false)
@@ -78,6 +86,7 @@ export const SendReceiveButton = () => {
         >
           <ProfileNewTransaction
             account={walletAddress ?? ""}
+            accountPrincipal={walletPrincipal?.toText() ?? ""}
             balance={walletBalance?.value ?? 0}
             isSuccess={isSuccess}
             onSendTransaction={sendTransfer}

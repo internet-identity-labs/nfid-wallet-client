@@ -1,7 +1,6 @@
 import React from "react"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { GmailIcon } from "frontend/ui/atoms/icons/gmail"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
 import { ListItem } from "frontend/ui/molecules/list/list-item"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -31,13 +30,13 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
           title={phone?.length ? phone : "Connect mobile phone number"}
           onClick={() => navigate(`${ProfileConstants.addPhoneNumber}`)}
         />
-        <ListItem
+        {/* <ListItem
           // disabled={!!email?.length}
           disabled
           icon={<GmailIcon />}
           title={email ?? "Connect Gmail"}
           onClick={() => {}}
-        />
+        /> */}
       </ProfileContainer>
     </ProfileTemplate>
   )

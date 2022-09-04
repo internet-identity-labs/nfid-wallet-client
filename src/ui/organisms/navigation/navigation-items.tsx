@@ -15,8 +15,8 @@ import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 import { useScroll } from "frontend/ui/utils/use-scroll"
 
-import { NavigationPopup } from "./navigation-popup"
-import { PopupLogin } from "./navigation-popup/popup-login"
+import { NavigationPopup } from "./auth-popup"
+import { PopupLogin } from "./auth-popup/popup-login"
 
 interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -184,7 +184,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               Register
             </Button>
           )}
-          {isPopupVisible || status !== "" ? <NavigationPopup /> : null}
+          {!isPopupVisible || status !== "" ? <NavigationPopup /> : null}
         </div>
       </div>
     </>

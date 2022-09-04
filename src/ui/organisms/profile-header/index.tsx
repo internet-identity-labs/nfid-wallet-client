@@ -12,8 +12,8 @@ import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import MenuIcon from "./assets/menu.svg"
 
+import AuthenticatedPopup from "../navigation-popup"
 import ProfileSidebar from "../profile-sidebar"
-import ProfileHeaderPopup from "./popup"
 
 interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
   anchor?: number
@@ -44,7 +44,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
             onClick={() => setIsPopupVisible(!isPopupVisible)}
           />
           {isPopupVisible && (
-            <ProfileHeaderPopup onSignOut={logout} anchor={data?.anchor ?? 0} />
+            <AuthenticatedPopup onSignOut={logout} anchor={data?.anchor ?? 0} />
           )}
         </div>
       </div>

@@ -7,7 +7,7 @@ import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 interface IRecoveryPhraseProtectModal
   extends React.HTMLAttributes<HTMLDivElement> {
   onClose: () => void
-  onProtect: (a: string) => void
+  onProtect: (a: string) => Promise<void>
 }
 
 const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
@@ -15,6 +15,11 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
   onProtect,
 }) => {
   const [phrase, setPhrase] = useState("")
+
+  const handleProtect = React.useCallback(async () => {
+    await onProtect(phrase)
+    onClose()
+  }, [onClose, onProtect, phrase])
 
   return (
     <ModalAdvanced
@@ -32,15 +37,15 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 font-mono leading-[26px]",
           )}
-          rows={5}
-          placeholder="lorem ipsum dolor ..."
+          rows={6}
+          placeholder="worry cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo"
           onChange={(e) => setPhrase(e.target.value)}
         />
         <Button
           primary
           block
           className="rounded-t-none"
-          onClick={() => onProtect(phrase)}
+          onClick={handleProtect}
         >
           Protect recovery phrase
         </Button>

@@ -6,19 +6,13 @@ import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import ProfileSidebarItem from "./sidebar-item"
 
-interface IProfileSidebar extends React.HTMLAttributes<HTMLDivElement> {
-  onHelpClick?: () => void
-  onSignOut?: () => void
-}
+interface IProfileSidebar extends React.HTMLAttributes<HTMLDivElement> {}
 
-const ProfileSidebar: React.FC<IProfileSidebar> = ({
-  onHelpClick,
-  onSignOut,
-}) => {
+const ProfileSidebar: React.FC<IProfileSidebar> = ({ className }) => {
   const { navigate } = useNFIDNavigate()
 
   return (
-    <div className={clsx("sticky top-4")}>
+    <div className={clsx("sticky top-4", className)}>
       {profileSidebarItems.map((item, index) => (
         <ProfileSidebarItem
           icon={item.icon}
@@ -28,20 +22,6 @@ const ProfileSidebar: React.FC<IProfileSidebar> = ({
           isActive={window.location.pathname === item.link}
         />
       ))}
-      {onHelpClick && onSignOut && (
-        <div>
-          <ProfileSidebarItem
-            className="text-sm font-normal text-gray-500"
-            title="Help"
-            onClick={onHelpClick}
-          />
-          <ProfileSidebarItem
-            className="text-sm font-normal text-gray-500"
-            title="Sign out"
-            onClick={onSignOut}
-          />
-        </div>
-      )}
     </div>
   )
 }

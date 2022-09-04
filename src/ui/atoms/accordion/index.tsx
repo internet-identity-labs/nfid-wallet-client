@@ -1,11 +1,23 @@
+import clsx from "clsx"
 import React, { useRef, useState } from "react"
 
 export interface AccordionProps {
   title: React.ReactNode
   details: React.ReactNode
+  className?: string
+  isBorder?: boolean
+  style?: any
+  detailsClassName?: string
 }
 
-export const Accordion: React.FC<AccordionProps> = ({ title, details }) => {
+export const Accordion: React.FC<AccordionProps> = ({
+  title,
+  details,
+  className,
+  isBorder = true,
+  style,
+  detailsClassName,
+}) => {
   const [active, setActive] = useState(false)
   const [height, setHeight] = useState("0px")
   const [rotate, setRotate] = useState("transform duration-700 ease")
@@ -27,14 +39,24 @@ export const Accordion: React.FC<AccordionProps> = ({ title, details }) => {
   }
 
   return (
-    <div className="flex flex-col border-b border-gray-200 font-inter">
+    <div
+      className={clsx(
+        "flex flex-col border-gray-200 font-inter",
+        isBorder && "border-b",
+      )}
+    >
       <button
-        className="box-border flex items-center justify-between py-6 appearance-none cursor-pointer focus:outline-none"
+        className={clsx(
+          "flex items-center justify-between py-6",
+          "box-border appearance-none cursor-pointer focus:outline-none",
+          className,
+        )}
+        style={style}
         onClick={toggleAccordion}
       >
-        <p className="inline-block text-lg font-bold text-left sm:text-xl">
+        <div className="inline-block text-lg font-bold text-left sm:text-xl">
           {title}
-        </p>
+        </div>
         <div className={`${rotate} inline-block w-[30px] h-[30px]`}>
           <svg
             width="30"
@@ -58,7 +80,12 @@ export const Accordion: React.FC<AccordionProps> = ({ title, details }) => {
         style={{ maxHeight: `${height}` }}
         className="overflow-hidden duration-700 ease-in-out transition-max-height"
       >
-        <div className="pb-10 text-base sm:text-lg tracking-[0.01em] leading-[26px]">
+        <div
+          className={clsx(
+            "pb-10 text-base sm:text-lg tracking-[0.01em] leading-[26px]",
+            detailsClassName,
+          )}
+        >
           {details}
         </div>
       </div>

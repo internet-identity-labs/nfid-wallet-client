@@ -7,6 +7,7 @@ import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import ProfileAddPhoneSMS from "frontend/ui/pages/new-profile/credentials/add-phone-sms"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
+import { ProfileConstants } from "../routes"
 import { phoneNumberAtom } from "../state"
 
 const ProfileSMS = () => {
@@ -27,7 +28,9 @@ const ProfileSMS = () => {
       toggleLoading()
       if (response.status_code >= 200 && response.status_code < 400) {
         refreshProfile()
-        return navigate("/profile/authenticate")
+        return navigate(
+          `${ProfileConstants.base}/${ProfileConstants.credentials}`,
+        )
       }
       if (response.error.length) setError(response.error[0])
     },
@@ -41,11 +44,8 @@ const ProfileSMS = () => {
       user?.principal as string,
     )
     toggleLoading()
-    if (response.status >= 200 && response.status < 400) {
-      return navigate("/profile/authenticate")
-    }
     setError(response.body.error)
-  }, [navigate, phone, user?.principal, verifyPhonenumber])
+  }, [phone, user?.principal, verifyPhonenumber])
 
   return (
     <ProfileAddPhoneSMS

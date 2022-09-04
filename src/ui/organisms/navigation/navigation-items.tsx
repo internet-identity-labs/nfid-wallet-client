@@ -28,7 +28,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { account, readAccount } = useAccount()
   const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
-  const { status } = useRegisterQRCode()
+  const { registerRoute, status } = useRegisterQRCode()
   const { scrollY } = useScroll()
 
   const handleLogin = async () => {
@@ -171,6 +171,15 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                       onClick={handleLogin}
                     >
                       Sign in
+                    </Button>
+                  ) : null}
+                  {!account && !isAuthenticated ? (
+                    <Button
+                      className={"h-full leading-none"}
+                      primary
+                      onClick={() => navigate(registerRoute)}
+                    >
+                      Register
                     </Button>
                   ) : null}
                 </div>

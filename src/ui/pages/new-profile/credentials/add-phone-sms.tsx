@@ -23,7 +23,7 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
   isLoading,
   phone,
 }) => {
-  const { counter, setCounter } = useTimer({ defaultCounter: 3 })
+  const { counter, setCounter } = useTimer({ defaultCounter: 60 })
 
   const handleResend = () => {
     onResendCode && onResendCode()

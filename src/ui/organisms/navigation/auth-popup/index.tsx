@@ -10,7 +10,6 @@ import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { PopupRegisterDecider } from "frontend/ui/organisms/navigation/auth-popup/popup-register-decider"
 
 import AuthenticatedPopup from "../../navigation-popup"
-import { PopupLogin } from "./popup-login"
 import { PopupRegister } from "./popup-register"
 
 interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -41,12 +40,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
       >
         <NFIDGradientBar />
         {status === "registerDecider" && <PopupRegisterDecider />}
-        {status === "registerDevice" && <PopupLogin />}
-        {status !== "" ? null : user || account ? (
-          <PopupLogin />
-        ) : (
-          <PopupRegister />
-        )}
+        {status === "" && !account && <PopupRegister />}
       </div>
     </Fade>
   )

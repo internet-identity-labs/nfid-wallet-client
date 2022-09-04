@@ -2,10 +2,8 @@ import clsx from "clsx"
 import React from "react"
 // @ts-ignore
 import { Slide } from "react-awesome-reveal"
-import { Link } from "react-router-dom"
 import sticky from "stickyfilljs"
 
-import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/authentication/recover-nfid/routes"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { ElementProps } from "frontend/types/react"
 

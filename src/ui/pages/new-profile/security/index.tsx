@@ -24,7 +24,7 @@ interface IProfileSecurityPage extends React.HTMLAttributes<HTMLDivElement> {
   onRecoveryDelete: (method: RecoveryDevice) => Promise<void>
   onRecoveryUpdate: (method: RecoveryDevice) => Promise<void>
   onRecoveryProtect: (phrase: string) => Promise<void>
-  onCreateRecoveryPhrase: () => Promise<string>
+  onCreateRecoveryPhrase: (protect?: boolean) => Promise<string>
   onDeleteRecoveryPhrase: (phrase: string) => Promise<void>
   onRegisterRecoveryKey: () => Promise<void>
   devices: LegacyDevice[]
@@ -136,6 +136,19 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
                 title="Secret recovery phrase"
                 subtitle="A “master password” to keep offline"
                 img={<IconRecovery />}
+              />
+            )}
+            {!hasRecoveryPhrase && (
+              <MethodRaw
+                onClick={handleWithLoading(
+                  () => onCreateRecoveryPhrase(false),
+                  (value) => setPhrase(value),
+                )}
+                title="Unprotected recovery phrase"
+                subtitle="A “master password” to keep offline"
+                img={<IconRecovery />}
+                id="createUnprotectedPhrase"
+                className="absolute w-0 h-0 opacity-0"
               />
             )}
             {!hasSecurityKey && (

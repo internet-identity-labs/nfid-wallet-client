@@ -38,7 +38,7 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
             "w-full -mb-2 font-mono leading-[26px]",
           )}
           rows={6}
-          placeholder="lorem ipsum dolor ..."
+          placeholder="worry cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo"
           onChange={(e) => setPhrase(e.target.value)}
         />
         <Button

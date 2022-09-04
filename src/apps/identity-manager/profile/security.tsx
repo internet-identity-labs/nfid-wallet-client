@@ -120,9 +120,11 @@ const ProfileSecurity = () => {
       } catch {
         toast.error("Incorrect seed phrase")
         return
+      } finally {
+        getRecoveryDevices()
       }
     },
-    [user?.anchor],
+    [getRecoveryDevices, user?.anchor],
   )
 
   const handleRegisterRecoveryKey = React.useCallback(async () => {

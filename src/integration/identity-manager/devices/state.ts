@@ -37,6 +37,7 @@ export interface RecoveryDevice {
   pubkey: number[]
   isRecoveryPhrase: boolean
   isSecurityKey: boolean
+  isProtected?: boolean
 }
 
 export const devicesAtom = atom<LegacyDevice[]>([])

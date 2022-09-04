@@ -140,6 +140,7 @@ const normalizeRecoveryDevices = (
         Object.keys(device.key_type).indexOf("seed_phrase") > -1,
       isSecurityKey:
         Object.keys(device.key_type).indexOf("cross_platform") > -1,
+      isProtected: device.protection.hasOwnProperty("protected"),
     }
   })
 }

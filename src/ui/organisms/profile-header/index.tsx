@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import React from "react"
+import { useNavigate } from "react-router-dom"
 import User from "src/assets/userpics/userpic_6.svg"
 
 import { Logo } from "@internet-identity-labs/nfid-sdk-react"
@@ -7,6 +8,7 @@ import { Logo } from "@internet-identity-labs/nfid-sdk-react"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAccount } from "frontend/integration/identity-manager/queries"
+import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
@@ -22,8 +24,9 @@ interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
-  const { data } = useAccount()
+  const { data: account } = useAccount()
   const { logout } = useAuthentication()
+  const navigate = useNavigate()
 
   return (
     <div
@@ -44,7 +47,10 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
             onClick={() => setIsPopupVisible(!isPopupVisible)}
           />
           {isPopupVisible && (
-            <AuthenticatedPopup onSignOut={logout} anchor={data?.anchor ?? 0} />
+            <AuthenticatedPopup
+              onSignOut={logout}
+              anchor={account?.anchor ?? 0}
+            />
           )}
         </div>
       </div>
@@ -61,10 +67,38 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
           {(toggleMenu) => (
             <div
               className={clsx(
-                "pl-2 pt-32 font-bold bg-white rounded w-[70vw] z-50",
+                "pl-2 pt-20 font-bold bg-white rounded w-[70vw] z-50",
               )}
             >
-              <ProfileSidebar onSignOut={() => {}} onHelpClick={() => {}} />
+              <Accordion
+                isBorder={false}
+                style={{ padding: 0 }}
+                detailsClassName="pb-0"
+                title={
+                  <div className="h-[60px] items-center flex p-2.5">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0">
+                      <img src={User} alt="user" className="cursor-pointer" />
+                    </div>
+                    <p className="text-sm text-gray-700 px-2.5 w-full">
+                      {account?.name ?? account?.anchor ?? ""}
+                    </p>
+                  </div>
+                }
+                details={
+                  <div className="text-sm font-light text-black-base pl-[60px]">
+                    <div
+                      className="flex items-center h-10"
+                      onClick={() => navigate(`/faq`)}
+                    >
+                      Help
+                    </div>
+                    <div className="flex items-center h-10" onClick={logout}>
+                      Log out
+                    </div>
+                  </div>
+                }
+              />
+              <ProfileSidebar className="mt-5" />
             </div>
           )}
         </ButtonMenu>

@@ -27,7 +27,7 @@ const ProfilePhone = () => {
         response = await verifyPhoneNumber(phone, delegationIdentity)
         setPhoneNumber(phone)
         return navigate(
-          `${ProfileConstants.base}/${ProfileConstants.verifySMS}`,
+          `${ProfileConstants.base}/${ProfileConstants.credentials}/${ProfileConstants.verifySMS}`,
         )
       } catch (e: any) {
         if (e.error) setError(e.error)
@@ -46,6 +46,7 @@ const ProfilePhone = () => {
       onSubmit={handleSubmitPhoneNumber}
       isLoading={isLoading}
       responseError={error}
+      setResponseError={setError}
     />
   )
 }

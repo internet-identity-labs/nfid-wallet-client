@@ -4,25 +4,27 @@ import User from "src/assets/userpics/userpic_6.svg"
 
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
-interface IProfileHeaderPopup extends React.HTMLAttributes<HTMLDivElement> {
+interface IAuthenticatedPopup extends React.HTMLAttributes<HTMLDivElement> {
   onSignOut: () => void
   anchor: number
+  isLanding?: boolean
 }
 
-const ProfileHeaderPopup: React.FC<IProfileHeaderPopup> = ({
+const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
   anchor,
   onSignOut,
+  isLanding = false,
 }) => {
   const { navigate } = useNFIDNavigate()
 
   return (
     <div
       className={clsx(
-        "w-60 z-40 h-[260px] absolute right-0 top-[50px] bg-white",
+        "w-60 z-40 min-h-[260px] absolute right-0 top-[50px] bg-white",
         "shadow-iframe rounded-md flex flex-col justify-between",
       )}
     >
-      <div>
+      <div className="mb-6">
         <img
           className={clsx("w-20 h-20 mx-auto mt-[30px]")}
           src={User}
@@ -33,6 +35,17 @@ const ProfileHeaderPopup: React.FC<IProfileHeaderPopup> = ({
         </p>
       </div>
       <div>
+        {isLanding ? (
+          <div
+            className={clsx(
+              "w-full h-10 text-center border-t border-gray-200 leading-10",
+              "hover:bg-gray-100 cursor-pointer text-sm",
+            )}
+            onClick={() => navigate("/profile/assets")}
+          >
+            NFID Profile
+          </div>
+        ) : null}
         <div
           className={clsx(
             "w-full h-10 text-center border-t border-gray-200 leading-10",
@@ -56,4 +69,4 @@ const ProfileHeaderPopup: React.FC<IProfileHeaderPopup> = ({
   )
 }
 
-export default ProfileHeaderPopup
+export default AuthenticatedPopup

@@ -1,5 +1,7 @@
 import React from "react"
 
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
 import { ListItem } from "frontend/ui/molecules/list/list-item"
@@ -10,11 +12,13 @@ import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 interface IProfileCredentialsPage extends React.HTMLAttributes<HTMLDivElement> {
   phone?: string
   email?: string
+  isLoading?: boolean
 }
 
 const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
   phone,
   email,
+  isLoading,
 }) => {
   const { navigate } = useNFIDNavigate()
 
@@ -38,6 +42,7 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
           onClick={() => {}}
         /> */}
       </ProfileContainer>
+      {isLoading ? <Loader isLoading={isLoading} /> : null}
     </ProfileTemplate>
   )
 }

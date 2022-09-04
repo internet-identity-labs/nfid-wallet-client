@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { format } from "date-fns"
 import produce from "immer"
 import React from "react"
+import ReactTooltip from "react-tooltip"
 
 import {
   Loader,
@@ -17,14 +18,17 @@ import {
 } from "frontend/integration/identity-manager/devices/state"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
+import { IconWarning } from "frontend/ui/atoms/icons/warning"
 
 import { DeviceIconDecider } from "../device-list/device-icon-decider"
 import { DeviceListButtonGroup } from "../device-list/device-list-button-group"
 import RecoveryPhraseDeleteModal from "./delete-phrase/phrase-delete-modal"
+import RecoveryPhraseProtectModal from "./protect-phrase/phrase-protect-modal"
 
 interface recoveryMethodListItemProps {
   recoveryMethod: RecoveryDevice
   onRecoveryUpdate: (recoveryMethod: RecoveryDevice) => Promise<void>
+  onRecoveryProtect?: (phrase: string) => Promise<void>
   onRecoveryDelete: (recoveryMethod: RecoveryDevice) => Promise<void>
   onDeleteRecoveryPhrase: (phrase: string) => Promise<void>
 }
@@ -32,9 +36,12 @@ interface recoveryMethodListItemProps {
 export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   recoveryMethod: initialRecovery,
   onRecoveryUpdate,
+  onRecoveryProtect,
   onRecoveryDelete,
   onDeleteRecoveryPhrase,
 }) => {
+  const [isProtectTooltipVisible, setIsProtectTooltipVisible] =
+    React.useState(true)
   const [updatedRecovery, setUpdatedRecovery] =
     React.useState<RecoveryDevice | null>(null)
 
@@ -44,6 +51,12 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
     (state) => !state,
     false,
   )
+
+  const [isProtectVisible, toggleProtectVisible] = React.useReducer(
+    (state) => !state,
+    false,
+  )
+
   const [deleteRecoveryModal, toggleDeleteRecoveryModal] = React.useReducer(
     (state) => !state,
     false,
@@ -66,6 +79,15 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
       toggleDeleteRecoveryModal()
     },
     [onRecoveryDelete],
+  )
+
+  const handleProtectRecovery = React.useCallback(
+    async (phrase: string) => {
+      setLoading(true)
+      onRecoveryProtect && (await onRecoveryProtect(phrase))
+      setLoading(false)
+    },
+    [onRecoveryProtect],
   )
 
   const handleDeleteRecoveryDialog = React.useCallback(
@@ -142,7 +164,11 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
         <div className="mr-4">
           <div className="relative flex items-center justify-center bg-white rounded-full w-9 h-9">
             <DeviceIconDecider
-              icon={recoveryMethod.icon}
+              icon={
+                recoveryMethod.isRecoveryPhrase
+                  ? "document"
+                  : recoveryMethod.icon
+              }
               onClick={
                 isEditingLabel ? () => null : handleEditRecoveryIconDialog
               }
@@ -160,7 +186,11 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
               ></input>
             ) : (
               <div className="flex-1 flex-shrink">
-                <div className="text-gray-700">{recoveryMethod.label}</div>
+                <div className="text-gray-700">
+                  {recoveryMethod.isRecoveryPhrase
+                    ? "Recovery phrase"
+                    : recoveryMethod.label}
+                </div>
                 {recoveryMethod.lastUsed ? (
                   <div className="my-1 text-sm text-gray-400">
                     Last activity:{" "}
@@ -170,9 +200,25 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
               </div>
             )}
           </div>
-
           <div className="pl-1 md:pl-4">
             <div className="flex space-x-2">
+              {isProtectTooltipVisible && <ReactTooltip html />}
+              <div
+                onClick={toggleProtectVisible}
+                className={
+                  recoveryMethod.isProtected
+                    ? "hidden"
+                    : "hover:opacity-70 transition-opacity"
+                }
+                data-tip="Recovery phrase can be removed without proving you know what it is.<br/> Click to protect this recovery phrase"
+                onMouseEnter={() => setIsProtectTooltipVisible(true)}
+                onMouseLeave={() => {
+                  setIsProtectTooltipVisible(false)
+                  setTimeout(() => setIsProtectTooltipVisible(true), 50)
+                }}
+              >
+                <IconWarning />
+              </div>
               <div
                 className="hover:bg-gray-200 text-red-base"
                 onClick={isEditingLabel ? handleOnLabelUpdate : toggleEditLabel}
@@ -222,13 +268,13 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           </div>
         </ModalAdvanced>
       )}
-      {deleteRecoveryModal && recoveryMethod.isRecoveryPhrase && (
+      {deleteRecoveryModal && recoveryMethod.isProtected && (
         <RecoveryPhraseDeleteModal
           onClose={toggleDeleteRecoveryModal}
           onDelete={onDeleteRecoveryPhrase}
         />
       )}
-      {deleteRecoveryModal && !recoveryMethod.isRecoveryPhrase && (
+      {deleteRecoveryModal && !recoveryMethod.isProtected && (
         <ModalAdvanced
           title="Delete access point"
           onClose={toggleDeleteRecoveryModal}
@@ -252,6 +298,12 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           </P>
         </ModalAdvanced>
       )}
+      {isProtectVisible ? (
+        <RecoveryPhraseProtectModal
+          onClose={toggleProtectVisible}
+          onProtect={(phrase) => handleProtectRecovery(phrase)}
+        />
+      ) : null}
       <Loader isLoading={loading} />
     </div>
   )

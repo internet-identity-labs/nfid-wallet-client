@@ -7,8 +7,9 @@ import { NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { PopupRegisterDecider } from "frontend/ui/organisms/navigation/navigation-popup/popup-register-decider"
+import { PopupRegisterDecider } from "frontend/ui/organisms/navigation/auth-popup/popup-register-decider"
 
+import AuthenticatedPopup from "../../navigation-popup"
 import { PopupLogin } from "./popup-login"
 import { PopupRegister } from "./popup-register"
 
@@ -16,12 +17,15 @@ interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
   const { account } = useAccount()
-  const { user } = useAuthentication()
+  const { logout, isAuthenticated, user } = useAuthentication()
   const { status } = useRegisterQRCode()
 
   const isPopupLogin = React.useMemo(() => {
     return user || account
   }, [user, account])
+
+  if (status === "" && isAuthenticated && account?.anchor)
+    return <AuthenticatedPopup onSignOut={logout} anchor={account.anchor} />
 
   return (
     // @ts-ignore: TODO: Pasha fix

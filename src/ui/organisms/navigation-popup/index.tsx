@@ -35,15 +35,17 @@ const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
         </p>
       </div>
       <div>
-        <div
-          className={clsx(
-            "w-full h-10 text-center border-t border-gray-200 leading-10",
-            "hover:bg-gray-100 cursor-pointer text-sm",
-          )}
-          onClick={() => navigate("/profile/assets")}
-        >
-          NFID Profile
-        </div>
+        {isLanding ? (
+          <div
+            className={clsx(
+              "w-full h-10 text-center border-t border-gray-200 leading-10",
+              "hover:bg-gray-100 cursor-pointer text-sm",
+            )}
+            onClick={() => navigate("/profile/assets")}
+          >
+            NFID Profile
+          </div>
+        ) : null}
         <div
           className={clsx(
             "w-full h-10 text-center border-t border-gray-200 leading-10",

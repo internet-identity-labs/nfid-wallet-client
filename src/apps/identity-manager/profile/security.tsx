@@ -67,10 +67,13 @@ const ProfileSecurity = () => {
     [getDevices, updateDevice],
   )
 
-  const handleCreateRecoveryPhrase = React.useCallback(async () => {
-    // NOTE: NEVER LOG RECOVERY PHRASE
-    return await createRecoveryPhrase()
-  }, [createRecoveryPhrase])
+  const handleCreateRecoveryPhrase = React.useCallback(
+    async (protect = true) => {
+      // NOTE: NEVER LOG RECOVERY PHRASE
+      return await createRecoveryPhrase(protect)
+    },
+    [createRecoveryPhrase],
+  )
 
   const handleDeleteRecoveryPhrase = React.useCallback(
     async (seedPhrase: string) => {

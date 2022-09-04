@@ -267,13 +267,13 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           </div>
         </ModalAdvanced>
       )}
-      {deleteRecoveryModal && recoveryMethod.isRecoveryPhrase && (
+      {deleteRecoveryModal && recoveryMethod.isProtected && (
         <RecoveryPhraseDeleteModal
           onClose={toggleDeleteRecoveryModal}
           onDelete={onDeleteRecoveryPhrase}
         />
       )}
-      {deleteRecoveryModal && !recoveryMethod.isRecoveryPhrase && (
+      {deleteRecoveryModal && !recoveryMethod.isProtected && (
         <ModalAdvanced
           title="Delete access point"
           onClose={toggleDeleteRecoveryModal}

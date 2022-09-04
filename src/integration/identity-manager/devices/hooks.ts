@@ -376,43 +376,52 @@ export const useDevices = () => {
    * NEVER LOG THE RECOVERY PHRASE TO CONSOLE OR SEND
    * TO EXTERNAL SERVICE
    */
-  const createRecoveryPhrase = React.useCallback(async () => {
-    if (!profile?.anchor)
-      throw new Error("useDevice.createRecoveryPhrase profile?.anchor missing")
-    if (!authState.get().actor)
-      throw new Error("useDevice.createRecoveryPhrase internetIdentity missing")
+  const createRecoveryPhrase = React.useCallback(
+    async (protect = true) => {
+      if (!profile?.anchor)
+        throw new Error(
+          "useDevice.createRecoveryPhrase profile?.anchor missing",
+        )
+      if (!authState.get().actor)
+        throw new Error(
+          "useDevice.createRecoveryPhrase internetIdentity missing",
+        )
 
-    // NOTE: NEVER LOG RECOVERY PHRASE
-    const recovery = generate().trim()
-    const recoverIdentity = await fromMnemonicWithoutValidation(
-      recovery,
-      IC_DERIVATION_PATH,
-    )
-    const deviceName = "Recovery phrase"
+      // NOTE: NEVER LOG RECOVERY PHRASE
+      const recovery = generate().trim()
+      const recoverIdentity = await fromMnemonicWithoutValidation(
+        recovery,
+        IC_DERIVATION_PATH,
+      )
+      const deviceName = "Recovery phrase"
 
-    await Promise.all([
-      addDevice(
-        BigInt(profile?.anchor),
-        deviceName,
-        { seed_phrase: null },
-        { recovery: null },
-        recoverIdentity.getPublicKey().toDer(),
-      ),
-      createRecoveryDevice(
-        new Blob([recoverIdentity.getPublicKey().toDer()]),
-        "document",
-        deviceName,
-      ),
-    ])
-    refreshRecoveryDevices()
-    refreshDevices()
-    return `${profile.anchor} ${recovery}`
-  }, [
-    createRecoveryDevice,
-    refreshDevices,
-    refreshRecoveryDevices,
-    profile?.anchor,
-  ])
+      await Promise.all([
+        addDevice(
+          BigInt(profile?.anchor),
+          deviceName,
+          { seed_phrase: null },
+          { recovery: null },
+          recoverIdentity.getPublicKey().toDer(),
+          undefined as any,
+          protect,
+        ),
+        createRecoveryDevice(
+          new Blob([recoverIdentity.getPublicKey().toDer()]),
+          "document",
+          deviceName,
+        ),
+      ])
+      refreshRecoveryDevices()
+      refreshDevices()
+      return `${profile.anchor} ${recovery}`
+    },
+    [
+      createRecoveryDevice,
+      refreshDevices,
+      refreshRecoveryDevices,
+      profile?.anchor,
+    ],
+  )
 
   const createSecurityDevice = React.useCallback(
     async (

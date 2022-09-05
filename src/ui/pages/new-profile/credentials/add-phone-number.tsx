@@ -49,7 +49,25 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
       onBack={`${ProfileConstants.base}/${ProfileConstants.credentials}`}
       isLoading={isLoading}
     >
-      <ProfileContainer subTitle="Verify your phone number with NFID. Standard text messaging rates may apply.">
+      <ProfileContainer
+        subTitle={
+          <p>
+            Verify your non-VOIP mobile phone number with NFID. Standard text
+            messaging rates may apply. <br /> Your phone number can only be
+            registered with one identity. To register it with your existing
+            Internet Identity anchor please see these{" "}
+            <a
+              className="text-blue-600 transition-opacity cursor-pointer hover:opacity-75"
+              href="https://docs.nfid.one/sign-in-with-ii-and-nfid"
+              target="_blank"
+              rel="noreferrer"
+            >
+              instructions
+            </a>
+            .
+          </p>
+        }
+      >
         <form
           className={clsx("mt-5 flex flex-col flex-1", "sm:block")}
           onSubmit={handleSubmit(onSubmit)}

@@ -11,15 +11,19 @@ const ProfileCredentials = () => {
   const [decryptedPhone, setDecryptedPhone] = React.useState("")
 
   const decryptPhone = React.useCallback(async (phone?: string) => {
-    setIsLoading(true)
     const delegation = authState.get().delegationIdentity
 
     if (!phone || !delegation) return ""
 
-    const result = await decryptStringForIdentity(phone, delegation)
-    setDecryptedPhone(result)
-
-    setIsLoading(false)
+    try {
+      setIsLoading(true)
+      const result = await decryptStringForIdentity(phone, delegation)
+      setDecryptedPhone(result)
+    } catch (e) {
+      console.log({ e })
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   React.useEffect(() => {

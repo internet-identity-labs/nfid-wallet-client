@@ -167,17 +167,17 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               </div>
             )}
 
-            <div className="pl-1 md:pl-4">
+            <div className="flex items-center pl-1 md:pl-4">
               <div
                 className={clsx(
-                  "flex space-x-2",
+                  "flex space-x-2 items-center",
                   !device.isAccessPoint && "hidden",
                   device.isSocialDevice && "hidden",
                 )}
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div
-                  className="hover:bg-gray-200 text-red-base"
+                  className="hover:bg-gray-50 text-red-base"
                   onClick={
                     isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }
@@ -185,7 +185,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
                 </div>
                 <div
-                  className="hover:bg-gray-200 text-red-base"
+                  className="hover:bg-gray-50 text-red-base"
                   onClick={
                     isEditingLabel ? toggleEditLabel : handleDeleteDeviceDialog
                   }

@@ -49,7 +49,7 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
             "w-full -mb-2 font-mono leading-[26px]",
           )}
           rows={6}
-          placeholder="worry cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo "
+          placeholder="10000 cute good fence purity play despair worth year layer install drastic vote skirt noble sadness miss gadget kitten ladder traffic risk phone bamboo "
           onChange={(e) => setPhrase(e.target.value)}
         />
         <Button

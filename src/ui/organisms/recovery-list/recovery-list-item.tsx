@@ -157,10 +157,10 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   return (
     <div
       className={clsx(
-        "relative flex flex-row hover:bg-gray-200 hover:rounded transition-colors duration-100 -mx-3 mt-2",
+        "relative flex flex-row hover:bg-gray-50 hover:rounded transition-colors duration-100 -mx-3",
       )}
     >
-      <div className="flex flex-wrap items-center flex-1 px-3 py-2 cursor-pointer select-none peer">
+      <div className="flex flex-wrap items-center flex-1 px-3 py-0 cursor-pointer select-none peer">
         <div className="mr-4">
           <div className="relative flex items-center justify-center bg-white rounded-full w-9 h-9">
             <DeviceIconDecider
@@ -176,7 +176,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           </div>
         </div>
 
-        <div className="relative flex items-center flex-1 border-b border-gray-300">
+        <div className="relative flex items-center flex-1 py-2 border-b border-gray-200">
           <div className="flex-1 flex-shrink">
             {isEditingLabel ? (
               <input
@@ -206,9 +206,9 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
               <div
                 onClick={toggleProtectVisible}
                 className={
-                  recoveryMethod.isProtected
-                    ? "hidden"
-                    : "hover:opacity-70 transition-opacity"
+                  recoveryMethod.isRecoveryPhrase && !recoveryMethod.isProtected
+                    ? "hover:opacity-70 transition-opacity"
+                    : "hidden"
                 }
                 data-tip="Recovery phrase can be removed without proving you know what it is.<br/> Click to protect this recovery phrase"
                 onMouseEnter={() => setIsProtectTooltipVisible(true)}
@@ -220,14 +220,14 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
                 <IconWarning />
               </div>
               <div
-                className="hover:bg-gray-200 text-red-base"
+                className="hover:bg-gray-50 text-red-base"
                 onClick={isEditingLabel ? handleOnLabelUpdate : toggleEditLabel}
                 style={{ display: !recoveryMethod.isSecurityKey ? "none" : "" }}
               >
                 {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
               </div>
               <div
-                className="hover:bg-gray-200 text-red-base"
+                className="hover:bg-gray-50 text-red-base"
                 onClick={
                   isEditingLabel ? toggleEditLabel : handleDeleteRecoveryDialog
                 }

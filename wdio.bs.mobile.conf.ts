@@ -5,6 +5,7 @@ export const config = {
 
 
   hostname: "hub.browserstack.com",
+  baseUrl: "http://bs-local.com:9090",
   capabilities: [
     {
       browserName: "ios",
@@ -32,6 +33,10 @@ export const config = {
     "bstack:options": {
       buildName: "browserstack-nfid-mobile",
     },
+  },
+  connection_settings: {
+    local: true,
+    local_identifier: "CypressLocalConnection1",
   },
   cucumberOpts: {
     ...common.cucumberOpts,

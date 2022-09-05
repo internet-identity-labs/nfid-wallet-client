@@ -23,6 +23,16 @@ Feature: Registration from landing page
     And  I expect that element "#create-nfid" has the class "btn-disabled"
 
 
+    When I set "b" to the inputfield "#enter-captcha"
+    And  I expect that element "#enter-captcha" contains the text "b"
+    And  I expect that element "#create-nfid" does not have the class "btn-disabled"
+
+    When I click on the selector "#create-nfid"
+    Then I wait on element "#loader" for 10000ms to not be displayed
+    And  I expect that element "#enter-captcha-error" contains the text "Wrong captcha! Please try again"
+    And  I wait on element "#captcha-spinner" for 10000ms to be displayed
+
+    When I wait on element "#captcha-spinner" for 10000ms to not be displayed
     When I set "a" to the inputfield "#enter-captcha"
     And  I expect that element "#enter-captcha" contains the text "a"
     And  I expect that element "#create-nfid" does not have the class "btn-disabled"

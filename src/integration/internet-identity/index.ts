@@ -10,6 +10,7 @@ import {
 import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import { BehaviorSubject } from "rxjs"
 import * as tweetnacl from "tweetnacl"
 
 import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
@@ -88,18 +89,30 @@ export interface JSONSerialisableSignedDelegation {
   userKey: PublicKey
 }
 
-function authStateClosure() {
-  let _identity: SignIdentity | undefined
-  let _delegationIdentity: DelegationIdentity | undefined
-  let _actor: ActorSubclass<InternetIdentity> | undefined
-  // NOTE: NOT SURE IF WE NEED THOSE
-  let _chain: DelegationChain | undefined
-  let _sessionKey: Ed25519KeyIdentity | undefined
+interface ObservableAuthState {
+  actor?: ActorSubclass<InternetIdentity>
+  identity?: SignIdentity
+  delegationIdentity?: DelegationIdentity
+  chain?: DelegationChain
+  sessionKey?: Ed25519KeyIdentity
+}
 
+const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({})
+
+observableAuthState$.subscribe({
+  next(value) {
+    console.log("observableAuthState new state", { value })
+  },
+  error(err) {
+    console.error("observableAuthState: something went wrong:", { err })
+  },
+  complete() {
+    console.debug("observableAuthState done")
+  },
+})
+
+function authStateClosure() {
   return {
-    setDelegationIdentity(delegationIdentity: DelegationIdentity) {
-      _delegationIdentity = delegationIdentity
-    },
     set(
       identity: SignIdentity,
       delegationIdentity: DelegationIdentity,
@@ -107,27 +120,21 @@ function authStateClosure() {
       chain?: DelegationChain | undefined,
       sessionKey?: Ed25519KeyIdentity | undefined,
     ) {
-      console.debug("authState.set", { identity, delegationIdentity })
-      _actor = actor
-      _identity = identity
-      _delegationIdentity = delegationIdentity
-      _chain = chain
-      _sessionKey = sessionKey
+      observableAuthState$.next({
+        actor,
+        identity,
+        delegationIdentity,
+        chain,
+        sessionKey,
+      })
       replaceIdentity(delegationIdentity)
     },
-    get: () => ({
-      identity: _identity,
-      delegationIdentity: _delegationIdentity,
-      actor: _actor,
-      chain: _chain,
-      sessionKey: _sessionKey,
-    }),
+    get: () => observableAuthState$.getValue(),
     reset() {
-      console.debug("authState.reset")
-      _identity = undefined
-      _delegationIdentity = undefined
-      _actor = undefined
+      observableAuthState$.next({})
     },
+    subscribe: (next: (state: ObservableAuthState) => void) =>
+      observableAuthState$.subscribe(next),
   }
 }
 

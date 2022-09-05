@@ -52,11 +52,7 @@ const config = {
                   ? process.env.AWS_VERIFY_PHONENUMBER
                   : "/verify",
               ),
-              SYMMETRIC: JSON.stringify(
-                process.env.FRONTEND_MODE === "production"
-                  ? process.env.AWS_SYMMETRIC
-                  : "/symmetric",
-              ),
+              AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
               SIGNIN_GOOGLE: JSON.stringify(
                 process.env.FRONTEND_MODE === "production"
                   ? process.env.AWS_SIGNIN_GOOGLE

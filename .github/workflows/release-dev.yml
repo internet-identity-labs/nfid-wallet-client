@@ -37,6 +37,7 @@ jobs:
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
+          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
 
   deploy:
     needs: check-secrets

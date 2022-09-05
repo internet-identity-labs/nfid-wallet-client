@@ -31,7 +31,7 @@ module.exports = {
       ),
       SYMMETRIC: JSON.stringify(
         process.env.FRONTEND_MODE === "production"
-          ? process.env.AWS_VERIFY_PHONENUMBER
+          ? process.env.AWS_SYMMETRIC
           : "/symmetric",
       ),
       INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(

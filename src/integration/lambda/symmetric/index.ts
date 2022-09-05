@@ -40,12 +40,9 @@ export async function getSymmetricKey(
     IDENTITY_MANAGER_CANISTER_ID,
     fields,
   )
-  console.log({ url, ic })
-  console.log({ request })
 
   let body = Cbor.encode(request.body)
   let str = toHexString(body)
-  console.log({ str, body })
 
   const response = await fetch(url, {
     method: "POST",

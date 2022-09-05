@@ -100,7 +100,9 @@ jobs:
         run: yarn test
 
       - name: Running E2E test
-        run: yarn test:e2e
+        run: |
+          yarn test:e2e
+          # yarn test:e2e:mobile
 
       - name: Generate HTML Report
         if: always()

@@ -51,8 +51,9 @@ export const Captcha: React.FC<CaptchaProps> = ({
         type: "manual",
         message: errorString,
       })
+      onRequestNewCaptcha()
     }
-  }, [errorString, setError, setValue])
+  }, [errorString, onRequestNewCaptcha, setError, setValue])
 
   const isFormComplete = !!dirtyFields.captcha
 
@@ -83,6 +84,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
           autoFocus
           placeholder="Enter characters"
           errorText={errors.captcha?.message}
+          disabled={isChallengeLoading}
           {...register("captcha", {
             required: captchaRules.errorMessages.required,
             minLength: {

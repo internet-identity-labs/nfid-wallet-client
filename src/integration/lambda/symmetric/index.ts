@@ -44,6 +44,7 @@ export async function getSymmetricKey(
 
   let body = Cbor.encode(request.body)
   let str = toHexString(body)
+  console.log({ str, body })
 
   const response = await fetch(url, {
     method: "POST",

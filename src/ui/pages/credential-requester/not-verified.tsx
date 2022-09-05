@@ -49,9 +49,21 @@ export const CredentialRequesterNotVerified: React.FC<
       // subTitle={`to continue ${applicationName ? `to ${applicationName}` : ""}`}
     >
       <P className="text-sm mt-7">
-        You haven't yet verified your phone number. Would you like to do it now?
-        Your phone number is never shared with anyone and only accessible to
-        you.
+        This application is requesting you verify a non-VOIP phone number with
+        NFID to continue.
+      </P>
+      <P className="mt-2 text-sm">
+        To register it with your existing Internet Identity anchor please see
+        these{" "}
+        <a
+          className="text-blue-600 transition-opacity cursor-pointer hover:opacity-75"
+          href="https://docs.nfid.one/sign-in-with-ii-and-nfid"
+          target="_blank"
+          rel="noreferrer"
+        >
+          instructions
+        </a>
+        .
       </P>
       <form
         className={clsx(

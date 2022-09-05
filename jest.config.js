@@ -15,7 +15,7 @@ module.exports = {
     CYCLES_MINTER_CANISTER_ID: "rkp4c-7iaaa-aaaaa-aaaca-cai",
     VERIFY_PHONE_NUMBER:
       "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",
-    SYMMETRIC:
+    AWS_SYMMETRIC:
       "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
     IC_HOST: "https://ic0.app",
     II_ENV: "dev",

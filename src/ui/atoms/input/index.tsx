@@ -80,6 +80,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         <div
+          id={`${id}-error`}
           className={clsx(
             "text-sm py-1 text-gray-400",
             errorText && "!text-red-base",

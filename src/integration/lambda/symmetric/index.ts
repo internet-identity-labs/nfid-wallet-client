@@ -8,7 +8,7 @@ import { Buffer } from "buffer"
 import { ic } from "frontend/integration/actors"
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
-declare const SYMMETRIC: string
+declare const AWS_SYMMETRIC: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 
 export async function decryptStringForIdentity(
@@ -30,7 +30,7 @@ export async function symmetric(identity: DelegationIdentity) {
 export async function getSymmetricKey(
   identity: DelegationIdentity,
 ): Promise<string> {
-  const url = ic.isLocal ? "/symmetric" : SYMMETRIC
+  const url = ic.isLocal ? "/symmetric" : AWS_SYMMETRIC
   const fields: QueryFields = {
     methodName: "validate_signature",
     arg: IDL.encode([IDL.Opt(IDL.Text)], [[]]),

@@ -8,7 +8,7 @@ import { Buffer } from "buffer"
 import { ic } from "frontend/integration/actors"
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
-declare const SYMMETRIC: string
+declare const AWS_SYMMETRIC: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
 
 export async function decryptStringForIdentity(
@@ -23,14 +23,14 @@ export async function symmetric(identity: DelegationIdentity) {
   try {
     return await getSymmetricKey(identity)
   } catch (e) {
-    throw new Error("There was an issue getting symmetric key.")
+    throw new Error("There was an issue getting symmetric key." + e)
   }
 }
 
 export async function getSymmetricKey(
   identity: DelegationIdentity,
 ): Promise<string> {
-  const url = ic.isLocal ? "/symmetric" : SYMMETRIC
+  const url = ic.isLocal ? "/symmetric" : AWS_SYMMETRIC
   const fields: QueryFields = {
     methodName: "validate_signature",
     arg: IDL.encode([IDL.Opt(IDL.Text)], [[]]),
@@ -40,6 +40,7 @@ export async function getSymmetricKey(
     IDENTITY_MANAGER_CANISTER_ID,
     fields,
   )
+  console.log({ url, ic })
   console.log({ request })
 
   let body = Cbor.encode(request.body)

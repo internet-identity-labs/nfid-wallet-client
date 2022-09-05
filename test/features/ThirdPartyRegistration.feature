@@ -2,10 +2,8 @@
 Feature: Registration from third party application
 
   Background: Browser setup
-    Given I have a screen that is 414 by 896 pixels
     Given I open the site "/ridp/?secret=a464132b-328f-41cc-bbad-6a57a48f25df&scope=http%3A%2F%2Flocalhost%3A3000&derivationOrigin=&maxTimeToLive=606461760455083"
     Given My browser supports WebAuthN
-  # Given I'm using a mobile device
 
   @uat
   @mission

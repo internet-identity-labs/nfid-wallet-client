@@ -23,7 +23,7 @@ export async function symmetric(identity: DelegationIdentity) {
   try {
     return await getSymmetricKey(identity)
   } catch (e) {
-    throw new Error("There was an issue getting symmetric key.")
+    throw new Error("There was an issue getting symmetric key." + e)
   }
 }
 

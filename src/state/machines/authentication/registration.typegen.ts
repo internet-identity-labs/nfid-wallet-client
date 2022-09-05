@@ -88,6 +88,7 @@ export interface Typegen0 {
       | "error.platform.createWebAuthnIdentity"
       | "error.platform.fetchChallenge"
       | "error.platform.registerService"
+    resetError: "FETCH_CAPTCHA"
   }
   eventsCausingServices: {
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"

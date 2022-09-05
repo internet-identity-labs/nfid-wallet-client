@@ -13,6 +13,7 @@ interface StepInputProps {
   responseError?: string
   onSubmit: (value: string) => Promise<void>
   buttonText?: string
+  buttonClassName?: string
 }
 
 export const StepInput: React.FC<StepInputProps> = ({
@@ -21,6 +22,7 @@ export const StepInput: React.FC<StepInputProps> = ({
   errorClasses,
   responseError,
   buttonText,
+  buttonClassName,
 }) => {
   const [isFormValid, setIsFormValid] = React.useState(false)
   const list = [...Array(6).keys()]
@@ -153,7 +155,7 @@ export const StepInput: React.FC<StepInputProps> = ({
       </div>
       <Button
         primary
-        className="px-10 mt-3 sm:mt-5"
+        className={clsx("px-10 mt-3 sm:mt-5", buttonClassName)}
         onClick={() => {
           validateToken()
           handleSubmit()

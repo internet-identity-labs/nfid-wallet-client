@@ -18,7 +18,7 @@ interface IProfileCredentialsPage extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
   phone,
   email,
-  isLoading,
+  isLoading = false,
 }) => {
   const { navigate } = useNFIDNavigate()
 

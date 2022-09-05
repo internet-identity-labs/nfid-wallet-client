@@ -98,6 +98,7 @@ const RegistrationMachine =
                   },
                   on: {
                     FETCH_CAPTCHA: {
+                      actions: ["resetError"],
                       target: "Fetch",
                     },
                   },
@@ -254,6 +255,7 @@ const RegistrationMachine =
           authSession: (_, event) => event.data,
         }),
         assignError: assign({ error: (context, event) => event.data.message }),
+        resetError: assign({ error: (_) => undefined }),
       },
       guards: {
         authenticated: (context) => !!context.authSession,

@@ -4,7 +4,7 @@ import { hooks } from "./test/hooks"
 
 dotenv.config({ path: ".env.local" })
 
-const isDebug = process.env.DEBUG === "true"
+export const isDebug = process.env.DEBUG === "true"
 
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile
@@ -92,7 +92,8 @@ export const config: WebdriverIO.Config = {
       "goog:chromeOptions": {
         args: [
           "--no-sandbox",
-          ...(isDebug ? [] : ["--headless", "--disable-dev-shm-usage"]),
+          ...(isDebug ? ["--auto-open-devtools-for-tabs"] : ["--headless"]),
+          "--disable-dev-shm-usage",
           "disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
         ],
@@ -217,7 +218,7 @@ export const config: WebdriverIO.Config = {
     // <boolean> fail if there are any undefined or pending steps
     strict: false,
     // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tagExpression: "not @pending",
+    tagExpression: "not @pending and not @mobile",
     // <number> timeout for step definitions
     timeout: 60000,
     // <boolean> Enable this config to treat undefined definitions as warnings.

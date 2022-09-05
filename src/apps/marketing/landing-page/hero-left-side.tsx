@@ -52,7 +52,7 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({
               "sm:w-[409px] sm:font-bold sm:text-xl",
             )}
           >
-            NFID is the digital identity for connecting to applications
+            NFID is the digital identity for signing in to applications
             privately and securely <br /> <br />
           </h2>
           {isUnregistered && isMobile && (

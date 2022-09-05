@@ -2,7 +2,6 @@ import clsx from "clsx"
 import React, { useState } from "react"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import Pagination from "frontend/ui/molecules/pagination"
 import TabsSwitcher from "frontend/ui/organisms/tabs-switcher"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -96,10 +95,8 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
           )}
         >
           <p className="mb-4 text-sm text-center">
-            Your transactions list is empty. You can create your first
-            transaction using the Send / Receive button.
+            No recent transactions to display.
           </p>
-          <SendReceiveButton />
         </div>
       )}
       <div className={clsx("mt-2 fixed right-4")}>

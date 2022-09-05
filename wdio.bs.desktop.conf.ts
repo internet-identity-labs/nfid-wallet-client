@@ -7,24 +7,11 @@ export const config = {
   hostname: "hub.browserstack.com",
   capabilities: [
     {
-      browserName: "ios",
+      browserName: "chrome",
+      browserVersion: "104.0",
       "bstack:options": {
-        deviceName: "iPhone 12 Pro Max",
-        osVersion: "16 Beta",
-      },
-    },
-    {
-      browserName: "android",
-      "bstack:options": {
-        deviceName: "Google Pixel 6 Pro",
-        osVersion: "13.0",
-      },
-    },
-    {
-      browserName: "ios",
-      "bstack:options": {
-        deviceName: "iPad Air 4",
-        osVersion: "14",
+        os: "Windows",
+        osVersion: "11",
       },
     },
   ],
@@ -35,6 +22,6 @@ export const config = {
   },
   cucumberOpts: {
     ...common.cucumberOpts,
-    tagExpression: "@mobile",
+    tagExpression: "not @mobile",
   },
 }

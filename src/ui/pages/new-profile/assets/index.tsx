@@ -26,7 +26,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
           <thead className={clsx("border-b border-black-base h-16")}>
             <tr className={clsx("font-bold text-sm leading-5")}>
               <th>Name</th>
-              <th>ICP balance</th>
+              <th>Token balance</th>
               <th>USD balance</th>
             </tr>
           </thead>

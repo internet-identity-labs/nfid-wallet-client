@@ -6,6 +6,9 @@ export const config = {
     {
       browserName: "chrome",
       "goog:chromeOptions": {
+        mobileEmulation: {
+          deviceName: "Pixel 2",
+        },
         args: [
           "--no-sandbox",
           ...(isDebug
@@ -14,8 +17,6 @@ export const config = {
           "--disable-dev-shm-usage",
           "--disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
-          "--use-mobile-user-agent",
-          "user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3",
         ],
       },
       acceptInsecureCerts: true,

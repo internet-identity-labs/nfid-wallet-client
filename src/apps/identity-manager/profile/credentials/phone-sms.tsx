@@ -1,9 +1,10 @@
 import { useAtom } from "jotai"
 import React from "react"
 
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { authState } from "frontend/integration/internet-identity"
+import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import ProfileAddPhoneSMS from "frontend/ui/pages/new-profile/credentials/add-phone-sms"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
@@ -15,9 +16,9 @@ const ProfileSMS = () => {
 
   const [isLoading, toggleLoading] = React.useReducer((s) => !s, false)
   const [error, setError] = React.useState("")
-  const { user } = useAuthentication()
   const { navigate } = useNFIDNavigate()
-  const { refreshProfile, verifyPhonenumber } = useAccount()
+  const { refreshProfile } = useAccount()
+  const { delegationIdentity } = authState.get()
 
   const handleSubmitSMSToken = React.useCallback(
     async (token: string) => {
@@ -38,14 +39,17 @@ const ProfileSMS = () => {
   )
 
   const handleResendToken = React.useCallback(async () => {
-    toggleLoading()
-    const response = await verifyPhonenumber(
-      phone as string,
-      user?.principal as string,
-    )
-    toggleLoading()
-    setError(response.body.error)
-  }, [phone, user?.principal, verifyPhonenumber])
+    if (!delegationIdentity) throw new Error("User delegation is undefined")
+
+    try {
+      toggleLoading()
+      await verifyPhoneNumber(phone as string, delegationIdentity)
+    } catch (e: any) {
+      if (e.body) setError(e.body.error)
+    } finally {
+      toggleLoading()
+    }
+  }, [delegationIdentity, phone])
 
   return (
     <ProfileAddPhoneSMS

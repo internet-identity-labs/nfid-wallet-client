@@ -74,6 +74,7 @@ export interface Typegen0 {
     assignAppMeta: "done.invoke.getAppMeta"
     assignAuthRequest: "done.invoke.handshake"
     assignAuthoSession: "done.invoke.authorize"
+    assignError: "error.platform.handshake"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.state.idp.Start"
@@ -95,13 +96,17 @@ export interface Typegen0 {
     | "Start.GetAppMeta.Fetch"
     | "Start.Handshake"
     | "Start.Handshake.Done"
+    | "Start.Handshake.Error"
     | "Start.Handshake.Fetch"
     | "TrustDevice"
     | {
         Start?:
           | "GetAppMeta"
           | "Handshake"
-          | { GetAppMeta?: "Done" | "Fetch"; Handshake?: "Done" | "Fetch" }
+          | {
+              GetAppMeta?: "Done" | "Fetch"
+              Handshake?: "Done" | "Error" | "Fetch"
+            }
       }
   tags: never
 }

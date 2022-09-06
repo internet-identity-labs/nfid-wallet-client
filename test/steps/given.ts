@@ -3,6 +3,8 @@ import { Given } from "@cucumber/cucumber"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab"
 import openWebsite from "./support/action/openWebsite"
 import setWindowSize from "./support/action/setWindowSize"
+import { setupVirtualAuthenticator } from "./support/action/setupVirtualWebauthn"
+import addLocalStorageKey from "./support/check/addLocalStorageKey"
 import checkContainsAnyText from "./support/check/checkContainsAnyText"
 import checkContainsText from "./support/check/checkContainsText"
 import checkCookieContent from "./support/check/checkCookieContent"
@@ -86,3 +88,12 @@ Given(/^I have a screen that is ([\d]+) by ([\d]+) pixels$/, setWindowSize)
 Given(/^I have closed all but the first (window|tab)$/, closeAllButFirstTab)
 
 Given(/^a (alertbox|confirmbox|prompt) is( not)* opened$/, checkModal)
+
+Given(/^My browser supports WebAuthN$/, async function () {
+  this.authenticator = await setupVirtualAuthenticator()
+})
+
+Given(
+  /^My browser localStorage has a key "([^"]*)?" with value '([^]*)?'$/,
+  addLocalStorageKey,
+)

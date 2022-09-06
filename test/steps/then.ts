@@ -1,5 +1,6 @@
 import { Then } from "@cucumber/cucumber"
 
+import { checkCredentialAmount } from "./support/action/setupVirtualWebauthn"
 import waitFor from "./support/action/waitFor"
 import waitForVisible from "./support/action/waitForDisplayed"
 import checkClass from "./support/check/checkClass"
@@ -14,6 +15,7 @@ import checkFontProperty from "./support/check/checkFontProperty"
 import checkInURLPath from "./support/check/checkInURLPath"
 import checkIsEmpty from "./support/check/checkIsEmpty"
 import checkIsOpenedInNewWindow from "./support/check/checkIsOpenedInNewWindow"
+import checkLocalStorageKey from "./support/check/checkLocalStorageKey"
 import checkModal from "./support/check/checkModal"
 import checkModalText from "./support/check/checkModalText"
 import checkNewWindow from "./support/check/checkNewWindow"
@@ -151,3 +153,12 @@ Then(
   /^I expect that a (alertbox|confirmbox|prompt)( not)* contains the text "([^"]*)?"$/,
   checkModalText,
 )
+
+Then(
+  /^I expect "([^"]*)?" key to( not)* be present in localStorage/,
+  checkLocalStorageKey,
+)
+
+Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
+  await checkCredentialAmount(this.authenticator, Number(amount))
+})

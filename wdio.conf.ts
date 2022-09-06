@@ -4,7 +4,7 @@ import { hooks } from "./test/hooks"
 
 dotenv.config({ path: ".env.local" })
 
-const isDebug = process.env.DEBUG === "true"
+export const isDebug = process.env.DEBUG === "true"
 
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile
@@ -78,6 +78,7 @@ export const config: WebdriverIO.Config = {
   // from the same test should run tests.
   //
   maxInstances: isDebug ? 1 : 10,
+  // maxInstances: 1,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -91,8 +92,10 @@ export const config: WebdriverIO.Config = {
       "goog:chromeOptions": {
         args: [
           "--no-sandbox",
-          ...(isDebug ? [] : ["headless", "headless"]),
+          ...(isDebug ? ["--auto-open-devtools-for-tabs"] : ["--headless"]),
+          "--disable-dev-shm-usage",
           "disable-gpu",
+          "--ignore-certificate-errors", // allow self-signed certificates
         ],
       },
       acceptInsecureCerts: true,
@@ -129,7 +132,7 @@ export const config: WebdriverIO.Config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: "http://127.0.0.1:8000",
+  baseUrl: "http://localhost:9090",
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -215,7 +218,7 @@ export const config: WebdriverIO.Config = {
     // <boolean> fail if there are any undefined or pending steps
     strict: false,
     // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tagExpression: "not @Pending",
+    tagExpression: "not @pending and not @mobile",
     // <number> timeout for step definitions
     timeout: 60000,
     // <boolean> Enable this config to treat undefined definitions as warnings.

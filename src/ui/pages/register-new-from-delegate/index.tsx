@@ -76,7 +76,7 @@ export const RegisterNewFromDelegate = () => {
               <Button
                 onClick={handleRegisterNewDevice}
                 large
-                secondary
+                primary
                 className="mt-8"
               >
                 Prove I own this {device}

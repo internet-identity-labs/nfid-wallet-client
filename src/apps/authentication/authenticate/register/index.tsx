@@ -90,7 +90,7 @@ export const RouteRegister: React.FC<RegisterProps> = ({
             })
           }
           return navigate(
-            `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
+            `${ProfileConstants.base}/${ProfileConstants.security}`,
           )
         }
         // when we're not on NFID we're handling the authorization on

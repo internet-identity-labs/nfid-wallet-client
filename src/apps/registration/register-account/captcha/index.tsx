@@ -53,6 +53,10 @@ export const RegisterAccountCaptcha: React.FC<
     },
   })
 
+  const navigateToProfile = React.useCallback(() => {
+    navigate("/profile/security")
+  }, [navigate])
+
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
       console.debug("RegisterAccountCaptcha handleRegisterAnchor", { captcha })
@@ -93,16 +97,16 @@ export const RegisterAccountCaptcha: React.FC<
             userNumberOverwrite: response.userNumber,
             userOverwrite: user,
           })
-          return navigate("/profile/authenticate")
+          return navigateToProfile()
         }
 
-        navigate("/profile/authenticate")
+        navigateToProfile()
       }
     },
     [
       createAccount,
       isRemoteRegister,
-      navigate,
+      navigateToProfile,
       registerAnchor,
       remoteNFIDLogin,
       secret,
@@ -152,7 +156,7 @@ export const RegisterAccountCaptcha: React.FC<
           console.debug("loginResponse", { loginResponse })
         }
 
-        return navigate("/profile/authenticate")
+        return navigate("/profile/security")
       }
       console.error(
         "RegisterAccountCaptcha.handleRegisterAnchorWithGoogle",
@@ -178,7 +182,7 @@ export const RegisterAccountCaptcha: React.FC<
       isChallengeLoading={isChallengeLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}
-      successPath={"/profile/authenticate"}
+      successPath={"/profile/security"}
       onRegisterAnchor={
         isGoogle ? handleRegisterAnchorWithGoogle : handleRegisterAnchor
       }

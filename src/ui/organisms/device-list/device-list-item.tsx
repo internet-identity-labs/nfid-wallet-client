@@ -157,12 +157,20 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   {device.isAccessPoint ? device.label : device.browser}
                 </div>
                 <div className="my-1 text-sm text-gray-400">
-                  {device.isAccessPoint
+                  {device.isSocialDevice
+                    ? `Last activity: ${format(device.lastUsed, "MMM d, yyyy")}`
+                    : null}
+
+                  {device.isAccessPoint && !device.isSocialDevice
                     ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +
                           device.browser ?? null
                       }`
-                    : "This is not an NFID device"}
+                    : null}
+
+                  {!device.isAccessPoint && !device.isAccessPoint
+                    ? "This is not an NFID device"
+                    : null}
                 </div>
               </div>
             )}

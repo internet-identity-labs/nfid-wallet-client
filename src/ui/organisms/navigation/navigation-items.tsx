@@ -223,7 +223,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
               onClick={() => setIsPopupVisible(!isPopupVisible)}
             >
-              <img src={User} alt="user" className="cursor-pointer" />
+              <img src={User} alt="user" className="cursor-pointer" id="profile-icon"/>
             </div>
           ) : null}
           {!account ? (

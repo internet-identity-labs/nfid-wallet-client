@@ -44,6 +44,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
             className={clsx("cursor-pointer w-10")}
             src={User}
             alt="profile icon"
+            id="profile"
             onClick={() => setIsPopupVisible(!isPopupVisible)}
           />
           {isPopupVisible && (

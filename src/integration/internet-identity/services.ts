@@ -200,16 +200,25 @@ export async function registerService(
   try {
     // Register the account with identity manager.
     const account = { anchor }
-    const accessPoint = {
-      icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
-      device: deviceInfo.newDeviceName,
-      browser: deviceInfo.browser.name ?? "Mobile",
-      pubKey: Array.from(
-        new Uint8Array(
-          authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
-        ),
+    const pubKey = Array.from(
+      new Uint8Array(
+        authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
       ),
-    }
+    )
+    const accessPoint =
+      sessionSource !== "google"
+        ? {
+            icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
+            device: deviceInfo.newDeviceName,
+            browser: deviceInfo.browser.name ?? "Mobile",
+            pubKey,
+          }
+        : {
+            icon: "google" as Icon,
+            device: "Google",
+            browser: "Google account",
+            pubKey,
+          }
     console.debug("RouterRegisterDeviceDecider handleRegister", {
       account,
       accessPoint,

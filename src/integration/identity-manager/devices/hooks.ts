@@ -192,38 +192,42 @@ async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
 
 /** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
-  const [socialDevices, setSocialDevices] = useState<LegacyDevice[]>([])
   const { profile } = useAccount()
+
   const {
     data: fetchedDevices,
     error: fetchDevicesError,
     mutate: refreshDevices,
-  } = useSWR({ anchor: profile?.anchor, type: "authenticator" }, fetchDevices)
-
-  // TODO replace by having social device like separate device type (as recover)
-  const devices = React.useMemo(() => {
-    setSocialDevices(
-      fetchedDevices
-        ?.filter((d) => d.browser === "Google account")
-        .map((socialDevice) => ({
-          ...socialDevice,
-          icon: "google",
-          label: "Google",
-          isAccessPoint: true,
-          isSocialDevice: true,
-        })) ?? [],
-    )
-    return fetchedDevices?.filter((d) => d.browser !== "Google account")
-  }, [fetchedDevices])
+  } = useSWR(
+    profile?.anchor ? { anchor: profile.anchor, type: "authenticator" } : null,
+    fetchDevices,
+  )
 
   const {
     data: recoveryDevices,
     error: fetchRecoveryDevicesError,
     mutate: refreshRecoveryDevices,
   } = useSWR(
-    { anchor: profile?.anchor, type: "recovery" },
+    profile?.anchor ? { anchor: profile.anchor, type: "recovery" } : null,
     fetchAccountRecoveryMethods,
   )
+
+  const socialDevices = React.useMemo(() => {
+    return (
+      fetchedDevices
+        ?.filter((d) => d.browser === "Google account")
+        .map((socialDevice) => ({
+          ...socialDevice,
+          isAccessPoint: true,
+          isSocialDevice: true,
+        })) ?? []
+    )
+  }, [fetchedDevices])
+
+  // TODO replace by having social device like separate device type (as recover)
+  const devices = React.useMemo(() => {
+    return fetchedDevices?.filter((d) => d.browser !== "Google account")
+  }, [fetchedDevices])
 
   const {
     newDeviceName,

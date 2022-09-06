@@ -4,7 +4,7 @@ import {
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import React, { useState } from "react"
+import React from "react"
 import useSWR from "swr"
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
@@ -190,40 +190,57 @@ async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
   return normalizedRecoveryDevices
 }
 
+interface GoogleDeviceFilter {
+  browser: string
+}
+
+export const byGoogleDevice = ({ browser }: GoogleDeviceFilter) => {
+  const knownGoogleFields = ["cross platform", "Google account"]
+  return knownGoogleFields.indexOf(browser) > -1
+}
+
+export const byNotGoogleDevice = ({ browser }: GoogleDeviceFilter) =>
+  !byGoogleDevice({ browser })
+
 /** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
-  const [socialDevices, setSocialDevices] = useState<LegacyDevice[]>([])
   const { profile } = useAccount()
+
   const {
     data: fetchedDevices,
     error: fetchDevicesError,
     mutate: refreshDevices,
-  } = useSWR({ anchor: profile?.anchor, type: "authenticator" }, fetchDevices)
-
-  // TODO replace by having social device like separate device type (as recover)
-  const devices = React.useMemo(() => {
-    setSocialDevices(
-      fetchedDevices
-        ?.filter((d) => d.browser === "Google account")
-        .map((socialDevice) => ({
-          ...socialDevice,
-          icon: "google",
-          label: "Google",
-          isAccessPoint: true,
-          isSocialDevice: true,
-        })) ?? [],
-    )
-    return fetchedDevices?.filter((d) => d.browser !== "Google account")
-  }, [fetchedDevices])
+  } = useSWR(
+    profile?.anchor ? { anchor: profile.anchor, type: "authenticator" } : null,
+    fetchDevices,
+  )
 
   const {
     data: recoveryDevices,
     error: fetchRecoveryDevicesError,
     mutate: refreshRecoveryDevices,
   } = useSWR(
-    { anchor: profile?.anchor, type: "recovery" },
+    profile?.anchor ? { anchor: profile.anchor, type: "recovery" } : null,
     fetchAccountRecoveryMethods,
   )
+
+  const socialDevices = React.useMemo(() => {
+    return (
+      fetchedDevices?.filter(byGoogleDevice).map((socialDevice) => ({
+        ...socialDevice,
+        // TODO: move to normalizer
+        icon: "google" as Icon,
+        label: "Google",
+        isAccessPoint: true,
+        isSocialDevice: true,
+      })) ?? []
+    )
+  }, [fetchedDevices])
+
+  // TODO replace by having social device like separate device type (as recover)
+  const devices = React.useMemo(() => {
+    return fetchedDevices?.filter(byNotGoogleDevice)
+  }, [fetchedDevices])
 
   const {
     newDeviceName,

@@ -4,7 +4,7 @@ import {
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import React, { useState } from "react"
+import React from "react"
 import useSWR from "swr"
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
@@ -190,6 +190,18 @@ async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
   return normalizedRecoveryDevices
 }
 
+interface GoogleDeviceFilter {
+  browser: string
+}
+
+export const byGoogleDevice = ({ browser }: GoogleDeviceFilter) => {
+  const knownGoogleFields = ["cross platform", "Google account"]
+  return knownGoogleFields.indexOf(browser) > -1
+}
+
+export const byNotGoogleDevice = ({ browser }: GoogleDeviceFilter) =>
+  !byGoogleDevice({ browser })
+
 /** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
   const { profile } = useAccount()
@@ -214,19 +226,20 @@ export const useDevices = () => {
 
   const socialDevices = React.useMemo(() => {
     return (
-      fetchedDevices
-        ?.filter((d) => d.browser === "Google account")
-        .map((socialDevice) => ({
-          ...socialDevice,
-          isAccessPoint: true,
-          isSocialDevice: true,
-        })) ?? []
+      fetchedDevices?.filter(byGoogleDevice).map((socialDevice) => ({
+        ...socialDevice,
+        // TODO: move to normalizer
+        icon: "google",
+        label: "Google",
+        isAccessPoint: true,
+        isSocialDevice: true,
+      })) ?? []
     )
   }, [fetchedDevices])
 
   // TODO replace by having social device like separate device type (as recover)
   const devices = React.useMemo(() => {
-    return fetchedDevices?.filter((d) => d.browser !== "Google account")
+    return fetchedDevices?.filter(byNotGoogleDevice)
   }, [fetchedDevices])
 
   const {

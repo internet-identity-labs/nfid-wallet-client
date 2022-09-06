@@ -229,7 +229,7 @@ export const useDevices = () => {
       fetchedDevices?.filter(byGoogleDevice).map((socialDevice) => ({
         ...socialDevice,
         // TODO: move to normalizer
-        icon: "google",
+        icon: "google" as Icon,
         label: "Google",
         isAccessPoint: true,
         isSocialDevice: true,

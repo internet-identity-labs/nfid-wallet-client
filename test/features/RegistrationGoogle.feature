@@ -8,17 +8,17 @@ Feature: Registration using Google
   @mission
   Scenario Outline: User wants to register with Google
     Given I remove the e2e@identitylabs.ooo
+    Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
     When I pause for 500ms
-    Then I wait on element "iframe[title='Sign in with Google Button']" for 1000ms to be displayed
     When I click on the selector "iframe[title='Sign in with Google Button']"
-    When I pause for 500ms
     Then I expect a new window has been opened
     When I focus the last opened window
     Then I wait on element "#credentials-picker > div:first-child" for 4000ms to be displayed
-    When I click on the selector "#credentials-picker > div:first-child"
     When I pause for 500ms
-    Given I have closed all but the first window
-    Then I wait on element "#captcha-img" for 60000ms to be displayed
+    When I click on the selector "#credentials-picker > div:first-child"
+    When I focus the previous opened window
+    When I pause for 1500ms
+    Then I wait on element "#captcha-img" for 10000ms to be displayed
     And  I expect that element "#enter-captcha" not contains any text
     And  I expect that element "#create-nfid" has the class "btn-disabled"
     When I set "a" to the inputfield "#enter-captcha"

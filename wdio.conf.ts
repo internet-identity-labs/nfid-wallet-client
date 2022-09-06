@@ -181,6 +181,7 @@ export const config: WebdriverIO.Config = {
         outputDir: "allure-results",
         disableWebdriverStepsReporting: true,
         useCucumberStepReporter: true,
+        addConsoleLogs: true,
       },
     ],
     [

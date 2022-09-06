@@ -11,12 +11,7 @@ export default async (position: any, obsolete: any) => {
    * @type {Object}
    */
 
-  const positions: Map<string, number> = new Map<string, number>([
-    ["last", -1],
-    ["previous", -2]
-  ])
-
-  const positionNumber: number = positions.get(position) || -2
+  const positionNumber: number = position === "last" ? -1 : -2;
   const lastWindowHandle = (await browser.getWindowHandles()).slice(positionNumber)[0]
 
   await browser.switchToWindow(lastWindowHandle)

@@ -54,6 +54,7 @@ const ProfileSMS = () => {
       isLoading={isLoading}
       responseError={error}
       onResendCode={handleResendToken}
+      resetResponseError={() => setError("")}
     />
   )
 }

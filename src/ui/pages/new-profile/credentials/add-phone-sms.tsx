@@ -12,6 +12,7 @@ interface IProfileAddPhoneSMS {
   onResendCode: () => void
   onSubmit: (token: string) => Promise<void>
   responseError?: string
+  resetResponseError?: () => void
   isLoading: boolean
   phone: string | number
 }
@@ -20,6 +21,7 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
   onResendCode,
   onSubmit,
   responseError,
+  resetResponseError,
   isLoading,
   phone,
 }) => {
@@ -65,6 +67,7 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
             onSubmit={onSubmit}
             buttonText="Complete"
             responseError={responseError}
+            resetResponseError={resetResponseError}
           />
         </div>
       </ProfileContainer>

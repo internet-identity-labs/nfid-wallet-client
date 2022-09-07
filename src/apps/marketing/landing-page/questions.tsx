@@ -179,7 +179,7 @@ export const questions = [
           only at{" "}
           <a
             className="text-blue-base hover:underline hover:text-blue-hover"
-            href="https://nfid.one"
+            href="https://nfid.one/recover-nfid/enter-recovery-phrase"
             target="_blank"
             rel="noreferrer"
           >

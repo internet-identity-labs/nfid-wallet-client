@@ -99,6 +99,7 @@ export const config: WebdriverIO.Config = {
           "--disable-dev-shm-usage",
           "disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
+          "--disable-web-security"
         ],
       },
       acceptInsecureCerts: true,

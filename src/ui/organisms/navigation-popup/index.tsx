@@ -56,6 +56,7 @@ const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
           Help
         </div>
         <div
+          id="logout"
           className={clsx(
             "w-full h-10 text-center border-t border-gray-200 leading-10",
             "hover:bg-gray-100 cursor-pointer text-sm rounded-b-md",

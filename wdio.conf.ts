@@ -77,7 +77,7 @@ export const config: WebdriverIO.Config = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: isDebug ? 1 : 10,
+  maxInstances: 1,
   // maxInstances: 1,
   //
   // If you have trouble getting all important capabilities together, check out the
@@ -91,11 +91,15 @@ export const config: WebdriverIO.Config = {
       browserName: "chrome",
       "goog:chromeOptions": {
         args: [
+          `user-data-dir=${process.env.USER_DATA_DIR}`,
           "--no-sandbox",
-          ...(isDebug ? ["--auto-open-devtools-for-tabs"] : ["--headless"]),
+          ...(isDebug ? [
+            // "--auto-open-devtools-for-tabs"
+        ] : ["--headless"]),
           "--disable-dev-shm-usage",
           "disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
+          "--disable-web-security"
         ],
       },
       acceptInsecureCerts: true,
@@ -178,6 +182,7 @@ export const config: WebdriverIO.Config = {
         outputDir: "allure-results",
         disableWebdriverStepsReporting: true,
         useCucumberStepReporter: true,
+        addConsoleLogs: true,
       },
     ],
     [

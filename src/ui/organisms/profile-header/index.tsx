@@ -39,7 +39,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
       <Logo />
       <div className={clsx("hidden", "sm:flex sm:space-x-5 sm:h-10")}>
         <SendReceiveButton />
-        <div className={clsx("relative")} ref={popupRef}>
+        <div className={clsx("relative")} ref={popupRef} id="profile">
           <img
             className={clsx("cursor-pointer w-10")}
             src={User}

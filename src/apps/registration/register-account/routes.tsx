@@ -40,7 +40,7 @@ export const RemoteRegisterAccountRoutes = (
       element={
         <RegisterAccountCaptcha
           isRemoteRegister
-          successPath={"/profile/authenticate"}
+          successPath={"/profile/security"}
         />
       }
     />
@@ -61,7 +61,7 @@ export const NFIDRegisterAccountRoutes = (
         <RouteRegisterAccountIntro
           isNFID
           captchaPath={`${NFIDRegisterAccountConstants.base}/${NFIDRegisterAccountConstants.captcha}`}
-          pathOnAuthenticated={"/profile/authenticate"}
+          pathOnAuthenticated={"/profile/security"}
         />
       }
     />

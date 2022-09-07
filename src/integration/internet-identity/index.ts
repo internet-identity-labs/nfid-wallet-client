@@ -10,6 +10,7 @@ import {
 import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
+import { BehaviorSubject } from "rxjs"
 import * as tweetnacl from "tweetnacl"
 
 import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
@@ -72,7 +73,7 @@ type SeedPhraseFail = { kind: "seedPhraseFail" }
 
 export type { ChallengeResult } from "frontend/integration/_ic_api/internet_identity_types"
 
-interface FrontendDelegation {
+export interface FrontendDelegation {
   delegationIdentity: DelegationIdentity
   chain: DelegationChain
   sessionKey: Ed25519KeyIdentity
@@ -88,18 +89,30 @@ export interface JSONSerialisableSignedDelegation {
   userKey: PublicKey
 }
 
-function authStateClosure() {
-  let _identity: SignIdentity | undefined
-  let _delegationIdentity: DelegationIdentity | undefined
-  let _actor: ActorSubclass<InternetIdentity> | undefined
-  // NOTE: NOT SURE IF WE NEED THOSE
-  let _chain: DelegationChain | undefined
-  let _sessionKey: Ed25519KeyIdentity | undefined
+interface ObservableAuthState {
+  actor?: ActorSubclass<InternetIdentity>
+  identity?: SignIdentity
+  delegationIdentity?: DelegationIdentity
+  chain?: DelegationChain
+  sessionKey?: Ed25519KeyIdentity
+}
 
+const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({})
+
+observableAuthState$.subscribe({
+  next(value) {
+    console.log("observableAuthState new state", { value })
+  },
+  error(err) {
+    console.error("observableAuthState: something went wrong:", { err })
+  },
+  complete() {
+    console.debug("observableAuthState done")
+  },
+})
+
+function authStateClosure() {
   return {
-    setDelegationIdentity(delegationIdentity: DelegationIdentity) {
-      _delegationIdentity = delegationIdentity
-    },
     set(
       identity: SignIdentity,
       delegationIdentity: DelegationIdentity,
@@ -107,27 +120,21 @@ function authStateClosure() {
       chain?: DelegationChain | undefined,
       sessionKey?: Ed25519KeyIdentity | undefined,
     ) {
-      console.debug("authState.set", { identity, delegationIdentity })
-      _actor = actor
-      _identity = identity
-      _delegationIdentity = delegationIdentity
-      _chain = chain
-      _sessionKey = sessionKey
+      observableAuthState$.next({
+        actor,
+        identity,
+        delegationIdentity,
+        chain,
+        sessionKey,
+      })
       replaceIdentity(delegationIdentity)
     },
-    get: () => ({
-      identity: _identity,
-      delegationIdentity: _delegationIdentity,
-      actor: _actor,
-      chain: _chain,
-      sessionKey: _sessionKey,
-    }),
+    get: () => observableAuthState$.getValue(),
     reset() {
-      console.debug("authState.reset")
-      _identity = undefined
-      _delegationIdentity = undefined
-      _actor = undefined
+      observableAuthState$.next({})
     },
+    subscribe: (next: (state: ObservableAuthState) => void) =>
+      observableAuthState$.subscribe(next),
   }
 }
 
@@ -143,6 +150,8 @@ export async function createChallenge(): Promise<Challenge> {
   })
   return challenge
 }
+
+declare const IS_E2E_TEST: string
 
 // The options sent to the browser when creating the credentials.
 // Credentials (key pair) creation is signed with a private key that is unique per device
@@ -168,7 +177,7 @@ export const creationOptions = (
   return {
     authenticatorSelection: {
       userVerification: "preferred",
-      authenticatorAttachment,
+      ...(IS_E2E_TEST === "true" ? {} : { authenticatorAttachment }),
     },
     excludeCredentials: exclude.flatMap((device) =>
       device.credential_id.length === 0
@@ -247,7 +256,7 @@ export const requestFEDelegationChain = async (
   return { chain, sessionKey }
 }
 
-export const requestFEDelegation = async (
+export let requestFEDelegation = async (
   identity: SignIdentity,
 ): Promise<FrontendDelegation> => {
   console.debug("requestFEDelegation")
@@ -450,7 +459,14 @@ export async function addDevice(
   purpose: Purpose,
   newPublicKey: DerEncodedPublicKey,
   credentialId?: ArrayBuffer,
+  protect?: boolean,
 ) {
+  //register only protected recovery phrase
+  let protectionType = hasOwnProperty(keyType, "seed_phrase")
+    ? { protected: null }
+    : { unprotected: null }
+
+  if (protect === false) protectionType = { unprotected: null }
   // NOTE: removed the call to renewDelegation. It was failing because
   // of missing identity from authState. We'll replace this entire logic within
   // the following refactor and need to take care of the authState in
@@ -464,7 +480,7 @@ export async function addDevice(
         : [],
       key_type: keyType,
       purpose,
-      protection: { unprotected: null },
+      protection: protectionType,
     })
     .catch((e) => {
       throw new Error(`addDevice: ${e.message}`)
@@ -479,6 +495,72 @@ export async function removeDevice(
   await ii.remove(userNumber, publicKey).catch((e) => {
     throw new Error(`removeDevice: ${e.message}`)
   })
+}
+
+export async function removeRecoveryDeviceII(
+  userNumber: UserNumber,
+  seedPhrase: string,
+) {
+  let { delegationIdentity } = authState.get()
+  if (!delegationIdentity) {
+    throw Error("Unauthenticated")
+  }
+  await asRecoveryIdentity(seedPhrase)
+
+  let recoveryPhraseDeviceData = (await ii
+    .lookup(userNumber)
+    .then((x) =>
+      x.find((d) => hasOwnProperty(d.purpose, "recovery")),
+    )) as DeviceData
+  if (!recoveryPhraseDeviceData) {
+    throw Error("Seed phrase not registered")
+  }
+
+  await removeDevice(userNumber, recoveryPhraseDeviceData.pubkey)
+  replaceIdentity(delegationIdentity)
+  return recoveryPhraseDeviceData.pubkey
+}
+
+export async function updateDevice(
+  userNumber: UserNumber,
+  publicKey: PublicKey,
+  deviceData: DeviceData,
+): Promise<void> {
+  await ii.update(userNumber, publicKey, deviceData).catch((e) => {
+    throw new Error(`Failed to update device: ${e.message}`)
+  })
+}
+
+export async function protectRecoveryPhrase(
+  userNumber: UserNumber,
+  seedPhrase: string,
+): Promise<void> {
+  let { delegationIdentity } = authState.get()
+  if (!delegationIdentity) {
+    throw Error("Unauthenticated")
+  }
+  await asRecoveryIdentity(seedPhrase)
+  let recoveryPhraseDeviceData = (await ii
+    .lookup(userNumber)
+    .then((x) =>
+      x.find((d) => hasOwnProperty(d.purpose, "recovery")),
+    )) as DeviceData
+  recoveryPhraseDeviceData.protection = { protected: null }
+  await updateDevice(
+    userNumber,
+    recoveryPhraseDeviceData.pubkey,
+    recoveryPhraseDeviceData,
+  )
+  replaceIdentity(delegationIdentity)
+}
+
+async function asRecoveryIdentity(seedPhrase: string) {
+  const identity = await fromMnemonicWithoutValidation(
+    seedPhrase,
+    IC_DERIVATION_PATH,
+  )
+  const frontendDelegation = await requestFEDelegation(identity)
+  replaceIdentity(frontendDelegation.delegationIdentity)
 }
 
 async function registerAnchor(
@@ -672,6 +754,7 @@ export async function login(
 
   return fromWebauthnDevices(userNumber, devices, withSecurityDevices)
 }
+
 /**
  * @param {string} seedPhrase NEVER LOG THE RECOVERY PHRASE KEY IDENTITY TO CONSOLE OR SEND TO EXTERNAL SERVICE
  */
@@ -1103,4 +1186,16 @@ export interface Device {
  */
 export function fetchPrincipal(anchor: number, salt: string) {
   return ii.get_principal(BigInt(anchor), salt)
+}
+
+export const delegationIdentityFromSignedIdentity = async (
+  sessionKey: Pick<SignIdentity, "sign">,
+  chain: DelegationChain,
+): Promise<DelegationIdentity> => {
+  const delegationIdentity = DelegationIdentity.fromDelegation(
+    sessionKey,
+    chain,
+  )
+
+  return delegationIdentity
 }

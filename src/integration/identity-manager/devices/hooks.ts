@@ -17,6 +17,7 @@ import {
   PublicKey,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { im } from "frontend/integration/actors"
+import { removeAccessPointFacade } from "frontend/integration/facade"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import {
   addDevice,
@@ -26,7 +27,6 @@ import {
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
   IC_DERIVATION_PATH,
-  removeDevice,
 } from "frontend/integration/internet-identity"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
@@ -140,6 +140,7 @@ const normalizeRecoveryDevices = (
         Object.keys(device.key_type).indexOf("seed_phrase") > -1,
       isSecurityKey:
         Object.keys(device.key_type).indexOf("cross_platform") > -1,
+      isProtected: device.protection.hasOwnProperty("protected"),
     }
   })
 }
@@ -189,23 +190,57 @@ async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
   return normalizedRecoveryDevices
 }
 
+interface GoogleDeviceFilter {
+  browser: string
+}
+
+export const byGoogleDevice = ({ browser }: GoogleDeviceFilter) => {
+  const knownGoogleFields = ["cross platform", "Google account"]
+  return knownGoogleFields.indexOf(browser) > -1
+}
+
+export const byNotGoogleDevice = ({ browser }: GoogleDeviceFilter) =>
+  !byGoogleDevice({ browser })
+
 /** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
   const { profile } = useAccount()
+
   const {
-    data: devices,
+    data: fetchedDevices,
     error: fetchDevicesError,
     mutate: refreshDevices,
-  } = useSWR({ anchor: profile?.anchor, type: "authenticator" }, fetchDevices)
+  } = useSWR(
+    profile?.anchor ? { anchor: profile.anchor, type: "authenticator" } : null,
+    fetchDevices,
+  )
 
   const {
     data: recoveryDevices,
     error: fetchRecoveryDevicesError,
     mutate: refreshRecoveryDevices,
   } = useSWR(
-    { anchor: profile?.anchor, type: "recovery" },
+    profile?.anchor ? { anchor: profile.anchor, type: "recovery" } : null,
     fetchAccountRecoveryMethods,
   )
+
+  const socialDevices = React.useMemo(() => {
+    return (
+      fetchedDevices?.filter(byGoogleDevice).map((socialDevice) => ({
+        ...socialDevice,
+        // TODO: move to normalizer
+        icon: "google" as Icon,
+        label: "Google",
+        isAccessPoint: true,
+        isSocialDevice: true,
+      })) ?? []
+    )
+  }, [fetchedDevices])
+
+  // TODO replace by having social device like separate device type (as recover)
+  const devices = React.useMemo(() => {
+    return fetchedDevices?.filter(byNotGoogleDevice)
+  }, [fetchedDevices])
 
   const {
     newDeviceName,
@@ -243,17 +278,11 @@ export const useDevices = () => {
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
       if (authState.get().actor && profile?.anchor) {
-        await Promise.all([
-          removeDevice(BigInt(profile?.anchor), pubkey),
-          im.remove_access_point({ pub_key: pubkey }).catch((e) => {
-            throw new Error(
-              `useDevices.deleteDevice im.remove_access_point: ${e.message}`,
-            )
-          }),
-        ])
+        await removeAccessPointFacade(BigInt(profile?.anchor), pubkey)
+        refreshDevices()
       }
     },
-    [profile?.anchor],
+    [profile?.anchor, refreshDevices],
   )
 
   const createWebAuthNDevice = React.useCallback(
@@ -381,43 +410,52 @@ export const useDevices = () => {
    * NEVER LOG THE RECOVERY PHRASE TO CONSOLE OR SEND
    * TO EXTERNAL SERVICE
    */
-  const createRecoveryPhrase = React.useCallback(async () => {
-    if (!profile?.anchor)
-      throw new Error("useDevice.createRecoveryPhrase profile?.anchor missing")
-    if (!authState.get().actor)
-      throw new Error("useDevice.createRecoveryPhrase internetIdentity missing")
+  const createRecoveryPhrase = React.useCallback(
+    async (protect = true) => {
+      if (!profile?.anchor)
+        throw new Error(
+          "useDevice.createRecoveryPhrase profile?.anchor missing",
+        )
+      if (!authState.get().actor)
+        throw new Error(
+          "useDevice.createRecoveryPhrase internetIdentity missing",
+        )
 
-    // NOTE: NEVER LOG RECOVERY PHRASE
-    const recovery = generate().trim()
-    const recoverIdentity = await fromMnemonicWithoutValidation(
-      recovery,
-      IC_DERIVATION_PATH,
-    )
-    const deviceName = "Recovery phrase"
+      // NOTE: NEVER LOG RECOVERY PHRASE
+      const recovery = generate().trim()
+      const recoverIdentity = await fromMnemonicWithoutValidation(
+        recovery,
+        IC_DERIVATION_PATH,
+      )
+      const deviceName = "Recovery phrase"
 
-    await Promise.all([
-      addDevice(
-        BigInt(profile?.anchor),
-        deviceName,
-        { seed_phrase: null },
-        { recovery: null },
-        recoverIdentity.getPublicKey().toDer(),
-      ),
-      createRecoveryDevice(
-        new Blob([recoverIdentity.getPublicKey().toDer()]),
-        "document",
-        deviceName,
-      ),
-    ])
-    refreshRecoveryDevices()
-    refreshDevices()
-    return `${profile.anchor} ${recovery}`
-  }, [
-    createRecoveryDevice,
-    refreshDevices,
-    refreshRecoveryDevices,
-    profile?.anchor,
-  ])
+      await Promise.all([
+        addDevice(
+          BigInt(profile?.anchor),
+          deviceName,
+          { seed_phrase: null },
+          { recovery: null },
+          recoverIdentity.getPublicKey().toDer(),
+          undefined as any,
+          protect,
+        ),
+        createRecoveryDevice(
+          new Blob([recoverIdentity.getPublicKey().toDer()]),
+          "document",
+          deviceName,
+        ),
+      ])
+      refreshRecoveryDevices()
+      refreshDevices()
+      return `${profile.anchor} ${recovery}`
+    },
+    [
+      createRecoveryDevice,
+      refreshDevices,
+      refreshRecoveryDevices,
+      profile?.anchor,
+    ],
+  )
 
   const createSecurityDevice = React.useCallback(
     async (
@@ -492,6 +530,7 @@ export const useDevices = () => {
   return {
     loadingDevices: !devices && !fetchDevicesError,
     devices: devices || [],
+    socialDevices,
     loadingRecoveryDevices: !recoveryDevices && !fetchRecoveryDevicesError,
     recoveryDevices: recoveryDevices || [],
     createWebAuthNDevice,

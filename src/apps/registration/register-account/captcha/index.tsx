@@ -4,9 +4,9 @@ import { useParams } from "react-router-dom"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useAuthorizeApp } from "frontend/apps/authorization/use-authorize-app"
 import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
-import { im } from "frontend/integration/actors"
 import { deviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { Icon } from "frontend/integration/identity-manager/devices/state"
 import { authState } from "frontend/integration/internet-identity"
 import { Captcha } from "frontend/ui/pages/captcha"
 import { useCaptcha, useChallenge } from "frontend/ui/pages/captcha/hook"
@@ -38,7 +38,7 @@ export const RegisterAccountCaptcha: React.FC<
 
   const {
     setLoading,
-    registerPayload: { isGoogle, deviceName },
+    registerPayload: { isGoogle },
     loading,
     registerAnchorFromGoogle,
     registerAnchor,
@@ -53,6 +53,10 @@ export const RegisterAccountCaptcha: React.FC<
     },
   })
 
+  const navigateToProfile = React.useCallback(() => {
+    navigate("/profile/security")
+  }, [navigate])
+
   const handleRegisterAnchor = React.useCallback(
     async ({ captcha }: { captcha: string }) => {
       console.debug("RegisterAccountCaptcha handleRegisterAnchor", { captcha })
@@ -61,7 +65,23 @@ export const RegisterAccountCaptcha: React.FC<
 
       if (response && response.kind === "loginSuccess") {
         const { user } = response
-        const profile = await createAccount({ anchor: response.userNumber })
+        const account = { anchor: response.userNumber }
+        const accessPoint = {
+          icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
+          device: deviceInfo.newDeviceName,
+          browser: deviceInfo.browser.name ?? "Mobile",
+          pubKey: Array.from(
+            new Uint8Array(
+              authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
+            ),
+          ),
+        }
+        console.debug("RouterRegisterDeviceDecider handleRegister", {
+          account,
+          accessPoint,
+        })
+        const profile = await createAccount(account, accessPoint)
+
         console.debug("RegisterAccountCaptcha handleRegisterAnchor", {
           profile,
         })
@@ -72,40 +92,21 @@ export const RegisterAccountCaptcha: React.FC<
               `RegisterAccountCaptcha.handleRegisterAnchor secret is missing from params`,
             )
 
-          const accessPointResponse = await im.create_access_point({
-            icon: "mobile",
-            device: deviceName,
-            browser: deviceInfo.browser.name ?? "Mobile",
-            pub_key: Array.from(
-              new Uint8Array(
-                authState.get()?.delegationIdentity?.getPublicKey().toDer() ??
-                  [],
-              ),
-            ),
-          })
-          console.debug(
-            "RegisterAccountCaptcha handleRegisterAnchor im.create_access_point",
-            {
-              accessPointResponse,
-            },
-          )
-
           await remoteNFIDLogin({
             secret,
             userNumberOverwrite: response.userNumber,
             userOverwrite: user,
           })
-          return navigate("/profile/authenticate")
+          return navigateToProfile()
         }
 
-        navigate("/profile/authenticate")
+        navigateToProfile()
       }
     },
     [
       createAccount,
-      deviceName,
       isRemoteRegister,
-      navigate,
+      navigateToProfile,
       registerAnchor,
       remoteNFIDLogin,
       secret,
@@ -120,17 +121,24 @@ export const RegisterAccountCaptcha: React.FC<
       if (response && response.kind === "loginSuccess") {
         setShouldStoreLocalAccount(false)
         const { user } = response
-        const createAccountResponse = await im
-          .create_account({
-            anchor: response.userNumber,
-          })
-          .catch((e) => {
-            throw new Error(
-              `handleRegisterAnchorWithGoogle im.create_account: ${e.message}`,
-            )
-          })
+        const account = { anchor: response.userNumber }
+        const accessPoint = {
+          // TODO: we need to create a google icon
+          icon: "mobile" as Icon,
+          device: "NFID Google device",
+          browser: "cross platform",
+          pubKey: Array.from(
+            new Uint8Array(
+              authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
+            ),
+          ),
+        }
+        await createAccount(account, accessPoint, false)
+        console.debug("RouterRegisterDeviceDecider handleRegister", {
+          account,
+          accessPoint,
+        })
         console.debug("handleRegisterAnchorWithGoogle", {
-          createAccountResponse,
           isRemoteRegister,
           secret,
         })
@@ -148,7 +156,7 @@ export const RegisterAccountCaptcha: React.FC<
           console.debug("loginResponse", { loginResponse })
         }
 
-        return navigate("/profile/authenticate")
+        return navigate("/profile/security")
       }
       console.error(
         "RegisterAccountCaptcha.handleRegisterAnchorWithGoogle",
@@ -156,6 +164,7 @@ export const RegisterAccountCaptcha: React.FC<
       )
     },
     [
+      createAccount,
       isRemoteRegister,
       navigate,
       registerAnchorFromGoogle,
@@ -173,7 +182,7 @@ export const RegisterAccountCaptcha: React.FC<
       isChallengeLoading={isChallengeLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}
-      successPath={"/profile/authenticate"}
+      successPath={"/profile/security"}
       onRegisterAnchor={
         isGoogle ? handleRegisterAnchorWithGoogle : handleRegisterAnchor
       }

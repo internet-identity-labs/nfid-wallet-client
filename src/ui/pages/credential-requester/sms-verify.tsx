@@ -75,6 +75,7 @@ export const CredentialRequesterSMSVerify: React.FC<
           errorClasses="text-center"
           buttonText="Verify phone number"
           responseError={responseError}
+          buttonClassName="w-full"
         />
         <Button
           text

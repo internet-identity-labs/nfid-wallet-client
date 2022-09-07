@@ -1,14 +1,18 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
+import { DeviceKey } from "frontend/integration/_ic_api/internet_identity_types"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
 import { mapOptional, unpackLegacyResponse, unpackResponse } from "../_common"
 import {
+  AccessPointRequest,
   AccessPointResponse,
   AccountResponse,
   Application as BEApplication,
   PersonaResponse,
 } from "../_ic_api/identity_manager.did"
+import { PublicKey } from "../_ic_api/internet_identity_types"
 import { im } from "../actors"
+import { Icon } from "./devices/state"
 
 export interface Profile {
   name?: string
@@ -19,10 +23,17 @@ export interface Profile {
   phoneNumber?: string
 }
 
-export interface AccessPoint {
-  icon: string
+export interface AccessPointCommon {
+  icon: Icon
   device: string
   browser: string
+}
+
+export interface CreateAccessPoint extends AccessPointCommon {
+  pubKey: PublicKey
+}
+
+export interface AccessPoint extends AccessPointCommon {
   lastUsed: number
   principalId: string
 }
@@ -81,7 +92,7 @@ function mapAccount(persona: PersonaResponse): Account {
  */
 function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
   return {
-    icon: accessPoint.icon,
+    icon: accessPoint.icon as Icon,
     device: accessPoint.device,
     browser: accessPoint.browser,
     lastUsed: Number(accessPoint.last_used),
@@ -187,6 +198,24 @@ export async function verifyToken(token: string) {
     })
 }
 
+function mapToAccessPointRequest(
+  accessPoint: CreateAccessPoint,
+): AccessPointRequest {
+  return {
+    icon: accessPoint.icon,
+    device: accessPoint.device,
+    pub_key: accessPoint.pubKey,
+    browser: accessPoint.browser,
+  }
+}
+
+export async function createAccessPoint(accessPoint: CreateAccessPoint) {
+  return im
+    .create_access_point(mapToAccessPointRequest(accessPoint))
+    .then(unpackResponse)
+    .then((r) => r.map(mapAccessPoint))
+}
+
 /**
  * Updates the last used timestamp on the used device from the actor
  */
@@ -197,15 +226,38 @@ export async function useAccessPoint() {
     .then((r) => r.map(mapAccessPoint))
 }
 
-export async function registerAccount(anchor: number) {
+async function createProfile(anchor: number) {
   return im
     .create_account({ anchor: BigInt(anchor) })
     .then(unpackResponse)
     .then(mapProfile)
 }
 
+/**
+ * Setup a new profile for the given II anchor
+ * and attach the accessPoint
+ *
+ * @export
+ * @param {number} anchor
+ * @param {CreateAccessPoint} accessPoint
+ */
+export async function registerProfileWithAccessPoint(
+  anchor: number,
+  accessPoint: CreateAccessPoint,
+) {
+  await createProfile(anchor)
+  await createAccessPoint(accessPoint)
+  return await fetchProfile()
+}
+
 export async function removeAccount() {
   im.remove_account()
+}
+
+export async function removeAccessPoint(pubkey: DeviceKey) {
+  await im.remove_access_point({ pub_key: pubkey }).catch((e) => {
+    throw new Error(`Not able to remove ap: ${e.message}`)
+  })
 }
 
 export interface Application {

@@ -21,6 +21,8 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
     case state.matches("Start.Register.InitialChallenge"):
     case state.matches("Start.Register.CreateIdentity"):
     case state.matches("AuthWithGoogle"):
+    case state.matches("ExistingAnchor"):
+    case state.matches("AuthenticateSameDevice"):
       return (
         <RegisterAccountIntro
           isLoading={
@@ -30,6 +32,17 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
           }
           applicationName={state.context.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
+          onToggleAdvancedOptions={() => {
+            // When we're on state ExistingAnchor
+            // then the user has clicked back if this method is called
+            state.matches("ExistingAnchor")
+              ? send("BACK")
+              : send("OTHER_SIGNIN_OPTIONS")
+          }}
+          showAdvancedOptions={
+            state.matches("ExistingAnchor") ||
+            state.matches("AuthenticateSameDevice")
+          }
           onRegister={() => send("CREATE_IDENTITY")}
           onSelectGoogleAuthorization={({ credential }) => {
             console.debug(
@@ -42,20 +55,25 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
               data: { jwt: credential },
             })
           }}
-          onSelectSecurityKeyAuthorization={function (
-            userNumber: number,
-          ): void | Promise<void> {
-            throw new Error(
-              "onSelectSecurityKeyAuthorization Function not implemented.",
-            )
-          }}
-          onSelectSameDeviceAuthorization={function (
-            userNumber: number,
-          ): void | Promise<void> {
-            throw new Error(
-              "onSelectSameDeviceAuthorization Function not implemented.",
-            )
-          }}
+          onSelectSameDeviceAuthorization={(userNumber) =>
+            send({
+              type: "AUTH_WITH_EXISTING_ANCHOR",
+              data: {
+                anchor: userNumber,
+                withSecurityDevices: false,
+              },
+            })
+          }
+          onSelectSecurityKeyAuthorization={(userNumber) =>
+            send({
+              type: "AUTH_WITH_EXISTING_ANCHOR",
+              data: {
+                anchor: userNumber,
+                withSecurityDevices: true,
+              },
+            })
+          }
+          authError={state.context.error}
         />
       )
     case state.matches("Start.Register.Captcha"):
@@ -76,10 +94,9 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
         />
       )
     case state.matches("End"):
+    default:
       return (
         <ScreenResponsive isLoading loadingMessage="Registered successful" />
       )
-    default:
-      return <></>
   }
 }

@@ -33,17 +33,26 @@ const config = {
           ? {}
           : {
               SENTRY_RELEASE: JSON.stringify(sentryRelease),
+              IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
               IC_HOST: JSON.stringify(process.env.IC_HOST),
               II_ENV: JSON.stringify(process.env.II_MODE),
+              CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
               FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
               IS_DEV: JSON.stringify(process.env.IS_DEV),
               USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
               GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
+              LEDGER_CANISTER_ID: JSON.stringify(
+                process.env.LEDGER_CANISTER_ID,
+              ),
+              CYCLES_MINTER_CANISTER_ID: JSON.stringify(
+                process.env.CYCLES_MINTER_CANISTER_ID,
+              ),
               VERIFY_PHONE_NUMBER: JSON.stringify(
                 process.env.FRONTEND_MODE === "production"
                   ? process.env.AWS_VERIFY_PHONENUMBER
                   : "/verify",
               ),
+              AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
               SIGNIN_GOOGLE: JSON.stringify(
                 process.env.FRONTEND_MODE === "production"
                   ? process.env.AWS_SIGNIN_GOOGLE
@@ -129,6 +138,12 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/signin/, ""),
+      },
+      "/symmetric": {
+        target: process.env.AWS_SYMMETRIC,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/symmetric/, ""),
       },
     },
   },

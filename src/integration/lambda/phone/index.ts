@@ -1,10 +1,4 @@
-import {
-  Cbor,
-  Endpoint,
-  Expiry,
-  QueryFields,
-  ReadRequest,
-} from "@dfinity/agent"
+import { Cbor, QueryFields } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationIdentity } from "@dfinity/identity"
@@ -13,6 +7,7 @@ import nacl from "tweetnacl"
 import nacl_util from "tweetnacl-util"
 
 import { ic } from "frontend/integration/actors"
+import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
 declare const VERIFY_PHONE_NUMBER: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string
@@ -83,32 +78,4 @@ export async function verifyPhoneNumber(
   const data = await response.json()
 
   return data.phoneNumberEncrypted
-}
-
-const DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS = 5 * 60 * 1000
-
-export async function getTransformedRequest(
-  identity: DelegationIdentity,
-  canisterId: string,
-  fields: QueryFields,
-) {
-  const canister =
-    typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId
-  const sender = identity.getPrincipal()
-  const request = {
-    request_type: "query",
-    canister_id: canister,
-    method_name: fields.methodName,
-    arg: fields.arg,
-    sender,
-    ingress_expiry: new Expiry(DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS),
-  } as ReadRequest
-  return await identity.transformRequest({
-    request: {
-      method: "POST",
-      headers: Object.assign({ "Content-Type": "application/cbor" }),
-    },
-    endpoint: "query" as Endpoint.Query,
-    body: request,
-  })
 }

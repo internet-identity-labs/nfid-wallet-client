@@ -54,9 +54,9 @@ const config = {
               ),
               AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
               SIGNIN_GOOGLE: JSON.stringify(
-                process.env.FRONTEND_MODE === "production"
-                  ? process.env.AWS_SIGNIN_GOOGLE
-                  : "/signin",
+                process.env.FRONTEND_MODE !== "production" || process.env.IS_E2E_TEST === "true"
+                  ? "/signin"
+                  : process.env.AWS_SIGNIN_GOOGLE,
               ),
               INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
                 process.env[

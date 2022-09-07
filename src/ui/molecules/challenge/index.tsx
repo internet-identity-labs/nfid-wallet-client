@@ -31,13 +31,21 @@ export const Challenge: React.FC<ChallengeProps> = ({
               alt="spinner"
               src={spinner}
             />
-            <span className="inline-block ml-2 text-xs font-normal align-middle opacity-40">
+            <span
+              id="captcha-spinner"
+              className="inline-block ml-2 text-xs font-normal align-middle opacity-40"
+            >
               Fetching captcha from blockchain
             </span>
           </div>
         </div>
       ) : (
-        <img alt="captcha" src={src} className="object-contain w-full h-full" />
+        <img
+          id="captcha-img"
+          alt="captcha"
+          src={src}
+          className="object-contain w-full h-full"
+        />
       )}
       {refresh && (
         <div

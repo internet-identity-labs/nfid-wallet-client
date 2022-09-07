@@ -91,7 +91,7 @@ export interface Typegen0 {
       | "done.invoke.verifyPhoneNumberService"
     assignPhoneNumber: "ENTER_PHONE_NUMBER"
     presentCredential: "done.invoke.generateCredential"
-    rejectCredential: "SKIP"
+    rejectCredential: "REJECT"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerCredentialHandler"
@@ -99,7 +99,7 @@ export interface Typegen0 {
     fetchPhoneNumber:
       | "done.invoke.AuthenticationMachine"
       | "done.state.PhoneNumberCredentialProvider.DevClearData"
-    generateCredential: "done.state.PhoneNumberCredentialProvider.GetPhoneNumber"
+    generateCredential: "CONSENT"
     registerCredentialHandler: "xstate.init"
     verifyPhoneNumberService: "ENTER_PHONE_NUMBER" | "RESEND"
     verifySmsService: "ENTER_SMS_TOKEN"
@@ -112,6 +112,7 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   matchesStates:
     | "Authenticate"
+    | "Consent"
     | "DevClearData"
     | "DevClearData.Clear"
     | "DevClearData.End"
@@ -123,7 +124,6 @@ export interface Typegen0 {
     | "GetPhoneNumber.EnterPhoneNumber"
     | "GetPhoneNumber.EnterSMSToken"
     | "GetPhoneNumber.GetExistingPhoneNumber"
-    | "GetPhoneNumber.PresentCredential"
     | "GetPhoneNumber.ValidateSMSToken"
     | "GetPhoneNumber.VerifyPhoneNumber"
     | "Ready"
@@ -134,7 +134,6 @@ export interface Typegen0 {
           | "EnterPhoneNumber"
           | "EnterSMSToken"
           | "GetExistingPhoneNumber"
-          | "PresentCredential"
           | "ValidateSMSToken"
           | "VerifyPhoneNumber"
       }

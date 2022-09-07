@@ -39,7 +39,7 @@ export const ProofOfAttendencyAward: React.FC<
         )}
       >
         <div className="z-20">
-          <Link to={"/profile/authenticate"}>
+          <Link to={"/profile/security"}>
             <Button icon>
               <ArrowLeft />
             </Button>

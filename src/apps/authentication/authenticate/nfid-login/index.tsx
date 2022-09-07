@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import { CardBody } from "@internet-identity-labs/nfid-sdk-react"
 
-import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
 import { NFIDLogin } from "frontend/ui/pages/nfid-login"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
@@ -18,8 +18,7 @@ interface AppScreenNFIDLoginProps extends React.HTMLAttributes<HTMLDivElement> {
 export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
   loginSuccessPath,
 }) => {
-  const { account } = useAccount()
-  if (!account) throw new Error("unknown device")
+  const profile = React.useMemo(() => loadProfileFromLocalStorage(), [])
 
   const { isLoading, login } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
@@ -41,7 +40,7 @@ export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
           <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
             <NFIDLogin
               loginSuccessPath={loginSuccessPath}
-              account={account}
+              account={profile}
               onLogin={handleLogin}
             />
           </CardBody>

@@ -18,6 +18,7 @@ module.exports = {
   },
   webpackFinal: async (config) => {
     const canisterEnv = {
+      CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
       IC_HOST: JSON.stringify(process.env.IC_HOST),
       II_ENV: JSON.stringify(process.env.II_MODE),
       FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
@@ -28,6 +29,7 @@ module.exports = {
           ? process.env.AWS_VERIFY_PHONENUMBER
           : "/verify",
       ),
+      AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
       INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
         process.env[
           `INTERNET_IDENTITY_CANISTER_ID_${process.env.BACKEND_MODE}`
@@ -42,6 +44,12 @@ module.exports = {
       VERIFIER_CANISTER_ID: JSON.stringify(
         process.env[`VERIFIER_CANISTER_ID_${process.env.BACKEND_MODE}`],
       ),
+      LEDGER_CANISTER_ID: JSON.stringify(process.env[`LEDGER_CANISTER_ID`]),
+      CYCLES_MINTER_CANISTER_ID: JSON.stringify(
+        process.env[`LEDGER_CANISTER_ID`],
+      ),
+      CURRCONV_TOKEN: JSON.stringify(process.env[`CURRCONV_TOKEN`]),
+      IS_DEV: JSON.stringify(process.env[`IS_DEV`]),
     }
 
     config.plugins.push(new webpack.DefinePlugin(canisterEnv))

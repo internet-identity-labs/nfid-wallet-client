@@ -25,10 +25,17 @@ export const useMultipass = () => {
   )
   const { newDeviceName } = useDeviceInfo()
 
-  // TODO: Refactor into device app
   const createWebAuthNIdentity = React.useCallback(async () => {
+    const publicKey = creationOptions()
+    console.debug("createWebAuthNIdentity", { publicKey })
+
     const identity = await WebAuthnIdentity.create({
-      publicKey: creationOptions(),
+      publicKey,
+    })
+
+    console.debug("createWebAuthNIdentity", {
+      identity,
+      principleId: identity.getPrincipal().toString(),
     })
 
     return {

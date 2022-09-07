@@ -35,6 +35,11 @@ export const RouteRegister: React.FC<RegisterProps> = ({
     useMultipass()
   const { navigate } = useNFIDNavigate()
 
+  const [showAdvancedOptions, toggleAdvancedOptions] = React.useReducer(
+    (state) => !state,
+    false,
+  )
+
   const { secret, scope } = useParams()
 
   const isNFID = React.useMemo(
@@ -85,7 +90,7 @@ export const RouteRegister: React.FC<RegisterProps> = ({
             })
           }
           return navigate(
-            `${ProfileConstants.base}/${ProfileConstants.authenticate}`,
+            `${ProfileConstants.base}/${ProfileConstants.security}`,
           )
         }
         // when we're not on NFID we're handling the authorization on
@@ -148,6 +153,8 @@ export const RouteRegister: React.FC<RegisterProps> = ({
       onSelectSameDeviceAuthorization={handleAuthorization({
         withSecurityDevices: false,
       })}
+      onToggleAdvancedOptions={toggleAdvancedOptions}
+      showAdvancedOptions={showAdvancedOptions}
       authError={authError}
     />
   )

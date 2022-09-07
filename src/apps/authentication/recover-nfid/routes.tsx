@@ -23,7 +23,7 @@ export const RecoverNFIDRoutes = (
       path={RecoverNFIDRoutesConstants.registerDevice}
       element={
         <RouterRegisterDeviceDecider
-          registerSuccessPath={"/profile/authenticate"}
+          registerSuccessPath={"/profile/security"}
         />
       }
     />

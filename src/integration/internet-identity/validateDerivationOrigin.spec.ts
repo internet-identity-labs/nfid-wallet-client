@@ -1,9 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-import { validateDerivationOrigin } from "./validateDerivationOrigin"
+import {
+  MAX_ALTERNATIVE_ORIGINS,
+  validateDerivationOrigin,
+} from "./validateDerivationOrigin"
 
-const mockRequestOrigin = "http://localhost:8080"
+const mockAliasDomain = "http://localhost:8080"
 const mockRequestDerivationOrigin =
   "https://rrkah-fqaaa-aaaaa-aaaaq-cai.ic0.app"
 
@@ -15,12 +18,11 @@ describe("validate derivation origin test suite", () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
         status: 200,
-        json: () =>
-          Promise.resolve({ alternativeOrigins: [mockRequestOrigin] }),
+        json: () => Promise.resolve({ alternativeOrigins: [mockAliasDomain] }),
       }),
     ) as jest.Mock
     const response = await validateDerivationOrigin(
-      mockRequestOrigin,
+      mockAliasDomain,
       mockDerivationOrigin,
     )
 
@@ -35,16 +37,39 @@ describe("validate derivation origin test suite", () => {
       }),
     ) as jest.Mock
     const response = await validateDerivationOrigin(
-      mockRequestOrigin,
+      mockAliasDomain,
       mockDerivationOrigin,
     )
 
     expect(response.result).toBe("invalid")
   })
 
+  it("should return invalid when alternativeOrigns array contains more than 10 entries", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            alternativeOrigins: new Array(11).map(
+              () => mockDerivationInvalidOrigin,
+            ),
+          }),
+      }),
+    ) as jest.Mock
+    const response = await validateDerivationOrigin(
+      mockAliasDomain,
+      mockDerivationOrigin,
+    )
+
+    expect(response).toEqual({
+      result: "invalid",
+      message: `Resource ${mockDerivationOrigin}/.well-known/ii-alternative-origins has too many entries: To prevent misuse at most ${MAX_ALTERNATIVE_ORIGINS} alternative origins are allowed.`,
+    })
+  })
+
   it("wrong regex should return invalid", async () => {
     const response = await validateDerivationOrigin(
-      mockRequestOrigin,
+      mockAliasDomain,
       mockDerivationInvalidOrigin,
     )
 
@@ -52,7 +77,7 @@ describe("validate derivation origin test suite", () => {
   })
 
   it("undefined derivationOrigin should valid", async () => {
-    const response = await validateDerivationOrigin(mockRequestOrigin)
+    const response = await validateDerivationOrigin(mockAliasDomain)
 
     expect(response.result).toBe("valid")
   })

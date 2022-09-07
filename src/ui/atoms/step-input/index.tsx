@@ -11,8 +11,10 @@ interface StepInputProps {
   className?: string
   errorClasses?: string
   responseError?: string
+  resetResponseError?: () => void
   onSubmit: (value: string) => Promise<void>
   buttonText?: string
+  buttonClassName?: string
 }
 
 export const StepInput: React.FC<StepInputProps> = ({
@@ -20,21 +22,26 @@ export const StepInput: React.FC<StepInputProps> = ({
   onSubmit,
   errorClasses,
   responseError,
+  resetResponseError,
   buttonText,
+  buttonClassName,
 }) => {
+  const [isFormValid, setIsFormValid] = React.useState(false)
   const list = [...Array(6).keys()]
   const inputItemsRef = React.useRef<Array<HTMLInputElement | null>>([])
   const {
-    formState: { errors, isValid },
+    formState: { errors },
     setError,
     clearErrors,
+    getFieldState,
   } = useForm<{ verificationCode: string; phonenumber: string }>({
     mode: "all",
   })
 
   const getVerificationCode = React.useCallback(
     () => inputItemsRef.current.map((item) => item?.value).join(""),
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getFieldState("verificationCode")],
   )
 
   const handleKeydown = React.useCallback((event: KeyboardEvent) => {
@@ -67,6 +74,10 @@ export const StepInput: React.FC<StepInputProps> = ({
   )
 
   const handleInput = (e: { target: HTMLInputElement }, index: number) => {
+    if (resetResponseError && responseError?.length) {
+      resetResponseError()
+      clearErrors("verificationCode")
+    }
     const validRegex = inputItemsRef.current[index]?.value.match(
       e.target.pattern,
     )
@@ -80,6 +91,8 @@ export const StepInput: React.FC<StepInputProps> = ({
     } else {
       e.target.value = e.target.value[0]
     }
+
+    setIsFormValid(getVerificationCode().length === 6)
   }
 
   React.useEffect(() => {
@@ -121,9 +134,9 @@ export const StepInput: React.FC<StepInputProps> = ({
   }
 
   const handleSubmit = React.useCallback(() => {
-    if (!isValid) return
+    if (!isFormValid) return
     onSubmit(getVerificationCode())
-  }, [getVerificationCode, isValid, onSubmit])
+  }, [getVerificationCode, isFormValid, onSubmit])
 
   return (
     <div>
@@ -139,7 +152,7 @@ export const StepInput: React.FC<StepInputProps> = ({
             onChange={(e) => handleInput(e, index)}
             maxLength={1}
             pattern="^[0-9]{1}$"
-            isErrorStyles={!isValid}
+            isErrorStyles={!!errors.verificationCode?.message?.length}
           />
         ))}
       </div>
@@ -148,12 +161,12 @@ export const StepInput: React.FC<StepInputProps> = ({
       </div>
       <Button
         primary
-        block
-        className="px-10 mt-3 sm:mt-5"
+        className={clsx("px-10 mt-3 sm:mt-5", buttonClassName)}
         onClick={() => {
           validateToken()
           handleSubmit()
         }}
+        disabled={!isFormValid}
       >
         {buttonText}
       </Button>

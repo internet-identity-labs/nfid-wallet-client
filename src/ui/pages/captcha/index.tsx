@@ -2,10 +2,10 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Button, Input } from "@internet-identity-labs/nfid-sdk-react"
-
 import { ElementProps } from "frontend/types/react"
 import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
+import { Button } from "frontend/ui/atoms/button"
+import { Input } from "frontend/ui/atoms/input"
 import { H5 } from "frontend/ui/atoms/typography"
 import { Challenge } from "frontend/ui/molecules/challenge"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
@@ -51,8 +51,9 @@ export const Captcha: React.FC<CaptchaProps> = ({
         type: "manual",
         message: errorString,
       })
+      onRequestNewCaptcha()
     }
-  }, [errorString, setError, setValue])
+  }, [errorString, onRequestNewCaptcha, setError, setValue])
 
   const isFormComplete = !!dirtyFields.captcha
 
@@ -79,9 +80,11 @@ export const Captcha: React.FC<CaptchaProps> = ({
           refresh={onRequestNewCaptcha}
         />
         <Input
+          id="enter-captcha"
           autoFocus
           placeholder="Enter characters"
           errorText={errors.captcha?.message}
+          disabled={isChallengeLoading}
           {...register("captcha", {
             required: captchaRules.errorMessages.required,
             minLength: {
@@ -99,20 +102,15 @@ export const Captcha: React.FC<CaptchaProps> = ({
           })}
         />
         <Button
-          secondary
-          className="mt-4"
+          id="create-nfid"
+          primary
+          className="mt-4 mb-6"
           block
           disabled={!isFormComplete || isLoading}
           onClick={handleSubmit(onRegisterAnchor)}
         >
           Create NFID
         </Button>
-        <p className="py-6 text-sm text-center">
-          Already have an account?{" "}
-          {/* <a href="#" className="text-blue-base">
-            Sign in
-          </a> */}
-        </p>
       </form>
     </ScreenResponsive>
   )

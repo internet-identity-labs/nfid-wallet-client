@@ -7,6 +7,8 @@ export type Icon =
   | "laptop"
   | "document"
   | "usb"
+  | "google"
+  | "unknown"
 
 export interface AccessPointRequest {
   icon: string
@@ -21,6 +23,7 @@ export interface AccessPointRequest {
  */
 export interface LegacyDevice {
   isAccessPoint?: boolean // Indicates if this device is already stored as access point
+  isSocialDevice?: boolean // Indicates if this device is social method
   label: string
   icon: Icon
   browser: string
@@ -36,6 +39,7 @@ export interface RecoveryDevice {
   pubkey: number[]
   isRecoveryPhrase: boolean
   isSecurityKey: boolean
+  isProtected?: boolean
 }
 
 export const devicesAtom = atom<LegacyDevice[]>([])

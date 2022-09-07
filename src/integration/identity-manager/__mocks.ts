@@ -1,7 +1,13 @@
 import { Principal } from "@dfinity/principal"
 
 import { AccessPoint, Account, Profile } from "."
-import { HTTPAccountResponse } from "../_ic_api/identity_manager.did"
+import {
+  AccessPointResponse,
+  AccountResponse,
+  HTTPAccessPointResponse,
+  HTTPAccountResponse,
+  PersonaResponse,
+} from "../_ic_api/identity_manager.did"
 
 export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse> {
   return {
@@ -58,7 +64,7 @@ export function factoryPersona(principal?: Principal): Account {
  */
 export function factoryAccessPoint(principal?: Principal): AccessPoint {
   return {
-    icon: "string",
+    icon: "mobile",
     device: "string",
     browser: "string",
     lastUsed: new Date().getTime(),
@@ -76,5 +82,54 @@ export function factoryProfile(): Profile {
       .fill(null)
       .map(factoryPersona),
     principalId: "aaaaa-aa",
+  }
+}
+
+export function factoryPersonaResponse(): PersonaResponse {
+  return {
+    domain: "example.com",
+    persona_name: "my persona",
+    persona_id: "0",
+  }
+}
+
+export function factoryAccessPointResponse(): AccessPointResponse {
+  return {
+    icon: "mobile",
+    device: "string",
+    browser: "string",
+    last_used: BigInt(new Date().getTime()),
+    principal_id: "string",
+  }
+}
+
+export async function mockCreateAccessPointResponse(): Promise<HTTPAccessPointResponse> {
+  return {
+    data: [[factoryAccessPointResponse()]],
+    error: [],
+    status_code: 200,
+  }
+}
+
+export function factoryAccountResponse(): AccountResponse {
+  return {
+    name: ["Mr. Doolittle"],
+    anchor: BigInt(42069),
+    access_points: Array(Math.floor(Math.random() * 4))
+      .fill(null)
+      .map(factoryAccessPointResponse),
+    personas: Array(Math.floor(Math.random() * 4))
+      .fill(null)
+      .map(factoryPersonaResponse),
+    principal_id: "aaaaa-aa",
+    phone_number: ["123"],
+  }
+}
+
+export async function mockGetAccountResponse(): Promise<HTTPAccountResponse> {
+  return {
+    data: [factoryAccountResponse()],
+    error: [],
+    status_code: 200,
   }
 }

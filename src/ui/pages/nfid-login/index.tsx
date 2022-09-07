@@ -34,9 +34,10 @@ export const NFIDLogin: React.FC<AuthenticateNFIDLoginContentProps> = ({
           {account?.name || account?.anchor}.
         </P>
         <Button
+          id="unlock-nfid"
           large={!iframe}
           block={iframe}
-          secondary
+          primary
           className="mt-8"
           onClick={onLogin}
           onTouchStart={onLogin}

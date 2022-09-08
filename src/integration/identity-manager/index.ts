@@ -7,12 +7,13 @@ import {
   AccessPointRequest,
   AccessPointResponse,
   AccountResponse,
-  Application as BEApplication,
+  Application as BEApplication, HTTPAppResponse,
   PersonaResponse,
 } from "../_ic_api/identity_manager.did"
 import { PublicKey } from "../_ic_api/internet_identity_types"
 import { im } from "../actors"
 import { Icon } from "./devices/state"
+import { data } from "autoprefixer"
 
 export interface Profile {
   name?: string
@@ -286,4 +287,16 @@ export async function fetchApplications() {
     .read_applications()
     .then(unpackResponse)
     .then((r) => r.map(mapApplication))
+}
+
+/**
+ * Update 3rd party application origin is needed
+ */
+export async function processApplicationOrigin(domain: string, origin: string) {
+  console.debug(`processApplicationOrigin`)
+  let application = await im.get_application(domain) as HTTPAppResponse;
+  // @ts-ignore
+  if (application.data.length === 0 || !application.data[0].alias[0].includes(origin)) {
+    await im.update_application_alias(domain, origin);
+  }
 }

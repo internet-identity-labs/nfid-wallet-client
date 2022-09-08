@@ -1,9 +1,11 @@
 import { Application } from "../_ic_api/identity_manager.did"
 
 export const ApplicationMock: Application = {
+  alias: [],
+  img: [],
   user_limit: 1,
   domain: "some-domain.com",
-  name: "MyApp",
+  name: "MyApp"
 }
 export const imReadApplicationsMock = () =>
   Promise.resolve({

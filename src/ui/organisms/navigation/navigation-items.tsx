@@ -224,7 +224,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               onClick={() => setIsPopupVisible(!isPopupVisible)}
               id="profile-icon"
             >
-              <img src={User} alt="user" className="cursor-pointer"/>
+              <img src={User} alt="user" className="cursor-pointer" />
             </div>
           ) : null}
           {!account ? (

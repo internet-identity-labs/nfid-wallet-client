@@ -138,7 +138,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
               <DeviceIconDecider
                 icon={device.isAccessPoint ? device.icon : "unknown"}
                 onClick={
-                  isEditingLabel ? () => null : handleEditDeviceIconDialog
+                  isEditingLabel ? handleEditDeviceIconDialog : () => null
                 }
               />
             </div>

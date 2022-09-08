@@ -43,7 +43,7 @@ export const questions = [
         Internet Identity recovery phrase in the{" "}
         <a
           className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
-          href="https://nfid.one/recover-nfid/enter-recovery-phrase"
+          href="/recover-nfid/enter-recovery-phrase"
           target="_blank"
           rel="noreferrer"
         >
@@ -179,7 +179,7 @@ export const questions = [
           only at{" "}
           <a
             className="text-blue-base hover:underline hover:text-blue-hover"
-            href="https://nfid.one/recover-nfid/enter-recovery-phrase"
+            href="/recover-nfid/enter-recovery-phrase"
             target="_blank"
             rel="noreferrer"
           >

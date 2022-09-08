@@ -48,6 +48,7 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
             />
             <DeviceRaw
               title={"Don’t trust this device"}
+              id="notTrustedDevice"
               subtitle={"This device is public or someone else’s"}
               handler={onLogin}
             />
@@ -75,15 +76,18 @@ interface DeviceRawProps {
   title: string
   subtitle: string
   handler: () => Promise<void> | void
+  id?: string
 }
 
 export const DeviceRaw: React.FC<DeviceRawProps> = ({
   title,
   subtitle,
   handler,
+  id
 }) => {
   return (
     <div
+      id={id}
       className={clsx(
         "w-full py-[10px] px-4 border border-gray-200 rounded-md",
         "hover:bg-blue-50 hover:border-blue-500 cursor-pointer transition-all",

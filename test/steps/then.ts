@@ -32,6 +32,8 @@ import isVisible from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
+import clickElement from "./support/action/clickElement"
+import setInputField from "./support/action/setInputField"
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
 
@@ -162,3 +164,20 @@ Then(
 Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
   await checkCredentialAmount(this.authenticator, Number(amount))
 })
+
+Then(/^Go to Profile page$/, async function() {
+  await clickElement("click", "selector", "#profileButton")
+})
+
+Then(/^I put Recovery Phrase to input field "([^"]*)?"$/, async function(phrase: string) {
+  await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
+})
+
+Then(/^I toggle checkbox "([^"]*)?"$/, async function(selector: string) {
+  await clickElement("click", "selector", selector )
+})
+
+Then(/^I press button "([^"]*)?"$/, async function(button: string) {
+  await clickElement("click", "selector", button )
+})
+

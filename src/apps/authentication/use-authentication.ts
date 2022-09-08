@@ -69,7 +69,7 @@ export const useAuthentication = () => {
     // This identity has expired due this application's security policy. Please refresh your authentication.
     // SENTRY: https://sentry.io/organizations/internet-identity-labs/issues/3364199030/?project=6424378&referrer=slack
     // TICKET: https://app.shortcut.com/the-internet-portal/story/2695/log-out-when-delegate-expires
-    window.location.reload()
+    window.location.href = "/"
     // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(Principal.anonymous())
   }, [setIsAuthenticated])

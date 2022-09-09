@@ -3,7 +3,6 @@ import React from "react"
 
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { ElementProps } from "frontend/types/react"
-import { H5 } from "frontend/ui/atoms/typography"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 

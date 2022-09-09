@@ -37,18 +37,18 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
       callback: onLogin,
       itp_support: true,
     })
-
-    window.google?.accounts.id.renderButton(buttonRef.current, {
-      width: googleButtonWidth?.toString() || "200",
-      text: "continue_with",
-      shape: "rectangular",
-      theme: "outline",
-      type: "standard",
-      size: "large",
-    })
-  }, [googleButtonWidth, onLogin])
+  }, [onLogin])
 
   useLoadGsiScript({ onScriptLoadSuccess })
+
+  window.google?.accounts.id.renderButton(buttonRef.current, {
+    width: googleButtonWidth?.toString() || "200",
+    text: "continue_with",
+    shape: "rectangular",
+    theme: "outline",
+    type: "standard",
+    size: "large",
+  })
 
   return <div ref={buttonRef} className="w-full" />
 }

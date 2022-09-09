@@ -4,19 +4,12 @@ import { Usergeek } from "usergeek-ic-js"
 
 import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
 
-import { AppScreenAuthenticateAccountRoutes } from "./apps/authentication/authenticate"
+// import { AppScreenAuthenticateAccountRoutes } from "./apps/authentication/authenticate"
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
-import {
-  AppScreenAuthorizeAppRoutes,
-  AppScreenAuthorizeDerivationOriginAppRoutes,
-} from "./apps/authentication/remote-authentication/routes"
-import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"
 import { Faq } from "./apps/marketing/landing-page/faq"
 import { OurMission } from "./apps/marketing/landing-page/our-mission"
-import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
-import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import IDPCoordinator from "./coordination/idp"
 import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
@@ -45,14 +38,6 @@ export const App = () => (
 
     {ProfileRoutes}
     {RecoverNFIDRoutes}
-
-    {/* Legacy routes that we still need */}
-    {AppScreenAuthenticateAccountRoutes}
-    {NFIDRegisterAccountRoutes}
-    {RemoteNFIDAuthenticationRoutes}
-    {RemoteRegisterAccountRoutes}
-    {AppScreenAuthorizeAppRoutes}
-    {AppScreenAuthorizeDerivationOriginAppRoutes}
 
     <Route path={"*"} element={<NotFound />} />
   </Routes>

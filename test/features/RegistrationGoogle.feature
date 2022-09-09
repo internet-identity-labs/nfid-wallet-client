@@ -1,4 +1,4 @@
-@registration @google @mobile
+@registration @google
 Feature: Registration using Google
 
   Background: Open the link and ensure userE2E is deleted.

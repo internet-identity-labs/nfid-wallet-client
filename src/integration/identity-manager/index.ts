@@ -8,7 +8,6 @@ import {
   AccessPointResponse,
   AccountResponse,
   Application as BEApplication,
-  HTTPAppResponse,
   PersonaResponse,
 } from "../_ic_api/identity_manager.did"
 import { PublicKey } from "../_ic_api/internet_identity_types"

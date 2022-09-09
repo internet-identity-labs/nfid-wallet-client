@@ -292,14 +292,22 @@ export async function fetchApplications() {
 /**
  * Update 3rd party application origin is needed
  */
-export async function processApplicationOrigin(domain: string, origin: string) {
+export async function processApplicationOrigin(
+  domain: string,
+  origin: string,
+  name?: string,
+) {
   console.debug(`processApplicationOrigin`)
-  let application = (await im.get_application(domain)) as HTTPAppResponse
+  let application = await im.get_application(domain)
   if (
     application.data.length === 0 ||
     // @ts-ignore
     !application.data[0].alias[0].includes(origin)
   ) {
-    await im.update_application_alias(domain, origin)
+    await im.update_application_alias(
+      domain,
+      origin,
+      typeof name !== "undefined" ? [name] : [],
+    )
   }
 }

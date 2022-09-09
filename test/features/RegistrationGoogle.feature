@@ -27,9 +27,9 @@ Feature: Registration using Google
     And  I expect that element "#create-nfid" does not have the class "btn-disabled"
     When I click on the selector "#create-nfid"
     Then I wait on element "#loader" for 15000ms to not be displayed
-    And  I wait on element "#dont-trust-this-device" to be displayed
+    And  I wait on element "#just-log-me-in" to be displayed
 
-    When I click on the selector "#dont-trust-this-device"
+    When I click on the selector "#just-log-me-in"
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
 
@@ -46,9 +46,9 @@ Feature: Registration using Google
     When I click on the selector "#credentials-picker > div:first-child"
     When I focus the previous opened window
     Then I wait on element "#loader" for 15000ms to not be displayed
-    And  I wait on element "#dont-trust-this-device" to be displayed
+    And  I wait on element "#just-log-me-in" to be displayed
 
-    When I click on the selector "#dont-trust-this-device"
+    When I click on the selector "#just-log-me-in"
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
 

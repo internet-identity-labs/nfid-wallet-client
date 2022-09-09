@@ -121,9 +121,9 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         ref={containerRef}
       >
         {!showAdvancedOptions ? (
-          <>
+          <div className="w-full max-w-[400px]">
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
-            <Separator className="max-w-[400px]" />
+            <Separator />
 
             <IconButton
               title="iPhone, iPad, or Android device"
@@ -131,7 +131,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
               img={<img src={QRCode} alt="qrcode" />}
               onClick={onSelectRemoteAuthorization}
             />
-          </>
+          </div>
         ) : (
           <>
             <IconButton

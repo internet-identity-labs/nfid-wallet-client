@@ -48,7 +48,9 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
               handler={onRegisterPlatformDevice}
             />
             <DeviceRaw
-              id="dont-trust-this-device"
+              // FIXME: in e2e headless mode, we're not correctly detecting isWebAuthNAvailable
+              // that's why we need to handle this button similar for now
+              id="just-log-me-in"
               title={"Don’t trust this device"}
               subtitle={"This device is public or someone else’s"}
               handler={onLogin}

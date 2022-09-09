@@ -37,12 +37,7 @@ export const RemoteRegisterAccountRoutes = (
     />
     <Route
       path={RemoteRegisterAccountConstants.captcha}
-      element={
-        <RegisterAccountCaptcha
-          isRemoteRegister
-          successPath={"/profile/security"}
-        />
-      }
+      element={<RegisterAccountCaptcha isRemoteRegister />}
     />
   </Route>
 )

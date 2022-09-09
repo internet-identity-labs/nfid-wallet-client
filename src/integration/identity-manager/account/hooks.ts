@@ -35,7 +35,11 @@ type AccountService = Pick<
 
 /** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {
-  const { data: profile, error, mutate } = useSWR("account", fetchProfile)
+  const {
+    data: profile,
+    error,
+    mutate: refreshProfile,
+  } = useSWR("account", fetchProfile)
   const [, setAccount] = useAtom(localStorageAccountAtom)
   const [, setMemoryAccount] = useAtom(memoryAccountAtom)
   const [userNumber] = useAtom(userNumberAtom)
@@ -56,10 +60,10 @@ export const useAccount = () => {
         accessPoint,
       )
       shouldStoreLocalAccount && setProfile(newAccount)
-      mutate()
+      refreshProfile()
       return newAccount
     },
-    [mutate],
+    [refreshProfile],
   )
 
   const recoverAccount = React.useCallback(
@@ -71,12 +75,12 @@ export const useAccount = () => {
 
       if (newAccount) {
         shouldStoreLocalAccount && setProfile(newAccount)
-        mutate()
+        refreshProfile()
       }
 
       return newAccount
     },
-    [mutate],
+    [refreshProfile],
   )
 
   const readAccount = React.useCallback(async () => {
@@ -90,10 +94,10 @@ export const useAccount = () => {
         ? setAccount(newAccount)
         : setMemoryAccount(newAccount)
     }
-    mutate()
+    refreshProfile()
 
     return newAccount
-  }, [shouldStoreLocalAccount, setAccount, setMemoryAccount, mutate])
+  }, [shouldStoreLocalAccount, setAccount, setMemoryAccount, refreshProfile])
 
   // Used when we do not want to use the local storage version of the account.
   // The account object is used as a flag to kickoff certain flows that do not make sense in particular use cases (recovery phrases, google, etc.)
@@ -186,7 +190,7 @@ export const useAccount = () => {
     isLoading: !profile && !error,
     error,
     profile,
-    refreshProfile: mutate,
+    refreshProfile,
     userNumber,
     shouldStoreLocalAccount,
     setLocalAccount: setAccount,

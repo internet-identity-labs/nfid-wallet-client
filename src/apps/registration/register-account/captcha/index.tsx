@@ -54,7 +54,7 @@ export const RegisterAccountCaptcha: React.FC<
   })
 
   const navigateToProfile = React.useCallback(() => {
-    navigate("/profile/security")
+    navigate("/profile/assets")
   }, [navigate])
 
   const handleRegisterAnchor = React.useCallback(

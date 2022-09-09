@@ -4,20 +4,17 @@ import produce from "immer"
 import React from "react"
 
 import {
-  Loader,
-  ModalAdvanced,
-  P,
-  PencilIcon,
-  TrashIcon,
-} from "@internet-identity-labs/nfid-sdk-react"
-
-import {
   LegacyDevice,
   Icon,
 } from "frontend/integration/identity-manager/devices/state"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { InfoIcon } from "frontend/ui/atoms/icons/info"
+import { PencilIcon } from "frontend/ui/atoms/icons/pencil"
+import { TrashIcon } from "frontend/ui/atoms/icons/trash"
+import { Loader } from "frontend/ui/atoms/loader"
+import { P } from "frontend/ui/atoms/typography/paragraph"
+import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 import { DeviceIconDecider } from "./device-icon-decider"
 import { DeviceListButtonGroup } from "./device-list-button-group"

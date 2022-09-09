@@ -3,9 +3,8 @@ import React from "react"
 import { Link } from "react-router-dom"
 import sticky from "stickyfilljs"
 
-import { ImageOnlyLoader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
+import { ImageOnlyLoader } from "frontend/ui/atoms/loader"
 import { useScroll } from "frontend/ui/utils/use-scroll"
 
 import { NavigationItems as NavigationItemsDefault } from "./navigation-items"

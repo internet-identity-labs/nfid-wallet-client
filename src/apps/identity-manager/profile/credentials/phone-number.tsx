@@ -14,7 +14,7 @@ const ProfilePhone = () => {
   const [, setPhoneNumber] = useAtom(phoneNumberAtom)
   const [isLoading, toggleLoading] = React.useReducer((s) => !s, false)
   const [error, setError] = React.useState("")
-  const { account } = useAccount()
+  const { profile } = useAccount()
   const { navigate } = useNFIDNavigate()
   const { delegationIdentity } = authState.get()
 
@@ -42,7 +42,7 @@ const ProfilePhone = () => {
   )
   return (
     <ProfileAddPhoneNumber
-      account={account}
+      account={profile}
       onSubmit={handleSubmitPhoneNumber}
       isLoading={isLoading}
       responseError={error}

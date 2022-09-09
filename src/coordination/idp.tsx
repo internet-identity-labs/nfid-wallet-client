@@ -7,8 +7,8 @@ import { AuthorizationActor } from "frontend/state/machines/authorization/author
 import IDPMachine, {
   IDPMachineType,
 } from "frontend/state/machines/authorization/idp"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { ErrorBanner } from "frontend/ui/molecules/error-banner"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
 import { AuthorizationCoordinator } from "./authorization"
@@ -33,11 +33,7 @@ export default function IDPCoordinator({ machine }: Props) {
 
   switch (true) {
     case state.matches("Start.Handshake.Error"):
-      return (
-        <ScreenResponsive>
-          <ErrorBanner errorMessage={state.context.error?.message} />
-        </ScreenResponsive>
-      )
+      return <ErrorBanner errorMessage={state.context.error?.message} />
     case state.matches("AuthenticationMachine"):
       return (
         <AuthenticationCoordinator
@@ -59,6 +55,6 @@ export default function IDPCoordinator({ machine }: Props) {
     case state.matches("End"):
     case state.matches("Start"):
     default:
-      return <ScreenResponsive isLoading />
+      return <BlurredLoader isLoading />
   }
 }

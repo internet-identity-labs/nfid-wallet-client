@@ -24,7 +24,7 @@ export interface UnknownDeviceContext {
 }
 
 export type Events =
-  | { type: "done.invoke.remote"; data: RemoteDeviceAuthSession }
+  | { type: "done.invoke.remote"; data?: RemoteDeviceAuthSession }
   | { type: "done.invoke.registration"; data?: AuthSession }
   | { type: "done.invoke.registerDevice"; data: AuthSession }
   | { type: "done.invoke.signInSameDevice"; data: LocalDeviceAuthSession }
@@ -140,8 +140,12 @@ const UnknownDeviceMachine =
             }),
             onDone: [
               {
+                cond: "bool",
                 target: "End",
                 actions: "assignAuthSession",
+              },
+              {
+                target: "AuthSelection",
               },
             ],
           },
@@ -192,7 +196,7 @@ const UnknownDeviceMachine =
           console.debug("isExistingGoogleAccount", { context, event })
           return !!event.data.anchor
         },
-        bool: (context, event) => event.data,
+        bool: (context, event) => !!event.data,
       },
       actions: {
         assignAuthSession: assign({

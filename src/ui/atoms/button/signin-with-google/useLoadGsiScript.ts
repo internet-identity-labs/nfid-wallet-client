@@ -11,11 +11,10 @@ export interface UseLoadGsiScriptOptions {
   onScriptLoadError?: () => void
 }
 
-export default function useLoadGsiScript(
-  options: UseLoadGsiScriptOptions = {},
-): boolean {
-  const { onScriptLoadSuccess, onScriptLoadError } = options
-
+export default function useLoadGsiScript({
+  onScriptLoadSuccess,
+  onScriptLoadError,
+}: UseLoadGsiScriptOptions = {}): boolean {
   const [scriptLoadedSuccessfully, setScriptLoadedSuccessfully] =
     useState(false)
 

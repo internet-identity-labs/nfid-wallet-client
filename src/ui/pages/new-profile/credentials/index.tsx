@@ -1,9 +1,8 @@
 import React from "react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
+import { Loader } from "frontend/ui/atoms/loader"
 import { ListItem } from "frontend/ui/molecules/list/list-item"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"

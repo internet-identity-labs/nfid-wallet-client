@@ -42,11 +42,13 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
         {isWebAuthNAvailable ? (
           <>
             <DeviceRaw
+              id="trust-this-device"
               title={"Trust this device"}
               subtitle={`Use ${platformAuth} to continue`}
               handler={onRegisterPlatformDevice}
             />
             <DeviceRaw
+              id="dont-trust-this-device"
               title={"Don’t trust this device"}
               subtitle={"This device is public or someone else’s"}
               handler={onLogin}
@@ -55,11 +57,13 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
         ) : (
           <>
             <DeviceRaw
+              id="register-my-security-key"
               title={"Register my security key"}
               subtitle={"Sign in faster with your security key"}
               handler={onRegisterSecurityDevice}
             />
             <DeviceRaw
+              id="just-log-me-in"
               title={"Just log me in"}
               subtitle={"I don’t want to register a security key now"}
               handler={onLogin}
@@ -72,18 +76,21 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
 }
 
 interface DeviceRawProps {
+  id: string
   title: string
   subtitle: string
   handler: () => Promise<void> | void
 }
 
 export const DeviceRaw: React.FC<DeviceRawProps> = ({
+  id,
   title,
   subtitle,
   handler,
 }) => {
   return (
     <div
+      id={id}
       className={clsx(
         "w-full py-[10px] px-4 border border-gray-200 rounded-md",
         "hover:bg-blue-50 hover:border-blue-500 cursor-pointer transition-all",

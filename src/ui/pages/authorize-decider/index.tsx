@@ -97,29 +97,30 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         title="Sign in"
         subTitle={`Choose how you'd like to sign in to ${applicationName}`}
       />
-      {showAdvancedOptions && (
-        <Input
-          errorText={errors.userNumber?.message}
-          labelText="Your NFID number"
-          className="w-full mt-8 max-w-[400px]"
-          {...register("userNumber", {
-            required: "userNumber is required",
-            pattern: {
-              value: anchorRules.regex,
-              message: anchorRules.errorMessages.pattern,
-            },
-            minLength: {
-              value: anchorRules.minLength,
-              message: anchorRules.errorMessages.length,
-            },
-          })}
-        />
-      )}
 
       <div
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}
       >
+        {showAdvancedOptions && (
+          <div className="w-full max-w-[400px]">
+            <Input
+              errorText={errors.userNumber?.message}
+              labelText="Your NFID number"
+              {...register("userNumber", {
+                required: "userNumber is required",
+                pattern: {
+                  value: anchorRules.regex,
+                  message: anchorRules.errorMessages.pattern,
+                },
+                minLength: {
+                  value: anchorRules.minLength,
+                  message: anchorRules.errorMessages.length,
+                },
+              })}
+            />
+          </div>
+        )}
         {!showAdvancedOptions ? (
           <div className="w-full max-w-[400px]">
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />

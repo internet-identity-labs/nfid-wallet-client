@@ -3,12 +3,11 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import User from "src/assets/userpics/userpic_6.svg"
 
-import { Logo } from "@internet-identity-labs/nfid-sdk-react"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAccount } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
+import { Logo } from "frontend/ui/atoms/images/logo"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 

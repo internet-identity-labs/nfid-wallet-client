@@ -1,8 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
+import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"

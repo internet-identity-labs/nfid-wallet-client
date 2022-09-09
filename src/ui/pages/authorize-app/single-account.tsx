@@ -1,8 +1,7 @@
 import React from "react"
 
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
-
 import { ElementProps } from "frontend/types/react"
+import { Button } from "frontend/ui/atoms/button"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 

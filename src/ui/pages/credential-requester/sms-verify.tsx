@@ -1,10 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
-import { P } from "@internet-identity-labs/nfid-sdk-react"
-
 import { Button } from "frontend/ui/atoms/button"
 import { StepInput } from "frontend/ui/atoms/step-input"
+import { P } from "frontend/ui/atoms/typography/paragraph"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { useTimer } from "frontend/ui/utils/use-timer"

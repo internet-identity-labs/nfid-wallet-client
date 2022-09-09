@@ -2,9 +2,12 @@ import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
-import { Button, Card, H2, P } from "@internet-identity-labs/nfid-sdk-react"
-
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
+
+import { Button } from "../atoms/button"
+import { H2 } from "../atoms/typography"
+import { P } from "../atoms/typography/paragraph"
+import { Card } from "../molecules/card"
 
 interface NotFoundProps
   extends React.DetailedHTMLProps<

@@ -5,8 +5,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
+import { Loader } from "frontend/ui/atoms/loader"
 import ProfileNewTransaction from "frontend/ui/organisms/profile-new-transaction"
 import { isHex } from "frontend/ui/utils"
 

@@ -2,8 +2,6 @@ import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
-import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
-
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"

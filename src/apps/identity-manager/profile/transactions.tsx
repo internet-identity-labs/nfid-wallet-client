@@ -1,8 +1,7 @@
 import { format } from "date-fns"
 import { useMemo } from "react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
+import { Loader } from "frontend/ui/atoms/loader"
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 
 import { useWallet } from "./wallet/hooks"

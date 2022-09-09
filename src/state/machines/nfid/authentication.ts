@@ -21,7 +21,11 @@ type Events = {
 
 const NFIDAuthenticationMachine = createMachine(
   {
-    context: {} as Context,
+    context: {
+      appMeta: {
+        name: "NFID",
+      },
+    } as Context,
     tsTypes: {} as import("./authentication.typegen").Typegen0,
     schema: { events: {} as Events },
     id: "NFIDAuthenticationMachine",

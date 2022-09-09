@@ -9,13 +9,20 @@ export const config = {
         args: [
           "--no-sandbox",
           ...(isDebug
-            ? ["--auto-open-devtools-for-tabs", "--window-size=1200,896"]
-            : ["--headless", "--window-size=414,896"]),
+            ? [
+                // "--auto-open-devtools-for-tabs",
+                // "--window-size=1200,896"
+              ]
+            : [
+                "--headless",
+                // "--window-size=414,896"
+              ]),
           "--disable-dev-shm-usage",
           "--disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
           "--use-mobile-user-agent",
-          "user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3",
+          "--user-agent='Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'",
+          "--window-size=414,896",
         ],
       },
       acceptInsecureCerts: true,

@@ -1,10 +1,12 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Button } from "frontend/ui/atoms/button"
 import { QRCode } from "frontend/ui/atoms/qrcode"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 
 export interface AuthorizeAppUnknownDeviceProps {
+  onClickBack: () => void
   registerSameDevicePath: string
   url: string | null
   applicationName: string
@@ -13,7 +15,7 @@ export interface AuthorizeAppUnknownDeviceProps {
 
 export const RemoteAuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ url, applicationLogo, applicationName }) => {
+> = ({ url, applicationLogo, applicationName, onClickBack }) => {
   return url ? (
     <div
       className={clsx("flex flex-col items-center text-center font-inter p-6")}
@@ -27,6 +29,9 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
       <div className="bg-gray-50 p-6 rounded-[10px] mt-8">
         <QRCode content={url} options={{ width: 192 }} />
       </div>
+      <Button onClick={onClickBack} text>
+        Back
+      </Button>
     </div>
   ) : null
 }

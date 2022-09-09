@@ -55,6 +55,10 @@ export function RemoteReceiverCoordinator({
   const { messages } = useMessages(state.context.secret)
   console.debug("RemoteReceiverCoordinator", { messages })
 
+  React.useEffect(() => {
+    console.debug("RemoteReceiverCoordinator", { state: state.value })
+  }, [state.value])
+
   const QRCodeUrl = React.useMemo(
     () =>
       remoteReceiverUrl({
@@ -113,6 +117,7 @@ export function RemoteReceiverCoordinator({
     <RemoteAuthorizeAppUnknownDevice
       applicationLogo={state.context.appMeta?.logo || ""}
       applicationName={state.context.appMeta?.name || ""}
+      onClickBack={() => send({ type: "BACK" })}
       registerDeviceDeciderPath={""}
       registerSameDevicePath={""}
       showRegister={false}

@@ -24,6 +24,27 @@ export function RemoteReceiverCoordinator({
   const { messages } = useMessages(state.context.secret)
   console.debug("RemoteReceiverCoordinator", { messages })
 
+  const QRCodeUrl = React.useMemo(
+    () =>
+      remoteReceiverUrl({
+        applicationDerivationOrigin:
+          state.context.authRequest?.derivationOrigin,
+        domain: state.context.authRequest?.hostname,
+        secret: state.context.secret,
+        maxTimeToLive: state.context.authRequest?.maxTimeToLive,
+        applicationName: state.context.appMeta?.name,
+        applicationLogo: state.context.appMeta?.logo,
+      }),
+    [
+      state.context.appMeta?.logo,
+      state.context.appMeta?.name,
+      state.context.authRequest?.derivationOrigin,
+      state.context.authRequest?.hostname,
+      state.context.authRequest?.maxTimeToLive,
+      state.context.secret,
+    ],
+  )
+
   // FIXME: REFACTOR THE MESSAGE HANDLING INTO MACHINE SERVICES
   const handleRemoteRegister = React.useCallback(
     async (message: RemoteLoginRegisterMessage) => {
@@ -64,15 +85,7 @@ export function RemoteReceiverCoordinator({
       registerDeviceDeciderPath={""}
       registerSameDevicePath={""}
       showRegister={false}
-      url={remoteReceiverUrl({
-        applicationDerivationOrigin:
-          state.context.authRequest?.derivationOrigin,
-        domain: state.context.authRequest?.hostname,
-        secret: state.context.secret,
-        maxTimeToLive: state.context.authRequest?.maxTimeToLive,
-        applicationName: state.context.appMeta?.name,
-        applicationLogo: state.context.appMeta?.logo,
-      })}
+      url={QRCodeUrl}
     />
   )
 }

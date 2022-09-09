@@ -1,8 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
-
+import { QRCode } from "frontend/ui/atoms/qrcode"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 
 export interface AuthorizeAppUnknownDeviceProps {

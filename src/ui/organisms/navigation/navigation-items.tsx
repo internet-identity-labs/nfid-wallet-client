@@ -15,6 +15,35 @@ import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
+import AuthenticatedPopup from "../navigation-popup"
+
+const NAV_ITEMS = [
+  {
+    label: "The Identity Layer",
+    to: "home",
+    external: false,
+  },
+  {
+    label: "Only with NFID",
+    to: "only-with-nfid",
+    external: false,
+  },
+  {
+    label: "Our mission",
+    to: "our-mission",
+    external: false,
+  },
+  {
+    label: "FAQ",
+    to: "faq",
+    external: false,
+  },
+  {
+    label: "Docs",
+    to: "https://docs.nfid.one",
+    external: true,
+  },
+]
 interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
@@ -22,48 +51,24 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { isAuthenticated, login, logout } = useAuthentication()
 
   const navigate = useNavigate()
-  const [isPopupVisible, setIsPopupVisible] = React.useState(false)
+  const [isPopupVisible, togglePopup] = React.useReducer(
+    (state) => !state,
+    false,
+  )
 
   const handleLogin = async () => {
     await login()
     navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
   }
 
-  const popupRef = useClickOutside(() => setIsPopupVisible(false))
+  const handleLogout = React.useCallback(() => {
+    logout()
+    togglePopup()
+  }, [logout])
+
+  const popupRef = useClickOutside(togglePopup)
 
   const isRegistered = React.useMemo(() => !!loadProfileFromLocalStorage(), [])
-
-  const items = [
-    {
-      label: "The Identity Layer",
-      to: "home",
-      external: false,
-    },
-    {
-      label: "Only with NFID",
-      to: "only-with-nfid",
-      external: false,
-    },
-    {
-      label: "Our mission",
-      to: "our-mission",
-      external: false,
-    },
-    // {
-    //   label: "Partners",
-    //   to: "partners",
-    // },
-    {
-      label: "FAQ",
-      to: "faq",
-      external: false,
-    },
-    {
-      label: "Docs",
-      to: "https://docs.nfid.one",
-      external: true,
-    },
-  ]
 
   const handleGoTo = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -83,6 +88,8 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
       })
     }
   }
+
+  console.debug("NavigationItems", { isAuthenticated, isPopupVisible })
 
   return (
     <>
@@ -139,7 +146,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                 />
               ) : null}
               <div className="flex flex-col px-4 pb-6 ml-1.5 space-y-5 font-bold mt-5">
-                {items.map((item, index) => (
+                {NAV_ITEMS.map((item, index) => (
                   <a
                     href={`/#${encodeURIComponent(item.label)}`}
                     className={clsx(
@@ -176,9 +183,9 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         <Scrollspy
           className="items-center hidden space-x-10 font-medium md:flex"
           currentClassName="text-black-base hover:text-black-base hover:no-underline"
-          items={items.map((i) => i.to)}
+          items={NAV_ITEMS.map((i) => i.to)}
         >
-          {items.map((item, index) => (
+          {NAV_ITEMS.map((item, index) => (
             <NavLink
               to={`/#${encodeURIComponent(item.label)}`}
               className={clsx(
@@ -205,11 +212,18 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           {isAuthenticated ? (
             <div
               className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
-              onClick={() => setIsPopupVisible(!isPopupVisible)}
+              onClick={togglePopup}
               id="profile-icon"
             >
               <img src={User} alt="user" className="cursor-pointer" />
             </div>
+          ) : null}
+          {isPopupVisible && profile?.anchor ? (
+            <AuthenticatedPopup
+              onSignOut={handleLogout}
+              anchor={profile.anchor}
+              isLanding
+            />
           ) : null}
         </div>
       </div>

@@ -21,7 +21,7 @@ import Icon_pink from "./assets/nfid_pink.svg"
 
 import { Footer } from "./footer"
 import { HeroLeftSide } from "./hero-left-side"
-import { HeroRightSide } from "./hero-right-side"
+import { NFIDAuthentication } from "./hero-right-side"
 import "./index.css"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
@@ -83,9 +83,8 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     src={Blur1}
                     alt="blur1"
                   />
-                  <HeroRightSide
+                  <NFIDAuthentication
                     isUnregistered={!isRegistered && !profile}
-                    hasAccount={!!profile}
                   />
                   {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>

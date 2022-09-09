@@ -6,7 +6,6 @@ import User from "src/assets/userpics/userpic_6.svg"
 
 import { Button } from "@internet-identity-labs/nfid-sdk-react"
 
-import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"

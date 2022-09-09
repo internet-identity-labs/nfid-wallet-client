@@ -25,6 +25,7 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
     case state.matches("AuthenticateSameDevice"):
       return (
         <RegisterAccountIntro
+          // TODO: should be refactored into root coordinator
           isLoading={
             state.matches("Start.Register.CheckAuth") ||
             state.matches("Start.Register.CreateIdentity") ||

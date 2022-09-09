@@ -30,6 +30,8 @@ export const PopupRegisterDecider: React.FC<PopupRegisterDeciderProps> = () => {
   const { getPersona } = usePersona()
   const navigate = useNavigate()
 
+  console.debug("PopupRegisterDecider")
+
   const {
     platform: { device, authenticator: platformAuth },
   } = useDeviceInfo()

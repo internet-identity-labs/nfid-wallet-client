@@ -7,6 +7,7 @@ import { NFIDGradientBar } from "@internet-identity-labs/nfid-sdk-react"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
 import { PopupRegisterDecider } from "frontend/ui/organisms/navigation/auth-popup/popup-register-decider"
 
 import AuthenticatedPopup from "../../navigation-popup"
@@ -15,20 +16,23 @@ import { PopupRegister } from "./popup-register"
 interface NavigationPopupProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
-  const { account } = useAccount()
-  const { logout, isAuthenticated, user } = useAuthentication()
+  const { profile } = useAccount()
+  const { logout, isAuthenticated } = useAuthentication()
   const { status } = useRegisterQRCode()
 
-  const isPopupLogin = React.useMemo(() => {
-    return user || account
-  }, [user, account])
+  const isRegistered = React.useMemo(() => !!loadProfileFromLocalStorage(), [])
 
-  if (status === "" && isAuthenticated && account?.anchor)
+  const isPopupLogin = React.useMemo(
+    () => isRegistered || profile,
+    [isRegistered, profile],
+  )
+
+  if (status === "" && isAuthenticated && profile?.anchor)
     return (
       <AuthenticatedPopup
         isLanding
         onSignOut={logout}
-        anchor={account.anchor}
+        anchor={profile.anchor}
       />
     )
 
@@ -38,7 +42,8 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
       <div
         className={clsx(
           "absolute right-0 flex flex-col items-center pb-6 bg-white shadow-iframe rounded-xl top-14",
-          (user && status !== "registerDecider") || status === "registerDevice"
+          (isRegistered && status !== "registerDecider") ||
+            status === "registerDevice"
             ? "w-60"
             : "w-80",
           status === "" && !isPopupLogin && window.scrollY < 500 && "hidden",
@@ -46,7 +51,7 @@ export const NavigationPopup: React.FC<NavigationPopupProps> = () => {
       >
         <NFIDGradientBar />
         {status === "registerDecider" && <PopupRegisterDecider />}
-        {status === "" && !account && <PopupRegister />}
+        {status === "" && !isRegistered && <PopupRegister />}
       </div>
     </Fade>
   )

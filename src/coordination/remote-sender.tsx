@@ -29,9 +29,11 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
       return <ScreenResponsive isLoading />
     case state.matches("AuthenticationMachine"):
       return (
-        <AuthenticationCoordinator
-          actor={state.children.authenticate as AuthenticationActor}
-        />
+        <ScreenResponsive className="flex flex-col items-center">
+          <AuthenticationCoordinator
+            actor={state.children.authenticate as AuthenticationActor}
+          />
+        </ScreenResponsive>
       )
     // NOTE: I dislike having routing logic in a coordinator
     case state.matches("End"):

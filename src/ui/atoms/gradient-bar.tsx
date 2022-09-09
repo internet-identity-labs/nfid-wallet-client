@@ -23,7 +23,7 @@ export const NFIDGradientBar: React.FC<NFIDGradientBarProps> = ({
   return (
     <div
       className={clsx(
-        "absolute top-0 h-[4px] w-[90%] inset-0 mx-auto",
+        "absolute top-0 h-[4px] w-full inset-0 mx-auto",
         rounded && "rounded-b",
         className,
       )}

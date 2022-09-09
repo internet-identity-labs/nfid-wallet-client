@@ -12,7 +12,7 @@ import {
 import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Input } from "frontend/ui/atoms/input"
 import { Separator } from "frontend/ui/atoms/separator"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { anchorRules } from "frontend/ui/utils/validations"
 
 import SecurityKey from "./assets/security-key.svg"
@@ -74,10 +74,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   )
 
   return (
-    <ScreenResponsive
-      className="flex flex-col items-center"
-      isLoading={isLoading}
-    >
+    <div className="relative flex flex-col items-center">
       {applicationLogo && (
         <ApplicationLogo
           src={applicationLogo}
@@ -143,6 +140,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           {showAdvancedOptions ? "Back" : "Other sign in options"}
         </p>
       </div>
-    </ScreenResponsive>
+      <BlurredLoader isLoading={isLoading} />
+    </div>
   )
 }

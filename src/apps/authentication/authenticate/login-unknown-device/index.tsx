@@ -4,6 +4,7 @@ import { useMultipass } from "frontend/apps/identity-provider/use-app-meta"
 import { useInterval } from "frontend/apps/inter-device/use-interval"
 import { RemoteAuthorizeAppUnknownDevice } from "frontend/ui/pages/remote-authorize-app-unknown-device"
 import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import {
@@ -36,13 +37,17 @@ export const LoginUnknownDevice: React.FC<LoginUnknownDeviceProps> = ({
 
   useInterval(handlePollForDelegate, 2000)
   return (
-    <RemoteAuthorizeAppUnknownDevice
-      registerSameDevicePath={registerSameDevicePath}
-      applicationName={applicationName ?? ""}
-      applicationLogo={applicationLogo ?? ""}
+    <ScreenResponsive
       isLoading={isLoading}
-      showRegister={showRegister}
-      url={url}
-    />
+      loadingMessage="Waiting for verification on mobile..."
+    >
+      <RemoteAuthorizeAppUnknownDevice
+        registerSameDevicePath={registerSameDevicePath}
+        applicationName={applicationName ?? ""}
+        applicationLogo={applicationLogo ?? ""}
+        showRegister={showRegister}
+        url={url}
+      />
+    </ScreenResponsive>
   )
 }

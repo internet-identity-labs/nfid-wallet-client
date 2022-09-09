@@ -4,9 +4,9 @@ import { Fade } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
+import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
@@ -33,9 +33,14 @@ interface Props
   > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const { user } = useAuthentication()
-  const { account } = useAccount()
+  const { profile } = useAccount()
   const { isMobile } = useDeviceInfo()
+
+  const [isRegistered, setIsRegistered] = React.useState(true)
+  React.useEffect(() => {
+    const profile = loadProfileFromLocalStorage()
+    setIsRegistered(!!profile)
+  }, [])
 
   return (
     <AppScreen
@@ -57,7 +62,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           <ParallaxProvider>
             <div
               className={`font-inner ${isMobile ? `mobile` : ``} ${
-                account ? `has-account` : ``
+                profile ? `has-account` : ``
               }`}
             >
               <section
@@ -65,7 +70,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 className="grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 scroll-mt-20"
               >
                 <div className="relative">
-                  <HeroLeftSide isUnregistered={!account} />
+                  <HeroLeftSide isUnregistered={!profile} />
                   <Parallax speed={isMobile ? undefined : -300}>
                     <p className="absolute text-[25vw] opacity-[0.02] z-0 left-0 font-bold">
                       Identity
@@ -79,8 +84,8 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     alt="blur1"
                   />
                   <HeroRightSide
-                    isUnregistered={!user && !account}
-                    hasAccount={!!account}
+                    isUnregistered={!isRegistered && !profile}
+                    hasAccount={!!profile}
                   />
                   {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>

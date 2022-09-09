@@ -6,24 +6,19 @@ import { H5 } from "@internet-identity-labs/nfid-sdk-react"
 
 import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { P } from "frontend/ui/atoms/typography/paragraph"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 export interface AuthorizeAppUnknownDeviceProps {
   registerSameDevicePath: string
   url: string | null
   applicationName: string
   applicationLogo: string
-  isLoading?: boolean
 }
 
 export const RemoteAuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
-> = ({ url, isLoading, applicationLogo, applicationName }) => {
+> = ({ url, applicationLogo, applicationName }) => {
   return url ? (
-    <ScreenResponsive
-      isLoading={isLoading}
-      loadingMessage="Waiting for verification on mobile..."
-    >
+    <>
       <div
         className={clsx("flex flex-col items-center font-inter")}
         style={{
@@ -46,6 +41,6 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
           <QRCode content={url} options={{ width: 192 }} />
         </div>
       </div>
-    </ScreenResponsive>
+    </>
   ) : null
 }

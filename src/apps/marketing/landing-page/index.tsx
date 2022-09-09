@@ -83,9 +83,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     src={Blur1}
                     alt="blur1"
                   />
-                  <NFIDAuthentication
-                    isUnregistered={!isRegistered && !profile}
-                  />
+                  <NFIDAuthentication isUnregistered={!isRegistered} />
                   {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>
                     <Parallax

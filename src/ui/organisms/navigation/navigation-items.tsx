@@ -51,10 +51,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
   const { isAuthenticated, login, logout } = useAuthentication()
 
   const navigate = useNavigate()
-  const [isPopupVisible, togglePopup] = React.useReducer(
-    (state) => !state,
-    false,
-  )
+  const [isPopupVisible, setIsPopupVisible] = React.useState(false)
 
   const handleLogin = async () => {
     await login()
@@ -63,10 +60,10 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
 
   const handleLogout = React.useCallback(() => {
     logout()
-    togglePopup()
+    setIsPopupVisible(false)
   }, [logout])
 
-  const popupRef = useClickOutside(togglePopup)
+  const popupRef = useClickOutside(() => setIsPopupVisible(false))
 
   const isRegistered = React.useMemo(() => !!loadProfileFromLocalStorage(), [])
 
@@ -210,7 +207,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           {isAuthenticated ? (
             <div
               className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
-              onClick={togglePopup}
+              onClick={() => setIsPopupVisible(true)}
               id="profile-icon"
             >
               <img src={User} alt="user" className="cursor-pointer" />

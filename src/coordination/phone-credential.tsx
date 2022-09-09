@@ -5,10 +5,10 @@ import PhoneCredentialMachine, {
   PhoneCredentialType,
 } from "frontend/state/machines/credentials/phone-credential"
 import { Button } from "frontend/ui/atoms/button"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { CredentialRequesterNotVerified } from "frontend/ui/pages/credential-requester/not-verified"
 import { CredentialRequesterSMSVerify } from "frontend/ui/pages/credential-requester/sms-verify"
 import { CredentialRequesterVerified } from "frontend/ui/pages/credential-requester/verified"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
 
@@ -23,7 +23,7 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
   switch (true) {
     case state.matches("Ready"):
       return (
-        <ScreenResponsive
+        <BlurredLoader
           isLoading
           loadingMessage={`Connecting to ${
             state.context.appMeta?.name ?? "the application"
@@ -32,19 +32,17 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
       )
     case state.matches("Authenticate"):
       return (
-        <ScreenResponsive className="flex flex-col items-center">
-          <AuthenticationCoordinator
-            actor={state.children.AuthenticationMachine as AuthenticationActor}
-          />
-        </ScreenResponsive>
+        <AuthenticationCoordinator
+          actor={state.children.AuthenticationMachine as AuthenticationActor}
+        />
       )
     case state.matches("DevClearData"):
       return (
-        <ScreenResponsive>
+        <>
           Would you like to wipe this account for testing purposes?
           <Button onClick={() => send("CLEAR_DATA")}>Yes</Button>
           <Button onClick={() => send("END")}>No</Button>
-        </ScreenResponsive>
+        </>
       )
     case state.matches("Consent"):
       const error =
@@ -54,8 +52,6 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
       console.log(state.event.type)
       return (
         <CredentialRequesterVerified
-          applicationLogo={state.context.appMeta?.logo}
-          applicationName={state.context.appMeta?.name}
           onPresent={() => send("CONSENT")}
           onSkip={() => send("REJECT")}
           error={error}
@@ -114,9 +110,9 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
       )
     case state.matches("GenerateCredential"):
       return (
-        <ScreenResponsive
+        <BlurredLoader
           isLoading
-          loadingMessage="Creating verifiable credential"
+          loadingMessage={"Creating verifiable credential"}
         />
       )
     default:
@@ -125,6 +121,6 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           state.value,
         )}`,
       )
-      return <ScreenResponsive isLoading />
+      return <BlurredLoader isLoading />
   }
 }

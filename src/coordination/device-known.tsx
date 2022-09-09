@@ -1,10 +1,10 @@
 import { useActor } from "@xstate/react"
 
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
-import { AuthorizeAppMultiAccount } from "frontend/ui/pages/authorize-app/multi-account"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
 import { AuthorizeAppSingleAccount } from "frontend/ui/pages/authorize-app/single-account"
 import { NFIDLogin } from "frontend/ui/pages/nfid-login"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
   const [state, send] = useActor(actor)
@@ -17,27 +17,22 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
   switch (true) {
     case state.matches("Start"):
       return (
-        <ScreenResponsive
-          isLoading
-          loadingMessage="Loading Configuration"
-          className="flex flex-col items-center"
-        />
+        <BlurredLoader isLoading loadingMessage={"Loading Configuration"} />
       )
     case state.matches("Authenticate"):
     case state.matches("Login"):
       switch (true) {
         case state.context.isNFID:
           return (
-            <ScreenResponsive
+            <BlurredLoader
               isLoading={state.matches("Login")}
               loadingMessage={"Unlocking your NFID"}
-              className="flex flex-col items-center"
             >
               <NFIDLogin
                 account={state.context.profile}
                 onLogin={() => send("UNLOCK")}
               />
-            </ScreenResponsive>
+            </BlurredLoader>
           )
         case state.context.isSingleAccountApplication:
           return (
@@ -51,7 +46,7 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
           )
         default:
           return (
-            <AuthorizeAppMultiAccount
+            <AuthorizeApp
               isLoading={state.matches("Login")}
               loadingMessage={"Unlocking your NFID"}
               applicationName={state.context?.authAppMeta?.name}
@@ -73,6 +68,6 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
       }
     case state.matches("End"):
     default:
-      return <ScreenResponsive isLoading />
+      return <BlurredLoader isLoading />
   }
 }

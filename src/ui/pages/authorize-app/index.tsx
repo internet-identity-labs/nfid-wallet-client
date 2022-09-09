@@ -11,17 +11,20 @@ import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { H5 } from "frontend/ui/atoms/typography"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { BlurOverlay } from "frontend/ui/molecules/blur-overlay"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import alertIcon from "./assets/alert-triangle.svg"
 
 import { AccountItem } from "./raw-item"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
-  isAuthenticated: boolean
+  isAuthenticated?: boolean
   applicationName?: string
   applicationLogo?: string
   accounts: NFIDPersona[]
   accountsLimit?: number
+  isLoading?: boolean
+  loadingMessage?: string | boolean
   onUnlockNFID: () => Promise<any>
   onLogin: (accountId: string) => Promise<void>
   onCreateAccount: () => Promise<void>
@@ -33,6 +36,8 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   applicationLogo,
   accounts,
   accountsLimit,
+  isLoading,
+  loadingMessage,
   onUnlockNFID,
   onLogin,
   onCreateAccount,
@@ -63,7 +68,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
       }))
 
   return (
-    <>
+    <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
       {applicationLogo && (
         <ApplicationLogo
           src={applicationLogo}
@@ -139,6 +144,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           </BlurOverlay>
         )}
       </div>
-    </>
+    </BlurredLoader>
   )
 }

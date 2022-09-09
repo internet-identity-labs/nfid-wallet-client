@@ -61,6 +61,8 @@ export const idlFactory = ({ IDL }) => {
     status_code: IDL.Nat16,
   })
   const Application = IDL.Record({
+    img: IDL.Opt(IDL.Text),
+    alias: IDL.Opt(IDL.Vec(IDL.Text)),
     user_limit: IDL.Nat16,
     domain: IDL.Text,
     name: IDL.Text,
@@ -169,6 +171,11 @@ export const idlFactory = ({ IDL }) => {
     daily: IDL.Vec(DailyMetricsData),
   })
   const CanisterMetrics = IDL.Record({ data: CanisterMetricsData })
+  const HTTPAppResponse = IDL.Record({
+    data: IDL.Opt(Application),
+    error: IDL.Opt(Error),
+    status_code: IDL.Nat16,
+  })
   const ConfigurationResponse = IDL.Record({
     env: IDL.Opt(IDL.Text),
     whitelisted_phone_numbers: IDL.Opt(IDL.Vec(IDL.Text)),
@@ -220,6 +227,7 @@ export const idlFactory = ({ IDL }) => {
   })
   const Token = IDL.Text
   return IDL.Service({
+    add_all_accounts_json: IDL.Func([IDL.Text], [], []),
     anchors: IDL.Func([], [HTTPAnchorsResponse], ["query"]),
     certify_phone_number_sha2: IDL.Func(
       [IDL.Text, IDL.Text],
@@ -228,6 +236,7 @@ export const idlFactory = ({ IDL }) => {
     ),
     collectCanisterMetrics: IDL.Func([], [], []),
     configure: IDL.Func([ConfigurationRequest], [], []),
+    count_anchors: IDL.Func([], [IDL.Nat64], ["query"]),
     create_access_point: IDL.Func(
       [AccessPointRequest],
       [HTTPAccessPointResponse],
@@ -259,6 +268,12 @@ export const idlFactory = ({ IDL }) => {
       [HTTPAccountResponse],
       ["query"],
     ),
+    get_all_accounts_json: IDL.Func(
+      [IDL.Nat32, IDL.Nat32],
+      [IDL.Text],
+      ["query"],
+    ),
+    get_application: IDL.Func([IDL.Text], [HTTPAppResponse], []),
     get_config: IDL.Func([], [ConfigurationResponse], []),
     is_over_the_application_limit: IDL.Func(
       [IDL.Text],
@@ -276,8 +291,10 @@ export const idlFactory = ({ IDL }) => {
       [],
     ),
     remove_account: IDL.Func([], [BoolHttpResponse], []),
+    remove_account_by_principal: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     restore_accounts: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     store_accounts: IDL.Func([IDL.Vec(Account)], [BoolHttpResponse], []),
+    sync_controllers: IDL.Func([], [IDL.Vec(IDL.Text)], []),
     update_access_point: IDL.Func(
       [AccessPointRequest],
       [HTTPAccessPointResponse],
@@ -288,8 +305,20 @@ export const idlFactory = ({ IDL }) => {
       [HTTPAccountResponse],
       [],
     ),
+    update_application: IDL.Func([Application], [HTTPApplicationResponse], []),
+    update_application_alias: IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
+      [BoolHttpResponse],
+      [],
+    ),
+    update_persona: IDL.Func([PersonaRequest], [HTTPAccountResponse], []),
     use_access_point: IDL.Func([], [HTTPAccessPointResponse], []),
     validate_phone: IDL.Func([ValidatePhoneRequest], [Response], []),
+    validate_signature: IDL.Func(
+      [IDL.Opt(IDL.Text)],
+      [IDL.Nat64, IDL.Opt(IDL.Text)],
+      ["query"],
+    ),
     verify_token: IDL.Func([Token], [Response], []),
   })
 }

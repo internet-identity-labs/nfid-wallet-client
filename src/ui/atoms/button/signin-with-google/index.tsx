@@ -21,7 +21,7 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
 
   const googleButtonWidth = React.useMemo(() => {
     if (window.innerWidth > 500) return 400
-    else return window.innerWidth - 40
+    else return window.innerWidth - 80
   }, [])
 
   React.useEffect(() => {

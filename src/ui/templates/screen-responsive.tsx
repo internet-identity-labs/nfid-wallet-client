@@ -1,13 +1,15 @@
 import clsx from "clsx"
 import React from "react"
 
-import { H5, Loader, P } from "@internet-identity-labs/nfid-sdk-react"
-
 import logo from "./assets/id.svg"
 
 import { ApplicationLogo } from "../atoms/application-logo"
 import { NFIDGradientBar } from "../atoms/gradient-bar"
+import { Loader } from "../atoms/loader"
+import { H5 } from "../atoms/typography"
+import { P } from "../atoms/typography/paragraph"
 import { BlurOverlay } from "../molecules/blur-overlay"
+import { BlurredLoader } from "../molecules/blurred-loader"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   isLoading?: boolean
@@ -78,22 +80,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
         developed by Internet Identity Labs.
       </div>
 
-      {isLoading && (
-        <div id="loader" className="absolute top-0 bottom-0 w-full">
-          <BlurOverlay className="absolute top-0 left-0 z-10 w-full h-full" />
-          <div className="z-20 flex flex-col items-center justify-center w-full h-full px-14">
-            <Loader
-              iframe
-              isLoading={isLoading}
-              fullscreen={false}
-              imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
-            />
-            {loadingMessage && (
-              <div className="z-20 mt-5 text-center">{loadingMessage}</div>
-            )}
-          </div>
-        </div>
-      )}
+      <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage} />
     </div>
   )
 }

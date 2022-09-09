@@ -11,7 +11,6 @@ import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Input } from "frontend/ui/atoms/input"
 import { Separator } from "frontend/ui/atoms/separator"
 import { H5 } from "frontend/ui/atoms/typography"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { anchorRules } from "frontend/ui/utils/validations"
 
 import QRCode from "./assets/qrcode.svg"
@@ -91,10 +90,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   )
 
   return (
-    <ScreenResponsive
-      className="flex flex-col items-center"
-      isLoading={isLoading}
-    >
+    <>
       {applicationLogo && (
         <ApplicationLogo
           src={applicationLogo}
@@ -164,6 +160,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           {showAdvancedOptions ? "Back" : "Other sign in options"}
         </p>
       </div>
-    </ScreenResponsive>
+    </>
   )
 }

@@ -32,9 +32,11 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
       )
     case state.matches("Authenticate"):
       return (
-        <AuthenticationCoordinator
-          actor={state.children.AuthenticationMachine as AuthenticationActor}
-        />
+        <ScreenResponsive className="flex flex-col items-center">
+          <AuthenticationCoordinator
+            actor={state.children.AuthenticationMachine as AuthenticationActor}
+          />
+        </ScreenResponsive>
       )
     case state.matches("DevClearData"):
       return (

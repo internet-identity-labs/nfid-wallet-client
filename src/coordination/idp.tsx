@@ -40,9 +40,11 @@ export default function IDPCoordinator({ machine }: Props) {
       )
     case state.matches("AuthenticationMachine"):
       return (
-        <AuthenticationCoordinator
-          actor={state.children.authenticate as AuthenticationActor}
-        />
+        <ScreenResponsive className="flex flex-col items-center">
+          <AuthenticationCoordinator
+            actor={state.children.authenticate as AuthenticationActor}
+          />
+        </ScreenResponsive>
       )
     case state.matches("AuthorizationMachine"):
       return (

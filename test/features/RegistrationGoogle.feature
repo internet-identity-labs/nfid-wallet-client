@@ -1,11 +1,9 @@
-@current @registration @google
+@registration @google @mobile
 Feature: Registration using Google
 
   Background: Open the link and ensure userE2E is deleted.
-    Given I open the site "/register-nfid-account/intro"
+    Given I open the site "/"
 
-  @uat
-  @mission
   Scenario Outline: User wants to register with Google
     Given I remove the e2e@identitylabs.ooo
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
@@ -29,8 +27,6 @@ Feature: Registration using Google
     When I click on the selector "#profile"
     Then I wait on element "#logout" for 15000ms to be displayed
 
-  @uat
-  @mission
   Scenario Outline: User wants to login with Google
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
     When I pause for 250ms

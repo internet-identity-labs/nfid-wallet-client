@@ -1,4 +1,4 @@
-@current @registration
+@pending @registration
 Feature: Registration from landing page
 
   Background: Background name
@@ -42,4 +42,4 @@ Feature: Registration from landing page
 
     Then I expect "account" key to be present in localStorage
 
-    Then I expect the url to contain "/profile/security"
+    Then I expect the url to contain "/profile/assets"

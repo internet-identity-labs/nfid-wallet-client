@@ -25,10 +25,9 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
       )}
     >
       <NFIDGradientBar className="w-full h-0.5 z-20" rounded={false} />
-      <div className="flex flex-col w-full h-full p-6">
+      <div className="flex flex-col w-full h-full">
         <NFIDAuthenticationCoordinator />
       </div>
-      <div className="z-0 bg-white"></div>
     </div>
   ) : (
     <div className="mb-[75px] sm:mb-[87px] z-10 relative">

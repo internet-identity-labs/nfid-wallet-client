@@ -33,7 +33,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
 
       <div
         className={clsx(
-          "flex-1 px-5 pt-7",
+          "w-full h-full",
           "sm:border-x sm:border-b sm:border-gray-100",
           className,
         )}

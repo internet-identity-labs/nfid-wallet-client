@@ -2,6 +2,7 @@
   "name": "@internet-identity-labs/nfid-frontend",
   "version": "0.0.0",
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build-storybook": "build-storybook -s public",
     "build:example": "export EXAMPLE_BUILD=1 && craco build",
     "build": "craco build",
@@ -148,6 +149,7 @@
     "prettier": "2.6.2",
     "react-test-renderer": "^18.2.0",
     "serve": "14.0.1",
+    "source-map-explorer": "2.5.2",
     "storybook": "6.5.9",
     "tailwindcss": "3.0.24",
     "ts-jest": "^27.1.5",

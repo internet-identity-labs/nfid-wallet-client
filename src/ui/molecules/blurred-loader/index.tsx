@@ -1,3 +1,5 @@
+import React from "react"
+
 import { Loader } from "frontend/ui/atoms/loader"
 
 import { BlurOverlay } from "../blur-overlay"
@@ -5,13 +7,16 @@ import { BlurOverlay } from "../blur-overlay"
 interface BlurredLoaderProps {
   isLoading?: boolean
   loadingMessage?: string | boolean
+  children?: React.ReactNode
 }
 export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
   isLoading,
   loadingMessage,
+  children,
 }) => {
   return (
-    <div>
+    <>
+      {children}
       {isLoading ? (
         <div id="loader" className="absolute top-0 bottom-0 w-full">
           <BlurOverlay className="absolute top-0 left-0 z-10 w-full h-full" />
@@ -27,6 +32,6 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
           </div>
         </div>
       ) : null}
-    </div>
+    </>
   )
 }

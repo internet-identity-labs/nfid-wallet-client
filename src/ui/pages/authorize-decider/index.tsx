@@ -11,6 +11,8 @@ import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Input } from "frontend/ui/atoms/input"
 import { Separator } from "frontend/ui/atoms/separator"
 import { H5 } from "frontend/ui/atoms/typography"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { anchorRules } from "frontend/ui/utils/validations"
 
 import QRCode from "./assets/qrcode.svg"
@@ -90,17 +92,13 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   )
 
   return (
-    <>
-      {applicationLogo && (
-        <ApplicationLogo
-          src={applicationLogo}
-          applicationName={applicationName}
-        />
-      )}
-      <H5>Sign in</H5>
-      <p className="mt-3 text-center">
-        Choose how you'd like to sign in to {applicationName}
-      </p>
+    <BlurredLoader isLoading={isLoading}>
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title="Sign in"
+        subTitle={`Choose how you'd like to sign in to ${applicationName}`}
+      />
       {showAdvancedOptions && (
         <Input
           errorText={errors.userNumber?.message}
@@ -160,6 +158,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           {showAdvancedOptions ? "Back" : "Other sign in options"}
         </p>
       </div>
-    </>
+    </BlurredLoader>
   )
 }

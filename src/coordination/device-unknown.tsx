@@ -1,11 +1,10 @@
 import { useActor } from "@xstate/react"
 import React from "react"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 
 import { RegistrationCoordinator } from "./registration"
@@ -71,6 +70,11 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
             state.matches("AuthWithGoogle") ||
             state.matches("AuthenticateSameDevice")
           }
+          loadingMessage={
+            state.matches("AuthWithGoogle")
+              ? "signing in with Google"
+              : undefined
+          }
           authError={
             // TODO cleanup types
             "data" in state.event && state.event.data
@@ -94,6 +98,6 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
     case state.matches("End"):
     case state.matches("Start"):
     default:
-      return <Loader isLoading={true} />
+      return <BlurredLoader isLoading />
   }
 }

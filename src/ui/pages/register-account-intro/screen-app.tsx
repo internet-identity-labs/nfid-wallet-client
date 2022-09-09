@@ -1,9 +1,6 @@
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
-import { H5 } from "@internet-identity-labs/nfid-sdk-react"
-
-import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
   LoginEventHandler,
@@ -12,6 +9,7 @@ import {
 import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Input } from "frontend/ui/atoms/input"
 import { Separator } from "frontend/ui/atoms/separator"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { anchorRules } from "frontend/ui/utils/validations"
 
@@ -72,17 +70,14 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   )
 
   return (
-    <div className="relative flex flex-col items-center">
-      {applicationLogo && (
-        <ApplicationLogo
-          src={applicationLogo}
-          appliactionName={applicationName}
-        />
-      )}
-      <H5>Sign in</H5>
-      <p className="mt-3 text-center">
-        Choose how you'd like to sign in to {applicationName}
-      </p>
+    // TODO: add loading message
+    <BlurredLoader isLoading={isLoading}>
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title="Sign in"
+        subTitle={`Choose how you'd like to sign in to ${applicationName}`}
+      />
       <div className="flex flex-col w-full mt-8 space-y-1">
         {!showAdvancedOptions ? (
           <>
@@ -138,7 +133,6 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
           {showAdvancedOptions ? "Back" : "Other sign in options"}
         </p>
       </div>
-      <BlurredLoader isLoading={isLoading} />
-    </div>
+    </BlurredLoader>
   )
 }

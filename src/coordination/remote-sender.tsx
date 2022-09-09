@@ -6,7 +6,7 @@ import { AuthenticationActor } from "frontend/state/machines/authentication/auth
 import RemoteSenderMachine, {
   RemoteSenderMachineType,
 } from "frontend/state/machines/authentication/remote-sender"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { AuthenticationCoordinator } from "./authentication"
 
@@ -26,19 +26,17 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
 
   switch (true) {
     case state.matches("Start"):
-      return <ScreenResponsive isLoading />
+      return <BlurredLoader isLoading />
     case state.matches("AuthenticationMachine"):
       return (
-        <ScreenResponsive className="flex flex-col items-center">
-          <AuthenticationCoordinator
-            actor={state.children.authenticate as AuthenticationActor}
-          />
-        </ScreenResponsive>
+        <AuthenticationCoordinator
+          actor={state.children.authenticate as AuthenticationActor}
+        />
       )
     // NOTE: I dislike having routing logic in a coordinator
     case state.matches("End"):
       return <Navigate to="/profile/security" />
     default:
-      return <ScreenResponsive isLoading />
+      return <BlurredLoader isLoading />
   }
 }

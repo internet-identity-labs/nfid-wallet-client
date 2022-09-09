@@ -3,30 +3,13 @@ import React from "react"
 
 import logo from "./assets/id.svg"
 
-import { ApplicationLogo } from "../atoms/application-logo"
 import { NFIDGradientBar } from "../atoms/gradient-bar"
-import { H5 } from "../atoms/typography"
-import { P } from "../atoms/typography/paragraph"
-import { BlurredLoader } from "../molecules/blurred-loader"
 
-interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
-  isLoading?: boolean
-  loadingMessage?: string | boolean
-  applicationLogo?: string
-  applicationName?: string
-  title?: string
-  subTitle?: string
-}
+interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   children,
   className,
-  isLoading,
-  loadingMessage,
-  applicationLogo,
-  applicationName,
-  title,
-  subTitle,
 }) => {
   return (
     <div
@@ -55,16 +38,6 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
           className,
         )}
       >
-        <div className="flex flex-col items-center">
-          {applicationLogo && (
-            <ApplicationLogo
-              src={applicationLogo}
-              applicationName={applicationName}
-            />
-          )}
-          <H5>{title}</H5>
-          <P className="mt-2">{subTitle}</P>
-        </div>
         {children}
       </div>
 
@@ -77,8 +50,6 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
         NFID is a privacy-preserving, one-touch multi-factor wallet protocol
         developed by Internet Identity Labs.
       </div>
-
-      <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage} />
     </div>
   )
 }

@@ -15,6 +15,7 @@ import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
 import { ic } from "./integration/actors"
 import { NotFound } from "./ui/pages/404"
+import { ScreenResponsive } from "./ui/templates/screen-responsive"
 
 declare const USERGEEK_API_KEY: string
 
@@ -33,8 +34,22 @@ export const App = () => (
       element={<PhoneCredentialCoordinator />}
     />
 
-    <Route path="/authenticate" element={<IDPCoordinator />} />
-    <Route path="/ridp" element={<RemoteIDPCoordinator />} />
+    <Route
+      path="/authenticate"
+      element={
+        <ScreenResponsive className="flex flex-col items-center">
+          <IDPCoordinator />
+        </ScreenResponsive>
+      }
+    />
+    <Route
+      path="/ridp"
+      element={
+        <ScreenResponsive className="flex flex-col items-center">
+          <RemoteIDPCoordinator />
+        </ScreenResponsive>
+      }
+    />
 
     {ProfileRoutes}
     {RecoverNFIDRoutes}

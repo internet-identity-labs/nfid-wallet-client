@@ -4,20 +4,21 @@ import React from "react"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { ElementProps } from "frontend/types/react"
 import { H5 } from "frontend/ui/atoms/typography"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 interface AuthorizeRegisterDeciderProps extends ElementProps<HTMLDivElement> {
   onLogin: () => Promise<void> | void
   onRegisterPlatformDevice: () => Promise<void>
   onRegisterSecurityDevice: () => Promise<void>
   isLoading: boolean
+  loadingMessage?: string
 }
 
 export const AuthorizeRegisterDeciderScreen: React.FC<
   AuthorizeRegisterDeciderProps
 > = ({
   isLoading,
-  className,
+  loadingMessage,
   onLogin,
   onRegisterPlatformDevice,
   onRegisterSecurityDevice,
@@ -28,10 +29,7 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
   } = useDeviceInfo()
 
   return (
-    <ScreenResponsive
-      className={clsx("flex flex-col items-center", className)}
-      isLoading={isLoading}
-    >
+    <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
       <H5>Sign in faster on this device</H5>
       <p className="mt-2 text-center">
         {isWebAuthNAvailable
@@ -67,7 +65,7 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
           </>
         )}
       </div>
-    </ScreenResponsive>
+    </BlurredLoader>
   )
 }
 

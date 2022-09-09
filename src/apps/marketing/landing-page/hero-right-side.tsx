@@ -19,8 +19,8 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
   return isUnregistered ? (
     <div
       className={clsx(
-        "relative m-auto sm:block z-10 bg-white rounded-b-md",
-        "mb-[20vh] sm:mb-[60vh] max-w-[360px] drop-shadow-[0_10px_60px_rgba(48,139,245,0.30)]",
+        "relative m-auto sm:block z-10 bg-white rounded-b-md overflow-hidden",
+        "mb-[20vh] sm:mb-[60vh] max-w-[360px] drop-shadow-[0_10px_60px_rgba(48,139,245,0.50)]",
         "min-h-[400px]",
         "md:mt-[4rem]",
       )}

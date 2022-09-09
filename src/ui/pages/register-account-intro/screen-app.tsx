@@ -17,8 +17,6 @@ import { anchorRules } from "frontend/ui/utils/validations"
 
 import SecurityKey from "./assets/security-key.svg"
 
-import "./index.css"
-
 interface RegisterAccountIntroProps {
   onRegister: () => void
   onSelectGoogleAuthorization: LoginEventHandler

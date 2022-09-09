@@ -2,7 +2,6 @@ import { SignIdentity } from "@dfinity/agent"
 import { useActor } from "@xstate/react"
 import React from "react"
 
-import { remoteReceiverUrl } from "frontend/apps/authentication/remote-authentication/routes"
 import {
   fetchAuthenticatorDevices,
   getMultiIdent,
@@ -15,6 +14,38 @@ import {
 } from "frontend/integration/pubsub"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
 import { RemoteAuthorizeAppUnknownDevice } from "frontend/ui/pages/remote-authorize-app-unknown-device"
+
+function remoteReceiverUrl({
+  domain,
+  secret,
+  maxTimeToLive = BigInt(Date.now() + 7 * 24 * 60 * 60 * 1e9),
+  applicationName,
+  applicationLogo,
+  applicationDerivationOrigin,
+}: {
+  domain: string | undefined
+  secret: string
+  maxTimeToLive?: bigint
+  applicationName?: string
+  applicationLogo?: string
+  applicationDerivationOrigin?: string
+}) {
+  const query = new URLSearchParams({
+    secret,
+    scope: domain || "",
+    derivationOrigin: applicationDerivationOrigin || "",
+    maxTimeToLive: maxTimeToLive.toString() || "",
+    applicationName: applicationName || "",
+    applicationLogo: encodeURIComponent(applicationLogo || ""),
+  }).toString()
+
+  const path = `/ridp/`
+  console.debug(remoteReceiverUrl.name, {
+    path: encodeURI(`${path}?${query.toString()}`),
+  })
+
+  return `${window.location.origin}${path}?${query.toString()}`
+}
 
 export function RemoteReceiverCoordinator({
   actor,

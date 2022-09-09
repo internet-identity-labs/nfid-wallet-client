@@ -10,24 +10,20 @@ import { RecoverNFIDRoutesConstants as RAC } from "frontend/apps/authentication/
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
-import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
+import { Accordion } from "frontend/ui/atoms/accordion"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
-import { useScroll } from "frontend/ui/utils/use-scroll"
-
-import { NavigationPopup } from "./auth-popup"
 
 interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
+  const { profile } = useAccount()
   const { isAuthenticated, login, logout } = useAuthentication()
 
   const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
-  const { registerRoute, status } = useRegisterQRCode()
-  const { scrollY } = useScroll()
 
   const handleLogin = async () => {
     await login()
@@ -114,7 +110,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                         <img src={User} alt="user" className="cursor-pointer" />
                       </div>
                       <p className="text-sm text-gray-700 px-2.5 w-full">
-                        {account?.name ?? account?.anchor ?? ""}
+                        {profile?.name ?? profile?.anchor ?? ""}
                       </p>
                     </div>
                   }
@@ -171,15 +167,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                       Sign in
                     </Button>
                   ) : null}
-                  {!isRegistered && !isAuthenticated ? (
-                    <Button
-                      className={"h-full leading-none"}
-                      primary
-                      onClick={() => navigate(registerRoute)}
-                    >
-                      Register
-                    </Button>
-                  ) : null}
                 </div>
               </div>
             </div>
@@ -225,16 +212,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               <img src={User} alt="user" className="cursor-pointer" />
             </div>
           ) : null}
-          {!isRegistered ? (
-            <Button
-              className={clsx("h-full leading-none", scrollY < 500 && "hidden")}
-              primary
-              onClick={() => setIsPopupVisible(!isPopupVisible)}
-            >
-              Register
-            </Button>
-          ) : null}
-          {isPopupVisible || status !== "" ? <NavigationPopup /> : null}
         </div>
       </div>
     </>

@@ -1,7 +1,7 @@
 import { useMachine } from "@xstate/react"
 import React from "react"
+import { useNavigate } from "react-router-dom"
 
-import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 import NFIDAuthenticationMachine, {
@@ -19,8 +19,7 @@ interface Props {
 
 export default function NFIDAuthenticationCoordinator({ machine }: Props) {
   const [state] = useMachine(machine || NFIDAuthenticationMachine)
-
-  const { refreshProfile } = useAccount()
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     console.debug("NFIDAuthenticationCoordinator", { state: state.value })
@@ -28,10 +27,9 @@ export default function NFIDAuthenticationCoordinator({ machine }: Props) {
 
   React.useEffect(() => {
     if (state.value === "End") {
-      console.debug("NFIDAuthenticationCoordinator TODO: handle authState")
-      refreshProfile()
+      navigate("/profile/assets")
     }
-  }, [refreshProfile, state.value])
+  }, [navigate, state.value])
 
   switch (true) {
     case state.matches("Authenticate"):

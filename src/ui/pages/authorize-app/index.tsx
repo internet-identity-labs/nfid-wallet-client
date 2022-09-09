@@ -10,6 +10,7 @@ import { Button } from "frontend/ui/atoms/button"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { H5 } from "frontend/ui/atoms/typography"
 import { P } from "frontend/ui/atoms/typography/paragraph"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurOverlay } from "frontend/ui/molecules/blur-overlay"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -69,16 +70,12 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
 
   return (
     <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
-      {applicationLogo && (
-        <ApplicationLogo
-          src={applicationLogo}
-          applicationName={applicationName}
-        />
-      )}
-      <H5>Choose an account</H5>
-      <P className="mt-2">
-        to continue {applicationName && `to ${applicationName}`}
-      </P>
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title="Choose an account"
+        subTitle={`to continue ${applicationName && `to ${applicationName}`}`}
+      />
       <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
         {displayAccounts.map((account, i) => {
           return (

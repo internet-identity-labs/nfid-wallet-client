@@ -89,8 +89,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
     }
   }
 
-  console.debug("NavigationItems", { isAuthenticated, isPopupVisible })
-
   return (
     <>
       <div className="md:hidden">

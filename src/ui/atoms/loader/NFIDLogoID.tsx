@@ -1,5 +1,5 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface NFIDLogoIDProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -11,7 +11,7 @@ export const NFIDLogoID: React.FC<NFIDLogoIDProps> = ({ className }) => {
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx('', className)}
+      className={clsx("", className)}
     >
       <path
         fillRule="evenodd"
@@ -36,5 +36,5 @@ export const NFIDLogoID: React.FC<NFIDLogoIDProps> = ({ className }) => {
         </linearGradient>
       </defs>
     </svg>
-  );
-};
+  )
+}

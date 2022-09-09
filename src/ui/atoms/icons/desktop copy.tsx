@@ -1,8 +1,8 @@
-import clsx from 'clsx';
-import React from 'react';
+import clsx from "clsx"
+import React from "react"
 
 interface DesktopIconProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export const DesktopIcon: React.FC<DesktopIconProps> = ({
@@ -13,7 +13,7 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
     <svg
       viewBox="0 0 34 34"
       fill="none"
-      className={clsx('w-6 h-6 cursor-pointer', className)}
+      className={clsx("w-6 h-6 cursor-pointer", className)}
       onClick={onClick}
     >
       <path
@@ -25,5 +25,5 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
         fill="#0E62FF"
       />
     </svg>
-  );
-};
+  )
+}

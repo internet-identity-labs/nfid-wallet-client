@@ -1,12 +1,9 @@
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
-import {
-  Loader,
-  Logo,
-  NFIDGradientBar,
-} from "@internet-identity-labs/nfid-sdk-react"
-
+import { NFIDGradientBar } from "../atoms/gradient-bar"
+import { Logo } from "../atoms/images/logo"
+import { Loader } from "../atoms/loader"
 import { BlurOverlay } from "../molecules/blur-overlay"
 
 interface IFrameWrapperProps extends React.HTMLAttributes<HTMLDivElement> {

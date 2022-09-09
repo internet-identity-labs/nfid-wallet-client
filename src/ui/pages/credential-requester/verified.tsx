@@ -1,8 +1,9 @@
 import React from "react"
 
-import { Button, P, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
-
+import { Button } from "frontend/ui/atoms/button"
+import { RadioButton } from "frontend/ui/atoms/button/radio"
 import ErrorDisplay from "frontend/ui/atoms/error"
+import { P } from "frontend/ui/atoms/typography/paragraph"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 
 interface CredentialRequesterVerifiedProps {

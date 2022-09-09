@@ -13,6 +13,7 @@ import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { CredentialResponse } from "frontend/ui/atoms/button/signin-with-google/types"
 import { useChallenge } from "frontend/ui/pages/captcha/hook"
 import { RegisterAccountIntro } from "frontend/ui/pages/register-account-intro/screen-app"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface RegisterAccountIntroProps
@@ -139,21 +140,23 @@ export const RouteRegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
     }
 
   return (
-    <RegisterAccountIntro
-      isLoading={isLoading}
-      applicationName={applicationName}
-      applicationLogo={applicationLogo}
-      onToggleAdvancedOptions={toggleAdvancedOptions}
-      showAdvancedOptions={showAdvancedOptions}
-      onRegister={handleCreateKeys}
-      onSelectGoogleAuthorization={handleGetGoogleKey}
-      onSelectSameDeviceAuthorization={handleAuthorization({
-        withSecurityDevices: false,
-      })}
-      onSelectSecurityKeyAuthorization={handleAuthorization({
-        withSecurityDevices: true,
-      })}
-      authError={authError}
-    />
+    <ScreenResponsive className="flex flex-col items-center">
+      <RegisterAccountIntro
+        isLoading={isLoading}
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        onToggleAdvancedOptions={toggleAdvancedOptions}
+        showAdvancedOptions={showAdvancedOptions}
+        onRegister={handleCreateKeys}
+        onSelectGoogleAuthorization={handleGetGoogleKey}
+        onSelectSameDeviceAuthorization={handleAuthorization({
+          withSecurityDevices: false,
+        })}
+        onSelectSecurityKeyAuthorization={handleAuthorization({
+          withSecurityDevices: true,
+        })}
+        authError={authError}
+      />
+    </ScreenResponsive>
   )
 }

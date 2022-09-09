@@ -16,17 +16,23 @@ const config = {
   },
   services: {
     getDataFromPath,
+    getAppMeta: () => Promise.resolve({ name: "My Application" }),
   },
 }
 
 describe("Remote IDP coordinator", () => {
   it("should render", async () => {
-    const testMachine = RemoteSenderMachine.withConfig({ ...config })
+    const testMachine = RemoteSenderMachine.withConfig({
+      ...config,
+    })
     await waitFor(
       async () => void render(<RemoteIDPCoordinator machine={testMachine} />),
     )
-    await waitFor(async () => screen.getByText("Sign in with NFID"))
-    expect(screen.getByText("Sign in with NFID")).toBeDefined()
+    await waitFor(async () =>
+      expect(
+        screen.getByText("Choose how you'd like to sign in to My Application"),
+      ).toBeDefined(),
+    )
   })
   // it("should render known device flow", async () => {
   //   const testMachine = RemoteSenderMachine.withConfig({

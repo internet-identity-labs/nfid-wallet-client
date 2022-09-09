@@ -3,12 +3,11 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import User from "src/assets/userpics/userpic_6.svg"
 
-import { Logo } from "@internet-identity-labs/nfid-sdk-react"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAccount } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
+import { Logo } from "frontend/ui/atoms/images/logo"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
@@ -76,7 +75,10 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                 detailsClassName="pb-0"
                 title={
                   <div className="h-[60px] items-center flex p-2.5">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0">
+                    <div
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0"
+                      onClick={toggleMenu}
+                    >
                       <img src={User} alt="user" className="cursor-pointer" />
                     </div>
                     <p className="text-sm text-gray-700 px-2.5 w-full">

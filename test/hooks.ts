@@ -158,6 +158,9 @@ export const hooks = {
   beforeScenario: (world: { name: string }) => {
     allureReporter.addFeature(world.name)
   },
+  afterScenario: () => {
+    browser.execute("window.localStorage.clear()")
+  },
   // beforeStep: function ({uri, feature, step}, context) {
   // },
   // afterStep: function ({uri, feature, step}, context, {error, result, duration, passed}) {

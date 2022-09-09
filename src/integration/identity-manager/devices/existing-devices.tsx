@@ -1,6 +1,6 @@
 import React from "react"
 
-import { List } from "@internet-identity-labs/nfid-sdk-react"
+import { List } from "frontend/ui/molecules/list"
 
 import { DeviceItem } from "./device-item"
 import { useDevices } from "./hooks"

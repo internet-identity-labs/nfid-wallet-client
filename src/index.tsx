@@ -6,9 +6,6 @@ import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import SwiperCore, { Pagination, Navigation } from "swiper"
-import "swiper/css"
-import "swiper/css/pagination"
 
 import { App } from "./App"
 import "./index.css"
@@ -28,8 +25,6 @@ process.env.NODE_ENV === "production" &&
     tracesSampleRate: 0.25,
     ...(SENTRY_RELEASE ? { release: SENTRY_RELEASE } : {}),
   })
-
-SwiperCore.use([Pagination, Navigation])
 
 const container = document.getElementById("root")
 

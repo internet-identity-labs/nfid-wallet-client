@@ -2,10 +2,11 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Button, P } from "@internet-identity-labs/nfid-sdk-react"
-
+import { Button } from "frontend/ui/atoms/button"
 import { Input } from "frontend/ui/atoms/input"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { P } from "frontend/ui/atoms/typography/paragraph"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { phoneRules } from "frontend/ui/utils/validations"
 
 interface CredentialRequesterNotVerifiedProps {
@@ -14,6 +15,7 @@ interface CredentialRequesterNotVerifiedProps {
   applicationName?: string
   onSubmit: (values: { phone: string }) => void
   isLoading?: boolean
+  loadingMessage?: string
   error?: string
   phoneNumber?: string
 }
@@ -21,11 +23,11 @@ interface CredentialRequesterNotVerifiedProps {
 export const CredentialRequesterNotVerified: React.FC<
   CredentialRequesterNotVerifiedProps
 > = ({
-  children,
   applicationLogo,
   applicationName,
   onSubmit,
   isLoading,
+  loadingMessage,
   error,
   phoneNumber,
 }) => {
@@ -41,13 +43,13 @@ export const CredentialRequesterNotVerified: React.FC<
   })
 
   return (
-    <ScreenResponsive
-      applicationLogo={applicationLogo}
-      applicationName={applicationName}
-      title="Verification request"
-      isLoading={isLoading}
-      // subTitle={`to continue ${applicationName ? `to ${applicationName}` : ""}`}
-    >
+    <BlurredLoader loadingMessage={loadingMessage} isLoading={isLoading}>
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title={"Verification request"}
+        subTitle={`to continue to ${applicationName ?? "the application"}`}
+      />
       <P className="text-sm mt-7">
         This application is requesting you verify a non-VOIP phone number with
         NFID to continue.
@@ -105,6 +107,6 @@ export const CredentialRequesterNotVerified: React.FC<
           Verify phone number
         </Button>
       </form>
-    </ScreenResponsive>
+    </BlurredLoader>
   )
 }

@@ -15,24 +15,18 @@ export const RemoteAuthorizeAppUnknownDevice: React.FC<
   AuthorizeAppUnknownDeviceProps
 > = ({ url, applicationLogo, applicationName }) => {
   return url ? (
-    <>
-      <div
-        className={clsx("flex flex-col items-center font-inter")}
-        style={{
-          backdropFilter: "blur(0px)",
-          WebkitBackdropFilter: "blur(0px)",
-        }}
-      >
-        <ApplicationMeta
-          applicationName={applicationName}
-          applicationLogo={applicationLogo}
-          title="Sign in"
-          subTitle={`Scan this code from a device with a camera to sign in to ${applicationName}`}
-        />
-        <div className="bg-gray-50 p-6 rounded-[10px] mt-8">
-          <QRCode content={url} options={{ width: 192 }} />
-        </div>
+    <div
+      className={clsx("flex flex-col items-center text-center font-inter p-6")}
+    >
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title="Sign in"
+        subTitle={`Scan this code from a device with a camera to sign in to ${applicationName}`}
+      />
+      <div className="bg-gray-50 p-6 rounded-[10px] mt-8">
+        <QRCode content={url} options={{ width: 192 }} />
       </div>
-    </>
+    </div>
   ) : null
 }

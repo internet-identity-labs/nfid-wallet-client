@@ -19,7 +19,6 @@ describe("Identity Manager suite", () => {
       imMock.update_application_alias = jest.fn(() =>
         Promise.resolve({ data: [true] }),
       )
-      // @ts-ignore
       await processApplicationOrigin("domain", "appName")
       expect(imMock.update_application_alias).toBeCalled()
     })
@@ -39,8 +38,7 @@ describe("Identity Manager suite", () => {
       imMock.update_application_alias = jest.fn(() =>
         Promise.resolve({ data: [true] }),
       )
-      // @ts-ignore
-      await processApplicationOrigin("domain", "appAliasAnother")
+      await processApplicationOrigin("domain", "appAliasAnother", "test")
       expect(imMock.update_application_alias).toBeCalled()
     })
     it("Should skip", async function () {

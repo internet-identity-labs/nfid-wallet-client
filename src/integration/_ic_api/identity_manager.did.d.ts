@@ -282,6 +282,7 @@ export interface _SERVICE {
   update_application_alias: (
     arg_0: string,
     arg_1: string,
+    arg_2: [] | [string],
   ) => Promise<BoolHttpResponse>
   update_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
   use_access_point: () => Promise<HTTPAccessPointResponse>

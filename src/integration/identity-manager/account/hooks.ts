@@ -36,10 +36,10 @@ type AccountService = Pick<
 /** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {
   const { data: profile, error, mutate } = useSWR("account", fetchProfile)
-  const [account, setAccount] = useAtom(localStorageAccountAtom)
-  const [memoryAccount, setMemoryAccount] = useAtom(memoryAccountAtom)
+  const [, setAccount] = useAtom(localStorageAccountAtom)
+  const [, setMemoryAccount] = useAtom(memoryAccountAtom)
   const [userNumber] = useAtom(userNumberAtom)
-  const { isAuthenticated, shouldStoreLocalAccount } = useAuthentication()
+  const { shouldStoreLocalAccount } = useAuthentication()
 
   React.useEffect(() => {
     console.debug("useAccount", { profile, error })
@@ -70,15 +70,13 @@ export const useAccount = () => {
         .then(mapProfile)
 
       if (newAccount) {
-        shouldStoreLocalAccount
-          ? setAccount(newAccount)
-          : setMemoryAccount(newAccount)
+        shouldStoreLocalAccount && setProfile(newAccount)
         mutate()
       }
 
       return newAccount
     },
-    [mutate, setAccount, setMemoryAccount],
+    [mutate],
   )
 
   const readAccount = React.useCallback(async () => {
@@ -140,7 +138,7 @@ export const useAccount = () => {
       accountService: AccountService,
       partialAccount: Partial<Profile>,
     ) => {
-      const newAccount = produce(account, (draft: Profile) => ({
+      const newAccount = produce(profile, (draft: Profile) => ({
         ...draft,
         ...partialAccount,
       }))
@@ -161,7 +159,7 @@ export const useAccount = () => {
         ? setAccount(newAccount)
         : setMemoryAccount(newAccount)
     },
-    [account, setAccount, setMemoryAccount, shouldStoreLocalAccount],
+    [profile, setAccount, setMemoryAccount, shouldStoreLocalAccount],
   )
 
   const verifyPhonenumber = React.useCallback(
@@ -189,8 +187,6 @@ export const useAccount = () => {
     error,
     profile,
     refreshProfile: mutate,
-    /**@deprecated */
-    account: isAuthenticated ? account || memoryAccount : account,
     userNumber,
     shouldStoreLocalAccount,
     setLocalAccount: setAccount,

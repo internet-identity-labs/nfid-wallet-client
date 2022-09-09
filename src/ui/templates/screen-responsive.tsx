@@ -5,10 +5,8 @@ import logo from "./assets/id.svg"
 
 import { ApplicationLogo } from "../atoms/application-logo"
 import { NFIDGradientBar } from "../atoms/gradient-bar"
-import { Loader } from "../atoms/loader"
 import { H5 } from "../atoms/typography"
 import { P } from "../atoms/typography/paragraph"
-import { BlurOverlay } from "../molecules/blur-overlay"
 import { BlurredLoader } from "../molecules/blurred-loader"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {

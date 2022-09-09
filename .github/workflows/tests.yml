@@ -112,7 +112,7 @@ jobs:
       - name: Running E2E test
         run: |
           yarn test:e2e
-          yarn test:e2e:mobile
+          # yarn test:e2e:mobile
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}

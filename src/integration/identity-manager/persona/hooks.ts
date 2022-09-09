@@ -22,7 +22,7 @@ export const usePersona = () => {
   const { scope } = useParams()
   const { isLoading } = useIsLoading()
   const { authorizationRequest } = useAuthorization()
-  const { account } = useAccount()
+  const { profile } = useAccount()
 
   const allAccounts = React.useMemo(() => {
     if (!personas) return []
@@ -50,8 +50,8 @@ export const usePersona = () => {
       setPersonas(response.data[0])
     }
     // NOTE: this is only for dev purposes
-    if (response.status_code === 404 && account?.anchor) {
-      const anchor = BigInt(account?.anchor)
+    if (response.status_code === 404 && profile?.anchor) {
+      const anchor = BigInt(profile?.anchor)
       await im
         .create_account({
           anchor,
@@ -64,7 +64,7 @@ export const usePersona = () => {
 
       getPersona()
     }
-  }, [account?.anchor, setPersonas])
+  }, [profile?.anchor, setPersonas])
 
   const createPersona = React.useCallback(
     async ({ domain }: { domain: string }) => {

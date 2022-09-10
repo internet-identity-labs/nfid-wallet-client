@@ -36,7 +36,7 @@ const root = createRoot(container)
 root.render(
   <React.StrictMode>
     <HelmetProvider>
-      <ToastContainer icon={({ theme, type }) => ToastIcons[type]} />
+      <ToastContainer icon={({ type }) => ToastIcons[type]} />
       <Router>
         <App />
       </Router>

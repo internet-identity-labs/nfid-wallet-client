@@ -36,20 +36,20 @@ export const AppScreenRecoverNFID: React.FC<
       if (!userNumber) {
         return setResponseError("Invalid Recovery Phrase (missing Anchor)")
       }
-
       let result = null
 
       try {
+        setResponseError("")
         result = await loginWithRecovery(seedPhrase, userNumber)
       } catch (e) {
         console.error(e)
-        setResponseError(
+        return setResponseError(
           "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
       }
 
       if (result?.tag !== "ok") {
-        setResponseError(
+        return setResponseError(
           "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
       }

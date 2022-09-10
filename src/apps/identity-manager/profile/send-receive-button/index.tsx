@@ -54,7 +54,7 @@ export const SendReceiveButton = () => {
       <Button
         className={clsx(
           "px-[10px] py-[11px] space-x-2.5 items-center",
-          "hidden sm:flex z-10",
+          "hidden md:flex z-10",
         )}
         onClick={() => setIsModalVisible(true)}
         primary
@@ -64,7 +64,7 @@ export const SendReceiveButton = () => {
       </Button>
       <div
         className={clsx(
-          "sm:hidden fixed bottom-3 right-3 w-12 h-12",
+          "md:hidden fixed bottom-3 right-3 w-12 h-12",
           "bg-blue-600 flex items-center justify-center",
           "rounded-full shadow-blueLight shadow-blue-600",
           "cursor-pointer z-30",

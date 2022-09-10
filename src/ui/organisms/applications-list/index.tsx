@@ -1,8 +1,9 @@
 import React from "react"
 
 import { List } from "frontend/ui/molecules/list"
-import { ListItem } from "frontend/ui/molecules/list/list-item"
 import { getUrl } from "frontend/ui/utils"
+
+import { ApplicationListItem } from "./list-item"
 
 interface IAccount {
   applicationName: string
@@ -32,12 +33,10 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   return (
     <List.Items className="ml-0">
       {accounts.map((application, index) => (
-        <ListItem
+        <ApplicationListItem
           key={index}
           title={application.applicationName}
-          subtitle={`${application.accountsCount} persona${
-            application.accountsCount > 1 ? "s" : ""
-          }`}
+          subtitle={getUrl(application.domain).host}
           icon={
             <span className="text-xl font-medium text-blue-base">
               {application.applicationName[0]}
@@ -47,6 +46,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
           onClick={() =>
             handleNavigateToApplication(application.applicationName)
           }
+          accountsLength={accounts.length}
         />
       ))}
     </List.Items>

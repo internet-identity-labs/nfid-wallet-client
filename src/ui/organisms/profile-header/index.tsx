@@ -31,12 +31,12 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
     <div
       className={clsx(
         "w-full h-28 flex justify-between items-center pt-14",
-        "sm:h-[70px] sm:pt-0",
+        "mdd:h-[70px] md:pt-0",
         className,
       )}
     >
       <Logo />
-      <div className={clsx("hidden", "sm:flex sm:space-x-5 sm:h-10")}>
+      <div className={clsx("hidden", "md:flex md:space-x-5 md:h-10")}>
         <SendReceiveButton />
         <div className={clsx("relative")} ref={popupRef} id="profile">
           <img
@@ -53,13 +53,13 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
           )}
         </div>
       </div>
-      <div className="sm:hidden">
+      <div className="md:hidden">
         <ButtonMenu
           buttonElement={
             <img
               src={MenuIcon}
               alt="menu"
-              className={clsx("transform rotate-180", "sm:hidden")}
+              className={clsx("transform rotate-180", "md:hidden")}
             />
           }
         >

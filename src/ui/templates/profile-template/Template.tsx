@@ -35,12 +35,14 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
       <div
         className={clsx(
-          "block relative z-1 px-4 sm:px-[30px]",
-          "sm:grid sm:grid-cols-[256px,1fr] sm:gap-[30px]",
+          "block relative z-1 px-4",
+          "sm:gap-[30px] sm:px-[30px]",
+          "md:grid md:grid-cols-[50px,1fr]",
+          "lg:grid-cols-[256px,1fr]",
           containerClassName,
         )}
       >
-        <div className={clsx("hidden mt-5 -ml-3 sm:block relative")}>
+        <div className={clsx("hidden mt-5 -ml-3 md:block relative")}>
           <ProfileSidebar />
         </div>
         <section className={clsx("relative", className)}>

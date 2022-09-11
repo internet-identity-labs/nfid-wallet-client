@@ -56,6 +56,7 @@ export const SendReceiveButton = () => {
           "px-[10px] py-[11px] space-x-2.5 items-center",
           "hidden sm:flex z-10",
         )}
+        id="sendReceiveButton"
         onClick={() => setIsModalVisible(true)}
         primary
       >

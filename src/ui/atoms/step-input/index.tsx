@@ -111,7 +111,7 @@ export const StepInput: React.FC<StepInputProps> = ({
         message: responseError,
       })
     }
-  }, [clearErrors, errors?.verificationCode?.message, responseError, setError])
+  }, [errors?.verificationCode?.message, responseError, setError])
 
   const validateToken = () => {
     const verificationCode = getVerificationCode()

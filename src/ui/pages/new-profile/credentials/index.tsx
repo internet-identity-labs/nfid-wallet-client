@@ -26,20 +26,22 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
       <ProfileContainer
         title="Issued by Internet Identity Labs"
         subTitle="Shareable verified data"
+        className="relative"
       >
-        <ListItem
-          disabled={!!phone?.length}
-          icon={<MobileIcon />}
-          title={phone?.length ? phone : "Connect mobile phone number"}
-          onClick={() => navigate(`${ProfileConstants.addPhoneNumber}`)}
-        />
-        {/* <ListItem
-          // disabled={!!email?.length}
-          disabled
-          icon={<GmailIcon />}
-          title={email ?? "Connect Gmail"}
-          onClick={() => {}}
-        /> */}
+        {isLoading ? (
+          <ListItem
+            disabled={true}
+            icon={<MobileIcon />}
+            title={"Loading..."}
+          />
+        ) : (
+          <ListItem
+            disabled={!!phone?.length}
+            icon={<MobileIcon />}
+            title={phone?.length ? phone : "Connect mobile phone number"}
+            onClick={() => navigate(`${ProfileConstants.addPhoneNumber}`)}
+          />
+        )}
       </ProfileContainer>
       {isLoading ? <Loader isLoading={isLoading} /> : null}
     </ProfileTemplate>

@@ -92,6 +92,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
       <ProfileContainer
         className="mt-[30px] relative mb-12 sm:mb-0"
         title="Account recovery methods"
+        id="recoveryPhrase"
         subTitle={
           recoveryMethods.length
             ? "Ways NFID can verify it’s you"

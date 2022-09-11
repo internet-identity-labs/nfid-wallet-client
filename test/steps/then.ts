@@ -34,6 +34,7 @@ import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
 import clickElement from "./support/action/clickElement"
 import setInputField from "./support/action/setInputField"
+import setValue from "webdriverio/build/commands/element/setValue"
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
 
@@ -171,6 +172,11 @@ Then(/^Go to Profile page$/, async function() {
 
 Then(/^I put Recovery Phrase to input field "([^"]*)?"$/, async function(phrase: string) {
   await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
+})
+
+Then(/^I put copied Recovery Phrase to input field/, async function() {
+  await clickElement("click", "selector", '[name="recoveryPhrase"]' )
+  await browser.keys(['Command','v'])
 })
 
 Then(/^I toggle checkbox "([^"]*)?"$/, async function(selector: string) {

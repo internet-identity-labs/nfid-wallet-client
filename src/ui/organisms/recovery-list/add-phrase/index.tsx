@@ -74,6 +74,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         </div>
 
         <Button
+          id="recoverySaveButton"
           block
           primary
           disabled={!copied || !isSaved}

@@ -33,6 +33,7 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
         setIsLoading(false)
       }}
       isLoading={isLoading || !state.matches("Select")}
+      loadingMessage={isLoading ? "registering device" : undefined}
     />
   )
 }

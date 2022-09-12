@@ -41,7 +41,7 @@ When(/^I scroll to element "([^"]*)?"$/, scroll)
 
 When(/^I close the last opened (window|tab)$/, closeLastOpenedWindow)
 
-When(/^I focus the last opened (window|tab)$/, focusLastOpenedWindow)
+When(/^I focus the (previous|last) opened (window|tab)$/, focusLastOpenedWindow)
 
 When(/^I focus the (previous|last) opened (window|tab)$/, focusLastOpenedWindow)
 

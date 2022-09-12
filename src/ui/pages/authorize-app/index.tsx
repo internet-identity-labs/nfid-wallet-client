@@ -5,23 +5,24 @@ import ReactTooltip from "react-tooltip"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
 import { ElementProps } from "frontend/types/react"
-import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { Button } from "frontend/ui/atoms/button"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
-import { H5 } from "frontend/ui/atoms/typography"
-import { P } from "frontend/ui/atoms/typography/paragraph"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurOverlay } from "frontend/ui/molecules/blur-overlay"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import alertIcon from "./assets/alert-triangle.svg"
 
 import { AccountItem } from "./raw-item"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
-  isAuthenticated: boolean
+  isAuthenticated?: boolean
   applicationName?: string
   applicationLogo?: string
   accounts: NFIDPersona[]
   accountsLimit?: number
+  isLoading?: boolean
+  loadingMessage?: string | boolean
   onUnlockNFID: () => Promise<any>
   onLogin: (accountId: string) => Promise<void>
   onCreateAccount: () => Promise<void>
@@ -33,6 +34,8 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   applicationLogo,
   accounts,
   accountsLimit,
+  isLoading,
+  loadingMessage,
   onUnlockNFID,
   onLogin,
   onCreateAccount,
@@ -63,17 +66,13 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
       }))
 
   return (
-    <>
-      {applicationLogo && (
-        <ApplicationLogo
-          src={applicationLogo}
-          applicationName={applicationName}
-        />
-      )}
-      <H5>Choose an account</H5>
-      <P className="mt-2">
-        to continue {applicationName && `to ${applicationName}`}
-      </P>
+    <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title="Choose an account"
+        subTitle={`to continue ${applicationName && `to ${applicationName}`}`}
+      />
       <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
         {displayAccounts.map((account, i) => {
           return (
@@ -139,6 +138,6 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           </BlurOverlay>
         )}
       </div>
-    </>
+    </BlurredLoader>
   )
 }

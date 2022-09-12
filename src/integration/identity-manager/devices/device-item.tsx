@@ -3,9 +3,9 @@ import { BiLoaderCircle } from "react-icons/bi"
 import { FaKey } from "react-icons/fa"
 import { MdLaptopMac } from "react-icons/md"
 
-import { ListItem } from "@internet-identity-labs/nfid-sdk-react"
-import { Chip } from "@internet-identity-labs/nfid-sdk-react"
-import { DeleteButton } from "@internet-identity-labs/nfid-sdk-react"
+import { DeleteButton } from "frontend/ui/atoms/button/delete-button"
+import { Chip } from "frontend/ui/atoms/chip"
+import { ListItem } from "frontend/ui/molecules/list/list-item"
 
 import { useDevices } from "./hooks"
 import { LegacyDevice } from "./state"

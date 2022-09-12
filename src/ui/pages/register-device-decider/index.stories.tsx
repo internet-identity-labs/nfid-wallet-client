@@ -2,7 +2,6 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { AuthorizeRegisterDeciderScreen } from "."
-import { AppScreenRegisterDeviceDecider } from "../../../apps/authentication/authenticate/screen-app-register-device-decider"
 
 export default {
   title: "Screens/AuthorizeRegisterDeciderScreen",
@@ -19,18 +18,6 @@ const RegisterDeviceDeciderTemplate: ComponentStory<
   return <AuthorizeRegisterDeciderScreen {...args} />
 }
 
-const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
-  typeof AppScreenRegisterDeviceDecider
-> = (args) => {
-  return (
-    <Router>
-      <AppScreenRegisterDeviceDecider {...args} />
-    </Router>
-  )
-}
-
 export const Raw = RegisterDeviceDeciderTemplate.bind({})
 
 Raw.args = {}
-
-export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})

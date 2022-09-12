@@ -2,14 +2,7 @@ import clsx from "clsx"
 import { format } from "date-fns"
 import produce from "immer"
 import React from "react"
-
-import {
-  Loader,
-  ModalAdvanced,
-  P,
-  PencilIcon,
-  TrashIcon,
-} from "@internet-identity-labs/nfid-sdk-react"
+import ReactTooltip from "react-tooltip"
 
 import {
   LegacyDevice,
@@ -18,6 +11,11 @@ import {
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { InfoIcon } from "frontend/ui/atoms/icons/info"
+import { PencilIcon } from "frontend/ui/atoms/icons/pencil"
+import { TrashIcon } from "frontend/ui/atoms/icons/trash"
+import { Loader } from "frontend/ui/atoms/loader"
+import { P } from "frontend/ui/atoms/typography/paragraph"
+import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 import { DeviceIconDecider } from "./device-icon-decider"
 import { DeviceListButtonGroup } from "./device-list-button-group"
@@ -33,6 +31,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   onDelete,
   onDeviceUpdate,
 }) => {
+  const [isTooltipVisible, setIsTooltipVisible] = React.useState(false)
   const [updatedDevice, setUpdatedDevice] = React.useState<LegacyDevice | null>(
     null,
   )
@@ -132,13 +131,15 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           "relative flex flex-row hover:bg-gray-50 hover:rounded transition-colors duration-100 -mx-3",
         )}
       >
+        {isTooltipVisible && <ReactTooltip className="max-w-[330px]" />}
+
         <div className="flex flex-wrap items-center flex-1 px-3 select-none py-2cursor-pointer peer">
           <div className="mr-4">
             <div className="relative flex items-center justify-center bg-white rounded-full w-9 h-9">
               <DeviceIconDecider
                 icon={device.isAccessPoint ? device.icon : "unknown"}
                 onClick={
-                  isEditingLabel ? () => null : handleEditDeviceIconDialog
+                  isEditingLabel ? handleEditDeviceIconDialog : () => null
                 }
               />
             </div>
@@ -202,7 +203,16 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 </div>
               </div>
 
-              <InfoIcon className={clsx(device.isAccessPoint && "hidden")} />
+              <div
+                onMouseEnter={() => setIsTooltipVisible(true)}
+                onMouseLeave={() => {
+                  setIsTooltipVisible(false)
+                  setTimeout(() => setIsTooltipVisible(true), 50)
+                }}
+                data-tip="You can sign in to the same identity from this device wherever you registered it (i.e. Internet Identity). It won’t work with NFID."
+              >
+                <InfoIcon className={clsx(device.isAccessPoint && "hidden")} />
+              </div>
             </div>
           </div>
         </div>

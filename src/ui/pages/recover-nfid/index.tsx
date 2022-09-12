@@ -2,14 +2,11 @@ import clsx from "clsx"
 import React from "react"
 import { FieldValues, useForm } from "react-hook-form"
 
-import {
-  Button,
-  Loader,
-  H2,
-  TextArea,
-} from "@internet-identity-labs/nfid-sdk-react"
-
+import { Button } from "frontend/ui/atoms/button"
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
+import { TextArea } from "frontend/ui/atoms/input/text-area"
+import { Loader } from "frontend/ui/atoms/loader"
+import { H2 } from "frontend/ui/atoms/typography"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
 interface RecoverNFIDProps extends React.HTMLAttributes<HTMLDivElement> {

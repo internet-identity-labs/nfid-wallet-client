@@ -1,9 +1,10 @@
 import React from "react"
 
-import { Button, P, RadioButton } from "@internet-identity-labs/nfid-sdk-react"
-
+import { Button } from "frontend/ui/atoms/button"
+import { RadioButton } from "frontend/ui/atoms/button/radio"
 import ErrorDisplay from "frontend/ui/atoms/error"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { P } from "frontend/ui/atoms/typography/paragraph"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 
 interface CredentialRequesterVerifiedProps {
   applicationLogo?: string
@@ -24,12 +25,13 @@ export const CredentialRequesterVerified: React.FC<
   }
 
   return (
-    <ScreenResponsive
-      applicationLogo={applicationLogo}
-      applicationName={applicationName}
-      title="Verification request"
-      subTitle={`to continue to ${applicationName ?? "the application"}`}
-    >
+    <>
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title={"Verification request"}
+        subTitle={`to continue to ${applicationName ?? "the application"}`}
+      />
       <P className="mt-5 text-sm">
         You already have a verified phone credential from Internet Identity
         Labs.
@@ -60,6 +62,6 @@ export const CredentialRequesterVerified: React.FC<
         Continue
       </Button>
       {error && <ErrorDisplay>{error}</ErrorDisplay>}
-    </ScreenResponsive>
+    </>
   )
 }

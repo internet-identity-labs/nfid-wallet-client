@@ -5,8 +5,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
-import { Loader } from "@internet-identity-labs/nfid-sdk-react"
-
+import { Loader } from "frontend/ui/atoms/loader"
 import ProfileNewTransaction from "frontend/ui/organisms/profile-new-transaction"
 import { isHex } from "frontend/ui/utils"
 
@@ -55,7 +54,7 @@ export const SendReceiveButton = () => {
       <Button
         className={clsx(
           "px-[10px] py-[11px] space-x-2.5 items-center",
-          "hidden sm:flex z-10",
+          "hidden md:flex z-10",
         )}
         id="sendReceiveButton"
         onClick={() => setIsModalVisible(true)}
@@ -66,7 +65,7 @@ export const SendReceiveButton = () => {
       </Button>
       <div
         className={clsx(
-          "sm:hidden fixed bottom-3 right-3 w-12 h-12",
+          "md:hidden fixed bottom-3 right-3 w-12 h-12",
           "bg-blue-600 flex items-center justify-center",
           "rounded-full shadow-blueLight shadow-blue-600",
           "cursor-pointer z-30",

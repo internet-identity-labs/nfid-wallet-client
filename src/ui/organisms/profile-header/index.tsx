@@ -3,12 +3,11 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import User from "src/assets/userpics/userpic_6.svg"
 
-import { Logo } from "@internet-identity-labs/nfid-sdk-react"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
 import { useAccount } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
+import { Logo } from "frontend/ui/atoms/images/logo"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
@@ -32,14 +31,14 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
     <div
       className={clsx(
         "w-full h-28 flex justify-between items-center pt-14",
-        "sm:h-[70px] sm:pt-0",
+        "md:h-[70px] md:pt-0",
         className,
       )}
     >
       <Logo />
-      <div className={clsx("hidden", "sm:flex sm:space-x-5 sm:h-10")}>
+      <div className={clsx("hidden", "md:flex md:space-x-5 md:h-10")}>
         <SendReceiveButton />
-        <div className={clsx("relative")} ref={popupRef}>
+        <div className={clsx("relative")} ref={popupRef} id="profile">
           <img
             className={clsx("cursor-pointer w-10")}
             src={User}
@@ -54,13 +53,13 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
           )}
         </div>
       </div>
-      <div className="sm:hidden">
+      <div className="md:hidden">
         <ButtonMenu
           buttonElement={
             <img
               src={MenuIcon}
               alt="menu"
-              className={clsx("transform rotate-180", "sm:hidden")}
+              className={clsx("transform rotate-180", "md:hidden")}
             />
           }
         >
@@ -76,7 +75,10 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                 detailsClassName="pb-0"
                 title={
                   <div className="h-[60px] items-center flex p-2.5">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0">
+                    <div
+                      className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0"
+                      onClick={toggleMenu}
+                    >
                       <img src={User} alt="user" className="cursor-pointer" />
                     </div>
                     <p className="text-sm text-gray-700 px-2.5 w-full">

@@ -42,6 +42,8 @@ export interface Account {
   domain: string
   label: string
   accountId: string
+  icon?: string
+  alias?: string[]
 }
 
 /**
@@ -264,6 +266,8 @@ export interface Application {
   accountLimit: number
   domain: string
   name: string
+  icon?: string
+  alias: [] | [string[]]
 }
 
 function mapApplication(application: BEApplication): Application {
@@ -274,6 +278,8 @@ function mapApplication(application: BEApplication): Application {
     accountLimit: application.user_limit,
     domain: application.domain,
     name: application.name,
+    icon: application.img[0],
+    alias: application.alias,
   }
 }
 

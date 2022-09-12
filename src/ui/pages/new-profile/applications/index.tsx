@@ -6,6 +6,7 @@ import Pagination from "frontend/ui/molecules/pagination"
 import { ApplicationList } from "frontend/ui/organisms/applications-list"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { getUrl } from "frontend/ui/utils"
 
 import ProfileApplicationsEmpty from "./empty-state"
 
@@ -23,12 +24,17 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
   const myApplications = React.useMemo(() => {
     // Group iiPersonas by hostname and count the number of iiPersonas
     const personasByHostname = applications.reduce((acc, persona) => {
-      const applicationName = applicationsMeta?.find(
+      const applicationMeta = applicationsMeta?.find(
         (app) => app.domain === persona.domain,
-      )?.name
+      )
 
-      const personas = acc[applicationName ?? ""] || []
-      acc[applicationName ?? ""] = [...personas, persona]
+      acc[applicationMeta?.name ?? getUrl(persona.domain).host] = [
+        // @ts-ignore
+        {
+          ...persona,
+          ...applicationMeta,
+        },
+      ]
 
       return acc
     }, {} as { [applicationName: string]: Account[] })
@@ -38,10 +44,10 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
       ([applicationName, accounts]) => {
         return {
           applicationName,
-          // Icon is not there yet
-          // applicationIcon: applicationsMeta?.find((app) => app.name === applicationName).icon,
           accountsCount: accounts.length,
           domain: accounts[0].domain,
+          icon: accounts[0].icon,
+          alias: accounts[0].alias,
         }
       },
     )

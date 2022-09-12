@@ -22,14 +22,17 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
   const { data: applicationsMeta } = useApplicationsMeta()
 
   const myApplications = React.useMemo(() => {
+    console.log({ applications })
     // Group iiPersonas by hostname and count the number of iiPersonas
     const personasByHostname = applications.reduce((acc, persona) => {
-      const applicationMeta = applicationsMeta?.find(
-        (app) => app.domain === persona.domain,
+      const applicationMeta = applicationsMeta?.find((app) =>
+        app?.alias?.includes(persona.domain),
       )
 
-      acc[applicationMeta?.name ?? getUrl(persona.domain).host] = [
-        // @ts-ignore
+      const personas = acc[getUrl(persona.domain).host ?? ""] || []
+
+      acc[getUrl(persona.domain).host] = [
+        ...(personas as any),
         {
           ...persona,
           ...applicationMeta,
@@ -51,8 +54,6 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
         }
       },
     )
-
-    console.debug({ personaByHostnameArray })
 
     return personaByHostnameArray
   }, [applications, applicationsMeta])

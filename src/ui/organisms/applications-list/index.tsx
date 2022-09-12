@@ -9,7 +9,10 @@ interface IAccount {
   applicationName: string
   accountsCount: number
   domain: string
+  icon?: string
+  alias?: string[]
 }
+
 interface ApplicationListProps {
   accounts: IAccount[]
 }
@@ -30,17 +33,27 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
     [accounts],
   )
 
+  const getApplicationAlias = (application: IAccount) => {
+    const alias = application?.alias?.map((alias) => getUrl(alias).host)
+    if (alias && alias.length) return alias.join(",")
+    return getUrl(application.domain).host
+  }
+
   return (
     <List.Items className="ml-0">
       {accounts.map((application, index) => (
         <ApplicationListItem
           key={index}
           title={application.applicationName}
-          subtitle={getUrl(application.domain).host}
+          subtitle={getApplicationAlias(application)}
           icon={
-            <span className="text-xl font-medium text-blue-base">
-              {application.applicationName[0]}
-            </span>
+            application.icon ? (
+              <img src={application.icon} alt="app icon" />
+            ) : (
+              <span className="text-xl font-medium text-blue-base">
+                {application.applicationName[0]}
+              </span>
+            )
           }
           defaultAction={false}
           onClick={() =>

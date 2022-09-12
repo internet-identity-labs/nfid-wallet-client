@@ -8,7 +8,6 @@ export default async (ms: string) => {
    * @type {Int}
    */
   const intMs = parseInt(ms, 10)
-
   // eslint-disable-next-line wdio/no-pause
   await browser.pause(intMs)
 }

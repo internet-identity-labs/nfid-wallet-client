@@ -2,9 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
-import { CardBody } from "@internet-identity-labs/nfid-sdk-react"
-
 import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
+import { CardBody } from "frontend/ui/molecules/card/body"
 import { NFIDLogin } from "frontend/ui/pages/nfid-login"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"

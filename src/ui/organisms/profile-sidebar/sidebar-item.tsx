@@ -18,8 +18,10 @@ const ProfileSidebarItem: React.FC<IProfileSidebarItem> = ({
   return (
     <div
       className={clsx(
-        "h-[50px] flex space-x-2.5 px-2.5 items-center rounded-[4px]",
+        "h-[50px] flex items-center space-x-2.5 px-2.5 rounded-[4px]",
         "hover:bg-gray-100 transition-colors cursor-pointer",
+        "md:w-[50px] md:justify-center",
+        "lg:w-auto lg:justify-start",
         isActive && "bg-gray-100",
       )}
       onClick={onClick}
@@ -32,7 +34,10 @@ const ProfileSidebarItem: React.FC<IProfileSidebarItem> = ({
         }}
       />
       <span
-        className={clsx(className ?? "text-sm font-semibold text-gray-700")}
+        className={clsx(
+          className ?? "text-sm font-semibold text-gray-700",
+          "sm:block md:hidden lg:block",
+        )}
       >
         {title}
       </span>

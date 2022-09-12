@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 
 import { Account } from "frontend/integration/identity-manager"
+import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import Pagination from "frontend/ui/molecules/pagination"
 import { ApplicationList } from "frontend/ui/organisms/applications-list"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -18,18 +19,29 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
   applications,
 }) => {
   const [filteredData, setFilteredData] = useState<any[]>([])
+  const { data: applicationsMeta } = useApplicationsMeta()
 
   const myApplications = React.useMemo(() => {
+    console.log({ applications })
     // Group iiPersonas by hostname and count the number of iiPersonas
     const personasByHostname = applications.reduce((acc, persona) => {
-      const hostname = getUrl(persona.domain).hostname.split(".")[0]
-      const applicationName =
-        hostname.charAt(0).toUpperCase() + hostname.slice(1)
-      const personas = acc[applicationName] || []
-      acc[applicationName] = [...personas, persona]
+      const applicationMeta = applicationsMeta?.find((app) =>
+        app?.alias?.includes(persona.domain),
+      )
+
+      const personas = acc[getUrl(persona.domain).host ?? ""] || []
+
+      acc[getUrl(persona.domain).host] = [
+        ...(personas as any),
+        {
+          ...persona,
+          ...applicationMeta,
+        },
+      ]
 
       return acc
     }, {} as { [applicationName: string]: Account[] })
+
     // Map the iiPersonas by application to an array of objects
     const personaByHostnameArray = Object.entries(personasByHostname).map(
       ([applicationName, accounts]) => {
@@ -37,14 +49,15 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
           applicationName,
           accountsCount: accounts.length,
           domain: accounts[0].domain,
+          icon: accounts[0].icon,
+          alias: accounts[0].alias,
         }
       },
     )
 
     return personaByHostnameArray
-  }, [applications])
+  }, [applications, applicationsMeta])
 
-  console.log({ myApplications })
   return (
     <ProfileTemplate pageTitle="Applications">
       {!myApplications.length ? (

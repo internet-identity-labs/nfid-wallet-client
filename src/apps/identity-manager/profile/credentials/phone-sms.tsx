@@ -1,5 +1,6 @@
 import { useAtom } from "jotai"
 import React from "react"
+import { toast } from "react-toastify"
 
 import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
@@ -20,6 +21,14 @@ const ProfileSMS = () => {
   const { refreshProfile } = useAccount()
   const { delegationIdentity } = authState.get()
 
+  const navigateToCredentials = React.useCallback(() => {
+    return navigate(`${ProfileConstants.base}/${ProfileConstants.credentials}`)
+  }, [navigate])
+
+  React.useEffect(() => {
+    if (!phone) navigateToCredentials()
+  }, [navigateToCredentials, phone])
+
   const handleSubmitSMSToken = React.useCallback(
     async (token: string) => {
       toggleLoading()
@@ -29,13 +38,11 @@ const ProfileSMS = () => {
       toggleLoading()
       if (response.status_code >= 200 && response.status_code < 400) {
         refreshProfile()
-        return navigate(
-          `${ProfileConstants.base}/${ProfileConstants.credentials}`,
-        )
+        return navigateToCredentials()
       }
       if (response.error.length) setError(response.error[0])
     },
-    [navigate, refreshProfile],
+    [navigateToCredentials, refreshProfile],
   )
 
   const handleResendToken = React.useCallback(async () => {
@@ -43,13 +50,19 @@ const ProfileSMS = () => {
 
     try {
       toggleLoading()
+      setError("")
       await verifyPhoneNumber(phone as string, delegationIdentity)
     } catch (e: any) {
-      if (e.body) setError(e.body.error)
+      console.log({ e })
+      if (e.message) setError(e.message)
+      else {
+        toast.error("We were not able to resend code. Please try again")
+        navigateToCredentials()
+      }
     } finally {
       toggleLoading()
     }
-  }, [delegationIdentity, phone])
+  }, [delegationIdentity, navigateToCredentials, phone])
 
   return (
     <ProfileAddPhoneSMS

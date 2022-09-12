@@ -77,8 +77,8 @@ export const config: WebdriverIO.Config = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: isDebug ? 1 : 10,
-  // maxInstances: 1,
+  maxInstances: 1,
+  // maxInstances: isDebug ? 1 : 10,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -91,11 +91,16 @@ export const config: WebdriverIO.Config = {
       browserName: "chrome",
       "goog:chromeOptions": {
         args: [
+          `--user-data-dir=${process.env.USER_DATA_DIR}`,
           "--no-sandbox",
-          ...(isDebug ? ["--auto-open-devtools-for-tabs"] : ["--headless"]),
-          "--disable-dev-shm-usage",
+          ...(isDebug
+            ? [
+                // "--auto-open-devtools-for-tabs"
+              ]
+            : ["--headless"]),
           "disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
+          "--disable-web-security",
         ],
       },
       acceptInsecureCerts: true,
@@ -148,7 +153,7 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ["chromedriver"],
+  services: ["chromedriver", "devtools"],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -178,6 +183,7 @@ export const config: WebdriverIO.Config = {
         outputDir: "allure-results",
         disableWebdriverStepsReporting: true,
         useCucumberStepReporter: true,
+        addConsoleLogs: true,
       },
     ],
     [

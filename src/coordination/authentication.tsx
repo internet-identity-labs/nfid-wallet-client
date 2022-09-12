@@ -4,7 +4,7 @@ import React from "react"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { KnownDeviceActor } from "frontend/state/machines/authentication/known-device"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { KnownDeviceCoordinator } from "./device-known"
 import { UnknownDeviceCoordinator } from "./device-unknown"
@@ -38,6 +38,6 @@ export function AuthenticationCoordinator({
       )
     case state.matches("IsDeviceRegistered"):
     default:
-      return <ScreenResponsive isLoading />
+      return <BlurredLoader isLoading />
   }
 }

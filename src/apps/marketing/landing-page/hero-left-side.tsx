@@ -4,10 +4,7 @@ import React from "react"
 import { Slide } from "react-awesome-reveal"
 import sticky from "stickyfilljs"
 
-import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { ElementProps } from "frontend/types/react"
-
-import MobileHero from "./assets/mobile_hero.svg"
 
 interface HeroLeftSideProps extends ElementProps<HTMLDivElement> {
   isUnregistered?: boolean
@@ -16,7 +13,6 @@ interface HeroLeftSideProps extends ElementProps<HTMLDivElement> {
 export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({
   isUnregistered,
 }) => {
-  const { isMobile } = useDeviceInfo()
   const text = React.useRef(null)
 
   React.useEffect(() => {
@@ -55,9 +51,6 @@ export const HeroLeftSide: React.FC<HeroLeftSideProps> = ({
             NFID is the digital identity for signing in to applications
             privately and securely <br /> <br />
           </h2>
-          {isUnregistered && isMobile && (
-            <img src={MobileHero} alt="" className="mb-8 min-h-[300px]" />
-          )}
         </div>
       </Slide>
     </div>

@@ -42,6 +42,9 @@ export interface Account {
   domain: string
   label: string
   accountId: string
+  icon?: string
+  alias?: string[]
+  accountCount?: number
 }
 
 /**
@@ -216,16 +219,6 @@ export async function createAccessPoint(accessPoint: CreateAccessPoint) {
     .then((r) => r.map(mapAccessPoint))
 }
 
-/**
- * Updates the last used timestamp on the used device from the actor
- */
-export async function useAccessPoint() {
-  return await im
-    .use_access_point()
-    .then(unpackResponse)
-    .then((r) => r.map(mapAccessPoint))
-}
-
 async function createProfile(anchor: number) {
   return im
     .create_account({ anchor: BigInt(anchor) })
@@ -264,6 +257,8 @@ export interface Application {
   accountLimit: number
   domain: string
   name: string
+  icon?: string
+  alias: string[]
 }
 
 function mapApplication(application: BEApplication): Application {
@@ -274,6 +269,8 @@ function mapApplication(application: BEApplication): Application {
     accountLimit: application.user_limit,
     domain: application.domain,
     name: application.name,
+    icon: application.img[0],
+    alias: application.alias as any,
   }
 }
 
@@ -286,4 +283,27 @@ export async function fetchApplications() {
     .read_applications()
     .then(unpackResponse)
     .then((r) => r.map(mapApplication))
+}
+
+/**
+ * Update 3rd party application origin is needed
+ */
+export async function processApplicationOrigin(
+  domain: string,
+  origin: string,
+  name?: string,
+) {
+  console.debug(`processApplicationOrigin`)
+  let application = await im.get_application(domain)
+  if (
+    application.data.length === 0 ||
+    // @ts-ignore
+    !application.data[0].alias[0].includes(origin)
+  ) {
+    await im.update_application_alias(
+      domain,
+      origin,
+      typeof name !== "undefined" ? [name] : [],
+    )
+  }
 }

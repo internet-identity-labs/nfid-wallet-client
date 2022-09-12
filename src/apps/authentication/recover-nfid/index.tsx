@@ -1,15 +1,12 @@
 import * as Sentry from "@sentry/browser"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { FieldValues } from "react-hook-form"
 
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { RecoverNFID } from "frontend/ui/pages/recover-nfid"
-import { useMessageChannel } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-message-channel"
-import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { useAuthentication } from "../use-authentication"
-import { NewDeviceEvent } from "./types"
 
 interface RestoreAccessPointRecoveryPhraseProps {
   registerDeviceDeciderPath: string
@@ -26,20 +23,7 @@ export const AppScreenRecoverNFID: React.FC<
   )
 
   const { navigate } = useNFIDNavigate()
-  const { loginWithRecovery, isLoading, user } = useAuthentication()
-  const { handleStoreNewDevice, setUserNumber } = useUnknownDeviceConfig()
-  const handleNewDevice = React.useCallback(
-    async (event: NewDeviceEvent) => {
-      await handleStoreNewDevice(event.data)
-    },
-    [handleStoreNewDevice],
-  )
-
-  useMessageChannel({
-    messageHandler: {
-      "new-device": handleNewDevice,
-    },
-  })
+  const { loginWithRecovery, isLoading } = useAuthentication()
 
   const onRecover = React.useCallback(
     async (data: FieldValues) => {
@@ -52,37 +36,29 @@ export const AppScreenRecoverNFID: React.FC<
       if (!userNumber) {
         return setResponseError("Invalid Recovery Phrase (missing Anchor)")
       }
-
       let result = null
 
       try {
+        setResponseError("")
         result = await loginWithRecovery(seedPhrase, userNumber)
       } catch (e) {
         console.error(e)
-        setResponseError(
+        return setResponseError(
           "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
       }
 
       if (result?.tag !== "ok") {
-        setResponseError(
+        return setResponseError(
           "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
         )
       }
 
       Sentry.setUser({ id: userNumber.toString() })
-      setUserNumber(userNumber)
+      navigate(registerDeviceDeciderPath, { state: { userNumber } })
     },
-    [loginWithRecovery, setResponseError, setUserNumber],
+    [loginWithRecovery, navigate, registerDeviceDeciderPath],
   )
-
-  const handleOnAuthenticated = React.useCallback(async () => {
-    navigate(registerDeviceDeciderPath)
-  }, [navigate, registerDeviceDeciderPath])
-
-  useEffect(() => {
-    if (!!user) handleOnAuthenticated()
-  }, [handleOnAuthenticated, user])
 
   return (
     <RecoverNFID

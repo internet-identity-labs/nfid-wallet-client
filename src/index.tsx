@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css"
 
 import { App } from "./App"
 import "./index.css"
+import { ToastIcons } from "./ui/atoms/toast-icons"
 
 declare const SENTRY_RELEASE: string
 
@@ -35,7 +36,7 @@ const root = createRoot(container)
 root.render(
   <React.StrictMode>
     <HelmetProvider>
-      <ToastContainer />
+      <ToastContainer icon={({ type }) => ToastIcons[type]} />
       <Router>
         <App />
       </Router>

@@ -29,3 +29,27 @@ ul {
   list-style-position: outside;
   margin-left: 1.2em;
 }
+
+.Toastify__toast {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(
+    180deg,
+    rgba(249, 250, 251, 0.85) 0%,
+    rgba(243, 244, 246, 0.5) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid #ffffff;
+}
+
+.Toastify__close-button {
+  @apply opacity-100;
+}
+
+.Toastify__toast-theme--light {
+  @apply text-sm text-black-base;
+}
+.Toastify__progress-bar {
+  width: 0;
+  height: 0;
+}

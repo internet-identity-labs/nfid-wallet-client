@@ -8,7 +8,7 @@ import {
 } from "@dfinity/identity"
 
 import { DeviceData } from "frontend/integration/_ic_api/internet_identity_types"
-import { ii, replaceIdentity } from "frontend/integration/actors"
+import { ii, im, replaceIdentity } from "frontend/integration/actors"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { II_DEVICES_DATA } from "frontend/integration/internet-identity/__mocks"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
@@ -115,6 +115,8 @@ describe("ii suite", () => {
         sessionKey: mockedIdentity,
         delegationIdentity: delegationIdentityDummy,
       }
+      // @ts-ignore
+      im.use_access_point = jest.fn(() => ({ catch: jest.fn() }))
       authStateMock.set(mockedIdentity, delegationIdentityDummy, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>

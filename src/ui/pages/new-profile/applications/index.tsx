@@ -52,6 +52,8 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
       },
     )
 
+    console.debug({ personaByHostnameArray })
+
     return personaByHostnameArray
   }, [applications, applicationsMeta])
 

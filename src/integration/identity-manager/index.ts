@@ -218,16 +218,6 @@ export async function createAccessPoint(accessPoint: CreateAccessPoint) {
     .then((r) => r.map(mapAccessPoint))
 }
 
-/**
- * Updates the last used timestamp on the used device from the actor
- */
-export async function useAccessPoint() {
-  return await im
-    .use_access_point()
-    .then(unpackResponse)
-    .then((r) => r.map(mapAccessPoint))
-}
-
 async function createProfile(anchor: number) {
   return im
     .create_account({ anchor: BigInt(anchor) })

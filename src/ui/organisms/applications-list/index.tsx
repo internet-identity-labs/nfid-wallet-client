@@ -59,7 +59,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
           onClick={() =>
             handleNavigateToApplication(application.applicationName)
           }
-          accountsLength={accounts.length}
+          accountsLength={application.accountsCount}
         />
       ))}
     </List.Items>

@@ -129,7 +129,9 @@ function authStateClosure() {
         sessionKey,
       })
       replaceIdentity(delegationIdentity)
-      im.use_access_point()
+      im.use_access_point().catch((error) => {
+        throw new Error(`im.use_access_point: ${error.message}`)
+      })
     },
     get: () => observableAuthState$.getValue(),
     reset() {

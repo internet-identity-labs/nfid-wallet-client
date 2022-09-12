@@ -54,8 +54,6 @@ export async function verifyPhoneNumber(
     fields,
   )
 
-  console.log({ request })
-
   let body = Cbor.encode(request.body)
   let str = toHexString(body)
 
@@ -73,7 +71,11 @@ export async function verifyPhoneNumber(
     principal: identity.getPrincipal().toText(),
   })
 
-  if (!response.ok) throw new Error(await response.text())
+  if (!response.ok) {
+    const errorObject = await response.json().then((err) => err)
+    console.log({ errorObject })
+    throw Error(errorObject.error)
+  }
 
   const data = await response.json()
 

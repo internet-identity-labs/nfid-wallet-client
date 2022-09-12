@@ -221,6 +221,11 @@ export const idlFactory = ({ IDL }) => {
     phone_number: IDL.Opt(IDL.Text),
   })
   const HTTPAccountUpdateRequest = IDL.Record({ name: IDL.Opt(IDL.Text) })
+  const HTTPOneAccessPointResponse = IDL.Record({
+    data: IDL.Opt(AccessPointResponse),
+    error: IDL.Opt(Error),
+    status_code: IDL.Nat16,
+  })
   const ValidatePhoneRequest = IDL.Record({
     phone_number_hash: IDL.Text,
     principal_id: IDL.Text,
@@ -305,14 +310,14 @@ export const idlFactory = ({ IDL }) => {
       [HTTPAccountResponse],
       [],
     ),
-    update_application: IDL.Func([Application], [HTTPApplicationResponse], []),
+    update_application: IDL.Func([Application], [AccessPointResponse], []),
     update_application_alias: IDL.Func(
       [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
       [BoolHttpResponse],
       [],
     ),
     update_persona: IDL.Func([PersonaRequest], [HTTPAccountResponse], []),
-    use_access_point: IDL.Func([], [HTTPAccessPointResponse], []),
+    use_access_point: IDL.Func([], [HTTPOneAccessPointResponse], []),
     validate_phone: IDL.Func([ValidatePhoneRequest], [Response], []),
     validate_signature: IDL.Func(
       [IDL.Opt(IDL.Text)],

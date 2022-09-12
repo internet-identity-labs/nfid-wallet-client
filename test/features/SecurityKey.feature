@@ -44,7 +44,7 @@ Feature: Manage Security Key as a Recovery device
     When I pause for 350ms
 
     When I click on the selector "[class='mt-3 space-y-2'] div:nth-of-type(3)"
-    Then I wait on element "#root > div.relative.min-h-screen.overflow-hidden > div.block.relative.z-1.px-4.sm\:gap-\[30px\].sm\:px-\[30px\].md\:grid.md\:grid-cols-\[50px\,1fr\].lg\:grid-cols-\[256px\,1fr\] > section > div.fixed.top-0.bottom-0.left-0.right-0.z-50.w-full.h-full" for 120000ms to not be displayed
+    Then I wait on element ".bottom-0.fixed.h-full.left-0.right-0.top-0.w-full.z-50" for 120000ms to not be displayed
     When I pause for 1000ms
     And  I expect that element "[class='flex flex-wrap items-center flex-1 px-3 py-0 cursor-pointer select-none peer']" contains the text "Security Key"
 
@@ -67,7 +67,7 @@ Feature: Manage Security Key as a Recovery device
     When I click on the selector "#credentials-picker > div:first-child"
     When I focus the previous opened window
     Then I wait on element "#loader" for 30000ms to not be displayed
-  
+
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
 
@@ -81,7 +81,7 @@ Feature: Manage Security Key as a Recovery device
     When I set "IAM SK" to the inputfield ".flex-1.flex-shrink.px-2.py-1.rounded"
     When I click on the selector "div:nth-of-type(3) > svg"
     When I pause for 350ms
-    Then I wait on element "#root > div.relative.min-h-screen.overflow-hidden > div.block.relative.z-1.px-4.sm\:gap-\[30px\].sm\:px-\[30px\].md\:grid.md\:grid-cols-\[50px\,1fr\].lg\:grid-cols-\[256px\,1fr\] > section > div.fixed.top-0.bottom-0.left-0.right-0.z-50.w-full.h-full" for 30000ms to not be displayed
+    Then I wait on element ".bottom-0.fixed.h-full.left-0.right-0.top-0.w-full.z-50" for 30000ms to not be displayed
 
     #verify security key name change
     When I click on the selector "[class='sticky top-4'] > div:nth-of-type(1)"

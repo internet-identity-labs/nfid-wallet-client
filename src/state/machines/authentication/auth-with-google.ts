@@ -1,5 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { im } from "frontend/integration/actors"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import {
   fetchGoogleDevice,
@@ -78,6 +79,7 @@ const AuthWithGoogleMachine =
             console.debug("AuthWithGoogleMachine assignAuthSession", {
               authSession: event.data,
             })
+            im.use_access_point()
             return event.data
           },
         }),

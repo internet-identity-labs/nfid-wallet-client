@@ -43,6 +43,8 @@ When(/^I close the last opened (window|tab)$/, closeLastOpenedWindow)
 
 When(/^I focus the last opened (window|tab)$/, focusLastOpenedWindow)
 
+When(/^I focus the (previous|last) opened (window|tab)$/, focusLastOpenedWindow)
+
 When(
   /^I select the (\d+)(st|nd|rd|th) option for element "([^"]*)?"$/,
   selectOptionByIndex,

@@ -169,6 +169,11 @@ export interface HTTPApplicationResponse {
   error: [] | [Error]
   status_code: number
 }
+export interface HTTPOneAccessPointResponse {
+  data: [] | [AccessPointResponse]
+  error: [] | [Error]
+  status_code: number
+}
 export interface HTTPPersonasResponse {
   data: [] | [Array<PersonaResponse>]
   error: [] | [Error]
@@ -278,14 +283,14 @@ export interface _SERVICE {
   update_account: (
     arg_0: HTTPAccountUpdateRequest,
   ) => Promise<HTTPAccountResponse>
-  update_application: (arg_0: Application) => Promise<HTTPApplicationResponse>
+  update_application: (arg_0: Application) => Promise<AccessPointResponse>
   update_application_alias: (
     arg_0: string,
     arg_1: string,
     arg_2: [] | [string],
   ) => Promise<BoolHttpResponse>
   update_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
-  use_access_point: () => Promise<HTTPAccessPointResponse>
+  use_access_point: () => Promise<HTTPOneAccessPointResponse>
   validate_phone: (arg_0: ValidatePhoneRequest) => Promise<Response>
   validate_signature: (arg_0: [] | [string]) => Promise<[bigint, [] | [string]]>
   verify_token: (arg_0: Token) => Promise<Response>

@@ -4,73 +4,67 @@ import { NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
 import User from "src/assets/userpics/userpic_6.svg"
 
-import { Button } from "@internet-identity-labs/nfid-sdk-react"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
-import { useRegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode/use-register-qrcode"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
+import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
 import { Accordion } from "frontend/ui/atoms/accordion"
+import { Button } from "frontend/ui/atoms/button"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
-import { useScroll } from "frontend/ui/utils/use-scroll"
 
-import { NavigationPopup } from "./auth-popup"
+import AuthenticatedPopup from "../navigation-popup"
 
+const NAV_ITEMS = [
+  {
+    label: "The Identity Layer",
+    to: "home",
+    external: false,
+  },
+  {
+    label: "Only with NFID",
+    to: "only-with-nfid",
+    external: false,
+  },
+  {
+    label: "Our mission",
+    to: "our-mission",
+    external: false,
+  },
+  {
+    label: "FAQ",
+    to: "faq",
+    external: false,
+  },
+  {
+    label: "Docs",
+    to: "https://docs.nfid.one",
+    external: true,
+  },
+]
 interface NavigationItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const NavigationItems: React.FC<NavigationItemsProps> = () => {
+  const { profile } = useAccount()
   const { isAuthenticated, login, logout } = useAuthentication()
-  const { getPersona } = usePersona()
 
-  const { account, readAccount } = useAccount()
   const navigate = useNavigate()
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
-  const { registerRoute, status } = useRegisterQRCode()
-  const { scrollY } = useScroll()
 
   const handleLogin = async () => {
     await login()
-    await readAccount()
-    await getPersona()
     navigate(`${ProfileConstants.base}/${ProfileConstants.assets}`)
   }
 
+  const handleLogout = React.useCallback(() => {
+    logout()
+    setIsPopupVisible(false)
+  }, [logout])
+
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
 
-  const items = [
-    {
-      label: "The Identity Layer",
-      to: "home",
-      external: false,
-    },
-    {
-      label: "Only with NFID",
-      to: "only-with-nfid",
-      external: false,
-    },
-    {
-      label: "Our mission",
-      to: "our-mission",
-      external: false,
-    },
-    // {
-    //   label: "Partners",
-    //   to: "partners",
-    // },
-    {
-      label: "FAQ",
-      to: "faq",
-      external: false,
-    },
-    {
-      label: "Docs",
-      to: "https://docs.nfid.one",
-      external: true,
-    },
-  ]
+  const isRegistered = React.useMemo(() => !!loadProfileFromLocalStorage(), [])
 
   const handleGoTo = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -116,7 +110,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                         <img src={User} alt="user" className="cursor-pointer" />
                       </div>
                       <p className="text-sm text-gray-700 px-2.5 w-full">
-                        {account?.name ?? account?.anchor ?? ""}
+                        {profile?.name ?? profile?.anchor ?? ""}
                       </p>
                     </div>
                   }
@@ -146,7 +140,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                 />
               ) : null}
               <div className="flex flex-col px-4 pb-6 ml-1.5 space-y-5 font-bold mt-5">
-                {items.map((item, index) => (
+                {NAV_ITEMS.map((item, index) => (
                   <a
                     href={`/#${encodeURIComponent(item.label)}`}
                     className={clsx(
@@ -164,22 +158,13 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                   </a>
                 ))}
                 <div>
-                  {account && !isAuthenticated ? (
+                  {isRegistered && !isAuthenticated ? (
                     <Button
                       className={clsx("h-full leading-none")}
                       primary
                       onClick={handleLogin}
                     >
                       Sign in
-                    </Button>
-                  ) : null}
-                  {!account && !isAuthenticated ? (
-                    <Button
-                      className={"h-full leading-none"}
-                      primary
-                      onClick={() => navigate(registerRoute)}
-                    >
-                      Register
                     </Button>
                   ) : null}
                 </div>
@@ -192,9 +177,9 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         <Scrollspy
           className="items-center hidden space-x-10 font-medium md:flex"
           currentClassName="text-black-base hover:text-black-base hover:no-underline"
-          items={items.map((i) => i.to)}
+          items={NAV_ITEMS.map((i) => i.to)}
         >
-          {items.map((item, index) => (
+          {NAV_ITEMS.map((item, index) => (
             <NavLink
               to={`/#${encodeURIComponent(item.label)}`}
               className={clsx(
@@ -209,7 +194,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           ))}
         </Scrollspy>
         <div className="relative" ref={popupRef}>
-          {account && !isAuthenticated ? (
+          {isRegistered && !isAuthenticated ? (
             <Button
               className={clsx("h-full leading-none")}
               primary
@@ -221,21 +206,19 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
           {isAuthenticated ? (
             <div
               className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base"
-              onClick={() => setIsPopupVisible(!isPopupVisible)}
+              onClick={() => setIsPopupVisible(true)}
+              id="profile-icon"
             >
               <img src={User} alt="user" className="cursor-pointer" />
             </div>
           ) : null}
-          {!account ? (
-            <Button
-              className={clsx("h-full leading-none", scrollY < 500 && "hidden")}
-              primary
-              onClick={() => setIsPopupVisible(!isPopupVisible)}
-            >
-              Register
-            </Button>
+          {isPopupVisible && profile?.anchor ? (
+            <AuthenticatedPopup
+              onSignOut={handleLogout}
+              anchor={profile.anchor}
+              isLanding
+            />
           ) : null}
-          {isPopupVisible || status !== "" ? <NavigationPopup /> : null}
         </div>
       </div>
     </>

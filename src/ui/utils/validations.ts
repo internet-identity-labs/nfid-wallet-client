@@ -20,17 +20,6 @@ export const phoneRules: IValidationRules = {
   },
 }
 
-export const nameRules = {
-  regex: /^[a-zA-Z0-9 ]{1,30}$/,
-  minLength: 3,
-  maxLength: 30,
-  errorMessages: {
-    pattern: "Full name must only contain letters and numbers",
-    required: "Full name is required",
-    length: "Full name must be between 3 and 30 characters long",
-  },
-}
-
 export const tokenRules = {
   regex: /^[0-9]{6}$/,
   minLength: 6,
@@ -72,22 +61,6 @@ export const sumRules = {
   },
 }
 
-export const isValidPhonenumber = (phonenumber: string) => {
-  return phoneRules.regex.test(phonenumber)
-}
-
-export const isValidName = (name: string) => {
-  return nameRules.regex.test(name)
-}
-
 export const isValidToken = (token: string) => {
   return tokenRules.regex.test(token)
-}
-
-export const isValidCaptcha = (captcha: string) => {
-  return captchaRules.regex.test(captcha)
-}
-
-export const isValidAnchor = (anchor: string) => {
-  return anchorRules.regex.test(anchor)
 }

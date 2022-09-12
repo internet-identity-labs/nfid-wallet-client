@@ -1,11 +1,11 @@
 import clsx from "clsx"
 import React from "react"
 
-import { P } from "@internet-identity-labs/nfid-sdk-react"
-
 import { Button } from "frontend/ui/atoms/button"
 import { StepInput } from "frontend/ui/atoms/step-input"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { P } from "frontend/ui/atoms/typography/paragraph"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { useTimer } from "frontend/ui/utils/use-timer"
 
 interface CredentialRequesterSMSVerifyProps {
@@ -17,6 +17,7 @@ interface CredentialRequesterSMSVerifyProps {
   responseError?: string
   onChangePhone: () => void
   isLoading?: boolean
+  loadingMessage?: string
 }
 
 export const CredentialRequesterSMSVerify: React.FC<
@@ -30,6 +31,7 @@ export const CredentialRequesterSMSVerify: React.FC<
   responseError,
   onChangePhone,
   isLoading,
+  loadingMessage,
 }) => {
   const { counter, setCounter } = useTimer({ defaultCounter: 3 })
 
@@ -39,13 +41,12 @@ export const CredentialRequesterSMSVerify: React.FC<
   }
 
   return (
-    <ScreenResponsive
-      applicationLogo={applicationLogo}
-      applicationName={applicationName}
-      title="SMS verification"
-      // subTitle={`to continue to ${applicationName}`}
-      isLoading={isLoading}
-    >
+    <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
+      <ApplicationMeta
+        applicationLogo={applicationLogo}
+        applicationName={applicationName}
+        title="SMS verification"
+      />
       <div
         className={clsx(
           "mt-5 flex flex-col justify-between flex-1",
@@ -85,6 +86,6 @@ export const CredentialRequesterSMSVerify: React.FC<
           Change phone number
         </Button>
       </div>
-    </ScreenResponsive>
+    </BlurredLoader>
   )
 }

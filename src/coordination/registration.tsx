@@ -2,9 +2,9 @@ import { useActor } from "@xstate/react"
 import React from "react"
 
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { Captcha } from "frontend/ui/pages/captcha"
 import { RegisterAccountIntro } from "frontend/ui/pages/register-account-intro/screen-app"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
   const [state, send] = useActor(actor)
@@ -95,8 +95,6 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
       )
     case state.matches("End"):
     default:
-      return (
-        <ScreenResponsive isLoading loadingMessage="Registered successful" />
-      )
+      return <BlurredLoader isLoading loadingMessage="Registered successful" />
   }
 }

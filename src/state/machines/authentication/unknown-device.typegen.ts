@@ -77,7 +77,7 @@ export interface Typegen0 {
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
   eventsCausingGuards: {
-    bool: "done.invoke.isMobileWithWebAuthn"
+    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
     isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
   }
   eventsCausingDelays: {}

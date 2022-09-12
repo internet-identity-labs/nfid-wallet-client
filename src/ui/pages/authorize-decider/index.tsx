@@ -1,7 +1,6 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
   LoginEventHandler,
@@ -10,8 +9,8 @@ import {
 import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Input } from "frontend/ui/atoms/input"
 import { Separator } from "frontend/ui/atoms/separator"
-import { H5 } from "frontend/ui/atoms/typography"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { anchorRules } from "frontend/ui/utils/validations"
 
 import QRCode from "./assets/qrcode.svg"
@@ -91,47 +90,41 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   )
 
   return (
-    <ScreenResponsive
-      className="flex flex-col items-center"
-      isLoading={isLoading}
-    >
-      {applicationLogo && (
-        <ApplicationLogo
-          src={applicationLogo}
-          applicationName={applicationName}
-        />
-      )}
-      <H5>Sign in</H5>
-      <p className="mt-3 text-center">
-        Choose how you'd like to sign in to {applicationName}
-      </p>
-      {showAdvancedOptions && (
-        <Input
-          errorText={errors.userNumber?.message}
-          labelText="Your NFID number"
-          className="w-full mt-8 max-w-[400px]"
-          {...register("userNumber", {
-            required: "userNumber is required",
-            pattern: {
-              value: anchorRules.regex,
-              message: anchorRules.errorMessages.pattern,
-            },
-            minLength: {
-              value: anchorRules.minLength,
-              message: anchorRules.errorMessages.length,
-            },
-          })}
-        />
-      )}
+    <BlurredLoader isLoading={isLoading}>
+      <ApplicationMeta
+        applicationName={applicationName}
+        applicationLogo={applicationLogo}
+        title="Sign in"
+        subTitle={`Choose how you'd like to sign in to ${applicationName}`}
+      />
 
       <div
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}
       >
+        {showAdvancedOptions && (
+          <div className="w-full max-w-[400px]">
+            <Input
+              errorText={errors.userNumber?.message}
+              labelText="Your NFID number"
+              {...register("userNumber", {
+                required: "userNumber is required",
+                pattern: {
+                  value: anchorRules.regex,
+                  message: anchorRules.errorMessages.pattern,
+                },
+                minLength: {
+                  value: anchorRules.minLength,
+                  message: anchorRules.errorMessages.length,
+                },
+              })}
+            />
+          </div>
+        )}
         {!showAdvancedOptions ? (
-          <>
+          <div className="w-full max-w-[400px]">
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
-            <Separator className="max-w-[400px]" />
+            <Separator />
 
             <IconButton
               title="iPhone, iPad, or Android device"
@@ -139,7 +132,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
               img={<img src={QRCode} alt="qrcode" />}
               onClick={onSelectRemoteAuthorization}
             />
-          </>
+          </div>
         ) : (
           <>
             <IconButton
@@ -164,6 +157,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           {showAdvancedOptions ? "Back" : "Other sign in options"}
         </p>
       </div>
-    </ScreenResponsive>
+    </BlurredLoader>
   )
 }

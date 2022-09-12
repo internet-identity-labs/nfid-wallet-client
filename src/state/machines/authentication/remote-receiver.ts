@@ -15,10 +15,12 @@ export interface Context {
   appMeta?: AuthorizingAppMeta
 }
 
-export type Events = {
-  type: "RECEIVE_DELEGATION"
-  data: RemoteDeviceAuthSession
-}
+export type Events =
+  | {
+      type: "RECEIVE_DELEGATION"
+      data: RemoteDeviceAuthSession
+    }
+  | { type: "BACK" }
 
 const RemoteReceiverMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgE5gFsB7dMPMAYzAEsA3MXAOgCVKb6BiZgUQGFuAkgDVuAfQAi3ADLcA4gEEAKgIDyAOUSgADkVjV01IgDtNIAB6IAjAA4AbIwCsAFicAmAOwBmAAxOAnE7u3n6uADQgAJ6IfvZ+7g6uTt62fsFOlu6uAL454UZEEHCmaFjkxKTkVHQMLGzVpjp6BsamFghu4VEIqYxxlp4D7tbWQUnuuSAlOPjlZPhV9EzcRhANuvqGJkjmiEmWjBkxIa5+DrbucZ6d0d697v2Dw6PenhNTZSRzdYtrTZutVms1wQNhyOSAA */
@@ -34,6 +36,9 @@ const RemoteReceiverMachine =
             RECEIVE_DELEGATION: {
               target: "End",
             },
+            BACK: {
+              target: "Back",
+            },
           },
         },
         End: {
@@ -47,6 +52,9 @@ const RemoteReceiverMachine =
             )
             return event.data
           },
+        },
+        Back: {
+          type: "final",
         },
       },
     },

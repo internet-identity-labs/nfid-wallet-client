@@ -1,8 +1,8 @@
 import React from "react"
 
-import { Button, H5 } from "@internet-identity-labs/nfid-sdk-react"
-
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
+import { Button } from "frontend/ui/atoms/button"
+import { H5 } from "frontend/ui/atoms/typography"
 
 export interface RegisterDeviceProps {
   onRegister: () => void

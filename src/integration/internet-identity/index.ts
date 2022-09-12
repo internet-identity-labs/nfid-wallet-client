@@ -32,6 +32,7 @@ import {
 } from "frontend/integration/_ic_api/internet_identity_types"
 import {
   accessList,
+  im,
   invalidateIdentity,
   replaceIdentity,
 } from "frontend/integration/actors"
@@ -128,6 +129,9 @@ function authStateClosure() {
         sessionKey,
       })
       replaceIdentity(delegationIdentity)
+      im.use_access_point().catch((error) => {
+        throw new Error(`im.use_access_point: ${error.message}`)
+      })
     },
     get: () => observableAuthState$.getValue(),
     reset() {

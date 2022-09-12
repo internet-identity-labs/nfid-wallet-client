@@ -4,14 +4,6 @@ export const getUserNumber = (
   return userNumber ? BigInt(userNumber) : undefined
 }
 
-export const setUserNumber = (userNumber: bigint | undefined): void => {
-  if (userNumber !== undefined) {
-    localStorage.setItem("userNumber", userNumber.toString())
-  } else {
-    localStorage.removeItem("userNumber")
-  }
-}
-
 // BigInt parses various things we do not want to allow, like:
 // - BigInt(whitespace) === 0
 // - Hex/Octal formatted numbers

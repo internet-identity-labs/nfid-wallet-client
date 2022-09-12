@@ -31,7 +31,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
     <div
       className={clsx(
         "w-full h-28 flex justify-between items-center pt-14",
-        "mdd:h-[70px] md:pt-0",
+        "md:h-[70px] md:pt-0",
         className,
       )}
     >

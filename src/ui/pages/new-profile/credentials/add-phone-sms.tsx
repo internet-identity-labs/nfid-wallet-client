@@ -31,16 +31,16 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
     onResendCode && onResendCode()
     setCounter(60)
   }
-
   return (
     <ProfileTemplate
       pageTitle="SMS verification"
       onBack={`${ProfileConstants.base}/${ProfileConstants.credentials}/${ProfileConstants.addPhoneNumber}`}
       isLoading={isLoading}
     >
-      <ProfileContainer>
-        <div className="text-sm">
-          <P>Please enter the verification code that was sent to {phone}.</P>
+      <ProfileContainer
+        subTitle={`Please enter the verification code that was sent to ${phone}.`}
+      >
+        <div className="mt-3 text-sm sm:mt-14">
           <P className="mt-3">
             {counter > 0 ? (
               `Code can be resent in ${counter} sec`

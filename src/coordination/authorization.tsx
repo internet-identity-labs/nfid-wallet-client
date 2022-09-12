@@ -3,9 +3,9 @@ import React from "react"
 
 import { mapPersonaToLegacy } from "frontend/integration/identity-manager"
 import { AuthorizationActor } from "frontend/state/machines/authorization/authorization"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
+import { AuthorizeAppMultiAccount } from "frontend/ui/pages/authorize-app/multi-account"
 import { AuthorizeAppSingleAccount } from "frontend/ui/pages/authorize-app/single-account"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
   const [state, send] = useActor(actor)
@@ -53,7 +53,7 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
           }}
         />
       ) : (
-        <AuthorizeApp
+        <AuthorizeAppMultiAccount
           isAuthenticated
           applicationName={state.context.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
@@ -78,6 +78,6 @@ export function AuthorizationCoordinator({ actor }: Actor<AuthorizationActor>) {
         />
       )
     default:
-      return <BlurredLoader isLoading />
+      return <ScreenResponsive isLoading />
   }
 }

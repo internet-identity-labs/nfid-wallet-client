@@ -5,13 +5,52 @@ export const questions = [
     title: "What is NFID?",
     info: (
       <p>
-        NFID is the most private, secure, and convenient way to sign in to
-        third-party apps and websites using the devices you already own. When
-        you see a Continue with NFID prompt on a participating app or website,
-        it means you can set up an account using your NFID. No more usernames or
-        passwords to manage, no more loss of privacy, and no more identity theft
-        or theft of the cryptocurrency you’re holding.
+        NFID is an app-less, strong portable authenticator built on Dfinity
+        Foundation's{" "}
+        <a
+          className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+          href="https://smartcontracts.org"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Internet Computer
+        </a>{" "}
+        and leverages Dfinity's{" "}
+        <a
+          className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+          href="https://smartcontracts.org/docs/ic-identity-guide/what-is-ic-identity.html#id-overview"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Internet Identity
+        </a>
+        , the strongest trustless cryptographic delegation system on the
+        Internet. NFID uses FIDO-based biometrics for secure, frictionless, and
+        consistent authentication. With one click to create new accounts or sign
+        into existing ones, NFID eliminates passwords and the inconveniences of
+        traditional credential-based logins.
       </p>
+    ),
+  },
+  {
+    title:
+      "How can I use NFID to access applications I've been using with my Internet Identity?",
+    info: (
+      <div>
+        NFID is built on top of Internet Identity and because of this, signing
+        in with NFID will sign you into the same accounts as those you've
+        created with Internet Identity! All you need to do is enter your
+        Internet Identity recovery phrase in the{" "}
+        <a
+          className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+          href="https://nfid.one/recover-nfid/enter-recovery-phrase"
+          target="_blank"
+          rel="noreferrer"
+        >
+          NFID recovery screen
+        </a>{" "}
+        from your phone and tap on the button to trust the device.
+      </div>
     ),
   },
   {
@@ -111,7 +150,7 @@ export const questions = [
           .
         </div>
         <div className="mb-6">
-          B - remotely lock the lost or stolen device to prevent anyone from
+          B – remotely lock the lost or stolen device to prevent anyone from
           using it. Follow the instructions for{" "}
           <Link
             to="https://support.apple.com/en-us/HT201472"
@@ -136,55 +175,47 @@ export const questions = [
           .
         </div>
         <div className="mb-6">
-          C - if you have no other registered devices,{" "}
+          C - if you have no other registered devices, use your recovery phrase
+          only at{" "}
           <a
             className="text-blue-base hover:underline hover:text-blue-hover"
-            href="/recover-nfid/enter-recovery-phrase"
+            href="https://nfid.one/recover-nfid/enter-recovery-phrase"
             target="_blank"
             rel="noreferrer"
           >
-            use your recovery phrase
+            https://nfid.one/recover-nfid/enter-recovery-phrase
           </a>{" "}
           to temporarily authenticate yourself and remove the lost device from
-          your list of NFID (authorized devices).
+          your list of NFID authorized devices.
         </div>
       </div>
     ),
   },
   {
     title: "Why don't you offer passwords or other methods of authentication?",
-    info: "Other authentication methods are the culprit for over 80% of all security hacks and data breaches because a username and password is all an attacker needs to impersonate you. NFID makes it impossible for anyone to breach any of your accounts without your device and the ability to unlock it. We also allow you to create and authenticate to your NFID conveniently with Google.",
+    info: "Other authentication methods are the culprit for over 80% of all security hacks and data breaches because a username and password is all an attacker needs to impersonate you. NFID makes it impossible for anyone to breach any of your accounts without your device and the ability to unlock it. We are currently developing a safer alternative that will let you register an NFID with your social accounts, email address, and phone numbers, but it will be discouraged since each has been proven insecure.",
   },
   {
     title:
       "What if I don't have a device with a face or touch scanner, or a security key?",
     info: (
       <>
-        If you don’t have a Google account or don’t want to use it to create
-        your NFID, please email us at{" "}
+        Please email us at{" "}
         <a
           href="mailto:hello@identitylabs.ooo"
           className="text-blue-base hover:underline hover:text-blue-hover"
         >
           hello@identitylabs.ooo
         </a>{" "}
-        or let us know in the feedback channel of our{" "}
-        <a
-          href="https://discord.gg/a9BFNrYJ99"
-          className="text-blue-base hover:underline hover:text-blue-hover"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Discord server
-        </a>{" "}
-        - we want to make sure everyone has a privacy-preserving self-sovereign
-        identity that's impossible to breach. If you don't yet have a
-        biometric-capable device, we want to hear from you.
+        or let us know in the feedback channel of our Discord server — we want
+        to make sure everyone has a privacy-preserving self-sovereign identity
+        that's impossible to breach. If you don't yet have a biometric-capable
+        device, we want to hear from you.
       </>
     ),
   },
   {
-    title: "Is my face or touch data being stored somewhere?",
+    title: "Is my face or touch data being stored on some server?",
     info: (
       <>
         No. This data never leaves your device. Apple wrote a{" "}
@@ -199,52 +230,38 @@ export const questions = [
     ),
   },
   {
+    title: "How can I access my NFID wallet?",
+    info: "The NFID wallet is currently in development and scheduled for release over the next few months.",
+  },
+  {
     title: "Could someone steal my NFID and impersonate me online?",
-    info: "Unlike every other identity system in the world today, the only way to steal an NFID is to steal the device and be able to unlock it before that device is locked. We are incredibly grateful to the Dfinity Foundation's cryptography team for having created such a secure environment on which we can build. If you connected your Google account to your NFID and someone steals your Google account, they could authenticate to your NFID. We encourage everyone to go the route of enhanced security, and are adding threshold recovery to add more security to those who choose Web2 authenticators.",
+    info: "Unlike every other identity system in the world today, the only way to steal an NFID is to steal the device and be able to unlock it before that device is locked. We are incredibly grateful to the Dfinity Foundation's cryptography team for having created such a secure environment on which we can build.",
   },
   {
     title: "How is my personal information used?",
-    info: "Your personal information is encrypted and only accessible to you. Personalizing your experience with NFID, whether it's adding your name, email address, or phone number, is meant only to make it easier for you to transport your information across applications, should they request this information from you.",
+    info: "Your personal information is encrypted and only accessible to you. Personalizing your experience with NFID, whether it's adding your name, email address, or phone number, is meant only to make it easier for you to use and easier for you to provide other applications, should they request this information from you.",
   },
   {
     title: "How is my phone number used?",
-    info: "Your phone number is encrypted and only accessible to you. Applications will sometimes want to know you're a unique human being before making some features available. When you share an obfuscated version of your phone number to applications, they will never be able to de-obfuscate it back to your actual number. We've received feedback from the community that this is a reasonable first step in qualifying a unique person, though we're already planning on supporting even more sybil-resistant credentials.",
+    info: "Your phone number is encrypted and only accessible to you. Applications will sometimes want to know you're a unique human being before making some features available. When you share an obfuscated version of your phone number to applications, they will never be able to de-obfuscate it back to your actual number. We've received feedback from the community that this is a reasonable first step in qualifying a unique person, though we're already developing even more sybil-resistant credentials.",
   },
   {
     title:
-      "How can I use NFID to access applications I've been using with my Internet Identity?",
-    info: (
-      <div>
-        NFID is built on top of Internet Identity and because of this, signing
-        in with NFID will sign you into the same accounts as those you've
-        created with Internet Identity. All you need to do is enter your
-        Internet Identity recovery phrase in the{" "}
-        <a
-          className="text-blue-base hover:underline hover:text-blue-hover"
-          href="/recover-nfid/enter-recovery-phrase"
-          target="_blank"
-          rel="noreferrer"
-        >
-          NFID recovery screen
-        </a>{" "}
-        from your phone and tap on the button to trust the device.
-      </div>
-    ),
-  },
-  {
-    title: "Still open questions?",
+      "The Internet Computer sounds cool, where can I learn more about it?",
     info: (
       <>
-        <div>
-          Feel free to email us all your questions on{" "}
+        <p>
+          We suggest starting with a look through their extensive documentation{" "}
           <a
-            className="text-blue-base hover:underline hover:text-blue-hover"
-            href="mailto:support@identitylabs.ooo"
+            className="font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+            href="https://dfinity.org/howitworks/"
+            target="_blank"
+            rel="noreferrer"
           >
-            support@identitylabs.ooo
-          </a>{" "}
-          or use our social networks.
-        </div>
+            here
+          </a>
+          .
+        </p>
       </>
     ),
   },

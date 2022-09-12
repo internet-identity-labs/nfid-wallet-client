@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import {
   LegacyDevice,
   RecoveryDevice,
@@ -8,7 +10,6 @@ import {
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { IconRecovery } from "frontend/ui/atoms/icons/recovery"
 import { USBIcon } from "frontend/ui/atoms/icons/usb"
-import { Loader } from "frontend/ui/atoms/loader"
 import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 import { DeviceListItem } from "frontend/ui/organisms/device-list/device-list-item"
 import AddRecoveryPhraseModal from "frontend/ui/organisms/recovery-list/add-phrase"

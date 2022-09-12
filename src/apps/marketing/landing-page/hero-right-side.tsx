@@ -1,42 +1,53 @@
-import clsx from "clsx"
 import React from "react"
+import { Fade } from "react-awesome-reveal"
+import Tilt from "react-parallax-tilt"
 
-import NFIDAuthenticationCoordinator from "frontend/coordination/nfid-authentication"
+import { useDeviceInfo } from "frontend/apps/device/use-device-info"
+import { RegisterQRCode } from "frontend/apps/marketing/landing-page/register-qrcode"
 import { ElementProps } from "frontend/types/react"
-import { NFIDGradientBar } from "frontend/ui/atoms/gradient-bar"
 
 import Group from "./assets/Group.svg"
 
 interface HeroRightSideProps extends ElementProps<HTMLDivElement> {
   isUnregistered?: boolean
+  hasAccount?: boolean
 }
 
-export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
+export const HeroRightSide: React.FC<HeroRightSideProps> = ({
+  children,
+  className,
   isUnregistered,
+  hasAccount,
 }) => {
-  console.debug("HeroRightSide", { isUnregistered })
+  const { isMobile } = useDeviceInfo()
 
-  return isUnregistered ? (
-    <div
-      className={clsx(
-        "relative m-auto sm:block z-10 bg-white rounded-b-md overflow-hidden",
-        "mb-[20vh] sm:mb-[60vh] max-w-[360px] drop-shadow-[0_10px_60px_rgba(48,139,245,0.50)]",
-        "min-h-[400px]",
-        "md:mt-[4rem]",
-      )}
-    >
-      <NFIDGradientBar className="w-full h-0.5 z-20" rounded={false} />
-      <div className="flex flex-col w-full h-full">
-        <NFIDAuthenticationCoordinator />
-      </div>
-      <div className={clsx("p-6 text-xs text-gray-400 text-center")}>
-        NFID is a privacy-preserving, one-touch multi-factor wallet protocol
-        developed by Internet Identity Labs.
-      </div>
-    </div>
-  ) : (
+  return isUnregistered && !isMobile ? (
+    // @ts-ignore TODO: Pasha fix
+    <Fade>
+      <Tilt className="mb-[20vh] sm:mb-[60vh] hidden sm:block">
+        <RegisterQRCode
+          className="flex items-center justify-center p-8 mx-auto border border-white sm:mt-20 sm:p-16 rounded-3xl"
+          style={{
+            background:
+              "linear-gradient(154.83deg, #FFFFFF 42.25%, rgba(255, 255, 255, 0) 112.96%)",
+            filter: "drop-shadow(0px 10px 60px rgba(48, 139, 245, 0.3))",
+            width: "max-content",
+          }}
+          options={{
+            margin: 0,
+            width: isMobile ? 210 : window.screen.availWidth * 0.18,
+          }}
+        />
+        <p className="mt-4 text-xs text-center text-gray-500 tracking-[0.16px]">
+          Scan this code with your phone's camera to register your NFID
+        </p>
+      </Tilt>
+    </Fade>
+  ) : hasAccount ? (
     <div className="mb-[75px] sm:mb-[87px] z-10 relative">
       <img src={Group} alt="Group" />
     </div>
+  ) : (
+    <span></span>
   )
 }

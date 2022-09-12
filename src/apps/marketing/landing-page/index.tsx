@@ -4,9 +4,9 @@ import { Fade } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
@@ -21,7 +21,7 @@ import Icon_pink from "./assets/nfid_pink.svg"
 
 import { Footer } from "./footer"
 import { HeroLeftSide } from "./hero-left-side"
-import { NFIDAuthentication } from "./hero-right-side"
+import { HeroRightSide } from "./hero-right-side"
 import "./index.css"
 import { questions } from "./questions"
 import { SocialButtons } from "./social-buttons"
@@ -33,14 +33,9 @@ interface Props
   > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const { profile } = useAccount()
+  const { user } = useAuthentication()
+  const { account } = useAccount()
   const { isMobile } = useDeviceInfo()
-
-  const [isRegistered, setIsRegistered] = React.useState(true)
-  React.useEffect(() => {
-    const profile = loadProfileFromLocalStorage()
-    setIsRegistered(!!profile)
-  }, [])
 
   return (
     <AppScreen
@@ -62,7 +57,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           <ParallaxProvider>
             <div
               className={`font-inner ${isMobile ? `mobile` : ``} ${
-                profile ? `has-account` : ``
+                account ? `has-account` : ``
               }`}
             >
               <section
@@ -70,7 +65,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 className="grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 scroll-mt-20"
               >
                 <div className="relative">
-                  <HeroLeftSide isUnregistered={!profile} />
+                  <HeroLeftSide isUnregistered={!account} />
                   <Parallax speed={isMobile ? undefined : -300}>
                     <p className="absolute text-[25vw] opacity-[0.02] z-0 left-0 font-bold">
                       Identity
@@ -83,7 +78,10 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     src={Blur1}
                     alt="blur1"
                   />
-                  <NFIDAuthentication isUnregistered={!isRegistered} />
+                  <HeroRightSide
+                    isUnregistered={!user && !account}
+                    hasAccount={!!account}
+                  />
                   {/* @ts-ignore: TODO: Pasha fix */}
                   <Fade right>
                     <Parallax

@@ -1,7 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Loader } from "frontend/ui/atoms/loader"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 

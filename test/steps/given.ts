@@ -22,9 +22,6 @@ import checkUrl from "./support/check/checkURL"
 import compareText from "./support/check/compareText"
 import isDisplayed from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
-import removeUserE2E from "./support/action/removeUserE2E"
-
-Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)
 

@@ -43,7 +43,6 @@ jobs:
           INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY}}
           AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
           AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
-          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
 
@@ -51,7 +50,6 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
-          USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
 
   build:
     needs: check-secrets
@@ -101,21 +99,10 @@ jobs:
       - name: Running unit tests
         run: yarn test
 
-      - name: Checkout Google user E2E
-        uses: actions/checkout@v3
-        with:
-          repository: internet-identity-labs/user-google-e2e
-          path: user-google-e2e
-          ref: main
-          token: ${{ secrets.PAT }}
-
       - name: Running E2E test
         run: |
           yarn test:e2e
           # yarn test:e2e:mobile
-        env:
-          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
-          USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
 
       - name: Generate HTML Report
         if: always()

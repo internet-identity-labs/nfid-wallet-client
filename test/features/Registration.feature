@@ -1,8 +1,8 @@
-@registration @mobile
+@current @registration
 Feature: Registration from landing page
 
   Background: Background name
-    Given I open the site "/"
+    Given I open the site "/register-nfid-account/intro"
     Given My browser supports WebAuthN
 
   @uat
@@ -14,6 +14,7 @@ Feature: Registration from landing page
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then My browser has 1 credentials
 
+    Then I expect the url to contain "/register-nfid-account/captcha"
     And  I expect that element "#captcha-spinner" is displayed
 
     Then I wait on element "#captcha-img" for 10000ms to be displayed
@@ -28,7 +29,7 @@ Feature: Registration from landing page
 
     When I click on the selector "#create-nfid"
     Then I wait on element "#loader" for 10000ms to not be displayed
-    And  I expect that element "#enter-captcha-error" contains the text "There was a problem with your captcha response, please try again."
+    And  I expect that element "#enter-captcha-error" contains the text "Wrong captcha! Please try again"
     And  I wait on element "#captcha-spinner" for 10000ms to be displayed
 
     When I wait on element "#captcha-spinner" for 10000ms to not be displayed
@@ -41,4 +42,4 @@ Feature: Registration from landing page
 
     Then I expect "account" key to be present in localStorage
 
-    Then I expect the url to contain "/profile/assets"
+    Then I expect the url to contain "/profile/security"

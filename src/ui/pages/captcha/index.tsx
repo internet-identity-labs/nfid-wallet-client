@@ -3,11 +3,12 @@ import React from "react"
 import { useForm } from "react-hook-form"
 
 import { ElementProps } from "frontend/types/react"
+import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
 import { Button } from "frontend/ui/atoms/button"
 import { Input } from "frontend/ui/atoms/input"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { H5 } from "frontend/ui/atoms/typography"
 import { Challenge } from "frontend/ui/molecules/challenge"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { captchaRules } from "frontend/ui/utils/validations"
 
 interface CaptchaProps extends ElementProps<HTMLDivElement> {
@@ -57,17 +58,21 @@ export const Captcha: React.FC<CaptchaProps> = ({
   const isFormComplete = !!dirtyFields.captcha
 
   return (
-    <BlurredLoader
+    <ScreenResponsive
       className={clsx("flex flex-col items-center", className)}
       isLoading={isLoading}
       loadingMessage={loadingMessage}
     >
-      <ApplicationMeta
-        applicationName={applicationName}
-        applicationLogo={applicationLogo}
-        title="Complete NFID registration"
-        subTitle={`to continue ${applicationName && `to ${applicationName}`}`}
-      />
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
+      )}
+      <H5>Complete NFID registration</H5>
+      <p className="mt-1 text-center">
+        to continue {applicationName && `to ${applicationName}`}
+      </p>
       <form className="flex flex-col w-full mt-5">
         <Challenge
           isLoading={isChallengeLoading}
@@ -107,6 +112,6 @@ export const Captcha: React.FC<CaptchaProps> = ({
           Create NFID
         </Button>
       </form>
-    </BlurredLoader>
+    </ScreenResponsive>
   )
 }

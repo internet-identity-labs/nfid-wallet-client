@@ -1,9 +1,10 @@
 import React from "react"
 
+import { Button, H4 } from "@internet-identity-labs/nfid-sdk-react"
+
 import { ElementProps } from "frontend/types/react"
-import { Button } from "frontend/ui/atoms/button"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { ApplicationLogo } from "frontend/ui/atoms/application-logo"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import MobileHero from "./assets/mobile_hero.svg"
 
@@ -25,17 +26,25 @@ export const AuthorizeAppSingleAccount: React.FC<
   loadingMessage,
 }) => {
   return (
-    <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
-      <ApplicationMeta
-        applicationLogo={applicationLogo}
-        applicationName={applicationName}
-        title="Unlock NFID"
-        subTitle={`to continue${applicationName && ` to ${applicationName}`}`}
-      />
+    <ScreenResponsive
+      isLoading={isLoading}
+      loadingMessage={loadingMessage}
+      className="flex flex-col items-center"
+    >
+      {applicationLogo && (
+        <ApplicationLogo
+          src={applicationLogo}
+          applicationName={applicationName}
+        />
+      )}
+      <H4>Unlock NFID</H4>
+      <p className="mt-2 text-sm">
+        to continue{applicationName && ` to ${applicationName}`}
+      </p>
       <img className="w-full max-w-max" src={MobileHero} alt="" />
       <Button className="my-6 " block primary onClick={onContinueButtonClick}>
         Unlock to continue
       </Button>
-    </BlurredLoader>
+    </ScreenResponsive>
   )
 }

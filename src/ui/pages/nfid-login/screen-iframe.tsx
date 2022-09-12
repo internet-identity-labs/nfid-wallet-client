@@ -12,7 +12,7 @@ interface IFrameAuthenticateNFIDLoginProps
 export const IFrameNFIDLogin: React.FC<IFrameAuthenticateNFIDLoginProps> = ({
   loginSuccessPath,
 }) => {
-  const { profile } = useAccount()
+  const { account } = useAccount()
 
   return (
     <IFrameScreen logo>
@@ -20,7 +20,7 @@ export const IFrameNFIDLogin: React.FC<IFrameAuthenticateNFIDLoginProps> = ({
         <NFIDLogin
           iframe
           loginSuccessPath={loginSuccessPath}
-          account={profile}
+          account={account}
         />
       </div>
     </IFrameScreen>

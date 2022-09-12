@@ -6,7 +6,7 @@ import { AuthenticationActor } from "frontend/state/machines/authentication/auth
 import RemoteSenderMachine, {
   RemoteSenderMachineType,
 } from "frontend/state/machines/authentication/remote-sender"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "./authentication"
 
@@ -26,7 +26,7 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
 
   switch (true) {
     case state.matches("Start"):
-      return <BlurredLoader isLoading />
+      return <ScreenResponsive isLoading />
     case state.matches("AuthenticationMachine"):
       return (
         <AuthenticationCoordinator
@@ -37,6 +37,6 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
     case state.matches("End"):
       return <Navigate to="/profile/security" />
     default:
-      return <BlurredLoader isLoading />
+      return <ScreenResponsive isLoading />
   }
 }

@@ -17,38 +17,31 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   onLogin,
 }) => {
   const buttonRef = React.useRef<HTMLDivElement>(null)
+  const isScriptLoaded = useLoadGsiScript()
 
-  const [googleButtonWidth, setButtonWidth] = React.useState<
-    number | undefined
-  >()
-
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      const width = buttonRef.current?.clientWidth
-      console.debug("handleOnLoadContainer", { width })
-      setButtonWidth(width)
-    })
-    return () => clearTimeout(timer)
+  const googleButtonWidth = React.useMemo(() => {
+    if (window.innerWidth > 500) return 400
+    else return window.innerWidth - 40
   }, [])
 
-  const onScriptLoadSuccess = React.useCallback(() => {
+  React.useEffect(() => {
+    if (!isScriptLoaded) return
+
     window.google?.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: onLogin,
       itp_support: true,
     })
-  }, [onLogin])
 
-  useLoadGsiScript({ onScriptLoadSuccess })
+    window.google?.accounts.id.renderButton(buttonRef.current, {
+      width: googleButtonWidth.toString(),
+      text: "continue_with",
+      shape: "rectangular",
+      theme: "outline",
+      type: "standard",
+      size: "large",
+    })
+  }, [googleButtonWidth, isScriptLoaded, onLogin])
 
-  window.google?.accounts.id.renderButton(buttonRef.current, {
-    width: googleButtonWidth?.toString() || "200",
-    text: "continue_with",
-    shape: "rectangular",
-    theme: "outline",
-    type: "standard",
-    size: "large",
-  })
-
-  return <div ref={buttonRef} className="w-full" />
+  return <div ref={buttonRef} />
 }

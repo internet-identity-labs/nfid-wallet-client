@@ -88,6 +88,7 @@ describe("IDP Machine", () => {
             state.matches("Start.Handshake.Error") &&
             state.matches("Start.GetAppMeta.Done")
           ) {
+            debugger
             expect(state.context.error?.message).toBe(
               "Invalid derivation origin",
             )

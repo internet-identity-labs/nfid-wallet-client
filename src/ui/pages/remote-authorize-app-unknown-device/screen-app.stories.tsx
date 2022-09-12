@@ -1,8 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
-
 import { RemoteAuthorizeAppUnknownDevice } from "."
 
 export default {
@@ -19,9 +17,7 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
 > = (args) => {
   return (
     <Router>
-      <ScreenResponsive>
-        <RemoteAuthorizeAppUnknownDevice {...args} />
-      </ScreenResponsive>
+      <RemoteAuthorizeAppUnknownDevice {...args} />
     </Router>
   )
 }

@@ -23,10 +23,8 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
         className,
       )}
     >
-      {title && <p className="mb-3 text-xl">{title}</p>}
-      {subTitle && (
-        <p className="mb-4 text-sm leading-5 text-gray-400">{subTitle}</p>
-      )}
+      <p className="mb-3 text-xl">{title}</p>
+      <p className="mb-4 text-sm leading-5 text-gray-400">{subTitle}</p>
       <div>{children}</div>
     </div>
   )

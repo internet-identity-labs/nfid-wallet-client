@@ -46,19 +46,16 @@ const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
             NFID Profile
           </div>
         ) : null}
-        <a
+        <div
           className={clsx(
             "w-full h-10 text-center border-t border-gray-200 leading-10",
-            "hover:bg-gray-100 cursor-pointer text-sm block",
+            "hover:bg-gray-100 cursor-pointer text-sm",
           )}
-          href="/faq"
-          target="_blank"
-          rel="noreferrer"
+          onClick={() => navigate("/faq")}
         >
           Help
-        </a>
+        </div>
         <div
-          id="logout"
           className={clsx(
             "w-full h-10 text-center border-t border-gray-200 leading-10",
             "hover:bg-gray-100 cursor-pointer text-sm rounded-b-md",

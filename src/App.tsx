@@ -2,17 +2,26 @@ import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
+import "@internet-identity-labs/nfid-sdk-react/dist/styles.css"
+
+import { AppScreenAuthenticateAccountRoutes } from "./apps/authentication/authenticate"
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
+import {
+  AppScreenAuthorizeAppRoutes,
+  AppScreenAuthorizeDerivationOriginAppRoutes,
+} from "./apps/authentication/remote-authentication/routes"
+import { RemoteNFIDAuthenticationRoutes } from "./apps/authentication/remote-nfid-authentication"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"
 import { Faq } from "./apps/marketing/landing-page/faq"
 import { OurMission } from "./apps/marketing/landing-page/our-mission"
+import { RemoteRegisterAccountRoutes } from "./apps/registration/register-account/routes"
+import { NFIDRegisterAccountRoutes } from "./apps/registration/register-account/routes"
 import IDPCoordinator from "./coordination/idp"
 import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
 import { ic } from "./integration/actors"
 import { NotFound } from "./ui/pages/404"
-import { ScreenResponsive } from "./ui/templates/screen-responsive"
 
 declare const USERGEEK_API_KEY: string
 
@@ -31,25 +40,19 @@ export const App = () => (
       element={<PhoneCredentialCoordinator />}
     />
 
-    <Route
-      path="/authenticate"
-      element={
-        <ScreenResponsive className="flex flex-col items-center">
-          <IDPCoordinator />
-        </ScreenResponsive>
-      }
-    />
-    <Route
-      path="/ridp"
-      element={
-        <ScreenResponsive className="flex flex-col items-center">
-          <RemoteIDPCoordinator />
-        </ScreenResponsive>
-      }
-    />
+    <Route path="/authenticate" element={<IDPCoordinator />} />
+    <Route path="/ridp" element={<RemoteIDPCoordinator />} />
 
     {ProfileRoutes}
     {RecoverNFIDRoutes}
+
+    {/* Legacy routes that we still need */}
+    {AppScreenAuthenticateAccountRoutes}
+    {NFIDRegisterAccountRoutes}
+    {RemoteNFIDAuthenticationRoutes}
+    {RemoteRegisterAccountRoutes}
+    {AppScreenAuthorizeAppRoutes}
+    {AppScreenAuthorizeDerivationOriginAppRoutes}
 
     <Route path={"*"} element={<NotFound />} />
   </Routes>

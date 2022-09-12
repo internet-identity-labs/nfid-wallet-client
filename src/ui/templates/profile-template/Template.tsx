@@ -1,7 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Loader } from "frontend/ui/atoms/loader"
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
@@ -35,14 +36,12 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
       <div
         className={clsx(
-          "block relative z-1 px-4",
-          "sm:gap-[30px] sm:px-[30px]",
-          "md:grid md:grid-cols-[50px,1fr]",
-          "lg:grid-cols-[256px,1fr]",
+          "block relative z-1 px-4 sm:px-[30px]",
+          "sm:grid sm:grid-cols-[256px,1fr] sm:gap-[30px]",
           containerClassName,
         )}
       >
-        <div className={clsx("hidden mt-5 -ml-3 md:block relative")}>
+        <div className={clsx("hidden mt-5 -ml-3 sm:block relative")}>
           <ProfileSidebar />
         </div>
         <section className={clsx("relative", className)}>

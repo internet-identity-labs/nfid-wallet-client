@@ -1,0 +1,35 @@
+.swiper {
+  @apply w-full overflow-hidden rounded-lg;
+}
+
+.swiper-slide {
+  @apply flex flex-col justify-start w-full;
+}
+
+.swiper-slide img {
+  @apply block object-cover w-full h-full;
+}
+
+.swiper-pagination {
+  @apply !relative pb-[9px] mx-7;
+}
+
+.swiper-title {
+  @apply mb-5 font-bold sm:text-title text-titleMobile;
+}
+
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+  @apply !rounded-full !w-[20px] !bg-black-base !h-[2px];
+}
+
+.swiper-pagination-bullet {
+  @apply !rounded-full !w-[8px] !bg-[#0B0E13] !h-[2px] !mx-1 transition-all duration-200 ease-in-out;
+}
+
+.swiper-pagination-horizontal {
+  @apply !w-auto !bottom-0 !left-0;
+}
+
+.swiper-controls {
+  @apply flex items-center mt-5;
+}

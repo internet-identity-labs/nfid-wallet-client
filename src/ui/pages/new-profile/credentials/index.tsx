@@ -1,8 +1,9 @@
 import React from "react"
 
+import { Loader } from "@internet-identity-labs/nfid-sdk-react"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
-import { Loader } from "frontend/ui/atoms/loader"
 import { ListItem } from "frontend/ui/molecules/list/list-item"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -26,22 +27,20 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
       <ProfileContainer
         title="Issued by Internet Identity Labs"
         subTitle="Shareable verified data"
-        className="relative"
       >
-        {isLoading ? (
-          <ListItem
-            disabled={true}
-            icon={<MobileIcon />}
-            title={"Loading..."}
-          />
-        ) : (
-          <ListItem
-            disabled={!!phone?.length}
-            icon={<MobileIcon />}
-            title={phone?.length ? phone : "Connect mobile phone number"}
-            onClick={() => navigate(`${ProfileConstants.addPhoneNumber}`)}
-          />
-        )}
+        <ListItem
+          disabled={!!phone?.length}
+          icon={<MobileIcon />}
+          title={phone?.length ? phone : "Connect mobile phone number"}
+          onClick={() => navigate(`${ProfileConstants.addPhoneNumber}`)}
+        />
+        {/* <ListItem
+          // disabled={!!email?.length}
+          disabled
+          icon={<GmailIcon />}
+          title={email ?? "Connect Gmail"}
+          onClick={() => {}}
+        /> */}
       </ProfileContainer>
       {isLoading ? <Loader isLoading={isLoading} /> : null}
     </ProfileTemplate>

@@ -1,13 +1,14 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
 
+import { DesktopIcon } from "@internet-identity-labs/nfid-sdk-react"
+
 import { CalendarIcon } from "./calendar"
 import { ButtonChevronIcon } from "./chevron"
 import { CopyIcon } from "./copy"
 import { IconLaptop } from "./desktop"
 import { DocumentIcon } from "./document"
 import { DotsIcon } from "./dots"
-import { IconDesktop } from "./laptop"
 import { LogoutIcon } from "./logout"
 import { MapPinIcon } from "./map-pin"
 import { MobileIcon } from "./mobile"
@@ -34,7 +35,7 @@ const Icons: Story = (args) => {
       <div className="flex items-center gap-2">
         <MobileIcon {...args} />
         <TabletIcon {...args} />
-        <IconDesktop {...args} />
+        <DesktopIcon {...args} />
         <IconLaptop {...args} />
         <DocumentIcon {...args} />
       </div>

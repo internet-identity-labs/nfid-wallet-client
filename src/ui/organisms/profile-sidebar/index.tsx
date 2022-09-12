@@ -19,7 +19,7 @@ const ProfileSidebar: React.FC<IProfileSidebar> = ({ className }) => {
           title={item.title}
           onClick={() => navigate(item.link)}
           key={`sidebarItem_${index}`}
-          isActive={window.location.pathname.includes(item.link)}
+          isActive={window.location.pathname === item.link}
         />
       ))}
     </div>

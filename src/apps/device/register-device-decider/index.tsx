@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -9,8 +9,10 @@ import { deviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { Icon } from "frontend/integration/identity-manager/devices/state"
+import { usePersona } from "frontend/integration/identity-manager/persona/hooks"
 import { authState } from "frontend/integration/internet-identity"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
+import { useUnknownDeviceConfig } from "frontend/ui/pages/remote-authorize-app-unknown-device/hooks/use-unknown-device.config"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface AppScreenRegisterDeviceDeciderProps
@@ -25,6 +27,7 @@ export const RouterRegisterDeviceDecider: React.FC<
   const { recoverDevice, createSecurityDevice } = useDevices()
   const { recoverAccount, createAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
+  const { getPersona } = usePersona()
   const { generatePath } = useNFIDNavigate()
   const { user } = useAuthentication()
 
@@ -34,8 +37,7 @@ export const RouterRegisterDeviceDecider: React.FC<
   } = useDeviceInfo()
   const navigate = useNavigate()
 
-  const { state } = useLocation()
-  const userNumber = BigInt((state as { userNumber: string }).userNumber)
+  const { userNumber } = useUnknownDeviceConfig()
 
   const handleRegister = React.useCallback(async () => {
     setIsLoading(true)
@@ -46,7 +48,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     }
 
     try {
-      await recoverAccount(BigInt(userNumber), true)
+      await recoverAccount(userNumber, true)
     } catch (e) {
       console.warn("account not found. Recreating")
       const account = { anchor: userNumber }
@@ -104,6 +106,8 @@ export const RouterRegisterDeviceDecider: React.FC<
       console.error(e)
     }
 
+    await getPersona()
+
     navigate(generatePath(registerSuccessPath))
     setIsLoading(false)
   }, [
@@ -111,6 +115,7 @@ export const RouterRegisterDeviceDecider: React.FC<
     createAccount,
     deviceName,
     generatePath,
+    getPersona,
     navigate,
     recoverAccount,
     recoverDevice,
@@ -127,11 +132,13 @@ export const RouterRegisterDeviceDecider: React.FC<
     setShouldStoreLocalAccount(false)
 
     await recoverAccount(userNumber, false)
+    await getPersona()
 
     setIsLoading(false)
     navigate(generatePath(registerSuccessPath))
   }, [
     generatePath,
+    getPersona,
     navigate,
     recoverAccount,
     registerSuccessPath,

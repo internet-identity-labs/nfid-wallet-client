@@ -94,6 +94,40 @@ export const ProfileRoutes = (
         </AuthWrapper>
       }
     />
+    {/* <Route
+      path={ProfileConstants.authenticate}
+      element={
+        // TODO: redirect to general register flow
+        <AuthWrapper>
+          <NFIDProfile />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.edit}
+      element={
+        <AuthWrapper>
+          <NFIDProfileEdit />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.addPhoneNumber}
+      element={
+        <AuthWrapper>
+          <AddPhoneNumber />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.verifySMSToken}
+      element={
+        <AuthWrapper>
+          <VerifySMSToken />
+        </AuthWrapper>
+      }
+    />
+    */}
   </Route>
 )
 

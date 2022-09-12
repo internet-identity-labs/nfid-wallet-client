@@ -1,7 +1,7 @@
 import React from "react"
 import { toast } from "react-toastify"
 
-import { QRCode } from "frontend/ui/atoms/qrcode"
+import { QRCode } from "@internet-identity-labs/nfid-sdk-react"
 
 import copy from "./assets/copy.svg"
 

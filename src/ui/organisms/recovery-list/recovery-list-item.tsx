@@ -5,17 +5,20 @@ import React from "react"
 import ReactTooltip from "react-tooltip"
 
 import {
+  Loader,
+  ModalAdvanced,
+  P,
+  PencilIcon,
+  TrashIcon,
+} from "@internet-identity-labs/nfid-sdk-react"
+
+import {
   Icon,
   RecoveryDevice,
 } from "frontend/integration/identity-manager/devices/state"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
-import { PencilIcon } from "frontend/ui/atoms/icons/pencil"
-import { TrashIcon } from "frontend/ui/atoms/icons/trash"
 import { IconWarning } from "frontend/ui/atoms/icons/warning"
-import { Loader } from "frontend/ui/atoms/loader"
-import { P } from "frontend/ui/atoms/typography/paragraph"
-import { ModalAdvanced } from "frontend/ui/molecules/modal/advanced"
 
 import { DeviceIconDecider } from "../device-list/device-icon-decider"
 import { DeviceListButtonGroup } from "../device-list/device-list-button-group"

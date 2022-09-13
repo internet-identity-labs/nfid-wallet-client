@@ -1,4 +1,5 @@
 import { Account, Application } from "frontend/integration/identity-manager"
+import { getUrl } from "frontend/ui/utils"
 
 export const groupPersonasByApplications = (
   applications: Account[],
@@ -9,7 +10,7 @@ export const groupPersonasByApplications = (
       return app?.alias?.includes(persona.domain)
     })
 
-    const objectKey = applicationMeta?.name ?? new URL(persona.domain).host
+    const objectKey = applicationMeta?.name ?? getUrl(persona.domain).host
     const personas = acc[objectKey] || []
 
     acc[objectKey] = [

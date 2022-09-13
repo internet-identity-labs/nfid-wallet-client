@@ -129,9 +129,6 @@ function authStateClosure() {
         sessionKey,
       })
       replaceIdentity(delegationIdentity)
-      im.use_access_point().catch((error) => {
-        throw new Error(`im.use_access_point: ${error.message}`)
-      })
     },
     get: () => observableAuthState$.getValue(),
     reset() {
@@ -786,6 +783,10 @@ export async function fromSeedPhrase(
   replaceIdentity(delegationIdentity.delegationIdentity)
   authState.set(identity, delegationIdentity.delegationIdentity, ii)
 
+  im.use_access_point().catch((error) => {
+    throw new Error(`fromSeedPhrase im.use_access_point: ${error.message}`)
+  })
+
   return {
     kind: "loginSuccess",
     userNumber,
@@ -834,6 +835,10 @@ async function fromWebauthnDevices(
 
   replaceIdentity(delegation.delegationIdentity)
   authState.set(multiIdent._actualIdentity!, delegation.delegationIdentity, ii)
+
+  im.use_access_point().catch((error) => {
+    throw new Error(`fromWebauthnDevices im.use_access_point: ${error.message}`)
+  })
 
   return {
     kind: "loginSuccess",
@@ -887,6 +892,11 @@ export async function loginfromGoogleDevice(identity: string): Promise<void> {
   const frontendDelegation = await requestFEDelegation(googleIdentity)
 
   authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
+  im.use_access_point().catch((error) => {
+    throw new Error(
+      `loginfromGoogleDevice im.use_access_point: ${error.message}`,
+    )
+  })
 }
 
 export interface ReconstructableIdentity {

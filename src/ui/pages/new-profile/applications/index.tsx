@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 
+import { groupPersonasByApplications } from "frontend/apps/identity-manager/profile/utils"
 import { Account } from "frontend/integration/identity-manager"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import Pagination from "frontend/ui/molecules/pagination"
 import { ApplicationList } from "frontend/ui/organisms/applications-list"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-import { getUrl } from "frontend/ui/utils"
 
 import ProfileApplicationsEmpty from "./empty-state"
 
@@ -22,40 +22,8 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
   const { data: applicationsMeta } = useApplicationsMeta()
 
   const myApplications = React.useMemo(() => {
-    console.log({ applications })
-    // Group iiPersonas by hostname and count the number of iiPersonas
-    const personasByHostname = applications.reduce((acc, persona) => {
-      const applicationMeta = applicationsMeta?.find((app) =>
-        app?.alias?.includes(persona.domain),
-      )
-
-      const personas = acc[getUrl(persona.domain).host ?? ""] || []
-
-      acc[getUrl(persona.domain).host] = [
-        ...(personas as any),
-        {
-          ...persona,
-          ...applicationMeta,
-        },
-      ]
-
-      return acc
-    }, {} as { [applicationName: string]: Account[] })
-
-    // Map the iiPersonas by application to an array of objects
-    const personaByHostnameArray = Object.entries(personasByHostname).map(
-      ([applicationName, accounts]) => {
-        return {
-          applicationName,
-          accountsCount: accounts.length,
-          domain: accounts[0].domain,
-          icon: accounts[0].icon,
-          alias: accounts[0].alias,
-        }
-      },
-    )
-
-    return personaByHostnameArray
+    if (!applicationsMeta) return []
+    return groupPersonasByApplications(applications, applicationsMeta)
   }, [applications, applicationsMeta])
 
   return (

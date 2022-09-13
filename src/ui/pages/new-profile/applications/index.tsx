@@ -28,10 +28,11 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
         return app?.alias?.includes(persona.domain)
       })
 
-      const personas =
-        acc[applicationMeta?.name ?? getUrl(persona.domain).host] || []
-      acc[applicationMeta?.name ?? getUrl(persona.domain).host] = [
-        ...(personas as any),
+      const objectKey = applicationMeta?.name ?? getUrl(persona.domain).host
+      const personas = acc[objectKey] || []
+
+      acc[objectKey] = [
+        ...personas,
         {
           ...persona,
           ...applicationMeta,

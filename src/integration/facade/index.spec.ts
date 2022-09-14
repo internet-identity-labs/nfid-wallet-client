@@ -17,12 +17,15 @@ import {
   fetchPrincipals,
   removeRecoveryDeviceFacade,
 } from "frontend/integration/facade/index"
-import { fetchAccounts } from "frontend/integration/identity-manager/index"
+import {
+  Application,
+  fetchAccounts,
+} from "frontend/integration/identity-manager/index"
+import * as imIndexMock from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
   authState as authStateMock,
-  fetchDelegate,
   FrontendDelegation,
 } from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
@@ -160,6 +163,24 @@ describe("Facade suite", () => {
         persona_id: "1",
         persona_name: "",
       })
+      let appRequired: Application = {
+        accountLimit: 0,
+        alias: [],
+        domain: "requiredDomain",
+        isNftStorage: true,
+        name: "",
+      }
+      let appNotRequired: Application = {
+        accountLimit: 0,
+        alias: [],
+        domain: "notRequiredDomain",
+        isNftStorage: false,
+        name: "",
+      }
+      // @ts-ignore
+      imIndexMock.fetchApplications = jest
+        .fn()
+        .mockReturnValue(Promise.resolve([appRequired, appNotRequired]))
       let accounts = await fetchAccounts()
       let principals: Map<string, Principal[]> = await fetchPrincipals(
         anchor,
@@ -167,6 +188,8 @@ describe("Facade suite", () => {
       )
       expect(principals.get("test")!.length).toEqual(2)
       expect(principals.get("oneMoreTest")!.length).toEqual(1)
+      expect(principals.get("requiredDomain")!.length).toEqual(1)
+      expect(principals.has("notRequiredDomain")).toEqual(false)
     })
 
     async function getErrorOnIncorrectSeedPhrase(

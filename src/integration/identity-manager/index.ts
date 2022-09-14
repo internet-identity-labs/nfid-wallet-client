@@ -259,6 +259,7 @@ export interface Application {
   name: string
   icon?: string
   alias: string[]
+  isNftStorage: boolean
 }
 
 function mapApplication(application: BEApplication): Application {
@@ -271,6 +272,10 @@ function mapApplication(application: BEApplication): Application {
     name: application.name,
     icon: application.img[0],
     alias: application.alias.map((a) => a[0]),
+    isNftStorage:
+      application.is_nft_storage.length === 0
+        ? false
+        : application.is_nft_storage[0],
   }
 }
 

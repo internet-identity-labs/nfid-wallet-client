@@ -21,7 +21,6 @@ import {
   Application,
   fetchAccounts,
 } from "frontend/integration/identity-manager/index"
-import * as imIndexMock from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
@@ -177,14 +176,11 @@ describe("Facade suite", () => {
         isNftStorage: false,
         name: "",
       }
-      // @ts-ignore
-      imIndexMock.fetchApplications = jest
-        .fn()
-        .mockReturnValue(Promise.resolve([appRequired, appNotRequired]))
       let accounts = await fetchAccounts()
       let principals: Map<string, Principal[]> = await fetchPrincipals(
         anchor,
         accounts,
+        [appRequired, appNotRequired],
       )
       expect(principals.get("test")!.length).toEqual(2)
       expect(principals.get("oneMoreTest")!.length).toEqual(1)

@@ -1,5 +1,7 @@
 import { Then } from "@cucumber/cucumber"
 
+import clickElement from "./support/action/clickElement"
+import setInputField from "./support/action/setInputField"
 import { checkCredentialAmount } from "./support/action/setupVirtualWebauthn"
 import waitFor from "./support/action/waitFor"
 import waitForVisible from "./support/action/waitForDisplayed"
@@ -161,4 +163,15 @@ Then(
 
 Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
   await checkCredentialAmount(this.authenticator, Number(amount))
+})
+
+Then(
+  /^I put Recovery Phrase to input field "([^"]*)?"$/,
+  async function (phrase: string) {
+    await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
+  },
+)
+
+Then(/^I toggle checkbox "([^"]*)?"$/, async function (selector: string) {
+  await clickElement("click", "selector", selector)
 })

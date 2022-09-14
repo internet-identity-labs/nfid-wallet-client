@@ -49,7 +49,7 @@ export const SendReceiveButton = () => {
   }
 
   return (
-    <div>
+    <div id="sendReceiveButton">
       <Loader isLoading={isLoading} />
       <Button
         className={clsx(

@@ -1,8 +1,15 @@
+import { Principal } from "@dfinity/principal"
+
 import {
   DeviceKey,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
-import { removeAccessPoint } from "frontend/integration/identity-manager"
+import { ii } from "frontend/integration/actors"
+import {
+  Account,
+  removeAccessPoint,
+} from "frontend/integration/identity-manager"
+import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import {
   removeDevice,
   removeRecoveryDeviceII,
@@ -22,4 +29,23 @@ export async function removeAccessPointFacade(
 ): Promise<void> {
   await removeDevice(userNumber, pubKey)
   await removeAccessPoint(pubKey)
+}
+
+export async function fetchPrincipals(
+  userNumber: UserNumber,
+  personas: Account[],
+): Promise<Map<string, Principal[]>> {
+  let principalsByDomain = new Map<string, Principal[]>()
+  for (const persona of personas) {
+    let principal = await ii.get_principal(
+      userNumber,
+      getScope(persona.domain, persona.accountId),
+    )
+    if (principalsByDomain.has(persona.domain)) {
+      principalsByDomain.get(persona.domain)!.push(principal)
+    } else {
+      principalsByDomain.set(persona.domain, [principal])
+    }
+  }
+  return principalsByDomain
 }

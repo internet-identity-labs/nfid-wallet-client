@@ -26,7 +26,7 @@ import {
   registerInternetIdentity,
   requestFEDelegationChain,
 } from "."
-import { ii } from "../actors"
+import { ii, im } from "../actors"
 import { deviceInfo } from "../device"
 import { identityFromDeviceList } from "../identity"
 import { Icon } from "../identity-manager/devices/state"
@@ -62,6 +62,11 @@ export async function loginWithAnchor(
       authResult.chain,
       authResult.sessionKey,
     )
+
+    im.use_access_point().catch((error) => {
+      throw new Error(`loginWithAnchor im.use_access_point: ${error.message}`)
+    })
+
     // When used platform authenticator
     // Then write profile to localStorage
     if (!event.data.withSecurityDevices) {
@@ -146,6 +151,10 @@ export async function loginService(context: {
     chain,
     sessionKey,
   )
+
+  im.use_access_point().catch((error) => {
+    throw new Error(`loginService im.use_access_point: ${error.message}`)
+  })
 
   const profile = loadProfileFromLocalStorage()
   if (!profile?.anchor)

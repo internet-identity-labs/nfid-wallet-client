@@ -1,5 +1,4 @@
 import { Principal } from "@dfinity/principal"
-import _ from "lodash"
 
 import {
   DeviceKey,

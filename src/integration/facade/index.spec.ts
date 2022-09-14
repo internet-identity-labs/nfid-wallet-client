@@ -165,7 +165,6 @@ describe("Facade suite", () => {
         anchor,
         accounts,
       )
-      console.log(principals.get("test"))
       expect(principals.get("test")!.length).toEqual(2)
       expect(principals.get("oneMoreTest")!.length).toEqual(1)
     })

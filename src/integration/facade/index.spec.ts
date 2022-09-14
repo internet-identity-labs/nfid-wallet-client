@@ -17,7 +17,7 @@ import {
   fetchPrincipals,
   removeRecoveryDeviceFacade,
 } from "frontend/integration/facade/index"
-import * as imMock from "frontend/integration/identity-manager/index"
+import { fetchAccounts } from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
@@ -160,7 +160,11 @@ describe("Facade suite", () => {
         persona_id: "1",
         persona_name: "",
       })
-      let principals: Map<string, Principal[]> = await fetchPrincipals(anchor)
+      let accounts = await fetchAccounts()
+      let principals: Map<string, Principal[]> = await fetchPrincipals(
+        anchor,
+        accounts,
+      )
       console.log(principals.get("test"))
       expect(principals.get("test")!.length).toEqual(2)
       expect(principals.get("oneMoreTest")!.length).toEqual(1)

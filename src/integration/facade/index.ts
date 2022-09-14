@@ -7,9 +7,9 @@ import {
 import { ii } from "frontend/integration/actors"
 import {
   Account,
-  fetchAccounts,
   removeAccessPoint,
 } from "frontend/integration/identity-manager"
+import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import {
   removeDevice,
   removeRecoveryDeviceII,
@@ -33,13 +33,13 @@ export async function removeAccessPointFacade(
 
 export async function fetchPrincipals(
   userNumber: UserNumber,
+  personas: Account[],
 ): Promise<Map<string, Principal[]>> {
-  let personas = await fetchAccounts()
   let principalsByDomain = new Map<string, Principal[]>()
   for (const persona of personas) {
     let principal = await ii.get_principal(
       userNumber,
-      persona.domain + persona.accountId,
+      getScope(persona.domain, persona.accountId),
     )
     if (principalsByDomain.has(persona.domain)) {
       principalsByDomain.get(persona.domain)!.push(principal)

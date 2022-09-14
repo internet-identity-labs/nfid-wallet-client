@@ -37,9 +37,7 @@ export async function fetchPrincipals(
   personas: Account[],
 ): Promise<Map<string, Principal[]>> {
   let principalsByDomain = new Map<string, Principal[]>()
-
   let userData = personas.map((persona) => [persona.domain, persona.accountId])
-
   let additionalDomains = (await fetchApplications())
     .filter((l) => l.isNftStorage === true)
     .map((l) => [l.domain, "0"])

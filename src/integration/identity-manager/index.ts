@@ -2,7 +2,12 @@
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity_types"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
-import { mapOptional, unpackLegacyResponse, unpackResponse } from "../_common"
+import {
+  mapOptional,
+  reverseMapOptional,
+  unpackLegacyResponse,
+  unpackResponse,
+} from "../_common"
 import {
   AccessPointRequest,
   AccessPointResponse,
@@ -289,23 +294,30 @@ export async function fetchApplications() {
 
 /**
  * Update 3rd party application origin is needed
+ *
+ * @param derivationOrigin - the canister url
+ * @param aliasDomain - the nice application domain used instead of the canister url
+ * @param applicationName - the application name provided by the 3rd party application developer
  */
 export async function processApplicationOrigin(
-  domain: string,
-  origin: string,
-  name?: string,
+  derivationOrigin: string,
+  aliasDomain: string,
+  applicationName?: string,
 ) {
-  console.debug(`processApplicationOrigin`)
-  let application = await im.get_application(domain)
+  console.debug("processApplicationOrigin", {
+    derivationOrigin,
+    aliasDomain,
+    applicationName,
+  })
+  let application = await im.get_application(derivationOrigin)
   if (
     application.data.length === 0 ||
-    // @ts-ignore
-    !application.data[0].alias[0].includes(origin)
+    !application?.data[0]?.alias[0]?.includes(aliasDomain)
   ) {
     await im.update_application_alias(
-      domain,
-      origin,
-      typeof name !== "undefined" ? [name] : [],
+      derivationOrigin,
+      aliasDomain,
+      reverseMapOptional(applicationName),
     )
   }
 }

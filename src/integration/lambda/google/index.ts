@@ -74,14 +74,14 @@ export async function getGoogleAuthSession(
     delegationIdentity.chain,
     delegationIdentity.sessionKey,
   )
-  im.use_access_point().catch((error) => {
-    throw new Error(
-      `getGoogleAuthSession im.use_access_point: ${error.message}`,
-    )
-  })
   let profile
   try {
     profile = await fetchProfile()
+    im.use_access_point().catch((error) => {
+      throw new Error(
+        `getGoogleAuthSession im.use_access_point: ${error.message}`,
+      )
+    })
   } catch (fetchProfileError: any) {
     if (fetchProfileError.code !== 404) {
       throw fetchProfileError

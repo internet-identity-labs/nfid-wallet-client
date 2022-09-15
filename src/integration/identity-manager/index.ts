@@ -272,10 +272,7 @@ function mapApplication(application: BEApplication): Application {
     name: application.name,
     icon: application.img[0],
     alias: application.alias.map((a) => a[0]),
-    isNftStorage:
-      application.is_nft_storage.length === 0
-        ? false
-        : application.is_nft_storage[0],
+    isNftStorage: mapOptional(application.is_nft_storage) || false,
   }
 }
 

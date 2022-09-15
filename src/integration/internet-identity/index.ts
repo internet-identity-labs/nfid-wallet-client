@@ -11,7 +11,6 @@ import { Principal } from "@dfinity/principal"
 import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
 import { BehaviorSubject } from "rxjs"
-import * as tweetnacl from "tweetnacl"
 
 import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
 import {
@@ -150,66 +149,6 @@ export async function createChallenge(): Promise<Challenge> {
     throw new Error(`createChallenge: ${e.message}`)
   })
   return challenge
-}
-
-declare const IS_E2E_TEST: string
-
-// The options sent to the browser when creating the credentials.
-// Credentials (key pair) creation is signed with a private key that is unique per device
-// model, as an "attestation" that the credentials were created with a FIDO
-// device. In II we discard this attestation because we only care about the key
-// pair that was created and that we use later. Discarding the attestation
-// means we do not have to care about attestation checking security concerns
-// like setting a server-generated, random challenge.
-//
-// Algorithm -7, ECDSA_WITH_SHA256, is specified. The reason is that the
-// generated (ECDSA) key pair is used later directly to sign messages to the
-// IC -- the "assertion" -- so we must use a signing algorithm supported by the
-// IC:
-//  * https://smartcontracts.org/docs/interface-spec/index.html#signatures
-//
-// For more information on attestation vs assertion (credentials.create vs
-// credentials.get), see
-//  * https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/Attestation_and_Assertion
-export const creationOptions = (
-  exclude: DeviceData[] = [],
-  authenticatorAttachment: AuthenticatorAttachment = "platform",
-): PublicKeyCredentialCreationOptions => {
-  return {
-    authenticatorSelection: {
-      userVerification: "preferred",
-      ...(IS_E2E_TEST === "true" ? {} : { authenticatorAttachment }),
-    },
-    excludeCredentials: exclude.flatMap((device) =>
-      device.credential_id.length === 0
-        ? []
-        : {
-            id: new Uint8Array(device.credential_id[0]),
-            type: "public-key",
-          },
-    ),
-    challenge: Uint8Array.from("<ic0.app>", (c) => c.charCodeAt(0)),
-    pubKeyCredParams: [
-      {
-        type: "public-key",
-        // alg: PubKeyCoseAlgo.ECDSA_WITH_SHA256
-        alg: -7,
-      },
-      {
-        type: "public-key",
-        // alg: PubKeyCoseAlgo.RSA_WITH_SHA256
-        alg: -257,
-      },
-    ],
-    rp: {
-      name: "Internet Identity Service",
-    },
-    user: {
-      id: tweetnacl.randomBytes(16),
-      name: "Internet Identity",
-      displayName: "Internet Identity",
-    },
-  }
 }
 
 export async function fetchAllDevices(anchor: UserNumber) {

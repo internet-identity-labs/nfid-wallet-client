@@ -24,11 +24,12 @@ describe("Identity Manager suite", () => {
     })
     it("Should update origin", async function () {
       const application: Application = {
+        is_nft_storage: [],
         alias: [["appAlias"]],
         user_limit: 5,
         domain: "domain",
         name: "appName",
-        img: [],
+        img: []
       }
       // @ts-ignore
       imMock.get_application = jest.fn(() =>
@@ -43,11 +44,12 @@ describe("Identity Manager suite", () => {
     })
     it("Should skip", async function () {
       const application: Application = {
+        is_nft_storage: [],
         alias: [["appAlias"]],
         user_limit: 5,
         domain: "domain",
         name: "appName",
-        img: [],
+        img: []
       }
       // @ts-ignore
       imMock.get_application = jest.fn(() =>

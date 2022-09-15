@@ -7,6 +7,7 @@ import {
 import { ii } from "frontend/integration/actors"
 import {
   Account,
+  Application,
   removeAccessPoint,
 } from "frontend/integration/identity-manager"
 import { getScope } from "frontend/integration/identity-manager/persona/utils"
@@ -34,17 +35,23 @@ export async function removeAccessPointFacade(
 export async function fetchPrincipals(
   userNumber: UserNumber,
   personas: Account[],
+  applications: Application[],
 ): Promise<Map<string, Principal[]>> {
   let principalsByDomain = new Map<string, Principal[]>()
-  for (const persona of personas) {
+  let userData = personas.map((persona) => [persona.domain, persona.accountId])
+  let additionalDomains = applications
+    .filter((l) => l.isNftStorage)
+    .map((l) => [l.domain, "0"])
+
+  for (const [domain, accountId] of userData.concat(additionalDomains)) {
     let principal = await ii.get_principal(
       userNumber,
-      getScope(persona.domain, persona.accountId),
+      getScope(domain, accountId),
     )
-    if (principalsByDomain.has(persona.domain)) {
-      principalsByDomain.get(persona.domain)!.push(principal)
+    if (principalsByDomain.has(domain)) {
+      principalsByDomain.get(domain)!.push(principal)
     } else {
-      principalsByDomain.set(persona.domain, [principal])
+      principalsByDomain.set(domain, [principal])
     }
   }
   return principalsByDomain

@@ -1,10 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {
-  Application,
-  BoolHttpResponse,
-} from "frontend/integration/_ic_api/identity_manager.did"
+import { Application } from "frontend/integration/_ic_api/identity_manager.did"
 import { im as imMock } from "frontend/integration/actors"
 import { processApplicationOrigin } from "frontend/integration/identity-manager/index"
 

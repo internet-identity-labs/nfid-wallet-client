@@ -1,8 +1,9 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Buffer } from "buffer"
 
-import { creationOptions, Device } from "../internet-identity"
+import { Device } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
+import { creationOptions } from "../webauthn/creation-options"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 
 /**

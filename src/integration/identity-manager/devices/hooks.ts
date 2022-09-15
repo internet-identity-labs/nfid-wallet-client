@@ -22,7 +22,6 @@ import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/i
 import {
   addDevice,
   authState,
-  creationOptions,
   fetchAllDevices,
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,
@@ -31,6 +30,7 @@ import {
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
+import { creationOptions } from "frontend/integration/webauthn/creation-options"
 
 import { useAccount } from "../account/hooks"
 import { LegacyDevice, Icon, RecoveryDevice } from "./state"

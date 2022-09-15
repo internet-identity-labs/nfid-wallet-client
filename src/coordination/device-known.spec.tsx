@@ -4,7 +4,6 @@
 import { DelegationChain } from "@dfinity/identity"
 import { render, waitFor, screen } from "@testing-library/react"
 import { act } from "react-dom/test-utils"
-import { timeout } from "rxjs"
 
 import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 // import { factoryProfile } from "frontend/integration/identity-manager/__mocks"

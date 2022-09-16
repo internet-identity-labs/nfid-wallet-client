@@ -25,6 +25,7 @@
 ### 1.1. <a name='InstallFrontend'></a>Install Frontend
 
 ```
+npm login --registry=https://npm.pkg.github.com --scope=@psychedelic
 yarn install
 ```
 

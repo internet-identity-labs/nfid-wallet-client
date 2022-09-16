@@ -275,7 +275,7 @@ function mapApplication(application: BEApplication): Application {
     domain: application.domain,
     name: application.name,
     icon: application.img[0],
-    alias: application.alias.map((a) => a[0]),
+    alias: mapOptional(application.alias) || [],
   }
 }
 

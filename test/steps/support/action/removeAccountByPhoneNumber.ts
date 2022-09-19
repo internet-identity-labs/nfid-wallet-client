@@ -11,6 +11,8 @@ const LAMBDA_IDENTITY = process.env.LAMBDA_IDENTITY;
 const IDENTITY_MANAGER_CANISTER_ID_DEV = process.env.IDENTITY_MANAGER_CANISTER_ID_DEV;
 const IC_HOST = process.env.IC_HOST;
 
+global.fetch = require("node-fetch");
+
 export default async () => {
   if(LAMBDA_IDENTITY && IDENTITY_MANAGER_CANISTER_ID_DEV) {
     let identity = getIdentity();

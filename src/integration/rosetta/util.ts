@@ -21,8 +21,6 @@ export async function restCall<T>(
       if (!response.ok) {
         throw Error(response.statusText)
       }
-      console.log("---------------")
-      console.log(response)
       return response
     })
     .catch((e: Error) => {

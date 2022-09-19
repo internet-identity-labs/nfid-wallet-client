@@ -1,12 +1,12 @@
 import React from "react"
 
-import { useAccount } from "frontend/integration/identity-manager/queries"
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { authState } from "frontend/integration/internet-identity"
 import { decryptStringForIdentity } from "frontend/integration/lambda/symmetric"
 import ProfileCredentialsPage from "frontend/ui/pages/new-profile/credentials"
 
 const ProfileCredentials = () => {
-  const { data } = useAccount()
+  const { profile } = useAccount()
   const [isLoading, setIsLoading] = React.useState(false)
   const [decryptedPhone, setDecryptedPhone] = React.useState("")
 
@@ -27,8 +27,8 @@ const ProfileCredentials = () => {
   }, [])
 
   React.useEffect(() => {
-    decryptPhone(data?.phoneNumber)
-  }, [data?.phoneNumber, decryptPhone])
+    decryptPhone(profile?.phoneNumber)
+  }, [profile?.phoneNumber, decryptPhone])
 
   return <ProfileCredentialsPage phone={decryptedPhone} isLoading={isLoading} />
 }

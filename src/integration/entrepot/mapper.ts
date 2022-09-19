@@ -29,6 +29,7 @@ export async function mapToNFTData(
     })
 }
 
+
 export async function toNftDetails(response: Response): Promise<NFTDetails[]> {
   return await response.json().then((data) => data as NFTDetails[])
 }

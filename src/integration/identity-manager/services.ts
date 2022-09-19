@@ -46,7 +46,6 @@ export async function fetchAccountsService(
 export async function createAccountService(
   context: AuthorizationMachineContext,
 ): Promise<{ accountId: string }> {
-  console.debug(`createAccountService`, { context })
   if (!context.authRequest)
     throw new Error(`createAccountService context.authRequest missing`)
   if (!context.accounts)

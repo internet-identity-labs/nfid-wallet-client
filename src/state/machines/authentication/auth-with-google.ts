@@ -65,7 +65,6 @@ const AuthWithGoogleMachine =
         End: {
           type: "final",
           data: (context) => {
-            console.debug("AuthWithGoogleMachine End", { context })
             return context.authSession
           },
         },
@@ -87,7 +86,6 @@ const AuthWithGoogleMachine =
       },
       services: {
         fetchGoogleDeviceService: (context) => {
-          console.debug("fetchGoogleDeviceService", { context })
           return fetchGoogleDevice(context.jwt)
         },
         signInWithGoogleService: (context, event) => {

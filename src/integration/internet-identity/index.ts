@@ -201,14 +201,11 @@ export let requestFEDelegation = async (
 ): Promise<FrontendDelegation> => {
   console.debug("requestFEDelegation")
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
-  console.debug("requestFEDelegation", { sessionKey, chain })
 
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,
     chain,
   )
-
-  console.debug("requestFEDelegation", { delegationIdentity })
 
   return {
     delegationIdentity,
@@ -218,8 +215,8 @@ export let requestFEDelegation = async (
 }
 
 async function renewDelegation() {
+  console.debug("renewDelegation")
   const { delegationIdentity, actor, identity } = authState.get()
-  console.debug("renewDelegation", { identity, delegationIdentity })
   if (!delegationIdentity || !identity)
     throw new Error(`renewDelegation unauthorized`)
 
@@ -796,11 +793,7 @@ export async function loginFromRemoteFrontendDelegation({
   chain: string
   sessionKey: string
 }): Promise<LoginResult> {
-  console.debug("loginFromRemoteFrontendDelegation", {
-    userNumber,
-    chainJSON,
-    sessionKeyJSON,
-  })
+  console.debug("loginFromRemoteFrontendDelegation")
   const [chain, sessionKey] = getDelegationFromJson(chainJSON, sessionKeyJSON)
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,
@@ -809,7 +802,7 @@ export async function loginFromRemoteFrontendDelegation({
 
   const devices = await fetchAuthenticatorDevices(userNumber)
   const multiIdent = getMultiIdent(devices)
-  console.debug("loginFromRemoteFrontendDelegation", { devices, multiIdent })
+  console.debug("loginFromRemoteFrontendDelegation", { devices })
 
   authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
 
@@ -989,7 +982,6 @@ export async function fetchDelegate(
     sessionKey,
     maxTimeToLive,
   )
-  console.debug(`fetchDelegate prepareDelegate`, { response: prepare })
 
   const signedDelegation = await getDelegateRetry(
     userNumber,
@@ -997,7 +989,6 @@ export async function fetchDelegate(
     sessionKey,
     prepare.timestamp,
   )
-  console.debug(`fetchDelegate getDelegate`, { signedDelegation })
 
   return {
     signedDelegation,

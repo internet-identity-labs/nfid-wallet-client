@@ -140,7 +140,7 @@ export const StepInput: React.FC<StepInputProps> = ({
 
   return (
     <div>
-      <div className={clsx("flex space-x-3", className)}>
+      <div id="pin-input" className={clsx("flex space-x-3", className)}>
         {list.map((_, index) => (
           <Input
             pin
@@ -160,6 +160,7 @@ export const StepInput: React.FC<StepInputProps> = ({
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button
+        id="send-pin"
         primary
         className={clsx("px-10 mt-3 sm:mt-5", buttonClassName)}
         onClick={() => {

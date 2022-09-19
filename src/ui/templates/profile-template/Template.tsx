@@ -43,7 +43,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         )}
       >
         <div className={clsx("hidden mt-5 -ml-3 md:block relative")}>
-          <ProfileSidebar />
+          <ProfileSidebar id="desktop"/>
         </div>
         <section className={clsx("relative", className)}>
           <div className="flex justify-between h-[70px] items-start mt-5">

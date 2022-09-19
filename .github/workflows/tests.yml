@@ -44,9 +44,10 @@ jobs:
           AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
           AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-
+          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
@@ -92,7 +93,7 @@ jobs:
           AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-
+          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
@@ -115,7 +116,10 @@ jobs:
           # yarn test:e2e:mobile
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+          IC_HOST: https://ic0.app
 
       - name: Generate HTML Report
         if: always()

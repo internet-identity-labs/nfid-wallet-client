@@ -40,6 +40,7 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
             icon={<MobileIcon />}
             title={phone?.length ? phone : "Connect mobile phone number"}
             onClick={() => navigate(`${ProfileConstants.addPhoneNumber}`)}
+            id={phone?.length ? "phone-number-value" : "connect-mobile-phone-number"}
           />
         )}
       </ProfileContainer>

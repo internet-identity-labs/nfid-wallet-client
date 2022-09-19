@@ -100,7 +100,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                   </div>
                 }
               />
-              <ProfileSidebar className="mt-5" />
+              <ProfileSidebar id="mobile" className="mt-5" />
             </div>
           )}
         </ButtonMenu>

@@ -23,8 +23,11 @@ import compareText from "./support/check/compareText"
 import isDisplayed from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import removeUserE2E from "./support/action/removeUserE2E"
+import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
 
 Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
+
+Given(/^I remove the account by phone number 380990374146$/, removeAccountByPhoneNumber)
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)
 

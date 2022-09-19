@@ -1,18 +1,22 @@
 import { Principal } from "@dfinity/principal"
-import { restCall } from "frontend/integration/rosetta/util"
 import { principalToAddress } from "ictool"
-import { Account } from "frontend/integration/identity-manager"
-import { CollectionDetailEntrepot, NFTData, NFTDetails } from "frontend/integration/entrepot/entrepot_interface"
-import {
-  mapEntrepotInfoToNFTData,
-  mapToNFTData,
-  toCollectionDetailEntrepot,
-} from "frontend/integration/entrepot/mapper"
 
+import {
+  NFTData,
+  NFTDetails,
+} from "frontend/integration/entrepot/entrepot_interface"
+import {
+  mapToNFTData,
+  toNftDetails,
+} from "frontend/integration/entrepot/mapper"
+import { Account } from "frontend/integration/identity-manager"
+import { restCall } from "frontend/integration/rosetta/util"
 
 const entrepot = "https://us-central1-entrepot-api.cloudfunctions.net/api"
 
-export async function getNFTsOfPrincipals(inputData: { principal: Principal, account: Account }[]): Promise<NFTData[]> {
+export async function getNFTsOfPrincipals(
+  inputData: { principal: Principal; account: Account }[],
+): Promise<NFTData[]> {
   let nftDataObjects: NFTData[] = []
   for (const data of inputData) {
     let address: string = principalToAddress(data.principal as any)
@@ -26,11 +30,12 @@ export async function getNFTsOfPrincipals(inputData: { principal: Principal, acc
 }
 
 export async function getNFTDetails(canisterId: string): Promise<NFTDetails> {
-  let collectionDataArray: CollectionDetailEntrepot[] = await restCall("GET", `${entrepot}/collections`)
-    .then(toCollectionDetailEntrepot)
-  let collectionData = collectionDataArray.find((e) => e.id === canisterId)
-  if (typeof collectionData === "undefined") {
+  let nftDetails = await restCall("GET", `${entrepot}/collections`)
+    .then(toNftDetails)
+    .then((l) => l.find((e) => e.id === canisterId))
+  console.log(nftDetails)
+  if (typeof nftDetails === "undefined") {
     throw Error(`Collection is undefined ${canisterId}`)
   }
-  return mapEntrepotInfoToNFTData(collectionDataArray[0])
+  return nftDetails
 }

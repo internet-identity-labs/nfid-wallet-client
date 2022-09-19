@@ -263,8 +263,10 @@ export const nftCollectionInfo = {
   priority: 10,
   name: "ICPCS",
   brief: "7,777 Internet Computers running on the IC",
-  description: "ICPCS is a collection of generative art on the Internet Computer. Holders of ICPCS will be granted access to ICOS - a browser-based portal into the ICP ecosystem.",
-  blurb: "ICPCS, or Internet Computers is a collection of 7,777 uniquely generated PC setups celebrating the evolution of the home PC. Holders will be granted exclusive perks, including access to: ICOS - a web-based, customizable and user friendly portal for everything IC related, with built-in utilities, dashboards, widgets, games and a dApp browser, as well as ICDM - a reflection rewards system for holders, tied to NRI.",
+  description:
+    "ICPCS is a collection of generative art on the Internet Computer. Holders of ICPCS will be granted access to ICOS - a browser-based portal into the ICP ecosystem.",
+  blurb:
+    "ICPCS, or Internet Computers is a collection of 7,777 uniquely generated PC setups celebrating the evolution of the home PC. Holders will be granted exclusive perks, including access to: ICOS - a web-based, customizable and user friendly portal for everything IC related, with built-in utilities, dashboards, widgets, games and a dApp browser, as well as ICDM - a reflection rewards system for holders, tied to NRI.",
   keywords: "Utility DeFi Generative",
   web: "https://icpcs.io/",
   telegram: "",
@@ -273,9 +275,12 @@ export const nftCollectionInfo = {
   medium: "https://icpcs.medium.com/",
   dscvr: "",
   distrikt: "",
-  banner: "https://s3.amazonaws.com/pf-user-files-01/u-166728/uploads/2022-03-09/nt13bt3/collection_banner.jpg",
-  avatar: "https://s3.amazonaws.com/pf-user-files-01/u-166728/uploads/2022-03-09/tb03b5i/avatar.jpg",
-  collection: "https://s3.amazonaws.com/pf-user-files-01/u-166728/uploads/2022-03-09/d923bee/collection_image.jpg",
+  banner:
+    "https://s3.amazonaws.com/pf-user-files-01/u-166728/uploads/2022-03-09/nt13bt3/collection_banner.jpg",
+  avatar:
+    "https://s3.amazonaws.com/pf-user-files-01/u-166728/uploads/2022-03-09/tb03b5i/avatar.jpg",
+  collection:
+    "https://s3.amazonaws.com/pf-user-files-01/u-166728/uploads/2022-03-09/d923bee/collection_image.jpg",
   route: "icpcs",
   commission: 0.08,
   legacy: "",

@@ -88,7 +88,7 @@ export function RemoteReceiverCoordinator({
       // My guess is, that it's required to call renewDelegation
       const devices = await fetchAuthenticatorDevices(BigInt(message.anchor))
       const multiIdent = getMultiIdent(devices)
-      console.debug("handleRemoteRegister", { devices, multiIdent })
+      console.debug("handleRemoteRegister", { devices })
       send({
         type: "RECEIVE_DELEGATION",
         data: {

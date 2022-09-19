@@ -2,7 +2,6 @@ import { Principal } from "@dfinity/principal"
 import { Account } from "frontend/integration/identity-manager"
 import {
   CollectionDetailEntrepot,
-  CollectionInfoEntrepot,
   EntrepotNFTData,
   NFTData,
   NFTDetails,
@@ -31,12 +30,6 @@ export async function toCollectionDetailEntrepot(response: Response): Promise<Co
   return await response
     .json()
     .then((data) => data as CollectionDetailEntrepot[])
-}
-
-export async function toCollectionInfoEntrepot(response: Response): Promise<CollectionInfoEntrepot> {
-  return await response
-    .json()
-    .then((data) => data as CollectionInfoEntrepot)
 }
 
 export function mapEntrepotInfoToNFTData(details: CollectionDetailEntrepot): NFTDetails {

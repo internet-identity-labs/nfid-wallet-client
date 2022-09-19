@@ -18,8 +18,6 @@ export interface NFTData {
 }
 
 export interface NFTDetails {
-  coverImage: string,
-  thumbnailImage: string,
   id: string,
   priority: number,
   name: string,

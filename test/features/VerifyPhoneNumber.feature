@@ -46,5 +46,6 @@ Feature: User wants to veirfy his phone number
     Then I wait on element "#send-pin" for 1000ms to be displayed
     When I click on the selector "#send-pin"
     Then I wait on element "#loader" for 15000ms to not be displayed
+    Then I wait on element "#phone-number-value" for 5000ms to be displayed
     Then I expect that element "#phone-number-value" contains the text "+380990374146"
 

@@ -119,6 +119,7 @@ jobs:
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+          IC_HOST: https://ic0.app
 
       - name: Generate HTML Report
         if: always()

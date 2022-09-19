@@ -70,6 +70,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
         >
           <div className="space-y-2">
             <Input
+              id="phone-number"
               className="max-w-[350px]"
               labelText="Phone number"
               placeholder="+1 234 856 7890"
@@ -93,6 +94,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
             />
           </div>
           <Button
+            id="add-phone-number"
             primary
             className="px-10 mt-3 sm:mt-5"
             onClick={handleSubmit(onSubmit)}

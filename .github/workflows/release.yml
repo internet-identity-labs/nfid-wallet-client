@@ -160,6 +160,7 @@ jobs:
       - name: Creating PR.
         uses: peter-evans/create-pull-request@v4
         with:
+          token: ${{ secrets.PAT }}
           commit-message: "chore: update nfid-frontend build"
           title: "chore: update nfid-frontend build"
           branch: chore/update-nfid-frontend-build

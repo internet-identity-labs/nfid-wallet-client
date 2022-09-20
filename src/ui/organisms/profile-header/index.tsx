@@ -5,7 +5,7 @@ import User from "src/assets/userpics/userpic_6.svg"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
-import { useAccount } from "frontend/integration/identity-manager/queries"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Logo } from "frontend/ui/atoms/images/logo"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
@@ -23,7 +23,7 @@ interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
   const [isPopupVisible, setIsPopupVisible] = React.useState(false)
   const popupRef = useClickOutside(() => setIsPopupVisible(false))
-  const { data: account } = useAccount()
+  const { profile } = useProfile()
   const { logout } = useAuthentication()
   const navigate = useNavigate()
 
@@ -48,7 +48,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
           {isPopupVisible && (
             <AuthenticatedPopup
               onSignOut={logout}
-              anchor={account?.anchor ?? 0}
+              anchor={profile?.anchor ?? 0}
             />
           )}
         </div>
@@ -82,7 +82,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                       <img src={User} alt="user" className="cursor-pointer" />
                     </div>
                     <p className="text-sm text-gray-700 px-2.5 w-full">
-                      {account?.name ?? account?.anchor ?? ""}
+                      {profile?.name ?? profile?.anchor ?? ""}
                     </p>
                   </div>
                 }

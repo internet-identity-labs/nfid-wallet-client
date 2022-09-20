@@ -43,9 +43,9 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         )}
       >
         <div className={clsx("hidden mt-5 -ml-3 md:block relative")}>
-          <ProfileSidebar id="desktop"/>
+          <ProfileSidebar id="desktop" />
         </div>
-        <section className={clsx("relative", className)}>
+        <section className={clsx("relative overflow-hidden", className)}>
           <div className="flex justify-between h-[70px] items-start mt-5">
             <div className="sticky left-0 flex space-x-2">
               {onBack && (

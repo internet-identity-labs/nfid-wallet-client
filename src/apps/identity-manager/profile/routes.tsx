@@ -102,24 +102,24 @@ export const profileSidebarItems = [
     icon: AssetsIcon,
     title: "Assets",
     link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
-    id: "profile-assets"
+    id: "profile-assets",
   },
   {
     icon: ApplicationsIcon,
     title: "Applications",
     link: `${ProfileConstants.base}/${ProfileConstants.applications}`,
-    id: "profile-applications"
+    id: "profile-applications",
   },
   {
     icon: CredentialsIcon,
     title: "Credentials",
     link: `${ProfileConstants.base}/${ProfileConstants.credentials}`,
-    id: "profile-credentials"
+    id: "profile-credentials",
   },
   {
     icon: SecurityIcon,
     title: "Security",
     link: `${ProfileConstants.base}/${ProfileConstants.security}`,
-    id: "profile-security"
+    id: "profile-security",
   },
 ]

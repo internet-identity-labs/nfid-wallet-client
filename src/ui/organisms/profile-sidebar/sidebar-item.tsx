@@ -16,7 +16,7 @@ const ProfileSidebarItem: React.FC<IProfileSidebarItem> = ({
   className,
   isActive,
   to,
-  id
+  id,
 }) => {
   return (
     <Link

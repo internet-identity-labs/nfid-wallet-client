@@ -10,7 +10,6 @@ interface IProfileSidebar extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ProfileSidebar: React.FC<IProfileSidebar> = ({ id, className }) => {
-
   return (
     <div id={id} className={clsx("sticky top-4", className)}>
       {profileSidebarItems.map((item, index) => (

@@ -3,7 +3,7 @@ import { principalToAddress } from "ictool"
 import { useEffect, useMemo } from "react"
 import useSWR, { mutate } from "swr"
 
-import { useAccount } from "frontend/integration/identity-manager/queries"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import {
   getBalance,
   getExchangeRate,
@@ -27,8 +27,8 @@ export const useWalletDelegation = (userNumber?: number) => {
 }
 
 export const useTransfer = () => {
-  const { data: account } = useAccount()
-  const { data: walletDelegation } = useWalletDelegation(account?.anchor)
+  const { profile } = useProfile()
+  const { data: walletDelegation } = useWalletDelegation(profile?.anchor)
 
   return useSWR(walletDelegation ? "someKey" : null, () => {
     if (!walletDelegation) throw new Error("Unreachable")
@@ -39,11 +39,11 @@ export const useTransfer = () => {
 }
 
 export const useWallet = () => {
-  const { data: account } = useAccount()
+  const { profile } = useProfile()
 
   const { data: principal, isValidating: isWalletPrincipalLoading } = useSWR(
     "walletPrincipal",
-    () => getWalletPrincipal(account?.anchor as number),
+    () => getWalletPrincipal(profile?.anchor as number),
   )
 
   const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(
@@ -65,8 +65,8 @@ export const useWallet = () => {
   }, [principal])
 
   useEffect(() => {
-    if (account?.anchor) mutate("walletPrincipal")
-  }, [account])
+    if (profile?.anchor) mutate("walletPrincipal")
+  }, [profile])
 
   useEffect(() => {
     if (!principal) return

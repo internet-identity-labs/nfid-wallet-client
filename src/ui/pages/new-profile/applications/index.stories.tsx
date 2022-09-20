@@ -1,6 +1,8 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
+import { applicationAccountDetailsNormalized } from "frontend/apps/identity-manager/profile/utils/index.mock"
+
 import Index from "."
 
 export default {
@@ -22,17 +24,5 @@ const Template: ComponentStory<typeof Index> = (args) => {
 export const AppScreen = Template.bind({})
 
 AppScreen.args = {
-  applications: [
-    {
-      label: "123",
-      domain: "wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app",
-      accountId: "1",
-    },
-    {
-      label: "123",
-      domain: "https://wzkxy-vyaaa-aaaaj-qab3q-cai.ic0.app",
-      accountId: "2",
-    },
-    { label: "123", domain: "https://dscvr.one", accountId: "1" },
-  ],
+  applications: applicationAccountDetailsNormalized,
 }

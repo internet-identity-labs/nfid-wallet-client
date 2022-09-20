@@ -1,41 +1,59 @@
-import { Account, Application } from "frontend/integration/identity-manager"
+import {
+  Account,
+  Application,
+  rmProto,
+} from "frontend/integration/identity-manager"
 import { getUrl } from "frontend/ui/utils"
 
-export const groupPersonasByApplications = (
-  applications: Account[],
+export interface ApplicationAccount {
+  applicationName: string
+  accountsCount: number
+  derivationOrigin: string
+  aliasDomains: string[]
+  icon?: string
+}
+
+export const mapApplicationAccounts = (
+  accounts: Account[],
   applicationsMeta: Application[],
-) => {
-  const personasByHostname = applications.reduce((acc, persona) => {
-    const applicationMeta = applicationsMeta?.find((app) => {
-      return app?.alias?.includes(persona.domain)
+): ApplicationAccount[] => {
+  const personasByHostname = accounts.reduce<{
+    [applicationName: string]: Account[]
+  }>((acc, account) => {
+    const applicationMeta = applicationsMeta?.find(({ domain }) => {
+      return domain.includes(account.domain)
     })
 
-    const objectKey = applicationMeta?.name ?? getUrl(persona.domain).host
-    const personas = acc[objectKey] || []
+    const applicationName = applicationMeta?.name ?? getUrl(account.domain).host
+    const accounts = acc[applicationName] || []
 
-    acc[objectKey] = [
-      ...personas,
+    acc[applicationName] = [
+      ...accounts,
       {
-        ...persona,
+        ...account,
         ...applicationMeta,
       },
     ]
 
     return acc
-  }, {} as { [applicationName: string]: Account[] })
+  }, {})
 
-  // Map the iiPersonas by application to an array of objects
-  const personaByHostnameArray = Object.entries(personasByHostname).map(
-    ([applicationName, accounts]) => {
+  const personaByHostnameArray = Object.entries(personasByHostname)
+    .map(([applicationName, accounts]) => {
       return {
-        applicationName,
+        applicationName: rmProto(applicationName),
         accountsCount: accounts.length,
-        domain: accounts[0].domain,
+        derivationOrigin: accounts[0].domain,
         icon: accounts[0].icon,
-        alias: accounts[0].alias,
+        aliasDomains: (accounts[0].alias || []).map((a) => getUrl(a).host),
       }
-    },
-  )
+    })
+    .sort(
+      (
+        { applicationName: applicationNameA },
+        { applicationName: applicationNameB },
+      ) => (applicationNameA < applicationNameB ? 1 : -1),
+    )
 
   return personaByHostnameArray
 }

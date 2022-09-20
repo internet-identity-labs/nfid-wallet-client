@@ -7,9 +7,23 @@ import {
   createAccount,
   getScope,
   getAccountDisplayOffset,
+  rmTrailingSlash,
+  rmProto,
 } from "./utils"
 
 describe("persona utils test suite", () => {
+  describe("rmProto", () => {
+    it("should remove trailing slash from input string", () => {
+      expect(rmProto("http://mydomain.com")).toBe("mydomain.com")
+    })
+  })
+  describe("rmTrailingSlash", () => {
+    it("should remove trailing slash from input string", () => {
+      expect(rmTrailingSlash("http://mydomain.com/")).toBe(
+        "http://mydomain.com",
+      )
+    })
+  })
   describe("selectAccounts", () => {
     it("selects personas/accounts for given domain", () => {
       const expectedResult = [

@@ -6,7 +6,14 @@ import { NFIDPersona } from "./types"
  *
  * @param {string} input
  */
-const rmProto = (input: string) => input.replace(/https?:\/\//, "")
+export const rmProto = (input: string) => input.replace(/https?:\/\//, "")
+
+/**
+ * Removes trailing '/' from input string
+ *
+ * @param {string} input
+ */
+export const rmTrailingSlash = (input: string) => input.replace(/\/$/, "")
 
 /**
  * Select accounts which pertain to given hostName. Uses dervitationOrigin exclusively if present.

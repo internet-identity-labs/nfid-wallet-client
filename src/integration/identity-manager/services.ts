@@ -51,17 +51,17 @@ export async function createAccountService(
   if (!context.accounts)
     throw new Error(`createAccountService context.accounts missing`)
   const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
-  const domain =
-    context.authRequest?.derivationOrigin || context.authRequest?.hostname
+  const derivationOrigin =
+    context.authRequest?.derivationOrigin || context.authRequest.hostname
 
   processApplicationOrigin(
-    context.authRequest?.hostname,
-    context.authRequest?.derivationOrigin ?? domain,
+    derivationOrigin,
+    context.authRequest.hostname,
     context.appMeta?.name,
   )
 
   const createPersonaReposne = await createAccount(
-    domain,
+    derivationOrigin,
     accountId,
     `Account #${accountId}`,
   )

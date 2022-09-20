@@ -29,7 +29,7 @@ describe("Identity Manager suite", () => {
         user_limit: 5,
         domain: "domain",
         name: "appName",
-        img: []
+        img: [],
       }
       // @ts-ignore
       imMock.get_application = jest.fn(() =>
@@ -49,7 +49,7 @@ describe("Identity Manager suite", () => {
         user_limit: 5,
         domain: "domain",
         name: "appName",
-        img: []
+        img: [],
       }
       // @ts-ignore
       imMock.get_application = jest.fn(() =>

@@ -6,7 +6,7 @@ export const ApplicationMock: Application = {
   img: [],
   user_limit: 1,
   domain: "some-domain.com",
-  name: "MyApp"
+  name: "MyApp",
 }
 export const imReadApplicationsMock = () =>
   Promise.resolve({

@@ -5,10 +5,8 @@ import { ii, im } from "../actors"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "../identity"
 import { fetchProfile } from "../identity-manager"
 import { setProfile } from "../identity-manager/profile"
-import {
-  creationOptions,
-  fetchAuthenticatorDevices,
-} from "../internet-identity"
+import { fetchAuthenticatorDevices } from "../internet-identity"
+import { creationOptions } from "../webauthn/creation-options"
 
 export async function isMobileWithWebAuthn() {
   console.debug("isMobileWithWebAuthn call fetchWebAuthnCapability")

@@ -27,7 +27,7 @@ Feature: Manage Security Key as a Recovery device
     And  I expect that element "#enter-captcha" contains the text "a"
     And  I expect that element "#create-nfid" does not have the class "btn-disabled"
     When I click on the selector "#create-nfid"
-    Then I wait on element "#loader" for 15000ms to not be displayed
+    Then I wait on element "#loader" for 30000ms to not be displayed
     And  I wait on element "#just-log-me-in" to be displayed
 
     When I click on the selector "#just-log-me-in"
@@ -58,7 +58,6 @@ Feature: Manage Security Key as a Recovery device
 
 
  Scenario Outline: User wants to rename a Security Key
-    Given I remove the e2e@identitylabs.ooo
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
     When I pause for 250ms
     When I click on the selector "iframe[title='Sign in with Google Button']"
@@ -68,9 +67,7 @@ Feature: Manage Security Key as a Recovery device
     When I click on the selector "#credentials-picker > div:first-child"
     When I focus the previous opened window
     Then I wait on element "#loader" for 30000ms to not be displayed
-    And  I wait on element "#just-log-me-in" to be displayed
-
-    When I click on the selector "#just-log-me-in"
+  
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
 
@@ -78,8 +75,23 @@ Feature: Manage Security Key as a Recovery device
     Then I expect the url to contain "/profile/security"
     And  I expect that element "[class='flex flex-wrap items-center flex-1 px-3 py-0 cursor-pointer select-none peer']" contains the text "Security Key"
 
-    #rename phrase
+    #rename security key step
     When I click on the selector "[class='flex space-x-2'] div:nth-of-type(3) [height]"
+    When I pause for 350ms
+    When I set "IAM SK" to the inputfield ".flex-1.flex-shrink.px-2.py-1.rounded"
+    When I click on the selector "div:nth-of-type(3) > svg"
+    When I pause for 350ms
+    Then I wait on element "#root > div.relative.min-h-screen.overflow-hidden > div.block.relative.z-1.px-4.sm\:gap-\[30px\].sm\:px-\[30px\].md\:grid.md\:grid-cols-\[50px\,1fr\].lg\:grid-cols-\[256px\,1fr\] > section > div.fixed.top-0.bottom-0.left-0.right-0.z-50.w-full.h-full" for 30000ms to not be displayed
+
+    #verify security key name change
+    When I click on the selector "[class='sticky top-4'] > div:nth-of-type(1)"
+    When I pause for 350ms
+    When I click on the selector "[class='sticky top-4'] div:nth-of-type(4)"
+    Then I expect the url to contain "/profile/security"
+    And  I expect that element "[class='flex flex-wrap items-center flex-1 px-3 py-0 cursor-pointer select-none peer']" contains the text "IAM SK"
+
+
+
 
 
 

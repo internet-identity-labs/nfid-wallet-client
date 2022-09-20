@@ -27,7 +27,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
       {subTitle && (
         <p className="mb-4 text-sm leading-5 text-gray-400">{subTitle}</p>
       )}
-      <div>{children}</div>
+      {children}
     </div>
   )
 }

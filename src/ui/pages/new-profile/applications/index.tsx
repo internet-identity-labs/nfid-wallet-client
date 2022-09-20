@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 
-import { groupPersonasByApplications } from "frontend/apps/identity-manager/profile/utils"
-import { Account } from "frontend/integration/identity-manager"
-import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
+import { ApplicationAccount } from "frontend/apps/identity-manager/profile/utils"
 import Pagination from "frontend/ui/molecules/pagination"
 import { ApplicationList } from "frontend/ui/organisms/applications-list"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -12,23 +10,17 @@ import ProfileApplicationsEmpty from "./empty-state"
 
 interface IProfileApplicationsPage
   extends React.HTMLAttributes<HTMLDivElement> {
-  applications: Account[]
+  applications: ApplicationAccount[]
 }
 
 const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
   applications,
 }) => {
-  const [filteredData, setFilteredData] = useState<any[]>([])
-  const { data: applicationsMeta } = useApplicationsMeta()
-
-  const myApplications = React.useMemo(() => {
-    if (!applicationsMeta) return []
-    return groupPersonasByApplications(applications, applicationsMeta)
-  }, [applications, applicationsMeta])
+  const [filteredData, setFilteredData] = useState<ApplicationAccount[]>([])
 
   return (
     <ProfileTemplate pageTitle="Applications">
-      {!myApplications.length ? (
+      {!applications.length ? (
         <ProfileApplicationsEmpty />
       ) : (
         <>
@@ -40,7 +32,7 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
           </ProfileContainer>
           <div className="flex justify-end w-full mt-4">
             <Pagination
-              data={myApplications}
+              data={applications}
               sliceData={setFilteredData}
               perPage={20}
             />

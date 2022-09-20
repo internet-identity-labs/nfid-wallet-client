@@ -70,8 +70,8 @@ Feature: User wants to veirfy his phone number
     When I set "+380" to the inputfield "#phone-number"
     When I click on the selector "#add-phone-number"
     Then I wait on element "#loader" for 15000ms to not be displayed
-    Then I wait on element "#phone-number-error" for 1000ms to be displayed
-    Then I expect that element "#phone-number-error" contains the text "Phone number must start with a"
+    Then I wait on element "#phone-number-error" for 5000ms to be displayed
+    Then I expect that element "#phone-number-error" contains the text "Phone number must start with a '+' followed by digits"
 
     When I set "+380990374146" to the inputfield "#phone-number"
     When I click on the selector "#add-phone-number"

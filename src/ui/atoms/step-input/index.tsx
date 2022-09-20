@@ -143,7 +143,7 @@ export const StepInput: React.FC<StepInputProps> = ({
       <div id="pin-input" className={clsx("flex space-x-3", className)}>
         {list.map((_, index) => (
           <Input
-            id={'pin-input-' + index}
+            id={`pin-input-${index}`}
             pin
             type="number"
             key={index}

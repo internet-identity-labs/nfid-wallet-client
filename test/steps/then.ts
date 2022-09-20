@@ -164,14 +164,3 @@ Then(
 Then(/^My browser has ([\d]+) credentials$/, async function (amount: number) {
   await checkCredentialAmount(this.authenticator, Number(amount))
 })
-
-Then(
-  /^I put Recovery Phrase to input field "([^"]*)?"$/,
-  async function (phrase: string) {
-    await setInputField("setValue", phrase, '[name="recoveryPhrase"]')
-  },
-)
-
-Then(/^I toggle checkbox "([^"]*)?"$/, async function (selector: string) {
-  await clickElement("click", "selector", selector)
-})

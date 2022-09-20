@@ -14,7 +14,7 @@ export const phoneRules: IValidationRules = {
   minLength: 4,
   maxLength: 20,
   errorMessages: {
-    pattern: 'Phone number must start with a "+" followed by digits',
+    pattern: `Phone number must start with a '+' followed by digits`,
     required: "Phone number is required",
     length: "Phone number must be between 4 and 20 digits long",
   },

@@ -88,6 +88,7 @@ export const RecoverNFID: React.FC<RecoverNFIDProps> = ({
                     className="my-4"
                     onClick={handleSubmit(onRecover)}
                     disabled={!isVerifiedDomain}
+                    id="recoveryButton"
                   >
                     Recover
                   </Button>

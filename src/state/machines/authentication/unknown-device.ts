@@ -193,7 +193,6 @@ const UnknownDeviceMachine =
     {
       guards: {
         isExistingGoogleAccount: (context, event) => {
-          console.debug("isExistingGoogleAccount", { context, event })
           return !!event.data.anchor
         },
         bool: (context, event) => !!event.data,

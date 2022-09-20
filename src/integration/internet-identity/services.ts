@@ -85,7 +85,6 @@ export async function fetchDelegateService(
   context: { authSession?: AuthSession; authRequest?: AuthorizationRequest },
   event: { data: { accountId: string } },
 ): Promise<ThirdPartyAuthSession> {
-  console.debug("fetchDelegateService", { context, event })
   if (!context.authSession) {
     const message = "context.authSession missing"
     console.error("fetchDelegateService", { message })
@@ -128,7 +127,6 @@ export async function loginService(context: {
 
   const multiIdent = identityFromDeviceList(context.devices)
   const { sessionKey, chain } = await requestFEDelegationChain(multiIdent)
-  console.debug("loginService", { multiIdent, sessionKey, chain })
 
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,
@@ -167,7 +165,6 @@ export async function registerService(
   },
   event: { data: string },
 ): Promise<AuthSession> {
-  console.debug("registerService", { context, event })
   const sessionSource = context.webAuthnIdentity
     ? "localDevice"
     : context.authSession?.sessionSource
@@ -247,7 +244,6 @@ export async function registerService(
 export async function fetchAuthenticatorDevicesService(context: {
   profile: Profile
 }) {
-  console.debug("fetchAuthenticatorDevicesService", context)
   const devices = await lookup(Number(context.profile.anchor), false)
   console.debug(`fetchAuthenticatorDevicesService lookup`, { devices })
   return devices

@@ -1,4 +1,8 @@
-import { Account, Application } from "frontend/integration/identity-manager"
+import {
+  Account,
+  Application,
+  rmProto,
+} from "frontend/integration/identity-manager"
 import { getUrl } from "frontend/ui/utils"
 
 export interface ApplicationAccount {
@@ -34,17 +38,22 @@ export const mapApplicationAccounts = (
     return acc
   }, {})
 
-  const personaByHostnameArray = Object.entries(personasByHostname).map(
-    ([applicationName, accounts]) => {
+  const personaByHostnameArray = Object.entries(personasByHostname)
+    .map(([applicationName, accounts]) => {
       return {
-        applicationName,
+        applicationName: rmProto(applicationName),
         accountsCount: accounts.length,
         derivationOrigin: accounts[0].domain,
         icon: accounts[0].icon,
         aliasDomains: (accounts[0].alias || []).map((a) => getUrl(a).host),
       }
-    },
-  )
+    })
+    .sort(
+      (
+        { applicationName: applicationNameA },
+        { applicationName: applicationNameB },
+      ) => (applicationNameA < applicationNameB ? 1 : -1),
+    )
 
   return personaByHostnameArray
 }

@@ -157,7 +157,7 @@ export async function fetchAccounts() {
  *
  * @param {string} input
  */
-const rmProto = (input: string) => input.replace(/https?:\/\//, "")
+export const rmProto = (input: string) => input.replace(/https?:\/\//, "")
 
 /**
  * selects all accounts by 3rd party app domain

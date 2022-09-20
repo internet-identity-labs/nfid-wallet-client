@@ -719,10 +719,8 @@ export async function fromSeedPhrase(
   replaceIdentity(delegationIdentity.delegationIdentity)
   authState.set(identity, delegationIdentity.delegationIdentity, ii)
 
-  im.use_access_point().catch((e) => {
-    // When user recovers from II, the call to use_access_points will fail
-    // because there is no account yet.
-    console.error(e)
+  im.use_access_point().catch((error) => {
+    throw new Error(`fromSeedPhrase im.use_access_point: ${error.message}`)
   })
 
   return {

@@ -143,6 +143,7 @@ export const StepInput: React.FC<StepInputProps> = ({
       <div id="pin-input" className={clsx("flex space-x-3", className)}>
         {list.map((_, index) => (
           <Input
+            id={`pin-input-${index}`}
             pin
             type="number"
             key={index}
@@ -156,7 +157,7 @@ export const StepInput: React.FC<StepInputProps> = ({
           />
         ))}
       </div>
-      <div className={clsx("py-1 text-sm text-red-base", errorClasses)}>
+      <div id="pin-input-error" className={clsx("py-1 text-sm text-red-base", errorClasses)}>
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button

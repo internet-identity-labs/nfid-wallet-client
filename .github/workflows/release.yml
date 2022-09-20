@@ -56,9 +56,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Running Yarn prettier
-        run: prettier --check "src/**/*.{ts,tsx}"
-
       - uses: aviate-labs/setup-dfx@v0.2.3
         with:
           dfx-version: 0.9.3

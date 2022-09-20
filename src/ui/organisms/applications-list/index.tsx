@@ -10,7 +10,7 @@ interface IAccount {
   accountsCount: number
   domain: string
   icon?: string
-  alias?: string[]
+  alias: string[]
 }
 
 interface ApplicationListProps {
@@ -21,16 +21,15 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
   accounts = [],
 }) => {
   const handleNavigateToApplication = React.useCallback(
-    (applicationName: string) => {
-      const application = accounts.find((persona) => {
-        return persona.domain.includes(applicationName.toLowerCase())
-      })
+    (application: IAccount) => {
+      const domain =
+        application.alias && application.alias.length
+          ? application.alias[0]
+          : application.domain
 
-      if (application) {
-        window.open(getUrl(application.domain), "_blank")
-      }
+      if (domain) window.open(getUrl(domain), "_blank")
     },
-    [accounts],
+    [],
   )
 
   const getApplicationAlias = (application: IAccount) => {
@@ -51,14 +50,12 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
               <img src={application.icon} alt="app icon" />
             ) : (
               <span className="text-xl font-medium text-blue-base">
-                {application.applicationName[0]}
+                {application.applicationName[0].toUpperCase()}
               </span>
             )
           }
           defaultAction={false}
-          onClick={() =>
-            handleNavigateToApplication(application.applicationName)
-          }
+          onClick={() => handleNavigateToApplication(application)}
           accountsLength={application.accountsCount}
         />
       ))}

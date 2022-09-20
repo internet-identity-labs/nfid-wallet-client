@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+
 import { Account } from "frontend/integration/identity-manager"
 
 export interface EntrepotNFTData {

@@ -3,6 +3,7 @@
  */
 import { Principal } from "@dfinity/principal"
 import { expect } from "@jest/globals"
+
 import { NFTData } from "frontend/integration/entrepot/entrepot_interface"
 import { Account } from "frontend/integration/identity-manager"
 import { nftCollectionInfo } from "frontend/integration/internet-identity/__mocks"

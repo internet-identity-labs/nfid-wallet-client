@@ -57,6 +57,7 @@ Feature: Manage Security Key as a Recovery device
 
 
 
+
  Scenario Outline: User wants to rename a Security Key
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
     When I pause for 250ms
@@ -93,6 +94,35 @@ Feature: Manage Security Key as a Recovery device
 
 
 
+
+ Scenario Outline: User wants to remove a Security Key
+    Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
+    When I pause for 250ms
+    When I click on the selector "iframe[title='Sign in with Google Button']"
+    Then I expect a new window has been opened
+    When I focus the last opened window
+    Then I wait on element "#credentials-picker > div:first-child" for 4000ms to be displayed
+    When I click on the selector "#credentials-picker > div:first-child"
+    When I focus the previous opened window
+    Then I wait on element "#loader" for 30000ms to not be displayed
+
+    Then I expect the url to contain "/profile/assets"
+    And  I wait on element "#profile" for 20000ms to be displayed
+
+    When I click on the selector "[class='sticky top-4'] div:nth-of-type(4)"
+    Then I expect the url to contain "/profile/security"
+    And  I expect that element "[class='flex flex-wrap items-center flex-1 px-3 py-0 cursor-pointer select-none peer']" contains the text "IAM SK"
+
+    #remove security key step
+    When I click on the selector "section div:nth-child(3) > div:nth-of-type(2) div:nth-of-type(4) [xmlns]"
+    When I pause for 350ms
+
+    #remove security key
+    And  I wait on element "[class='relative flex-auto px-6 ']" for 1000ms to be displayed
+    When I click on the selector "[class='btn cursor-pointer btn-large-max btn-error \!py-3 \!px-8']"
+    Then I wait on element ".bottom-0.fixed.h-full.left-0.right-0.top-0.w-full.z-50" for 30000ms to not be displayed
+
+    Then I expect the url to contain "/profile/security"
 
 
 

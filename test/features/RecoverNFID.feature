@@ -5,8 +5,8 @@ Feature: Recover NFID Account from Recovery Phrase
 
   Scenario:
     Given I open the site "/recover-nfid/enter-recovery-phrase"
-    When I put Recovery Phrase to input field "10974 same candy swim dry violin end asthma lake similar bronze dragon obtain recall panther essence cheese pitch flip slot nerve insane village protect load"
-    And I toggle checkbox "#has-verified-domain"
+    When I set "10974 same candy swim dry violin end asthma lake similar bronze dragon obtain recall panther essence cheese pitch flip slot nerve insane village protect load" to the inputfield "[name='recoveryPhrase']"
+    When I click on the selector "#has-verified-domain"
     And I click on the selector "#recoveryButton"
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then I wait on element "#just-log-me-in" for 10000ms to be displayed

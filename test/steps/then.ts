@@ -1,7 +1,5 @@
 import { Then } from "@cucumber/cucumber"
 
-import clickElement from "./support/action/clickElement"
-import setInputField from "./support/action/setInputField"
 import { checkCredentialAmount } from "./support/action/setupVirtualWebauthn"
 import waitFor from "./support/action/waitFor"
 import waitForVisible from "./support/action/waitForDisplayed"

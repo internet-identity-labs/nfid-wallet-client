@@ -104,9 +104,6 @@ const RemoteSenderMachine =
             id: "postRemoteDelegationService",
             onDone: "End",
             data: (context) => {
-              console.debug("RemoteSenderMachine PostDelegation", {
-                context,
-              })
               return {
                 appMeta: context.appMeta,
                 authRequest: context.authRequest,

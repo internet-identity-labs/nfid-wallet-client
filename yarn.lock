@@ -4110,20 +4110,20 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
-"@types/node@*", "@types/node@17.0.29":
-  version "17.0.29"
-  resolved "https://registry.npmjs.org/@types/node/-/node-17.0.29.tgz"
-  integrity sha512-tx5jMmMFwx7wBwq/V7OohKDVb/JwJU5qCVkeLMh1//xycAJ/ESuw9aJ9SEtlCZDYi2pBfe4JkisSoAtbOsBNAA==
+"@types/node@*", "@types/node@>=12", "@types/node@^18.0.0":
+  version "18.6.1"
+  resolved "https://registry.npmjs.org/@types/node/-/node-18.6.1.tgz"
+  integrity sha512-z+2vB6yDt1fNwKOeGbckpmirO+VBDuQqecXkgeIqDlaOtmKn6hPR/viQ8cxCfqLU4fTlvM3+YjM367TukWdxpg==
 
 "@types/node@11.11.6":
   version "11.11.6"
   resolved "https://registry.npmjs.org/@types/node/-/node-11.11.6.tgz"
   integrity sha512-Exw4yUWMBXM3X+8oqzJNRqZSwUAaS4+7NdvHqQuFi/d+synz++xmX3QIf+BFqneW8N31R8Ky+sikfZUXq07ggQ==
 
-"@types/node@>=12", "@types/node@^18.0.0":
-  version "18.6.1"
-  resolved "https://registry.npmjs.org/@types/node/-/node-18.6.1.tgz"
-  integrity sha512-z+2vB6yDt1fNwKOeGbckpmirO+VBDuQqecXkgeIqDlaOtmKn6hPR/viQ8cxCfqLU4fTlvM3+YjM367TukWdxpg==
+"@types/node@17.0.29":
+  version "17.0.29"
+  resolved "https://registry.npmjs.org/@types/node/-/node-17.0.29.tgz"
+  integrity sha512-tx5jMmMFwx7wBwq/V7OohKDVb/JwJU5qCVkeLMh1//xycAJ/ESuw9aJ9SEtlCZDYi2pBfe4JkisSoAtbOsBNAA==
 
 "@types/node@^14.0.10 || ^16.0.0", "@types/node@^14.14.20 || ^16.0.0":
   version "16.11.45"
@@ -4889,17 +4889,17 @@
     webdriver "7.23.0"
     webdriverio "7.23.0"
 
-"@wdio/sauce-service@7.23.0":
-  version "7.23.0"
-  resolved "https://registry.yarnpkg.com/@wdio/sauce-service/-/sauce-service-7.23.0.tgz#b26a81500cd2a54be24fcfb21a76121cf4d933b1"
-  integrity sha512-b+TnbrHGyvb6fQp1pO5TaZ+pQujuljy4eZtmCa9sPnEn8JYQK99VctXqGcLJbb1bq6HmtsA+MVTrqTUhZWMn8A==
+"@wdio/sauce-service@7.24.0":
+  version "7.24.0"
+  resolved "https://registry.yarnpkg.com/@wdio/sauce-service/-/sauce-service-7.24.0.tgz#054760da62d9aee2de059d0bbbdf27c1e219c316"
+  integrity sha512-WE3kfJMAUWG4wxIy8kybr1WlBOypSGpG5X0lyJocFJJcWrnGqum4jwfYrgox/iKXlRCqIZr09Izf37/aAu8giA==
   dependencies:
     "@types/node" "^18.0.0"
     "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.23.0"
-    "@wdio/utils" "7.23.0"
+    "@wdio/types" "7.24.0"
+    "@wdio/utils" "7.24.0"
     saucelabs "^7.1.3"
-    webdriverio "7.23.0"
+    webdriverio "7.24.0"
 
 "@wdio/selenium-standalone-service@7.23.0":
   version "7.23.0"

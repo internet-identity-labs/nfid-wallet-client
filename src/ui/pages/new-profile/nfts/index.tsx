@@ -5,7 +5,6 @@ import { IoIosSearch } from "react-icons/io"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { Account } from "frontend/integration/identity-manager"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Input } from "frontend/ui/atoms/input"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -45,7 +44,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({ isLoading, tokens }) => {
       pageTitle="Your NFTs"
       onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
     >
-      <div className={clsx(`flex flex-col gap-6`)}>
+      <div className={clsx(`flex flex-col gap-6 pb-10`)}>
         {/* <ProfileContainer className={clsx(`bg-gray-200`)}> */}
         <div className={clsx(`px-[4px]`)}>
           <Input

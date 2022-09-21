@@ -163,10 +163,22 @@ describe("Facade suite", () => {
         persona_id: "1",
         persona_name: "",
       })
+      await im.create_persona({
+        domain: "duplicatedDomain",
+        persona_id: "1",
+        persona_name: "",
+      })
       let appRequired: Application = {
         accountLimit: 0,
         alias: [],
         domain: "requiredDomain",
+        isNftStorage: true,
+        name: "",
+      }
+      let appDuplicated: Application = {
+        accountLimit: 0,
+        alias: [],
+        domain: "duplicatedDomain",
         isNftStorage: true,
         name: "",
       }
@@ -179,7 +191,11 @@ describe("Facade suite", () => {
       }
       let accounts = await fetchAccounts()
       let principals: { principal: Principal; account: Account }[] =
-        await fetchPrincipals(anchor, accounts, [appRequired, appNotRequired])
+        await fetchPrincipals(anchor, accounts, [
+          appRequired,
+          appNotRequired,
+          appDuplicated,
+        ])
       expect(
         principals.filter((p) => p.account.domain === "test")!.length,
       ).toEqual(2)
@@ -188,6 +204,10 @@ describe("Facade suite", () => {
       ).toEqual(1)
       expect(
         principals.filter((p) => p.account.domain === "requiredDomain")!.length,
+      ).toEqual(1)
+      expect(
+        principals.filter((p) => p.account.domain === "duplicatedDomain")!
+          .length,
       ).toEqual(1)
       expect(
         principals.filter((p) => p.account.domain === "notRequiredDomain"),

@@ -39,11 +39,16 @@ export async function fetchPrincipals(
   applications: Application[],
 ): Promise<{ principal: Principal; account: Account }[]> {
   const result: { principal: Principal; account: Account }[] = []
+  const fixedAccounts = applications
+    .filter(
+      (app) =>
+        app.isNftStorage &&
+        !personas.find((acct) => acct.domain === app.domain),
+    )
+    .map(applicationToAccount)
+  const accounts = [...personas, ...fixedAccounts]
 
-  for (const account of [
-    ...personas,
-    ...applications.filter((x) => x.isNftStorage).map(applicationToAccount),
-  ]) {
+  for (const account of accounts) {
     let principal = await ii.get_principal(
       userNumber,
       getScope(account.domain, account.accountId),

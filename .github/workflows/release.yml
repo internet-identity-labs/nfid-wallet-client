@@ -7,6 +7,10 @@ on:
   pull_request:
     branches:
       - main
+    types:
+      - opened
+      - synchronize
+      - closed
 
 jobs:
   check-secrets:
@@ -115,6 +119,7 @@ jobs:
 
   update_sdk:
     needs: deploy
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout CI repo.
@@ -160,6 +165,7 @@ jobs:
       - name: Creating PR.
         uses: peter-evans/create-pull-request@v4
         with:
+          token: ${{ secrets.PAT }}
           commit-message: "chore: update nfid-frontend build"
           title: "chore: update nfid-frontend build"
           branch: chore/update-nfid-frontend-build

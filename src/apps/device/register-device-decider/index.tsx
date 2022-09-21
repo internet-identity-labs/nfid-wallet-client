@@ -11,6 +11,7 @@ import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { Icon } from "frontend/integration/identity-manager/devices/state"
 import { authState } from "frontend/integration/internet-identity"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface AppScreenRegisterDeviceDeciderProps
@@ -147,11 +148,13 @@ export const RouterRegisterDeviceDecider: React.FC<
   }, [navigate, user])
 
   return (
-    <AuthorizeRegisterDeciderScreen
-      onLogin={handleLogin}
-      isLoading={isLoading}
-      onRegisterPlatformDevice={handleRegister}
-      onRegisterSecurityDevice={createSecurityDevice}
-    />
+    <ScreenResponsive>
+      <AuthorizeRegisterDeciderScreen
+        onLogin={handleLogin}
+        isLoading={isLoading}
+        onRegisterPlatformDevice={handleRegister}
+        onRegisterSecurityDevice={createSecurityDevice}
+      />
+    </ScreenResponsive>
   )
 }

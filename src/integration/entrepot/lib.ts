@@ -200,7 +200,6 @@ export async function assetFullsize(
   const url = entrepotAsset(collection, token, true)
   const _format = getEntrepotDisplayFormat(collection, token)
   const format = getDisplayFormat(_format)
-  console.log(_format, collection.name)
   if (_format === "default") {
     return { url: assetPreview(collection, token), format }
   }

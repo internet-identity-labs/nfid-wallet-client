@@ -13,12 +13,14 @@ import CopyRecoveryPhrase from "./copy-recovery-phrase"
 import ProfileCredentials from "./credentials"
 import ProfilePhone from "./credentials/phone-number"
 import ProfileSMS from "./credentials/phone-sms"
+import ProfileNFTs from "./nfts"
 import ProfileSecurity from "./security"
 import ProfileTransactions from "./transactions"
 
 export const ProfileConstants = {
   base: "/profile",
   assets: "assets",
+  nfts: "nfts",
   security: "security",
   credentials: "credentials",
   transactions: "transactions",
@@ -35,6 +37,14 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <ProfileAssets />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.nfts}
+      element={
+        <AuthWrapper>
+          <ProfileNFTs />
         </AuthWrapper>
       }
     />

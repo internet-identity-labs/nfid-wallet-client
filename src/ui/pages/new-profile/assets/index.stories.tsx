@@ -30,6 +30,6 @@ AppScreen.args = {
     title: "Internet Computer",
     subTitle: "ICP",
     balance: "987.12345678 ICP",
-    price: "$6.91",
+    price: 6.913413,
   }),
 }

@@ -17,6 +17,7 @@ export interface InputProps
   pin?: boolean
   small?: boolean
   isErrorStyles?: boolean
+  inputClassName?: string
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -25,6 +26,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       id,
       children,
       className,
+      inputClassName,
       prependedText,
       placeholder,
       type = "text",
@@ -66,6 +68,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               prependedText ? "rounded-r-md" : "rounded-md",
               icon && "pl-10",
               pin && "max-w-[45px] h-[60px] text-2xl md:text-3xl",
+              inputClassName,
             )}
             placeholder={placeholder}
             ref={ref}

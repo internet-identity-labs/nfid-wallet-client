@@ -18,6 +18,7 @@ import {
   removeRecoveryDeviceFacade,
 } from "frontend/integration/facade/index"
 import {
+  Account,
   Application,
   fetchAccounts,
 } from "frontend/integration/identity-manager/index"
@@ -177,15 +178,20 @@ describe("Facade suite", () => {
         name: "",
       }
       let accounts = await fetchAccounts()
-      let principals: Map<string, Principal[]> = await fetchPrincipals(
-        anchor,
-        accounts,
-        [appRequired, appNotRequired],
-      )
-      expect(principals.get("test")!.length).toEqual(2)
-      expect(principals.get("oneMoreTest")!.length).toEqual(1)
-      expect(principals.get("requiredDomain")!.length).toEqual(1)
-      expect(principals.has("notRequiredDomain")).toEqual(false)
+      let principals: { principal: Principal; account: Account }[] =
+        await fetchPrincipals(anchor, accounts, [appRequired, appNotRequired])
+      expect(
+        principals.filter((p) => p.account.domain === "test")!.length,
+      ).toEqual(2)
+      expect(
+        principals.filter((p) => p.account.domain === "oneMoreTest")!.length,
+      ).toEqual(1)
+      expect(
+        principals.filter((p) => p.account.domain === "requiredDomain")!.length,
+      ).toEqual(1)
+      expect(
+        principals.filter((p) => p.account.domain === "notRequiredDomain"),
+      ).toEqual([])
     })
 
     async function getErrorOnIncorrectSeedPhrase(

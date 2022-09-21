@@ -34,6 +34,7 @@ export const StepInput: React.FC<StepInputProps> = ({
     setError,
     clearErrors,
     getFieldState,
+    setValue,
   } = useForm<{ verificationCode: string; phonenumber: string }>({
     mode: "all",
   })
@@ -73,6 +74,17 @@ export const StepInput: React.FC<StepInputProps> = ({
     [clearErrors],
   )
 
+  const resetForm = React.useCallback(() => {
+    clearErrors("verificationCode")
+    setValue("verificationCode", "")
+    setIsFormValid(false)
+    inputItemsRef.current.forEach((item, index) => {
+      if (item) {
+        item.value = ""
+      }
+    })
+  }, [clearErrors, setValue])
+
   const handleInput = (e: { target: HTMLInputElement }, index: number) => {
     if (resetResponseError && responseError?.length) {
       resetResponseError()
@@ -105,13 +117,13 @@ export const StepInput: React.FC<StepInputProps> = ({
   }, [handleKeydown, handlePaste])
 
   React.useEffect(() => {
-    if (responseError && errors?.verificationCode?.message !== responseError) {
+    if (responseError?.length) {
       setError("verificationCode", {
         type: "manual",
         message: responseError,
       })
-    }
-  }, [errors?.verificationCode?.message, responseError, setError])
+    } else resetForm()
+  }, [resetForm, responseError, setError])
 
   const validateToken = () => {
     const verificationCode = getVerificationCode()
@@ -157,7 +169,10 @@ export const StepInput: React.FC<StepInputProps> = ({
           />
         ))}
       </div>
-      <div id="pin-input-error" className={clsx("py-1 text-sm text-red-base", errorClasses)}>
+      <div
+        id="pin-input-error"
+        className={clsx("py-1 text-sm text-red-base", errorClasses)}
+      >
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button

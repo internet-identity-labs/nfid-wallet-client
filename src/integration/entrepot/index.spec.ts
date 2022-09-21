@@ -4,56 +4,62 @@
 import { Principal } from "@dfinity/principal"
 import { expect } from "@jest/globals"
 
-import { NFTData } from "frontend/integration/entrepot/entrepot_interface"
 import { Account } from "frontend/integration/identity-manager"
-import { nftCollectionInfo } from "frontend/integration/internet-identity/__mocks"
-import { restCall as mockRest } from "frontend/integration/rosetta/util"
 
-import { getNFTDetails, getNFTsOfPrincipals } from "."
-
-const Readable = require("stream").Readable
+import { collection, principalTokens } from "."
+import { collection as mockCollection } from "./__mock"
+import { UserNFTDetails } from "./types"
 
 describe("Entrepot suite", () => {
   describe("getNFTsOfPrincipals", () => {
     it("should return correct NFTs.", async function () {
       let mock = [
         {
-          canisterId: "dcbuw-wyaaa-aaaam-qapfq-cai",
-          imageUrl: "imageURL",
-          owner: "921",
-          tokenId: "xwg5r-jakor-uwiaa-aaaaa-deadz-maqca-aaams-q",
+          canisterId: mockCollection.id,
+          tokenId: "4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q",
         },
       ]
       let rr = new Response(JSON.stringify(mock))
-      // @ts-ignore
-      mockRest = jest.fn().mockReturnValue(Promise.resolve(rr))
+      jest
+        .spyOn(global, "fetch")
+        .mockImplementation((url: RequestInfo | URL): Promise<Response> => {
+          if (url.toString().includes('/api/maddies/getAllNfts')) {
+            return Promise.resolve({ ...rr, json: async () => mock })
+          } else if (url.toString().includes('api/collections')) {
+            return Promise.resolve({ ...rr, json: async () => [mockCollection]})
+          } else {
+            throw url.toString()
+          }
+        })
       let principal = Principal.fromText(
         "rtoow-aed5e-e6vpe-yj46l-63vqp-2gbqw-vqdop-2mepz-ktptl-asbck-rqe",
       )
       let acc: Account = { accountId: "", domain: "", label: "" }
-      let response: NFTData[] = await getNFTsOfPrincipals([
+      let response: UserNFTDetails[] = await principalTokens([
         { principal: principal, account: acc },
       ])
       expect(response[0].principal).toBe(principal)
       expect(response[0].account).toBe(acc)
-      expect(response[0].canisterId).toBe("dcbuw-wyaaa-aaaam-qapfq-cai")
-      expect(response[0].imageUrl).toBe("imageURL")
-      expect(response[0].owner).toBe("921")
-      expect(response[0].tokenId).toBe(
-        "xwg5r-jakor-uwiaa-aaaaa-deadz-maqca-aaams-q",
-      )
+      expect(response[0].canisterId).toBe("nges7-giaaa-aaaaj-qaiya-cai")
+      expect(response[0].assetPreview).toBe("https://images.entrepot.app/t/nges7-giaaa-aaaaj-qaiya-cai/4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q")
+      expect(response[0].tokenId).toBe("4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q")
+      expect(response[0].index).toBeDefined()
+      expect(response[0].assetFullsize).toBeDefined()
     })
   })
 
-  describe("getNFTDetails", () => {
+  describe("collection", () => {
     it("should return correct collection details.", async function () {
-      let info = new Response(JSON.stringify([nftCollectionInfo]))
-      // @ts-ignore
-      mockRest = jest.fn().mockReturnValue(Promise.resolve(info))
-      let response = await getNFTDetails("j3dqa-byaaa-aaaah-qcwfa-cai")
+      let info = new Response(JSON.stringify([mockCollection]))
+      jest
+        .spyOn(global, "fetch")
+        .mockImplementation(() =>
+          Promise.resolve({ ...info, json: async () => [mockCollection] }),
+        )
+      let response = await collection("nges7-giaaa-aaaaj-qaiya-cai")
       expect(
-        JSON.stringify(response) === JSON.stringify(nftCollectionInfo),
-      ).toBe(true)
+        JSON.stringify(response),
+      ).toBe(JSON.stringify(mockCollection))
     })
   })
 })

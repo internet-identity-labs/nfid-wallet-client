@@ -9,7 +9,7 @@ import {
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import ProfileNFTsPage from "frontend/ui/pages/new-profile/nfts"
 
-const ProfileNFTs = () => {
+export function useAllNFTs() {
   const { profile } = useProfile()
 
   const accounts = useSWR(`accounts`, fetchAccounts)
@@ -30,7 +30,7 @@ const ProfileNFTs = () => {
       )
     },
   )
-  const tokens = useSWR(principals?.data ? `userTokers` : null, () => {
+  return useSWR(principals?.data ? `userTokers` : null, () => {
     if (!principals.data) throw new Error("unreachable")
     console.debug(
       "Searched for NFTs at principals",
@@ -38,6 +38,10 @@ const ProfileNFTs = () => {
     )
     return principalTokens(principals.data)
   })
+}
+
+const ProfileNFTs = () => {
+  const tokens = useAllNFTs()
   return <ProfileNFTsPage isLoading={!tokens.data} tokens={tokens.data || []} />
 }
 

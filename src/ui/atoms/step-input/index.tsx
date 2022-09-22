@@ -75,8 +75,8 @@ export const StepInput: React.FC<StepInputProps> = ({
 
   const resetFormErrors = React.useCallback(() => {
     clearErrors("verificationCode")
-    setIsFormValid(false)
-  }, [clearErrors])
+    setIsFormValid(getVerificationCode().length === 6)
+  }, [clearErrors, getVerificationCode])
 
   const handleInput = (e: { target: HTMLInputElement }, index: number) => {
     if (resetResponseError && responseError?.length) {

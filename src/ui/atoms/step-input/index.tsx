@@ -34,7 +34,6 @@ export const StepInput: React.FC<StepInputProps> = ({
     setError,
     clearErrors,
     getFieldState,
-    setValue,
   } = useForm<{ verificationCode: string; phonenumber: string }>({
     mode: "all",
   })
@@ -74,16 +73,10 @@ export const StepInput: React.FC<StepInputProps> = ({
     [clearErrors],
   )
 
-  const resetForm = React.useCallback(() => {
+  const resetFormErrors = React.useCallback(() => {
     clearErrors("verificationCode")
-    setValue("verificationCode", "")
     setIsFormValid(false)
-    inputItemsRef.current.forEach((item, index) => {
-      if (item) {
-        item.value = ""
-      }
-    })
-  }, [clearErrors, setValue])
+  }, [clearErrors])
 
   const handleInput = (e: { target: HTMLInputElement }, index: number) => {
     if (resetResponseError && responseError?.length) {
@@ -122,8 +115,8 @@ export const StepInput: React.FC<StepInputProps> = ({
         type: "manual",
         message: responseError,
       })
-    } else resetForm()
-  }, [resetForm, responseError, setError])
+    } else resetFormErrors()
+  }, [resetFormErrors, responseError, setError])
 
   const validateToken = () => {
     const verificationCode = getVerificationCode()

@@ -5,7 +5,10 @@ const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
 const PLATFORMS_IOS = ["iPhone", "iPad", "iPod"]
 
 const parser = bowser.getParser(window.navigator.userAgent)
-const browser = parser.getBrowser()
+const browser = (navigator as any).brave
+  ? { ...parser.getBrowser(), name: "Brave" }
+  : parser.getBrowser()
+
 const platform = getPlatformInfo()
 
 export async function fetchWebAuthnCapability() {

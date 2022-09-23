@@ -34,7 +34,7 @@ AppScreen.args = {
     balance: "987.12345678 ICP",
     price: 691,
   }),
-  nfts: Array(4).fill({
+  nfts: Array(0).fill({
     canisterId: "dhsafgduyqwijlkfdnvbhgfeuwirj123",
     tokenId: "dsfnhjkl123",
     imageUrl: MockNFTImage,

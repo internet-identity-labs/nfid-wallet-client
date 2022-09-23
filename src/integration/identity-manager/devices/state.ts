@@ -24,6 +24,7 @@ export interface AccessPointRequest {
 export interface LegacyDevice {
   isAccessPoint?: boolean // Indicates if this device is already stored as access point
   isSocialDevice?: boolean // Indicates if this device is social method
+  isSecurityKey?: boolean
   label: string
   icon: Icon
   browser: string

@@ -18,9 +18,11 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
     <>
       <div className="w-full h-full p-6">{children}</div>
       {isLoading ? (
-        <div id="loader" className="absolute top-0 bottom-0 w-full">
-          <BlurOverlay className="absolute top-0 left-0 z-10 w-full h-full" />
-          <div className="z-20 flex flex-col items-center justify-center w-full h-full px-14">
+        <BlurOverlay
+          id="loader"
+          className="absolute top-0 bottom-0 z-20 w-full"
+        >
+          <div className="flex flex-col items-center justify-center w-full h-full px-14">
             <Loader
               isLoading={isLoading}
               fullscreen={false}
@@ -30,7 +32,7 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
               <div className="z-20 mt-5 text-center">{loadingMessage}</div>
             )}
           </div>
-        </div>
+        </BlurOverlay>
       ) : null}
     </>
   )

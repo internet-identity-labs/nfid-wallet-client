@@ -1,13 +1,12 @@
 import { ActorRefFrom, createMachine } from "xstate"
 
-import { fetchWebAuthnCapability } from "frontend/integration/device"
+import { fetchWebAuthnPlatformCapability } from "frontend/integration/device"
 import {
   registerDeviceWithSecurityKey,
   registerDeviceWithWebAuthn,
 } from "frontend/integration/device/services"
-import { fetchProfile } from "frontend/integration/identity-manager"
+import { hasSecurityKeyService } from "frontend/integration/identity"
 import { isDeviceRegistered } from "frontend/integration/identity-manager/services"
-import { fetchAuthenticatorDevices } from "frontend/integration/internet-identity"
 
 export interface Context {}
 
@@ -145,26 +144,10 @@ export const TrustDeviceMachine =
     {
       services: {
         isDeviceRegistered: async () => isDeviceRegistered(),
-        fetchWebAuthnCapability,
+        fetchWebAuthnCapability: fetchWebAuthnPlatformCapability,
         registerDeviceWithWebAuthn,
         registerDeviceWithSecurityKey,
-        async hasSecurityKey() {
-          const profile = await fetchProfile()
-          console.debug("hasSecurityKey", { profile })
-          const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
-            BigInt(profile.anchor),
-            true,
-          )
-          const hasSecurityKey =
-            usersAuthenticatorDevices.findIndex(
-              (x) => "cross_platform" in x.key_type,
-            ) >= 0
-          console.debug("hasSecurityKey", {
-            usersAuthenticatorDevices,
-            hasSecurityKey,
-          })
-          return hasSecurityKey
-        },
+        hasSecurityKey: hasSecurityKeyService,
       },
       guards: {
         bool: (_, event) => event.data,

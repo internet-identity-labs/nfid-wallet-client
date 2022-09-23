@@ -23,10 +23,13 @@ describe("Entrepot suite", () => {
       jest
         .spyOn(global, "fetch")
         .mockImplementation((url: RequestInfo | URL): Promise<Response> => {
-          if (url.toString().includes('/api/maddies/getAllNfts')) {
+          if (url.toString().includes("/api/maddies/getAllNfts")) {
             return Promise.resolve({ ...rr, json: async () => mock })
-          } else if (url.toString().includes('api/collections')) {
-            return Promise.resolve({ ...rr, json: async () => [mockCollection]})
+          } else if (url.toString().includes("api/collections")) {
+            return Promise.resolve({
+              ...rr,
+              json: async () => [mockCollection],
+            })
           } else {
             throw url.toString()
           }
@@ -41,8 +44,12 @@ describe("Entrepot suite", () => {
       expect(response[0].principal).toBe(principal)
       expect(response[0].account).toBe(acc)
       expect(response[0].canisterId).toBe("nges7-giaaa-aaaaj-qaiya-cai")
-      expect(response[0].assetPreview).toBe("https://images.entrepot.app/t/nges7-giaaa-aaaaj-qaiya-cai/4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q")
-      expect(response[0].tokenId).toBe("4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q")
+      expect(response[0].assetPreview).toBe(
+        "https://images.entrepot.app/t/nges7-giaaa-aaaaj-qaiya-cai/4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q",
+      )
+      expect(response[0].tokenId).toBe(
+        "4tkih-zykor-uwiaa-aaaaa-cmacg-aaqca-aaaaa-q",
+      )
       expect(response[0].index).toBeDefined()
       expect(response[0].assetFullsize).toBeDefined()
     })
@@ -57,9 +64,7 @@ describe("Entrepot suite", () => {
           Promise.resolve({ ...info, json: async () => [mockCollection] }),
         )
       let response = await collection("nges7-giaaa-aaaaj-qaiya-cai")
-      expect(
-        JSON.stringify(response),
-      ).toBe(JSON.stringify(mockCollection))
+      expect(JSON.stringify(response)).toBe(JSON.stringify(mockCollection))
     })
   })
 })

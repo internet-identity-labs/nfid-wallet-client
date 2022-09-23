@@ -12,7 +12,12 @@ import {
   fetchNFTsOfPrincipals,
   getTokenLink,
 } from "./lib"
-import type { EntrepotCollection, EntrepotToken, NFTDetails, UserNFTDetails } from "./types"
+import type {
+  EntrepotCollection,
+  EntrepotToken,
+  NFTDetails,
+  UserNFTDetails,
+} from "./types"
 
 /**
  * Retrieve all known NFT collections.

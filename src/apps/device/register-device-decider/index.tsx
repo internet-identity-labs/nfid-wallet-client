@@ -3,9 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { im } from "frontend/integration/actors"
-import { deviceInfo } from "frontend/integration/device"
+import { deviceInfo, useDeviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { Icon } from "frontend/integration/identity-manager/devices/state"
@@ -23,20 +22,43 @@ export const RouterRegisterDeviceDecider: React.FC<
   AppScreenRegisterDeviceDeciderProps
 > = ({ registerSuccessPath }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { recoverDevice, createSecurityDevice } = useDevices()
+  const { recoverDevice, createSecurityDevice, hasSecurityKey } = useDevices()
   const { recoverAccount, createAccount } = useAccount()
   const { setShouldStoreLocalAccount } = useAuthentication()
   const { generatePath } = useNFIDNavigate()
-  const { user } = useAuthentication()
+  const { isAuthenticated } = useAuthentication()
 
   const {
     browser: { name: browserName },
     platform: { os: deviceName },
+    hasPlatformAuthenticator,
   } = useDeviceInfo()
+  console.log(">> ", { hasWebAuthn: hasPlatformAuthenticator })
+
   const navigate = useNavigate()
 
   const { state } = useLocation()
   const userNumber = BigInt((state as { userNumber: string }).userNumber)
+  console.debug("RouterRegisterDeviceDecider", {
+    hasSecurityKey,
+    hasWebAuthn: hasPlatformAuthenticator,
+  })
+
+  // In case the current device
+  // - does not support web authn platform authentication (!hasPlatformAuthenticator)
+  // - but has a security key registered (hasSecurityKey)
+  // then we don't want to show the decider and transition to profile
+  React.useEffect(() => {
+    if (!hasPlatformAuthenticator && hasSecurityKey) {
+      return navigate(generatePath(registerSuccessPath))
+    }
+  }, [
+    generatePath,
+    hasSecurityKey,
+    hasPlatformAuthenticator,
+    navigate,
+    registerSuccessPath,
+  ])
 
   const handleRegister = React.useCallback(async () => {
     setIsLoading(true)
@@ -120,6 +142,13 @@ export const RouterRegisterDeviceDecider: React.FC<
     userNumber,
   ])
 
+  const handleRegisterSecurityKey = React.useCallback(async () => {
+    setIsLoading(true)
+    await createSecurityDevice()
+    navigate(generatePath(registerSuccessPath))
+    setIsLoading(false)
+  }, [createSecurityDevice, generatePath, navigate, registerSuccessPath])
+
   const handleLogin = React.useCallback(async () => {
     if (!userNumber)
       throw new Error("userNumber is not defined. Not authorized.")
@@ -141,19 +170,22 @@ export const RouterRegisterDeviceDecider: React.FC<
   ])
 
   useEffect(() => {
-    if (!user)
+    if (!isAuthenticated)
       navigate(
         `${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.enterRecoveryPhrase}`,
       )
-  }, [navigate, user])
+  }, [isAuthenticated, navigate])
 
   return (
     <ScreenResponsive>
       <AuthorizeRegisterDeciderScreen
         onLogin={handleLogin}
         isLoading={isLoading}
+        isWebAuthNAvailable={!!hasPlatformAuthenticator}
+        deviceName={deviceInfo.platform.device}
+        platformAuthenticatorName={deviceInfo.platform.authenticator}
         onRegisterPlatformDevice={handleRegister}
-        onRegisterSecurityDevice={createSecurityDevice}
+        onRegisterSecurityDevice={handleRegisterSecurityKey}
       />
     </ScreenResponsive>
   )

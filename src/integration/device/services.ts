@@ -1,6 +1,10 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 
-import { deviceInfo, fetchWebAuthnCapability, getIsMobileDeviceMatch } from "."
+import {
+  deviceInfo,
+  fetchWebAuthnPlatformCapability,
+  getIsMobileDeviceMatch,
+} from "."
 import { ii, im } from "../actors"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "../identity"
 import { fetchProfile } from "../identity-manager"
@@ -10,7 +14,7 @@ import { creationOptions } from "../webauthn/creation-options"
 
 export async function isMobileWithWebAuthn() {
   console.debug("isMobileWithWebAuthn call fetchWebAuthnCapability")
-  return (await fetchWebAuthnCapability()) && getIsMobileDeviceMatch()
+  return (await fetchWebAuthnPlatformCapability()) && getIsMobileDeviceMatch()
 }
 
 // NOTE: Maybe this should live somewhere else?

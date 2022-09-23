@@ -7,7 +7,6 @@ import { Principal } from "@dfinity/principal"
 import React from "react"
 import useSWR from "swr"
 
-import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import {
   AccessPointRequest,
   AccessPointResponse,
@@ -17,6 +16,7 @@ import {
   PublicKey,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { im } from "frontend/integration/actors"
+import { useDeviceInfo } from "frontend/integration/device"
 import { removeAccessPointFacade } from "frontend/integration/facade"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import {
@@ -83,6 +83,8 @@ const normalizeDevices = (
         ? Number(BigInt(accessPoint.last_used) / BigInt(1000000))
         : 0,
       browser: accessPoint?.browser || getBrowser(device),
+      isSecurityKey:
+        Object.keys(device.key_type).indexOf("cross_platform") > -1,
     }
   })
 }
@@ -162,6 +164,7 @@ async function fetchDevices({ anchor }: { anchor: string }) {
     existingDevices,
     accessPoints?.data[0],
   )
+  console.debug("fetchDevices", { normalizedDevices })
   return normalizedDevices
 }
 
@@ -185,7 +188,7 @@ async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
     accessPoints?.data[0],
   )
   console.debug("fetchAccountRecoveryMethods", {
-    normalizedDevices: normalizedRecoveryDevices,
+    normalizedRecoveryDevices,
   })
   return normalizedRecoveryDevices
 }
@@ -202,13 +205,12 @@ export const byGoogleDevice = ({ browser }: GoogleDeviceFilter) => {
 export const byNotGoogleDevice = ({ browser }: GoogleDeviceFilter) =>
   !byGoogleDevice({ browser })
 
-/** @deprecated FIXME: move to integration layer */
 export const useDevices = () => {
   const { profile } = useAccount()
 
   const {
-    data: fetchedDevices,
-    error: fetchDevicesError,
+    data: authenticatorDevices,
+    error: authenticatorDevicesError,
     mutate: refreshDevices,
   } = useSWR(
     profile?.anchor ? { anchor: profile.anchor, type: "authenticator" } : null,
@@ -226,7 +228,7 @@ export const useDevices = () => {
 
   const socialDevices = React.useMemo(() => {
     return (
-      fetchedDevices?.filter(byGoogleDevice).map((socialDevice) => ({
+      authenticatorDevices?.filter(byGoogleDevice).map((socialDevice) => ({
         ...socialDevice,
         // TODO: move to normalizer
         icon: "google" as Icon,
@@ -235,12 +237,12 @@ export const useDevices = () => {
         isSocialDevice: true,
       })) ?? []
     )
-  }, [fetchedDevices])
+  }, [authenticatorDevices])
 
   // TODO replace by having social device like separate device type (as recover)
   const devices = React.useMemo(() => {
-    return fetchedDevices?.filter(byNotGoogleDevice)
-  }, [fetchedDevices])
+    return authenticatorDevices?.filter(byNotGoogleDevice)
+  }, [authenticatorDevices])
 
   const {
     newDeviceName,
@@ -528,11 +530,14 @@ export const useDevices = () => {
   )
 
   return {
-    loadingDevices: !devices && !fetchDevicesError,
+    loadingDevices: !devices && !authenticatorDevicesError,
     devices: devices || [],
     socialDevices,
     loadingRecoveryDevices: !recoveryDevices && !fetchRecoveryDevicesError,
     recoveryDevices: recoveryDevices || [],
+    hasSecurityKey:
+      !!authenticatorDevices?.find((d) => d.isSecurityKey) ||
+      !!recoveryDevices?.find((d) => d.isSecurityKey),
     createWebAuthNDevice,
     createRecoveryPhrase,
     createSecurityDevice,
@@ -543,8 +548,6 @@ export const useDevices = () => {
     createRecoveryDevice,
     recoverDevice,
     updateDevice,
-    /**@deprecated */
-    handleLoadDevices: refreshDevices,
     deleteDevice,
   }
 }

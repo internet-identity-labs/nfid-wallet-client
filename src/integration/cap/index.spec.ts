@@ -47,17 +47,19 @@ describe("rosetta suite", () => {
         .spyOn(mockUtil, "getCapRootTransactions")
         .mockImplementationOnce(() => Promise.resolve([mockTransactionTo]))
         .mockImplementationOnce(() => Promise.resolve([mockTransactionFrom]))
+        .mockImplementationOnce(() => Promise.resolve([]))
       let response = await mock.getUserTransactions(
         "dcbuw-wyaaa-aaaam-qapfq-cai",
         Principal.fromText(
           "tn74f-iacec-blwhn-qymcu-i6zmt-toa3i-hwqqs-g2j5u-ekp5m-3m26i-3ae",
         ),
         0,
-        2,
+        3,
       )
       expect(response.length).toEqual(2)
-      expect(response[0]).toEqual(mockTransactionTo)
-      expect(response[1]).toEqual(mockTransactionFrom)
+      expect(response[0][0]).toEqual(mockTransactionTo)
+      expect(response[0][1]).toEqual(mockTransactionFrom)
+      expect(response[1]).toEqual(true)
     })
 
     it("getTokenTxHistoryOfTokenIndex", async function () {
@@ -90,8 +92,9 @@ describe("rosetta suite", () => {
         2,
       )
       expect(response.length).toEqual(2)
-      expect(response[0]).toEqual(mockTransaction)
-      expect(response[1]).toEqual(mockTransaction)
+      expect(response[0][0]).toEqual(mockTransaction)
+      expect(response[0][1]).toEqual(mockTransaction)
+      expect(response[1]).toEqual(false)
     })
   })
 })

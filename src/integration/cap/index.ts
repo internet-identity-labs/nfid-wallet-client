@@ -16,18 +16,19 @@ export async function getUserTransactions(
   user: Principal,
   from: number,
   to: number,
-): Promise<TransactionPrettified[]> {
+): Promise<[TransactionPrettified[], boolean]> {
   let address = principalToAddress(user as any)
   let transactions: TransactionPrettified[] = []
   while (from < to) {
     let transactionHistory = await getTokenTransactionHistory(canisterId, from)
+    if (transactionHistory.length === 0) return [transactions, true]
     let filtered = transactionHistory.filter(
       (l) => l.details.from === address || l.details.to === address,
     )
     transactions = transactions.concat(filtered)
     from++
   }
-  return transactions
+  return [transactions, false]
 }
 
 export async function getTokenTxHistoryOfTokenIndex(
@@ -35,16 +36,19 @@ export async function getTokenTxHistoryOfTokenIndex(
   tokenId: number,
   from: number,
   to: number,
-) {
+): Promise<[TransactionPrettified[], boolean]> {
   const encodedTokenId = encodeTokenIdentifier(canisterId, tokenId)
   let transactions: TransactionPrettified[] = []
   while (from < to) {
     let transactionHistory = await getTokenTransactionHistory(canisterId, from)
+    if (transactionHistory.length === 0) {
+      return [transactions, true]
+    }
     let filtered = transactionHistory.filter(
       (l) => l.details.token === encodedTokenId,
     )
     transactions = transactions.concat(filtered)
     from++
   }
-  return transactions
+  return [transactions, false]
 }

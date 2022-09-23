@@ -8,8 +8,8 @@ import { encodeTokenIdentifier } from "ictool"
 import * as mockUtil from "frontend/integration/cap/cap_util"
 import * as mock from "frontend/integration/cap/index"
 
-describe("rosetta suite", () => {
-  describe("getBalance", () => {
+describe("cap suite", () => {
+  describe("cat txHistory", () => {
     it("getUserTransactions", async function () {
       let encodedToken = encodeTokenIdentifier(
         "dcbuw-wyaaa-aaaam-qapfq-cai",
@@ -56,10 +56,10 @@ describe("rosetta suite", () => {
         0,
         3,
       )
-      expect(response.length).toEqual(2)
-      expect(response[0][0]).toEqual(mockTransactionTo)
-      expect(response[0][1]).toEqual(mockTransactionFrom)
-      expect(response[1]).toEqual(true)
+      expect(response.txHistory.length).toEqual(2)
+      expect(response.txHistory[0]).toEqual(mockTransactionTo)
+      expect(response.txHistory[1]).toEqual(mockTransactionFrom)
+      expect(response.isLastPage).toEqual(true)
     })
 
     it("getTokenTxHistoryOfTokenIndex", async function () {
@@ -91,10 +91,10 @@ describe("rosetta suite", () => {
         0,
         2,
       )
-      expect(response.length).toEqual(2)
-      expect(response[0][0]).toEqual(mockTransaction)
-      expect(response[0][1]).toEqual(mockTransaction)
-      expect(response[1]).toEqual(false)
+      expect(response.txHistory.length).toEqual(2)
+      expect(response.txHistory[0]).toEqual(mockTransaction)
+      expect(response.txHistory[1]).toEqual(mockTransaction)
+      expect(response.isLastPage).toEqual(false)
     })
   })
 })

@@ -11,12 +11,11 @@ export async function getTokenTransactionHistory(
   return await getCapRootTransactions(canisterId, page)
 }
 
-
 /**
  * Function to retrieve transaction history of the principal. Returns array
  * of transactions and isLastPage boolean
  * @param canisterId
- * @param tokenId
+ * @param user
  * @param from
  * @param to
  */
@@ -25,19 +24,23 @@ export async function getUserTransactions(
   user: Principal,
   from: number,
   to: number,
-): Promise<[TransactionPrettified[], boolean]> {
+): Promise<{ txHistory: TransactionPrettified[]; isLastPage: boolean }> {
   let address = principalToAddress(user as any)
-  let transactions: TransactionPrettified[] = []
-  while (from < to) {
-    let transactionHistory = await getTokenTransactionHistory(canisterId, from)
-    if (transactionHistory.length === 0) return [transactions, true]
-    let filtered = transactionHistory.filter(
-      (l) => l.details.from === address || l.details.to === address,
-    )
-    transactions = transactions.concat(filtered)
-    from++
-  }
-  return [transactions, false]
+  let transactionHistory = await Promise.all(
+    [...Array(to).keys()].slice(from, to).map(async (page) => {
+      let allHistory = await getTokenTransactionHistory(canisterId, page)
+      let txHistory = allHistory.filter(
+        (l) => l.details.from === address || l.details.to === address,
+      )
+      return { txHistory, isLastPage: allHistory.length === 0 }
+    }),
+  )
+  return transactionHistory.reduce((x, y) => {
+    return {
+      txHistory: x.txHistory.concat(y.txHistory),
+      isLastPage: x.isLastPage || y.isLastPage,
+    }
+  })
 }
 
 /**
@@ -53,19 +56,21 @@ export async function getTokenTxHistoryOfTokenIndex(
   tokenId: number,
   from: number,
   to: number,
-): Promise<[TransactionPrettified[], boolean]> {
+): Promise<{ txHistory: TransactionPrettified[]; isLastPage: boolean }> {
   const encodedTokenId = encodeTokenIdentifier(canisterId, tokenId)
-  let transactions: TransactionPrettified[] = []
-  while (from < to) {
-    let transactionHistory = await getTokenTransactionHistory(canisterId, from)
-    if (transactionHistory.length === 0) {
-      return [transactions, true]
+  let transactionHistory = await Promise.all(
+    [...Array(to).keys()].slice(from, to).map(async (page) => {
+      let allHistory = await getTokenTransactionHistory(canisterId, page)
+      let txHistory = allHistory.filter(
+        (l) => l.details.token === encodedTokenId,
+      )
+      return { txHistory, isLastPage: allHistory.length === 0 }
+    }),
+  )
+  return transactionHistory.reduce((x, y) => {
+    return {
+      txHistory: x.txHistory.concat(y.txHistory),
+      isLastPage: x.isLastPage || y.isLastPage,
     }
-    let filtered = transactionHistory.filter(
-      (l) => l.details.token === encodedTokenId,
-    )
-    transactions = transactions.concat(filtered)
-    from++
-  }
-  return [transactions, false]
+  })
 }

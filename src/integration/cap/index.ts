@@ -11,6 +11,15 @@ export async function getTokenTransactionHistory(
   return await getCapRootTransactions(canisterId, page)
 }
 
+
+/**
+ * Function to retrieve transaction history of the principal. Returns array
+ * of transactions and isLastPage boolean
+ * @param canisterId
+ * @param tokenId
+ * @param from
+ * @param to
+ */
 export async function getUserTransactions(
   canisterId: string,
   user: Principal,
@@ -31,6 +40,14 @@ export async function getUserTransactions(
   return [transactions, false]
 }
 
+/**
+ * Function to retrieve transaction history of the token. Returns array
+ * of transactions and isLastPage boolean
+ * @param canisterId
+ * @param tokenId
+ * @param from
+ * @param to
+ */
 export async function getTokenTxHistoryOfTokenIndex(
   canisterId: string,
   tokenId: number,

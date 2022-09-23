@@ -6,8 +6,27 @@ import { Account } from "frontend/integration/identity-manager"
 
 import { GlauberTS } from "./search"
 
-export function sortUserTokens(tokens: UserNFTDetails[]) {
-  return tokens.sort((a, b) => a.index - b.index)
+const sortFuncs: {
+  [key: string]: (a: UserNFTDetails, b: UserNFTDetails) => number
+} = {
+  "Token #": (a, b) => a.index - b.index,
+  Wallet: (a, b) =>
+    a.account.label.toLowerCase() < b.account.label.toLowerCase() ? -1 : 1,
+  Collection: (a, b) =>
+    a.collection.name.toLowerCase() < b.collection.name.toLowerCase() ? -1 : 1,
+  default: () => 0,
+}
+
+export function sortUserTokens(
+  tokens: UserNFTDetails[],
+  fields: string[] = ["Tokens #"],
+) {
+  // return [...fields]
+  //   .reverse()
+  //   .reduce((agg, field) => agg.sort(sortFuncs[field] || defaultSort), tokens)
+  const func = sortFuncs[fields[0]]
+  if (!func) console.warn(`Unknown sort method ${fields[0]}`)
+  return tokens.sort(func || sortFuncs.default)
 }
 
 export function filterUserTokens(

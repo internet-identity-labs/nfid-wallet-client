@@ -28,7 +28,7 @@ export async function getUserTransactions(
   let address = principalToAddress(user as any)
   let transactionHistory = await Promise.all(
     [...Array(to).keys()].slice(from, to).map(async (page) => {
-      let allHistory = await getTokenTransactionHistory(canisterId, page)
+      let allHistory = await getCapRootTransactions(canisterId, page)
       let txHistory = allHistory.filter(
         (l) => l.details.from === address || l.details.to === address,
       )
@@ -60,7 +60,7 @@ export async function getTokenTxHistoryOfTokenIndex(
   const encodedTokenId = encodeTokenIdentifier(canisterId, tokenId)
   let transactionHistory = await Promise.all(
     [...Array(to).keys()].slice(from, to).map(async (page) => {
-      let allHistory = await getTokenTransactionHistory(canisterId, page)
+      let allHistory = await getCapRootTransactions(canisterId, page)
       let txHistory = allHistory.filter(
         (l) => l.details.token === encodedTokenId,
       )

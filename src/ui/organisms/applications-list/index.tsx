@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ApplicationAccount } from "frontend/apps/identity-manager/profile/utils"
+import { ApplicationAccount } from "frontend/apps/identity-manager/profile/applications/utils"
 import { List } from "frontend/ui/molecules/list"
 
 import { ApplicationListItem } from "./list-item"

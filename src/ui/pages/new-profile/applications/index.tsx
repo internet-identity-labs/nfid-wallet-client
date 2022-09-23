@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-import { ApplicationAccount } from "frontend/apps/identity-manager/profile/utils"
+import { ApplicationAccount } from "frontend/apps/identity-manager/profile/applications/utils"
 import Pagination from "frontend/ui/molecules/pagination"
 import { ApplicationList } from "frontend/ui/organisms/applications-list"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"

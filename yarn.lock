@@ -1721,7 +1721,7 @@
     "@devtools-ds/themes" "^1.2.0"
     clsx "1.1.0"
 
-"@dfinity/agent@0.10.4":
+"@dfinity/agent@0.10.4", "@dfinity/agent@^0.10.1":
   version "0.10.4"
   resolved "https://registry.npmjs.org/@dfinity/agent/-/agent-0.10.4.tgz"
   integrity sha512-/O1443GWkQ6GngrXos/ShAbnF9IgUlWclzaQn/qEsGJIey6S7tty+iOa5yZqOS1BtOTnDe+TYh8GeERZZn7vvg==
@@ -1753,7 +1753,7 @@
   resolved "https://registry.npmjs.org/@dfinity/authentication/-/authentication-0.10.4.tgz"
   integrity sha512-IP1zepm9YnXATV6lXVMqObmETKuBtkDMbWW6rgUvEekulaxITTHJppgzdMD8E7Hh5SVajVHLJm14kDa3FXwMnA==
 
-"@dfinity/candid@0.10.4":
+"@dfinity/candid@0.10.4", "@dfinity/candid@^0.10.1":
   version "0.10.4"
   resolved "https://registry.npmjs.org/@dfinity/candid/-/candid-0.10.4.tgz"
   integrity sha512-Rd8uoo3jd4FLmGY9aBgTRdBCYVuG/Y7QmpDJB3eQvsU3WHhVZJWLMHcodnMIoy2bzqzCKeTdLkL565K7qx5H3Q==
@@ -1784,7 +1784,7 @@
     secp256k1 "^4.0.2"
     tweetnacl "^1.0.1"
 
-"@dfinity/principal@0.10.4":
+"@dfinity/principal@0.10.4", "@dfinity/principal@^0.10.1":
   version "0.10.4"
   resolved "https://registry.npmjs.org/@dfinity/principal/-/principal-0.10.4.tgz"
   integrity sha512-qwzpmq5wfyeKMBspRZmuYvTxu1dqN+IY0ThACHTRh6D58QjnVQNCD3Hq9d5eEDu0qyNcY22cJEWwzrzZaaoVmw==
@@ -2363,6 +2363,17 @@
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
     source-map "^0.7.3"
+
+"@psychedelic/cap-js@^0.0.8":
+  version "0.0.8"
+  resolved "https://npm.pkg.github.com/download/@Psychedelic/cap-js/0.0.8/1843754aab039d490b39685aeb35cda0e5e6e001#1843754aab039d490b39685aeb35cda0e5e6e001"
+  integrity sha512-h188QIJe3AsOyP1dIPT+4dQCb/J1zWMyKrR5t+cPaO5gNUful/betb+kyiGgL3+6ahshDv4Tkg+kEVaEW6qogQ==
+  dependencies:
+    "@dfinity/agent" "^0.10.1"
+    "@dfinity/candid" "^0.10.1"
+    "@dfinity/principal" "^0.10.1"
+    axios "^0.24.0"
+    cross-fetch "^3.1.4"
 
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
@@ -5979,6 +5990,13 @@ axe-core@^4.4.3:
   resolved "https://registry.npmjs.org/axe-core/-/axe-core-4.4.3.tgz"
   integrity sha512-32+ub6kkdhhWick/UjvEwRchgoetXqTK14INLqbGm5U2TzBkBNF3nQtLYm8ovxSkQWArjEQvftCKryjZaATu3w==
 
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+  dependencies:
+    follow-redirects "^1.14.4"
+
 axios@^0.27.2:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
@@ -7834,9 +7852,9 @@ cross-env@7.0.3:
   dependencies:
     cross-spawn "^7.0.1"
 
-cross-fetch@3.1.5:
+cross-fetch@3.1.5, cross-fetch@^3.1.4:
   version "3.1.5"
-  resolved "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.5.tgz"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
   dependencies:
     node-fetch "2.6.7"
@@ -10145,6 +10163,11 @@ follow-redirects@^1.0.0, follow-redirects@^1.14.9:
   version "1.15.1"
   resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.1.tgz"
   integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
+
+follow-redirects@^1.14.4:
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
+  integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
 
 for-each@^0.3.3:
   version "0.3.3"

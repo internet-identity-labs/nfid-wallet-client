@@ -1,4 +1,5 @@
 import bowser from "bowser"
+import useSWR from "swr"
 
 const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
 const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
@@ -11,7 +12,7 @@ const browser = (navigator as any).brave
 
 const platform = getPlatformInfo()
 
-export async function fetchWebAuthnCapability() {
+export async function fetchWebAuthnPlatformCapability() {
   try {
     return await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
   } catch (e) {
@@ -84,8 +85,20 @@ export function getPlatformInfo() {
         authenticator: "Fingerprint",
       }
     default:
-      return { make: "unknown", os: "unknown", authenticator: "unknown" }
+      return {
+        make: "unknown",
+        os: "unknown",
+        device: "unknown",
+        authenticator: "unknown",
+      }
   }
+}
+
+let hasWebAuthn: boolean | undefined = undefined
+fetchWebAuthnPlatformCapability().then((r) => (hasWebAuthn = r))
+
+export function fetchWebAuthnCapabilitySync() {
+  return hasWebAuthn
 }
 
 export const deviceInfo = {
@@ -93,12 +106,13 @@ export const deviceInfo = {
   browser,
   newDeviceName: `NFID ${browser.name} on ${platform.os}`,
   isMobile: getIsMobileDeviceMatch(),
-  hasWebAuthn: fetchWebAuthnCapability(),
 }
 
-let hasWebAuthn: boolean | undefined = undefined
-fetchWebAuthnCapability().then((r) => (hasWebAuthn = r))
+export const useDeviceInfo = () => {
+  const { data: hasPlatformAuthenticator } = useSWR(
+    "hasWebAuthNCapability",
+    fetchWebAuthnPlatformCapability,
+  )
 
-export function fetchWebAuthnCapabilitySync() {
-  return hasWebAuthn
+  return { ...deviceInfo, hasPlatformAuthenticator }
 }

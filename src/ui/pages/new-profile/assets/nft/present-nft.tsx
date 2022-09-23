@@ -16,7 +16,7 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
 
   const visibleLength = React.useMemo(() => {
     // Let's show 4 NFTS on large screens - @Suggestion from Pavlo
-    return width < 1536 ? 3 : 3
+    return width < 1536 ? 3 : 4
   }, [width])
 
   return (
@@ -33,7 +33,7 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
         <div
           className={clsx(
             "grid gap-4 lg:gap-8",
-            "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+            "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
           )}
         >
           {nfts.slice(0, visibleLength).map((nft) => (

@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 import { FiCopy } from "react-icons/fi"
+import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { link } from "frontend/integration/entrepot"
@@ -26,17 +27,29 @@ export const ProfileAssetsNFTItem: React.FC<IProfileAssetsNFTItem> = ({
   }, [nft.collection.id, nft.index])
 
   return (
-    <div
+    <Link
       className={clsx(
         "flex-col bg-gray-50 rounded-md transition-all",
         "hover:shadow-md hover:bg-white cursor-pointer",
         "p-[1px] sm:p-0.5",
       )}
+      to={"#"}
     >
-      <div
-        style={{ backgroundImage: `url(${nft.assetPreview})` }}
-        className="bg-center bg-contain h-[30vh] bg-no-repeat"
-      />
+      <div className="relative overflow-hidden bg-clip-border rounded-t-md">
+        <div
+          style={{
+            backgroundImage: `url(${nft.assetPreview})`,
+          }}
+          className={clsx(
+            "bg-cover bg-center bg-no-repeat blur-md brightness-150",
+            "h-[30vh] absolute z-10 w-full",
+          )}
+        />
+        <div
+          style={{ backgroundImage: `url(${nft.assetPreview})` }}
+          className="bg-center bg-contain h-[30vh] bg-no-repeat relative z-20"
+        />
+      </div>
       <div className="flex pl-5 pr-2.5 py-4">
         <div className="w-full text-sm">
           <p className="font-bold">{nft.name}</p>
@@ -67,6 +80,6 @@ export const ProfileAssetsNFTItem: React.FC<IProfileAssetsNFTItem> = ({
           </div> */}
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

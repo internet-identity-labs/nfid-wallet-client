@@ -49,7 +49,6 @@ const ProfileSMS = () => {
     if (!delegationIdentity) throw new Error("User delegation is undefined")
 
     try {
-      toggleLoading()
       setError("")
       await verifyPhoneNumber(phone as string, delegationIdentity)
     } catch (e: any) {
@@ -59,8 +58,6 @@ const ProfileSMS = () => {
         toast.error("We were not able to resend code. Please try again")
         navigateToCredentials()
       }
-    } finally {
-      toggleLoading()
     }
   }, [delegationIdentity, navigateToCredentials, phone])
 

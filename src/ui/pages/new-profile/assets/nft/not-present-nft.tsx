@@ -22,8 +22,13 @@ export const ProfileNFTNotPresent: React.FC<IProfileAssetsNFT> = () => {
         </p>
         <p className="mt-4">
           Email us at{" "}
-          <a href="mailto:hello@identitylabs.ooo">hello@identitylabs.ooo</a> for
-          support.
+          <a
+            href="mailto:hello@identitylabs.ooo"
+            className="text-blue-600 transition-opacity hover:opacity-50"
+          >
+            hello@identitylabs.ooo
+          </a>{" "}
+          for support.
         </p>
       </div>
       <img

@@ -1,19 +1,23 @@
 import clsx from "clsx"
 import React from "react"
 
-import { INFT } from "frontend/types/nft"
+import { NFTDetails } from "frontend/integration/entrepot/types"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
+import useWindowSize from "frontend/ui/utils/use-window-size"
 
 import { ProfileAssetsNFTItem } from "./nft-item"
 
 interface IProfileAssetsNFT extends React.HTMLAttributes<HTMLDivElement> {
-  nfts: INFT[]
+  nfts: NFTDetails[]
 }
 
 export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
+  const { width } = useWindowSize()
+
   const visibleLength = React.useMemo(() => {
-    return 3
-  }, [])
+    // Let's show 4 NFTS on large screens - @Suggestion from Pavlo
+    return width < 1536 ? 3 : 3
+  }, [width])
 
   return (
     <div>
@@ -32,7 +36,7 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
             "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
           )}
         >
-          {nfts.slice(0, 3).map((nft) => (
+          {nfts.slice(0, visibleLength).map((nft) => (
             <ProfileAssetsNFTItem
               nft={nft}
               key={`nft_${nft.tokenId}_${Math.random()}`}

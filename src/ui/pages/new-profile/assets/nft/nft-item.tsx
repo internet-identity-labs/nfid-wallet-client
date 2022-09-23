@@ -1,20 +1,30 @@
 import clsx from "clsx"
 import React from "react"
+import { FiCopy } from "react-icons/fi"
+import { toast } from "react-toastify"
 
-import { INFT } from "frontend/types/nft"
-import useClickOutside from "frontend/ui/utils/use-click-outside"
+import { link } from "frontend/integration/entrepot"
+import { NFTDetails } from "frontend/integration/entrepot/types"
 
-import moreIcon from "./assets/more.svg"
+// No tooltip menu for now -  @Artem
+// import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 interface IProfileAssetsNFTItem extends React.HTMLAttributes<HTMLDivElement> {
-  nft: INFT
+  nft: NFTDetails
 }
 
 export const ProfileAssetsNFTItem: React.FC<IProfileAssetsNFTItem> = ({
   nft,
 }) => {
-  const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
-  const ref = useClickOutside(() => setIsTooltipOpen(false))
+  // No tooltip menu for now -  @Artem
+  // const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
+  // const ref = useClickOutside(() => setIsTooltipOpen(false))
+
+  const copyToClipboard = React.useCallback(() => {
+    toast.info("NFT URL copied to clipboard")
+    navigator.clipboard.writeText(link(nft.collection.id, nft.index))
+  }, [nft.collection.id, nft.index])
+
   return (
     <div
       className={clsx(
@@ -23,20 +33,21 @@ export const ProfileAssetsNFTItem: React.FC<IProfileAssetsNFTItem> = ({
         "p-[1px] sm:p-0.5",
       )}
     >
-      <img src={nft.imageUrl} alt="nft" />
+      <div
+        style={{ backgroundImage: `url(${nft.assetPreview})` }}
+        className="bg-center bg-contain h-[30vh] bg-no-repeat"
+      />
       <div className="flex pl-5 pr-2.5 py-4">
         <div className="w-full text-sm">
-          <p className="font-bold">Solo Sensei #2969</p>
-          <p className="text-gray-400">Degenerate Ape Academy</p>
+          <p className="font-bold">{nft.name}</p>
+          <p className="text-gray-400">{nft.collection.name}</p>
         </div>
-        <div className="relative w-6" ref={ref}>
-          <img
-            onClick={() => setIsTooltipOpen(!isTooltipOpen)}
-            className="transition-opacity cursor-pointer hover:opacity-40"
-            src={moreIcon}
-            alt="more"
-          />
-          <div
+        <div className="relative w-6">
+          <div onClick={copyToClipboard}>
+            <FiCopy className="transition-opacity cursor-pointer hover:opacity-40" />
+          </div>
+          {/* No tooltip menu for now - @Artem */}
+          {/* <div
             className={clsx(
               "absolute top-6 right-0 w-[150px]",
               "bg-white rounded-md shadow-md",
@@ -53,7 +64,7 @@ export const ProfileAssetsNFTItem: React.FC<IProfileAssetsNFTItem> = ({
             <p className="pl-[10px] leading-10 hover:bg-gray-100 rounded-md">
               Copy link
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

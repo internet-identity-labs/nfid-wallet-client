@@ -19,9 +19,8 @@ const ProfileSecurity = () => {
     devices,
     socialDevices,
     recoveryDevices,
-    getDevices,
     deleteDevice,
-    handleLoadDevices,
+    getDevices,
     updateDevice,
     getRecoveryDevices,
     createRecoveryPhrase,
@@ -39,9 +38,9 @@ const ProfileSecurity = () => {
   const handleDeleteDevice = React.useCallback(
     async (device: LegacyDevice) => {
       await deleteDevice(device.pubkey)
-      await handleLoadDevices()
+      await getDevices()
     },
-    [deleteDevice, handleLoadDevices],
+    [deleteDevice, getDevices],
   )
 
   const handleDeviceUpdate = React.useCallback(

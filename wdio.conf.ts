@@ -189,7 +189,7 @@ export const config: WebdriverIO.Config = {
     [
       "json",
       {
-        outputDir: "test/report",
+        outputDir: "test/reporter",
         outputFileFormat: function () {
           return `cucumber_report.json`
         },
@@ -208,7 +208,11 @@ export const config: WebdriverIO.Config = {
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
     // <string[]> (file/dir) require files before executing features
-    require: ["./test/step-definitions/*.ts", "./test/steps/*.ts", "./src/integration/_ic_api/identity_manager_idl.js"],
+    require: [
+      "./test/step-definitions/*.ts",
+      "./test/steps/*.ts",
+      "./src/integration/_ic_api/identity_manager_idl.js",
+    ],
     // <boolean> show full backtrace for errors
     backtrace: false,
     // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)

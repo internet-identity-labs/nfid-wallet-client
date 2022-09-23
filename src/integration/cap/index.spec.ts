@@ -7,42 +7,19 @@ import { encodeTokenIdentifier } from "ictool"
 
 import * as mockUtil from "frontend/integration/cap/cap_util"
 import * as mock from "frontend/integration/cap/index"
+import { mockTransaction } from "frontend/integration/internet-identity/__mocks"
 
 describe("cap suite", () => {
   describe("cat txHistory", () => {
     it("getUserTransactions", async function () {
-      let encodedToken = encodeTokenIdentifier(
-        "dcbuw-wyaaa-aaaam-qapfq-cai",
-        89,
-      )
-      let detailsTo = {
-        to: "79867ae4c39553850f70fc3c1f208966f22818bce8b00dff272cfff59786c66b",
-        from: "84162df231ae9d4d9a38cae8ce7f263ed29d730706abf2b3dda1e8859d86f1a8",
-        token: encodedToken,
-        balance: BigInt(1),
-      }
-      let detailsFrom = {
-        to: "a17518efac3544ce0528858335775dec6090dfaf1b52d970208d20899c5e59ab",
-        from: "79867ae4c39553850f70fc3c1f208966f22818bce8b00dff272cfff59786c66b",
-        token: encodedToken,
-        balance: BigInt(1),
-      }
-      let mockTransactionTo: TransactionPrettified = {
-        caller: Principal.fromText(
-          "tn74f-iacec-blwhn-qymcu-i6zmt-toa3i-hwqqs-g2j5u-ekp5m-3m26i-3ae",
-        ),
-        details: detailsTo,
-        operation: "",
-        time: BigInt(1),
-      }
-      let mockTransactionFrom: TransactionPrettified = {
-        caller: Principal.fromText(
-          "tn74f-iacec-blwhn-qymcu-i6zmt-toa3i-hwqqs-g2j5u-ekp5m-3m26i-3ae",
-        ),
-        details: detailsFrom,
-        operation: "",
-        time: BigInt(1),
-      }
+      let address =
+        "79867ae4c39553850f70fc3c1f208966f22818bce8b00dff272cfff59786c66b"
+      let mockTransactionTo: TransactionPrettified = mockTransaction
+      mockTransactionTo.details.to =
+        "79867ae4c39553850f70fc3c1f208966f22818bce8b00dff272cfff59786c66b"
+      let mockTransactionFrom: TransactionPrettified = mockTransaction
+      mockTransactionFrom.details.from =
+        "79867ae4c39553850f70fc3c1f208966f22818bce8b00dff272cfff59786c66b"
       jest
         .spyOn(mockUtil, "getCapRootTransactions")
         .mockImplementationOnce(() => Promise.resolve([mockTransactionTo]))
@@ -67,24 +44,11 @@ describe("cap suite", () => {
         "dcbuw-wyaaa-aaaam-qapfq-cai",
         89,
       )
-      let details = {
-        to: "a17518efac3544ce0528858335775dec6090dfaf1b52d970208d20899c5e59ab",
-        from: "84162df231ae9d4d9a38cae8ce7f263ed29d730706abf2b3dda1e8859d86f1a8",
-        token: encodedToken,
-        balance: BigInt(1),
-      }
-      let mockTransaction: TransactionPrettified = {
-        caller: Principal.fromText(
-          "tn74f-iacec-blwhn-qymcu-i6zmt-toa3i-hwqqs-g2j5u-ekp5m-3m26i-3ae",
-        ),
-        details: details,
-        operation: "",
-        time: BigInt(1),
-      }
-
+      let mockTransactionToken: TransactionPrettified = mockTransaction
+      mockTransactionToken.details.token = encodedToken
       jest
         .spyOn(mockUtil, "getCapRootTransactions")
-        .mockReturnValue(Promise.resolve([mockTransaction]))
+        .mockReturnValue(Promise.resolve([mockTransactionToken]))
       let response = await mock.getTokenTxHistoryOfTokenIndex(
         "dcbuw-wyaaa-aaaam-qapfq-cai",
         89,

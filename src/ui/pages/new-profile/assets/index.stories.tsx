@@ -4,6 +4,8 @@ import { BrowserRouter as Router } from "react-router-dom"
 import Dfinity from "frontend/assets/dfinity.svg"
 
 import ProfileAssetsPage from "."
+// @ts-ignore
+import MockNFTImage from "./nft/assets/mockNFT.jpg"
 
 export default {
   title: "Screens/NewProfile/Assets",
@@ -25,11 +27,19 @@ export const AppScreen = Template.bind({})
 
 AppScreen.args = {
   onIconClick: () => {},
-  tokens: Array(4).fill({
+  tokens: Array(1).fill({
     icon: Dfinity,
     title: "Internet Computer",
     subTitle: "ICP",
     balance: "987.12345678 ICP",
-    price: "$6.91",
+    price: 691,
+  }),
+  nfts: Array(4).fill({
+    canisterId: "dhsafgduyqwijlkfdnvbhgfeuwirj123",
+    tokenId: "dsfnhjkl123",
+    imageUrl: MockNFTImage,
+    owner: "dsadasd",
+    principal: null,
+    account: null,
   }),
 }

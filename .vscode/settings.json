@@ -8,5 +8,6 @@
     "*.tsx": "${capture}.ts, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.md"
   },
   "explorer.fileNesting.expand": true,
-  "explorer.fileNesting.enabled": true
+  "explorer.fileNesting.enabled": true,
+  "cSpell.words": ["INFT"]
 }

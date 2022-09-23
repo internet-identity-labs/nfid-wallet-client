@@ -32,6 +32,7 @@ const ProfileAssets = () => {
         navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`)
       }
       tokens={tokens}
+      nfts={[]}
     />
   )
 }

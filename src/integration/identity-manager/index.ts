@@ -52,6 +52,20 @@ export interface Account {
   accountCount?: number
 }
 
+export function applicationToAccount(application: Application): Account {
+  if (!application.isNftStorage)
+    throw new Error(
+      "This application is not intended to be used as a token account.",
+    )
+  return {
+    domain: application.domain,
+    label: application.name,
+    accountId: "0",
+    alias: application.alias,
+    icon: application.icon,
+  }
+}
+
 /**
  * Sanitize im.get_account response from canister into our internal profile representation
  * @param profile {@link AccountResponse} Account response from canister

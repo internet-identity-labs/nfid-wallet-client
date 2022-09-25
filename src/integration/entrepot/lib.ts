@@ -163,15 +163,17 @@ export function getEntrepotDisplayFormat(
 
 export function getDisplayFormat(format: EntrepotDisplayFormat): DisplayFormat {
   switch (format) {
-    case "default":
-    case "asset_canisters":
-    case "generative_assets_on_nft_canister":
-    case "motoko_mechs":
-      return "img"
     case "interactive_nfts_or_videos":
       return "iframe"
     case "videos_that_dont_fit_in_frame":
       return "video"
+    case "":
+    case "default":
+    case "asset_canisters":
+    case "generative_assets_on_nft_canister":
+    case "motoko_mechs":
+    default:
+      return "img"
   }
 }
 
@@ -198,7 +200,6 @@ export async function assetFullsize(
   const url = entrepotAsset(collection, token, true)
   const _format = getEntrepotDisplayFormat(collection, token)
   const format = getDisplayFormat(_format)
-  console.log(_format, collection.name)
   if (_format === "default") {
     return { url: assetPreview(collection, token), format }
   }

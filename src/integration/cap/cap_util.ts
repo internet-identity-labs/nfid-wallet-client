@@ -6,7 +6,8 @@ import {
 } from "@psychedelic/cap-js"
 import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
 
-const MAIN_NET = "https://mainnet.dfinity.network"
+// const MAIN_NET = "https://mainnet.dfinity.network"
+const MAIN_NET = "https://ic0.app"
 
 export async function getCapRootTransactions(
   canisterId: string,

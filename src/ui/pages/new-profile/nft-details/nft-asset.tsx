@@ -9,7 +9,7 @@ export const NFTAsset = (assetFullsize: {
       return (
         <div
           style={{ backgroundImage: `url(${assetFullsize.url})` }}
-          className="relative h-full bg-center bg-no-repeat bg-contain"
+          className="relative z-20 h-full bg-center bg-no-repeat bg-contain"
         />
       )
     case "iframe":
@@ -20,6 +20,7 @@ export const NFTAsset = (assetFullsize: {
           src={assetFullsize.url}
           alt=""
           style={{
+            zIndex: "20",
             border: "none",
             height: "100%",
             width: "100%",

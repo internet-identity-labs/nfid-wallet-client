@@ -54,14 +54,19 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({ isLoading, tokens }) => {
     "Token #",
   ])
   const [reverse, setReverse] = React.useState(false)
-  const handleSort = React.useMemo(
+  const handleHeaderClick = React.useMemo(
     () => (v: string) => {
-      const newValue = sorting.map((x) => x)
-      newValue.splice(newValue.indexOf(v), 1)
-      newValue.unshift(v)
-      setSorting(newValue)
+      if (!sorting.includes(v)) return
+      if (sorting[0] === v) {
+        setReverse(!reverse)
+      } else {
+        const newValue = sorting.map((x) => x)
+        newValue.splice(newValue.indexOf(v), 1)
+        newValue.unshift(v)
+        setSorting(newValue)
+      }
     },
-    [sorting],
+    [sorting, reverse],
   )
   const rows = React.useMemo(() => {
     const result = sortUserTokens(tokensFiltered, sorting).map((token) => [
@@ -112,8 +117,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({ isLoading, tokens }) => {
             headings={headings}
             sort={sorting}
             reverse={reverse}
-            handleSort={handleSort}
-            handleReverse={() => setReverse(!reverse)}
+            handleHeaderClick={handleHeaderClick}
           />
         ) : (
           Object.values(tokensByWallet)

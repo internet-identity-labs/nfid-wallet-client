@@ -43,7 +43,7 @@ export const ProfileAssetsNFTItem: React.FC<IProfileAssetsNFTItem> = ({
           }}
           className={clsx(
             "bg-cover bg-center bg-no-repeat blur-md brightness-150",
-            "h-[30vh] absolute z-10 w-full",
+            "h-[30vh] absolute z-10 w-full opacity-90",
           )}
         />
         <div

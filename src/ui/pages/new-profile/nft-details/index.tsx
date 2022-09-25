@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -14,13 +15,27 @@ import WalletIcon from "./assets/wallet.svg"
 
 import { NFTAsset } from "./nft-asset"
 
+export interface ITransaction {
+  from: string
+  to: string
+  datetime: string
+  type: string
+  price?: string
+}
+
 interface IProfileNFTDetails {
   nft: UserNFTDetails
+  isTransactionsFetching?: boolean
+  transactions: ITransaction[]
 }
 
 const containerClassName = "max-w-[100vw] px-4 sm:px-[30px]"
 
-export const ProfileNFTDetailsPage = ({ nft }: IProfileNFTDetails) => {
+export const ProfileNFTDetailsPage = ({
+  nft,
+  isTransactionsFetching = false,
+  transactions,
+}: IProfileNFTDetails) => {
   const copyToClipboard = React.useCallback(() => {
     toast.info("NFT URL copied to clipboard")
     navigator.clipboard.writeText(link(nft.collection.id, nft.index))
@@ -37,17 +52,26 @@ export const ProfileNFTDetailsPage = ({ nft }: IProfileNFTDetails) => {
       <div
         className={clsx(
           "grid gap-[30px]",
-          "grid-cols-1 sm:grid-cols-[40%,1fr]",
+          "grid-cols-1 sm:grid-cols-[30vw,1fr]",
           containerClassName,
         )}
       >
         <div className="relative overflow-hidden bg-gray-50 rounded-xl aspect-square">
+          <div
+            style={{
+              backgroundImage: `url(${nft.assetPreview})`,
+            }}
+            className={clsx(
+              "bg-cover bg-center bg-no-repeat blur-md brightness-150",
+              "h-full absolute z-10 w-full opacity-90",
+            )}
+          />
           <NFTAsset
             url={nft.assetFullsize.url}
             format={nft.assetFullsize.format}
           />
         </div>
-        <div className="">
+        <div>
           <p className="font-bold text-blue-600">{nft.collection.name}</p>
           <p className="text-[28px] mt-2.5">{nft.name}</p>
           <div className="flex items-center mt-4 space-x-2">
@@ -90,7 +114,7 @@ export const ProfileNFTDetailsPage = ({ nft }: IProfileNFTDetails) => {
       <div
         className={clsx(
           "block border border-gray-200 rounded-xl",
-          "my-[30px] mx-4",
+          "my-[30px] mx-4 sm:mx-[30px]",
         )}
       >
         <div
@@ -104,23 +128,23 @@ export const ProfileNFTDetailsPage = ({ nft }: IProfileNFTDetails) => {
         </div>
         <Table
           headings={["Event type", "Date and time", "From", "To", "Price"]}
-          rows={[
-            [
-              "Mint",
-              "Jan 28, 2018 - 11:00:45 am",
-              "662di02jqd0912edjc98h9281ejd09fj09j09ejc09jx019665",
-              "552di02jqd0912edjc98h928155d09fj09j09ejc09jx019665",
-              "15 ICP",
-            ],
-            [
-              "Sale",
-              "Jan 28, 2018 - 11:00:45 am",
-              "662di02jqd0912edjc98h9281ejd09fj09j09ejc09jx019665",
-              "552di02jqd0912edjc98h928155d09fj09j09ejc09jx019665",
-              "25 ICP",
-            ],
-          ]}
+          rows={transactions.map((transaction) =>
+            Object.values(transaction).map((value, i) => (
+              <span
+                className={clsx(
+                  i === 0 && "capitalize",
+                  (i === 1 || i === 4) && "whitespace-nowrap",
+                  (i === 2 || i === 3) && "w-[216px] break-words inline-block",
+                )}
+              >
+                {value}
+              </span>
+            )),
+          )}
         />
+        <div className="flex justify-center w-full h-16 py-2">
+          <Loader fullscreen={false} isLoading={isTransactionsFetching} />
+        </div>
       </div>
     </ProfileTemplate>
   )

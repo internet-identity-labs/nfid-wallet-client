@@ -6,8 +6,8 @@ interface TableData {
   rows: React.ReactNode[][]
   sort?: string[]
   reverse?: boolean
-  handleSort: (col: string) => void
-  handleReverse: () => void
+  handleSort?: (col: string) => void
+  handleReverse?: () => void
 }
 
 export default function Table({
@@ -18,30 +18,34 @@ export default function Table({
   handleSort,
   handleReverse,
 }: TableData) {
+  const onHeaderClick = (heading: string) => {
+    if (!handleReverse || !handleSort) return
+
+    return sort?.includes(heading) && sort?.[0] === heading
+      ? handleReverse()
+      : handleSort(heading)
+  }
+
   return (
-    <table className={clsx(`table-auto w-full text-left`)}>
+    <table className={clsx("table-auto w-full text-left")}>
       <thead>
-        <tr className={clsx(`border-b border-gray-900`)}>
+        <tr className={clsx("border-b border-gray-900")}>
           {headings.map((heading, i) => (
             <th
               className={clsx(
-                `h-[64px] hover:bg-gray-100 group`,
-                sort?.includes(heading) && "cursor-pointer",
+                "h-16",
+                sort?.includes(heading) && "cursor-pointer hover:bg-gray-100",
               )}
-              key={`heading${i}`}
-              onClick={() =>
-                sort?.includes(heading) && sort?.[0] === heading
-                  ? handleReverse()
-                  : handleSort(heading)
-              }
+              key={`heading_${heading}`}
+              onClick={() => onHeaderClick(heading)}
             >
-              <div className={clsx(`flex gap-2 items-center group`)}>
+              <div className={clsx("flex gap-2 items-center group")}>
                 {heading}
                 {sort?.[0] === heading && (
-                  <BsArrowDown className={clsx(reverse && `rotate-180`)} />
+                  <BsArrowDown className={clsx(reverse && "rotate-180")} />
                 )}
                 {sort?.includes(heading) && sort?.[0] !== heading && (
-                  <div className={clsx(`invisible group-hover:visible`)}>
+                  <div className={clsx("invisible group-hover:visible")}>
                     <BsArrowDown />
                   </div>
                 )}
@@ -52,9 +56,9 @@ export default function Table({
       </thead>
       <tbody>
         {rows.map((row, i) => (
-          <tr key={`row${i}`} className={clsx(`border-b border-grey-200`)}>
+          <tr key={`row_${i}`} className={clsx("border-b border-grey-200")}>
             {row.map((cell, j) => (
-              <td className={clsx(`h-[85px]`)} key={`row${i}cell${j}`}>
+              <td className={clsx("h-[85px]")} key={`row_${i}_cell_${j}`}>
                 {cell}
               </td>
             ))}

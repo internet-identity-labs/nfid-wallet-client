@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
@@ -98,6 +99,13 @@ export const ProfileNFTDetails = ({ nft }: IProfileNFTDetails) => {
           })}
         </div>
       </div> */}
+      <Table
+        headings={["Make", "Model", "Year", "Color"]}
+        rows={[
+          ["Mazda", "Miata", "2004", "Silver"],
+          ["Volkswagon", "GTI", "2015", "Dark Gray"],
+        ]}
+      />
     </ProfileTemplate>
   )
 }

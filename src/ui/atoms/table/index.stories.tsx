@@ -18,8 +18,7 @@ const DefaultTemplate: Story<{}> = (args) => (
       ["Mazda", "Miata", "2004", "Silver"],
       ["Volkswagon", "GTI", "2015", "Dark Gray"],
     ]}
-    handleSort={() => {}}
-    handleReverse={() => {}}
+    handleHeaderClick={() => {}}
   />
 )
 

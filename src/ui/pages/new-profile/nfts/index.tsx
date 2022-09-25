@@ -10,6 +10,7 @@ import { toast } from "react-toastify"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { Application } from "frontend/integration/identity-manager"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
 import { Input } from "frontend/ui/atoms/input"
@@ -29,9 +30,14 @@ import {
 interface IProfileNFTsPage extends React.HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
   tokens: UserNFTDetails[]
+  applications: Application[]
 }
 
-const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({ isLoading, tokens }) => {
+const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
+  isLoading,
+  tokens,
+  applications,
+}) => {
   const [search, setSearch] = React.useState("")
   const [display, setDisplay] = React.useState<"grid" | "table">("grid")
   const tokensFiltered = React.useMemo(
@@ -77,7 +83,11 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({ isLoading, tokens }) => {
       />,
       `#${token.index}`,
       <div className={clsx(`w-full`)}>{token.collection.name}</div>,
-      <div className={clsx(`w-full`)}>{token.account.label}</div>,
+      <div className={clsx(`w-full`)}>
+        {applications.find((x) => x.domain === token.account.domain)?.name}{" "}
+        {token.account.accountId !== "0" &&
+          `#${Number(token.account.accountId) + 1}`}
+      </div>,
       <FiCopy
         className={clsx(`hover:text-blue-500 cursor-pointer`)}
         size="18"
@@ -89,7 +99,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({ isLoading, tokens }) => {
     ])
     reverse && result.reverse()
     return result
-  }, [tokensFiltered, sorting, reverse])
+  }, [tokensFiltered, sorting, reverse, applications])
   return (
     <ProfileTemplate
       pageTitle="Your NFTs"
@@ -139,7 +149,14 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({ isLoading, tokens }) => {
                       <div
                         className={clsx(`flex gap-2 items-center font-light`)}
                       >
-                        <AiOutlineWallet /> {wallet.account.label}
+                        <AiOutlineWallet />{" "}
+                        {
+                          applications.find(
+                            (x) => x.domain === wallet.account.domain,
+                          )?.name
+                        }{" "}
+                        {wallet.account.accountId !== "0" &&
+                          `#${Number(wallet.account.accountId) + 1}`}
                       </div>
                       <div
                         className={clsx(`text-sm text-slate-400 font-light`)}

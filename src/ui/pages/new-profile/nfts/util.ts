@@ -19,7 +19,7 @@ const sortFuncs: {
 
 export function sortUserTokens(
   tokens: UserNFTDetails[],
-  fields: string[] = ["Tokens #"],
+  fields: string[] = ["Token #"],
 ) {
   // return [...fields]
   //   .reverse()

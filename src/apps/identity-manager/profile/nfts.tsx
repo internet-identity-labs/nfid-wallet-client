@@ -11,11 +11,14 @@ import {
   fetchAccounts,
   fetchApplications,
 } from "frontend/integration/identity-manager"
-import { useProfile } from "frontend/integration/identity-manager/queries"
+import {
+  useApplicationsMeta,
+  useProfile,
+} from "frontend/integration/identity-manager/queries"
 import ProfileNFTsPage from "frontend/ui/pages/new-profile/nfts"
 
 export function useNFT(tokenid: string) {
-  const { canister, index } = decodeTokenIdentifier(tokenid)
+  const { canister } = decodeTokenIdentifier(tokenid)
   const _collection = useSWR(`collection/${canister}`, () =>
     collection(canister),
   )
@@ -68,7 +71,14 @@ export function useAllNFTs() {
 
 const ProfileNFTs = () => {
   const tokens = useAllNFTs()
-  return <ProfileNFTsPage isLoading={!tokens.data} tokens={tokens.data || []} />
+  const applications = useApplicationsMeta()
+  return (
+    <ProfileNFTsPage
+      isLoading={!tokens.data || applications.isLoading}
+      tokens={tokens.data || []}
+      applications={applications.applicationsMeta || []}
+    />
+  )
 }
 
 export default ProfileNFTs

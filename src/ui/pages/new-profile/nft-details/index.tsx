@@ -87,26 +87,6 @@ export const ProfileNFTDetails = ({ nft }: IProfileNFTDetails) => {
           <p className="text-sm">{nft.collection.description}</p>
         </ProfileContainer>
       </div>
-      {/* <div className="border border-[#E5E7EB] rounded-xl p-[30px] mt-[30px]">
-        <div className="flex items-center mb-[30px]">
-          <p className="text-xl leading-6">Properties</p>
-          <p className="w-5 h-5 flex items-center justify-center text-white rounded bg-black-base ml-[14px]">
-            {propertiesList.length}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-[10px]">
-          {propertiesList.map((prop) => {
-            return (
-              <PropertiItems
-                valueOfRarity={prop.valueOfRarity}
-                features={prop.features}
-                valueFeatures={prop.valueFeatures}
-              />
-            )
-          })}
-        </div>
-      </div> */}
       <div
         className={clsx(
           "block border border-gray-200 rounded-xl",

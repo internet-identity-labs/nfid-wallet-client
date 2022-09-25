@@ -1,6 +1,11 @@
+import { decodeTokenIdentifier } from "ictool"
 import useSWR from "swr"
 
-import { principalTokens } from "frontend/integration/entrepot"
+import {
+  principalTokens,
+  collection,
+  tokens,
+} from "frontend/integration/entrepot"
 import { fetchPrincipals } from "frontend/integration/facade"
 import {
   fetchAccounts,
@@ -8,6 +13,27 @@ import {
 } from "frontend/integration/identity-manager"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import ProfileNFTsPage from "frontend/ui/pages/new-profile/nfts"
+
+export function useNFT(tokenid: string) {
+  const { canister, index } = decodeTokenIdentifier(tokenid)
+  const _collection = useSWR(`collection/${canister}`, () =>
+    collection(canister),
+  )
+  const _tokens = useSWR(
+    _collection.data ? `collection/${canister}/tokens` : null,
+    () => {
+      if (!_collection.data) throw new Error("unreachable")
+      return tokens(_collection.data)
+    },
+  )
+  return useSWR(
+    _collection.data && _tokens.data ? `token/${tokenid}` : null,
+    () => {
+      if (!_collection.data || !_tokens.data) throw new Error("unreachable")
+      return _tokens.data.find((token) => token.tokenId === tokenid)
+    },
+  )
+}
 
 export function useAllNFTs() {
   const { profile } = useProfile()

@@ -12,7 +12,12 @@ import {
   fetchNFTsOfPrincipals,
   getTokenLink,
 } from "./lib"
-import type { EntrepotCollection, EntrepotToken, NFTDetails, UserNFTDetails } from "./types"
+import type {
+  EntrepotCollection,
+  EntrepotToken,
+  NFTDetails,
+  UserNFTDetails,
+} from "./types"
 
 /**
  * Retrieve all known NFT collections.
@@ -63,7 +68,7 @@ export async function tokens(
 ): Promise<NFTDetails[]> {
   return Promise.all(
     await fetchCollectionTokens(collection).then((tokens) =>
-      tokens.slice(0, 4).map(async ({ tokenId }) => {
+      tokens.map(async ({ tokenId }) => {
         const { index } = decodeTokenIdentifier(tokenId)
         return await token(collection, tokens, index)
       }),

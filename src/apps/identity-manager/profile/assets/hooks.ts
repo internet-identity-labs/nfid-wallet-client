@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal"
 import useSWR from "swr"
 
 import { principalTokens } from "frontend/integration/entrepot"
@@ -37,14 +36,14 @@ export const useAllNFTs = () => {
     if (!principals.data) throw new Error("unreachable")
     console.log(principals.data)
     // @ts-ignore
-    // return principalTokens(principals.data)
-    return principalTokens([
-      {
-        principal: Principal.fromText(
-          "fxbar-soekq-nqxzb-qnjbd-6i5ms-oy4od-3an3t-4e3jq-gka7c-dcecn-uae",
-        ),
-        account: accounts.data ? accounts.data[0] : ({} as any),
-      },
-    ])
+    return principalTokens(principals.data)
+    // return principalTokens([
+    //   {
+    //     principal: Principal.fromText(
+    //       "fxbar-soekq-nqxzb-qnjbd-6i5ms-oy4od-3an3t-4e3jq-gka7c-dcecn-uae",
+    //     ),
+    //     account: accounts.data ? accounts.data[0] : ({} as any),
+    //   },
+    // ])
   })
 }

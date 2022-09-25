@@ -20,7 +20,7 @@ interface IProfileNFTDetails {
 
 const containerClassName = "max-w-[100vw] px-4 sm:px-[30px]"
 
-export const ProfileNFTDetails = ({ nft }: IProfileNFTDetails) => {
+export const ProfileNFTDetailsPage = ({ nft }: IProfileNFTDetails) => {
   const copyToClipboard = React.useCallback(() => {
     toast.info("NFT URL copied to clipboard")
     navigator.clipboard.writeText(link(nft.collection.id, nft.index))

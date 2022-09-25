@@ -20,13 +20,13 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
     <div
       className={clsx(
         "relative m-auto sm:block z-10 bg-white rounded-b-md overflow-hidden",
-        "mb-[20vh] sm:mb-[60vh] max-w-[360px] drop-shadow-[0_10px_60px_rgba(48,139,245,0.50)]",
+        "mb-[20vh] sm:mb-[60vh] max-w-[360px] shadow-[0_10px_60px_rgba(48,139,245,0.50)]",
         "min-h-[400px]",
         "md:mt-[4rem]",
       )}
     >
       <NFIDGradientBar className="w-full h-0.5 z-20" rounded={false} />
-      <div className="flex flex-col w-full h-full">
+      <div className="relative mt-[2px] flex flex-col w-full h-full">
         <NFIDAuthenticationCoordinator />
       </div>
       <div className={clsx("p-6 text-xs text-gray-400 text-center")}>

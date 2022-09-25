@@ -1,7 +1,9 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Buffer } from "buffer"
 
-import { Device } from "../internet-identity"
+import { DeviceData } from "../_ic_api/internet_identity_types"
+import { fetchProfile } from "../identity-manager"
+import { Device, fetchAuthenticatorDevices } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
 import { creationOptions } from "../webauthn/creation-options"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
@@ -39,4 +41,22 @@ export async function createWebAuthnIdentity() {
   return await WebAuthnIdentity.create({
     publicKey: creationOptions(),
   })
+}
+
+export const includesSecurityKey = (device: DeviceData[]) =>
+  device.findIndex((x) => "cross_platform" in x.key_type) >= 0
+
+export async function hasSecurityKeyService() {
+  const profile = await fetchProfile()
+  console.debug("hasSecurityKey", { profile })
+  const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
+    BigInt(profile.anchor),
+    true,
+  )
+  const hasSecurityKey = includesSecurityKey(usersAuthenticatorDevices)
+  console.debug("hasSecurityKey", {
+    usersAuthenticatorDevices,
+    hasSecurityKey,
+  })
+  return hasSecurityKey
 }

@@ -19,7 +19,7 @@ import ProfileTransactions from "./transactions"
 
 export const ProfileConstants = {
   base: "/profile",
-  nftDetails: ":collectionId",
+  nftDetails: ":tokenId",
   assets: "assets",
   security: "security",
   credentials: "credentials",

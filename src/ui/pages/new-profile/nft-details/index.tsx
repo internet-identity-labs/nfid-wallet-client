@@ -77,7 +77,7 @@ export const ProfileNFTDetailsPage = ({
           <div className="flex items-center mt-4 space-x-2">
             <img src={WalletIcon} alt="wallet" />
             <p className="text-sm font-semibold text-gray-400">
-              {nft.account.label}
+              {nft?.account?.label}
             </p>
           </div>
           <ProfileContainer title="Details" className="mt-6">

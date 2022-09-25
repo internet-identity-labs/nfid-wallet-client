@@ -33,7 +33,7 @@ export default function Table({
           {headings.map((heading, i) => (
             <th
               className={clsx(
-                "h-16 pl-2",
+                "h-16 px-3",
                 i === 0 && "pl-[30px]",
                 i === heading.length - 1 && "pr-[30px]",
                 sort?.includes(heading) && "cursor-pointer hover:bg-gray-100",
@@ -66,7 +66,7 @@ export default function Table({
             {row.map((cell, j) => (
               <td
                 className={clsx(
-                  "h-[85px] pl-2 whitespace-nowrap",
+                  "h-[85px] px-3",
                   j === 0 && "pl-[30px]",
                   i === row.length - 1 && "pr-[30px]",
                 )}

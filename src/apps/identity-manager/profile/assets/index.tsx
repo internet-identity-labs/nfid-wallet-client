@@ -38,7 +38,7 @@ const ProfileAssets = () => {
         navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`)
       }
       tokens={fungibleTokens}
-      nfts={nonFungibleTokens ?? []}
+      nfts={nonFungibleTokens}
     />
   )
 }

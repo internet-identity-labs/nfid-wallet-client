@@ -12,7 +12,7 @@ import { ProfileAssetsNFT } from "./nft"
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: any[]
-  nfts: NFTDetails[]
+  nfts?: NFTDetails[]
 }
 
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({

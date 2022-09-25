@@ -33,7 +33,7 @@ export const ProfileAssetsNFTItem: React.FC<IProfileAssetsNFTItem> = ({
         "hover:shadow-md hover:bg-white cursor-pointer",
         "p-[1px] sm:p-0.5",
       )}
-      to={`${nft.collection.id}`}
+      to={`${nft.tokenId}`}
       state={{ nft: nft }}
     >
       <div className="relative overflow-hidden bg-clip-border rounded-t-md">

@@ -17,6 +17,9 @@ import { NFTAsset } from "./nft-asset"
 interface IProfileNFTDetails {
   nft: UserNFTDetails
 }
+
+const containerClassName = "max-w-[100vw] px-4 sm:px-[30px]"
+
 export const ProfileNFTDetails = ({ nft }: IProfileNFTDetails) => {
   const copyToClipboard = React.useCallback(() => {
     toast.info("NFT URL copied to clipboard")
@@ -28,11 +31,14 @@ export const ProfileNFTDetails = ({ nft }: IProfileNFTDetails) => {
       onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
       icon={CopyIcon}
       onIconClick={copyToClipboard}
+      className="w-full min-w-fit z-[1]"
+      containerClassName="overflow-x-auto px-0"
     >
       <div
         className={clsx(
           "grid gap-[30px]",
           "grid-cols-1 sm:grid-cols-[40%,1fr]",
+          containerClassName,
         )}
       >
         <div className="relative overflow-hidden bg-gray-50 rounded-xl aspect-square">
@@ -76,9 +82,11 @@ export const ProfileNFTDetails = ({ nft }: IProfileNFTDetails) => {
           </ProfileContainer>
         </div>
       </div>
-      <ProfileContainer title="About" className="mt-[30px]">
-        <p className="text-sm">{nft.collection.description}</p>
-      </ProfileContainer>
+      <div className={clsx("mt-[30px]", containerClassName)}>
+        <ProfileContainer title="About">
+          <p className="text-sm">{nft.collection.description}</p>
+        </ProfileContainer>
+      </div>
       {/* <div className="border border-[#E5E7EB] rounded-xl p-[30px] mt-[30px]">
         <div className="flex items-center mb-[30px]">
           <p className="text-xl leading-6">Properties</p>
@@ -99,13 +107,41 @@ export const ProfileNFTDetails = ({ nft }: IProfileNFTDetails) => {
           })}
         </div>
       </div> */}
-      <Table
-        headings={["Make", "Model", "Year", "Color"]}
-        rows={[
-          ["Mazda", "Miata", "2004", "Silver"],
-          ["Volkswagon", "GTI", "2015", "Dark Gray"],
-        ]}
-      />
+      <div
+        className={clsx(
+          "block border border-gray-200 rounded-xl",
+          "my-[30px] mx-4",
+        )}
+      >
+        <div
+          className={clsx(
+            "ml-5 sm:ml-[30px]",
+            "mt-4 sm:mt-[26px]",
+            "mb-3 text-xl",
+          )}
+        >
+          Activity
+        </div>
+        <Table
+          headings={["Event type", "Date and time", "From", "To", "Price"]}
+          rows={[
+            [
+              "Mint",
+              "Jan 28, 2018 - 11:00:45 am",
+              "662di02jqd0912edjc98h9281ejd09fj09j09ejc09jx019665",
+              "552di02jqd0912edjc98h928155d09fj09j09ejc09jx019665",
+              "15 ICP",
+            ],
+            [
+              "Sale",
+              "Jan 28, 2018 - 11:00:45 am",
+              "662di02jqd0912edjc98h9281ejd09fj09j09ejc09jx019665",
+              "552di02jqd0912edjc98h928155d09fj09j09ejc09jx019665",
+              "25 ICP",
+            ],
+          ]}
+        />
+      </div>
     </ProfileTemplate>
   )
 }

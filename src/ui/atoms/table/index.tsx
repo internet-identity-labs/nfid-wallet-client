@@ -33,13 +33,19 @@ export default function Table({
           {headings.map((heading, i) => (
             <th
               className={clsx(
-                "h-16",
+                "h-16 pl-2",
+                i === 0 && "pl-[30px]",
+                i === heading.length - 1 && "pr-[30px]",
                 sort?.includes(heading) && "cursor-pointer hover:bg-gray-100",
               )}
               key={`heading_${heading}`}
               onClick={() => onHeaderClick(heading)}
             >
-              <div className={clsx("flex gap-2 items-center group")}>
+              <div
+                className={clsx(
+                  "flex gap-2 items-center group whitespace-nowrap",
+                )}
+              >
                 {heading}
                 {sort?.[0] === heading && (
                   <BsArrowDown className={clsx(reverse && "rotate-180")} />
@@ -58,7 +64,14 @@ export default function Table({
         {rows.map((row, i) => (
           <tr key={`row_${i}`} className={clsx("border-b border-grey-200")}>
             {row.map((cell, j) => (
-              <td className={clsx("h-[85px]")} key={`row_${i}_cell_${j}`}>
+              <td
+                className={clsx(
+                  "h-[85px] pl-2 whitespace-nowrap",
+                  j === 0 && "pl-[30px]",
+                  i === row.length - 1 && "pr-[30px]",
+                )}
+                key={`row_${i}_cell_${j}`}
+              >
                 {cell}
               </td>
             ))}

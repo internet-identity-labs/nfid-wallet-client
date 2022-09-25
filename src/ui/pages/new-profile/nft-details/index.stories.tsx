@@ -1,20 +1,20 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { ProfileNFTDetails } from "."
+import { ProfileNFTDetailsPage } from "."
 
 export default {
-  title: "Screens/NewProfile/ProfileNFTDetails",
-  component: ProfileNFTDetails,
+  title: "Screens/NewProfile/ProfileNFTDetailsPage",
+  component: ProfileNFTDetailsPage,
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileNFTDetails>
+} as ComponentMeta<typeof ProfileNFTDetailsPage>
 
-const Template: ComponentStory<typeof ProfileNFTDetails> = (args) => {
+const Template: ComponentStory<typeof ProfileNFTDetailsPage> = (args) => {
   return (
     <Router>
-      <ProfileNFTDetails {...args} />
+      <ProfileNFTDetailsPage {...args} />
     </Router>
   )
 }

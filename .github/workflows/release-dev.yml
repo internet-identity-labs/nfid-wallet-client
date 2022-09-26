@@ -63,6 +63,8 @@ jobs:
           yarn
           yarn prettier --check "src/**/*.{ts,tsx}"
           yarn test
+        env:
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: NFID FRONTEND | deploy
         run: |

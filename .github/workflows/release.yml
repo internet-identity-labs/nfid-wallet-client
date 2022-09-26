@@ -53,6 +53,7 @@ jobs:
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
   deploy:
     needs: check-secrets
@@ -68,8 +69,14 @@ jobs:
 
       - name: NFID FRONTEND | install & format check
         run: |
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          EOF
           yarn
           yarn prettier --check "src/**/*.{ts,tsx}"
+        env:
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: NFID FRONTEND | deploy
         run: |
@@ -104,6 +111,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: Create Sentry release
         if: ${{ github.ref == 'refs/heads/main' }}

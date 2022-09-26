@@ -23,24 +23,19 @@ const ProfileNFTDetails = () => {
     return state?.nft ?? nftDetails
   }, [nftDetails, state?.nft])
 
-  const {
-    data,
-    isValidating: isTransactionsFetching,
-    mutate: refetchTransactions,
-  } = useSWR(nft && `transactions_${nft?.tokenId}`, () => {
-    if (!tokenId) throw new Error("ProfileNFTDetails tokenId missing")
+  const { data, isValidating: isTransactionsFetching } = useSWR(
+    nft ? `transactions_${nft?.tokenId}` : null,
+    () => {
+      if (!tokenId) throw new Error("ProfileNFTDetails tokenId missing")
 
-    return getTokenTxHistoryOfTokenIndex(
-      nft?.canisterId ?? nftDetails?.canisterId ?? "",
-      decodeTokenIdentifier(tokenId).index,
-      0,
-      100,
-    )
-  })
-
-  React.useEffect(() => {
-    refetchTransactions()
-  }, [nftDetails, refetchTransactions])
+      return getTokenTxHistoryOfTokenIndex(
+        nft?.canisterId ?? nftDetails?.canisterId ?? "",
+        decodeTokenIdentifier(tokenId).index,
+        0,
+        100,
+      )
+    },
+  )
 
   const transactions = React.useMemo(() => {
     if (!data?.txHistory) return []

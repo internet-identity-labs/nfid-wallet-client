@@ -2,6 +2,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import logo from "frontend/assets/distrikt.svg"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthorizeApp } from "."
 import { AuthorizeAppSingleAccount } from "./single-account"
@@ -19,7 +20,11 @@ export default {
 const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   typeof AuthorizeApp
 > = (args) => {
-  return <AuthorizeApp {...args} />
+  return (
+    <ScreenResponsive>
+      <AuthorizeApp {...args} />
+    </ScreenResponsive>
+  )
 }
 
 const AuthorizeAppIframeTemplate: ComponentStory<typeof AuthorizeApp> = (
@@ -49,6 +54,7 @@ SingleAccount.args = {
 
 AppScreen.args = {
   applicationName: "My Application",
+  applicationLogo: logo,
   accounts: [
     { persona_id: "1", domain: "https://my-app.ic0.app" },
     { persona_id: "2", domain: "https://my-app.ic0.app" },

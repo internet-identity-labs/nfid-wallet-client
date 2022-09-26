@@ -27,14 +27,16 @@ const ProfileNFTDetails = () => {
     data,
     isValidating: isTransactionsFetching,
     mutate: refetchTransactions,
-  } = useSWR(nft && `transactions_${nft?.tokenId}`, () =>
-    getTokenTxHistoryOfTokenIndex(
+  } = useSWR(nft && `transactions_${nft?.tokenId}`, () => {
+    if (!tokenId) throw new Error("ProfileNFTDetails tokenId missing")
+
+    return getTokenTxHistoryOfTokenIndex(
       nft?.canisterId ?? nftDetails?.canisterId ?? "",
-      decodeTokenIdentifier(tokenId as string).index,
+      decodeTokenIdentifier(tokenId).index,
       0,
       100,
-    ),
-  )
+    )
+  })
 
   React.useEffect(() => {
     refetchTransactions()

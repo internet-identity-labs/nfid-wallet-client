@@ -7,6 +7,10 @@ on:
   pull_request:
     branches:
       - main
+    types:
+      - opened
+      - synchronize
+      - closed
 
 jobs:
   check-secrets:
@@ -49,6 +53,7 @@ jobs:
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
   deploy:
     needs: check-secrets
@@ -64,8 +69,14 @@ jobs:
 
       - name: NFID FRONTEND | install & format check
         run: |
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          EOF
           yarn
           yarn prettier --check "src/**/*.{ts,tsx}"
+        env:
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: NFID FRONTEND | deploy
         run: |
@@ -100,6 +111,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: Create Sentry release
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -115,6 +127,7 @@ jobs:
 
   update_sdk:
     needs: deploy
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout CI repo.
@@ -160,6 +173,7 @@ jobs:
       - name: Creating PR.
         uses: peter-evans/create-pull-request@v4
         with:
+          token: ${{ secrets.PAT }}
           commit-message: "chore: update nfid-frontend build"
           title: "chore: update nfid-frontend build"
           branch: chore/update-nfid-frontend-build

@@ -56,7 +56,7 @@ jobs:
         run: |
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=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
+          //npm.pkg.github.com/:_authToken=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
           EOF
           cat ~/.npmrc
           yarn

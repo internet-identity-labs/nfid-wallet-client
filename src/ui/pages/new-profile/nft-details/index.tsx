@@ -30,7 +30,7 @@ export const ProfileNFTDetailsPage = ({
   transactions,
 }: IProfileNFTDetails) => {
   const copyToClipboard = React.useCallback(() => {
-    toast.info("NFT URL copied to clipboard")
+    toast.info("NFT URL copied to clipboard", { toastId: "NFTCopied" })
     navigator.clipboard.writeText(link(nft.collection.id, nft.index))
   }, [nft.collection.id, nft.index])
 

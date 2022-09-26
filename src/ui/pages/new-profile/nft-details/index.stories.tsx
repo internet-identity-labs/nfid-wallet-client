@@ -1,24 +1,20 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import Dfinity from "frontend/assets/dfinity.svg"
-
-import ProfileAssetsPage from "."
-// @ts-ignore
-import MockNFTImage from "./nft/assets/mockNFT.jpg"
+import { ProfileNFTDetailsPage } from "."
 
 export default {
-  title: "Screens/NewProfile/Assets",
-  component: ProfileAssetsPage,
+  title: "Screens/NewProfile/ProfileNFTDetailsPage",
+  component: ProfileNFTDetailsPage,
   parameters: {
     layout: "fullscreen",
   },
-} as ComponentMeta<typeof ProfileAssetsPage>
+} as ComponentMeta<typeof ProfileNFTDetailsPage>
 
-const Template: ComponentStory<typeof ProfileAssetsPage> = (args) => {
+const Template: ComponentStory<typeof ProfileNFTDetailsPage> = (args) => {
   return (
     <Router>
-      <ProfileAssetsPage {...args} />
+      <ProfileNFTDetailsPage {...args} />
     </Router>
   )
 }
@@ -26,15 +22,7 @@ const Template: ComponentStory<typeof ProfileAssetsPage> = (args) => {
 export const AppScreen = Template.bind({})
 
 AppScreen.args = {
-  onIconClick: () => {},
-  tokens: Array(1).fill({
-    icon: Dfinity,
-    title: "Internet Computer",
-    subTitle: "ICP",
-    balance: "987.12345678 ICP",
-    price: 691,
-  }),
-  nfts: Array(5).fill({
+  nft: {
     collection: {
       id: "cwu5z-wyaaa-aaaaj-qaoaq-cai",
       priority: 10,
@@ -71,7 +59,7 @@ AppScreen.args = {
       earn: false,
       saletype: "v1",
       standard: "legacy",
-      detailpage: "",
+      detailpage: undefined,
       nftlicense: "",
       kyc: false,
     },
@@ -85,5 +73,7 @@ AppScreen.args = {
       url: "https://images.entrepot.app/t/cwu5z-wyaaa-aaaaj-qaoaq-cai/2dg3x-uakor-uwiaa-aaaaa-cmadq-eaqca-aaaag-a",
       format: "img",
     },
-  }),
+    account: { label: "OpenChat account 1" } as any,
+    principal: {} as any,
+  },
 }

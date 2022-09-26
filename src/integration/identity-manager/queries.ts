@@ -1,7 +1,7 @@
 import React from "react"
 import useSWR from "swr"
 
-import { mapApplicationAccounts } from "frontend/apps/identity-manager/profile/utils"
+import { mapApplicationAccounts } from "frontend/apps/identity-manager/profile/applications/utils"
 
 import { fetchApplications, fetchProfile } from "."
 

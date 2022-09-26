@@ -15,8 +15,8 @@ const DefaultTemplate: Story<{}> = (args) => (
   <Table
     headings={["Make", "Model", "Year", "Color"]}
     rows={[
-      ["Mazda", "Miata", "2004", "Silver"],
-      ["Volkswagon", "GTI", "2015", "Dark Gray"],
+      { key: "0", val: ["Mazda", "Miata", "2004", "Silver"] },
+      { key: "1", val: ["Volkswagon", "GTI", "2015", "Dark Gray"] },
     ]}
     handleHeaderClick={() => {}}
   />

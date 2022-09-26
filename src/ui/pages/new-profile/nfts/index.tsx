@@ -75,28 +75,33 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     [sorting, reverse],
   )
   const rows = React.useMemo(() => {
-    const result = sortUserTokens(tokensFiltered, sorting).map((token) => [
-      <img
-        alt={`${token.collection.name} ${token.index}`}
-        src={token.assetPreview}
-        className={clsx(`w-[74px] h-[74px] object-cover rounded`)}
-      />,
-      `#${token.index}`,
-      <div className={clsx(`w-full`)}>{token.collection.name}</div>,
-      <div className={clsx(`w-full`)}>
-        {applications.find((x) => x.domain === token.account.domain)?.name}{" "}
-        {token.account.accountId !== "0" &&
-          `#${Number(token.account.accountId) + 1}`}
-      </div>,
-      <FiCopy
-        className={clsx(`hover:text-blue-500 cursor-pointer`)}
-        size="18"
-        onClick={() => {
-          toast.info("NFT URL copied to clipboard")
-          navigator.clipboard.writeText(link(token.collection.id, token.index))
-        }}
-      />,
-    ])
+    const result = sortUserTokens(tokensFiltered, sorting).map((token) => ({
+      key: token.tokenId,
+      val: [
+        <img
+          alt={`${token.collection.name} ${token.index}`}
+          src={token.assetPreview}
+          className={clsx(`w-[74px] h-[74px] object-cover rounded`)}
+        />,
+        `#${token.index}`,
+        <div className={clsx(`w-full`)}>{token.collection.name}</div>,
+        <div className={clsx(`w-full`)}>
+          {applications.find((x) => x.domain === token.account.domain)?.name}{" "}
+          {token.account.accountId !== "0" &&
+            `#${Number(token.account.accountId) + 1}`}
+        </div>,
+        <FiCopy
+          className={clsx(`hover:text-blue-500 cursor-pointer`)}
+          size="18"
+          onClick={() => {
+            toast.info("NFT URL copied to clipboard")
+            navigator.clipboard.writeText(
+              link(token.collection.id, token.index),
+            )
+          }}
+        />,
+      ],
+    }))
     reverse && result.reverse()
     return result
   }, [tokensFiltered, sorting, reverse, applications])

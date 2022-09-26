@@ -3,7 +3,7 @@ import { BsArrowDown } from "react-icons/bs"
 
 interface TableData {
   headings: string[]
-  rows: React.ReactNode[][]
+  rows: {val: React.ReactNode[], key: string}[]
   sort?: string[]
   reverse?: boolean
   handleHeaderClick: (col: string) => void
@@ -46,10 +46,10 @@ export default function Table({
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, i) => (
-            <tr key={`row${i}`} className={clsx(`border-b border-grey-200`)}>
-              {row.map((cell, j) => (
-                <td className={clsx(`h-[85px]`)} key={`row${i}cell${j}`}>
+          {rows.map((row) => (
+            <tr key={`row${row.key}`} className={clsx(`border-b border-grey-200`)}>
+              {row.val.map((cell, i) => (
+                <td className={clsx(`h-[85px]`)} key={`row${row.key}cell${headings[i]}`}>
                   {cell}
                 </td>
               ))}

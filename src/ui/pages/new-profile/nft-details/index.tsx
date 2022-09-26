@@ -2,6 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { toast } from "react-toastify"
 
+import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
@@ -14,14 +15,6 @@ import CopyIcon from "./assets/copy.svg"
 import WalletIcon from "./assets/wallet.svg"
 
 import { NFTAsset } from "./nft-asset"
-
-export interface ITransaction {
-  from: string
-  to: string
-  datetime: string
-  type: string
-  price?: string
-}
 
 interface IProfileNFTDetails {
   nft: UserNFTDetails

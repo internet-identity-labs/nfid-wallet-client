@@ -1,7 +1,7 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { applicationAccountDetailsNormalized } from "frontend/apps/identity-manager/profile/utils/index.mock"
+import { applicationAccountDetailsNormalized } from "frontend/apps/identity-manager/profile/applications/utils/index.mock"
 
 import Index from "."
 

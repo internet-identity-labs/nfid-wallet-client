@@ -54,6 +54,7 @@ export type EntrepotDisplayFormat =
   | "asset_canisters" // Image tag
   | "motoko_mechs" // Special
   | "default" // Image tag
+  | ""
 
 // Internal types
 

@@ -54,7 +54,7 @@ export const Accordion: React.FC<AccordionProps> = ({
         style={style}
         onClick={toggleAccordion}
       >
-        <div className="inline-block text-lg font-bold text-left sm:text-xl">
+        <div className="block text-lg font-bold text-left sm:text-xl">
           {title}
         </div>
         <div className={`${rotate} inline-block w-[30px] h-[30px]`}>

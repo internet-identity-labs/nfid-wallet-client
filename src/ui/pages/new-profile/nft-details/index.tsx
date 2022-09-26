@@ -36,7 +36,7 @@ export const ProfileNFTDetailsPage = ({
 
   return (
     <ProfileTemplate
-      onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
+      onBack={`${ProfileConstants.base}/${ProfileConstants.nfts}`}
       icon={CopyIcon}
       onIconClick={copyToClipboard}
       className="w-full min-w-fit z-[1]"
@@ -123,8 +123,9 @@ export const ProfileNFTDetailsPage = ({
         </div>
         <Table
           headings={["Event type", "Date and time", "From", "To", "Price"]}
-          rows={transactions.map((transaction) =>
-            Object.values(transaction).map((value, i) => (
+          rows={transactions.map((transaction) => ({
+            key: `${transaction.from}${transaction.to}${transaction.datetime}`,
+            val: Object.values(transaction).map((value, i) => (
               <span
                 className={clsx(
                   i === 0 && "capitalize",
@@ -135,7 +136,7 @@ export const ProfileNFTDetailsPage = ({
                 {value}
               </span>
             )),
-          )}
+          }))}
         />
         <div className="flex justify-center w-full h-16 py-2">
           <Loader fullscreen={false} isLoading={isTransactionsFetching} />

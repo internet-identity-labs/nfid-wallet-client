@@ -208,7 +208,8 @@ describe("Facade suite", () => {
       expect(
         principals.filter((p) => p.account.domain === "duplicatedDomain")!
           .length,
-      ).toEqual(1)
+      ).toEqual(2)
+      // ).toEqual(1)
       expect(
         principals.filter((p) => p.account.domain === "notRequiredDomain"),
       ).toEqual([])

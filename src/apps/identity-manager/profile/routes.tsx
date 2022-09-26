@@ -14,6 +14,7 @@ import ProfileCredentials from "./credentials"
 import ProfilePhone from "./credentials/phone-number"
 import ProfileSMS from "./credentials/phone-sms"
 import ProfileNFTDetails from "./nft-details"
+import ProfileNFTs from "./nfts"
 import ProfileSecurity from "./security"
 import ProfileTransactions from "./transactions"
 
@@ -21,6 +22,7 @@ export const ProfileConstants = {
   base: "/profile",
   nftDetails: ":tokenId",
   assets: "assets",
+  nfts: "nfts",
   security: "security",
   credentials: "credentials",
   transactions: "transactions",
@@ -37,6 +39,14 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <ProfileAssets />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.nfts}
+      element={
+        <AuthWrapper>
+          <ProfileNFTs />
         </AuthWrapper>
       }
     />

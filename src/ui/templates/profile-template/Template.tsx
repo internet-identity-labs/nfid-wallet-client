@@ -16,6 +16,7 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   headerClassName?: string
   containerClassName?: string
   isLoading?: boolean
+  headerMenu?: React.ReactNode
 }
 
 const ProfileTemplate: React.FC<IProfileTemplate> = ({
@@ -28,6 +29,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   headerClassName,
   containerClassName,
   isLoading = false,
+  headerMenu,
 }) => {
   const { navigate } = useNFIDNavigate()
   return (
@@ -66,6 +68,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
                 className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
               />
             )}
+            {headerMenu}
           </div>
           {children}
         </section>

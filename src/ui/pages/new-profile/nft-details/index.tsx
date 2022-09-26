@@ -5,7 +5,7 @@ import { toast } from "react-toastify"
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { link } from "frontend/integration/entrepot"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { NFTDetails, UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -17,7 +17,7 @@ import WalletIcon from "./assets/wallet.svg"
 import { NFTAsset } from "./nft-asset"
 
 interface IProfileNFTDetails {
-  nft: UserNFTDetails
+  nft: UserNFTDetails | NFTDetails
   isTransactionsFetching?: boolean
   transactions: ITransaction[]
 }
@@ -67,12 +67,14 @@ export const ProfileNFTDetailsPage = ({
         <div>
           <p className="font-bold text-blue-600">{nft.collection.name}</p>
           <p className="text-[28px] mt-2.5">{nft.name}</p>
-          <div className="flex items-center mt-4 space-x-2">
-            <img src={WalletIcon} alt="wallet" />
-            <p className="text-sm font-semibold text-gray-400">
-              {nft?.account?.label}
-            </p>
-          </div>
+          {"account" in nft ? (
+            <div className="flex items-center mt-4 space-x-2">
+              <img src={WalletIcon} alt="wallet" />
+              <p className="text-sm font-semibold text-gray-400">
+                {nft?.account?.label}
+              </p>
+            </div>
+          ) : null}
           <ProfileContainer title="Details" className="mt-6">
             <div className="mt-5 space-y-4 text-sm">
               <div

@@ -14,29 +14,26 @@ import { mapTransactionsForUI } from "./utils"
 
 const ProfileNFTDetails = () => {
   const location = useLocation()
+  const state = location.state as { nft?: UserNFTDetails }
   const { tokenId } = useParams()
 
-  const nft = React.useMemo(() => {
-    return (location.state as any)?.nft as UserNFTDetails
-  }, [location.state])
-
   const { data: nftDetails } = useNFT(tokenId ?? "")
+
+  const nft = React.useMemo(() => {
+    return state?.nft ?? nftDetails
+  }, [nftDetails, state?.nft])
 
   const {
     data,
     isValidating: isTransactionsFetching,
     mutate: refetchTransactions,
-  } = useSWR(
-    nft
-      ? `transactions_${nft?.tokenId}`
-      : `transactions_${nftDetails?.tokenId}`,
-    () =>
-      getTokenTxHistoryOfTokenIndex(
-        nft?.canisterId ?? nftDetails?.canisterId,
-        decodeTokenIdentifier(tokenId as string).index,
-        0,
-        100,
-      ),
+  } = useSWR(nft && `transactions_${nft?.tokenId}`, () =>
+    getTokenTxHistoryOfTokenIndex(
+      nft?.canisterId ?? nftDetails?.canisterId ?? "",
+      decodeTokenIdentifier(tokenId as string).index,
+      0,
+      100,
+    ),
   )
 
   React.useEffect(() => {
@@ -53,7 +50,7 @@ const ProfileNFTDetails = () => {
     return mapTransactionsForUI(transactionsSortedByDate)
   }, [data])
 
-  if (!nft && !nftDetails)
+  if (!nft)
     return (
       <ProfileTemplate pageTitle="Fetching NFT...">
         <Loader isLoading={true} />
@@ -62,7 +59,7 @@ const ProfileNFTDetails = () => {
 
   return (
     <ProfileNFTDetailsPage
-      nft={nft ?? nftDetails}
+      nft={nft}
       isTransactionsFetching={isTransactionsFetching}
       transactions={transactions}
     />

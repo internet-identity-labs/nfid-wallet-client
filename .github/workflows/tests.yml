@@ -53,6 +53,7 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
   build:
     needs: check-secrets
@@ -76,6 +77,10 @@ jobs:
 
       - name: Run install, build and serve for e2e
         run: |
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          EOF
           yarn
           yarn build
           yarn serve -l 9090 -s build &
@@ -105,6 +110,7 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: Running unit tests
         run: yarn test

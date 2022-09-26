@@ -24,13 +24,15 @@ export default function Table({
             {headings.map((heading, i) => (
               <th
                 className={clsx(
-                  `h-[64px] hover:bg-gray-100 group`,
-                  sort?.includes(heading) && "cursor-pointer",
+                  "h-16 px-3",
+                  i === 0 && "pl-[30px]",
+                  i === heading.length - 1 && "pr-[30px]",
+                  sort?.includes(heading) && "cursor-pointer hover:bg-gray-100",
                 )}
-                key={`heading${i}`}
+                key={`heading${heading}`}
                 onClick={() => handleHeaderClick(heading)}
               >
-                <div className={clsx(`flex gap-2 items-center group`)}>
+                <div className={clsx(`flex gap-2 items-center group whitespace-nowrap`)}>
                   {heading}
                   {sort?.[0] === heading && (
                     <BsArrowDown className={clsx(reverse && `rotate-180`)} />
@@ -46,10 +48,14 @@ export default function Table({
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
+          {rows.map((row, j) => (
             <tr key={`row${row.key}`} className={clsx(`border-b border-grey-200`)}>
               {row.val.map((cell, i) => (
-                <td className={clsx(`h-[85px]`)} key={`row${row.key}cell${headings[i]}`}>
+                <td className={clsx(
+                  "h-[85px] px-3",
+                  j === 0 && "pl-[30px]",
+                  i === row.val.length - 1 && "pr-[30px]",
+                )} key={`row${row.key}cell${headings[i]}`}>
                   {cell}
                 </td>
               ))}

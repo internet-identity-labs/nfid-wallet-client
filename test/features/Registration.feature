@@ -9,7 +9,7 @@ Feature: Registration from landing page
   @mission
   Scenario Outline: User wants to register with WebAuthN
 
-    Then I wait on element "#continue-with-enhanced-security" for 3000ms to be displayed
+    Then I wait on element "#continue-with-enhanced-security" for 20000ms to be displayed
     When I click on the selector "#continue-with-enhanced-security"
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then My browser has 1 credentials

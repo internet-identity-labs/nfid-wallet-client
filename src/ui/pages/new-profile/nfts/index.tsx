@@ -5,6 +5,7 @@ import { BiGridAlt } from "react-icons/bi"
 import { FiCopy } from "react-icons/fi"
 import { HiViewList } from "react-icons/hi"
 import { IoIosSearch } from "react-icons/io"
+import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -78,12 +79,20 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     const result = sortUserTokens(tokensFiltered, sorting).map((token) => ({
       key: token.tokenId,
       val: [
-        <img
-          alt={`${token.collection.name} ${token.index}`}
-          src={token.assetPreview}
-          className={clsx(`w-[74px] h-[74px] object-cover rounded`)}
-        />,
-        `#${token.index}`,
+        <Link
+          to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+        >
+          <img
+            alt={`${token.collection.name} ${token.index}`}
+            src={token.assetPreview}
+            className={clsx(`w-[74px] h-[74px] object-cover rounded`)}
+          />
+        </Link>,
+        <Link
+          to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+        >
+          #{token.index}
+        </Link>,
         <div className={clsx(`w-full`)}>{token.collection.name}</div>,
         <div className={clsx(`w-full`)}>
           {applications.find((x) => x.domain === token.account.domain)?.name}{" "}

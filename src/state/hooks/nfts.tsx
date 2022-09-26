@@ -11,9 +11,7 @@ import {
   fetchAccounts,
   fetchApplications,
 } from "frontend/integration/identity-manager"
-import {
-  useProfile,
-} from "frontend/integration/identity-manager/queries"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 
 export function useNFT(tokenid: string) {
   const { canister } = decodeTokenIdentifier(tokenid)

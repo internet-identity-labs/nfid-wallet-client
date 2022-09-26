@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
+import { Link } from "react-router-dom"
 
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { NFTDetails } from "frontend/integration/entrepot/types"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import useWindowSize from "frontend/ui/utils/use-window-size"
@@ -45,14 +47,15 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
         </div>
         {nfts.length > visibleLength && (
           <div className="flex justify-center items-center mt-[30px] h-12">
-            <p
+            <Link
               className={clsx(
                 "text-blue-600 text-sm font-bold tracking-[0.01em]",
                 "hover:opacity-50 transition-opacity cursor-pointer",
               )}
+              to={`${ProfileConstants.base}/${ProfileConstants.nfts}`}
             >
               View all
-            </p>
+            </Link>
           </div>
         )}
       </ProfileContainer>

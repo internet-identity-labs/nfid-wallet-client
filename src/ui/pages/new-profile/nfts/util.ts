@@ -38,9 +38,7 @@ export function filterUserTokens(
   let result = tokens
   if (filters.search) {
     const search = filters.search
-    result = tokens.filter((token) =>
-      GlauberTS.containsDeep(search)(token),
-    )
+    result = tokens.filter((token) => GlauberTS.containsDeep(search)(token))
   }
   return result
 }

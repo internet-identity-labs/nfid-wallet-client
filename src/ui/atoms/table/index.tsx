@@ -3,10 +3,10 @@ import { BsArrowDown } from "react-icons/bs"
 
 interface TableData {
   headings: string[]
-  rows: {val: React.ReactNode[], key: string}[]
+  rows: { val: React.ReactNode[]; key: string }[]
   sort?: string[]
   reverse?: boolean
-  handleHeaderClick: (col: string) => void
+  handleHeaderClick?: (col: string) => void
 }
 
 export default function Table({
@@ -30,9 +30,13 @@ export default function Table({
                   sort?.includes(heading) && "cursor-pointer hover:bg-gray-100",
                 )}
                 key={`heading${heading}`}
-                onClick={() => handleHeaderClick(heading)}
+                onClick={() => handleHeaderClick && handleHeaderClick(heading)}
               >
-                <div className={clsx(`flex gap-2 items-center group whitespace-nowrap`)}>
+                <div
+                  className={clsx(
+                    `flex gap-2 items-center group whitespace-nowrap`,
+                  )}
+                >
                   {heading}
                   {sort?.[0] === heading && (
                     <BsArrowDown className={clsx(reverse && `rotate-180`)} />
@@ -49,13 +53,19 @@ export default function Table({
         </thead>
         <tbody>
           {rows.map((row, j) => (
-            <tr key={`row${row.key}`} className={clsx(`border-b border-grey-200`)}>
+            <tr
+              key={`row${row.key}`}
+              className={clsx(`border-b border-grey-200`)}
+            >
               {row.val.map((cell, i) => (
-                <td className={clsx(
-                  "h-[85px] px-3",
-                  j === 0 && "pl-[30px]",
-                  i === row.val.length - 1 && "pr-[30px]",
-                )} key={`row${row.key}cell${headings[i]}`}>
+                <td
+                  className={clsx(
+                    "h-[85px] px-3",
+                    j === 0 && "pl-[30px]",
+                    i === row.val.length - 1 && "pr-[30px]",
+                  )}
+                  key={`row${row.key}cell${headings[i]}`}
+                >
                   {cell}
                 </td>
               ))}

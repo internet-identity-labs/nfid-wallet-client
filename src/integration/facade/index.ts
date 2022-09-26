@@ -42,9 +42,7 @@ export async function fetchPrincipals(
   const fixedAccounts = applications
     .filter(
       (app) =>
-        app.isNftStorage &&
-        !personas.find((acct) => acct.domain === app.domain),
-    )
+        app.isNftStorage)
     .map(applicationToAccount)
   const accounts = [...personas, ...fixedAccounts]
 

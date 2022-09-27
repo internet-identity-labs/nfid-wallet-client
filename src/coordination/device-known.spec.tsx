@@ -78,7 +78,7 @@ describe("KnownDevice Coordinator", () => {
         const context = {
           profile: plan.profile,
           isNFID: plan.isNFID,
-          authAppMeta: {
+          appMeta: {
             name: "MyApp",
             logo: "https://my-app.com/logo.svg",
           },
@@ -145,7 +145,7 @@ describe("KnownDevice Coordinator", () => {
             anchor: 11111,
           } as Profile,
           isNFID: false,
-          authAppMeta: {
+          appMeta: {
             name: "MyApp",
             logo: "https://my-app.com/logo.svg",
           },
@@ -229,7 +229,7 @@ describe("KnownDevice Coordinator", () => {
             anchor: 11111,
           } as Profile,
           isNFID: plan.isNFID,
-          authAppMeta: {
+          appMeta: {
             name: "MyApp",
             logo: "https://my-app.com/logo.svg",
           },

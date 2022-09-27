@@ -307,7 +307,7 @@ export async function fetchApplications() {
 }
 
 /**
- * Update 3rd party application origin is needed
+ * Update 3rd party application configuration
  *
  * @param derivationOrigin - the canister url
  * @param aliasDomain - the nice application domain used instead of the canister url

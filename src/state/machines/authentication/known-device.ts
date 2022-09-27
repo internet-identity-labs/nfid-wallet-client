@@ -24,7 +24,7 @@ export interface KnownDeviceMachineContext {
   isNFID: boolean
   profile: Profile
   authRequest: AuthorizationRequest
-  authAppMeta?: AuthorizingAppMeta
+  appMeta?: AuthorizingAppMeta
   isSingleAccountApplication?: boolean
   authSession?: AuthSession
   devices?: Device[]

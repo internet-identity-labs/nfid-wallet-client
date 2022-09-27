@@ -1,47 +1,27 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent"
-import { DerEncodedPublicKey } from "@dfinity/agent"
-import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import {
-  Ed25519KeyIdentity,
-  DelegationChain,
-  DelegationIdentity,
-  WebAuthnIdentity,
-} from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-import { arrayBufferEqual } from "ictool/dist/bits"
-import { BehaviorSubject } from "rxjs"
+import { ActorSubclass, SignIdentity } from "@dfinity/agent";
+import { DerEncodedPublicKey } from "@dfinity/agent";
+import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer";
+import { Ed25519KeyIdentity, DelegationChain, DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity";
+import { Principal } from "@dfinity/principal";
+import { arrayBufferEqual } from "ictool/dist/bits";
+import { BehaviorSubject } from "rxjs";
 
-import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
-import {
-  ChallengeResult,
-  DeviceData,
-  PublicKey,
-  SessionKey,
-  SignedDelegation as IISignedDelegation,
-  Purpose,
-  UserNumber,
-  KeyType,
-  CredentialId,
-  FrontendHostname,
-  Timestamp,
-  GetDelegationResponse,
-  Challenge,
-  RegisterResponse,
-} from "frontend/integration/_ic_api/internet_identity_types"
-import {
-  accessList,
-  im,
-  invalidateIdentity,
-  replaceIdentity,
-} from "frontend/integration/actors"
-import { ii } from "frontend/integration/actors"
-import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
-import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
-import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
-import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
-import { derFromPubkey, hasOwnProperty } from "./utils"
-import { getCredentials } from "../webauthn/creation-options"
+
+import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types";
+import { ChallengeResult, DeviceData, PublicKey, SessionKey, SignedDelegation as IISignedDelegation, Purpose, UserNumber, KeyType, CredentialId, FrontendHostname, Timestamp, GetDelegationResponse, Challenge, RegisterResponse } from "frontend/integration/_ic_api/internet_identity_types";
+import { accessList, im, invalidateIdentity, replaceIdentity } from "frontend/integration/actors";
+import { ii } from "frontend/integration/actors";
+import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519";
+import { ThirdPartyAuthSession } from "frontend/state/authorization";
+
+
+
+import { mapOptional, mapVariant, reverseMapOptional } from "../_common";
+import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity";
+import { getCredentials } from "../webauthn/creation-options";
+import { derFromPubkey, hasOwnProperty } from "./utils";
+
 
 export type ApiResult = LoginResult | RegisterResult
 export type LoginResult =
@@ -1104,20 +1084,19 @@ export function mapDeviceData(data: DeviceData): Device {
  * @param withSecurityDevices flag to include recovery devices
  * @returns list of devices on the II anchor
  */
-export async function lookup(anchor: number, predicate?: (device: Device) => boolean) {
+export async function lookup(
+  anchor: number,
+  predicate?: (device: Device) => boolean,
+) {
   return await ii
     .lookup(BigInt(anchor))
     .then((r) => r.map(mapDeviceData))
     .then((r) => {
-      if(predicate) {
-        return r.filter(predicate);
+      if (predicate) {
+        return r.filter(predicate)
       }
-      return r;
-    }
-      // r.filter((device) =>
-      //   withSecurityDevices ? true : device.purpose === "authentication",
-      // ),
-    )
+      return r
+    })
 }
 
 export interface Device {

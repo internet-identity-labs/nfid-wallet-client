@@ -10,11 +10,12 @@ import {
 import { DeviceData } from "frontend/integration/_ic_api/internet_identity_types"
 import { ii, im, replaceIdentity } from "frontend/integration/actors"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
-import { II_DEVICES_DATA } from "frontend/integration/internet-identity/__mocks"
+import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
   authState as authStateMock,
+  Device,
   FrontendDelegation,
   getMultiIdent,
 } from "frontend/integration/internet-identity/index"
@@ -141,15 +142,15 @@ describe("ii suite", () => {
     describe("getMultiIdent test suite", () => {
       it("should create MultiWebAuthnIdentity", () => {
         MultiWebAuthnIdentity.fromCredentials = jest.fn()
-        getMultiIdent(II_DEVICES_DATA as DeviceData[])
+        getMultiIdent(AUTHENTICATOR_DEVICES as Device[])
         expect(MultiWebAuthnIdentity.fromCredentials).toHaveBeenCalledWith(
           [
             {
-              credentialId: Buffer.from(II_DEVICES_DATA[0].credential_id[0]),
+              credentialId: Buffer.from(AUTHENTICATOR_DEVICES[0].credentialId),
               pubkey: new ArrayBuffer(1),
             },
             {
-              credentialId: Buffer.from(II_DEVICES_DATA[1].credential_id[0]),
+              credentialId: Buffer.from(AUTHENTICATOR_DEVICES[1].credentialId),
               pubkey: new ArrayBuffer(1),
             },
           ],

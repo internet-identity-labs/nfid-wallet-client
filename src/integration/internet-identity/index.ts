@@ -8,7 +8,6 @@ import {
   WebAuthnIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { Buffer } from "buffer"
 import { arrayBufferEqual } from "ictool/dist/bits"
 import { BehaviorSubject } from "rxjs"
 
@@ -42,6 +41,7 @@ import { ThirdPartyAuthSession } from "frontend/state/authorization"
 import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { derFromPubkey, hasOwnProperty } from "./utils"
+import { getCredentials } from "../webauthn/creation-options"
 
 export type ApiResult = LoginResult | RegisterResult
 export type LoginResult =
@@ -288,6 +288,7 @@ const retryGetDelegation = async (
     })
     const res = await getDelegation(userNumber, hostname, sessionKey, timestamp)
     if (hasOwnProperty(res, "signed_delegation")) {
+      // @ts-ignore
       return res.signed_delegation
     }
   }
@@ -524,16 +525,11 @@ async function registerAnchor(
 }
 
 export const getMultiIdent = (
-  devices: DeviceData[],
+  devices: Device[],
   withSecurityDevices?: boolean,
 ) => {
   return MultiWebAuthnIdentity.fromCredentials(
-    devices.flatMap((device) =>
-      device.credential_id.map((credentialId: CredentialId) => ({
-        pubkey: derFromPubkey(device.pubkey),
-        credentialId: Buffer.from(credentialId),
-      })),
-    ),
+    getCredentials(devices),
     withSecurityDevices,
   )
 }
@@ -586,6 +582,7 @@ export async function register(
   if (hasOwnProperty(registerResponse, "canister_full")) {
     return { kind: "registerNoSpace" }
   } else if (hasOwnProperty(registerResponse, "registered")) {
+    // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
     authState.set(identity, delegation.delegationIdentity, ii)
@@ -648,6 +645,7 @@ export async function registerFromGoogle(
   if (hasOwnProperty(registerResponse, "canister_full")) {
     return { kind: "registerNoSpace" }
   } else if (hasOwnProperty(registerResponse, "registered")) {
+    // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
     replaceIdentity(delegation.delegationIdentity)
@@ -670,9 +668,10 @@ export async function login(
   withSecurityDevices?: boolean,
 ): Promise<LoginResult> {
   console.debug("login", { userNumber, withSecurityDevices })
-  let devices: DeviceData[]
+  let devices: Device[]
   try {
-    devices = await fetchAuthenticatorDevices(userNumber, withSecurityDevices)
+    const predicate: ((x:Device) => boolean) | undefined = withSecurityDevices ? undefined : x => x.purpose === "authentication";
+    devices = await lookup(Number(userNumber), predicate)
   } catch (e: unknown) {
     console.error(`Error when looking up authenticators`, e)
     if (e instanceof Error) {
@@ -735,7 +734,7 @@ export async function fromSeedPhrase(
 
 async function fromWebauthnDevices(
   userNumber: bigint,
-  devices: DeviceData[],
+  devices: Device[],
   withSecurityDevices?: boolean,
 ): Promise<LoginResult> {
   console.debug("fromWebauthnDevices", {
@@ -802,7 +801,7 @@ export async function loginFromRemoteFrontendDelegation({
     chain,
   )
 
-  const devices = await fetchAuthenticatorDevices(userNumber)
+  const devices = await lookup(Number(userNumber), x => x.purpose === "authentication");
   const multiIdent = getMultiIdent(devices)
   console.debug("loginFromRemoteFrontendDelegation", { devices })
 
@@ -1105,14 +1104,19 @@ export function mapDeviceData(data: DeviceData): Device {
  * @param withSecurityDevices flag to include recovery devices
  * @returns list of devices on the II anchor
  */
-export async function lookup(anchor: number, withSecurityDevices: boolean) {
+export async function lookup(anchor: number, predicate?: (device: Device) => boolean) {
   return await ii
     .lookup(BigInt(anchor))
     .then((r) => r.map(mapDeviceData))
-    .then((r) =>
-      r.filter((device) =>
-        withSecurityDevices ? true : device.purpose === "authentication",
-      ),
+    .then((r) => {
+      if(predicate) {
+        return r.filter(predicate);
+      }
+      return r;
+    }
+      // r.filter((device) =>
+      //   withSecurityDevices ? true : device.purpose === "authentication",
+      // ),
     )
 }
 

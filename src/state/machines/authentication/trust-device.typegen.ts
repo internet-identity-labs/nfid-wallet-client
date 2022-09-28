@@ -3,8 +3,8 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.fetchWebAuthnCapability": {
-      type: "done.invoke.fetchWebAuthnCapability"
+    "done.invoke.fetchWebAuthnPlatformCapability": {
+      type: "done.invoke.fetchWebAuthnPlatformCapability"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -28,8 +28,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.fetchWebAuthnCapability": {
-      type: "error.platform.fetchWebAuthnCapability"
+    "error.platform.fetchWebAuthnPlatformCapability": {
+      type: "error.platform.fetchWebAuthnPlatformCapability"
       data: unknown
     }
     "error.platform.hasSecurityKey": {
@@ -51,7 +51,7 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    fetchWebAuthnCapability: "done.invoke.fetchWebAuthnCapability"
+    fetchWebAuthnPlatformCapability: "done.invoke.fetchWebAuthnPlatformCapability"
     hasSecurityKey: "done.invoke.hasSecurityKey"
     isDeviceRegistered: "done.invoke.isDeviceRegistered"
     registerDeviceWithSecurityKey: "done.invoke.regsiterWithSecurityKey"
@@ -65,17 +65,17 @@ export interface Typegen0 {
   }
   eventsCausingActions: {}
   eventsCausingServices: {
-    fetchWebAuthnCapability: "TRUST" | "done.invoke.isDeviceRegistered"
-    hasSecurityKey: "done.invoke.fetchWebAuthnCapability"
+    fetchWebAuthnPlatformCapability: "TRUST" | "done.invoke.isDeviceRegistered"
+    hasSecurityKey: "done.invoke.fetchWebAuthnPlatformCapability"
     isDeviceRegistered: "xstate.init"
-    registerDeviceWithSecurityKey: "done.invoke.fetchWebAuthnCapability"
+    registerDeviceWithSecurityKey: "done.invoke.fetchWebAuthnPlatformCapability"
     registerDeviceWithWebAuthn:
-      | "done.invoke.fetchWebAuthnCapability"
+      | "done.invoke.fetchWebAuthnPlatformCapability"
       | "error.platform.registerDeviceWithWebAuthn"
   }
   eventsCausingGuards: {
     bool:
-      | "done.invoke.fetchWebAuthnCapability"
+      | "done.invoke.fetchWebAuthnPlatformCapability"
       | "done.invoke.hasSecurityKey"
       | "done.invoke.isDeviceRegistered"
   }
@@ -85,12 +85,18 @@ export interface Typegen0 {
     | "CheckCapability.End"
     | "CheckCapability.SecurityKey"
     | "CheckCapability.Trusted"
-    | "CheckCapability.WebAuthn"
+    | "CheckCapability.WebAuthnPlatformCapability"
     | "End"
     | "Register"
     | "RegisterDeviceWithSecurityKey"
     | "RegisterDeviceWithWebAuthn"
     | "Select"
-    | { CheckCapability?: "End" | "SecurityKey" | "Trusted" | "WebAuthn" }
+    | {
+        CheckCapability?:
+          | "End"
+          | "SecurityKey"
+          | "Trusted"
+          | "WebAuthnPlatformCapability"
+      }
   tags: never
 }

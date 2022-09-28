@@ -15,7 +15,7 @@ export type Events =
   | { type: "END" }
   | { type: "DONT_TRUST" }
   | { type: "done.invoke.isDeviceRegistered"; data: boolean }
-  | { type: "done.invoke.fetchWebAuthnCapability"; data: boolean }
+  | { type: "done.invoke.fetchWebAuthnPlatformCapability"; data: boolean }
   | { type: "done.invoke.hasSecurityKey"; data: boolean }
 
 export const TrustDeviceMachine =
@@ -40,15 +40,15 @@ export const TrustDeviceMachine =
                     target: "#TrustDeviceMachine.End",
                   },
                   {
-                    target: "WebAuthn",
+                    target: "WebAuthnPlatformCapability",
                   },
                 ],
               },
             },
-            WebAuthn: {
+            WebAuthnPlatformCapability: {
               invoke: {
-                src: "fetchWebAuthnCapability",
-                id: "fetchWebAuthnCapability",
+                src: "fetchWebAuthnPlatformCapability",
+                id: "fetchWebAuthnPlatformCapability",
                 onDone: [
                   {
                     cond: "bool",
@@ -95,8 +95,8 @@ export const TrustDeviceMachine =
         },
         Register: {
           invoke: {
-            src: "fetchWebAuthnCapability",
-            id: "fetchWebAuthnCapability",
+            src: "fetchWebAuthnPlatformCapability",
+            id: "fetchWebAuthnPlatformCapability",
             onDone: [
               {
                 cond: "bool",
@@ -144,7 +144,7 @@ export const TrustDeviceMachine =
     {
       services: {
         isDeviceRegistered: async () => isDeviceRegistered(),
-        fetchWebAuthnCapability: fetchWebAuthnPlatformCapability,
+        fetchWebAuthnPlatformCapability,
         registerDeviceWithWebAuthn,
         registerDeviceWithSecurityKey,
         hasSecurityKey: hasSecurityKeyService,

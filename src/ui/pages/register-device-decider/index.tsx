@@ -12,7 +12,7 @@ interface AuthorizeRegisterDeciderProps extends ElementProps<HTMLDivElement> {
   deviceName: string
   platformAuthenticatorName: string
   isLoading: boolean
-  isWebAuthNAvailable: boolean
+  isPlatformAuthenticatorAvailable: boolean
   loadingMessage?: string
 }
 
@@ -22,7 +22,7 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
   isLoading,
   deviceName,
   platformAuthenticatorName,
-  isWebAuthNAvailable,
+  isPlatformAuthenticatorAvailable,
   loadingMessage,
   onLogin,
   onRegisterPlatformDevice,
@@ -33,13 +33,13 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
       <ApplicationMeta
         title="Sign in faster on this device"
         subTitle={
-          isWebAuthNAvailable
+          isPlatformAuthenticatorAvailable
             ? `Trust this ${deviceName}? You can quickly and securely sign in next time using this device's ${platformAuthenticatorName}.`
             : "You can quickly and securely sign in next time with a security key if you register one now."
         }
       />
       <div className="flex flex-col w-full space-y-1 mt-7">
-        {isWebAuthNAvailable ? (
+        {isPlatformAuthenticatorAvailable ? (
           <>
             <DeviceRaw
               id="trust-this-device"

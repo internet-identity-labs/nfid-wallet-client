@@ -40,7 +40,9 @@ export interface Typegen0 {
     AuthenticationMachine: "xstate.init"
     TrustDeviceMachine: "done.invoke.AuthenticationMachine"
   }
-  eventsCausingGuards: {}
+  eventsCausingGuards: {
+    isWebAuthNSupported: "done.invoke.AuthenticationMachine"
+  }
   eventsCausingDelays: {}
   matchesStates: "Authenticate" | "End" | "TrustDevice"
   tags: never

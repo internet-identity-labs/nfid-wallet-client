@@ -12,7 +12,7 @@ import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-devic
 export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
   const [isLoading, setIsLoading] = useState(false)
   const [state, send] = useActor(actor)
-  const { hasPlatformAuthenticator: hasWebAuthn, platform } = useDeviceInfo()
+  const { hasPlatformAuthenticator, platform } = useDeviceInfo()
 
   React.useEffect(
     () =>
@@ -38,7 +38,7 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
       }}
       isLoading={isLoading || !state.matches("Select")}
       loadingMessage={isLoading ? "registering device" : undefined}
-      isWebAuthNAvailable={!!hasWebAuthn}
+      isPlatformAuthenticatorAvailable={!!hasPlatformAuthenticator}
       deviceName={platform.device}
       platformAuthenticatorName={platform.authenticator}
     />

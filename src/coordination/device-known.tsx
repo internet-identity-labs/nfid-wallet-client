@@ -39,8 +39,8 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
             <AuthorizeAppSingleAccount
               isLoading={state.matches("Login")}
               loadingMessage={"Unlocking your NFID"}
-              applicationName={state.context?.authAppMeta?.name}
-              applicationLogo={state.context?.authAppMeta?.logo}
+              applicationName={state.context?.appMeta?.name}
+              applicationLogo={state.context?.appMeta?.logo}
               onContinueButtonClick={async () => send("UNLOCK")}
             />
           )
@@ -49,8 +49,8 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
             <AuthorizeApp
               isLoading={state.matches("Login")}
               loadingMessage={"Unlocking your NFID"}
-              applicationName={state.context?.authAppMeta?.name}
-              applicationLogo={state.context?.authAppMeta?.logo}
+              applicationName={state.context?.appMeta?.name}
+              applicationLogo={state.context?.appMeta?.logo}
               accounts={[]}
               onUnlockNFID={async () => send("UNLOCK")}
               onCreateAccount={function (): Promise<void> {

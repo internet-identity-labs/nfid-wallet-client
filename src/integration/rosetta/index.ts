@@ -21,17 +21,12 @@ import {
 } from "frontend/integration/rosetta/rosetta_interface"
 
 import { BlockIndex, TransferResult } from "../_ic_api/ledger.did"
-import {
-  delegationIdentityFromSignedIdentity,
-  fetchDelegate,
-} from "../internet-identity"
 import { mapToBalance, mapToTransactionHistory, mapToXdrUsd } from "./mapper"
 import { restCall } from "./util"
 
 declare const CURRCONV_TOKEN: string
 
 const rosetta = "https://rosetta-api.internetcomputer.org"
-const WALLET_SCOPE = "nfid.one"
 const converter = `https://free.currconv.com/api/v7/convert?q=XDR_USD&compact=ultra&apiKey=${
   CURRCONV_TOKEN ?? "df6440fc0578491bb13eb2088c4f60c7"
 }`
@@ -90,55 +85,6 @@ export async function transfer(
 
   if ("Err" in result) throw Error(Object.keys(result.Err)[0])
   return result.Ok
-}
-
-export async function getWalletPrincipal(anchor: number): Promise<Principal> {
-  return ii.get_principal(BigInt(anchor), WALLET_SCOPE).catch((e) => {
-    throw Error(`Getting of Wallet Principal failed!: ${e}`, e)
-  })
-}
-
-// TODO WALLET. Code review delegation. Test should be written
-const WALLET_SESSION_TTL = BigInt(2 * 60 * 1e9)
-
-export async function getWalletDelegation(
-  userNumber: number,
-): Promise<DelegationIdentity> {
-  // TODO WALLET. Code review delegation
-  // const scope = getScope(WALLET_SCOPE)
-  const scope = WALLET_SCOPE
-  const sessionKey = Ed25519KeyIdentity.generate()
-  const maxTimeToLive = WALLET_SESSION_TTL
-
-  if (!sessionKey)
-    throw new Error("getWalletDelegation. Unable to create sessionKey")
-
-  const delegation = await fetchDelegate(
-    userNumber,
-    scope,
-    [...new Uint8Array(sessionKey.getPublicKey().toDer())],
-    maxTimeToLive,
-  )
-
-  return await delegationIdentityFromSignedIdentity(
-    sessionKey,
-    DelegationChain.fromDelegations(
-      [
-        {
-          delegation: new Delegation(
-            new Uint8Array(
-              delegation.signedDelegation.delegation.pubkey,
-            ).buffer,
-            delegation.signedDelegation.delegation.expiration,
-            delegation.signedDelegation.delegation.targets,
-          ),
-          signature: new Uint8Array(delegation.signedDelegation.signature)
-            .buffer as Signature,
-        },
-      ],
-      new Uint8Array(delegation.userPublicKey).buffer as DerEncodedPublicKey,
-    ),
-  )
 }
 
 function getRosettaRequest(principal: Principal): RosettaRequest {

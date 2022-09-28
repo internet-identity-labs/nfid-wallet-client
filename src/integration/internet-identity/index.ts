@@ -1,36 +1,42 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent"
-import { DerEncodedPublicKey } from "@dfinity/agent"
+import {
+  ActorSubclass,
+  DerEncodedPublicKey,
+  Signature,
+  SignIdentity,
+} from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
-  Ed25519KeyIdentity,
+  Delegation,
   DelegationChain,
   DelegationIdentity,
+  Ed25519KeyIdentity,
   WebAuthnIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { arrayBufferEqual } from "ictool/dist/bits"
 import { BehaviorSubject } from "rxjs"
 
-import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
 import {
+  _SERVICE as InternetIdentity,
+  Challenge,
   ChallengeResult,
+  CredentialId,
   DeviceData,
+  FrontendHostname,
+  GetDelegationResponse,
+  KeyType,
   PublicKey,
+  Purpose,
+  RegisterResponse,
   SessionKey,
   SignedDelegation as IISignedDelegation,
-  Purpose,
-  UserNumber,
-  KeyType,
-  CredentialId,
-  FrontendHostname,
   Timestamp,
-  GetDelegationResponse,
-  Challenge,
-  RegisterResponse,
+  UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { ii } from "frontend/integration/actors"
 import {
   accessList,
+  ii,
   im,
   invalidateIdentity,
   replaceIdentity,
@@ -1150,4 +1156,39 @@ export const delegationIdentityFromSignedIdentity = async (
   )
 
   return delegationIdentity
+}
+
+export async function delegationByScope(
+  userNumber: number,
+  scope: string,
+  maxTimeToLive: bigint,
+) {
+  const sessionKey = Ed25519KeyIdentity.generate()
+
+  const delegation = await fetchDelegate(
+    userNumber,
+    scope,
+    [...new Uint8Array(sessionKey.getPublicKey().toDer())],
+    maxTimeToLive,
+  )
+
+  return await delegationIdentityFromSignedIdentity(
+    sessionKey,
+    DelegationChain.fromDelegations(
+      [
+        {
+          delegation: new Delegation(
+            new Uint8Array(
+              delegation.signedDelegation.delegation.pubkey,
+            ).buffer,
+            delegation.signedDelegation.delegation.expiration,
+            delegation.signedDelegation.delegation.targets,
+          ),
+          signature: new Uint8Array(delegation.signedDelegation.signature)
+            .buffer as Signature,
+        },
+      ],
+      new Uint8Array(delegation.userPublicKey).buffer as DerEncodedPublicKey,
+    ),
+  )
 }

@@ -89,7 +89,7 @@ export const ProfileNFTDetailsPage = ({
                 className={clsx("flex items-center justify-between flex-wrap")}
               >
                 <p className="mb-1 text-gray-400">ID</p>
-                <p className="w-full sm:w-[80%]">{nft.index}</p>
+                <p className="w-full sm:w-[80%]">{nft.tokenId}</p>
               </div>
               <div
                 className={clsx("flex items-center justify-between flex-wrap")}

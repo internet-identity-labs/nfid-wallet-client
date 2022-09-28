@@ -61,7 +61,7 @@ export default function Table({
                 <td
                   className={clsx(
                     "h-[85px] px-3",
-                    j === 0 && "pl-[30px]",
+                    i === 0 && "pl-[30px]",
                     i === row.val.length - 1 && "pr-[30px]",
                   )}
                   key={`row${row.key}cell${headings[i]}`}

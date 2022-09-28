@@ -253,7 +253,10 @@ export async function registerService(
 export async function fetchAuthenticatorDevicesService(context: {
   profile: Profile
 }) {
-  const devices = await lookup(Number(context.profile.anchor), false)
+  const devices = await lookup(
+    Number(context.profile.anchor),
+    (x) => x.purpose === "authentication",
+  )
   console.debug(`fetchAuthenticatorDevicesService lookup`, { devices })
   return devices
 }

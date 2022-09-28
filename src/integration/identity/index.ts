@@ -1,11 +1,9 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { Buffer } from "buffer"
 
 import { DeviceData } from "../_ic_api/internet_identity_types"
 import { fetchProfile } from "../identity-manager"
 import { Device, fetchAuthenticatorDevices } from "../internet-identity"
-import { derFromPubkey } from "../internet-identity/utils"
-import { creationOptions } from "../webauthn/creation-options"
+import { creationOptions, getCredentials } from "../webauthn/creation-options"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 
 /**
@@ -19,13 +17,10 @@ export function identityFromDeviceList(
   devices: Device[],
   withSecurityDevices?: boolean,
 ): MultiWebAuthnIdentity {
-  const credential = devices
-    .filter((device) => !!device.credentialId)
-    .map((device) => ({
-      pubkey: derFromPubkey(device.pubkey),
-      credentialId: Buffer.from(device.credentialId!),
-    }))
-  return MultiWebAuthnIdentity.fromCredentials(credential, withSecurityDevices)
+  return MultiWebAuthnIdentity.fromCredentials(
+    getCredentials(devices),
+    withSecurityDevices,
+  )
 }
 
 export const ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST = [

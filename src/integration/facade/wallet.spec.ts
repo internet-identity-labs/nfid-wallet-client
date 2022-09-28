@@ -27,19 +27,23 @@ describe("wallet suite", () => {
       // @ts-ignore
       delegationByScope = jest.fn()
       await getWalletDelegation(10000)
-      // @ts-ignore
-      let call = delegationByScope.mock.calls[0]
-      expect(call[1]).toBe("nfid.one")
-      expect(call[0]).toBe(10000)
-      expect(call[3]).toBe(BigInt(2 * 60 * 1e9))
+      expect(delegationByScope).toHaveBeenCalledWith(
+        10000,
+        "nfid.one",
+        BigInt(2 * 60 * 1e9),
+      )
       await getWalletDelegation(10000, "https://testScope.fk")
-      // @ts-ignore
-      call = delegationByScope.mock.calls[1]
-      expect(call[1]).toBe("https://testScope.fk")
+      expect(delegationByScope).toHaveBeenCalledWith(
+        10000,
+        "https://testScope.fk",
+        BigInt(2 * 60 * 1e9),
+      )
       await getWalletDelegation(10000, "https://testScope.fk", "1")
-      // @ts-ignore
-      call = delegationByScope.mock.calls[2]
-      expect(call[1]).toBe("1@https://testScope.fk")
+      expect(delegationByScope).toHaveBeenCalledWith(
+        10000,
+        "1@https://testScope.fk",
+        BigInt(2 * 60 * 1e9),
+      )
     })
   })
 })

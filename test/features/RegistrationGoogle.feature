@@ -8,8 +8,6 @@ Feature: Registration using Google
   Scenario Outline: User wants to register with Google
     Given I remove the e2e@identitylabs.ooo
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
-    And  I pause for 250ms
-
     When I click on the selector "iframe[title='Sign in with Google Button']"
     Then I expect a new window has been opened
 

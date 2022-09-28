@@ -7,7 +7,6 @@ import {
   selectAccounts,
   mapPersonaToLegacy,
   verifyToken,
-  processApplicationOrigin,
 } from "."
 import { fetchPrincipal } from "../actors"
 import { getNextAccountId } from "./persona/utils"
@@ -53,12 +52,6 @@ export async function createAccountService(
   const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
   const derivationOrigin =
     context.authRequest?.derivationOrigin || context.authRequest.hostname
-
-  processApplicationOrigin(
-    derivationOrigin,
-    context.authRequest.hostname,
-    context.appMeta?.name,
-  )
 
   const createPersonaReposne = await createAccount(
     derivationOrigin,

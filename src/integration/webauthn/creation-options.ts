@@ -47,11 +47,14 @@ type Credentials = {
 
 export function getCredentials(devices: Device[]): Credentials[] {
   return devices
-    .filter((device) => device.credentialId && device.credentialId.length > 0)
+    .filter(
+      (device): device is Device & { credentialId: CredentialId } =>
+        !!device.credentialId && device.credentialId.length > 0,
+    )
     .map((device) => {
       return {
         pubkey: derFromPubkey(device.pubkey),
-        credentialId: Buffer.from(device.credentialId as CredentialId),
+        credentialId: Buffer.from(device.credentialId),
       }
     })
 }

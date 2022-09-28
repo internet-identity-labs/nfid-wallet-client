@@ -288,7 +288,6 @@ const retryGetDelegation = async (
     })
     const res = await getDelegation(userNumber, hostname, sessionKey, timestamp)
     if (hasOwnProperty(res, "signed_delegation")) {
-      // @ts-ignore
       return res.signed_delegation
     }
   }
@@ -582,7 +581,6 @@ export async function register(
   if (hasOwnProperty(registerResponse, "canister_full")) {
     return { kind: "registerNoSpace" }
   } else if (hasOwnProperty(registerResponse, "registered")) {
-    // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
     authState.set(identity, delegation.delegationIdentity, ii)
@@ -645,7 +643,6 @@ export async function registerFromGoogle(
   if (hasOwnProperty(registerResponse, "canister_full")) {
     return { kind: "registerNoSpace" }
   } else if (hasOwnProperty(registerResponse, "registered")) {
-    // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
     replaceIdentity(delegation.delegationIdentity)

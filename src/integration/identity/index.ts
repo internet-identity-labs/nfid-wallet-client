@@ -1,8 +1,9 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+
+import { DeviceData } from "../_ic_api/internet_identity_types"
 import { fetchProfile } from "../identity-manager"
 import { Device, fetchAuthenticatorDevices } from "../internet-identity"
 import { creationOptions, getCredentials } from "../webauthn/creation-options"
-import { DeviceData } from "../_ic_api/internet_identity_types"
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 
 /**
@@ -16,7 +17,10 @@ export function identityFromDeviceList(
   devices: Device[],
   withSecurityDevices?: boolean,
 ): MultiWebAuthnIdentity {
-  return MultiWebAuthnIdentity.fromCredentials(getCredentials(devices), withSecurityDevices)
+  return MultiWebAuthnIdentity.fromCredentials(
+    getCredentials(devices),
+    withSecurityDevices,
+  )
 }
 
 export const ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST = [

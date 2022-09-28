@@ -1,9 +1,10 @@
-import { DerEncodedPublicKey } from "@dfinity/agent";
-import * as tweetnacl from "tweetnacl";
-import { CredentialId, DeviceData } from "../_ic_api/internet_identity_types";
-import { Device } from "../internet-identity";
-import { derFromPubkey } from "../internet-identity/utils";
+import { DerEncodedPublicKey } from "@dfinity/agent"
 import { Buffer } from "buffer"
+import * as tweetnacl from "tweetnacl"
+
+import { CredentialId, DeviceData } from "../_ic_api/internet_identity_types"
+import { Device } from "../internet-identity"
+import { derFromPubkey } from "../internet-identity/utils"
 
 interface DeviceWithCredential extends DeviceData {
   credential_id: [CredentialId]
@@ -52,7 +53,7 @@ export function getCredentials(devices: Device[]): Credentials[] {
         pubkey: derFromPubkey(device.pubkey),
         credentialId: Buffer.from(device.credentialId as CredentialId),
       }
-    });
+    })
 }
 
 declare const IS_E2E_TEST: string

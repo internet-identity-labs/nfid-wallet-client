@@ -1,27 +1,47 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent";
-import { DerEncodedPublicKey } from "@dfinity/agent";
-import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer";
-import { Ed25519KeyIdentity, DelegationChain, DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity";
-import { Principal } from "@dfinity/principal";
-import { arrayBufferEqual } from "ictool/dist/bits";
-import { BehaviorSubject } from "rxjs";
+import { ActorSubclass, SignIdentity } from "@dfinity/agent"
+import { DerEncodedPublicKey } from "@dfinity/agent"
+import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import {
+  Ed25519KeyIdentity,
+  DelegationChain,
+  DelegationIdentity,
+  WebAuthnIdentity,
+} from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
+import { arrayBufferEqual } from "ictool/dist/bits"
+import { BehaviorSubject } from "rxjs"
 
+import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
+import {
+  ChallengeResult,
+  DeviceData,
+  PublicKey,
+  SessionKey,
+  SignedDelegation as IISignedDelegation,
+  Purpose,
+  UserNumber,
+  KeyType,
+  CredentialId,
+  FrontendHostname,
+  Timestamp,
+  GetDelegationResponse,
+  Challenge,
+  RegisterResponse,
+} from "frontend/integration/_ic_api/internet_identity_types"
+import { ii } from "frontend/integration/actors"
+import {
+  accessList,
+  im,
+  invalidateIdentity,
+  replaceIdentity,
+} from "frontend/integration/actors"
+import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
+import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
-
-import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types";
-import { ChallengeResult, DeviceData, PublicKey, SessionKey, SignedDelegation as IISignedDelegation, Purpose, UserNumber, KeyType, CredentialId, FrontendHostname, Timestamp, GetDelegationResponse, Challenge, RegisterResponse } from "frontend/integration/_ic_api/internet_identity_types";
-import { accessList, im, invalidateIdentity, replaceIdentity } from "frontend/integration/actors";
-import { ii } from "frontend/integration/actors";
-import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519";
-import { ThirdPartyAuthSession } from "frontend/state/authorization";
-
-
-
-import { mapOptional, mapVariant, reverseMapOptional } from "../_common";
-import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity";
-import { getCredentials } from "../webauthn/creation-options";
-import { derFromPubkey, hasOwnProperty } from "./utils";
-
+import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
+import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
+import { getCredentials } from "../webauthn/creation-options"
+import { derFromPubkey, hasOwnProperty } from "./utils"
 
 export type ApiResult = LoginResult | RegisterResult
 export type LoginResult =
@@ -650,7 +670,9 @@ export async function login(
   console.debug("login", { userNumber, withSecurityDevices })
   let devices: Device[]
   try {
-    const predicate: ((x:Device) => boolean) | undefined = withSecurityDevices ? undefined : x => x.purpose === "authentication";
+    const predicate: ((x: Device) => boolean) | undefined = withSecurityDevices
+      ? undefined
+      : (x) => x.purpose === "authentication"
     devices = await lookup(Number(userNumber), predicate)
   } catch (e: unknown) {
     console.error(`Error when looking up authenticators`, e)
@@ -781,7 +803,10 @@ export async function loginFromRemoteFrontendDelegation({
     chain,
   )
 
-  const devices = await lookup(Number(userNumber), x => x.purpose === "authentication");
+  const devices = await lookup(
+    Number(userNumber),
+    (x) => x.purpose === "authentication",
+  )
   const multiIdent = getMultiIdent(devices)
   console.debug("loginFromRemoteFrontendDelegation", { devices })
 
@@ -1102,6 +1127,7 @@ export async function lookup(
 export interface Device {
   alias: string
   protected: boolean
+
   pubkey: PublicKey
   keyType: "platform" | "seed_phrase" | "cross_platform" | "unknown"
   purpose: "authentication" | "recovery"

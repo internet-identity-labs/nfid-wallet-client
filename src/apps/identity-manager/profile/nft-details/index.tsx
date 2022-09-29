@@ -11,6 +11,8 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { useNFT } from "../assets/hooks"
 import { mapTransactionsForUI } from "./utils"
 
+const ACTIVITY_TARGET = 5
+
 const ProfileNFTDetails = () => {
   const location = useLocation()
   const state = location.state as { nft?: UserNFTDetails }
@@ -40,7 +42,8 @@ const ProfileNFTDetails = () => {
 
       setNFTActivity(NFTActivity.concat(result.txHistory))
 
-      if (!result.isLastPage && NFTActivity.length < 5) fetchTokenHistory(i + 1)
+      if (!result.isLastPage && NFTActivity.length < ACTIVITY_TARGET)
+        fetchTokenHistory(i + 1)
       else setIsNFTActivityFetching(false)
     },
     [NFTActivity, nft?.canisterId, tokenId],

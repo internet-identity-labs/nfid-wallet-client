@@ -65,15 +65,8 @@ export async function token(
  */
 export async function tokens(
   collection: EntrepotCollection,
-): Promise<NFTDetails[]> {
-  return Promise.all(
-    await fetchCollectionTokens(collection).then((tokens) =>
-      tokens.map(async ({ tokenId }) => {
-        const { index } = decodeTokenIdentifier(tokenId)
-        return await token(collection, tokens, index)
-      }),
-    ),
-  )
+): Promise<EntrepotToken[]> {
+  return Promise.all(await fetchCollectionTokens(collection))
 }
 
 /**

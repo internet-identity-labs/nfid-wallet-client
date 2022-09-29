@@ -103,7 +103,9 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
           className={clsx(`hover:text-blue-500 cursor-pointer`)}
           size="18"
           onClick={() => {
-            toast.info("NFT URL copied to clipboard")
+            toast.info("NFT URL copied to clipboard", {
+              toastId: `copied_nft_${token.tokenId}`,
+            })
             navigator.clipboard.writeText(
               link(token.collection.id, token.index),
             )

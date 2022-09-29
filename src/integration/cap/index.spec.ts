@@ -51,7 +51,7 @@ describe("cap suite", () => {
         .mockReturnValue(Promise.resolve([mockTransactionToken]))
       let response = await mock.getTokenTxHistoryOfTokenIndex(
         "dcbuw-wyaaa-aaaam-qapfq-cai",
-        89,
+        "z4j3m-4akor-uwiaa-aaaaa-deadz-maqca-aaabm-q",
         0,
         2,
       )

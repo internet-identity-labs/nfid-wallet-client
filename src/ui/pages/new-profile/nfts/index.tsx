@@ -134,7 +134,6 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.currentTarget.value)}
-            inputClassName={clsx(`!bg-white border-slate-100`)}
             icon={<IoIosSearch size="20" />}
             placeholder="Search by NFT name, ID or collection"
           />

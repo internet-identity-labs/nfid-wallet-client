@@ -51,10 +51,6 @@ const ProfileNFTDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nft])
 
-  React.useEffect(() => {
-    console.log({ NFTActivity })
-  }, [NFTActivity])
-
   const transactions = React.useMemo(() => {
     const transactionsSortedByDate = NFTActivity.sort(
       (a, b) => Number(b.time) - Number(a.time),

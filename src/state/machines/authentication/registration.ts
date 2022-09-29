@@ -260,10 +260,6 @@ const RegistrationMachine =
       guards: {
         authenticated: (context) => !!context.authSession,
         isExistingGoogleAccount: (context, event) => {
-          console.debug("RegistrationMachine guards isExistingGoogleAccount", {
-            context,
-            event,
-          })
           return !!event.data.anchor
         },
       },

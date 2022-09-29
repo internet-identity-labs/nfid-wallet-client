@@ -181,7 +181,7 @@ export const RouterRegisterDeviceDecider: React.FC<
       <AuthorizeRegisterDeciderScreen
         onLogin={handleLogin}
         isLoading={isLoading}
-        isWebAuthNAvailable={!!hasPlatformAuthenticator}
+        isPlatformAuthenticatorAvailable={!!hasPlatformAuthenticator}
         deviceName={deviceInfo.platform.device}
         platformAuthenticatorName={deviceInfo.platform.authenticator}
         onRegisterPlatformDevice={handleRegister}

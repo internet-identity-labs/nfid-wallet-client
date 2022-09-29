@@ -8,6 +8,8 @@ import { im } from "frontend/integration/actors"
 import { ii } from "frontend/integration/actors"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
 import { mockIdentityClientAuthEvent } from "frontend/integration/windows/__mock"
+import { AuthSession } from "frontend/state/authentication"
+import { ThirdPartyAuthSession } from "frontend/state/authorization"
 import IDPMachine from "frontend/state/machines/authorization/idp"
 
 const challengeMock = jest.fn(async () => ({
@@ -153,6 +155,44 @@ describe("IDP Machine", () => {
             expect(Object.keys(context)).toContain("appMeta")
             expect(Object.keys(context)).toContain("authRequest")
             expect(Object.keys(context)).toContain("authSession")
+            done()
+          }
+        })
+        .start()
+    })
+    it("transitions to TrustDevice when WebAuthN capability", (done) => {
+      const testMachineMockAuthn = testMachine.withConfig({
+        services: {
+          AuthenticationMachine: async () => ({} as AuthSession),
+          AuthorizationMachine: async () => ({} as ThirdPartyAuthSession),
+        },
+        guards: {
+          isWebAuthNSupported: () => true,
+        },
+      })
+      interpret(testMachineMockAuthn)
+        .onTransition((state) => {
+          if (state.matches("TrustDevice")) {
+            expect(state.matches("TrustDevice")).toBe(true)
+            done()
+          }
+        })
+        .start()
+    })
+    it("transitions to End when WebAuthN capability is not available", (done) => {
+      const testMachineMockAuthn = testMachine.withConfig({
+        services: {
+          AuthenticationMachine: async () => ({} as AuthSession),
+          AuthorizationMachine: async () => ({} as ThirdPartyAuthSession),
+        },
+        guards: {
+          isWebAuthNSupported: () => false,
+        },
+      })
+      interpret(testMachineMockAuthn)
+        .onTransition((state) => {
+          if (state.matches("End")) {
+            expect(state.matches("End")).toBe(true)
             done()
           }
         })

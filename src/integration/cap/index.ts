@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
-import { encodeTokenIdentifier, principalToAddress } from "ictool"
+import { principalToAddress } from "ictool"
 
 import { getCapRootTransactions } from "frontend/integration/cap/cap_util"
 

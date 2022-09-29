@@ -34,6 +34,7 @@ export const ProfileNFTDetailsPage = ({
     navigator.clipboard.writeText(link(nft.collection.id, nft.index))
   }, [nft.collection.id, nft.index])
 
+  console.log({ nft })
   return (
     <ProfileTemplate
       onBack={`${ProfileConstants.base}/${ProfileConstants.nfts}`}
@@ -57,6 +58,7 @@ export const ProfileNFTDetailsPage = ({
             className={clsx(
               "bg-cover bg-center bg-no-repeat blur-md brightness-150",
               "h-full absolute z-10 w-full opacity-90",
+              nft.assetFullsize.format === "video" && "hidden",
             )}
           />
           <NFTAsset

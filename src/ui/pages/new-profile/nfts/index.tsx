@@ -207,26 +207,37 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
 
 export default ProfileNFTsPage
 
-const DisplaySwitch = (props: {
+const DisplaySwitch = ({
+  state,
+  onClick,
+}: {
   state: "grid" | "table"
   onClick: (state: "grid" | "table") => void
 }) => {
+  const handleGridClick = () => {
+    onClick("grid")
+    ;(document.activeElement as HTMLElement)?.blur()
+  }
+  const handleTableClick = () => {
+    onClick("table")
+    ;(document.activeElement as HTMLElement)?.blur()
+  }
   return (
     <div className={clsx(`flex gap-3`)}>
       <Button
-        onClick={() => props.onClick("grid")}
+        onClick={handleGridClick}
         className={clsx(
           `p-0 w-[40px] h-[40px] flex justify-center items-center hover:text-blue-hover transition-all outline-none`,
-          props.state === "grid" && "bg-gray-200",
+          state === "grid" && "bg-gray-200",
         )}
       >
         <BiGridAlt size="20" />
       </Button>
       <Button
-        onClick={() => props.onClick("table")}
+        onClick={handleTableClick}
         className={clsx(
           `p-0 w-[40px] h-[40px] flex justify-center items-center hover:text-blue-hover transition-all outline-none`,
-          props.state === "table" && "bg-gray-200",
+          state === "table" && "bg-gray-200",
         )}
       >
         <HiViewList size="20" />

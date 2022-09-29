@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
-import { encodeTokenIdentifier, principalToAddress } from "ictool"
+import { principalToAddress } from "ictool"
 
 import { getCapRootTransactions } from "frontend/integration/cap/cap_util"
 
@@ -53,17 +53,14 @@ export async function getUserTransactions(
  */
 export async function getTokenTxHistoryOfTokenIndex(
   canisterId: string,
-  tokenId: number,
+  tokenId: string,
   from: number,
   to: number,
 ): Promise<{ txHistory: TransactionPrettified[]; isLastPage: boolean }> {
-  const encodedTokenId = encodeTokenIdentifier(canisterId, tokenId)
   let transactionHistory = await Promise.all(
     [...Array(to).keys()].slice(from, to).map(async (page) => {
       let allHistory = await getCapRootTransactions(canisterId, page)
-      let txHistory = allHistory.filter(
-        (l) => l.details.token === encodedTokenId,
-      )
+      let txHistory = allHistory.filter((l) => l.details.token === tokenId)
       return { txHistory, isLastPage: allHistory.length === 0 }
     }),
   )

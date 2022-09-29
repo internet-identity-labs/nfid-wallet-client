@@ -12,12 +12,22 @@ const browser = (navigator as any).brave
 
 const platform = getPlatformInfo()
 
+/**
+ * Determine if the browser is capable of WebAuthN
+ */
+export function isWebAuthNSupported(): boolean {
+  return (
+    window?.PublicKeyCredential !== undefined &&
+    typeof window.PublicKeyCredential === "function"
+  )
+}
+
 export async function fetchWebAuthnPlatformCapability() {
-  try {
-    return await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
-  } catch (e) {
+  if (!isWebAuthNSupported()) {
     return false
   }
+
+  return PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
 }
 
 export const MobileBrowser = [

@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal"
-import { decodeTokenIdentifier, encodeTokenIdentifier } from "ictool"
+import { encodeTokenIdentifier } from "ictool"
 
 import { Account } from "frontend/integration/identity-manager"
 

@@ -39,6 +39,7 @@ export interface Application {
   user_limit: number
   domain: string
   name: string
+  is_nft_storage: [] | [boolean]
 }
 export interface BasicEntity {
   modified_date: bigint
@@ -273,7 +274,9 @@ export interface _SERVICE {
     arg_0: AccessPointRemoveRequest,
   ) => Promise<HTTPAccessPointResponse>
   remove_account: () => Promise<BoolHttpResponse>
+  remove_account_by_phone_number: () => Promise<BoolHttpResponse>
   remove_account_by_principal: (arg_0: string) => Promise<BoolHttpResponse>
+  remove_nfid_personas: () => Promise<undefined>
   restore_accounts: (arg_0: string) => Promise<BoolHttpResponse>
   store_accounts: (arg_0: Array<Account>) => Promise<BoolHttpResponse>
   sync_controllers: () => Promise<Array<string>>
@@ -283,7 +286,7 @@ export interface _SERVICE {
   update_account: (
     arg_0: HTTPAccountUpdateRequest,
   ) => Promise<HTTPAccountResponse>
-  update_application: (arg_0: Application) => Promise<AccessPointResponse>
+  update_application: (arg_0: Application) => Promise<HTTPApplicationResponse>
   update_application_alias: (
     arg_0: string,
     arg_1: string,

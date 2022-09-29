@@ -28,6 +28,8 @@ export const NFTAsset = (assetFullsize: {
           }}
         />
       )
+    case "video":
+      return <video src={assetFullsize.url} autoPlay controls muted />
     default:
       return (
         <div

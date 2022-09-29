@@ -21,7 +21,12 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   nfts,
 }) => {
   return (
-    <ProfileTemplate pageTitle="Assets" icon={Icon} onIconClick={onIconClick}>
+    <ProfileTemplate
+      pageTitle="Assets"
+      icon={Icon}
+      onIconClick={onIconClick}
+      className="overflow-inherit"
+    >
       <ProfileContainer title="Your tokens">
         <Loader isLoading={!tokens.length} />
         <table className={clsx("text-left w-full hidden sm:table")}>

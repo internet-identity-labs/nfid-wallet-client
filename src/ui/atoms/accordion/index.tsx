@@ -8,6 +8,8 @@ export interface AccordionProps {
   isBorder?: boolean
   style?: any
   detailsClassName?: string
+  openTrigger?: string
+  closeTrigger?: string
 }
 
 export const Accordion: React.FC<AccordionProps> = ({
@@ -17,6 +19,8 @@ export const Accordion: React.FC<AccordionProps> = ({
   isBorder = true,
   style,
   detailsClassName,
+  openTrigger,
+  closeTrigger,
 }) => {
   const [active, setActive] = useState(false)
   const [height, setHeight] = useState("0px")
@@ -26,17 +30,32 @@ export const Accordion: React.FC<AccordionProps> = ({
 
   function toggleAccordion() {
     setActive((prevState) => !prevState)
+  }
+
+  React.useEffect(() => {
     setHeight(
       active
-        ? "0px"
-        : `${contentSpace.current && contentSpace.current.scrollHeight}px`,
+        ? `${contentSpace.current && contentSpace.current.scrollHeight}px`
+        : "0px",
     )
     setRotate(
       active
-        ? "transform duration-700 ease"
-        : "transform duration-700 ease rotate-180",
+        ? "transform duration-700 ease rotate-180"
+        : "transform duration-700 ease",
     )
-  }
+  }, [active])
+
+  React.useEffect(() => {
+    if (openTrigger) {
+      setActive(true)
+    }
+  }, [openTrigger])
+
+  React.useEffect(() => {
+    if (closeTrigger) {
+      setActive(false)
+    }
+  }, [closeTrigger])
 
   return (
     <div

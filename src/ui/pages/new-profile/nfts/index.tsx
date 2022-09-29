@@ -114,6 +114,13 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     reverse && result.reverse()
     return result
   }, [tokensFiltered, sorting, reverse, applications])
+  const openAccordions = React.useMemo(() => {
+    if (!search) {
+      return [Math.random().toString()]
+    } else {
+      return Object.values(tokensByWallet).map((x) => Math.random().toString())
+    }
+  }, [search, tokensByWallet])
   return (
     <ProfileTemplate
       pageTitle="Your NFTs"
@@ -146,12 +153,13 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
         ) : (
           Object.values(tokensByWallet)
             .sort((a, b) => (a.account.label < b.account.label ? -1 : 1))
-            .map((wallet) => (
+            .map((wallet, i) => (
               <ProfileContainer
                 key={`wallet${wallet.principal}`}
                 // title={wallet.account.label}
               >
                 <Accordion
+                  openTrigger={openAccordions[i]}
                   isBorder={false}
                   style={{ padding: 0 }}
                   title={

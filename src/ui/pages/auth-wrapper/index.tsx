@@ -10,5 +10,5 @@ interface AuthWrapperProps {
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const { isAuthenticated } = useAuthentication()
 
-  return isAuthenticated ? <>{children}</>: <Navigate to="/"/>
+  return isAuthenticated ? <>{children}</> : <Navigate to="/" />
 }

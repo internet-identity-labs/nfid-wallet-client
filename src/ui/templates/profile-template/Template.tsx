@@ -1,17 +1,17 @@
 import clsx from "clsx"
 import React from "react"
+import { To, useNavigate } from "react-router-dom"
 
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import ArrowBackIcon from "../assets/arrow-back.svg"
 
 interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
   icon?: string
-  onBack?: string
+  onBack?: To
   onIconClick?: () => void
   headerClassName?: string
   containerClassName?: string
@@ -31,7 +31,8 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   isLoading = false,
   headerMenu,
 }) => {
-  const { navigate } = useNFIDNavigate()
+  const navigate = useNavigate()
+
   return (
     <div className={clsx("relative min-h-screen overflow-hidden")}>
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />

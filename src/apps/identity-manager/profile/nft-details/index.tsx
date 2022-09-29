@@ -4,6 +4,7 @@ import { useLocation, useParams } from "react-router-dom"
 
 import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { Loader } from "frontend/ui/atoms/loader"
 import { ProfileNFTDetailsPage } from "frontend/ui/pages/new-profile/nft-details"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -20,8 +21,9 @@ const ProfileNFTDetails = () => {
 
   const { data: nftDetails } = useNFT(tokenId ?? "")
   const [NFTActivity, setNFTActivity] = useState<TransactionPrettified[]>([])
-  const [isNFTActivityFetching, setIsNFTActivityFetching] =
-    useState<boolean>(true)
+  const applications = useApplicationsMeta()
+
+  const [isActivityFetching, setIsActivityFetching] = useState<boolean>(true)
 
   const nft = React.useMemo(() => {
     return state?.nft ?? nftDetails
@@ -44,7 +46,7 @@ const ProfileNFTDetails = () => {
 
       if (!result.isLastPage && NFTActivity.length < ACTIVITY_TARGET)
         fetchTokenHistory(i + 1)
-      else setIsNFTActivityFetching(false)
+      else setIsActivityFetching(false)
     },
     [NFTActivity, nft?.canisterId, tokenId],
   )
@@ -72,8 +74,9 @@ const ProfileNFTDetails = () => {
   return (
     <ProfileNFTDetailsPage
       nft={nft}
-      isTransactionsFetching={isNFTActivityFetching}
+      isTransactionsFetching={isActivityFetching}
       transactions={transactions}
+      applications={applications.applicationsMeta || []}
     />
   )
 }

@@ -5,6 +5,7 @@ import {
   principalTokens,
   collection,
   tokens,
+  token,
 } from "frontend/integration/entrepot"
 import { fetchPrincipals } from "frontend/integration/facade"
 import {
@@ -15,21 +16,37 @@ import { useProfile } from "frontend/integration/identity-manager/queries"
 
 export function useNFT(tokenId: string) {
   const { canister } = decodeTokenIdentifier(tokenId)
-  const _collection = useSWR(`collection/${canister}`, () =>
-    collection(canister),
+  const _collection = useSWR(
+    `collection/${canister}`,
+    () => collection(canister),
+    {
+      dedupingInterval: 60_000 * 5,
+      revalidateIfStale: false,
+    },
   )
+
   const _tokens = useSWR(
     _collection.data ? `collection/${canister}/tokens` : null,
     () => {
       if (!_collection.data) throw new Error("unreachable")
       return tokens(_collection.data)
     },
+    {
+      dedupingInterval: 60_000 * 5,
+      revalidateIfStale: false,
+    },
   )
+
   return useSWR(
     _collection.data && _tokens.data ? `token/${tokenId}` : null,
     () => {
       if (!_collection.data || !_tokens.data) throw new Error("unreachable")
-      return _tokens.data.find((token) => token.tokenId === tokenId)
+      const { index } = decodeTokenIdentifier(tokenId)
+      return token(_collection.data, _tokens.data, index)
+    },
+    {
+      dedupingInterval: 60_000 * 5,
+      revalidateIfStale: false,
     },
   )
 }

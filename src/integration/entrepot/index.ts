@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal"
-import { decodeTokenIdentifier, encodeTokenIdentifier } from "ictool"
+import { encodeTokenIdentifier } from "ictool"
 
 import { Account } from "frontend/integration/identity-manager"
 
@@ -65,15 +65,8 @@ export async function token(
  */
 export async function tokens(
   collection: EntrepotCollection,
-): Promise<NFTDetails[]> {
-  return Promise.all(
-    await fetchCollectionTokens(collection).then((tokens) =>
-      tokens.map(async ({ tokenId }) => {
-        const { index } = decodeTokenIdentifier(tokenId)
-        return await token(collection, tokens, index)
-      }),
-    ),
-  )
+): Promise<EntrepotToken[]> {
+  return Promise.all(await fetchCollectionTokens(collection))
 }
 
 /**

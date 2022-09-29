@@ -57,7 +57,7 @@ export const useAuthentication = () => {
     // NOTE: after dom ready reload the page so thate safari is able to authenticate again
     setTimeout(() => {
       window.location.reload()
-    });
+    })
 
     Usergeek.setPrincipal(Principal.anonymous())
   }, [])

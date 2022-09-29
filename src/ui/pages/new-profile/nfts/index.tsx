@@ -103,7 +103,9 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
           className={clsx(`hover:text-blue-500 cursor-pointer`)}
           size="18"
           onClick={() => {
-            toast.info("NFT URL copied to clipboard")
+            toast.info("NFT URL copied to clipboard", {
+              toastId: `copied_nft_${token.tokenId}`,
+            })
             navigator.clipboard.writeText(
               link(token.collection.id, token.index),
             )
@@ -114,6 +116,15 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     reverse && result.reverse()
     return result
   }, [tokensFiltered, sorting, reverse, applications])
+
+  const openAccordions = React.useMemo(() => {
+    if (!search) {
+      return [Math.random().toString()]
+    } else {
+      return Object.values(tokensByWallet).map((x) => Math.random().toString())
+    }
+  }, [search, tokensByWallet])
+
   return (
     <ProfileTemplate
       pageTitle="Your NFTs"
@@ -127,7 +138,6 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.currentTarget.value)}
-            inputClassName={clsx(`!bg-white border-slate-100`)}
             icon={<IoIosSearch size="20" />}
             placeholder="Search by NFT name, ID or collection"
           />
@@ -146,12 +156,13 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
         ) : (
           Object.values(tokensByWallet)
             .sort((a, b) => (a.account.label < b.account.label ? -1 : 1))
-            .map((wallet) => (
+            .map((wallet, i) => (
               <ProfileContainer
                 key={`wallet${wallet.principal}`}
                 // title={wallet.account.label}
               >
                 <Accordion
+                  openTrigger={openAccordions[i]}
                   isBorder={false}
                   style={{ padding: 0 }}
                   title={
@@ -169,11 +180,12 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                             (x) => x.domain === wallet.account.domain,
                           )?.name
                         }{" "}
-                        {wallet.account.accountId !== "0" &&
-                          `#${Number(wallet.account.accountId) + 1}`}
+                        account {Number(wallet.account.accountId) + 1}
                       </div>
                       <div
-                        className={clsx(`text-sm text-slate-400 font-light`)}
+                        className={clsx(
+                          `text-sm text-gray-400 font-light mr-3`,
+                        )}
                       >
                         {wallet.tokens.length} Item
                         {wallet.tokens.length > 1 && "s"}
@@ -183,7 +195,8 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                   details={
                     <div
                       className={clsx(
-                        `flex justify-center gap-3 flex-wrap pt-7`,
+                        "grid gap-4 lg:gap-8 pt-7",
+                        "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
                       )}
                     >
                       {wallet.tokens.map((token) => (
@@ -202,26 +215,37 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
 
 export default ProfileNFTsPage
 
-const DisplaySwitch = (props: {
+const DisplaySwitch = ({
+  state,
+  onClick,
+}: {
   state: "grid" | "table"
   onClick: (state: "grid" | "table") => void
 }) => {
+  const handleGridClick = () => {
+    onClick("grid")
+    ;(document.activeElement as HTMLElement)?.blur()
+  }
+  const handleTableClick = () => {
+    onClick("table")
+    ;(document.activeElement as HTMLElement)?.blur()
+  }
   return (
     <div className={clsx(`flex gap-3`)}>
       <Button
-        onClick={() => props.onClick("grid")}
+        onClick={handleGridClick}
         className={clsx(
           `p-0 w-[40px] h-[40px] flex justify-center items-center hover:text-blue-hover transition-all outline-none`,
-          props.state === "grid" && "bg-gray-200",
+          state === "grid" && "bg-gray-200",
         )}
       >
         <BiGridAlt size="20" />
       </Button>
       <Button
-        onClick={() => props.onClick("table")}
+        onClick={handleTableClick}
         className={clsx(
           `p-0 w-[40px] h-[40px] flex justify-center items-center hover:text-blue-hover transition-all outline-none`,
-          props.state === "table" && "bg-gray-200",
+          state === "table" && "bg-gray-200",
         )}
       >
         <HiViewList size="20" />

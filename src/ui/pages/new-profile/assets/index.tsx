@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { NFTDetails } from "frontend/integration/entrepot/types"
+import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -12,7 +12,7 @@ import { ProfileAssetsNFT } from "./nft"
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: any[]
-  nfts?: NFTDetails[]
+  nfts?: UserNFTDetails[]
 }
 
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({

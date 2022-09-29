@@ -169,8 +169,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                             (x) => x.domain === wallet.account.domain,
                           )?.name
                         }{" "}
-                        {wallet.account.accountId !== "0" &&
-                          `#${Number(wallet.account.accountId) + 1}`}
+                        account {Number(wallet.account.accountId) + 1}
                       </div>
                       <div
                         className={clsx(`text-sm text-slate-400 font-light`)}

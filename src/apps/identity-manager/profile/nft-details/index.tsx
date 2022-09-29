@@ -1,7 +1,6 @@
-import { decodeTokenIdentifier } from "ictool"
-import React from "react"
+import { TransactionPrettified } from "@psychedelic/cap-js"
+import React, { useState } from "react"
 import { useLocation, useParams } from "react-router-dom"
-import useSWR from "swr"
 
 import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
@@ -18,34 +17,51 @@ const ProfileNFTDetails = () => {
   const { tokenId } = useParams()
 
   const { data: nftDetails } = useNFT(tokenId ?? "")
+  const [NFTActivity, setNFTActivity] = useState<TransactionPrettified[]>([])
+  const [isNFTActivityFetching, setIsNFTActivityFetching] =
+    useState<boolean>(true)
 
   const nft = React.useMemo(() => {
     return state?.nft ?? nftDetails
   }, [nftDetails, state?.nft])
 
-  const { data, isValidating: isTransactionsFetching } = useSWR(
-    nft ? `transactions_${nft?.tokenId}` : null,
-    () => {
-      if (!tokenId) throw new Error("ProfileNFTDetails tokenId missing")
+  const fetchTokenHistory = React.useCallback(
+    async (i: number) => {
+      if (!nft?.canisterId || !tokenId) return
 
-      return getTokenTxHistoryOfTokenIndex(
-        nft?.canisterId ?? nftDetails?.canisterId ?? "",
-        decodeTokenIdentifier(tokenId).index,
-        0,
-        100,
+      const result = await getTokenTxHistoryOfTokenIndex(
+        nft.canisterId,
+        tokenId,
+        i * 10 - 10,
+        i * 10,
       )
+
+      console.debug(`fetchTokenHistory_${i}`, { result, NFTActivity })
+
+      setNFTActivity(NFTActivity.concat(result.txHistory))
+
+      if (!result.isLastPage && NFTActivity.length < 5) fetchTokenHistory(i + 1)
+      else setIsNFTActivityFetching(false)
     },
+    [NFTActivity, nft?.canisterId, tokenId],
   )
 
-  const transactions = React.useMemo(() => {
-    if (!data?.txHistory) return []
+  React.useEffect(() => {
+    fetchTokenHistory(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nft])
 
-    const transactionsSortedByDate = data.txHistory.sort(
+  React.useEffect(() => {
+    console.log({ NFTActivity })
+  }, [NFTActivity])
+
+  const transactions = React.useMemo(() => {
+    const transactionsSortedByDate = NFTActivity.sort(
       (a, b) => Number(b.time) - Number(a.time),
     )
 
     return mapTransactionsForUI(transactionsSortedByDate)
-  }, [data])
+  }, [NFTActivity])
 
   if (!nft)
     return (
@@ -57,7 +73,7 @@ const ProfileNFTDetails = () => {
   return (
     <ProfileNFTDetailsPage
       nft={nft}
-      isTransactionsFetching={isTransactionsFetching}
+      isTransactionsFetching={isNFTActivityFetching}
       transactions={transactions}
     />
   )

@@ -181,11 +181,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                     </div>
                   }
                   details={
-                    <div
-                      className={clsx(
-                        `flex justify-center gap-3 flex-wrap pt-7`,
-                      )}
-                    >
+                    <div className={clsx(`flex gap-3 flex-wrap pt-7`)}>
                       {wallet.tokens.map((token) => (
                         <NFTPreview key={`token${token.tokenId}`} {...token} />
                       ))}

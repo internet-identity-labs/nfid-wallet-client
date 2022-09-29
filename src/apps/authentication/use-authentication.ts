@@ -53,23 +53,16 @@ export const useAuthentication = () => {
     invalidateIdentity()
     setUser(undefined)
     Sentry.setUser(null)
-    // TODO: this is a quick fix after the auth state refactor.
-    // The problem is that after we invalidate the identity, the
-    // frontend throws the error:
-    // This identity has expired due this application's security policy. Please refresh your authentication.
-    // SENTRY: https://sentry.io/organizations/internet-identity-labs/issues/3364199030/?project=6424378&referrer=slack
-    // TICKET: https://app.shortcut.com/the-internet-portal/story/2695/log-out-when-delegate-expires
-    window.location.href = "/"
-    // @ts-ignore TODO: remove this
+
+    // NOTE: after dom ready reload the page so thate safari is able to authenticate again
+    setTimeout(() => {
+      window.location.reload()
+    });
+
     Usergeek.setPrincipal(Principal.anonymous())
   }, [])
 
   const initUserGeek = React.useCallback((principal: Principal) => {
-    // TODO: create pull request removing the requirement of
-    // @dfinity/auth-client to be installed
-    // they just use LocalStorage implementation from it.
-
-    // @ts-ignore TODO: remove this
     Usergeek.setPrincipal(principal)
     Usergeek.trackSession()
   }, [])

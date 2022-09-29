@@ -181,7 +181,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                       </div>
                       <div
                         className={clsx(
-                          `text-sm text-slate-400 font-light mr-3`,
+                          `text-sm text-gray-400 font-light mr-3`,
                         )}
                       >
                         {wallet.tokens.length} Item

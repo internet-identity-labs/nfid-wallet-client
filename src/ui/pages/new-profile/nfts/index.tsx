@@ -114,6 +114,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     reverse && result.reverse()
     return result
   }, [tokensFiltered, sorting, reverse, applications])
+
   const openAccordions = React.useMemo(() => {
     if (!search) {
       return [Math.random().toString()]
@@ -121,6 +122,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
       return Object.values(tokensByWallet).map((x) => Math.random().toString())
     }
   }, [search, tokensByWallet])
+
   return (
     <ProfileTemplate
       pageTitle="Your NFTs"
@@ -189,7 +191,12 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                     </div>
                   }
                   details={
-                    <div className={clsx(`flex gap-3 flex-wrap pt-7`)}>
+                    <div
+                      className={clsx(
+                        "grid gap-4 lg:gap-8 pt-7",
+                        "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
+                      )}
+                    >
                       {wallet.tokens.map((token) => (
                         <NFTPreview key={`token${token.tokenId}`} {...token} />
                       ))}

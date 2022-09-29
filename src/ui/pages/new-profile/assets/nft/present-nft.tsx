@@ -3,14 +3,13 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { NFTDetails } from "frontend/integration/entrepot/types"
+import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import NFTPreview from "frontend/ui/atoms/nft-preview"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import useWindowSize from "frontend/ui/utils/use-window-size"
 
-import { ProfileAssetsNFTItem } from "./nft-item"
-
 interface IProfileAssetsNFT extends React.HTMLAttributes<HTMLDivElement> {
-  nfts: NFTDetails[]
+  nfts: UserNFTDetails[]
 }
 
 export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
@@ -39,10 +38,7 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
           )}
         >
           {nfts.slice(0, visibleLength).map((nft) => (
-            <ProfileAssetsNFTItem
-              nft={nft}
-              key={`nft_${nft.tokenId}_${Math.random()}`}
-            />
+            <NFTPreview {...nft} key={`nft_${nft.tokenId}_${Math.random()}`} />
           ))}
         </div>
         {nfts.length > visibleLength && (

@@ -7,7 +7,6 @@ import {
   selectAccounts,
   mapPersonaToLegacy,
   verifyToken,
-  processApplicationOrigin,
 } from "."
 import { fetchPrincipal } from "../actors"
 import { getNextAccountId } from "./persona/utils"
@@ -46,7 +45,6 @@ export async function fetchAccountsService(
 export async function createAccountService(
   context: AuthorizationMachineContext,
 ): Promise<{ accountId: string }> {
-  console.debug(`createAccountService`, { context })
   if (!context.authRequest)
     throw new Error(`createAccountService context.authRequest missing`)
   if (!context.accounts)
@@ -54,12 +52,6 @@ export async function createAccountService(
   const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
   const derivationOrigin =
     context.authRequest?.derivationOrigin || context.authRequest.hostname
-
-  processApplicationOrigin(
-    derivationOrigin,
-    context.authRequest.hostname,
-    context.appMeta?.name,
-  )
 
   const createPersonaReposne = await createAccount(
     derivationOrigin,

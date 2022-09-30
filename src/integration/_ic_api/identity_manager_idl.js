@@ -66,6 +66,7 @@ export const idlFactory = ({ IDL }) => {
     user_limit: IDL.Nat16,
     domain: IDL.Text,
     name: IDL.Text,
+    is_nft_storage: IDL.Opt(IDL.Bool),
   })
   const HTTPApplicationResponse = IDL.Record({
     data: IDL.Opt(IDL.Vec(Application)),
@@ -296,6 +297,7 @@ export const idlFactory = ({ IDL }) => {
       [],
     ),
     remove_account: IDL.Func([], [BoolHttpResponse], []),
+    remove_account_by_phone_number: IDL.Func([], [BoolHttpResponse], []),
     remove_account_by_principal: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     restore_accounts: IDL.Func([IDL.Text], [BoolHttpResponse], []),
     store_accounts: IDL.Func([IDL.Vec(Account)], [BoolHttpResponse], []),
@@ -310,7 +312,7 @@ export const idlFactory = ({ IDL }) => {
       [HTTPAccountResponse],
       [],
     ),
-    update_application: IDL.Func([Application], [AccessPointResponse], []),
+    update_application: IDL.Func([Application], [HTTPApplicationResponse], []),
     update_application_alias: IDL.Func(
       [IDL.Text, IDL.Text, IDL.Opt(IDL.Text)],
       [BoolHttpResponse],

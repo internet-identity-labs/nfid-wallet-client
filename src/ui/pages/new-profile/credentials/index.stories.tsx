@@ -54,10 +54,18 @@ AddPhoneNumberScreen.args = {
 }
 
 AddPhoneSMSScreen.args = {
-  onResendCode: () => console.log("resend"),
+  onResendCode: () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log("resend")
+        resolve(undefined)
+      }, 2000)
+    })
+  },
   onSubmit: (token) => {
     console.log({ token })
     return Promise.resolve()
   },
   phone: "d2d5bdf84ca7b3130cecf91ad8772d4d",
+  resendDelay: 5,
 }

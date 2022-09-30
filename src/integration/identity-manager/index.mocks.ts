@@ -1,6 +1,7 @@
 import { Application } from "../_ic_api/identity_manager.did"
 
 export const ApplicationMock: Application = {
+  is_nft_storage: [],
   alias: [],
   img: [],
   user_limit: 1,

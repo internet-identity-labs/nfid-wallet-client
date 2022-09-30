@@ -1,13 +1,12 @@
 import { ActorRefFrom, createMachine } from "xstate"
 
-import { fetchWebAuthnCapability } from "frontend/integration/device"
+import { fetchWebAuthnPlatformCapability } from "frontend/integration/device"
 import {
   registerDeviceWithSecurityKey,
   registerDeviceWithWebAuthn,
 } from "frontend/integration/device/services"
-import { fetchProfile } from "frontend/integration/identity-manager"
+import { hasSecurityKeyService } from "frontend/integration/identity"
 import { isDeviceRegistered } from "frontend/integration/identity-manager/services"
-import { fetchAuthenticatorDevices } from "frontend/integration/internet-identity"
 
 export interface Context {}
 
@@ -16,7 +15,7 @@ export type Events =
   | { type: "END" }
   | { type: "DONT_TRUST" }
   | { type: "done.invoke.isDeviceRegistered"; data: boolean }
-  | { type: "done.invoke.fetchWebAuthnCapability"; data: boolean }
+  | { type: "done.invoke.fetchWebAuthnPlatformCapability"; data: boolean }
   | { type: "done.invoke.hasSecurityKey"; data: boolean }
 
 export const TrustDeviceMachine =
@@ -41,15 +40,15 @@ export const TrustDeviceMachine =
                     target: "#TrustDeviceMachine.End",
                   },
                   {
-                    target: "WebAuthn",
+                    target: "WebAuthnPlatformCapability",
                   },
                 ],
               },
             },
-            WebAuthn: {
+            WebAuthnPlatformCapability: {
               invoke: {
-                src: "fetchWebAuthnCapability",
-                id: "fetchWebAuthnCapability",
+                src: "fetchWebAuthnPlatformCapability",
+                id: "fetchWebAuthnPlatformCapability",
                 onDone: [
                   {
                     cond: "bool",
@@ -96,8 +95,8 @@ export const TrustDeviceMachine =
         },
         Register: {
           invoke: {
-            src: "fetchWebAuthnCapability",
-            id: "fetchWebAuthnCapability",
+            src: "fetchWebAuthnPlatformCapability",
+            id: "fetchWebAuthnPlatformCapability",
             onDone: [
               {
                 cond: "bool",
@@ -145,26 +144,10 @@ export const TrustDeviceMachine =
     {
       services: {
         isDeviceRegistered: async () => isDeviceRegistered(),
-        fetchWebAuthnCapability,
+        fetchWebAuthnPlatformCapability,
         registerDeviceWithWebAuthn,
         registerDeviceWithSecurityKey,
-        async hasSecurityKey() {
-          const profile = await fetchProfile()
-          console.debug("hasSecurityKey", { profile })
-          const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
-            BigInt(profile.anchor),
-            true,
-          )
-          const hasSecurityKey =
-            usersAuthenticatorDevices.findIndex(
-              (x) => "cross_platform" in x.key_type,
-            ) >= 0
-          console.debug("hasSecurityKey", {
-            usersAuthenticatorDevices,
-            hasSecurityKey,
-          })
-          return hasSecurityKey
-        },
+        hasSecurityKey: hasSecurityKeyService,
       },
       guards: {
         bool: (_, event) => event.data,

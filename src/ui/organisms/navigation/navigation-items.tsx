@@ -160,6 +160,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                 <div>
                   {isRegistered && !isAuthenticated ? (
                     <Button
+                      id="btn-signin"
                       className={clsx("h-full leading-none")}
                       primary
                       onClick={handleLogin}
@@ -196,6 +197,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
         <div className="relative" ref={popupRef}>
           {isRegistered && !isAuthenticated ? (
             <Button
+              id="btn-signin"
               className={clsx("h-full leading-none")}
               primary
               onClick={handleLogin}

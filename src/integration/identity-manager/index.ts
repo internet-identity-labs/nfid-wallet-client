@@ -52,6 +52,20 @@ export interface Account {
   accountCount?: number
 }
 
+export function applicationToAccount(application: Application): Account {
+  if (!application.isNftStorage)
+    throw new Error(
+      "This application is not intended to be used as a token account.",
+    )
+  return {
+    domain: application.domain,
+    label: application.name,
+    accountId: "0",
+    alias: application.alias,
+    icon: application.icon,
+  }
+}
+
 /**
  * Sanitize im.get_account response from canister into our internal profile representation
  * @param profile {@link AccountResponse} Account response from canister
@@ -157,7 +171,7 @@ export async function fetchAccounts() {
  *
  * @param {string} input
  */
-const rmProto = (input: string) => input.replace(/https?:\/\//, "")
+export const rmProto = (input: string) => input.replace(/https?:\/\//, "")
 
 /**
  * selects all accounts by 3rd party app domain
@@ -264,6 +278,7 @@ export interface Application {
   name: string
   icon?: string
   alias: string[]
+  isNftStorage: boolean
 }
 
 function mapApplication(application: BEApplication): Application {
@@ -276,6 +291,7 @@ function mapApplication(application: BEApplication): Application {
     name: application.name,
     icon: application.img[0],
     alias: mapOptional(application.alias) || [],
+    isNftStorage: !!mapOptional(application.is_nft_storage),
   }
 }
 
@@ -291,7 +307,7 @@ export async function fetchApplications() {
 }
 
 /**
- * Update 3rd party application origin is needed
+ * Update 3rd party application configuration
  *
  * @param derivationOrigin - the canister url
  * @param aliasDomain - the nice application domain used instead of the canister url

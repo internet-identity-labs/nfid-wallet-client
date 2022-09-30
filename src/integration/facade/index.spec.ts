@@ -6,13 +6,22 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 
 import {
   DeviceData,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { ii, im, replaceIdentity } from "frontend/integration/actors"
-import { removeRecoveryDeviceFacade } from "frontend/integration/facade/index"
+import {
+  fetchPrincipals,
+  removeRecoveryDeviceFacade,
+} from "frontend/integration/facade/index"
+import {
+  Account,
+  Application,
+  fetchAccounts,
+} from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
@@ -112,6 +121,98 @@ describe("Facade suite", () => {
         )) as DeviceData
       expect(removedDevice).toBe(undefined)
       expect((await im.read_access_points()).data[0]).toEqual([])
+    })
+
+    it("Should fetch principals", async function () {
+      let mockedIdentity = Ed25519KeyIdentity.generate()
+      const delegationIdentity: DelegationIdentity =
+        await generateDelegationIdentity(mockedIdentity)
+      replaceIdentity(delegationIdentity)
+      const deviceData: DeviceData = {
+        alias: "Device",
+        protection: { unprotected: null },
+        pubkey: Array.from(
+          new Uint8Array(mockedIdentity.getPublicKey().toDer()),
+        ),
+        key_type: { platform: null },
+        purpose: { authentication: null },
+        credential_id: [],
+      }
+      let anchor = await registerIIAccount(mockedIdentity, deviceData)
+      await im.create_account({ anchor })
+      await im.create_access_point({
+        browser: "",
+        device: "",
+        icon: "",
+        pub_key: Array.from(
+          new Uint8Array(mockedIdentity.getPublicKey().toDer()),
+        ),
+      })
+      await im.create_persona({
+        domain: "test",
+        persona_id: "1",
+        persona_name: "",
+      })
+      await im.create_persona({
+        domain: "test",
+        persona_id: "2",
+        persona_name: "",
+      })
+      await im.create_persona({
+        domain: "oneMoreTest",
+        persona_id: "1",
+        persona_name: "",
+      })
+      await im.create_persona({
+        domain: "duplicatedDomain",
+        persona_id: "1",
+        persona_name: "",
+      })
+      let appRequired: Application = {
+        accountLimit: 0,
+        alias: [],
+        domain: "requiredDomain",
+        isNftStorage: true,
+        name: "",
+      }
+      let appDuplicated: Application = {
+        accountLimit: 0,
+        alias: [],
+        domain: "duplicatedDomain",
+        isNftStorage: true,
+        name: "",
+      }
+      let appNotRequired: Application = {
+        accountLimit: 0,
+        alias: [],
+        domain: "notRequiredDomain",
+        isNftStorage: false,
+        name: "",
+      }
+      let accounts = await fetchAccounts()
+      let principals: { principal: Principal; account: Account }[] =
+        await fetchPrincipals(anchor, accounts, [
+          appRequired,
+          appNotRequired,
+          appDuplicated,
+        ])
+      expect(
+        principals.filter((p) => p.account.domain === "test")!.length,
+      ).toEqual(2)
+      expect(
+        principals.filter((p) => p.account.domain === "oneMoreTest")!.length,
+      ).toEqual(1)
+      expect(
+        principals.filter((p) => p.account.domain === "requiredDomain")!.length,
+      ).toEqual(1)
+      expect(
+        principals.filter((p) => p.account.domain === "duplicatedDomain")!
+          .length,
+      ).toEqual(2)
+      // ).toEqual(1)
+      expect(
+        principals.filter((p) => p.account.domain === "notRequiredDomain"),
+      ).toEqual([])
     })
 
     async function getErrorOnIncorrectSeedPhrase(

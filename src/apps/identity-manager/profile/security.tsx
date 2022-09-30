@@ -7,21 +7,20 @@ import {
   LegacyDevice,
   RecoveryDevice,
 } from "frontend/integration/identity-manager/devices/state"
-import { useAccount } from "frontend/integration/identity-manager/queries"
+import { useProfile } from "frontend/integration/identity-manager/queries"
 import { protectRecoveryPhrase } from "frontend/integration/internet-identity"
 import ProfileSecurityPage from "frontend/ui/pages/new-profile/security"
 
 const ProfileSecurity = () => {
   const [fetched, loadOnce] = React.useReducer(() => true, false)
-  const { data: user } = useAccount()
+  const { profile } = useProfile()
 
   const {
     devices,
     socialDevices,
     recoveryDevices,
-    getDevices,
     deleteDevice,
-    handleLoadDevices,
+    getDevices,
     updateDevice,
     getRecoveryDevices,
     createRecoveryPhrase,
@@ -39,9 +38,9 @@ const ProfileSecurity = () => {
   const handleDeleteDevice = React.useCallback(
     async (device: LegacyDevice) => {
       await deleteDevice(device.pubkey)
-      await handleLoadDevices()
+      await getDevices()
     },
-    [deleteDevice, handleLoadDevices],
+    [deleteDevice, getDevices],
   )
 
   const handleDeviceUpdate = React.useCallback(
@@ -78,14 +77,14 @@ const ProfileSecurity = () => {
 
   const handleDeleteRecoveryPhrase = React.useCallback(
     async (seedPhrase: string) => {
-      if (!user?.anchor) return
+      if (!profile?.anchor) return
 
       let phrase = seedPhrase.split(" ")
       const possibleUserNumber = parseInt(phrase[0])
 
       if (
         !isNaN(possibleUserNumber) &&
-        Number(user.anchor) !== possibleUserNumber
+        Number(profile.anchor) !== possibleUserNumber
       ) {
         toast.error("Incorrect seed phrase")
         return
@@ -93,22 +92,25 @@ const ProfileSecurity = () => {
 
       if (!isNaN(possibleUserNumber)) phrase.shift()
 
-      await removeRecoveryDeviceFacade(BigInt(user?.anchor), phrase.join(" "))
+      await removeRecoveryDeviceFacade(
+        BigInt(profile?.anchor),
+        phrase.join(" "),
+      )
       await getRecoveryDevices()
     },
-    [getRecoveryDevices, user?.anchor],
+    [getRecoveryDevices, profile?.anchor],
   )
 
   const handleProtectRecovery = React.useCallback(
     async (seedPhrase: string) => {
-      if (!user?.anchor) return
+      if (!profile?.anchor) return
 
       let phrase = seedPhrase.split(" ")
       const possibleUserNumber = parseInt(phrase[0])
 
       if (
         !isNaN(possibleUserNumber) &&
-        Number(user.anchor) !== possibleUserNumber
+        Number(profile.anchor) !== possibleUserNumber
       ) {
         toast.error("Incorrect seed phrase")
         return
@@ -118,7 +120,7 @@ const ProfileSecurity = () => {
 
       try {
         return await protectRecoveryPhrase(
-          BigInt(user?.anchor ?? 0),
+          BigInt(profile?.anchor ?? 0),
           phrase.join(" "),
         )
       } catch {
@@ -128,7 +130,7 @@ const ProfileSecurity = () => {
         getRecoveryDevices()
       }
     },
-    [getRecoveryDevices, user?.anchor],
+    [getRecoveryDevices, profile?.anchor],
   )
 
   const handleRegisterRecoveryKey = React.useCallback(async () => {

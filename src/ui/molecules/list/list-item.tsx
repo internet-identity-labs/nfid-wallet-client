@@ -11,6 +11,7 @@ interface Props {
   icon?: React.ReactNode
   action?: React.ReactNode
   disabled?: boolean
+  id?: string
 }
 
 export const ListItem: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const ListItem: React.FC<Props> = ({
   action,
   onClick,
   disabled,
+  id,
 }) => {
   return (
     <div
@@ -43,7 +45,10 @@ export const ListItem: React.FC<Props> = ({
 
         <div className="relative flex items-center flex-1">
           <div className="flex-1 flex-shrink">
-            <div className={clsx(disabled ? "text-gray-400" : "text-gray-700")}>
+            <div
+              id={id}
+              className={clsx(disabled ? "text-gray-400" : "text-gray-700")}
+            >
               {title}
             </div>
             {subtitle && (

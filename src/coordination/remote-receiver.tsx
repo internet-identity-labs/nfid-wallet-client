@@ -3,8 +3,8 @@ import { useActor } from "@xstate/react"
 import React from "react"
 
 import {
-  fetchAuthenticatorDevices,
   getMultiIdent,
+  lookup,
   reconstructIdentity,
 } from "frontend/integration/internet-identity"
 import {
@@ -86,9 +86,12 @@ export function RemoteReceiverCoordinator({
       console.debug("handleRemoteRegister", { message })
       // FIXME: Not sure if we need to reconstruct the multiIdent.
       // My guess is, that it's required to call renewDelegation
-      const devices = await fetchAuthenticatorDevices(BigInt(message.anchor))
+      const devices = await lookup(
+        message.anchor,
+        (x) => x.purpose === "authentication",
+      )
       const multiIdent = getMultiIdent(devices)
-      console.debug("handleRemoteRegister", { devices, multiIdent })
+      console.debug("handleRemoteRegister", { devices })
       send({
         type: "RECEIVE_DELEGATION",
         data: {

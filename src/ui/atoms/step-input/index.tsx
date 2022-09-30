@@ -73,6 +73,11 @@ export const StepInput: React.FC<StepInputProps> = ({
     [clearErrors],
   )
 
+  const resetFormErrors = React.useCallback(() => {
+    clearErrors("verificationCode")
+    setIsFormValid(getVerificationCode().length === 6)
+  }, [clearErrors, getVerificationCode])
+
   const handleInput = (e: { target: HTMLInputElement }, index: number) => {
     if (resetResponseError && responseError?.length) {
       resetResponseError()
@@ -105,13 +110,13 @@ export const StepInput: React.FC<StepInputProps> = ({
   }, [handleKeydown, handlePaste])
 
   React.useEffect(() => {
-    if (responseError && errors?.verificationCode?.message !== responseError) {
+    if (responseError?.length) {
       setError("verificationCode", {
         type: "manual",
         message: responseError,
       })
-    }
-  }, [errors?.verificationCode?.message, responseError, setError])
+    } else resetFormErrors()
+  }, [resetFormErrors, responseError, setError])
 
   const validateToken = () => {
     const verificationCode = getVerificationCode()
@@ -140,9 +145,10 @@ export const StepInput: React.FC<StepInputProps> = ({
 
   return (
     <div>
-      <div className={clsx("flex space-x-3", className)}>
+      <div id="pin-input" className={clsx("flex space-x-3", className)}>
         {list.map((_, index) => (
           <Input
+            id={`pin-input-${index}`}
             pin
             type="number"
             key={index}
@@ -156,10 +162,14 @@ export const StepInput: React.FC<StepInputProps> = ({
           />
         ))}
       </div>
-      <div className={clsx("py-1 text-sm text-red-base", errorClasses)}>
+      <div
+        id="pin-input-error"
+        className={clsx("py-1 text-sm text-red-base", errorClasses)}
+      >
         {errors.verificationCode?.message || errors.phonenumber?.message}
       </div>
       <Button
+        id="send-pin"
         primary
         className={clsx("px-10 mt-3 sm:mt-5", buttonClassName)}
         onClick={() => {

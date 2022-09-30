@@ -35,8 +35,6 @@ export const ProfileNFTDetailsPage = ({
     navigator.clipboard.writeText(link(nft.collection.id, nft.index))
   }, [nft.collection.id, nft.index])
 
-  console.log({ nft })
-
   return (
     <ProfileTemplate
       // I have not found any other ways to avoid as To. This is exactly what navigate expect
@@ -117,7 +115,11 @@ export const ProfileNFTDetailsPage = ({
         </ProfileContainer>
       </div>
       <div
-        className={clsx("block border border-gray-200 rounded-xl", "my-[30px]")}
+        className={clsx(
+          "block border border-gray-200 rounded-xl",
+          "my-[30px]",
+          !transactions.length && !isTransactionsFetching && "hidden",
+        )}
       >
         <div
           className={clsx(

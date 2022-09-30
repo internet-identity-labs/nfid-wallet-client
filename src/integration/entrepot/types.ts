@@ -1,6 +1,8 @@
 import { Principal } from "@dfinity/principal"
 
 import { Account } from "../identity-manager"
+import { principalToAddress } from "ictool"
+import { getSubAccountArray } from "ictool/dist/principal"
 
 // External Entrepot types
 export interface EntrepotCollection {
@@ -83,6 +85,19 @@ export interface NFTDetails {
 export interface UserNFTDetails extends NFTDetails {
   principal: Principal
   account: Account
+}
+
+export interface TransferRequest {
+
+}
+
+export interface TransferExtRequest {
+  token: string,
+  from: Principal|string,
+  to: Principal|string,
+  notify: boolean,
+  memo?: string,
+  subaccount?: number,
 }
 
 export type DisplayFormat = "img" | "iframe" | "video"

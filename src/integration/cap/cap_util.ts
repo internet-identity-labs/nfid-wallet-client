@@ -22,7 +22,8 @@ export async function getCapRootTransactions(
       if (typeof rootBucket.canister[0] === "undefined") {
         throw Error(`Psychedelic error. No root bucket for ${canisterId}`)
       }
-      return  rootBucket.canister[0].toText()})
+      return rootBucket.canister[0].toText()
+    })
     .then((capCanister) =>
       CapRoot.init({ host: MAIN_NET, canisterId: capCanister }),
     )

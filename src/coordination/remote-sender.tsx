@@ -2,6 +2,7 @@ import { useMachine } from "@xstate/react"
 import React from "react"
 import { Navigate } from "react-router-dom"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import RemoteSenderMachine, {
   RemoteSenderMachineType,
@@ -17,6 +18,7 @@ interface Props {
 
 export default function RemoteIDPCoordinator({ machine }: Props) {
   const [state] = useMachine(machine || RemoteSenderMachine)
+  const { isAuthenticated } = useAuthentication()
   React.useEffect(() => {
     console.debug("RemoteIDPCoordinator", {
       state: state.value,
@@ -34,7 +36,7 @@ export default function RemoteIDPCoordinator({ machine }: Props) {
         />
       )
     // NOTE: I dislike having routing logic in a coordinator
-    case state.matches("End"):
+    case state.matches("End") && isAuthenticated:
       return <Navigate to="/profile/security" />
     default:
       return <BlurredLoader isLoading />

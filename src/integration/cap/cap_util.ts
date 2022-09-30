@@ -6,7 +6,6 @@ import {
 } from "@psychedelic/cap-js"
 import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
 
-// const MAIN_NET = "https://mainnet.dfinity.network"
 const MAIN_NET = "https://ic0.app"
 
 export async function getCapRootTransactions(
@@ -19,7 +18,11 @@ export async function getCapRootTransactions(
         tokenId: Principal.fromText(canisterId),
       }),
     )
-    .then((rootBucket) => rootBucket.canister[0].toText())
+    .then((rootBucket) => {
+      if (typeof rootBucket.canister[0] === "undefined") {
+        throw Error(`Psychedelic error. No root bucket for ${canisterId}`)
+      }
+      return  rootBucket.canister[0].toText()})
     .then((capCanister) =>
       CapRoot.init({ host: MAIN_NET, canisterId: capCanister }),
     )

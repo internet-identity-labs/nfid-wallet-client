@@ -17,6 +17,8 @@ import {
   removeRecoveryDeviceII,
 } from "frontend/integration/internet-identity"
 
+import { getWalletPrincipal, WALLET_SCOPE } from "../rosetta"
+
 export async function removeRecoveryDeviceFacade(
   userNumber: UserNumber,
   seedPhrase: string,
@@ -41,17 +43,27 @@ export async function fetchPrincipals(
   const fixedAccounts = applications
     .filter((app) => app.isNftStorage)
     .map(applicationToAccount)
+  const NfidWalletAccount: Account = {
+    domain: WALLET_SCOPE,
+    label: "NFID",
+    accountId: "0",
+  }
   const accounts = [...personas, ...fixedAccounts]
 
-  return Promise.all(
-    accounts.map(async (account) => {
-      return {
-        principal: await ii.get_principal(
-          userNumber,
-          getScope(account.domain, account.accountId),
-        ),
-        account,
-      }
-    }),
-  )
+  return (
+    await Promise.all(
+      accounts.map(async (account) => {
+        return {
+          principal: await ii.get_principal(
+            userNumber,
+            getScope(account.domain, account.accountId),
+          ),
+          account,
+        }
+      }),
+    )
+  ).concat({
+    principal: await getWalletPrincipal(Number(userNumber)),
+    account: NfidWalletAccount,
+  })
 }

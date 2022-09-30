@@ -32,15 +32,24 @@ const ProfileNFTDetails = () => {
   const fetchTokenHistory = React.useCallback(
     async (i: number) => {
       if (!nft?.canisterId || !tokenId) return
+      let result
 
-      const result = await getTokenTxHistoryOfTokenIndex(
-        nft.canisterId,
-        tokenId,
-        i * 10 - 10,
-        i * 10,
-      )
+      try {
+        result = await getTokenTxHistoryOfTokenIndex(
+          nft.canisterId,
+          tokenId,
+          i * 10 - 10,
+          i * 10,
+        )
+        console.debug(`fetchTokenHistory_${i}`, { result, NFTActivity })
+      } catch (e) {
+        console.error("fetchTokenHistory", e)
+      }
 
-      console.debug(`fetchTokenHistory_${i}`, { result, NFTActivity })
+      if (!result) {
+        setIsActivityFetching(false)
+        return
+      }
 
       setNFTActivity(NFTActivity.concat(result.txHistory))
 

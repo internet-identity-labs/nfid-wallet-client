@@ -28,10 +28,6 @@ const ProfileAssets = () => {
     ]
   }, [walletBalance, walletExchangeRate])
 
-  React.useEffect(() => {
-    console.log({ nonFungibleTokens })
-  }, [nonFungibleTokens])
-
   return (
     <ProfileAssetsPage
       onIconClick={() =>

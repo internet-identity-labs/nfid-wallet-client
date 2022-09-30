@@ -21,7 +21,11 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
         domain={application.aliasDomains[0] || application.derivationOrigin}
         icon={
           application.icon ? (
-            <img src={application.icon} alt="app icon" />
+            <img
+              className="rounded-full"
+              src={application.icon}
+              alt="app icon"
+            />
           ) : (
             <span className="text-xl font-medium text-blue-base">
               {application.applicationName[0].toUpperCase()}

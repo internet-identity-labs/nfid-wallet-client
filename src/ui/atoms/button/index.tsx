@@ -32,6 +32,7 @@ export const Button = <T extends React.ElementType = "button">({
   error,
   as,
   isActive,
+  id,
   ...buttonProps
 }: ButtonProps<T> &
   Omit<React.ComponentPropsWithoutRef<T>, keyof ButtonProps<T>>) => {
@@ -39,6 +40,7 @@ export const Button = <T extends React.ElementType = "button">({
 
   return (
     <Component
+      id={id}
       disabled={disabled}
       className={clsx(
         "btn",

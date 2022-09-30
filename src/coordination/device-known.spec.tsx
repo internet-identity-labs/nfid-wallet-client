@@ -78,7 +78,7 @@ describe("KnownDevice Coordinator", () => {
         const context = {
           profile: plan.profile,
           isNFID: plan.isNFID,
-          authAppMeta: {
+          appMeta: {
             name: "MyApp",
             logo: "https://my-app.com/logo.svg",
           },
@@ -97,7 +97,7 @@ describe("KnownDevice Coordinator", () => {
           plan.detectOnScreen.map((ele) => screen.getByText(ele))
         })
         expect(IM.fetchApplications).toHaveBeenCalledWith()
-        expect(II.lookup).toHaveBeenCalledWith(11111, false)
+        expect(II.lookup).toHaveBeenCalledWith(11111, expect.any(Function))
       })
     })
   })
@@ -145,7 +145,7 @@ describe("KnownDevice Coordinator", () => {
             anchor: 11111,
           } as Profile,
           isNFID: false,
-          authAppMeta: {
+          appMeta: {
             name: "MyApp",
             logo: "https://my-app.com/logo.svg",
           },
@@ -170,7 +170,7 @@ describe("KnownDevice Coordinator", () => {
           )
         })
         expect(IM.fetchApplications).toHaveBeenCalledWith()
-        expect(II.lookup).toHaveBeenCalledWith(11111, false)
+        expect(II.lookup).toHaveBeenCalledWith(11111, expect.any(Function))
       })
     })
   })
@@ -229,7 +229,7 @@ describe("KnownDevice Coordinator", () => {
             anchor: 11111,
           } as Profile,
           isNFID: plan.isNFID,
-          authAppMeta: {
+          appMeta: {
             name: "MyApp",
             logo: "https://my-app.com/logo.svg",
           },

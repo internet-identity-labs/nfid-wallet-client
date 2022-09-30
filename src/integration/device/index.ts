@@ -1,19 +1,33 @@
 import bowser from "bowser"
+import useSWR from "swr"
 
 const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
 const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
 const PLATFORMS_IOS = ["iPhone", "iPad", "iPod"]
 
 const parser = bowser.getParser(window.navigator.userAgent)
-const browser = parser.getBrowser()
+const browser = (navigator as any).brave
+  ? { ...parser.getBrowser(), name: "Brave" }
+  : parser.getBrowser()
+
 const platform = getPlatformInfo()
 
-export async function fetchWebAuthnCapability() {
-  try {
-    return await window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
-  } catch (e) {
+/**
+ * Determine if the browser is capable of WebAuthN
+ */
+export function isWebAuthNSupported(): boolean {
+  return (
+    window?.PublicKeyCredential !== undefined &&
+    typeof window.PublicKeyCredential === "function"
+  )
+}
+
+export async function fetchWebAuthnPlatformCapability() {
+  if (!isWebAuthNSupported()) {
     return false
   }
+
+  return PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
 }
 
 export const MobileBrowser = [
@@ -81,8 +95,20 @@ export function getPlatformInfo() {
         authenticator: "Fingerprint",
       }
     default:
-      return { make: "unknown", os: "unknown", authenticator: "unknown" }
+      return {
+        make: "unknown",
+        os: "unknown",
+        device: "unknown",
+        authenticator: "unknown",
+      }
   }
+}
+
+let hasWebAuthn: boolean | undefined = undefined
+fetchWebAuthnPlatformCapability().then((r) => (hasWebAuthn = r))
+
+export function fetchWebAuthnCapabilitySync() {
+  return hasWebAuthn
 }
 
 export const deviceInfo = {
@@ -90,12 +116,13 @@ export const deviceInfo = {
   browser,
   newDeviceName: `NFID ${browser.name} on ${platform.os}`,
   isMobile: getIsMobileDeviceMatch(),
-  hasWebAuthn: fetchWebAuthnCapability(),
 }
 
-let hasWebAuthn: boolean | undefined = undefined
-fetchWebAuthnCapability().then((r) => (hasWebAuthn = r))
+export const useDeviceInfo = () => {
+  const { data: hasPlatformAuthenticator } = useSWR(
+    "hasWebAuthNCapability",
+    fetchWebAuthnPlatformCapability,
+  )
 
-export function fetchWebAuthnCapabilitySync() {
-  return hasWebAuthn
+  return { ...deviceInfo, hasPlatformAuthenticator }
 }

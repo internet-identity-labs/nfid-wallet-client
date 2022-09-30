@@ -1,6 +1,10 @@
+import { DerEncodedPublicKey } from "@dfinity/agent"
+import { Buffer } from "buffer"
 import * as tweetnacl from "tweetnacl"
 
 import { CredentialId, DeviceData } from "../_ic_api/internet_identity_types"
+import { Device } from "../internet-identity"
+import { derFromPubkey } from "../internet-identity/utils"
 
 interface DeviceWithCredential extends DeviceData {
   credential_id: [CredentialId]
@@ -34,6 +38,25 @@ export const transformDeviceDataToExcludeCredentials = (
     id: new Uint8Array(d.credential_id[0]),
     type: "public-key",
   }))
+}
+
+type Credentials = {
+  pubkey: DerEncodedPublicKey
+  credentialId: Buffer
+}
+
+export function getCredentials(devices: Device[]): Credentials[] {
+  return devices
+    .filter(
+      (device): device is Device & { credentialId: CredentialId } =>
+        !!device.credentialId && device.credentialId.length > 0,
+    )
+    .map((device) => {
+      return {
+        pubkey: derFromPubkey(device.pubkey),
+        credentialId: Buffer.from(device.credentialId),
+      }
+    })
 }
 
 declare const IS_E2E_TEST: string

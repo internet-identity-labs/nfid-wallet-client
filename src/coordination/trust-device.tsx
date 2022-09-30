@@ -1,6 +1,7 @@
 import { useActor } from "@xstate/react"
 import React, { useState } from "react"
 
+import { useDeviceInfo } from "frontend/integration/device"
 import {
   registerDeviceWithSecurityKey,
   registerDeviceWithWebAuthn,
@@ -11,6 +12,8 @@ import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-devic
 export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
   const [isLoading, setIsLoading] = useState(false)
   const [state, send] = useActor(actor)
+  const { hasPlatformAuthenticator, platform } = useDeviceInfo()
+
   React.useEffect(
     () =>
       console.debug("TrustDeviceCoordinator", {
@@ -19,6 +22,7 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
       }),
     [state.value, state.context],
   )
+
   return (
     <AuthorizeRegisterDeciderScreen
       onLogin={() => send("DONT_TRUST")}
@@ -34,6 +38,9 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
       }}
       isLoading={isLoading || !state.matches("Select")}
       loadingMessage={isLoading ? "registering device" : undefined}
+      isPlatformAuthenticatorAvailable={!!hasPlatformAuthenticator}
+      deviceName={platform.device}
+      platformAuthenticatorName={platform.authenticator}
     />
   )
 }

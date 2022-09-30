@@ -82,9 +82,11 @@ export interface Typegen0 {
     TrustDeviceMachine: "done.invoke.authorize"
     getAppMeta: "xstate.init"
     handshake: "xstate.init"
-    postDelegation: "done.invoke.trustDeviceMachine"
+    postDelegation: "done.invoke.authorize" | "done.invoke.trustDeviceMachine"
   }
-  eventsCausingGuards: {}
+  eventsCausingGuards: {
+    isWebAuthNSupported: "done.invoke.authorize"
+  }
   eventsCausingDelays: {}
   matchesStates:
     | "AuthenticationMachine"

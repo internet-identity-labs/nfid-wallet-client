@@ -1,8 +1,17 @@
+import { Principal } from "@dfinity/principal"
+
 import {
   DeviceKey,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
-import { removeAccessPoint } from "frontend/integration/identity-manager"
+import { ii } from "frontend/integration/actors"
+import {
+  Account,
+  Application,
+  applicationToAccount,
+  removeAccessPoint,
+} from "frontend/integration/identity-manager"
+import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import {
   removeDevice,
   removeRecoveryDeviceII,
@@ -22,4 +31,27 @@ export async function removeAccessPointFacade(
 ): Promise<void> {
   await removeDevice(userNumber, pubKey)
   await removeAccessPoint(pubKey)
+}
+
+export async function fetchPrincipals(
+  userNumber: UserNumber,
+  personas: Account[],
+  applications: Application[],
+): Promise<{ principal: Principal; account: Account }[]> {
+  const fixedAccounts = applications
+    .filter((app) => app.isNftStorage)
+    .map(applicationToAccount)
+  const accounts = [...personas, ...fixedAccounts]
+
+  return Promise.all(
+    accounts.map(async (account) => {
+      return {
+        principal: await ii.get_principal(
+          userNumber,
+          getScope(account.domain, account.accountId),
+        ),
+        account,
+      }
+    }),
+  )
 }

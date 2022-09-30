@@ -7,9 +7,6 @@ import QR from "qrcode"
 import { ii, pubsub } from "frontend/integration/actors"
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import * as device from "frontend/integration/device"
-import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
-import { WAIT_FOR_CONFIRMATION_MESSAGE } from "frontend/integration/pubsub"
-import { REMOTE_LOGIN_REGISTER_MESSAGE } from "frontend/integration/pubsub/__mocks"
 import UnknownDeviceMachine, {
   UnknownDeviceActor,
   UnknownDeviceContext,
@@ -22,7 +19,7 @@ const setupCoordinator = (userAgent: string, WebAuthNCapability: boolean) => {
   // @ts-ignore
   global.navigator.userAgent = userAgent
   jest
-    .spyOn(device, "fetchWebAuthnCapability")
+    .spyOn(device, "fetchWebAuthnPlatformCapability")
     .mockImplementation(() => Promise.resolve(WebAuthNCapability))
   const actor = makeInvokedActor<UnknownDeviceContext>(UnknownDeviceMachine, {
     appMeta: {
@@ -52,7 +49,7 @@ describe("UnknownDeviceCoordinator", () => {
           screen.getByText("Use passkey from a device with a camera")
         })
 
-        expect(device.fetchWebAuthnCapability).toHaveBeenCalled()
+        expect(device.fetchWebAuthnPlatformCapability).toHaveBeenCalled()
       },
     )
     it.each(["DesktopBrowser", ...device.MobileBrowser])(
@@ -155,7 +152,7 @@ describe("UnknownDeviceCoordinator", () => {
           screen.getByText("Continue with enhanced security")
         })
 
-        expect(device.fetchWebAuthnCapability).toHaveBeenCalled()
+        expect(device.fetchWebAuthnPlatformCapability).toHaveBeenCalled()
       },
     )
   })

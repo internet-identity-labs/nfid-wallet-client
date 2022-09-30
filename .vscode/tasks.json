@@ -14,7 +14,8 @@
         "reveal": "always",
         "panel": "new",
         "group": "develop"
-      }
+      },
+      "problemMatcher": []
     },
     {
       "label": "NFID Frontend",
@@ -24,7 +25,8 @@
         "reveal": "always",
         "panel": "new",
         "group": "develop"
-      }
+      },
+      "problemMatcher": []
     },
     {
       "label": "NFID DFX",
@@ -34,7 +36,8 @@
         "reveal": "always",
         "panel": "new",
         "group": "develop"
-      }
+      },
+      "problemMatcher": []
     },
     {
       "label": "NFID Storybook",
@@ -44,7 +47,8 @@
         "reveal": "always",
         "panel": "new",
         "group": "develop"
-      }
+      },
+      "problemMatcher": []
     },
     {
       "label": "NFID NGROK tunnel",
@@ -55,7 +59,8 @@
         "reveal": "always",
         "panel": "new",
         "group": "develop"
-      }
+      },
+      "problemMatcher": []
     },
     {
       "label": "NFID E2E TEST",
@@ -66,7 +71,8 @@
         "reveal": "always",
         "panel": "new",
         "group": "tests"
-      }
+      },
+      "problemMatcher": []
     }
   ]
 }

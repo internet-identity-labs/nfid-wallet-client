@@ -58,12 +58,9 @@ const AuthenticationMachine = createMachine(
           ],
           data: (context) =>
             ({
-              authAppMeta: context.appMeta,
+              appMeta: context.appMeta,
               authRequest: context.authRequest,
-            } as Pick<
-              KnownDeviceMachineContext,
-              "authAppMeta" | "authRequest"
-            >),
+            } as Pick<KnownDeviceMachineContext, "appMeta" | "authRequest">),
         },
       },
       UnknownDevice: {

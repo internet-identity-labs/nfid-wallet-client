@@ -16,7 +16,9 @@ const TransactionReceive: React.FC<ITransactionReceive> = ({
 }) => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(account)
-    toast.success("Copied to clipboard")
+    toast.success("Copied to clipboard", {
+      toastId: "copiedToClipboard",
+    })
   }
   return (
     <div>

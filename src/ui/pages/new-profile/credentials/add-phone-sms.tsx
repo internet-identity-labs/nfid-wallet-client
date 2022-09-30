@@ -15,6 +15,7 @@ interface IProfileAddPhoneSMS {
   resetResponseError?: () => void
   isLoading: boolean
   phone: string | number
+  resendDelay?: number
 }
 
 const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
@@ -24,12 +25,13 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
   resetResponseError,
   isLoading,
   phone,
+  resendDelay = 60,
 }) => {
-  const { counter, setCounter } = useTimer({ defaultCounter: 60 })
+  const { counter, setCounter } = useTimer({ defaultCounter: resendDelay })
 
   const handleResend = () => {
     onResendCode && onResendCode()
-    setCounter(60)
+    setCounter(resendDelay)
   }
 
   return (

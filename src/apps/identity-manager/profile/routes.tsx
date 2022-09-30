@@ -13,12 +13,16 @@ import CopyRecoveryPhrase from "./copy-recovery-phrase"
 import ProfileCredentials from "./credentials"
 import ProfilePhone from "./credentials/phone-number"
 import ProfileSMS from "./credentials/phone-sms"
+import ProfileNFTDetails from "./nft-details"
+import ProfileNFTs from "./nfts"
 import ProfileSecurity from "./security"
 import ProfileTransactions from "./transactions"
 
 export const ProfileConstants = {
   base: "/profile",
+  nftDetails: ":tokenId",
   assets: "assets",
+  nfts: "nfts",
   security: "security",
   credentials: "credentials",
   transactions: "transactions",
@@ -35,6 +39,14 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <ProfileAssets />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={ProfileConstants.nfts}
+      element={
+        <AuthWrapper>
+          <ProfileNFTs />
         </AuthWrapper>
       }
     />
@@ -94,6 +106,14 @@ export const ProfileRoutes = (
         </AuthWrapper>
       }
     />
+    <Route
+      path={`${ProfileConstants.assets}/${ProfileConstants.nftDetails}`}
+      element={
+        <AuthWrapper>
+          <ProfileNFTDetails />
+        </AuthWrapper>
+      }
+    />
   </Route>
 )
 
@@ -102,20 +122,24 @@ export const profileSidebarItems = [
     icon: AssetsIcon,
     title: "Assets",
     link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
+    id: "profile-assets",
   },
   {
     icon: ApplicationsIcon,
     title: "Applications",
     link: `${ProfileConstants.base}/${ProfileConstants.applications}`,
+    id: "profile-applications",
   },
   {
     icon: CredentialsIcon,
     title: "Credentials",
     link: `${ProfileConstants.base}/${ProfileConstants.credentials}`,
+    id: "profile-credentials",
   },
   {
     icon: SecurityIcon,
     title: "Security",
     link: `${ProfileConstants.base}/${ProfileConstants.security}`,
+    id: "profile-security",
   },
 ]

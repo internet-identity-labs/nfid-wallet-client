@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-import { useDeviceInfo } from "frontend/apps/device/use-device-info"
 import { ElementProps } from "frontend/types/react"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -10,7 +9,10 @@ interface AuthorizeRegisterDeciderProps extends ElementProps<HTMLDivElement> {
   onLogin: () => Promise<void> | void
   onRegisterPlatformDevice: () => Promise<void>
   onRegisterSecurityDevice: () => Promise<void>
+  deviceName: string
+  platformAuthenticatorName: string
   isLoading: boolean
+  isPlatformAuthenticatorAvailable: boolean
   loadingMessage?: string
 }
 
@@ -18,33 +20,31 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
   AuthorizeRegisterDeciderProps
 > = ({
   isLoading,
+  deviceName,
+  platformAuthenticatorName,
+  isPlatformAuthenticatorAvailable,
   loadingMessage,
   onLogin,
   onRegisterPlatformDevice,
   onRegisterSecurityDevice,
 }) => {
-  const {
-    platform: { device, authenticator: platformAuth },
-    isWebAuthNAvailable,
-  } = useDeviceInfo()
-
   return (
     <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
       <ApplicationMeta
         title="Sign in faster on this device"
         subTitle={
-          isWebAuthNAvailable
-            ? `Trust this ${device}? You can quickly and securely sign in next time using this device's ${platformAuth}.`
+          isPlatformAuthenticatorAvailable
+            ? `Trust this ${deviceName}? You can quickly and securely sign in next time using this device's ${platformAuthenticatorName}.`
             : "You can quickly and securely sign in next time with a security key if you register one now."
         }
       />
       <div className="flex flex-col w-full space-y-1 mt-7">
-        {isWebAuthNAvailable ? (
+        {isPlatformAuthenticatorAvailable ? (
           <>
             <DeviceRaw
               id="trust-this-device"
               title={"Trust this device"}
-              subtitle={`Use ${platformAuth} to continue`}
+              subtitle={`Use ${platformAuthenticatorName} to continue`}
               handler={onRegisterPlatformDevice}
             />
             <DeviceRaw

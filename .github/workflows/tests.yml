@@ -44,14 +44,16 @@ jobs:
           AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
           AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-
+          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
   build:
     needs: check-secrets
@@ -66,8 +68,19 @@ jobs:
 
       - uses: actions/checkout@v3
 
+      - name: Add npmrc
+        uses: ferluisxd/create-npmrc@3
+        with:
+          org_name: psychedelic
+        env:
+          AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: Run install, build and serve for e2e
         run: |
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          EOF
           yarn
           yarn build
           yarn serve -l 9090 -s build &
@@ -92,11 +105,12 @@ jobs:
           AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
           GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-
+          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: Running unit tests
         run: yarn test
@@ -115,7 +129,10 @@ jobs:
           # yarn test:e2e:mobile
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+          IC_HOST: https://ic0.app
 
       - name: Generate HTML Report
         if: always()

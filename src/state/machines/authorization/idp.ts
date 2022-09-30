@@ -1,5 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { isWebAuthNSupported } from "frontend/integration/device"
 import {
   getAppMeta,
   handshake,
@@ -120,7 +121,10 @@ const IDPMachine =
           invoke: {
             src: "AuthorizationMachine",
             id: "authorize",
-            onDone: "TrustDevice",
+            onDone: [
+              { target: "TrustDevice", cond: "isWebAuthNSupported" },
+              { target: "End" },
+            ],
             data: (context, event) =>
               ({
                 appMeta: context.appMeta,
@@ -166,6 +170,9 @@ const IDPMachine =
           thirdPartyAuthoSession: (context, event) => event.data,
         }),
         assignError: assign({ error: (context, event) => event.data }),
+      },
+      guards: {
+        isWebAuthNSupported,
       },
     },
   )

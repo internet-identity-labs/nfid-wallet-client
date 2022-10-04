@@ -4,7 +4,6 @@ import {
   ActorMethod,
   HttpAgent,
   Identity,
-  SignIdentity,
   SubmitResponse,
 } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"

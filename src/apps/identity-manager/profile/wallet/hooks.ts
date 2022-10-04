@@ -3,13 +3,15 @@ import { principalToAddress } from "ictool"
 import { useEffect, useMemo } from "react"
 import useSWR, { mutate } from "swr"
 
+import {
+  getWalletDelegation,
+  getWalletPrincipal,
+} from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import {
   getBalance,
   getExchangeRate,
   getTransactionHistory,
-  getWalletDelegation,
-  getWalletPrincipal,
   transfer,
 } from "frontend/integration/rosetta"
 

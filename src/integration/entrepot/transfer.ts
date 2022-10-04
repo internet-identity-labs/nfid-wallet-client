@@ -6,7 +6,6 @@ import {
   Balance,
   TransferRequest,
   TransferResult,
-  User,
 } from "frontend/integration/_ic_api/ext.did"
 import { extIDL } from "frontend/integration/_ic_api/ext_idl"
 import { initActor } from "frontend/integration/actors"

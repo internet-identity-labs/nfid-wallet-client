@@ -13,7 +13,7 @@ import { delegationByScope } from "frontend/integration/internet-identity"
 
 describe("wallet suite", () => {
   describe("getWalletPrincipal", () => {
-    it("should return correct exchange rate.", async function () {
+    it("request ii for principal", async function () {
       let expected = Principal.anonymous()
       // @ts-ignore
       ii.get_principal = jest.fn(async () => expected)

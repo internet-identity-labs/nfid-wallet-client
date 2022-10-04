@@ -8,7 +8,7 @@ import {
 } from "frontend/integration/internet-identity"
 
 const WALLET_SCOPE = "nfid.one"
-const WALLET_SESSION_TTL = BigInt(2 * 60 * 1e9)
+export const WALLET_SESSION_TTL = BigInt(2 * 60 * 1e9)
 
 export async function getWalletPrincipal(anchor: number): Promise<Principal> {
   return fetchPrincipal(anchor, WALLET_SCOPE).catch((e) => {

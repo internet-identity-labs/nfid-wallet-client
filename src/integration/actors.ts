@@ -1,6 +1,12 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
-import { HttpAgent, Identity, SubmitResponse } from "@dfinity/agent"
+import {
+  ActorMethod,
+  HttpAgent,
+  Identity,
+  SignIdentity,
+  SubmitResponse,
+} from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
@@ -151,6 +157,15 @@ export function ledgerWithIdentity(identity: DelegationIdentity) {
   })
 }
 
+export async function initActor(
+  identity: SignIdentity,
+  canisterId: string,
+  factory: InterfaceFactory,
+): Promise<Record<string, ActorMethod>> {
+  return actor(canisterId, factory, {
+    agent: new HttpAgent({ host: "https://ic0.app", identity }),
+  })
+}
 // All of the actor definitions needed in our app should go here.
 
 export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)

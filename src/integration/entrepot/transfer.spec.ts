@@ -4,14 +4,12 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { expect } from "@jest/globals"
-import { principalToAddress } from "ictool"
+import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
-import { Balance, TransferResult } from "frontend/integration/_ic_api/ext.did"
+import { Balance } from "frontend/integration/_ic_api/ext.did"
 import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
-import { transferNFT } from "frontend/integration/entrepot/transfer"
+import { transferEXT } from "frontend/integration/entrepot/transfer"
 import { EntrepotCollection } from "frontend/integration/entrepot/types"
-
-import { collection } from "."
 
 const identityA: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -23,6 +21,7 @@ const identityB: JsonnableEd25519KeyIdentity = [
 ]
 const testToken = "m2qxv-aqkor-uwiaa-aaaaa-b4ats-4aqca-aaelv-q"
 const testCollection = "p5jg7-6aaaa-aaaah-qcolq-cai"
+const testCollectionTurtle = "jeghr-iaaaa-aaaah-qco7q-cai" //fl5nr-xiaaa-aaaai-qbjmq-cai ICTurtles on DAB and legacy API in Entrepot
 
 describe("NFT transfer suite", () => {
   describe("ext", () => {
@@ -40,10 +39,36 @@ describe("NFT transfer suite", () => {
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
-      let response: Balance = await transferNFT(
+      let response: Balance = await transferEXT(
         testToken,
         sourceIdentity,
         principalToAddress(targetIdentity.getPrincipal() as any),
+      )
+      expect(response).toBe(BigInt(1))
+    })
+
+    //Looks like transferTo and transferFrom been wrapped with common interface.
+    //For now, it's not really possible to get collection/token info for old canisters.
+    //Probably canister wrapper used for all legacy interfaces,
+    // and we can proceed with common transfer API for EXT
+    it("should transfer wrapped canister", async function () {
+      let testToken = encodeTokenIdentifier(testCollectionTurtle, 7322)
+      let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
+      let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
+      // @ts-ignore
+      let ex: EntrepotCollection = { id: testCollectionTurtle }
+      // @ts-ignore
+      let owner = (await fetchCollectionTokens(ex)).find(
+        (token) => token.tokenId === testToken,
+      ).owner
+      let sourceIdentity =
+        owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
+      let targetIdentity =
+        owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
+      let response: Balance = await transferEXT(
+        testToken,
+        sourceIdentity,
+        targetIdentity.getPrincipal().toText(),
       )
       expect(response).toBe(BigInt(1))
     })
@@ -61,7 +86,7 @@ describe("NFT transfer suite", () => {
         owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
       let targetIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
-      let transfer = transferNFT(
+      let transfer = transferEXT(
         testToken,
         sourceIdentity,
         principalToAddress(targetIdentity.getPrincipal() as any),

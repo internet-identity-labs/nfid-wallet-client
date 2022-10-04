@@ -11,7 +11,7 @@ import { extIDL } from "frontend/integration/_ic_api/ext_idl"
 import { initActor } from "frontend/integration/actors"
 import { isHex } from "frontend/ui/utils"
 
-export async function transferNFT(
+export async function transferEXT(
   token: string,
   source: Identity,
   target: string,

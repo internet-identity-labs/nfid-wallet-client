@@ -4,15 +4,9 @@
 import { Principal } from "@dfinity/principal"
 import { expect } from "@jest/globals"
 
-import { ii } from "frontend/integration/actors"
 import { TRANSACTION_HISTORY } from "frontend/integration/internet-identity/__mocks"
 
-import {
-  getBalance,
-  getExchangeRate,
-  getTransactionHistory,
-  getWalletPrincipal,
-} from "."
+import { getBalance, getExchangeRate, getTransactionHistory } from "."
 
 describe("rosetta suite", () => {
   describe("getBalance", () => {
@@ -45,22 +39,6 @@ describe("rosetta suite", () => {
     it("should return correct exchange rate.", async function () {
       let response = await getExchangeRate()
       expect(typeof response).toBe("number")
-    })
-  })
-
-  describe("getWalletPrincipal", () => {
-    it("should return correct exchange rate.", async function () {
-      let expected = Principal.anonymous()
-      // @ts-ignore
-      ii.get_principal = jest.fn(async () => expected)
-      let response = await getWalletPrincipal(10000)
-      expect(response).toBe(expected)
-    })
-  })
-
-  describe("getWalletDelegation", () => {
-    it("should expire in expected time", () => {
-      // TODO Wallet code review. Write test
     })
   })
 

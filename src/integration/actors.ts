@@ -158,7 +158,7 @@ export function ledgerWithIdentity(identity: DelegationIdentity) {
 }
 
 export async function initActor(
-  identity: SignIdentity,
+  identity: Identity,
   canisterId: string,
   factory: InterfaceFactory,
 ): Promise<Record<string, ActorMethod>> {

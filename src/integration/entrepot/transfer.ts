@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { Identity } from "@dfinity/agent/lib/cjs/auth"
 import { Principal } from "@dfinity/principal"
 import { decodeTokenIdentifier } from "ictool"
 
@@ -13,7 +13,7 @@ import { isHex } from "frontend/ui/utils"
 
 export async function transferNFT(
   token: string,
-  source: SignIdentity,
+  source: Identity,
   target: string,
 ): Promise<Balance> {
   let actor = await initActor(

@@ -33,7 +33,6 @@ import {
   Timestamp,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
-import { ii } from "frontend/integration/actors"
 import {
   accessList,
   ii,

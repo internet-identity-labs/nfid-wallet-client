@@ -214,6 +214,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
               options={walletOptions}
               label="Wallets"
               onChange={setWalletsFilter}
+              isSearch
             />
           </div>
         </ProfileContainer>

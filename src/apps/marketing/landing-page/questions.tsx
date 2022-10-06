@@ -152,6 +152,27 @@ export const questions = [
     ),
   },
   {
+    title:
+      "How can I use NFID to access applications I've been using with my Internet Identity?",
+    info: (
+      <div>
+        NFID is built on top of Internet Identity and because of this, signing
+        in with NFID will sign you into the same accounts as those you've
+        created with Internet Identity. All you need to do is enter your
+        Internet Identity recovery phrase in the{" "}
+        <a
+          className="text-blue-base hover:underline hover:text-blue-hover"
+          href="/recover-nfid/enter-recovery-phrase"
+          target="_blank"
+          rel="noreferrer"
+        >
+          NFID recovery screen
+        </a>{" "}
+        from your phone and tap on the button to trust the device.
+      </div>
+    ),
+  },
+  {
     title: "Why don't you offer passwords or other methods of authentication?",
     info: "Other authentication methods are the culprit for over 80% of all security hacks and data breaches because a username and password is all an attacker needs to impersonate you. NFID makes it impossible for anyone to breach any of your accounts without your device and the ability to unlock it. We also allow you to create and authenticate to your NFID conveniently with Google.",
   },
@@ -209,27 +230,6 @@ export const questions = [
   {
     title: "How is my phone number used?",
     info: "Your phone number is encrypted and only accessible to you. Applications will sometimes want to know you're a unique human being before making some features available. When you share an obfuscated version of your phone number to applications, they will never be able to de-obfuscate it back to your actual number. We've received feedback from the community that this is a reasonable first step in qualifying a unique person, though we're already planning on supporting even more sybil-resistant credentials.",
-  },
-  {
-    title:
-      "How can I use NFID to access applications I've been using with my Internet Identity?",
-    info: (
-      <div>
-        NFID is built on top of Internet Identity and because of this, signing
-        in with NFID will sign you into the same accounts as those you've
-        created with Internet Identity. All you need to do is enter your
-        Internet Identity recovery phrase in the{" "}
-        <a
-          className="text-blue-base hover:underline hover:text-blue-hover"
-          href="/recover-nfid/enter-recovery-phrase"
-          target="_blank"
-          rel="noreferrer"
-        >
-          NFID recovery screen
-        </a>{" "}
-        from your phone and tap on the button to trust the device.
-      </div>
-    ),
   },
   {
     title: "Still open questions?",

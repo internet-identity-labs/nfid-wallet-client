@@ -100,6 +100,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
         })),
       )
     },
+    { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )
 
   const appAccountBalance = React.useMemo(

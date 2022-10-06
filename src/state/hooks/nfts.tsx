@@ -6,12 +6,8 @@ import {
   collection,
   tokens,
 } from "frontend/integration/entrepot"
-import { fetchPrincipals } from "frontend/integration/facade"
-import {
-  fetchAccounts,
-  fetchApplications,
-} from "frontend/integration/identity-manager"
-import { useProfile } from "frontend/integration/identity-manager/queries"
+
+import { useAllPrincipals } from "../../integration/internet-identity/queries"
 
 export function useNFT(tokenid: string) {
   const { canister } = decodeTokenIdentifier(tokenid)
@@ -35,32 +31,14 @@ export function useNFT(tokenid: string) {
 }
 
 export function useAllNFTs() {
-  const { profile } = useProfile()
+  const { principals } = useAllPrincipals()
 
-  const accounts = useSWR(`accounts`, fetchAccounts)
-  const applications = useSWR(`applications`, () => {
-    return fetchApplications().then((r) => r.filter((app) => app.isNftStorage))
-  })
-  const principals = useSWR(
-    profile?.anchor && accounts?.data && applications.data
-      ? `principals${profile.anchor}`
-      : null,
-    () => {
-      if (!profile || !accounts.data || !applications.data)
-        throw new Error("Unreachable")
-      return fetchPrincipals(
-        BigInt(profile.anchor),
-        accounts.data,
-        applications.data,
-      )
-    },
-  )
-  return useSWR(principals?.data ? `userTokers` : null, () => {
-    if (!principals.data) throw new Error("unreachable")
+  return useSWR(principals ? `userTokers` : null, () => {
+    if (!principals) throw new Error("unreachable")
     console.debug(
       "Searched for NFTs at principals",
-      principals.data.map((p) => [p.account, p.principal.toText()]),
+      principals.map((p) => [p.account, p.principal.toText()]),
     )
-    return principalTokens(principals.data)
+    return principalTokens(principals)
   })
 }

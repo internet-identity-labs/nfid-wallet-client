@@ -10,7 +10,6 @@ import {
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import {
   getBalance,
-  getExchangeRate,
   getTransactionHistory,
   transfer,
 } from "frontend/integration/rosetta"

@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
 
@@ -76,7 +77,13 @@ function mapApplicationBalance(
       ...(currentApp ? currentApp.accounts : []),
       {
         accountName:
-          rawBalance.account.label || `account ${rawBalance.account.accountId}`,
+          rawBalance.account.label ||
+          `account ${parseInt(rawBalance.account.accountId) + 1}`,
+        principalId: rawBalance.principalId,
+        accountId: principalToAddress(
+          // FIXME: any typecast because of Principal version mismatch in ictools
+          Principal.fromText(rawBalance.principalId) as any,
+        ),
         icpBalance: `${rawBalance.balance.value} ${token}`,
         usdBalance: icpToUSD(rawBalance.balance.value, icpExchangeRate),
       },

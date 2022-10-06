@@ -20,6 +20,7 @@ export interface IDropdownSelect {
   bordered?: boolean
   options: IOption[]
   isSearch?: boolean
+  onChange: (values: string[]) => void
 }
 
 export const DropdownSelect = ({
@@ -27,6 +28,7 @@ export const DropdownSelect = ({
   options,
   bordered = true,
   isSearch = false,
+  onChange,
 }: IDropdownSelect) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState(true)
@@ -45,11 +47,11 @@ export const DropdownSelect = ({
   }, [options, searchInput])
 
   useEffect(() => {
-    console.log({ selectedValues })
-  }, [selectedValues])
+    onChange(selectedValues)
+  }, [onChange, selectedValues])
 
   return (
-    <div className={clsx("relative w-[400px]")} ref={ref}>
+    <div className={clsx("relative w-full")} ref={ref}>
       <label className={clsx("text-xs tracking-[0.16px] leading-4 mb-1")}>
         {label}
       </label>
@@ -87,6 +89,7 @@ export const DropdownSelect = ({
           <div className={clsx("max-h-[40vh] overflow-auto flex flex-col")}>
             {filteredOptions?.map((option) => (
               <label
+                key={`option_${option.value}`}
                 htmlFor={option.value}
                 className={clsx(
                   "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",

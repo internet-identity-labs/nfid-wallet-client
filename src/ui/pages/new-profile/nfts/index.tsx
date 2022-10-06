@@ -14,6 +14,7 @@ import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Application } from "frontend/integration/identity-manager"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
+import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { Input } from "frontend/ui/atoms/input"
 import { Loader } from "frontend/ui/atoms/loader"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
@@ -41,10 +42,23 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
 }) => {
   const [search, setSearch] = React.useState("")
   const [display, setDisplay] = React.useState<"grid" | "table">("grid")
+  const [walletsFilter, setWalletsFilter] = React.useState<string[]>([])
+  const [collectionsFilter, setCollectionsFilter] = React.useState<string[]>([])
+
   const tokensFiltered = React.useMemo(
-    () => filterUserTokens(tokens, { search }),
-    [tokens, search],
+    () =>
+      filterUserTokens(tokens, { search })
+        .filter((token) => {
+          if (!walletsFilter.length) return true
+          return walletsFilter.includes(token.principal.toText())
+        })
+        .filter((token) => {
+          if (!collectionsFilter.length) return true
+          return collectionsFilter.includes(token.collection.id)
+        }),
+    [tokens, search, walletsFilter, collectionsFilter],
   )
+
   const tokensByWallet = React.useMemo(
     () =>
       userTokensByWallet(
@@ -125,24 +139,79 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     }
   }, [search, tokensByWallet])
 
+  const walletOptions = React.useMemo(() => {
+    const wallets = Object.values(
+      userTokensByWallet(
+        Object.values(userTokensByCollection(sortUserTokens(tokens)))
+          .map((x) => x.tokens)
+          .flat(),
+      ),
+    ).filter((token) => {
+      if (!collectionsFilter.length) return true
+      return collectionsFilter.includes(token.tokens[0].collection.id)
+    })
+
+    return Object.values(wallets).map((item) => ({
+      // TODO NFT getWalletName util
+      label: `${
+        applications.find((x) => x.domain === item.account.domain)?.name ?? ""
+      } account ${Number(item.account.accountId) + 1}`,
+      value: item.principal,
+      afterLabel: item.tokens.length,
+    }))
+  }, [applications, collectionsFilter, tokens])
+
+  const collectionsOptions = React.useMemo(() => {
+    const tokensByCollection = Object.values(
+      userTokensByCollection(sortUserTokens(tokens)),
+    ).filter((obj) => {
+      if (!walletsFilter.length) return true
+      // return obj.tokens[0].
+      return false
+    })
+
+    console.log({ tokensByCollection, walletsFilter })
+
+    return tokensByCollection.map((option) => ({
+      label: option.collection.name,
+      value: option.collection.id,
+      icon: option.collection.avatar,
+    }))
+  }, [tokens, walletsFilter])
+
   return (
     <ProfileTemplate
       pageTitle="Your NFTs"
       headerMenu={<DisplaySwitch onClick={setDisplay} state={display} />}
       onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
+      className="overflow-inherit"
     >
       <div className={clsx(`flex flex-col gap-6 pb-10`)}>
-        {/* <ProfileContainer className={clsx(`bg-gray-200`)}> */}
-        <div className={clsx(`px-[4px]`)}>
+        <ProfileContainer className={clsx(`bg-gray-200`)}>
           <Input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.currentTarget.value)}
             icon={<IoIosSearch size="20" />}
             placeholder="Search by NFT name, ID or collection"
+            inputClassName="bg-white border-none"
           />
-        </div>
-        {/* </ProfileContainer> */}
+          <div className="grid grid-cols-2 gap-5">
+            <DropdownSelect
+              bordered={false}
+              options={collectionsOptions}
+              label="Collections"
+              onChange={(values) => setCollectionsFilter(values)}
+              isSearch
+            />
+            <DropdownSelect
+              bordered={false}
+              options={walletOptions}
+              label="Wallets"
+              onChange={(values) => setWalletsFilter(values)}
+            />
+          </div>
+        </ProfileContainer>
         {!tokens.length ? (
           <>{isLoading ? <Loader isLoading={true} /> : "You have no NFTs!"}</>
         ) : display === "table" ? (

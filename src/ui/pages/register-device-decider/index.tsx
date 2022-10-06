@@ -52,6 +52,7 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
               // that's why we need to handle this button similar for now
               id="just-log-me-in"
               title={"Don’t trust this device"}
+              id="notTrustedDevice"
               subtitle={"This device is public or someone else’s"}
               handler={onLogin}
             />
@@ -82,6 +83,7 @@ interface DeviceRawProps {
   title: string
   subtitle: string
   handler: () => Promise<void> | void
+  id?: string
 }
 
 export const DeviceRaw: React.FC<DeviceRawProps> = ({
@@ -89,6 +91,7 @@ export const DeviceRaw: React.FC<DeviceRawProps> = ({
   title,
   subtitle,
   handler,
+  id
 }) => {
   return (
     <div

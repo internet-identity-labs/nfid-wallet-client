@@ -76,12 +76,14 @@ describe("rosetta queries suite", () => {
               domain: "domain-1",
               name: "Application 1",
               isNftStorage: false,
+              icon: "app-icon-1",
             } as Application,
             {
               accountLimit: 1,
               domain: "domain-2",
               name: "Application 2",
               isNftStorage: false,
+              icon: "app-icon-2",
             } as Application,
           ],
           isLoading: false,
@@ -105,27 +107,28 @@ describe("rosetta queries suite", () => {
       expect(result.current.isLoading).toBe(false)
 
       expect(result.current.appAccountBalance).toEqual({
-        "Application 1": {
-          totalBalance: {
-            value: "0.0003",
-            ...commonFields,
+        label: "Internet Computer",
+        token: "ICP",
+        icpBalance: "0.0003 ICP",
+        usdBalance: "TODO: convert 0.0003 to USD",
+        applications: {
+          "Application 1": {
+            appName: "Application 1",
+            icon: "app-icon-1",
+            icpBalance: "0.0003 ICP",
+            accounts: [
+              {
+                accountName: "account 0",
+                icpBalance: "0.0001 ICP",
+                usdBalance: "TODO: convert to usd 0.0001 USD",
+              },
+              {
+                accountName: "account 1",
+                icpBalance: "0.0002 ICP",
+                usdBalance: "TODO: convert to usd 0.0002 USD",
+              },
+            ],
           },
-          accounts: [
-            {
-              accountId: "0",
-              balance: {
-                value: "0.0001",
-                ...commonFields,
-              },
-            },
-            {
-              accountId: "1",
-              balance: {
-                value: "0.0002",
-                ...commonFields,
-              },
-            },
-          ],
         },
       })
     })

@@ -201,6 +201,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
             <div className="flex space-x-2">
               {isProtectTooltipVisible && <ReactTooltip html />}
               <div
+                id="protect-recovery"
                 onClick={toggleProtectVisible}
                 className={
                   recoveryMethod.isRecoveryPhrase && !recoveryMethod.isProtected

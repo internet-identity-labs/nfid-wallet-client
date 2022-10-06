@@ -24,6 +24,7 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import {
   filterUserTokens,
+  GetWalletName,
   sortUserTokens,
   userTokensByCollection,
   userTokensByWallet,
@@ -132,11 +133,8 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
   }, [tokensFiltered, sorting, reverse, applications])
 
   const openAccordions = React.useMemo(() => {
-    if (!search) {
-      return [Math.random().toString()]
-    } else {
-      return Object.values(tokensByWallet).map((x) => Math.random().toString())
-    }
+    if (!search) return [Math.random().toString()]
+    return Object.values(tokensByWallet).map((x) => Math.random().toString())
   }, [search, tokensByWallet])
 
   const walletOptions = React.useMemo(() => {
@@ -148,16 +146,23 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
       ),
     ).filter((token) => {
       if (!collectionsFilter.length) return true
-      return collectionsFilter.includes(token.tokens[0].collection.id)
+
+      return !!token.tokens.filter((t) =>
+        collectionsFilter.includes(t.collection.id),
+      ).length
     })
 
     return Object.values(wallets).map((item) => ({
-      // TODO NFT getWalletName util
-      label: `${
-        applications.find((x) => x.domain === item.account.domain)?.name ?? ""
-      } account ${Number(item.account.accountId) + 1}`,
+      label: GetWalletName(
+        applications,
+        item.account.domain,
+        item.account.accountId,
+      ),
       value: item.principal,
-      afterLabel: item.tokens.length,
+      afterLabel: item.tokens.filter((token) => {
+        if (!collectionsFilter.length) return true
+        return collectionsFilter.includes(token.collection.id)
+      }).length,
     }))
   }, [applications, collectionsFilter, tokens])
 
@@ -166,11 +171,10 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
       userTokensByCollection(sortUserTokens(tokens)),
     ).filter((obj) => {
       if (!walletsFilter.length) return true
-      // return obj.tokens[0].
-      return false
+      return !!obj.tokens.filter((o) =>
+        walletsFilter.includes(o.principal.toText()),
+      ).length
     })
-
-    console.log({ tokensByCollection, walletsFilter })
 
     return tokensByCollection.map((option) => ({
       label: option.collection.name,
@@ -244,12 +248,11 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                         className={clsx(`flex gap-2 items-center font-light`)}
                       >
                         <AiOutlineWallet />{" "}
-                        {
-                          applications.find(
-                            (x) => x.domain === wallet.account.domain,
-                          )?.name
-                        }{" "}
-                        account {Number(wallet.account.accountId) + 1}
+                        {GetWalletName(
+                          applications,
+                          wallet.account.domain,
+                          wallet.account.accountId,
+                        )}
                       </div>
                       <div
                         className={clsx(

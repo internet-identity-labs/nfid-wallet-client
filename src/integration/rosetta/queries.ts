@@ -81,9 +81,9 @@ const reduceRawToAppAccountBalance = (
 /**
  * returns map of applications and there accumulated balance across all accounts
  *
- * @param filterZeroAccount only include applications with non zero balance
+ * @param excludeEmpty only include applications with non zero balance
  */
-export const useBalanceICPAll = (filterZeroAccount: boolean = true) => {
+export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
 
@@ -108,7 +108,7 @@ export const useBalanceICPAll = (filterZeroAccount: boolean = true) => {
         ? reduceRawToAppAccountBalance(
             balanceICPRaw,
             applicationsMeta || [],
-            filterZeroAccount,
+            excludeEmpty,
           )
         : null,
     [balanceICPRaw, applicationsMeta],

@@ -60,7 +60,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={id}
             type={type}
             className={clsx(
-              "flex-1 block w-full placeholder:text-sm border-black-base  py-[10px]",
+              "flex-1 block w-full placeholder:text-sm border-black-base py-[10px]",
               "disabled:bg-gray-200 disabled:text-gray-400 disabled:border-none disabled:ring-transparent disabled:drop-shadow-none shadow-none placeholder:text-base placeholder:text-gray-400",
               errorText || isErrorStyles
                 ? "active:ring-4 active:ring-red-200 active:border-red-base border-red-base focus:border-red-base focus:ring-red-base active:bg-red-50"

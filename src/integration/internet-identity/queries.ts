@@ -20,18 +20,9 @@ export const useAllPrincipals = () => {
 
   const { data: principals } = useSWR(
     profile?.anchor && accounts?.data && applications.data
-      ? `principals${profile.anchor}`
+      ? [BigInt(profile.anchor), accounts.data, applications.data]
       : null,
-    () => {
-      if (!profile || !accounts.data || !applications.data)
-        throw new Error("Unreachable")
-
-      return fetchPrincipals(
-        BigInt(profile.anchor),
-        accounts.data,
-        applications.data,
-      )
-    },
+    fetchPrincipals,
   )
   return { principals }
 }

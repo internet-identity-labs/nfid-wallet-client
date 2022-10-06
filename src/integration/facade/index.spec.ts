@@ -34,6 +34,7 @@ import {
   generateDelegationIdentity,
   registerIIAccount,
 } from "../../../test/steps/support/integration/test-util"
+import { getWalletPrincipal } from "../rosetta"
 
 describe("Facade suite", () => {
   jest.setTimeout(80000)
@@ -209,10 +210,15 @@ describe("Facade suite", () => {
         principals.filter((p) => p.account.domain === "duplicatedDomain")!
           .length,
       ).toEqual(2)
-      // ).toEqual(1)
       expect(
         principals.filter((p) => p.account.domain === "notRequiredDomain"),
       ).toEqual([])
+      const walletPrincipal = await getWalletPrincipal(Number(anchor))
+      expect(
+        principals.find(
+          (x) => x.principal.toText() === walletPrincipal.toText(),
+        ),
+      ).toBeDefined()
     })
 
     async function getErrorOnIncorrectSeedPhrase(

@@ -226,7 +226,9 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
               </div>
               <div
                 id={
-                  recoveryMethod.isRecoveryPhrase ? "deleteRecoveryPhrase" : ""
+                  recoveryMethod.isRecoveryPhrase
+                    ? "delete-recovery-phrase"
+                    : ""
                 }
                 className="hover:bg-gray-50 text-red-base"
                 onClick={

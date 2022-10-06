@@ -200,7 +200,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
             placeholder="Search by NFT name, ID or collection"
             inputClassName="bg-white border-none"
           />
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             <DropdownSelect
               bordered={false}
               options={collectionsOptions}
@@ -245,7 +245,10 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                       )}
                     >
                       <div
-                        className={clsx(`flex gap-2 items-center font-light`)}
+                        className={clsx(
+                          `flex gap-2 items-center font-light`,
+                          "text-sm lg:text-base",
+                        )}
                       >
                         <AiOutlineWallet />{" "}
                         {GetWalletName(
@@ -256,7 +259,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                       </div>
                       <div
                         className={clsx(
-                          `text-sm text-gray-400 font-light mr-3`,
+                          "text-xs lg:text-sm text-gray-400 font-light mr-3 flex-shrink-0",
                         )}
                       >
                         {wallet.tokens.length} Item

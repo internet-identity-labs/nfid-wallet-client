@@ -31,7 +31,7 @@ export const DropdownSelect = ({
   onChange,
 }: IDropdownSelect) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([])
-  const [isDropdownOpen, setIsDropdownOpen] = useState(true)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
 
   const ref = useClickOutside(() => setIsDropdownOpen(false))

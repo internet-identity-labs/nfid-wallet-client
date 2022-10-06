@@ -8,6 +8,7 @@ interface MethodRawProps extends ElementProps<HTMLElement> {
   title: string
   subtitle: string
   onClick: React.MouseEventHandler
+  id?: string
 }
 
 export const MethodRaw: React.FC<MethodRawProps> = ({

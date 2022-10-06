@@ -52,6 +52,7 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
           onChange={(e) => setPhrase(e.target.value)}
         />
         <Button
+          id="deleteRecoveryButton"
           error
           block
           className="rounded-t-none"

@@ -1137,15 +1137,6 @@ export interface Device {
   credentialId?: CredentialId
 }
 
-/**
- * Retrieve user's principal for a domain + persona hash.
- * @param anchor
- * @param salt
- */
-export function fetchPrincipal(anchor: number, salt: string) {
-  return ii.get_principal(BigInt(anchor), salt)
-}
-
 export const delegationIdentityFromSignedIdentity = async (
   sessionKey: Pick<SignIdentity, "sign">,
   chain: DelegationChain,

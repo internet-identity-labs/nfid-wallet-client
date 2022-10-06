@@ -2,7 +2,7 @@ import {
   EntrepotCollection,
   UserNFTDetails,
 } from "frontend/integration/entrepot/types"
-import { Account } from "frontend/integration/identity-manager"
+import { Account, Application } from "frontend/integration/identity-manager"
 
 import { GlauberTS } from "./search"
 
@@ -79,4 +79,16 @@ export function userTokensByCollection(tokens: UserNFTDetails[]) {
     }),
     {},
   )
+}
+
+export function GetWalletName(
+  applications: Application[],
+  domain: string,
+  accountId: number | string,
+) {
+  if (!applications) return ""
+
+  return `${
+    applications.find((x) => x.domain === domain)?.name ?? ""
+  } account ${Number(accountId) + 1}`
 }

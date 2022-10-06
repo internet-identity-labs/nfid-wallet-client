@@ -117,3 +117,15 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
 
   return { isLoading, appAccountBalance }
 }
+
+export function useBalanceICP(principal: Principal) {
+  const { data: balance, ...rest } = useSWR([principal], getBalance, {
+    dedupingInterval: 60_000,
+    refreshInterval: 60_000,
+  })
+
+  return {
+    balance,
+    ...rest,
+  }
+}

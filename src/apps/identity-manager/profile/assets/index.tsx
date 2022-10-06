@@ -1,6 +1,7 @@
 import React from "react"
 
 import Dfinity from "frontend/assets/dfinity.svg"
+import { icpToUSD } from "frontend/integration/rosetta/queries"
 import ProfileAssetsPage from "frontend/ui/pages/new-profile/assets"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
@@ -23,7 +24,7 @@ const ProfileAssets = () => {
         balance: `${Number(walletBalance?.value)} ${
           walletBalance.currency.symbol
         }`,
-        price: walletExchangeRate * Number(walletBalance.value),
+        price: icpToUSD(walletBalance.value, walletExchangeRate),
       },
     ]
   }, [walletBalance, walletExchangeRate])

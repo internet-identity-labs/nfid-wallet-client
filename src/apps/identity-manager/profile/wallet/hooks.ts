@@ -14,6 +14,7 @@ import {
   getTransactionHistory,
   transfer,
 } from "frontend/integration/rosetta"
+import { useICPExchangeRate } from "frontend/integration/rosetta/queries"
 
 import { stringICPtoE8s } from "./utils"
 
@@ -58,8 +59,8 @@ export const useWallet = () => {
       getTransactionHistory(principal as Principal),
     )
 
-  const { data: exchangeRate, isValidating: isWalletExchangeRateLoading } =
-    useSWR("walletExchangeRate", getExchangeRate)
+  const { exchangeRate, isValidating: isWalletExchangeRateLoading } =
+    useICPExchangeRate()
 
   const address = useMemo(() => {
     if (!principal) return ""

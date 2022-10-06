@@ -17,7 +17,7 @@ export default function Table({
   handleHeaderClick,
 }: TableData) {
   return (
-    <div className={clsx(`overflow-x-scroll`)}>
+    <div className={clsx(`overflow-x-scroll lg:overflow-x-hidden`)}>
       <table className={clsx(`table-auto w-full text-left min-w-[640px]`)}>
         <thead>
           <tr className={clsx(`border-b border-gray-900`)}>

@@ -10,25 +10,12 @@ import * as iiHooks from "frontend/integration/internet-identity/queries"
 
 import * as rosettaMocks from "."
 import { Account, Application } from "../identity-manager"
-import { sumDecimalValue, useBalanceICPAll } from "./queries"
+import { sumE8sICPString, useBalanceICPAll } from "./queries"
 
 describe("rosetta queries suite", () => {
-  describe("sumDecimalValue", () => {
-    it("shoudl sum decimal values", () => {
-      expect(
-        sumDecimalValue(
-          { value: "0.0001", decimals: 4 },
-          { value: "0.0002", decimals: 4 },
-        ),
-      ).toBe("0.0003")
-    })
-    it("should throw when different decimals", () => {
-      expect(() =>
-        sumDecimalValue(
-          { value: "0.0001", decimals: 2 },
-          { value: "0.0002", decimals: 4 },
-        ),
-      ).toThrow("decimals must match")
+  describe("sumE8sICPString", () => {
+    it("shoudl sum e8s string values", () => {
+      expect(sumE8sICPString("0.0001", "0.0002")).toBe("0.0003")
     })
   })
   describe("useBalanceICPAll", () => {
@@ -117,7 +104,6 @@ describe("rosetta queries suite", () => {
       })
       expect(result.current.isLoading).toBe(false)
 
-      expect(result.current.balanceICPRaw?.length).toBe(3)
       expect(result.current.appAccountBalance).toEqual({
         "Application 1": {
           totalBalance: {

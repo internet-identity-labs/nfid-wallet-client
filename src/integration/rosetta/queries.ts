@@ -1,6 +1,11 @@
 import React from "react"
 import useSWR from "swr"
 
+import {
+  e8sICPToString,
+  stringICPtoE8s,
+} from "frontend/apps/identity-manager/profile/wallet/utils"
+
 import { getBalance } from "."
 import { Account, Application } from "../identity-manager"
 import { useApplicationsMeta } from "../identity-manager/queries"
@@ -27,16 +32,8 @@ interface AppAccountBalanceRecords {
   [applicationName: string]: AppBalance | undefined
 }
 
-export const sumDecimalValue = (
-  a: { value: string; decimals: number },
-  b: { value: string; decimals: number },
-) => {
-  if (a.decimals !== b.decimals) throw new Error("decimals must match")
-  const multiplier = Math.pow(10, a.decimals)
-  return `${
-    (multiplier * parseFloat(a.value) + multiplier * parseFloat(b.value)) /
-    multiplier
-  }`
+export const sumE8sICPString = (a: string, b: string) => {
+  return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))
 }
 
 const reduceRawToAppAccountBalance = (
@@ -44,41 +41,6 @@ const reduceRawToAppAccountBalance = (
   applications: Application[],
   filterZeroAccount: boolean,
 ): AppAccountBalanceRecords => {
-  const commonFields = {
-    currency: {
-      symbol: "ICP",
-      decimals: 8,
-      metadata: {
-        Issuer: "",
-      },
-    },
-    metadata: {},
-  }
-  const appAccountBalance = {
-    "Application 1": {
-      totalBalance: {
-        value: "0.0003",
-        ...commonFields,
-      },
-      accounts: [
-        {
-          accountId: "0",
-          balance: {
-            value: "0.0001",
-            ...commonFields,
-          },
-        },
-        {
-          accountId: "1",
-          balance: {
-            value: "0.0002",
-            ...commonFields,
-          },
-        },
-      ],
-    },
-  }
-  // return appAccountBalance
   return rawBalance.reduce<AppAccountBalanceRecords>((acc, rawBalance) => {
     const applicationMatch = applications.find(
       (a) => a.domain === rawBalance.account.domain,
@@ -90,17 +52,9 @@ const reduceRawToAppAccountBalance = (
 
     const currentApp: AppBalance | undefined = acc[appName]
 
-    const totalBalanceValue = sumDecimalValue(
-      {
-        value: currentApp?.totalBalance?.value || "0",
-        decimals:
-          currentApp?.totalBalance?.currency?.decimals ||
-          rawBalance.balance.currency.decimals,
-      },
-      {
-        value: rawBalance.balance.value,
-        decimals: rawBalance.balance.currency.decimals,
-      },
+    const totalBalanceValue = sumE8sICPString(
+      currentApp?.totalBalance?.value || "0",
+      rawBalance.balance.value,
     )
 
     if (filterZeroAccount && totalBalanceValue === "0") return acc
@@ -160,5 +114,5 @@ export const useBalanceICPAll = (filterZeroAccount: boolean = true) => {
     [balanceICPRaw, applicationsMeta],
   )
 
-  return { isLoading, balanceICPRaw, appAccountBalance }
+  return { isLoading, appAccountBalance }
 }

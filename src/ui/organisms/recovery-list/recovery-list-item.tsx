@@ -224,6 +224,9 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
                 {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
               </div>
               <div
+                id={
+                  recoveryMethod.isRecoveryPhrase ? "deleteRecoveryPhrase" : ""
+                }
                 className="hover:bg-gray-50 text-red-base"
                 onClick={
                   isEditingLabel ? toggleEditLabel : handleDeleteRecoveryDialog

@@ -6,6 +6,7 @@ interface IProfileContainer {
   subTitle?: string | React.ReactNode
   children?: React.ReactNode
   className?: string
+  id?: string
 }
 
 const ProfileContainer: React.FC<IProfileContainer> = ({
@@ -13,9 +14,11 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
   subTitle,
   children,
   className,
+  id
 }) => {
   return (
     <div
+      id={id}
       className={clsx(
         "block border border-gray-200 rounded-xl",
         "px-5 py-4",

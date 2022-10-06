@@ -74,7 +74,7 @@ export const DropdownSelect = ({
       </div>
       {isDropdownOpen && (
         <div
-          className={clsx("w-full bg-white rounded-md mt-[1px] absolute")}
+          className={clsx("w-full bg-white rounded-md mt-[1px] absolute z-50")}
           style={{ boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)" }}
         >
           {isSearch && (

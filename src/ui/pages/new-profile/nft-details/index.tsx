@@ -41,8 +41,8 @@ export const ProfileNFTDetailsPage = ({
       onBack={-1 as To}
       icon={CopyIcon}
       onIconClick={copyToClipboard}
-      className="w-full min-w-fit z-[1]"
-      containerClassName="overflow-x-auto px-0"
+      className="w-full md:min-w-fit z-[1]"
+      containerClassName="overflow-x-auto md:px-0 px-4"
     >
       <div
         className={clsx(
@@ -50,7 +50,7 @@ export const ProfileNFTDetailsPage = ({
           "grid-cols-1 sm:grid-cols-[auto,1fr]",
         )}
       >
-        <div className="relative overflow-hidden bg-gray-50 rounded-xl h-[342px] aspect-square">
+        <div className="relative overflow-hidden bg-gray-50 rounded-xl h-full md:h-[342px] aspect-square">
           <div
             style={{
               backgroundImage: `url(${nft.assetPreview})`,

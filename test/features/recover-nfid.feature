@@ -4,9 +4,7 @@ Feature: Recover NFID Account from Recovery Phrase
 
 
   Scenario:
-    Given I open the site "/"
-    When I click on the link "Recover NFID"
-    Then I expect the url to contain "/recover-nfid/enter-recovery-phrase"
+    Given I open the site "/recover-nfid/enter-recovery-phrase"
     When I put Recovery Phrase to input field "10974 same candy swim dry violin end asthma lake similar bronze dragon obtain recall panther essence cheese pitch flip slot nerve insane village protect load"
     And I toggle checkbox "#has-verified-domain"
     And I press button "#recoveryButton"

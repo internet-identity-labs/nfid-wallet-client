@@ -57,6 +57,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
         <ButtonMenu
           buttonElement={
             <img
+              id="mobile-menu"
               src={MenuIcon}
               alt="menu"
               className={clsx("transform rotate-180", "md:hidden")}

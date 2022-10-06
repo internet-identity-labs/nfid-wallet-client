@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import React from "react"
 import useSWR from "swr"
 

@@ -7,11 +7,23 @@ import {
   stringICPtoE8s,
 } from "frontend/apps/identity-manager/profile/wallet/utils"
 
-import { getBalance } from "."
+import { getBalance, getExchangeRate } from "."
 import { Account, Application } from "../identity-manager"
 import { useApplicationsMeta } from "../identity-manager/queries"
 import { useAllPrincipals } from "../internet-identity/queries"
 import { Balance } from "./rosetta_interface"
+
+export const useICPExchangeRate = () => {
+  const { data: exchangeRate, ...rest } = useSWR(
+    "walletExchangeRate",
+    getExchangeRate,
+    { dedupingInterval: 60_000 * 60, refreshInterval: 60_000 * 60 },
+  )
+  return {
+    exchangeRate,
+    ...rest,
+  }
+}
 
 interface RawBalance {
   principalId: string
@@ -44,9 +56,38 @@ export const sumE8sICPString = (a: string, b: string) => {
   return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))
 }
 
+export const icpToUSD = (value: string, exchangeRate: number) =>
+  `$${(exchangeRate * Number(value)).toFixed(2)}`
+
+function mapApplicationBalance(
+  appName: string,
+  currentAppTotalBalance: string,
+  token: string,
+  rawBalance: RawBalance,
+  icpExchangeRate: number,
+  applicationMatch?: Application,
+  currentApp?: AppBalance,
+): AppBalance | undefined {
+  return {
+    icon: applicationMatch?.icon,
+    appName: appName,
+    icpBalance: `${currentAppTotalBalance} ${token}`,
+    accounts: [
+      ...(currentApp ? currentApp.accounts : []),
+      {
+        accountName:
+          rawBalance.account.label || `account ${rawBalance.account.accountId}`,
+        icpBalance: `${rawBalance.balance.value} ${token}`,
+        usdBalance: icpToUSD(rawBalance.balance.value, icpExchangeRate),
+      },
+    ],
+  }
+}
+
 const reduceRawToAppAccountBalance = (
   rawBalance: RawBalance[],
   applications: Application[],
+  icpExchangeRate: number,
   filterZeroAccount: boolean,
 ): ICPBalanceSheet => {
   return rawBalance.reduce<ICPBalanceSheet>(
@@ -75,24 +116,18 @@ const reduceRawToAppAccountBalance = (
       return {
         ...acc,
         icpBalance: `${totalBalanceValue} ${acc.token}`,
-        usdBalance: `TODO: convert ${totalBalanceValue} to USD`,
+        usdBalance: icpToUSD(totalBalanceValue, icpExchangeRate),
         applications: {
           ...acc.applications,
-          [appName]: {
-            icon: applicationMatch?.icon,
-            appName: appName,
-            icpBalance: `${currentAppTotalBalance} ${acc.token}`,
-            accounts: [
-              ...(currentApp ? currentApp.accounts : []),
-              {
-                accountName:
-                  rawBalance.account.label ||
-                  `account ${rawBalance.account.accountId}`,
-                icpBalance: `${rawBalance.balance.value} ${acc.token}`,
-                usdBalance: `TODO: convert to usd ${rawBalance.balance.value} USD`,
-              },
-            ],
-          },
+          [appName]: mapApplicationBalance(
+            appName,
+            currentAppTotalBalance,
+            acc.token,
+            rawBalance,
+            icpExchangeRate,
+            applicationMatch,
+            currentApp,
+          ),
         },
       }
     },
@@ -114,13 +149,14 @@ const reduceRawToAppAccountBalance = (
 export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
+  const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
+    useICPExchangeRate()
 
-  const { data: balanceICPRaw, isValidating: isLoading } = useSWR(
-    principals ? "balanceICPAll" : null,
+  const { data: balanceICPRaw, isValidating: isLoadingPrincipals } = useSWR(
+    principals ? "balanceICPRaw" : null,
     async () => {
-      if (!principals) throw new Error("principals required")
-
-      return Promise.all(
+      if (!principals) throw new Error("missing req")
+      return await Promise.all(
         principals.map(async ({ principal, account }) => ({
           principalId: principal.toText(),
           account,
@@ -131,19 +167,36 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )
 
+  console.debug("", {
+    isLoadingICPExchangeRate,
+    isLoadingPrincipals,
+    exchangeRate,
+  })
+
   const appAccountBalance = React.useMemo(
     () =>
+      !isLoadingICPExchangeRate &&
+      !isLoadingPrincipals &&
+      exchangeRate &&
       balanceICPRaw
         ? reduceRawToAppAccountBalance(
             balanceICPRaw,
             applicationsMeta || [],
+            exchangeRate,
             excludeEmpty,
           )
         : null,
-    [balanceICPRaw, applicationsMeta],
+    [
+      isLoadingICPExchangeRate,
+      isLoadingPrincipals,
+      balanceICPRaw,
+      applicationsMeta,
+      exchangeRate,
+      excludeEmpty,
+    ],
   )
 
-  return { isLoading, appAccountBalance }
+  return { isLoading: isLoadingPrincipals, appAccountBalance }
 }
 
 export function useBalanceICP(principal: Principal) {

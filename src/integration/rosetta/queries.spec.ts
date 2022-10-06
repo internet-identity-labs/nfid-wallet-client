@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
 import { act, renderHook, waitFor } from "@testing-library/react"
 
 import * as imHooks from "frontend/integration/identity-manager/queries"
@@ -15,7 +14,7 @@ import { sumE8sICPString, useBalanceICPAll } from "./queries"
 describe("rosetta queries suite", () => {
   describe("sumE8sICPString", () => {
     it("shoudl sum e8s string values", () => {
-      expect(sumE8sICPString("0.0001", "0.0002")).toBe("0.0003")
+      expect(sumE8sICPString("0.1", "0.2")).toBe("0.3")
     })
   })
   describe("useBalanceICPAll", () => {
@@ -30,14 +29,20 @@ describe("rosetta queries suite", () => {
         },
         metadata: {},
       }
-      const call1Promise = Promise.resolve({ value: "0.0001", ...commonFields })
-      const call2Promise = Promise.resolve({ value: "0.0002", ...commonFields })
-      const call3Promise = Promise.resolve({ value: "0.0000", ...commonFields })
+      const getBalanceP1 = Promise.resolve({ value: "0.1", ...commonFields })
+      const getBalanceP2 = Promise.resolve({ value: "0.2", ...commonFields })
+      const getBalanceP3 = Promise.resolve({ value: "0.0", ...commonFields })
+
       const getBalanceSpy = jest
         .spyOn(rosettaMocks, "getBalance")
-        .mockImplementationOnce(() => call1Promise)
-        .mockImplementationOnce(() => call2Promise)
-        .mockImplementationOnce(() => call3Promise)
+        .mockImplementationOnce(() => getBalanceP1)
+        .mockImplementationOnce(() => getBalanceP2)
+        .mockImplementationOnce(() => getBalanceP3)
+
+      const getExchangeRateP1 = Promise.resolve(5)
+      const getExchangeRateSpy = jest
+        .spyOn(rosettaMocks, "getExchangeRate")
+        .mockImplementation(() => getExchangeRateP1)
 
       const useAllPrincipals = jest
         .spyOn(iiHooks, "useAllPrincipals")
@@ -55,6 +60,7 @@ describe("rosetta queries suite", () => {
               account: {
                 domain: "domain-1",
                 accountId: "1",
+                label: "renamedAccount",
               } as Account,
             },
             {
@@ -93,13 +99,15 @@ describe("rosetta queries suite", () => {
       const { result } = renderHook(() => useBalanceICPAll())
 
       await act(async () => {
-        await call1Promise
-        await call2Promise
-        await call3Promise
+        await getBalanceP1
+        await getBalanceP2
+        await getBalanceP3
+        await getExchangeRateP1
       })
 
       waitFor(() => {
         expect(useAllPrincipals).toHaveBeenCalled()
+        expect(getExchangeRateSpy).toHaveBeenCalled()
         expect(useApplicationsMeta).toHaveBeenCalled()
         expect(result.current.isLoading).toBe(true)
         expect(getBalanceSpy).toBeCalledTimes(3)
@@ -109,23 +117,23 @@ describe("rosetta queries suite", () => {
       expect(result.current.appAccountBalance).toEqual({
         label: "Internet Computer",
         token: "ICP",
-        icpBalance: "0.0003 ICP",
-        usdBalance: "TODO: convert 0.0003 to USD",
+        icpBalance: "0.3 ICP",
+        usdBalance: "$1.50",
         applications: {
           "Application 1": {
             appName: "Application 1",
             icon: "app-icon-1",
-            icpBalance: "0.0003 ICP",
+            icpBalance: "0.3 ICP",
             accounts: [
               {
                 accountName: "account 0",
-                icpBalance: "0.0001 ICP",
-                usdBalance: "TODO: convert to usd 0.0001 USD",
+                icpBalance: "0.1 ICP",
+                usdBalance: "$0.50",
               },
               {
-                accountName: "account 1",
-                icpBalance: "0.0002 ICP",
-                usdBalance: "TODO: convert to usd 0.0002 USD",
+                accountName: "renamedAccount",
+                icpBalance: "0.2 ICP",
+                usdBalance: "$1.00",
               },
             ],
           },

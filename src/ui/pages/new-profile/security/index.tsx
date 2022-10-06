@@ -92,6 +92,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
       <ProfileContainer
         className="mt-[30px] relative mb-12 sm:mb-0"
         title="Account recovery methods"
+        id="recovery-phrase"
         subTitle={
           recoveryMethods.length
             ? "Ways NFID can verify it’s you"
@@ -99,7 +100,11 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
         }
       >
         {canAddRecoveryMethod && (
-          <div className="" onClick={() => setIsModalVisible(true)}>
+          <div
+            id="add-recovery"
+            className=""
+            onClick={() => setIsModalVisible(true)}
+          >
             <PlusIcon
               className={clsx(
                 "absolute w-6 h-6 text-gray-500",
@@ -152,6 +157,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
                   setPhrase(value),
                 )}
                 title="Secret recovery phrase"
+                id="recovery-key"
                 subtitle="A “master password” to keep offline"
                 img={<IconRecovery />}
               />
@@ -165,7 +171,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
                 title="Unprotected recovery phrase"
                 subtitle="A “master password” to keep offline"
                 img={<IconRecovery />}
-                id="createUnprotectedPhrase"
+                id="create-unprotected-phrase"
                 className="absolute w-0 h-0 opacity-0"
               />
             )}
@@ -173,6 +179,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
               <MethodRaw
                 onClick={handleWithLoading(onRegisterRecoveryKey)}
                 title="Security key"
+                id="security-key"
                 subtitle="A special USB stick to keep safe"
                 img={<USBIcon />}
                 isDisabled={hasSecurityKey}

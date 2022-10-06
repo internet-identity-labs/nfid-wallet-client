@@ -17,7 +17,7 @@ import {
   removeRecoveryDeviceII,
 } from "frontend/integration/internet-identity"
 
-import { getWalletPrincipal, WALLET_SCOPE } from "../rosetta"
+import { WALLET_SCOPE } from "../rosetta"
 
 export async function removeRecoveryDeviceFacade(
   userNumber: UserNumber,
@@ -37,9 +37,12 @@ export async function removeAccessPointFacade(
 
 export async function fetchPrincipals(
   userNumber: UserNumber,
-  personas: Account[],
+  accounts: Account[],
   applications: Application[],
 ): Promise<{ principal: Principal; account: Account }[]> {
+  // Accounts which have been created with external IDPs
+  // e.g.: nns.ic0.app, www.stoicwallet.com
+  // FIXME: determining additional accounts seems to be a different concern
   const fixedAccounts = applications
     .filter((app) => app.isNftStorage)
     .map(applicationToAccount)
@@ -48,22 +51,17 @@ export async function fetchPrincipals(
     label: "NFID",
     accountId: "0",
   }
-  const accounts = [...personas, ...fixedAccounts]
+  const allAccounts = [NfidWalletAccount, ...accounts, ...fixedAccounts]
 
-  return (
-    await Promise.all(
-      accounts.map(async (account) => {
-        return {
-          principal: await ii.get_principal(
-            userNumber,
-            getScope(account.domain, account.accountId),
-          ),
-          account,
-        }
-      }),
-    )
-  ).concat({
-    principal: await getWalletPrincipal(Number(userNumber)),
-    account: NfidWalletAccount,
-  })
+  return Promise.all(
+    allAccounts.map(async (account) => {
+      return {
+        principal: await ii.get_principal(
+          userNumber,
+          getScope(account.domain, account.accountId),
+        ),
+        account,
+      }
+    }),
+  )
 }

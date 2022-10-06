@@ -137,6 +137,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     return Object.values(tokensByWallet).map((x) => Math.random().toString())
   }, [search, tokensByWallet])
 
+  // TODO Refactor
   const walletOptions = React.useMemo(() => {
     const wallets = Object.values(
       userTokensByWallet(
@@ -205,14 +206,14 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
               bordered={false}
               options={collectionsOptions}
               label="Collections"
-              onChange={(values) => setCollectionsFilter(values)}
+              onChange={setCollectionsFilter}
               isSearch
             />
             <DropdownSelect
               bordered={false}
               options={walletOptions}
               label="Wallets"
-              onChange={(values) => setWalletsFilter(values)}
+              onChange={setWalletsFilter}
             />
           </div>
         </ProfileContainer>

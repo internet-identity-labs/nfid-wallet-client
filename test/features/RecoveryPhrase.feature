@@ -32,45 +32,45 @@ Feature: Add protected/unportected, Protect, Delete recovery phrase
     Then I expect that element "#profile-security" is displayed
 
     When I press button "#profile-security"
-    When I expect that element "#addRecovery" is displayed
+    When I expect that element "#add-recovery" is displayed
 
-    Then I wait on element "#addRecovery" for 2000ms to be displayed
+    Then I wait on element "#add-recovery" for 2000ms to be displayed
 
-    When I press button "#addRecovery > svg"
-    Then I expect that element "#recoveryKey" is displayed
-    Then I expect that element "#securityKey" is displayed
+    When I press button "#add-recovery > svg"
+    Then I expect that element "#recovery-key" is displayed
+    Then I expect that element "#security-key" is displayed
 
     # Create protected, protect and delete
 
-    When I press button "#recoveryKey"
+    When I press button "#recovery-key"
     Then I wait on element "#loader" for 10000ms to not be displayed
-    Then I wait on element "#copyButton > span" for 10000ms to be displayed
-    Then I press button "#copyButton > span"
-    Then I press button "#savedCheckbox"
-    Then I press button "#recoverySaveButton"
+    Then I wait on element "#copy-button > span" for 10000ms to be displayed
+    Then I press button "#copy-button > span"
+    Then I press button "#saved-checkbox"
+    Then I press button "#recovery-save-button"
 
-    Then I wait on element "#recoveryPhrase" for 10000ms to be displayed
-    Then I wait on element "#deleteRecoveryPhrase" for 10000ms to be displayed
+    Then I wait on element "#recovery-phrase" for 10000ms to be displayed
+    Then I wait on element "#delete-recovery-phrase" for 10000ms to be displayed
 
-    When I press button "#deleteRecoveryPhrase"
+    When I press button "#delete-recovery-phrase"
 
     Then I put copied Recovery Phrase to input field
-    Then I press button "#deleteRecoveryButton"
+    Then I press button "#delete-recovery-button"
     Then I wait on element "#loader" for 10000ms to not be displayed
-    Then I wait on element "#deleteRecoveryButton" for 10000ms to not be displayed
+    Then I wait on element "#delete-recovery-button" for 10000ms to not be displayed
 
-    When I press button "#addRecovery > svg"
-    Then I wait on element "#securityKey"
-    Then I expect that element "#recoveryKey" is displayed
+    When I press button "#add-recovery > svg"
+    Then I wait on element "#security-key"
+    Then I expect that element "#recovery-key" is displayed
 
     # Create unprotected, protect and delete
 
-    When I press button "#createUnprotectedPhrase"
+    When I press button "#create-unprotected-phrase"
     Then I wait on element "#loader" for 10000ms to not be displayed
-    Then I wait on element "#copyButton > span" for 10000ms to be displayed
-    Then I press button "#copyButton > span"
-    Then I press button "#savedCheckbox"
-    Then I press button "#recoverySaveButton"
+    Then I wait on element "#copy-button > span" for 10000ms to be displayed
+    Then I press button "#copy-button > span"
+    Then I press button "#saved-checkbox"
+    Then I press button "#recovery-save-button"
 
     Then I wait on element "#protect-recovery" for 10000ms to be displayed
     When I press button "#protect-recovery"
@@ -80,18 +80,18 @@ Feature: Add protected/unportected, Protect, Delete recovery phrase
     Then I press button "#protect-submit"
     Then I wait on element "#protect-modal" for 10000ms to not be displayed
 
-    Then I press button "#deleteRecoveryPhrase"
-    Then I wait on element "#deleteRecoveryButton" for 3000ms to be displayed
-    And  I expect that element "#deleteRecoveryButton" has the class "btn-disabled"
+    Then I press button "#delete-recovery-phrase"
+    Then I wait on element "#delete-recovery-button" for 3000ms to be displayed
+    And  I expect that element "#delete-recovery-button" has the class "btn-disabled"
 
     Then I put copied Recovery Phrase to input field
-    And  I expect that element "#deleteRecoveryButton" does not have the class "btn-disabled"
-    Then I press button "#deleteRecoveryButton"
+    And  I expect that element "#delete-recovery-button" does not have the class "btn-disabled"
+    Then I press button "#delete-recovery-button"
     Then I wait on element "#loader" for 10000ms to not be displayed
 
-    When I press button "#addRecovery > svg"
-    Then I wait on element "#securityKey"
-    Then I expect that element "#recoveryKey" is displayed
+    When I press button "#add-recovery > svg"
+    Then I wait on element "#security-key"
+    Then I expect that element "#recovery-key" is displayed
 
     
 

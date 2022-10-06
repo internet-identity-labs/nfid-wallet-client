@@ -51,7 +51,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
           block
           className="flex justify-center space-x-2 border-2 border-t-0 rounded-t-none border-black-base"
           onClick={copyToClipboard}
-          id="copyButton"
+          id="copy-button"
         >
           <CopyIcon className="text-black-base stroke-black-base" />
           <span>{copied ? "Copied" : "Copy"}</span>
@@ -60,13 +60,13 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         <div className="mt-5">
           <input
             type="checkbox"
-            id="savedCheckbox"
+            id="saved-checkbox"
             className="w-5 h-5 border-2 rounded cursor-pointer border-black-base"
             onChange={() => setIsSaved(!isSaved)}
             checked={isSaved}
           />
           <label
-            htmlFor="savedCheckbox"
+            htmlFor="saved-checkbox"
             className="ml-2 text-sm cursor-pointer"
           >
             I’ve saved this phrase in a safe place
@@ -74,7 +74,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         </div>
 
         <Button
-          id="recoverySaveButton"
+          id="recovery-save-button"
           block
           primary
           disabled={!copied || !isSaved}

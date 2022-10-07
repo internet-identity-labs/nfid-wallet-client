@@ -36,20 +36,49 @@ export const useWalletDelegation = (
   )
 }
 
-export const useTransfer = () => {
-  const { profile } = useProfile()
-  const { data: walletDelegation } = useWalletDelegation(profile?.anchor)
+export interface TransferAccount {
+  domain?: string
+  accountId?: string
+}
 
+export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
+  const { profile } = useProfile()
+  const { data: walletDelegation, isValidating: isValidatingWalletDelegation } =
+    useWalletDelegation(profile?.anchor, domain, accountId)
+
+  const [queuedTransfer, setQueuedTransfer] = React.useState<{
+    to: string
+    amount: string
+  } | null>(null)
+
+  console.debug("useTransfer", { isValidatingWalletDelegation })
   const handleTransfer = React.useCallback(
     (to: string, amount: string) => {
-      if (!walletDelegation) throw new Error("Unreachable")
-
-      return transfer(stringICPtoE8s(amount), to, walletDelegation)
+      return !walletDelegation
+        ? setQueuedTransfer({ to, amount })
+        : transfer(stringICPtoE8s(amount), to, walletDelegation)
     },
     [walletDelegation],
   )
 
-  return { transfer: handleTransfer }
+  React.useEffect(() => {
+    if (queuedTransfer && walletDelegation) {
+      transfer(
+        stringICPtoE8s(queuedTransfer.amount),
+        queuedTransfer.to,
+        walletDelegation,
+      ).then(() => {
+        setQueuedTransfer(null)
+      })
+    }
+  }, [queuedTransfer, walletDelegation])
+
+  return {
+    isValidatingWalletDelegation,
+    queuedTransfer,
+    isTransferPending: !!queuedTransfer,
+    transfer: handleTransfer,
+  }
 }
 
 export const useWallet = () => {

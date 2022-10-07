@@ -65,9 +65,8 @@ export function createAccount(
 }
 
 export function getScope(hostName: string, personaId?: string) {
-  const isProtocolExist =
-    hostName.includes("https") || hostName.includes("http")
-  const origin = isProtocolExist ? hostName : `https://${hostName}`
+  const hasProtocol = hostName.includes("https") || hostName.includes("http")
+  const origin = hasProtocol ? hostName : `https://${hostName}`
 
   return `${personaId && personaId !== "0" ? `${personaId}@` : ``}${origin}`
 }

@@ -9,8 +9,8 @@ import { Loader } from "frontend/ui/atoms/loader"
 import ProfileNewTransaction from "frontend/ui/organisms/profile-new-transaction"
 import { isHex } from "frontend/ui/utils"
 
+import { useTransfer, useWallet } from "../../../../integration/wallet/hooks"
 import { Button } from "../../../../ui/atoms/button"
-import { useTransfer, useWallet } from "../wallet/hooks"
 import SendReceiveIcon from "./send_receive.svg"
 
 export const SendReceiveButton = () => {

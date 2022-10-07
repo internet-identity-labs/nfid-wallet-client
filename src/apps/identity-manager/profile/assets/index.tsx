@@ -5,8 +5,8 @@ import { icpToUSD } from "frontend/integration/rosetta/queries"
 import ProfileAssetsPage from "frontend/ui/pages/new-profile/assets"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
+import { useWallet } from "../../../../integration/wallet/hooks"
 import { ProfileConstants } from "../routes"
-import { useWallet } from "../wallet/hooks"
 import { useAllNFTs } from "./hooks"
 
 const ProfileAssets = () => {

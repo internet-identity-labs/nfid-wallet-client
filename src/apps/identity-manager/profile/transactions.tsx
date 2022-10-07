@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 
-import { useWallet } from "./wallet/hooks"
+import { useWallet } from "../../../integration/wallet/hooks"
 
 interface ITransaction {
   type: "send" | "receive"

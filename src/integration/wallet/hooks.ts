@@ -1,11 +1,13 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import { useEffect, useMemo } from "react"
+import React from "react"
 import useSWR, { mutate } from "swr"
 
 import {
   getWalletDelegation,
   getWalletPrincipal,
+  WALLET_SESSION_TTL_2_MIN_IN_NS,
 } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import {
@@ -18,13 +20,20 @@ import { useICPExchangeRate } from "frontend/integration/rosetta/queries"
 import { stringICPtoE8s } from "./utils"
 
 export const useWalletDelegation = (userNumber?: number) => {
+export const useWalletDelegation = (
+  userNumber?: number,
+  hostName?: string,
+  personaId?: string,
+) => {
+  console.debug("useWalletDelegation", { userNumber })
   return useSWR(
-    userNumber ? "walletDelegation" : null,
-    () => {
-      if (!userNumber) throw new Error("Unreachable")
-      return getWalletDelegation(userNumber)
+    userNumber ? [userNumber, hostName, personaId] : null,
+    (userNumber, hostName, personaId) =>
+      getWalletDelegation(userNumber, hostName, personaId),
+    {
+      dedupingInterval: WALLET_SESSION_TTL_2_MIN_IN_NS,
+      focusThrottleInterval: WALLET_SESSION_TTL_2_MIN_IN_NS,
     },
-    { dedupingInterval: 90 },
   )
 }
 
@@ -32,12 +41,16 @@ export const useTransfer = () => {
   const { profile } = useProfile()
   const { data: walletDelegation } = useWalletDelegation(profile?.anchor)
 
-  return useSWR(walletDelegation ? "someKey" : null, () => {
-    if (!walletDelegation) throw new Error("Unreachable")
+  const handleTransfer = React.useCallback(
+    (to: string, amount: string) => {
+      if (!walletDelegation) throw new Error("Unreachable")
 
-    return (to: string, amount: string) =>
-      transfer(stringICPtoE8s(amount), to, walletDelegation)
-  })
+      return transfer(stringICPtoE8s(amount), to, walletDelegation)
+    },
+    [walletDelegation],
+  )
+
+  return { transfer: handleTransfer }
 }
 
 export const useWallet = () => {

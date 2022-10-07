@@ -19,7 +19,6 @@ import { useICPExchangeRate } from "frontend/integration/rosetta/queries"
 
 import { stringICPtoE8s } from "./utils"
 
-export const useWalletDelegation = (userNumber?: number) => {
 export const useWalletDelegation = (
   userNumber?: number,
   hostName?: string,

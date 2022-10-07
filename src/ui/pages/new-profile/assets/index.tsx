@@ -6,8 +6,8 @@ import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
-import Icon from "./book-open.svg"
 import { ProfileAssetsNFT } from "./nft"
+import Icon from "./transactions.svg"
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void

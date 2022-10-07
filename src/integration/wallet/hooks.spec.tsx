@@ -1,20 +1,28 @@
 /**
  * @jest-environment jsdom
  */
-import { renderHook } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
+import { notDeepEqual } from "assert"
 import React from "react"
-import { SWRConfig, useSWRConfig } from "swr"
+import { SWRConfig } from "swr"
 
 import * as facadeMocks from "frontend/integration/facade/wallet"
+import * as imQueryMocks from "frontend/integration/identity-manager/queries"
+import * as rosettaMocks from "frontend/integration/rosetta"
 
+import { Profile } from "../identity-manager"
 import { factoryDelegationIdentity } from "../identity/__mocks"
-import { useWalletDelegation } from "./hooks"
+import { TransferAccount, useTransfer, useWalletDelegation } from "./hooks"
 
 beforeEach(() => {
   jest.resetAllMocks()
 })
 
 describe("wallet hooks", () => {
+  // NOTE: this is required in order to isolate the swr cache per test run
+  const wrapper = ({ children }: { children: React.ReactElement }) => (
+    <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
+  )
   describe("useWalletDeletation", () => {
     const getWalletDelegationSpy = jest
       .spyOn(facadeMocks, "getWalletDelegation")
@@ -27,11 +35,7 @@ describe("wallet hooks", () => {
         personaId?: string
       } = {},
     ) => {
-      // NOTE: this is required in order to isolate the swr cache per test run
-      const wrapper = ({ children }: { children: React.ReactElement }) => (
-        <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
-      )
-      const result = renderHook(
+      return renderHook(
         ({ userNumber, hostName, personaId }) => {
           return useWalletDelegation(userNumber, hostName, personaId)
         },
@@ -40,23 +44,14 @@ describe("wallet hooks", () => {
           wrapper,
         },
       )
-      return { ...result }
     }
 
     it("should not call getWalletDelegation without userNumber", () => {
       setup()
       expect(getWalletDelegationSpy).not.toHaveBeenCalled()
     })
-    it("should call getWalletDelegation only once", () => {
-      const { rerender } = setup({ userNumber: 10000 })
-      for (let i = 0; i < 5; i++) {
-        rerender({ userNumber: 10000 })
-      }
-      expect(getWalletDelegationSpy).toHaveBeenCalledTimes(1)
-    })
-    it("should call getWalletDelegation once per arg set", async () => {
-      jest.useFakeTimers()
 
+    it("should call getWalletDelegation once per arg set", async () => {
       const { rerender } = setup({ userNumber: 10000 })
 
       // FIXME:
@@ -87,6 +82,64 @@ describe("wallet hooks", () => {
       rerender({ userNumber: 10000 })
 
       expect(getWalletDelegationSpy).toHaveBeenCalledTimes(6)
+    })
+  })
+  describe("useTransfer", () => {
+    const setup = (initialProps: TransferAccount = {}) => {
+      return renderHook(
+        ({ domain, accountId }: TransferAccount = {}) => {
+          return useTransfer({ domain, accountId })
+        },
+        {
+          initialProps,
+          wrapper,
+        },
+      )
+    }
+    it("should delay transfer call until wallet delegation ready", async () => {
+      const getWalletDelegationP = Promise.resolve(factoryDelegationIdentity())
+      const useProfile = jest
+        .spyOn(imQueryMocks, "useProfile")
+        .mockImplementation(() => ({
+          isLoading: false,
+          refreshProfile: jest.fn(),
+          profile: { anchor: 10000 } as Profile,
+        }))
+
+      const getWalletDelegationSpy = jest
+        .spyOn(facadeMocks, "getWalletDelegation")
+        .mockImplementation(() => getWalletDelegationP)
+
+      const transferP = Promise.resolve(BigInt(1))
+      const transferSpy = jest
+        .spyOn(rosettaMocks, "transfer")
+        .mockImplementation(() => transferP)
+
+      const { result } = setup()
+
+      expect(useProfile).toHaveBeenCalled()
+      expect(getWalletDelegationSpy).toHaveBeenCalled()
+      expect(result.current.isValidatingWalletDelegation).toBe(true)
+
+      act(() => {
+        result.current.transfer("test", "10")
+      })
+
+      expect(result.current.isTransferPending).toBe(true)
+      expect(result.current.queuedTransfer).toEqual({
+        to: "test",
+        amount: "10",
+      })
+      expect(transferSpy).not.toHaveBeenCalled()
+
+      await act(async () => {
+        await getWalletDelegationP
+      })
+
+      expect(result.current.isValidatingWalletDelegation).toBe(false)
+      expect(result.current.isTransferPending).toBe(false)
+      expect(result.current.queuedTransfer).toBe(null)
+      expect(transferSpy).toHaveBeenCalled()
     })
   })
 })

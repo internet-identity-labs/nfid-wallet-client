@@ -14,7 +14,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
   subTitle,
   children,
   className,
-  id
+  id,
 }) => {
   return (
     <div

@@ -48,12 +48,11 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
           <table className={clsx("text-left w-full mb-16 sm:mb-0")}>
             <thead className={clsx("border-b border-black-base h-16")}>
               <tr className={clsx("font-bold text-sm leading-5")}>
-                <th className="pl-4 min-w-[285px]">Date</th>
-                <th className="min-w-[95px]">Asset</th>
-                <th className="min-w-[160px]">Quantity</th>
-                <th className="min-w-[235px]">From</th>
+                <th className="pl-4 w-[285px]">Date</th>
+                <th className="w-[95px]">Asset</th>
+                <th className="w-[160px]">Quantity</th>
+                <th className="min-w-[235px] pr-5">From</th>
                 <th className="min-w-[235px]">To</th>
-                <th className="min-w-[235px]">Note</th>
               </tr>
             </thead>
             <tbody className={clsx("text-sm text-[#0B0E13] border-b")}>
@@ -69,19 +68,20 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
                   <td>{transaction.quantity}</td>
                   <td>
                     <span
-                      className={clsx("inline-block w-[214px] break-words")}
+                      className={clsx(
+                        "inline-block max-w-[400px] break-words pr-5",
+                      )}
                     >
                       {transaction.from}
                     </span>
                   </td>
                   <td>
                     <span
-                      className={clsx("inline-block w-[214px] break-words")}
+                      className={clsx("inline-block max-w-[400px] break-words")}
                     >
                       {transaction.to}
                     </span>
                   </td>
-                  <td>{transaction.note}</td>
                 </tr>
               ))}
             </tbody>

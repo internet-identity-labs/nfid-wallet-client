@@ -23,6 +23,7 @@ import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
+import transferIcon from "./transfer.svg"
 import {
   filterUserTokens,
   GetWalletName,
@@ -70,7 +71,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
       ),
     [tokensFiltered],
   )
-  const headings = ["Asset", "Token #", "Collection", "Wallet", "URL"]
+  const headings = ["Asset", "Name", "Collection", "ID", "Wallet", "Actions"]
   const [sorting, setSorting] = React.useState([
     "Wallet",
     "Collection",
@@ -104,29 +105,35 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
             className={clsx(`w-[74px] h-[74px] object-cover rounded`)}
           />
         </Link>,
+        <div>{token.name}</div>,
+        <div className={clsx(`w-full`)}>{token.collection.name}</div>,
         <Link
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
         >
-          #{token.index}
+          {token.tokenId}
         </Link>,
-        <div className={clsx(`w-full`)}>{token.collection.name}</div>,
         <div className={clsx(`w-full`)}>
-          {applications.find((x) => x.domain === token.account.domain)?.name}{" "}
-          {token.account.accountId !== "0" &&
-            `#${Number(token.account.accountId) + 1}`}
+          {GetWalletName(
+            applications,
+            token.account.domain,
+            token.account.accountId,
+          )}
         </div>,
-        <FiCopy
-          className={clsx(`hover:text-blue-500 cursor-pointer`)}
-          size="18"
-          onClick={() => {
-            toast.info("NFT URL copied to clipboard", {
-              toastId: `copied_nft_${token.tokenId}`,
-            })
-            navigator.clipboard.writeText(
-              link(token.collection.id, token.index),
-            )
-          }}
-        />,
+        <div className="flex items-center space-x-2.5 justify-center">
+          <FiCopy
+            className={clsx(`hover:text-blue-500 cursor-pointer`)}
+            size="18"
+            onClick={() => {
+              toast.info("NFT URL copied to clipboard", {
+                toastId: `copied_nft_${token.tokenId}`,
+              })
+              navigator.clipboard.writeText(
+                link(token.collection.id, token.index),
+              )
+            }}
+          />
+          <img onClick={() => console.log(1)} src={transferIcon} alt="" />
+        </div>,
       ],
     }))
     reverse && result.reverse()
@@ -256,10 +263,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
           Object.values(tokensByWallet)
             .sort((a, b) => (a.account.label < b.account.label ? -1 : 1))
             .map((wallet, i) => (
-              <ProfileContainer
-                key={`wallet${wallet.principal}`}
-                // title={wallet.account.label}
-              >
+              <ProfileContainer key={`wallet${wallet.principal}`}>
                 <Accordion
                   openTrigger={openAccordions[i]}
                   isBorder={false}
@@ -296,7 +300,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                   details={
                     <div
                       className={clsx(
-                        "grid gap-4 lg:gap-8 pt-7",
+                        "grid gap-4 lg:gap-8 pt-7 pb-5",
                         "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
                       )}
                     >

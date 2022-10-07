@@ -132,6 +132,18 @@ describe("wallet hooks", () => {
       })
       expect(transferSpy).not.toHaveBeenCalled()
 
+      act(() => {
+        expect(() => result.current.transfer("test", "15")).toThrow(
+          "there is a pending transfer",
+        )
+      })
+
+      expect(result.current.queuedTransfer).toEqual({
+        to: "test",
+        amount: "10",
+      })
+      expect(transferSpy).not.toHaveBeenCalled()
+
       await act(async () => {
         await getWalletDelegationP
       })

@@ -5,12 +5,12 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
+import { useTransfer, useWallet } from "frontend/integration/wallet/hooks"
+import { Button } from "frontend/ui/atoms/button"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileNewTransaction from "frontend/ui/organisms/profile-new-transaction"
 import { isHex } from "frontend/ui/utils"
 
-import { useTransfer, useWallet } from "../../../../integration/wallet/hooks"
-import { Button } from "../../../../ui/atoms/button"
 import SendReceiveIcon from "./send_receive.svg"
 
 export const SendReceiveButton = () => {
@@ -18,7 +18,7 @@ export const SendReceiveButton = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const { walletAddress, walletBalance, walletPrincipal } = useWallet()
-  const { data: transfer } = useTransfer()
+  const { transfer } = useTransfer()
 
   const sendTransfer = async (values: { address: string; sum: string }) => {
     if (Number(values.sum) === 0) return toast.error("You can't send 0 ICP")

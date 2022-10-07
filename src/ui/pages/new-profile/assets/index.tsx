@@ -54,7 +54,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   </div>
                 </td>
                 <td className="text-sm">{token.balance}</td>
-                <td className="text-sm">${token.price.toFixed(2)}</td>
+                <td className="text-sm">{token.price}</td>
               </tr>
             ))}
           </tbody>
@@ -80,9 +80,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               </div>
               <div className="text-right">
                 <div className="text-sm leading-5">{token.balance}</div>
-                <div className="text-sm leading-3">
-                  ${token.price.toFixed(2)}
-                </div>
+                <div className="text-sm leading-3">{token.price}</div>
               </div>
             </div>
           ))}

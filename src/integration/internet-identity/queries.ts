@@ -1,21 +1,25 @@
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
-import { fetchPrincipal } from "."
+import { fetchPrincipals } from "frontend/integration/facade"
+import {
+  useAccounts,
+  useApplicationsMeta,
+  useProfile,
+} from "frontend/integration/identity-manager/queries"
 
 /**
- * React hook to retrieve user principal for given anchor and scope.
+ * React hook to retrieve user principals.
  */
-export function usePrincipal(anchor: number, salt: string) {
-  return useSWR(`principal/${anchor}/${salt}`, () =>
-    fetchPrincipal(anchor, salt),
+export const useAllPrincipals = () => {
+  const { profile } = useProfile()
+  const { accounts } = useAccounts()
+  const { applicationsMeta } = useApplicationsMeta()
+
+  const { data: principals } = useSWRImmutable(
+    profile?.anchor && accounts && applicationsMeta
+      ? [BigInt(profile.anchor), accounts, applicationsMeta]
+      : null,
+    fetchPrincipals,
   )
-}
-
-/**
- * React hook to retrieve user principal given a list of anchors and scopes.
- */
-export function usePrincipals(data: { anchor: number; salt: string }[]) {
-  return useSWR(`principals`, () => {
-    return Promise.all(data.map((x) => fetchPrincipal(x.anchor, x.salt)))
-  })
+  return { principals }
 }

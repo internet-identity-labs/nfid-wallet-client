@@ -54,11 +54,13 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
   console.debug("useTransfer", { isValidatingWalletDelegation })
   const handleTransfer = React.useCallback(
     (to: string, amount: string) => {
+      if (queuedTransfer) throw new Error("there is a pending transfer")
+
       return !walletDelegation
         ? setQueuedTransfer({ to, amount })
         : transfer(stringICPtoE8s(amount), to, walletDelegation)
     },
-    [walletDelegation],
+    [queuedTransfer, walletDelegation],
   )
 
   React.useEffect(() => {

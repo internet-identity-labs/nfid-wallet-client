@@ -203,7 +203,10 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
     ],
   )
 
-  return { isLoading: isLoadingPrincipals, appAccountBalance }
+  return {
+    isLoading: isLoadingPrincipals || isLoadingICPExchangeRate,
+    appAccountBalance,
+  }
 }
 
 export function useBalanceICP(principal: Principal) {

@@ -115,12 +115,15 @@ describe("wallet hooks", () => {
         .spyOn(rosettaMocks, "transfer")
         .mockImplementation(() => transferP)
 
+      // Initial setup of useTransfer hook
       const { rerender, result } = setup()
 
       expect(useProfile).toHaveBeenCalled()
       expect(getWalletDelegationSpy).toHaveBeenCalled()
       expect(result.current.isValidatingWalletDelegation).toBe(true)
+      expect(result.current.queuedTransfer.current).toBe(null)
 
+      // initialising a transfer before the walletDelegation has settled
       act(() => {
         result.current.transfer("test", "10")
       })
@@ -131,8 +134,32 @@ describe("wallet hooks", () => {
         accountId: undefined,
         domain: undefined,
       })
+      expect(result.current.isTransferPending).toBe(true)
       expect(transferSpy).not.toHaveBeenCalled()
 
+      // Simulating a rerender with changed props given to the hook
+      rerender({ domain: "my-domain", accountId: "0" })
+
+      expect(getWalletDelegationSpy).toHaveBeenCalled()
+      expect(result.current.isValidatingWalletDelegation).toBe(true)
+      // Checking that the pending transaction is invalidated
+      expect(result.current.isTransferPending).toBe(false)
+      expect(result.current.queuedTransfer.current).toBe(null)
+
+      // initialising a new transfer again before the walletDelegation has settled
+      act(() => {
+        result.current.transfer("test", "10")
+      })
+
+      expect(result.current.queuedTransfer.current).toEqual({
+        to: "test",
+        amount: "10",
+        accountId: "0",
+        domain: "my-domain",
+      })
+      expect(transferSpy).not.toHaveBeenCalled()
+
+      // simulating a repeated call to transfer which is expected to throw
       act(() => {
         expect(() => result.current.transfer("test", "15")).toThrow(
           "there is a pending transfer",
@@ -142,21 +169,21 @@ describe("wallet hooks", () => {
       expect(result.current.queuedTransfer.current).toEqual({
         to: "test",
         amount: "10",
-        accountId: undefined,
-        domain: undefined,
+        accountId: "0",
+        domain: "my-domain",
       })
       expect(transferSpy).not.toHaveBeenCalled()
       expect(result.current.isTransferPending).toBe(true)
 
+      // Simulating the resolving promise for the walletDelegation
       await act(async () => {
         await getWalletDelegationP
       })
 
+      // checking final state
       expect(result.current.isValidatingWalletDelegation).toBe(false)
       expect(result.current.isTransferPending).toBe(false)
       expect(result.current.queuedTransfer.current).toBe(null)
-      rerender()
-      expect(transferSpy).toHaveBeenCalledTimes(1)
     })
   })
 })

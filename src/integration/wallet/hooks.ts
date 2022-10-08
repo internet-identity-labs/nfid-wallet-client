@@ -55,20 +55,20 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
     accountId?: string
   } | null>(null)
 
-  console.debug("useTransfer", { isValidatingWalletDelegation })
-  const handleTransfer = React.useCallback(
-    (to: string, amount: string) => {
-      if (queuedTransfer.current) throw new Error("there is a pending transfer")
+  // This effect makes sure that we're resetting the queuedTransfer when
+  // domain or accountId are changing
+  React.useEffect(() => {
+    if (
+      queuedTransfer.current?.domain !== domain ||
+      queuedTransfer.current?.accountId !== accountId
+    ) {
+      queuedTransfer.current = null
+      setIsTransferPending(false)
+    }
+  }, [domain, accountId])
 
-      if (!walletDelegation) {
-        queuedTransfer.current = { to, amount, domain, accountId }
-        return setIsTransferPending(true)
-      }
-      transfer(stringICPtoE8s(amount), to, walletDelegation)
-    },
-    [accountId, domain, walletDelegation],
-  )
-
+  // This effect calls the pending transfer when walletDelegations settles
+  // and the queued parameter domain and accountId matching there current values.
   React.useEffect(() => {
     if (queuedTransfer.current) {
       const {
@@ -90,6 +90,20 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
     }
   }, [accountId, domain, walletDelegation])
 
+  const handleTransfer = React.useCallback(
+    (to: string, amount: string) => {
+      if (queuedTransfer.current) throw new Error("there is a pending transfer")
+
+      if (!walletDelegation) {
+        queuedTransfer.current = { to, amount, domain, accountId }
+        return setIsTransferPending(true)
+      }
+      transfer(stringICPtoE8s(amount), to, walletDelegation)
+    },
+    [accountId, domain, walletDelegation],
+  )
+
+  console.debug("useTransfer", { isValidatingWalletDelegation })
   return {
     isValidatingWalletDelegation,
     queuedTransfer,

@@ -10,10 +10,11 @@ export interface IChip {
 
 export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
   if (!title?.length) return null
+
   return (
     <div
       className={clsx(
-        "flex items-center py-1 pl-2 pr-1 space-x-1",
+        "flex items-center space-x-1 pl-2 pr-0.5 py-0.5",
         "border border-black-base rounded-full",
         "w-max",
       )}
@@ -23,7 +24,7 @@ export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
         onClick={onRemove}
         className={clsx(
           "block w-4 cursor-pointer",
-          "hover:opacity-40 transition-opacity",
+          "hover:bg-gray-200 rounded-full",
         )}
         src={iconClose}
         alt=""

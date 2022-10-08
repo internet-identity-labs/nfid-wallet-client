@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import { act, renderHook } from "@testing-library/react"
-import { notDeepEqual } from "assert"
 import React from "react"
 import { SWRConfig } from "swr"
 
@@ -116,74 +115,71 @@ describe("wallet hooks", () => {
         .mockImplementation(() => transferP)
 
       // Initial setup of useTransfer hook
-      const { rerender, result } = setup()
+      const { result } = setup()
 
       expect(useProfile).toHaveBeenCalled()
       expect(getWalletDelegationSpy).toHaveBeenCalled()
       expect(result.current.isValidatingWalletDelegation).toBe(true)
-      expect(result.current.queuedTransfer.current).toBe(null)
 
-      // initialising a transfer before the walletDelegation has settled
-      act(() => {
-        result.current.transfer("test", "10")
-      })
+      const transferPromise = result.current.transfer("test", "10")
 
-      expect(result.current.queuedTransfer.current).toEqual({
-        to: "test",
-        amount: "10",
-        accountId: undefined,
-        domain: undefined,
-      })
-      expect(result.current.isTransferPending).toBe(true)
       expect(transferSpy).not.toHaveBeenCalled()
 
-      // Simulating a rerender with changed props given to the hook
-      rerender({ domain: "my-domain", accountId: "0" })
-
-      expect(getWalletDelegationSpy).toHaveBeenCalledTimes(2)
-      expect(result.current.isValidatingWalletDelegation).toBe(true)
-      // Checking that the pending transaction is invalidated
-      expect(result.current.isTransferPending).toBe(false)
-      expect(result.current.queuedTransfer.current).toBe(null)
-
-      // initialising a new transfer again before the walletDelegation has settled
-      act(() => {
-        result.current.transfer("test", "10")
-      })
-
-      expect(result.current.queuedTransfer.current).toEqual({
-        to: "test",
-        amount: "10",
-        accountId: "0",
-        domain: "my-domain",
-      })
-      expect(transferSpy).not.toHaveBeenCalled()
-
-      // simulating a repeated call to transfer which is expected to throw
-      act(() => {
-        expect(() => result.current.transfer("test", "15")).toThrow(
-          "there is a pending transfer",
-        )
-      })
-
-      expect(result.current.queuedTransfer.current).toEqual({
-        to: "test",
-        amount: "10",
-        accountId: "0",
-        domain: "my-domain",
-      })
-      expect(transferSpy).not.toHaveBeenCalled()
-      expect(result.current.isTransferPending).toBe(true)
-
-      // Simulating the resolving promise for the walletDelegation
+      // // Simulating the resolving promise for the walletDelegation
       await act(async () => {
         await getWalletDelegationP
       })
 
-      // checking final state
+      // // checking final state
       expect(result.current.isValidatingWalletDelegation).toBe(false)
-      expect(result.current.isTransferPending).toBe(false)
-      expect(result.current.queuedTransfer.current).toBe(null)
+      expect(transferSpy).toHaveBeenCalledWith(
+        1000000000,
+        "test",
+        expect.anything(),
+      )
+      expect(transferPromise).resolves.toBe(BigInt(1))
+    })
+    it("should throw when calling transfer while pending", async () => {
+      const getWalletDelegationP = Promise.resolve(factoryDelegationIdentity())
+
+      jest.spyOn(imQueryMocks, "useProfile").mockImplementation(() => ({
+        isLoading: false,
+        refreshProfile: jest.fn(),
+        profile: { anchor: 10000 } as Profile,
+      }))
+
+      const getWalletDelegationSpy = jest
+        .spyOn(facadeMocks, "getWalletDelegation")
+        .mockImplementation(() => getWalletDelegationP)
+
+      const transferP = Promise.resolve(BigInt(1))
+      const transferSpy = jest
+        .spyOn(rosettaMocks, "transfer")
+        .mockImplementation(() => transferP)
+
+      // Initial setup of useTransfer hook
+      const { rerender, result } = setup()
+
+      const transferPromise = result.current.transfer("test", "10")
+
+      rerender({ domain: "test", accountId: "0" })
+      expect(transferPromise).rejects.toBe(
+        "domain or accountId has been changed",
+      )
+      expect(transferSpy).not.toHaveBeenCalled()
+      expect(getWalletDelegationSpy).toHaveBeenCalledTimes(2)
+
+      const transferPromise2 = result.current.transfer("test-2", "20")
+
+      await act(async () => {
+        await getWalletDelegationP
+      })
+      expect(transferPromise2).resolves.toBe(BigInt(1))
+      expect(transferSpy).toHaveBeenCalledWith(
+        2000000000,
+        "test-2",
+        expect.anything(),
+      )
     })
   })
 })

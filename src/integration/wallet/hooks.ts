@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import { useEffect, useMemo } from "react"
@@ -46,13 +47,17 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
   const { data: walletDelegation, isValidating: isValidatingWalletDelegation } =
     useWalletDelegation(profile?.anchor, domain, accountId)
 
-  const [isTransferPending, setIsTransferPending] = React.useState(false)
-
   const queuedTransfer = React.useRef<{
     to: string
     amount: string
     domain?: string
     accountId?: string
+    rejectTransfer?: (reason: any) => void
+    executeTransfer?: (
+      walletDelegation: DelegationIdentity,
+      to: string,
+      amount: string,
+    ) => void
   } | null>(null)
 
   // This effect makes sure that we're resetting the queuedTransfer when
@@ -62,8 +67,11 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
       queuedTransfer.current?.domain !== domain ||
       queuedTransfer.current?.accountId !== accountId
     ) {
+      queuedTransfer.current?.rejectTransfer &&
+        queuedTransfer.current.rejectTransfer(
+          "domain or accountId has been changed",
+        )
       queuedTransfer.current = null
-      setIsTransferPending(false)
     }
   }, [domain, accountId])
 
@@ -74,31 +82,46 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
       const {
         amount,
         to,
+        executeTransfer,
         domain: queuedDomain,
         accountId: queuedAccountId,
       } = queuedTransfer.current
       if (
         walletDelegation &&
+        executeTransfer &&
         queuedDomain === domain &&
         queuedAccountId === accountId
       ) {
+        executeTransfer(walletDelegation, to, amount)
         queuedTransfer.current = null
-        transfer(stringICPtoE8s(amount), to, walletDelegation).finally(() =>
-          setIsTransferPending(false),
-        )
       }
     }
   }, [accountId, domain, walletDelegation])
 
   const handleTransfer = React.useCallback(
-    (to: string, amount: string) => {
+    async (to: string, amount: string) => {
       if (queuedTransfer.current) throw new Error("there is a pending transfer")
 
-      if (!walletDelegation) {
-        queuedTransfer.current = { to, amount, domain, accountId }
-        return setIsTransferPending(true)
-      }
-      transfer(stringICPtoE8s(amount), to, walletDelegation)
+      return new Promise<bigint>((resolve, reject) => {
+        if (!walletDelegation) {
+          queuedTransfer.current = {
+            to,
+            amount,
+            domain,
+            accountId,
+            rejectTransfer: reject,
+            executeTransfer: (walletDelegation, to, amount) => {
+              transfer(stringICPtoE8s(amount), to, walletDelegation)
+                .then((value) => resolve(value))
+                .catch((reason) => reject(reason))
+            },
+          }
+        } else {
+          return transfer(stringICPtoE8s(amount), to, walletDelegation)
+            .then((value) => resolve(value))
+            .catch((reason) => reject(reason))
+        }
+      })
     },
     [accountId, domain, walletDelegation],
   )
@@ -106,8 +129,6 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
   console.debug("useTransfer", { isValidatingWalletDelegation })
   return {
     isValidatingWalletDelegation,
-    queuedTransfer,
-    isTransferPending,
     transfer: handleTransfer,
   }
 }

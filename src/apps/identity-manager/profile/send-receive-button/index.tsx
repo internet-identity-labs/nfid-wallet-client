@@ -31,8 +31,6 @@ export const SendReceiveButton = () => {
         toastId: "transferToSelfError",
       })
 
-    if (!transfer) throw new Error("Transfer doesn't exist")
-
     let validAddress = isHex(values.address)
       ? values.address
       : principalToAddress(Principal.fromText(values.address) as any)

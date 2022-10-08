@@ -115,7 +115,7 @@ describe("wallet hooks", () => {
         .spyOn(rosettaMocks, "transfer")
         .mockImplementation(() => transferP)
 
-      const { result } = setup()
+      const { rerender, result } = setup()
 
       expect(useProfile).toHaveBeenCalled()
       expect(getWalletDelegationSpy).toHaveBeenCalled()
@@ -146,14 +146,17 @@ describe("wallet hooks", () => {
         domain: undefined,
       })
       expect(transferSpy).not.toHaveBeenCalled()
+      expect(result.current.isTransferPending).toBe(true)
 
       await act(async () => {
         await getWalletDelegationP
       })
 
       expect(result.current.isValidatingWalletDelegation).toBe(false)
+      expect(result.current.isTransferPending).toBe(false)
       expect(result.current.queuedTransfer.current).toBe(null)
-      expect(transferSpy).toHaveBeenCalled()
+      rerender()
+      expect(transferSpy).toHaveBeenCalledTimes(1)
     })
   })
 })

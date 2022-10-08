@@ -125,10 +125,11 @@ describe("wallet hooks", () => {
         result.current.transfer("test", "10")
       })
 
-      expect(result.current.isTransferPending).toBe(true)
-      expect(result.current.queuedTransfer).toEqual({
+      expect(result.current.queuedTransfer.current).toEqual({
         to: "test",
         amount: "10",
+        accountId: undefined,
+        domain: undefined,
       })
       expect(transferSpy).not.toHaveBeenCalled()
 
@@ -138,9 +139,11 @@ describe("wallet hooks", () => {
         )
       })
 
-      expect(result.current.queuedTransfer).toEqual({
+      expect(result.current.queuedTransfer.current).toEqual({
         to: "test",
         amount: "10",
+        accountId: undefined,
+        domain: undefined,
       })
       expect(transferSpy).not.toHaveBeenCalled()
 
@@ -149,8 +152,7 @@ describe("wallet hooks", () => {
       })
 
       expect(result.current.isValidatingWalletDelegation).toBe(false)
-      expect(result.current.isTransferPending).toBe(false)
-      expect(result.current.queuedTransfer).toBe(null)
+      expect(result.current.queuedTransfer.current).toBe(null)
       expect(transferSpy).toHaveBeenCalled()
     })
   })

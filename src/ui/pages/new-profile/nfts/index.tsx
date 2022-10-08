@@ -207,14 +207,16 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
               bordered={false}
               options={collectionsOptions}
               label="Collections"
-              onChange={setCollectionsFilter}
+              setSelectedValues={setCollectionsFilter}
+              selectedValues={collectionsFilter}
               isSearch
             />
             <DropdownSelect
               bordered={false}
               options={walletOptions}
               label="Wallets"
-              onChange={setWalletsFilter}
+              setSelectedValues={setWalletsFilter}
+              selectedValues={walletsFilter}
               isSearch
             />
           </div>

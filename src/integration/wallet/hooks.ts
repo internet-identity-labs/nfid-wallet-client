@@ -30,8 +30,8 @@ export const useWalletDelegation = (
     (userNumber, hostName, personaId) =>
       getWalletDelegation(userNumber, hostName, personaId),
     {
-      dedupingInterval: WALLET_SESSION_TTL_2_MIN_IN_NS,
-      focusThrottleInterval: WALLET_SESSION_TTL_2_MIN_IN_NS,
+      dedupingInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,
+      focusThrottleInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,
     },
   )
 }

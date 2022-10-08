@@ -140,7 +140,7 @@ describe("wallet hooks", () => {
       // Simulating a rerender with changed props given to the hook
       rerender({ domain: "my-domain", accountId: "0" })
 
-      expect(getWalletDelegationSpy).toHaveBeenCalled()
+      expect(getWalletDelegationSpy).toHaveBeenCalledTimes(2)
       expect(result.current.isValidatingWalletDelegation).toBe(true)
       // Checking that the pending transaction is invalidated
       expect(result.current.isTransferPending).toBe(false)

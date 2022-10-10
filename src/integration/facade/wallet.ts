@@ -8,7 +8,7 @@ import {
 } from "frontend/integration/internet-identity"
 
 const WALLET_SCOPE = "nfid.one"
-export const WALLET_SESSION_TTL = BigInt(2 * 60 * 1e9)
+export const WALLET_SESSION_TTL_2_MIN_IN_NS = 2 * 60 * 1e9
 
 export async function getWalletPrincipal(anchor: number): Promise<Principal> {
   return fetchPrincipal(anchor, WALLET_SCOPE).catch((e) => {
@@ -25,5 +25,9 @@ export async function getWalletDelegation(
     typeof hostName === "undefined"
       ? WALLET_SCOPE
       : getScope(hostName, personaId)
-  return delegationByScope(userNumber, scope, WALLET_SESSION_TTL)
+  return delegationByScope(
+    userNumber,
+    scope,
+    BigInt(WALLET_SESSION_TTL_2_MIN_IN_NS),
+  )
 }

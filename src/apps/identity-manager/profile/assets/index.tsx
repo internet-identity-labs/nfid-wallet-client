@@ -2,11 +2,11 @@ import React from "react"
 
 import Dfinity from "frontend/assets/dfinity.svg"
 import { icpToUSD } from "frontend/integration/rosetta/queries"
+import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
 import ProfileAssetsPage from "frontend/ui/pages/new-profile/assets"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"
-import { useWallet } from "../wallet/hooks"
 import { useAllNFTs } from "./hooks"
 
 const ProfileAssets = () => {

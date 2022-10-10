@@ -42,7 +42,7 @@ export const ProfileNFTDetailsPage = ({
       icon={CopyIcon}
       onIconClick={copyToClipboard}
       className="w-full md:min-w-fit z-[1]"
-      containerClassName="overflow-x-auto md:px-0 px-4"
+      containerClassName="overflow-x-auto"
     >
       <div
         className={clsx(

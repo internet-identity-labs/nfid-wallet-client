@@ -48,6 +48,7 @@ import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
 import { derFromPubkey, hasOwnProperty } from "./utils"
+import { getBrowserName } from "../device"
 
 export type ApiResult = LoginResult | RegisterResult
 export type LoginResult =
@@ -723,7 +724,7 @@ export async function fromSeedPhrase(
   replaceIdentity(delegationIdentity.delegationIdentity)
   authState.set(identity, delegationIdentity.delegationIdentity, ii)
 
-  im.use_access_point().catch((e) => {
+  im.use_access_point(getBrowserName()).catch((e) => {
     // When user recovers from II, the call to use_access_points will fail
     // because there is no account yet.
     console.error(e)
@@ -778,7 +779,8 @@ async function fromWebauthnDevices(
   replaceIdentity(delegation.delegationIdentity)
   authState.set(multiIdent._actualIdentity!, delegation.delegationIdentity, ii)
 
-  im.use_access_point().catch((error) => {
+  im.use_access_point(getBrowserName()).catch((error) => {
+    console.log(error);
     throw new Error(`fromWebauthnDevices im.use_access_point: ${error.message}`)
   })
 
@@ -833,7 +835,7 @@ export async function loginfromGoogleDevice(identity: string): Promise<void> {
   const frontendDelegation = await requestFEDelegation(googleIdentity)
 
   authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
-  im.use_access_point().catch((error) => {
+  im.use_access_point(getBrowserName()).catch((error) => {
     throw new Error(
       `loginfromGoogleDevice im.use_access_point: ${error.message}`,
     )

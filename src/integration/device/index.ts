@@ -1,6 +1,8 @@
 import bowser from "bowser"
 import useSWR from "swr"
 
+import { Icon } from "../identity-manager/devices/state"
+
 const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
 const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
 const PLATFORMS_IOS = ["iPhone", "iPad", "iPod"]
@@ -11,6 +13,7 @@ const browser = (navigator as any).brave
   : parser.getBrowser()
 
 const platform = getPlatformInfo()
+const name = getName()
 
 /**
  * Determine if the browser is capable of WebAuthN
@@ -20,6 +23,17 @@ export function isWebAuthNSupported(): boolean {
     window?.PublicKeyCredential !== undefined &&
     typeof window.PublicKeyCredential === "function"
   )
+}
+
+export function getName(): string {
+  if (platform.os === "Windows") {
+    return `NFID Windows Hello`
+  }
+  return `NFID ${browser.name} on ${platform.os}`
+}
+
+export function getBrowserName(): [string] {
+  return [browser.name || "My Computer"];
 }
 
 export async function fetchWebAuthnPlatformCapability() {
@@ -111,10 +125,17 @@ export function fetchWebAuthnCapabilitySync() {
   return hasWebAuthn
 }
 
+export function getIcon(deviceInfo: any): Icon {
+  if (deviceInfo.platform.os === "Windows") {
+    return "desktop"
+  }
+  return deviceInfo.isMobile ? "mobile" : "desktop"
+}
+
 export const deviceInfo = {
   platform,
   browser,
-  newDeviceName: `NFID ${browser.name} on ${platform.os}`,
+  newDeviceName: name,
   isMobile: getIsMobileDeviceMatch(),
 }
 

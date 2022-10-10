@@ -27,7 +27,7 @@ import {
   requestFEDelegationChain,
 } from "."
 import { ii, im } from "../actors"
-import { deviceInfo } from "../device"
+import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
 import { Icon } from "../identity-manager/devices/state"
 import {
@@ -63,7 +63,7 @@ export async function loginWithAnchor(
       authResult.sessionKey,
     )
 
-    im.use_access_point().catch((error) => {
+    im.use_access_point(getBrowserName()).catch((error) => {
       throw new Error(`loginWithAnchor im.use_access_point: ${error.message}`)
     })
 
@@ -150,7 +150,7 @@ export async function loginService(context: {
     sessionKey,
   )
 
-  im.use_access_point().catch((error) => {
+  im.use_access_point(getBrowserName()).catch((error) => {
     throw new Error(`loginService im.use_access_point: ${error.message}`)
   })
 
@@ -214,7 +214,7 @@ export async function registerService(
     const accessPoint =
       sessionSource !== "google"
         ? {
-            icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
+            icon: getIcon(deviceInfo),
             device: deviceInfo.newDeviceName,
             browser: deviceInfo.browser.name ?? "Mobile",
             pubKey,

@@ -319,7 +319,7 @@ export const idlFactory = ({ IDL }) => {
       [],
     ),
     update_persona: IDL.Func([PersonaRequest], [HTTPAccountResponse], []),
-    use_access_point: IDL.Func([], [HTTPOneAccessPointResponse], []),
+    use_access_point: IDL.Func([IDL.Opt(IDL.Text)], [HTTPOneAccessPointResponse], []),
     validate_phone: IDL.Func([ValidatePhoneRequest], [Response], []),
     validate_signature: IDL.Func(
       [IDL.Opt(IDL.Text)],

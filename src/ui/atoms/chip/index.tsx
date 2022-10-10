@@ -1,30 +1,34 @@
 import clsx from "clsx"
-import React, { ReactElement } from "react"
+import React from "react"
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  solid?: boolean
-  icon?: ReactElement
-  dense?: boolean
+import iconClose from "./close.svg"
+
+export interface IChip {
+  onRemove?: () => void
+  title?: string
 }
 
-export const Chip: React.FC<Props> = ({
-  children,
-  className,
-  icon,
-  solid = false,
-  dense = false,
-}) => {
+export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
+  if (!title?.length) return null
+
   return (
     <div
       className={clsx(
-        className,
-        solid ? "bg-indigo-500 text-white" : "text-indigo-500",
-        "text-sm rounded-full border border-indigo-500 w-min flex items-center",
-        dense ? "py-[1px] px-[12px]" : "px-4 h-[30px]",
+        "flex items-center space-x-1 pl-2 pr-0.5 py-0.5",
+        "border border-black-base rounded-full",
+        "w-max",
       )}
     >
-      {icon && <span className="mr-2">{icon}</span>}
-      {children}
+      <span className="text-xs tracking-[0.16px]">{title}</span>
+      <img
+        onClick={onRemove}
+        className={clsx(
+          "block w-4 cursor-pointer",
+          "hover:bg-gray-200 rounded-full",
+        )}
+        src={iconClose}
+        alt=""
+      />
     </div>
   )
 }

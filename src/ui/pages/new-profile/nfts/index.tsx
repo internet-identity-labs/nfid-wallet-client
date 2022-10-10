@@ -14,6 +14,7 @@ import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Application } from "frontend/integration/identity-manager"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
+import { Chip } from "frontend/ui/atoms/chip"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { Input } from "frontend/ui/atoms/input"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -206,18 +207,41 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
               bordered={false}
               options={collectionsOptions}
               label="Collections"
-              onChange={setCollectionsFilter}
+              setSelectedValues={setCollectionsFilter}
+              selectedValues={collectionsFilter}
               isSearch
             />
             <DropdownSelect
               bordered={false}
               options={walletOptions}
               label="Wallets"
-              onChange={setWalletsFilter}
+              setSelectedValues={setWalletsFilter}
+              selectedValues={walletsFilter}
               isSearch
             />
           </div>
         </ProfileContainer>
+
+        <div className="flex w-full flex-wrap gap-2.5">
+          {collectionsFilter.map((value) => (
+            <Chip
+              onRemove={() =>
+                setCollectionsFilter(
+                  collectionsFilter.filter((f) => f !== value),
+                )
+              }
+              title={collectionsOptions.find((o) => o.value === value)?.label}
+            />
+          ))}
+          {walletsFilter.map((value) => (
+            <Chip
+              onRemove={() =>
+                setWalletsFilter(walletsFilter.filter((f) => f !== value))
+              }
+              title={walletOptions.find((o) => o.value === value)?.label}
+            />
+          ))}
+        </div>
         {!tokens.length ? (
           <>{isLoading ? <Loader isLoading={true} /> : "You have no NFTs!"}</>
         ) : display === "table" ? (

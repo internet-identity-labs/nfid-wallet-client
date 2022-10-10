@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
 import useClickOutside from "frontend/ui/utils/use-click-outside"
@@ -20,7 +20,8 @@ export interface IDropdownSelect {
   bordered?: boolean
   options: IOption[]
   isSearch?: boolean
-  onChange: (values: string[]) => void
+  selectedValues: string[]
+  setSelectedValues: (value: string[]) => void
 }
 
 export const DropdownSelect = ({
@@ -28,9 +29,9 @@ export const DropdownSelect = ({
   options,
   bordered = true,
   isSearch = false,
-  onChange,
+  selectedValues,
+  setSelectedValues,
 }: IDropdownSelect) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
 
@@ -43,12 +44,10 @@ export const DropdownSelect = ({
   }
 
   const filteredOptions = useMemo(() => {
-    return options.filter((option) => option.label.includes(searchInput))
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchInput.toLowerCase()),
+    )
   }, [options, searchInput])
-
-  useEffect(() => {
-    onChange(selectedValues)
-  }, [onChange, selectedValues])
 
   return (
     <div className={clsx("relative w-full")} ref={ref}>

@@ -5,18 +5,17 @@ import { DelegationChain } from "@dfinity/identity"
 import { render, waitFor, screen } from "@testing-library/react"
 import { act } from "react-dom/test-utils"
 
+import * as IM from "frontend/integration/identity-manager"
+import { Profile } from "frontend/integration/identity-manager"
 import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
-// import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
+import * as II from "frontend/integration/internet-identity"
 import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
 import KnownDeviceMachine, {
   KnownDeviceMachineContext,
   KnownDeviceActor,
 } from "frontend/state/machines/authentication/known-device"
 
-import * as IM from "../integration/identity-manager"
-import { Profile } from "../integration/identity-manager"
-import * as II from "../integration/internet-identity"
 import { KnownDeviceCoordinator } from "./device-known"
 import { makeInvokedActor } from "./test-utils"
 

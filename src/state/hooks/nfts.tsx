@@ -6,8 +6,7 @@ import {
   collection,
   tokens,
 } from "frontend/integration/entrepot"
-
-import { useAllPrincipals } from "../../integration/internet-identity/queries"
+import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
 export function useNFT(tokenid: string) {
   const { canister } = decodeTokenIdentifier(tokenid)

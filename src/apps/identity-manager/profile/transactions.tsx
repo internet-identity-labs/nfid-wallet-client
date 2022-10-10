@@ -1,10 +1,9 @@
 import { format } from "date-fns"
 import { useMemo } from "react"
 
+import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
-
-import { useWallet } from "./wallet/hooks"
 
 interface ITransaction {
   type: "send" | "receive"

@@ -1,16 +1,23 @@
 import clsx from "clsx"
 import React from "react"
-import { FiCopy } from "react-icons/fi"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import useClickOutside from "frontend/ui/utils/use-click-outside"
+
+import copyIcon from "./assets/copy.svg"
+import moreIcon from "./assets/more.svg"
+import transferIcon from "./assets/transfer.svg"
 
 const NFTPreview = (props: UserNFTDetails) => {
+  const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
+  const ref = useClickOutside(() => setIsTooltipOpen(false))
+
   const copyToClipboard = React.useCallback(
-    (e: React.MouseEvent<SVGElement>) => {
+    (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault()
       toast.info("NFT URL copied to clipboard", {
         toastId: `copied_nft_${props.tokenId}`,
@@ -23,7 +30,8 @@ const NFTPreview = (props: UserNFTDetails) => {
   return (
     <div
       className={clsx(
-        "rounded w-full h-[315px] bg-slate-100 hover:bg-inherit hover:shadow-md hover:shadow-slate-100 transition-all cursor-pointer",
+        "rounded w-full transition-all cursor-pointer overflow-visible",
+        "bg-gray-50 hover:bg-white hover:shadow-md hover:shadow-slate-100",
       )}
     >
       <Link
@@ -44,11 +52,46 @@ const NFTPreview = (props: UserNFTDetails) => {
               {props.collection.name}
             </div>
           </div>
-          <FiCopy
-            className={clsx(`hover:text-blue-500`)}
-            size="18"
-            onClick={copyToClipboard}
-          />
+          <div className="relative w-6" ref={ref}>
+            <img
+              onClick={(e) => {
+                e.preventDefault()
+                setIsTooltipOpen(!isTooltipOpen)
+              }}
+              className="transition-opacity cursor-pointer hover:opacity-40"
+              src={moreIcon}
+              alt="more"
+            />
+            <div
+              className={clsx(
+                "absolute top-6 right-0 w-[150px]",
+                "bg-white rounded-md shadow-md",
+                "text-sm",
+                !isTooltipOpen && "hidden",
+              )}
+            >
+              <div
+                onClick={() => console.log("transfer")}
+                className={clsx(
+                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
+                  "flex items-center space-x-2",
+                )}
+              >
+                <img src={transferIcon} alt="" />
+                <span>Transfer</span>
+              </div>
+              <div
+                onClick={copyToClipboard}
+                className={clsx(
+                  "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
+                  "flex items-center space-x-2",
+                )}
+              >
+                <img src={copyIcon} alt="" />
+                <span> Copy link</span>
+              </div>
+            </div>
+          </div>
         </div>
       </Link>
     </div>

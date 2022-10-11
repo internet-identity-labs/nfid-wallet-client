@@ -78,7 +78,7 @@ export async function getGoogleAuthSession(
   let profile
   try {
     profile = await fetchProfile()
-    im.use_access_point(getBrowserName()).catch((error) => {
+    im.use_access_point([getBrowserName()]).catch((error) => {
       throw new Error(
         `getGoogleAuthSession im.use_access_point: ${error.message}`,
       )

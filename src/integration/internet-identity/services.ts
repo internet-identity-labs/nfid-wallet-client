@@ -63,7 +63,7 @@ export async function loginWithAnchor(
       authResult.sessionKey,
     )
 
-    im.use_access_point(getBrowserName()).catch((error) => {
+    im.use_access_point([getBrowserName()]).catch((error) => {
       throw new Error(`loginWithAnchor im.use_access_point: ${error.message}`)
     })
 
@@ -150,7 +150,7 @@ export async function loginService(context: {
     sessionKey,
   )
 
-  im.use_access_point(getBrowserName()).catch((error) => {
+  im.use_access_point([getBrowserName()]).catch((error) => {
     throw new Error(`loginService im.use_access_point: ${error.message}`)
   })
 

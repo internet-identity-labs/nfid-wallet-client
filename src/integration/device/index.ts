@@ -32,8 +32,8 @@ export function getName(): string {
   return `NFID ${browser.name} on ${platform.os}`
 }
 
-export function getBrowserName(): [string] {
-  return [browser.name || "My Computer"];
+export function getBrowserName(): string {
+  return browser.name || "My Computer";
 }
 
 export async function fetchWebAuthnPlatformCapability() {

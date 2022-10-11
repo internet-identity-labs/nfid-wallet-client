@@ -117,7 +117,7 @@ describe("ii suite", () => {
         delegationIdentity: delegationIdentityDummy,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn(() => ({ catch: jest.fn() }))
+      im.use_access_point = jest.fn((x: [] | [string]) => ({ catch: jest.fn() }))
       authStateMock.set(mockedIdentity, delegationIdentityDummy, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>

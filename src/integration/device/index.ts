@@ -33,7 +33,7 @@ export function getName(): string {
 }
 
 export function getBrowserName(): string {
-  return browser.name || "My Computer";
+  return browser.name || "My Computer"
 }
 
 export async function fetchWebAuthnPlatformCapability() {

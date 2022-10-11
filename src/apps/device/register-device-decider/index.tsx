@@ -4,7 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { im } from "frontend/integration/actors"
-import { deviceInfo, getBrowserName, getIcon, useDeviceInfo } from "frontend/integration/device"
+import {
+  deviceInfo,
+  getBrowserName,
+  getIcon,
+  useDeviceInfo,
+} from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { authState } from "frontend/integration/internet-identity"

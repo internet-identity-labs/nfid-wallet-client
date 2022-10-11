@@ -45,10 +45,10 @@ import { fromMnemonicWithoutValidation } from "frontend/integration/internet-ide
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
 import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
+import { getBrowserName } from "../device"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
 import { derFromPubkey, hasOwnProperty } from "./utils"
-import { getBrowserName } from "../device"
 
 export type ApiResult = LoginResult | RegisterResult
 export type LoginResult =
@@ -780,7 +780,7 @@ async function fromWebauthnDevices(
   authState.set(multiIdent._actualIdentity!, delegation.delegationIdentity, ii)
 
   im.use_access_point([getBrowserName()]).catch((error) => {
-    console.log(error);
+    console.log(error)
     throw new Error(`fromWebauthnDevices im.use_access_point: ${error.message}`)
   })
 

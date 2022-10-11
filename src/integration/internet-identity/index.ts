@@ -40,7 +40,7 @@ import {
   invalidateIdentity,
   replaceIdentity,
 } from "frontend/integration/actors"
-import { WALLET_SESSION_TTL } from "frontend/integration/facade/wallet"
+import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "frontend/integration/facade/wallet"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
@@ -1171,7 +1171,9 @@ export async function delegationByScope(
     userNumber,
     scope,
     [...new Uint8Array(sessionKey.getPublicKey().toDer())],
-    typeof maxTimeToLive === "undefined" ? WALLET_SESSION_TTL : maxTimeToLive,
+    typeof maxTimeToLive === "undefined"
+      ? BigInt(WALLET_SESSION_TTL_2_MIN_IN_NS)
+      : maxTimeToLive,
   )
 
   return await delegationIdentityFromSignedIdentity(

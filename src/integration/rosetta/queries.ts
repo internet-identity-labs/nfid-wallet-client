@@ -6,7 +6,7 @@ import useSWR from "swr"
 import {
   e8sICPToString,
   stringICPtoE8s,
-} from "frontend/apps/identity-manager/profile/wallet/utils"
+} from "frontend/integration/wallet/utils"
 
 import { getBalance, getExchangeRate } from "."
 import { Account, Application } from "../identity-manager"

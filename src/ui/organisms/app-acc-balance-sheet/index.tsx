@@ -32,7 +32,7 @@ const GridCell: React.FC<{
 }> = ({ children, className }) => (
   <td
     className={clsx(
-      "relative px-3 flex w-full h-14 group-hover:bg-gray-200 hover:bg-gray-200",
+      "flex relative px-3 w-full h-14 group-hover:bg-gray-200 hover:bg-gray-200",
       className,
     )}
   >
@@ -123,7 +123,7 @@ export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
 
   return (
     <TableWrapper>
-      <TableBase className="grid-cols-[minmax(200px,2fr)_1fr_1fr_1fr_minmax(200px,400px)_minmax(200px,400px)]">
+      <TableBase className="grid grid-rows-3 grid-cols-[minmax(200px,2fr)_1fr_1fr_1fr_minmax(200px,400px)_minmax(200px,400px)]">
         <TableHead sort={[]} headings={headings} />
         <div className="col-span-6 border-b border-gray-900" />
         {apps.map((app) => (

@@ -5,7 +5,6 @@ import { toast } from "react-toastify"
 import ReactTooltip from "react-tooltip"
 
 import { AppBalance } from "frontend/integration/rosetta/queries"
-import { APP_ACC_BALANCE_SHEET } from "frontend/integration/rosetta/queries.mocks"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"

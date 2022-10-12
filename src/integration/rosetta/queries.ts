@@ -32,13 +32,15 @@ interface RawBalance {
   balance: Balance
 }
 
-interface AccountBalance {
+export interface AccountBalance {
   accountName: string
   icpBalance: string
   usdBalance: string
+  principalId: string
+  accountId: string
 }
 
-interface AppBalance {
+export interface AppBalance {
   icon?: string
   appName: string
   icpBalance: string

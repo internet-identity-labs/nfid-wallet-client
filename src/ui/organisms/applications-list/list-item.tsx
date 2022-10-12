@@ -34,13 +34,7 @@ export const ApplicationListItem: React.FC<Props> = ({
       rel="noreferrer"
     >
       <div className="flex items-center flex-1 px-3 py-0 overflow-hidden cursor-pointer select-none peer">
-        {icon && (
-          <div className="mr-4">
-            <div className="relative flex items-center justify-center bg-white rounded-full w-9 h-9">
-              {icon}
-            </div>
-          </div>
-        )}
+        {icon && <div className="mr-4">{icon}</div>}
 
         <div className="flex-col flex-1 overflow-hidden">
           <div

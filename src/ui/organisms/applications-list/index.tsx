@@ -1,6 +1,7 @@
 import React from "react"
 
 import { ApplicationAccount } from "frontend/apps/identity-manager/profile/applications/utils"
+import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { List } from "frontend/ui/molecules/list"
 
 import { ApplicationListItem } from "./list-item"
@@ -20,17 +21,10 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
         subtitle={application.aliasDomains.join(", ")}
         domain={application.aliasDomains[0] || application.derivationOrigin}
         icon={
-          application.icon ? (
-            <img
-              className="rounded-full"
-              src={application.icon}
-              alt="app icon"
-            />
-          ) : (
-            <span className="text-xl font-medium text-blue-base">
-              {application.applicationName[0].toUpperCase()}
-            </span>
-          )
+          <ApplicationIcon
+            appName={application.applicationName}
+            icon={application.icon}
+          />
         }
         defaultAction={false}
         accountsLength={application.accountsCount}

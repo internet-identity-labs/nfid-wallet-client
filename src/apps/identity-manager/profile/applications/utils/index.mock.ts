@@ -28,6 +28,7 @@ export const mockApplicationsMeta = [
     name: "My Sweet App",
     alias: ["http://localhost:3000"],
     isNftStorage: false,
+    icon: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
   },
   {
     accountLimit: 5,
@@ -65,5 +66,6 @@ export const applicationAccountDetailsNormalized = [
     accountsCount: 1,
     derivationOrigin: "http://localhost:3000",
     aliasDomains: ["localhost:3000"],
+    icon: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
   },
 ]

@@ -2,17 +2,29 @@ import React from "react"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import ICP from "frontend/assets/dfinity.svg"
-import { AppBalance } from "frontend/integration/rosetta/queries"
-import { APP_ACC_BALANCE_SHEET } from "frontend/integration/rosetta/queries.mocks"
+import {
+  AppBalance,
+  ICPBalanceSheet,
+} from "frontend/integration/rosetta/queries"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 interface IProfileTransactionsPage
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLDivElement> {
+  icpBlanceSheet: ICPBalanceSheet | null
+}
 
-const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = () => {
-  const apps: AppBalance[] = Object.values(APP_ACC_BALANCE_SHEET.applications)
+const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
+  icpBlanceSheet,
+}) => {
+  const apps: AppBalance[] | null = React.useMemo(
+    () =>
+      icpBlanceSheet
+        ? Object.values(icpBlanceSheet.applications).filter(Boolean)
+        : null,
+    [icpBlanceSheet],
+  )
   return (
     <ProfileTemplate
       pageTitle="Your Internet Computer wallets"
@@ -21,14 +33,14 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = () => {
       containerClassName="overflow-x-auto"
     >
       <TokenDetailBalance
-        token="ICP"
-        label="Internet Computer"
+        token={icpBlanceSheet?.token || ""}
+        label={icpBlanceSheet?.label || ""}
         icon={ICP}
-        tokenBalance={"987.12345678 ICP"}
-        usdBalance="$6,526.30"
+        tokenBalance={icpBlanceSheet?.icpBalance || ""}
+        usdBalance={icpBlanceSheet?.usdBalance || ""}
       />
       <div className="mt-5">
-        <AppAccountBalanceSheet apps={apps} />
+        {apps && <AppAccountBalanceSheet apps={apps} />}
       </div>
     </ProfileTemplate>
   )

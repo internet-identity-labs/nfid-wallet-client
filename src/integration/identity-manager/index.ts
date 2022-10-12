@@ -59,7 +59,7 @@ export function applicationToAccount(application: Application): Account {
     )
   return {
     domain: application.domain,
-    label: application.name,
+    label: "",
     accountId: "0",
     alias: application.alias,
     icon: application.icon,

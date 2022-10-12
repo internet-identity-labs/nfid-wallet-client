@@ -47,12 +47,12 @@ export interface AppBalance {
   accounts: AccountBalance[]
 }
 
-interface ICPBalanceSheet {
+export interface ICPBalanceSheet {
   label: string
   token: string
   icpBalance: string
   usdBalance: string
-  applications: { [applicationName: string]: AppBalance | undefined }
+  applications: { [applicationName: string]: AppBalance }
 }
 
 export const sumE8sICPString = (a: string, b: string) => {
@@ -62,6 +62,8 @@ export const sumE8sICPString = (a: string, b: string) => {
 export const icpToUSD = (value: string, exchangeRate: number) =>
   `$${(exchangeRate * Number(value)).toFixed(2)}`
 
+const isDefaultLabel = (a: string) => /^Account #\d*$/.test(a)
+
 function mapApplicationBalance(
   appName: string,
   currentAppTotalBalance: string,
@@ -70,7 +72,7 @@ function mapApplicationBalance(
   icpExchangeRate: number,
   applicationMatch?: Application,
   currentApp?: AppBalance,
-): AppBalance | undefined {
+): AppBalance {
   return {
     icon: applicationMatch?.icon,
     appName: appName,
@@ -79,8 +81,9 @@ function mapApplicationBalance(
       ...(currentApp ? currentApp.accounts : []),
       {
         accountName:
-          rawBalance.account.label ||
-          `account ${parseInt(rawBalance.account.accountId) + 1}`,
+          isDefaultLabel(rawBalance.account.label) || !rawBalance.account.label
+            ? `account ${parseInt(rawBalance.account.accountId) + 1}`
+            : rawBalance.account.label,
         principalId: rawBalance.principalId,
         accountId: principalToAddress(
           // FIXME: any typecast because of Principal version mismatch in ictools
@@ -97,7 +100,8 @@ const reduceRawToAppAccountBalance = (
   rawBalance: RawBalance[],
   applications: Application[],
   icpExchangeRate: number,
-  filterZeroAccount: boolean,
+  excludeEmpty: boolean,
+  includeEmptyApps: string[],
 ): ICPBalanceSheet => {
   return rawBalance.reduce<ICPBalanceSheet>(
     (acc, rawBalance) => {
@@ -108,6 +112,8 @@ const reduceRawToAppAccountBalance = (
       const appName = applicationMatch
         ? applicationMatch.name
         : rawBalance.account.domain
+
+      console.debug(">> reduceRawToAppAccountBalance", { appName })
 
       const currentApp: AppBalance | undefined = acc.applications[appName]
 
@@ -120,7 +126,12 @@ const reduceRawToAppAccountBalance = (
         rawBalance.balance.value,
       )
 
-      if (filterZeroAccount && currentAppTotalBalance === "0") return acc
+      if (
+        excludeEmpty &&
+        includeEmptyApps.indexOf(appName) < 0 &&
+        currentAppTotalBalance === "0"
+      )
+        return acc
 
       return {
         ...acc,
@@ -193,6 +204,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
             applicationsMeta || [],
             exchangeRate,
             excludeEmpty,
+            ["nfid.one"],
           )
         : null,
     [

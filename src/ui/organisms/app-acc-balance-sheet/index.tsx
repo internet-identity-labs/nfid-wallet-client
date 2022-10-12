@@ -106,7 +106,13 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
   )
 }
 
-export const AppAccountBalanceSheet = () => {
+interface AppAccountBalanceSheetProps {
+  apps: AppBalance[]
+}
+
+export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
+  apps,
+}) => {
   const headings = [
     "Application",
     "Account",
@@ -116,13 +122,9 @@ export const AppAccountBalanceSheet = () => {
     "Principal ID",
   ]
 
-  const apps: AppBalance[] = Object.values(APP_ACC_BALANCE_SHEET.applications)
-
-  console.log(">> ", { apps })
-
   return (
     <TableWrapper>
-      <TableBase className="grid-cols-[1fr_1fr_1fr_1fr_minmax(200px,400px)_minmax(200px,400px)]">
+      <TableBase className="grid-cols-[minmax(200px,2fr)_1fr_1fr_1fr_minmax(200px,400px)_minmax(200px,400px)]">
         <TableHead sort={[]} headings={headings} />
         <div className="col-span-6 border-b border-gray-900" />
         {apps.map((app) => (

@@ -78,7 +78,7 @@ function mapApplicationBalance(
     appName: appName,
     icpBalance: `${currentAppTotalBalance} ${token}`,
     accounts: [
-      ...(currentApp ? currentApp.accounts : []),
+      ...(currentApp?.accounts ?? []),
       {
         accountName:
           isDefaultLabel(rawBalance.account.label) || !rawBalance.account.label
@@ -187,12 +187,6 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )
 
-  console.debug("", {
-    isLoadingICPExchangeRate,
-    isLoadingPrincipals,
-    exchangeRate,
-  })
-
   const appAccountBalance = React.useMemo(
     () =>
       !isLoadingICPExchangeRate &&
@@ -216,6 +210,14 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
       excludeEmpty,
     ],
   )
+
+  console.debug("useBalanceICPAll", {
+    isLoadingICPExchangeRate,
+    isLoadingPrincipals,
+    exchangeRate,
+    applicationsMeta,
+    appAccountBalance,
+  })
 
   return {
     isLoading: isLoadingPrincipals || isLoadingICPExchangeRate,

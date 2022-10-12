@@ -1,4 +1,7 @@
 import { ComponentStory } from "@storybook/react"
+import { ToastContainer } from "react-toastify"
+
+import { ToastIcons } from "frontend/ui/atoms/toast-icons"
 
 import { AppAccountBalanceSheet } from "."
 
@@ -11,7 +14,10 @@ export default {
 }
 
 const Template: ComponentStory<typeof AppAccountBalanceSheet> = (args) => (
-  <AppAccountBalanceSheet />
+  <div>
+    <ToastContainer icon={({ type }) => ToastIcons[type]} />
+    <AppAccountBalanceSheet />
+  </div>
 )
 
 export const Default = Template.bind({})

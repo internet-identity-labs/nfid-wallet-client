@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { ReactNode } from "react"
 import { BsArrowDown } from "react-icons/bs"
 
 interface TableData {
@@ -19,7 +19,7 @@ export const TableWrapper: React.FC<{ children: React.ReactElement }> = ({
 )
 
 export const TableBase: React.FC<{
-  children: JSX.Element[] | JSX.Element
+  children: ReactNode[] | ReactNode
   className?: string
 }> = ({ children, className }) => (
   <table className={clsx("grid w-full text-left min-w-[640px]", className)}>

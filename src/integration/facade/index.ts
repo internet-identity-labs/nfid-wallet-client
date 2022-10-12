@@ -50,7 +50,7 @@ export async function fetchPrincipals(
 
   const NfidWalletAccount: Account = {
     domain: WALLET_SCOPE,
-    label: "NFID",
+    label: "",
     accountId: "0",
   }
 

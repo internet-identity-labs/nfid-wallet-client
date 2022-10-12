@@ -41,8 +41,8 @@ export function useApplicationsMeta(
     ["applications/meta", predicate],
     (_, predicate) => fetchApplications(predicate),
     {
-      dedupingInterval: 60_000,
-      focusThrottleInterval: 60_000,
+      dedupingInterval: 5 * 60_000,
+      focusThrottleInterval: 5 * 60_000,
     },
   )
 

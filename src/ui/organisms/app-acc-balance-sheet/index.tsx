@@ -29,16 +29,12 @@ const TooltipWrap: React.FC<{
 const GridCell: React.FC<{
   className?: string
   children: ReactNode | ReactNode[]
-}> = ({ children, className }) => (
+}> = ({ children, className, ...props }) => (
   <td
-    className={clsx(
-      "flex relative px-3 w-full h-14 group-hover:bg-gray-200 hover:bg-gray-200",
-      className,
-    )}
+    className={clsx("relative px-3 h-14 hover:bg-gray-200", className)}
+    {...props}
   >
-    <div className={"flex align-middle items-center h-full w-full"}>
-      {children}
-    </div>
+    <div className={"flex items-center h-full w-full"}>{children}</div>
   </td>
 )
 
@@ -57,27 +53,23 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
     [],
   )
   return (
-    <tbody
-      className={clsx(
-        "border-b border-grey-200",
-        "hover:bg-gray-200",
-        "contents",
-      )}
-    >
+    <tbody className={clsx("border-b border-grey-200")}>
       {accounts.map((account, i) => (
         <tr
           key={account.accountId}
-          className="pl-10 cursor-pointer contents group hover:bg-gray-200"
+          className="pl-10 cursor-pointer hover:bg-gray-200"
         >
           {i === 0 && (
             <GridCell
+              rowspan={accounts.length}
               className={clsx(
                 "whitespace-nowrap overflow-hidden text-ellipsis",
-                `row-span-${accounts.length}`,
               )}
             >
-              <ApplicationIcon appName={appName} icon={icon} />
-              <div className="ml-4 font-semibold">{appName}</div>
+              <div className="flex items-center">
+                <ApplicationIcon appName={appName} icon={icon} />
+                <div className="ml-4 font-semibold">{appName}</div>
+              </div>
             </GridCell>
           )}
           <GridCell>{account.accountName}</GridCell>
@@ -88,7 +80,11 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
               tip="Copy to clipboard"
               onClick={copyToClipboard("accountId", account.accountId)}
             >
-              <CenterEllipsis value={account.accountId} trailingChars={5} />
+              <CenterEllipsis
+                value={account.accountId}
+                trailingChars={3}
+                leadingChars={4}
+              />
             </TooltipWrap>
           </GridCell>
           <GridCell>
@@ -96,7 +92,11 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
               tip="Copy to clipboard"
               onClick={copyToClipboard("principalId", account.principalId)}
             >
-              <CenterEllipsis value={account.principalId} trailingChars={3} />
+              <CenterEllipsis
+                value={account.principalId}
+                trailingChars={3}
+                leadingChars={4}
+              />
             </TooltipWrap>
           </GridCell>
         </tr>
@@ -123,9 +123,8 @@ export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
 
   return (
     <TableWrapper>
-      <TableBase className="grid grid-rows-3 grid-cols-[minmax(200px,2fr)_1fr_1fr_1fr_minmax(200px,400px)_minmax(200px,400px)]">
-        <TableHead sort={[]} headings={headings} />
-        <div className="col-span-6 border-b border-gray-900" />
+      <TableBase>
+        <TableHead headings={headings} />
         {apps.map((app) => (
           <AppRow
             key={app.appName}

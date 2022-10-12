@@ -1,13 +1,12 @@
 import clsx from "clsx"
 import React from "react"
-import { generatePath } from "react-router-dom"
+import { generatePath, useNavigate } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileAssetsNFT } from "./nft"
 import Icon from "./transactions.svg"
@@ -23,7 +22,17 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   tokens,
   nfts,
 }) => {
-  const { navigateFactory } = useNFIDNavigate()
+  const navigate = useNavigate()
+  const handleNavigateToTokenDetails = React.useCallback(
+    (token: string) => () => {
+      navigate(
+        generatePath(`${ProfileConstants.base}/${ProfileConstants.wallet}`, {
+          token,
+        }),
+      )
+    },
+    [navigate],
+  )
   return (
     <ProfileTemplate
       pageTitle="Assets"
@@ -45,14 +54,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
             {tokens.map((token, index) => (
               <tr
                 key={`token_${index}`}
-                onClick={navigateFactory(
-                  generatePath(
-                    `${ProfileConstants.base}/${ProfileConstants.wallet}`,
-                    {
-                      token: token.currency,
-                    },
-                  ),
-                )}
+                onClick={handleNavigateToTokenDetails(token.currency)}
               >
                 <td className="flex items-center h-16">
                   <img

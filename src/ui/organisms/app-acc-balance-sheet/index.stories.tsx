@@ -1,6 +1,7 @@
 import { ComponentStory } from "@storybook/react"
 import { ToastContainer } from "react-toastify"
 
+import { APP_ACC_BALANCE_SHEET } from "frontend/integration/rosetta/queries.mocks"
 import { ToastIcons } from "frontend/ui/atoms/toast-icons"
 
 import { AppAccountBalanceSheet } from "."
@@ -16,9 +17,11 @@ export default {
 const Template: ComponentStory<typeof AppAccountBalanceSheet> = (args) => (
   <div>
     <ToastContainer icon={({ type }) => ToastIcons[type]} />
-    <AppAccountBalanceSheet />
+    <AppAccountBalanceSheet apps={args.apps} />
   </div>
 )
 
 export const Default = Template.bind({})
-Default.args = {}
+Default.args = {
+  apps: Object.values(APP_ACC_BALANCE_SHEET.applications),
+}

@@ -22,7 +22,12 @@ export const TableBase: React.FC<{
   children: ReactNode[] | ReactNode
   className?: string
 }> = ({ children, className }) => (
-  <table className={clsx("w-full text-left min-w-[640px]", className)}>
+  <table
+    className={clsx(
+      "w-full text-left min-w-[640px]",
+      className ?? "table-auto",
+    )}
+  >
     {children}
   </table>
 )

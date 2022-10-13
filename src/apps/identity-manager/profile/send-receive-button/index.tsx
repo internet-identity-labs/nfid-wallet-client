@@ -5,11 +5,17 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
+import { transferEXT } from "frontend/integration/entrepot/transfer"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { useProfile } from "frontend/integration/identity-manager/queries"
+import { useAllWallets } from "frontend/integration/identity-manager/wallet/hooks"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
-import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
+import { useAllNFTs } from "frontend/state/hooks/nfts"
 import { Button } from "frontend/ui/atoms/button"
 import { Loader } from "frontend/ui/atoms/loader"
-import ProfileNewTransaction from "frontend/ui/organisms/profile-new-transaction"
+import { TransferModal } from "frontend/ui/organisms/transfer-modal"
+import { ITransferNFT } from "frontend/ui/organisms/transfer-modal/send/send-nft"
+import { ITransferToken } from "frontend/ui/organisms/transfer-modal/send/send-token"
 import { isHex } from "frontend/ui/utils"
 
 import SendReceiveIcon from "./send_receive.svg"
@@ -17,29 +23,21 @@ import SendReceiveIcon from "./send_receive.svg"
 export const SendReceiveButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const { walletAddress, walletBalance, walletPrincipal } = useWallet()
+  const [successMessage, setSuccessMessage] = useState("")
   const { transfer } = useTransfer()
+  const { wallets } = useAllWallets()
+  const { data: nfts } = useAllNFTs()
+  const { profile } = useProfile()
 
-  const sendTransfer = async (values: { address: string; sum: string }) => {
-    if (Number(values.sum) === 0) return toast.error("You can't send 0 ICP")
-    if (Number(values.sum) < 0)
-      return toast.error("Transfer amount can't be negative value", {
-        toastId: "transferAmountError",
-      })
-    if (values.address === walletAddress)
-      return toast.error("You can't transfer ICP to yourself", {
-        toastId: "transferToSelfError",
-      })
-
-    let validAddress = isHex(values.address)
-      ? values.address
-      : principalToAddress(Principal.fromText(values.address) as any)
+  const onTokenSubmit = async (values: ITransferToken) => {
+    let validAddress = isHex(values.to)
+      ? values.to
+      : principalToAddress(Principal.fromText(values.to) as any)
 
     try {
       setIsLoading(true)
-      await transfer(validAddress, values.sum)
-      setIsSuccess(true)
+      await transfer(validAddress, String(values.amount))
+      setSuccessMessage(`${values.amount} ICP was sent`)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction", {
@@ -52,6 +50,34 @@ export const SendReceiveButton = () => {
       console.log({ e })
     } finally {
       mutate("walletBalance")
+      setIsLoading(false)
+    }
+  }
+
+  const onNFTSubmit = async (values: ITransferNFT) => {
+    if (!profile?.anchor) throw new Error("No profile anchor")
+    setIsLoading(true)
+
+    const nftDetails = nfts?.find((nft) => nft.tokenId === values.tokenId)
+
+    const identity = await getWalletDelegation(
+      profile?.anchor,
+      nftDetails?.account.domain,
+      nftDetails?.account.accountId,
+    )
+
+    try {
+      await transferEXT(values.tokenId, identity, values.to)
+      setSuccessMessage(`${nftDetails?.name} was sent`)
+    } catch (e: any) {
+      toast.error("Unexpected error: The transaction has been cancelled", {
+        toastId: "unexpectedTransferError",
+      })
+      console.log({ e })
+    } finally {
+      setTimeout(() => {
+        mutate("userTokens")
+      }, 1000)
       setIsLoading(false)
     }
   }
@@ -84,25 +110,28 @@ export const SendReceiveButton = () => {
       </div>
       {isModalVisible && (
         <div
-          onClick={() => setIsModalVisible(false)}
           className={clsx([
             "transition ease-in-out delay-150 duration-300",
             "z-40 top-0 left-0 w-full h-screen",
             "fixed bg-opacity-75 bg-gray-600",
           ])}
           style={{ margin: 0 }}
+          onClick={() => setIsModalVisible(false)}
         >
-          <ProfileNewTransaction
-            account={walletAddress ?? ""}
-            accountPrincipal={walletPrincipal?.toText() ?? ""}
-            balance={walletBalance?.value ?? 0}
-            isSuccess={isSuccess}
-            onSendTransaction={sendTransfer}
+          <TransferModal
+            nfts={nfts ?? []}
+            wallets={wallets}
+            onTokenSubmit={onTokenSubmit}
+            onNFTSubmit={onNFTSubmit}
             onClose={() => {
-              mutate("walletBalance")
               setIsModalVisible(false)
-              setIsSuccess(false)
+              setSuccessMessage("")
+              setTimeout(() => {
+                mutate("walletBalance")
+                mutate("userTokens")
+              }, 500)
             }}
+            successMessage={successMessage}
           />
         </div>
       )}

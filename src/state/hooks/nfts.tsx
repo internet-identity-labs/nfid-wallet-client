@@ -32,7 +32,7 @@ export function useNFT(tokenid: string) {
 export function useAllNFTs() {
   const { principals } = useAllPrincipals()
 
-  return useSWR(principals ? `userTokers` : null, () => {
+  return useSWR(principals ? `userTokens` : null, () => {
     if (!principals) throw new Error("unreachable")
     console.debug(
       "Searched for NFTs at principals",

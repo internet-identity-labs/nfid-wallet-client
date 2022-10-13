@@ -89,6 +89,6 @@ export function GetWalletName(
   if (!applications) return ""
 
   return `${
-    applications.find((x) => x.domain === domain)?.name ?? ""
+    applications.find((x) => x.domain === domain)?.name ?? "NFID"
   } account ${Number(accountId) + 1}`
 }

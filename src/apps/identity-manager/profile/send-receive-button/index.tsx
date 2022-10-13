@@ -5,7 +5,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
-import { transferEXT } from "frontend/integration/entrepot/transfer"
+import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { useAllWallets } from "frontend/integration/identity-manager/wallet/hooks"

@@ -1,16 +1,21 @@
 /**
  * @jest-environment jsdom
  */
-import {Ed25519KeyIdentity} from "@dfinity/identity"
-import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
-import {expect} from "@jest/globals"
-import {encodeTokenIdentifier, principalToAddress} from "ictool"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { expect } from "@jest/globals"
+import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
-import {fetchCollectionTokens} from "frontend/integration/entrepot/lib"
-import {listNFT, lockNFT, transferEXT, unListNFT} from "frontend/integration/entrepot/ext"
-import {EntrepotCollection} from "frontend/integration/entrepot/types"
-import {Balance} from "frontend/integration/_ic_api/ext.did";
-import {transfer} from "frontend/integration/rosetta";
+import { Balance } from "frontend/integration/_ic_api/ext.did"
+import {
+  listNFT,
+  lockNFT,
+  transferEXT,
+  unListNFT,
+} from "frontend/integration/entrepot/ext"
+import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
+import { EntrepotCollection } from "frontend/integration/entrepot/types"
+import { transfer } from "frontend/integration/rosetta"
 
 const identityA: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -35,10 +40,10 @@ describe("NFT EXT standard suite", () => {
       let price = 1000000
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      let token = 'hdjt6-5ikor-uwiaa-aaaaa-b4ats-4aqca-aabhj-q'
+      let token = "hdjt6-5ikor-uwiaa-aaaaa-b4ats-4aqca-aabhj-q"
 
       // @ts-ignore
-      let ex: EntrepotCollection = {id: allien}
+      let ex: EntrepotCollection = { id: allien }
       // @ts-ignore
       let owner = (await fetchCollectionTokens(ex)).find(
         (tok) => tok.tokenId === token,
@@ -49,11 +54,7 @@ describe("NFT EXT standard suite", () => {
         owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
 
       await listNFT(token, sourceIdentity, price)
-      let address = await lockNFT(
-        token,
-        targetIdentity,
-        price,
-      )
+      let address = await lockNFT(token, targetIdentity, price)
       await transfer(price, address, targetIdentity)
       let result = await unListNFT(token, targetIdentity)
       expect(result).toBe(true)
@@ -62,10 +63,10 @@ describe("NFT EXT standard suite", () => {
       let price = 1000000
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      let token = '3qtw7-xykor-uwiaa-aaaaa-b4aro-maqca-aaap6-a'
+      let token = "3qtw7-xykor-uwiaa-aaaaa-b4aro-maqca-aaap6-a"
 
       // @ts-ignore
-      let ex: EntrepotCollection = {id: heroes}
+      let ex: EntrepotCollection = { id: heroes }
       // @ts-ignore
       let owner = (await fetchCollectionTokens(ex)).find(
         (tok) => tok.tokenId === token,
@@ -78,13 +79,7 @@ describe("NFT EXT standard suite", () => {
       let listResult = await listNFT(token, sourceIdentity, price)
       expect(listResult).toBe(true)
       await unListNFT(token, sourceIdentity)
-      await expect(
-        lockNFT(
-          token,
-          targetIdentity,
-          price,
-        )
-      ).rejects.toThrow(
+      await expect(lockNFT(token, targetIdentity, price)).rejects.toThrow(
         "Lock failed! Other : No listing!",
       )
     })
@@ -92,7 +87,7 @@ describe("NFT EXT standard suite", () => {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
       // @ts-ignore
-      let ex: EntrepotCollection = {id: testCollection}
+      let ex: EntrepotCollection = { id: testCollection }
       // @ts-ignore
       let owner = (await fetchCollectionTokens(ex)).find(
         (token) => token.tokenId === testToken,
@@ -118,7 +113,7 @@ describe("NFT EXT standard suite", () => {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
       // @ts-ignore
-      let ex: EntrepotCollection = {id: testCollectionTurtle}
+      let ex: EntrepotCollection = { id: testCollectionTurtle }
       // @ts-ignore
       let owner = (await fetchCollectionTokens(ex)).find(
         (token) => token.tokenId === testToken,
@@ -139,7 +134,7 @@ describe("NFT EXT standard suite", () => {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
       // @ts-ignore
-      let ex: EntrepotCollection = {id: testCollection}
+      let ex: EntrepotCollection = { id: testCollection }
       // @ts-ignore
       let owner = (await fetchCollectionTokens(ex)).find(
         (token) => token.tokenId === testToken,

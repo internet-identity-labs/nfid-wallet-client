@@ -1,11 +1,12 @@
-import { Principal } from "@dfinity/principal"
 import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 import { principalToAddress, fromHexString } from "ictool"
 
 import {
@@ -27,7 +28,6 @@ import {
 } from "../internet-identity"
 import { mapToBalance, mapToTransactionHistory, mapToXdrUsd } from "./mapper"
 import { restCall } from "./util"
-import {SignIdentity} from "@dfinity/agent";
 
 declare const CURRCONV_TOKEN: string
 

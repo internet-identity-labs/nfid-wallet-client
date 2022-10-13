@@ -1,6 +1,6 @@
-import {Identity} from "@dfinity/agent/lib/cjs/auth"
-import {Principal} from "@dfinity/principal"
-import {decodeTokenIdentifier, principalToAddress} from "ictool"
+import { Identity } from "@dfinity/agent/lib/cjs/auth"
+import { Principal } from "@dfinity/principal"
+import { decodeTokenIdentifier, principalToAddress } from "ictool"
 
 import {
   AccountIdentifier,
@@ -10,9 +10,9 @@ import {
   TransferRequest,
   TransferResult,
 } from "frontend/integration/_ic_api/ext.did"
-import {extIDL} from "frontend/integration/_ic_api/ext_idl"
-import {initActor} from "frontend/integration/actors"
-import {isHex} from "frontend/ui/utils"
+import { extIDL } from "frontend/integration/_ic_api/ext_idl"
+import { initActor } from "frontend/integration/actors"
+import { isHex } from "frontend/ui/utils"
 
 export async function transferEXT(
   token: string,
@@ -36,30 +36,42 @@ export async function transferEXT(
   const result: TransferResult = (await actor.transfer(request).catch((e) => {
     throw Error(`Transfer failed!: ${e}`, e)
   })) as TransferResult
-  if ("err" in result) throw Error("Transfer failed! " + formatError(result.err))
+  if ("err" in result)
+    throw Error("Transfer failed! " + formatError(result.err))
   return result.ok
 }
 
-export async function lockNFT(token: string,
-                              source: Identity,
-                              price: number,): Promise<AccountIdentifier> {
+export async function lockNFT(
+  token: string,
+  source: Identity,
+  price: number,
+): Promise<AccountIdentifier> {
   let actor = await initActor(
     source,
     decodeTokenIdentifier(token).canister,
     extIDL,
   )
-  const result = (await actor.lock(token,  BigInt(price), principalToAddress(source.getPrincipal() as any), []).catch((e) => {
-    throw Error(`Lock failed!: ${e}`, e)
-  })) as LockResult
+  const result = (await actor
+    .lock(
+      token,
+      BigInt(price),
+      principalToAddress(source.getPrincipal() as any),
+      [],
+    )
+    .catch((e) => {
+      throw Error(`Lock failed!: ${e}`, e)
+    })) as LockResult
   if ("err" in result) {
     throw Error("Lock failed! " + formatError(result.err))
   }
   return result.ok
 }
 
-export async function listNFT(token: string,
-                              source: Identity,
-                              price: number,): Promise<boolean> {
+export async function listNFT(
+  token: string,
+  source: Identity,
+  price: number,
+): Promise<boolean> {
   let actor = await initActor(
     source,
     decodeTokenIdentifier(token).canister,
@@ -68,7 +80,7 @@ export async function listNFT(token: string,
   const request = {
     token: token,
     from_subaccount: [],
-    price: [ BigInt(price)]
+    price: [BigInt(price)],
   }
   const result = (await actor.list(request).catch((e) => {
     throw Error(`List failed!: ${e}`, e)
@@ -77,8 +89,10 @@ export async function listNFT(token: string,
   return result.ok === null
 }
 
-export async function unListNFT(token: string,
-                                source: Identity): Promise<boolean> {
+export async function unListNFT(
+  token: string,
+  source: Identity,
+): Promise<boolean> {
   let actor = await initActor(
     source,
     decodeTokenIdentifier(token).canister,
@@ -87,7 +101,7 @@ export async function unListNFT(token: string,
   const request = {
     token: token,
     from_subaccount: [],
-    price: []
+    price: [],
   }
   const result = (await actor.list(request).catch((e) => {
     throw Error(`UnList failed!: ${e}`, e)
@@ -98,14 +112,13 @@ export async function unListNFT(token: string,
 
 const constructUser = (u: string) => {
   if (isHex(u) && u.length === 64) {
-    return {address: u}
+    return { address: u }
   } else {
-    return {principal: Principal.fromText(u)}
+    return { principal: Principal.fromText(u) }
   }
 }
 
 // @ts-ignore
 function formatError(err) {
-  return Object.keys(err)[0] +
-    " : " + Object.values(err)[0]
+  return Object.keys(err)[0] + " : " + Object.values(err)[0]
 }

@@ -47,14 +47,14 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
     <ProfileTemplate
       pageTitle="Transactions history"
       onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
-      className="w-full min-w-fit z-[1]"
+      className="w-full z-[1]"
       containerClassName="overflow-x-auto"
     >
       <ProfileContainer className={clsx(`bg-gray-200`)}>
         <DropdownSelect
           bordered={false}
           options={transactionsFilterOptions}
-          placeHolder="All wallets"
+          placeHolder="All wallets with transaction history"
           setSelectedValues={setTransactionFilter}
           selectedValues={selectedTransactionFilter}
           isSearch
@@ -72,56 +72,60 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      {filteredData.length ? (
-        <>
-          <table className={clsx("text-left w-full mb-16 sm:mb-0")}>
-            <thead className={clsx("border-b border-black-base h-16")}>
-              <tr className={clsx("font-bold text-sm leading-5")}>
-                <th className="pl-4 w-[285px]">Date</th>
-                <th className="w-[95px]">Asset</th>
-                <th className="w-[160px]">Quantity</th>
-                <th className="min-w-[235px] pr-5">From</th>
-                <th className="min-w-[235px]">To</th>
-              </tr>
-            </thead>
-            <tbody className={clsx("text-sm text-[#0B0E13] border-b")}>
-              {filteredData.map((transaction, index) => (
-                <tr
-                  className={clsx(
-                    "hover:bg-[#F3F4F6] hover:cursor-pointer h-16",
-                  )}
-                  key={`transaction_${index}`}
-                >
-                  <td className="pl-4 whitespace-nowrap">{transaction.date}</td>
-                  <td>{transaction.asset}</td>
-                  <td>{transaction.quantity}</td>
-                  <td>
-                    <span className={clsx("inline-block break-words pr-5")}>
-                      {transaction.from}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={clsx("inline-block break-words")}>
-                      {transaction.to}
-                    </span>
-                  </td>
+      <div className="w-full overflow-y-scroll">
+        {filteredData.length ? (
+          <>
+            <table className={clsx("text-left w-full mb-16 sm:mb-0")}>
+              <thead className={clsx("border-b border-black-base h-16")}>
+                <tr className={clsx("font-bold text-sm leading-5")}>
+                  <th className="pl-4 w-[285px]">Date</th>
+                  <th className="w-[95px]">Asset</th>
+                  <th className="w-[160px]">Quantity</th>
+                  <th className="min-w-[235px] pr-5">From</th>
+                  <th className="min-w-[235px]">To</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      ) : (
-        <div
-          className={clsx(
-            "w-full h-[50vh]",
-            "flex justify-center items-center flex-col",
-          )}
-        >
-          <p className="mb-4 text-sm text-center">
-            No recent transactions to display.
-          </p>
-        </div>
-      )}
+              </thead>
+              <tbody className={clsx("text-sm text-[#0B0E13] border-b")}>
+                {filteredData.map((transaction, index) => (
+                  <tr
+                    className={clsx(
+                      "hover:bg-[#F3F4F6] hover:cursor-pointer h-16",
+                    )}
+                    key={`transaction_${index}`}
+                  >
+                    <td className="pl-4 whitespace-nowrap">
+                      {transaction.date}
+                    </td>
+                    <td>{transaction.asset}</td>
+                    <td>{transaction.quantity}</td>
+                    <td>
+                      <span className={clsx("inline-block break-words pr-5")}>
+                        {transaction.from}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={clsx("inline-block break-words")}>
+                        {transaction.to}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <div
+            className={clsx(
+              "w-full h-[50vh]",
+              "flex justify-center items-center flex-col",
+            )}
+          >
+            <p className="mb-4 text-sm text-center">
+              No recent transactions to display.
+            </p>
+          </div>
+        )}
+      </div>
       <div className={clsx("mt-2 fixed right-4")}>
         <Pagination
           data={activeTab === "Sent" ? sentData : receivedData}

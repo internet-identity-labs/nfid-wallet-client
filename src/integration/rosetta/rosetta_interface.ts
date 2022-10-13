@@ -132,7 +132,7 @@ type Sender = Operation
 type Receiver = Operation
 type Fee = Operation
 
-interface Transaction {
+export interface Transaction {
   blockIdentifier: {
     index: number
     hash: string

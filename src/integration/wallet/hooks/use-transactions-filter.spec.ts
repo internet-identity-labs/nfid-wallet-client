@@ -85,7 +85,7 @@ describe("useTransactionsFilter", () => {
         refreshApplicationMeta: jest.fn(),
       }))
     const { result } = renderHook(() => useTransactionsFilter())
-    expect(useAllPrincipals).toHaveBeenCalledTimes(1)
+    expect(useAllPrincipals).toHaveBeenCalledTimes(2)
     expect(useApplicationsMeta).toHaveBeenCalledTimes(1)
     expect(result.current).toEqual({
       transactionsFilterOptions: [

@@ -1,4 +1,4 @@
-import {Principal} from "@dfinity/principal"
+import { Principal } from "@dfinity/principal"
 
 type Balance = number
 type AccountIdentifier = string
@@ -22,42 +22,39 @@ export type TransferRequest = {
 export type TransferResult =
   | { ok: Balance }
   | {
-  err:
-    | { CannotNotify: string }
-    | { InsufficientBalance: null }
-    | { InvalidToken: string }
-    | { Rejected: null }
-    | { Unauthorized: string }
-    | { Other: string }
-}
+      err:
+        | { CannotNotify: string }
+        | { InsufficientBalance: null }
+        | { InvalidToken: string }
+        | { Rejected: null }
+        | { Unauthorized: string }
+        | { Other: string }
+    }
 
 export type CommonError =
   | { InvalidToken: AccountIdentifier }
   | { Other: string }
 
-export type LockResult =
-  | { ok: AccountIdentifier }
-  | { err: CommonError }
-
+export type LockResult = { ok: AccountIdentifier } | { err: CommonError }
 
 export type ListRequest = {
-  token: TokenIdentifier,
-  from_subaccount: [SubAccount],
+  token: TokenIdentifier
+  from_subaccount: [SubAccount]
   price: [BigInt]
-};
+}
 
-export type ListResult =
-  | { ok: null }
-  | { err: CommonError }
+export type ListResult = { ok: null } | { err: CommonError }
 
-export type SettleResult =
-  | { ok: null }
-  | { err: CommonError }
-
+export type SettleResult = { ok: null } | { err: CommonError }
 
 export interface _SERVICE {
   transfer: (TransferRequest) => Promise<TransferResult>
-  lock: (TokenIdentifier, number, AccountIdentifier, SubAccount) => Promise<LockResult>
-  list: (ListRequest) => Promise<ListResult>,
-  settle: (string) => Promise<SettleResult>,
+  lock: (
+    TokenIdentifier,
+    number,
+    AccountIdentifier,
+    SubAccount,
+  ) => Promise<LockResult>
+  list: (ListRequest) => Promise<ListResult>
+  settle: (string) => Promise<SettleResult>
 }

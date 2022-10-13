@@ -3,7 +3,8 @@ import * as Agent from "@dfinity/agent"
 import {
   ActorMethod,
   HttpAgent,
-  Identity, SignIdentity,
+  Identity,
+  SignIdentity,
   SubmitResponse,
 } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"

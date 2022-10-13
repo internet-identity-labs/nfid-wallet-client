@@ -20,6 +20,7 @@ export interface IDropdownSelect {
   bordered?: boolean
   options: IOption[]
   isSearch?: boolean
+  placeHolder?: string
   selectedValues: string[]
   setSelectedValues: (value: string[]) => void
   placeholder?: string
@@ -29,6 +30,7 @@ export interface IDropdownSelect {
 
 export const DropdownSelect = ({
   label,
+  placeHolder = "All",
   options,
   bordered = true,
   isSearch = false,

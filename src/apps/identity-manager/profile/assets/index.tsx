@@ -1,7 +1,7 @@
 import React from "react"
 
 import Dfinity from "frontend/assets/dfinity.svg"
-import { useBalanceICPAll } from "frontend/integration/rosetta/queries"
+import { useBalanceICPAll } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
 import ProfileAssetsPage from "frontend/ui/pages/new-profile/assets"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 

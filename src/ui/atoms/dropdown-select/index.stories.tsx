@@ -1,5 +1,5 @@
 import { Meta, Story } from "@storybook/react"
-import React from "react"
+import React, { useState } from "react"
 
 import { DropdownSelect, IDropdownSelect } from "."
 import CollectionIcon from "./collection.png"
@@ -15,18 +15,30 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<IDropdownSelect> = (args) => (
-  <div className="w-full h-screen p-4 bg-gray-100">
-    <DropdownSelect {...args} />
-  </div>
-)
-
-const CollectionsTemplate: Story<IDropdownSelect> = (args) => (
-  <div className="w-full h-screen p-4 bg-gray-100">
-    <DropdownSelect {...args} />
-  </div>
-)
-
+const Template: Story<IDropdownSelect> = (args) => {
+  const [selectedValues, setSelectedValues] = useState<string[]>([])
+  return (
+    <div className="w-full h-screen p-4 bg-gray-100">
+      <DropdownSelect
+        {...args}
+        selectedValues={selectedValues}
+        setSelectedValues={setSelectedValues}
+      />
+    </div>
+  )
+}
+const CollectionsTemplate: Story<IDropdownSelect> = (args) => {
+  const [selectedValues, setSelectedValues] = useState<string[]>([])
+  return (
+    <div className="w-full h-screen p-4 bg-gray-100">
+      <DropdownSelect
+        {...args}
+        selectedValues={selectedValues}
+        setSelectedValues={setSelectedValues}
+      />
+    </div>
+  )
+}
 // By passing using the Args format for exported stories, you can control the props for a component for reuse in a test
 // https://storybook.js.org/docs/react/workflows/unit-testing
 export const Default = Template.bind({})

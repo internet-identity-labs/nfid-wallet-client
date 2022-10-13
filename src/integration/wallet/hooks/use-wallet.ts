@@ -5,8 +5,10 @@ import useSWR, { mutate } from "swr"
 
 import { getWalletPrincipal } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { getBalance, getTransactionHistory } from "frontend/integration/rosetta"
-import { useICPExchangeRate } from "frontend/integration/rosetta/queries"
+import { getBalance } from "frontend/integration/rosetta"
+import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
+
+import { useAllTransactions } from "./get-all-transactions"
 
 export const useWallet = () => {
   const { profile } = useProfile()
@@ -21,10 +23,7 @@ export const useWallet = () => {
     () => getBalance(principal as Principal),
   )
 
-  const { data: transactions, isValidating: isWalletTransactionsLoading } =
-    useSWR("walletTransactions", () =>
-      getTransactionHistory(principal as Principal),
-    )
+  const { transactions, isWalletTransactionsLoading } = useAllTransactions()
 
   const { exchangeRate, isValidating: isWalletExchangeRateLoading } =
     useICPExchangeRate()

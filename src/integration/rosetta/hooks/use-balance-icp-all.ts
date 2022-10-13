@@ -3,28 +3,18 @@ import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
 
+import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
 import {
   e8sICPToString,
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
 
-import { getBalance, getExchangeRate } from "."
-import { Account, Application } from "../identity-manager"
-import { useApplicationsMeta } from "../identity-manager/queries"
-import { useAllPrincipals } from "../internet-identity/queries"
-import { Balance } from "./rosetta_interface"
-
-export const useICPExchangeRate = () => {
-  const { data: exchangeRate, ...rest } = useSWR(
-    "walletExchangeRate",
-    getExchangeRate,
-    { dedupingInterval: 60_000 * 60, refreshInterval: 60_000 * 60 },
-  )
-  return {
-    exchangeRate,
-    ...rest,
-  }
-}
+import { getBalance } from ".."
+import { Account, Application } from "../../identity-manager"
+import { useApplicationsMeta } from "../../identity-manager/queries"
+import { useAllPrincipals } from "../../internet-identity/queries"
+import { Balance } from "../rosetta_interface"
+import { useICPExchangeRate } from "./use-icp-exchange-rate"
 
 interface RawBalance {
   principalId: string
@@ -61,8 +51,6 @@ export const sumE8sICPString = (a: string, b: string) => {
 
 export const icpToUSD = (value: string, exchangeRate: number) =>
   `$${(exchangeRate * Number(value)).toFixed(2)}`
-
-const isDefaultLabel = (a: string) => /^Account #\d*$/.test(a)
 
 function mapApplicationBalance(
   appName: string,
@@ -222,17 +210,5 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
   return {
     isLoading: isLoadingPrincipals || isLoadingICPExchangeRate,
     appAccountBalance,
-  }
-}
-
-export function useBalanceICP(principal: Principal) {
-  const { data: balance, ...rest } = useSWR([principal], getBalance, {
-    dedupingInterval: 60_000,
-    refreshInterval: 60_000,
-  })
-
-  return {
-    balance,
-    ...rest,
   }
 }

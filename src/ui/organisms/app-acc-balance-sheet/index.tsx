@@ -4,7 +4,7 @@ import React from "react"
 import { toast } from "react-toastify"
 import ReactTooltip from "react-tooltip"
 
-import { AppBalance } from "frontend/integration/rosetta/queries"
+import { AppBalance } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"

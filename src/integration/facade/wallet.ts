@@ -22,7 +22,7 @@ export async function getWalletDelegation(
   personaId?: string,
 ): Promise<DelegationIdentity> {
   const scope =
-    typeof hostName === "undefined"
+    typeof hostName === "undefined" || hostName === "nfid.one"
       ? WALLET_SCOPE
       : getScope(hostName, personaId)
   return delegationByScope(

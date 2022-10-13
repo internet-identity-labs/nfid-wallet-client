@@ -57,7 +57,10 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   } = useForm<ITransferToken>()
 
   const setFullAmount = useCallback(() => {
-    setValue("amount", Number(currentWallet?.balance?.value) - walletFee)
+    setValue(
+      "amount",
+      (Number(currentWallet?.balance?.value) - walletFee).toString(),
+    )
   }, [currentWallet, setValue])
 
   return (
@@ -77,7 +80,6 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
               id="amount"
               min={0}
               {...register("amount", {
-                valueAsNumber: true,
                 required: sumRules.errorMessages.required,
                 validate: validateTransferAmountField,
               })}

@@ -42,12 +42,9 @@ describe("NFT EXT standard suite", () => {
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
       let token = "hdjt6-5ikor-uwiaa-aaaaa-b4ats-4aqca-aabhj-q"
 
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: allien }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(allien)).find(
         (tok) => tok.tokenId === token,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
@@ -65,12 +62,9 @@ describe("NFT EXT standard suite", () => {
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
       let token = "3qtw7-xykor-uwiaa-aaaaa-b4aro-maqca-aaap6-a"
 
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: heroes }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(heroes)).find(
         (tok) => tok.tokenId === token,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
@@ -86,12 +80,9 @@ describe("NFT EXT standard suite", () => {
     it("should transfer", async function () {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: testCollection }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(testCollection)).find(
         (token) => token.tokenId === testToken,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
@@ -112,12 +103,9 @@ describe("NFT EXT standard suite", () => {
       let testToken = encodeTokenIdentifier(testCollectionTurtle, 7322)
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: testCollectionTurtle }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(testCollectionTurtle)).find(
         (token) => token.tokenId === testToken,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
@@ -133,12 +121,9 @@ describe("NFT EXT standard suite", () => {
     it("should throw Unauthorized error", async function () {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: testCollection }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(testCollection)).find(
         (token) => token.tokenId === testToken,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
       let targetIdentity =

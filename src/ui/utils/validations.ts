@@ -56,7 +56,7 @@ export const sumRules = {
   minLength: 1,
   errorMessages: {
     pattern: "Sum must only contain numbers",
-    required: "Sum is required",
+    required: "This field cannot be empty",
     length: "Sum must be 1 or more digits long",
   },
 }

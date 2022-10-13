@@ -110,77 +110,47 @@ export interface TransactionHistoryResponse {
   total_count: number
 }
 
+interface Operation {
+  operationIdentifier: {
+    index: number
+  }
+  type: string
+  status: string
+  account: {
+    address: string
+  }
+  amount: {
+    value: string
+    currency: {
+      symbol: string
+      decimals: number
+    }
+  }
+}
+
+type Sender = Operation
+type Receiver = Operation
+type Fee = Operation
+
+interface Transaction {
+  blockIdentifier: {
+    index: number
+    hash: string
+  }
+  transaction: {
+    transactionIdentifier: {
+      hash: string
+    }
+    operations: [Sender, Receiver, Fee]
+    metadata: {
+      blockHeight: number
+      memo: number
+      timestamp: number
+    }
+  }
+}
+
 export interface TransactionHistory {
-  transactions: [
-    {
-      blockIdentifier: {
-        index: number
-        hash: string
-      }
-      transaction: {
-        transactionIdentifier: {
-          hash: string
-        }
-        operations: [
-          {
-            operationIdentifier: {
-              index: number
-            }
-            type: string
-            status: string
-            account: {
-              address: string
-            }
-            amount: {
-              value: string
-              currency: {
-                symbol: string
-                decimals: number
-              }
-            }
-          },
-          {
-            operationIdentifier: {
-              index: number
-            }
-            type: string
-            status: string
-            account: {
-              address: string
-            }
-            amount: {
-              value: string
-              currency: {
-                symbol: string
-                decimals: number
-              }
-            }
-          },
-          {
-            operationIdentifier: {
-              index: number
-            }
-            type: string
-            status: string
-            account: {
-              address: string
-            }
-            amount: {
-              value: string
-              currency: {
-                symbol: string
-                decimals: number
-              }
-            }
-          },
-        ]
-        metadata: {
-          blockHeight: number
-          memo: number
-          timestamp: number
-        }
-      }
-    },
-  ]
+  transactions: Transaction[]
   totalCount: number
 }

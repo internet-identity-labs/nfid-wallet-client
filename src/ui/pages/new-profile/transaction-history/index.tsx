@@ -99,12 +99,20 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
                     <td>{transaction.asset}</td>
                     <td>{transaction.quantity}</td>
                     <td>
-                      <span className={clsx("inline-block break-words pr-5")}>
+                      <span
+                        className={clsx(
+                          "inline-block max-w-[400px] break-words pr-5",
+                        )}
+                      >
                         {transaction.from}
                       </span>
                     </td>
                     <td>
-                      <span className={clsx("inline-block break-words")}>
+                      <span
+                        className={clsx(
+                          "inline-block max-w-[400px] break-words",
+                        )}
+                      >
                         {transaction.to}
                       </span>
                     </td>

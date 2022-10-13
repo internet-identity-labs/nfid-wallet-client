@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
 import useClickOutside from "frontend/ui/utils/use-click-outside"
@@ -22,6 +22,9 @@ export interface IDropdownSelect {
   isSearch?: boolean
   selectedValues: string[]
   setSelectedValues: (value: string[]) => void
+  placeholder?: string
+  isMultiselect?: boolean
+  firstSelected?: boolean
 }
 
 export const DropdownSelect = ({
@@ -31,17 +34,28 @@ export const DropdownSelect = ({
   isSearch = false,
   selectedValues,
   setSelectedValues,
+  placeholder = "All",
+  isMultiselect = true,
+  firstSelected = false,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
 
   const ref = useClickOutside(() => setIsDropdownOpen(false))
 
-  const toggleCheckbox = (isChecked: boolean, value: string) => {
-    const isChecking = !isChecked
-    if (isChecking) setSelectedValues(selectedValues.concat([value]))
-    else setSelectedValues(selectedValues.filter((v) => v !== value))
-  }
+  const toggleCheckbox = useCallback(
+    (isChecked: boolean, value: string) => {
+      const isChecking = !isChecked
+      if (!isMultiselect) {
+        setSelectedValues([value])
+        return setIsDropdownOpen(false)
+      }
+
+      if (isChecking) setSelectedValues(selectedValues.concat([value]))
+      else setSelectedValues(selectedValues.filter((v) => v !== value))
+    },
+    [isMultiselect, selectedValues, setSelectedValues],
+  )
 
   const filteredOptions = useMemo(() => {
     return options.filter((option) =>
@@ -49,9 +63,19 @@ export const DropdownSelect = ({
     )
   }, [options, searchInput])
 
+  useEffect(() => {
+    if (firstSelected) toggleCheckbox(false, options[0].value)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className={clsx("relative w-full")} ref={ref}>
-      <label className={clsx("text-xs tracking-[0.16px] leading-4 mb-1")}>
+      <label
+        className={clsx(
+          "text-xs tracking-[0.16px] leading-4 mb-1",
+          "text-black-base",
+        )}
+      >
         {label}
       </label>
       <div
@@ -66,8 +90,15 @@ export const DropdownSelect = ({
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
       >
-        <p className={clsx("text-sm leading-5")}>
-          {selectedValues.length ? `${selectedValues.length} selected` : "All"}
+        <p className={clsx("text-sm leading-5", !isMultiselect && "hidden")}>
+          {selectedValues?.length
+            ? `${selectedValues.length} selected`
+            : placeholder}
+        </p>
+        <p className={clsx("text-sm leading-5", isMultiselect && "hidden")}>
+          {selectedValues?.length
+            ? options.find((o) => o.value === selectedValues[0])?.label
+            : placeholder}
         </p>
         <img src={Arrow} alt="arrow" />
       </div>
@@ -85,29 +116,30 @@ export const DropdownSelect = ({
               onKeyUp={(e) => setSearchInput(e.target.value)}
             />
           )}
-          <div className={clsx("max-h-[40vh] overflow-auto flex flex-col")}>
+          <div className={clsx("max-h-[30vh] overflow-auto flex flex-col")}>
             {filteredOptions?.map((option) => (
               <label
                 key={`option_${option.value}`}
                 htmlFor={option.value}
                 className={clsx(
                   "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
-                  "flex items-center text-sm",
+                  "flex items-center text-sm text-black-base",
                 )}
               >
                 <Checkbox
                   value={option.value}
                   isChecked={selectedValues.includes(option.value)}
                   onChange={toggleCheckbox}
+                  className={clsx("mr-[13px]", !isMultiselect && "hidden")}
                 />
                 {option.icon && (
                   <img
-                    className="ml-[13px] w-10 h-10 object-cover"
+                    className="mr-[13px] w-10 h-10 object-cover"
                     src={option.icon}
                     alt={option.value}
                   />
                 )}
-                <span className="ml-[13px] w-full">{option.label}</span>
+                <span className="w-full">{option.label}</span>
                 <span className="text-gray-400 ">{option.afterLabel}</span>
               </label>
             ))}

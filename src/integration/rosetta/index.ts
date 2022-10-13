@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
 import {
   Delegation,
@@ -5,7 +6,6 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
 import { principalToAddress, fromHexString } from "ictool"
 
 import {
@@ -27,6 +27,7 @@ import {
 } from "../internet-identity"
 import { mapToBalance, mapToTransactionHistory, mapToXdrUsd } from "./mapper"
 import { restCall } from "./util"
+import {SignIdentity} from "@dfinity/agent";
 
 declare const CURRCONV_TOKEN: string
 
@@ -71,7 +72,7 @@ export async function getExchangeRate(): Promise<number> {
 export async function transfer(
   amount: number,
   to: string,
-  identity: DelegationIdentity,
+  identity: SignIdentity,
 ): Promise<BlockIndex> {
   const ledgerWithWallet = ledgerWithIdentity(identity)
 

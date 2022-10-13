@@ -6,7 +6,7 @@ import useSWR, { mutate } from "swr"
 import { getWalletPrincipal } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { getBalance } from "frontend/integration/rosetta"
-import { useICPExchangeRate } from "frontend/integration/rosetta/queries"
+import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
 
 import { useAllTransactions } from "./get-all-transactions"
 

@@ -237,7 +237,9 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                   collectionsFilter.filter((f) => f !== value),
                 )
               }
-              title={collectionsOptions.find((o) => o.value === value)?.label}
+              title={
+                collectionsOptions.find((o) => o.value === value)?.label || ""
+              }
             />
           ))}
           {walletsFilter.map((value) => (
@@ -245,7 +247,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
               onRemove={() =>
                 setWalletsFilter(walletsFilter.filter((f) => f !== value))
               }
-              title={walletOptions.find((o) => o.value === value)?.label}
+              title={walletOptions.find((o) => o.value === value)?.label || ""}
             />
           ))}
         </div>

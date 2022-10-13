@@ -4,8 +4,8 @@ import React from "react"
 import iconClose from "./close.svg"
 
 export interface IChip {
-  onRemove?: () => void
-  title?: string
+  onRemove?: (value: string) => void
+  title: string
 }
 
 export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
@@ -21,7 +21,7 @@ export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
     >
       <span className="text-xs tracking-[0.16px]">{title}</span>
       <img
-        onClick={onRemove}
+        onClick={() => onRemove && onRemove(title)}
         className={clsx(
           "block w-4 cursor-pointer",
           "hover:bg-gray-200 rounded-full",

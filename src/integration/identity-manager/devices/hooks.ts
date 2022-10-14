@@ -147,7 +147,7 @@ const normalizeRecoveryDevices = (
   })
 }
 
-async function fetchDevices({ anchor }: { anchor: string }) {
+async function fetchDevices(anchor: string) {
   console.log(">> fetchDevices", { anchor })
 
   const [accessPoints, existingDevices] = await Promise.all([
@@ -213,7 +213,7 @@ export const useDevices = () => {
     error: authenticatorDevicesError,
     mutate: refreshDevices,
   } = useSWR(
-    profile?.anchor ? { anchor: profile.anchor, type: "authenticator" } : null,
+    profile?.anchor ? [profile.anchor, "authenticator"] : null,
     fetchDevices,
   )
 

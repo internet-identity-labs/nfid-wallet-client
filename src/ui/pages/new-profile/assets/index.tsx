@@ -55,8 +55,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               <tr
                 key={`token_${index}`}
                 onClick={handleNavigateToTokenDetails(token.currency)}
+                className="cursor-pointer hover:bg-gray-200"
               >
-                <td className="flex items-center h-16">
+                <td className="flex items-center h-16 pl-4">
                   <img
                     src={token.icon}
                     alt="icon"

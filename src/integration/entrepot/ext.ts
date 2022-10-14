@@ -43,11 +43,11 @@ export async function transferEXT(
 
 export async function lockNFT(
   token: string,
-  source: Identity,
+  identity: Identity,
   price: number,
 ): Promise<AccountIdentifier> {
   let actor = await initActor(
-    source,
+    identity,
     decodeTokenIdentifier(token).canister,
     extIDL,
   )
@@ -55,7 +55,7 @@ export async function lockNFT(
     .lock(
       token,
       BigInt(price),
-      principalToAddress(source.getPrincipal() as any),
+      principalToAddress(identity.getPrincipal() as any),
       [],
     )
     .catch((e) => {
@@ -69,11 +69,11 @@ export async function lockNFT(
 
 export async function listNFT(
   token: string,
-  source: Identity,
+  identity: Identity,
   price: number,
 ): Promise<boolean> {
   let actor = await initActor(
-    source,
+    identity,
     decodeTokenIdentifier(token).canister,
     extIDL,
   )
@@ -91,10 +91,10 @@ export async function listNFT(
 
 export async function unListNFT(
   token: string,
-  source: Identity,
+  identity: Identity,
 ): Promise<boolean> {
   let actor = await initActor(
-    source,
+    identity,
     decodeTokenIdentifier(token).canister,
     extIDL,
   )
@@ -118,7 +118,6 @@ const constructUser = (u: string) => {
   }
 }
 
-// @ts-ignore
-function formatError(err) {
+function formatError(err: { [key: string]: any }) {
   return Object.keys(err)[0] + " : " + Object.values(err)[0]
 }

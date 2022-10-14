@@ -54,6 +54,7 @@ jobs:
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          E2E_PASSWORD: ${{secrets.E2E_PASSWORD}}
 
   build:
     needs: check-secrets
@@ -93,7 +94,6 @@ jobs:
           DFX_NETWORK: dev
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           IS_E2E_TEST: true
-
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
@@ -115,14 +115,6 @@ jobs:
       - name: Running unit tests
         run: yarn test
 
-      - name: Checkout Google user E2E
-        uses: actions/checkout@v3
-        with:
-          repository: internet-identity-labs/user-google-e2e
-          path: user-google-e2e
-          ref: main
-          token: ${{ secrets.PAT }}
-
       - name: Running E2E test
         run: |
           yarn test:e2e
@@ -133,6 +125,7 @@ jobs:
           IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           IC_HOST: https://ic0.app
+          E2E_PASSWORD: ${{secrets.E2E_PASSWORD}}
 
       - name: Generate HTML Report
         if: always()

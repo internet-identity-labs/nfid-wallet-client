@@ -7,16 +7,16 @@ Feature: Registration using Google
 
   Scenario Outline: User wants to register with Google
     Given I remove the e2e@identitylabs.ooo
-    Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
-    And  I pause for 250ms
-
-    When I click on the selector "iframe[title='Sign in with Google Button']"
+    Then I wait on element "div > iframe" for 3000ms to be displayed
+    When I click on the selector "div > iframe"
     Then I expect a new window has been opened
-
     When I focus the last opened window
-    Then I wait on element "#credentials-picker > div:first-child" for 4000ms to be displayed
+    When I set "e2e@identitylabs.ooo" to the inputfield "#identifierId"
+    When I click on the selector "#identifierNext"
+    Then I wait on element "input[type='password']" for 3000ms to be displayed
+    When I set "$E2E_PASSWORD" to the inputfield "input[type='password']"
+    When I click on the selector "#passwordNext"
 
-    When I click on the selector "#credentials-picker > div:first-child"
     When I focus the previous opened window
     Then I wait on element "#captcha-img" for 10000ms to be displayed
     And  I expect that element "#enter-captcha" not contains any text
@@ -37,9 +37,9 @@ Feature: Registration using Google
     Then I wait on element "#logout" for 15000ms to be displayed
 
   Scenario Outline: User wants to login with Google
-    Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
-    When I pause for 250ms
-    When I click on the selector "iframe[title='Sign in with Google Button']"
+    Then I wait on element "iframe" for 3000ms to be displayed
+    And I pause for 400ms
+    When I click on the selector "iframe"
     Then I expect a new window has been opened
     When I focus the last opened window
     Then I wait on element "#credentials-picker > div:first-child" for 4000ms to be displayed

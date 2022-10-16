@@ -215,6 +215,10 @@ export const useDevices = () => {
   } = useSWR(
     profile?.anchor ? [profile.anchor, "authenticator"] : null,
     fetchDevices,
+    {
+      dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
+    },
   )
 
   const {
@@ -224,6 +228,10 @@ export const useDevices = () => {
   } = useSWR(
     profile?.anchor ? { anchor: profile.anchor, type: "recovery" } : null,
     fetchAccountRecoveryMethods,
+    {
+      dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
+    },
   )
 
   const socialDevices = React.useMemo(() => {

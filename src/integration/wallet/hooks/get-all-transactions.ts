@@ -30,6 +30,10 @@ export const useAllTransactions = () => {
             getTransactionHistory(principal as Principal),
           ),
         ),
+      {
+        dedupingInterval: 30_000,
+        focusThrottleInterval: 30_000,
+      },
     )
 
   const transactions = React.useMemo(

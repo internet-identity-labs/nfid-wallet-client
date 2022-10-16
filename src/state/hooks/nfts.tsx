@@ -46,15 +46,8 @@ export function useAllNFTs() {
   const { principals } = useAllPrincipals()
 
   return useSWR(
-    principals ? `userTokens` : null,
-    () => {
-      if (!principals) throw new Error("unreachable")
-      console.debug(
-        "Searched for NFTs at principals",
-        principals.map((p) => [p.account, p.principal.toText()]),
-      )
-      return principalTokens(principals)
-    },
+    principals ? [principals, "userTokens"] : null,
+    principalTokens,
     {
       dedupingInterval: 30_000,
       focusThrottleInterval: 30_000,

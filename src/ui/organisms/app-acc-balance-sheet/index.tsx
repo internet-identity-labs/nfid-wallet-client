@@ -53,7 +53,7 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
     [],
   )
   return (
-    <tbody className={clsx("border-b border-grey-200")}>
+    <tbody className={clsx("border-b border-grey-200 group")}>
       {accounts.map((account, i) => (
         <tr
           key={account.accountId}
@@ -63,7 +63,7 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
             <GridCell
               rowspan={accounts.length}
               className={clsx(
-                "align-top whitespace-nowrap overflow-hidden text-ellipsis",
+                "align-top whitespace-nowrap overflow-hidden text-ellipsis group-hover:bg-gray-200",
               )}
             >
               <div

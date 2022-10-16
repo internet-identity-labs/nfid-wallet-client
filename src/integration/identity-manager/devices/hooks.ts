@@ -168,7 +168,7 @@ async function fetchDevices(anchor: string) {
   return normalizedDevices
 }
 
-async function fetchAccountRecoveryMethods({ anchor }: { anchor: string }) {
+async function fetchAccountRecoveryMethods(anchor: string) {
   console.debug("fetchAccountRecoveryMethods", { anchor })
   const [accessPoints, existingRecoveryDevices] = await Promise.all([
     im.read_access_points().catch((e) => {
@@ -215,6 +215,10 @@ export const useDevices = () => {
   } = useSWR(
     profile?.anchor ? [profile.anchor, "authenticator"] : null,
     fetchDevices,
+    {
+      dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
+    },
   )
 
   const {
@@ -222,8 +226,12 @@ export const useDevices = () => {
     error: fetchRecoveryDevicesError,
     mutate: refreshRecoveryDevices,
   } = useSWR(
-    profile?.anchor ? { anchor: profile.anchor, type: "recovery" } : null,
+    profile?.anchor ? [profile.anchor, "recovery"] : null,
     fetchAccountRecoveryMethods,
+    {
+      dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
+    },
   )
 
   const socialDevices = React.useMemo(() => {

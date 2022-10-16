@@ -23,13 +23,17 @@ export const useAllTransactions = () => {
 
   const { data: rawTransactions, isValidating: isWalletTransactionsLoading } =
     useSWR(
-      principals ? ["allTransactions", principals] : null,
-      (_, principals) =>
+      principals ? [principals, "allTransactions"] : null,
+      (principals) =>
         Promise.all(
           principals?.map(({ principal }) =>
             getTransactionHistory(principal as Principal),
           ),
         ),
+      {
+        dedupingInterval: 30_000,
+        focusThrottleInterval: 30_000,
+      },
     )
 
   const transactions = React.useMemo(

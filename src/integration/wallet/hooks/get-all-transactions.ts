@@ -23,8 +23,8 @@ export const useAllTransactions = () => {
 
   const { data: rawTransactions, isValidating: isWalletTransactionsLoading } =
     useSWR(
-      principals ? ["allTransactions", principals] : null,
-      (_, principals) =>
+      principals ? [principals, "allTransactions"] : null,
+      (principals) =>
         Promise.all(
           principals?.map(({ principal }) =>
             getTransactionHistory(principal as Principal),

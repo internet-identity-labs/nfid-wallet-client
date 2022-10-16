@@ -34,7 +34,7 @@ const GridCell: React.FC<{
     className={clsx("relative px-3 h-14 hover:bg-gray-200", className)}
     {...props}
   >
-    <div className={"flex items-center h-full w-full"}>{children}</div>
+    {children}
   </td>
 )
 
@@ -63,10 +63,13 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
             <GridCell
               rowspan={accounts.length}
               className={clsx(
-                "whitespace-nowrap overflow-hidden text-ellipsis",
+                "align-top whitespace-nowrap overflow-hidden text-ellipsis",
               )}
             >
-              <div className="flex items-center">
+              <div
+                className="flex items-center"
+                style={{ height: `calc(1/${accounts.length} * 100%)` }}
+              >
                 <ApplicationIcon appName={appName} icon={icon} />
                 <div className="ml-4 font-semibold">{appName}</div>
               </div>

@@ -16,6 +16,7 @@ export function useNFT(tokenId: string) {
     () => collection(canister),
     {
       dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
       revalidateIfStale: false,
     },
   )
@@ -28,6 +29,7 @@ export function useNFT(tokenId: string) {
     },
     {
       dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
       revalidateIfStale: false,
     },
   )
@@ -41,6 +43,7 @@ export function useNFT(tokenId: string) {
     },
     {
       dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
       revalidateIfStale: false,
     },
   )
@@ -49,8 +52,13 @@ export function useNFT(tokenId: string) {
 export const useAllNFTs = () => {
   const { principals } = useAllPrincipals()
 
-  return useSWR(principals ? `userTokens` : null, () => {
-    if (!principals) throw new Error("unreachable")
-    return principalTokens(principals)
-  })
+  return useSWR(
+    principals ? [principals, "userTokens"] : null,
+    principalTokens,
+    {
+      dedupingInterval: 60_000 * 5,
+      focusThrottleInterval: 60_000 * 5,
+      revalidateIfStale: false,
+    },
+  )
 }

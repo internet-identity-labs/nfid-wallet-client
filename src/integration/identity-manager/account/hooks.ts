@@ -23,7 +23,10 @@ export const useAccount = () => {
     data: profile,
     error,
     mutate: refreshProfile,
-  } = useSWR("account", fetchProfile)
+  } = useSWR("account", fetchProfile, {
+    dedupingInterval: 60_000 * 5,
+    focusThrottleInterval: 60_000 * 5,
+  })
 
   const [userNumber] = useAtom(userNumberAtom)
 

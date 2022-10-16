@@ -20,6 +20,7 @@ export const useAllPrincipals = () => {
       ? [BigInt(profile.anchor), accounts, applicationsMeta]
       : null,
     fetchPrincipals,
+    { dedupingInterval: 60_000, refreshInterval: 60_000 },
   )
   return { principals }
 }

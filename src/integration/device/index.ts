@@ -1,5 +1,5 @@
 import bowser from "bowser"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
 import { Icon } from "../identity-manager/devices/state"
 
@@ -140,7 +140,7 @@ export const deviceInfo = {
 }
 
 export const useDeviceInfo = () => {
-  const { data: hasPlatformAuthenticator } = useSWR(
+  const { data: hasPlatformAuthenticator } = useSWRImmutable(
     "hasWebAuthNCapability",
     fetchWebAuthnPlatformCapability,
   )

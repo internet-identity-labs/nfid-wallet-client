@@ -20,7 +20,7 @@ interface ITransaction {
 }
 
 const ProfileTransactions = () => {
-  const { walletTransactions, walletAddress, isWalletLoading } = useWallet()
+  const { walletTransactions, isWalletLoading } = useWallet()
 
   const [search] = useSearchParams()
 
@@ -48,8 +48,13 @@ const ProfileTransactions = () => {
   const transactions: ITransaction[] | undefined = useMemo(() => {
     return walletTransactions?.transactions
       .map<ITransaction>(({ transaction }) => {
+        const walletAddresses =
+          transactionFilter.length === 0
+            ? transactionsFilterOptions.map((tfo) => tfo.value)
+            : transactionFilter
         const isSend =
-          transaction.operations[0].account.address === walletAddress
+          walletAddresses.indexOf(transaction.operations[0].account.address) >
+          -1
 
         return {
           type: isSend ? "send" : "receive",
@@ -66,11 +71,15 @@ const ProfileTransactions = () => {
       .filter(({ from, to }) => {
         if (selectedTransactionFilter.length === 0) return true
         const addresses = selectedTransactionFilter.map((stf) => stf.value)
-        return addresses.findIndex((address) => address === (from || to)) > -1
+        return (
+          addresses.findIndex((address) => address === from || address === to) >
+          -1
+        )
       })
   }, [
     selectedTransactionFilter,
-    walletAddress,
+    transactionFilter,
+    transactionsFilterOptions,
     walletTransactions?.transactions,
   ])
 

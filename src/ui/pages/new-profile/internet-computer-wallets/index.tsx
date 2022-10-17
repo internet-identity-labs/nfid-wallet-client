@@ -2,6 +2,7 @@ import React from "react"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import ICP from "frontend/assets/dfinity.svg"
+import { rmProto } from "frontend/integration/identity-manager"
 import {
   AppBalance,
   ICPBalanceSheet,
@@ -21,7 +22,20 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
   const apps: AppBalance[] | null = React.useMemo(
     () =>
       icpBlanceSheet
-        ? Object.values(icpBlanceSheet.applications).filter(Boolean)
+        ? Object.values(icpBlanceSheet.applications)
+            .filter(Boolean)
+            .sort((a, b) => {
+              if (a.appName === ("nfid.one" || "NFID")) return -1
+              if (b.appName === ("nfid.one" || "NFID")) return 1
+
+              return rmProto(a.appName).localeCompare(
+                rmProto(b.appName),
+                "en",
+                {
+                  sensitivity: "base",
+                },
+              )
+            })
         : null,
     [icpBlanceSheet],
   )

@@ -30,7 +30,6 @@ export interface IDropdownSelect {
 
 export const DropdownSelect = ({
   label,
-  placeHolder = "All",
   options,
   bordered = true,
   isSearch = false,
@@ -142,7 +141,9 @@ export const DropdownSelect = ({
                   />
                 )}
                 <span className="w-full">{option.label}</span>
-                <span className="text-gray-400 ">{option.afterLabel}</span>
+                <span className="text-gray-400 whitespace-nowrap">
+                  {option.afterLabel}
+                </span>
               </label>
             ))}
           </div>

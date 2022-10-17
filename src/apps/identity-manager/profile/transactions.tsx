@@ -30,10 +30,7 @@ const ProfileTransactions = () => {
     transactionFilterFromSearch ? [transactionFilterFromSearch] : [],
   )
   const { transactionsFilterOptions } = useTransactionsFilter({
-    excludeEmpty: true,
-    includeAddresses: transactionFilterFromSearch
-      ? [transactionFilterFromSearch]
-      : [],
+    excludeEmpty: false,
   })
 
   const selectedTransactionFilter = React.useMemo(

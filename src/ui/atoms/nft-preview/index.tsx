@@ -1,9 +1,11 @@
 import clsx from "clsx"
+import { useAtom } from "jotai"
 import React from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
@@ -13,6 +15,8 @@ import moreIcon from "./assets/more.svg"
 import transferIcon from "./assets/transfer.svg"
 
 const NFTPreview = (props: UserNFTDetails) => {
+  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
   const ref = useClickOutside(() => setIsTooltipOpen(false))
 
@@ -25,6 +29,19 @@ const NFTPreview = (props: UserNFTDetails) => {
       navigator.clipboard.writeText(link(props.collection.id, props.index))
     },
     [props.collection.id, props.index, props.tokenId],
+  )
+
+  const onTransferNFT = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      setTransferModalState({
+        ...transferModalState,
+        isModalOpen: true,
+        sendType: "nft",
+        selectedNFT: [props.tokenId],
+      })
+    },
+    [props.tokenId, setTransferModalState, transferModalState],
   )
 
   return (
@@ -71,7 +88,7 @@ const NFTPreview = (props: UserNFTDetails) => {
               )}
             >
               <div
-                onClick={() => console.log("transfer")}
+                onClick={onTransferNFT}
                 className={clsx(
                   "pl-[10px] leading-10 hover:bg-gray-100 rounded-md",
                   "flex items-center space-x-2",

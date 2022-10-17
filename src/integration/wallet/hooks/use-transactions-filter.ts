@@ -65,9 +65,17 @@ const reduceTransactionFilterOptions = (
     }, [])
 }
 
-interface TransactionsFilterOption extends IOption {}
+export interface TransactionsFilterOption extends IOption {}
 
-export const useTransactionsFilter = (excludeEmpty: boolean = true) => {
+export interface UseTransactionsFilterProps {
+  excludeEmpty: boolean
+  includeAddresses: string[]
+}
+
+export const useTransactionsFilter = ({
+  excludeEmpty,
+  includeAddresses,
+}: UseTransactionsFilterProps) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
   const { transactions } = useAllTransactions()
@@ -78,9 +86,20 @@ export const useTransactionsFilter = (excludeEmpty: boolean = true) => {
             principals,
             applicationsMeta,
             transactions.transactions,
-          ).filter((t) => (excludeEmpty ? Number(t.afterLabel) > 0 : true))
+          ).filter((t) =>
+            excludeEmpty
+              ? Number(t.afterLabel) > 0 ||
+                includeAddresses.indexOf(t.value) > -1
+              : true,
+          )
         : [],
-    [principals, applicationsMeta, transactions, excludeEmpty],
+    [
+      principals,
+      applicationsMeta,
+      transactions,
+      excludeEmpty,
+      includeAddresses,
+    ],
   )
   return { transactionsFilterOptions }
 }

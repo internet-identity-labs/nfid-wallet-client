@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { useAtom } from "jotai"
 import React from "react"
 import { To, useNavigate } from "react-router-dom"
+import ReactTooltip from "react-tooltip"
 
 import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
@@ -20,6 +21,7 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   containerClassName?: string
   isLoading?: boolean
   headerMenu?: React.ReactNode
+  iconTooltip?: string
 }
 
 const ProfileTemplate: React.FC<IProfileTemplate> = ({
@@ -33,6 +35,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   containerClassName,
   isLoading = false,
   headerMenu,
+  iconTooltip,
 }) => {
   const navigate = useNavigate()
   const [transferModalState] = useAtom(transferModalAtom)
@@ -72,8 +75,10 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
                 alt="icon"
                 onClick={onIconClick}
                 className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
+                data-tip={iconTooltip}
               />
             )}
+            <ReactTooltip delayShow={2000} />
             {headerMenu}
           </div>
           {children}

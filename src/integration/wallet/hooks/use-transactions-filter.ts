@@ -37,7 +37,7 @@ const mapToTransactionFilterOption = (
   const value = principalToAddress(principal.principal as any)
   return {
     label: getWalletName(principal.account, application),
-    afterLabel: getTransactionsCount(value, transactions),
+    afterLabel: `${getTransactionsCount(value, transactions)} TXNs`,
     value,
   }
 }
@@ -68,13 +68,13 @@ const reduceTransactionFilterOptions = (
 export interface TransactionsFilterOption extends IOption {}
 
 export interface UseTransactionsFilterProps {
-  excludeEmpty: boolean
-  includeAddresses: string[]
+  excludeEmpty?: boolean
+  includeAddresses?: string[]
 }
 
 export const useTransactionsFilter = ({
-  excludeEmpty,
-  includeAddresses,
+  excludeEmpty = true,
+  includeAddresses = [],
 }: UseTransactionsFilterProps) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()

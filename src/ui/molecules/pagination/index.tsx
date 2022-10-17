@@ -37,7 +37,7 @@ const Pagination: React.FC<IPagination> = ({
   return (
     <div
       className={clsx(
-        "flex items-center",
+        "flex items-center justify-end",
         data.length < perPage + 1 && "hidden",
       )}
     >

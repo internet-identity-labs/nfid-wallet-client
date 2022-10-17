@@ -54,7 +54,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
         <DropdownSelect
           bordered={false}
           options={transactionsFilterOptions}
-          placeHolder="All wallets with transaction history"
+          placeholder="All wallets"
           setSelectedValues={setTransactionFilter}
           selectedValues={selectedTransactionFilter}
           isSearch
@@ -134,7 +134,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
           </div>
         )}
       </div>
-      <div className={clsx("mt-2 fixed right-4")}>
+      <div className={clsx("my-2")}>
         <Pagination
           data={activeTab === "Sent" ? sentData : receivedData}
           sliceData={setFilteredData}

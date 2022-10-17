@@ -7,17 +7,14 @@ Feature: User wants to veirfy his phone number
     Given I remove the account by phone number 380990374146
 
   Scenario Outline: User wants to veirfy his phone number
-    Then I wait on element "div > iframe" for 3000ms to be displayed
-    When I click on the selector "div > iframe"
+    Then I wait on element "iframe[title='Sign in with Google Button']" for 5000ms to be displayed
+    And  I pause for 250ms
+    When I click on the selector "iframe[title='Sign in with Google Button']"
     Then I expect a new window has been opened
     When I focus the last opened window
-    When I set "e2e@identitylabs.ooo" to the inputfield "#identifierId"
-    When I click on the selector "#identifierNext"
-    Then I wait on element "input[type='password']" for 3000ms to be displayed
-    When I set "$E2E_PASSWORD" to the inputfield "input[type='password']"
-    When I click on the selector "#passwordNext"
+    Then I wait on element "#credentials-picker > div:first-child" for 4000ms to be displayed
+    When I click on the selector "#credentials-picker > div:first-child"
     When I focus the previous opened window
-
     Then I wait on element "#captcha-img" for 10000ms to be displayed
     And  I expect that element "#enter-captcha" not contains any text
     And  I expect that element "#create-nfid" has the class "btn-disabled"

@@ -66,7 +66,7 @@ export const DropdownSelect = ({
   }, [options, searchInput])
 
   useEffect(() => {
-    if (firstSelected) toggleCheckbox(false, options[0].value)
+    if (firstSelected && options.length) toggleCheckbox(false, options[0].value)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -5,6 +5,7 @@ interface IToggleButton extends React.HTMLAttributes<HTMLDivElement> {
   onToggle: (value: boolean) => void
   firstValue: string
   secondValue: string
+  initialChecked?: boolean
 }
 
 export const ToggleButton: React.FC<IToggleButton> = ({
@@ -12,8 +13,9 @@ export const ToggleButton: React.FC<IToggleButton> = ({
   firstValue,
   secondValue,
   className,
+  initialChecked = false,
 }) => {
-  const [value, toggleOption] = useReducer((state) => !state, false)
+  const [value, toggleOption] = useReducer((state) => !state, initialChecked)
 
   useEffect(() => {
     onToggle(value)

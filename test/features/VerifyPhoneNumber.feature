@@ -76,7 +76,7 @@ Feature: User wants to veirfy his phone number
     When I set "+380990374146" to the inputfield "#phone-number"
     When I click on the selector "#add-phone-number"
     Then I wait on element "#loader" for 15000ms to not be displayed
-    Then I wait on element "#send-pin" for 1000ms to be displayed
+    Then I wait on element "#send-pin" for 5000ms to be displayed
     And  I expect that element "#send-pin" has the class "btn-disabled"
     Then I wait on element "#pin-input-0" for 1000ms to be displayed
     When I click on the selector "#pin-input-0"
@@ -96,7 +96,7 @@ Feature: User wants to veirfy his phone number
 
     When I click on the selector "#pin-input-0"
     When I set "1" to the inputfield "#pin-input-0"
-    Then I wait on element "#send-pin" for 1000ms to be displayed
+    Then I wait on element "#send-pin" for 5000ms to be displayed
     Then I wait on element "#loader" for 15000ms to not be displayed
     When I click on the selector "#send-pin"
 

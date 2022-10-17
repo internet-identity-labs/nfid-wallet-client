@@ -93,11 +93,10 @@ export const RouterRegisterDeviceDecider: React.FC<
       await createAccount(account, accessPoint)
 
       // attach the current identity as access point
-      const pub_key = Array.from(
-        new Uint8Array(
-          authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
-        ),
-      )
+      const pub_key = authState
+        .get()
+        ?.delegationIdentity?.getPrincipal()
+        .toText()!
       const createAccessPointResponse = await im
         .create_access_point({
           icon: "laptop",

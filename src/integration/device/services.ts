@@ -28,12 +28,11 @@ export async function registerDeviceWithWebAuthn() {
       publicKey: creationOptions(usersAuthenticatorDevices),
     })
     const credential_id = Array.from(new Uint8Array(identity.rawId))
-    const pubKey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
     await Promise.all([
       ii
         .add(BigInt(profile.anchor), {
           alias: deviceInfo.newDeviceName,
-          pubkey: pubKey,
+          pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
           credential_id: [credential_id],
           key_type: { platform: null },
           purpose: { authentication: null },
@@ -47,7 +46,7 @@ export async function registerDeviceWithWebAuthn() {
           icon: "",
           device: deviceInfo.newDeviceName,
           browser: deviceInfo.browser.name ?? "",
-          pub_key: pubKey,
+          pub_key: identity.getPrincipal().toText(),
         })
         .catch((e) => {
           throw new Error(
@@ -78,13 +77,12 @@ export async function registerDeviceWithSecurityKey() {
       publicKey: creationOptions(usersAuthenticatorDevices, "cross-platform"),
     })
     const credential_id = Array.from(new Uint8Array(identity.rawId))
-    const pubKey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
     await Promise.all([
       ii
         .add(BigInt(profile.anchor), {
           alias: deviceInfo.newDeviceName,
           // pubkey: Array.from(new Uint8Array(newPublicKey)),
-          pubkey: pubKey,
+          pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
           credential_id: [credential_id],
           key_type: { cross_platform: null },
           purpose: { authentication: null },
@@ -98,7 +96,7 @@ export async function registerDeviceWithSecurityKey() {
           icon: "usb",
           device: "Security Key",
           browser: "",
-          pub_key: pubKey,
+          pub_key: identity.getPrincipal().toText(),
         })
         .catch((e) => {
           throw new Error(

@@ -93,7 +93,7 @@ const normalizeDeviceRequest = (device: LegacyDevice): AccessPointRequest => {
   return {
     icon: device.icon,
     device: device.label,
-    pub_key: device.pubkey,
+    pub_key: Principal.fromUint8Array(new Uint8Array(device.pubkey)).toText(),
     browser: device.browser,
   }
 }
@@ -347,7 +347,7 @@ export const useDevices = () => {
             icon: "",
             device: deviceName,
             browser: browserName ?? "",
-            pub_key: Array.from(new Uint8Array(pub_key)),
+            pub_key: Principal.fromUint8Array(new Uint8Array(pub_key)).toText(),
           })
           .catch((e) => {
             throw new Error(
@@ -365,9 +365,9 @@ export const useDevices = () => {
         icon: icon ?? "document",
         device: device ?? "Recovery Phrase",
         browser: "",
-        pub_key: Array.from(
+        pub_key: Principal.fromUint8Array(
           new Uint8Array(await recoverIdentity.arrayBuffer()),
-        ),
+        ).toText(),
       }
 
       return await im.create_access_point(newDevice).catch((e) => {

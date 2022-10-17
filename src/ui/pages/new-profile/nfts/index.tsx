@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { useAtom } from "jotai"
 import React from "react"
 import { AiOutlineWallet } from "react-icons/ai"
 import { BiGridAlt } from "react-icons/bi"
@@ -9,6 +10,7 @@ import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Application } from "frontend/integration/identity-manager"
@@ -43,6 +45,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
   tokens,
   applications,
 }) => {
+  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
   const [search, setSearch] = React.useState("")
   const [display, setDisplay] = React.useState<"grid" | "table">("grid")
   const [walletsFilter, setWalletsFilter] = React.useState<string[]>([])
@@ -92,6 +95,19 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     },
     [sorting, reverse],
   )
+
+  const onTransferNFT = React.useCallback(
+    (tokenId: string) => {
+      setTransferModalState({
+        ...transferModalState,
+        isModalOpen: true,
+        sendType: "nft",
+        selectedNFT: [tokenId],
+      })
+    },
+    [setTransferModalState, transferModalState],
+  )
+
   const rows = React.useMemo(() => {
     const result = sortUserTokens(tokensFiltered, sorting).map((token) => ({
       key: token.tokenId,
@@ -132,13 +148,17 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
               )
             }}
           />
-          <img onClick={() => console.log(1)} src={transferIcon} alt="" />
+          <img
+            onClick={() => onTransferNFT(token.tokenId)}
+            src={transferIcon}
+            alt=""
+          />
         </div>,
       ],
     }))
     reverse && result.reverse()
     return result
-  }, [tokensFiltered, sorting, reverse, applications])
+  }, [tokensFiltered, sorting, reverse, applications, onTransferNFT])
 
   const openAccordions = React.useMemo(() => {
     if (!search) return [Math.random().toString()]

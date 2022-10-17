@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react"
+import { useAtom } from "jotai"
+import React, { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 
+import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
@@ -25,11 +27,12 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   nfts,
   onNFTSubmit,
 }) => {
-  const [selectedNFTS, setSelectedNFTS] = useState<string[]>([])
+  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+
   const selectedNFTDetails = useMemo(() => {
-    if (!selectedNFTS.length) return
-    return nfts.find((nft) => nft.tokenId === selectedNFTS[0])
-  }, [nfts, selectedNFTS])
+    if (!transferModalState.selectedNFT?.length) return
+    return nfts.find((nft) => nft.tokenId === transferModalState.selectedNFT[0])
+  }, [nfts, transferModalState.selectedNFT])
 
   const nftOptions = useMemo(() => {
     return nfts.map((nft) => ({
@@ -47,8 +50,10 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   } = useForm<ITransferNFT>()
 
   useEffect(() => {
-    if (selectedNFTS.length) setValue("tokenId", selectedNFTS[0])
-  }, [selectedNFTDetails, selectedNFTS, setValue])
+    if (transferModalState.selectedNFT?.length) {
+      setValue("tokenId", transferModalState.selectedNFT[0])
+    }
+  }, [selectedNFTDetails, transferModalState.selectedNFT, setValue])
 
   return (
     <div className="flex flex-col justify-between flex-grow">
@@ -63,8 +68,13 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
             placeholder="Choose NFT"
             label="NFT to transfer"
             options={nftOptions}
-            selectedValues={selectedNFTS}
-            setSelectedValues={setSelectedNFTS}
+            selectedValues={transferModalState.selectedNFT}
+            setSelectedValues={(values) => {
+              setTransferModalState({
+                ...transferModalState,
+                selectedNFT: values,
+              })
+            }}
             isSearch
             isMultiselect={false}
           />

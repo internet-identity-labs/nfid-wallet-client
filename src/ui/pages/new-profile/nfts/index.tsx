@@ -165,11 +165,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
   // TODO Refactor
   const walletOptions = React.useMemo(() => {
     const wallets = Object.values(
-      userTokensByWallet(
-        Object.values(tokensByCollections)
-          .map((x) => x.tokens)
-          .flat(),
-      ),
+      userTokensByWallet(tokensByCollections.map((x) => x.tokens).flat()),
     ).filter((token) => {
       if (!collectionsFilter.length) return true
 

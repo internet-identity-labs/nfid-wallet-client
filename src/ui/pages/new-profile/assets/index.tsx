@@ -37,6 +37,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
     <ProfileTemplate
       pageTitle="Assets"
       icon={Icon}
+      iconTooltip="Transactions history"
       onIconClick={onIconClick}
       className="overflow-inherit"
     >

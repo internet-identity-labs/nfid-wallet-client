@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { ReactNode } from "react"
 import React from "react"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import ReactTooltip from "react-tooltip"
 
@@ -43,6 +44,7 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
   icon,
   accounts,
 }) => {
+  const navigate = useNavigate()
   const copyToClipboard = React.useCallback(
     (type: string, value: string) => () => {
       toast.info(`${type} copied to clipboard`, {
@@ -52,12 +54,21 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
     },
     [],
   )
+
+  const navigateToTransactions = React.useCallback(
+    (address: string) => () => {
+      navigate(`/profile/transactions?wallet=${address}`)
+    },
+    [navigate],
+  )
+
   return (
     <tbody className={clsx("border-b border-grey-200 group")}>
       {accounts.map((account, i) => (
         <tr
-          key={account.accountId}
+          key={account.address}
           className="pl-10 cursor-pointer hover:bg-gray-200"
+          onClick={navigateToTransactions(account.address)}
         >
           {i === 0 && (
             <GridCell
@@ -81,10 +92,10 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
           <GridCell>
             <TooltipWrap
               tip="Copy to clipboard"
-              onClick={copyToClipboard("accountId", account.accountId)}
+              onClick={copyToClipboard("accountId", account.address)}
             >
               <CenterEllipsis
-                value={account.accountId}
+                value={account.address}
                 trailingChars={3}
                 leadingChars={4}
               />

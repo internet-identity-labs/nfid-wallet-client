@@ -1,6 +1,7 @@
 import { format } from "date-fns"
 import { useMemo } from "react"
 import React from "react"
+import { useSearchParams } from "react-router-dom"
 
 import { useTransactionsFilter } from "frontend/integration/wallet/hooks/use-transactions-filter"
 import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
@@ -20,8 +21,20 @@ interface ITransaction {
 
 const ProfileTransactions = () => {
   const { walletTransactions, walletAddress, isWalletLoading } = useWallet()
-  const [transactionFilter, setTransactionFilter] = React.useState<string[]>([])
-  const { transactionsFilterOptions } = useTransactionsFilter()
+
+  const [search] = useSearchParams()
+
+  const transactionFilterFromSearch = search.get("wallet")
+
+  const [transactionFilter, setTransactionFilter] = React.useState<string[]>(
+    transactionFilterFromSearch ? [transactionFilterFromSearch] : [],
+  )
+  const { transactionsFilterOptions } = useTransactionsFilter({
+    excludeEmpty: true,
+    includeAddresses: transactionFilterFromSearch
+      ? [transactionFilterFromSearch]
+      : [],
+  })
 
   const selectedTransactionFilter = React.useMemo(
     () =>

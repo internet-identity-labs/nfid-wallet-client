@@ -9,7 +9,11 @@ import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
 
 import * as getAllTransactionsMock from "./get-all-transactions"
-import { useTransactionsFilter } from "./use-transactions-filter"
+import {
+  TransactionsFilterOption,
+  useTransactionsFilter,
+  UseTransactionsFilterProps,
+} from "./use-transactions-filter"
 
 describe("useTransactionsFilter", () => {
   it("should return filter options array", () => {
@@ -93,7 +97,14 @@ describe("useTransactionsFilter", () => {
         isWalletTransactionsLoading: false,
       }))
 
-    const { result } = renderHook(() => useTransactionsFilter(false))
+    const { result, rerender } = renderHook<
+      { transactionsFilterOptions: TransactionsFilterOption[] },
+      UseTransactionsFilterProps
+    >(
+      ({ excludeEmpty, includeAddresses }: UseTransactionsFilterProps) =>
+        useTransactionsFilter({ excludeEmpty, includeAddresses }),
+      { initialProps: { excludeEmpty: false, includeAddresses: [] } },
+    )
     expect(useAllPrincipals).toHaveBeenCalledTimes(1)
     expect(useApplicationsMeta).toHaveBeenCalledTimes(1)
     expect(useAllTransactionsMock).toHaveBeenCalledTimes(1)
@@ -124,6 +135,26 @@ describe("useTransactionsFilter", () => {
             "7d3b6612f09d9464612dae852b32b5169e4d8afb556b7921b49bd79e4b637f88",
         },
       ],
+    })
+    rerender({
+      excludeEmpty: true,
+      includeAddresses: [
+        "d9197b5c40cfab4049cdae2dcccfa062d616a25ce85a189e4b6a8c610daa4bc0",
+      ],
+    })
+    expect(result.current).toEqual({
+      transactionsFilterOptions: [
+        {
+          label: "Application 1 account 1",
+          afterLabel: 0,
+          value:
+            "d9197b5c40cfab4049cdae2dcccfa062d616a25ce85a189e4b6a8c610daa4bc0",
+        },
+      ],
+    })
+    rerender({ excludeEmpty: true, includeAddresses: [] })
+    expect(result.current).toEqual({
+      transactionsFilterOptions: [],
     })
   })
 })

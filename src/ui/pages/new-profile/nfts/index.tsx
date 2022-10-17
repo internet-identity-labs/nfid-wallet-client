@@ -3,11 +3,10 @@ import { useAtom } from "jotai"
 import React from "react"
 import { AiOutlineWallet } from "react-icons/ai"
 import { BiGridAlt } from "react-icons/bi"
-import { FiCopy } from "react-icons/fi"
 import { HiViewList } from "react-icons/hi"
 import { IoIosSearch } from "react-icons/io"
 import { Link } from "react-router-dom"
-import { toast } from "react-toastify"
+import ReactTooltip from "react-tooltip"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
@@ -17,6 +16,7 @@ import { Application } from "frontend/integration/identity-manager"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
 import { Chip } from "frontend/ui/atoms/chip"
+import { Copy } from "frontend/ui/atoms/copy"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { Input } from "frontend/ui/atoms/input"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -136,23 +136,15 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
           )}
         </div>,
         <div className="flex items-center space-x-2.5 justify-center">
-          <FiCopy
-            className={clsx(`hover:text-blue-500 cursor-pointer`)}
-            size="18"
-            onClick={() => {
-              toast.info("NFT URL copied to clipboard", {
-                toastId: `copied_nft_${token.tokenId}`,
-              })
-              navigator.clipboard.writeText(
-                link(token.collection.id, token.index),
-              )
-            }}
-          />
+          <Copy value={link(token.collection.id, token.index)} />
           <img
+            data-tip="Transfer"
+            className="transition-opacity cursor-pointer hover:opacity-50"
             onClick={() => onTransferNFT(token.tokenId)}
             src={transferIcon}
             alt=""
           />
+          <ReactTooltip delayShow={2000} />
         </div>,
       ],
     }))

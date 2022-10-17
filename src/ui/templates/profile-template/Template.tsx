@@ -1,7 +1,10 @@
 import clsx from "clsx"
+import { useAtom } from "jotai"
 import React from "react"
 import { To, useNavigate } from "react-router-dom"
 
+import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"
+import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
@@ -32,10 +35,12 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   headerMenu,
 }) => {
   const navigate = useNavigate()
+  const [transferModalState] = useAtom(transferModalAtom)
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden")}>
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
+      {transferModalState.isModalOpen && <ProfileTransferModal />}
       <div
         className={clsx(
           "block relative z-1 px-4",

@@ -49,14 +49,16 @@ export const TransferModal: React.FC<ITransferModal> = ({
       {modalType !== "Success" && (
         <TransferModalTabs activeTab={modalType} setActiveTab={setModalType} />
       )}
-      {modalType === "Send" && (
+
+      <div className={clsx(modalType === "Send" ? "" : "hidden")}>
         <TransferModalSend
           nfts={nfts}
           wallets={wallets}
           onTokenSubmit={onTokenSubmit}
           onNFTSubmit={onNFTSubmit}
         />
-      )}
+      </div>
+
       {modalType === "Receive" && <TransferModalReceive wallets={wallets} />}
       {modalType === "Success" && (
         <TransferModalSuccess

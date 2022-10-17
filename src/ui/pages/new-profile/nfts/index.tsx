@@ -74,6 +74,11 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
       ),
     [tokensFiltered],
   )
+
+  const tokensByCollections = React.useMemo(() => {
+    return Object.values(userTokensByCollection(sortUserTokens(tokens)))
+  }, [tokens])
+
   const headings = ["Asset", "Name", "Collection", "ID", "Wallet", "Actions"]
   const [sorting, setSorting] = React.useState([
     "Wallet",
@@ -161,7 +166,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
   const walletOptions = React.useMemo(() => {
     const wallets = Object.values(
       userTokensByWallet(
-        Object.values(userTokensByCollection(sortUserTokens(tokens)))
+        Object.values(tokensByCollections)
           .map((x) => x.tokens)
           .flat(),
       ),
@@ -185,12 +190,10 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
         return collectionsFilter.includes(token.collection.id)
       }).length,
     }))
-  }, [applications, collectionsFilter, tokens])
+  }, [applications, collectionsFilter, tokensByCollections])
 
   const collectionsOptions = React.useMemo(() => {
-    const tokensByCollection = Object.values(
-      userTokensByCollection(sortUserTokens(tokens)),
-    ).filter((obj) => {
+    const tokensByCollection = tokensByCollections.filter((obj) => {
       if (!walletsFilter.length) return true
       return !!obj.tokens.filter((o) =>
         walletsFilter.includes(o.principal.toText()),
@@ -202,7 +205,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
       value: option.collection.id,
       icon: option.collection.avatar,
     }))
-  }, [tokens, walletsFilter])
+  }, [tokensByCollections, walletsFilter])
 
   return (
     <ProfileTemplate
@@ -250,7 +253,8 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                 )
               }
               title={
-                collectionsOptions.find((o) => o.value === value)?.label || ""
+                tokensByCollections.find((o) => o.collection.id === value)
+                  ?.collection.name || ""
               }
             />
           ))}

@@ -80,7 +80,7 @@ function mapApplicationBalance(
         icpBalance: `${rawBalance.balance.value} ${token}`,
         usdBalance: icpToUSD(rawBalance.balance.value, icpExchangeRate),
       },
-    ],
+    ].sort((a, b) => a.accountName.localeCompare(b.accountName)),
   }
 }
 
@@ -101,8 +101,6 @@ const reduceRawToAppAccountBalance = (
         ? applicationMatch.name
         : rawBalance.account.domain
 
-      console.debug(">> reduceRawToAppAccountBalance", { appName })
-
       const currentApp: AppBalance | undefined = acc.applications[appName]
 
       const totalBalanceValue = sumE8sICPString(
@@ -114,9 +112,13 @@ const reduceRawToAppAccountBalance = (
         rawBalance.balance.value,
       )
 
+      const isExplicitlyIncluded =
+        includeEmptyApps.includes(applicationMatch?.domain || "") ||
+        includeEmptyApps.includes(applicationMatch?.domain || "")
+
       if (
         excludeEmpty &&
-        includeEmptyApps.indexOf(appName) < 0 &&
+        !isExplicitlyIncluded &&
         currentAppTotalBalance === "0"
       )
         return acc

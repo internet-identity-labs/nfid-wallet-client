@@ -24,10 +24,10 @@ describe("useBalanceICPAll", () => {
       },
       metadata: {},
     }
-    const getBalanceP0 = Promise.resolve({ value: "1.0", ...commonFields })
-    const getBalanceP1 = Promise.resolve({ value: "0.1", ...commonFields })
+    const getBalanceP0 = Promise.resolve({ value: "0.1", ...commonFields })
+    const getBalanceP1 = Promise.resolve({ value: "0.0", ...commonFields })
     const getBalanceP2 = Promise.resolve({ value: "0.2", ...commonFields })
-    const getBalanceP3 = Promise.resolve({ value: "0.0", ...commonFields })
+    const getBalanceP3 = Promise.resolve({ value: "1.0", ...commonFields })
 
     const getBalanceSpy = jest
       .spyOn(rosettaMocks, "getBalance")
@@ -46,21 +46,20 @@ describe("useBalanceICPAll", () => {
       .mockImplementation(() => ({
         principals: [
           {
-            // principal: Ed25519KeyIdentity.generate().getPrincipal(),
-            principal: Principal.fromText(
-              "dcxdv-zztqe-t22xz-k4jl6-j7vx5-3b3zh-z645u-mjlg6-lnerc-qaiq2-sae",
-            ),
-            account: {
-              domain: "nfid.one",
-              accountId: "0",
-            } as Account,
-          },
-          {
             principal: Principal.fromText(
               "gv5fe-6s7su-pgeqr-2wizb-t3suu-7kayl-vqxah-3yyia-ezheu-uovga-rqe",
             ),
             account: {
               domain: "domain-1",
+              accountId: "0",
+            } as Account,
+          },
+          {
+            principal: Principal.fromText(
+              "b27e3-f3kqs-v4awo-5naps-qdb2x-6pi6t-elxdc-snwxn-nz3jd-3445f-5qe",
+            ),
+            account: {
+              domain: "domain-2",
               accountId: "0",
             } as Account,
           },
@@ -75,11 +74,12 @@ describe("useBalanceICPAll", () => {
             } as Account,
           },
           {
+            // principal: Ed25519KeyIdentity.generate().getPrincipal(),
             principal: Principal.fromText(
-              "b27e3-f3kqs-v4awo-5naps-qdb2x-6pi6t-elxdc-snwxn-nz3jd-3445f-5qe",
+              "dcxdv-zztqe-t22xz-k4jl6-j7vx5-3b3zh-z645u-mjlg6-lnerc-qaiq2-sae",
             ),
             account: {
-              domain: "domain-2",
+              domain: "nfid.one",
               accountId: "0",
             } as Account,
           },
@@ -133,6 +133,7 @@ describe("useBalanceICPAll", () => {
     })
     expect(result.current.isLoading).toBe(false)
 
+    debugger
     expect(result.current.appAccountBalance).toEqual(APP_ACC_BALANCE_SHEET)
   })
 })

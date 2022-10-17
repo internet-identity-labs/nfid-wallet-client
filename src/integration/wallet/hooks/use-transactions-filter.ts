@@ -24,7 +24,7 @@ const getTransactionsCount = (address: string, transactions: Transaction[]) => {
           },
         ],
       },
-    }) => address === (senderAddress || receiverAddress),
+    }) => address === senderAddress || address === receiverAddress,
   )
   return matchingTransactions.length
 }

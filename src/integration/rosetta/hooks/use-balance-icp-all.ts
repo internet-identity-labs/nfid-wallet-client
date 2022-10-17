@@ -27,7 +27,7 @@ export interface AccountBalance {
   icpBalance: string
   usdBalance: string
   principalId: string
-  accountId: string
+  address: string
 }
 
 export interface AppBalance {
@@ -73,7 +73,7 @@ function mapApplicationBalance(
             ? `account ${parseInt(rawBalance.account.accountId) + 1}`
             : rawBalance.account.label,
         principalId: rawBalance.principalId,
-        accountId: principalToAddress(
+        address: principalToAddress(
           // FIXME: any typecast because of Principal version mismatch in ictools
           Principal.fromText(rawBalance.principalId) as any,
         ),

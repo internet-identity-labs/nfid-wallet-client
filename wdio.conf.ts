@@ -91,6 +91,7 @@ export const config: WebdriverIO.Config = {
       browserName: "chrome",
       "goog:chromeOptions": {
         args: [
+          `--user-data-dir=${process.env.USER_DATA_DIR}`,
           "--no-sandbox",
           ...(isDebug
             ? [

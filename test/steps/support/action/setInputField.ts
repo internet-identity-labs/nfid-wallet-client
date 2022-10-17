@@ -1,4 +1,3 @@
-import { el } from "date-fns/locale"
 import type { Selector } from "webdriverio"
 
 import checkIfElementExists from "../check/checkIfElementExists"
@@ -17,13 +16,7 @@ export default async (method: string, value: string, selector: Selector) => {
    */
   const command = method === "add" ? "addValue" : "setValue"
 
-  let checkValue: string
-
-  if (value.startsWith("$")) {
-    checkValue = process.env[value.replace("$", "")] || ""
-  } else {
-    checkValue = value
-  }
+  let checkValue = value
 
   await checkIfElementExists(selector, false, 1)
 

@@ -12,11 +12,7 @@ interface TableData {
 
 export const TableWrapper: React.FC<{ children: React.ReactElement }> = ({
   children,
-}) => (
-  <div className={clsx(`overflow-x-scroll lg:overflow-x-hidden`)}>
-    {children}
-  </div>
-)
+}) => <div className={clsx("overflow-x-scroll")}>{children}</div>
 
 export const TableBase: React.FC<{
   children: ReactNode[] | ReactNode

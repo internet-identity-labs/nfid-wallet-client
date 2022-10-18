@@ -124,6 +124,9 @@ describe("persona utils test suite", () => {
     it("adds https protocol if no protocol is present", () => {
       expect(getScope("test.com", "1")).toBe("1@https://test.com")
     })
+    it("does not add https protocol if domain is nfid.one", () => {
+      expect(getScope("nfid.one", "0")).toBe("nfid.one")
+    })
   })
 
   describe("createAccount", () => {

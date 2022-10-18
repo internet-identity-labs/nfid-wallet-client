@@ -37,7 +37,7 @@ const mapToTransactionFilterOption = (
   const value = principalToAddress(principal.principal as any)
   return {
     label: getWalletName(principal.account, application),
-    afterLabel: `${getTransactionsCount(value, transactions)} TXNs`,
+    afterLabel: `${getTransactionsCount(value, transactions)} TXs`,
     value,
   }
 }

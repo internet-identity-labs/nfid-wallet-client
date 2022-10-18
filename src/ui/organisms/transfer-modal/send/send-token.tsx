@@ -10,7 +10,7 @@ import { IWallet } from "frontend/integration/identity-manager/wallet/types"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
-import { Input } from "frontend/ui/atoms/input"
+import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
 import { sumRules } from "frontend/ui/utils/validations"
 
 import ArrowWhite from "../assets/arrowWhite.svg"
@@ -54,7 +54,12 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
     formState: { errors },
     handleSubmit,
     setValue,
-  } = useForm<ITransferToken>()
+    getValues,
+  } = useForm<ITransferToken>({
+    defaultValues: {
+      to: "",
+    },
+  })
 
   const setFullAmount = useCallback(() => {
     setValue(
@@ -128,15 +133,17 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             isMultiselect={false}
             firstSelected
           />
-          <Input
-            inputClassName="!text-sm placeholder:!text-sm !h-10"
-            labelText="To"
+          <InputDropdown
+            label="To"
             placeholder="Recipient principal or account ID"
+            options={walletsOptions ?? []}
             errorText={errors.to?.message}
-            {...register("to", {
+            registerFunction={register("to", {
               validate: validateAddressField,
               required: "This field cannot be empty",
             })}
+            value={() => getValues("to")}
+            setValue={(value) => setValue("to", value)}
           />
         </div>
       </div>

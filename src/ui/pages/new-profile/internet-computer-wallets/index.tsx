@@ -11,6 +11,25 @@ import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
+const getSortedBalanceSheet = (balanceSheet: ICPBalanceSheet | null) => {
+  if (!balanceSheet) return null
+  const applications = Object.values(balanceSheet.applications)
+  const NFID = applications.find((app) => app.appName === "NFID")
+  const NNS = applications.find((app) => app.appName === "NNS")
+
+  return [
+    ...(NFID ? [NFID] : []),
+    ...(NNS ? [NNS] : []),
+    ...applications
+      .filter((a) => Boolean(a) && a.appName !== "NFID" && a.appName !== "NNS")
+      .sort((a, b) => {
+        return rmProto(a.appName).localeCompare(rmProto(b.appName), "en", {
+          sensitivity: "base",
+        })
+      }),
+  ]
+}
+
 interface IProfileTransactionsPage
   extends React.HTMLAttributes<HTMLDivElement> {
   icpBlanceSheet: ICPBalanceSheet | null
@@ -20,23 +39,8 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
   icpBlanceSheet,
 }) => {
   const apps: AppBalance[] | null = React.useMemo(
-    () =>
-      icpBlanceSheet
-        ? Object.values(icpBlanceSheet.applications)
-            .filter(Boolean)
-            .sort((a, b) => {
-              if (a.appName === ("nfid.one" || "NFID")) return -1
-              if (b.appName === ("nfid.one" || "NFID")) return 1
+    () => getSortedBalanceSheet(icpBlanceSheet),
 
-              return rmProto(a.appName).localeCompare(
-                rmProto(b.appName),
-                "en",
-                {
-                  sensitivity: "base",
-                },
-              )
-            })
-        : null,
     [icpBlanceSheet],
   )
   return (

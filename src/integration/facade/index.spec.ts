@@ -171,6 +171,13 @@ describe("Facade suite", () => {
         persona_id: "1",
         persona_name: "",
       })
+      let nfid: Application = {
+        accountLimit: 1,
+        alias: [],
+        domain: "nfid.one",
+        isNftStorage: true,
+        name: "NFID",
+      }
       let appRequired: Application = {
         accountLimit: 0,
         alias: [],
@@ -195,6 +202,7 @@ describe("Facade suite", () => {
       let accounts = await fetchAccounts()
       let principals: { principal: Principal; account: Account }[] =
         await fetchPrincipals(anchor, accounts, [
+          nfid,
           appRequired,
           appNotRequired,
           appDuplicated,

@@ -55,7 +55,11 @@ export const TransferModalSend: React.FC<ITransferModalSend> = ({
         />
       </div>
       <div className={clsx(sendType === "nft" ? "" : "hidden")}>
-        <TransferModalSendNFT onNFTSubmit={onNFTSubmit} nfts={nfts} />
+        <TransferModalSendNFT
+          wallets={wallets}
+          onNFTSubmit={onNFTSubmit}
+          nfts={nfts}
+        />
       </div>
     </>
   )

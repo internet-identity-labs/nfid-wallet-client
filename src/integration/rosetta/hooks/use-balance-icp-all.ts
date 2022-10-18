@@ -67,19 +67,24 @@ function mapApplicationBalance(
     icpBalance: `${currentAppTotalBalance} ${token}`,
     accounts: [
       ...(currentApp?.accounts ?? []),
-      {
-        accountName:
-          isDefaultLabel(rawBalance.account.label) || !rawBalance.account.label
-            ? `account ${parseInt(rawBalance.account.accountId) + 1}`
-            : rawBalance.account.label,
-        principalId: rawBalance.principalId,
-        address: principalToAddress(
-          // FIXME: any typecast because of Principal version mismatch in ictools
-          Principal.fromText(rawBalance.principalId) as any,
-        ),
-        icpBalance: `${rawBalance.balance.value} ${token}`,
-        usdBalance: icpToUSD(rawBalance.balance.value, icpExchangeRate),
-      },
+      ...(Number(rawBalance.balance.value) > 0
+        ? [
+            {
+              accountName:
+                isDefaultLabel(rawBalance.account.label) ||
+                !rawBalance.account.label
+                  ? `account ${parseInt(rawBalance.account.accountId) + 1}`
+                  : rawBalance.account.label,
+              principalId: rawBalance.principalId,
+              address: principalToAddress(
+                // FIXME: any typecast because of Principal version mismatch in ictools
+                Principal.fromText(rawBalance.principalId) as any,
+              ),
+              icpBalance: `${rawBalance.balance.value} ${token}`,
+              usdBalance: icpToUSD(rawBalance.balance.value, icpExchangeRate),
+            },
+          ]
+        : []),
     ].sort((a, b) => a.accountName.localeCompare(b.accountName)),
   }
 }

@@ -41,8 +41,7 @@ export const ProfileNFTDetailsPage = ({
       onBack={-1 as To}
       icon={CopyIcon}
       onIconClick={copyToClipboard}
-      className="w-full md:min-w-fit z-[1]"
-      containerClassName="overflow-x-auto"
+      className="w-full z-[1]"
     >
       <div
         className={clsx(
@@ -116,7 +115,8 @@ export const ProfileNFTDetailsPage = ({
       </div>
       <div
         className={clsx(
-          "block border border-gray-200 rounded-xl",
+          "w-full",
+          "border border-gray-200 rounded-xl",
           "my-[30px]",
           !transactions.length && !isTransactionsFetching && "hidden",
         )}

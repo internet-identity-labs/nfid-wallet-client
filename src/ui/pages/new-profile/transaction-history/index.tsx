@@ -48,7 +48,6 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
       pageTitle="Transactions history"
       onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
       className="w-full z-[1]"
-      containerClassName="overflow-x-auto"
     >
       <ProfileContainer className={clsx(`bg-gray-200`)}>
         <DropdownSelect

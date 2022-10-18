@@ -112,25 +112,25 @@ describe("useTransactionsFilter", () => {
       transactionsFilterOptions: [
         {
           label: "Application 1 account 1",
-          afterLabel: 0,
+          afterLabel: "0 TXNs",
           value:
             "d9197b5c40cfab4049cdae2dcccfa062d616a25ce85a189e4b6a8c610daa4bc0",
         },
         {
           label: "Application 1 renamedAccount",
-          afterLabel: 0,
+          afterLabel: "0 TXNs",
           value:
             "27a716d1a6fad66ddf068e3605e8280b5839e7b7e159d97295f6e1840a0a0a9a",
         },
         {
           label: "Application 2 account 1",
-          afterLabel: 0,
+          afterLabel: "0 TXNs",
           value:
             "bfd62f239e34e2cd42e651b1c0c1a6758a08895720ac5b4b2fd728250b939832",
         },
         {
           label: "NFID account 1",
-          afterLabel: 0,
+          afterLabel: "0 TXNs",
           value:
             "7d3b6612f09d9464612dae852b32b5169e4d8afb556b7921b49bd79e4b637f88",
         },
@@ -146,7 +146,7 @@ describe("useTransactionsFilter", () => {
       transactionsFilterOptions: [
         {
           label: "Application 1 account 1",
-          afterLabel: 0,
+          afterLabel: "0 TXNs",
           value:
             "d9197b5c40cfab4049cdae2dcccfa062d616a25ce85a189e4b6a8c610daa4bc0",
         },

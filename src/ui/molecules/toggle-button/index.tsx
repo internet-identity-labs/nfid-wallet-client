@@ -1,26 +1,19 @@
 import clsx from "clsx"
-import { useEffect, useReducer } from "react"
 
 interface IToggleButton extends React.HTMLAttributes<HTMLDivElement> {
-  onToggle: (value: boolean) => void
   firstValue: string
   secondValue: string
-  initialChecked?: boolean
+  value: boolean
+  toggleValue: () => void
 }
 
 export const ToggleButton: React.FC<IToggleButton> = ({
-  onToggle,
   firstValue,
   secondValue,
   className,
-  initialChecked = false,
+  value,
+  toggleValue,
 }) => {
-  const [value, toggleOption] = useReducer((state) => !state, initialChecked)
-
-  useEffect(() => {
-    onToggle(value)
-  }, [onToggle, value])
-
   return (
     <div
       className={clsx(
@@ -28,7 +21,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
         "grid grid-cols-2 relative select-none",
         className,
       )}
-      onClick={toggleOption}
+      onClick={toggleValue}
     >
       <div
         className={clsx(

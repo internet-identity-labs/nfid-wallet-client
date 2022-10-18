@@ -67,7 +67,7 @@ export const DropdownSelect = ({
   useEffect(() => {
     if (firstSelected && options.length) toggleCheckbox(false, options[0].value)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [firstSelected, options])
 
   return (
     <div className={clsx("relative w-full")} ref={ref}>

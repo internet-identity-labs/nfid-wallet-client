@@ -1,19 +1,18 @@
 import clsx from "clsx"
-import React, { useCallback, useMemo, useState } from "react"
+import { useAtom } from "jotai"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
-import { AiOutlineLoading } from "react-icons/ai"
 import ReactTooltip from "react-tooltip"
 
+import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import ICPIcon from "frontend/assets/dfinity.svg"
 import { walletFee } from "frontend/constants/wallet"
 import { IWallet } from "frontend/integration/identity-manager/wallet/types"
-import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
 import { sumRules } from "frontend/ui/utils/validations"
 
-import ArrowWhite from "../assets/arrowWhite.svg"
 import { validateAddressField, validateTransferAmountField } from "./utils"
 
 export interface ITransferToken {
@@ -30,16 +29,14 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   onTokenSubmit,
   wallets,
 }) => {
+  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+
   const [selectedWallets, setSelectedWallets] = useState<string[]>([])
+
   const currentWallet = useMemo(() => {
     if (!selectedWallets.length) return
     return wallets?.find((w) => w.principal?.toText() === selectedWallets[0])
   }, [selectedWallets, wallets])
-
-  const { isValidatingWalletDelegation } = useTransfer({
-    accountId: currentWallet?.accountId,
-    domain: currentWallet?.domain,
-  })
 
   const walletsOptions = useMemo(() => {
     return wallets?.map((wallet) => ({
@@ -48,6 +45,15 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
       afterLabel: wallet.balance?.value,
     }))
   }, [wallets])
+
+  useEffect(() => {
+    if (currentWallet)
+      setTransferModalState({
+        ...transferModalState,
+        selectedWallet: currentWallet,
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWallet])
 
   const {
     register,
@@ -153,17 +159,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
         className="flex items-center justify-center mt-auto"
         onClick={handleSubmit(onTokenSubmit)}
         id="send-token-button"
-        disabled={isValidatingWalletDelegation}
       >
-        {!isValidatingWalletDelegation ? (
-          <img
-            src={ArrowWhite}
-            alt="ArrowWhite"
-            className="w-[18px] h-[18px mr-[10px]"
-          />
-        ) : (
-          <AiOutlineLoading className="w-[18px] h-[18px mr-[10px] animate-spin" />
-        )}
         Send
       </Button>
     </div>

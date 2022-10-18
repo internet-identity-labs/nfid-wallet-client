@@ -24,7 +24,10 @@ export const ProfileTransferModal = () => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
   const [successMessage, setSuccessMessage] = useState("")
-  const { transfer } = useTransfer()
+  const { transfer } = useTransfer({
+    accountId: transferModalState.selectedWallet.accountId,
+    domain: transferModalState.selectedWallet.domain,
+  })
   const { wallets } = useAllWallets()
   const { data: nfts } = useAllNFTs()
   const { profile } = useProfile()

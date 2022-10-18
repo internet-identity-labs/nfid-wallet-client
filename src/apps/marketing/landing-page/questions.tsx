@@ -113,26 +113,32 @@ export const questions = [
         <div className="mb-6">
           B - remotely lock the lost or stolen device to prevent anyone from
           using it. Follow the instructions for{" "}
-          <Link
-            to="https://support.apple.com/en-us/HT201472"
+          <a
+            href="https://support.apple.com/en-us/HT201472"
+            target="_blank"
             className="text-blue-base hover:underline hover:text-blue-hover"
+            rel="noreferrer"
           >
             Apple
-          </Link>
+          </a>
           , for{" "}
-          <Link
-            to="https://support.google.com/accounts/answer/6160491"
+          <a
+            href="https://support.google.com/accounts/answer/6160491"
+            target="_blank"
             className="text-blue-base hover:underline hover:text-blue-hover"
+            rel="noreferrer"
           >
             Google
-          </Link>
+          </a>
           , for{" "}
-          <Link
-            to="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
+          <a
+            href="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
+            target="_blank"
             className="text-blue-base hover:underline hover:text-blue-hover"
+            rel="noreferrer"
           >
             Microsoft
-          </Link>
+          </a>
           .
         </div>
         <div className="mb-6">

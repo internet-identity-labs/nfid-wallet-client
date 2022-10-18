@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useAtom } from "jotai"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
@@ -24,17 +24,12 @@ export const TransferModalSend: React.FC<ITransferModalSend> = ({
   nfts,
 }) => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
-  const [sendType, setSendType] = useState<"nft" | "token">("token")
-
-  const onToggleSwitch = useCallback((value: boolean) => {
-    if (value) setSendType("nft")
-    else setSendType("token")
-  }, [])
+  const [isSendNFT, setIsSendNFT] = useState(false)
 
   useEffect(() => {
-    if (transferModalState.sendType?.length) {
-      setSendType(transferModalState.sendType)
-      setTransferModalState({ ...transferModalState, sendType: "nft" })
+    if (transferModalState.sendType) {
+      setIsSendNFT(transferModalState.sendType === "nft")
+      setTransferModalState({ ...transferModalState, sendType: undefined })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -44,17 +39,17 @@ export const TransferModalSend: React.FC<ITransferModalSend> = ({
       <ToggleButton
         firstValue="Token"
         secondValue="NFT"
-        initialChecked={sendType === "token"}
-        onToggle={onToggleSwitch}
         className="mb-6"
+        value={isSendNFT}
+        toggleValue={() => setIsSendNFT(!isSendNFT)}
       />
-      <div className={clsx(sendType === "token" ? "" : "hidden")}>
+      <div className={clsx(!isSendNFT ? "" : "hidden")}>
         <TransferModalSendToken
           onTokenSubmit={onTokenSubmit}
           wallets={wallets}
         />
       </div>
-      <div className={clsx(sendType === "nft" ? "" : "hidden")}>
+      <div className={clsx(isSendNFT ? "" : "hidden")}>
         <TransferModalSendNFT
           wallets={wallets}
           onNFTSubmit={onNFTSubmit}

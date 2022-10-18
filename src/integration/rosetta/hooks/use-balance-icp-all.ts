@@ -60,6 +60,7 @@ function mapApplicationBalance(
   icpExchangeRate: number,
   applicationMatch?: Application,
   currentApp?: AppBalance,
+  isExplicitlyIncluded?: boolean,
 ): AppBalance {
   return {
     icon: applicationMatch?.icon,
@@ -67,7 +68,7 @@ function mapApplicationBalance(
     icpBalance: `${currentAppTotalBalance} ${token}`,
     accounts: [
       ...(currentApp?.accounts ?? []),
-      ...(Number(rawBalance.balance.value) > 0
+      ...(Number(rawBalance.balance.value) > 0 || isExplicitlyIncluded
         ? [
             {
               accountName:
@@ -89,6 +90,15 @@ function mapApplicationBalance(
   }
 }
 
+/**
+ * Returns the balance sheet for all applications and their accounts
+ *
+ * @param rawBalance - balance of a single account
+ * @param applications - list of applications from identity manager
+ * @param icpExchangeRate - exchange rate of ICP to USD
+ * @param excludeEmpty - if true, exclude applications with no balance
+ * @param includeEmptyApps - include apps with given appName or domain even if their balance is 0
+ */
 const reduceRawToAppAccountBalance = (
   rawBalance: RawBalance[],
   applications: Application[],
@@ -98,7 +108,7 @@ const reduceRawToAppAccountBalance = (
 ): ICPBalanceSheet => {
   return rawBalance.reduce<ICPBalanceSheet>(
     (acc, rawBalance) => {
-      const applicationMatch = applications.find(
+      const applicationMatch: Application | undefined = applications.find(
         (a) => a.domain === rawBalance.account.domain,
       )
 
@@ -119,7 +129,7 @@ const reduceRawToAppAccountBalance = (
 
       const isExplicitlyIncluded =
         includeEmptyApps.includes(applicationMatch?.domain || "") ||
-        includeEmptyApps.includes(applicationMatch?.domain || "")
+        includeEmptyApps.includes(applicationMatch?.name || "")
 
       if (
         excludeEmpty &&
@@ -142,6 +152,7 @@ const reduceRawToAppAccountBalance = (
             icpExchangeRate,
             applicationMatch,
             currentApp,
+            isExplicitlyIncluded,
           ),
         },
       }
@@ -168,9 +179,8 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
     useICPExchangeRate()
 
   const { data: balanceICPRaw, isValidating: isLoadingPrincipals } = useSWR(
-    principals ? "balanceICPRaw" : null,
-    async () => {
-      if (!principals) throw new Error("missing req")
+    principals ? [principals, "balanceICPRaw"] : null,
+    async (principals) => {
       return await Promise.all(
         principals.map(async ({ principal, account }) => ({
           principalId: principal.toText(),
@@ -193,7 +203,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
             applicationsMeta || [],
             exchangeRate,
             excludeEmpty,
-            ["nfid.one"],
+            ["nfid.one", "https://nns.ic0.app"],
           )
         : null,
     [
@@ -212,6 +222,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
     exchangeRate,
     applicationsMeta,
     appAccountBalance,
+    balanceICPRaw,
   })
 
   return {

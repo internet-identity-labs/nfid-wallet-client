@@ -4,9 +4,10 @@ import { useForm } from "react-hook-form"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { IWallet } from "frontend/integration/identity-manager/wallet/types"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
-import { Input } from "frontend/ui/atoms/input"
+import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
 
 import ArrowWhite from "../assets/arrowWhite.svg"
 import { TransferSendNFTInfo } from "./nft/nft-info"
@@ -21,11 +22,13 @@ export interface ITransferNFT {
 interface ITransferModalSendNFT {
   nfts: UserNFTDetails[]
   onNFTSubmit: (values: ITransferNFT) => void
+  wallets?: IWallet[]
 }
 
 export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   nfts,
   onNFTSubmit,
+  wallets,
 }) => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
@@ -42,12 +45,21 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
     }))
   }, [nfts])
 
+  const walletsOptions = useMemo(() => {
+    return wallets?.map((wallet) => ({
+      label: wallet.label ?? "",
+      value: wallet.principal?.toText() ?? "",
+      afterLabel: wallet.balance?.value,
+    }))
+  }, [wallets])
+
   const {
     register,
     formState: { errors },
     handleSubmit,
     setValue,
-  } = useForm<ITransferNFT>()
+    getValues,
+  } = useForm<ITransferNFT>({ defaultValues: { to: "" } })
 
   useEffect(() => {
     if (transferModalState.selectedNFT?.length) {
@@ -78,15 +90,18 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
             isSearch
             isMultiselect={false}
           />
-          <Input
-            inputClassName="!text-sm placeholder:!text-sm !h-10"
-            labelText="To"
+
+          <InputDropdown
+            label="To"
             placeholder="Recipient principal or account ID"
+            options={walletsOptions ?? []}
             errorText={errors.to?.message}
-            {...register("to", {
+            registerFunction={register("to", {
               validate: validateAddressField,
               required: "This field cannot be empty",
             })}
+            value={() => getValues("to")}
+            setValue={(value) => setValue("to", value)}
           />
         </div>
       </div>

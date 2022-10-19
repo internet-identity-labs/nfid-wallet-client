@@ -6,8 +6,9 @@ import ReactTooltip from "react-tooltip"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import ICPIcon from "frontend/assets/dfinity.svg"
-import { walletFee } from "frontend/constants/wallet"
+import { walletFee, walletFeeE8s } from "frontend/constants/wallet"
 import { IWallet } from "frontend/integration/identity-manager/wallet/types"
+import { E8S, stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
@@ -61,6 +62,8 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
     handleSubmit,
     setValue,
     getValues,
+    setError,
+    resetField,
   } = useForm<ITransferToken>({
     defaultValues: {
       to: "",
@@ -68,11 +71,17 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   })
 
   const setFullAmount = useCallback(() => {
-    setValue(
-      "amount",
-      (Number(currentWallet?.balance?.value) - walletFee).toString(),
-    )
-  }, [currentWallet, setValue])
+    if (!currentWallet?.balance?.value) return
+    const amount =
+      (stringICPtoE8s(currentWallet.balance.value) - walletFeeE8s) / E8S
+    if (amount < 0) {
+      setValue("amount", "0")
+      setError("amount", { message: "Insufficient funds" })
+      setTimeout(() => {
+        resetField("amount")
+      }, 2000)
+    } else setValue("amount", amount)
+  }, [currentWallet?.balance?.value, resetField, setError, setValue])
 
   return (
     <div className="flex flex-col justify-between flex-grow">

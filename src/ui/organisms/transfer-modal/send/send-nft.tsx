@@ -49,7 +49,6 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
       value: wallet.principal?.toText() ?? "",
-      afterLabel: wallet.balance?.value,
     }))
   }, [wallets])
 

@@ -1,14 +1,12 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { toast } from "react-toastify"
+import { useEffect, useMemo, useState } from "react"
 
 import { IWallet } from "frontend/integration/wallet/hooks/types"
+import { Copy } from "frontend/ui/atoms/copy"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { QRCode } from "frontend/ui/atoms/qrcode"
-
-import CopyIcon from "./assets/copy.svg"
 
 interface ITransferModalReceive {
   wallets: IWallet[] | undefined
@@ -30,17 +28,6 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
       value: wallet.principal?.toText() ?? "",
     }))
   }, [wallets])
-
-  const copyToClipboard = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>, value: string) => {
-      e.preventDefault()
-      toast.info("Copied to clipboard", {
-        toastId: `copied_${value}`,
-      })
-      navigator.clipboard.writeText(value)
-    },
-    [],
-  )
 
   return (
     <div className="flex flex-col flex-grow">
@@ -69,18 +56,15 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
                   Principal.fromText(selectedWallet[0]) as any,
                 )}
             </p>
-            <img
-              src={CopyIcon}
-              onClick={(e) =>
-                copyToClipboard(
-                  e,
-                  principalToAddress(
-                    Principal.fromText(selectedWallet[0] ?? "") as any,
-                  ),
-                )
+            <Copy
+              className="w-[18px] h-[18px] flex-shrink-0"
+              value={
+                selectedWallet.length
+                  ? principalToAddress(
+                      Principal.fromText(selectedWallet[0] ?? "") as any,
+                    )
+                  : ""
               }
-              className="cursor-pointer"
-              alt="copy"
             />
           </div>
         </div>
@@ -96,11 +80,9 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
             <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
               {selectedWallet[0]}
             </p>
-            <img
-              src={CopyIcon}
-              onClick={(e) => copyToClipboard(e, selectedWallet[0])}
-              className="cursor-pointer"
-              alt="copy"
+            <Copy
+              className="w-[18px] h-[18px] flex-shrink-0"
+              value={selectedWallet[0]}
             />
           </div>
         </div>

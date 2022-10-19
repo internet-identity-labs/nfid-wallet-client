@@ -8,6 +8,7 @@ import { useApplicationsMeta } from "frontend/integration/identity-manager/queri
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 import { Transaction } from "frontend/integration/rosetta/rosetta_interface"
 import { IOption } from "frontend/ui/atoms/dropdown-select"
+import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
 import { useAllTransactions } from "./get-all-transactions"
 
@@ -47,13 +48,7 @@ const reduceTransactionFilterOptions = (
   applications: Application[],
   transactions: Transaction[],
 ): TransactionsFilterOption[] => {
-  return principals
-    .sort((a, b) => {
-      if (a.account.domain === b.account.domain) {
-        return a.account.accountId > b.account.accountId ? 1 : -1
-      }
-      return a.account.domain > b.account.domain ? 1 : -1
-    })
+  const options = principals
     .reduce<TransactionsFilterOption[]>((acc, principal) => {
       const applicationMatch = applications.find(
         (a) => a.domain === principal.account.domain,
@@ -63,6 +58,11 @@ const reduceTransactionFilterOptions = (
         mapToTransactionFilterOption(principal, transactions, applicationMatch),
       ]
     }, [])
+    .sort(sortAlphabetic(({ label }) => label))
+  return keepStaticOrder<TransactionsFilterOption>(
+    ({ label }) => label,
+    ["NFID", "NNS"],
+  )(options)
 }
 
 export interface TransactionsFilterOption extends IOption {}

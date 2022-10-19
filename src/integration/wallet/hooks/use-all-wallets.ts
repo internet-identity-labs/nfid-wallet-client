@@ -27,7 +27,9 @@ export const useAllWallets = () => {
           balance: await getBalance(principal),
         })),
       )
-        .then(sortAlphabetic(({ label }) => label ?? ""))
+        .then((wallets) =>
+          wallets.sort(sortAlphabetic(({ label }) => label ?? "")),
+        )
         .then(keepStaticOrder(({ label }) => label ?? "", ["NFID", "NNS"]))
     },
     { dedupingInterval: 30_000, refreshInterval: 60_000 },

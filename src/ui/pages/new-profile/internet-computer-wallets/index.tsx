@@ -10,14 +10,17 @@ import {
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
+import {
+  keepStaticOrder,
+  sortAlphabetic as alphabetic,
+} from "frontend/ui/utils/sorting"
 
 const getSortedBalanceSheet = (balanceSheet: ICPBalanceSheet | null) => {
   if (!balanceSheet) return null
   const applications = Object.values(balanceSheet.applications)
-  const sortedAlphabetic = sortAlphabetic<AppBalance>(({ appName }) =>
-    rmProto(appName),
-  )(applications)
+  const sortedAlphabetic = applications.sort(
+    alphabetic<AppBalance>(({ appName }) => rmProto(appName)),
+  )
   const staticOrdered = keepStaticOrder<AppBalance>(
     ({ appName }) => appName,
     ["NFID", "NNS"],

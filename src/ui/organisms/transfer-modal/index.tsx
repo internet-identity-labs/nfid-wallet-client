@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { IWallet } from "frontend/integration/identity-manager/wallet/types"
+import { IWallet } from "frontend/integration/wallet/hooks/types"
 
 import { TransferModalReceive } from "./receive"
 import { TransferModalSend } from "./send"

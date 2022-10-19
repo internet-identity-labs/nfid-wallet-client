@@ -1,10 +1,11 @@
 import clsx from "clsx"
 import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
+import React from "react"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { IWallet } from "frontend/integration/identity-manager/wallet/types"
+import { IWallet } from "frontend/integration/wallet/hooks/types"
 import { ToggleButton } from "frontend/ui/molecules/toggle-button"
 
 import { ITransferNFT, TransferModalSendNFT } from "./send-nft"

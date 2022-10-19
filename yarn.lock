@@ -3664,10 +3664,10 @@
   resolved "https://registry.npmjs.org/@teppeis/multimaps/-/multimaps-2.0.0.tgz"
   integrity sha512-TL1adzq1HdxUf9WYduLcQ/DNGYiz71U31QRgbnr0Ef1cPyOUOsBojxHVWpFeOSUucB6Lrs0LxFRA14ntgtkc9w==
 
-"@testim/chrome-version@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.npmjs.org/@testim/chrome-version/-/chrome-version-1.1.2.tgz"
-  integrity sha512-1c4ZOETSRpI0iBfIFUqU4KqwBAB2lHUAlBjZz/YqOHqwM9dTTzjV6Km0ZkiEiSCx/tLr1BtESIKyWWMww+RUqw==
+"@testim/chrome-version@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@testim/chrome-version/-/chrome-version-1.1.3.tgz#fbb68696899d7b8c1b9b891eded9c04fe2cd5529"
+  integrity sha512-g697J3WxV/Zytemz8aTuKjTGYtta9+02kva3C1xc7KXB8GdbfE1akGJIsZLyY/FSh2QrnE+fiB7vmWU3XNcb6A==
 
 "@testing-library/dom@^8.3.0", "@testing-library/dom@^8.5.0":
   version "8.16.0"
@@ -7154,16 +7154,17 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.npmjs.org/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz"
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
-chromedriver@104.0.0:
-  version "104.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-104.0.0.tgz#2f730f52a567280872567bf3497e1c673b6f4275"
-  integrity sha512-zbHZutN2ATo19xA6nXwwLn+KueD/5w8ap5m4b6bCb8MIaRFnyDwMbFoy7oFAjlSMpCFL3KSaZRiWUwjj//N3yQ==
+chromedriver@106.0.1:
+  version "106.0.1"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-106.0.1.tgz#f3850cc0a6904336b552d1b13a8ae1705d127bbe"
+  integrity sha512-thaBvbDEPgGocSp4/SBIajQz3G7UQfUqCOHZBp9TVhRJv7c91eZrUGcjeJUaNF4p9CfSjCYNYzs4EVVryqmddA==
   dependencies:
-    "@testim/chrome-version" "^1.1.2"
+    "@testim/chrome-version" "^1.1.3"
     axios "^0.27.2"
-    del "^6.0.0"
+    compare-versions "^5.0.1"
+    del "^6.1.1"
     extract-zip "^2.0.1"
-    https-proxy-agent "^5.0.0"
+    https-proxy-agent "^5.0.1"
     proxy-from-env "^1.1.0"
     tcp-port-used "^1.0.1"
 
@@ -7495,6 +7496,11 @@ compare-func@^2.0.0:
   dependencies:
     array-ify "^1.0.0"
     dot-prop "^5.1.0"
+
+compare-versions@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/compare-versions/-/compare-versions-5.0.1.tgz#14c6008436d994c3787aba38d4087fabe858555e"
+  integrity sha512-v8Au3l0b+Nwkp4G142JcgJFh1/TUhdxut7wzD1Nq1dyp5oa3tXaqb03EXOAB6jS4gMlalkjAUPZBMiAfKUixHQ==
 
 component-emitter@^1.2.1:
   version "1.3.0"
@@ -8455,9 +8461,9 @@ defined@^1.0.0:
   resolved "https://registry.npmjs.org/defined/-/defined-1.0.0.tgz"
   integrity sha512-Y2caI5+ZwS5c3RiNDJ6u53VhQHv+hHKwhkI1iHvceKUHw9Df6EK2zRLfjejRgMuCuxK7PfSWIMwWecceVvThjQ==
 
-del@^6.0.0:
+del@^6.1.1:
   version "6.1.1"
-  resolved "https://registry.npmjs.org/del/-/del-6.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/del/-/del-6.1.1.tgz#3b70314f1ec0aa325c6b14eb36b95786671edb7a"
   integrity sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg==
   dependencies:
     globby "^11.0.1"

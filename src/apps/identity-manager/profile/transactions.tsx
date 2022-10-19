@@ -44,6 +44,10 @@ const ProfileTransactions = () => {
   // TODO: move out of React
   const transactions: ITransaction[] | undefined = useMemo(() => {
     return walletTransactions?.transactions
+      .sort(
+        (a, b) =>
+          b.transaction.metadata.timestamp - a.transaction.metadata.timestamp,
+      )
       .map<ITransaction>(({ transaction }) => {
         const walletAddresses =
           transactionFilter.length === 0

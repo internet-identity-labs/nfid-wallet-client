@@ -9,7 +9,7 @@ import { mutate } from "swr"
 import { transferEXT } from "frontend/integration/entrepot/transfer"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { useAllWallets } from "frontend/integration/identity-manager/wallet/hooks"
+import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { Loader } from "frontend/ui/atoms/loader"
 import { TransferModal } from "frontend/ui/organisms/transfer-modal"
@@ -24,7 +24,10 @@ export const ProfileTransferModal = () => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
   const [successMessage, setSuccessMessage] = useState("")
-  const { transfer } = useTransfer()
+  const { transfer } = useTransfer({
+    accountId: transferModalState.selectedWallet.accountId,
+    domain: transferModalState.selectedWallet.domain,
+  })
   const { wallets } = useAllWallets()
   const { data: nfts } = useAllNFTs()
   const { profile } = useProfile()

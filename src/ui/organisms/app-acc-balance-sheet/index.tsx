@@ -46,7 +46,9 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
 }) => {
   const navigate = useNavigate()
   const copyToClipboard = React.useCallback(
-    (type: string, value: string) => () => {
+    (type: string, value: string) => (e: React.SyntheticEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
       toast.info(`${type} copied to clipboard`, {
         toastId: `copied_${type}_${value}`,
       })
@@ -92,7 +94,7 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
           <GridCell>
             <TooltipWrap
               tip="Copy to clipboard"
-              onClick={copyToClipboard("accountId", account.address)}
+              onClick={copyToClipboard("Account ID", account.address)}
             >
               <CenterEllipsis
                 value={account.address}
@@ -104,7 +106,7 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
           <GridCell>
             <TooltipWrap
               tip="Copy to clipboard"
-              onClick={copyToClipboard("principalId", account.principalId)}
+              onClick={copyToClipboard("Principal ID", account.principalId)}
             >
               <CenterEllipsis
                 value={account.principalId}

@@ -4,7 +4,7 @@ import { principalToAddress } from "ictool"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
-import { IWallet } from "frontend/integration/identity-manager/wallet/types"
+import { IWallet } from "frontend/integration/wallet/hooks/types"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { QRCode } from "frontend/ui/atoms/qrcode"
 

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { IWallet } from "frontend/integration/identity-manager/wallet/types"
+import { IWallet } from "frontend/integration/wallet/hooks/types"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
@@ -49,7 +49,6 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
       value: wallet.principal?.toText() ?? "",
-      afterLabel: wallet.balance?.value,
     }))
   }, [wallets])
 
@@ -68,7 +67,7 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   }, [selectedNFTDetails, transferModalState.selectedNFT, setValue])
 
   return (
-    <div className="flex flex-col justify-between flex-grow">
+    <>
       <div>
         {selectedNFTDetails ? (
           <TransferSendNFTInfo nft={selectedNFTDetails} />
@@ -119,6 +118,6 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
         />
         Send
       </Button>
-    </div>
+    </>
   )
 }

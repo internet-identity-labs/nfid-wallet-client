@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { IWallet } from "frontend/integration/identity-manager/wallet/types"
+import { IWallet } from "frontend/integration/wallet/hooks/types"
 
 import { TransferModalReceive } from "./receive"
 import { TransferModalSend } from "./send"
@@ -50,7 +50,13 @@ export const TransferModal: React.FC<ITransferModal> = ({
         <TransferModalTabs activeTab={modalType} setActiveTab={setModalType} />
       )}
 
-      <div className={clsx(modalType === "Send" ? "" : "hidden")}>
+      <div
+        className={clsx(
+          modalType === "Send"
+            ? "flex flex-col justify-between flex-grow"
+            : "hidden",
+        )}
+      >
         <TransferModalSend
           nfts={nfts}
           wallets={wallets}

@@ -50,7 +50,13 @@ export const TransferModal: React.FC<ITransferModal> = ({
         <TransferModalTabs activeTab={modalType} setActiveTab={setModalType} />
       )}
 
-      <div className={clsx(modalType === "Send" ? "" : "hidden")}>
+      <div
+        className={clsx(
+          modalType === "Send"
+            ? "flex flex-col justify-between flex-grow"
+            : "hidden",
+        )}
+      >
         <TransferModalSend
           nfts={nfts}
           wallets={wallets}

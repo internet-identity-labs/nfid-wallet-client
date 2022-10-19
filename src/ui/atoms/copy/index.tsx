@@ -30,6 +30,7 @@ export const Copy: React.FC<ICopy> = ({ value, className }) => {
       )}
     >
       <img
+        className="w-full"
         onClick={copyToClipboard}
         src={copied ? CopiedIcon : CopyIcon}
         alt="copy"

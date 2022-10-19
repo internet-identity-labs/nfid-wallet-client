@@ -1,12 +1,19 @@
+/**
+ * sort alphabetically
+ *
+ * @param accessor - extract the value to sort by
+ */
 export const sortAlphabetic =
   <T>(accessor: (item: T) => string) =>
-  (wallets: T[]) =>
-    wallets.sort((a, b) => {
-      return accessor(a).localeCompare(accessor(b), "en", {
-        sensitivity: "base",
-      })
-    })
+  (a: T, b: T) =>
+    accessor(a).localeCompare(accessor(b), "en", { sensitivity: "base" })
 
+/**
+ * keep the order of predefined static items
+ *
+ * @param accessor - extract the value to sort by
+ * @param staticOrder - the order of the items that should be kept static
+ */
 export const keepStaticOrder =
   <T>(accessor: (item: T) => string, staticOrder: string[]) =>
   (items: T[]) => {

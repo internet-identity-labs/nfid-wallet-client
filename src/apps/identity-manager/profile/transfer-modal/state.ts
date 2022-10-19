@@ -1,6 +1,6 @@
 import { atom } from "jotai"
 
-import { IWallet } from "frontend/integration/identity-manager/wallet/types"
+import { IWallet } from "frontend/integration/wallet/hooks/types"
 
 export interface ITransferModalAtom {
   isModalOpen: boolean

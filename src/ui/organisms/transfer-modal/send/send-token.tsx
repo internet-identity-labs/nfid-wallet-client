@@ -84,7 +84,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   }, [currentWallet?.balance?.value, resetField, setError, setValue])
 
   return (
-    <div className="flex flex-col justify-between flex-grow">
+    <>
       <div>
         <div className="text-xs text-black-base h-[142px]">
           <label htmlFor="amount">Amount to send</label>
@@ -171,6 +171,6 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
       >
         Send
       </Button>
-    </div>
+    </>
   )
 }

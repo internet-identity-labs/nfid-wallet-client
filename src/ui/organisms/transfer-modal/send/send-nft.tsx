@@ -67,7 +67,7 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   }, [selectedNFTDetails, transferModalState.selectedNFT, setValue])
 
   return (
-    <div className="flex flex-col justify-between flex-grow">
+    <>
       <div>
         {selectedNFTDetails ? (
           <TransferSendNFTInfo nft={selectedNFTDetails} />
@@ -118,6 +118,6 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
         />
         Send
       </Button>
-    </div>
+    </>
   )
 }

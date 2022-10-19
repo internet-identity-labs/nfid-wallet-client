@@ -10,24 +10,20 @@ import {
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
 const getSortedBalanceSheet = (balanceSheet: ICPBalanceSheet | null) => {
   if (!balanceSheet) return null
   const applications = Object.values(balanceSheet.applications)
-  const NFID = applications.find((app) => app.appName === "NFID")
-  const NNS = applications.find((app) => app.appName === "NNS")
+  const sortedAlphabetic = sortAlphabetic<AppBalance>(({ appName }) =>
+    rmProto(appName),
+  )(applications)
+  const staticOrdered = keepStaticOrder<AppBalance>(
+    ({ appName }) => appName,
+    ["NFID", "NNS"],
+  )(sortedAlphabetic)
 
-  return [
-    ...(NFID ? [NFID] : []),
-    ...(NNS ? [NNS] : []),
-    ...applications
-      .filter((a) => Boolean(a) && a.appName !== "NFID" && a.appName !== "NNS")
-      .sort((a, b) => {
-        return rmProto(a.appName).localeCompare(rmProto(b.appName), "en", {
-          sensitivity: "base",
-        })
-      }),
-  ]
+  return staticOrdered
 }
 
 interface IProfileTransactionsPage

@@ -58,6 +58,9 @@ jobs:
   build:
     needs: check-secrets
     runs-on: ubuntu-latest
+    concurrency:
+      group: ci-frontend-test
+      cancel-in-progress: false
 
     steps:
       - name: Setup chrome browser

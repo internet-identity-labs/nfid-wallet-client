@@ -29,7 +29,7 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
       onBgClick={onClose}
       buttonsClassNames="py-3"
     >
-      <div>
+      <div id="protect-modal">
         <textarea
           name="recoveryPhrase"
           className={clsx(
@@ -46,6 +46,7 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
           block
           className="rounded-t-none"
           onClick={handleProtect}
+          id="protect-submit"
         >
           Protect recovery phrase
         </Button>

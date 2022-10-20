@@ -1,0 +1,98 @@
+import { Principal } from "@dfinity/principal"
+import clsx from "clsx"
+import { principalToAddress } from "ictool"
+import { useEffect, useMemo, useState } from "react"
+
+import { IWallet } from "frontend/integration/wallet/hooks/types"
+import { Copy } from "frontend/ui/atoms/copy"
+import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
+import { QRCode } from "frontend/ui/atoms/qrcode"
+
+interface ITransferModalReceive {
+  wallets: IWallet[] | undefined
+}
+
+export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
+  wallets,
+}) => {
+  const [selectedWallet, setSelectedWallet] = useState<string[]>([])
+
+  useEffect(() => {
+    if (wallets?.length)
+      return setSelectedWallet([wallets[0].principal?.toText() ?? ""])
+  }, [wallets])
+
+  const walletsOptions = useMemo(() => {
+    return wallets?.map((wallet) => ({
+      label: wallet.label ?? "",
+      value: wallet.principal?.toText() ?? "",
+    }))
+  }, [wallets])
+
+  return (
+    <div className="flex flex-col flex-grow">
+      <div className="flex flex-col space-y-2.5 text-black-base">
+        <DropdownSelect
+          label="Select your wallet"
+          options={walletsOptions ?? []}
+          selectedValues={selectedWallet}
+          setSelectedValues={setSelectedWallet}
+          isSearch
+          isMultiselect={false}
+        />
+
+        <div>
+          <p className="mb-1 text-xs text-gray-400">Account ID</p>
+          <div
+            className={clsx(
+              "h-[40px] text-gray-400 bg-gray-100 rounded-md",
+              "flex items-center justify-between px-2.5 space-x-2",
+            )}
+            id="account-id"
+          >
+            <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+              {selectedWallet.length &&
+                principalToAddress(
+                  Principal.fromText(selectedWallet[0]) as any,
+                )}
+            </p>
+            <Copy
+              className="w-[18px] h-[18px] flex-shrink-0"
+              value={
+                selectedWallet.length
+                  ? principalToAddress(
+                      Principal.fromText(selectedWallet[0] ?? "") as any,
+                    )
+                  : ""
+              }
+            />
+          </div>
+        </div>
+        <div>
+          <p className="mb-1 text-xs text-gray-400">Principal ID</p>
+          <div
+            className={clsx(
+              "h-[40px] text-gray-400 bg-gray-100 rounded-md",
+              "flex items-center justify-between px-2.5 space-x-2",
+            )}
+            id="principal-id"
+          >
+            <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
+              {selectedWallet[0]}
+            </p>
+            <Copy
+              className="w-[18px] h-[18px] flex-shrink-0"
+              value={selectedWallet[0]}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="w-[179px] my-8 mx-auto">
+        <QRCode
+          options={{ width: 179, margin: 0 }}
+          content={selectedWallet.length ? selectedWallet[0] : ""}
+        />
+      </div>
+    </div>
+  )
+}

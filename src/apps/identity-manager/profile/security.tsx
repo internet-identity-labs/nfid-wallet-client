@@ -12,7 +12,6 @@ import { protectRecoveryPhrase } from "frontend/integration/internet-identity"
 import ProfileSecurityPage from "frontend/ui/pages/new-profile/security"
 
 const ProfileSecurity = () => {
-  const [fetched, loadOnce] = React.useReducer(() => true, false)
   const { profile } = useProfile()
 
   const {
@@ -27,20 +26,11 @@ const ProfileSecurity = () => {
     createSecurityDevice,
   } = useDevices()
 
-  React.useEffect(() => {
-    if (!fetched) {
-      loadOnce()
-      getDevices()
-      getRecoveryDevices()
-    }
-  }, [fetched, getDevices, getRecoveryDevices])
-
   const handleDeleteDevice = React.useCallback(
     async (device: LegacyDevice) => {
       await deleteDevice(device.pubkey)
-      await getDevices()
     },
-    [deleteDevice, getDevices],
+    [deleteDevice],
   )
 
   const handleDeviceUpdate = React.useCallback(
@@ -54,17 +44,15 @@ const ProfileSecurity = () => {
   const handleRecoveryDelete = React.useCallback(
     async (method: RecoveryDevice) => {
       await deleteDevice(method.pubkey)
-      await getRecoveryDevices()
     },
-    [deleteDevice, getRecoveryDevices],
+    [deleteDevice],
   )
 
   const handleRecoveryUpdate = React.useCallback(
     async (device: RecoveryDevice) => {
       await updateDevice({ ...device, browser: "" })
-      await getDevices()
     },
-    [getDevices, updateDevice],
+    [updateDevice],
   )
 
   const handleCreateRecoveryPhrase = React.useCallback(

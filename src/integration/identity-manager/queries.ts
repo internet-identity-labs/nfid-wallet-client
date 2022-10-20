@@ -3,7 +3,16 @@ import useSWR from "swr"
 
 import { mapApplicationAccounts } from "frontend/apps/identity-manager/profile/applications/utils"
 
-import { fetchApplications, fetchProfile } from "."
+import { Application, fetchAccounts, fetchApplications, fetchProfile } from "."
+
+export function useAccounts() {
+  const {
+    data: accounts,
+    isValidating: isLoading,
+    error,
+  } = useSWR(`accounts`, fetchAccounts)
+  return { accounts, isLoading, error }
+}
 
 export function useProfile() {
   const {
@@ -21,15 +30,21 @@ export function useProfile() {
   }
 }
 
-export function useApplicationsMeta() {
+export function useApplicationsMeta(
+  predicate?: (application: Application) => boolean,
+) {
   const {
     data,
     error,
     mutate: refreshApplicationMeta,
-  } = useSWR("applications/meta", fetchApplications, {
-    dedupingInterval: 60_000,
-    focusThrottleInterval: 60_000,
-  })
+  } = useSWR(
+    ["applications/meta", predicate],
+    (_, predicate) => fetchApplications(predicate),
+    {
+      dedupingInterval: 5 * 60_000,
+      focusThrottleInterval: 5 * 60_000,
+    },
+  )
 
   return {
     isLoading: !data && !error,

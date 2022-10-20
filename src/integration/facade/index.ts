@@ -33,18 +33,28 @@ export async function removeAccessPointFacade(
   await removeAccessPoint(pubKey)
 }
 
+export interface PrincipalAccount {
+  principal: Principal
+  account: Account
+}
+
+// TOOD: write tests
 export async function fetchPrincipals(
   userNumber: UserNumber,
-  personas: Account[],
+  accounts: Account[],
   applications: Application[],
-): Promise<{ principal: Principal; account: Account }[]> {
+): Promise<PrincipalAccount[]> {
+  // Accounts which have been created with external IDPs
+  // e.g.: nns.ic0.app, www.stoicwallet.com
+  // FIXME: determining additional accounts seems to be a different concern
   const fixedAccounts = applications
     .filter((app) => app.isNftStorage)
     .map(applicationToAccount)
-  const accounts = [...personas, ...fixedAccounts]
 
-  return Promise.all(
-    accounts.map(async (account) => {
+  const allAccounts = [...accounts, ...fixedAccounts]
+
+  return await Promise.all(
+    allAccounts.map(async (account) => {
       return {
         principal: await ii.get_principal(
           userNumber,

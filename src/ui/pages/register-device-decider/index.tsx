@@ -85,10 +85,10 @@ interface DeviceRawProps {
 }
 
 export const DeviceRaw: React.FC<DeviceRawProps> = ({
-  id,
   title,
   subtitle,
   handler,
+  id,
 }) => {
   return (
     <div

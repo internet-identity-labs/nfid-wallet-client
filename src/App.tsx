@@ -2,6 +2,8 @@ import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
+import { ic } from "frontend/integration/actors"
+
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
 import { HomeScreen } from "./apps/marketing/landing-page"
@@ -10,7 +12,6 @@ import { OurMission } from "./apps/marketing/landing-page/our-mission"
 import IDPCoordinator from "./coordination/idp"
 import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
-import { ic } from "./integration/actors"
 import { NotFound } from "./ui/pages/404"
 import { ScreenResponsive } from "./ui/templates/screen-responsive"
 

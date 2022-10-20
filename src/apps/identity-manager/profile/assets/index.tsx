@@ -1,32 +1,30 @@
 import React from "react"
 
 import Dfinity from "frontend/assets/dfinity.svg"
+import { useBalanceICPAll } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
 import ProfileAssetsPage from "frontend/ui/pages/new-profile/assets"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "../routes"
-import { useWallet } from "../wallet/hooks"
 import { useAllNFTs } from "./hooks"
 
 const ProfileAssets = () => {
   const { navigate } = useNFIDNavigate()
-  const { walletBalance, walletExchangeRate } = useWallet()
+  const { appAccountBalance } = useBalanceICPAll()
   const { data: nonFungibleTokens } = useAllNFTs()
 
   const fungibleTokens = React.useMemo(() => {
-    if (!walletBalance || !walletExchangeRate) return []
+    if (!appAccountBalance) return []
     return [
       {
         icon: Dfinity,
-        title: "Internet Computer",
-        currency: walletBalance?.currency.symbol,
-        balance: `${Number(walletBalance?.value)} ${
-          walletBalance.currency.symbol
-        }`,
-        price: walletExchangeRate * Number(walletBalance.value),
+        title: appAccountBalance.label,
+        currency: appAccountBalance.token,
+        balance: appAccountBalance.icpBalance,
+        price: appAccountBalance.usdBalance,
       },
     ]
-  }, [walletBalance, walletExchangeRate])
+  }, [appAccountBalance])
 
   return (
     <ProfileAssetsPage

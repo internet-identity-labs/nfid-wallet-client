@@ -34,6 +34,7 @@ import {
   generateDelegationIdentity,
   registerIIAccount,
 } from "../../../test/steps/support/integration/test-util"
+import { getWalletPrincipal } from "../rosetta"
 
 describe("Facade suite", () => {
   jest.setTimeout(80000)
@@ -103,7 +104,9 @@ describe("Facade suite", () => {
         delegationIdentity: recoveryIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn(() => ({ catch: jest.fn() }))
+      im.use_access_point = jest.fn((x: [] | [string]) => ({
+        catch: jest.fn(),
+      }))
       authStateMock.set(recoveryDevice, recoveryIdentity, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
@@ -168,6 +171,13 @@ describe("Facade suite", () => {
         persona_id: "1",
         persona_name: "",
       })
+      let nfid: Application = {
+        accountLimit: 1,
+        alias: [],
+        domain: "nfid.one",
+        isNftStorage: true,
+        name: "NFID",
+      }
       let appRequired: Application = {
         accountLimit: 0,
         alias: [],
@@ -192,6 +202,7 @@ describe("Facade suite", () => {
       let accounts = await fetchAccounts()
       let principals: { principal: Principal; account: Account }[] =
         await fetchPrincipals(anchor, accounts, [
+          nfid,
           appRequired,
           appNotRequired,
           appDuplicated,
@@ -209,10 +220,15 @@ describe("Facade suite", () => {
         principals.filter((p) => p.account.domain === "duplicatedDomain")!
           .length,
       ).toEqual(2)
-      // ).toEqual(1)
       expect(
         principals.filter((p) => p.account.domain === "notRequiredDomain"),
       ).toEqual([])
+      const walletPrincipal = await getWalletPrincipal(Number(anchor))
+      expect(
+        principals.find(
+          (x) => x.principal.toText() === walletPrincipal.toText(),
+        ),
+      ).toBeDefined()
     })
 
     async function getErrorOnIncorrectSeedPhrase(
@@ -231,7 +247,9 @@ describe("Facade suite", () => {
         delegationIdentity: delegationIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn(() => ({ catch: jest.fn() }))
+      im.use_access_point = jest.fn((x: [] | [string]) => ({
+        catch: jest.fn(),
+      }))
       authStateMock.set(mockedIdentity, delegationIdentity, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>

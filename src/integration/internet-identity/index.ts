@@ -1,44 +1,51 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent"
-import { DerEncodedPublicKey } from "@dfinity/agent"
+import {
+  ActorSubclass,
+  DerEncodedPublicKey,
+  Signature,
+  SignIdentity,
+} from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
-  Ed25519KeyIdentity,
+  Delegation,
   DelegationChain,
   DelegationIdentity,
+  Ed25519KeyIdentity,
   WebAuthnIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { arrayBufferEqual } from "ictool/dist/bits"
 import { BehaviorSubject } from "rxjs"
 
-import { _SERVICE as InternetIdentity } from "frontend/integration/_ic_api/internet_identity_types"
 import {
+  _SERVICE as InternetIdentity,
+  Challenge,
   ChallengeResult,
+  CredentialId,
   DeviceData,
+  FrontendHostname,
+  GetDelegationResponse,
+  KeyType,
   PublicKey,
+  Purpose,
+  RegisterResponse,
   SessionKey,
   SignedDelegation as IISignedDelegation,
-  Purpose,
-  UserNumber,
-  KeyType,
-  CredentialId,
-  FrontendHostname,
   Timestamp,
-  GetDelegationResponse,
-  Challenge,
-  RegisterResponse,
+  UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
-import { ii } from "frontend/integration/actors"
 import {
   accessList,
+  ii,
   im,
   invalidateIdentity,
   replaceIdentity,
 } from "frontend/integration/actors"
+import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "frontend/integration/facade/wallet"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
 import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
+import { getBrowserName } from "../device"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
 import { derFromPubkey, hasOwnProperty } from "./utils"
@@ -717,7 +724,7 @@ export async function fromSeedPhrase(
   replaceIdentity(delegationIdentity.delegationIdentity)
   authState.set(identity, delegationIdentity.delegationIdentity, ii)
 
-  im.use_access_point().catch((e) => {
+  im.use_access_point([getBrowserName()]).catch((e) => {
     // When user recovers from II, the call to use_access_points will fail
     // because there is no account yet.
     console.error(e)
@@ -772,7 +779,8 @@ async function fromWebauthnDevices(
   replaceIdentity(delegation.delegationIdentity)
   authState.set(multiIdent._actualIdentity!, delegation.delegationIdentity, ii)
 
-  im.use_access_point().catch((error) => {
+  im.use_access_point([getBrowserName()]).catch((error) => {
+    console.log(error)
     throw new Error(`fromWebauthnDevices im.use_access_point: ${error.message}`)
   })
 
@@ -827,7 +835,7 @@ export async function loginfromGoogleDevice(identity: string): Promise<void> {
   const frontendDelegation = await requestFEDelegation(googleIdentity)
 
   authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
-  im.use_access_point().catch((error) => {
+  im.use_access_point([getBrowserName()]).catch((error) => {
     throw new Error(
       `loginfromGoogleDevice im.use_access_point: ${error.message}`,
     )
@@ -1150,4 +1158,41 @@ export const delegationIdentityFromSignedIdentity = async (
   )
 
   return delegationIdentity
+}
+
+export async function delegationByScope(
+  userNumber: number,
+  scope: string,
+  maxTimeToLive?: bigint,
+) {
+  const sessionKey = Ed25519KeyIdentity.generate()
+
+  const delegation = await fetchDelegate(
+    userNumber,
+    scope,
+    [...new Uint8Array(sessionKey.getPublicKey().toDer())],
+    typeof maxTimeToLive === "undefined"
+      ? BigInt(WALLET_SESSION_TTL_2_MIN_IN_NS)
+      : maxTimeToLive,
+  )
+
+  return await delegationIdentityFromSignedIdentity(
+    sessionKey,
+    DelegationChain.fromDelegations(
+      [
+        {
+          delegation: new Delegation(
+            new Uint8Array(
+              delegation.signedDelegation.delegation.pubkey,
+            ).buffer,
+            delegation.signedDelegation.delegation.expiration,
+            delegation.signedDelegation.delegation.targets,
+          ),
+          signature: new Uint8Array(delegation.signedDelegation.signature)
+            .buffer as Signature,
+        },
+      ],
+      new Uint8Array(delegation.userPublicKey).buffer as DerEncodedPublicKey,
+    ),
+  )
 }

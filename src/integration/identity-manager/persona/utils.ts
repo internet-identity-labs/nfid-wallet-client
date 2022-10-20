@@ -1,3 +1,5 @@
+import { WALLET_SCOPE } from "frontend/integration/rosetta"
+
 import { Account } from ".."
 import { NFIDPersona } from "./types"
 
@@ -65,9 +67,10 @@ export function createAccount(
 }
 
 export function getScope(hostName: string, personaId?: string) {
-  const isProtocolExist =
-    hostName.includes("https") || hostName.includes("http")
-  const origin = isProtocolExist ? hostName : `https://${hostName}`
+  if (hostName === WALLET_SCOPE) return WALLET_SCOPE
+
+  const hasProtocol = hostName.includes("https") || hostName.includes("http")
+  const origin = hasProtocol ? hostName : `https://${hostName}`
 
   return `${personaId && personaId !== "0" ? `${personaId}@` : ``}${origin}`
 }

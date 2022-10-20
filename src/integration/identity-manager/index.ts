@@ -59,7 +59,7 @@ export function applicationToAccount(application: Application): Account {
     )
   return {
     domain: application.domain,
-    label: application.name,
+    label: "",
     accountId: "0",
     alias: application.alias,
     icon: application.icon,
@@ -298,12 +298,15 @@ function mapApplication(application: BEApplication): Application {
 /**
  * Fetches 3rd party application meta data
  */
-export async function fetchApplications() {
+export async function fetchApplications(
+  predicate?: (application: Application) => boolean,
+) {
   console.debug(`fetchApplications`)
   return im
     .read_applications()
     .then(unpackResponse)
     .then((r) => r.map(mapApplication))
+    .then((r) => (predicate ? r.filter(predicate) : r))
 }
 
 /**

@@ -1,7 +1,11 @@
 import clsx from "clsx"
+import { useAtom } from "jotai"
 import React from "react"
 import { To, useNavigate } from "react-router-dom"
+import ReactTooltip from "react-tooltip"
 
+import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"
+import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
@@ -17,6 +21,7 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   containerClassName?: string
   isLoading?: boolean
   headerMenu?: React.ReactNode
+  iconTooltip?: string
 }
 
 const ProfileTemplate: React.FC<IProfileTemplate> = ({
@@ -30,15 +35,18 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   containerClassName,
   isLoading = false,
   headerMenu,
+  iconTooltip,
 }) => {
   const navigate = useNavigate()
+  const [transferModalState] = useAtom(transferModalAtom)
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden")}>
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
+      {transferModalState.isModalOpen && <ProfileTransferModal />}
       <div
         className={clsx(
-          "block relative z-1 px-4",
+          "h-[calc(100vh-70px)] relative z-1 px-4",
           "sm:gap-[30px] sm:px-[30px]",
           "md:grid md:grid-cols-[50px,1fr]",
           "lg:grid-cols-[256px,1fr]",
@@ -48,7 +56,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         <div className={clsx("hidden mt-5 -ml-3 md:block relative")}>
           <ProfileSidebar id="desktop" />
         </div>
-        <section className={clsx("relative", className ?? "overflow-hidden")}>
+        <section className={clsx("relative  overflow-scroll", className)}>
           <div className="flex justify-between h-[70px] items-start mt-5">
             <div className="sticky left-0 flex space-x-2">
               {onBack && (
@@ -67,8 +75,10 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
                 alt="icon"
                 onClick={onIconClick}
                 className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
+                data-tip={iconTooltip}
               />
             )}
+            <ReactTooltip delayShow={2000} />
             {headerMenu}
           </div>
           {children}

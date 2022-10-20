@@ -104,7 +104,9 @@ describe("Facade suite", () => {
         delegationIdentity: recoveryIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn(() => ({ catch: jest.fn() }))
+      im.use_access_point = jest.fn((x: [] | [string]) => ({
+        catch: jest.fn(),
+      }))
       authStateMock.set(recoveryDevice, recoveryIdentity, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
@@ -169,6 +171,13 @@ describe("Facade suite", () => {
         persona_id: "1",
         persona_name: "",
       })
+      let nfid: Application = {
+        accountLimit: 1,
+        alias: [],
+        domain: "nfid.one",
+        isNftStorage: true,
+        name: "NFID",
+      }
       let appRequired: Application = {
         accountLimit: 0,
         alias: [],
@@ -193,6 +202,7 @@ describe("Facade suite", () => {
       let accounts = await fetchAccounts()
       let principals: { principal: Principal; account: Account }[] =
         await fetchPrincipals(anchor, accounts, [
+          nfid,
           appRequired,
           appNotRequired,
           appDuplicated,
@@ -237,7 +247,9 @@ describe("Facade suite", () => {
         delegationIdentity: delegationIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn(() => ({ catch: jest.fn() }))
+      im.use_access_point = jest.fn((x: [] | [string]) => ({
+        catch: jest.fn(),
+      }))
       authStateMock.set(mockedIdentity, delegationIdentity, ii)
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>

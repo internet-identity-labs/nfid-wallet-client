@@ -1,18 +1,20 @@
 import clsx from "clsx"
-import React from "react"
+import { useAtom } from "jotai"
+import { useCallback } from "react"
 import { To } from "react-router-dom"
-import { toast } from "react-toastify"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
+import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { NFTDetails, UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Application } from "frontend/integration/identity-manager"
+import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
-import CopyIcon from "./assets/copy.svg"
+import TransferIcon from "./assets/transfer.svg"
 import WalletIcon from "./assets/wallet.svg"
 
 import { NFTAsset } from "./nft-asset"
@@ -30,19 +32,37 @@ export const ProfileNFTDetailsPage = ({
   transactions,
   applications,
 }: IProfileNFTDetails) => {
-  const copyToClipboard = React.useCallback(() => {
-    toast.info("NFT URL copied to clipboard", { toastId: "NFTCopied" })
-    navigator.clipboard.writeText(link(nft.collection.id, nft.index))
-  }, [nft.collection.id, nft.index])
+  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+
+  const onTransferNFT = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      setTransferModalState({
+        ...transferModalState,
+        isModalOpen: true,
+        sendType: "nft",
+        selectedNFT: [nft.tokenId],
+      })
+    },
+    [nft.tokenId, setTransferModalState, transferModalState],
+  )
 
   return (
     <ProfileTemplate
       // I have not found any other ways to avoid as To. This is exactly what navigate expect
       onBack={-1 as To}
-      icon={CopyIcon}
-      onIconClick={copyToClipboard}
-      className="w-full min-w-fit z-[1]"
-      containerClassName="overflow-x-auto px-0"
+      headerMenu={
+        <div className="flex items-center space-x-4">
+          <img
+            className="transition-opacity cursor-pointer hover:opacity-50"
+            src={TransferIcon}
+            alt="transfer"
+            onClick={onTransferNFT}
+          />
+          <Copy value={link(nft.collection.id, nft.index)} />
+        </div>
+      }
+      className="w-full z-[1]"
     >
       <div
         className={clsx(
@@ -50,7 +70,7 @@ export const ProfileNFTDetailsPage = ({
           "grid-cols-1 sm:grid-cols-[auto,1fr]",
         )}
       >
-        <div className="relative overflow-hidden bg-gray-50 rounded-xl h-[342px] aspect-square">
+        <div className="relative overflow-hidden bg-gray-50 rounded-xl h-full md:h-[342px] aspect-square">
           <div
             style={{
               backgroundImage: `url(${nft.assetPreview})`,
@@ -116,7 +136,8 @@ export const ProfileNFTDetailsPage = ({
       </div>
       <div
         className={clsx(
-          "block border border-gray-200 rounded-xl",
+          "w-full",
+          "border border-gray-200 rounded-xl",
           "my-[30px]",
           !transactions.length && !isTransactionsFetching && "hidden",
         )}

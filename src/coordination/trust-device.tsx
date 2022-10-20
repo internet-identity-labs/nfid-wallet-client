@@ -6,6 +6,7 @@ import {
   registerDeviceWithSecurityKey,
   registerDeviceWithWebAuthn,
 } from "frontend/integration/device/services"
+import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
 
@@ -13,6 +14,7 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
   const [isLoading, setIsLoading] = useState(false)
   const [state, send] = useActor(actor)
   const { hasPlatformAuthenticator, platform } = useDeviceInfo()
+  const { getDevices } = useDevices()
 
   React.useEffect(
     () =>
@@ -29,11 +31,13 @@ export function TrustDeviceCoordinator({ actor }: Actor<TrustDeviceActor>) {
       onRegisterPlatformDevice={async () => {
         setIsLoading(true)
         await registerDeviceWithWebAuthn().then(() => send("END"))
+        getDevices()
         setIsLoading(false)
       }}
       onRegisterSecurityDevice={async () => {
         setIsLoading(true)
         await registerDeviceWithSecurityKey().then(() => send("END"))
+        getDevices()
         setIsLoading(false)
       }}
       isLoading={isLoading || !state.matches("Select")}

@@ -113,26 +113,32 @@ export const questions = [
         <div className="mb-6">
           B - remotely lock the lost or stolen device to prevent anyone from
           using it. Follow the instructions for{" "}
-          <Link
-            to="https://support.apple.com/en-us/HT201472"
+          <a
+            href="https://support.apple.com/en-us/HT201472"
+            target="_blank"
             className="text-blue-base hover:underline hover:text-blue-hover"
+            rel="noreferrer"
           >
             Apple
-          </Link>
+          </a>
           , for{" "}
-          <Link
-            to="https://support.google.com/accounts/answer/6160491"
+          <a
+            href="https://support.google.com/accounts/answer/6160491"
+            target="_blank"
             className="text-blue-base hover:underline hover:text-blue-hover"
+            rel="noreferrer"
           >
             Google
-          </Link>
+          </a>
           , for{" "}
-          <Link
-            to="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
+          <a
+            href="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
+            target="_blank"
             className="text-blue-base hover:underline hover:text-blue-hover"
+            rel="noreferrer"
           >
             Microsoft
-          </Link>
+          </a>
           .
         </div>
         <div className="mb-6">
@@ -148,6 +154,27 @@ export const questions = [
           to temporarily authenticate yourself and remove the lost device from
           your list of NFID (authorized devices).
         </div>
+      </div>
+    ),
+  },
+  {
+    title:
+      "How can I use NFID to access applications I've been using with my Internet Identity?",
+    info: (
+      <div>
+        NFID is built on top of Internet Identity and because of this, signing
+        in with NFID will sign you into the same accounts as those you've
+        created with Internet Identity. All you need to do is enter your
+        Internet Identity recovery phrase in the{" "}
+        <a
+          className="text-blue-base hover:underline hover:text-blue-hover"
+          href="/recover-nfid/enter-recovery-phrase"
+          target="_blank"
+          rel="noreferrer"
+        >
+          NFID recovery screen
+        </a>{" "}
+        from your phone and tap on the button to trust the device.
       </div>
     ),
   },
@@ -209,27 +236,6 @@ export const questions = [
   {
     title: "How is my phone number used?",
     info: "Your phone number is encrypted and only accessible to you. Applications will sometimes want to know you're a unique human being before making some features available. When you share an obfuscated version of your phone number to applications, they will never be able to de-obfuscate it back to your actual number. We've received feedback from the community that this is a reasonable first step in qualifying a unique person, though we're already planning on supporting even more sybil-resistant credentials.",
-  },
-  {
-    title:
-      "How can I use NFID to access applications I've been using with my Internet Identity?",
-    info: (
-      <div>
-        NFID is built on top of Internet Identity and because of this, signing
-        in with NFID will sign you into the same accounts as those you've
-        created with Internet Identity. All you need to do is enter your
-        Internet Identity recovery phrase in the{" "}
-        <a
-          className="text-blue-base hover:underline hover:text-blue-hover"
-          href="/recover-nfid/enter-recovery-phrase"
-          target="_blank"
-          rel="noreferrer"
-        >
-          NFID recovery screen
-        </a>{" "}
-        from your phone and tap on the button to trust the device.
-      </div>
-    ),
   },
   {
     title: "Still open questions?",

@@ -201,6 +201,7 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
             <div className="flex space-x-2">
               {isProtectTooltipVisible && <ReactTooltip html />}
               <div
+                id="protect-recovery"
                 onClick={toggleProtectVisible}
                 className={
                   recoveryMethod.isRecoveryPhrase && !recoveryMethod.isProtected
@@ -224,6 +225,11 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
                 {isEditingLabel ? <IconCheckMark /> : <PencilIcon />}
               </div>
               <div
+                id={
+                  recoveryMethod.isRecoveryPhrase
+                    ? "delete-recovery-phrase"
+                    : ""
+                }
                 className="hover:bg-gray-50 text-red-base"
                 onClick={
                   isEditingLabel ? toggleEditLabel : handleDeleteRecoveryDialog

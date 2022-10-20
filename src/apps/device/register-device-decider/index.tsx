@@ -4,10 +4,14 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { im } from "frontend/integration/actors"
-import { deviceInfo, useDeviceInfo } from "frontend/integration/device"
+import {
+  deviceInfo,
+  getBrowserName,
+  getIcon,
+  useDeviceInfo,
+} from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
-import { Icon } from "frontend/integration/identity-manager/devices/state"
 import { authState } from "frontend/integration/internet-identity"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
@@ -29,7 +33,6 @@ export const RouterRegisterDeviceDecider: React.FC<
   const { isAuthenticated } = useAuthentication()
 
   const {
-    browser: { name: browserName },
     platform: { os: deviceName },
     hasPlatformAuthenticator,
   } = useDeviceInfo()
@@ -74,7 +77,7 @@ export const RouterRegisterDeviceDecider: React.FC<
       console.warn("account not found. Recreating")
       const account = { anchor: userNumber }
       const accessPoint = {
-        icon: (deviceInfo.isMobile ? "mobile" : "desktop") as Icon,
+        icon: getIcon(deviceInfo),
         device: deviceInfo.newDeviceName,
         browser: deviceInfo.browser.name ?? "Mobile",
         pubKey: Array.from(
@@ -99,7 +102,7 @@ export const RouterRegisterDeviceDecider: React.FC<
         .create_access_point({
           icon: "laptop",
           device: deviceName,
-          browser: browserName || "My Computer",
+          browser: getBrowserName(),
           pub_key,
         })
         .catch((e) => {
@@ -114,7 +117,7 @@ export const RouterRegisterDeviceDecider: React.FC<
         })
       }
 
-      im.use_access_point().catch((e) => {
+      im.use_access_point([getBrowserName()]).catch((e) => {
         throw new Error(
           `useAuthentication.loginWithRecovery im.use_access_point: ${e.message}`,
         )
@@ -130,7 +133,6 @@ export const RouterRegisterDeviceDecider: React.FC<
     navigate(generatePath(registerSuccessPath))
     setIsLoading(false)
   }, [
-    browserName,
     createAccount,
     deviceName,
     generatePath,

@@ -292,7 +292,9 @@ export interface _SERVICE {
     arg_2: [] | [string],
   ) => Promise<BoolHttpResponse>
   update_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
-  use_access_point: () => Promise<HTTPOneAccessPointResponse>
+  use_access_point: (
+    arg_0: [] | [string],
+  ) => Promise<HTTPOneAccessPointResponse>
   validate_phone: (arg_0: ValidatePhoneRequest) => Promise<Response>
   validate_signature: (arg_0: [] | [string]) => Promise<[bigint, [] | [string]]>
   verify_token: (arg_0: Token) => Promise<Response>

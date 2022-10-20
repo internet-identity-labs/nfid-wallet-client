@@ -14,6 +14,7 @@ import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
 import { sumRules } from "frontend/ui/utils/validations"
 
+import ArrowWhite from "../assets/arrowWhite.svg"
 import { validateAddressField, validateTransferAmountField } from "./utils"
 
 export interface ITransferToken {
@@ -169,6 +170,11 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
         onClick={handleSubmit(onTokenSubmit)}
         id="send-token-button"
       >
+        <img
+          src={ArrowWhite}
+          alt="ArrowWhite"
+          className="w-[18px] h-[18px mr-[10px]"
+        />
         Send
       </Button>
     </>

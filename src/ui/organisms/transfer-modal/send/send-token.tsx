@@ -62,7 +62,6 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
     formState: { errors },
     handleSubmit,
     setValue,
-    getValues,
     setError,
     resetField,
   } = useForm<ITransferToken>({
@@ -158,7 +157,6 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
               validate: validateAddressField,
               required: "This field cannot be empty",
             })}
-            value={() => getValues("to")}
             setValue={(value) => setValue("to", value)}
           />
         </div>

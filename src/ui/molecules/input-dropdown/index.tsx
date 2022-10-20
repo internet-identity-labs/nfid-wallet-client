@@ -1,6 +1,7 @@
 import clsx from "clsx"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
+import { IoCloseOutline } from "react-icons/io5"
 
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
@@ -18,7 +19,6 @@ export interface IInputDropdown {
   bordered?: boolean
   options: IOption[]
   placeholder?: string
-  value: () => string
   registerFunction: UseFormRegisterReturn<string>
   errorText?: string
   setValue: (value: string) => void
@@ -31,24 +31,41 @@ export const InputDropdown = ({
   placeholder = "",
   registerFunction,
   errorText,
-  value,
   setValue,
 }: IInputDropdown) => {
   const [selectedValue, setSelectedValue] = useState("")
+  const [selectedOption, setSelectedOption] = useState<IOption>()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const ref = useClickOutside(() => setIsDropdownOpen(false))
 
   const filteredOptions = useMemo(() => {
     return options.filter((option) =>
-      option.label.toLowerCase().includes(value().toLowerCase()),
+      option.label.toLowerCase().includes(selectedValue.toLowerCase()),
     )
-  }, [options, value])
+  }, [options, selectedValue])
 
   useEffect(() => {
     if (selectedValue.length) setIsDropdownOpen(true)
     else setIsDropdownOpen(false)
-  }, [selectedValue, value])
+  }, [selectedValue])
+
+  const toggleDropdown = useCallback(() => {
+    if (selectedOption) {
+      setSelectedValue("")
+      setValue("")
+      setSelectedOption(undefined)
+    } else setIsDropdownOpen(true)
+  }, [selectedOption, setValue])
+
+  const selectDropdownOption = useCallback(
+    (option: IOption) => {
+      setValue(option.value)
+      setSelectedOption(option)
+      setIsDropdownOpen(false)
+    },
+    [setValue],
+  )
 
   return (
     <div className={clsx("relative w-full")} ref={ref}>
@@ -72,22 +89,31 @@ export const InputDropdown = ({
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
         htmlFor="input"
       >
-        <input
-          id="input"
-          className={clsx("outline-none bg-transparent w-full", "text-sm")}
-          placeholder={placeholder}
-          onChangeCapture={(e: any) => setSelectedValue(e.target.value)}
-          {...registerFunction}
-        />
-
+        {selectedOption ? (
+          <p className="w-full text-sm cursor-default">
+            {selectedOption.label}
+          </p>
+        ) : (
+          <input
+            id="input"
+            className={clsx("outline-none bg-transparent w-full", "text-sm")}
+            placeholder={placeholder}
+            onChangeCapture={(e: any) => setSelectedValue(e.target.value)}
+            {...registerFunction}
+          />
+        )}
         <div
           className={clsx(
             "w-10 h-10 cursor-pointer hover:opacity-50",
             "flex items-center justify-center z-10",
           )}
-          onClick={() => setIsDropdownOpen(true)}
+          onClick={toggleDropdown}
         >
-          <img src={Arrow} alt="arrow" />
+          {selectedOption ? (
+            <IoCloseOutline />
+          ) : (
+            <img src={Arrow} alt="arrow" />
+          )}
         </div>
       </label>
       {isDropdownOpen && (
@@ -104,10 +130,7 @@ export const InputDropdown = ({
                   "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
                   "flex items-center text-sm text-black-base",
                 )}
-                onClick={() => {
-                  setValue(option.value)
-                  setIsDropdownOpen(false)
-                }}
+                onClick={() => selectDropdownOption(option)}
               >
                 {option.icon && (
                   <img

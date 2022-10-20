@@ -17,8 +17,6 @@ import {
   removeRecoveryDeviceII,
 } from "frontend/integration/internet-identity"
 
-import { getWalletPrincipal, WALLET_SCOPE } from "../rosetta"
-
 export async function removeRecoveryDeviceFacade(
   userNumber: UserNumber,
   seedPhrase: string,

@@ -73,16 +73,26 @@ describe("cap suite", () => {
 
 
       let js = await didToJs(result,agent,"a4gq6-oaaaa-aaaab-qaa4q-cai");
+
+      console.log(js)
       const dataUri = 'data:text/javascript;charset=utf-8,' + encodeURIComponent(js!);
 
+      // @ts-ignore
+      import('data:text/javascript;charset=utf-8;base64,ZXhwb3J0IGNvbnN0IG51bWJlciA9IDQyOwpleHBvcnQgY29uc3QgZm4gPSAoKSA9PiAiSGVsbG8gd29ybGQiOw==')
+        .then(module => console.log(module));
       // console.log(dataUri)
+      // import(dataUri).then(async module => {
+      //
+      //   const actor: ActorSubclass = Actor.createActor(module.idlFactory, { agent, canisterId });
+      //   let rr = await actor.get_account();
+      //   console.log(rr)
+      // })
+      // const candid: any = await eval('import("' + dataUri + '")');
 
-      const candid: any = await eval('import("' + dataUri + '")');
 
-      const actor: ActorSubclass = Actor.createActor(candid.idlFactory, { agent, canisterId });
-
-      let rr = await actor.get_account();
-      console.log(rr)
+      //
+      // let rr = await actor.get_account();
+      // console.log(rr)
 
       // CanisterStatus.request()
 

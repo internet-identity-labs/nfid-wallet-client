@@ -24,7 +24,7 @@ export default async () => {
   }
 }
 
-function getIdentity(): Secp256k1KeyIdentity {
+export function getIdentity(): Secp256k1KeyIdentity {
   const rawKey: any = LAMBDA_IDENTITY?.trim();
   const rawBuffer = Uint8Array.from(rawKey).buffer;
   const privateKey = Uint8Array.from(sha256(rawBuffer as any, { asBytes: true }));

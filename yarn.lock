@@ -1721,7 +1721,19 @@
     "@devtools-ds/themes" "^1.2.0"
     clsx "1.1.0"
 
-"@dfinity/agent@0.10.4", "@dfinity/agent@^0.10.1":
+"@dfinity/agent@0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.13.1.tgz#db33cc0d8642dc15a0e675b49845332d8fb342e8"
+  integrity sha512-ALBgvdOvj0hWDV4GGy+d80CLGIr9Rm8TEDCJc+VrROEQe6TJiI1PAGpvq8fMeN8vv2O4m0yDIvIgseN901oHXA==
+  dependencies:
+    base64-arraybuffer "^0.2.0"
+    bignumber.js "^9.0.0"
+    borc "^2.1.1"
+    js-sha256 "0.9.0"
+    simple-cbor "^0.4.1"
+    ts-node "^10.8.2"
+
+"@dfinity/agent@^0.10.1":
   version "0.10.4"
   resolved "https://registry.npmjs.org/@dfinity/agent/-/agent-0.10.4.tgz"
   integrity sha512-/O1443GWkQ6GngrXos/ShAbnF9IgUlWclzaQn/qEsGJIey6S7tty+iOa5yZqOS1BtOTnDe+TYh8GeERZZn7vvg==
@@ -1753,7 +1765,14 @@
   resolved "https://registry.npmjs.org/@dfinity/authentication/-/authentication-0.10.4.tgz"
   integrity sha512-IP1zepm9YnXATV6lXVMqObmETKuBtkDMbWW6rgUvEekulaxITTHJppgzdMD8E7Hh5SVajVHLJm14kDa3FXwMnA==
 
-"@dfinity/candid@0.10.4", "@dfinity/candid@^0.10.1":
+"@dfinity/candid@0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.13.1.tgz#f1b73acfa8ab6fe6a2cee4eeab1b5e84ea29a7b2"
+  integrity sha512-kle1v5/D4Tvj0UZlFjfb/k0ET/iwOov0TugfxsuXrPBaeDyOgFNfICeB7QOflFC5B9OsI+CkZwNdbWC3th5QIg==
+  dependencies:
+    ts-node "^10.8.2"
+
+"@dfinity/candid@^0.10.1":
   version "0.10.4"
   resolved "https://registry.npmjs.org/@dfinity/candid/-/candid-0.10.4.tgz"
   integrity sha512-Rd8uoo3jd4FLmGY9aBgTRdBCYVuG/Y7QmpDJB3eQvsU3WHhVZJWLMHcodnMIoy2bzqzCKeTdLkL565K7qx5H3Q==
@@ -1784,7 +1803,14 @@
     secp256k1 "^4.0.2"
     tweetnacl "^1.0.1"
 
-"@dfinity/principal@0.10.4", "@dfinity/principal@^0.10.1":
+"@dfinity/principal@0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.13.1.tgz#7363149e0aa613c3a8ca47485c2fe5e48a708129"
+  integrity sha512-JB8JS5HQIOtb8ITBgDnW5A1RIr0bBJE73yuEq8q7y8cVtI9ZKShI6eDYz0qpWZLQhWZd1demZcfQOymW2xgtHg==
+  dependencies:
+    ts-node "^10.8.2"
+
+"@dfinity/principal@^0.10.1":
   version "0.10.4"
   resolved "https://registry.npmjs.org/@dfinity/principal/-/principal-0.10.4.tgz"
   integrity sha512-qwzpmq5wfyeKMBspRZmuYvTxu1dqN+IY0ThACHTRh6D58QjnVQNCD3Hq9d5eEDu0qyNcY22cJEWwzrzZaaoVmw==
@@ -19014,9 +19040,9 @@ ts-jest@^27.1.5:
     semver "7.x"
     yargs-parser "20.x"
 
-ts-node@^10.7.0, ts-node@^10.8.1:
+ts-node@^10.7.0, ts-node@^10.8.1, ts-node@^10.8.2:
   version "10.9.1"
-  resolved "https://registry.npmjs.org/ts-node/-/ts-node-10.9.1.tgz"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==
   dependencies:
     "@cspotcode/source-map-support" "^0.8.0"

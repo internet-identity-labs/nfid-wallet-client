@@ -106,7 +106,7 @@ jobs:
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: Run unit tests
-        run: yarn test
+        run: npx nx test
 
   e2e-tests:
     needs: check-secrets
@@ -126,8 +126,8 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
           EOF
           yarn
-          yarn build
-          yarn serve -l 9090 -s build &
+          npx nx build
+          yarn serve &
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV
@@ -172,7 +172,7 @@ jobs:
 
       - name: Running E2E test
         run: |
-          yarn test:e2e
+          npx nx nfid-frontend:test:e2e
           # yarn test:e2e:mobile
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}

@@ -1,32 +1,35 @@
 // import {} from "@craco/craco"
-import dfxJson from './dfx.json';
-import { config as loadEnv } from 'dotenv';
-import path from 'path';
+import { config as loadEnv } from "dotenv"
+import path from "path"
+import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
+import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 
-const webpack = require('webpack');
+import dfxJson from "./dfx.json"
 
-loadEnv({ path: path.resolve(__dirname, '.env.local') });
+const webpack = require("webpack")
 
-const isExampleBuild = process.env.EXAMPLE_BUILD === '1';
+loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
-let sentryRelease = require('child_process')
-  .execSync('git rev-parse HEAD')
+const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
+
+let sentryRelease = require("child_process")
+  .execSync("git rev-parse HEAD")
   .toString()
   .trim()
-  .slice(0, 12);
+  .slice(0, 12)
 
 // Gets the port dfx is running on from dfx.json
-const DFX_PORT = dfxJson.networks.local.bind.split(':')[1];
+const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 
 const config = {
   webpack: {
     alias: {
-      frontend: path.resolve(__dirname, 'src'),
+      frontend: path.resolve(__dirname, "src"),
     },
     optimization: {
       minimize: !isExampleBuild,
     },
-    configure: (webpackConfig: any, { env, paths }: any) => {
+    configure: (config: any, { env, paths }: any) => {
       const canisterEnv = {
         ...(isExampleBuild
           ? {}
@@ -41,57 +44,79 @@ const config = {
               USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
               GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
               LEDGER_CANISTER_ID: JSON.stringify(
-                process.env.LEDGER_CANISTER_ID
+                process.env.LEDGER_CANISTER_ID,
               ),
               CYCLES_MINTER_CANISTER_ID: JSON.stringify(
-                process.env.CYCLES_MINTER_CANISTER_ID
+                process.env.CYCLES_MINTER_CANISTER_ID,
               ),
               VERIFY_PHONE_NUMBER: JSON.stringify(
-                process.env.FRONTEND_MODE === 'production'
+                process.env.FRONTEND_MODE === "production"
                   ? process.env.AWS_VERIFY_PHONENUMBER
-                  : '/verify'
+                  : "/verify",
               ),
               AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
               SIGNIN_GOOGLE: JSON.stringify(
-                process.env.FRONTEND_MODE === 'production'
+                process.env.FRONTEND_MODE === "production"
                   ? process.env.AWS_SIGNIN_GOOGLE
-                  : '/signin'
+                  : "/signin",
               ),
               INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
                 process.env[
                   `INTERNET_IDENTITY_CANISTER_ID_${process.env.BACKEND_MODE}`
-                ]
+                ],
               ),
               IDENTITY_MANAGER_CANISTER_ID: JSON.stringify(
                 process.env[
                   `IDENTITY_MANAGER_CANISTER_ID_${process.env.BACKEND_MODE}`
-                ]
+                ],
               ),
               PUB_SUB_CHANNEL_CANISTER_ID: JSON.stringify(
                 process.env[
                   `PUB_SUB_CHANNEL_CANISTER_ID_${process.env.BACKEND_MODE}`
-                ]
+                ],
               ),
               VERIFIER_CANISTER_ID: JSON.stringify(
-                process.env[`VERIFIER_CANISTER_ID_${process.env.BACKEND_MODE}`]
+                process.env[`VERIFIER_CANISTER_ID_${process.env.BACKEND_MODE}`],
               ),
             }),
-      };
-      webpackConfig.plugins.push(new webpack.DefinePlugin(canisterEnv));
-      webpackConfig.plugins.push(
+      }
+      config.plugins.push(new webpack.DefinePlugin(canisterEnv))
+      config.plugins.push(
         new webpack.ProvidePlugin({
-          Buffer: [require.resolve('buffer/'), 'Buffer'],
-          process: require.resolve('process/browser'),
-        })
-      );
-      webpackConfig.plugins.push(
+          Buffer: [require.resolve("buffer/"), "Buffer"],
+          process: require.resolve("process/browser"),
+        }),
+      )
+      config.plugins.push(
         new webpack.IgnorePlugin({
           contextRegExp: /^\.\/wordlists\/(?!english)/,
           resourceRegExp: /bip39\/src$/,
-        })
-      );
+        }),
+      )
+      // Remove guard against importing modules outside of `src`.
+      // Needed for workspace projects.
+      config.resolve.plugins = config.resolve.plugins.filter(
+        (plugin: any) => !(plugin instanceof ModuleScopePlugin),
+      )
+      // Add support for importing workspace projects.
+      config.resolve.plugins.push(
+        new TsConfigPathsPlugin({
+          configFile: path.resolve(__dirname, "tsconfig.json"),
+          extensions: [".ts", ".tsx", ".js", ".jsx"],
+          mainFields: ["module", "main"],
+        }),
+      )
+
+      // Replace include option for babel loader with exclude
+      // so babel will handle workspace projects as well.
+      config.module.rules[1].oneOf.forEach((r: any) => {
+        if (r.loader && r.loader.indexOf("babel") !== -1) {
+          r.exclude = /node_modules/
+          delete r.include
+        }
+      })
       return {
-        ...webpackConfig,
+        ...config,
         // module: {
         //   rules: [
         //     {
@@ -101,21 +126,54 @@ const config = {
         //     },
         //   ],
         // },
-        devtool: process.env.FRONTEND_MODE !== 'production' && 'source-map',
+        devtool: process.env.FRONTEND_MODE !== "production" && "source-map",
         ignoreWarnings: [/Failed to parse source map from/],
         resolve: {
-          ...webpackConfig.resolve,
-          extensions: ['.js', '.ts', '.jsx', '.tsx'],
+          ...config.resolve,
+          extensions: [".js", ".ts", ".jsx", ".tsx"],
           fallback: {
-            ...webpackConfig.resolve.fallback,
-            assert: require.resolve('assert'),
-            buffer: require.resolve('buffer'),
-            events: require.resolve('events'),
-            stream: require.resolve('stream-browserify'),
-            util: require.resolve('util'),
+            ...config.resolve.fallback,
+            assert: require.resolve("assert"),
+            buffer: require.resolve("buffer"),
+            events: require.resolve("events"),
+            stream: require.resolve("stream-browserify"),
+            util: require.resolve("util"),
           },
         },
-      };
+      }
+    },
+  },
+  jest: {
+    configure: (config: any) => {
+      config.resolver = "@nrwl/jest/plugins/resolver"
+      return config
+    },
+    displayName: "nfid-frontend",
+    preset: "../../jest.preset.js",
+    testMatch: ["**/*.spec.(js|ts|tsx)"],
+    transform: {
+      "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "@nrwl/react/plugins/jest",
+      "^.+\\.[tj]sx?$": ["babel-jest", { presets: ["@nrwl/react/babel"] }],
+    },
+    collectCoverage: false,
+    coverageDirectory: "./coverage",
+    coverageThreshold: {
+      global: {
+        branches: 99,
+        functions: 100,
+        lines: 100,
+        statements: 100,
+      },
+    },
+    collectCoverageFrom: ["src/**/*.ts", "!**/node_modules/**"],
+    setupFilesAfterEnv: ["./src/setupTests.ts"],
+    roots: ["test/", "src/"],
+    moduleDirectories: ["node_modules"],
+    moduleNameMapper: {
+      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|did)$":
+        "<rootDir>/mocks/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/mocks/fileMock.js",
+      "^frontend/(.*)$": "<rootDir>/src/$1",
     },
   },
   devServer: {
@@ -123,28 +181,28 @@ const config = {
     port: 9090,
     proxy: {
       // This proxies all http requests made to /api to our running dfx instance
-      '/api': {
+      "/api": {
         target: `http://0.0.0.0:${DFX_PORT}`,
       },
-      '/verify': {
+      "/verify": {
         target: process.env.AWS_VERIFY_PHONENUMBER,
         secure: true,
         changeOrigin: true,
-        pathRewrite: (path: string) => path.replace(/^\/verify/, ''),
+        pathRewrite: (path: string) => path.replace(/^\/verify/, ""),
       },
-      '/signin': {
+      "/signin": {
         target: process.env.AWS_SIGNIN_GOOGLE,
         secure: true,
         changeOrigin: true,
-        pathRewrite: (path: string) => path.replace(/^\/signin/, ''),
+        pathRewrite: (path: string) => path.replace(/^\/signin/, ""),
       },
-      '/symmetric': {
+      "/symmetric": {
         target: process.env.AWS_SYMMETRIC,
         secure: true,
         changeOrigin: true,
-        pathRewrite: (path: string) => path.replace(/^\/symmetric/, ''),
+        pathRewrite: (path: string) => path.replace(/^\/symmetric/, ""),
       },
     },
   },
-};
-export default config;
+}
+export default config

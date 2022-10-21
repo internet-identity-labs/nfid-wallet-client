@@ -327,6 +327,9 @@ export async function processApplicationOrigin(
     applicationName,
   })
   let application = await im.get_application(derivationOrigin)
+
+  console.debug("processApplicationOrigin", { application })
+
   if (
     application.data.length === 0 ||
     !application?.data[0]?.alias[0]?.includes(aliasDomain)

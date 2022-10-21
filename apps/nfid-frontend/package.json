@@ -27,7 +27,6 @@
     "test": "craco test",
     "tunnel": "./scripts/tunnel.sh"
   },
-  "jest": {},
   "cracoConfig": "craco.config.ts",
   "eslintConfig": {
     "extends": "react-app",

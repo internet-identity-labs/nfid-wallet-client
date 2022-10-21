@@ -108,7 +108,7 @@ const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({})
 
 observableAuthState$.subscribe({
   next(value) {
-    console.log("observableAuthState new state", { value })
+    console.debug("observableAuthState new state", { value })
   },
   error(err) {
     console.error("observableAuthState: something went wrong:", { err })

@@ -1,4 +1,4 @@
-import { Response } from "./_ic_api/identity_manager.did.d"
+import { Response } from './_ic_api/identity_manager.did.d';
 
 /**
  * Sanitize dfinity date object into js Date.
@@ -6,37 +6,37 @@ import { Response } from "./_ic_api/identity_manager.did.d"
  * @returns js Date
  */
 export function mapDate(candid: bigint): Date {
-  const millis = Number(candid) / 10 ** 6
-  return new Date(millis)
+  const millis = Number(candid) / 10 ** 6;
+  return new Date(millis);
 }
 
 /**
  * Transform javascript date as milliseconds to dfinity date format.
  */
 export function reverseMapDate(number: number): bigint {
-  return BigInt(number * 10 ** 6)
+  return BigInt(number * 10 ** 6);
 }
 
 export function mapOptional<T>(value: [T] | []): T | undefined {
-  if (value.length) return value[0]
+  if (value.length) return value[0];
 }
 
 export function reverseMapOptional<T>(value?: T): [] | [T] {
-  if (value) return [value]
-  return []
+  if (value) return [value];
+  return [];
 }
 
 // NFID Canisters use this response pattern, which includes http status codes
 
 interface NFIDResponse<T> {
-  data: [] | [T]
-  error: [] | [string]
-  status_code: number
+  data: [] | [T];
+  error: [] | [string];
+  status_code: number;
 }
 
 type DiscriminatedNFIDResponse<T> =
   | { code: number; ok: true; data: T }
-  | { code: number; ok: false; error: string }
+  | { code: number; ok: false; error: string };
 
 /**
  * Cast NFID response interface into discriminated type.
@@ -44,24 +44,24 @@ type DiscriminatedNFIDResponse<T> =
  * @returns
  */
 export function typeResponse<T>(
-  response: NFIDResponse<T>,
+  response: NFIDResponse<T>
 ): DiscriminatedNFIDResponse<T> {
   if (response.data.length) {
-    return { ok: true, code: response.status_code, data: response.data[0] }
+    return { ok: true, code: response.status_code, data: response.data[0] };
   } else if (response.error.length) {
-    return { ok: false, code: response.status_code, error: response.error[0] }
+    return { ok: false, code: response.status_code, error: response.error[0] };
   }
   throw new Error(
-    `typeResponse Unknown response type ${Object.keys(response)[0]}`,
-  )
+    `typeResponse Unknown response type ${Object.keys(response)[0]}`
+  );
 }
 
 export class NfidHttpError extends Error {
-  code: number
+  code: number;
   constructor(message: string, code: number) {
-    super(message)
-    this.name = "NfidHttpError"
-    this.code = code
+    super(message);
+    this.name = 'NfidHttpError';
+    this.code = code;
   }
 }
 
@@ -71,11 +71,11 @@ export class NfidHttpError extends Error {
  * @returns
  */
 export function unpackResponse<T>(response: NFIDResponse<T>) {
-  const r = typeResponse(response)
+  const r = typeResponse(response);
   if (r.ok) {
-    return r.data
+    return r.data;
   } else {
-    throw new NfidHttpError(`${r.code} error: ${r.error}`, r.code)
+    throw new NfidHttpError(`${r.code} error: ${r.error}`, r.code);
   }
 }
 
@@ -85,7 +85,8 @@ export function unpackResponse<T>(response: NFIDResponse<T>) {
  * @returns string as keyof variant
  */
 export function mapVariant<T>(variant: T): keyof T {
-  return Object.keys(variant)[0] as keyof T
+  // @ts-ignore
+  return Object.keys(variant)[0] as keyof T;
 }
 
 // Some older NFID canister methods do not use the above response pattern. The following methods deal with these older patterns.
@@ -94,12 +95,12 @@ export function mapVariant<T>(variant: T): keyof T {
  * Discriminate legacy canister response into standard typed response.
  */
 export function typeLegacyResponse(
-  response: Response,
+  response: Response
 ): DiscriminatedNFIDResponse<null> {
   if (response.error.length) {
-    return { ok: false, code: response.status_code, error: response.error[0] }
+    return { ok: false, code: response.status_code, error: response.error[0] };
   } else {
-    return { ok: true, code: response.status_code, data: null }
+    return { ok: true, code: response.status_code, data: null };
   }
 }
 
@@ -107,10 +108,10 @@ export function typeLegacyResponse(
  * Unpack legacy NFID canister response type into boolean true or throw error.
  */
 export function unpackLegacyResponse(response: Response) {
-  const r = typeLegacyResponse(response)
+  const r = typeLegacyResponse(response);
   if (r.ok) {
-    return true
+    return true;
   } else {
-    throw new Error(`unpackLegacyResponse ${r.code} error: ${r.error}`)
+    throw new Error(`unpackLegacyResponse ${r.code} error: ${r.error}`);
   }
 }

@@ -1,0 +1,13 @@
+coverage
+node_modules
+.DS_Store
+dist
+build
+dist-ssr
+*.local
+.dfx
+NOTES.md
+yarn-error.log
+Icon
+allure-results
+package-lock.json

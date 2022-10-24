@@ -4,6 +4,7 @@ import React from "react"
 import logo from "./assets/id.svg"
 
 import { NFIDGradientBar } from "../atoms/gradient-bar"
+import { MaintenanceError } from "../molecules/maintenance-error"
 import { useMaintenance } from "../utils/use-maintenance"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -42,32 +43,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
           className,
         )}
       >
-        <div
-          className={clsx(
-            "text-xs lg:text-sm text-white h-12",
-            "bg-red-500 text-center font-inter",
-            "flex items-center justify-center",
-          )}
-        >
-          <p>
-            {!isDown ? (
-              <>
-                Please note NFID will be unavailable during scheduled <br />
-                maintenance for some hours on October 26.{" "}
-              </>
-            ) : (
-              <>NFID is undergoing scheduled maintenance. </>
-            )}
-            <a
-              className="transition-opacity border-b hover:opacity-80"
-              href="https://forum.dfinity.org/t/internet-identity-subnet-migration-on-october-26/15989"
-              target="_blank"
-              rel="noreferrer"
-            >
-              More details
-            </a>
-          </p>
-        </div>
+        <MaintenanceError isDown={isDown} />
         {children}
       </div>
 

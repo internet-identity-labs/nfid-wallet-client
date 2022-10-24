@@ -97,7 +97,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         title="Sign in"
         subTitle={`Choose how you'd like to sign in to ${applicationName}`}
       />
-
       <div
         className="flex flex-col items-center w-full mt-8 space-y-1"
         ref={containerRef}

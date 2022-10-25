@@ -26,7 +26,7 @@ export const idlFactory = ({ IDL }) => {
   const AccessPointRequest = IDL.Record({
     icon: IDL.Text,
     device: IDL.Text,
-    pub_key: IDL.Vec(IDL.Nat8),
+    pub_key: IDL.Text,
     browser: IDL.Text,
   })
   const AccessPointResponse = IDL.Record({
@@ -206,7 +206,7 @@ export const idlFactory = ({ IDL }) => {
     status_code: IDL.Nat16,
   })
   const AccessPointRemoveRequest = IDL.Record({
-    pub_key: IDL.Vec(IDL.Nat8),
+    pub_key: IDL.Text,
   })
   const BasicEntity = IDL.Record({
     modified_date: IDL.Nat64,

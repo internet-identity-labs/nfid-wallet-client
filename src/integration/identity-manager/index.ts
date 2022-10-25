@@ -1,4 +1,6 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
+import { Principal } from "@dfinity/principal"
+
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity_types"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
@@ -226,7 +228,9 @@ function mapToAccessPointRequest(
   return {
     icon: accessPoint.icon,
     device: accessPoint.device,
-    pub_key: accessPoint.pubKey,
+    pub_key: Principal.selfAuthenticating(
+      new Uint8Array(accessPoint.pubKey),
+    ).toText(),
     browser: accessPoint.browser,
   }
 }
@@ -267,9 +271,13 @@ export async function removeAccount() {
 }
 
 export async function removeAccessPoint(pubkey: DeviceKey) {
-  await im.remove_access_point({ pub_key: pubkey }).catch((e) => {
-    throw new Error(`Not able to remove ap: ${e.message}`)
-  })
+  await im
+    .remove_access_point({
+      pub_key: Principal.selfAuthenticating(new Uint8Array(pubkey)).toText(),
+    })
+    .catch((e) => {
+      throw new Error(`Not able to remove ap: ${e.message}`)
+    })
 }
 
 export interface Application {

@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import { App } from "./App"
-import { consoleWarning } from "./constants/console"
+import { initializeConsoleWarnings } from "./boot"
 import "./index.css"
 import { ToastIcons } from "./ui/atoms/toast-icons"
 
@@ -29,9 +29,7 @@ process.env.NODE_ENV === "production" &&
   })
 
 const container = document.getElementById("root")
-
-console.log("%cWARNING", "color: red; font-size: 20px")
-console.log(consoleWarning, "font-size: 16px")
+initializeConsoleWarnings()
 
 if (!container) throw new Error("Failed to find the root element")
 

@@ -7,9 +7,14 @@ import { expect } from "@jest/globals"
 import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
 import { Balance } from "frontend/integration/_ic_api/ext.did"
+import {
+  listNFT,
+  lockNFT,
+  transferEXT,
+  unListNFT,
+} from "frontend/integration/entrepot/ext"
 import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
-import { transferEXT } from "frontend/integration/entrepot/transfer"
-import { EntrepotCollection } from "frontend/integration/entrepot/types"
+import { transfer } from "frontend/integration/rosetta"
 
 const identityA: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -21,20 +26,62 @@ const identityB: JsonnableEd25519KeyIdentity = [
 ]
 const testToken = "m2qxv-aqkor-uwiaa-aaaaa-b4ats-4aqca-aaelv-q"
 const testCollection = "p5jg7-6aaaa-aaaah-qcolq-cai"
+const allien = "p5jg7-6aaaa-aaaah-qcolq-cai"
+const heroes = "poyn6-dyaaa-aaaah-qcfzq-cai"
 const testCollectionTurtle = "jeghr-iaaaa-aaaah-qco7q-cai" //fl5nr-xiaaa-aaaai-qbjmq-cai ICTurtles on DAB and legacy API in Entrepot
 
-describe("NFT transfer suite", () => {
-  describe("ext", () => {
-    jest.setTimeout(20000)
+describe("NFT EXT standard suite", () => {
+  describe("ext nft", () => {
+    jest.setTimeout(50000)
+    //this test describes how to purchase nft
+    //TODO skip after e2e done because it takes 0.03% from the transaction
+    it.skip("should lock and buy", async function () {
+      let price = 1000000
+      let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
+      let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
+      let token = "hdjt6-5ikor-uwiaa-aaaaa-b4ats-4aqca-aabhj-q"
+
+      let owner = (await fetchCollectionTokens(allien)).find(
+        (tok) => tok.tokenId === token,
+      )?.owner
+      let sourceIdentity =
+        owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
+      let targetIdentity =
+        owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
+
+      await listNFT(token, sourceIdentity, price)
+      let address = await lockNFT(token, targetIdentity, price)
+      await transfer(price, address, targetIdentity)
+      let result = await unListNFT(token, targetIdentity)
+      expect(result).toBe(true)
+    })
+    it("should unlist", async function () {
+      let price = 1000000
+      let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
+      let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
+      let token = "3qtw7-xykor-uwiaa-aaaaa-b4aro-maqca-aaap6-a"
+
+      let owner = (await fetchCollectionTokens(heroes)).find(
+        (tok) => tok.tokenId === token,
+      )?.owner
+      let sourceIdentity =
+        owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
+      let targetIdentity =
+        owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
+
+      let listResult = await listNFT(token, sourceIdentity, price)
+      expect(listResult).toBe(true)
+      await unListNFT(token, sourceIdentity)
+      await expect(lockNFT(token, targetIdentity, price)).rejects.toThrow(
+        "Lock failed! Other : No listing!",
+      )
+    })
     it("should transfer", async function () {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: testCollection }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(testCollection)).find(
         (token) => token.tokenId === testToken,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
@@ -55,12 +102,9 @@ describe("NFT transfer suite", () => {
       let testToken = encodeTokenIdentifier(testCollectionTurtle, 7322)
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: testCollectionTurtle }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(testCollectionTurtle)).find(
         (token) => token.tokenId === testToken,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
       let targetIdentity =
@@ -76,12 +120,9 @@ describe("NFT transfer suite", () => {
     it("should throw Unauthorized error", async function () {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      // @ts-ignore
-      let ex: EntrepotCollection = { id: testCollection }
-      // @ts-ignore
-      let owner = (await fetchCollectionTokens(ex)).find(
+      let owner = (await fetchCollectionTokens(testCollection)).find(
         (token) => token.tokenId === testToken,
-      ).owner
+      )?.owner
       let sourceIdentity =
         owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
       let targetIdentity =

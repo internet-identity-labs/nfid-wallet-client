@@ -75,7 +75,7 @@ export async function createActorDynamically(
   return Actor.createActor(module.idlFactory, { agent, canisterId })
 }
 
-//todo TBD sc-5147
+// TODO: sc-5147
 export async function evaluateMethod(
   actor: ActorSubclass,
   methodName: string,

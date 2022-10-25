@@ -14,7 +14,6 @@ import {
   unListNFT,
 } from "frontend/integration/entrepot/ext"
 import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
-import { EntrepotCollection } from "frontend/integration/entrepot/types"
 import { transfer } from "frontend/integration/rosetta"
 
 const identityA: JsonnableEd25519KeyIdentity = [

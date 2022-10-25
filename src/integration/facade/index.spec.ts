@@ -37,7 +37,7 @@ import {
 import { getWalletPrincipal } from "../rosetta"
 
 describe("Facade suite", () => {
-  jest.setTimeout(80000)
+  jest.setTimeout(100000)
 
   describe("Facade Service Test", () => {
     it("Should create and remove protected Recovery device", async function () {

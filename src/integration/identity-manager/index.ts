@@ -228,7 +228,7 @@ function mapToAccessPointRequest(
   return {
     icon: accessPoint.icon,
     device: accessPoint.device,
-    pub_key: Principal.fromUint8Array(
+    pub_key: Principal.selfAuthenticating(
       new Uint8Array(accessPoint.pubKey),
     ).toText(),
     browser: accessPoint.browser,
@@ -273,7 +273,7 @@ export async function removeAccount() {
 export async function removeAccessPoint(pubkey: DeviceKey) {
   await im
     .remove_access_point({
-      pub_key: Principal.fromUint8Array(new Uint8Array(pubkey)).toText(),
+      pub_key: Principal.selfAuthenticating(new Uint8Array(pubkey)).toText(),
     })
     .catch((e) => {
       throw new Error(`Not able to remove ap: ${e.message}`)

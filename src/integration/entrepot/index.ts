@@ -66,7 +66,7 @@ export async function token(
 export async function tokens(
   collection: EntrepotCollection,
 ): Promise<EntrepotToken[]> {
-  return Promise.all(await fetchCollectionTokens(collection))
+  return Promise.all(await fetchCollectionTokens(collection.id))
 }
 
 /**

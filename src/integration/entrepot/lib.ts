@@ -58,16 +58,15 @@ export async function fetchCollection(
  * Fetch and cache all tokens from a specific token canister.
  */
 export async function fetchCollectionTokens(
-  collection: EntrepotCollection,
+  collectionId: string,
 ): Promise<EntrepotToken[]> {
-  const { id } = collection
-  if (!tokenCache[id]) {
+  if (!tokenCache[collectionId]) {
     const tokens: EntrepotToken[] = await fetch(
-      `${API}/maddies/getNftCollection/${id}`,
+      `${API}/maddies/getNftCollection/${collectionId}`,
     ).then((r) => r.json())
-    tokenCache[id] = tokens
+    tokenCache[collectionId] = tokens
   }
-  return tokenCache[id]
+  return tokenCache[collectionId]
 }
 
 /**

@@ -4,6 +4,7 @@ import {
   ActorMethod,
   HttpAgent,
   Identity,
+  SignIdentity,
   SubmitResponse,
 } from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
@@ -149,7 +150,7 @@ export function actor<T>(
   return Agent.Actor.createActor(factory, { canisterId, agent, ...config })
 }
 
-export function ledgerWithIdentity(identity: DelegationIdentity) {
+export function ledgerWithIdentity(identity: SignIdentity) {
   return actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL, {
     // TODO WALLET CODE REVIEW MAKE CONFIGURABLYAT
     agent: new HttpAgent({ identity, host: "https://ic0.app" }),

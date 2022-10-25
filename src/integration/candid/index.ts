@@ -60,7 +60,7 @@ export async function transformDidToJs(
   return result[0]
 }
 
-//todo @philip will extend this one with proper js solution sc-5145
+// TODO: @philipp will extend this one with proper js solution sc-5145
 export async function createActorDynamically(
   js: string,
   canisterId: string,

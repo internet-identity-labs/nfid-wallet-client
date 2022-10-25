@@ -36,7 +36,7 @@ describe("NFT EXT standard suite", () => {
     jest.setTimeout(50000)
     //this test describes how to purchase nft
     //TODO skip after e2e done because it takes 0.03% from the transaction
-    it("should lock and buy", async function () {
+    it.skip("should lock and buy", async function () {
       let price = 1000000
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)

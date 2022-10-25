@@ -4,7 +4,7 @@ export const MaintenanceError = ({ isDown }: { isDown: boolean }) => {
   return (
     <div
       className={clsx(
-        "text-xs text-white h-12",
+        "text-xs text-white h-12 w-full",
         "bg-red-500 text-center font-inter",
         "flex items-center justify-center",
       )}

@@ -6,6 +6,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
+import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
@@ -18,7 +19,6 @@ import { isHex } from "frontend/ui/utils"
 
 import { useAllNFTs } from "../assets/hooks"
 import { transferModalAtom } from "./state"
-import { transferEXT } from "frontend/integration/entrepot/ext"
 
 export const ProfileTransferModal = () => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)

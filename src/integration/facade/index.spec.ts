@@ -37,7 +37,7 @@ import {
 import { getWalletPrincipal } from "../rosetta"
 
 describe("Facade suite", () => {
-  jest.setTimeout(80000)
+  jest.setTimeout(100000)
 
   describe("Facade Service Test", () => {
     it("Should create and remove protected Recovery device", async function () {
@@ -71,9 +71,7 @@ describe("Facade suite", () => {
         icon: "RecoveryTest",
         device: "RecoveryTest",
         browser: "RecoveryTest",
-        pub_key: Array.from(
-          new Uint8Array(recoveryDevice.getPublicKey().toDer()),
-        ),
+        pub_key: recoveryDevice.getPrincipal().toText(),
       })
       // @ts-ignore
       expect(accessPoints.data[0][0].device).toEqual("RecoveryTest")
@@ -147,9 +145,7 @@ describe("Facade suite", () => {
         browser: "",
         device: "",
         icon: "",
-        pub_key: Array.from(
-          new Uint8Array(mockedIdentity.getPublicKey().toDer()),
-        ),
+        pub_key: mockedIdentity.getPrincipal().toText(),
       })
       await im.create_persona({
         domain: "test",

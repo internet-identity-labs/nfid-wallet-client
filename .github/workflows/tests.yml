@@ -55,18 +55,13 @@ jobs:
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
-  build:
+  unit-tests:
     needs: check-secrets
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup chrome browser
-        uses: browser-actions/setup-chrome@latest
-
-      - name: Chrome version
-        run: chrome --version
-
-      - uses: actions/checkout@v3
+      - name: Checkout CI repo
+        uses: actions/checkout@v3
 
       - name: Add npmrc
         uses: ferluisxd/create-npmrc@3
@@ -75,7 +70,56 @@ jobs:
         env:
           AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Run install, build and serve for e2e
+      - name: Build project
+        run: |
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          EOF
+          yarn
+        env:
+          FRONTEND_MODE: production
+          BACKEND_MODE: DEV
+          IS_DEV: true
+          II_MODE: production
+          IC_HOST: https://ic0.app
+          DFX_NETWORK: dev
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
+          IS_E2E_TEST: true
+
+          REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
+          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
+          PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
+          VERIFIER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_VERIFIER}}
+          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
+          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
+          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY}}
+          AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
+          AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
+          GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
+          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
+          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+
+      - name: Run unit tests
+        run: yarn test
+
+  e2e-tests:
+    needs: check-secrets
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ci-frontend-test
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout CI repo
+        uses: actions/checkout@v3
+
+      - name: Build project
         run: |
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
@@ -112,8 +156,11 @@ jobs:
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
-      - name: Running unit tests
-        run: yarn test
+      - name: Setup chrome browser
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Chrome version
+        run: chrome --version
 
       - name: Checkout Google user E2E
         uses: actions/checkout@v3

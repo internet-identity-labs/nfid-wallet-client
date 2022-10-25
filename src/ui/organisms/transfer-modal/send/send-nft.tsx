@@ -57,7 +57,6 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
     formState: { errors },
     handleSubmit,
     setValue,
-    getValues,
   } = useForm<ITransferNFT>({ defaultValues: { to: "" } })
 
   useEffect(() => {
@@ -99,7 +98,6 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
               validate: validateAddressField,
               required: "This field cannot be empty",
             })}
-            value={() => getValues("to")}
             setValue={(value) => setValue("to", value)}
           />
         </div>

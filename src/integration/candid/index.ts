@@ -32,11 +32,8 @@ export async function getCandidMetadata(
         e,
     )
   }
-  const certCandid = await Certificate.create({
-    certificate: responseCandid.certificate,
-    rootKey: agent.rootKey,
-    canisterId: canister,
-  })
+  const certCandid = new Certificate(responseCandid, agent)
+  await certCandid.verify()
   const dataCandid = certCandid.lookup(pathCandid)
   return new TextDecoder().decode(dataCandid)
 }
@@ -66,8 +63,8 @@ export async function createActorDynamically(
   canisterId: string,
 ): Promise<Actor & Record<string, ActorMethod>> {
   let agent = new HttpAgent({ host: "https://ic0.app" })
-  let fileName = "src/integration/_ic_api/" + canisterId + ".js"
-  writeFileSync(fileName, js, {
+  const filePath = "src/integration/_ic_api/" + canisterId + ".js"
+  writeFileSync(filePath, js, {
     flag: "w",
   })
   //todo validate to not import malicious script instead id

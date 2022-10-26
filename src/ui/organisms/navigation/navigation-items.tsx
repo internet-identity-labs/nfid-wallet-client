@@ -13,7 +13,6 @@ import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
-import { useMaintenance } from "frontend/ui/utils/use-maintenance"
 
 import AuthenticatedPopup from "../navigation-popup"
 
@@ -85,9 +84,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
       })
     }
   }
-
-  // TM - Temporary Maintenance
-  const { isDown } = useMaintenance()
 
   return (
     <>
@@ -168,7 +164,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                       className={clsx("h-full leading-none")}
                       primary
                       onClick={handleLogin}
-                      disabled={isDown}
                     >
                       Sign in
                     </Button>
@@ -206,7 +201,6 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               className={clsx("h-full leading-none")}
               primary
               onClick={handleLogin}
-              disabled={isDown}
             >
               Sign in
             </Button>

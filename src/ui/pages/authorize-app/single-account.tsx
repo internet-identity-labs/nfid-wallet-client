@@ -4,7 +4,6 @@ import { ElementProps } from "frontend/types/react"
 import { Button } from "frontend/ui/atoms/button"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { useMaintenance } from "frontend/ui/utils/use-maintenance"
 
 import MobileHero from "./assets/mobile_hero.svg"
 
@@ -25,29 +24,16 @@ export const AuthorizeAppSingleAccount: React.FC<
   isLoading,
   loadingMessage,
 }) => {
-  // TM - Temporary Maintenance
-  const { isDown } = useMaintenance()
-
   return (
     <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
       <ApplicationMeta
         applicationLogo={applicationLogo}
         applicationName={applicationName}
-        title={!isDown ? "Unlock NFID" : "Scheduled maintenance"}
-        subTitle={
-          !isDown
-            ? `to continue${applicationName && ` to ${applicationName}`}`
-            : "Please check back later"
-        }
+        title="Unlock NFID"
+        subTitle={`to continue${applicationName && ` to ${applicationName}`}`}
       />
       <img className="w-full max-w-max" src={MobileHero} alt="" />
-      <Button
-        className="my-6 "
-        block
-        primary
-        onClick={onContinueButtonClick}
-        disabled={isDown}
-      >
+      <Button className="my-6 " block primary onClick={onContinueButtonClick}>
         Unlock to continue
       </Button>
     </BlurredLoader>

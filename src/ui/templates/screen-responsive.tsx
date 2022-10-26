@@ -4,8 +4,6 @@ import React from "react"
 import logo from "./assets/id.svg"
 
 import { NFIDGradientBar } from "../atoms/gradient-bar"
-import { MaintenanceError } from "../molecules/maintenance-error"
-import { useMaintenance } from "../utils/use-maintenance"
 
 interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -13,9 +11,6 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   children,
   className,
 }) => {
-  // TM - Temporary Maintenance
-  const { isDown } = useMaintenance()
-
   return (
     <div
       className={clsx(
@@ -43,7 +38,6 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
           className,
         )}
       >
-        <MaintenanceError isDown={isDown} />
         {children}
       </div>
 

@@ -10,7 +10,6 @@ import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurOverlay } from "frontend/ui/molecules/blur-overlay"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { useMaintenance } from "frontend/ui/utils/use-maintenance"
 
 import alertIcon from "./assets/alert-triangle.svg"
 
@@ -66,20 +65,13 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         persona_id: i === 0 ? "longer" : `${i}`,
       }))
 
-  // TM - Temporary Maintenance
-  const { isDown } = useMaintenance()
-
   return (
     <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
       <ApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
-        title={!isDown ? "Choose an account" : "Scheduled maintenance"}
-        subTitle={
-          !isDown
-            ? `to continue ${applicationName && `to ${applicationName}`}`
-            : "Please check back later"
-        }
+        title="Choose an account"
+        subTitle={`to continue ${applicationName && `to ${applicationName}`}`}
       />
       <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
         {displayAccounts.map((account, i) => {
@@ -136,7 +128,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             )}
           >
             <Button
-              className={clsx("mt-[520px]", isDown && "hidden")}
+              className={clsx("mt-[520px]")}
               primary
               large
               onClick={() => onUnlockNFID()}

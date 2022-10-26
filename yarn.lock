@@ -1723,7 +1723,7 @@
 
 "@dfinity/agent@0.10.4", "@dfinity/agent@^0.10.1":
   version "0.10.4"
-  resolved "https://registry.npmjs.org/@dfinity/agent/-/agent-0.10.4.tgz"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.10.4.tgz#269406f1cb5524276c52ddf37e933abd75529063"
   integrity sha512-/O1443GWkQ6GngrXos/ShAbnF9IgUlWclzaQn/qEsGJIey6S7tty+iOa5yZqOS1BtOTnDe+TYh8GeERZZn7vvg==
   dependencies:
     base64-arraybuffer "^0.2.0"
@@ -1755,7 +1755,7 @@
 
 "@dfinity/candid@0.10.4", "@dfinity/candid@^0.10.1":
   version "0.10.4"
-  resolved "https://registry.npmjs.org/@dfinity/candid/-/candid-0.10.4.tgz"
+  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.10.4.tgz#32f666f6a069d87b6f7007d7ad3c50ab307d8b76"
   integrity sha512-Rd8uoo3jd4FLmGY9aBgTRdBCYVuG/Y7QmpDJB3eQvsU3WHhVZJWLMHcodnMIoy2bzqzCKeTdLkL565K7qx5H3Q==
 
 "@dfinity/candid@^0.11.3":
@@ -1786,7 +1786,7 @@
 
 "@dfinity/principal@0.10.4", "@dfinity/principal@^0.10.1":
   version "0.10.4"
-  resolved "https://registry.npmjs.org/@dfinity/principal/-/principal-0.10.4.tgz"
+  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.10.4.tgz#8f28f631929cc420a4238f75930090aba84d74b8"
   integrity sha512-qwzpmq5wfyeKMBspRZmuYvTxu1dqN+IY0ThACHTRh6D58QjnVQNCD3Hq9d5eEDu0qyNcY22cJEWwzrzZaaoVmw==
 
 "@dfinity/principal@^0.11.0", "@dfinity/principal@^0.11.3":
@@ -19016,7 +19016,7 @@ ts-jest@^27.1.5:
 
 ts-node@^10.7.0, ts-node@^10.8.1:
   version "10.9.1"
-  resolved "https://registry.npmjs.org/ts-node/-/ts-node-10.9.1.tgz"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==
   dependencies:
     "@cspotcode/source-map-support" "^0.8.0"

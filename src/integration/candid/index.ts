@@ -7,6 +7,7 @@ import {
 } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
+import { Block, parse } from "comment-parser"
 import { writeFileSync } from "fs"
 
 const candidUICanister = "a4gq6-oaaaa-aaaab-qaa4q-cai"
@@ -79,4 +80,32 @@ export async function evaluateMethod(
   params?: string,
 ) {
   return eval("actor." + methodName + "()")
+}
+
+export function getCommentsByMethodNames(did: string): Map<string, Block> {
+  return did
+    .split("service : () -> {")[1]
+    .split(";")
+    .map((serviceBlock) => serviceBlock.split(":")[0])
+    .map((methodBlock) => {
+      let comments: Block[] = parse(methodBlock)
+
+      if (comments.length > 1) {
+        throw Error("More than one multiline comments were found.")
+      }
+
+      return { methodName: getMethodName(methodBlock), comment: comments[0] }
+    })
+    .filter((pair) => pair.comment !== undefined)
+    .reduce((acc, it) => {
+      acc.set(it.methodName, it.comment)
+      return acc
+    }, new Map<string, Block>())
+}
+
+function getMethodName(text: string): string {
+  return text
+    .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "")
+    .replace(/[^a-zA-Z0-9_]/g, "")
+    .trim()
 }

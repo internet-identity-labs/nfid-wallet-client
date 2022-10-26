@@ -38,7 +38,7 @@ describe("candid runner suite", () => {
     expect(comment?.tags[3].name).toBe("to")
     expect(result).toContain(calledMethodName)
     let js = await transformDidToJs(result, agent)
-    let actor = await createActorDynamically(js, "jiept-kaaaa-aaaao-aajsa-cai") //todo update dfx version to get candid interface
+    let actor = await createActorDynamically(js, canisterId) //todo update dfx version to get candid interface
     let evalResult = await evaluateMethod(actor, calledMethodName)
     expect(evalResult.status_code).toEqual(200)
   })

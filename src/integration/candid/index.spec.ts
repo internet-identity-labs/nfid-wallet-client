@@ -16,6 +16,7 @@ import {
 const canisterId = "jiept-kaaaa-aaaao-aajsa-cai" //todo update dfx version in dev to get candid interface
 
 describe("candid runner suite", () => {
+  jest.setTimeout(10000)
   it("retrieve candid file and execute method", async function () {
     let agent = new HttpAgent({ host: "https://ic0.app" })
     let calledMethodName = "read_applications"

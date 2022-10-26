@@ -12,7 +12,7 @@ import { writeFileSync } from "fs"
 
 const candidUICanister = "a4gq6-oaaaa-aaaab-qaa4q-cai"
 
-export async function getCandidMetadata(
+export async function getCandidFile(
   canisterId: string,
   agent: HttpAgent,
 ): Promise<string> {
@@ -29,8 +29,7 @@ export async function getCandidMetadata(
     responseCandid = await agent.readState(canister, { paths: [pathCandid] })
   } catch (e) {
     throw new Error(
-      `Not possible to retrieve candid file from the canister ${canisterId} : ` +
-        e,
+      `Not possible to retrieve candid file from the canister ${canisterId} : ${e}`,
     )
   }
   const certCandid = new Certificate(responseCandid, agent)
@@ -73,13 +72,13 @@ export async function createActorDynamically(
   return Actor.createActor(module.idlFactory, { agent, canisterId })
 }
 
-// TODO: sc-5147
 export async function evaluateMethod(
   actor: ActorSubclass,
   methodName: string,
-  params?: string,
+  ...parameters: string[]
 ) {
-  return eval("actor." + methodName + "()")
+  //TODO: sanitise params with string.match() sc-5142
+  return eval("actor." + methodName + "(" + parameters.join(", ") + ")")
 }
 
 export function getCommentsByMethodNames(did: string): Map<string, Block> {

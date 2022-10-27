@@ -40,7 +40,7 @@ describe("candid runner suite", () => {
     let js = await transformDidToJs(result, agent)
     let actor = await createActorDynamically(js, canisterId) //todo update dfx version to get candid interface
     let evalResult = await evaluateMethod(actor, calledMethodName)
-    expect(evalResult.status_code).toEqual(200)
+    expect((evalResult as any).status_code).toEqual(200)
   })
 
   it("should parse did file with multiline comment into an object", async function () {
@@ -112,9 +112,9 @@ describe("candid runner suite", () => {
     expect(result).toContain(calledMethodName)
     let js = await transformDidToJs(result, agent)
     let actor = await createActorDynamically(js, canisterId)
-    let param1 = JSON.stringify({ anchor: 10000 })
+    let param1 = { anchor: 10000 }
     let evalResult = await evaluateMethod(actor, calledMethodName, param1)
-    expect(evalResult.status_code).toEqual(404)
+    expect((evalResult as any).status_code).toEqual(404)
     await expect(
       evaluateMethod(actor, calledMethodName, param1, param1),
     ).rejects.toThrow("Invalid argument entry 1")

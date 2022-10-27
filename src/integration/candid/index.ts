@@ -75,10 +75,9 @@ export async function createActorDynamically(
 export async function evaluateMethod(
   actor: ActorSubclass,
   methodName: string,
-  ...parameters: string[]
+  ...parameters: any[]
 ) {
-  //TODO: sanitise params with string.match() sc-5142
-  return eval("actor." + methodName + "(" + parameters.join(", ") + ")")
+  return actor[methodName](...parameters)
 }
 
 export function getCommentsByMethodNames(did: string): Map<string, Block> {

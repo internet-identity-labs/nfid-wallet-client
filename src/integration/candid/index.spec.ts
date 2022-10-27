@@ -2,22 +2,25 @@
  * @jest-environment jsdom
  */
 import { HttpAgent } from "@dfinity/agent"
+import { expect } from "@jest/globals"
 import { Block } from "comment-parser"
 
 import {
   createActorDynamically,
   evaluateMethod,
-  getCandidMetadata,
   getCommentsByMethodNames,
+  getCandidFile,
   transformDidToJs,
 } from "frontend/integration/candid/index"
 
+const canisterId = "jiept-kaaaa-aaaao-aajsa-cai" //todo update dfx version in dev to get candid interface
+
 describe("candid runner suite", () => {
+  jest.setTimeout(10000)
   it("retrieve candid file and execute method", async function () {
-    let canisterId = "jiept-kaaaa-aaaao-aajsa-cai"
     let agent = new HttpAgent({ host: "https://ic0.app" })
     let calledMethodName = "read_applications"
-    let result = await getCandidMetadata(canisterId, agent)
+    let result = await getCandidFile(canisterId, agent)
     let commentsByMethodNames: Map<string, Block> =
       getCommentsByMethodNames(result)
     let comment: Block | undefined = commentsByMethodNames.get(calledMethodName)
@@ -35,9 +38,9 @@ describe("candid runner suite", () => {
     expect(comment?.tags[3].name).toBe("to")
     expect(result).toContain(calledMethodName)
     let js = await transformDidToJs(result, agent)
-    let actor = await createActorDynamically(js, "jiept-kaaaa-aaaao-aajsa-cai") //todo update dfx version to get candid interface
+    let actor = await createActorDynamically(js, canisterId) //todo update dfx version to get candid interface
     let evalResult = await evaluateMethod(actor, calledMethodName)
-    expect(evalResult.status_code).toEqual(200)
+    expect((evalResult as any).status_code).toEqual(200)
   })
 
   it("should parse did file with multiline comment into an object", async function () {
@@ -100,5 +103,20 @@ describe("candid runner suite", () => {
       let error = e as Error
       expect(error.message).toBe("More than one multiline comments were found.")
     }
+  })
+
+  it("retrieve candid file and execute method with params", async function () {
+    let agent = new HttpAgent({ host: "https://ic0.app" })
+    let calledMethodName = "create_account"
+    let result: string = await getCandidFile(canisterId, agent)
+    expect(result).toContain(calledMethodName)
+    let js = await transformDidToJs(result, agent)
+    let actor = await createActorDynamically(js, canisterId)
+    let param1 = { anchor: 10000 }
+    let evalResult = await evaluateMethod(actor, calledMethodName, param1)
+    expect((evalResult as any).status_code).toEqual(404)
+    await expect(
+      evaluateMethod(actor, calledMethodName, param1, param1),
+    ).rejects.toThrow("Invalid argument entry 1")
   })
 })

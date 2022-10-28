@@ -7,7 +7,9 @@ import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
 
-import { RouteRequestTransfer } from "./route"
+import { RouteRequestTransfer } from "."
+import { environment } from "../../environments/environment"
+import { PageTemplate } from "../page-template"
 
 const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
 
@@ -29,7 +31,7 @@ export const PageRequestTransfer: React.FC = () => {
         { to, amount },
         {
           provider: new URL(
-            `http://localhost:9090/wallet/request-transfer?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
+            `${environment.nfidProviderOrigin}/wallet/request-transfer?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
           ),
         },
       )
@@ -41,10 +43,7 @@ export const PageRequestTransfer: React.FC = () => {
   )
 
   return (
-    <RouteRequestTransfer>
-      <Helmet>
-        <title>NFIDemo | {title}</title>
-      </Helmet>
+    <PageTemplate title={title}>
       <div className={clsx("flex-col space-y-2")}>
         <H1>{title}</H1>
         <RequestTransferForm
@@ -53,7 +52,7 @@ export const PageRequestTransfer: React.FC = () => {
           isLoading={isLoading}
         />
       </div>
-    </RouteRequestTransfer>
+    </PageTemplate>
   )
 }
 

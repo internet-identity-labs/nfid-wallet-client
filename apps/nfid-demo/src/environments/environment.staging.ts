@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  nfidProviderOrigin: "https://nfid.one",
+  nfidProviderOrigin: "https://nfid.dev",
   verifierCanisterId: "gzqxf-kqaaa-aaaak-qakba-cai",
 }

@@ -2295,6 +2295,11 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+"@nfid/core@0.0.2-alpha.3":
+  version "0.0.2-alpha.3"
+  resolved "https://registry.yarnpkg.com/@nfid/core/-/core-0.0.2-alpha.3.tgz#81f5c1ba771140ef89666acbba482be86924959e"
+  integrity sha512-T1Iahueor2SFpIrthvI+4FoH5FF3cp5RkX9s/PyM5PqFyJWppVceLTE41EWo1oUBN7+M9WZRqNZgJlaliD2tug==
+
 "@nfid/credentials@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nfid/credentials/-/credentials-1.1.0.tgz#def90f363c2a0c7c9844bbc8c0c4f04b6ebf8ce4"
@@ -2306,6 +2311,14 @@
     "@dfinity/principal" "^0.11.3"
     ictool "^0.0.6"
     luxon "^2.4.0"
+
+"@nfid/wallet@0.0.2-alpha.7":
+  version "0.0.2-alpha.7"
+  resolved "https://registry.yarnpkg.com/@nfid/wallet/-/wallet-0.0.2-alpha.7.tgz#daf204bc7e85253db7999255702a6ee67710e064"
+  integrity sha512-Po/+UHLdLDR/Yq6NWqrF53HzNNglSC2NlkzprZeOFuj6ENitrBLxHTV8jJ7/nLq8q7A6icnJNIibD7kp2upD2Q==
+  dependencies:
+    "@nfid/core" "0.0.2-alpha.3"
+    tslib "2.4.0"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -19053,15 +19066,15 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
+tslib@2.4.0, tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0:
+  version "2.4.0"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
+
 tslib@^1.8.1, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
-
-tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0:
-  version "2.4.0"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
-  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 tsutils@^3.21.0:
   version "3.21.0"

@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nfid-frontend/ui": ["packages/ui/src/index.ts"]
+      "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
+      "@nfid-frontend/validation": ["packages/validation/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

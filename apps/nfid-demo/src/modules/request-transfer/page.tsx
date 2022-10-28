@@ -1,26 +1,25 @@
 import { Button, H1, Input } from "@nfid-frontend/ui"
+import { minMax } from "@nfid-frontend/validation"
 import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
 import clsx from "clsx"
-import { watch } from "fs"
 import React from "react"
 import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
-import { BiWallet } from "react-icons/bi"
 
 import { RouteRequestTransfer } from "./route"
 
-interface PagePhoneNumberVerificationProps {}
-
-export const PageRequestTransfer: React.FC<
-  PagePhoneNumberVerificationProps
-> = () => {
+export const PageRequestTransfer: React.FC = () => {
   const title = "Request transfer"
 
   const handleRequestTransfer = React.useCallback(
     async ({ to, amount }: RequestTransferParams) => {
       console.log(">> handleRequestTransfer", { to, amount })
 
-      const result = await requestTransfer({ to, amount })
+      const result = await requestTransfer(
+        { to, amount },
+        { provider: new URL("http://localhost:9090/wallet/request-transfer") },
+      )
+      console.log(">> handleRequestTransfer", { result })
     },
     [],
   )
@@ -46,12 +45,14 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
   onSubmit,
 }) => {
   const {
-    formState: { isValid, errors },
+    formState: { errors, isValid },
     register,
     watch,
     handleSubmit,
-  } = useForm<RequestTransferParams>()
-  console.log(">> RequestTransferForm", { isValid })
+  } = useForm<RequestTransferParams>({
+    mode: "onChange",
+  })
+  console.log(">> RequestTransferForm", { errors, isValid })
 
   return (
     <>
@@ -66,15 +67,24 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
           <Input
             labelText="To"
             type="string"
-            {...register("to", { required: true })}
+            {...register("to", {
+              required: true,
+            })}
             errorText={errors.to?.message}
             inputClassName={clsx("border")}
           />
           <Input
             labelText="Amount"
-            type="string"
+            type="number"
             errorText={errors.amount?.message}
-            {...register("amount", { required: true })}
+            min={0}
+            {...register("amount", {
+              required: true,
+              validate: minMax({
+                min: 0,
+                toLowError: "Amount cannot be negative",
+              }),
+            })}
             inputClassName={clsx("border")}
           />
           <Button
@@ -86,20 +96,33 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
           </Button>
         </form>
       </div>
-      <div
-        className={clsx(
-          "block border border-gray-200 rounded-xl",
-          "px-5 py-4",
-          "sm:px-[30px] sm:py-[26px]",
-        )}
-      >
-        <pre>
-          {JSON.stringify(
-            { to: watch("to"), amount: watch("amount") },
-            null,
-            2,
+      <div className={clsx("flex space-x-1 w-full")}>
+        <div
+          className={clsx(
+            "block border border-gray-200 rounded-xl",
+            "px-5 py-4",
+            "sm:px-[30px] sm:py-[26px]",
           )}
-        </pre>
+        >
+          <h2 className={clsx("font-bold")}>Form state:</h2>
+          <pre>{JSON.stringify({ isValid }, null, 2)}</pre>
+        </div>
+        <div
+          className={clsx(
+            "block border border-gray-200 rounded-xl",
+            "px-5 py-4",
+            "sm:px-[30px] sm:py-[26px]",
+          )}
+        >
+          <h2 className={clsx("font-bold")}>Form input:</h2>
+          <pre>
+            {JSON.stringify(
+              { to: watch("to"), amount: watch("amount") },
+              null,
+              2,
+            )}
+          </pre>
+        </div>
       </div>
     </>
   )

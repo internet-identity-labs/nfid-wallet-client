@@ -38,6 +38,14 @@ export const ProfileTransferModal = () => {
       ? values.to
       : principalToAddress(Principal.fromText(values.to) as any)
 
+    if (
+      principalToAddress(transferModalState.selectedWallet.principal as any) ===
+      validAddress
+    )
+      return toast.error("You cannot send tokens to the same wallet", {
+        toastId: "sameWalletError",
+      })
+
     try {
       setIsLoading(true)
       await transfer(validAddress, String(values.amount))

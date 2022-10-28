@@ -1,13 +1,33 @@
-coverage
-node_modules
-.DS_Store
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
 dist
-build
 dist-ssr
+tmp
+/out-tsc
+
+# dependencies
+node_modules
+build
+
+# environment variables
 *.local
+
+# Internet Computer
 .dfx
+
+# Other
 NOTES.md
+
+# misc
+coverage
 yarn-error.log
-Icon
 allure-results
 package-lock.json
+npm-debug.log
+yarn-error.log
+
+# System Files
+.DS_Store
+Thumbs.db
+Icon

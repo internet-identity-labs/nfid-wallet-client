@@ -12,6 +12,7 @@
     "rust-lang.rust",
     "statelyai.stately-vscode",
     "stevejpurves.cucumber",
-    "vadimcn.vscode-lldb"
+    "vadimcn.vscode-lldb",
+    "firsttris.vscode-jest-runner"
   ]
 }

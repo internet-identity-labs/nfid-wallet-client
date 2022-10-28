@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function RequestTransferCoordinator({ machine }: Props) {
-  const [state, send] = useMachine(machine || RequestTransferMachine)
+  const [state] = useMachine(machine || RequestTransferMachine)
 
   switch (true) {
     case state.matches("Ready"):

@@ -1,9 +1,11 @@
-import { MenuWrapper } from "@nfid-frontend/ui"
+import { MenuWrapper, NFIDLogo } from "@nfid-frontend/ui"
 
 export function App() {
   return (
     <div>
-      <MenuWrapper>NFIDDemo</MenuWrapper>
+      <MenuWrapper>
+        <NFIDLogo />
+      </MenuWrapper>
     </div>
   )
 }

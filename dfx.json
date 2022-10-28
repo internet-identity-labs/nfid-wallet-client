@@ -6,6 +6,14 @@
       },
       "source": ["build/"],
       "type": "assets"
+    },
+    "nfid-demo": {
+      "frontend": {
+        "entrypoint": "dist/apps/nfid-demo/index.html"
+      },
+      "source": ["dist/apps/nfid-demo/"],
+      "build": "npx nx run nfid-demo:build:staging",
+      "type": "assets"
     }
   },
   "defaults": {

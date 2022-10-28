@@ -60,7 +60,7 @@ jobs:
           EOF
           yarn
           yarn prettier --check "src/**/*.{ts,tsx}"
-          yarn test
+          npx nx test nfid-frontend
         env:
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 

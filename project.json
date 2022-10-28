@@ -3,5 +3,27 @@
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "src",
   "projectType": "application",
+  "namedInputs": {
+    "default": [
+      "!{projectRoot}/**/*",
+      "{projectRoot}/mocks/**/*",
+      "{projectRoot}/public/**/*",
+      "{projectRoot}/src/**/*",
+      "{projectRoot}/test/**/*",
+      "{projectRoot}/user-google-e2e/**/*",
+      "{projectRoot}/.env",
+      "{projectRoot}/.env*",
+      "{projectRoot}/.eslintrc.json",
+      "{projectRoot}/.yarnrc",
+      "{projectRoot}/craco.config.ts",
+      "{projectRoot}/jest.config.js",
+      "{projectRoot}/package.json",
+      "{projectRoot}/yarn.lock",
+      "{projectRoot}/postcss.config.js",
+      "{projectRoot}/tailwind.config.js",
+      "{projectRoot}/tsconfig.config.js",
+      "{projectRoot}/wdio.*.ts"
+    ]
+  },
   "tags": []
 }

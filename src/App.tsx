@@ -12,6 +12,7 @@ import { OurMission } from "./apps/marketing/landing-page/our-mission"
 import IDPCoordinator from "./coordination/idp"
 import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
+import RequestTransferCoordinator from "./coordination/wallet/request-transfer"
 import { NotFound } from "./ui/pages/404"
 import { ScreenResponsive } from "./ui/templates/screen-responsive"
 
@@ -30,6 +31,11 @@ export const App = () => (
     <Route
       path="/credential/verified-phone-number"
       element={<PhoneCredentialCoordinator />}
+    />
+
+    <Route
+      path="/wallet/request-transfer"
+      element={<RequestTransferCoordinator />}
     />
 
     <Route

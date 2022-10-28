@@ -2945,10 +2945,10 @@
     ictool "^0.0.6"
     luxon "^2.4.0"
 
-"@nfid/wallet@0.0.2-alpha.7":
-  version "0.0.2-alpha.7"
-  resolved "https://registry.yarnpkg.com/@nfid/wallet/-/wallet-0.0.2-alpha.7.tgz#daf204bc7e85253db7999255702a6ee67710e064"
-  integrity sha512-Po/+UHLdLDR/Yq6NWqrF53HzNNglSC2NlkzprZeOFuj6ENitrBLxHTV8jJ7/nLq8q7A6icnJNIibD7kp2upD2Q==
+"@nfid/wallet@0.0.2-alpha.8":
+  version "0.0.2-alpha.8"
+  resolved "https://registry.yarnpkg.com/@nfid/wallet/-/wallet-0.0.2-alpha.8.tgz#fe9c83cbc96b97945cb97ed19e607fcdb185c3fd"
+  integrity sha512-bRcLviorTkyt/dWH9Qf8IL5nDYVssF9667D1eWMTSRxqtGZpHfyLx4LUZugqpgSiT7bXoDKGnbsu77GSIV0f4w==
   dependencies:
     "@nfid/core" "0.0.2-alpha.3"
     tslib "2.4.0"

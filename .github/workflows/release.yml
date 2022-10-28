@@ -151,7 +151,7 @@ jobs:
 
           ci_echo_info "Building example" >&2
           yarn
-          yarn build:example
+          npx nx build:example nfid-frontend
 
       - name: Checkout nfid-sdk repo.
         uses: actions/checkout@v3

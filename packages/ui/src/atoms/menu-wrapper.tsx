@@ -3,5 +3,5 @@ interface MenuWrapperProps {
 }
 
 export const MenuWrapper: React.FC<MenuWrapperProps> = ({ children }) => (
-  <div>{children}</div>
+  <div className="bg-red-400">{children}</div>
 )

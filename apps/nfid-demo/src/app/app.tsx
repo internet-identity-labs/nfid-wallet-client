@@ -1,4 +1,4 @@
-import { MenuWrapper } from "packages/ui/src"
+import { MenuWrapper } from "@nfid-frontend/ui"
 
 export function App() {
   return (

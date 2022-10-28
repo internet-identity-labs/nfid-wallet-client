@@ -3,4 +3,6 @@
 
 export const environment = {
   production: false,
-};
+  nfidProviderOrigin: "http://localhost:9090",
+  verifierCanisterId: "gzqxf-kqaaa-aaaak-qakba-cai",
+}

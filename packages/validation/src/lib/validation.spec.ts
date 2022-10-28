@@ -1,7 +1,9 @@
 import { minMax } from "./validation"
 
 describe("validation", () => {
-  it("should work", () => {
-    expect(minMax()).toEqual("validation")
+  describe("minMax", () => {
+    it("should work", () => {
+      expect(minMax({ min: 0 })(-1)).toEqual("value is too small")
+    })
   })
 })

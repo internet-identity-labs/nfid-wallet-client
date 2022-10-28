@@ -1,5 +1,11 @@
+import { MenuWrapper } from "packages/ui/src"
+
 export function App() {
-  return <div>NFIDDemo</div>
+  return (
+    <div>
+      <MenuWrapper>NFIDDemo</MenuWrapper>
+    </div>
+  )
 }
 
 export default App

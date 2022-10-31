@@ -1,10 +1,11 @@
 {
   "canisters": {
-    "assets": {
+    "nfid-frontend": {
       "frontend": {
         "entrypoint": "dist/apps/nfid-frontend/index.html"
       },
-      "source": ["dist/apps/nfid-frontend/"],
+      "source": ["build/"],
+      "build": "npx nx run nfid-frontend:build",
       "type": "assets"
     },
     "nfid-demo": {

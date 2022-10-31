@@ -63,6 +63,12 @@ jobs:
       - name: Checkout CI repo
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "yarn"
+
       - name: Add npmrc
         uses: ferluisxd/create-npmrc@3
         with:
@@ -76,7 +82,7 @@ jobs:
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
           EOF
-          yarn
+          yarn --prefer-offline
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV
@@ -119,13 +125,19 @@ jobs:
       - name: Checkout CI repo
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "yarn"
+
       - name: Build project
         run: |
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
           //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
           EOF
-          yarn
+          yarn --prefer-offline
           npx nx build nfid-frontend
           yarn serve -l 9090 -s build &
         env:

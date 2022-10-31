@@ -19,8 +19,19 @@ interface Props {
 }
 
 export default function RequestTransferCoordinator({ machine }: Props) {
-  const [state, send] = useMachine(machine || RequestTransferMachine)
   const [searchParams] = useSearchParams()
+  const applicationName = searchParams.get("applicationName")
+  const applicationLogo = searchParams.get("applicationLogo")
+
+  const [state, send] = useMachine(
+    machine ||
+      RequestTransferMachine.withConfig(
+        {},
+        {
+          appMeta: { name: applicationName || "", logo: applicationLogo || "" },
+        },
+      ),
+  )
 
   useEffect(() => {
     console.debug("RequestTransferCoordinator", { state: state.value })

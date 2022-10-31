@@ -2,9 +2,9 @@
   "canisters": {
     "assets": {
       "frontend": {
-        "entrypoint": "build/index.html"
+        "entrypoint": "dist/apps/nfid-frontend/index.html"
       },
-      "source": ["build/"],
+      "source": ["dist/apps/nfid-frontend/"],
       "type": "assets"
     },
     "nfid-demo": {

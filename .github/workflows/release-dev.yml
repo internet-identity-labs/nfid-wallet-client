@@ -67,7 +67,7 @@ jobs:
       - name: NFID FRONTEND | deploy
         run: |
           dfx identity use action
-          dfx deploy --network dev  --no-wallet
+          dfx deploy --network dev nfid-frontend --no-wallet
 
         env:
           FRONTEND_MODE: production

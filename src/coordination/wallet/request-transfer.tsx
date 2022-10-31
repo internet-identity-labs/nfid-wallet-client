@@ -21,7 +21,7 @@ export default function RequestTransferCoordinator({ machine }: Props) {
   const [state, send] = useMachine(machine || RequestTransferMachine)
 
   useEffect(() => {
-    console.log(state)
+    console.debug("RequestTransferCoordinator", { state: state.value })
   }, [state])
 
   switch (true) {

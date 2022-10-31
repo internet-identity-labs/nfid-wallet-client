@@ -60,7 +60,6 @@ export const RequestTransfer = ({
   }, [amountICP, exchangeRate])
 
   const onApprove = async () => {
-    console.log({ to })
     let validAddress = isHex(to)
       ? to
       : principalToAddress(Principal.fromText(to) as any)
@@ -78,26 +77,10 @@ export const RequestTransfer = ({
         toast.error("Unexpected error: The transaction has been cancelled", {
           toastId: "unexpectedTransferError",
         })
-      console.log({ e })
     } finally {
       setIsLoading(false)
     }
   }
-
-  useEffect(() => {
-    // TODO find interface
-    const handleTabClose = (event: any) => {
-      event.preventDefault()
-
-      return (event.returnValue = "Are you sure you want to exit?")
-    }
-
-    window.addEventListener("beforeunload", handleTabClose)
-
-    return () => {
-      window.removeEventListener("beforeunload", handleTabClose)
-    }
-  }, [])
 
   return (
     <RequestTransferPage

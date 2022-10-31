@@ -9,9 +9,15 @@ import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { KnownDeviceCoordinator } from "./device-known"
 import { UnknownDeviceCoordinator } from "./device-unknown"
 
+interface AuthenticationCoordinatorProps {
+  actor: AuthenticationActor
+  enforceSingleAccountScreen?: boolean
+}
+
 export function AuthenticationCoordinator({
   actor,
-}: Actor<AuthenticationActor>) {
+  enforceSingleAccountScreen,
+}: AuthenticationCoordinatorProps) {
   const [state] = useActor(actor)
 
   React.useEffect(
@@ -28,6 +34,7 @@ export function AuthenticationCoordinator({
       return (
         <KnownDeviceCoordinator
           actor={state.children["known-device"] as KnownDeviceActor}
+          enforceSingleAccountScreen={enforceSingleAccountScreen}
         />
       )
     case state.matches("UnknownDevice"):

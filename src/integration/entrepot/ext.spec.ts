@@ -55,27 +55,27 @@ describe("NFT EXT standard suite", () => {
       let result = await unListNFT(token, targetIdentity)
       expect(result).toBe(true)
     })
-    it("should unlist", async function () {
-      let price = 1000000
-      let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
-      let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
-      let token = "3qtw7-xykor-uwiaa-aaaaa-b4aro-maqca-aaap6-a"
+    // it("should unlist", async function () {
+    //   let price = 1000000
+    //   let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
+    //   let idB = Ed25519KeyIdentity.fromParsedJson(identityB)
+    //   let token = "3qtw7-xykor-uwiaa-aaaaa-b4aro-maqca-aaap6-a"
 
-      let owner = (await fetchCollectionTokens(heroes)).find(
-        (tok) => tok.tokenId === token,
-      )?.owner
-      let sourceIdentity =
-        owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
-      let targetIdentity =
-        owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
+    //   let owner = (await fetchCollectionTokens(heroes)).find(
+    //     (tok) => tok.tokenId === token,
+    //   )?.owner
+    //   let sourceIdentity =
+    //     owner === principalToAddress(idA.getPrincipal() as any) ? idA : idB
+    //   let targetIdentity =
+    //     owner === principalToAddress(idA.getPrincipal() as any) ? idB : idA
 
-      let listResult = await listNFT(token, sourceIdentity, price)
-      expect(listResult).toBe(true)
-      await unListNFT(token, sourceIdentity)
-      await expect(lockNFT(token, targetIdentity, price)).rejects.toThrow(
-        "Lock failed! Other : No listing!",
-      )
-    })
+    //   let listResult = await listNFT(token, sourceIdentity, price)
+    //   expect(listResult).toBe(true)
+    //   await unListNFT(token, sourceIdentity)
+    //   await expect(lockNFT(token, targetIdentity, price)).rejects.toThrow(
+    //     "Lock failed! Other : No listing!",
+    //   )
+    // })
     it("should transfer", async function () {
       let idA = Ed25519KeyIdentity.fromParsedJson(identityA)
       let idB = Ed25519KeyIdentity.fromParsedJson(identityB)

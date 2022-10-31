@@ -13,6 +13,7 @@ export interface IOption {
   afterLabel?: string | number
   icon?: string
   value: string
+  disabled?: boolean
 }
 
 export interface IDropdownSelect {
@@ -125,6 +126,7 @@ export const DropdownSelect = ({
                 className={clsx(
                   "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
                   "flex items-center text-sm text-black-base",
+                  option.disabled && "pointer-events-none !text-gray-300",
                 )}
               >
                 <Checkbox

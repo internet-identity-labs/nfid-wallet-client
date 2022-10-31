@@ -1,18 +1,29 @@
+import { Principal } from "@dfinity/principal"
 import {
   registerRequestTransferHandler,
   RequestTransferParams,
 } from "@nfid/wallet"
+import { principalToAddress } from "ictool"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { icpToUSD } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
+import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
+import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
+import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
+import { isHex } from "frontend/ui/utils"
 
 // State local to the machine.
 interface Context {
   appMeta?: AuthorizingAppMeta
   authSession?: AuthSession
   requestTransfer?: RequestTransferParams
+  amount: number
+  to: string
+  selectedWallets: []
+  isLoading?: boolean
 }
 
 let credentialResolved = false
@@ -28,6 +39,7 @@ type Events =
       data: RequestTransferParams
     }
   | { type: "CONSENT" }
+  | { type: "SUCCESS" }
   | { type: "REJECT" }
   | { type: "END" }
 
@@ -61,7 +73,11 @@ const RequestTransferMachine = createMachine(
           }),
         },
       },
-      RequestTransfer: {},
+      RequestTransfer: {
+        on: {
+          SUCCESS: "End",
+        },
+      },
       End: {
         type: "final",
       },
@@ -90,7 +106,6 @@ const RequestTransferMachine = createMachine(
         console.debug("registerRequestTransferHandler", { params })
         return params
       },
-
       AuthenticationMachine,
     },
     guards: {},

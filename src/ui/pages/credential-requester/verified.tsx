@@ -5,6 +5,7 @@ import { RadioButton } from "frontend/ui/atoms/button/radio"
 import ErrorDisplay from "frontend/ui/atoms/error"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 interface CredentialRequesterVerifiedProps {
   applicationLogo?: string
@@ -25,7 +26,7 @@ export const CredentialRequesterVerified: React.FC<
   }
 
   return (
-    <>
+    <BlurredLoader isLoading={false}>
       <ApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
@@ -62,6 +63,6 @@ export const CredentialRequesterVerified: React.FC<
         Continue
       </Button>
       {error && <ErrorDisplay>{error}</ErrorDisplay>}
-    </>
+    </BlurredLoader>
   )
 }

@@ -1,10 +1,15 @@
 import { useMachine } from "@xstate/react"
+import { useEffect } from "react"
 
+import { RequestTransfer } from "frontend/apps/identity-manager/request-transfer"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import RequestTransferMachine, {
   RequestTransferMachineType,
 } from "frontend/state/machines/wallet/request-transfer"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { TransferModalSuccess } from "frontend/ui/organisms/transfer-modal/sucess"
+import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
+import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "../authentication"
 
@@ -13,7 +18,11 @@ interface Props {
 }
 
 export default function RequestTransferCoordinator({ machine }: Props) {
-  const [state] = useMachine(machine || RequestTransferMachine)
+  const [state, send] = useMachine(machine || RequestTransferMachine)
+
+  useEffect(() => {
+    console.log(state)
+  }, [state])
 
   switch (true) {
     case state.matches("Ready"):
@@ -27,12 +36,31 @@ export default function RequestTransferCoordinator({ machine }: Props) {
       )
     case state.matches("Authenticate"):
       return (
-        <AuthenticationCoordinator
-          actor={state.children.AuthenticationMachine as AuthenticationActor}
-        />
+        <ScreenResponsive>
+          <AuthenticationCoordinator
+            actor={state.children.AuthenticationMachine as AuthenticationActor}
+          />
+        </ScreenResponsive>
       )
     case state.matches("RequestTransfer"):
-      return <div>Do your magic here magic here @Pashunya 🪩</div>
+      return (
+        <RequestTransfer
+          applicationName={state.context.appMeta?.name}
+          applicationLogo={state.context.appMeta?.logo}
+          to={state.context.requestTransfer?.to ?? ""}
+          amountICP={state.context.requestTransfer?.amount ?? 0}
+          onSuccess={() => send("SUCCESS")}
+        />
+      )
+    case state.matches("End"):
+      return (
+        <ScreenResponsive>
+          <TransferModalSuccess
+            transactionMessage={`${state.context.requestTransfer?.amount} ICP was sent`}
+            onClose={() => window.close()}
+          />
+        </ScreenResponsive>
+      )
     default:
       console.debug(
         `PhoneCredentialCoordinator rendering loader, unknown state: ${JSON.stringify(

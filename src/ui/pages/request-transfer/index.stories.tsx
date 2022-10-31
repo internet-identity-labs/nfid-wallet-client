@@ -29,7 +29,7 @@ export const ResponsiveScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 ResponsiveScreen.args = {
   applicationName: "My Application",
   applicationLogo: logo,
-  amountICP: "19.0765312",
+  amountICP: 19.0765312,
   amountUSD: "95.02",
   walletOptions: [],
   isSuccess: false,

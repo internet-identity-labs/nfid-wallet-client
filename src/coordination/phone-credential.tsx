@@ -1,4 +1,5 @@
 import { useMachine } from "@xstate/react"
+import { useSearchParams } from "react-router-dom"
 
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import PhoneCredentialMachine, {
@@ -19,6 +20,7 @@ interface Props {
 
 export default function PhoneCredentialCoordinator({ machine }: Props) {
   const [state, send] = useMachine(machine || PhoneCredentialMachine)
+  const [searchParams] = useSearchParams()
 
   switch (true) {
     case state.matches("Ready"):
@@ -55,6 +57,8 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           onPresent={() => send("CONSENT")}
           onSkip={() => send("REJECT")}
           error={error}
+          applicationName={searchParams.get("applicationName") ?? ""}
+          applicationLogo={searchParams.get("applicationLogo") ?? ""}
         />
       )
     case state.matches("GetPhoneNumber.GetExistingPhoneNumber"):
@@ -83,6 +87,8 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
               : undefined
           }
           phoneNumber={state.context.phone}
+          applicationName={searchParams.get("applicationName") ?? ""}
+          applicationLogo={searchParams.get("applicationLogo") ?? ""}
         />
       )
     case state.matches("GetPhoneNumber.EnterSMSToken"):
@@ -106,6 +112,8 @@ export default function PhoneCredentialCoordinator({ machine }: Props) {
           }
           isLoading={state.matches("GetPhoneNumber.ValidateSMSToken")}
           loadingMessage="Validating token"
+          applicationName={searchParams.get("applicationName") ?? ""}
+          applicationLogo={searchParams.get("applicationLogo") ?? ""}
         />
       )
     case state.matches("GenerateCredential"):

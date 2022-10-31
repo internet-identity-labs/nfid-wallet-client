@@ -30,7 +30,11 @@ export const App = () => (
 
     <Route
       path="/credential/verified-phone-number"
-      element={<PhoneCredentialCoordinator />}
+      element={
+        <ScreenResponsive frameLabel="Verify with NFID">
+          <PhoneCredentialCoordinator />
+        </ScreenResponsive>
+      }
     />
 
     <Route

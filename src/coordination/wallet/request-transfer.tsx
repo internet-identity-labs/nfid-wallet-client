@@ -1,5 +1,6 @@
 import { useMachine } from "@xstate/react"
 import { useEffect } from "react"
+import { useSearchParams } from "react-router-dom"
 
 import { RequestTransfer } from "frontend/apps/identity-manager/request-transfer"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
@@ -19,6 +20,7 @@ interface Props {
 
 export default function RequestTransferCoordinator({ machine }: Props) {
   const [state, send] = useMachine(machine || RequestTransferMachine)
+  const [searchParams] = useSearchParams()
 
   useEffect(() => {
     console.debug("RequestTransferCoordinator", { state: state.value })
@@ -45,8 +47,8 @@ export default function RequestTransferCoordinator({ machine }: Props) {
     case state.matches("RequestTransfer"):
       return (
         <RequestTransfer
-          applicationName={state.context.appMeta?.name}
-          applicationLogo={state.context.appMeta?.logo}
+          applicationName={searchParams.get("applicationName") ?? ""}
+          applicationLogo={searchParams.get("applicationLogo") ?? ""}
           to={state.context.requestTransfer?.to ?? ""}
           amountICP={state.context.requestTransfer?.amount ?? 0}
           onSuccess={() => send("SUCCESS")}

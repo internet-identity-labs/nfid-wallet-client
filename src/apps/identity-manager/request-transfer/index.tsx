@@ -93,6 +93,8 @@ export const RequestTransfer = ({
       onApprove={onApprove}
       isSuccess={false}
       isLoading={isLoading}
+      applicationLogo={applicationLogo}
+      applicationName={applicationName}
     />
   )
 }

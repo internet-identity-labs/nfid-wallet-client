@@ -50,13 +50,14 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
           "sm:gap-[30px] sm:px-[30px]",
           "md:grid md:grid-cols-[50px,1fr]",
           "lg:grid-cols-[256px,1fr]",
+          "overflow-auto",
           containerClassName,
         )}
       >
         <div className={clsx("hidden mt-5 -ml-3 md:block relative")}>
           <ProfileSidebar id="desktop" />
         </div>
-        <section className={clsx("relative  overflow-scroll", className)}>
+        <section className={clsx("relative", className)}>
           <div className="flex justify-between h-[70px] items-start mt-5">
             <div className="sticky left-0 flex space-x-2">
               {onBack && (

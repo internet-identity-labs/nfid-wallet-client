@@ -5,7 +5,7 @@
   "projectType": "application",
   "namedInputs": {
     "default": [
-      "!{projectRoot}/**/*",
+      "{projectRoot}/project.json",
       "{projectRoot}/mocks/**/*",
       "{projectRoot}/public/**/*",
       "{projectRoot}/src/**/*",

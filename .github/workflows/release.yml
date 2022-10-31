@@ -89,7 +89,7 @@ jobs:
           # On main branch build on ic
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
             dfx identity use action
-            dfx deploy --network ic  --no-wallet
+            dfx deploy --network ic nfid-frontend --no-wallet
           fi
 
         env:

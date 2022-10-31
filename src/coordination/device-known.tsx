@@ -6,7 +6,14 @@ import { AuthorizeApp } from "frontend/ui/pages/authorize-app"
 import { AuthorizeAppSingleAccount } from "frontend/ui/pages/authorize-app/single-account"
 import { NFIDLogin } from "frontend/ui/pages/nfid-login"
 
-export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
+interface KnownDeviceCoordinatorProps {
+  actor: KnownDeviceActor
+  enforceSingleAccountScreen?: boolean
+}
+export function KnownDeviceCoordinator({
+  actor,
+  enforceSingleAccountScreen,
+}: KnownDeviceCoordinatorProps) {
   const [state, send] = useActor(actor)
 
   console.debug("KnownDeviceCoordinator", {
@@ -34,7 +41,8 @@ export function KnownDeviceCoordinator({ actor }: Actor<KnownDeviceActor>) {
               />
             </BlurredLoader>
           )
-        case state.context.isSingleAccountApplication:
+        case state.context.isSingleAccountApplication ||
+          enforceSingleAccountScreen:
           return (
             <AuthorizeAppSingleAccount
               isLoading={state.matches("Login")}

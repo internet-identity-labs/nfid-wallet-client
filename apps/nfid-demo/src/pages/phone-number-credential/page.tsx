@@ -20,6 +20,7 @@ interface ButtonState {
   loading: boolean
   label: string
 }
+const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
 
 const useButtonState = ({
   disabled = false,
@@ -93,7 +94,7 @@ export const PagePhoneNumberVerification: React.FC = () => {
     })
     requestPhoneNumberCredential(identity, {
       provider: new URL(
-        `${environment.nfidProviderOrigin}/credential/verified-phone-number`,
+        `${environment.nfidProviderOrigin}/credential/verified-phone-number?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
       ),
       verifier: environment.verifierCanisterId,
     })

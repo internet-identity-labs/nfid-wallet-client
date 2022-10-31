@@ -5,11 +5,14 @@ import logo from "./assets/id.svg"
 
 import { NFIDGradientBar } from "../atoms/gradient-bar"
 
-interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
+  frameLabel?: string
+}
 
 export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   children,
   className,
+  frameLabel = "Sign in with NFID",
 }) => {
   return (
     <div
@@ -23,12 +26,12 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
 
       <div
         className={clsx(
-          "border-b border-gray-100 mt-1 py-3 px-5 space-x-2 flex cursor-pointer hover:opacity-75 transition-opacity",
+          "border-b border-gray-100 mt-1 py-3 px-5 space-x-2 flex",
           "sm:border-x",
         )}
       >
         <img src={logo} alt="logo" />
-        <span className="text-xs text-gray-400">Sign in with NFID</span>
+        <span className="text-xs text-gray-400">{frameLabel}</span>
       </div>
 
       <div

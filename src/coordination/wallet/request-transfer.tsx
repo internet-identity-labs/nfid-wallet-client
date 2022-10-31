@@ -41,6 +41,7 @@ export default function RequestTransferCoordinator({ machine }: Props) {
         <ScreenResponsive>
           <AuthenticationCoordinator
             actor={state.children.AuthenticationMachine as AuthenticationActor}
+            enforceSingleAccountScreen
           />
         </ScreenResponsive>
       )

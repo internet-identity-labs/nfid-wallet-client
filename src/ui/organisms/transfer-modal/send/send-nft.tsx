@@ -92,7 +92,12 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
           <InputDropdown
             label="To"
             placeholder="Recipient principal or account ID"
-            options={walletsOptions ?? []}
+            options={
+              walletsOptions?.filter(
+                (wallet) =>
+                  wallet.value !== selectedNFTDetails?.principal.toText(),
+              ) ?? []
+            }
             errorText={errors.to?.message}
             registerFunction={register("to", {
               validate: validateAddressField,

@@ -18,9 +18,42 @@
       "problemMatcher": []
     },
     {
+      "label": "Frontend + Demo",
+      "type": "shell",
+      "dependsOn": ["NFID Frontend", "NFID Demo"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend + Storybook",
+      "type": "shell",
+      "dependsOn": ["NFID Frontend", "NFID Storybook"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "NFID Frontend",
       "type": "shell",
       "command": "yarn && yarn dev",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "develop"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "NFID Demo",
+      "type": "shell",
+      "command": "yarn && npx nx serve nfid-demo",
       "presentation": {
         "reveal": "always",
         "panel": "new",

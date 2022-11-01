@@ -62,15 +62,17 @@ export default function RequestTransferCoordinator({ machine }: Props) {
           applicationLogo={searchParams.get("applicationLogo") ?? ""}
           to={state.context.requestTransfer?.to ?? ""}
           amountICP={state.context.requestTransfer?.amount ?? 0}
-          onSuccess={() => send("SUCCESS")}
+          onSuccess={(blockIndex) => {
+            send({ type: "CONFIRM", blockHeight: blockIndex })
+          }}
         />
       )
-    case state.matches("End"):
+    case state.matches("Confirm"):
       return (
         <ScreenResponsive className="p-5">
           <TransferModalSuccess
             transactionMessage={`${state.context.requestTransfer?.amount} ICP was sent`}
-            onClose={() => window.close()}
+            onClose={() => send({ type: "END" })}
           />
         </ScreenResponsive>
       )

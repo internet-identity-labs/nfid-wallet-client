@@ -307,7 +307,7 @@ export const nftCollectionInfo = {
 export const mockTransaction: TransactionPrettified = {
   caller: Principal.fromText(
     "tn74f-iacec-blwhn-qymcu-i6zmt-toa3i-hwqqs-g2j5u-ekp5m-3m26i-3ae",
-  ),
+  ) as any,
   details: {
     to: "79867ae4c39553850f70fc3c1f208966f22818bce8b00dff272cfff59786c66b",
     from: "84162df231ae9d4d9a38cae8ce7f263ed29d730706abf2b3dda1e8859d86f1a8",

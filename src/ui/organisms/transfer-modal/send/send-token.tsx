@@ -151,7 +151,11 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
           <InputDropdown
             label="To"
             placeholder="Recipient principal or account ID"
-            options={walletsOptions ?? []}
+            options={
+              walletsOptions?.filter(
+                (wallet) => wallet.value !== selectedWallets[0],
+              ) ?? []
+            }
             errorText={errors.to?.message}
             registerFunction={register("to", {
               validate: validateAddressField,

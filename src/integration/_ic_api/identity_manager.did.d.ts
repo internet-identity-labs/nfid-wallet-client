@@ -1,12 +1,12 @@
 import type { Principal } from "@dfinity/principal"
 
 export interface AccessPointRemoveRequest {
-  pub_key: Array<number>
+  pub_key: string
 }
 export interface AccessPointRequest {
   icon: string
   device: string
-  pub_key: Array<number>
+  pub_key: string
   browser: string
 }
 export interface AccessPointResponse {

@@ -31,7 +31,7 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
           You can view transaction details in the <br />
           <a
             target="_blank"
-            ref="noreferrer"
+            rel="noreferrer"
             href={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
             onClick={onClose}
             className="text-blue-600 transition-opacity cursor-pointer hover:opacity-75"

@@ -43,5 +43,32 @@
   "Generate React.useCallback": {
     "prefix": "il-ucb",
     "body": ["const $1 = React.useCallback(() => {$0}, [])"]
+  },
+  "Generate StorybookComponent": {
+    "prefix": "storybook",
+    "body": [
+      "import { Meta, Story } from \"@storybook/react\"",
+      "import React from \"react\"",
+      "import { ${1}, ${1}Props } from \"./index\"",
+      "",
+      "const meta: Meta = {",
+      "  title: \"${2:Pages}/${1}\",",
+      "  component: ${1},",
+      "  argTypes: {},",
+      "  parameters: {",
+      "    controls: { expanded: true }",
+      "  },",
+      "}",
+      "",
+      "export default meta",
+      "",
+      "const Template: Story<${1}Props> = (args) => (",
+      "  <${1} {...args} />",
+      ")",
+      "",
+      "export const Default = Template.bind({})",
+      "",
+      "Default.args = {}"
+    ]
   }
 }

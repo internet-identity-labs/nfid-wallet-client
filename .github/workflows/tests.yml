@@ -69,6 +69,7 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
+
       - name: Add npmrc
         uses: ferluisxd/create-npmrc@3
         with:
@@ -83,6 +84,7 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
           EOF
           yarn --prefer-offline
+
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV

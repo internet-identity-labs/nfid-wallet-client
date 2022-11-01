@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import { App } from "./App"
+import { initializeConsoleWarnings } from "./boot"
 import "./index.css"
 import { ToastIcons } from "./ui/atoms/toast-icons"
 
@@ -28,18 +29,17 @@ process.env.NODE_ENV === "production" &&
   })
 
 const container = document.getElementById("root")
+initializeConsoleWarnings()
 
 if (!container) throw new Error("Failed to find the root element")
 
 const root = createRoot(container)
 
 root.render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <ToastContainer icon={({ type }) => ToastIcons[type]} />
-      <Router>
-        <App />
-      </Router>
-    </HelmetProvider>
-  </React.StrictMode>,
+  <HelmetProvider>
+    <ToastContainer icon={({ type }) => ToastIcons[type]} />
+    <Router>
+      <App />
+    </Router>
+  </HelmetProvider>,
 )

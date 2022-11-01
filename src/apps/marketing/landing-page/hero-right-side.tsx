@@ -26,10 +26,15 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
       )}
     >
       <NFIDGradientBar className="w-full h-0.5 z-20" rounded={false} />
-      <div className="relative mt-[2px] flex flex-col w-full h-full">
+      <div className="relative mt-[2px] flex flex-col w-full h-full z-10">
         <NFIDAuthenticationCoordinator />
       </div>
-      <div className={clsx("p-6 text-xs text-gray-400 text-center")}>
+      <div
+        className={clsx(
+          "p-6 text-xs text-gray-400 text-center",
+          "relative z-20",
+        )}
+      >
         NFID is a privacy-preserving, one-touch multi-factor wallet protocol
         developed by Internet Identity Labs.
       </div>

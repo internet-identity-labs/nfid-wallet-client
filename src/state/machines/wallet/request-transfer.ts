@@ -16,9 +16,10 @@ interface Context {
   amount?: number
   to?: string
   isLoading?: boolean
+  blockHeight?: bigint
 }
 
-let credentialResolved = false
+let _blockHeight: number | null = null
 
 // Definition of events usable in the machine.
 type Events =
@@ -31,7 +32,7 @@ type Events =
       data: RequestTransferParams
     }
   | { type: "CONSENT" }
-  | { type: "SUCCESS" }
+  | { type: "CONFIRM"; blockHeight?: bigint }
   | { type: "REJECT" }
   | { type: "END" }
 
@@ -42,7 +43,7 @@ const RequestTransferMachine = createMachine(
     context: {} as Context,
     tsTypes: {} as import("./request-transfer.typegen").Typegen0,
     schema: { events: {} as Events },
-    id: "PhoneNumberCredentialProvider",
+    id: "RequestTransferProvider",
     initial: "Ready",
     states: {
       Ready: {
@@ -67,10 +68,17 @@ const RequestTransferMachine = createMachine(
       },
       RequestTransfer: {
         on: {
-          SUCCESS: "End",
+          CONFIRM: "Confirm",
+        },
+      },
+      Confirm: {
+        onEntry: "assignBlockHeight",
+        on: {
+          END: "End",
         },
       },
       End: {
+        onEntry: "setBlockHeight",
         type: "final",
       },
     },
@@ -83,16 +91,24 @@ const RequestTransferMachine = createMachine(
       assignRequestTransferRequest: assign({
         requestTransfer: (_, event) => event.data,
       }),
+      setBlockHeight: ({ blockHeight }) => {
+        _blockHeight = Number(blockHeight)
+      },
+      assignBlockHeight: assign({
+        blockHeight: (_, event) => event.blockHeight,
+      }),
     },
     services: {
       async registerRequestTransferHandler() {
         const params = await registerRequestTransferHandler(() => {
           return new Promise((resolve) => {
-            setInterval(
-              () =>
-                credentialResolved && resolve({ status: "SUCCESS", height: 0 }),
-              1000,
-            )
+            setInterval(() => {
+              _blockHeight &&
+                resolve({
+                  status: "SUCCESS",
+                  height: _blockHeight,
+                })
+            }, 1000)
           })
         })
         console.debug("registerRequestTransferHandler", { params })

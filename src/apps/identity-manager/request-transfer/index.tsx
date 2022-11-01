@@ -15,7 +15,7 @@ interface IRequestTransfer {
   applicationName?: string
   applicationLogo?: string
   amountICP: number
-  onSuccess: () => void
+  onSuccess: (blockIndex: bigint) => void
   to: string
 }
 
@@ -66,8 +66,8 @@ export const RequestTransfer = ({
 
     try {
       setIsLoading(true)
-      await transfer(validAddress, String(amountICP))
-      onSuccess()
+      const blockIndex = await transfer(validAddress, String(amountICP))
+      onSuccess(blockIndex)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction", {

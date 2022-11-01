@@ -2,7 +2,7 @@
   "canisters": {
     "nfid-frontend": {
       "frontend": {
-        "entrypoint": "dist/apps/nfid-frontend/index.html"
+        "entrypoint": "build/index.html"
       },
       "source": ["build/"],
       "build": "npx nx run nfid-frontend:build",

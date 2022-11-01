@@ -15,7 +15,7 @@ export async function getCapRootTransactions(
   return CapRouter.init({})
     .then((capRouter) =>
       capRouter.get_token_contract_root_bucket({
-        tokenId: Principal.fromText(canisterId),
+        tokenId: Principal.fromText(canisterId) as any,
       }),
     )
     .then((rootBucket) => {

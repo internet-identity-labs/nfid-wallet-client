@@ -82,7 +82,6 @@ export async function loginWithAnchor(
   } else if ("message" in authResult) {
     throw new Error(authResult.message)
   }
-
   throw new Error(`loginWithAnchor Unreachable`)
 }
 

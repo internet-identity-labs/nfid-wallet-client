@@ -1,4 +1,5 @@
 import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
 import {
   Delegation,
   DelegationChain,
@@ -71,7 +72,7 @@ export async function getExchangeRate(): Promise<number> {
 export async function transfer(
   amount: number,
   to: string,
-  identity: DelegationIdentity,
+  identity: SignIdentity,
 ): Promise<BlockIndex> {
   const ledgerWithWallet = ledgerWithIdentity(identity)
 

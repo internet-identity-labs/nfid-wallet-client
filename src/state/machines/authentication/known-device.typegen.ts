@@ -3,8 +3,8 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.getLocalStorageProfileService": {
-      type: "done.invoke.getLocalStorageProfileService"
+    "done.invoke.fetchAccountLimitService": {
+      type: "done.invoke.fetchAccountLimitService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -13,8 +13,13 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.fetchAccountLimitService": {
-      type: "done.invoke.fetchAccountLimitService"
+    "done.invoke.fetchProfileService": {
+      type: "done.invoke.fetchProfileService"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.getLocalStorageProfileService": {
+      type: "done.invoke.getLocalStorageProfileService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -23,39 +28,34 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "xstate.init": { type: "xstate.init" }
-    "error.platform.getLocalStorageProfileService": {
-      type: "error.platform.getLocalStorageProfileService"
+    "error.platform.fetchAccountLimitService": {
+      type: "error.platform.fetchAccountLimitService"
       data: unknown
     }
     "error.platform.fetchAuthenticatorDevicesService": {
       type: "error.platform.fetchAuthenticatorDevicesService"
       data: unknown
     }
-    "error.platform.fetchAccountLimitService": {
-      type: "error.platform.fetchAccountLimitService"
+    "error.platform.fetchProfileService": {
+      type: "error.platform.fetchProfileService"
+      data: unknown
+    }
+    "error.platform.getLocalStorageProfileService": {
+      type: "error.platform.getLocalStorageProfileService"
       data: unknown
     }
     "error.platform.loginService": {
       type: "error.platform.loginService"
       data: unknown
     }
-    "done.invoke.fetchProfileService": {
-      type: "done.invoke.fetchProfileService"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
-    "error.platform.fetchProfileService": {
-      type: "error.platform.fetchProfileService"
-      data: unknown
-    }
+    "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    getLocalStorageProfileService: "done.invoke.getLocalStorageProfileService"
-    fetchAuthenticatorDevicesService: "done.invoke.fetchAuthenticatorDevicesService"
     fetchAccountLimitService: "done.invoke.fetchAccountLimitService"
-    loginService: "done.invoke.loginService"
+    fetchAuthenticatorDevicesService: "done.invoke.fetchAuthenticatorDevicesService"
     fetchProfileService: "done.invoke.fetchProfileService"
+    getLocalStorageProfileService: "done.invoke.getLocalStorageProfileService"
+    loginService: "done.invoke.loginService"
   }
   missingImplementations: {
     actions: never
@@ -64,43 +64,43 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
-    assignProfile: "done.invoke.getLocalStorageProfileService"
-    assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
     assignAccountLimit: "done.invoke.fetchAccountLimitService"
     assignAuthSession: "done.invoke.loginService"
+    assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
+    assignProfile: "done.invoke.getLocalStorageProfileService"
   }
   eventsCausingServices: {
-    getLocalStorageProfileService: "xstate.init"
-    fetchAuthenticatorDevicesService: "done.invoke.getLocalStorageProfileService"
     fetchAccountLimitService: "done.state.KnownDeviceMachine.Start.FetchDevices"
-    loginService: "UNLOCK"
+    fetchAuthenticatorDevicesService: "done.invoke.getLocalStorageProfileService"
     fetchProfileService: "done.invoke.loginService"
+    getLocalStorageProfileService: "xstate.init"
+    loginService: "UNLOCK"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
   matchesStates:
-    | "Start"
-    | "Start.LoadProfile"
-    | "Start.FetchDevices"
-    | "Start.FetchDevices.Fetch"
-    | "Start.FetchDevices.Done"
-    | "Start.FetchAccountLimit"
-    | "Start.FetchAccountLimit.Fetch"
-    | "Start.FetchAccountLimit.Done"
-    | "Start.Done"
     | "Authenticate"
-    | "Login"
-    | "UpdateProfile"
     | "End"
+    | "Login"
+    | "Start"
+    | "Start.Done"
+    | "Start.FetchAccountLimit"
+    | "Start.FetchAccountLimit.Done"
+    | "Start.FetchAccountLimit.Fetch"
+    | "Start.FetchDevices"
+    | "Start.FetchDevices.Done"
+    | "Start.FetchDevices.Fetch"
+    | "Start.LoadProfile"
+    | "UpdateProfile"
     | {
         Start?:
-          | "LoadProfile"
-          | "FetchDevices"
-          | "FetchAccountLimit"
           | "Done"
+          | "FetchAccountLimit"
+          | "FetchDevices"
+          | "LoadProfile"
           | {
-              FetchDevices?: "Fetch" | "Done"
-              FetchAccountLimit?: "Fetch" | "Done"
+              FetchAccountLimit?: "Done" | "Fetch"
+              FetchDevices?: "Done" | "Fetch"
             }
       }
   tags: never

@@ -6,7 +6,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
-import { transferEXT } from "frontend/integration/entrepot/transfer"
+import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
@@ -37,6 +37,14 @@ export const ProfileTransferModal = () => {
     let validAddress = isHex(values.to)
       ? values.to
       : principalToAddress(Principal.fromText(values.to) as any)
+
+    if (
+      principalToAddress(transferModalState.selectedWallet.principal as any) ===
+      validAddress
+    )
+      return toast.error("You cannot send tokens to the same wallet", {
+        toastId: "sameWalletError",
+      })
 
     try {
       setIsLoading(true)

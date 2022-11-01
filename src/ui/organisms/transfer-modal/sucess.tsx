@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -16,6 +16,16 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
   transactionMessage,
   onClose,
 }) => {
+  useEffect(() => {
+    function handler(e: BeforeUnloadEvent) {
+      e.preventDefault()
+      e.stopPropagation()
+      onClose()
+    }
+    window.addEventListener("beforeunload", handler)
+    return () => window.removeEventListener("beforeunload", handler)
+  }, [])
+
   return (
     <div
       className={clsx(
@@ -29,13 +39,15 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
         <p className="font-bold mt-[10px] mb-3">{transactionMessage}</p>
         <p className="text-sm ">
           You can view transaction details in the <br />
-          <Link
-            to={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
             onClick={onClose}
             className="text-blue-600 transition-opacity cursor-pointer hover:opacity-75"
           >
             Transaction history
-          </Link>
+          </a>
           .
         </p>
       </div>

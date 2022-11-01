@@ -60,14 +60,14 @@ jobs:
           EOF
           yarn
           yarn prettier --check "src/**/*.{ts,tsx}"
-          yarn test
+          npx nx test nfid-frontend
         env:
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: NFID FRONTEND | deploy
         run: |
           dfx identity use action
-          dfx deploy --network dev  --no-wallet
+          dfx deploy --network dev nfid-frontend --no-wallet
 
         env:
           FRONTEND_MODE: production

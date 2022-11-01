@@ -83,13 +83,13 @@ jobs:
 
           # install local to generate the types
           dfx start --clean --background
-          dfx deploy --no-wallet
+          dfx deploy nfid-frontend --no-wallet
           dfx stop
 
           # On main branch build on ic
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
             dfx identity use action
-            dfx deploy --network ic  --no-wallet
+            dfx deploy --network ic nfid-frontend --no-wallet
           fi
 
         env:
@@ -151,7 +151,7 @@ jobs:
 
           ci_echo_info "Building example" >&2
           yarn
-          yarn build:example
+          npx nx build:example nfid-frontend
 
       - name: Checkout nfid-sdk repo.
         uses: actions/checkout@v3

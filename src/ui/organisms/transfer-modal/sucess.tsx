@@ -29,13 +29,15 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
         <p className="font-bold mt-[10px] mb-3">{transactionMessage}</p>
         <p className="text-sm ">
           You can view transaction details in the <br />
-          <Link
-            to={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
+          <a
+            target="_blank"
+            ref="noreferrer"
+            href={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
             onClick={onClose}
             className="text-blue-600 transition-opacity cursor-pointer hover:opacity-75"
           >
             Transaction history
-          </Link>
+          </a>
           .
         </p>
       </div>

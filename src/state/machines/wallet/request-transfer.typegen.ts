@@ -35,7 +35,9 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.AuthenticationMachine"
+    assignBlockHeight: "CONFIRM"
     assignRequestTransferRequest: "done.invoke.registerRequestTransferHandler"
+    setBlockHeight: "END"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerRequestTransferHandler"
@@ -43,6 +45,11 @@ export interface Typegen0 {
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
-  matchesStates: "Authenticate" | "End" | "Ready" | "RequestTransfer"
+  matchesStates:
+    | "Authenticate"
+    | "Confirm"
+    | "End"
+    | "Ready"
+    | "RequestTransfer"
   tags: never
 }

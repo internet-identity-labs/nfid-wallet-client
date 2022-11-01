@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -16,6 +16,16 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
   transactionMessage,
   onClose,
 }) => {
+  useEffect(() => {
+    function handler(e: BeforeUnloadEvent) {
+      e.preventDefault()
+      e.stopPropagation()
+      onClose()
+    }
+    window.addEventListener("beforeunload", handler)
+    return () => window.removeEventListener("beforeunload", handler)
+  }, [])
+
   return (
     <div
       className={clsx(

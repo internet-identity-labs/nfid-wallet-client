@@ -83,7 +83,7 @@ jobs:
 
           # install local to generate the types
           dfx start --clean --background
-          dfx deploy --no-wallet
+          dfx deploy nfid-frontend --no-wallet
           dfx stop
 
           # On main branch build on ic

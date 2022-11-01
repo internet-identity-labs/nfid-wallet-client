@@ -128,7 +128,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             )}
           >
             <Button
-              className="mt-[520px]"
+              className={clsx("mt-[520px]")}
               primary
               large
               onClick={() => onUnlockNFID()}

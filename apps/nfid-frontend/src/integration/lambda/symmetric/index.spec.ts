@@ -10,11 +10,10 @@ import {
   decryptStringForIdentity,
   symmetric,
 } from "frontend/integration/lambda/symmetric"
-
 import {
   generateDelegationIdentity,
   registerIIAndIM,
-} from "../../../../test/steps/support/integration/test-util"
+} from "frontend/integration/test-util"
 
 describe("symmetric suite", () => {
   jest.setTimeout(50000)

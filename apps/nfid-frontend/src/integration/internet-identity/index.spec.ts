@@ -21,10 +21,7 @@ import {
 } from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
-import {
-  generateDelegationIdentity,
-  registerIIAccount,
-} from "../../../test/steps/support/integration/test-util"
+import { generateDelegationIdentity, registerIIAccount } from "../test-util"
 
 describe("ii suite", () => {
   jest.setTimeout(50000)

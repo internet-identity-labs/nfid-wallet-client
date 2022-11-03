@@ -1,11 +1,15 @@
 import reporter, { Options } from "cucumber-html-reporter"
+import path from "path"
 
 var options: Options = {
   theme: "bootstrap",
   brandTitle: "Test Summary",
-  jsonDir: "test/reporter/json/",
-  output: "test/reporter/cucumber_report.html",
-  screenshotsDirectory: "test/reporter/screenshots/",
+  jsonDir: path.join(__dirname, "../../test/reporter/json/"),
+  output: path.join(__dirname, "../../test/reporter/cucumber_report.html"),
+  screenshotsDirectory: path.join(
+    __dirname,
+    "../../test/reporter/screenshots/",
+  ),
   storeScreenshots: true,
   reportSuiteAsScenarios: true,
   scenarioTimestamp: true,
@@ -21,6 +25,6 @@ var options: Options = {
   },
 }
 
-reporter.generate(options)
+console.log(">> ", { options })
 
-// trest
+reporter.generate(options)

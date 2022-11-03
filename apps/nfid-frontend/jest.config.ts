@@ -1,8 +1,8 @@
-const dotenv = require("dotenv")
-
-dotenv.config({ path: ".env.local" })
-
-module.exports = {
+export default {
+  displayName: "nfid-frontend",
+  preset: "../../jest.preset.js",
+  coverageDirectory: "../../coverage/apps/nfid-demo",
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   globals: {
     "ts-jest": {
       preserveSymlinks: true,
@@ -31,7 +31,6 @@ module.exports = {
     "^.+\\.(ts|tsx|js|jsx)$": "ts-jest",
   },
   collectCoverage: false,
-  coverageDirectory: "./coverage",
   coverageThreshold: {
     global: {
       branches: 99,
@@ -41,8 +40,8 @@ module.exports = {
     },
   },
   collectCoverageFrom: ["src/**/*.ts", "!**/node_modules/**"],
-  setupFilesAfterEnv: ["./test/setup.ts", "./src/setupTests.ts"],
-  roots: ["test/", "src/"],
+  setupFilesAfterEnv: ["./src/setupTests.ts"],
+  roots: ["src/"],
   moduleDirectories: ["node_modules"],
   moduleNameMapper: {
     "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|did)$":

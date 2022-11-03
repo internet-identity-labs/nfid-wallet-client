@@ -69,7 +69,6 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
-
       - name: Add npmrc
         uses: ferluisxd/create-npmrc@3
         with:
@@ -124,6 +123,8 @@ jobs:
       cancel-in-progress: false
 
     steps:
+      - run: pwd
+
       - name: Checkout CI repo
         uses: actions/checkout@v3
 
@@ -141,7 +142,7 @@ jobs:
           EOF
           yarn --prefer-offline
           npx nx build nfid-frontend
-          yarn serve -l 9090 -s build &
+          yarn serve -l 9090 -s dist/apps/nfid-frontend &
         env:
           FRONTEND_MODE: production
           BACKEND_MODE: DEV
@@ -180,14 +181,16 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: internet-identity-labs/user-google-e2e
-          path: user-google-e2e
+          path: apps/nfid-frontend-e2e/user-google-e2e
           ref: main
           token: ${{ secrets.PAT }}
 
+      - run: ls -la apps/nfid-frontend-e2e/user-google-e2e
+
       - name: Running E2E test
         run: |
-          npx nx test:e2e nfid-frontend
-          # yarn test:e2e:mobile
+          npx nx test:e2e nfid-frontend-e2e
+          # npx nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
@@ -197,11 +200,18 @@ jobs:
 
       - name: Generate HTML Report
         if: always()
-        run: yarn generate-cucumber-html-report
+        run: npx nx generate-cucumber-html-report nfid-frontend-e2e
 
       - name: Final Test Reports
         uses: actions/upload-artifact@v2
         if: always()
         with:
           name: wdio-report
-          path: test/reporter
+          path: apps/nfid-frontend-e2e/test/reporter
+
+      - name: Upload build artefacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: dist
+          path: dist

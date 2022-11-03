@@ -2,8 +2,8 @@
 import { config as loadEnv } from "dotenv"
 import path from "path"
 
-import dfxJson from "./dfx.json"
-import { serviceConfig } from "./packages/config/src"
+import dfxJson from "../../dfx.json"
+import { serviceConfig } from "../../packages/config/src"
 
 const webpack = require("webpack")
 

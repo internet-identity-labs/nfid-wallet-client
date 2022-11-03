@@ -1,8 +1,4 @@
-import dotenv from "dotenv"
-
-import { hooks } from "./test/hooks"
-
-dotenv.config({ path: ".env.local" })
+import { hooks } from "./src/hooks"
 
 export const isDebug = process.env.DEBUG === "true"
 
@@ -56,7 +52,7 @@ export const config: WebdriverIO.Config = {
   // then the current working directory is where your `package.json` resides, so `wdio`
   // will be called from there.
   //
-  specs: ["./test/features/**/*.feature"],
+  specs: ["./src/features/**/*.feature"],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -208,11 +204,7 @@ export const config: WebdriverIO.Config = {
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
     // <string[]> (file/dir) require files before executing features
-    require: [
-      "./test/step-definitions/*.ts",
-      "./test/steps/*.ts",
-      "./src/integration/_ic_api/identity_manager_idl.js",
-    ],
+    require: ["./src/steps/*.ts"],
     // <boolean> show full backtrace for errors
     backtrace: false,
     // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)

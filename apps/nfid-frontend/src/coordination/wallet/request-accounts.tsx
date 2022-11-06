@@ -4,36 +4,26 @@ import { useSearchParams } from "react-router-dom"
 
 import { RequestAccounts } from "frontend/apps/identity-manager/request-accounts"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
-import {
-  RequestAccountsMachine,
+import RequestAccountsMachine, {
   RequestAccountsMachineType,
 } from "frontend/state/machines/wallet/request-accounts"
-import RequestTransferMachine from "frontend/state/machines/wallet/request-transfer"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { SDKRequestAccountsPage } from "frontend/ui/pages/request-accounts"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "../authentication"
 
-interface Props {
-  machine?: RequestAccountsMachineType
-}
-
-export default function RequestAccountsCoordinator({ machine }: Props) {
+export default function RequestAccountsCoordinator() {
   const [searchParams] = useSearchParams()
   const applicationName = searchParams.get("applicationName")
   const applicationLogo = searchParams.get("applicationLogo")
 
-  // @ts-ignore
   const [state, send] = useMachine(
-    machine ||
-      RequestAccountsMachine.withConfig(
-        // @ts-ignore
-        {},
-        {
-          appMeta: { name: applicationName || "", logo: applicationLogo || "" },
-        },
-      ),
+    RequestAccountsMachine.withConfig(
+      {},
+      {
+        appMeta: { name: applicationName || "", logo: applicationLogo || "" },
+      },
+    ),
   )
 
   useEffect(() => {
@@ -46,7 +36,7 @@ export default function RequestAccountsCoordinator({ machine }: Props) {
         <BlurredLoader
           isLoading
           loadingMessage={`Connecting to ${
-            state.context.appMeta?.name ?? "the application"
+            state.context?.appMeta?.name ?? "the application"
           }`}
         />
       )
@@ -62,10 +52,9 @@ export default function RequestAccountsCoordinator({ machine }: Props) {
     case state.matches("RequestAccounts"):
       return (
         <RequestAccounts
-          applicationName={state.context.appMeta?.name}
+          applicationName={state.context?.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
           onSuccess={(accounts: string[]) => {
-            // @ts-ignore
             send({ type: "SUCCESS", blockHeight: accounts })
           }}
         />

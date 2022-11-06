@@ -9,6 +9,7 @@ import AuthenticationMachine from "../authentication/authentication"
 interface Context {
   appMeta?: AuthorizingAppMeta
   authSession?: AuthSession
+  requestAccounts?: string
   isLoading?: boolean
   accounts?: string[]
 }
@@ -21,83 +22,91 @@ type Events =
       type: "done.invoke.AuthenticationMachine"
       data: AuthSession
     }
+  | {
+      type: "done.invoke.registerRequestAccountsHandler"
+      data: string
+    }
   | { type: "SUCCESS" }
   | { type: "REJECT" }
   | { type: "END" }
 
-export const RequestAccountsMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QCUwEcCucAuBBAxvgPYYB22sACgE5EBuAlhGNQHSoCGEAngMQRFSYVg1J0iAa2HUwUBrGwtUmHAWJkKACQ6kIAGxYBtAAwBdRKAAORWA2wNBFkAA9EAFgDMADlbG-xgEYAVgAmAJCvbwBOABoQbkQAgIB2X38ggDYvN2NM5I9kgF9CuOUsBTUScipaRmY2XAxsAAswcgZ8DkV+QWFRcSlWRpa2+077QQBZDnxm0TATcyQQa1sJ0idXBCSvENYAr2S3KK8o5ICMkNj4xCiPViCko48PHM8gqIDi0vRyvEIqhQaPQmCx2L9VACNLBeABlACqAGFEQBRWGwxZOVZ2BwbZZbC6eVjJILJZJREIeXIUuIJBB3B5PTyvYzvT7FEogUhEZjwZZlSHqarAupgzg8LE2HGOfHuEK0xCRNJ+ALGKIZAJnNxFTkCipQ4W1UENJqtdrjMCSta4zaIZJeDL7Q5BNUZDJnEJueU3BBK-yBV2ao46n4qfVCoFG+rgsP-CN8qxS9a27ZuDWsY5RLPqjLGc4nBXbFIPf0ug7uu5ub4gPVxwE1EHRlG6K3SvGgAlkx13fIUryBDLJd2Fp7K4whIceXP9o7V2uVaEi42t5OyhAAWgyhc3HMKQA */
-  createMachine(
-    {
-      context: {} as Context,
-      tsTypes: {} as import("./request-accounts.typegen").Typegen0,
-      schema: { events: {} as Events },
-      initial: "Ready",
-      states: {
-        Ready: {
-          invoke: {
-            src: "registerRequestAccountsHandler",
-            id: "registerRequestAccountsHandler",
-            onDone: [
-              {
-                target: "Authenticate",
-              },
-            ],
-          },
-        },
-        Authenticate: {
-          invoke: {
-            src: "AuthenticationMachine",
-            id: "AuthenticationMachine",
-            onDone: [
-              {
-                target: "RequestAccounts",
-                actions: "assignAuthSession",
-              },
-            ],
-          },
-        },
-        RequestAccounts: {
-          on: {
-            SUCCESS: {
-              target: "End",
-              actions: "",
+/** @xstate-layout N4IgpgJg5mDOIC5QCUwEcCucAuBBAxvgPYYB22sACgE5EBuAlhGNQHSoCGEAngMQRFSYVg1J0iAa2HUwUBrGwtUmHAWJkKACQ6kIAGxYBtAAwBdRKAAORWA2wNBFkAA9EAFgDMAdlYBOf75evh6+AGweAEweABwArAA0INyIwayxAIzpXh7pwemhGR4AvkWJylgKaiTkVLSMzGy4GNgAFmDkDPgcivyCwqLiUqxNre32XfaCALIc+C2iYCbmSCDWtpOkTq4ImdERrOnRXrHGob7psb5uEdGJyQipGVk5eQXpxaUg5aqE1RQ09CYLHY6AqeF+GlgvAAygBVADC8IAotDoUsnGs7A5NittvlPKxjl5oulrmFYns3HcUh40plsrkcm8Pp9SERmPAVt9KhCagD6sDODwMTYsY5ce4ItSEHs-AErjEIp49h8yqCfuo+XUgY1mm0OhMwCL1titohiaEDkc3F4lekIr5onFpbL5QrKYrVV91TzNf9tQ0QSpfX9OVZRRszTs3KF0qw3AEvEnoiFDlSkoh6WljDmMm5Kflom4Smrg+C-bVAYGkbpjWKcaA8UnLcFjh5jG4Y7EKdKszmc+9zl57bavdzy6H+Tq65GJQgALShaWLkolIA */
+const RequestAccountsMachine = createMachine(
+  {
+    context: {} as Context,
+    tsTypes: {} as import("./request-accounts.typegen").Typegen0,
+    schema: { events: {} as Events },
+    initial: "Ready",
+    states: {
+      Ready: {
+        invoke: {
+          src: "registerRequestAccountsHandler",
+          id: "registerRequestAccountsHandler",
+          onDone: [
+            {
+              target: "Authenticate",
+              actions: "assignRequestAccountsRequest",
             },
+          ],
+        },
+      },
+      Authenticate: {
+        invoke: {
+          src: "AuthenticationMachine",
+          id: "AuthenticationMachine",
+          onDone: [
+            {
+              target: "RequestAccounts",
+              actions: "assignAuthSession",
+            },
+          ],
+        },
+      },
+      RequestAccounts: {
+        on: {
+          SUCCESS: {
+            target: "End",
           },
         },
-        End: {
-          type: "final",
-        },
       },
-      id: "RequestAccountsProvider",
+      End: {
+        type: "final",
+      },
     },
-    {
-      actions: {
-        assignAuthSession: assign((_, event) => ({
-          authSession: event.data,
-        })),
-      },
-      services: {
-        async registerRequestAccountsHandler() {
-          const params = await registerRequestAccountsHandler(() => {
-            return new Promise((resolve) => {
-              setInterval(() => {
-                accounts.length &&
-                  resolve({
-                    status: "SUCCESS",
-                    accounts: accounts,
-                  })
-              }, 1000)
-            })
+    id: "RequestAccountsProvider",
+  },
+  {
+    actions: {
+      assignAuthSession: assign((_, event) => ({
+        authSession: event.data,
+      })),
+      assignRequestAccountsRequest: assign({
+        requestAccounts: (_, event) => event.data,
+      }),
+    },
+    services: {
+      async registerRequestAccountsHandler() {
+        const params = await registerRequestAccountsHandler(() => {
+          return new Promise((resolve) => {
+            setInterval(() => {
+              accounts.length &&
+                resolve({
+                  status: "SUCCESS",
+                  accounts: accounts,
+                })
+            }, 1000)
           })
-          console.debug("registerRequestAccountsHandler", { params })
-          return params
-        },
-        AuthenticationMachine,
+        })
+        console.debug("registerRequestAccountsHandler", { params })
+        return params
       },
-      guards: {},
+      AuthenticationMachine,
     },
-  )
+    guards: {},
+  },
+)
+
+export default RequestAccountsMachine
 
 export type RequestAccountsMachineActor = ActorRefFrom<
   typeof RequestAccountsMachine

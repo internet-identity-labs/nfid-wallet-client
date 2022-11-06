@@ -28,14 +28,14 @@ export interface Typegen0 {
     registerRequestAccountsHandler: "done.invoke.registerRequestAccountsHandler"
   }
   missingImplementations: {
-    actions: ""
+    actions: never
     services: never
     guards: never
     delays: never
   }
   eventsCausingActions: {
-    "": "SUCCESS"
     assignAuthSession: "done.invoke.AuthenticationMachine"
+    assignRequestAccountsRequest: "done.invoke.registerRequestAccountsHandler"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerRequestAccountsHandler"

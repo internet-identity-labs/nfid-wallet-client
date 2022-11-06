@@ -26,7 +26,7 @@ export const PageGetAccounts = () => {
     })
     updateRequestButton({ loading: false, disabled: false })
     console.log({ result })
-    setNfidResponse(JSON.stringify(result))
+    setNfidResponse(result)
   }, [updateRequestButton])
 
   return (

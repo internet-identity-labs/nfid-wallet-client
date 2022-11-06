@@ -24,14 +24,16 @@ export default function RequestAccountsCoordinator({ machine }: Props) {
   const applicationName = searchParams.get("applicationName")
   const applicationLogo = searchParams.get("applicationLogo")
 
+  // @ts-ignore
   const [state, send] = useMachine(
-    RequestAccountsMachine.withConfig(
-      // @ts-ignore
-      {},
-      {
-        appMeta: { name: applicationName || "", logo: applicationLogo || "" },
-      },
-    ),
+    machine ||
+      RequestAccountsMachine.withConfig(
+        // @ts-ignore
+        {},
+        {
+          appMeta: { name: applicationName || "", logo: applicationLogo || "" },
+        },
+      ),
   )
 
   useEffect(() => {
@@ -63,6 +65,7 @@ export default function RequestAccountsCoordinator({ machine }: Props) {
           applicationName={state.context.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
           onSuccess={(accounts: string[]) => {
+            // @ts-ignore
             send({ type: "SUCCESS", blockHeight: accounts })
           }}
         />

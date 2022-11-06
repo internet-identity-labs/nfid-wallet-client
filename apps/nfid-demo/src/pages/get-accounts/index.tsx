@@ -1,6 +1,6 @@
 import { Route } from "wouter"
-import { PageGetAccounts } from "./page"
 
+import { PageGetAccounts } from "./page"
 
 export const RoutePathGetAccounts = "/get-accounts"
 

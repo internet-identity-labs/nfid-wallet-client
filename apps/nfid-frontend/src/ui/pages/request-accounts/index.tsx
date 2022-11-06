@@ -10,8 +10,8 @@ import LoaderIcon from "./loader.svg"
 import NFIDLogo from "./nfid.svg"
 
 export interface SDKRequestAccountsPageProps {
-  applicationName: string
-  applicationLogo: string
+  applicationName?: string
+  applicationLogo?: string
   onReject: () => void
   onApprove: () => void
   accountsOptions: IOption[]

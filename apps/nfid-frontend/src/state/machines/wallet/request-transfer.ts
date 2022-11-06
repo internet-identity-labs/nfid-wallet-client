@@ -37,7 +37,7 @@ type Events =
   | { type: "END" }
 
 // The machine. Install xstate vscode extension for best results.
-/** @xstate-layout N4IgpgJg5mDOIC5QAUAWB7AdmAcgVwFsAjMAJwGFTIxMAXASwEMAbZU9AN3ojIDoAlMIwgBPAMSJQAB3Sx6DLJJAAPRAEYAHGt4AWNQHYtAViMAGHRv2mATABoQI9UYCcO3mYDMpo-o-PNvjoAvkH2aFi4hCQUVDx0TKzsXDykvACCeLSoNAwAxoy0YGIQEbz0mBzoANZg6ZnZ8fkKmACyjLmo5WBKMnLNSqoIHgBs1rymw0Y6HnrOGhoeGs72jggGBrwapmomaqb6JjrbIWEY2PjEZJTU8SxsnNx8AOJgtOHnUc+vAKLK9LAMTBQd6RS6kYqlcqVGq8ABmrw6IIu0R6snk9EUSBUiD0Gl4gQ8Oxcw1Gww8RhWiGspg0Yw0OmsHl8RnJTI0wxOICRnxiNwYdySj1SLzeZ1B0V43zoZG5YLE3xwABVvvwAPrIAASAHkcN9VTgAKotABCKtRfQxmAGOI8Hk2fn0zn01mcpgmrkpCGsemGvGGmnpajUzhdk05sui1zi-MSDxSvBFEb4ADUyPRYSIk+CStgyhVqrUOGmM1mAMpkLi5bpY3rozGgQZ+ZzuJ3DN1LbY+fSe6zMzZGSwWdlePwc0JcsXIq6xHIJe7JL6iiJT1Kp0jpzOTnliMjsVJSZgFWHoUgEXhF9clrdg8ukSvV6Ro-pYwZqHRuPx6czDWnmObDHsLDtd9TGcIx-QOPYNHDa9IxnW5YwXYVXizSVpVIUsWlLRUC0wMRyA1NIcCePVNR1PVDRNM0ayfS1rTWbRnC8XtJkdNRqSDDQe2GfR9D9SxrB8Ix2JDXwYOXHko1nAU40XVCpUKDCsJwmo8IVZU1Uw0tVUVLUAGkFXNOsrRfHFhM2fQ9m2HjaQHZYHCpZwf10LRTBHIxvV7aDxyzKSEPnIUExQ2C+AUsgtJUmgxH4b5SwVAARIznwbKkpnxBl-F8QTvQmLiHK9fQdCMdwNDMXw1CZYkPHEj4wT8mMAvjRMQtXFhuAKMAItwiFcyhAtz2LERSwIWBb3vJK6NMhB6VMdwZi2LZhlcFkdB7fRRk2Ax5msLR2SDIwavFac+TnQUmuCiSwV4ZM2ogDqutUndSD3XgDyPE8zwvDdhtGit6CrCb62xL1rG0eYbDA70RjfHQAPyl1ePxQlvBcZ0eLmQ6V3q07ZOQpdauiHragBDreF8+CGrOuSWsBkyUoQOZtEmW09jbRYys9AxGV4W0HSc6xBJMA7OUwdAeHgLFyZOmSkIEIRRFp+iAFo9nGVndtAgcXRmTnwLtN0vAZLRYcdaxMckimcdljIslnJoHxAWtkuBrxZrbPWyRMb93118yDZR3saUEsdTkuuDpcQwLmrDxdfn+QFgRpmiLSBxtYd4ZbA6WSYnPs1Zg00XgBZMKwQymNyQ4nGPeWjK2o4ugnQvQrNFam99m0seY7Nmck8tWRlrF9H8jltFx2eqnyWuxmX6-xo7V0Glvk+M+iZl9TOrGz1HzB7cDfTUEkmPmZwnKWc26stmfzrnlc0MUh6aFb+nYbcL2luDKZ2Rsbt4csO0BaWK6L8zonTn3DrXK+1Nq7XVuvdZSuEn4ux0M2f0Hhg7bF4vtVa+UvBLTmhMaky0eLrTAcdCBkdr7yUwBARBr5QL7y3gyEw3oGQ9gqs2cCbkQy2mdDoMSk9q7TwoVAxupBaGIBVmMd0zoZjUksHMWknN6S+mLuBEMewPLC1DqIoRjU+BsDgDkIR4iGbeAzoPXibpvBHF7LrDang3KCxGHMYIAidGX2EWI5eztBhKxGOMJaMiGQ0kdPMTmfDmz+y0NSN0jJXEhCAA */
+/** @xstate-layout N4IgpgJg5mDOIC5QCUwEcCucAuAVATgIYB2sAZmPgAr4D2AbgJYSUB0qhEAngMQS3EwrRsXq0A1kPxgojWNkqpMOAiXKUAEiQgAbSgG0ADAF1EoAA61YjbIwFmQAD0QBmABxvWHgKzfDATgAmF38Adl9DABYAGhAuREjI-y9AwwA2F0i3bwBGQOCcgF9C2KUseVVSCmo6JhZ8VgBBDGwACzBiWwBjQgU+ASERMUkmlvbOxh7bAQBZQi7WkTAjUyQQS2tp4gdnBBzDYNZAtLTjwMTvQJzQl1j4hBcT1lD-N39Dfb83SLTQ4tL0OU8EQqpQaAxmGwyioQep8DwAMIAeQAcgAxACSyBmKwcGxsdm2a12AFocpEcqw0tljiFjm5DNk7og3DlPNcci4XMdIi4AoYXP8QNCKrDquC6mwEQIyIx8ABbHgAURRABFcWt8Vsdq53Kx3r9Qjkcv4gv5TmlmQhWeyjVyeXz3oKhcRaCx4GsRcC1OLapCGhxuHirAT7MTECTzt5WOS6cFzoFzf4rS5Oc8BQzQml-C5vKFIt4hV7KnCJf7Rm0Ot1emBg5tCTqEBTKRm8qzqabDOkU4Zo120t5IvnMjc-iVhYCYT6wX76uxJ6Lp-g66GiaBSZyXDHvP4IkbO6yrWkAqxBwX-EkgicAkWF97QTUIXPpcRZQqV9rw03kgPQoFvI6LzpLmVqhG4gRUqEXacpEgShDciS3soi4PmWc5KsQEAfg2X5pEOp5gTubhQTkJxcqBOaQZyVzHF2OaBEhQIlr6T6UNhYbrhGiZbrGQTxrBSZWlcaSsP2AG5ryxrUcUxRAA */
 const RequestTransferMachine = createMachine(
   {
     context: {} as Context,
@@ -50,35 +50,43 @@ const RequestTransferMachine = createMachine(
         invoke: {
           src: "registerRequestTransferHandler",
           id: "registerRequestTransferHandler",
-          onDone: {
-            target: "Authenticate",
-            actions: "assignRequestTransferRequest",
-          },
+          onDone: [
+            {
+              target: "Authenticate",
+              actions: "assignRequestTransferRequest",
+            },
+          ],
         },
       },
       Authenticate: {
         invoke: {
           src: "AuthenticationMachine",
           id: "AuthenticationMachine",
-          onDone: [{ target: "RequestTransfer", actions: "assignAuthSession" }],
-          data: (context) => ({
-            appMeta: context.appMeta,
-          }),
+          onDone: [
+            {
+              target: "RequestTransfer",
+              actions: "assignAuthSession",
+            },
+          ],
         },
       },
       RequestTransfer: {
         on: {
-          CONFIRM: "Confirm",
+          CONFIRM: {
+            target: "Confirm",
+          },
         },
       },
       Confirm: {
-        onEntry: "assignBlockHeight",
+        entry: "assignBlockHeight",
         on: {
-          END: "End",
+          END: {
+            target: "End",
+          },
         },
       },
       End: {
-        onEntry: "setBlockHeight",
+        entry: "setBlockHeight",
         type: "final",
       },
     },

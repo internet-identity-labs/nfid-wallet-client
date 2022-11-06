@@ -11,33 +11,12 @@ import React from "react"
 import { ImSpinner } from "react-icons/im"
 
 import { environment } from "../../environments/environment"
+import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
 let identity: DelegationIdentity
 
-interface ButtonState {
-  disabled: boolean
-  loading: boolean
-  label: string
-}
 const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
-
-const useButtonState = ({
-  disabled = false,
-  loading = false,
-  label = "Submit",
-}: Partial<ButtonState> = {}) =>
-  React.useReducer(
-    (state: ButtonState, newState: Partial<ButtonState>): ButtonState => ({
-      ...state,
-      ...newState,
-    }),
-    {
-      disabled,
-      loading,
-      label,
-    },
-  )
 
 export const PagePhoneNumberVerification: React.FC = () => {
   const [authButton, updateAuthButton] = useButtonState({

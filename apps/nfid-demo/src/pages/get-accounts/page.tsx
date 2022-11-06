@@ -15,24 +15,25 @@ export const PageGetAccounts = () => {
     label: "Request accounts",
   })
 
-  const [principal, setPrincipal] = useState("")
+  const [nfidResponse, setNfidResponse] = useState({})
 
   const handleRequestAccounts = useCallback(async () => {
     updateRequestButton({ loading: true, disabled: true })
     const result = await requestAccounts({
       provider: new URL(
-        `${environment.nfidProviderOrigin}/wallet/request-accounts?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
+        `${environment.nfidProviderOrigin}/wallet/request-accounts?applicationName=RequestAccountsDemo&applicationLogo=${APPLICATION_LOGO_URL}`,
       ),
     })
     updateRequestButton({ loading: false, disabled: false })
     console.log({ result })
+    setNfidResponse(JSON.stringify(result))
   }, [updateRequestButton])
 
   return (
     <PageTemplate title="Get accounts">
       <H1 className="title">Request accounts</H1>
 
-      <div className="flex flex-col w-64">
+      <div className="flex flex-col w-64 my-8">
         <Button
           primary
           disabled={requestButton.disabled}
@@ -56,8 +57,8 @@ export const PageGetAccounts = () => {
           "sm:px-[30px] sm:py-[26px]",
         )}
       >
-        <h2 className={clsx("font-bold")}>Identity principal:</h2>
-        <pre>{JSON.stringify(principal, null, 2)}</pre>
+        <h2 className={clsx("font-bold mb-1")}>NFID Response:</h2>
+        <pre>{JSON.stringify(nfidResponse, null, 2)}</pre>
       </div>
     </PageTemplate>
   )

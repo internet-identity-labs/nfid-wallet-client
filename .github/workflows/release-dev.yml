@@ -59,7 +59,7 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
           EOF
           yarn
-          yarn prettier --check "src/**/*.{ts,tsx}"
+          yarn format:check
           npx nx test nfid-frontend
         env:
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}

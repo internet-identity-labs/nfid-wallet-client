@@ -2,7 +2,9 @@ import clsx from "clsx"
 
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
+import { Loader } from "frontend/ui/atoms/loader"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
+import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { IOption } from "frontend/ui/molecules/input-dropdown"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
@@ -17,7 +19,7 @@ export interface SDKRequestAccountsPageProps {
   accountsOptions: IOption[]
   selectedAccounts: string[]
   setSelectedAccounts: (value: string[]) => void
-  isLoading: boolean
+  timer: number | boolean
 }
 
 export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
@@ -28,10 +30,11 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
   accountsOptions,
   selectedAccounts,
   setSelectedAccounts,
-  isLoading = false,
+  timer = false,
 }) => {
   return (
     <ScreenResponsive frameLabel="Approve with NFID">
+      <BlurredLoader isLoading={!accountsOptions.length} />
       <div
         className={clsx(
           "flex flex-col flex-grow lg:justify-between",
@@ -56,15 +59,6 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
                 )}
               >
                 <img className="w-6" src={NFIDLogo} alt="nfid" />
-                <img
-                  src={LoaderIcon}
-                  alt="loading"
-                  className={clsx(
-                    "absolute -right-1 -bottom-1",
-                    "animate-spin",
-                    !isLoading && "hidden",
-                  )}
-                />
               </div>
               <div>
                 <p className="text-sm font-semibold">View your Web3 balance</p>
@@ -75,19 +69,19 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
               </div>
             </div>
             <DropdownSelect
+              disabled={timer !== -1}
               isSearch
               options={accountsOptions}
               selectedValues={selectedAccounts}
               setSelectedValues={setSelectedAccounts}
               placeholder="None selected - connect anonymously"
-              disabled={isLoading}
             />
           </div>
         </div>
         <div
           className={clsx(
             "grid grid-cols-2 gap-5 mt-5 lg:mt-32",
-            isLoading && "hidden",
+            timer !== -1 && "hidden",
           )}
         >
           <Button stroke onClick={onReject}>
@@ -99,12 +93,11 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
         </div>
 
         <Button
-          className={clsx("mt-5 lg:mt-32", !isLoading && "hidden")}
-          disabled
+          className={clsx("mt-5 lg:mt-32", timer === -1 && "hidden")}
           block
           primary
         >
-          In progress...
+          Success! Closing in {timer}
         </Button>
       </div>
     </ScreenResponsive>

@@ -55,7 +55,7 @@ export default function RequestAccountsCoordinator() {
           applicationName={state.context?.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
           onSuccess={(accounts: string[]) => {
-            send({ type: "SUCCESS", blockHeight: accounts })
+            send({ type: "SUCCESS", accounts: accounts })
           }}
         />
       )

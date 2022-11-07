@@ -11,8 +11,10 @@ export default async (position: any, obsolete: any) => {
    * @type {Object}
    */
 
-  const positionNumber: number = position === "last" ? -1 : -2;
-  const lastWindowHandle = (await browser.getWindowHandles()).slice(positionNumber)[0]
+  const positionNumber: number = position === "last" ? -1 : -2
+  const lastWindowHandle = (await browser.getWindowHandles()).slice(
+    positionNumber,
+  )[0]
 
   await browser.switchToWindow(lastWindowHandle)
 }

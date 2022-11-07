@@ -1,4 +1,10 @@
-import { DelegationChain, DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import {
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
+
+import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.did"
 import {
   Challenge,
   ChallengeResult,
@@ -6,8 +12,6 @@ import {
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity_types"
 import { ii, im } from "frontend/integration/actors"
-import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.did"
-
 
 export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
   const sessionKey = Ed25519KeyIdentity.generate()
@@ -20,7 +24,10 @@ export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
   return DelegationIdentity.fromDelegation(sessionKey, chain)
 }
 
-export async function registerIIAccount(identity: Ed25519KeyIdentity, deviceData: DeviceData) {
+export async function registerIIAccount(
+  identity: Ed25519KeyIdentity,
+  deviceData: DeviceData,
+) {
   const challenge: Challenge = (await ii.create_challenge()) as Challenge
   const challenageResult: ChallengeResult = {
     key: challenge.challenge_key,

@@ -2,6 +2,8 @@ import { Given } from "@cucumber/cucumber"
 
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab"
 import openWebsite from "./support/action/openWebsite"
+import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
+import removeUserE2E from "./support/action/removeUserE2E"
 import setWindowSize from "./support/action/setWindowSize"
 import { setupVirtualAuthenticator } from "./support/action/setupVirtualWebauthn"
 import addLocalStorageKey from "./support/check/addLocalStorageKey"
@@ -22,12 +24,13 @@ import checkUrl from "./support/check/checkURL"
 import compareText from "./support/check/compareText"
 import isDisplayed from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
-import removeUserE2E from "./support/action/removeUserE2E"
-import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
 
 Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
 
-Given(/^I remove the account by phone number 380990374146$/, removeAccountByPhoneNumber)
+Given(
+  /^I remove the account by phone number 380990374146$/,
+  removeAccountByPhoneNumber,
+)
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)
 

@@ -11,7 +11,7 @@ export function App() {
       <RouteHome />
       <RouteRequestTransfer />
       <RoutePhoneNumberVerification />
-      <RouteGetAccounts/>
+      <RouteGetAccounts />
     </HelmetProvider>
   )
 }

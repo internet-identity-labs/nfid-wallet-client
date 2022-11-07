@@ -1,5 +1,5 @@
 import { Button, H1 } from "@nfid-frontend/ui"
-import { requestAccounts } from "@nfid/accounts"
+import { requestAccounts } from "@nfid/wallet"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import { ImSpinner } from "react-icons/im"

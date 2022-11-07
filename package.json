@@ -10,7 +10,7 @@
     "dev": "craco start",
     "eject": "craco eject",
     "format:examples": "prettier --write ./examples/MultipassDemo/src",
-    "format:check": "yarn prettier --check 'apps/**/*.{ts,tsx}' --check 'packages/**/*.{ts,tsx}'",
+    "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
     "generate-cucumber-html-report": "ts-node ./test/reporter/index.ts",
     "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js",

@@ -21,12 +21,12 @@ export interface IDropdownSelect {
   bordered?: boolean
   options: IOption[]
   isSearch?: boolean
-  placeHolder?: string
   selectedValues: string[]
   setSelectedValues: (value: string[]) => void
   placeholder?: string
   isMultiselect?: boolean
   firstSelected?: boolean
+  disabled?: boolean
 }
 
 export const DropdownSelect = ({
@@ -39,6 +39,7 @@ export const DropdownSelect = ({
   placeholder = "All",
   isMultiselect = true,
   firstSelected = false,
+  disabled = false,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
@@ -71,7 +72,13 @@ export const DropdownSelect = ({
   }, [firstSelected, options])
 
   return (
-    <div className={clsx("relative w-full")} ref={ref}>
+    <div
+      className={clsx(
+        "relative w-full",
+        disabled && "pointer-events-none cursor-default",
+      )}
+      ref={ref}
+    >
       <label
         className={clsx(
           "text-xs tracking-[0.16px] leading-4 mb-1",
@@ -88,6 +95,7 @@ export const DropdownSelect = ({
           "active:outline active:outline-offset-1",
           bordered && "border border-black-base",
           isDropdownOpen && "border border-blue-600 bg-blue-50",
+          disabled && "!border-none !bg-gray-100 !text-gray-400",
         )}
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}

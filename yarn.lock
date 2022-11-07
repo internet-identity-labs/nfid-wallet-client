@@ -3003,10 +3003,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nfid/core@0.0.2-alpha.3":
-  version "0.0.2-alpha.3"
-  resolved "https://registry.yarnpkg.com/@nfid/core/-/core-0.0.2-alpha.3.tgz#81f5c1ba771140ef89666acbba482be86924959e"
-  integrity sha512-T1Iahueor2SFpIrthvI+4FoH5FF3cp5RkX9s/PyM5PqFyJWppVceLTE41EWo1oUBN7+M9WZRqNZgJlaliD2tug==
+"@nfid/core@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@nfid/core/-/core-1.0.2.tgz#ee9ae17650bcee7cd14689c5bbaf101a0b240d5e"
+  integrity sha512-Utw8R69KSlwnfVcoritY99iW0eF/z/JGj0MKWawTQQdqFZL1xCN7RtFx35Lwupnx9cWzcIvv6lQfzp7wQsPjFg==
 
 "@nfid/credentials@1.1.0":
   version "1.1.0"
@@ -3020,12 +3020,12 @@
     ictool "^0.0.6"
     luxon "^2.4.0"
 
-"@nfid/wallet@0.0.2-alpha.8":
-  version "0.0.2-alpha.8"
-  resolved "https://registry.yarnpkg.com/@nfid/wallet/-/wallet-0.0.2-alpha.8.tgz#fe9c83cbc96b97945cb97ed19e607fcdb185c3fd"
-  integrity sha512-bRcLviorTkyt/dWH9Qf8IL5nDYVssF9667D1eWMTSRxqtGZpHfyLx4LUZugqpgSiT7bXoDKGnbsu77GSIV0f4w==
+"@nfid/wallet@1.1.0-alpha.0":
+  version "1.1.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@nfid/wallet/-/wallet-1.1.0-alpha.0.tgz#3c81e50bc8472ed6e50769ce50feb378b757e723"
+  integrity sha512-TJaMvACuRVGtaqMUa7yQ170H5t7yb73rD3BGe7JsQnOQQHfRnCb5j9+DSBUwxQJauAkB8TnmskcSNNULzTPDfA==
   dependencies:
-    "@nfid/core" "0.0.2-alpha.3"
+    "@nfid/core" "1.0.2"
     tslib "2.4.0"
 
 "@nodelib/fs.scandir@2.1.5":

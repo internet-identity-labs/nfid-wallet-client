@@ -63,7 +63,7 @@ jobs:
 
       - uses: aviate-labs/setup-dfx@v0.2.3
         with:
-          dfx-version: 0.9.3
+          dfx-version: 0.11.2
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
@@ -74,23 +74,19 @@ jobs:
           //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
           EOF
           yarn
-          yarn format:check
         env:
           NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
 
       - name: NFID FRONTEND | deploy
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
 
           # install local to generate the types
-          dfx start --clean --background
-          dfx deploy nfid-frontend --no-wallet
-          dfx stop
+          npx nx run-many --target=build --projects=nfid-demo,nfid-frontend
 
-          # On main branch build on ic
-          if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            dfx identity use action
-            dfx deploy --network ic nfid-frontend --no-wallet
-          fi
+          dfx identity use action
+          dfx deploy --network ic nfid-frontend --no-wallet
+          dfx deploy --network ic nfid-demo --no-wallet
 
         env:
           FRONTEND_MODE: production

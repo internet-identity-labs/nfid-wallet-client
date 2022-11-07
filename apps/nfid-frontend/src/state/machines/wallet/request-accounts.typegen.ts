@@ -34,8 +34,10 @@ export interface Typegen0 {
     delays: never
   }
   eventsCausingActions: {
+    assignAccounts: "SUCCESS"
     assignAuthSession: "done.invoke.AuthenticationMachine"
     assignRequestAccountsRequest: "done.invoke.registerRequestAccountsHandler"
+    setAccounts: "SUCCESS"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerRequestAccountsHandler"
@@ -43,6 +45,11 @@ export interface Typegen0 {
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
-  matchesStates: "Authenticate" | "End" | "Ready" | "RequestAccounts"
+  matchesStates:
+    | "Authenticate"
+    | "Confirm"
+    | "End"
+    | "Ready"
+    | "RequestAccounts"
   tags: never
 }

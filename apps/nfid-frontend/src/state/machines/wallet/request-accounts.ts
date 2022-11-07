@@ -14,7 +14,7 @@ interface Context {
   accounts?: string[]
 }
 
-let accounts: string[] = []
+let accounts: string[] | undefined = undefined
 
 // Definition of events usable in the machine.
 type Events =
@@ -26,7 +26,7 @@ type Events =
       type: "done.invoke.registerRequestAccountsHandler"
       data: string
     }
-  | { type: "SUCCESS" }
+  | { type: "SUCCESS"; accounts: string[] }
   | { type: "REJECT" }
   | { type: "END" }
 
@@ -60,14 +60,21 @@ const RequestAccountsMachine = createMachine(
               actions: "assignAuthSession",
             },
           ],
+          data: (context) => ({
+            appMeta: context.appMeta,
+          }),
         },
       },
       RequestAccounts: {
         on: {
           SUCCESS: {
-            target: "End",
+            target: "Confirm",
+            actions: "assignAccounts",
           },
         },
+      },
+      Confirm: {
+        onEntry: "setAccounts",
       },
       End: {
         type: "final",
@@ -83,17 +90,25 @@ const RequestAccountsMachine = createMachine(
       assignRequestAccountsRequest: assign({
         requestAccounts: (_, event) => event.data,
       }),
+      assignAccounts: assign({
+        accounts: (_, event) => event.accounts,
+      }),
+      setAccounts: (data) => {
+        console.log({ accounts, data })
+        accounts = data.accounts
+      },
     },
     services: {
       async registerRequestAccountsHandler() {
         const params = await registerRequestAccountsHandler(() => {
           return new Promise((resolve) => {
             setInterval(() => {
-              accounts.length &&
+              if (accounts) {
                 resolve({
                   status: "SUCCESS",
                   accounts: accounts,
                 })
+              }
             }, 1000)
           })
         })

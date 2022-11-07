@@ -5,7 +5,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build-storybook": "build-storybook -s public",
     "build:example": "export EXAMPLE_BUILD=1 && craco build",
-    "build": "craco build",
+    "build": "npx nx run-many build --target=build --projects=nfid-demo,nfid-frontend",
     "clear": "rm -rf node_modules build allure-results",
     "dev": "craco start",
     "eject": "craco eject",

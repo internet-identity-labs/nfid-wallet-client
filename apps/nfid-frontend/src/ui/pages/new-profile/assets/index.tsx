@@ -82,6 +82,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
             <div
               key={`token_${index}`}
               className="flex items-center justify-between h-16"
+              onClick={handleNavigateToTokenDetails(token.currency)}
             >
               <div className="flex items-center text-[#0B0E13]">
                 <img

@@ -42,7 +42,7 @@
     {
       "label": "NFID Frontend",
       "type": "shell",
-      "command": "yarn && yarn dev",
+      "command": "yarn && npx nx serve nfid-frontend",
       "presentation": {
         "reveal": "always",
         "panel": "new",

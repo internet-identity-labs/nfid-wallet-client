@@ -1,5 +1,4 @@
-import { authState } from "@nfid/integration"
-import { im } from "@nfid/integration"
+import { authState, im } from "@nfid/integration"
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 

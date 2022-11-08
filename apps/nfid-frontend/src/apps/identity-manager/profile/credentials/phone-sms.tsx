@@ -1,10 +1,9 @@
-import { authState } from "@nfid/integration"
-import { im } from "@nfid/integration"
+import { authState, im } from "@nfid/integration"
 import { useAtom } from "jotai"
 import React from "react"
 import { toast } from "react-toastify"
+import { useProfile } from "src/integration/identity-manager/queries"
 
-import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import ProfileAddPhoneSMS from "frontend/ui/pages/new-profile/credentials/add-phone-sms"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
@@ -18,7 +17,7 @@ const ProfileSMS = () => {
   const [isLoading, toggleLoading] = React.useReducer((s) => !s, false)
   const [error, setError] = React.useState("")
   const { navigate } = useNFIDNavigate()
-  const { refreshProfile } = useAccount()
+  const { refreshProfile } = useProfile()
   const { delegationIdentity } = authState.get()
 
   const navigateToCredentials = React.useCallback(() => {

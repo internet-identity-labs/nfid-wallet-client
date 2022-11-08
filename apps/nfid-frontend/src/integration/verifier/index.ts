@@ -1,5 +1,5 @@
 import { mapDate, mapOptional } from "../_common"
-import { Certificate as ExternalCertificate } from "../_ic_api/verifier.did"
+import { Certificate as ExternalCertificate } from "../_ic_api/verifier.d"
 import { verifier } from "../actors"
 
 export interface Certificate {

@@ -11,7 +11,7 @@ import { Principal } from "@dfinity/principal"
 import {
   DeviceData,
   UserNumber,
-} from "frontend/integration/_ic_api/internet_identity_types"
+} from "frontend/integration/_ic_api/internet_identity.d"
 import { ii, im, replaceIdentity } from "frontend/integration/actors"
 import {
   fetchPrincipals,

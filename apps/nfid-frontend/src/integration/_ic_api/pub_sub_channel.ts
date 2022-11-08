@@ -1,4 +1,4 @@
-export const idlFactory = ({ IDL }) => {
+export const idlFactory = ({ IDL }: any) => {
   const Topic = IDL.Text
   const Message = IDL.Text
   const Error = IDL.Text
@@ -19,6 +19,6 @@ export const idlFactory = ({ IDL }) => {
     ),
   })
 }
-export const init = ({ IDL }) => {
+export const init = ({ IDL }: any) => {
   return []
 }

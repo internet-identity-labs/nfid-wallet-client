@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { Application } from "frontend/integration/_ic_api/identity_manager.did"
+import { Application } from "frontend/integration/_ic_api/identity_manager.d"
 import { im as imMock } from "frontend/integration/actors"
 import { processApplicationOrigin } from "frontend/integration/identity-manager/index"
 

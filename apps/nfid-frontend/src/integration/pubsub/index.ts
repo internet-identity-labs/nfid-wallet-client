@@ -5,7 +5,7 @@ import { unpackResponse } from "frontend/integration/_common"
 import {
   MessageHttpResponse,
   Topic,
-} from "frontend/integration/_ic_api/pub_sub_channel.did"
+} from "frontend/integration/_ic_api/pub_sub_channel.d"
 import { pubsub } from "frontend/integration/actors"
 
 import { ReconstructableIdentity } from "../internet-identity"

@@ -3,10 +3,9 @@
  */
 import { Actor, HttpAgent } from "@dfinity/agent"
 import { Secp256k1KeyIdentity } from "@dfinity/identity"
-// import { idlFactory } from "./../../../../src/integration/_ic_api/identity_manager_idl";
 import sha256 from "sha256"
 
-import { idlFactory } from "../../../../../nfid-frontend/src/integration/_ic_api/identity_manager_idl"
+import { idlFactory } from "../../../../../nfid-frontend/src/integration/_ic_api/identity_manager"
 
 const LAMBDA_IDENTITY = process.env.LAMBDA_IDENTITY
 const IDENTITY_MANAGER_CANISTER_ID_DEV =

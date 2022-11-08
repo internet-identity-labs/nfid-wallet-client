@@ -3,7 +3,7 @@ import React from "react"
 import useSWR from "swr"
 
 import { unpackResponse } from "frontend/integration/_common"
-import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.did"
+import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.d"
 import { im } from "frontend/integration/actors"
 
 import {

@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
-      "@nfid-frontend/validation": ["packages/validation/src/index.ts"]
+      "@nfid-frontend/validation": ["packages/validation/src/index.ts"],
+      "@nfid/integration": ["packages/integration/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

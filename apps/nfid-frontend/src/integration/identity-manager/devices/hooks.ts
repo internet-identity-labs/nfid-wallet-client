@@ -10,11 +10,11 @@ import useSWR from "swr"
 import {
   AccessPointRequest,
   AccessPointResponse,
-} from "frontend/integration/_ic_api/identity_manager.did"
+} from "frontend/integration/_ic_api/identity_manager.d"
 import {
   DeviceData,
   PublicKey,
-} from "frontend/integration/_ic_api/internet_identity_types"
+} from "frontend/integration/_ic_api/internet_identity.d"
 import { im } from "frontend/integration/actors"
 import { useDeviceInfo } from "frontend/integration/device"
 import { removeAccessPointFacade } from "frontend/integration/facade"

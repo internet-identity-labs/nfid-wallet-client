@@ -6,7 +6,7 @@ import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/
 import { expect } from "@jest/globals"
 import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
-import { Balance } from "frontend/integration/_ic_api/ext.did"
+import { Balance } from "frontend/integration/_ic_api/ext.d"
 import {
   listNFT,
   lockNFT,

@@ -7,7 +7,7 @@ import {
   HTTPAccessPointResponse,
   HTTPAccountResponse,
   PersonaResponse,
-} from "../_ic_api/identity_manager.did"
+} from "../_ic_api/identity_manager.d"
 
 export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse> {
   return {

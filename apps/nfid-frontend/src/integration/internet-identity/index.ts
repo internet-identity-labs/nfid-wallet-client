@@ -32,7 +32,7 @@ import {
   SignedDelegation as IISignedDelegation,
   Timestamp,
   UserNumber,
-} from "frontend/integration/_ic_api/internet_identity_types"
+} from "frontend/integration/_ic_api/internet_identity.d"
 import {
   accessList,
   ii,
@@ -78,7 +78,7 @@ type ApiError = { kind: "apiError"; error: Error }
 type RegisterNoSpace = { kind: "registerNoSpace" }
 type SeedPhraseFail = { kind: "seedPhraseFail" }
 
-export type { ChallengeResult } from "frontend/integration/_ic_api/internet_identity_types"
+export type { ChallengeResult } from "frontend/integration/_ic_api/internet_identity.d"
 
 export interface FrontendDelegation {
   delegationIdentity: DelegationIdentity

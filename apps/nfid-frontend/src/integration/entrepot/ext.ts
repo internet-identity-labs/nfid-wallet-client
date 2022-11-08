@@ -2,6 +2,7 @@ import { Identity } from "@dfinity/agent/lib/cjs/auth"
 import { Principal } from "@dfinity/principal"
 import { decodeTokenIdentifier, principalToAddress } from "ictool"
 
+import { extIDL } from "frontend/integration/_ic_api/ext"
 import {
   AccountIdentifier,
   Balance,
@@ -9,8 +10,7 @@ import {
   LockResult,
   TransferRequest,
   TransferResult,
-} from "frontend/integration/_ic_api/ext.did"
-import { extIDL } from "frontend/integration/_ic_api/ext_idl"
+} from "frontend/integration/_ic_api/ext.d"
 import { initActor } from "frontend/integration/actors"
 import { isHex } from "frontend/ui/utils"
 

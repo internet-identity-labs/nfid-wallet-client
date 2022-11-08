@@ -21,7 +21,7 @@ import {
   XdrUsd,
 } from "frontend/integration/rosetta/rosetta_interface"
 
-import { BlockIndex, TransferResult } from "../_ic_api/ledger.did"
+import { BlockIndex, TransferResult } from "../_ic_api/ledger.d"
 import {
   delegationIdentityFromSignedIdentity,
   fetchDelegate,

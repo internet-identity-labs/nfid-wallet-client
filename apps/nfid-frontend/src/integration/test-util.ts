@@ -4,13 +4,13 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
-import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.did"
+import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.d"
 import {
   Challenge,
   ChallengeResult,
   DeviceData,
   UserNumber,
-} from "frontend/integration/_ic_api/internet_identity_types"
+} from "frontend/integration/_ic_api/internet_identity.d"
 import { ii, im } from "frontend/integration/actors"
 
 export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
@@ -25,6 +25,7 @@ export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
 }
 
 export async function registerIIAccount(
+  // FIXME: unused
   identity: Ed25519KeyIdentity,
   deviceData: DeviceData,
 ) {

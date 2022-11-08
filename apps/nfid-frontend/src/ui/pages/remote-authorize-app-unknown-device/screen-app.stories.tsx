@@ -3,7 +3,10 @@ import { BrowserRouter as Router } from "react-router-dom"
 
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
-import { RemoteAuthorizeAppUnknownDevice } from "."
+import {
+  AuthorizeAppUnknownDeviceProps,
+  RemoteAuthorizeAppUnknownDevice,
+} from "."
 
 export default {
   title: "Screens/AuthorizeAppUnknownDevice",
@@ -16,7 +19,7 @@ export default {
 
 const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   typeof RemoteAuthorizeAppUnknownDevice
-> = (args) => {
+> = (args: AuthorizeAppUnknownDeviceProps) => {
   return (
     <Router>
       <ScreenResponsive>
@@ -31,6 +34,4 @@ export const ResponsiveScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 ResponsiveScreen.args = {
   applicationName: "My Application",
   url: "https://nfid.one/secret/scope/my-application",
-  isLoading: false,
-  registerDeviceDeciderPath: "/register-device-decider",
 }

@@ -7,13 +7,9 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { ii, cyclesMinter, ledgerWithIdentity } from "@nfid/integration"
 import { principalToAddress, fromHexString } from "ictool"
 
-import {
-  ii,
-  cyclesMinter,
-  ledgerWithIdentity,
-} from "frontend/integration/actors"
 import {
   Balance,
   RosettaRequest,
@@ -117,7 +113,7 @@ export async function getWalletDelegation(
   const delegation = await fetchDelegate(
     userNumber,
     scope,
-    [...new Uint8Array(sessionKey.getPublicKey().toDer())],
+    Array.from(new Uint8Array(sessionKey.getPublicKey().toDer())),
     maxTimeToLive,
   )
 

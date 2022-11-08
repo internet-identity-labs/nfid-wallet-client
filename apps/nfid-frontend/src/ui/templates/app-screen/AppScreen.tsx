@@ -67,7 +67,6 @@ export const AppScreen: React.FC<Props> = ({
             <BlurOverlay className="absolute top-0 left-0 z-10 w-full h-full" />
             <div className="z-20 flex flex-col items-center justify-center w-full h-full px-14">
               <Loader
-                iframe
                 isLoading={isLoading}
                 fullscreen={false}
                 imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}

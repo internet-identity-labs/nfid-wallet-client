@@ -3,6 +3,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import { ii, im } from "@nfid/integration"
 
 import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.d"
 import {
@@ -11,7 +12,6 @@ import {
   DeviceData,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
-import { ii, im } from "frontend/integration/actors"
 
 export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
   const sessionKey = Ed25519KeyIdentity.generate()

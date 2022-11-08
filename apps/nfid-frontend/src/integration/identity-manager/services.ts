@@ -1,3 +1,5 @@
+import { fetchPrincipal } from "@nfid/integration"
+
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
 import {
@@ -8,7 +10,6 @@ import {
   mapPersonaToLegacy,
   verifyToken,
 } from "."
-import { fetchPrincipal } from "../actors"
 import { getNextAccountId } from "./persona/utils"
 import { loadProfileFromLocalStorage } from "./profile"
 

@@ -36,9 +36,6 @@ export function factoryAccount(principal?: Principal): Profile {
     accessPoints: new Array(Math.floor(Math.random() * 5)).fill(
       factoryAccessPoint(),
     ),
-    personas: new Array(Math.floor(Math.random() * 5)).fill(
-      factoryAccessPoint(),
-    ),
     accounts: [],
     principalId: principal?.toText() || "",
     name: undefined,

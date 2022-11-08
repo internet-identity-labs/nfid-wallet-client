@@ -1,6 +1,7 @@
+import { authState } from "@nfid/integration"
+
 import { AuthSession } from "frontend/state/authentication"
 
-import { authState } from "../internet-identity"
 import {
   buildRemoteLoginRegisterMessage,
   createTopic,

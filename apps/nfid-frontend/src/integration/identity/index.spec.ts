@@ -1,8 +1,9 @@
 /**
  * @jest-environment jsdom
  */
+import { ii } from "@nfid/integration"
+
 import { identityFromDeviceList } from "."
-import { ii } from "../actors"
 import { getMultiIdent, lookup } from "../internet-identity"
 import { II_DEVICES_DATA } from "../internet-identity/__mocks"
 

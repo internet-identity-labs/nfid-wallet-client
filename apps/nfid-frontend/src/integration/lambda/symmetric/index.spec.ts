@@ -3,9 +3,9 @@
  */
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { expect } from "@jest/globals"
+import { replaceIdentity } from "@nfid/integration"
 import { createCipheriv } from "crypto"
 
-import { replaceIdentity } from "frontend/integration/actors"
 import {
   decryptStringForIdentity,
   symmetric,

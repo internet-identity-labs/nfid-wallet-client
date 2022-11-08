@@ -17,11 +17,7 @@ export const IFrameNFIDLogin: React.FC<IFrameAuthenticateNFIDLoginProps> = ({
   return (
     <IFrameScreen logo>
       <div className="flex flex-col-reverse">
-        <NFIDLogin
-          iframe
-          loginSuccessPath={loginSuccessPath}
-          account={profile}
-        />
+        <NFIDLogin iframe account={profile} />
       </div>
     </IFrameScreen>
   )

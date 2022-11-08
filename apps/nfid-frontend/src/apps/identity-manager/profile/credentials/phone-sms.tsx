@@ -1,10 +1,10 @@
+import { authState } from "@nfid/integration"
+import { im } from "@nfid/integration"
 import { useAtom } from "jotai"
 import React from "react"
 import { toast } from "react-toastify"
 
-import { im } from "frontend/integration/actors"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { authState } from "frontend/integration/internet-identity"
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import ProfileAddPhoneSMS from "frontend/ui/pages/new-profile/credentials/add-phone-sms"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"

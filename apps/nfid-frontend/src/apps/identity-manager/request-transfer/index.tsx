@@ -91,7 +91,6 @@ export const RequestTransfer = ({
       setSelectedWallets={setSelectedWallets}
       onReject={() => window.close()}
       onApprove={onApprove}
-      isSuccess={false}
       isLoading={isLoading}
       applicationLogo={applicationLogo}
       applicationName={applicationName}

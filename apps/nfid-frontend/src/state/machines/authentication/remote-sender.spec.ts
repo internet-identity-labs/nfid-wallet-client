@@ -1,10 +1,9 @@
 /**
  * @jest-environment jsdom
  */
+import { ii } from "@nfid/integration"
 import "@testing-library/jest-dom"
 import { interpret } from "xstate"
-
-import { ii } from "frontend/integration/actors"
 
 import RemoteSenderMachine from "./remote-sender"
 

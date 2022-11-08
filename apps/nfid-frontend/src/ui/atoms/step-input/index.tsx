@@ -27,7 +27,7 @@ export const StepInput: React.FC<StepInputProps> = ({
   buttonClassName,
 }) => {
   const [isFormValid, setIsFormValid] = React.useState(false)
-  const list = [...Array(6).keys()]
+  const list = Array.from(Array(6).keys())
   const inputItemsRef = React.useRef<Array<HTMLInputElement | null>>([])
   const {
     formState: { errors },

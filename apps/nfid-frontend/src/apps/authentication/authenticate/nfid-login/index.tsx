@@ -37,11 +37,7 @@ export const AppScreenNFIDLogin: React.FC<AppScreenNFIDLoginProps> = ({
       <main className={clsx("flex flex-1")}>
         <div className="container p-6 mx-auto">
           <CardBody className="flex flex-col-reverse h-full justify-between lg:flex-row lg:justify-between !py-0">
-            <NFIDLogin
-              loginSuccessPath={loginSuccessPath}
-              account={profile}
-              onLogin={handleLogin}
-            />
+            <NFIDLogin account={profile} onLogin={handleLogin} />
           </CardBody>
         </div>
       </main>

@@ -1,10 +1,10 @@
 /**
  * @jest-environment jsdom
  */
+import { ii, pubsub } from "@nfid/integration"
 import { act, render, screen, waitFor } from "@testing-library/react"
 import QR from "qrcode"
 
-import { ii, pubsub } from "frontend/integration/actors"
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import * as device from "frontend/integration/device"
 import UnknownDeviceMachine, {

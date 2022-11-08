@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -16,21 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "downlevelIteration": true,
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "frontend/*": ["./src/*"]
-    },
-    "sourceMap": true,
-    "suppressExcessPropertyErrors": true,
-    "types": [
-      "node",
-      "webdriverio/async",
-      "@wdio/cucumber-framework",
-      "expect-webdriverio",
-      "jest"
-    ]
+    "jsx": "react-jsx"
   },
-  "include": ["src", "src/types/custom.d.ts", "test", "mocks"],
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "extends": "../../tsconfig.base.json"
 }

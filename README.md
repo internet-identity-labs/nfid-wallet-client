@@ -82,6 +82,16 @@ yarn tunnel
 
 ## Architecture
 
+To build a scalable and reusable application architecture we're applying a modular approach which can be described by the following diagram:
+
+```mermaid
+flowchart BT
+    app([Application]) --> feature([feature])
+    feature --> config([config]) & integration([integration]) & ui([ui-kit])
+```
+
+The individual applications (e.g. `nfid-frontend`) holds a collection of `pages` rendered on specific `urls`. Each page assembles components exported from our public interface in `package/features` without referring to any lower level implementation details.
+
 ### Applications within the mono repo
 
 ```
@@ -89,32 +99,6 @@ apps/
   nfid-demo/
   nfid-frontend/
   nfid-frontend-e2e/
-```
-
-### Packages within the mono repo
-
-```
-packages/
-  config/         # Shared repo configuration
-  common/         # Shared common
-    _ic_api/        # generated idlFactories and types
-    actors.ts       # icp interface
-    intex.ts        # exports public accessible interface
-  constants/      # Shared configuration defaults
-
-  ui/             # Shared dumb UI components
-    atoms/        # smalles building blocks e.g. button
-    molecules/    # combines atoms e.g. input field with label and error component
-    organisms/    # combines molecules e.g search field with icon input field and button
-    templates/    # full reusable page templates/layouts
-
-  features/       # modular main feature integrated on multiple pages
-    account-recovery/
-    authorized-devices/
-    applications/
-    nfts/
-    phone-number-credential/
-    send-receive-icp/
 ```
 
 ### Modular application architecture
@@ -138,4 +122,30 @@ apps/nfid-frontend/
   flows/          # coordination layer which sticks multiple pages into a flow
     idp/
 
+```
+
+### Packages within the mono repo
+
+```
+packages/
+  config/         # Shared repo configuration
+  integration/    # Shared common functionality
+    _ic_api/        # generated idlFactories and types
+    actors.ts       # icp interface
+    intex.ts        # exports public accessible interface
+  constants/      # Shared configuration defaults
+
+  ui/             # Shared dumb UI components
+    atoms/        # smalles building blocks e.g. button
+    molecules/    # combines atoms e.g. input field with label and error component
+    organisms/    # combines molecules e.g search field with icon input field and button
+    templates/    # full reusable page templates/layouts
+
+  features/       # modular main feature integrated on multiple pages
+    account-recovery/
+    authorized-devices/
+    applications/
+    nfts/
+    phone-number-credential/
+    send-receive-icp/
 ```

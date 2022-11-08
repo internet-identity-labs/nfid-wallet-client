@@ -38,7 +38,7 @@ jobs:
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
           AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
   deploy:
     needs: check-secrets
@@ -57,11 +57,11 @@ jobs:
         run: |
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
           yarn
         env:
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID FRONTEND | deploy
         run: |
@@ -92,4 +92,4 @@ jobs:
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
           AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}

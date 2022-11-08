@@ -1,34 +1,12 @@
 {
   "name": "@internet-identity-labs/nfid-frontend",
-  "version": "0.0.0",
   "scripts": {
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "build-storybook": "build-storybook -s public",
-    "build:example": "export EXAMPLE_BUILD=1 && craco build",
-    "build": "npx nx run-many build --target=build --projects=nfid-demo,nfid-frontend",
-    "clear": "rm -rf node_modules build allure-results",
-    "dev": "craco start",
-    "eject": "craco eject",
-    "format:examples": "prettier --write ./examples/MultipassDemo/src",
+    "build": "echo '💀 DONT REMOVE THIS 💀'",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
-    "generate-cucumber-html-report": "ts-node ./test/reporter/index.ts",
-    "generate:js": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t js > frontend/generated/identity_manager.js",
-    "generate:types": "../../Dfinity/candid/target/debug/didc bind ../identity-manager/src/identity_manager/identity_manager.did -t ts > frontend/generated/identity_manager.d.ts",
     "prepare": "husky install",
-    "storybook": "start-storybook -p 6006 -s public",
-    "test:dev": "jest --passWithNoTests --detectOpenHandles --watch",
-    "test:dev:silent": "yarn test:dev --silent=true",
-    "test:e2e": "wdio run wdio.conf.ts",
-    "test:e2e:desktop": "wdio run wdio.conf.ts",
-    "test:e2e:mobile": "wdio run wdio.mobile.conf.ts",
-    "test:e2e:bs:mobile": "wdio run wdio.bs.mobile.conf.ts",
-    "test:e2e:bs:desktop": "wdio run wdio.bs.desktop.conf.ts",
-    "test:e2e:debug": "cross-env DEBUG=true wdio run wdio.conf.ts --inspect",
-    "test": "jest --passWithNoTests --detectOpenHandles --silent=true",
     "tunnel": "./scripts/tunnel.sh"
   },
-  "cracoConfig": "craco.config.ts",
   "dependencies": {
     "@dfinity/agent": "^0.11.3",
     "@dfinity/auth-client": "^0.11.3",
@@ -188,33 +166,6 @@
     "webdriverio": "7.23.0",
     "webpack": "5",
     "whatwg-fetch": "3.6.2"
-  },
-  "eslintConfig": {
-    "extends": "react-app",
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
-    ]
-  },
-  "browserslist": {
-    "production": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version",
-      "last 2 edge version"
-    ],
-    "development": [
-      "last 2 chrome version",
-      "last 2 firefox version",
-      "last 2 safari version",
-      "last 2 edge version"
-    ]
   },
   "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",
   "license": "MIT"

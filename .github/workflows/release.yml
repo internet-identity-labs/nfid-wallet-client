@@ -61,9 +61,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: aviate-labs/setup-dfx@v0.2.3
+      - uses: internet-identity-labs/setup-dfx@2a601e8a4e14d09ce2b7a1a32bc9fd5eacd25913
         with:
           dfx-version: 0.11.2
+          dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
@@ -82,7 +83,7 @@ jobs:
         run: |
 
           # install local to generate the types
-          npx nx run-many --target=build --projects=nfid-demo,nfid-frontend
+          npx nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend
 
           dfx identity use action
           dfx deploy --network ic nfid-frontend --no-wallet

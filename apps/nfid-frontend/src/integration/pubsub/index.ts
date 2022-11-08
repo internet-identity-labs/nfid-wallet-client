@@ -1,4 +1,5 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+import { pubsub } from "@nfid/integration"
 import useSWR, { SWRConfiguration } from "swr"
 
 import { unpackResponse } from "frontend/integration/_common"
@@ -6,7 +7,6 @@ import {
   MessageHttpResponse,
   Topic,
 } from "frontend/integration/_ic_api/pub_sub_channel.d"
-import { pubsub } from "frontend/integration/actors"
 
 import { ReconstructableIdentity } from "../internet-identity"
 

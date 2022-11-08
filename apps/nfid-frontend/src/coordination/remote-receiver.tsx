@@ -121,9 +121,7 @@ export function RemoteReceiverCoordinator({
       applicationLogo={state.context.appMeta?.logo || ""}
       applicationName={state.context.appMeta?.name || ""}
       onClickBack={() => send({ type: "BACK" })}
-      registerDeviceDeciderPath={""}
       registerSameDevicePath={""}
-      showRegister={false}
       url={QRCodeUrl}
     />
   )

@@ -1,7 +1,7 @@
+import { authState } from "@nfid/integration"
 import React from "react"
 
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { authState } from "frontend/integration/internet-identity"
 import { decryptStringForIdentity } from "frontend/integration/lambda/symmetric"
 import ProfileCredentialsPage from "frontend/ui/pages/new-profile/credentials"
 

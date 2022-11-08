@@ -1,6 +1,7 @@
+import { verifier } from "@nfid/integration"
+
 import { mapDate, mapOptional } from "../_common"
 import { Certificate as ExternalCertificate } from "../_ic_api/verifier.d"
-import { verifier } from "../actors"
 
 export interface Certificate {
   domain: string

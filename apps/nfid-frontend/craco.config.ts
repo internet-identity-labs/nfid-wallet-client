@@ -1,13 +1,11 @@
 // import {} from "@craco/craco"
-import { config as loadEnv } from "dotenv"
 import path from "path"
+import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
+import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
+import webpack from "webpack"
 
 import dfxJson from "../../dfx.json"
 import { serviceConfig } from "../../packages/config/src"
-
-const webpack = require("webpack")
-
-loadEnv({ path: path.resolve(__dirname, ".env.local") })
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 
@@ -22,25 +20,43 @@ const config = {
     optimization: {
       minimize: !isExampleBuild,
     },
-    configure: (webpackConfig: any, { env, paths }: any) => {
+    configure: (config: any, { env, paths }: any) => {
+      config.resolve.plugins = config.resolve.plugins.filter(
+        (plugin: any) => !(plugin instanceof ModuleScopePlugin),
+      )
       const canisterEnv = {
         ...(isExampleBuild ? {} : serviceConfig),
       }
-      webpackConfig.plugins.push(new webpack.DefinePlugin(canisterEnv))
-      webpackConfig.plugins.push(
+      config.resolve.plugins.push(
+        new TsConfigPathsPlugin({
+          configFile: path.resolve(__dirname, "tsconfig.json"),
+          extensions: [".ts", ".tsx", ".js", ".jsx"],
+          mainFields: ["module", "main"],
+        }),
+      )
+      // Replace include option for babel loader with exclude
+      // so babel will handle workspace projects as well.
+      config.module.rules[1].oneOf.forEach((r: any) => {
+        if (r.loader && r.loader.indexOf("babel") !== -1) {
+          r.exclude = /node_modules/
+          delete r.include
+        }
+      })
+      config.plugins.push(new webpack.DefinePlugin(canisterEnv))
+      config.plugins.push(
         new webpack.ProvidePlugin({
           Buffer: [require.resolve("buffer/"), "Buffer"],
           process: require.resolve("process/browser"),
         }),
       )
-      webpackConfig.plugins.push(
+      config.plugins.push(
         new webpack.IgnorePlugin({
           contextRegExp: /^\.\/wordlists\/(?!english)/,
           resourceRegExp: /bip39\/src$/,
         }),
       )
       return {
-        ...webpackConfig,
+        ...config,
         // module: {
         //   rules: [
         //     {
@@ -53,10 +69,10 @@ const config = {
         devtool: process.env.FRONTEND_MODE !== "production" && "source-map",
         ignoreWarnings: [/Failed to parse source map from/],
         resolve: {
-          ...webpackConfig.resolve,
+          ...config.resolve,
           extensions: [".js", ".ts", ".jsx", ".tsx"],
           fallback: {
-            ...webpackConfig.resolve.fallback,
+            ...config.resolve.fallback,
             assert: require.resolve("assert"),
             buffer: require.resolve("buffer"),
             events: require.resolve("events"),

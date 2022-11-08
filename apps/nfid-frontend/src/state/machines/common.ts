@@ -1,4 +1,4 @@
-import { ic } from "frontend/integration/actors"
+import { ic } from "@nfid/integration"
 
 // Guards
 

@@ -49,8 +49,7 @@ AppScreen.args = {
 }
 
 AddPhoneNumberScreen.args = {
-  onBack: () => {},
-  onSubmit: (values) => console.log({ values }),
+  onSubmit: (values: any) => console.log({ values }),
 }
 
 AddPhoneSMSScreen.args = {

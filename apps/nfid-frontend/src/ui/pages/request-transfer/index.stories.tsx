@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 
 import logo from "frontend/assets/distrikt.svg"
 
-import { RequestTransferPage } from "."
+import { IRequestTransferPage, RequestTransferPage } from "."
 
 export default {
   title: "Screens/Wallet/RequestTransferPage",
@@ -16,7 +16,7 @@ export default {
 
 const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   typeof RequestTransferPage
-> = (args) => {
+> = (args: IRequestTransferPage) => {
   return (
     <Router>
       <RequestTransferPage {...args} />
@@ -32,6 +32,5 @@ ResponsiveScreen.args = {
   amountICP: 19.0765312,
   amountUSD: "95.02",
   walletOptions: [],
-  isSuccess: false,
   onReject: () => window.close(),
 }

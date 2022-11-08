@@ -1,9 +1,4 @@
-import {
-  ActorSubclass,
-  DerEncodedPublicKey,
-  Signature,
-  SignIdentity,
-} from "@dfinity/agent"
+import { DerEncodedPublicKey, Signature, SignIdentity } from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
   Delegation,
@@ -13,11 +8,17 @@ import {
   WebAuthnIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { authState } from "@nfid/integration"
+import {
+  accessList,
+  ii,
+  im,
+  invalidateIdentity,
+  replaceIdentity,
+} from "@nfid/integration"
 import { arrayBufferEqual } from "ictool/dist/bits"
-import { BehaviorSubject } from "rxjs"
 
 import {
-  _SERVICE as InternetIdentity,
   Challenge,
   ChallengeResult,
   CredentialId,
@@ -33,13 +34,6 @@ import {
   Timestamp,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
-import {
-  accessList,
-  ii,
-  im,
-  invalidateIdentity,
-  replaceIdentity,
-} from "frontend/integration/actors"
 import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "frontend/integration/facade/wallet"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
@@ -95,57 +89,6 @@ export interface JSONSerialisableSignedDelegation {
   signature: number[]
   userKey: PublicKey
 }
-
-interface ObservableAuthState {
-  actor?: ActorSubclass<InternetIdentity>
-  identity?: SignIdentity
-  delegationIdentity?: DelegationIdentity
-  chain?: DelegationChain
-  sessionKey?: Ed25519KeyIdentity
-}
-
-const observableAuthState$ = new BehaviorSubject<ObservableAuthState>({})
-
-observableAuthState$.subscribe({
-  next(value) {
-    console.debug("observableAuthState new state", { value })
-  },
-  error(err) {
-    console.error("observableAuthState: something went wrong:", { err })
-  },
-  complete() {
-    console.debug("observableAuthState done")
-  },
-})
-
-function authStateClosure() {
-  return {
-    set(
-      identity: SignIdentity,
-      delegationIdentity: DelegationIdentity,
-      actor: ActorSubclass<InternetIdentity>,
-      chain?: DelegationChain | undefined,
-      sessionKey?: Ed25519KeyIdentity | undefined,
-    ) {
-      observableAuthState$.next({
-        actor,
-        identity,
-        delegationIdentity,
-        chain,
-        sessionKey,
-      })
-      replaceIdentity(delegationIdentity)
-    },
-    get: () => observableAuthState$.getValue(),
-    reset() {
-      observableAuthState$.next({})
-    },
-    subscribe: (next: (state: ObservableAuthState) => void) =>
-      observableAuthState$.subscribe(next),
-  }
-}
-
-export const authState = authStateClosure()
 
 const ONE_MINUTE_IN_M_SEC = 60 * 1000
 const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
@@ -295,6 +238,7 @@ const retryGetDelegation = async (
     })
     const res = await getDelegation(userNumber, hostname, sessionKey, timestamp)
     if (hasOwnProperty(res, "signed_delegation")) {
+      // @ts-ignore
       return res.signed_delegation
     }
   }
@@ -1170,7 +1114,7 @@ export async function delegationByScope(
   const delegation = await fetchDelegate(
     userNumber,
     scope,
-    [...new Uint8Array(sessionKey.getPublicKey().toDer())],
+    Array.from(new Uint8Array(sessionKey.getPublicKey().toDer())),
     typeof maxTimeToLive === "undefined"
       ? BigInt(WALLET_SESSION_TTL_2_MIN_IN_NS)
       : maxTimeToLive,

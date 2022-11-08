@@ -1,6 +1,5 @@
+import { ii } from "@nfid/integration"
 import useSWR from "swr"
-
-import { ii } from "frontend/integration/actors"
 
 const healthCheck = async () => {
   try {

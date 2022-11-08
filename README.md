@@ -5,9 +5,7 @@
   - 1.2. [Install dfx](#Installdfx)
   - 1.3. [Install ngrok (https tunnel for mobile device)](#Installngrokhttpstunnelformobiledevice)
   - 1.4. [configure environment](#configureenvironment)
-    - 1.4.1. [`II_MODE`: used to decide if we need to fetch rootkeys](#II_MODE:usedtodecideifweneedtofetchrootkeys)
-    - 1.4.2. [`INTERNET_IDENTITY_CANISTER_ID`: Internet Identity Frontend Canister ID](#INTERNET_IDENTITY_CANISTER_ID:MultipassFrontendCanisterID)
-    - 1.4.3. [`TUNNEL_DOMAIN`: The domain which should be used for the qrcode](#TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode)
+    - 1.4.1. [`TUNNEL_DOMAIN`: The domain which should be used for the qrcode](#TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode)
 - 2. [Available scripts](#Availablescripts)
   - 2.1. [yarn dev](#yarndev)
   - 2.2. [yarn tunnel](#yarntunnel)
@@ -18,7 +16,7 @@
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
 
-# Multipass Frontend
+# NFID Frontend
 
 ## 1. <a name='Setupdevelopmentenvironment'></a>Setup development environment
 
@@ -80,4 +78,64 @@ starts ngrok tunnel for testing on mobile device while development
 
 ```
 yarn tunnel
+```
+
+## Architecture
+
+### Applications within the mono repo
+
+```
+apps/
+  nfid-demo/
+  nfid-frontend/
+  nfid-frontend-e2e/
+```
+
+### Packages within the mono repo
+
+```
+packages/
+  config/         # Shared repo configuration
+  common/         # Shared common
+    _ic_api/        # generated idlFactories and types
+    actors.ts       # icp interface
+    intex.ts        # exports public accessible interface
+  constants/      # Shared configuration defaults
+
+  ui/             # Shared dumb UI components
+    atoms/        # smalles building blocks e.g. button
+    molecules/    # combines atoms e.g. input field with label and error component
+    organisms/    # combines molecules e.g search field with icon input field and button
+    templates/    # full reusable page templates/layouts
+
+  features/       # modular main feature integrated on multiple pages
+    account-recovery/
+    authorized-devices/
+    applications/
+    nfts/
+    phone-number-credential/
+    send-receive-icp/
+```
+
+### Modular application architecture
+
+```
+apps/nfid-frontend/
+
+  pages/          # connected container components
+    profile/        # nfid.one/profile/ (resolves to index.ts within that folder)
+      assets/         # nfid.one/profile/assets
+        cmp/
+        hooks/
+        constants.ts    # contains constant configuration defaults
+        intex.ts        # exposes public interface. Nowhere else will be exported
+
+      applications/   # nfid.one/profile/applications
+      credentials/    # nfid.one/profile/credentials
+      security/       # nfid.one/profile/security
+      index.ts
+
+  flows/          # coordination layer which sticks multiple pages into a flow
+    idp/
+
 ```

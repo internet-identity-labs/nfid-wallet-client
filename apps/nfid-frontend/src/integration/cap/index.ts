@@ -27,13 +27,15 @@ export async function getUserTransactions(
 ): Promise<{ txHistory: TransactionPrettified[]; isLastPage: boolean }> {
   let address = principalToAddress(user as any)
   let transactionHistory = await Promise.all(
-    [...Array(to).keys()].slice(from, to).map(async (page) => {
-      let allHistory = await getCapRootTransactions(canisterId, page)
-      let txHistory = allHistory.filter(
-        (l) => l.details.from === address || l.details.to === address,
-      )
-      return { txHistory, isLastPage: allHistory.length === 0 }
-    }),
+    Array.from(Array(to).keys())
+      .slice(from, to)
+      .map(async (page) => {
+        let allHistory = await getCapRootTransactions(canisterId, page)
+        let txHistory = allHistory.filter(
+          (l) => l.details.from === address || l.details.to === address,
+        )
+        return { txHistory, isLastPage: allHistory.length === 0 }
+      }),
   )
   return transactionHistory.reduce((x, y) => {
     return {
@@ -58,11 +60,13 @@ export async function getTokenTxHistoryOfTokenIndex(
   to: number,
 ): Promise<{ txHistory: TransactionPrettified[]; isLastPage: boolean }> {
   let transactionHistory = await Promise.all(
-    [...Array(to).keys()].slice(from, to).map(async (page) => {
-      let allHistory = await getCapRootTransactions(canisterId, page)
-      let txHistory = allHistory.filter((l) => l.details.token === tokenId)
-      return { txHistory, isLastPage: allHistory.length === 0 }
-    }),
+    Array.from(Array(to).keys())
+      .slice(from, to)
+      .map(async (page) => {
+        let allHistory = await getCapRootTransactions(canisterId, page)
+        let txHistory = allHistory.filter((l) => l.details.token === tokenId)
+        return { txHistory, isLastPage: allHistory.length === 0 }
+      }),
   )
   return transactionHistory.reduce((x, y) => {
     return {

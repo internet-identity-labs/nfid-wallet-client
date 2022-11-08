@@ -1,84 +1,52 @@
-<!-- vscode-markdown-toc -->
-
-- 1. [Setup development environment](#Setupdevelopmentenvironment)
-  - 1.1. [Install Frontend](#InstallFrontend)
-  - 1.2. [Install dfx](#Installdfx)
-  - 1.3. [Install ngrok (https tunnel for mobile device)](#Installngrokhttpstunnelformobiledevice)
-  - 1.4. [configure environment](#configureenvironment)
-    - 1.4.1. [`TUNNEL_DOMAIN`: The domain which should be used for the qrcode](#TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode)
-- 2. [Available scripts](#Availablescripts)
-  - 2.1. [yarn dev](#yarndev)
-  - 2.2. [yarn tunnel](#yarntunnel)
-
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
-
 # NFID Frontend
 
-## 1. <a name='Setupdevelopmentenvironment'></a>Setup development environment
+## Setup development environment
 
-### 1.1. <a name='InstallFrontend'></a>Install Frontend
-
-```
-npm login --registry=https://npm.pkg.github.com --scope=@psychedelic
-yarn install
-```
-
-### 1.2. <a name='Installdfx'></a>Install dfx
+### Install dependencies
 
 ```
-DFX_VERSION=0.9.3 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+yarn login --registry=https://npm.pkg.github.com --scope=@psychedelic
+yarn
 ```
 
-### 1.3. <a name='Installngrokhttpstunnelformobiledevice'></a>Install ngrok (https tunnel for mobile device)
+### Install latest dfx
+
+```
+sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+```
+
+### Install ngrok (https tunnel for mobile device)
 
 [download ngrok](https://dashboard.ngrok.com/get-started/setup) and unzip to `./scrips/ngrok`
 
-setup your authtoken
+setup your authtoken (copy from ngrok dashboard)
 
 ```
 ./scripts/ngrok authtoken <YOUR_AUTH_TOKEN>
 ```
 
-### 1.4. <a name='configureenvironment'></a>configure environment
-
-copy the env template:
+### Environment config
 
 ```
 cp .env.local.template .env.local
 ```
 
-#### 1.4.1. <a name='TUNNEL_DOMAIN:Thedomainwhichshouldbeusedfortheqrcode'></a>`TUNNEL_DOMAIN`: The domain which should be used for the qrcode
-
-> this is mainly for development purposes
+Update user specific `TUNNEL_DOMAIN` vairables within your local copy `.env.local`. This is the domain which should be used for the qrcode.
 
 example
 
 ```
 TUNNEL_DOMAIN=3540a630b330.ngrok.io
-TUNNEL_REGION=<us or eu>
 ```
 
-## 2. <a name='Availablescripts'></a>Available scripts
+## Available scripts
 
-### 2.1. <a name='yarndev'></a>yarn dev
+when you're working with vscode you can use the task runner to start the development environment. Press `CMD+SHIFT+P` then type `run task` and select from:
 
-starts the frontend in development mode
-
-```
-yarn dev
-```
-
-### 2.2. <a name='yarntunnel'></a>yarn tunnel
-
-starts ngrok tunnel for testing on mobile device while development
-
-```
-yarn tunnel
-```
+1. NFID Frontend (`npx nx serve nfid-frontend`)
+2. NFID Demo (`npx nx serve nfid-demo`)
+3. NFID Storybook (`npx nx storybook ui`)
+4. etc...
 
 ## Architecture
 
@@ -90,7 +58,31 @@ flowchart BT
     feature --> config([config]) & integration([integration]) & ui([ui-kit])
 ```
 
+This architecture is inspired by:
+
+1. [clean-code-javascript](https://github.com/ryanmcdermott/clean-code-javascript)
+2. [bulletproof-react](https://github.com/alan2207/bulletproof-react/)
+3. [react-clean-architecture](https://github.com/eduardomoroni/react-clean-architecture)
+
 The individual applications (e.g. `nfid-frontend`) holds a collection of `pages` rendered on specific `urls`. Each page assembles components exported from our public interface in `package/features` without referring to any lower level implementation details.
+
+### Libraries
+
+⚠️ new packages **MUST** undergo security audits before installation. ⚠️
+
+**State**
+
+currently we're relying on these state management solutions (will be revised as having so many is not ideal):
+
+- [jotai](https://jotai.org/) to handle global state singletons
+- [xstate](https://xstate.js.org/) to manage complicated flows
+- [rxjs](https://rxjs.dev/) to bridge state between vanilla js to react state
+
+**Client side caching** - [swr](https://swr.vercel.app/)
+
+**Forms state** - [React Hook Form](https://react-hook-form.com/)
+
+**Routing** - [react-router-dom](https://reactrouter.com/en/main)
 
 ### Applications within the mono repo
 
@@ -128,12 +120,16 @@ apps/nfid-frontend/
 
 ```
 packages/
-  config/         # Shared repo configuration
-  integration/    # Shared common functionality
+  config/         # Shared configuration and constants
+  integration/    # Shared api/backend integration
     _ic_api/        # generated idlFactories and types
     actors.ts       # icp interface
-    intex.ts        # exports public accessible interface
-  constants/      # Shared configuration defaults
+    index.ts        # exports public accessible interface
+
+  utils/          # vanilly typescript helper
+  react-utils/    # shared react helper
+    hooks/          # shared react helper
+    provider/       # shared react helper
 
   ui/             # Shared dumb UI components
     atoms/        # smalles building blocks e.g. button
@@ -142,6 +138,8 @@ packages/
     templates/    # full reusable page templates/layouts
 
   features/       # modular main feature integrated on multiple pages
+    authentication/
+    authorization/
     account-recovery/
     authorized-devices/
     applications/

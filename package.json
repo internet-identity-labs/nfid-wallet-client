@@ -2,6 +2,7 @@
   "name": "@internet-identity-labs/nfid-frontend",
   "scripts": {
     "build": "echo '💀 DONT REMOVE THIS 💀'",
+    "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
     "format": "yarn prettier --write 'apps/**/*.{ts,tsx}' --write 'packages/**/*.{ts,tsx}'",
     "prepare": "husky install",

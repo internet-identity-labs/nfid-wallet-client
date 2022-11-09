@@ -45,9 +45,9 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
   return (
     <ProfileTemplate
       pageTitle="Your Internet Computer wallets"
-      onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
       className="w-full min-w-fit z-[1]"
       containerClassName="overflow-x-auto"
+      showBackButton
     >
       <TokenDetailBalance
         token={icpBlanceSheet?.token || ""}

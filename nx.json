@@ -42,5 +42,10 @@
       "!{projectRoot}/.eslintrc.json"
     ],
     "sharedGlobals": ["{workspaceRoot}/babel.config.json"]
+  },
+  "pluginsConfig": {
+    "@nrwl/js": {
+      "analyzeSourceFiles": true
+    }
   }
 }

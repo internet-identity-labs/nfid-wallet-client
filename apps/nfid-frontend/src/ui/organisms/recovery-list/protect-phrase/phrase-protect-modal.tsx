@@ -26,7 +26,6 @@ const RecoveryPhraseProtectModal: React.FC<IRecoveryPhraseProtectModal> = ({
       title="Protect recovery phrase"
       subTitle="Once protected, a recovery phrase can only be removed by inputting it again."
       onClose={onClose}
-      onBgClick={onClose}
       buttonsClassNames="py-3"
     >
       <div id="protect-modal">

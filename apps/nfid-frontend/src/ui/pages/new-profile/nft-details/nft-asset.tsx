@@ -18,7 +18,6 @@ export const NFTAsset = (assetFullsize: {
           title="nft"
           frameBorder="0"
           src={assetFullsize.url}
-          alt=""
           style={{
             zIndex: "20",
             border: "none",

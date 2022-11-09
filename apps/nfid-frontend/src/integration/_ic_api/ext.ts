@@ -1,4 +1,4 @@
-export const extIDL = ({ IDL }) => {
+export const extIDL = ({ IDL }: any) => {
   const SubAccount = IDL.Vec(IDL.Nat8)
   const AccountIdentifier = IDL.Text
   const TokenIdentifier = IDL.Text
@@ -66,6 +66,6 @@ export const extIDL = ({ IDL }) => {
     settle: IDL.Func([TokenIdentifier], [Result_3], []),
   })
 }
-export const init = ({ IDL }) => {
+export const init = ({ IDL }: any) => {
   return []
 }

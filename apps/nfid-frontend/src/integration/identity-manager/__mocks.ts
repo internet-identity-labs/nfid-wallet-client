@@ -7,7 +7,7 @@ import {
   HTTPAccessPointResponse,
   HTTPAccountResponse,
   PersonaResponse,
-} from "../_ic_api/identity_manager.did"
+} from "../_ic_api/identity_manager.d"
 
 export async function mockExternalAccountResponse(): Promise<HTTPAccountResponse> {
   return {
@@ -34,9 +34,6 @@ export function factoryAccount(principal?: Principal): Profile {
   return {
     anchor: Math.floor(100_000 * Math.random()),
     accessPoints: new Array(Math.floor(Math.random() * 5)).fill(
-      factoryAccessPoint(),
-    ),
-    personas: new Array(Math.floor(Math.random() * 5)).fill(
       factoryAccessPoint(),
     ),
     accounts: [],

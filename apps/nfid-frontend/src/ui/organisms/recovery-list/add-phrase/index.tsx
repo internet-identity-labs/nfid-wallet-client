@@ -34,7 +34,6 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         </>
       }
       onClose={onClose}
-      onBgClick={onClose}
       buttonsClassNames="py-3"
     >
       <div>

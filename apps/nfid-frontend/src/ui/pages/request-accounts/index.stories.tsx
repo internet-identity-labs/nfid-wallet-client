@@ -25,5 +25,4 @@ Default.args = {
   applicationName: "My Application",
   applicationLogo: logo,
   accountsOptions: [],
-  isLoading: false,
 }

@@ -2,7 +2,7 @@ import { Principal } from "@dfinity/principal"
 import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
 import { encodeTokenIdentifier } from "ictool"
 
-import { CredentialId } from "../_ic_api/internet_identity_types"
+import { CredentialId } from "../_ic_api/internet_identity.d"
 
 export const NFID_SIGNED_DELEGATION = {
   chain: {

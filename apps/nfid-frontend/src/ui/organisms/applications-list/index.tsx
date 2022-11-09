@@ -26,7 +26,6 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({
             icon={application.icon}
           />
         }
-        defaultAction={false}
         accountsLength={application.accountsCount}
       />
     ))}

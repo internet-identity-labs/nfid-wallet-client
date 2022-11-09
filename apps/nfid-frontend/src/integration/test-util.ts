@@ -3,15 +3,15 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import { ii, im } from "@nfid/integration"
 
-import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.did"
+import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.d"
 import {
   Challenge,
   ChallengeResult,
   DeviceData,
   UserNumber,
-} from "frontend/integration/_ic_api/internet_identity_types"
-import { ii, im } from "frontend/integration/actors"
+} from "frontend/integration/_ic_api/internet_identity.d"
 
 export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
   const sessionKey = Ed25519KeyIdentity.generate()
@@ -25,6 +25,7 @@ export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
 }
 
 export async function registerIIAccount(
+  // FIXME: unused
   identity: Ed25519KeyIdentity,
   deviceData: DeviceData,
 ) {

@@ -1,4 +1,6 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
+import { authState } from "@nfid/integration"
+import { ii, im } from "@nfid/integration"
 import * as Sentry from "@sentry/browser"
 
 import {
@@ -17,7 +19,6 @@ import {
 } from "frontend/state/authorization"
 
 import {
-  authState,
   CaptchaChallenge,
   Device,
   fetchDelegate,
@@ -26,7 +27,6 @@ import {
   registerInternetIdentity,
   requestFEDelegationChain,
 } from "."
-import { ii, im } from "../actors"
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
 import { Icon } from "../identity-manager/devices/state"

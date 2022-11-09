@@ -53,7 +53,7 @@ jobs:
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
   deploy:
     needs: check-secrets
@@ -72,11 +72,11 @@ jobs:
         run: |
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
           yarn
         env:
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID FRONTEND | deploy
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -108,7 +108,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: Create Sentry release
         if: ${{ github.ref == 'refs/heads/main' }}

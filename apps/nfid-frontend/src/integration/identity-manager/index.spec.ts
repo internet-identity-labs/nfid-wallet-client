@@ -1,8 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import { Application } from "frontend/integration/_ic_api/identity_manager.did"
-import { im as imMock } from "frontend/integration/actors"
+import { im as imMock } from "@nfid/integration"
+
+import { Application } from "frontend/integration/_ic_api/identity_manager.d"
 import { processApplicationOrigin } from "frontend/integration/identity-manager/index"
 
 describe("Identity Manager suite", () => {

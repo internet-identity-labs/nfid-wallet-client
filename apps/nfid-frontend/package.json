@@ -2,6 +2,7 @@
   "scripts": {
     "start": "craco start",
     "build": "BUILD_PATH=../../dist/apps/nfid-frontend/ craco build",
+    "build:example": "EXAMPLE_BUILD=1 BUILD_PATH=../../dist/apps/nfid-frontend/ craco build",
     "craco:test": "craco test",
     "test:dev": "jest --passWithNoTests --detectOpenHandles --watch",
     "test:dev:silent": "yarn test:dev --silent=true",

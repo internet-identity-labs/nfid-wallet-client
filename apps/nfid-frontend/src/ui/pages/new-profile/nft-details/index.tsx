@@ -49,8 +49,7 @@ export const ProfileNFTDetailsPage = ({
 
   return (
     <ProfileTemplate
-      // I have not found any other ways to avoid as To. This is exactly what navigate expect
-      onBack={-1 as To}
+      showBackButton
       headerMenu={
         <div className="flex items-center space-x-4">
           <img

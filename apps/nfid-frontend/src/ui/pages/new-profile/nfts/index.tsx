@@ -207,8 +207,8 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     <ProfileTemplate
       pageTitle="Your NFTs"
       headerMenu={<DisplaySwitch onClick={setDisplay} state={display} />}
-      onBack={`${ProfileConstants.base}/${ProfileConstants.assets}`}
       className="overflow-inherit"
+      showBackButton
     >
       <div className={clsx(`flex flex-col gap-6 pb-10`)}>
         <ProfileContainer className={clsx(`bg-gray-200`)}>

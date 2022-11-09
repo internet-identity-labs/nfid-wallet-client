@@ -5,7 +5,7 @@
   "cucumberautocomplete.strictGherkinCompletion": true,
   "explorer.fileNesting.patterns": {
     "*.ts": "${capture}.d.ts, ${capture}.types.ts, ${capture}.js, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.mocks.ts",
-    "*.tsx": "${capture}.ts, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.md"
+    "*.tsx": "${capture}.ts, ${capture}.typegen.ts, ${capture}.spec.ts, ${capture}.spec.tsx, ${capture}.stories.tsx, ${capture}.md"
   },
   "explorer.fileNesting.expand": true,
   "explorer.fileNesting.enabled": true,

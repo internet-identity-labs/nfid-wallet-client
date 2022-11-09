@@ -22,7 +22,7 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
   const { navigate } = useNFIDNavigate()
 
   return (
-    <ProfileTemplate pageTitle="Credentials">
+    <ProfileTemplate pageTitle="Credentials" isLoading={isLoading}>
       <ProfileContainer
         title="Issued by Internet Identity Labs"
         subTitle="Shareable verified data"
@@ -48,7 +48,6 @@ const ProfileCredentialsPage: React.FC<IProfileCredentialsPage> = ({
           />
         )}
       </ProfileContainer>
-      {isLoading ? <Loader isLoading={isLoading} /> : null}
     </ProfileTemplate>
   )
 }

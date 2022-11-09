@@ -14,13 +14,13 @@ const ProfileCredentials = () => {
     error,
     isValidating,
   } = useSWR(
-    profile?.phoneNumber && delegationIdentity ? "decryptedPhone" : null,
-    async () => {
-      if (!profile?.phoneNumber || !delegationIdentity)
-        throw new Error("ProfileCredentials unauthenticated")
+    profile?.phoneNumber && delegationIdentity
+      ? ["decryptedPhone", profile.phoneNumber, delegationIdentity]
+      : null,
 
+    async (_, phoneNumber, delegationIdentity) => {
       const result = await decryptStringForIdentity(
-        profile?.phoneNumber,
+        phoneNumber,
         delegationIdentity,
       )
       return result

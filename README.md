@@ -84,6 +84,14 @@ currently we're relying on these state management solutions (will be revised as 
 
 **Routing** - [react-router-dom](https://reactrouter.com/en/main)
 
+**TODOs**
+
+- [ ] replace [@headlessui/react](https://bundlephobia.com/package/@headlessui/react@1.7.4) with [@radix-ui](https://www.radix-ui.com/) as wrapped ui-kit components
+- [ ] replace [react-awesome-reveal](https://bundlephobia.com/package/react-awesome-reveal@4.1.0) with [@react-motion](https://bundlephobia.com/package/react-motion@0.5.2) as wrapped ui-kit components
+- [ ] replace [react-toastify]() [@radix-ui/react-toast](https://www.radix-ui.com/docs/primitives/components/toast#toast) as wrapped ui-kit components
+- [ ] replace [react-tooltip]() with [@radix-ui/react-tooltip](https://www.radix-ui.com/docs/primitives/components/tooltip#tooltip) as wrapped ui-kit components
+- [ ] replace [react-scroll-parallax](), [react-scrollspy](), [stickyfilljs]() with [react-viewport-utils](https://www.npmjs.com/package/react-viewport-utils)
+
 ### Applications within the mono repo
 
 ```
@@ -94,6 +102,13 @@ apps/
 ```
 
 ### Modular application architecture
+
+**TODOs**
+
+- [ ] define feature scaffold
+- [ ] define page scaffold
+- [ ] extract/bundle components into features
+- [ ] extract/bundle integration/state components into `packages/integration` and `packages/features`
 
 ```
 apps/nfid-frontend/

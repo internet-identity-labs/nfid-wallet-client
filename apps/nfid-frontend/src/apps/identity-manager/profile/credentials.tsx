@@ -9,26 +9,29 @@ const ProfileCredentials = () => {
   const { profile } = useProfile()
   const { delegationIdentity } = authState.get()
 
-  const { data: decryptedPhone, isValidating } = useSWR(
+  const {
+    data: decryptedPhone,
+    error,
+    isValidating,
+  } = useSWR(
     profile?.phoneNumber && delegationIdentity ? "decryptedPhone" : null,
     async () => {
       if (!profile?.phoneNumber || !delegationIdentity)
         throw new Error("ProfileCredentials unauthenticated")
 
-      try {
-        const result = await decryptStringForIdentity(
-          profile?.phoneNumber,
-          delegationIdentity,
-        )
-        return result
-      } catch (e) {
-        console.log({ e })
-      }
+      const result = await decryptStringForIdentity(
+        profile?.phoneNumber,
+        delegationIdentity,
+      )
+      return result
     },
   )
 
   return (
-    <ProfileCredentialsPage phone={decryptedPhone} isLoading={isValidating} />
+    <ProfileCredentialsPage
+      phone={decryptedPhone || error}
+      isLoading={isValidating}
+    />
   )
 }
 

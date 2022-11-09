@@ -1,4 +1,4 @@
-export const idlFactory = ({ IDL }) => {
+export const idlFactory = ({ IDL }: any) => {
   const Error = IDL.Text
   const HTTPAnchorsResponse = IDL.Record({
     data: IDL.Opt(IDL.Vec(IDL.Nat64)),
@@ -333,6 +333,6 @@ export const idlFactory = ({ IDL }) => {
     verify_token: IDL.Func([Token], [Response], []),
   })
 }
-export const init = ({ IDL }) => {
+export const init = ({ IDL }: any) => {
   return []
 }

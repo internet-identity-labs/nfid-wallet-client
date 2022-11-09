@@ -1,7 +1,7 @@
+import { authState } from "@nfid/integration"
 import { useAtom } from "jotai"
 import React from "react"
 
-import { authState } from "frontend/integration/internet-identity"
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import ProfileAddPhoneNumber from "frontend/ui/pages/new-profile/credentials/add-phone-number"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"

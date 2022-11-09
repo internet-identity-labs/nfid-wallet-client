@@ -1,4 +1,4 @@
-export const idlFactory = ({ IDL }) => {
+export const idlFactory = ({ IDL }: any) => {
   const ConfigurationRequest = IDL.Record({
     identity_manager: IDL.Text,
     token_ttl: IDL.Opt(IDL.Nat64),
@@ -118,6 +118,6 @@ export const idlFactory = ({ IDL }) => {
     resolve_token: IDL.Func([IDL.Vec(IDL.Nat8)], [IDL.Opt(Certificate)], []),
   })
 }
-export const init = ({ IDL }) => {
+export const init = ({ IDL }: any) => {
   return []
 }

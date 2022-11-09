@@ -1,4 +1,4 @@
-import { Application } from "../_ic_api/identity_manager.did"
+import { Application } from "../_ic_api/identity_manager.d"
 
 export const ApplicationMock: Application = {
   is_nft_storage: [],

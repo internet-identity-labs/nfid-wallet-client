@@ -57,11 +57,7 @@ export const Captcha: React.FC<CaptchaProps> = ({
   const isFormComplete = !!dirtyFields.captcha
 
   return (
-    <BlurredLoader
-      className={clsx("flex flex-col items-center", className)}
-      isLoading={isLoading}
-      loadingMessage={loadingMessage}
-    >
+    <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
       <ApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}

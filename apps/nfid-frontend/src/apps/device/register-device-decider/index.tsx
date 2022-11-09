@@ -1,9 +1,9 @@
+import { authState, im } from "@nfid/integration"
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { im } from "frontend/integration/actors"
 import {
   deviceInfo,
   getBrowserName,
@@ -12,7 +12,6 @@ import {
 } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
-import { authState } from "frontend/integration/internet-identity"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"

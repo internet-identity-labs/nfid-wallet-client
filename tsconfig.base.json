@@ -8,15 +8,18 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es6",
     "module": "esnext",
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "src/*": ["apps/nfid-frontend/src/*"],
+      "frontend/*": ["apps/nfid-frontend/src/*"],
       "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
-      "@nfid-frontend/validation": ["packages/validation/src/index.ts"]
+      "@nfid-frontend/utils": ["packages/utils/src/index.ts"],
+      "@nfid/integration": ["packages/integration/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

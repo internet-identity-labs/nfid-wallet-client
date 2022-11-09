@@ -6,15 +6,15 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+import { authState as authStateMock } from "@nfid/integration"
+import { ii, im, replaceIdentity } from "@nfid/integration"
 
-import { DeviceData } from "frontend/integration/_ic_api/internet_identity_types"
-import { ii, im, replaceIdentity } from "frontend/integration/actors"
+import { DeviceData } from "frontend/integration/_ic_api/internet_identity.d"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AUTHENTICATOR_DEVICES } from "frontend/integration/internet-identity/__mocks"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
-  authState as authStateMock,
   Device,
   FrontendDelegation,
   getMultiIdent,

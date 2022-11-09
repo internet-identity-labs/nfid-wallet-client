@@ -182,7 +182,6 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
                 id="security-key"
                 subtitle="A special USB stick to keep safe"
                 img={<USBIcon />}
-                isDisabled={hasSecurityKey}
               />
             )}
           </div>

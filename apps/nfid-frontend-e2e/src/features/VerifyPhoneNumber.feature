@@ -97,9 +97,10 @@ Feature: User wants to veirfy his phone number
     When I click on the selector "#pin-input-0"
     When I set "1" to the inputfield "#pin-input-0"
     Then I wait on element "#send-pin" for 5000ms to be displayed
-    Then I wait on element "#loader" for 15000ms to not be displayed
     When I click on the selector "#send-pin"
+    Then I wait on element "#loader" for 15000ms to not be displayed
 
+    Then I expect the url to contain "/profile/credentials"
     Then I wait on element "#loader" for 15000ms to not be displayed
     Then I wait on element "#phone-number-value" for 15000ms to be displayed
     Then I expect that element "#phone-number-value" contains the text "+380990374146"

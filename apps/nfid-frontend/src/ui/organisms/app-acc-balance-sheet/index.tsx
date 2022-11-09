@@ -74,6 +74,7 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
         >
           {i === 0 && (
             <GridCell
+              // @ts-ignore FIXME: type doesn't exist
               rowSpan={accounts.length}
               className={clsx(
                 "align-top whitespace-nowrap overflow-hidden text-ellipsis group-hover:bg-gray-200",

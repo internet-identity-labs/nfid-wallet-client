@@ -2,7 +2,7 @@ import { DerEncodedPublicKey } from "@dfinity/agent"
 import { Buffer } from "buffer"
 import * as tweetnacl from "tweetnacl"
 
-import { CredentialId, DeviceData } from "../_ic_api/internet_identity_types"
+import { CredentialId, DeviceData } from "../_ic_api/internet_identity.d"
 import { Device } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
 

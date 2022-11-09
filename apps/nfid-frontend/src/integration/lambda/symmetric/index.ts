@@ -2,10 +2,10 @@ import { Cbor, QueryFields } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationIdentity } from "@dfinity/identity"
+import { ic } from "@nfid/integration"
 import { createDecipheriv } from "browser-crypto"
 import { Buffer } from "buffer"
 
-import { ic } from "frontend/integration/actors"
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
 declare const AWS_SYMMETRIC: string

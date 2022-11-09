@@ -1,10 +1,10 @@
 import { Principal } from "@dfinity/principal"
+import { ii } from "@nfid/integration"
 
 import {
   DeviceKey,
   UserNumber,
-} from "frontend/integration/_ic_api/internet_identity_types"
-import { ii } from "frontend/integration/actors"
+} from "frontend/integration/_ic_api/internet_identity.d"
 import {
   Account,
   Application,

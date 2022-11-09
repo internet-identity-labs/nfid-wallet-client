@@ -51,7 +51,6 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
             )
             send({
               type: "AUTH_WITH_GOOGLE",
-              to: "auth-unknown-device",
               data: { jwt: credential },
             })
           }}

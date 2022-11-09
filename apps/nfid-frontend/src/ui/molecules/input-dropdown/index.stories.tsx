@@ -19,11 +19,7 @@ const Template: Story<IInputDropdown> = (args) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([])
   return (
     <div className="w-full h-screen p-4 bg-gray-100">
-      <InputDropdown
-        {...args}
-        selectedValues={selectedValues}
-        setSelectedValues={setSelectedValues}
-      />
+      <InputDropdown {...args} />
     </div>
   )
 }

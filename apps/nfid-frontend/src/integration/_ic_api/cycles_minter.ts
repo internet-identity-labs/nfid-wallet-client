@@ -1,4 +1,4 @@
-export const idlFactory = ({ IDL }) => {
+export const idlFactory = ({ IDL }: any) => {
   const IcpXdrConversionRate = IDL.Record({
     xdr_permyriad_per_icp: IDL.Nat64,
     timestamp_seconds: IDL.Nat64,

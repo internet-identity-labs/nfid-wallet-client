@@ -1,11 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+import { im } from "@nfid/integration"
+import { ii } from "@nfid/integration"
 import "@testing-library/jest-dom"
 import { interpret } from "xstate"
 
-import { im } from "frontend/integration/actors"
-import { ii } from "frontend/integration/actors"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
 import { mockIdentityClientAuthEvent } from "frontend/integration/windows/__mock"
 import { AuthSession } from "frontend/state/authentication"

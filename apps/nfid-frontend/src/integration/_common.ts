@@ -1,4 +1,4 @@
-import { Response } from "./_ic_api/identity_manager.did.d"
+import { Response } from "./_ic_api/identity_manager.d"
 
 /**
  * Sanitize dfinity date object into js Date.

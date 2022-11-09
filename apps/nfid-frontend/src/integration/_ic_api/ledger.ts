@@ -1,4 +1,4 @@
-export const idlFactory = ({ IDL }) => {
+export const idlFactory = ({ IDL }: any) => {
   const AccountIdentifier = IDL.Vec(IDL.Nat8)
   const AccountBalanceArgs = IDL.Record({ account: AccountIdentifier })
   const Tokens = IDL.Record({ e8s: IDL.Nat64 })
@@ -97,6 +97,6 @@ export const idlFactory = ({ IDL }) => {
     transfer_fee: IDL.Func([TransferFeeArg], [TransferFee], ["query"]),
   })
 }
-export const init = ({ IDL }) => {
+export const init = ({ IDL }: any) => {
   return []
 }

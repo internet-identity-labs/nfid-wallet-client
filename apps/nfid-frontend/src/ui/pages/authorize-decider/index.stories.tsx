@@ -2,6 +2,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import React from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter as Router } from "react-router-dom"
+import { CredentialResponse } from "src/ui/atoms/button/signin-with-google/types"
 
 import logo from "frontend/assets/dfinity.svg"
 
@@ -22,7 +23,7 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
   onToggleAdvancedOptions,
   showAdvancedOptions: defaultShowAdvancedOptions,
   ...args
-}) => {
+}: any) => {
   const [showAdvancedOptions, toggleShowAdvancedOptions] = React.useReducer(
     (state) => !state,
     !!defaultShowAdvancedOptions,
@@ -32,6 +33,24 @@ const AppScreenRegisterDeviceDeciderTemplate: ComponentStory<
     <HelmetProvider>
       <Router>
         <AuthorizeDecider
+          onSelectRemoteAuthorization={function (): void | Promise<void> {
+            throw new Error("Function not implemented.")
+          }}
+          onSelectSameDeviceAuthorization={function (
+            userNumber: number,
+          ): void | Promise<void> {
+            throw new Error("Function not implemented.")
+          }}
+          onSelectSecurityKeyAuthorization={function (
+            userNumber: number,
+          ): void | Promise<void> {
+            throw new Error("Function not implemented.")
+          }}
+          onSelectGoogleAuthorization={function ({
+            credential,
+          }: CredentialResponse): void {
+            throw new Error("Function not implemented.")
+          }}
           onToggleAdvancedOptions={toggleShowAdvancedOptions}
           showAdvancedOptions={showAdvancedOptions}
           {...args}
@@ -46,8 +65,6 @@ export const AppScreen = AppScreenRegisterDeviceDeciderTemplate.bind({})
 AppScreen.args = {
   applicationName: "My Application",
   applicationLogo: logo,
-  url: "https://nfid.one/secret/scope/my-application",
   isLoading: false,
-  registerDeviceDeciderPath: "/register-device-decider",
   showAdvancedOptions: false,
 }

@@ -1,7 +1,8 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
+import { im } from "@nfid/integration"
 
-import { DeviceKey } from "frontend/integration/_ic_api/internet_identity_types"
+import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
 import {
@@ -16,9 +17,8 @@ import {
   AccountResponse,
   Application as BEApplication,
   PersonaResponse,
-} from "../_ic_api/identity_manager.did"
-import { PublicKey } from "../_ic_api/internet_identity_types"
-import { im } from "../actors"
+} from "../_ic_api/identity_manager.d"
+import { PublicKey } from "../_ic_api/internet_identity.d"
 import { Icon } from "./devices/state"
 
 export interface Profile {

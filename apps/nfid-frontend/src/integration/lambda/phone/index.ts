@@ -3,10 +3,10 @@ import { IDL } from "@dfinity/candid"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { ic } from "@nfid/integration"
 import nacl from "tweetnacl"
 import nacl_util from "tweetnacl-util"
 
-import { ic } from "frontend/integration/actors"
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
 declare const VERIFY_PHONE_NUMBER: string

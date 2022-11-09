@@ -32,9 +32,6 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           applicationName={state.context.appMeta?.name}
           applicationLogo={state.context.appMeta?.logo}
           onSelectRemoteAuthorization={() => send("AUTH_WITH_REMOTE")}
-          onSelectSameDeviceRegistration={() =>
-            console.log("VOID: SAME DEVICE")
-          }
           onSelectSameDeviceAuthorization={(userNumber) =>
             send({
               type: "AUTH_WITH_EXISTING_ANCHOR",
@@ -60,7 +57,6 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
             )
             send({
               type: "AUTH_WITH_GOOGLE",
-              to: "auth-unknown-device",
               data: { jwt: credential },
             })
           }}
@@ -70,11 +66,12 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
             state.matches("AuthWithGoogle") ||
             state.matches("AuthenticateSameDevice")
           }
-          loadingMessage={
-            state.matches("AuthWithGoogle")
-              ? "signing in with Google"
-              : undefined
-          }
+          // FIXME: doesn't exist on component interface
+          // loadingMessage={
+          //   state.matches("AuthWithGoogle")
+          //     ? "signing in with Google"
+          //     : undefined
+          // }
           authError={
             // TODO cleanup types
             "data" in state.event && state.event.data

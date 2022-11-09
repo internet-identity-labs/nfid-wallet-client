@@ -4,24 +4,24 @@ import {
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { authState } from "@nfid/integration"
+import { im } from "@nfid/integration"
 import React from "react"
 import useSWR from "swr"
 
 import {
   AccessPointRequest,
   AccessPointResponse,
-} from "frontend/integration/_ic_api/identity_manager.did"
+} from "frontend/integration/_ic_api/identity_manager.d"
 import {
   DeviceData,
   PublicKey,
-} from "frontend/integration/_ic_api/internet_identity_types"
-import { im } from "frontend/integration/actors"
+} from "frontend/integration/_ic_api/internet_identity.d"
 import { useDeviceInfo } from "frontend/integration/device"
 import { removeAccessPointFacade } from "frontend/integration/facade"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import {
   addDevice,
-  authState,
   fetchAllDevices,
   fetchAuthenticatorDevices,
   fetchRecoveryDevices,

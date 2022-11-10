@@ -99,6 +99,9 @@ export const config: WebdriverIO.Config = {
           "--disable-web-security",
         ],
       },
+      "goog:loggingPrefs": {
+        "browser": "ALL"
+      },
       acceptInsecureCerts: true,
     },
   ],

@@ -1,3 +1,4 @@
+import { principalToAddress } from "ictool"
 import { useCallback, useMemo, useState } from "react"
 
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
@@ -19,10 +20,11 @@ export const RequestAccounts = ({
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([])
   const { wallets } = useAllWallets()
   const { counter, setCounter } = useTimer({ defaultCounter: -1 })
+
   const accountsOptions: IOption[] | undefined = useMemo(() => {
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
-      value: wallet.principal?.toText() ?? "",
+      value: principalToAddress(wallet.principal) ?? "",
       afterLabel: wallet.balance.value,
     }))
   }, [wallets])

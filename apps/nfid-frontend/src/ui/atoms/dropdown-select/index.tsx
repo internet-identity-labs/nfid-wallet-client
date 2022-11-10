@@ -4,9 +4,9 @@ import { IoIosSearch } from "react-icons/io"
 
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
-import { Checkbox } from "../checkbox"
 import { Input } from "../input"
 import Arrow from "./arrow.svg"
+import { DropdownOption } from "./option"
 
 export interface IOption {
   label: string
@@ -27,6 +27,7 @@ export interface IDropdownSelect {
   isMultiselect?: boolean
   firstSelected?: boolean
   disabled?: boolean
+  isSelectAll?: boolean
 }
 
 export const DropdownSelect = ({
@@ -40,11 +41,27 @@ export const DropdownSelect = ({
   isMultiselect = true,
   firstSelected = false,
   disabled = false,
+  isSelectAll = false,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
 
   const ref = useClickOutside(() => setIsDropdownOpen(false))
+
+  const filteredOptions = useMemo(() => {
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchInput.toLowerCase()),
+    )
+  }, [options, searchInput])
+
+  const isAllSelected = useMemo(() => {
+    return filteredOptions.length === selectedValues.length
+  }, [filteredOptions, selectedValues])
+
+  useEffect(() => {
+    if (firstSelected && options.length) toggleCheckbox(false, options[0].value)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstSelected, options])
 
   const toggleCheckbox = useCallback(
     (isChecked: boolean, value: string) => {
@@ -60,16 +77,11 @@ export const DropdownSelect = ({
     [isMultiselect, selectedValues, setSelectedValues],
   )
 
-  const filteredOptions = useMemo(() => {
-    return options.filter((option) =>
-      option.label.toLowerCase().includes(searchInput.toLowerCase()),
-    )
-  }, [options, searchInput])
-
-  useEffect(() => {
-    if (firstSelected && options.length) toggleCheckbox(false, options[0].value)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstSelected, options])
+  const toggleSelectAll = useCallback(() => {
+    if (isAllSelected) return setSelectedValues([])
+    const allValues = filteredOptions.map((option) => option.value)
+    setSelectedValues(allValues)
+  }, [filteredOptions, setSelectedValues, isAllSelected])
 
   return (
     <div
@@ -127,34 +139,21 @@ export const DropdownSelect = ({
             />
           )}
           <div className={clsx("max-h-[30vh] overflow-auto flex flex-col")}>
+            {isSelectAll && (
+              <DropdownOption
+                option={{ label: "Select all", value: "all" }}
+                isChecked={isAllSelected}
+                toggleCheckbox={toggleSelectAll}
+                isCheckbox
+              />
+            )}
             {filteredOptions?.map((option) => (
-              <label
-                key={`option_${option.value}`}
-                htmlFor={option.value}
-                className={clsx(
-                  "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
-                  "flex items-center text-sm text-black-base",
-                  option.disabled && "pointer-events-none !text-gray-300",
-                )}
-              >
-                <Checkbox
-                  value={option.value}
-                  isChecked={selectedValues.includes(option.value)}
-                  onChange={toggleCheckbox}
-                  className={clsx("mr-[13px]", !isMultiselect && "hidden")}
-                />
-                {option.icon && (
-                  <img
-                    className="mr-[13px] w-10 h-10 object-cover"
-                    src={option.icon}
-                    alt={option.value}
-                  />
-                )}
-                <span className="w-full">{option.label}</span>
-                <span className="text-gray-400 whitespace-nowrap">
-                  {option.afterLabel}
-                </span>
-              </label>
+              <DropdownOption
+                option={option}
+                isChecked={selectedValues.includes(option.value)}
+                toggleCheckbox={toggleCheckbox}
+                isCheckbox
+              />
             ))}
           </div>
         </div>

@@ -16,7 +16,7 @@ export const NFIDLogo = () => {
         />
 
         <div className="w-12 h-12 p-1 group-hover:hidden">
-          <img src={logo} />
+          {/* <img src={logo} /> */}
         </div>
       </div>
     </div>

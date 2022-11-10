@@ -1,3 +1,4 @@
+import { principalToAddress } from "ictool"
 import { useCallback, useMemo, useState } from "react"
 
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"

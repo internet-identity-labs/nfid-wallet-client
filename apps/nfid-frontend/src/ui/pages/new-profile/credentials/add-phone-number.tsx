@@ -40,8 +40,8 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
   return (
     <ProfileTemplate
       pageTitle="Add phone number"
-      onBack={`${ProfileConstants.base}/${ProfileConstants.credentials}`}
       isLoading={isLoading}
+      showBackButton
     >
       <ProfileContainer>
         <div className={clsx("text-sm")}>

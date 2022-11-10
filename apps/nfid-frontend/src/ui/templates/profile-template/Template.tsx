@@ -1,3 +1,4 @@
+import { ArrowButton } from "@nfid-frontend/ui"
 import clsx from "clsx"
 import { useAtom } from "jotai"
 import React from "react"
@@ -10,12 +11,10 @@ import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
 
-import ArrowBackIcon from "../assets/arrow-back.svg"
-
 interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
   icon?: string
-  onBack?: To
+  showBackButton?: boolean
   onIconClick?: () => void
   headerClassName?: string
   containerClassName?: string
@@ -27,7 +26,7 @@ interface IProfileTemplate extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileTemplate: React.FC<IProfileTemplate> = ({
   pageTitle,
   icon,
-  onBack,
+  showBackButton,
   onIconClick,
   children,
   className,
@@ -37,7 +36,9 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   headerMenu,
   iconTooltip,
 }) => {
-  const navigate = useNavigate()
+  const handleNavigateBack = React.useCallback(() => {
+    window.history.back()
+  }, [])
   const [transferModalState] = useAtom(transferModalAtom)
 
   return (
@@ -60,16 +61,12 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         <section className={clsx("relative", className)}>
           <div className="flex justify-between h-[70px] items-start mt-5">
             <div className="sticky left-0 flex space-x-2">
-              {onBack && (
-                <img
-                  src={ArrowBackIcon}
-                  alt="back"
-                  className="transition-all cursor-pointer hover:opacity-70"
-                  onClick={() => navigate(onBack)}
-                />
+              {showBackButton && (
+                <ArrowButton onClick={handleNavigateBack} alt={"Back"} />
               )}
               <p className="text-[28px] block">{pageTitle}</p>
             </div>
+
             {icon && onIconClick && (
               <img
                 src={icon}

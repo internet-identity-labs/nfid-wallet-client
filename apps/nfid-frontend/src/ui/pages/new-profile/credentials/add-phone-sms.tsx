@@ -37,8 +37,8 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
   return (
     <ProfileTemplate
       pageTitle="SMS verification"
-      onBack={`${ProfileConstants.base}/${ProfileConstants.credentials}/${ProfileConstants.addPhoneNumber}`}
       isLoading={isLoading}
+      showBackButton
     >
       <ProfileContainer>
         <div className="text-sm">

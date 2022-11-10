@@ -1,15 +1,8 @@
-import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { toast } from "react-toastify"
+import { useCallback, useMemo, useState } from "react"
 
-import { icpToUSD } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
-import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { IOption } from "frontend/ui/atoms/dropdown-select"
 import { SDKRequestAccountsPage } from "frontend/ui/pages/request-accounts"
-import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
-import { isHex } from "frontend/ui/utils"
 import { useTimer } from "frontend/ui/utils/use-timer"
 
 interface IRequestAccounts {

@@ -75,6 +75,7 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
               selectedValues={selectedAccounts}
               setSelectedValues={setSelectedAccounts}
               placeholder="None selected - connect anonymously"
+              showSelectAllOption
             />
           </div>
         </div>

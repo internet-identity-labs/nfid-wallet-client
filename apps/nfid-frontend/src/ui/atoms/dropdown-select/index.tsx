@@ -27,7 +27,7 @@ export interface IDropdownSelect {
   isMultiselect?: boolean
   firstSelected?: boolean
   disabled?: boolean
-  isSelectAll?: boolean
+  showSelectAllOption?: boolean
 }
 
 export const DropdownSelect = ({
@@ -41,7 +41,7 @@ export const DropdownSelect = ({
   isMultiselect = true,
   firstSelected = false,
   disabled = false,
-  isSelectAll = false,
+  showSelectAllOption = false,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
@@ -139,7 +139,7 @@ export const DropdownSelect = ({
             />
           )}
           <div className={clsx("max-h-[30vh] overflow-auto flex flex-col")}>
-            {isSelectAll && (
+            {showSelectAllOption && (
               <DropdownOption
                 option={{ label: "Select all", value: "all" }}
                 isChecked={isAllSelected}

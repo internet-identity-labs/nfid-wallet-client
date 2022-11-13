@@ -129,6 +129,9 @@ const KnownDeviceMachine =
                 actions: "assignAuthSession",
               },
             ],
+            onError: {
+              target: "Authenticate",
+            },
           },
         },
         UpdateProfile: {

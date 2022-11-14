@@ -18,7 +18,7 @@ Feature: Registration using Google
 
     When I click on the selector "#credentials-picker > div:first-child"
     When I focus the previous opened window
-    Then I wait on element "#captcha-img" for 10000ms to be displayed
+    Then I wait on element "#captcha-img" for 15000ms to be displayed
     And  I expect that element "#enter-captcha" not contains any text
     And  I expect that element "#create-nfid" has the class "btn-disabled"
 

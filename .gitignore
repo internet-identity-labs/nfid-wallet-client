@@ -26,6 +26,7 @@ allure-results
 package-lock.json
 npm-debug.log
 yarn-error.log
+apps/nfid-frontend/src/integration/_ic_api/jiept-kaaaa-aaaao-aajsa-cai.js
 
 # System Files
 .DS_Store

@@ -83,7 +83,7 @@ jobs:
         run: |
 
           # install local to generate the types
-          npx nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend
+          npx nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend --skip-nx-cache
 
           dfx identity use action
           dfx deploy --network ic nfid-frontend --no-wallet

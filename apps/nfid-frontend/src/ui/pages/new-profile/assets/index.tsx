@@ -4,6 +4,7 @@ import { generatePath, useNavigate } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -41,14 +42,14 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       onIconClick={onIconClick}
       className="overflow-inherit"
     >
-      <ProfileContainer title="Your tokens">
+      <ProfileContainer title="Your tokens" showChildrenPadding={false}>
         <Loader isLoading={!tokens.length} />
         <table className={clsx("text-left w-full hidden sm:table")}>
           <thead className={clsx("border-b border-black-base h-16")}>
             <tr className={clsx("font-bold text-sm leading-5")}>
-              <th>Name</th>
+              <th className="pl-5 sm:pl-[30px]">Name</th>
               <th>Token balance</th>
-              <th>USD balance</th>
+              <th className="pr-5 sm:pr-[30px]">USD balance</th>
             </tr>
           </thead>
           <tbody className="h-16 text-sm text-[#0B0E13]">
@@ -56,13 +57,13 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               <tr
                 key={`token_${index}`}
                 onClick={handleNavigateToTokenDetails(token.currency)}
-                className="cursor-pointer hover:bg-gray-200"
+                className="border-b border-gray-200 cursor-pointer hover:bg-gray-100"
               >
-                <td className="flex items-center h-16 pl-4">
-                  <img
-                    src={token.icon}
-                    alt="icon"
-                    className="w-6 h-6 mr-[18px]"
+                <td className="flex items-center h-16 pl-5 sm:pl-[30px]">
+                  <ApplicationIcon
+                    className="mr-[18px]"
+                    icon={token.icon}
+                    appName={token.title}
                   />
                   <div>
                     <p className="text-sm">{token.title}</p>
@@ -77,7 +78,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
             ))}
           </tbody>
         </table>
-        <div className="sm:hidden">
+        <div className="px-5 sm:hidden">
           {tokens.map((token, index) => (
             <div
               key={`token_${index}`}

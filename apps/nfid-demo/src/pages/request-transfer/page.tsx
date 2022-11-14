@@ -1,13 +1,11 @@
 import { Button, H1, Input } from "@nfid-frontend/ui"
-import { minMax } from "@nfid-frontend/validation"
+import { minMax } from "@nfid-frontend/utils"
 import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
 import clsx from "clsx"
 import React from "react"
-import { Helmet } from "react-helmet-async"
 import { useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
 
-import { RouteRequestTransfer } from "."
 import { environment } from "../../environments/environment"
 import { PageTemplate } from "../page-template"
 

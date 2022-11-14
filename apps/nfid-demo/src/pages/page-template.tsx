@@ -6,9 +6,10 @@ import {
 } from "@nfid-frontend/ui"
 import clsx from "clsx"
 import { Helmet } from "react-helmet-async"
-import { BiMobile, BiWallet } from "react-icons/bi"
+import { BiMobile, BiWallet, BiUser } from "react-icons/bi"
 
 import { Link, NavLink } from "./common"
+import { RoutePathGetAccounts } from "./get-accounts"
 import { RoutePathPhoneNumberVerification } from "./phone-number-credential"
 import { RoutePath as RoutePathRequestTransfer } from "./request-transfer"
 
@@ -37,7 +38,7 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
           className={clsx(
             "px-5 py-6",
             "border-gray-100 border-r",
-            "h-full w-72",
+            "h-full w-72 shrink-0",
           )}
         >
           <SidebarWrapper>
@@ -49,6 +50,9 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
             </NavLink>
             <NavLink route={RoutePathRequestTransfer}>
               <SidebarItem icon={<BiWallet />} title="Request transfer" />
+            </NavLink>
+            <NavLink route={RoutePathGetAccounts}>
+              <SidebarItem icon={<BiUser />} title="Request accounts" />
             </NavLink>
           </SidebarWrapper>
         </div>

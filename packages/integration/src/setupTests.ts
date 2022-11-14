@@ -10,3 +10,20 @@ global.TextEncoder = TextEncoder
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 global.TextDecoder = TextDecoder
+
+// Global userAgent Mock
+// define userAgent within your tests by
+// global.userAgent = 'iPhone'
+// https://vincent-benoit.medium.com/how-to-test-useragent-with-jest-inside-a-react-application-cfd87648843a
+Object.defineProperty(
+  window.navigator,
+  "userAgent",
+  ((value) => ({
+    get() {
+      return value
+    },
+    set(v) {
+      value = v
+    },
+  }))(window.navigator.userAgent),
+)

@@ -38,7 +38,7 @@ jobs:
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
           AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
   deploy:
     needs: check-secrets
@@ -46,9 +46,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: aviate-labs/setup-dfx@v0.2.3
+      - uses: internet-identity-labs/setup-dfx@2a601e8a4e14d09ce2b7a1a32bc9fd5eacd25913
         with:
-          dfx-version: 0.9.3
+          dfx-version: 0.11.2
+          dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
 
@@ -56,18 +57,20 @@ jobs:
         run: |
           cat > ~/.npmrc << EOF
           @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${NPM_GH_TOKEN}
+          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
           yarn
-          yarn prettier --check "src/**/*.{ts,tsx}"
-          npx nx test nfid-frontend
         env:
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID FRONTEND | deploy
         run: |
+
+          npx nx run-many --target=build --configuration=staging --projects=nfid-demo,nfid-frontend
+
           dfx identity use action
           dfx deploy --network dev nfid-frontend --no-wallet
+          dfx deploy --network dev nfid-demo --no-wallet
 
         env:
           FRONTEND_MODE: production
@@ -89,4 +92,4 @@ jobs:
           LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
           CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
           AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-          NPM_GH_TOKEN: ${{secrets.NPM_GH_TOKEN}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}

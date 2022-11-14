@@ -1,6 +1,7 @@
 import "./styles.scss"
 
 export * from "./atoms/button"
+export * from "./atoms/button/arrow-button"
 export * from "./atoms/input"
 export * from "./atoms/menu-wrapper"
 export * from "./atoms/nfid-logo"

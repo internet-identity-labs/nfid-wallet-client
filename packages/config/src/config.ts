@@ -1,8 +1,4 @@
 import * as childProcess from "child_process"
-import { config as loadEnv } from "dotenv"
-import * as path from "path"
-
-loadEnv({ path: path.resolve(__dirname, "../../../.env.local") })
 
 const sentryRelease = childProcess
   .execSync("git rev-parse HEAD")

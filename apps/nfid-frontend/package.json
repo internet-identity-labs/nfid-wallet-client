@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "start": "craco start",
+    "build": "BUILD_PATH=../../dist/apps/nfid-frontend/ craco build",
+    "build:example": "EXAMPLE_BUILD=1 BUILD_PATH=../../dist/apps/nfid-frontend/ craco build",
+    "craco:test": "craco test",
+    "test:dev": "jest --passWithNoTests --detectOpenHandles --watch",
+    "test:dev:silent": "yarn test:dev --silent=true",
+    "test": "jest --passWithNoTests --detectOpenHandles --silent=true",
+    "eject": "react-scripts eject",
+    "serve": "npm start"
+  },
+  "browserslist": {
+    "production": [
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version",
+      "last 2 edge version"
+    ],
+    "development": [
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version",
+      "last 2 edge version"
+    ]
+  }
+}

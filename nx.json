@@ -33,7 +33,29 @@
     }
   },
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals",
+      { "env": "FRONTEND_MODE" },
+      { "env": "BACKEND_MODE" },
+      { "env": "II_MODE" },
+      { "env": "IC_HOST" },
+      { "env": "DFX_NETWORK" },
+      { "env": "CURRCONV_TOKEN" },
+      { "env": "REACT_APP_SENTRY_CONNECTION" },
+      { "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION" },
+      { "env": "PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION" },
+      { "env": "VERIFIER_CANISTER_ID_PRODUCTION" },
+      { "env": "INTERNET_IDENTITY_CANISTER_ID_PRODUCTION" },
+      { "env": "AWS_VERIFY_PHONENUMBER" },
+      { "env": "AWS_SIGNIN_GOOGLE" },
+      { "env": "AWS_SYMMETRIC" },
+      { "env": "GOOGLE_CLIENT_ID" },
+      { "env": "USERGEEK_API_KEY" },
+      { "env": "LEDGER_CANISTER_ID" },
+      { "env": "CYCLES_MINTER_CANISTER_ID" },
+      { "env": "PSYCHEDELIC_GH_NPM_REGISTRY" }
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",

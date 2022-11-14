@@ -27,7 +27,7 @@ export const ApplicationListItem: React.FC<Props> = ({
       href={getUrl(domain).toString()}
       target="_blank"
       className={clsx(
-        "relative flex hover:bg-gray-50 hover:rounded transition-colors duration-100 -mx-3",
+        "relative flex hover:bg-gray-50 hover:rounded transition-colors duration-100",
         "h-[60px] border-b border-gray-200",
         className,
       )}

@@ -43,16 +43,21 @@ describe("SignIn with Internet Identity", () => {
       pub_key: identity2.getPrincipal().toString(),
     })
 
-    expect(accessPoints.status_code).toEqual(200)
-    expect(accessPoints.error).toStrictEqual([])
-    const accessPoint: AccessPointResponse = accessPoints
-      .data[0]?.[0] as AccessPointResponse
-    expect(accessPoint.icon).toEqual("desktop")
-    expect(accessPoint.device).toEqual("Device2")
-    expect(accessPoint.browser).toEqual("Safari")
-    expect(accessPoint.principal_id).toEqual(
-      identity2.getPrincipal().toString(),
-    )
+    expect(accessPoints).toEqual({
+      status_code: 200,
+      error: [],
+      data: [
+        [
+          {
+            icon: "desktop",
+            device: "Device2",
+            browser: "Safari",
+            principal_id: identity2.getPrincipal().toString(),
+            last_used: expect.any(BigInt),
+          },
+        ],
+      ],
+    })
 
     const deviceDatas: DeviceData[] = await ii.lookup(anchor)
     const lastDeviceData: DeviceData = deviceDatas[deviceDatas.length - 1]

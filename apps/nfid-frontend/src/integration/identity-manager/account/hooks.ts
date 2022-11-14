@@ -31,7 +31,7 @@ export const useAccount = () => {
   const [userNumber] = useAtom(userNumberAtom)
 
   React.useEffect(() => {
-    console.debug("useAccount", { profile, error })
+    console.debug("useAccount", JSON.stringify({ profile, error }, null, 2))
   }, [profile, error])
 
   const createAccount = React.useCallback(

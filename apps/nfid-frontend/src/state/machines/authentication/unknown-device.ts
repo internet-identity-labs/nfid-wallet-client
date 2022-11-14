@@ -200,7 +200,10 @@ const UnknownDeviceMachine =
       actions: {
         assignAuthSession: assign({
           authSession: (_, event) => {
-            console.debug("UnknownDeviceMachine assignAuthSession", { event })
+            console.debug(
+              "UnknownDeviceMachine assignAuthSession",
+              JSON.stringify({ event }, null, 2),
+            )
             return event.data
           },
         }),

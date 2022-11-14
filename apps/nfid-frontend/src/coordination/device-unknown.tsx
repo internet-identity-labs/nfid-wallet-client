@@ -15,10 +15,17 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
 
   React.useEffect(
     () =>
-      console.debug("UnknownDeviceCoordinator", {
-        context: state.context,
-        state: state.value,
-      }),
+      console.debug(
+        "UnknownDeviceCoordinator",
+        JSON.stringify(
+          {
+            context: state.context,
+            state: state.value,
+          },
+          null,
+          2,
+        ),
+      ),
     [state.value, state.context],
   )
 

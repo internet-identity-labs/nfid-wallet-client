@@ -10,10 +10,17 @@ export function RegistrationCoordinator({ actor }: Actor<RegistrationActor>) {
   const [state, send] = useActor(actor)
 
   React.useEffect(() => {
-    console.debug("RegistrationCoordinator", {
-      state: state.value,
-      context: state.context,
-    })
+    console.debug(
+      "RegistrationCoordinator",
+      JSON.stringify(
+        {
+          state: state.value,
+          context: state.context,
+        },
+        null,
+        2,
+      ),
+    )
   }, [state.value, state.context])
 
   switch (true) {

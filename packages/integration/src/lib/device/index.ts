@@ -1,3 +1,4 @@
+import { MobileBrowser } from "@nfid/config"
 import bowser from "bowser"
 import useSWRImmutable from "swr/immutable"
 
@@ -21,7 +22,7 @@ const name = getName()
 export function isWebAuthNSupported(): boolean {
   return (
     window?.PublicKeyCredential !== undefined &&
-    typeof window.PublicKeyCredential === "function"
+    typeof window?.PublicKeyCredential === "function"
   )
 }
 
@@ -44,16 +45,6 @@ export async function fetchWebAuthnPlatformCapability() {
   return PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
 }
 
-export const MobileBrowser = [
-  "Android",
-  "BlackBerry",
-  "iPhone",
-  "iPad",
-  "iPod",
-  "Opera Mini",
-  "IEMobile",
-  "WPDesktop",
-]
 export const IsMobileRegEx = new RegExp(MobileBrowser.join("|"), "i")
 
 // NOTE: needed to turn this into a function. Otherwise within tests its not

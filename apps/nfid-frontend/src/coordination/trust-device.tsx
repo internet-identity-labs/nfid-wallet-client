@@ -1,7 +1,7 @@
 import { useActor } from "@xstate/react"
 import React, { useState } from "react"
 
-import { useDeviceInfo } from "frontend/integration/device"
+import { useDeviceInfo } from "@nfid/integration"
 import {
   registerDeviceWithSecurityKey,
   registerDeviceWithWebAuthn,

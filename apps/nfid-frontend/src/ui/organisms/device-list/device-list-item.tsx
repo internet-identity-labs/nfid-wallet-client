@@ -7,7 +7,7 @@ import ReactTooltip from "react-tooltip"
 import {
   LegacyDevice,
   Icon,
-} from "frontend/integration/identity-manager/devices/state"
+} from "@nfid/integration"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { InfoIcon } from "frontend/ui/atoms/icons/info"

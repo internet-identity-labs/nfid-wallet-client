@@ -3,15 +3,15 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { ii, im } from "@nfid/integration"
 
-import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.d"
+import { HTTPAccountRequest } from "./_ic_api/identity_manager.d"
 import {
   Challenge,
   ChallengeResult,
   DeviceData,
   UserNumber,
-} from "frontend/integration/_ic_api/internet_identity.d"
+} from "./_ic_api/internet_identity.d"
+import { ii, im } from "./actors"
 
 export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
   const sessionKey = Ed25519KeyIdentity.generate()
@@ -41,7 +41,9 @@ export async function registerIIAccount(
   return registerResponse.registered.user_number
 }
 
-export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
+export async function registerIIAndIM(
+  identity: Ed25519KeyIdentity,
+): Promise<bigint> {
   const deviceData: DeviceData = {
     alias: "Device",
     protection: {
@@ -56,9 +58,10 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
     },
     credential_id: [],
   }
-  let anchor: UserNumber = await registerIIAccount(identity, deviceData)
-  let req: HTTPAccountRequest = {
+  const anchor: UserNumber = await registerIIAccount(identity, deviceData)
+  const req: HTTPAccountRequest = {
     anchor: anchor,
   }
   await im.create_account(req)
+  return anchor
 }

@@ -6,7 +6,7 @@ import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import {
   LegacyDevice,
   RecoveryDevice,
-} from "frontend/integration/identity-manager/devices/state"
+} from "@nfid/integration"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { protectRecoveryPhrase } from "frontend/integration/internet-identity"
 import ProfileSecurityPage from "frontend/ui/pages/new-profile/security"

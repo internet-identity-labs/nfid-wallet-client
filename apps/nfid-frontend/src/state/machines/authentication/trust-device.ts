@@ -1,6 +1,6 @@
+import { fetchWebAuthnPlatformCapability } from "@nfid/integration"
 import { ActorRefFrom, createMachine } from "xstate"
 
-import { fetchWebAuthnPlatformCapability } from "frontend/integration/device"
 import {
   registerDeviceWithSecurityKey,
   registerDeviceWithWebAuthn,

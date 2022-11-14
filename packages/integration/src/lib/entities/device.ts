@@ -1,5 +1,3 @@
-import { atom } from "jotai"
-
 export type Icon =
   | "mobile"
   | "tablet"
@@ -9,13 +7,6 @@ export type Icon =
   | "usb"
   | "google"
   | "unknown"
-
-export interface AccessPointRequest {
-  icon: string
-  device: string
-  pub_key: Array<number>
-  browser: string
-}
 
 // TODO: update to backend api
 /**
@@ -42,6 +33,3 @@ export interface RecoveryDevice {
   isSecurityKey: boolean
   isProtected?: boolean
 }
-
-export const devicesAtom = atom<LegacyDevice[]>([])
-export const recoveryDevicesAtom = atom<RecoveryDevice[]>([])

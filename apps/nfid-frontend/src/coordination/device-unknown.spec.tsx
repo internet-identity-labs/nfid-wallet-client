@@ -6,7 +6,7 @@ import { act, render, screen, waitFor } from "@testing-library/react"
 import QR from "qrcode"
 
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
-import * as device from "frontend/integration/device"
+import * as device from "@nfid/integration"
 import UnknownDeviceMachine, {
   UnknownDeviceActor,
   UnknownDeviceContext,

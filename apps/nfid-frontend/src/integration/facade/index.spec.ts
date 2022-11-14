@@ -9,6 +9,10 @@ import {
 import { Principal } from "@dfinity/principal"
 import { authState as authStateMock } from "@nfid/integration"
 import { ii, im, replaceIdentity } from "@nfid/integration"
+import {
+  generateDelegationIdentity,
+  registerIIAccount,
+} from "@nfid/integration"
 
 import {
   DeviceData,
@@ -29,7 +33,6 @@ import { FrontendDelegation } from "frontend/integration/internet-identity/index
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
 import { getWalletPrincipal } from "../rosetta"
-import { generateDelegationIdentity, registerIIAccount } from "../test-util"
 
 describe("Facade suite", () => {
   jest.setTimeout(100000)

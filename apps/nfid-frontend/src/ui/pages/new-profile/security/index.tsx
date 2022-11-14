@@ -4,7 +4,7 @@ import React from "react"
 import {
   LegacyDevice,
   RecoveryDevice,
-} from "frontend/integration/identity-manager/devices/state"
+} from "@nfid/integration"
 import { PlusIcon } from "frontend/ui/atoms/icons/plus"
 import { IconRecovery } from "frontend/ui/atoms/icons/recovery"
 import { USBIcon } from "frontend/ui/atoms/icons/usb"

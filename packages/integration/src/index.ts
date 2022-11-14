@@ -1,2 +1,6 @@
 export * from "./lib/agent"
+export * from "./lib/device"
+export * from "./lib/entities/device"
+export * from "./lib/internet-identity/add-tentative-device"
 export * from "./lib/actors"
+export * from "./lib/test-util"

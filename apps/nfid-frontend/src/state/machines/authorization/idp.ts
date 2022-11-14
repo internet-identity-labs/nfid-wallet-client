@@ -1,6 +1,6 @@
+import { isWebAuthNSupported } from "@nfid/integration"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { isWebAuthNSupported } from "frontend/integration/device"
 import {
   getAppMeta,
   handshake,

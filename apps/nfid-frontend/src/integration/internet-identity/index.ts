@@ -16,6 +16,7 @@ import {
   invalidateIdentity,
   replaceIdentity,
 } from "@nfid/integration"
+import { getBrowserName } from "@nfid/integration"
 import { arrayBufferEqual } from "ictool/dist/bits"
 
 import {
@@ -39,7 +40,6 @@ import { fromMnemonicWithoutValidation } from "frontend/integration/internet-ide
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
 import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
-import { getBrowserName } from "../device"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
 import { derFromPubkey, hasOwnProperty } from "./utils"

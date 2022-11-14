@@ -7,7 +7,7 @@ import ReactTooltip from "react-tooltip"
 import {
   Icon,
   RecoveryDevice,
-} from "frontend/integration/identity-manager/devices/state"
+} from "@nfid/integration"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { PencilIcon } from "frontend/ui/atoms/icons/pencil"

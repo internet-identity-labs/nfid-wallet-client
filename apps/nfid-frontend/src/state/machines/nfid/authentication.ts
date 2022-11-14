@@ -1,7 +1,7 @@
 // State machine controlling the phone number credential flow.
+import { isWebAuthNSupported } from "@nfid/integration"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { isWebAuthNSupported } from "frontend/integration/device"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 

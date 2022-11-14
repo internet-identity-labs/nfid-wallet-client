@@ -9,7 +9,7 @@ import {
   getBrowserName,
   getIcon,
   useDeviceInfo,
-} from "frontend/integration/device"
+} from "@nfid/integration"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"

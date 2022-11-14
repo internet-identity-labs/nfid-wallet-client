@@ -6,6 +6,8 @@ import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { authState } from "@nfid/integration"
 import { im } from "@nfid/integration"
+import { LegacyDevice, Icon, RecoveryDevice } from "@nfid/integration"
+import { useDeviceInfo } from "@nfid/integration"
 import React from "react"
 import useSWR from "swr"
 
@@ -17,7 +19,6 @@ import {
   DeviceData,
   PublicKey,
 } from "frontend/integration/_ic_api/internet_identity.d"
-import { useDeviceInfo } from "frontend/integration/device"
 import { removeAccessPointFacade } from "frontend/integration/facade"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import {
@@ -33,7 +34,6 @@ import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 import { creationOptions } from "frontend/integration/webauthn/creation-options"
 
 import { useAccount } from "../account/hooks"
-import { LegacyDevice, Icon, RecoveryDevice } from "./state"
 
 declare const SIGNIN_GOOGLE: string
 

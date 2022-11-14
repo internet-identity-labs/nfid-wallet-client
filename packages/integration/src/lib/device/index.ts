@@ -1,7 +1,7 @@
 import bowser from "bowser"
 import useSWRImmutable from "swr/immutable"
 
-import { Icon } from "../identity-manager/devices/state"
+import { Icon } from "../entities/device"
 
 const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
 const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
@@ -69,7 +69,7 @@ export const getIsMobileDeviceMatch = (): boolean => {
 }
 
 export function getPlatformInfo() {
-  var userAgent = window.navigator.userAgent,
+  const userAgent = window.navigator.userAgent,
     platform = window.navigator.platform
 
   switch (true) {
@@ -139,6 +139,7 @@ export const deviceInfo = {
   isMobile: getIsMobileDeviceMatch(),
 }
 
+// TODO: rename this as it is not a hook
 export const useDeviceInfo = () => {
   const { data: hasPlatformAuthenticator } = useSWRImmutable(
     "hasWebAuthNCapability",

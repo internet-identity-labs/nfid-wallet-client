@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 import {
   LegacyDevice,
   RecoveryDevice,
-} from "frontend/integration/identity-manager/devices/state"
+} from "@nfid/integration"
 
 import Index from "."
 

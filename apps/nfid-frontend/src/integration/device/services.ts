@@ -1,11 +1,11 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { ii, im } from "@nfid/integration"
-
 import {
   deviceInfo,
   fetchWebAuthnPlatformCapability,
   getIsMobileDeviceMatch,
-} from "."
+} from "@nfid/integration"
+
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "../identity"
 import { fetchProfile } from "../identity-manager"
 import { setProfile } from "../identity-manager/profile"

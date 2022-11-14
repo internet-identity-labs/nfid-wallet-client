@@ -27,6 +27,7 @@ const ProfileApplicationsPage: React.FC<IProfileApplicationsPage> = ({
           <ProfileContainer
             title="Third-party applications"
             subTitle="Applications you’ve created account with"
+            showChildrenPadding={false}
           >
             <ApplicationList accounts={filteredData} />
           </ProfileContainer>

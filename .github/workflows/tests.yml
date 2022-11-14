@@ -209,6 +209,13 @@ jobs:
           name: wdio-report
           path: apps/nfid-frontend-e2e/test/reporter
 
+      - name: Upload browser logs
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: logs
+          path: apps/nfid-frontend-e2e/user-google-e2e/chrome_debug.log
+
       - name: Upload build artefacts
         uses: actions/upload-artifact@v2
         if: always()

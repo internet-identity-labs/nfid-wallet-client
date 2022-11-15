@@ -28,24 +28,12 @@ jobs:
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
-          IDENTITY_MANAGER_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_IDENTITY_MANAGER}}
-          PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_PUB_SUB_CHANNEL}}
-          VERIFIER_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_VERIFIER}}
-          INTERNET_IDENTITY_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_INTERNET_IDENTITY}}
-          IM_ADDITION_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_IM_ADDITION}}
-          AWS_VERIFY_PHONENUMBER: ${{secrets.PROD_AWS_VERIFY_PHONENUMBER}}
-          AWS_SIGNIN_GOOGLE: ${{secrets.PROD_AWS_SIGNIN_GOOGLE}}
-          AWS_SYMMETRIC: ${{secrets.PROD_AWS_SYMMETRIC}}
-          GOOGLE_CLIENT_ID: ${{secrets.PROD_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
           SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
-          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
-          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
   deploy:
@@ -76,31 +64,16 @@ jobs:
         run: |
 
           # install local to generate the types
-          npx nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend --skip-nx-cache
+          npx env-cmd -f .env.production nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend --skip-nx-cache
 
           dfx identity use action
           dfx deploy --network ic nfid-frontend --no-wallet
           dfx deploy --network ic nfid-demo --no-wallet
 
         env:
-          FRONTEND_MODE: production
-          BACKEND_MODE: PRODUCTION
-          II_MODE: production
-          IC_HOST: https://ic0.app
-          DFX_NETWORK: ic
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           REACT_APP_SENTRY_CONNECTION: ${{secrets.PROD_SENTRY_CONNECTION}}
-          IDENTITY_MANAGER_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_IDENTITY_MANAGER}}
-          PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_PUB_SUB_CHANNEL}}
-          VERIFIER_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_VERIFIER}}
-          INTERNET_IDENTITY_CANISTER_ID_PRODUCTION: ${{secrets.PROD_CANISTER_ID_INTERNET_IDENTITY}}
-          AWS_VERIFY_PHONENUMBER: ${{secrets.PROD_AWS_VERIFY_PHONENUMBER}}
-          AWS_SIGNIN_GOOGLE: ${{secrets.PROD_AWS_SIGNIN_GOOGLE}}
-          AWS_SYMMETRIC: ${{secrets.PROD_AWS_SYMMETRIC}}
-          GOOGLE_CLIENT_ID: ${{secrets.PROD_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
-          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: Create Sentry release

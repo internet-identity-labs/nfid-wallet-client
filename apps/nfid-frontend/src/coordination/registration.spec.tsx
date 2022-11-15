@@ -51,6 +51,8 @@ describe("Registration Coordinator", () => {
     // @ts-ignore: actor class has additional things to mock
     im.get_account = jest.fn(mockGetAccountResponse)
 
+    jest.useFakeTimers().setSystemTime(new Date("1969-01-01T00:27:48.512Z"))
+
     WebAuthnIdentity.create = jest.fn(mockWebAuthnCreate)
     DelegationChain.create = jest.fn(factoryDelegationChain)
 

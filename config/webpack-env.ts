@@ -13,13 +13,8 @@ export const serviceConfig = {
   II_ENV: JSON.stringify(process.env.II_MODE),
   CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
   FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
-  IS_DEV: JSON.stringify(process.env.IS_DEV),
   USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
   GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
-  LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
-  CYCLES_MINTER_CANISTER_ID: JSON.stringify(
-    process.env.CYCLES_MINTER_CANISTER_ID,
-  ),
   VERIFY_PHONE_NUMBER: JSON.stringify(
     process.env.FRONTEND_MODE === "production"
       ? process.env.AWS_VERIFY_PHONENUMBER
@@ -32,15 +27,17 @@ export const serviceConfig = {
       : "/signin",
   ),
   INTERNET_IDENTITY_CANISTER_ID: JSON.stringify(
-    process.env[`INTERNET_IDENTITY_CANISTER_ID_${process.env.BACKEND_MODE}`],
+    process.env.INTERNET_IDENTITY_CANISTER_ID,
   ),
   IDENTITY_MANAGER_CANISTER_ID: JSON.stringify(
-    process.env[`IDENTITY_MANAGER_CANISTER_ID_${process.env.BACKEND_MODE}`],
+    process.env.IDENTITY_MANAGER_CANISTER_ID,
   ),
   PUB_SUB_CHANNEL_CANISTER_ID: JSON.stringify(
-    process.env[`PUB_SUB_CHANNEL_CANISTER_ID_${process.env.BACKEND_MODE}`],
+    process.env.PUB_SUB_CHANNEL_CANISTER_ID,
   ),
-  VERIFIER_CANISTER_ID: JSON.stringify(
-    process.env[`VERIFIER_CANISTER_ID_${process.env.BACKEND_MODE}`],
+  VERIFIER_CANISTER_ID: JSON.stringify(process.env.VERIFIER_CANISTER_ID),
+  LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
+  CYCLES_MINTER_CANISTER_ID: JSON.stringify(
+    process.env.CYCLES_MINTER_CANISTER_ID,
   ),
 }

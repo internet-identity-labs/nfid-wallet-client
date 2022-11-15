@@ -138,7 +138,9 @@ function authStateClosure() {
       })
       replaceIdentity(delegationIdentity)
     },
-    get: () => observableAuthState$.getValue(),
+    get: () => {
+      return observableAuthState$.getValue()
+    },
     reset() {
       observableAuthState$.next({})
     },

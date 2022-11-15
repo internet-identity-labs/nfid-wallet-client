@@ -109,6 +109,7 @@ jobs:
           npx env-cmd -f .env.staging nx build nfid-frontend
           yarn serve -l 9090 -s dist/apps/nfid-frontend &
         env:
+          IS_DEV: true
           IS_E2E_TEST: true
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
 

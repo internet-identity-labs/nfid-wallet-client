@@ -19,6 +19,7 @@ export default {
       "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
     IC_HOST: "https://ic0.app",
     II_ENV: "dev",
+    IS_DEV: "",
     IS_E2E_TEST: false,
     GOOGLE_CLIENT_ID:
       "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",

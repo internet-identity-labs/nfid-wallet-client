@@ -47,27 +47,35 @@ describe("SignIn with Internet Identity", () => {
       pub_key: identity2.getPrincipal().toString(),
     })
 
-    expect(accessPoints.status_code).toEqual(200)
-    expect(accessPoints.error).toStrictEqual([])
+    expect(accessPoints).toEqual(
+      expect.objectContaining({
+        status_code: 200,
+        error: [],
+      }),
+    )
+
     const accessPoint: AccessPointResponse = accessPoints
       .data[0]?.[0] as AccessPointResponse
-    expect(accessPoint.icon).toEqual("desktop")
-    expect(accessPoint.device).toEqual("Device2")
-    expect(accessPoint.browser).toEqual("Safari")
-    expect(accessPoint.principal_id).toEqual(
-      identity2.getPrincipal().toString(),
+
+    expect(accessPoint).toEqual(
+      expect.objectContaining({
+        icon: "desktop",
+        device: "Device2",
+        browser: "Safari",
+        principal_id: identity2.getPrincipal().toString(),
+      }),
     )
 
     const deviceDatas: DeviceData[] = await ii.lookup(anchor)
     const lastDeviceData: DeviceData = deviceDatas[deviceDatas.length - 1]
-    expect(lastDeviceData.alias).toEqual(deviceName)
-    expect(lastDeviceData.protection).toEqual({ unprotected: null })
-    expect(lastDeviceData.pubkey).toStrictEqual(
-      new Uint8Array(identity2.getPublicKey().toDer()),
-    )
-    expect(lastDeviceData.key_type).toEqual({ platform: null })
-    expect(lastDeviceData.purpose).toEqual({ authentication: null })
-    expect(lastDeviceData.credential_id).toEqual([])
+    expect(lastDeviceData).toEqual({
+      alias: deviceName,
+      protection: { unprotected: null },
+      pubkey: new Uint8Array(identity2.getPublicKey().toDer()),
+      key_type: { platform: null },
+      purpose: { authentication: null },
+      credential_id: [],
+    })
 
     const delegationIdentity2: DelegationIdentity =
       await generateDelegationIdentity(identity2)

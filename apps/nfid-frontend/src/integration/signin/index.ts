@@ -13,6 +13,13 @@ export type TentativeDeviceResponse = {
   deviceRegistrationTimeout: Timestamp
 }
 
+type AddedTentatively = {
+  added_tentatively: {
+    verification_code: string
+    device_registration_timeout: Timestamp
+  }
+}
+
 export async function addTentativeDevice(
   identity: Ed25519KeyIdentity,
   deviceName: string,
@@ -47,13 +54,6 @@ export async function addTentativeDevice(
 
   if (!("added_tentatively" in addTentativeDeviceResponse)) {
     throw Error("Unknown error during proccess of adding tentative device.")
-  }
-
-  type AddedTentatively = {
-    added_tentatively: {
-      verification_code: string
-      device_registration_timeout: Timestamp
-    }
   }
 
   const response = (addTentativeDeviceResponse as AddedTentatively)

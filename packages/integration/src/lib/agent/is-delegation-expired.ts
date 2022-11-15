@@ -8,9 +8,16 @@ export const isDelegationExpired = (
   let isExpired = false
 
   for (const { delegation } of delegationIdentity.getDelegation().delegations) {
-    if (
-      +new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()
-    ) {
+    const expiration = new Date(Number(delegation.expiration / BigInt(1000000)))
+    const now = new Date()
+
+    if (+expiration <= +now) {
+      console.debug("isDelegationExpired", {
+        isExpired: true,
+        expirationDate: expiration,
+        nowDate: now,
+      })
+
       isExpired = true
       break
     }

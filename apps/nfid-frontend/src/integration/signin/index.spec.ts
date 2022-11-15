@@ -14,7 +14,7 @@ import { fetchProfile, Profile } from "../identity-manager"
 import { generateDelegationIdentity, registerIIAndIM } from "../test-util"
 
 describe("SignIn with Internet Identity", () => {
-  jest.setTimeout(80000)
+  jest.setTimeout(100000)
 
   it("should add tentative device to account and authorize thru it.", async () => {
     const deviceName = "Device2"

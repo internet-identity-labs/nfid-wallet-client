@@ -8,7 +8,11 @@ import {
   WebAuthnIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { authState } from "@nfid/integration"
+import {
+  authState,
+  FrontendDelegation,
+  requestFEDelegation,
+} from "@nfid/integration"
 import {
   accessList,
   ii,
@@ -74,12 +78,6 @@ type SeedPhraseFail = { kind: "seedPhraseFail" }
 
 export type { ChallengeResult } from "frontend/integration/_ic_api/internet_identity.d"
 
-export interface FrontendDelegation {
-  delegationIdentity: DelegationIdentity
-  chain: DelegationChain
-  sessionKey: Ed25519KeyIdentity
-}
-
 export interface JSONSerialisableSignedDelegation {
   delegation: {
     pubkey: PublicKey
@@ -90,8 +88,6 @@ export interface JSONSerialisableSignedDelegation {
   userKey: PublicKey
 }
 
-const ONE_MINUTE_IN_M_SEC = 60 * 1000
-const TEN_MINUTES_IN_M_SEC = 10 * ONE_MINUTE_IN_M_SEC
 export const IC_DERIVATION_PATH = [44, 223, 0, 0, 0]
 
 export async function createChallenge(): Promise<Challenge> {
@@ -125,43 +121,6 @@ export async function fetchRecoveryDevices(anchor: UserNumber) {
   return allDevices.filter((device) =>
     hasOwnProperty(device.purpose, "recovery"),
   )
-}
-
-export const requestFEDelegationChain = async (
-  identity: SignIdentity,
-  ttl: number = TEN_MINUTES_IN_M_SEC,
-) => {
-  console.debug("Request FE Delegation Chain.")
-  const sessionKey = Ed25519KeyIdentity.generate()
-  // Here the security device is used. Besides creating new keys, this is the only place.
-  const chain = await DelegationChain.create(
-    identity,
-    sessionKey.getPublicKey(),
-    new Date(Date.now() + ttl),
-    {
-      targets: accessList.map((x) => Principal.fromText(x)),
-    },
-  )
-
-  return { chain, sessionKey }
-}
-
-export let requestFEDelegation = async (
-  identity: SignIdentity,
-): Promise<FrontendDelegation> => {
-  console.debug("requestFEDelegation")
-  const { sessionKey, chain } = await requestFEDelegationChain(identity)
-
-  const delegationIdentity = DelegationIdentity.fromDelegation(
-    sessionKey,
-    chain,
-  )
-
-  return {
-    delegationIdentity,
-    chain,
-    sessionKey,
-  }
 }
 
 async function renewDelegation() {

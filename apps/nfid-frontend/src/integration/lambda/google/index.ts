@@ -1,10 +1,9 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { authState } from "@nfid/integration"
-import { ii, im } from "@nfid/integration"
+import { authState, ii, im, requestFEDelegation } from "@nfid/integration"
 
 import { getBrowserName } from "frontend/integration/device"
 import { fetchProfile } from "frontend/integration/identity-manager"
-import { requestFEDelegation } from "frontend/integration/internet-identity"
+import "frontend/integration/internet-identity"
 import { GoogleAuthSession } from "frontend/state/authentication"
 
 declare const SIGNIN_GOOGLE: string

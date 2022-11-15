@@ -9,6 +9,7 @@ import {
 import { Principal } from "@dfinity/principal"
 import { authState as authStateMock } from "@nfid/integration"
 import { ii, im, replaceIdentity } from "@nfid/integration"
+import { FrontendDelegation } from "@nfid/integration"
 
 import {
   DeviceData,
@@ -25,7 +26,6 @@ import {
 } from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
-import { FrontendDelegation } from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
 import { getWalletPrincipal } from "../rosetta"

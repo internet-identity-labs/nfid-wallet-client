@@ -66,7 +66,7 @@ jobs:
       - name: NFID FRONTEND | deploy
         run: |
 
-          npx nx run-many --target=build --configuration=staging --projects=nfid-demo,nfid-frontend
+          npx env-cmd -f .env.staging nx run-many --target=build --configuration=staging --projects=nfid-demo,nfid-frontend
 
           dfx identity use action
           dfx deploy --network dev nfid-frontend --no-wallet
@@ -78,7 +78,6 @@ jobs:
           IS_DEV: true
           II_MODE: production
           IC_HOST: https://ic0.app
-          DFX_NETWORK: dev
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}

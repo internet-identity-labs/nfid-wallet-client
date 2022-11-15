@@ -4,8 +4,8 @@ import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 import webpack from "webpack"
 
+import { serviceConfig } from "../../config/webpack-env"
 import dfxJson from "../../dfx.json"
-import { serviceConfig } from "../../packages/config/src"
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 

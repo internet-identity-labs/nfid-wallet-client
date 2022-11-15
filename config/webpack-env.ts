@@ -13,6 +13,7 @@ export const serviceConfig = {
   II_ENV: JSON.stringify(process.env.II_MODE),
   CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
   FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
+  IS_DEV: JSON.stringify(process.env.IS_DEV),
   USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
   GOOGLE_CLIENT_ID: JSON.stringify(process.env.GOOGLE_CLIENT_ID),
   VERIFY_PHONE_NUMBER: JSON.stringify(

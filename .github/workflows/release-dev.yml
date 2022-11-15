@@ -62,6 +62,7 @@ jobs:
           dfx deploy --network dev nfid-demo --no-wallet
 
         env:
+          IS_DEV: true
           IC_HOST: https://ic0.app
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}

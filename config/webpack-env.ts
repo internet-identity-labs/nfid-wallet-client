@@ -41,4 +41,7 @@ export const serviceConfig = {
   CYCLES_MINTER_CANISTER_ID: JSON.stringify(
     process.env.CYCLES_MINTER_CANISTER_ID,
   ),
+  II_PROVIDER: JSON.stringify(
+    process.env[`II_PROVIDER_${process.env.BACKEND_MODE}`],
+  ),
 }

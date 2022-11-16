@@ -462,7 +462,7 @@ async function registerAnchor(
       {
         alias,
         pubkey,
-        credential_id: credentialId ? [credentialId] : [],
+        credential_id: credentialId ? [credentialId] : [[0]],
         key_type: { unknown: null },
         purpose: { authentication: null },
         protection: { unprotected: null },

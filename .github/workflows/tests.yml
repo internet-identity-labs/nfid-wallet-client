@@ -33,15 +33,10 @@ jobs:
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
-          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
@@ -115,10 +110,6 @@ jobs:
 
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: Setup chrome browser

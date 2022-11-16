@@ -3,21 +3,22 @@ import { Delegation, DelegationChain } from "@dfinity/identity"
 
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
-export const delegationChainFromDelegation = (
-  delegation: ThirdPartyAuthSession,
-): DelegationChain => {
+export const delegationChainFromDelegation = ({
+  signedDelegation,
+  userPublicKey,
+}: ThirdPartyAuthSession): DelegationChain => {
   return DelegationChain.fromDelegations(
     [
       {
         delegation: new Delegation(
-          new Uint8Array(delegation.signedDelegation.delegation.pubkey).buffer,
-          delegation.signedDelegation.delegation.expiration,
-          delegation.signedDelegation.delegation.targets,
+          new Uint8Array(signedDelegation.delegation.pubkey).buffer,
+          signedDelegation.delegation.expiration,
+          signedDelegation.delegation.targets,
         ),
-        signature: new Uint8Array(delegation.signedDelegation.signature)
+        signature: new Uint8Array(signedDelegation.signature)
           .buffer as Signature,
       },
     ],
-    new Uint8Array(delegation.userPublicKey).buffer as DerEncodedPublicKey,
+    new Uint8Array(userPublicKey).buffer as DerEncodedPublicKey,
   )
 }

@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import { useAtom } from "jotai"
 import { useCallback } from "react"
-import { To } from "react-router-dom"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"

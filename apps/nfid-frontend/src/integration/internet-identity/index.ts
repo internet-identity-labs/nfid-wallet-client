@@ -13,13 +13,7 @@ import {
   FrontendDelegation,
   requestFEDelegation,
 } from "@nfid/integration"
-import {
-  accessList,
-  ii,
-  im,
-  invalidateIdentity,
-  replaceIdentity,
-} from "@nfid/integration"
+import { ii, im, invalidateIdentity, replaceIdentity } from "@nfid/integration"
 import { arrayBufferEqual } from "ictool/dist/bits"
 
 import {

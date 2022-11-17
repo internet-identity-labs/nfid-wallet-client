@@ -9,10 +9,10 @@ import {
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
 
-import { getBalance } from ".."
 import { Account, Application } from "../../identity-manager"
 import { useApplicationsMeta } from "../../identity-manager/queries"
 import { useAllPrincipals } from "../../internet-identity/queries"
+import { getBalance } from "../balance"
 import { Balance } from "../rosetta_interface"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 

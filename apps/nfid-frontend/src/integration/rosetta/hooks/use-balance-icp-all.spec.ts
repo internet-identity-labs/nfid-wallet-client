@@ -9,8 +9,10 @@ import * as iiHooks from "frontend/integration/internet-identity/queries"
 
 import * as rosettaMocks from ".."
 import { Account, Application } from "../../identity-manager"
-import { APP_ACC_BALANCE_SHEET } from "../queries.mocks"
+import * as balanceMocks from "../balance"
+import * as getExchangeRateMocks from "../get-exchange-rate"
 import { useBalanceICPAll } from "./use-balance-icp-all"
+import { APP_ACC_BALANCE_SHEET } from "./use-balance-icp-all.mocks"
 
 const commonFields = {
   currency: {
@@ -121,7 +123,7 @@ describe("useBalanceICPAll", () => {
       Promise.resolve(mock.getBalanceResponse),
     )
 
-    const getBalanceSpy = jest.spyOn(rosettaMocks, "getBalance")
+    const getBalanceSpy = jest.spyOn(balanceMocks, "getBalance")
 
     promises.map((promise) =>
       getBalanceSpy.mockImplementationOnce((principal) => promise),
@@ -129,7 +131,7 @@ describe("useBalanceICPAll", () => {
 
     const getExchangeRateP1 = Promise.resolve(5)
     const getExchangeRateSpy = jest
-      .spyOn(rosettaMocks, "getExchangeRate")
+      .spyOn(getExchangeRateMocks, "getExchangeRate")
       .mockImplementation(() => getExchangeRateP1)
 
     const useAllPrincipals = jest

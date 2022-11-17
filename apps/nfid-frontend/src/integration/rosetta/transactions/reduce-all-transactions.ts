@@ -1,4 +1,4 @@
-import { TransactionHistory } from "./rosetta_interface"
+import { TransactionHistory } from "../rosetta_interface"
 
 export const reduceAllTransactions = (transactions: TransactionHistory[]) => {
   return transactions.reduce<TransactionHistory>(

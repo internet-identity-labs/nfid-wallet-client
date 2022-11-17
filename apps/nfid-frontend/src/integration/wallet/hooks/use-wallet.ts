@@ -5,7 +5,7 @@ import useSWRImmutable from "swr/immutable"
 
 import { getWalletPrincipal } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { getBalance } from "frontend/integration/rosetta"
+import { getBalance } from "frontend/integration/rosetta/balance"
 import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
 
 import { useAllTransactions } from "./get-all-transactions"

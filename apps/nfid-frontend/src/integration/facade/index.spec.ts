@@ -28,7 +28,7 @@ import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
-import { getWalletPrincipal } from "../rosetta"
+import { getWalletPrincipal } from "../rosetta/get-wallet-principal"
 import { generateDelegationIdentity, registerIIAccount } from "../test-util"
 
 describe("Facade suite", () => {

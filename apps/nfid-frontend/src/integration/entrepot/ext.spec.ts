@@ -14,7 +14,8 @@ import {
   unListNFT,
 } from "frontend/integration/entrepot/ext"
 import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
-import { transfer } from "frontend/integration/rosetta"
+
+import { transfer } from "../rosetta/transfer"
 
 const identityA: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -27,7 +28,6 @@ const identityB: JsonnableEd25519KeyIdentity = [
 const testToken = "m2qxv-aqkor-uwiaa-aaaaa-b4ats-4aqca-aaelv-q"
 const testCollection = "p5jg7-6aaaa-aaaah-qcolq-cai"
 const allien = "p5jg7-6aaaa-aaaah-qcolq-cai"
-const heroes = "poyn6-dyaaa-aaaah-qcfzq-cai"
 const testCollectionTurtle = "jeghr-iaaaa-aaaah-qco7q-cai" //fl5nr-xiaaa-aaaai-qbjmq-cai ICTurtles on DAB and legacy API in Entrepot
 
 describe("NFT EXT standard suite", () => {

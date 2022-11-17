@@ -1,7 +1,7 @@
 import useSWR from "swr"
 
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import { getAllTransactionHistory } from "frontend/integration/rosetta"
+import { getAllTransactionHistory } from "frontend/integration/rosetta/transactions/get-all-transaction-history"
 
 export const useAllTransactions = () => {
   const { principals } = useAllPrincipals()

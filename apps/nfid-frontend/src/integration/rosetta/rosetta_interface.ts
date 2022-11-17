@@ -21,16 +21,6 @@ export interface Balance {
   metadata: object
 }
 
-export interface RosettaRequest {
-  network_identifier: {
-    blockchain: string
-    network: string
-  }
-  account_identifier: {
-    address: string
-  }
-}
-
 export interface XdrUsd {
   XDR_USD: string
 }

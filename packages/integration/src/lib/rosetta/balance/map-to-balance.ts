@@ -1,4 +1,4 @@
-import { Balance, RosettaBalance } from "../rosetta_interface"
+import { Balance, RosettaBalance } from "."
 
 export async function mapToBalance(response: Response): Promise<Balance> {
   return await response

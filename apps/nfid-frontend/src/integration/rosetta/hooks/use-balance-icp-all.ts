@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import { Balance, getBalance } from "@nfid/integration"
 import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
@@ -12,8 +13,6 @@ import {
 import { Account, Application } from "../../identity-manager"
 import { useApplicationsMeta } from "../../identity-manager/queries"
 import { useAllPrincipals } from "../../internet-identity/queries"
-import { getBalance } from "../balance"
-import { Balance } from "../rosetta_interface"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 
 interface RawBalance {

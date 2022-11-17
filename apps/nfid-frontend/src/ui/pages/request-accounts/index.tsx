@@ -2,13 +2,11 @@ import clsx from "clsx"
 
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
-import { Loader } from "frontend/ui/atoms/loader"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { IOption } from "frontend/ui/molecules/input-dropdown"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
-import LoaderIcon from "./loader.svg"
 import NFIDLogo from "./nfid.svg"
 
 export interface SDKRequestAccountsPageProps {

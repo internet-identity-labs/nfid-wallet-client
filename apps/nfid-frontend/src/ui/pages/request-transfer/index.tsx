@@ -2,13 +2,9 @@ import clsx from "clsx"
 
 import ICPIcon from "frontend/assets/dfinity.svg"
 import { walletFee } from "frontend/constants/wallet"
-import { IWallet } from "frontend/integration/wallet/hooks/types"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect, IOption } from "frontend/ui/atoms/dropdown-select"
-import { Loader } from "frontend/ui/atoms/loader"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { TransferModalSuccess } from "frontend/ui/organisms/transfer-modal/sucess"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import LoaderIcon from "./loader.svg"

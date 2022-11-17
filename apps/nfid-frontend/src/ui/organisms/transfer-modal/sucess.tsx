@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import React, { useEffect } from "react"
-import { Link } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { Button } from "frontend/ui/atoms/button"
@@ -24,7 +23,7 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
     }
     window.addEventListener("beforeunload", handler)
     return () => window.removeEventListener("beforeunload", handler)
-  }, [])
+  }, [onClose])
 
   return (
     <div

@@ -22,5 +22,8 @@ export const useAllPrincipals = () => {
     fetchPrincipals,
     { dedupingInterval: 60_000, refreshInterval: 60_000 },
   )
+
+  console.debug("useAllPrincipals", { principals })
+
   return { principals }
 }

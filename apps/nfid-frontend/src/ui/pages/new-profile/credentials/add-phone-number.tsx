@@ -2,7 +2,6 @@ import clsx from "clsx"
 import React, { Dispatch, SetStateAction } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { Button } from "frontend/ui/atoms/button"
 import { Input } from "frontend/ui/atoms/input"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"

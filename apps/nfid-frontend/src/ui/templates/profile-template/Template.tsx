@@ -2,7 +2,6 @@ import { ArrowButton } from "@nfid-frontend/ui"
 import clsx from "clsx"
 import { useAtom } from "jotai"
 import React from "react"
-import { To, useNavigate } from "react-router-dom"
 import ReactTooltip from "react-tooltip"
 
 import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { TransactionRow } from "frontend/integration/rosetta/select-transactions"
 import { Chip } from "frontend/ui/atoms/chip"
 import { DropdownSelect, IOption } from "frontend/ui/atoms/dropdown-select"
 import Pagination from "frontend/ui/molecules/pagination"
@@ -11,8 +11,8 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 interface IProfileTransactionsPage
   extends React.HTMLAttributes<HTMLDivElement> {
-  sentData: any[]
-  receivedData: any[]
+  sentData: TransactionRow[]
+  receivedData: TransactionRow[]
   transactionsFilterOptions: IOption[]
   chips: string[]
   onChipRemove: (value: string) => void

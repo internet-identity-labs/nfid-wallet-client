@@ -48,11 +48,9 @@ jobs:
       - name: Checkout CI repo
         uses: actions/checkout@v2
 
-      - run: git fetch origin ${{ github.base_ref }}
-
       - uses: nrwl/nx-set-shas@v3
         with:
-          main-branch-name: ${{ github.base_ref }}
+          main-branch-name: "${{ github.base_ref }}"
 
       - name: Set up Node.js
         uses: actions/setup-node@v3

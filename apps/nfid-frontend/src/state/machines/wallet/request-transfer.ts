@@ -68,17 +68,13 @@ const RequestTransferMachine = createMachine(
       },
       RequestTransfer: {
         on: {
-          CONFIRM: "Confirm",
+          CONFIRM: { target: "Confirm", actions: "assignBlockHeight" },
         },
       },
       Confirm: {
-        onEntry: "assignBlockHeight",
-        on: {
-          END: "End",
-        },
+        onEntry: "setBlockHeight",
       },
       End: {
-        onEntry: "setBlockHeight",
         type: "final",
       },
     },

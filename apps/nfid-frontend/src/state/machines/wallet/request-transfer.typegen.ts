@@ -37,7 +37,7 @@ export interface Typegen0 {
     assignAuthSession: "done.invoke.AuthenticationMachine"
     assignBlockHeight: "CONFIRM"
     assignRequestTransferRequest: "done.invoke.registerRequestTransferHandler"
-    setBlockHeight: "END"
+    setBlockHeight: "CONFIRM"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerRequestTransferHandler"

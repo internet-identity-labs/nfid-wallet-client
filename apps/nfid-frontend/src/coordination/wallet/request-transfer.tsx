@@ -67,15 +67,6 @@ export default function RequestTransferCoordinator({ machine }: Props) {
           }}
         />
       )
-    case state.matches("Confirm"):
-      return (
-        <ScreenResponsive className="p-5">
-          <TransferModalSuccess
-            transactionMessage={`${state.context.requestTransfer?.amount} ICP was sent`}
-            onClose={() => send({ type: "END" })}
-          />
-        </ScreenResponsive>
-      )
     default:
       console.debug(
         `PhoneCredentialCoordinator rendering loader, unknown state: ${JSON.stringify(

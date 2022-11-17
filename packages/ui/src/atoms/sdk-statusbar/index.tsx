@@ -17,7 +17,7 @@ export const SDKStatusbar = ({
   children,
 }: SDKStatusbarProps) => {
   return (
-    <div className={clsx("flex space-x-2.5")}>
+    <div className={clsx("flex space-x-2.5 items-center mb-2.5")}>
       <div
         className={clsx(
           "w-10 h-10 rounded-full bg-gray-50",
@@ -39,7 +39,7 @@ export const SDKStatusbar = ({
           />
         </div>
       </div>
-      <div>{children}</div>
+      <div className="w-full">{children}</div>
     </div>
   )
 }

@@ -1,5 +1,5 @@
-@tailwind components;
 @tailwind base;
+@tailwind components;
 @tailwind utilities;
 
 /* You can add global styles to this file, and also import other style files
@@ -36,6 +36,8 @@ body {
 */
 body {
   line-height: 1.5;
+  margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
 }
 /*

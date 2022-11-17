@@ -9,7 +9,7 @@ import { SDKFooter } from "../../atoms/sdk-footer/footer"
 import { SDKHeader } from "../../atoms/sdk-header"
 import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 
-export interface SDKApproveTemplateProps
+export interface ApproveTemplateProps
   extends React.HTMLAttributes<HTMLDivElement> {
   applicationName: string
   applicationLogo: string
@@ -19,7 +19,7 @@ export interface SDKApproveTemplateProps
   isLoading?: boolean
 }
 
-export const SDKApproveTemplate: React.FC<SDKApproveTemplateProps> = ({
+export const ApproveTemplate: React.FC<ApproveTemplateProps> = ({
   children,
   className,
   applicationName,

@@ -1,4 +1,4 @@
-import { SDKApproveTemplate, SDKStatusbar } from "@nfid-frontend/ui"
+import { ApproveTemplate, SDKStatusbar } from "@nfid-frontend/ui"
 import clsx from "clsx"
 
 import { walletFee } from "frontend/constants/wallet"
@@ -37,7 +37,7 @@ export const RequestTransferPage: React.FC<IRequestTransferPage> = ({
   isInsufficientFunds,
 }) => {
   return (
-    <SDKApproveTemplate
+    <ApproveTemplate
       applicationName={applicationName}
       applicationLogo={applicationLogo}
       onReject={onReject}
@@ -85,6 +85,6 @@ export const RequestTransferPage: React.FC<IRequestTransferPage> = ({
       <div className="text-xs text-gray-400 mt-2.5">
         Transfer fee: {walletFee} ICP
       </div>
-    </SDKApproveTemplate>
+    </ApproveTemplate>
   )
 }

@@ -1,11 +1,11 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
 
-import { SDKApproveTemplate, SDKApproveTemplateProps } from "./index"
+import { ApproveTemplate, ApproveTemplateProps } from "./index"
 
 const meta: Meta = {
-  title: "Templates/SDKApproveTemplate",
-  component: SDKApproveTemplate,
+  title: "Templates/ApproveTemplate",
+  component: ApproveTemplate,
   argTypes: {},
   parameters: {
     controls: { expanded: true },
@@ -14,8 +14,8 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<SDKApproveTemplateProps> = (args) => (
-  <SDKApproveTemplate {...args} />
+const Template: Story<ApproveTemplateProps> = (args) => (
+  <ApproveTemplate {...args} />
 )
 
 export const Default = Template.bind({})

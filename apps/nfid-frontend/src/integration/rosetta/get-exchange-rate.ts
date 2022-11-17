@@ -1,9 +1,8 @@
-import { cyclesMinter } from "@nfid/integration"
+import { cyclesMinter, restCall } from "@nfid/integration"
 
 import { XdrUsd } from "frontend/integration/rosetta/rosetta_interface"
 
 import { converter } from "./index"
-import { restCall } from "./util"
 
 export async function mapToXdrUsd(response: Response): Promise<XdrUsd> {
   return response.json().then((data) => data as XdrUsd)

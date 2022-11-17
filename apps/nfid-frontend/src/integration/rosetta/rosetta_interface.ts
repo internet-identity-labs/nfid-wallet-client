@@ -110,7 +110,7 @@ export interface TransactionHistoryResponse {
   total_count: number
 }
 
-interface Operation {
+export interface Operation {
   operationIdentifier: {
     index: number
   }

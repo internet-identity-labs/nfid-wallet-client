@@ -12,7 +12,7 @@ interface RosettaRequest {
 }
 
 export function getRosettaRequest(principal: Principal): RosettaRequest {
-  let address: string = principalToAddress(principal as any)
+  const address: string = principalToAddress(principal as any)
   return {
     network_identifier: {
       blockchain: "Internet Computer",

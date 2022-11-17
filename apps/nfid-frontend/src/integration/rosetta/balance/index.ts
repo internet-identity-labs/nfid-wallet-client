@@ -1,9 +1,8 @@
 import { Principal } from "@dfinity/principal"
-import { restCall } from "@nfid/integration"
+import { getRosettaRequest, restCall } from "@nfid/integration"
 
 import { Balance } from "frontend/integration/rosetta/rosetta_interface"
 
-import { getRosettaRequest } from "../get-rosetta-request"
 import { rosetta } from "../index"
 import { mapToBalance } from "./map-to-balance"
 

@@ -10,6 +10,12 @@
     "eject": "react-scripts eject",
     "serve": "npm start"
   },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "browserslist": {
     "production": [
       "last 2 chrome version",

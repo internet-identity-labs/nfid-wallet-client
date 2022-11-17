@@ -4,9 +4,7 @@ import { useSearchParams } from "react-router-dom"
 
 import { RequestAccounts } from "frontend/apps/identity-manager/request-accounts"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
-import RequestAccountsMachine, {
-  RequestAccountsMachineType,
-} from "frontend/state/machines/wallet/request-accounts"
+import RequestAccountsMachine from "frontend/state/machines/wallet/request-accounts"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 

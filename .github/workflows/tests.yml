@@ -39,7 +39,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          II_PROVIDER_DEV: ${{secrets.DEV_II_PROVIDER}}
+          II_PROVIDER: ${{secrets.DEV_II_PROVIDER}}
 
   unit-tests:
     needs: check-secrets
@@ -72,7 +72,7 @@ jobs:
 
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          II_PROVIDER_DEV: ${{secrets.DEV_II_PROVIDER}}
+          II_PROVIDER: ${{secrets.DEV_II_PROVIDER}}
 
       - name: Run unit tests
         run: npx nx test nfid-frontend
@@ -113,7 +113,7 @@ jobs:
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          II_PROVIDER_DEV: ${{secrets.DEV_II_PROVIDER}}
+          II_PROVIDER: ${{secrets.DEV_II_PROVIDER}}
 
       - name: Setup chrome browser
         uses: browser-actions/setup-chrome@latest

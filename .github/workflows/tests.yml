@@ -73,7 +73,7 @@ jobs:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: Run unit tests
-        run: npx nx test nfid-frontend
+        run: npx nx run-many --target=test
 
   e2e-tests:
     needs: check-secrets

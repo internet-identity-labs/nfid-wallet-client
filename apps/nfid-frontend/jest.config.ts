@@ -1,4 +1,4 @@
-export default {
+const config = {
   displayName: "nfid-frontend",
   preset: "../../jest.preset.js",
   coverageDirectory: "../../coverage/apps/nfid-demo",
@@ -51,3 +51,4 @@ export default {
     "^frontend/(.*)$": "<rootDir>/src/$1",
   },
 }
+export default config

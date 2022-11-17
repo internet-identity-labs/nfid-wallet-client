@@ -30,6 +30,7 @@ Feature: Registration using Google
     And  I wait on element "#just-log-me-in" to be displayed
 
     When I click on the selector "#just-log-me-in"
+    Then I wait on element "#loader" for 20000ms to not be displayed
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
 
@@ -50,6 +51,7 @@ Feature: Registration using Google
 
     When I click on the selector "#just-log-me-in"
     Then I expect the url to contain "/profile/assets"
+    Then I wait on element "#loader" for 20000ms to not be displayed
     And  I wait on element "#profile" for 20000ms to be displayed
 
     When I click on the selector "#profile"

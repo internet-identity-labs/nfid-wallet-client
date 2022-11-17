@@ -1,17 +1,17 @@
 /**
  * @jest-environment jsdom
  */
+import { TransactionHistory } from "../rosetta_interface"
 import { reduceAllTransactions } from "./reduce-all-transactions"
 import {
-  reducedTransactions,
+  REDUCED_TRANSACTIONS,
   transactionsList,
 } from "./reduce-all-transactions.mocks"
-import { TransactionHistory } from "./rosetta_interface"
 
 describe("reduceAllTransactions", () => {
   it("should flatten list of TransactionHistory", () => {
     expect(
       reduceAllTransactions(transactionsList as TransactionHistory[]),
-    ).toEqual(reducedTransactions)
+    ).toEqual(REDUCED_TRANSACTIONS)
   })
 })

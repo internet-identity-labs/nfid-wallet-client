@@ -9,6 +9,7 @@ import { Profile } from "frontend/integration/identity-manager"
 import * as imQueryMocks from "frontend/integration/identity-manager/queries"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
 import * as rosettaMocks from "frontend/integration/rosetta"
+import * as transferMocks from "frontend/integration/rosetta/transfer"
 
 import { TransferAccount } from "."
 import { useTransfer } from "./use-transfer"
@@ -49,7 +50,7 @@ describe("useTransfer", () => {
 
     const transferP = Promise.resolve(BigInt(1))
     const transferSpy = jest
-      .spyOn(rosettaMocks, "transfer")
+      .spyOn(transferMocks, "transfer")
       .mockImplementation(() => transferP)
 
     // Initial setup of useTransfer hook
@@ -92,7 +93,7 @@ describe("useTransfer", () => {
 
     const transferP = Promise.resolve(BigInt(1))
     const transferSpy = jest
-      .spyOn(rosettaMocks, "transfer")
+      .spyOn(transferMocks, "transfer")
       .mockImplementation(() => transferP)
 
     // Initial setup of useTransfer hook

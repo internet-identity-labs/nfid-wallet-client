@@ -10,6 +10,7 @@ import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { IOption } from "frontend/ui/atoms/dropdown-select"
 import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
 import { isHex } from "frontend/ui/utils"
+import { useTimer } from "frontend/ui/utils/use-timer"
 
 interface IRequestTransfer {
   applicationName?: string
@@ -28,6 +29,7 @@ export const RequestTransfer = ({
 }: IRequestTransfer) => {
   const [selectedWallets, setSelectedWallets] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const { counter, setCounter } = useTimer({ defaultCounter: -1 })
 
   const { wallets } = useAllWallets()
   const { exchangeRate } = useICPExchangeRate()
@@ -67,7 +69,10 @@ export const RequestTransfer = ({
     try {
       setIsLoading(true)
       const blockIndex = await transfer(validAddress, String(amountICP))
-      onSuccess(blockIndex)
+      setCounter(5)
+      setTimeout(() => {
+        return onSuccess(blockIndex)
+      }, 5000)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction", {
@@ -82,6 +87,10 @@ export const RequestTransfer = ({
     }
   }
 
+  const isInsufficientFunds = useMemo(() => {
+    return !walletsOptions?.filter((option) => option.disabled !== true).length
+  }, [])
+
   return (
     <RequestTransferPage
       amountICP={amountICP}
@@ -92,8 +101,11 @@ export const RequestTransfer = ({
       onReject={() => window.close()}
       onApprove={onApprove}
       isLoading={isLoading}
-      applicationLogo={applicationLogo}
-      applicationName={applicationName}
+      applicationLogo={applicationLogo ?? ""}
+      applicationName={applicationName ?? ""}
+      destinationAddress={to}
+      successTimer={counter}
+      isInsufficientFunds={isInsufficientFunds}
     />
   )
 }

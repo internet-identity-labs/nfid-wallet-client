@@ -3,18 +3,16 @@ import React from "react"
 
 import successWhiteIcon from "./assets/success-white.svg"
 
-import logo from "../../assets/id.svg"
 import { Button } from "../../atoms/button"
 import { NFIDGradientBar } from "../../atoms/gradient-bar"
 import { SDKFooter } from "../../atoms/sdk-footer/footer"
 import { SDKHeader } from "../../atoms/sdk-header"
-import { SDKStatusbar } from "../../atoms/sdk-statusbar"
 import { SDKMeta } from "../../molecules/sdk-meta"
 
 export interface SDKApproveTemplateProps
   extends React.HTMLAttributes<HTMLDivElement> {
   applicationName: string
-  provider?: "nfid" | "dfinity"
+  applicationLogo: string
   onReject: () => void
   onApprove: () => void
   successTimer?: number
@@ -25,11 +23,11 @@ export const SDKApproveTemplate: React.FC<SDKApproveTemplateProps> = ({
   children,
   className,
   applicationName,
+  applicationLogo,
   onReject,
   onApprove,
   successTimer = -1,
   isLoading = false,
-  provider = "nfid",
 }) => {
   return (
     <div
@@ -44,14 +42,14 @@ export const SDKApproveTemplate: React.FC<SDKApproveTemplateProps> = ({
 
       <div
         className={clsx(
-          "w-full h-full flex-grow p-[22px]",
+          "w-full h-full flex-grow p-5",
           "sm:border-x sm:border-b sm:border-gray-100",
           "flex flex-col justify-between",
           className,
         )}
       >
         <SDKMeta
-          applicationLogo={logo}
+          applicationLogo={applicationLogo}
           title={applicationName}
           subTitle="wants to perform the following actions:"
         />
@@ -60,7 +58,7 @@ export const SDKApproveTemplate: React.FC<SDKApproveTemplateProps> = ({
           className={clsx(
             "border border-gray-300 rounded-md",
             "flex-grow h-full",
-            "p-3 mt-4 mb-14",
+            "p-3 mt-4 mb-16",
           )}
         >
           {children}
@@ -81,13 +79,17 @@ export const SDKApproveTemplate: React.FC<SDKApproveTemplateProps> = ({
         </div>
         <Button
           className={clsx(
-            "mt-5 lg:mt-32 flex items-center justify-center",
+            "flex items-center justify-center",
             successTimer === -1 && "hidden",
           )}
           block
           primary
         >
-          <img src={successWhiteIcon} alt="success-icon" className="mr-1.5" />
+          <img
+            src={successWhiteIcon}
+            alt="success-icon"
+            className={clsx("mr-2")}
+          />
           Success! Closing in {successTimer}
         </Button>
       </div>

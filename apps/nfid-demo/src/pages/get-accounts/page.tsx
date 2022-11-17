@@ -21,7 +21,7 @@ export const PageGetAccounts = () => {
     updateRequestButton({ loading: true, disabled: true })
     const result = await requestAccounts({
       provider: new URL(
-        `${environment.nfidProviderOrigin}/wallet/request-accounts?applicationName=RequestAccountsDemo&applicationLogo=${APPLICATION_LOGO_URL}`,
+        `${environment.nfidProviderOrigin}/wallet/request-accounts?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
       ),
     })
     updateRequestButton({ loading: false, disabled: false })

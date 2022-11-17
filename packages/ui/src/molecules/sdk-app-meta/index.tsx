@@ -2,14 +2,14 @@ import { ApplicationLogo } from "../../atoms/application-logo"
 import { H5 } from "../../atoms/typography"
 import { P } from "../../atoms/typography/paragraph"
 
-interface SDKMetaProps {
+interface SDKApplicationMetaProps {
   applicationLogo?: string
   applicationName?: string
   title?: string
   subTitle?: string
 }
 
-export const SDKMeta: React.FC<SDKMetaProps> = ({
+export const SDKApplicationMeta: React.FC<SDKApplicationMetaProps> = ({
   applicationLogo,
   applicationName,
   title,

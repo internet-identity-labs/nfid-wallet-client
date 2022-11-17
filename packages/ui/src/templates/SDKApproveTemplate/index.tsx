@@ -7,7 +7,7 @@ import { Button } from "../../atoms/button"
 import { NFIDGradientBar } from "../../atoms/gradient-bar"
 import { SDKFooter } from "../../atoms/sdk-footer/footer"
 import { SDKHeader } from "../../atoms/sdk-header"
-import { SDKMeta } from "../../molecules/sdk-meta"
+import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 
 export interface SDKApproveTemplateProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -48,7 +48,7 @@ export const SDKApproveTemplate: React.FC<SDKApproveTemplateProps> = ({
           className,
         )}
       >
-        <SDKMeta
+        <SDKApplicationMeta
           applicationLogo={applicationLogo}
           title={applicationName}
           subTitle="wants to perform the following actions:"

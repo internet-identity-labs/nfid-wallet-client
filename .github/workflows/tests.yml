@@ -47,7 +47,10 @@ jobs:
     steps:
       - name: Checkout CI repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
+      - uses: nrwl/nx-set-shas@v3
       - run: git fetch origin ${{ github.base_ref }}
 
       - name: Set up Node.js
@@ -73,9 +76,6 @@ jobs:
 
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-
-      - name: Set nx environment
-        run: echo "NX_BASE=$($(git rev-parse origin/${{ github.base_ref }}))" >> $GITHUB_ENV
 
       - name: Run unit tests
         run: npx nx affected:test

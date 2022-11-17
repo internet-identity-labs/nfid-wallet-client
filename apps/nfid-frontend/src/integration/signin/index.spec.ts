@@ -1,20 +1,39 @@
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
+import {
+  Delegation,
+  DelegationChain,
+  DelegationIdentity,
+  Ed25519KeyIdentity,
+} from "@dfinity/identity"
 import { ii, im } from "@nfid/integration"
 import { replaceIdentity } from "@nfid/integration"
+
+import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
 import { addTentativeDevice, TentativeDeviceResponse } from "."
 import {
   HTTPAccessPointResponse,
   AccessPointResponse,
   HTTPAccountResponse,
+  HTTPAccountRequest,
 } from "../_ic_api/identity_manager.d"
-import { DeviceData } from "../_ic_api/internet_identity.d"
+import { DeviceData, UserNumber } from "../_ic_api/internet_identity.d"
 import { deviceInfo, getBrowserName, getIcon } from "../device"
+import { createDeviceFactory } from "../device/create-device-factory"
 import { fetchProfile, Profile } from "../identity-manager"
-import { generateDelegationIdentity, registerIIAndIM } from "../test-util"
+import { delegationChainFromDelegation } from "../identity/delegation-chain-from-delegation"
+import {
+  delegationIdentityFromSignedIdentity,
+  fetchDelegate,
+} from "../internet-identity"
+import {
+  generateDelegationIdentity,
+  registerIIAccount,
+  registerIIAndIM,
+} from "../test-util"
 
 describe("SignIn with Internet Identity", () => {
-  jest.setTimeout(100000)
+  jest.setTimeout(150000)
 
   it("should add tentative device to account and authorize thru it.", async () => {
     const deviceName = "Device2"
@@ -83,5 +102,79 @@ describe("SignIn with Internet Identity", () => {
 
     const account: HTTPAccountResponse = await im.get_account()
     expect(account.data[0]?.anchor).toEqual(anchor)
+  })
+
+  it("should add register new II for existing II and auth thru it.", async () => {
+    // NOTE: This is scaffolding for the test,
+    // for real user use case we can just login thru his existing II account.
+    const privateIiIdentity: Ed25519KeyIdentity = Ed25519KeyIdentity.generate()
+    const privateIideviceData: DeviceData = createDeviceFactory(
+      "PrivateDevice",
+      privateIiIdentity.getPublicKey(),
+    )
+    const privateDelegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(privateIiIdentity)
+    replaceIdentity(privateDelegationIdentity)
+    const privateAnchor: UserNumber = await registerIIAccount(
+      privateIiIdentity,
+      privateIideviceData,
+    )
+
+    // NOTE: to retrieve the delegation from existing II,
+    // make use of `signinWithII` function.
+    const privateDelegation: ThirdPartyAuthSession = await fetchDelegate(
+      Number(privateAnchor),
+      "nfid.one",
+      Array.from(new Uint8Array(privateIiIdentity.getPublicKey().toDer())),
+    )
+
+    const derivedDelegationIdentity: DelegationIdentity =
+      await delegationIdentityFromSignedIdentity(
+        privateIiIdentity,
+        delegationChainFromDelegation(privateDelegation),
+      )
+
+    replaceIdentity(derivedDelegationIdentity)
+
+    const derivedDeviceData: DeviceData = createDeviceFactory(
+      "DerivedDevice",
+      derivedDelegationIdentity.getPublicKey(),
+    )
+
+    let derivedAnchor: UserNumber = await registerIIAccount(
+      undefined as any as Ed25519KeyIdentity,
+      derivedDeviceData,
+    )
+
+    await im.create_account({
+      anchor: derivedAnchor,
+    })
+
+    // NOTE: Here I relogin to user's own II to check
+    // I can obtain the same derived NFID profile from it.
+    const secondlyTakenPrivateDelegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(privateIiIdentity)
+    replaceIdentity(secondlyTakenPrivateDelegationIdentity)
+
+    const secondlyTakenPrivateDelegation: ThirdPartyAuthSession =
+      await fetchDelegate(
+        Number(privateAnchor),
+        "nfid.one",
+        Array.from(
+          new Uint8Array(
+            secondlyTakenPrivateDelegationIdentity.getPublicKey().toDer(),
+          ),
+        ),
+      )
+
+    const secondlyTakenDerivedDelegationIdentity: DelegationIdentity =
+      await delegationIdentityFromSignedIdentity(
+        privateIiIdentity,
+        delegationChainFromDelegation(secondlyTakenPrivateDelegation),
+      )
+
+    replaceIdentity(secondlyTakenDerivedDelegationIdentity)
+    const profile: Profile = await fetchProfile()
+    expect(derivedAnchor).toEqual(BigInt(profile.anchor))
   })
 })

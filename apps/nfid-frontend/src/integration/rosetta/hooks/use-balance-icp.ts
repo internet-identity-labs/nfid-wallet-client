@@ -1,7 +1,6 @@
 import { Principal } from "@dfinity/principal"
+import { getBalance } from "@nfid/integration"
 import useSWR from "swr"
-
-import { getBalance } from "../balance"
 
 export function useBalanceICP(principal: Principal) {
   const { data: balance, ...rest } = useSWR([principal], getBalance, {

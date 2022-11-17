@@ -7,6 +7,7 @@ export default {
     "ts-jest": {
       preserveSymlinks: true,
     },
+    II_PROVIDER: "https://nprnb-waaaa-aaaaj-qax4a-cai.ic0.app",
     INTERNET_IDENTITY_CANISTER_ID: "nprnb-waaaa-aaaaj-qax4a-cai",
     IDENTITY_MANAGER_CANISTER_ID: "74gpt-tiaaa-aaaak-aacaa-cai",
     PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",

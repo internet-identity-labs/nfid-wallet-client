@@ -1,15 +1,9 @@
 import { SDKApproveTemplate, SDKStatusbar } from "@nfid-frontend/ui"
 import clsx from "clsx"
 
-import ICPIcon from "frontend/assets/dfinity.svg"
 import { walletFee } from "frontend/constants/wallet"
-import { Button } from "frontend/ui/atoms/button"
 import { Copy } from "frontend/ui/atoms/copy"
 import { DropdownSelect, IOption } from "frontend/ui/atoms/dropdown-select"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
-
-import LoaderIcon from "./loader.svg"
 
 export interface IRequestTransferPage {
   applicationName: string

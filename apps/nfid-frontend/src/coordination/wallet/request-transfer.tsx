@@ -8,7 +8,6 @@ import RequestTransferMachine, {
   RequestTransferMachineType,
 } from "frontend/state/machines/wallet/request-transfer"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { TransferModalSuccess } from "frontend/ui/organisms/transfer-modal/sucess"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "../authentication"

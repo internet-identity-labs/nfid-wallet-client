@@ -1,9 +1,8 @@
 import { Principal } from "@dfinity/principal"
-import { getRosettaRequest, restCall } from "@nfid/integration"
+import { getRosettaRequest, restCall, rosetta } from "@nfid/integration"
 
 import { Balance } from "frontend/integration/rosetta/rosetta_interface"
 
-import { rosetta } from "../index"
 import { mapToBalance } from "./map-to-balance"
 
 export async function getBalance(principal: Principal): Promise<Balance> {

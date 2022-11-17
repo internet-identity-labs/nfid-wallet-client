@@ -23,6 +23,7 @@ import {
   fetchDelegate,
 } from "../internet-identity"
 import { mapToBalance, mapToTransactionHistory, mapToXdrUsd } from "./mapper"
+import { reduceAllTransactions } from "./reduce-all-transactions"
 import { restCall } from "./util"
 
 declare const CURRCONV_TOKEN: string
@@ -46,6 +47,14 @@ export async function getTransactionHistory(
   let request: RosettaRequest = getRosettaRequest(principal)
   return await restCall("POST", `${rosetta}/search/transactions`, request).then(
     mapToTransactionHistory,
+  )
+}
+
+export async function getAllTransactionHistory(
+  principals: Principal[],
+): Promise<TransactionHistory> {
+  return reduceAllTransactions(
+    await Promise.all(principals.map(getTransactionHistory)),
   )
 }
 

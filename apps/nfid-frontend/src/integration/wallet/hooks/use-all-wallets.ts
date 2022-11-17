@@ -1,8 +1,8 @@
+import { getBalance } from "@nfid/integration"
 import useSWR from "swr"
 
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import { getBalance } from "frontend/integration/rosetta/balance"
 import { GetWalletName } from "frontend/ui/pages/new-profile/nfts/util"
 import { sortAlphabetic, keepStaticOrder } from "frontend/ui/utils/sorting"
 

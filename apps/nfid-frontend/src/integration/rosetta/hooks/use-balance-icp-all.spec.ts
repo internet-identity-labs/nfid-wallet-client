@@ -2,17 +2,18 @@
  * @jest-environment jsdom
  */
 import { Principal } from "@dfinity/principal"
+import { getBalance } from "@nfid/integration"
 import { act, renderHook, waitFor } from "@testing-library/react"
 
 import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
 
-import * as rosettaMocks from ".."
 import { Account, Application } from "../../identity-manager"
-import * as balanceMocks from "../balance"
 import * as getExchangeRateMocks from "../get-exchange-rate"
 import { useBalanceICPAll } from "./use-balance-icp-all"
 import { APP_ACC_BALANCE_SHEET } from "./use-balance-icp-all.mocks"
+
+jest.mock("@nfid/integration")
 
 const commonFields = {
   currency: {
@@ -123,10 +124,8 @@ describe("useBalanceICPAll", () => {
       Promise.resolve(mock.getBalanceResponse),
     )
 
-    const getBalanceSpy = jest.spyOn(balanceMocks, "getBalance")
-
     promises.map((promise) =>
-      getBalanceSpy.mockImplementationOnce((principal) => promise),
+      (getBalance as jest.Mock).mockImplementationOnce((principal) => promise),
     )
 
     const getExchangeRateP1 = Promise.resolve(5)
@@ -156,7 +155,7 @@ describe("useBalanceICPAll", () => {
       expect(getExchangeRateSpy).toHaveBeenCalled()
       expect(useApplicationsMeta).toHaveBeenCalled()
       expect(result.current.isLoading).toBe(true)
-      expect(getBalanceSpy).toBeCalledTimes(3)
+      expect(getBalance).toBeCalledTimes(3)
     })
     expect(result.current.isLoading).toBe(false)
 

@@ -1,3 +1,4 @@
+import { getBalance } from "@nfid/integration"
 import { principalToAddress } from "ictool"
 import { useEffect, useMemo } from "react"
 import useSWR, { mutate } from "swr"
@@ -5,7 +6,6 @@ import useSWRImmutable from "swr/immutable"
 
 import { getWalletPrincipal } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { getBalance } from "frontend/integration/rosetta/balance"
 import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
 
 import { useAllTransactions } from "./get-all-transactions"

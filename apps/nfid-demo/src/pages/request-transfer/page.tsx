@@ -29,7 +29,7 @@ export const PageRequestTransfer: React.FC = () => {
         { to, amount },
         {
           provider: new URL(
-            `${environment.nfidProviderOrigin}/wallet/request-transfer?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
+            `${environment.nfidProviderOrigin}/wallet/request-transfer?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
           ),
         },
       )

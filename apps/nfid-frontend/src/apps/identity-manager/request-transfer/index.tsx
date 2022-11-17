@@ -88,6 +88,7 @@ export const RequestTransfer = ({
   }
 
   const isInsufficientFunds = useMemo(() => {
+    if (!walletsOptions?.length) return false
     return !walletsOptions?.filter((option) => option.disabled !== true).length
   }, [walletsOptions])
 

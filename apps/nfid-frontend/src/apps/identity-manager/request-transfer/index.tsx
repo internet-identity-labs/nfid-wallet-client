@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { icpToUSD } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
@@ -36,7 +36,7 @@ export const RequestTransfer = ({
     return wallets?.find(
       (wallet) => wallet.principal.toString() === selectedWallets[0],
     )
-  }, [selectedWallets])
+  }, [selectedWallets, wallets])
 
   const { transfer } = useTransfer({
     accountId: selectedWallet?.accountId,
@@ -52,7 +52,7 @@ export const RequestTransfer = ({
         disabled: Number(wallet.balance.value) <= Number(amountICP),
       }))
       .sort((a, b) => Number(a?.disabled) - Number(b?.disabled))
-  }, [wallets])
+  }, [amountICP, wallets])
 
   const amountUSD = useMemo(() => {
     if (!exchangeRate) return "0"

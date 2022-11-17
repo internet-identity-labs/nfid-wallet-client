@@ -11,6 +11,10 @@ module.exports = {
     ),
     ...createGlobPatternsForDependencies(__dirname),
   ],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@internet-identity-labs/nfid-ui-kit-core"),
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -20,8 +24,4 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("@internet-identity-labs/nfid-ui-kit-core"),
-  ],
 }

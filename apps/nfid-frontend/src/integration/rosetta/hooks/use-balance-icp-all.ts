@@ -1,8 +1,9 @@
 import { Principal } from "@dfinity/principal"
-import { Balance, getBalance } from "@nfid/integration"
 import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
+
+import { Balance, getBalance } from "@nfid/integration"
 
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
 import {
@@ -184,7 +185,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
         principals.map(async ({ principal, account }) => ({
           principalId: principal.toText(),
           account,
-          balance: await getBalance(account.accountId),
+          balance: await getBalance(principalToAddress(principal)),
         })),
       )
     },

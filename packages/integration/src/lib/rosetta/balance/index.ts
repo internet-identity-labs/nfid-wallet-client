@@ -1,5 +1,3 @@
-import { Principal } from "@dfinity/principal"
-
 import { rosetta } from ".."
 import { restCall } from "../../rest/rest-call"
 import { getRosettaRequest } from "../get-rosetta-request"
@@ -28,8 +26,8 @@ export interface Balance {
   metadata: object
 }
 
-export async function getBalance(principal: Principal): Promise<Balance> {
-  const request = getRosettaRequest(principal)
+export async function getBalance(address: string): Promise<Balance> {
+  const request = getRosettaRequest(address)
   return await restCall("POST", `${rosetta}/account/balance`, request).then(
     mapToBalance,
   )

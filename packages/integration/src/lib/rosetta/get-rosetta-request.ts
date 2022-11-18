@@ -1,6 +1,3 @@
-import { Principal } from "@dfinity/principal"
-import { principalToAddress } from "ictool"
-
 interface RosettaRequest {
   network_identifier: {
     blockchain: string
@@ -11,8 +8,7 @@ interface RosettaRequest {
   }
 }
 
-export function getRosettaRequest(principal: Principal): RosettaRequest {
-  const address: string = principalToAddress(principal as any)
+export function getRosettaRequest(address: string): RosettaRequest {
   return {
     network_identifier: {
       blockchain: "Internet Computer",

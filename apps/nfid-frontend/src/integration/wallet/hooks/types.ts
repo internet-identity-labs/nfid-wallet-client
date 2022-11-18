@@ -1,6 +1,5 @@
 import { Principal } from "@dfinity/principal"
-
-import { Balance } from "frontend/integration/rosetta/rosetta_interface"
+import { Balance } from "@nfid/integration"
 
 export interface IWallet {
   label?: string

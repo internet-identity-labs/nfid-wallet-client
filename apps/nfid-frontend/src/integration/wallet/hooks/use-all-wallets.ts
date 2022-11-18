@@ -1,8 +1,10 @@
+import { principalToAddress } from "ictool"
 import useSWR from "swr"
+
+import { getBalance } from "@nfid/integration"
 
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import { getBalance } from "frontend/integration/rosetta"
 import { GetWalletName } from "frontend/ui/pages/new-profile/nfts/util"
 import { sortAlphabetic, keepStaticOrder } from "frontend/ui/utils/sorting"
 
@@ -24,7 +26,7 @@ export const useAllWallets = () => {
           principal: principal,
           accountId: account.accountId,
           domain: account.domain,
-          balance: await getBalance(principal),
+          balance: await getBalance(principalToAddress(principal)),
         })),
       )
         .then((wallets) =>

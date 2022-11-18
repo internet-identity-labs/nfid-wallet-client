@@ -1,3 +1,5 @@
+import { JEST_GLOBALS } from "../../config/jest-globals"
+
 /* eslint-disable */
 export default {
   displayName: "nfid-demo",
@@ -9,4 +11,7 @@ export default {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/apps/nfid-demo",
   setupFilesAfterEnv: ["./src/setupTests.ts"],
+  globals: {
+    ...JEST_GLOBALS,
+  },
 }

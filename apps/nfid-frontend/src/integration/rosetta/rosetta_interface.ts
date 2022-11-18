@@ -1,36 +1,3 @@
-export interface RosettaBalance {
-  block_identifier: {
-    index: number
-    hash: string
-  }
-  balances: [Balance]
-  metadata: {
-    sequence_number: number
-  }
-}
-
-export interface Balance {
-  value: string
-  currency: {
-    symbol: string
-    decimals: number
-    metadata: {
-      Issuer: string
-    }
-  }
-  metadata: object
-}
-
-export interface RosettaRequest {
-  network_identifier: {
-    blockchain: string
-    network: string
-  }
-  account_identifier: {
-    address: string
-  }
-}
-
 export interface XdrUsd {
   XDR_USD: string
 }

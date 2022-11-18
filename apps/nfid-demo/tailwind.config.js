@@ -1,15 +1,15 @@
 const defaultTheme = require("tailwindcss/defaultTheme")
-const { createGlobPatternsForDependencies } = require("@nrwl/react/tailwind")
 const { join } = require("path")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    join(
-      __dirname,
-      "{src,pages,components}/**/*!(*.stories|*.spec).{ts,tsx,html}",
-    ),
-    ...createGlobPatternsForDependencies(__dirname),
+    join(__dirname, "{src,public}/**/*!(*.stories|*.spec).{ts,tsx,html}"),
+    "../../packages/ui/**/*!(*.stories|*.spec).{ts,tsx,html}",
+  ],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@internet-identity-labs/nfid-ui-kit-core"),
   ],
   theme: {
     extend: {
@@ -20,8 +20,4 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("@internet-identity-labs/nfid-ui-kit-core"),
-  ],
 }

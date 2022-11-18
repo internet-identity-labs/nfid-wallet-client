@@ -1,4 +1,4 @@
-import { TransactionHistory } from "./rosetta_interface"
+import { TransactionHistory } from "../rosetta_interface"
 
 export const principals = []
 
@@ -196,7 +196,7 @@ export const transactionsList = [
   },
 ]
 
-export const reducedTransactions = {
+export const REDUCED_TRANSACTIONS = {
   totalCount: 2,
   transactions: [
     {

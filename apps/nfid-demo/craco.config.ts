@@ -6,6 +6,8 @@ import webpack from "webpack"
 import { JEST_GLOBALS } from "../../config/jest-globals"
 import { serviceConfig } from "../../config/webpack-env"
 
+console.log(">> ", { serviceConfig })
+
 const config = {
   webpack: {
     configure: (config: any) => {

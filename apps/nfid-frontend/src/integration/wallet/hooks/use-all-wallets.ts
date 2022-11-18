@@ -1,6 +1,7 @@
-import { getBalance } from "@nfid/integration"
 import { principalToAddress } from "ictool"
 import useSWR from "swr"
+
+import { getBalance } from "@nfid/integration"
 
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"

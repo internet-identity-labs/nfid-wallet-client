@@ -1,10 +1,10 @@
+import { NFIDLogo } from "@nfid-frontend/ui"
 import clsx from "clsx"
 import React from "react"
 import { Link } from "react-router-dom"
 import sticky from "stickyfilljs"
 
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"
-import { ImageOnlyLoader } from "frontend/ui/atoms/loader"
 import { useScroll } from "frontend/ui/utils/use-scroll"
 
 import { NavigationItems as NavigationItemsDefault } from "./navigation-items"
@@ -47,12 +47,8 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
         <div className="flex items-center justify-between">
           {showLogo && (
             <div className="flex items-center ">
-              <Link
-                to={"/"}
-                className="flex items-center w-24 text-2xl font-black"
-              >
-                <span>NF</span>
-                <ImageOnlyLoader className="w-12 h-12" />
+              <Link to={"/"}>
+                <NFIDLogo />
               </Link>
             </div>
           )}

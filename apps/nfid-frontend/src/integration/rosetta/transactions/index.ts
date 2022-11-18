@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
-import { getRosettaRequest, restCall, rosetta } from "@nfid/integration"
 import { principalToAddress } from "ictool"
+
+import { getRosettaRequest, restCall, rosetta } from "@nfid/integration"
 
 import { TransactionHistory } from "frontend/integration/rosetta/rosetta_interface"
 

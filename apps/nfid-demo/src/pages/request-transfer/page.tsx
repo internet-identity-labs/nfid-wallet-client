@@ -9,7 +9,6 @@ import { minMax } from "@nfid-frontend/utils"
 import { getBalance } from "@nfid/integration"
 import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
 
-import { environment } from "../../environments/environment"
 import { PageTemplate } from "../page-template"
 
 const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
@@ -32,7 +31,7 @@ export const PageRequestTransfer: React.FC = () => {
         { to, amount },
         {
           provider: new URL(
-            `${environment.nfidProviderOrigin}/wallet/request-transfer?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
+            `${NFID_PROVIDER_URL}/wallet/request-transfer?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
           ),
         },
       )

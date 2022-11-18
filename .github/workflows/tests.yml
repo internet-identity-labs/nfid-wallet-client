@@ -79,7 +79,7 @@ jobs:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: Run unit tests
-        run: npx nx affected:test
+        run: npx env-cmd -f .env.staging nx affected:test
 
   e2e-tests:
     needs: check-secrets

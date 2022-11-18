@@ -3,6 +3,7 @@ import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 import webpack from "webpack"
 
+import { JEST_GLOBALS } from "../../config/jest-globals"
 import { serviceConfig } from "../../config/webpack-env"
 
 const config = {
@@ -44,7 +45,12 @@ const config = {
   jest: {
     configure: (config: any) => {
       config.resolver = "@nrwl/jest/plugins/resolver"
-      return config
+      return {
+        ...config,
+        globals: {
+          ...JEST_GLOBALS,
+        },
+      }
     },
   },
 }

@@ -1,15 +1,15 @@
-import { reducedTransactions } from "./reduce-all-transactions.mocks"
 import {
   selectReceivedTransactions,
   selectSendTransactions,
 } from "./select-transactions"
 import { ACCOUNTS } from "./select-transactions.mocks"
+import { REDUCED_TRANSACTIONS } from "./transactions/reduce-all-transactions.mocks"
 
 describe("selectTransactions", () => {
   it("should return send transactions", () => {
     expect(
       selectSendTransactions({
-        transactions: reducedTransactions,
+        transactions: REDUCED_TRANSACTIONS,
         accounts: ACCOUNTS,
       }),
     ).toEqual([
@@ -26,7 +26,7 @@ describe("selectTransactions", () => {
   it("should return received transactions", () => {
     expect(
       selectReceivedTransactions({
-        transactions: reducedTransactions,
+        transactions: REDUCED_TRANSACTIONS,
         accounts: ACCOUNTS,
       }),
     ).toEqual([

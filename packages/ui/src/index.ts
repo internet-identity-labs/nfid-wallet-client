@@ -1,4 +1,4 @@
-import "./styles.scss"
+import "./styles.css"
 
 export * from "./atoms/button"
 export * from "./atoms/button/arrow-button"

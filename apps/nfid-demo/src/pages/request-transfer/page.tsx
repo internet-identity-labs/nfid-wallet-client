@@ -1,10 +1,13 @@
-import { Button, H1, Input } from "@nfid-frontend/ui"
-import { minMax } from "@nfid-frontend/utils"
-import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
+import useSWR from "swr"
+
+import { Button, H1, Input } from "@nfid-frontend/ui"
+import { minMax } from "@nfid-frontend/utils"
+import { getBalance } from "@nfid/integration"
+import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
 
 import { environment } from "../../environments/environment"
 import { PageTemplate } from "../page-template"
@@ -74,6 +77,16 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
     mode: "onChange",
   })
   console.log(">> RequestTransferForm", { errors, isValid })
+  const to = watch("to")
+
+  const { data: balance, mutate: refrechBalance } = useSWR(
+    to ? to : null,
+    getBalance,
+  )
+
+  React.useEffect(() => {
+    refrechBalance()
+  }, [refrechBalance, result])
 
   return (
     <>
@@ -163,6 +176,16 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
         >
           <h2 className={clsx("font-bold")}>NFID response:</h2>
           <pre>{JSON.stringify(result, null, 2)}</pre>
+        </div>
+        <div
+          className={clsx(
+            "w-full border border-gray-200 rounded-xl",
+            "px-5 py-4",
+            "sm:px-[30px] sm:py-[26px]",
+          )}
+        >
+          <h2 className={clsx("font-bold")}>Current balance:</h2>
+          <pre>{JSON.stringify(balance, null, 2)}</pre>
         </div>
       </div>
     </>

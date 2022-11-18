@@ -1,7 +1,7 @@
 import { ComponentStory } from "@storybook/react"
 import { ToastContainer } from "react-toastify"
 
-import { APP_ACC_BALANCE_SHEET } from "frontend/integration/rosetta/queries.mocks"
+import { APP_ACC_BALANCE_SHEET } from "frontend/integration/rosetta/hooks/use-balance-icp-all.mocks"
 import { ToastIcons } from "frontend/ui/atoms/toast-icons"
 
 import { AppAccountBalanceSheet } from "."

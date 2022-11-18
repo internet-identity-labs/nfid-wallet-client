@@ -1,6 +1,9 @@
 name: DEV Deployment
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - current-release
 
 jobs:
   check-secrets:

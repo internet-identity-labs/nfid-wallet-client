@@ -1,5 +1,5 @@
 import { parameters as rootParameters } from "../../../.storybook/preview"
-import "../src/styles.scss"
+import "./styles.scss"
 
 export const parameters = {
   ...rootParameters,
@@ -9,5 +9,5 @@ export const parameters = {
 // Ignored an update to unaccepted module
 // https://github.com/nrwl/nx/issues/11209
 if (module.hot) {
-  module.hot.accept();
+  module.hot.accept()
 }

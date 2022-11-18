@@ -184,7 +184,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
         principals.map(async ({ principal, account }) => ({
           principalId: principal.toText(),
           account,
-          balance: await getBalance(principal),
+          balance: await getBalance(account.accountId),
         })),
       )
     },

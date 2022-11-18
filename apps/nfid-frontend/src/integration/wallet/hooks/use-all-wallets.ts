@@ -1,4 +1,5 @@
 import { getBalance } from "@nfid/integration"
+import { principalToAddress } from "ictool"
 import useSWR from "swr"
 
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
@@ -24,7 +25,7 @@ export const useAllWallets = () => {
           principal: principal,
           accountId: account.accountId,
           domain: account.domain,
-          balance: await getBalance(principal),
+          balance: await getBalance(principalToAddress(principal)),
         })),
       )
         .then((wallets) =>

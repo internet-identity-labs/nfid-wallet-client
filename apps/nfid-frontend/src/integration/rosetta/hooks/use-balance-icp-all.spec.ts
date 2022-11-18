@@ -125,7 +125,7 @@ describe("useBalanceICPAll", () => {
     )
 
     promises.map((promise) =>
-      (getBalance as jest.Mock).mockImplementationOnce((principal) => promise),
+      (getBalance as jest.Mock).mockImplementationOnce(() => promise),
     )
 
     const getExchangeRateP1 = Promise.resolve(5)

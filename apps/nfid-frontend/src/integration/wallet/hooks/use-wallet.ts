@@ -20,7 +20,7 @@ export const useWallet = () => {
     )
 
   const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(
-    principal ? [principal, "walletBalance"] : null,
+    principal ? [principalToAddress(principal), "walletBalance"] : null,
     getBalance,
     {
       dedupingInterval: 30_000,
@@ -36,7 +36,7 @@ export const useWallet = () => {
 
   const address = useMemo(() => {
     if (!principal) return ""
-    return principalToAddress(principal as any)
+    return principalToAddress(principal)
   }, [principal])
 
   useEffect(() => {

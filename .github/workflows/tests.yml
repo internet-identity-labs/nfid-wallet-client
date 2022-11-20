@@ -4,8 +4,6 @@
 name: Tests CI
 
 on:
-  push:
-    branches: [main, current-release, release/*]
   pull_request:
     branches: [main, current-release, release/*]
   workflow_dispatch:

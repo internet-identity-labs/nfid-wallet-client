@@ -1,4 +1,8 @@
-import { Account, Application } from "frontend/integration/identity-manager"
+import {
+  Account,
+  Application,
+  rmProto,
+} from "frontend/integration/identity-manager"
 import { getUrl } from "frontend/ui/utils"
 
 export interface ApplicationAccount {
@@ -19,7 +23,7 @@ export const mapApplicationAccounts = (
     >
   }>((acc, account) => {
     const applicationMeta = applicationsMeta?.find(({ domain }) => {
-      return domain.includes(account.domain)
+      return rmProto(domain) === rmProto(account.domain)
     })
 
     const applicationDomain = applicationMeta?.domain

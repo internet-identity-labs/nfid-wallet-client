@@ -82,7 +82,11 @@ export const creationOptions = (
   devices: DeviceData[] = [],
   authenticatorAttachment: AuthenticatorAttachment = "platform",
 ): PublicKeyCredentialCreationOptions => {
-  console.debug("creationOptions", { devices })
+  console.debug("creationOptions", {
+    devices,
+    IS_E2E_TEST: IS_E2E_TEST,
+    authenticatorAttachment,
+  })
   return {
     authenticatorSelection: {
       userVerification: "preferred",

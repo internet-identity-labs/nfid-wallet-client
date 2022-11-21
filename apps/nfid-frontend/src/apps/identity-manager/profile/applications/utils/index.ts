@@ -1,8 +1,4 @@
-import {
-  Account,
-  Application,
-  rmProto,
-} from "frontend/integration/identity-manager"
+import { Account, Application } from "frontend/integration/identity-manager"
 import { getUrl } from "frontend/ui/utils"
 
 export interface ApplicationAccount {
@@ -18,20 +14,27 @@ export const mapApplicationAccounts = (
   applicationsMeta: Application[],
 ): ApplicationAccount[] => {
   const personasByHostname = accounts.reduce<{
-    [applicationName: string]: Account[]
+    [applicationName: string]: Array<
+      Account & { applicationName: string; icon?: string }
+    >
   }>((acc, account) => {
     const applicationMeta = applicationsMeta?.find(({ domain }) => {
       return domain.includes(account.domain)
     })
 
-    const applicationName = applicationMeta?.name ?? getUrl(account.domain).host
-    const accounts = acc[applicationName] || []
+    const applicationDomain = applicationMeta?.domain
+      ? getUrl(applicationMeta.domain).host
+      : getUrl(account.domain).host
 
-    acc[applicationName] = [
+    const accounts = acc[applicationDomain] || []
+
+    acc[applicationDomain] = [
       ...accounts,
       {
         ...account,
-        ...applicationMeta,
+        applicationName: applicationMeta?.name || applicationDomain,
+        alias: applicationMeta?.alias,
+        icon: applicationMeta?.icon,
       },
     ]
 
@@ -39,9 +42,9 @@ export const mapApplicationAccounts = (
   }, {})
 
   const personaByHostnameArray = Object.entries(personasByHostname)
-    .map(([applicationName, accounts]) => {
+    .map(([_, accounts]) => {
       return {
-        applicationName: rmProto(applicationName),
+        applicationName: accounts[0].applicationName,
         accountsCount: accounts.length,
         derivationOrigin: accounts[0].domain,
         icon: accounts[0].icon,

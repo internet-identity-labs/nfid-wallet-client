@@ -6,7 +6,7 @@ import {
   applicationAccountDetailsNormalized,
   mockAccountApplications,
   mockApplicationsMeta,
-} from "./index.mock"
+} from "./index.mocks"
 
 describe("Profile Applications Page suite", () => {
   describe("groupPersonasByApplications test", () => {

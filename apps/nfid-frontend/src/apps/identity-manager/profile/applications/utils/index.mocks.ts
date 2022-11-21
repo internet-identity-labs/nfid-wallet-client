@@ -39,7 +39,7 @@ export const mockApplicationsMeta = [
   },
   {
     accountLimit: 5,
-    domain: "http://my-sweet-application.com",
+    domain: "my-sweet-application.com",
     name: DUPLICATE_APPLICATION_NAME,
     alias: ["http://my-sweet-application.com"],
     isNftStorage: false,

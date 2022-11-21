@@ -1,4 +1,5 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+
 import { ii, im } from "@nfid/integration"
 
 import {
@@ -23,6 +24,8 @@ export async function registerDeviceWithWebAuthn() {
   const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
     BigInt(profile.anchor),
   )
+  console.debug("registerDeviceWithWebAuthn", { usersAuthenticatorDevices })
+
   try {
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(usersAuthenticatorDevices),

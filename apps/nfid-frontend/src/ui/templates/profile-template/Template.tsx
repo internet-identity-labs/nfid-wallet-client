@@ -1,8 +1,8 @@
-import { ArrowButton } from "@nfid-frontend/ui"
 import clsx from "clsx"
 import { useAtom } from "jotai"
 import React from "react"
-import ReactTooltip from "react-tooltip"
+
+import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
 
 import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
@@ -67,15 +67,15 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
             </div>
 
             {icon && onIconClick && (
-              <img
-                src={icon}
-                alt="icon"
-                onClick={onIconClick}
-                className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
-                data-tip={iconTooltip}
-              />
+              <Tooltip tip={iconTooltip}>
+                <img
+                  src={icon}
+                  alt="icon"
+                  onClick={onIconClick}
+                  className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
+                />
+              </Tooltip>
             )}
-            <ReactTooltip delayShow={2000} />
             {headerMenu}
           </div>
           {children}

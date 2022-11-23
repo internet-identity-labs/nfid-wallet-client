@@ -1,4 +1,4 @@
-import "./styles.scss"
+import "./styles.css"
 
 export * from "./atoms/button"
 export * from "./atoms/button/arrow-button"
@@ -9,3 +9,5 @@ export * from "./atoms/nfid-logo-spinning"
 export * from "./atoms/sidebar/wrapper"
 export * from "./atoms/sidebar/item"
 export * from "./atoms/typography"
+export * from "./templates/approve-template"
+export * from "./atoms/sdk-statusbar"

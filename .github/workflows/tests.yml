@@ -4,10 +4,8 @@
 name: Tests CI
 
 on:
-  push:
-    branches: [main, release/*]
   pull_request:
-    branches: [main, release/*]
+    branches: [main, current-release, release/*]
   workflow_dispatch:
 
 jobs:
@@ -33,25 +31,10 @@ jobs:
           JSON='${{ toJSON(env) }}'
           ci_check_secrets "${JSON}"
         env:
-          DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
-          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
-          PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
-          VERIFIER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_VERIFIER}}
-          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
-          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
-          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY}}
-          AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
-          AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
-          GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
@@ -61,7 +44,13 @@ jobs:
 
     steps:
       - name: Checkout CI repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: nrwl/nx-set-shas@v3
+        with:
+          main-branch-name: ${{ github.base_ref }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -85,35 +74,10 @@ jobs:
           yarn --prefer-offline
 
         env:
-          FRONTEND_MODE: production
-          BACKEND_MODE: DEV
-          IS_DEV: true
-          II_MODE: production
-          IC_HOST: https://ic0.app
-          DFX_NETWORK: dev
-          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
-          IS_E2E_TEST: true
-
-          REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
-          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
-          PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
-          VERIFIER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_VERIFIER}}
-          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
-          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
-          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY}}
-          AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
-          AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
-          GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
-          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: Run unit tests
-        run: npx nx test nfid-frontend
+        run: npx nx affected:test
 
   e2e-tests:
     needs: check-secrets
@@ -141,34 +105,15 @@ jobs:
           //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
           EOF
           yarn --prefer-offline
-          npx nx build nfid-frontend
+          npx env-cmd -f .env.staging nx build nfid-frontend
           yarn serve -l 9090 -s dist/apps/nfid-frontend &
         env:
-          FRONTEND_MODE: production
-          BACKEND_MODE: DEV
           IS_DEV: true
-          II_MODE: production
-          IC_HOST: https://ic0.app
-          DFX_NETWORK: dev
-          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           IS_E2E_TEST: true
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
 
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
-          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
-          PUB_SUB_CHANNEL_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_PUB_SUB_CHANNEL}}
-          VERIFIER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_VERIFIER}}
-          LEDGER_CANISTER_ID: ${{secrets.LEDGER_CANISTER_ID}}
-          CYCLES_MINTER_CANISTER_ID: ${{secrets.CYCLES_MINTER_CANISTER_ID}}
-          INTERNET_IDENTITY_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_INTERNET_IDENTITY}}
-          AWS_VERIFY_PHONENUMBER: ${{secrets.DEV_AWS_VERIFY_PHONENUMBER}}
-          AWS_SIGNIN_GOOGLE: ${{secrets.DEV_AWS_SIGNIN_GOOGLE}}
-          GOOGLE_CLIENT_ID: ${{secrets.DEV_GOOGLE_CLIENT_ID}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          AWS_SYMMETRIC: ${{secrets.DEV_AWS_SYMMETRIC}}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_NFID }}
-          SENTRY_LOG_LEVEL: ${{ secrets.SENTRY_LOG_LEVEL }}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: Setup chrome browser
@@ -189,14 +134,12 @@ jobs:
 
       - name: Running E2E test
         run: |
-          npx nx test:e2e nfid-frontend-e2e
+          npx env-cmd -f .env.staging nx test:e2e nfid-frontend-e2e
           # npx nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
-          IDENTITY_MANAGER_CANISTER_ID_DEV: ${{secrets.DEV_CANISTER_ID_IDENTITY_MANAGER}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
-          IC_HOST: https://ic0.app
 
       - name: Generate HTML Report
         if: always()

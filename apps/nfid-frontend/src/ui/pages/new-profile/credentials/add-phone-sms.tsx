@@ -1,7 +1,6 @@
 import clsx from "clsx"
 import React from "react"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { StepInput } from "frontend/ui/atoms/step-input"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"

@@ -1,10 +1,10 @@
-import { Button, H1 } from "@nfid-frontend/ui"
-import { requestAccounts } from "@nfid/wallet"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import { ImSpinner } from "react-icons/im"
 
-import { environment } from "../../environments/environment"
+import { Button, H1 } from "@nfid-frontend/ui"
+import { requestAccounts } from "@nfid/wallet"
+
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
@@ -21,7 +21,7 @@ export const PageGetAccounts = () => {
     updateRequestButton({ loading: true, disabled: true })
     const result = await requestAccounts({
       provider: new URL(
-        `${environment.nfidProviderOrigin}/wallet/request-accounts?applicationName=RequestAccountsDemo&applicationLogo=${APPLICATION_LOGO_URL}`,
+        `${NFID_PROVIDER_URL}/wallet/request-accounts?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
       ),
     })
     updateRequestButton({ loading: false, disabled: false })

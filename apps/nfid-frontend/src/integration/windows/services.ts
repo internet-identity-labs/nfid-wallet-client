@@ -5,9 +5,9 @@ import {
 } from "frontend/state/authorization"
 
 import {
-  awaitMessageFromClient,
+  awaitClientMessage,
   getAppMetaFromQuery,
-  IdentityClientAuthEvent,
+  isIdentityClientAuthEvent,
   postMessageToClient,
   prepareClientDelegate,
 } from "."
@@ -18,23 +18,26 @@ import { validateDerivationOrigin } from "../internet-identity/validateDerivatio
  * @returns authorization request
  */
 export async function handshake(): Promise<AuthorizationRequest> {
-  const response = awaitMessageFromClient<IdentityClientAuthEvent>(
-    "authorize-client",
-  ).then(async (event) => {
-    console.debug("handshake", { event })
-    const validation = await validateDerivationOrigin(
-      event.origin,
-      event.data.derivationOrigin,
-    )
-    console.log({ validation, derivationOrigin: event.data.derivationOrigin })
-    if (validation.result !== "valid") throw new Error(validation.message)
-    return {
-      maxTimeToLive: event.data.maxTimeToLive,
-      sessionPublicKey: event.data.sessionPublicKey,
-      derivationOrigin: event.data.derivationOrigin,
-      hostname: event.origin,
-    }
-  })
+  const response = awaitClientMessage(isIdentityClientAuthEvent).then(
+    async (event) => {
+      console.debug("handshake", { event })
+      const validation = await validateDerivationOrigin(
+        event.origin,
+        event.data.derivationOrigin,
+      )
+      console.debug("handshake", {
+        validation,
+        derivationOrigin: event.data.derivationOrigin,
+      })
+      if (validation.result !== "valid") throw new Error(validation.message)
+      return {
+        maxTimeToLive: event.data.maxTimeToLive,
+        sessionPublicKey: event.data.sessionPublicKey,
+        derivationOrigin: event.data.derivationOrigin,
+        hostname: event.origin,
+      }
+    },
+  )
   postMessageToClient({ kind: "authorize-ready" })
   return response
 }

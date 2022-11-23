@@ -51,9 +51,10 @@ const setupCSP = () => {
         "https://accounts.google.com/gsi/style",
         "https://fonts.googleapis.com",
       ],
-      "script-src": ["'self'"],
-      "script-src-elem": [
+      "script-src": [
         "'self'",
+        // FIXME: required for WebAssembly.instantiate()
+        "'unsafe-eval'",
         "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
         "https://accounts.google.com/gsi/client",
         "https://www.googletagmanager.com/gtag/js",

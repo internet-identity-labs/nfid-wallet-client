@@ -90,38 +90,135 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>NFID | The identity layer for the Internet</title>
-    <meta name="description" content="The decentralized one-touch MFA identity provider and crypto wallet." />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta
+      name="description"
+      content="The decentralized one-touch MFA identity provider and crypto wallet."
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self' 'unsafe-eval';
+        style-src 'self' 'unsafe-inline' fonts.googleapis.com  accounts.google.com;
+        font-src 'self' fonts.gstatic.com;
+        img-src 'self' www.googletagmanager.com *.entrepot.app;
+        connect-src 'self' ic0.app free.currconv.com rosetta-api.internetcomputer.org;
+        script-src-elem 'unsafe-inline' 'self' www.googletagmanager.com accounts.google.com;
+        frame-src accounts.google.com
+      "
+    />
 
     <!-- Open Graph -->
-    <meta data-n-head="ssr" data-hid="og:title" property="og:title" content="NFID | The identity layer for the Internet">
-    <meta data-n-head="ssr" data-hid="og:desc" property="og:description" content="The decentralized one-touch MFA identity provider and crypto wallet.">
-    <meta data-n-head="ssr" data-hid="og:description" property="og:description" content="The decentralized one-touch MFA identity provider and crypto wallet.">
-    <meta data-n-head="ssr" data-hid="og:site_name" property="og:site_name" content="NFID | The identity layer for the Internet">
-    <meta data-n-head="ssr" data-hid="og:type" property="og:type" content="website">
-    <meta data-n-head="ssr" data-hid="og:url" property="og:url" content="https://nfid.one">
-    <meta data-n-head="ssr" data-hid="og:image" property="og:image" content="https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app/assets/nfid_og.png">
-    <meta data-n-head="ssr" data-hid="og:image:width" property="og:image:width" content="1200">
-    <meta data-n-head="ssr" data-hid="og:image:height" property="og:image:height" content="627">
+    <meta
+      data-n-head="ssr"
+      data-hid="og:title"
+      property="og:title"
+      content="NFID | The identity layer for the Internet"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:desc"
+      property="og:description"
+      content="The decentralized one-touch MFA identity provider and crypto wallet."
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:description"
+      property="og:description"
+      content="The decentralized one-touch MFA identity provider and crypto wallet."
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:site_name"
+      property="og:site_name"
+      content="NFID | The identity layer for the Internet"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:type"
+      property="og:type"
+      content="website"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:url"
+      property="og:url"
+      content="https://nfid.one"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:image"
+      property="og:image"
+      content="https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app/assets/nfid_og.jpg"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:image:width"
+      property="og:image:width"
+      content="1200"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="og:image:height"
+      property="og:image:height"
+      content="627"
+    />
 
     <!-- Twitter Card -->
-    <meta data-n-head="ssr" data-hid="twitter:title" property="twitter:title" content="NFID | The identity layer for the Internet">
-    <meta data-n-head="ssr" data-hid="twitter:description" property="twitter:description" content="The decentralized one-touch MFA identity provider and crypto wallet.">
-    <meta data-n-head="ssr" data-hid="twitter:site" name="twitter:site" content="NFID">
-    <meta data-n-head="ssr" data-hid="twitter:card" name="twitter:card" content="summary_large_image">
-    <meta data-n-head="ssr" data-hid="twitter:image" property="twitter:image" content="https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app/assets/nfid_og.png">
-    <meta data-n-head="ssr" data-hid="twitter:image:alt" property="twitter:image:alt" content="NFID | The identity layer for the Internet">
+    <meta
+      data-n-head="ssr"
+      data-hid="twitter:title"
+      property="twitter:title"
+      content="NFID | The identity layer for the Internet"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="twitter:description"
+      property="twitter:description"
+      content="The decentralized one-touch MFA identity provider and crypto wallet."
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="twitter:site"
+      name="twitter:site"
+      content="NFID"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="twitter:card"
+      name="twitter:card"
+      content="summary_large_image"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="twitter:image"
+      property="twitter:image"
+      content="https://3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app/assets/nfid_og.jpg"
+    />
+    <meta
+      data-n-head="ssr"
+      data-hid="twitter:image:alt"
+      property="twitter:image:alt"
+      content="NFID | The identity layer for the Internet"
+    />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2821LJYH9P"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-2821LJYH9P"
+    ></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag("js", new Date())
 
-      gtag('config', 'G-2821LJYH9P');
+      gtag("config", "G-2821LJYH9P")
     </script>
-
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

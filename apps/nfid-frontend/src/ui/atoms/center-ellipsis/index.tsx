@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import React from "react"
 
 interface CenterEllipsisProps
   extends React.DetailedHTMLProps<
@@ -10,15 +11,13 @@ interface CenterEllipsisProps
   leadingChars: number
 }
 
-export const CenterEllipsis: React.FC<CenterEllipsisProps> = ({
-  value,
-  leadingChars,
-  trailingChars,
-  ...divProps
-}) => {
+export const CenterEllipsis = React.forwardRef<
+  HTMLDivElement,
+  CenterEllipsisProps
+>(({ value, leadingChars, trailingChars, ...divProps }, ref) => {
   const splitAt = value.length - trailingChars
   return (
-    <div className="flex min-w-0" {...divProps}>
+    <div ref={ref} className="flex min-w-0" {...divProps}>
       <div className={clsx("overflow-hidden whitespace-nowrap")}>
         {value.slice(0, leadingChars)}
       </div>
@@ -26,4 +25,4 @@ export const CenterEllipsis: React.FC<CenterEllipsisProps> = ({
       <div className="flex-shrink-0">{value.slice(splitAt)}</div>
     </div>
   )
-}
+})

@@ -11,16 +11,21 @@ import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
 
-const GridCell: React.FC<{
+interface GridCellProps {
   className?: string
   children: ReactNode | ReactNode[]
-}> = ({ children, className, ...props }) => (
-  <td
-    className={clsx("relative px-3 h-14 hover:bg-gray-200", className)}
-    {...props}
-  >
-    {children}
-  </td>
+}
+
+const GridCell = React.forwardRef<HTMLTableCellElement, GridCellProps>(
+  ({ children, className, ...props }, ref) => (
+    <td
+      ref={ref}
+      className={clsx("relative px-3 h-14 hover:bg-gray-200", className)}
+      {...props}
+    >
+      {children}
+    </td>
+  ),
 )
 
 const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
@@ -76,26 +81,26 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
           <GridCell>{account.accountName}</GridCell>
           <GridCell>{account.icpBalance}</GridCell>
           <GridCell>{account.usdBalance}</GridCell>
-          <GridCell>
-            <Tooltip tip="Copy to clipboard">
+          <Tooltip tip="Copy to clipboard">
+            <GridCell>
               <CenterEllipsis
                 onClick={copyToClipboard("Account ID", account.address)}
                 value={account.address}
                 trailingChars={3}
                 leadingChars={4}
               />
-            </Tooltip>
-          </GridCell>
-          <GridCell>
-            <Tooltip tip="Copy to clipboard">
+            </GridCell>
+          </Tooltip>
+          <Tooltip tip="Copy to clipboard">
+            <GridCell>
               <CenterEllipsis
                 onClick={copyToClipboard("Principal ID", account.principalId)}
                 value={account.principalId}
                 trailingChars={3}
                 leadingChars={4}
               />
-            </Tooltip>
-          </GridCell>
+            </GridCell>
+          </Tooltip>
         </tr>
       ))}
     </tbody>

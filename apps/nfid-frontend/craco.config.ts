@@ -23,6 +23,7 @@ const setupCSP = () => {
         "https://*.ic0.app",
         "https://region1.analytics.google.com",
         "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin",
+        "https://o1255710.ingest.sentry.io/api/6431627/envelope/, //?sentry_key=51ebe3dddb764757999d493d619c3e6a&sentry_version=7&sentry_client=sentry.javascript.react%2F7.14.0",
         "https://rosetta-api.internetcomputer.org/",
         "https://free.currconv.com/", //api/v7/convert?q=XDR_USD&compact=ultra&apiKey=***REMOVED***"
         "https://us-central1-entrepot-api.cloudfunctions.net/", //api/maddies/getAllNfts/950fb7a3f9cfda1696366a5599f4feef2da94a50c283c57fe34e319f21509431"

@@ -1,7 +1,5 @@
 // import {} from "@craco/craco"
 import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
-import cheerio from "cheerio"
-import get from "lodash/get"
 import path from "path"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
@@ -53,7 +51,13 @@ const setupCSP = () => {
         "https://accounts.google.com/gsi/style",
         "https://fonts.googleapis.com",
       ],
-      "script-src": ["'unsafe-inline'", "'unsafe-eval'", "'strict-dynamic'"],
+      "script-src": ["'self'"],
+      "script-src-elem": [
+        "'self'",
+        "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
+        "https://accounts.google.com/gsi/client",
+        "https://www.googletagmanager.com/gtag/js",
+      ],
       "require-trusted-types-for": ["'script'"],
     }
 

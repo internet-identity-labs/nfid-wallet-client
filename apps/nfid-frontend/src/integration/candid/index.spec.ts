@@ -13,7 +13,7 @@ import {
   transformDidToJs,
 } from "frontend/integration/candid/index"
 
-const canisterId = "jiept-kaaaa-aaaao-aajsa-cai" //todo update dfx version in dev to get candid interface
+const canisterId = "74gpt-tiaaa-aaaak-aacaa-cai"
 
 describe("candid runner suite", () => {
   jest.setTimeout(20000)
@@ -25,20 +25,14 @@ describe("candid runner suite", () => {
       getCommentsByMethodNames(result)
     let comment: Block | undefined = commentsByMethodNames.get(calledMethodName)
     expect(comment?.description).toContain(
-      "Function to retrieve transaction history of the token.",
+      "Retrieve list of registered applications",
     )
-    expect(comment?.tags.length).toBe(4)
-    expect(comment?.tags[0].tag).toBe("param")
-    expect(comment?.tags[0].name).toBe("canisterId")
-    expect(comment?.tags[1].tag).toBe("param")
-    expect(comment?.tags[1].name).toBe("tokenId")
-    expect(comment?.tags[2].tag).toBe("param")
-    expect(comment?.tags[2].name).toBe("from")
-    expect(comment?.tags[3].tag).toBe("param")
-    expect(comment?.tags[3].name).toBe("to")
+    expect(comment?.tags.length).toBe(1)
+    expect(comment?.tags[0].tag).toBe("return")
+    expect(comment?.tags[0].name).toBe("HTTPApplicationResponse")
     expect(result).toContain(calledMethodName)
     let js = await transformDidToJs(result, agent)
-    let actor = await createActorDynamically(js, canisterId) //todo update dfx version to get candid interface
+    let actor = await createActorDynamically(js, canisterId)
     let evalResult = await evaluateMethod(actor, calledMethodName)
     expect((evalResult as any).status_code).toEqual(200)
   })

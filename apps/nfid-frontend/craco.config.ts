@@ -25,6 +25,7 @@ const setupCSP = () => {
         "https://rosetta-api.internetcomputer.org/",
         "https://free.currconv.com/", //api/v7/convert?q=XDR_USD&compact=ultra&apiKey=***REMOVED***"
         "https://us-central1-entrepot-api.cloudfunctions.net/", //api/maddies/getAllNfts/950fb7a3f9cfda1696366a5599f4feef2da94a50c283c57fe34e319f21509431"
+        "https://stats.g.doubleclick.net/g/collect", //?v=2&tid=G-2821LJYH9P&cid=1558024000.1664347338&gtm=2oeb70&aip=1",
       ],
       "worker-src": "'self'",
       "img-src": ["'self' blob: data: content:", "https://www.google.de"],
@@ -39,15 +40,15 @@ const setupCSP = () => {
         "https://accounts.google.com/",
       ],
       "manifest-src": "'self'",
-      "style-src": [
+      "style-src-elem": [
         "'self'",
         // FIXME: libraries adding inline styles:
         // - react-tooltip
         // - google button
         "'unsafe-inline'",
         // FIXME: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        "https://fonts.googleapis.com",
         "https://accounts.google.com/gsi/style",
+        "https://fonts.googleapis.com",
       ],
       "script-src": ["'strict-dynamic'"],
       "require-trusted-types-for": ["'script'"],

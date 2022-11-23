@@ -20,6 +20,7 @@ const setupCSP = () => {
       "connect-src": [
         "'self'",
         "https://ic0.app",
+        "https://*.ic0.app",
         "https://region1.analytics.google.com",
         "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/",
         "https://rosetta-api.internetcomputer.org/",
@@ -40,7 +41,7 @@ const setupCSP = () => {
         "https://accounts.google.com/",
       ],
       "manifest-src": "'self'",
-      "style-src-elem": [
+      "style-src": [
         "'self'",
         // FIXME: libraries adding inline styles:
         // - react-tooltip
@@ -50,7 +51,7 @@ const setupCSP = () => {
         "https://accounts.google.com/gsi/style",
         "https://fonts.googleapis.com",
       ],
-      "script-src": ["'strict-dynamic'"],
+      "script-src": ["'unsafe-inline'", "'unsafe-eval'", "'strict-dynamic'"],
       "require-trusted-types-for": ["'script'"],
     }
 

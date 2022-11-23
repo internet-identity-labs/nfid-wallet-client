@@ -2,7 +2,8 @@ import clsx from "clsx"
 import { format } from "date-fns"
 import produce from "immer"
 import React from "react"
-import ReactTooltip from "react-tooltip"
+
+import { Tooltip } from "@nfid-frontend/ui"
 
 import {
   Icon,
@@ -37,8 +38,6 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
   onRecoveryDelete,
   onDeleteRecoveryPhrase,
 }) => {
-  const [isProtectTooltipVisible, setIsProtectTooltipVisible] =
-    React.useState(true)
   const [updatedRecovery, setUpdatedRecovery] =
     React.useState<RecoveryDevice | null>(null)
 
@@ -199,24 +198,25 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           </div>
           <div className="pl-1 md:pl-4">
             <div className="flex space-x-2">
-              {isProtectTooltipVisible && <ReactTooltip html />}
-              <div
-                id="protect-recovery"
-                onClick={toggleProtectVisible}
-                className={
-                  recoveryMethod.isRecoveryPhrase && !recoveryMethod.isProtected
-                    ? "hover:opacity-70 transition-opacity"
-                    : "hidden"
-                }
-                data-tip="Recovery phrase can be removed without proving you know what it is.<br/> Click to protect this recovery phrase"
-                onMouseEnter={() => setIsProtectTooltipVisible(true)}
-                onMouseLeave={() => {
-                  setIsProtectTooltipVisible(false)
-                  setTimeout(() => setIsProtectTooltipVisible(true), 50)
-                }}
-              >
-                <IconWarning />
-              </div>
+              {recoveryMethod.isRecoveryPhrase && !recoveryMethod.isProtected && (
+                <Tooltip
+                  tip={
+                    <div>
+                      Recovery phrase can be removed without proving you know
+                      what it is.
+                      <br /> Click to protect this recovery phrase
+                    </div>
+                  }
+                >
+                  <div
+                    id="protect-recovery"
+                    onClick={toggleProtectVisible}
+                    className={"hover:opacity-70 transition-opacity"}
+                  >
+                    <IconWarning />
+                  </div>
+                </Tooltip>
+              )}
               <div
                 className="hover:bg-gray-50 text-red-base"
                 onClick={isEditingLabel ? handleOnLabelUpdate : toggleEditLabel}

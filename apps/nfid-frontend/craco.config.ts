@@ -1,5 +1,7 @@
 // import {} from "@craco/craco"
 import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
+import cheerio from "cheerio"
+import get from "lodash/get"
 import path from "path"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
@@ -23,7 +25,7 @@ const setupCSP = () => {
         "https://*.ic0.app",
         "https://region1.analytics.google.com",
         "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin",
-        "https://o1255710.ingest.sentry.io/api/6431627/envelope/, //?sentry_key=51ebe3dddb764757999d493d619c3e6a&sentry_version=7&sentry_client=sentry.javascript.react%2F7.14.0",
+        "https://o1255710.ingest.sentry.io/api/6431627/envelope/", //?sentry_key=51ebe3dddb764757999d493d619c3e6a&sentry_version=7&sentry_client=sentry.javascript.react%2F7.14.0",
         "https://rosetta-api.internetcomputer.org/",
         "https://free.currconv.com/", //api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7"
         "https://us-central1-entrepot-api.cloudfunctions.net/", //api/maddies/getAllNfts/950fb7a3f9cfda1696366a5599f4feef2da94a50c283c57fe34e319f21509431"
@@ -45,7 +47,6 @@ const setupCSP = () => {
       "style-src": [
         "'self'",
         // FIXME: libraries adding inline styles:
-        // - react-tooltip
         // - google button
         "'unsafe-inline'",
         // FIXME: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -56,7 +57,20 @@ const setupCSP = () => {
       "require-trusted-types-for": ["'script'"],
     }
 
-    return [new CspHtmlWebpackPlugin(cspConfigPolicy)]
+    return [
+      new CspHtmlWebpackPlugin(cspConfigPolicy, {
+        // PrimeReact is a component library which is enabled by default,
+        // but it is not used in the frontend. When it is enabled, it produces
+        // a nonce within `style-src` which in turn disables `unsafe-inline`.
+        primeReactEnabled: false,
+        hashEnabled: {
+          "style-src": false,
+        },
+        nonceEnabled: {
+          "style-src": false,
+        },
+      }),
+    ]
   }
   return []
 }

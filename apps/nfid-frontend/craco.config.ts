@@ -97,6 +97,10 @@ const config = {
       const isProduction = process.env.FRONTEND_MODE === "production"
       return {
         ...config,
+        output: {
+          ...config.output,
+          crossOriginLoading: "anonymous",
+        },
         devtool: !isProduction && "source-map",
         ignoreWarnings: [/Failed to parse source map from/],
         resolve: {

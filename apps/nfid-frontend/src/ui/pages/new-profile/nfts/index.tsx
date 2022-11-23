@@ -6,7 +6,8 @@ import { BiGridAlt } from "react-icons/bi"
 import { HiViewList } from "react-icons/hi"
 import { IoIosSearch } from "react-icons/io"
 import { Link } from "react-router-dom"
-import ReactTooltip from "react-tooltip"
+
+import { Tooltip } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
@@ -142,14 +143,15 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
         </div>,
         <div className="flex items-center space-x-2.5 justify-center">
           <Copy value={link(token.collection.id, token.index)} />
-          <img
-            data-tip="Transfer"
-            className="transition-opacity cursor-pointer hover:opacity-50"
-            onClick={() => onTransferNFT(token.tokenId)}
-            src={transferIcon}
-            alt=""
-          />
-          <ReactTooltip delayShow={2000} />
+          <Tooltip tip="Transfer">
+            <img
+              data-tip="Transfer"
+              className="transition-opacity cursor-pointer hover:opacity-50"
+              onClick={() => onTransferNFT(token.tokenId)}
+              src={transferIcon}
+              alt=""
+            />
+          </Tooltip>
         </div>,
       ],
     }))

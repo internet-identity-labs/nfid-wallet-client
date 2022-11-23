@@ -3,29 +3,13 @@ import { ReactNode } from "react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
-import ReactTooltip from "react-tooltip"
+
+import { Tooltip } from "@nfid-frontend/ui"
 
 import { AppBalance } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
-
-const TooltipWrap: React.FC<{
-  children: ReactNode | ReactNode[]
-  tip: string
-  onClick: React.ReactEventHandler
-}> = ({ children, tip, onClick }) => (
-  <>
-    <div
-      className="flex items-center w-full h-full align-middle"
-      data-tip={tip}
-      onClick={onClick}
-    >
-      {children}
-    </div>
-    <ReactTooltip />
-  </>
-)
 
 const GridCell: React.FC<{
   className?: string
@@ -93,28 +77,24 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
           <GridCell>{account.icpBalance}</GridCell>
           <GridCell>{account.usdBalance}</GridCell>
           <GridCell>
-            <TooltipWrap
-              tip="Copy to clipboard"
-              onClick={copyToClipboard("Account ID", account.address)}
-            >
+            <Tooltip tip="Copy to clipboard">
               <CenterEllipsis
+                onClick={copyToClipboard("Account ID", account.address)}
                 value={account.address}
                 trailingChars={3}
                 leadingChars={4}
               />
-            </TooltipWrap>
+            </Tooltip>
           </GridCell>
           <GridCell>
-            <TooltipWrap
-              tip="Copy to clipboard"
-              onClick={copyToClipboard("Principal ID", account.principalId)}
-            >
+            <Tooltip tip="Copy to clipboard">
               <CenterEllipsis
+                onClick={copyToClipboard("Principal ID", account.principalId)}
                 value={account.principalId}
                 trailingChars={3}
                 leadingChars={4}
               />
-            </TooltipWrap>
+            </Tooltip>
           </GridCell>
         </tr>
       ))}

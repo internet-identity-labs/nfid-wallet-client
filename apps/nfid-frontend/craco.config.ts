@@ -1,5 +1,5 @@
 // import {} from "@craco/craco"
-import CspHtmlWebpackPlugin from "csp-html-webpack-plugin"
+import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
 import path from "path"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
@@ -9,6 +9,54 @@ import { serviceConfig } from "../../config/webpack-env"
 import dfxJson from "../../dfx.json"
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
+
+const setupCSP = () => {
+  const isProduction = process.env.FRONTEND_MODE === "production"
+  if (isProduction) {
+    const cspConfigPolicy = {
+      "default-src": "'none'",
+      "object-src": "'none'",
+      "base-uri": "'self'",
+      "connect-src": [
+        "'self'",
+        "https://ic0.app",
+        "https://region1.analytics.google.com",
+        "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/",
+        "https://rosetta-api.internetcomputer.org/",
+        "https://free.currconv.com/", //api/v7/convert?q=XDR_USD&compact=ultra&apiKey=df6440fc0578491bb13eb2088c4f60c7"
+        "https://us-central1-entrepot-api.cloudfunctions.net/", //api/maddies/getAllNfts/950fb7a3f9cfda1696366a5599f4feef2da94a50c283c57fe34e319f21509431"
+      ],
+      "worker-src": "'self'",
+      "img-src": ["'self' blob: data: content:", "https://www.google.de"],
+      "font-src": [
+        "'self'",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+      ],
+      "frame-src": [
+        "'self'",
+        "https://accounts.google.com/gsi/style",
+        "https://accounts.google.com/",
+      ],
+      "manifest-src": "'self'",
+      "style-src": [
+        "'self'",
+        // FIXME: libraries adding inline styles:
+        // - react-tooltip
+        // - google button
+        "'unsafe-inline'",
+        // FIXME: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "https://fonts.googleapis.com",
+        "https://accounts.google.com/gsi/style",
+      ],
+      "script-src": ["'strict-dynamic'"],
+      "require-trusted-types-for": ["'script'"],
+    }
+
+    return [new CspHtmlWebpackPlugin(cspConfigPolicy)]
+  }
+  return []
+}
 
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
@@ -72,14 +120,7 @@ const config = {
             contextRegExp: /^\.\/wordlists\/(?!english)/,
             resourceRegExp: /bip39\/src$/,
           }),
-          ...(isProduction
-            ? [
-                new CspHtmlWebpackPlugin({
-                  "script-src": "",
-                  "style-src": "",
-                }),
-              ]
-            : []),
+          ...setupCSP(),
         ],
       }
     },

@@ -79,7 +79,7 @@
     "@nrwl/eslint-plugin-nx": "15.0.2",
     "@nrwl/jest": "15.0.4",
     "@nrwl/linter": "15.0.2",
-    "@nrwl/react": "^15.0.2",
+    "@nrwl/react": "^15.2.1",
     "@nrwl/storybook": "15.0.7",
     "@nrwl/webpack": "^15.0.2",
     "@storybook/addon-actions": "^6.5.13",

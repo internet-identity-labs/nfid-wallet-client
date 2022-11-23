@@ -25,11 +25,11 @@ const setupCSP = () => {
         process.env.AWS_VERIFY_PHONENUMBER as string,
         process.env.AWS_SYMMETRIC as string,
         process.env.AWS_SIGNIN_GOOGLE as string,
-        "https://o1255710.ingest.sentry.io/api/6424378/envelope/", //?sentry_key=51ebe3dddb764757999d493d619c3e6a&sentry_version=7&sentry_client=sentry.javascript.react%2F7.14.0",
+        "https://o1255710.ingest.sentry.io/api/6424378/envelope/",
         "https://rosetta-api.internetcomputer.org/",
-        "https://free.currconv.com/", //api/v7/convert?q=XDR_USD&compact=ultra&apiKey=***REMOVED***"
-        "https://us-central1-entrepot-api.cloudfunctions.net/", //api/maddies/getAllNfts/950fb7a3f9cfda1696366a5599f4feef2da94a50c283c57fe34e319f21509431"
-        "https://stats.g.doubleclick.net/g/collect", //?v=2&tid=G-2821LJYH9P&cid=1558024000.1664347338&gtm=2oeb70&aip=1",
+        "https://free.currconv.com/",
+        "https://us-central1-entrepot-api.cloudfunctions.net/",
+        "https://stats.g.doubleclick.net/g/collect",
       ],
       "worker-src": "'self'",
       "img-src": ["'self' blob: data: content:", "https://www.google.de"],

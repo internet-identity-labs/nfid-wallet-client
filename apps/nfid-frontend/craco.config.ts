@@ -1,4 +1,5 @@
 // import {} from "@craco/craco"
+import CspHtmlWebpackPlugin from "csp-html-webpack-plugin"
 import path from "path"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
@@ -42,31 +43,11 @@ const config = {
           delete r.include
         }
       })
-      config.plugins.push(new webpack.DefinePlugin(canisterEnv))
-      config.plugins.push(
-        new webpack.ProvidePlugin({
-          Buffer: [require.resolve("buffer/"), "Buffer"],
-          process: require.resolve("process/browser"),
-        }),
-      )
-      config.plugins.push(
-        new webpack.IgnorePlugin({
-          contextRegExp: /^\.\/wordlists\/(?!english)/,
-          resourceRegExp: /bip39\/src$/,
-        }),
-      )
+
+      const isProduction = process.env.FRONTEND_MODE === "production"
       return {
         ...config,
-        // module: {
-        //   rules: [
-        //     {
-        //       test: /\.tsx$/,
-        //       enforce: "pre",
-        //       use: ["source-map-loader"],
-        //     },
-        //   ],
-        // },
-        devtool: process.env.FRONTEND_MODE !== "production" && "source-map",
+        devtool: !isProduction && "source-map",
         ignoreWarnings: [/Failed to parse source map from/],
         resolve: {
           ...config.resolve,
@@ -80,6 +61,26 @@ const config = {
             util: require.resolve("util"),
           },
         },
+        plugins: [
+          ...config.plugins,
+          new webpack.DefinePlugin(canisterEnv),
+          new webpack.ProvidePlugin({
+            Buffer: [require.resolve("buffer/"), "Buffer"],
+            process: require.resolve("process/browser"),
+          }),
+          new webpack.IgnorePlugin({
+            contextRegExp: /^\.\/wordlists\/(?!english)/,
+            resourceRegExp: /bip39\/src$/,
+          }),
+          ...(isProduction
+            ? [
+                new CspHtmlWebpackPlugin({
+                  "script-src": "",
+                  "style-src": "",
+                }),
+              ]
+            : []),
+        ],
       }
     },
   },

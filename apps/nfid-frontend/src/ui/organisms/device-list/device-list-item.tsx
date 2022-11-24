@@ -201,8 +201,15 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 </div>
               </div>
 
-              <Tooltip tip="You can sign in to the same identity from this device wherever you registered it (i.e. Internet Identity). It won’t work with NFID.">
-                <InfoIcon className={clsx(device.isAccessPoint && "hidden")} />
+              <Tooltip
+                tip="You can sign in to the same identity from this device wherever you registered it (i.e. Internet Identity). It won't work with NFID."
+                className="w-72"
+              >
+                <div>
+                  <InfoIcon
+                    className={clsx(device.isAccessPoint && "hidden")}
+                  />
+                </div>
               </Tooltip>
             </div>
           </div>

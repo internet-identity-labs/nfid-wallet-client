@@ -17,6 +17,8 @@ const setupCSP = () => {
       "default-src": "'none'",
       "object-src": "'none'",
       "base-uri": "'self'",
+      "report-uri":
+        "https://o1255710.ingest.sentry.io/api/6424378/security/?sentry_key=***REMOVED***",
       "connect-src": [
         "'self'",
         "https://ic0.app",

@@ -32,7 +32,11 @@ const setupCSP = () => {
         "https://stats.g.doubleclick.net/g/collect",
       ],
       "worker-src": "'self'",
-      "img-src": ["'self' blob: data: content:", "https://www.google.de"],
+      "img-src": [
+        "'self' blob: data: content:",
+        "https://www.google.de",
+        "https://images.entrepot.app",
+      ],
       "font-src": [
         "'self'",
         "https://fonts.googleapis.com",

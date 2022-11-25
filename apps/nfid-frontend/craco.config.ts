@@ -17,6 +17,8 @@ const setupCSP = () => {
       "default-src": "'none'",
       "object-src": "'none'",
       "base-uri": "'self'",
+      "report-uri":
+        "https://o1255710.ingest.sentry.io/api/6424378/security/?sentry_key=***REMOVED***",
       "connect-src": [
         "'self'",
         "https://ic0.app",
@@ -25,14 +27,18 @@ const setupCSP = () => {
         process.env.AWS_VERIFY_PHONENUMBER as string,
         process.env.AWS_SYMMETRIC as string,
         process.env.AWS_SIGNIN_GOOGLE as string,
-        "https://o1255710.ingest.sentry.io/api/6424378/envelope/",
-        "https://rosetta-api.internetcomputer.org/",
+        "https://o1255710.ingest.sentry.io",
+        "https://rosetta-api.internetcomputer.org",
         "https://free.currconv.com/",
-        "https://us-central1-entrepot-api.cloudfunctions.net/",
+        "https://us-central1-entrepot-api.cloudfunctions.net",
         "https://stats.g.doubleclick.net/g/collect",
       ],
       "worker-src": "'self'",
-      "img-src": ["'self' blob: data: content:", "https://www.google.de"],
+      "img-src": [
+        "'self' blob: data: content:",
+        "https://www.google.de",
+        "https://images.entrepot.app",
+      ],
       "font-src": [
         "'self'",
         "https://fonts.googleapis.com",

@@ -7,7 +7,8 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { authState as authStateMock } from "@nfid/integration"
+
+import { Account, authState as authStateMock } from "@nfid/integration"
 import { ii, im, replaceIdentity } from "@nfid/integration"
 import { FrontendDelegation } from "@nfid/integration"
 
@@ -20,7 +21,6 @@ import {
   removeRecoveryDeviceFacade,
 } from "frontend/integration/facade/index"
 import {
-  Account,
   Application,
   fetchAccounts,
 } from "frontend/integration/identity-manager/index"

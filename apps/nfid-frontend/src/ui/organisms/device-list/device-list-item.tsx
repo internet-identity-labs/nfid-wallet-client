@@ -4,11 +4,9 @@ import produce from "immer"
 import React from "react"
 
 import { Tooltip } from "@nfid-frontend/ui"
+import { Icon } from "@nfid/integration"
 
-import {
-  LegacyDevice,
-  Icon,
-} from "frontend/integration/identity-manager/devices/state"
+import { LegacyDevice } from "frontend/integration/identity-manager/devices/state"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { InfoIcon } from "frontend/ui/atoms/icons/info"

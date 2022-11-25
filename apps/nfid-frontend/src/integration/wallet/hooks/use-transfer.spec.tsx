@@ -4,11 +4,11 @@
 import { act, renderHook } from "@testing-library/react"
 import { SWRConfig } from "swr"
 
+import { Profile } from "@nfid/integration"
+
 import * as facadeMocks from "frontend/integration/facade/wallet"
-import { Profile } from "frontend/integration/identity-manager"
 import * as imQueryMocks from "frontend/integration/identity-manager/queries"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
-import * as rosettaMocks from "frontend/integration/rosetta"
 import * as transferMocks from "frontend/integration/rosetta/transfer"
 
 import { TransferAccount } from "."

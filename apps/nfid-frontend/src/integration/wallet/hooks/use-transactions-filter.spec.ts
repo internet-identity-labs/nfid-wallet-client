@@ -4,7 +4,9 @@
 import { Principal } from "@dfinity/principal"
 import { renderHook } from "@testing-library/react"
 
-import { Account, Application } from "frontend/integration/identity-manager"
+import { Account } from "@nfid/integration"
+
+import { Application } from "frontend/integration/identity-manager"
 import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
 

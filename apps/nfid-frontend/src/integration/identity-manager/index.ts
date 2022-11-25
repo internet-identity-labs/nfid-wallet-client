@@ -1,6 +1,14 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
-import { im } from "@nfid/integration"
+
+import {
+  AccessPoint,
+  AccessPointCommon,
+  Account,
+  Icon,
+  im,
+  Profile,
+} from "@nfid/integration"
 
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
@@ -19,39 +27,9 @@ import {
   PersonaResponse,
 } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
-import { Icon } from "./devices/state"
-
-export interface Profile {
-  name?: string
-  anchor: number
-  accessPoints: AccessPoint[]
-  accounts: Account[]
-  principalId: string
-  phoneNumber?: string
-}
-
-export interface AccessPointCommon {
-  icon: Icon
-  device: string
-  browser: string
-}
 
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
-}
-
-export interface AccessPoint extends AccessPointCommon {
-  lastUsed: number
-  principalId: string
-}
-
-export interface Account {
-  domain: string
-  label: string
-  accountId: string
-  icon?: string
-  alias?: string[]
-  accountCount?: number
 }
 
 export function applicationToAccount(application: Application): Account {

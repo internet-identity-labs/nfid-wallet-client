@@ -1,7 +1,7 @@
 import bowser from "bowser"
 import useSWRImmutable from "swr/immutable"
 
-import { Icon } from "../identity-manager/devices/state"
+import { Icon } from "@nfid/integration"
 
 const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
 const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]

@@ -1,15 +1,16 @@
 // State machine controlling the phone number credential flow.
+import { ActorRefFrom, assign, createMachine } from "xstate"
+
 import {
   registerPhoneNumberCredentialHandler,
   CredentialResult,
 } from "@nfid/credentials"
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { clearProfile } from "@nfid/integration"
 
 import {
   fetchProfile,
   removeAccount,
 } from "frontend/integration/identity-manager"
-import { clearProfile } from "frontend/integration/identity-manager/profile"
 import { verifySmsService } from "frontend/integration/identity-manager/services"
 import { verifyPhoneNumberService } from "frontend/integration/lambda/phone/services"
 import { Certificate } from "frontend/integration/verifier"

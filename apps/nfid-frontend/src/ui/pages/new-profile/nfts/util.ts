@@ -1,8 +1,10 @@
+import { Account } from "@nfid/integration"
+
 import {
   EntrepotCollection,
   UserNFTDetails,
 } from "frontend/integration/entrepot/types"
-import { Account, Application } from "frontend/integration/identity-manager"
+import { Application } from "frontend/integration/identity-manager"
 
 import { GlauberTS } from "./search"
 

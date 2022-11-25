@@ -7,6 +7,7 @@ import {
 import { Principal } from "@dfinity/principal"
 
 import { accessList } from "../actors"
+import { getDelegationTTL } from "../local-storage/get-delegation-ttl"
 
 // FIXME: move to constants
 const ONE_SECOND_IN_M_SEC = 1000
@@ -21,7 +22,7 @@ export interface FrontendDelegation {
 
 export const requestFEDelegationChain = async (
   identity: SignIdentity,
-  ttl: number = TEN_MINUTES_IN_M_SEC,
+  ttl: number = getDelegationTTL(TEN_MINUTES_IN_M_SEC),
 ) => {
   console.debug("Request FE Delegation Chain.")
   const sessionKey = Ed25519KeyIdentity.generate()

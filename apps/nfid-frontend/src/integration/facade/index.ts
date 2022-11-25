@@ -1,12 +1,12 @@
 import { Principal } from "@dfinity/principal"
-import { ii } from "@nfid/integration"
+
+import { Account, ii } from "@nfid/integration"
 
 import {
   DeviceKey,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
 import {
-  Account,
   Application,
   applicationToAccount,
   removeAccessPoint,

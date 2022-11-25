@@ -4,9 +4,10 @@ import { Fade } from "react-awesome-reveal"
 import { Link } from "react-router-dom"
 import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 
+import { loadProfileFromLocalStorage } from "@nfid/integration"
+
 import { useDeviceInfo } from "frontend/integration/device"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 

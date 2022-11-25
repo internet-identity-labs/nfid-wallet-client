@@ -11,8 +11,10 @@ import { ii } from "../actors"
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { requestFEDelegation } from "../identity/frontend-delegation"
+import { loadProfileFromLocalStorage } from "../local-storage/profile"
 
 interface ObservableAuthState {
+  pendingRenewDelegation?: boolean
   actor?: ActorSubclass<InternetIdentity>
   identity?: SignIdentity
   delegationIdentity?: DelegationIdentity
@@ -44,6 +46,7 @@ function authStateClosure() {
       sessionKey?: Ed25519KeyIdentity | undefined,
     ) {
       observableAuthState$.next({
+        pendingRenewDelegation: false,
         actor,
         identity,
         delegationIdentity,
@@ -53,24 +56,7 @@ function authStateClosure() {
       replaceIdentity(delegationIdentity)
     },
     get: () => {
-      const { delegationIdentity, identity } = observableAuthState$.getValue()
-      if (!delegationIdentity || !identity)
-        return observableAuthState$.getValue()
-
-      if (isDelegationExpired(delegationIdentity)) {
-        requestFEDelegation(identity)
-          .then((result) => {
-            authState.set(
-              identity,
-              result.delegationIdentity,
-              ii,
-              result.chain,
-              result.sessionKey,
-            )
-          })
-          .catch(() => invalidateIdentity())
-      }
-
+      checkDelegationExpiration()
       return observableAuthState$.getValue()
     },
     reset() {
@@ -78,6 +64,49 @@ function authStateClosure() {
     },
     subscribe: (next: (state: ObservableAuthState) => void) =>
       observableAuthState$.subscribe(next),
+    setRenewDelegationStatus: (isPending: boolean) => {
+      observableAuthState$.next({
+        ...observableAuthState$.getValue(),
+        pendingRenewDelegation: isPending,
+      })
+    },
+  }
+}
+
+export function checkDelegationExpiration() {
+  const { pendingRenewDelegation, delegationIdentity, identity } =
+    observableAuthState$.getValue()
+
+  if (!delegationIdentity || !identity || pendingRenewDelegation) return
+
+  if (isDelegationExpired(delegationIdentity)) {
+    // we don't have a profile in local storage, so we cannot request a new delegation
+    if (!loadProfileFromLocalStorage()) {
+      console.debug("checkDelegationExpiration no profile invalidateIdentity")
+
+      return invalidateIdentity()
+    }
+
+    console.debug(
+      "checkDelegationExpiration delegation expired. Request new one.",
+    )
+
+    authState.setRenewDelegationStatus(true)
+
+    return requestFEDelegation(identity)
+      .then((result) => {
+        authState.set(
+          identity,
+          result.delegationIdentity,
+          ii,
+          result.chain,
+          result.sessionKey,
+        )
+      })
+      .catch((e) => {
+        console.error("checkDelegationExpiration", e)
+        invalidateIdentity()
+      })
   }
 }
 
@@ -101,5 +130,6 @@ export function replaceIdentity(identity: DelegationIdentity) {
 export function invalidateIdentity() {
   authState.reset()
   agent.invalidateIdentity()
+  window.location.reload()
   rawId = undefined
 }

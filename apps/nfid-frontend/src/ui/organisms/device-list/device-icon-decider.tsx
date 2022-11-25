@@ -1,6 +1,7 @@
 import React from "react"
 
-import { Icon } from "frontend/integration/identity-manager/devices/state"
+import { Icon } from "@nfid/integration"
+
 import { IconLaptop } from "frontend/ui/atoms/icons/desktop"
 import { DocumentIcon } from "frontend/ui/atoms/icons/document"
 import { GoogleIcon } from "frontend/ui/atoms/icons/google"

@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Account } from "frontend/integration/identity-manager"
+import { Account } from "@nfid/integration"
 
 export interface INFT {
   canisterId: string

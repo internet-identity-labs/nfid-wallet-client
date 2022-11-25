@@ -4,11 +4,12 @@ import { NavLink, useNavigate } from "react-router-dom"
 import Scrollspy from "react-scrollspy"
 import User from "src/assets/userpics/userpic_6.svg"
 
+import { loadProfileFromLocalStorage } from "@nfid/integration"
+
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import IconMenu from "frontend/apps/marketing/landing-page/assets/menu_close.svg"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
-import { loadProfileFromLocalStorage } from "frontend/integration/identity-manager/profile"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
 import { ButtonMenu } from "frontend/ui/atoms/menu"

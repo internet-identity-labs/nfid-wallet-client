@@ -1,12 +1,6 @@
-import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
-import {
-  Delegation,
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { ii, im } from "@nfid/integration"
-import { replaceIdentity } from "@nfid/integration"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+
+import { ii, im, Profile, replaceIdentity } from "@nfid/integration"
 
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
@@ -15,12 +9,11 @@ import {
   HTTPAccessPointResponse,
   AccessPointResponse,
   HTTPAccountResponse,
-  HTTPAccountRequest,
 } from "../_ic_api/identity_manager.d"
 import { DeviceData, UserNumber } from "../_ic_api/internet_identity.d"
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { createDeviceFactory } from "../device/create-device-factory"
-import { fetchProfile, Profile } from "../identity-manager"
+import { fetchProfile } from "../identity-manager"
 import { delegationChainFromDelegation } from "../identity/delegation-chain-from-delegation"
 import {
   delegationIdentityFromSignedIdentity,

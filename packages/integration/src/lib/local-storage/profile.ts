@@ -1,6 +1,4 @@
-// TODO: Write a migration for existing users to go from account => profile as local key
-// remove personas key from localstorage and use profile.accounts instead
-import { Profile } from "."
+import { Profile } from "../identity-manager/profile"
 
 export function loadProfileFromLocalStorage(): Profile | undefined {
   console.debug("loadProfileFromLocalStorage")

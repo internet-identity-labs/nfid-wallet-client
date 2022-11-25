@@ -3,7 +3,7 @@ import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
 
-import { Balance, getBalance } from "@nfid/integration"
+import { Account, Balance, getBalance } from "@nfid/integration"
 
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
 import {
@@ -11,7 +11,7 @@ import {
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
 
-import { Account, Application } from "../../identity-manager"
+import { Application } from "../../identity-manager"
 import { useApplicationsMeta } from "../../identity-manager/queries"
 import { useAllPrincipals } from "../../internet-identity/queries"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"

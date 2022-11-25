@@ -1,6 +1,7 @@
+import { Account } from "@nfid/integration"
+
 import { WALLET_SCOPE } from "frontend/integration/rosetta"
 
-import { Account } from ".."
 import { NFIDPersona } from "./types"
 
 /**

@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import { decodeTokenIdentifier } from "ictool"
 
-import { Account } from "frontend/integration/identity-manager"
+import { Account } from "@nfid/integration"
 
 import { collection, token } from "."
 import { EntrepotToken, UserNFTDetails } from "./types"

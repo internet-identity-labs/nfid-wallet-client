@@ -1,7 +1,8 @@
 import { assign, ActorRefFrom, createMachine, send } from "xstate"
 
+import { Account } from "@nfid/integration"
+
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
-import { Account } from "frontend/integration/identity-manager"
 import {
   createAccountService,
   fetchAccountsService,

@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import { encodeTokenIdentifier } from "ictool"
 
-import { Account } from "frontend/integration/identity-manager"
+import { Account } from "@nfid/integration"
 
 import {
   assetFullsize,

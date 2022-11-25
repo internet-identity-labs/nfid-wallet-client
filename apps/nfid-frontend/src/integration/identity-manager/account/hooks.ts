@@ -1,7 +1,8 @@
-import { im } from "@nfid/integration"
 import { useAtom } from "jotai"
 import React from "react"
 import useSWR from "swr"
+
+import { im, setProfile } from "@nfid/integration"
 
 import { unpackResponse } from "frontend/integration/_common"
 import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.d"
@@ -12,7 +13,6 @@ import {
   mapProfile,
   registerProfileWithAccessPoint,
 } from ".."
-import { setProfile } from "../profile"
 import { userNumberAtom } from "./state"
 
 declare const VERIFY_PHONE_NUMBER: string

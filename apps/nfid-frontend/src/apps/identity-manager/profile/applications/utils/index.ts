@@ -1,8 +1,6 @@
-import {
-  Account,
-  Application,
-  rmProto,
-} from "frontend/integration/identity-manager"
+import { Account } from "@nfid/integration"
+
+import { Application, rmProto } from "frontend/integration/identity-manager"
 import { getUrl } from "frontend/ui/utils"
 
 export interface ApplicationAccount {

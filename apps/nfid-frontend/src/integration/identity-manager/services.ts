@@ -1,4 +1,5 @@
 import { fetchPrincipal } from "@nfid/integration"
+import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
@@ -11,7 +12,6 @@ import {
   verifyToken,
 } from "."
 import { getNextAccountId } from "./persona/utils"
-import { loadProfileFromLocalStorage } from "./profile"
 
 export function getLocalStorageProfileService() {
   const profile = loadProfileFromLocalStorage()

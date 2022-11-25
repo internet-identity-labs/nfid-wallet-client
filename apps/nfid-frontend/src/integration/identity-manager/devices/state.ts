@@ -1,14 +1,6 @@
 import { atom } from "jotai"
 
-export type Icon =
-  | "mobile"
-  | "tablet"
-  | "desktop"
-  | "laptop"
-  | "document"
-  | "usb"
-  | "google"
-  | "unknown"
+import { Icon } from "@nfid/integration"
 
 export interface AccessPointRequest {
   icon: string

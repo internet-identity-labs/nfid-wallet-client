@@ -4,10 +4,10 @@ import {
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { authState } from "@nfid/integration"
-import { im } from "@nfid/integration"
 import React from "react"
 import useSWR from "swr"
+
+import { im, authState, Icon } from "@nfid/integration"
 
 import {
   AccessPointRequest,
@@ -33,7 +33,7 @@ import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 import { creationOptions } from "frontend/integration/webauthn/creation-options"
 
 import { useAccount } from "../account/hooks"
-import { LegacyDevice, Icon, RecoveryDevice } from "./state"
+import { LegacyDevice, RecoveryDevice } from "./state"
 
 declare const SIGNIN_GOOGLE: string
 

@@ -1,10 +1,19 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
-import { authState, requestFEDelegationChain, ii, im } from "@nfid/integration"
 import * as Sentry from "@sentry/browser"
 
 import {
-  fetchProfile,
+  authState,
+  requestFEDelegationChain,
+  ii,
+  im,
+  setProfile,
+  loadProfileFromLocalStorage,
+  Icon,
   Profile,
+} from "@nfid/integration"
+
+import {
+  fetchProfile,
   registerProfileWithAccessPoint,
 } from "frontend/integration/identity-manager"
 import {
@@ -27,11 +36,6 @@ import {
 } from "."
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
-import { Icon } from "../identity-manager/devices/state"
-import {
-  loadProfileFromLocalStorage,
-  setProfile,
-} from "../identity-manager/profile"
 import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(

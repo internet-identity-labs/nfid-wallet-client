@@ -1,4 +1,6 @@
-import { Account, Application } from ".."
+import { Account } from "@nfid/integration"
+
+import { Application } from ".."
 
 export const isDefaultLabel = (a: string) =>
   /^Account #\d*$/.test(a) || a === undefined || a === ""

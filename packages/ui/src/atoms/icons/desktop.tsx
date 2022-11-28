@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-interface DesktopIconProps extends React.SVGProps<SVGSVGElement> {}
+type DesktopIconProps = React.SVGProps<SVGSVGElement>
 
 export const IconLaptop: React.FC<DesktopIconProps> = ({
   className,

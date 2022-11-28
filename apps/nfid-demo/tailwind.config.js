@@ -8,7 +8,7 @@ module.exports = {
     "../../packages/ui/**/*!(*.stories|*.spec).{ts,tsx,html}",
   ],
   plugins: [
-    require("@tailwindcss/forms"),
+    require("../../packages/ui-tailwind-core/src/forms"),
     require("../../packages/ui-tailwind-core"),
   ],
   theme: {

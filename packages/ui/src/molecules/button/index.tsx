@@ -10,6 +10,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode
   text?: boolean
   type?: ButtonType
+  isSmall?: boolean
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -19,6 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   icon,
   id,
+  isSmall,
   ...buttonProps
 }: ButtonProps) => {
   const isPrimary = type === "primary"
@@ -38,6 +40,7 @@ export const Button: React.FC<ButtonProps> = ({
         "border rounded-md outline-none p-[15px] leading-4",
         "cursor-pointer disabled:cursor-not-allowed",
         "focus:ring-2 focus:ring-offset-[1px] focus:ring-black",
+        isSmall ? (children ? "px-[15px] py-[11px]" : "p-[11px]") : "p-[15px]",
         isPrimary &&
           clsx(
             "text-white",

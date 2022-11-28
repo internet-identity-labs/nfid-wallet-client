@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Label } from "../../input/label"
+import { Label } from "@nfid-frontend/ui"
 
 interface RadioButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string

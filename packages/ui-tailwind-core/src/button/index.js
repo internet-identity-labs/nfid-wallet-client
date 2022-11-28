@@ -1,6 +1,6 @@
 module.exports = (theme) => ({
   ".btn": {
-    "@apply text-center text-sm font-bold rounded-md outline-none focus:ring-2 focus:ring-offset-[1px] focus:ring-black first-letter:capitalize hover:no-underline transition duration-75 py-[14px] px-5":
+    "@apply text-center text-sm font-bold rounded-md outline-none focus:ring-2 focus:ring-offset-[1px] focus:ring-black first-letter:capitalize hover:no-underline transition duration-75 p-[15px] leading-[18px]":
       {},
   },
   ".btn-text": {

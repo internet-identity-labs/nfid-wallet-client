@@ -1,5 +1,6 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
+import { ImPlus, ImSpinner } from "react-icons/im"
 
 import { Button, ButtonProps } from "."
 import { IconLaptop } from "../icons/desktop"
@@ -14,6 +15,11 @@ const meta: Meta = {
         type: "text",
       },
     },
+    disabled: { control: { type: "boolean" } },
+    type: {
+      options: ["primary", "secondary", "stroke", "ghost", "red"],
+      control: { type: "radio" },
+    },
   },
   parameters: {
     controls: { expanded: true },
@@ -22,7 +28,15 @@ const meta: Meta = {
 
 export default meta
 
-const DefaultTemplate: Story<ButtonProps> = (args) => <Button {...args} />
+const DefaultTemplate: Story<ButtonProps> = (args) => {
+  return (
+    <div className="flex space-x-8">
+      <Button {...args} />
+      <Button {...args} icon={<ImSpinner />} />
+      <Button {...args} icon={<ImPlus />} children="" />
+    </div>
+  )
+}
 
 const IconTemplate: Story = (args) => (
   <Button {...args}>
@@ -32,7 +46,6 @@ const IconTemplate: Story = (args) => (
 export const Default = DefaultTemplate.bind({})
 Default.args = {
   children: "Button",
-  primary: true,
 }
 
 export const Icon = IconTemplate.bind({})

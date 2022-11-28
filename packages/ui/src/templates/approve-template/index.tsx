@@ -70,26 +70,35 @@ export const ApproveTemplate: React.FC<ApproveTemplateProps> = ({
             successTimer !== -1 && "hidden",
           )}
         >
-          <Button disabled={isLoading} stroke onClick={onReject}>
+          <Button
+            disabled={isLoading}
+            type="stroke"
+            onClick={onReject}
+            className="flex items-center justify-center"
+          >
             Reject
           </Button>
-          <Button disabled={isLoading} primary onClick={onApprove}>
+          <Button
+            disabled={isLoading}
+            onClick={onApprove}
+            className="flex items-center justify-center"
+          >
             Approve
           </Button>
         </div>
         <Button
+          icon={
+            <img
+              src={successWhiteIcon}
+              alt="success-icon"
+              className={clsx("mr-2")}
+            />
+          }
           className={clsx(
             "flex items-center justify-center",
             successTimer === -1 && "hidden",
           )}
-          block
-          primary
         >
-          <img
-            src={successWhiteIcon}
-            alt="success-icon"
-            className={clsx("mr-2")}
-          />
           Success! Closing in {successTimer}
         </Button>
       </div>

@@ -8,7 +8,6 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode
   disabled?: boolean
   icon?: React.ReactNode
-  isActive?: boolean
   text?: boolean
   type?: ButtonType
 }
@@ -19,7 +18,6 @@ export const Button: React.FC<ButtonProps> = ({
   type = "primary",
   disabled,
   icon,
-  isActive,
   id,
   ...buttonProps
 }: ButtonProps) => {

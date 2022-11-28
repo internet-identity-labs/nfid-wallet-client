@@ -1,9 +1,10 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { Input } from "@nfid-frontend/ui"
+
 import { ElementProps } from "frontend/types/react"
 import { Button } from "frontend/ui/atoms/button"
-import { Input } from "frontend/ui/atoms/input"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { Challenge } from "frontend/ui/molecules/challenge"

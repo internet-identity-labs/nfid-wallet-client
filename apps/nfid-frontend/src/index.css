@@ -47,7 +47,7 @@ ul {
 }
 
 .Toastify__toast-theme--light {
-  @apply text-sm text-black-base;
+  @apply text-sm;
 }
 .Toastify__progress-bar {
   width: 0;

@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { FieldValues, useForm } from "react-hook-form"
 
-import { TextArea } from "@nfid-frontend/ui/text-area"
+import { TextArea } from "@nfid-frontend/ui"
 
 import { Button } from "frontend/ui/atoms/button"
 import { CONTAINER_CLASSES } from "frontend/ui/atoms/container"

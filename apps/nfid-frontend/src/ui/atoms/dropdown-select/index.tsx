@@ -154,6 +154,7 @@ export const DropdownSelect = ({
             )}
             {filteredOptions?.map((option) => (
               <DropdownOption
+                key={option.value}
                 option={option}
                 isChecked={selectedValues.includes(option.value)}
                 toggleCheckbox={toggleCheckbox}

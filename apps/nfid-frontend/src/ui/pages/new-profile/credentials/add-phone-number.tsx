@@ -2,8 +2,9 @@ import clsx from "clsx"
 import React, { Dispatch, SetStateAction } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
+import { Input } from "@nfid-frontend/ui"
+
 import { Button } from "frontend/ui/atoms/button"
-import { Input } from "frontend/ui/atoms/input"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { phoneRules } from "frontend/ui/utils/validations"

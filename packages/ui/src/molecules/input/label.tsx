@@ -14,7 +14,7 @@ export const Label: React.FC<Props> = ({
   return (
     <label
       className={clsx(
-        "text-sm text-black-base leading-4 mb-[6px] block",
+        "text-xs text-black leading-4",
         menuItem && "px-3 font-bold pt-2",
         className,
       )}

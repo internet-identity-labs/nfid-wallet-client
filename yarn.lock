@@ -1980,11 +1980,6 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@internet-identity-labs/nfid-ui-kit-core@0.0.1-alpha.3":
-  version "0.0.1-alpha.3"
-  resolved "https://registry.npmjs.org/@internet-identity-labs/nfid-ui-kit-core/-/nfid-ui-kit-core-0.0.1-alpha.3.tgz"
-  integrity sha512-kh1sP4LpyFD/Eq9KnYt1WEUBIEyMXF5JWg2nRABvwmfgz7GjS037VxIlOW21DlLFU5fbSM0yaSeEGTQbio+rbA==
-
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.npmjs.org/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz"

@@ -1,4 +1,4 @@
-import { ErrorIcon } from "frontend/ui/atoms/input/icons/error"
+import { ErrorIcon } from "@nfid-frontend/ui/icons/error"
 
 interface ErrorBannerProps {
   errorMessage?: string

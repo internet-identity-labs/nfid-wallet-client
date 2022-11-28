@@ -6,6 +6,7 @@ import IconSvgCopy from "./copy.svg"
 import IconSvgDesktop from "./desktop.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
+import IconSvgError from "./error.svg"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgInfo from "./info.svg"
@@ -35,6 +36,7 @@ export {
   IconSvgDesktop,
   IconSvgDokument,
   IconSvgDots,
+  IconSvgError,
   IconSvgGmail,
   IconSvgGoogle,
   IconSvgInfo,
@@ -64,6 +66,7 @@ export { ReactComponent as IconCmpCopy } from "./copy.svg"
 export { ReactComponent as IconCmpDesktop } from "./desktop.svg"
 export { ReactComponent as IconCmpDokument } from "./document.svg"
 export { ReactComponent as IconCmpDots } from "./dots.svg"
+export { ReactComponent as IconCmpError } from "./error.svg"
 export { ReactComponent as IconCmpGmail } from "./gmail.svg"
 export { ReactComponent as IconCmpGoogle } from "./google.svg"
 export { ReactComponent as IconCmpInfo } from "./info.svg"

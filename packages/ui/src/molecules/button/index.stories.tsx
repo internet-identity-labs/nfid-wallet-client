@@ -3,10 +3,9 @@ import React from "react"
 import { ImPlus, ImSpinner } from "react-icons/im"
 
 import { Button, ButtonProps } from "."
-import { IconLaptop } from "../icons/desktop"
 
 const meta: Meta = {
-  title: "Atoms/Button",
+  title: "Molecules/Button",
   component: Button,
   argTypes: {
     onClick: { action: "clicked" },
@@ -38,19 +37,9 @@ const DefaultTemplate: Story<ButtonProps> = (args) => {
   )
 }
 
-const IconTemplate: Story = (args) => (
-  <Button {...args}>
-    <IconLaptop />
-  </Button>
-)
 export const Default = DefaultTemplate.bind({})
 Default.args = {
   children: "Button",
-}
-
-export const Icon = IconTemplate.bind({})
-
-Icon.args = {
-  isActive: false,
-  icon: true,
+  type: "primary",
+  disabled: false,
 }

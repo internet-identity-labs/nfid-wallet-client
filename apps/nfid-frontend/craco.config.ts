@@ -17,8 +17,6 @@ const setupCSP = () => {
       "default-src": "'none'",
       "object-src": "'none'",
       "base-uri": "'self'",
-      "report-uri":
-        "https://o1255710.ingest.sentry.io/api/6424378/security/?sentry_key=***REMOVED***",
       "connect-src": [
         "'self'",
         "https://ic0.app",
@@ -34,11 +32,7 @@ const setupCSP = () => {
         "https://stats.g.doubleclick.net/g/collect",
       ],
       "worker-src": "'self'",
-      "img-src": [
-        "'self' blob: data: content:",
-        "https://www.google.de",
-        "https://images.entrepot.app",
-      ],
+      "img-src": ["'self' blob: data: content: https:"],
       "font-src": [
         "'self'",
         "https://fonts.googleapis.com",

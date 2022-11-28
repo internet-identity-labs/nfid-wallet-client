@@ -42,4 +42,5 @@ Default.args = {
   children: "Button",
   type: "primary",
   disabled: false,
+  isSmall: false,
 }

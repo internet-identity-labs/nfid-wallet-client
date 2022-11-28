@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import { Button } from "."
-import { ReactComponent as ArrowLeft } from "../icons/arrow-left.svg"
+import { ReactComponent as ArrowLeft } from "../../atoms/icons/arrow-left.svg"
 
 interface ArrowButtonProps {
   direction?: "left" | "right" | "top" | "bottom"
@@ -19,7 +19,7 @@ export const ArrowButton: React.FC<ArrowButtonProps> = ({
   iconClassName,
 }) => {
   return (
-    <Button onClick={onClick} icon className={buttonClassName}>
+    <Button onClick={onClick} className={buttonClassName} type="ghost">
       <ArrowLeft
         className={clsx(
           direction === "right" && "",

@@ -120,11 +120,7 @@ export const PagePhoneNumberVerification: React.FC = () => {
           here
         </a>
       </div>
-      <Button
-        primary
-        disabled={authButton.disabled}
-        onClick={handleAuthenticate}
-      >
+      <Button disabled={authButton.disabled} onClick={handleAuthenticate}>
         {authButton.loading ? (
           <div className={clsx("flex items-center space-x-2")}>
             <ImSpinner className={clsx("animate-spin")} />
@@ -145,7 +141,6 @@ requestPhoneNumberCredential(identity)
         `}
       </pre>
       <Button
-        primary
         id="credential"
         disabled={credButton.disabled}
         onClick={handleCreateCredential}

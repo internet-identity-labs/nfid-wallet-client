@@ -35,7 +35,6 @@ export const PageGetAccounts = () => {
 
       <div className="flex flex-col w-64 my-8">
         <Button
-          primary
           disabled={requestButton.disabled}
           onClick={handleRequestAccounts}
         >

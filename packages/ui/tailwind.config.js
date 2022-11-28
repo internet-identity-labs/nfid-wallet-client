@@ -5,8 +5,8 @@ const { join } = require("path")
 module.exports = {
   content: [join(__dirname, "src/**/*!(*.stories|*.spec).{ts,tsx,html}")],
   plugins: [
-    require("@tailwindcss/forms"),
-    require("@internet-identity-labs/nfid-ui-kit-core"),
+    require("../../packages/ui-tailwind-core"),
+    require("../../packages/ui-tailwind-core/src/forms"),
   ],
   theme: {
     extend: {

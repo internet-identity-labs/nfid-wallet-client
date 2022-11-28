@@ -123,7 +123,7 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
             inputClassName={clsx("border")}
           />
           <Button
-            secondary
+            type="secondary"
             onClick={handleSubmit(onSubmit)}
             disabled={!isValid || isLoading}
             className={"relative"}

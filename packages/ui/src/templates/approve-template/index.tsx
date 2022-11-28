@@ -3,10 +3,10 @@ import React from "react"
 
 import successWhiteIcon from "./assets/success-white.svg"
 
-import { Button } from "../../atoms/button"
 import { NFIDGradientBar } from "../../atoms/gradient-bar"
 import { SDKFooter } from "../../atoms/sdk-footer/footer"
 import { SDKHeader } from "../../atoms/sdk-header"
+import { Button } from "../../molecules/button"
 import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 
 export interface ApproveTemplateProps

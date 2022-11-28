@@ -76,7 +76,6 @@
     "@commitlint/cli": "16.2.4",
     "@commitlint/config-conventional": "16.2.4",
     "@craco/craco": "6.4.3",
-    "@internet-identity-labs/nfid-ui-kit-core": "0.0.1-alpha.3",
     "@melloware/csp-webpack-plugin": "6.0.4",
     "@nrwl/eslint-plugin-nx": "15.0.2",
     "@nrwl/jest": "15.0.4",

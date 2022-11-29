@@ -6,12 +6,14 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+
 import {
   authState as authStateMock,
   ii,
   im,
   replaceIdentity,
   FrontendDelegation,
+  generateDelegationIdentity,
 } from "@nfid/integration"
 
 import { DeviceData } from "frontend/integration/_ic_api/internet_identity.d"
@@ -25,7 +27,7 @@ import {
 } from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
-import { generateDelegationIdentity, registerIIAccount } from "../test-util"
+import { registerIIAccount } from "../test-util"
 
 describe("ii suite", () => {
   jest.setTimeout(50000)

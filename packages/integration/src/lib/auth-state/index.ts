@@ -11,7 +11,7 @@ import { ii } from "../actors"
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { requestFEDelegation } from "../identity/frontend-delegation"
-import { loadProfileFromLocalStorage } from "../local-storage/profile"
+import { setupSessionManager } from "./session-handling"
 
 interface ObservableAuthState {
   pendingRenewDelegation?: boolean
@@ -45,6 +45,7 @@ function authStateClosure() {
       chain?: DelegationChain | undefined,
       sessionKey?: Ed25519KeyIdentity | undefined,
     ) {
+      setupSessionManager({ onIdle: invalidateIdentity })
       observableAuthState$.next({
         pendingRenewDelegation: false,
         actor,
@@ -80,17 +81,6 @@ export function checkDelegationExpiration() {
   if (!delegationIdentity || !identity || pendingRenewDelegation) return
 
   if (isDelegationExpired(delegationIdentity)) {
-    // we don't have a profile in local storage, so we cannot request a new delegation
-    if (!loadProfileFromLocalStorage()) {
-      console.debug("checkDelegationExpiration no profile invalidateIdentity")
-
-      return invalidateIdentity()
-    }
-
-    console.debug(
-      "checkDelegationExpiration delegation expired. Request new one.",
-    )
-
     authState.setRenewDelegationStatus(true)
 
     return requestFEDelegation(identity)
@@ -108,6 +98,7 @@ export function checkDelegationExpiration() {
         invalidateIdentity()
       })
   }
+  return
 }
 
 export const authState = authStateClosure()
@@ -128,6 +119,7 @@ export function replaceIdentity(identity: DelegationIdentity) {
  * When user disconnects an identity, we update our agent.
  */
 export function invalidateIdentity() {
+  console.debug("invalidateIdentity")
   authState.reset()
   agent.invalidateIdentity()
   window.location.reload()

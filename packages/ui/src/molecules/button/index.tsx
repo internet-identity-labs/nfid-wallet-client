@@ -85,7 +85,7 @@ export const Button: React.FC<ButtonProps> = ({
             {icon}
           </div>
         ) : null}
-        {children ? <div>{children}</div> : null}
+        {children ? <div className="w-full text-center">{children}</div> : null}
       </div>
     </button>
   )

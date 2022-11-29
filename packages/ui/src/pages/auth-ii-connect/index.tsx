@@ -1,9 +1,9 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { Button, Input } from "@nfid-frontend/ui"
+
 import ArrowBackIcon from "../../assets/arrow-back.svg"
-import { Button } from "../../atoms/button"
-import { Input } from "../../atoms/input"
 
 export interface AuthConnectIIProps {
   onBack: () => void
@@ -55,7 +55,7 @@ export const IIAuthConnect: React.FC<AuthConnectIIProps> = ({
         {...register("anchor")}
       />
       <Button
-        primary
+        type="primary"
         block
         className="mb-1"
         onClick={() => onConnect(getValues("anchor"))}

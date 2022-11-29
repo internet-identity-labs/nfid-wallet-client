@@ -1,4 +1,5 @@
-import { Button } from "../../atoms/button"
+import { Button } from "@nfid-frontend/ui"
+
 import { Copy } from "../../atoms/copy"
 
 export interface IIAuthCodeProps {
@@ -40,7 +41,7 @@ export const IIAuthCode = ({
           </div>
         </div>
       </div>
-      <Button stroke block onClick={onCancel}>
+      <Button type="stroke" onClick={onCancel}>
         Cancel
       </Button>
     </div>

@@ -1,14 +1,17 @@
-import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import {
+  fromHexString,
+  toHexString,
+} from "@dfinity/candid/lib/cjs/utils/buffer"
+import { WebAuthnIdentity } from "@dfinity/identity"
 import React, { useCallback, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IIAuthAddRemoteDevice } from "@nfid-frontend/ui"
+import { FrontendDelegation, requestFEDelegation } from "@nfid/integration"
 
 import { useDeviceInfo } from "frontend/integration/device"
-import {
-  useDevices,
-  WebAuthnDevice,
-} from "frontend/integration/identity-manager/devices/hooks"
+import { createWebAuthnIdentity } from "frontend/integration/identity"
+import { WebAuthnDevice } from "frontend/integration/identity-manager/devices/hooks"
 import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 import {
   addTentativeDevice,
@@ -18,7 +21,8 @@ import {
 interface IIAuthAddRemoteDeviceProps {
   onCancel: () => void
   onSuccess: (data: string) => void
-  assignDevice: (data: WebAuthnDevice) => void
+  assignDevice: (data: WebAuthnIdentity) => void
+  assignDelegation: (data: FrontendDelegation) => void
   anchor: number
 }
 
@@ -27,17 +31,27 @@ export const IIAuthAddTentativeDevice: React.FC<IIAuthAddRemoteDeviceProps> = ({
   onSuccess,
   anchor,
   assignDevice,
+  assignDelegation,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { newDeviceName } = useDeviceInfo()
-  const { createWebAuthNDevice } = useDevices()
 
   const onRetry = useCallback(async () => {
     try {
       setIsLoading(true)
 
-      const { device } = await createWebAuthNDevice(BigInt(anchor))
-      assignDevice(device)
+      // const { device } = await createWebAuthNDevice(BigInt(anchor))
+      const deviceIdentity = await createWebAuthnIdentity()
+      assignDevice(deviceIdentity)
+
+      const FEDelegation = await requestFEDelegation(deviceIdentity)
+      assignDelegation(FEDelegation)
+
+      const device: WebAuthnDevice = {
+        deviceName: newDeviceName,
+        publicKey: toHexString(deviceIdentity.getPublicKey().toDer()),
+        rawId: toHexString(deviceIdentity.rawId),
+      }
 
       const pub_key = fromHexString(device.publicKey)
 
@@ -57,7 +71,7 @@ export const IIAuthAddTentativeDevice: React.FC<IIAuthAddRemoteDeviceProps> = ({
     } finally {
       setIsLoading(false)
     }
-  }, [anchor, assignDevice, createWebAuthNDevice, newDeviceName, onSuccess])
+  }, [anchor, assignDelegation, assignDevice, newDeviceName, onSuccess])
 
   return (
     <IIAuthAddRemoteDevice

@@ -223,7 +223,7 @@ const UnknownDeviceMachine =
     {
       guards: {
         isExistingAccount: (context, event) => {
-          return !!event.data.anchor
+          return !!event?.data?.anchor
         },
         bool: (context, event) => !!event.data,
       },

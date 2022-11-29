@@ -1,3 +1,4 @@
+import { WebAuthnIdentity } from "@dfinity/identity"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 
@@ -7,6 +8,7 @@ import {
   IIAuthEntry,
   Loader,
 } from "@nfid-frontend/ui"
+import { FrontendDelegation } from "@nfid/integration"
 
 import { WebAuthnDevice } from "frontend/integration/identity-manager/devices/hooks"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -73,8 +75,11 @@ export function AuthWithIICoordinator({ actor }: AuthWithIICoordinatorProps) {
           onSuccess={(data: string) =>
             send({ type: "CONNECT_RETRY", verificationCode: data })
           }
-          assignDevice={(data: WebAuthnDevice) =>
+          assignDevice={(data: WebAuthnIdentity) =>
             send({ type: "ASSIGN_USER_DEVICE", data })
+          }
+          assignDelegation={(data: FrontendDelegation) =>
+            send({ type: "ASSIGN_FRONTEND_DELEGATION", data })
           }
         />
       )

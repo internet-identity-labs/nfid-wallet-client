@@ -49,8 +49,9 @@ export interface Typegen0 {
       | "RECOVER_II_SUCCESS"
       | "done.invoke.checkTentativeDevice"
       | "done.invoke.getIIAuthSessionService"
+    assignFrontendDelegation: "ASSIGN_FRONTEND_DELEGATION"
     assignRegistrationStatus: "done.invoke.checkRegistrationStatus"
-    assignUserDevice: "ASSIGN_USER_DEVICE"
+    assignUserIdentity: "ASSIGN_USER_DEVICE"
     assignVerificationCode: "CONNECT_RETRY"
   }
   eventsCausingServices: {

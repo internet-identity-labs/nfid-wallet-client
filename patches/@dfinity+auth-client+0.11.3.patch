@@ -1,0 +1,58 @@
+diff --git a/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts b/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts
+index a4b9ca8..b7d9e2f 100644
+--- a/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts
++++ b/node_modules/@dfinity/auth-client/lib/cjs/index.d.ts
+@@ -168,6 +168,11 @@ export declare class AuthClient {
+          * @example "toolbar=0,location=0,menubar=0,width=500,height=500,left=100,top=100"
+          */
+         windowOpenerFeatures?: string;
++        /**
++         * Options to define the identity provider window name
++         * @default idpWindow
++         */
++        idpWindowName?: string;
+         /**
+          * Callback once login has completed
+          */
+diff --git a/node_modules/@dfinity/auth-client/lib/cjs/index.js b/node_modules/@dfinity/auth-client/lib/cjs/index.js
+index bc655b9..768a4bc 100644
+--- a/node_modules/@dfinity/auth-client/lib/cjs/index.js
++++ b/node_modules/@dfinity/auth-client/lib/cjs/index.js
+@@ -236,7 +236,7 @@ class AuthClient {
+         window.addEventListener('message', this._eventHandler);
+         // Open a new window with the IDP provider.
+         this._idpWindow =
+-            (_d = window.open(identityProviderUrl.toString(), 'idpWindow', options === null || options === void 0 ? void 0 : options.windowOpenerFeatures)) !== null && _d !== void 0 ? _d : undefined;
++            (_d = window.open(identityProviderUrl.toString(), options.idpWindowName || 'iiIdpWindow', options === null || options === void 0 ? void 0 : options.windowOpenerFeatures)) !== null && _d !== void 0 ? _d : undefined;
+         // Check if the _idpWindow is closed by user.
+         const checkInterruption = () => {
+             // The _idpWindow is opened and not yet closed by the client
+diff --git a/node_modules/@dfinity/auth-client/lib/esm/index.d.ts b/node_modules/@dfinity/auth-client/lib/esm/index.d.ts
+index a4b9ca8..b7d9e2f 100644
+--- a/node_modules/@dfinity/auth-client/lib/esm/index.d.ts
++++ b/node_modules/@dfinity/auth-client/lib/esm/index.d.ts
+@@ -168,6 +168,11 @@ export declare class AuthClient {
+          * @example "toolbar=0,location=0,menubar=0,width=500,height=500,left=100,top=100"
+          */
+         windowOpenerFeatures?: string;
++        /**
++         * Options to define the identity provider window name
++         * @default idpWindow
++         */
++        idpWindowName?: string;
+         /**
+          * Callback once login has completed
+          */
+diff --git a/node_modules/@dfinity/auth-client/lib/esm/index.js b/node_modules/@dfinity/auth-client/lib/esm/index.js
+index d816aff..ad08c92 100644
+--- a/node_modules/@dfinity/auth-client/lib/esm/index.js
++++ b/node_modules/@dfinity/auth-client/lib/esm/index.js
+@@ -222,7 +222,7 @@ export class AuthClient {
+         window.addEventListener('message', this._eventHandler);
+         // Open a new window with the IDP provider.
+         this._idpWindow =
+-            (_d = window.open(identityProviderUrl.toString(), 'idpWindow', options === null || options === void 0 ? void 0 : options.windowOpenerFeatures)) !== null && _d !== void 0 ? _d : undefined;
++            (_d = window.open(identityProviderUrl.toString(), options.idpWindowName || 'iiIdpWindow', options === null || options === void 0 ? void 0 : options.windowOpenerFeatures)) !== null && _d !== void 0 ? _d : undefined;
+         // Check if the _idpWindow is closed by user.
+         const checkInterruption = () => {
+             // The _idpWindow is opened and not yet closed by the client

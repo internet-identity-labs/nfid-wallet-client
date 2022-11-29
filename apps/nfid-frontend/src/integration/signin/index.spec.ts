@@ -1,6 +1,12 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { ii, im, Profile, replaceIdentity } from "@nfid/integration"
+import {
+  generateDelegationIdentity,
+  ii,
+  im,
+  Profile,
+  replaceIdentity,
+} from "@nfid/integration"
 
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
@@ -19,11 +25,7 @@ import {
   delegationIdentityFromSignedIdentity,
   fetchDelegate,
 } from "../internet-identity"
-import {
-  generateDelegationIdentity,
-  registerIIAccount,
-  registerIIAndIM,
-} from "../test-util"
+import { registerIIAccount, registerIIAndIM } from "../test-util"
 
 describe("SignIn with Internet Identity", () => {
   jest.setTimeout(150000)

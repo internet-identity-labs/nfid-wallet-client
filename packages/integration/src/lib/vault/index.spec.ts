@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 import { principalToAddress } from "ictool"
-import { generateDelegationIdentity } from "src/integration/test-util"
 import { getVaults, registerVault } from "./index"
 
 import { replaceIdentity } from "@nfid/integration"
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { generateDelegationIdentity } from "../test-util"
 describe("Vault suite", () => {
   jest.setTimeout(100000)
 

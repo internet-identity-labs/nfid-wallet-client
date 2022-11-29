@@ -1,5 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { fetchProfile } from "frontend/integration/identity-manager"
 import { signinWithII } from "frontend/integration/signin/signin-with-ii"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -12,7 +13,7 @@ export interface AuthenticationMachineContext {
 }
 
 export type Events =
-  | { type: "done.invoke.signInWithIIService"; data?: AuthSession }
+  | { type: "done.invoke.signInWithIIService"; data?: any }
   | { type: "done.invoke.checkRegistrationStatus"; data: boolean }
   | { type: "NEW_NFID" }
   | { type: "EXISTING_NFID" }
@@ -20,7 +21,7 @@ export type Events =
   | { type: "CONNECT_WITH_RECOVERY" }
   | { type: "CREATE_NEW_ANCHOR" }
   | { type: "CONNECT_RETRY" }
-  | { type: "RECOVER_II_SUCCESS" }
+  | { type: "RECOVER_II_SUCCESS"; data: AuthSession }
   | { type: "BACK" }
 
 export interface Schema {
@@ -77,13 +78,13 @@ const AuthWithIIMachine =
             },
           },
         },
-        // CheckRegistrationStatus: {
-        //   invoke: {
-        //     src: "checkRegistrationStatus",
-        //     id: "checkRegistrationStatus",
-        //     onDone: { target: "End", actions: "assignRegistrationStatus" },
-        //   },
-        // },
+        CheckRegistrationStatus: {
+          invoke: {
+            src: "checkRegistrationStatus",
+            id: "checkRegistrationStatus",
+            onDone: { target: "End", actions: "assignRegistrationStatus" },
+          },
+        },
         IIConnectAnchor: {
           on: {
             CONNECT_RETRY: {
@@ -104,43 +105,46 @@ const AuthWithIIMachine =
         IIRecoveryPhrase: {
           on: {
             RECOVER_II_SUCCESS: {
-              target: "TrustDevice",
+              target: "CheckRegistrationStatus",
+              actions: "assignAuthSession",
             },
             BACK: {
               target: "IICreateNewNFID",
             },
           },
         },
-        TrustDevice: {},
+        TrustDevice: {
+          invoke: {
+            src: "assignAuthSession",
+            id: "assignAuthSession",
+            onDone: {
+              target: "End",
+            },
+          },
+        },
         End: {
           type: "final",
           data: (context) => {
-            return context.authSession
+            return context?.authSession
           },
         },
       },
     },
     {
       actions: {
-        assignAnchor: assign((context, event) => {
-          console.log({ event })
-          return { anchor: event.anchor }
-        }),
+        assignAnchor: assign((context, event) => ({ anchor: event.anchor })),
         assignAuthSession: assign({
           authSession: (_, event) => {
-            console.debug("AuthWithII assignAuthSession", {
-              authSession: event.data,
-            })
+            console.debug("AuthWithIIMachine assignAuthSession", { event })
             return event.data
           },
         }),
-        // assignRegistrationStatus: assign({
-        //   isRegistered: (_, event) => event.data,
-        // }),
+        assignRegistrationStatus: assign({
+          isRegistered: (_, event) => event.data,
+        }),
       },
       guards: {},
       services: {
-        // @ts-ignore
         signInWithIIService: async (context, event) => {
           console.debug("AuthWithII signInWithIISerivce", {
             context,
@@ -150,19 +154,19 @@ const AuthWithIIMachine =
           console.log({ response })
           return response
         },
-        // checkRegistrationStatus: async (context) => {
-        //   console.log({ context })
-        //   try {
-        //     const profile = await fetchProfile()
-        //     console.debug("checkRegistrationStatus", { profile })
-        //     return true
-        //   } catch (error: any) {
-        //     if (error.code === 404) {
-        //       return false
-        //     }
-        //     throw error
-        //   }
-        // },
+        checkRegistrationStatus: async (context) => {
+          console.log({ context })
+          try {
+            const profile = await fetchProfile()
+            console.debug("checkRegistrationStatus", { profile })
+            return true
+          } catch (error: any) {
+            if (error.code === 404) {
+              return false
+            }
+            throw error
+          }
+        },
       },
     },
   )

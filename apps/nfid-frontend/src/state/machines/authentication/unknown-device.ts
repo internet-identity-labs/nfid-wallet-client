@@ -143,6 +143,10 @@ const UnknownDeviceMachine =
           invoke: {
             src: "AuthWithIIMachine",
             id: "authWithII",
+            data: (context, _) => ({
+              authRequest: context.authRequest,
+              appMeta: context.appMeta,
+            }),
             onDone: {
               target: "End",
             },

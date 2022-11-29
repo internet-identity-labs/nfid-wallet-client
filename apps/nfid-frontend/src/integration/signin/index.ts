@@ -7,6 +7,7 @@ import {
   FrontendDelegation,
   ii,
   replaceIdentity,
+  setProfile,
 } from "@nfid/integration"
 
 import { IIAuthSession } from "frontend/state/authentication"
@@ -21,7 +22,6 @@ import {
   fetchProfile,
   registerProfileWithAccessPoint,
 } from "../identity-manager"
-import { setProfile } from "../identity-manager/profile"
 import { fetchAllDevices } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
 

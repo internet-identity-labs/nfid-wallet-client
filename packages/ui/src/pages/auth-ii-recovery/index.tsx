@@ -1,8 +1,8 @@
 import React, { HTMLAttributes } from "react"
 
+import { Button, TextArea } from "@nfid-frontend/ui"
+
 import ArrowBackIcon from "../../assets/arrow-back.svg"
-import { Button } from "../../atoms/button"
-import { TextArea } from "../../atoms/input/text-area"
 import { BlurredLoader } from "../../molecules/blurred-loader"
 
 export interface AuthRecoveryIIProps {
@@ -45,7 +45,7 @@ export const IIAuthRecovery: React.FC<AuthRecoveryIIProps> = ({
 
       <p className="text-xs text-red-500">{responseError}</p>
 
-      <Button primary block className="mt-5 mb-1" onClick={onRecover}>
+      <Button type="primary" className="mt-5 mb-1" onClick={onRecover}>
         Connect
       </Button>
     </BlurredLoader>

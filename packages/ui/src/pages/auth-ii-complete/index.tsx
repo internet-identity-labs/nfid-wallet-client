@@ -1,10 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
-
-import { Button } from "../../atoms/button"
-import { Loader } from "../../atoms/loader"
+import { BlurredLoader, Button } from "@nfid-frontend/ui"
 
 export interface IIAuthAddRemoteDeviceProps {
   anchor: string | number
@@ -43,10 +40,10 @@ export const IIAuthAddRemoteDevice: React.FC<IIAuthAddRemoteDeviceProps> = ({
         </div>
 
         <div className={clsx("w-full grid grid-cols-2 gap-5 mt-5")}>
-          <Button stroke onClick={onCancel}>
+          <Button type="stroke" onClick={onCancel}>
             Cancel
           </Button>
-          <Button primary onClick={onRetry}>
+          <Button type="primary" onClick={onRetry}>
             Retry
           </Button>
         </div>

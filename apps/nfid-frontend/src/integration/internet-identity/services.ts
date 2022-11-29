@@ -1,8 +1,6 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 import * as Sentry from "@sentry/browser"
 
-import { authState, requestFEDelegationChain, ii, im } from "@nfid/integration"
-
 import {
   authState,
   requestFEDelegationChain,

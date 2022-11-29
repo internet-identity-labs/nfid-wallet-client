@@ -1,7 +1,8 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 
-import { Button } from "../../atoms/button"
+import { Button } from "@nfid-frontend/ui"
+
 import { RadioButton } from "../../atoms/radio"
 import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 
@@ -48,10 +49,10 @@ export const IIAuthEntry: React.FC<AuthWithIIProps> = ({
         onClick={() => setSignType("existing_nfid")}
       />
       <div className={clsx("w-full grid grid-cols-2 gap-5 mt-10")}>
-        <Button stroke onClick={onBack}>
+        <Button type="stroke" onClick={onBack}>
           Back
         </Button>
-        <Button primary onClick={() => onContinue(signType)}>
+        <Button type="primary" onClick={() => onContinue(signType)}>
           Continue
         </Button>
       </div>

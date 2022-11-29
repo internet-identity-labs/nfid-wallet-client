@@ -45,7 +45,11 @@ describe("SignIn with Internet Identity", () => {
     await ii.enter_device_registration_mode(anchor)
 
     const addedTentativelyDeviceResponse: TentativeDeviceResponse =
-      await addTentativeDevice(identity2, deviceName, anchor)
+      await addTentativeDevice(
+        identity2.getPublicKey() as any,
+        deviceName,
+        anchor,
+      )
 
     await ii.verify_tentative_device(
       anchor,

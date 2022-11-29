@@ -23,8 +23,10 @@ export const IIAuthCode = ({
       <div className="bg-gradient-to-b from-[#EFF6FF] to-white-100 h-64 my-5 rounded-md p-5">
         <div className="text-[34px] w-full">
           <div className="grid grid-cols-6">
-            {secureCode.split("").map((char) => (
-              <div className="text-center">{char}</div>
+            {secureCode.split("").map((char, index) => (
+              <div key={`code_${index}`} className="text-center">
+                {char}
+              </div>
             ))}
           </div>
 

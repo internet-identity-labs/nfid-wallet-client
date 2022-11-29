@@ -198,14 +198,25 @@ async function fetchAccountRecoveryMethods(anchor: string) {
 interface GoogleDeviceFilter {
   browser: string
 }
+interface WalletDeviceFilter {
+  label: string
+}
 
 export const byGoogleDevice = ({ browser }: GoogleDeviceFilter) => {
   const knownGoogleFields = ["cross platform", "Google account"]
   return knownGoogleFields.indexOf(browser) > -1
 }
 
+export const byWalletDevice = ({ label }: WalletDeviceFilter) => {
+  const knownWalletDevices = ["Internet Identity"]
+  return knownWalletDevices.indexOf(label) > -1
+}
+
 export const byNotGoogleDevice = ({ browser }: GoogleDeviceFilter) =>
   !byGoogleDevice({ browser })
+
+export const byNotWalletDevice = ({ label }: WalletDeviceFilter) =>
+  !byWalletDevice({ label })
 
 export const useDevices = () => {
   const { profile } = useAccount()
@@ -249,9 +260,21 @@ export const useDevices = () => {
     )
   }, [authenticatorDevices])
 
+  const walletDevices = React.useMemo(() => {
+    return (
+      authenticatorDevices?.filter(byWalletDevice).map((walletDevice) => ({
+        ...walletDevice,
+        isAccessPoint: true,
+        isWalletDevice: true,
+      })) ?? []
+    )
+  }, [authenticatorDevices])
+
   // TODO replace by having social device like separate device type (as recover)
   const devices = React.useMemo(() => {
-    return authenticatorDevices?.filter(byNotGoogleDevice)
+    return authenticatorDevices
+      ?.filter(byNotGoogleDevice)
+      ?.filter(byNotWalletDevice)
   }, [authenticatorDevices])
 
   const {
@@ -545,6 +568,7 @@ export const useDevices = () => {
     loadingDevices: !devices && !authenticatorDevicesError,
     devices: devices || [],
     socialDevices,
+    walletDevices,
     loadingRecoveryDevices: !recoveryDevices && !fetchRecoveryDevicesError,
     recoveryDevices: recoveryDevices || [],
     hasSecurityKey:

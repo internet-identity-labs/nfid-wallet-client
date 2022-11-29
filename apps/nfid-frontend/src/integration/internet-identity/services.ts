@@ -232,17 +232,24 @@ export async function registerService(
       ),
     )
     const accessPoint =
-      sessionSource !== "google"
+      sessionSource === "google"
         ? {
-            icon: getIcon(deviceInfo),
-            device: deviceInfo.newDeviceName,
-            browser: deviceInfo.browser.name ?? "Mobile",
-            pubKey,
-          }
-        : {
             icon: "google" as Icon,
             device: "Google",
             browser: "Google account",
+            pubKey,
+          }
+        : sessionSource === "ii"
+        ? {
+            icon: "ii" as Icon,
+            device: "Internet Identity",
+            browser: delegationIdentity.getPrincipal().toString(),
+            pubKey,
+          }
+        : {
+            icon: getIcon(deviceInfo),
+            device: deviceInfo.newDeviceName,
+            browser: deviceInfo.browser.name ?? "Mobile",
             pubKey,
           }
     console.debug("RouterRegisterDeviceDecider handleRegister", {

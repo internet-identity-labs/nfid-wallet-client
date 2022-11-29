@@ -127,7 +127,7 @@ const UnknownDeviceMachine =
             },
             onDone: [
               {
-                cond: "isExistingGoogleAccount",
+                cond: "isExistingAccount",
                 actions: "assignAuthSession",
                 target: "End",
               },
@@ -148,12 +148,13 @@ const UnknownDeviceMachine =
             }),
             onDone: [
               {
-                cond: "bool",
+                cond: "isExistingAccount",
                 actions: "assignAuthSession",
                 target: "End",
               },
               {
-                target: "AuthSelection",
+                actions: "assignAuthSession",
+                target: "RegistrationMachine",
               },
             ],
           },
@@ -221,7 +222,7 @@ const UnknownDeviceMachine =
     },
     {
       guards: {
-        isExistingGoogleAccount: (context, event) => {
+        isExistingAccount: (context, event) => {
           return !!event.data.anchor
         },
         bool: (context, event) => !!event.data,

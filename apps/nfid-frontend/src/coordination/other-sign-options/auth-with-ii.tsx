@@ -5,9 +5,9 @@ import {
   IIAuthComplete,
   IIAuthConnect,
   IIAuthEntry,
-  IIAuthRecovery,
 } from "@nfid-frontend/ui"
 
+import { IIAuthRecoveryPhrase } from "frontend/apps/authentication/auth-ii/recovery-phrase"
 import { AuthWithIIActor } from "frontend/state/machines/authentication/auth-with-ii"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -54,9 +54,11 @@ export function AuthWithIICoordinator({ actor }: AuthWithIICoordinatorProps) {
       )
     case state.matches("IIRecoveryPhrase"):
       return (
-        <IIAuthRecovery
+        <IIAuthRecoveryPhrase
           onBack={() => send({ type: "BACK" })}
-          onRecover={() => send({ type: "RECOVER_II_SUCCESS" })}
+          onSuccess={(authSession) =>
+            send({ type: "RECOVER_II_SUCCESS", data: authSession })
+          }
         />
       )
     case state.matches("IIConnectAnchor"):

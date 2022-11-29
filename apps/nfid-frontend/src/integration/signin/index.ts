@@ -10,7 +10,8 @@ import {
   setProfile,
 } from "@nfid/integration"
 
-import { IIAuthSession } from "frontend/state/authentication"
+import { IIAuthenticationMachineContext } from "frontend/features/sign-in-options/machine"
+import { AuthSession } from "frontend/state/authentication"
 
 import {
   AddTentativeDeviceResponse,
@@ -138,11 +139,37 @@ export async function validateTentativeDevice(
   }
 
   const session = {
-    sessionSource: "ii",
+    sessionSource: "localDevice",
     identity: userIdentity,
     delegationIdentity: userDelegation.delegationIdentity,
     anchor: anchor,
-  } as IIAuthSession
+  } as AuthSession
 
   return session
+}
+
+/**
+ * Machine service
+ * Check if tentative device added to II
+ * @returns authSession
+ */
+export async function checkTentativeDevice(
+  context: IIAuthenticationMachineContext,
+) {
+  return new Promise<AuthSession>((resolve, reject) => {
+    const intervalCheck = async () => {
+      window.setTimeout(async function () {
+        const result = await validateTentativeDevice(
+          context.anchor,
+          context.userIdentity,
+          context.frontendDelegation,
+        )
+
+        if (result) resolve(result)
+        else intervalCheck()
+      }, 3000)
+    }
+
+    intervalCheck()
+  })
 }

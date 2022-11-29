@@ -45,7 +45,7 @@ export const IIAuthRecovery: React.FC<AuthRecoveryIIProps> = ({
 
       <p className="text-xs text-red-500">{responseError}</p>
 
-      <Button type="primary" className="mt-5 mb-1" onClick={onRecover}>
+      <Button type="primary" block className="mt-5 mb-1" onClick={onRecover}>
         Connect
       </Button>
     </BlurredLoader>

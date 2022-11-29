@@ -1,7 +1,7 @@
 import { Meta, Story } from "@storybook/react"
 
 import logo from "../../assets/id.svg"
-import { SDKTemplate } from "../../templates/sdk-template"
+import { ThirdPartyTemplate } from "../../templates/sdk-template"
 import { IIAuthEntry, AuthWithIIProps } from "./index"
 
 const meta: Meta = {
@@ -16,9 +16,9 @@ const meta: Meta = {
 export default meta
 
 const InitialTemplate: Story<AuthWithIIProps> = (args) => (
-  <SDKTemplate>
+  <ThirdPartyTemplate>
     <IIAuthEntry {...args} />
-  </SDKTemplate>
+  </ThirdPartyTemplate>
 )
 
 export const StateInitial = InitialTemplate.bind({})

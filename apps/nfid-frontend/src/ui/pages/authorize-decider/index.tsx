@@ -130,7 +130,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           <div className="w-full max-w-[400px]">
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
 
-            <div className="grid grid-cols-3 gap-[15px] mt-[15px] h-12">
+            <div className="grid h-12 grid-cols-3 gap-4 mt-4">
               <IconButton
                 img={<img src={MetamaskIcon} alt="metamask" />}
                 onClick={onSelectIIAuthorization}
@@ -175,7 +175,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         )}
 
         <p
-          className="py-4 text-sm text-center cursor-pointer text-blue-base"
+          className="py-4 text-sm text-center cursor-pointer text-blue-600"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

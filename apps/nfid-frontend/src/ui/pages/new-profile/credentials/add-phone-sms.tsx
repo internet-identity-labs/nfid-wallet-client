@@ -49,7 +49,7 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
               <>
                 Didn't receive a code?{" "}
                 <span
-                  className="cursor-pointer text-blue-base"
+                  className="cursor-pointer text-blue-600"
                   onClick={handleResend}
                 >
                   Resend

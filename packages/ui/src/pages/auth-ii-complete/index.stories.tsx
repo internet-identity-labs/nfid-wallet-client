@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react"
 
-import { SDKTemplate } from "../../templates/sdk-template"
+import { ThirdPartyTemplate } from "../../templates/sdk-template"
 import { IIAuthAddRemoteDevice, IIAuthAddRemoteDeviceProps } from "./index"
 
 const meta: Meta = {
@@ -15,9 +15,9 @@ const meta: Meta = {
 export default meta
 
 const Template: Story<IIAuthAddRemoteDeviceProps> = (args) => (
-  <SDKTemplate>
+  <ThirdPartyTemplate>
     <IIAuthAddRemoteDevice {...args} />
-  </SDKTemplate>
+  </ThirdPartyTemplate>
 )
 
 export const Default = Template.bind({})

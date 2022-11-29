@@ -1001,16 +1001,13 @@ export async function registerInternetIdentity(
  * @returns registered anchor number
  */
 export async function registerInternetIdentityWithII(
-  identity: DelegationIdentity,
+  pubkey: number[],
   alias: string,
   challengeResult: ChallengeResult,
 ) {
   console.debug("Register new internet identity")
-  const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
-  authState.set(identity, identity, ii)
-
-  const anchor = await ii
+  return await ii
     .register(
       {
         alias,
@@ -1023,11 +1020,6 @@ export async function registerInternetIdentityWithII(
       challengeResult,
     )
     .then(mapRegisterResponse)
-
-  return {
-    anchor,
-    delegationIdentity: identity,
-  }
 }
 
 export function mapDeviceData(data: DeviceData): Device {

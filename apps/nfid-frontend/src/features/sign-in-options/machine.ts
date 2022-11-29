@@ -3,13 +3,13 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { FrontendDelegation } from "@nfid/integration"
 
-import { fetchProfile } from "frontend/integration/identity-manager"
-import { validateTentativeDevice } from "frontend/integration/signin"
+import { checkRegistrationStatus } from "frontend/integration/identity-manager/services"
+import { checkTentativeDevice } from "frontend/integration/signin"
 import { getIIAuthSessionService } from "frontend/integration/signin/signin-with-ii"
 import { AuthSession, IIAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-export interface AuthenticationMachineContext {
+export interface IIAuthenticationMachineContext {
   anchor: number
   appMeta?: AuthorizingAppMeta
   authSession: AuthSession
@@ -40,7 +40,7 @@ export type Events =
 
 export interface Schema {
   events: Events
-  context: AuthenticationMachineContext
+  context: IIAuthenticationMachineContext
 }
 
 const AuthWithIIMachine =
@@ -175,36 +175,8 @@ const AuthWithIIMachine =
       guards: {},
       services: {
         getIIAuthSessionService,
-        checkTentativeDevice: async (context, event) => {
-          return new Promise<IIAuthSession>((resolve, reject) => {
-            const intervalCheck = async () => {
-              window.setTimeout(async function () {
-                const result = await validateTentativeDevice(
-                  context.anchor,
-                  context.userIdentity,
-                  context.frontendDelegation,
-                )
-
-                if (result) resolve(result)
-                else intervalCheck()
-              }, 3000)
-            }
-
-            intervalCheck()
-          })
-        },
-        checkRegistrationStatus: async (context) => {
-          try {
-            const profile = await fetchProfile()
-            console.debug("checkRegistrationStatus", { profile })
-            return true
-          } catch (error: any) {
-            if (error.code === 404) {
-              return false
-            }
-            throw error
-          }
-        },
+        checkRegistrationStatus,
+        checkTentativeDevice,
       },
     },
   )

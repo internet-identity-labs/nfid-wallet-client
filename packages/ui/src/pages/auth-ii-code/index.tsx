@@ -35,13 +35,13 @@ export const IIAuthCode = ({
             <Copy
               value={secureCode}
               className="h-[18px] flex-shrink-0"
-              iconClassName="stroke-gray-400"
+              iconClassName="text-gray-400"
               copyTitle="Click to copy"
             />
           </div>
         </div>
       </div>
-      <Button type="stroke" onClick={onCancel}>
+      <Button type="stroke" block onClick={onCancel}>
         Cancel
       </Button>
     </div>

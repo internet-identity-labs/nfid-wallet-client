@@ -303,7 +303,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                       </div>
                       {/* <Link
                     to="/our-mission"
-                    className="flex text-xl font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+                    className="flex text-xl font-semibold transition-all text-blue-600 hover:opacity-50 hover:underline hover:text-blue-hover"
                   >
                     Read more <img className="ml-2" src={Arrow} alt="" />
                   </Link> */}
@@ -383,7 +383,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                     ))}
                     <Link
                       to={"/faq"}
-                      className="flex mt-5 text-xl font-semibold transition-all text-blue-base hover:opacity-50 hover:underline hover:text-blue-hover"
+                      className="flex mt-5 text-xl font-semibold transition-all text-blue-600 hover:opacity-50 hover:underline hover:text-blue-hover"
                     >
                       Read more <img className="ml-2" src={Arrow} alt="" />
                     </Link>

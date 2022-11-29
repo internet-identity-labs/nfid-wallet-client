@@ -8,7 +8,7 @@ interface ResponsiveTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   frameLabel?: string
 }
 
-export const SDKTemplate: React.FC<ResponsiveTemplateProps> = ({
+export const ThirdPartyTemplate: React.FC<ResponsiveTemplateProps> = ({
   children,
   className,
   frameLabel = "Sign in with NFID",

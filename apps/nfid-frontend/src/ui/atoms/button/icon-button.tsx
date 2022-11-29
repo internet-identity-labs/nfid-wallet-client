@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { HTMLAttributes } from "react"
 
-interface MethodRawProps extends HTMLAttributes<HTMLDivElement> {
+interface IconButtonProps extends HTMLAttributes<HTMLDivElement> {
   id?: string
   img: React.ReactElement
   title?: string
@@ -9,7 +9,7 @@ interface MethodRawProps extends HTMLAttributes<HTMLDivElement> {
   onClick: React.MouseEventHandler
 }
 
-export const IconButton: React.FC<MethodRawProps> = ({
+export const IconButton: React.FC<IconButtonProps> = ({
   id,
   img,
   title,

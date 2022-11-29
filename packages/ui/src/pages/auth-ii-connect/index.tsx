@@ -57,16 +57,21 @@ export const IIAuthConnect: React.FC<AuthConnectIIProps> = ({
       <Button
         type="primary"
         block
-        className="mb-1"
+        className="mt-3 mb-1"
         onClick={() => onConnect(getValues("anchor"))}
         disabled={!anchor?.toString().length}
       >
         Connect
       </Button>
-      <Button text block onClick={onRecovery}>
+      <Button type="ghost" block onClick={onRecovery} className="font-normal">
         Connect with recovery phrase
       </Button>
-      <Button text block onClick={onCreateAnchor}>
+      <Button
+        type="ghost"
+        block
+        onClick={onCreateAnchor}
+        className="font-normal"
+      >
         Create a new anchor
       </Button>
     </div>

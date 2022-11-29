@@ -21,6 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   id,
   isSmall,
+  block,
   ...buttonProps
 }: ButtonProps) => {
   const isPrimary = type === "primary"
@@ -75,6 +76,7 @@ export const Button: React.FC<ButtonProps> = ({
             "bg-red-600 hover:bg-red-500 focus:bg-red-600 active:bg-red-700 disabled:bg-gray-300",
             "hover:shadow-md hover:shadow-red-600/40 disabled:shadow-none",
           ),
+        block && clsx("w-full block"),
         className,
       )}
       {...buttonProps}

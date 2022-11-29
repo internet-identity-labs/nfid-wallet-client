@@ -199,17 +199,15 @@ export async function registerService(
   }
 
   // Create account with internet identity.
-  let anchor: number, delegationIdentity: DelegationIdentity
+  let anchor: number,
+    delegationIdentity = identity as DelegationIdentity
 
   if (context.authSession?.sessionSource === "ii") {
-    const result = await registerInternetIdentityWithII(
-      identity as DelegationIdentity,
+    anchor = await registerInternetIdentityWithII(
+      Array.from(new Uint8Array(identity.getPublicKey().toDer())),
       deviceInfo.newDeviceName,
       { key: context.challenge.challengeKey, chars: event.data },
     )
-
-    anchor = result.anchor
-    delegationIdentity = result.delegationIdentity
   } else {
     const result = await registerInternetIdentity(
       identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
@@ -257,7 +255,7 @@ export async function registerService(
     const profile = await registerProfileWithAccessPoint(anchor, accessPoint)
 
     // Only in case this device has registered, we set the config in localStorage
-    if (sessionSource === "localDevice" || sessionSource === "ii") {
+    if (sessionSource === "localDevice") {
       setProfile(profile)
     }
   } catch (e) {

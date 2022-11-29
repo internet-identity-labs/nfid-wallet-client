@@ -27,6 +27,19 @@ export function isDeviceRegistered() {
   return !!loadProfileFromLocalStorage()
 }
 
+export async function checkRegistrationStatus() {
+  try {
+    const profile = await fetchProfile()
+    console.debug("checkRegistrationStatus", { profile })
+    return true
+  } catch (error: any) {
+    if (error.code === 404) {
+      return false
+    }
+    throw error
+  }
+}
+
 export async function fetchAccountsService(
   context: AuthorizationMachineContext,
 ) {

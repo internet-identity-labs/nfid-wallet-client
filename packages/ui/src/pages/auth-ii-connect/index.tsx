@@ -18,9 +18,11 @@ export const IIAuthConnect: React.FC<AuthConnectIIProps> = ({
   onCreateAnchor,
   onConnect,
 }) => {
-  const { register, getValues } = useForm<{ anchor: number }>({
+  const { register, getValues, watch } = useForm<{ anchor: number }>({
     mode: "all",
   })
+
+  const anchor = watch("anchor")
 
   return (
     <div>
@@ -57,6 +59,7 @@ export const IIAuthConnect: React.FC<AuthConnectIIProps> = ({
         block
         className="mb-1"
         onClick={() => onConnect(getValues("anchor"))}
+        disabled={!anchor?.toString().length}
       >
         Connect
       </Button>

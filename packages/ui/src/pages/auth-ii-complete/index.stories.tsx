@@ -1,11 +1,11 @@
 import { Meta, Story } from "@storybook/react"
 
 import { SDKTemplate } from "../../templates/sdk-template"
-import { IIAuthComplete, IIAuthCompleteProps } from "./index"
+import { IIAuthAddRemoteDevice, IIAuthAddRemoteDeviceProps } from "./index"
 
 const meta: Meta = {
-  title: "Pages/IIAuthComplete",
-  component: IIAuthComplete,
+  title: "Pages/IIAuthAddRemoteDevice",
+  component: IIAuthAddRemoteDevice,
   argTypes: {},
   parameters: {
     controls: { expanded: true },
@@ -14,9 +14,9 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<IIAuthCompleteProps> = (args) => (
+const Template: Story<IIAuthAddRemoteDeviceProps> = (args) => (
   <SDKTemplate>
-    <IIAuthComplete {...args} />
+    <IIAuthAddRemoteDevice {...args} />
   </SDKTemplate>
 )
 

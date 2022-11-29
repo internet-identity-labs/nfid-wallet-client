@@ -1,7 +1,9 @@
+import { WebAuthnIdentity } from "@dfinity/identity"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { FrontendDelegation } from "@nfid/integration"
+
 import { fetchProfile } from "frontend/integration/identity-manager"
-import { WebAuthnDevice } from "frontend/integration/identity-manager/devices/hooks"
 import { validateTentativeDevice } from "frontend/integration/signin"
 import { getIIAuthSessionService } from "frontend/integration/signin/signin-with-ii"
 import { AuthSession, IIAuthSession } from "frontend/state/authentication"
@@ -13,7 +15,8 @@ export interface AuthenticationMachineContext {
   authSession: AuthSession
   isRegistered?: boolean
   verificationCode?: string
-  userDevice?: WebAuthnDevice
+  userIdentity?: WebAuthnIdentity
+  frontendDelegation?: FrontendDelegation
 }
 
 export type Events =
@@ -28,7 +31,8 @@ export type Events =
   | { type: "CONNECT_RETRY"; verificationCode: string }
   | { type: "RECOVER_II_SUCCESS"; data: AuthSession }
   | { type: "BACK" }
-  | { type: "ASSIGN_USER_DEVICE"; data: WebAuthnDevice }
+  | { type: "ASSIGN_USER_DEVICE"; data: WebAuthnIdentity }
+  | { type: "ASSIGN_FRONTEND_DELEGATION"; data: FrontendDelegation }
   | {
       type: "End"
       data: { authSession: IIAuthSession; isRegistered: boolean }
@@ -85,7 +89,10 @@ const AuthWithIIMachine =
               actions: "assignVerificationCode",
             },
             ASSIGN_USER_DEVICE: {
-              actions: "assignUserDevice",
+              actions: "assignUserIdentity",
+            },
+            ASSIGN_FRONTEND_DELEGATION: {
+              actions: "assignFrontendDelegation",
             },
             BACK: {
               target: "IICreateNewNFID",
@@ -146,8 +153,11 @@ const AuthWithIIMachine =
     {
       actions: {
         assignAnchor: assign((context, event) => ({ anchor: event.anchor })),
-        assignUserDevice: assign((context, event) => ({
-          userDevice: event.data,
+        assignUserIdentity: assign((context, event) => ({
+          userIdentity: event.data,
+        })),
+        assignFrontendDelegation: assign((context, event) => ({
+          frontendDelegation: event.data,
         })),
         assignAuthSession: assign({
           authSession: (_, event) => {
@@ -167,18 +177,20 @@ const AuthWithIIMachine =
         getIIAuthSessionService,
         checkTentativeDevice: async (context, event) => {
           return new Promise<IIAuthSession>((resolve, reject) => {
-            const tentativeInterval = setInterval(async () => {
-              const result = await validateTentativeDevice(
-                context.anchor,
-                context.userDevice,
-              )
+            const intervalCheck = async () => {
+              window.setTimeout(async function () {
+                const result = await validateTentativeDevice(
+                  context.anchor,
+                  context.userIdentity,
+                  context.frontendDelegation,
+                )
 
-              if (result) {
-                clearInterval(tentativeInterval)
-                console.log({ result })
-                resolve(result)
-              }
-            }, 5000)
+                if (result) resolve(result)
+                else intervalCheck()
+              }, 3000)
+            }
+
+            intervalCheck()
           })
         },
         checkRegistrationStatus: async (context) => {

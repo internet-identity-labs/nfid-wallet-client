@@ -1,6 +1,8 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
 import * as Sentry from "@sentry/browser"
 
+import { authState, requestFEDelegationChain, ii, im } from "@nfid/integration"
+
 import {
   authState,
   requestFEDelegationChain,
@@ -33,6 +35,7 @@ import {
   login,
   lookup,
   registerInternetIdentity,
+  registerInternetIdentityWithII,
 } from "."
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
@@ -198,11 +201,27 @@ export async function registerService(
   }
 
   // Create account with internet identity.
-  const { anchor, delegationIdentity } = await registerInternetIdentity(
-    identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
-    deviceInfo.newDeviceName,
-    { key: context.challenge.challengeKey, chars: event.data },
-  )
+  let anchor: number, delegationIdentity: DelegationIdentity
+
+  if (context.authSession?.sessionSource === "ii") {
+    const result = await registerInternetIdentityWithII(
+      identity as DelegationIdentity,
+      deviceInfo.newDeviceName,
+      { key: context.challenge.challengeKey, chars: event.data },
+    )
+
+    anchor = result.anchor
+    delegationIdentity = result.delegationIdentity
+  } else {
+    const result = await registerInternetIdentity(
+      identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
+      deviceInfo.newDeviceName,
+      { key: context.challenge.challengeKey, chars: event.data },
+    )
+
+    anchor = result.anchor
+    delegationIdentity = result.delegationIdentity
+  }
 
   try {
     // Register the account with identity manager.

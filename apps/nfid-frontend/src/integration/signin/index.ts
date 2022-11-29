@@ -1,21 +1,27 @@
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { WebAuthnIdentity } from "@dfinity/identity"
 
-import { authState, ii, requestFEDelegation } from "@nfid/integration"
+import {
+  authState,
+  FrontendDelegation,
+  ii,
+  replaceIdentity,
+} from "@nfid/integration"
+
+import { IIAuthSession } from "frontend/state/authentication"
 
 import {
   AddTentativeDeviceResponse,
   DeviceData,
   Timestamp,
 } from "../_ic_api/internet_identity.d"
-import { fetchProfile } from "../identity-manager"
-import { WebAuthnDevice } from "../identity-manager/devices/hooks"
+import { deviceInfo, getBrowserName } from "../device"
 import {
-  Device,
-  fetchAllDevices,
-  getMultiIdent,
-  lookup,
-} from "../internet-identity"
+  fetchProfile,
+  registerProfileWithAccessPoint,
+} from "../identity-manager"
+import { fetchAllDevices } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
 
 export type TentativeDeviceResponse = {
@@ -80,84 +86,63 @@ export async function addTentativeDevice(
 /**
  * Create an auth session from a tentative device
  * @param anchor user number
- * @param userDevice WebAuthnDevice
+ * @param userIdentity WebAuthnIdentity
  * @returns II auth session
  */
 export async function validateTentativeDevice(
   anchor: number,
-  userDevice?: WebAuthnDevice,
+  userIdentity?: WebAuthnIdentity,
+  userDelegation?: FrontendDelegation,
 ) {
+  if (!userIdentity || !userDelegation) return false
+
   const devices = await fetchAllDevices(BigInt(anchor))
   const addedDevice = devices.find((device) => {
     const devicePublicKey = toHexString(
       derFromPubkey(Array.from(new Uint8Array(device.pubkey))),
     )
-    return devicePublicKey === userDevice?.publicKey
+
+    return devicePublicKey === toHexString(userIdentity?.getPublicKey().toDer())
   })
 
   if (!addedDevice) return false
 
-  const predicate: ((x: Device) => boolean) | undefined = false
-    ? undefined
-    : (x) => x.purpose === "authentication"
+  replaceIdentity(userDelegation.delegationIdentity)
 
+  authState.set(
+    userIdentity,
+    userDelegation.delegationIdentity,
+    ii,
+    userDelegation.chain,
+    userDelegation.sessionKey,
+  )
+
+  let profile
   try {
-    let iiDevices = await lookup(Number(anchor), predicate)
+    profile = await fetchProfile()
+  } catch (fetchProfileError: any) {
+    if (fetchProfileError.code !== 404) {
+      throw fetchProfileError
+    }
 
-    const multiIdentity = getMultiIdent(iiDevices, false)
-    const FEDelegation = await requestFEDelegation(multiIdentity)
-
-    console.log({ FEDelegation })
-
-    authState.set(
-      // @ts-ignore
-      FEDelegation.delegationIdentity._inner,
-      FEDelegation.delegationIdentity,
-      ii,
-    )
-
-    const profile = await fetchProfile()
-    console.log({ profile })
-    //    im.use_access_point([getBrowserName()]).catch((error) => {
-    //      throw new Error(
-    //        `getIIAuthSession im.use_access_point: ${error.message}`,
-    //      )
-    //    })
-    //  } catch (fetchProfileError: any) {
-    //    if (fetchProfileError.code !== 404) {
-    //      throw fetchProfileError
-    //    }
-    //  }
-    // const accessPoint = {
-    //   icon: getIcon(deviceInfo),
-    //   device: deviceInfo.newDeviceName,
-    //   browser: deviceInfo.browser.name ?? "Mobile",
-    //   pub_key: Principal.selfAuthenticating(
-    //     new Uint8Array(addedDevice.pubkey),
-    //   ).toText(),
-    // }
-    // const loginResult = fromWebauthnDevices(
-    //   BigInt(anchor),
-    //   iiDevices,
-    //   false,
-    //   accessPoint,
-    // )
-
-    //   const res = await login(BigInt(anchor), false, accessPoint)
-    //   console.log({ res })
-    //   if (res.kind !== "loginSuccess") return false
-    //   const reconstructedIdentity = reconstructIdentity({
-    //     chain: res.chain,
-    //     sessionKey: res.sessionKey,
-    //   })
-    //   return {
-    //     sessionSource: "ii",
-    //     anchor: anchor,
-    //     identity: res.sessionKey,
-    //     delegationIdentity: reconstructedIdentity,
-    //   } as IIAuthSession
-  } catch (e) {
-    console.log({ e })
-    return false
+    await registerProfileWithAccessPoint(anchor, {
+      browser: getBrowserName(),
+      device: deviceInfo.newDeviceName,
+      icon: "desktop",
+      pubKey: Array.from(
+        new Uint8Array(userIdentity.getPublicKey().toDer() ?? []),
+      ),
+    })
   }
+
+  console.log({ profile })
+
+  const session = {
+    sessionSource: "ii",
+    identity: userIdentity,
+    delegationIdentity: userDelegation.delegationIdentity,
+    anchor: anchor,
+  } as IIAuthSession
+
+  return session
 }

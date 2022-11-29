@@ -8,6 +8,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.authWithII": {
+      type: "done.invoke.authWithII"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.isMobileWithWebAuthn": {
       type: "done.invoke.isMobileWithWebAuthn"
       data: unknown
@@ -32,6 +37,10 @@ export interface Typegen0 {
       type: "error.platform.AuthWithGoogleMachine"
       data: unknown
     }
+    "error.platform.authWithII": {
+      type: "error.platform.authWithII"
+      data: unknown
+    }
     "error.platform.isMobileWithWebAuthn": {
       type: "error.platform.isMobileWithWebAuthn"
       data: unknown
@@ -49,6 +58,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
+    AuthWithIIMachine: "done.invoke.authWithII"
     RegistrationMachine: "done.invoke.registration"
     RemoteReceiverMachine: "done.invoke.remote"
     isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
@@ -69,6 +79,7 @@ export interface Typegen0 {
   }
   eventsCausingServices: {
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
+    AuthWithIIMachine: "AUTH_WITH_II"
     RegistrationMachine:
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.isMobileWithWebAuthn"
@@ -87,6 +98,7 @@ export interface Typegen0 {
     | "AuthenticateSameDevice"
     | "End"
     | "ExistingAnchor"
+    | "IIAuthentication"
     | "RegistrationMachine"
     | "RemoteAuthentication"
     | "Start"

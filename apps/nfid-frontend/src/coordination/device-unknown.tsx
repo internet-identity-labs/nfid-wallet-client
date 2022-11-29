@@ -1,12 +1,14 @@
 import { useActor } from "@xstate/react"
 import React from "react"
 
+import { AuthWithIIActor } from "frontend/state/machines/authentication/auth-with-ii"
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 
+import { AuthWithIICoordinator } from "./other-sign-options/auth-with-ii"
 import { RegistrationCoordinator } from "./registration"
 import { RemoteReceiverCoordinator } from "./remote-receiver"
 
@@ -60,6 +62,9 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
               data: { jwt: credential },
             })
           }}
+          onSelectIIAuthorization={() => {
+            send({ type: "AUTH_WITH_II" })
+          }}
           onToggleAdvancedOptions={() => send("AUTH_WITH_OTHER")}
           showAdvancedOptions={state.matches("ExistingAnchor")}
           isLoading={
@@ -91,6 +96,14 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
         <RemoteReceiverCoordinator
           actor={state.children.remote as RemoteReceiverActor}
         />
+      )
+    case state.matches("IIAuthentication"):
+      return (
+        <BlurredLoader>
+          <AuthWithIICoordinator
+            actor={state.children.authWithII as AuthWithIIActor}
+          />
+        </BlurredLoader>
       )
     case state.matches("End"):
     case state.matches("Start"):

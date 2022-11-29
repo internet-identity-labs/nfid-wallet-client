@@ -5,6 +5,7 @@ import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
 import {
   AuthSession,
+  IIAuthSession,
   LocalDeviceAuthSession,
   RemoteDeviceAuthSession,
 } from "frontend/state/authentication"
@@ -14,6 +15,7 @@ import {
 } from "frontend/state/authorization"
 
 import AuthWithGoogleMachine from "./auth-with-google"
+import AuthWithIIMachine from "./auth-with-ii"
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
@@ -34,12 +36,17 @@ export type Events =
       data: AuthSession
     }
   | {
+      type: "done.invoke.AuthWithIIMachine"
+      data: IIAuthSession
+    }
+  | {
       type: "done.invoke.loginWithAnchor"
       data: AuthSession
     }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
+  | { type: "AUTH_WITH_II" }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
       data: { anchor: number; withSecurityDevices?: boolean }
@@ -107,6 +114,9 @@ const UnknownDeviceMachine =
             AUTH_WITH_OTHER: {
               target: "ExistingAnchor",
             },
+            AUTH_WITH_II: {
+              target: "IIAuthentication",
+            },
           },
         },
         AuthWithGoogle: {
@@ -127,6 +137,15 @@ const UnknownDeviceMachine =
                 target: "RegistrationMachine",
               },
             ],
+          },
+        },
+        IIAuthentication: {
+          invoke: {
+            src: "AuthWithIIMachine",
+            id: "authWithII",
+            onDone: {
+              target: "End",
+            },
           },
         },
         RemoteAuthentication: {
@@ -211,6 +230,7 @@ const UnknownDeviceMachine =
         RemoteReceiverMachine,
         loginWithAnchor,
         AuthWithGoogleMachine,
+        AuthWithIIMachine,
       },
     },
   )

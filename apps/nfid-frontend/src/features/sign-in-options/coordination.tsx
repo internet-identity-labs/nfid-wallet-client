@@ -10,7 +10,6 @@ import {
 } from "@nfid-frontend/ui"
 import { FrontendDelegation } from "@nfid/integration"
 
-import { WebAuthnDevice } from "frontend/integration/identity-manager/devices/hooks"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { AuthWithIIActor } from "./machine"

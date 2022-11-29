@@ -259,7 +259,7 @@ export async function registerService(
     const profile = await registerProfileWithAccessPoint(anchor, accessPoint)
 
     // Only in case this device has registered, we set the config in localStorage
-    if (sessionSource === "localDevice") {
+    if (sessionSource === "localDevice" || sessionSource === "ii") {
       setProfile(profile)
     }
   } catch (e) {

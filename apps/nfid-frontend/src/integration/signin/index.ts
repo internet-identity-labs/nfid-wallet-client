@@ -21,6 +21,7 @@ import {
   fetchProfile,
   registerProfileWithAccessPoint,
 } from "../identity-manager"
+import { setProfile } from "../identity-manager/profile"
 import { fetchAllDevices } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
 
@@ -120,6 +121,7 @@ export async function validateTentativeDevice(
   let profile
   try {
     profile = await fetchProfile()
+    setProfile(profile)
   } catch (fetchProfileError: any) {
     if (fetchProfileError.code !== 404) {
       throw fetchProfileError
@@ -134,8 +136,6 @@ export async function validateTentativeDevice(
       ),
     })
   }
-
-  console.log({ profile })
 
   const session = {
     sessionSource: "ii",

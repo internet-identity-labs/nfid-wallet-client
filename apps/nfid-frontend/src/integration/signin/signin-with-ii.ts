@@ -5,7 +5,6 @@ import { authState, ii, im } from "@nfid/integration"
 
 import { IIAuthSession } from "frontend/state/authentication"
 
-import { getBrowserName } from "../device"
 import { fetchProfile } from "../identity-manager"
 
 declare const II_PROVIDER: string
@@ -42,7 +41,7 @@ export const getIIAuthSessionService = async () => {
   let profile
   try {
     profile = await fetchProfile()
-    im.use_access_point([getBrowserName()]).catch((error) => {
+    im.use_access_point([identity.getPrincipal().toString()]).catch((error) => {
       throw new Error(`getIIAuthSession im.use_access_point: ${error.message}`)
     })
   } catch (fetchProfileError: any) {

@@ -46,7 +46,7 @@ describe("SignIn with Internet Identity", () => {
 
     const addedTentativelyDeviceResponse: TentativeDeviceResponse =
       await addTentativeDevice(
-        identity2.getPublicKey() as any,
+        identity2.getPublicKey().toDer(),
         deviceName,
         anchor,
       )

@@ -50,7 +50,7 @@ export function AuthWithIICoordinator({ actor }: AuthWithIICoordinatorProps) {
               type: "CONNECT_WITH_RECOVERY",
             })
           }
-          onCreateAnchor={() => send({ type: "EXISTING_NFID" })}
+          onCreateAnchor={() => send({ type: "CREATE_NEW_ANCHOR" })}
           onConnect={(anchor: number) =>
             send({ type: "CONNECT_WITH_ANCHOR", anchor: anchor })
           }

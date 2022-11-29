@@ -1,5 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { fetchProfile } from "frontend/integration/identity-manager"
 import { WebAuthnDevice } from "frontend/integration/identity-manager/devices/hooks"
 import { validateTentativeDevice } from "frontend/integration/signin"
 import { getIIAuthSessionService } from "frontend/integration/signin/signin-with-ii"
@@ -18,6 +19,7 @@ export interface AuthenticationMachineContext {
 export type Events =
   | { type: "done.invoke.getIIAuthSessionService"; data: IIAuthSession }
   | { type: "done.invoke.checkTentativeDevice"; data: AuthSession }
+  | { type: "done.invoke.checkRegistrationStatus"; data: boolean }
   | { type: "NEW_NFID" }
   | { type: "EXISTING_NFID" }
   | { type: "CONNECT_WITH_ANCHOR"; anchor: number }
@@ -29,7 +31,7 @@ export type Events =
   | { type: "ASSIGN_USER_DEVICE"; data: WebAuthnDevice }
   | {
       type: "End"
-      data: { authSession: IIAuthSession }
+      data: { authSession: IIAuthSession; isRegistered: boolean }
     }
 
 export interface Schema {
@@ -76,16 +78,6 @@ const AuthWithIIMachine =
             },
           },
         },
-        IIThirdParty: {
-          invoke: {
-            src: "getIIAuthSessionService",
-            id: "getIIAuthSessionService",
-            onDone: {
-              target: "End",
-              actions: "assignAuthSession",
-            },
-          },
-        },
         IIConnectAnchor: {
           on: {
             CONNECT_RETRY: {
@@ -126,6 +118,23 @@ const AuthWithIIMachine =
             },
           },
         },
+        IIThirdParty: {
+          invoke: {
+            src: "getIIAuthSessionService",
+            id: "getIIAuthSessionService",
+            onDone: {
+              target: "CheckRegistrationStatus",
+              actions: "assignAuthSession",
+            },
+          },
+        },
+        CheckRegistrationStatus: {
+          invoke: {
+            src: "checkRegistrationStatus",
+            id: "checkRegistrationStatus",
+            onDone: { target: "End", actions: "assignRegistrationStatus" },
+          },
+        },
         End: {
           type: "final",
           data: (context) => {
@@ -149,6 +158,9 @@ const AuthWithIIMachine =
         assignVerificationCode: assign((context, event) => ({
           verificationCode: event.verificationCode,
         })),
+        assignRegistrationStatus: assign({
+          isRegistered: (_, event) => event.data,
+        }),
       },
       guards: {},
       services: {
@@ -168,6 +180,18 @@ const AuthWithIIMachine =
               }
             }, 5000)
           })
+        },
+        checkRegistrationStatus: async (context) => {
+          try {
+            const profile = await fetchProfile()
+            console.debug("checkRegistrationStatus", { profile })
+            return true
+          } catch (error: any) {
+            if (error.code === 404) {
+              return false
+            }
+            throw error
+          }
         },
       },
     },

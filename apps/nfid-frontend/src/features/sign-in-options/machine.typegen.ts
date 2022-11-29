@@ -3,6 +3,11 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "done.invoke.checkRegistrationStatus": {
+      type: "done.invoke.checkRegistrationStatus"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.checkTentativeDevice": {
       type: "done.invoke.checkTentativeDevice"
       data: unknown
@@ -12,6 +17,10 @@ export interface Typegen0 {
       type: "done.invoke.getIIAuthSessionService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.checkRegistrationStatus": {
+      type: "error.platform.checkRegistrationStatus"
+      data: unknown
     }
     "error.platform.checkTentativeDevice": {
       type: "error.platform.checkTentativeDevice"
@@ -24,6 +33,7 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
+    checkRegistrationStatus: "done.invoke.checkRegistrationStatus"
     checkTentativeDevice: "done.invoke.checkTentativeDevice"
     getIIAuthSessionService: "done.invoke.getIIAuthSessionService"
   }
@@ -39,16 +49,19 @@ export interface Typegen0 {
       | "RECOVER_II_SUCCESS"
       | "done.invoke.checkTentativeDevice"
       | "done.invoke.getIIAuthSessionService"
+    assignRegistrationStatus: "done.invoke.checkRegistrationStatus"
     assignUserDevice: "ASSIGN_USER_DEVICE"
     assignVerificationCode: "CONNECT_RETRY"
   }
   eventsCausingServices: {
+    checkRegistrationStatus: "done.invoke.getIIAuthSessionService"
     checkTentativeDevice: "CONNECT_RETRY"
     getIIAuthSessionService: "CREATE_NEW_ANCHOR" | "EXISTING_NFID"
   }
   eventsCausingGuards: {}
   eventsCausingDelays: {}
   matchesStates:
+    | "CheckRegistrationStatus"
     | "End"
     | "IIConnectAnchor"
     | "IIConnectAnchorCode"

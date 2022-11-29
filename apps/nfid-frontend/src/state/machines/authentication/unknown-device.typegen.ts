@@ -83,17 +83,17 @@ export interface Typegen0 {
     AuthWithIIMachine: "AUTH_WITH_II"
     RegistrationMachine:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithII"
       | "done.invoke.isMobileWithWebAuthn"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     isMobileWithWebAuthn: "xstate.init"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
   eventsCausingGuards: {
-    bool:
+    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
+    isExistingAccount:
+      | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
-      | "done.invoke.isMobileWithWebAuthn"
-      | "done.invoke.remote"
-    isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
   }
   eventsCausingDelays: {}
   matchesStates:

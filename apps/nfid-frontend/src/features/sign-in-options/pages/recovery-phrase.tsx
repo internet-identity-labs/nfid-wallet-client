@@ -4,12 +4,11 @@ import { useForm } from "react-hook-form"
 
 import { IIAuthRecovery } from "@nfid-frontend/ui"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { createProfile } from "frontend/integration/identity-manager"
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { AuthSession } from "frontend/state/authentication"
-
-import { useAuthentication } from "../use-authentication"
 
 interface IIAuthRecoveryPhraseProps {
   onBack: () => void

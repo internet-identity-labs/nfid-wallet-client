@@ -1,11 +1,11 @@
 import { v4 as uuid } from "uuid"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
 import {
   AuthSession,
-  IIAuthSession,
   LocalDeviceAuthSession,
   RemoteDeviceAuthSession,
 } from "frontend/state/authentication"
@@ -15,7 +15,6 @@ import {
 } from "frontend/state/authorization"
 
 import AuthWithGoogleMachine from "./auth-with-google"
-import AuthWithIIMachine from "./auth-with-ii"
 import RegistrationMachine from "./registration"
 import RemoteReceiverMachine from "./remote-receiver"
 
@@ -36,8 +35,8 @@ export type Events =
       data: AuthSession
     }
   | {
-      type: "done.invoke.AuthWithIIMachine"
-      data: IIAuthSession
+      type: "done.invoke.authWithII"
+      data: AuthSession
     }
   | {
       type: "done.invoke.loginWithAnchor"
@@ -147,9 +146,16 @@ const UnknownDeviceMachine =
               authRequest: context.authRequest,
               appMeta: context.appMeta,
             }),
-            onDone: {
-              target: "End",
-            },
+            onDone: [
+              {
+                cond: "bool",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                target: "AuthSelection",
+              },
+            ],
           },
         },
         RemoteAuthentication: {

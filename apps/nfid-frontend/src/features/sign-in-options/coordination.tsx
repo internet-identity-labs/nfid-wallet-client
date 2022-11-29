@@ -1,15 +1,19 @@
 import { useActor } from "@xstate/react"
+import clsx from "clsx"
 
 import {
   IIAuthCode,
-  IIAuthComplete,
   IIAuthConnect,
   IIAuthEntry,
+  Loader,
 } from "@nfid-frontend/ui"
 
-import { IIAuthRecoveryPhrase } from "frontend/apps/authentication/auth-ii/recovery-phrase"
-import { AuthWithIIActor } from "frontend/state/machines/authentication/auth-with-ii"
+import { WebAuthnDevice } from "frontend/integration/identity-manager/devices/hooks"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+
+import { AuthWithIIActor } from "./machine"
+import { IIAuthAddTentativeDevice } from "./pages/add-remote-device"
+import { IIAuthRecoveryPhrase } from "./pages/recovery-phrase"
 
 interface AuthWithIICoordinatorProps {
   actor: AuthWithIIActor
@@ -63,19 +67,30 @@ export function AuthWithIICoordinator({ actor }: AuthWithIICoordinatorProps) {
       )
     case state.matches("IIConnectAnchor"):
       return (
-        <IIAuthComplete
+        <IIAuthAddTentativeDevice
           anchor={state.context?.anchor}
           onCancel={() => send({ type: "BACK" })}
-          onRetry={() => send({ type: "CONNECT_RETRY" })}
+          onSuccess={(data: string) =>
+            send({ type: "CONNECT_RETRY", verificationCode: data })
+          }
+          assignDevice={(data: WebAuthnDevice) =>
+            send({ type: "ASSIGN_USER_DEVICE", data })
+          }
         />
       )
     case state.matches("IIConnectAnchorCode"):
       return (
         <IIAuthCode
-          secureCode={"123456"}
+          secureCode={state.context?.verificationCode ?? ""}
           anchor={state?.context?.anchor}
           onCancel={() => send({ type: "BACK" })}
         />
+      )
+    case state.matches("IIThirdParty"):
+      return (
+        <div className={clsx("relative h-[300px] px-24", "flex items-center")}>
+          <Loader isLoading fullscreen={false} />
+        </div>
       )
     case state.matches("End"):
     default:

@@ -1,14 +1,14 @@
 import { useActor } from "@xstate/react"
 import React from "react"
 
-import { AuthWithIIActor } from "frontend/state/machines/authentication/auth-with-ii"
+import { AuthWithIIActor } from "frontend/features/sign-in-options/machine"
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
 import { UnknownDeviceActor } from "frontend/state/machines/authentication/unknown-device"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { AuthorizeDecider } from "frontend/ui/pages/authorize-decider"
 
-import { AuthWithIICoordinator } from "./other-sign-options/auth-with-ii"
+import { AuthWithIICoordinator } from "../features/sign-in-options/coordination"
 import { RegistrationCoordinator } from "./registration"
 import { RemoteReceiverCoordinator } from "./remote-receiver"
 
@@ -18,7 +18,7 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
   React.useEffect(
     () =>
       console.debug("UnknownDeviceCoordinator", {
-        context: state.context,
+        context: state?.context,
         state: state.value,
       }),
     [state.value, state.context],

@@ -73,6 +73,7 @@ export interface Typegen0 {
   eventsCausingActions: {
     assignAuthSession:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithII"
       | "done.invoke.loginWithAnchor"
       | "done.invoke.registration"
       | "done.invoke.remote"
@@ -88,7 +89,10 @@ export interface Typegen0 {
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
   eventsCausingGuards: {
-    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
+    bool:
+      | "done.invoke.authWithII"
+      | "done.invoke.isMobileWithWebAuthn"
+      | "done.invoke.remote"
     isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
   }
   eventsCausingDelays: {}

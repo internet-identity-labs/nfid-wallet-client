@@ -3,17 +3,15 @@
  */
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { expect } from "@jest/globals"
-import { replaceIdentity } from "@nfid/integration"
 import { createCipheriv } from "crypto"
+
+import { generateDelegationIdentity, replaceIdentity } from "@nfid/integration"
 
 import {
   decryptStringForIdentity,
   symmetric,
 } from "frontend/integration/lambda/symmetric"
-import {
-  generateDelegationIdentity,
-  registerIIAndIM,
-} from "frontend/integration/test-util"
+import { registerIIAndIM } from "frontend/integration/test-util"
 
 describe("symmetric suite", () => {
   jest.setTimeout(50000)

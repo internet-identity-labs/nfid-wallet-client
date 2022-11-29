@@ -8,7 +8,11 @@ import {
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
-import { Account, authState as authStateMock } from "@nfid/integration"
+import {
+  Account,
+  authState as authStateMock,
+  generateDelegationIdentity,
+} from "@nfid/integration"
 import { ii, im, replaceIdentity } from "@nfid/integration"
 import { FrontendDelegation } from "@nfid/integration"
 
@@ -29,7 +33,7 @@ import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
 import { getWalletPrincipal } from "../rosetta/get-wallet-principal"
-import { generateDelegationIdentity, registerIIAccount } from "../test-util"
+import { registerIIAccount } from "../test-util"
 
 describe("Facade suite", () => {
   jest.setTimeout(100000)

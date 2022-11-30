@@ -1,5 +1,7 @@
 // Code allowing third parties to configure their apps will go here
-import { Application, fetchApplications } from "../identity-manager"
+import { Application } from "@nfid/integration"
+
+import { fetchApplications } from "../identity-manager"
 import { rmTrailingSlash } from "../identity-manager/persona/utils"
 
 // NOTE: make sure to sanitize application meta

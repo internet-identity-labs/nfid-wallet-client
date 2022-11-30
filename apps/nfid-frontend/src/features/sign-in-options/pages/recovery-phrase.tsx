@@ -87,6 +87,7 @@ export const IIAuthRecoveryPhrase: React.FC<IIAuthRecoveryPhraseProps> = ({
       fieldProps={{ ...register("recoveryPhrase") }}
       responseError={responseError}
       isLoading={isLoading}
+      isDisabled={!recoveryPhrase?.length}
     />
   )
 }

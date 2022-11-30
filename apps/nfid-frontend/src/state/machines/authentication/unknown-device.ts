@@ -147,6 +147,7 @@ const UnknownDeviceMachine =
               appMeta: context.appMeta,
             }),
             onDone: [
+              { cond: "isReturn", target: "AuthSelection" },
               {
                 cond: "isExistingAccount",
                 actions: "assignAuthSession",
@@ -226,6 +227,7 @@ const UnknownDeviceMachine =
           return !!event?.data?.anchor
         },
         bool: (context, event) => !!event.data,
+        isReturn: (context, event) => !event.data,
       },
       actions: {
         assignAuthSession: assign({

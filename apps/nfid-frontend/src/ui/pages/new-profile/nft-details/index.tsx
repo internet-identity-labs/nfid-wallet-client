@@ -2,11 +2,12 @@ import clsx from "clsx"
 import { useAtom } from "jotai"
 import { useCallback } from "react"
 
+import { Application } from "@nfid/integration"
+
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { NFTDetails, UserNFTDetails } from "frontend/integration/entrepot/types"
-import { Application } from "frontend/integration/identity-manager"
 import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"

@@ -62,7 +62,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
       {/* TODO: create Chiplist component */}
       <div className="mt-6 flex w-full flex-wrap gap-2.5">
         {chips.map((chip) => (
-          <Chip title={chip} onRemove={onChipRemove} />
+          <Chip key={chip} title={chip} onRemove={onChipRemove} />
         ))}
       </div>
       <TabsSwitcher

@@ -6,11 +6,7 @@ import {
   DeviceKey,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
-import {
-  Application,
-  applicationToAccount,
-  removeAccessPoint,
-} from "frontend/integration/identity-manager"
+import { removeAccessPoint } from "frontend/integration/identity-manager"
 import { getScope } from "frontend/integration/identity-manager/persona/utils"
 import {
   removeDevice,
@@ -38,23 +34,12 @@ export interface PrincipalAccount {
   account: Account
 }
 
-// TOOD: write tests
 export async function fetchPrincipals(
   userNumber: UserNumber,
   accounts: Account[],
-  applications: Application[],
 ): Promise<PrincipalAccount[]> {
-  // Accounts which have been created with external IDPs
-  // e.g.: nns.ic0.app, www.stoicwallet.com
-  // FIXME: determining additional accounts seems to be a different concern
-  const fixedAccounts = applications
-    .filter((app) => app.isNftStorage)
-    .map(applicationToAccount)
-
-  const allAccounts = [...accounts, ...fixedAccounts]
-
   return await Promise.all(
-    allAccounts.map(async (account) => {
+    accounts.map(async (account) => {
       return {
         principal: await ii.get_principal(
           userNumber,

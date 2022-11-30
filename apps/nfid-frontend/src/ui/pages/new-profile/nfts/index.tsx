@@ -9,12 +9,12 @@ import { Link } from "react-router-dom"
 
 import { Tooltip } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
+import { Application } from "@nfid/integration"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { Application } from "frontend/integration/identity-manager"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
 import { Chip } from "frontend/ui/atoms/chip"

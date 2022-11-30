@@ -133,6 +133,9 @@ const AuthWithIIMachine =
               target: "CheckRegistrationStatus",
               actions: "assignAuthSession",
             },
+            onError: {
+              target: "IICreateNewNFID",
+            },
           },
         },
         CheckRegistrationStatus: {

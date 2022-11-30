@@ -17,6 +17,8 @@ import { idlFactory as vaultIDL } from "./_ic_api/vault"
 import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
+import { idlFactory as signerIDL } from "./_ic_api/signer"
+import { _SERVICE as Signer } from "./_ic_api/signer.d"
 import { agent } from "./agent"
 
 /////////////
@@ -31,6 +33,7 @@ declare const VERIFIER_CANISTER_ID: string
 declare const LEDGER_CANISTER_ID: string
 declare const CYCLES_MINTER_CANISTER_ID: string
 declare const VAULT_CANISTER_ID: string
+declare const SIGNER_CANISTER_ID: string
 
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
@@ -40,6 +43,7 @@ const canisterConfig = [
   ["Ledger", LEDGER_CANISTER_ID],
   ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
   ["Vault", VAULT_CANISTER_ID],
+  ["Signer", SIGNER_CANISTER_ID],
 ]
 
 export const accessList = canisterConfig.map((x) => x[1])
@@ -85,6 +89,7 @@ export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
 export const vault = actor<Vault>(VAULT_CANISTER_ID, vaultIDL)
+export const signer = actor<Signer>(SIGNER_CANISTER_ID, signerIDL)
 export const cyclesMinter = actor<CyclesMinter>(
   CYCLES_MINTER_CANISTER_ID,
   cyclesMinterIDL,

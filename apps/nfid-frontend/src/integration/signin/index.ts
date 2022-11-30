@@ -1,11 +1,14 @@
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity, WebAuthnIdentity } from "@dfinity/identity"
+import { Wallet } from "ethers"
+import sha256 from "sha256"
 
 import {
   authState,
   FrontendDelegation,
   ii,
+  signer,
   replaceIdentity,
   setProfile,
 } from "@nfid/integration"
@@ -36,6 +39,19 @@ type AddedTentatively = {
     verification_code: string
     device_registration_timeout: Timestamp
   }
+}
+
+export async function getIdentityByMessageAndWallet(
+  message: string,
+  wallet: Wallet,
+): Promise<Ed25519KeyIdentity> {
+  const signature: string = await wallet.signMessage(message)
+  const secret: string = await signer.secret_by_signature(signature)
+  const seed: Uint8Array = new Uint8Array(
+    sha256(signature + secret, { asBytes: true }),
+  )
+  const identity = Ed25519KeyIdentity.generate(seed)
+  return identity
 }
 
 export async function addTentativeDevice(

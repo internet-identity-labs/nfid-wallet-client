@@ -4,12 +4,11 @@
 import { Principal } from "@dfinity/principal"
 import { act, renderHook, waitFor } from "@testing-library/react"
 
-import { Account, getBalance } from "@nfid/integration"
+import { Account, Application, getBalance } from "@nfid/integration"
 
 import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
 
-import { Application } from "../../identity-manager"
 import * as getExchangeRateMocks from "../get-exchange-rate"
 import { useBalanceICPAll } from "./use-balance-icp-all"
 import { APP_ACC_BALANCE_SHEET } from "./use-balance-icp-all.mocks"

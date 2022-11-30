@@ -94,6 +94,7 @@ export interface Typegen0 {
     isExistingAccount:
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
+    isReturn: "done.invoke.authWithII"
   }
   eventsCausingDelays: {}
   matchesStates:

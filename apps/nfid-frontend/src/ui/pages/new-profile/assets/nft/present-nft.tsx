@@ -44,7 +44,7 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
         <div className="flex justify-center items-center mt-[30px] h-12">
           <Link
             className={clsx(
-              "text-blue-600 text-sm font-bold tracking-[0.01em]",
+              "text-blue text-sm font-bold tracking-[0.01em]",
               "hover:opacity-50 transition-opacity cursor-pointer",
             )}
             to={`${ProfileConstants.base}/${ProfileConstants.nfts}`}

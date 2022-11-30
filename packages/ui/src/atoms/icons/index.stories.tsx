@@ -209,5 +209,5 @@ const Icons: Story = (args) => {
 export const Overview = Icons.bind({})
 
 Overview.args = {
-  className: "text-blue-600",
+  className: "text-blue",
 }

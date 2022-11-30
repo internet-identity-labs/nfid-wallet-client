@@ -43,7 +43,6 @@
       { "env": "CURRCONV_TOKEN" },
       { "env": "REACT_APP_SENTRY_CONNECTION" },
       { "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION" },
-      { "env": "II_PROVIDER" },
       { "env": "PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION" },
       { "env": "VERIFIER_CANISTER_ID_PRODUCTION" },
       { "env": "INTERNET_IDENTITY_CANISTER_ID_PRODUCTION" },

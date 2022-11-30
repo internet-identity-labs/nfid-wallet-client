@@ -54,7 +54,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
             register it with your existing Internet Identity anchor please see
             these{" "}
             <a
-              className="text-blue-600 transition-opacity cursor-pointer hover:opacity-75"
+              className="text-blue transition-opacity cursor-pointer hover:opacity-75"
               href="https://docs.nfid.one/sign-in-with-ii-and-nfid"
               target="_blank"
               rel="noreferrer"

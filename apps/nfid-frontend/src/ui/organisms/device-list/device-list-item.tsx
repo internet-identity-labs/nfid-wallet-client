@@ -141,7 +141,12 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
             </div>
           </div>
 
-          <div className="relative flex items-center flex-1 py-2 border-b border-gray-200 ">
+          <div
+            className={clsx(
+              "relative flex items-center flex-1 py-2 border-b border-gray-200",
+              device.isWalletDevice && "!items-start",
+            )}
+          >
             {isEditingLabel ? (
               <input
                 className="flex-1 flex-shrink px-2 py-1 rounded"
@@ -153,21 +158,29 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 <div className="text-gray-700">
                   {device.isAccessPoint ? device.label : device.browser}
                 </div>
+                <div
+                  className={clsx(
+                    "my-1 text-sm text-gray-400",
+                    !device.isWalletDevice && "hidden",
+                  )}
+                >
+                  Address: {device.browser}
+                </div>
                 <div className="my-1 text-sm text-gray-400">
-                  {device.isSocialDevice
+                  {device.isSocialDevice || device.isWalletDevice
                     ? `Last activity: ${format(device.lastUsed, "MMM d, yyyy")}`
                     : null}
 
-                  {device.isAccessPoint && !device.isSocialDevice
+                  {device.isAccessPoint &&
+                  !device.isSocialDevice &&
+                  !device.isWalletDevice
                     ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +
                           device.browser ?? null
                       }`
                     : null}
 
-                  {!device.isAccessPoint && !device.isAccessPoint
-                    ? "This is not an NFID device"
-                    : null}
+                  {!device.isAccessPoint ? "This is not an NFID device" : null}
                 </div>
               </div>
             )}
@@ -182,7 +195,10 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div
-                  className="hover:bg-gray-50 text-red-base"
+                  className={clsx(
+                    "hover:bg-gray-50 text-red-base",
+                    device.isWalletDevice && "hidden",
+                  )}
                   onClick={
                     isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }

@@ -14,7 +14,7 @@ export const ApplicationIcon: React.FC<ApplicationIconProps> = ({
   return (
     <div
       className={clsx(
-        "bg-white rounded-full w-[40px] h-[40px] text-blue-base",
+        "bg-white rounded-full w-[40px] h-[40px] text-blue",
         "flex items-center justify-center",
         "text-xl font-medium",
         className,

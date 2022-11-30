@@ -1,6 +1,7 @@
 {
   "name": "@internet-identity-labs/nfid-frontend",
   "scripts": {
+    "postinstall": "patch-package",
     "build": "echo '💀 DONT REMOVE THIS 💀'",
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format:check": "yarn prettier --check ./apps --check ./packages",
@@ -150,6 +151,7 @@
     "node-fetch": "2.6.1",
     "npm-run-all": "4.1.5",
     "nx": "15.2.0",
+    "patch-package": "6.5.0",
     "postcss": "8.4.19",
     "postcss-preset-env": "7.8.2",
     "prettier": "2.6.2",

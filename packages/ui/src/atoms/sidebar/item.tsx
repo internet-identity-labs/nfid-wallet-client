@@ -29,7 +29,7 @@ export const SidebarItem: React.FC<IProfileSidebarItem> = ({
       <div>
         {icon
           ? React.cloneElement(icon, {
-              className: isActive ? "text-blue-600" : "text-gray-700",
+              className: isActive ? "text-blue" : "text-gray-700",
             })
           : null}
       </div>

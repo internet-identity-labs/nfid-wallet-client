@@ -1,6 +1,7 @@
 import { v4 as uuid } from "uuid"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
 import {
@@ -34,12 +35,17 @@ export type Events =
       data: AuthSession
     }
   | {
+      type: "done.invoke.authWithII"
+      data: AuthSession
+    }
+  | {
       type: "done.invoke.loginWithAnchor"
       data: AuthSession
     }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
+  | { type: "AUTH_WITH_II" }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
       data: { anchor: number; withSecurityDevices?: boolean }
@@ -107,6 +113,9 @@ const UnknownDeviceMachine =
             AUTH_WITH_OTHER: {
               target: "ExistingAnchor",
             },
+            AUTH_WITH_II: {
+              target: "IIAuthentication",
+            },
           },
         },
         AuthWithGoogle: {
@@ -118,7 +127,28 @@ const UnknownDeviceMachine =
             },
             onDone: [
               {
-                cond: "isExistingGoogleAccount",
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "RegistrationMachine",
+              },
+            ],
+          },
+        },
+        IIAuthentication: {
+          invoke: {
+            src: "AuthWithIIMachine",
+            id: "authWithII",
+            data: (context, _) => ({
+              authRequest: context.authRequest,
+              appMeta: context.appMeta,
+            }),
+            onDone: [
+              {
+                cond: "isExistingAccount",
                 actions: "assignAuthSession",
                 target: "End",
               },
@@ -192,8 +222,8 @@ const UnknownDeviceMachine =
     },
     {
       guards: {
-        isExistingGoogleAccount: (context, event) => {
-          return !!event.data.anchor
+        isExistingAccount: (context, event) => {
+          return !!event?.data?.anchor
         },
         bool: (context, event) => !!event.data,
       },
@@ -211,6 +241,7 @@ const UnknownDeviceMachine =
         RemoteReceiverMachine,
         loginWithAnchor,
         AuthWithGoogleMachine,
+        AuthWithIIMachine,
       },
     },
   )

@@ -6,7 +6,6 @@ import { ReactComponent as ArrowLeft } from "../../atoms/icons/arrow.svg"
 
 interface ArrowButtonProps {
   direction?: "left" | "right" | "top" | "bottom"
-  alt: string
   onClick?: () => void
   buttonClassName?: string
   iconClassName?: string

@@ -5,6 +5,7 @@ import {
   AccessPoint,
   AccessPointCommon,
   Account,
+  Application,
   Icon,
   im,
   Profile,
@@ -30,20 +31,6 @@ import { PublicKey } from "../_ic_api/internet_identity.d"
 
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
-}
-
-export function applicationToAccount(application: Application): Account {
-  if (!application.isNftStorage)
-    throw new Error(
-      "This application is not intended to be used as a token account.",
-    )
-  return {
-    domain: application.domain,
-    label: "",
-    accountId: "0",
-    alias: application.alias,
-    icon: application.icon,
-  }
 }
 
 /**
@@ -256,15 +243,6 @@ export async function removeAccessPoint(pubkey: DeviceKey) {
     .catch((e) => {
       throw new Error(`Not able to remove ap: ${e.message}`)
     })
-}
-
-export interface Application {
-  accountLimit: number
-  domain: string
-  name: string
-  icon?: string
-  alias: string[]
-  isNftStorage: boolean
 }
 
 function mapApplication(application: BEApplication): Application {

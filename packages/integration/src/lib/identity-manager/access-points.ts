@@ -7,6 +7,7 @@ export type Icon =
   | "usb"
   | "google"
   | "unknown"
+  | "ii"
 
 export interface AccessPointCommon {
   icon: Icon

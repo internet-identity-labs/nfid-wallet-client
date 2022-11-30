@@ -21,7 +21,7 @@ const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
     <div
       className={clsx(
         "w-60 z-40 min-h-[260px] absolute right-0 top-[50px] bg-white",
-        "shadow-iframe rounded-md flex flex-col justify-between",
+        "shadow-sm rounded-md flex flex-col justify-between",
       )}
     >
       <div className="mb-6">

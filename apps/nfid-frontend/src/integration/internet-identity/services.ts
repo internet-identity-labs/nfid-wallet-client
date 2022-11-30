@@ -33,6 +33,7 @@ import {
   login,
   lookup,
   registerInternetIdentity,
+  registerInternetIdentityWithII,
 } from "."
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
@@ -198,11 +199,25 @@ export async function registerService(
   }
 
   // Create account with internet identity.
-  const { anchor, delegationIdentity } = await registerInternetIdentity(
-    identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
-    deviceInfo.newDeviceName,
-    { key: context.challenge.challengeKey, chars: event.data },
-  )
+  let anchor: number,
+    delegationIdentity = identity as DelegationIdentity
+
+  if (context.authSession?.sessionSource === "ii") {
+    anchor = await registerInternetIdentityWithII(
+      Array.from(new Uint8Array(identity.getPublicKey().toDer())),
+      deviceInfo.newDeviceName,
+      { key: context.challenge.challengeKey, chars: event.data },
+    )
+  } else {
+    const result = await registerInternetIdentity(
+      identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
+      deviceInfo.newDeviceName,
+      { key: context.challenge.challengeKey, chars: event.data },
+    )
+
+    anchor = result.anchor
+    delegationIdentity = result.delegationIdentity
+  }
 
   try {
     // Register the account with identity manager.
@@ -213,17 +228,24 @@ export async function registerService(
       ),
     )
     const accessPoint =
-      sessionSource !== "google"
+      sessionSource === "google"
         ? {
-            icon: getIcon(deviceInfo),
-            device: deviceInfo.newDeviceName,
-            browser: deviceInfo.browser.name ?? "Mobile",
-            pubKey,
-          }
-        : {
             icon: "google" as Icon,
             device: "Google",
             browser: "Google account",
+            pubKey,
+          }
+        : sessionSource === "ii"
+        ? {
+            icon: "ii" as Icon,
+            device: "Internet Identity",
+            browser: delegationIdentity.getPrincipal().toString(),
+            pubKey,
+          }
+        : {
+            icon: getIcon(deviceInfo),
+            device: deviceInfo.newDeviceName,
+            browser: deviceInfo.browser.name ?? "Mobile",
             pubKey,
           }
     console.debug("RouterRegisterDeviceDecider handleRegister", {

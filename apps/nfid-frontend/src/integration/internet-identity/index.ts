@@ -8,13 +8,14 @@ import {
   WebAuthnIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+import { arrayBufferEqual } from "ictool/dist/bits"
+
 import {
   authState,
   FrontendDelegation,
   requestFEDelegation,
 } from "@nfid/integration"
 import { ii, im, invalidateIdentity, replaceIdentity } from "@nfid/integration"
-import { arrayBufferEqual } from "ictool/dist/bits"
 
 import {
   Challenge,
@@ -990,6 +991,35 @@ export async function registerInternetIdentity(
     anchor,
     delegationIdentity: delegation.delegationIdentity,
   }
+}
+
+/**
+ * Register a new internet identity anchor using ii as a device.
+ * @param identity II delegationIdentity
+ * @param alias device name
+ * @param challengeResult completed captcha
+ * @returns registered anchor number
+ */
+export async function registerInternetIdentityWithII(
+  pubkey: number[],
+  alias: string,
+  challengeResult: ChallengeResult,
+) {
+  console.debug("Register new internet identity")
+
+  return await ii
+    .register(
+      {
+        alias,
+        pubkey,
+        credential_id: [],
+        key_type: { unknown: null },
+        purpose: { authentication: null },
+        protection: { unprotected: null },
+      },
+      challengeResult,
+    )
+    .then(mapRegisterResponse)
 }
 
 export function mapDeviceData(data: DeviceData): Device {

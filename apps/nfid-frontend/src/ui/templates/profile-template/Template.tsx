@@ -60,9 +60,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
         <section className={clsx("relative", className)}>
           <div className="flex justify-between h-[70px] items-start mt-5">
             <div className="sticky left-0 flex items-center space-x-2">
-              {showBackButton && (
-                <ArrowButton onClick={handleNavigateBack} alt={"Back"} />
-              )}
+              {showBackButton && <ArrowButton onClick={handleNavigateBack} />}
               <p className="text-[28px] block">{pageTitle}</p>
             </div>
 

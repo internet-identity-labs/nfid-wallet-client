@@ -186,7 +186,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               to={`/#${encodeURIComponent(item.label)}`}
               className={clsx(
                 "text-black hover:underline cursor-pointer hover:text-blue-hover transition-all",
-                "text-blue-base",
+                "text-blue",
               )}
               onClick={(e) => handleGoTo(e, item.to, item.external)}
               key={index}

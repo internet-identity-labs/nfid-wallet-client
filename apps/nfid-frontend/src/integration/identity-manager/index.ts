@@ -220,7 +220,7 @@ export async function createAccessPoint(accessPoint: CreateAccessPoint) {
     .then((r) => r.map(mapAccessPoint))
 }
 
-async function createProfile(anchor: number) {
+export async function createProfile(anchor: number) {
   return im
     .create_account({ anchor: BigInt(anchor) })
     .then(unpackResponse)

@@ -1,6 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { fetchProfile } from "frontend/integration/identity-manager"
+import { checkRegistrationStatus } from "frontend/integration/identity-manager/services"
 import {
   fetchGoogleDevice,
   GoogleDeviceResult,
@@ -85,6 +85,7 @@ const AuthWithGoogleMachine =
         }),
       },
       services: {
+        checkRegistrationStatus,
         fetchGoogleDeviceService: (context) => {
           return fetchGoogleDevice(context.jwt)
         },
@@ -94,18 +95,6 @@ const AuthWithGoogleMachine =
             event,
           })
           return getGoogleAuthSession(event.data)
-        },
-        checkRegistrationStatus: async (context) => {
-          try {
-            const profile = await fetchProfile()
-            console.debug("checkRegistrationStatus", { profile })
-            return true
-          } catch (error: any) {
-            if (error.code === 404) {
-              return false
-            }
-            throw error
-          }
         },
       },
     },

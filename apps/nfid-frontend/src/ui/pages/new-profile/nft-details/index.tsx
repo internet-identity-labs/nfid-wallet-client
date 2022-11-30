@@ -85,7 +85,7 @@ export const ProfileNFTDetailsPage = ({
           />
         </div>
         <div>
-          <p className="font-bold text-blue-600">{nft.collection.name}</p>
+          <p className="font-bold text-blue">{nft.collection.name}</p>
           <p className="text-[28px] mt-2.5">{nft.name}</p>
           {"account" in nft ? (
             <div className="flex items-center mt-4 space-x-2">

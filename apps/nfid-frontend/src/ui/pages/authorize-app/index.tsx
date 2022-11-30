@@ -99,7 +99,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               "flex space-x-3 hover:opacity-70 transition-all cursor-pointer",
               isAccountsLimit
                 ? "text-gray-400 pointer-events-none"
-                : "text-blue-600",
+                : "text-blue",
             )}
           >
             <PlusIcon className="w-5 h-5" />

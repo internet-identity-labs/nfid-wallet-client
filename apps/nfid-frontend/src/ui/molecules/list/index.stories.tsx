@@ -23,7 +23,7 @@ const ListTemplate: Story = (args) => (
           title="One"
           subtitle="Item one subtitle"
           icon={
-            <span className="text-xl font-medium text-blue-600">
+            <span className="text-xl font-medium text-blue">
               <IconDesktop />
             </span>
           }
@@ -32,7 +32,7 @@ const ListTemplate: Story = (args) => (
           title="Two"
           subtitle="Item one subtitle"
           icon={
-            <span className="text-xl font-medium text-blue-600">
+            <span className="text-xl font-medium text-blue">
               <IconDesktop />
             </span>
           }

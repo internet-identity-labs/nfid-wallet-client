@@ -22,7 +22,7 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
   onClick,
 }) => {
   const props = {
-    className: "text-xl text-blue-600",
+    className: "text-xl text-blue",
     onClick,
   }
 

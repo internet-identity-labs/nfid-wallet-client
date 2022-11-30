@@ -103,7 +103,7 @@ export const questions = [
           A - Use one of your registered devices to remove the lost or stolen
           device from your list of NFID{" "}
           <Link
-            className="text-blue-600 hover:underline hover:text-blue-hover"
+            className="text-blue hover:underline hover:text-blue-hover"
             to={"/profile/security"}
           >
             authorized devices
@@ -116,7 +116,7 @@ export const questions = [
           <a
             href="https://support.apple.com/en-us/HT201472"
             target="_blank"
-            className="text-blue-600 hover:underline hover:text-blue-hover"
+            className="text-blue hover:underline hover:text-blue-hover"
             rel="noreferrer"
           >
             Apple
@@ -125,7 +125,7 @@ export const questions = [
           <a
             href="https://support.google.com/accounts/answer/6160491"
             target="_blank"
-            className="text-blue-600 hover:underline hover:text-blue-hover"
+            className="text-blue hover:underline hover:text-blue-hover"
             rel="noreferrer"
           >
             Google
@@ -134,7 +134,7 @@ export const questions = [
           <a
             href="https://support.microsoft.com/account-billing/find-and-lock-a-lost-windows-device-890bf25e-b8ba-d3fe-8253-e98a12f26316"
             target="_blank"
-            className="text-blue-600 hover:underline hover:text-blue-hover"
+            className="text-blue hover:underline hover:text-blue-hover"
             rel="noreferrer"
           >
             Microsoft
@@ -144,7 +144,7 @@ export const questions = [
         <div className="mb-6">
           C - if you have no other registered devices,{" "}
           <a
-            className="text-blue-600 hover:underline hover:text-blue-hover"
+            className="text-blue hover:underline hover:text-blue-hover"
             href="/recover-nfid/enter-recovery-phrase"
             target="_blank"
             rel="noreferrer"
@@ -167,7 +167,7 @@ export const questions = [
         created with Internet Identity. All you need to do is enter your
         Internet Identity recovery phrase in the{" "}
         <a
-          className="text-blue-600 hover:underline hover:text-blue-hover"
+          className="text-blue hover:underline hover:text-blue-hover"
           href="/recover-nfid/enter-recovery-phrase"
           target="_blank"
           rel="noreferrer"
@@ -191,14 +191,14 @@ export const questions = [
         your NFID, please email us at{" "}
         <a
           href="mailto:hello@identitylabs.ooo"
-          className="text-blue-600 hover:underline hover:text-blue-hover"
+          className="text-blue hover:underline hover:text-blue-hover"
         >
           hello@identitylabs.ooo
         </a>{" "}
         or let us know in the feedback channel of our{" "}
         <a
           href="https://discord.gg/a9BFNrYJ99"
-          className="text-blue-600 hover:underline hover:text-blue-hover"
+          className="text-blue hover:underline hover:text-blue-hover"
           target="_blank"
           rel="noreferrer"
         >
@@ -217,7 +217,7 @@ export const questions = [
         No. This data never leaves your device. Apple wrote a{" "}
         <a
           href="https://support.apple.com/en-us/HT208108"
-          className="text-blue-600 hover:underline hover:text-blue-hover"
+          className="text-blue hover:underline hover:text-blue-hover"
         >
           support article
         </a>{" "}
@@ -244,7 +244,7 @@ export const questions = [
         <div>
           Feel free to email us all your questions on{" "}
           <a
-            className="text-blue-600 hover:underline hover:text-blue-hover"
+            className="text-blue hover:underline hover:text-blue-hover"
             href="mailto:support@identitylabs.ooo"
           >
             support@identitylabs.ooo

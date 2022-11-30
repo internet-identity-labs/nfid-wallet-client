@@ -65,7 +65,7 @@ export const Button: React.FC<ButtonProps> = ({
           ),
         isGhost &&
           clsx(
-            "text-blue-600 hover:underline disabled:text-gray-400",
+            "text-blue hover:underline disabled:text-gray-400",
             "border-transparent hover:border-gray-100 disabled:border-transparent",
             "active:bg-gray-200 hover:bg-gray-100 disabled:bg-white",
           ),

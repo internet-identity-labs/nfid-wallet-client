@@ -43,4 +43,9 @@ export const serviceConfig = {
     process.env.CYCLES_MINTER_CANISTER_ID,
   ),
   VAULT_CANISTER_ID: JSON.stringify(process.env.VAULT_CANISTER_ID),
+  II_PROVIDER: JSON.stringify(process.env.II_PROVIDER),
+  ETH_SECRET_STORAGE_CANISTER_ID: JSON.stringify(
+    process.env.ETH_SECRET_STORAGE_CANISTER_ID,
+  ),
+  METAMASK_SIGNIN_MESSAGE: JSON.stringify(process.env.METAMASK_SIGNIN_MESSAGE),
 }

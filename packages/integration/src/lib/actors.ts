@@ -5,6 +5,8 @@ import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
+import { idlFactory as ethSecretStorageIDL } from "./_ic_api/eth_secret_storage"
+import { _SERVICE as EthSecretStorage } from "./_ic_api/eth_secret_storage.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.d"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity"
@@ -31,6 +33,7 @@ declare const VERIFIER_CANISTER_ID: string
 declare const LEDGER_CANISTER_ID: string
 declare const CYCLES_MINTER_CANISTER_ID: string
 declare const VAULT_CANISTER_ID: string
+declare const ETH_SECRET_STORAGE_CANISTER_ID: string
 
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
@@ -40,6 +43,7 @@ const canisterConfig = [
   ["Ledger", LEDGER_CANISTER_ID],
   ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
   ["Vault", VAULT_CANISTER_ID],
+  ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
 ]
 
 export const accessList = canisterConfig.map((x) => x[1])
@@ -85,6 +89,10 @@ export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
 export const vault = actor<Vault>(VAULT_CANISTER_ID, vaultIDL)
+export const ethSecretStorage = actor<EthSecretStorage>(
+  ETH_SECRET_STORAGE_CANISTER_ID,
+  ethSecretStorageIDL,
+)
 export const cyclesMinter = actor<CyclesMinter>(
   CYCLES_MINTER_CANISTER_ID,
   cyclesMinterIDL,

@@ -1,13 +1,15 @@
+import clsx from "clsx"
+import { Helmet } from "react-helmet-async"
+import { BiMobile, BiWallet, BiUser, BiLock } from "react-icons/bi"
+
 import {
   MenuWrapper,
   NFIDLogo,
   SidebarItem,
   SidebarWrapper,
 } from "@nfid-frontend/ui"
-import clsx from "clsx"
-import { Helmet } from "react-helmet-async"
-import { BiMobile, BiWallet, BiUser } from "react-icons/bi"
 
+import { RoutePathAuthentication } from "./authentication"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
 import { RoutePathPhoneNumberVerification } from "./phone-number-credential"
@@ -42,6 +44,9 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
           )}
         >
           <SidebarWrapper>
+            <NavLink route={RoutePathAuthentication}>
+              <SidebarItem icon={<BiLock />} title="Authentication" />
+            </NavLink>
             <NavLink route={RoutePathPhoneNumberVerification}>
               <SidebarItem
                 icon={<BiMobile />}

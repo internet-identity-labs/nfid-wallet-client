@@ -227,6 +227,7 @@ export async function registerService(
         authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
       ),
     )
+    // TODO create some factory for this
     const accessPoint =
       sessionSource === "google"
         ? {
@@ -239,6 +240,13 @@ export async function registerService(
         ? {
             icon: "ii" as Icon,
             device: "Internet Identity",
+            browser: delegationIdentity.getPrincipal().toString(),
+            pubKey,
+          }
+        : sessionSource === "metamask"
+        ? {
+            icon: "metamask" as Icon,
+            device: "Metamask",
             browser: delegationIdentity.getPrincipal().toString(),
             pubKey,
           }

@@ -58,16 +58,15 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
-      - name: Build project
-        run: |
-          cat > ~/.npmrc << EOF
-          @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
-          EOF
-          yarn --prefer-offline
-
+      - name: Add npmrc
+        uses: ferluisxd/create-npmrc@3
+        with:
+          org_name: psychedelic
         env:
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          AUTH_TOKEN: ${{ secrets.PSYCHEDELIC_GH_NPM_REGISTRY }}
+
+      - name: Build project
+        run: yarn --prefer-offline
 
       - name: Run unit tests
         run: npx nx affected:test
@@ -98,12 +97,15 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
+      - name: Add npmrc
+        uses: ferluisxd/create-npmrc@3
+        with:
+          org_name: psychedelic
+        env:
+          AUTH_TOKEN: ${{ secrets.PSYCHEDELIC_GH_NPM_REGISTRY }}
+
       - name: Build project
         run: |
-          cat > ~/.npmrc << EOF
-          @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
-          EOF
           yarn --prefer-offline
           npx env-cmd -f .env.staging nx build nfid-frontend
           yarn serve -l 9090 -s dist/apps/nfid-frontend &

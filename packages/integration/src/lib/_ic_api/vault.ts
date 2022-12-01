@@ -19,11 +19,15 @@ export const idlFactory = ({ IDL }: any) => {
     "wallets": IDL.Vec(IDL.Nat64),
     "policies": IDL.Vec(IDL.Nat64),
   })
-  const VaultRegisterRequest = IDL.Record({ "name": IDL.Text })
   const Wallet = IDL.Record({
     "id": IDL.Nat64,
-    "vault_ids": IDL.Vec(IDL.Nat64),
+    "vaults": IDL.Vec(IDL.Nat64),
     "name": IDL.Opt(IDL.Text),
+  })
+  const VaultRegisterRequest = IDL.Record({ "name": IDL.Text })
+  const WalletRegisterRequest = IDL.Record({
+    "name": IDL.Opt(IDL.Text),
+    "vault_id": IDL.Nat64,
   })
   return IDL.Service({
     "add_vault_member": IDL.Func([VaultMemberRequest], [Vault], []),
@@ -33,8 +37,9 @@ export const idlFactory = ({ IDL }: any) => {
       ["query"],
     ),
     "get_vaults": IDL.Func([], [IDL.Vec(Vault)], ["query"]),
+    "get_wallets": IDL.Func([IDL.Nat64], [IDL.Vec(Wallet)], ["query"]),
     "register_vault": IDL.Func([VaultRegisterRequest], [Vault], []),
-    "register_wallet": IDL.Func([IDL.Nat64, IDL.Opt(IDL.Text)], [Wallet], []),
+    "register_wallet": IDL.Func([WalletRegisterRequest], [Wallet], []),
     "sub": IDL.Func([IDL.Nat64], [IDL.Text], ["query"]),
   })
 }

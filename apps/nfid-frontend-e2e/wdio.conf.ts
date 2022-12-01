@@ -1,4 +1,4 @@
-import { hooks } from "./src/hooks"
+import { hooks } from "./src/wdio-hooks"
 
 export const isDebug = process.env.DEBUG === "true"
 
@@ -97,9 +97,10 @@ export const config: WebdriverIO.Config = {
           "disable-gpu",
           "--ignore-certificate-errors", // allow self-signed certificates
           "--disable-web-security",
-          "--enable-logging --v=1",
         ],
       },
+      // @ts-ignore
+      "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
       acceptInsecureCerts: true,
     },
   ],
@@ -150,7 +151,7 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ["chromedriver", "devtools"],
+  services: [["chromedriver", { chromeDriverArgs: "--verbose" }], "devtools"],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber

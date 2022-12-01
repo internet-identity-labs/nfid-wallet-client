@@ -8,6 +8,7 @@ export type Icon =
   | "google"
   | "unknown"
   | "ii"
+  | "metamask"
 
 export interface AccessPointCommon {
   icon: Icon

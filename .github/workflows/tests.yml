@@ -67,10 +67,7 @@ jobs:
 
       - name: Build project
         run: |
-          cat > ~/.npmrc << EOF
-          @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
-          EOF
+          yarn config set '//npm.pkg.github.com:_authToken' "${PSYCHEDELIC_GH_NPM_REGISTRY}"
           yarn --prefer-offline
 
         env:

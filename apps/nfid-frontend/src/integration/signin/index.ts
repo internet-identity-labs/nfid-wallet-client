@@ -1,6 +1,6 @@
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import { Ed25519KeyIdentity, WebAuthnIdentity } from "@dfinity/identity"
+import { Secp256k1KeyIdentity, WebAuthnIdentity } from "@dfinity/identity"
 import { Wallet } from "ethers"
 import sha256 from "sha256"
 
@@ -8,7 +8,7 @@ import {
   authState,
   FrontendDelegation,
   ii,
-  signer,
+  ethSecretStorage,
   replaceIdentity,
   setProfile,
 } from "@nfid/integration"
@@ -29,6 +29,8 @@ import {
 import { fetchAllDevices } from "../internet-identity"
 import { derFromPubkey } from "../internet-identity/utils"
 
+declare const METAMASK_SIGNIN_MESSAGE: string
+
 export type TentativeDeviceResponse = {
   verificationCode: string
   deviceRegistrationTimeout: Timestamp
@@ -42,15 +44,14 @@ type AddedTentatively = {
 }
 
 export async function getIdentityByMessageAndWallet(
-  message: string,
   wallet: Wallet,
-): Promise<Ed25519KeyIdentity> {
-  const signature: string = await wallet.signMessage(message)
-  const secret: string = await signer.secret_by_signature(signature)
+): Promise<Secp256k1KeyIdentity> {
+  const signature: string = await wallet.signMessage(METAMASK_SIGNIN_MESSAGE)
+  const secret: string = await ethSecretStorage.secret_by_signature(signature)
   const seed: Uint8Array = new Uint8Array(
     sha256(signature + secret, { asBytes: true }),
   )
-  const identity = Ed25519KeyIdentity.generate(seed)
+  const identity = Secp256k1KeyIdentity.generate(seed)
   return identity
 }
 

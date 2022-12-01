@@ -184,7 +184,6 @@ describe("SignIn with Internet Identity", () => {
   })
 
   it("should generate identity based on metamask signature.", async () => {
-    const message: string = "You're authentification to NFID."
     const wallet: Wallet = Wallet.fromMnemonic(
       "copy neck copy eager sing begin worry shed pitch spin daring toward",
     )
@@ -193,22 +192,13 @@ describe("SignIn with Internet Identity", () => {
       "copy neck copy eager sing begin worry shed pitch spin daring toward",
     )
 
-    const identity1: SignIdentity = await getIdentityByMessageAndWallet(
-      message,
-      wallet,
-    )
+    const identity1: SignIdentity = await getIdentityByMessageAndWallet(wallet)
     const principal: string = identity1.getPrincipal().toString()
 
-    const identity2: SignIdentity = await getIdentityByMessageAndWallet(
-      message,
-      wallet2,
-    )
+    const identity2: SignIdentity = await getIdentityByMessageAndWallet(wallet2)
     const principal2: string = identity2.getPrincipal().toString()
 
-    const identity3: SignIdentity = await getIdentityByMessageAndWallet(
-      message,
-      wallet3,
-    )
+    const identity3: SignIdentity = await getIdentityByMessageAndWallet(wallet3)
     const principal3: string = identity3.getPrincipal().toString()
 
     expect(principal).toEqual(principal3)

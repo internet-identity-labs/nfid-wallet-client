@@ -58,16 +58,12 @@ jobs:
           node-version: "18"
           cache: "yarn"
 
-      - name: Add npmrc
-        uses: ferluisxd/create-npmrc@3
-        with:
-          org_name: psychedelic
-        env:
-          AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
-
       - name: Build project
         run: |
-          yarn config set '//npm.pkg.github.com:_authToken' "${PSYCHEDELIC_GH_NPM_REGISTRY}"
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
+          EOF
           yarn --prefer-offline
 
         env:

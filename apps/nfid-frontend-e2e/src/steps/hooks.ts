@@ -1,4 +1,4 @@
-import { After, Status } from "@cucumber/cucumber"
+import { After } from "@cucumber/cucumber"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 After(async function () {

@@ -9,8 +9,8 @@ import { generateDelegationIdentity } from "../test-utils"
 import {
   addMemberToVault,
   getVaultMembers,
-  getVaults,
-  registerVault,
+  getVaults, getWallets,
+  registerVault, registerWallet, walletAddress,
 } from "./index"
 import { VaultMember, VaultRole } from "./types"
 
@@ -68,7 +68,25 @@ describe("Vault suite", () => {
     expect(member).toEqual({
       name: "Test Name",
       role: VaultRole.Member,
-      userId: expect.any(String),
+      userId: memberAddress,
     })
+
+    const wallet1 = await registerWallet({
+        name: "Wallet1", vaultId: vaultFirst.id,
+      },
+    )
+    const wallet2 = await registerWallet({
+        name: "Wallet2", vaultId: vaultFirst.id,
+      },
+    )
+    expect(wallet1.name).toEqual("Wallet1")
+    expect(wallet2.name).toEqual("Wallet2")
+    const wallets = await getWallets(vaultFirst.id)
+    expect(wallets.length).toEqual(2)
+  })
+
+  it("test subaddress", async () => {
+    const actual = await walletAddress(BigInt(1))
+    expect("1c016881d9e01ee163f9c5f698636e25ea095fb86ffa977b28254703286b91db").toEqual(actual)
   })
 })

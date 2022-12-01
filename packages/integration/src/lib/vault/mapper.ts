@@ -1,10 +1,11 @@
 import {
   Vault as VaultResponse,
+  Wallet as WalletResponse,
   VaultMember as VaultMemberResponse,
   VaultRole as VaultRoleTransport,
 } from "../_ic_api/vault.d"
 import { hasOwnProperty } from "../test-utils"
-import { Vault, VaultMember, VaultRole } from "./types"
+import { Vault, VaultMember, VaultRole, Wallet } from "./types"
 
 export function responseToVault(response: VaultResponse): Vault {
   return {
@@ -13,6 +14,14 @@ export function responseToVault(response: VaultResponse): Vault {
     name: response.name,
     policies: response.policies,
     wallets: response.wallets,
+  }
+}
+
+export function responseToWallet(response: WalletResponse): Wallet {
+  return {
+    vaults: response.vaults,
+    id: response.id,
+    name: response.name.length === 0 ? undefined : response.name[0]
   }
 }
 

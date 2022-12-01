@@ -1,7 +1,7 @@
-import { VaultMemberRequest, VaultRegisterRequest } from "../_ic_api/vault.d"
-import { vault as vaultAPI } from "../actors"
-import { responseToMember, responseToVault, roleToRequest } from "./mapper"
-import { Vault, VaultMember, VaultRole } from "./types"
+import { VaultMemberRequest, VaultRegisterRequest, WalletRegisterRequest } from "../_ic_api/vault.d"
+import { vault, vault as vaultAPI } from "../actors"
+import { responseToMember, responseToVault, responseToWallet, roleToRequest } from "./mapper"
+import { Vault, VaultMember, VaultRole, Wallet } from "./types"
 
 export async function registerVault(vaultName: string): Promise<Vault> {
   const request: VaultRegisterRequest = {
@@ -24,11 +24,11 @@ interface AddMemberToVaultOptions {
 }
 
 export async function addMemberToVault({
-  vaultId,
-  memberAddress,
-  name,
-  role,
-}: AddMemberToVaultOptions): Promise<Vault> {
+   vaultId,
+   memberAddress,
+   name,
+   role,
+ }: AddMemberToVaultOptions): Promise<Vault> { //TODO Promise<VaultMember[]>
   const vaultMemberRequest: VaultMemberRequest = {
     address: memberAddress,
     name: [name],
@@ -42,4 +42,27 @@ export async function addMemberToVault({
 export async function getVaultMembers(vaultId: bigint): Promise<VaultMember[]> {
   const response = await vaultAPI.get_vault_members(vaultId)
   return response.map((v) => responseToMember(v))
+}
+
+interface AddWalletOptions {
+  vaultId: bigint
+  name: string
+}
+
+export async function registerWallet({
+   vaultId,
+   name,
+ }: AddWalletOptions): Promise<Wallet> {
+  const walletRegisterRequest: WalletRegisterRequest = { name: [name], vault_id: vaultId }
+  const response = await vaultAPI.register_wallet(walletRegisterRequest)
+  return responseToWallet(response)
+}
+
+export async function getWallets(vaultId: bigint): Promise<VaultMember[]> {
+  const response = await vaultAPI.get_vault_members(vaultId)
+  return response.map((v) => responseToMember(v))
+}
+
+export async function walletAddress(walletId: bigint): Promise<string> {
+  return await vault.sub(walletId) //todo move algorithm from rust
 }

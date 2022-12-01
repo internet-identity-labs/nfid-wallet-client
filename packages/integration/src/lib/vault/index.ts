@@ -2,10 +2,6 @@ import { VaultMemberRequest, VaultRegisterRequest, WalletRegisterRequest } from 
 import { vault, vault as vaultAPI } from "../actors"
 import { responseToMember, responseToVault, responseToWallet, roleToRequest } from "./mapper"
 import { Vault, VaultMember, VaultRole, Wallet } from "./types"
-import { principalToAddress } from "ictool"
-import { Principal } from "@dfinity/principal"
-
-declare const VAULT_CANISTER_ID: string
 
 export async function registerVault(vaultName: string): Promise<Vault> {
   const request: VaultRegisterRequest = {
@@ -28,11 +24,11 @@ interface AddMemberToVaultOptions {
 }
 
 export async function addMemberToVault({
-  vaultId,
-  memberAddress,
-  name,
-  role,
-}: AddMemberToVaultOptions): Promise<Vault> { //TODO Promise<VaultMember[]>
+   vaultId,
+   memberAddress,
+   name,
+   role,
+ }: AddMemberToVaultOptions): Promise<Vault> { //TODO Promise<VaultMember[]>
   const vaultMemberRequest: VaultMemberRequest = {
     address: memberAddress,
     name: [name],
@@ -54,9 +50,9 @@ interface AddWalletOptions {
 }
 
 export async function registerWallet({
- vaultId,
- name,
-}: AddWalletOptions): Promise<Wallet> {
+   vaultId,
+   name,
+ }: AddWalletOptions): Promise<Wallet> {
   const walletRegisterRequest: WalletRegisterRequest = { name: [name], vault_id: vaultId }
   const response = await vaultAPI.register_wallet(walletRegisterRequest)
   return responseToWallet(response)

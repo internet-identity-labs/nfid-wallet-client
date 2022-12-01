@@ -4,6 +4,7 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
+import { getMetamaskAuthSession } from "frontend/integration/signin/metamask"
 import {
   AuthSession,
   LocalDeviceAuthSession,
@@ -28,6 +29,7 @@ export type Events =
   | { type: "done.invoke.remote"; data?: RemoteDeviceAuthSession }
   | { type: "done.invoke.registration"; data?: AuthSession }
   | { type: "done.invoke.registerDevice"; data: AuthSession }
+  | { type: "done.invoke.getMetamaskAuthSession"; data: AuthSession }
   | { type: "done.invoke.signInSameDevice"; data: LocalDeviceAuthSession }
   | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }
   | {
@@ -46,6 +48,7 @@ export type Events =
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
   | { type: "AUTH_WITH_II" }
+  | { type: "AUTH_WITH_METAMASK" }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
       data: { anchor: number; withSecurityDevices?: boolean }
@@ -116,6 +119,9 @@ const UnknownDeviceMachine =
             AUTH_WITH_II: {
               target: "IIAuthentication",
             },
+            AUTH_WITH_METAMASK: {
+              target: "AuthWithMetamask",
+            },
           },
         },
         AuthWithGoogle: {
@@ -158,6 +164,24 @@ const UnknownDeviceMachine =
                 target: "RegistrationMachine",
               },
             ],
+          },
+        },
+        AuthWithMetamask: {
+          invoke: {
+            src: "getMetamaskAuthSession",
+            id: "getMetamaskAuthSession",
+            onDone: [
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "RegistrationMachine",
+              },
+            ],
+            onError: { target: "AuthSelection" },
           },
         },
         RemoteAuthentication: {
@@ -244,6 +268,7 @@ const UnknownDeviceMachine =
         loginWithAnchor,
         AuthWithGoogleMachine,
         AuthWithIIMachine,
+        getMetamaskAuthSession,
       },
     },
   )

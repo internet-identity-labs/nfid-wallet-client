@@ -86,3 +86,5 @@ export { ReactComponent as IconCmpTrash } from "./trash.svg"
 export { ReactComponent as IconCmpUnknown } from "./unknown.svg"
 export { ReactComponent as IconCmpUsb } from "./usb.svg"
 export { ReactComponent as IconCmpWarning } from "./warning.svg"
+
+export { IconMetamask } from "./metamask"

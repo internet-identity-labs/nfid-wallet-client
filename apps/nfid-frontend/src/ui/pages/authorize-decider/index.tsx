@@ -25,6 +25,7 @@ export interface AuthorizeAppUnknownDeviceProps {
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
   onSelectIIAuthorization: () => void
+  onSelectMetamaskAuthorization: () => void
   onSelectGoogleAuthorization: LoginEventHandler
   onToggleAdvancedOptions: () => void
   authError?: string
@@ -40,6 +41,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   onSelectSecurityKeyAuthorization,
   onSelectGoogleAuthorization,
   onSelectIIAuthorization,
+  onSelectMetamaskAuthorization,
   onToggleAdvancedOptions,
   applicationName,
   applicationLogo,
@@ -133,7 +135,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             <div className="grid h-12 grid-cols-3 gap-4 mt-4">
               <IconButton
                 img={<img src={MetamaskIcon} alt="metamask" />}
-                onClick={onSelectIIAuthorization}
+                onClick={onSelectMetamaskAuthorization}
                 className="flex justify-center"
               />
               <IconButton

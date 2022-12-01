@@ -1,6 +1,8 @@
 import { useActor } from "@xstate/react"
 import React from "react"
 
+import { Loader } from "@nfid-frontend/ui"
+
 import { AuthWithIIActor } from "frontend/features/sign-in-options/machine"
 import { RegistrationActor } from "frontend/state/machines/authentication/registration"
 import { RemoteReceiverActor } from "frontend/state/machines/authentication/remote-receiver"
@@ -65,6 +67,9 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           onSelectIIAuthorization={() => {
             send({ type: "AUTH_WITH_II" })
           }}
+          onSelectMetamaskAuthorization={() => {
+            send({ type: "AUTH_WITH_METAMASK" })
+          }}
           onToggleAdvancedOptions={() => send("AUTH_WITH_OTHER")}
           showAdvancedOptions={state.matches("ExistingAnchor")}
           isLoading={
@@ -104,6 +109,12 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
             actor={state.children.authWithII as AuthWithIIActor}
           />
         </BlurredLoader>
+      )
+    case state.matches("AuthWithMetamask"):
+      return (
+        <div className="relative h-[300px] px-24 flex items-center">
+          <Loader isLoading fullscreen={false} />
+        </div>
       )
     case state.matches("End"):
     case state.matches("Start"):

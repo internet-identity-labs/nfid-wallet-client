@@ -1,5 +1,6 @@
 import React from "react"
 
+import { IconMetamask } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 
 import { IconLaptop } from "frontend/ui/atoms/icons/desktop"
@@ -45,6 +46,8 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
       return <UnknownIcon {...props} />
     case "ii":
       return <IIIcon />
+    case "metamask":
+      return <IconMetamask />
     default:
       return null
   }

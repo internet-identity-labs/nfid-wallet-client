@@ -20,7 +20,7 @@
     "@nfid/credentials": "1.1.3",
     "@nfid/wallet": "1.1.0-alpha.0",
     "@nrwl/nx-cloud": "^15.0.0",
-    "@psychedelic/cap-js": "^0.0.8",
+    "@psychedelic/cap-js": "0.0.8",
     "@sentry/react": "7.14.0",
     "@sentry/tracing": "7.14.0",
     "@tailwindcss/forms": "^0.5.0",

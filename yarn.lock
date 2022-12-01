@@ -3544,7 +3544,7 @@
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
-"@psychedelic/cap-js@^0.0.8":
+"@psychedelic/cap-js@0.0.8":
   version "0.0.8"
   resolved "https://npm.pkg.github.com/download/@Psychedelic/cap-js/0.0.8/1843754aab039d490b39685aeb35cda0e5e6e001#1843754aab039d490b39685aeb35cda0e5e6e001"
   integrity sha512-h188QIJe3AsOyP1dIPT+4dQCb/J1zWMyKrR5t+cPaO5gNUful/betb+kyiGgL3+6ahshDv4Tkg+kEVaEW6qogQ==

@@ -79,6 +79,13 @@ jobs:
       - name: Run unit tests
         run: npx nx affected:test
 
+      - name: Upload build artefacts
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: yarn-error-logs
+          path: /home/runner/work/nfid-frontend/nfid-frontend/yarn-error.log
+
   e2e-tests:
     needs: check-secrets
     runs-on: ubuntu-latest

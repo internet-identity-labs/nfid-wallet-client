@@ -13,6 +13,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.getMetamaskAuthSession": {
+      type: "done.invoke.getMetamaskAuthSession"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.isMobileWithWebAuthn": {
       type: "done.invoke.isMobileWithWebAuthn"
       data: unknown
@@ -41,6 +46,10 @@ export interface Typegen0 {
       type: "error.platform.authWithII"
       data: unknown
     }
+    "error.platform.getMetamaskAuthSession": {
+      type: "error.platform.getMetamaskAuthSession"
+      data: unknown
+    }
     "error.platform.isMobileWithWebAuthn": {
       type: "error.platform.isMobileWithWebAuthn"
       data: unknown
@@ -61,6 +70,7 @@ export interface Typegen0 {
     AuthWithIIMachine: "done.invoke.authWithII"
     RegistrationMachine: "done.invoke.registration"
     RemoteReceiverMachine: "done.invoke.remote"
+    getMetamaskAuthSession: "done.invoke.getMetamaskAuthSession"
     isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
     loginWithAnchor: "done.invoke.loginWithAnchor"
   }
@@ -74,6 +84,7 @@ export interface Typegen0 {
     assignAuthSession:
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
+      | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.loginWithAnchor"
       | "done.invoke.registration"
       | "done.invoke.remote"
@@ -84,8 +95,10 @@ export interface Typegen0 {
     RegistrationMachine:
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
+      | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.isMobileWithWebAuthn"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
+    getMetamaskAuthSession: "AUTH_WITH_METAMASK"
     isMobileWithWebAuthn: "xstate.init"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
@@ -94,12 +107,14 @@ export interface Typegen0 {
     isExistingAccount:
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
+      | "done.invoke.getMetamaskAuthSession"
     isReturn: "done.invoke.authWithII"
   }
   eventsCausingDelays: {}
   matchesStates:
     | "AuthSelection"
     | "AuthWithGoogle"
+    | "AuthWithMetamask"
     | "AuthenticateSameDevice"
     | "End"
     | "ExistingAnchor"

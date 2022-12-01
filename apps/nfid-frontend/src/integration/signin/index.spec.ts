@@ -1,6 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { Wallet } from "ethers"
 
 import {
   generateDelegationIdentity,
@@ -12,11 +10,7 @@ import {
 
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
-import {
-  addTentativeDevice,
-  getIdentityByMessageAndWallet,
-  TentativeDeviceResponse,
-} from "."
+import { addTentativeDevice, TentativeDeviceResponse } from "."
 import {
   HTTPAccessPointResponse,
   AccessPointResponse,
@@ -181,27 +175,5 @@ describe("SignIn with Internet Identity", () => {
     replaceIdentity(secondlyTakenDerivedDelegationIdentity)
     const profile: Profile = await fetchProfile()
     expect(derivedAnchor).toEqual(BigInt(profile.anchor))
-  })
-
-  it("should generate identity based on metamask signature.", async () => {
-    const wallet: Wallet = Wallet.fromMnemonic(
-      "copy neck copy eager sing begin worry shed pitch spin daring toward",
-    )
-    const wallet2: Wallet = Wallet.createRandom()
-    const wallet3: Wallet = Wallet.fromMnemonic(
-      "copy neck copy eager sing begin worry shed pitch spin daring toward",
-    )
-
-    const identity1: SignIdentity = await getIdentityByMessageAndWallet(wallet)
-    const principal: string = identity1.getPrincipal().toString()
-
-    const identity2: SignIdentity = await getIdentityByMessageAndWallet(wallet2)
-    const principal2: string = identity2.getPrincipal().toString()
-
-    const identity3: SignIdentity = await getIdentityByMessageAndWallet(wallet3)
-    const principal3: string = identity3.getPrincipal().toString()
-
-    expect(principal).toEqual(principal3)
-    expect(principal).not.toEqual(principal2)
   })
 })

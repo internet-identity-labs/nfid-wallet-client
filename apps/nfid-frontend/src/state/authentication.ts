@@ -35,9 +35,13 @@ export interface LocalDeviceAuthSession extends AbstractAuthSession {
 export interface IIAuthSession extends AbstractAuthSession {
   sessionSource: "ii"
 }
+export interface MetamaskAuthSession extends AbstractAuthSession {
+  sessionSource: "metamask"
+}
 
 export type AuthSession =
   | GoogleAuthSession
   | RemoteDeviceAuthSession
   | LocalDeviceAuthSession
   | IIAuthSession
+  | MetamaskAuthSession

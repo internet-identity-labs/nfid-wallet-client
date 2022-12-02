@@ -83,8 +83,9 @@ Scenario Outline: User should be able to send more than 0 ICPs
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then I wait on element "#just-log-me-in" for 10000ms to be displayed
     When I click on the selector "#just-log-me-in"
-    When I click on the selector "#desktop #profile-assets"
     And  I pause for 10000ms
+    When I click on the selector "#desktop #profile-assets"
+    And  I pause for 2000ms
     Then I expect that element "[class] tr .text-sm:nth-of-type(2)" is displayed
     And  I expect that element "[class] tr .text-sm:nth-of-type(2)" contains the text "0.001 ICP"
     And  I expect that element "[class] tr .text-sm:nth-of-type(3)" contains the text "$0.01"
@@ -97,8 +98,9 @@ Scenario Outline: User should be able to send more than 0 ICPs
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then I wait on element "#just-log-me-in" for 10000ms to be displayed
     When I click on the selector "#just-log-me-in"
-    When I click on the selector "#desktop #profile-assets"
     And  I pause for 10000ms
+    When I click on the selector "#desktop #profile-assets"
+    And  I pause for 2000ms
     Then I expect that element "[class='flex justify-between h-\[70px\] items-start mt-5'] [alt]" is displayed
     When I click on the selector "[class='flex justify-between h-\[70px\] items-start mt-5'] [alt]"
     Then I expect the url to contain "/profile/transactions"

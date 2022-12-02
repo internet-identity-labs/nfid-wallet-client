@@ -25,7 +25,7 @@ export default async (
    */
   const method = action === "click" ? "click" : "doubleClick"
 
-  // await checkIfElementExists(selector2)
+  await checkIfElementExists(selector2)
 
   await $(selector2)[method]()
 }

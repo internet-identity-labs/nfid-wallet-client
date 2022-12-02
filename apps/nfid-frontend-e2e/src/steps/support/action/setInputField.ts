@@ -18,7 +18,7 @@ export default async (method: string, value: string, selector: Selector) => {
 
   let checkValue = value
 
-  // await checkIfElementExists(selector, false, 1)
+  await checkIfElementExists(selector, false, 1)
 
   if (!value) {
     checkValue = ""

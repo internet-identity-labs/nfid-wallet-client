@@ -7,7 +7,6 @@ import { Parallax, ParallaxProvider } from "react-scroll-parallax"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { useDeviceInfo } from "frontend/integration/device"
-import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
@@ -34,14 +33,9 @@ interface Props
   > {}
 
 export const HomeScreen: React.FC<Props> = ({ children, className }) => {
-  const { profile } = useAccount()
-  const { isMobile } = useDeviceInfo()
+  const isRegistered = !!React.useMemo(() => loadProfileFromLocalStorage(), [])
 
-  const [isRegistered, setIsRegistered] = React.useState(true)
-  React.useEffect(() => {
-    const profile = loadProfileFromLocalStorage()
-    setIsRegistered(!!profile)
-  }, [])
+  const { isMobile } = useDeviceInfo()
 
   return (
     <AppScreen
@@ -63,7 +57,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
           <ParallaxProvider>
             <div
               className={`font-inner ${isMobile ? `mobile` : ``} ${
-                profile ? `has-account` : ``
+                isRegistered ? `has-account` : ``
               }`}
             >
               <section
@@ -71,7 +65,7 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
                 className="grid grid-cols-1 md:grid-cols-[5fr,7fr] gap-10 scroll-mt-20"
               >
                 <div className="relative">
-                  <HeroLeftSide isUnregistered={!profile} />
+                  <HeroLeftSide isUnregistered={!isRegistered} />
                   <Parallax speed={isMobile ? undefined : -300}>
                     <p className="absolute text-[25vw] opacity-[0.02] z-0 left-0 font-bold">
                       Identity

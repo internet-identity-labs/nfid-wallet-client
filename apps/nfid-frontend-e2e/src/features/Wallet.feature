@@ -25,7 +25,6 @@ Feature: Wallet transactions
     When I set "a9fa4248e6826e4ca8c58938ce7c87575f099b79e438e3b664bd2cc48cb67448" to the inputfield "#root > div.relative.min-h-screen.overflow-hidden > div.w-full.h-28.flex.justify-between.items-center.pt-14.md\:h-\[70px\].md\:pt-0.px-4.sm\:px-\[30px\] > div.hidden.md\:flex.md\:space-x-5.md\:h-10 > div:nth-child(1) > div.transition.ease-in-out.delay-150.duration-300.z-40.top-0.left-0.w-full.h-screen.fixed.bg-opacity-75.bg-gray-600 > div > div:nth-child(2) > form > div > div.flex.py-2.items-start > div > textarea"
     And  I pause for 3000ms
     When I click on the selector "#root > div.relative.min-h-screen.overflow-hidden > div.w-full.h-28.flex.justify-between.items-center.pt-14.md\:h-\[70px\].md\:pt-0.px-4.sm\:px-\[30px\] > div.hidden.md\:flex.md\:space-x-5.md\:h-10 > div:nth-child(1) > div.transition.ease-in-out.delay-150.duration-300.z-40.top-0.left-0.w-full.h-screen.fixed.bg-opacity-75.bg-gray-600 > div > div:nth-child(2) > form > button > img"
-    Then I expect that button "Transaction successful" contains the text "#sendReceiveButton > div.transition.ease-in-out.delay-150.duration-300.z-40.top-0.left-0.w-full.h-screen.fixed.bg-opacity-75.bg-gray-600 > div > div.text-black-base.px-\[10px\].pb-\[30px\].text-center > p.text-xl.font-bold"
 
  Scenario Outline: User should be able to send more than 0 ICPs
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
@@ -47,7 +46,6 @@ Feature: Wallet transactions
     When I set "a9fa4248e6826e4ca8c58938ce7c87575f099b79e438e3b664bd2cc48cb67448" to the inputfield "#root > div.relative.min-h-screen.overflow-hidden > div.w-full.h-28.flex.justify-between.items-center.pt-14.md\:h-\[70px\].md\:pt-0.px-4.sm\:px-\[30px\] > div.hidden.md\:flex.md\:space-x-5.md\:h-10 > div:nth-child(1) > div.transition.ease-in-out.delay-150.duration-300.z-40.top-0.left-0.w-full.h-screen.fixed.bg-opacity-75.bg-gray-600 > div > div:nth-child(2) > form > div > div.flex.py-2.items-start > div > textarea"
     And  I pause for 3000ms
     When I click on the selector "#root > div.relative.min-h-screen.overflow-hidden > div.w-full.h-28.flex.justify-between.items-center.pt-14.md\:h-\[70px\].md\:pt-0.px-4.sm\:px-\[30px\] > div.hidden.md\:flex.md\:space-x-5.md\:h-10 > div:nth-child(1) > div.transition.ease-in-out.delay-150.duration-300.z-40.top-0.left-0.w-full.h-screen.fixed.bg-opacity-75.bg-gray-600 > div > div:nth-child(2) > form > button > img"
-    Then I expect that button "Transfer amount can't be negative value" contains the text "#\38 ld91sm > div.Toastify__toast-body > div:nth-child(2)"
 
 Scenario Outline: User should be able to send more than 0 ICPs
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed

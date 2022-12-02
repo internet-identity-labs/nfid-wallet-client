@@ -5,6 +5,7 @@ Feature: Registration using Google
     Given I open the site "/"
     Given My browser supports WebAuthN
 
+@g1
   Scenario Outline: User wants to register with Google
     Given I remove the e2e@identitylabs.ooo
     Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed

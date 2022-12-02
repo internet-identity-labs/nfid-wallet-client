@@ -17,4 +17,6 @@ export default async (position: any, obsolete: any) => {
   )[0]
 
   await browser.switchToWindow(lastWindowHandle)
+
+  await browser.pause(5000)
 }

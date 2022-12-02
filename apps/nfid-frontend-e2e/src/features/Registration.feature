@@ -1,4 +1,4 @@
-@registration @mobile
+@registration @mobile @rt
 Feature: Registration from landing page
 
   Background: Background name

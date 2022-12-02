@@ -25,6 +25,4 @@ var options: Options = {
   },
 }
 
-console.log(">> ", { options })
-
 reporter.generate(options)

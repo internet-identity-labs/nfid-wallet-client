@@ -36,6 +36,7 @@ export const IIAuthRecoveryPhrase: React.FC<IIAuthRecoveryPhraseProps> = ({
     const seedPhrase = recoveryPhrase.split(`${userNumber} `)[1]
 
     if (!userNumber) {
+      setIsLoading(false)
       return setResponseError("Invalid Recovery Phrase (missing Anchor)")
     }
 

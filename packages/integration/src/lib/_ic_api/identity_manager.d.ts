@@ -1,3 +1,4 @@
+import type { ActorMethod } from "@dfinity/agent"
 import type { Principal } from "@dfinity/principal"
 
 export interface AccessPointRemoveRequest {
@@ -40,6 +41,7 @@ export interface Application {
   domain: string
   name: string
   is_nft_storage: [] | [boolean]
+  is_trusted: [] | [boolean]
 }
 export interface BasicEntity {
   modified_date: bigint
@@ -235,67 +237,64 @@ export interface ValidatePhoneRequest {
   principal_id: string
 }
 export interface _SERVICE {
-  add_all_accounts_json: (arg_0: string) => Promise<undefined>
-  anchors: () => Promise<HTTPAnchorsResponse>
-  certify_phone_number_sha2: (
-    arg_0: string,
-    arg_1: string,
-  ) => Promise<StringHttpResponse>
-  collectCanisterMetrics: () => Promise<undefined>
-  configure: (arg_0: ConfigurationRequest) => Promise<undefined>
-  count_anchors: () => Promise<bigint>
-  create_access_point: (
-    arg_0: AccessPointRequest,
-  ) => Promise<HTTPAccessPointResponse>
-  create_account: (arg_0: HTTPAccountRequest) => Promise<HTTPAccountResponse>
-  create_application: (arg_0: Application) => Promise<HTTPApplicationResponse>
-  create_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
-  credentials: () => Promise<CredentialResponse>
-  delete_application: (arg_0: string) => Promise<BoolHttpResponse>
-  getCanisterLog: (
-    arg_0: [] | [CanisterLogRequest],
-  ) => Promise<[] | [CanisterLogResponse]>
-  getCanisterMetrics: (
-    arg_0: GetMetricsParameters,
-  ) => Promise<[] | [CanisterMetrics]>
-  get_account: () => Promise<HTTPAccountResponse>
-  get_account_by_anchor: (arg_0: bigint) => Promise<HTTPAccountResponse>
-  get_account_by_principal: (arg_0: string) => Promise<HTTPAccountResponse>
-  get_all_accounts_json: (arg_0: number, arg_1: number) => Promise<string>
-  get_application: (arg_0: string) => Promise<HTTPAppResponse>
-  get_config: () => Promise<ConfigurationResponse>
-  is_over_the_application_limit: (arg_0: string) => Promise<BoolHttpResponse>
-  post_token: (arg_0: TokenRequest) => Promise<Response>
-  read_access_points: () => Promise<HTTPAccessPointResponse>
-  read_applications: () => Promise<HTTPApplicationResponse>
-  read_personas: () => Promise<HTTPPersonasResponse>
-  recover_account: (arg_0: bigint) => Promise<HTTPAccountResponse>
-  remove_access_point: (
-    arg_0: AccessPointRemoveRequest,
-  ) => Promise<HTTPAccessPointResponse>
-  remove_account: () => Promise<BoolHttpResponse>
-  remove_account_by_phone_number: () => Promise<BoolHttpResponse>
-  remove_account_by_principal: (arg_0: string) => Promise<BoolHttpResponse>
-  restore_accounts: (arg_0: string) => Promise<BoolHttpResponse>
-  store_accounts: (arg_0: Array<Account>) => Promise<BoolHttpResponse>
-  sync_controllers: () => Promise<Array<string>>
-  update_access_point: (
-    arg_0: AccessPointRequest,
-  ) => Promise<HTTPAccessPointResponse>
-  update_account: (
-    arg_0: HTTPAccountUpdateRequest,
-  ) => Promise<HTTPAccountResponse>
-  update_application: (arg_0: Application) => Promise<HTTPApplicationResponse>
-  update_application_alias: (
-    arg_0: string,
-    arg_1: string,
-    arg_2: [] | [string],
-  ) => Promise<BoolHttpResponse>
-  update_persona: (arg_0: PersonaRequest) => Promise<HTTPAccountResponse>
-  use_access_point: (
-    arg_0: [] | [string],
-  ) => Promise<HTTPOneAccessPointResponse>
-  validate_phone: (arg_0: ValidatePhoneRequest) => Promise<Response>
-  validate_signature: (arg_0: [] | [string]) => Promise<[bigint, [] | [string]]>
-  verify_token: (arg_0: Token) => Promise<Response>
+  add_all_accounts_json: ActorMethod<[string], undefined>
+  anchors: ActorMethod<[], HTTPAnchorsResponse>
+  certify_phone_number_sha2: ActorMethod<[string, string], StringHttpResponse>
+  collectCanisterMetrics: ActorMethod<[], undefined>
+  configure: ActorMethod<[ConfigurationRequest], undefined>
+  count_anchors: ActorMethod<[], bigint>
+  create_access_point: ActorMethod<
+    [AccessPointRequest],
+    HTTPAccessPointResponse
+  >
+  create_account: ActorMethod<[HTTPAccountRequest], HTTPAccountResponse>
+  create_application: ActorMethod<[Application], HTTPApplicationResponse>
+  create_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
+  credentials: ActorMethod<[], CredentialResponse>
+  delete_application: ActorMethod<[string], BoolHttpResponse>
+  getCanisterLog: ActorMethod<
+    [[] | [CanisterLogRequest]],
+    [] | [CanisterLogResponse]
+  >
+  getCanisterMetrics: ActorMethod<
+    [GetMetricsParameters],
+    [] | [CanisterMetrics]
+  >
+  get_account: ActorMethod<[], HTTPAccountResponse>
+  get_account_by_anchor: ActorMethod<[bigint], HTTPAccountResponse>
+  get_account_by_principal: ActorMethod<[string], HTTPAccountResponse>
+  get_all_accounts_json: ActorMethod<[number, number], string>
+  get_application: ActorMethod<[string], HTTPAppResponse>
+  get_config: ActorMethod<[], ConfigurationResponse>
+  is_over_the_application_limit: ActorMethod<[string], BoolHttpResponse>
+  post_token: ActorMethod<[TokenRequest], Response>
+  read_access_points: ActorMethod<[], HTTPAccessPointResponse>
+  read_applications: ActorMethod<[], HTTPApplicationResponse>
+  read_personas: ActorMethod<[], HTTPPersonasResponse>
+  recover_account: ActorMethod<[bigint], HTTPAccountResponse>
+  remove_access_point: ActorMethod<
+    [AccessPointRemoveRequest],
+    HTTPAccessPointResponse
+  >
+  remove_account: ActorMethod<[], BoolHttpResponse>
+  remove_account_by_phone_number: ActorMethod<[], BoolHttpResponse>
+  remove_account_by_principal: ActorMethod<[string], BoolHttpResponse>
+  restore_accounts: ActorMethod<[string], BoolHttpResponse>
+  store_accounts: ActorMethod<[Array<Account>], BoolHttpResponse>
+  sync_controllers: ActorMethod<[], Array<string>>
+  update_access_point: ActorMethod<
+    [AccessPointRequest],
+    HTTPAccessPointResponse
+  >
+  update_account: ActorMethod<[HTTPAccountUpdateRequest], HTTPAccountResponse>
+  update_application: ActorMethod<[Application], HTTPApplicationResponse>
+  update_application_alias: ActorMethod<
+    [string, string, [] | [string]],
+    BoolHttpResponse
+  >
+  update_persona: ActorMethod<[PersonaRequest], HTTPAccountResponse>
+  use_access_point: ActorMethod<[[] | [string]], HTTPOneAccessPointResponse>
+  validate_phone: ActorMethod<[ValidatePhoneRequest], Response>
+  validate_signature: ActorMethod<[[] | [string]], [bigint, [] | [string]]>
+  verify_token: ActorMethod<[Token], Response>
 }

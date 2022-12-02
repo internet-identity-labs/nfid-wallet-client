@@ -79,12 +79,10 @@ Scenario Outline: User should be able to send more than 0 ICPs
     Given I open the site "/recover-nfid/enter-recovery-phrase"
     When I set "14083 kind advance capital dignity giggle cigar dawn come hard miracle culture coffee opinion silk joke where basic stock pulse wisdom stuff congress drastic suspect" to the inputfield "[name='recoveryPhrase']"
     When I click on the selector "#has-verified-domain"
-    And I click on the selector "#recoveryButton"
+    And I click on the selector "#root > div:nth-child(2) > div.relative.flex.flex-col.w-full.min-h-screen.mx-auto.overflow-hidden.min-h-screen-ios > main > div > div > div > div > div > button"
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then I wait on element "#just-log-me-in" for 10000ms to be displayed
     When I click on the selector "#just-log-me-in"
-    And I wait on element "#sendReceiveButton" for 10000ms to be displayed
-    Then I expect that element "#sendReceiveButton" is displayed
     When I click on the selector "#desktop #profile-assets"
     And  I pause for 10000ms
     Then I expect that element "[class] tr .text-sm:nth-of-type(2)" is displayed
@@ -95,12 +93,10 @@ Scenario Outline: User should be able to send more than 0 ICPs
     Given I open the site "/recover-nfid/enter-recovery-phrase"
     When I set "14083 kind advance capital dignity giggle cigar dawn come hard miracle culture coffee opinion silk joke where basic stock pulse wisdom stuff congress drastic suspect" to the inputfield "[name='recoveryPhrase']"
     When I click on the selector "#has-verified-domain"
-    And I click on the selector "#recoveryButton"
+    And I click on the selector "#root > div:nth-child(2) > div.relative.flex.flex-col.w-full.min-h-screen.mx-auto.overflow-hidden.min-h-screen-ios > main > div > div > div > div > div > button"
     Then I wait on element "#loader" for 10000ms to not be displayed
     Then I wait on element "#just-log-me-in" for 10000ms to be displayed
     When I click on the selector "#just-log-me-in"
-    And I wait on element "#sendReceiveButton" for 10000ms to be displayed
-    Then I expect that element "#sendReceiveButton" is displayed
     When I click on the selector "#desktop #profile-assets"
     And  I pause for 10000ms
     Then I expect that element "[class='flex justify-between h-\[70px\] items-start mt-5'] [alt]" is displayed

@@ -4,6 +4,7 @@ import useSWR from "swr"
 
 import { im, setProfile } from "@nfid/integration"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { unpackResponse } from "frontend/integration/_common"
 import { HTTPAccountRequest } from "frontend/integration/_ic_api/identity_manager.d"
 
@@ -19,11 +20,13 @@ declare const VERIFY_PHONE_NUMBER: string
 
 /** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {
+  const { isAuthenticated } = useAuthentication()
+
   const {
     data: profile,
     error,
     mutate: refreshProfile,
-  } = useSWR("account", fetchProfile, {
+  } = useSWR(isAuthenticated ? "account" : null, fetchProfile, {
     dedupingInterval: 60_000 * 5,
     focusThrottleInterval: 60_000 * 5,
   })

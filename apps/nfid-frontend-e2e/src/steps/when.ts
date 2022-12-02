@@ -57,8 +57,3 @@ When(
   /^I move to element "([^"]*)?"(?: with an offset of (\d+),(\d+))*$/,
   moveTo,
 )
-
-When(
-  /^I (click|doubleclick) on the sendreceive button (link|selector) "([^"]*)?"$/,
-  clickElement
-)

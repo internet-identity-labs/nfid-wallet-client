@@ -20,10 +20,10 @@ Feature: Wallet transactions
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
     When I click on the selector "#profile"
-    And I click on the sendreceive button selector "[alt='send/receive']"
+    And I click on the selector "[alt='send/receive']"
     When I set "0.0001" to the inputfield "#input"
     When I set "a9fa4248e6826e4ca8c58938ce7c87575f099b79e438e3b664bd2cc48cb67448" to the inputfield "[name='address']"
-    And  I pause for 3000ms
+    Then I wait on element "#loader" for 3000ms to not be displayed
     When I click on the selector ".btn-primary.justify-center"
 
  Scenario Outline: User should be able to send more than 0 ICPs
@@ -41,7 +41,7 @@ Feature: Wallet transactions
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
     When I click on the selector "#profile"
-    And I click on the sendreceive button selector "[alt='send/receive']"
+    And I click on the selector "[alt='send/receive']"
     When I set "-2" to the inputfield "#input"
     When I set "a9fa4248e6826e4ca8c58938ce7c87575f099b79e438e3b664bd2cc48cb67448" to the inputfield "[name='address']"
     And  I pause for 3000ms
@@ -69,7 +69,7 @@ Scenario Outline: User should be able to send more than 0 ICPs
     Then I expect the url to contain "/profile/assets"
     And  I wait on element "#profile" for 20000ms to be displayed
     When I click on the selector "#profile"
-    And I click on the sendreceive button selector "[alt='send/receive']"
+    And I click on the selector "[alt='send/receive']"
     When I set "-2" to the inputfield "#input"
     When I set "a9fa4248e6826e4ca8c58938ce7c87575f099b79e438e3b664bd2cc48cb67448" to the inputfield "[name='address']"
     And  I pause for 3000ms

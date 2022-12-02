@@ -19,11 +19,7 @@ import setPromptText from "./support/action/setPromptText"
 
 When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)
 
-// When(/^I (click|doubleclick) on thee (link|selector) "([^"]*)?"$/, clickElement)
-
 When(/^I (add|set) "([^"]*)?" to the inputfield "([^"]*)?"$/, setInputField)
-
-// When(/^I (add|set) "([^"]*)?" to thee inputfield "([^"]*)?"$/, setInputField)
 
 When(/^I clear the inputfield "([^"]*)?"$/, clearInputField)
 
@@ -66,5 +62,3 @@ When(
   /^I (click|doubleclick) on the sendreceive button (link|selector) "([^"]*)?"$/,
   clickElement
 )
-
-// I use another gmail account

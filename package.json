@@ -83,7 +83,7 @@
     "@nrwl/eslint-plugin-nx": "15.2.4",
     "@nrwl/jest": "15.0.4",
     "@nrwl/linter": "15.0.2",
-    "@nrwl/react": "^15.0.2",
+    "@nrwl/react": "^15.2.4",
     "@nrwl/storybook": "15.0.7",
     "@nrwl/webpack": "^15.0.2",
     "@radix-ui/react-tooltip": "1.0.2",

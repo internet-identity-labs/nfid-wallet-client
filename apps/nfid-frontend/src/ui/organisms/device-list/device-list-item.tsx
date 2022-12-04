@@ -129,9 +129,18 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           "relative flex flex-row hover:bg-gray-50 hover:rounded transition-colors duration-100 -mx-3",
         )}
       >
-        <div className="flex flex-wrap items-center flex-1 px-3 select-none py-2cursor-pointer peer">
+        <div
+          className={clsx(
+            "flex flex-wrap items-center flex-1 px-3 select-none py-2 h-[69px]",
+          )}
+        >
           <div className="mr-4">
-            <div className="relative flex items-center justify-center bg-white rounded-full w-9 h-9">
+            <div
+              className={clsx(
+                "relative flex items-center justify-center bg-white rounded-full w-9 h-9",
+                isEditingLabel && "cursor-pointer",
+              )}
+            >
               <DeviceIconDecider
                 icon={device.isAccessPoint ? device.icon : "unknown"}
                 onClick={
@@ -144,12 +153,13 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           <div
             className={clsx(
               "relative flex items-center flex-1 py-2 border-b border-gray-200",
+              "h-full",
               device.isWalletDevice && "!items-start",
             )}
           >
             {isEditingLabel ? (
               <input
-                className="flex-1 flex-shrink px-2 py-1 rounded"
+                className="flex-1 flex-shrink px-2 py-1 rounded outline-none"
                 defaultValue={device.label}
                 onChange={handleOnChangeLabel}
               ></input>
@@ -236,7 +246,12 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           primaryButton={{
             text: "Change",
             type: "primary",
-            onClick: updatedDevice ? handleOnIconUpdate : toggleIconModal,
+            onClick: updatedDevice
+              ? handleOnIconUpdate
+              : () => {
+                  toggleIconModal()
+                  setUpdatedDevice(null)
+                },
           }}
           secondaryButton={{
             text: "Cancel",

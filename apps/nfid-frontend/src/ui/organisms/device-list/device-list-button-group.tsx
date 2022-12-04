@@ -37,6 +37,7 @@ export const DeviceListButtonGroup: React.FC<DeviceListButtonGroupProps> = ({
           icon
           onClick={handleSelect(icon)}
           isActive={selected === icon}
+          className="hover:!bg-blue-50"
         >
           <DeviceIconDecider icon={icon} />
         </Button>

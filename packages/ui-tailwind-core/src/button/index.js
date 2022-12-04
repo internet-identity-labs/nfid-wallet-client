@@ -11,7 +11,7 @@ module.exports = (theme) => ({
     "@apply bg-black text-white border-0 hover:shadow-black": {},
   },
   ".btn-stroke": {
-    "@apply border border-black text-black active:bg-black active:text-white hover:text-white focus:text-white":
+    "@apply border border-black text-black hover:bg-black active:bg-black active:text-white hover:text-white focus:text-white":
       {},
   },
   ".btn-large": {
@@ -28,7 +28,7 @@ module.exports = (theme) => ({
       {},
   },
   ".btn-icon-active": {
-    "@apply !border-blue-600 bg-blue-700": {},
+    "@apply !border-blue-600 bg-blue-50": {},
   },
   ".btn-block": {
     "@apply w-full": {},

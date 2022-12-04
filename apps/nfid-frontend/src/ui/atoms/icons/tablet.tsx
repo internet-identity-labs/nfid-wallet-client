@@ -11,7 +11,7 @@ export const TabletIcon: React.FC<TabletIconProps> = ({
     <svg
       viewBox="0 0 34 34"
       fill="none"
-      className={clsx("cursor-pointer w-6 h-6", className)}
+      className={clsx("w-6 h-6", className)}
       onClick={onClick}
     >
       <path

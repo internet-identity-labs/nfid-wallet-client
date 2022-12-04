@@ -42,7 +42,7 @@ export async function getMetamaskSignature() {
     params: [METAMASK_SIGNIN_MESSAGE, accounts[0]],
   })
 
-  return signature
+  return { signature, accounts }
 }
 
 /**
@@ -52,7 +52,7 @@ export async function getMetamaskSignature() {
 // TODO this function is same with signin-with-ii
 // we need to make it reusable
 export async function getMetamaskAuthSession() {
-  const signature = await getMetamaskSignature()
+  const { signature, accounts } = await getMetamaskSignature()
 
   const identity = await getIdentityByMessageAndWallet(signature)
 
@@ -64,7 +64,7 @@ export async function getMetamaskAuthSession() {
   let profile
   try {
     profile = await fetchProfile()
-    im.use_access_point([identity.getPrincipal().toString()]).catch((error) => {
+    im.use_access_point([accounts[0]]).catch((error) => {
       throw new Error(
         `getMetamaskAuthSession im.use_access_point: ${error.message}`,
       )

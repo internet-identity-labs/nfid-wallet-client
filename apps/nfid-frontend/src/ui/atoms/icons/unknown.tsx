@@ -14,7 +14,7 @@ export const UnknownIcon: React.FC<UnknownIconProps> = ({
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={clsx("cursor-pointer w-6 h-6", className)}
+      className={clsx("w-6 h-6", className)}
       onClick={onClick}
     >
       <path

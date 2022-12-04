@@ -11,7 +11,7 @@ export const IconDesktop: React.FC<LaptopIconProps> = ({
     <svg
       viewBox="0 0 34 34"
       fill="none"
-      className={clsx("w-6 h-6 cursor-pointer", className)}
+      className={clsx("w-6 h-6", className)}
       onClick={onClick}
     >
       <path

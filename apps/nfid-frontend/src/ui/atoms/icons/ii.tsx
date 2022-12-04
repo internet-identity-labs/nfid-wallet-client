@@ -10,7 +10,7 @@ export const IIIcon: React.FC<IIIconProps> = ({ className, onClick }) => {
     <img
       src={dfinity}
       alt="ii"
-      className={clsx("cursor-pointer w-6 h-6", className)}
+      className={clsx("w-6 h-6", className)}
       onClick={onClick}
     />
   )

@@ -1,6 +1,7 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
-import { pubsub } from "@nfid/integration"
 import useSWR, { SWRConfiguration } from "swr"
+
+import { pubsub } from "@nfid/integration"
 
 import { unpackResponse } from "frontend/integration/_common"
 import {

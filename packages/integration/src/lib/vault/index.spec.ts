@@ -116,11 +116,15 @@ describe("Vault suite", () => {
     expect(firstPolicy?.walletIds).toEqual(undefined)
     expect(firstPolicy?.currency).toEqual(Currency.ICP)
     expect(firstPolicy?.memberThreshold).toEqual(1)
-    expect(firstPolicy?.amountThreshold.toString()).toEqual(BigInt(1).toString())
+    expect(firstPolicy?.amountThreshold.toString()).toEqual(
+      BigInt(1).toString(),
+    )
 
     const secondPolicy = policies.find((l) => l.id === policy2.id)
     expect(secondPolicy?.walletIds?.length).toEqual(1)
-    expect(secondPolicy?.walletIds?.[0].toString()).toEqual(wallet1.id.toString())
+    expect(secondPolicy?.walletIds?.[0].toString()).toEqual(
+      wallet1.id.toString(),
+    )
   })
 
   it("test subaddress", async () => {

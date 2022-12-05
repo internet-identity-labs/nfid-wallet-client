@@ -1,8 +1,9 @@
-import { getBalance } from "@nfid/integration"
 import { principalToAddress } from "ictool"
 import { useEffect, useMemo } from "react"
 import useSWR, { mutate } from "swr"
 import useSWRImmutable from "swr/immutable"
+
+import { getBalance } from "@nfid/integration"
 
 import { getWalletPrincipal } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"

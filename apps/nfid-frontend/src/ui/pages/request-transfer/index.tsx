@@ -1,5 +1,6 @@
-import { ApproveTemplate, SDKStatusbar } from "@nfid-frontend/ui"
 import clsx from "clsx"
+
+import { ApproveTemplate, SDKStatusbar } from "@nfid-frontend/ui"
 
 import { walletFee } from "frontend/constants/wallet"
 import { Copy } from "frontend/ui/atoms/copy"

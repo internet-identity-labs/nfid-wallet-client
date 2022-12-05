@@ -1,7 +1,8 @@
-import { ic } from "@nfid/integration"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
+
+import { ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"

@@ -42,6 +42,14 @@ export const getIIAuthSessionService = async () => {
   try {
     profile = await fetchProfile()
 
+    await im
+      .use_access_point([identity.getPrincipal().toString()])
+      .catch((error) => {
+        throw new Error(
+          `getIIAuthSession im.use_access_point: ${error.message}`,
+        )
+      })
+
     const isAccessPointPresent = profile.accessPoints.find(
       (a) => a.principalId === identity.getPrincipal().toString(),
     )
@@ -51,10 +59,6 @@ export const getIIAuthSessionService = async () => {
         "We cannot find your II device. You need to add it firstly.",
       )
     }
-
-    im.use_access_point([identity.getPrincipal().toString()]).catch((error) => {
-      throw new Error(`getIIAuthSession im.use_access_point: ${error.message}`)
-    })
   } catch (fetchProfileError: any) {
     if (fetchProfileError.code !== 404) {
       throw fetchProfileError

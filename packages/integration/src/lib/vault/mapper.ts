@@ -6,7 +6,15 @@ import {
   Wallet as WalletResponse,
 } from "../_ic_api/vault.d"
 import { hasOwnProperty } from "../test-utils"
-import { Currency, Policy, PolicyType, ThresholdPolicy, Vault, VaultMember, VaultRole, Wallet } from "./types"
+import {
+  Currency,
+  Policy,
+  PolicyType,
+  Vault,
+  VaultMember,
+  VaultRole,
+  Wallet,
+} from "./types"
 
 export function responseToVault(response: VaultResponse): Vault {
   return {
@@ -35,8 +43,9 @@ export function responseToPolicy(response: PolicyResponse): Policy {
       id: response.id,
       memberThreshold: threshold.member_threshold,
       type: PolicyType.ThresholdPolicy,
-      walletIds: threshold.wallet_ids.length === 0 ? undefined : threshold.wallet_ids[0],
-    } as ThresholdPolicy
+      walletIds:
+        threshold.wallet_ids.length === 0 ? undefined : threshold.wallet_ids[0],
+    }
   }
   throw Error("Unknown policy type")
 }

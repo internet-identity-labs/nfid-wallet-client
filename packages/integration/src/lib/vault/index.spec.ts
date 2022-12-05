@@ -7,7 +7,8 @@ import { principalToAddress } from "ictool"
 import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
-  addMemberToVault, getPolicies,
+  addMemberToVault,
+  getPolicies,
   getVaultMembers,
   getVaults,
   getWallets,
@@ -16,7 +17,13 @@ import {
   registerWallet,
   walletAddress,
 } from "./index"
-import { Currency, PolicyType, ThresholdPolicy, VaultMember, VaultRole } from "./types"
+import {
+  Currency,
+  PolicyType,
+  ThresholdPolicy,
+  VaultMember,
+  VaultRole,
+} from "./types"
 
 describe("Vault suite", () => {
   jest.setTimeout(100000)
@@ -76,35 +83,37 @@ describe("Vault suite", () => {
     })
 
     const wallet1 = await registerWallet({
-        name: "Wallet1", vaultId: vaultFirst.id,
-      },
-    )
+      name: "Wallet1",
+      vaultId: vaultFirst.id,
+    })
     const wallet2 = await registerWallet({
-        name: "Wallet2", vaultId: vaultFirst.id,
-      },
-    )
+      name: "Wallet2",
+      vaultId: vaultFirst.id,
+    })
     expect(wallet1.name).toEqual("Wallet1")
     expect(wallet2.name).toEqual("Wallet2")
     const wallets = await getWallets(vaultFirst.id)
     expect(wallets.length).toEqual(2)
 
-    const policy1 = await registerPolicy({
-      amountThreshold: BigInt(1),
-      currency: Currency.ICP,
-      memberThreshold: 1,
-      type: PolicyType.ThresholdPolicy,
-      walletIds: undefined,
-      vaultId: vaultFirst.id,
-    }) as ThresholdPolicy
+    const [policy1] = await Promise.all([
+      registerPolicy({
+        amountThreshold: BigInt(1),
+        currency: Currency.ICP,
+        memberThreshold: 1,
+        type: PolicyType.ThresholdPolicy,
+        walletIds: undefined,
+        vaultId: vaultFirst.id,
+      }),
 
-    const policy2 = await registerPolicy({
-      amountThreshold: BigInt(1),
-      currency: Currency.ICP,
-      memberThreshold: 1,
-      type: PolicyType.ThresholdPolicy,
-      walletIds: [wallet1.id],
-      vaultId: vaultFirst.id,
-    }) as ThresholdPolicy
+      registerPolicy({
+        amountThreshold: BigInt(1),
+        currency: Currency.ICP,
+        memberThreshold: 1,
+        type: PolicyType.ThresholdPolicy,
+        walletIds: [wallet1.id],
+        vaultId: vaultFirst.id,
+      }),
+    ])
 
     const policies = await getPolicies(vaultFirst.id)
 
@@ -117,13 +126,15 @@ describe("Vault suite", () => {
     expect(firstPolicy.memberThreshold).toEqual(1)
     expect(firstPolicy.amountThreshold.toString()).toEqual(BigInt(1).toString())
     expect(secondPolicy.walletIds?.length).toEqual(1)
-    // @ts-ignore
-    expect(secondPolicy.walletIds[0].toString()).toEqual(wallet1.id.toString())
+    expect(secondPolicy?.walletIds?.[0].toString()).toEqual(
+      wallet1.id.toString(),
+    )
   })
-
 
   it("test subaddress", async () => {
     const actual = await walletAddress(BigInt(1))
-    expect("1c016881d9e01ee163f9c5f698636e25ea095fb86ffa977b28254703286b91db").toEqual(actual)
+    expect(
+      "1c016881d9e01ee163f9c5f698636e25ea095fb86ffa977b28254703286b91db",
+    ).toEqual(actual)
   })
 })

@@ -76,7 +76,6 @@ interface AddPolicyOptions {
 
 export async function registerPolicy({
    vaultId,
-   currency,
    amountThreshold,
    memberThreshold,
    walletIds,

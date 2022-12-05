@@ -87,7 +87,7 @@
     "@nrwl/storybook": "15.0.7",
     "@nrwl/webpack": "^15.0.2",
     "@radix-ui/react-tooltip": "1.0.2",
-    "@storybook/addon-actions": "^6.5.13",
+    "@storybook/addon-actions": "^6.5.14",
     "@storybook/addon-essentials": "~6.5.9",
     "@storybook/addon-interactions": "6.5.13",
     "@storybook/addon-links": "6.5.13",

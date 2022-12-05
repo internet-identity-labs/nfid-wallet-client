@@ -1,7 +1,13 @@
-import { VaultMemberRequest, VaultRegisterRequest, WalletRegisterRequest } from "../_ic_api/vault.d"
+import {
+  PolicyRegisterRequest,
+  ThresholdPolicy as ThresholdPolicyRequest,
+  VaultMemberRequest,
+  VaultRegisterRequest,
+  WalletRegisterRequest,
+} from "../_ic_api/vault.d"
 import { vault, vault as vaultAPI } from "../actors"
-import { responseToMember, responseToVault, responseToWallet, roleToRequest } from "./mapper"
-import { Vault, VaultMember, VaultRole, Wallet } from "./types"
+import { responseToMember, responseToPolicy, responseToVault, responseToWallet, roleToRequest } from "./mapper"
+import { Currency, Policy, PolicyType, Vault, VaultMember, VaultRole, Wallet } from "./types"
 
 export async function registerVault(vaultName: string): Promise<Vault> {
   const request: VaultRegisterRequest = {
@@ -58,9 +64,41 @@ export async function registerWallet({
   return responseToWallet(response)
 }
 
+
+interface AddPolicyOptions {
+  vaultId: bigint
+  type: PolicyType
+  amountThreshold: bigint,
+  currency: Currency,
+  memberThreshold: number,
+  walletIds: Array<bigint> | undefined,
+}
+
+export async function registerPolicy({
+   vaultId,
+   amountThreshold,
+   memberThreshold,
+   walletIds,
+ }: AddPolicyOptions): Promise<Policy> {
+  const tp: ThresholdPolicyRequest = {
+    amount_threshold: amountThreshold,
+    currency: { "ICP": null },
+    member_threshold: memberThreshold,
+    wallet_ids: walletIds === undefined ? [] : [walletIds],
+  }
+  const policyRegisterRequest: PolicyRegisterRequest = { policy_type: { "threshold_policy": tp }, vault_id: vaultId }
+  const response = await vaultAPI.register_policy(policyRegisterRequest)
+  return responseToPolicy(response)
+}
+
 export async function getWallets(vaultId: bigint): Promise<VaultMember[]> {
   const response = await vaultAPI.get_vault_members(vaultId)
   return response.map((v) => responseToMember(v))
+}
+
+export async function getPolicies(vaultId: bigint): Promise<Policy[]> {
+  const response = await vaultAPI.get_policies(vaultId)
+  return response.map((v) => responseToPolicy(v))
 }
 
 export async function walletAddress(walletId: bigint): Promise<string> {

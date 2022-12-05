@@ -8,11 +8,16 @@ import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
   addMemberToVault,
+  getPolicies,
   getVaultMembers,
-  getVaults, getWallets,
-  registerVault, registerWallet, walletAddress,
+  getVaults,
+  getWallets,
+  registerPolicy,
+  registerVault,
+  registerWallet,
+  walletAddress,
 } from "./index"
-import { VaultMember, VaultRole } from "./types"
+import { Currency, PolicyType, VaultMember, VaultRole } from "./types"
 
 describe("Vault suite", () => {
   jest.setTimeout(100000)
@@ -72,21 +77,56 @@ describe("Vault suite", () => {
     })
 
     const wallet1 = await registerWallet({
-        name: "Wallet1", vaultId: vaultFirst.id,
-      },
-    )
+      name: "Wallet1",
+      vaultId: vaultFirst.id,
+    })
     const wallet2 = await registerWallet({
-        name: "Wallet2", vaultId: vaultFirst.id,
-      },
-    )
+      name: "Wallet2",
+      vaultId: vaultFirst.id,
+    })
     expect(wallet1.name).toEqual("Wallet1")
     expect(wallet2.name).toEqual("Wallet2")
     const wallets = await getWallets(vaultFirst.id)
     expect(wallets.length).toEqual(2)
+
+    const [policy1, policy2] = await Promise.all([
+      registerPolicy({
+        amountThreshold: BigInt(1),
+        currency: Currency.ICP,
+        memberThreshold: 1,
+        type: PolicyType.ThresholdPolicy,
+        walletIds: undefined,
+        vaultId: vaultFirst.id,
+      }),
+      registerPolicy({
+        amountThreshold: BigInt(1),
+        currency: Currency.ICP,
+        memberThreshold: 1,
+        type: PolicyType.ThresholdPolicy,
+        walletIds: [wallet1.id],
+        vaultId: vaultFirst.id,
+      }),
+    ])
+
+    const policies = await getPolicies(vaultFirst.id)
+
+    expect(policies.length).toEqual(2)
+    const firstPolicy = policies.find((l) => l.id === policy1.id)
+
+    expect(firstPolicy?.walletIds).toEqual(undefined)
+    expect(firstPolicy?.currency).toEqual(Currency.ICP)
+    expect(firstPolicy?.memberThreshold).toEqual(1)
+    expect(firstPolicy?.amountThreshold.toString()).toEqual(BigInt(1).toString())
+
+    const secondPolicy = policies.find((l) => l.id === policy2.id)
+    expect(secondPolicy?.walletIds?.length).toEqual(1)
+    expect(secondPolicy?.walletIds?.[0].toString()).toEqual(wallet1.id.toString())
   })
 
   it("test subaddress", async () => {
     const actual = await walletAddress(BigInt(1))
-    expect("1c016881d9e01ee163f9c5f698636e25ea095fb86ffa977b28254703286b91db").toEqual(actual)
+    expect(
+      "1c016881d9e01ee163f9c5f698636e25ea095fb86ffa977b28254703286b91db",
+    ).toEqual(actual)
   })
 })

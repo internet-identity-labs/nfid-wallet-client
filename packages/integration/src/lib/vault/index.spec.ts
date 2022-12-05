@@ -88,7 +88,7 @@ describe("Vault suite", () => {
     const wallets = await getWallets(vaultFirst.id)
     expect(wallets.length).toEqual(2)
 
-   const policy1 = await registerPolicy({
+    const policy1 = await registerPolicy({
       amountThreshold: BigInt(1),
       currency: Currency.ICP,
       memberThreshold: 1,
@@ -97,14 +97,14 @@ describe("Vault suite", () => {
       vaultId: vaultFirst.id,
     }) as ThresholdPolicy
 
-    const policy2 =  await registerPolicy({
+    const policy2 = await registerPolicy({
       amountThreshold: BigInt(1),
       currency: Currency.ICP,
       memberThreshold: 1,
       type: PolicyType.ThresholdPolicy,
       walletIds: [wallet1.id],
       vaultId: vaultFirst.id,
-    }) as ThresholdPolicy;
+    }) as ThresholdPolicy
 
     const policies = await getPolicies(vaultFirst.id)
 
@@ -112,18 +112,13 @@ describe("Vault suite", () => {
     const firstPolicy = policies[0] as ThresholdPolicy
     const secondPolicy = policies[1] as ThresholdPolicy
     expect(firstPolicy.id).toEqual(policy1.id)
-    expect(firstPolicy.amountThreshold).toEqual(BigInt(1))
     expect(firstPolicy.walletIds).toEqual(undefined)
     expect(firstPolicy.currency).toEqual(Currency.ICP)
     expect(firstPolicy.memberThreshold).toEqual(1)
-    expect(secondPolicy).toEqual({
-      id: policy2.id,
-      amountThreshold: BigInt(1),
-      currency: Currency.ICP,
-      memberThreshold: 1,
-      type: PolicyType.ThresholdPolicy,
-      walletIds: [wallet1.id],
-    })
+    expect(firstPolicy.amountThreshold.toString()).toEqual(BigInt(1).toString())
+    expect(secondPolicy.walletIds?.length).toEqual(1)
+    // @ts-ignore
+    expect(secondPolicy.walletIds[0].toString()).toEqual(wallet1.id.toString())
   })
 
 

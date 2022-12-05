@@ -88,6 +88,7 @@ export interface Typegen0 {
       | "done.invoke.loginWithAnchor"
       | "done.invoke.registration"
       | "done.invoke.remote"
+    handleError: "error.platform.getMetamaskAuthSession"
   }
   eventsCausingServices: {
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"

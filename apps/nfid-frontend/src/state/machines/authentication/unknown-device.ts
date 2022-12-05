@@ -1,3 +1,4 @@
+import { toast } from "react-toastify"
 import { v4 as uuid } from "uuid"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
@@ -30,6 +31,10 @@ export type Events =
   | { type: "done.invoke.registration"; data?: AuthSession }
   | { type: "done.invoke.registerDevice"; data: AuthSession }
   | { type: "done.invoke.getMetamaskAuthSession"; data: AuthSession }
+  | {
+      type: "error.platform.getMetamaskAuthSession"
+      data: { message: string }
+    }
   | { type: "done.invoke.signInSameDevice"; data: LocalDeviceAuthSession }
   | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }
   | {
@@ -181,7 +186,7 @@ const UnknownDeviceMachine =
                 target: "RegistrationMachine",
               },
             ],
-            onError: { target: "AuthSelection" },
+            onError: { target: "AuthSelection", actions: "handleError" },
           },
         },
         RemoteAuthentication: {
@@ -260,6 +265,9 @@ const UnknownDeviceMachine =
             return event.data
           },
         }),
+        handleError: (event, context) => {
+          toast.error(context.data.message)
+        },
       },
       services: {
         isMobileWithWebAuthn,

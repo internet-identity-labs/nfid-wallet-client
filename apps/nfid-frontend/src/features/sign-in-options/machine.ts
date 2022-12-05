@@ -140,7 +140,7 @@ const AuthWithIIMachine =
             },
             onError: {
               target: "IICreateNewNFID",
-              actions: "toastError",
+              actions: "handleError",
             },
           },
         },
@@ -180,7 +180,7 @@ const AuthWithIIMachine =
         assignRegistrationStatus: assign({
           isRegistered: (_, event) => event.data,
         }),
-        toastError: (event, context) => {
+        handleError: (event, context) => {
           toast.error(context.data.message)
         },
       },

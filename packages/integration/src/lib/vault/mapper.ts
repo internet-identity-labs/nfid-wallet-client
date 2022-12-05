@@ -1,11 +1,12 @@
 import {
+  Policy as PolicyResponse,
   Vault as VaultResponse,
-  Wallet as WalletResponse,
   VaultMember as VaultMemberResponse,
   VaultRole as VaultRoleTransport,
+  Wallet as WalletResponse,
 } from "../_ic_api/vault.d"
 import { hasOwnProperty } from "../test-utils"
-import { Vault, VaultMember, VaultRole, Wallet } from "./types"
+import { Currency, Policy, PolicyType, ThresholdPolicy, Vault, VaultMember, VaultRole, Wallet } from "./types"
 
 export function responseToVault(response: VaultResponse): Vault {
   return {
@@ -21,8 +22,23 @@ export function responseToWallet(response: WalletResponse): Wallet {
   return {
     vaults: response.vaults,
     id: response.id,
-    name: response.name.length === 0 ? undefined : response.name[0]
+    name: response.name.length === 0 ? undefined : response.name[0],
   }
+}
+
+export function responseToPolicy(response: PolicyResponse): Policy {
+  if (hasOwnProperty(response.policy_type, "threshold_policy")) {
+    const threshold = response.policy_type.threshold_policy
+    return {
+      amountThreshold: threshold.amount_threshold,
+      currency: Currency.ICP,
+      id: response.id,
+      memberThreshold: threshold.member_threshold,
+      type: PolicyType.ThresholdPolicy,
+      walletIds: threshold.wallet_ids.length === 0 ? undefined : threshold.wallet_ids[0],
+    } as ThresholdPolicy
+  }
+  throw Error("Unknown policy type")
 }
 
 export function responseToMember(response: VaultMemberResponse): VaultMember {

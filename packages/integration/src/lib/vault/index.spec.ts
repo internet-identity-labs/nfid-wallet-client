@@ -7,12 +7,16 @@ import { principalToAddress } from "ictool"
 import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
-  addMemberToVault,
+  addMemberToVault, getPolicies,
   getVaultMembers,
-  getVaults, getWallets,
-  registerVault, registerWallet, walletAddress,
+  getVaults,
+  getWallets,
+  registerPolicy,
+  registerVault,
+  registerWallet,
+  walletAddress,
 } from "./index"
-import { VaultMember, VaultRole } from "./types"
+import { Currency, PolicyType, ThresholdPolicy, VaultMember, VaultRole } from "./types"
 
 describe("Vault suite", () => {
   jest.setTimeout(100000)
@@ -83,7 +87,45 @@ describe("Vault suite", () => {
     expect(wallet2.name).toEqual("Wallet2")
     const wallets = await getWallets(vaultFirst.id)
     expect(wallets.length).toEqual(2)
+
+   const policy1 = await registerPolicy({
+      amountThreshold: BigInt(1),
+      currency: Currency.ICP,
+      memberThreshold: 1,
+      type: PolicyType.ThresholdPolicy,
+      walletIds: undefined,
+      vaultId: vaultFirst.id,
+    }) as ThresholdPolicy
+
+    const policy2 =  await registerPolicy({
+      amountThreshold: BigInt(1),
+      currency: Currency.ICP,
+      memberThreshold: 1,
+      type: PolicyType.ThresholdPolicy,
+      walletIds: [wallet1.id],
+      vaultId: vaultFirst.id,
+    }) as ThresholdPolicy;
+
+    const policies = await getPolicies(vaultFirst.id)
+
+    expect(policies.length).toEqual(2)
+    const firstPolicy = policies[0] as ThresholdPolicy
+    const secondPolicy = policies[1] as ThresholdPolicy
+    expect(firstPolicy.id).toEqual(policy1.id)
+    expect(firstPolicy.amountThreshold).toEqual(BigInt(1))
+    expect(firstPolicy.walletIds).toEqual(undefined)
+    expect(firstPolicy.currency).toEqual(Currency.ICP)
+    expect(firstPolicy.memberThreshold).toEqual(1)
+    expect(secondPolicy).toEqual({
+      id: policy2.id,
+      amountThreshold: BigInt(1),
+      currency: Currency.ICP,
+      memberThreshold: 1,
+      type: PolicyType.ThresholdPolicy,
+      walletIds: [wallet1.id],
+    })
   })
+
 
   it("test subaddress", async () => {
     const actual = await walletAddress(BigInt(1))

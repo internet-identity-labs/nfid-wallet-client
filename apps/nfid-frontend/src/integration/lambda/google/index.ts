@@ -1,4 +1,5 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+
 import { authState, ii, im, requestFEDelegation } from "@nfid/integration"
 
 import { getBrowserName } from "frontend/integration/device"

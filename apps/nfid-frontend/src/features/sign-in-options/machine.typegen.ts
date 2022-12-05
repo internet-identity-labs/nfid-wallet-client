@@ -53,6 +53,7 @@ export interface Typegen0 {
     assignRegistrationStatus: "done.invoke.checkRegistrationStatus"
     assignUserIdentity: "ASSIGN_USER_DEVICE"
     assignVerificationCode: "CONNECT_RETRY"
+    toastError: "error.platform.getIIAuthSessionService"
   }
   eventsCausingServices: {
     checkRegistrationStatus: "done.invoke.getIIAuthSessionService"

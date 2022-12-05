@@ -1,5 +1,5 @@
-import "whatwg-fetch"
 import { TextEncoder, TextDecoder } from "util"
+import "whatwg-fetch"
 
 global.TextEncoder = TextEncoder
 // @ts-ignore

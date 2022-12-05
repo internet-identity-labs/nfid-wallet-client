@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+
 import { ii } from "@nfid/integration"
 
 import { WALLET_SCOPE } from "./index"

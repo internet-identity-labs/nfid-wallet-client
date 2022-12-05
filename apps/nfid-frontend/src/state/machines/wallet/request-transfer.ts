@@ -1,8 +1,9 @@
+import { ActorRefFrom, assign, createMachine } from "xstate"
+
 import {
   registerRequestTransferHandler,
   RequestTransferParams,
 } from "@nfid/wallet"
-import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"

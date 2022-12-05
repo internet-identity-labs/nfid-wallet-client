@@ -196,25 +196,26 @@ export const RecoveryMethodListItem: React.FC<recoveryMethodListItemProps> = ({
           </div>
           <div className="pl-1 md:pl-4">
             <div className="flex space-x-2">
-              {recoveryMethod.isRecoveryPhrase && !recoveryMethod.isProtected && (
-                <Tooltip
-                  tip={
-                    <div>
-                      Recovery phrase can be removed without proving you know
-                      what it is.
-                      <br /> Click to protect this recovery phrase
-                    </div>
-                  }
-                >
-                  <div
-                    id="protect-recovery"
-                    onClick={toggleProtectVisible}
-                    className={"hover:opacity-70 transition-opacity"}
+              {recoveryMethod.isRecoveryPhrase &&
+                !recoveryMethod.isProtected && (
+                  <Tooltip
+                    tip={
+                      <div>
+                        Recovery phrase can be removed without proving you know
+                        what it is.
+                        <br /> Click to protect this recovery phrase
+                      </div>
+                    }
                   >
-                    <IconWarning />
-                  </div>
-                </Tooltip>
-              )}
+                    <div
+                      id="protect-recovery"
+                      onClick={toggleProtectVisible}
+                      className={"hover:opacity-70 transition-opacity"}
+                    >
+                      <IconWarning />
+                    </div>
+                  </Tooltip>
+                )}
               <div
                 className="hover:bg-gray-50 text-red-base"
                 onClick={isEditingLabel ? handleOnLabelUpdate : toggleEditLabel}

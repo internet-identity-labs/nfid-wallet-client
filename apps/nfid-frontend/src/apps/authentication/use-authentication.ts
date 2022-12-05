@@ -1,11 +1,12 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { authState } from "@nfid/integration"
-import { agent, invalidateIdentity } from "@nfid/integration"
 import * as Sentry from "@sentry/browser"
 import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
+
+import { authState } from "@nfid/integration"
+import { agent, invalidateIdentity } from "@nfid/integration"
 
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {

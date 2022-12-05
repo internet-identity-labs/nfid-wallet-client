@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import { DelegationChain, WebAuthnIdentity } from "@dfinity/identity"
-import { ii, im } from "@nfid/integration"
 import {
   render,
   waitFor,
@@ -11,6 +10,8 @@ import {
   getByPlaceholderText,
 } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import { ii, im } from "@nfid/integration"
 
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import {

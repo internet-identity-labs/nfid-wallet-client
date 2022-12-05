@@ -1,4 +1,5 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
+import { toast } from "react-toastify"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { FrontendDelegation } from "@nfid/integration"
@@ -21,6 +22,10 @@ export interface IIAuthenticationMachineContext {
 
 export type Events =
   | { type: "done.invoke.getIIAuthSessionService"; data: IIAuthSession }
+  | {
+      type: "error.platform.getIIAuthSessionService"
+      data: { message: string }
+    }
   | { type: "done.invoke.checkTentativeDevice"; data: AuthSession }
   | { type: "done.invoke.checkRegistrationStatus"; data: boolean }
   | { type: "NEW_NFID" }
@@ -135,6 +140,7 @@ const AuthWithIIMachine =
             },
             onError: {
               target: "IICreateNewNFID",
+              actions: "handleError",
             },
           },
         },
@@ -174,6 +180,9 @@ const AuthWithIIMachine =
         assignRegistrationStatus: assign({
           isRegistered: (_, event) => event.data,
         }),
+        handleError: (event, context) => {
+          toast.error(context.data.message)
+        },
       },
       guards: {},
       services: {

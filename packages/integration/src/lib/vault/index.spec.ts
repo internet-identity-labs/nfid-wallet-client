@@ -17,13 +17,7 @@ import {
   registerWallet,
   walletAddress,
 } from "./index"
-import {
-  Currency,
-  PolicyType,
-  ThresholdPolicy,
-  VaultMember,
-  VaultRole,
-} from "./types"
+import { Currency, PolicyType, VaultMember, VaultRole } from "./types"
 
 describe("Vault suite", () => {
   jest.setTimeout(100000)
@@ -95,7 +89,7 @@ describe("Vault suite", () => {
     const wallets = await getWallets(vaultFirst.id)
     expect(wallets.length).toEqual(2)
 
-    const [policy1] = await Promise.all([
+    const [policy1, policy2] = await Promise.all([
       registerPolicy({
         amountThreshold: BigInt(1),
         currency: Currency.ICP,
@@ -104,7 +98,6 @@ describe("Vault suite", () => {
         walletIds: undefined,
         vaultId: vaultFirst.id,
       }),
-
       registerPolicy({
         amountThreshold: BigInt(1),
         currency: Currency.ICP,
@@ -118,17 +111,16 @@ describe("Vault suite", () => {
     const policies = await getPolicies(vaultFirst.id)
 
     expect(policies.length).toEqual(2)
-    const firstPolicy = policies[0] as ThresholdPolicy
-    const secondPolicy = policies[1] as ThresholdPolicy
-    expect(firstPolicy.id).toEqual(policy1.id)
-    expect(firstPolicy.walletIds).toEqual(undefined)
-    expect(firstPolicy.currency).toEqual(Currency.ICP)
-    expect(firstPolicy.memberThreshold).toEqual(1)
-    expect(firstPolicy.amountThreshold.toString()).toEqual(BigInt(1).toString())
-    expect(secondPolicy.walletIds?.length).toEqual(1)
-    expect(secondPolicy?.walletIds?.[0].toString()).toEqual(
-      wallet1.id.toString(),
-    )
+    const firstPolicy = policies.find((l) => l.id === policy1.id)
+
+    expect(firstPolicy?.walletIds).toEqual(undefined)
+    expect(firstPolicy?.currency).toEqual(Currency.ICP)
+    expect(firstPolicy?.memberThreshold).toEqual(1)
+    expect(firstPolicy?.amountThreshold.toString()).toEqual(BigInt(1).toString())
+
+    const secondPolicy = policies.find((l) => l.id === policy2.id)
+    expect(secondPolicy?.walletIds?.length).toEqual(1)
+    expect(secondPolicy?.walletIds?.[0].toString()).toEqual(wallet1.id.toString())
   })
 
   it("test subaddress", async () => {

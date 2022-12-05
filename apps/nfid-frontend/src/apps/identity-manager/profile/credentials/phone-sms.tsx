@@ -1,8 +1,9 @@
-import { authState, im } from "@nfid/integration"
 import { useAtom } from "jotai"
 import React from "react"
 import { toast } from "react-toastify"
 import { useProfile } from "src/integration/identity-manager/queries"
+
+import { authState, im } from "@nfid/integration"
 
 import { verifyPhoneNumber } from "frontend/integration/lambda/phone"
 import ProfileAddPhoneSMS from "frontend/ui/pages/new-profile/credentials/add-phone-sms"

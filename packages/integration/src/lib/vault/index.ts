@@ -6,8 +6,22 @@ import {
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
 import { vault, vault as vaultAPI } from "../actors"
-import { responseToMember, responseToPolicy, responseToVault, responseToWallet, roleToRequest } from "./mapper"
-import { Currency, Policy, PolicyType, Vault, VaultMember, VaultRole, Wallet } from "./types"
+import {
+  responseToMember,
+  responseToPolicy,
+  responseToVault,
+  responseToWallet,
+  roleToRequest,
+} from "./mapper"
+import {
+  Currency,
+  Policy,
+  PolicyType,
+  Vault,
+  VaultMember,
+  VaultRole,
+  Wallet,
+} from "./types"
 
 export async function registerVault(vaultName: string): Promise<Vault> {
   const request: VaultRegisterRequest = {
@@ -30,11 +44,12 @@ interface AddMemberToVaultOptions {
 }
 
 export async function addMemberToVault({
-   vaultId,
-   memberAddress,
-   name,
-   role,
- }: AddMemberToVaultOptions): Promise<Vault> { //TODO Promise<VaultMember[]>
+  vaultId,
+  memberAddress,
+  name,
+  role,
+}: AddMemberToVaultOptions): Promise<Vault> {
+  //TODO Promise<VaultMember[]>
   const vaultMemberRequest: VaultMemberRequest = {
     address: memberAddress,
     name: [name],
@@ -56,37 +71,42 @@ interface AddWalletOptions {
 }
 
 export async function registerWallet({
-   vaultId,
-   name,
- }: AddWalletOptions): Promise<Wallet> {
-  const walletRegisterRequest: WalletRegisterRequest = { name: [name], vault_id: vaultId }
+  vaultId,
+  name,
+}: AddWalletOptions): Promise<Wallet> {
+  const walletRegisterRequest: WalletRegisterRequest = {
+    name: [name],
+    vault_id: vaultId,
+  }
   const response = await vaultAPI.register_wallet(walletRegisterRequest)
   return responseToWallet(response)
 }
 
-
 interface AddPolicyOptions {
   vaultId: bigint
   type: PolicyType
-  amountThreshold: bigint,
-  currency: Currency,
-  memberThreshold: number,
-  walletIds: Array<bigint> | undefined,
+  amountThreshold: bigint
+  currency: Currency
+  memberThreshold: number
+  walletIds: Array<bigint> | undefined
 }
 
 export async function registerPolicy({
-   vaultId,
-   amountThreshold,
-   memberThreshold,
-   walletIds,
- }: AddPolicyOptions): Promise<Policy> {
+  vaultId,
+  amountThreshold,
+  memberThreshold,
+  walletIds,
+}: AddPolicyOptions): Promise<Policy> {
   const tp: ThresholdPolicyRequest = {
     amount_threshold: amountThreshold,
-    currency: { "ICP": null },
+    currency: { ICP: null },
     member_threshold: memberThreshold,
     wallet_ids: walletIds === undefined ? [] : [walletIds],
   }
-  const policyRegisterRequest: PolicyRegisterRequest = { policy_type: { "threshold_policy": tp }, vault_id: vaultId }
+  const policyRegisterRequest: PolicyRegisterRequest = {
+    policy_type: { threshold_policy: tp },
+    vault_id: vaultId,
+  }
   const response = await vaultAPI.register_policy(policyRegisterRequest)
   return responseToPolicy(response)
 }

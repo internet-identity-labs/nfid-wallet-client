@@ -3,6 +3,7 @@
  */
 import { Principal } from "@dfinity/principal"
 import { expect } from "@jest/globals"
+
 import { ii } from "@nfid/integration"
 
 import {

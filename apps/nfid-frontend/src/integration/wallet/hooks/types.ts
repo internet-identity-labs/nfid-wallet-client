@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+
 import { Balance } from "@nfid/integration"
 
 export interface IWallet {

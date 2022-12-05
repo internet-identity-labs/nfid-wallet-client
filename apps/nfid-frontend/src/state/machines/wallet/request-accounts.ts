@@ -1,5 +1,6 @@
-import { registerRequestAccountsHandler } from "@nfid/wallet"
 import { ActorRefFrom, assign, createMachine } from "xstate"
+
+import { registerRequestAccountsHandler } from "@nfid/wallet"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"

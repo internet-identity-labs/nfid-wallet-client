@@ -1,6 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
-import { ledgerWithIdentity } from "@nfid/integration"
 import { fromHexString } from "ictool"
+
+import { ledgerWithIdentity } from "@nfid/integration"
 
 import { BlockIndex, TransferResult } from "../_ic_api/ledger.d"
 

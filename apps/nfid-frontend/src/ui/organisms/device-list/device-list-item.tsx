@@ -131,7 +131,7 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
       >
         <div
           className={clsx(
-            "flex flex-wrap items-center flex-1 px-3 select-none py-2 h-[69px]",
+            "flex flex-wrap items-center flex-1 px-3 select-none py-2 min-h-[69px]",
           )}
         >
           <div className="mr-4">

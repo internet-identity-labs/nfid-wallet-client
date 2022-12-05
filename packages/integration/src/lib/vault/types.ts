@@ -26,23 +26,23 @@ export enum VaultRole {
 }
 
 export enum PolicyType {
-  ThresholdPolicy,
+  ThresholdPolicy = "ThresholdPolicy",
 }
 
 export enum Currency {
-  ICP
+  ICP,
 }
 
-export interface Policy {
-  "id": bigint,
-  "type": PolicyType,
+export interface BasePolicy {
+  id: bigint
+  type: PolicyType
 }
 
-export interface ThresholdPolicy extends Policy {
-  "id": bigint,
-  "type": PolicyType,
-  "memberThreshold": number,
-  "amountThreshold": bigint,
-  "walletIds": undefined | [Array<bigint>],
-  "currency": Currency,
+export interface ThresholdPolicy extends BasePolicy {
+  memberThreshold: number
+  amountThreshold: bigint
+  walletIds?: Array<bigint>
+  currency: Currency
 }
+
+export type Policy = ThresholdPolicy // | AddressPolicy

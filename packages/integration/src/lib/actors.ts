@@ -54,6 +54,8 @@ for (const [label, canister] of canisterConfig) {
     throw new Error(`Missing canister id for "${label}", please check envars.`)
 }
 
+export const agentBaseConfig = { host: "https://ic0.app" }
+
 /**
  * Create an actor.
  */
@@ -67,8 +69,7 @@ export function actor<T>(
 
 export function ledgerWithIdentity(identity: SignIdentity) {
   return actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL, {
-    // TODO WALLET CODE REVIEW MAKE CONFIGURABLYAT
-    agent: new HttpAgent({ identity, host: "https://ic0.app" }),
+    agent: new HttpAgent({ ...agentBaseConfig, identity }),
   })
 }
 
@@ -78,7 +79,7 @@ export async function initActor(
   factory: InterfaceFactory,
 ): Promise<Record<string, ActorMethod>> {
   return actor(canisterId, factory, {
-    agent: new HttpAgent({ host: "https://ic0.app", identity }),
+    agent: new HttpAgent({ ...agentBaseConfig, identity }),
   })
 }
 // All of the actor definitions needed in our app should go here.

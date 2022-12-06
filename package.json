@@ -68,7 +68,7 @@
     "tslib": "^2.3.0",
     "tweetnacl-util": "^0.15.1",
     "usergeek-ic-js": "git+https://github.com/usergeek/usergeek-ic-js#v1.0.3",
-    "uuid": "8.3.2",
+    "uuid": "9.0.0",
     "wouter": "2.9.0",
     "xstate": "^4.32.1"
   },
@@ -112,7 +112,7 @@
     "@types/react-router-dom": "5.3.3",
     "@types/react-tooltip": "^4.2.4",
     "@types/sha256": "^0.2.0",
-    "@types/uuid": "8.3.4",
+    "@types/uuid": "9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "@wdio/allure-reporter": "7.23.0",

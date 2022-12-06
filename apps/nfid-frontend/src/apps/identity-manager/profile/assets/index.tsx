@@ -15,6 +15,7 @@ const ProfileAssets = () => {
 
   const fungibleTokens = React.useMemo(() => {
     if (!appAccountBalance) return []
+
     return [
       {
         icon: Dfinity,

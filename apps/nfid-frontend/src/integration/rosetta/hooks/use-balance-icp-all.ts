@@ -139,7 +139,7 @@ const reduceRawToAppAccountBalance = (
 
       return {
         ...acc,
-        icpBalance: `${totalBalanceValue} ${acc.token}`,
+        icpBalance: `${Number(totalBalanceValue).toFixed(2)} ${acc.token}`,
         usdBalance: icpToUSD(totalBalanceValue, icpExchangeRate),
         applications: {
           ...acc.applications,

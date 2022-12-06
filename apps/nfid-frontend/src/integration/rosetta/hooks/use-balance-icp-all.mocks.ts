@@ -1,7 +1,7 @@
 export const APP_ACC_BALANCE_SHEET = {
   label: "Internet Computer",
   token: "ICP",
-  icpBalance: "1.3 ICP",
+  icpBalance: "1.30 ICP",
   usdBalance: "$6.50",
   applications: {
     NFID: {

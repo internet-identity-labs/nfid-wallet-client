@@ -18,6 +18,7 @@
       "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
       "@nfid-frontend/utils": ["packages/utils/src/index.ts"],
       "@nfid/integration": ["packages/integration/src/index.ts"],
+      "config": ["packages/config/src/index.ts"],
       "frontend/*": ["apps/nfid-frontend/src/*"],
       "src/*": ["apps/nfid-frontend/src/*"]
     }

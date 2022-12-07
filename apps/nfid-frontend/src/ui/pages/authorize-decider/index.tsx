@@ -5,7 +5,7 @@ import { Input } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
 import MetamaskIcon from "frontend/assets/metamask.svg"
-import WConnectIcon from "frontend/assets/wallet-connect.svg"
+// import WConnectIcon from "frontend/assets/wallet-connect.svg"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
   LoginEventHandler,
@@ -132,7 +132,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           <div className="w-full max-w-[400px]">
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
 
-            <div className="grid h-12 grid-cols-3 gap-4 mt-4">
+            <div className="grid h-12 grid-cols-2 gap-4 mt-4">
               <IconButton
                 img={<img src={MetamaskIcon} alt="metamask" />}
                 onClick={onSelectMetamaskAuthorization}
@@ -143,11 +143,11 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
                 onClick={onSelectIIAuthorization}
                 className="flex justify-center"
               />
-              <IconButton
+              {/* <IconButton
                 img={<img src={WConnectIcon} alt="wallet-connect" />}
                 onClick={onSelectIIAuthorization}
                 className="flex justify-center"
-              />
+              /> */}
             </div>
 
             <Separator />

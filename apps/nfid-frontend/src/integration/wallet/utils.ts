@@ -1,6 +1,4 @@
-// REFERENCE:
-// https://internetcomputer.org/docs/current/references/cli-reference/dfx-ledger/#options
-export const E8S = 10 ** 8
+import { E8S } from "@nfid/integration"
 
 export const stringICPtoE8s = (value: string) => {
   return Number(parseFloat(value) * E8S)

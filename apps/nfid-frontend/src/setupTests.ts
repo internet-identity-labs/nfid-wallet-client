@@ -26,3 +26,9 @@ Object.defineProperty(
     },
   }))(window.navigator.userAgent),
 )
+
+Object.defineProperty(BigInt.prototype, "toJSON", {
+  get() {
+    return () => `${this.toString()}n`
+  },
+})

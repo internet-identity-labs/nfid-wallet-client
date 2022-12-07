@@ -22,3 +22,11 @@ export function hasOwnProperty<
 >(obj: X, prop: Y): obj is X & Record<Y, unknown> {
   return Object.prototype.hasOwnProperty.call(obj, prop)
 }
+
+export function stringify(
+  value: any,
+  replacer?: (number | string)[] | null,
+  space: string | number = 2,
+) {
+  return JSON.stringify(value, replacer, space)
+}

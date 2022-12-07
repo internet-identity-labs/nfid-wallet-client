@@ -16,14 +16,6 @@ export interface RosettaBalance {
 
 export interface Balance {
   value: string
-  currency: {
-    symbol: string
-    decimals: number
-    metadata: {
-      Issuer: string
-    }
-  }
-  metadata: object
 }
 
 export async function getBalance(address: string): Promise<Balance> {

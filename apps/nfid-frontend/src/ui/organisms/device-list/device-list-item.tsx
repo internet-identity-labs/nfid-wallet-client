@@ -242,7 +242,10 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
       {editIconModal && (
         <ModalAdvanced
           title="Change icon"
-          onClose={toggleIconModal}
+          onClose={() => {
+            setUpdatedDevice(null)
+            toggleIconModal()
+          }}
           primaryButton={{
             text: "Change",
             type: "primary",

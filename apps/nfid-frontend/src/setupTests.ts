@@ -27,7 +27,8 @@ Object.defineProperty(
   }))(window.navigator.userAgent),
 )
 
-// @ts-ignore
-BigInt.prototype.toJSON = function () {
-  return `${this.toString()}n`
-}
+Object.defineProperty(BigInt.prototype, "toJSON", {
+  get() {
+    return () => `${this.toString()}n`
+  },
+})

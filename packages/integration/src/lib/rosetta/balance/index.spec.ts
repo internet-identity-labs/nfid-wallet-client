@@ -12,9 +12,6 @@ describe("getBalance", () => {
         ),
       ),
     )
-    // TODO Code review. Update GET_BALANCE
-    expect(JSON.stringify(response)).toBe(
-      '{"value":"0.0001","currency":{"symbol":"ICP","decimals":8}}',
-    )
+    expect(response).toEqual({ value: "0.0001" })
   })
 })

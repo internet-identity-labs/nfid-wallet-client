@@ -26,9 +26,7 @@ export async function getIdentity(
   const message: string = ethers.utils.hashMessage(METAMASK_SIGNIN_MESSAGE)
   const address: string = ethers.utils.recoverAddress(message, signature)
   const secret: string = await ethSecretStorage.get_secret(address, signature)
-  const seed: Uint8Array = new Uint8Array(
-    sha256(signature + secret, { asBytes: true }),
-  )
+  const seed: Uint8Array = ethers.utils.arrayify(secret)
   return Secp256k1KeyIdentity.generate(seed)
 }
 

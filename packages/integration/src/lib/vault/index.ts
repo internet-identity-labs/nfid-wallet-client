@@ -9,6 +9,7 @@ import { vault, vault as vaultAPI } from "../actors"
 import {
   responseToMember,
   responseToPolicy,
+  responseToTransaction,
   responseToVault,
   responseToWallet,
   roleToRequest,
@@ -17,6 +18,8 @@ import {
   Currency,
   Policy,
   PolicyType,
+  State,
+  Transaction,
   Vault,
   VaultMember,
   VaultRole,
@@ -123,4 +126,44 @@ export async function getPolicies(vaultId: bigint): Promise<Policy[]> {
 
 export async function walletAddress(walletId: bigint): Promise<string> {
   return await vault.sub(walletId) //todo move algorithm from rust
+}
+
+export interface TransactionRegisterOptions {
+  address: string
+  amount: bigint
+  walletId: bigint
+}
+
+export async function registerTransaction({
+  address,
+  amount,
+  walletId,
+}: TransactionRegisterOptions): Promise<Transaction> {
+  const transaction = await vaultAPI.register_transaction({
+    address,
+    amount,
+    wallet_id: walletId,
+  })
+  return responseToTransaction(transaction)
+}
+
+export interface TransactionApproveOptions {
+  transactionId: bigint
+  state: State
+}
+
+export async function approveTransaction({
+  transactionId,
+  state,
+}: TransactionApproveOptions): Promise<Transaction> {
+  const transaction = await vaultAPI.approve_transaction({
+    state: { APPROVED: null }, //TODO
+    transaction_id: transactionId,
+  })
+  return responseToTransaction(transaction)
+}
+
+export async function getTransactions(): Promise<Transaction[]> {
+  const transactions = await vaultAPI.get_transactions()
+  return transactions.map(responseToTransaction)
 }

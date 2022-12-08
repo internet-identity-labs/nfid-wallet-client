@@ -103,11 +103,11 @@ export function checkDelegationExpiration() {
 
 export const authState = authStateClosure()
 
-export let rawId: DelegationIdentity | undefined
+export let rawId: SignIdentity | undefined
 /**
  * When user connects an identity, we update our agent.
  */
-export function replaceIdentity(identity: DelegationIdentity) {
+export function replaceIdentity(identity: SignIdentity) {
   agent.replaceIdentity(identity)
   agent.getPrincipal().then((principal) => {
     console.debug("replaceIdentity", { principalId: principal.toText() })

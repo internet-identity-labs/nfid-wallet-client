@@ -1,9 +1,8 @@
 import { SignIdentity } from "@dfinity/agent"
 import { fromHexString } from "ictool"
 
-import { ledgerWithIdentity } from "@nfid/integration"
-
-import { BlockIndex, TransferResult } from "../_ic_api/ledger.d"
+import { BlockIndex, TransferResult } from "../../_ic_api/ledger.d"
+import { ledgerWithIdentity } from "../../actors"
 
 //todo not properly tested. blocked by e2e
 
@@ -23,8 +22,8 @@ export async function transfer(
       from_subaccount: [],
       created_at_time: [],
     })
-    .catch((e) => {
-      throw Error(`Transfer failed!: ${e}`, e)
+    .catch((e: any) => {
+      throw Error(`Transfer failed!: ${e}`)
     })
 
   if ("Err" in result) throw Error(Object.keys(result.Err)[0])

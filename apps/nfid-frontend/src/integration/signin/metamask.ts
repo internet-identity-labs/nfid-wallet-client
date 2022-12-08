@@ -1,6 +1,5 @@
 import { Secp256k1KeyIdentity } from "@dfinity/identity"
 import { ethers, providers } from "ethers"
-import sha256 from "sha256"
 
 import {
   authState,

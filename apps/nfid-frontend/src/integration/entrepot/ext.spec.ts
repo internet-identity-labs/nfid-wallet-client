@@ -6,6 +6,8 @@ import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/
 import { expect } from "@jest/globals"
 import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
+import { transfer } from "@nfid/integration"
+
 import { Balance } from "frontend/integration/_ic_api/ext.d"
 import {
   listNFT,
@@ -14,7 +16,6 @@ import {
   unListNFT,
 } from "frontend/integration/entrepot/ext"
 import { fetchCollectionTokens } from "frontend/integration/entrepot/lib"
-import { transfer } from "frontend/integration/rosetta/transfer"
 
 const identityA: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",

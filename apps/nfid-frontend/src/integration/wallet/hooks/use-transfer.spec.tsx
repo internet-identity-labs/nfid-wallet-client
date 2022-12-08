@@ -4,15 +4,16 @@
 import { act, renderHook } from "@testing-library/react"
 import { SWRConfig } from "swr"
 
-import { Profile } from "@nfid/integration"
+import { Profile, transfer } from "@nfid/integration"
 
 import * as facadeMocks from "frontend/integration/facade/wallet"
 import * as imQueryMocks from "frontend/integration/identity-manager/queries"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
-import * as transferMocks from "frontend/integration/rosetta/transfer"
 
 import { TransferAccount } from "."
 import { useTransfer } from "./use-transfer"
+
+jest.mock("@nfid/integration")
 
 beforeEach(() => {
   jest.resetAllMocks()
@@ -49,9 +50,9 @@ describe("useTransfer", () => {
       .mockImplementation(() => getWalletDelegationP)
 
     const transferP = Promise.resolve(BigInt(1))
-    const transferSpy = jest
-      .spyOn(transferMocks, "transfer")
-      .mockImplementation(() => transferP)
+    const transferSpy = (transfer as jest.Mock).mockImplementation(
+      () => transferP,
+    )
 
     // Initial setup of useTransfer hook
     const { result } = setup()
@@ -92,9 +93,9 @@ describe("useTransfer", () => {
       .mockImplementation(() => getWalletDelegationP)
 
     const transferP = Promise.resolve(BigInt(1))
-    const transferSpy = jest
-      .spyOn(transferMocks, "transfer")
-      .mockImplementation(() => transferP)
+    const transferSpy = (transfer as jest.Mock).mockImplementation(
+      () => transferP,
+    )
 
     // Initial setup of useTransfer hook
     const { rerender, result } = setup()

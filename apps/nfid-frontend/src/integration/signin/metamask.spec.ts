@@ -1,45 +1,19 @@
-import { Wallet } from "ethers"
+import { getIdentity } from "./metamask"
 
-import { getIdentityByMessageAndWallet } from "./metamask"
-
-declare const METAMASK_SIGNIN_MESSAGE: string
+const SIGNATURE = "0x2abb0d6e433694a9b03bbc7d3d2e9ab713cdfab9f47cb92378ea930a4357e4712277c3a987d950e052f27f12331d8882e8a1c7fdc8886aae34b58189df9488751b";
+const SIGNATURE2 = "0xccfd9eb0bf034622dd40bfde6e2debfab16f36a2b715444f86a26507131cd06d2d92e12bc6d49a181a8f2a179385e555eb18f05731b71f153e3de4c46936edec1b";
 
 describe("SignIn with Internet Identity", () => {
-  jest.setTimeout(150000)
+  jest.setTimeout(10000)
 
   it("should generate identity based on metamask signature.", async () => {
-    expect(Wallet).toBeDefined()
-    expect(getIdentityByMessageAndWallet).toBeDefined()
-    expect(METAMASK_SIGNIN_MESSAGE).toBeDefined()
-    // const wallet: Wallet = Wallet.fromMnemonic(
-    //   "copy neck copy eager sing begin worry shed pitch spin daring toward",
-    // )
-    // const wallet2: Wallet = Wallet.createRandom()
-    // const wallet3: Wallet = Wallet.fromMnemonic(
-    //   "copy neck copy eager sing begin worry shed pitch spin daring toward",
-    // )
+    const [identity, identity2, identity3] = await Promise.all([
+      getIdentity(SIGNATURE),
+      getIdentity(SIGNATURE),
+      getIdentity(SIGNATURE2)
+    ]).then(array => array.map(x => x.getPrincipal().toString()));
 
-    // const signature1: string = await wallet.signMessage(METAMASK_SIGNIN_MESSAGE)
-    // const signature2: string = await wallet2.signMessage(
-    //   METAMASK_SIGNIN_MESSAGE,
-    // )
-    // const signature3: string = await wallet3.signMessage(
-    //   METAMASK_SIGNIN_MESSAGE,
-    // )
-
-    // const principal = (await getIdentityByMessageAndWallet(signature1))
-    //   .getPrincipal()
-    //   .toString()
-
-    // const principal2 = (await getIdentityByMessageAndWallet(signature2))
-    //   .getPrincipal()
-    //   .toString()
-
-    // const principal3 = (await getIdentityByMessageAndWallet(signature3))
-    //   .getPrincipal()
-    //   .toString()
-
-    // expect(principal).toEqual(principal3)
-    // expect(principal).not.toEqual(principal2)
+    expect(identity).toEqual(identity2)
+    expect(identity).not.toEqual(identity3)
   })
 })

@@ -1,5 +1,5 @@
 import { Secp256k1KeyIdentity } from "@dfinity/identity"
-import { providers } from "ethers"
+import { ethers, providers } from "ethers"
 import sha256 from "sha256"
 
 import {
@@ -16,15 +16,20 @@ import { fetchProfile } from "../identity-manager"
 
 declare const METAMASK_SIGNIN_MESSAGE: string
 
-export async function getIdentityByMessageAndWallet(
+/**
+ * Request secret from a canister based on signature and restored from it address.
+ * @returns a Secp256k1KeyIdentity identity
+ */
+export async function getIdentity(
   signature: string,
 ): Promise<Secp256k1KeyIdentity> {
-  const secret: string = await ethSecretStorage.secret_by_signature(signature)
+  const message: string = ethers.utils.hashMessage(METAMASK_SIGNIN_MESSAGE)
+  const address: string = ethers.utils.recoverAddress(message, signature)
+  const secret: string = await ethSecretStorage.get_secret(address, signature)
   const seed: Uint8Array = new Uint8Array(
     sha256(signature + secret, { asBytes: true }),
   )
-  const identity = Secp256k1KeyIdentity.generate(seed)
-  return identity
+  return Secp256k1KeyIdentity.generate(seed)
 }
 
 /**
@@ -54,7 +59,7 @@ export async function getMetamaskSignature() {
 export async function getMetamaskAuthSession() {
   const { signature, accounts } = await getMetamaskSignature()
 
-  const identity = await getIdentityByMessageAndWallet(signature)
+  const identity = await getIdentity(signature)
 
   const { delegationIdentity } = await requestFEDelegation(identity)
 

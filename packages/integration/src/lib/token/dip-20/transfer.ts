@@ -24,7 +24,12 @@ export async function transfer({
       throw Error(`transfer failed: ${e}`)
     })
 
-  if ("Err" in response) throw Error(Object.keys(response.Err)[0])
+  if ("Err" in response) {
+    if ("Other" in response.Err) {
+      throw Error(response.Err.Other)
+    }
+    throw Error(Object.keys(response.Err)[0])
+  }
 
   console.debug("transfer", { response })
   return response.Ok

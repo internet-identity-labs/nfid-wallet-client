@@ -138,11 +138,13 @@ describe("Vault suite", () => {
     expect(registeredTransaction).toEqual({
       amount: BigInt(1),
       amountThreshold: expect.any(BigInt),
-      approves: [{
-        createdDate: expect.any(BigInt),
-        signer: expect.any(String),
-        status: State.APPROVED,
-      }],
+      approves: [
+        {
+          createdDate: expect.any(BigInt),
+          signer: expect.any(String),
+          status: State.APPROVED,
+        },
+      ],
       blockIndex: undefined,
       createdDate: expect.any(BigInt),
       currency: Currency.ICP,
@@ -158,7 +160,8 @@ describe("Vault suite", () => {
     replaceIdentity(memberIdentity)
 
     const approvedTransaction = await approveTransaction({
-      state: State.APPROVED, transactionId: registeredTransaction.id,
+      state: State.APPROVED,
+      transactionId: registeredTransaction.id,
     })
     expect(approvedTransaction.id).toEqual(registeredTransaction.id)
     expect(approvedTransaction.approves.length).toEqual(2)

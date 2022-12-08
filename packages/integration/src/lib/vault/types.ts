@@ -1,4 +1,3 @@
-
 export interface Vault {
   id: bigint
   members: Array<VaultMember>
@@ -52,24 +51,24 @@ export interface ThresholdPolicy extends BasePolicy {
 export type Policy = ThresholdPolicy // | AddressPolicy
 
 export interface Approve {
-  status : State,
-  signer : string,
-  createdDate : bigint,
+  status: State
+  signer: string
+  createdDate: bigint
 }
 
 export interface Transaction {
-  id: bigint,
-  to: string,
-  memberThreshold: number,
-  blockIndex: bigint|undefined,
-  amountThreshold: bigint,
-  state: State,
-  approves: Array<Approve>,
-  currency: Currency,
-  amount: bigint,
-  createdDate: bigint,
-  modifiedDate: bigint,
-  walletId: bigint,
-  vaultId: bigint,
-  policyId: bigint,
+  id: bigint
+  to: string
+  memberThreshold: number
+  blockIndex: bigint | undefined
+  amountThreshold: bigint
+  state: State
+  approves: Array<Approve>
+  currency: Currency
+  amount: bigint
+  createdDate: bigint
+  modifiedDate: bigint
+  walletId: bigint
+  vaultId: bigint
+  policyId: bigint
 }

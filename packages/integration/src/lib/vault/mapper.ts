@@ -66,18 +66,21 @@ export function responseToMember(response: VaultMemberResponse): VaultMember {
 
 export function responseToApprove(response: ApproveResponse): Approve {
   return {
-    createdDate: response.created_date, signer: response.signer,
-    status: responseToState(response.status)
+    createdDate: response.created_date,
+    signer: response.signer,
+    status: responseToState(response.status),
   }
 }
 
-
-export function responseToTransaction(response: TransactionResponse): Transaction {
+export function responseToTransaction(
+  response: TransactionResponse,
+): Transaction {
   return {
     amount: response.amount,
     amountThreshold: response.amount_threshold,
     approves: response.approves.map(responseToApprove),
-    blockIndex: response.block_index.length === 0 ? undefined : response.block_index[0],
+    blockIndex:
+      response.block_index.length === 0 ? undefined : response.block_index[0],
     createdDate: response.created_date,
     currency: Currency.ICP,
     id: response.id,
@@ -87,7 +90,7 @@ export function responseToTransaction(response: TransactionResponse): Transactio
     state: responseToState(response.state),
     to: response.to,
     walletId: response.wallet_id,
-    vaultId: response.vault_id
+    vaultId: response.vault_id,
   }
 }
 

@@ -1,4 +1,3 @@
-import { Currency as CurrencyTransport } from "../_ic_api/vault.d"
 
 export interface Vault {
   id: bigint
@@ -33,6 +32,11 @@ export enum Currency {
   ICP,
 }
 
+export enum State {
+  APPROVED,
+  PENDING,
+}
+
 export interface BasePolicy {
   id: bigint
   type: PolicyType
@@ -46,3 +50,26 @@ export interface ThresholdPolicy extends BasePolicy {
 }
 
 export type Policy = ThresholdPolicy // | AddressPolicy
+
+export interface Approve {
+  status : State,
+  signer : string,
+  createdDate : bigint,
+}
+
+export interface Transaction {
+  id: bigint,
+  to: string,
+  memberThreshold: number,
+  blockIndex: bigint|undefined,
+  amountThreshold: bigint,
+  state: State,
+  approves: Array<Approve>,
+  currency: Currency,
+  amount: bigint,
+  createdDate: bigint,
+  modifiedDate: bigint,
+  walletId: bigint,
+  vaultId: bigint,
+  policyId: bigint,
+}

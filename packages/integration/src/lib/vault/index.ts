@@ -8,7 +8,7 @@ import {
 import { vault, vault as vaultAPI } from "../actors"
 import {
   responseToMember,
-  responseToPolicy,
+  responseToPolicy, responseToTransaction,
   responseToVault,
   responseToWallet,
   roleToRequest,
@@ -16,7 +16,7 @@ import {
 import {
   Currency,
   Policy,
-  PolicyType,
+  PolicyType, State, Transaction,
   Vault,
   VaultMember,
   VaultRole,
@@ -44,11 +44,11 @@ interface AddMemberToVaultOptions {
 }
 
 export async function addMemberToVault({
-  vaultId,
-  memberAddress,
-  name,
-  role,
-}: AddMemberToVaultOptions): Promise<Vault> {
+   vaultId,
+   memberAddress,
+   name,
+   role,
+ }: AddMemberToVaultOptions): Promise<Vault> {
   //TODO Promise<VaultMember[]>
   const vaultMemberRequest: VaultMemberRequest = {
     address: memberAddress,
@@ -71,8 +71,8 @@ interface AddWalletOptions {
 }
 
 export async function registerWallet({
-  vaultId,
-  name,
+ vaultId,
+ name,
 }: AddWalletOptions): Promise<Wallet> {
   const walletRegisterRequest: WalletRegisterRequest = {
     name: [name],
@@ -92,10 +92,10 @@ interface AddPolicyOptions {
 }
 
 export async function registerPolicy({
-  vaultId,
-  amountThreshold,
-  memberThreshold,
-  walletIds,
+ vaultId,
+ amountThreshold,
+ memberThreshold,
+ walletIds,
 }: AddPolicyOptions): Promise<Policy> {
   const tp: ThresholdPolicyRequest = {
     amount_threshold: amountThreshold,
@@ -123,4 +123,37 @@ export async function getPolicies(vaultId: bigint): Promise<Policy[]> {
 
 export async function walletAddress(walletId: bigint): Promise<string> {
   return await vault.sub(walletId) //todo move algorithm from rust
+}
+
+export interface TransactionRegisterOptions {
+  address: string,
+  amount: bigint,
+  walletId: bigint,
+}
+
+export async function registerTransaction({
+  address,
+  amount,
+  walletId,
+}: TransactionRegisterOptions): Promise<Transaction> {
+  const transaction = await vaultAPI.register_transaction({ address, amount, wallet_id: walletId })
+  return responseToTransaction(transaction)
+}
+
+export interface TransactionApproveOptions {
+  transactionId: bigint,
+  state: State,
+}
+
+export async function approveTransaction({ transactionId, state }: TransactionApproveOptions): Promise<Transaction> {
+  const transaction = await vaultAPI.approve_transaction({
+    state: { "APPROVED": null }, //TODO
+    transaction_id: transactionId,
+  })
+  return responseToTransaction(transaction)
+}
+
+export async function getTransactions(): Promise<Transaction[]> {
+  const transactions = await vaultAPI.get_transactions()
+  return transactions.map(responseToTransaction)
 }

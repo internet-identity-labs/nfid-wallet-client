@@ -1,15 +1,21 @@
 import {
   Policy as PolicyResponse,
+  Transaction as TransactionResponse,
   Vault as VaultResponse,
   VaultMember as VaultMemberResponse,
   VaultRole as VaultRoleTransport,
+  State as StateTransport,
   Wallet as WalletResponse,
+  Approve as ApproveResponse,
 } from "../_ic_api/vault.d"
 import { hasOwnProperty } from "../test-utils"
 import {
+  Approve,
   Currency,
   Policy,
   PolicyType,
+  State,
+  Transaction,
   Vault,
   VaultMember,
   VaultRole,
@@ -58,12 +64,49 @@ export function responseToMember(response: VaultMemberResponse): VaultMember {
   }
 }
 
+export function responseToApprove(response: ApproveResponse): Approve {
+  return {
+    createdDate: response.created_date, signer: response.signer,
+    status: responseToState(response.status)
+  }
+}
+
+
+export function responseToTransaction(response: TransactionResponse): Transaction {
+  return {
+    amount: response.amount,
+    amountThreshold: response.amount_threshold,
+    approves: response.approves.map(responseToApprove),
+    blockIndex: response.block_index.length === 0 ? undefined : response.block_index[0],
+    createdDate: response.created_date,
+    currency: Currency.ICP,
+    id: response.id,
+    memberThreshold: response.member_threshold,
+    modifiedDate: response.modified_date,
+    policyId: response.policy_id,
+    state: responseToState(response.state),
+    to: response.to,
+    walletId: response.wallet_id,
+    vaultId: response.vault_id
+  }
+}
+
 function responseToRole(response: VaultRoleTransport): VaultRole {
   if (hasOwnProperty(response, "Admin")) {
     return VaultRole.Admin
   }
   if (hasOwnProperty(response, "Member")) {
     return VaultRole.Member
+  }
+  throw Error("Unexpected enum value")
+}
+
+function responseToState(response: StateTransport): State {
+  if (hasOwnProperty(response, "APPROVED")) {
+    return State.APPROVED
+  }
+  if (hasOwnProperty(response, "PENDING")) {
+    return State.PENDING
   }
   throw Error("Unexpected enum value")
 }

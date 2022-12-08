@@ -8,16 +8,19 @@ import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
   addMemberToVault,
+  approveTransaction,
   getPolicies,
+  getTransactions,
   getVaultMembers,
   getVaults,
   getWallets,
   registerPolicy,
+  registerTransaction,
   registerVault,
   registerWallet,
   walletAddress,
 } from "./index"
-import { Currency, PolicyType, VaultMember, VaultRole } from "./types"
+import { Currency, PolicyType, State, VaultMember, VaultRole } from "./types"
 
 describe("Vault suite", () => {
   jest.setTimeout(100000)
@@ -55,8 +58,9 @@ describe("Vault suite", () => {
 
     let members = await getVaultMembers(vaultFirst.id)
     expect(members.length).toEqual(1)
+    const memberIdentity = Ed25519KeyIdentity.generate()
     const memberAddress = principalToAddress(
-      Ed25519KeyIdentity.generate().getPrincipal() as any,
+      memberIdentity.getPrincipal(),
       Array(32).fill(1),
     )
     await addMemberToVault({
@@ -93,7 +97,7 @@ describe("Vault suite", () => {
       registerPolicy({
         amountThreshold: BigInt(1),
         currency: Currency.ICP,
-        memberThreshold: 1,
+        memberThreshold: 5,
         type: PolicyType.ThresholdPolicy,
         walletIds: undefined,
         vaultId: vaultFirst.id,
@@ -101,7 +105,7 @@ describe("Vault suite", () => {
       registerPolicy({
         amountThreshold: BigInt(1),
         currency: Currency.ICP,
-        memberThreshold: 1,
+        memberThreshold: 5,
         type: PolicyType.ThresholdPolicy,
         walletIds: [wallet1.id],
         vaultId: vaultFirst.id,
@@ -115,7 +119,7 @@ describe("Vault suite", () => {
 
     expect(firstPolicy?.walletIds).toEqual(undefined)
     expect(firstPolicy?.currency).toEqual(Currency.ICP)
-    expect(firstPolicy?.memberThreshold).toEqual(1)
+    expect(firstPolicy?.memberThreshold).toEqual(5)
     expect(firstPolicy?.amountThreshold.toString()).toEqual(
       BigInt(1).toString(),
     )
@@ -125,12 +129,49 @@ describe("Vault suite", () => {
     expect(secondPolicy?.walletIds?.[0].toString()).toEqual(
       wallet1.id.toString(),
     )
+    const targetAddress = await walletAddress(BigInt(1))
+    const registeredTransaction = await registerTransaction({
+      address: targetAddress,
+      amount: BigInt(1),
+      walletId: wallet1.id,
+    })
+    expect(registeredTransaction).toEqual({
+      amount: BigInt(1),
+      amountThreshold: expect.any(BigInt),
+      approves: [{
+        createdDate: expect.any(BigInt),
+        signer: expect.any(String),
+        status: State.APPROVED,
+      }],
+      blockIndex: undefined,
+      createdDate: expect.any(BigInt),
+      currency: Currency.ICP,
+      id: expect.any(BigInt),
+      memberThreshold: 5,
+      modifiedDate: expect.any(BigInt),
+      policyId: expect.any(BigInt),
+      state: State.PENDING,
+      to: targetAddress,
+      vaultId: expect.any(BigInt),
+      walletId: expect.any(BigInt),
+    })
+    replaceIdentity(memberIdentity)
+
+    const approvedTransaction = await approveTransaction({
+      state: State.APPROVED, transactionId: registeredTransaction.id,
+    })
+    expect(approvedTransaction.id).toEqual(registeredTransaction.id)
+    expect(approvedTransaction.approves.length).toEqual(2)
+
+    const transactions = await getTransactions()
+    expect(transactions.length).toBe(1)
+    expect(transactions[0].id).toBe(approvedTransaction.id)
   })
 
   it("test subaddress", async () => {
     const actual = await walletAddress(BigInt(1))
     expect(
-      "1c016881d9e01ee163f9c5f698636e25ea095fb86ffa977b28254703286b91db",
+      "1dbb387996dbb10113df15757452044f78d5c6aec83aa0a6ec1d2c0c12c80671",
     ).toEqual(actual)
   })
 })

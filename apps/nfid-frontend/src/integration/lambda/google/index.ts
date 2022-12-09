@@ -2,10 +2,10 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { authState, ii, im, requestFEDelegation } from "@nfid/integration"
 
-import { getBrowserName } from "frontend/integration/device"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import "frontend/integration/internet-identity"
 import { GoogleAuthSession } from "frontend/state/authentication"
+import { getBrowserName } from "frontend/ui/utils"
 
 declare const SIGNIN_GOOGLE: string
 
@@ -76,11 +76,13 @@ export async function getGoogleAuthSession(
   let profile
   try {
     profile = await fetchProfile()
-    im.use_access_point([getBrowserName()]).catch((error) => {
-      throw new Error(
-        `getGoogleAuthSession im.use_access_point: ${error.message}`,
-      )
-    })
+    im.use_access_point([`${getBrowserName()} with google account`]).catch(
+      (error) => {
+        throw new Error(
+          `getGoogleAuthSession im.use_access_point: ${error.message}`,
+        )
+      },
+    )
   } catch (fetchProfileError: any) {
     if (fetchProfileError.code !== 404) {
       throw fetchProfileError

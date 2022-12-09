@@ -233,7 +233,9 @@ export async function registerService(
         ? {
             icon: "google" as Icon,
             device: "Google",
-            browser: "Google account",
+            browser: `${
+              deviceInfo.browser.name ?? getBrowserName()
+            } with google account`,
             pubKey,
           }
         : sessionSource === "ii"

@@ -203,8 +203,7 @@ interface WalletDeviceFilter {
 }
 
 export const byGoogleDevice = ({ browser }: GoogleDeviceFilter) => {
-  const knownGoogleFields = ["cross platform", "Google account"]
-  return knownGoogleFields.indexOf(browser) > -1
+  return browser.includes("google")
 }
 
 export const byWalletDevice = ({ label }: WalletDeviceFilter) => {

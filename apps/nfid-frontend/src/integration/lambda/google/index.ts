@@ -2,7 +2,6 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { authState, ii, im, requestFEDelegation } from "@nfid/integration"
 
-import { getBrowserName } from "frontend/integration/device"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import "frontend/integration/internet-identity"
 import { GoogleAuthSession } from "frontend/state/authentication"
@@ -76,7 +75,7 @@ export async function getGoogleAuthSession(
   let profile
   try {
     profile = await fetchProfile()
-    im.use_access_point([getBrowserName()]).catch((error) => {
+    im.use_access_point(["Google account"]).catch((error) => {
       throw new Error(
         `getGoogleAuthSession im.use_access_point: ${error.message}`,
       )

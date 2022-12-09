@@ -18,5 +18,10 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "extends": "../../tsconfig.base.json"
+  "extends": "../../tsconfig.base.json",
+  "references": [
+    {
+      "path": "./.storybook/tsconfig.json"
+    }
+  ]
 }

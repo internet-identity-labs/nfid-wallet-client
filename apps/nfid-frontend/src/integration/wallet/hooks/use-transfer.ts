@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import React from "react"
 
-import { transfer } from "@nfid/integration"
+import { transfer } from "@nfid/integration/token/icp"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 

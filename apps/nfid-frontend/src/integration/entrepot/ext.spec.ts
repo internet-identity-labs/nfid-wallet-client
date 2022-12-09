@@ -5,7 +5,8 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { expect } from "@jest/globals"
 import { encodeTokenIdentifier, principalToAddress } from "ictool"
 
-import { mockIdentityA, mockIdentityB, transfer } from "@nfid/integration"
+import { mockIdentityA, mockIdentityB } from "@nfid/integration"
+import { transfer } from "@nfid/integration/token/icp"
 
 import { Balance } from "frontend/integration/_ic_api/ext.d"
 import {

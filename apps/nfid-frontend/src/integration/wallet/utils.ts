@@ -1,4 +1,4 @@
-import { E8S } from "@nfid/integration"
+import { E8S } from "@nfid/integration/token/icp"
 
 export const stringICPtoE8s = (value: string) => {
   return Number(parseFloat(value) * E8S)

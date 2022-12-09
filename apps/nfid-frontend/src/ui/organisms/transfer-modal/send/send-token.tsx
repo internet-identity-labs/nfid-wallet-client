@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { Tooltip } from "@nfid-frontend/ui"
-import { E8S } from "@nfid/integration"
+import { E8S } from "@nfid/integration/token/icp"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import ICPIcon from "frontend/assets/dfinity.svg"

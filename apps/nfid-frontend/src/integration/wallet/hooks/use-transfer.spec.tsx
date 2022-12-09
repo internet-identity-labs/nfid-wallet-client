@@ -4,7 +4,8 @@
 import { act, renderHook } from "@testing-library/react"
 import { SWRConfig } from "swr"
 
-import { Profile, transfer } from "@nfid/integration"
+import { Profile } from "@nfid/integration"
+import { transfer } from "@nfid/integration/token/icp"
 
 import * as facadeMocks from "frontend/integration/facade/wallet"
 import * as imQueryMocks from "frontend/integration/identity-manager/queries"
@@ -13,7 +14,7 @@ import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks
 import { TransferAccount } from "."
 import { useTransfer } from "./use-transfer"
 
-jest.mock("@nfid/integration")
+jest.mock("@nfid/integration/token/icp")
 
 beforeEach(() => {
   jest.resetAllMocks()

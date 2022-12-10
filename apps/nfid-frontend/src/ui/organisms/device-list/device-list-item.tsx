@@ -204,14 +204,12 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   "flex space-x-2 items-center",
                   !device.isAccessPoint && "hidden",
                   device.isSocialDevice && "hidden",
+                  device.isWalletDevice && "hidden",
                 )}
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div
-                  className={clsx(
-                    "hover:bg-gray-50 text-red-base",
-                    device.isWalletDevice && "hidden",
-                  )}
+                  className={clsx("hover:bg-gray-50 text-red-base")}
                   onClick={
                     isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }

@@ -143,7 +143,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.31.11",
     "eslint-plugin-react-hooks": "4.3.0",
-    "eslint-plugin-storybook": "^0.6.7",
+    "eslint-plugin-storybook": "^0.6.8",
     "eslint-plugin-wdio": "^7.4.2",
     "events": "3.3.0",
     "geckodriver": "^3.0.1",

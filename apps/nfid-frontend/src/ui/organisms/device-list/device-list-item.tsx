@@ -177,11 +177,18 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   Address: {device.browser}
                 </div>
                 <div className="my-1 text-sm text-gray-400">
-                  {device.isSocialDevice || device.isWalletDevice
+                  {device.isSocialDevice
                     ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +
                         device.browser
                       }`
+                    : null}
+
+                  {device.isWalletDevice
+                    ? `Last activity: ${format(
+                        device.lastUsed,
+                        "MMM d, yyyy ",
+                      )}`
                     : null}
 
                   {device.isAccessPoint &&
@@ -204,14 +211,12 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   "flex space-x-2 items-center",
                   !device.isAccessPoint && "hidden",
                   device.isSocialDevice && "hidden",
+                  device.isWalletDevice && "hidden",
                 )}
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div
-                  className={clsx(
-                    "hover:bg-gray-50 text-red-base",
-                    device.isWalletDevice && "hidden",
-                  )}
+                  className={clsx("hover:bg-gray-50 text-red-base")}
                   onClick={
                     isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }

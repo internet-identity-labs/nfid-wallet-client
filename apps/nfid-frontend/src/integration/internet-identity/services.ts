@@ -37,6 +37,7 @@ import {
 } from "."
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
+import { getMetamaskAccounts } from "../signin/metamask"
 import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(
@@ -249,7 +250,7 @@ export async function registerService(
         ? {
             icon: "metamask" as Icon,
             device: "Metamask",
-            browser: delegationIdentity.getPrincipal().toString(),
+            browser: (await getMetamaskAccounts())[0],
             pubKey,
           }
         : {

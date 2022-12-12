@@ -30,6 +30,19 @@ export async function getIdentity(
 }
 
 /**
+ * Request to window.ethereum for eth_requestAccounts
+ * @returns an array of strings
+ */
+export async function getMetamaskAccounts() {
+  const eth = (window as any).ethereum as providers.ExternalProvider
+  if (!eth || !eth.request) throw new Error("Please install Metamask extension")
+
+  const accounts = await eth.request({ method: "eth_requestAccounts" })
+
+  return accounts
+}
+
+/**
  * Request to window.ethereum for metamask signature
  * @returns a string contains signature
  */

@@ -59,11 +59,18 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {}
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    bool:
+      | "done.invoke.fetchWebAuthnPlatformCapability"
+      | "done.invoke.hasSecurityKey"
+      | "done.invoke.isDeviceRegistered"
+  }
   eventsCausingServices: {
     fetchWebAuthnPlatformCapability: "TRUST" | "done.invoke.isDeviceRegistered"
     hasSecurityKey: "done.invoke.fetchWebAuthnPlatformCapability"
@@ -73,13 +80,6 @@ export interface Typegen0 {
       | "done.invoke.fetchWebAuthnPlatformCapability"
       | "error.platform.registerDeviceWithWebAuthn"
   }
-  eventsCausingGuards: {
-    bool:
-      | "done.invoke.fetchWebAuthnPlatformCapability"
-      | "done.invoke.hasSecurityKey"
-      | "done.invoke.isDeviceRegistered"
-  }
-  eventsCausingDelays: {}
   matchesStates:
     | "CheckCapability"
     | "CheckCapability.End"

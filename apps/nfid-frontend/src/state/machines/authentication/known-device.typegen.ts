@@ -59,9 +59,9 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAccountLimit: "done.invoke.fetchAccountLimitService"
@@ -69,6 +69,8 @@ export interface Typegen0 {
     assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
     assignProfile: "done.invoke.getLocalStorageProfileService"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {}
   eventsCausingServices: {
     fetchAccountLimitService: "done.state.KnownDeviceMachine.Start.FetchDevices"
     fetchAuthenticatorDevicesService: "done.invoke.getLocalStorageProfileService"
@@ -76,8 +78,6 @@ export interface Typegen0 {
     getLocalStorageProfileService: "xstate.init"
     loginService: "UNLOCK"
   }
-  eventsCausingGuards: {}
-  eventsCausingDelays: {}
   matchesStates:
     | "Authenticate"
     | "End"

@@ -76,9 +76,9 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession:
@@ -89,6 +89,15 @@ export interface Typegen0 {
       | "done.invoke.registration"
       | "done.invoke.remote"
     handleError: "error.platform.getMetamaskAuthSession"
+  }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
+    isExistingAccount:
+      | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithII"
+      | "done.invoke.getMetamaskAuthSession"
+    isReturn: "done.invoke.authWithII"
   }
   eventsCausingServices: {
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
@@ -103,15 +112,6 @@ export interface Typegen0 {
     isMobileWithWebAuthn: "xstate.init"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
-  eventsCausingGuards: {
-    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
-    isExistingAccount:
-      | "done.invoke.AuthWithGoogleMachine"
-      | "done.invoke.authWithII"
-      | "done.invoke.getMetamaskAuthSession"
-    isReturn: "done.invoke.authWithII"
-  }
-  eventsCausingDelays: {}
   matchesStates:
     | "AuthSelection"
     | "AuthWithGoogle"

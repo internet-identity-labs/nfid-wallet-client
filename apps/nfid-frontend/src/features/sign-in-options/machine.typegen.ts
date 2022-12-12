@@ -39,9 +39,9 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAnchor: "CONNECT_WITH_ANCHOR"
@@ -55,13 +55,13 @@ export interface Typegen0 {
     assignVerificationCode: "CONNECT_RETRY"
     handleError: "error.platform.getIIAuthSessionService"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {}
   eventsCausingServices: {
     checkRegistrationStatus: "done.invoke.getIIAuthSessionService"
     checkTentativeDevice: "CONNECT_RETRY"
     getIIAuthSessionService: "CREATE_NEW_ANCHOR" | "EXISTING_NFID"
   }
-  eventsCausingGuards: {}
-  eventsCausingDelays: {}
   matchesStates:
     | "CheckRegistrationStatus"
     | "End"

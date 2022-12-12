@@ -177,11 +177,18 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   Address: {device.browser}
                 </div>
                 <div className="my-1 text-sm text-gray-400">
-                  {device.isSocialDevice || device.isWalletDevice
+                  {device.isSocialDevice
                     ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +
                         device.browser
                       }`
+                    : null}
+
+                  {device.isWalletDevice
+                    ? `Last activity: ${format(
+                        device.lastUsed,
+                        "MMM d, yyyy ",
+                      )}`
                     : null}
 
                   {device.isAccessPoint &&

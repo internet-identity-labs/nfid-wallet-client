@@ -30,21 +30,21 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.known-device" | "done.invoke.unknown-device"
+  }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    isDeviceRegistered: ""
   }
   eventsCausingServices: {
     KnownDeviceMachine: ""
     UnknownDeviceMachine: ""
   }
-  eventsCausingGuards: {
-    isDeviceRegistered: ""
-  }
-  eventsCausingDelays: {}
   matchesStates: "End" | "IsDeviceRegistered" | "KnownDevice" | "UnknownDevice"
   tags: never
 }

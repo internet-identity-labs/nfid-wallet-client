@@ -1,8 +1,11 @@
+import { toast } from "react-toastify"
 import { v4 as uuid } from "uuid"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
+import { getMetamaskAuthSession } from "frontend/integration/signin/metamask"
 import {
   AuthSession,
   LocalDeviceAuthSession,
@@ -27,10 +30,19 @@ export type Events =
   | { type: "done.invoke.remote"; data?: RemoteDeviceAuthSession }
   | { type: "done.invoke.registration"; data?: AuthSession }
   | { type: "done.invoke.registerDevice"; data: AuthSession }
+  | { type: "done.invoke.getMetamaskAuthSession"; data: AuthSession }
+  | {
+      type: "error.platform.getMetamaskAuthSession"
+      data: { message: string }
+    }
   | { type: "done.invoke.signInSameDevice"; data: LocalDeviceAuthSession }
   | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
+      data: AuthSession
+    }
+  | {
+      type: "done.invoke.authWithII"
       data: AuthSession
     }
   | {
@@ -40,6 +52,8 @@ export type Events =
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
+  | { type: "AUTH_WITH_II" }
+  | { type: "AUTH_WITH_METAMASK" }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
       data: { anchor: number; withSecurityDevices?: boolean }
@@ -107,6 +121,12 @@ const UnknownDeviceMachine =
             AUTH_WITH_OTHER: {
               target: "ExistingAnchor",
             },
+            AUTH_WITH_II: {
+              target: "IIAuthentication",
+            },
+            AUTH_WITH_METAMASK: {
+              target: "AuthWithMetamask",
+            },
           },
         },
         AuthWithGoogle: {
@@ -118,7 +138,7 @@ const UnknownDeviceMachine =
             },
             onDone: [
               {
-                cond: "isExistingGoogleAccount",
+                cond: "isExistingAccount",
                 actions: "assignAuthSession",
                 target: "End",
               },
@@ -127,6 +147,46 @@ const UnknownDeviceMachine =
                 target: "RegistrationMachine",
               },
             ],
+          },
+        },
+        IIAuthentication: {
+          invoke: {
+            src: "AuthWithIIMachine",
+            id: "authWithII",
+            data: (context, _) => ({
+              authRequest: context.authRequest,
+              appMeta: context.appMeta,
+            }),
+            onDone: [
+              { cond: "isReturn", target: "AuthSelection" },
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "RegistrationMachine",
+              },
+            ],
+          },
+        },
+        AuthWithMetamask: {
+          invoke: {
+            src: "getMetamaskAuthSession",
+            id: "getMetamaskAuthSession",
+            onDone: [
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "RegistrationMachine",
+              },
+            ],
+            onError: { target: "AuthSelection", actions: "handleError" },
           },
         },
         RemoteAuthentication: {
@@ -192,10 +252,11 @@ const UnknownDeviceMachine =
     },
     {
       guards: {
-        isExistingGoogleAccount: (context, event) => {
-          return !!event.data.anchor
+        isExistingAccount: (context, event) => {
+          return !!event?.data?.anchor
         },
         bool: (context, event) => !!event.data,
+        isReturn: (context, event) => !event.data,
       },
       actions: {
         assignAuthSession: assign({
@@ -204,6 +265,9 @@ const UnknownDeviceMachine =
             return event.data
           },
         }),
+        handleError: (event, context) => {
+          toast.error(context.data.message)
+        },
       },
       services: {
         isMobileWithWebAuthn,
@@ -211,6 +275,8 @@ const UnknownDeviceMachine =
         RemoteReceiverMachine,
         loginWithAnchor,
         AuthWithGoogleMachine,
+        AuthWithIIMachine,
+        getMetamaskAuthSession,
       },
     },
   )

@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import React from "react"
-import ReactTooltip from "react-tooltip"
+
+import { Tooltip } from "@nfid-frontend/ui"
 
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
@@ -98,25 +99,24 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               "flex space-x-3 hover:opacity-70 transition-all cursor-pointer",
               isAccountsLimit
                 ? "text-gray-400 pointer-events-none"
-                : "text-blue-base",
+                : "text-blue",
             )}
           >
             <PlusIcon className="w-5 h-5" />
             <p className="text-sm font-semibold">Create a new account</p>
           </div>
           {isAccountsLimit && (
-            <>
-              <img
-                data-tip={`${
-                  applicationName ?? "The application"
-                } has limited the number of free accounts${
-                  accountsLimit ? ` to ${accountsLimit}` : ""
-                }. Manage your accounts from your NFID Profile page.`}
-                src={alertIcon}
-                alt="alert"
-              />
-              <ReactTooltip className="w-72" />
-            </>
+            <Tooltip
+              tip={`${
+                applicationName ?? "The application"
+              } has limited the number of free accounts${
+                accountsLimit ? ` to ${accountsLimit}` : ""
+              }. Manage your accounts from your NFID Profile page.`}
+              className="w-72"
+              side="left"
+            >
+              <img src={alertIcon} alt="alert" />
+            </Tooltip>
           )}
         </div>
         {!isAuthenticated && (

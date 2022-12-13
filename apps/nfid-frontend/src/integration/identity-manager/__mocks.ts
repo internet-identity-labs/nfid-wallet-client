@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 
-import { AccessPoint, Account, Profile } from "."
+import { AccessPoint, Account, Profile } from "@nfid/integration"
+
 import {
   AccessPointResponse,
   AccountResponse,

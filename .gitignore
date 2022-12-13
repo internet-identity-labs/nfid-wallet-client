@@ -26,9 +26,9 @@ allure-results
 package-lock.json
 npm-debug.log
 yarn-error.log
+*tsconfig.tsbuildinfo
 
 # System Files
 .DS_Store
 Thumbs.db
 Icon
-"Icon\r\r\"

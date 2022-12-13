@@ -1,7 +1,8 @@
 import { Identity } from "@dfinity/agent/lib/cjs/auth"
 import { Principal } from "@dfinity/principal"
-import { initActor } from "@nfid/integration"
 import { decodeTokenIdentifier, principalToAddress } from "ictool"
+
+import { initActor } from "@nfid/integration"
 
 import { extIDL } from "frontend/integration/_ic_api/ext"
 import {

@@ -6,19 +6,20 @@ import { BiGridAlt } from "react-icons/bi"
 import { HiViewList } from "react-icons/hi"
 import { IoIosSearch } from "react-icons/io"
 import { Link } from "react-router-dom"
-import ReactTooltip from "react-tooltip"
+
+import { Tooltip } from "@nfid-frontend/ui"
+import { Input } from "@nfid-frontend/ui"
+import { Application } from "@nfid/integration"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { Application } from "frontend/integration/identity-manager"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Button } from "frontend/ui/atoms/button"
 import { Chip } from "frontend/ui/atoms/chip"
 import { Copy } from "frontend/ui/atoms/copy"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
-import { Input } from "frontend/ui/atoms/input"
 import { Loader } from "frontend/ui/atoms/loader"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import Table from "frontend/ui/atoms/table"
@@ -142,14 +143,15 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
         </div>,
         <div className="flex items-center space-x-2.5 justify-center">
           <Copy value={link(token.collection.id, token.index)} />
-          <img
-            data-tip="Transfer"
-            className="transition-opacity cursor-pointer hover:opacity-50"
-            onClick={() => onTransferNFT(token.tokenId)}
-            src={transferIcon}
-            alt=""
-          />
-          <ReactTooltip delayShow={2000} />
+          <Tooltip tip="Transfer">
+            <img
+              data-tip="Transfer"
+              className="transition-opacity cursor-pointer hover:opacity-50"
+              onClick={() => onTransferNFT(token.tokenId)}
+              src={transferIcon}
+              alt=""
+            />
+          </Tooltip>
         </div>,
       ],
     }))

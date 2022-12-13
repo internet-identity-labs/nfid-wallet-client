@@ -3,9 +3,10 @@ import { useEffect, useMemo } from "react"
 import useSWR, { mutate } from "swr"
 import useSWRImmutable from "swr/immutable"
 
+import { getBalance } from "@nfid/integration"
+
 import { getWalletPrincipal } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { getBalance } from "frontend/integration/rosetta"
 import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
 
 import { useAllTransactions } from "./get-all-transactions"
@@ -20,7 +21,7 @@ export const useWallet = () => {
     )
 
   const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(
-    principal ? [principal, "walletBalance"] : null,
+    principal ? [principalToAddress(principal), "walletBalance"] : null,
     getBalance,
     {
       dedupingInterval: 30_000,
@@ -36,7 +37,7 @@ export const useWallet = () => {
 
   const address = useMemo(() => {
     if (!principal) return ""
-    return principalToAddress(principal as any)
+    return principalToAddress(principal)
   }, [principal])
 
   useEffect(() => {

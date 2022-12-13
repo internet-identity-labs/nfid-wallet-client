@@ -1,13 +1,13 @@
 import clsx from "clsx"
 import { useAtom } from "jotai"
 import { useCallback } from "react"
-import { To } from "react-router-dom"
+
+import { Application } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { NFTDetails, UserNFTDetails } from "frontend/integration/entrepot/types"
-import { Application } from "frontend/integration/identity-manager"
 import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
@@ -86,7 +86,7 @@ export const ProfileNFTDetailsPage = ({
           />
         </div>
         <div>
-          <p className="font-bold text-blue-600">{nft.collection.name}</p>
+          <p className="font-bold text-blue">{nft.collection.name}</p>
           <p className="text-[28px] mt-2.5">{nft.name}</p>
           {"account" in nft ? (
             <div className="flex items-center mt-4 space-x-2">

@@ -2,13 +2,15 @@ import clsx from "clsx"
 import { useAtom } from "jotai"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
-import ReactTooltip from "react-tooltip"
+
+import { Tooltip } from "@nfid-frontend/ui"
+import { E8S } from "@nfid/integration/token/icp"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import ICPIcon from "frontend/assets/dfinity.svg"
 import { walletFee, walletFeeE8s } from "frontend/constants/wallet"
 import { IWallet } from "frontend/integration/wallet/hooks/types"
-import { E8S, stringICPtoE8s } from "frontend/integration/wallet/utils"
+import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
@@ -127,17 +129,17 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             <p>Transfer fee: {walletFee} ICP</p>
             <div>
               <span>Balance: </span>
-              <span
-                data-tip="Click to select full balance"
-                className="border-b border-dotted cursor-pointer border-black-base text-black-base"
-                id="full-amount-button"
-                onClick={setFullAmount}
-              >
-                {currentWallet?.balance?.value}
-              </span>
+              <Tooltip tip="Click to select full balance">
+                <span
+                  className="border-b border-dotted cursor-pointer border-black-base text-black-base"
+                  id="full-amount-button"
+                  onClick={setFullAmount}
+                >
+                  {currentWallet?.balance?.value}
+                </span>
+              </Tooltip>
             </div>
           </div>
-          <ReactTooltip className="w-52" backgroundColor="#000" />
         </div>
         <div className="mt-5 space-y-2 text-black-base">
           <DropdownSelect

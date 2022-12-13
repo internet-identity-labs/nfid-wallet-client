@@ -1,6 +1,7 @@
-import { authState, im } from "@nfid/integration"
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+
+import { authState, im } from "@nfid/integration"
 
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"

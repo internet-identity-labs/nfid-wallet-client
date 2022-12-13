@@ -1,13 +1,17 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { Input } from "@nfid-frontend/ui"
+
+import IIIcon from "frontend/assets/dfinity.svg"
+import MetamaskIcon from "frontend/assets/metamask.svg"
+// import WConnectIcon from "frontend/assets/wallet-connect.svg"
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
   LoginEventHandler,
   SignInWithGoogle,
 } from "frontend/ui/atoms/button/signin-with-google"
 import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
-import { Input } from "frontend/ui/atoms/input"
 import { Separator } from "frontend/ui/atoms/separator"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -20,6 +24,8 @@ export interface AuthorizeAppUnknownDeviceProps {
   onSelectRemoteAuthorization: () => Promise<void> | void
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void
   onSelectSecurityKeyAuthorization: (userNumber: number) => Promise<void> | void
+  onSelectIIAuthorization: () => void
+  onSelectMetamaskAuthorization: () => void
   onSelectGoogleAuthorization: LoginEventHandler
   onToggleAdvancedOptions: () => void
   authError?: string
@@ -34,6 +40,8 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   onSelectSameDeviceAuthorization,
   onSelectSecurityKeyAuthorization,
   onSelectGoogleAuthorization,
+  onSelectIIAuthorization,
+  onSelectMetamaskAuthorization,
   onToggleAdvancedOptions,
   applicationName,
   applicationLogo,
@@ -123,6 +131,25 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         {!showAdvancedOptions ? (
           <div className="w-full max-w-[400px]">
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
+
+            <div className="grid h-12 grid-cols-2 gap-4 mt-4">
+              <IconButton
+                img={<img src={MetamaskIcon} alt="metamask" />}
+                onClick={onSelectMetamaskAuthorization}
+                className="flex justify-center"
+              />
+              <IconButton
+                img={<img src={IIIcon} alt="ii" />}
+                onClick={onSelectIIAuthorization}
+                className="flex justify-center"
+              />
+              {/* <IconButton
+                img={<img src={WConnectIcon} alt="wallet-connect" />}
+                onClick={onSelectIIAuthorization}
+                className="flex justify-center"
+              /> */}
+            </div>
+
             <Separator />
 
             <IconButton
@@ -150,7 +177,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         )}
 
         <p
-          className="py-4 text-sm text-center cursor-pointer text-blue-base"
+          className="py-4 text-sm text-center cursor-pointer text-blue"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

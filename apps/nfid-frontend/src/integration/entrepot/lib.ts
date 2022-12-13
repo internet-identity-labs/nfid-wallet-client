@@ -5,7 +5,8 @@ import {
   principalToAddress,
 } from "ictool"
 
-import { Account } from "../identity-manager"
+import { Account } from "@nfid/integration"
+
 import { mapToNFTData } from "./mapper"
 import {
   CollectionCache,

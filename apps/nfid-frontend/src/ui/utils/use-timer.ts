@@ -4,12 +4,14 @@ interface useTimerProps {
   defaultCounter: number
   frequency?: number
   loop?: boolean
+  onElapsed?: () => void
 }
 
 export const useTimer = ({
   defaultCounter,
   loop,
   frequency = 1000,
+  onElapsed,
 }: useTimerProps) => {
   const [counter, setCounter] = React.useState(defaultCounter)
   const timer = React.useRef<NodeJS.Timer>()
@@ -22,6 +24,7 @@ export const useTimer = ({
 
     if (counter === 0) {
       setElapsed(true)
+      onElapsed && onElapsed()
       clearInterval(Number(timer.current))
     }
 
@@ -30,7 +33,7 @@ export const useTimer = ({
       timer.current = setInterval(handleInterval, frequency)
       setElapsed(false)
     }
-  }, [counter, defaultCounter, frequency, loop])
+  }, [counter, defaultCounter, frequency, loop, onElapsed])
 
   React.useEffect(() => {
     timer.current = setInterval(handleInterval, frequency)

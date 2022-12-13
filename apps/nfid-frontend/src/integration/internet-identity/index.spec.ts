@@ -6,8 +6,15 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { authState as authStateMock } from "@nfid/integration"
-import { ii, im, replaceIdentity } from "@nfid/integration"
+
+import {
+  authState as authStateMock,
+  ii,
+  im,
+  replaceIdentity,
+  FrontendDelegation,
+  generateDelegationIdentity,
+} from "@nfid/integration"
 
 import { DeviceData } from "frontend/integration/_ic_api/internet_identity.d"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
@@ -16,12 +23,11 @@ import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
 import {
   Device,
-  FrontendDelegation,
   getMultiIdent,
 } from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
-import { generateDelegationIdentity, registerIIAccount } from "../test-util"
+import { registerIIAccount } from "../test-util"
 
 describe("ii suite", () => {
   jest.setTimeout(50000)

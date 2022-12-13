@@ -1,6 +1,6 @@
 import useSWR from "swr"
 
-import { getExchangeRate } from ".."
+import { getExchangeRate } from "../get-exchange-rate"
 
 export const useICPExchangeRate = () => {
   const { data: exchangeRate, ...rest } = useSWR(

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1-alpha.3",
+  "name": "@nfid-frontend/ui-tailwind-core",
+  "author": "Philipp Litzenberger",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "A Tailwind CSS plugin for NFID applications",
+  "main": "src/index.js",
+  "files": [
+    "src/*.js",
+    "src/**/*.js"
+  ],
+  "scripts": {
+    "test": "jest --passWithNoTests"
+  }
+}

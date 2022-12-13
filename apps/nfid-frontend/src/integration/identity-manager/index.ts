@@ -1,6 +1,15 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
 import { Principal } from "@dfinity/principal"
-import { im } from "@nfid/integration"
+
+import {
+  AccessPoint,
+  AccessPointCommon,
+  Account,
+  Application,
+  Icon,
+  im,
+  Profile,
+} from "@nfid/integration"
 
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
@@ -19,53 +28,9 @@ import {
   PersonaResponse,
 } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
-import { Icon } from "./devices/state"
-
-export interface Profile {
-  name?: string
-  anchor: number
-  accessPoints: AccessPoint[]
-  accounts: Account[]
-  principalId: string
-  phoneNumber?: string
-}
-
-export interface AccessPointCommon {
-  icon: Icon
-  device: string
-  browser: string
-}
 
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
-}
-
-export interface AccessPoint extends AccessPointCommon {
-  lastUsed: number
-  principalId: string
-}
-
-export interface Account {
-  domain: string
-  label: string
-  accountId: string
-  icon?: string
-  alias?: string[]
-  accountCount?: number
-}
-
-export function applicationToAccount(application: Application): Account {
-  if (!application.isNftStorage)
-    throw new Error(
-      "This application is not intended to be used as a token account.",
-    )
-  return {
-    domain: application.domain,
-    label: "",
-    accountId: "0",
-    alias: application.alias,
-    icon: application.icon,
-  }
 }
 
 /**
@@ -242,7 +207,7 @@ export async function createAccessPoint(accessPoint: CreateAccessPoint) {
     .then((r) => r.map(mapAccessPoint))
 }
 
-async function createProfile(anchor: number) {
+export async function createProfile(anchor: number) {
   return im
     .create_account({ anchor: BigInt(anchor) })
     .then(unpackResponse)
@@ -278,15 +243,6 @@ export async function removeAccessPoint(pubkey: DeviceKey) {
     .catch((e) => {
       throw new Error(`Not able to remove ap: ${e.message}`)
     })
-}
-
-export interface Application {
-  accountLimit: number
-  domain: string
-  name: string
-  icon?: string
-  alias: string[]
-  isNftStorage: boolean
 }
 
 function mapApplication(application: BEApplication): Application {

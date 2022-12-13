@@ -1,6 +1,7 @@
-import { authState } from "@nfid/integration"
 import { useProfile } from "src/integration/identity-manager/queries"
 import useSWR from "swr"
+
+import { authState } from "@nfid/integration"
 
 import { decryptStringForIdentity } from "frontend/integration/lambda/symmetric"
 import ProfileCredentialsPage from "frontend/ui/pages/new-profile/credentials"

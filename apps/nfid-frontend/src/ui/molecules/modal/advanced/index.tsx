@@ -53,14 +53,12 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
             </div>
 
             <div
-              className={clsx(
-                "flex items-center justify-end p-6 space-x-4",
-                buttonsClassNames,
-              )}
+              className={clsx("grid grid-cols-2 p-6 gap-4", buttonsClassNames)}
             >
               {secondaryButton && (
                 <Button
                   stroke
+                  block
                   className={clsx("!py-3 !px-8")}
                   onClick={secondaryButton?.onClick}
                   largeMax
@@ -77,7 +75,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
                   className={clsx("!py-3 !px-8")}
                   onClick={primaryButton.onClick}
                   largeMax
-                  block={primaryButton.block}
+                  block
                 >
                   {primaryButton.text}
                 </Button>

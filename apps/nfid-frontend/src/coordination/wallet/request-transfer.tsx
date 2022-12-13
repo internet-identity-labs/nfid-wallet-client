@@ -8,7 +8,6 @@ import RequestTransferMachine, {
   RequestTransferMachineType,
 } from "frontend/state/machines/wallet/request-transfer"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { TransferModalSuccess } from "frontend/ui/organisms/transfer-modal/sucess"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "../authentication"
@@ -66,15 +65,6 @@ export default function RequestTransferCoordinator({ machine }: Props) {
             send({ type: "CONFIRM", blockHeight: blockIndex })
           }}
         />
-      )
-    case state.matches("Confirm"):
-      return (
-        <ScreenResponsive className="p-5">
-          <TransferModalSuccess
-            transactionMessage={`${state.context.requestTransfer?.amount} ICP was sent`}
-            onClose={() => send({ type: "END" })}
-          />
-        </ScreenResponsive>
       )
     default:
       console.debug(

@@ -1,13 +1,86 @@
 // import {} from "@craco/craco"
+import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
 import path from "path"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 import webpack from "webpack"
 
+import { serviceConfig } from "../../config/webpack-env"
 import dfxJson from "../../dfx.json"
-import { serviceConfig } from "../../packages/config/src"
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
+
+const setupCSP = () => {
+  const isProduction = process.env.FRONTEND_MODE === "production"
+  if (isProduction) {
+    const cspConfigPolicy = {
+      "default-src": "'none'",
+      "object-src": "'none'",
+      "base-uri": "'self'",
+      "connect-src": [
+        "'self'",
+        "https://ic0.app",
+        "https://*.ic0.app",
+        "https://region1.analytics.google.com",
+        process.env.AWS_VERIFY_PHONENUMBER as string,
+        process.env.AWS_SYMMETRIC as string,
+        process.env.AWS_SIGNIN_GOOGLE as string,
+        "https://o1255710.ingest.sentry.io",
+        "https://rosetta-api.internetcomputer.org",
+        "https://free.currconv.com/",
+        "https://us-central1-entrepot-api.cloudfunctions.net",
+        "https://stats.g.doubleclick.net/g/collect",
+      ],
+      "worker-src": "'self'",
+      "img-src": ["'self' blob: data: content: https:"],
+      "font-src": [
+        "'self'",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+      ],
+      "frame-src": [
+        "'self'",
+        "https://accounts.google.com/gsi/style",
+        "https://accounts.google.com/",
+      ],
+      "manifest-src": "'self'",
+      "style-src": [
+        "'self'",
+        // FIXME: libraries adding inline styles:
+        // - google button
+        "'unsafe-inline'",
+        // FIXME: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "https://accounts.google.com/gsi/style",
+        "https://fonts.googleapis.com",
+      ],
+      "script-src": [
+        "'self'",
+        // FIXME: required for WebAssembly.instantiate()
+        "'unsafe-eval'",
+        "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
+        "https://accounts.google.com/gsi/client",
+        "https://www.googletagmanager.com/gtag/js",
+      ],
+      "require-trusted-types-for": ["'script'"],
+    }
+
+    return [
+      new CspHtmlWebpackPlugin(cspConfigPolicy, {
+        // PrimeReact is a component library which is enabled by default,
+        // but it is not used in the frontend. When it is enabled, it produces
+        // a nonce within `style-src` which in turn disables `unsafe-inline`.
+        primeReactEnabled: false,
+        hashEnabled: {
+          "style-src": false,
+        },
+        nonceEnabled: {
+          "style-src": false,
+        },
+      }),
+    ]
+  }
+  return []
+}
 
 // Gets the port dfx is running on from dfx.json
 const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
@@ -42,31 +115,15 @@ const config = {
           delete r.include
         }
       })
-      config.plugins.push(new webpack.DefinePlugin(canisterEnv))
-      config.plugins.push(
-        new webpack.ProvidePlugin({
-          Buffer: [require.resolve("buffer/"), "Buffer"],
-          process: require.resolve("process/browser"),
-        }),
-      )
-      config.plugins.push(
-        new webpack.IgnorePlugin({
-          contextRegExp: /^\.\/wordlists\/(?!english)/,
-          resourceRegExp: /bip39\/src$/,
-        }),
-      )
+
+      const isProduction = process.env.FRONTEND_MODE === "production"
       return {
         ...config,
-        // module: {
-        //   rules: [
-        //     {
-        //       test: /\.tsx$/,
-        //       enforce: "pre",
-        //       use: ["source-map-loader"],
-        //     },
-        //   ],
-        // },
-        devtool: process.env.FRONTEND_MODE !== "production" && "source-map",
+        output: {
+          ...config.output,
+          crossOriginLoading: "anonymous",
+        },
+        devtool: !isProduction && "source-map",
         ignoreWarnings: [/Failed to parse source map from/],
         resolve: {
           ...config.resolve,
@@ -80,6 +137,19 @@ const config = {
             util: require.resolve("util"),
           },
         },
+        plugins: [
+          ...config.plugins,
+          new webpack.DefinePlugin(canisterEnv),
+          new webpack.ProvidePlugin({
+            Buffer: [require.resolve("buffer/"), "Buffer"],
+            process: require.resolve("process/browser"),
+          }),
+          new webpack.IgnorePlugin({
+            contextRegExp: /^\.\/wordlists\/(?!english)/,
+            resourceRegExp: /bip39\/src$/,
+          }),
+          ...setupCSP(),
+        ],
       }
     },
   },

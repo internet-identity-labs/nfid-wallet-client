@@ -2,6 +2,7 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { SignedDelegation } from "../internet-identity"
 import { BuiltDelegate } from "../internet-identity/build-delegate"
+import { hasOwnProperty } from "../internet-identity/utils"
 
 /**
  * Identity provider flow proceeds as follows.
@@ -31,8 +32,6 @@ export type IdentityClientAuthEvent = {
   sessionPublicKey: Uint8Array
   derivationOrigin?: string
 }
-type IdentityClientDeviceEvent = { kind: "new-device" }
-type IdentityClientEvents = IdentityClientAuthEvent | IdentityClientDeviceEvent
 
 /** Third party auth delegation format expected by @dfinity/auth-client */
 export interface DfinityAuthClientDelegate {
@@ -57,14 +56,17 @@ export function postMessageToClient<T extends IdentityProviderEvents>(
   origin.postMessage(event, hostname)
 }
 
-export function awaitMessageFromClient<T extends IdentityClientEvents>(
-  event: T["kind"],
+export function awaitClientMessage<T>(
+  isExpectedMessage: (message: MessageEvent<T>) => message is MessageEvent<T>,
 ) {
   return new Promise<MessageEvent<T>>((res) => {
-    window.addEventListener("message", (message: MessageEvent<T>) => {
-      if (message.data.kind === event) {
-        res(message)
+    window.addEventListener("message", (message) => {
+      if (isExpectedMessage(message)) {
+        return res(message)
       }
+      console.warn(
+        `awaitClientMessage: Unexpected message: ${JSON.stringify(message)}`,
+      )
     })
   })
 }
@@ -93,4 +95,53 @@ export function getAppMetaFromQuery(): AuthorizingAppMeta {
     name: params.get("applicationName") || undefined,
     logo: params.get("applicationLogo") || undefined,
   }
+}
+
+export const isIdentityClientAuthEvent = (
+  event: unknown,
+): event is MessageEvent<IdentityClientAuthEvent> => {
+  const msg = (event as any).data as unknown
+
+  console.debug("isIdentityClientAuthEvent", { msg })
+
+  if (typeof msg !== "object") {
+    return false
+  }
+
+  if (msg === null) {
+    return false
+  }
+
+  // Some extra conversions to take typescript by the hand
+  // eslint-disable-next-line
+  const tmp: {} = msg
+  const obj: Record<string, unknown> = tmp
+
+  if (!hasOwnProperty(obj, "kind") || obj.kind !== "authorize-client") {
+    return false
+  }
+
+  if (
+    !hasOwnProperty(obj, "sessionPublicKey") ||
+    !(obj.sessionPublicKey instanceof Uint8Array)
+  ) {
+    return false
+  }
+
+  const maxTimeToLive = obj.maxTimeToLive
+  if (
+    typeof maxTimeToLive !== "undefined" &&
+    typeof maxTimeToLive !== "bigint"
+  ) {
+    return false
+  }
+
+  const derivationOrigin = obj.derivationOrigin
+  if (
+    typeof derivationOrigin !== "undefined" &&
+    typeof derivationOrigin !== "string"
+  ) {
+    return false
+  }
+  return true
 }

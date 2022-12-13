@@ -17,6 +17,7 @@ const ProfileSecurity = () => {
   const {
     devices,
     socialDevices,
+    walletDevices,
     recoveryDevices,
     deleteDevice,
     getDevices,
@@ -131,6 +132,7 @@ const ProfileSecurity = () => {
       onDeviceUpdate={handleDeviceUpdate}
       devices={devices}
       socialDevices={socialDevices}
+      walletDevices={walletDevices}
       onRecoveryDelete={handleRecoveryDelete}
       onRecoveryUpdate={handleRecoveryUpdate}
       onRecoveryProtect={handleProtectRecovery}

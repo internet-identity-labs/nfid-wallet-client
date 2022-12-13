@@ -1,9 +1,12 @@
 import React from "react"
 
-import { Icon } from "frontend/integration/identity-manager/devices/state"
+import { IconMetamask } from "@nfid-frontend/ui"
+import { Icon } from "@nfid/integration"
+
 import { IconLaptop } from "frontend/ui/atoms/icons/desktop"
 import { DocumentIcon } from "frontend/ui/atoms/icons/document"
 import { GoogleIcon } from "frontend/ui/atoms/icons/google"
+import { IIIcon } from "frontend/ui/atoms/icons/ii"
 import { IconDesktop } from "frontend/ui/atoms/icons/laptop"
 import { MobileIcon } from "frontend/ui/atoms/icons/mobile"
 import { TabletIcon } from "frontend/ui/atoms/icons/tablet"
@@ -20,7 +23,7 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
   onClick,
 }) => {
   const props = {
-    className: "text-xl text-blue-base",
+    className: "text-xl text-blue",
     onClick,
   }
 
@@ -41,6 +44,10 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
       return <GoogleIcon {...props} />
     case "unknown":
       return <UnknownIcon {...props} />
+    case "ii":
+      return <IIIcon />
+    case "metamask":
+      return <IconMetamask />
     default:
       return null
   }

@@ -1,4 +1,4 @@
-import { hooks } from "./src/hooks"
+import { hooks } from "./src/wdio-hooks"
 
 export const isDebug = process.env.DEBUG === "true"
 
@@ -99,6 +99,8 @@ export const config: WebdriverIO.Config = {
           "--disable-web-security",
         ],
       },
+      // @ts-ignore
+      "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
       acceptInsecureCerts: true,
     },
   ],

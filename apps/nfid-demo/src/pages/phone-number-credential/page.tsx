@@ -1,16 +1,16 @@
 import { HttpAgent } from "@dfinity/agent"
 import { AuthClient } from "@dfinity/auth-client"
 import { DelegationIdentity } from "@dfinity/identity"
+import clsx from "clsx"
+import React from "react"
+import { ImSpinner } from "react-icons/im"
+
 import { Button, H1 } from "@nfid-frontend/ui"
 import {
   requestPhoneNumberCredential,
   verifyPhoneNumberCredential,
 } from "@nfid/credentials"
-import clsx from "clsx"
-import React from "react"
-import { ImSpinner } from "react-icons/im"
 
-import { environment } from "../../environments/environment"
 import { useButtonState } from "../../hooks/useButtonState"
 import { PageTemplate } from "../page-template"
 
@@ -42,6 +42,7 @@ export const PagePhoneNumberVerification: React.FC = () => {
     const authClient = await AuthClient.create()
     updateAuthButton({ loading: true, label: "Authenticating..." })
     await authClient.login({
+      idpWindowName: "nfidIdpWindow",
       onSuccess: () => {
         identity = authClient.getIdentity() as DelegationIdentity
         if (!(window as any).ic) (window as any).ic = {}
@@ -60,7 +61,7 @@ export const PagePhoneNumberVerification: React.FC = () => {
       onError: (error) => {
         console.error(error)
       },
-      identityProvider: `${environment.nfidProviderOrigin}/authenticate`,
+      identityProvider: `${NFID_PROVIDER_URL}/authenticate`,
       windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
     })
   }, [updateAuthButton, updateCredButton])
@@ -73,9 +74,9 @@ export const PagePhoneNumberVerification: React.FC = () => {
     })
     requestPhoneNumberCredential(identity, {
       provider: new URL(
-        `${environment.nfidProviderOrigin}/credential/verified-phone-number?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
+        `${NFID_PROVIDER_URL}/credential/verified-phone-number?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
       ),
-      verifier: environment.verifierCanisterId,
+      verifier: VERIFIER_CANISTER_ID,
     })
       .then((result) => {
         setCertificate(JSON.stringify(result, null, 2))
@@ -84,7 +85,7 @@ export const PagePhoneNumberVerification: React.FC = () => {
           setVerify("Verifying credential...")
           return verifyPhoneNumberCredential(
             identity.getPrincipal().toText(),
-            environment.verifierCanisterId,
+            VERIFIER_CANISTER_ID,
           )
         }
         return undefined
@@ -120,11 +121,7 @@ export const PagePhoneNumberVerification: React.FC = () => {
           here
         </a>
       </div>
-      <Button
-        primary
-        disabled={authButton.disabled}
-        onClick={handleAuthenticate}
-      >
+      <Button disabled={authButton.disabled} onClick={handleAuthenticate}>
         {authButton.loading ? (
           <div className={clsx("flex items-center space-x-2")}>
             <ImSpinner className={clsx("animate-spin")} />
@@ -145,7 +142,6 @@ requestPhoneNumberCredential(identity)
         `}
       </pre>
       <Button
-        primary
         id="credential"
         disabled={credButton.disabled}
         onClick={handleCreateCredential}

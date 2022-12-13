@@ -1,9 +1,11 @@
 import React from "react"
 import useSWR from "swr"
 
+import { Application } from "@nfid/integration"
+
 import { mapApplicationAccounts } from "frontend/apps/identity-manager/profile/applications/utils"
 
-import { Application, fetchAccounts, fetchApplications, fetchProfile } from "."
+import { fetchAccounts, fetchApplications, fetchProfile } from "."
 
 export function useAccounts() {
   const {

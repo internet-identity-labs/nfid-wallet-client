@@ -1,14 +1,7 @@
 import { DerEncodedPublicKey } from "@dfinity/agent"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import { WebAuthnIdentity } from "@dfinity/identity"
 
-import {
-  authState,
-  FrontendDelegation,
-  ii,
-  replaceIdentity,
-  setProfile,
-} from "@nfid/integration"
+import { authState, ii, replaceIdentity, setProfile } from "@nfid/integration"
 
 import { IIAuthenticationMachineContext } from "frontend/features/sign-in-options/machine"
 import { AuthSession } from "frontend/state/authentication"
@@ -91,23 +84,12 @@ export async function addTentativeDevice(
  * @param userIdentity WebAuthnIdentity
  * @returns II auth session
  */
-export async function validateTentativeDevice(
-  anchor: number,
-  userIdentity?: WebAuthnIdentity,
-  userDelegation?: FrontendDelegation,
-) {
-  if (!userIdentity || !userDelegation) return false
-
-  const devices = await fetchAllDevices(BigInt(anchor))
-  const addedDevice = devices.find((device) => {
-    const devicePublicKey = toHexString(
-      derFromPubkey(Array.from(new Uint8Array(device.pubkey))),
-    )
-
-    return devicePublicKey === toHexString(userIdentity?.getPublicKey().toDer())
-  })
-
-  if (!addedDevice) return false
+export async function createTentativeDevice({
+  userIdentity,
+  frontendDelegation: userDelegation,
+  anchor,
+}: IIAuthenticationMachineContext) {
+  if (!userIdentity || !userDelegation) return null!
 
   replaceIdentity(userDelegation.delegationIdentity)
 
@@ -153,19 +135,34 @@ export async function validateTentativeDevice(
  * Check if tentative device added to II
  * @returns authSession
  */
-export async function checkTentativeDevice(
-  context: IIAuthenticationMachineContext,
-) {
-  return new Promise<AuthSession>((resolve, reject) => {
+export async function checkTentativeDevice({
+  userIdentity,
+  frontendDelegation: userDelegation,
+  anchor,
+}: IIAuthenticationMachineContext) {
+  return new Promise<boolean>((resolve, reject) => {
     const intervalCheck = async () => {
       window.setTimeout(async function () {
-        const result = await validateTentativeDevice(
-          context.anchor,
-          context.userIdentity,
-          context.frontendDelegation,
-        )
+        // const result = await validateTentativeDevice(
+        //   context.anchor,
+        //   context.userIdentity,
+        //   context.frontendDelegation,
+        // )
+        if (!userIdentity || !userDelegation) return false
 
-        if (result) resolve(result)
+        const devices = await fetchAllDevices(BigInt(anchor))
+        const addedDevice = devices.find((device) => {
+          const devicePublicKey = toHexString(
+            derFromPubkey(Array.from(new Uint8Array(device.pubkey))),
+          )
+
+          return (
+            devicePublicKey ===
+            toHexString(userIdentity?.getPublicKey().toDer())
+          )
+        })
+
+        if (addedDevice) resolve(true)
         else intervalCheck()
       }, 3000)
     }

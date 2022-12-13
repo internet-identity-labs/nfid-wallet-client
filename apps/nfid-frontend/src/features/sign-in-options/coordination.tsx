@@ -83,11 +83,13 @@ export function AuthWithIICoordinator({ actor }: AuthWithIICoordinatorProps) {
         />
       )
     case state.matches("IIConnectAnchorCode"):
+    case state.matches("IIConnectAnchorCodeLoading"):
       return (
         <IIAuthCode
           secureCode={state.context?.verificationCode ?? ""}
           anchor={state?.context?.anchor}
           onCancel={() => send({ type: "BACK" })}
+          isLoading={state.context.loading ?? false}
         />
       )
     case state.matches("IIThirdParty"):

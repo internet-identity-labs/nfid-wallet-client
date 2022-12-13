@@ -80,7 +80,7 @@ export const validateDerivationOrigin = async (
   } catch (e: any) {
     return {
       result: "invalid",
-      message: `An error occurred while validation the derivationOrigin "${derivationOrigin}": ${e?.message}`,
+      message: `An error occurred while validating the derivationOrigin "${derivationOrigin}" for alias domain "${authRequestOrigin}": ${e?.message}`,
     }
   }
 

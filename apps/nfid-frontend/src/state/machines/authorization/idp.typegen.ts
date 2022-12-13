@@ -85,7 +85,7 @@ export interface Typegen0 {
     AuthorizationMachine: "done.invoke.authenticate"
     TrustDeviceMachine: "done.invoke.authorize"
     getAppMeta: "xstate.init"
-    handshake: "xstate.init"
+    handshake: "RETRY" | "xstate.init"
     postDelegation: "done.invoke.authorize" | "done.invoke.trustDeviceMachine"
   }
   matchesStates:

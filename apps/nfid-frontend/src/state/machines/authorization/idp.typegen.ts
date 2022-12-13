@@ -66,15 +66,19 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAppMeta: "done.invoke.getAppMeta"
     assignAuthRequest: "done.invoke.handshake"
     assignAuthoSession: "done.invoke.authorize"
     assignError: "error.platform.handshake"
+  }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    isWebAuthNSupported: "done.invoke.authorize"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.state.idp.Start"
@@ -84,10 +88,6 @@ export interface Typegen0 {
     handshake: "xstate.init"
     postDelegation: "done.invoke.authorize" | "done.invoke.trustDeviceMachine"
   }
-  eventsCausingGuards: {
-    isWebAuthNSupported: "done.invoke.authorize"
-  }
-  eventsCausingDelays: {}
   matchesStates:
     | "AuthenticationMachine"
     | "AuthorizationMachine"

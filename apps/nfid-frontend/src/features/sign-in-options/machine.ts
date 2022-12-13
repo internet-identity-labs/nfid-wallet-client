@@ -5,7 +5,10 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 import { FrontendDelegation } from "@nfid/integration"
 
 import { checkRegistrationStatus } from "frontend/integration/identity-manager/services"
-import { checkTentativeDevice } from "frontend/integration/signin"
+import {
+  checkTentativeDevice,
+  createTentativeDevice,
+} from "frontend/integration/signin"
 import { getIIAuthSessionService } from "frontend/integration/signin/signin-with-ii"
 import { AuthSession, IIAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -18,6 +21,7 @@ export interface IIAuthenticationMachineContext {
   verificationCode?: string
   userIdentity?: WebAuthnIdentity
   frontendDelegation?: FrontendDelegation
+  loading?: boolean
 }
 
 export type Events =
@@ -26,7 +30,8 @@ export type Events =
       type: "error.platform.getIIAuthSessionService"
       data: { message: string }
     }
-  | { type: "done.invoke.checkTentativeDevice"; data: AuthSession }
+  | { type: "done.invoke.checkTentativeDevice"; data: boolean }
+  | { type: "done.invoke.createTentativeDevice"; data: AuthSession }
   | { type: "done.invoke.checkRegistrationStatus"; data: boolean }
   | { type: "NEW_NFID" }
   | { type: "EXISTING_NFID" }
@@ -109,13 +114,23 @@ const AuthWithIIMachine =
             src: "checkTentativeDevice",
             id: "checkTentativeDevice",
             onDone: {
-              target: "End",
-              actions: "assignAuthSession",
+              target: "IIConnectAnchorCodeLoading",
+              actions: "assignLoading",
             },
           },
           on: {
             BACK: {
               target: "IIConnectAnchor",
+            },
+          },
+        },
+        IIConnectAnchorCodeLoading: {
+          invoke: {
+            src: "createTentativeDevice",
+            id: "createTentativeDevice",
+            onDone: {
+              target: "End",
+              actions: "assignAuthSession",
             },
           },
         },
@@ -174,6 +189,11 @@ const AuthWithIIMachine =
             return event.data
           },
         }),
+        assignLoading: assign({
+          loading: (_, event) => {
+            return event.data
+          },
+        }),
         assignVerificationCode: assign((context, event) => ({
           verificationCode: event.verificationCode,
         })),
@@ -189,6 +209,7 @@ const AuthWithIIMachine =
         getIIAuthSessionService,
         checkRegistrationStatus,
         checkTentativeDevice,
+        createTentativeDevice,
       },
     },
   )

@@ -13,6 +13,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.createTentativeDevice": {
+      type: "done.invoke.createTentativeDevice"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.getIIAuthSessionService": {
       type: "done.invoke.getIIAuthSessionService"
       data: unknown
@@ -26,6 +31,10 @@ export interface Typegen0 {
       type: "error.platform.checkTentativeDevice"
       data: unknown
     }
+    "error.platform.createTentativeDevice": {
+      type: "error.platform.createTentativeDevice"
+      data: unknown
+    }
     "error.platform.getIIAuthSessionService": {
       type: "error.platform.getIIAuthSessionService"
       data: unknown
@@ -35,6 +44,7 @@ export interface Typegen0 {
   invokeSrcNameMap: {
     checkRegistrationStatus: "done.invoke.checkRegistrationStatus"
     checkTentativeDevice: "done.invoke.checkTentativeDevice"
+    createTentativeDevice: "done.invoke.createTentativeDevice"
     getIIAuthSessionService: "done.invoke.getIIAuthSessionService"
   }
   missingImplementations: {
@@ -47,9 +57,10 @@ export interface Typegen0 {
     assignAnchor: "CONNECT_WITH_ANCHOR"
     assignAuthSession:
       | "RECOVER_II_SUCCESS"
-      | "done.invoke.checkTentativeDevice"
+      | "done.invoke.createTentativeDevice"
       | "done.invoke.getIIAuthSessionService"
     assignFrontendDelegation: "ASSIGN_FRONTEND_DELEGATION"
+    assignLoading: "done.invoke.checkTentativeDevice"
     assignRegistrationStatus: "done.invoke.checkRegistrationStatus"
     assignUserIdentity: "ASSIGN_USER_DEVICE"
     assignVerificationCode: "CONNECT_RETRY"
@@ -60,6 +71,7 @@ export interface Typegen0 {
   eventsCausingServices: {
     checkRegistrationStatus: "done.invoke.getIIAuthSessionService"
     checkTentativeDevice: "CONNECT_RETRY"
+    createTentativeDevice: "done.invoke.checkTentativeDevice"
     getIIAuthSessionService: "CREATE_NEW_ANCHOR" | "EXISTING_NFID"
   }
   matchesStates:
@@ -67,6 +79,7 @@ export interface Typegen0 {
     | "End"
     | "IIConnectAnchor"
     | "IIConnectAnchorCode"
+    | "IIConnectAnchorCodeLoading"
     | "IICreateNewNFID"
     | "IIRecoveryPhrase"
     | "IIThirdParty"

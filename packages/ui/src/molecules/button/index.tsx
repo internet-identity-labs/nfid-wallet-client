@@ -81,13 +81,13 @@ export const Button: React.FC<ButtonProps> = ({
       )}
       {...buttonProps}
     >
-      <div className="flex items-center space-x-2 center">
+      <div className="flex items-center justify-center space-x-2">
         {icon ? (
           <div className="w-[18px] h-[18px] flex items-center justify-center">
             {icon}
           </div>
         ) : null}
-        {children ? <div className="w-full text-center">{children}</div> : null}
+        {children ? <div className="text-center">{children}</div> : null}
       </div>
     </button>
   )

@@ -1,3 +1,5 @@
+import { ImPlus, ImSpinner } from "react-icons/im"
+
 import { Button } from "@nfid-frontend/ui"
 
 import { Copy } from "../../atoms/copy"
@@ -6,12 +8,14 @@ export interface IIAuthCodeProps {
   secureCode: string
   anchor?: number
   onCancel: () => void
+  isLoading?: boolean
 }
 
 export const IIAuthCode = ({
   secureCode,
   anchor,
   onCancel,
+  isLoading,
 }: IIAuthCodeProps) => {
   return (
     <div>
@@ -41,8 +45,14 @@ export const IIAuthCode = ({
           </div>
         </div>
       </div>
-      <Button type="stroke" block onClick={onCancel}>
-        Cancel
+      <Button
+        type={isLoading ? "primary" : "stroke"}
+        block
+        onClick={onCancel}
+        disabled={isLoading}
+        icon={isLoading ? <ImSpinner className="animate-spin" /> : undefined}
+      >
+        {isLoading ? "Connecting..." : "Cancel"}
       </Button>
     </div>
   )

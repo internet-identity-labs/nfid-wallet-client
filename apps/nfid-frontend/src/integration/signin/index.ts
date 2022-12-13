@@ -89,7 +89,14 @@ export async function createTentativeDevice({
   frontendDelegation: userDelegation,
   anchor,
 }: IIAuthenticationMachineContext) {
-  if (!userIdentity || !userDelegation) return null!
+  const session = {
+    sessionSource: "localDevice",
+    identity: userIdentity,
+    delegationIdentity: userDelegation?.delegationIdentity,
+    anchor: anchor,
+  } as AuthSession
+
+  if (!userIdentity || !userDelegation) return session
 
   replaceIdentity(userDelegation.delegationIdentity)
 
@@ -120,13 +127,6 @@ export async function createTentativeDevice({
     })
   }
 
-  const session = {
-    sessionSource: "localDevice",
-    identity: userIdentity,
-    delegationIdentity: userDelegation.delegationIdentity,
-    anchor: anchor,
-  } as AuthSession
-
   return session
 }
 
@@ -143,11 +143,6 @@ export async function checkTentativeDevice({
   return new Promise<boolean>((resolve, reject) => {
     const intervalCheck = async () => {
       window.setTimeout(async function () {
-        // const result = await validateTentativeDevice(
-        //   context.anchor,
-        //   context.userIdentity,
-        //   context.frontendDelegation,
-        // )
         if (!userIdentity || !userDelegation) return false
 
         const devices = await fetchAllDevices(BigInt(anchor))

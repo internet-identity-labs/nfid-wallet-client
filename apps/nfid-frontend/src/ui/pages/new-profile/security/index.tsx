@@ -29,6 +29,7 @@ interface IProfileSecurityPage extends React.HTMLAttributes<HTMLDivElement> {
   devices: LegacyDevice[]
   recoveryMethods: RecoveryDevice[]
   socialDevices?: LegacyDevice[]
+  walletDevices?: LegacyDevice[]
 }
 
 const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
@@ -43,6 +44,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
   onRegisterRecoveryKey,
   recoveryMethods,
   socialDevices,
+  walletDevices,
 }) => {
   console.log({ devices, socialDevices })
   const [isModalVisible, setIsModalVisible] = React.useState(false)
@@ -131,6 +133,22 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
           className="mt-[30px] relative mb-12 sm:mb-0"
         >
           {socialDevices.map((device) => (
+            <DeviceListItem
+              key={`${device.label}-${device.browser}-${device.lastUsed}`}
+              device={device}
+              onDeviceUpdate={onDeviceUpdate}
+              onDelete={onDeviceDelete}
+            />
+          ))}
+        </ProfileContainer>
+      ) : null}
+      {walletDevices?.length ? (
+        <ProfileContainer
+          title="Web3 wallets"
+          subTitle="Web3 wallets you can sign in from"
+          className="mt-[30px] relative mb-12 sm:mb-0"
+        >
+          {walletDevices.map((device) => (
             <DeviceListItem
               key={`${device.label}-${device.browser}-${device.lastUsed}`}
               device={device}

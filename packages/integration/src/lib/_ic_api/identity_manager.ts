@@ -67,6 +67,7 @@ export const idlFactory = ({ IDL }: any) => {
     domain: IDL.Text,
     name: IDL.Text,
     is_nft_storage: IDL.Opt(IDL.Bool),
+    is_trusted: IDL.Opt(IDL.Bool),
   })
   const HTTPApplicationResponse = IDL.Record({
     data: IDL.Opt(IDL.Vec(Application)),
@@ -205,9 +206,7 @@ export const idlFactory = ({ IDL }: any) => {
     error: IDL.Opt(Error),
     status_code: IDL.Nat16,
   })
-  const AccessPointRemoveRequest = IDL.Record({
-    pub_key: IDL.Text,
-  })
+  const AccessPointRemoveRequest = IDL.Record({ pub_key: IDL.Text })
   const BasicEntity = IDL.Record({
     modified_date: IDL.Nat64,
     created_date: IDL.Nat64,

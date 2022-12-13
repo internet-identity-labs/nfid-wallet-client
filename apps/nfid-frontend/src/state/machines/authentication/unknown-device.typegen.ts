@@ -8,6 +8,16 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.authWithII": {
+      type: "done.invoke.authWithII"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.getMetamaskAuthSession": {
+      type: "done.invoke.getMetamaskAuthSession"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.isMobileWithWebAuthn": {
       type: "done.invoke.isMobileWithWebAuthn"
       data: unknown
@@ -32,6 +42,14 @@ export interface Typegen0 {
       type: "error.platform.AuthWithGoogleMachine"
       data: unknown
     }
+    "error.platform.authWithII": {
+      type: "error.platform.authWithII"
+      data: unknown
+    }
+    "error.platform.getMetamaskAuthSession": {
+      type: "error.platform.getMetamaskAuthSession"
+      data: unknown
+    }
     "error.platform.isMobileWithWebAuthn": {
       type: "error.platform.isMobileWithWebAuthn"
       data: unknown
@@ -49,44 +67,59 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
+    AuthWithIIMachine: "done.invoke.authWithII"
     RegistrationMachine: "done.invoke.registration"
     RemoteReceiverMachine: "done.invoke.remote"
+    getMetamaskAuthSession: "done.invoke.getMetamaskAuthSession"
     isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
     loginWithAnchor: "done.invoke.loginWithAnchor"
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithII"
+      | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.loginWithAnchor"
       | "done.invoke.registration"
       | "done.invoke.remote"
+    handleError: "error.platform.getMetamaskAuthSession"
+  }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
+    isExistingAccount:
+      | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithII"
+      | "done.invoke.getMetamaskAuthSession"
+    isReturn: "done.invoke.authWithII"
   }
   eventsCausingServices: {
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
+    AuthWithIIMachine: "AUTH_WITH_II"
     RegistrationMachine:
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.authWithII"
+      | "done.invoke.getMetamaskAuthSession"
       | "done.invoke.isMobileWithWebAuthn"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
+    getMetamaskAuthSession: "AUTH_WITH_METAMASK"
     isMobileWithWebAuthn: "xstate.init"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
-  eventsCausingGuards: {
-    bool: "done.invoke.isMobileWithWebAuthn" | "done.invoke.remote"
-    isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
-  }
-  eventsCausingDelays: {}
   matchesStates:
     | "AuthSelection"
     | "AuthWithGoogle"
+    | "AuthWithMetamask"
     | "AuthenticateSameDevice"
     | "End"
     | "ExistingAnchor"
+    | "IIAuthentication"
     | "RegistrationMachine"
     | "RemoteAuthentication"
     | "Start"

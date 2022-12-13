@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import { DelegationChain, WebAuthnIdentity } from "@dfinity/identity"
-import { ii, im } from "@nfid/integration"
 import {
   render,
   waitFor,
@@ -11,6 +10,8 @@ import {
   getByPlaceholderText,
 } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import { ii, im } from "@nfid/integration"
 
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import {
@@ -50,6 +51,8 @@ describe("Registration Coordinator", () => {
     im.create_access_point = jest.fn(mockCreateAccessPointResponse)
     // @ts-ignore: actor class has additional things to mock
     im.get_account = jest.fn(mockGetAccountResponse)
+
+    jest.useFakeTimers().setSystemTime(new Date("1969-01-01T00:27:48.512Z"))
 
     WebAuthnIdentity.create = jest.fn(mockWebAuthnCreate)
     DelegationChain.create = jest.fn(factoryDelegationChain)

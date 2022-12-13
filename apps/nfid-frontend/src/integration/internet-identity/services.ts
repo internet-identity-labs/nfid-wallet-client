@@ -1,11 +1,19 @@
 import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
-import { authState } from "@nfid/integration"
-import { ii, im } from "@nfid/integration"
 import * as Sentry from "@sentry/browser"
 
 import {
-  fetchProfile,
+  authState,
+  requestFEDelegationChain,
+  ii,
+  im,
+  setProfile,
+  loadProfileFromLocalStorage,
+  Icon,
   Profile,
+} from "@nfid/integration"
+
+import {
+  fetchProfile,
   registerProfileWithAccessPoint,
 } from "frontend/integration/identity-manager"
 import {
@@ -25,15 +33,11 @@ import {
   login,
   lookup,
   registerInternetIdentity,
-  requestFEDelegationChain,
+  registerInternetIdentityWithII,
 } from "."
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
-import { Icon } from "../identity-manager/devices/state"
-import {
-  loadProfileFromLocalStorage,
-  setProfile,
-} from "../identity-manager/profile"
+import { getMetamaskAccounts } from "../signin/metamask"
 import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(
@@ -196,11 +200,25 @@ export async function registerService(
   }
 
   // Create account with internet identity.
-  const { anchor, delegationIdentity } = await registerInternetIdentity(
-    identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
-    deviceInfo.newDeviceName,
-    { key: context.challenge.challengeKey, chars: event.data },
-  )
+  let anchor: number,
+    delegationIdentity = identity as DelegationIdentity
+
+  if (context.authSession?.sessionSource === "ii") {
+    anchor = await registerInternetIdentityWithII(
+      Array.from(new Uint8Array(identity.getPublicKey().toDer())),
+      deviceInfo.newDeviceName,
+      { key: context.challenge.challengeKey, chars: event.data },
+    )
+  } else {
+    const result = await registerInternetIdentity(
+      identity as WebAuthnIdentity, // It's not actually always a WebAuthnIdentity 😬
+      deviceInfo.newDeviceName,
+      { key: context.challenge.challengeKey, chars: event.data },
+    )
+
+    anchor = result.anchor
+    delegationIdentity = result.delegationIdentity
+  }
 
   try {
     // Register the account with identity manager.
@@ -210,18 +228,35 @@ export async function registerService(
         authState.get()?.delegationIdentity?.getPublicKey().toDer() ?? [],
       ),
     )
+    // TODO create some factory for this
     const accessPoint =
-      sessionSource !== "google"
+      sessionSource === "google"
         ? {
-            icon: getIcon(deviceInfo),
-            device: deviceInfo.newDeviceName,
-            browser: deviceInfo.browser.name ?? "Mobile",
+            icon: "google" as Icon,
+            device: "Google",
+            browser: `${
+              deviceInfo.browser.name ?? getBrowserName()
+            } with google account`,
+            pubKey,
+          }
+        : sessionSource === "ii"
+        ? {
+            icon: "ii" as Icon,
+            device: "Internet Identity",
+            browser: delegationIdentity.getPrincipal().toString(),
+            pubKey,
+          }
+        : sessionSource === "metamask"
+        ? {
+            icon: "metamask" as Icon,
+            device: "Metamask",
+            browser: (await getMetamaskAccounts())[0],
             pubKey,
           }
         : {
-            icon: "google" as Icon,
-            device: "Google",
-            browser: "Google account",
+            icon: getIcon(deviceInfo),
+            device: deviceInfo.newDeviceName,
+            browser: deviceInfo.browser.name ?? "Mobile",
             pubKey,
           }
     console.debug("RouterRegisterDeviceDecider handleRegister", {

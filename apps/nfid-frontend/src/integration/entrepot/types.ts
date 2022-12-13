@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Account } from "../identity-manager"
+import { Account } from "@nfid/integration"
 
 // External Entrepot types
 export interface EntrepotCollection {

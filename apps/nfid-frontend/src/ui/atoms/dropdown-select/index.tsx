@@ -2,9 +2,10 @@ import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
+import { Input } from "@nfid-frontend/ui"
+
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
-import { Input } from "../input"
 import Arrow from "./arrow.svg"
 import { DropdownOption } from "./option"
 
@@ -28,6 +29,7 @@ export interface IDropdownSelect {
   firstSelected?: boolean
   disabled?: boolean
   showSelectAllOption?: boolean
+  errorText?: string
 }
 
 export const DropdownSelect = ({
@@ -42,6 +44,7 @@ export const DropdownSelect = ({
   firstSelected = false,
   disabled = false,
   showSelectAllOption = false,
+  errorText,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
@@ -108,6 +111,7 @@ export const DropdownSelect = ({
           bordered && "border border-black-base",
           isDropdownOpen && "border border-blue-600 bg-blue-50",
           disabled && "!border-none !bg-gray-100 !text-gray-400",
+          errorText && "!border border-red-600 !ring-2 !ring-red-100",
         )}
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -124,6 +128,7 @@ export const DropdownSelect = ({
         </p>
         <img src={Arrow} alt="arrow" />
       </div>
+      <p className={clsx("text-sm text-red-600")}>{errorText}</p>
       {isDropdownOpen && (
         <div
           className={clsx("w-full bg-white rounded-md mt-[1px] absolute z-50")}
@@ -149,6 +154,7 @@ export const DropdownSelect = ({
             )}
             {filteredOptions?.map((option) => (
               <DropdownOption
+                key={option.value}
                 option={option}
                 isChecked={selectedValues.includes(option.value)}
                 toggleCheckbox={toggleCheckbox}

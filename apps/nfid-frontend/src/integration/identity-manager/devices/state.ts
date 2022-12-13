@@ -1,14 +1,6 @@
 import { atom } from "jotai"
 
-export type Icon =
-  | "mobile"
-  | "tablet"
-  | "desktop"
-  | "laptop"
-  | "document"
-  | "usb"
-  | "google"
-  | "unknown"
+import { Icon } from "@nfid/integration"
 
 export interface AccessPointRequest {
   icon: string
@@ -24,6 +16,7 @@ export interface AccessPointRequest {
 export interface LegacyDevice {
   isAccessPoint?: boolean // Indicates if this device is already stored as access point
   isSocialDevice?: boolean // Indicates if this device is social method
+  isWalletDevice?: boolean // Indicates if this II device
   isSecurityKey?: boolean
   label: string
   icon: Icon

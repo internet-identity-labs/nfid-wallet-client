@@ -36,7 +36,7 @@ export const ProfileNFTNotPresent: React.FC<IProfileNFTNotPresent> = ({
               Email us at{" "}
               <a
                 href="mailto:hello@identitylabs.ooo"
-                className="text-blue-600 transition-opacity hover:opacity-50"
+                className="text-blue transition-opacity hover:opacity-50"
               >
                 hello@identitylabs.ooo
               </a>{" "}

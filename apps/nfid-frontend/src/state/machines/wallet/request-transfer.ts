@@ -1,8 +1,9 @@
+import { ActorRefFrom, assign, createMachine } from "xstate"
+
 import {
   registerRequestTransferHandler,
   RequestTransferParams,
 } from "@nfid/wallet"
-import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -68,17 +69,13 @@ const RequestTransferMachine = createMachine(
       },
       RequestTransfer: {
         on: {
-          CONFIRM: "Confirm",
+          CONFIRM: { target: "Confirm", actions: "assignBlockHeight" },
         },
       },
       Confirm: {
-        onEntry: "assignBlockHeight",
-        on: {
-          END: "End",
-        },
+        onEntry: "setBlockHeight",
       },
       End: {
-        onEntry: "setBlockHeight",
         type: "final",
       },
     },

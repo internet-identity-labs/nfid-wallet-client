@@ -3,7 +3,8 @@
  */
 import { interpret } from "xstate"
 
-import { Profile } from "frontend/integration/identity-manager"
+import { Profile } from "@nfid/integration"
+
 import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 
 // import { factoryProfile } from "frontend/integration/identity-manager/__mocks"

@@ -7,8 +7,16 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
-import { authState as authStateMock } from "@nfid/integration"
+
+import {
+  Account,
+  Application,
+  authState as authStateMock,
+  extendWithFixedAccounts,
+  generateDelegationIdentity,
+} from "@nfid/integration"
 import { ii, im, replaceIdentity } from "@nfid/integration"
+import { FrontendDelegation } from "@nfid/integration"
 
 import {
   DeviceData,
@@ -18,18 +26,13 @@ import {
   fetchPrincipals,
   removeRecoveryDeviceFacade,
 } from "frontend/integration/facade/index"
-import {
-  Account,
-  Application,
-  fetchAccounts,
-} from "frontend/integration/identity-manager/index"
+import { fetchAccounts } from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"
-import { FrontendDelegation } from "frontend/integration/internet-identity/index"
 import { hasOwnProperty } from "frontend/integration/internet-identity/utils"
 
-import { getWalletPrincipal } from "../rosetta"
-import { generateDelegationIdentity, registerIIAccount } from "../test-util"
+import { getWalletPrincipal } from "../rosetta/get-wallet-principal"
+import { registerIIAccount } from "../test-util"
 
 describe("Facade suite", () => {
   jest.setTimeout(100000)
@@ -142,73 +145,76 @@ describe("Facade suite", () => {
         icon: "",
         pub_key: mockedIdentity.getPrincipal().toText(),
       })
-      await im.create_persona({
-        domain: "test",
-        persona_id: "1",
-        persona_name: "",
-      })
-      await im.create_persona({
-        domain: "test",
-        persona_id: "2",
-        persona_name: "",
-      })
-      await im.create_persona({
-        domain: "oneMoreTest",
-        persona_id: "1",
-        persona_name: "",
-      })
-      await im.create_persona({
-        domain: "duplicatedDomain",
-        persona_id: "1",
-        persona_name: "",
-      })
-      let nfid: Application = {
+      await Promise.all([
+        im.create_persona({
+          domain: "test",
+          persona_id: "1",
+          persona_name: "",
+        }),
+        im.create_persona({
+          domain: "test",
+          persona_id: "2",
+          persona_name: "",
+        }),
+        im.create_persona({
+          domain: "oneMoreTest",
+          persona_id: "1",
+          persona_name: "",
+        }),
+        im.create_persona({
+          domain: "duplicatedDomain",
+          persona_id: "1",
+          persona_name: "",
+        }),
+      ])
+      const nfid: Application = {
         accountLimit: 1,
         alias: [],
         domain: "nfid.one",
         isNftStorage: true,
         name: "NFID",
       }
-      let appRequired: Application = {
+      const appRequired: Application = {
         accountLimit: 0,
         alias: [],
         domain: "requiredDomain",
         isNftStorage: true,
         name: "",
       }
-      let appDuplicated: Application = {
+      const appDuplicated: Application = {
         accountLimit: 0,
         alias: [],
         domain: "duplicatedDomain",
         isNftStorage: true,
         name: "",
       }
-      let appNotRequired: Application = {
+      const appNotRequired: Application = {
         accountLimit: 0,
         alias: [],
         domain: "notRequiredDomain",
         isNftStorage: false,
         name: "",
       }
-      let accounts = await fetchAccounts()
-      let principals: { principal: Principal; account: Account }[] =
-        await fetchPrincipals(anchor, accounts, [
-          nfid,
-          appRequired,
-          appNotRequired,
-          appDuplicated,
-        ])
+      const userAccounts = await fetchAccounts()
+      const accountsIncludingStaticApps = extendWithFixedAccounts(
+        userAccounts,
+        [nfid, appRequired, appNotRequired, appDuplicated],
+      )
+
+      const principals: { principal: Principal; account: Account }[] =
+        await fetchPrincipals(anchor, accountsIncludingStaticApps)
+
       expect(
-        principals.filter((p) => p.account.domain === "test")!.length,
+        principals.filter((p) => p.account.domain === "test").length,
       ).toEqual(2)
       expect(
-        principals.filter((p) => p.account.domain === "oneMoreTest")!.length,
+        principals.filter((p) => p.account.domain === "oneMoreTest").length,
       ).toEqual(1)
       expect(
-        principals.filter((p) => p.account.domain === "requiredDomain")!.length,
+        principals.filter((p) => p.account.domain === "requiredDomain").length,
       ).toEqual(1)
       expect(
-        principals.filter((p) => p.account.domain === "duplicatedDomain")!
+        principals.filter((p) => p.account.domain === "duplicatedDomain")
           .length,
       ).toEqual(2)
       expect(

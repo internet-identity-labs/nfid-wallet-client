@@ -4,7 +4,7 @@
 import { Principal } from "@dfinity/principal"
 import { expect } from "@jest/globals"
 
-import { Account } from "frontend/integration/identity-manager"
+import { Account } from "@nfid/integration"
 
 import { collection, principalTokens } from "."
 import { collection as mockCollection } from "./__mock"

@@ -61,10 +61,7 @@ export const CredentialRequesterSMSVerify: React.FC<
           ) : (
             <P className="mt-3">
               Didn’t receive a code?{" "}
-              <span
-                className="cursor-pointer text-blue-base"
-                onClick={handleResend}
-              >
+              <span className="cursor-pointer text-blue" onClick={handleResend}>
                 Resend
               </span>
             </P>
@@ -81,7 +78,7 @@ export const CredentialRequesterSMSVerify: React.FC<
         <Button
           text
           onClick={onChangePhone}
-          className="w-full mt-4 mb-8 text-sm text-center cursor-pointer text-blue-base hover:text-blue-hover"
+          className="w-full mt-4 mb-8 text-sm text-center cursor-pointer text-blue hover:text-blue-hover"
         >
           Change phone number
         </Button>

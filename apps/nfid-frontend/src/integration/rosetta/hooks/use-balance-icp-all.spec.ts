@@ -4,13 +4,16 @@
 import { Principal } from "@dfinity/principal"
 import { act, renderHook, waitFor } from "@testing-library/react"
 
+import { Account, Application, getBalance } from "@nfid/integration"
+
 import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
 
-import * as rosettaMocks from ".."
-import { Account, Application } from "../../identity-manager"
-import { APP_ACC_BALANCE_SHEET } from "../queries.mocks"
+import * as getExchangeRateMocks from "../get-exchange-rate"
 import { useBalanceICPAll } from "./use-balance-icp-all"
+import { APP_ACC_BALANCE_SHEET } from "./use-balance-icp-all.mocks"
+
+jest.mock("@nfid/integration")
 
 const commonFields = {
   currency: {
@@ -121,15 +124,13 @@ describe("useBalanceICPAll", () => {
       Promise.resolve(mock.getBalanceResponse),
     )
 
-    const getBalanceSpy = jest.spyOn(rosettaMocks, "getBalance")
-
     promises.map((promise) =>
-      getBalanceSpy.mockImplementationOnce((principal) => promise),
+      (getBalance as jest.Mock).mockImplementationOnce(() => promise),
     )
 
     const getExchangeRateP1 = Promise.resolve(5)
     const getExchangeRateSpy = jest
-      .spyOn(rosettaMocks, "getExchangeRate")
+      .spyOn(getExchangeRateMocks, "getExchangeRate")
       .mockImplementation(() => getExchangeRateP1)
 
     const useAllPrincipals = jest
@@ -154,7 +155,7 @@ describe("useBalanceICPAll", () => {
       expect(getExchangeRateSpy).toHaveBeenCalled()
       expect(useApplicationsMeta).toHaveBeenCalled()
       expect(result.current.isLoading).toBe(true)
-      expect(getBalanceSpy).toBeCalledTimes(3)
+      expect(getBalance).toBeCalledTimes(3)
     })
     expect(result.current.isLoading).toBe(false)
 

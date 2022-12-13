@@ -1,12 +1,14 @@
-import { Button, H1, Input } from "@nfid-frontend/ui"
-import { minMax } from "@nfid-frontend/utils"
-import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
 import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
+import useSWR from "swr"
 
-import { environment } from "../../environments/environment"
+import { Button, H1, Input } from "@nfid-frontend/ui"
+import { minMax } from "@nfid-frontend/utils"
+import { getBalance } from "@nfid/integration"
+import { requestTransfer, RequestTransferParams } from "@nfid/wallet"
+
 import { PageTemplate } from "../page-template"
 
 const APPLICATION_LOGO_URL = "https%3A%2F%2Flogo.clearbit.com%2Fclearbit.com"
@@ -29,7 +31,7 @@ export const PageRequestTransfer: React.FC = () => {
         { to, amount },
         {
           provider: new URL(
-            `${environment.nfidProviderOrigin}/wallet/request-transfer?applicationName=RequestTransfer&applicationLogo=${APPLICATION_LOGO_URL}`,
+            `${NFID_PROVIDER_URL}/wallet/request-transfer?applicationName=NFID-Demo&applicationLogo=${APPLICATION_LOGO_URL}`,
           ),
         },
       )
@@ -74,6 +76,16 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
     mode: "onChange",
   })
   console.log(">> RequestTransferForm", { errors, isValid })
+  const to = watch("to")
+
+  const { data: balance, mutate: refrechBalance } = useSWR(
+    to ? to : null,
+    getBalance,
+  )
+
+  React.useEffect(() => {
+    refrechBalance()
+  }, [refrechBalance, result])
 
   return (
     <>
@@ -111,7 +123,7 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
             inputClassName={clsx("border")}
           />
           <Button
-            secondary
+            type="secondary"
             onClick={handleSubmit(onSubmit)}
             disabled={!isValid || isLoading}
             className={"relative"}
@@ -163,6 +175,16 @@ const RequestTransferForm: React.FC<RequestTransferFormProps> = ({
         >
           <h2 className={clsx("font-bold")}>NFID response:</h2>
           <pre>{JSON.stringify(result, null, 2)}</pre>
+        </div>
+        <div
+          className={clsx(
+            "w-full border border-gray-200 rounded-xl",
+            "px-5 py-4",
+            "sm:px-[30px] sm:py-[26px]",
+          )}
+        >
+          <h2 className={clsx("font-bold")}>Current balance:</h2>
+          <pre>{JSON.stringify(balance, null, 2)}</pre>
         </div>
       </div>
     </>

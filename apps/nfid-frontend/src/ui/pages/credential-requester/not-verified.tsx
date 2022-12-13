@@ -2,8 +2,9 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { Input } from "@nfid-frontend/ui"
+
 import { Button } from "frontend/ui/atoms/button"
-import { Input } from "frontend/ui/atoms/input"
 import { P } from "frontend/ui/atoms/typography/paragraph"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -58,7 +59,7 @@ export const CredentialRequesterNotVerified: React.FC<
         To register it with your existing Internet Identity anchor please see
         these{" "}
         <a
-          className="text-blue-600 transition-opacity cursor-pointer hover:opacity-75"
+          className="text-blue transition-opacity cursor-pointer hover:opacity-75"
           href="https://docs.nfid.one/sign-in-with-ii-and-nfid"
           target="_blank"
           rel="noreferrer"

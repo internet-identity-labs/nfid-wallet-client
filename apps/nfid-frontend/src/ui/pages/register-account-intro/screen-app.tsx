@@ -1,13 +1,14 @@
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
+import { Input } from "@nfid-frontend/ui"
+
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
   LoginEventHandler,
   SignInWithGoogle,
 } from "frontend/ui/atoms/button/signin-with-google"
 import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
-import { Input } from "frontend/ui/atoms/input"
 import { Separator } from "frontend/ui/atoms/separator"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -127,7 +128,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         )}
 
         <p
-          className="py-4 text-sm text-center cursor-pointer text-blue-base"
+          className="py-4 text-sm text-center cursor-pointer text-blue"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

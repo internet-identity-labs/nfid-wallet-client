@@ -3,17 +3,16 @@ import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
 
+import { Account, Application, Balance, getBalance } from "@nfid/integration"
+
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
 import {
   e8sICPToString,
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
 
-import { getBalance } from ".."
-import { Account, Application } from "../../identity-manager"
 import { useApplicationsMeta } from "../../identity-manager/queries"
 import { useAllPrincipals } from "../../internet-identity/queries"
-import { Balance } from "../rosetta_interface"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 
 interface RawBalance {
@@ -140,7 +139,7 @@ const reduceRawToAppAccountBalance = (
 
       return {
         ...acc,
-        icpBalance: `${totalBalanceValue} ${acc.token}`,
+        icpBalance: `${Number(totalBalanceValue).toFixed(2)} ${acc.token}`,
         usdBalance: icpToUSD(totalBalanceValue, icpExchangeRate),
         applications: {
           ...acc.applications,
@@ -185,7 +184,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
         principals.map(async ({ principal, account }) => ({
           principalId: principal.toText(),
           account,
-          balance: await getBalance(principal),
+          balance: await getBalance(principalToAddress(principal)),
         })),
       )
     },

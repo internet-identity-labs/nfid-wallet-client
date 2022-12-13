@@ -5,6 +5,8 @@ import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
+import { idlFactory as ethSecretStorageIDL } from "./_ic_api/eth_secret_storage"
+import { _SERVICE as EthSecretStorage } from "./_ic_api/eth_secret_storage.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.d"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity"
@@ -13,6 +15,8 @@ import { idlFactory as ledgerIDL } from "./_ic_api/ledger"
 import { _SERVICE as Ledger } from "./_ic_api/ledger.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel"
 import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.d"
+import { idlFactory as vaultIDL } from "./_ic_api/vault"
+import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
 import { agent } from "./agent"
@@ -28,6 +32,8 @@ declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
 declare const LEDGER_CANISTER_ID: string
 declare const CYCLES_MINTER_CANISTER_ID: string
+declare const VAULT_CANISTER_ID: string
+declare const ETH_SECRET_STORAGE_CANISTER_ID: string
 
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
@@ -36,6 +42,8 @@ const canisterConfig = [
   ["Verifier", VERIFIER_CANISTER_ID],
   ["Ledger", LEDGER_CANISTER_ID],
   ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
+  ["Vault", VAULT_CANISTER_ID],
+  ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
 ]
 
 export const accessList = canisterConfig.map((x) => x[1])
@@ -45,6 +53,8 @@ for (const [label, canister] of canisterConfig) {
   if (!canister)
     throw new Error(`Missing canister id for "${label}", please check envars.`)
 }
+
+export const agentBaseConfig = { host: "https://ic0.app" }
 
 /**
  * Create an actor.
@@ -59,8 +69,7 @@ export function actor<T>(
 
 export function ledgerWithIdentity(identity: SignIdentity) {
   return actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL, {
-    // TODO WALLET CODE REVIEW MAKE CONFIGURABLYAT
-    agent: new HttpAgent({ identity, host: "https://ic0.app" }),
+    agent: new HttpAgent({ ...agentBaseConfig, identity }),
   })
 }
 
@@ -70,7 +79,7 @@ export async function initActor(
   factory: InterfaceFactory,
 ): Promise<Record<string, ActorMethod>> {
   return actor(canisterId, factory, {
-    agent: new HttpAgent({ host: "https://ic0.app", identity }),
+    agent: new HttpAgent({ ...agentBaseConfig, identity }),
   })
 }
 // All of the actor definitions needed in our app should go here.
@@ -80,6 +89,11 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
+export const vault = actor<Vault>(VAULT_CANISTER_ID, vaultIDL)
+export const ethSecretStorage = actor<EthSecretStorage>(
+  ETH_SECRET_STORAGE_CANISTER_ID,
+  ethSecretStorageIDL,
+)
 export const cyclesMinter = actor<CyclesMinter>(
   CYCLES_MINTER_CANISTER_ID,
   cyclesMinterIDL,

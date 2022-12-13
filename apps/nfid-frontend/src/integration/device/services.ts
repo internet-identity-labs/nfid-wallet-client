@@ -1,5 +1,6 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { ii, im } from "@nfid/integration"
+
+import { ii, im, setProfile } from "@nfid/integration"
 
 import {
   deviceInfo,
@@ -8,7 +9,6 @@ import {
 } from "."
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "../identity"
 import { fetchProfile } from "../identity-manager"
-import { setProfile } from "../identity-manager/profile"
 import { fetchAuthenticatorDevices } from "../internet-identity"
 import { creationOptions } from "../webauthn/creation-options"
 
@@ -23,6 +23,8 @@ export async function registerDeviceWithWebAuthn() {
   const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
     BigInt(profile.anchor),
   )
+  console.debug("registerDeviceWithWebAuthn", { usersAuthenticatorDevices })
+
   try {
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(usersAuthenticatorDevices),

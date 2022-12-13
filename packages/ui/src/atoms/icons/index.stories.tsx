@@ -1,20 +1,35 @@
 import { Meta, Story } from "@storybook/react"
+import clsx from "clsx"
 import React from "react"
 
-import { CalendarIcon } from "./calendar"
-import { ButtonChevronIcon } from "./chevron"
-import { CopyIcon } from "./copy"
-import { IconLaptop } from "./desktop"
-import { DocumentIcon } from "./document"
-import { DotsIcon } from "./dots"
-import { IconDesktop } from "./laptop"
-import { LogoutIcon } from "./logout"
-import { MapPinIcon } from "./map-pin"
-import { MobileIcon } from "./mobile"
-import { PencilIcon } from "./pencil"
-import { RefreshIcon } from "./refresh"
-import { TabletIcon } from "./tablet"
-import { TrashIcon } from "./trash"
+import { ReactComponent as Arrow } from "./arrow.svg"
+import { ReactComponent as Calendar } from "./calendar.svg"
+import { ReactComponent as Cancel } from "./cancel.svg"
+import { ReactComponent as CheckMark } from "./check-mark.svg"
+import { ReactComponent as Copy } from "./copy.svg"
+import { ReactComponent as Desktop } from "./desktop.svg"
+import { ReactComponent as Dokument } from "./document.svg"
+import { ReactComponent as Dots } from "./dots.svg"
+import { ReactComponent as Error } from "./error.svg"
+import { ReactComponent as Gmail } from "./gmail.svg"
+import { ReactComponent as Google } from "./google.svg"
+import { ReactComponent as Info } from "./info.svg"
+import { ReactComponent as Key } from "./key.svg"
+import { ReactComponent as Laptop } from "./laptop.svg"
+import { ReactComponent as Logout } from "./logout.svg"
+import { ReactComponent as MapPin } from "./map-pin.svg"
+import { ReactComponent as Mobile } from "./mobile.svg"
+import { ReactComponent as Pencil } from "./pencil.svg"
+import { ReactComponent as Plus } from "./plus.svg"
+import { ReactComponent as Recovery } from "./recovery.svg"
+import { ReactComponent as Refresh } from "./refresh.svg"
+import { ReactComponent as Success } from "./success.svg"
+import { ReactComponent as Tablet } from "./tablet.svg"
+import { ReactComponent as TouchId } from "./touch-id.svg"
+import { ReactComponent as Trash } from "./trash.svg"
+import { ReactComponent as Unknown } from "./unknown.svg"
+import { ReactComponent as Usb } from "./usb.svg"
+import { ReactComponent as Warning } from "./warning.svg"
 
 const meta: Meta = {
   title: "Atoms/Icons",
@@ -22,36 +37,170 @@ const meta: Meta = {
     onClick: {
       action: "clicked",
     },
+    className: {
+      options: [
+        "text-primary-600",
+        "text-secondary",
+        "text-red-600",
+        "text-orange-600",
+        "text-amber-600",
+        "text-green-600",
+        "text-emerald-600",
+        "text-teal-600",
+        "text-cyan-600",
+        "text-indigo-600",
+        "text-violet-600",
+        "text-purple-600",
+      ],
+      control: { type: "radio" },
+    },
   },
 }
 
 export default meta
 
+const IconWrapper: React.FC<{ icon: React.ReactNode; label: string }> = ({
+  icon,
+  label,
+}) => (
+  <div className="flex flex-col items-center p-4 space-y-2 border rounded center justity-center">
+    <div>{icon}</div>
+    <div className="text-xs">{label}</div>
+  </div>
+)
+
 const Icons: Story = (args) => {
   return (
     <div>
-      <div className="mb-2 font-bold">DeviceIcons:</div>
+      <div className="mb-2 font-bold">Controls:</div>
       <div className="flex items-center gap-2">
-        <MobileIcon {...args} />
-        <TabletIcon {...args} />
-        <IconDesktop {...args} />
-        <IconLaptop {...args} />
-        <DocumentIcon {...args} />
+        <IconWrapper
+          icon={<Arrow className={clsx(args["className"])} />}
+          label="Arrow"
+        />
+        <IconWrapper
+          icon={<Arrow className={clsx(args["className"], "rotate-90")} />}
+          label="Arrow Up"
+        />
+        <IconWrapper
+          icon={<Arrow className={clsx(args["className"], "rotate-180")} />}
+          label="Arrow Right"
+        />
+        <IconWrapper
+          icon={<Arrow className={clsx(args["className"], "-rotate-90")} />}
+          label="Arrow Down"
+        />
+        <IconWrapper
+          icon={<Calendar className={clsx(args["className"])} />}
+          label="Calendar"
+        />
+        <IconWrapper
+          icon={<Cancel className={clsx(args["className"])} />}
+          label="Cancel"
+        />
+        <IconWrapper
+          icon={<CheckMark className={clsx(args["className"])} />}
+          label="CheckMark"
+        />
+        <IconWrapper
+          icon={<Copy className={clsx(args["className"])} />}
+          label="Copy"
+        />
+        <IconWrapper
+          icon={<Dots className={clsx(args["className"])} />}
+          label="Dots"
+        />
+        <IconWrapper
+          icon={<Error className={clsx(args["className"])} />}
+          label="Error"
+        />
+        <IconWrapper
+          icon={<Info className={clsx(args["className"])} />}
+          label="Info"
+        />
+        <IconWrapper
+          icon={<Logout className={clsx(args["className"])} />}
+          label="Logout"
+        />
+        <IconWrapper
+          icon={<Pencil className={clsx(args["className"])} />}
+          label="Pencil"
+        />
+        <IconWrapper
+          icon={<Plus className={clsx(args["className"])} />}
+          label="Plus"
+        />
+        <IconWrapper
+          icon={<Refresh className={clsx(args["className"])} />}
+          label="Refresh"
+        />
+        <IconWrapper
+          icon={<Success className={clsx(args["className"])} />}
+          label="Success"
+        />
+        <IconWrapper
+          icon={<TouchId className={clsx(args["className"])} />}
+          label="TouchId"
+        />
+        <IconWrapper
+          icon={<Trash className={clsx(args["className"])} />}
+          label="Trash"
+        />
+        <IconWrapper
+          icon={<Warning className={clsx(args["className"])} />}
+          label="Warning"
+        />
       </div>
-      <div className="mt-4 mb-2 font-bold">Controls:</div>
+      <div className="mb-2 font-bold">Devices:</div>
       <div className="flex items-center gap-2">
-        <PencilIcon {...args} />
-        <TrashIcon {...args} />
-        <ButtonChevronIcon {...args} />
-        <CopyIcon {...args} />
-        <DotsIcon {...args} />
-        <LogoutIcon {...args} />
-        <RefreshIcon {...args} />
+        <IconWrapper
+          icon={<Desktop className={clsx(args["className"])} />}
+          label="Desktop"
+        />
+        <IconWrapper
+          icon={<Dokument className={clsx(args["className"])} />}
+          label="Dokument"
+        />
+        <IconWrapper
+          icon={<Key className={clsx(args["className"])} />}
+          label="Key"
+        />
+        <IconWrapper
+          icon={<Laptop className={clsx(args["className"])} />}
+          label="Laptop"
+        />
+        <IconWrapper
+          icon={<Mobile className={clsx(args["className"])} />}
+          label="Mobile"
+        />
+        <IconWrapper
+          icon={<Recovery className={clsx(args["className"])} />}
+          label="Recovery"
+        />
+        <IconWrapper
+          icon={<Tablet className={clsx(args["className"])} />}
+          label="Tablet"
+        />
+        <IconWrapper
+          icon={<Usb className={clsx(args["className"])} />}
+          label="Usb"
+        />
+        <IconWrapper
+          icon={<Unknown className={clsx(args["className"])} />}
+          label="Unknown"
+        />
       </div>
-      <div className="mt-4 mb-2 font-bold">Other:</div>
+      <div className="mb-2 font-bold">Other:</div>
       <div className="flex items-center gap-2">
-        <CalendarIcon {...args} />
-        <MapPinIcon {...args} />
+        <IconWrapper
+          icon={<Gmail className={clsx(args["className"])} />}
+          label="Gmail"
+        />
+        <IconWrapper icon={<Google />} label="Google" />
+        <IconWrapper
+          icon={<MapPin className={clsx(args["className"])} />}
+          label="MapPin"
+        />
       </div>
     </div>
   )
@@ -59,4 +208,6 @@ const Icons: Story = (args) => {
 
 export const Overview = Icons.bind({})
 
-Overview.args = {}
+Overview.args = {
+  className: "text-blue",
+}

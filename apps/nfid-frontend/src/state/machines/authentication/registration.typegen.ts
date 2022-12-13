@@ -70,9 +70,9 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession:
@@ -90,6 +90,11 @@ export interface Typegen0 {
       | "error.platform.registerService"
     resetError: "FETCH_CAPTCHA"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    authenticated: ""
+    isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
+  }
   eventsCausingServices: {
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
     challengeTimer: "done.invoke.fetchChallenge"
@@ -103,11 +108,6 @@ export interface Typegen0 {
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
     registerService: "SUBMIT_CAPTCHA"
   }
-  eventsCausingGuards: {
-    authenticated: ""
-    isExistingGoogleAccount: "done.invoke.AuthWithGoogleMachine"
-  }
-  eventsCausingDelays: {}
   matchesStates:
     | "AuthWithGoogle"
     | "AuthenticateSameDevice"

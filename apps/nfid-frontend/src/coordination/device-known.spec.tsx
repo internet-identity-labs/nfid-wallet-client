@@ -5,8 +5,9 @@ import { DelegationChain } from "@dfinity/identity"
 import { render, waitFor, screen } from "@testing-library/react"
 import { act } from "react-dom/test-utils"
 
+import { Profile } from "@nfid/integration"
+
 import * as IM from "frontend/integration/identity-manager"
-import { Profile } from "frontend/integration/identity-manager"
 import { factoryProfile } from "frontend/integration/identity-manager/__mocks"
 import { MultiWebAuthnIdentity } from "frontend/integration/identity/multiWebAuthnIdentity"
 import * as II from "frontend/integration/internet-identity"
@@ -266,7 +267,7 @@ describe("KnownDevice Coordinator", () => {
           ],
           undefined,
         )
-        await waitFor(() => screen.getAllByAltText("loader"))
+        await screen.findAllByAltText("loader")
         expect(DelegationChain.create).toHaveBeenCalled()
       })
     })

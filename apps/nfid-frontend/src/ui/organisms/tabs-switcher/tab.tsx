@@ -18,7 +18,7 @@ const Tab: React.FC<ITab> = ({ isActive, onClick, children }) => {
       <div
         className={clsx(
           "font-bold",
-          isActive ? "text-blue-600" : "text-black-base",
+          isActive ? "text-blue" : "text-black-base",
         )}
       >
         {children}

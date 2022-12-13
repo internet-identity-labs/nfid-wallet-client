@@ -20,7 +20,7 @@ export const TransferSendNFTInfo = ({ nft }: { nft: UserNFTDetails }) => {
         <p className={clsx("text-black-base font-semibold")}>
           {nft.collection.name}
         </p>
-        <p className={clsx("text-lg font-bold text-blue-600")}>{nft.name}</p>
+        <p className={clsx("text-lg font-bold text-blue")}>{nft.name}</p>
         <p
           className={clsx(
             "font-semibold text-gray-400",

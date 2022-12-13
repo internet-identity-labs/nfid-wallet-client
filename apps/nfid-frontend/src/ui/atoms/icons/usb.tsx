@@ -8,7 +8,7 @@ export const USBIcon: React.FC<USBIconProps> = ({ className, onClick }) => {
     <svg
       viewBox="0 0 17 24"
       fill="none"
-      className={clsx("cursor-pointer w-6 h-6", className)}
+      className={clsx("w-6 h-6", className)}
       onClick={onClick}
     >
       <path

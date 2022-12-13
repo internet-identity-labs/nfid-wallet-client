@@ -2,12 +2,11 @@ import clsx from "clsx"
 import { format } from "date-fns"
 import produce from "immer"
 import React from "react"
-import ReactTooltip from "react-tooltip"
 
-import {
-  LegacyDevice,
-  Icon,
-} from "frontend/integration/identity-manager/devices/state"
+import { Tooltip } from "@nfid-frontend/ui"
+import { Icon } from "@nfid/integration"
+
+import { LegacyDevice } from "frontend/integration/identity-manager/devices/state"
 import { IconCancel } from "frontend/ui/atoms/icons/cancle"
 import { IconCheckMark } from "frontend/ui/atoms/icons/check-mark"
 import { InfoIcon } from "frontend/ui/atoms/icons/info"
@@ -31,7 +30,6 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
   onDelete,
   onDeviceUpdate,
 }) => {
-  const [isTooltipVisible, setIsTooltipVisible] = React.useState(false)
   const [updatedDevice, setUpdatedDevice] = React.useState<LegacyDevice | null>(
     null,
   )
@@ -131,11 +129,18 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
           "relative flex flex-row hover:bg-gray-50 hover:rounded transition-colors duration-100 -mx-3",
         )}
       >
-        {isTooltipVisible && <ReactTooltip className="max-w-[330px]" />}
-
-        <div className="flex flex-wrap items-center flex-1 px-3 select-none py-2cursor-pointer peer">
+        <div
+          className={clsx(
+            "flex flex-wrap items-center flex-1 px-3 select-none py-2 min-h-[69px]",
+          )}
+        >
           <div className="mr-4">
-            <div className="relative flex items-center justify-center bg-white rounded-full w-9 h-9">
+            <div
+              className={clsx(
+                "relative flex items-center justify-center bg-white rounded-full w-9 h-9",
+                isEditingLabel && "cursor-pointer",
+              )}
+            >
               <DeviceIconDecider
                 icon={device.isAccessPoint ? device.icon : "unknown"}
                 onClick={
@@ -145,10 +150,16 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
             </div>
           </div>
 
-          <div className="relative flex items-center flex-1 py-2 border-b border-gray-200 ">
+          <div
+            className={clsx(
+              "relative flex items-center flex-1 py-2 border-b border-gray-200",
+              "h-full",
+              device.isWalletDevice && "!items-start",
+            )}
+          >
             {isEditingLabel ? (
               <input
-                className="flex-1 flex-shrink px-2 py-1 rounded"
+                className="flex-1 flex-shrink px-2 py-1 rounded outline-none"
                 defaultValue={device.label}
                 onChange={handleOnChangeLabel}
               ></input>
@@ -157,21 +168,39 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 <div className="text-gray-700">
                   {device.isAccessPoint ? device.label : device.browser}
                 </div>
+                <div
+                  className={clsx(
+                    "my-1 text-sm text-gray-400",
+                    !device.isWalletDevice && "hidden",
+                  )}
+                >
+                  Address: {device.browser}
+                </div>
                 <div className="my-1 text-sm text-gray-400">
                   {device.isSocialDevice
-                    ? `Last activity: ${format(device.lastUsed, "MMM d, yyyy")}`
+                    ? `Last activity: ${
+                        format(device.lastUsed, "MMM d, yyyy 'on '") +
+                        device.browser
+                      }`
                     : null}
 
-                  {device.isAccessPoint && !device.isSocialDevice
+                  {device.isWalletDevice
+                    ? `Last activity: ${format(
+                        device.lastUsed,
+                        "MMM d, yyyy ",
+                      )}`
+                    : null}
+
+                  {device.isAccessPoint &&
+                  !device.isSocialDevice &&
+                  !device.isWalletDevice
                     ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +
                           device.browser ?? null
                       }`
                     : null}
 
-                  {!device.isAccessPoint && !device.isAccessPoint
-                    ? "This is not an NFID device"
-                    : null}
+                  {!device.isAccessPoint ? "This is not an NFID device" : null}
                 </div>
               </div>
             )}
@@ -182,11 +211,12 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                   "flex space-x-2 items-center",
                   !device.isAccessPoint && "hidden",
                   device.isSocialDevice && "hidden",
+                  device.isWalletDevice && "hidden",
                 )}
                 style={{ display: (device as any).recovery ? "none" : "" }}
               >
                 <div
-                  className="hover:bg-gray-50 text-red-base"
+                  className={clsx("hover:bg-gray-50 text-red-base")}
                   onClick={
                     isEditingLabel ? handleOnLabelUpdate : toggleEditLabel
                   }
@@ -203,16 +233,16 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 </div>
               </div>
 
-              <div
-                onMouseEnter={() => setIsTooltipVisible(true)}
-                onMouseLeave={() => {
-                  setIsTooltipVisible(false)
-                  setTimeout(() => setIsTooltipVisible(true), 50)
-                }}
-                data-tip="You can sign in to the same identity from this device wherever you registered it (i.e. Internet Identity). It won’t work with NFID."
+              <Tooltip
+                tip="You can sign in to the same identity from this device wherever you registered it (i.e. Internet Identity). It won't work with NFID."
+                className="w-72"
               >
-                <InfoIcon className={clsx(device.isAccessPoint && "hidden")} />
-              </div>
+                <div>
+                  <InfoIcon
+                    className={clsx(device.isAccessPoint && "hidden")}
+                  />
+                </div>
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -220,11 +250,19 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
       {editIconModal && (
         <ModalAdvanced
           title="Change icon"
-          onClose={toggleIconModal}
+          onClose={() => {
+            setUpdatedDevice(null)
+            toggleIconModal()
+          }}
           primaryButton={{
             text: "Change",
             type: "primary",
-            onClick: updatedDevice ? handleOnIconUpdate : toggleIconModal,
+            onClick: updatedDevice
+              ? handleOnIconUpdate
+              : () => {
+                  toggleIconModal()
+                  setUpdatedDevice(null)
+                },
           }}
           secondaryButton={{
             text: "Cancel",

@@ -4,13 +4,14 @@
 import { Principal } from "@dfinity/principal"
 import { renderHook } from "@testing-library/react"
 
-import { Account, Application } from "frontend/integration/identity-manager"
+import { Account, Application } from "@nfid/integration"
+
 import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
 
 import * as getAllTransactionsMock from "./get-all-transactions"
+import { TransactionsFilterOption } from "./reduce-transaction-filter-options"
 import {
-  TransactionsFilterOption,
   useTransactionsFilter,
   UseTransactionsFilterProps,
 } from "./use-transactions-filter"

@@ -2,10 +2,11 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { Input } from "@nfid-frontend/ui"
+
 import { isValidToken, tokenRules } from "frontend/ui/utils/validations"
 
 import { Button } from "../button"
-import { Input } from "../input"
 
 interface StepInputProps {
   className?: string

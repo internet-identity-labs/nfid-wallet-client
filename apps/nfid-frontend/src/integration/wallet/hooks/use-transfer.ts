@@ -1,8 +1,9 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import React from "react"
 
+import { transfer } from "@nfid/integration/token/icp"
+
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { transfer } from "frontend/integration/rosetta"
 
 import { stringICPtoE8s } from "../utils"
 import { TransferAccount } from "./index"

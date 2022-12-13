@@ -1,6 +1,5 @@
 import React from "react"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import ICP from "frontend/assets/dfinity.svg"
 import { rmProto } from "frontend/integration/identity-manager"
 import {

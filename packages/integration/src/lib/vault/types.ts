@@ -2,20 +2,27 @@ export interface Vault {
   id: bigint
   members: Array<VaultMember>
   name: string
+  description: string | undefined
   wallets: Array<bigint>
   policies: Array<bigint>
+  createdDate: bigint
+  modifiedDate: bigint
 }
 
 export interface Wallet {
   id: bigint
   name: string | undefined
   vaults: Array<bigint>
+  state: ObjectState
+  cratedDate: bigint
+  modifiedDate: bigint
 }
 
 export interface VaultMember {
   userId: string
   name: string | undefined
   role: VaultRole
+  state: ObjectState
 }
 
 export enum VaultRole {
@@ -31,14 +38,25 @@ export enum Currency {
   ICP,
 }
 
-export enum State {
+export enum TransactionState {
   APPROVED,
   PENDING,
+  CANCELED,
+  REJECTED
+}
+
+export enum ObjectState {
+  ARCHIVED,
+  ACTIVE,
 }
 
 export interface BasePolicy {
   id: bigint
   type: PolicyType
+  vault: bigint
+  state: ObjectState
+  createdDate: bigint
+  modifiedDate: bigint
 }
 
 export interface ThresholdPolicy extends BasePolicy {
@@ -51,7 +69,7 @@ export interface ThresholdPolicy extends BasePolicy {
 export type Policy = ThresholdPolicy // | AddressPolicy
 
 export interface Approve {
-  status: State
+  status: TransactionState
   signer: string
   createdDate: bigint
 }
@@ -62,7 +80,7 @@ export interface Transaction {
   memberThreshold: number
   blockIndex: bigint | undefined
   amountThreshold: bigint
-  state: State
+  state: TransactionState
   approves: Array<Approve>
   currency: Currency
   amount: bigint
@@ -71,4 +89,5 @@ export interface Transaction {
   walletId: bigint
   vaultId: bigint
   policyId: bigint
+  owner: string
 }

@@ -7,142 +7,209 @@ import { principalToAddress } from "ictool"
 import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
-  addMemberToVault,
   approveTransaction,
-  getPolicies,
-  getTransactions,
-  getVaultMembers,
+  getPolicies, getTransactions,
   getVaults,
   getWallets,
-  registerPolicy,
-  registerTransaction,
+  registerPolicy, registerTransaction,
   registerVault,
   registerWallet,
-  walletAddress,
+  storeMember, updatePolicy,
+  updateWallet, walletAddress,
 } from "./index"
-import { Currency, PolicyType, State, VaultMember, VaultRole } from "./types"
+import {
+  Currency,
+  ObjectState,
+  Policy,
+  PolicyType,
+  ThresholdPolicy, Transaction, TransactionState,
+  Vault,
+  VaultMember,
+  VaultRole,
+  Wallet,
+} from "./types"
 
 describe("Vault suite", () => {
   jest.setTimeout(100000)
 
+  let vaultFirst: Vault
+  const memberIdentity = Ed25519KeyIdentity.generate()
+  const memberAddress = principalToAddress(
+    memberIdentity.getPrincipal(),
+    Array(32).fill(1),
+  )
+  let address: string
   it("vault register test", async () => {
     const mockedIdentity = Ed25519KeyIdentity.generate()
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
     replaceIdentity(delegationIdentity)
-    const vaultFirst = await registerVault("first")
-    const address = principalToAddress(
+    vaultFirst = await registerVault("first", undefined)
+    address = principalToAddress(
       mockedIdentity.getPrincipal() as any,
       Array(32).fill(1),
     )
-
     expect(vaultFirst).toEqual({
+      createdDate: expect.any(BigInt),
+      modifiedDate: expect.any(BigInt),
       id: expect.any(BigInt),
       name: "first",
-      members: [{ name: undefined, userId: address, role: VaultRole.Admin }],
+      description: undefined,
+      members: [{ name: undefined, userId: address, role: VaultRole.Admin, state: ObjectState.ACTIVE }],
       policies: expect.any(BigUint64Array),
       wallets: expect.any(BigUint64Array),
     })
-
-    const vaultSecond = await registerVault("second")
-    expect(vaultSecond).toEqual({
-      id: expect.any(BigInt),
-      name: "second",
-      members: [{ name: undefined, userId: address, role: VaultRole.Admin }],
-      policies: expect.any(BigUint64Array),
-      wallets: expect.any(BigUint64Array),
-    })
+  })
+  it("get vaults test", async () => {
 
     const vaults = await getVaults()
-    expect(vaults).toEqual([vaultFirst, vaultSecond])
+    expect(vaults).toEqual([vaultFirst])
 
-    let members = await getVaultMembers(vaultFirst.id)
-    expect(members.length).toEqual(1)
-    const memberIdentity = Ed25519KeyIdentity.generate()
-    const memberAddress = principalToAddress(
-      memberIdentity.getPrincipal(),
-      Array(32).fill(1),
-    )
-    await addMemberToVault({
+
+  })
+  it("store member test", async () => {
+    //STORE MEMBER AS ACTIVE
+    await storeMember({
+      state: ObjectState.ACTIVE,
       vaultId: vaultFirst.id,
       memberAddress,
       name: "Test Name",
       role: VaultRole.Member,
     })
-    members = await getVaultMembers(vaultFirst.id)
-    expect(members.length).toEqual(2)
-    const member = members.find(
+    const vaults = await getVaults()
+    const members = vaults.find(v => v.id === BigInt(vaultFirst.id))?.members
+    expect(members?.length).toEqual(2)
+    const member = members?.find(
       (l) => l.userId === memberAddress,
     ) as VaultMember
     expect(member).toEqual({
+      state: ObjectState.ACTIVE,
       name: "Test Name",
       role: VaultRole.Member,
       userId: memberAddress,
     })
 
-    const wallet1 = await registerWallet({
+  })
+  it("restore member test", async () => {
+    await storeMember({
+      state: ObjectState.ARCHIVED,
+      vaultId: vaultFirst.id,
+      memberAddress: memberAddress,
+      name: "Test Name2",
+      role: VaultRole.Member,
+    })
+    expect(await getVaults()
+      .then(v => v.find(v => v.id === BigInt(vaultFirst.id))?.members?.find(
+        (l) => l.userId === memberAddress,
+      ))).toEqual({
+      state: ObjectState.ARCHIVED,
+      name: "Test Name2",
+      role: VaultRole.Member,
+      userId: memberAddress,
+    })
+
+  })
+  let wallet: Wallet
+  it("register member test", async () => {
+    wallet = await registerWallet({
       name: "Wallet1",
       vaultId: vaultFirst.id,
     })
-    const wallet2 = await registerWallet({
-      name: "Wallet2",
+    expect(wallet).toEqual({
+      cratedDate: expect.any(BigInt),
+      id: expect.any(BigInt),
+      modifiedDate: expect.any(BigInt),
+      name: "Wallet1",
+      state: ObjectState.ACTIVE,
+      vaults: expect.any(BigUint64Array),
+    })
+
+  })
+  it("get wallets test", async () => {
+    const wallets = await getWallets(vaultFirst.id)
+    expect(wallets.length).toEqual(1)
+
+  })
+  it("update wallet test", async () => {
+    wallet.name = "Updated"
+    wallet.state = ObjectState.ARCHIVED
+    const updated = await updateWallet(wallet)
+    expect(updated).toEqual({
+      cratedDate: expect.any(BigInt),
+      id: expect.any(BigInt),
+      modifiedDate: expect.any(BigInt),
+      name: "Updated",
+      state: ObjectState.ARCHIVED,
+      vaults: expect.any(BigUint64Array),
+    })
+
+  })
+
+  let policy: Policy
+  it("store policy test", async () => {
+    policy = await registerPolicy({
+      amountThreshold: BigInt(1),
+      currency: Currency.ICP,
+      memberThreshold: 5,
+      type: PolicyType.ThresholdPolicy,
+      walletIds: undefined,
       vaultId: vaultFirst.id,
     })
-    expect(wallet1.name).toEqual("Wallet1")
-    expect(wallet2.name).toEqual("Wallet2")
-    const wallets = await getWallets(vaultFirst.id)
-    expect(wallets.length).toEqual(2)
+    expect(policy).toEqual({
+      amountThreshold: BigInt(1),
+      createdDate: expect.any(BigInt),
+      currency: Currency.ICP,
+      id: expect.any(BigInt),
+      memberThreshold: 5,
+      modifiedDate: expect.any(BigInt),
+      state: ObjectState.ACTIVE,
+      type: PolicyType.ThresholdPolicy,
+      vault: vaultFirst.id,
+      walletIds: undefined,
+    })
 
-    const [policy1, policy2] = await Promise.all([
-      registerPolicy({
-        amountThreshold: BigInt(1),
-        currency: Currency.ICP,
-        memberThreshold: 5,
-        type: PolicyType.ThresholdPolicy,
-        walletIds: undefined,
-        vaultId: vaultFirst.id,
-      }),
-      registerPolicy({
-        amountThreshold: BigInt(1),
-        currency: Currency.ICP,
-        memberThreshold: 5,
-        type: PolicyType.ThresholdPolicy,
-        walletIds: [wallet1.id],
-        vaultId: vaultFirst.id,
-      }),
-    ])
-
+  })
+  it("get policies test", async () => {
     const policies = await getPolicies(vaultFirst.id)
+    expect(policies.length).toEqual(1)
+  })
+  it("update policy test", async () => {
+    policy.amountThreshold = BigInt(10)
+    policy.walletIds = [wallet.id]
+    const updated = await updatePolicy(policy)
+    console.log(updated)
 
-    expect(policies.length).toEqual(2)
-    const firstPolicy = policies.find((l) => l.id === policy1.id)
+    expect(updated).toEqual({
+      amountThreshold: BigInt(10),
+      createdDate: expect.any(BigInt),
+      currency: Currency.ICP,
+      id: expect.any(BigInt),
+      memberThreshold: 5,
+      modifiedDate: expect.any(BigInt),
+      state: ObjectState.ACTIVE,
+      type: PolicyType.ThresholdPolicy,
+      vault: vaultFirst.id,
+      walletIds: expect.any(BigUint64Array),
+    })
 
-    expect(firstPolicy?.walletIds).toEqual(undefined)
-    expect(firstPolicy?.currency).toEqual(Currency.ICP)
-    expect(firstPolicy?.memberThreshold).toEqual(5)
-    expect(firstPolicy?.amountThreshold.toString()).toEqual(
-      BigInt(1).toString(),
-    )
+  })
+  let registeredTransaction: Transaction
+  it("create transaction test", async () => {
 
-    const secondPolicy = policies.find((l) => l.id === policy2.id)
-    expect(secondPolicy?.walletIds?.length).toEqual(1)
-    expect(secondPolicy?.walletIds?.[0].toString()).toEqual(
-      wallet1.id.toString(),
-    )
     const targetAddress = await walletAddress(BigInt(1))
-    const registeredTransaction = await registerTransaction({
+    registeredTransaction = await registerTransaction({
       address: targetAddress,
-      amount: BigInt(1),
-      walletId: wallet1.id,
+      amount: BigInt(15),
+      walletId: wallet.id,
     })
     expect(registeredTransaction).toEqual({
-      amount: BigInt(1),
-      amountThreshold: expect.any(BigInt),
+      amount: BigInt(15),
+      amountThreshold: BigInt(10),
       approves: [
         {
           createdDate: expect.any(BigInt),
           signer: expect.any(String),
-          status: State.APPROVED,
+          status: TransactionState.APPROVED,
         },
       ],
       blockIndex: undefined,
@@ -152,15 +219,20 @@ describe("Vault suite", () => {
       memberThreshold: 5,
       modifiedDate: expect.any(BigInt),
       policyId: expect.any(BigInt),
-      state: State.PENDING,
+      state: TransactionState.PENDING,
       to: targetAddress,
       vaultId: expect.any(BigInt),
       walletId: expect.any(BigInt),
+      owner: address,
     })
+
     replaceIdentity(memberIdentity)
 
+  })
+  it("approve transaction test", async () => {
+
     const approvedTransaction = await approveTransaction({
-      state: State.APPROVED,
+      state: TransactionState.APPROVED,
       transactionId: registeredTransaction.id,
     })
     expect(approvedTransaction.id).toEqual(registeredTransaction.id)

@@ -11,13 +11,12 @@ export const extendWithFixedAccounts = (
     .map(applicationToAccount)
 
   return fixedAccounts.reduce((acc, account) => {
-    if (
-      !acc.find(
-        (a) => a.domain === account.domain && a.accountId === account.accountId,
-      )
-    ) {
-      return [...acc, account]
+    const accountAlreadyAdded = acc.find(
+      (a) => a.domain === account.domain && a.accountId === account.accountId,
+    )
+    if (accountAlreadyAdded) {
+      return acc
     }
-    return acc
+    return [...acc, account]
   }, accounts)
 }

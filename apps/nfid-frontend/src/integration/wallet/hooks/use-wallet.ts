@@ -22,7 +22,7 @@ export const useWallet = () => {
 
   const { data: balance, isValidating: isWalletBalanceLoading } = useSWR(
     principal ? [principalToAddress(principal), "walletBalance"] : null,
-    getBalance,
+    ([address]) => getBalance(address),
     {
       dedupingInterval: 30_000,
       focusThrottleInterval: 30_000,

@@ -7,7 +7,7 @@ import { getBalance } from "@nfid/integration"
 export function useBalanceICP(principal: Principal) {
   const { data: balance, ...rest } = useSWR(
     [principalToAddress(principal)],
-    getBalance,
+    ([address]) => getBalance(address),
     {
       dedupingInterval: 60000,
       refreshInterval: 60000,

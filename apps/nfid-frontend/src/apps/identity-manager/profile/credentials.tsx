@@ -19,7 +19,7 @@ const ProfileCredentials = () => {
       ? ["decryptedPhone", profile.phoneNumber, delegationIdentity]
       : null,
 
-    async (_, phoneNumber, delegationIdentity) => {
+    async ([, phoneNumber, delegationIdentity]) => {
       const result = await decryptStringForIdentity(
         phoneNumber,
         delegationIdentity,

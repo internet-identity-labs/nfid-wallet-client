@@ -11,7 +11,7 @@ export const useAllTransactions = () => {
       principals
         ? [principals.map(({ principal }) => principal), "allTransactions"]
         : null,
-      (principals) => getAllTransactionHistory(principals),
+      ([principals]) => getAllTransactionHistory(principals),
       {
         dedupingInterval: 30_000,
         focusThrottleInterval: 30_000,

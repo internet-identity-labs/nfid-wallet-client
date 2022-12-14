@@ -225,8 +225,8 @@ export const useDevices = () => {
     error: authenticatorDevicesError,
     mutate: refreshDevices,
   } = useSWR(
-    profile?.anchor ? [profile.anchor, "authenticator"] : null,
-    fetchDevices,
+    profile?.anchor ? [profile.anchor.toString(), "authenticator"] : null,
+    ([anchor]) => fetchDevices(anchor),
     {
       dedupingInterval: 60_000 * 5,
       focusThrottleInterval: 60_000 * 5,
@@ -238,8 +238,8 @@ export const useDevices = () => {
     error: fetchRecoveryDevicesError,
     mutate: refreshRecoveryDevices,
   } = useSWR(
-    profile?.anchor ? [profile.anchor, "recovery"] : null,
-    fetchAccountRecoveryMethods,
+    profile?.anchor ? [profile.anchor.toString(), "recovery"] : null,
+    ([anchor]) => fetchAccountRecoveryMethods(anchor),
     {
       dedupingInterval: 60_000 * 5,
       focusThrottleInterval: 60_000 * 5,

@@ -54,7 +54,7 @@ export const useAllNFTs = () => {
 
   return useSWR(
     principals ? [principals, "userTokens"] : null,
-    principalTokens,
+    ([principals]) => principalTokens(principals),
     {
       dedupingInterval: 60_000 * 5,
       focusThrottleInterval: 60_000 * 5,

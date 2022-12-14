@@ -60,7 +60,6 @@ jobs:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
       - name: NFID FRONTEND | deploy
-        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
 
           # install local to generate the types

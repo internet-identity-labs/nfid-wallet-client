@@ -6555,17 +6555,18 @@
     csv-stringify "^6.0.4"
     strip-ansi "^6.0.0"
 
-"@wdio/browserstack-service@7.23.0":
-  version "7.23.0"
-  resolved "https://registry.yarnpkg.com/@wdio/browserstack-service/-/browserstack-service-7.23.0.tgz#9034f1356eb2e413bb6b165378ad30e138761e30"
-  integrity sha512-PPbvGcOFBc84TQzocRF+FXmLHklduHYn0lz0rTiwgRVHWm2ApHWvLfH2wC0hew0gemeOtvx6zI/1pYxr0OfLbA==
+"@wdio/browserstack-service@8.0.11":
+  version "8.0.11"
+  resolved "https://registry.yarnpkg.com/@wdio/browserstack-service/-/browserstack-service-8.0.11.tgz#1f43b25e8c9dd0f8a1c80591f5959bee6b16e693"
+  integrity sha512-Ox23s4VxozZuSGVdSEWtEh2QdDB3lTCxS6WQMFWALRbeurwPw9mNm61b6+ri0gLbe94q7P7O1F4HswZiLQRHcw==
   dependencies:
     "@types/node" "^18.0.0"
-    "@wdio/logger" "7.19.0"
-    "@wdio/types" "7.23.0"
-    browserstack-local "^1.4.5"
-    got "^11.0.2"
-    webdriverio "7.23.0"
+    "@wdio/logger" "8.0.0"
+    "@wdio/types" "8.0.11"
+    browserstack-local "^1.5.1"
+    form-data "^4.0.0"
+    got "^12.1.0"
+    webdriverio "8.0.2"
 
 "@wdio/cli@7.23.0":
   version "7.23.0"
@@ -6908,6 +6909,13 @@
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@wdio/types/-/types-8.0.0.tgz#e5d3d87fb6bf96e5c48ea43477c81135076dd4d5"
   integrity sha512-6Qt4NmCJrxtbZLxCJBSW68Q4olvHGLoy5mOBaZhPC5FUEmxwhMAtq5e3zrAIpnHEMwl3RUDnMnSO9dApI7a7IQ==
+  dependencies:
+    "@types/node" "^18.0.0"
+
+"@wdio/types@8.0.11":
+  version "8.0.11"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-8.0.11.tgz#e3623506e89da59947aa7a7caf01e513363fe1c9"
+  integrity sha512-54xbajB7tqWmYPXFI0ALupPauwLyVtPSZSG/R/DPlY25p+Ygw4jwH64s+Jh1V3TZYnktfv4cIt1Bw/M35cBgOQ==
   dependencies:
     "@types/node" "^18.0.0"
 
@@ -8692,7 +8700,7 @@ browserslist@^4.0.0, browserslist@^4.12.0, browserslist@^4.14.5, browserslist@^4
     node-releases "^2.0.6"
     update-browserslist-db "^1.0.9"
 
-browserstack-local@^1.4.5:
+browserstack-local@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/browserstack-local/-/browserstack-local-1.5.1.tgz#0d424474cc2b74a9d9a22d00a2282941ff636f34"
   integrity sha512-T/wxyWDzvBHbDvl7fZKpFU7mYze6nrUkBhNy+d+8bXBqgQX10HTYvajIGO0wb49oGSLCPM0CMZTV/s7e6LF0sA==

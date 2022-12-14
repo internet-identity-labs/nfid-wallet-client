@@ -116,7 +116,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "@wdio/allure-reporter": "7.23.0",
-    "@wdio/browserstack-service": "7.23.0",
+    "@wdio/browserstack-service": "8.0.11",
     "@wdio/cli": "7.23.0",
     "@wdio/config": "7.23.0",
     "@wdio/cucumber-framework": "7.23.0",

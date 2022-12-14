@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - current-release
+      - main
 
 jobs:
   check-secrets:

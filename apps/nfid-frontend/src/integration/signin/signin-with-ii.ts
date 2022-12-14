@@ -8,7 +8,7 @@ import { IIAuthSession } from "frontend/state/authentication"
 import { fetchProfile } from "../identity-manager"
 
 declare const INTERNET_IDENTITY_CANISTER_ID: string
-declare const II_MODE: string
+declare const FRONTEND_MODE: string
 
 export const signinWithII = async () => {
   const authClient = await AuthClient.create()
@@ -24,7 +24,7 @@ export const signinWithII = async () => {
         reject()
       },
       identityProvider:
-        II_MODE === "development"
+        FRONTEND_MODE === "development"
           ? `https://${INTERNET_IDENTITY_CANISTER_ID}.ic0.app/#authorize`
           : `https://identity.ic0.app/#authorize`,
       windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,

@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function IDPCoordinator({ machine }: Props) {
-  const [state] = useMachine(machine || IDPMachine)
+  const [state, send] = useMachine(machine || IDPMachine)
 
   React.useEffect(
     () =>
@@ -33,7 +33,12 @@ export default function IDPCoordinator({ machine }: Props) {
 
   switch (true) {
     case state.matches("Start.Handshake.Error"):
-      return <ErrorBanner errorMessage={state.context.error?.message} />
+      return (
+        <ErrorBanner
+          errorMessage={state.context.error?.message}
+          onRetry={() => send("RETRY")}
+        />
+      )
     case state.matches("AuthenticationMachine"):
       return (
         <AuthenticationCoordinator

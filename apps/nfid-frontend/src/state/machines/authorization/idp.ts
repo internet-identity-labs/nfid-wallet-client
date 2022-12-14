@@ -39,13 +39,14 @@ export type IDPMachineEvents =
   | { type: "done.invoke.authenticate"; data: AuthSession }
   | { type: "done.invoke.authorize"; data: ThirdPartyAuthSession }
   | { type: "done.invoke.done"; data: void }
+  | { type: "RETRY" }
 
 interface Schema {
   context: IDPMachineContext
   events: IDPMachineEvents
 }
 const IDPMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEsIAcB0BlALgQwCccMAJPAOwlgAs8BrMDAMTBwGNqBiCAe3MeTkAbjwYZalGvTCJQaHrGQ5kfWSAAeiACwAGAMwYAjAA4A7AFY9ew+a3GAnPdMAaEAE9E1gEwYdfv4bWxgBswTrGAL4RrqiYuITEAOKsAIJoaACyrHjMrBzcfALCoowwOGmZ2WryisqqSBraXloYloZeXubGZnpa5sEu7ojm9j7+fqY6wfbB3XpRMejY+EQF-Biw+DgCS-FE1QpKKuRqmgjGOoYYpl7B5jpOlv0hrh4IejMYjt8XpiZe4VMCxAsQwKQArjhqGByMo2Hg6uQMngOIIwGsiiIxHhIdDYch4dsDrVjqdEIYdF4ruFjFpOjo+vY9F5Bm87AYdDdbqYtEzzBZgsDQRCoTwCMgAF4I47I1H8DEYQRYxg40XiiUyBo1I71UBnCksoy6D7mbmGWbmV6IWY+fm84z9Tmm3pCpYAFQI4M2ABEwEICejeOtNgidpgPV6cL7-WxNXJDoiyQg7MEjKatFY9M7bg6rQhzXcMCFOlndMb7JFoiD3Z6fX6AwqlSUMBG6zGwLLqGjiTqTg0ziMOVpTBc7KbDFpJ3nabamcEOsZmmZ51Eq+QeBA4GpQXtiGRJLQxCx2NQe4n++TKXm9H5fONAiZQuFXXEVnuKFRD4xvYUz6SLwgXT2EW9hTA8oz2CMhjXp0GC8t8FaGOahiOC+ywJKQH5SAwf66o0CAjnmHSmL4XhmOESEUn8IRobuGDJOU6RZPguQnrhfZ6peXh5vywEIU4dxTIugpVjub70akTHZBgP78OxSbBDYvg2F07SQcYE55mE5itOM5j9Lcw5aLR4kMRUzF4PJAGmMBi50lmjh+AC5o8ZypE9GRnS3L08yibsb5WZxgFaHmNgtDo-IOSMDIoS6fmYCKeJwtKfCdt2WoJv+QX2Ep4RARWXgfKYpjBNew5wQhvz-ICaGJWKkopUiKJdnJGUknhZxMlcoFmE4MyKUh9g8XYGA3jZkymHotIhIYaGtlG9axoF+FmDpsxaKEXkRYVpVDARhbBHYWjtJcswMmhACilDLWchU6Rmq0ApN1gVsY04UhgimTkZxphL5ixoDdng6O9vghH4swTjlkWrhEQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEsIAcB0BlALgQwCccBiCAewDswNZ8drVNdCcBtABgF1FQ0zZkOZJR4gAHogCcAZgAcGaZPYBWWQEYATJNVqALABoQATyns1GPbN2azANlntdAXyeHG2fEQwAJPBQiwABZ4ANbUAGJgOADGgaSUDBQAbmRhGMH+QaFgHNxIIHwCQiL5EgiK8gDs1SoasraVypVqssqGJuUauhjKGtK6urbs0o3Vki5u6B4sPn4BwWmRMXFgBARkBBhoADZ4OABmGwC26XNZYbmihYLCFKJleua2auz2ks1DKrIa7Ygaej0VGpKuxZCMNBp2JVbBMQO5mF5fJkFtQAKJrDbEABKqIAKliAJqXfLXYp3Up-bQ9Pq6EZtYyIXTsSSA9hstTSFq2IayWHwzw4DAAcSiAEE0GgALJRPAYJaxeJUDDIZKpagwHDiqUy4m8fg3EqgDpNFmSM1m6HKV7fWyGMq6SS2DDNWSNPlTUUAVxwgTAFCE0T2t0leFiKrAisSKTSeG9vv9yED9F1BX1ZNEHX6lQwDvNDhdkNddsQHMaOa0tgd30U1RhrjhHrjG2QAC8g5QQ2GqJHlaqY02CK2clwrmnbvcS9JbMoMGDXpUK89NL8EFoWbmzfmWoXKu7MF6fc222TO4Fwz2VdHqLHD4OWzk1Hk9UVxxSEBzp7PpPPF2plwzV2UcwN0kLdvlBXd63cXECE9WgABEwCSRMI3IJVLzVDAcFghCkJQ09wxTUlX1AB4pxnaRKJeNlIV6aR6Q6JknXNTcoW3CCXHrCgyAgOBREYUcX0NcREAAWm-J16M0exBjUXpKnoldRN0bMzV0KxuWqNQhkqAY92mIhBINclSLEjRVAUICNBk555MUgDFEBID1GZSjQXsfSEUFJF5myIz0zfUT-nYSzpI0uSNAUhiS0ijA2SAxpHV6SsFM8gVZmRbI5SiWJ-JIkT33YH4HLZOK2XZTl6h5NKZh8840QxAg8uEspRO0jRQus8K7Oi8phgwcz2T0XRlBGOtJiYdK6pRDB4ISZqTIK1RsxaZprFsSQmM2ld+m6XSLSsCpuWcKCpi84UxQlaV8AWicEGUAwAIdDqrXKyLKldazKxqrwRU1K6ZWy5ZbrfF5iuNSpTRYy1rWsn7BT+rVrtlOaqBB0yEFsuK5J0LQdEejohhnV74uUWxrJUk6JowA94wDdsKAItGSTHFqpDkuLWlkTc+neaEdpUnMWLAnd9Npo8GaZsB0YKmRzCUV13kdJc1EkFcHvkb9IZBBSrHqNR9JguCcEQ5DomllmhMWspXRnGzyd6WopxXS0MErKwbG0hwqYbTBUX8GX7W5IX7GUV7Kzsldue6SQXlpUD7FV3lOKAA */
   createMachine(
     {
       tsTypes: {} as import("./idp.typegen").Typegen0,
@@ -74,6 +75,7 @@ const IDPMachine =
                 },
                 Error: {
                   onEntry: "assignError",
+                  on: { RETRY: "Fetch" },
                 },
                 Done: {
                   type: "final",
@@ -125,7 +127,7 @@ const IDPMachine =
               { target: "TrustDevice", cond: "isWebAuthNSupported" },
               { target: "End" },
             ],
-            data: (context, event) =>
+            data: (context, event: { data: AuthSession }) =>
               ({
                 appMeta: context.appMeta,
                 authRequest: context.authRequest,

@@ -49,23 +49,23 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAccounts: "done.invoke.fetchAccountsService"
     assignUserLimit: "done.invoke.fetchAccountLimitService"
     handleAccounts: "done.invoke.fetchAccountsService"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {}
   eventsCausingServices: {
     createAccountService: "CREATE_ACCOUNT"
     fetchAccountLimitService: "xstate.init"
     fetchAccountsService: "done.invoke.fetchAccountLimitService"
     fetchDelegateService: "SELECT_ACCOUNT" | "done.invoke.createAccountService"
   }
-  eventsCausingGuards: {}
-  eventsCausingDelays: {}
   matchesStates:
     | "CreateAccount"
     | "End"

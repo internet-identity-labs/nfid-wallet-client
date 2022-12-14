@@ -47,7 +47,7 @@ export function useAllNFTs() {
 
   return useSWR(
     principals ? [principals, "userTokens"] : null,
-    principalTokens,
+    ([principals]) => principalTokens(principals),
     {
       dedupingInterval: 30_000,
       focusThrottleInterval: 30_000,

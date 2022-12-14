@@ -41,7 +41,7 @@ export function useApplicationsMeta(
     mutate: refreshApplicationMeta,
   } = useSWR(
     ["applications/meta", predicate],
-    (_, predicate) => fetchApplications(predicate),
+    ([, predicate]) => fetchApplications(predicate),
     {
       dedupingInterval: 5 * 60_000,
       focusThrottleInterval: 5 * 60_000,

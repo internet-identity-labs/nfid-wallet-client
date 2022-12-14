@@ -8,21 +8,27 @@ import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
   approveTransaction,
-  getPolicies, getTransactions,
+  getPolicies,
+  getTransactions,
   getVaults,
   getWallets,
-  registerPolicy, registerTransaction,
+  registerPolicy,
+  registerTransaction,
   registerVault,
   registerWallet,
-  storeMember, updatePolicy,
-  updateWallet, walletAddress,
+  storeMember,
+  updatePolicy,
+  updateWallet,
+  walletAddress,
 } from "./index"
 import {
   Currency,
   ObjectState,
   Policy,
   PolicyType,
-  ThresholdPolicy, Transaction, TransactionState,
+  ThresholdPolicy,
+  Transaction,
+  TransactionState,
   Vault,
   VaultMember,
   VaultRole,
@@ -55,17 +61,21 @@ describe("Vault suite", () => {
       id: expect.any(BigInt),
       name: "first",
       description: undefined,
-      members: [{ name: undefined, userId: address, role: VaultRole.Admin, state: ObjectState.ACTIVE }],
+      members: [
+        {
+          name: undefined,
+          userId: address,
+          role: VaultRole.Admin,
+          state: ObjectState.ACTIVE,
+        },
+      ],
       policies: expect.any(BigUint64Array),
       wallets: expect.any(BigUint64Array),
     })
   })
   it("get vaults test", async () => {
-
     const vaults = await getVaults()
     expect(vaults).toEqual([vaultFirst])
-
-
   })
   it("store member test", async () => {
     //STORE MEMBER AS ACTIVE
@@ -77,7 +87,7 @@ describe("Vault suite", () => {
       role: VaultRole.Member,
     })
     const vaults = await getVaults()
-    const members = vaults.find(v => v.id === BigInt(vaultFirst.id))?.members
+    const members = vaults.find((v) => v.id === BigInt(vaultFirst.id))?.members
     expect(members?.length).toEqual(2)
     const member = members?.find(
       (l) => l.userId === memberAddress,
@@ -88,7 +98,6 @@ describe("Vault suite", () => {
       role: VaultRole.Member,
       userId: memberAddress,
     })
-
   })
   it("restore member test", async () => {
     await storeMember({
@@ -98,16 +107,18 @@ describe("Vault suite", () => {
       name: "Test Name2",
       role: VaultRole.Member,
     })
-    expect(await getVaults()
-      .then(v => v.find(v => v.id === BigInt(vaultFirst.id))?.members?.find(
-        (l) => l.userId === memberAddress,
-      ))).toEqual({
+    expect(
+      await getVaults().then((v) =>
+        v
+          .find((v) => v.id === BigInt(vaultFirst.id))
+          ?.members?.find((l) => l.userId === memberAddress),
+      ),
+    ).toEqual({
       state: ObjectState.ARCHIVED,
       name: "Test Name2",
       role: VaultRole.Member,
       userId: memberAddress,
     })
-
   })
   let wallet: Wallet
   it("register member test", async () => {
@@ -123,12 +134,10 @@ describe("Vault suite", () => {
       state: ObjectState.ACTIVE,
       vaults: expect.any(BigUint64Array),
     })
-
   })
   it("get wallets test", async () => {
     const wallets = await getWallets(vaultFirst.id)
     expect(wallets.length).toEqual(1)
-
   })
   it("update wallet test", async () => {
     wallet.name = "Updated"
@@ -142,7 +151,6 @@ describe("Vault suite", () => {
       state: ObjectState.ARCHIVED,
       vaults: expect.any(BigUint64Array),
     })
-
   })
 
   let policy: Policy
@@ -167,7 +175,6 @@ describe("Vault suite", () => {
       vault: vaultFirst.id,
       walletIds: undefined,
     })
-
   })
   it("get policies test", async () => {
     const policies = await getPolicies(vaultFirst.id)
@@ -191,11 +198,9 @@ describe("Vault suite", () => {
       vault: vaultFirst.id,
       walletIds: expect.any(BigUint64Array),
     })
-
   })
   let registeredTransaction: Transaction
   it("create transaction test", async () => {
-
     const targetAddress = await walletAddress(BigInt(1))
     registeredTransaction = await registerTransaction({
       address: targetAddress,
@@ -227,10 +232,8 @@ describe("Vault suite", () => {
     })
 
     replaceIdentity(memberIdentity)
-
   })
   it("approve transaction test", async () => {
-
     const approvedTransaction = await approveTransaction({
       state: TransactionState.APPROVED,
       transactionId: registeredTransaction.id,

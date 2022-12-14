@@ -42,7 +42,7 @@ export enum TransactionState {
   APPROVED,
   PENDING,
   CANCELED,
-  REJECTED
+  REJECTED,
 }
 
 export enum ObjectState {

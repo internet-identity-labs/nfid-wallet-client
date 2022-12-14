@@ -27,7 +27,8 @@ import {
 export function candidToVault(response: VaultCandid): Vault {
   return {
     createdDate: response.created_date,
-    description: response.description.length === 0 ? undefined : response.description[0],
+    description:
+      response.description.length === 0 ? undefined : response.description[0],
     modifiedDate: response.modified_date,
     id: response.id,
     members: response.members.map((m) => candidToMember(m)),
@@ -65,11 +66,12 @@ export function policyToCandid(policy: Policy): PolicyCandid {
     id: policy.id,
     modified_date: policy.modifiedDate,
     policy_type: {
-      "threshold_policy": {
+      threshold_policy: {
         amount_threshold: policy.amountThreshold,
-        currency: { "ICP": null },
+        currency: { ICP: null },
         member_threshold: policy.memberThreshold,
-        wallet_ids: typeof policy.walletIds === "undefined" ? [] : [policy.walletIds],
+        wallet_ids:
+          typeof policy.walletIds === "undefined" ? [] : [policy.walletIds],
       },
     },
     state: objectStateToCandid(policy.state),
@@ -114,9 +116,7 @@ export function candidToApprove(response: ApproveCandid): Approve {
   }
 }
 
-export function candidToTransaction(
-  response: TransactionCandid,
-): Transaction {
+export function candidToTransaction(response: TransactionCandid): Transaction {
   return {
     owner: response.owner,
     amount: response.amount,
@@ -157,7 +157,9 @@ function candidToObjectState(response: ObjectStateCandid): ObjectState {
   throw Error("Unexpected enum value")
 }
 
-function candidToTransactionState(response: TransactionStateCandid): TransactionState {
+function candidToTransactionState(
+  response: TransactionStateCandid,
+): TransactionState {
   if (hasOwnProperty(response, "Approved")) {
     return TransactionState.APPROVED
   }
@@ -173,28 +175,30 @@ function candidToTransactionState(response: TransactionStateCandid): Transaction
   throw Error("Unexpected enum value")
 }
 
-export function transactionStateToCandid(state: TransactionState): TransactionStateCandid {
+export function transactionStateToCandid(
+  state: TransactionState,
+): TransactionStateCandid {
   if (state === TransactionState.APPROVED) {
-    return { "Approved": null }
+    return { Approved: null }
   }
   if (state === TransactionState.REJECTED) {
-    return { "Rejected": null }
+    return { Rejected: null }
   }
   if (state === TransactionState.CANCELED) {
-    return { "Canceled": null }
+    return { Canceled: null }
   }
   if (state === TransactionState.PENDING) {
-    return { "Pending": null }
+    return { Pending: null }
   }
   throw Error("Unexpected enum value")
 }
 
 export function objectStateToCandid(state: ObjectState): ObjectStateCandid {
   if (state === ObjectState.ACTIVE) {
-    return { "Active": null }
+    return { Active: null }
   }
   if (state === ObjectState.ARCHIVED) {
-    return { "Archived": null }
+    return { Archived: null }
   }
   throw Error("Unexpected enum value")
 }

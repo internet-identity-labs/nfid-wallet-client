@@ -1,7 +1,7 @@
 export const JEST_GLOBALS = {
   INTERNET_IDENTITY_CANISTER_ID: "nprnb-waaaa-aaaaj-qax4a-cai",
   IDENTITY_MANAGER_CANISTER_ID: "74gpt-tiaaa-aaaak-aacaa-cai",
-  VAULT_CANISTER_ID: "ymvb6-7qaaa-aaaan-qbgga-cai",
+  VAULT_CANISTER_ID: "lsdm3-pyaaa-aaaap-qavoa-cai",
   ETH_SECRET_STORAGE_CANISTER_ID: "25nnx-kyaaa-aaaao-ab43a-cai",
   PUB_SUB_CHANNEL_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
   VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",

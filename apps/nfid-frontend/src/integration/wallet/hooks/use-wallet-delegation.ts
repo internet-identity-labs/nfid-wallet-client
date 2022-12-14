@@ -13,7 +13,7 @@ export const useWalletDelegation = (
   console.debug("useWalletDelegation", { userNumber })
   return useSWR(
     userNumber ? [userNumber, hostName, personaId] : null,
-    (userNumber, hostName, personaId) =>
+    ([userNumber, hostName, personaId]) =>
       getWalletDelegation(userNumber, hostName, personaId),
     {
       dedupingInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,

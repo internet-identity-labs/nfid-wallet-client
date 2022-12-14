@@ -179,7 +179,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
 
   const { data: balanceICPRaw, isValidating: isLoadingPrincipals } = useSWR(
     principals ? [principals, "balanceICPRaw"] : null,
-    async (principals) => {
+    async ([principals]) => {
       return await Promise.all(
         principals.map(async ({ principal, account }) => ({
           principalId: principal.toText(),

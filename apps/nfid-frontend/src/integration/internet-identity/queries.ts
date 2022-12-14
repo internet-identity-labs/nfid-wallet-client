@@ -26,7 +26,7 @@ export const useAllPrincipals = () => {
     profile?.anchor && allAccounts
       ? [BigInt(profile.anchor), allAccounts]
       : null,
-    fetchPrincipals,
+    ([anchor, allAccounts]) => fetchPrincipals(anchor, allAccounts),
     { dedupingInterval: 60_000, refreshInterval: 60_000 },
   )
 

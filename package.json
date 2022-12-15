@@ -98,7 +98,7 @@
     "@storybook/preset-create-react-app": "4.1.2",
     "@storybook/react": "~6.5.9",
     "@storybook/testing-library": "^0.0.13",
-    "@storybook/theming": "6.5.13",
+    "@storybook/theming": "6.5.14",
     "@svgr/webpack": "^5.4.0",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/google-one-tap": "^1.2.0",

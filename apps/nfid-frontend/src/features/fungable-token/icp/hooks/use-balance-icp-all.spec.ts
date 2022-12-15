@@ -5,6 +5,7 @@ import { Principal } from "@dfinity/principal"
 import { act, renderHook } from "@testing-library/react"
 
 import { Account, Application, getBalance, stringify } from "@nfid/integration"
+import { getAllToken } from "@nfid/integration/token/dip-20"
 import { E8S } from "@nfid/integration/token/icp"
 
 import * as imHooks from "frontend/integration/identity-manager/queries"
@@ -15,6 +16,7 @@ import { useBalanceICPAll } from "./use-balance-icp-all"
 import { APP_ACC_BALANCE_SHEET } from "./use-balance-icp-all.mocks"
 
 jest.mock("@nfid/integration")
+jest.mock("@nfid/integration/token/dip-20")
 
 const ICP_BALANCE_MOCKS = [
   {
@@ -118,6 +120,9 @@ describe("useBalanceICPAll", () => {
     promises.map((promise) =>
       (getBalance as jest.Mock).mockImplementationOnce(() => promise),
     )
+
+    //
+    ;(getAllToken as jest.Mock).mockImplementation(() => [])
 
     const getExchangeRateP1 = Promise.resolve(5)
     const getExchangeRateSpy = jest

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { Principal } from "@dfinity/principal"
-import { act, renderHook, waitFor } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 
 import { Account, Application, getBalance, stringify } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"

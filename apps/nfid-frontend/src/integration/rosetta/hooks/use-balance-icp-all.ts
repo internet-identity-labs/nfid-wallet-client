@@ -37,7 +37,7 @@ export interface AppBalance {
   accounts: AccountBalance[]
 }
 
-export interface ICPBalanceSheet {
+export interface TokenBalanceSheet {
   label: string
   token: string
   tokenBalance: Balance
@@ -108,8 +108,8 @@ const reduceRawToAppAccountBalance = (
   exchangeRate: number,
   excludeEmpty: boolean,
   includeEmptyApps: string[],
-): ICPBalanceSheet => {
-  return rawBalance.reduce<ICPBalanceSheet>(
+): TokenBalanceSheet => {
+  return rawBalance.reduce<TokenBalanceSheet>(
     (acc, rawBalance) => {
       const applicationMatch: Application | undefined = applications.find(
         (a) => a.domain === rawBalance.account.domain,
@@ -167,39 +167,55 @@ const reduceRawToAppAccountBalance = (
   )
 }
 
-/**
- * returns map of applications and there accumulated balance across all accounts
- *
- * @param excludeEmpty only include applications with non zero balance
- */
-export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
-  const { principals } = useAllPrincipals()
-  const { applicationsMeta } = useApplicationsMeta()
-  const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
-    useICPExchangeRate()
+type UseUserBalancesArgs = {
+  token: string
+  getBalance: (principalId: string) => Promise<Balance>
+}
 
-  const { data: balanceICPRaw, isValidating: isLoadingPrincipals } = useSWR(
-    principals ? [principals, "balanceICPRaw"] : null,
+export const useUserBalances = ({ token, getBalance }: UseUserBalancesArgs) => {
+  const { principals } = useAllPrincipals()
+
+  const { data: balances, isValidating: isLoadingPrincipals } = useSWR(
+    principals ? [principals, `${token}BalanceRaw`] : null,
     async ([principals]) => {
       return await Promise.all(
         principals.map(async ({ principal, account }) => ({
           principalId: principal.toText(),
           account,
-          balance: await getBalance(principalToAddress(principal)),
+          balance: await getBalance(principal.toText()),
         })),
       )
     },
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )
 
+  return { balances: balances, isLoadingPrincipals }
+}
+
+/**
+ * returns map of applications and there accumulated balance across all accounts
+ *
+ * @param excludeEmpty only include applications with non zero balance
+ */
+export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
+  const { applicationsMeta } = useApplicationsMeta()
+  const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
+    useICPExchangeRate()
+
+  const { balances: icpBalance, isLoadingPrincipals } = useUserBalances({
+    token: "ICP",
+    getBalance: (principalId) =>
+      getBalance(principalToAddress(Principal.fromText(principalId))),
+  })
+
   const appAccountBalance = React.useMemo(
     () =>
       !isLoadingICPExchangeRate &&
       !isLoadingPrincipals &&
       exchangeRate &&
-      balanceICPRaw
+      icpBalance
         ? reduceRawToAppAccountBalance(
-            balanceICPRaw,
+            icpBalance,
             applicationsMeta || [],
             exchangeRate,
             excludeEmpty,
@@ -209,7 +225,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
     [
       isLoadingICPExchangeRate,
       isLoadingPrincipals,
-      balanceICPRaw,
+      icpBalance,
       applicationsMeta,
       exchangeRate,
       excludeEmpty,
@@ -222,7 +238,7 @@ export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
     exchangeRate,
     applicationsMeta,
     appAccountBalance,
-    balanceICPRaw,
+    balanceICPRaw: icpBalance,
   })
 
   return {

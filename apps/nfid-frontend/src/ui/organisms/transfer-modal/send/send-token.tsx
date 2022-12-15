@@ -4,13 +4,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { Tooltip } from "@nfid-frontend/ui"
-import { E8S } from "@nfid/integration/token/icp"
+import { toPresentation } from "@nfid/integration/token/icp"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import ICPIcon from "frontend/assets/dfinity.svg"
 import { walletFee, walletFeeE8s } from "frontend/constants/wallet"
 import { IWallet } from "frontend/integration/wallet/hooks/types"
-import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
@@ -46,7 +45,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
       value: wallet.principal?.toText() ?? "",
-      afterLabel: wallet.balance?.value,
+      afterLabel: `${toPresentation(wallet.balance)} ICP`,
     }))
   }, [wallets])
 
@@ -73,17 +72,16 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   })
 
   const setFullAmount = useCallback(() => {
-    if (!currentWallet?.balance?.value) return
-    const amount =
-      (stringICPtoE8s(currentWallet.balance.value) - walletFeeE8s) / E8S
+    if (!currentWallet?.balance) return
+    const amount = currentWallet.balance - BigInt(walletFeeE8s)
     if (amount < 0) {
       setValue("amount", "0")
       setError("amount", { message: "Insufficient funds" })
       setTimeout(() => {
         resetField("amount")
       }, 2000)
-    } else setValue("amount", amount)
-  }, [currentWallet?.balance?.value, resetField, setError, setValue])
+    } else setValue("amount", toPresentation(amount))
+  }, [currentWallet?.balance, resetField, setError, setValue])
 
   return (
     <>
@@ -135,7 +133,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
                   id="full-amount-button"
                   onClick={setFullAmount}
                 >
-                  {currentWallet?.balance?.value}
+                  {toPresentation(currentWallet?.balance)} {"ICP"}
                 </span>
               </Tooltip>
             </div>

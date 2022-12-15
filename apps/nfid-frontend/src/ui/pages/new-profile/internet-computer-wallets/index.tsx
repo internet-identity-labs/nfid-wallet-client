@@ -1,11 +1,10 @@
 import React from "react"
 
-import ICP from "frontend/assets/dfinity.svg"
-import { rmProto } from "frontend/integration/identity-manager"
 import {
   AppBalance,
-  ICPBalanceSheet,
-} from "frontend/integration/rosetta/hooks/use-balance-icp-all"
+  TokenBalanceSheet,
+} from "frontend/features/fungable-token/types"
+import { rmProto } from "frontend/integration/identity-manager"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -14,7 +13,7 @@ import {
   sortAlphabetic as alphabetic,
 } from "frontend/ui/utils/sorting"
 
-const getSortedBalanceSheet = (balanceSheet: ICPBalanceSheet | null) => {
+const getSortedBalanceSheet = (balanceSheet?: TokenBalanceSheet) => {
   if (!balanceSheet) return null
   const applications = Object.values(balanceSheet.applications)
   const sortedAlphabetic = applications.sort(
@@ -30,7 +29,7 @@ const getSortedBalanceSheet = (balanceSheet: ICPBalanceSheet | null) => {
 
 interface IProfileTransactionsPage
   extends React.HTMLAttributes<HTMLDivElement> {
-  icpBlanceSheet: ICPBalanceSheet | null
+  icpBlanceSheet?: TokenBalanceSheet
 }
 
 const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
@@ -51,12 +50,17 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
       <TokenDetailBalance
         token={icpBlanceSheet?.token || ""}
         label={icpBlanceSheet?.label || ""}
-        icon={ICP}
-        tokenBalance={icpBlanceSheet?.icpBalance || ""}
+        icon={icpBlanceSheet?.icon || ""}
+        tokenBalance={icpBlanceSheet?.tokenBalance}
         usdBalance={icpBlanceSheet?.usdBalance || ""}
       />
       <div className="mt-5">
-        {apps && <AppAccountBalanceSheet apps={apps} />}
+        {apps && (
+          <AppAccountBalanceSheet
+            apps={apps}
+            currency={icpBlanceSheet?.token}
+          />
+        )}
       </div>
     </ProfileTemplate>
   )

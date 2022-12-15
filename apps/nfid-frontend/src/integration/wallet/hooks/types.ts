@@ -7,5 +7,5 @@ export interface IWallet {
   principal?: Principal
   accountId: string
   domain: string
-  balance?: Balance
+  balance: Balance
 }

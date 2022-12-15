@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { Tooltip } from "@nfid-frontend/ui"
+import { toPresentation } from "@nfid/integration/token/icp"
 
-import { AppBalance } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
+import { AppBalance } from "frontend/features/fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
@@ -28,11 +29,9 @@ const GridCell = React.forwardRef<HTMLTableCellElement, GridCellProps>(
   ),
 )
 
-const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
-  appName,
-  icon,
-  accounts,
-}) => {
+const AppRow: React.FC<
+  Pick<AppBalance, "accounts" | "appName" | "icon"> & { currency: string }
+> = ({ appName, icon, accounts, currency }) => {
   const navigate = useNavigate()
   const copyToClipboard = React.useCallback(
     (type: string, value: string) => (e: React.SyntheticEvent) => {
@@ -79,7 +78,9 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
             </GridCell>
           )}
           <GridCell>{account.accountName}</GridCell>
-          <GridCell>{account.icpBalance}</GridCell>
+          <GridCell>
+            {toPresentation(account.tokenBalance)} {currency}
+          </GridCell>
           <GridCell>{account.usdBalance}</GridCell>
           <Tooltip tip="Copy to clipboard">
             <GridCell>
@@ -109,15 +110,17 @@ const AppRow: React.FC<Pick<AppBalance, "accounts" | "appName" | "icon">> = ({
 
 interface AppAccountBalanceSheetProps {
   apps: AppBalance[]
+  currency?: string
 }
 
 export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
   apps,
+  currency = "ICP",
 }) => {
   const headings = [
     "Application",
     "Account",
-    "ICP balance",
+    `${currency} balance`,
     "USD balance",
     "Account ID",
     "Principal ID",
@@ -130,6 +133,7 @@ export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
         {apps.map((app) => (
           <AppRow
             key={app.appName}
+            currency={currency}
             appName={app.appName}
             accounts={app.accounts}
             icon={app.icon}

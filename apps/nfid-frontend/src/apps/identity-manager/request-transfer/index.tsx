@@ -3,8 +3,10 @@ import { principalToAddress } from "ictool"
 import { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
-import { icpToUSD } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
-import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
+import { toPresentation } from "@nfid/integration/token/icp"
+
+import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
+import { icpToUSD } from "frontend/features/fungable-token/reduce-to-app-account-balance"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { IOption } from "frontend/ui/atoms/dropdown-select"
@@ -50,15 +52,15 @@ export const RequestTransfer = ({
       ?.map((wallet) => ({
         label: wallet.label ?? "",
         value: wallet.principal?.toText() ?? "",
-        afterLabel: wallet.balance.value,
-        disabled: Number(wallet.balance.value) <= Number(amountICP),
+        afterLabel: toPresentation(wallet.balance),
+        disabled: Number(wallet.balance) <= Number(amountICP),
       }))
       .sort((a, b) => Number(a?.disabled) - Number(b?.disabled))
   }, [amountICP, wallets])
 
   const amountUSD = useMemo(() => {
     if (!exchangeRate) return "0"
-    return icpToUSD(amountICP.toString(), exchangeRate)
+    return icpToUSD(amountICP, exchangeRate)
   }, [amountICP, exchangeRate])
 
   const onApprove = async () => {

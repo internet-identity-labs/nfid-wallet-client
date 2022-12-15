@@ -4,5 +4,4 @@ export interface Account {
   accountId: string
   icon?: string
   alias?: string[]
-  accountCount?: number
 }

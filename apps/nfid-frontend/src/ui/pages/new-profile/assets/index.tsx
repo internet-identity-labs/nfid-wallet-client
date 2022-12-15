@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
+import { toPresentation } from "@nfid/integration/token/icp"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
@@ -12,9 +14,17 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { ProfileAssetsNFT } from "./nft"
 import Icon from "./transactions.svg"
 
+type Token = {
+  icon: string
+  title: string
+  currency: string
+  balance?: bigint
+  price?: string
+}
+
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
-  tokens: any[]
+  tokens: Token[]
   nfts?: UserNFTDetails[]
 }
 
@@ -34,6 +44,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
     },
     [navigate],
   )
+  console.debug("ProfileAssetsPage", { tokens })
   return (
     <ProfileTemplate
       pageTitle="Assets"
@@ -72,7 +83,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     </p>
                   </div>
                 </td>
-                <td className="text-sm">{token.balance}</td>
+                <td className="text-sm">
+                  {toPresentation(token.balance)} {token.currency}
+                </td>
                 <td className="text-sm">{token.price}</td>
               </tr>
             ))}
@@ -99,7 +112,9 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm leading-5">{token.balance}</div>
+                <div className="text-sm leading-5">
+                  {toPresentation(token.balance)} {token.currency}
+                </div>
                 <div className="text-sm leading-3">{token.price}</div>
               </div>
             </div>

@@ -21,7 +21,9 @@ const setupCSP = () => {
         "'self'",
         "https://ic0.app",
         "https://*.ic0.app",
-        "https://region1.analytics.google.com",
+        "https://*.google-analytics.com",
+        "https://*.analytics.google.com",
+        "https://*.googletagmanager.com",
         process.env.AWS_VERIFY_PHONENUMBER as string,
         process.env.AWS_SYMMETRIC as string,
         process.env.AWS_SIGNIN_GOOGLE as string,
@@ -32,7 +34,11 @@ const setupCSP = () => {
         "https://stats.g.doubleclick.net/g/collect",
       ],
       "worker-src": "'self'",
-      "img-src": ["'self' blob: data: content: https:"],
+      "img-src": [
+        "'self' blob: data: content: https:",
+        "https://*.google-analytics.com",
+        "https://*.googletagmanager.com",
+      ],
       "font-src": [
         "'self'",
         "https://fonts.googleapis.com",
@@ -59,7 +65,7 @@ const setupCSP = () => {
         "'unsafe-eval'",
         "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
         "https://accounts.google.com/gsi/client",
-        "https://www.googletagmanager.com/gtag/js",
+        "https://*.googletagmanager.com",
       ],
       "require-trusted-types-for": ["'script'"],
     }

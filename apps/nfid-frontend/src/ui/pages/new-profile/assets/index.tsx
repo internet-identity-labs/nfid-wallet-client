@@ -18,8 +18,8 @@ type Token = {
   icon: string
   title: string
   currency: string
-  balance: bigint
-  price: string
+  balance?: bigint
+  price?: string
 }
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {

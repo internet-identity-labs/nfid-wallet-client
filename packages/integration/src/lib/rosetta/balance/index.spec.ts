@@ -12,6 +12,6 @@ describe("getBalance", () => {
         ),
       ),
     )
-    expect(response).toEqual({ value: "0.0001" })
+    expect(response).toEqual(BigInt(10000))
   })
 })

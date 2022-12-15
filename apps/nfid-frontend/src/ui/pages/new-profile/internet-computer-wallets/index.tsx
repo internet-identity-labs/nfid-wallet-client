@@ -52,7 +52,7 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
         token={icpBlanceSheet?.token || ""}
         label={icpBlanceSheet?.label || ""}
         icon={ICP}
-        tokenBalance={icpBlanceSheet?.icpBalance || ""}
+        tokenBalance={icpBlanceSheet?.tokenBalance}
         usdBalance={icpBlanceSheet?.usdBalance || ""}
       />
       <div className="mt-5">

@@ -4,7 +4,7 @@ import ICP from "frontend/assets/dfinity.svg"
 import { rmProto } from "frontend/integration/identity-manager"
 import {
   AppBalance,
-  ICPBalanceSheet,
+  TokenBalanceSheet,
 } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
@@ -14,7 +14,7 @@ import {
   sortAlphabetic as alphabetic,
 } from "frontend/ui/utils/sorting"
 
-const getSortedBalanceSheet = (balanceSheet: ICPBalanceSheet | null) => {
+const getSortedBalanceSheet = (balanceSheet: TokenBalanceSheet | null) => {
   if (!balanceSheet) return null
   const applications = Object.values(balanceSheet.applications)
   const sortedAlphabetic = applications.sort(
@@ -30,7 +30,7 @@ const getSortedBalanceSheet = (balanceSheet: ICPBalanceSheet | null) => {
 
 interface IProfileTransactionsPage
   extends React.HTMLAttributes<HTMLDivElement> {
-  icpBlanceSheet: ICPBalanceSheet | null
+  icpBlanceSheet: TokenBalanceSheet | null
 }
 
 const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({

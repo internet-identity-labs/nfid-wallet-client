@@ -136,18 +136,18 @@ describe("useBalanceICPAll", () => {
 
     const { result } = renderHook(() => useBalanceICPAll())
 
+    expect(result.current.isLoading).toBe(true)
+
     await act(async () => {
       await Promise.all(promises)
       await getExchangeRateP1
     })
 
-    waitFor(() => {
-      expect(useAllPrincipals).toHaveBeenCalled()
-      expect(getExchangeRateSpy).toHaveBeenCalled()
-      expect(useApplicationsMeta).toHaveBeenCalled()
-      expect(result.current.isLoading).toBe(true)
-      expect(getBalance).toBeCalledTimes(3)
-    })
+    expect(useAllPrincipals).toHaveBeenCalled()
+    expect(getExchangeRateSpy).toHaveBeenCalled()
+    expect(useApplicationsMeta).toHaveBeenCalled()
+    expect(getBalance).toBeCalledTimes(5)
+
     expect(result.current.isLoading).toBe(false)
 
     expect(stringify(result.current.appAccountBalance)).toEqual(

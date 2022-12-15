@@ -4,7 +4,8 @@
 import { Principal } from "@dfinity/principal"
 import { act, renderHook, waitFor } from "@testing-library/react"
 
-import { Account, Application, getBalance } from "@nfid/integration"
+import { Account, Application, getBalance, stringify } from "@nfid/integration"
+import { E8S } from "@nfid/integration/token/icp"
 
 import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
@@ -15,19 +16,9 @@ import { APP_ACC_BALANCE_SHEET } from "./use-balance-icp-all.mocks"
 
 jest.mock("@nfid/integration")
 
-const commonFields = {
-  currency: {
-    symbol: "ICP",
-    decimals: 8,
-    metadata: {
-      Issuer: "",
-    },
-  },
-  metadata: {},
-}
 const ICP_BALANCE_MOCKS = [
   {
-    getBalanceResponse: { value: "0.1", ...commonFields },
+    getBalanceResponse: BigInt(parseFloat("0.1") * E8S),
     principalObject: {
       principal: Principal.fromText(
         "gv5fe-6s7su-pgeqr-2wizb-t3suu-7kayl-vqxah-3yyia-ezheu-uovga-rqe",
@@ -39,7 +30,7 @@ const ICP_BALANCE_MOCKS = [
     },
   },
   {
-    getBalanceResponse: { value: "0.0", ...commonFields },
+    getBalanceResponse: BigInt(parseFloat("0.0") * E8S),
     principalObject: {
       principal: Principal.fromText(
         "b27e3-f3kqs-v4awo-5naps-qdb2x-6pi6t-elxdc-snwxn-nz3jd-3445f-5qe",
@@ -51,7 +42,7 @@ const ICP_BALANCE_MOCKS = [
     },
   },
   {
-    getBalanceResponse: { value: "0.2", ...commonFields },
+    getBalanceResponse: BigInt(parseFloat("0.2") * E8S),
     principalObject: {
       principal: Principal.fromText(
         "yosev-36gsi-oipnu-ayggf-4bnff-6ljlu-p3qos-xmqt7-dqmtm-i5mit-dae",
@@ -65,7 +56,7 @@ const ICP_BALANCE_MOCKS = [
   },
   {
     // NOTE: SHOULD BE EXCLUDED FROM BALANCE SHEET
-    getBalanceResponse: { value: "0.0", ...commonFields },
+    getBalanceResponse: BigInt(parseFloat("0.0") * E8S),
     principalObject: {
       principal: Principal.fromText(
         "yosev-36gsi-oipnu-ayggf-4bnff-6ljlu-p3qos-xmqt7-dqmtm-i5mit-dae",
@@ -77,7 +68,7 @@ const ICP_BALANCE_MOCKS = [
     },
   },
   {
-    getBalanceResponse: { value: "1.0", ...commonFields },
+    getBalanceResponse: BigInt(parseFloat("1.0") * E8S),
     principalObject: {
       // principal: Ed25519KeyIdentity.generate().getPrincipal(),
       principal: Principal.fromText(
@@ -159,6 +150,8 @@ describe("useBalanceICPAll", () => {
     })
     expect(result.current.isLoading).toBe(false)
 
-    expect(result.current.appAccountBalance).toEqual(APP_ACC_BALANCE_SHEET)
+    expect(stringify(result.current.appAccountBalance)).toEqual(
+      stringify(APP_ACC_BALANCE_SHEET),
+    )
   })
 })

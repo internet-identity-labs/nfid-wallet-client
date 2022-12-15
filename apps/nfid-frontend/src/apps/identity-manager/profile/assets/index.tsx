@@ -21,7 +21,7 @@ const ProfileAssets = () => {
         icon: Dfinity,
         title: appAccountBalance.label,
         currency: appAccountBalance.token,
-        balance: appAccountBalance.icpBalance,
+        balance: appAccountBalance.tokenBalance,
         price: appAccountBalance.usdBalance,
       },
     ]

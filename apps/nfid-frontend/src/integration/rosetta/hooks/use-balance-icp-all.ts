@@ -4,6 +4,7 @@ import React from "react"
 import useSWR from "swr"
 
 import { Account, Application, Balance, getBalance } from "@nfid/integration"
+import { toPresentation } from "@nfid/integration/token/icp"
 
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
 import {
@@ -23,7 +24,7 @@ interface RawBalance {
 
 export interface AccountBalance {
   accountName: string
-  icpBalance: string
+  tokenBalance: Balance
   usdBalance: string
   principalId: string
   address: string
@@ -32,14 +33,14 @@ export interface AccountBalance {
 export interface AppBalance {
   icon?: string
   appName: string
-  icpBalance: string
+  tokenBalance: Balance
   accounts: AccountBalance[]
 }
 
 export interface ICPBalanceSheet {
   label: string
   token: string
-  icpBalance: string
+  tokenBalance: Balance
   usdBalance: string
   applications: { [applicationName: string]: AppBalance }
 }
@@ -48,12 +49,12 @@ export const sumE8sICPString = (a: string, b: string) => {
   return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))
 }
 
-export const icpToUSD = (value: string, exchangeRate: number) =>
-  `$${(exchangeRate * Number(value)).toFixed(2)}`
+export const icpToUSD = (value: number, exchangeRate: number) =>
+  `$${(exchangeRate * value).toFixed(2)}`
 
 function mapApplicationBalance(
   appName: string,
-  currentAppTotalBalance: string,
+  currentAppTotalBalance: Balance,
   token: string,
   rawBalance: RawBalance,
   icpExchangeRate: number,
@@ -64,10 +65,10 @@ function mapApplicationBalance(
   return {
     icon: applicationMatch?.icon,
     appName: appName,
-    icpBalance: `${currentAppTotalBalance} ${token}`,
+    tokenBalance: currentAppTotalBalance,
     accounts: [
       ...(currentApp?.accounts ?? []),
-      ...(Number(rawBalance.balance.value) > 0 || isExplicitlyIncluded
+      ...(rawBalance.balance > 0 || isExplicitlyIncluded
         ? [
             {
               accountName:
@@ -80,8 +81,11 @@ function mapApplicationBalance(
                 // FIXME: any typecast because of Principal version mismatch in ictools
                 Principal.fromText(rawBalance.principalId) as any,
               ),
-              icpBalance: `${rawBalance.balance.value} ${token}`,
-              usdBalance: icpToUSD(rawBalance.balance.value, icpExchangeRate),
+              tokenBalance: rawBalance.balance,
+              usdBalance: icpToUSD(
+                toPresentation(rawBalance.balance),
+                icpExchangeRate,
+              ),
             },
           ]
         : []),
@@ -94,14 +98,14 @@ function mapApplicationBalance(
  *
  * @param rawBalance - balance of a single account
  * @param applications - list of applications from identity manager
- * @param icpExchangeRate - exchange rate of ICP to USD
+ * @param exchangeRate - exchange rate of Token to USD
  * @param excludeEmpty - if true, exclude applications with no balance
  * @param includeEmptyApps - include apps with given appName or domain even if their balance is 0
  */
 const reduceRawToAppAccountBalance = (
   rawBalance: RawBalance[],
   applications: Application[],
-  icpExchangeRate: number,
+  exchangeRate: number,
   excludeEmpty: boolean,
   includeEmptyApps: string[],
 ): ICPBalanceSheet => {
@@ -117,14 +121,11 @@ const reduceRawToAppAccountBalance = (
 
       const currentApp: AppBalance | undefined = acc.applications[appName]
 
-      const totalBalanceValue = sumE8sICPString(
-        acc.icpBalance,
-        rawBalance.balance.value,
-      )
-      const currentAppTotalBalance = sumE8sICPString(
-        acc.applications[appName]?.icpBalance || "0",
-        rawBalance.balance.value,
-      )
+      const totalBalanceValue = acc.tokenBalance + rawBalance.balance
+
+      const currentAppTotalBalance =
+        acc.applications[appName]?.tokenBalance ||
+        BigInt(0) + rawBalance.balance
 
       const isExplicitlyIncluded =
         includeEmptyApps.includes(applicationMatch?.domain || "") ||
@@ -133,14 +134,14 @@ const reduceRawToAppAccountBalance = (
       if (
         excludeEmpty &&
         !isExplicitlyIncluded &&
-        currentAppTotalBalance === "0"
+        currentAppTotalBalance === BigInt(0)
       )
         return acc
 
       return {
         ...acc,
-        icpBalance: `${Number(totalBalanceValue).toFixed(2)} ${acc.token}`,
-        usdBalance: icpToUSD(totalBalanceValue, icpExchangeRate),
+        tokenBalance: totalBalanceValue,
+        usdBalance: icpToUSD(toPresentation(totalBalanceValue), exchangeRate),
         applications: {
           ...acc.applications,
           [appName]: mapApplicationBalance(
@@ -148,7 +149,7 @@ const reduceRawToAppAccountBalance = (
             currentAppTotalBalance,
             acc.token,
             rawBalance,
-            icpExchangeRate,
+            exchangeRate,
             applicationMatch,
             currentApp,
             isExplicitlyIncluded,
@@ -159,7 +160,7 @@ const reduceRawToAppAccountBalance = (
     {
       label: "Internet Computer",
       token: "ICP",
-      icpBalance: "0",
+      tokenBalance: BigInt(0),
       usdBalance: "0",
       applications: {},
     },

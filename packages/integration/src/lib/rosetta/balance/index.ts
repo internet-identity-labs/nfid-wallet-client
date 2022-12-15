@@ -3,20 +3,22 @@ import { restCall } from "../../rest/rest-call"
 import { getRosettaRequest } from "../get-rosetta-request"
 import { mapToBalance } from "./map-to-balance"
 
+export type RosettaTokenBalance = {
+  value: string
+}
+
 export interface RosettaBalance {
   block_identifier: {
     index: number
     hash: string
   }
-  balances: [Balance]
+  balances: [RosettaTokenBalance]
   metadata: {
     sequence_number: number
   }
 }
 
-export interface Balance {
-  value: string
-}
+export type Balance = bigint
 
 export async function getBalance(address: string): Promise<Balance> {
   const request = getRosettaRequest(address)

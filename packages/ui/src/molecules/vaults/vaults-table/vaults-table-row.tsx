@@ -26,8 +26,8 @@ export const VaultsTableRow: React.FC<VaultsTableRowProps> = ({
   return (
     <TableRow onClick={() => navigate(`url/${id}`)}>
       <TableCell isLeft>{name}</TableCell>
-      <TableCell className="text-center">{walletsQuantity}</TableCell>
-      <TableCell className="text-center">{membersQuantity}</TableCell>
+      <TableCell centered>{walletsQuantity}</TableCell>
+      <TableCell centered>{membersQuantity}</TableCell>
       <TableCell>{lastActivity}</TableCell>
       <TableCell isRight>
         <IconCmpArrowRight className="text-gray-400" />

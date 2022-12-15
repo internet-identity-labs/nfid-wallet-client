@@ -7,13 +7,13 @@ import { Account, Application, Balance, getBalance } from "@nfid/integration"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
+import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
+import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 import {
   e8sICPToString,
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
 
-import { useApplicationsMeta } from "../../identity-manager/queries"
-import { useAllPrincipals } from "../../internet-identity/queries"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 
 interface RawBalance {

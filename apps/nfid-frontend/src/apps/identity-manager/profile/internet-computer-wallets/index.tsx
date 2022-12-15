@@ -1,6 +1,6 @@
 import React from "react"
 
-import { useBalanceICPAll } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
+import { useBalanceICPAll } from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
 import InternetComputerWalletsPage from "frontend/ui/pages/new-profile/internet-computer-wallets"
 
 const ProfileInternetComputerWallets = () => {

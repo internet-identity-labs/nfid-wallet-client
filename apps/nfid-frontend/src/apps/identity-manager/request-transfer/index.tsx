@@ -5,8 +5,8 @@ import { toast } from "react-toastify"
 
 import { toPresentation } from "@nfid/integration/token/icp"
 
-import { icpToUSD } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
-import { useICPExchangeRate } from "frontend/integration/rosetta/hooks/use-icp-exchange-rate"
+import { icpToUSD } from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
+import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { IOption } from "frontend/ui/atoms/dropdown-select"

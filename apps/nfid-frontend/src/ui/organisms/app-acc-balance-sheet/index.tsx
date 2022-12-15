@@ -7,7 +7,7 @@ import { toast } from "react-toastify"
 import { Tooltip } from "@nfid-frontend/ui"
 import { toPresentation } from "@nfid/integration/token/icp"
 
-import { AppBalance } from "frontend/integration/rosetta/hooks/use-balance-icp-all"
+import { AppBalance } from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"

@@ -1,189 +1,50 @@
-import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
 
-import { Account, Application, Balance, getBalance } from "@nfid/integration"
-import { toPresentation } from "@nfid/integration/token/icp"
+import { getBalance } from "@nfid/integration"
+import { getBalance as getDip20Balance } from "@nfid/integration/token/dip-20"
 
-import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
+import ICP from "frontend/assets/dfinity.svg"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import {
-  e8sICPToString,
-  stringICPtoE8s,
-} from "frontend/integration/wallet/utils"
 
+import { useAllTokenMeta } from "../../dip-20/hooks/use-all-token-meta"
+import { accumulateAppAccountBalance } from "../../reduce-to-app-account-balance"
+import { RawBalance, TokenBalanceSheet } from "../../types"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 
-interface RawBalance {
-  principalId: string
-  account: Account
-  balance: Balance
-}
-
-export interface AccountBalance {
-  accountName: string
-  tokenBalance: Balance
-  usdBalance: string
-  principalId: string
-  address: string
-}
-
-export interface AppBalance {
-  icon?: string
-  appName: string
-  tokenBalance: Balance
-  accounts: AccountBalance[]
-}
-
-export interface TokenBalanceSheet {
-  label: string
-  token: string
-  tokenBalance: Balance
-  usdBalance: string
-  applications: { [applicationName: string]: AppBalance }
-}
-
-export const sumE8sICPString = (a: string, b: string) => {
-  return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))
-}
-
-export const icpToUSD = (value: number, exchangeRate: number) =>
-  `$${(exchangeRate * value).toFixed(2)}`
-
-function mapApplicationBalance(
-  appName: string,
-  currentAppTotalBalance: Balance,
-  token: string,
-  rawBalance: RawBalance,
-  icpExchangeRate: number,
-  applicationMatch?: Application,
-  currentApp?: AppBalance,
-  isExplicitlyIncluded?: boolean,
-): AppBalance {
-  return {
-    icon: applicationMatch?.icon,
-    appName: appName,
-    tokenBalance: currentAppTotalBalance,
-    accounts: [
-      ...(currentApp?.accounts ?? []),
-      ...(rawBalance.balance > 0 || isExplicitlyIncluded
-        ? [
-            {
-              accountName:
-                isDefaultLabel(rawBalance.account.label) ||
-                !rawBalance.account.label
-                  ? `account ${parseInt(rawBalance.account.accountId) + 1}`
-                  : rawBalance.account.label,
-              principalId: rawBalance.principalId,
-              address: principalToAddress(
-                // FIXME: any typecast because of Principal version mismatch in ictools
-                Principal.fromText(rawBalance.principalId) as any,
-              ),
-              tokenBalance: rawBalance.balance,
-              usdBalance: icpToUSD(
-                toPresentation(rawBalance.balance),
-                icpExchangeRate,
-              ),
-            },
-          ]
-        : []),
-    ].sort((a, b) => a.accountName.localeCompare(b.accountName)),
-  }
-}
-
-/**
- * Returns the balance sheet for all applications and their accounts
- *
- * @param rawBalance - balance of a single account
- * @param applications - list of applications from identity manager
- * @param exchangeRate - exchange rate of Token to USD
- * @param excludeEmpty - if true, exclude applications with no balance
- * @param includeEmptyApps - include apps with given appName or domain even if their balance is 0
- */
-const reduceRawToAppAccountBalance = (
-  rawBalance: RawBalance[],
-  applications: Application[],
-  exchangeRate: number,
-  excludeEmpty: boolean,
-  includeEmptyApps: string[],
-): TokenBalanceSheet => {
-  return rawBalance.reduce<TokenBalanceSheet>(
-    (acc, rawBalance) => {
-      const applicationMatch: Application | undefined = applications.find(
-        (a) => a.domain === rawBalance.account.domain,
-      )
-
-      const appName = applicationMatch
-        ? applicationMatch.name
-        : rawBalance.account.domain
-
-      const currentApp: AppBalance | undefined = acc.applications[appName]
-
-      const totalBalanceValue = acc.tokenBalance + rawBalance.balance
-
-      const currentAppTotalBalance =
-        acc.applications[appName]?.tokenBalance ||
-        BigInt(0) + rawBalance.balance
-
-      const isExplicitlyIncluded =
-        includeEmptyApps.includes(applicationMatch?.domain || "") ||
-        includeEmptyApps.includes(applicationMatch?.name || "")
-
-      if (
-        excludeEmpty &&
-        !isExplicitlyIncluded &&
-        currentAppTotalBalance === BigInt(0)
-      )
-        return acc
-
-      return {
-        ...acc,
-        tokenBalance: totalBalanceValue,
-        usdBalance: icpToUSD(toPresentation(totalBalanceValue), exchangeRate),
-        applications: {
-          ...acc.applications,
-          [appName]: mapApplicationBalance(
-            appName,
-            currentAppTotalBalance,
-            acc.token,
-            rawBalance,
-            exchangeRate,
-            applicationMatch,
-            currentApp,
-            isExplicitlyIncluded,
-          ),
-        },
-      }
-    },
-    {
-      label: "Internet Computer",
-      token: "ICP",
-      tokenBalance: BigInt(0),
-      usdBalance: "0",
-      applications: {},
-    },
-  )
-}
-
-type UseUserBalancesArgs = {
-  token: string
-  getBalance: (principalId: string) => Promise<Balance>
-}
-
-export const useUserBalances = ({ token, getBalance }: UseUserBalancesArgs) => {
+export const useUserBalances = () => {
   const { principals } = useAllPrincipals()
+  const { token: dip20Token } = useAllTokenMeta()
+  console.debug("useUserBalances", { dip20Token })
 
   const { data: balances, isValidating: isLoadingPrincipals } = useSWR(
-    principals ? [principals, `${token}BalanceRaw`] : null,
-    async ([principals]) => {
+    dip20Token && principals ? [principals, dip20Token, `AllBalanceRaw`] : null,
+    async ([principals, dip20Token]): Promise<RawBalance[]> => {
+      console.debug("AllBalanceRaw", { principals, dip20Token })
       return await Promise.all(
-        principals.map(async ({ principal, account }) => ({
-          principalId: principal.toText(),
-          account,
-          balance: await getBalance(principal.toText()),
-        })),
+        principals.map(async ({ principal, account }) => {
+          const ICP = await getBalance(principalToAddress(principal))
+          const DIP20 = await dip20Token.reduce(
+            async (acc, { symbol, canisterId }) => ({
+              ...(await acc),
+              [symbol]: await getDip20Balance({
+                canisterId,
+                principalId: principal.toText(),
+              }),
+            }),
+            Promise.resolve({}),
+          )
+          return {
+            principalId: principal.toText(),
+            account,
+            balance: {
+              ICP,
+              ...DIP20,
+            },
+          }
+        }),
       )
     },
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
@@ -192,53 +53,88 @@ export const useUserBalances = ({ token, getBalance }: UseUserBalancesArgs) => {
   return { balances: balances, isLoadingPrincipals }
 }
 
+type AppAccountBalanceByToken = {
+  [token: string]: TokenBalanceSheet
+}
+
+type UseBalanceICPAllReturn = {
+  isLoading: boolean
+  appAccountBalance?: AppAccountBalanceByToken
+}
+
 /**
  * returns map of applications and there accumulated balance across all accounts
  *
  * @param excludeEmpty only include applications with non zero balance
  */
-export const useBalanceICPAll = (excludeEmpty: boolean = true) => {
-  const { applicationsMeta } = useApplicationsMeta()
+export const useBalanceICPAll = (
+  excludeEmpty: boolean = true,
+): UseBalanceICPAllReturn => {
+  const { applicationsMeta: applications } = useApplicationsMeta()
   const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
     useICPExchangeRate()
+  const { token: dip20Token } = useAllTokenMeta()
 
-  const { balances: icpBalance, isLoadingPrincipals } = useUserBalances({
-    token: "ICP",
-    getBalance: (principalId) =>
-      getBalance(principalToAddress(Principal.fromText(principalId))),
-  })
+  const { balances, isLoadingPrincipals } = useUserBalances()
+  console.debug("useUserBalances", { icpBalance: balances })
 
-  const appAccountBalance = React.useMemo(
-    () =>
-      !isLoadingICPExchangeRate &&
-      !isLoadingPrincipals &&
-      exchangeRate &&
-      icpBalance
-        ? reduceRawToAppAccountBalance(
-            icpBalance,
-            applicationsMeta || [],
-            exchangeRate,
-            excludeEmpty,
-            ["nfid.one", "https://nns.ic0.app"],
+  const appAccountBalance = React.useMemo(() => {
+    if (
+      isLoadingICPExchangeRate ||
+      isLoadingPrincipals ||
+      !exchangeRate ||
+      !balances
+    ) {
+      return
+    }
+
+    return {
+      ICP: accumulateAppAccountBalance({
+        balances,
+        applications,
+        exchangeRate,
+        excludeEmpty,
+        includeEmptyApps: ["nfid.one", "https://nns.ic0.app"],
+        label: "Internet Computer",
+        token: "ICP",
+        icon: ICP,
+      }),
+      ...(dip20Token
+        ? dip20Token.reduce(
+            (acc, { symbol, name, logo }) => ({
+              ...acc,
+              [symbol]: accumulateAppAccountBalance({
+                balances,
+                applications,
+                icon: logo,
+                exchangeRate: symbol === "WICP" ? exchangeRate : 0,
+                excludeEmpty,
+                includeEmptyApps: ["nfid.one", "https://nns.ic0.app"],
+                label: name,
+                token: symbol,
+              }),
+            }),
+            {},
           )
-        : null,
-    [
-      isLoadingICPExchangeRate,
-      isLoadingPrincipals,
-      icpBalance,
-      applicationsMeta,
-      exchangeRate,
-      excludeEmpty,
-    ],
-  )
+        : {}),
+    }
+  }, [
+    isLoadingICPExchangeRate,
+    isLoadingPrincipals,
+    exchangeRate,
+    balances,
+    applications,
+    excludeEmpty,
+    dip20Token,
+  ])
 
   console.debug("useBalanceICPAll", {
     isLoadingICPExchangeRate,
     isLoadingPrincipals,
     exchangeRate,
-    applicationsMeta,
+    applicationsMeta: applications,
     appAccountBalance,
-    balanceICPRaw: icpBalance,
+    balanceICPRaw: balances,
   })
 
   return {

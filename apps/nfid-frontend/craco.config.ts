@@ -47,6 +47,7 @@ const setupCSP = () => {
       ],
       "frame-src": [
         "'self'",
+        "https://*.ic0.app",
         "https://accounts.google.com/gsi/style",
         "https://accounts.google.com/",
       ],

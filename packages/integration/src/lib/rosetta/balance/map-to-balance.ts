@@ -5,8 +5,6 @@ export async function mapToBalance(response: Response): Promise<Balance> {
     .json()
     .then((data) => data as RosettaBalance)
     .then((balance: RosettaBalance) => {
-      return {
-        value: (Number(balance.balances[0].value) / 10 ** 8).toString(),
-      }
+      return BigInt(balance.balances[0].value)
     })
 }

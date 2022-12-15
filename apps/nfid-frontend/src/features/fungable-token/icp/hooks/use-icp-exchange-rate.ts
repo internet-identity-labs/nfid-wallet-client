@@ -1,6 +1,6 @@
 import useSWR from "swr"
 
-import { getExchangeRate } from "../get-exchange-rate"
+import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 
 export const useICPExchangeRate = () => {
   const { data: exchangeRate, ...rest } = useSWR(

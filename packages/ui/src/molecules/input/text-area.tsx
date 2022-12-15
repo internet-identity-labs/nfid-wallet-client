@@ -1,17 +1,32 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Label } from "@nfid-frontend/ui"
+
 interface TextAreaProps extends React.HTMLAttributes<HTMLTextAreaElement> {
   rows?: number
   placeholder?: string
   helperText?: string
   errorText?: string
+  labelText?: string
 }
 
 export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ children, className, rows = 3, helperText, errorText, ...props }, ref) => {
+  (
+    {
+      children,
+      className,
+      labelText,
+      rows = 3,
+      helperText,
+      errorText,
+      ...props
+    },
+    ref,
+  ) => {
     return (
       <div className={clsx("", className)}>
+        {labelText && <Label className={clsx("text-xs")}>{labelText}</Label>}
         <textarea
           ref={ref}
           rows={rows}

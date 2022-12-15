@@ -9,8 +9,8 @@ import { E8S } from "@nfid/integration/token/icp"
 
 import * as imHooks from "frontend/integration/identity-manager/queries"
 import * as iiHooks from "frontend/integration/internet-identity/queries"
+import * as getExchangeRateMocks from "frontend/integration/rosetta/get-exchange-rate"
 
-import * as getExchangeRateMocks from "../get-exchange-rate"
 import { useBalanceICPAll } from "./use-balance-icp-all"
 import { APP_ACC_BALANCE_SHEET } from "./use-balance-icp-all.mocks"
 

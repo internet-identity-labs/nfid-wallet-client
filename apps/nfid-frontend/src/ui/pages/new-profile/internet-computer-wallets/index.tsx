@@ -1,11 +1,11 @@
 import React from "react"
 
 import ICP from "frontend/assets/dfinity.svg"
-import { rmProto } from "frontend/integration/identity-manager"
 import {
   AppBalance,
   TokenBalanceSheet,
-} from "frontend/integration/rosetta/hooks/use-balance-icp-all"
+} from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
+import { rmProto } from "frontend/integration/identity-manager"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"

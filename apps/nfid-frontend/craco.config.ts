@@ -21,6 +21,7 @@ const setupCSP = () => {
         "'self'",
         "https://ic0.app",
         "https://*.ic0.app",
+        "https://analytics.google.com",
         "https://*.google-analytics.com",
         "https://*.analytics.google.com",
         "https://*.googletagmanager.com",

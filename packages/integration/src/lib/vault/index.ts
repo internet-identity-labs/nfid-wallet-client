@@ -7,36 +7,47 @@ import {
 } from "../_ic_api/vault.d"
 import { vault, vault as vaultAPI } from "../actors"
 import {
-  responseToMember,
-  responseToPolicy,
-  responseToTransaction,
-  responseToVault,
-  responseToWallet,
-  roleToRequest,
+  candidToPolicy,
+  candidToTransaction,
+  candidToVault,
+  candidToWallet,
+  objectStateToCandid,
+  policyToCandid,
+  roleToCandid,
+  transactionStateToCandid,
+  walletToCandid,
 } from "./mapper"
 import {
   Currency,
+  ObjectState,
   Policy,
   PolicyType,
-  State,
   Transaction,
+  TransactionState,
   Vault,
-  VaultMember,
   VaultRole,
   Wallet,
 } from "./types"
 
-export async function registerVault(vaultName: string): Promise<Vault> {
+export async function registerVault(
+  vaultName: string,
+  description: string | undefined,
+): Promise<Vault> {
   const request: VaultRegisterRequest = {
+    description: typeof description === "undefined" ? [] : [description],
     name: vaultName,
   }
-  const vaultResponse = await vaultAPI.register_vault(request)
-  return responseToVault(vaultResponse)
+  const vaultResponse = await vaultAPI.register_vault(request).catch((e) => {
+    throw new Error(`registerVault: ${e.message}`)
+  })
+  return candidToVault(vaultResponse)
 }
 
 export async function getVaults(): Promise<Vault[]> {
-  const response = await vaultAPI.get_vaults()
-  return response.map((v) => responseToVault(v))
+  const response = await vaultAPI.get_vaults().catch((e) => {
+    throw new Error(`getVaults: ${e.message}`)
+  })
+  return response.map((v) => candidToVault(v))
 }
 
 interface AddMemberToVaultOptions {
@@ -44,28 +55,29 @@ interface AddMemberToVaultOptions {
   memberAddress: string
   name: string
   role: VaultRole
+  state: ObjectState
 }
 
-export async function addMemberToVault({
+export async function storeMember({
   vaultId,
   memberAddress,
   name,
   role,
+  state,
 }: AddMemberToVaultOptions): Promise<Vault> {
-  //TODO Promise<VaultMember[]>
   const vaultMemberRequest: VaultMemberRequest = {
+    state: objectStateToCandid(state),
     address: memberAddress,
     name: [name],
-    role: roleToRequest(role),
+    role: roleToCandid(role),
     vault_id: vaultId,
   }
-  const response = await vaultAPI.add_vault_member(vaultMemberRequest)
-  return responseToVault(response)
-}
-
-export async function getVaultMembers(vaultId: bigint): Promise<VaultMember[]> {
-  const response = await vaultAPI.get_vault_members(vaultId)
-  return response.map((v) => responseToMember(v))
+  const response = await vaultAPI
+    .store_member(vaultMemberRequest)
+    .catch((e) => {
+      throw new Error(`storeMember: ${e.message}`)
+    })
+  return candidToVault(response)
 }
 
 interface AddWalletOptions {
@@ -81,8 +93,21 @@ export async function registerWallet({
     name: [name],
     vault_id: vaultId,
   }
-  const response = await vaultAPI.register_wallet(walletRegisterRequest)
-  return responseToWallet(response)
+  const response = await vaultAPI
+    .register_wallet(walletRegisterRequest)
+    .catch((e) => {
+      throw new Error(`registerWallet: ${e.message}`)
+    })
+  return candidToWallet(response)
+}
+
+export async function updateWallet(wallet: Wallet): Promise<Wallet> {
+  const response = await vaultAPI
+    .update_wallet(walletToCandid(wallet))
+    .catch((e) => {
+      throw new Error(`updateWallet: ${e.message}`)
+    })
+  return candidToWallet(response)
 }
 
 interface AddPolicyOptions {
@@ -110,22 +135,42 @@ export async function registerPolicy({
     policy_type: { threshold_policy: tp },
     vault_id: vaultId,
   }
-  const response = await vaultAPI.register_policy(policyRegisterRequest)
-  return responseToPolicy(response)
+  const response = await vaultAPI
+    .register_policy(policyRegisterRequest)
+    .catch((e) => {
+      throw new Error(`registerPolicy: ${e.message}`)
+    })
+  return candidToPolicy(response)
 }
 
-export async function getWallets(vaultId: bigint): Promise<VaultMember[]> {
-  const response = await vaultAPI.get_vault_members(vaultId)
-  return response.map((v) => responseToMember(v))
+export async function updatePolicy(policy: Policy): Promise<Policy> {
+  const response = await vaultAPI
+    .update_policy(policyToCandid(policy))
+    .catch((e) => {
+      throw new Error(`updatePolicy: ${e.message}`)
+    })
+  return candidToPolicy(response)
+}
+
+export async function getWallets(vaultId: bigint): Promise<Wallet[]> {
+  const response = await vaultAPI.get_wallets(vaultId).catch((e) => {
+    throw new Error(`getWallets: ${e.message}`)
+  })
+  return response.map((v) => candidToWallet(v))
 }
 
 export async function getPolicies(vaultId: bigint): Promise<Policy[]> {
-  const response = await vaultAPI.get_policies(vaultId)
-  return response.map((v) => responseToPolicy(v))
+  const response = await vaultAPI.get_policies(vaultId).catch((e) => {
+    throw new Error(`getPolicies: ${e.message}`)
+  })
+  return response.map((v) => candidToPolicy(v))
 }
 
 export async function walletAddress(walletId: bigint): Promise<string> {
-  return await vault.sub(walletId) //todo move algorithm from rust
+  //todo move algorithm from rust
+  return await vault.sub(walletId).catch((e) => {
+    throw new Error(`walletAddress: ${e.message}`)
+  })
 }
 
 export interface TransactionRegisterOptions {
@@ -139,31 +184,41 @@ export async function registerTransaction({
   amount,
   walletId,
 }: TransactionRegisterOptions): Promise<Transaction> {
-  const transaction = await vaultAPI.register_transaction({
-    address,
-    amount,
-    wallet_id: walletId,
-  })
-  return responseToTransaction(transaction)
+  const transaction = await vaultAPI
+    .register_transaction({
+      address,
+      amount,
+      wallet_id: walletId,
+    })
+    .catch((e) => {
+      throw new Error(`registerTransaction: ${e.message}`)
+    })
+  return candidToTransaction(transaction)
 }
 
 export interface TransactionApproveOptions {
   transactionId: bigint
-  state: State
+  state: TransactionState
 }
 
 export async function approveTransaction({
   transactionId,
   state,
 }: TransactionApproveOptions): Promise<Transaction> {
-  const transaction = await vaultAPI.approve_transaction({
-    state: { APPROVED: null }, //TODO
-    transaction_id: transactionId,
-  })
-  return responseToTransaction(transaction)
+  const transaction = await vaultAPI
+    .approve_transaction({
+      state: transactionStateToCandid(state),
+      transaction_id: transactionId,
+    })
+    .catch((e) => {
+      throw new Error(`approveTransaction: ${e.message}`)
+    })
+  return candidToTransaction(transaction)
 }
 
 export async function getTransactions(): Promise<Transaction[]> {
-  const transactions = await vaultAPI.get_transactions()
-  return transactions.map(responseToTransaction)
+  const transactions = await vaultAPI.get_transactions().catch((e) => {
+    throw new Error(`getTransactions: ${e.message}`)
+  })
+  return transactions.map(candidToTransaction)
 }

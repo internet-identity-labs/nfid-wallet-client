@@ -26,7 +26,7 @@ export const selectAccountAction = (
     console.debug("selectAccountAction CREATE_ACCOUNT")
     return "CREATE_ACCOUNT"
   }
-  if (accountsAmount === 1 && accountsLimit && accountsLimit <= 1) {
+  if (accountsLimit && accountsLimit <= 1) {
     console.debug("selectAccountAction SELECT_ACCOUNT")
     return "SELECT_ACCOUNT"
   }

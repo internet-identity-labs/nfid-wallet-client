@@ -1,6 +1,5 @@
 import React from "react"
 
-import ICP from "frontend/assets/dfinity.svg"
 import {
   AppBalance,
   TokenBalanceSheet,

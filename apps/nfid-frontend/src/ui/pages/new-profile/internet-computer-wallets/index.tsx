@@ -56,7 +56,12 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
         usdBalance={icpBlanceSheet?.usdBalance || ""}
       />
       <div className="mt-5">
-        {apps && <AppAccountBalanceSheet apps={apps} />}
+        {apps && (
+          <AppAccountBalanceSheet
+            apps={apps}
+            currency={icpBlanceSheet?.token}
+          />
+        )}
       </div>
     </ProfileTemplate>
   )

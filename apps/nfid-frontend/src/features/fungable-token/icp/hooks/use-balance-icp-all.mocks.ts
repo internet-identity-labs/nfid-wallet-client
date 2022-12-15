@@ -3,6 +3,7 @@ import { E8S } from "@nfid/integration/token/icp"
 export const APP_ACC_BALANCE_SHEET = {
   label: "Internet Computer",
   token: "ICP",
+  icon: "icon",
   tokenBalance: BigInt(parseFloat("1.30") * E8S),
   usdBalance: "$6.50",
   applications: {

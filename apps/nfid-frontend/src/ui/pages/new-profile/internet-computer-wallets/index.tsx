@@ -4,7 +4,7 @@ import ICP from "frontend/assets/dfinity.svg"
 import {
   AppBalance,
   TokenBalanceSheet,
-} from "frontend/features/fungable-token/icp/hooks/use-balance-icp-all"
+} from "frontend/features/fungable-token/types"
 import { rmProto } from "frontend/integration/identity-manager"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
@@ -14,7 +14,7 @@ import {
   sortAlphabetic as alphabetic,
 } from "frontend/ui/utils/sorting"
 
-const getSortedBalanceSheet = (balanceSheet: TokenBalanceSheet | null) => {
+const getSortedBalanceSheet = (balanceSheet?: TokenBalanceSheet) => {
   if (!balanceSheet) return null
   const applications = Object.values(balanceSheet.applications)
   const sortedAlphabetic = applications.sort(
@@ -30,7 +30,7 @@ const getSortedBalanceSheet = (balanceSheet: TokenBalanceSheet | null) => {
 
 interface IProfileTransactionsPage
   extends React.HTMLAttributes<HTMLDivElement> {
-  icpBlanceSheet: TokenBalanceSheet | null
+  icpBlanceSheet?: TokenBalanceSheet
 }
 
 const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
@@ -51,7 +51,7 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
       <TokenDetailBalance
         token={icpBlanceSheet?.token || ""}
         label={icpBlanceSheet?.label || ""}
-        icon={ICP}
+        icon={icpBlanceSheet?.icon || ""}
         tokenBalance={icpBlanceSheet?.tokenBalance}
         usdBalance={icpBlanceSheet?.usdBalance || ""}
       />

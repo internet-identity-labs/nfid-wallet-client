@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { sumE8sICPString } from "./use-balance-icp-all"
+import { sumE8sICPString } from "./reduce-to-app-account-balance"
 
 describe("rosetta queries suite", () => {
   describe("sumE8sICPString", () => {

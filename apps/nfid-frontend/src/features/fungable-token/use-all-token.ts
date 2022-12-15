@@ -16,16 +16,16 @@ export const useAllToken = () => {
         icon: Dfinity,
         title: "ICP",
         currency: "ICP",
-        balance: appAccountBalance?.tokenBalance,
-        price: appAccountBalance?.usdBalance,
+        balance: appAccountBalance?.ICP.tokenBalance,
+        price: appAccountBalance?.ICP.usdBalance,
       },
       ...(dip20Token
-        ? dip20Token.map((token) => ({
-            icon: token.logo,
-            title: token.name,
-            currency: token.symbol,
-            balance: BigInt(0),
-            price: "0",
+        ? dip20Token.map(({ symbol, name, logo }) => ({
+            icon: logo,
+            title: name,
+            currency: symbol,
+            balance: appAccountBalance?.[symbol].tokenBalance,
+            price: appAccountBalance?.[symbol].usdBalance,
           }))
         : []),
     ]

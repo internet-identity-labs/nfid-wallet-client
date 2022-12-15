@@ -26,28 +26,28 @@ export interface VaultMember {
 }
 
 export enum VaultRole {
-  Admin,
-  Member,
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
 }
 
 export enum PolicyType {
-  ThresholdPolicy = "ThresholdPolicy",
+  THRESHOLD_POLICY = "THRESHOLD_POLICY",
 }
 
 export enum Currency {
-  ICP,
+  ICP = "ICP",
 }
 
 export enum TransactionState {
-  APPROVED,
-  PENDING,
-  CANCELED,
-  REJECTED,
+  APPROVED = "APPROVED",
+  PENDING = "PENDING",
+  CANCELED = "CANCELED",
+  REJECTED = "REJECTED",
 }
 
 export enum ObjectState {
-  ARCHIVED,
-  ACTIVE,
+  ARCHIVED = "ARCHIVED",
+  ACTIVE = "ACTIVE",
 }
 
 export interface BasePolicy {

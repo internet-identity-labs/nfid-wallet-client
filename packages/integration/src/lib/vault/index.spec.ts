@@ -65,7 +65,7 @@ describe("Vault suite", () => {
         {
           name: undefined,
           userId: address,
-          role: VaultRole.Admin,
+          role: VaultRole.ADMIN,
           state: ObjectState.ACTIVE,
         },
       ],
@@ -84,7 +84,7 @@ describe("Vault suite", () => {
       vaultId: vaultFirst.id,
       memberAddress,
       name: "Test Name",
-      role: VaultRole.Member,
+      role: VaultRole.MEMBER,
     })
     const vaults = await getVaults()
     const members = vaults.find((v) => v.id === BigInt(vaultFirst.id))?.members
@@ -95,7 +95,7 @@ describe("Vault suite", () => {
     expect(member).toEqual({
       state: ObjectState.ACTIVE,
       name: "Test Name",
-      role: VaultRole.Member,
+      role: VaultRole.MEMBER,
       userId: memberAddress,
     })
   })
@@ -105,7 +105,7 @@ describe("Vault suite", () => {
       vaultId: vaultFirst.id,
       memberAddress: memberAddress,
       name: "Test Name2",
-      role: VaultRole.Member,
+      role: VaultRole.MEMBER,
     })
     expect(
       await getVaults().then((v) =>
@@ -116,7 +116,7 @@ describe("Vault suite", () => {
     ).toEqual({
       state: ObjectState.ARCHIVED,
       name: "Test Name2",
-      role: VaultRole.Member,
+      role: VaultRole.MEMBER,
       userId: memberAddress,
     })
   })
@@ -159,7 +159,7 @@ describe("Vault suite", () => {
       amountThreshold: BigInt(1),
       currency: Currency.ICP,
       memberThreshold: 5,
-      type: PolicyType.ThresholdPolicy,
+      type: PolicyType.THRESHOLD_POLICY,
       walletIds: undefined,
       vaultId: vaultFirst.id,
     })
@@ -171,7 +171,7 @@ describe("Vault suite", () => {
       memberThreshold: 5,
       modifiedDate: expect.any(BigInt),
       state: ObjectState.ACTIVE,
-      type: PolicyType.ThresholdPolicy,
+      type: PolicyType.THRESHOLD_POLICY,
       vault: vaultFirst.id,
       walletIds: undefined,
     })
@@ -194,7 +194,7 @@ describe("Vault suite", () => {
       memberThreshold: 5,
       modifiedDate: expect.any(BigInt),
       state: ObjectState.ACTIVE,
-      type: PolicyType.ThresholdPolicy,
+      type: PolicyType.THRESHOLD_POLICY,
       vault: vaultFirst.id,
       walletIds: expect.any(BigUint64Array),
     })

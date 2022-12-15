@@ -91,7 +91,7 @@ export function candidToPolicy(response: PolicyCandid): Policy {
       currency: Currency.ICP,
       id: response.id,
       memberThreshold: threshold.member_threshold,
-      type: PolicyType.ThresholdPolicy,
+      type: PolicyType.THRESHOLD_POLICY,
       walletIds:
         threshold.wallet_ids.length === 0 ? undefined : threshold.wallet_ids[0],
     }
@@ -139,10 +139,10 @@ export function candidToTransaction(response: TransactionCandid): Transaction {
 
 function candidToRole(response: VaultRoleCandid): VaultRole {
   if (hasOwnProperty(response, "Admin")) {
-    return VaultRole.Admin
+    return VaultRole.ADMIN
   }
   if (hasOwnProperty(response, "Member")) {
-    return VaultRole.Member
+    return VaultRole.MEMBER
   }
   throw Error("Unexpected enum value")
 }
@@ -204,10 +204,10 @@ export function objectStateToCandid(state: ObjectState): ObjectStateCandid {
 }
 
 export function roleToCandid(response: VaultRole): VaultRoleCandid {
-  if (response === VaultRole.Admin) {
+  if (response === VaultRole.ADMIN) {
     return { Admin: null } as VaultRoleCandid
   }
-  if (response === VaultRole.Member) {
+  if (response === VaultRole.MEMBER) {
     return { Member: null } as VaultRoleCandid
   }
   throw Error("Unexpected enum value")

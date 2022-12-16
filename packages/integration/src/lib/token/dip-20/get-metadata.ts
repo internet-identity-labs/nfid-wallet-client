@@ -1,9 +1,9 @@
 import { makeDip20Actor } from "./actor"
 import { Metadata } from "./dip-20.d"
 
-type TokenMetadata = {
+export interface TokenMetadata extends Metadata {
   canisterId: string
-} & Metadata
+}
 
 export async function getMetadata(canisterId: string): Promise<TokenMetadata> {
   const dip20 = makeDip20Actor(canisterId)

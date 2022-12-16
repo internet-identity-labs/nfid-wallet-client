@@ -1,17 +1,5 @@
 import { Account, Balance } from "@nfid/integration"
 
-export type Token = string
-
-export type TokenBalance = {
-  [token: Token]: Balance
-}
-
-export type RawBalance = {
-  principalId: string
-  account: Account
-  balance: TokenBalance
-}
-
 export interface AccountBalance {
   accountName: string
   tokenBalance: Balance

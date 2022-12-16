@@ -1,10 +1,10 @@
 import { principalToAddress } from "ictool"
 
+import { IOption } from "@nfid-frontend/ui"
 import { Application, PrincipalAccount } from "@nfid/integration"
 
 import { getWalletName } from "frontend/integration/identity-manager/account/utils"
 import { Transaction } from "frontend/integration/rosetta/rosetta_interface"
-import { IOption } from "frontend/ui/atoms/dropdown-select"
 import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
 const getTransactionsCount = (address: string, transactions: Transaction[]) => {

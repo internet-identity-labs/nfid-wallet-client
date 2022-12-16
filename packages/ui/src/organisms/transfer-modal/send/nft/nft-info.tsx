@@ -1,12 +1,12 @@
 import clsx from "clsx"
 
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { GetWalletName } from "frontend/ui/pages/new-profile/nfts/util"
 
 import WalletIcon from "../../assets/wallet.svg"
+import { NFT } from "../../types"
 
-export const TransferSendNFTInfo = ({ nft }: { nft: UserNFTDetails }) => {
+export const TransferSendNFTInfo = ({ nft }: { nft: NFT }) => {
   const { applicationsMeta } = useApplicationsMeta()
 
   return (

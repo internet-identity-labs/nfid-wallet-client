@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 
-import { TransferModal } from "."
+import { TransferModal } from "./transfer-modal"
 
 export default {
   title: "Organisms/TransferModal",

@@ -6,18 +6,18 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
+import { ITransferToken, ITransferNFT, TransferModal } from "@nfid-frontend/ui"
+
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { Loader } from "frontend/ui/atoms/loader"
-import { TransferModal } from "frontend/ui/organisms/transfer-modal"
-import { ITransferNFT } from "frontend/ui/organisms/transfer-modal/send/send-nft"
-import { ITransferToken } from "frontend/ui/organisms/transfer-modal/send/send-token"
 import { isHex } from "frontend/ui/utils"
 
 import { useAllNFTs } from "../assets/hooks"
+import { ProfileConstants } from "../routes"
 import { transferModalAtom } from "./state"
 
 export const ProfileTransferModal = () => {
@@ -107,6 +107,14 @@ export const ProfileTransferModal = () => {
     >
       <Loader isLoading={isLoading} />
       <TransferModal
+        transactionRoute={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
+        tokenType={transferModalState.sendType}
+        toggleTokenType={() =>
+          setTransferModalState({
+            ...transferModalState,
+            sendType: transferModalState.sendType === "ft" ? "nft" : "ft",
+          })
+        }
         nfts={nfts ?? []}
         wallets={wallets}
         onTokenSubmit={onTokenSubmit}
@@ -120,6 +128,17 @@ export const ProfileTransferModal = () => {
           }, 500)
         }}
         successMessage={successMessage}
+        setSelectedNFTs={(nftIds: string[]): void => {
+          console.debug("setSelectedNFTs", { nftIds })
+          setTransferModalState({
+            ...transferModalState,
+            selectedNFT: nftIds,
+          })
+        }}
+        selectedNFTIds={transferModalState.selectedNFT}
+        selectedNFTDetails={nfts?.find(
+          (nft) => nft.tokenId === transferModalState.selectedNFT[0],
+        )}
       />
     </div>
   )

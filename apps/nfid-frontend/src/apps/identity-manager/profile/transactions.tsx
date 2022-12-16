@@ -1,13 +1,14 @@
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 
+import { IOption } from "@nfid-frontend/ui"
+
 import {
   selectReceivedTransactions,
   selectSendTransactions,
 } from "frontend/integration/rosetta/select-transactions"
 import { useTransactionsFilter } from "frontend/integration/wallet/hooks/use-transactions-filter"
 import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
-import { IOption } from "frontend/ui/atoms/dropdown-select"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 

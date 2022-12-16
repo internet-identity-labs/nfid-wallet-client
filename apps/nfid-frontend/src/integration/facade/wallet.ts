@@ -1,7 +1,8 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
-import { getScope } from "frontend/integration/identity-manager/persona/utils"
+import { getScope } from "@nfid/integration"
+
 import {
   delegationByScope,
   fetchPrincipal,

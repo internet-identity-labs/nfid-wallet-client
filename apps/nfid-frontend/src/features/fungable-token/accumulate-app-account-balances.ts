@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 
 import { Application, Balance } from "@nfid/integration"
+import { AccountBalance } from "@nfid/integration/token/fetch-balances"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
@@ -10,7 +11,7 @@ import {
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
 
-import { AppBalance, RawBalance, TokenBalanceSheet } from "./types"
+import { AppBalance, TokenBalanceSheet } from "./types"
 
 export const sumE8sICPString = (a: string, b: string) => {
   return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))
@@ -23,7 +24,7 @@ function mapApplicationBalance(
   appName: string,
   currentAppTotalBalance: Balance,
   token: string,
-  rawBalance: RawBalance,
+  accountBalance: AccountBalance,
   icpExchangeRate: number,
   applicationMatch?: Application,
   currentApp?: AppBalance,
@@ -35,22 +36,22 @@ function mapApplicationBalance(
     tokenBalance: currentAppTotalBalance,
     accounts: [
       ...(currentApp?.accounts ?? []),
-      ...(rawBalance.balance[token] > 0 || isExplicitlyIncluded
+      ...(accountBalance.balance[token] > 0 || isExplicitlyIncluded
         ? [
             {
               accountName:
-                isDefaultLabel(rawBalance.account.label) ||
-                !rawBalance.account.label
-                  ? `account ${parseInt(rawBalance.account.accountId) + 1}`
-                  : rawBalance.account.label,
-              principalId: rawBalance.principalId,
+                isDefaultLabel(accountBalance.account.label) ||
+                !accountBalance.account.label
+                  ? `account ${parseInt(accountBalance.account.accountId) + 1}`
+                  : accountBalance.account.label,
+              principalId: accountBalance.principalId,
               address: principalToAddress(
                 // FIXME: any typecast because of Principal version mismatch in ictools
-                Principal.fromText(rawBalance.principalId) as any,
+                Principal.fromText(accountBalance.principalId) as any,
               ),
-              tokenBalance: rawBalance.balance[token],
+              tokenBalance: accountBalance.balance[token],
               usdBalance: icpToUSD(
-                toPresentation(rawBalance.balance[token]),
+                toPresentation(accountBalance.balance[token]),
                 icpExchangeRate,
               ),
             },
@@ -61,7 +62,7 @@ function mapApplicationBalance(
 }
 
 type ReduceRawToAppAccountBalanceArgs = {
-  balances: RawBalance[]
+  balances: AccountBalance[]
   applications?: Application[]
   exchangeRate: number
   excludeEmpty: boolean
@@ -104,8 +105,8 @@ export const accumulateAppAccountBalance = ({
       const totalBalanceValue = acc.tokenBalance + rawBalance.balance[acc.token]
 
       const currentAppTotalBalance =
-        acc.applications[appName]?.tokenBalance ||
-        BigInt(0) + rawBalance.balance[acc.token]
+        (acc.applications[appName]?.tokenBalance || BigInt(0)) +
+        rawBalance.balance[acc.token]
 
       const isExplicitlyIncluded =
         includeEmptyApps.includes(applicationMatch?.domain || "") ||

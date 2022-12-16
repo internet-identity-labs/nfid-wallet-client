@@ -1,9 +1,8 @@
 import React from "react"
 import useSWRImmutable from "swr/immutable"
 
-import { extendWithFixedAccounts } from "@nfid/integration"
+import { extendWithFixedAccounts, fetchPrincipals } from "@nfid/integration"
 
-import { fetchPrincipals } from "frontend/integration/facade"
 import {
   useAccounts,
   useApplicationsMeta,

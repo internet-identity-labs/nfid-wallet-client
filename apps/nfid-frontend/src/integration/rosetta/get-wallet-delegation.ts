@@ -6,11 +6,12 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
+import { WALLET_SCOPE, WALLET_SESSION_TTL } from "@nfid/config"
+
 import {
   delegationIdentityFromSignedIdentity,
   fetchDelegate,
 } from "../internet-identity"
-import { WALLET_SCOPE, WALLET_SESSION_TTL } from "./index"
 
 export async function getWalletDelegation(
   userNumber: number,

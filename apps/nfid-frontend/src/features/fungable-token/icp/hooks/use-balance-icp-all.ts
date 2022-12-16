@@ -1,9 +1,7 @@
-import { principalToAddress } from "ictool"
 import React from "react"
 import useSWR from "swr"
 
-import { getBalance } from "@nfid/integration"
-import { getBalance as getDip20Balance } from "@nfid/integration/token/dip-20"
+import { fetchBalances } from "@nfid/integration/token/fetch-balances"
 
 import ICP from "frontend/assets/dfinity.svg"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
@@ -11,7 +9,7 @@ import { useAllPrincipals } from "frontend/integration/internet-identity/queries
 
 import { accumulateAppAccountBalance } from "../../accumulate-app-account-balances"
 import { useAllTokenMeta } from "../../dip-20/hooks/use-all-token-meta"
-import { RawBalance, TokenBalanceSheet } from "../../types"
+import { TokenBalanceSheet } from "../../types"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 
 export const useUserBalances = () => {
@@ -21,31 +19,9 @@ export const useUserBalances = () => {
 
   const { data: balances, isValidating: isLoadingPrincipals } = useSWR(
     dip20Token && principals ? [principals, dip20Token, `AllBalanceRaw`] : null,
-    async ([principals, dip20Token]): Promise<RawBalance[]> => {
+    async ([principals, dip20Token]) => {
       console.debug("AllBalanceRaw", { principals, dip20Token })
-      return await Promise.all(
-        principals.map(async ({ principal, account }) => {
-          const ICP = await getBalance(principalToAddress(principal))
-          const DIP20 = await dip20Token.reduce(
-            async (acc, { symbol, canisterId }) => ({
-              ...(await acc),
-              [symbol]: await getDip20Balance({
-                canisterId,
-                principalId: principal.toText(),
-              }),
-            }),
-            Promise.resolve({}),
-          )
-          return {
-            principalId: principal.toText(),
-            account,
-            balance: {
-              ICP,
-              ...DIP20,
-            },
-          }
-        }),
-      )
+      return await fetchBalances({ principals, dip20Token })
     },
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )

@@ -13,6 +13,7 @@ import {
   Application,
   authState as authStateMock,
   extendWithFixedAccounts,
+  fetchPrincipals,
   generateDelegationIdentity,
 } from "@nfid/integration"
 import { ii, im, replaceIdentity } from "@nfid/integration"
@@ -22,10 +23,7 @@ import {
   DeviceData,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
-import {
-  fetchPrincipals,
-  removeRecoveryDeviceFacade,
-} from "frontend/integration/facade/index"
+import { removeRecoveryDeviceFacade } from "frontend/integration/facade/index"
 import { fetchAccounts } from "frontend/integration/identity-manager/index"
 import * as ed25519Mock from "frontend/integration/internet-identity/crypto/ed25519"
 import * as iiIndexMock from "frontend/integration/internet-identity/index"

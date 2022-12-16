@@ -1,10 +1,14 @@
 import clsx from "clsx"
 
-import { ApproveTemplate, SDKStatusbar } from "@nfid-frontend/ui"
+import {
+  DropdownSelect,
+  IOption,
+  ApproveTemplate,
+  SDKStatusbar,
+} from "@nfid-frontend/ui"
 
 import { walletFee } from "frontend/constants/wallet"
 import { Copy } from "frontend/ui/atoms/copy"
-import { DropdownSelect, IOption } from "frontend/ui/atoms/dropdown-select"
 
 export interface IRequestTransferPage {
   applicationName: string

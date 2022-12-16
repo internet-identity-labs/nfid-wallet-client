@@ -1,11 +1,11 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 
+import { DropdownSelect, IOption, TabsSwitcher } from "@nfid-frontend/ui"
+
 import { TransactionRow } from "frontend/integration/rosetta/select-transactions"
 import { Chip } from "frontend/ui/atoms/chip"
-import { DropdownSelect, IOption } from "frontend/ui/atoms/dropdown-select"
 import Pagination from "frontend/ui/molecules/pagination"
-import TabsSwitcher from "frontend/ui/organisms/tabs-switcher"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 

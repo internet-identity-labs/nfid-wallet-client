@@ -4,8 +4,8 @@ import React, { Dispatch, SetStateAction } from "react"
 import ArrowReceive from "./assets/arrowReceive.svg"
 import ArrowSend from "./assets/arrowSend.svg"
 
-import { modalTypes } from "."
-import TabsSwitcher from "../tabs-switcher"
+import { TabsSwitcher } from "../tabs-switcher"
+import { modalTypes } from "./transfer-modal"
 
 interface ITransferModalTabs {
   activeTab: modalTypes

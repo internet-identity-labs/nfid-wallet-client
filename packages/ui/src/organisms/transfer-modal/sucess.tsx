@@ -1,18 +1,19 @@
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { Button } from "frontend/ui/atoms/button"
-
 import success from "./assets/success.png"
+
+import { Button } from "../../molecules/button"
 
 interface ITransferModalSuccess {
   transactionMessage: string
+  transactionRoute: string
   onClose: () => void
 }
 
 export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
   transactionMessage,
+  transactionRoute,
   onClose,
 }) => {
   useEffect(() => {
@@ -41,19 +42,16 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
           <a
             target="_blank"
             rel="noreferrer"
-            href={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
+            href={transactionRoute}
             onClick={onClose}
-            className="text-blue transition-opacity cursor-pointer hover:opacity-75"
+            className="transition-opacity cursor-pointer text-blue hover:opacity-75"
           >
             Transaction history
           </a>
           .
         </p>
       </div>
-      <Button
-        className="w-full bg-blue-600 text-white mt-[36px]"
-        onClick={onClose}
-      >
+      <Button className="w-full mt-[36px]" onClick={onClose}>
         Close
       </Button>
     </div>

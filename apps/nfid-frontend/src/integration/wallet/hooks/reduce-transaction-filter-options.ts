@@ -1,8 +1,7 @@
 import { principalToAddress } from "ictool"
 
-import { Application } from "@nfid/integration"
+import { Application, PrincipalAccount } from "@nfid/integration"
 
-import { PrincipalAccount } from "frontend/integration/facade"
 import { getWalletName } from "frontend/integration/identity-manager/account/utils"
 import { Transaction } from "frontend/integration/rosetta/rosetta_interface"
 import { IOption } from "frontend/ui/atoms/dropdown-select"

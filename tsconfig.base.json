@@ -8,7 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es6",
+    "target": "es2015",
     "module": "esnext",
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
@@ -19,7 +19,7 @@
       "@nfid-frontend/utils": ["packages/utils/src/index.ts"],
       "@nfid/integration": ["packages/integration/src/index.ts"],
       "@nfid/integration/token/*": ["packages/integration/src/lib/token/*"],
-      "config": ["packages/config/src/index.ts"],
+      "@nfid/config": ["packages/config/src/index.ts"],
       "frontend/*": ["apps/nfid-frontend/src/*"],
       "src/*": ["apps/nfid-frontend/src/*"]
     }

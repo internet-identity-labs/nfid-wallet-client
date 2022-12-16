@@ -15,7 +15,7 @@ interface ITabsSwitcher extends React.HTMLAttributes<HTMLDivElement> {
   isFitLine?: boolean
 }
 
-const TabsSwitcher: React.FC<ITabsSwitcher> = ({
+export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
   tabs,
   className,
   activeTab,
@@ -44,5 +44,3 @@ const TabsSwitcher: React.FC<ITabsSwitcher> = ({
     </div>
   )
 }
-
-export default TabsSwitcher

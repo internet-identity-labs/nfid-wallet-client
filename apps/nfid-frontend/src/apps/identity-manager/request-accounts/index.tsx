@@ -1,10 +1,10 @@
 import { principalToAddress } from "ictool"
 import { useCallback, useMemo, useState } from "react"
 
+import { IOption } from "@nfid-frontend/ui"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
-import { IOption } from "frontend/ui/atoms/dropdown-select"
 import { SDKRequestAccountsPage } from "frontend/ui/pages/request-accounts"
 import { useTimer } from "frontend/ui/utils/use-timer"
 

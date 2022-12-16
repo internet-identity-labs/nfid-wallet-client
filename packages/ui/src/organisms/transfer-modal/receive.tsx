@@ -3,10 +3,9 @@ import clsx from "clsx"
 import { principalToAddress } from "ictool"
 import { useEffect, useMemo, useState } from "react"
 
-import { Copy } from "frontend/ui/atoms/copy"
-import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
-import { QRCode } from "frontend/ui/atoms/qrcode"
-
+import { Copy } from "../../atoms/copy"
+import { DropdownSelect } from "../../atoms/dropdown-select"
+import { QRCode } from "../../atoms/qrcode"
 import { IWallet } from "./types"
 
 interface ITransferModalReceive {

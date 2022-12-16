@@ -1,10 +1,10 @@
 import clsx from "clsx"
 
+import { IOption, DropdownSelect } from "@nfid-frontend/ui"
+
 import { Button } from "frontend/ui/atoms/button"
-import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { IOption } from "frontend/ui/molecules/input-dropdown"
 import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import NFIDLogo from "./nfid.svg"

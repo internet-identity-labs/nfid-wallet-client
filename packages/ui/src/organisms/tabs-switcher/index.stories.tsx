@@ -1,7 +1,7 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import TabsSwitcher from "."
+import { TabsSwitcher } from "."
 
 export default {
   title: "Organisms/TabsSwitcher",

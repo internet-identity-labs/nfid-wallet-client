@@ -1,14 +1,11 @@
-import { useAtom } from "jotai"
-import React, { useEffect, useMemo } from "react"
+import React, { useMemo } from "react"
 import { useForm } from "react-hook-form"
 
-import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
-import { Button } from "frontend/ui/atoms/button"
-import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
-import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
-import { IWallet, NFT } from "frontend/ui/organisms/transfer-modal/types"
-
+import { DropdownSelect } from "../../../atoms/dropdown-select"
+import { Button } from "../../../molecules/button"
+import { InputDropdown } from "../../../molecules/input-dropdown"
 import ArrowWhite from "../assets/arrowWhite.svg"
+import { IWallet, NFT } from "../types"
 import { TransferSendNFTInfo } from "./nft/nft-info"
 import { TransferSendNFTPlaceholder } from "./nft/nft-placeholder"
 import { validateAddressField } from "./utils"
@@ -21,21 +18,20 @@ export interface ITransferNFT {
 interface ITransferModalSendNFT {
   nfts: NFT[]
   onNFTSubmit: (values: ITransferNFT) => void
+  setSelectedNFTs: (nftIds: string[]) => void
+  selectedNFTIds: string[]
   wallets?: IWallet[]
+  selectedNFTDetails?: NFT
 }
 
 export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   nfts,
   onNFTSubmit,
+  setSelectedNFTs,
   wallets,
+  selectedNFTDetails,
+  selectedNFTIds,
 }) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
-
-  const selectedNFTDetails = useMemo(() => {
-    if (!transferModalState.selectedNFT?.length) return
-    return nfts.find((nft) => nft.tokenId === transferModalState.selectedNFT[0])
-  }, [nfts, transferModalState.selectedNFT])
-
   const nftOptions = useMemo(() => {
     return nfts.map((nft) => ({
       label: nft.name,
@@ -58,11 +54,11 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
     setValue,
   } = useForm<ITransferNFT>({ defaultValues: { to: "" } })
 
-  useEffect(() => {
-    if (transferModalState.selectedNFT?.length) {
-      setValue("tokenId", transferModalState.selectedNFT[0])
+  React.useEffect(() => {
+    if (selectedNFTIds.length) {
+      setValue("tokenId", selectedNFTIds[0])
     }
-  }, [selectedNFTDetails, transferModalState.selectedNFT, setValue])
+  }, [selectedNFTDetails, setValue, selectedNFTIds])
 
   return (
     <>
@@ -77,13 +73,8 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
             placeholder="Choose NFT"
             label="NFT to transfer"
             options={nftOptions}
-            selectedValues={transferModalState.selectedNFT}
-            setSelectedValues={(values) => {
-              setTransferModalState({
-                ...transferModalState,
-                selectedNFT: values,
-              })
-            }}
+            selectedValues={selectedNFTIds}
+            setSelectedValues={setSelectedNFTs}
             isSearch
             isMultiselect={false}
           />
@@ -108,16 +99,17 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
       </div>
       <Button
         block
-        primary
         className="flex items-center justify-center mt-auto"
         id="send-nft-button"
         onClick={handleSubmit(onNFTSubmit)}
+        icon={
+          <img
+            src={ArrowWhite}
+            alt="ArrowWhite"
+            className="w-[18px] h-[18px mr-[10px]"
+          />
+        }
       >
-        <img
-          src={ArrowWhite}
-          alt="ArrowWhite"
-          className="w-[18px] h-[18px mr-[10px]"
-        />
         Send
       </Button>
     </>

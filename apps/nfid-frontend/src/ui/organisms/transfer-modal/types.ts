@@ -9,3 +9,17 @@ export interface IWallet {
   domain: string
   balance: Balance
 }
+
+export type NFT = {
+  assetPreview: string
+  name: string
+  tokenId: string
+  collection: {
+    name: string
+  }
+  principal: Principal
+  account: {
+    domain: string
+    accountId: string
+  }
+}

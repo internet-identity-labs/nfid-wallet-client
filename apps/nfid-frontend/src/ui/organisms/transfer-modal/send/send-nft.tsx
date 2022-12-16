@@ -3,11 +3,10 @@ import React, { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { IWallet } from "frontend/integration/wallet/hooks/types"
 import { Button } from "frontend/ui/atoms/button"
 import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
 import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
+import { IWallet, NFT } from "frontend/ui/organisms/transfer-modal/types"
 
 import ArrowWhite from "../assets/arrowWhite.svg"
 import { TransferSendNFTInfo } from "./nft/nft-info"
@@ -20,7 +19,7 @@ export interface ITransferNFT {
 }
 
 interface ITransferModalSendNFT {
-  nfts: UserNFTDetails[]
+  nfts: NFT[]
   onNFTSubmit: (values: ITransferNFT) => void
   wallets?: IWallet[]
 }

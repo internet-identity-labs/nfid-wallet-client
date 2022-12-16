@@ -18,6 +18,7 @@ import { ITransferToken } from "frontend/ui/organisms/transfer-modal/send/send-t
 import { isHex } from "frontend/ui/utils"
 
 import { useAllNFTs } from "../assets/hooks"
+import { ProfileConstants } from "../routes"
 import { transferModalAtom } from "./state"
 
 export const ProfileTransferModal = () => {
@@ -107,6 +108,14 @@ export const ProfileTransferModal = () => {
     >
       <Loader isLoading={isLoading} />
       <TransferModal
+        transactionRoute={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
+        tokenType={transferModalState.sendType}
+        toggleTokenType={() =>
+          setTransferModalState({
+            ...transferModalState,
+            sendType: transferModalState.sendType === "ft" ? "nft" : "ft",
+          })
+        }
         nfts={nfts ?? []}
         wallets={wallets}
         onTokenSubmit={onTokenSubmit}

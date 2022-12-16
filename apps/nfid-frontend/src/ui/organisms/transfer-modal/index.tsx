@@ -1,33 +1,37 @@
 import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { IWallet } from "frontend/integration/wallet/hooks/types"
-
 import { TransferModalReceive } from "./receive"
-import { TransferModalSend } from "./send"
+import { TokenType, TransferModalSend } from "./send"
 import { ITransferNFT } from "./send/send-nft"
 import { ITransferToken } from "./send/send-token"
 import { TransferModalSuccess } from "./sucess"
 import { TransferModalTabs } from "./tabs"
+import { IWallet, NFT } from "./types"
 
 interface ITransferModal {
+  transactionRoute: string
   wallets: IWallet[] | undefined
   successMessage: string
+  tokenType: TokenType
+  toggleTokenType: () => void
   onTokenSubmit: (values: ITransferToken) => void
   onNFTSubmit: (values: ITransferNFT) => void
   onClose: () => void
-  nfts: UserNFTDetails[]
+  nfts: NFT[]
 }
 
 export type modalTypes = "Send" | "Receive" | "Success" | string
 
 export const TransferModal: React.FC<ITransferModal> = ({
+  transactionRoute,
   successMessage,
   wallets,
+  toggleTokenType,
   onTokenSubmit,
   onNFTSubmit,
   onClose,
+  tokenType,
   nfts,
 }) => {
   const [modalType, setModalType] = useState<modalTypes>("Send")
@@ -58,6 +62,8 @@ export const TransferModal: React.FC<ITransferModal> = ({
         )}
       >
         <TransferModalSend
+          tokenType={tokenType}
+          toggleTokenType={toggleTokenType}
           nfts={nfts}
           wallets={wallets}
           onTokenSubmit={onTokenSubmit}
@@ -68,6 +74,7 @@ export const TransferModal: React.FC<ITransferModal> = ({
       {modalType === "Receive" && <TransferModalReceive wallets={wallets} />}
       {modalType === "Success" && (
         <TransferModalSuccess
+          transactionRoute={transactionRoute}
           transactionMessage={successMessage}
           onClose={onClose}
         />

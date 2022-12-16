@@ -1,69 +1,54 @@
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import React from "react"
 
-import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
-import { IWallet } from "frontend/integration/wallet/hooks/types"
 import { ToggleButton } from "frontend/ui/molecules/toggle-button"
 
+import { IWallet, NFT } from "../types"
 import { ITransferNFT, TransferModalSendNFT } from "./send-nft"
 import { ITransferToken, TransferModalSendToken } from "./send-token"
+
+export type TokenType = "ft" | "nft"
 
 interface ITransferModalSend {
   onTokenSubmit: (values: ITransferToken) => void
   onNFTSubmit: (values: ITransferNFT) => void
+  toggleTokenType: () => void
+  tokenType: TokenType
   wallets?: IWallet[]
-  nfts: UserNFTDetails[]
+  nfts: NFT[]
 }
 
 export const TransferModalSend: React.FC<ITransferModalSend> = ({
+  toggleTokenType,
   onTokenSubmit,
   onNFTSubmit,
   wallets,
   nfts,
+  tokenType,
 }) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
-  const [isSendNFT, setIsSendNFT] = useState(false)
-
-  useEffect(() => {
-    if (transferModalState.sendType) {
-      setIsSendNFT(transferModalState.sendType === "nft")
-      setTransferModalState({ ...transferModalState, sendType: undefined })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   return (
     <>
       <ToggleButton
         firstValue="Token"
         secondValue="NFT"
         className="mb-6"
-        value={isSendNFT}
-        toggleValue={() => setIsSendNFT(!isSendNFT)}
+        value={tokenType === "nft"}
+        toggleValue={toggleTokenType}
       />
-      <div
-        className={clsx(
-          !isSendNFT ? "flex flex-col justify-between flex-grow" : "hidden",
+      <div className={clsx("flex flex-col justify-between flex-grow")}>
+        {tokenType === "ft" ? (
+          <TransferModalSendToken
+            onTokenSubmit={onTokenSubmit}
+            wallets={wallets}
+          />
+        ) : (
+          <TransferModalSendNFT
+            wallets={wallets}
+            onNFTSubmit={onNFTSubmit}
+            nfts={nfts}
+          />
         )}
-      >
-        <TransferModalSendToken
-          onTokenSubmit={onTokenSubmit}
-          wallets={wallets}
-        />
-      </div>
-      <div
-        className={clsx(
-          isSendNFT ? "flex flex-col justify-between flex-grow" : "hidden",
-        )}
-      >
-        <TransferModalSendNFT
-          wallets={wallets}
-          onNFTSubmit={onNFTSubmit}
-          nfts={nfts}
-        />
       </div>
     </>
   )

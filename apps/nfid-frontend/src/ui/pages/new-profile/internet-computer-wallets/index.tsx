@@ -15,7 +15,10 @@ import {
 
 const getSortedBalanceSheet = (balanceSheet?: TokenBalanceSheet) => {
   if (!balanceSheet) return null
-  const applications = Object.values(balanceSheet.applications)
+  const applications = Object.values(balanceSheet.applications).filter(
+    (a: AppBalance | undefined): a is AppBalance => !!a,
+  )
+
   const sortedAlphabetic = applications.sort(
     alphabetic<AppBalance>(({ appName }) => rmProto(appName)),
   )

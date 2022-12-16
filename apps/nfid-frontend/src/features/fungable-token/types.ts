@@ -33,5 +33,5 @@ export interface TokenBalanceSheet {
   icon: string
   tokenBalance: Balance
   usdBalance: string
-  applications: { [applicationName: string]: AppBalance }
+  applications: { [applicationName: string]: AppBalance | undefined }
 }

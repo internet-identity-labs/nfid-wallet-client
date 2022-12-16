@@ -23,5 +23,5 @@ const Template: ComponentStory<typeof AppAccountBalanceSheet> = (args) => (
 
 export const Default = Template.bind({})
 Default.args = {
-  apps: Object.values(APP_ACC_BALANCE_SHEET.applications),
+  apps: Object.values(APP_ACC_BALANCE_SHEET.ICP.applications),
 }

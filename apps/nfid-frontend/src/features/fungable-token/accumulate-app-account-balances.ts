@@ -104,8 +104,8 @@ export const accumulateAppAccountBalance = ({
       const totalBalanceValue = acc.tokenBalance + rawBalance.balance[acc.token]
 
       const currentAppTotalBalance =
-        acc.applications[appName]?.tokenBalance ||
-        BigInt(0) + rawBalance.balance[acc.token]
+        (acc.applications[appName]?.tokenBalance || BigInt(0)) +
+        rawBalance.balance[acc.token]
 
       const isExplicitlyIncluded =
         includeEmptyApps.includes(applicationMatch?.domain || "") ||

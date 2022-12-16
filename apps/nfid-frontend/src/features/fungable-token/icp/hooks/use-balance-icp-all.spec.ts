@@ -120,6 +120,8 @@ describe("useBalanceICPAll", () => {
     promises.map((promise) =>
       (getBalance as jest.Mock).mockImplementationOnce(() => promise),
     )
+    //
+    ;(getAllToken as jest.Mock).mockImplementation(() => [])
 
     //
     ;(getAllToken as jest.Mock).mockImplementation(() => [])
@@ -155,8 +157,6 @@ describe("useBalanceICPAll", () => {
 
     expect(result.current.isLoading).toBe(false)
 
-    expect(stringify(result.current.appAccountBalance)).toEqual(
-      stringify(APP_ACC_BALANCE_SHEET),
-    )
+    expect(result.current.appAccountBalance).toEqual(APP_ACC_BALANCE_SHEET)
   })
 })

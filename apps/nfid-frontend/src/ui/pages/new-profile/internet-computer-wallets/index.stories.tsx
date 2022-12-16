@@ -27,5 +27,5 @@ const Template: ComponentStory<typeof InternetComputerWalletsPage> = (args) => {
 export const AppScreen = Template.bind({})
 
 AppScreen.args = {
-  icpBlanceSheet: APP_ACC_BALANCE_SHEET,
+  icpBlanceSheet: APP_ACC_BALANCE_SHEET["ICP"],
 }

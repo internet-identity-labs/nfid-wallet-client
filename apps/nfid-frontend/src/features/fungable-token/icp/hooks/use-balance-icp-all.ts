@@ -9,8 +9,8 @@ import ICP from "frontend/assets/dfinity.svg"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
+import { accumulateAppAccountBalance } from "../../accumulate-app-account-balances"
 import { useAllTokenMeta } from "../../dip-20/hooks/use-all-token-meta"
-import { accumulateAppAccountBalance } from "../../reduce-to-app-account-balance"
 import { RawBalance, TokenBalanceSheet } from "../../types"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 

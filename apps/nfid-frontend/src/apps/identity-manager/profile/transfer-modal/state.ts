@@ -1,6 +1,6 @@
 import { atom } from "jotai"
 
-import { IWallet } from "frontend/ui/organisms/transfer-modal/types"
+import { IWallet } from "@nfid-frontend/ui"
 
 export interface ITransferModalAtom {
   isModalOpen: boolean

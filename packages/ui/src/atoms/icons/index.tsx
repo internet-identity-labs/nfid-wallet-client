@@ -4,6 +4,7 @@ import IconSvgCancel from "./cancel.svg"
 import IconSvgCheckMark from "./check-mark.svg"
 import IconSvgCopy from "./copy.svg"
 import IconSvgDesktop from "./desktop.svg"
+import IconSvgDfinity from "./dfinity.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
 import IconSvgError from "./error.svg"
@@ -34,6 +35,7 @@ export {
   IconSvgCheckMark,
   IconSvgCopy,
   IconSvgDesktop,
+  IconSvgDfinity,
   IconSvgDokument,
   IconSvgDots,
   IconSvgError,

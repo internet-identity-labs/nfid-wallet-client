@@ -18,6 +18,9 @@ interface ITransferModal {
   onTokenSubmit: (values: ITransferToken) => void
   onNFTSubmit: (values: ITransferNFT) => void
   onClose: () => void
+  setSelectedNFTs: (nftIds: string[]) => void
+  selectedNFTIds: string[]
+  selectedNFTDetails?: NFT
   nfts: NFT[]
 }
 
@@ -31,6 +34,9 @@ export const TransferModal: React.FC<ITransferModal> = ({
   onTokenSubmit,
   onNFTSubmit,
   onClose,
+  setSelectedNFTs,
+  selectedNFTIds,
+  selectedNFTDetails,
   tokenType,
   nfts,
 }) => {
@@ -68,6 +74,9 @@ export const TransferModal: React.FC<ITransferModal> = ({
           wallets={wallets}
           onTokenSubmit={onTokenSubmit}
           onNFTSubmit={onNFTSubmit}
+          setSelectedNFTs={setSelectedNFTs}
+          selectedNFTIds={selectedNFTIds}
+          selectedNFTDetails={selectedNFTDetails}
         />
       </div>
 

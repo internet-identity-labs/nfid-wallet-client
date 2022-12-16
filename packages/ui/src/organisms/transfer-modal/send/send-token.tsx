@@ -1,21 +1,21 @@
 import clsx from "clsx"
 import { useAtom } from "jotai"
+import { InputDropdown } from "packages/ui/src/molecules/input-dropdown"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { Tooltip } from "@nfid-frontend/ui"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
-import ICPIcon from "frontend/assets/dfinity.svg"
 import { walletFee, walletFeeE8s } from "frontend/constants/wallet"
 import { Button } from "frontend/ui/atoms/button"
-import { DropdownSelect } from "frontend/ui/atoms/dropdown-select"
-import { InputDropdown } from "frontend/ui/molecules/input-dropdown"
-import { IWallet } from "frontend/ui/organisms/transfer-modal/types"
 import { sumRules } from "frontend/ui/utils/validations"
 
+import { DropdownSelect } from "../../../atoms/dropdown-select"
+import { IconSvgDfinity } from "../../../atoms/icons"
+import { Tooltip } from "../../../molecules/tooltip"
 import ArrowWhite from "../assets/arrowWhite.svg"
+import { IWallet } from "../types"
 import { validateAddressField, validateTransferAmountField } from "./utils"
 
 export interface ITransferToken {
@@ -110,7 +110,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
                 "text-sm font-semibold",
               )}
             >
-              <img src={ICPIcon} alt="icp" className="w-6" />
+              <img src={IconSvgDfinity} alt="icp" className="w-6" />
               <span>ICP</span>
             </div>
           </div>

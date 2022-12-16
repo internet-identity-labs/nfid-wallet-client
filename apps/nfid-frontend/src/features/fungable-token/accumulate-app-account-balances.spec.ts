@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 import { Application } from "@nfid/integration"
+import { AccountBalance } from "@nfid/integration/token/fetch-balances"
 import { E8S } from "@nfid/integration/token/icp"
 
 import {
   accumulateAppAccountBalance,
   sumE8sICPString,
 } from "./accumulate-app-account-balances"
-import { RawBalance } from "./types"
 
 describe("accumulate-app-account-balances", () => {
   describe("sumE8sICPString", () => {
@@ -18,7 +18,7 @@ describe("accumulate-app-account-balances", () => {
   })
   describe("accumulateAppAccountBalance", () => {
     it("should accumulate app account balances", () => {
-      const balances: RawBalance[] = [
+      const balances: AccountBalance[] = [
         {
           principalId:
             "gv5fe-6s7su-pgeqr-2wizb-t3suu-7kayl-vqxah-3yyia-ezheu-uovga-rqe",

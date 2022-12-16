@@ -4,12 +4,16 @@
 import { Principal } from "@dfinity/principal"
 import { act, renderHook } from "@testing-library/react"
 
-import { Account, Application, getBalance, stringify } from "@nfid/integration"
+import {
+  Account,
+  Application,
+  getBalance as getICPBalance,
+} from "@nfid/integration"
 import { getAllToken } from "@nfid/integration/token/dip-20"
 import { E8S } from "@nfid/integration/token/icp"
 
+import * as useUserBalancesMocks from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import * as imHooks from "frontend/integration/identity-manager/queries"
-import * as iiHooks from "frontend/integration/internet-identity/queries"
 import * as getExchangeRateMocks from "frontend/integration/rosetta/get-exchange-rate"
 
 import { useBalanceICPAll } from "./use-balance-icp-all"
@@ -111,6 +115,17 @@ const USE_APPLICATIONS_META_MOCK = {
   refreshApplicationMeta: jest.fn(),
 }
 
+const USE_USER_BALANCES_MOCK = {
+  balances: ICP_BALANCE_MOCKS.map((mock) => ({
+    principalId: mock.principalObject.principal.toString(),
+    account: mock.principalObject.account,
+    balance: {
+      ICP: mock.getBalanceResponse,
+    },
+  })),
+  isLoadingPrincipals: false,
+}
+
 describe("useBalanceICPAll", () => {
   it("should return application balances with accumulated balance greater than zero", async () => {
     const promises = ICP_BALANCE_MOCKS.map((mock) =>
@@ -118,11 +133,8 @@ describe("useBalanceICPAll", () => {
     )
 
     promises.map((promise) =>
-      (getBalance as jest.Mock).mockImplementationOnce(() => promise),
+      (getICPBalance as jest.Mock).mockImplementationOnce(() => promise),
     )
-    //
-    ;(getAllToken as jest.Mock).mockImplementation(() => [])
-
     //
     ;(getAllToken as jest.Mock).mockImplementation(() => [])
 
@@ -131,15 +143,13 @@ describe("useBalanceICPAll", () => {
       .spyOn(getExchangeRateMocks, "getExchangeRate")
       .mockImplementation(() => getExchangeRateP1)
 
-    const useAllPrincipals = jest
-      .spyOn(iiHooks, "useAllPrincipals")
-      .mockImplementation(() => ({
-        principals: ICP_BALANCE_MOCKS.map((mock) => mock.principalObject),
-      }))
-
     const useApplicationsMeta = jest
       .spyOn(imHooks, "useApplicationsMeta")
       .mockImplementation(() => USE_APPLICATIONS_META_MOCK)
+
+    const useUserBalances = jest
+      .spyOn(useUserBalancesMocks, "useUserBalances")
+      .mockImplementation(() => USE_USER_BALANCES_MOCK)
 
     const { result } = renderHook(() => useBalanceICPAll())
 
@@ -150,10 +160,10 @@ describe("useBalanceICPAll", () => {
       await getExchangeRateP1
     })
 
-    expect(useAllPrincipals).toHaveBeenCalled()
+    expect(useUserBalances).toHaveBeenCalled()
     expect(getExchangeRateSpy).toHaveBeenCalled()
     expect(useApplicationsMeta).toHaveBeenCalled()
-    expect(getBalance).toBeCalledTimes(5)
+    expect(getAllToken).toHaveBeenCalled()
 
     expect(result.current.isLoading).toBe(false)
 

@@ -17,6 +17,7 @@ export type TokenBalance = {
 }
 
 export type AccountBalance = {
+  principalId: string
   account: Account
   balance: TokenBalance
 }
@@ -24,7 +25,7 @@ export type AccountBalance = {
 export async function fetchBalances({
   principals,
   dip20Token,
-}: FetchBalanceArgs) {
+}: FetchBalanceArgs): Promise<AccountBalance[]> {
   return await Promise.all(
     principals.map(async ({ principal, account }) => {
       const token = await Promise.all<TokenBalance>([
@@ -41,6 +42,7 @@ export async function fetchBalances({
       ])
 
       return {
+        principalId: principal.toText(),
         account,
         // pulling only token key value pairs and drop array specific
         // properties from the result to keep clean return interface

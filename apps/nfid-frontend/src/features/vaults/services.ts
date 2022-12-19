@@ -13,7 +13,6 @@ export const getMemberAddress = () => {
 }
 
 /**
- * TODO Vaults - temporary getVault
  * @params vaultId: string
  * @returns vault by id
  */

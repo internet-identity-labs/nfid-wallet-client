@@ -7,6 +7,7 @@ module.exports = {
   plugins: [
     require("../../packages/ui-tailwind-core"),
     require("../../packages/ui-tailwind-core/src/forms"),
+    require("tailwindcss-radix")(),
   ],
   theme: {
     extend: {

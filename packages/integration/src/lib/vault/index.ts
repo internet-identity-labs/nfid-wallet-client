@@ -116,20 +116,20 @@ interface AddPolicyOptions {
   amountThreshold: bigint
   currency: Currency
   memberThreshold: number
-  walletIds: Array<bigint> | undefined
+  wallets: Array<string> | undefined
 }
 
 export async function registerPolicy({
   vaultId,
   amountThreshold,
   memberThreshold,
-  walletIds,
+  wallets,
 }: AddPolicyOptions): Promise<Policy> {
   const tp: ThresholdPolicyRequest = {
     amount_threshold: amountThreshold,
     currency: { ICP: null },
     member_threshold: memberThreshold,
-    wallet_ids: walletIds === undefined ? [] : [walletIds],
+    wallet_ids: wallets === undefined ? [] : [wallets],
   }
   const policyRegisterRequest: PolicyRegisterRequest = {
     policy_type: { threshold_policy: tp },
@@ -166,29 +166,22 @@ export async function getPolicies(vaultId: bigint): Promise<Policy[]> {
   return response.map((v) => candidToPolicy(v))
 }
 
-export async function walletAddress(walletId: bigint): Promise<string> {
-  //todo move algorithm from rust
-  return await vault.sub(walletId).catch((e) => {
-    throw new Error(`walletAddress: ${e.message}`)
-  })
-}
-
 export interface TransactionRegisterOptions {
   address: string
   amount: bigint
-  walletId: bigint
+  from_sub_account: string
 }
 
 export async function registerTransaction({
   address,
   amount,
-  walletId,
+  from_sub_account,
 }: TransactionRegisterOptions): Promise<Transaction> {
   const transaction = await vaultAPI
     .register_transaction({
       address,
       amount,
-      wallet_id: walletId,
+      wallet_id: from_sub_account,
     })
     .catch((e) => {
       throw new Error(`registerTransaction: ${e.message}`)

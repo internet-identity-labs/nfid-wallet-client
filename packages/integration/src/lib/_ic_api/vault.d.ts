@@ -27,7 +27,7 @@ export type PolicyType = { threshold_policy: ThresholdPolicy }
 export interface ThresholdPolicy {
   member_threshold: number
   amount_threshold: bigint
-  wallet_ids: [] | [Array<bigint>]
+  wallet_ids: [] | [Array<string>]
   currency: Currency
 }
 export interface Transaction {
@@ -36,7 +36,9 @@ export interface Transaction {
   member_threshold: number
   block_index: [] | [bigint]
   owner: string
+  from: string
   modified_date: bigint
+  memo: [] | [string]
   vault_id: bigint
   amount_threshold: bigint
   state: TransactionState
@@ -44,7 +46,6 @@ export interface Transaction {
   currency: Currency
   amount: bigint
   created_date: bigint
-  wallet_id: bigint
   policy_id: bigint
 }
 export interface TransactionApproveRequest {
@@ -54,7 +55,7 @@ export interface TransactionApproveRequest {
 export interface TransactionRegisterRequest {
   address: string
   amount: bigint
-  wallet_id: bigint
+  wallet_id: string
 }
 export type TransactionState =
   | { Approved: null }
@@ -68,7 +69,7 @@ export interface Vault {
   name: string
   description: [] | [string]
   state: ObjectState
-  wallets: Array<bigint>
+  wallets: Array<string>
   created_date: bigint
   policies: Array<bigint>
 }
@@ -91,7 +92,7 @@ export interface VaultRegisterRequest {
 }
 export type VaultRole = { Member: null } | { Admin: null }
 export interface Wallet {
-  id: bigint
+  uid: string
   modified_date: bigint
   name: [] | [string]
   vaults: Array<bigint>
@@ -113,7 +114,6 @@ export interface _SERVICE {
   register_vault: ActorMethod<[VaultRegisterRequest], Vault>
   register_wallet: ActorMethod<[WalletRegisterRequest], Wallet>
   store_member: ActorMethod<[VaultMemberRequest], Vault>
-  sub: ActorMethod<[bigint], string>
   update_policy: ActorMethod<[Policy], Policy>
   update_vault: ActorMethod<[Vault], Vault>
   update_wallet: ActorMethod<[Wallet], Wallet>

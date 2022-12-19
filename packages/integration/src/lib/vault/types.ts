@@ -3,18 +3,18 @@ export interface Vault {
   members: Array<VaultMember>
   name: string
   description: string | undefined
-  wallets: Array<bigint>
+  wallets: Array<string>
   policies: Array<bigint>
   createdDate: bigint
   modifiedDate: bigint
 }
 
 export interface Wallet {
-  id: bigint
+  uid: string
   name: string | undefined
   vaults: Array<bigint>
   state: ObjectState
-  cratedDate: bigint
+  createdDate: bigint
   modifiedDate: bigint
 }
 
@@ -62,7 +62,7 @@ export interface BasePolicy {
 export interface ThresholdPolicy extends BasePolicy {
   memberThreshold: number
   amountThreshold: bigint
-  walletIds?: Array<bigint>
+  wallets?: Array<string>
   currency: Currency
 }
 
@@ -86,7 +86,7 @@ export interface Transaction {
   amount: bigint
   createdDate: bigint
   modifiedDate: bigint
-  walletId: bigint
+  from_sub_account: string
   vaultId: bigint
   policyId: bigint
   owner: string

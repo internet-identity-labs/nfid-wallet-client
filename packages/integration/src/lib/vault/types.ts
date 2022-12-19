@@ -60,7 +60,7 @@ export interface BasePolicy {
 }
 
 export interface ThresholdPolicy extends BasePolicy {
-  memberThreshold: number
+  memberThreshold: number | undefined
   amountThreshold: bigint
   wallets?: Array<string>
   currency: Currency
@@ -90,4 +90,5 @@ export interface Transaction {
   vaultId: bigint
   policyId: bigint
   owner: string
+  memo: string | undefined
 }

@@ -233,6 +233,7 @@ describe("Vault suite", () => {
       vaultId: expect.any(BigInt),
       from_sub_account: expect.any(String),
       owner: address,
+      memo: undefined,
     })
 
     replaceIdentity(memberIdentity)
@@ -242,6 +243,7 @@ describe("Vault suite", () => {
       state: TransactionState.APPROVED,
       transactionId: registeredTransaction.id,
     })
+    console.log(approvedTransaction)
     expect(approvedTransaction.id).toEqual(registeredTransaction.id)
     expect(approvedTransaction.approves.length).toEqual(2)
 

@@ -36,4 +36,5 @@ Default.args = {
   helperText: "helper text",
   labelText: "label text",
   disabled: false,
+  innerText: "of 12",
 }

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
 
 import { replaceIdentity } from "../auth-state"
@@ -32,7 +33,6 @@ import {
   VaultRole,
   Wallet,
 } from "./types"
-import { Principal } from "@dfinity/principal"
 
 declare const VAULT_CANISTER_ID: string
 
@@ -71,7 +71,7 @@ describe("Vault suite", () => {
         },
       ],
       policies: expect.any(BigUint64Array),
-      wallets: expect.any(Array<string>),
+      wallets: expect.any(Array),
     })
   })
   it("get vaults test", async () => {
@@ -197,12 +197,15 @@ describe("Vault suite", () => {
       state: ObjectState.ACTIVE,
       type: PolicyType.THRESHOLD_POLICY,
       vault: vaultFirst.id,
-      wallets: expect.any(Array<string>),
+      wallets: expect.any(Array),
     })
   })
   let registeredTransaction: Transaction
   it("create transaction test", async () => {
-    const targetAddress = principalToAddress(Principal.fromText(VAULT_CANISTER_ID), fromHexString(wallet.uid))
+    const targetAddress = principalToAddress(
+      Principal.fromText(VAULT_CANISTER_ID),
+      fromHexString(wallet.uid),
+    )
     registeredTransaction = await registerTransaction({
       address: targetAddress,
       amount: BigInt(15),
@@ -246,5 +249,4 @@ describe("Vault suite", () => {
     expect(transactions.length).toBe(1)
     expect(transactions[0].id).toBe(approvedTransaction.id)
   })
-
 })

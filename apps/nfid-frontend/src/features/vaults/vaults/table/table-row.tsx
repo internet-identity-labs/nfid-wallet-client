@@ -1,10 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
-import { IconCmpArrowRight } from "@nfid-frontend/ui"
-
-import { TableCell } from "../../table/table-cell"
-import { TableRow } from "../../table/table-row"
+import { IconCmpArrowRight, TableCell, TableRow } from "@nfid-frontend/ui"
 
 export interface VaultsTableRowProps {
   name: string
@@ -30,7 +27,7 @@ export const VaultsTableRow: React.FC<VaultsTableRowProps> = ({
       <TableCell centered>{membersQuantity}</TableCell>
       <TableCell>{lastActivity}</TableCell>
       <TableCell isRight>
-        <IconCmpArrowRight className="text-gray-400" />
+        <IconCmpArrowRight className="ml-auto text-gray-400" />
       </TableCell>
     </TableRow>
   )

@@ -5,11 +5,7 @@ export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   tableHeader: JSX.Element
 }
 
-export default function Table({
-  className,
-  children,
-  tableHeader,
-}: TableProps) {
+export const Table = ({ className, children, tableHeader }: TableProps) => {
   return (
     <table
       className={clsx(

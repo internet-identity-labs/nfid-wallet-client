@@ -1,5 +1,6 @@
 import { Meta, Story } from "@storybook/react"
-import { IconCmpPlus } from "packages/ui/src/atoms/icons"
+
+import { IconCmpPlus } from "@nfid-frontend/ui"
 
 import { VaultActionBar, VaultActionBarProps } from "./index"
 

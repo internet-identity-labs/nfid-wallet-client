@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { principalToAddress } from "ictool"
+import { Principal } from "@dfinity/principal"
+import { fromHexString, principalToAddress } from "ictool"
 
 import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
@@ -19,14 +20,12 @@ import {
   storeMember,
   updatePolicy,
   updateWallet,
-  walletAddress,
 } from "./index"
 import {
   Currency,
   ObjectState,
   Policy,
   PolicyType,
-  ThresholdPolicy,
   Transaction,
   TransactionState,
   Vault,
@@ -34,6 +33,8 @@ import {
   VaultRole,
   Wallet,
 } from "./types"
+
+declare const VAULT_CANISTER_ID: string
 
 describe("Vault suite", () => {
   jest.setTimeout(100000)
@@ -70,7 +71,7 @@ describe("Vault suite", () => {
         },
       ],
       policies: expect.any(BigUint64Array),
-      wallets: expect.any(BigUint64Array),
+      wallets: expect.any(Array),
     })
   })
   it("get vaults test", async () => {
@@ -127,8 +128,8 @@ describe("Vault suite", () => {
       vaultId: vaultFirst.id,
     })
     expect(wallet).toEqual({
-      cratedDate: expect.any(BigInt),
-      id: expect.any(BigInt),
+      createdDate: expect.any(BigInt),
+      uid: expect.any(String),
       modifiedDate: expect.any(BigInt),
       name: "Wallet1",
       state: ObjectState.ACTIVE,
@@ -144,8 +145,8 @@ describe("Vault suite", () => {
     wallet.state = ObjectState.ARCHIVED
     const updated = await updateWallet(wallet)
     expect(updated).toEqual({
-      cratedDate: expect.any(BigInt),
-      id: expect.any(BigInt),
+      createdDate: expect.any(BigInt),
+      uid: expect.any(String),
       modifiedDate: expect.any(BigInt),
       name: "Updated",
       state: ObjectState.ARCHIVED,
@@ -160,7 +161,7 @@ describe("Vault suite", () => {
       currency: Currency.ICP,
       memberThreshold: 5,
       type: PolicyType.THRESHOLD_POLICY,
-      walletIds: undefined,
+      wallets: undefined,
       vaultId: vaultFirst.id,
     })
     expect(policy).toEqual({
@@ -173,7 +174,7 @@ describe("Vault suite", () => {
       state: ObjectState.ACTIVE,
       type: PolicyType.THRESHOLD_POLICY,
       vault: vaultFirst.id,
-      walletIds: undefined,
+      wallets: undefined,
     })
   })
   it("get policies test", async () => {
@@ -182,7 +183,7 @@ describe("Vault suite", () => {
   })
   it("update policy test", async () => {
     policy.amountThreshold = BigInt(10)
-    policy.walletIds = [wallet.id]
+    policy.wallets = [wallet.uid]
     const updated = await updatePolicy(policy)
     console.log(updated)
 
@@ -196,16 +197,19 @@ describe("Vault suite", () => {
       state: ObjectState.ACTIVE,
       type: PolicyType.THRESHOLD_POLICY,
       vault: vaultFirst.id,
-      walletIds: expect.any(BigUint64Array),
+      wallets: expect.any(Array),
     })
   })
   let registeredTransaction: Transaction
   it("create transaction test", async () => {
-    const targetAddress = await walletAddress(BigInt(1))
+    const targetAddress = principalToAddress(
+      Principal.fromText(VAULT_CANISTER_ID),
+      fromHexString(wallet.uid),
+    )
     registeredTransaction = await registerTransaction({
       address: targetAddress,
       amount: BigInt(15),
-      walletId: wallet.id,
+      from_sub_account: wallet.uid,
     })
     expect(registeredTransaction).toEqual({
       amount: BigInt(15),
@@ -227,7 +231,7 @@ describe("Vault suite", () => {
       state: TransactionState.PENDING,
       to: targetAddress,
       vaultId: expect.any(BigInt),
-      walletId: expect.any(BigInt),
+      from_sub_account: expect.any(String),
       owner: address,
     })
 
@@ -244,12 +248,5 @@ describe("Vault suite", () => {
     const transactions = await getTransactions()
     expect(transactions.length).toBe(1)
     expect(transactions[0].id).toBe(approvedTransaction.id)
-  })
-
-  it("test subaddress", async () => {
-    const actual = await walletAddress(BigInt(1))
-    expect(
-      "1dbb387996dbb10113df15757452044f78d5c6aec83aa0a6ec1d2c0c12c80671",
-    ).toEqual(actual)
   })
 })

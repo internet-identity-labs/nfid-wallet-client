@@ -40,19 +40,19 @@ export function candidToVault(response: VaultCandid): Vault {
 
 export function candidToWallet(response: WalletCandid): Wallet {
   return {
-    cratedDate: response.created_date,
+    createdDate: response.created_date,
     modifiedDate: response.modified_date,
     state: candidToObjectState(response.state),
     vaults: response.vaults,
-    id: response.id,
+    uid: response.uid,
     name: response.name.length === 0 ? undefined : response.name[0],
   }
 }
 
 export function walletToCandid(wallet: Wallet): WalletCandid {
   return {
-    created_date: wallet.cratedDate,
-    id: wallet.id,
+    created_date: wallet.createdDate,
+    uid: wallet.uid,
     modified_date: wallet.modifiedDate,
     name: typeof wallet.name === undefined ? [] : [wallet.name as string],
     state: objectStateToCandid(wallet.state),
@@ -71,7 +71,7 @@ export function policyToCandid(policy: Policy): PolicyCandid {
         currency: { ICP: null },
         member_threshold: policy.memberThreshold,
         wallet_ids:
-          typeof policy.walletIds === "undefined" ? [] : [policy.walletIds],
+          typeof policy.wallets === "undefined" ? [] : [policy.wallets],
       },
     },
     state: objectStateToCandid(policy.state),
@@ -92,7 +92,7 @@ export function candidToPolicy(response: PolicyCandid): Policy {
       id: response.id,
       memberThreshold: threshold.member_threshold,
       type: PolicyType.THRESHOLD_POLICY,
-      walletIds:
+      wallets:
         threshold.wallet_ids.length === 0 ? undefined : threshold.wallet_ids[0],
     }
   }
@@ -132,7 +132,7 @@ export function candidToTransaction(response: TransactionCandid): Transaction {
     policyId: response.policy_id,
     state: candidToTransactionState(response.state),
     to: response.to,
-    walletId: response.wallet_id,
+    from_sub_account: response.from,
     vaultId: response.vault_id,
   }
 }

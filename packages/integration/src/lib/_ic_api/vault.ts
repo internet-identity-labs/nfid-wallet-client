@@ -22,7 +22,9 @@ export const idlFactory = ({ IDL }: any) => {
     member_threshold: IDL.Nat8,
     block_index: IDL.Opt(IDL.Nat64),
     owner: IDL.Text,
+    from: IDL.Text,
     modified_date: IDL.Nat64,
+    memo: IDL.Opt(IDL.Text),
     vault_id: IDL.Nat64,
     amount_threshold: IDL.Nat64,
     state: TransactionState,
@@ -30,7 +32,6 @@ export const idlFactory = ({ IDL }: any) => {
     currency: Currency,
     amount: IDL.Nat64,
     created_date: IDL.Nat64,
-    wallet_id: IDL.Nat64,
     policy_id: IDL.Nat64,
   })
   const ObjectState = IDL.Variant({
@@ -40,7 +41,7 @@ export const idlFactory = ({ IDL }: any) => {
   const ThresholdPolicy = IDL.Record({
     member_threshold: IDL.Nat8,
     amount_threshold: IDL.Nat64,
-    wallet_ids: IDL.Opt(IDL.Vec(IDL.Nat64)),
+    wallet_ids: IDL.Opt(IDL.Vec(IDL.Text)),
     currency: Currency,
   })
   const PolicyType = IDL.Variant({ threshold_policy: ThresholdPolicy })
@@ -66,12 +67,12 @@ export const idlFactory = ({ IDL }: any) => {
     name: IDL.Text,
     description: IDL.Opt(IDL.Text),
     state: ObjectState,
-    wallets: IDL.Vec(IDL.Nat64),
+    wallets: IDL.Vec(IDL.Text),
     created_date: IDL.Nat64,
     policies: IDL.Vec(IDL.Nat64),
   })
   const Wallet = IDL.Record({
-    id: IDL.Nat64,
+    uid: IDL.Text,
     modified_date: IDL.Nat64,
     name: IDL.Opt(IDL.Text),
     vaults: IDL.Vec(IDL.Nat64),
@@ -85,7 +86,7 @@ export const idlFactory = ({ IDL }: any) => {
   const TransactionRegisterRequest = IDL.Record({
     address: IDL.Text,
     amount: IDL.Nat64,
-    wallet_id: IDL.Nat64,
+    wallet_id: IDL.Text,
   })
   const VaultRegisterRequest = IDL.Record({
     name: IDL.Text,
@@ -121,7 +122,6 @@ export const idlFactory = ({ IDL }: any) => {
     register_vault: IDL.Func([VaultRegisterRequest], [Vault], []),
     register_wallet: IDL.Func([WalletRegisterRequest], [Wallet], []),
     store_member: IDL.Func([VaultMemberRequest], [Vault], []),
-    sub: IDL.Func([IDL.Nat64], [IDL.Text], ["query"]),
     update_policy: IDL.Func([Policy], [Policy], []),
     update_vault: IDL.Func([Vault], [Vault], []),
     update_wallet: IDL.Func([Wallet], [Wallet], []),

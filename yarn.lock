@@ -6633,6 +6633,20 @@
     deepmerge "^4.0.0"
     glob "^8.0.3"
 
+"@wdio/config@8.0.13":
+  version "8.0.13"
+  resolved "https://registry.yarnpkg.com/@wdio/config/-/config-8.0.13.tgz#2b1dab9b06a88e514b55c59aae93b5dafc47ad45"
+  integrity sha512-KYCFH//q/Ry6jUGZfnbYG30TCj+pC8YvxhXDdL9aH8NpLMaQITOa/Yc83ujjTcqgottF638WtDJTJIULbvHJpQ==
+  dependencies:
+    "@wdio/logger" "8.0.0"
+    "@wdio/types" "8.0.11"
+    "@wdio/utils" "8.0.13"
+    decamelize "^6.0.0"
+    deepmerge-ts "^4.2.2"
+    glob "^8.0.3"
+    import-meta-resolve "^2.1.0"
+    read-pkg-up "^9.1.0"
+
 "@wdio/config@8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@wdio/config/-/config-8.0.2.tgz#db105e2bddbf7156931b0f8b6868f861ea19ef0d"
@@ -6911,6 +6925,13 @@
   dependencies:
     "@types/node" "^18.0.0"
 
+"@wdio/types@8.0.11":
+  version "8.0.11"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-8.0.11.tgz#e3623506e89da59947aa7a7caf01e513363fe1c9"
+  integrity sha512-54xbajB7tqWmYPXFI0ALupPauwLyVtPSZSG/R/DPlY25p+Ygw4jwH64s+Jh1V3TZYnktfv4cIt1Bw/M35cBgOQ==
+  dependencies:
+    "@types/node" "^18.0.0"
+
 "@wdio/utils@7.16.14":
   version "7.16.14"
   resolved "https://registry.npmjs.org/@wdio/utils/-/utils-7.16.14.tgz"
@@ -6936,6 +6957,16 @@
   dependencies:
     "@wdio/logger" "7.19.0"
     "@wdio/types" "7.24.0"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@8.0.13":
+  version "8.0.13"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-8.0.13.tgz#8aa2b11d880df485acc54e6cc8f4bab3ac1b380f"
+  integrity sha512-xk0zpIZ/9J1t5PL79d4bbbhCTgboXK+QLpZ4nHxACbea9gLxEfw8MPMzRCZ0ctDgLYWxoGq8hTgeMZDjiMcUWw==
+  dependencies:
+    "@wdio/logger" "8.0.0"
+    "@wdio/types" "8.0.11"
+    import-meta-resolve "^2.2.0"
     p-iteration "^1.1.8"
 
 "@wdio/utils@8.0.2":
@@ -14004,7 +14035,7 @@ import-local@^3.0.2:
     pkg-dir "^4.2.0"
     resolve-cwd "^3.0.0"
 
-import-meta-resolve@^2.1.0:
+import-meta-resolve@^2.1.0, import-meta-resolve@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-2.2.0.tgz#701aa29a044954bd135214049294745ac70dd607"
   integrity sha512-CpPOtiCHxP9HdtDM5F45tNiAe66Cqlv3f5uHoJjt+KlaLrUh9/Wz9vepADZ78SlqEo62aDWZtj9ydMGXV+CPnw==

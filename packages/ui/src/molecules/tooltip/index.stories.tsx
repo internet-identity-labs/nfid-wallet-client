@@ -1,6 +1,6 @@
 import type { ComponentStory, ComponentMeta } from "@storybook/react"
 
-import { Tooltip } from "./tooltip"
+import { Tooltip } from "."
 
 const Story: ComponentMeta<typeof Tooltip> = {
   component: Tooltip,

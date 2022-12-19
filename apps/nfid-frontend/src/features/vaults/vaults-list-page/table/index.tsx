@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import React, { useMemo } from "react"
 
 import { Table } from "@nfid-frontend/ui"
-import { BigIntMillisecondsToSeconds } from "@nfid-frontend/utils"
+import { bigIntMillisecondsToSeconds } from "@nfid-frontend/utils"
 import { Vault } from "@nfid/integration"
 
 import { VaultsTableHeader } from "./table-header"
@@ -13,6 +13,7 @@ export interface VaultsTableProps {
 }
 
 export const VaultsTable: React.FC<VaultsTableProps> = ({ vaults }) => {
+  console.log({ vaults })
   const vaultsToRowsOptions: VaultsTableRowProps[] = useMemo(() => {
     return vaults.map((vault) => ({
       id: String(vault.id),
@@ -20,7 +21,7 @@ export const VaultsTable: React.FC<VaultsTableProps> = ({ vaults }) => {
       walletsQuantity: vault.wallets.length,
       membersQuantity: vault.members.length,
       lastActivity: format(
-        new Date(BigIntMillisecondsToSeconds(vault.modifiedDate)),
+        new Date(bigIntMillisecondsToSeconds(vault.modifiedDate)),
         "MMM dd, yyyy - hh:mm:ss aaa",
       ),
     }))

@@ -3,6 +3,7 @@ import clsx from "clsx"
 export interface ITableCell extends React.HTMLAttributes<HTMLDivElement> {
   isLeft?: boolean
   isRight?: boolean
+  centered?: boolean
 }
 
 export const TableCell = ({
@@ -10,6 +11,7 @@ export const TableCell = ({
   isLeft,
   isRight,
   className,
+  centered,
 }: ITableCell) => {
   return (
     <td
@@ -17,6 +19,7 @@ export const TableCell = ({
         "px-3",
         isLeft && "pl-[10px]",
         isRight && "pr-[10px]",
+        centered && "text-center",
         className,
       )}
     >

@@ -18,7 +18,7 @@ export default function Table({
       )}
     >
       <thead className="h-16">{tableHeader}</thead>
-      {children}
+      <tbody>{children}</tbody>
     </table>
   )
 }

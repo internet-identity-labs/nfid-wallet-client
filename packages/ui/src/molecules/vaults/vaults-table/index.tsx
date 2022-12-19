@@ -23,7 +23,7 @@ export const VaultsTable: React.FC<VaultsTableProps> = ({ vaults }) => {
   return (
     <Table tableHeader={<VaultsTableHeader />}>
       {vaultsToRowsOptions.map((vault) => (
-        <VaultsTableRow {...vault} />
+        <VaultsTableRow {...vault} key={`vault_${vault.id}`} />
       ))}
     </Table>
   )

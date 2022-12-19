@@ -11,6 +11,7 @@ import {
 } from "@nfid-frontend/ui"
 
 export interface VaultsMembersTableRowProps {
+  id: string | number
   number: number
   name: string
   address: number

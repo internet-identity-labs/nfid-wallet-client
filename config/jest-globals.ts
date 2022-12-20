@@ -19,5 +19,7 @@ export const JEST_GLOBALS = {
     "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
   SIGNIN_GOOGLE: "/signin",
   CURRCONV_TOKEN: process.env["CURRCONV_TOKEN"],
-  METAMASK_SIGNIN_MESSAGE: "Hi there from NFID! Sign this message to prove you own this wallet and we’ll log you in. This won’t cost you any Ether.",
+  METAMASK_SIGNIN_MESSAGE:
+    "Hi there from NFID! Sign this message to prove you own this wallet and we’ll log you in. This won’t cost you any Ether.",
+  WALLET_CONNECT_PROJECT_ID: "aca79764a3850f6e712e91e7f9164e87",
 }

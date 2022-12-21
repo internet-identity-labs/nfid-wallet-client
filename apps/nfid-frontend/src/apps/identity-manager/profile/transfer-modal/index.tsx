@@ -28,7 +28,7 @@ import { ProfileConstants } from "../routes"
 import { transformToAddress } from "./transform-to-address"
 
 export const ProfileTransferModal = () => {
-  const { reloadBalances } = useUserBalances()
+  const { refreshBalances } = useUserBalances()
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
   const [successMessage, setSuccessMessage] = useState("")
@@ -99,7 +99,7 @@ export const ProfileTransferModal = () => {
     try {
       setIsLoading(true)
       await transfer(validAddress, String(values.amount))
-      reloadBalances()
+      refreshBalances()
       setSuccessMessage(`${values.amount} ${selectedToken.value} was sent`)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")

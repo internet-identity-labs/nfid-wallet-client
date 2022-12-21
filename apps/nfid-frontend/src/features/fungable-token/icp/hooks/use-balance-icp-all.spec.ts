@@ -125,7 +125,7 @@ const USE_USER_BALANCES_MOCK = {
     },
   })),
   isLoading: false,
-  reloadBalances: jest.fn(),
+  refreshBalances: jest.fn(),
 }
 
 describe("useBalanceICPAll", () => {

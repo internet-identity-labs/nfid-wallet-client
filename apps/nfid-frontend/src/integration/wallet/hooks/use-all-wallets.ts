@@ -1,41 +1,46 @@
-import { principalToAddress } from "ictool"
-import useSWR from "swr"
+import { Principal } from "@dfinity/principal"
+import React from "react"
 
-import { getBalance } from "@nfid/integration"
+import { getWalletName } from "@nfid/integration"
+import { TokenBalance } from "@nfid/integration/token/fetch-balances"
 
+import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
-import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import { GetWalletName } from "frontend/ui/pages/new-profile/nfts/util"
 import { sortAlphabetic, keepStaticOrder } from "frontend/ui/utils/sorting"
 
+type Wallet = {
+  principal: Principal
+  principalId: string
+  balance: TokenBalance
+  label: string
+  accountId: string
+  domain: string
+}
+
 export const useAllWallets = () => {
-  const { principals } = useAllPrincipals()
+  const { balances, isLoading } = useUserBalances()
+
   const applications = useApplicationsMeta()
 
-  const { data: wallets, isValidating: isLoadingWallets } = useSWR(
-    principals ? "allWallets" : null,
-    async () => {
-      if (!principals) throw new Error("missing req")
-      return await Promise.all(
-        principals.map(async ({ principal, account }) => ({
-          label: GetWalletName(
-            applications.applicationsMeta ?? [],
-            account.domain,
-            account.accountId,
-          ),
-          principal: principal,
-          accountId: account.accountId,
-          domain: account.domain,
-          balance: await getBalance(principalToAddress(principal)),
-        })),
-      )
-        .then((wallets) =>
-          wallets.sort(sortAlphabetic(({ label }) => label ?? "")),
-        )
-        .then(keepStaticOrder(({ label }) => label ?? "", ["NFID", "NNS"]))
-    },
-    { dedupingInterval: 30_000, refreshInterval: 60_000 },
-  )
+  const wallets = React.useMemo(() => {
+    const wallets = balances
+      ?.map(({ principal, account, ...rest }) => ({
+        label: getWalletName(
+          applications.applicationsMeta ?? [],
+          account.domain,
+          account.accountId,
+        ),
+        accountId: account.accountId,
+        domain: account.domain,
+        principal,
+        ...rest,
+      }))
+      .sort(sortAlphabetic(({ label }) => label ?? ""))
+    return keepStaticOrder<Wallet>(
+      ({ label }) => label ?? "",
+      ["NFID", "NNS"],
+    )(wallets || [])
+  }, [applications.applicationsMeta, balances])
 
-  return { wallets, isLoadingWallets }
+  return { wallets, isLoading }
 }

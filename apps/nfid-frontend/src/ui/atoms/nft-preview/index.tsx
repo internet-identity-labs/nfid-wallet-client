@@ -4,8 +4,9 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
+import { transferModalAtom } from "@nfid-frontend/ui"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import useClickOutside from "frontend/ui/utils/use-click-outside"

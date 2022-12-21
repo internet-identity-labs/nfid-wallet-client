@@ -1,5 +1,8 @@
 import { decodeTokenIdentifier } from "ictool"
+import React from "react"
 import useSWR from "swr"
+
+import { getWalletName } from "@nfid/integration"
 
 import {
   principalTokens,
@@ -7,6 +10,7 @@ import {
   tokens,
   token,
 } from "frontend/integration/entrepot"
+import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
 export function useNFT(tokenId: string) {
@@ -51,8 +55,9 @@ export function useNFT(tokenId: string) {
 
 export const useAllNFTs = () => {
   const { principals } = useAllPrincipals()
+  const { applicationsMeta } = useApplicationsMeta()
 
-  return useSWR(
+  const { data, isLoading, isValidating } = useSWR(
     principals ? [principals, "userTokens"] : null,
     ([principals]) => principalTokens(principals),
     {
@@ -61,4 +66,18 @@ export const useAllNFTs = () => {
       revalidateIfStale: false,
     },
   )
+  const nfts = React.useMemo(() => {
+    if (!data || !applicationsMeta) return []
+    return data.map(({ principal, account, ...rest }) => ({
+      principal,
+      account,
+      walletName: getWalletName(
+        applicationsMeta,
+        principal.toString(),
+        account.accountId,
+      ),
+      ...rest,
+    }))
+  }, [data, applicationsMeta])
+  return { nfts, isLoading: isLoading || isValidating }
 }

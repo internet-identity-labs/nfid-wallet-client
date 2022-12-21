@@ -1,14 +1,14 @@
 import clsx from "clsx"
 
-import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
-import { GetWalletName } from "frontend/ui/pages/new-profile/nfts/util"
-
 import WalletIcon from "../../assets/wallet.svg"
 import { NFT } from "../../types"
 
-export const TransferSendNFTInfo = ({ nft }: { nft: NFT }) => {
-  const { applicationsMeta } = useApplicationsMeta()
+export type Application = {
+  domain: string
+  name: string
+}
 
+export const TransferSendNFTInfo = ({ nft }: { nft: NFT }) => {
   return (
     <div className="flex items-center space-x-6 h-[142px]">
       <img
@@ -28,13 +28,7 @@ export const TransferSendNFTInfo = ({ nft }: { nft: NFT }) => {
           )}
         >
           <img src={WalletIcon} alt="wallet" />
-          <span>
-            {GetWalletName(
-              applicationsMeta ?? [],
-              nft.account.domain,
-              nft.account.accountId,
-            )}
-          </span>
+          <span>{nft.walletName}</span>
         </p>
       </div>
     </div>

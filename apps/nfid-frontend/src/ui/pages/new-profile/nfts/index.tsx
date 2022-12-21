@@ -7,13 +7,12 @@ import { HiViewList } from "react-icons/hi"
 import { IoIosSearch } from "react-icons/io"
 import { Link } from "react-router-dom"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { Tooltip, transferModalAtom } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { DropdownSelect } from "@nfid-frontend/ui"
-import { Application } from "@nfid/integration"
+import { Application, getWalletName } from "@nfid/integration"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Accordion } from "frontend/ui/atoms/accordion"
@@ -29,7 +28,6 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import transferIcon from "./transfer.svg"
 import {
   filterUserTokens,
-  GetWalletName,
   sortUserTokens,
   userTokensByCollection,
   userTokensByWallet,
@@ -135,7 +133,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
           {token.tokenId}
         </Link>,
         <div className={clsx(`w-full`)}>
-          {GetWalletName(
+          {getWalletName(
             applications,
             token.account.domain,
             token.account.accountId,
@@ -177,7 +175,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
     })
 
     return Object.values(wallets).map((item) => ({
-      label: GetWalletName(
+      label: getWalletName(
         applications,
         item.account.domain,
         item.account.accountId,
@@ -297,7 +295,7 @@ const ProfileNFTsPage: React.FC<IProfileNFTsPage> = ({
                         )}
                       >
                         <AiOutlineWallet />{" "}
-                        {GetWalletName(
+                        {getWalletName(
                           applications,
                           wallet.account.domain,
                           wallet.account.accountId,

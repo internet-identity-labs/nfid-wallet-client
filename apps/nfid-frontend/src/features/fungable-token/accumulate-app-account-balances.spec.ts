@@ -1,6 +1,8 @@
 /**
  * @jest-environment jsdom
  */
+import { Principal } from "@dfinity/principal"
+
 import { Application } from "@nfid/integration"
 import { AccountBalance } from "@nfid/integration/token/fetch-balances"
 import { E8S } from "@nfid/integration/token/icp"
@@ -20,18 +22,27 @@ describe("accumulate-app-account-balances", () => {
     it("should accumulate app account balances", () => {
       const balances: AccountBalance[] = [
         {
+          principal: Principal.fromText(
+            "gv5fe-6s7su-pgeqr-2wizb-t3suu-7kayl-vqxah-3yyia-ezheu-uovga-rqe",
+          ),
           principalId:
             "gv5fe-6s7su-pgeqr-2wizb-t3suu-7kayl-vqxah-3yyia-ezheu-uovga-rqe",
           account: { domain: "one", label: "", accountId: "0" },
           balance: { ICP: BigInt(1 * E8S) },
         },
         {
+          principal: Principal.fromText(
+            "b27e3-f3kqs-v4awo-5naps-qdb2x-6pi6t-elxdc-snwxn-nz3jd-3445f-5qe",
+          ),
           principalId:
             "b27e3-f3kqs-v4awo-5naps-qdb2x-6pi6t-elxdc-snwxn-nz3jd-3445f-5qe",
           account: { domain: "one", label: "", accountId: "1" },
           balance: { ICP: BigInt(1 * E8S) },
         },
         {
+          principal: Principal.fromText(
+            "yosev-36gsi-oipnu-ayggf-4bnff-6ljlu-p3qos-xmqt7-dqmtm-i5mit-dae",
+          ),
           principalId:
             "yosev-36gsi-oipnu-ayggf-4bnff-6ljlu-p3qos-xmqt7-dqmtm-i5mit-dae",
           account: { domain: "two", label: "", accountId: "0" },

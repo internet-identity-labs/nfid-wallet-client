@@ -2,12 +2,11 @@ import clsx from "clsx"
 import React, { Dispatch, SetStateAction } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 
-import { Input } from "@nfid-frontend/ui"
+import { Input, phoneRules } from "@nfid-frontend/ui"
 
 import { Button } from "frontend/ui/atoms/button"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-import { phoneRules } from "frontend/ui/utils/validations"
 
 interface IProfileAddPhoneNumber {
   responseError?: string
@@ -54,7 +53,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
             register it with your existing Internet Identity anchor please see
             these{" "}
             <a
-              className="text-blue transition-opacity cursor-pointer hover:opacity-75"
+              className="transition-opacity cursor-pointer text-blue hover:opacity-75"
               href="https://docs.nfid.one/sign-in-with-ii-and-nfid"
               target="_blank"
               rel="noreferrer"

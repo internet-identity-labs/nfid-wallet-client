@@ -1,14 +1,13 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Input } from "@nfid-frontend/ui"
+import { captchaRules, Input } from "@nfid-frontend/ui"
 
 import { ElementProps } from "frontend/types/react"
 import { Button } from "frontend/ui/atoms/button"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 import { Challenge } from "frontend/ui/molecules/challenge"
-import { captchaRules } from "frontend/ui/utils/validations"
 
 interface CaptchaProps extends ElementProps<HTMLDivElement> {
   successPath?: string

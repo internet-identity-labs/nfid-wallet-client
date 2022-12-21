@@ -1,9 +1,9 @@
 import React, { HTMLAttributes } from "react"
 
-import { Button, TextArea } from "@nfid-frontend/ui"
-
 import ArrowBackIcon from "../../assets/arrow-back.svg"
 import { BlurredLoader } from "../../molecules/blurred-loader"
+import { Button } from "../../molecules/button"
+import { TextArea } from "../../molecules/input/text-area"
 
 export interface AuthRecoveryIIProps {
   onBack: () => void

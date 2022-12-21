@@ -2,6 +2,7 @@ import { Identity } from "@dfinity/agent/lib/cjs/auth"
 import { Principal } from "@dfinity/principal"
 import { decodeTokenIdentifier, principalToAddress } from "ictool"
 
+import { isHex } from "@nfid-frontend/utils"
 import { initActor } from "@nfid/integration"
 
 import { extIDL } from "frontend/integration/_ic_api/ext"
@@ -13,7 +14,6 @@ import {
   TransferRequest,
   TransferResult,
 } from "frontend/integration/_ic_api/ext.d"
-import { isHex } from "frontend/ui/utils"
 
 export async function transferEXT(
   token: string,

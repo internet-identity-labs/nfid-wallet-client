@@ -25,9 +25,9 @@ export interface PolicyRegisterRequest {
 }
 export type PolicyType = { threshold_policy: ThresholdPolicy }
 export interface ThresholdPolicy {
-  member_threshold: number
+  member_threshold: [] | [number]
   amount_threshold: bigint
-  wallet_ids: [] | [Array<string>]
+  wallets: [] | [Array<string>]
   currency: Currency
 }
 export interface Transaction {

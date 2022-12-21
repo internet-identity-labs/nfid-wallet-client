@@ -69,9 +69,11 @@ export function policyToCandid(policy: Policy): PolicyCandid {
       threshold_policy: {
         amount_threshold: policy.amountThreshold,
         currency: { ICP: null },
-        member_threshold: policy.memberThreshold,
-        wallet_ids:
-          typeof policy.wallets === "undefined" ? [] : [policy.wallets],
+        member_threshold:
+          typeof policy.memberThreshold === "undefined"
+            ? []
+            : [policy.memberThreshold],
+        wallets: typeof policy.wallets === "undefined" ? [] : [policy.wallets],
       },
     },
     state: objectStateToCandid(policy.state),
@@ -90,10 +92,13 @@ export function candidToPolicy(response: PolicyCandid): Policy {
       amountThreshold: threshold.amount_threshold,
       currency: Currency.ICP,
       id: response.id,
-      memberThreshold: threshold.member_threshold,
+      memberThreshold:
+        threshold.member_threshold.length === 0
+          ? undefined
+          : threshold.member_threshold[0],
       type: PolicyType.THRESHOLD_POLICY,
       wallets:
-        threshold.wallet_ids.length === 0 ? undefined : threshold.wallet_ids[0],
+        threshold.wallets.length === 0 ? undefined : threshold.wallets[0],
     }
   }
   throw Error("Unknown policy type")
@@ -134,6 +139,7 @@ export function candidToTransaction(response: TransactionCandid): Transaction {
     to: response.to,
     from_sub_account: response.from,
     vaultId: response.vault_id,
+    memo: response.memo.length === 0 ? undefined : response.memo[0]
   }
 }
 

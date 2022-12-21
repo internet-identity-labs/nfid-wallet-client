@@ -39,9 +39,9 @@ export const idlFactory = ({ IDL }: any) => {
     Archived: IDL.Null,
   })
   const ThresholdPolicy = IDL.Record({
-    member_threshold: IDL.Nat8,
+    member_threshold: IDL.Opt(IDL.Nat8),
     amount_threshold: IDL.Nat64,
-    wallet_ids: IDL.Opt(IDL.Vec(IDL.Text)),
+    wallets: IDL.Opt(IDL.Vec(IDL.Text)),
     currency: Currency,
   })
   const PolicyType = IDL.Variant({ threshold_policy: ThresholdPolicy })

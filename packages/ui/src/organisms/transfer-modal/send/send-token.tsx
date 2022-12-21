@@ -93,10 +93,10 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
       <div>
         <div className="text-xs text-black-base h-[142px]">
           <label htmlFor="amount">Amount to send</label>
-          <div className="flex items-center justify-between mt-2.5">
+          <div className="flex items-center mt-2.5">
             <input
               className={clsx(
-                "w-full text-4xl placeholder:text-black-base",
+                "min-w-0 text-4xl placeholder:text-black-base",
                 "outline-none border-none h-[66px] focus:ring-0",
                 "p-0",
               )}

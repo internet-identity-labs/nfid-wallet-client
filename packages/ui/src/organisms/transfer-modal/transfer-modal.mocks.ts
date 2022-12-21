@@ -12,7 +12,7 @@ export const WALLETS: IWallet[] = [
     ),
     accountId: "0",
     domain: "nfid.one",
-    balance: BigInt(10000),
+    balance: { ICP: BigInt(10000) },
   },
   {
     label: "Wallet 2",
@@ -21,12 +21,12 @@ export const WALLETS: IWallet[] = [
     ),
     accountId: "0",
     domain: "another-domain.com",
-    balance: BigInt(20000),
+    balance: { ICP: BigInt(20000) },
   },
 ]
 
 export const WALLET_OPTIONS = WALLETS.map((wallet) => ({
   label: wallet.label ?? "",
   value: wallet.principal?.toText() ?? "",
-  afterLabel: `${mockToPresentation(wallet.balance)} ICP`,
+  afterLabel: `${mockToPresentation(wallet.balance["ICP"])} ICP`,
 }))

@@ -27,7 +27,7 @@ export const RequestAccounts = ({
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
       value: principalToAddress(wallet.principal) ?? "",
-      afterLabel: `${toPresentation(wallet.balance)} ICP`,
+      afterLabel: `${toPresentation(wallet.balance["ICP"])} ICP`,
     }))
   }, [wallets])
 

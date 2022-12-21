@@ -117,13 +117,14 @@ const USE_APPLICATIONS_META_MOCK = {
 
 const USE_USER_BALANCES_MOCK = {
   balances: ICP_BALANCE_MOCKS.map((mock) => ({
+    principal: mock.principalObject.principal,
     principalId: mock.principalObject.principal.toString(),
     account: mock.principalObject.account,
     balance: {
       ICP: mock.getBalanceResponse,
     },
   })),
-  isLoadingPrincipals: false,
+  isLoading: false,
 }
 
 describe("useBalanceICPAll", () => {

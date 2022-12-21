@@ -1,4 +1,4 @@
-import { Account, Application } from "@nfid/integration"
+import { Account } from "@nfid/integration"
 
 import {
   EntrepotCollection,
@@ -22,9 +22,6 @@ export function sortUserTokens(
   tokens: UserNFTDetails[],
   fields: string[] = ["Token #"],
 ) {
-  // return [...fields]
-  //   .reverse()
-  //   .reduce((agg, field) => agg.sort(sortFuncs[field] || defaultSort), tokens)
   const func = sortFuncs[fields[0]]
   if (!func) console.warn(`Unknown sort method ${fields[0]}`)
   return tokens.sort(func || sortFuncs.default)

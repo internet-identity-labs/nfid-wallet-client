@@ -31,13 +31,13 @@ export const useBalanceICPAll = (
     useICPExchangeRate()
   const { token: dip20Token } = useAllTokenMeta()
 
-  const { balances, isLoadingPrincipals } = useUserBalances()
+  const { balances, isLoading: isLoadingBalances } = useUserBalances()
   console.debug("useUserBalances", { icpBalance: balances })
 
   const appAccountBalance = React.useMemo(() => {
     if (
       isLoadingICPExchangeRate ||
-      isLoadingPrincipals ||
+      isLoadingBalances ||
       !exchangeRate ||
       !balances
     ) {
@@ -76,7 +76,7 @@ export const useBalanceICPAll = (
     }
   }, [
     isLoadingICPExchangeRate,
-    isLoadingPrincipals,
+    isLoadingBalances,
     exchangeRate,
     balances,
     applications,
@@ -86,7 +86,7 @@ export const useBalanceICPAll = (
 
   console.debug("useBalanceICPAll", {
     isLoadingICPExchangeRate,
-    isLoadingPrincipals,
+    isLoadingPrincipals: isLoadingBalances,
     exchangeRate,
     applicationsMeta: applications,
     appAccountBalance,
@@ -94,7 +94,7 @@ export const useBalanceICPAll = (
   })
 
   return {
-    isLoading: isLoadingPrincipals || isLoadingICPExchangeRate,
+    isLoading: isLoadingBalances || isLoadingICPExchangeRate,
     appAccountBalance,
   }
 }

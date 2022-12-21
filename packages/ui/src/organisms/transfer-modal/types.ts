@@ -2,12 +2,16 @@ import { Principal } from "@dfinity/principal"
 
 export type Balance = bigint
 
+export type TokenBalance = {
+  [token: string]: Balance
+}
+
 export interface IWallet {
   label?: string
   principal?: Principal
   accountId: string
   domain: string
-  balance: Balance
+  balance: TokenBalance
 }
 
 export type NFT = {

@@ -2,6 +2,7 @@ import IconSvgArrow from "./arrow.svg"
 import IconSvgCalendar from "./calendar.svg"
 import IconSvgCancel from "./cancel.svg"
 import IconSvgCheckMark from "./check-mark.svg"
+import IconSvgChevron from "./chevron.svg"
 import IconSvgCopy from "./copy.svg"
 import IconSvgDesktop from "./desktop.svg"
 import IconSvgDfinity from "./dfinity.svg"
@@ -33,6 +34,7 @@ export {
   IconSvgCalendar,
   IconSvgCancel,
   IconSvgCheckMark,
+  IconSvgChevron,
   IconSvgCopy,
   IconSvgDesktop,
   IconSvgDfinity,
@@ -64,6 +66,7 @@ export { ReactComponent as IconCmpArrow } from "./arrow.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"
 export { ReactComponent as IconCmpCheckMark } from "./check-mark.svg"
+export { ReactComponent as IconCmpChevron } from "./chevron.svg"
 export { ReactComponent as IconCmpCopy } from "./copy.svg"
 export { ReactComponent as IconCmpDesktop } from "./desktop.svg"
 export { ReactComponent as IconCmpDokument } from "./document.svg"

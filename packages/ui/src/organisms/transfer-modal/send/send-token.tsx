@@ -7,8 +7,11 @@ import { Button } from "../../../molecules/button"
 import { InputDropdown } from "../../../molecules/input-dropdown"
 import { Tooltip } from "../../../molecules/tooltip"
 import { sumRules } from "../../../utils/validations"
+import {
+  SelectTokenMenu,
+  TokenOption,
+} from "../../select-token/select-token-menu"
 import ArrowWhite from "../assets/arrowWhite.svg"
-import { SelectedToken } from "../selected-token"
 import { IWallet } from "../types"
 import { validateAddressField, validateTransferAmountField } from "./utils"
 
@@ -18,26 +21,32 @@ export interface ITransferToken {
 }
 
 export type TokenConfig = {
-  symbol: string
+  value: string
   icon: string
   fee: bigint
   toPresentation: (amount?: bigint) => number
 }
 
 interface ITransferModalSendToken {
-  onTokenSubmit: (values: ITransferToken) => void
+  onSelectToken: (tokenValue: string) => void
   onSelectWallet: (walletId: string) => void
-  tokenConfig: TokenConfig
-  walletOptions: { label: string; value: string; afterLabel: string }[]
+  onTokenSubmit: (values: ITransferToken) => void
+  selectedToken: TokenOption
   selectedWalletId?: string
+  tokenConfig: TokenConfig
+  tokenOptions: TokenOption[]
+  walletOptions: { label: string; value: string; afterLabel: string }[]
   wallets?: IWallet[]
 }
 
 export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
-  onTokenSubmit,
+  onSelectToken,
   onSelectWallet,
-  tokenConfig,
+  onTokenSubmit,
+  selectedToken,
   selectedWalletId,
+  tokenConfig,
+  tokenOptions,
   walletOptions,
   wallets,
 }) => {
@@ -60,8 +69,9 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   })
 
   const setFullAmount = useCallback(() => {
-    if (!selectedWallet?.balance) return
-    const amount = selectedWallet.balance - tokenConfig.fee
+    if (!selectedWallet?.balance[selectedToken.value]) return
+
+    const amount = selectedWallet.balance[selectedToken.value] - tokenConfig.fee
     if (amount < 0) {
       setValue("amount", "0")
       setError("amount", { message: "Insufficient funds" })
@@ -69,7 +79,14 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
         resetField("amount")
       }, 2000)
     } else setValue("amount", tokenConfig.toPresentation(amount))
-  }, [selectedWallet?.balance, setValue, tokenConfig, setError, resetField])
+  }, [
+    selectedWallet?.balance,
+    selectedToken.value,
+    tokenConfig,
+    setValue,
+    setError,
+    resetField,
+  ])
 
   return (
     <>
@@ -92,9 +109,10 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
                 validate: validateTransferAmountField,
               })}
             />
-            <SelectedToken
-              icon={tokenConfig.icon}
-              symbol={tokenConfig.symbol}
+            <SelectTokenMenu
+              tokenOptions={tokenOptions}
+              selectedToken={selectedToken}
+              onSelectToken={onSelectToken}
             />
           </div>
           <span className={clsx("absolute text-red-600")}>
@@ -108,7 +126,8 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
           />
           <div className="flex items-center justify-between mt-2 text-gray-400">
             <p>
-              Transfer fee: {tokenConfig.toPresentation(tokenConfig.fee)} ICP
+              Transfer fee: {tokenConfig.toPresentation(tokenConfig.fee)}{" "}
+              {tokenConfig.value}
             </p>
             <div>
               <span>Balance: </span>
@@ -118,8 +137,10 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
                   id="full-amount-button"
                   onClick={setFullAmount}
                 >
-                  {tokenConfig.toPresentation(selectedWallet?.balance)}{" "}
-                  {tokenConfig.symbol}
+                  {tokenConfig.toPresentation(
+                    selectedWallet?.balance[selectedToken.value],
+                  )}{" "}
+                  {tokenConfig.value}
                 </span>
               </Tooltip>
             </div>

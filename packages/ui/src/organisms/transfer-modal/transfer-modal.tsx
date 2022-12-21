@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 
+import { TokenOption } from "../select-token/select-token-menu"
 import { TransferModalReceive } from "./receive"
 import { TokenType, TransferModalSend } from "./send"
 import { ITransferNFT } from "./send/send-nft"
@@ -13,15 +14,18 @@ interface ITransferModal {
   nfts: NFT[]
   onClose: () => void
   onNFTSubmit: (values: ITransferNFT) => void
+  onSelectToken: (tokenValue: string) => void
   onSelectWallet: (walletId: string) => void
   onTokenSubmit: (values: ITransferToken) => void
   selectedNFTDetails?: NFT
   selectedNFTIds: string[]
+  selectedToken: TokenOption
   selectedWalletId?: string
   setSelectedNFTs: (nftIds: string[]) => void
   successMessage: string
   toggleTokenType: () => void
   tokenConfig: TokenConfig
+  tokenOptions: TokenOption[]
   tokenType: TokenType
   transactionRoute: string
   walletOptions: { label: string; value: string; afterLabel: string }[]
@@ -34,16 +38,19 @@ export const TransferModal: React.FC<ITransferModal> = ({
   nfts,
   onClose,
   onNFTSubmit,
+  onSelectToken,
   onSelectWallet,
   onTokenSubmit,
   selectedNFTDetails,
   selectedNFTIds,
+  selectedToken,
   selectedWalletId,
   setSelectedNFTs,
   successMessage,
   toggleTokenType,
-  tokenType,
   tokenConfig,
+  tokenOptions,
+  tokenType,
   transactionRoute,
   walletOptions,
   wallets,
@@ -76,19 +83,22 @@ export const TransferModal: React.FC<ITransferModal> = ({
         )}
       >
         <TransferModalSend
-          tokenType={tokenType}
-          tokenConfig={tokenConfig}
-          toggleTokenType={toggleTokenType}
           nfts={nfts}
-          wallets={wallets}
-          walletOptions={walletOptions}
-          onTokenSubmit={onTokenSubmit}
           onNFTSubmit={onNFTSubmit}
-          setSelectedNFTs={setSelectedNFTs}
-          selectedNFTIds={selectedNFTIds}
-          selectedNFTDetails={selectedNFTDetails}
+          onSelectToken={onSelectToken}
           onSelectWallet={onSelectWallet}
+          onTokenSubmit={onTokenSubmit}
+          selectedNFTDetails={selectedNFTDetails}
+          selectedNFTIds={selectedNFTIds}
+          selectedToken={selectedToken}
           selectedWalletId={selectedWalletId}
+          setSelectedNFTs={setSelectedNFTs}
+          toggleTokenType={toggleTokenType}
+          tokenConfig={tokenConfig}
+          tokenOptions={tokenOptions}
+          tokenType={tokenType}
+          walletOptions={walletOptions}
+          wallets={wallets}
         />
       </div>
 

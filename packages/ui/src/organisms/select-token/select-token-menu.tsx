@@ -4,7 +4,12 @@ import clsx from "clsx"
 import { SelectedToken } from "./selected-token"
 import { TokenOption } from "./token-options"
 
-export type TokenOption = { label: string; value: string; icon: string }
+export type TokenOption = {
+  label: string
+  value: string
+  icon: string
+  tokenStandard: string
+}
 
 type SelectTokenMenuProps = {
   tokenOptions: TokenOption[]

@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"
 import { useAtom } from "jotai"
@@ -13,9 +12,9 @@ import {
   TransferModal,
   transferModalAtom,
 } from "@nfid-frontend/ui"
-import { isHex } from "@nfid-frontend/utils"
 import { toPresentation } from "@nfid/integration/token/icp"
 
+import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -29,6 +28,7 @@ import { ProfileConstants } from "../routes"
 import { transformToAddress } from "./transform-to-address"
 
 export const ProfileTransferModal = () => {
+  const { reloadBalances } = useUserBalances()
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
   const [successMessage, setSuccessMessage] = useState("")
@@ -99,6 +99,7 @@ export const ProfileTransferModal = () => {
     try {
       setIsLoading(true)
       await transfer(validAddress, String(values.amount))
+      reloadBalances()
       setSuccessMessage(`${values.amount} ${selectedToken.value} was sent`)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")

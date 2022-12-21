@@ -13,7 +13,10 @@ import {
 } from "../../select-token/select-token-menu"
 import ArrowWhite from "../assets/arrowWhite.svg"
 import { IWallet } from "../types"
-import { validateAddressField, validateTransferAmountField } from "./utils"
+import {
+  makeAddressFieldValidation,
+  validateTransferAmountField,
+} from "./utils"
 
 export interface ITransferToken {
   amount: string | number
@@ -169,7 +172,9 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             }
             errorText={errors.to?.message}
             registerFunction={register("to", {
-              validate: validateAddressField,
+              validate: makeAddressFieldValidation(
+                selectedToken.tokenStandard === "ICP",
+              ),
               required: "This field cannot be empty",
             })}
             setValue={(value) => setValue("to", value)}

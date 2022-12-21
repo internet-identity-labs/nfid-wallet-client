@@ -5,7 +5,8 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
-import { getMetamaskAuthSession } from "frontend/integration/signin/metamask"
+import { getMetamaskAuthSession } from "frontend/integration/sign-in/metamask"
+import { getWalletConnectAuthSession } from "frontend/integration/sign-in/wallet-connect"
 import {
   AuthSession,
   LocalDeviceAuthSession,
@@ -31,8 +32,13 @@ export type Events =
   | { type: "done.invoke.registration"; data?: AuthSession }
   | { type: "done.invoke.registerDevice"; data: AuthSession }
   | { type: "done.invoke.getMetamaskAuthSession"; data: AuthSession }
+  | { type: "done.invoke.getWalletConnectAuthSession"; data: AuthSession }
   | {
       type: "error.platform.getMetamaskAuthSession"
+      data: { message: string }
+    }
+  | {
+      type: "error.platform.getWalletConnectAuthSession"
       data: { message: string }
     }
   | { type: "done.invoke.signInSameDevice"; data: LocalDeviceAuthSession }
@@ -54,6 +60,7 @@ export type Events =
   | { type: "AUTH_WITH_OTHER" }
   | { type: "AUTH_WITH_II" }
   | { type: "AUTH_WITH_METAMASK" }
+  | { type: "AUTH_WITH_WALLET_CONNECT" }
   | {
       type: "AUTH_WITH_EXISTING_ANCHOR"
       data: { anchor: number; withSecurityDevices?: boolean }
@@ -127,6 +134,9 @@ const UnknownDeviceMachine =
             AUTH_WITH_METAMASK: {
               target: "AuthWithMetamask",
             },
+            AUTH_WITH_WALLET_CONNECT: {
+              target: "AuthWithWalletConnect",
+            },
           },
         },
         AuthWithGoogle: {
@@ -175,6 +185,24 @@ const UnknownDeviceMachine =
           invoke: {
             src: "getMetamaskAuthSession",
             id: "getMetamaskAuthSession",
+            onDone: [
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "End",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "RegistrationMachine",
+              },
+            ],
+            onError: { target: "AuthSelection", actions: "handleError" },
+          },
+        },
+        AuthWithWalletConnect: {
+          invoke: {
+            src: "getWalletConnectAuthSession",
+            id: "getWalletConnectAuthSession",
             onDone: [
               {
                 cond: "isExistingAccount",
@@ -277,6 +305,7 @@ const UnknownDeviceMachine =
         AuthWithGoogleMachine,
         AuthWithIIMachine,
         getMetamaskAuthSession,
+        getWalletConnectAuthSession,
       },
     },
   )

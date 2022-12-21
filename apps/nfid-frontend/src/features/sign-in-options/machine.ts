@@ -5,11 +5,11 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 import { FrontendDelegation } from "@nfid/integration"
 
 import { checkRegistrationStatus } from "frontend/integration/identity-manager/services"
+import { getIIAuthSessionService } from "frontend/integration/sign-in/internet-identity"
 import {
   checkTentativeDevice,
   createTentativeDevice,
 } from "frontend/integration/signin"
-import { getIIAuthSessionService } from "frontend/integration/signin/signin-with-ii"
 import { AuthSession, IIAuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 

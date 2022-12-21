@@ -1,20 +1,4 @@
 import { Secp256k1KeyIdentity } from "@dfinity/identity"
-import { configureChains, createClient, signMessage } from "@wagmi/core"
-import {
-  mainnet,
-  arbitrum,
-  avalanche,
-  bsc,
-  fantom,
-  optimism,
-  polygon,
-} from "@wagmi/core/chains"
-import {
-  EthereumClient,
-  modalConnectors,
-  walletConnectProvider,
-} from "@web3modal/ethereum"
-import { Web3Modal } from "@web3modal/html"
 import { ethers, providers } from "ethers"
 
 import {
@@ -30,7 +14,6 @@ import { MetamaskAuthSession } from "frontend/state/authentication"
 import { fetchProfile } from "../identity-manager"
 
 declare const METAMASK_SIGNIN_MESSAGE: string
-declare const WALLET_CONNECT_PROJECT_ID: string
 
 /**
  * Request secret from a canister based on signature and restored from it address.
@@ -77,48 +60,6 @@ export async function getMetamaskSignature() {
   return { signature, accounts }
 }
 
-export async function getWalletConnectSignature() {
-  const chains = [mainnet, arbitrum, avalanche, bsc, fantom, optimism, polygon]
-
-  const { provider } = configureChains(chains, [
-    walletConnectProvider({ projectId: WALLET_CONNECT_PROJECT_ID }),
-  ])
-  const wagmiClient = createClient({
-    autoConnect: true,
-    connectors: modalConnectors({ appName: "web3Modal", chains }),
-    provider,
-  })
-
-  const ethereumClient = new EthereumClient(wagmiClient, chains)
-  const web3Modal = new Web3Modal(
-    { projectId: WALLET_CONNECT_PROJECT_ID },
-    ethereumClient,
-  )
-
-  web3Modal.closeModal()
-  web3Modal.openModal()
-
-  const signature: string = await new Promise((resolve, reject) => {
-    let address: string
-    web3Modal.subscribeSelectedChain((newState) => {
-      console.log(newState)
-      if (newState.address && newState.address !== address) {
-        const signature = signMessage({ message: METAMASK_SIGNIN_MESSAGE })
-        address = newState.address
-        resolve(signature)
-      }
-    })
-  })
-
-  console.log(ethereumClient.getAccount())
-
-  const accounts: string = ethereumClient.getAccount().address!
-  web3Modal.closeModal()
-  return { signature, accounts }
-}
-
-getWalletConnectSignature()
-
 /**
  * Create an auth session from II sdk
  * @returns an AuthSession powered by Metamask
@@ -126,8 +67,7 @@ getWalletConnectSignature()
 // TODO this function is same with signin-with-ii
 // we need to make it reusable
 export async function getMetamaskAuthSession() {
-  const { signature, accounts } = await getWalletConnectSignature()
-  // const { signature, accounts } = await getWalletConnectSignature()
+  const { signature, accounts } = await getMetamaskSignature()
 
   const identity = await getIdentity(signature)
 

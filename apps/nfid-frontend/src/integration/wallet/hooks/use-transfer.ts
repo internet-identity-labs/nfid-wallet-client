@@ -133,7 +133,7 @@ export const useTransfer = ({
         }
       })
     },
-    [accountId, domain, tokenCanisterId, walletDelegation],
+    [accountId, domain, tokenCanisterId, transformAmount, walletDelegation],
   )
 
   console.debug("useTransfer", { isValidatingWalletDelegation })

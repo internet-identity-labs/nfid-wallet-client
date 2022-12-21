@@ -11,7 +11,7 @@ const ProfileInternetComputerWallets = () => {
 
   return (
     <InternetComputerWalletsPage
-      icpBlanceSheet={
+      balanceSheet={
         token && appAccountBalance ? appAccountBalance[token] : undefined
       }
     />

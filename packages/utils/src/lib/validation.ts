@@ -16,3 +16,8 @@ export const minMax =
     if (max !== undefined && Number(value) > max) return toBigError
     return true
   }
+
+export const isHex = (h: string) => {
+  const re = /[0-9A-Fa-f]{6}/g
+  return re.test(h)
+}

@@ -1,22 +1,13 @@
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import { InputDropdown } from "packages/ui/src/molecules/input-dropdown"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useMemo } from "react"
 import { useForm } from "react-hook-form"
-
-import {
-  toPresentation,
-  WALLET_FEE,
-  WALLET_FEE_E8S,
-} from "@nfid/integration/token/icp"
-
-import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
-import { Button } from "frontend/ui/atoms/button"
-import { sumRules } from "frontend/ui/utils/validations"
 
 import { DropdownSelect } from "../../../atoms/dropdown-select"
 import { IconSvgDfinity } from "../../../atoms/icons"
+import { Button } from "../../../molecules/button"
+import { InputDropdown } from "../../../molecules/input-dropdown"
 import { Tooltip } from "../../../molecules/tooltip"
+import { sumRules } from "../../../utils/validations"
 import ArrowWhite from "../assets/arrowWhite.svg"
 import { IWallet } from "../types"
 import { validateAddressField, validateTransferAmountField } from "./utils"
@@ -26,40 +17,33 @@ export interface ITransferToken {
   to: string
 }
 
+export type TokenConfig = {
+  symbol: string
+  fee: bigint
+  toPresentation: (amount?: bigint) => number
+}
+
 interface ITransferModalSendToken {
   onTokenSubmit: (values: ITransferToken) => void
+  onSelectWallet: (walletId: string) => void
+  tokenConfig: TokenConfig
+  walletOptions: { label: string; value: string; afterLabel: string }[]
+  selectedWalletId?: string
   wallets?: IWallet[]
 }
 
 export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   onTokenSubmit,
+  onSelectWallet,
+  tokenConfig,
+  selectedWalletId,
+  walletOptions,
   wallets,
 }) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
-
-  const [selectedWallets, setSelectedWallets] = useState<string[]>([])
-
-  const currentWallet = useMemo(() => {
-    if (!selectedWallets.length) return
-    return wallets?.find((w) => w.principal?.toText() === selectedWallets[0])
-  }, [selectedWallets, wallets])
-
-  const walletsOptions = useMemo(() => {
-    return wallets?.map((wallet) => ({
-      label: wallet.label ?? "",
-      value: wallet.principal?.toText() ?? "",
-      afterLabel: `${toPresentation(wallet.balance)} ICP`,
-    }))
-  }, [wallets])
-
-  useEffect(() => {
-    if (currentWallet)
-      setTransferModalState({
-        ...transferModalState,
-        selectedWallet: currentWallet,
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentWallet])
+  const selectedWallet = useMemo(() => {
+    if (!selectedWalletId) return
+    return wallets?.find((w) => w.principal?.toText() === selectedWalletId)
+  }, [selectedWalletId, wallets])
 
   const {
     register,
@@ -75,16 +59,16 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   })
 
   const setFullAmount = useCallback(() => {
-    if (!currentWallet?.balance) return
-    const amount = currentWallet.balance - BigInt(WALLET_FEE_E8S)
+    if (!selectedWallet?.balance) return
+    const amount = selectedWallet.balance - tokenConfig.fee
     if (amount < 0) {
       setValue("amount", "0")
       setError("amount", { message: "Insufficient funds" })
       setTimeout(() => {
         resetField("amount")
       }, 2000)
-    } else setValue("amount", toPresentation(amount))
-  }, [currentWallet?.balance, resetField, setError, setValue])
+    } else setValue("amount", tokenConfig.toPresentation(amount))
+  }, [selectedWallet?.balance, setValue, tokenConfig, setError, resetField])
 
   return (
     <>
@@ -127,7 +111,9 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             )}
           />
           <div className="flex items-center justify-between mt-2 text-gray-400">
-            <p>Transfer fee: {WALLET_FEE} ICP</p>
+            <p>
+              Transfer fee: {tokenConfig.toPresentation(tokenConfig.fee)} ICP
+            </p>
             <div>
               <span>Balance: </span>
               <Tooltip tip="Click to select full balance">
@@ -136,7 +122,8 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
                   id="full-amount-button"
                   onClick={setFullAmount}
                 >
-                  {toPresentation(currentWallet?.balance)} {"ICP"}
+                  {tokenConfig.toPresentation(selectedWallet?.balance)}{" "}
+                  {tokenConfig.symbol}
                 </span>
               </Tooltip>
             </div>
@@ -145,9 +132,9 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
         <div className="mt-5 space-y-2 text-black-base">
           <DropdownSelect
             label="From"
-            options={walletsOptions ?? []}
-            selectedValues={selectedWallets}
-            setSelectedValues={setSelectedWallets}
+            options={walletOptions ?? []}
+            selectedValues={selectedWalletId ? [selectedWalletId] : []}
+            setSelectedValues={([walletId]) => onSelectWallet(walletId)}
             isMultiselect={false}
             firstSelected
           />
@@ -155,8 +142,8 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             label="To"
             placeholder="Recipient principal or account ID"
             options={
-              walletsOptions?.filter(
-                (wallet) => wallet.value !== selectedWallets[0],
+              walletOptions?.filter(
+                (wallet) => wallet.value !== selectedWalletId,
               ) ?? []
             }
             errorText={errors.to?.message}
@@ -170,16 +157,17 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
       </div>
       <Button
         block
-        primary
         className="flex items-center justify-center mt-auto"
         onClick={handleSubmit(onTokenSubmit)}
         id="send-token-button"
+        icon={
+          <img
+            src={ArrowWhite}
+            alt="ArrowWhite"
+            className="w-[18px] h-[18px mr-[10px]"
+          />
+        }
       >
-        <img
-          src={ArrowWhite}
-          alt="ArrowWhite"
-          className="w-[18px] h-[18px mr-[10px]"
-        />
         Send
       </Button>
     </>

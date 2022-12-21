@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
-import { Input } from "@nfid-frontend/ui"
+import { anchorRules, Input } from "@nfid-frontend/ui"
 
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
@@ -12,7 +12,6 @@ import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Separator } from "frontend/ui/atoms/separator"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { anchorRules } from "frontend/ui/utils/validations"
 
 import SecurityKey from "./assets/security-key.svg"
 

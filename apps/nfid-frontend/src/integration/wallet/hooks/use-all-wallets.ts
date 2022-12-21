@@ -1,24 +1,23 @@
 import { principalToAddress } from "ictool"
 import useSWR from "swr"
 
-import { getBalance } from "@nfid/integration"
+import { getBalance, getWalletName } from "@nfid/integration"
 
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
-import { GetWalletName } from "frontend/ui/pages/new-profile/nfts/util"
 import { sortAlphabetic, keepStaticOrder } from "frontend/ui/utils/sorting"
 
 export const useAllWallets = () => {
   const { principals } = useAllPrincipals()
   const applications = useApplicationsMeta()
 
-  const { data: wallets, isValidating: isLoadingWallets } = useSWR(
+  const { data: wallets = [], isValidating: isLoadingWallets } = useSWR(
     principals ? "allWallets" : null,
     async () => {
       if (!principals) throw new Error("missing req")
       return await Promise.all(
         principals.map(async ({ principal, account }) => ({
-          label: GetWalletName(
+          label: getWalletName(
             applications.applicationsMeta ?? [],
             account.domain,
             account.accountId,

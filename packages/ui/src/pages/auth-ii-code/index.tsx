@@ -1,8 +1,7 @@
-import { ImPlus, ImSpinner } from "react-icons/im"
-
-import { Button } from "@nfid-frontend/ui"
+import { ImSpinner } from "react-icons/im"
 
 import { Copy } from "../../atoms/copy"
+import { Button } from "../../molecules/button"
 
 export interface IIAuthCodeProps {
   secureCode: string

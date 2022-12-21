@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Balance } from "@nfid/integration"
+export type Balance = bigint
 
 export interface IWallet {
   label?: string
@@ -18,8 +18,5 @@ export type NFT = {
     name: string
   }
   principal: Principal
-  account: {
-    domain: string
-    accountId: string
-  }
+  walletName: string
 }

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IOption } from "@nfid-frontend/ui"
+import { isHex } from "@nfid-frontend/utils"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { icpToUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
@@ -11,7 +12,6 @@ import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/u
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
-import { isHex } from "frontend/ui/utils"
 import { useTimer } from "frontend/ui/utils/use-timer"
 
 interface IRequestTransfer {

@@ -9,7 +9,7 @@
   },
   "explorer.fileNesting.expand": true,
   "explorer.fileNesting.enabled": true,
-  "cSpell.words": ["INFT"],
+  "cSpell.words": ["INFT", "wagmi"],
   "jest.nodeEnv": {
     "experimental-vm-modules": true
   },

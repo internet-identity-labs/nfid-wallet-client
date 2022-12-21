@@ -37,7 +37,7 @@ import {
 } from "."
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { identityFromDeviceList } from "../identity"
-import { getMetamaskAccounts } from "../signin/metamask"
+import { getMetamaskAccounts } from "../sign-in/metamask"
 import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(

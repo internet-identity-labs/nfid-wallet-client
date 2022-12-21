@@ -48,4 +48,7 @@ export const serviceConfig = {
     process.env.ETH_SECRET_STORAGE_CANISTER_ID,
   ),
   METAMASK_SIGNIN_MESSAGE: JSON.stringify(process.env.METAMASK_SIGNIN_MESSAGE),
+  WALLET_CONNECT_PROJECT_ID: JSON.stringify(
+    process.env.WALLET_CONNECT_PROJECT_ID,
+  ),
 }

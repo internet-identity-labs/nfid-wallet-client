@@ -15,9 +15,13 @@ export const SelectedToken: React.FC<SelectedTokenProps> = ({
     <div
       className={clsx("flex items-center space-x-2", "text-sm font-semibold")}
     >
-      <img src={icon} alt={`icon-${symbol}`} className="w-6 h-6" />
-      <span>{symbol}</span>
-      <img src={IconSvgChevron} alt={`icon-chevron`} />
+      <div>
+        <img src={icon} alt={`icon-${symbol}`} width={45} height={45} />
+      </div>
+      <div>{symbol}</div>
+      <div>
+        <img src={IconSvgChevron} alt={`icon-chevron`} width={20} height={20} />
+      </div>
     </div>
   )
 }

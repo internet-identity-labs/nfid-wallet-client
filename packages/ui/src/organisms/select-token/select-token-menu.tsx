@@ -29,7 +29,7 @@ export const SelectTokenMenu: React.FC<SelectTokenMenuProps> = ({
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Content
-        className={clsx("rounded py-2 space-y-1 shadow-lg")}
+        className={clsx("rounded py-2 space-y-1 shadow-lg bg-white z-[1000]")}
         sideOffset={5}
       >
         <DropdownMenu.Arrow className="fill-white" />

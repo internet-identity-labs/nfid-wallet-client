@@ -14,7 +14,7 @@ export const TokenOption: React.FC<TokenOptionProps> = ({
   return (
     <div
       className={clsx(
-        "flex items-center space-x-2 shrink-0 p-2",
+        "flex items-center space-x-2 shrink-0 p-2 hover:cursor-pointer",
         "text-sm font-semibold border border-transparent",
         isSelected && "bg-gray-100",
       )}

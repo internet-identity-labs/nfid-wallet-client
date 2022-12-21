@@ -5,7 +5,7 @@ import { DropdownSelect } from "../../../atoms/dropdown-select"
 import { Button } from "../../../molecules/button"
 import { InputDropdown } from "../../../molecules/input-dropdown"
 import ArrowWhite from "../assets/arrowWhite.svg"
-import { IWallet, NFT } from "../types"
+import { NFT } from "../types"
 import { TransferSendNFTInfo } from "./nft/nft-info"
 import { TransferSendNFTPlaceholder } from "./nft/nft-placeholder"
 import { validateAddressField } from "./utils"
@@ -20,7 +20,7 @@ interface ITransferModalSendNFT {
   onNFTSubmit: (values: ITransferNFT) => void
   setSelectedNFTs: (nftIds: string[]) => void
   selectedNFTIds: string[]
-  wallets?: IWallet[]
+  walletOptions?: { label: string; value: string }[]
   selectedNFTDetails?: NFT
 }
 
@@ -28,24 +28,17 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   nfts,
   onNFTSubmit,
   setSelectedNFTs,
-  wallets,
+  walletOptions,
   selectedNFTDetails,
   selectedNFTIds,
 }) => {
   const nftOptions = useMemo(() => {
-    return nfts.map((nft) => ({
+    return nfts?.map((nft) => ({
       label: nft.name,
       value: nft.tokenId,
       icon: nft.assetPreview,
     }))
   }, [nfts])
-
-  const walletsOptions = useMemo(() => {
-    return wallets?.map((wallet) => ({
-      label: wallet.label ?? "",
-      value: wallet.principal?.toText() ?? "",
-    }))
-  }, [wallets])
 
   const {
     register,
@@ -83,7 +76,7 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
             label="To"
             placeholder="Recipient principal or account ID"
             options={
-              walletsOptions?.filter(
+              walletOptions?.filter(
                 (wallet) =>
                   wallet.value !== selectedNFTDetails?.principal.toText(),
               ) ?? []

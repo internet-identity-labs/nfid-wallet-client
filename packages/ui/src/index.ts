@@ -38,3 +38,5 @@ export * from "./pages/auth-ii-complete"
 export * from "./pages/auth-ii-code"
 
 export * from "./templates/approve-template"
+
+export * from "./utils/validations"

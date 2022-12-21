@@ -1,9 +1,10 @@
 import clsx from "clsx"
 import { useAtom } from "jotai"
 
+import { transferModalAtom } from "@nfid-frontend/ui"
+
 import { Button } from "frontend/ui/atoms/button"
 
-import { transferModalAtom } from "../transfer-modal/state"
 import SendReceiveIcon from "./send_receive.svg"
 
 export const SendReceiveButton = () => {

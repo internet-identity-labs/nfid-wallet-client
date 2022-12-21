@@ -43,11 +43,6 @@ export const getUrl = (url: string) => {
   return new URL(url)
 }
 
-export const isHex = (h: string) => {
-  const re = /[0-9A-Fa-f]{6}/g
-  return re.test(h)
-}
-
 /**
  * Turn Hello World! into hello-world
  *

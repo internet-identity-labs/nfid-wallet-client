@@ -1,7 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
-import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { BlurredLoader } from "../../molecules/blurred-loader"
+import { Button } from "../../molecules/button"
 
 export interface IIAuthAddRemoteDeviceProps {
   anchor: string | number

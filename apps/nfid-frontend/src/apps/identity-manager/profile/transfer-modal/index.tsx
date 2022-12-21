@@ -3,10 +3,18 @@ import clsx from "clsx"
 import { principalToAddress } from "ictool"
 import { useAtom } from "jotai"
 import { useState } from "react"
+import React from "react"
 import { toast } from "react-toastify"
 import { mutate } from "swr"
 
-import { ITransferToken, ITransferNFT, TransferModal } from "@nfid-frontend/ui"
+import {
+  ITransferToken,
+  ITransferNFT,
+  TransferModal,
+  transferModalAtom,
+} from "@nfid-frontend/ui"
+import { isHex } from "@nfid-frontend/utils"
+import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
 
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -14,24 +22,31 @@ import { useProfile } from "frontend/integration/identity-manager/queries"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { Loader } from "frontend/ui/atoms/loader"
-import { isHex } from "frontend/ui/utils"
 
 import { useAllNFTs } from "../assets/hooks"
 import { ProfileConstants } from "../routes"
-import { transferModalAtom } from "./state"
 
 export const ProfileTransferModal = () => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
   const [successMessage, setSuccessMessage] = useState("")
+  const [selectedWalletId, setSelectedWalletId] = useState("")
   const { transfer } = useTransfer({
     accountId: transferModalState.selectedWallet.accountId,
     domain: transferModalState.selectedWallet.domain,
   })
   const { wallets } = useAllWallets()
-  const { data: nfts } = useAllNFTs()
+  const { nfts } = useAllNFTs()
   const { profile } = useProfile()
   const [isLoading, setIsLoading] = useState(false)
+
+  const walletOptions = React.useMemo(() => {
+    return wallets?.map((wallet) => ({
+      label: wallet.label ?? "",
+      value: wallet.principal?.toText() ?? "",
+      afterLabel: `${toPresentation(wallet.balance)} ICP`,
+    }))
+  }, [wallets])
 
   const onTokenSubmit = async (values: ITransferToken) => {
     let validAddress = isHex(values.to)
@@ -65,6 +80,22 @@ export const ProfileTransferModal = () => {
       setIsLoading(false)
     }
   }
+
+  const handleSelectWallet = React.useCallback(
+    (walletId: string) => {
+      const wallet = wallets?.find(
+        (wallet) => wallet.principal.toString() === walletId,
+      )
+      if (wallet) {
+        setSelectedWalletId(walletId)
+        setTransferModalState({
+          ...transferModalState,
+          selectedWallet: wallet,
+        })
+      }
+    },
+    [setTransferModalState, transferModalState, wallets],
+  )
 
   const onNFTSubmit = async (values: ITransferNFT) => {
     if (!profile?.anchor) throw new Error("No profile anchor")
@@ -109,6 +140,11 @@ export const ProfileTransferModal = () => {
       <TransferModal
         transactionRoute={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
         tokenType={transferModalState.sendType}
+        tokenConfig={{
+          symbol: "ICP",
+          fee: BigInt(WALLET_FEE_E8S),
+          toPresentation,
+        }}
         toggleTokenType={() =>
           setTransferModalState({
             ...transferModalState,
@@ -117,6 +153,7 @@ export const ProfileTransferModal = () => {
         }
         nfts={nfts ?? []}
         wallets={wallets}
+        walletOptions={walletOptions}
         onTokenSubmit={onTokenSubmit}
         onNFTSubmit={onNFTSubmit}
         onClose={() => {
@@ -139,6 +176,8 @@ export const ProfileTransferModal = () => {
         selectedNFTDetails={nfts?.find(
           (nft) => nft.tokenId === transferModalState.selectedNFT[0],
         )}
+        onSelectWallet={handleSelectWallet}
+        selectedWalletId={selectedWalletId}
       />
     </div>
   )

@@ -2,9 +2,7 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Input } from "@nfid-frontend/ui"
-
-import { isValidToken, tokenRules } from "frontend/ui/utils/validations"
+import { Input, isValidToken, tokenRules } from "@nfid-frontend/ui"
 
 import { Button } from "../button"
 

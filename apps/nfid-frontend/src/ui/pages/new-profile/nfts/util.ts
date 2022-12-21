@@ -81,15 +81,3 @@ export function userTokensByCollection(tokens: UserNFTDetails[]) {
     {},
   )
 }
-
-export function GetWalletName(
-  applications: Application[],
-  domain: string,
-  accountId: number | string,
-) {
-  if (!applications) return ""
-
-  return `${
-    applications.find((x) => x.domain === domain)?.name ?? "NFID"
-  } account ${Number(accountId) + 1}`
-}

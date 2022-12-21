@@ -1,10 +1,10 @@
 import { Principal } from "@dfinity/principal"
 
-import { isHex } from "frontend/ui/utils"
+import { isHex } from "@nfid-frontend/utils"
 
 export const validateAddressField = (string: string) => {
   if (!string.length) return "This field cannot be empty"
-  let value = string.replace(/\s/g, "")
+  const value = string.replace(/\s/g, "")
   if (isHex(value) && value.length === 64) return true
 
   try {

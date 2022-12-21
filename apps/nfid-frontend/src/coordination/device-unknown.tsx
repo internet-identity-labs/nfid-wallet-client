@@ -70,6 +70,9 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
           onSelectMetamaskAuthorization={() => {
             send({ type: "AUTH_WITH_METAMASK" })
           }}
+          onSelectWConnectAuthorization={() => {
+            send({ type: "AUTH_WITH_WALLET_CONNECT" })
+          }}
           onToggleAdvancedOptions={() => send("AUTH_WITH_OTHER")}
           showAdvancedOptions={state.matches("ExistingAnchor")}
           isLoading={
@@ -111,6 +114,7 @@ export function UnknownDeviceCoordinator({ actor }: Actor<UnknownDeviceActor>) {
         </BlurredLoader>
       )
     case state.matches("AuthWithMetamask"):
+    case state.matches("AuthWithWalletConnect"):
       return (
         <div className="relative h-[300px] px-24 flex items-center">
           <Loader isLoading fullscreen={false} />

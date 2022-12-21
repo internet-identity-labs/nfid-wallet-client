@@ -30,6 +30,9 @@
     "@types/qrcode": "^1.4.2",
     "@types/react-scrollspy": "^3.3.5",
     "@types/react-toastify": "^4.1.0",
+    "@wagmi/core": "^0.8.2",
+    "@web3modal/ethereum": "^2.0.0-beta.9",
+    "@web3modal/html": "^2.0.0-beta.9",
     "@xstate/react": "^3.0.0",
     "biguintle": "1.0.3",
     "bip39": "3.0.4",
@@ -69,6 +72,7 @@
     "tweetnacl-util": "^0.15.1",
     "usergeek-ic-js": "git+https://github.com/usergeek/usergeek-ic-js#v1.0.3",
     "uuid": "8.3.2",
+    "web3modal": "^1.9.10",
     "wouter": "2.9.0",
     "xstate": "^4.32.1"
   },

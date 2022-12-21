@@ -179,7 +179,7 @@ describe("Vault suite", () => {
   })
   it("get policies test", async () => {
     const policies = await getPolicies(vaultFirst.id)
-    expect(policies.length).toEqual(1)
+    expect(policies.length).toEqual(2) //+default one
   })
   it("update policy test", async () => {
     policy.amountThreshold = BigInt(10)
@@ -233,6 +233,7 @@ describe("Vault suite", () => {
       vaultId: expect.any(BigInt),
       from_sub_account: expect.any(String),
       owner: address,
+      memo: undefined
     })
 
     replaceIdentity(memberIdentity)

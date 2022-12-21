@@ -5,7 +5,7 @@ import {
   VaultRegisterRequest,
   WalletRegisterRequest,
 } from "../_ic_api/vault.d"
-import { vault, vault as vaultAPI } from "../actors"
+import { vault as vaultAPI } from "../actors"
 import {
   candidToPolicy,
   candidToTransaction,
@@ -128,8 +128,8 @@ export async function registerPolicy({
   const tp: ThresholdPolicyRequest = {
     amount_threshold: amountThreshold,
     currency: { ICP: null },
-    member_threshold: memberThreshold,
-    wallet_ids: wallets === undefined ? [] : [wallets],
+    member_threshold: memberThreshold === undefined ? [] : [memberThreshold],
+    wallets: wallets === undefined ? [] : [wallets],
   }
   const policyRegisterRequest: PolicyRegisterRequest = {
     policy_type: { threshold_policy: tp },

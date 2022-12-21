@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { useAtom } from "jotai"
 import React from "react"
 
+import { IconSvgDfinity } from "../../atoms/icons"
 import { transferModalAtom } from "./state"
 import { TransferModal } from "./transfer-modal"
 import { WALLETS, WALLET_OPTIONS } from "./transfer-modal.mocks"
@@ -26,6 +27,7 @@ const TransferModalPage: ComponentStory<typeof TransferModal> = (args) => {
           tokenType={transferModalState.sendType}
           tokenConfig={{
             symbol: "ICP",
+            icon: IconSvgDfinity,
             fee: BigInt(10000),
             toPresentation: (value = BigInt(0)) => Number(value) / 100000000,
           }}

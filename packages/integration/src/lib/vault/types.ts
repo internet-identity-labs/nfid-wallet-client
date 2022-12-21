@@ -90,4 +90,5 @@ export interface Transaction {
   vaultId: bigint
   policyId: bigint
   owner: string
+  memo: string | undefined
 }

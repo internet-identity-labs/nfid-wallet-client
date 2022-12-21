@@ -139,6 +139,7 @@ export function candidToTransaction(response: TransactionCandid): Transaction {
     to: response.to,
     from_sub_account: response.from,
     vaultId: response.vault_id,
+    memo: response.memo.length === 0 ? undefined : response.memo[0]
   }
 }
 

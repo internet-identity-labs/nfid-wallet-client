@@ -38,6 +38,9 @@ export interface IIAuthSession extends AbstractAuthSession {
 export interface MetamaskAuthSession extends AbstractAuthSession {
   sessionSource: "metamask"
 }
+export interface WalletConnectAuthSession extends AbstractAuthSession {
+  sessionSource: string
+}
 
 export type AuthSession =
   | GoogleAuthSession
@@ -45,3 +48,4 @@ export type AuthSession =
   | LocalDeviceAuthSession
   | IIAuthSession
   | MetamaskAuthSession
+  | WalletConnectAuthSession

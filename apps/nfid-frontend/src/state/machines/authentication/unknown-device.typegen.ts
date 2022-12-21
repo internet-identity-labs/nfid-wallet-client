@@ -18,6 +18,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.getWalletConnectAuthSession": {
+      type: "done.invoke.getWalletConnectAuthSession"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.isMobileWithWebAuthn": {
       type: "done.invoke.isMobileWithWebAuthn"
       data: unknown
@@ -50,6 +55,10 @@ export interface Typegen0 {
       type: "error.platform.getMetamaskAuthSession"
       data: unknown
     }
+    "error.platform.getWalletConnectAuthSession": {
+      type: "error.platform.getWalletConnectAuthSession"
+      data: unknown
+    }
     "error.platform.isMobileWithWebAuthn": {
       type: "error.platform.isMobileWithWebAuthn"
       data: unknown
@@ -71,6 +80,7 @@ export interface Typegen0 {
     RegistrationMachine: "done.invoke.registration"
     RemoteReceiverMachine: "done.invoke.remote"
     getMetamaskAuthSession: "done.invoke.getMetamaskAuthSession"
+    getWalletConnectAuthSession: "done.invoke.getWalletConnectAuthSession"
     isMobileWithWebAuthn: "done.invoke.isMobileWithWebAuthn"
     loginWithAnchor: "done.invoke.loginWithAnchor"
   }
@@ -85,10 +95,13 @@ export interface Typegen0 {
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
+      | "done.invoke.getWalletConnectAuthSession"
       | "done.invoke.loginWithAnchor"
       | "done.invoke.registration"
       | "done.invoke.remote"
-    handleError: "error.platform.getMetamaskAuthSession"
+    handleError:
+      | "error.platform.getMetamaskAuthSession"
+      | "error.platform.getWalletConnectAuthSession"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
@@ -97,6 +110,7 @@ export interface Typegen0 {
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
+      | "done.invoke.getWalletConnectAuthSession"
     isReturn: "done.invoke.authWithII"
   }
   eventsCausingServices: {
@@ -106,9 +120,11 @@ export interface Typegen0 {
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.authWithII"
       | "done.invoke.getMetamaskAuthSession"
+      | "done.invoke.getWalletConnectAuthSession"
       | "done.invoke.isMobileWithWebAuthn"
     RemoteReceiverMachine: "AUTH_WITH_REMOTE"
     getMetamaskAuthSession: "AUTH_WITH_METAMASK"
+    getWalletConnectAuthSession: "AUTH_WITH_WALLET_CONNECT"
     isMobileWithWebAuthn: "xstate.init"
     loginWithAnchor: "AUTH_WITH_EXISTING_ANCHOR"
   }
@@ -116,6 +132,7 @@ export interface Typegen0 {
     | "AuthSelection"
     | "AuthWithGoogle"
     | "AuthWithMetamask"
+    | "AuthWithWalletConnect"
     | "AuthenticateSameDevice"
     | "End"
     | "ExistingAnchor"

@@ -11,7 +11,7 @@ export const useUserBalances = () => {
   const { token: dip20Token } = useAllTokenMeta()
   console.debug("useUserBalances", { dip20Token })
 
-  const { data: balances, isValidating: isLoadingPrincipals } = useSWR(
+  const { data: balances, isValidating: isLoading } = useSWR(
     dip20Token && principals ? [principals, dip20Token, `AllBalanceRaw`] : null,
     async ([principals, dip20Token]) => {
       console.debug("AllBalanceRaw", { principals, dip20Token })
@@ -20,5 +20,5 @@ export const useUserBalances = () => {
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )
 
-  return { balances: balances, isLoadingPrincipals }
+  return { balances: balances, isLoading }
 }

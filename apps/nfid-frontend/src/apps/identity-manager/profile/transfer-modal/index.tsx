@@ -14,8 +14,9 @@ import {
   transferModalAtom,
 } from "@nfid-frontend/ui"
 import { isHex } from "@nfid-frontend/utils"
-import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
+import { toPresentation } from "@nfid/integration/token/icp"
 
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
@@ -31,6 +32,31 @@ export const ProfileTransferModal = () => {
 
   const [successMessage, setSuccessMessage] = useState("")
   const [selectedWalletId, setSelectedWalletId] = useState("")
+  const [selectedTokenValue, setSelectedTokenValue] = useState("")
+
+  const { token } = useAllToken()
+  const tokenOptions = React.useMemo(
+    () =>
+      token.map((t) => ({
+        label: t.title,
+        value: t.currency,
+        icon: t.icon,
+        fee: t.fee,
+        toPresentation: t.toPresentation,
+      })),
+    [token],
+  )
+  const selectedToken = React.useMemo(
+    () =>
+      tokenOptions.find((option) => option.value === selectedTokenValue) ||
+      tokenOptions[0],
+    [tokenOptions, selectedTokenValue],
+  )
+  console.debug("", {
+    selectedToken,
+    transferFee: selectedToken?.toPresentation(selectedToken.fee),
+  })
+
   const { transfer } = useTransfer({
     accountId: transferModalState.selectedWallet.accountId,
     domain: transferModalState.selectedWallet.domain,
@@ -44,9 +70,11 @@ export const ProfileTransferModal = () => {
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
       value: wallet.principal?.toText() ?? "",
-      afterLabel: `${toPresentation(wallet.balance)} ICP`,
+      afterLabel: `${toPresentation(wallet.balance[selectedToken.value])} ${
+        selectedToken.value
+      }`,
     }))
-  }, [wallets])
+  }, [selectedToken.value, wallets])
 
   const onTokenSubmit = async (values: ITransferToken) => {
     let validAddress = isHex(values.to)
@@ -140,11 +168,7 @@ export const ProfileTransferModal = () => {
       <TransferModal
         transactionRoute={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
         tokenType={transferModalState.sendType}
-        tokenConfig={{
-          symbol: "ICP",
-          fee: BigInt(WALLET_FEE_E8S),
-          toPresentation,
-        }}
+        tokenConfig={selectedToken}
         toggleTokenType={() =>
           setTransferModalState({
             ...transferModalState,
@@ -178,6 +202,9 @@ export const ProfileTransferModal = () => {
         )}
         onSelectWallet={handleSelectWallet}
         selectedWalletId={selectedWalletId}
+        onSelectToken={setSelectedTokenValue}
+        tokenOptions={tokenOptions}
+        selectedToken={selectedToken}
       />
     </div>
   )

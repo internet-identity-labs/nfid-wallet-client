@@ -16,6 +16,6 @@ export const transferModalAtom = atom<ITransferModalAtom>({
   selectedWallet: {
     accountId: "",
     domain: "",
-    balance: BigInt(0),
+    balance: {},
   },
 })

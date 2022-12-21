@@ -52,7 +52,8 @@ export const RequestTransfer = ({
       ?.map((wallet) => ({
         label: wallet.label ?? "",
         value: wallet.principal?.toText() ?? "",
-        afterLabel: toPresentation(wallet.balance),
+        // FIXME: support dip-20
+        afterLabel: toPresentation(wallet.balance["ICP"]),
         disabled: Number(wallet.balance) <= Number(amountICP),
       }))
       .sort((a, b) => Number(a?.disabled) - Number(b?.disabled))

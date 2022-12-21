@@ -14,7 +14,7 @@ export const useUserBalances = () => {
   const {
     data: balances,
     isValidating: isLoading,
-    mutate: reloadBalances,
+    mutate: refreshBalances,
   } = useSWR(
     dip20Token && principals ? [principals, dip20Token, `AllBalanceRaw`] : null,
     async ([principals, dip20Token]) => {
@@ -24,5 +24,5 @@ export const useUserBalances = () => {
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )
 
-  return { balances: balances, isLoading, reloadBalances }
+  return { balances: balances, isLoading, refreshBalances }
 }

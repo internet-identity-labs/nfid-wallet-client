@@ -13,7 +13,7 @@ import CopyRecoveryPhrase from "./copy-recovery-phrase"
 import ProfileCredentials from "./credentials"
 import ProfilePhone from "./credentials/phone-number"
 import ProfileSMS from "./credentials/phone-sms"
-import ProfileInternetComputerWallets from "./internet-computer-wallets"
+import ProfileTokenWalletsDetailPage from "./internet-computer-wallets"
 import ProfileNFTDetails from "./nft-details"
 import ProfileNFTs from "./nfts"
 import ProfileSecurity from "./security"
@@ -48,7 +48,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.wallet}
       element={
         <AuthWrapper>
-          <ProfileInternetComputerWallets />
+          <ProfileTokenWalletsDetailPage />
         </AuthWrapper>
       }
     />

@@ -7,7 +7,6 @@ import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 
 import { TokenTransferConfig } from "."
-import { stringICPtoE8s } from "../utils"
 import { useWalletDelegation } from "./use-wallet-delegation"
 
 interface Transfer {

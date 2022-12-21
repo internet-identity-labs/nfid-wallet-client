@@ -157,7 +157,11 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
           />
           <InputDropdown
             label="To"
-            placeholder="Recipient principal or account ID"
+            placeholder={
+              selectedToken.tokenStandard === "ICP"
+                ? "Recipient principal or account ID"
+                : "Recipient principal"
+            }
             options={
               walletOptions?.filter(
                 (wallet) => wallet.value !== selectedWalletId,

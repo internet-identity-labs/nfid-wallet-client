@@ -1,4 +1,4 @@
-import { Account, Application } from "@nfid/integration"
+import { Account } from "@nfid/integration"
 
 import {
   EntrepotCollection,
@@ -22,9 +22,6 @@ export function sortUserTokens(
   tokens: UserNFTDetails[],
   fields: string[] = ["Token #"],
 ) {
-  // return [...fields]
-  //   .reverse()
-  //   .reduce((agg, field) => agg.sort(sortFuncs[field] || defaultSort), tokens)
   const func = sortFuncs[fields[0]]
   if (!func) console.warn(`Unknown sort method ${fields[0]}`)
   return tokens.sort(func || sortFuncs.default)
@@ -80,16 +77,4 @@ export function userTokensByCollection(tokens: UserNFTDetails[]) {
     }),
     {},
   )
-}
-
-export function GetWalletName(
-  applications: Application[],
-  domain: string,
-  accountId: number | string,
-) {
-  if (!applications) return ""
-
-  return `${
-    applications.find((x) => x.domain === domain)?.name ?? "NFID"
-  } account ${Number(accountId) + 1}`
 }

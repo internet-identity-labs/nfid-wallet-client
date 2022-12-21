@@ -2,10 +2,9 @@ import clsx from "clsx"
 import { useAtom } from "jotai"
 import React from "react"
 
-import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
+import { ArrowButton, Tooltip, transferModalAtom } from "@nfid-frontend/ui"
 
 import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"
-import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"

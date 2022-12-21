@@ -1,9 +1,8 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 
-import { Button } from "@nfid-frontend/ui"
-
 import { RadioButton } from "../../atoms/radio"
+import { Button } from "../../molecules/button"
 import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 
 export interface AuthWithIIProps {

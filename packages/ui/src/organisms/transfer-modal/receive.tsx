@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Copy } from "../../atoms/copy"
 import { DropdownSelect } from "../../atoms/dropdown-select"
@@ -10,9 +10,11 @@ import { IWallet } from "./types"
 
 interface ITransferModalReceive {
   wallets: IWallet[] | undefined
+  walletOptions: { label: string; value: string }[]
 }
 
 export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
+  walletOptions,
   wallets,
 }) => {
   const [selectedWallet, setSelectedWallet] = useState<string[]>([])
@@ -22,19 +24,12 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
       return setSelectedWallet([wallets[0].principal?.toText() ?? ""])
   }, [wallets])
 
-  const walletsOptions = useMemo(() => {
-    return wallets?.map((wallet) => ({
-      label: wallet.label ?? "",
-      value: wallet.principal?.toText() ?? "",
-    }))
-  }, [wallets])
-
   return (
     <div className="flex flex-col flex-grow">
       <div className="flex flex-col space-y-2.5 text-black-base">
         <DropdownSelect
           label="Select your wallet"
-          options={walletsOptions ?? []}
+          options={walletOptions ?? []}
           selectedValues={selectedWallet}
           setSelectedValues={setSelectedWallet}
           isSearch

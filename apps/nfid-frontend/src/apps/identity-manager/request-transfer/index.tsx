@@ -4,14 +4,15 @@ import { useMemo, useState } from "react"
 import { toast } from "react-toastify"
 
 import { IOption } from "@nfid-frontend/ui"
+import { isHex } from "@nfid-frontend/utils"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { icpToUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
+import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
-import { isHex } from "frontend/ui/utils"
 import { useTimer } from "frontend/ui/utils/use-timer"
 
 interface IRequestTransfer {
@@ -42,9 +43,11 @@ export const RequestTransfer = ({
     )
   }, [selectedWallets, wallets])
 
+  // FIXME: support dip-20
   const { transfer } = useTransfer({
     accountId: selectedWallet?.accountId,
     domain: selectedWallet?.domain,
+    transformAmount: stringICPtoE8s,
   })
 
   const walletsOptions: IOption[] | undefined = useMemo(() => {
@@ -52,7 +55,8 @@ export const RequestTransfer = ({
       ?.map((wallet) => ({
         label: wallet.label ?? "",
         value: wallet.principal?.toText() ?? "",
-        afterLabel: toPresentation(wallet.balance),
+        // FIXME: support dip-20
+        afterLabel: toPresentation(wallet.balance["ICP"]),
         disabled: Number(wallet.balance) <= Number(amountICP),
       }))
       .sort((a, b) => Number(a?.disabled) - Number(b?.disabled))

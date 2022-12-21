@@ -6,6 +6,7 @@ import { ReactComponent as Arrow } from "./arrow.svg"
 import { ReactComponent as Calendar } from "./calendar.svg"
 import { ReactComponent as Cancel } from "./cancel.svg"
 import { ReactComponent as CheckMark } from "./check-mark.svg"
+import { ReactComponent as Chevron } from "./chevron.svg"
 import { ReactComponent as Copy } from "./copy.svg"
 import { ReactComponent as Desktop } from "./desktop.svg"
 import { ReactComponent as Dokument } from "./document.svg"
@@ -101,6 +102,10 @@ const Icons: Story = (args) => {
         <IconWrapper
           icon={<CheckMark className={clsx(args["className"])} />}
           label="CheckMark"
+        />
+        <IconWrapper
+          icon={<Chevron className={clsx(args["className"])} />}
+          label="Chevron"
         />
         <IconWrapper
           icon={<Copy className={clsx(args["className"])} />}

@@ -1,7 +1,7 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Input } from "@nfid-frontend/ui"
+import { anchorRules, Input } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
 import MetamaskIcon from "frontend/assets/metamask.svg"
@@ -15,7 +15,6 @@ import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Separator } from "frontend/ui/atoms/separator"
 import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { anchorRules } from "frontend/ui/utils/validations"
 
 import QRCode from "./assets/qrcode.svg"
 import SecurityKey from "./assets/security-key.svg"

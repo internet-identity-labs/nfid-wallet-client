@@ -1,4 +1,4 @@
-import { Account, Balance } from "@nfid/integration"
+import { Balance } from "@nfid/integration"
 
 export interface AccountBalance {
   accountName: string

@@ -2,9 +2,8 @@ import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
-import { Input } from "@nfid-frontend/ui"
-
 import useClickOutside from "../../utils/use-click-outside"
+import { Input } from "../input"
 import Arrow from "./arrow.svg"
 import { DropdownOption } from "./option"
 

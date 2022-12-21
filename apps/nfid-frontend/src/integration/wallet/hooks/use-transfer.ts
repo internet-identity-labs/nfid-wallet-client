@@ -1,15 +1,46 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import React from "react"
 
-import { transfer } from "@nfid/integration/token/icp"
+import { transfer as transferDIP20 } from "@nfid/integration/token/dip-20"
+import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 
-import { stringICPtoE8s } from "../utils"
-import { TransferAccount } from "./index"
+import { TokenTransferConfig } from "."
 import { useWalletDelegation } from "./use-wallet-delegation"
 
-export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
+interface Transfer {
+  to: string
+  amount: string
+  delegationIdentity: DelegationIdentity
+  canisterId?: string
+  transformAmount: (amount: string) => number
+}
+
+const handleTokenTransfer = async ({
+  to,
+  amount,
+  delegationIdentity,
+  transformAmount,
+  canisterId,
+}: Transfer) => {
+  if (canisterId) {
+    return await transferDIP20({
+      canisterId,
+      amount: transformAmount(amount),
+      to,
+      sourceIdentity: delegationIdentity,
+    })
+  }
+  return await transferICP(transformAmount(amount), to, delegationIdentity)
+}
+
+export const useTransfer = ({
+  domain,
+  accountId,
+  tokenCanisterId,
+  transformAmount,
+}: TokenTransferConfig) => {
   const { profile } = useProfile()
   const { data: walletDelegation, isValidating: isValidatingWalletDelegation } =
     useWalletDelegation(profile?.anchor, domain, accountId)
@@ -78,19 +109,31 @@ export const useTransfer = ({ domain, accountId }: TransferAccount = {}) => {
             accountId,
             rejectTransfer: reject,
             executeTransfer: (walletDelegation, to, amount) => {
-              transfer(stringICPtoE8s(amount), to, walletDelegation)
+              handleTokenTransfer({
+                amount: amount,
+                to,
+                delegationIdentity: walletDelegation,
+                canisterId: tokenCanisterId,
+                transformAmount,
+              })
                 .then((value) => resolve(value))
                 .catch((reason) => reject(reason))
             },
           }
         } else {
-          return transfer(stringICPtoE8s(amount), to, walletDelegation)
+          return handleTokenTransfer({
+            amount: amount,
+            to,
+            delegationIdentity: walletDelegation,
+            canisterId: tokenCanisterId,
+            transformAmount,
+          })
             .then((value) => resolve(value))
             .catch((reason) => reject(reason))
         }
       })
     },
-    [accountId, domain, walletDelegation],
+    [accountId, domain, tokenCanisterId, transformAmount, walletDelegation],
   )
 
   console.debug("useTransfer", { isValidatingWalletDelegation })

@@ -32,41 +32,38 @@ const getSortedBalanceSheet = (balanceSheet?: TokenBalanceSheet) => {
 
 interface IProfileTransactionsPage
   extends React.HTMLAttributes<HTMLDivElement> {
-  icpBlanceSheet?: TokenBalanceSheet
+  balanceSheet?: TokenBalanceSheet
 }
 
-const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
-  icpBlanceSheet,
+const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
+  balanceSheet,
 }) => {
   const apps: AppBalance[] | null = React.useMemo(
-    () => getSortedBalanceSheet(icpBlanceSheet),
+    () => getSortedBalanceSheet(balanceSheet),
 
-    [icpBlanceSheet],
+    [balanceSheet],
   )
   return (
     <ProfileTemplate
-      pageTitle="Your Internet Computer wallets"
+      pageTitle={`Your ${balanceSheet?.label} wallets`}
       className="w-full min-w-fit z-[1]"
       containerClassName="overflow-x-auto"
       showBackButton
     >
       <TokenDetailBalance
-        token={icpBlanceSheet?.token || ""}
-        label={icpBlanceSheet?.label || ""}
-        icon={icpBlanceSheet?.icon || ""}
-        tokenBalance={icpBlanceSheet?.tokenBalance}
-        usdBalance={icpBlanceSheet?.usdBalance || ""}
+        token={balanceSheet?.token || ""}
+        label={balanceSheet?.label || ""}
+        icon={balanceSheet?.icon || ""}
+        tokenBalance={balanceSheet?.tokenBalance}
+        usdBalance={balanceSheet?.usdBalance || ""}
       />
       <div className="mt-5">
         {apps && (
-          <AppAccountBalanceSheet
-            apps={apps}
-            currency={icpBlanceSheet?.token}
-          />
+          <AppAccountBalanceSheet apps={apps} currency={balanceSheet?.token} />
         )}
       </div>
     </ProfileTemplate>
   )
 }
 
-export default InternetComputerWalletsPage
+export default TokenWalletsDetailPage

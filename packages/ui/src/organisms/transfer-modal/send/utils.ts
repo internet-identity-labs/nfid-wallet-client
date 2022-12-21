@@ -1,10 +1,10 @@
 import { Principal } from "@dfinity/principal"
 
-import { isHex } from "frontend/ui/utils"
+import { isHex } from "@nfid-frontend/utils"
 
 export const validateAddressField = (string: string) => {
   if (!string.length) return "This field cannot be empty"
-  let value = string.replace(/\s/g, "")
+  const value = string.replace(/\s/g, "")
   if (isHex(value) && value.length === 64) return true
 
   try {
@@ -14,8 +14,40 @@ export const validateAddressField = (string: string) => {
   }
 }
 
+export const isNotEmpty = (value: string) => {
+  if (value.length) return true
+  return "This field cannot be empty"
+}
+
+export const isValidAddress = (value: string) => {
+  if (isHex(value)) return true
+  return "Not a valid address"
+}
+
+export const isValidPrincipalId = (value: string) => {
+  try {
+    if (Principal.fromText(value)) return true
+  } catch {
+    return "Not a valid principal ID"
+  }
+  return "Not a valid principal ID"
+}
+
 export const validateTransferAmountField = (value: string | number) => {
   if (Number(value) < 0) return "Transfer amount can't be negative value"
   if (Number(value) === 0) return "You can't send 0 ICP"
   return true
 }
+
+export const makeAddressFieldValidation =
+  (shouldAcceptAddress: boolean) => (value: string) => {
+    if (typeof isNotEmpty(value) !== "boolean") return isNotEmpty(value)
+    if (typeof isValidPrincipalId(value) !== "boolean")
+      return isValidPrincipalId(value)
+
+    if (shouldAcceptAddress) {
+      if (typeof isHex(value) !== "boolean") return isHex(value)
+      return true
+    }
+    return true
+  }

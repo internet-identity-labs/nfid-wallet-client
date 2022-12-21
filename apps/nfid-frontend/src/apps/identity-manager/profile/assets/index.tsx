@@ -9,7 +9,7 @@ import { useAllNFTs } from "./hooks"
 
 const ProfileAssets = () => {
   const { navigate } = useNFIDNavigate()
-  const { data: nonFungibleTokens } = useAllNFTs()
+  const { nfts: nonFungibleTokens } = useAllNFTs()
 
   const { token } = useAllToken()
   console.debug("ProfileAssets", { token })

@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 
 import { Account } from "../identity-manager/account"
@@ -17,6 +18,7 @@ export type TokenBalance = {
 }
 
 export type AccountBalance = {
+  principal: Principal
   principalId: string
   account: Account
   balance: TokenBalance
@@ -42,6 +44,7 @@ export async function fetchBalances({
       ])
 
       return {
+        principal,
         principalId: principal.toText(),
         account,
         // pulling only token key value pairs and drop array specific

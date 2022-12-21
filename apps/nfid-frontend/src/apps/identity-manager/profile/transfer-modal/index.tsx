@@ -26,6 +26,7 @@ import { Loader } from "frontend/ui/atoms/loader"
 
 import { useAllNFTs } from "../assets/hooks"
 import { ProfileConstants } from "../routes"
+import { transformToAddress } from "./transform-to-address"
 
 export const ProfileTransferModal = () => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
@@ -43,6 +44,9 @@ export const ProfileTransferModal = () => {
         icon: t.icon,
         fee: t.fee,
         toPresentation: t.toPresentation,
+        transformAmount: t.transformAmount,
+        tokenCanisterId: t.canisterId,
+        tokenStandard: t.tokenStandard,
       })),
     [token],
   )
@@ -60,6 +64,8 @@ export const ProfileTransferModal = () => {
   const { transfer } = useTransfer({
     accountId: transferModalState.selectedWallet.accountId,
     domain: transferModalState.selectedWallet.domain,
+    transformAmount: selectedToken.transformAmount,
+    tokenCanisterId: selectedToken.tokenCanisterId,
   })
   const { wallets } = useAllWallets()
   const { nfts } = useAllNFTs()
@@ -77,9 +83,10 @@ export const ProfileTransferModal = () => {
   }, [selectedToken.value, wallets])
 
   const onTokenSubmit = async (values: ITransferToken) => {
-    let validAddress = isHex(values.to)
-      ? values.to
-      : principalToAddress(Principal.fromText(values.to) as any)
+    const validAddress = transformToAddress(
+      values.to,
+      selectedToken.tokenStandard,
+    )
 
     if (
       principalToAddress(transferModalState.selectedWallet.principal as any) ===
@@ -92,7 +99,7 @@ export const ProfileTransferModal = () => {
     try {
       setIsLoading(true)
       await transfer(validAddress, String(values.amount))
-      setSuccessMessage(`${values.amount} ICP was sent`)
+      setSuccessMessage(`${values.amount} ${selectedToken.value} was sent`)
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction", {

@@ -11,6 +11,7 @@ import { icpToUSD } from "frontend/features/fungable-token/accumulate-app-accoun
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
+import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
 import { useTimer } from "frontend/ui/utils/use-timer"
 
@@ -42,9 +43,11 @@ export const RequestTransfer = ({
     )
   }, [selectedWallets, wallets])
 
+  // FIXME: support dip-20
   const { transfer } = useTransfer({
     accountId: selectedWallet?.accountId,
     domain: selectedWallet?.domain,
+    transformAmount: stringICPtoE8s,
   })
 
   const walletsOptions: IOption[] | undefined = useMemo(() => {

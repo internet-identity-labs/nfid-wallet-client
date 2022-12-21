@@ -3,12 +3,12 @@ import React, { useCallback, useMemo } from "react"
 import { useForm } from "react-hook-form"
 
 import { DropdownSelect } from "../../../atoms/dropdown-select"
-import { IconSvgDfinity } from "../../../atoms/icons"
 import { Button } from "../../../molecules/button"
 import { InputDropdown } from "../../../molecules/input-dropdown"
 import { Tooltip } from "../../../molecules/tooltip"
 import { sumRules } from "../../../utils/validations"
 import ArrowWhite from "../assets/arrowWhite.svg"
+import { SelectedToken } from "../selected-token"
 import { IWallet } from "../types"
 import { validateAddressField, validateTransferAmountField } from "./utils"
 
@@ -19,6 +19,7 @@ export interface ITransferToken {
 
 export type TokenConfig = {
   symbol: string
+  icon: string
   fee: bigint
   toPresentation: (amount?: bigint) => number
 }
@@ -91,15 +92,10 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
                 validate: validateTransferAmountField,
               })}
             />
-            <div
-              className={clsx(
-                "flex items-center space-x-2 shrink-0",
-                "text-sm font-semibold",
-              )}
-            >
-              <img src={IconSvgDfinity} alt="icp" className="w-6" />
-              <span>ICP</span>
-            </div>
+            <SelectedToken
+              icon={tokenConfig.icon}
+              symbol={tokenConfig.symbol}
+            />
           </div>
           <span className={clsx("absolute text-red-600")}>
             {errors.amount?.message}

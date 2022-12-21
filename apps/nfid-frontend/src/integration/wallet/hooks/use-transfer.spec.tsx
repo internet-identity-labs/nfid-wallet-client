@@ -11,7 +11,8 @@ import * as facadeMocks from "frontend/integration/facade/wallet"
 import * as imQueryMocks from "frontend/integration/identity-manager/queries"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
 
-import { TransferAccount } from "."
+import { TokenTransferConfig } from "."
+import { stringICPtoE8s } from "../utils"
 import { useTransfer } from "./use-transfer"
 
 jest.mock("@nfid/integration/token/icp")
@@ -25,10 +26,16 @@ describe("useTransfer", () => {
   const wrapper = ({ children }: { children: React.ReactElement }) => (
     <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
   )
-  const setup = (initialProps: TransferAccount = {}) => {
+  const setup = (
+    initialProps: TokenTransferConfig = { transformAmount: stringICPtoE8s },
+  ) => {
     return renderHook(
-      ({ domain, accountId }: TransferAccount = {}) => {
-        return useTransfer({ domain, accountId })
+      ({ domain, accountId, transformAmount }: TokenTransferConfig) => {
+        return useTransfer({
+          domain,
+          accountId,
+          transformAmount,
+        })
       },
       {
         initialProps,
@@ -103,7 +110,11 @@ describe("useTransfer", () => {
 
     const transferPromise = result.current.transfer("test", "10")
 
-    rerender({ domain: "test", accountId: "0" })
+    rerender({
+      domain: "test",
+      accountId: "0",
+      transformAmount: stringICPtoE8s,
+    })
     expect(transferPromise).rejects.toBe("domain or accountId has been changed")
     expect(transferSpy).not.toHaveBeenCalled()
     expect(getWalletDelegationSpy).toHaveBeenCalledTimes(2)

@@ -35,7 +35,7 @@ interface IProfileTransactionsPage
   balanceSheet?: TokenBalanceSheet
 }
 
-const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
+const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
   balanceSheet,
 }) => {
   const apps: AppBalance[] | null = React.useMemo(
@@ -66,4 +66,4 @@ const InternetComputerWalletsPage: React.FC<IProfileTransactionsPage> = ({
   )
 }
 
-export default InternetComputerWalletsPage
+export default TokenWalletsDetailPage

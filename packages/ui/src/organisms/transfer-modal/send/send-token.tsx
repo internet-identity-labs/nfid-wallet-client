@@ -4,10 +4,13 @@ import { InputDropdown } from "packages/ui/src/molecules/input-dropdown"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { toPresentation } from "@nfid/integration/token/icp"
+import {
+  toPresentation,
+  WALLET_FEE,
+  WALLET_FEE_E8S,
+} from "@nfid/integration/token/icp"
 
 import { transferModalAtom } from "frontend/apps/identity-manager/profile/transfer-modal/state"
-import { walletFee, walletFeeE8s } from "frontend/constants/wallet"
 import { Button } from "frontend/ui/atoms/button"
 import { sumRules } from "frontend/ui/utils/validations"
 
@@ -73,7 +76,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
 
   const setFullAmount = useCallback(() => {
     if (!currentWallet?.balance) return
-    const amount = currentWallet.balance - BigInt(walletFeeE8s)
+    const amount = currentWallet.balance - BigInt(WALLET_FEE_E8S)
     if (amount < 0) {
       setValue("amount", "0")
       setError("amount", { message: "Insufficient funds" })
@@ -124,7 +127,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             )}
           />
           <div className="flex items-center justify-between mt-2 text-gray-400">
-            <p>Transfer fee: {walletFee} ICP</p>
+            <p>Transfer fee: {WALLET_FEE} ICP</p>
             <div>
               <span>Balance: </span>
               <Tooltip tip="Click to select full balance">

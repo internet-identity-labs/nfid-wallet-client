@@ -1,11 +1,13 @@
 import clsx from "clsx"
 
 import { Balance } from "@nfid/integration"
-import { toPresentation } from "@nfid/integration/token/icp"
 
 import { TokenIcon } from "frontend/ui/atoms/token-icon"
 
 interface TokenDetailBalanceProps {
+  tokenConfig?: {
+    toPresentation: (balance?: bigint) => number
+  }
   token: string
   label: string
   icon: string
@@ -19,6 +21,7 @@ export const TokenDetailBalance: React.FC<TokenDetailBalanceProps> = ({
   icon,
   tokenBalance,
   usdBalance,
+  tokenConfig,
 }) => {
   return (
     <div
@@ -36,7 +39,10 @@ export const TokenDetailBalance: React.FC<TokenDetailBalanceProps> = ({
         <div className="text-xs text-gray-400">{token}</div>
       </div>
       <div className="text-sm font-semibold">
-        {tokenBalance ? toPresentation(tokenBalance) : 0} {token}
+        {tokenBalance && tokenConfig
+          ? tokenConfig.toPresentation(tokenBalance)
+          : 0}{" "}
+        {token}
       </div>
       <div className="text-sm font-semibold">{usdBalance}</div>
     </div>

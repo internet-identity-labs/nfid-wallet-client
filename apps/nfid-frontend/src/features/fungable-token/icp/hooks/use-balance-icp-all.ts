@@ -1,10 +1,12 @@
 import React from "react"
 
+import { toPresentation } from "@nfid/integration/token/icp"
+
 import ICP from "frontend/assets/dfinity.svg"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 
 import { accumulateAppAccountBalance } from "../../accumulate-app-account-balances"
-import { useAllTokenMeta } from "../../dip-20/hooks/use-all-token-meta"
+import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"
 import { TokenBalanceSheet } from "../../types"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 import { useUserBalances } from "./use-user-balances"
@@ -29,7 +31,7 @@ export const useBalanceICPAll = (
   const { applicationsMeta: applications } = useApplicationsMeta()
   const { exchangeRate, isValidating: isLoadingICPExchangeRate } =
     useICPExchangeRate()
-  const { token: dip20Token } = useAllTokenMeta()
+  const { token: dip20Token } = useAllDip20Token()
 
   const { balances, isLoading: isLoadingBalances } = useUserBalances()
   console.debug("useUserBalances", { icpBalance: balances })
@@ -54,12 +56,14 @@ export const useBalanceICPAll = (
         label: "Internet Computer",
         token: "ICP",
         icon: ICP,
+        toPresentation,
       }),
       ...(dip20Token
         ? dip20Token.reduce(
-            (acc, { symbol, name, logo }) => ({
+            (acc, { symbol, name, logo, toPresentation }) => ({
               ...acc,
               [symbol]: accumulateAppAccountBalance({
+                toPresentation,
                 balances,
                 applications,
                 icon: logo,

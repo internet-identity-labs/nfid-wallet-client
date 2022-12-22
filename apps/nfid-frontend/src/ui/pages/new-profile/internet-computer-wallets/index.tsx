@@ -4,6 +4,7 @@ import {
   AppBalance,
   TokenBalanceSheet,
 } from "frontend/features/fungable-token/types"
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { rmProto } from "frontend/integration/identity-manager"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"
 import { AppAccountBalanceSheet } from "frontend/ui/organisms/app-acc-balance-sheet"
@@ -38,11 +39,17 @@ interface IProfileTransactionsPage
 const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
   balanceSheet,
 }) => {
+  const { token } = useAllToken()
   const apps: AppBalance[] | null = React.useMemo(
     () => getSortedBalanceSheet(balanceSheet),
 
     [balanceSheet],
   )
+  const tokenConfig = React.useMemo(
+    () => token.find((t) => t.currency === balanceSheet?.token),
+    [token, balanceSheet?.token],
+  )
+
   return (
     <ProfileTemplate
       pageTitle={`Your ${balanceSheet?.label} wallets`}
@@ -52,6 +59,7 @@ const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
     >
       <TokenDetailBalance
         token={balanceSheet?.token || ""}
+        tokenConfig={tokenConfig}
         label={balanceSheet?.label || ""}
         icon={balanceSheet?.icon || ""}
         tokenBalance={balanceSheet?.tokenBalance}
@@ -59,7 +67,11 @@ const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
       />
       <div className="mt-5">
         {apps && (
-          <AppAccountBalanceSheet apps={apps} currency={balanceSheet?.token} />
+          <AppAccountBalanceSheet
+            apps={apps}
+            currency={balanceSheet?.token}
+            toPresentation={tokenConfig?.toPresentation}
+          />
         )}
       </div>
     </ProfileTemplate>

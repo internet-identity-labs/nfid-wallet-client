@@ -3,7 +3,6 @@ import { principalToAddress } from "ictool"
 
 import { Application, Balance } from "@nfid/integration"
 import { AccountBalance } from "@nfid/integration/token/fetch-balances"
-import { toPresentation } from "@nfid/integration/token/icp"
 
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
 import {
@@ -17,19 +16,32 @@ export const sumE8sICPString = (a: string, b: string) => {
   return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))
 }
 
-export const icpToUSD = (value: number, exchangeRate: number) =>
-  `$${(exchangeRate * value).toFixed(2)}`
+export const toUSD = (value: number, exchangeRate: number) =>
+  exchangeRate !== 0 ? `$${(exchangeRate * value).toFixed(2)}` : `N/A`
 
-function mapApplicationBalance(
-  appName: string,
-  currentAppTotalBalance: Balance,
-  token: string,
-  accountBalance: AccountBalance,
-  icpExchangeRate: number,
-  applicationMatch?: Application,
-  currentApp?: AppBalance,
-  isExplicitlyIncluded?: boolean,
-): AppBalance {
+type MapApplicationBalanceArgs = {
+  toPresentation: (value?: bigint) => number
+  appName: string
+  currentAppTotalBalance: Balance
+  token: string
+  accountBalance: AccountBalance
+  exchangeRate: number
+  applicationMatch?: Application
+  currentApp?: AppBalance
+  isExplicitlyIncluded?: boolean
+}
+
+function mapApplicationBalance({
+  toPresentation,
+  appName,
+  currentAppTotalBalance,
+  token,
+  accountBalance,
+  exchangeRate,
+  applicationMatch,
+  currentApp,
+  isExplicitlyIncluded,
+}: MapApplicationBalanceArgs): AppBalance {
   return {
     icon: applicationMatch?.icon,
     appName: appName,
@@ -46,13 +58,12 @@ function mapApplicationBalance(
                   : accountBalance.account.label,
               principalId: accountBalance.principalId,
               address: principalToAddress(
-                // FIXME: any typecast because of Principal version mismatch in ictools
-                Principal.fromText(accountBalance.principalId) as any,
+                Principal.fromText(accountBalance.principalId),
               ),
               tokenBalance: accountBalance.balance[token],
-              usdBalance: icpToUSD(
+              usdBalance: toUSD(
                 toPresentation(accountBalance.balance[token]),
-                icpExchangeRate,
+                exchangeRate,
               ),
             },
           ]
@@ -62,6 +73,7 @@ function mapApplicationBalance(
 }
 
 type ReduceRawToAppAccountBalanceArgs = {
+  toPresentation: (value?: bigint) => number
   balances: AccountBalance[]
   applications?: Application[]
   exchangeRate: number
@@ -81,6 +93,7 @@ type ReduceRawToAppAccountBalanceArgs = {
  * @param includeEmptyApps - include apps with given appName or domain even if their balance is 0
  */
 export const accumulateAppAccountBalance = ({
+  toPresentation,
   balances,
   applications = [],
   exchangeRate,
@@ -123,19 +136,20 @@ export const accumulateAppAccountBalance = ({
         ...acc,
         icon: acc.icon,
         tokenBalance: totalBalanceValue,
-        usdBalance: icpToUSD(toPresentation(totalBalanceValue), exchangeRate),
+        usdBalance: toUSD(toPresentation(totalBalanceValue), exchangeRate),
         applications: {
           ...acc.applications,
-          [appName]: mapApplicationBalance(
+          [appName]: mapApplicationBalance({
+            toPresentation,
             appName,
             currentAppTotalBalance,
-            acc.token,
-            rawBalance,
+            token: acc.token,
+            accountBalance: rawBalance,
             exchangeRate,
             applicationMatch,
             currentApp,
             isExplicitlyIncluded,
-          ),
+          }),
         },
       }
     },

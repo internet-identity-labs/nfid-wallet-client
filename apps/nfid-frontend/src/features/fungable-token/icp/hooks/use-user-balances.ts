@@ -4,12 +4,11 @@ import { fetchBalances } from "@nfid/integration/token/fetch-balances"
 
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
-import { useAllTokenMeta } from "../../dip-20/hooks/use-all-token-meta"
+import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"
 
 export const useUserBalances = () => {
   const { principals } = useAllPrincipals()
-  const { token: dip20Token } = useAllTokenMeta()
-  console.debug("useUserBalances", { dip20Token })
+  const { token: dip20Token } = useAllDip20Token()
 
   const {
     data: balances,

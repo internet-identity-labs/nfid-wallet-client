@@ -34,6 +34,7 @@ const setupCSP = () => {
         "https://us-central1-entrepot-api.cloudfunctions.net",
         "https://stats.g.doubleclick.net/g/collect",
         "https://registry.walletconnect.com",
+        "wss://y.bridge.walletconnect.org",
       ],
       "worker-src": "'self'",
       "img-src": [

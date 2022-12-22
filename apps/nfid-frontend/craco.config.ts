@@ -33,6 +33,7 @@ const setupCSP = () => {
         "https://free.currconv.com/",
         "https://us-central1-entrepot-api.cloudfunctions.net",
         "https://stats.g.doubleclick.net/g/collect",
+        "https://registry.walletconnect.com",
       ],
       "worker-src": "'self'",
       "img-src": [

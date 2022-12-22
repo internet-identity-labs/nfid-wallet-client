@@ -6,7 +6,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
-import { useAllTokenMeta } from "./dip-20/hooks/use-all-token-meta"
+import { useAllDip20Token } from "./dip-20/hooks/use-all-token-meta"
 import { useBalanceICPAll } from "./icp/hooks/use-balance-icp-all"
 
 export interface TokenConfig {
@@ -24,7 +24,7 @@ export interface TokenConfig {
 
 export const useAllToken = (): { token: TokenConfig[] } => {
   const { appAccountBalance } = useBalanceICPAll()
-  const { token: dip20Token } = useAllTokenMeta()
+  const { token: dip20Token } = useAllDip20Token()
 
   const token: TokenConfig[] = React.useMemo(() => {
     return [
@@ -40,23 +40,15 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         transformAmount: stringICPtoE8s,
       },
       ...(dip20Token
-        ? dip20Token.map(
-            ({ symbol, name, logo, fee, decimals, canisterId }) => ({
-              tokenStandard: TokenStandards.DIP20,
-              icon: logo,
-              title: name,
-              currency: symbol,
-              balance: appAccountBalance?.[symbol].tokenBalance,
-              price: appAccountBalance?.[symbol].usdBalance,
-              fee,
-              canisterId,
-              toPresentation: (value: bigint = BigInt(0)) => {
-                return Number(value) / Number(BigInt(10 ** decimals))
-              },
-              transformAmount: (value: string) =>
-                Number(parseFloat(value) * 10 ** decimals),
-            }),
-          )
+        ? dip20Token.map(({ symbol, name, logo, ...rest }) => ({
+            tokenStandard: TokenStandards.DIP20,
+            icon: logo,
+            title: name,
+            currency: symbol,
+            balance: appAccountBalance?.[symbol].tokenBalance,
+            price: appAccountBalance?.[symbol].usdBalance,
+            ...rest,
+          }))
         : []),
     ]
   }, [appAccountBalance, dip20Token])

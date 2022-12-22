@@ -5,7 +5,7 @@ import { Principal } from "@dfinity/principal"
 
 import { Application } from "@nfid/integration"
 import { AccountBalance } from "@nfid/integration/token/fetch-balances"
-import { E8S } from "@nfid/integration/token/icp"
+import { E8S, toPresentation } from "@nfid/integration/token/icp"
 
 import {
   accumulateAppAccountBalance,
@@ -64,6 +64,7 @@ describe("accumulate-app-account-balances", () => {
       const token: string = "ICP"
 
       const result = accumulateAppAccountBalance({
+        toPresentation,
         balances,
         applications,
         exchangeRate,

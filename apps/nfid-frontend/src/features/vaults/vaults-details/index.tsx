@@ -1,11 +1,11 @@
 import React from "react"
 
-import { ITab, Tabs } from "@nfid-frontend/ui"
+import { Tabs } from "@nfid-frontend/ui"
 
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { useVault } from "../hooks/use-vault"
-import { VaultsMembersPage } from "./members-page"
+import { tabs } from "./tabs"
 
 interface VaultsDetailsCoordinatorProps {}
 
@@ -13,29 +13,6 @@ export const VaultsDetailsCoordinator: React.FC<
   VaultsDetailsCoordinatorProps
 > = () => {
   const { vault, isFetching } = useVault()
-
-  const tabs: ITab[] = [
-    {
-      label: "Wallets",
-      content: <div>wallets</div>,
-      value: "wallets",
-    },
-    {
-      label: "Members",
-      content: <VaultsMembersPage />,
-      value: "members",
-    },
-    {
-      label: "Policies",
-      content: <div>policies</div>,
-      value: "policies",
-    },
-    {
-      label: "Transactions",
-      content: <div>transactions</div>,
-      value: "transactions",
-    },
-  ]
 
   return (
     <ProfileTemplate

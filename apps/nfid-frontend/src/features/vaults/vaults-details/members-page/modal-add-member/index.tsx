@@ -54,7 +54,7 @@ export const VaultAddMember = () => {
       isLoading={isLoading}
       isModalOpen={isModalOpen}
       isModalOpenChange={setIsModalOpen}
-      secondaryButton={{ type: "stroke", onClick: () => {}, text: "Cancel" }}
+      secondaryButton={{ type: "stroke", text: "Cancel" }}
       primaryButton={{
         type: "primary",
         onClick: handleSubmit(onAddMember),

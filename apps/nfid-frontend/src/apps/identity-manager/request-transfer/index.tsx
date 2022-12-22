@@ -7,7 +7,7 @@ import { IOption } from "@nfid-frontend/ui"
 import { isHex } from "@nfid-frontend/utils"
 import { toPresentation } from "@nfid/integration/token/icp"
 
-import { icpToUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
@@ -64,7 +64,7 @@ export const RequestTransfer = ({
 
   const amountUSD = useMemo(() => {
     if (!exchangeRate) return "0"
-    return icpToUSD(amountICP, exchangeRate)
+    return toUSD(amountICP, exchangeRate)
   }, [amountICP, exchangeRate])
 
   const onApprove = async () => {

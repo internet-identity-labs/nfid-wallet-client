@@ -12,7 +12,6 @@ import {
   TransferModal,
   transferModalAtom,
 } from "@nfid-frontend/ui"
-import { toPresentation } from "@nfid/integration/token/icp"
 
 import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
@@ -76,11 +75,11 @@ export const ProfileTransferModal = () => {
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
       value: wallet.principal?.toText() ?? "",
-      afterLabel: `${toPresentation(wallet.balance[selectedToken.value])} ${
-        selectedToken.value
-      }`,
+      afterLabel: `${selectedToken.toPresentation(
+        wallet.balance[selectedToken.value],
+      )} ${selectedToken.value}`,
     }))
-  }, [selectedToken.value, wallets])
+  }, [selectedToken, wallets])
 
   const onTokenSubmit = async (values: ITransferToken) => {
     const validAddress = transformToAddress(

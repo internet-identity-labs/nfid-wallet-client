@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { Tooltip } from "@nfid-frontend/ui"
-import { toPresentation } from "@nfid/integration/token/icp"
 
 import { AppBalance } from "frontend/features/fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
@@ -30,8 +29,11 @@ const GridCell = React.forwardRef<HTMLTableCellElement, GridCellProps>(
 )
 
 const AppRow: React.FC<
-  Pick<AppBalance, "accounts" | "appName" | "icon"> & { currency: string }
-> = ({ appName, icon, accounts, currency }) => {
+  Pick<AppBalance, "accounts" | "appName" | "icon"> & {
+    currency: string
+    toPresentation?: (balance?: bigint) => number
+  }
+> = ({ appName, icon, accounts, currency, toPresentation }) => {
   const navigate = useNavigate()
   const copyToClipboard = React.useCallback(
     (type: string, value: string) => (e: React.SyntheticEvent) => {
@@ -79,7 +81,8 @@ const AppRow: React.FC<
           )}
           <GridCell>{account.accountName}</GridCell>
           <GridCell>
-            {toPresentation(account.tokenBalance)} {currency}
+            {toPresentation ? toPresentation(account.tokenBalance) : 0}{" "}
+            {currency}
           </GridCell>
           <GridCell>{account.usdBalance}</GridCell>
           <Tooltip tip="Copy to clipboard">
@@ -111,11 +114,13 @@ const AppRow: React.FC<
 interface AppAccountBalanceSheetProps {
   apps: AppBalance[]
   currency?: string
+  toPresentation?: (balance?: bigint) => number
 }
 
 export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
   apps,
   currency = "ICP",
+  toPresentation,
 }) => {
   const headings = [
     "Application",
@@ -137,6 +142,7 @@ export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
             appName={app.appName}
             accounts={app.accounts}
             icon={app.icon}
+            toPresentation={toPresentation}
           />
         ))}
       </TableBase>

@@ -6,7 +6,7 @@ import { TransactionPrettified } from "@psychedelic/cap-js/dist/utils"
 import { encodeTokenIdentifier } from "ictool"
 
 import * as mockUtil from "frontend/integration/cap/cap_util"
-import * as mock from "frontend/integration/cap/index"
+import * as mock from "frontend/integration/cap/fungible-transactions"
 import { mockTransaction } from "frontend/integration/internet-identity/__mocks"
 
 describe("cap suite", () => {

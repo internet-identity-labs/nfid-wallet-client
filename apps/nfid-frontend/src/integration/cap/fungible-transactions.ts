@@ -59,28 +59,11 @@ export async function getTokenTransactions(
   from: number,
   to: number,
 ): Promise<{ txHistory: Transaction[]; isLastPage: boolean }> {
-  let address = principalToAddress(user as any)
-  let transactionHistory = await Promise.all(
-    Array.from(Array(to).keys())
-      .slice(from, to)
-      .map(async (page) => {
-        let allHistory = await getCapRootTransactions(token.canisterId, page)
-        let txHistory: Transaction[] = allHistory
-          .filter(
-            (l) =>
-              l.details.from.toString() === address ||
-              l.details.to.toString() === address,
-          )
-          .map((x) => getTransaction(x, token))
-        return { txHistory, isLastPage: allHistory.length === 0 }
-      }),
-  )
-  return transactionHistory.reduce((x, y) => {
-    return {
-      txHistory: x.txHistory.concat(y.txHistory),
-      isLastPage: x.isLastPage || y.isLastPage,
-    }
-  })
+  const txs = await getUserTransactions(token.canisterId, user, from, to)
+  return {
+    txHistory: txs.txHistory.map((x) => getTransaction(x, token)),
+    isLastPage: txs.isLastPage,
+  }
 }
 
 export async function getTokenTransactionHistory(
@@ -111,7 +94,9 @@ export async function getUserTransactions(
       .map(async (page) => {
         let allHistory = await getCapRootTransactions(canisterId, page)
         let txHistory = allHistory.filter(
-          (l) => l.details.from === address || l.details.to === address,
+          (l) =>
+            l.details.from.toString() === address ||
+            l.details.to.toString() === address,
         )
         return { txHistory, isLastPage: allHistory.length === 0 }
       }),

@@ -2,7 +2,7 @@ import { TransactionPrettified } from "@psychedelic/cap-js"
 import React, { useState } from "react"
 import { useLocation, useParams } from "react-router-dom"
 
-import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap"
+import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap/fungible-transactions"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { Loader } from "frontend/ui/atoms/loader"

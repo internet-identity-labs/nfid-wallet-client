@@ -152,7 +152,7 @@
     "eslint-plugin-wdio": "^7.4.2",
     "events": "3.3.0",
     "geckodriver": "^3.0.1",
-    "husky": "7.0.4",
+    "husky": "8.0.2",
     "jest": "28.1.1",
     "jest-circus": "^27.1.5",
     "node-fetch": "2.6.1",

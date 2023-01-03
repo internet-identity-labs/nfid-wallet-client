@@ -233,7 +233,7 @@ describe("Vault suite", () => {
       vaultId: expect.any(BigInt),
       from_sub_account: expect.any(String),
       owner: address,
-      memo: undefined
+      memo: undefined,
     })
 
     replaceIdentity(memberIdentity)

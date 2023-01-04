@@ -48,7 +48,7 @@ const canisterConfig = [
   ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
   ["Vault", VAULT_CANISTER_ID],
   ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
-  ["ECDSASigner", ECDSA_SIGNER_CANISTER_ID],
+  ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
 ]
 
 export const accessList = [

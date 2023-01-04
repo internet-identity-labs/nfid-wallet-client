@@ -7,8 +7,8 @@ export const VaultsTableHeader = () => {
       <TableCell isLeft className="w-auto">
         Name
       </TableCell>
-      <TableCell className="text-center">Wallets</TableCell>
-      <TableCell className="text-center">Members</TableCell>
+      <TableCell centered>Wallets</TableCell>
+      <TableCell centered>Members</TableCell>
       <TableCell className="w-52">Last activity</TableCell>
       <TableCell isRight />
     </TableRow>

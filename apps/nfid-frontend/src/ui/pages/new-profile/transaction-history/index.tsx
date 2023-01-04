@@ -1,7 +1,13 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 
-import { DropdownSelect, IOption, TabsSwitcher } from "@nfid-frontend/ui"
+import {
+  DropdownSelect,
+  IconCmpInfo,
+  IOption,
+  TabsSwitcher,
+  Tooltip,
+} from "@nfid-frontend/ui"
 
 import { TransactionRow } from "frontend/integration/rosetta/select-transactions"
 import { Chip } from "frontend/ui/atoms/chip"
@@ -48,6 +54,18 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
       pageTitle="Transactions history"
       className="w-full z-[1]"
       showBackButton
+      headerMenu={
+        <Tooltip
+          tip={
+            <div className="w-60">
+              Transaction history for some assets, like XTC, are not supported
+              due to a lack of support from Fleek.
+            </div>
+          }
+        >
+          <IconCmpInfo className="text-gray-400 cursor-pointer" />
+        </Tooltip>
+      }
     >
       <ProfileContainer className={clsx(`bg-gray-200`)}>
         <DropdownSelect

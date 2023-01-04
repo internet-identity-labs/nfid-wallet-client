@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
+import { IconCmpInfo, Tooltip } from "@nfid-frontend/ui"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
@@ -52,7 +54,24 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       onIconClick={onIconClick}
       className="overflow-inherit"
     >
-      <ProfileContainer title="Your tokens" showChildrenPadding={false}>
+      <ProfileContainer
+        title={
+          <>
+            <p>Your tokens</p>
+            <Tooltip
+              tip={
+                <div className="w-60">
+                  Transaction history for some assets, like XTC, are not
+                  supported due to a lack of support from Fleek.
+                </div>
+              }
+            >
+              <IconCmpInfo className="cursor-pointer" />
+            </Tooltip>
+          </>
+        }
+        showChildrenPadding={false}
+      >
         <Loader isLoading={!tokens.length} />
         <table className={clsx("text-left w-full hidden sm:table")}>
           <thead className={clsx("border-b border-black-base h-16")}>

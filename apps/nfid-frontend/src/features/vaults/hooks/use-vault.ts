@@ -11,7 +11,9 @@ export const useVault = () => {
     isLoading,
     isValidating,
     mutate,
-  } = useSWR(`vault_${vaultId}`, () => getVaultById(vaultId ?? ""))
+  } = useSWR(vaultId ? `vault_${vaultId}` : null, () =>
+    getVaultById(vaultId ?? ""),
+  )
 
   return {
     isFetching: isLoading || isValidating,

@@ -26,6 +26,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs, defaultValue }) => {
             )}
             value={tab.value}
             key={`radix_tab_${tab.value}`}
+            id={`tab_${tab.value}`}
           >
             {tab.label}
           </RadixTabs.Trigger>

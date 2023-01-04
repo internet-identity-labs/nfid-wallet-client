@@ -1,5 +1,6 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { principalToAddress } from "ictool"
+import { fromHexString, principalToAddress } from "ictool"
 import { useAtom } from "jotai"
 import { useState } from "react"
 import React from "react"
@@ -12,6 +13,11 @@ import {
   TransferModal,
   transferModalAtom,
 } from "@nfid-frontend/ui"
+import {
+  registerTransaction,
+  TransactionRegisterOptions,
+} from "@nfid/integration"
+import { toPresentation } from "@nfid/integration/token/icp"
 
 import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
@@ -20,11 +26,17 @@ import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
+import {
+  e8sICPToString,
+  stringICPtoE8s,
+} from "frontend/integration/wallet/utils"
 import { Loader } from "frontend/ui/atoms/loader"
 
 import { useAllNFTs } from "../assets/hooks"
 import { ProfileConstants } from "../routes"
 import { transformToAddress } from "./transform-to-address"
+
+declare const VAULT_CANISTER_ID: string
 
 export const ProfileTransferModal = () => {
   const { refreshBalances } = useUserBalances()
@@ -72,14 +84,39 @@ export const ProfileTransferModal = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const walletOptions = React.useMemo(() => {
+    console.log({ wallets })
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
-      value: wallet.principal?.toText() ?? "",
-      afterLabel: `${selectedToken.toPresentation(
-        wallet.balance[selectedToken.value],
-      )} ${selectedToken.value}`,
+      value: !wallet.isVaultWallet
+        ? wallet.principal?.toText() ?? ""
+        : wallet.accountId,
+      afterLabel: `${toPresentation(wallet.balance[selectedToken.value])} ${
+        selectedToken.value
+      }`,
     }))
   }, [selectedToken, wallets])
+
+  const submitVaultWallet = React.useCallback(
+    async (data: TransactionRegisterOptions) => {
+      try {
+        setIsLoading(true)
+        await registerTransaction(data)
+        setSuccessMessage(
+          `You've requested ${e8sICPToString(
+            Number(data.amount),
+          )} ICP from the vault wallet`,
+        )
+      } catch (e) {
+        console.log({ e })
+        toast.error("Unexpected error: The transaction has been cancelled", {
+          toastId: "unexpectedTransferError",
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [],
+  )
 
   const onTokenSubmit = async (values: ITransferToken) => {
     const validAddress = transformToAddress(
@@ -93,6 +130,19 @@ export const ProfileTransferModal = () => {
     )
       return toast.error("You cannot send tokens to the same wallet", {
         toastId: "sameWalletError",
+      })
+
+    if (
+      transferModalState.selectedWallet.principal?.toString() ===
+      VAULT_CANISTER_ID
+    )
+      return submitVaultWallet({
+        address: principalToAddress(
+          Principal.fromText(VAULT_CANISTER_ID),
+          fromHexString(transferModalState.selectedWallet.accountId),
+        ),
+        amount: BigInt(stringICPtoE8s(String(values.amount))),
+        from_sub_account: transferModalState.selectedWallet.accountId,
       })
 
     try {
@@ -119,7 +169,9 @@ export const ProfileTransferModal = () => {
   const handleSelectWallet = React.useCallback(
     (walletId: string) => {
       const wallet = wallets?.find(
-        (wallet) => wallet.principal.toString() === walletId,
+        (wallet) =>
+          wallet.principal.toString() === walletId ||
+          wallet.accountId === walletId,
       )
       if (wallet) {
         setSelectedWalletId(walletId)

@@ -9,6 +9,7 @@ export const TableRow = ({
   className,
   onClick,
   header,
+  id,
 }: ITableRow) => {
   return (
     <tr
@@ -19,6 +20,7 @@ export const TableRow = ({
         onClick && "hover:bg-gray-100 cursor-pointer",
         className,
       )}
+      id={id}
     >
       {children}
     </tr>

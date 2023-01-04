@@ -1,5 +1,6 @@
 import clsx from "clsx"
-import React from "react"
+import { useAtom } from "jotai"
+import React, { useCallback } from "react"
 
 import {
   IconCmpArchive,
@@ -9,6 +10,7 @@ import {
   PopoverTools,
   TableCell,
   TableRow,
+  transferModalAtom,
 } from "@nfid-frontend/ui"
 
 export interface VaultsWalletsTableRowProps {
@@ -23,6 +25,7 @@ export interface VaultsWalletsTableRowProps {
 }
 
 export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
+  uid,
   number,
   name,
   tokenBalance,
@@ -30,9 +33,19 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   onArchive,
   isArchived,
 }: VaultsWalletsTableRowProps) => {
+  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+
+  const onSendFromVaultWallet = useCallback(() => {
+    setTransferModalState({
+      ...transferModalState,
+      isModalOpen: true,
+      sendType: "ft",
+    })
+  }, [setTransferModalState, transferModalState])
   return (
     <TableRow
       className={clsx(isArchived && "text-gray-400 pointer-events-none")}
+      id={`wallet_${name}`}
     >
       <TableCell isLeft>{number}</TableCell>
       <TableCell>{name}</TableCell>
@@ -50,7 +63,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
               {
                 icon: <IconCmpTransfer />,
                 text: "Send",
-                onClick: () => [],
+                onClick: onSendFromVaultWallet,
               },
               {
                 icon: <IconCmpTransfer className="rotate-180" />,

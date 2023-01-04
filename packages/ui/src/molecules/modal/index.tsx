@@ -12,6 +12,7 @@ export interface ModalButtonProps {
   onClick?: () => void
   type: "primary" | "secondary" | "red" | "stroke"
   block?: boolean
+  id?: string
 }
 
 export interface ModalAdvancedProps
@@ -92,6 +93,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
                 onClick={primaryButton.onClick}
                 className={clsx("!py-3 !px-8")}
                 type={primaryButton.type}
+                id={primaryButton.id}
               >
                 {primaryButton.text}
               </Button>

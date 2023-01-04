@@ -59,6 +59,7 @@ export const VaultAddMember = () => {
         type: "primary",
         onClick: handleSubmit(onAddMember),
         text: "Add",
+        id: "add-member-button",
       }}
       trigger={
         <div
@@ -66,6 +67,7 @@ export const VaultAddMember = () => {
             "flex items-center space-x-2 font-bold text-blue-600 cursor-pointer",
             "hover:opacity-50 transition-opacity",
           )}
+          id="add-member-trigger"
         >
           <IconCmpPlus className="w-4" />
           <span className="hidden text-sm sm:block">Add member</span>

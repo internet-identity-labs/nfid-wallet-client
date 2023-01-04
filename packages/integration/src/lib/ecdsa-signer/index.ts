@@ -1,6 +1,6 @@
-import { hasOwnProperty } from "src/integration/internet-identity/utils"
 
 import { ecdsaSigner as ecdsaAPI } from "../actors"
+import { hasOwnProperty } from "../test-utils"
 
 export async function getEcdsaPublicKey(): Promise<Array<number>> {
   const publicKeyResult = await ecdsaAPI.public_key().catch((e) => {

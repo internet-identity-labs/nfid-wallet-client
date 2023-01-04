@@ -24,7 +24,7 @@ export const VaultsMembersTable: React.FC<VaultsMembersTableProps> = ({
       name: member.name ?? "Unknown user",
       address: member.userId,
       role: member.role,
-      index,
+      index: index + 1,
       isArchived: member.state === ObjectState.ARCHIVED,
     }))
   }, [members])

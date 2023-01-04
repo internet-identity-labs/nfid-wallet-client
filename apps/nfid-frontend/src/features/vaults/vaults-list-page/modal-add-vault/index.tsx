@@ -2,10 +2,14 @@ import clsx from "clsx"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { IconCmpPlus, Input, ModalAdvanced, TextArea } from "@nfid-frontend/ui"
+import {
+  IconCmpPlus,
+  Input,
+  ModalAdvanced,
+  TextArea,
+  vaultRules,
+} from "@nfid-frontend/ui"
 import { registerVault } from "@nfid/integration"
-
-import { vaultRules } from "frontend/ui/utils/validations"
 
 interface VaultCreateForm {
   vaultName: string

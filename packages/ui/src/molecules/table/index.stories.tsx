@@ -1,8 +1,8 @@
 import { Meta, Story } from "@storybook/react"
 
-import { IconCmpArrowRight } from "@nfid-frontend/ui"
+import { IconCmpArrowRight, Table } from "@nfid-frontend/ui"
 
-import Table, { TableProps } from "."
+import { TableProps } from "."
 import { TableCell } from "./table-cell"
 import { TableRow } from "./table-row"
 

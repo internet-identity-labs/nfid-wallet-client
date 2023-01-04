@@ -1,11 +1,11 @@
 import { Meta, Story } from "@storybook/react"
 import React from "react"
 
-import { VaultModalCreate, VaultModalCreateProps } from "./index"
+import { VaultAddressBar, VaultAddressBarProps } from "."
 
 const meta: Meta = {
-  title: "Pages/VaultModalCreate",
-  component: VaultModalCreate,
+  title: "Pages/VaultAddressBar",
+  component: VaultAddressBar,
   argTypes: {},
   parameters: {
     controls: { expanded: true },
@@ -14,8 +14,8 @@ const meta: Meta = {
 
 export default meta
 
-const Template: Story<VaultModalCreateProps> = (args) => (
-  <VaultModalCreate {...args} />
+const Template: Story<VaultAddressBarProps> = (args) => (
+  <VaultAddressBar {...args} />
 )
 
 export const Default = Template.bind({})

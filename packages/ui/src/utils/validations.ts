@@ -61,6 +61,15 @@ export const sumRules = {
   },
 }
 
+export const vaultRules = {
+  minLength: 2,
+  errorMessages: {
+    pattern: "Vault name must only contain numbers",
+    required: "This field cannot be empty",
+    length: "Vault name must be 2 or more characters long",
+  },
+}
+
 export const isValidToken = (token: string) => {
   return tokenRules.regex.test(token)
 }

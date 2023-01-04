@@ -1,16 +1,18 @@
 import clsx from "clsx"
+import { HTMLAttributes } from "react"
 
-export interface IEmptyTableCard {
+export interface IEmptyCard extends HTMLAttributes<HTMLDivElement> {
   icon: JSX.Element
   description: string
 }
 
-export const EmptyTableCard = ({ icon, description }: IEmptyTableCard) => {
+export const EmptyCard = ({ icon, description, className }: IEmptyCard) => {
   return (
     <div
       className={clsx(
         "flex flex-col items-center justify-center w-full h-full",
         "text-gray-400",
+        className,
       )}
     >
       {icon}

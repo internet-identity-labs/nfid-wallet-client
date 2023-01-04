@@ -94,5 +94,6 @@ export { ReactComponent as IconCmpUsb } from "./usb.svg"
 export { ReactComponent as IconCmpWarning } from "./warning.svg"
 export { ReactComponent as IconCmpArrowRight } from "./filled-arrow-right.svg"
 export { ReactComponent as IconCmpSearch } from "./search.svg"
+export { ReactComponent as IconCmpTransfer } from "./transfer.svg"
 
 export { IconMetamask } from "./metamask"

@@ -38,7 +38,7 @@ export const VaultsMembersPage: React.FC<VaultsMembersPageProps> = () => {
       />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsMembersTable members={filteredMembers} />
-        {!filteredMembers && !isFetching && (
+        {!filteredMembers.length && !isFetching && (
           <EmptyCard
             className="h-64"
             icon={<IconCmpMembers />}

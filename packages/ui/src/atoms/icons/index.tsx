@@ -97,5 +97,7 @@ export { ReactComponent as IconCmpSearch } from "./search.svg"
 export { ReactComponent as IconCmpTransfer } from "./transfer.svg"
 export { ReactComponent as IconCmpVault } from "./vault.svg"
 export { ReactComponent as IconCmpMembers } from "./members.svg"
+export { ReactComponent as IconCmpWallet } from "./wallet.svg"
+
 // png
 export { IconMetamask } from "./metamask"

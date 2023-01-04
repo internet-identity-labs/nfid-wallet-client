@@ -35,6 +35,7 @@ export const VaultsMembersTableRow: React.FC<VaultsMembersTableRowProps> = ({
   return (
     <TableRow
       className={clsx(isArchived && "text-gray-400 pointer-events-none")}
+      id={`member_${name}`}
     >
       <TableCell isLeft>{index}</TableCell>
       <TableCell>{name}</TableCell>

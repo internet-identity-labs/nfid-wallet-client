@@ -85,6 +85,7 @@ export const VaultAddPolicy = () => {
         type: "primary",
         onClick: handleSubmit(onAddPolicy),
         text: "Create",
+        id: "create-policy-button",
       }}
       trigger={
         <div
@@ -92,13 +93,14 @@ export const VaultAddPolicy = () => {
             "flex items-center space-x-2 font-bold text-blue-600 cursor-pointer",
             "hover:opacity-50 transition-opacity",
           )}
+          id="create-policy-trigger"
         >
           <IconCmpPlus className="w-4" />
           <span className="hidden text-sm sm:block">Add policy</span>
         </div>
       }
     >
-      <div className="space-y-5">
+      <div className="space-y-5" id="create-policy-modal">
         <DropdownSelect
           label="Transactions sourced from this wallet"
           options={walletsOptions ?? []}
@@ -107,6 +109,7 @@ export const VaultAddPolicy = () => {
           isMultiselect={false}
           showSelectAllOption
           placeholder="Select wallet"
+          id="select-wallet"
         />
         <Input
           labelText="That are greater than"

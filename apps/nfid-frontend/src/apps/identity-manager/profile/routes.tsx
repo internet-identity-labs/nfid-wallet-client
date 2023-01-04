@@ -2,6 +2,7 @@ import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
 import { VaultsDetailsCoordinator } from "frontend/features/vaults/vaults-details"
+import { VaultTransactionsDetailsPage } from "frontend/features/vaults/vaults-details/transactions-details-page"
 import { VaultsListPage } from "frontend/features/vaults/vaults-list-page"
 import ApplicationsIcon from "frontend/ui/organisms/profile-sidebar/assets/applications.svg"
 import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
@@ -37,11 +38,11 @@ export const ProfileConstants = {
   verifySMS: "verify-sms",
   vaults: "vaults",
   vault: ":vaultId",
+  vaultTransaction: ":transactionId",
 }
 
 export const ProfileRoutes = (
   <Route path={ProfileConstants.base} element={<Outlet />}>
-    1
     <Route
       path={ProfileConstants.assets}
       element={
@@ -143,6 +144,14 @@ export const ProfileRoutes = (
       element={
         <AuthWrapper>
           <VaultsDetailsCoordinator />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
+      element={
+        <AuthWrapper>
+          <VaultTransactionsDetailsPage />
         </AuthWrapper>
       }
     />

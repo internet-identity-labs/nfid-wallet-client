@@ -50,6 +50,7 @@ export const VaultModalCreate = ({ refetchVaults }: IVaultModalCreate) => {
         type: "primary",
         onClick: handleSubmit(onVaultCreate),
         text: "Create",
+        id: "create-vault-button",
       }}
       trigger={
         <div
@@ -57,6 +58,7 @@ export const VaultModalCreate = ({ refetchVaults }: IVaultModalCreate) => {
             "flex items-center space-x-2 font-bold text-blue-600 cursor-pointer",
             "hover:opacity-50 transition-opacity",
           )}
+          id="create-vault-trigger"
         >
           <IconCmpPlus className="w-4" />
           <span className="hidden text-sm sm:block">Add vault</span>

@@ -11,6 +11,7 @@ export const VaultsTransactionsTableHeader = () => {
       <TableCell className="w-32">To</TableCell>
       <TableCell className="w-36">Tokens</TableCell>
       <TableCell className="w-36">Status</TableCell>
+      <TableCell isRight className="w-10" />
     </TableRow>
   )
 }

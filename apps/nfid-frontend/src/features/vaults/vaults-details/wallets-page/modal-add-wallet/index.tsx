@@ -51,6 +51,7 @@ export const VaultAddWallet = () => {
         type: "primary",
         onClick: handleSubmit(onAddMember),
         text: "Create",
+        id: "create-wallet-button",
       }}
       trigger={
         <div
@@ -58,6 +59,7 @@ export const VaultAddWallet = () => {
             "flex items-center space-x-2 font-bold text-blue-600 cursor-pointer",
             "hover:opacity-50 transition-opacity",
           )}
+          id="create-wallet-trigger"
         >
           <IconCmpPlus className="w-4" />
           <span className="hidden text-sm sm:block">Add wallet</span>

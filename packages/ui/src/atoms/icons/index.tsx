@@ -102,6 +102,7 @@ export { ReactComponent as IconCmpPolicy } from "./policies.svg"
 export { ReactComponent as IconCmpTransactions } from "./transactions.svg"
 export { ReactComponent as IconCmpFilters } from "./filters.svg"
 export { ReactComponent as IconCmpSorting } from "./sorting.svg"
+export { ReactComponent as IconCmpOut } from "./out.svg"
 
 // png
 export { IconMetamask } from "./metamask"

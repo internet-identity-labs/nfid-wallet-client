@@ -18,6 +18,7 @@ export * from "./atoms/loader"
 export * from "./atoms/checkbox"
 export * from "./atoms/popover"
 export * from "./atoms/popover/popover-tools"
+export * from "./atoms/badge"
 
 export * from "./molecules/button"
 export * from "./molecules/button/arrow-button"

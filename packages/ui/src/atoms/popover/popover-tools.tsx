@@ -4,7 +4,7 @@ import React, { HTMLAttributes, ReactElement } from "react"
 export interface IItem {
   icon: ReactElement
   text: string
-  onClick: () => void
+  onClick?: () => void
 }
 
 interface PopoverToolsProps extends HTMLAttributes<HTMLDivElement> {

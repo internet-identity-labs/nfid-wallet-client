@@ -22,7 +22,7 @@ export interface ModalAdvancedProps
   secondaryButton?: ModalButtonProps
   large?: boolean
   buttonsClassNames?: string
-  trigger: JSX.Element
+  trigger?: JSX.Element
   isLoading?: boolean
   isModalOpen?: boolean
   isModalOpenChange?: (open: boolean) => void

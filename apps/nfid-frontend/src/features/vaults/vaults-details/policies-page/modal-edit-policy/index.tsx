@@ -13,6 +13,7 @@ import { Input, ModalAdvanced } from "@nfid-frontend/ui"
 import { Policy, updatePolicy } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
+import { useVaultPolicies } from "frontend/features/vaults/hooks/use-vault-policies"
 
 interface VaultPolicyEditProps {
   isModalOpen: boolean
@@ -32,7 +33,8 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
   selectedPolicy,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { vault, refetch } = useVault()
+  const { refetch } = useVaultPolicies()
+  const { vault } = useVault()
 
   const { register, handleSubmit, formState, reset } = useForm({
     defaultValues: useMemo(() => {
@@ -62,7 +64,7 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
 
   const onPolicyEdit = useCallback(
     async (data: VaultPolicyEditForm) => {
-      if (!selectedPolicy || !vault?.id) return
+      if (!selectedPolicy) return
 
       try {
         setIsLoading(true)
@@ -80,7 +82,7 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
         await refetch()
       }
     },
-    [refetch, selectedPolicy, setIsModalOpen, vault?.id],
+    [refetch, selectedPolicy, setIsModalOpen],
   )
 
   return (

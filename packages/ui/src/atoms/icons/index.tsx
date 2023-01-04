@@ -99,6 +99,9 @@ export { ReactComponent as IconCmpVault } from "./vault.svg"
 export { ReactComponent as IconCmpMembers } from "./members.svg"
 export { ReactComponent as IconCmpWallet } from "./wallet.svg"
 export { ReactComponent as IconCmpPolicy } from "./policies.svg"
+export { ReactComponent as IconCmpTransactions } from "./transactions.svg"
+export { ReactComponent as IconCmpFilters } from "./filters.svg"
+export { ReactComponent as IconCmpSorting } from "./sorting.svg"
 
 // png
 export { IconMetamask } from "./metamask"

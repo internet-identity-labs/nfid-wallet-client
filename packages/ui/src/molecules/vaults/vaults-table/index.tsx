@@ -2,8 +2,8 @@ import { format } from "date-fns"
 import React, { useMemo } from "react"
 
 import Table from "../../table"
-import { VaultsTableHeader } from "./vaults-table-header"
-import { VaultsTableRow, VaultsTableRowProps } from "./vaults-table-row"
+import { VaultsTableHeader } from "./table-header"
+import { VaultsTableRow, VaultsTableRowProps } from "./table-row"
 
 export interface VaultsTableProps {
   vaults: any[]

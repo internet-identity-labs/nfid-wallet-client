@@ -1,5 +1,4 @@
-import { TableCell } from "../../table/table-cell"
-import { TableRow } from "../../table/table-row"
+import { TableCell, TableRow } from "@nfid-frontend/ui"
 
 export const VaultsTableHeader = () => {
   return (

@@ -1,6 +1,7 @@
 import { ITab } from "@nfid-frontend/ui"
 
 import { VaultsMembersPage } from "./members-page"
+import { VaultsPoliciesPage } from "./policies-page"
 import { VaultsWalletsPage } from "./wallets-page"
 
 export const tabs: ITab[] = [
@@ -16,7 +17,7 @@ export const tabs: ITab[] = [
   },
   {
     label: "Policies",
-    content: <div>policies</div>,
+    content: <VaultsPoliciesPage />,
     value: "policies",
   },
   {

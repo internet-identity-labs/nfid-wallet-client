@@ -4,40 +4,41 @@ import React from "react"
 import {
   IconCmpArchive,
   IconCmpDots,
-  IconCmpTransfer,
+  IconCmpPencil,
   Popover,
   PopoverTools,
   TableCell,
   TableRow,
 } from "@nfid-frontend/ui"
 
-export interface VaultsWalletsTableRowProps {
-  uid?: string
-  id: number
+export interface VaultsPoliciesTableRowProps {
+  id: bigint
   number: number
-  name: string
-  tokenBalance: number
-  USDBalance: number
-  onArchive: () => void
+  source: string
+  greaterThan: string
+  approvers: string
+  onArchive?: () => void
+  onEdit?: () => void
   isArchived?: boolean
 }
 
-export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
+export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
   number,
-  name,
-  tokenBalance,
-  USDBalance,
+  source,
+  greaterThan,
+  approvers,
   onArchive,
+  onEdit,
   isArchived,
-}: VaultsWalletsTableRowProps) => {
+}: VaultsPoliciesTableRowProps) => {
   return (
     <TableRow
       className={clsx(isArchived && "text-gray-400 pointer-events-none")}
     >
       <TableCell isLeft>{number}</TableCell>
-      <TableCell>{name}</TableCell>
-      <TableCell>{tokenBalance} ICP</TableCell>
-      <TableCell>${USDBalance}</TableCell>
+      <TableCell>{source}</TableCell>
+      <TableCell>{greaterThan}</TableCell>
+      <TableCell centered>{approvers}</TableCell>
       <TableCell isRight className="px-0">
         <Popover
           align="end"
@@ -48,14 +49,9 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
           <PopoverTools
             items={[
               {
-                icon: <IconCmpTransfer />,
-                text: "Send",
-                onClick: () => [],
-              },
-              {
-                icon: <IconCmpTransfer className="rotate-180" />,
-                text: "Receive",
-                onClick: () => [],
+                icon: <IconCmpPencil />,
+                text: "Edit",
+                onClick: onEdit,
               },
               {
                 icon: <IconCmpArchive />,

@@ -42,13 +42,11 @@ export const VaultsMembersTableRow: React.FC<VaultsMembersTableRowProps> = ({
         <CenterEllipsis value={address} leadingChars={9} trailingChars={3} />
       </TableCell>
       <TableCell centered>{role}</TableCell>
-      <TableCell isRight>
+      <TableCell isRight className="px-0">
         <Popover
           align="end"
           trigger={
-            <IconCmpDots
-              className={clsx("w-full text-gray-400", isArchived && "hidden")}
-            />
+            <IconCmpDots className={clsx("w-full", isArchived && "hidden")} />
           }
         >
           <PopoverTools

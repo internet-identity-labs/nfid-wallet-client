@@ -114,15 +114,28 @@ export const DropdownSelect = ({
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
       >
-        <p className={clsx("text-sm leading-5", !isMultiselect && "hidden")}>
+        <p
+          className={clsx(
+            "text-sm leading-5",
+            (!isMultiselect || isAllSelected) && "hidden",
+          )}
+        >
           {selectedValues?.length
             ? `${selectedValues.length} selected`
             : placeholder}
         </p>
-        <p className={clsx("text-sm leading-5", isMultiselect && "hidden")}>
+        <p
+          className={clsx(
+            "text-sm leading-5",
+            (isMultiselect || isAllSelected) && "hidden",
+          )}
+        >
           {selectedValues?.length
             ? options.find((o) => o.value === selectedValues[0])?.label
             : placeholder}
+        </p>
+        <p className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
+          All
         </p>
         <img src={Arrow} alt="arrow" />
       </div>

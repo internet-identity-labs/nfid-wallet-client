@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: internet-identity-labs/setup-dfx@2a601e8a4e14d09ce2b7a1a32bc9fd5eacd25913
+      - uses: aviate-labs/setup-dfx@v0.2.4
         with:
           dfx-version: 0.11.2
           dfx-disable-encryption: true

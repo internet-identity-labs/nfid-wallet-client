@@ -12,6 +12,7 @@ import { ReactComponent as Desktop } from "./desktop.svg"
 import { ReactComponent as Dokument } from "./document.svg"
 import { ReactComponent as Dots } from "./dots.svg"
 import { ReactComponent as Error } from "./error.svg"
+import { ReactComponent as FilledArrowRight } from "./filled-arrow-right.svg"
 import { ReactComponent as Gmail } from "./gmail.svg"
 import { ReactComponent as Google } from "./google.svg"
 import { ReactComponent as Info } from "./info.svg"
@@ -158,6 +159,10 @@ const Icons: Story = (args) => {
         <IconWrapper
           icon={<Warning className={clsx(args["className"])} />}
           label="Warning"
+        />
+        <IconWrapper
+          icon={<FilledArrowRight className={clsx(args["className"])} />}
+          label="FilledArrowRight"
         />
       </div>
       <div className="mb-2 font-bold">Devices:</div>

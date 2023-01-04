@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { getEcdsaPublicKey, signEcdsaMessage } from "./index"
+import { getEcdsaPublicKey, signEcdsaMessage } from "."
 
 describe("ECDSA suite", () => {
   jest.setTimeout(200000)

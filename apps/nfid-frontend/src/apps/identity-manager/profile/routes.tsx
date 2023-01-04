@@ -1,7 +1,8 @@
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
-import { ProfileVaultsPage } from "frontend/features/vaults"
+import { VaultsDetailsCoordinator } from "frontend/features/vaults/vaults-details"
+import { VaultsListPage } from "frontend/features/vaults/vaults-list-page"
 import ApplicationsIcon from "frontend/ui/organisms/profile-sidebar/assets/applications.svg"
 import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
 import CredentialsIcon from "frontend/ui/organisms/profile-sidebar/assets/credentials.svg"
@@ -35,10 +36,12 @@ export const ProfileConstants = {
   addPhoneNumber: "add-phone-number",
   verifySMS: "verify-sms",
   vaults: "vaults",
+  vault: ":vaultId",
 }
 
 export const ProfileRoutes = (
   <Route path={ProfileConstants.base} element={<Outlet />}>
+    1
     <Route
       path={ProfileConstants.assets}
       element={
@@ -131,7 +134,15 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}`}
       element={
         <AuthWrapper>
-          <ProfileVaultsPage />
+          <VaultsListPage />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
+      element={
+        <AuthWrapper>
+          <VaultsDetailsCoordinator />
         </AuthWrapper>
       }
     />

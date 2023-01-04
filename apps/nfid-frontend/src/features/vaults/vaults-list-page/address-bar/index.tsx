@@ -5,7 +5,7 @@ import { Copy } from "@nfid-frontend/ui"
 
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
-import { getMemberAddress } from "../vaults/services"
+import { getMemberAddress } from "../../services"
 
 export interface VaultAddressBarProps {}
 

@@ -39,6 +39,8 @@ export const VaultModalCreate = ({ refetchVaults }: IVaultModalCreate) => {
       large
       title={"Add vault"}
       isLoading={isLoading}
+      isModalOpen={isModalOpen}
+      isModalOpenChange={setIsModalOpen}
       secondaryButton={{ type: "stroke", onClick: () => {}, text: "Cancel" }}
       primaryButton={{
         type: "primary",
@@ -56,8 +58,6 @@ export const VaultModalCreate = ({ refetchVaults }: IVaultModalCreate) => {
           <span className="hidden text-sm sm:block">Add vault</span>
         </div>
       }
-      isModalOpen={isModalOpen}
-      isModalOpenChange={setIsModalOpen}
     >
       <Input
         placeholder="Vault name"

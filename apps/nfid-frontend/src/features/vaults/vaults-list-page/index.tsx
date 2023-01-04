@@ -6,14 +6,14 @@ import { getVaults } from "@nfid/integration"
 
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
-import { VaultActionBar } from "./action-bar"
+import { VaultActionBar } from "../action-bar"
 import { VaultAddressBar } from "./address-bar"
-import { VaultModalCreate } from "./vaults/modal-add-vault"
-import { VaultsTable } from "./vaults/table"
+import { VaultModalCreate } from "./modal-add-vault"
+import { VaultsTable } from "./table"
 
-export interface ProfileVaultsPageProps {}
+export interface VaultsListPageProps {}
 
-export const ProfileVaultsPage: React.FC<ProfileVaultsPageProps> = () => {
+export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
   const {
     data: vaults,
@@ -44,7 +44,7 @@ export const ProfileVaultsPage: React.FC<ProfileVaultsPageProps> = () => {
         />
         <div className="w-full px-5 overflow-x-auto">
           <VaultsTable vaults={filteredVaults} />
-          {!filteredVaults.length && (
+          {!filteredVaults.length && !isLoading && !isValidating && (
             <EmptyCard
               className="h-64"
               icon={<IconCmpVault />}

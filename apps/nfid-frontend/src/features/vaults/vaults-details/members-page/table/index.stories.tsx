@@ -1,7 +1,7 @@
 import { Meta, Story } from "@storybook/react"
 import { BrowserRouter } from "react-router-dom"
 
-import { VaultsMembersTable, VaultsMembersTableProps } from "./index"
+import { VaultsMembersTable, VaultsMembersTableProps } from "."
 
 const meta: Meta = {
   title: "Pages/VaultsMembersTable",
@@ -23,12 +23,5 @@ const Template: Story<VaultsMembersTableProps> = (args) => (
 export const Default = Template.bind({})
 
 Default.args = {
-  members: [
-    {
-      id: 1,
-      name: "Brooklyn Simmons",
-      role: "Admin",
-      address: "laksdkasd...qqw",
-    },
-  ],
+  members: [],
 }

@@ -13,7 +13,6 @@ export interface VaultsTableProps {
 }
 
 export const VaultsTable: React.FC<VaultsTableProps> = ({ vaults }) => {
-  console.log({ vaults })
   const vaultsToRowsOptions: VaultsTableRowProps[] = useMemo(() => {
     return vaults.map((vault) => ({
       id: String(vault.id),

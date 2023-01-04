@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React from "react"
 
 import {
@@ -10,42 +11,57 @@ import {
   TableRow,
 } from "@nfid-frontend/ui"
 
+import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
+
 export interface VaultsMembersTableRowProps {
-  id: string | number
-  number: number
   name: string
-  address: number
+  address: string
   role: string
+  index: number
+  isArchived: boolean
+  onEdit?: () => void
+  onArchive?: () => void
 }
 
 export const VaultsMembersTableRow: React.FC<VaultsMembersTableRowProps> = ({
-  number,
   name,
   address,
   role,
+  index,
+  onEdit,
+  onArchive,
+  isArchived,
 }: VaultsMembersTableRowProps) => {
   return (
-    <TableRow>
-      <TableCell isLeft>{number}</TableCell>
+    <TableRow
+      className={clsx(isArchived && "text-gray-400 pointer-events-none")}
+    >
+      <TableCell isLeft>{index}</TableCell>
       <TableCell>{name}</TableCell>
-      <TableCell>{address}</TableCell>
-      <TableCell>{role}</TableCell>
-      <TableCell isRight className="px-0">
+      <TableCell centered>
+        <CenterEllipsis value={address} leadingChars={9} trailingChars={3} />
+      </TableCell>
+      <TableCell centered>{role}</TableCell>
+      <TableCell isRight>
         <Popover
           align="end"
-          trigger={<IconCmpDots className="w-full text-gray-400" />}
+          trigger={
+            <IconCmpDots
+              className={clsx("w-full text-gray-400", isArchived && "hidden")}
+            />
+          }
         >
           <PopoverTools
             items={[
               {
                 icon: <IconCmpPencil />,
                 text: "Edit",
-                onClick: () => [],
+                onClick: onEdit,
               },
               {
                 icon: <IconCmpArchive />,
                 text: "Archive",
-                onClick: () => [],
+                onClick: onArchive,
               },
             ]}
           />

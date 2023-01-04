@@ -21,7 +21,7 @@ export const VaultsTableRow: React.FC<VaultsTableRowProps> = ({
   const navigate = useNavigate()
 
   return (
-    <TableRow onClick={() => navigate(`url/${id}`)}>
+    <TableRow onClick={() => navigate(`${id}`)}>
       <TableCell isLeft>{name}</TableCell>
       <TableCell centered>{walletsQuantity}</TableCell>
       <TableCell centered>{membersQuantity}</TableCell>

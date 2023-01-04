@@ -5,8 +5,8 @@ import { IconCmpSearch, Input } from "@nfid-frontend/ui"
 
 export interface VaultActionBarProps {
   actionButtons: JSX.Element
-  onInputChange: (event: ChangeEvent<HTMLInputElement>) => void
-  onInputType: (event: ChangeEvent<HTMLInputElement>) => void
+  onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  onInputType?: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export const VaultActionBar: React.FC<VaultActionBarProps> = ({

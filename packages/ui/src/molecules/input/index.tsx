@@ -111,7 +111,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {errorText && (
           <div
             id={`${id}-error`}
-            className={clsx("mt-1 text-xs text-red-base")}
+            className={clsx("mt-1 text-xs text-red-base text-red-600")}
           >
             {errorText}
           </div>

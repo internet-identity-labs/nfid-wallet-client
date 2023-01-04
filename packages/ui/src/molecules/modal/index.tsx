@@ -9,7 +9,7 @@ import { Button } from "../button"
 
 export interface ModalButtonProps {
   text: string
-  onClick: () => void
+  onClick?: () => void
   type: "primary" | "secondary" | "red" | "stroke"
   block?: boolean
 }

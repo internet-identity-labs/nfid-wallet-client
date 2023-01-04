@@ -63,6 +63,7 @@ export {
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
+export { ReactComponent as IconCmpArchive } from "./archive.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"
 export { ReactComponent as IconCmpCheckMark } from "./check-mark.svg"

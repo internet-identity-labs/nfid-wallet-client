@@ -51,4 +51,8 @@ export const serviceConfig = {
   WALLET_CONNECT_PROJECT_ID: JSON.stringify(
     process.env.WALLET_CONNECT_PROJECT_ID,
   ),
+  ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
+    process.env.ECDSA_SIGNER_CANISTER_ID,
+  ),
+
 }

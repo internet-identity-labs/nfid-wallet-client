@@ -63,6 +63,7 @@ export {
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
+export { ReactComponent as IconCmpArchive } from "./archive.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"
 export { ReactComponent as IconCmpCheckMark } from "./check-mark.svg"
@@ -91,5 +92,17 @@ export { ReactComponent as IconCmpTrash } from "./trash.svg"
 export { ReactComponent as IconCmpUnknown } from "./unknown.svg"
 export { ReactComponent as IconCmpUsb } from "./usb.svg"
 export { ReactComponent as IconCmpWarning } from "./warning.svg"
+export { ReactComponent as IconCmpArrowRight } from "./filled-arrow-right.svg"
+export { ReactComponent as IconCmpSearch } from "./search.svg"
+export { ReactComponent as IconCmpTransfer } from "./transfer.svg"
+export { ReactComponent as IconCmpVault } from "./vault.svg"
+export { ReactComponent as IconCmpMembers } from "./members.svg"
+export { ReactComponent as IconCmpWallet } from "./wallet.svg"
+export { ReactComponent as IconCmpPolicy } from "./policies.svg"
+export { ReactComponent as IconCmpTransactions } from "./transactions.svg"
+export { ReactComponent as IconCmpFilters } from "./filters.svg"
+export { ReactComponent as IconCmpSorting } from "./sorting.svg"
+export { ReactComponent as IconCmpOut } from "./out.svg"
 
+// png
 export { IconMetamask } from "./metamask"

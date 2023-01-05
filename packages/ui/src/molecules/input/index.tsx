@@ -18,6 +18,7 @@ export interface InputProps
   isErrorStyles?: boolean
   inputClassName?: string
   disabled?: boolean
+  innerText?: string
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -36,6 +37,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       helperText,
       labelText,
       isErrorStyles,
+      innerText,
       ...inputProps
     },
     ref,
@@ -86,6 +88,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             {...inputProps}
           />
+          {innerText && (
+            <div
+              className={clsx(
+                "bg-black bg-opacity-[0.04] h-full px-3 rounded-r-md",
+                "absolute right-0 top-1/2 -translate-y-1/2 z-10",
+                "flex items-center flex-shrink-0",
+                "text-sm text-gray-400",
+              )}
+            >
+              {innerText}
+            </div>
+          )}
 
           {errorText && (
             <span className="absolute -translate-y-1/2 right-2 top-1/2">
@@ -97,7 +111,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {errorText && (
           <div
             id={`${id}-error`}
-            className={clsx("mt-1 text-xs text-red-base")}
+            className={clsx("mt-1 text-xs text-red-base text-red-600")}
           >
             {errorText}
           </div>

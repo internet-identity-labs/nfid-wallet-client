@@ -24,4 +24,7 @@ const Template: Story<ICheckbox> = (args) => (
 // https://storybook.js.org/docs/react/workflows/unit-testing
 export const Default = Template.bind({})
 
-Default.args = {}
+Default.args = {
+  labelText: "Date and time",
+  value: "datetime",
+}

@@ -3,13 +3,13 @@ import React, { Dispatch, SetStateAction } from "react"
 
 import Tab from "./tab"
 
-export interface ITab {
+export interface TabProps {
   name: string
   title: JSX.Element
 }
 
 interface ITabsSwitcher extends React.HTMLAttributes<HTMLDivElement> {
-  tabs: ITab[]
+  tabs: TabProps[]
   activeTab: string
   setActiveTab: Dispatch<SetStateAction<string>>
   isFitLine?: boolean

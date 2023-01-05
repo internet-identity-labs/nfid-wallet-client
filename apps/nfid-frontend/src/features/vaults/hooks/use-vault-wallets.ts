@@ -19,7 +19,7 @@ export const useVaultWallets = () => {
   const { data: walletsWithBalances, isValidating: isBalancesLoading } = useSWR(
     wallets ? [wallets, `useVaultWallets`] : null,
     async ([wallets]) => {
-      console.log("useVaultWallets", { wallets })
+      console.debug("useVaultWallets", { wallets })
       return await fetchVaultWalletsBalances(wallets)
     },
     { dedupingInterval: 30_000, refreshInterval: 60_000 },

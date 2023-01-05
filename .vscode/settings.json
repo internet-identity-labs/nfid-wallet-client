@@ -1,6 +1,9 @@
 {
   "liveshare.launcherClient": "visualStudioCode",
-  "cucumberautocomplete.steps": ["./apps/nfid-frontend-e2e/src/steps/*.ts"],
+  "cucumberautocomplete.steps": [
+    "./apps/nfid-frontend-e2e/src/steps/*.ts",
+    "./apps/nfid-frontend/node_modules/qa-lib/src/step_definitions/*.js"
+  ],
   "cucumberautocomplete.syncfeatures": "./apps/nfid-frontend-e2e/src/features/**/*.feature",
   "cucumberautocomplete.strictGherkinCompletion": true,
   "explorer.fileNesting.patterns": {

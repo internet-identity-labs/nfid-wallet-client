@@ -16,6 +16,7 @@ export interface Wallet {
   state: ObjectState
   createdDate: bigint
   modifiedDate: bigint
+  balance?: { ICP: bigint }
 }
 
 export interface VaultMember {

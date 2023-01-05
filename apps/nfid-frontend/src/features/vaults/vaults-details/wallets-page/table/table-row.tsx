@@ -18,8 +18,8 @@ export interface VaultsWalletsTableRowProps {
   id: number
   number: number
   name: string
-  tokenBalance: number
-  USDBalance: number
+  tokenBalance: string
+  USDBalance: string
   onArchive: () => void
   isArchived?: boolean
 }

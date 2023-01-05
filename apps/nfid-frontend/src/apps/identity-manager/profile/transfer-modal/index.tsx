@@ -87,9 +87,7 @@ export const ProfileTransferModal = () => {
     console.log({ wallets })
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
-      value: !wallet.isVaultWallet
-        ? wallet.principal?.toText() ?? ""
-        : wallet.accountId,
+      value: wallet.principal?.toText(),
       afterLabel: `${toPresentation(wallet.balance[selectedToken.value])} ${
         selectedToken.value
       }`,

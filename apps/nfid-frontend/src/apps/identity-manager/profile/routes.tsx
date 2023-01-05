@@ -1,10 +1,14 @@
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
+import { VaultsDetailsCoordinator } from "frontend/features/vaults/vaults-details"
+import { VaultTransactionsDetailsPage } from "frontend/features/vaults/vaults-details/transactions-details-page"
+import { VaultsListPage } from "frontend/features/vaults/vaults-list-page"
 import ApplicationsIcon from "frontend/ui/organisms/profile-sidebar/assets/applications.svg"
 import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
 import CredentialsIcon from "frontend/ui/organisms/profile-sidebar/assets/credentials.svg"
 import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.svg"
+import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 
 import ProfileApplications from "./applications"
@@ -32,6 +36,9 @@ export const ProfileConstants = {
   copyRecoveryPhrase: "copy-recovery-phrase",
   addPhoneNumber: "add-phone-number",
   verifySMS: "verify-sms",
+  vaults: "vaults",
+  vault: ":vaultId",
+  vaultTransaction: ":transactionId",
 }
 
 export const ProfileRoutes = (
@@ -124,6 +131,30 @@ export const ProfileRoutes = (
         </AuthWrapper>
       }
     />
+    <Route
+      path={`${ProfileConstants.vaults}`}
+      element={
+        <AuthWrapper>
+          <VaultsListPage />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
+      element={
+        <AuthWrapper>
+          <VaultsDetailsCoordinator />
+        </AuthWrapper>
+      }
+    />
+    <Route
+      path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
+      element={
+        <AuthWrapper>
+          <VaultTransactionsDetailsPage />
+        </AuthWrapper>
+      }
+    />
   </Route>
 )
 
@@ -133,6 +164,12 @@ export const profileSidebarItems = [
     title: "Assets",
     link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
     id: "profile-assets",
+  },
+  {
+    icon: VaultsIcon,
+    title: "Vaults",
+    link: `${ProfileConstants.base}/${ProfileConstants.vaults}`,
+    id: "profile-vaults",
   },
   {
     icon: ApplicationsIcon,

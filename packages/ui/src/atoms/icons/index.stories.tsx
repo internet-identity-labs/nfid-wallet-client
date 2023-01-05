@@ -12,6 +12,7 @@ import { ReactComponent as Desktop } from "./desktop.svg"
 import { ReactComponent as Dokument } from "./document.svg"
 import { ReactComponent as Dots } from "./dots.svg"
 import { ReactComponent as Error } from "./error.svg"
+import { ReactComponent as FilledArrowRight } from "./filled-arrow-right.svg"
 import { ReactComponent as Gmail } from "./gmail.svg"
 import { ReactComponent as Google } from "./google.svg"
 import { ReactComponent as Info } from "./info.svg"
@@ -19,17 +20,21 @@ import { ReactComponent as Key } from "./key.svg"
 import { ReactComponent as Laptop } from "./laptop.svg"
 import { ReactComponent as Logout } from "./logout.svg"
 import { ReactComponent as MapPin } from "./map-pin.svg"
+import { ReactComponent as Members } from "./members.svg"
 import { ReactComponent as Mobile } from "./mobile.svg"
 import { ReactComponent as Pencil } from "./pencil.svg"
 import { ReactComponent as Plus } from "./plus.svg"
+import { ReactComponent as Policies } from "./policies.svg"
 import { ReactComponent as Recovery } from "./recovery.svg"
 import { ReactComponent as Refresh } from "./refresh.svg"
 import { ReactComponent as Success } from "./success.svg"
 import { ReactComponent as Tablet } from "./tablet.svg"
 import { ReactComponent as TouchId } from "./touch-id.svg"
+import { ReactComponent as Transactions } from "./transactions.svg"
 import { ReactComponent as Trash } from "./trash.svg"
 import { ReactComponent as Unknown } from "./unknown.svg"
 import { ReactComponent as Usb } from "./usb.svg"
+import { ReactComponent as Wallet } from "./wallet.svg"
 import { ReactComponent as Warning } from "./warning.svg"
 
 const meta: Meta = {
@@ -64,7 +69,7 @@ const IconWrapper: React.FC<{ icon: React.ReactNode; label: string }> = ({
   icon,
   label,
 }) => (
-  <div className="flex flex-col items-center p-4 space-y-2 border rounded center justity-center">
+  <div className="flex flex-col items-center p-4 space-y-2 border rounded center">
     <div>{icon}</div>
     <div className="text-xs">{label}</div>
   </div>
@@ -155,6 +160,10 @@ const Icons: Story = (args) => {
           icon={<Warning className={clsx(args["className"])} />}
           label="Warning"
         />
+        <IconWrapper
+          icon={<FilledArrowRight className={clsx(args["className"])} />}
+          label="FilledArrowRight"
+        />
       </div>
       <div className="mb-2 font-bold">Devices:</div>
       <div className="flex items-center gap-2">
@@ -205,6 +214,25 @@ const Icons: Story = (args) => {
         <IconWrapper
           icon={<MapPin className={clsx(args["className"])} />}
           label="MapPin"
+        />
+      </div>
+      <div className="mb-2 font-bold">Other:</div>
+      <div className="flex items-center gap-2">
+        <IconWrapper
+          icon={<Transactions className={clsx("h-6", args["className"])} />}
+          label="Transactions"
+        />
+        <IconWrapper
+          icon={<Policies className={clsx("h-6", args["className"])} />}
+          label="Policies"
+        />
+        <IconWrapper
+          icon={<Members className={clsx("h-6", args["className"])} />}
+          label="Members"
+        />
+        <IconWrapper
+          icon={<Wallet className={clsx("h-6", args["className"])} />}
+          label="Wallet"
         />
       </div>
     </div>

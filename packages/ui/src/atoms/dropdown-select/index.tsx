@@ -28,6 +28,7 @@ export interface IDropdownSelect {
   disabled?: boolean
   showSelectAllOption?: boolean
   errorText?: string
+  id?: string
 }
 
 export const DropdownSelect = ({
@@ -43,6 +44,7 @@ export const DropdownSelect = ({
   disabled = false,
   showSelectAllOption = false,
   errorText,
+  id,
 }: IDropdownSelect) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
@@ -113,16 +115,30 @@ export const DropdownSelect = ({
         )}
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        id={id}
       >
-        <p className={clsx("text-sm leading-5", !isMultiselect && "hidden")}>
+        <p
+          className={clsx(
+            "text-sm leading-5",
+            (!isMultiselect || isAllSelected) && "hidden",
+          )}
+        >
           {selectedValues?.length
             ? `${selectedValues.length} selected`
             : placeholder}
         </p>
-        <p className={clsx("text-sm leading-5", isMultiselect && "hidden")}>
+        <p
+          className={clsx(
+            "text-sm leading-5",
+            (isMultiselect || isAllSelected) && "hidden",
+          )}
+        >
           {selectedValues?.length
             ? options.find((o) => o.value === selectedValues[0])?.label
             : placeholder}
+        </p>
+        <p className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
+          All
         </p>
         <img src={Arrow} alt="arrow" />
       </div>
@@ -141,7 +157,10 @@ export const DropdownSelect = ({
               onKeyUp={(e) => setSearchInput(e.target.value)}
             />
           )}
-          <div className={clsx("max-h-[30vh] overflow-auto flex flex-col")}>
+          <div
+            className={clsx("max-h-[30vh] overflow-auto flex flex-col")}
+            id="dropdown-options"
+          >
             {showSelectAllOption && (
               <DropdownOption
                 option={{ label: "Select all", value: "all" }}

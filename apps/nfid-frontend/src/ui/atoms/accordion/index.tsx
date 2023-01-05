@@ -4,12 +4,13 @@ import React, { useRef, useState } from "react"
 export interface AccordionProps {
   title: React.ReactNode
   details: React.ReactNode
-  className?: string
   isBorder?: boolean
   style?: any
-  detailsClassName?: string
   openTrigger?: string
   closeTrigger?: string
+  className?: string
+  detailsClassName?: string
+  titleClassName?: string
 }
 
 export const Accordion: React.FC<AccordionProps> = ({
@@ -21,6 +22,7 @@ export const Accordion: React.FC<AccordionProps> = ({
   detailsClassName,
   openTrigger,
   closeTrigger,
+  titleClassName,
 }) => {
   const [active, setActive] = useState(false)
   const [height, setHeight] = useState("0px")
@@ -73,7 +75,12 @@ export const Accordion: React.FC<AccordionProps> = ({
         style={style}
         onClick={toggleAccordion}
       >
-        <div className="block text-lg font-bold text-left sm:text-xl w-[100%]">
+        <div
+          className={clsx(
+            "block text-lg font-bold text-left sm:text-xl w-[100%]",
+            titleClassName,
+          )}
+        >
           {title}
         </div>
         <div className={`${rotate} inline-block w-[30px] h-[30px]`}>
@@ -86,7 +93,7 @@ export const Accordion: React.FC<AccordionProps> = ({
           >
             <path
               d="M8.34564 12L15 18.6543L21.6543 12"
-              stroke="black"
+              stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"

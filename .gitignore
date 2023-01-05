@@ -18,6 +18,7 @@ build
 
 # Other
 NOTES.md
+.idea
 
 # misc
 coverage

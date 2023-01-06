@@ -3,6 +3,8 @@ import React, { useCallback, useMemo, useState } from "react"
 import { Table } from "@nfid-frontend/ui"
 import { ObjectState, Wallet } from "@nfid/integration"
 
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
+import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 
 import { VaultArchiveWallet } from "../modal-archive-wallet"
@@ -18,8 +20,11 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
 }) => {
   const [isArchiveModal, setIsArchiveModal] = useState(false)
   const [selectedWallet, setSelectedWallet] = useState<Wallet>()
+  const { exchangeRate } = useICPExchangeRate()
 
   const walletsToRows = useMemo(() => {
+    if (!exchangeRate) return []
+
     return wallets.map(
       (wallet, index) =>
         ({
@@ -28,11 +33,14 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
           name: wallet.name,
           number: index + 1,
           tokenBalance: e8sICPToString(Number(wallet.balance?.ICP)),
-          USDBalance: e8sICPToString(Number(wallet.balance?.ICP)),
+          USDBalance: toUSD(
+            Number(e8sICPToString(Number(wallet.balance?.ICP))),
+            exchangeRate,
+          ),
           isArchived: wallet.state === ObjectState.ARCHIVED,
         } as VaultsWalletsTableRowProps),
     )
-  }, [wallets])
+  }, [exchangeRate, wallets])
 
   const onModalOpen = useCallback(
     (type: "archive", walletUid: string) => {

@@ -13,7 +13,6 @@ export const useAllVaultsWallets = () => {
         return await getWallets(vault.id)
       })
 
-      console.log({ vaults })
       return (await Promise.all(promisesArray))
         .flat(1)
         .filter((wallet) => wallet.state !== ObjectState.ARCHIVED)

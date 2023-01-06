@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { Copy } from "../../atoms/copy"
 import { DropdownSelect } from "../../atoms/dropdown-select"
@@ -23,6 +23,20 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
     if (wallets?.length)
       return setSelectedWallet([wallets[0].principal?.toText() ?? ""])
   }, [wallets])
+
+  const selectedWalletAddress = useMemo(() => {
+    const wallet = wallets?.find(
+      (wallet) =>
+        wallet.principal?.toText() === selectedWallet[0] ||
+        wallet.address === selectedWallet[0],
+    )
+
+    if (wallet?.isVaultWallet) return wallet.address ?? ""
+
+    return selectedWallet.length
+      ? principalToAddress(Principal.fromText(selectedWallet[0]))
+      : ""
+  }, [selectedWallet, wallets])
 
   return (
     <div className="flex flex-col flex-grow">
@@ -46,20 +60,11 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
             id="account-id"
           >
             <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-              {selectedWallet.length &&
-                principalToAddress(
-                  Principal.fromText(selectedWallet[0]) as any,
-                )}
+              {selectedWalletAddress}
             </p>
             <Copy
               className="w-[18px] h-[18px] flex-shrink-0"
-              value={
-                selectedWallet.length
-                  ? principalToAddress(
-                      Principal.fromText(selectedWallet[0] ?? "") as any,
-                    )
-                  : ""
-              }
+              value={selectedWalletAddress}
             />
           </div>
         </div>

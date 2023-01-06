@@ -53,9 +53,14 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   walletOptions,
   wallets,
 }) => {
+  console.log({ selectedWalletId, walletOptions, wallets })
   const selectedWallet = useMemo(() => {
     if (!selectedWalletId) return
-    return wallets?.find((w) => w.principal?.toText() === selectedWalletId)
+    return wallets?.find(
+      (w) =>
+        w.principal?.toText() === selectedWalletId ||
+        w.address === selectedWalletId,
+    )
   }, [selectedWalletId, wallets])
 
   const {

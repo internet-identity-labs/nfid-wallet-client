@@ -25,6 +25,7 @@ export type AccountBalance = {
   principalId: string
   account: Account
   balance: TokenBalance
+  address?: string
 }
 
 export async function fetchBalances({
@@ -63,21 +64,20 @@ export async function fetchVaultsWalletsBalances(
 ): Promise<AccountBalance[]> {
   return await Promise.all(
     wallets.map(async (wallet) => {
-      const balance = await getICPBalance(
-        principalToAddress(
-          Principal.fromText(VAULT_CANISTER_ID),
-          fromHexString(wallet.uid),
-        ),
-      )
+      const principal = Principal.fromText(VAULT_CANISTER_ID)
+
+      const address = principalToAddress(principal, fromHexString(wallet.uid))
+      const balance = await getICPBalance(address)
 
       return {
-        principal: Principal.fromText(VAULT_CANISTER_ID),
+        principal: principal,
         account: {
           domain: "nfid.vaults",
           label: wallet.name ?? "",
           accountId: wallet.uid,
         },
-        principalId: wallet.uid,
+        principalId: principal.toText(),
+        address: address,
         balance: { ICP: balance },
       }
     }),

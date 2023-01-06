@@ -50,7 +50,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
       <TableCell isLeft>{number}</TableCell>
       <TableCell>{name}</TableCell>
       <TableCell>{tokenBalance} ICP</TableCell>
-      <TableCell>${USDBalance}</TableCell>
+      <TableCell>{USDBalance}</TableCell>
       <TableCell isRight className="px-0">
         <Popover
           align="end"

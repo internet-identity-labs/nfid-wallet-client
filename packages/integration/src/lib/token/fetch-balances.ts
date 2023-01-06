@@ -83,3 +83,23 @@ export async function fetchVaultsWalletsBalances(
     }),
   )
 }
+
+export async function fetchVaultWalletsBalances(
+  wallets: Wallet[],
+): Promise<Wallet[]> {
+  return await Promise.all(
+    wallets.map(async (wallet) => {
+      const balance = await getICPBalance(
+        principalToAddress(
+          Principal.fromText(VAULT_CANISTER_ID),
+          fromHexString(wallet.uid),
+        ),
+      )
+
+      return {
+        ...wallet,
+        balance: { ICP: balance },
+      }
+    }),
+  )
+}

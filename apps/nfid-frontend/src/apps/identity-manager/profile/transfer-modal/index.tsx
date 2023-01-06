@@ -1,6 +1,5 @@
-import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { fromHexString, principalToAddress } from "ictool"
+import { principalToAddress } from "ictool"
 import { useAtom } from "jotai"
 import { useState } from "react"
 import React from "react"
@@ -84,13 +83,15 @@ export const ProfileTransferModal = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const walletOptions = React.useMemo(() => {
-    console.log({ wallets })
     return wallets?.map((wallet) => ({
       label: wallet.label ?? "",
-      value: wallet.principal?.toText(),
+      value: wallet.isVaultWallet
+        ? wallet.address ?? ""
+        : wallet.principal?.toText(),
       afterLabel: `${toPresentation(wallet.balance[selectedToken.value])} ${
         selectedToken.value
       }`,
+      isVaultWallet: wallet.isVaultWallet,
     }))
   }, [selectedToken, wallets])
 
@@ -135,10 +136,7 @@ export const ProfileTransferModal = () => {
       VAULT_CANISTER_ID
     )
       return submitVaultWallet({
-        address: principalToAddress(
-          Principal.fromText(VAULT_CANISTER_ID),
-          fromHexString(transferModalState.selectedWallet.accountId),
-        ),
+        address: validAddress,
         amount: BigInt(stringICPtoE8s(String(values.amount))),
         from_sub_account: transferModalState.selectedWallet.accountId,
       })
@@ -169,7 +167,7 @@ export const ProfileTransferModal = () => {
       const wallet = wallets?.find(
         (wallet) =>
           wallet.principal.toString() === walletId ||
-          wallet.accountId === walletId,
+          wallet.address === walletId,
       )
       if (wallet) {
         setSelectedWalletId(walletId)

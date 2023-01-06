@@ -12,6 +12,9 @@ export interface IWallet {
   accountId: string
   domain: string
   balance: TokenBalance
+  isVaultWallet?: boolean
+  principalId?: string
+  address?: string
 }
 
 export type NFT = {

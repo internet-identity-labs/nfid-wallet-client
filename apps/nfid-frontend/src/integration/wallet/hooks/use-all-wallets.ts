@@ -17,6 +17,7 @@ type Wallet = {
   accountId: string
   domain: string
   isVaultWallet?: boolean
+  address?: string
 }
 
 export const useAllWallets = () => {

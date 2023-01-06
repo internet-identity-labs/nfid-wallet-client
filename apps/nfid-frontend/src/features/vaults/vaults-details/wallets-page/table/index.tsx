@@ -3,6 +3,8 @@ import React, { useCallback, useMemo, useState } from "react"
 import { Table } from "@nfid-frontend/ui"
 import { ObjectState, Wallet } from "@nfid/integration"
 
+import { e8sICPToString } from "frontend/integration/wallet/utils"
+
 import { VaultArchiveWallet } from "../modal-archive-wallet"
 import { VaultsWalletsTableHeader } from "./table-header"
 import { VaultsWalletsTableRow, VaultsWalletsTableRowProps } from "./table-row"
@@ -25,8 +27,8 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
           uid: wallet.uid,
           name: wallet.name,
           number: index + 1,
-          tokenBalance: 0,
-          USDBalance: 0,
+          tokenBalance: e8sICPToString(Number(wallet.balance?.ICP)),
+          USDBalance: e8sICPToString(Number(wallet.balance?.ICP)),
           isArchived: wallet.state === ObjectState.ARCHIVED,
         } as VaultsWalletsTableRowProps),
     )

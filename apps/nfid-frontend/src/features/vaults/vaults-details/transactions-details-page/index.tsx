@@ -69,9 +69,13 @@ export const VaultTransactionsDetailsPage = () => {
         <div
           className={clsx(
             "absolute -translate-x-1/2 left-1/2 top-1/2 -translate-y-1/2",
-            "-rotate-90 md:rotate-180 rounded-full text-white bg-amber-500",
+            "-rotate-90 md:rotate-180 rounded-full text-white",
             "flex items-center justify-center",
             "w-10 h-10 md:w-14 md:h-14",
+            state?.status === TransactionState.PENDING && "bg-amber-500",
+            state?.status === TransactionState.APPROVED && "bg-emerald-500",
+            state?.status === TransactionState.REJECTED && "bg-red-500",
+            state?.status === TransactionState.CANCELED && "bg-gray-500",
           )}
         >
           <IconCmpArrow />
@@ -79,7 +83,12 @@ export const VaultTransactionsDetailsPage = () => {
       </div>
       <div className="flex items-center justify-between mb-8 mt-7">
         <p className="text-xl font-bold">Details</p>
-        <div className="flex items-center text-blue-600 cursor-pointer">
+        <div
+          className={clsx(
+            "flex items-center text-blue-600 cursor-pointer",
+            state?.status !== TransactionState.APPROVED && "hidden",
+          )}
+        >
           <p className="mr-2 text-sm font-bold">View on block explorer</p>
           <IconCmpOut />
         </div>
@@ -150,7 +159,7 @@ export const VaultTransactionsDetailsPage = () => {
         <div
           className={clsx(
             "flex justify-end mt-5",
-            state?.status === TransactionState.REJECTED && "hidden",
+            state?.status !== TransactionState.PENDING && "hidden",
           )}
         >
           <Button

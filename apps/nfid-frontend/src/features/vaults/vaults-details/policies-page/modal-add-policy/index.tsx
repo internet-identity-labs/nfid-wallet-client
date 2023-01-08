@@ -84,7 +84,7 @@ export const VaultAddPolicy = () => {
       primaryButton={{
         type: "primary",
         onClick: handleSubmit(onAddPolicy),
-        text: "Create",
+        text: "Add",
         id: "create-policy-button",
       }}
       trigger={
@@ -102,7 +102,7 @@ export const VaultAddPolicy = () => {
     >
       <div className="space-y-5" id="create-policy-modal">
         <DropdownSelect
-          label="Transactions sourced from this wallet"
+          label="Source (transactions sourced from this wallet)"
           options={walletsOptions ?? []}
           selectedValues={selectedWallets}
           setSelectedValues={setSelectedWallets}
@@ -111,24 +111,26 @@ export const VaultAddPolicy = () => {
           placeholder="Select wallet"
           id="select-wallet"
         />
-        <Input
-          labelText="That are greater than"
-          type="number"
-          innerText="ICP"
-          errorText={formState.errors.amount?.message}
-          {...register("amount", {
-            required: "This field cannot be empty",
-          })}
-        />
-        <Input
-          labelText="Will require this number of approvers"
-          type="number"
-          innerText={`of ${vault?.members.length}`}
-          errorText={formState.errors.approvers?.message}
-          {...register("approvers", {
-            required: "This field cannot be empty",
-          })}
-        />
+        <div className="grid grid-cols-2 gap-5">
+          <Input
+            labelText="Greater than (that are greater than)"
+            type="number"
+            innerText="ICP"
+            errorText={formState.errors.amount?.message}
+            {...register("amount", {
+              required: "This field cannot be empty",
+            })}
+          />
+          <Input
+            labelText="Approvers"
+            type="number"
+            innerText={`of ${vault?.members.length}`}
+            errorText={formState.errors.approvers?.message}
+            {...register("approvers", {
+              required: "This field cannot be empty",
+            })}
+          />
+        </div>
       </div>
     </ModalAdvanced>
   )

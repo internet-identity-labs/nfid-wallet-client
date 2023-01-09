@@ -80,7 +80,7 @@ export const VaultModalCreate = ({ refetchVaults }: IVaultModalCreate) => {
       <TextArea
         className="mt-3"
         labelText="Description (optional)"
-        placeholder="Short description. Create policies to secure DeFi transactions, including amount caps to limit your risk."
+        placeholder="Differentiate the purpose of this vault from your others with an optional description about its function."
         rows={4}
         {...register("description")}
       />

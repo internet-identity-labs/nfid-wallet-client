@@ -5,6 +5,7 @@ import { Policy } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVaultPolicies } from "../../hooks/use-vault-policies"
+import { VaultPolicyInfoTooltip } from "./info-tooltip"
 import { VaultAddPolicy } from "./modal-add-policy"
 import { VaultsPoliciesTable } from "./table"
 
@@ -19,7 +20,7 @@ export const VaultsPoliciesPage: React.FC<VaultsPoliciesPageProps> = () => {
 
     return policies
       .filter((policies) => policies?.walletName?.includes(searchFilter))
-      .sort((a, b) => a.state.localeCompare(b.state))
+      .sort((a, b) => Number(a.createdDate) - Number(b.createdDate))
   }, [policies, searchFilter])
 
   const onFilterChange = useCallback(
@@ -33,7 +34,12 @@ export const VaultsPoliciesPage: React.FC<VaultsPoliciesPageProps> = () => {
     <div className="border border-gray-200 rounded-xl mt-[30px]">
       <VaultActionBar
         onInputChange={onFilterChange}
-        actionButtons={<VaultAddPolicy />}
+        actionButtons={
+          <div className="flex space-x-5">
+            <VaultAddPolicy />
+            <VaultPolicyInfoTooltip />
+          </div>
+        }
       />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsPoliciesTable policies={filteredPolicies} />

@@ -54,14 +54,12 @@ describe("ECDSA suite", () => {
     const nfidWallet = new EthWallet(customHttpProvider)
     const address = await nfidWallet.getAddress()
     const gasPrice = await customHttpProvider.getGasPrice()
-    console.log(gasPrice)
     const value = ethers.utils.parseEther("0.0000001")
     const gasLimit = BigNumber.from(100000)
     const trCount = await customHttpProvider.getTransactionCount(
       address,
       "latest",
     )
-    console.log(trCount)
     const transaction = {
       from: address,
       to: addressTo,
@@ -70,7 +68,6 @@ describe("ECDSA suite", () => {
       gasLimit: gasLimit,
       gasPrice: gasPrice,
     }
-    console.log(address)
     try {
       const actual = await nfidWallet.sendTransaction(transaction)
       expect(actual.from).toEqual(address)

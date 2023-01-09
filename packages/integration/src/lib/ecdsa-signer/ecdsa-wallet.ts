@@ -30,11 +30,11 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   }
 
   async signMessage(message: Bytes | string): Promise<string> {
-    const keccak = hashMessage(message)
-    const digestBytes = arrayify(keccak)
-    return signEcdsaMessage([...digestBytes])
+    const keccakHash = hashMessage(message)
+    const messageHashAsBytes = arrayify(keccakHash)
+    return signEcdsaMessage([...messageHashAsBytes])
       .then(signature => {
-        const ethersSignature = this._splitSignature(signature, digestBytes)
+        const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
         return joinSignature(ethersSignature)
       })
   }
@@ -44,11 +44,11 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       if (tx.from != null) {
         delete tx.from
       }
-      const keccak = keccak256(serialize(<UnsignedTransaction>tx))
-      const digestBytes = arrayify(keccak)
-      return signEcdsaMessage([...digestBytes])
+      const keccakHash = keccak256(serialize(<UnsignedTransaction>tx))
+      const messageHashAsBytes = arrayify(keccakHash)
+      return signEcdsaMessage([...messageHashAsBytes])
         .then(signature => {
-          const ethersSignature = this._splitSignature(signature, digestBytes)
+          const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
           return serialize(<UnsignedTransaction>tx, ethersSignature)
         })
     })

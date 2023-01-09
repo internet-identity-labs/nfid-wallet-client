@@ -37,6 +37,7 @@ type Events =
   | { type: "error.platform.registerService"; data: Error }
   | { type: "done.invoke.createWebAuthnIdentity"; data: WebAuthnIdentity }
   | { type: "error.platform.loginWithAnchor"; data: Error }
+  | { type: "error.platform.createWebAuthnIdentity"; data: Error }
   | {
       type: "done.invoke.AuthWithGoogleMachine"
       data: AuthSession
@@ -163,7 +164,8 @@ const RegistrationMachine =
                       },
                     ],
                     onError: {
-                      actions: ["logServiceError"],
+                      actions: ["assignError", "logServiceError"],
+                      target: "InitialChallenge",
                     },
                   },
                 },

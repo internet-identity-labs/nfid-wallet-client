@@ -7,9 +7,9 @@ Feature: User wants to veirfy his phone number
     Given I remove the account by phone number 380990374146
 
   Scenario Outline: User wants to veirfy his phone number
-    Then I wait on element "iframe[title='Sign in with Google Button']" for 5000ms to be displayed
+    Then I wait on element ".//iframe[contains(@src,'accounts.google')]" for 5000ms to be displayed
     And  I pause for 250ms
-    When I click on the selector "iframe[title='Sign in with Google Button']"
+    When I click on the selector ".//iframe[contains(@src,'accounts.google')]"
     Then I expect a new window has been opened
     When I focus the last opened window
     Then I wait on element "#credentials-picker > div:first-child" for 4000ms to be displayed

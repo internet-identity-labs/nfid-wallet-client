@@ -7,10 +7,10 @@ Feature: Registration using Google
 
   Scenario Outline: User wants to register with Google
     Given I remove the e2e@identitylabs.ooo
-    Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
+    Then I wait on element ".//iframe[contains(@src,'accounts.google')]" for 3000ms to be displayed
     And  I pause for 250ms
 
-    When I click on the selector "iframe[title='Sign in with Google Button']"
+    When I click on the selector ".//iframe[contains(@src,'accounts.google')]"
     Then I expect a new window has been opened
 
     When I focus the last opened window
@@ -38,9 +38,9 @@ Feature: Registration using Google
     Then I wait on element "#logout" for 15000ms to be displayed
 
   Scenario Outline: User wants to login with Google
-    Then I wait on element "iframe[title='Sign in with Google Button']" for 3000ms to be displayed
+    Then I wait on element ".//iframe[contains(@src,'accounts.google')]" for 3000ms to be displayed
     When I pause for 250ms
-    When I click on the selector "iframe[title='Sign in with Google Button']"
+    When I click on the selector ".//iframe[contains(@src,'accounts.google')]"
     Then I expect a new window has been opened
     When I focus the last opened window
     Then I wait on element "#credentials-picker > div:first-child" for 4000ms to be displayed

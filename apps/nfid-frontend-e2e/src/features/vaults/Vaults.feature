@@ -8,7 +8,7 @@ Feature: Create vault / Show vault / Archive vault
     Given I remove the e2e@identitylabs.ooo
 
   Scenario:
-    #register with google
+    # Register with google
     Then I wait on element ".//iframe[contains(@src,'accounts.google')]" for 3000ms to be displayed
     And  I pause for 250ms
 

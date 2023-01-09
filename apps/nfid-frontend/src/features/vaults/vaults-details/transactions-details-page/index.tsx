@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { toast } from "react-toastify"
 
-import { Badge, Button, IconCmpArrow, IconCmpOut } from "@nfid-frontend/ui"
+import { Badge, Button, IconCmpOut } from "@nfid-frontend/ui"
 import { approveTransaction, TransactionState } from "@nfid/integration"
 
 import { Accordion } from "frontend/ui/atoms/accordion"
@@ -15,6 +15,7 @@ import {
 } from "../transactions-page/table/table-row"
 import { VaultTransactionInfo } from "./info-block"
 import { TransactionInfoRow } from "./info-row"
+import { TransactionStatusArrow } from "./status-arrow"
 
 export const VaultTransactionsDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -66,20 +67,7 @@ export const VaultTransactionsDetailsPage = () => {
             direction="left"
           />
         </div>
-        <div
-          className={clsx(
-            "absolute -translate-x-1/2 left-1/2 top-1/2 -translate-y-1/2",
-            "-rotate-90 md:rotate-180 rounded-full text-white",
-            "flex items-center justify-center",
-            "w-10 h-10 md:w-14 md:h-14",
-            state?.status === TransactionState.PENDING && "bg-amber-500",
-            state?.status === TransactionState.APPROVED && "bg-emerald-500",
-            state?.status === TransactionState.REJECTED && "bg-red-500",
-            state?.status === TransactionState.CANCELED && "bg-gray-500",
-          )}
-        >
-          <IconCmpArrow />
-        </div>
+        <TransactionStatusArrow state={state?.status} />
       </div>
       <div className="flex items-center justify-between mb-8 mt-7">
         <p className="text-xl font-bold">Details</p>

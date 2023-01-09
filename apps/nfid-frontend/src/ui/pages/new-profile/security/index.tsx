@@ -198,7 +198,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
                 onClick={handleWithLoading(onRegisterRecoveryKey)}
                 title="Security key"
                 id="security-key"
-                subtitle="A special USB stick to keep safe"
+                subtitle="A USB stick to store a passkey on"
                 img={<USBIcon />}
               />
             )}

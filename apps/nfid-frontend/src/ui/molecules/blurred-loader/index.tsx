@@ -20,7 +20,7 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
       {isLoading ? (
         <BlurOverlay
           id="loader"
-          className="absolute top-0 bottom-0 z-20 w-full"
+          className="absolute top-0 bottom-0 left-0 z-20 w-full"
         >
           <div className="flex flex-col items-center justify-center w-full h-full px-14">
             <Loader

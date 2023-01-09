@@ -17,7 +17,7 @@ export interface ModalButtonProps {
 
 export interface ModalAdvancedProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  title: string
+  title?: string
   subTitle?: string | JSX.Element
   primaryButton?: ModalButtonProps
   secondaryButton?: ModalButtonProps

@@ -8,6 +8,7 @@ import { Table } from "@nfid-frontend/ui"
 import { bigIntMillisecondsToSeconds } from "@nfid-frontend/utils"
 import { Transaction } from "@nfid/integration"
 
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
@@ -50,9 +51,9 @@ export const VaultsTransactionsTable: React.FC<
           id: transaction.id,
           status: transaction.state,
           amountICP: e8sICPToString(Number(transaction.amount)),
-          amountUSD: String(
-            Number(e8sICPToString(Number(transaction.amount))) *
-              (exchangeRate ?? 0),
+          amountUSD: toUSD(
+            Number(e8sICPToString(Number(transaction.amount))),
+            exchangeRate ?? 0,
           ),
           fromAddress: principalToAddress(
             Principal.fromText(VAULT_CANISTER_ID),

@@ -6,13 +6,15 @@ import {
   IconCmpTransactions,
   IOption,
 } from "@nfid-frontend/ui"
-import { bigIntMillisecondsToSeconds } from "@nfid-frontend/utils"
+import {
+  bigIntMillisecondsToSeconds,
+  isDateBetween,
+} from "@nfid-frontend/utils"
 import { Transaction, TransactionState } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
 import { useVaultTransactions } from "../../hooks/use-vault-transactions"
-import { isDateBetween } from "../../utils"
 import { VaultFilterTransactions } from "./modal-filters"
 import { VaultsTransactionsTable } from "./table"
 

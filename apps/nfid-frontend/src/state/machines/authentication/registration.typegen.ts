@@ -80,6 +80,7 @@ export interface Typegen0 {
       | "done.invoke.loginWithAnchor"
     assignChallenge: "done.invoke.fetchChallenge"
     assignError:
+      | "error.platform.createWebAuthnIdentity"
       | "error.platform.loginWithAnchor"
       | "error.platform.registerService"
     assignWebAuthnIdentity: "done.invoke.createWebAuthnIdentity"

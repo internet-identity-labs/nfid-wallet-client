@@ -22,7 +22,6 @@
       "frontend/*": ["./src/*"]
     },
     "sourceMap": true,
-    "suppressExcessPropertyErrors": true,
     "types": [
       "node",
       "webdriverio/async",

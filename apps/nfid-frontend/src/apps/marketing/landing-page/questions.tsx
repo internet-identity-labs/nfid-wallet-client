@@ -5,12 +5,9 @@ export const questions = [
     title: "What is NFID?",
     info: (
       <p>
-        NFID is the most private, secure, and convenient way to sign in to
-        third-party apps and websites using the devices you already own. When
-        you see a Continue with NFID prompt on a participating app or website,
-        it means you can set up an account using your NFID. No more usernames or
-        passwords to manage, no more loss of privacy, and no more identity theft
-        or theft of the cryptocurrency you’re holding.
+        NFID is a self-custodial wallet that doesn’t require a browser plugin or
+        app download. Secure your blockchain assets (tokens and NFTs), personal
+        information, and application data with NFID.
       </p>
     ),
   },

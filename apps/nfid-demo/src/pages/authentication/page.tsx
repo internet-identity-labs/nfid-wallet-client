@@ -4,6 +4,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 import { ImSpinner } from "react-icons/im"
+import useSWR from "swr"
 
 import { Button, H1 } from "@nfid-frontend/ui"
 
@@ -18,9 +19,11 @@ export const PageAuthentication = () => {
   })
 
   const [nfidResponse, setNfidResponse] = useState({})
+  const { data: authClient } = useSWR("authClient", () => AuthClient.create())
 
   const handleAuthenticate = useCallback(async () => {
-    const authClient = await AuthClient.create()
+    if (!authClient) return
+
     updateAuthButton({ loading: true, label: "Authenticating..." })
     await authClient.login({
       idpWindowName: "nfidIdpWindow",
@@ -32,9 +35,9 @@ export const PageAuthentication = () => {
           host: "https://ic0.app",
         })
         updateAuthButton({
-          disabled: true,
+          disabled: false,
           loading: false,
-          label: "Authenticated",
+          label: "Logout",
         })
         setNfidResponse({ principal: identity.getPrincipal().toText() })
       },
@@ -44,24 +47,41 @@ export const PageAuthentication = () => {
       identityProvider: `${NFID_PROVIDER_URL}/authenticate`,
       windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
     })
-  }, [updateAuthButton])
+  }, [authClient, updateAuthButton])
+
+  const handleLogout = useCallback(async () => {
+    authClient?.logout()
+    setNfidResponse({})
+    updateAuthButton({
+      disabled: false,
+      loading: false,
+      label: "Authenticate",
+    })
+  }, [authClient, updateAuthButton])
 
   return (
-    <PageTemplate title="Get accounts">
+    <PageTemplate title="Authentication / Registration">
       <H1 className="title">Authentication / Registration</H1>
 
-      <div className="flex flex-col w-64 my-8">
-        <Button disabled={authButton.disabled} onClick={handleAuthenticate}>
-          {authButton.loading ? (
-            <div className={clsx("flex items-center space-x-2")}>
-              <ImSpinner className={clsx("animate-spin")} />
-              <div>{authButton.label}</div>
-            </div>
-          ) : (
-            authButton.label
-          )}
-        </Button>
-      </div>
+      {authClient && (
+        <div className="flex flex-col w-64 my-8">
+          <Button
+            disabled={authButton.disabled}
+            onClick={
+              authButton.label === "Logout" ? handleLogout : handleAuthenticate
+            }
+          >
+            {authButton.loading ? (
+              <div className={clsx("flex items-center space-x-2")}>
+                <ImSpinner className={clsx("animate-spin")} />
+                <div>{authButton.label}</div>
+              </div>
+            ) : (
+              authButton.label
+            )}
+          </Button>
+        </div>
+      )}
 
       <div
         className={clsx(

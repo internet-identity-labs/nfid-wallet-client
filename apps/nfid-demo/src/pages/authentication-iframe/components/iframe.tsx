@@ -1,40 +1,32 @@
 import clsx from "clsx"
-import React, { useState } from "react"
+import React from "react"
 
-import { IFrameContent } from "./iframe-content"
-import { IFrameWrapper } from "./iframe-wrapper"
-
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface IFrameProps extends React.HTMLAttributes<HTMLDivElement> {
   src: string
   onLoad?: () => void
 }
 
-export const IFrame: React.FC<Props> = ({ className, src, onLoad }) => {
-  const [visible, setVisible] = useState(true)
+export const IFrame: React.FC<IFrameProps> = ({ className, src, onLoad }) => {
+  const [isLoading, setLoading] = React.useState(true)
 
-  React.useEffect(() => {
-    const timeout = setTimeout(() => setVisible(true), 500)
-    return () => clearTimeout(timeout)
-  }, [])
+  const handleOnLoad = React.useCallback(() => {
+    setLoading(false)
+    onLoad && onLoad()
+  }, [onLoad])
 
-  React.useEffect(() => {
-    const iframeWrapperCard = document.querySelector(
-      "#iframe-wrapper-card",
-    ) as HTMLDivElement
-    const origin = new URL(src).origin
-
-    window.addEventListener("message", function (event) {
-      if (event.origin !== origin) return
-
-      const height = parseInt(event.data.height)
-
-      iframeWrapperCard.style.height = `${height > 190 ? height : 190}px`
-    })
-  }, [src])
-
-  return visible ? (
-    <IFrameWrapper className={clsx(className)}>
-      <IFrameContent src={src} onLoad={onLoad} />
-    </IFrameWrapper>
-  ) : null
+  return (
+    <iframe
+      className={clsx(
+        "w-full transition-all delay-300 h-full",
+        isLoading && "opacity-0",
+        className,
+      )}
+      src={src}
+      frameBorder="0"
+      title="iiIdpWindow"
+      name="iiIdpWindow"
+      allow="publickey-credentials-get"
+      onLoad={handleOnLoad}
+    />
+  )
 }

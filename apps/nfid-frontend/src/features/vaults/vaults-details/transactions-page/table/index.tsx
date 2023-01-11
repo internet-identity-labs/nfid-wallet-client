@@ -45,9 +45,7 @@ export const VaultsTransactionsTable: React.FC<
               (wallet) => wallet.uid === transaction.from_sub_account,
             )?.name ?? "",
           toAddress: transaction.to,
-          ownerName:
-            vault?.members.find((member) => member.userId === transaction.owner)
-              ?.name ?? transaction.owner,
+          ownerName: transaction.owner,
           id: transaction.id,
           status: transaction.state,
           amountICP: e8sICPToString(Number(transaction.amount)),

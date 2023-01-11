@@ -1,5 +1,4 @@
 import assert from "assert"
-import { WebAuthnCredential } from "test/setup"
 import { command } from "webdriver"
 
 const NFID_URL = "http://localhost:9090"

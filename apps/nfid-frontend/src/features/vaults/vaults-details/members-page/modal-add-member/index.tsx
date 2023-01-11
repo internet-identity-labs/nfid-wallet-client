@@ -2,11 +2,13 @@ import clsx from "clsx"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
+import useSWR from "swr"
 
 import { IconCmpPlus, Input, ModalAdvanced } from "@nfid-frontend/ui"
 import { ObjectState, storeMember, VaultRole } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
+import { getMemberAddress } from "frontend/features/vaults/services"
 
 interface VaultCreateForm {
   name: string
@@ -17,8 +19,9 @@ export const VaultAddMember = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { vault, refetch } = useVault()
+  const { data: memberAddress } = useSWR("memberAddress", getMemberAddress)
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, resetField } = useForm({
     defaultValues: {
       name: "",
       address: "",
@@ -27,6 +30,14 @@ export const VaultAddMember = () => {
 
   const onAddMember = async ({ name, address }: VaultCreateForm) => {
     if (!vault?.id) return
+
+    if (address === memberAddress) {
+      toast.warn(
+        "You're trying to invite yourself to the vault. Try another address.",
+      )
+      setIsModalOpen(false)
+      return resetField("address")
+    }
 
     try {
       setIsLoading(true)

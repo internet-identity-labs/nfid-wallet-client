@@ -23,7 +23,7 @@ export async function handshake(): Promise<AuthorizationRequest> {
   // Having this interval is the easiest work around for now.
   const interval = setInterval(
     () => postMessageToClient({ kind: "authorize-ready" }),
-    1000,
+    500,
   )
 
   const response = awaitClientMessage(isIdentityClientAuthEvent).then(
@@ -47,6 +47,7 @@ export async function handshake(): Promise<AuthorizationRequest> {
       }
     },
   )
+  postMessageToClient({ kind: "authorize-ready" })
   return response
 }
 

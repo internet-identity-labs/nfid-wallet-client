@@ -45,10 +45,7 @@ export const PageAuthenticationIframe = () => {
       {!identity && mountIFrame && (
         <AuthIFrame
           identityProvider={`${NFID_PROVIDER_URL}/authenticate`}
-          handler={handleAuthenticate}
-          onClose={function (): void {
-            throw new Error("Function not implemented.")
-          }}
+          authenticate={handleAuthenticate}
         />
       )}
       {identity && (

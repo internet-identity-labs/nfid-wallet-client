@@ -21,7 +21,7 @@ export const VaultAddMember = () => {
   const { vault, refetch } = useVault()
   const { data: memberAddress } = useSWR("memberAddress", getMemberAddress)
 
-  const { register, handleSubmit, formState, resetField } = useForm({
+  const { register, handleSubmit, formState, resetField, reset } = useForm({
     defaultValues: {
       name: "",
       address: "",
@@ -48,12 +48,13 @@ export const VaultAddMember = () => {
         role: VaultRole.MEMBER,
         state: ObjectState.ACTIVE,
       })
+      toast.success(`Member ${name} successfully added`)
+      reset()
     } catch (e: any) {
       toast.error(e.message)
     } finally {
       setIsLoading(false)
       setIsModalOpen(false)
-      toast.success(`Member ${name} successfully added`)
       await refetch()
     }
   }

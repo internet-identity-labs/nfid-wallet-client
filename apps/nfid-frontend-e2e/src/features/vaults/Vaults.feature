@@ -42,6 +42,7 @@ Feature: Create vault / Show vault / Archive vault
     # Test create vault
     Then I wait on element "#desktop > #profile-vaults" for 2000ms to exist
     Then I click on the selector "#desktop > #profile-vaults"
+    Then I wait on element "#loader" for 10000ms to not be displayed
     Then I click on the selector "#create-vault-trigger"
     When I set <vaultName> to the inputfield "[name='vaultName']"
     Then I click on the selector "#create-vault-button"

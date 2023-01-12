@@ -43,7 +43,7 @@ export const VaultAddPolicy = () => {
     }))
   }, [wallets])
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, reset } = useForm({
     defaultValues: {
       amount: 0,
       approvers: 0,
@@ -63,6 +63,7 @@ export const VaultAddPolicy = () => {
         type: PolicyType.THRESHOLD_POLICY,
         wallets: selectedWallets.length > 1 ? undefined : selectedWallets,
       })
+      reset()
     } catch (e: any) {
       console.log({ e })
       toast.error(e.message)

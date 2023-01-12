@@ -12,6 +12,7 @@ export const TableCell = ({
   isRight,
   className,
   centered,
+  onClick,
 }: ITableCell) => {
   return (
     <td
@@ -22,6 +23,7 @@ export const TableCell = ({
         centered && "text-center",
         className,
       )}
+      onClick={onClick}
     >
       {children}
     </td>

@@ -2,14 +2,12 @@ import clsx from "clsx"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import useSWR from "swr"
 
 import { IconCmpPlus, Input, ModalAdvanced } from "@nfid-frontend/ui"
 import { ObjectState, storeMember, VaultRole } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
-import { getMemberAddress } from "frontend/features/vaults/services"
 
 interface VaultCreateForm {
   name: string

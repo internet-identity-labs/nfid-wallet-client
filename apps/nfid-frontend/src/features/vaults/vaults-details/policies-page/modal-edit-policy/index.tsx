@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 import { Input, ModalAdvanced } from "@nfid-frontend/ui"
+import { minMax } from "@nfid-frontend/utils"
 import { Policy, updatePolicy } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
@@ -121,6 +122,10 @@ export const VaultEditPolicy: React.FC<VaultPolicyEditProps> = ({
           errorText={formState.errors.approvers?.message}
           {...register("approvers", {
             required: "This field cannot be empty",
+            validate: minMax({
+              min: 1,
+              toLowError: "Minimum amount is 1",
+            }),
           })}
         />
       </div>

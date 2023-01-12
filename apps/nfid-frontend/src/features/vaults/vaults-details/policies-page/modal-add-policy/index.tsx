@@ -10,6 +10,7 @@ import {
   IOption,
   ModalAdvanced,
 } from "@nfid-frontend/ui"
+import { minMax } from "@nfid-frontend/utils"
 import {
   Currency,
   ObjectState,
@@ -128,6 +129,10 @@ export const VaultAddPolicy = () => {
             errorText={formState.errors.approvers?.message}
             {...register("approvers", {
               required: "This field cannot be empty",
+              validate: minMax({
+                min: 1,
+                toLowError: "Minimum amount is 1",
+              }),
             })}
           />
         </div>

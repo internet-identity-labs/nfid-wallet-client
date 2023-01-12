@@ -1,7 +1,15 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
-import { ActorMethod, HttpAgent, Identity, SignIdentity } from "@dfinity/agent"
+import {
+  Actor,
+  ActorMethod,
+  ActorSubclass,
+  HttpAgent,
+  Identity,
+  SignIdentity,
+} from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
+import { DelegationIdentity } from "@dfinity/identity"
 
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
@@ -90,6 +98,17 @@ export async function initActor(
     agent: new HttpAgent({ ...agentBaseConfig, identity }),
   })
 }
+
+export async function replaceActorIdentity(
+  actor: ActorSubclass<
+    Vault | Ledger | Verifier | IdentityManager | InternetIdentity
+  >,
+  identity: DelegationIdentity,
+) {
+  const actorAgent = Actor.agentOf(actor)
+  if (actorAgent?.replaceIdentity) actorAgent.replaceIdentity(identity)
+}
+
 // All of the actor definitions needed in our app should go here.
 
 export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)

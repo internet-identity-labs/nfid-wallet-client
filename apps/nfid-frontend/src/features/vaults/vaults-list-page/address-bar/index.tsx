@@ -1,17 +1,16 @@
 import clsx from "clsx"
 import React from "react"
-import useSWR from "swr"
 
 import { Copy } from "@nfid-frontend/ui"
 
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
-import { getMemberAddress } from "../../services"
+import { useVaultMember } from "../../hooks/use-vault-member"
 
 export interface VaultAddressBarProps {}
 
 export const VaultAddressBar: React.FC<VaultAddressBarProps> = () => {
-  const { data: memberAddress } = useSWR("memberAddress", getMemberAddress)
+  const { address } = useVaultMember()
 
   return (
     <div
@@ -42,11 +41,11 @@ export const VaultAddressBar: React.FC<VaultAddressBarProps> = () => {
           )}
         >
           <CenterEllipsis
-            value={memberAddress ?? ""}
+            value={address ?? ""}
             leadingChars={20}
             trailingChars={3}
           />
-          <Copy className="text-gray-400" value={memberAddress ?? ""} />
+          <Copy className="text-gray-400" value={address ?? ""} />
         </div>
       </div>
     </div>

@@ -41,6 +41,7 @@
       { "env": "II_MODE" },
       { "env": "IC_HOST" },
       { "env": "CURRCONV_TOKEN" },
+      { "env": "RAMP_WALLET_API_KEY" },
       { "env": "REACT_APP_SENTRY_CONNECTION" },
       { "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION" },
       { "env": "PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION" },

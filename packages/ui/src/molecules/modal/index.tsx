@@ -76,11 +76,12 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
           >
             {secondaryButton && (
               <RadixDialog.Close asChild>
-                <div>
+                <div className={clsx(secondaryButton.block && "w-full block")}>
                   <Button
                     onClick={secondaryButton?.onClick}
                     className={clsx("!py-3 !px-8")}
                     type={secondaryButton.type}
+                    block={secondaryButton.block}
                   >
                     {secondaryButton?.text}
                   </Button>

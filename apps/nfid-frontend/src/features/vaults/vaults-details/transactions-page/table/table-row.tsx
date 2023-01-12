@@ -32,6 +32,7 @@ export interface IVaultTransactionsDetails {
   status: TransactionState
   isInitiatedByYou: boolean
   isApprovedByYou: boolean
+  memo?: string
 }
 
 export enum VaultBadgeStatuses {

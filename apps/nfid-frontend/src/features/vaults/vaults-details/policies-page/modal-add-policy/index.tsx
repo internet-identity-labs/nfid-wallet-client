@@ -131,7 +131,9 @@ export const VaultAddPolicy = () => {
               required: "This field cannot be empty",
               validate: minMax({
                 min: 1,
+                max: 255,
                 toLowError: "Minimum amount is 1",
+                toBigError: "Maximum amount is 255",
               }),
             })}
           />

@@ -88,24 +88,26 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             {...inputProps}
           />
-          {innerText && (
-            <div
-              className={clsx(
-                "bg-black bg-opacity-[0.04] h-full px-3 rounded-r-md",
-                "absolute right-0 top-1/2 -translate-y-1/2 z-10",
-                "flex items-center flex-shrink-0",
-                "text-sm text-gray-400",
-              )}
-            >
-              {innerText}
-            </div>
-          )}
 
-          {errorText && (
-            <span className="absolute -translate-y-1/2 right-2 top-1/2">
-              <IconCmpError className="text-red-600" />
-            </span>
-          )}
+          <span
+            className={clsx(
+              "absolute right-0 h-full -translate-y-1/2 top-1/2",
+              "items-center flex",
+            )}
+          >
+            {errorText && <IconCmpError className="mr-2 text-red-600" />}
+            {innerText && (
+              <div
+                className={clsx(
+                  "bg-black bg-opacity-[0.04] h-full px-3 rounded-r-md",
+                  "flex items-center flex-shrink-0",
+                  "text-sm text-gray-400",
+                )}
+              >
+                {innerText}
+              </div>
+            )}
+          </span>
         </div>
 
         {errorText && (

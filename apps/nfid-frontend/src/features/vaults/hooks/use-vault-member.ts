@@ -15,6 +15,7 @@ export const useVaultMember = () => {
 
   const userAddress = useMemo(() => {
     if (!UserIIDelegation) return ""
+
     return principalToAddress(
       UserIIDelegation.getPrincipal(),
       Array(32).fill(1),

@@ -9,8 +9,8 @@ import { Transaction } from "@nfid/integration"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
-import { useMemberAddress } from "frontend/features/vaults/hooks/use-member-address"
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
+import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 
@@ -31,7 +31,7 @@ export const VaultsTransactionsTable: React.FC<
   const { vault } = useVault()
   const { wallets } = useVaultWallets()
   const { exchangeRate } = useICPExchangeRate()
-  const { address: userAddress } = useMemberAddress()
+  const { address: userAddress } = useVaultMember()
 
   const transactionsToRows = useMemo(() => {
     console.log({ transactions })

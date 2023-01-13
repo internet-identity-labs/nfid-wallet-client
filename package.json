@@ -134,6 +134,7 @@
     "@wdio/selenium-standalone-service": "7.23.0",
     "@wdio/spec-reporter": "7.23.0",
     "@wdio/static-server-service": "7.23.0",
+    "allure-commandline": "2.20.1",
     "assert": "2.0.0",
     "autoprefixer": "10.4.13",
     "babel-loader": "8.1.0",
@@ -183,6 +184,7 @@
     "wdio-cucumberjs-json-reporter": "4.4.3",
     "wdio-geckodriver-service": "3.0.3",
     "wdio-json-reporter": "3.0.0",
+    "wdio-docker-service": "^3.2.1",
     "webdriverio": "7.23.0",
     "webpack": "5",
     "whatwg-fetch": "3.6.2"

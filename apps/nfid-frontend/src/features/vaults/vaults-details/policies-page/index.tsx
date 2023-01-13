@@ -4,6 +4,7 @@ import { EmptyCard, IconCmpPolicy } from "@nfid-frontend/ui"
 import { Policy } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
+import { useVault } from "../../hooks/use-vault"
 import { useVaultPolicies } from "../../hooks/use-vault-policies"
 import { VaultPolicyInfoTooltip } from "./info-tooltip"
 import { VaultAddPolicy } from "./modal-add-policy"
@@ -14,6 +15,7 @@ interface VaultsPoliciesPageProps {}
 export const VaultsPoliciesPage: React.FC<VaultsPoliciesPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
   const { policies, isFetching } = useVaultPolicies()
+  const { isAdmin } = useVault()
 
   const filteredPolicies: Policy[] = useMemo(() => {
     if (!policies) return []
@@ -36,7 +38,7 @@ export const VaultsPoliciesPage: React.FC<VaultsPoliciesPageProps> = () => {
         onInputChange={onFilterChange}
         actionButtons={
           <div className="flex space-x-5">
-            <VaultAddPolicy />
+            {isAdmin ? <VaultAddPolicy /> : null}
             <VaultPolicyInfoTooltip />
           </div>
         }

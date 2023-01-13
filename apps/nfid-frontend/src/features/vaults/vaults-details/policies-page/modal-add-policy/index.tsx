@@ -109,7 +109,6 @@ export const VaultAddPolicy = () => {
           selectedValues={selectedWallets}
           setSelectedValues={setSelectedWallets}
           isMultiselect={false}
-          showSelectAllOption
           placeholder="Select wallet"
           id="select-wallet"
         />

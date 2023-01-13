@@ -5,11 +5,11 @@ import useSWR from "swr"
 import { VaultRole } from "@nfid/integration"
 
 import { getVaultById } from "../services"
-import { useMemberAddress } from "./use-member-address"
+import { useVaultMember } from "./use-vault-member"
 
 export const useVault = () => {
   const { vaultId } = useParams()
-  const { address } = useMemberAddress()
+  const { address } = useVaultMember()
 
   const {
     data: vault,

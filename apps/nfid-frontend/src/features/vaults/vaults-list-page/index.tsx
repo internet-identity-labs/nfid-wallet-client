@@ -4,6 +4,7 @@ import useSWR from "swr"
 import { EmptyCard, IconCmpVault, Loader } from "@nfid-frontend/ui"
 import { getVaults } from "@nfid/integration"
 
+import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { VaultActionBar } from "../action-bar"
@@ -16,7 +17,12 @@ export interface VaultsListPageProps {}
 
 export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
-  const { isReady } = useVaultMember()
+  const { isReady, anchor } = useVaultMember()
+  // NOTE: I've left this call there - to always have root identity in vault actor
+  // I'll take a look for more flexible solution after vaults release
+  // It's not causing any issues with re-renders, etc. now.
+  useWalletDelegation(anchor)
+
   const {
     data: vaults,
     mutate,

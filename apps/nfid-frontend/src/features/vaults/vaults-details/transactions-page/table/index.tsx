@@ -76,6 +76,7 @@ export const VaultsTransactionsTable: React.FC<
             transaction.approves.findIndex(
               (approve) => approve.signer === userAddress,
             ) !== -1,
+          memo: transaction.memo,
         } as IVaultTransactionsDetails),
     )
   }, [exchangeRate, transactions, userAddress, vault?.members, wallets])

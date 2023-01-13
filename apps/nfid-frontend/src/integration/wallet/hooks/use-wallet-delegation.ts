@@ -1,5 +1,7 @@
 import useSWR from "swr"
 
+import { replaceActorIdentity, vault } from "@nfid/integration"
+
 import {
   getWalletDelegation,
   WALLET_SESSION_TTL_2_MIN_IN_NS,
@@ -18,6 +20,10 @@ export const useWalletDelegation = (
     {
       dedupingInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,
       focusThrottleInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,
+      onSuccess: (data) => {
+        replaceActorIdentity(vault, data)
+        return data
+      },
     },
   )
 }

@@ -67,7 +67,8 @@ Feature: Create vault / Show vault / Archive vault
     Then I click on the selector "#tab_policies"
     Then I click on the selector "#create-policy-trigger"
     Then I click on the selector "#select-wallet"
-    Then I click on the selector "#dropdown-options > label:nth-child(2)"
+    Then I wait on element "#dropdown-options > label:nth-child(1)" for 3000ms to be displayed
+    Then I click on the selector "#dropdown-options > label:nth-child(1)"
     When I set "1" to the inputfield "[name='amount']"
     When I set "2" to the inputfield "[name='approvers']"
     Then I click on the selector "#create-policy-button"

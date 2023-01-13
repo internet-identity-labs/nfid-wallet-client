@@ -58,6 +58,7 @@ export const DropdownSelect = ({
   }, [options, searchInput])
 
   const isAllSelected = useMemo(() => {
+    if (filteredOptions.length === 1) return false
     return filteredOptions.length === selectedValues.length
   }, [filteredOptions, selectedValues])
 

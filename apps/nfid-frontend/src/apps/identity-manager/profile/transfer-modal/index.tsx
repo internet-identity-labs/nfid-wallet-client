@@ -25,6 +25,7 @@ import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
+import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
 import {
   e8sICPToString,
   stringICPtoE8s,
@@ -40,6 +41,11 @@ declare const VAULT_CANISTER_ID: string
 export const ProfileTransferModal = () => {
   const { refreshBalances } = useUserBalances()
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const { profile } = useProfile()
+  // NOTE: I've left this call there - to always have root identity in vault actor
+  // I'll take a look for more flexible solution after vaults release
+  // It's not causing any issues with re-renders, etc. now.
+  useWalletDelegation(profile?.anchor)
 
   const [successMessage, setSuccessMessage] = useState("")
   const [selectedWalletId, setSelectedWalletId] = useState("")
@@ -79,7 +85,6 @@ export const ProfileTransferModal = () => {
   })
   const { wallets } = useAllWallets()
   const { nfts } = useAllNFTs()
-  const { profile } = useProfile()
   const [isLoading, setIsLoading] = useState(false)
 
   const walletOptions = React.useMemo(() => {

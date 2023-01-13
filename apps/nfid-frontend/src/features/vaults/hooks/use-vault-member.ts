@@ -23,6 +23,7 @@ export const useVaultMember = () => {
 
   return {
     address: userAddress,
+    anchor: profile?.anchor,
     identity: UserIIDelegation as SignIdentity,
     isLoading: isValidating,
     isReady: !isLoading,

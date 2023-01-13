@@ -20,6 +20,7 @@ export interface VaultsPoliciesTableRowProps {
   onArchive?: () => void
   onEdit?: () => void
   isArchived?: boolean
+  isAdmin?: boolean
 }
 
 export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
@@ -30,6 +31,7 @@ export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
   onArchive,
   onEdit,
   isArchived,
+  isAdmin,
 }: VaultsPoliciesTableRowProps) => {
   return (
     <TableRow
@@ -44,7 +46,9 @@ export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
         <Popover
           align="end"
           trigger={
-            <IconCmpDots className={clsx("w-full", isArchived && "hidden")} />
+            <IconCmpDots
+              className={clsx("w-full", (isArchived || !isAdmin) && "hidden")}
+            />
           }
         >
           <PopoverTools

@@ -139,15 +139,15 @@ export const InputDropdown = ({
                   />
                 )}
                 <span className="w-full">{option.label}</span>
-                <span className="text-gray-400 ">{option.afterLabel}</span>
+                <span className="text-gray-400 shrink-0">
+                  {option.afterLabel}
+                </span>
               </label>
             ))}
           </div>
         </div>
       )}
-      <div className={clsx("text-sm py-1 text-gray-400", "!text-red-base")}>
-        {errorText}
-      </div>
+      <div className={clsx("text-xs py-1 text-red")}>{errorText}</div>
     </div>
   )
 }

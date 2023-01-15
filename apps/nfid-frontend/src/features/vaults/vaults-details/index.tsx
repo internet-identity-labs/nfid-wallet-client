@@ -6,6 +6,7 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { useVault } from "../hooks/use-vault"
 import { tabs } from "./tabs"
+import { VaultToolbar } from "./vault-toolbar"
 
 interface VaultsDetailsCoordinatorProps {}
 
@@ -19,6 +20,7 @@ export const VaultsDetailsCoordinator: React.FC<
       pageTitle={vault?.name}
       isLoading={isFetching}
       showBackButton
+      headerMenu={<VaultToolbar />}
     >
       <p className="mb-5 text-sm">{vault?.description}</p>
       <Tabs tabs={tabs} defaultValue="wallets" />

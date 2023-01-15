@@ -14,9 +14,16 @@ interface PopoverToolsProps extends HTMLAttributes<HTMLDivElement> {
 export const PopoverTools: React.FC<PopoverToolsProps> = ({
   children,
   items,
+  className,
 }) => {
   return (
-    <div className={clsx("bg-white rounded-md shadow-md", "w-40 text-sm")}>
+    <div
+      className={clsx(
+        "bg-white rounded-md shadow-md",
+        "w-40 text-sm",
+        className,
+      )}
+    >
       {items.map((item, i) => (
         <div
           key={`popover_item_${i}`}

@@ -1,11 +1,13 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"
+import { useAtom } from "jotai"
 import { useEffect, useMemo, useState } from "react"
 
 import { Copy } from "../../atoms/copy"
 import { DropdownSelect } from "../../atoms/dropdown-select"
 import { QRCode } from "../../atoms/qrcode"
+import { transferModalAtom } from "./state"
 import { IWallet } from "./types"
 
 interface ITransferModalReceive {
@@ -17,26 +19,32 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
   walletOptions,
   wallets,
 }) => {
-  const [selectedWallet, setSelectedWallet] = useState<string[]>([])
+  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
   useEffect(() => {
-    if (wallets?.length)
-      return setSelectedWallet([wallets[0].principal?.toText() ?? ""])
-  }, [wallets])
+    if (wallets?.length && !transferModalState.selectedWallets.length) {
+      setTransferModalState({
+        ...transferModalState,
+        selectedWallets: [wallets[0].principal?.toText() ?? ""],
+      })
+    }
+  }, [setTransferModalState, transferModalState, wallets])
 
   const selectedWalletAddress = useMemo(() => {
     const wallet = wallets?.find(
       (wallet) =>
-        wallet.principal?.toText() === selectedWallet[0] ||
-        wallet.address === selectedWallet[0],
+        wallet.principal?.toText() === transferModalState.selectedWallets[0] ||
+        wallet.address === transferModalState.selectedWallets[0],
     )
 
     if (wallet?.isVaultWallet) return wallet.address ?? ""
 
-    return selectedWallet.length
-      ? principalToAddress(Principal.fromText(selectedWallet[0]))
+    return transferModalState.selectedWallets.length
+      ? principalToAddress(
+          Principal.fromText(transferModalState.selectedWallets[0]),
+        )
       : ""
-  }, [selectedWallet, wallets])
+  }, [transferModalState.selectedWallets, wallets])
 
   return (
     <div className="flex flex-col flex-grow">
@@ -44,8 +52,13 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
         <DropdownSelect
           label="Select your wallet"
           options={walletOptions ?? []}
-          selectedValues={selectedWallet}
-          setSelectedValues={setSelectedWallet}
+          selectedValues={transferModalState.selectedWallets}
+          setSelectedValues={(value) =>
+            setTransferModalState({
+              ...transferModalState,
+              selectedWallets: value,
+            })
+          }
           isSearch
           isMultiselect={false}
         />
@@ -78,11 +91,11 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
             id="principal-id"
           >
             <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-              {selectedWallet[0]}
+              {transferModalState.selectedWallets[0]}
             </p>
             <Copy
               className="w-[18px] h-[18px] flex-shrink-0"
-              value={selectedWallet[0]}
+              value={transferModalState.selectedWallets[0]}
             />
           </div>
         </div>
@@ -90,7 +103,11 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
       <div className="w-[179px] my-8 mx-auto">
         <QRCode
           options={{ width: 179, margin: 0 }}
-          content={selectedWallet.length ? selectedWallet[0] : ""}
+          content={
+            transferModalState.selectedWallets.length
+              ? transferModalState.selectedWallets[0]
+              : ""
+          }
         />
       </div>
     </div>

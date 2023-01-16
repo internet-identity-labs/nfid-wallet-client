@@ -5,6 +5,7 @@ import { ObjectState, Wallet } from "@nfid/integration"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
+import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 
 import { VaultArchiveWallet } from "../modal-archive-wallet"
@@ -21,6 +22,7 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
   const [isArchiveModal, setIsArchiveModal] = useState(false)
   const [selectedWallet, setSelectedWallet] = useState<Wallet>()
   const { exchangeRate } = useICPExchangeRate()
+  const { isAdmin } = useVault()
 
   const walletsToRows = useMemo(() => {
     if (!exchangeRate) return []
@@ -38,9 +40,10 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
             exchangeRate,
           ),
           isArchived: wallet.state === ObjectState.ARCHIVED,
+          isAdmin: isAdmin,
         } as VaultsWalletsTableRowProps),
     )
-  }, [exchangeRate, wallets])
+  }, [exchangeRate, isAdmin, wallets])
 
   const onModalOpen = useCallback(
     (type: "archive", walletUid: string) => {

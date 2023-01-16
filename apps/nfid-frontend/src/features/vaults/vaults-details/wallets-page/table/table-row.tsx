@@ -22,6 +22,7 @@ export interface VaultsWalletsTableRowProps {
   USDBalance: string
   onArchive: () => void
   isArchived?: boolean
+  isAdmin?: boolean
 }
 
 export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
@@ -32,6 +33,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   USDBalance,
   onArchive,
   isArchived,
+  isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
 
@@ -55,7 +57,9 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
         <Popover
           align="end"
           trigger={
-            <IconCmpDots className={clsx("w-full", isArchived && "hidden")} />
+            <IconCmpDots
+              className={clsx("w-full", (isArchived || !isAdmin) && "hidden")}
+            />
           }
         >
           <PopoverTools

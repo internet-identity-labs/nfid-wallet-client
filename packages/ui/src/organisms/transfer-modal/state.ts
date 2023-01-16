@@ -7,6 +7,7 @@ export interface ITransferModalAtom {
   selectedNFT: string[]
   selectedWallet: IWallet
   sendType: "nft" | "ft"
+  selectedWallets: string[]
 }
 
 export const transferModalAtom = atom<ITransferModalAtom>({
@@ -18,4 +19,5 @@ export const transferModalAtom = atom<ITransferModalAtom>({
     domain: "",
     balance: {},
   },
+  selectedWallets: [],
 })

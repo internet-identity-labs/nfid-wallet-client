@@ -1,8 +1,6 @@
-import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
-import { principalToAddress } from "ictool"
 import { useAtom } from "jotai"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 
 import { Copy } from "../../atoms/copy"
 import { DropdownSelect } from "../../atoms/dropdown-select"
@@ -30,20 +28,14 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
     }
   }, [setTransferModalState, transferModalState, wallets])
 
-  const selectedWalletAddress = useMemo(() => {
-    const wallet = wallets?.find(
-      (wallet) =>
-        wallet.principal?.toText() === transferModalState.selectedWallets[0] ||
-        wallet.address === transferModalState.selectedWallets[0],
-    )
+  const selectedWallet = useMemo(() => {
+    const wallet = wallets?.find((wallet) => {
+      return [wallet.principal?.toText(), wallet.address].includes(
+        transferModalState.selectedWallets[0],
+      )
+    })
 
-    if (wallet?.isVaultWallet) return wallet.address ?? ""
-
-    return transferModalState.selectedWallets.length
-      ? principalToAddress(
-          Principal.fromText(transferModalState.selectedWallets[0]),
-        )
-      : ""
+    return wallet
   }, [transferModalState.selectedWallets, wallets])
 
   return (
@@ -73,15 +65,15 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
             id="account-id"
           >
             <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-              {selectedWalletAddress}
+              {selectedWallet?.address}
             </p>
             <Copy
               className="w-[18px] h-[18px] flex-shrink-0"
-              value={selectedWalletAddress}
+              value={selectedWallet?.address ?? ""}
             />
           </div>
         </div>
-        <div>
+        <div className={clsx(selectedWallet?.isVaultWallet && "hidden")}>
           <p className="mb-1 text-xs text-gray-400">Principal ID</p>
           <div
             className={clsx(
@@ -91,11 +83,11 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
             id="principal-id"
           >
             <p className="overflow-hidden text-sm text-ellipsis whitespace-nowrap">
-              {transferModalState.selectedWallets[0]}
+              {selectedWallet?.principal?.toText()}
             </p>
             <Copy
               className="w-[18px] h-[18px] flex-shrink-0"
-              value={transferModalState.selectedWallets[0]}
+              value={selectedWallet?.principal?.toText() ?? ""}
             />
           </div>
         </div>

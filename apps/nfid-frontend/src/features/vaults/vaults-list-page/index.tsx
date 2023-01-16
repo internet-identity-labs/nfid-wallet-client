@@ -64,3 +64,4 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
     </ProfileTemplate>
   )
 }
+export default VaultsListPage

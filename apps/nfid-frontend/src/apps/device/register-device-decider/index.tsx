@@ -191,3 +191,5 @@ export const RouterRegisterDeviceDecider: React.FC<
     </ScreenResponsive>
   )
 }
+
+export default RouterRegisterDeviceDecider

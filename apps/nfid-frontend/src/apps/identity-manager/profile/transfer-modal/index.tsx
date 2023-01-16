@@ -11,6 +11,7 @@ import {
   ITransferNFT,
   TransferModal,
   transferModalAtom,
+  modalTypes,
 } from "@nfid-frontend/ui"
 import {
   registerTransaction,
@@ -260,6 +261,10 @@ export const ProfileTransferModal = () => {
         onSelectToken={setSelectedTokenValue}
         tokenOptions={tokenOptions}
         selectedToken={selectedToken}
+        modalType={transferModalState.modalType}
+        setModalType={(value: modalTypes) =>
+          setTransferModalState({ ...transferModalState, modalType: value })
+        }
       />
     </div>
   )

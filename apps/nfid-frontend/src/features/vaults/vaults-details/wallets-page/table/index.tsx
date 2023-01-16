@@ -32,6 +32,7 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
         ({
           id: index,
           uid: wallet.uid,
+          address: wallet.address,
           name: wallet.name,
           number: index + 1,
           tokenBalance: e8sICPToString(Number(wallet.balance?.ICP)),

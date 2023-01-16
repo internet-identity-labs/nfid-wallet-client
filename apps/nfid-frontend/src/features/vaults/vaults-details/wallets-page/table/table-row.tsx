@@ -14,6 +14,7 @@ import {
 } from "@nfid-frontend/ui"
 
 export interface VaultsWalletsTableRowProps {
+  address?: string
   uid?: string
   id: number
   number: number
@@ -26,7 +27,7 @@ export interface VaultsWalletsTableRowProps {
 }
 
 export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
-  uid,
+  address,
   number,
   name,
   tokenBalance,
@@ -44,6 +45,17 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
       sendType: "ft",
     })
   }, [setTransferModalState, transferModalState])
+
+  const onReceiveToVaultWallet = useCallback(() => {
+    setTransferModalState({
+      ...transferModalState,
+      isModalOpen: true,
+      modalType: "Receive",
+      selectedWallets: address ? [address] : [],
+    })
+    console.log({ address })
+  }, [setTransferModalState, transferModalState, address])
+
   return (
     <TableRow
       className={clsx(isArchived && "text-gray-400 pointer-events-none")}
@@ -72,7 +84,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
               {
                 icon: <IconCmpTransfer className="rotate-180" />,
                 text: "Receive",
-                onClick: () => [],
+                onClick: onReceiveToVaultWallet,
               },
               {
                 icon: <IconCmpArchive />,

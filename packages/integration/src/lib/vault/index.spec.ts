@@ -46,13 +46,14 @@ describe("Vault suite", () => {
     memberIdentity.getPrincipal(),
     Array(32).fill(1),
   )
-  replaceActorIdentity(vault, memberIdentity)
+
   let address: string
   it("vault register test", async () => {
     const mockedIdentity = Ed25519KeyIdentity.generate()
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
-    replaceIdentity(delegationIdentity)
+    replaceActorIdentity(vault, delegationIdentity)
+
     vaultFirst = await registerVault("first", undefined)
     address = principalToAddress(
       mockedIdentity.getPrincipal() as any,

@@ -39,7 +39,6 @@ import { transformToAddress } from "./transform-to-address"
 declare const VAULT_CANISTER_ID: string
 
 export const ProfileTransferModal = () => {
-  const { refreshBalances } = useUserBalances()
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
   const { profile } = useProfile()
 
@@ -79,6 +78,7 @@ export const ProfileTransferModal = () => {
     transformAmount: selectedToken.transformAmount,
     tokenCanisterId: selectedToken.tokenCanisterId,
   })
+  const { refreshBalances } = useUserBalances()
   const { wallets } = useAllWallets()
   const { nfts } = useAllNFTs()
   const [isLoading, setIsLoading] = useState(false)
@@ -208,6 +208,7 @@ export const ProfileTransferModal = () => {
       setIsLoading(false)
     }
   }
+
   return (
     <div
       className={clsx([
@@ -237,7 +238,11 @@ export const ProfileTransferModal = () => {
         onTokenSubmit={onTokenSubmit}
         onNFTSubmit={onNFTSubmit}
         onClose={() => {
-          setTransferModalState({ ...transferModalState, isModalOpen: false })
+          setTransferModalState({
+            ...transferModalState,
+            isModalOpen: false,
+            modalType: "Send",
+          })
           setSuccessMessage("")
           setTimeout(() => {
             mutate("walletBalance")

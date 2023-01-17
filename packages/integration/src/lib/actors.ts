@@ -3,7 +3,6 @@ import * as Agent from "@dfinity/agent"
 import {
   Actor,
   ActorMethod,
-  ActorSubclass,
   HttpAgent,
   Identity,
   SignIdentity,

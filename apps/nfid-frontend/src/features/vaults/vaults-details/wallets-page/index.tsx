@@ -4,6 +4,7 @@ import { EmptyCard, IconCmpWallet } from "@nfid-frontend/ui"
 import { Wallet } from "@nfid/integration"
 
 import { VaultActionBar } from "../../action-bar"
+import { useVault } from "../../hooks/use-vault"
 import { useVaultWallets } from "../../hooks/use-vault-wallets"
 import { VaultAddWallet } from "./modal-add-wallet"
 import { VaultsWalletsTable } from "./table"
@@ -13,6 +14,7 @@ interface VaultsWalletsPageProps {}
 export const VaultsWalletsPage: React.FC<VaultsWalletsPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
   const { wallets, isFetching } = useVaultWallets()
+  const { isAdmin } = useVault()
 
   const filteredWallets: Wallet[] = useMemo(() => {
     if (!wallets) return []
@@ -33,7 +35,7 @@ export const VaultsWalletsPage: React.FC<VaultsWalletsPageProps> = () => {
     <div className="border border-gray-200 rounded-xl mt-[30px]">
       <VaultActionBar
         onInputChange={onFilterChange}
-        actionButtons={<VaultAddWallet />}
+        actionButtons={isAdmin ? <VaultAddWallet /> : <div />}
       />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsWalletsTable wallets={filteredWallets} />

@@ -13,6 +13,8 @@ import {
   transferModalAtom,
 } from "@nfid-frontend/ui"
 
+import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
+
 export interface VaultsWalletsTableRowProps {
   address?: string
   uid?: string
@@ -37,14 +39,17 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {
     setTransferModalState({
       ...transferModalState,
       isModalOpen: true,
       sendType: "ft",
+      selectedWallets: address ? [address] : [],
+      selectedWallet: wallets.find((w) => w.address === address) ?? ({} as any),
     })
-  }, [setTransferModalState, transferModalState])
+  }, [address, setTransferModalState, transferModalState, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
     setTransferModalState({
@@ -53,7 +58,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
       modalType: "Receive",
       selectedWallets: address ? [address] : [],
     })
-    console.log({ address })
   }, [setTransferModalState, transferModalState, address])
 
   return (
@@ -69,9 +73,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
         <Popover
           align="end"
           trigger={
-            <IconCmpDots
-              className={clsx("w-full", (isArchived || !isAdmin) && "hidden")}
-            />
+            <IconCmpDots className={clsx("w-full", isArchived && "hidden")} />
           }
         >
           <PopoverTools
@@ -86,11 +88,13 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
                 text: "Receive",
                 onClick: onReceiveToVaultWallet,
               },
-              {
-                icon: <IconCmpArchive />,
-                text: "Archive",
-                onClick: onArchive,
-              },
+              isAdmin
+                ? {
+                    icon: <IconCmpArchive />,
+                    text: "Archive",
+                    onClick: onArchive,
+                  }
+                : {},
             ]}
           />
         </Popover>

@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import { principalToAddress } from "ictool"
 import { useAtom } from "jotai"
 import { useState } from "react"
 import React from "react"
@@ -43,7 +42,6 @@ export const ProfileTransferModal = () => {
   const { profile } = useProfile()
 
   const [successMessage, setSuccessMessage] = useState("")
-  const [selectedWalletId, setSelectedWalletId] = useState("")
   const [selectedTokenValue, setSelectedTokenValue] = useState("")
 
   const { token } = useAllToken()
@@ -96,15 +94,24 @@ export const ProfileTransferModal = () => {
     }))
   }, [selectedToken, wallets])
 
+  React.useEffect(() => {
+    if (!transferModalState.selectedWallets.length && walletOptions.length)
+      setTransferModalState({
+        ...transferModalState,
+        selectedWallets: [walletOptions[0]?.value],
+      })
+  }, [setTransferModalState, transferModalState, walletOptions])
+
   const submitVaultWallet = React.useCallback(
     async (data: TransactionRegisterOptions) => {
       try {
         setIsLoading(true)
         await registerTransaction(data)
+        setTransferModalState({ ...transferModalState, modalType: "Success" })
         setSuccessMessage(
           `You've requested ${e8sICPToString(
             Number(data.amount),
-          )} ICP from the vault wallet`,
+          )} ICP from the vault`,
         )
       } catch (e) {
         console.log({ e })
@@ -115,7 +122,7 @@ export const ProfileTransferModal = () => {
         setIsLoading(false)
       }
     },
-    [],
+    [setTransferModalState, transferModalState],
   )
 
   const onTokenSubmit = async (values: ITransferToken) => {
@@ -124,10 +131,7 @@ export const ProfileTransferModal = () => {
       selectedToken.tokenStandard,
     )
 
-    if (
-      principalToAddress(transferModalState.selectedWallet.principal as any) ===
-      validAddress
-    )
+    if (transferModalState.selectedWallets[0] === validAddress)
       return toast.error("You cannot send tokens to the same wallet", {
         toastId: "sameWalletError",
       })
@@ -147,6 +151,7 @@ export const ProfileTransferModal = () => {
       await transfer(validAddress, String(values.amount))
       refreshBalances()
       setSuccessMessage(`${values.amount} ${selectedToken.value} was sent`)
+      setTransferModalState({ ...transferModalState, modalType: "Success" })
     } catch (e: any) {
       if (e.message === "InsufficientFunds")
         toast.error("You don't have enough ICP for this transaction", {
@@ -171,10 +176,10 @@ export const ProfileTransferModal = () => {
           wallet.address === walletId,
       )
       if (wallet) {
-        setSelectedWalletId(walletId)
         setTransferModalState({
           ...transferModalState,
           selectedWallet: wallet,
+          selectedWallets: [walletId],
         })
       }
     },
@@ -262,7 +267,7 @@ export const ProfileTransferModal = () => {
           (nft) => nft.tokenId === transferModalState.selectedNFT[0],
         )}
         onSelectWallet={handleSelectWallet}
-        selectedWalletId={selectedWalletId}
+        selectedWalletId={transferModalState.selectedWallets[0]}
         onSelectToken={setSelectedTokenValue}
         tokenOptions={tokenOptions}
         selectedToken={selectedToken}

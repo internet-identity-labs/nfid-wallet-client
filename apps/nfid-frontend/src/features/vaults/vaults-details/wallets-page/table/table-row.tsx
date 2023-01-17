@@ -46,6 +46,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
       ...transferModalState,
       isModalOpen: true,
       sendType: "ft",
+      modalType: "Send",
       selectedWallets: address ? [address] : [],
       selectedWallet: wallets.find((w) => w.address === address) ?? ({} as any),
     })

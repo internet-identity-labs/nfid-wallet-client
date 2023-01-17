@@ -1,11 +1,9 @@
 import useSWR from "swr"
 
+import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
 import { replaceActorIdentity, vault } from "@nfid/integration"
 
-import {
-  getWalletDelegation,
-  WALLET_SESSION_TTL_1_MIN_IN_MS,
-} from "frontend/integration/facade/wallet"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 export const useVaultDelegation = (
   userNumber?: number,

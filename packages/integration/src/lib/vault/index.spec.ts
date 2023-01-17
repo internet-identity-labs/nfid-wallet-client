@@ -5,6 +5,7 @@ import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
 
+import { replaceActorIdentity, vault } from "../actors"
 import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
@@ -45,6 +46,7 @@ describe("Vault suite", () => {
     memberIdentity.getPrincipal(),
     Array(32).fill(1),
   )
+  replaceActorIdentity(vault, memberIdentity)
   let address: string
   it("vault register test", async () => {
     const mockedIdentity = Ed25519KeyIdentity.generate()

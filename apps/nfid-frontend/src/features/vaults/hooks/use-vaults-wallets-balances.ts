@@ -29,7 +29,7 @@ export const useAllVaultsWallets = () => {
   const { data: balances, isValidating: isBalancesLoading } = useSWR(
     allVaultsWallets ? [allVaultsWallets, `allVaultsWalletsBalances`] : null,
     async ([allVaultsWallets]) => {
-      console.log("allVaultsWalletsBalances", { allVaultsWallets })
+      console.debug("allVaultsWalletsBalances", { allVaultsWallets })
       return await fetchVaultsWalletsBalances(allVaultsWallets)
     },
     { dedupingInterval: 30_000, refreshInterval: 60_000 },

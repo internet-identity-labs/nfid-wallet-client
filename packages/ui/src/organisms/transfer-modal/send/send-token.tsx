@@ -160,7 +160,6 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             selectedValues={selectedWalletId ? [selectedWalletId] : []}
             setSelectedValues={([walletId]) => onSelectWallet(walletId)}
             isMultiselect={false}
-            firstSelected
           />
           <InputDropdown
             label="To"

@@ -4,7 +4,7 @@ import { replaceActorIdentity, vault } from "@nfid/integration"
 
 import {
   getWalletDelegation,
-  WALLET_SESSION_TTL_2_MIN_IN_MS,
+  WALLET_SESSION_TTL_1_MIN_IN_MS,
 } from "frontend/integration/facade/wallet"
 
 export const useVaultDelegation = (
@@ -17,7 +17,7 @@ export const useVaultDelegation = (
     ([userNumber, hostName, personaId]) =>
       getWalletDelegation(userNumber, hostName, personaId),
     {
-      refreshInterval: WALLET_SESSION_TTL_2_MIN_IN_MS,
+      refreshInterval: WALLET_SESSION_TTL_1_MIN_IN_MS,
       onSuccess: async (data) => {
         if (data) await replaceActorIdentity(vault, data)
         return data

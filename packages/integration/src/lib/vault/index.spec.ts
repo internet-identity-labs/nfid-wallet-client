@@ -6,7 +6,6 @@ import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
 
 import { replaceActorIdentity, vault } from "../actors"
-import { replaceIdentity } from "../auth-state"
 import { generateDelegationIdentity } from "../test-utils"
 import {
   approveTransaction,
@@ -239,7 +238,9 @@ describe("Vault suite", () => {
       memo: undefined,
     })
 
-    replaceIdentity(memberIdentity)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(memberIdentity)
+    replaceActorIdentity(vault, delegationIdentity)
   })
   it("approve transaction test", async () => {
     const approvedTransaction = await approveTransaction({

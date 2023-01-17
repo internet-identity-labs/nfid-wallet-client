@@ -18,7 +18,6 @@ export const VaultArchiveWallet: React.FC<VaultArchiveWalletProps> = ({
   setIsModalOpen,
   selectedWallet,
 }) => {
-  console.log({ selectedWallet })
   const [isLoading, setIsLoading] = useState(false)
   const { refetch } = useVaultWallets()
 

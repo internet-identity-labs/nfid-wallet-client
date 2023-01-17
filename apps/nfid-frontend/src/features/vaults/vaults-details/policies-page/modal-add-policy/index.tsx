@@ -36,11 +36,19 @@ export const VaultAddPolicy = () => {
   const { vault } = useVault()
 
   const walletsOptions: IOption[] | undefined = useMemo(() => {
-    return wallets?.map((wallet) => ({
+    const options = wallets?.map((wallet) => ({
       label: wallet.name ?? "",
       value: wallet.uid ?? "",
       disabled: wallet.state === ObjectState.ARCHIVED,
     }))
+
+    options?.unshift({
+      label: "Any",
+      value: "Any",
+      disabled: false,
+    })
+
+    return options
   }, [wallets])
 
   const { register, handleSubmit, formState, reset } = useForm({
@@ -61,7 +69,7 @@ export const VaultAddPolicy = () => {
         currency: Currency.ICP,
         memberThreshold: Number(approvers),
         type: PolicyType.THRESHOLD_POLICY,
-        wallets: selectedWallets.length > 1 ? undefined : selectedWallets,
+        wallets: selectedWallets[0] === "Any" ? undefined : selectedWallets,
       })
       reset()
     } catch (e: any) {

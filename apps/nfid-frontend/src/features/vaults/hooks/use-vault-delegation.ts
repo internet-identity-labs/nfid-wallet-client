@@ -1,22 +1,25 @@
 import useSWR from "swr"
 
-import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
+import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
+import { replaceActorIdentity, vault } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
-export const useWalletDelegation = (
+export const useVaultDelegation = (
   userNumber?: number,
   hostName?: string,
   personaId?: string,
 ) => {
-  console.debug("useWalletDelegation", { userNumber })
   return useSWR(
     userNumber ? [userNumber, hostName, personaId] : null,
     ([userNumber, hostName, personaId]) =>
       getWalletDelegation(userNumber, hostName, personaId),
     {
-      dedupingInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,
-      focusThrottleInterval: WALLET_SESSION_TTL_2_MIN_IN_NS / 2,
+      refreshInterval: WALLET_SESSION_TTL_1_MIN_IN_MS,
+      onSuccess: async (data) => {
+        if (data) await replaceActorIdentity(vault, data)
+        return data
+      },
     },
   )
 }

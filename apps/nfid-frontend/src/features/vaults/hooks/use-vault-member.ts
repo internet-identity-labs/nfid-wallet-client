@@ -3,7 +3,8 @@ import { principalToAddress } from "ictool"
 import { useMemo } from "react"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
+
+import { useVaultDelegation } from "./use-vault-delegation"
 
 export const useVaultMember = () => {
   const { profile } = useProfile()
@@ -11,7 +12,7 @@ export const useVaultMember = () => {
     data: UserIIDelegation,
     isLoading,
     isValidating,
-  } = useWalletDelegation(profile?.anchor)
+  } = useVaultDelegation(profile?.anchor)
 
   const userAddress = useMemo(() => {
     if (!UserIIDelegation) return ""

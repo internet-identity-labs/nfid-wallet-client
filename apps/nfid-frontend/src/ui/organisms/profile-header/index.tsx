@@ -5,8 +5,8 @@ import User from "src/assets/userpics/userpic_6.svg"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
+import { useVaultDelegation } from "frontend/features/vaults/hooks/use-vault-delegation"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { useWalletDelegation } from "frontend/integration/wallet/hooks/use-wallet-delegation"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Logo } from "frontend/ui/atoms/images/logo"
 import { ButtonMenu } from "frontend/ui/atoms/menu"
@@ -27,10 +27,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
   const { profile } = useProfile()
   const { logout } = useAuthentication()
   const navigate = useNavigate()
-  // NOTE: I've left this call there - to always have root identity in vault actor
-  // I'll take a look for more flexible solution after vaults release
-  // It's not causing any issues with re-renders, etc. now.
-  useWalletDelegation(profile?.anchor)
+  useVaultDelegation(profile?.anchor)
 
   return (
     <div

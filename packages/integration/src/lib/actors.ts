@@ -3,7 +3,6 @@ import * as Agent from "@dfinity/agent"
 import {
   Actor,
   ActorMethod,
-  ActorSubclass,
   HttpAgent,
   Identity,
   SignIdentity,
@@ -100,9 +99,7 @@ export async function initActor(
 }
 
 export async function replaceActorIdentity(
-  actor: ActorSubclass<
-    Vault | Ledger | Verifier | IdentityManager | InternetIdentity
-  >,
+  actor: Actor,
   identity: DelegationIdentity,
 ) {
   const actorAgent = Actor.agentOf(actor)
@@ -116,7 +113,10 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
-export const vault = actor<Vault>(VAULT_CANISTER_ID, vaultIDL)
+export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
+  canisterId: VAULT_CANISTER_ID,
+  agent: new HttpAgent({ ...agentBaseConfig }),
+})
 export const ecdsaSigner = actor<EcdsaSigner>(
   ECDSA_SIGNER_CANISTER_ID,
   ecdsaSignerIDL,

@@ -3,6 +3,8 @@ import React, { useCallback, useMemo, useState } from "react"
 import { Table } from "@nfid-frontend/ui"
 import { ObjectState, VaultMember } from "@nfid/integration"
 
+import { useVault } from "frontend/features/vaults/hooks/use-vault"
+
 import { VaultArchiveMember } from "../modal-archive-member"
 import { VaultEditMember } from "../modal-edit-member"
 import { VaultsMembersTableHeader } from "./table-header"
@@ -18,6 +20,7 @@ export const VaultsMembersTable: React.FC<VaultsMembersTableProps> = ({
   const [isEditModal, setIsEditModal] = useState(false)
   const [isArchiveModal, setIsArchiveModal] = useState(false)
   const [selectedMember, setSelectedMember] = useState<VaultMember>()
+  const { isAdmin } = useVault()
 
   const membersRows: VaultsMembersTableRowProps[] = useMemo(() => {
     return members.map((member, index) => ({
@@ -26,8 +29,9 @@ export const VaultsMembersTable: React.FC<VaultsMembersTableProps> = ({
       role: member.role,
       index: index + 1,
       isArchived: member.state === ObjectState.ARCHIVED,
+      isAdmin: isAdmin,
     }))
-  }, [members])
+  }, [isAdmin, members])
 
   const onModalOpen = useCallback(
     (type: "edit" | "archive", memberId: string) => {

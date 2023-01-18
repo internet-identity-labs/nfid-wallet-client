@@ -170,6 +170,7 @@ describe("Facade suite", () => {
         alias: [],
         domain: "nfid.one",
         isNftStorage: true,
+        isIFrameAllowed: false,
         name: "NFID",
       }
       const appRequired: Application = {
@@ -177,6 +178,7 @@ describe("Facade suite", () => {
         alias: [],
         domain: "requiredDomain",
         isNftStorage: true,
+        isIFrameAllowed: false,
         name: "",
       }
       const appDuplicated: Application = {
@@ -184,6 +186,7 @@ describe("Facade suite", () => {
         alias: [],
         domain: "duplicatedDomain",
         isNftStorage: true,
+        isIFrameAllowed: false,
         name: "",
       }
       const appNotRequired: Application = {
@@ -191,6 +194,7 @@ describe("Facade suite", () => {
         alias: [],
         domain: "notRequiredDomain",
         isNftStorage: false,
+        isIFrameAllowed: false,
         name: "",
       }
       const userAccounts = await fetchAccounts()

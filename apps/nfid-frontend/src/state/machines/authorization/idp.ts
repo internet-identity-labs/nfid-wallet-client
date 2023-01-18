@@ -5,6 +5,8 @@ import {
   getAppMeta,
   handshake,
   postDelegation,
+  checkIsIframe,
+  checkIsIframeAllowed,
 } from "frontend/integration/windows/services"
 import { AuthSession } from "frontend/state/authentication"
 import {
@@ -26,16 +28,21 @@ export interface IDPMachineContext {
     maxTimeToLive: bigint
     sessionPublicKey: Uint8Array
     hostname: string
+    derivationOrigin?: string
   }
   thirdPartyAuthoSession?: ThirdPartyAuthSession
   appMeta?: AuthorizingAppMeta
   error?: Error
+  isIframe: boolean
 }
 
 export type IDPMachineEvents =
   | { type: "done.invoke.handshake"; data: AuthorizationRequest }
   | { type: "error.platform.handshake"; data: Error }
   | { type: "done.invoke.getAppMeta"; data: AuthorizingAppMeta }
+  | { type: "done.invoke.checkIsIframe"; data: boolean }
+  | { type: "done.invoke.checkIsIframeAllowed"; data: boolean }
+  | { type: "error.platform.checkRuntime"; data: Error }
   | { type: "done.invoke.authenticate"; data: AuthSession }
   | { type: "done.invoke.authorize"; data: ThirdPartyAuthSession }
   | { type: "done.invoke.done"; data: void }
@@ -46,11 +53,11 @@ interface Schema {
   events: IDPMachineEvents
 }
 const IDPMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEsIAcB0BlALgQwCccBiCAewDswNZ8drVNdCcBtABgF1FQ0zZkOZJR4gAHogCcAZgAcGaZPYBWWQEYATJNVqALABoQATyns1GPbN2azANlntdAXyeHG2fEQwAJPBQiwABZ4ANbUAGJgOADGgaSUDBQAbmRhGMH+QaFgHNxIIHwCQiL5EgiK8gDs1SoasraVypVqssqGJuUauhjKGtK6urbs0o3Vki5u6B4sPn4BwWmRMXFgBARkBBhoADZ4OABmGwC26XNZYbmihYLCFKJleua2auz2ks1DKrIa7Ygaej0VGpKuxZCMNBp2JVbBMQO5mF5fJkFtQAKJrDbEABKqIAKliAJqXfLXYp3Up-bQ9Pq6EZtYyIXTsSSA9hstTSFq2IayWHwzw4DAAcSiAEE0GgALJRPAYJaxeJUDDIZKpagwHDiqUy4m8fg3EqgDpNFmSM1m6HKV7fWyGMq6SS2DDNWSNPlTUUAVxwgTAFCE0T2t0leFiKrAisSKTSeG9vv9yED9F1BX1ZNEHX6lQwDvNDhdkNddsQHMaOa0tgd30U1RhrjhHrjG2QAC8g5QQ2GqJHlaqY02CK2clwrmnbvcS9JbMoMGDXpUK89NL8EFoWbmzfmWoXKu7MF6fc222TO4Fwz2VdHqLHD4OWzk1Hk9UVxxSEBzp7PpPPF2plwzV2UcwN0kLdvlBXd63cXECE9WgABEwCSRMI3IJVLzVDAcFghCkJQ09wxTUlX1AB4pxnaRKJeNlIV6aR6Q6JknXNTcoW3CCXHrCgyAgOBREYUcX0NcREAAWm-J16M0exBjUXpKnoldRN0bMzV0KxuWqNQhkqAY92mIhBINclSLEjRVAUICNBk555MUgDFEBID1GZSjQXsfSEUFJF5myIz0zfUT-nYSzpI0uSNAUhiS0ijA2SAxpHV6SsFM8gVZmRbI5SiWJ-JIkT33YH4HLZOK2XZTl6h5NKZh8840QxAg8uEspRO0jRQus8K7Oi8phgwcz2T0XRlBGOtJiYdK6pRDB4ISZqTIK1RsxaZprFsSQmM2ld+m6XSLSsCpuWcKCpi84UxQlaV8AWicEGUAwAIdDqrXKyLKldazKxqrwRU1K6ZWy5ZbrfF5iuNSpTRYy1rWsn7BT+rVrtlOaqBB0yEFsuK5J0LQdEejohhnV74uUWxrJUk6JowA94wDdsKAItGSTHFqpDkuLWlkTc+neaEdpUnMWLAnd9Npo8GaZsB0YKmRzCUV13kdJc1EkFcHvkb9IZBBSrHqNR9JguCcEQ5DomllmhMWspXRnGzyd6WopxXS0MErKwbG0hwqYbTBUX8GX7W5IX7GUV7Kzsldue6SQXlpUD7FV3lOKAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEsIAcB0BlALgQwCccBiCAewDswNZ8drVNdCcBtABgF1FQ0zZkOZJR4gAHogCM7SQGYMs2QDYAHAFYVK9rOkB2ACwAaEAE9EOjLqX6VATmkAmG5JWyHSgL4fjjbPiIYABJ4FBCwABZ4ANbUAGJgOADG4aSUDBQAbmQxGJGhEdFgHNxIIHwCQiKlEgiytiqWurrsag4qSrpqui5qxma1Thitsvr6StqdTbZePuh+LEEhYZE58UkpYAQEZAQYaAA2eDgAZjsAtrlLBTHFouWCwhSiNZL6khhK0qq23eMtKg4+ogHK8hi1JM1XLoHA52FYZiBfMwAsF8itqABRLY7YgAJQxABVcQBNW6le6VJ7VYG2NRDBwjWSdIEIfTsWxg9hcuQuJTjFQIpH+HAYADiCQAgmg0ABZBJ4DBrZKpKgYZCZbLUGA4KWy+Vk3j8B5VUA1BkODD-BmdKEdWyA0yIfkYFRjMaSWEObqjQVzCUAVxw4TAFCEiSOjxleGS6rAKvSWRyeEDwdDyHD9ANZSNlOeiHq+iG+jUY00APYbVsLMktnkLn0uldWh+2grvswAaDO2QAC8I5QozGqPG1Rqkynuz2ilw7jnHnmEHY6y52OpNKM2boWSNdBh9LYDyXrB79CN2xhO+FJ-2KIPwrGR+rE9Rk12CL2ipISoaKvPqQgPTsIY7DZVw+XZCEWQbDk+UkD0uhPX5zwJAh-VoAARMAMnTONyFVJ9NQwHBUIwrCcLvWMswpP9TXzEs9xbNpdHsZR7BZDR3i5NQSzaJRFBLaYEQoMgIDgURGFnX8TXERAAFpZHYJQPnGNQT0kJRzRaFlZO4yxZFUlpTxGBs7HPZEcEk40qVohBZIcDRlPBJx1M03pHVqDk1HBJkVFeWQAQcWx9DM4VFjRQpLNzf87OkBRVPcV1PlaXR9OrL1LW8tRbHZH59IcEKFlRZZCkVBJkkimiZIAitty5DKuRkHR2n5AqUSudEMCxbYCAq6Salkly4o9VR3WS1L3IU+R7O5V5iyZTxvEROZzLC4qcnQtJeusqqNF3FxvXUoLFKC7dRksfcfldOpmuCxahQWcUdWlOV8C2hcYvYRz4reDS3C09zWneEZjysMYvT41qRUe3UXoVJVwje6LBvA76XL+tz+mdRL3U9b1btmJhQuh575QwDaqERmybELVROlpOoxg0+yWT4zjbGsEZAu4lQUshjAAGFg0SKIAElYBF44CDwM4wEpqqPqGhLRq9cb+mbBiDx+JQvNUdxz0vEMwxvCiKfJOc+sQTQlIU2lRl8n6bBZdQXVGT5fpcjp8aWjsJ3fPtKRN2Wzak7aajsDla1dMabAx4EZEsPiGX0L1WjGQSCYwFC0JwTDsMSIOfyshdNDpJpXTeaEtCcWPWQsVdujkVmmjhc8MVCOWantXcuniiDvmsFnVEsH4gvUdmazUVvsR64Oi+i+yGn04bEskMaa70Bp7HYU96lUGsBS8DwgA */
   createMachine(
     {
       tsTypes: {} as import("./idp.typegen").Typegen0,
-      schema: { events: {}, context: {} } as Schema,
+      schema: { events: {}, context: { isIframe: false } } as Schema,
       id: "idp",
       initial: "Start",
       states: {
@@ -67,14 +74,46 @@ const IDPMachine =
                     onDone: [
                       {
                         actions: "assignAuthRequest",
-                        target: "Done",
+                        target: "CheckIsIframe",
                       },
                     ],
-                    onError: "Error",
+                    onError: {
+                      target: "Error",
+                      actions: "assignError",
+                    },
+                  },
+                },
+                CheckIsIframe: {
+                  invoke: {
+                    src: "checkIsIframe",
+                    id: "checkIsIframe",
+                    onDone: [
+                      {
+                        actions: "assignIsIframe",
+                        target: "CheckIsIframeAllowed",
+                        cond: "isTrue",
+                      },
+                      { target: "Done" },
+                    ],
+                  },
+                },
+                CheckIsIframeAllowed: {
+                  invoke: {
+                    src: "checkIsIframeAllowed",
+                    id: "checkIsIframeAllowed",
+                    onDone: [
+                      {
+                        target: "Done",
+                        cond: "isTrue",
+                      },
+                      {
+                        target: "Error",
+                        actions: "assignIframeNotAllowedError",
+                      },
+                    ],
                   },
                 },
                 Error: {
-                  onEntry: "assignError",
                   on: { RETRY: "Fetch" },
                 },
                 Done: {
@@ -150,6 +189,9 @@ const IDPMachine =
           },
           type: "final",
         },
+        Error: {
+          type: "final",
+        },
       },
     },
     {
@@ -157,24 +199,36 @@ const IDPMachine =
         handshake,
         getAppMeta,
         postDelegation,
+        checkIsIframe,
+        checkIsIframeAllowed,
         AuthenticationMachine,
         AuthorizationMachine,
         TrustDeviceMachine,
       },
       actions: {
-        assignAuthRequest: assign((context, event) => ({
+        assignAuthRequest: assign((_, event) => ({
           authRequest: event.data,
         })),
-        assignAppMeta: assign((context, event) => ({
+        assignAppMeta: assign((_, event) => ({
           appMeta: event.data,
         })),
         assignAuthoSession: assign({
-          thirdPartyAuthoSession: (context, event) => event.data,
+          thirdPartyAuthoSession: (_, event) => event.data,
         }),
-        assignError: assign({ error: (context, event) => event.data }),
+        assignError: assign({ error: (_, event) => event.data }),
+        assignIframeNotAllowedError: assign({
+          error: (_) =>
+            new Error(
+              "NFID Embed is not activated. Please contact Internet Identity Labs at support@identitylabs.ooo to activate this feature.",
+            ),
+        }),
+        assignIsIframe: assign((_, event) => ({
+          isIframe: event.data,
+        })),
       },
       guards: {
         isWebAuthNSupported,
+        isTrue: (_, event) => !!event.data,
       },
     },
   )

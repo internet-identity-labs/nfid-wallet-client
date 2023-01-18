@@ -253,9 +253,11 @@ function mapApplication(application: BEApplication): Application {
     accountLimit: application.user_limit,
     domain: application.domain,
     name: application.name,
-    icon: application.img[0],
+    icon: mapOptional(application.img),
     alias: mapOptional(application.alias) || [],
     isNftStorage: !!mapOptional(application.is_nft_storage),
+    // FIXME: replace by backend prop
+    isIFrameAllowed: false,
   }
 }
 
@@ -271,6 +273,11 @@ export async function fetchApplications(
     .then(unpackResponse)
     .then((r) => r.map(mapApplication))
     .then((r) => (predicate ? r.filter(predicate) : r))
+}
+
+export async function fetchApplication(domain: string) {
+  console.debug("fetchApplication", { domain })
+  return im.get_application(domain).then(unpackResponse).then(mapApplication)
 }
 
 /**

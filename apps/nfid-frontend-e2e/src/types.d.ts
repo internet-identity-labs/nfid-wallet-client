@@ -5,3 +5,8 @@ type WebAuthnCredential = {
   signCount: number
 }
 
+interface IChromeOption {
+  args: string[];
+  mobileEmulation?: object;
+}
+

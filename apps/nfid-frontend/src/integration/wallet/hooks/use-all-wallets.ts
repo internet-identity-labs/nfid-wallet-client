@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import { principalToAddress } from "ictool"
 import React from "react"
 
 import { getWalletName } from "@nfid/integration"
@@ -40,15 +41,17 @@ export const useAllWallets = () => {
         accountId: account.accountId,
         domain: account.domain,
         principal,
+        address: principalToAddress(principal),
         ...rest,
       }))
       .sort(sortAlphabetic(({ label }) => label ?? ""))
       .concat(
-        vaultsBalances?.map(({ principal, account, ...rest }) => ({
+        vaultsBalances?.map(({ principal, account, address, ...rest }) => ({
           label: account.label,
           accountId: account.accountId,
           domain: account.domain,
           principal,
+          address: address ?? account.accountId,
           ...rest,
           isVaultWallet: true,
         })),

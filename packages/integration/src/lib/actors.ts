@@ -1,7 +1,14 @@
 // A global singleton for our internet computer actors.
 import * as Agent from "@dfinity/agent"
-import { ActorMethod, HttpAgent, Identity, SignIdentity } from "@dfinity/agent"
+import {
+  Actor,
+  ActorMethod,
+  HttpAgent,
+  Identity,
+  SignIdentity,
+} from "@dfinity/agent"
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
+import { DelegationIdentity } from "@dfinity/identity"
 
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
@@ -90,6 +97,15 @@ export async function initActor(
     agent: new HttpAgent({ ...agentBaseConfig, identity }),
   })
 }
+
+export async function replaceActorIdentity(
+  actor: Actor,
+  identity: DelegationIdentity,
+) {
+  const actorAgent = Actor.agentOf(actor)
+  if (actorAgent?.replaceIdentity) actorAgent.replaceIdentity(identity)
+}
+
 // All of the actor definitions needed in our app should go here.
 
 export const pubsub = actor<PubSub>(PUB_SUB_CHANNEL_CANISTER_ID, pubsubIDL)
@@ -97,7 +113,10 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
-export const vault = actor<Vault>(VAULT_CANISTER_ID, vaultIDL)
+export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
+  canisterId: VAULT_CANISTER_ID,
+  agent: new HttpAgent({ ...agentBaseConfig }),
+})
 export const ecdsaSigner = actor<EcdsaSigner>(
   ECDSA_SIGNER_CANISTER_ID,
   ecdsaSignerIDL,

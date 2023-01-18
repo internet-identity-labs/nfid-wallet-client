@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React, { Dispatch, SetStateAction } from "react"
+import React from "react"
 
 import ArrowReceive from "./assets/arrowReceive.svg"
 import ArrowSend from "./assets/arrowSend.svg"
@@ -9,7 +9,7 @@ import { modalTypes } from "./transfer-modal"
 
 interface ITransferModalTabs {
   activeTab: modalTypes
-  setActiveTab: Dispatch<SetStateAction<string>>
+  setActiveTab: (value: string) => void
 }
 
 export const TransferModalTabs: React.FC<ITransferModalTabs> = ({

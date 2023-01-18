@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 
 import { TokenOption } from "../select-token/select-token-menu"
 import { TransferModalReceive } from "./receive"
@@ -9,6 +9,8 @@ import { ITransferToken, TokenConfig } from "./send/send-token"
 import { TransferModalSuccess } from "./sucess"
 import { TransferModalTabs } from "./tabs"
 import { IWallet, NFT } from "./types"
+
+export type modalTypes = "Send" | "Receive" | "Success" | string
 
 interface ITransferModal {
   nfts: NFT[]
@@ -30,9 +32,9 @@ interface ITransferModal {
   transactionRoute: string
   walletOptions: { label: string; value: string; afterLabel: string }[]
   wallets?: IWallet[]
+  modalType: modalTypes
+  setModalType: (value: modalTypes) => void
 }
-
-export type modalTypes = "Send" | "Receive" | "Success" | string
 
 export const TransferModal: React.FC<ITransferModal> = ({
   nfts,
@@ -54,12 +56,12 @@ export const TransferModal: React.FC<ITransferModal> = ({
   transactionRoute,
   walletOptions,
   wallets,
+  modalType,
+  setModalType,
 }) => {
-  const [modalType, setModalType] = useState<modalTypes>("Send")
-
   useEffect(() => {
     if (successMessage?.length) setModalType("Success")
-  }, [successMessage])
+  }, [setModalType, successMessage])
 
   return (
     <div
@@ -72,7 +74,10 @@ export const TransferModal: React.FC<ITransferModal> = ({
       onClick={(e) => e.stopPropagation()}
     >
       {modalType !== "Success" && (
-        <TransferModalTabs activeTab={modalType} setActiveTab={setModalType} />
+        <TransferModalTabs
+          activeTab={modalType}
+          setActiveTab={(value) => setModalType(value)}
+        />
       )}
 
       <div

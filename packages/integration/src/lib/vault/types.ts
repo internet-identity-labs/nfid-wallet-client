@@ -17,6 +17,7 @@ export interface Wallet {
   createdDate: bigint
   modifiedDate: bigint
   balance?: { ICP: bigint }
+  address?: string
 }
 
 export interface VaultMember {

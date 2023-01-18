@@ -10,6 +10,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { RoutePathAuthentication } from "./authentication"
+import { RoutePathAuthenticationIFrame } from "./authentication-iframe"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
 import { RoutePathPhoneNumberVerification } from "./phone-number-credential"
@@ -46,6 +47,9 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
           <SidebarWrapper>
             <NavLink route={RoutePathAuthentication}>
               <SidebarItem icon={<BiLock />} title="Authentication" />
+            </NavLink>
+            <NavLink route={RoutePathAuthenticationIFrame}>
+              <SidebarItem icon={<BiLock />} title="Authentication iFrame" />
             </NavLink>
             <NavLink route={RoutePathPhoneNumberVerification}>
               <SidebarItem

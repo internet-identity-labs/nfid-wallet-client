@@ -111,6 +111,7 @@ jobs:
           IS_DEV: true
           IS_E2E_TEST: true
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
+          RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
 
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}

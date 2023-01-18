@@ -54,5 +54,10 @@ export const serviceConfig = {
   ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
     process.env.ECDSA_SIGNER_CANISTER_ID,
   ),
-
+  RAMP_WALLET_API_KEY: JSON.stringify(
+    process.env.RAMP_WALLET_API_KEY,
+  ),
+  RAMP_WALLET_SDK_URL: JSON.stringify(
+    process.env.RAMP_WALLET_SDK_URL,
+  ),
 }

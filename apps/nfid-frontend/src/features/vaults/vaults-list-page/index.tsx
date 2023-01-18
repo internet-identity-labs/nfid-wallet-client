@@ -7,6 +7,7 @@ import { getVaults } from "@nfid/integration"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { VaultActionBar } from "../action-bar"
+import { useVaultMember } from "../hooks/use-vault-member"
 import { VaultAddressBar } from "./address-bar"
 import { VaultModalCreate } from "./modal-add-vault"
 import { VaultsTable } from "./table"
@@ -15,12 +16,14 @@ export interface VaultsListPageProps {}
 
 export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
+  const { isReady } = useVaultMember()
+
   const {
     data: vaults,
     mutate,
     isLoading,
     isValidating,
-  } = useSWR("vaults", getVaults)
+  } = useSWR([isReady ? "vaults" : null], getVaults)
 
   const filteredVaults = useMemo(() => {
     if (!vaults) return []
@@ -35,7 +38,7 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   )
 
   return (
-    <ProfileTemplate pageTitle="Vaults">
+    <ProfileTemplate pageTitle="Vaults" isLoading={!isReady}>
       <VaultAddressBar />
       <div className="border border-gray-200 rounded-xl mt-[30px]">
         <VaultActionBar

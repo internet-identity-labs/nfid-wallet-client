@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React, { Dispatch, SetStateAction } from "react"
+import React from "react"
 
 import Tab from "./tab"
 
@@ -11,7 +11,7 @@ export interface TabProps {
 interface ITabsSwitcher extends React.HTMLAttributes<HTMLDivElement> {
   tabs: TabProps[]
   activeTab: string
-  setActiveTab: Dispatch<SetStateAction<string>>
+  setActiveTab: (value: string) => void
   isFitLine?: boolean
 }
 

@@ -15,6 +15,7 @@ import {
 } from "../transactions-page/table/table-row"
 import { VaultTransactionInfo } from "./info-block"
 import { TransactionInfoRow } from "./info-row"
+import { VaultTransactionRejectReason } from "./rejected-modal"
 import { TransactionStatusArrow } from "./status-arrow"
 
 export const VaultTransactionsDetailsPage = () => {
@@ -104,10 +105,15 @@ export const VaultTransactionsDetailsPage = () => {
         <TransactionInfoRow
           title="Status"
           content={
-            <Badge
-              type={VaultBadgeStatuses[state?.status ?? "CANCELED"]}
-              children={state?.status}
-            />
+            <div className="flex items-center justify-between">
+              <Badge
+                type={VaultBadgeStatuses[state?.status ?? "CANCELED"]}
+                children={state?.status}
+              />
+              {state?.memo ? (
+                <VaultTransactionRejectReason error={state?.memo} />
+              ) : null}
+            </div>
           }
         />
         <TransactionInfoRow

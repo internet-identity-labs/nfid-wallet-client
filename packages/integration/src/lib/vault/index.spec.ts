@@ -5,7 +5,7 @@ import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
 
-import { replaceIdentity } from "../auth-state"
+import { replaceActorIdentity, vault } from "../actors"
 import { generateDelegationIdentity } from "../test-utils"
 import {
   approveTransaction,
@@ -45,12 +45,14 @@ describe("Vault suite", () => {
     memberIdentity.getPrincipal(),
     Array(32).fill(1),
   )
+
   let address: string
   it("vault register test", async () => {
     const mockedIdentity = Ed25519KeyIdentity.generate()
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
-    replaceIdentity(delegationIdentity)
+    replaceActorIdentity(vault, delegationIdentity)
+
     vaultFirst = await registerVault("first", undefined)
     address = principalToAddress(
       mockedIdentity.getPrincipal() as any,
@@ -236,7 +238,9 @@ describe("Vault suite", () => {
       memo: undefined,
     })
 
-    replaceIdentity(memberIdentity)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(memberIdentity)
+    replaceActorIdentity(vault, delegationIdentity)
   })
   it("approve transaction test", async () => {
     const approvedTransaction = await approveTransaction({

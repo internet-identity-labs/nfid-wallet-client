@@ -42,12 +42,14 @@ export const validateTransferAmountField = (value: string | number) => {
 export const makeAddressFieldValidation =
   (shouldAcceptAddress: boolean) => (value: string) => {
     if (typeof isNotEmpty(value) !== "boolean") return isNotEmpty(value)
-    if (typeof isValidPrincipalId(value) !== "boolean")
-      return isValidPrincipalId(value)
 
     if (shouldAcceptAddress) {
       if (typeof isHex(value) !== "boolean") return isHex(value)
       return true
     }
+
+    if (typeof isValidPrincipalId(value) !== "boolean")
+      return isValidPrincipalId(value)
+
     return true
   }

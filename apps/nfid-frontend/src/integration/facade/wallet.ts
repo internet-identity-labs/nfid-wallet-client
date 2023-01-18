@@ -1,15 +1,13 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
+import { WALLET_SCOPE, WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
 import { getScope } from "@nfid/integration"
 
 import {
   delegationByScope,
   fetchPrincipal,
 } from "frontend/integration/internet-identity"
-
-const WALLET_SCOPE = "nfid.one"
-export const WALLET_SESSION_TTL_2_MIN_IN_NS = 2 * 60 * 1e9
 
 export async function getWalletPrincipal(anchor: number): Promise<Principal> {
   return fetchPrincipal(anchor, WALLET_SCOPE).catch((e) => {

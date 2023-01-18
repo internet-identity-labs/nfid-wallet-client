@@ -1,10 +1,15 @@
+import { useMemo } from "react"
 import { useParams } from "react-router-dom"
 import useSWR from "swr"
 
+import { VaultRole } from "@nfid/integration"
+
 import { getVaultById } from "../services"
+import { useVaultMember } from "./use-vault-member"
 
 export const useVault = () => {
   const { vaultId } = useParams()
+  const { address } = useVaultMember()
 
   const {
     data: vault,
@@ -15,9 +20,18 @@ export const useVault = () => {
     getVaultById(vaultId ?? ""),
   )
 
+  const isAdmin = useMemo(() => {
+    const vaultMember = vault?.members.find(
+      (member) => member.userId === address,
+    )
+
+    return vaultMember?.role === VaultRole.ADMIN
+  }, [address, vault?.members])
+
   return {
     isFetching: isLoading || isValidating,
     refetch: mutate,
     vault,
+    isAdmin,
   }
 }

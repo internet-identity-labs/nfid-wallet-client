@@ -18,6 +18,14 @@ import { validateDerivationOrigin } from "../internet-identity/validateDerivatio
  * @returns authorization request
  */
 export async function handshake(): Promise<AuthorizationRequest> {
+  // FIXME: for the iframe mode to work, we need to send the message
+  // to the parent window after we've called the `authClient.login()`.
+  // Having this interval is the easiest work around for now.
+  const interval = setInterval(
+    () => postMessageToClient({ kind: "authorize-ready" }),
+    500,
+  )
+
   const response = awaitClientMessage(isIdentityClientAuthEvent).then(
     async (event) => {
       console.debug("handshake", { event })
@@ -30,6 +38,7 @@ export async function handshake(): Promise<AuthorizationRequest> {
         derivationOrigin: event.data.derivationOrigin,
       })
       if (validation.result !== "valid") throw new Error(validation.message)
+      clearInterval(interval)
       return {
         maxTimeToLive: event.data.maxTimeToLive,
         sessionPublicKey: event.data.sessionPublicKey,

@@ -4083,6 +4083,13 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
+"@ramp-network/ramp-instant-sdk@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-4.0.1.tgz#a767f815d45f00148ca1e21a4cd89852fa53a291"
+  integrity sha512-t8F1C8A6MUKNUKf/4rMq3J77Yi3I4mFUNI6MlOiiyyWbl1z0sWqdT7/g4dEqDt1JAOt9i/NVMNBw+37aWrzH4g==
+  dependencies:
+    body-scroll-lock "^3.1.5"
+
 "@remix-run/router@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.0.3.tgz#953b88c20ea00d0eddaffdc1b115c08474aa295d"
@@ -6003,6 +6010,13 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/bn.js@*":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.1.1.tgz#b51e1b55920a4ca26e9285ff79936bbdec910682"
+  integrity sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==
+  dependencies:
+    "@types/node" "*"
+
 "@types/bn.js@^4.11.3":
   version "4.11.6"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-4.11.6.tgz#c306c70d9358aaea33cd4eda092a742b9505967c"
@@ -6074,6 +6088,13 @@
   version "3.1.1"
   resolved "https://registry.npmjs.org/@types/ejs/-/ejs-3.1.1.tgz"
   integrity sha512-RQul5wEfY7BjWm0sYY86cmUN/pcXWGyVxWX93DFFJvcrxax5zKlieLwA3T77xJGwNcZW0YW6CYG70p1m8xPFmA==
+
+"@types/elliptic@6.4.14":
+  version "6.4.14"
+  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.14.tgz#7bbaad60567a588c1f08b10893453e6b9b4de48e"
+  integrity sha512-z4OBcDAU0GVwDTuwJzQCiL6188QvZMkvoERgcVjq0/mPM8jCfdwZ3x5zQEVoL9WCAru3aG5wl3Z5Ww5wBWn7ZQ==
+  dependencies:
+    "@types/bn.js" "*"
 
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"
@@ -9237,6 +9258,11 @@ body-parser@1.20.0:
     raw-body "2.5.1"
     type-is "~1.6.18"
     unpipe "1.0.0"
+
+body-scroll-lock@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-3.1.5.tgz#c1392d9217ed2c3e237fee1e910f6cdd80b7aaec"
+  integrity sha512-Yi1Xaml0EvNA0OYWxXiYNqY24AfWkbA6w5vxE7GWxtKfzIbZM+Qw+aSmkgsbWzbHiy/RCSkUZBplVxTA+E4jJg==
 
 bonjour-service@^1.0.11:
   version "1.0.13"

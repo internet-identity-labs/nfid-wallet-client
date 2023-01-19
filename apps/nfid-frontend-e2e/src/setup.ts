@@ -1,13 +1,6 @@
 /* eslint-disable no-var, no-unused-vars, no-underscore-dangle */
 import { TextEncoder, TextDecoder } from "util"
 
-export type WebAuthnCredential = {
-  credentialId: string
-  isResidentCredential: boolean
-  privateKey: string
-  signCount: number
-}
-
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace WebdriverIO {

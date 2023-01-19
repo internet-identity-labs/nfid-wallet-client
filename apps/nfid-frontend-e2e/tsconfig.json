@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -19,18 +23,28 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "frontend/*": ["./src/*"]
+      "frontend/*": [
+        "./src/*"
+      ]
     },
     "sourceMap": true,
-    "suppressExcessPropertyErrors": true,
     "types": [
       "node",
       "webdriverio/async",
+      "@wdio/globals/types",
       "@wdio/cucumber-framework",
+      "@wdio/devtools-service",
       "expect-webdriverio",
       "jest"
     ]
   },
-  "include": ["src", "src/types/custom.d.ts", "test", "mocks"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src",
+    "src/types/custom.d.ts",
+    "test",
+    "mocks"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

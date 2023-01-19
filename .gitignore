@@ -24,6 +24,7 @@ NOTES.md
 coverage
 yarn-error.log
 allure-results
+allure-report
 package-lock.json
 npm-debug.log
 yarn-error.log

@@ -1,6 +1,9 @@
 import { hooks } from "./src/wdio-hooks"
 
 export const isDebug = process.env.DEBUG === "true"
+export const hostName = process.env.HOST_NAME;
+export const hostPath = process.env.HOST_PATH;
+const baseURL = process.env.BASE_URL ? process.env.BASE_URL : "http://localhost:9090"
 
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile
@@ -135,7 +138,10 @@ export const config: WebdriverIO.Config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: "http://localhost:9090",
+  baseUrl: baseURL,
+  hostname: hostName ? hostName : 'localhost',
+  port: 4444,
+  path: hostPath ? hostPath : '/',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -145,13 +151,14 @@ export const config: WebdriverIO.Config = {
   connectionRetryTimeout: 120000,
   //
   // Default request retries count
-  connectionRetryCount: 3,
+  connectionRetryCount: 2,
   //
   // Test runner services
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ["chromedriver", "devtools"],
+  services: ["chromedriver"],
+  // services: ["docker"],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber

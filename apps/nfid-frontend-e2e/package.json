@@ -6,6 +6,8 @@
     "test:e2e:bs:mobile": "wdio run wdio.bs.mobile.conf.ts",
     "test:e2e:bs:desktop": "wdio run wdio.bs.desktop.conf.ts",
     "test:e2e:debug": "cross-env DEBUG=true wdio run wdio.conf.ts --inspect",
-    "generate-cucumber-html-report": "ts-node ./src/reporter/index.ts"
+    "generate-cucumber-html-report": "ts-node ./src/reporter/index.ts",
+    "allure-report": "allure generate allure-results --clean && allure open",
+    "clean": "rm -r allure-results allure-report"
   }
 }

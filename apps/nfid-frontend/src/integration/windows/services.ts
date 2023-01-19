@@ -11,6 +11,7 @@ import {
   postMessageToClient,
   prepareClientDelegate,
 } from "."
+import { fetchApplication } from "../identity-manager"
 import { validateDerivationOrigin } from "../internet-identity/validateDerivationOrigin"
 
 /**
@@ -88,4 +89,35 @@ export async function postDelegation(context: {
 export async function getAppMeta(): Promise<AuthorizingAppMeta> {
   const meta = getAppMetaFromQuery()
   return meta
+}
+
+export async function checkIsIframe() {
+  try {
+    return window.self !== window.top
+  } catch (e) {
+    return true
+  }
+}
+
+type CheckIsIframeAllowedParams = {
+  authRequest?: {
+    hostname: string
+    derivationOrigin?: string
+  }
+}
+
+export async function checkIsIframeAllowed({
+  authRequest: { hostname, derivationOrigin } = {
+    hostname: "",
+  },
+}: CheckIsIframeAllowedParams) {
+  console.debug("checkIsIframeAllowed", { hostname, derivationOrigin })
+  if (!hostname)
+    throw new Error("checkIsIframeAllowed hostname cannot be empty")
+
+  const { isIFrameAllowed } = await fetchApplication(
+    derivationOrigin || hostname,
+  )
+  console.debug("checkIsIframeAllowed", { isIFrameAllowed })
+  return isIFrameAllowed
 }

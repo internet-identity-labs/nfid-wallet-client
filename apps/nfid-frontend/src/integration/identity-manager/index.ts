@@ -256,8 +256,7 @@ function mapApplication(application: BEApplication): Application {
     icon: mapOptional(application.img),
     alias: mapOptional(application.alias) || [],
     isNftStorage: !!mapOptional(application.is_nft_storage),
-    // FIXME: replace by backend prop
-    isIFrameAllowed: false,
+    isIFrameAllowed: !!mapOptional(application.is_iframe_allowed),
   }
 }
 

@@ -35,6 +35,7 @@ export const mockApplicationsMeta = [
     name: DUPLICATE_APPLICATION_NAME,
     alias: ["http://localhost:3000"],
     isNftStorage: false,
+    isIFrameAllowed: false,
     icon: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
   },
   {
@@ -43,6 +44,7 @@ export const mockApplicationsMeta = [
     name: DUPLICATE_APPLICATION_NAME,
     alias: ["http://my-sweet-application.com"],
     isNftStorage: false,
+    isIFrameAllowed: false,
     icon: "https://i.picsum.photos/id/348/60/60.jpg?hmac=BwKvjP6fd5Epl3ISp3wHM37Ppk0WHPbwsAdUomHbKDc",
   },
   {
@@ -55,6 +57,7 @@ export const mockApplicationsMeta = [
       "https://xyzxy-vyaaa-aaaaj-qab3q-cai.raw.ic0.app",
     ],
     isNftStorage: false,
+    isIFrameAllowed: false,
   },
   {
     accountLimit: 1,
@@ -62,6 +65,7 @@ export const mockApplicationsMeta = [
     name: "NFID-SA-DEMO",
     alias: [],
     isNftStorage: false,
+    isIFrameAllowed: false,
   },
 ]
 

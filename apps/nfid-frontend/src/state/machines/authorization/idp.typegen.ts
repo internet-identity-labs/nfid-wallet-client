@@ -104,7 +104,10 @@ export interface Typegen0 {
     isWebAuthNSupported: "done.invoke.authorize"
   }
   eventsCausingServices: {
-    AuthenticationMachine: "done.state.idp.Start"
+    AuthenticationMachine:
+      | "done.invoke.checkIsIframe"
+      | "done.invoke.checkIsIframeAllowed"
+      | "done.state.idp.Start"
     AuthorizationMachine: "done.invoke.authenticate"
     TrustDeviceMachine: "done.invoke.authorize"
     checkIsIframe: "done.invoke.handshake"

@@ -93,7 +93,7 @@ const IDPMachine =
                         target: "CheckIsIframeAllowed",
                         cond: "isTrue",
                       },
-                      { target: "Done" },
+                      { target: "#idp.AuthenticationMachine" },
                     ],
                   },
                 },
@@ -103,7 +103,7 @@ const IDPMachine =
                     id: "checkIsIframeAllowed",
                     onDone: [
                       {
-                        target: "Done",
+                        target: "#idp.AuthenticationMachine",
                         cond: "isTrue",
                       },
                       {

@@ -17,9 +17,9 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
     <div
       className={clsx(
         "flex flex-col justify-between font-inter rounded-xl",
-        "w-auto mx-2 min-h-[480px] border border-gray-100 shadow-screen",
+        "mx-2 min-h-[480px] border border-gray-100 shadow-screen",
         "absolute top-1/2 -translate-y-1/2 overflow-hidden",
-        "sm:w-[450px] sm:left-1/2 sm:-translate-x-1/2",
+        "w-[calc(100%-16px)] sm:w-[450px] sm:left-1/2 sm:-translate-x-1/2",
         checkIsIframe() && "!w-full !m-0",
       )}
     >

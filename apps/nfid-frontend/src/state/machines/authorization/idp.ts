@@ -180,8 +180,9 @@ const IDPMachine =
             src: "TrustDeviceMachine",
             id: "trustDeviceMachine",
             onDone: "End",
-            // NEED TO PASS isIframe
-            data: {},
+            data: (context) => ({
+              isIframe: context.isIframe,
+            }),
           },
         },
         End: {

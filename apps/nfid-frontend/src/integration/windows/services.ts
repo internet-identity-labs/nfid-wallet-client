@@ -115,9 +115,9 @@ export async function checkIsIframeAllowed({
   if (!hostname)
     throw new Error("checkIsIframeAllowed hostname cannot be empty")
 
-  const { isIFrameAllowed } = await fetchApplication(
+  const { isIFrameAllowed, domain } = await fetchApplication(
     derivationOrigin || hostname,
   )
-  console.debug("checkIsIframeAllowed", { isIFrameAllowed })
+  console.debug("checkIsIframeAllowed", { isIFrameAllowed, domain })
   return isIFrameAllowed
 }

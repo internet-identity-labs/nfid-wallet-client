@@ -94,13 +94,10 @@ export interface Typegen0 {
   }
   eventsCausingServices: {
     checkIframeSelect:
-      | "TRUST"
       | "done.invoke.fetchWebAuthnPlatformCapability"
       | "done.invoke.hasSecurityKey"
-    fetchWebAuthnPlatformCapability:
-      | "done.invoke.checkIframeSelect"
-      | "done.invoke.isDeviceRegistered"
-    getIframeWebauthn: "done.invoke.checkIframeSelect"
+    fetchWebAuthnPlatformCapability: "done.invoke.isDeviceRegistered"
+    getIframeWebauthn: "TRUST" | "done.invoke.checkIframeSelect"
     hasSecurityKey: "done.invoke.fetchWebAuthnPlatformCapability"
     isDeviceRegistered: "xstate.init"
     registerDeviceWithSecurityKey: "done.invoke.fetchWebAuthnPlatformCapability"

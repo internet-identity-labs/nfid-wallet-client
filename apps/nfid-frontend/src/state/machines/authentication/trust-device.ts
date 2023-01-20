@@ -67,7 +67,7 @@ export const TrustDeviceMachine =
                 onDone: [
                   {
                     cond: "bool",
-                    target: "#TrustDeviceMachine.Select",
+                    target: "#TrustDeviceMachine.CheckIframeSelect",
                   },
                   {
                     target: "SecurityKey",

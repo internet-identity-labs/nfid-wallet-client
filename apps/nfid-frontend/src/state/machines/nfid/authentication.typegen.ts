@@ -29,21 +29,21 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.AuthenticationMachine"
+  }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    isWebAuthNSupported: "done.invoke.AuthenticationMachine"
   }
   eventsCausingServices: {
     AuthenticationMachine: "xstate.init"
     TrustDeviceMachine: "done.invoke.AuthenticationMachine"
   }
-  eventsCausingGuards: {
-    isWebAuthNSupported: "done.invoke.AuthenticationMachine"
-  }
-  eventsCausingDelays: {}
   matchesStates: "Authenticate" | "End" | "TrustDevice"
   tags: never
 }

@@ -14,6 +14,7 @@ import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
 import RequestAccountsCoordinator from "./coordination/wallet/request-accounts"
 import RequestTransferCoordinator from "./coordination/wallet/request-transfer"
+import { IframeTrustDeviceCoordinator } from "./features/iframe/iframe-trust-device/coordinator"
 import { NotFound } from "./ui/pages/404"
 import { ScreenResponsive } from "./ui/templates/screen-responsive"
 
@@ -61,6 +62,14 @@ export const App = () => (
       element={
         <ScreenResponsive className="flex flex-col items-center">
           <RemoteIDPCoordinator />
+        </ScreenResponsive>
+      }
+    />
+    <Route
+      path="/iframe/trust-device"
+      element={
+        <ScreenResponsive>
+          <IframeTrustDeviceCoordinator />
         </ScreenResponsive>
       }
     />

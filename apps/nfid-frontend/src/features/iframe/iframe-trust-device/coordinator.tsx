@@ -35,20 +35,23 @@ export const IframeTrustDeviceCoordinator = () => {
       const identity = await WebAuthnIdentity.create({
         publicKey: creationOptions(userDevices),
       })
-      window.postMessage({
-        isDeviceTrusted: true,
-        identity: JSON.stringify(identity.toJSON()),
-        isWebAuthN,
-      })
+      window.postMessage(
+        {
+          isDeviceTrusted: true,
+          identity: JSON.stringify(identity.toJSON()),
+          isWebAuthN,
+        },
+        window.opener.origin,
+      )
     } catch {
-      window.postMessage({ isDeviceTrusted: true })
+      window.postMessage({ isDeviceTrusted: true }, window.opener.origin)
     } finally {
       window.close()
     }
   }, [isWebAuthN, userDevices])
 
   const onSkip = useCallback(() => {
-    window.postMessage({ isDeviceTrusted: false })
+    window.postMessage({ isDeviceTrusted: false }, window.opener.origin)
     window.close()
   }, [])
 

@@ -64,6 +64,8 @@ export const getIframeWebauthn = async () => {
     top=${(window.screen.height - 490) / 2}`,
   )
 
+  if (!w) return
+
   return new Promise((resolve) => {
     w?.addEventListener("message", async (e) => {
       if ("ready" in e?.data)

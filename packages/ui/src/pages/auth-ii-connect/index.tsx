@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import ArrowBackIcon from "../../assets/arrow-back.svg"
 import { Button } from "../../molecules/button"
 import { Input } from "../../molecules/input"
+import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 
 export interface AuthConnectIIProps {
   onBack: () => void
@@ -33,22 +34,20 @@ export const IIAuthConnect: React.FC<AuthConnectIIProps> = ({
           alt="back"
           onClick={onBack}
         />
-        <p className="font-bold">Connect Internet Identity</p>
+        <p className="text-lg font-bold">Connect Internet Identity</p>
       </div>
-      <p className="mt-4 text-sm ">
-        By connecting, you will sign in to IC dapps with the same accounts as
-        your Internet Identity, and take advantage of all of NFID’s current and
-        upcoming features:
+      <p className="mt-3 text-sm">
+        By connecting, your NFID Wallet will sign you in to the same accounts as
+        II, plus:
       </p>
-      <ul className="mt-2 text-sm leading-6 list-disc ml-7">
+      <ul className="mt-1 text-sm leading-6 list-disc ml-7">
         <li>Buy, store, send, and swap tokens</li>
         <li>Manage all your ICP wallets</li>
         <li>Own and share your data across dapps</li>
-        <li>Prove to dapps you’re a unique human</li>
       </ul>
 
       <Input
-        className="mt-5"
+        className="mt-3"
         labelText="Your Internet Identity anchor"
         placeholder="123456"
         type="number"
@@ -57,7 +56,7 @@ export const IIAuthConnect: React.FC<AuthConnectIIProps> = ({
       <Button
         type="primary"
         block
-        className="mt-3 mb-1"
+        className="mt-2"
         onClick={() => onConnect(getValues("anchor"))}
         disabled={!anchor?.toString().length}
       >

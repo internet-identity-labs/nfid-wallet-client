@@ -1,8 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
+import { SDKApplicationMeta } from "@nfid-frontend/ui"
+
 import { ElementProps } from "frontend/types/react"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 interface AuthorizeRegisterDeciderProps extends ElementProps<HTMLDivElement> {
@@ -30,7 +31,7 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
 }) => {
   return (
     <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
-      <ApplicationMeta
+      <SDKApplicationMeta
         title="Sign in faster on this device"
         subTitle={
           isPlatformAuthenticatorAvailable

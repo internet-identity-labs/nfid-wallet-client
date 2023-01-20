@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React from "react"
 
 import { Loader } from "frontend/ui/atoms/loader"
@@ -8,15 +9,17 @@ interface BlurredLoaderProps {
   isLoading?: boolean
   loadingMessage?: string | boolean
   children?: React.ReactNode
+  className?: string
 }
 export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
   isLoading,
   loadingMessage,
   children,
+  className,
 }) => {
   return (
     <>
-      <div className="w-full h-full p-6">{children}</div>
+      <div className={clsx("w-full h-full", className)}>{children}</div>
       {isLoading ? (
         <BlurOverlay
           id="loader"

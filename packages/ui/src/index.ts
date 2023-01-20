@@ -46,6 +46,7 @@ export * from "./pages/auth-ii-complete"
 export * from "./pages/auth-ii-code"
 
 export * from "./templates/approve-template"
+export * from "./templates/screen-responsive"
 
 export * from "./utils/validations"
 export * from "./utils/use-click-outside"

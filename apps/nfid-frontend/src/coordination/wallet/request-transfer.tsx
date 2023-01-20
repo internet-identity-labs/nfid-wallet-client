@@ -2,13 +2,14 @@ import { useMachine } from "@xstate/react"
 import { useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
 
+import { ScreenResponsive } from "@nfid-frontend/ui"
+
 import { RequestTransfer } from "frontend/apps/identity-manager/request-transfer"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import RequestTransferMachine, {
   RequestTransferMachineType,
 } from "frontend/state/machines/wallet/request-transfer"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthenticationCoordinator } from "../authentication"
 

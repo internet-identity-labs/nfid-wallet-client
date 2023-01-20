@@ -68,6 +68,7 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
     'is_nft_storage' : IDL.Opt(IDL.Bool),
     'is_trusted' : IDL.Opt(IDL.Bool),
+    'is_iframe_allowed' : IDL.Opt(IDL.Bool),
   });
   const HTTPApplicationResponse = IDL.Record({
     'data' : IDL.Opt(IDL.Vec(Application)),

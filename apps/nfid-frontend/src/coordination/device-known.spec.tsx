@@ -105,7 +105,7 @@ describe("KnownDevice Coordinator", () => {
     const RENDER_AUTH_STATE_TEST_PLAN = [
       {
         description: "should render MultiAccount Authentication state",
-        detectOnScreen: ["Choose an account", "to continue to MyApp"],
+        detectOnScreen: ["Choose an account", "to connect to MyApp"],
         hostNameMock: "https://my-application.com",
         fetchApplicationsMock: [],
         profile: {
@@ -114,7 +114,7 @@ describe("KnownDevice Coordinator", () => {
       },
       {
         description: "should render SingleAccount Authentication state",
-        detectOnScreen: ["Unlock NFID", "to continue to MyApp"],
+        detectOnScreen: ["Unlock NFID", "to connect to MyApp"],
         hostNameMock: "https://my-application.com",
         fetchApplicationsMock: [
           { accountLimit: 1, domain: "https://my-application.com" },
@@ -192,7 +192,7 @@ describe("KnownDevice Coordinator", () => {
       {
         description:
           "MultiAccount should produce an authSession when user clicks unlock",
-        detectOnScreen: ["Choose an account", "to continue to MyApp"],
+        detectOnScreen: ["Choose an account", "to connect to MyApp"],
         unlockTarget: "Unlock NFID",
         lookupMock: AUTHENTICATOR_DEVICES,
         hostNameMock: "https://my-application.com",
@@ -202,7 +202,7 @@ describe("KnownDevice Coordinator", () => {
       {
         description:
           "SingleAccount should produce an authSession when user clicks unlock",
-        detectOnScreen: ["Unlock NFID", "to continue to MyApp"],
+        detectOnScreen: ["Unlock NFID", "to connect to MyApp"],
         unlockTarget: "Unlock to continue",
         lookupMock: AUTHENTICATOR_DEVICES,
         hostNameMock: "https://my-application.com",

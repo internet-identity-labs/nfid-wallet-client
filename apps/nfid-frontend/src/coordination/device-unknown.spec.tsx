@@ -46,7 +46,7 @@ describe("UnknownDeviceCoordinator", () => {
         setupCoordinator(userAgent, false)
 
         await waitFor(() => {
-          screen.getByText("Choose how you'd like to sign in to MyApp")
+          screen.getByText("Sign in to MyApp with your passkey")
           screen.getByText("Use passkey from a device with a camera")
         })
 

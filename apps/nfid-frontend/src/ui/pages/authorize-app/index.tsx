@@ -74,9 +74,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
         applicationName={applicationName}
         applicationLogo={applicationLogo}
         title="Choose an account"
-        subTitle={`to continue ${
-          applicationName && `to ${applicationName}`
-        } with your NFID Wallet`}
+        subTitle={`to connect to ${applicationName}`}
       />
       <div
         className={clsx("flex flex-col w-full pt-4 space-y-1 relative h-full")}

@@ -210,7 +210,7 @@ jobs:
 
       - name: Upload url to file
         env:
-          target_url: https://${{ github.actor }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
         run: echo "$target_url" > "report_url.txt"
       - uses: actions/upload-artifact@v3
         with:

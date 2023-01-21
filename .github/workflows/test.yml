@@ -136,6 +136,10 @@ jobs:
     needs: e2e-tests
     if: always()
     runs-on: ubuntu-latest
+    env:
+      URL: ${{ github.event.pull_request.comments_url }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
     steps:
       - name: Get Allure history
         uses: actions/checkout@v3
@@ -168,10 +172,6 @@ jobs:
           PUBLISH_DIR: apps/nfid-frontend-e2e/allure-history
 
       - name: Upload url
-        env:
-          URL: ${{ github.event.pull_request.comments_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
         run: echo "$TARGET_URL" > "report_url.txt"
       - name: PR URL
         run: |

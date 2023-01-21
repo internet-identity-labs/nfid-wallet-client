@@ -175,6 +175,7 @@ jobs:
         run: echo "$TARGET_URL" > "report_url.txt"
       - name: PR URL
         run: |
+          TARGET_URL=$TARGET_URL
           curl \
             -X POST \
             $URL \

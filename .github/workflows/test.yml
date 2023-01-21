@@ -175,7 +175,7 @@ jobs:
         run: echo "$TARGET_URL" > "report_url.txt"
       - name: Upload PR comment with url
         run: |
-          print -v data '{ "body": "%s" }' "$TARGET_URL" \
+          print -v data '{ "body": "%s" }' "$TARGET_URL" &&
           curl \
             -X POST \
             $URL \

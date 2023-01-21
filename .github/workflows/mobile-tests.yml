@@ -1,0 +1,171 @@
+name: Mobile Tests CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
+
+jobs:
+  check-secrets:
+    defaults:
+      run:
+        shell: bash
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout CI repo.
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
+          repository: internet-identity-labs/ci_libs
+          ref: main
+          path: ci_libs
+
+      - name: Check secrets
+        run: |
+          source ./ci_libs/CI_LIBS.sh
+          JSON='${{ toJSON(env) }}'
+          ci_check_secrets "${JSON}"
+        env:
+          REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
+          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+
+  e2e-tests:
+    needs: check-secrets
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ci-frontend-test
+      cancel-in-progress: false
+
+    steps:
+      - run: pwd
+
+      - name: Checkout CI repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - name: Build project
+        run: |
+          cat > ~/.npmrc << EOF
+          @psychedelic:registry=https://npm.pkg.github.com
+          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
+          EOF
+          yarn --prefer-offline
+          npx env-cmd -f .env.staging nx build nfid-frontend
+          yarn serve -l 9090 -s dist/apps/nfid-frontend &
+        env:
+          IS_DEV: true
+          IS_E2E_TEST: true
+          CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
+          RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
+
+          REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
+          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+
+      - name: Setup chrome browser
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Chrome version
+        run: chrome --version
+
+      - name: Checkout Google user E2E
+        uses: actions/checkout@v3
+        with:
+          repository: internet-identity-labs/user-google-e2e
+          path: apps/nfid-frontend-e2e/user-google-e2e
+          ref: main
+          token: ${{ secrets.PAT }}
+
+      - run: ls -la apps/nfid-frontend-e2e/user-google-e2e
+
+      - name: Running E2E test
+        run: |
+          DEVICE_NAME='Pixel 5' npx env-cmd -f .env.staging nx test:e2e:mobile nfid-frontend-e2e
+        env:
+          URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
+          LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
+          USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
+
+      - name: Caching allure-results
+        if: always()
+        uses: actions/cache@v3
+        with:
+          path: apps/nfid-frontend-e2e/allure-results
+          key: allure-results-${{github.RUN_ID}}
+
+      - name: Upload Chrome logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: chrome_debug.log
+          path: apps/nfid-frontend-e2e/user-google-e2e/chrome_debug.log
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: dist
+          path: dist
+
+  allure-report:
+    needs: e2e-tests
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Allure history
+        uses: actions/checkout@v3
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+      - uses: actions/cache@v3
+        with:
+          path: apps/nfid-frontend-e2e/allure-results
+          key: allure-results-${{github.RUN_ID}}
+
+      - name: Preparing the report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: apps/nfid-frontend-e2e/allure-results
+          gh_pages: gh-pages
+          allure_report: apps/nfid-frontend-e2e/allure-report
+          allure_history: apps/nfid-frontend-e2e/allure-history
+          keep_reports: 20
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: apps/nfid-frontend-e2e/allure-history
+
+      - name: Upload url to file
+        env:
+          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+        run: echo "$target_url" > "report_url.txt"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ReportUrl
+          path: "report_url.txt"

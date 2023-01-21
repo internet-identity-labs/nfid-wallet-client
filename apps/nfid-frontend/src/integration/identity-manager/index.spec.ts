@@ -23,6 +23,7 @@ describe("Identity Manager suite", () => {
     it("Should update origin", async function () {
       const application: Application = {
         is_nft_storage: [],
+        is_trusted: [],
         is_iframe_allowed: [],
         alias: [["appAlias"]],
         user_limit: 5,
@@ -44,6 +45,7 @@ describe("Identity Manager suite", () => {
     it("Should skip", async function () {
       const application: Application = {
         is_nft_storage: [],
+        is_trusted: [],
         is_iframe_allowed: [],
         alias: [["appAlias"]],
         user_limit: 5,

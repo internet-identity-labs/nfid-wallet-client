@@ -173,16 +173,15 @@ jobs:
 
       - name: Upload url
         run: echo "$TARGET_URL" > "report_url.txt"
-      - name: PR URL
+      - name: Upload PR comment with url
         run: |
-          TARGET_URL=$TARGET_URL
           curl \
             -X POST \
             $URL \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d '{ "body": "$TARGET_URL" }'
+            -d '{ "body": $TARGET_URL }'
       - uses: actions/upload-artifact@v3
         with:
           name: ReportUrl

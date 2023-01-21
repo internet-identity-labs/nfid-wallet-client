@@ -177,6 +177,10 @@ jobs:
     needs: e2e-tests
     if: always()
     runs-on: ubuntu-latest
+    env:
+      URL: ${{ github.event.pull_request.comments_url }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
     steps:
       - name: Get Allure history
         uses: actions/checkout@v3
@@ -212,6 +216,16 @@ jobs:
         env:
           target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
         run: echo "$target_url" > "report_url.txt"
+      - name: Upload url to PR comments
+        run: |
+          printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
+          curl \
+            -X POST \
+            $URL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "$data"
       - uses: actions/upload-artifact@v3
         with:
           name: ReportUrl

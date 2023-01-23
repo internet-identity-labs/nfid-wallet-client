@@ -78,6 +78,7 @@ export interface NFTDetails {
   }
   collection: EntrepotCollection
   owner?: string
+  blockchain: "ic" | "eth"
 }
 
 export interface UserNFTDetails extends NFTDetails {

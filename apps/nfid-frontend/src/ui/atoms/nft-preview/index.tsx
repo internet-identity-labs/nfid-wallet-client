@@ -60,7 +60,7 @@ const NFTPreview = (props: UserNFTDetails) => {
           className={clsx(
             "flex items-center justify-center",
             "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
-            props.blockchain !== "ii" && "hidden",
+            props.blockchain !== "ic" && "hidden",
           )}
         >
           <img src={ICPLogo} alt="logo" className="w-2/3" />

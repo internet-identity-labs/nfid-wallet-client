@@ -199,7 +199,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     return [
       {
         label: "Internet Computer",
-        value: "ii",
+        value: "ic",
       },
       {
         label: "Ethereum",

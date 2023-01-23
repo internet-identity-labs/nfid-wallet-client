@@ -85,7 +85,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     "Token #",
   ])
   const [reverse, setReverse] = React.useState(false)
-  const handleHeaderClick = React.useMemo(
+  const handleHeaderClick = React.useCallback(
     () => (v: string) => {
       if (!sorting.includes(v)) return
       if (sorting[0] === v) {

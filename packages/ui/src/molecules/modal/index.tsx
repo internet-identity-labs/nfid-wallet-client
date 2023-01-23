@@ -2,7 +2,6 @@ import * as RadixDialog from "@radix-ui/react-dialog"
 import clsx from "clsx"
 import React from "react"
 
-import { IconCmpCancel } from "../../atoms/icons"
 import { Loader } from "../../atoms/loader"
 import { H5 } from "../../atoms/typography"
 import { Button } from "../button"
@@ -61,7 +60,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
             isLoading && "!pointer-events-none",
           )}
         >
-          <div className="relative flex-auto px-6 w-ful">
+          <div className="relative flex-auto w-full px-2.5">
             <H5 className="mt-4">{title}</H5>
             <p className="my-4 text-sm">{subTitle}</p>
             <div className={clsx("", className)}>{children}</div>
@@ -69,7 +68,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
 
           <div
             className={clsx(
-              "grid grid-cols-2 p-6 gap-4",
+              "grid grid-cols-2 p-2.5 gap-5",
               large && "!flex justify-end",
               buttonsClassNames,
             )}
@@ -100,14 +99,6 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
               </Button>
             )}
           </div>
-
-          <RadixDialog.Close
-            className={clsx("absolute top-5 right-5 cursor-pointer")}
-          >
-            <div>
-              <IconCmpCancel />
-            </div>
-          </RadixDialog.Close>
         </RadixDialog.Content>
       </RadixDialog.Portal>
     </RadixDialog.Root>

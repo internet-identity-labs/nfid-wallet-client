@@ -16,7 +16,6 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
   const { width } = useWindowSize()
 
   const visibleLength = React.useMemo(() => {
-    // Let's show 4 NFTS on large screens - @Suggestion from Pavlo
     return width < 1536 ? 3 : 4
   }, [width])
 
@@ -25,32 +24,39 @@ export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {
       <ProfileContainer
         title={
           <>
-            <span>Your NFTs</span>
-            <span className="text-sm text-gray-400">{nfts.length} items</span>
+            <span>Your latest collectibles</span>
+            <Link
+              className={clsx(
+                "text-blue text-sm font-bold tracking-[0.01em]",
+                "hover:opacity-80 transition-opacity cursor-pointer",
+                "flex items-center space-x-1",
+              )}
+              to={`${ProfileConstants.base}/${ProfileConstants.collectibles}`}
+            >
+              <span>View all</span>
+              <span
+                className={clsx(
+                  "text-xs font-bold text-white bg-blue-600 rounded-lg",
+                  "flex item-center justify-center",
+                  "px-2 py-[1px]",
+                )}
+              >
+                {nfts.length}
+              </span>
+            </Link>
           </>
         }
         className={clsx("pb-[26px] mt-[30px] mb-[30px] relative")}
       >
         <div
           className={clsx(
-            "grid gap-4 lg:gap-8",
+            "grid gap-5 mt-2",
             "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
           )}
         >
           {nfts.slice(0, visibleLength).map((nft) => (
             <NFTPreview {...nft} key={`nft_${nft.tokenId}_${Math.random()}`} />
           ))}
-        </div>
-        <div className="flex justify-center items-center mt-[30px] h-12">
-          <Link
-            className={clsx(
-              "text-blue text-sm font-bold tracking-[0.01em]",
-              "hover:opacity-50 transition-opacity cursor-pointer",
-            )}
-            to={`${ProfileConstants.base}/${ProfileConstants.nfts}`}
-          >
-            View all
-          </Link>
         </div>
       </ProfileContainer>
     </div>

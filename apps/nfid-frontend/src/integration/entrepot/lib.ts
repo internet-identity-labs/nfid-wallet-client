@@ -295,5 +295,5 @@ export async function fetchNFTsOfPrincipals(
         .then((r: EntrepotToken[]) => mapToNFTData(r, principal, account))
     }),
   )
-  return response.flat()
+  return response.flat().map((nft) => ({ ...nft, blockchain: "ii" }))
 }

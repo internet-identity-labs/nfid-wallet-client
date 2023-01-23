@@ -28,11 +28,7 @@ describe("Remote IDP coordinator", () => {
     await waitFor(
       async () => void render(<RemoteIDPCoordinator machine={testMachine} />),
     )
-    await waitFor(async () =>
-      expect(
-        screen.getByText("Choose how you'd like to sign in to My Application"),
-      ).toBeDefined(),
-    )
+    await screen.findByText("Create an NFID")
   })
   // it("should render known device flow", async () => {
   //   const testMachine = RemoteSenderMachine.withConfig({

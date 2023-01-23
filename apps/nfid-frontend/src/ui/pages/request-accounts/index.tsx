@@ -1,11 +1,10 @@
 import clsx from "clsx"
 
-import { IOption, DropdownSelect } from "@nfid-frontend/ui"
+import { IOption, DropdownSelect, SDKApplicationMeta } from "@nfid-frontend/ui"
+import { ScreenResponsive } from "@nfid-frontend/ui"
 
 import { Button } from "frontend/ui/atoms/button"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import NFIDLogo from "./nfid.svg"
 
@@ -36,11 +35,11 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
         <div
           className={clsx(
             "flex flex-col flex-grow lg:justify-between",
-            "h-full p-5",
+            "h-full",
           )}
         >
           <div>
-            <ApplicationMeta
+            <SDKApplicationMeta
               applicationLogo={applicationLogo}
               title={applicationName}
               subTitle="wants to perform the following actions:"

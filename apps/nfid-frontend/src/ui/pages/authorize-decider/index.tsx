@@ -1,7 +1,7 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { anchorRules, Input } from "@nfid-frontend/ui"
+import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
 import MetamaskIcon from "frontend/assets/metamask.svg"
@@ -12,8 +12,6 @@ import {
   SignInWithGoogle,
 } from "frontend/ui/atoms/button/signin-with-google"
 import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
-import { Separator } from "frontend/ui/atoms/separator"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import QRCode from "./assets/qrcode.svg"
@@ -100,18 +98,22 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
 
   return (
     <BlurredLoader isLoading={isLoading}>
-      <ApplicationMeta
+      <SDKApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
-        title="Sign in"
-        subTitle={`Choose how you'd like to sign in to ${applicationName}`}
+        title="Create an NFID"
+        subTitle={
+          showAdvancedOptions
+            ? `Sign in to ${applicationName} with your passkey`
+            : `to continue to ${applicationName}`
+        }
       />
       <div
-        className="flex flex-col items-center w-full mt-8 space-y-1"
+        className="flex flex-col items-center w-full mt-8"
         ref={containerRef}
       >
         {showAdvancedOptions && (
-          <div className="w-full max-w-[400px]">
+          <div className="w-full">
             <Input
               errorText={errors.userNumber?.message}
               labelText="Your NFID number"
@@ -133,7 +135,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
           <div className="w-full max-w-[400px]">
             <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
 
-            <div className="grid h-12 grid-cols-3 gap-4 mt-4">
+            <div className="grid h-12 grid-cols-3 gap-4 my-2.5">
               <IconButton
                 img={<img src={MetamaskIcon} alt="metamask" />}
                 onClick={onSelectMetamaskAuthorization}
@@ -151,8 +153,6 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
               />
             </div>
 
-            <Separator />
-
             <IconButton
               title="iPhone, iPad, or Android device"
               subtitle="Use passkey from a device with a camera"
@@ -161,7 +161,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             />
           </div>
         ) : (
-          <>
+          <div className="space-y-2.5 mt-7 w-full">
             <IconButton
               title="Platform auth on this device"
               subtitle="Use this device if previously registered"
@@ -174,7 +174,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
               img={<img src={SecurityKey} alt="touch-id" />}
               onClick={handleSubmit(handleSelectSecurityKeyAuthorization)}
             />
-          </>
+          </div>
         )}
 
         <p

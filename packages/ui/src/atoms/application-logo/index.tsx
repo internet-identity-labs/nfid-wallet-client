@@ -13,7 +13,7 @@ export const ApplicationLogo: React.FC<ApplicationLogoProps> = ({
     <img
       src={decodeURIComponent(url)}
       alt={`application-logo-${applicationName}`}
-      className="w-[37px] h-[37px] inline-block mb-4"
+      className="inline-block w-10 h-10"
     />
   )
 }

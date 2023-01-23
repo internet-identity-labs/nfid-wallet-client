@@ -46,7 +46,7 @@ describe("UnknownDeviceCoordinator", () => {
         setupCoordinator(userAgent, false)
 
         await waitFor(() => {
-          screen.getByText("Choose how you'd like to sign in to MyApp")
+          screen.getByText("Create an NFID")
           screen.getByText("Use passkey from a device with a camera")
         })
 
@@ -79,7 +79,7 @@ describe("UnknownDeviceCoordinator", () => {
         expect(QR.toCanvas).toHaveBeenCalledWith(
           expect.anything(),
           expect.stringContaining("http://localhost/ridp/?"),
-          { width: 192 },
+          { width: 142 },
           expect.anything(),
         )
         expect(pubsub.get_messages).toHaveBeenCalled()

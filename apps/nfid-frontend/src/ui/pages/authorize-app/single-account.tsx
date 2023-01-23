@@ -1,8 +1,9 @@
 import React from "react"
 
+import { SDKApplicationMeta } from "@nfid-frontend/ui"
+
 import { ElementProps } from "frontend/types/react"
 import { Button } from "frontend/ui/atoms/button"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import MobileHero from "./assets/mobile_hero.svg"
@@ -26,7 +27,7 @@ export const AuthorizeAppSingleAccount: React.FC<
 }) => {
   return (
     <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
-      <ApplicationMeta
+      <SDKApplicationMeta
         applicationLogo={applicationLogo}
         applicationName={applicationName}
         title="Unlock NFID"

@@ -35,7 +35,7 @@ export const TableHead: React.FC<{
   handleHeaderClick?: (col: string) => void
 }> = ({ sort, reverse, headings, handleHeaderClick }) => (
   <thead className="contents">
-    <tr className={clsx(`border-b border-gray-900 contents`)}>
+    <tr className={clsx(`border-b border-gray-900`)}>
       {headings.map((heading, i) => (
         <th
           className={clsx(

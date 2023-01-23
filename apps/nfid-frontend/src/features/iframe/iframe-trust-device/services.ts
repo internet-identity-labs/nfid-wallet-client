@@ -1,8 +1,8 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
 
-import { ii, im, setProfile } from "@nfid/integration"
+import { setProfile } from "@nfid/integration"
 
-import { deviceInfo, getIcon } from "frontend/integration/device"
+import { addDeviceToIIandIM } from "frontend/integration/device/services"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { fetchAuthenticatorDevices } from "frontend/integration/internet-identity"
@@ -14,33 +14,7 @@ const handleTrustDevice = async (JSONIdentity: string, isWebAuthN: boolean) => {
   const identity = WebAuthnIdentity.fromJSON(JSONIdentity)
 
   try {
-    const credential_id = Array.from(new Uint8Array(identity.rawId))
-    await Promise.all([
-      ii
-        .add(BigInt(profile.anchor), {
-          alias: deviceInfo.newDeviceName,
-          pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
-          credential_id: [credential_id],
-          key_type: isWebAuthN ? { platform: null } : { cross_platform: null },
-          purpose: { authentication: null },
-          protection: { unprotected: null },
-        })
-        .catch((e) => {
-          throw new Error(`registerDeviceWithSecurityKey ii.add: ${e.message}`)
-        }),
-      im
-        .create_access_point({
-          icon: isWebAuthN ? getIcon(deviceInfo) : "usb",
-          device: isWebAuthN ? deviceInfo.newDeviceName : "Security Key",
-          browser: "",
-          pub_key: identity.getPrincipal().toText(),
-        })
-        .catch((e) => {
-          throw new Error(
-            `registerDeviceWithSecurityKey im.create_access_point: ${e.message}`,
-          )
-        }),
-    ])
+    await addDeviceToIIandIM(identity, BigInt(profile.anchor), !isWebAuthN)
   } catch (e: any) {
     console.error("registerDeviceWithSecurityKey", { message: e.message })
     if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)) {

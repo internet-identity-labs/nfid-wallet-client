@@ -38,6 +38,7 @@ const boxShadow = {
   xl: "0 9px 20px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
   inner: "inset 0 2px 4px 0 rgb(0 0 0 / 0.05)",
   none: "none",
+  screen: " 0px 20px 50px rgba(0, 0, 0, 0.05)",
 }
 
 const blur = {

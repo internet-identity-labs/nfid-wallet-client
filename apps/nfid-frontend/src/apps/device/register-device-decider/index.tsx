@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
+import { ScreenResponsive } from "@nfid-frontend/ui"
 import { authState, im } from "@nfid/integration"
 
 import { RecoverNFIDRoutesConstants } from "frontend/apps/authentication/recover-nfid/routes"
@@ -14,7 +15,6 @@ import {
 import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { useDevices } from "frontend/integration/identity-manager/devices/hooks"
 import { AuthorizeRegisterDeciderScreen } from "frontend/ui/pages/register-device-decider"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface AppScreenRegisterDeviceDeciderProps

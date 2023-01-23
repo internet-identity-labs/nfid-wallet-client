@@ -1,8 +1,9 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
+import { ScreenResponsive } from "@nfid-frontend/ui"
+
 import logo from "frontend/assets/distrikt.svg"
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
 
 import { AuthorizeApp } from "."
 import { AuthorizeAppSingleAccount } from "./single-account"

@@ -1,10 +1,11 @@
 import React from "react"
 
+import { SDKApplicationMeta } from "@nfid-frontend/ui"
+
 import { Button } from "frontend/ui/atoms/button"
 import { RadioButton } from "frontend/ui/atoms/button/radio"
 import ErrorDisplay from "frontend/ui/atoms/error"
 import { P } from "frontend/ui/atoms/typography/paragraph"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 interface CredentialRequesterVerifiedProps {
@@ -27,7 +28,7 @@ export const CredentialRequesterVerified: React.FC<
 
   return (
     <BlurredLoader isLoading={false}>
-      <ApplicationMeta
+      <SDKApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
         title={"Verification request"}

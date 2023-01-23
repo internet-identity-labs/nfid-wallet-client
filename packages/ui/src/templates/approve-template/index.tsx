@@ -8,6 +8,7 @@ import { SDKFooter } from "../../atoms/sdk-footer/footer"
 import { SDKHeader } from "../../atoms/sdk-header"
 import { Button } from "../../molecules/button"
 import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
+import { ScreenResponsive } from "../screen-responsive"
 
 export interface ApproveTemplateProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -30,80 +31,60 @@ export const ApproveTemplate: React.FC<ApproveTemplateProps> = ({
   isLoading = false,
 }) => {
   return (
-    <div
-      className={clsx(
-        "relative flex flex-col justify-between h-screen font-inter",
-        "sm:min-h-[550px] sm:w-[450px] sm:absolute sm:h-auto",
-        "sm:left-1/2 sm:-translate-x-1/2 sm:top-1/2 sm:-translate-y-1/2",
-      )}
-    >
-      <NFIDGradientBar className="w-full h-0.5 z-20" rounded={false} />
-      <SDKHeader frameLabel="Approve with NFID" />
+    <ScreenResponsive>
+      <SDKApplicationMeta
+        applicationLogo={applicationLogo}
+        title={applicationName}
+        subTitle="wants to perform the following actions:"
+      />
 
       <div
         className={clsx(
-          "w-full h-full flex-grow p-5",
-          "sm:border-x sm:border-b sm:border-gray-100",
-          "flex flex-col justify-between",
-          className,
+          "border border-gray-300 rounded-md",
+          "flex-grow h-full",
+          "p-3 mt-4 mb-16",
         )}
       >
-        <SDKApplicationMeta
-          applicationLogo={applicationLogo}
-          title={applicationName}
-          subTitle="wants to perform the following actions:"
-        />
-
-        <div
-          className={clsx(
-            "border border-gray-300 rounded-md",
-            "flex-grow h-full",
-            "p-3 mt-4 mb-16",
-          )}
-        >
-          {children}
-        </div>
-
-        <div
-          className={clsx(
-            "w-full grid grid-cols-2 gap-5",
-            successTimer !== -1 && "hidden",
-          )}
-        >
-          <Button
-            disabled={isLoading}
-            type="stroke"
-            onClick={onReject}
-            className="flex items-center justify-center"
-          >
-            Reject
-          </Button>
-          <Button
-            disabled={isLoading}
-            onClick={onApprove}
-            className="flex items-center justify-center"
-          >
-            Approve
-          </Button>
-        </div>
-        <Button
-          icon={
-            <img
-              src={successWhiteIcon}
-              alt="success-icon"
-              className={clsx("mr-2")}
-            />
-          }
-          className={clsx(
-            "flex items-center justify-center",
-            successTimer === -1 && "hidden",
-          )}
-        >
-          Success! Closing in {successTimer}
-        </Button>
+        {children}
       </div>
 
-      <SDKFooter />
-    </div>
+      <div
+        className={clsx(
+          "w-full grid grid-cols-2 gap-5",
+          successTimer !== -1 && "hidden",
+        )}
+      >
+        <Button
+          disabled={isLoading}
+          type="stroke"
+          onClick={onReject}
+          className="flex items-center justify-center"
+        >
+          Reject
+        </Button>
+        <Button
+          disabled={isLoading}
+          onClick={onApprove}
+          className="flex items-center justify-center"
+        >
+          Approve
+        </Button>
+      </div>
+      <Button
+        icon={
+          <img
+            src={successWhiteIcon}
+            alt="success-icon"
+            className={clsx("mr-2")}
+          />
+        }
+        className={clsx(
+          "flex items-center justify-center",
+          successTimer === -1 && "hidden",
+        )}
+      >
+        Success! Closing in {successTimer}
+      </Button>
+    </ScreenResponsive>
   )
 }

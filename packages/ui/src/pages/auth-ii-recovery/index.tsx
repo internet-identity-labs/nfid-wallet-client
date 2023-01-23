@@ -31,7 +31,7 @@ export const IIAuthRecovery: React.FC<AuthRecoveryIIProps> = ({
           alt="back"
           onClick={onBack}
         />
-        <p className="font-bold">Connect with recovery phrase</p>
+        <p className="text-lg font-bold">Connect with recovery phrase</p>
       </div>
       <p className="mt-4 text-sm">
         To connect your Internet Identity and continue, enter your Internet

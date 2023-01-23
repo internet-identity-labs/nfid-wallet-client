@@ -1,12 +1,22 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Tests CI
+name: Desktop Tests CI
 
 on:
   pull_request:
     branches: [main, current-release, release/*]
   workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
 
 jobs:
   check-secrets:
@@ -142,27 +152,81 @@ jobs:
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
 
-      - name: Generate HTML Report
+      - name: Caching allure-results
         if: always()
-        run: npx nx generate-cucumber-html-report nfid-frontend-e2e
-
-      - name: Final Test Reports
-        uses: actions/upload-artifact@v2
-        if: always()
+        uses: actions/cache@v3
         with:
-          name: wdio-report
-          path: apps/nfid-frontend-e2e/test/reporter
+          path: apps/nfid-frontend-e2e/allure-results
+          key: allure-results-${{github.RUN_ID}}
 
       - name: Upload Chrome logs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: chrome_debug.log
           path: apps/nfid-frontend-e2e/user-google-e2e/chrome_debug.log
 
-      - name: Upload build artefacts
-        uses: actions/upload-artifact@v2
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: dist
           path: dist
+
+  allure-report:
+    needs: e2e-tests
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      URL: ${{ github.event.pull_request.comments_url }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+    steps:
+      - name: Get Allure history
+        uses: actions/checkout@v3
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+      - uses: actions/cache@v3
+        with:
+          path: apps/nfid-frontend-e2e/allure-results
+          key: allure-results-${{github.RUN_ID}}
+
+      - name: Preparing the report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: apps/nfid-frontend-e2e/allure-results
+          gh_pages: gh-pages
+          allure_report: apps/nfid-frontend-e2e/allure-report
+          allure_history: apps/nfid-frontend-e2e/allure-history
+          keep_reports: 20
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: apps/nfid-frontend-e2e/allure-history
+
+      - name: Upload url to file
+        env:
+          target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
+        run: echo "$target_url" > "report_url.txt"
+      - name: Upload url to PR comments
+        run: |
+          printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
+          curl \
+            -X POST \
+            $URL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "$data"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ReportUrl
+          path: "report_url.txt"

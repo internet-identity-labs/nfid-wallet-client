@@ -49,23 +49,23 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAppMeta: "done.invoke.getAppMeta"
     assignAuthRequest: "done.invoke.getDataFromPath"
     assignAuthSession: "done.invoke.authenticate"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {}
   eventsCausingServices: {
     AuthenticationMachine: "done.state.auth-remote-sender.Start"
     getAppMeta: "xstate.init"
     getDataFromPath: "xstate.init"
     postRemoteDelegationService: "done.invoke.authenticate"
   }
-  eventsCausingGuards: {}
-  eventsCausingDelays: {}
   matchesStates:
     | "AuthenticationMachine"
     | "End"

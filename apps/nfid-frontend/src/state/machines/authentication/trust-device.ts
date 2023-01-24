@@ -56,7 +56,7 @@ export const TrustDeviceMachine =
                 onDone: [
                   {
                     cond: "bool",
-                    target: "#TrustDeviceMachine.CheckIframeSelect",
+                    target: "#TrustDeviceMachine.Select",
                   },
                   {
                     target: "SecurityKey",
@@ -74,7 +74,7 @@ export const TrustDeviceMachine =
                     target: "#TrustDeviceMachine.End",
                   },
                   {
-                    target: "#TrustDeviceMachine.CheckIframeSelect",
+                    target: "#TrustDeviceMachine.Select",
                   },
                 ],
               },
@@ -87,7 +87,7 @@ export const TrustDeviceMachine =
         Select: {
           on: {
             TRUST: {
-              target: "IframeSelect",
+              target: "CheckIframeSelect",
             },
             DONT_TRUST: {
               target: "End",
@@ -107,7 +107,7 @@ export const TrustDeviceMachine =
                 target: "IframeSelect",
               },
               {
-                target: "Select",
+                target: "Register",
               },
             ],
           },

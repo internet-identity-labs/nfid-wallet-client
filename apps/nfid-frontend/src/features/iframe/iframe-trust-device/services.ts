@@ -33,7 +33,7 @@ export const getIframeWebauthn = async () => {
   const w = window.open(
     `${NFID_PROVIDER_URL}/iframe/trust-device`,
     "iframeTrust",
-    `toolbar=0,location=0,menubar=0,width=390,height=490,
+    `toolbar=0,location=0,menubar=0,width=390,height=500,
     left=${(window.screen.width - 390) / 2},
     top=${(window.screen.height - 490) / 2}`,
   )
@@ -42,7 +42,8 @@ export const getIframeWebauthn = async () => {
 
   return new Promise((resolve) => {
     w?.addEventListener("message", async (e) => {
-      if ("ready" in e?.data)
+      if (!e?.data) return
+      if ("ready" in e.data)
         return w?.postMessage({ devices: usersAuthenticatorDevices })
 
       if (!("isDeviceTrusted" in e?.data)) return

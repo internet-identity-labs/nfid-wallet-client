@@ -17,7 +17,7 @@ export const IframeTrustDevice = ({
   isLoading = false,
 }: IIframeTrustDevice) => {
   return (
-    <BlurredLoader isLoading={isLoading}>
+    <BlurredLoader isLoading={isLoading} className="p-0">
       <p className="mb-4 text-xl font-bold">
         {isWebAuthN ? "Trust this device" : "Register security key"}
       </p>

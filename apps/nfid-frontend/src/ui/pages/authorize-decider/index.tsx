@@ -1,12 +1,7 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import {
-  anchorRules,
-  Button,
-  Input,
-  SDKApplicationMeta,
-} from "@nfid-frontend/ui"
+import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
 import MetamaskIcon from "frontend/assets/metamask.svg"
@@ -16,11 +11,11 @@ import {
   LoginEventHandler,
   SignInWithGoogle,
 } from "frontend/ui/atoms/button/signin-with-google"
-import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import QRCode from "./assets/qrcode.svg"
-import SecurityKey from "./assets/security-key.svg"
+import { ReactComponent as QRCode } from "./assets/qrcode.svg"
+import { ReactComponent as SecurityKey } from "./assets/security-key.svg"
+import { ReactComponent as TouchId } from "./assets/touch-id.svg"
 
 export interface AuthorizeAppUnknownDeviceProps {
   onSelectRemoteAuthorization: () => Promise<void> | void
@@ -161,7 +156,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             <IconButton
               title="iPhone, iPad, or Android device"
               subtitle="Use passkey from a device with a camera"
-              img={<img src={QRCode} alt="qrcode" />}
+              img={<QRCode />}
               onClick={onSelectRemoteAuthorization}
             />
           </div>
@@ -170,13 +165,13 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             <IconButton
               title="Platform auth on this device"
               subtitle="Use this device if previously registered"
-              img={<img src={TouchId} alt="touch-id" />}
+              img={<TouchId />}
               onClick={handleSubmit(handleSelectSameDeviceAuthorization)}
             />
             <IconButton
               title="Security key"
               subtitle="Use a previously registered security key"
-              img={<img src={SecurityKey} alt="touch-id" />}
+              img={<SecurityKey />}
               onClick={handleSubmit(handleSelectSecurityKeyAuthorization)}
             />
           </div>

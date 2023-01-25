@@ -106,7 +106,7 @@ export const DropdownSelect = ({
           "flex justify-between items-center",
           "cursor-pointer select-none",
           "active:outline active:outline-offset-1",
-          bordered && "border border-black-base",
+          bordered && "border border-black",
           isDropdownOpen && "border border-blue-600 bg-blue-50",
           disabled && "!border-none !bg-gray-100 !text-secondary",
           errorText && "!border border-red-600 !ring-2 !ring-red-100",

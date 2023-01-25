@@ -127,11 +127,11 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
           </span>
           <div
             className={clsx(
-              "w-full h-[1px] bg-black-base rounded-md mt-5",
+              "w-full h-[1px] bg-black rounded-md mt-5",
               errors.amount && "bg-red-600",
             )}
           />
-          <div className="flex items-center justify-between mt-2 text-secondary">
+          <div className="flex items-center justify-between mt-2 text-black">
             <p>
               Transfer fee: {tokenConfig.toPresentation(tokenConfig.fee)}{" "}
               {tokenConfig.value}
@@ -140,7 +140,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
               <span>Balance: </span>
               <Tooltip tip="Click to select full balance">
                 <span
-                  className="border-b border-dotted cursor-pointer border-black-base text-black"
+                  className="text-black border-b border-black border-dotted cursor-pointer"
                   id="full-amount-button"
                   onClick={setFullAmount}
                 >

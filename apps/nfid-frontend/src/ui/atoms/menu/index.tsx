@@ -51,7 +51,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
 
       {toggleMenu && (
         <div
-          className="fixed top-0 left-0 z-[11] block w-full h-screen bg-black-base bg-opacity-25 overflow-hidden"
+          className="fixed top-0 left-0 z-[11] block w-full h-screen bg-black bg-opacity-25 overflow-hidden"
           onClick={() => setToggleMenu(false)}
         />
       )}

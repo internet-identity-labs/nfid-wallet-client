@@ -39,7 +39,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
       <div>
         <div
           className={clsx(
-            "border-2 border-black-base rounded-t-md",
+            "border-2 border-black rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
             "w-full font-mono leading-[26px] p-2",
           )}
@@ -48,11 +48,11 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
         </div>
         <Button
           block
-          className="flex justify-center space-x-2 border-2 border-t-0 rounded-t-none border-black-base"
+          className="flex justify-center space-x-2 border-2 border-t-0 rounded-t-none border-black"
           onClick={copyToClipboard}
           id="copy-button"
         >
-          <CopyIcon className="text-black stroke-black-base" />
+          <CopyIcon className="text-black stroke-black" />
           <span>{copied ? "Copied" : "Copy"}</span>
         </Button>
 
@@ -60,7 +60,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
           <input
             type="checkbox"
             id="saved-checkbox"
-            className="w-5 h-5 border-2 rounded cursor-pointer border-black-base"
+            className="w-5 h-5 border-2 rounded cursor-pointer border-black"
             onChange={() => setIsSaved(!isSaved)}
             checked={isSaved}
           />

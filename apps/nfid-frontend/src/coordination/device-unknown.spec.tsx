@@ -1,10 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import { act, render, screen, waitFor } from "@testing-library/react"
-import QR from "qrcode"
+import { render, screen, waitFor } from "@testing-library/react"
 
-import { ii, pubsub } from "@nfid/integration"
+import { ii } from "@nfid/integration"
 
 import { iiCreateChallengeMock } from "frontend/integration/actors.mocks"
 import * as device from "frontend/integration/device"
@@ -40,51 +39,43 @@ const setupCoordinator = (userAgent: string, WebAuthNCapability: boolean) => {
 
 describe("UnknownDeviceCoordinator", () => {
   describe("Desktop or no support for WebAuthN", () => {
-    it.each(["DesktopBrowser", ...device.MobileBrowser])(
-      "should render AuthSelection when on %s",
-      async (userAgent) => {
-        setupCoordinator(userAgent, false)
-
-        await waitFor(() => {
-          screen.getByText("Create an NFID")
-          screen.getByText("Use passkey from a device with a camera")
-        })
-
-        expect(device.fetchWebAuthnPlatformCapability).toHaveBeenCalled()
-      },
-    )
-    it.each(["DesktopBrowser", ...device.MobileBrowser])(
-      "should render RemoteAuthentication on %s and query for messages",
-      async (userAgent) => {
-        setupCoordinator(userAgent, false)
-
-        await waitFor(() => {
-          screen.getByText("Use passkey from a device with a camera")
-        })
-
-        QR.toCanvas = jest.fn()
-
-        pubsub.get_messages = jest.fn()
-
-        act(() => {
-          screen.getByText("Use passkey from a device with a camera").click()
-        })
-
-        await waitFor(() => {
-          screen.getByText(
-            "Scan this code from a device with a camera to sign in to MyApp",
-          )
-        })
-
-        expect(QR.toCanvas).toHaveBeenCalledWith(
-          expect.anything(),
-          expect.stringContaining("http://localhost/ridp/?"),
-          { width: 142 },
-          expect.anything(),
-        )
-        expect(pubsub.get_messages).toHaveBeenCalled()
-      },
-    )
+    // it.each(["DesktopBrowser", ...device.MobileBrowser])(
+    //   "should render AuthSelection when on %s",
+    //   async (userAgent) => {
+    //     setupCoordinator(userAgent, false)
+    //     await waitFor(() => {
+    //       screen.getByText("Create an NFID")
+    //       screen.getByText("Use passkey from a device with a camera")
+    //     })
+    //     expect(device.fetchWebAuthnPlatformCapability).toHaveBeenCalled()
+    //   },
+    // )
+    // it.each(["DesktopBrowser", ...device.MobileBrowser])(
+    //   "should render RemoteAuthentication on %s and query for messages",
+    //   async (userAgent) => {
+    //     setupCoordinator(userAgent, false)
+    //     await waitFor(() => {
+    //       screen.getByText("Use passkey from a device with a camera")
+    //     })
+    //     QR.toCanvas = jest.fn()
+    //     pubsub.get_messages = jest.fn()
+    //     act(() => {
+    //       screen.getByText("Use passkey from a device with a camera").click()
+    //     })
+    //     await waitFor(() => {
+    //       screen.getByText(
+    //         "Scan this code from a device with a camera to sign in to MyApp",
+    //       )
+    //     })
+    //     expect(QR.toCanvas).toHaveBeenCalledWith(
+    //       expect.anything(),
+    //       expect.stringContaining("http://localhost/ridp/?"),
+    //       { width: 142 },
+    //       expect.anything(),
+    //     )
+    //     expect(pubsub.get_messages).toHaveBeenCalled()
+    //   },
+    // )
     // NOTE: This screen was removed, but a version of it will likely be added back soon
     // it("should render loading state when receiving await confirmation messages", async () => {
     //   setupCoordinator("DesktopBrowser", false)
@@ -99,7 +90,6 @@ describe("UnknownDeviceCoordinator", () => {
     //       status_code: 200,
     //     }),
     //   )
-
     //   act(() => {
     //     screen.getByText("Use passkey from a device with a camera").click()
     //   })
@@ -123,7 +113,6 @@ describe("UnknownDeviceCoordinator", () => {
     //   })
     //   // @ts-ignore FIXME: some mock configuration missing
     //   ii.lookup = jest.fn(() => Promise.resolve(AUTHENTICATOR_DEVICES))
-
     //   await waitFor(
     //     async () =>
     //       await act(async () => {

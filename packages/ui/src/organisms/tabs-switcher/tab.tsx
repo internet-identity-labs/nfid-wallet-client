@@ -11,7 +11,7 @@ const Tab: React.FC<ITab> = ({ isActive, onClick, children }) => {
     <div
       className={clsx(
         `pb-1.5 border-b-2 mr-0.5 cursor-pointer min-w-[150px]`,
-        isActive ? "border-blue-600" : "border-black-base",
+        isActive ? "border-blue-600" : "border-black",
       )}
       onClick={onClick}
     >

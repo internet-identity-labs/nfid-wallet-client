@@ -82,7 +82,7 @@ export const InputDropdown = ({
           "flex justify-between items-center",
           "cursor-text select-none",
           "active:outline active:outline-offset-1",
-          bordered && "border border-black-base",
+          bordered && "border border-black",
           isDropdownOpen && "border border-blue-600 bg-blue-50",
         )}
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}

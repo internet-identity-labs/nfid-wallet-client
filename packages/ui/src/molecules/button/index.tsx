@@ -45,29 +45,29 @@ export const Button: React.FC<ButtonProps> = ({
         isPrimary &&
           clsx(
             "text-white",
-            "hover:border-blue-500 focus:border-blue-600 active:border-blue-700 disabled:border-gray-300",
-            "bg-blue-600 hover:bg-blue-500 focus:bg-blue-600 active:bg-blue-700 disabled:bg-gray-300",
-            "hover:shadow-md hover:shadow-blue-700/40 disabled:shadow-none",
+            "focus:border-primaryButtonColor active:border-primaryButtonColor border-transparent",
+            "bg-primaryButtonColor focus:bg-primaryButtonColor active:bg-primaryButtonColor disabled:bg-primaryButtonColor/20",
+            "hover:shadow-md hover:shadow-primaryButtonColor/40 disabled:shadow-none",
           ),
         isSecondary &&
           clsx(
             "text-white",
-            "hover:border-gray-700 focus:border-black active:border-black disabled:border-gray-300",
-            "bg-black hover:bg-gray-700 hover:bg-black-hover focus:bg-black active:bg-black active:border-black disabled:bg-gray-300",
-            "hover:shadow-md hover:shadow-gray-700/40 disabled:shadow-none",
+            "hover:border-secondaryButtonColor disabled:border-secondaryButtonColor/50",
+            "bg-black hover:bg-secondaryButtonColor active:border-secondaryButtonColor disabled:bg-secondaryButtonColor/50",
+            "hover:shadow-md hover:shadow-secondaryButtonColor/40 disabled:shadow-none",
           ),
         isStroke &&
           clsx(
-            "text-black hover:text-white focus:text-white active:text-white disabled:text-gray-400",
-            "border-black hover:border-gray-100 disabled:border-gray-300",
-            "bg-white hover:bg-gray-700 focus:bg-black active:bg-black disabled:bg-white",
+            "text-black hover:text-white focus:text-white active:text-white disabled:text-secondary active:bg-secondaryButtonColor",
+            "border-secondaryButtonColor hover:border-secondaryButtonColor disabled:border-secondaryButtonColor/50",
+            "bg-transparent hover:bg-secondaryButtonColor disabled:bg-secondaryButtonColor/50 focus:bg-secondaryButtonColor",
             "hover:shadow-md disabled:shadow-none",
           ),
         isGhost &&
           clsx(
-            "text-blue hover:underline disabled:text-gray-400",
-            "border-transparent hover:border-gray-100 disabled:border-transparent",
-            "active:bg-gray-200 hover:bg-gray-100 disabled:bg-white",
+            "text-linkColor hover:underline disabled:text-secondary",
+            "border-transparent disabled:border-transparent",
+            "active:bg-linkColor/20 hover:bg-linkColor/10 disabled:bg-white",
           ),
         isRed &&
           clsx(

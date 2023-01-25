@@ -46,7 +46,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <div className={clsx("rounded-md", className)}>
         {labelText && (
           <Label
-            className={clsx("text-xs", inputProps.disabled && "!text-gray-400")}
+            className={clsx(
+              "text-xs",
+              inputProps.disabled && "!text-secondary",
+            )}
           >
             {labelText}
           </Label>
@@ -56,7 +59,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <div
               className={clsx(
                 "flex-shrink-0 absolute left-2 top-1/2 -translate-y-1/2 z-10",
-                inputProps.disabled && "text-gray-400",
+                inputProps.disabled && "text-secondary",
               )}
             >
               {icon}
@@ -67,8 +70,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={type}
             className={clsx(
               "flex-1 block w-full py-[7px]",
-              "placeholder:text-gray-400 placeholder:text-sm",
-              "disabled:bg-gray-200 disabled:text-gray-400 disabled:drop-shadow-none shadow-none",
+              "placeholder:text-secondary placeholder:text-sm",
+              "disabled:bg-gray-200 disabled:text-secondary disabled:drop-shadow-none shadow-none",
               "border-1 disabled:border-gray-200",
               "rounded-md",
               errorText || isErrorStyles
@@ -101,7 +104,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 className={clsx(
                   "bg-black bg-opacity-[0.04] h-full px-3 rounded-r-md",
                   "flex items-center flex-shrink-0",
-                  "text-sm text-gray-400",
+                  "text-sm text-secondary",
                 )}
               >
                 {innerText}
@@ -121,7 +124,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {helperText && !errorText && (
           <div
             id={`${id}-helper`}
-            className={clsx("mt-1 text-xs text-gray-400")}
+            className={clsx("mt-1 text-xs text-secondary")}
           >
             {helperText}
           </div>

@@ -95,7 +95,7 @@ export const DropdownSelect = ({
       <label
         className={clsx(
           "text-xs tracking-[0.16px] leading-4 mb-1",
-          "text-black-base",
+          "text-black",
         )}
       >
         {label}
@@ -108,7 +108,7 @@ export const DropdownSelect = ({
           "active:outline active:outline-offset-1",
           bordered && "border border-black-base",
           isDropdownOpen && "border border-blue-600 bg-blue-50",
-          disabled && "!border-none !bg-gray-100 !text-gray-400",
+          disabled && "!border-none !bg-gray-100 !text-secondary",
           errorText && "!border border-red-600 !ring-2 !ring-red-100",
         )}
         style={{ boxShadow: isDropdownOpen ? "0px 0px 2px #0E62FF" : "" }}

@@ -98,12 +98,12 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
   return (
     <>
       <div>
-        <div className="text-xs text-black-base h-[142px]">
+        <div className="text-xs text-black h-[142px]">
           <label htmlFor="amount">Amount to send</label>
           <div className="flex items-center mt-2.5">
             <input
               className={clsx(
-                "min-w-0 text-4xl placeholder:text-black-base",
+                "min-w-0 text-4xl placeholder:text-black",
                 "outline-none border-none h-[66px] focus:ring-0",
                 "p-0",
               )}
@@ -131,7 +131,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
               errors.amount && "bg-red-600",
             )}
           />
-          <div className="flex items-center justify-between mt-2 text-gray-400">
+          <div className="flex items-center justify-between mt-2 text-secondary">
             <p>
               Transfer fee: {tokenConfig.toPresentation(tokenConfig.fee)}{" "}
               {tokenConfig.value}
@@ -140,7 +140,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
               <span>Balance: </span>
               <Tooltip tip="Click to select full balance">
                 <span
-                  className="border-b border-dotted cursor-pointer border-black-base text-black-base"
+                  className="border-b border-dotted cursor-pointer border-black-base text-black"
                   id="full-amount-button"
                   onClick={setFullAmount}
                 >
@@ -153,7 +153,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
             </div>
           </div>
         </div>
-        <div className="mt-5 space-y-2 text-black-base">
+        <div className="mt-5 space-y-2 text-black">
           <DropdownSelect
             label="From"
             options={walletOptions ?? []}

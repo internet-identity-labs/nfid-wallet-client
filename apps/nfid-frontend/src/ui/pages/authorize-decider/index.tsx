@@ -1,7 +1,12 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
+import {
+  anchorRules,
+  Button,
+  Input,
+  SDKApplicationMeta,
+} from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
 import MetamaskIcon from "frontend/assets/metamask.svg"
@@ -178,7 +183,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         )}
 
         <p
-          className="py-4 text-sm text-center cursor-pointer text-blue"
+          className="py-4 text-sm text-center cursor-pointer text-linkColor"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

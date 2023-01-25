@@ -19,7 +19,7 @@ export const TransactionInfoRow = ({
         "items-center py-1",
       )}
     >
-      <div className={clsx("text-gray-400", titleClassName)}>{title}</div>
+      <div className={clsx("text-secondary", titleClassName)}>{title}</div>
       <div>{content}</div>
     </div>
   )

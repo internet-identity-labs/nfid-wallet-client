@@ -15,7 +15,7 @@ export const PencilIcon: React.FC<PencilIconProps> = ({
       fill="none"
       viewBox="0 0 24 24"
       className={clsx(
-        "text-gray-400 hover:text-black-base cursor-pointer",
+        "text-secondary hover:text-black cursor-pointer",
         className,
       )}
       onClick={onClick}

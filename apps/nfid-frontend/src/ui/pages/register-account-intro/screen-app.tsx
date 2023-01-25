@@ -126,7 +126,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         )}
 
         <p
-          className="py-4 text-sm text-center cursor-pointer text-blue"
+          className="py-4 text-sm text-center cursor-pointer text-linkColor"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

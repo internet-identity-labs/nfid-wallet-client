@@ -1,10 +1,9 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import ArrowBackIcon from "../../assets/arrow-back.svg"
+import { IconCmpArrow } from "../../atoms/icons"
 import { Button } from "../../molecules/button"
 import { Input } from "../../molecules/input"
-import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 
 export interface AuthConnectIIProps {
   onBack: () => void
@@ -28,12 +27,7 @@ export const IIAuthConnect: React.FC<AuthConnectIIProps> = ({
   return (
     <div>
       <div className="flex space-x-2">
-        <img
-          className="cursor-pointer"
-          src={ArrowBackIcon}
-          alt="back"
-          onClick={onBack}
-        />
+        <IconCmpArrow onClick={onBack} className="cursor-pointer" />
         <p className="text-lg font-bold">Connect Internet Identity</p>
       </div>
       <p className="mt-3 text-sm">

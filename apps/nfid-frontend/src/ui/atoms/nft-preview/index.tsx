@@ -75,14 +75,14 @@ const NFTPreview = (props: UserNFTDetails) => {
         <div className={clsx(`text-sm p-2.5 flex justify-between items-end`)}>
           <div>
             <div className={clsx(`font-bold`)}>{props.name}</div>
-            <div className={clsx(`text-gray-400 truncate w-[190px] mt-1`)}>
+            <div className={clsx(`text-secondary truncate w-[190px] mt-1`)}>
               {props.collection.name}
             </div>
           </div>
           <div className="relative w-6" ref={ref}>
             <IconCmpDots
               className={clsx(
-                "text-gray-400 cursor-pointer hover:text-black",
+                "text-secondary cursor-pointer hover:text-black",
                 "rotate-90",
               )}
               onClick={(e) => {

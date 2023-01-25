@@ -71,7 +71,7 @@ export const InputDropdown = ({
       <label
         className={clsx(
           "text-xs tracking-[0.16px] leading-4 mb-1",
-          "text-black-base",
+          "text-black",
         )}
       >
         {label}
@@ -127,7 +127,7 @@ export const InputDropdown = ({
                 htmlFor={option.value}
                 className={clsx(
                   "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
-                  "flex items-center text-sm text-black-base",
+                  "flex items-center text-sm text-black",
                 )}
                 onClick={() => selectDropdownOption(option)}
               >
@@ -139,7 +139,7 @@ export const InputDropdown = ({
                   />
                 )}
                 <span className="w-full">{option.label}</span>
-                <span className="text-gray-400 shrink-0">
+                <span className="text-secondary shrink-0">
                   {option.afterLabel}
                 </span>
               </label>

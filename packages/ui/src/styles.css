@@ -3,7 +3,17 @@
 * REFERENCE
 * https://www.joshwcomeau.com/css/custom-css-reset/
 */
-
+/* @layer base { */
+:root {
+  --color-frameBgColor: 255 255 255;
+  --color-frameBorderColor: 243 244 246;
+  --color-primaryButtonColor: 37 99 235;
+  --color-secondaryButtonColor: 0 0 0;
+  --color-mainTextColor: 0 0 0;
+  --color-secondaryTextColor: 156 163 175;
+  --color-linkColor: 37 99 235;
+}
+/* } */
 /*
   1. Use a more-intuitive box-sizing model.
 */

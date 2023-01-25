@@ -56,7 +56,7 @@ export const RequestTransferPage: React.FC<IRequestTransferPage> = ({
           <p className="text-sm">
             {amountICP}
             {" ICP "}
-            <span className="text-xs text-gray-400">≈ {amountUSD} </span>
+            <span className="text-xs text-secondary">≈ {amountUSD} </span>
           </p>
         </div>
       </SDKStatusbar>
@@ -74,7 +74,7 @@ export const RequestTransferPage: React.FC<IRequestTransferPage> = ({
       <p className="mt-2 mb-1 text-sm">To</p>
       <div
         className={clsx(
-          "h-10 text-gray-400 bg-gray-100 rounded-md",
+          "h-10 text-secondary bg-gray-100 rounded-md",
           "flex items-center justify-between px-2.5 space-x-2",
         )}
         id="account-id"
@@ -88,7 +88,7 @@ export const RequestTransferPage: React.FC<IRequestTransferPage> = ({
         />
       </div>
       {/* FIXME: support dip-20 */}
-      <div className="text-xs text-gray-400 mt-2.5">
+      <div className="text-xs text-secondary mt-2.5">
         Transfer fee: {WALLET_FEE} ICP
       </div>
     </ApproveTemplate>

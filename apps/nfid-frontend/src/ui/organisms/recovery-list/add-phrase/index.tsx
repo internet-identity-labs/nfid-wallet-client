@@ -52,7 +52,7 @@ const AddRecoveryPhraseModal: React.FC<IAddRecoveryPhraseModal> = ({
           onClick={copyToClipboard}
           id="copy-button"
         >
-          <CopyIcon className="text-black-base stroke-black-base" />
+          <CopyIcon className="text-black stroke-black-base" />
           <span>{copied ? "Copied" : "Copy"}</span>
         </Button>
 

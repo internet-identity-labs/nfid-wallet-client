@@ -72,7 +72,7 @@ export const VaultsTransactionsTableRow: React.FC<IVaultTransactionsDetails> = (
       <TableCell isLeft>{state.number}</TableCell>
       <TableCell>{state.ownerName}</TableCell>
       <TableCell
-        className="hover:text-gray-400"
+        className="hover:text-secondary"
         onClick={(e) => copyToClipboard(e, state.fromAddress)}
       >
         <Tooltip tip={"Copy to clipboard"}>
@@ -80,7 +80,7 @@ export const VaultsTransactionsTableRow: React.FC<IVaultTransactionsDetails> = (
         </Tooltip>
       </TableCell>
       <TableCell
-        className="hover:text-gray-400"
+        className="hover:text-secondary"
         onClick={(e) => copyToClipboard(e, state.toAddress)}
       >
         <Tooltip tip={"Copy to clipboard"}>
@@ -93,13 +93,13 @@ export const VaultsTransactionsTableRow: React.FC<IVaultTransactionsDetails> = (
       </TableCell>
       <TableCell>
         <p>{state.amountICP?.toString()} ICP</p>
-        <p className="text-xs text-gray-400">{state.amountUSD}</p>
+        <p className="text-xs text-secondary">{state.amountUSD}</p>
       </TableCell>
       <TableCell>
         <Badge type={VaultBadgeStatuses[state.status]}>{state.status}</Badge>
       </TableCell>
       <TableCell isRight>
-        <IconCmpArrowRight className="ml-auto text-gray-400" />
+        <IconCmpArrowRight className="ml-auto text-secondary" />
       </TableCell>
     </TableRow>
   )

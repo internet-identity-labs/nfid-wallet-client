@@ -10,7 +10,7 @@ export const ListItemChevron: React.FC<ListItemChevronProps> = ({
   onClick,
 }) => {
   return (
-    <div className={clsx("text-black-base p-1", className)} onClick={onClick}>
+    <div className={clsx("text-black p-1", className)} onClick={onClick}>
       <svg
         width="16"
         height="16"

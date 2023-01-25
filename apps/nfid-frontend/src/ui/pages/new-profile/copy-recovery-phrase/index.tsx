@@ -26,7 +26,7 @@ const ProfileCopyPhrasePage: React.FC<ProfileCopyPhrasePageProps> = ({
   return (
     <ProfileTemplate>
       <ProfileContainer>
-        <div className="p-4 border rounded-t border-black-base">
+        <div className="p-4 border rounded-t border-black">
           <P className="font-mono">{recoveryPhrase}</P>
         </div>
 

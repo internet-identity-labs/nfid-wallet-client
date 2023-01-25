@@ -88,7 +88,7 @@ export const VaultTransactionsDetailsPage = () => {
           content={
             <div>
               <p>{state?.amountICP} ICP</p>
-              <p className="text-xs text-gray-400">≈{state?.amountUSD}</p>
+              <p className="text-xs text-secondary">≈{state?.amountUSD}</p>
             </div>
           }
         />
@@ -121,7 +121,7 @@ export const VaultTransactionsDetailsPage = () => {
           titleClassName="align-top h-full mt-1"
           content={
             <Accordion
-              className="!p-0 text-gray-400"
+              className="!p-0 text-secondary"
               titleClassName="!text-sm font-normal text-black"
               detailsClassName="mt-2"
               title={`${

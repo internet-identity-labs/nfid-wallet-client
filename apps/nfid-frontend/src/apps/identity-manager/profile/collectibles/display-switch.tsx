@@ -20,7 +20,7 @@ export const DisplaySwitch = ({ state, setState }: IDisplaySwitch) => {
         )}
       >
         <IconCmpGrid
-          className={clsx("text-black", state !== "grid" && "!text-gray-400")}
+          className={clsx("text-black", state !== "grid" && "!text-secondary")}
         />
       </div>
       <div
@@ -33,7 +33,7 @@ export const DisplaySwitch = ({ state, setState }: IDisplaySwitch) => {
         )}
       >
         <IconCmpTable
-          className={clsx("text-black", state !== "table" && "!text-gray-400")}
+          className={clsx("text-black", state !== "table" && "!text-secondary")}
         />
       </div>
     </div>

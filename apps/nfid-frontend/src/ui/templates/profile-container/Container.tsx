@@ -34,7 +34,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
           </div>
         )}
         {subTitle && (
-          <div className="flex items-center justify-between mb-4 text-sm leading-5 text-gray-400">
+          <div className="flex items-center justify-between mb-4 text-sm leading-5 text-secondary">
             {subTitle}
           </div>
         )}

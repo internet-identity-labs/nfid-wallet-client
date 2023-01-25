@@ -29,7 +29,7 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
   return (
     <div
       className={clsx(
-        "text-black-base text-center",
+        "text-black text-center",
         "flex flex-grow flex-col justify-between",
       )}
     >

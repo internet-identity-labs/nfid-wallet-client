@@ -103,8 +103,8 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               "hover:opacity-70 transition-all cursor-pointer text-center",
               "text-sm font-semibold",
               isAccountsLimit
-                ? "text-gray-400 pointer-events-none"
-                : "text-blue",
+                ? "text-secondary pointer-events-none"
+                : "text-primaryButtonColor",
               !isAuthenticated && "hidden",
             )}
           >

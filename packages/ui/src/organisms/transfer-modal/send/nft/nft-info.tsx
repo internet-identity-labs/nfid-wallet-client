@@ -17,13 +17,13 @@ export const TransferSendNFTInfo = ({ nft }: { nft: NFT }) => {
         alt={nft.name}
       />
       <div className={clsx("text-xs space-y-2.5")}>
-        <p className={clsx("text-black-base font-semibold")}>
+        <p className={clsx("text-black font-semibold")}>
           {nft.collection.name}
         </p>
         <p className={clsx("text-lg font-bold text-blue")}>{nft.name}</p>
         <p
           className={clsx(
-            "font-semibold text-gray-400",
+            "font-semibold text-secondary",
             "flex items-center space-x-2",
           )}
         >

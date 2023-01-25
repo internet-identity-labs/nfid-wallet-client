@@ -21,7 +21,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs, defaultValue }) => {
           <RadixTabs.Trigger
             className={clsx(
               "radix-state-active:border-b-blue-600 radix-state-active:text-blue-600",
-              "pb-1.5 border-b-2 min-w-[150px] border-black-base",
+              "pb-1.5 border-b-2 min-w-[150px] border-black",
               "text-left font-bold",
             )}
             value={tab.value}
@@ -33,7 +33,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs, defaultValue }) => {
         ))}
         <RadixTabs.Trigger
           disabled
-          className={clsx("pb-1.5 border-b-2 border-black-base w-full")}
+          className={clsx("pb-1.5 border-b-2 border-black w-full")}
           value="empty"
         >
           &nbsp;

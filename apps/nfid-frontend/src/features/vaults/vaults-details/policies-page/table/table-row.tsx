@@ -35,7 +35,7 @@ export const VaultsPoliciesTableRow: React.FC<VaultsPoliciesTableRowProps> = ({
 }: VaultsPoliciesTableRowProps) => {
   return (
     <TableRow
-      className={clsx(isArchived && "text-gray-400 pointer-events-none")}
+      className={clsx(isArchived && "text-secondary pointer-events-none")}
       id={`policy_row`}
     >
       <TableCell isLeft>{number}</TableCell>

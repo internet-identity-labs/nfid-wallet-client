@@ -15,7 +15,7 @@ export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
     <div
       className={clsx(
         "flex items-center space-x-1 pl-2 pr-0.5 py-0.5",
-        "border border-black-base rounded-full",
+        "border border-black rounded-full",
         "w-max",
       )}
     >

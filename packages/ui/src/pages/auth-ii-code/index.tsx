@@ -38,7 +38,7 @@ export const IIAuthCode = ({
             <Copy
               value={secureCode}
               className="h-[18px] flex-shrink-0"
-              iconClassName="text-gray-400"
+              iconClassName="text-secondary"
               copyTitle="Click to copy"
             />
           </div>

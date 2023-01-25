@@ -55,7 +55,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       <ProfileContainer title="Your tokens" showChildrenPadding={false}>
         <Loader isLoading={!tokens.length} />
         <table className={clsx("text-left w-full hidden sm:table")}>
-          <thead className={clsx("border-b border-black-base h-16")}>
+          <thead className={clsx("border-b border-black h-16")}>
             <tr className={clsx("font-bold text-sm leading-5")}>
               <th className="pl-5 sm:pl-[30px]">Name</th>
               <th>Token balance</th>

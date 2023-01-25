@@ -7448,6 +7448,20 @@
     import-meta-resolve "^2.1.0"
     read-pkg-up "^9.1.0"
 
+"@wdio/config@8.2.3":
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/@wdio/config/-/config-8.2.3.tgz#07d65f777ae5a93845a6cc8a42361abe01f16dcf"
+  integrity sha512-bNi9aiYGjHZd2KtR9a7xuz49VKAY9YFFaq6bvrPQZfNYHvKvwZZzmWBgocqT95AxxzBFv/Vmh9AJWE/Z0nw0tQ==
+  dependencies:
+    "@wdio/logger" "8.1.0"
+    "@wdio/types" "8.1.2"
+    "@wdio/utils" "8.2.3"
+    decamelize "^6.0.0"
+    deepmerge-ts "^4.2.2"
+    glob "^8.0.3"
+    import-meta-resolve "^2.1.0"
+    read-pkg-up "^9.1.0"
+
 "@wdio/cucumber-framework@7.23.0":
   version "7.23.0"
   resolved "https://registry.yarnpkg.com/@wdio/cucumber-framework/-/cucumber-framework-7.23.0.tgz#78c25814f4d09c6a1c700b8e6d63454466ee0c37"
@@ -7537,6 +7551,16 @@
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-8.0.0.tgz#fa464f815df6a1d38737460d7c43432e76b1deef"
   integrity sha512-QEBPZoFQhWqqIYmhp8Wa+HhvMrH2Yy0xbD3MPOibkFwp9Tn8Si7oDxbnWqzcPiukLWcb4E/QlgE5f3IM5BrAPQ==
+  dependencies:
+    chalk "^5.1.2"
+    loglevel "^1.6.0"
+    loglevel-plugin-prefix "^0.8.4"
+    strip-ansi "^6.0.0"
+
+"@wdio/logger@8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-8.1.0.tgz#aaefce7da066a477249191aec8e9caa8581aeb33"
+  integrity sha512-QRC5b7FF4JIYUCqggnVA0sZ80TwIUFN9JyBSbuGuMxaSLSLujSo7WfuSrnQXVvsRbnJ16wWwJWYigfLkxOW86Q==
   dependencies:
     chalk "^5.1.2"
     loglevel "^1.6.0"
@@ -7712,6 +7736,13 @@
   dependencies:
     "@types/node" "^18.0.0"
 
+"@wdio/types@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-8.1.2.tgz#6221eae9e6665a4fcced83a37f4f4fa8c9b1c254"
+  integrity sha512-k2I/u08Ljtl7i6i+ANSo7ghPRsdTdJfwl3j8jFSzO98IwOqcmVItC3ysmiuVSlSrbOUljlmo0uohIpiTZHkyKw==
+  dependencies:
+    "@types/node" "^18.0.0"
+
 "@wdio/utils@7.16.14":
   version "7.16.14"
   resolved "https://registry.npmjs.org/@wdio/utils/-/utils-7.16.14.tgz"
@@ -7746,6 +7777,16 @@
   dependencies:
     "@wdio/logger" "8.0.0"
     "@wdio/types" "8.0.0"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@8.2.3":
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-8.2.3.tgz#51ca1944c4e1c2e0c2920d67589a4a1658b0e6cb"
+  integrity sha512-/+LpYDhPCFJAVLAVutIW3NqA1B26u/ot6f/nMQs4c/CIwOq4jzgLCHhzNtIhErYqgPLvre+fUAEa9uj1Zot+dg==
+  dependencies:
+    "@wdio/logger" "8.1.0"
+    "@wdio/types" "8.1.2"
+    import-meta-resolve "^2.2.0"
     p-iteration "^1.1.8"
 
 "@web3modal/core@2.0.0-beta.10":
@@ -15228,10 +15269,10 @@ import-local@^3.0.2:
     pkg-dir "^4.2.0"
     resolve-cwd "^3.0.0"
 
-import-meta-resolve@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-2.2.0.tgz#701aa29a044954bd135214049294745ac70dd607"
-  integrity sha512-CpPOtiCHxP9HdtDM5F45tNiAe66Cqlv3f5uHoJjt+KlaLrUh9/Wz9vepADZ78SlqEo62aDWZtj9ydMGXV+CPnw==
+import-meta-resolve@^2.1.0, import-meta-resolve@^2.2.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-2.2.1.tgz#80fdeddbc15d7f3992c37425023ffb4aca7cb583"
+  integrity sha512-C6lLL7EJPY44kBvA80gq4uMsVFw5x3oSKfuMl1cuZ2RkI5+UJqQXgn+6hlUew0y4ig7Ypt4CObAAIzU53Nfpuw==
 
 imurmurhash@^0.1.4:
   version "0.1.4"

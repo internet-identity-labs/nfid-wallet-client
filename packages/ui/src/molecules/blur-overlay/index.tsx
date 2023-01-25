@@ -11,7 +11,7 @@ export const BlurOverlay: React.FC<BlurOverlayProps> = ({
     <div
       className={clsx("", className)}
       style={{
-        background: "rgba(255, 255, 255, 0.1)",
+        background: "rgba(255, 255, 255, 1)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
       }}

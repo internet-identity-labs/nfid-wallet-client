@@ -105,7 +105,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
         subTitle={
           showAdvancedOptions
             ? `Sign in to ${applicationName} with your passkey`
-            : `to continue to ${applicationName}`
+            : `to continue to ${applicationName ?? "the application"}`
         }
       />
       <div

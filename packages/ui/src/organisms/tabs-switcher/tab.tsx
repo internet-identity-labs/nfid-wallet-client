@@ -15,12 +15,7 @@ const Tab: React.FC<ITab> = ({ isActive, onClick, children }) => {
       )}
       onClick={onClick}
     >
-      <div
-        className={clsx(
-          "font-bold",
-          isActive ? "text-blue" : "text-black-base",
-        )}
-      >
+      <div className={clsx("font-bold", isActive ? "text-blue" : "text-black")}>
         {children}
       </div>
     </div>

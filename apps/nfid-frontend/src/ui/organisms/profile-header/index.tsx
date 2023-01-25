@@ -90,7 +90,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                   </div>
                 }
                 details={
-                  <div className="text-sm font-light text-black-base pl-[60px]">
+                  <div className="text-sm font-light text-black pl-[60px]">
                     <div
                       className="flex items-center h-10"
                       onClick={() => navigate(`/faq`)}

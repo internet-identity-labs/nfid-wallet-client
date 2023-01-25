@@ -95,13 +95,13 @@ export const DeviceRaw: React.FC<DeviceRawProps> = ({
     <div
       id={id}
       className={clsx(
-        "w-full py-[10px] px-4 border border-gray-200 rounded-md",
-        "hover:bg-blue-50 hover:border-blue-500 cursor-pointer transition-all",
+        "w-full py-[10px] px-4 border border-primaryButtonColor/30 rounded-md",
+        "hover:bg-primaryButtonColor/10 hover:border-primaryButtonColor/50 cursor-pointer transition-all",
       )}
       onClick={handler}
     >
       <p className="text-sm">{title}</p>
-      <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>
+      <p className="mt-0.5 text-xs text-secondary">{subtitle}</p>
     </div>
   )
 }

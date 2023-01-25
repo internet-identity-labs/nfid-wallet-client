@@ -116,7 +116,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     </div>
                   }
                   details={
-                    <div className="text-sm font-light text-black-base pl-[60px]">
+                    <div className="text-sm font-light text-black pl-[60px]">
                       <div
                         className="flex items-center h-10"
                         onClick={() =>
@@ -178,7 +178,7 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
       <div className={clsx("hidden space-x-10 sm:flex")}>
         <Scrollspy
           className="items-center hidden space-x-10 font-medium md:flex"
-          currentClassName="text-black-base hover:text-black-base hover:no-underline"
+          currentClassName="text-black hover:text-black hover:no-underline"
           items={NAV_ITEMS.map((i) => i.to)}
         >
           {NAV_ITEMS.map((item, index) => (

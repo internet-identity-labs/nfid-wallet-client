@@ -274,7 +274,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
             </div>
           </div>
         </ProfileContainer>
-        <p className="text-sm text-center text-gray-400 h-[50px] leading-[50px]">
+        <p className="text-sm text-center text-secondary h-[50px] leading-[50px]">
           {tokens.length} items
         </p>
         {!tokens.length ? (

@@ -22,7 +22,7 @@ export const DropdownOption = ({
       htmlFor={option.value}
       className={clsx(
         "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
-        "flex items-center text-sm text-black-base",
+        "flex items-center text-sm text-black",
         option.disabled && "pointer-events-none !text-gray-300",
       )}
     >
@@ -40,7 +40,7 @@ export const DropdownOption = ({
         />
       )}
       <span className="w-full">{option.label}</span>
-      <span className="text-gray-400 whitespace-nowrap">
+      <span className="text-secondary whitespace-nowrap">
         {option.afterLabel}
       </span>
     </label>

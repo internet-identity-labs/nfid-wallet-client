@@ -114,6 +114,7 @@ export { ReactComponent as IconCmpOut } from "./out.svg"
 export { ReactComponent as IconCmpTable } from "./table.svg"
 export { ReactComponent as IconCmpGrid } from "./grid.svg"
 export { ReactComponent as IconCmpBook } from "./book.svg"
+export { ReactComponent as IconCmpNFIDWallet } from "./nfid-wallet.svg"
 
 // png
 export { IconMetamask } from "./metamask"

@@ -11,7 +11,7 @@ export const EmptyCard = ({ icon, description, className }: IEmptyCard) => {
     <div
       className={clsx(
         "flex flex-col items-center justify-center w-full h-full",
-        "text-gray-400",
+        "text-secondary",
         className,
       )}
     >

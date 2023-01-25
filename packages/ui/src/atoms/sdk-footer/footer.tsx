@@ -1,9 +1,9 @@
-import NFIDWallet from "../../assets/nfid-wallet.svg"
+import { IconCmpNFIDWallet } from "../icons"
 
 export const SDKFooter = () => {
   return (
     <div className="flex items-center justify-between w-full mt-6">
-      <div className="flex text-xs font-medium text-gray-400 space-x-2.5">
+      <div className="flex text-xs font-medium text-secondary space-x-2.5">
         <a
           href="https://docs.nfid.one/legal/terms"
           target="_blank"
@@ -21,7 +21,9 @@ export const SDKFooter = () => {
           Privacy policy
         </a>
       </div>
-      <img src={NFIDWallet} alt="NFIDWallet" />
+
+      <IconCmpNFIDWallet className="text-secondary" />
+      {/* <img className="text-secondary" src={NFIDWallet} alt="NFIDWallet" /> */}
     </div>
   )
 }

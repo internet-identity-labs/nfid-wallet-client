@@ -30,7 +30,7 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
           id={id}
           name={name}
           value={value}
-          className="w-5 h-5 hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black-base"
+          className="w-5 h-5 hover:ring-2 hover:ring-blue-200 focus:ring-2 focus:ring-offset-2 focus:ring-black"
           {...props}
         />
         <Label htmlFor={id} className="ml-3 !mb-0 cursor-pointer">

@@ -89,10 +89,7 @@ export const ModalAdvanced: React.FC<ModalAdvancedProps> = ({
         </div>
       </div>
       <div
-        className={clsx(
-          "fixed inset-0 z-40 bg-black-base",
-          backgroundClassnames,
-        )}
+        className={clsx("fixed inset-0 z-40 bg-black", backgroundClassnames)}
       ></div>
     </>
   )

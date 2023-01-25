@@ -25,7 +25,7 @@ const RecoveryPhraseDeleteModal: React.FC<IRecoveryPhraseDeleteModal> = ({
         <textarea
           name="recoveryPhrase"
           className={clsx(
-            "border border-black-base rounded-t-md",
+            "border border-black rounded-t-md",
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 font-mono leading-[26px]",
           )}

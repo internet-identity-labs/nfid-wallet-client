@@ -75,7 +75,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
         {filteredData.length ? (
           <>
             <table className={clsx("text-left w-full mb-16 sm:mb-0")}>
-              <thead className={clsx("border-b border-black-base h-16")}>
+              <thead className={clsx("border-b border-black h-16")}>
                 <tr className={clsx("font-bold text-sm leading-5")}>
                   <th className="pl-4 w-[285px]">Date</th>
                   <th className="w-[95px]">Asset</th>

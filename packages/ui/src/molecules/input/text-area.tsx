@@ -34,7 +34,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
             "shadow-sm text-black my-1 block w-full text-sm border rounded-md font-mono bg-transparent",
             errorText
               ? "active:bg-transparent active:border-red-base !border-red-base box-shadow-red focus:ring-red-base"
-              : "focus:ring-black-base focus:border-black-base border-black-base",
+              : "focus:ring-black focus:border-black border-black",
           )}
           {...props}
         />

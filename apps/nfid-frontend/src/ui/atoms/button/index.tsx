@@ -46,8 +46,7 @@ export const Button = <T extends React.ElementType = "button">({
         "btn",
         !disabled && "cursor-pointer",
         text && "btn-text",
-        secondary &&
-          "btn-secondary hover:bg-black-hover focus:ring-black-base ",
+        secondary && "btn-secondary hover:bg-black-hover focus:ring-black ",
         stroke &&
           "btn-stroke hover:bg-black-hover !focus:ring-black-hover focus:bg-black-hover",
         large && "btn-large",

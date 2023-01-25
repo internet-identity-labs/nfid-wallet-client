@@ -50,7 +50,6 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
     })
   }, [styleConfig])
 
-  // to continue to
   // icon button borders
 
   return (

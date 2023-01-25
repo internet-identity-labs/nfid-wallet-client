@@ -28,7 +28,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
         className,
       )}
     >
-      <div className="w-[28px]">{img}</div>
+      <div className="w-[28px] text-linkColor">{img}</div>
       {title && subtitle && (
         <div className={clsx("ml-[9px]")}>
           <p className="text-sm">{title}</p>

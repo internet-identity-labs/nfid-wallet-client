@@ -61,7 +61,7 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
         ) : (
           <TransferSendNFTPlaceholder />
         )}
-        <div className="mt-5 space-y-2 text-black-base">
+        <div className="mt-5 space-y-2 text-black">
           <DropdownSelect
             placeholder="Choose NFT"
             label="NFT to transfer"

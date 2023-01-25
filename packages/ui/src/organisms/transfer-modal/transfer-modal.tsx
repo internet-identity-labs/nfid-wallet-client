@@ -66,7 +66,7 @@ export const TransferModal: React.FC<ITransferModal> = ({
   return (
     <div
       className={clsx(
-        "rounded-xl shadow-lg p-5 text-gray-400",
+        "rounded-xl shadow-lg p-5 text-secondary",
         "z-20 bg-white absolute flex flex-col",
         "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
         "w-[95%] sm:w-[420px] h-[510px]",

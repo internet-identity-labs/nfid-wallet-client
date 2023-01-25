@@ -34,7 +34,7 @@ const DefaultTemplate: Story<TableProps> = (args) => (
       <TableCell centered>2</TableCell>
       <TableCell>Some date</TableCell>
       <TableCell isRight>
-        <IconCmpArrowRight className="text-gray-400" />
+        <IconCmpArrowRight className="text-secondary" />
       </TableCell>
     </TableRow>
   </Table>

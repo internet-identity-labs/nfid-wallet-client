@@ -61,7 +61,7 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
                   <p className="text-sm font-semibold">
                     View your Web3 balance
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-secondary">
                     This site will see tokens and history from your selected
                     accounts
                   </p>

@@ -40,7 +40,7 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
 
   return (
     <div className="flex flex-col flex-grow">
-      <div className="flex flex-col space-y-2.5 text-black-base">
+      <div className="flex flex-col space-y-2.5 text-black">
         <DropdownSelect
           label="Select your wallet"
           options={walletOptions ?? []}
@@ -56,10 +56,10 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
         />
 
         <div>
-          <p className="mb-1 text-xs text-gray-400">Account ID</p>
+          <p className="mb-1 text-xs text-secondary">Account ID</p>
           <div
             className={clsx(
-              "h-[40px] text-gray-400 bg-gray-100 rounded-md",
+              "h-[40px] text-secondary bg-gray-100 rounded-md",
               "flex items-center justify-between px-2.5 space-x-2",
             )}
             id="account-id"
@@ -74,10 +74,10 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
           </div>
         </div>
         <div className={clsx(selectedWallet?.isVaultWallet && "hidden")}>
-          <p className="mb-1 text-xs text-gray-400">Principal ID</p>
+          <p className="mb-1 text-xs text-secondary">Principal ID</p>
           <div
             className={clsx(
-              "h-[40px] text-gray-400 bg-gray-100 rounded-md",
+              "h-[40px] text-secondary bg-gray-100 rounded-md",
               "flex items-center justify-between px-2.5 space-x-2",
             )}
             id="principal-id"

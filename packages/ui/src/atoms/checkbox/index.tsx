@@ -21,7 +21,7 @@ export const Checkbox = ({
     <div className="flex items-center space-x-2">
       <input
         className={clsx(
-          "rounded-[3px] h-[18px] w-[18px] border border-black-base",
+          "rounded-[3px] h-[18px] w-[18px] border border-black",
           className,
         )}
         type="checkbox"

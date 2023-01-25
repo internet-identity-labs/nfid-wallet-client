@@ -36,7 +36,7 @@ export const TokenDetailBalance: React.FC<TokenDetailBalanceProps> = ({
       </div>
       <div className="flex-grow">
         <div className="text-sm font-semibold">{label}</div>
-        <div className="text-xs text-gray-400">{token}</div>
+        <div className="text-xs text-secondary">{token}</div>
       </div>
       <div className="text-sm font-semibold">
         {tokenBalance && tokenConfig

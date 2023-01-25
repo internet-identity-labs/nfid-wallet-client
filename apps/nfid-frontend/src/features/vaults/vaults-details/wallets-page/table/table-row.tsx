@@ -63,7 +63,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
 
   return (
     <TableRow
-      className={clsx(isArchived && "text-gray-400 pointer-events-none")}
+      className={clsx(isArchived && "text-secondary pointer-events-none")}
       id={`wallet_${name}`}
     >
       <TableCell isLeft>{number}</TableCell>

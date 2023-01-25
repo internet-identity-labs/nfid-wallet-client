@@ -25,7 +25,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
     >
       <div
         className={clsx(
-          "text-center text-black-base",
+          "text-center text-black",
           "font-semibold text-xs leading-7",
         )}
       >
@@ -33,7 +33,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
       </div>
       <div
         className={clsx(
-          "text-center text-black-base",
+          "text-center text-black",
           "font-semibold text-xs leading-7",
         )}
       >

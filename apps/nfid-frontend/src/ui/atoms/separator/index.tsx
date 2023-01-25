@@ -12,7 +12,7 @@ export const Separator: React.FC<SeparatorProps> = ({
   return (
     <div
       className={clsx(
-        "flex items-center justify-between w-full text-sm text-gray-400 h-9",
+        "flex items-center justify-between w-full text-sm text-secondary h-9",
         className,
       )}
     >

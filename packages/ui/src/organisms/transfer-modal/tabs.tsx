@@ -27,7 +27,7 @@ export const TransferModalTabs: React.FC<ITransferModalTabs> = ({
             <div
               className={clsx(
                 tabClassNames,
-                activeTab === "Send" ? "bg-blue-600" : "bg-black-base",
+                activeTab === "Send" ? "bg-blue-600" : "bg-black",
               )}
               style={{
                 WebkitMask: `url(${ArrowSend})`,
@@ -45,7 +45,7 @@ export const TransferModalTabs: React.FC<ITransferModalTabs> = ({
             <div
               className={clsx(
                 tabClassNames,
-                activeTab === "Receive" ? "bg-blue-600" : "bg-black-base",
+                activeTab === "Receive" ? "bg-blue-600" : "bg-black",
               )}
               style={{
                 WebkitMask: `url(${ArrowReceive})`,

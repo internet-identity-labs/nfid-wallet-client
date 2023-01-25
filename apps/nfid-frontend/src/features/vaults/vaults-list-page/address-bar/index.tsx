@@ -45,7 +45,7 @@ export const VaultAddressBar: React.FC<VaultAddressBarProps> = () => {
             leadingChars={20}
             trailingChars={3}
           />
-          <Copy className="text-gray-400" value={address ?? ""} />
+          <Copy className="text-secondary" value={address ?? ""} />
         </div>
       </div>
     </div>

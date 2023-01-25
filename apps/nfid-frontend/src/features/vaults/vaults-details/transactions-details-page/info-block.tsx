@@ -22,7 +22,7 @@ export const VaultTransactionInfo = ({
         <p className="font-bold tracking-[0.01em] mb-3">{title}</p>
         <div className="flex items-center">
           <CenterEllipsis value={value} leadingChars={20} trailingChars={10} />
-          <Copy className="ml-3 text-gray-400" value={value} />
+          <Copy className="ml-3 text-secondary" value={value} />
         </div>
       </div>
       <div

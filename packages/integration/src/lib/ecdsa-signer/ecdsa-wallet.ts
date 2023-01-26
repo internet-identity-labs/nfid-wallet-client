@@ -9,8 +9,11 @@ import {UnsignedTransaction} from "ethers-ts"
 import BN = require("bn.js")
 
 const ABI_721 = [
+  'function setApprovalForAll(address operator, bool _approved)',
   'function safeTransferFrom(address from, address to, uint256 tokenId)',
-  'function transfer(address from, address to, uint256 tokenId)'
+  'function transfer(address from, address to, uint256 tokenId)',
+  'function approve(address to, uint256 tokenId)',
+  'function isApprovedForAll(address owner, address operator)'
 ];
 
 export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
@@ -62,6 +65,24 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
     const connectedWallet = contract.connect(this)
     return connectedWallet["safeTransferFrom"](this.getAddress(), to, tokenId);
+  }
+
+  async approve(to: string, contractAddress: string, tokenId: string) {
+    const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
+    const connectedWallet = contract.connect(this)
+    return connectedWallet["approve"](to, tokenId);
+  }
+
+  async setApprovalForAll(operator: string, contractAddress: string, approved: boolean) {
+    const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
+    const connectedWallet = contract.connect(this)
+    return connectedWallet["setApprovalForAll"](operator, approved);
+  }
+
+  async isApprovedForAll(owner: string, contractAddress: string, operator: string) {
+    const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
+    const connectedWallet = contract.connect(this)
+    return connectedWallet["isApprovedForAll"](owner, operator);
   }
 
   connect(provider: Provider): Signer {

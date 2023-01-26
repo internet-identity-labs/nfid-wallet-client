@@ -157,7 +157,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: apps/nfid-frontend-e2e/allure-results
-          key: allure-results-${{github.RUN_ID}}
+          key: allure-results-${{github.RUN_ID}}-${{date +%s}}
 
       - name: Upload Chrome logs
         uses: actions/upload-artifact@v3
@@ -218,6 +218,7 @@ jobs:
         run: echo "$target_url" > "report_url.txt"
       - name: Upload url to PR comments
         run: |
+          if [ -n "${URL}" ]; then
           printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
           curl \
             -X POST \
@@ -226,6 +227,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -d "$data"
+          fi
       - uses: actions/upload-artifact@v3
         with:
           name: ReportUrl

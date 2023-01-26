@@ -6,7 +6,7 @@ import {arrayify, hashMessage, keccak256, resolveProperties, splitSignature} fro
 import {hexZeroPad, joinSignature} from "@ethersproject/bytes"
 import {serialize} from "@ethersproject/transactions"
 import {UnsignedTransaction} from "ethers-ts"
-import BN = require("bn.js")
+import * as BN from "bn.js"
 
 const ABI_721 = [
   'function setApprovalForAll(address operator, bool _approved)',
@@ -102,10 +102,8 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     // Compute recoveryParam from v
     const recoveryParam: number = 1 - (v % 2)
     return {
-      // @ts-ignore
       r: new BN(new Uint8Array(signature.slice(0, 32))),
       recoveryParam: recoveryParam,
-      // @ts-ignore
       s: new BN(new Uint8Array(signature.slice(32, 64))),
     }
   }

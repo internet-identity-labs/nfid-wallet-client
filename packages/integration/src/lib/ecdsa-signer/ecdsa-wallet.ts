@@ -6,7 +6,7 @@ import {arrayify, hashMessage, keccak256, resolveProperties, splitSignature} fro
 import {hexZeroPad, joinSignature} from "@ethersproject/bytes"
 import {serialize} from "@ethersproject/transactions"
 import {UnsignedTransaction} from "ethers-ts"
-import { BN } from "bn.js"
+import BN = require("bn.js")
 import {TypedDataSigner} from "@ethersproject/abstract-signer/src.ts";
 
 const ABI_721 = [

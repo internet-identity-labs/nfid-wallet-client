@@ -23,8 +23,8 @@ export const IFrame: React.FC<IFrameProps> = ({ className, src, onLoad }) => {
       )}
       src={src}
       frameBorder="0"
-      title="iiIdpWindow"
-      name="iiIdpWindow"
+      title="nfidIdpWindow"
+      name="nfidIdpWindow"
       allow="publickey-credentials-get"
       onLoad={handleOnLoad}
     />

@@ -145,8 +145,8 @@ jobs:
 
       - name: Running E2E test
         run: |
+          npx nx clean nfid-frontend-e2e ||
           npx env-cmd -f .env.staging nx test:e2e nfid-frontend-e2e
-          # npx nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
@@ -157,7 +157,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: apps/nfid-frontend-e2e/allure-results
-          key: allure-results-${{github.RUN_ID}}-${{date +%s}}
+          key: allure-results-${{github.RUN_ID}}
 
       - name: Upload Chrome logs
         uses: actions/upload-artifact@v3

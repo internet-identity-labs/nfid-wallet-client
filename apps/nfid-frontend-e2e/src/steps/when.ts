@@ -1,5 +1,8 @@
 import { When } from "@cucumber/cucumber"
 
+import HomePage from "../pages/home-page"
+import Profile from "../pages/profile"
+
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
 import closeLastOpenedWindow from "./support/action/closeLastOpenedWindow"
@@ -16,6 +19,19 @@ import selectOptionByIndex from "./support/action/selectOptionByIndex"
 import setCookie from "./support/action/setCookie"
 import setInputField from "./support/action/setInputField"
 import setPromptText from "./support/action/setPromptText"
+
+When(/^I enter a captcha$/, async () => {
+  await HomePage.captchaPass();
+})
+
+When(/^It log's me in$/, async () => {
+  await HomePage.justLogMeIn();
+  await HomePage.waitForLoaderDisappear();
+})
+
+When(/^I open profile menu$/, async () => {
+  await Profile.openProfileMenu();
+})
 
 When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)
 

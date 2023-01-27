@@ -30,6 +30,7 @@ export const PageAuthenticationIframe = () => {
         console.error(error)
       },
       identityProvider: `${NFID_PROVIDER_URL}/authenticate`,
+      idpWindowName: "nfidIdpWindow",
     })
   }, [])
 

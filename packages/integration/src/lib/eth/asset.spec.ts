@@ -17,7 +17,9 @@ describe("Asset", () => {
     const tokenId =
       "88260187566799326202913268841041605580353496351673437472672373155789474365442"
     const itemId = `ETHEREUM:0xd8560c88d1dc85f9ed05b25878e366c49b68bef9:${tokenId}`
-    const activities: Activities = await EthereumAsset.getActivitiesByItem(itemId)
+    const activities: Activities = await EthereumAsset.getActivitiesByItem(
+      itemId,
+    )
     expect(activities.activities[0]).toEqual(
       expect.objectContaining({
         tokenId,

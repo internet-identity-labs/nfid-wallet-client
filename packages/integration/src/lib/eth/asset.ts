@@ -6,7 +6,10 @@ import {
   UserActivityType,
 } from "@rarible/api-client"
 import { Blockchain } from "@rarible/api-client"
-import { convertEthereumToUnionAddress, EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
+import {
+  convertEthereumToUnionAddress,
+  EVMBlockchain,
+} from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { toCurrencyId, UnionAddress } from "@rarible/types"
 import { toBn, BigNumber } from "@rarible/utils"
 
@@ -18,7 +21,7 @@ const config = {
   blockchain: Blockchain.ETHEREUM as EVMBlockchain,
   mainnet: "https://ethereum.publicnode.com",
   testnet: "https://ethereum-goerli-rpc.allthatnode.com",
-  currency: "ETHEREUM:0x0000000000000000000000000000000000000000"
+  currency: "ETHEREUM:0x0000000000000000000000000000000000000000",
 }
 
 const net = "production" == FRONTEND_MODE ? config.mainnet : config.testnet
@@ -110,7 +113,9 @@ export const EthereumAsset: Asset = {
       config.blockchain,
     )
     const [balance, currencyRate] = await Promise.all([
-      rarible.sdk().balances.getBalance(unionAddress, toCurrencyId(config.currency)),
+      rarible
+        .sdk()
+        .balances.getBalance(unionAddress, toCurrencyId(config.currency)),
       rarible.sdk().apis.currency.getCurrencyUsdRateByCurrencyId({
         currencyId: config.currency,
         at: new Date(),

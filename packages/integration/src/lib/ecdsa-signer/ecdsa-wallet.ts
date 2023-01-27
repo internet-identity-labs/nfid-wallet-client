@@ -1,13 +1,20 @@
-import { ActorMethod } from "@dfinity/agent"
-import { Bytes, ethers, Signer } from "ethers"
-import { Provider, TransactionRequest } from "@ethersproject/abstract-provider"
-import { getEcdsaPublicKey, signEcdsaMessage } from "./index"
-import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature } from "ethers/lib/utils"
-import { hexZeroPad, joinSignature } from "@ethersproject/bytes"
-import { serialize } from "@ethersproject/transactions"
-import { UnsignedTransaction } from "ethers-ts"
-import { BN } from "bn.js"
+import {ActorMethod} from "@dfinity/agent"
+import {Bytes, ethers, Signer, TypedDataDomain, TypedDataField} from "ethers"
+import {Provider, TransactionRequest} from "@ethersproject/abstract-provider"
+import {getEcdsaPublicKey, signEcdsaMessage} from "./index"
+import {arrayify, hashMessage, keccak256, resolveProperties, splitSignature} from "ethers/lib/utils"
+import {hexZeroPad, joinSignature} from "@ethersproject/bytes"
+import {serialize} from "@ethersproject/transactions"
+import {UnsignedTransaction} from "ethers-ts"
+import * as BN from "bn.js"
 
+const ABI_721 = [
+  'function setApprovalForAll(address operator, bool _approved)',
+  'function safeTransferFrom(address from, address to, uint256 tokenId)',
+  'function transfer(address from, address to, uint256 tokenId)',
+  'function approve(address to, uint256 tokenId)',
+  'function isApprovedForAll(address owner, address operator)'
+];
 
 export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   override provider?: Provider
@@ -54,6 +61,30 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     })
   }
 
+  async safeTransferFrom(to: string, contractAddress: string, tokenId: string) {
+    const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
+    const connectedWallet = contract.connect(this)
+    return connectedWallet["safeTransferFrom"](this.getAddress(), to, tokenId);
+  }
+
+  async approve(to: string, contractAddress: string, tokenId: string) {
+    const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
+    const connectedWallet = contract.connect(this)
+    return connectedWallet["approve"](to, tokenId);
+  }
+
+  async setApprovalForAll(operator: string, contractAddress: string, approved: boolean) {
+    const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
+    const connectedWallet = contract.connect(this)
+    return connectedWallet["setApprovalForAll"](operator, approved);
+  }
+
+  async isApprovedForAll(owner: string, contractAddress: string, operator: string) {
+    const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
+    const connectedWallet = contract.connect(this)
+    return connectedWallet["isApprovedForAll"](owner, operator);
+  }
+
   connect(provider: Provider): Signer {
     this.provider = provider
     return this
@@ -77,9 +108,9 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     }
   }
 
-  _splitSignature(signature: Array<number>, digestBytes: Uint8Array){
+  _splitSignature(signature: Array<number>, digestBytes: Uint8Array) {
     const elliptic_signature = this._toEllipticSignature(signature)
-    let  ethersSignature = splitSignature({
+    let ethersSignature = splitSignature({
       recoveryParam: elliptic_signature.recoveryParam,
       r: hexZeroPad("0x" + elliptic_signature.r.toString(16), 32),
       s: hexZeroPad("0x" + elliptic_signature.s.toString(16), 32),
@@ -98,6 +129,10 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       })
     }
     return ethersSignature
+  }
+
+  async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
+   throw new Error("We did not decide what to do with this for now. Please contact BE team if you face it (:")
   }
 
 }

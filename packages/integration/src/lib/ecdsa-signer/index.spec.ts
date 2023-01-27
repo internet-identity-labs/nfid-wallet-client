@@ -1,12 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { BigNumber, ethers, Wallet } from "ethers"
-import { arrayify, hashMessage } from "ethers/lib/utils"
+import {JsonnableEd25519KeyIdentity} from "@dfinity/identity/lib/cjs/identity/ed25519"
+import {BigNumber, ethers, Wallet} from "ethers"
+import {arrayify, hashMessage} from "ethers/lib/utils"
 
-import { getEcdsaPublicKey, signEcdsaMessage } from "."
-import { EthWallet } from "./ecdsa-wallet"
+import {getEcdsaPublicKey, signEcdsaMessage} from "."
+import {EthWallet} from "./ecdsa-wallet"
 
 const idd: JsonnableEd25519KeyIdentity = [
   "0402f7e13e782ad8bb2c4da69d00c14af52d4bf0f1cc20ddb52f117d7fff2e3678c950145102d87915c5688a218cdc4348407cd7b1fdb8256dade044309a2552cd",
@@ -15,7 +15,10 @@ const idd: JsonnableEd25519KeyIdentity = [
 
 describe("ECDSA suite", () => {
   jest.setTimeout(200000)
-
+  const rpcProvider = new ethers.providers.JsonRpcProvider(
+    "https://ethereum-goerli-rpc.allthatnode.com",
+  )
+  const nfidWallet = new EthWallet(rpcProvider)
   it("ecdsa public key", async () => {
     const pk = await getEcdsaPublicKey()
     expect(pk.length > 0).toBe(true)
@@ -28,7 +31,6 @@ describe("ECDSA suite", () => {
   })
 
   it("nfid-wallet verify message", async () => {
-    const nfidWallet = new EthWallet()
     const address = await nfidWallet.getAddress()
     const message = "test_message"
 
@@ -40,6 +42,43 @@ describe("ECDSA suite", () => {
     const actual = ethers.utils.computeAddress(ethers.utils.arrayify(pk))
 
     expect(actual).toEqual(address)
+  })
+
+  it("nfid-wallet safeTransfer eip721", async () => {
+    const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
+    const to = "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439"
+    const tokenId =
+      "80322369037599879817130611650014995038071054105692890356259348959353817268226"
+    try {
+      await nfidWallet.safeTransferFrom(to, contract, tokenId)
+    } catch (e) {
+      expect(JSON.stringify(e)).toContain(
+        "transfer caller is not owner nor approved",
+      )
+    }
+  })
+
+  it("nfid-wallet approve eip721", async () => {
+    const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
+    const to = "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439"
+    const tokenId =
+      "80322369037599879817130611650014995038071054105692890356259348959353817268226"
+    try {
+      await nfidWallet.approve(to, contract, tokenId)
+    } catch (e) {
+      expect(JSON.stringify(e)).toContain(
+        "execution reverted: ERC721: approval to current owner",
+      )
+    }
+  })
+
+  it("nfid-wallet approveForAll eip721", async () => {
+    const contract = "0x1f419b9469d641d333805c4054ca3b65af54d315"
+    const to = "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439"
+    const response =  await nfidWallet.setApprovalForAll(to, contract, true)
+    const wait = await response.wait()
+    console.log(wait)
+    expect(wait.events[0].data).toEqual('0x0000000000000000000000000000000000000000000000000000000000000001')
   })
 
   // to run this test you need to install geth or another local EVM

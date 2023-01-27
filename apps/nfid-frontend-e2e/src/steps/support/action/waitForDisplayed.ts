@@ -16,6 +16,6 @@ export default async (selector: Selector, falseCase: boolean) => {
 
   await $(selector).waitForDisplayed({
     timeout: ms,
-    reverse: falseCase
+    reverse: falseCase,
   })
 }

@@ -10,6 +10,7 @@ import {
   IOption,
   ModalAdvanced,
 } from "@nfid-frontend/ui"
+import { minMax } from "@nfid-frontend/utils"
 import {
   Currency,
   ObjectState,
@@ -35,14 +36,22 @@ export const VaultAddPolicy = () => {
   const { vault } = useVault()
 
   const walletsOptions: IOption[] | undefined = useMemo(() => {
-    return wallets?.map((wallet) => ({
+    const options = wallets?.map((wallet) => ({
       label: wallet.name ?? "",
       value: wallet.uid ?? "",
       disabled: wallet.state === ObjectState.ARCHIVED,
     }))
+
+    options?.unshift({
+      label: "Any",
+      value: "Any",
+      disabled: false,
+    })
+
+    return options
   }, [wallets])
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, reset } = useForm({
     defaultValues: {
       amount: 0,
       approvers: 0,
@@ -60,8 +69,9 @@ export const VaultAddPolicy = () => {
         currency: Currency.ICP,
         memberThreshold: Number(approvers),
         type: PolicyType.THRESHOLD_POLICY,
-        wallets: selectedWallets.length > 1 ? undefined : selectedWallets,
+        wallets: selectedWallets[0] === "Any" ? undefined : selectedWallets,
       })
+      reset()
     } catch (e: any) {
       console.log({ e })
       toast.error(e.message)
@@ -107,7 +117,6 @@ export const VaultAddPolicy = () => {
           selectedValues={selectedWallets}
           setSelectedValues={setSelectedWallets}
           isMultiselect={false}
-          showSelectAllOption
           placeholder="Select wallet"
           id="select-wallet"
         />
@@ -128,6 +137,12 @@ export const VaultAddPolicy = () => {
             errorText={formState.errors.approvers?.message}
             {...register("approvers", {
               required: "This field cannot be empty",
+              validate: minMax({
+                min: 1,
+                max: 255,
+                toLowError: "Minimum amount is 1",
+                toBigError: "Maximum amount is 255",
+              }),
             })}
           />
         </div>

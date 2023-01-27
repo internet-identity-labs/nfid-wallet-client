@@ -10,6 +10,7 @@ import {
 import { Principal } from "@dfinity/principal"
 import { arrayBufferEqual } from "ictool/dist/bits"
 
+import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
 import {
   authState,
   FrontendDelegation,
@@ -33,7 +34,6 @@ import {
   Timestamp,
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
-import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "frontend/integration/facade/wallet"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 

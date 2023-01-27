@@ -4,7 +4,7 @@ export const TransferSendNFTPlaceholder = () => {
   return (
     <div className="flex items-center space-x-4 h-[142px]">
       <span className="bg-gray-50 h-[134px] w-[134px] rounded-md" />
-      <div className={clsx("text-xs text-gray-400 space-y-2.5")}>
+      <div className={clsx("text-xs text-secondary space-y-2.5")}>
         <p
           className={clsx(
             "w-[205px] bg-gray-50 font-medium",

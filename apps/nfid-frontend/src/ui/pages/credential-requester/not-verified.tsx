@@ -2,11 +2,10 @@ import clsx from "clsx"
 import React from "react"
 import { useForm } from "react-hook-form"
 
-import { Input, phoneRules } from "@nfid-frontend/ui"
+import { Input, phoneRules, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import { Button } from "frontend/ui/atoms/button"
 import { P } from "frontend/ui/atoms/typography/paragraph"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 interface CredentialRequesterNotVerifiedProps {
@@ -44,7 +43,7 @@ export const CredentialRequesterNotVerified: React.FC<
 
   return (
     <BlurredLoader loadingMessage={loadingMessage} isLoading={isLoading}>
-      <ApplicationMeta
+      <SDKApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
         title={"Verification request"}

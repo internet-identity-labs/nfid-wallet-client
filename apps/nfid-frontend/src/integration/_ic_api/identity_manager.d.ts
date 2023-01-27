@@ -40,6 +40,8 @@ export interface Application {
   domain: string
   name: string
   is_nft_storage: [] | [boolean]
+  is_trusted: [] | [boolean]
+  is_iframe_allowed: [] | [boolean]
 }
 export interface BasicEntity {
   modified_date: bigint

@@ -15,10 +15,6 @@ module.exports = plugin(
         transparent: "transparent",
         current: "currentColor",
         primary: { ...colors.blue, DEFAULT: colors.blue[600] },
-        secondary: colors.black,
-        black: colors.black,
-        // FIXME: get rid of that. Just use `-black` instead
-        "black-base": colors.black,
         white: colors.white,
         gray: { ...colors.gray, DEFAULT: colors.gray[600] },
         red: { ...colors.red, DEFAULT: colors.red[600] },
@@ -32,6 +28,15 @@ module.exports = plugin(
         indigo: { ...colors.indigo, DEFAULT: colors.indigo[600] },
         violet: { ...colors.violet, DEFAULT: colors.violet[600] },
         purple: { ...colors.purple, DEFAULT: colors.purple[600] },
+        frameBgColor: "rgb(var(--color-frameBgColor) / <alpha-value>)",
+        frameBorderColor: "rgb(var(--color-frameBorderColor) / <alpha-value>)",
+        primaryButtonColor:
+          "rgb(var(--color-primaryButtonColor) / <alpha-value>)",
+        secondaryButtonColor:
+          "rgb(var(--color-secondaryButtonColor) / <alpha-value>)",
+        black: "rgb(var(--color-mainTextColor) / <alpha-value>)",
+        secondary: "rgb(var(--color-secondaryTextColor) / <alpha-value>)",
+        linkColor: "rgb(var(--color-linkColor) / <alpha-value>)",
       },
     },
   },

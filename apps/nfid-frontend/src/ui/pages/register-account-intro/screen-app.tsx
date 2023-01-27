@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
-import { anchorRules, Input } from "@nfid-frontend/ui"
+import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
@@ -10,7 +10,6 @@ import {
 } from "frontend/ui/atoms/button/signin-with-google"
 import TouchId from "frontend/ui/atoms/icons/touch-id.svg"
 import { Separator } from "frontend/ui/atoms/separator"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import SecurityKey from "./assets/security-key.svg"
@@ -72,7 +71,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
   return (
     // TODO: add loading message
     <BlurredLoader isLoading={isLoading}>
-      <ApplicationMeta
+      <SDKApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
         title="Sign in"
@@ -127,7 +126,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
         )}
 
         <p
-          className="py-4 text-sm text-center cursor-pointer text-blue"
+          className="py-4 text-sm text-center cursor-pointer text-linkColor"
           onClick={onToggleAdvancedOptions}
         >
           {showAdvancedOptions ? "Back" : "Other sign in options"}

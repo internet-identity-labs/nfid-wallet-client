@@ -18,7 +18,6 @@ export const VaultArchiveMember: React.FC<VaultArchiveMemberProps> = ({
   setIsModalOpen,
   selectedMember,
 }) => {
-  console.log({ selectedMember })
   const [isLoading, setIsLoading] = useState(false)
   const { vault, refetch } = useVault()
 

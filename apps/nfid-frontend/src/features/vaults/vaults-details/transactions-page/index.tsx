@@ -72,6 +72,12 @@ export const VaultsTransactionsPage: React.FC<
     if (!transactions) return []
 
     return transactions
+      .map((transaction) => ({
+        ...transaction,
+        owner:
+          vault?.members.find((member) => member.userId === transaction.owner)
+            ?.name ?? transaction.owner,
+      }))
       .filter((transaction) => transaction?.owner.includes(searchFilter))
       .filter((transaction) =>
         statusFilter.length ? statusFilter.includes(transaction.state) : true,
@@ -92,6 +98,7 @@ export const VaultsTransactionsPage: React.FC<
       })
   }, [
     transactions,
+    vault?.members,
     searchFilter,
     statusFilter,
     initiatedFilter,

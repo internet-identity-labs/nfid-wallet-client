@@ -170,13 +170,13 @@ export const DeviceListItem: React.FC<DeviceListItemProps> = ({
                 </div>
                 <div
                   className={clsx(
-                    "my-1 text-sm text-gray-400",
+                    "my-1 text-sm text-secondary",
                     !device.isWalletDevice && "hidden",
                   )}
                 >
                   Address: {device.browser}
                 </div>
-                <div className="my-1 text-sm text-gray-400">
+                <div className="my-1 text-sm text-secondary">
                   {device.isSocialDevice
                     ? `Last activity: ${
                         format(device.lastUsed, "MMM d, yyyy 'on '") +

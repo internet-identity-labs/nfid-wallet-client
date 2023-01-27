@@ -51,15 +51,19 @@ export const RequestTransfer = ({
   })
 
   const walletsOptions: IOption[] | undefined = useMemo(() => {
-    return wallets
-      ?.map((wallet) => ({
-        label: wallet.label ?? "",
-        value: wallet.principal?.toText() ?? "",
-        // FIXME: support dip-20
-        afterLabel: toPresentation(wallet.balance["ICP"]),
-        disabled: Number(wallet.balance) <= Number(amountICP),
-      }))
-      .sort((a, b) => Number(a?.disabled) - Number(b?.disabled))
+    return (
+      wallets
+        // Added filtering there to avoid changes which should require a lot of re-testing
+        ?.filter((wallet) => !wallet.isVaultWallet)
+        ?.map((wallet) => ({
+          label: wallet.label ?? "",
+          value: wallet.principal?.toText() ?? "",
+          // FIXME: support dip-20
+          afterLabel: toPresentation(wallet.balance["ICP"]),
+          disabled: Number(wallet.balance) <= Number(amountICP),
+        }))
+        .sort((a, b) => Number(a?.disabled) - Number(b?.disabled))
+    )
   }, [amountICP, wallets])
 
   const amountUSD = useMemo(() => {

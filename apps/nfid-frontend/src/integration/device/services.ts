@@ -17,7 +17,50 @@ export async function isMobileWithWebAuthn() {
   return (await fetchWebAuthnPlatformCapability()) && getIsMobileDeviceMatch()
 }
 
-// NOTE: Maybe this should live somewhere else?
+export async function addDeviceToIIandIM(
+  identity: WebAuthnIdentity,
+  anchor: bigint,
+  isSecurityKey: boolean,
+) {
+  try {
+    const credential_id = Array.from(new Uint8Array(identity.rawId))
+    await Promise.all([
+      ii
+        .add(anchor, {
+          alias: deviceInfo.newDeviceName,
+          pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
+          credential_id: [credential_id],
+          key_type: isSecurityKey
+            ? { cross_platform: null }
+            : { platform: null },
+          purpose: { authentication: null },
+          protection: { unprotected: null },
+        })
+        .catch((e) => {
+          throw new Error(`addDeviceToIIandIM ii.add: ${e.message}`)
+        }),
+      im
+        .create_access_point({
+          icon: "",
+          device: deviceInfo.newDeviceName,
+          browser: deviceInfo.browser.name ?? "",
+          pub_key: identity.getPrincipal().toText(),
+        })
+        .catch((e) => {
+          throw new Error(
+            `addDeviceToIIandIM im.create_access_point: ${e.message}`,
+          )
+        }),
+    ])
+  } catch (e: any) {
+    console.error("addDeviceToIIandIM", { message: e.message })
+    if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)) {
+      throw e
+    }
+    console.debug("addDeviceToIIandIM", "device already registered")
+  }
+}
+
 export async function registerDeviceWithWebAuthn() {
   const profile = await fetchProfile()
   const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
@@ -29,33 +72,7 @@ export async function registerDeviceWithWebAuthn() {
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(usersAuthenticatorDevices),
     })
-    const credential_id = Array.from(new Uint8Array(identity.rawId))
-    await Promise.all([
-      ii
-        .add(BigInt(profile.anchor), {
-          alias: deviceInfo.newDeviceName,
-          pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
-          credential_id: [credential_id],
-          key_type: { platform: null },
-          purpose: { authentication: null },
-          protection: { unprotected: null },
-        })
-        .catch((e) => {
-          throw new Error(`registerDeviceWithWebAuthn ii.add: ${e.message}`)
-        }),
-      im
-        .create_access_point({
-          icon: "",
-          device: deviceInfo.newDeviceName,
-          browser: deviceInfo.browser.name ?? "",
-          pub_key: identity.getPrincipal().toText(),
-        })
-        .catch((e) => {
-          throw new Error(
-            `registerDeviceWithWebAuthn im.create_access_point: ${e.message}`,
-          )
-        }),
-    ])
+    await addDeviceToIIandIM(identity, BigInt(profile.anchor), false)
   } catch (e: any) {
     console.error("registerDeviceWithWebAuthn", { message: e.message })
     if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)) {
@@ -66,7 +83,6 @@ export async function registerDeviceWithWebAuthn() {
   setProfile(profile)
 }
 
-// NOTE: Maybe this should live somewhere else?
 export async function registerDeviceWithSecurityKey() {
   const profile = await fetchProfile()
   const usersAuthenticatorDevices = await fetchAuthenticatorDevices(
@@ -78,34 +94,7 @@ export async function registerDeviceWithSecurityKey() {
     const identity = await WebAuthnIdentity.create({
       publicKey: creationOptions(usersAuthenticatorDevices, "cross-platform"),
     })
-    const credential_id = Array.from(new Uint8Array(identity.rawId))
-    await Promise.all([
-      ii
-        .add(BigInt(profile.anchor), {
-          alias: deviceInfo.newDeviceName,
-          // pubkey: Array.from(new Uint8Array(newPublicKey)),
-          pubkey: Array.from(new Uint8Array(identity.getPublicKey().toDer())),
-          credential_id: [credential_id],
-          key_type: { cross_platform: null },
-          purpose: { authentication: null },
-          protection: { unprotected: null },
-        })
-        .catch((e) => {
-          throw new Error(`registerDeviceWithSecurityKey ii.add: ${e.message}`)
-        }),
-      im
-        .create_access_point({
-          icon: "usb",
-          device: "Security Key",
-          browser: "",
-          pub_key: identity.getPrincipal().toText(),
-        })
-        .catch((e) => {
-          throw new Error(
-            `registerDeviceWithSecurityKey im.create_access_point: ${e.message}`,
-          )
-        }),
-    ])
+    await addDeviceToIIandIM(identity, BigInt(profile.anchor), true)
   } catch (e: any) {
     console.error("registerDeviceWithSecurityKey", { message: e.message })
     if (!ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)) {

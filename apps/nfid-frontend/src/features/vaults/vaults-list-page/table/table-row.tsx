@@ -27,7 +27,7 @@ export const VaultsTableRow: React.FC<VaultsTableRowProps> = ({
       <TableCell centered>{membersQuantity}</TableCell>
       <TableCell>{lastActivity}</TableCell>
       <TableCell isRight>
-        <IconCmpArrowRight className="ml-auto text-gray-400" />
+        <IconCmpArrowRight className="ml-auto text-secondary" />
       </TableCell>
     </TableRow>
   )

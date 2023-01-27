@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
+import { ScreenResponsive } from "@nfid-frontend/ui"
 import { ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
@@ -14,8 +15,8 @@ import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
 import RequestAccountsCoordinator from "./coordination/wallet/request-accounts"
 import RequestTransferCoordinator from "./coordination/wallet/request-transfer"
+import { IframeTrustDeviceCoordinator } from "./features/iframe/iframe-trust-device/coordinator"
 import { NotFound } from "./ui/pages/404"
-import { ScreenResponsive } from "./ui/templates/screen-responsive"
 
 declare const USERGEEK_API_KEY: string
 
@@ -61,6 +62,14 @@ export const App = () => (
       element={
         <ScreenResponsive className="flex flex-col items-center">
           <RemoteIDPCoordinator />
+        </ScreenResponsive>
+      }
+    />
+    <Route
+      path="/iframe/trust-device"
+      element={
+        <ScreenResponsive>
+          <IframeTrustDeviceCoordinator />
         </ScreenResponsive>
       }
     />

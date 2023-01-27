@@ -23,7 +23,7 @@ export const VaultPolicyInfoTooltip = () => {
       }
       className="!px-3"
     >
-      <IconCmpInfo className="text-gray-400 cursor-pointer" />
+      <IconCmpInfo className="text-secondary cursor-pointer" />
     </Tooltip>
   )
 }

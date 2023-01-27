@@ -1,8 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
+import { SDKApplicationMeta } from "@nfid-frontend/ui"
+
 import { ElementProps } from "frontend/types/react"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 interface AuthorizeRegisterDeciderProps extends ElementProps<HTMLDivElement> {
@@ -30,7 +31,7 @@ export const AuthorizeRegisterDeciderScreen: React.FC<
 }) => {
   return (
     <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
-      <ApplicationMeta
+      <SDKApplicationMeta
         title="Sign in faster on this device"
         subTitle={
           isPlatformAuthenticatorAvailable
@@ -94,13 +95,13 @@ export const DeviceRaw: React.FC<DeviceRawProps> = ({
     <div
       id={id}
       className={clsx(
-        "w-full py-[10px] px-4 border border-gray-200 rounded-md",
-        "hover:bg-blue-50 hover:border-blue-500 cursor-pointer transition-all",
+        "w-full py-[10px] px-4 border border-primaryButtonColor/30 rounded-md",
+        "hover:bg-primaryButtonColor/10 hover:border-primaryButtonColor/50 cursor-pointer transition-all",
       )}
       onClick={handler}
     >
       <p className="text-sm">{title}</p>
-      <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>
+      <p className="mt-0.5 text-xs text-secondary">{subtitle}</p>
     </div>
   )
 }

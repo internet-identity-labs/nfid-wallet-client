@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from "react"
 
-import ArrowBackIcon from "../../assets/arrow-back.svg"
+import { IconCmpArrow } from "../../atoms/icons"
 import { BlurredLoader } from "../../molecules/blurred-loader"
 import { Button } from "../../molecules/button"
 import { TextArea } from "../../molecules/input/text-area"
@@ -25,13 +25,8 @@ export const IIAuthRecovery: React.FC<AuthRecoveryIIProps> = ({
   return (
     <BlurredLoader isLoading={isLoading} className="!p-0 relative">
       <div className="flex space-x-2">
-        <img
-          className="cursor-pointer"
-          src={ArrowBackIcon}
-          alt="back"
-          onClick={onBack}
-        />
-        <p className="font-bold">Connect with recovery phrase</p>
+        <IconCmpArrow onClick={onBack} className="cursor-pointer" />
+        <p className="text-lg font-bold">Connect with recovery phrase</p>
       </div>
       <p className="mt-4 text-sm">
         To connect your Internet Identity and continue, enter your Internet

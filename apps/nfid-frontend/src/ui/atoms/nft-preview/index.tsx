@@ -4,15 +4,15 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
-import { transferModalAtom } from "@nfid-frontend/ui"
+import { IconCmpDots, transferModalAtom } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import ICPLogo from "frontend/assets/dfinity.svg"
 import { link } from "frontend/integration/entrepot"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import copyIcon from "./assets/copy.svg"
-import moreIcon from "./assets/more.svg"
 import transferIcon from "./assets/transfer.svg"
 
 const NFTPreview = (props: UserNFTDetails) => {
@@ -48,37 +48,47 @@ const NFTPreview = (props: UserNFTDetails) => {
   return (
     <div
       className={clsx(
-        "rounded w-full transition-all cursor-pointer overflow-visible",
-        "bg-gray-50 hover:bg-white hover:shadow-md hover:shadow-slate-100",
+        "rounded-md w-full transition-all cursor-pointer overflow-visible p-[1px] relative",
+        "bg-gray-50 hover:bg-white hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)]",
       )}
     >
       <Link
         to={`${ProfileConstants.base}/${ProfileConstants.assets}/${props.tokenId}`}
         state={{ nft: props }}
       >
+        <div
+          className={clsx(
+            "flex items-center justify-center",
+            "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
+            props.blockchain !== "ic" && "hidden",
+          )}
+        >
+          <img src={ICPLogo} alt="logo" className="w-2/3" />
+        </div>
         <img
-          className={clsx("rounded w-full h-[245px] object-cover")}
+          className={clsx(
+            "rounded-[5px] w-full h-[245px] md:h-[300px] object-cover",
+          )}
           src={props.assetPreview}
           alt={props.name}
         />
-        <div className={clsx(`text-sm p-4 flex justify-between`)}>
-          <div className={clsx(``)}>
-            <div className={clsx(`font-bold`)}>#{props.index}</div>
-            <div
-              className={clsx(`text-slate-400 font-light truncate w-[190px]`)}
-            >
+        <div className={clsx(`text-sm p-2.5 flex justify-between items-end`)}>
+          <div>
+            <div className={clsx(`font-bold`)}>{props.name}</div>
+            <div className={clsx(`text-secondary truncate w-[190px] mt-1`)}>
               {props.collection.name}
             </div>
           </div>
           <div className="relative w-6" ref={ref}>
-            <img
+            <IconCmpDots
+              className={clsx(
+                "text-secondary cursor-pointer hover:text-black",
+                "rotate-90",
+              )}
               onClick={(e) => {
                 e.preventDefault()
                 setIsTooltipOpen(!isTooltipOpen)
               }}
-              className="transition-opacity cursor-pointer hover:opacity-40"
-              src={moreIcon}
-              alt="more"
             />
             <div
               className={clsx(

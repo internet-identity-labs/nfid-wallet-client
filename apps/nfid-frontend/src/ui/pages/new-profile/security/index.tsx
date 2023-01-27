@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import React from "react"
-import { toast } from "react-toastify"
 
 import {
   LegacyDevice,
@@ -75,7 +74,7 @@ const ProfileSecurityPage: React.FC<IProfileSecurityPage> = ({
         const res = await cb()
         callback && callback(res)
       } catch (e) {
-        toast.error(String(e))
+        console.error(e)
       } finally {
         setIsLoading(false)
         setIsModalVisible(false)

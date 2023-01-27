@@ -12,7 +12,7 @@ interface VaultsMembersPageProps {}
 
 export const VaultsMembersPage: React.FC<VaultsMembersPageProps> = () => {
   const [searchFilter, setSearchFilter] = useState("")
-  const { vault, isFetching } = useVault()
+  const { vault, isFetching, isAdmin } = useVault()
 
   const filteredMembers: VaultMember[] = useMemo(() => {
     if (!vault?.members) return []
@@ -34,7 +34,7 @@ export const VaultsMembersPage: React.FC<VaultsMembersPageProps> = () => {
     <div className="border border-gray-200 rounded-xl mt-[30px]">
       <VaultActionBar
         onInputChange={onFilterChange}
-        actionButtons={<VaultAddMember />}
+        actionButtons={isAdmin ? <VaultAddMember /> : <div />}
       />
       <div className="w-full px-5 overflow-x-auto">
         <VaultsMembersTable members={filteredMembers} />

@@ -1,4 +1,5 @@
 import IconSvgArrow from "./arrow.svg"
+import IconSvgBook from "./book.svg"
 import IconSvgCalendar from "./calendar.svg"
 import IconSvgCancel from "./cancel.svg"
 import IconSvgCheckMark from "./check-mark.svg"
@@ -11,6 +12,7 @@ import IconSvgDots from "./dots.svg"
 import IconSvgError from "./error.svg"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
+import IconSvgGrid from "./grid.svg"
 import IconSvgInfo from "./info.svg"
 import IconSvgKey from "./key.svg"
 import IconSvgLaptop from "./laptop.svg"
@@ -22,8 +24,10 @@ import IconSvgPlus from "./plus.svg"
 import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSuccess from "./success.svg"
+import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
 import IconSvgTouchId from "./touch-id.svg"
+import IconSvgTransactions from "./transactions.svg"
 import IconSvgTrash from "./trash.svg"
 import IconSvgUnknown from "./unknown.svg"
 import IconSvgUsb from "./usb.svg"
@@ -60,6 +64,10 @@ export {
   IconSvgUnknown,
   IconSvgUsb,
   IconSvgWarning,
+  IconSvgTable,
+  IconSvgGrid,
+  IconSvgTransactions,
+  IconSvgBook,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -103,6 +111,10 @@ export { ReactComponent as IconCmpTransactions } from "./transactions.svg"
 export { ReactComponent as IconCmpFilters } from "./filters.svg"
 export { ReactComponent as IconCmpSorting } from "./sorting.svg"
 export { ReactComponent as IconCmpOut } from "./out.svg"
+export { ReactComponent as IconCmpTable } from "./table.svg"
+export { ReactComponent as IconCmpGrid } from "./grid.svg"
+export { ReactComponent as IconCmpBook } from "./book.svg"
+export { ReactComponent as IconCmpNFIDWallet } from "./nfid-wallet.svg"
 
 // png
 export { IconMetamask } from "./metamask"

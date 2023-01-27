@@ -45,7 +45,7 @@ export const Copy: React.FC<ICopy> = ({
       </div>
 
       {copyTitle && (
-        <p className="w-full ml-2 text-xs font-semibold text-gray-400">
+        <p className="w-full ml-2 text-xs font-semibold text-secondary">
           {copyTitle}
         </p>
       )}

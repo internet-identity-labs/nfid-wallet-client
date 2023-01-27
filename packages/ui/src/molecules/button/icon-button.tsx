@@ -26,7 +26,7 @@ export const IconButton: React.FC<MethodRawProps> = ({
     <div className="w-[28px] mr-[9px]">{img}</div>
     <div>
       <p className="text-sm">{title}</p>
-      <p className="text-[11px] text-gray-400">{subtitle}</p>
+      <p className="text-[11px] text-secondary">{subtitle}</p>
     </div>
   </div>
 )

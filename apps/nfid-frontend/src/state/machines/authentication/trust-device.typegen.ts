@@ -3,8 +3,18 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "done.invoke.checkIframeSelect": {
+      type: "done.invoke.checkIframeSelect"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.fetchWebAuthnPlatformCapability": {
       type: "done.invoke.fetchWebAuthnPlatformCapability"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.getIframeWebauthn": {
+      type: "done.invoke.getIframeWebauthn"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -28,8 +38,16 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.checkIframeSelect": {
+      type: "error.platform.checkIframeSelect"
+      data: unknown
+    }
     "error.platform.fetchWebAuthnPlatformCapability": {
       type: "error.platform.fetchWebAuthnPlatformCapability"
+      data: unknown
+    }
+    "error.platform.getIframeWebauthn": {
+      type: "error.platform.getIframeWebauthn"
       data: unknown
     }
     "error.platform.hasSecurityKey": {
@@ -51,7 +69,9 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
+    checkIframeSelect: "done.invoke.checkIframeSelect"
     fetchWebAuthnPlatformCapability: "done.invoke.fetchWebAuthnPlatformCapability"
+    getIframeWebauthn: "done.invoke.getIframeWebauthn"
     hasSecurityKey: "done.invoke.hasSecurityKey"
     isDeviceRegistered: "done.invoke.isDeviceRegistered"
     registerDeviceWithSecurityKey: "done.invoke.regsiterWithSecurityKey"
@@ -67,12 +87,17 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {
     bool:
+      | "done.invoke.checkIframeSelect"
       | "done.invoke.fetchWebAuthnPlatformCapability"
       | "done.invoke.hasSecurityKey"
       | "done.invoke.isDeviceRegistered"
   }
   eventsCausingServices: {
-    fetchWebAuthnPlatformCapability: "TRUST" | "done.invoke.isDeviceRegistered"
+    checkIframeSelect: "TRUST"
+    fetchWebAuthnPlatformCapability:
+      | "done.invoke.checkIframeSelect"
+      | "done.invoke.isDeviceRegistered"
+    getIframeWebauthn: "done.invoke.checkIframeSelect"
     hasSecurityKey: "done.invoke.fetchWebAuthnPlatformCapability"
     isDeviceRegistered: "xstate.init"
     registerDeviceWithSecurityKey: "done.invoke.fetchWebAuthnPlatformCapability"
@@ -86,7 +111,9 @@ export interface Typegen0 {
     | "CheckCapability.SecurityKey"
     | "CheckCapability.Trusted"
     | "CheckCapability.WebAuthnPlatformCapability"
+    | "CheckIframeSelect"
     | "End"
+    | "IframeSelect"
     | "Register"
     | "RegisterDeviceWithSecurityKey"
     | "RegisterDeviceWithWebAuthn"

@@ -10,6 +10,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { RoutePathAuthentication } from "./authentication"
+import { RoutePathAuthenticationIFrame } from "./authentication-iframe"
 import { Link, NavLink } from "./common"
 import { RoutePathGetAccounts } from "./get-accounts"
 import { RoutePathPhoneNumberVerification } from "./phone-number-credential"
@@ -18,11 +19,13 @@ import { RoutePath as RoutePathRequestTransfer } from "./request-transfer"
 interface PageTemplateProps {
   title: string
   children: React.ReactNode | React.ReactNode[]
+  className?: string
 }
 
 export const PageTemplate: React.FC<PageTemplateProps> = ({
   children,
   title,
+  className,
 }) => (
   <>
     <Helmet>
@@ -47,6 +50,9 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
             <NavLink route={RoutePathAuthentication}>
               <SidebarItem icon={<BiLock />} title="Authentication" />
             </NavLink>
+            <NavLink route={RoutePathAuthenticationIFrame}>
+              <SidebarItem icon={<BiLock />} title="Authentication iFrame" />
+            </NavLink>
             <NavLink route={RoutePathPhoneNumberVerification}>
               <SidebarItem
                 icon={<BiMobile />}
@@ -61,7 +67,7 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({
             </NavLink>
           </SidebarWrapper>
         </div>
-        <div className="w-full px-5 py-6">{children}</div>
+        <div className={clsx("w-full px-5 py-6", className)}>{children}</div>
       </div>
     </div>
   </>

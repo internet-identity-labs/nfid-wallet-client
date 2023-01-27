@@ -145,8 +145,8 @@ jobs:
 
       - name: Running E2E test
         run: |
+          npx nx clean nfid-frontend-e2e ||
           npx env-cmd -f .env.staging nx test:e2e nfid-frontend-e2e
-          # npx nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
@@ -218,6 +218,7 @@ jobs:
         run: echo "$target_url" > "report_url.txt"
       - name: Upload url to PR comments
         run: |
+          if [ -n "${URL}" ]; then
           printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
           curl \
             -X POST \
@@ -226,6 +227,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -d "$data"
+          fi
       - uses: actions/upload-artifact@v3
         with:
           name: ReportUrl

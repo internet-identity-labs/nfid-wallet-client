@@ -77,7 +77,9 @@ export const ProfileNFTDetailsPage = ({
             className={clsx(
               "bg-cover bg-center bg-no-repeat blur-md brightness-150",
               "h-full absolute z-10 w-full opacity-70",
-              nft.assetFullsize.format === "video" && "hidden",
+              (nft.assetFullsize.format === "video" ||
+                nft.assetFullsize.format === "iframe") &&
+                "hidden",
             )}
           />
           <NFTAsset

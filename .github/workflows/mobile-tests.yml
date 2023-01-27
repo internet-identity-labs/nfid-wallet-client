@@ -99,6 +99,7 @@ jobs:
 
       - name: Running E2E test
         run: |
+          npx nx clean nfid-frontend-e2e ||
           DEVICE_NAME='Pixel 5' npx env-cmd -f .env.staging nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
@@ -130,6 +131,10 @@ jobs:
     needs: e2e-tests
     if: always()
     runs-on: ubuntu-latest
+    env:
+      URL: ${{ github.event.pull_request.comments_url }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TARGET_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
     steps:
       - name: Get Allure history
         uses: actions/checkout@v3
@@ -165,6 +170,18 @@ jobs:
         env:
           target_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ github.run_number }}
         run: echo "$target_url" > "report_url.txt"
+      - name: Upload url to PR comments
+        run: |
+          if [ -n "${URL}" ]; then
+          printf -v data '{ "body": "%s" }' "$TARGET_URL" &&
+          curl \
+            -X POST \
+            $URL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "$data"
+          fi
       - uses: actions/upload-artifact@v3
         with:
           name: ReportUrl

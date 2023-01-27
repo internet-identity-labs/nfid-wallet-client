@@ -1,14 +1,12 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { SDKApplicationMeta, Tooltip } from "@nfid-frontend/ui"
 
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
 import { ElementProps } from "frontend/types/react"
 import { Button } from "frontend/ui/atoms/button"
-import { PlusIcon } from "frontend/ui/atoms/icons/plus"
-import { ApplicationMeta } from "frontend/ui/molecules/application-meta"
 import { BlurOverlay } from "frontend/ui/molecules/blur-overlay"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -67,14 +65,20 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
       }))
 
   return (
-    <BlurredLoader isLoading={isLoading} loadingMessage={loadingMessage}>
-      <ApplicationMeta
+    <BlurredLoader
+      isLoading={isLoading}
+      loadingMessage={loadingMessage}
+      className="flex flex-col flex-1"
+    >
+      <SDKApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
         title="Choose an account"
-        subTitle={`to continue ${applicationName && `to ${applicationName}`}`}
+        subTitle={`to connect to ${applicationName}`}
       />
-      <div className={clsx("flex flex-col w-full pt-4 space-y-1 relative")}>
+      <div
+        className={clsx("flex flex-col w-full pt-4 space-y-1 relative h-full")}
+      >
         {displayAccounts.map((account, i) => {
           return (
             <AccountItem
@@ -91,19 +95,20 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
           )
         })}
         <div
-          className={clsx("h-12 flex items-center justify-between px-[10px]")}
+          className={clsx("h-8 flex items-center justify-center space-x-3")}
           onClick={!isAccountsLimit ? onCreateAccount : undefined}
         >
           <div
             className={clsx(
-              "flex space-x-3 hover:opacity-70 transition-all cursor-pointer",
+              "hover:opacity-70 transition-all cursor-pointer text-center",
+              "text-sm font-semibold",
               isAccountsLimit
-                ? "text-gray-400 pointer-events-none"
-                : "text-blue",
+                ? "text-secondary pointer-events-none"
+                : "text-primaryButtonColor",
+              !isAuthenticated && "hidden",
             )}
           >
-            <PlusIcon className="w-5 h-5" />
-            <p className="text-sm font-semibold">Create a new account</p>
+            Create a new account
           </div>
           {isAccountsLimit && (
             <Tooltip
@@ -113,29 +118,29 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
                 accountsLimit ? ` to ${accountsLimit}` : ""
               }. Manage your accounts from your NFID Profile page.`}
               className="w-72"
-              side="left"
             >
               <img src={alertIcon} alt="alert" />
             </Tooltip>
           )}
         </div>
         {!isAuthenticated && (
-          <BlurOverlay
-            className={clsx(
-              "-m-4 p-4",
-              "absolute left-0 top-0 bottom-0 right-0 z-10",
-              "flex justify-center items-center",
-            )}
-          >
+          <div>
+            <BlurOverlay
+              className={clsx(
+                "w-full h-full",
+                "absolute left-0 top-0 bottom-0 right-0 z-10",
+                "flex items-end",
+              )}
+            ></BlurOverlay>
             <Button
-              className={clsx("mt-[520px]")}
+              className="relative z-20"
               primary
               large
               onClick={() => onUnlockNFID()}
             >
-              Unlock NFID
+              Continue
             </Button>
-          </BlurOverlay>
+          </div>
         )}
       </div>
     </BlurredLoader>

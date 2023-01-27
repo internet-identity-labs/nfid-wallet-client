@@ -13,7 +13,10 @@ import {
   transferModalAtom,
 } from "@nfid-frontend/ui"
 
+import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
+
 export interface VaultsWalletsTableRowProps {
+  address?: string
   uid?: string
   id: number
   number: number
@@ -22,29 +25,45 @@ export interface VaultsWalletsTableRowProps {
   USDBalance: string
   onArchive: () => void
   isArchived?: boolean
+  isAdmin?: boolean
 }
 
 export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
-  uid,
+  address,
   number,
   name,
   tokenBalance,
   USDBalance,
   onArchive,
   isArchived,
+  isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {
     setTransferModalState({
       ...transferModalState,
       isModalOpen: true,
       sendType: "ft",
+      modalType: "Send",
+      selectedWallets: address ? [address] : [],
+      selectedWallet: wallets.find((w) => w.address === address) ?? ({} as any),
     })
-  }, [setTransferModalState, transferModalState])
+  }, [address, setTransferModalState, transferModalState, wallets])
+
+  const onReceiveToVaultWallet = useCallback(() => {
+    setTransferModalState({
+      ...transferModalState,
+      isModalOpen: true,
+      modalType: "Receive",
+      selectedWallets: address ? [address] : [],
+    })
+  }, [setTransferModalState, transferModalState, address])
+
   return (
     <TableRow
-      className={clsx(isArchived && "text-gray-400 pointer-events-none")}
+      className={clsx(isArchived && "text-secondary pointer-events-none")}
       id={`wallet_${name}`}
     >
       <TableCell isLeft>{number}</TableCell>
@@ -68,13 +87,15 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
               {
                 icon: <IconCmpTransfer className="rotate-180" />,
                 text: "Receive",
-                onClick: () => [],
+                onClick: onReceiveToVaultWallet,
               },
-              {
-                icon: <IconCmpArchive />,
-                text: "Archive",
-                onClick: onArchive,
-              },
+              isAdmin
+                ? {
+                    icon: <IconCmpArchive />,
+                    text: "Archive",
+                    onClick: onArchive,
+                  }
+                : {},
             ]}
           />
         </Popover>

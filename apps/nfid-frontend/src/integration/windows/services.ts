@@ -11,6 +11,7 @@ import {
   postMessageToClient,
   prepareClientDelegate,
 } from "."
+import { fetchApplication } from "../identity-manager"
 import { validateDerivationOrigin } from "../internet-identity/validateDerivationOrigin"
 
 /**
@@ -18,6 +19,14 @@ import { validateDerivationOrigin } from "../internet-identity/validateDerivatio
  * @returns authorization request
  */
 export async function handshake(): Promise<AuthorizationRequest> {
+  // FIXME: for the iframe mode to work, we need to send the message
+  // to the parent window after we've called the `authClient.login()`.
+  // Having this interval is the easiest work around for now.
+  const interval = setInterval(
+    () => postMessageToClient({ kind: "authorize-ready" }),
+    500,
+  )
+
   const response = awaitClientMessage(isIdentityClientAuthEvent).then(
     async (event) => {
       console.debug("handshake", { event })
@@ -30,6 +39,7 @@ export async function handshake(): Promise<AuthorizationRequest> {
         derivationOrigin: event.data.derivationOrigin,
       })
       if (validation.result !== "valid") throw new Error(validation.message)
+      clearInterval(interval)
       return {
         maxTimeToLive: event.data.maxTimeToLive,
         sessionPublicKey: event.data.sessionPublicKey,
@@ -79,4 +89,35 @@ export async function postDelegation(context: {
 export async function getAppMeta(): Promise<AuthorizingAppMeta> {
   const meta = getAppMetaFromQuery()
   return meta
+}
+
+export async function checkIsIframe() {
+  try {
+    return window.self !== window.top
+  } catch (e) {
+    return true
+  }
+}
+
+type CheckIsIframeAllowedParams = {
+  authRequest?: {
+    hostname: string
+    derivationOrigin?: string
+  }
+}
+
+export async function checkIsIframeAllowed({
+  authRequest: { hostname, derivationOrigin } = {
+    hostname: "",
+  },
+}: CheckIsIframeAllowedParams) {
+  console.debug("checkIsIframeAllowed", { hostname, derivationOrigin })
+  if (!hostname)
+    throw new Error("checkIsIframeAllowed hostname cannot be empty")
+
+  const { isIFrameAllowed, domain } = await fetchApplication(
+    derivationOrigin || hostname,
+  )
+  console.debug("checkIsIframeAllowed", { isIFrameAllowed, domain })
+  return isIFrameAllowed
 }

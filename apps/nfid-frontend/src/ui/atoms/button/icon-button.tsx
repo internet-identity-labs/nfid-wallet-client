@@ -23,16 +23,16 @@ export const IconButton: React.FC<IconButtonProps> = ({
       onClick={onClick}
       className={clsx(
         "flex items-center px-3 py-2 border border-gray-300 rounded-md",
-        "hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]",
+        "hover:border-blue-light transition-all cursor-pointer hover:bg-[#F4FAFF]/50",
         "w-full max-w-[400px]",
         className,
       )}
     >
-      <div className="w-[28px]">{img}</div>
+      <div className="w-[28px] text-linkColor">{img}</div>
       {title && subtitle && (
         <div className={clsx("ml-[9px]")}>
           <p className="text-sm">{title}</p>
-          <p className="text-[11px] text-gray-400">{subtitle}</p>
+          <p className="text-[11px] text-secondary">{subtitle}</p>
         </div>
       )}
     </div>

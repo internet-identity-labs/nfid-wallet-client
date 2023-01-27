@@ -44,8 +44,9 @@ export interface DfinityAuthClientDelegate {
 }
 
 function opener() {
-  if (!window.opener) throw new Error("Could not identify window opener.")
-  return window.opener as Window
+  const opener = window.opener || window.parent
+  if (!opener) throw new Error("Could not identify window opener.")
+  return opener as Window
 }
 
 export function postMessageToClient<T extends IdentityProviderEvents>(
@@ -53,6 +54,7 @@ export function postMessageToClient<T extends IdentityProviderEvents>(
   hostname: string = "*",
 ) {
   const origin = opener()
+  console.debug("postMessageToClient", { event, hostname })
   origin.postMessage(event, hostname)
 }
 

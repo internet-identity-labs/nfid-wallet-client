@@ -7,6 +7,7 @@ import { IconCmpPlus, Input, ModalAdvanced } from "@nfid-frontend/ui"
 import { ObjectState, storeMember, VaultRole } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
+import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 
 interface VaultCreateForm {
   name: string
@@ -17,8 +18,9 @@ export const VaultAddMember = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { vault, refetch } = useVault()
+  const { address: memberAddress } = useVaultMember()
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, resetField, reset } = useForm({
     defaultValues: {
       name: "",
       address: "",
@@ -27,6 +29,14 @@ export const VaultAddMember = () => {
 
   const onAddMember = async ({ name, address }: VaultCreateForm) => {
     if (!vault?.id) return
+
+    if (address === memberAddress) {
+      toast.warn(
+        "You're trying to invite yourself to the vault. Try another address.",
+      )
+      setIsModalOpen(false)
+      return resetField("address")
+    }
 
     try {
       setIsLoading(true)
@@ -37,12 +47,13 @@ export const VaultAddMember = () => {
         role: VaultRole.MEMBER,
         state: ObjectState.ACTIVE,
       })
+      toast.success(`Member ${name} successfully added`)
+      reset()
     } catch (e: any) {
       toast.error(e.message)
     } finally {
       setIsLoading(false)
       setIsModalOpen(false)
-      toast.success(`Member ${name} successfully added`)
       await refetch()
     }
   }

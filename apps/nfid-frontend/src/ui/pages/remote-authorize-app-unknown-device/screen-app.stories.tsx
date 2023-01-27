@@ -1,7 +1,7 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import { ScreenResponsive } from "frontend/ui/templates/screen-responsive"
+import { ScreenResponsive } from "@nfid-frontend/ui"
 
 import {
   AuthorizeAppUnknownDeviceProps,

@@ -3,9 +3,16 @@ import useSWR from "swr"
 import { getVaults, getWallets, ObjectState } from "@nfid/integration"
 import { fetchVaultsWalletsBalances } from "@nfid/integration/token/fetch-balances"
 
+import { useProfile } from "frontend/integration/identity-manager/queries"
+
+import { useVaultDelegation } from "./use-vault-delegation"
+
 export const useAllVaultsWallets = () => {
+  const { profile } = useProfile()
+  const { data: vaultDelegation } = useVaultDelegation(profile?.anchor)
+
   const { data: allVaultsWallets, isLoading: isAllWalletsLoading } = useSWR(
-    "allVaultsWallets",
+    vaultDelegation ? "allVaultsWallets" : null,
     async () => {
       const vaults = await getVaults()
 
@@ -22,7 +29,7 @@ export const useAllVaultsWallets = () => {
   const { data: balances, isValidating: isBalancesLoading } = useSWR(
     allVaultsWallets ? [allVaultsWallets, `allVaultsWalletsBalances`] : null,
     async ([allVaultsWallets]) => {
-      console.log("allVaultsWalletsBalances", { allVaultsWallets })
+      console.debug("allVaultsWalletsBalances", { allVaultsWallets })
       return await fetchVaultsWalletsBalances(allVaultsWallets)
     },
     { dedupingInterval: 30_000, refreshInterval: 60_000 },

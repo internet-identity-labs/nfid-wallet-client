@@ -30,7 +30,7 @@ const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
           src={User}
           alt="profile icon"
         />
-        <p className={clsx("text-xs text-gray-400 text-center mt-5")}>
+        <p className={clsx("text-xs text-secondary text-center mt-5")}>
           NFID number: {anchor}
         </p>
       </div>

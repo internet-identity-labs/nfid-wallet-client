@@ -39,21 +39,21 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.signInWithGoogleService"
     assignRegistrationStatus: "done.invoke.checkRegistrationStatus"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {}
   eventsCausingServices: {
     checkRegistrationStatus: "done.invoke.signInWithGoogleService"
     fetchGoogleDeviceService: "xstate.init"
     signInWithGoogleService: "done.invoke.fetchGoogleDeviceService"
   }
-  eventsCausingGuards: {}
-  eventsCausingDelays: {}
   matchesStates: "CheckRegistrationStatus" | "End" | "FetchKeys" | "SignIn"
   tags: never
 }

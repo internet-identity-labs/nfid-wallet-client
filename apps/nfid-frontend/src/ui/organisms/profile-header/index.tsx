@@ -5,6 +5,7 @@ import User from "src/assets/userpics/userpic_6.svg"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { SendReceiveButton } from "frontend/apps/identity-manager/profile/send-receive-button"
+import { useVaultDelegation } from "frontend/features/vaults/hooks/use-vault-delegation"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Accordion } from "frontend/ui/atoms/accordion"
 import { Logo } from "frontend/ui/atoms/images/logo"
@@ -26,6 +27,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
   const { profile } = useProfile()
   const { logout } = useAuthentication()
   const navigate = useNavigate()
+  useVaultDelegation(profile?.anchor)
 
   return (
     <div
@@ -88,7 +90,7 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                   </div>
                 }
                 details={
-                  <div className="text-sm font-light text-black-base pl-[60px]">
+                  <div className="text-sm font-light text-black pl-[60px]">
                     <div
                       className="flex items-center h-10"
                       onClick={() => navigate(`/faq`)}

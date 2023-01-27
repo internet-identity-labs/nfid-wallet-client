@@ -1,12 +1,14 @@
 import { atom } from "jotai"
 
-import { IWallet } from "@nfid-frontend/ui"
+import { IWallet, modalTypes } from "@nfid-frontend/ui"
 
 export interface ITransferModalAtom {
   isModalOpen: boolean
   selectedNFT: string[]
   selectedWallet: IWallet
   sendType: "nft" | "ft"
+  selectedWallets: string[]
+  modalType: modalTypes
 }
 
 export const transferModalAtom = atom<ITransferModalAtom>({
@@ -18,4 +20,6 @@ export const transferModalAtom = atom<ITransferModalAtom>({
     domain: "",
     balance: {},
   },
+  selectedWallets: [],
+  modalType: "Send",
 })

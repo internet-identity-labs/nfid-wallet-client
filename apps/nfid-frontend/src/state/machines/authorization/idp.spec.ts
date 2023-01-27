@@ -56,7 +56,7 @@ const testMachine = IDPMachine.withConfig({
     },
     getAppMeta,
   },
-}).withContext({})
+}).withContext({ isIframe: false })
 
 const testMachineMockAuthn = testMachine.withConfig({
   services: {
@@ -84,7 +84,7 @@ describe("IDP Machine", () => {
               logo: "",
             })),
           },
-        }).withContext({}),
+        }).withContext({ isIframe: false }),
       )
         .onTransition((state) => {
           if (

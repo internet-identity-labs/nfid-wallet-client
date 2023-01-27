@@ -15,6 +15,7 @@ import {
 } from "../transactions-page/table/table-row"
 import { VaultTransactionInfo } from "./info-block"
 import { TransactionInfoRow } from "./info-row"
+import { VaultTransactionRejectReason } from "./rejected-modal"
 import { TransactionStatusArrow } from "./status-arrow"
 
 export const VaultTransactionsDetailsPage = () => {
@@ -87,7 +88,7 @@ export const VaultTransactionsDetailsPage = () => {
           content={
             <div>
               <p>{state?.amountICP} ICP</p>
-              <p className="text-xs text-gray-400">≈{state?.amountUSD}</p>
+              <p className="text-xs text-secondary">≈{state?.amountUSD}</p>
             </div>
           }
         />
@@ -104,10 +105,15 @@ export const VaultTransactionsDetailsPage = () => {
         <TransactionInfoRow
           title="Status"
           content={
-            <Badge
-              type={VaultBadgeStatuses[state?.status ?? "CANCELED"]}
-              children={state?.status}
-            />
+            <div className="flex items-center justify-between">
+              <Badge
+                type={VaultBadgeStatuses[state?.status ?? "CANCELED"]}
+                children={state?.status}
+              />
+              {state?.memo ? (
+                <VaultTransactionRejectReason error={state?.memo} />
+              ) : null}
+            </div>
           }
         />
         <TransactionInfoRow
@@ -115,7 +121,7 @@ export const VaultTransactionsDetailsPage = () => {
           titleClassName="align-top h-full mt-1"
           content={
             <Accordion
-              className="!p-0 text-gray-400"
+              className="!p-0 text-secondary"
               titleClassName="!text-sm font-normal text-black"
               detailsClassName="mt-2"
               title={`${

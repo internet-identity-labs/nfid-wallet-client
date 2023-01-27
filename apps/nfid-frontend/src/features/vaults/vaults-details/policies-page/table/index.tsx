@@ -23,7 +23,7 @@ export const VaultsPoliciesTable: React.FC<VaultsPoliciesTableProps> = ({
   const [isArchiveModal, setIsArchiveModal] = useState(false)
   const [isEditModal, setIsEditModal] = useState(false)
   const [selectedPolicy, setSelectedPolicy] = useState<Policy>()
-  const { vault } = useVault()
+  const { vault, isAdmin } = useVault()
 
   const policiesToRows = useMemo(() => {
     return policies.map(
@@ -38,9 +38,10 @@ export const VaultsPoliciesTable: React.FC<VaultsPoliciesTableProps> = ({
             ? `${policy.memberThreshold} of ${vault?.members.length}`
             : "All",
           isArchived: policy.state === ObjectState.ARCHIVED,
+          isAdmin: isAdmin,
         } as VaultsPoliciesTableRowProps),
     )
-  }, [policies, vault?.members.length])
+  }, [isAdmin, policies, vault?.members.length])
 
   const onModalOpen = useCallback(
     (type: "archive" | "edit", policyId: string) => {

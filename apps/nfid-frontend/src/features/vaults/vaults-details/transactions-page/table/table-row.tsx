@@ -1,11 +1,13 @@
 import React, { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
 import {
   Badge,
   IconCmpArrowRight,
   TableCell,
   TableRow,
+  Tooltip,
 } from "@nfid-frontend/ui"
 import { TransactionState } from "@nfid/integration"
 
@@ -32,6 +34,7 @@ export interface IVaultTransactionsDetails {
   status: TransactionState
   isInitiatedByYou: boolean
   isApprovedByYou: boolean
+  memo?: string
 }
 
 export enum VaultBadgeStatuses {
@@ -55,27 +58,48 @@ export const VaultsTransactionsTableRow: React.FC<IVaultTransactionsDetails> = (
     )
   }, [navigate, state])
 
+  const copyToClipboard = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, value: string) => {
+      e.stopPropagation()
+      navigator.clipboard.writeText(value)
+      toast.success("Address copied to clipboard")
+    },
+    [],
+  )
+
   return (
     <TableRow className="space-x-5 hover:bg-gray-100" onClick={onDetailsOpen}>
       <TableCell isLeft>{state.number}</TableCell>
       <TableCell>{state.ownerName}</TableCell>
-      <TableCell>{state.fromWalletName}</TableCell>
-      <TableCell>
-        <CenterEllipsis
-          value={state.toAddress}
-          leadingChars={9}
-          trailingChars={3}
-        />
+      <TableCell
+        className="hover:text-secondary"
+        onClick={(e) => copyToClipboard(e, state.fromAddress)}
+      >
+        <Tooltip tip={"Copy to clipboard"}>
+          <span>{state.fromWalletName}</span>
+        </Tooltip>
+      </TableCell>
+      <TableCell
+        className="hover:text-secondary"
+        onClick={(e) => copyToClipboard(e, state.toAddress)}
+      >
+        <Tooltip tip={"Copy to clipboard"}>
+          <CenterEllipsis
+            value={state.toAddress}
+            leadingChars={9}
+            trailingChars={3}
+          />
+        </Tooltip>
       </TableCell>
       <TableCell>
         <p>{state.amountICP?.toString()} ICP</p>
-        <p className="text-xs text-gray-400">{state.amountUSD}</p>
+        <p className="text-xs text-secondary">{state.amountUSD}</p>
       </TableCell>
       <TableCell>
         <Badge type={VaultBadgeStatuses[state.status]}>{state.status}</Badge>
       </TableCell>
       <TableCell isRight>
-        <IconCmpArrowRight className="ml-auto text-gray-400" />
+        <IconCmpArrowRight className="ml-auto text-secondary" />
       </TableCell>
     </TableRow>
   )

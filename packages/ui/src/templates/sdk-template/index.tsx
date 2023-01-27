@@ -30,7 +30,7 @@ export const ThirdPartyTemplate: React.FC<ResponsiveTemplateProps> = ({
         )}
       >
         <img src={logo} alt="logo" />
-        <span className="text-xs text-gray-400">{frameLabel}</span>
+        <span className="text-xs text-secondary">{frameLabel}</span>
       </div>
 
       <div
@@ -45,7 +45,7 @@ export const ThirdPartyTemplate: React.FC<ResponsiveTemplateProps> = ({
 
       <div
         className={clsx(
-          "px-5 mb-5 text-xs text-gray-400",
+          "px-5 mb-5 text-xs text-secondary",
           "sm:mt-4 text-center",
         )}
       >

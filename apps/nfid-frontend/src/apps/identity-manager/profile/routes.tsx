@@ -6,6 +6,7 @@ import { VaultTransactionsDetailsPage } from "frontend/features/vaults/vaults-de
 import { VaultsListPage } from "frontend/features/vaults/vaults-list-page"
 import ApplicationsIcon from "frontend/ui/organisms/profile-sidebar/assets/applications.svg"
 import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
+import CollectiblesIcon from "frontend/ui/organisms/profile-sidebar/assets/collectibles.svg"
 import CredentialsIcon from "frontend/ui/organisms/profile-sidebar/assets/credentials.svg"
 import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.svg"
 import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
@@ -13,13 +14,13 @@ import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 
 import ProfileApplications from "./applications"
 import ProfileAssets from "./assets"
+import ProfileCollectiblesPage from "./collectibles"
 import CopyRecoveryPhrase from "./copy-recovery-phrase"
 import ProfileCredentials from "./credentials"
 import ProfilePhone from "./credentials/phone-number"
 import ProfileSMS from "./credentials/phone-sms"
 import ProfileTokenWalletsDetailPage from "./internet-computer-wallets"
 import ProfileNFTDetails from "./nft-details"
-import ProfileNFTs from "./nfts"
 import ProfileSecurity from "./security"
 import ProfileTransactions from "./transactions"
 
@@ -27,8 +28,8 @@ export const ProfileConstants = {
   base: "/profile",
   nftDetails: ":tokenId",
   assets: "assets",
+  collectibles: "collectibles",
   wallet: ":token/wallet",
-  nfts: "nfts",
   security: "security",
   credentials: "credentials",
   transactions: "transactions",
@@ -52,18 +53,18 @@ export const ProfileRoutes = (
       }
     />
     <Route
-      path={ProfileConstants.wallet}
+      path={ProfileConstants.collectibles}
       element={
         <AuthWrapper>
-          <ProfileTokenWalletsDetailPage />
+          <ProfileCollectiblesPage />
         </AuthWrapper>
       }
     />
     <Route
-      path={ProfileConstants.nfts}
+      path={ProfileConstants.wallet}
       element={
         <AuthWrapper>
-          <ProfileNFTs />
+          <ProfileTokenWalletsDetailPage />
         </AuthWrapper>
       }
     />
@@ -164,6 +165,12 @@ export const profileSidebarItems = [
     title: "Assets",
     link: `${ProfileConstants.base}/${ProfileConstants.assets}`,
     id: "profile-assets",
+  },
+  {
+    icon: CollectiblesIcon,
+    title: "Collectibles",
+    link: `${ProfileConstants.base}/${ProfileConstants.collectibles}`,
+    id: "profile-collectibles",
   },
   {
     icon: VaultsIcon,

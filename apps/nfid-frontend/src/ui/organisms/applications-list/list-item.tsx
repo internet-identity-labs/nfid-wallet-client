@@ -45,7 +45,7 @@ export const ApplicationListItem: React.FC<Props> = ({
             {title}
           </div>
           {subtitle && (
-            <div className="flex justify-between my-1 space-x-2 overflow-hidden text-sm text-gray-400">
+            <div className="flex justify-between my-1 space-x-2 overflow-hidden text-sm text-secondary">
               <span className="flex-1 overflow-hidden whitespace-nowrap text-ellipsis">
                 {subtitle}
               </span>

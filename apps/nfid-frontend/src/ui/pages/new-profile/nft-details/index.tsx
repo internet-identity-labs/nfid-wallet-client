@@ -77,7 +77,9 @@ export const ProfileNFTDetailsPage = ({
             className={clsx(
               "bg-cover bg-center bg-no-repeat blur-md brightness-150",
               "h-full absolute z-10 w-full opacity-70",
-              nft.assetFullsize.format === "video" && "hidden",
+              (nft.assetFullsize.format === "video" ||
+                nft.assetFullsize.format === "iframe") &&
+                "hidden",
             )}
           />
           <NFTAsset
@@ -91,7 +93,7 @@ export const ProfileNFTDetailsPage = ({
           {"account" in nft ? (
             <div className="flex items-center mt-4 space-x-2">
               <img src={WalletIcon} alt="wallet" />
-              <p className="text-sm font-semibold text-gray-400">
+              <p className="text-sm font-semibold text-secondary">
                 {
                   applications.find((x) => x.domain === nft.account.domain)
                     ?.name
@@ -105,7 +107,7 @@ export const ProfileNFTDetailsPage = ({
               <div
                 className={clsx("flex items-center justify-between flex-wrap")}
               >
-                <p className="mb-1 text-gray-400">Standard</p>
+                <p className="mb-1 text-secondary">Standard</p>
                 <p className={clsx("w-full sm:w-[80%]")}>
                   {nft.collection.standard === "legacy"
                     ? "Legacy EXT"
@@ -115,13 +117,13 @@ export const ProfileNFTDetailsPage = ({
               <div
                 className={clsx("flex items-center justify-between flex-wrap")}
               >
-                <p className="mb-1 text-gray-400">NFT ID</p>
+                <p className="mb-1 text-secondary">NFT ID</p>
                 <p className="w-full sm:w-[80%]">{nft.tokenId}</p>
               </div>
               <div
                 className={clsx("flex items-center justify-between flex-wrap")}
               >
-                <p className="mb-1 text-gray-400">Collection ID</p>
+                <p className="mb-1 text-secondary">Collection ID</p>
                 <p className="w-full sm:w-[80%]">{nft.canisterId}</p>
               </div>
             </div>

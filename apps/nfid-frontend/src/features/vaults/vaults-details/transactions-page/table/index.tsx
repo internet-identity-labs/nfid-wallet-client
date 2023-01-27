@@ -2,7 +2,6 @@ import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
 import { fromHexString, principalToAddress } from "ictool"
 import React, { useMemo } from "react"
-import useSWR from "swr"
 
 import { Table } from "@nfid-frontend/ui"
 import { bigIntMillisecondsToSeconds } from "@nfid-frontend/utils"
@@ -11,8 +10,8 @@ import { Transaction } from "@nfid/integration"
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
+import { useVaultMember } from "frontend/features/vaults/hooks/use-vault-member"
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
-import { getMemberAddress } from "frontend/features/vaults/services"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
 
 import { VaultsTransactionsTableHeader } from "./table-header"
@@ -32,7 +31,7 @@ export const VaultsTransactionsTable: React.FC<
   const { vault } = useVault()
   const { wallets } = useVaultWallets()
   const { exchangeRate } = useICPExchangeRate()
-  const { data: userAddress } = useSWR("vaultMemberAddress", getMemberAddress)
+  const { address: userAddress } = useVaultMember()
 
   const transactionsToRows = useMemo(() => {
     console.log({ transactions })
@@ -45,9 +44,7 @@ export const VaultsTransactionsTable: React.FC<
               (wallet) => wallet.uid === transaction.from_sub_account,
             )?.name ?? "",
           toAddress: transaction.to,
-          ownerName:
-            vault?.members.find((member) => member.userId === transaction.owner)
-              ?.name ?? transaction.owner,
+          ownerName: transaction.owner,
           id: transaction.id,
           status: transaction.state,
           amountICP: e8sICPToString(Number(transaction.amount)),
@@ -78,6 +75,7 @@ export const VaultsTransactionsTable: React.FC<
             transaction.approves.findIndex(
               (approve) => approve.signer === userAddress,
             ) !== -1,
+          memo: transaction.memo,
         } as IVaultTransactionsDetails),
     )
   }, [exchangeRate, transactions, userAddress, vault?.members, wallets])

@@ -18,17 +18,16 @@ Feature: Create vault / Show vault / Archive vault
     Given I authenticate with google account
     And It log's me in
     When I open Vaults tab
-    And I create a new Vault testVault
-    Then Vault id appears with testVault
+    And I create a new Vault with name testVault
+    Then Vault id appears with name testVault
 
-  Scenario: Test add wallet
+  Scenario: Add wallet
     Given I authenticate with google account
     And It log's me in
-    Then I click on the selector <vaultId>
-    Then I click on the selector "#create-wallet-trigger"
-    When I set "wallet" to the inputfield "[name='name']"
-    Then I click on the selector "#create-wallet-button"
-    Then I wait on element "#wallet_wallet" for 5000ms to be displayed
+    When I open Vaults tab
+    And I click on vault with name testVault
+    And I create a new wallet with name myNewWallet
+    Then Wallet displays with name myNewWallet
 
   Scenario: Test add member
     Given I authenticate with google account

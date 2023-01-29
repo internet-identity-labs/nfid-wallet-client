@@ -2,6 +2,7 @@ import { When } from "@cucumber/cucumber"
 
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
+import Vaults from "../pages/vaults"
 
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
@@ -31,6 +32,16 @@ When(/^It log's me in$/, async () => {
 
 When(/^I open profile menu$/, async () => {
   await Profile.openProfileMenu();
+})
+
+When(/^I open Vaults tab$/, async () => {
+  await Profile.openVaultsTab();
+  await Profile.waitForLoaderDisappear();
+})
+
+When(/^I create a new Vault ([^"]*)$/, async (name: string) => {
+  await Vaults.createVault(name);
+  await Profile.waitForLoaderDisappear();
 })
 
 When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)

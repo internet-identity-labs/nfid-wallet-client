@@ -2,6 +2,7 @@ import { Then } from "@cucumber/cucumber"
 import setValue from "webdriverio/build/commands/element/setValue"
 
 import Profile from "../pages/profile"
+import Vaults from "../pages/vaults"
 
 import clickElement from "./support/action/clickElement"
 import setInputField from "./support/action/setInputField"
@@ -40,6 +41,10 @@ import checkIfElementExists from "./support/lib/checkIfElementExists"
 
 Then(/^I logout$/, async () => {
   await Profile.logout();
+})
+
+Then(/^Vault id appears with ([^"]*)$/, async (name: string) => {
+  await Vaults.getVaultById(name);
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)

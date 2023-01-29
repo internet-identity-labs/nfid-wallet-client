@@ -36,9 +36,9 @@ Given(
 
 Given(/^I authenticate with google account$/, async() => {
   await HomePage.authenticateWithGoogle();
-  await HomePage.switсhToWindow("last");
+  await HomePage.switchToWindow("last");
   await HomePage.pickGoogleAccount();
-  await HomePage.switсhToWindow();
+  await HomePage.switchToWindow();
 });
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)

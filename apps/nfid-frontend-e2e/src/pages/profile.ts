@@ -1,7 +1,7 @@
 import { HomePage } from "./home-page";
 
 
-class Profile extends HomePage {
+export class Profile extends HomePage {
 
   private get profilePic() {
     return $("#profile");
@@ -9,6 +9,15 @@ class Profile extends HomePage {
 
   private get logoutButton() {
     return $("#logout");
+  }
+
+  private get vaultsTab() {
+    return $("#desktop > #profile-vaults");
+  }
+
+  public async openVaultsTab() {
+    await this.vaultsTab.waitForDisplayed({timeout: 6000, timeoutMsg: "Vaults tab is missing!"})
+    await this.vaultsTab.click();
   }
 
   public async openProfileMenu() {

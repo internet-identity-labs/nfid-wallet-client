@@ -1,4 +1,3 @@
-import getValue from "webdriverio/build/commands/element/getValue";
 import { Page } from "./page";
 
 export class HomePage extends Page {

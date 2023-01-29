@@ -94,14 +94,6 @@ export const ProfileTransferModal = () => {
     }))
   }, [selectedToken, wallets])
 
-  React.useEffect(() => {
-    if (!transferModalState.selectedWallets.length && walletOptions.length)
-      setTransferModalState({
-        ...transferModalState,
-        selectedWallets: [walletOptions[0]?.value],
-      })
-  }, [setTransferModalState, transferModalState, walletOptions])
-
   const submitVaultWallet = React.useCallback(
     async (data: TransactionRegisterOptions) => {
       try {
@@ -213,6 +205,16 @@ export const ProfileTransferModal = () => {
       setIsLoading(false)
     }
   }
+
+  React.useEffect(() => {
+    if (!transferModalState.selectedWallets.length && walletOptions.length)
+      handleSelectWallet(walletOptions[0]?.value)
+  }, [
+    handleSelectWallet,
+    setTransferModalState,
+    transferModalState,
+    walletOptions,
+  ])
 
   return (
     <div

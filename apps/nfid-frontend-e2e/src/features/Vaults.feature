@@ -5,9 +5,9 @@ Feature: Create vault / Show vault / Archive vault
   Background: User navigates to Vaults page
     Given I open the site "/"
     Given My browser supports WebAuthN
-    Given I remove the e2e@identitylabs.ooo
 
   Scenario: User registers via google
+    Given I remove the e2e@identitylabs.ooo
     Given I authenticate with google account
     And I enter a captcha
     And It log's me in
@@ -15,6 +15,8 @@ Feature: Create vault / Show vault / Archive vault
     Then I logout
 
   Scenario: Test create vault
+    Given I authenticate with google account
+    And It log's me in
     Then I wait on element "#desktop > #profile-vaults" for 2000ms to exist
     Then I click on the selector "#desktop > #profile-vaults"
     Then I wait on element "#loader" for 10000ms to not be displayed
@@ -24,6 +26,8 @@ Feature: Create vault / Show vault / Archive vault
     Then I wait on element <vaultId> for 5000ms to be displayed
 
   Scenario: Test add wallet
+    Given I authenticate with google account
+    And It log's me in
     Then I click on the selector <vaultId>
     Then I click on the selector "#create-wallet-trigger"
     When I set "wallet" to the inputfield "[name='name']"
@@ -31,6 +35,8 @@ Feature: Create vault / Show vault / Archive vault
     Then I wait on element "#wallet_wallet" for 5000ms to be displayed
 
   Scenario: Test add member
+    Given I authenticate with google account
+    And It log's me in
     Then I click on the selector "#tab_members"
     Then I click on the selector "#add-member-trigger"
     When I set "member" to the inputfield "[name='name']"
@@ -39,6 +45,8 @@ Feature: Create vault / Show vault / Archive vault
     Then I wait on element "#member_member" for 5000ms to be displayed
 
   Scenario: Test add policy
+    Given I authenticate with google account
+    And It log's me in
     Then I click on the selector "#tab_policies"
     Then I click on the selector "#create-policy-trigger"
     Then I click on the selector "#select-wallet"

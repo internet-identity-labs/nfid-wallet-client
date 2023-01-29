@@ -1,7 +1,7 @@
 import { Profile } from "./profile";
 
 
-class Vaults extends Profile {
+export class Vaults extends Profile {
 
   private get createVaultButton() {
     return $("#create-vault-trigger");
@@ -28,9 +28,10 @@ class Vaults extends Profile {
     await this.createVaultConfirmationButton.click();
   }
 
-  public async getVaultById(name: string) {
+  public async getVaultByName(name: string) {
     await $(this.vaultId + `${name}` + "']")
       .waitForDisplayed({ timeout: 7000, timeoutMsg: "Vault has not been created! Missing vault id!" });
+    return await $(this.vaultId + `${name}` + "']");
   }
 
 }

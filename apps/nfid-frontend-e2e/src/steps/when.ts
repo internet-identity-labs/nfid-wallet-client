@@ -3,6 +3,7 @@ import { When } from "@cucumber/cucumber"
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
 import Vaults from "../pages/vaults"
+import Vault from "../pages/vault"
 
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
@@ -39,9 +40,19 @@ When(/^I open Vaults tab$/, async () => {
   await Profile.waitForLoaderDisappear();
 })
 
-When(/^I create a new Vault ([^"]*)$/, async (name: string) => {
-  await Vaults.createVault(name);
-  await Profile.waitForLoaderDisappear();
+When(/^I create a new Vault with name ([^"]*)$/, async (vaultName: string) => {
+  await Vaults.createVault(vaultName);
+  await Vaults.waitForLoaderDisappear();
+})
+
+When(/^I click on vault with name ([^"]*)$/, async (vaultName: string) => {
+  await (await Vaults.getVaultByName(vaultName)).click();
+  await Vaults.waitForLoaderDisappear();
+})
+
+When(/^I create a new wallet with name ([^"]*)$/, async (walletName: string) => {
+  await Vault.addWallet(walletName);
+  await Vault.waitForLoaderDisappear();
 })
 
 When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)

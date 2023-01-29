@@ -3,6 +3,7 @@ import setValue from "webdriverio/build/commands/element/setValue"
 
 import Profile from "../pages/profile"
 import Vaults from "../pages/vaults"
+import Vault from "../pages/vault"
 
 import clickElement from "./support/action/clickElement"
 import setInputField from "./support/action/setInputField"
@@ -43,8 +44,12 @@ Then(/^I logout$/, async () => {
   await Profile.logout();
 })
 
-Then(/^Vault id appears with ([^"]*)$/, async (name: string) => {
-  await Vaults.getVaultById(name);
+Then(/^Vault id appears with name ([^"]*)$/, async (vaultName: string) => {
+  await Vaults.getVaultByName(vaultName);
+})
+
+Then(/^Wallet displays with name ([^"]*)$/, async (walletName: string)=> {
+  await Vault.getWalletByName(walletName)
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)

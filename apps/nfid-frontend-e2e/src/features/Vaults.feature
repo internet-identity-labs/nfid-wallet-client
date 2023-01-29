@@ -14,16 +14,12 @@ Feature: Create vault / Show vault / Archive vault
     When I open profile menu
     Then I logout
 
-  Scenario: Test create vault
+  Scenario: Create a new Vault
     Given I authenticate with google account
     And It log's me in
-    Then I wait on element "#desktop > #profile-vaults" for 2000ms to exist
-    Then I click on the selector "#desktop > #profile-vaults"
-    Then I wait on element "#loader" for 10000ms to not be displayed
-    Then I click on the selector "#create-vault-trigger"
-    When I set <vaultName> to the inputfield "[name='vaultName']"
-    Then I click on the selector "#create-vault-button"
-    Then I wait on element <vaultId> for 5000ms to be displayed
+    When I open Vaults tab
+    And I create a new Vault testVault
+    Then Vault id appears with testVault
 
   Scenario: Test add wallet
     Given I authenticate with google account

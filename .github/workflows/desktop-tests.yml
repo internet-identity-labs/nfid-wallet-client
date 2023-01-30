@@ -154,7 +154,7 @@ jobs:
 
       - name: Caching allure-results
         if: always()
-        uses: actions/cache@v3
+        uses: pat-s/always-upload-cache@v3.0.11
         with:
           path: apps/nfid-frontend-e2e/allure-results
           key: allure-results-${{github.RUN_ID}}
@@ -188,7 +188,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
-      - uses: actions/cache@v3
+      - uses: pat-s/always-upload-cache@v3.0.11
         with:
           path: apps/nfid-frontend-e2e/allure-results
           key: allure-results-${{github.RUN_ID}}

@@ -1,11 +1,6 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Desktop Tests CI
+name: Mobile Tests CI
 
 on:
-  pull_request:
-    branches: [main, current-release, release/*]
   workflow_dispatch:
     inputs:
       logLevel:
@@ -48,47 +43,6 @@ jobs:
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
-  unit-tests:
-    needs: check-secrets
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout CI repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - uses: nrwl/nx-set-shas@v3
-        with:
-          main-branch-name: ${{ github.base_ref }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: "yarn"
-
-      - name: Build project
-        run: |
-          cat > ~/.npmrc << EOF
-          @psychedelic:registry=https://npm.pkg.github.com
-          //npm.pkg.github.com/:_authToken=${PSYCHEDELIC_GH_NPM_REGISTRY}
-          EOF
-          yarn --prefer-offline
-
-        env:
-          PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-
-      - name: Run unit tests
-        run: npx nx affected:test
-
-      - name: Upload build artefacts
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: yarn-error-logs
-          path: /home/runner/work/nfid-frontend/nfid-frontend/yarn-error.log
-
   e2e-tests:
     needs: check-secrets
     runs-on: ubuntu-latest
@@ -105,7 +59,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
           cache: "yarn"
 
       - name: Build project
@@ -146,7 +100,7 @@ jobs:
       - name: Running E2E test
         run: |
           npx nx clean nfid-frontend-e2e ||
-          npx env-cmd -f .env.staging nx test:e2e nfid-frontend-e2e
+          DEVICE_NAME='Pixel 5' npx env-cmd -f .env.staging nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}
@@ -154,7 +108,7 @@ jobs:
 
       - name: Caching allure-results
         if: always()
-        uses: pat-s/always-upload-cache@v3.0.11
+        uses: actions/cache@v3
         with:
           path: apps/nfid-frontend-e2e/allure-results
           key: allure-results-${{github.RUN_ID}}
@@ -188,7 +142,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
-      - uses: pat-s/always-upload-cache@v3.0.11
+      - uses: actions/cache@v3
         with:
           path: apps/nfid-frontend-e2e/allure-results
           key: allure-results-${{github.RUN_ID}}

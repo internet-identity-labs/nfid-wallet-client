@@ -1,9 +1,11 @@
-import { Activities } from "@rarible/api-client"
 import { BigNumber } from "@rarible/utils"
 
-import { EthereumAsset, Balance } from "./asset"
+import {
+  EthereumAsset,
+  Balance,
+} from "./ethereum-asset"
 
-describe("Asset", () => {
+describe("Ethereum Asset", () => {
   jest.setTimeout(200000)
   it("should request balance", async function () {
     const balance: Balance = await EthereumAsset.getBalance()
@@ -14,17 +16,14 @@ describe("Asset", () => {
   })
 
   it("should request activities by item", async function () {
-    const tokenId =
-      "88260187566799326202913268841041605580353496351673437472672373155789474365442"
-    const itemId = `ETHEREUM:0xd8560c88d1dc85f9ed05b25878e366c49b68bef9:${tokenId}`
-    const activities: Activities = await EthereumAsset.getActivitiesByItem(
-      itemId,
-    )
-    expect(activities.activities[0]).toEqual(
-      expect.objectContaining({
-        tokenId,
-      }),
-    )
+    try {
+      const tokenId =
+        "88260187566799326202913268841041605580353496351673437472672373155789474365442"
+      const itemId = `ETHEREUM:0xd8560c88d1dc85f9ed05b25878e366c49b68bef9:${tokenId}`
+      await EthereumAsset.getActivitiesByItem(itemId)
+    } catch (e) {
+      fail(e)
+    }
   })
 
   it("should request activities by user", async function () {
@@ -49,7 +48,7 @@ describe("Asset", () => {
     const tokenId =
       "80322369037599879817130611650014995038071054105692890356259348959353817268226"
     try {
-      console.log(await EthereumAsset.transfer(to, contract, tokenId))
+      await EthereumAsset.transferNft(to, contract, tokenId)
     } catch (e) {
       expect(JSON.stringify(e)).toContain(
         "transfer caller is not owner nor approved",

@@ -6,6 +6,10 @@ export class Vault extends Vaults {
     return $("#tab_members");
   }
 
+  private get policiesTab() {
+    return $("#tab_policies");
+  }
+
   private get addMemberButton() {
     return $("#add-member-trigger");
   }
@@ -26,6 +30,34 @@ export class Vault extends Vaults {
     return "[id*='member_";
   }
 
+  private get addPolicyButton() {
+    return $("#create-policy-trigger");
+  }
+
+  private get selectWalletDropDown() {
+    return $("#select-wallet");
+  }
+
+  private get walletsList() {
+    return $$("#dropdown-options label");
+  }
+
+  private get greaterThanInput() {
+    return $("[name='amount']");
+  }
+
+  private get approversInput() {
+    return $("[name='approvers']");
+  }
+
+  private get createPolicyButton() {
+    return $("#create-policy-button");
+  }
+
+  public get policiesList() {
+    return $$("#policy_row");
+  }
+
   private get addWalletButton() {
     return $("#create-wallet-trigger");
   }
@@ -43,8 +75,13 @@ export class Vault extends Vaults {
   }
 
   public async openMembersTab() {
-    await this.membersTab.waitForDisplayed({ timeout: 8000, timeoutMsg: "Members tab is missing!" })
+    await this.membersTab.waitForDisplayed({ timeout: 8000, timeoutMsg: "Members tab is missing!" });
     await this.membersTab.click();
+  }
+
+  public async openPoliciestab() {
+    await this.policiesTab.waitForDisplayed({ timeout: 8000, timeoutMsg: "Policies tab is missing!" });
+    await this.policiesTab.click();
   }
 
   public async addMember(memberName: string, address: string) {
@@ -77,6 +114,28 @@ export class Vault extends Vaults {
     await $(this.walletName + `${name}` + "']")
       .waitForDisplayed({ timeout: 7000, timeoutMsg: "Wallet has not been created! Missing wallet name!" });
     return await $(this.walletName + `${name}` + "']");
+  }
+
+  public async addPolicy(walletName: string, greaterThan: number, approvers: number) {
+    await this.addPolicyButton.waitForDisplayed({ timeout: 6000, timeoutMsg: "Add Policy button is missing!" });
+    await this.addPolicyButton.click();
+    await this.selectWalletDropDown.waitForDisplayed({ timeout: 4000 });
+    await this.selectWalletDropDown.click();
+    await browser.waitUntil(
+      async () =>
+        (await this.walletsList.length > 0),
+      { timeout: 6000, timeoutMsg: "Wallets are not on the list" }
+    );
+
+    await this.walletsList.forEach(wallet => {
+      if (wallet.getAttribute("innerText").toString() === walletName) {
+        wallet.click();
+      }
+    });
+    await this.greaterThanInput.setValue(greaterThan);
+    await this.approversInput.setValue(approvers);
+    await this.createPolicyButton.waitForClickable();
+    await this.createPolicyButton.click();
   }
 
 }

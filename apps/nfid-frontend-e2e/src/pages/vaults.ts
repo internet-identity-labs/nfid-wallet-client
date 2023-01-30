@@ -15,7 +15,7 @@ export class Vaults extends Profile {
     return $("#create-vault-button");
   }
 
-  private get vaultId() {
+  private get vaultName() {
     return "[id*='vault_";
   }
 
@@ -24,14 +24,15 @@ export class Vaults extends Profile {
     await this.createVaultButton.click();
     await this.vaultNameInput.waitForDisplayed({ timeout: 4000, timeoutMsg: "Vault name input is missing!" })
     await this.vaultNameInput.setValue(vaultName);
-    await this.createVaultConfirmationButton.waitForDisplayed({ timeout: 4000, timeoutMsg: "Create Vault button is missing!" });
+    await this.createVaultConfirmationButton
+      .waitForDisplayed({ timeout: 4000, timeoutMsg: "Create Vault button is missing!" });
     await this.createVaultConfirmationButton.click();
   }
 
   public async getVaultByName(name: string) {
-    await $(this.vaultId + `${name}` + "']")
-      .waitForDisplayed({ timeout: 7000, timeoutMsg: "Vault has not been created! Missing vault id!" });
-    return await $(this.vaultId + `${name}` + "']");
+    await $(this.vaultName + `${name}` + "']")
+      .waitForDisplayed({ timeout: 7000, timeoutMsg: "Vault has not been created! Missing vault name!" });
+    return await $(this.vaultName + `${name}` + "']");
   }
 
 }

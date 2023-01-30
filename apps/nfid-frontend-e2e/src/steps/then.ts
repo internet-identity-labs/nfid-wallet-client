@@ -48,8 +48,12 @@ Then(/^Vault id appears with name ([^"]*)$/, async (vaultName: string) => {
   await Vaults.getVaultByName(vaultName);
 })
 
-Then(/^Wallet displays with name ([^"]*)$/, async (walletName: string)=> {
+Then(/^Wallet displays with name ([^"]*)$/, async (walletName: string) => {
   await Vault.getWalletByName(walletName)
+})
+
+Then(/^New member displays with ([^"]*)$/, async (memberName: string) => {
+  await Vault.getMemberByName(memberName);
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)

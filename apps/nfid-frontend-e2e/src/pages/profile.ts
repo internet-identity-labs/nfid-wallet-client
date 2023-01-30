@@ -15,7 +15,7 @@ export class Profile extends HomePage {
     return $("#desktop > #profile-vaults");
   }
 
-  public async openVaultsTab() {
+  public async openVaults() {
     await this.vaultsTab.waitForDisplayed({timeout: 6000, timeoutMsg: "Vaults tab is missing!"})
     await this.vaultsTab.click();
   }

@@ -35,9 +35,17 @@ When(/^I open profile menu$/, async () => {
   await Profile.openProfileMenu();
 })
 
-When(/^I open Vaults tab$/, async () => {
-  await Profile.openVaultsTab();
+When(/^I open Vaults$/, async () => {
+  await Profile.openVaults();
   await Profile.waitForLoaderDisappear();
+})
+
+When(/^I open Members tab$/, async () => {
+  await Vault.openMembersTab();
+})
+
+When(/^I add new member to this vault with ([^"]*) and ([^"]*)$/, async (name: string, address: string) => {
+  await Vault.addMember(name, address);
 })
 
 When(/^I create a new Vault with name ([^"]*)$/, async (vaultName: string) => {

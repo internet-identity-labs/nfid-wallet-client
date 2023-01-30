@@ -63,6 +63,15 @@ When(/^I create a new wallet with name ([^"]*)$/, async (walletName: string) => 
   await Vault.waitForLoaderDisappear();
 })
 
+When(/^I open Policies tab$/, async () => {
+  await Vault.openPoliciestab();
+})
+
+When(/^I create new Policy for this vault with ([^"]*), ([^"]*) and ([^"]*) included$/,
+  async (walletName: string, greaterThan: number, approvers: number) => {
+    await Vault.addPolicy(walletName, greaterThan, approvers);
+  })
+
 When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)
 
 When(/^I (add|set) "([^"]*)?" to the inputfield "([^"]*)?"$/, setInputField)

@@ -56,6 +56,14 @@ Then(/^New member displays with ([^"]*)$/, async (memberName: string) => {
   await Vault.getMemberByName(memberName);
 })
 
+Then(/^Policy is displayed on the policies list$/, async () => {
+  const policiesCount = await Vault.policiesList.length;
+  await browser.waitUntil(
+    async () => (policiesCount < await Vault.policiesList.length),
+    { timeout: 10000, timeoutMsg: "Policy has no been added" }
+  )
+})
+
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
 
 Then(/^I expect that the title( not)* contains "([^"]*)?"$/, checkTitleContains)

@@ -13,6 +13,7 @@ import { createRaribleSdk, IRaribleSdk } from "@rarible/sdk"
 import { EthereumWallet } from "@rarible/sdk-wallet"
 import {
   convertEthereumToUnionAddress,
+  convertEthereumItemId,
   EVMBlockchain,
 } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { toCurrencyId, UnionAddress } from "@rarible/types"
@@ -20,7 +21,14 @@ import { toBn } from "@rarible/utils"
 import { ethers } from "ethers-ts"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
-import { Asset, Balance, NonFungibleActivityRecord, NonFungibleActivityRecords, NonFungibleItem, NonFunmgibleItems } from "./asset"
+import {
+  Asset,
+  Balance,
+  NonFungibleActivityRecord,
+  NonFungibleActivityRecords,
+  NonFungibleItem,
+  NonFunmgibleItems,
+} from "./asset"
 
 declare const FRONTEND_MODE: string
 
@@ -32,10 +40,12 @@ const [sdk, wallet] = getRaribleSdk(FRONTEND_MODE)
 
 export const EthereumAsset: Asset = {
   getActivitiesByItem: async function (
-    itemId: string,
+    tokenId: string,
+    contract: string,
     cursor?: string,
     size?: number,
   ): Promise<NonFungibleActivityRecords> {
+    const itemId = convertEthereumItemId(`${contract}:${tokenId}`, blockchain)
     const raribleActivities = await sdk.apis.activity.getActivitiesByItem({
       type: [ActivityType.SELL, ActivityType.TRANSFER],
       itemId,
@@ -181,4 +191,3 @@ function getRaribleSdk(mode: string): [IRaribleSdk, EthWallet] {
   return [sdk, wallet]
 }
 export { Balance }
-

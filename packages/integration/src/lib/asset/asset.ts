@@ -2,7 +2,8 @@ import { BigNumber } from "@rarible/utils"
 
 export declare type Asset = {
   getActivitiesByItem(
-    itemId: string,
+    tokenId: string,
+    contract: string,
     cursor?: string,
     size?: number,
   ): Promise<NonFungibleActivityRecords>

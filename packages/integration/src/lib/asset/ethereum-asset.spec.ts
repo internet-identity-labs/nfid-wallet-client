@@ -1,9 +1,6 @@
 import { BigNumber } from "@rarible/utils"
 
-import {
-  EthereumAsset,
-  Balance,
-} from "./ethereum-asset"
+import { EthereumAsset, Balance } from "./ethereum-asset"
 
 describe("Ethereum Asset", () => {
   jest.setTimeout(200000)
@@ -17,10 +14,10 @@ describe("Ethereum Asset", () => {
 
   it("should request activities by item", async function () {
     try {
+      const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
       const tokenId =
         "88260187566799326202913268841041605580353496351673437472672373155789474365442"
-      const itemId = `ETHEREUM:0xd8560c88d1dc85f9ed05b25878e366c49b68bef9:${tokenId}`
-      await EthereumAsset.getActivitiesByItem(itemId)
+      await EthereumAsset.getActivitiesByItem(contract, tokenId)
     } catch (e) {
       fail(e)
     }

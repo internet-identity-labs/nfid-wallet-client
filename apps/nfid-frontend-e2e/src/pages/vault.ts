@@ -127,11 +127,12 @@ export class Vault extends Vaults {
       { timeout: 6000, timeoutMsg: "Wallets are not on the list" }
     );
 
-    await this.walletsList.forEach(wallet => {
-      if (wallet.getAttribute("innerText").toString() === walletName) {
-        wallet.click();
+    await this.walletsList.forEach(async (wallet) => {
+      if (await wallet.getText() === walletName) {
+        await wallet.click();
       }
-    });
+    })
+
     await this.greaterThanInput.setValue(greaterThan);
     await this.approversInput.setValue(approvers);
     await this.createPolicyButton.waitForClickable();

@@ -44,7 +44,7 @@ Then(/^I logout$/, async () => {
   await Profile.logout();
 })
 
-Then(/^Vault id appears with name ([^"]*)$/, async (vaultName: string) => {
+Then(/^Vault appears with name ([^"]*)$/, async (vaultName: string) => {
   await Vaults.getVaultByName(vaultName);
 })
 

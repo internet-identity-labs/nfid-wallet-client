@@ -19,7 +19,7 @@ Feature: Vault scenarios
     And It log's me in
     When I open Vaults
     And I create a new Vault with name testVault
-    Then Vault id appears with name testVault
+    Then Vault appears with name testVault
 
   Scenario: Add wallet
     Given I authenticate with google account
@@ -35,12 +35,12 @@ Feature: Vault scenarios
     When I open Vaults
     And I click on vault with name testVault
     And I open Members tab
-    And I add new member to this vault with <name> and <address>
-    Then New member displays with <name>
+    And I add new member to this vault with <membername> and <address>
+    Then New member displays with <membername>
 
     Examples:
-      | name | address                                                          |
-      | john | bf255d5747df36885680098ef6cfe1137720dfdd2206904b69a6758160988b39 |
+      | membername | address                                                          |
+      | john       | bf255d5747df36885680098ef6cfe1137720dfdd2206904b69a6758160988b39 |
 
   Scenario: Add policy
     Given I authenticate with google account

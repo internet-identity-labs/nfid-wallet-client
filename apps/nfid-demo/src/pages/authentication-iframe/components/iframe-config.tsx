@@ -12,6 +12,7 @@ const initialStyleConfig = {
   mainTextColor: "",
   secondaryTextColor: "",
   linkColor: "",
+  checkmarkColor: "",
 }
 
 export const IframeConfig = ({
@@ -106,7 +107,7 @@ export const IframeConfig = ({
             <H5>Text styles</H5>
             <div className="space-y-1.5 mt-2">
               {Object.entries(styleConfig)
-                .slice(4)
+                .slice(4, 7)
                 .map((object) => (
                   <div className="flex">
                     <Popover
@@ -133,6 +134,38 @@ export const IframeConfig = ({
                   </div>
                 ))}
             </div>
+          </div>
+        </div>
+        <div className="">
+          <H5>Other styles</H5>
+          <div className="space-y-1.5 mt-2">
+            {Object.entries(styleConfig)
+              .slice(7)
+              .map((object) => (
+                <div className="flex">
+                  <Popover
+                    trigger={
+                      <div
+                        className="w-5 h-5 rounded-full mr-2.5 border border-black"
+                        style={{
+                          background: `rgb(${object[1]})`,
+                        }}
+                      />
+                    }
+                  >
+                    <ChromePicker
+                      color={`rgb(${object[1]})`}
+                      onChange={({ rgb: { r, g, b } }) => {
+                        setStyleConfig({
+                          ...styleConfig,
+                          [`${object[0]}`]: `${r} ${g} ${b}`,
+                        })
+                      }}
+                    />
+                  </Popover>
+                  <p className="font-mono">{object[0]}</p>
+                </div>
+              ))}
           </div>
         </div>
       </div>

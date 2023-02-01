@@ -1,6 +1,10 @@
 import { Then } from "@cucumber/cucumber"
 import setValue from "webdriverio/build/commands/element/setValue"
 
+import Profile from "../pages/profile"
+import Vaults from "../pages/vaults"
+import Vault from "../pages/vault"
+
 import clickElement from "./support/action/clickElement"
 import setInputField from "./support/action/setInputField"
 import { checkCredentialAmount } from "./support/action/setupVirtualWebauthn"
@@ -35,6 +39,30 @@ import isVisible from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
+
+Then(/^I logout$/, async () => {
+  await Profile.logout();
+})
+
+Then(/^Vault appears with name ([^"]*)$/, async (vaultName: string) => {
+  await Vaults.getVaultByName(vaultName);
+})
+
+Then(/^Wallet displays with name ([^"]*)$/, async (walletName: string) => {
+  await Vault.getWalletByName(walletName)
+})
+
+Then(/^New member displays with ([^"]*)$/, async (memberName: string) => {
+  await Vault.getMemberByName(memberName);
+})
+
+Then(/^Policy is displayed on the policies list$/, async () => {
+  const policiesCount = await Vault.policiesList.length;
+  await browser.waitUntil(
+    async () => (policiesCount < await Vault.policiesList.length),
+    { timeout: 10000, timeoutMsg: "Policy has no been added" }
+  )
+})
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
 

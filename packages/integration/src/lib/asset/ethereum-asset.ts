@@ -27,7 +27,7 @@ import {
   NonFungibleActivityRecord,
   NonFungibleActivityRecords,
   NonFungibleItem,
-  NonFunmgibleItems,
+  NonFungibleItems,
 } from "./asset"
 
 declare const FRONTEND_MODE: string
@@ -91,7 +91,7 @@ export const EthereumAsset: Asset = {
   getItemsByUser: async function (
     cursor?: string,
     size?: number,
-  ): Promise<NonFunmgibleItems> {
+  ): Promise<NonFungibleItems> {
     const address = await wallet.getAddress()
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,

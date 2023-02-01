@@ -11,7 +11,7 @@ export declare type Asset = {
     cursor?: string,
     size?: number,
   ): Promise<NonFungibleActivityRecords>
-  getItemsByUser(cursor?: string, size?: number): Promise<NonFunmgibleItems>
+  getItemsByUser(cursor?: string, size?: number): Promise<NonFungibleItems>
   getBalance(): Promise<Balance>
   transferNft(
     tokenId: string,
@@ -41,7 +41,7 @@ export declare type NonFungibleActivityRecords = {
   activities: Array<NonFungibleActivityRecord>
 }
 
-export declare type NonFunmgibleItems = {
+export declare type NonFungibleItems = {
   total?: number
   items: Array<NonFungibleItem>
 }

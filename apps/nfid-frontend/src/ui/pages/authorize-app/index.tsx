@@ -1,12 +1,11 @@
 import clsx from "clsx"
 import React from "react"
 
-import { SDKApplicationMeta, Tooltip } from "@nfid-frontend/ui"
+import { Button, SDKApplicationMeta, Tooltip } from "@nfid-frontend/ui"
 
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
 import { ElementProps } from "frontend/types/react"
-import { Button } from "frontend/ui/atoms/button"
 import { BlurOverlay } from "frontend/ui/molecules/blur-overlay"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
@@ -134,8 +133,8 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             ></BlurOverlay>
             <Button
               className="relative z-20"
-              primary
-              large
+              type="primary"
+              block
               onClick={() => onUnlockNFID()}
             >
               Continue

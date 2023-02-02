@@ -1,6 +1,6 @@
 import { BigNumber } from "@rarible/utils"
 
-export declare type Asset = {
+declare type Asset = {
   getActivitiesByItem(
     tokenId: string,
     contract: string,
@@ -20,12 +20,12 @@ export declare type Asset = {
   ): Promise<void>
 }
 
-export declare type Balance = {
+declare type Balance = {
   balance?: BigNumber
   balanceinUsd?: BigNumber
 }
 
-export declare type NonFungibleActivityRecord = {
+declare type NonFungibleActivityRecord = {
   id: string
   type: string
   to: string
@@ -36,17 +36,17 @@ export declare type NonFungibleActivityRecord = {
   priceUsd?: string
 }
 
-export declare type NonFungibleActivityRecords = {
+declare type NonFungibleActivityRecords = {
   cursor?: string
   activities: Array<NonFungibleActivityRecord>
 }
 
-export declare type NonFungibleItems = {
+declare type NonFungibleItems = {
   total?: number
   items: Array<NonFungibleItem>
 }
 
-export declare type NonFungibleItem = {
+declare type NonFungibleItem = {
   id: string
   blockchain: string
   collection?: string

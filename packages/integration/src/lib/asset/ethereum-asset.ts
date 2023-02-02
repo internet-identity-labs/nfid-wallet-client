@@ -28,7 +28,7 @@ import {
   NonFungibleActivityRecords,
   NonFungibleItem,
   NonFungibleItems,
-} from "./asset"
+} from "./types"
 
 declare const FRONTEND_MODE: string
 

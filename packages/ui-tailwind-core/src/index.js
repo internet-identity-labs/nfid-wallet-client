@@ -34,6 +34,8 @@ module.exports = plugin(
           "rgb(var(--color-primaryButtonColor) / <alpha-value>)",
         secondaryButtonColor:
           "rgb(var(--color-secondaryButtonColor) / <alpha-value>)",
+        buttonBorderColor:
+          "rgb(var(--color-buttonBorderColor) / <alpha-value>)",
         black: "rgb(var(--color-mainTextColor) / <alpha-value>)",
         secondary: "rgb(var(--color-secondaryTextColor) / <alpha-value>)",
         linkColor: "rgb(var(--color-linkColor) / <alpha-value>)",

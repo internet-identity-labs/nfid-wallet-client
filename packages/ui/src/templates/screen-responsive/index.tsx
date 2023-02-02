@@ -38,6 +38,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
       mainTextColor: searchParams.get("mainTextColor"),
       secondaryTextColor: searchParams.get("secondaryTextColor"),
       linkColor: searchParams.get("linkColor"),
+      buttonBorderColor: searchParams.get("buttonBorderColor"),
     })
   }, [searchParams])
 

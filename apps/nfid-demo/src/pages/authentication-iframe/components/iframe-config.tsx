@@ -9,6 +9,7 @@ const initialStyleConfig = {
   frameBorderColor: "",
   primaryButtonColor: "",
   secondaryButtonColor: "",
+  buttonBorderColor: "",
   mainTextColor: "",
   secondaryTextColor: "",
   linkColor: "",
@@ -75,7 +76,7 @@ export const IframeConfig = ({
             <H5>Buttons styles</H5>
             <div className="space-y-1.5 mt-2">
               {Object.entries(styleConfig)
-                .slice(2, 4)
+                .slice(2, 5)
                 .map((object) => (
                   <div className="flex">
                     <Popover
@@ -107,7 +108,7 @@ export const IframeConfig = ({
             <H5>Text styles</H5>
             <div className="space-y-1.5 mt-2">
               {Object.entries(styleConfig)
-                .slice(4, 7)
+                .slice(5, 7)
                 .map((object) => (
                   <div className="flex">
                     <Popover

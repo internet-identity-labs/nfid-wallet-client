@@ -1,9 +1,11 @@
 import { hooks } from "./src/wdio-hooks"
 
 export const isDebug = process.env.DEBUG === "true"
-export const hostName = process.env.HOST_NAME;
-export const hostPath = process.env.HOST_PATH;
-const baseURL = process.env.BASE_URL ? process.env.BASE_URL : "http://localhost:9090"
+export const hostName = process.env.HOST_NAME
+export const hostPath = process.env.HOST_PATH
+const baseURL = process.env.BASE_URL
+  ? process.env.BASE_URL
+  : "http://localhost:9090"
 
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile
@@ -139,9 +141,9 @@ export const config: WebdriverIO.Config = {
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
   baseUrl: baseURL,
-  hostname: hostName ? hostName : 'localhost',
+  hostname: hostName ? hostName : "localhost",
   port: 4444,
-  path: hostPath ? hostPath : '/',
+  path: hostPath ? hostPath : "/",
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,

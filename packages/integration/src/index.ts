@@ -1,6 +1,7 @@
 export * from "./lib/actors"
 export * from "./lib/agent"
 export * from "./lib/auth-state"
+export * from "./lib/ecdsa-signer"
 export * from "./lib/identity-manager/access-points"
 export * from "./lib/identity-manager/account"
 export * from "./lib/identity-manager/application"

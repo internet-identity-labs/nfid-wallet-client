@@ -22,3 +22,21 @@ export async function signEcdsaMessage(
   }
   return signatureResult.Ok.signature
 }
+
+export async function prepareSignature(
+  message: Array<number>,
+): Promise<string> {
+  return await ecdsaAPI.prepare_signature(message).catch((e) => {
+    throw new Error(`prepareSignature: ${e.message}`)
+  })
+}
+
+export async function getSignature(hash: string): Promise<Array<number>> {
+  const signatureResult = await ecdsaAPI.get_signature(hash).catch((e) => {
+    throw new Error(`getSignature: ${e.message}`)
+  })
+  if (hasOwnProperty(signatureResult, "Err")) {
+    throw new Error(`getSignature: ${signatureResult.Err}`)
+  }
+  return signatureResult.Ok.signature
+}

@@ -2,7 +2,7 @@ import { ActorMethod } from "@dfinity/agent"
 import { Bytes, ethers, Signer, TypedDataDomain, TypedDataField } from "ethers"
 import { Provider, TransactionRequest } from "@ethersproject/abstract-provider"
 import { getEcdsaPublicKey, signEcdsaMessage } from "./index"
-import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature } from "ethers/lib/utils"
+import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature, _TypedDataEncoder } from "ethers/lib/utils"
 import { hexZeroPad, joinSignature } from "@ethersproject/bytes"
 import { serialize } from "@ethersproject/transactions"
 import { UnsignedTransaction } from "ethers-ts"
@@ -42,6 +42,22 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     return signEcdsaMessage([...messageHashAsBytes])
       .then(signature => {
         const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
+        return joinSignature(ethersSignature)
+      })
+  }
+
+  async signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, message: Record<string, unknown>): Promise<string> {
+
+    const populated = await _TypedDataEncoder.resolveNames(domain, types, message, async (name: string) => {
+      if (!this.provider) throw new Error("init provider first");
+      return await this.provider.resolveName(name) || "FIXME: why could this happen?";
+    });
+
+    const encodedMessage = _TypedDataEncoder.hash(populated.domain, types, populated.value);
+
+    return signEcdsaMessage([...arrayify(encodedMessage)])
+      .then(signature => {
+        const ethersSignature = this._splitSignature(signature, arrayify(encodedMessage))
         return joinSignature(ethersSignature)
       })
   }
@@ -129,10 +145,6 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       })
     }
     return ethersSignature
-  }
-
-  async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
-   throw new Error("We did not decide what to do with this for now. Please contact BE team if you face it (:")
   }
 
 }

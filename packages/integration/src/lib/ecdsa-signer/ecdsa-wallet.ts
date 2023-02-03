@@ -1,7 +1,7 @@
 import {ActorMethod} from "@dfinity/agent"
 import {Bytes, ethers, Signer, TypedDataDomain, TypedDataField} from "ethers"
 import {Provider, TransactionRequest} from "@ethersproject/abstract-provider"
-import {getEcdsaPublicKey, signEcdsaMessage} from "./index"
+import {getEcdsaPublicKey, getSignature, prepareSignature, signEcdsaMessage} from "./index"
 import {arrayify, hashMessage, keccak256, resolveProperties, splitSignature} from "ethers/lib/utils"
 import {hexZeroPad, joinSignature} from "@ethersproject/bytes"
 import {serialize} from "@ethersproject/transactions"
@@ -44,6 +44,21 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
         const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
         return joinSignature(ethersSignature)
       })
+  }
+
+  async prepareSignature(message: Bytes | string): Promise<string> {
+    const keccakHash = hashMessage(message)
+    const messageHashAsBytes = arrayify(keccakHash)
+    return prepareSignature([...messageHashAsBytes])
+  }
+
+  async getPreparedSignature(hash: string, message: Bytes | string): Promise<string> {
+    const keccakHash = hashMessage(message)
+    const messageHashAsBytes = arrayify(keccakHash)
+    return getSignature(hash).then(signature => {
+      const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
+      return joinSignature(ethersSignature)
+    })
   }
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
@@ -132,7 +147,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   }
 
   async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
-   throw new Error("We did not decide what to do with this for now. Please contact BE team if you face it (:")
+    throw new Error("We did not decide what to do with this for now. Please contact BE team if you face it (:")
   }
 
 }

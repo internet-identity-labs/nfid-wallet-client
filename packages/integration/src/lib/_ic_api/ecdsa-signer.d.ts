@@ -16,4 +16,6 @@ export interface SignatureReply {
 export interface _SERVICE {
   public_key: ActorMethod<[], Result>
   sign: ActorMethod<[Array<number>], Result_1>
+  prepare_signature: ActorMethod<[Array<number>], string>
+  get_signature: ActorMethod<[string], Result_1>
 }

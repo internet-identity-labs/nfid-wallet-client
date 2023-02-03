@@ -30,6 +30,13 @@ describe("ECDSA suite", () => {
     expect(signature.length > 0).toBe(true)
   })
 
+  it("ecdsa prepare signature", async () => {
+    const message = "test_message"
+    const hash = await nfidWallet.prepareSignature(message)
+    const signature = await nfidWallet.getPreparedSignature(hash, message)
+    expect(signature.length > 0).toBe(true)
+  })
+
   it("nfid-wallet verify message", async () => {
     const address = await nfidWallet.getAddress()
     const message = "test_message"

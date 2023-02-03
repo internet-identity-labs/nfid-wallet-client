@@ -7,6 +7,8 @@ export const idlFactory = ({ IDL }: any) => {
   return IDL.Service({
     public_key: IDL.Func([], [Result], []),
     sign: IDL.Func([IDL.Vec(IDL.Nat8)], [Result_1], []),
+    prepare_signature: IDL.Func([IDL.Vec(IDL.Nat8)], [IDL.Text], []),
+    get_signature: IDL.Func([IDL.Text], [Result_1], ["query"]),
   })
 }
 export const init = ({ IDL }: any) => {

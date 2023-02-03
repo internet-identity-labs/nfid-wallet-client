@@ -31,16 +31,3 @@ const windowMessages = fromEvent<MessageEvent<RPCMessage>>(window, "message")
 export const rpcMessages = windowMessages.pipe(
   filter((event) => event.data && event.data.jsonrpc === "2.0"),
 )
-
-rpcMessages.subscribe((event: any) => {
-  console.debug("rpcMessages", { event })
-})
-
-
-export interface RPCQueue {
-  calls: RPCMessage[]
-}
-
-// const rpcQueue$ = new BehaviorSubject<RPCQueue>({
-//   calls: []
-// })

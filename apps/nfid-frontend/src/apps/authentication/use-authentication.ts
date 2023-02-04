@@ -5,7 +5,7 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
-import { authState } from "@nfid/integration"
+import { authState, hasOwnProperty } from "@nfid/integration"
 import { agent, invalidateIdentity } from "@nfid/integration"
 
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
@@ -119,8 +119,8 @@ export const useAuthentication = () => {
         recoveryDevices = await fetchRecoveryDevices(userNumber)
       }
 
-      const recoveryPhraseDevice = recoveryDevices.find(
-        (device) => device.alias === "Recovery phrase",
+      const recoveryPhraseDevice = recoveryDevices.find((device) =>
+        hasOwnProperty(device.purpose, "recovery"),
       )
 
       if (!recoveryPhraseDevice) {

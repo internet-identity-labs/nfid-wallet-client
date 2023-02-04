@@ -93,8 +93,16 @@ export async function createChallenge(): Promise<Challenge> {
 }
 
 export async function fetchAllDevices(anchor: UserNumber) {
-  return await ii.lookup(anchor).catch((e) => {
-    throw new Error(`fetchAllDevices: ${e.message}`)
+  return (
+    await ii.lookup(anchor).catch((e) => {
+      throw new Error(`fetchAllDevices: ${e.message}`)
+    })
+  ).map((value) => {
+    console.debug("fetchAllDevices", {
+      isAuth: !!authState.get().delegationIdentity,
+    })
+    if (!!authState.get().delegationIdentity) return value
+    else return { ...value, alias: "" }
   })
 }
 

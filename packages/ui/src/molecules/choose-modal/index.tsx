@@ -16,7 +16,7 @@ import { ChooseItem } from "./choose-item"
 import { filterGroupedOptionsByTitle } from "./helpers"
 import { IGroupedOptions, IGroupOption } from "./types"
 
-export interface IChoseModal {
+export interface IChooseModal {
   optionGroups: IGroupedOptions[]
   onSelect?: (value: string) => {}
   infoText?: string
@@ -24,13 +24,13 @@ export interface IChoseModal {
   title: string
 }
 
-export const ChoseModal = ({
+export const ChooseModal = ({
   optionGroups,
   onSelect,
   infoText,
   title,
   label,
-}: IChoseModal) => {
+}: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>(

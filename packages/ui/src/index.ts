@@ -35,6 +35,7 @@ export * from "./molecules/table/table-cell"
 export * from "./molecules/table/table-row"
 export * from "./molecules/empty-card"
 export * from "./molecules/tabs"
+export * from "./molecules/choose-modal"
 
 export * from "./organisms/tabs-switcher"
 export * from "./organisms/transfer-modal"

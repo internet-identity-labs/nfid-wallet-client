@@ -22,7 +22,7 @@ export const ChooseItem = ({
       onClick={handleClick}
       className={clsx(
         "border-t border-t-gray-100 last:border-b last:border-b-gray-100",
-        "hover:opacity-70 transition-opacity",
+        "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
         "py-2.5 cursor-pointer",
       )}
@@ -39,8 +39,8 @@ export const ChooseItem = ({
         </div>
       </div>
       <div>
-        <p className="text-sm">{innerTitle}</p>
-        <p className="text-xs text-gray-400">{innerSubtitle}</p>
+        <p className="text-sm text-right">{innerTitle}</p>
+        <p className="text-xs text-right text-gray-400">{innerSubtitle}</p>
       </div>
     </div>
   )

@@ -10,7 +10,6 @@ export async function storeSignIn(event: {
   billable: boolean
 }) {
   const url = ic.isLocal ? "/auth" : AWS_AUTH_STATS
-  console.log(url)
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

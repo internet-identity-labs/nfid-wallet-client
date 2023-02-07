@@ -43,6 +43,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
   }, [searchParams])
 
   useEffect(() => {
+    if (!checkIsIframe()) return
     Object.entries(styleConfig).map((entry) => {
       return document.documentElement.style.setProperty(
         `--color-${entry[0]}`,

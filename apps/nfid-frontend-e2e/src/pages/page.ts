@@ -1,12 +1,10 @@
-import { timeout } from "@dfinity/agent/lib/cjs/polling/strategy"
-
 export class Page {
   private get loader() {
     return $("#loader")
   }
 
-  public async openUrl(path: string) {
-    return await browser.url(path)
+  public async openBaseUrl() {
+    await browser.url("/");
   }
 
   public async openPage(page: string) {
@@ -15,7 +13,7 @@ export class Page {
 
   // -1 retrieves the last window, or -2 gets the first one
   public async switchToWindow(window?: string) {
-    const positionNumber: number = window === "last" ? -1 : -2
+    const positionNumber: number = window === "last" ? -1 : -2;
     if (window) {
       expect((await browser.getWindowHandles()).length).toBeGreaterThan(1)
     }
@@ -25,10 +23,10 @@ export class Page {
 
   public async waitForLoaderDisappear() {
     try {
-      await this.loader.waitForDisplayed({ timeout: 3000 })
-      await this.loader.waitForDisplayed({ timeout: 20000, reverse: true })
+      await this.loader.waitForDisplayed({ timeout: 3000 });
+      await this.loader.waitForDisplayed({ timeout: 20000, reverse: true });
     } catch (e: any) {
-      console.log(e)
+      // console.log(e);
     }
   }
 }

@@ -33,11 +33,22 @@ Given(
   removeAccountByPhoneNumber,
 )
 
-Given(/^I authenticate with google account$/, async () => {
-  await HomePage.authenticateWithGoogle()
-  await HomePage.switchToWindow("last")
-  await HomePage.pickGoogleAccount()
-  await HomePage.switchToWindow()
+Given(/^User authenticates with google account$/, async () => {
+  await HomePage.authenticateWithGoogle();
+  await HomePage.switchToWindow("last");
+  await HomePage.pickGoogleAccount();
+  await HomePage.switchToWindow();
+});
+
+Given(/^User authenticates with enhanced security$/, async function () {
+  this.auth = await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true);
+  await HomePage.authenticateWithEnhancedSecurity();
+  await HomePage.waitForLoaderDisappear();
+  console.log("CREDS:::::  ", await browser.getWebauthnCredentials(this.auth));
+})
+
+Given(/^User opens NFID site$/, async () => {
+  await HomePage.openBaseUrl();
 })
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)

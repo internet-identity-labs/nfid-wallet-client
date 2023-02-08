@@ -2,7 +2,7 @@ import {ActorMethod} from "@dfinity/agent"
 import {Bytes, ethers, Signer, TypedDataDomain, TypedDataField} from "ethers"
 import {Provider, TransactionRequest} from "@ethersproject/abstract-provider"
 import {getEcdsaPublicKey, getSignature, prepareSignature, signEcdsaMessage} from "./index"
-import {arrayify, hashMessage, keccak256, resolveProperties, splitSignature} from "ethers/lib/utils"
+import {_TypedDataEncoder, arrayify, hashMessage, keccak256, resolveProperties, splitSignature} from "ethers/lib/utils"
 import {hexZeroPad, joinSignature} from "@ethersproject/bytes"
 import {serialize} from "@ethersproject/transactions"
 import {UnsignedTransaction} from "ethers-ts"
@@ -147,6 +147,20 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   }
 
   async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const populated = await _TypedDataEncoder.resolveNames(domain, types, value, (name: string) => {
+      return this.provider!.resolveName(name);
+    });
+    const abc = _TypedDataEncoder.hash(populated.domain, types, populated.value);
+    return signEcdsaMessage([...arrayify(abc)])
+      .then(signature => {
+        const ethersSignature = this._splitSignature(signature, arrayify(abc))
+        return joinSignature(ethersSignature)
+      })
+  }
+
+  async signTypedData(data: any): Promise<string> {
     throw new Error("We did not decide what to do with this for now. Please contact BE team if you face it (:")
   }
 

@@ -47,7 +47,6 @@ Given(/^User authenticates with enhanced security$/, async function () {
 })
 
 Given(/^User signs in$/, async function () {
-  // this.auth = await addWebAuthnCredential(browser, this.auth, )
   await HomePage.signIn();
 })
 

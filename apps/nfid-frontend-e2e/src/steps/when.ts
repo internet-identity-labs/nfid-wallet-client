@@ -1,5 +1,8 @@
 import { When } from "@cucumber/cucumber"
 
+import { baseURL } from "../../wdio.conf"
+import { readFile } from "../helpers/fileops"
+
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
@@ -45,6 +48,25 @@ When(/^User opens mobile profile menu$/, async () => {
 
 When(/^User opens profile menu$/, async () => {
   await Profile.openProfileMenu();
+})
+
+When(/^User is already authenticated$/, async function () {
+  this.authId = await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true);
+  const rpId = new URL(baseURL).hostname;
+  const creds: WebAuthnCredential = await readFile("credentials.json");
+  const anchor: Object = await readFile("accounts.json");
+
+  await browser.addWebauthnCredential(
+    this.authId,
+    rpId,
+    creds.credentialId,
+    creds.isResidentCredential,
+    creds.privateKey,
+    creds.signCount
+  )
+
+  await browser.setLocalStorage("account", JSON.stringify(anchor));
+  await browser.refresh();
 })
 
 When(/^I open Vaults$/, async () => {

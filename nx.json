@@ -50,6 +50,7 @@
       { "env": "AWS_VERIFY_PHONENUMBER" },
       { "env": "AWS_SIGNIN_GOOGLE" },
       { "env": "AWS_SYMMETRIC" },
+      { "env": "AWS_AUTH_STATS" },
       { "env": "GOOGLE_CLIENT_ID" },
       { "env": "USERGEEK_API_KEY" },
       { "env": "LEDGER_CANISTER_ID" },

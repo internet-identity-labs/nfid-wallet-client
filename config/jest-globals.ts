@@ -12,6 +12,8 @@ export const JEST_GLOBALS = {
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:
     "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
+  AWS_AUTH_STATS:
+    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/auth/",
   IC_HOST: "https://ic0.app",
   II_ENV: "dev",
   IS_DEV: "",

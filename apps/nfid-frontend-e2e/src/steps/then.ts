@@ -62,6 +62,12 @@ Then(/^Policy is displayed on the policies list$/, async () => {
   )
 })
 
+Then(/^User has stored localstorage$/, async () => {
+  const localStorage = await browser.getLocalStorageItem("account");
+  expect(localStorage.length).toBeGreaterThan(1);
+  expect(localStorage).toContain("account");
+})
+
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
 
 Then(/^I expect that the title( not)* contains "([^"]*)?"$/, checkTitleContains)

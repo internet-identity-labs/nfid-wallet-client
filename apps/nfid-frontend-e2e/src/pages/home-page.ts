@@ -69,7 +69,6 @@ export class HomePage extends Page {
   public async authenticateWithEnhancedSecurity() {
     await this.enhacedSecurity.waitForDisplayed({ timeout: 7000, timeoutMsg: "Enhanced Security button is missing!" });
     await this.enhacedSecurity.click();
-    await this.waitForLoaderDisappear();
   }
 
   public async signIn() {

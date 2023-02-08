@@ -3,6 +3,7 @@ import cucumberJson from "wdio-cucumberjs-json-reporter"
 import { baseURL } from "../wdio.conf"
 import { deviceName } from "../wdio.mobile.conf"
 import { addVirtualAuthCommands } from "./steps/support/action/setupVirtualWebauthn"
+import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
 
 //
 // =====
@@ -55,6 +56,7 @@ export const hooks = {
    */
   before: async function (capabilities: any, specs: any) {
     await addVirtualAuthCommands(browser);
+    await addLocalStorageCommands(browser);
   },
   /**
    * Gets executed before the suite starts.

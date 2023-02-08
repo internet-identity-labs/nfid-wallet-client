@@ -6,7 +6,7 @@ import openWebsite from "./support/action/openWebsite"
 import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
 import removeUserE2E from "./support/action/removeUserE2E"
 import setWindowSize from "./support/action/setWindowSize"
-import { setupVirtualAuthenticator } from "./support/action/setupVirtualWebauthn"
+import { setupVirtualAuthenticator, addWebAuthnCredential } from "./support/action/setupVirtualWebauthn"
 import addLocalStorageKey from "./support/check/addLocalStorageKey"
 import checkContainsAnyText from "./support/check/checkContainsAnyText"
 import checkContainsText from "./support/check/checkContainsText"
@@ -44,7 +44,11 @@ Given(/^User authenticates with enhanced security$/, async function () {
   this.auth = await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true);
   await HomePage.authenticateWithEnhancedSecurity();
   await HomePage.waitForLoaderDisappear();
-  console.log("CREDS:::::  ", await browser.getWebauthnCredentials(this.auth));
+})
+
+Given(/^User signs in$/, async function () {
+  // this.auth = await addWebAuthnCredential(browser, this.auth, )
+  await HomePage.signIn();
 })
 
 Given(/^User opens NFID site$/, async () => {

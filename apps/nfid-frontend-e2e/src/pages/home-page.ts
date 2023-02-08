@@ -2,6 +2,10 @@ import { Page } from "./page"
 
 export class HomePage extends Page {
 
+  private get signInButton() {
+    return $("#btn-signin");
+  }
+
   private get burgerButton() {
     return $("button [alt=menu]");
   }
@@ -66,6 +70,11 @@ export class HomePage extends Page {
     await this.enhacedSecurity.waitForDisplayed({ timeout: 7000, timeoutMsg: "Enhanced Security button is missing!" });
     await this.enhacedSecurity.click();
     await this.waitForLoaderDisappear();
+  }
+
+  public async signIn() {
+    await this.signInButton.waitForDisplayed({timeout: 7000, timeoutMsg: "Sign In button is not displayed!"});
+    await this.signInButton.click();
   }
 
   public async captchaPass() {

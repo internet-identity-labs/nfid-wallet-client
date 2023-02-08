@@ -27,6 +27,21 @@ declare global {
         userHandle?: string,
         largeBlob?: string,
       ) => Promise<void>
+
+      getLocalStorage: (
+      ) => Promise<string[]>
+      setLocalStorage: (
+        key: string,
+        value: string
+      ) => Promise<void>
+      clearLocalStorage: (
+      ) => Promise<void>
+      getLocalStorageItem: (
+        key: string
+      ) => Promise<string>
+      deleteLocalStorageItem: (
+        key: string
+      ) => Promise<void>
     }
   }
 }

@@ -2,8 +2,7 @@
 Feature: Registration using Google
 
   Background: Open the link and ensure userE2E is deleted.
-    Given I open the site "/"
-    Given My browser supports WebAuthN
+    Given User opens NFID site
 
   Scenario Outline: User wants to register with Google
     Given I remove the e2e@identitylabs.ooo

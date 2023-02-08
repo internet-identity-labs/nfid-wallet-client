@@ -11,6 +11,7 @@ export const chromeBrowserOptions: IChromeOption = {
     // "--enable-features=NetworkService,NetworkServiceInProcess"
     `--user-data-dir=${process.env.USER_DATA_DIR}`,
   ],
+  'w3c': false
 }
 
 export const chromeBrowser = {

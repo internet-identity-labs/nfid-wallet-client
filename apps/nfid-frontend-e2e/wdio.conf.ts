@@ -1,4 +1,5 @@
 import { hooks } from "./src/wdio-hooks"
+import { chromeBrowser } from "./src/browserOptions"
 
 export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME;
@@ -85,28 +86,7 @@ export const config: WebdriverIO.Config = {
   //
 
   // Adds chrome capabilities to run headless
-  capabilities: [
-    {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: [
-          `--user-data-dir=${process.env.USER_DATA_DIR}`,
-          "--no-sandbox",
-          ...(isDebug
-            ? [
-                // "--auto-open-devtools-for-tabs"
-              ]
-            : ["--headless"]),
-          "disable-gpu",
-          "--ignore-certificate-errors", // allow self-signed certificates
-          "--disable-web-security",
-        ],
-      },
-      // @ts-ignore
-      "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
-      acceptInsecureCerts: true,
-    },
-  ],
+  capabilities: [chromeBrowser],
   //
   // ===================
   // Test Configurations

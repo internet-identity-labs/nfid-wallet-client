@@ -5,7 +5,7 @@ Feature: Add protected/unportected, Protect, Delete recovery phrase
   Scenario:
     Given I open the site "/"
     Given My browser supports WebAuthN
-   
+
     Then I wait on element "#continue-with-enhanced-security" for 4000ms to be displayed
     When I click on the selector "#continue-with-enhanced-security"
     Then I wait on element "#loader" for 10000ms to not be displayed
@@ -93,6 +93,6 @@ Feature: Add protected/unportected, Protect, Delete recovery phrase
     Then I wait on element "#security-key"
     Then I expect that element "#recovery-key" is displayed
 
-    
+
 
 

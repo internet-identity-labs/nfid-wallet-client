@@ -9,13 +9,16 @@ import { AuthSession } from "frontend/state/authentication"
 import { RPCMessage, RPC_BASE } from "../embed/rpc-service"
 
 type ConnectAccountServiceContext = {
-  authSession: AuthSession
+  authSession?: AuthSession
+  rpcMessage?: RPCMessage
 }
 
-export const ConnectAccountService = async (
-  { authSession }: ConnectAccountServiceContext,
-  event: { type: string; data: RPCMessage },
-) => {
+export const ConnectAccountService = async ({
+  authSession,
+  rpcMessage,
+}: ConnectAccountServiceContext) => {
+  if (!authSession || !rpcMessage)
+    throw new Error("No authSession or rpcMessage")
   console.time("ConnectAccountService")
   console.time("ConnectAccountService getWalletDelegation")
   const identity = await getWalletDelegation(authSession.anchor)
@@ -32,5 +35,5 @@ export const ConnectAccountService = async (
 
   console.debug("ConnectAccountService")
   console.timeEnd("ConnectAccountService")
-  return Promise.resolve({ ...RPC_BASE, id: event.data.id, result: [address] })
+  return Promise.resolve({ ...RPC_BASE, id: rpcMessage.id, result: [address] })
 }

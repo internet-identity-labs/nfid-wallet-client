@@ -1,30 +1,24 @@
 // FIXME:
 // import from @nfid/integration
-import { createMachine } from "xstate"
+import { ActorRefFrom, createMachine } from "xstate"
 
 import { AuthSession } from "frontend/state/authentication"
+import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { RPCMessage, RPCResponse } from "../../embed/rpc-service"
 import { ConnectAccountService } from "../services"
 
-type NFIDEmbedMachineContext = {
+type NFIDConnectAccountMachineContext = {
+  appMeta?: AuthorizingAppMeta
   authSession?: AuthSession
   rpcMessage?: RPCMessage
   error?: any
 }
 
-// TODO:
-// - load from url
-const appMeta = {
-  appMeta: {
-    name: "Rarible SDK Example",
-    logo: "https://app.rarible.com/favicon.ico",
-  },
-}
-
 type Events =
   | { type: "done.invoke.ConnectAccountService"; data: RPCResponse }
   | { type: "CONNECTION_DETAILS" }
+  | { type: "CONNECT_WITH_ACCOUNT"; data: string }
   | { type: "BACK" }
 
 export const NFIDConnectAccountMachine =
@@ -32,13 +26,17 @@ export const NFIDConnectAccountMachine =
   createMachine(
     {
       tsTypes: {} as import("./index.typegen").Typegen0,
-      schema: { events: {} as Events, context: {} as NFIDEmbedMachineContext },
+      schema: {
+        events: {} as Events,
+        context: {} as NFIDConnectAccountMachineContext,
+      },
       id: "NFIDConnectAccountMachine",
       initial: "Ready",
       states: {
         Ready: {
           on: {
             CONNECTION_DETAILS: "ConnectionDetails",
+            CONNECT_WITH_ACCOUNT: "ConnectWithAccount",
           },
         },
         Error: {},
@@ -48,15 +46,38 @@ export const NFIDConnectAccountMachine =
             BACK: "Ready",
           },
         },
+
+        ConnectWithAccount: {
+          invoke: {
+            src: "ConnectAccountService",
+            id: "ConnectAccountService",
+            onDone: "End",
+            data: (context) => ({
+              authSession: context.authSession,
+              event: context.rpcMessage,
+            }),
+          },
+        },
+        ConnectAnonymously: {},
+
+        End: {
+          type: "final",
+          data: (context, event: { data: NFIDConnectAccountMachineContext }) =>
+            event.data,
+        },
       },
     },
     {
       actions: {},
       guards: {},
       services: {
-        // FIXME:
-        // @ts-ignore
         ConnectAccountService,
       },
     },
   )
+
+export type NFIDConnectAccountActor = ActorRefFrom<
+  typeof NFIDConnectAccountMachine
+>
+
+export default NFIDConnectAccountMachine

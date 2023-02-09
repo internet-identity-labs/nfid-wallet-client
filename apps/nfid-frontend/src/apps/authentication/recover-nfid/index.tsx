@@ -2,6 +2,7 @@ import * as Sentry from "@sentry/browser"
 import React, { useState } from "react"
 import { FieldValues } from "react-hook-form"
 
+import { useAccount } from "frontend/integration/identity-manager/account/hooks"
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { RecoverNFID } from "frontend/ui/pages/recover-nfid"
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
@@ -21,6 +22,7 @@ export const AppScreenRecoverNFID: React.FC<
     (state) => !state,
     !!isVerifiedDomainDefault,
   )
+  const { refreshProfile } = useAccount()
 
   const { navigate } = useNFIDNavigate()
   const { loginWithRecovery, isLoading } = useAuthentication()
@@ -41,6 +43,7 @@ export const AppScreenRecoverNFID: React.FC<
       try {
         setResponseError("")
         result = await loginWithRecovery(seedPhrase, userNumber)
+        await refreshProfile()
       } catch (e) {
         console.error(e)
         return setResponseError(
@@ -57,7 +60,7 @@ export const AppScreenRecoverNFID: React.FC<
       Sentry.setUser({ id: userNumber.toString() })
       navigate(registerDeviceDeciderPath, { state: { userNumber } })
     },
-    [loginWithRecovery, navigate, registerDeviceDeciderPath],
+    [loginWithRecovery, navigate, refreshProfile, registerDeviceDeciderPath],
   )
 
   return (

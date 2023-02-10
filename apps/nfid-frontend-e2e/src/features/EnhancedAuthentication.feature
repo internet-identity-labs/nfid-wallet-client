@@ -16,7 +16,6 @@ Feature: Mobile registration and authentication
   Scenario Outline: User Signs In with predefined credentials
     Given User opens NFID site
     And User is already authenticated
-    And User opens burger menu
     Given User signs in
     And Tokens displayed on user assets
     And User opens burger menu

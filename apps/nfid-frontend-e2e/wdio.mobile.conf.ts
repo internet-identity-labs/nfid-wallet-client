@@ -2,23 +2,18 @@ import { cucumberOpts } from "./src/cucumber-options"
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
 import { config as common } from "./wdio.conf"
 
-export const deviceName = process.env.DEVICE_NAME ? process.env.DEVICE_NAME : "Pixel 5"
-export const isHeadless = process.env.IS_HEADLESS
+export const deviceName = process.env.DEVICE_NAME
 
 if (deviceName) {
   chromeBrowserOptions.args.push('--window-size=500,900')
   chromeBrowserOptions.mobileEmulation = { deviceName }
 }
 
-if (isHeadless) {
-  chromeBrowserOptions.args.push("--headless")
-}
-
-export const config = {
+export const config: WebdriverIO.Config = {
   ...common,
   capabilities: [chromeBrowser],
   cucumberOpts: {
-    cucumberOpts,
-    tagExpression: "@mobile",
+    ...cucumberOpts,
+    tagExpression: "@mobile"
   }
 }

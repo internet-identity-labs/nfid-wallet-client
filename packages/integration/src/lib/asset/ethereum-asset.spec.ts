@@ -4,6 +4,22 @@ import { EthereumAsset, Balance } from "./ethereum-asset"
 
 describe("Ethereum Asset", () => {
   jest.setTimeout(200000)
+
+  it("should return one fungible tx", async function () {
+    const actual = await EthereumAsset.getFungibleActivityByUser({ sort: "asc", size: 1 })
+    expect(actual).toEqual([
+      {
+        type: 'transfer',
+        date: '1674484632',
+        to: '0x382901144a77bec53493fa090053b9c63da5dd07',
+        from: '0xdc75e8c3ae765d8947adbc6698a2403a6141d439',
+        transactionHash: '0xc69ffa77fa4a3e29050a5fbc9014f206278d958be966d2fe6d7e3864db77220a',
+        price: '1000000000000000',
+        gasPrice: '1500000018'
+      }
+    ])
+  })
+
   it("should request balance", async function () {
     const balance: Balance = await EthereumAsset.getBalance()
     expect(balance).toMatchObject({

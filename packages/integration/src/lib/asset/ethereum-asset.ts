@@ -31,12 +31,16 @@ import {
 } from "./types"
 
 declare const FRONTEND_MODE: string
+declare const ETHERSCAN_API_KEY: string
 
 const currencyId = "ETHEREUM:0x0000000000000000000000000000000000000000"
 const mainnet = "https://ethereum.publicnode.com"
 const testnet = "https://ethereum-goerli-rpc.allthatnode.com"
+const etherscanApiTestnet = "https://api-goerli.etherscan.io/api"
+const etherscanApiMainnnet = "https://api.etherscan.io/api"
 const blockchain = Blockchain.ETHEREUM as EVMBlockchain
 const [sdk, wallet] = getRaribleSdk(FRONTEND_MODE)
+const etherscanApi = "production" == FRONTEND_MODE ? etherscanApiMainnnet : etherscanApiTestnet
 
 export const EthereumAsset: Asset = {
   getActivitiesByItem: async function (
@@ -134,6 +138,49 @@ export const EthereumAsset: Asset = {
     receiver: string,
   ): Promise<void> {
     wallet.safeTransferFrom(receiver, contract, tokenId)
+  },
+
+  getFungibleActivityByUser: async function ({page = 1, size = 0, sort = "desc"}: {
+    page?: number,
+    size?: number,
+    sort?: "asc" | "desc",
+  } = {}): Promise<any> {
+    const address = await wallet.getAddress()
+    const params: Record<string, any> = {
+      module: "account",
+      action: "txlist",
+      address: address,
+      page: page,
+      offset: size,
+      sort: sort,
+      apikey: ETHERSCAN_API_KEY,
+    }
+    const response = await fetch(
+      etherscanApi + "?" + new URLSearchParams(params),
+    )
+    const data = await response.json()
+    const result = data.result.map(
+      (tx: {
+        functionName: string
+        timeStamp: number
+        to: string
+        from: string
+        hash: string
+        value: number
+        gasPrice: number
+      }) => {
+        return {
+          type: tx.functionName.split("(")[0] || "transfer",
+          date: tx.timeStamp,
+          to: tx.to,
+          from: tx.from,
+          transactionHash: tx.hash,
+          price: tx.value,
+          gasPrice: tx.gasPrice,
+        }
+      },
+    )
+    return result
   },
 }
 

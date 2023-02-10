@@ -43,6 +43,7 @@
     "@web3modal/ethereum": "^2.0.0-beta.9",
     "@web3modal/html": "^2.0.0-beta.9",
     "@xstate/react": "^3.0.0",
+    "alchemy-sdk": "^2.4.2",
     "biguintle": "1.0.3",
     "bip39": "3.0.4",
     "bn.js": "5.2.1",

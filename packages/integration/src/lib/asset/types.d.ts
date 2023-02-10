@@ -18,6 +18,11 @@ declare type Asset = {
     constract: string,
     receiver: string,
   ): Promise<void>
+  getFungibleActivityByUser({page, size, sort}: {
+    page?: number,
+    size?: number,
+    sort?: "asc" | "desc",
+   } = {}): Promise<any>
 }
 
 declare type Balance = {

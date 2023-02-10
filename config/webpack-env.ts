@@ -13,6 +13,7 @@ export const serviceConfig = {
   IC_HOST: JSON.stringify(process.env.IC_HOST),
   II_ENV: JSON.stringify(process.env.II_MODE),
   CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
+  ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
   FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
   IS_DEV: JSON.stringify(process.env.IS_DEV),
   USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),

@@ -23,6 +23,7 @@ export const JEST_GLOBALS = {
   SIGNIN_GOOGLE: "/signin",
   FRONTEND_MODE: "development",
   CURRCONV_TOKEN: process.env["CURRCONV_TOKEN"],
+  ETHERSCAN_API_KEY: process.env["ETHERSCAN_API_KEY"],
   METAMASK_SIGNIN_MESSAGE:
     "Hi there from NFID! Sign this message to prove you own this wallet and we’ll log you in. This won’t cost you any Ether.",
   WALLET_CONNECT_PROJECT_ID: "aca79764a3850f6e712e91e7f9164e87",

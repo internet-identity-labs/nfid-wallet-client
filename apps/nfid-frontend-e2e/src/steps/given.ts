@@ -47,7 +47,7 @@ Given(/^User authenticates with enhanced security$/, async function () {
 })
 
 Given(/^User signs in$/, async function () {
-  await HomePage.signIn();
+  await HomePage.signIn(true);
 })
 
 Given(/^User opens NFID site$/, async () => {

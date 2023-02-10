@@ -1,14 +1,9 @@
 import { cucumberOpts } from "./src/cucumber-options"
-import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
+import { chromeBrowser } from "./src/browserOptions"
 import { config as common } from "./wdio.conf"
 
-export const isHeadless = process.env.IS_HEADLESS
 
-if (isHeadless) {
-  chromeBrowserOptions.args.push("--headless")
-}
-
-export const config = {
+export const config: WebdriverIO.Config = {
   ...common,
   capabilities: [chromeBrowser],
   cucumberOpts: {

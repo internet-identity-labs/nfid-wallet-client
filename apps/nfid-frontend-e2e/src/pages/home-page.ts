@@ -3,7 +3,7 @@ import { Page } from "./page"
 export class HomePage extends Page {
 
   private get signInButton() {
-    return $("#btn-signin");
+    return $$("#btn-signin");
   }
 
   private get burgerButton() {
@@ -71,9 +71,24 @@ export class HomePage extends Page {
     await this.enhacedSecurity.click();
   }
 
-  public async signIn() {
-    await this.signInButton.waitForDisplayed({timeout: 7000, timeoutMsg: "Sign In button is not displayed!"});
-    await this.signInButton.click();
+  public async signIn(isMobile?: boolean) {
+    let index = isMobile ? 0 : 1;
+    let counter = 0;
+    while (await this.signInButton.length > 0 || counter++ < 3) {
+      if (isMobile) await this.openBurgerMenu();
+      await this.signInButton[index].waitForDisplayed({ timeout: 7000, timeoutMsg: "Sign In button is not displayed!" });
+      await this.signInButton[index].waitForClickable({ timeout: 4000, timeoutMsg: "Sign In button is not clickable!" });
+      await this.signInButton[index].click();
+      try {
+        // handles the situation with Registration ceremony
+        // https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client
+        await browser.waitUntil(
+          async () => (await this.signInButton.length) < 1, {
+          timeout: 6000 + (counter * 1000)
+        });
+        break;
+      } catch (err) { }
+    }
   }
 
   public async captchaPass() {

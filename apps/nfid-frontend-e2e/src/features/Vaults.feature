@@ -8,21 +8,21 @@ Feature: Vault scenarios
 
   Scenario: User registers via google
     Given I remove the e2e@identitylabs.ooo
-    Given I authenticate with google account
-    And I enter a captcha
+    Given User authenticates with google account
+    And User enters a captcha
     And It log's me in
-    When I open profile menu
-    Then I logout
+    When User opens profile menu
+    Then User logs out
 
   Scenario: Create a new Vault
-    Given I authenticate with google account
+    Given User authenticates with google account
     And It log's me in
     When I open Vaults
     And I create a new Vault with name testVault
     Then Vault appears with name testVault
 
   Scenario: Add wallet
-    Given I authenticate with google account
+    Given User authenticates with google account
     And It log's me in
     When I open Vaults
     And I click on vault with name testVault
@@ -30,7 +30,7 @@ Feature: Vault scenarios
     Then Wallet displays with name myNewWallet
 
   Scenario: Add member
-    Given I authenticate with google account
+    Given User authenticates with google account
     And It log's me in
     When I open Vaults
     And I click on vault with name testVault
@@ -43,7 +43,7 @@ Feature: Vault scenarios
       | john       | bf255d5747df36885680098ef6cfe1137720dfdd2206904b69a6758160988b39 |
 
   Scenario: Add policy
-    Given I authenticate with google account
+    Given User authenticates with google account
     And It log's me in
     When I open Vaults
     And I click on vault with name testVault

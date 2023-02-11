@@ -1,4 +1,6 @@
 export const JEST_GLOBALS = {
+  Uint8Array,
+  ArrayBuffer,
   INTERNET_IDENTITY_CANISTER_ID: "nprnb-waaaa-aaaaj-qax4a-cai",
   IDENTITY_MANAGER_CANISTER_ID: "74gpt-tiaaa-aaaak-aacaa-cai",
   VAULT_CANISTER_ID: "ymvb6-7qaaa-aaaan-qbgga-cai",

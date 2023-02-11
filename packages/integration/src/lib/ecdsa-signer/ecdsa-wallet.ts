@@ -7,6 +7,7 @@ import {hexZeroPad, joinSignature} from "@ethersproject/bytes"
 import {serialize} from "@ethersproject/transactions"
 import {UnsignedTransaction} from "ethers-ts"
 import * as BN from "bn.js"
+import { SignTypedDataVersion, TypedDataUtils } from "@metamask/eth-sig-util";
 
 const ABI_721 = [
   'function setApprovalForAll(address operator, bool _approved)',
@@ -74,6 +75,23 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
           return serialize(<UnsignedTransaction>tx, ethersSignature)
         })
     })
+  }
+
+  async signTypedData(data: any): Promise<string> {
+    const typedDataHash = TypedDataUtils.eip712Hash(
+      {
+        types: data.types,
+        primaryType: data.primaryType,
+        domain: data.domain,
+        message: data.message
+      },
+      SignTypedDataVersion.V4
+    );
+    return signEcdsaMessage([...typedDataHash])
+      .then(signature => {
+        const ethersSignature = this._splitSignature(signature, typedDataHash);
+        return joinSignature(ethersSignature);
+      });
   }
 
   async safeTransferFrom(to: string, contractAddress: string, tokenId: string) {

@@ -3,8 +3,8 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.NFIDConnectAccountMachine": {
-      type: "done.invoke.NFIDConnectAccountMachine"
+    "done.invoke.EmbedConnectAccountMachine": {
+      type: "done.invoke.EmbedConnectAccountMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -23,8 +23,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.NFIDConnectAccountMachine": {
-      type: "error.platform.NFIDConnectAccountMachine"
+    "error.platform.EmbedConnectAccountMachine": {
+      type: "error.platform.EmbedConnectAccountMachine"
       data: unknown
     }
     "error.platform.SendTransactionService": {
@@ -44,7 +44,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.authenticate"
-    NFIDConnectAccountMachine: "done.invoke.NFIDConnectAccountMachine"
+    EmbedConnectAccountMachine: "done.invoke.EmbedConnectAccountMachine"
     SendTransactionService: "done.invoke.SendTransactionService"
     SignTypedDataService: "done.invoke.SignTypedDataService"
   }
@@ -62,7 +62,7 @@ export interface Typegen0 {
       | "error.platform.SignTypedDataService"
     nfid_authenticated: "done.invoke.authenticate"
     sendRPCResponse:
-      | "done.invoke.NFIDConnectAccountMachine"
+      | "done.invoke.EmbedConnectAccountMachine"
       | "done.invoke.SendTransactionService"
       | "done.invoke.SignTypedDataService"
       | "error.platform.SendTransactionService"
@@ -79,7 +79,7 @@ export interface Typegen0 {
       | "SEND_TRANSACTION"
       | "SIGN_TYPED_DATA"
       | "xstate.init"
-    NFIDConnectAccountMachine: "CONNECT_ACCOUNT"
+    EmbedConnectAccountMachine: "CONNECT_ACCOUNT"
     SendTransactionService: "SEND_TRANSACTION"
     SignTypedDataService: "SIGN_TYPED_DATA"
   }

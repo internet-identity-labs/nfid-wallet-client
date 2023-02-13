@@ -1,12 +1,25 @@
 import { Page } from "./page"
 
 export class HomePage extends Page {
+
+  private get burgerButton() {
+    return $("button [alt=menu]");
+  }
+
+  private get isBurgerMenuOpened() {
+    return $("//div[contains(@class,'translate-x-0')]");
+  }
+
   private get googleAuthButton() {
     return $(".//iframe[contains(@src,'accounts.google')]")
   }
 
   private get accountPicker() {
     return $("#credentials-picker > div:first-child") //picks first account from the list
+  }
+
+  private get enhacedSecurity() {
+    return $("#continue-with-enhanced-security");
   }
 
   private get captchaImage() {
@@ -25,6 +38,12 @@ export class HomePage extends Page {
     return $("#create-nfid")
   }
 
+  public async openBurgerMenu() {
+    await this.burgerButton.waitForDisplayed({ timeout: 7000, timeoutMsg: "Burgen Menu is missing!" });
+    await this.burgerButton.click();
+    await this.isBurgerMenuOpened.waitForDisplayed({ timeout: 3000, timeoutMsg: "Burger Menu is not opened" });
+  }
+
   public async authenticateWithGoogle() {
     await this.googleAuthButton.waitForDisplayed({
       timeout: 6000,
@@ -41,6 +60,12 @@ export class HomePage extends Page {
     })
     await this.accountPicker.waitForClickable()
     await this.accountPicker.click()
+  }
+
+  public async authenticateWithEnhancedSecurity() {
+    await this.enhacedSecurity.waitForDisplayed({ timeout: 7000, timeoutMsg: "Enhanced Security button is missing!" });
+    await this.enhacedSecurity.click();
+    await this.waitForLoaderDisappear();
   }
 
   public async captchaPass() {

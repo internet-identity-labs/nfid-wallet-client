@@ -6,10 +6,12 @@ declare global {
   namespace WebdriverIO {
     interface Browser {
       addVirtualWebAuth: (
-        protocol: string,
-        transport: string,
-        hasResidentKey: boolean,
-        isUserConsenting: boolean,
+        protocol?: string,
+        transport?: string,
+        hasResidentKey?: boolean,
+        hasUserVerification?: boolean,
+        isUserConsenting?: boolean,
+        isUserVerified?: boolean
       ) => Promise<string>
       removeVirtualWebAuth: (authenticatorId: string) => Promise<void>
       getWebauthnCredentials: (

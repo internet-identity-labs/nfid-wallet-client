@@ -1,11 +1,9 @@
 import { hooks } from "./src/wdio-hooks"
 
 export const isDebug = process.env.DEBUG === "true"
-export const hostName = process.env.HOST_NAME
-export const hostPath = process.env.HOST_PATH
-const baseURL = process.env.NFID_PROVIDER_URL
-  ? process.env.NFID_PROVIDER_URL
-  : "http://localhost:9090"
+export const hostName = process.env.HOST_NAME;
+export const hostPath = process.env.HOST_PATH;
+export const baseURL = process.env.NFID_PROVIDER_URL ? process.env.NFID_PROVIDER_URL : "http://localhost:9090"
 
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile

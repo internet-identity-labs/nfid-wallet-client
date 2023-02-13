@@ -1,7 +1,6 @@
 import { Given } from "@cucumber/cucumber"
 
 import HomePage from "../pages/home-page"
-
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab"
 import openWebsite from "./support/action/openWebsite"
 import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
@@ -34,12 +33,12 @@ Given(
   removeAccountByPhoneNumber,
 )
 
-Given(/^I authenticate with google account$/, async() => {
-  await HomePage.authenticateWithGoogle();
-  await HomePage.switchToWindow("last");
-  await HomePage.pickGoogleAccount();
-  await HomePage.switchToWindow();
-});
+Given(/^I authenticate with google account$/, async () => {
+  await HomePage.authenticateWithGoogle()
+  await HomePage.switchToWindow("last")
+  await HomePage.pickGoogleAccount()
+  await HomePage.switchToWindow()
+})
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)
 

@@ -18,6 +18,11 @@ declare type Asset = {
     constract: string,
     receiver: string,
   ): Promise<void>
+  getFungibleActivityByUser({page, size, sort}: {
+    page?: number,
+    size?: number,
+    sort?: "asc" | "desc",
+   } = {}): Promise<any>
 }
 
 declare type Balance = {
@@ -25,7 +30,13 @@ declare type Balance = {
   balanceinUsd?: BigNumber
 }
 
-declare type NonFungibleActivityRecord = {
+declare type FungibleActivityRecords = {
+  page?: number
+  size?: number
+  activities: Array<ActivityRecord>
+}
+
+declare type ActivityRecord = {
   id: string
   type: string
   to: string
@@ -34,11 +45,12 @@ declare type NonFungibleActivityRecord = {
   transactionHash: string
   price?: string
   priceUsd?: string
+  error?: boolean
 }
 
 declare type NonFungibleActivityRecords = {
   cursor?: string
-  activities: Array<NonFungibleActivityRecord>
+  activities: Array<ActivityRecord>
 }
 
 declare type NonFungibleItems = {

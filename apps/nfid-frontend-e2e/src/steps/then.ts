@@ -1,5 +1,4 @@
 import { Then } from "@cucumber/cucumber"
-import setValue from "webdriverio/build/commands/element/setValue"
 
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
@@ -39,8 +38,8 @@ import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
 
-Then(/^I logout$/, async () => {
-  await Profile.logout()
+Then(/^User logs out$/, async () => {
+  await Profile.logout();
 })
 
 Then(/^Vault appears with name ([^"]*)$/, async (vaultName: string) => {

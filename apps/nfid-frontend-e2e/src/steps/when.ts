@@ -21,8 +21,9 @@ import setCookie from "./support/action/setCookie"
 import setInputField from "./support/action/setInputField"
 import setPromptText from "./support/action/setPromptText"
 
-When(/^I enter a captcha$/, async () => {
-  await HomePage.captchaPass()
+When(/^User enters a captcha$/, async function () {
+  await HomePage.captchaPass();
+  await HomePage.waitForLoaderDisappear();
 })
 
 When(/^It log's me in$/, async () => {
@@ -30,8 +31,20 @@ When(/^It log's me in$/, async () => {
   await HomePage.waitForLoaderDisappear()
 })
 
-When(/^I open profile menu$/, async () => {
-  await Profile.openProfileMenu()
+When(/^Tokens displayed on user assets$/, async () => {
+  await Profile.waitForTokensAppear();
+})
+
+When(/^User opens burger menu$/, async () => {
+  await Profile.openBurgerMenu();
+})
+
+When(/^User opens mobile profile menu$/, async () => {
+  await Profile.openMobileProfileMenu();
+})
+
+When(/^User opens profile menu$/, async () => {
+  await Profile.openProfileMenu();
 })
 
 When(/^I open Vaults$/, async () => {

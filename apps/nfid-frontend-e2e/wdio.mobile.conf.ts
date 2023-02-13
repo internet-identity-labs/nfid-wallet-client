@@ -5,7 +5,7 @@ import { config as common } from "./wdio.conf"
 export const deviceName = process.env.DEVICE_NAME
 
 if (deviceName) {
-  chromeBrowserOptions.args.push('--window-size=500,900')
+  // chromeBrowserOptions.args.push('--window-size=500,900')
   chromeBrowserOptions.mobileEmulation = { deviceName }
 }
 

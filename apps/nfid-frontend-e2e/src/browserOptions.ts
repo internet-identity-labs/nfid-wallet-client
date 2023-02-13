@@ -1,6 +1,5 @@
 export const chromeBrowserOptions: IChromeOption = {
   args: [
-    "--window-size=1920,1080",
     "--no-sandbox",
     // '--use-fake-device-for-media-stream',
     "--disable-notifications",
@@ -8,6 +7,7 @@ export const chromeBrowserOptions: IChromeOption = {
     "--allow-insecure-localhost",
     "--disable-infobars",
     // '--disable-dev-shm-usage',
+    // "--start-maximized",
     "--ignore-certificate-errors",
     "--disable-gpu",
     // "--enable-features=NetworkService,NetworkServiceInProcess"

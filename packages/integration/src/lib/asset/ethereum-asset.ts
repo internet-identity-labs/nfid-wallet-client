@@ -24,10 +24,11 @@ import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import {
   Asset,
   Balance,
-  NonFungibleActivityRecord,
+  ActivityRecord,
   NonFungibleActivityRecords,
   NonFungibleItem,
   NonFungibleItems,
+  FungibleActivityRecords,
 } from "./types"
 
 declare const FRONTEND_MODE: string
@@ -40,7 +41,8 @@ const etherscanApiTestnet = "https://api-goerli.etherscan.io/api"
 const etherscanApiMainnnet = "https://api.etherscan.io/api"
 const blockchain = Blockchain.ETHEREUM as EVMBlockchain
 const [sdk, wallet] = getRaribleSdk(FRONTEND_MODE)
-const etherscanApi = "production" == FRONTEND_MODE ? etherscanApiMainnnet : etherscanApiTestnet
+const etherscanApi =
+  "production" == FRONTEND_MODE ? etherscanApiMainnnet : etherscanApiTestnet
 
 export const EthereumAsset: Asset = {
   getActivitiesByItem: async function (
@@ -140,11 +142,15 @@ export const EthereumAsset: Asset = {
     wallet.safeTransferFrom(receiver, contract, tokenId)
   },
 
-  getFungibleActivityByUser: async function ({page = 1, size = 0, sort = "desc"}: {
-    page?: number,
-    size?: number,
-    sort?: "asc" | "desc",
-  } = {}): Promise<any> {
+  getFungibleActivityByUser: async function ({
+    page = 1,
+    size = 0,
+    sort = "desc",
+  }: {
+    page?: number
+    size?: number
+    sort?: "asc" | "desc"
+  } = {}): Promise<FungibleActivityRecords> {
     const address = await wallet.getAddress()
     const params: Record<string, any> = {
       module: "account",
@@ -159,8 +165,9 @@ export const EthereumAsset: Asset = {
       etherscanApi + "?" + new URLSearchParams(params),
     )
     const data = await response.json()
-    const result = data.result.map(
+    const activities: Array<ActivityRecord> = data.result.map(
       (tx: {
+        isError: string
         functionName: string
         timeStamp: number
         to: string
@@ -170,21 +177,27 @@ export const EthereumAsset: Asset = {
         gasPrice: number
       }) => {
         return {
+          id: tx.hash,
+          error: tx.isError === "0" ? false : true,
           type: tx.functionName.split("(")[0] || "transfer",
           date: tx.timeStamp,
           to: tx.to,
           from: tx.from,
           transactionHash: tx.hash,
-          price: tx.value,
-          gasPrice: tx.gasPrice,
+          price: ethers.utils.formatEther(tx.value),
+          gasPrice: ethers.utils.formatEther(tx.gasPrice),
         }
       },
     )
-    return result
+    return {
+      size,
+      page,
+      activities,
+    }
   },
 }
 
-const mapActivity = (activity: RaribleActivity): NonFungibleActivityRecord => {
+const mapActivity = (activity: RaribleActivity): ActivityRecord => {
   switch (activity["@type"]) {
     case "SELL": {
       const sell = activity as OrderMatchSell

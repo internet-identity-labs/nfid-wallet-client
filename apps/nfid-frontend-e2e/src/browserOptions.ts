@@ -6,7 +6,7 @@ export const chromeBrowserOptions: IChromeOption = {
     "--disable-web-security",
     "--allow-insecure-localhost",
     "--disable-infobars",
-    "--remote-debugging-port=9222",
+    "--remote-debugging-port=9090",
     // "--disable-setuid-sandbox",
     // '--disable-dev-shm-usage',
     // "--start-maximized",

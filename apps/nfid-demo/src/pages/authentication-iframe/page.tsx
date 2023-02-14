@@ -42,7 +42,7 @@ export const PageAuthenticationIframe = () => {
 
   return (
     <PageTemplate title="Authentication iFrame" className="!p-0">
-      <div className="grid h-full grid-cols-[auto,400px] w-full">
+      <div className="grid h-full grid-cols-[auto,440px] w-full">
         <div className="border-r border-gray-100 p-2.5">
           <IframeConfig
             updateStyleQuery={onUpdateIframeStyles}

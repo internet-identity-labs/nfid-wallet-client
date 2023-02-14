@@ -2,45 +2,39 @@ import { principalToAddress } from "ictool"
 
 import { checkIsIframe } from "@nfid-frontend/utils"
 
+import { fetchPrincipal } from "frontend/integration/internet-identity"
 import { storeSignIn } from "frontend/integration/lambda/auth-stats"
-import { delegationIdentityFromSignedIdentity, getDelegationChain } from "frontend/integration/internet-identity"
-import { SignIdentity } from "@dfinity/agent"
-import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
 interface LogAuthorizeApplicationArgs {
-  delegation: ThirdPartyAuthSession
-  sessionPublicKey: Pick<SignIdentity, "sign">
+  scope: string
+  anchor: number
   applicationName?: string
   chain?: string
 }
 
 /**
  * Store user to analytics database
- * @param delegation - What we get from prepare and getDelegation
- * @param sessionPublicKey - What we received from 3rd party app as a session public key
+ * @param scope - user id + domain used for the delegation
+ * @param anchor - user number in internet identity
  * @param applicationName - The name of the application requesting authorization
  * @param chain - The chain the user is signing in to
  */
 export const logAuthorizeApplication = async ({
-  delegation,
-  sessionPublicKey,
+  scope,
+  anchor,
   applicationName: application = "Undefined application",
-  chain = "Internet Computer" }: LogAuthorizeApplicationArgs
-) => {
-  const identity = delegationIdentityFromSignedIdentity(
-    sessionPublicKey,
-    getDelegationChain(delegation)
-  )
-
+  chain = "Internet Computer",
+}: LogAuthorizeApplicationArgs) => {
+  const principal = await fetchPrincipal(anchor, scope)
+  const principalId = principal.toString()
   const billable = checkIsIframe()
-
-  const principal = identity.getPrincipal()
-
   const blockchainAddress = principalToAddress(principal)
 
-
   storeSignIn({
-    application, billable, blockchainAddress, chain,
-    principal: principal.toString(),
+    application,
+    billable,
+    blockchainAddress,
+    chain,
+    principal: principalId,
   })
 }

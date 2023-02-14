@@ -1,3 +1,5 @@
+import { SignIdentity } from "@dfinity/agent"
+import { logAuthorizeApplication } from "frontend/features/stats/services"
 import {
   AuthorizationRequest,
   AuthorizingAppMeta,
@@ -59,8 +61,9 @@ export async function handshake(): Promise<AuthorizationRequest> {
  * @returns
  */
 export async function postDelegation(context: {
-  authRequest?: { hostname: string }
+  authRequest?: { hostname: string, sessionPublicKey: Pick<SignIdentity, "sign"> }
   thirdPartyAuthoSession?: ThirdPartyAuthSession
+  appMeta: AuthorizingAppMeta
 }) {
   console.debug("postDelegation")
   if (!context.authRequest?.hostname)
@@ -69,13 +72,21 @@ export async function postDelegation(context: {
     throw new Error("Missing third party auth session")
   }
 
+  const delegations = [prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation)]
+  const userPublicKey = context.thirdPartyAuthoSession.userPublicKey
+
+  logAuthorizeApplication({
+    delegation: context.thirdPartyAuthoSession,
+    sessionPublicKey: context.authRequest.sessionPublicKey,
+    applicationName: context.appMeta.name,
+    chain: "Internet Computer",
+  })
+
   postMessageToClient(
     {
       kind: "authorize-client-success",
-      delegations: [
-        prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation),
-      ],
-      userPublicKey: context.thirdPartyAuthoSession.userPublicKey,
+      delegations,
+      userPublicKey,
     },
     context.authRequest.hostname,
   )

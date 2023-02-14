@@ -127,7 +127,7 @@ const KnownDeviceMachine =
             onDone: [
               {
                 target: "UpdateProfile",
-                actions: ["assignAuthSession"],
+                actions: "assignAuthSession",
               },
             ],
             onError: {

@@ -908,6 +908,8 @@ export async function fetchDelegate(
   )
 
   return {
+    scope,
+    anchor: userNumber,
     signedDelegation,
     userPublicKey: prepare.userPublicKey,
   }
@@ -1077,10 +1079,10 @@ export interface Device {
 /**
  * Retrieve user's principal for a domain + persona hash.
  * @param anchor
- * @param salt
+ * @param scope
  */
-export function fetchPrincipal(anchor: number, salt: string) {
-  return ii.get_principal(BigInt(anchor), salt)
+export function fetchPrincipal(anchor: number, scope: string) {
+  return ii.get_principal(BigInt(anchor), scope)
 }
 
 export const delegationIdentityFromSignedIdentity = (
@@ -1130,7 +1132,7 @@ export async function delegationByScope(
       : maxTimeToLive,
   )
 
-  return await delegationIdentityFromSignedIdentity(
+  return delegationIdentityFromSignedIdentity(
     sessionKey,
     getDelegationChain(delegation)
   )

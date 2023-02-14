@@ -120,7 +120,7 @@ export const useAuthentication = () => {
       }
 
       const recoveryPhraseDevice = recoveryDevices.find((device) =>
-        hasOwnProperty(device.purpose, "recovery"),
+        hasOwnProperty(device.key_type, "seed_phrase"),
       )
 
       if (!recoveryPhraseDevice) {
@@ -128,7 +128,7 @@ export const useAuthentication = () => {
         throw new Error("useAuthentication.loginWithRecovery No devices found")
       }
 
-      const response = await fromSeedPhrase(
+      let response = await fromSeedPhrase(
         userNumber,
         seedPhrase,
         recoveryPhraseDevice,

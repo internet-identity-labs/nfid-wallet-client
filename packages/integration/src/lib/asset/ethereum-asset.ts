@@ -18,6 +18,7 @@ import {
 } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { toCurrencyId, UnionAddress } from "@rarible/types"
 import { toBn } from "@rarible/utils"
+import { Network, Alchemy } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
@@ -29,6 +30,7 @@ import {
   NonFungibleItem,
   NonFungibleItems,
   FungibleActivityRecords,
+  Tokens,
 } from "./types"
 
 declare const FRONTEND_MODE: string
@@ -43,6 +45,8 @@ const blockchain = Blockchain.ETHEREUM as EVMBlockchain
 const [sdk, wallet] = getRaribleSdk(FRONTEND_MODE)
 const etherscanApi =
   "production" == FRONTEND_MODE ? etherscanApiMainnnet : etherscanApiTestnet
+const alchemyApiKey = "Gvl6jhntAUlqmfKASgr4aYGG-KEBtz_6"
+const alchemyNetwork = "production" == FRONTEND_MODE ? Network.ETH_MAINNET : Network.ETH_GOERLI
 
 export const EthereumAsset: Asset = {
   getActivitiesByItem: async function (
@@ -193,6 +197,26 @@ export const EthereumAsset: Asset = {
       size,
       page,
       activities,
+    }
+  },
+  getErc20TokensByUser: async function (cursor?: string): Promise<Tokens> {
+    const alchemy = new Alchemy({
+      apiKey: alchemyApiKey,
+      network: alchemyNetwork,
+    })
+    const address = await wallet.getAddress()
+    const tokens = await alchemy.core.getTokensForOwner(address, { pageKey: cursor })
+    return {
+      cursor: tokens.pageKey,
+      tokens: tokens.tokens
+        .filter((x) => x.rawBalance !== undefined && 0 != +x.rawBalance)
+        .map((x) => ({
+          name: x.name || "N/A",
+          symbol: x.symbol || "N/A",
+          logo: x.logo,
+          balance: x.balance || "0.0",
+          contractAddress: x.contractAddress,
+        })),
     }
   },
 }

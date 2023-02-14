@@ -22,7 +22,21 @@ declare type Asset = {
     page?: number,
     size?: number,
     sort?: "asc" | "desc",
-   } = {}): Promise<any>
+  } = {}): Promise<FungibleActivityRecords>
+  getErc20TokensByUser(cursor?: string): Promise<Tokens>
+}
+
+declare type Tokens = {
+  cursor?: string,
+  tokens: Array<Token>
+}
+
+declare type Token = {
+  name: string,
+  symbol: string,
+  logo?: string,
+  balance: string,
+  contractAddress: string
 }
 
 declare type Balance = {

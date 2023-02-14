@@ -35,6 +35,7 @@ import {
 
 declare const FRONTEND_MODE: string
 declare const ETHERSCAN_API_KEY: string
+declare const ALCHEMY_API_KEY: string
 
 const currencyId = "ETHEREUM:0x0000000000000000000000000000000000000000"
 const mainnet = "https://ethereum.publicnode.com"
@@ -45,7 +46,6 @@ const blockchain = Blockchain.ETHEREUM as EVMBlockchain
 const [sdk, wallet] = getRaribleSdk(FRONTEND_MODE)
 const etherscanApi =
   "production" == FRONTEND_MODE ? etherscanApiMainnnet : etherscanApiTestnet
-const alchemyApiKey = "Gvl6jhntAUlqmfKASgr4aYGG-KEBtz_6"
 const alchemyNetwork = "production" == FRONTEND_MODE ? Network.ETH_MAINNET : Network.ETH_GOERLI
 
 export const EthereumAsset: Asset = {
@@ -201,7 +201,7 @@ export const EthereumAsset: Asset = {
   },
   getErc20TokensByUser: async function (cursor?: string): Promise<Tokens> {
     const alchemy = new Alchemy({
-      apiKey: alchemyApiKey,
+      apiKey: ALCHEMY_API_KEY,
       network: alchemyNetwork,
     })
     const address = await wallet.getAddress()

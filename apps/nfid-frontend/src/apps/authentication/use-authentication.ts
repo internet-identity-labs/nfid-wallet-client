@@ -120,7 +120,7 @@ export const useAuthentication = () => {
       }
 
       const recoveryPhraseDevice = recoveryDevices.find((device) =>
-        hasOwnProperty(device.purpose, "recovery"),
+        hasOwnProperty(device.key_type, "seed_phrase"),
       )
 
       if (!recoveryPhraseDevice) {

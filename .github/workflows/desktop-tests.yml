@@ -143,7 +143,9 @@ jobs:
           chrome-version: stable
 
       - name: Chrome version
-        run: chrome --version
+        run: |
+          chrome --version
+          netstat -nlpt
 
       - name: Checkout Google user E2E
         uses: actions/checkout@v3

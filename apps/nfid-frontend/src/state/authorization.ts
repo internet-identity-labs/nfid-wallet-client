@@ -6,6 +6,8 @@ import { SignedDelegation } from "frontend/integration/internet-identity"
  * session keys which the client has generated and provided to the identity provider.
  */
 export interface ThirdPartyAuthSession {
+  scope: string
+  anchor: number
   signedDelegation: SignedDelegation
   userPublicKey: Uint8Array
 }

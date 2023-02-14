@@ -2,6 +2,7 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { Profile } from "@nfid/integration"
 
+import { logUser } from "frontend/features/stats/services"
 import { fetchAccountLimitService } from "frontend/integration/app-config/services"
 import {
   fetchProfileService,
@@ -127,7 +128,7 @@ const KnownDeviceMachine =
             onDone: [
               {
                 target: "UpdateProfile",
-                actions: "assignAuthSession",
+                actions: ["assignAuthSession", "logUserStats"],
               },
             ],
             onError: {
@@ -163,6 +164,8 @@ const KnownDeviceMachine =
         assignAccountLimit: assign({
           isSingleAccountApplication: (_context, event) => event.data === 1,
         }),
+        logUserStats: (context) =>
+          logUser({ applicationName: context.appMeta?.name }),
       },
     },
   )

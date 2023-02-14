@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import AuthWithIIMachine from "frontend/features/sign-in-options/machine"
+import { logUser } from "frontend/features/stats/services"
 import { isMobileWithWebAuthn } from "frontend/integration/device/services"
 import { loginWithAnchor } from "frontend/integration/internet-identity/services"
 import { getMetamaskAuthSession } from "frontend/integration/sign-in/metamask"
@@ -273,6 +274,7 @@ const UnknownDeviceMachine =
               context,
               event,
             })
+            logUser({ applicationName: context.appMeta?.name })
             return context.authSession
           },
         },

@@ -68,6 +68,7 @@ export interface Typegen0 {
     assignAuthSession: "done.invoke.loginService"
     assignDevices: "done.invoke.fetchAuthenticatorDevicesService"
     assignProfile: "done.invoke.getLocalStorageProfileService"
+    logUserStats: "done.invoke.loginService"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}

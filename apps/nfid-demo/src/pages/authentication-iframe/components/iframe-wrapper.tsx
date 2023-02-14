@@ -13,9 +13,9 @@ export const IFrameWrapper: React.FC<IFrameWrapperProps> = ({
     <div
       id="iframe-wrapper-card"
       className={clsx(
-        "bg-white rounded-b-xl md:rounded-b-xl w-full md:w-[380px] duration-200 ease-in-out overflow-hidden",
+        "bg-white rounded-b-xl md:rounded-b-xl w-full duration-200 ease-in-out overflow-hidden",
         "flex flex-col",
-        "h-[480px] w-[360px]",
+        "h-[580px] w-[440px]",
         className,
       )}
     >

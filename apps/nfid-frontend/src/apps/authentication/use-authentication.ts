@@ -128,7 +128,7 @@ export const useAuthentication = () => {
         throw new Error("useAuthentication.loginWithRecovery No devices found")
       }
 
-      let response = await fromSeedPhrase(
+      const response = await fromSeedPhrase(
         userNumber,
         seedPhrase,
         recoveryPhraseDevice,

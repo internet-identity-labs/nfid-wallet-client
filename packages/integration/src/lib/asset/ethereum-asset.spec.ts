@@ -1,10 +1,25 @@
 import { BigNumber } from "@rarible/utils"
-import { ethers } from "ethers-ts"
 
 import { EthereumAsset, Balance } from "./ethereum-asset"
 
 describe("Ethereum Asset", () => {
   jest.setTimeout(200000)
+
+  it("should return one fungible erc20 tx", async function () {
+    const actual = await EthereumAsset.getErc20TokensByUser()
+    expect(actual).toEqual({
+      cursor: undefined,
+      tokens: [
+        {
+          name: 'ChainLink Token',
+          symbol: 'LINK',
+          logo: undefined,
+          balance: '10.0',
+          contractAddress: '0x326c977e6efc84e512bb9c30f76e30c160ed06fb'
+        }
+      ]
+    })
+  })
 
   it("should return one fungible tx", async function () {
     const actual = await EthereumAsset.getFungibleActivityByUser({

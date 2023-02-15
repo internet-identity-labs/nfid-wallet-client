@@ -31,6 +31,7 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
 
@@ -71,6 +72,7 @@ jobs:
           IC_HOST: https://ic0.app
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}

@@ -56,6 +56,8 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
 
   unit-tests:
     needs: check-secrets
@@ -87,6 +89,8 @@ jobs:
 
         env:
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
 
       - name: Run unit tests
         run: npx nx affected:test

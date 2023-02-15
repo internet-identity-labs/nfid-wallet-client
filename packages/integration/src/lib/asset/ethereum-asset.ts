@@ -200,8 +200,6 @@ export const EthereumAsset: Asset = {
     }
   },
   getErc20TokensByUser: async function (cursor?: string): Promise<Tokens> {
-    console.log(ALCHEMY_API_KEY)
-    console.log("ALCHEMY")
     const alchemy = new Alchemy({
       apiKey: ALCHEMY_API_KEY,
       network: alchemyNetwork,

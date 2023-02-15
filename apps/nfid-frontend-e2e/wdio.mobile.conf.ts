@@ -2,7 +2,7 @@ import { cucumberOpts } from "./src/cucumber-options"
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
 import { config as common } from "./wdio.conf"
 
-export const deviceName = process.env.DEVICE_NAME ? process.env.DEVICE_NAME : "Pixel 5"
+export const deviceName = process.env.DEVICE_NAME
 export const isHeadless = process.env.IS_HEADLESS
 
 if (deviceName) {
@@ -18,7 +18,7 @@ export const config = {
   ...common,
   capabilities: [chromeBrowser],
   cucumberOpts: {
-    cucumberOpts,
+    ...cucumberOpts,
     tagExpression: "@mobile",
   }
 }

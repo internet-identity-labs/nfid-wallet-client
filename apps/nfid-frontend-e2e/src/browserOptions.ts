@@ -3,11 +3,13 @@ export const chromeBrowserOptions: IChromeOption = {
     "--no-sandbox",
     // '--use-fake-device-for-media-stream',
     "--disable-notifications",
+    "--disable-web-security",
     "--allow-insecure-localhost",
     "--disable-infobars",
     // '--disable-dev-shm-usage',
     "--ignore-certificate-errors",
     "--disable-gpu",
+    // "--start-maximized",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
     `--user-data-dir=${process.env.USER_DATA_DIR}`,
   ],

@@ -19,7 +19,7 @@ export function originToRelyingPartyId(origin: string): string {
 export async function addVirtualAuthCommands(
   browser: WebdriverIO.Browser,
 ): Promise<void> {
-  await browser.addCommand(
+  browser.addCommand(
     "addVirtualWebAuth",
     command("POST", "/session/:sessionId/webauthn/authenticator", {
       command: "addVirtualWebAuth",
@@ -69,7 +69,7 @@ export async function addVirtualAuthCommands(
     }),
   )
 
-  await browser.addCommand(
+  browser.addCommand(
     "removeVirtualWebAuth",
     command(
       "DELETE",
@@ -92,7 +92,7 @@ export async function addVirtualAuthCommands(
   )
 
   // This retrieves previously created credentials, see https://www.w3.org/TR/webauthn-2/#sctn-automation-get-credentials
-  await browser.addCommand(
+  browser.addCommand(
     "getWebauthnCredentials",
     command(
       "GET",
@@ -115,7 +115,7 @@ export async function addVirtualAuthCommands(
   )
 
   // This adds a previously created credential, see https://www.w3.org/TR/webauthn-2/#sctn-automation-add-credential
-  await browser.addCommand(
+  browser.addCommand(
     "addWebauthnCredential",
     command(
       "POST",

@@ -3,7 +3,7 @@ export const chromeBrowserOptions: IChromeOption = {
     "--no-sandbox",
     // '--use-fake-device-for-media-stream',
     "--disable-notifications",
-    "--disable-web-security",
+    // "--disable-web-security",
     "--allow-insecure-localhost",
     "--disable-infobars",
     // '--disable-dev-shm-usage',

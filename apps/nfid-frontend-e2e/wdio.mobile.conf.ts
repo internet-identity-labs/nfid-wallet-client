@@ -17,7 +17,7 @@ export const config = {
   ...common,
   capabilities: [chromeBrowser],
   cucumberOpts: {
-    ...common.cucumberOpts,
+    ...common,
     tagExpression: "@mobile",
   }
 }

@@ -6,7 +6,7 @@ type WebAuthnCredential = {
 }
 
 interface IChromeOption {
-  // w3c: boolean
+  w3c: boolean
   args: string[]
   mobileEmulation?: object
 }

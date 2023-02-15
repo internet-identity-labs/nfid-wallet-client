@@ -1,5 +1,5 @@
 import { hooks } from "./src/wdio-hooks"
-import { chromeBrowser } from "./src/browserOptions"
+import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
 import { cucumberOpts } from "./src/cucumber-options";
 
 export const isDebug = process.env.DEBUG === "true"
@@ -86,8 +86,15 @@ export const config: WebdriverIO.Config = {
   // https://saucelabs.com/platform/platform-configurator
   //
 
-  // Adds chrome capabilities to run headless
-  capabilities: [chromeBrowser],
+  capabilities: [
+    {
+      browserName: "chrome",
+      "goog:chromeOptions": chromeBrowserOptions,
+      // @ts-ignore
+      "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
+      acceptInsecureCerts: true,
+    },
+  ],
   //
   // ===================
   // Test Configurations

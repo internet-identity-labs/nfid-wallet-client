@@ -1,15 +1,16 @@
 export const chromeBrowserOptions: IChromeOption = {
   args: [
     "--no-sandbox",
-    // '--use-fake-device-for-media-stream',
-    "--disable-notifications",
-    "--allow-insecure-localhost",
-    "--disable-infobars",
-    // '--disable-dev-shm-usage',
     "--ignore-certificate-errors",
-    "--disable-gpu",
-    // "--enable-features=NetworkService,NetworkServiceInProcess"
     `--user-data-dir=${process.env.USER_DATA_DIR}`,
+    "--disable-web-security",
+    "disable-gpu",
+    // '--use-fake-device-for-media-stream',
+    // "--disable-notifications",
+    // "--allow-insecure-localhost",
+    // "--disable-infobars",
+    // '--disable-dev-shm-usage',
+    // "--enable-features=NetworkService,NetworkServiceInProcess"
   ],
   'w3c': false
 }

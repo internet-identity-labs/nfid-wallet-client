@@ -2,7 +2,7 @@ import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
 import { baseURL } from "../wdio.conf"
 import { deviceName } from "../wdio.mobile.conf"
-import { addVirtualAuthCommands } from "./steps/support/action/setupVirtualWebauthn"
+import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
 import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
 
 //
@@ -160,7 +160,7 @@ export const hooks = {
    * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
    * @param {Object}                 context  Cucumber World object
    */
-  beforeScenario: async (world: { name: string }) => {
+  beforeScenario: async (world: any) => {
     allureReporter.addFeature(world.name)
   },
   afterScenario: async () => {

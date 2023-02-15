@@ -1,4 +1,5 @@
 import { hooks } from "./src/wdio-hooks"
+import { chromeBrowser } from "./src/browserOptions"
 
 export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME;

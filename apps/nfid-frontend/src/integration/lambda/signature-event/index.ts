@@ -5,7 +5,6 @@ import { ic } from "@nfid/integration"
 declare const AWS_SIGNATURE_EVENT: string
 
 export async function storeSignatureEvent(event: BasicSignatureEvent) {
-  console.log(AWS_SIGNATURE_EVENT)
   const url = ic.isLocal ? "/signature" : AWS_SIGNATURE_EVENT
   const response = await fetch(url, {
     method: "POST",

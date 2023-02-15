@@ -1,5 +1,6 @@
+import { BasicSignatureEvent } from "src/integration/lambda/signature-event/basic-event"
+
 import { ic } from "@nfid/integration"
-import { BasicSignatureEvent } from "src/integration/lambda/signature-event/basic-event";
 
 declare const AWS_SIGNATURE_EVENT: string
 

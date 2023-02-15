@@ -25,6 +25,7 @@ export const serviceConfig = {
   ),
   AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
   AWS_AUTH_STATS: JSON.stringify(process.env.AWS_AUTH_STATS),
+  AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
   SIGNIN_GOOGLE: JSON.stringify(
     process.env.FRONTEND_MODE === "production"
       ? process.env.AWS_SIGNIN_GOOGLE

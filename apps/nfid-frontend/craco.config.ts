@@ -28,6 +28,7 @@ const setupCSP = () => {
         process.env.AWS_VERIFY_PHONENUMBER as string,
         process.env.AWS_SYMMETRIC as string,
         process.env.AWS_AUTH_STATS as string,
+        process.env.AWS_SIGNATURE_EVENT as string,
         process.env.AWS_SIGNIN_GOOGLE as string,
         "https://o1255710.ingest.sentry.io",
         "https://rosetta-api.internetcomputer.org",
@@ -192,6 +193,12 @@ const config = {
       },
       "/auth": {
         target: process.env.AWS_AUTH_STATS,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/auth/, ""),
+      },
+      "/signature": {
+        target: process.env.AWS_SIGNATURE_EVENT,
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/auth/, ""),

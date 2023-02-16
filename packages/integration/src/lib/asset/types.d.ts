@@ -18,11 +18,31 @@ declare type Asset = {
     constract: string,
     receiver: string,
   ): Promise<void>
-  getFungibleActivityByUser({page, size, sort}: {
-    page?: number,
-    size?: number,
-    sort?: "asc" | "desc",
-   } = {}): Promise<any>
+  getErc20TokensByUser(cursor?: string): Promise<Tokens>
+  getFungibleActivityByTokenAndUser(
+    request: FungibleActivityRequest,
+  ): Promise<FungibleActivityRecords>
+}
+
+declare type FungibleActivityRequest = {
+  direction?: "from" | "to"
+  contract?: string
+  cursor?: string
+  size?: number
+  sort?: "asc" | "desc"
+}
+
+declare type Tokens = {
+  cursor?: string
+  tokens: Array<Token>
+}
+
+declare type Token = {
+  name: string
+  symbol: string
+  logo?: string
+  balance: string
+  contractAddress: string
 }
 
 declare type Balance = {
@@ -31,9 +51,17 @@ declare type Balance = {
 }
 
 declare type FungibleActivityRecords = {
-  page?: number
-  size?: number
-  activities: Array<ActivityRecord>
+  cursor?: string
+  activities: Array<FungibleActivityRecord>
+}
+
+declare type FungibleActivityRecord = {
+  id: string
+  date: string
+  to: string
+  from: string
+  transactionHash: string
+  price: number
 }
 
 declare type ActivityRecord = {

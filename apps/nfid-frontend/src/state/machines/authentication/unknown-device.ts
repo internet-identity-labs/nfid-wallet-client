@@ -34,27 +34,27 @@ export type Events =
   | { type: "done.invoke.getMetamaskAuthSession"; data: AuthSession }
   | { type: "done.invoke.getWalletConnectAuthSession"; data: AuthSession }
   | {
-    type: "error.platform.getMetamaskAuthSession"
-    data: { message: string }
-  }
+      type: "error.platform.getMetamaskAuthSession"
+      data: { message: string }
+    }
   | {
-    type: "error.platform.getWalletConnectAuthSession"
-    data: { message: string }
-  }
+      type: "error.platform.getWalletConnectAuthSession"
+      data: { message: string }
+    }
   | { type: "done.invoke.signInSameDevice"; data: LocalDeviceAuthSession }
   | { type: "done.invoke.isMobileWithWebAuthn"; data: boolean }
   | {
-    type: "done.invoke.AuthWithGoogleMachine"
-    data: AuthSession
-  }
+      type: "done.invoke.AuthWithGoogleMachine"
+      data: AuthSession
+    }
   | {
-    type: "done.invoke.authWithII"
-    data: AuthSession
-  }
+      type: "done.invoke.authWithII"
+      data: AuthSession
+    }
   | {
-    type: "done.invoke.loginWithAnchor"
-    data: AuthSession
-  }
+      type: "done.invoke.loginWithAnchor"
+      data: AuthSession
+    }
   | { type: "AUTH_WITH_GOOGLE"; data: { jwt: string } }
   | { type: "AUTH_WITH_REMOTE" }
   | { type: "AUTH_WITH_OTHER" }
@@ -62,9 +62,9 @@ export type Events =
   | { type: "AUTH_WITH_METAMASK" }
   | { type: "AUTH_WITH_WALLET_CONNECT" }
   | {
-    type: "AUTH_WITH_EXISTING_ANCHOR"
-    data: { anchor: number; withSecurityDevices?: boolean }
-  }
+      type: "AUTH_WITH_EXISTING_ANCHOR"
+      data: { anchor: number; withSecurityDevices?: boolean }
+    }
   | { type: "END"; data: AuthSession }
 
 export interface Schema {

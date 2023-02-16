@@ -151,10 +151,11 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: "AuthorizationMachine",
-            data: (context) => ({
-              appMeta: context.appMeta,
-              authRequest: context.authRequest,
-            } as AuthenticationMachineContext),
+            data: (context) =>
+              ({
+                appMeta: context.appMeta,
+                authRequest: context.authRequest,
+              } as AuthenticationMachineContext),
           },
         },
         AuthorizationMachine: {
@@ -165,11 +166,12 @@ const IDPMachine =
               { target: "TrustDevice", cond: "isWebAuthNSupported" },
               { target: "End" },
             ],
-            data: (context, event: { data: AuthSession }) => ({
-              appMeta: context.appMeta,
-              authRequest: context.authRequest,
-              authSession: event.data,
-            } as AuthorizationMachineContext),
+            data: (context, event: { data: AuthSession }) =>
+              ({
+                appMeta: context.appMeta,
+                authRequest: context.authRequest,
+                authSession: event.data,
+              } as AuthorizationMachineContext),
           },
         },
         TrustDevice: {

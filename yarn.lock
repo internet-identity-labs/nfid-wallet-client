@@ -9803,7 +9803,7 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.2, ajv@^6.12.3, ajv@^6.12.4, ajv
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-alchemy-sdk@^2.4.2:
+alchemy-sdk@^2.4.3:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/alchemy-sdk/-/alchemy-sdk-2.4.3.tgz#3993c3098cc92f45ca461bcaabd72d0859751de4"
   integrity sha512-VKzkeJT7pDIxMmdoSNKSw85Z8IFC2v3AtE1oDpSrNyhCT81vSnOx1Q6k6IHjg8LRIHVkGQMM9yk/AkTJEdce5w==

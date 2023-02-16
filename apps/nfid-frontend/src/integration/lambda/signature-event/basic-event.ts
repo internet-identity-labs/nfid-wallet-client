@@ -19,7 +19,7 @@ export interface TransferNftSignatureEvent extends BasicSignatureEvent {
 
 export interface MessageSignatureEvent extends BasicSignatureEvent {
   message: string
-  blockchain_address: string
+  blockchainAddress: string
 }
 
 export enum SignatureEvent {

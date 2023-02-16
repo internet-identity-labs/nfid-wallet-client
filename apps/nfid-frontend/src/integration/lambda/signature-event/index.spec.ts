@@ -49,7 +49,7 @@ describe("Signature event suite", () => {
     it("sore message", async function () {
       try {
         const event: MessageSignatureEvent = {
-          blockchain_address: "something",
+          blockchainAddress: "something",
           message: "message to sign",
           application: "unit_test_FE",
           chain: "Ethereum",

@@ -72,8 +72,9 @@ export async function postDelegation(context: {
   if (!context.appMeta)
     throw new Error("postDelegation context.appMeta missing")
 
-
-  const delegations = [prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation)]
+  const delegations = [
+    prepareClientDelegate(context.thirdPartyAuthoSession.signedDelegation),
+  ]
   const userPublicKey = context.thirdPartyAuthoSession.userPublicKey
 
   logAuthorizeApplication({

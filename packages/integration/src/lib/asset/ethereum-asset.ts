@@ -18,7 +18,12 @@ import {
 } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { toCurrencyId, UnionAddress } from "@rarible/types"
 import { toBn } from "@rarible/utils"
-import { Network, Alchemy } from "alchemy-sdk"
+import {
+  Network,
+  Alchemy,
+  SortingOrder,
+  AssetTransfersCategory,
+} from "alchemy-sdk"
 import { ethers } from "ethers-ts"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
@@ -31,22 +36,19 @@ import {
   NonFungibleItems,
   FungibleActivityRecords,
   Tokens,
-} from "./types"
+  FungibleActivityRequest,
+} from "./types.d"
 
 declare const FRONTEND_MODE: string
-declare const ETHERSCAN_API_KEY: string
 declare const ALCHEMY_API_KEY: string
 
 const currencyId = "ETHEREUM:0x0000000000000000000000000000000000000000"
 const mainnet = "https://ethereum.publicnode.com"
 const testnet = "https://ethereum-goerli-rpc.allthatnode.com"
-const etherscanApiTestnet = "https://api-goerli.etherscan.io/api"
-const etherscanApiMainnnet = "https://api.etherscan.io/api"
 const blockchain = Blockchain.ETHEREUM as EVMBlockchain
 const [sdk, wallet] = getRaribleSdk(FRONTEND_MODE)
-const etherscanApi =
-  "production" == FRONTEND_MODE ? etherscanApiMainnnet : etherscanApiTestnet
-const alchemyNetwork = "production" == FRONTEND_MODE ? Network.ETH_MAINNET : Network.ETH_GOERLI
+const alchemyNetwork =
+  "production" == FRONTEND_MODE ? Network.ETH_MAINNET : Network.ETH_GOERLI
 
 export const EthereumAsset: Asset = {
   getActivitiesByItem: async function (
@@ -146,66 +148,15 @@ export const EthereumAsset: Asset = {
     wallet.safeTransferFrom(receiver, contract, tokenId)
   },
 
-  getFungibleActivityByUser: async function ({
-    page = 1,
-    size = 0,
-    sort = "desc",
-  }: {
-    page?: number
-    size?: number
-    sort?: "asc" | "desc"
-  } = {}): Promise<FungibleActivityRecords> {
-    const address = await wallet.getAddress()
-    const params: Record<string, any> = {
-      module: "account",
-      action: "txlist",
-      address: address,
-      page: page,
-      offset: size,
-      sort: sort,
-      apikey: ETHERSCAN_API_KEY,
-    }
-    const response = await fetch(
-      etherscanApi + "?" + new URLSearchParams(params),
-    )
-    const data = await response.json()
-    const activities: Array<ActivityRecord> = data.result.map(
-      (tx: {
-        isError: string
-        functionName: string
-        timeStamp: number
-        to: string
-        from: string
-        hash: string
-        value: number
-        gasPrice: number
-      }) => {
-        return {
-          id: tx.hash,
-          error: tx.isError === "0" ? false : true,
-          type: tx.functionName.split("(")[0] || "transfer",
-          date: tx.timeStamp,
-          to: tx.to,
-          from: tx.from,
-          transactionHash: tx.hash,
-          price: ethers.utils.formatEther(tx.value),
-          gasPrice: ethers.utils.formatEther(tx.gasPrice),
-        }
-      },
-    )
-    return {
-      size,
-      page,
-      activities,
-    }
-  },
   getErc20TokensByUser: async function (cursor?: string): Promise<Tokens> {
     const alchemy = new Alchemy({
       apiKey: ALCHEMY_API_KEY,
       network: alchemyNetwork,
     })
     const address = await wallet.getAddress()
-    const tokens = await alchemy.core.getTokensForOwner(address, { pageKey: cursor })
+    const tokens = await alchemy.core.getTokensForOwner(address, {
+      pageKey: cursor,
+    })
     return {
       cursor: tokens.pageKey,
       tokens: tokens.tokens
@@ -217,6 +168,42 @@ export const EthereumAsset: Asset = {
           balance: x.balance || "0.0",
           contractAddress: x.contractAddress,
         })),
+    }
+  },
+
+  getFungibleActivityByTokenAndUser: async function ({
+    direction = "from",
+    contract,
+    cursor,
+    size,
+    sort = "desc",
+  }: FungibleActivityRequest = {}): Promise<FungibleActivityRecords> {
+    const alchemy = new Alchemy({
+      apiKey: ALCHEMY_API_KEY,
+      network: alchemyNetwork,
+    })
+    const address = await wallet.getAddress()
+    const transfers = await alchemy.core.getAssetTransfers({
+      fromAddress: "from" == direction ? address : undefined,
+      toAddress: "to" == direction ? address : undefined,
+      category: contract
+        ? [AssetTransfersCategory.ERC20]
+        : [AssetTransfersCategory.EXTERNAL],
+      withMetadata: true,
+      order: "asc" == sort ? SortingOrder.ASCENDING : SortingOrder.DESCENDING,
+      maxCount: size,
+      pageKey: cursor,
+    })
+    return {
+      cursor: transfers.pageKey,
+      activities: transfers.transfers.map((x) => ({
+        id: x.uniqueId,
+        date: x.metadata.blockTimestamp,
+        to: x.to || "N/A",
+        from: x.from,
+        transactionHash: x.hash,
+        price: x.value || 0,
+      })),
     }
   },
 }

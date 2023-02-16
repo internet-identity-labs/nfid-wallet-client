@@ -9,13 +9,12 @@ describe("Ethereum Asset", () => {
 
     expect(actual[0]).toMatchObject({
       token: "AAA",
-      price: "N/A"
+      price: "N/A",
     })
 
     expect(actual[1]).toMatchObject({
       token: "ICP",
-      price: expect.any(String)
+      price: expect.any(String),
     })
   })
-
 })

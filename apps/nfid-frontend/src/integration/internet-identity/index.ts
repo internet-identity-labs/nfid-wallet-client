@@ -1102,9 +1102,7 @@ export const getDelegationChain = (delegation: ThirdPartyAuthSession) => {
     [
       {
         delegation: new Delegation(
-          new Uint8Array(
-            delegation.signedDelegation.delegation.pubkey,
-          ).buffer,
+          new Uint8Array(delegation.signedDelegation.delegation.pubkey).buffer,
           delegation.signedDelegation.delegation.expiration,
           delegation.signedDelegation.delegation.targets,
         ),
@@ -1134,6 +1132,6 @@ export async function delegationByScope(
 
   return delegationIdentityFromSignedIdentity(
     sessionKey,
-    getDelegationChain(delegation)
+    getDelegationChain(delegation),
   )
 }

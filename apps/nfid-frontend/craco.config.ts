@@ -201,7 +201,7 @@ const config = {
         target: process.env.AWS_SIGNATURE_EVENT,
         secure: true,
         changeOrigin: true,
-        pathRewrite: (path: string) => path.replace(/^\/auth/, ""),
+        pathRewrite: (path: string) => path.replace(/^\/signature/, ""),
       },
     },
   },

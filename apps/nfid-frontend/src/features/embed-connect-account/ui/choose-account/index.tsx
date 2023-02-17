@@ -2,7 +2,7 @@ import {
   IGroupedOptions,
   IGroupOption,
 } from "packages/ui/src/molecules/choose-modal/types"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
   BlurredLoader,
@@ -85,6 +85,11 @@ export const ChooseAccount = ({
 
     onConnect(account?.account.domain ?? "", account?.account.accountId ?? "")
   }, [onConnect, selectedAccount, wallets])
+
+  useEffect(() => {
+    accountsOptions.length &&
+      setSelectedAccount(accountsOptions[0].options[0].value)
+  }, [accountsOptions])
 
   return (
     <BlurredLoader

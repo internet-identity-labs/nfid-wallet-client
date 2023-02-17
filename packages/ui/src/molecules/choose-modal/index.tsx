@@ -1,7 +1,6 @@
-import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import { Input } from "packages/ui/src/molecules/input"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
 import {
@@ -18,7 +17,7 @@ import { IGroupedOptions, IGroupOption } from "./types"
 
 export interface IChooseModal {
   optionGroups: IGroupedOptions[]
-  onSelect?: (value: string) => {}
+  onSelect?: (value: string) => void
   infoText?: string
   label?: string
   title: string
@@ -33,9 +32,7 @@ export const ChooseModal = ({
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [selectedOption, setSelectedOption] = useState<IGroupOption>(
-    optionGroups[0].options[0],
-  )
+  const [selectedOption, setSelectedOption] = useState<IGroupOption>()
 
   const handleSelect = (option: IGroupOption) => {
     onSelect && onSelect(option.value)
@@ -47,9 +44,14 @@ export const ChooseModal = ({
     return filterGroupedOptionsByTitle(optionGroups, searchInput)
   }, [optionGroups, searchInput])
 
+  useEffect(() => {
+    if (optionGroups.length && !selectedOption)
+      setSelectedOption(optionGroups[0]?.options[0])
+  }, [optionGroups])
+
   return (
     <div>
-      {label && <Label>{label}</Label>}
+      {label && <Label className="mb-1">{label}</Label>}
       <div
         className={clsx(
           "border border-black rounded-md cursor-pointer h-14",
@@ -90,11 +92,9 @@ export const ChooseModal = ({
             <p className="text-xl font-bold">{title}</p>
           </div>
           {infoText && (
-            <TooltipProvider>
-              <Tooltip tip={infoText}>
-                <IconCmpInfo className="cursor-pointer hover:opacity-70" />
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip tip={infoText}>
+              <IconCmpInfo className="cursor-pointer hover:opacity-70" />
+            </Tooltip>
           )}
         </div>
         <Input
@@ -105,12 +105,16 @@ export const ChooseModal = ({
           className="my-4"
         />
         {filteredOptions.map((group) => (
-          <div className="mt-6">
+          <div
+            className="mt-6 max-h-[380px] overflow-auto"
+            key={`group_${group.label}_${group.options.length}`}
+          >
             <p className="text-sm font-bold tracking-[0.01em] mb-1.5">
               {group.label}
             </p>
             {group.options.map((option) => (
               <ChooseItem
+                key={`option_${option.value}`}
                 handleClick={() => handleSelect(option)}
                 image={option.icon}
                 title={option.title}

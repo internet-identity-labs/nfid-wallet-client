@@ -1,20 +1,20 @@
 import { ComponentStory, ComponentMeta } from "@storybook/react"
 
 import InternetComputerIcon from "../../assets/ic.svg"
-import { ChoseModal } from "./index"
+import { ChooseModal } from "./index"
 
 export default {
   title: "Molecules/ChoseModal",
-  component: ChoseModal,
-} as ComponentMeta<typeof ChoseModal>
+  component: ChooseModal,
+} as ComponentMeta<typeof ChooseModal>
 
-const ChoseModalWrapper: ComponentStory<typeof ChoseModal> = (args) => {
-  return <ChoseModal {...args} />
+const ChoseModalWrapper: ComponentStory<typeof ChooseModal> = (args) => {
+  return <ChooseModal {...args} />
 }
 
-export const ChoseModalScreen = ChoseModalWrapper.bind({})
+export const ChooseModalScreen = ChoseModalWrapper.bind({})
 
-ChoseModalScreen.args = {
+ChooseModalScreen.args = {
   title: "Choose an asset",
   optionGroups: [
     {

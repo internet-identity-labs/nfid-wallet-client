@@ -1,11 +1,16 @@
 import { hooks } from "./src/wdio-hooks"
+import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
+import { cucumberOpts } from "./src/cucumber-options";
 
+export const isHeadless = process.env.IS_HEADLESS
 export const isDebug = process.env.DEBUG === "true"
-export const hostName = process.env.HOST_NAME
-export const hostPath = process.env.HOST_PATH
-const baseURL = process.env.NFID_PROVIDER_URL
-  ? process.env.NFID_PROVIDER_URL
-  : "http://localhost:9090"
+export const hostName = process.env.HOST_NAME;
+export const hostPath = process.env.HOST_PATH;
+export const baseURL = process.env.NFID_PROVIDER_URL ? process.env.NFID_PROVIDER_URL : "http://localhost:9090"
+
+if (isHeadless) {
+  chromeBrowserOptions.args.push("--headless")
+}
 
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile
@@ -87,28 +92,7 @@ export const config: WebdriverIO.Config = {
   //
 
   // Adds chrome capabilities to run headless
-  capabilities: [
-    {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: [
-          `--user-data-dir=${process.env.USER_DATA_DIR}`,
-          "--no-sandbox",
-          ...(isDebug
-            ? [
-                // "--auto-open-devtools-for-tabs"
-              ]
-            : ["--headless"]),
-          "disable-gpu",
-          "--ignore-certificate-errors", // allow self-signed certificates
-          "--disable-web-security",
-        ],
-      },
-      // @ts-ignore
-      "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
-      acceptInsecureCerts: true,
-    },
-  ],
+  capabilities: [chromeBrowser],
   //
   // ===================
   // Test Configurations
@@ -213,29 +197,6 @@ export const config: WebdriverIO.Config = {
 
   //
   // If you are using Cucumber you need to specify the location of your step definitions.
-  cucumberOpts: {
-    // <string[]> (file/dir) require files before executing features
-    require: ["./src/steps/*.ts"],
-    // <boolean> show full backtrace for errors
-    backtrace: false,
-    // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
-    requireModule: [],
-    // <boolean> invoke formatters without executing steps
-    dryRun: false,
-    // <boolean> abort the run on first failure
-    failFast: false,
-    // <boolean> hide step definition snippets for pending steps
-    snippets: true,
-    // <boolean> hide source uris
-    source: true,
-    // <boolean> fail if there are any undefined or pending steps
-    strict: false,
-    // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tagExpression: "not @pending and not @mobile",
-    // <number> timeout for step definitions
-    timeout: 60000,
-    // <boolean> Enable this config to treat undefined definitions as warnings.
-    ignoreUndefinedDefinitions: false,
-  } as WebdriverIO.CucumberOpts,
+  cucumberOpts,
   ...hooks,
 }

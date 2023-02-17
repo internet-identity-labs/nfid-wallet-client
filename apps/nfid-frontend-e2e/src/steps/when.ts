@@ -1,5 +1,8 @@
 import { When } from "@cucumber/cucumber"
 
+import { baseURL } from "../../wdio.conf"
+import { readFile } from "../helpers/fileops"
+
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
@@ -21,8 +24,9 @@ import setCookie from "./support/action/setCookie"
 import setInputField from "./support/action/setInputField"
 import setPromptText from "./support/action/setPromptText"
 
-When(/^I enter a captcha$/, async () => {
-  await HomePage.captchaPass()
+When(/^User enters a captcha$/, async function () {
+  await HomePage.captchaPass();
+  await HomePage.waitForLoaderDisappear();
 })
 
 When(/^It log's me in$/, async () => {
@@ -30,8 +34,39 @@ When(/^It log's me in$/, async () => {
   await HomePage.waitForLoaderDisappear()
 })
 
-When(/^I open profile menu$/, async () => {
-  await Profile.openProfileMenu()
+When(/^Tokens displayed on user assets$/, async () => {
+  await Profile.waitForTokensAppear();
+})
+
+When(/^User opens burger menu$/, async () => {
+  await Profile.openBurgerMenu();
+})
+
+When(/^User opens mobile profile menu$/, async () => {
+  await Profile.openMobileProfileMenu();
+})
+
+When(/^User opens profile menu$/, async () => {
+  await Profile.openProfileMenu();
+})
+
+When(/^User is already authenticated$/, async function () {
+  this.authId = await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true);
+  const rpId = new URL(baseURL).hostname;
+  const creds: WebAuthnCredential = await readFile("credentials.json");
+  const anchor: Object = await readFile("accounts.json");
+
+  await browser.addWebauthnCredential(
+    this.authId,
+    rpId,
+    creds.credentialId,
+    creds.isResidentCredential,
+    creds.privateKey,
+    creds.signCount
+  )
+
+  await browser.setLocalStorage("account", JSON.stringify(anchor));
+  await browser.refresh();
 })
 
 When(/^I open Vaults$/, async () => {

@@ -21,7 +21,7 @@ export const NFIDEmbedCoordinator = () => {
       return (
         <NFIDConnectAccountCoordinator
           actor={
-            state.children.NFIDConnectAccountMachine as NFIDConnectAccountActor
+            state.children.EmbedConnectAccountMachine as NFIDConnectAccountActor
           }
         />
       )

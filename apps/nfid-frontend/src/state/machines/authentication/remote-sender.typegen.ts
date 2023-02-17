@@ -81,10 +81,7 @@ export interface Typegen0 {
         Start?:
           | "GetAppMeta"
           | "GetAuthRequest"
-          | {
-              GetAppMeta?: "Done" | "Fetch"
-              GetAuthRequest?: "Done" | "Fetch"
-            }
+          | { GetAppMeta?: "Done" | "Fetch"; GetAuthRequest?: "Done" | "Fetch" }
       }
   tags: never
 }

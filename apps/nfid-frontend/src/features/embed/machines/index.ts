@@ -20,11 +20,14 @@ type NFIDEmbedMachineContext = {
 
 // TODO:
 // - load from url
-const appMeta = {
+const mockContext = {
   appMeta: {
     name: "Rarible SDK Example",
     logo: "https://app.rarible.com/favicon.ico",
     url: "rarible.com",
+  },
+  authRequest: {
+    hostname: "http://localhost:3000",
   },
 }
 
@@ -95,7 +98,7 @@ export const NFIDEmbedMachine =
                 actions: ["nfid_authenticated", "assignAuthSession"],
               },
             ],
-            data: () => appMeta,
+            data: () => mockContext,
           },
         },
 
@@ -106,7 +109,8 @@ export const NFIDEmbedMachine =
             data: (context, event) => ({
               authSession: context.authSession,
               rpcMessage: event.data,
-              appMeta: appMeta.appMeta,
+              appMeta: mockContext.appMeta,
+              authRequest: mockContext.authRequest,
             }),
             onDone: "Ready",
           },

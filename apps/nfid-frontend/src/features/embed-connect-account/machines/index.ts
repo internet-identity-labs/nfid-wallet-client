@@ -1,9 +1,16 @@
-// FIXME:
-// import from @nfid/integration
-import { ActorRefFrom, createMachine } from "xstate"
+import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { Account } from "@nfid/integration"
+
+import {
+  createAccountService,
+  fetchAccountsService,
+} from "frontend/integration/identity-manager/services"
 import { AuthSession } from "frontend/state/authentication"
-import { AuthorizingAppMeta } from "frontend/state/authorization"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 
 import { RPCMessage, RPCResponse } from "../../embed/rpc-service"
 import { ConnectAccountService } from "../services"
@@ -11,17 +18,30 @@ import { ConnectAccountService } from "../services"
 type EmbedConnectAccountMachineContext = {
   appMeta?: AuthorizingAppMeta
   authSession?: AuthSession
+  authRequest: AuthorizationRequest
   rpcMessage?: RPCMessage
   error?: any
+  accounts?: Account[]
+  accountsLimit?: number
 }
 
 type Events =
   | { type: "done.invoke.ConnectAccountService"; data: RPCResponse }
+  | {
+      type: "done.invoke.createAccountService"
+      data: { hostname: string; accountId: string }
+    }
+  | { type: "done.invoke.fetchAccountsService"; data: Account[] }
+  | { type: "done.invoke.fetchAccountLimitService"; data: number }
+  | { type: "CREATE_ACCOUNT" }
+  | { type: "SELECT_ACCOUNT"; data: { accountId: Account["accountId"] } }
+  | { type: "PRESENT_ACCOUNTS" }
   | { type: "CONNECTION_DETAILS" }
   | {
       type: "CONNECT_WITH_ACCOUNT"
       data: { hostname: string; accountId: string }
     }
+  | { type: "CONNECT_ANONYMOUSLY" }
   | { type: "BACK" }
 
 export const EmbedConnectAccountMachine =
@@ -34,19 +54,47 @@ export const EmbedConnectAccountMachine =
         context: {} as EmbedConnectAccountMachineContext,
       },
       id: "EmbedConnectAccountMachine",
-      initial: "Ready",
+      initial: "Start",
       states: {
-        Ready: {
+        Start: {
+          type: "parallel",
+          states: {
+            FetchAccountLimit: {
+              invoke: {
+                src: "fetchAccountLimitService",
+                id: "fetchAccountLimitService",
+                onDone: [
+                  {
+                    actions: "assignUserLimit",
+                    target: "FetchAccounts",
+                  },
+                ],
+              },
+            },
+            FetchAccounts: {
+              invoke: {
+                src: "fetchAccountsService",
+                id: "fetchAccountsService",
+                onDone: [
+                  {
+                    actions: ["assignAccounts"],
+                  },
+                ],
+              },
+            },
+          },
           on: {
             CONNECTION_DETAILS: "ConnectionDetails",
             CONNECT_WITH_ACCOUNT: "ConnectWithAccount",
+            CONNECT_ANONYMOUSLY: "ConnectAnonymously",
           },
         },
+
         Error: {},
 
         ConnectionDetails: {
           on: {
-            BACK: "Ready",
+            BACK: "Start",
           },
         },
 
@@ -57,7 +105,18 @@ export const EmbedConnectAccountMachine =
             onDone: "End",
           },
         },
-        ConnectAnonymously: {},
+
+        ConnectAnonymously: {
+          invoke: {
+            src: "createAccountService",
+            id: "createAccountService",
+            onDone: [
+              {
+                target: ["ConnectWithAccount"],
+              },
+            ],
+          },
+        },
 
         End: {
           type: "final",
@@ -67,10 +126,17 @@ export const EmbedConnectAccountMachine =
       },
     },
     {
-      actions: {},
+      actions: {
+        assignUserLimit: assign({
+          accountsLimit: (context, event) => event.data,
+        }),
+        assignAccounts: assign({ accounts: (context, event) => event.data }),
+      },
       guards: {},
       services: {
         ConnectAccountService,
+        fetchAccountsService,
+        createAccountService,
       },
     },
   )

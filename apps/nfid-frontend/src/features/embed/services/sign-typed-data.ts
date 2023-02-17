@@ -28,11 +28,8 @@ export const SignTypedDataService = async ({ authSession }: SignTypedDataService
 
   try {
     console.time("SignTypedDataService sendTransaction:")
-    const result = await nfidWallet.signTypedData(
-      parsedMessage.domain,
-      parsedMessage.types,
-      parsedMessage.message
-    )
+    const result = await nfidWallet.signTypedData(parsedMessage)
+
     console.timeEnd("SignTypedDataService sendTransaction:")
     console.debug("SignTypedDataService", { result })
     return Promise.resolve({ ...RPC_BASE, id: event.data.id, result })

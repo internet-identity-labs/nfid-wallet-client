@@ -30,6 +30,7 @@ export interface AuthorizationRequest {
 export interface AuthorizingAppMeta {
   name?: string
   logo?: string
+  url?: string
 }
 
 /**

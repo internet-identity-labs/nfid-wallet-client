@@ -1,17 +1,29 @@
-import { useMachine } from "@xstate/react"
+import { useActor } from "@xstate/react"
 
-import { NFIDConnectAccountMachine } from "./machines"
+import { NFIDConnectAccountActor } from "./machines"
 import { ChooseAccount } from "./ui/choose-account"
 import { ConnectionDetails } from "./ui/connection-details"
 
-export const NFIDConnectAccountCoordinator = () => {
-  const [state, send] = useMachine(NFIDConnectAccountMachine)
+export const NFIDConnectAccountCoordinator = ({
+  actor,
+}: Actor<NFIDConnectAccountActor>) => {
+  const [state, send] = useActor(actor)
 
   switch (true) {
-    case state.matches("Ready"):
+    case state.matches("Ready") || state.matches("ConnectWithAccount"):
       return (
         <ChooseAccount
           onConnectionDetails={() => send({ type: "CONNECTION_DETAILS" })}
+          onConnect={(accountId: string) =>
+            send({
+              type: "CONNECT_WITH_ACCOUNT",
+              data: accountId,
+            })
+          }
+          applicationName={state.context?.appMeta?.name}
+          applicationLogo={state.context?.appMeta?.logo}
+          applicationURL={state.context?.appMeta?.url}
+          isLoading={state.matches("ConnectWithAccount")}
         />
       )
     case state.matches("ConnectionDetails"):

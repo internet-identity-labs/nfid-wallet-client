@@ -4,6 +4,7 @@ import { AuthenticationCoordinator } from "frontend/coordination/authentication"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 
 import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
+import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
 import { NFIDEmbedMachine } from "./machines"
 
 export const NFIDEmbedCoordinator = () => {
@@ -17,7 +18,13 @@ export const NFIDEmbedCoordinator = () => {
         />
       )
     case state.matches("ConnectAccount"):
-      return <NFIDConnectAccountCoordinator />
+      return (
+        <NFIDConnectAccountCoordinator
+          actor={
+            state.children.NFIDConnectAccountMachine as NFIDConnectAccountActor
+          }
+        />
+      )
     case state.matches("SendTransaction"):
       return <div>SendTransaction</div>
     case state.matches("SignTypedDataV4"):

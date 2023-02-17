@@ -2,7 +2,7 @@ import {
   IGroupedOptions,
   IGroupOption,
 } from "packages/ui/src/molecules/choose-modal/types"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import {
   BlurredLoader,
@@ -14,17 +14,22 @@ import {
   Tooltip,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
+import { getWalletName } from "@nfid/integration"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
-import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
+import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
+import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
+import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
 
 interface IChooseAccount {
   applicationLogo?: string
   applicationName?: string
   applicationURL?: string
   onConnectionDetails: () => void
+  onConnect: (accountId: string) => void
+  isLoading: boolean
 }
 
 export const ChooseAccount = ({
@@ -32,13 +37,13 @@ export const ChooseAccount = ({
   applicationName,
   applicationURL,
   onConnectionDetails,
+  onConnect,
+  isLoading,
 }: IChooseAccount) => {
-  // I use hooks here, because it is the easiest way to achieve the goal
-  // We don't have needed services for this
-  const { wallets, isLoading } = useAllWallets()
-  const { exchangeRate, isValidating: isExchangeRateLoading } =
-    useICPExchangeRate()
+  const { balances: wallets } = useUserBalances()
+  const { exchangeRate } = useICPExchangeRate()
 
+  const applications = useApplicationsMeta()
   const [selectedAccount, setSelectedAccount] = useState("")
 
   const accountsOptions: IGroupedOptions[] = useMemo(() => {
@@ -46,28 +51,43 @@ export const ChooseAccount = ({
 
     return [
       {
-        label: "Public",
-        options: wallets.map(
-          (account) =>
-            ({
-              title: account.label,
-              value: account.principalId,
-              subTitle: truncateString(account.principalId, 5),
-              innerTitle: toPresentation(account.balance["ICP"]).toString(),
-              innerSubtitle: toUSD(
-                toPresentation(account.balance["ICP"]),
-                exchangeRate,
-              ),
-            } as IGroupOption),
+        label: "Anonymous",
+        options: keepStaticOrder<IGroupOption>(
+          ({ title }) => title ?? "",
+          ["NFID", "NNS"],
+        )(
+          wallets
+            .map(
+              (account) =>
+                ({
+                  title: getWalletName(
+                    applications.applicationsMeta ?? [],
+                    account.account.domain,
+                    account.account.accountId,
+                  ),
+                  value: account.principalId,
+                  subTitle: truncateString(account.principalId, 5),
+                  innerTitle: toPresentation(account.balance["ICP"]).toString(),
+                  innerSubtitle: toUSD(
+                    toPresentation(account.balance["ICP"]),
+                    exchangeRate,
+                  ),
+                } as IGroupOption),
+            )
+            .sort(sortAlphabetic(({ title }) => title ?? "")) || [],
         ),
       },
     ]
-  }, [exchangeRate, wallets])
+  }, [applications.applicationsMeta, exchangeRate, wallets])
+
+  const handleConnect = useCallback(() => {
+    onConnect(selectedAccount)
+  }, [onConnect, selectedAccount])
 
   return (
     <BlurredLoader
       className="p-0"
-      isLoading={isLoading || isExchangeRateLoading}
+      isLoading={isLoading || !wallets?.length || !exchangeRate}
     >
       <div className="flex justify-between">
         <div>
@@ -81,6 +101,8 @@ export const ChooseAccount = ({
                 <a
                   className="text-blue hover:opacity-70"
                   href={`https://${applicationURL}`}
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   {applicationURL}
                 </a>
@@ -125,7 +147,9 @@ export const ChooseAccount = ({
           Connection details
         </p>
       </div>
-      <Button className="w-full mt-3">Connect</Button>
+      <Button className="w-full mt-3" onClick={handleConnect}>
+        Connect
+      </Button>
       <Button type="ghost" block className="mt-3">
         Connect anonymously
       </Button>

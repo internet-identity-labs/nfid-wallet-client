@@ -62,6 +62,7 @@ export interface Typegen0 {
       | "error.platform.SignTypedDataService"
     nfid_authenticated: "done.invoke.authenticate"
     sendRPCResponse:
+      | "done.invoke.NFIDConnectAccountMachine"
       | "done.invoke.SendTransactionService"
       | "done.invoke.SignTypedDataService"
       | "error.platform.SendTransactionService"

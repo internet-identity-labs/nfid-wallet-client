@@ -24,6 +24,7 @@ const appMeta = {
   appMeta: {
     name: "Rarible SDK Example",
     logo: "https://app.rarible.com/favicon.ico",
+    url: "rarible.com",
   },
 }
 
@@ -102,7 +103,14 @@ export const NFIDEmbedMachine =
           invoke: {
             src: "NFIDConnectAccountMachine",
             id: "NFIDConnectAccountMachine",
+            data: (context, event) => ({
+              authSession: context.authSession,
+              rpcMessage: event.data,
+              appMeta: appMeta.appMeta,
+            }),
+            onDone: "Ready",
           },
+          onExit: ["sendRPCResponse"],
         },
 
         SendTransaction: {

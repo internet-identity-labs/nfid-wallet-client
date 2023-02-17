@@ -6,7 +6,7 @@ interface SDKApplicationMetaProps {
   applicationLogo?: string
   applicationName?: string
   title?: string
-  subTitle?: string
+  subTitle?: string | JSX.Element
 }
 
 export const SDKApplicationMeta: React.FC<SDKApplicationMetaProps> = ({

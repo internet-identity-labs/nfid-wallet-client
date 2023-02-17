@@ -2,7 +2,9 @@ import { useMachine } from "@xstate/react"
 
 import { AuthenticationCoordinator } from "frontend/coordination/authentication"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
-import { NFIDEmbedMachine } from "./machine"
+
+import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
+import { NFIDEmbedMachine } from "./machines"
 
 export const NFIDEmbedCoordinator = () => {
   const [state] = useMachine(NFIDEmbedMachine)
@@ -15,7 +17,7 @@ export const NFIDEmbedCoordinator = () => {
         />
       )
     case state.matches("ConnectAccount"):
-      return <div>ConnectAccount</div>
+      return <NFIDConnectAccountCoordinator />
     case state.matches("SendTransaction"):
       return <div>SendTransaction</div>
     case state.matches("SignTypedDataV4"):

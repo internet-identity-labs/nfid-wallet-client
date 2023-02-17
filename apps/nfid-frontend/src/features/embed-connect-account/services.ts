@@ -1,15 +1,21 @@
 // import { ethers } from "ethers"
-import { RPCMessage, RPC_BASE } from "../rpc-service"
-import { AuthSession } from "frontend/state/authentication"
-import { ecdsaSigner, EthWallet, replaceActorIdentity } from "@nfid/integration"
 import { ethers } from "ethers"
+
+import { ecdsaSigner, EthWallet, replaceActorIdentity } from "@nfid/integration"
+
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { AuthSession } from "frontend/state/authentication"
+
+import { RPCMessage, RPC_BASE } from "../embed/rpc-service"
 
 type ConnectAccountServiceContext = {
   authSession: AuthSession
 }
 
-export const ConnectAccountService = async ({ authSession }: ConnectAccountServiceContext, event: { type: string, data: RPCMessage }) => {
+export const ConnectAccountService = async (
+  { authSession }: ConnectAccountServiceContext,
+  event: { type: string; data: RPCMessage },
+) => {
   console.time("ConnectAccountService")
   console.time("ConnectAccountService getWalletDelegation")
   const identity = await getWalletDelegation(authSession.anchor)
@@ -28,6 +34,3 @@ export const ConnectAccountService = async ({ authSession }: ConnectAccountServi
   console.timeEnd("ConnectAccountService")
   return Promise.resolve({ ...RPC_BASE, id: event.data.id, result: [address] })
 }
-
-
-

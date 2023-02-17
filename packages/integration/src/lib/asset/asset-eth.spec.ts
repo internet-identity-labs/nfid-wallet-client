@@ -1,12 +1,13 @@
 import { BigNumber } from "@rarible/utils"
 
-import { Balance, EthereumAsset } from "./ethereum-asset"
+import { ethereumAsset } from "./asset-ethereum"
+import { Balance } from "./types"
 
 describe("Ethereum Asset", () => {
-  jest.setTimeout(200000)
+  jest.setTimeout(20000)
 
   it("should return one fungible native tx", async function () {
-    const actual = await EthereumAsset.getFungibleActivityByTokenAndUser({
+    const actual = await ethereumAsset.getFungibleActivityByTokenAndUser({
       size: 1,
       sort: "asc",
     })
@@ -28,7 +29,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should return one fungible erc20 tx", async function () {
-    const actual = await EthereumAsset.getFungibleActivityByTokenAndUser({
+    const actual = await ethereumAsset.getFungibleActivityByTokenAndUser({
       contract: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
       size: 1,
       sort: "asc",
@@ -52,7 +53,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should return one fungible erc20 token", async function () {
-    const actual = await EthereumAsset.getErc20TokensByUser()
+    const actual = await ethereumAsset.getErc20TokensByUser()
     expect(actual).toEqual({
       cursor: undefined,
       tokens: [
@@ -68,7 +69,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should request balance", async function () {
-    const balance: Balance = await EthereumAsset.getBalance()
+    const balance: Balance = await ethereumAsset.getBalance()
     expect(balance).toMatchObject({
       balance: expect.any(BigNumber),
       balanceinUsd: expect.any(BigNumber),
@@ -80,7 +81,7 @@ describe("Ethereum Asset", () => {
       const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
       const tokenId =
         "88260187566799326202913268841041605580353496351673437472672373155789474365442"
-      await EthereumAsset.getActivitiesByItem(contract, tokenId)
+      await ethereumAsset.getActivitiesByItem(contract, tokenId)
     } catch (e) {
       fail(e)
     }
@@ -88,7 +89,7 @@ describe("Ethereum Asset", () => {
 
   it("should request activities by user", async function () {
     try {
-      await EthereumAsset.getActivitiesByUser()
+      await ethereumAsset.getActivitiesByUser()
     } catch (e) {
       fail(e)
     }
@@ -96,7 +97,7 @@ describe("Ethereum Asset", () => {
 
   it("should request items by user", async function () {
     try {
-      await EthereumAsset.getItemsByUser()
+      await ethereumAsset.getItemsByUser()
     } catch (e) {
       fail(e)
     }
@@ -108,7 +109,7 @@ describe("Ethereum Asset", () => {
     const tokenId =
       "80322369037599879817130611650014995038071054105692890356259348959353817268226"
     try {
-      await EthereumAsset.transferNft(to, contract, tokenId)
+      await ethereumAsset.transferNft(to, contract, tokenId)
     } catch (e) {
       expect(JSON.stringify(e)).toContain(
         "transfer caller is not owner nor approved",

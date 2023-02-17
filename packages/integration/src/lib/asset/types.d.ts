@@ -1,4 +1,6 @@
+import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { BigNumber } from "@rarible/utils"
+import { Network } from "alchemy-sdk"
 
 declare type Asset = {
   getActivitiesByItem(
@@ -98,4 +100,15 @@ declare type NonFungibleItem = {
 declare type TokenPrice = {
   token: string
   price: string
+}
+
+declare type Configuration = {
+  currencyId: string
+  blockchain: EVMBlockchain
+  unionBlockchain: EVMBlockchain
+  provider: {
+    mainnet: string
+    testnet: string
+  }
+  alchemy: { mainnet: Network; testnet: Network }
 }

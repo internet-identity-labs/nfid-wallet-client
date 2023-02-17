@@ -7,6 +7,7 @@ export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME;
 export const hostPath = process.env.HOST_PATH;
 export const baseURL = process.env.NFID_PROVIDER_URL ? process.env.NFID_PROVIDER_URL : "http://localhost:9090"
+export const serviceName = process.env.SERVICE_NAME ? process.env.SERVICE_NAME : "chromedriver"
 
 if (isHeadless) {
   chromeBrowserOptions.args.push("--headless")
@@ -143,7 +144,7 @@ export const config: WebdriverIO.Config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ["chromedriver"],
+  services: [serviceName],
   // services: ["docker"],
 
   // Framework you want to run your specs with.

@@ -7,7 +7,7 @@ import { hexZeroPad, joinSignature } from "@ethersproject/bytes"
 import { serialize } from "@ethersproject/transactions"
 import { UnsignedTransaction } from "ethers-ts"
 import * as BN from "bn.js"
-import { SignTypedDataVersion, TypedDataUtils } from "@metamask/eth-sig-util";
+import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
 
 const ABI_721 = [
   'function setApprovalForAll(address operator, bool _approved)',
@@ -78,30 +78,11 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     })
   }
 
-  async signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, message: Record<string, unknown>): Promise<string> {
+  async signTypedData({ types, primaryType, domain, message }: TypedMessage<any>): Promise<string> {
+    console.debug("signTypedData", { types, primaryType, domain, message })
 
-    const populated = await _TypedDataEncoder.resolveNames(domain, types, message, async (name: string) => {
-      if (!this.provider) throw new Error("init provider first");
-      return await this.provider.resolveName(name) || "FIXME: why could this happen?";
-    });
-
-    const encodedMessage = _TypedDataEncoder.hash(populated.domain, types, populated.value);
-
-    return signEcdsaMessage([...arrayify(encodedMessage)])
-      .then(signature => {
-        const ethersSignature = this._splitSignature(signature, arrayify(encodedMessage))
-        return joinSignature(ethersSignature)
-      })
-  }
-
-  async signTypedDataV2(data: any): Promise<string> {
     const typedDataHash = TypedDataUtils.eip712Hash(
-      {
-        types: data.types,
-        primaryType: data.primaryType,
-        domain: data.domain,
-        message: data.message
-      },
+      { types, primaryType, domain, message },
       SignTypedDataVersion.V4
     );
     return signEcdsaMessage([...typedDataHash])

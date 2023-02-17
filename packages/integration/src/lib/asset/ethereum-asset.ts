@@ -37,7 +37,7 @@ import {
   FungibleActivityRecords,
   Tokens,
   FungibleActivityRequest,
-} from "./types.d"
+} from "./types"
 
 declare const FRONTEND_MODE: string
 declare const ALCHEMY_API_KEY: string

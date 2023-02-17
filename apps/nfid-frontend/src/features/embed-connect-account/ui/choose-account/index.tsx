@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
-import { getWalletName } from "@nfid/integration"
+import { Account, getWalletName } from "@nfid/integration"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
@@ -28,18 +28,21 @@ interface IChooseAccount {
   applicationName?: string
   applicationURL?: string
   onConnectionDetails: () => void
+  onConnectAnonymously: () => void
   onConnect: (hostname: string, accountId: string) => void
-  isLoading: boolean
+  accounts?: Account[]
 }
 
 export const ChooseAccount = ({
   applicationLogo,
   applicationName,
   applicationURL,
+  onConnectAnonymously,
   onConnectionDetails,
   onConnect,
-  isLoading,
+  accounts,
 }: IChooseAccount) => {
+  console.log({ accounts })
   const { balances: wallets } = useUserBalances()
   const { exchangeRate } = useICPExchangeRate()
 
@@ -94,7 +97,7 @@ export const ChooseAccount = ({
   return (
     <BlurredLoader
       className="p-0"
-      isLoading={isLoading || !wallets?.length || !exchangeRate}
+      isLoading={!wallets?.length || !exchangeRate}
     >
       <div className="flex justify-between">
         <div>
@@ -157,7 +160,12 @@ export const ChooseAccount = ({
       <Button className="w-full mt-3" onClick={handleConnect}>
         Connect
       </Button>
-      <Button type="ghost" block className="mt-3">
+      <Button
+        type="ghost"
+        block
+        className="mt-3"
+        onClick={onConnectAnonymously}
+      >
         Connect anonymously
       </Button>
     </BlurredLoader>

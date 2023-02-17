@@ -1,5 +1,7 @@
 import { useActor } from "@xstate/react"
 
+import { Loader } from "@nfid-frontend/ui"
+
 import { NFIDConnectAccountActor } from "./machines"
 import { ChooseAccount } from "./ui/choose-account"
 import { ConnectionDetails } from "./ui/connection-details"
@@ -10,7 +12,7 @@ export const NFIDConnectAccountCoordinator = ({
   const [state, send] = useActor(actor)
 
   switch (true) {
-    case state.matches("Ready") || state.matches("ConnectWithAccount"):
+    case state.matches("Start"):
       return (
         <ChooseAccount
           onConnectionDetails={() => send({ type: "CONNECTION_DETAILS" })}
@@ -20,10 +22,11 @@ export const NFIDConnectAccountCoordinator = ({
               data: { hostname, accountId },
             })
           }
+          onConnectAnonymously={() => send({ type: "CONNECT_ANONYMOUSLY" })}
           applicationName={state.context?.appMeta?.name}
           applicationLogo={state.context?.appMeta?.logo}
           applicationURL={state.context?.appMeta?.url}
-          isLoading={state.matches("ConnectWithAccount")}
+          accounts={state?.context?.accounts}
         />
       )
     case state.matches("ConnectionDetails"):
@@ -31,6 +34,6 @@ export const NFIDConnectAccountCoordinator = ({
     case state.matches("Error"):
       return <div>Some Error happened</div>
     default:
-      return <div>NFIDConnectAccountCoordinator</div>
+      return <Loader isLoading={true} />
   }
 }

@@ -7,7 +7,7 @@ import { createMachine, assign } from "xstate"
 import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 
-import { NFIDConnectAccountMachine } from "../../embed-connect-account/machines"
+import { EmbedConnectAccountMachine } from "../../embed-connect-account/machines"
 import { RPCMessage, rpcMessages, RPCResponse } from "../rpc-service"
 import { SendTransactionService } from "../services/send-transaction"
 import { SignTypedDataService } from "../services/sign-typed-data"
@@ -101,8 +101,8 @@ export const NFIDEmbedMachine =
 
         ConnectAccount: {
           invoke: {
-            src: "NFIDConnectAccountMachine",
-            id: "NFIDConnectAccountMachine",
+            src: "EmbedConnectAccountMachine",
+            id: "EmbedConnectAccountMachine",
             data: (context, event) => ({
               authSession: context.authSession,
               rpcMessage: event.data,
@@ -169,7 +169,7 @@ export const NFIDEmbedMachine =
       },
       services: {
         AuthenticationMachine,
-        NFIDConnectAccountMachine,
+        EmbedConnectAccountMachine,
         // FIXME:
         // @ts-ignore
         SendTransactionService,

@@ -1,20 +1,25 @@
 import assert from "assert"
 import { command } from "webdriver"
 
-const NFID_URL = "http://localhost:9090"
-
 export function originToRelyingPartyId(origin: string): string {
   return origin.replace(/https?:\/\/([.\w]+).*/, "$1")
 }
 
 /**
- * Adds custom commands for webauthn authenticator administration as documented here: https://webdriver.io/docs/customcommands/#add-more-webdriver-commands
+ * Already implemented in WDIO since 8.x.x version
+ *
+ * Adds custom commands for webauthn authenticator administration as documented here:
+ * https://webdriver.io/docs/customcommands/#add-more-webdriver-commands
+ *
+ * About Virtual Authenticator:
+ * https://www.w3.org/TR/webauthn-2/#virtual-authenticators
+ *
  * @param browser browser to add the commands to
  */
-export async function addCustomCommands(
+export async function addVirtualAuthCommands(
   browser: WebdriverIO.Browser,
 ): Promise<void> {
-  await browser.addCommand(
+  browser.addCommand(
     "addVirtualWebAuth",
     command("POST", "/session/:sessionId/webauthn/authenticator", {
       command: "addVirtualWebAuth",
@@ -26,33 +31,45 @@ export async function addCustomCommands(
           name: "protocol",
           type: "string",
           description: "The protocol the Virtual Authenticator speaks",
-          required: true,
+          required: false,
         },
         {
           name: "transport",
           type: "string",
           description: "The AuthenticatorTransport simulated",
-          required: true,
+          required: false,
         },
         {
           name: "hasResidentKey",
           type: "boolean",
           description:
             "If set to true the authenticator will support client-side discoverable credentials",
-          required: true,
+          required: false,
+        },
+        {
+          name: "hasUserVerification",
+          type: "boolean",
+          description: "If set to true, the authenticator supports user verification.",
+          required: false
         },
         {
           name: "isUserConsenting",
           type: "boolean",
           description:
             "Determines the result of all user consent authorization gestures",
-          required: true,
+          required: false,
         },
+        {
+          name: "isUserVerified",
+          type: "boolean",
+          description: "Determines the result of User Verification performed on the Virtual Authenticator",
+          required: false
+        }
       ],
     }),
   )
 
-  await browser.addCommand(
+  browser.addCommand(
     "removeVirtualWebAuth",
     command(
       "DELETE",
@@ -75,7 +92,7 @@ export async function addCustomCommands(
   )
 
   // This retrieves previously created credentials, see https://www.w3.org/TR/webauthn-2/#sctn-automation-get-credentials
-  await browser.addCommand(
+  browser.addCommand(
     "getWebauthnCredentials",
     command(
       "GET",
@@ -88,7 +105,7 @@ export async function addCustomCommands(
           {
             name: "authenticatorId",
             type: "string",
-            description: "The id of the authenticator to remove",
+            description: "The id of the authenticator to retrieve credentials",
             required: true,
           },
         ],
@@ -98,7 +115,7 @@ export async function addCustomCommands(
   )
 
   // This adds a previously created credential, see https://www.w3.org/TR/webauthn-2/#sctn-automation-add-credential
-  await browser.addCommand(
+  browser.addCommand(
     "addWebauthnCredential",
     command(
       "POST",
@@ -111,7 +128,7 @@ export async function addCustomCommands(
           {
             name: "authenticatorId",
             type: "string",
-            description: "The id of the authenticator to remove",
+            description: "The id of the authenticator related to credential",
             required: true,
           },
         ],
@@ -174,7 +191,7 @@ export async function addCustomCommands(
 export async function addVirtualAuthenticator(
   browser: WebdriverIO.Browser,
 ): Promise<string> {
-  return await browser.addVirtualWebAuth("ctap2", "usb", true, true)
+  return await browser.addVirtualWebAuth("ctap2", "usb", true, true, true, true);
 }
 
 // NOTE: there is also a native webdriverio implementation for this
@@ -219,9 +236,7 @@ export async function addWebAuthnCredential(
  */
 export const setupVirtualAuthenticator = async () => {
   try {
-    await addCustomCommands(browser)
-    const authenticator = await addVirtualAuthenticator(browser)
-    return authenticator
+    return await addVirtualAuthenticator(browser)
   } catch (e) {
     console.debug("setupVirtualWebauthn", { e })
     assert(e, "Could not setup webauthn")

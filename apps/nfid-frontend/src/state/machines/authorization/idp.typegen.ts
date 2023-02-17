@@ -1,3 +1,4 @@
+
 // This file was automatically generated. Edits will be overwritten
 
 export interface Typegen0 {
@@ -108,9 +109,9 @@ export interface Typegen0 {
   }
   eventsCausingServices: {
     AuthenticationMachine:
-      | "done.invoke.checkIsIframe"
-      | "done.invoke.checkIsIframeAllowed"
-      | "done.state.idp.Start"
+    | "done.invoke.checkIsIframe"
+    | "done.invoke.checkIsIframeAllowed"
+    | "done.state.idp.Start"
     AuthorizationMachine: "done.invoke.authenticate"
     TrustDeviceMachine: "done.invoke.authorize"
     checkIsIframe: "done.invoke.handshake"
@@ -120,34 +121,34 @@ export interface Typegen0 {
     postDelegation: "done.invoke.authorize" | "done.invoke.trustDeviceMachine"
   }
   matchesStates:
-    | "AuthenticationMachine"
-    | "AuthorizationMachine"
-    | "End"
-    | "Error"
-    | "Start"
-    | "Start.GetAppMeta"
-    | "Start.GetAppMeta.Done"
-    | "Start.GetAppMeta.Fetch"
-    | "Start.Handshake"
-    | "Start.Handshake.CheckIsIframe"
-    | "Start.Handshake.CheckIsIframeAllowed"
-    | "Start.Handshake.Done"
-    | "Start.Handshake.Error"
-    | "Start.Handshake.Fetch"
-    | "TrustDevice"
+  | "AuthenticationMachine"
+  | "AuthorizationMachine"
+  | "End"
+  | "Error"
+  | "Start"
+  | "Start.GetAppMeta"
+  | "Start.GetAppMeta.Done"
+  | "Start.GetAppMeta.Fetch"
+  | "Start.Handshake"
+  | "Start.Handshake.CheckIsIframe"
+  | "Start.Handshake.CheckIsIframeAllowed"
+  | "Start.Handshake.Done"
+  | "Start.Handshake.Error"
+  | "Start.Handshake.Fetch"
+  | "TrustDevice"
+  | {
+    Start?:
+    | "GetAppMeta"
+    | "Handshake"
     | {
-        Start?:
-          | "GetAppMeta"
-          | "Handshake"
-          | {
-              GetAppMeta?: "Done" | "Fetch"
-              Handshake?:
-                | "CheckIsIframe"
-                | "CheckIsIframeAllowed"
-                | "Done"
-                | "Error"
-                | "Fetch"
-            }
-      }
+      GetAppMeta?: "Done" | "Fetch"
+      Handshake?:
+      | "CheckIsIframe"
+      | "CheckIsIframeAllowed"
+      | "Done"
+      | "Error"
+      | "Fetch"
+    }
+  }
   tags: never
 }

@@ -1,6 +1,6 @@
 import { useActor } from "@xstate/react"
 
-import { Loader } from "@nfid-frontend/ui"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { NFIDConnectAccountActor } from "./machines"
 import { ChooseAccount } from "./ui/choose-account"
@@ -34,6 +34,6 @@ export const NFIDConnectAccountCoordinator = ({
     case state.matches("Error"):
       return <div>Some Error happened</div>
     default:
-      return <Loader isLoading={true} />
+      return <BlurredLoader className="w-full h-full" isLoading={true} />
   }
 }

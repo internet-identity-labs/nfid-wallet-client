@@ -20,6 +20,7 @@ export const ConnectAccountService = async (
     data: { hostname: string; accountId: string }
   },
 ) => {
+  console.log(event)
   if (!authSession || !rpcMessage)
     throw new Error("No authSession or rpcMessage")
 

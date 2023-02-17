@@ -84,7 +84,7 @@ export class HomePage extends Page {
         // https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client
         await browser.waitUntil(
           async () => (await this.signInButton.length) < 1, {
-          timeout: 6000 + (counter * 2000)
+          timeout: 6000 + (counter * 2500)
         });
         break;
       } catch (err) { ++counter }

@@ -8,10 +8,11 @@ import {
 } from "../services/connect-account"
 import { SendTransactionService } from "../services/send-transaction"
 import { SignTypedDataService } from "../services/sign-typed-data"
-import { RPCMessage, RPCResponse } from "../rpc-service"
+import { RPCMessage, rpcMessages, RPCResponse } from "../rpc-service"
 // FIXME:
 // import from @nfid/integration
 import { isDelegationExpired } from "packages/integration/src/lib/agent/is-delegation-expired"
+import { map } from "rxjs"
 
 type NFIDEmbedMachineContext = {
   authSession?: AuthSession
@@ -49,11 +50,27 @@ export const NFIDEmbedMachine =
       initial: "AuthenticationMachine",
       states: {
         Ready: {
+          invoke: {
+            onError: "Error",
+            src: () => rpcMessages.pipe(map(({ data, origin }) => {
+              switch (data.method) {
+                case "eth_accounts":
+                  return { type: "CONNECT_ACCOUNT", data, origin }
+                case "eth_sendTransaction":
+                  return { type: "SEND_TRANSACTION", data, origin }
+                case "eth_signTypedData_v4":
+                  return { type: "SIGN_TYPED_DATA", data, origin }
+                default:
+                  throw new Error(`Unknown method: ${data.method}`)
+              }
+            })),
+          },
           on: {
             CONNECT_ACCOUNT: [
               { target: "ConnectAccount", cond: "isAuthenticated" },
               // TODO:
-              // store rpc message for later handling
+              // - store rpc message for later handling
+              // - replay rpc message after authentication
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
             SEND_TRANSACTION: [

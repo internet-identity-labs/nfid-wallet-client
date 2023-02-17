@@ -113,14 +113,17 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
+
 export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
   canisterId: VAULT_CANISTER_ID,
   agent: new HttpAgent({ ...agentBaseConfig }),
 })
-export const ecdsaSigner = actor<EcdsaSigner>(
-  ECDSA_SIGNER_CANISTER_ID,
-  ecdsaSignerIDL,
-)
+
+export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(ecdsaSignerIDL, {
+  canisterId: ECDSA_SIGNER_CANISTER_ID,
+  agent: new HttpAgent({ ...agentBaseConfig }),
+})
+
 export const ethSecretStorage = actor<EthSecretStorage>(
   ETH_SECRET_STORAGE_CANISTER_ID,
   ethSecretStorageIDL,

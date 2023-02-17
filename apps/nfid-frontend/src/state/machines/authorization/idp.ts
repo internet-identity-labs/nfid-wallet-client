@@ -14,14 +14,12 @@ import {
   AuthorizingAppMeta,
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
-import AuthenticationMachine, {
-  AuthenticationMachineContext,
-} from "frontend/state/machines/authentication/authentication"
-import AuthorizationMachine, {
-  AuthorizationMachineContext,
-} from "frontend/state/machines/authorization/authorization"
+import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
+import AuthorizationMachine from "frontend/state/machines/authorization/authorization"
 
 import TrustDeviceMachine from "../authentication/trust-device"
+
+
 
 export interface IDPMachineContext {
   authRequest?: {
@@ -151,11 +149,10 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: "AuthorizationMachine",
-            data: (context) =>
-              ({
-                appMeta: context.appMeta,
-                authRequest: context.authRequest,
-              } as AuthenticationMachineContext),
+            data: (context) => ({
+              appMeta: context.appMeta,
+              authRequest: context.authRequest,
+            }),
           },
         },
         AuthorizationMachine: {
@@ -166,12 +163,11 @@ const IDPMachine =
               { target: "TrustDevice", cond: "isWebAuthNSupported" },
               { target: "End" },
             ],
-            data: (context, event: { data: AuthSession }) =>
-              ({
-                appMeta: context.appMeta,
-                authRequest: context.authRequest,
-                authSession: event.data,
-              } as AuthorizationMachineContext),
+            data: (context, event: { data: AuthSession }) => ({
+              appMeta: context.appMeta,
+              authRequest: context.authRequest,
+              authSession: event.data,
+            }),
           },
         },
         TrustDevice: {

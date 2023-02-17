@@ -1,8 +1,8 @@
 import { ActorMethod } from "@dfinity/agent"
 import { Bytes, ethers, Signer, TypedDataDomain, TypedDataField } from "ethers"
 import { Provider, TransactionRequest } from "@ethersproject/abstract-provider"
-import { getEcdsaPublicKey, signEcdsaMessage } from "./index"
-import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature } from "ethers/lib/utils"
+import { getEcdsaPublicKey, getSignature, signEcdsaMessage } from "."
+import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature, _TypedDataEncoder } from "ethers/lib/utils"
 import { hexZeroPad, joinSignature } from "@ethersproject/bytes"
 import { serialize } from "@ethersproject/transactions"
 import { UnsignedTransaction } from "ethers-ts"
@@ -50,7 +50,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   async prepareSignature(message: Bytes | string): Promise<string> {
     const keccakHash = hashMessage(message)
     const messageHashAsBytes = arrayify(keccakHash)
-    return prepareSignature([...messageHashAsBytes])
+    return this.prepareSignature([...messageHashAsBytes])
   }
 
   async getPreparedSignature(hash: string, message: Bytes | string): Promise<string> {
@@ -61,6 +61,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       return joinSignature(ethersSignature)
     })
   }
+
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
     return resolveProperties(transaction).then((tx) => {
@@ -77,7 +78,23 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     })
   }
 
-  async signTypedData(data: any): Promise<string> {
+  async signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, message: Record<string, unknown>): Promise<string> {
+
+    const populated = await _TypedDataEncoder.resolveNames(domain, types, message, async (name: string) => {
+      if (!this.provider) throw new Error("init provider first");
+      return await this.provider.resolveName(name) || "FIXME: why could this happen?";
+    });
+
+    const encodedMessage = _TypedDataEncoder.hash(populated.domain, types, populated.value);
+
+    return signEcdsaMessage([...arrayify(encodedMessage)])
+      .then(signature => {
+        const ethersSignature = this._splitSignature(signature, arrayify(encodedMessage))
+        return joinSignature(ethersSignature)
+      })
+  }
+
+  async signTypedDataV2(data: any): Promise<string> {
     const typedDataHash = TypedDataUtils.eip712Hash(
       {
         types: data.types,

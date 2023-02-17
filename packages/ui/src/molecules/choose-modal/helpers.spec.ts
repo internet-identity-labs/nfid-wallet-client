@@ -25,7 +25,7 @@ describe("filterGroupedOptionsByTitle", () => {
     const filteredOptions = filterGroupedOptionsByTitle(options, "option 2")
     expect(filteredOptions).toEqual([
       {
-        groupTitle: "Group 1",
+        label: "Group 1",
         options: [{ title: "Option 2", value: "2" }],
       },
     ])
@@ -39,7 +39,7 @@ describe("filterGroupedOptionsByTitle", () => {
     )
     expect(filteredOptions).toEqual([
       {
-        groupTitle: "Group 1",
+        label: "Group 1",
         options: [{ title: "Option 2", value: "2" }],
       },
     ])

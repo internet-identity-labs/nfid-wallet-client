@@ -18,7 +18,10 @@ type EmbedConnectAccountMachineContext = {
 type Events =
   | { type: "done.invoke.ConnectAccountService"; data: RPCResponse }
   | { type: "CONNECTION_DETAILS" }
-  | { type: "CONNECT_WITH_ACCOUNT"; data: string }
+  | {
+      type: "CONNECT_WITH_ACCOUNT"
+      data: { hostname: string; accountId: string }
+    }
   | { type: "BACK" }
 
 export const EmbedConnectAccountMachine =
@@ -52,10 +55,6 @@ export const EmbedConnectAccountMachine =
             src: "ConnectAccountService",
             id: "ConnectAccountService",
             onDone: "End",
-            data: (context) => ({
-              authSession: context.authSession,
-              event: context.rpcMessage,
-            }),
           },
         },
         ConnectAnonymously: {},

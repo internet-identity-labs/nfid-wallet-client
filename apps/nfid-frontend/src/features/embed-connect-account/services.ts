@@ -13,27 +13,28 @@ type ConnectAccountServiceContext = {
   rpcMessage?: RPCMessage
 }
 
-export const ConnectAccountService = async ({
-  authSession,
-  rpcMessage,
-}: ConnectAccountServiceContext) => {
+export const ConnectAccountService = async (
+  { authSession, rpcMessage }: ConnectAccountServiceContext,
+  event: {
+    type: string
+    data: { hostname: string; accountId: string }
+  },
+) => {
   if (!authSession || !rpcMessage)
     throw new Error("No authSession or rpcMessage")
-  console.time("ConnectAccountService")
-  console.time("ConnectAccountService getWalletDelegation")
-  const identity = await getWalletDelegation(authSession.anchor)
-  replaceActorIdentity(ecdsaSigner, identity)
-  console.timeEnd("ConnectAccountService getWalletDelegation")
 
-  console.time("ConnectAccountService getAddress")
+  const identity = await getWalletDelegation(
+    authSession.anchor,
+    event.data.hostname,
+    event.data.accountId,
+  )
+  replaceActorIdentity(ecdsaSigner, identity)
+
   const rpcProvider = new ethers.providers.JsonRpcProvider(
     "https://ethereum-goerli-rpc.allthatnode.com",
   )
   const nfidWallet = new EthWallet(rpcProvider)
   const address = await nfidWallet.getAddress()
-  console.timeEnd("ConnectAccountService getAddress")
 
-  console.debug("ConnectAccountService")
-  console.timeEnd("ConnectAccountService")
   return Promise.resolve({ ...RPC_BASE, id: rpcMessage.id, result: [address] })
 }

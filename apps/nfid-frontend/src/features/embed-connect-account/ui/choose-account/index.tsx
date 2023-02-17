@@ -28,7 +28,7 @@ interface IChooseAccount {
   applicationName?: string
   applicationURL?: string
   onConnectionDetails: () => void
-  onConnect: (accountId: string) => void
+  onConnect: (hostname: string, accountId: string) => void
   isLoading: boolean
 }
 
@@ -81,8 +81,10 @@ export const ChooseAccount = ({
   }, [applications.applicationsMeta, exchangeRate, wallets])
 
   const handleConnect = useCallback(() => {
-    onConnect(selectedAccount)
-  }, [onConnect, selectedAccount])
+    const account = wallets?.find((acc) => acc.principalId === selectedAccount)
+
+    onConnect(account?.account.domain ?? "", account?.account.accountId ?? "")
+  }, [onConnect, selectedAccount, wallets])
 
   return (
     <BlurredLoader

@@ -14,10 +14,10 @@ export const NFIDConnectAccountCoordinator = ({
       return (
         <ChooseAccount
           onConnectionDetails={() => send({ type: "CONNECTION_DETAILS" })}
-          onConnect={(accountId: string) =>
+          onConnect={(hostname: string, accountId: string) =>
             send({
               type: "CONNECT_WITH_ACCOUNT",
-              data: accountId,
+              data: { hostname, accountId },
             })
           }
           applicationName={state.context?.appMeta?.name}

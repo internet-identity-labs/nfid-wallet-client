@@ -50,6 +50,10 @@ export class Profile extends HomePage {
     await this.profilePic.click()
   }
 
+  public async getNFIDnumber() {
+    return $("div button  p");
+  }
+
   public async logout() {
     await this.logoutButton.waitForDisplayed({
       timeout: 5000,

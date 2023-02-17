@@ -62,10 +62,9 @@ Then(/^Policy is displayed on the policies list$/, async () => {
   )
 })
 
-Then(/^User has stored localstorage$/, async () => {
-  const localStorage = await browser.getLocalStorageItem("account");
-  expect(localStorage.length).toBeGreaterThan(1);
-  expect(localStorage).toContain("account");
+Then(/^NFID number is not zero$/,async () => {
+  const actualNFID = await Profile.getNFIDnumber();
+  expect(actualNFID).not.toBe("0");
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)

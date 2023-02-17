@@ -149,7 +149,7 @@
     "autoprefixer": "10.4.13",
     "babel-loader": "8.1.0",
     "buffer": "6.0.3",
-    "chromedriver": "108.0.0",
+    "chromedriver": "110.0.0",
     "cross-env": "7.0.3",
     "csp-html-webpack-plugin": "5.1.0",
     "cucumber-html-reporter": "^5.5.0",

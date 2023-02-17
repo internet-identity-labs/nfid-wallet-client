@@ -94,3 +94,8 @@ declare type NonFungibleItem = {
   tokenId?: string
   lastUpdatedAt: string
 }
+
+declare type TokenPrice = {
+  token: string
+  price: string
+}

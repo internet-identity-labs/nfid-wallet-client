@@ -1,12 +1,11 @@
 import { Then } from "@cucumber/cucumber"
-import setValue from "webdriverio/build/commands/element/setValue"
 
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
 import Vaults from "../pages/vaults"
 import clickElement from "./support/action/clickElement"
 import setInputField from "./support/action/setInputField"
-import { checkCredentialAmount } from "./support/action/setupVirtualWebauthn"
+import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import waitFor from "./support/action/waitFor"
 import waitForVisible from "./support/action/waitForDisplayed"
 import checkClass from "./support/check/checkClass"
@@ -39,8 +38,8 @@ import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
 
-Then(/^I logout$/, async () => {
-  await Profile.logout()
+Then(/^User logs out$/, async () => {
+  await Profile.logout();
 })
 
 Then(/^Vault appears with name ([^"]*)$/, async (vaultName: string) => {
@@ -61,6 +60,12 @@ Then(/^Policy is displayed on the policies list$/, async () => {
     async () => policiesCount < (await Vault.policiesList.length),
     { timeout: 10000, timeoutMsg: "Policy has no been added" },
   )
+})
+
+Then(/^User has stored localstorage$/, async () => {
+  const localStorage = await browser.getLocalStorageItem("account");
+  expect(localStorage.length).toBeGreaterThan(1);
+  expect(localStorage).toContain("account");
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)

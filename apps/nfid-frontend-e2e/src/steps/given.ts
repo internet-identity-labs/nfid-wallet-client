@@ -6,7 +6,7 @@ import openWebsite from "./support/action/openWebsite"
 import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
 import removeUserE2E from "./support/action/removeUserE2E"
 import setWindowSize from "./support/action/setWindowSize"
-import { setupVirtualAuthenticator } from "./support/action/setupVirtualWebauthn"
+import { setupVirtualAuthenticator } from "../helpers/setupVirtualWebauthn"
 import addLocalStorageKey from "./support/check/addLocalStorageKey"
 import checkContainsAnyText from "./support/check/checkContainsAnyText"
 import checkContainsText from "./support/check/checkContainsText"
@@ -33,11 +33,25 @@ Given(
   removeAccountByPhoneNumber,
 )
 
-Given(/^I authenticate with google account$/, async () => {
-  await HomePage.authenticateWithGoogle()
-  await HomePage.switchToWindow("last")
-  await HomePage.pickGoogleAccount()
-  await HomePage.switchToWindow()
+Given(/^User authenticates with google account$/, async () => {
+  await HomePage.authenticateWithGoogle();
+  await HomePage.switchToWindow("last");
+  await HomePage.pickGoogleAccount();
+  await HomePage.switchToWindow();
+});
+
+Given(/^User authenticates with enhanced security$/, async function () {
+  this.auth = await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true);
+  await HomePage.authenticateWithEnhancedSecurity();
+  await HomePage.waitForLoaderDisappear();
+})
+
+Given(/^User signs in$/, async function () {
+  await HomePage.signIn(true);
+})
+
+Given(/^User opens NFID site$/, async () => {
+  await HomePage.openBaseUrl();
 })
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)

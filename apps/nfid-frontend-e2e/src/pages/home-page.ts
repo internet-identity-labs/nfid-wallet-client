@@ -6,12 +6,12 @@ export class HomePage extends Page {
     return $$("#btn-signin");
   }
 
-  private get burgerButton() {
-    return $("button [alt=menu]");
+  private get homeBurgerButton() {
+    return $("#burger-mobile");
   }
 
-  private get isBurgerMenuOpened() {
-    return $("//div[contains(@class,'translate-x-0')]");
+  private get isHomeBurgerMenuOpened() {
+    return $("#menu-mobile-window");
   }
 
   private get googleAuthButton() {
@@ -42,10 +42,10 @@ export class HomePage extends Page {
     return $("#create-nfid")
   }
 
-  public async openBurgerMenu() {
-    await this.burgerButton.waitForDisplayed({ timeout: 7000, timeoutMsg: "Burgen Menu is missing!" });
-    await this.burgerButton.click();
-    await this.isBurgerMenuOpened.waitForDisplayed({ timeout: 3000, timeoutMsg: "Burger Menu is not opened" });
+  public async openHomeBurgerMenu() {
+    await this.homeBurgerButton.waitForDisplayed({ timeout: 7000, timeoutMsg: "Burgen Menu is missing!" });
+    await this.homeBurgerButton.click();
+    await this.isHomeBurgerMenuOpened.waitForDisplayed({ timeout: 3000, timeoutMsg: "Burger Menu is not opened" });
   }
 
   public async authenticateWithGoogle() {
@@ -75,7 +75,7 @@ export class HomePage extends Page {
     let index = isMobile ? 0 : 1;
     let counter = 0;
     while (await this.signInButton.length > 0 || counter < 3) {
-      if (isMobile) await this.openBurgerMenu();
+      if (isMobile) await this.openHomeBurgerMenu();
       await this.signInButton[index].waitForDisplayed({ timeout: 7000, timeoutMsg: "Sign In button is not displayed!" });
       await this.signInButton[index].waitForClickable({ timeout: 4000, timeoutMsg: "Sign In button is not clickable!" });
       await this.signInButton[index].click();

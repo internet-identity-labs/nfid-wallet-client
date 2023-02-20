@@ -1,4 +1,4 @@
-@registration @mobile
+@registration @mobile @onlythis
 Feature: Mobile registration and authentication
 
   @uat
@@ -9,7 +9,6 @@ Feature: Mobile registration and authentication
     Given User authenticates with enhanced security
     And User enters a captcha
     And Tokens displayed on user assets
-    And User opens burger menu
     When User opens mobile profile menu
     And User has account stored in localstorage
     Then NFID number is not zero
@@ -19,7 +18,6 @@ Feature: Mobile registration and authentication
     And User is already authenticated
     Given User signs in
     And Tokens displayed on user assets
-    And User opens burger menu
     When User opens mobile profile menu
     And User has account stored in localstorage
     Then NFID number is not zero

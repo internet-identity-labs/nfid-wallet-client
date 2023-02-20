@@ -6,11 +6,15 @@ export class Profile extends HomePage {
   }
 
   private get mobileProfile() {
-    return $$("div button")[3];
+    return $("#profile-mobile");
+  }
+
+  private get profileBurgerMenu() {
+    return $("#mobile-menu");
   }
 
   private get tokens() {
-    return $$("table+div > div");
+    return $$("table tbody tr");
   }
 
   private get logoutButton() {
@@ -30,13 +34,15 @@ export class Profile extends HomePage {
     await browser.waitUntil(
       async () => (await this.tokens.length) > 1,
       {
-        timeout: 10000,
+        timeout: 13000,
         timeoutMsg: "Tokens are not displayed on user profile!"
       }
     );
   }
 
   public async openMobileProfileMenu() {
+    await this.profileBurgerMenu.waitForDisplayed({ timeout: 7000, timeoutMsg: "User mobile menu is missing" });
+    await this.profileBurgerMenu.click();
     await this.mobileProfile.waitForDisplayed({ timeout: 5000, timeoutMsg: "Mobile Profile button is missing!" });
     await this.mobileProfile.waitForClickable({ timeout: 3000 });
     await this.mobileProfile.click();
@@ -48,6 +54,10 @@ export class Profile extends HomePage {
       timeoutMsg: "Profile Picture is missing!",
     })
     await this.profilePic.click()
+  }
+
+  public async getNFIDnumber() {
+    return $("#nfid-anchor");
   }
 
   public async logout() {

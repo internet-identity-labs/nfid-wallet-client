@@ -52,6 +52,7 @@ Given(/^User signs in$/, async function () {
 
 Given(/^User opens NFID site$/, async () => {
   await HomePage.openBaseUrl();
+  await HomePage.waitForLoaderDisappear();
 })
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)

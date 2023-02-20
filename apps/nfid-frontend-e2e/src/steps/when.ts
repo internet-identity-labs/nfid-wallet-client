@@ -39,7 +39,7 @@ When(/^Tokens displayed on user assets$/, async () => {
 })
 
 When(/^User opens burger menu$/, async () => {
-  await Profile.openBurgerMenu();
+  await Profile.openHomeBurgerMenu();
 })
 
 When(/^User opens mobile profile menu$/, async () => {
@@ -48,6 +48,12 @@ When(/^User opens mobile profile menu$/, async () => {
 
 When(/^User opens profile menu$/, async () => {
   await Profile.openProfileMenu();
+})
+
+When(/^User has account stored in localstorage$/, async () => {
+  const localStorage = await browser.getLocalStorageItem("account");
+  expect(localStorage.length).toBeGreaterThan(1);
+  expect(localStorage).toContain("account");
 })
 
 When(/^User is already authenticated$/, async function () {
@@ -79,8 +85,7 @@ When(/^I open Members tab$/, async () => {
 })
 
 When(
-  /^I add new member to this vault with ([^"]*) and ([^"]*)$/,
-  async (name: string, address: string) => {
+  /^I add new member to this vault with ([^"]*) and ([^"]*)$/, async (name: string, address: string) => {
     await Vault.addMember(name, address)
   },
 )

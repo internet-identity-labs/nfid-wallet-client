@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { Input } from "packages/ui/src/molecules/input"
+import { Input } from "@nfid-frontend/ui"
 import { useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 

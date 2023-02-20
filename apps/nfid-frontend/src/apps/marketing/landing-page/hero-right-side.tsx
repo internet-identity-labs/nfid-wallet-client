@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { SDKFooter } from "packages/ui/src/atoms/sdk-footer/footer"
+import { SDKFooter } from "@nfid-frontend/ui"
 import React from "react"
 
 import NFIDAuthenticationCoordinator from "frontend/coordination/nfid-authentication"

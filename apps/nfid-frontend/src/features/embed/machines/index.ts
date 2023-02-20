@@ -1,6 +1,4 @@
-// FIXME:
-// import from @nfid/integration
-import { isDelegationExpired } from "packages/integration/src/lib/agent/is-delegation-expired"
+import { isDelegationExpired } from "@nfid/integration"
 import { map } from "rxjs"
 import { createMachine, assign } from "xstate"
 

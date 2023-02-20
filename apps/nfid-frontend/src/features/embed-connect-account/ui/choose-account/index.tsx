@@ -1,7 +1,7 @@
 import {
   IGroupedOptions,
   IGroupOption,
-} from "packages/ui/src/molecules/choose-modal/types"
+} from "@nfid-frontend/ui"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
@@ -62,20 +62,20 @@ export const ChooseAccount = ({
           wallets
             .map(
               (account) =>
-                ({
-                  title: getWalletName(
-                    applications.applicationsMeta ?? [],
-                    account.account.domain,
-                    account.account.accountId,
-                  ),
-                  value: account.principalId,
-                  subTitle: truncateString(account.principalId, 5),
-                  innerTitle: toPresentation(account.balance["ICP"]).toString(),
-                  innerSubtitle: toUSD(
-                    toPresentation(account.balance["ICP"]),
-                    exchangeRate,
-                  ),
-                } as IGroupOption),
+              ({
+                title: getWalletName(
+                  applications.applicationsMeta ?? [],
+                  account.account.domain,
+                  account.account.accountId,
+                ),
+                value: account.principalId,
+                subTitle: truncateString(account.principalId, 5),
+                innerTitle: toPresentation(account.balance["ICP"]).toString(),
+                innerSubtitle: toUSD(
+                  toPresentation(account.balance["ICP"]),
+                  exchangeRate,
+                ),
+              } as IGroupOption),
             )
             .sort(sortAlphabetic(({ title }) => title ?? "")) || [],
         ),

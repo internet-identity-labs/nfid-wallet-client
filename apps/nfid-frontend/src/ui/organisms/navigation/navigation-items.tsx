@@ -95,18 +95,25 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
               src={IconMenu}
               alt="menu"
               className="rotate-180 focus:shadow-none"
+              id="burger-mobile"
             />
           }
         >
           {(toggleMenu) => (
-            <div className={clsx("font-bold bg-white rounded w-[70vw] pt-20")}>
+            <div
+              className={clsx("font-bold bg-white rounded w-[70vw] pt-20")}
+              id="menu-mobile-window"
+            >
               {isAuthenticated ? (
                 <Accordion
                   isBorder={false}
                   style={{ padding: 0 }}
                   detailsClassName="pb-0"
                   title={
-                    <div className="h-[60px] items-center flex p-2.5">
+                    <div
+                      className="h-[60px] items-center flex p-2.5"
+                      id="burger-menu-title"
+                    >
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0">
                         <img src={User} alt="user" className="cursor-pointer" />
                       </div>
@@ -116,7 +123,10 @@ export const NavigationItems: React.FC<NavigationItemsProps> = () => {
                     </div>
                   }
                   details={
-                    <div className="text-sm font-light text-black pl-[60px]">
+                    <div
+                      className="text-sm font-light text-black pl-[60px]"
+                      id="burger-menu-details"
+                    >
                       <div
                         className="flex items-center h-10"
                         onClick={() =>

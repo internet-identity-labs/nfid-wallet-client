@@ -50,7 +50,7 @@ When(/^User opens profile menu$/, async () => {
   await Profile.openProfileMenu();
 })
 
-When(/^User has stored localstorage$/, async () => {
+When(/^User has account stored in localstorage$/, async () => {
   const localStorage = await browser.getLocalStorageItem("account");
   expect(localStorage.length).toBeGreaterThan(1);
   expect(localStorage).toContain("account");
@@ -85,8 +85,7 @@ When(/^I open Members tab$/, async () => {
 })
 
 When(
-  /^I add new member to this vault with ([^"]*) and ([^"]*)$/,
-  async (name: string, address: string) => {
+  /^I add new member to this vault with ([^"]*) and ([^"]*)$/, async (name: string, address: string) => {
     await Vault.addMember(name, address)
   },
 )

@@ -6,7 +6,7 @@ import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature, _T
 import { hexZeroPad, joinSignature } from "@ethersproject/bytes"
 import { serialize } from "@ethersproject/transactions"
 import { UnsignedTransaction } from "ethers-ts"
-import * as BN from "bn.js"
+import BN from "bn.js"
 import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
 
 const ABI_721 = [

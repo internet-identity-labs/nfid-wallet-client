@@ -11,7 +11,7 @@ Feature: Mobile registration and authentication
     And Tokens displayed on user assets
     And User opens burger menu
     When User opens mobile profile menu
-    And User has stored localstorage
+    And User has account stored in localstorage
     Then NFID number is not zero
 
   Scenario Outline: User Signs In with predefined credentials
@@ -21,5 +21,5 @@ Feature: Mobile registration and authentication
     And Tokens displayed on user assets
     And User opens burger menu
     When User opens mobile profile menu
-    And User has stored localstorage
+    And User has account stored in localstorage
     Then NFID number is not zero

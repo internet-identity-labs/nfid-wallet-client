@@ -77,7 +77,10 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                 style={{ padding: 0 }}
                 detailsClassName="pb-0"
                 title={
-                  <div className="h-[60px] items-center flex p-2.5">
+                  <div
+                    className="h-[60px] items-center flex p-2.5"
+                    id="profile-mobile"
+                  >
                     <div
                       className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-base shrink-0"
                       onClick={toggleMenu}
@@ -90,7 +93,10 @@ const ProfileHeader: React.FC<IProfileHeader> = ({ className }) => {
                   </div>
                 }
                 details={
-                  <div className="text-sm font-light text-black pl-[60px]">
+                  <div
+                    className="text-sm font-light text-black pl-[60px]"
+                    id="profile-mobile-details"
+                  >
                     <div
                       className="flex items-center h-10"
                       onClick={() => navigate(`/faq`)}

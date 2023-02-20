@@ -1,8 +1,8 @@
 import { ActorMethod } from "@dfinity/agent"
 import { Bytes, ethers, Signer, TypedDataDomain, TypedDataField } from "ethers"
 import { Provider, TransactionRequest } from "@ethersproject/abstract-provider"
-import { getEcdsaPublicKey, getSignature, signEcdsaMessage } from "."
-import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature, _TypedDataEncoder } from "ethers/lib/utils"
+import { getEcdsaPublicKey, getSignature, signEcdsaMessage, prepareSignature } from "."
+import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature } from "ethers/lib/utils"
 import { hexZeroPad, joinSignature } from "@ethersproject/bytes"
 import { serialize } from "@ethersproject/transactions"
 import { UnsignedTransaction } from "ethers-ts"
@@ -50,7 +50,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   async prepareSignature(message: Bytes | string): Promise<string> {
     const keccakHash = hashMessage(message)
     const messageHashAsBytes = arrayify(keccakHash)
-    return this.prepareSignature([...messageHashAsBytes])
+    return prepareSignature([...messageHashAsBytes])
   }
 
   async getPreparedSignature(hash: string, message: Bytes | string): Promise<string> {

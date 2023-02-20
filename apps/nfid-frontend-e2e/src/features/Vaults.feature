@@ -3,8 +3,7 @@ Feature: Vault scenarios
   As a user, I want to create vault, create wallet, invite member and add custom policy.
 
   Background: User navigates to Vaults page
-    Given I open the site "/"
-    Given My browser supports WebAuthN
+    Given User opens NFID site
 
   Scenario: User registers via google
     Given I remove the e2e@identitylabs.ooo

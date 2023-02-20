@@ -1,12 +1,14 @@
-import { hooks } from "./src/wdio-hooks"
 import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
-import { cucumberOpts } from "./src/cucumber-options";
+import { cucumberOpts } from "./src/cucumber-options"
+import { hooks } from "./src/wdio-hooks"
 
 export const isHeadless = process.env.IS_HEADLESS
 export const isDebug = process.env.DEBUG === "true"
-export const hostName = process.env.HOST_NAME;
-export const hostPath = process.env.HOST_PATH;
-export const baseURL = process.env.NFID_PROVIDER_URL ? process.env.NFID_PROVIDER_URL : "http://localhost:9090"
+export const hostName = process.env.HOST_NAME
+export const hostPath = process.env.HOST_PATH
+export const baseURL = process.env.NFID_PROVIDER_URL
+  ? process.env.NFID_PROVIDER_URL
+  : "http://localhost:9090"
 
 if (isHeadless) {
   chromeBrowserOptions.args.push("--headless")

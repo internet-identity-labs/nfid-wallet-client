@@ -4,33 +4,45 @@ import { Network } from "alchemy-sdk"
 
 declare type Asset = {
   getActivitiesByItem(
-    tokenId: string,
-    contract: string,
-    cursor?: string,
-    size?: number,
+    request: ActivitiesByItemRequest,
   ): Promise<NonFungibleActivityRecords>
   getActivitiesByUser(
-    cursor?: string,
-    size?: number,
+    request?: PageRequest & SortRequest,
   ): Promise<NonFungibleActivityRecords>
-  getItemsByUser(cursor?: string, size?: number): Promise<NonFungibleItems>
+  getItemsByUser(request?: PageRequest): Promise<NonFungibleItems>
   getBalance(): Promise<Balance>
   transferNft(
     tokenId: string,
     constract: string,
     receiver: string,
   ): Promise<void>
-  getErc20TokensByUser(cursor?: string): Promise<Tokens>
+  getErc20TokensByUser(request?: CursorRequest): Promise<Tokens>
   getFungibleActivityByTokenAndUser(
     request: FungibleActivityRequest,
   ): Promise<FungibleActivityRecords>
 }
 
-declare type FungibleActivityRequest = {
+declare type SortRequest = {
+  sort?: "asc" | "desc"
+}
+
+declare type CursorRequest = {
+  cursor?: string
+}
+
+declare type PageRequest = CursorRequest & {
+  size?: number
+}
+
+declare type ActivitiesByItemRequest = PageRequest &
+  SortRequest & {
+    tokenId: string
+    contract: string
+  }
+
+declare type FungibleActivityRequest = PageRequest & {
   direction?: "from" | "to"
   contract?: string
-  cursor?: string
-  size?: number
   sort?: "asc" | "desc"
 }
 

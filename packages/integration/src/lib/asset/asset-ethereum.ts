@@ -38,6 +38,9 @@ import {
   Tokens,
   FungibleActivityRequest,
   Configuration,
+  ActivitiesByItemRequest,
+  PageRequest,
+  SortRequest,
 } from "./types"
 
 declare const FRONTEND_MODE: string
@@ -61,12 +64,13 @@ class EthereumAsset implements Asset {
     this.unionBlockchain = config.unionBlockchain
   }
 
-  public async getActivitiesByItem(
-    tokenId: string,
-    contract: string,
-    cursor?: string,
-    size?: number,
-  ): Promise<NonFungibleActivityRecords> {
+  public async getActivitiesByItem({
+    tokenId,
+    contract,
+    cursor,
+    size,
+    sort,
+  }: ActivitiesByItemRequest): Promise<NonFungibleActivityRecords> {
     const itemId = convertEthereumItemId(
       `${contract}:${tokenId}`,
       this.blockchain,
@@ -77,7 +81,10 @@ class EthereumAsset implements Asset {
         itemId,
         cursor,
         size,
-        sort: ActivitySort.LATEST_FIRST,
+        sort:
+          "asc" === sort
+            ? ActivitySort.EARLIEST_FIRST
+            : ActivitySort.LATEST_FIRST,
       })
 
     return {
@@ -86,10 +93,11 @@ class EthereumAsset implements Asset {
     }
   }
 
-  public async getActivitiesByUser(
-    cursor?: string,
-    size?: number,
-  ): Promise<NonFungibleActivityRecords> {
+  public async getActivitiesByUser({
+    cursor,
+    size,
+    sort,
+  }: PageRequest & SortRequest = {}): Promise<NonFungibleActivityRecords> {
     const address = await this.wallet.getAddress()
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,
@@ -107,7 +115,10 @@ class EthereumAsset implements Asset {
         cursor,
         size,
         blockchains: [this.blockchain],
-        sort: ActivitySort.LATEST_FIRST,
+        sort:
+          "asc" === sort
+            ? ActivitySort.EARLIEST_FIRST
+            : ActivitySort.LATEST_FIRST,
       })
     return {
       activities: raribleActivities.activities.map(this.mapActivity),
@@ -115,10 +126,10 @@ class EthereumAsset implements Asset {
     }
   }
 
-  public async getItemsByUser(
-    cursor?: string,
-    size?: number,
-  ): Promise<NonFungibleItems> {
+  public async getItemsByUser({
+    cursor,
+    size,
+  }: PageRequest = {}): Promise<NonFungibleItems> {
     const address = await this.wallet.getAddress()
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,
@@ -166,7 +177,9 @@ class EthereumAsset implements Asset {
     this.wallet.safeTransferFrom(receiver, contract, tokenId)
   }
 
-  public async getErc20TokensByUser(cursor?: string): Promise<Tokens> {
+  public async getErc20TokensByUser({
+    cursor,
+  }: PageRequest = {}): Promise<Tokens> {
     const address = await this.wallet.getAddress()
     const tokens = await this.alchemySdk.core.getTokensForOwner(address, {
       pageKey: cursor,
@@ -174,19 +187,14 @@ class EthereumAsset implements Asset {
     return {
       cursor: tokens.pageKey,
       tokens: tokens.tokens
-        .filter(
-          (x) =>
-            x.rawBalance !== undefined && 0 != +x.rawBalance,
-        )
-        .map(
-          (x) => ({
-            name: x.name || "N/A",
-            symbol: x.symbol || "N/A",
-            logo: x.logo,
-            balance: x.balance || "0.0",
-            contractAddress: x.contractAddress,
-          }),
-        ),
+        .filter((x) => x.rawBalance !== undefined && 0 != +x.rawBalance)
+        .map((x) => ({
+          name: x.name || "N/A",
+          symbol: x.symbol || "N/A",
+          logo: x.logo,
+          balance: x.balance || "0.0",
+          contractAddress: x.contractAddress,
+        })),
     }
   }
 
@@ -211,16 +219,14 @@ class EthereumAsset implements Asset {
     })
     return {
       cursor: transfers.pageKey,
-      activities: transfers.transfers.map(
-        (x) => ({
-          id: x.uniqueId,
-          date: x.metadata.blockTimestamp,
-          to: x.to || "N/A",
-          from: x.from,
-          transactionHash: x.hash,
-          price: x.value || 0,
-        }),
-      ),
+      activities: transfers.transfers.map((x) => ({
+        id: x.uniqueId,
+        date: x.metadata.blockTimestamp,
+        to: x.to || "N/A",
+        from: x.from,
+        transactionHash: x.hash,
+        price: x.value || 0,
+      })),
     }
   }
 
@@ -305,7 +311,7 @@ export const ethereumAsset = new EthereumAsset({
 
 export const polygonAsset = new EthereumAsset({
   currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
-  blockchain: Blockchain.ETHEREUM as EVMBlockchain,
+  blockchain: Blockchain.POLYGON as EVMBlockchain,
   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
   provider: {
     mainnet: "https://polygon-mainnet.infura.io",

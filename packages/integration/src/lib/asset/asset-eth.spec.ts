@@ -89,13 +89,13 @@ describe("Ethereum Asset", () => {
       cursor: expect.any(String),
       activities: [
         {
-          id: "ETHEREUM:63dbf15dc341254bf48063b9",
+          id: "ETHEREUM:63c7d2161020c105300ae228",
           type: "TRANSFER",
-          date: "2023-02-02T17:22:24Z",
-          from: "ETHEREUM:0x968774a2277719b825df46c109c360d797d19ed4",
-          to: "ETHEREUM:0x5d88229726c01f00fdefed1e70bd628407dc07ce",
+          date: "2023-01-18T11:03:48Z",
+          from: "ETHEREUM:0xc3217ef1d6027b5ad5404b21a911b952b5f728b4",
+          to: "ETHEREUM:0x2209da095ba4a0e55d96745006ad3df747f06a3b",
           transactionHash:
-            "0xb798f68f80c79191f4104b381727d07a07c3a1d3c8b8500c809916c00a5cd36b",
+            "0x7db526539a7e6c0e5532d6ee60b6f7530e83cce70c5972d10bdd1900401815a0",
         },
       ],
     })

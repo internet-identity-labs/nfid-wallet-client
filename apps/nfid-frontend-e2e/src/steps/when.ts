@@ -39,7 +39,7 @@ When(/^Tokens displayed on user assets$/, async () => {
 })
 
 When(/^User opens burger menu$/, async () => {
-  await Profile.openBurgerMenu();
+  await Profile.openHomeBurgerMenu();
 })
 
 When(/^User opens mobile profile menu$/, async () => {

@@ -1,4 +1,4 @@
-@registration @mobile @onlythis
+@registration @mobile
 Feature: Mobile registration and authentication
 
   @uat

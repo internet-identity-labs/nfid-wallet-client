@@ -9,7 +9,7 @@ export const hostPath = process.env.HOST_PATH;
 export const baseURL = process.env.NFID_PROVIDER_URL ? process.env.NFID_PROVIDER_URL : "http://localhost:9090"
 
 if (isHeadless) {
-  chromeBrowserOptions.args.push("--headless")
+  chromeBrowserOptions.args.push("--headless=new")
 }
 
 export const config: WebdriverIO.Config = {

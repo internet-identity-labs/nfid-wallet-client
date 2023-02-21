@@ -1,9 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "emitDecoratorMetadata": true,
-    "noEmit": false,
     "outDir": ""
   },
   "files": [

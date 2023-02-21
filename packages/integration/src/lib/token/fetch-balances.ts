@@ -7,8 +7,6 @@ import { Balance, getBalance as getICPBalance } from "../rosetta"
 import { Wallet } from "../vault/types"
 import { TokenMetadata, getBalance as getDip20Balance } from "./dip-20"
 
-declare const VAULT_CANISTER_ID: string
-
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]
   dip20Token: TokenMetadata[]

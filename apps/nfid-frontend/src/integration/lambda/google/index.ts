@@ -7,8 +7,6 @@ import "frontend/integration/internet-identity"
 import { GoogleAuthSession } from "frontend/state/authentication"
 import { getBrowserName } from "frontend/ui/utils"
 
-declare const SIGNIN_GOOGLE: string
-
 if (!SIGNIN_GOOGLE)
   throw new Error("Google lambda proxy SIGNIN_GOOGLE is not defined")
 

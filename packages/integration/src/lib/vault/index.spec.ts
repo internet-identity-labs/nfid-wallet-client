@@ -34,8 +34,6 @@ import {
   Wallet,
 } from "./types"
 
-declare const VAULT_CANISTER_ID: string
-
 describe("Vault suite", () => {
   jest.setTimeout(100000)
 

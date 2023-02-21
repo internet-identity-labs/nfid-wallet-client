@@ -39,9 +39,6 @@ import {
   FungibleActivityRequest,
 } from "./types"
 
-declare const FRONTEND_MODE: string
-declare const ALCHEMY_API_KEY: string
-
 const currencyId = "ETHEREUM:0x0000000000000000000000000000000000000000"
 const mainnet = "https://ethereum.publicnode.com"
 const testnet = "https://ethereum-goerli-rpc.allthatnode.com"

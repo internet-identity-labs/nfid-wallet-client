@@ -9,9 +9,7 @@
       "options": {
         "uiFramework": "@storybook/react",
         "port": 4400,
-        "config": {
-          "configFolder": "apps/nfid-frontend/.storybook"
-        }
+        "configDir": "apps/nfid-frontend/.storybook"
       },
       "configurations": {
         "ci": {
@@ -21,13 +19,11 @@
     },
     "build-storybook": {
       "executor": "@nrwl/storybook:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputDir}"],
       "options": {
         "uiFramework": "@storybook/react",
-        "outputPath": "dist/storybook/nfid-frontend",
-        "config": {
-          "configFolder": "apps/nfid-frontend/.storybook"
-        }
+        "configDir": "apps/nfid-frontend/.storybook",
+        "outputDir": "dist/storybook/nfid-frontend"
       },
       "configurations": {
         "ci": {

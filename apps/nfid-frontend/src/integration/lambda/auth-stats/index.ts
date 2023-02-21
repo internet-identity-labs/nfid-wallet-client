@@ -1,7 +1,5 @@
 import { ic } from "@nfid/integration"
 
-declare const AWS_AUTH_STATS: string
-
 export async function storeSignIn(event: {
   principal: string
   blockchainAddress: string

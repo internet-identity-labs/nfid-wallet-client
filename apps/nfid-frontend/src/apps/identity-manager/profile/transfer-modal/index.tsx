@@ -35,8 +35,6 @@ import { useAllNFTs } from "../assets/hooks"
 import { ProfileConstants } from "../routes"
 import { transformToAddress } from "./transform-to-address"
 
-declare const VAULT_CANISTER_ID: string
-
 export const ProfileTransferModal = () => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
   const { profile } = useProfile()

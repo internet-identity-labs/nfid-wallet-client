@@ -10,9 +10,6 @@ import { ic } from "@nfid/integration"
 
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
-declare const VERIFY_PHONE_NUMBER: string
-declare const IDENTITY_MANAGER_CANISTER_ID: string
-
 if (!VERIFY_PHONE_NUMBER) {
   throw new Error(`Phone verification lambda is not defined.`)
 }

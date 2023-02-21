@@ -59,8 +59,6 @@ export function getCredentials(devices: Device[]): Credentials[] {
     })
 }
 
-declare const IS_E2E_TEST: string
-
 // The options sent to the browser when creating the credentials.
 // Credentials (key pair) creation is signed with a private key that is unique per device
 // model, as an "attestation" that the credentials were created with a FIDO

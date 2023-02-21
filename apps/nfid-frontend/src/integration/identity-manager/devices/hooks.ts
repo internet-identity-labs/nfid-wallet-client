@@ -35,8 +35,6 @@ import { creationOptions } from "frontend/integration/webauthn/creation-options"
 import { useAccount } from "../account/hooks"
 import { LegacyDevice, RecoveryDevice } from "./state"
 
-declare const SIGNIN_GOOGLE: string
-
 export interface WebAuthnDevice {
   publicKey: string
   rawId: string

@@ -20,7 +20,6 @@ import {
   VaultsTransactionsTableRow,
 } from "./table-row"
 
-declare const VAULT_CANISTER_ID: string
 export interface VaultsTransactionsTableProps {
   transactions: Transaction[]
 }

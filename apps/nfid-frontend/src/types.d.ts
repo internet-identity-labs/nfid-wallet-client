@@ -21,3 +21,5 @@ declare const VAULT_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
 declare const VERIFY_PHONE_NUMBER: string
 declare const WALLET_CONNECT_PROJECT_ID: string
+declare const AWS_AUTH_STATS: string
+declare const AWS_SIGNATURE_EVENT: string

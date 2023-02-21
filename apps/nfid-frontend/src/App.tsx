@@ -19,7 +19,6 @@ import { IframeTrustDeviceCoordinator } from "./features/iframe/iframe-trust-dev
 import { NotFound } from "./ui/pages/404"
 import { NFIDEmbedCoordinator } from "./features/embed/coordinator"
 
-declare const USERGEEK_API_KEY: string
 
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })

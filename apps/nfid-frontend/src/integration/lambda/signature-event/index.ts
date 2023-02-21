@@ -2,8 +2,6 @@ import { BasicSignatureEvent } from "src/integration/lambda/signature-event/basi
 
 import { ic } from "@nfid/integration"
 
-declare const AWS_SIGNATURE_EVENT: string
-
 export async function storeSignatureEvent(event: BasicSignatureEvent) {
   const url = ic.isLocal ? "/signature" : AWS_SIGNATURE_EVENT
   const response = await fetch(url, {

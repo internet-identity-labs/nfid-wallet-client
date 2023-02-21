@@ -35,17 +35,6 @@ import { TOKEN_CANISTER } from "./token/dip-20/constants"
 // Config //
 ///////////
 
-// Envars
-declare const INTERNET_IDENTITY_CANISTER_ID: string
-declare const IDENTITY_MANAGER_CANISTER_ID: string
-declare const PUB_SUB_CHANNEL_CANISTER_ID: string
-declare const VERIFIER_CANISTER_ID: string
-declare const LEDGER_CANISTER_ID: string
-declare const CYCLES_MINTER_CANISTER_ID: string
-declare const VAULT_CANISTER_ID: string
-declare const ETH_SECRET_STORAGE_CANISTER_ID: string
-declare const ECDSA_SIGNER_CANISTER_ID: string
-
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
   ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],

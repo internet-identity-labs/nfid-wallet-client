@@ -9,9 +9,6 @@ import { WalletConnectAuthSession } from "frontend/state/authentication"
 import { fetchProfile } from "../identity-manager"
 import { getIdentity } from "./metamask"
 
-declare const WALLET_CONNECT_PROJECT_ID: string
-declare const METAMASK_SIGNIN_MESSAGE: string
-
 const getWalletConnectSignature = async () => {
   const web3Modal = new Web3Modal({
     network: "mainnet",

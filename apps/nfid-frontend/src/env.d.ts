@@ -23,3 +23,8 @@ declare const VERIFY_PHONE_NUMBER: string
 declare const WALLET_CONNECT_PROJECT_ID: string
 declare const AWS_AUTH_STATS: string
 declare const AWS_SIGNATURE_EVENT: string
+
+declare const II_ENV: string
+declare const IS_DEV: string
+declare const IC_HOST: string
+declare const ALCHEMY_API_KEY: string

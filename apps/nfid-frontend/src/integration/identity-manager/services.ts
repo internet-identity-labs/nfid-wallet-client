@@ -41,7 +41,7 @@ export async function checkRegistrationStatus() {
 }
 
 export async function fetchAccountsService(
-  context: AuthorizationMachineContext,
+  context: Pick<AuthorizationMachineContext, "authRequest">,
 ) {
   if (!context.authRequest?.hostname) {
     throw new Error(
@@ -56,16 +56,17 @@ export async function fetchAccountsService(
   )
 }
 
-export async function createAccountService(
-  context: AuthorizationMachineContext,
-): Promise<{ accountId: string }> {
-  if (!context.authRequest)
-    throw new Error(`createAccountService context.authRequest missing`)
-  if (!context.accounts)
-    throw new Error(`createAccountService context.accounts missing`)
-  const accountId = getNextAccountId(context.accounts.map(mapPersonaToLegacy))
-  const derivationOrigin =
-    context.authRequest?.derivationOrigin || context.authRequest.hostname
+export async function createAccountService({
+  authRequest,
+  accounts,
+}: Pick<AuthorizationMachineContext, "authRequest" | "accounts">): Promise<{
+  accountId: string
+  hostname: string
+}> {
+  if (!authRequest) throw new Error(`createAccountService authRequest missing`)
+  if (!accounts) throw new Error(`createAccountService accounts missing`)
+  const accountId = getNextAccountId(accounts.map(mapPersonaToLegacy))
+  const derivationOrigin = authRequest?.derivationOrigin || authRequest.hostname
 
   const createPersonaReposne = await createAccount(
     derivationOrigin,
@@ -73,7 +74,7 @@ export async function createAccountService(
     `Account #${accountId}`,
   )
   console.debug(`createAccountService`, { createPersonaReposne })
-  return { accountId }
+  return { accountId, hostname: derivationOrigin }
 }
 
 export async function fetchProfileService() {

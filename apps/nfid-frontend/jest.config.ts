@@ -6,9 +6,6 @@ const config = {
   coverageDirectory: "../../coverage/apps/nfid-demo",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   globals: {
-    "ts-jest": {
-      preserveSymlinks: true,
-    },
     ...JEST_GLOBALS,
   },
   testMatch: ["**/*.spec.(js|ts|tsx)"],

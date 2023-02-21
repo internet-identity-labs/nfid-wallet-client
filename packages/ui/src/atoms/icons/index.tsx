@@ -1,3 +1,4 @@
+import IconSvgAlertCircle from "./alert-circle.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgBook from "./book.svg"
 import IconSvgCalendar from "./calendar.svg"
@@ -68,6 +69,7 @@ export {
   IconSvgGrid,
   IconSvgTransactions,
   IconSvgBook,
+  IconSvgAlertCircle,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -115,6 +117,7 @@ export { ReactComponent as IconCmpTable } from "./table.svg"
 export { ReactComponent as IconCmpGrid } from "./grid.svg"
 export { ReactComponent as IconCmpBook } from "./book.svg"
 export { ReactComponent as IconCmpNFIDWallet } from "./nfid-wallet.svg"
+export { ReactComponent as IconCmpAlertCircle } from "./alert-circle.svg"
 
 // png
 export { IconMetamask } from "./metamask"

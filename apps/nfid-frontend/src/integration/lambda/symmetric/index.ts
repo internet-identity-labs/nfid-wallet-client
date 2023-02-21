@@ -9,9 +9,6 @@ import { ic } from "@nfid/integration"
 
 import { getTransformedRequest } from "frontend/integration/lambda/util/util"
 
-declare const AWS_SYMMETRIC: string
-declare const IDENTITY_MANAGER_CANISTER_ID: string
-
 export async function decryptStringForIdentity(
   encrypted: string,
   identity: DelegationIdentity,

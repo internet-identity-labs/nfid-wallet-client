@@ -16,7 +16,6 @@ import {
 } from ".."
 import { userNumberAtom } from "./state"
 
-declare const VERIFY_PHONE_NUMBER: string
 
 /** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {

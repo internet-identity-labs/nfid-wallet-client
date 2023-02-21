@@ -1,13 +1,13 @@
-import {ActorMethod} from "@dfinity/agent"
-import {Bytes, ethers, Signer, TypedDataDomain, TypedDataField} from "ethers"
-import {Provider, TransactionRequest} from "@ethersproject/abstract-provider"
-import {getEcdsaPublicKey, getSignature, prepareSignature, signEcdsaMessage} from "./index"
-import {arrayify, hashMessage, keccak256, resolveProperties, splitSignature} from "ethers/lib/utils"
-import {hexZeroPad, joinSignature} from "@ethersproject/bytes"
-import {serialize} from "@ethersproject/transactions"
-import {UnsignedTransaction} from "ethers-ts"
-import * as BN from "bn.js"
-import { SignTypedDataVersion, TypedDataUtils } from "@metamask/eth-sig-util";
+import { ActorMethod } from "@dfinity/agent"
+import { Bytes, ethers, Signer, TypedDataDomain, TypedDataField } from "ethers"
+import { Provider, TransactionRequest } from "@ethersproject/abstract-provider"
+import { getEcdsaPublicKey, getSignature, signEcdsaMessage, prepareSignature } from "."
+import { arrayify, hashMessage, keccak256, resolveProperties, splitSignature } from "ethers/lib/utils"
+import { hexZeroPad, joinSignature } from "@ethersproject/bytes"
+import { serialize } from "@ethersproject/transactions"
+import { UnsignedTransaction } from "ethers-ts"
+import BN from "bn.js"
+import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
 
 const ABI_721 = [
   'function setApprovalForAll(address operator, bool _approved)',
@@ -62,6 +62,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     })
   }
 
+
   async signTransaction(transaction: TransactionRequest): Promise<string> {
     return resolveProperties(transaction).then((tx) => {
       if (tx.from != null) {
@@ -77,14 +78,11 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     })
   }
 
-  async signTypedData(data: any): Promise<string> {
+  async signTypedData({ types, primaryType, domain, message }: TypedMessage<any>): Promise<string> {
+    console.debug("signTypedData", { types, primaryType, domain, message })
+
     const typedDataHash = TypedDataUtils.eip712Hash(
-      {
-        types: data.types,
-        primaryType: data.primaryType,
-        domain: data.domain,
-        message: data.message
-      },
+      { types, primaryType, domain, message },
       SignTypedDataVersion.V4
     );
     return signEcdsaMessage([...typedDataHash])

@@ -1,4 +1,4 @@
-import { ScreenStyleParams } from "packages/ui/src/templates/screen-responsive/config"
+import { ScreenStyleParams } from "@nfid-frontend/ui"
 import { useCallback, useState } from "react"
 import { ChromePicker } from "react-color"
 

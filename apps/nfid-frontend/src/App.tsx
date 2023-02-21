@@ -17,6 +17,7 @@ import RequestAccountsCoordinator from "./coordination/wallet/request-accounts"
 import RequestTransferCoordinator from "./coordination/wallet/request-transfer"
 import { IframeTrustDeviceCoordinator } from "./features/iframe/iframe-trust-device/coordinator"
 import { NotFound } from "./ui/pages/404"
+import { NFIDEmbedCoordinator } from "./features/embed/coordinator"
 
 declare const USERGEEK_API_KEY: string
 
@@ -70,6 +71,15 @@ export const App = () => (
       element={
         <ScreenResponsive>
           <IframeTrustDeviceCoordinator />
+        </ScreenResponsive>
+      }
+    />
+
+    <Route
+      path="/embed"
+      element={
+        <ScreenResponsive>
+          <NFIDEmbedCoordinator />
         </ScreenResponsive>
       }
     />

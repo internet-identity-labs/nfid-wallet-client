@@ -40,3 +40,5 @@ export async function getSignature(hash: string): Promise<Array<number>> {
   }
   return signatureResult.Ok.signature
 }
+
+export * from "./ecdsa-wallet"

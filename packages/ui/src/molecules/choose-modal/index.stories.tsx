@@ -1,0 +1,95 @@
+import { ComponentStory, ComponentMeta } from "@storybook/react"
+
+import InternetComputerIcon from "../../assets/ic.svg"
+import { ChooseModal } from "./index"
+
+export default {
+  title: "Molecules/ChoseModal",
+  component: ChooseModal,
+} as ComponentMeta<typeof ChooseModal>
+
+const ChoseModalWrapper: ComponentStory<typeof ChooseModal> = (args) => {
+  return <ChooseModal {...args} />
+}
+
+export const ChooseModalScreen = ChoseModalWrapper.bind({})
+
+ChooseModalScreen.args = {
+  title: "Choose an asset",
+  optionGroups: [
+    {
+      label: "label 1",
+      options: [
+        {
+          title: "title",
+          subTitle: "subtitle",
+          icon: InternetComputerIcon,
+          innerTitle: "innerTitle",
+          innerSubtitle: "innerSubtitle",
+          value: "300",
+        },
+        {
+          title: "assss",
+          subTitle: "subtitle",
+          innerTitle: "innerTitle",
+          innerSubtitle: "innerSubtitle",
+          value: "500",
+        },
+      ],
+    },
+    {
+      label: "label 2",
+      options: [
+        {
+          title: "something",
+          subTitle: "subtitle",
+          innerTitle: "innerTitle",
+          innerSubtitle: "innerSubtitle",
+          value: "300",
+        },
+        {
+          title: "assss",
+          icon: InternetComputerIcon,
+          subTitle: "subtitle",
+          value: "500",
+        },
+      ],
+    },
+    {
+      label: "label 3",
+      options: [
+        {
+          title: "else",
+          subTitle: "subtitle",
+          innerTitle: "innerTitle",
+          innerSubtitle: "innerSubtitle",
+          value: "300",
+        },
+        {
+          title: "assss",
+          icon: InternetComputerIcon,
+          subTitle: "subtitle",
+          value: "500",
+        },
+      ],
+    },
+    {
+      label: "label 4",
+      options: [
+        {
+          title: "bla",
+          subTitle: "subtitle",
+          innerTitle: "innerTitle",
+          innerSubtitle: "innerSubtitle",
+          value: "300",
+        },
+        {
+          title: "pavlo",
+          icon: InternetComputerIcon,
+          subTitle: "subtitle",
+          value: "500",
+        },
+      ],
+    },
+  ],
+}

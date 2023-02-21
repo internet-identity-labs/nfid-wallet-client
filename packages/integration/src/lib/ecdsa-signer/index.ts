@@ -14,12 +14,14 @@ export async function getEcdsaPublicKey(): Promise<Array<number>> {
 export async function signEcdsaMessage(
   message: Array<number>,
 ): Promise<Array<number>> {
+  console.time("signEcdsaMessage")
   const signatureResult = await ecdsaAPI.sign(message).catch((e) => {
     throw new Error(`signEcdsaMessage: ${e.message}`)
   })
   if (hasOwnProperty(signatureResult, "Err")) {
     throw new Error(`signEcdsaMessage: ${signatureResult.Err}`)
   }
+  console.timeEnd("signEcdsaMessage")
   return signatureResult.Ok.signature
 }
 

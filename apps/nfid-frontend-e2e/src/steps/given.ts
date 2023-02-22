@@ -46,8 +46,9 @@ Given(/^User authenticates with enhanced security$/, async function () {
   await HomePage.waitForLoaderDisappear();
 })
 
-Given(/^User signs in$/, async function () {
-  await HomePage.signIn(true);
+Given(/^User signs in ?(?:(.*))?$/, async function (mobile: string) {
+  if (mobile) await HomePage.signIn(true);
+  else await HomePage.signIn();
 })
 
 Given(/^User opens NFID site$/, async () => {

@@ -15,7 +15,11 @@ export class Page {
   public async switchToWindow(window?: string) {
     const positionNumber: number = window === "last" ? -1 : -2;
     if (window) {
-      expect((await browser.getWindowHandles()).length).toBeGreaterThan(1)
+      await browser.waitUntil(
+        async () => ((await browser.getWindowHandles()).length) > 1, {
+        timeout: 7000, timeoutMsg: "Google account iframe is not appeared"
+      }
+      )
     }
     const windowHandles = await browser.getWindowHandles()
     browser.switchToWindow(windowHandles.slice(positionNumber)[0])

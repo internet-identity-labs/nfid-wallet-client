@@ -64,8 +64,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
 
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
-    console.time("signTransaction")
-    const response = await resolveProperties(transaction).then((tx) => {
+    return resolveProperties(transaction).then((tx) => {
       if (tx.from != null) {
         delete tx.from
       }
@@ -77,8 +76,6 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
           return serialize(<UnsignedTransaction>tx, ethersSignature)
         })
     })
-    console.timeEnd("signTransaction")
-    return response
   }
 
   async signTypedData({ types, primaryType, domain, message }: TypedMessage<any>): Promise<string> {

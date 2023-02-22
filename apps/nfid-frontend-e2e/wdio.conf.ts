@@ -86,12 +86,6 @@ export const config: WebdriverIO.Config = {
   maxInstances: 1,
   // maxInstances: isDebug ? 1 : 10,
   //
-  // If you have trouble getting all important capabilities together, check out the
-  // Sauce Labs platform configurator - a great tool to configure your capabilities:
-  // https://saucelabs.com/platform/platform-configurator
-  //
-
-  // Adds chrome capabilities to run headless
   capabilities: [chromeBrowser],
   //
   // ===================
@@ -144,7 +138,6 @@ export const config: WebdriverIO.Config = {
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
   services: ["chromedriver"],
-  // services: ["docker"],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber

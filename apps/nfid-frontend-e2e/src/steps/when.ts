@@ -29,9 +29,16 @@ When(/^User enters a captcha$/, async function () {
   await HomePage.waitForLoaderDisappear();
 })
 
+When(/^User trusts this device$/, async () => {
+  await HomePage.iTrustThisDevice();
+  await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true);
+  await HomePage.waitForLoaderDisappear();
+  await Profile.waitForTokensAppear();
+})
+
 When(/^It log's me in$/, async () => {
-  await HomePage.justLogMeIn()
-  await HomePage.waitForLoaderDisappear()
+  await HomePage.dontTrustThisDevice();
+  await Profile.waitForTokensAppear();
 })
 
 When(/^Tokens displayed on user assets$/, async () => {

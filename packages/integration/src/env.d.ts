@@ -1,5 +1,6 @@
 declare const CYCLES_MINTER_CANISTER_ID: string
 declare const ECDSA_SIGNER_CANISTER_ID: string
+declare const BITCOIN_WALLET_CANISTER_ID: string
 declare const ETH_SECRET_STORAGE_CANISTER_ID: string
 declare const IC_HOST: string
 declare const IDENTITY_MANAGER_CANISTER_ID: string

@@ -28,6 +28,8 @@ import { idlFactory as vaultIDL } from "./_ic_api/vault"
 import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
+import { idlFactory as btcIDL } from "./_ic_api/btc-wallet"
+import { _SERVICE as Btc } from "./_ic_api/btc-wallet.d"
 import { agent } from "./agent"
 import { TOKEN_CANISTER } from "./token/dip-20/constants"
 
@@ -45,6 +47,7 @@ const canisterConfig = [
   ["Vault", VAULT_CANISTER_ID],
   ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
+  ["Btc", BITCOIN_WALLET_CANISTER_ID],
 ]
 
 export const accessList = [
@@ -110,6 +113,11 @@ export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
 
 export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(ecdsaSignerIDL, {
   canisterId: ECDSA_SIGNER_CANISTER_ID,
+  agent: new HttpAgent({ ...agentBaseConfig }),
+})
+
+export const btcWallet = Agent.Actor.createActor<Btc>(btcIDL, {
+  canisterId: BITCOIN_WALLET_CANISTER_ID,
   agent: new HttpAgent({ ...agentBaseConfig }),
 })
 

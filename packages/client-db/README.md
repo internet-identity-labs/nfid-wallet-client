@@ -1,6 +1,6 @@
 # client-db
 
-This library was generated with [Nx](https://nx.dev).
+This package encapsulates access to locally stored information on the NFID client.
 
 ## Building
 

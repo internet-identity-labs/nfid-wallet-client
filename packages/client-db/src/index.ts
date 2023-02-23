@@ -1,1 +1,1 @@
-export * from "./lib/client-db"
+export * from "./lib/addresses"

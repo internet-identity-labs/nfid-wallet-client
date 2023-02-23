@@ -95,7 +95,7 @@
     "@babel/preset-typescript": "7.18.6",
     "@commitlint/cli": "16.2.4",
     "@commitlint/config-conventional": "17.3.0",
-    "@craco/craco": "6.4.3",
+    "@craco/craco": "7.0.0",
     "@melloware/csp-webpack-plugin": "6.0.4",
     "@nrwl/eslint-plugin-nx": "15.7.2",
     "@nrwl/jest": "15.7.2",

@@ -1,6 +1,7 @@
 import { HomePage } from "./home-page"
 
 export class Profile extends HomePage {
+
   private get profilePic() {
     return $("#profile")
   }
@@ -25,9 +26,69 @@ export class Profile extends HomePage {
     return $("#desktop > #profile-vaults")
   }
 
+  private get credentialsTab() {
+    return $$("#profile-credentials")
+  }
+
+  private get connectPhoneNumberButton() {
+    return $("#connect-mobile-phone-number")
+  }
+
+  private get phoneNumberInput() {
+    return $("#phone-number")
+  }
+
+  private get verifyPhoneNumber() {
+    return $("#add-phone-number")
+  }
+
+  private pinInput(number: number) {
+    return `#pin-input-${number}`
+  }
+
+  private get sendPinButton() {
+    return $("#send-pin")
+  }
+
+  public get getPhoneNumber() {
+    return $("#phone-number-value")
+  }
+
   public async openVaults() {
     await this.vaultsTab.waitForDisplayed({ timeout: 6000, timeoutMsg: "Vaults tab is missing!" })
     await this.vaultsTab.click();
+  }
+
+  public async openCredentials(isMobile?: boolean) {
+    let index = isMobile ? 0 : 1;
+    if (isMobile) await this.openMobileProfileMenu();
+    this.credentialsTab[index].waitForDisplayed({ timeout: 5000, timeoutMsg: "Creadentials tab is missing!" })
+    this.credentialsTab[index].click()
+  }
+
+  public async connectMobilePhoneNumber() {
+    await this.connectPhoneNumberButton.waitForDisplayed({ timeout: 7000, timeoutMsg: "Connect Phone number" })
+    await this.connectPhoneNumberButton.click()
+  }
+
+  public async inputAndVerifyPhoneNumber(phoneNumber: string) {
+    await this.phoneNumberInput.waitForDisplayed({ timeoutMsg: "Phone number input is missing" })
+    await this.phoneNumberInput.setValue(phoneNumber)
+    await this.verifyPhoneNumber.waitForDisplayed({ timeoutMsg: "Verify Phone number is missing" })
+    await this.verifyPhoneNumber.click()
+  }
+
+  public async enterPin(pinNumber: string) {
+    const pinNumberArr: string[] = [...pinNumber]
+    for (let i = 0; i < pinNumberArr.length; i++) {
+      $(this.pinInput(i)).waitForDisplayed({ timeout: 7000, timeoutMsg: `Pin Number ${i} input is missing` })
+      await $(this.pinInput(i)).click()
+      await $(this.pinInput(i)).setValue(pinNumberArr[i])
+    }
+    await this.sendPinButton.waitForDisplayed({ timeout: 6000, timeoutMsg: "Send Pin button is missing" })
+    try {
+      await this.sendPinButton.click()
+    } catch (err) { }
   }
 
   public async waitForTokensAppear() {
@@ -41,7 +102,7 @@ export class Profile extends HomePage {
   }
 
   public async openMobileProfileMenu() {
-    await this.profileBurgerMenu.waitForDisplayed({ timeout: 7000, timeoutMsg: "User mobile menu is missing" });
+    await this.profileBurgerMenu.waitForDisplayed({ timeout: 15000, timeoutMsg: "User mobile menu is missing" });
     await this.profileBurgerMenu.click();
     await this.mobileProfile.waitForDisplayed({ timeout: 5000, timeoutMsg: "Mobile Profile button is missing!" });
     await this.mobileProfile.waitForClickable({ timeout: 3000 });

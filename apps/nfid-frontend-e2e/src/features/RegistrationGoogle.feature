@@ -7,6 +7,7 @@ Feature: Registration using Google
     Given User authenticates with google account
     And User enters a captcha
     And It log's me in
+    And Tokens displayed on user assets
     When User opens profile menu
     Then NFID number is not zero
 
@@ -14,6 +15,7 @@ Feature: Registration using Google
     Given User opens NFID site
     Given User authenticates with google account
     And It log's me in
+    And Tokens displayed on user assets
     When User opens profile menu
     Then NFID number is not zero
 
@@ -25,6 +27,7 @@ Feature: Registration using Google
     Given User authenticates with google account
     And User enters a captcha
     And User trusts this device
+    And Tokens displayed on user assets
     And User has account stored in localstorage
     When User opens mobile profile menu
     Then NFID number is not zero

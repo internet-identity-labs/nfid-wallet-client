@@ -21,6 +21,7 @@ import {
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { useVaultPolicies } from "frontend/features/vaults/hooks/use-vault-policies"
 import { useVaultWallets } from "frontend/features/vaults/hooks/use-vault-wallets"
+import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 interface PolicyCreateForm {
   amount: number
@@ -65,7 +66,7 @@ export const VaultAddPolicy = () => {
       setIsLoading(true)
       await registerPolicy({
         vaultId: vault?.id,
-        amountThreshold: BigInt(amount),
+        amountThreshold: BigInt(stringICPtoE8s(String(amount))),
         currency: Currency.ICP,
         memberThreshold: Number(approvers),
         type: PolicyType.THRESHOLD_POLICY,

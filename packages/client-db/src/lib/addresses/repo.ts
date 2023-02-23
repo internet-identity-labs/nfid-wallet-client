@@ -1,9 +1,10 @@
 import { getScope } from "@nfid/integration"
 
+import { STORAGE_KEY } from "./constants"
 import { CachedAddresses } from "./types"
 
 const loadAddressCache = (): CachedAddresses => {
-  const cache = localStorage.getItem("nfid_address_cache")
+  const cache = localStorage.getItem(STORAGE_KEY)
   const parsedCache = cache ? JSON.parse(cache) : {}
   return parsedCache
 }
@@ -27,7 +28,7 @@ export const createAddress = ({
   const cache = loadAddressCache()
   const scope = getScope(hostname, accountId)
   localStorage.setItem(
-    "nfid_address_cache",
+    STORAGE_KEY,
     JSON.stringify({ ...cache, [scope]: address }),
   )
 }

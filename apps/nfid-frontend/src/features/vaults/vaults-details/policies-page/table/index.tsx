@@ -4,6 +4,7 @@ import { Table } from "@nfid-frontend/ui"
 import { ObjectState, Policy } from "@nfid/integration"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
+import { e8sICPToString } from "frontend/integration/wallet/utils"
 
 import { VaultArchivePolicy } from "../modal-archive-policy"
 import { VaultEditPolicy } from "../modal-edit-policy"
@@ -33,7 +34,9 @@ export const VaultsPoliciesTable: React.FC<VaultsPoliciesTableProps> = ({
           number: index + 1,
           // @ts-ignore
           source: policy.walletName,
-          greaterThan: `${Number(policy.amountThreshold)} ${policy.currency}`,
+          greaterThan: `${e8sICPToString(Number(policy.amountThreshold))} ${
+            policy.currency
+          }`,
           approvers: policy.memberThreshold
             ? `${policy.memberThreshold} of ${vault?.members.length}`
             : "All",

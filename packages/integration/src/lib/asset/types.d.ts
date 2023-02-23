@@ -10,7 +10,7 @@ declare type Asset = {
     request?: PageRequest & SortRequest,
   ): Promise<NonFungibleActivityRecords>
   getItemsByUser(request?: PageRequest): Promise<NonFungibleItems>
-  getBalance(): Promise<Balance>
+  getBalance(): Promise<ChainBalance>
   transferNft(
     tokenId: string,
     constract: string,
@@ -59,7 +59,7 @@ declare type Token = {
   contractAddress: string
 }
 
-declare type Balance = {
+declare type ChainBalance = {
   balance?: BigNumber
   balanceinUsd?: BigNumber
 }

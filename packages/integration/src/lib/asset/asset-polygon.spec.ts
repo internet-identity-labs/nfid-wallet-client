@@ -1,7 +1,7 @@
 import { BigNumber } from "@rarible/utils"
 
 import { polygonAsset } from "./asset-ethereum"
-import { Balance } from "./types"
+import { ChainBalance } from "./types"
 
 describe("Polygon Asset", () => {
   jest.setTimeout(20000)
@@ -67,7 +67,7 @@ describe("Polygon Asset", () => {
   })
 
   it("should request balance", async function () {
-    const balance: Balance = await polygonAsset.getBalance()
+    const balance: ChainBalance = await polygonAsset.getBalance()
     expect(balance).toMatchObject({
       balance: expect.any(BigNumber),
       balanceinUsd: expect.any(BigNumber),

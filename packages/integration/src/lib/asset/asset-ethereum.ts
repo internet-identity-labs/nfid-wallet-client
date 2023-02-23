@@ -29,7 +29,7 @@ import { ethers } from "ethers-ts"
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import {
   Asset,
-  Balance,
+  ChainBalance,
   ActivityRecord,
   NonFungibleActivityRecords,
   NonFungibleItem,
@@ -147,7 +147,7 @@ class EthereumAsset implements Asset {
     }
   }
 
-  public async getBalance(): Promise<Balance> {
+  public async getBalance(): Promise<ChainBalance> {
     const address = await this.wallet.getAddress()
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,

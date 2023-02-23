@@ -28,10 +28,7 @@ import isEnabled from "./support/check/isEnabled"
 
 Given(/^I remove the e2e@identitylabs.ooo$/, removeUserE2E)
 
-Given(
-  /^I remove the account by phone number 380990374146$/,
-  removeAccountByPhoneNumber,
-)
+Given(/^I remove the account by phone number 380990374146$/, removeAccountByPhoneNumber)
 
 Given(/^User authenticates with google account$/, async () => {
   await HomePage.authenticateWithGoogle();
@@ -51,8 +48,9 @@ Given(/^User signs in ?(?:(.*))?$/, async function (mobile: string) {
   else await HomePage.signIn();
 })
 
-Given(/^User opens NFID site$/, async () => {
-  await HomePage.openBaseUrl();
+Given(/^User opens NFID ?(?:(.*))?$/, async function (site: string) {
+  if (site === "site") await HomePage.openBaseUrl();
+  else await HomePage.openPage(site)
   await HomePage.waitForLoaderDisappear();
 })
 

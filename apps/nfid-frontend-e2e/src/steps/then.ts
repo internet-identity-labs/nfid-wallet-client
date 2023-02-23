@@ -62,9 +62,14 @@ Then(/^Policy is displayed on the policies list$/, async () => {
   )
 })
 
-Then(/^NFID number is not zero$/,async () => {
+Then(/^NFID number is not zero$/, async () => {
   const actualNFID = await Profile.getNFIDnumber();
   expect(actualNFID).not.toBe("0");
+})
+
+Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
+  await Profile.getPhoneNumber.waitForDisplayed({ timeout: 13000, timeoutMsg: "Phone Number is not displayed" })
+  expect(await Profile.getPhoneNumber.getText()).toHaveText(phoneNumber)
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
@@ -78,10 +83,7 @@ Then(
 
 Then(/^I expect that element "([^"]*)?" is( not)* displayed$/, isVisible)
 
-Then(
-  /^I expect that element "([^"]*)?" becomes( not)* displayed$/,
-  waitForVisible,
-)
+Then(/^I expect that element ([^"]*)? becomes( not)* displayed$/, waitForVisible)
 
 Then(
   /^I expect that element "([^"]*)?" is( not)* within the viewport$/,

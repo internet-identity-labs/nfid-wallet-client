@@ -27,7 +27,7 @@ export class Page {
 
   public async waitForLoaderDisappear() {
     try {
-      await this.loader.waitForDisplayed({ timeout: 3000 });
+      await this.loader.waitForDisplayed({ timeout: 2000 });
       await this.loader.waitForDisplayed({ timeout: 20000, reverse: true });
     } catch (e: any) {
       // console.log(e);

@@ -8733,6 +8733,20 @@
     import-meta-resolve "^2.1.0"
     read-pkg-up "^9.1.0"
 
+"@wdio/config@8.3.11":
+  version "8.3.11"
+  resolved "https://registry.yarnpkg.com/@wdio/config/-/config-8.3.11.tgz#b37130b3a4fba1fc5dfce4f5e46bfaac6c552766"
+  integrity sha512-sZ1SZkBEZWqSDHqrQxspsrc+OBqf3qyx2c4gVvAovOd1hnT4EcWhlJu1Asp3H0Mti115XstwQabOW4sSsdmVCw==
+  dependencies:
+    "@wdio/logger" "8.1.0"
+    "@wdio/types" "8.3.0"
+    "@wdio/utils" "8.3.0"
+    decamelize "^6.0.0"
+    deepmerge-ts "^4.2.2"
+    glob "^8.0.3"
+    import-meta-resolve "^2.1.0"
+    read-pkg-up "^9.1.0"
+
 "@wdio/cucumber-framework@7.23.0":
   version "7.23.0"
   resolved "https://registry.yarnpkg.com/@wdio/cucumber-framework/-/cucumber-framework-7.23.0.tgz#78c25814f4d09c6a1c700b8e6d63454466ee0c37"
@@ -8822,6 +8836,16 @@
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-8.0.0.tgz#fa464f815df6a1d38737460d7c43432e76b1deef"
   integrity sha512-QEBPZoFQhWqqIYmhp8Wa+HhvMrH2Yy0xbD3MPOibkFwp9Tn8Si7oDxbnWqzcPiukLWcb4E/QlgE5f3IM5BrAPQ==
+  dependencies:
+    chalk "^5.1.2"
+    loglevel "^1.6.0"
+    loglevel-plugin-prefix "^0.8.4"
+    strip-ansi "^6.0.0"
+
+"@wdio/logger@8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@wdio/logger/-/logger-8.1.0.tgz#aaefce7da066a477249191aec8e9caa8581aeb33"
+  integrity sha512-QRC5b7FF4JIYUCqggnVA0sZ80TwIUFN9JyBSbuGuMxaSLSLujSo7WfuSrnQXVvsRbnJ16wWwJWYigfLkxOW86Q==
   dependencies:
     chalk "^5.1.2"
     loglevel "^1.6.0"
@@ -8997,6 +9021,13 @@
   dependencies:
     "@types/node" "^18.0.0"
 
+"@wdio/types@8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-8.3.0.tgz#86a8336db1a1b33afeb46c2cd60391ca3c801163"
+  integrity sha512-TTs3ETVOJtooTIY/u2+feeBnMBx2Hb4SEItN31r0pFncn37rnIZXE/buywLNf5wvZW9ukxoCup5hCnohOR27eQ==
+  dependencies:
+    "@types/node" "^18.0.0"
+
 "@wdio/utils@7.16.14":
   version "7.16.14"
   resolved "https://registry.npmjs.org/@wdio/utils/-/utils-7.16.14.tgz"
@@ -9031,6 +9062,16 @@
   dependencies:
     "@wdio/logger" "8.0.0"
     "@wdio/types" "8.0.0"
+    p-iteration "^1.1.8"
+
+"@wdio/utils@8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-8.3.0.tgz#bc69284e7349dbdaf8c903548232b277d5555043"
+  integrity sha512-BbgzxAu4AN99l9hwaRUvkvBJLeIxON7F6ts+vq4LASRiGVRErrwYGeO9H3ffYgpCAaYSvXnw2GtOf2SQGaPoLA==
+  dependencies:
+    "@wdio/logger" "8.1.0"
+    "@wdio/types" "8.3.0"
+    import-meta-resolve "^2.2.0"
     p-iteration "^1.1.8"
 
 "@web3modal/core@2.0.0-beta.10":
@@ -12597,24 +12638,7 @@ crypt@0.0.2:
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
   integrity sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==
 
-crypto-browserify@3.12.0:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/crypto-browserify/-/crypto-browserify-3.12.0.tgz#396cf9f3137f03e4b8e532c58f698254e00f80ec"
-  integrity sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==
-  dependencies:
-    browserify-cipher "^1.0.0"
-    browserify-sign "^4.0.0"
-    create-ecdh "^4.0.0"
-    create-hash "^1.1.0"
-    create-hmac "^1.1.0"
-    diffie-hellman "^5.0.0"
-    inherits "^2.0.1"
-    pbkdf2 "^3.0.3"
-    public-encrypt "^4.0.0"
-    randombytes "^2.0.0"
-    randomfill "^1.0.3"
-
-crypto-browserify@^3.11.0:
+crypto-browserify@3.12.0, crypto-browserify@^3.11.0:
   version "3.12.0"
   resolved "https://registry.npmjs.org/crypto-browserify/-/crypto-browserify-3.12.0.tgz"
   integrity sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==
@@ -16961,12 +16985,7 @@ http2-wrapper@^2.1.10:
     quick-lru "^5.1.1"
     resolve-alpn "^1.2.0"
 
-https-browserify@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
-  integrity sha512-J+FkSdyD+0mA0N+81tMotaRMfSL9SGi+xpD3T6YApKsc3bGSXJlfXri3VyFOeYkfLRQisDk1W+jIFFKBeUBbBg==
-
-https-browserify@^1.0.0:
+https-browserify@1.0.0, https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/https-browserify/-/https-browserify-1.0.0.tgz"
   integrity sha512-J+FkSdyD+0mA0N+81tMotaRMfSL9SGi+xpD3T6YApKsc3bGSXJlfXri3VyFOeYkfLRQisDk1W+jIFFKBeUBbBg==
@@ -17142,10 +17161,10 @@ import-local@^3.0.2:
     pkg-dir "^4.2.0"
     resolve-cwd "^3.0.0"
 
-import-meta-resolve@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-2.2.0.tgz#701aa29a044954bd135214049294745ac70dd607"
-  integrity sha512-CpPOtiCHxP9HdtDM5F45tNiAe66Cqlv3f5uHoJjt+KlaLrUh9/Wz9vepADZ78SlqEo62aDWZtj9ydMGXV+CPnw==
+import-meta-resolve@^2.1.0, import-meta-resolve@^2.2.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-2.2.1.tgz#80fdeddbc15d7f3992c37425023ffb4aca7cb583"
+  integrity sha512-C6lLL7EJPY44kBvA80gq4uMsVFw5x3oSKfuMl1cuZ2RkI5+UJqQXgn+6hlUew0y4ig7Ypt4CObAAIzU53Nfpuw==
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -21748,12 +21767,7 @@ ora@^5.4.1:
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
-os-browserify@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/os-browserify/-/os-browserify-0.3.0.tgz#854373c7f5c2315914fc9bfc6bd8238fdda1ec27"
-  integrity sha512-gjcpUc3clBf9+210TRaDWbf+rZZZEshZ+DlXMRCeAjp0xhTrnQsKHypIy1J3d5hKdUzj69t708EHtU8P6bUn0A==
-
-os-browserify@^0.3.0:
+os-browserify@0.3.0, os-browserify@^0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/os-browserify/-/os-browserify-0.3.0.tgz"
   integrity sha512-gjcpUc3clBf9+210TRaDWbf+rZZZEshZ+DlXMRCeAjp0xhTrnQsKHypIy1J3d5hKdUzj69t708EHtU8P6bUn0A==
@@ -22149,12 +22163,7 @@ path-browserify@0.0.1:
   resolved "https://registry.npmjs.org/path-browserify/-/path-browserify-0.0.1.tgz"
   integrity sha512-BapA40NHICOS+USX9SN4tyhq+A2RrN/Ws5F0Z5aMHDp98Fl86lX8Oti8B7uN93L4Ifv4fHOEA+pQw87gmMO/lQ==
 
-path-browserify@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"
-  integrity sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==
-
-path-browserify@^1.0.1:
+path-browserify@1.0.1, path-browserify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/path-browserify/-/path-browserify-1.0.1.tgz"
   integrity sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==

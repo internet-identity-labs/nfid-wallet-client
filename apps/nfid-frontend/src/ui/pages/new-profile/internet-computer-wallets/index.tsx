@@ -52,7 +52,7 @@ const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
 
   return (
     <ProfileTemplate
-      pageTitle={`Your ${balanceSheet?.label} wallets`}
+      pageTitle={`Your ${balanceSheet?.label} accounts`}
       className="w-full min-w-fit z-[1]"
       containerClassName="overflow-x-auto"
       showBackButton

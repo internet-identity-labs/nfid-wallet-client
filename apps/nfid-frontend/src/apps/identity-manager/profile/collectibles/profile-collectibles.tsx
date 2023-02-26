@@ -78,7 +78,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     return Object.values(userTokensByCollection(sortUserTokens(tokens)))
   }, [tokens])
 
-  const headings = ["Asset", "Name", "Collection", "ID", "Wallet", "Actions"]
+  const headings = ["Asset", "Name", "Collection", "ID", "Account", "Actions"]
   const [sorting, setSorting] = React.useState([
     "Wallet",
     "Collection",

@@ -1,18 +1,13 @@
 // import { ethers } from "ethers"
 import { ethers } from "ethers"
 
-import { readAddress, createAddress } from "@nfid/client-db"
+import { readAddress, createAddress, createConnection } from "@nfid/client-db"
 import { ecdsaSigner, EthWallet, replaceActorIdentity } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
-import { AuthSession } from "frontend/state/authentication"
 
-import { RPCMessage, RPC_BASE } from "../embed/rpc-service"
-
-type ConnectAccountServiceContext = {
-  authSession?: AuthSession
-  rpcMessage?: RPCMessage
-}
+import { RPC_BASE } from "../embed/rpc-service"
+import { EmbedConnectAccountMachineContext } from "./machines"
 
 type GetAddressArgs = {
   anchor: number
@@ -20,7 +15,11 @@ type GetAddressArgs = {
   accountId: string
 }
 
-const getAddress = async ({ anchor, hostname, accountId }: GetAddressArgs) => {
+const getEthAddress = async ({
+  anchor,
+  hostname,
+  accountId,
+}: GetAddressArgs) => {
   console.debug("getAddress")
   const identity = await getWalletDelegation(anchor, hostname, accountId)
   replaceActorIdentity(ecdsaSigner, identity)
@@ -33,7 +32,7 @@ const getAddress = async ({ anchor, hostname, accountId }: GetAddressArgs) => {
 }
 
 export const ConnectAccountService = async (
-  { authSession, rpcMessage }: ConnectAccountServiceContext,
+  { authSession, rpcMessage, authRequest }: EmbedConnectAccountMachineContext,
   event: {
     type: string
     data: { hostname: string; accountId: string }
@@ -50,9 +49,15 @@ export const ConnectAccountService = async (
 
   const address = cachedAddress
     ? cachedAddress
-    : await getAddress({ anchor: authSession.anchor, ...event.data })
+    : await getEthAddress({ anchor: authSession.anchor, ...event.data })
 
   !cachedAddress && createAddress({ ...event.data, address })
+
+  createConnection({
+    connectionDomain: authRequest.derivationOrigin ?? authRequest.hostname,
+    accountId: event.data.accountId,
+    domain: event.data.hostname,
+  })
 
   return Promise.resolve({ ...RPC_BASE, id: rpcMessage.id, result: [address] })
 }

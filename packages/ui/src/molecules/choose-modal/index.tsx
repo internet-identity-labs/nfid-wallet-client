@@ -1,8 +1,8 @@
 import clsx from "clsx"
-import { Input } from "@nfid-frontend/ui"
 import { useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
+import { Input } from "@nfid-frontend/ui"
 import {
   IconCmpArrow,
   IconCmpArrowRight,
@@ -104,27 +104,29 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput(e.target.value)}
           className="my-4"
         />
-        {filteredOptions.map((group) => (
-          <div
-            className="mt-6 max-h-[380px] overflow-auto"
-            key={`group_${group.label}_${group.options.length}`}
-          >
-            <p className="text-sm font-bold tracking-[0.01em] mb-1.5">
-              {group.label}
-            </p>
-            {group.options.map((option) => (
-              <ChooseItem
-                key={`option_${option.value}`}
-                handleClick={() => handleSelect(option)}
-                image={option.icon}
-                title={option.title}
-                subTitle={option.subTitle}
-                innerTitle={option.innerTitle}
-                innerSubtitle={option.innerSubtitle}
-              />
-            ))}
-          </div>
-        ))}
+        <div className="h-full overflow-auto snap-end scroll-pl-1">
+          {filteredOptions.map((group) => (
+            <div
+              className="mt-6"
+              key={`group_${group.label}_${group.options.length}`}
+            >
+              <p className="text-sm font-bold tracking-[0.01em] mb-1.5">
+                {group.label}
+              </p>
+              {group.options.map((option) => (
+                <ChooseItem
+                  key={`option_${option.value}`}
+                  handleClick={() => handleSelect(option)}
+                  image={option.icon}
+                  title={option.title}
+                  subTitle={option.subTitle}
+                  innerTitle={option.innerTitle}
+                  innerSubtitle={option.innerSubtitle}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

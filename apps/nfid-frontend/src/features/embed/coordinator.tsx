@@ -3,6 +3,8 @@ import { useMachine } from "@xstate/react"
 import { AuthenticationCoordinator } from "frontend/coordination/authentication"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 
+import { NFIDCheckoutCoordinator } from "../checkout/coordinator"
+import { CheckoutMachineActor } from "../checkout/machine"
 import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
 import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
 import { NFIDEmbedMachine } from "./machines"
@@ -25,8 +27,12 @@ export const NFIDEmbedCoordinator = () => {
           }
         />
       )
-    case state.matches("SendTransaction"):
-      return <div>SendTransaction</div>
+    case state.matches("CheckoutMachine"):
+      return (
+        <NFIDCheckoutCoordinator
+          actor={state.children.CheckoutMachine as CheckoutMachineActor}
+        />
+      )
     case state.matches("SignTypedDataV4"):
       return <div>SignTypedDataV4</div>
     case state.matches("Ready"):

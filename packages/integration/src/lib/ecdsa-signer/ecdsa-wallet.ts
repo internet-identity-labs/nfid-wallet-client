@@ -8,6 +8,7 @@ import { serialize } from "@ethersproject/transactions"
 import { UnsignedTransaction } from "ethers-ts"
 import BN from "bn.js"
 import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
+import { PreparedSignatureResponse } from "./types"
 
 const ABI_721 = [
   'function setApprovalForAll(address operator, bool _approved)',
@@ -59,6 +60,30 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     return getSignature(hash).then(signature => {
       const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
       return joinSignature(ethersSignature)
+    })
+  }
+
+  async prepareSendTransaction(transaction: TransactionRequest): Promise<PreparedSignatureResponse> {
+    this._checkProvider("sendTransaction");
+    const tx = await resolveProperties(await this.populateTransaction(transaction))
+
+    if (tx.from !== null) {
+      delete tx.from
+    }
+
+    const keccakHash = keccak256(serialize(<UnsignedTransaction>tx))
+    const message = arrayify(keccakHash)
+    return { hash: await prepareSignature([...message]), message, tx }
+  }
+
+  async sendPreparedTransaction(hash: string, message: Bytes | string, tx: TransactionRequest) {
+    const messageHashAsBytes = arrayify(hashMessage(message))
+    return getSignature(hash).then(signature => {
+      if (!this.provider) throw new Error("missing provider");
+
+      const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
+      const serializedMessage = serialize(<UnsignedTransaction>tx, ethersSignature)
+      return this.provider.sendTransaction(serializedMessage)
     })
   }
 
@@ -167,3 +192,8 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   }
 
 }
+
+const rpcProvider = new ethers.providers.JsonRpcProvider(
+  "https://ethereum-goerli-rpc.allthatnode.com",
+)
+export const nfidEthWallet = new EthWallet(rpcProvider)

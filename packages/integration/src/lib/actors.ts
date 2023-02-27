@@ -10,6 +10,8 @@ import {
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 import { DelegationIdentity } from "@dfinity/identity"
 
+import { idlFactory as btcIDL } from "./_ic_api/btc-wallet"
+import { _SERVICE as Btc } from "./_ic_api/btc-wallet.d"
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
 import { idlFactory as ecdsaSignerIDL } from "./_ic_api/ecdsa-signer"
@@ -28,8 +30,6 @@ import { idlFactory as vaultIDL } from "./_ic_api/vault"
 import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
-import { idlFactory as btcIDL } from "./_ic_api/btc-wallet"
-import { _SERVICE as Btc } from "./_ic_api/btc-wallet.d"
 import { agent } from "./agent"
 import { TOKEN_CANISTER } from "./token/dip-20/constants"
 
@@ -111,10 +111,13 @@ export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
   agent: new HttpAgent({ ...agentBaseConfig }),
 })
 
-export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(ecdsaSignerIDL, {
-  canisterId: ECDSA_SIGNER_CANISTER_ID,
-  agent: new HttpAgent({ ...agentBaseConfig }),
-})
+export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(
+  ecdsaSignerIDL,
+  {
+    canisterId: ECDSA_SIGNER_CANISTER_ID,
+    agent: new HttpAgent({ ...agentBaseConfig }),
+  },
+)
 
 export const btcWallet = Agent.Actor.createActor<Btc>(btcIDL, {
   canisterId: BITCOIN_WALLET_CANISTER_ID,

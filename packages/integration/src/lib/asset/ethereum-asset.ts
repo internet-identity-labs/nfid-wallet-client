@@ -35,8 +35,10 @@ import {
   NonFungibleItems,
   FungibleActivityRecords,
   Tokens,
-  FungibleActivityRequest, NonFungibleAsset, FungibleAsset
-} from "./types";
+  FungibleActivityRequest,
+  NonFungibleAsset,
+  FungibleAsset,
+} from "./types"
 
 const currencyId = "ETHEREUM:0x0000000000000000000000000000000000000000"
 const mainnet = "https://ethereum.publicnode.com"

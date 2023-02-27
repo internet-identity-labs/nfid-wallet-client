@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 
-import { IconCmpLoading, SDKFooter, Skeleton } from "@nfid-frontend/ui"
+import { IconCmpLoading } from "@nfid-frontend/ui"
 
 enum TransactionStatuses {
   "Verifying balance",

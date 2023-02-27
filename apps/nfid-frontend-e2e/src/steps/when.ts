@@ -7,6 +7,8 @@ import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
 import Vaults from "../pages/vaults"
+import RecoveryPage from "../pages/recovery-page"
+
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
 import closeLastOpenedWindow from "./support/action/closeLastOpenedWindow"
@@ -27,11 +29,18 @@ import setPromptText from "./support/action/setPromptText"
 When(/^User enters a captcha$/, async function () {
   await HomePage.captchaPass();
   await HomePage.waitForLoaderDisappear();
+  await HomePage.waitForLoaderDisappear();
+})
+
+When(/^User trusts this device$/, async () => {
+  await HomePage.iTrustThisDevice();
+  await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true);
+  await HomePage.waitForLoaderDisappear();
 })
 
 When(/^It log's me in$/, async () => {
-  await HomePage.justLogMeIn()
-  await HomePage.waitForLoaderDisappear()
+  await HomePage.dontTrustThisDevice();
+  await HomePage.waitForLoaderDisappear();
 })
 
 When(/^Tokens displayed on user assets$/, async () => {
@@ -39,7 +48,7 @@ When(/^Tokens displayed on user assets$/, async () => {
 })
 
 When(/^User opens burger menu$/, async () => {
-  await Profile.openHomeBurgerMenu();
+  await HomePage.openHomeBurgerMenu();
 })
 
 When(/^User opens mobile profile menu$/, async () => {
@@ -112,14 +121,51 @@ When(/^I open Policies tab$/, async () => {
   await Vault.openPoliciestab()
 })
 
-When(
-  /^I create new Policy for this vault with ([^"]*), ([^"]*) and ([^"]*) included$/,
+When(/^I create new Policy for this vault with ([^"]*), ([^"]*) and ([^"]*) included$/,
   async (walletName: string, greaterThan: number, approvers: number) => {
     await Vault.addPolicy(walletName, greaterThan, approvers)
   },
 )
 
-When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)
+When(/^User opens Credentials$/, async () => {
+  await Profile.openCredentials()
+})
+
+When(/^User connects mobile number$/, async () => {
+  await Profile.connectMobilePhoneNumber()
+})
+
+When(/^User inputs a phone number (.*)$/, async (phoneNumber: string) => {
+  await Profile.inputAndVerifyPhoneNumber(phoneNumber)
+  await Profile.waitForLoaderDisappear()
+})
+
+When(/^Phone number error appears "(.*)"$/, async (errorMsg: string) => {
+  await $("#phone-number-error").waitForDisplayed({ timeout: 7000, timeoutMsg: "Phone number error is missing" })
+  expect(await $("#phone-number-error").getText()).toContain(errorMsg)
+})
+
+When(/^User enters pincode "(.*)"$/, async (pinCode: string) => {
+  await Profile.enterPin(pinCode)
+})
+
+When(/^Pin code error message appears "(.*)"$/, async (errorMsg: string) => {
+  await Profile.waitForLoaderDisappear()
+  await $("#pin-input-error").waitForDisplayed({ timeout: 7000, timeoutMsg: "Pin Error message is not displayed" })
+  const text = await $("#pin-input-error").getText()
+  expect(text).toHaveText(errorMsg)
+})
+
+When(/^User goes to recover account with FAQ$/, async () => {
+  await HomePage.recoverAccountWithFAQ()
+  await HomePage.switchToWindow("last")
+})
+
+When(/^User recovers account with a ([^"]*)$/, async (phrase: string) => {
+  await RecoveryPage.recoverAccountWithThePhrase(phrase)
+})
+
+When(/^I (click|doubleclick) on the (link|selector) ([^"]*)?$/, clickElement)
 
 When(/^I (add|set) "([^"]*)?" to the inputfield "([^"]*)?"$/, setInputField)
 

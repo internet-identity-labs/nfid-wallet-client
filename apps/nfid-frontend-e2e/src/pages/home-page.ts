@@ -42,6 +42,14 @@ export class HomePage extends Page {
     return $("#create-nfid")
   }
 
+  private get trustThisDeviceButton() {
+    return $("#trust-this-device");
+  }
+
+  private get dontTrustThisDeviceButton() {
+    return $("#just-log-me-in");
+  }
+
   public async openHomeBurgerMenu() {
     await this.homeBurgerButton.waitForDisplayed({ timeout: 7000, timeoutMsg: "Burgen Menu is missing!" });
     await this.homeBurgerButton.click();
@@ -107,13 +115,32 @@ export class HomePage extends Page {
     return this
   }
 
-  public async justLogMeIn() {
-    await $("#just-log-me-in").waitForDisplayed({
+  public async iTrustThisDevice() {
+    await this.trustThisDeviceButton.waitForDisplayed({
       timeout: 30000,
-      timeoutMsg: "Just Log Me In option is missing",
+      timeoutMsg: "Trust this device option is missing"
     })
-    await $("#just-log-me-in").click()
+    await this.trustThisDeviceButton.click()
   }
+
+  public async dontTrustThisDevice() {
+    await this.dontTrustThisDeviceButton.waitForDisplayed({
+      timeout: 30000,
+      timeoutMsg: "Just Log Me In option is missing"
+    })
+    await this.dontTrustThisDeviceButton.click()
+  }
+
+  public async recoverAccountWithFAQ() {
+    await $(`=${'FAQ'}`).waitForDisplayed({timeout: 5000, timeoutMsg: ""})
+
+    await $("//button[contains(.,'What if my device')]").waitForDisplayed({ timeout: 7000 })
+    await $("//button[contains(.,'What if my device')]").click()
+
+    await $("[href*='/recover-nfid']").waitForDisplayed({ timeout: 6000 })
+    await $("[href*='/recover-nfid']").click()
+  }
+
 }
 
 export default new HomePage()

@@ -1,15 +1,25 @@
-@homePage @smoke @regression
-Feature: Home page
-  To check if user navigation features on Home page
+@smoke @regression
+Feature: User navigates through Home page
 
   Background: Background name
-    Given I open the site "/"
+    Given User opens NFID site
 
-  @uat
-  @mission
   Scenario Outline: User navigates sections on home page
-    When I click on the link "<link>"
-    Then I expect that element "<element>" becomes displayed
+    When I click on the link <link>
+    Then I expect that element <element> becomes displayed
+
+    Examples:
+      | link               | element         |
+      | The Identity Layer | #home           |
+      | Only with NFID     | #only-with-nfid |
+      | Our mission        | #our-mission    |
+      | FAQ                | #faq            |
+
+  @mobile
+  Scenario Outline: User navigates sections on mobile home page
+    And User opens burger menu
+    When I click on the link <link>
+    Then I expect that element <element> becomes displayed
 
     Examples:
       | link               | element         |

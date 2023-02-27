@@ -3,13 +3,13 @@ import { useEffect, useState } from "react"
 
 import { IconCmpLoading } from "@nfid-frontend/ui"
 
-enum TransactionStatuses {
+const TransactionStatuses = [
   "Verifying balance",
   "Securing connection",
   "Approving transaction",
   "Processing withdrawal",
   "Confirming transaction",
-}
+]
 
 export const CheckoutPostloader = () => {
   const [currentStatus, setCurrentStatus] = useState(0)
@@ -24,11 +24,12 @@ export const CheckoutPostloader = () => {
     <div
       className={clsx(
         "flex flex-col items-center justify-center",
-        "w-full h-full font-bold",
+        "w-full h-full font-bold text-gray-400",
+        "text-sm",
       )}
     >
       <IconCmpLoading />
-      <p>{TransactionStatuses[currentStatus]}...</p>
+      <p className="mt-4">{TransactionStatuses[currentStatus]}...</p>
     </div>
   )
 }

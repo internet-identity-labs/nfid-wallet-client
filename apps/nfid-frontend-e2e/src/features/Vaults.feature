@@ -10,12 +10,14 @@ Feature: Vault scenarios
     Given User authenticates with google account
     And User enters a captcha
     And It log's me in
+    And Tokens displayed on user assets
     When User opens profile menu
     Then User logs out
 
   Scenario: Create a new Vault
     Given User authenticates with google account
     And It log's me in
+    And Tokens displayed on user assets
     When I open Vaults
     And I create a new Vault with name testVault
     Then Vault appears with name testVault
@@ -23,6 +25,7 @@ Feature: Vault scenarios
   Scenario: Add wallet
     Given User authenticates with google account
     And It log's me in
+    And Tokens displayed on user assets
     When I open Vaults
     And I click on vault with name testVault
     And I create a new wallet with name myNewWallet
@@ -31,6 +34,7 @@ Feature: Vault scenarios
   Scenario: Add member
     Given User authenticates with google account
     And It log's me in
+    And Tokens displayed on user assets
     When I open Vaults
     And I click on vault with name testVault
     And I open Members tab
@@ -44,6 +48,7 @@ Feature: Vault scenarios
   Scenario: Add policy
     Given User authenticates with google account
     And It log's me in
+    And Tokens displayed on user assets
     When I open Vaults
     And I click on vault with name testVault
     And I open Policies tab

@@ -35,6 +35,7 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignPreparedSignature: "done.invoke.prepareSignature"
+    assignRpcResponse: "done.invoke.sendTransactionService"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}

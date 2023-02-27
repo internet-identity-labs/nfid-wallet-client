@@ -5,7 +5,7 @@ import { PreparedSignatureResponse } from "@nfid/integration"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { RPCMessage } from "../embed/rpc-service"
+import { RPCMessage, RPCResponse } from "../embed/rpc-service"
 import { sendTransactionService } from "../embed/services/send-transaction"
 import { prepareSignature } from "./services"
 
@@ -13,12 +13,14 @@ export type CheckoutMachineContext = {
   authSession: AuthSession
   appMeta?: AuthorizingAppMeta
   rpcMessage?: RPCMessage
+  rpcResponse?: RPCResponse
   preparedSignature?: PreparedSignatureResponse
 }
 
 type Events =
   | { type: "SHOW_TRANSACTION_DETAILS" }
   | { type: "done.invoke.prepareSignature"; data: PreparedSignatureResponse }
+  | { type: "done.invoke.sendTransactionService"; data: RPCResponse }
   | { type: "VERIFY"; data?: RPCMessage }
   | { type: "CLOSE" }
   | { type: "BACK" }
@@ -59,7 +61,7 @@ export const CheckoutMachine =
           invoke: {
             src: "sendTransactionService",
             id: "sendTransactionService",
-            onDone: "Success",
+            onDone: { target: "Success", actions: "assignRpcResponse" },
             onError: "Checkout",
           },
         },
@@ -71,8 +73,7 @@ export const CheckoutMachine =
 
         End: {
           type: "final",
-          data: (context, event: { data: CheckoutMachineContext }) =>
-            event.data,
+          data: (context) => context.rpcResponse,
         },
       },
     },
@@ -80,6 +81,9 @@ export const CheckoutMachine =
       actions: {
         assignPreparedSignature: assign({
           preparedSignature: (_, event) => event.data,
+        }),
+        assignRpcResponse: assign({
+          rpcResponse: (_, event) => event.data,
         }),
       },
       guards: {},

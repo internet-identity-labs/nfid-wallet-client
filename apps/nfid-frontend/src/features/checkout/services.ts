@@ -1,4 +1,4 @@
-import { EthWallet } from "@nfid/integration"
+import { nfidEthWallet } from "@nfid/integration"
 
 import { CheckoutMachineContext } from "./machine"
 
@@ -11,8 +11,6 @@ export const postLoaderService = async () => {
 export const prepareSignature = async ({
   rpcMessage,
 }: CheckoutMachineContext) => {
-  const nfidWallet = new EthWallet()
-
   const rawMessage = rpcMessage?.params[0]
   const message = Object.keys(rawMessage).reduce(
     (acc, key) => ({
@@ -22,5 +20,5 @@ export const prepareSignature = async ({
     {},
   )
 
-  return nfidWallet.prepareSendTransaction(message)
+  return nfidEthWallet.prepareSendTransaction(message)
 }

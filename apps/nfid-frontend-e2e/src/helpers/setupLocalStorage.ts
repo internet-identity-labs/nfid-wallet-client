@@ -1,18 +1,16 @@
 import { command } from "webdriver"
 
-
 /**
  *
  * https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidlocal_storage
  *
-*/
+ */
 // export class LocalStorageHelper implements JsonwpCommands {
 // }
 
 export async function addLocalStorageCommands(
   browser: WebdriverIO.Browser,
 ): Promise<void> {
-
   browser.addCommand(
     "getLocalStorage",
     command("GET", "/session/:sessionId/local_storage", {
@@ -20,8 +18,8 @@ export async function addLocalStorageCommands(
       description: "Get all keys of the storage.",
       ref: "https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidlocal_storage",
       variables: [],
-      parameters: []
-    })
+      parameters: [],
+    }),
   )
 
   browser.addCommand(
@@ -43,9 +41,9 @@ export async function addLocalStorageCommands(
           type: "string",
           description: "Local Storage value to set",
           required: true,
-        }
-      ]
-    })
+        },
+      ],
+    }),
   )
 
   browser.addCommand(
@@ -55,8 +53,8 @@ export async function addLocalStorageCommands(
       description: "Clear the storage.",
       ref: "",
       variables: [],
-      parameters: []
-    })
+      parameters: [],
+    }),
   )
 
   browser.addCommand(
@@ -71,10 +69,10 @@ export async function addLocalStorageCommands(
           type: "string",
           description: "Local Storage key to set",
           required: true,
-        }
+        },
       ],
-      parameters: []
-    })
+      parameters: [],
+    }),
   )
 
   browser.addCommand(
@@ -89,13 +87,9 @@ export async function addLocalStorageCommands(
           type: "string",
           description: "Local Storage key to set",
           required: true,
-        }
+        },
       ],
-      parameters: []
-    })
+      parameters: [],
+    }),
   )
-
 }
-
-
-

@@ -16,7 +16,6 @@ import {
 } from ".."
 import { userNumberAtom } from "./state"
 
-
 /** @deprecated FIXME: move to integration layer */
 export const useAccount = () => {
   const { isAuthenticated } = useAuthentication()

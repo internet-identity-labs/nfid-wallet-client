@@ -4,7 +4,7 @@ export class Page {
   }
 
   public async openBaseUrl() {
-    await browser.url("/");
+    await browser.url("/")
   }
 
   public async openPage(page: string) {
@@ -13,12 +13,14 @@ export class Page {
 
   // -1 retrieves the last window, or -2 gets the first one
   public async switchToWindow(window?: string) {
-    const positionNumber: number = window === "last" ? -1 : -2;
+    const positionNumber: number = window === "last" ? -1 : -2
     if (window) {
       await browser.waitUntil(
-        async () => ((await browser.getWindowHandles()).length) > 1, {
-        timeout: 7000, timeoutMsg: "Google account iframe is not appeared"
-      }
+        async () => (await browser.getWindowHandles()).length > 1,
+        {
+          timeout: 7000,
+          timeoutMsg: "Google account iframe is not appeared",
+        },
       )
     }
     const windowHandles = await browser.getWindowHandles()
@@ -27,8 +29,8 @@ export class Page {
 
   public async waitForLoaderDisappear() {
     try {
-      await this.loader.waitForDisplayed({ timeout: 2000 });
-      await this.loader.waitForDisplayed({ timeout: 20000, reverse: true });
+      await this.loader.waitForDisplayed({ timeout: 2000 })
+      await this.loader.waitForDisplayed({ timeout: 20000, reverse: true })
     } catch (e: any) {
       // console.log(e);
     }

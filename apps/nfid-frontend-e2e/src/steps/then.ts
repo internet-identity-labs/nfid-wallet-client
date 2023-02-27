@@ -1,11 +1,11 @@
 import { Then } from "@cucumber/cucumber"
 
+import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
 import Vaults from "../pages/vaults"
 import clickElement from "./support/action/clickElement"
 import setInputField from "./support/action/setInputField"
-import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import waitFor from "./support/action/waitFor"
 import waitForVisible from "./support/action/waitForDisplayed"
 import checkClass from "./support/check/checkClass"
@@ -39,7 +39,7 @@ import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
 
 Then(/^User logs out$/, async () => {
-  await Profile.logout();
+  await Profile.logout()
 })
 
 Then(/^Vault appears with name ([^"]*)$/, async (vaultName: string) => {
@@ -63,12 +63,15 @@ Then(/^Policy is displayed on the policies list$/, async () => {
 })
 
 Then(/^NFID number is not zero$/, async () => {
-  const actualNFID = await Profile.getNFIDnumber();
-  expect(actualNFID).not.toBe("0");
+  const actualNFID = await Profile.getNFIDnumber()
+  expect(actualNFID).not.toBe("0")
 })
 
 Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
-  await Profile.getPhoneNumber.waitForDisplayed({ timeout: 13000, timeoutMsg: "Phone Number is not displayed" })
+  await Profile.getPhoneNumber.waitForDisplayed({
+    timeout: 13000,
+    timeoutMsg: "Phone Number is not displayed",
+  })
   expect(await Profile.getPhoneNumber.getText()).toHaveText(phoneNumber)
 })
 
@@ -83,7 +86,10 @@ Then(
 
 Then(/^I expect that element "([^"]*)?" is( not)* displayed$/, isVisible)
 
-Then(/^I expect that element ([^"]*)? becomes( not)* displayed$/, waitForVisible)
+Then(
+  /^I expect that element ([^"]*)? becomes( not)* displayed$/,
+  waitForVisible,
+)
 
 Then(
   /^I expect that element "([^"]*)?" is( not)* within the viewport$/,

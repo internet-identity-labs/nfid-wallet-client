@@ -19,8 +19,6 @@ import AuthorizationMachine from "frontend/state/machines/authorization/authoriz
 
 import TrustDeviceMachine from "../authentication/trust-device"
 
-
-
 export interface IDPMachineContext {
   authRequest?: {
     maxTimeToLive: bigint

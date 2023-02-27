@@ -1,6 +1,7 @@
 import clsx from "clsx"
-import { SDKFooter } from "@nfid-frontend/ui"
 import React from "react"
+
+import { SDKFooter } from "@nfid-frontend/ui"
 
 import NFIDAuthenticationCoordinator from "frontend/coordination/nfid-authentication"
 import { ElementProps } from "frontend/types/react"

@@ -108,10 +108,13 @@ export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
   agent: new HttpAgent({ ...agentBaseConfig }),
 })
 
-export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(ecdsaSignerIDL, {
-  canisterId: ECDSA_SIGNER_CANISTER_ID,
-  agent: new HttpAgent({ ...agentBaseConfig }),
-})
+export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(
+  ecdsaSignerIDL,
+  {
+    canisterId: ECDSA_SIGNER_CANISTER_ID,
+    agent: new HttpAgent({ ...agentBaseConfig }),
+  },
+)
 
 export const ethSecretStorage = actor<EthSecretStorage>(
   ETH_SECRET_STORAGE_CANISTER_ID,

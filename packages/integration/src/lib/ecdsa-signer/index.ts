@@ -2,7 +2,7 @@ import { ecdsaSigner as ecdsaAPI } from "../actors"
 import { hasOwnProperty } from "../test-utils"
 
 export * from "./ecdsa-wallet"
-export * from './types'
+export * from "./types"
 
 export async function getEcdsaPublicKey(): Promise<Array<number>> {
   const publicKeyResult = await ecdsaAPI.public_key().catch((e) => {
@@ -45,4 +45,3 @@ export async function getSignature(hash: string): Promise<Array<number>> {
   }
   return signatureResult.Ok.signature
 }
-

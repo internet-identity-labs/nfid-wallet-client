@@ -20,6 +20,8 @@ export * from "./atoms/checkbox"
 export * from "./atoms/popover"
 export * from "./atoms/popover/popover-tools"
 export * from "./atoms/badge"
+export * from "./atoms/skeleton"
+export * from "./atoms/sdk-footer/footer"
 
 export * from "./molecules/button"
 export * from "./molecules/button/arrow-button"

@@ -7,7 +7,7 @@ import { Button } from "../../molecules/button"
 
 interface ITransferModalSuccess {
   transactionMessage: string
-  transactionRoute: string
+  transactionRoute?: string
   onClose: () => void
 }
 
@@ -37,7 +37,7 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
         <img className="w-[240px] mx-auto" src={success} alt="success" />
         <p className="text-xl font-bold">Transaction successful</p>
         <p className="font-bold mt-[10px] mb-3">{transactionMessage}</p>
-        <p className="text-sm ">
+        <p className={clsx("text-sm", !transactionRoute?.length && "hidden")}>
           You can view transaction details in the <br />
           <a
             target="_blank"

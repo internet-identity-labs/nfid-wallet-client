@@ -3,8 +3,8 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "done.invoke.getPurchaseInfo": {
-      type: "done.invoke.getPurchaseInfo"
+    "done.invoke.prepareSignature": {
+      type: "done.invoke.prepareSignature"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -13,8 +13,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.getPurchaseInfo": {
-      type: "error.platform.getPurchaseInfo"
+    "error.platform.prepareSignature": {
+      type: "error.platform.prepareSignature"
       data: unknown
     }
     "error.platform.sendTransactionService": {
@@ -24,7 +24,7 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
-    getPurchaseInfo: "done.invoke.getPurchaseInfo"
+    prepareSignature: "done.invoke.prepareSignature"
     sendTransactionService: "done.invoke.sendTransactionService"
   }
   missingImplementations: {
@@ -33,11 +33,13 @@ export interface Typegen0 {
     guards: never
     services: never
   }
-  eventsCausingActions: {}
+  eventsCausingActions: {
+    assignSignatureId: "done.invoke.prepareSignature"
+  }
   eventsCausingDelays: {}
   eventsCausingGuards: {}
   eventsCausingServices: {
-    getPurchaseInfo: "xstate.init"
+    prepareSignature: "xstate.init"
     sendTransactionService: "VERIFY"
   }
   matchesStates:

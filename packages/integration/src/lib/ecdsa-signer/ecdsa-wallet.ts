@@ -62,6 +62,23 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     })
   }
 
+  async prepareSendTransaction(transaction: TransactionRequest): Promise<string> {
+    this._checkProvider("sendTransaction");
+    const tx = await this.populateTransaction(transaction);
+    return this.prepareSignTransaction(tx);
+  }
+
+  async prepareSignTransaction(transaction: TransactionRequest): Promise<string> {
+    return resolveProperties(transaction).then((tx) => {
+      if (tx.from != null) {
+        delete tx.from
+      }
+      const keccakHash = keccak256(serialize(<UnsignedTransaction>tx))
+      const messageHashAsBytes = arrayify(keccakHash)
+      return prepareSignature([...messageHashAsBytes])
+    })
+  }
+
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
     return resolveProperties(transaction).then((tx) => {

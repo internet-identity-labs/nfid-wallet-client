@@ -1,4 +1,5 @@
 import { useActor } from "@xstate/react"
+import clsx from "clsx"
 import { TransferModalSuccess } from "packages/ui/src/organisms/transfer-modal/sucess"
 import React from "react"
 
@@ -6,6 +7,7 @@ import { IconCmpLoading } from "@nfid-frontend/ui"
 
 import { CheckoutMachineActor } from "./machine"
 import { CheckoutPage } from "./ui/checkout"
+import { CheckoutPostloader } from "./ui/postloader"
 import { CheckoutPreloader } from "./ui/preloader"
 import { TransactionDetails } from "./ui/transactions"
 
@@ -51,12 +53,7 @@ export function NFIDCheckoutCoordinator({
     case state.matches("TransactionDetails"):
       return <TransactionDetails onClose={() => send({ type: "BACK" })} />
     case state.matches("Verifying"):
-      return (
-        <div className="flex items-center justify-center w-full h-full">
-          <IconCmpLoading />
-          <p className="font-bold">{state.context?.transactionStatus}...</p>
-        </div>
-      )
+      return <CheckoutPostloader />
     case state.matches("Ramp"):
       return <div>Ramp</div>
     case state.matches("Success"):

@@ -15,7 +15,7 @@ import {
 import { RPCMessage, RPCResponse } from "../../embed/rpc-service"
 import { ConnectAccountService } from "../services"
 
-type EmbedConnectAccountMachineContext = {
+export type EmbedConnectAccountMachineContext = {
   appMeta?: AuthorizingAppMeta
   authSession?: AuthSession
   authRequest: AuthorizationRequest

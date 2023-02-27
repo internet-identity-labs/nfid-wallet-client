@@ -11,10 +11,11 @@ type ConnectAccountServiceContext = {
   authSession: AuthSession
 }
 
-export const SendTransactionService = async (
+export const sendTransactionService = async (
   { authSession }: ConnectAccountServiceContext,
-  event: { type: string; data: RPCMessage },
+  event: { type: string; data?: RPCMessage },
 ) => {
+  if (!event.data) throw new Error("No event data")
   const identity = await getWalletDelegation(authSession.anchor)
   replaceActorIdentity(ecdsaSigner, identity)
 

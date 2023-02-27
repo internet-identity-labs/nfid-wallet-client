@@ -1,13 +1,14 @@
-import { isDelegationExpired } from "@nfid/integration"
 import { map } from "rxjs"
 import { createMachine, assign } from "xstate"
 
+import { isDelegationExpired } from "@nfid/integration"
+
+import CheckoutMachine from "frontend/features/checkout/machine"
 import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 
 import { EmbedConnectAccountMachine } from "../../embed-connect-account/machines"
 import { RPCMessage, rpcMessages, RPCResponse } from "../rpc-service"
-import { SendTransactionService } from "../services/send-transaction"
 import { SignTypedDataService } from "../services/sign-typed-data"
 
 type NFIDEmbedMachineContext = {
@@ -75,7 +76,7 @@ export const NFIDEmbedMachine =
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
             SEND_TRANSACTION: [
-              { target: "SendTransaction", cond: "isAuthenticated" },
+              { target: "CheckoutMachine", cond: "isAuthenticated" },
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
             SIGN_TYPED_DATA: [
@@ -115,12 +116,18 @@ export const NFIDEmbedMachine =
           onExit: ["sendRPCResponse"],
         },
 
-        SendTransaction: {
+        CheckoutMachine: {
           invoke: {
-            src: "SendTransactionService",
-            id: "SendTransactionService",
-            onDone: "Ready",
+            src: "CheckoutMachine",
+            id: "CheckoutMachine",
             onError: { target: "Error", actions: "assingError" },
+            onDone: "Ready",
+            data: (context, event) => ({
+              authSession: context.authSession,
+              rpcMessage: event.data,
+              appMeta: mockContext.appMeta,
+              authRequest: mockContext.authRequest,
+            }),
           },
           exit: ["sendRPCResponse"],
         },
@@ -171,10 +178,8 @@ export const NFIDEmbedMachine =
       },
       services: {
         AuthenticationMachine,
+        CheckoutMachine,
         EmbedConnectAccountMachine,
-        // FIXME:
-        // @ts-ignore
-        SendTransactionService,
         // FIXME:
         // @ts-ignore
         SignTypedDataService,

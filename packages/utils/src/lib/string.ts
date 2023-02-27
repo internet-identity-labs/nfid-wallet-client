@@ -4,3 +4,13 @@ export const truncateString = (str: string, maxLength: number): string => {
   }
   return str
 }
+
+export const copyToClipboard = (
+  e: React.MouseEvent<HTMLElement | SVGSVGElement, MouseEvent>,
+  value?: string,
+  callback?: () => void,
+) => {
+  e.stopPropagation()
+  navigator.clipboard.writeText(value ?? "")
+  callback && callback()
+}

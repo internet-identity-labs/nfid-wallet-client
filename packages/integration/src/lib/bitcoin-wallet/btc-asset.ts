@@ -2,19 +2,18 @@ import { toBn } from "@rarible/utils"
 
 import { getPrice } from "../asset/asset"
 import {
-  Balance,
+  ChainBalance,
   FungibleActivityRecord,
   FungibleActivityRecords,
-  FungibleActivityRequest,
-  FungibleAsset,
-} from "../asset/types"
+  FungibleActivityRequest, FungibleAsset
+} from "../asset/types";
 import { BtcWallet } from "./btc-wallet"
 
 const mainnet = "https://mempool.space/api/address/"
 const testnet = "https://mempool.space/testnet/api/address/"
 
 export const BtcAsset: FungibleAsset = {
-  async getBalance(walletAddress): Promise<Balance> {
+  async getBalance(walletAddress): Promise<ChainBalance> {
     let url = "production" == FRONTEND_MODE ? mainnet : testnet
 
     const address = walletAddress

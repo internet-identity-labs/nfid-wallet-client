@@ -1,9 +1,6 @@
 import { useActor } from "@xstate/react"
-import clsx from "clsx"
 import { TransferModalSuccess } from "packages/ui/src/organisms/transfer-modal/sucess"
 import React from "react"
-
-import { IconCmpLoading } from "@nfid-frontend/ui"
 
 import { CheckoutMachineActor } from "./machine"
 import { CheckoutPage } from "./ui/checkout"

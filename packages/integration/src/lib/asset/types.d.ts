@@ -2,7 +2,7 @@ import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/commo
 import { BigNumber } from "@rarible/utils"
 import { Network } from "alchemy-sdk"
 
-declare type Asset = {
+declare type NonFungibleAsset = {
   getActivitiesByItem(
     request: ActivitiesByItemRequest,
   ): Promise<NonFungibleActivityRecords>
@@ -41,6 +41,7 @@ declare type ActivitiesByItemRequest = PageRequest &
   }
 
 declare type FungibleActivityRequest = PageRequest & {
+  address?: string
   direction?: "from" | "to"
   contract?: string
   sort?: "asc" | "desc"

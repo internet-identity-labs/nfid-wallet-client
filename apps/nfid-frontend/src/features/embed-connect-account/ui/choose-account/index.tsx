@@ -18,7 +18,7 @@ import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-b
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
-import { keepStaticOrder, sortAlphabetic } from "frontend/ui/utils/sorting"
+import { sortAlphabetic } from "frontend/ui/utils/sorting"
 
 interface IChooseAccount {
   applicationLogo?: string
@@ -50,20 +50,10 @@ export const ChooseAccount = ({
 
     return [
       {
-        label: "Anonymous",
-        options:
-          accounts?.map((acc) => ({
-            title: `${applicationName} ${acc.label}`,
-            value: getScope(acc.domain, acc.accountId),
-          })) ?? [],
-      },
-      {
         label: "Public",
-        options: keepStaticOrder<IGroupOption>(
-          ({ title }) => title ?? "",
-          ["NFID", "NNS"],
-        )(
+        options:
           wallets
+            .filter((wallet) => wallet.account.domain === "nfid.one")
             .map(
               (account) =>
                 ({
@@ -82,7 +72,14 @@ export const ChooseAccount = ({
                 } as IGroupOption),
             )
             .sort(sortAlphabetic(({ title }) => title ?? "")) || [],
-        ),
+      },
+      {
+        label: "Anonymous",
+        options:
+          accounts?.map((acc) => ({
+            title: `${applicationName} ${acc.label}`,
+            value: getScope(acc.domain, acc.accountId),
+          })) ?? [],
       },
     ]
   }, [

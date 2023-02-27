@@ -1,9 +1,6 @@
-import {
-  IGroupedOptions,
-  IGroupOption,
-} from "@nfid-frontend/ui"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
+import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
 import {
   BlurredLoader,
   Button,
@@ -14,7 +11,7 @@ import {
   Tooltip,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
-import { Account, getWalletName } from "@nfid/integration"
+import { Account, getScope, getWalletName } from "@nfid/integration"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
@@ -42,7 +39,6 @@ export const ChooseAccount = ({
   onConnect,
   accounts,
 }: IChooseAccount) => {
-  console.log({ accounts })
   const { balances: wallets } = useUserBalances()
   const { exchangeRate } = useICPExchangeRate()
 
@@ -55,6 +51,14 @@ export const ChooseAccount = ({
     return [
       {
         label: "Anonymous",
+        options:
+          accounts?.map((acc) => ({
+            title: `${applicationName} ${acc.label}`,
+            value: getScope(acc.domain, acc.accountId),
+          })) ?? [],
+      },
+      {
+        label: "Public",
         options: keepStaticOrder<IGroupOption>(
           ({ title }) => title ?? "",
           ["NFID", "NNS"],
@@ -62,32 +66,43 @@ export const ChooseAccount = ({
           wallets
             .map(
               (account) =>
-              ({
-                title: getWalletName(
-                  applications.applicationsMeta ?? [],
-                  account.account.domain,
-                  account.account.accountId,
-                ),
-                value: account.principalId,
-                subTitle: truncateString(account.principalId, 5),
-                innerTitle: toPresentation(account.balance["ICP"]).toString(),
-                innerSubtitle: toUSD(
-                  toPresentation(account.balance["ICP"]),
-                  exchangeRate,
-                ),
-              } as IGroupOption),
+                ({
+                  title: getWalletName(
+                    applications.applicationsMeta ?? [],
+                    account.account.domain,
+                    account.account.accountId,
+                  ),
+                  value: account.principalId,
+                  subTitle: truncateString(account.principalId, 5),
+                  innerTitle: toPresentation(account.balance["ICP"]).toString(),
+                  innerSubtitle: toUSD(
+                    toPresentation(account.balance["ICP"]),
+                    exchangeRate,
+                  ),
+                } as IGroupOption),
             )
             .sort(sortAlphabetic(({ title }) => title ?? "")) || [],
         ),
       },
     ]
-  }, [applications.applicationsMeta, exchangeRate, wallets])
+  }, [
+    accounts,
+    applicationName,
+    applications.applicationsMeta,
+    exchangeRate,
+    wallets,
+  ])
 
   const handleConnect = useCallback(() => {
     const account = wallets?.find((acc) => acc.principalId === selectedAccount)
+    if (account)
+      return onConnect(account?.account.domain, account?.account.accountId)
 
-    onConnect(account?.account.domain ?? "", account?.account.accountId ?? "")
-  }, [onConnect, selectedAccount, wallets])
+    const acc = accounts?.find(
+      (acc) => getScope(acc.domain, acc.accountId) === selectedAccount,
+    )
+    return onConnect(acc?.domain ?? "", acc?.accountId ?? "")
+  }, [accounts, onConnect, selectedAccount, wallets])
 
   useEffect(() => {
     accountsOptions.length &&

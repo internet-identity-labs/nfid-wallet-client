@@ -63,6 +63,7 @@ export async function createAccountService({
   accountId: string
   hostname: string
 }> {
+  console.log({ authRequest })
   if (!authRequest) throw new Error(`createAccountService authRequest missing`)
   if (!accounts) throw new Error(`createAccountService accounts missing`)
   const accountId = getNextAccountId(accounts.map(mapPersonaToLegacy))

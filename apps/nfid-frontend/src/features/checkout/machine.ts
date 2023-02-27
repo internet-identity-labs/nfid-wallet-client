@@ -1,29 +1,22 @@
-import { ActorRefFrom, createMachine } from "xstate"
+import { ActorRefFrom, createMachine, assign } from "xstate"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { RPCMessage } from "../embed/rpc-service"
 import { sendTransactionService } from "../embed/services/send-transaction"
-import { getPurchaseInfo } from "./services"
+import { prepareSignature } from "./services"
 
-enum TransactionStatuses {
-  "Verifying balance",
-  "Securing connection",
-  "Approving transaction",
-  "Processing withdrawal",
-  "Confirming transaction",
-}
-
-type CheckoutMachineContext = {
+export type CheckoutMachineContext = {
   authSession: AuthSession
   appMeta?: AuthorizingAppMeta
   rpcMessage?: RPCMessage
-  transactionStatus?: TransactionStatuses
+  signatureId?: string
 }
 
 type Events =
   | { type: "SHOW_TRANSACTION_DETAILS" }
+  | { type: "done.invoke.prepareSignature"; data: string }
   | { type: "VERIFY"; data?: RPCMessage }
   | { type: "CLOSE" }
   | { type: "BACK" }
@@ -42,9 +35,9 @@ export const CheckoutMachine =
       states: {
         Preloader: {
           invoke: {
-            src: "getPurchaseInfo",
-            id: "getPurchaseInfo",
-            onDone: "Checkout",
+            src: "prepareSignature",
+            id: "prepareSignature",
+            onDone: { target: "Checkout", actions: "assignSignatureId" },
           },
         },
         Checkout: {
@@ -65,6 +58,7 @@ export const CheckoutMachine =
             src: "sendTransactionService",
             id: "sendTransactionService",
             onDone: "Success",
+            onError: "Checkout",
           },
         },
         Success: {
@@ -81,10 +75,14 @@ export const CheckoutMachine =
       },
     },
     {
-      actions: {},
+      actions: {
+        assignSignatureId: assign({
+          signatureId: (_, event) => event.data,
+        }),
+      },
       guards: {},
       services: {
-        getPurchaseInfo,
+        prepareSignature,
         sendTransactionService,
       },
     },

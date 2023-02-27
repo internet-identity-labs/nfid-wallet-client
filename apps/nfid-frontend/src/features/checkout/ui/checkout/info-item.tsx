@@ -31,7 +31,7 @@ export const InfoItem = ({
           )}
         </div>
 
-        <p>{description}</p>
+        <div>{description}</div>
       </div>
       {icon}
     </div>

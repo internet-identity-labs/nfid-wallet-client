@@ -34,7 +34,7 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
-    assignSignatureId: "done.invoke.prepareSignature"
+    assignPreparedSignature: "done.invoke.prepareSignature"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}

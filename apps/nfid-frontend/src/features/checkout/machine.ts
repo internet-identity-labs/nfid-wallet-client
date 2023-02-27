@@ -1,5 +1,7 @@
 import { ActorRefFrom, createMachine, assign } from "xstate"
 
+import { PreparedSignatureResponse } from "@nfid/integration"
+
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
@@ -11,12 +13,12 @@ export type CheckoutMachineContext = {
   authSession: AuthSession
   appMeta?: AuthorizingAppMeta
   rpcMessage?: RPCMessage
-  signatureId?: string
+  preparedSignature?: PreparedSignatureResponse
 }
 
 type Events =
   | { type: "SHOW_TRANSACTION_DETAILS" }
-  | { type: "done.invoke.prepareSignature"; data: string }
+  | { type: "done.invoke.prepareSignature"; data: PreparedSignatureResponse }
   | { type: "VERIFY"; data?: RPCMessage }
   | { type: "CLOSE" }
   | { type: "BACK" }
@@ -37,7 +39,7 @@ export const CheckoutMachine =
           invoke: {
             src: "prepareSignature",
             id: "prepareSignature",
-            onDone: { target: "Checkout", actions: "assignSignatureId" },
+            onDone: { target: "Checkout", actions: "assignPreparedSignature" },
           },
         },
         Checkout: {
@@ -76,8 +78,8 @@ export const CheckoutMachine =
     },
     {
       actions: {
-        assignSignatureId: assign({
-          signatureId: (_, event) => event.data,
+        assignPreparedSignature: assign({
+          preparedSignature: (_, event) => event.data,
         }),
       },
       guards: {},

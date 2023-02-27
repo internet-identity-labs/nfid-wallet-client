@@ -42,6 +42,7 @@ export const serviceConfig = {
     process.env.PUB_SUB_CHANNEL_CANISTER_ID,
   ),
   VERIFIER_CANISTER_ID: JSON.stringify(process.env.VERIFIER_CANISTER_ID),
+  BITCOIN_WALLET_CANISTER_ID: JSON.stringify(process.env.BITCOIN_WALLET_CANISTER_ID),
   LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
   CYCLES_MINTER_CANISTER_ID: JSON.stringify(
     process.env.CYCLES_MINTER_CANISTER_ID,

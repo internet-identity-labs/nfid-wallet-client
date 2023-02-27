@@ -19,6 +19,7 @@ declare const SIGNIN_GOOGLE: string
 declare const USERGEEK_API_KEY: string
 declare const VAULT_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
+declare const BITCOIN_WALLET_CANISTER_ID: string
 declare const VERIFY_PHONE_NUMBER: string
 declare const WALLET_CONNECT_PROJECT_ID: string
 declare const AWS_AUTH_STATS: string

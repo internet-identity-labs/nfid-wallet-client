@@ -2,7 +2,7 @@ import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/commo
 import { BigNumber } from "@rarible/utils";
 import { Network } from "alchemy-sdk";
 
-interface NonFungibleAsset extends FungibleAsset{
+declare type NonFungibleAsset = FungibleAsset &  {
   getActivitiesByItem(
     request: ActivitiesByItemRequest,
   ): Promise<NonFungibleActivityRecords>
@@ -18,7 +18,7 @@ interface NonFungibleAsset extends FungibleAsset{
   getErc20TokensByUser(request?: CursorRequest): Promise<Tokens>
 }
 
-interface FungibleAsset  {
+declare type FungibleAsset = {
   getBalance(address?: string): Promise<ChainBalance>
   getFungibleActivityByTokenAndUser(
     request: FungibleActivityRequest

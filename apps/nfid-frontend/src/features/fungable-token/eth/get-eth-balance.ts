@@ -9,5 +9,6 @@ interface GetBalanceParams {
 export const getEthBalance = async ({ ethAddress }: GetBalanceParams) => {
   const web3 = new Web3(getEthProvider())
 
-  return await web3.eth.getBalance(ethAddress)
+  const balance = await web3.eth.getBalance(ethAddress)
+  return (parseFloat(balance) / 10 ** 18).toFixed(8)
 }

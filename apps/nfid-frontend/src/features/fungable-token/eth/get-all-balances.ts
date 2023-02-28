@@ -7,7 +7,7 @@ export const getAllEthBalances = async () => {
 
   const balances = await Promise.all(
     addresses.map(async (address) => {
-      const balance = await ethereumAsset.getBalance({ address })
+      const balance = await ethereumAsset.getBalance(address)
       return {
         [address]: {
           eth: balance.balance?.toFixed(8) ?? "",

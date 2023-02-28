@@ -28,7 +28,7 @@ import { ethers } from "ethers-ts"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import {
-  Asset,
+  NonFungibleAsset,
   ChainBalance,
   ActivityRecord,
   NonFungibleActivityRecords,
@@ -46,7 +46,7 @@ import {
 declare const FRONTEND_MODE: string
 declare const ALCHEMY_API_KEY: string
 
-class EthereumAsset implements Asset {
+class EthereumAsset implements NonFungibleAsset {
   readonly blockchain: EVMBlockchain
   readonly unionBlockchain: EVMBlockchain
   readonly currencyId: string

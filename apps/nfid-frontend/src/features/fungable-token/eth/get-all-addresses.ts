@@ -34,7 +34,6 @@ export const getAllEthAddresses: () => Promise<string[]> = async () => {
 
   return new Promise((resolve) =>
     processArray(allAccounts, fetchAddress, () => {
-      console.log({ addresses, allAccounts })
       resolve(addresses)
     }),
   )

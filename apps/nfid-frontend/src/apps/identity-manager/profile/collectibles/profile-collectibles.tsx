@@ -295,7 +295,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
               "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
             )}
           >
-            {tokensFiltered.map((token, i) => (
+            {tokensFiltered.map((token) => (
               <NFTPreview key={`token_${token.tokenId}`} {...token} />
             ))}
           </div>

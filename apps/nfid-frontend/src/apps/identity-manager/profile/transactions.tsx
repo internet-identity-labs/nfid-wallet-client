@@ -1,8 +1,8 @@
-import { parse } from "date-fns"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 
 import { IOption } from "@nfid-frontend/ui"
+import { sortByDate } from "@nfid-frontend/utils"
 
 import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
 import {
@@ -50,48 +50,26 @@ const ProfileTransactions = () => {
   const sendTransactions = React.useMemo(
     () =>
       walletTransactions
-        ? selectSendTransactions({
-            transactions: walletTransactions,
-            accounts: walletAddresses,
-          })
-            .concat(sendEthTXs)
-            .sort((a, b) => {
-              const dateA = parse(
-                a.date,
-                "MMM dd',' yyyy - hh:mm:ss a",
-                new Date(),
-              )
-              const dateB = parse(
-                b.date,
-                "MMM dd',' yyyy - hh:mm:ss a",
-                new Date(),
-              )
-              return dateB.getTime() - dateA.getTime()
-            })
+        ? sortByDate(
+            selectSendTransactions({
+              transactions: walletTransactions,
+              accounts: walletAddresses,
+            }).concat(sendEthTXs),
+            "MMM dd',' yyyy - hh:mm:ss a",
+          )
         : [],
     [sendEthTXs, walletAddresses, walletTransactions],
   )
   const recceivedTransactions = React.useMemo(
     () =>
       walletTransactions
-        ? selectReceivedTransactions({
-            transactions: walletTransactions,
-            accounts: walletAddresses,
-          })
-            .concat(receiveEthTXs)
-            .sort((a, b) => {
-              const dateA = parse(
-                a.date,
-                "MMM dd',' yyyy - hh:mm:ss a",
-                new Date(),
-              )
-              const dateB = parse(
-                b.date,
-                "MMM dd',' yyyy - hh:mm:ss a",
-                new Date(),
-              )
-              return dateB.getTime() - dateA.getTime()
-            })
+        ? sortByDate(
+            selectReceivedTransactions({
+              transactions: walletTransactions,
+              accounts: walletAddresses,
+            }).concat(receiveEthTXs),
+            "MMM dd',' yyyy - hh:mm:ss a",
+          )
         : [],
     [receiveEthTXs, walletAddresses, walletTransactions],
   )

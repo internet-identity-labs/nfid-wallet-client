@@ -47,12 +47,12 @@ declare const FRONTEND_MODE: string
 declare const ALCHEMY_API_KEY: string
 
 class EthereumAsset implements NonFungibleAsset {
-  readonly blockchain: EVMBlockchain
-  readonly unionBlockchain: EVMBlockchain
-  readonly currencyId: string
-  readonly raribleSdk: IRaribleSdk
-  readonly wallet: EthWallet
-  readonly alchemySdk: Alchemy
+  private readonly blockchain: EVMBlockchain
+  private readonly unionBlockchain: EVMBlockchain
+  private readonly currencyId: string
+  private readonly raribleSdk: IRaribleSdk
+  private readonly wallet: EthWallet
+  private readonly alchemySdk: Alchemy
 
   constructor(config: Configuration) {
     const [raribleSdk, wallet] = this.getRaribleSdk(FRONTEND_MODE, config)
@@ -62,6 +62,10 @@ class EthereumAsset implements NonFungibleAsset {
     this.blockchain = config.blockchain
     this.currencyId = config.currencyId
     this.unionBlockchain = config.unionBlockchain
+  }
+
+  public async getAddress(): Promise<string> {
+    return await this.wallet.getAddress()
   }
 
   public async getActivitiesByItem({
@@ -149,10 +153,10 @@ class EthereumAsset implements NonFungibleAsset {
     }
   }
 
-  public async getBalance(): Promise<ChainBalance> {
-    const address = await this.wallet.getAddress()
+  public async getBalance(address: string): Promise<ChainBalance> {
+    const validAddress = address ?? (await this.wallet.getAddress())
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
-      address,
+      validAddress,
       this.unionBlockchain,
     )
     const now = new Date()

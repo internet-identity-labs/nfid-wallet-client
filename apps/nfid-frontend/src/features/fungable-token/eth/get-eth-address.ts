@@ -1,11 +1,11 @@
-import { ethers } from "ethers"
-
 import { createAddress, readAddress } from "@nfid/client-db"
-import { replaceActorIdentity, ecdsaSigner, EthWallet } from "@nfid/integration"
+import {
+  replaceActorIdentity,
+  ecdsaSigner,
+  ethereumAsset,
+} from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
-
-import { getEthProvider } from "./provider"
 
 type GetAddressArgs = {
   anchor: number
@@ -28,10 +28,8 @@ export const getEthAddress = async ({
   const identity = await getWalletDelegation(anchor, hostname, accountId)
   replaceActorIdentity(ecdsaSigner, identity)
 
-  const rpcProvider = new ethers.providers.JsonRpcProvider(getEthProvider())
-  const nfidWallet = new EthWallet(rpcProvider)
+  const address = await ethereumAsset.getAddress()
 
-  const address = await nfidWallet.getAddress()
   !cachedAddress && createAddress({ address, accountId, hostname })
 
   return address

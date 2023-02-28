@@ -13,8 +13,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.SignTypedDataService": {
-      type: "done.invoke.SignTypedDataService"
+    "done.invoke.SignMessageMachine": {
+      type: "done.invoke.SignMessageMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -36,8 +36,8 @@ export interface Typegen0 {
       type: "error.platform.EmbedConnectAccountMachine"
       data: unknown
     }
-    "error.platform.SignTypedDataService": {
-      type: "error.platform.SignTypedDataService"
+    "error.platform.SignMessageMachine": {
+      type: "error.platform.SignMessageMachine"
       data: unknown
     }
     "error.platform.authenticate": {
@@ -55,7 +55,7 @@ export interface Typegen0 {
     AuthenticationMachine: "done.invoke.authenticate"
     CheckoutMachine: "done.invoke.CheckoutMachine"
     EmbedConnectAccountMachine: "done.invoke.EmbedConnectAccountMachine"
-    SignTypedDataService: "done.invoke.SignTypedDataService"
+    SignMessageMachine: "done.invoke.SignMessageMachine"
     TrustDeviceMachine: "done.invoke.trustDeviceMachine"
   }
   missingImplementations: {
@@ -69,14 +69,14 @@ export interface Typegen0 {
     assignRPCMessage: "CONNECT_ACCOUNT" | "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
     assingError:
       | "error.platform.CheckoutMachine"
-      | "error.platform.SignTypedDataService"
+      | "error.platform.SignMessageMachine"
     nfid_authenticated: "done.invoke.trustDeviceMachine"
     sendRPCResponse:
       | "done.invoke.CheckoutMachine"
       | "done.invoke.EmbedConnectAccountMachine"
-      | "done.invoke.SignTypedDataService"
+      | "done.invoke.SignMessageMachine"
       | "error.platform.CheckoutMachine"
-      | "error.platform.SignTypedDataService"
+      | "error.platform.SignMessageMachine"
       | "xstate.stop"
   }
   eventsCausingDelays: {}
@@ -91,7 +91,7 @@ export interface Typegen0 {
       | "xstate.init"
     CheckoutMachine: "SEND_TRANSACTION"
     EmbedConnectAccountMachine: "CONNECT_ACCOUNT"
-    SignTypedDataService: "SIGN_TYPED_DATA"
+    SignMessageMachine: "SIGN_TYPED_DATA"
     TrustDeviceMachine: "done.invoke.authenticate"
   }
   matchesStates:

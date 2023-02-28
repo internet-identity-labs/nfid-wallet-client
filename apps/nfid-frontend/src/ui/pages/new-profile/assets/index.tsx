@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React from "react"
+import React, { useMemo, useState } from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -10,8 +10,8 @@ import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import ArrowRight from "./arrow-right.svg"
+import { ProfileAssetsHeader } from "./header"
 import { ProfileAssetsNFT } from "./nft"
-import { NftsTitle } from "./nft/nfts-title"
 import Icon from "./transactions.svg"
 
 type Token = {
@@ -21,6 +21,7 @@ type Token = {
   currency: string
   balance?: bigint
   price?: string
+  blockchain: string
 }
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
@@ -34,6 +35,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   tokens,
   nfts,
 }) => {
+  const [blockchainFilter, setBlockchainFilter] = useState<string[]>([])
   const navigate = useNavigate()
   const handleNavigateToTokenDetails = React.useCallback(
     (token: string) => () => {
@@ -46,6 +48,31 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
     [navigate],
   )
   console.debug("ProfileAssetsPage", { tokens })
+
+  const filteredTokens = useMemo(() => {
+    return tokens.filter((token) => {
+      if (!blockchainFilter.length) return true
+      return blockchainFilter.includes(token.blockchain)
+    })
+  }, [blockchainFilter, tokens])
+
+  const blockchainOptions = React.useMemo(() => {
+    return [
+      {
+        label: "Internet Computer",
+        value: "ic",
+      },
+      {
+        label: "Ethereum",
+        value: "eth",
+      },
+    ]
+  }, [])
+
+  const resetFilters = React.useCallback(() => {
+    setBlockchainFilter([])
+  }, [])
+
   return (
     <ProfileTemplate
       pageTitle="Assets"
@@ -55,7 +82,14 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       className="overflow-inherit"
     >
       <ProfileContainer
-        title={<NftsTitle />}
+        title={
+          <ProfileAssetsHeader
+            blockchainOptions={blockchainOptions}
+            blockchainFilter={blockchainFilter}
+            setBlockchainFilter={setBlockchainFilter}
+            resetFilters={resetFilters}
+          />
+        }
         showChildrenPadding={false}
         className="sm:pb-0"
       >
@@ -71,7 +105,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               </tr>
             </thead>
             <tbody className="h-16 text-sm text-[#0B0E13]">
-              {tokens.map((token, index) => (
+              {filteredTokens.map((token, index) => (
                 <tr
                   key={`token_${index}`}
                   onClick={handleNavigateToTokenDetails(token.currency)}

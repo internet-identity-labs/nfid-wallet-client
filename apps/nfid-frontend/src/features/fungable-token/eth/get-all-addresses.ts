@@ -14,7 +14,12 @@ export const getAllEthAddresses: () => Promise<string[]> = async () => {
   const accounts = await fetchAccounts()
   const applications = await fetchApplications()
 
-  const allAccounts = extendWithFixedAccounts(accounts, applications)
+  // Extend only with nfid account for now
+  // Approved by Dan
+  const allAccounts = extendWithFixedAccounts(
+    accounts,
+    applications.filter((app) => app.domain === "nfid.one"),
+  )
   let addresses: string[] = []
 
   const fetchAddress = async (element: Account, callback: () => void) => {

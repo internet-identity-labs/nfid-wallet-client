@@ -131,10 +131,10 @@ class EthereumAsset implements NonFungibleAsset {
     size,
     address,
   }: PageRequest = {}): Promise<NonFungibleItems> {
-    if (!address) return { items: [], total: 0 }
+    const validAddress = address ?? (await this.wallet.getAddress())
 
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
-      address,
+      validAddress,
       this.unionBlockchain,
     )
     const raribleItems = await this.raribleSdk.apis.item.getItemsByOwner({

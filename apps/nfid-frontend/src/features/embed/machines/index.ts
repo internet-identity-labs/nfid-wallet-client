@@ -198,6 +198,7 @@ export const NFIDEmbedMachine =
         CheckoutMachine,
         EmbedConnectAccountMachine,
         SignMessageMachine,
+        TrustDeviceMachine,
       },
     },
   )

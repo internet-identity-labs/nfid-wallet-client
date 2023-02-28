@@ -53,7 +53,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         title: "Ethereum",
         currency: "ETH",
         balance: BigInt(Number(ethBalance?.totalETH ?? 0) * E8S),
-        price: "$" + ethBalance?.totalUSD.toFixed(2) ?? 0,
+        price: "$" + (ethBalance?.totalUSD.toFixed(2) ?? 0),
         fee: BigInt(WALLET_FEE_E8S),
         toPresentation,
         transformAmount: stringICPtoE8s,

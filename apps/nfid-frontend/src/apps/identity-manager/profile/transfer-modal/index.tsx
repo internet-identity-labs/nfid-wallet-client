@@ -76,6 +76,7 @@ export const ProfileTransferModal = () => {
   })
   const { refreshBalances } = useUserBalances()
   const { wallets } = useAllWallets()
+
   const { nfts } = useAllNFTs()
   const [isLoading, setIsLoading] = useState(false)
 

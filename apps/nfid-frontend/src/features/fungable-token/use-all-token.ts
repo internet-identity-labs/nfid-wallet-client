@@ -50,7 +50,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         tokenStandard: TokenStandards.ETH,
         title: "Ethereum",
         currency: "ETH",
-        balance: BigInt(Number(ethBalance?.totalETH.toFixed(8) ?? 0) / E8S),
+        balance: BigInt(Number(ethBalance?.totalETH ?? 0 / E8S)),
         price: "$" + String(ethBalance?.totalUSD ?? 0),
         fee: BigInt(WALLET_FEE_E8S),
         toPresentation,

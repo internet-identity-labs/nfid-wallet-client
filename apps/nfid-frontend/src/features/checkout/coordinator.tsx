@@ -34,6 +34,7 @@ export function NFIDCheckoutCoordinator({
     case state.matches("Checkout"):
       return (
         <CheckoutPage
+          error={state.context.error}
           showTransactionDetails={() =>
             send({ type: "SHOW_TRANSACTION_DETAILS" })
           }
@@ -45,6 +46,7 @@ export function NFIDCheckoutCoordinator({
           applicationLogo={state.context.appMeta?.logo}
           fromAddress={state.context.rpcMessage?.params[0].from}
           toAddress={state.context.rpcMessage?.params[0].to}
+          onBuyToken={() => send({ type: "BUY_TOKENS" })}
         />
       )
     case state.matches("TransactionDetails"):

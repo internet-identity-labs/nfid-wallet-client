@@ -15,11 +15,14 @@ export type CheckoutMachineContext = {
   rpcMessage?: RPCMessage
   rpcResponse?: RPCResponse
   preparedSignature?: PreparedSignatureResponse
+  error?: { reason: string }
 }
 
 type Events =
   | { type: "SHOW_TRANSACTION_DETAILS" }
+  | { type: "BUY_TOKENS" }
   | { type: "done.invoke.prepareSignature"; data: PreparedSignatureResponse }
+  | { type: "error.platform.prepareSignature"; data: { reason: string } }
   | { type: "done.invoke.sendTransactionService"; data: RPCResponse }
   | { type: "VERIFY"; data?: RPCMessage }
   | { type: "CLOSE" }
@@ -41,6 +44,7 @@ export const CheckoutMachine =
           invoke: {
             src: "prepareSignature",
             id: "prepareSignature",
+            onError: { target: "Checkout", actions: "assignError" },
             onDone: { target: "Checkout", actions: "assignPreparedSignature" },
           },
         },
@@ -49,6 +53,7 @@ export const CheckoutMachine =
             SHOW_TRANSACTION_DETAILS: "TransactionDetails",
             VERIFY: "Verifying",
             CLOSE: "End",
+            BUY_TOKENS: "Ramp",
           },
         },
         TransactionDetails: {
@@ -84,6 +89,9 @@ export const CheckoutMachine =
         }),
         assignRpcResponse: assign({
           rpcResponse: (_, event) => event.data,
+        }),
+        assignError: assign({
+          error: (_, event) => event.data,
         }),
       },
       guards: {},

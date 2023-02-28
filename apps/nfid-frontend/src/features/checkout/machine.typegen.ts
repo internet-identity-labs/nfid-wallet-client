@@ -34,6 +34,7 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    assignError: "error.platform.prepareSignature"
     assignPreparedSignature: "done.invoke.prepareSignature"
     assignRpcResponse: "done.invoke.sendTransactionService"
   }

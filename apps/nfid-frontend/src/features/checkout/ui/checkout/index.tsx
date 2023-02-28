@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import {
   SDKApplicationMeta,
@@ -20,9 +20,11 @@ import { InfoItem } from "./info-item"
 import Nft from "./nft.svg"
 
 interface ICheckoutPage {
+  error?: { reason: string }
   showTransactionDetails: () => void
   onApprove: () => void
   onCancel: () => void
+  onBuyToken: () => void
   applicationURL?: string
   applicationLogo?: string
   fromAddress?: string
@@ -30,6 +32,7 @@ interface ICheckoutPage {
 }
 
 export const CheckoutPage = ({
+  error,
   showTransactionDetails,
   onApprove,
   onCancel,
@@ -37,6 +40,7 @@ export const CheckoutPage = ({
   applicationLogo,
   fromAddress,
   toAddress,
+  onBuyToken,
 }: ICheckoutPage) => {
   const [isButtonDisabled, setIsButtonDisable] = useState(true)
   const { counter } = useTimer({
@@ -45,6 +49,10 @@ export const CheckoutPage = ({
     loop: false,
     onElapsed: () => setIsButtonDisable(false),
   })
+
+  const isInsufficientFunds = useMemo(() => {
+    return error?.reason.includes("insufficient funds")
+  }, [error])
 
   return (
     <TooltipProvider>
@@ -124,12 +132,28 @@ export const CheckoutPage = ({
       >
         Transaction details
       </p>
-      <div className="flex items-center w-full mt-14">
+      <p
+        className={clsx(
+          "text-xs text-red my-3.5",
+          !isInsufficientFunds && "hidden",
+        )}
+      >
+        Insufficient balance in you account to pay for this transaction.
+        <span
+          className="font-semibold cursor-pointer text-blue"
+          onClick={onBuyToken}
+        >
+          {" "}
+          Buy ETH{" "}
+        </span>
+        or deposit from another account.
+      </p>
+      <div className="flex items-center w-full">
         <Button type="stroke" className="w-full mr-2" onClick={onCancel}>
           Cancel
         </Button>
         <Button
-          disabled={isButtonDisabled}
+          disabled={isButtonDisabled || isInsufficientFunds}
           className={clsx(
             "w-full relative disabled:bg-gray-200 overflow-hidden",
           )}
@@ -139,7 +163,7 @@ export const CheckoutPage = ({
             className={clsx(
               "absolute left-0 top-0",
               "h-full w-full bg-gray-400/30 transition-all",
-              !isButtonDisabled && "hidden",
+              (!isButtonDisabled || isInsufficientFunds) && "hidden",
             )}
             style={{
               transform: `translateX(calc(-1%*${counter}))`,

@@ -19,11 +19,12 @@ export const sendTransactionService = async (
   try {
     console.time("SendTransactionService sendTransaction:")
     const { wait, ...result } = await nfidEthWallet.sendPreparedTransaction(
-      preparedSignature?.hash,
-      preparedSignature?.message,
-      preparedSignature?.tx,
+      preparedSignature.hash,
+      preparedSignature.message,
+      preparedSignature.tx,
     )
     console.timeEnd("SendTransactionService sendTransaction:")
+    console.debug("SendTransactionService signature", { preparedSignature })
     console.debug("SendTransactionService", { result })
     return Promise.resolve({
       ...RPC_BASE,

@@ -5,7 +5,7 @@ import { ecdsaSigner, EthWallet, replaceActorIdentity } from "@nfid/integration"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
 
-import { RPCMessage, RPC_BASE } from "../rpc-service"
+import { RPCMessage, RPC_BASE } from "../embed/rpc-service"
 
 type SignTypedDataServiceContext = {
   authSession: AuthSession
@@ -13,8 +13,9 @@ type SignTypedDataServiceContext = {
 
 export const SignTypedDataService = async (
   { authSession }: SignTypedDataServiceContext,
-  event: { type: string; data: RPCMessage },
+  event: { type: string; data?: RPCMessage },
 ) => {
+  if (!event.data) throw new Error("No event data")
   const identity = await getWalletDelegation(authSession.anchor)
   replaceActorIdentity(ecdsaSigner, identity)
 
@@ -28,6 +29,7 @@ export const SignTypedDataService = async (
   )
   const nfidWallet = new EthWallet(rpcProvider)
 
+  // @philipp should we also use prepared signature here ?
   try {
     console.time("SignTypedDataService sendTransaction:")
     const result = await nfidWallet.signTypedData(parsedMessage)

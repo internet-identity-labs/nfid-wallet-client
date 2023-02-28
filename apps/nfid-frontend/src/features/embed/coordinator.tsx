@@ -10,6 +10,8 @@ import { NFIDCheckoutCoordinator } from "../checkout/coordinator"
 import { CheckoutMachineActor } from "../checkout/machine"
 import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
 import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
+import { NFIDSignMessageCoordinator } from "../sign-message/coordinator"
+import { SignMessageActor } from "../sign-message/machine"
 import { NFIDEmbedMachine } from "./machines"
 
 export const NFIDEmbedCoordinator = () => {
@@ -53,7 +55,11 @@ export const NFIDEmbedCoordinator = () => {
         />
       )
     case state.matches("SignTypedDataV4"):
-      return <div>SignTypedDataV4</div>
+      return (
+        <NFIDSignMessageCoordinator
+          actor={state.children.SignMessageMachine as SignMessageActor}
+        />
+      )
     case state.matches("Ready"):
       return <div>Waiting for RPC Messages</div>
     case state.matches("Error"):

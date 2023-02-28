@@ -1,11 +1,28 @@
 import { useState } from "react"
 
-import { IconCmpFilters, ModalAdvanced, Tooltip } from "@nfid-frontend/ui"
+import {
+  DropdownSelect,
+  IconCmpFilters,
+  IOption,
+  ModalAdvanced,
+  Tooltip,
+} from "@nfid-frontend/ui"
 
-import ActionIcon from "../actions-icon.svg"
-import { AssetsModal } from "./filter-modal"
+import ActionIcon from "./actions-icon.svg"
 
-export const NftsTitle = () => {
+interface IProfileAssetsHeader {
+  blockchainOptions: IOption[]
+  blockchainFilter: string[]
+  setBlockchainFilter: (value: string[]) => void
+  resetFilters: () => void
+}
+
+export const ProfileAssetsHeader = ({
+  blockchainFilter,
+  blockchainOptions,
+  setBlockchainFilter,
+  resetFilters,
+}: IProfileAssetsHeader) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
   return (
     <div className="flex items-center justify-between w-full">
@@ -17,15 +34,13 @@ export const NftsTitle = () => {
             isModalOpenChange={setIsFiltersOpen}
             secondaryButton={{
               type: "stroke",
-              // кнопка скинути
-              onClick: () => setIsFiltersOpen(false),
+              onClick: () => resetFilters(),
               text: "Reset filter",
               id: "reset-filters-button",
               block: true,
             }}
             primaryButton={{
               type: "primary",
-              // кнопка застосувати
               onClick: () => setIsFiltersOpen(false),
               text: "Apply",
               id: "apply-filters-button",
@@ -34,18 +49,11 @@ export const NftsTitle = () => {
             trigger={<IconCmpFilters />}
             title="Filter"
           >
-            <AssetsModal
-              // фільтри
-              blockchainOptions={[]}
-              accountOptions={[]}
-              blockchainFilter={[]}
-              accountFilter={[]}
-              setBlockchainFilter={function (value: string[]): void {
-                throw new Error("Function not implemented.")
-              }}
-              setAccountFilter={function (value: string[]): void {
-                throw new Error("Function not implemented.")
-              }}
+            <DropdownSelect
+              label="Blockchain"
+              options={blockchainOptions}
+              selectedValues={blockchainFilter}
+              setSelectedValues={setBlockchainFilter}
             />
           </ModalAdvanced>
         </div>

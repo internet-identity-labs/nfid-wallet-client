@@ -35,6 +35,7 @@ declare type CursorRequest = {
 
 declare type PageRequest = CursorRequest & {
   size?: number
+  address?: string
 }
 
 declare type ActivitiesByItemRequest = PageRequest &

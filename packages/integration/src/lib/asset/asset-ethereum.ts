@@ -129,8 +129,10 @@ class EthereumAsset implements NonFungibleAsset {
   public async getItemsByUser({
     cursor,
     size,
+    address,
   }: PageRequest = {}): Promise<NonFungibleItems> {
-    const address = await this.wallet.getAddress()
+    if (!address) return { items: [], total: 0 }
+
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,
       this.unionBlockchain,

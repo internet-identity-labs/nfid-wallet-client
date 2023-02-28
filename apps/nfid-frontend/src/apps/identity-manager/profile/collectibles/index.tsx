@@ -1,16 +1,16 @@
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
-import { useAllNFTs } from "frontend/state/hooks/nfts"
 
+import { useAllNFTs } from "../assets/hooks"
 import { ProfileCollectibles } from "./profile-collectibles"
 
 const ProfileCollectiblesPage = () => {
-  const tokens = useAllNFTs()
+  const { nfts } = useAllNFTs()
   const applications = useApplicationsMeta()
 
   return (
     <ProfileCollectibles
-      isLoading={!tokens.data || applications.isLoading}
-      tokens={tokens.data || []}
+      isLoading={!nfts || applications.isLoading}
+      tokens={nfts || []}
       applications={applications.applicationsMeta || []}
     />
   )

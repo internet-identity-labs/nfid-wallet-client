@@ -1,8 +1,8 @@
-import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common";
-import { BigNumber } from "@rarible/utils";
-import { Network } from "alchemy-sdk";
+import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
+import { BigNumber } from "@rarible/utils"
+import { Network } from "alchemy-sdk"
 
-declare type NonFungibleAsset = FungibleAsset &  {
+declare type NonFungibleAsset = FungibleAsset & {
   getActivitiesByItem(
     request: ActivitiesByItemRequest,
   ): Promise<NonFungibleActivityRecords>
@@ -10,18 +10,20 @@ declare type NonFungibleAsset = FungibleAsset &  {
     request?: PageRequest & SortRequest,
   ): Promise<NonFungibleActivityRecords>
   getItemsByUser(request?: PageRequest): Promise<NonFungibleItems>
+  getBalance(address?: string): Promise<ChainBalance>
   transferNft(
     tokenId: string,
     constract: string,
     receiver: string,
   ): Promise<void>
   getErc20TokensByUser(request?: CursorRequest): Promise<Tokens>
+  getAddress(): Promise<string>
 }
 
 declare type FungibleAsset = {
   getBalance(address?: string): Promise<ChainBalance>
   getFungibleActivityByTokenAndUser(
-    request: FungibleActivityRequest
+    request: FungibleActivityRequest,
   ): Promise<FungibleActivityRecords>
 }
 
@@ -35,6 +37,7 @@ declare type CursorRequest = {
 
 declare type PageRequest = CursorRequest & {
   size?: number
+  address?: string
 }
 
 declare type ActivitiesByItemRequest = PageRequest &

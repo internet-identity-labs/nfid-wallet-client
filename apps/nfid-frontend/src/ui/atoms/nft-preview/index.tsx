@@ -4,7 +4,11 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
-import { IconCmpDots, transferModalAtom } from "@nfid-frontend/ui"
+import {
+  IconCmpDots,
+  IconPngEthereum,
+  transferModalAtom,
+} from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import ICPLogo from "frontend/assets/dfinity.svg"
@@ -60,10 +64,16 @@ const NFTPreview = (props: UserNFTDetails) => {
           className={clsx(
             "flex items-center justify-center",
             "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
-            props.blockchain !== "ic" && "hidden",
           )}
         >
-          <img src={ICPLogo} alt="logo" className="w-2/3" />
+          <img
+            src={props.blockchain === "ic" ? ICPLogo : IconPngEthereum}
+            alt="logo"
+            className={clsx(
+              "w-2/3",
+              props.blockchain !== "ic" && "!w-auto h-2/3",
+            )}
+          />
         </div>
         <img
           className={clsx(

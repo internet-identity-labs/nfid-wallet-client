@@ -23,6 +23,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.trustDeviceMachine": {
+      type: "done.invoke.trustDeviceMachine"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "error.platform.CheckoutMachine": {
       type: "error.platform.CheckoutMachine"
       data: unknown
@@ -39,6 +44,10 @@ export interface Typegen0 {
       type: "error.platform.authenticate"
       data: unknown
     }
+    "error.platform.trustDeviceMachine": {
+      type: "error.platform.trustDeviceMachine"
+      data: unknown
+    }
     "xstate.init": { type: "xstate.init" }
     "xstate.stop": { type: "xstate.stop" }
   }
@@ -47,6 +56,7 @@ export interface Typegen0 {
     CheckoutMachine: "done.invoke.CheckoutMachine"
     EmbedConnectAccountMachine: "done.invoke.EmbedConnectAccountMachine"
     SignTypedDataService: "done.invoke.SignTypedDataService"
+    TrustDeviceMachine: "done.invoke.trustDeviceMachine"
   }
   missingImplementations: {
     actions: never
@@ -60,7 +70,7 @@ export interface Typegen0 {
     assingError:
       | "error.platform.CheckoutMachine"
       | "error.platform.SignTypedDataService"
-    nfid_authenticated: "done.invoke.authenticate"
+    nfid_authenticated: "done.invoke.trustDeviceMachine"
     sendRPCResponse:
       | "done.invoke.CheckoutMachine"
       | "done.invoke.EmbedConnectAccountMachine"
@@ -82,6 +92,7 @@ export interface Typegen0 {
     CheckoutMachine: "SEND_TRANSACTION"
     EmbedConnectAccountMachine: "CONNECT_ACCOUNT"
     SignTypedDataService: "SIGN_TYPED_DATA"
+    TrustDeviceMachine: "done.invoke.authenticate"
   }
   matchesStates:
     | "AuthenticationMachine"
@@ -90,5 +101,6 @@ export interface Typegen0 {
     | "Error"
     | "Ready"
     | "SignTypedDataV4"
+    | "TrustDevice"
   tags: never
 }

@@ -42,7 +42,7 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
     <div className="flex flex-col flex-grow">
       <div className="flex flex-col space-y-2.5 text-black">
         <DropdownSelect
-          label="Select your wallet"
+          label="Select your account"
           options={walletOptions ?? []}
           selectedValues={transferModalState.selectedWallets}
           setSelectedValues={(value) =>

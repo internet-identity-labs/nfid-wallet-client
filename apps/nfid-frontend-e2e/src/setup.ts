@@ -11,7 +11,7 @@ declare global {
         hasResidentKey?: boolean,
         hasUserVerification?: boolean,
         isUserConsenting?: boolean,
-        isUserVerified?: boolean
+        isUserVerified?: boolean,
       ) => Promise<string>
       removeVirtualWebAuth: (authenticatorId: string) => Promise<void>
       getWebauthnCredentials: (
@@ -28,20 +28,11 @@ declare global {
         largeBlob?: string,
       ) => Promise<void>
 
-      getLocalStorage: (
-      ) => Promise<string[]>
-      setLocalStorage: (
-        key: string,
-        value: string
-      ) => Promise<void>
-      clearLocalStorage: (
-      ) => Promise<void>
-      getLocalStorageItem: (
-        key: string
-      ) => Promise<string>
-      deleteLocalStorageItem: (
-        key: string
-      ) => Promise<void>
+      getLocalStorage: () => Promise<string[]>
+      setLocalStorage: (key: string, value: string) => Promise<void>
+      clearLocalStorage: () => Promise<void>
+      getLocalStorageItem: (key: string) => Promise<string>
+      deleteLocalStorageItem: (key: string) => Promise<void>
     }
   }
 }

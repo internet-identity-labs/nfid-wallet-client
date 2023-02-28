@@ -1,7 +1,10 @@
 import { useMachine } from "@xstate/react"
+import React from "react"
 
 import { AuthenticationCoordinator } from "frontend/coordination/authentication"
+import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
+import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 
 import { NFIDCheckoutCoordinator } from "../checkout/coordinator"
 import { CheckoutMachineActor } from "../checkout/machine"
@@ -11,6 +14,15 @@ import { NFIDEmbedMachine } from "./machines"
 
 export const NFIDEmbedCoordinator = () => {
   const [state] = useMachine(NFIDEmbedMachine)
+
+  React.useEffect(
+    () =>
+      console.log("NFIDEmbedCoordinator", {
+        context: state.context,
+        state: state.value,
+      }),
+    [state.value, state.context],
+  )
 
   switch (true) {
     case state.matches("AuthenticationMachine"):
@@ -31,6 +43,13 @@ export const NFIDEmbedCoordinator = () => {
       return (
         <NFIDCheckoutCoordinator
           actor={state.children.CheckoutMachine as CheckoutMachineActor}
+        />
+      )
+
+    case state.matches("TrustDevice"):
+      return (
+        <TrustDeviceCoordinator
+          actor={state.children.trustDeviceMachine as TrustDeviceActor}
         />
       )
     case state.matches("SignTypedDataV4"):

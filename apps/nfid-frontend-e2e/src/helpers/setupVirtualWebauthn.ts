@@ -49,8 +49,9 @@ export async function addVirtualAuthCommands(
         {
           name: "hasUserVerification",
           type: "boolean",
-          description: "If set to true, the authenticator supports user verification.",
-          required: false
+          description:
+            "If set to true, the authenticator supports user verification.",
+          required: false,
         },
         {
           name: "isUserConsenting",
@@ -62,9 +63,10 @@ export async function addVirtualAuthCommands(
         {
           name: "isUserVerified",
           type: "boolean",
-          description: "Determines the result of User Verification performed on the Virtual Authenticator",
-          required: false
-        }
+          description:
+            "Determines the result of User Verification performed on the Virtual Authenticator",
+          required: false,
+        },
       ],
     }),
   )
@@ -191,7 +193,7 @@ export async function addVirtualAuthCommands(
 export async function addVirtualAuthenticator(
   browser: WebdriverIO.Browser,
 ): Promise<string> {
-  return await browser.addVirtualWebAuth("ctap2", "usb", true, true, true, true);
+  return await browser.addVirtualWebAuth("ctap2", "usb", true, true, true, true)
 }
 
 // NOTE: there is also a native webdriverio implementation for this

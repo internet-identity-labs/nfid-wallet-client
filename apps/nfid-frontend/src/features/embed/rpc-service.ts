@@ -1,4 +1,4 @@
-import { filter, fromEvent } from "rxjs";
+import { filter, fromEvent } from "rxjs"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 

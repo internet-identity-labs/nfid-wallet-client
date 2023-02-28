@@ -1,11 +1,13 @@
 import { map } from "rxjs"
 import { createMachine, assign } from "xstate"
 
+import { checkIsIframe } from "@nfid-frontend/utils"
 import { isDelegationExpired } from "@nfid/integration"
 
 import CheckoutMachine from "frontend/features/checkout/machine"
 import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
+import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
 
 import { EmbedConnectAccountMachine } from "../../embed-connect-account/machines"
 import { RPCMessage, rpcMessages, RPCResponse } from "../rpc-service"
@@ -91,13 +93,22 @@ export const NFIDEmbedMachine =
           invoke: {
             src: "AuthenticationMachine",
             id: "authenticate",
+            onDone: { target: "TrustDevice", actions: "assignAuthSession" },
+            data: () => mockContext,
+          },
+        },
+
+        TrustDevice: {
+          invoke: {
+            src: "TrustDeviceMachine",
+            id: "trustDeviceMachine",
             onDone: [
               {
                 target: "Ready",
-                actions: ["nfid_authenticated", "assignAuthSession"],
+                actions: ["nfid_authenticated"],
               },
             ],
-            data: () => mockContext,
+            data: () => ({ isIframe: checkIsIframe() }),
           },
         },
 
@@ -183,6 +194,7 @@ export const NFIDEmbedMachine =
         // FIXME:
         // @ts-ignore
         SignTypedDataService,
+        TrustDeviceMachine,
       },
     },
   )

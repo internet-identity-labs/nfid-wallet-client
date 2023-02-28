@@ -2,16 +2,18 @@ import { ethers } from "ethers"
 
 import { ecdsaSigner, EthWallet, replaceActorIdentity } from "@nfid/integration"
 
-import { RPCMessage, RPC_BASE } from "../rpc-service"
-import { AuthSession } from "frontend/state/authentication"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { AuthSession } from "frontend/state/authentication"
+
+import { RPCMessage, RPC_BASE } from "../rpc-service"
 
 type SignTypedDataServiceContext = {
   authSession: AuthSession
 }
 
-
-export const SignTypedDataService = async ({ authSession }: SignTypedDataServiceContext, event: { type: string; data: RPCMessage },
+export const SignTypedDataService = async (
+  { authSession }: SignTypedDataServiceContext,
+  event: { type: string; data: RPCMessage },
 ) => {
   const identity = await getWalletDelegation(authSession.anchor)
   replaceActorIdentity(ecdsaSigner, identity)

@@ -1,7 +1,6 @@
-import { cucumberOpts } from "./src/cucumber-options"
 import { chromeBrowser } from "./src/browserOptions"
+import { cucumberOpts } from "./src/cucumber-options"
 import { config as common } from "./wdio.conf"
-
 
 export const config: WebdriverIO.Config = {
   ...common,
@@ -9,5 +8,5 @@ export const config: WebdriverIO.Config = {
   cucumberOpts: {
     ...cucumberOpts,
     tagExpression: "not @pending and not @mobile",
-  }
+  },
 }

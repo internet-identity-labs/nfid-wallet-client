@@ -11,9 +11,9 @@ export const chromeBrowserOptions: IChromeOption = {
     "--ignore-certificate-errors",
     "--disable-gpu",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
-    `--user-data-dir=${process.env.USER_DATA_DIR}`
+    `--user-data-dir=${process.env.USER_DATA_DIR}`,
   ],
-  "w3c": false
+  w3c: false,
 }
 
 export const chromeBrowser = {

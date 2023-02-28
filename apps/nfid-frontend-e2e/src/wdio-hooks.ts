@@ -1,9 +1,10 @@
 import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
+
 import { baseURL } from "../wdio.conf"
 import { deviceName } from "../wdio.mobile.conf"
-import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
 import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
+import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
 
 //
 // =====
@@ -55,8 +56,8 @@ export const hooks = {
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
   before: async function (capabilities: any, specs: any) {
-    await addVirtualAuthCommands(browser);
-    await addLocalStorageCommands(browser);
+    await addVirtualAuthCommands(browser)
+    await addLocalStorageCommands(browser)
   },
   /**
    * Gets executed before the suite starts.
@@ -181,7 +182,12 @@ export const hooks = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {Object}             context          Cucumber World object
    */
-  afterStep: async function (step: any, scenario: any, result: any, context: any) {
+  afterStep: async function (
+    step: any,
+    scenario: any,
+    result: any,
+    context: any,
+  ) {
     // @ts-ignore browser
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
   },
@@ -198,11 +204,11 @@ export const hooks = {
   // @ts-ignore
   afterFeature: async function (uri, feature) {
     // @ts-ignore browser
-    allureReporter.addEnvironment('Browser', "Chrome");
-    allureReporter.addEnvironment('Environment', baseURL)
+    allureReporter.addEnvironment("Browser", "Chrome")
+    allureReporter.addEnvironment("Environment", baseURL)
     if (deviceName) {
-      allureReporter.addEnvironment('Device', deviceName);
+      allureReporter.addEnvironment("Device", deviceName)
     }
-    allureReporter.addEnvironment('Platform', process.platform);
+    allureReporter.addEnvironment("Platform", process.platform)
   },
 }

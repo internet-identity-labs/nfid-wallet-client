@@ -27,7 +27,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
         className,
       )}
     >
-      <div className="px-5 sm:px-[30px]">
+      <div className="px-5">
         {title && (
           <div className="flex items-center justify-between mb-3 text-xl">
             {title}

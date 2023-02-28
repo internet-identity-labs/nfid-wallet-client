@@ -7,7 +7,6 @@ import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/i
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { fetchAuthenticatorDevices } from "frontend/integration/internet-identity"
 
-
 const handleTrustDevice = async (JSONIdentity: string, isWebAuthN: boolean) => {
   const profile = await fetchProfile()
   const identity = WebAuthnIdentity.fromJSON(JSONIdentity)

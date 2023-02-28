@@ -1,10 +1,9 @@
-import { DelegationIdentity } from "@dfinity/identity"
-
 import { processArray } from "@nfid-frontend/utils"
+import { Account, extendWithFixedAccounts } from "@nfid/integration"
 
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import {
   fetchAccounts,
+  fetchApplications,
   fetchProfile,
 } from "frontend/integration/identity-manager"
 
@@ -13,30 +12,24 @@ import { getEthAddress } from "./get-eth-address"
 export const getAllEthAddresses: () => Promise<string[]> = async () => {
   const profile = await fetchProfile()
   const accounts = await fetchAccounts()
+  const applications = await fetchApplications()
+
+  const allAccounts = extendWithFixedAccounts(accounts, applications)
   let addresses: string[] = []
 
-  const delegations = await Promise.all(
-    accounts.map(async (account) => {
-      return await getWalletDelegation(
-        profile.anchor,
-        account.domain,
-        account.accountId,
-      )
-    }),
-  )
-
-  const fetchAddress = async (
-    element: DelegationIdentity,
-    callback: () => void,
-  ) => {
-    const address = await getEthAddress(element)
+  const fetchAddress = async (element: Account, callback: () => void) => {
+    const address = await getEthAddress({
+      anchor: profile.anchor,
+      hostname: element.domain,
+      accountId: element.accountId,
+    })
     addresses.push(address)
     callback()
   }
 
   return new Promise((resolve) =>
-    processArray(delegations, fetchAddress, () => {
-      console.log({ addresses, delegations, accounts })
+    processArray(allAccounts, fetchAddress, () => {
+      console.log({ addresses, allAccounts })
       resolve(addresses)
     }),
   )

@@ -67,7 +67,7 @@ describe("Ethereum Asset", () => {
   })
 
   it("should request balance", async function () {
-    const balance: ChainBalance = await ethereumAsset.getBalance({})
+    const balance: ChainBalance = await ethereumAsset.getBalance()
     expect(balance).toMatchObject({
       balance: expect.any(BigNumber),
       balanceinUsd: expect.any(BigNumber),

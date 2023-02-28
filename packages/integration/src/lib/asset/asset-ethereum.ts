@@ -153,7 +153,7 @@ class EthereumAsset implements NonFungibleAsset {
     }
   }
 
-  public async getBalance(address: string): Promise<ChainBalance> {
+  public async getBalance(address?: string): Promise<ChainBalance> {
     const validAddress = address ?? (await this.wallet.getAddress())
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       validAddress,

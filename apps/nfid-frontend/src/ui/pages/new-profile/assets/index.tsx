@@ -9,7 +9,9 @@ import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
+import ArrowRight from "./arrow-right.svg"
 import { ProfileAssetsNFT } from "./nft"
+import { NftsTitle } from "./nft/nfts-title"
 import Icon from "./transactions.svg"
 
 type Token = {
@@ -52,72 +54,85 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
       onIconClick={onIconClick}
       className="overflow-inherit"
     >
-      <ProfileContainer title="Your tokens" showChildrenPadding={false}>
-        <Loader isLoading={!tokens.length} />
-        <table className={clsx("text-left w-full hidden sm:table")}>
-          <thead className={clsx("border-b border-black h-16")}>
-            <tr className={clsx("font-bold text-sm leading-5")}>
-              <th className="pl-5 sm:pl-[30px]">Name</th>
-              <th>Token balance</th>
-              <th className="pr-5 sm:pr-[30px]">USD balance</th>
-            </tr>
-          </thead>
-          <tbody className="h-16 text-sm text-[#0B0E13]">
+      <ProfileContainer
+        title={<NftsTitle />}
+        showChildrenPadding={false}
+        className="sm:pb-0"
+      >
+        <div className="px-5">
+          <Loader isLoading={!tokens.length} />
+          <table className={clsx("text-left w-full hidden sm:table")}>
+            <thead className={clsx("border-b border-black  h-16")}>
+              <tr className={clsx("font-bold text-sm leading-5")}>
+                <th>Name</th>
+                <th>Blockchain</th>
+                <th>Token balance</th>
+                <th className="pr-5 sm:pr-[30px]">USD balance</th>
+              </tr>
+            </thead>
+            <tbody className="h-16 text-sm text-[#0B0E13]">
+              {tokens.map((token, index) => (
+                <tr
+                  key={`token_${index}`}
+                  onClick={handleNavigateToTokenDetails(token.currency)}
+                  className="border-b border-gray-200 cursor-pointer last:border-b-0 hover:bg-gray-100"
+                >
+                  <td className="flex items-center h-16">
+                    <ApplicationIcon
+                      className="mr-[18px]"
+                      icon={token.icon}
+                      appName={token.title}
+                    />
+                    <div>
+                      <p className="text-sm font-bold">{token.currency}</p>
+                      <p className={"text-[#9CA3AF] text-xs items-left flex"}>
+                        {token.title}
+                      </p>
+                    </div>
+                  </td>
+                  <td>Internet Computer</td>
+                  <td className="text-sm">
+                    {token.toPresentation(token.balance)} {token.currency}
+                  </td>
+                  <td className="text-sm">{token.price}</td>
+                  <td>
+                    <img src={ArrowRight} alt="arrow right" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="px-5 sm:hidden">
             {tokens.map((token, index) => (
-              <tr
+              <div
                 key={`token_${index}`}
+                className="flex items-center justify-between h-16"
                 onClick={handleNavigateToTokenDetails(token.currency)}
-                className="border-b border-gray-200 cursor-pointer hover:bg-gray-100"
               >
-                <td className="flex items-center h-16 pl-5 sm:pl-[30px]">
-                  <ApplicationIcon
-                    className="mr-[18px]"
-                    icon={token.icon}
-                    appName={token.title}
+                <div className="flex items-center text-[#0B0E13]">
+                  <img
+                    src={token.icon}
+                    alt="icon"
+                    className="w-6 h-6 mr-[13px]"
                   />
                   <div>
-                    <p className="text-sm">{token.title}</p>
-                    <p className={"text-[#9CA3AF] text-xs items-left flex"}>
+                    <p className="text-sm font-bold leading-5">{token.title}</p>
+                    <p className="text-[#9CA3AF] text-xs items-left flex leading-3">
                       {token.currency}
                     </p>
                   </div>
-                </td>
-                <td className="text-sm">
-                  {token.toPresentation(token.balance)} {token.currency}
-                </td>
-                <td className="text-sm">{token.price}</td>
-              </tr>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm leading-5">
+                    {token.toPresentation(token.balance)} {token.currency}
+                  </div>
+                  <div className="text-xs leading-3 text-gray-400">
+                    {token.price}
+                  </div>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-        <div className="px-5 sm:hidden">
-          {tokens.map((token, index) => (
-            <div
-              key={`token_${index}`}
-              className="flex items-center justify-between h-16"
-              onClick={handleNavigateToTokenDetails(token.currency)}
-            >
-              <div className="flex items-center text-[#0B0E13]">
-                <img
-                  src={token.icon}
-                  alt="icon"
-                  className="w-6 h-6 mr-[13px]"
-                />
-                <div>
-                  <p className="text-sm leading-5">{token.title}</p>
-                  <p className="text-[#9CA3AF] text-xs items-left flex leading-3">
-                    {token.currency}
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-sm leading-5">
-                  {token.toPresentation(token.balance)} {token.currency}
-                </div>
-                <div className="text-sm leading-3">{token.price}</div>
-              </div>
-            </div>
-          ))}
+          </div>
         </div>
       </ProfileContainer>
       <ProfileAssetsNFT nfts={nfts} />

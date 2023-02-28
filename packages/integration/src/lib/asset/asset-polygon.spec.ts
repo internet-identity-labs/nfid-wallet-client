@@ -67,7 +67,7 @@ describe("Polygon Asset", () => {
   })
 
   it("should request balance", async function () {
-    const balance: ChainBalance = await polygonAsset.getBalance()
+    const balance: ChainBalance = await polygonAsset.getBalance({})
     expect(balance).toMatchObject({
       balance: expect.any(BigNumber),
       balanceinUsd: expect.any(BigNumber),

@@ -7,8 +7,7 @@ export const getAllEthNFTs = async () => {
 
   const nfts = await Promise.all(
     addresses.map(async (address) => {
-      const items = (await ethereumAsset.getItemsByUser({ address: address }))
-        .items
+      const { items } = await ethereumAsset.getItemsByUser({ address })
 
       const result = items.map((item) => ({ ...item, owner: address }))
       return result

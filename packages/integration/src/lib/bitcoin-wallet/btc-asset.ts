@@ -5,8 +5,9 @@ import {
   ChainBalance,
   FungibleActivityRecord,
   FungibleActivityRecords,
-  FungibleActivityRequest, FungibleAsset
-} from "../asset/types";
+  FungibleActivityRequest,
+  FungibleAsset,
+} from "../asset/types"
 import { BtcWallet } from "./btc-wallet"
 
 const mainnet = "https://mempool.space/api/address/"

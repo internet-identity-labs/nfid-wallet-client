@@ -1,8 +1,10 @@
+import { parse } from "date-fns"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 
 import { IOption } from "@nfid-frontend/ui"
 
+import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
 import {
   selectReceivedTransactions,
   selectSendTransactions,
@@ -14,7 +16,8 @@ import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-h
 
 const ProfileTransactions = () => {
   const { walletTransactions, isWalletLoading } = useWallet()
-
+  const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
+    useEthTransactions()
   const [search] = useSearchParams()
 
   const transactionFilterFromSearch = search.get("wallet")
@@ -51,8 +54,22 @@ const ProfileTransactions = () => {
             transactions: walletTransactions,
             accounts: walletAddresses,
           })
+            .concat(sendEthTXs)
+            .sort((a, b) => {
+              const dateA = parse(
+                a.date,
+                "MMM dd',' yyyy - hh:mm:ss a",
+                new Date(),
+              )
+              const dateB = parse(
+                b.date,
+                "MMM dd',' yyyy - hh:mm:ss a",
+                new Date(),
+              )
+              return dateB.getTime() - dateA.getTime()
+            })
         : [],
-    [walletAddresses, walletTransactions],
+    [sendEthTXs, walletAddresses, walletTransactions],
   )
   const recceivedTransactions = React.useMemo(
     () =>
@@ -61,8 +78,22 @@ const ProfileTransactions = () => {
             transactions: walletTransactions,
             accounts: walletAddresses,
           })
+            .concat(receiveEthTXs)
+            .sort((a, b) => {
+              const dateA = parse(
+                a.date,
+                "MMM dd',' yyyy - hh:mm:ss a",
+                new Date(),
+              )
+              const dateB = parse(
+                b.date,
+                "MMM dd',' yyyy - hh:mm:ss a",
+                new Date(),
+              )
+              return dateB.getTime() - dateA.getTime()
+            })
         : [],
-    [walletAddresses, walletTransactions],
+    [receiveEthTXs, walletAddresses, walletTransactions],
   )
 
   const handleRemoveFilterChip = React.useCallback(

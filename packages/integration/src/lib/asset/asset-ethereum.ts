@@ -206,11 +206,12 @@ class EthereumAsset implements NonFungibleAsset {
     cursor,
     size,
     sort = "desc",
+    address,
   }: FungibleActivityRequest = {}): Promise<FungibleActivityRecords> {
-    const address = await this.wallet.getAddress()
+    const validAddress = address ?? (await this.wallet.getAddress())
     const transfers = await this.alchemySdk.core.getAssetTransfers({
-      fromAddress: "from" == direction ? address : undefined,
-      toAddress: "to" == direction ? address : undefined,
+      fromAddress: "from" == direction ? validAddress : undefined,
+      toAddress: "to" == direction ? validAddress : undefined,
       category: contract
         ? [AssetTransfersCategory.ERC20]
         : [AssetTransfersCategory.EXTERNAL],

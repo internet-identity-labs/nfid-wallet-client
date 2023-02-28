@@ -5,13 +5,13 @@ import { checkIsIframe } from "@nfid-frontend/utils"
 import { isDelegationExpired } from "@nfid/integration"
 
 import CheckoutMachine from "frontend/features/checkout/machine"
+import SignMessageMachine from "frontend/features/sign-message/machine"
 import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
 
 import { EmbedConnectAccountMachine } from "../../embed-connect-account/machines"
 import { RPCMessage, rpcMessages, RPCResponse } from "../rpc-service"
-import { SignTypedDataService } from "../services/sign-typed-data"
 
 type NFIDEmbedMachineContext = {
   authSession?: AuthSession
@@ -145,10 +145,16 @@ export const NFIDEmbedMachine =
 
         SignTypedDataV4: {
           invoke: {
-            src: "SignTypedDataService",
-            id: "SignTypedDataService",
+            src: "SignMessageMachine",
+            id: "SignMessageMachine",
             onDone: "Ready",
             onError: { target: "Error", actions: "assingError" },
+            data: (context, event) => ({
+              authSession: context.authSession,
+              rpcMessage: event.data,
+              appMeta: mockContext.appMeta,
+              authRequest: mockContext.authRequest,
+            }),
           },
           exit: ["sendRPCResponse"],
         },
@@ -191,9 +197,7 @@ export const NFIDEmbedMachine =
         AuthenticationMachine,
         CheckoutMachine,
         EmbedConnectAccountMachine,
-        // FIXME:
-        // @ts-ignore
-        SignTypedDataService,
+        SignMessageMachine,
         TrustDeviceMachine,
       },
     },

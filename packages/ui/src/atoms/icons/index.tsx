@@ -11,6 +11,7 @@ import IconSvgDfinity from "./dfinity.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
 import IconSvgError from "./error.svg"
+import IconPngEthereum from "./ethereum.png"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
@@ -36,6 +37,7 @@ import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
 
 export {
+  IconPngEthereum,
   IconSvgArrow,
   IconSvgCalendar,
   IconSvgCancel,

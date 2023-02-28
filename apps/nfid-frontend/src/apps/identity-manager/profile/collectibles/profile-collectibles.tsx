@@ -129,6 +129,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         <div className={clsx(`w-full`)}>{token.collection.name}</div>,
         <Link
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+          className="truncate block sm:w-[400px]"
         >
           {token.tokenId}
         </Link>,
@@ -275,7 +276,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
           </div>
         </ProfileContainer>
         <p className="text-sm text-center text-secondary h-[50px] leading-[50px]">
-          {tokens.length} items
+          {tokensFiltered.length} items
         </p>
         {!tokens.length ? (
           <>{isLoading ? <Loader isLoading={true} /> : "You have no NFTs!"}</>
@@ -294,11 +295,9 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
               "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4",
             )}
           >
-            {tokensFiltered
-              .sort((a, b) => (a.account.label < b.account.label ? -1 : 1))
-              .map((token, i) => (
-                <NFTPreview key={`token_${token.tokenId}`} {...token} />
-              ))}
+            {tokensFiltered.map((token) => (
+              <NFTPreview key={`token_${token.tokenId}`} {...token} />
+            ))}
           </div>
         )}
       </ProfileContainer>

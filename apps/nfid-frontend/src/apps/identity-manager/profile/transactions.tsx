@@ -2,7 +2,9 @@ import React from "react"
 import { useSearchParams } from "react-router-dom"
 
 import { IOption } from "@nfid-frontend/ui"
+import { sortByDate } from "@nfid-frontend/utils"
 
+import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
 import {
   selectReceivedTransactions,
   selectSendTransactions,
@@ -14,7 +16,8 @@ import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-h
 
 const ProfileTransactions = () => {
   const { walletTransactions, isWalletLoading } = useWallet()
-
+  const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
+    useEthTransactions()
   const [search] = useSearchParams()
 
   const transactionFilterFromSearch = search.get("wallet")
@@ -47,22 +50,28 @@ const ProfileTransactions = () => {
   const sendTransactions = React.useMemo(
     () =>
       walletTransactions
-        ? selectSendTransactions({
-            transactions: walletTransactions,
-            accounts: walletAddresses,
-          })
+        ? sortByDate(
+            selectSendTransactions({
+              transactions: walletTransactions,
+              accounts: walletAddresses,
+            }).concat(sendEthTXs),
+            "MMM dd',' yyyy - hh:mm:ss a",
+          )
         : [],
-    [walletAddresses, walletTransactions],
+    [sendEthTXs, walletAddresses, walletTransactions],
   )
   const recceivedTransactions = React.useMemo(
     () =>
       walletTransactions
-        ? selectReceivedTransactions({
-            transactions: walletTransactions,
-            accounts: walletAddresses,
-          })
+        ? sortByDate(
+            selectReceivedTransactions({
+              transactions: walletTransactions,
+              accounts: walletAddresses,
+            }).concat(receiveEthTXs),
+            "MMM dd',' yyyy - hh:mm:ss a",
+          )
         : [],
-    [walletAddresses, walletTransactions],
+    [receiveEthTXs, walletAddresses, walletTransactions],
   )
 
   const handleRemoveFilterChip = React.useCallback(

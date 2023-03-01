@@ -1,6 +1,10 @@
-import allure from "@wdio/allure-reporter"
 import allureReporter from "@wdio/allure-reporter"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
+
+import { baseURL } from "../wdio.conf"
+import { deviceName } from "../wdio.mobile.conf"
+import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
+import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
 
 //
 // =====
@@ -51,8 +55,10 @@ export const hooks = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  // before: function (capabilities, specs) {
-  // },
+  before: async function (capabilities: any, specs: any) {
+    await addVirtualAuthCommands(browser)
+    await addLocalStorageCommands(browser)
+  },
   /**
    * Gets executed before the suite starts.
    * @param {Object} suite suite details
@@ -155,10 +161,10 @@ export const hooks = {
    * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
    * @param {Object}                 context  Cucumber World object
    */
-  beforeScenario: (world: { name: string }) => {
+  beforeScenario: async (world: any) => {
     allureReporter.addFeature(world.name)
   },
-  afterScenario: () => {
+  afterScenario: async () => {
     browser.execute("window.localStorage.clear()")
   },
   // beforeStep: function ({uri, feature, step}, context) {
@@ -176,7 +182,12 @@ export const hooks = {
    * @param {number}             result.duration  duration of scenario in milliseconds
    * @param {Object}             context          Cucumber World object
    */
-  afterStep: async () => {
+  afterStep: async function (
+    step: any,
+    scenario: any,
+    result: any,
+    context: any,
+  ) {
     // @ts-ignore browser
     cucumberJson.attach(await browser.takeScreenshot(), "image/png")
   },
@@ -191,8 +202,13 @@ export const hooks = {
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
   // @ts-ignore
-  afterFeature: function (uri, feature) {
+  afterFeature: async function (uri, feature) {
     // @ts-ignore browser
-    allure.addEnvironment("Environment:", browser.config.environment)
+    allureReporter.addEnvironment("Browser", "Chrome")
+    allureReporter.addEnvironment("Environment", baseURL)
+    if (deviceName) {
+      allureReporter.addEnvironment("Device", deviceName)
+    }
+    allureReporter.addEnvironment("Platform", process.platform)
   },
 }

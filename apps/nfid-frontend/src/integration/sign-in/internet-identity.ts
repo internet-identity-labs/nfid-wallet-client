@@ -7,9 +7,6 @@ import { IIAuthSession } from "frontend/state/authentication"
 
 import { fetchProfile } from "../identity-manager"
 
-declare const INTERNET_IDENTITY_CANISTER_ID: string
-declare const FRONTEND_MODE: string
-
 export const signinWithII = async () => {
   const authClient = await AuthClient.create()
   return new Promise(async (resolve, reject) => {

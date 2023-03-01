@@ -3,6 +3,24 @@ name: Mobile Tests CI
 on:
   workflow_dispatch:
     inputs:
+      env:
+        description: 'Environment to run against'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - staging
+        - production
+      device:
+        description: 'Device to run tests with'
+        required: true
+        default: 'Pixel 5'
+        type: choice
+        options:
+        - Pixel 5
+        - iPhone X
+        - Galaxy S8
       logLevel:
         description: 'Log level'
         required: true
@@ -42,6 +60,9 @@ jobs:
           USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
           USER_DATA_DIR: ${{secrets.USER_DATA_DIR}}
           PSYCHEDELIC_GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+
 
   e2e-tests:
     needs: check-secrets
@@ -75,6 +96,8 @@ jobs:
           IS_DEV: true
           IS_E2E_TEST: true
           CURRCONV_TOKEN: ${{secrets.CURRCONV_TOKEN}}
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
           RAMP_WALLET_API_KEY: ${{secrets.RAMP_WALLET_API_KEY}}
 
           REACT_APP_SENTRY_CONNECTION: ${{secrets.DEV_SENTRY_CONNECTION}}
@@ -100,7 +123,7 @@ jobs:
       - name: Running E2E test
         run: |
           npx nx clean nfid-frontend-e2e ||
-          DEVICE_NAME='Pixel 5' npx env-cmd -f .env.staging nx test:e2e:mobile nfid-frontend-e2e
+          DEVICE_NAME=${{ github.event.inputs.device }} IS_HEADLESS='true' npx env-cmd -f .env.${{ github.event.inputs.env || 'dev' }} nx test:e2e:mobile nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}
           LAMBDA_IDENTITY: ${{secrets.LAMBDA_IDENTITY}}

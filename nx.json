@@ -1,4 +1,8 @@
 {
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "packages"
+  },
   "extends": "nx/presets/npm.json",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "tasksRunnerOptions": {
@@ -41,6 +45,8 @@
       { "env": "II_MODE" },
       { "env": "IC_HOST" },
       { "env": "CURRCONV_TOKEN" },
+      { "env": "ETHERSCAN_API_KEY" },
+      { "env": "ALCHEMY_API_KEY" },
       { "env": "RAMP_WALLET_API_KEY" },
       { "env": "REACT_APP_SENTRY_CONNECTION" },
       { "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION" },
@@ -51,6 +57,7 @@
       { "env": "AWS_SIGNIN_GOOGLE" },
       { "env": "AWS_SYMMETRIC" },
       { "env": "AWS_AUTH_STATS" },
+      { "env": "AWS_SIGNATURE_EVENT" },
       { "env": "GOOGLE_CLIENT_ID" },
       { "env": "USERGEEK_API_KEY" },
       { "env": "LEDGER_CANISTER_ID" },

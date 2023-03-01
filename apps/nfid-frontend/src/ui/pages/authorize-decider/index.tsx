@@ -17,6 +17,8 @@ import { ReactComponent as QRCode } from "./assets/qrcode.svg"
 import { ReactComponent as SecurityKey } from "./assets/security-key.svg"
 import { ReactComponent as TouchId } from "./assets/touch-id.svg"
 
+import "./wallet-connect.css"
+
 export interface AuthorizeAppUnknownDeviceProps {
   onSelectRemoteAuthorization: () => Promise<void> | void
   onSelectSameDeviceAuthorization: (userNumber: number) => Promise<void> | void

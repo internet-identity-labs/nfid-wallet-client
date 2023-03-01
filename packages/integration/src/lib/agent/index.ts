@@ -3,11 +3,6 @@ import { Identity, SubmitResponse } from "@dfinity/agent"
 import "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
-// Envars
-declare const II_ENV: string
-declare const IS_DEV: string
-declare const IC_HOST: string
-
 export const ic = {
   host: IC_HOST || "https://ic0.app",
   // NOTE: not sure if this is the right envar for islocal

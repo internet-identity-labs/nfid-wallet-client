@@ -13,6 +13,8 @@ export const serviceConfig = {
   IC_HOST: JSON.stringify(process.env.IC_HOST),
   II_ENV: JSON.stringify(process.env.II_MODE),
   CURRCONV_TOKEN: JSON.stringify(process.env.CURRCONV_TOKEN),
+  ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
+  ALCHEMY_API_KEY: JSON.stringify(process.env.ALCHEMY_API_KEY),
   FRONTEND_MODE: JSON.stringify(process.env.FRONTEND_MODE),
   IS_DEV: JSON.stringify(process.env.IS_DEV),
   USERGEEK_API_KEY: JSON.stringify(process.env.USERGEEK_API_KEY),
@@ -24,6 +26,7 @@ export const serviceConfig = {
   ),
   AWS_SYMMETRIC: JSON.stringify(process.env.AWS_SYMMETRIC),
   AWS_AUTH_STATS: JSON.stringify(process.env.AWS_AUTH_STATS),
+  AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
   SIGNIN_GOOGLE: JSON.stringify(
     process.env.FRONTEND_MODE === "production"
       ? process.env.AWS_SIGNIN_GOOGLE
@@ -39,6 +42,7 @@ export const serviceConfig = {
     process.env.PUB_SUB_CHANNEL_CANISTER_ID,
   ),
   VERIFIER_CANISTER_ID: JSON.stringify(process.env.VERIFIER_CANISTER_ID),
+  BITCOIN_WALLET_CANISTER_ID: JSON.stringify(process.env.BITCOIN_WALLET_CANISTER_ID),
   LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
   CYCLES_MINTER_CANISTER_ID: JSON.stringify(
     process.env.CYCLES_MINTER_CANISTER_ID,

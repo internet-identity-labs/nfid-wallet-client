@@ -37,6 +37,22 @@ const config = {
         ...config,
         ignoreWarnings: [/Failed to parse source map from/],
         plugins: [...config.plugins, new webpack.DefinePlugin(serviceConfig)],
+        resolve: {
+          ...config.resolve,
+          fallback: {
+            ...config.resolve.fallback,
+            assert: require.resolve("assert"),
+            buffer: require.resolve("buffer"),
+            events: require.resolve("events"),
+            stream: require.resolve("stream-browserify"),
+            util: require.resolve("util"),
+            https: require.resolve("https-browserify"),
+            http: require.resolve("stream-http"),
+            crypto: require.resolve("crypto-browserify"),
+            path: require.resolve("path-browserify"),
+            os: require.resolve("os-browserify/browser"),
+          },
+        },
       }
     },
   },

@@ -29,9 +29,9 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAccounts: "SUCCESS"
@@ -39,12 +39,12 @@ export interface Typegen0 {
     assignRequestAccountsRequest: "done.invoke.registerRequestAccountsHandler"
     setAccounts: "SUCCESS"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {}
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerRequestAccountsHandler"
     registerRequestAccountsHandler: "xstate.init"
   }
-  eventsCausingGuards: {}
-  eventsCausingDelays: {}
   matchesStates:
     | "Authenticate"
     | "Confirm"

@@ -15,10 +15,9 @@ import PhoneCredentialCoordinator from "./coordination/phone-credential"
 import RemoteIDPCoordinator from "./coordination/remote-sender"
 import RequestAccountsCoordinator from "./coordination/wallet/request-accounts"
 import RequestTransferCoordinator from "./coordination/wallet/request-transfer"
+import { NFIDEmbedCoordinator } from "./features/embed/coordinator"
 import { IframeTrustDeviceCoordinator } from "./features/iframe/iframe-trust-device/coordinator"
 import { NotFound } from "./ui/pages/404"
-
-declare const USERGEEK_API_KEY: string
 
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
@@ -70,6 +69,15 @@ export const App = () => (
       element={
         <ScreenResponsive>
           <IframeTrustDeviceCoordinator />
+        </ScreenResponsive>
+      }
+    />
+
+    <Route
+      path="/embed"
+      element={
+        <ScreenResponsive>
+          <NFIDEmbedCoordinator />
         </ScreenResponsive>
       }
     />

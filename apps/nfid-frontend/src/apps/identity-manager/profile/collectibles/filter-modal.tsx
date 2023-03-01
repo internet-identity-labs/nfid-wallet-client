@@ -49,7 +49,7 @@ export const CollectiblesModal = ({
       />
       <DropdownSelect
         options={walletOptions}
-        label="Wallets"
+        label="Accounts"
         setSelectedValues={setWalletsFilter}
         selectedValues={walletsFilter}
         isSearch

@@ -6,7 +6,7 @@ interface SDKApplicationMetaProps {
   applicationLogo?: string
   applicationName?: string
   title?: string
-  subTitle?: string
+  subTitle?: string | JSX.Element
 }
 
 export const SDKApplicationMeta: React.FC<SDKApplicationMetaProps> = ({
@@ -25,6 +25,6 @@ export const SDKApplicationMeta: React.FC<SDKApplicationMetaProps> = ({
       )}
       <H5 className="">{title}</H5>
     </div>
-    <P className="mt-4 text-sm">{subTitle}</P>
+    <div className="mt-4 mb-3 text-sm leading-6 text-black">{subTitle}</div>
   </>
 )

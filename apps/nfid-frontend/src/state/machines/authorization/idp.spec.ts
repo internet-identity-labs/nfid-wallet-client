@@ -62,6 +62,7 @@ const testMachineMockAuthn = testMachine.withConfig({
   services: {
     AuthenticationMachine: async () => {
       return {
+        anchor: 10000,
         identity: await factoryDelegationIdentity(),
         delegationIdentity: await factoryDelegationIdentity(),
         sessionSource: "remoteDevice",

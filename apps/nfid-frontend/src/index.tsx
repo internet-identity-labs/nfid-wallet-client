@@ -12,8 +12,6 @@ import "./index.css"
 import { Provider } from "./provider"
 import { ToastIcons } from "./ui/atoms/toast-icons"
 
-declare const SENTRY_RELEASE: string
-
 process.env.NODE_ENV === "production" &&
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_CONNECTION,

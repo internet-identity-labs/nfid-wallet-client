@@ -1,10 +1,12 @@
 import { When } from "@cucumber/cucumber"
 
+import { baseURL } from "../../wdio.conf"
+import { readFile } from "../helpers/fileops"
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
-import Vaults from "../pages/vaults"
+import RecoveryPage from "../pages/recovery-page"
 import Vault from "../pages/vault"
-
+import Vaults from "../pages/vaults"
 import clearInputField from "./support/action/clearInputField"
 import clickElement from "./support/action/clickElement"
 import closeLastOpenedWindow from "./support/action/closeLastOpenedWindow"
@@ -22,57 +24,161 @@ import setCookie from "./support/action/setCookie"
 import setInputField from "./support/action/setInputField"
 import setPromptText from "./support/action/setPromptText"
 
-When(/^I enter a captcha$/, async () => {
-  await HomePage.captchaPass();
+When(/^User enters a captcha$/, async function () {
+  await HomePage.captchaPass()
+  await HomePage.waitForLoaderDisappear()
+  await HomePage.waitForLoaderDisappear()
+})
+
+When(/^User trusts this device$/, async () => {
+  await HomePage.iTrustThisDevice()
+  await browser.addVirtualWebAuth("ctap2", "internal", true, true, true, true)
+  await HomePage.waitForLoaderDisappear()
 })
 
 When(/^It log's me in$/, async () => {
-  await HomePage.justLogMeIn();
-  await HomePage.waitForLoaderDisappear();
+  await HomePage.dontTrustThisDevice()
+  await HomePage.waitForLoaderDisappear()
 })
 
-When(/^I open profile menu$/, async () => {
-  await Profile.openProfileMenu();
+When(/^Tokens displayed on user assets$/, async () => {
+  await Profile.waitForTokensAppear()
+})
+
+When(/^User opens burger menu$/, async () => {
+  await HomePage.openHomeBurgerMenu()
+})
+
+When(/^User opens mobile profile menu$/, async () => {
+  await Profile.openMobileProfileMenu()
+})
+
+When(/^User opens profile menu$/, async () => {
+  await Profile.openProfileMenu()
+})
+
+When(/^User has account stored in localstorage$/, async () => {
+  const localStorage = await browser.getLocalStorageItem("account")
+  expect(localStorage.length).toBeGreaterThan(1)
+  expect(localStorage).toContain("account")
+})
+
+When(/^User is already authenticated$/, async function () {
+  this.authId = await browser.addVirtualWebAuth(
+    "ctap2",
+    "internal",
+    true,
+    true,
+    true,
+    true,
+  )
+  const rpId = new URL(baseURL).hostname
+  const creds: WebAuthnCredential = await readFile("credentials.json")
+  const anchor: Object = await readFile("accounts.json")
+
+  await browser.addWebauthnCredential(
+    this.authId,
+    rpId,
+    creds.credentialId,
+    creds.isResidentCredential,
+    creds.privateKey,
+    creds.signCount,
+  )
+
+  await browser.setLocalStorage("account", JSON.stringify(anchor))
+  await browser.refresh()
 })
 
 When(/^I open Vaults$/, async () => {
-  await Profile.openVaults();
-  await Profile.waitForLoaderDisappear();
+  await Profile.openVaults()
+  await Profile.waitForLoaderDisappear()
 })
 
 When(/^I open Members tab$/, async () => {
-  await Vault.openMembersTab();
+  await Vault.openMembersTab()
 })
 
-When(/^I add new member to this vault with ([^"]*) and ([^"]*)$/, async (name: string, address: string) => {
-  await Vault.addMember(name, address);
-})
+When(
+  /^I add new member to this vault with ([^"]*) and ([^"]*)$/,
+  async (name: string, address: string) => {
+    await Vault.addMember(name, address)
+  },
+)
 
 When(/^I create a new Vault with name ([^"]*)$/, async (vaultName: string) => {
-  await Vaults.createVault(vaultName);
-  await Vaults.waitForLoaderDisappear();
+  await Vaults.createVault(vaultName)
+  await Vaults.waitForLoaderDisappear()
 })
 
 When(/^I click on vault with name ([^"]*)$/, async (vaultName: string) => {
-  await (await Vaults.getVaultByName(vaultName)).click();
-  await Vaults.waitForLoaderDisappear();
+  await (await Vaults.getVaultByName(vaultName)).click()
+  await Vaults.waitForLoaderDisappear()
 })
 
-When(/^I create a new wallet with name ([^"]*)$/, async (walletName: string) => {
-  await Vault.addWallet(walletName);
-  await Vault.waitForLoaderDisappear();
-})
+When(
+  /^I create a new wallet with name ([^"]*)$/,
+  async (walletName: string) => {
+    await Vault.addWallet(walletName)
+    await Vault.waitForLoaderDisappear()
+  },
+)
 
 When(/^I open Policies tab$/, async () => {
-  await Vault.openPoliciestab();
+  await Vault.openPoliciestab()
 })
 
-When(/^I create new Policy for this vault with ([^"]*), ([^"]*) and ([^"]*) included$/,
+When(
+  /^I create new Policy for this vault with ([^"]*), ([^"]*) and ([^"]*) included$/,
   async (walletName: string, greaterThan: number, approvers: number) => {
-    await Vault.addPolicy(walletName, greaterThan, approvers);
-  })
+    await Vault.addPolicy(walletName, greaterThan, approvers)
+  },
+)
 
-When(/^I (click|doubleclick) on the (link|selector) "([^"]*)?"$/, clickElement)
+When(/^User opens Credentials$/, async () => {
+  await Profile.openCredentials()
+})
+
+When(/^User connects mobile number$/, async () => {
+  await Profile.connectMobilePhoneNumber()
+})
+
+When(/^User inputs a phone number (.*)$/, async (phoneNumber: string) => {
+  await Profile.inputAndVerifyPhoneNumber(phoneNumber)
+  await Profile.waitForLoaderDisappear()
+})
+
+When(/^Phone number error appears "(.*)"$/, async (errorMsg: string) => {
+  await $("#phone-number-error").waitForDisplayed({
+    timeout: 7000,
+    timeoutMsg: "Phone number error is missing",
+  })
+  expect(await $("#phone-number-error").getText()).toContain(errorMsg)
+})
+
+When(/^User enters pincode "(.*)"$/, async (pinCode: string) => {
+  await Profile.enterPin(pinCode)
+})
+
+When(/^Pin code error message appears "(.*)"$/, async (errorMsg: string) => {
+  await Profile.waitForLoaderDisappear()
+  await $("#pin-input-error").waitForDisplayed({
+    timeout: 7000,
+    timeoutMsg: "Pin Error message is not displayed",
+  })
+  const text = await $("#pin-input-error").getText()
+  expect(text).toHaveText(errorMsg)
+})
+
+When(/^User goes to recover account with FAQ$/, async () => {
+  await HomePage.recoverAccountWithFAQ()
+  await HomePage.switchToWindow("last")
+})
+
+When(/^User recovers account with a ([^"]*)$/, async (phrase: string) => {
+  await RecoveryPage.recoverAccountWithThePhrase(phrase)
+})
+
+When(/^I (click|doubleclick) on the (link|selector) ([^"]*)?$/, clickElement)
 
 When(/^I (add|set) "([^"]*)?" to the inputfield "([^"]*)?"$/, setInputField)
 

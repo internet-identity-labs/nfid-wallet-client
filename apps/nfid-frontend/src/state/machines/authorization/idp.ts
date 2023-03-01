@@ -14,12 +14,8 @@ import {
   AuthorizingAppMeta,
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
-import AuthenticationMachine, {
-  AuthenticationMachineContext,
-} from "frontend/state/machines/authentication/authentication"
-import AuthorizationMachine, {
-  AuthorizationMachineContext,
-} from "frontend/state/machines/authorization/authorization"
+import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
+import AuthorizationMachine from "frontend/state/machines/authorization/authorization"
 
 import TrustDeviceMachine from "../authentication/trust-device"
 
@@ -45,7 +41,7 @@ export type IDPMachineEvents =
   | { type: "error.platform.checkRuntime"; data: Error }
   | { type: "done.invoke.authenticate"; data: AuthSession }
   | { type: "done.invoke.authorize"; data: ThirdPartyAuthSession }
-  | { type: "done.invoke.done"; data: void }
+  | { type: "done.invoke.postDelegation"; data: void }
   | { type: "RETRY" }
 
 interface Schema {
@@ -151,11 +147,10 @@ const IDPMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: "AuthorizationMachine",
-            data: (context) =>
-              ({
-                appMeta: context.appMeta,
-                authRequest: context.authRequest,
-              } as AuthenticationMachineContext),
+            data: (context) => ({
+              appMeta: context.appMeta,
+              authRequest: context.authRequest,
+            }),
           },
         },
         AuthorizationMachine: {
@@ -166,12 +161,11 @@ const IDPMachine =
               { target: "TrustDevice", cond: "isWebAuthNSupported" },
               { target: "End" },
             ],
-            data: (context, event: { data: AuthSession }) =>
-              ({
-                appMeta: context.appMeta,
-                authRequest: context.authRequest,
-                authSession: event.data,
-              } as AuthorizationMachineContext),
+            data: (context, event: { data: AuthSession }) => ({
+              appMeta: context.appMeta,
+              authRequest: context.authRequest,
+              authSession: event.data,
+            }),
           },
         },
         TrustDevice: {
@@ -188,7 +182,7 @@ const IDPMachine =
         End: {
           invoke: {
             src: "postDelegation",
-            id: "done",
+            id: "postDelegation",
           },
           type: "final",
         },

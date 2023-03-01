@@ -1,36 +1,38 @@
-import { timeout } from "@dfinity/agent/lib/cjs/polling/strategy";
-
 export class Page {
-
   private get loader() {
-    return $("#loader");
+    return $("#loader")
   }
 
-  public async openUrl(path: string) {
-    return await browser.url(path);
+  public async openBaseUrl() {
+    await browser.url("/")
   }
 
   public async openPage(page: string) {
-    browser.url(browser.options.baseUrl + page);
+    browser.url(browser.options.baseUrl + page)
   }
 
   // -1 retrieves the last window, or -2 gets the first one
   public async switchToWindow(window?: string) {
     const positionNumber: number = window === "last" ? -1 : -2
     if (window) {
-      expect((await browser.getWindowHandles()).length).toBeGreaterThan(1);
+      await browser.waitUntil(
+        async () => (await browser.getWindowHandles()).length > 1,
+        {
+          timeout: 7000,
+          timeoutMsg: "Google account iframe is not appeared",
+        },
+      )
     }
-    const windowHandles = await browser.getWindowHandles();
-    browser.switchToWindow(windowHandles.slice(positionNumber)[0]);
+    const windowHandles = await browser.getWindowHandles()
+    browser.switchToWindow(windowHandles.slice(positionNumber)[0])
   }
 
   public async waitForLoaderDisappear() {
     try {
-      await this.loader.waitForDisplayed({timeout: 3000});
-      await this.loader.waitForDisplayed({timeout: 20000, reverse: true});
-    } catch(e: any) {
-      console.log(e);
+      await this.loader.waitForDisplayed({ timeout: 2000 })
+      await this.loader.waitForDisplayed({ timeout: 20000, reverse: true })
+    } catch (e: any) {
+      // console.log(e);
     }
   }
-
 }

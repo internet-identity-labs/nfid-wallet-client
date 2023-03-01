@@ -1,28 +1,19 @@
-const deviceName = process.env.DEVICE_NAME
-const isHeadless = process.env.IS_HEADLESS
-
-const chromeBrowserOptions: IChromeOption = {
+export const chromeBrowserOptions: IChromeOption = {
   args: [
-    // '--window-size=1920,1080',
     "--no-sandbox",
-    // '--use-fake-device-for-media-stream',
+    // "--use-fake-device-for-media-stream",
     "--disable-notifications",
+    "--disable-web-security",
     "--allow-insecure-localhost",
     "--disable-infobars",
-    // '--disable-dev-shm-usage',
+    // "--disable-dev-shm-usage",
+    "--start-maximized",
     "--ignore-certificate-errors",
     "--disable-gpu",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
     `--user-data-dir=${process.env.USER_DATA_DIR}`,
   ],
-}
-
-if (deviceName) {
-  chromeBrowserOptions.mobileEmulation = { deviceName }
-}
-
-if (isHeadless) {
-  chromeBrowserOptions.args.push("--headless")
+  w3c: false,
 }
 
 export const chromeBrowser = {

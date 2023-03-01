@@ -1,6 +1,9 @@
 import { ecdsaSigner as ecdsaAPI } from "../actors"
 import { hasOwnProperty } from "../test-utils"
 
+export * from "./ecdsa-wallet"
+export * from "./types"
+
 export async function getEcdsaPublicKey(): Promise<Array<number>> {
   const publicKeyResult = await ecdsaAPI.public_key().catch((e) => {
     throw new Error(`getEcdsaPublicKey: ${e.message}`)
@@ -14,12 +17,14 @@ export async function getEcdsaPublicKey(): Promise<Array<number>> {
 export async function signEcdsaMessage(
   message: Array<number>,
 ): Promise<Array<number>> {
+  console.time("signEcdsaMessage")
   const signatureResult = await ecdsaAPI.sign(message).catch((e) => {
     throw new Error(`signEcdsaMessage: ${e.message}`)
   })
   if (hasOwnProperty(signatureResult, "Err")) {
     throw new Error(`signEcdsaMessage: ${signatureResult.Err}`)
   }
+  console.timeEnd("signEcdsaMessage")
   return signatureResult.Ok.signature
 }
 

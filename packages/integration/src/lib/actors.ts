@@ -10,6 +10,8 @@ import {
 import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
 import { DelegationIdentity } from "@dfinity/identity"
 
+import { idlFactory as btcIDL } from "./_ic_api/btc-wallet"
+import { _SERVICE as Btc } from "./_ic_api/btc-wallet.d"
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
 import { idlFactory as ecdsaSignerIDL } from "./_ic_api/ecdsa-signer"
@@ -35,17 +37,6 @@ import { TOKEN_CANISTER } from "./token/dip-20/constants"
 // Config //
 ///////////
 
-// Envars
-declare const INTERNET_IDENTITY_CANISTER_ID: string
-declare const IDENTITY_MANAGER_CANISTER_ID: string
-declare const PUB_SUB_CHANNEL_CANISTER_ID: string
-declare const VERIFIER_CANISTER_ID: string
-declare const LEDGER_CANISTER_ID: string
-declare const CYCLES_MINTER_CANISTER_ID: string
-declare const VAULT_CANISTER_ID: string
-declare const ETH_SECRET_STORAGE_CANISTER_ID: string
-declare const ECDSA_SIGNER_CANISTER_ID: string
-
 const canisterConfig = [
   ["Internet Identity", INTERNET_IDENTITY_CANISTER_ID],
   ["Identity Manager", IDENTITY_MANAGER_CANISTER_ID],
@@ -56,6 +47,7 @@ const canisterConfig = [
   ["Vault", VAULT_CANISTER_ID],
   ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
+  ["Btc", BITCOIN_WALLET_CANISTER_ID],
 ]
 
 export const accessList = [
@@ -113,14 +105,25 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
+
 export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
   canisterId: VAULT_CANISTER_ID,
   agent: new HttpAgent({ ...agentBaseConfig }),
 })
-export const ecdsaSigner = actor<EcdsaSigner>(
-  ECDSA_SIGNER_CANISTER_ID,
+
+export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(
   ecdsaSignerIDL,
+  {
+    canisterId: ECDSA_SIGNER_CANISTER_ID,
+    agent: new HttpAgent({ ...agentBaseConfig }),
+  },
 )
+
+export const btcWallet = Agent.Actor.createActor<Btc>(btcIDL, {
+  canisterId: BITCOIN_WALLET_CANISTER_ID,
+  agent: new HttpAgent({ ...agentBaseConfig }),
+})
+
 export const ethSecretStorage = actor<EthSecretStorage>(
   ETH_SECRET_STORAGE_CANISTER_ID,
   ethSecretStorageIDL,

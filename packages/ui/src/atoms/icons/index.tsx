@@ -1,3 +1,4 @@
+import IconSvgAlertCircle from "./alert-circle.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgBook from "./book.svg"
 import IconSvgCalendar from "./calendar.svg"
@@ -10,6 +11,7 @@ import IconSvgDfinity from "./dfinity.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
 import IconSvgError from "./error.svg"
+import IconPngEthereum from "./ethereum.png"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
@@ -23,6 +25,7 @@ import IconSvgPencil from "./pencil.svg"
 import IconSvgPlus from "./plus.svg"
 import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
+import IconSvgSettings from "./settings.svg"
 import IconSvgSuccess from "./success.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
@@ -34,6 +37,7 @@ import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
 
 export {
+  IconPngEthereum,
   IconSvgArrow,
   IconSvgCalendar,
   IconSvgCancel,
@@ -58,6 +62,7 @@ export {
   IconSvgRecovery,
   IconSvgRefresh,
   IconSvgSuccess,
+  IconSvgSettings,
   IconSvgTablet,
   IconSvgTouchId,
   IconSvgTrash,
@@ -68,6 +73,7 @@ export {
   IconSvgGrid,
   IconSvgTransactions,
   IconSvgBook,
+  IconSvgAlertCircle,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -94,6 +100,7 @@ export { ReactComponent as IconCmpPlus } from "./plus.svg"
 export { ReactComponent as IconCmpRecovery } from "./recovery.svg"
 export { ReactComponent as IconCmpRefresh } from "./refresh.svg"
 export { ReactComponent as IconCmpSuccess } from "./success.svg"
+export { ReactComponent as IconCmpSettings } from "./settings.svg"
 export { ReactComponent as IconCmpTablet } from "./tablet.svg"
 export { ReactComponent as IconCmpTouchId } from "./touch-id.svg"
 export { ReactComponent as IconCmpTrash } from "./trash.svg"
@@ -115,6 +122,8 @@ export { ReactComponent as IconCmpTable } from "./table.svg"
 export { ReactComponent as IconCmpGrid } from "./grid.svg"
 export { ReactComponent as IconCmpBook } from "./book.svg"
 export { ReactComponent as IconCmpNFIDWallet } from "./nfid-wallet.svg"
+export { ReactComponent as IconCmpAlertCircle } from "./alert-circle.svg"
+export { ReactComponent as IconCmpLoading } from "./loader.svg"
 
 // png
 export { IconMetamask } from "./metamask"

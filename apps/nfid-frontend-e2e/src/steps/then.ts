@@ -1,13 +1,11 @@
 import { Then } from "@cucumber/cucumber"
-import setValue from "webdriverio/build/commands/element/setValue"
 
+import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Profile from "../pages/profile"
-import Vaults from "../pages/vaults"
 import Vault from "../pages/vault"
-
+import Vaults from "../pages/vaults"
 import clickElement from "./support/action/clickElement"
 import setInputField from "./support/action/setInputField"
-import { checkCredentialAmount } from "./support/action/setupVirtualWebauthn"
 import waitFor from "./support/action/waitFor"
 import waitForVisible from "./support/action/waitForDisplayed"
 import checkClass from "./support/check/checkClass"
@@ -40,12 +38,12 @@ import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
 
-Then(/^I logout$/, async () => {
-  await Profile.logout();
+Then(/^User logs out$/, async () => {
+  await Profile.logout()
 })
 
 Then(/^Vault appears with name ([^"]*)$/, async (vaultName: string) => {
-  await Vaults.getVaultByName(vaultName);
+  await Vaults.getVaultByName(vaultName)
 })
 
 Then(/^Wallet displays with name ([^"]*)$/, async (walletName: string) => {
@@ -53,15 +51,28 @@ Then(/^Wallet displays with name ([^"]*)$/, async (walletName: string) => {
 })
 
 Then(/^New member displays with ([^"]*)$/, async (memberName: string) => {
-  await Vault.getMemberByName(memberName);
+  await Vault.getMemberByName(memberName)
 })
 
 Then(/^Policy is displayed on the policies list$/, async () => {
-  const policiesCount = await Vault.policiesList.length;
+  const policiesCount = await Vault.policiesList.length
   await browser.waitUntil(
-    async () => (policiesCount < await Vault.policiesList.length),
-    { timeout: 10000, timeoutMsg: "Policy has no been added" }
+    async () => policiesCount < (await Vault.policiesList.length),
+    { timeout: 10000, timeoutMsg: "Policy has no been added" },
   )
+})
+
+Then(/^NFID number is not zero$/, async () => {
+  const actualNFID = await Profile.getNFIDnumber()
+  expect(actualNFID).not.toBe("0")
+})
+
+Then(/^Phone number is ([^"]*)$/, async (phoneNumber: string) => {
+  await Profile.getPhoneNumber.waitForDisplayed({
+    timeout: 13000,
+    timeoutMsg: "Phone Number is not displayed",
+  })
+  expect(await Profile.getPhoneNumber.getText()).toHaveText(phoneNumber)
 })
 
 Then(/^I expect that the title is( not)* "([^"]*)?"$/, checkTitle)
@@ -76,7 +87,7 @@ Then(
 Then(/^I expect that element "([^"]*)?" is( not)* displayed$/, isVisible)
 
 Then(
-  /^I expect that element "([^"]*)?" becomes( not)* displayed$/,
+  /^I expect that element ([^"]*)? becomes( not)* displayed$/,
   waitForVisible,
 )
 

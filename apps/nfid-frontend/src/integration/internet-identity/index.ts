@@ -135,9 +135,9 @@ async function renewDelegation() {
   for (const { delegation } of delegationIdentity.getDelegation().delegations) {
     // prettier-ignore
     if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
-        invalidateIdentity();
-        break;
-      }
+      invalidateIdentity();
+      break;
+    }
   }
 
   if (actor === undefined) {
@@ -908,6 +908,8 @@ export async function fetchDelegate(
   )
 
   return {
+    scope,
+    anchor: userNumber,
     signedDelegation,
     userPublicKey: prepare.userPublicKey,
   }
@@ -1077,22 +1079,39 @@ export interface Device {
 /**
  * Retrieve user's principal for a domain + persona hash.
  * @param anchor
- * @param salt
+ * @param scope
  */
-export function fetchPrincipal(anchor: number, salt: string) {
-  return ii.get_principal(BigInt(anchor), salt)
+export function fetchPrincipal(anchor: number, scope: string) {
+  return ii.get_principal(BigInt(anchor), scope)
 }
 
-export const delegationIdentityFromSignedIdentity = async (
+export const delegationIdentityFromSignedIdentity = (
   sessionKey: Pick<SignIdentity, "sign">,
   chain: DelegationChain,
-): Promise<DelegationIdentity> => {
+): DelegationIdentity => {
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,
     chain,
   )
 
   return delegationIdentity
+}
+
+export const getDelegationChain = (delegation: ThirdPartyAuthSession) => {
+  return DelegationChain.fromDelegations(
+    [
+      {
+        delegation: new Delegation(
+          new Uint8Array(delegation.signedDelegation.delegation.pubkey).buffer,
+          delegation.signedDelegation.delegation.expiration,
+          delegation.signedDelegation.delegation.targets,
+        ),
+        signature: new Uint8Array(delegation.signedDelegation.signature)
+          .buffer as Signature,
+      },
+    ],
+    new Uint8Array(delegation.userPublicKey).buffer as DerEncodedPublicKey,
+  )
 }
 
 export async function delegationByScope(
@@ -1111,23 +1130,8 @@ export async function delegationByScope(
       : maxTimeToLive,
   )
 
-  return await delegationIdentityFromSignedIdentity(
+  return delegationIdentityFromSignedIdentity(
     sessionKey,
-    DelegationChain.fromDelegations(
-      [
-        {
-          delegation: new Delegation(
-            new Uint8Array(
-              delegation.signedDelegation.delegation.pubkey,
-            ).buffer,
-            delegation.signedDelegation.delegation.expiration,
-            delegation.signedDelegation.delegation.targets,
-          ),
-          signature: new Uint8Array(delegation.signedDelegation.signature)
-            .buffer as Signature,
-        },
-      ],
-      new Uint8Array(delegation.userPublicKey).buffer as DerEncodedPublicKey,
-    ),
+    getDelegationChain(delegation),
   )
 }

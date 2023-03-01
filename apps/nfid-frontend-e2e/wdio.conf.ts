@@ -1,10 +1,18 @@
+import { chromeBrowser, chromeBrowserOptions } from "./src/browserOptions"
+import { cucumberOpts } from "./src/cucumber-options"
 import { hooks } from "./src/wdio-hooks"
 
+export const isHeadless = process.env.IS_HEADLESS
 export const isDebug = process.env.DEBUG === "true"
-export const hostName = process.env.HOST_NAME;
-export const hostPath = process.env.HOST_PATH;
-const baseURL = process.env.NFID_PROVIDER_URL ? process.env.NFID_PROVIDER_URL : "http://localhost:9090"
+export const hostName = process.env.HOST_NAME
+export const hostPath = process.env.HOST_PATH
+export const baseURL = process.env.NFID_PROVIDER_URL
+  ? process.env.NFID_PROVIDER_URL
+  : "http://localhost:9090"
 
+if (isHeadless) {
+  chromeBrowserOptions.args.push("--headless=new")
+}
 
 export const config: WebdriverIO.Config = {
   // REFERENCE: https://webdriver.io/docs/configurationfile
@@ -80,34 +88,7 @@ export const config: WebdriverIO.Config = {
   maxInstances: 1,
   // maxInstances: isDebug ? 1 : 10,
   //
-  // If you have trouble getting all important capabilities together, check out the
-  // Sauce Labs platform configurator - a great tool to configure your capabilities:
-  // https://saucelabs.com/platform/platform-configurator
-  //
-
-  // Adds chrome capabilities to run headless
-  capabilities: [
-    {
-      browserName: "chrome",
-      "goog:chromeOptions": {
-        args: [
-          `--user-data-dir=${process.env.USER_DATA_DIR}`,
-          "--no-sandbox",
-          ...(isDebug
-            ? [
-                // "--auto-open-devtools-for-tabs"
-              ]
-            : ["--headless"]),
-          "disable-gpu",
-          "--ignore-certificate-errors", // allow self-signed certificates
-          "--disable-web-security",
-        ],
-      },
-      // @ts-ignore
-      "goog:loggingPrefs": { browser: "ALL", driver: "ALL" },
-      acceptInsecureCerts: true,
-    },
-  ],
+  capabilities: [chromeBrowser],
   //
   // ===================
   // Test Configurations
@@ -159,7 +140,6 @@ export const config: WebdriverIO.Config = {
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
   services: ["chromedriver"],
-  // services: ["docker"],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -212,29 +192,6 @@ export const config: WebdriverIO.Config = {
 
   //
   // If you are using Cucumber you need to specify the location of your step definitions.
-  cucumberOpts: {
-    // <string[]> (file/dir) require files before executing features
-    require: ["./src/steps/*.ts"],
-    // <boolean> show full backtrace for errors
-    backtrace: false,
-    // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
-    requireModule: [],
-    // <boolean> invoke formatters without executing steps
-    dryRun: false,
-    // <boolean> abort the run on first failure
-    failFast: false,
-    // <boolean> hide step definition snippets for pending steps
-    snippets: true,
-    // <boolean> hide source uris
-    source: true,
-    // <boolean> fail if there are any undefined or pending steps
-    strict: false,
-    // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tagExpression: "not @pending and not @mobile",
-    // <number> timeout for step definitions
-    timeout: 60000,
-    // <boolean> Enable this config to treat undefined definitions as warnings.
-    ignoreUndefinedDefinitions: false,
-  } as WebdriverIO.CucumberOpts,
+  cucumberOpts,
   ...hooks,
 }

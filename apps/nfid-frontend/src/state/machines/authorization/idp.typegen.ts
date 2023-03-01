@@ -23,11 +23,6 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.done": {
-      type: "done.invoke.done"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.getAppMeta": {
       type: "done.invoke.getAppMeta"
       data: unknown
@@ -35,6 +30,11 @@ export interface Typegen0 {
     }
     "done.invoke.handshake": {
       type: "done.invoke.handshake"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "done.invoke.postDelegation": {
+      type: "done.invoke.postDelegation"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -59,13 +59,16 @@ export interface Typegen0 {
       type: "error.platform.checkIsIframeAllowed"
       data: unknown
     }
-    "error.platform.done": { type: "error.platform.done"; data: unknown }
     "error.platform.getAppMeta": {
       type: "error.platform.getAppMeta"
       data: unknown
     }
     "error.platform.handshake": {
       type: "error.platform.handshake"
+      data: unknown
+    }
+    "error.platform.postDelegation": {
+      type: "error.platform.postDelegation"
       data: unknown
     }
     "error.platform.trustDeviceMachine": {
@@ -82,7 +85,7 @@ export interface Typegen0 {
     checkIsIframeAllowed: "done.invoke.checkIsIframeAllowed"
     getAppMeta: "done.invoke.getAppMeta"
     handshake: "done.invoke.handshake"
-    postDelegation: "done.invoke.done"
+    postDelegation: "done.invoke.postDelegation"
   }
   missingImplementations: {
     actions: never

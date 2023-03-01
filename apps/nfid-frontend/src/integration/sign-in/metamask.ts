@@ -13,8 +13,6 @@ import { MetamaskAuthSession } from "frontend/state/authentication"
 
 import { fetchProfile } from "../identity-manager"
 
-declare const METAMASK_SIGNIN_MESSAGE: string
-
 /**
  * Request secret from a canister based on signature and restored from it address.
  * @returns a Secp256k1KeyIdentity identity

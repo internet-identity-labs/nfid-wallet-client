@@ -11,12 +11,21 @@ export async function mapToNFTData(
   principal: Principal,
   account: Account,
 ): Promise<UserNFTDetails[]> {
-  return Promise.all(
-    response.map(async (entrepotNFT) => {
-      const _collection = await collection(entrepotNFT.canisterId)
-      const { index } = decodeTokenIdentifier(entrepotNFT.tokenId)
-      const _token = await token(_collection, response, index)
-      return { ..._token, principal, account }
-    }),
-  )
+  return (
+    await Promise.all(
+      response.map(async (entrepotNFT) => {
+        let _token
+
+        try {
+          const _collection = await collection(entrepotNFT.canisterId)
+          const { index } = decodeTokenIdentifier(entrepotNFT.tokenId)
+          _token = await token(_collection, response, index)
+        } catch (e) {
+          console.log("mapToNFTData", { e })
+        }
+
+        return { ..._token, principal, account } as UserNFTDetails
+      }),
+    )
+  ).filter((nft) => nft?.tokenId && nft?.collection?.id)
 }

@@ -20,7 +20,6 @@ const ABI_721 = [
 
 export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   override provider?: Provider
-  private address?: string
 
   constructor(provider?: Provider) {
     super()
@@ -28,22 +27,16 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   }
 
   async getAddress(): Promise<string> {
-    if (typeof this.address !== "undefined") {
-      return this.address
-    }
     return getEcdsaPublicKey()
-      .then(pk => {
-        this.address = ethers.utils.computeAddress(pk)
-        return this.address
-      })
+      .then(ethers.utils.computeAddress)
   }
 
   async signMessage(message: Bytes | string): Promise<string> {
     const keccakHash = hashMessage(message)
     const messageHashAsBytes = arrayify(keccakHash)
     return signEcdsaMessage([...messageHashAsBytes])
-      .then(signature => {
-        const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
+      .then(async signature => {
+        const ethersSignature = await this._splitSignature(signature, messageHashAsBytes)
         return joinSignature(ethersSignature)
       })
   }
@@ -57,8 +50,8 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   async getPreparedSignature(hash: string, message: Bytes | string): Promise<string> {
     const keccakHash = hashMessage(message)
     const messageHashAsBytes = arrayify(keccakHash)
-    return getSignature(hash).then(signature => {
-      const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
+    return getSignature(hash).then(async signature => {
+      const ethersSignature = await this._splitSignature(signature, messageHashAsBytes)
       return joinSignature(ethersSignature)
     })
   }
@@ -78,10 +71,10 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
 
   async sendPreparedTransaction(hash: string, message: Bytes | string, tx: TransactionRequest) {
     const messageHashAsBytes = arrayify(hashMessage(message))
-    return getSignature(hash).then(signature => {
+    return getSignature(hash).then(async signature => {
       if (!this.provider) throw new Error("missing provider");
 
-      const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
+      const ethersSignature = await this._splitSignature(signature, messageHashAsBytes)
       const serializedMessage = serialize(<UnsignedTransaction>tx, ethersSignature)
       return this.provider.sendTransaction(serializedMessage)
     })
@@ -96,8 +89,8 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       const keccakHash = keccak256(serialize(<UnsignedTransaction>tx))
       const messageHashAsBytes = arrayify(keccakHash)
       return signEcdsaMessage([...messageHashAsBytes])
-        .then(signature => {
-          const ethersSignature = this._splitSignature(signature, messageHashAsBytes)
+        .then(async signature => {
+          const ethersSignature = await this._splitSignature(signature, messageHashAsBytes)
           return serialize(<UnsignedTransaction>tx, ethersSignature)
         })
     })
@@ -111,8 +104,8 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       SignTypedDataVersion.V4
     );
     return signEcdsaMessage([...typedDataHash])
-      .then(signature => {
-        const ethersSignature = this._splitSignature(signature, typedDataHash);
+      .then(async signature => {
+        const ethersSignature = await this._splitSignature(signature, typedDataHash);
         return joinSignature(ethersSignature);
       });
   }
@@ -164,7 +157,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     }
   }
 
-  _splitSignature(signature: Array<number>, digestBytes: Uint8Array) {
+  async _splitSignature(signature: Array<number>, digestBytes: Uint8Array) {
     const elliptic_signature = this._toEllipticSignature(signature)
     let ethersSignature = splitSignature({
       recoveryParam: elliptic_signature.recoveryParam,
@@ -172,7 +165,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       s: hexZeroPad("0x" + elliptic_signature.s.toString(16), 32),
     })
     const address = ethers.utils.recoverAddress([...digestBytes], ethersSignature)
-    const isEqualAddress = address === this.address
+    const isEqualAddress = address === await this.getAddress()
     // according to EIP-2098 we need to get recovery param from the first byte of s
     // but it does not work for some reasons.
     // With this workaround we can try to recover address with different yParity

@@ -11,8 +11,6 @@ import {
   abi,
 } from "./constant"
 
-global.fetch = require("node-fetch")
-
 const ethereum = new EthersEthereum(ethers.Wallet.createRandom())
 const sdk = createRaribleSdk(null, "testnet")
 

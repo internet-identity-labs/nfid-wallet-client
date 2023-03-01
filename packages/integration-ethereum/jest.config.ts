@@ -12,4 +12,5 @@ export default {
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration-ethereum",
+  setupFilesAfterEnv: ["./src/setupTests.ts"],
 }

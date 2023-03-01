@@ -21,6 +21,9 @@
       "@nfid/config": ["packages/config/src/index.ts"],
       "@nfid/integration": ["packages/integration/src/index.ts"],
       "@nfid/integration/token/*": ["packages/integration/src/lib/token/*"],
+      "@nfid/integration-ethereum": [
+        "packages/integration-ethereum/src/index.ts"
+      ],
       "frontend/*": ["apps/nfid-frontend/src/*"],
       "src/*": ["apps/nfid-frontend/src/*"]
     }

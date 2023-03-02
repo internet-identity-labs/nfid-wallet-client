@@ -263,14 +263,14 @@ Then(/^([^"]*) address calculated$/, async (asselLabel: string) => {
 })
 
 Then(
-  /^Expect element ([^"]*) with text ([^"]*)$/,
+  /^Expect ([^"]*) with text ([^"]*)$/,
   async (asselLabel: string, text: string) => {
     await Assets.getAssetByElementAndCompareText(asselLabel, text)
   },
 )
 
 Then(
-  /^Expect element "([^"]*)" not with text ([^"]*)$/,
+  /^Expect "([^"]*)" not with text ([^"]*)$/,
   async (asselLabel: string, text: string) => {
     await Assets.getAssetByElementAndCompareText(asselLabel, text, false)
   },

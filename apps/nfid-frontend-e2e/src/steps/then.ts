@@ -1,6 +1,8 @@
 import { Then } from "@cucumber/cucumber"
+import { wait } from "@nrwl/nx-cloud/lib/utilities/waiter"
 
 import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
+import Assets from "../pages/assets"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
 import Vaults from "../pages/vaults"
@@ -37,8 +39,6 @@ import isVisible from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
-import Assets from "../pages/assets";
-import { wait } from "@nrwl/nx-cloud/lib/utilities/waiter";
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -239,18 +239,39 @@ Then(/^Open asset with label ([^"]*)$/, async (asselLabel: string) => {
   await Assets.openAssetByLabel(asselLabel)
 })
 
-Then(/^Asset ([^"]*) appears with currency ([^"]*) and blockchain ([^"]*) balance ([^"]*) and ([^"]*)$/, async (asselLabel: string, currency:string, blockchain: string, balance: string, usd: string) => {
-  await Assets.verifyAssetFields(asselLabel, currency, blockchain, balance, usd)
-})
+Then(
+  /^Asset ([^"]*) appears with currency ([^"]*) and blockchain ([^"]*) balance ([^"]*) and ([^"]*)$/,
+  async (
+    asselLabel: string,
+    currency: string,
+    blockchain: string,
+    balance: string,
+    usd: string,
+  ) => {
+    await Assets.verifyAssetFields(
+      asselLabel,
+      currency,
+      blockchain,
+      balance,
+      usd,
+    )
+  },
+)
 
 Then(/^([^"]*) address calculated$/, async (asselLabel: string) => {
   await Assets.waitUntilAddressWithFundsCalculated(asselLabel)
 })
 
-Then(/^Expect element ([^"]*) with text ([^"]*)$/, async (asselLabel: string, text:string) => {
-  await Assets.getAssetByElementAndCompareText(asselLabel, text)
-})
+Then(
+  /^Expect element ([^"]*) with text ([^"]*)$/,
+  async (asselLabel: string, text: string) => {
+    await Assets.getAssetByElementAndCompareText(asselLabel, text)
+  },
+)
 
-Then(/^Expect element "([^"]*)" not with text ([^"]*)$/, async (asselLabel: string, text:string) => {
-  await Assets.getAssetByElementAndCompareText(asselLabel, text, false)
-})
+Then(
+  /^Expect element "([^"]*)" not with text ([^"]*)$/,
+  async (asselLabel: string, text: string) => {
+    await Assets.getAssetByElementAndCompareText(asselLabel, text, false)
+  },
+)

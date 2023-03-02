@@ -35,8 +35,12 @@ export const TokenDetailBalance: React.FC<TokenDetailBalanceProps> = ({
         <TokenIcon src={icon} token={token} />
       </div>
       <div className="flex-grow">
-        <div className="text-sm font-semibold" id={"label"}>{label}</div>
-        <div className="text-xs text-secondary" id={"token"}>{token}</div>
+        <div className="text-sm font-semibold" id={"label"}>
+          {label}
+        </div>
+        <div className="text-xs text-secondary" id={"token"}>
+          {token}
+        </div>
       </div>
       <div className="text-sm font-semibold" id={"token_info"}>
         {tokenBalance && tokenConfig

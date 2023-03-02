@@ -124,17 +124,29 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       appName={token.title}
                     />
                     <div>
-                      <p className="text-sm font-bold" id={`token_${token.title}_currency`}>{token.currency}</p>
-                      <p className={"text-[#9CA3AF] text-xs items-left flex" }>
+                      <p
+                        className="text-sm font-bold"
+                        id={`token_${token.title}_currency`}
+                      >
+                        {token.currency}
+                      </p>
+                      <p className={"text-[#9CA3AF] text-xs items-left flex"}>
                         {token.title}
                       </p>
                     </div>
                   </td>
-                  <td className="text-sm" id={`token_${token.title}_blockchain`}>{token.blockchain_name}</td>
+                  <td
+                    className="text-sm"
+                    id={`token_${token.title}_blockchain`}
+                  >
+                    {token.blockchain_name}
+                  </td>
                   <td className="text-sm" id={`token_${token.title}_balance`}>
                     {token.toPresentation(token.balance)} {token.currency}
                   </td>
-                  <td className="text-sm" id={`token_${token.title}_usd`}>{token.price}</td>
+                  <td className="text-sm" id={`token_${token.title}_usd`}>
+                    {token.price}
+                  </td>
                   <td>
                     <img src={ArrowRight} alt="arrow right" />
                   </td>

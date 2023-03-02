@@ -18,7 +18,7 @@ interface GridCellProps {
 }
 
 const GridCell = React.forwardRef<HTMLTableCellElement, GridCellProps>(
-  ({ children, className, id,...props }, ref) => (
+  ({ children, className, id, ...props }, ref) => (
     <td
       ref={ref}
       className={clsx("relative px-3 h-14 hover:bg-gray-200", className)}

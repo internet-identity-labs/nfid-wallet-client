@@ -1,4 +1,7 @@
-import { decodeToken } from "./decode-ethereum-function-call"
+import {
+  decodeToken,
+  decodeTokenByAssetClass,
+} from "./decode-ethereum-function-call"
 
 describe("Decode function call data.", () => {
   it("should return tokenId for 721_LAZY", async () => {
@@ -79,6 +82,28 @@ describe("Decode function call data.", () => {
         ),
         tokenId: expect.stringMatching(
           /86090545217057429589019094455964497579787873809883022909766658167983963111433/i,
+        ),
+      }),
+    )
+  })
+
+  it("should return tokenId for 721 by assetClass", async () => {
+    const type = "0x73ad2146"
+    const data =
+      "0x000000000000000000000000d8560c88d1dc85f9ed05b25878e366c49b68bef93eb89979bd2468b0fc0ed83cbf3fec379969c5e3000000000000000000000012"
+    const id = await decodeTokenByAssetClass(type, data)
+
+    expect(id).toEqual(
+      expect.objectContaining({
+        blockchain: "ETHEREUM",
+        collection: expect.stringMatching(
+          /ETHEREUM:0xd8560c88d1dc85f9ed05b25878e366c49b68bef9/i,
+        ),
+        contract: expect.stringMatching(
+          /ETHEREUM:0xD8560C88D1DC85f9ED05b25878E366c49B68bEf9/i,
+        ),
+        tokenId: expect.stringMatching(
+          /28369555721345345376156468705960426739116538599175521796431207211942537068562/i,
         ),
       }),
     )

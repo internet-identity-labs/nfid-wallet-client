@@ -41,6 +41,8 @@ const setupCSP = () => {
         "https://ethereum.publicnode.com",
         "https://testnet-api.rarible.org",
         "https://logging.rarible.com/",
+        "https://polygon-mainnet.infura.io",
+        "https://rpc-mumbai.maticvigil.com",
       ],
       "worker-src": "'self'",
       "img-src": [

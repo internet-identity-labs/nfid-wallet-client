@@ -21,7 +21,7 @@ export const CheckoutItem: React.FC<ICheckoutItem> = ({
         )}
       >
         <div className="flex items-center">
-          <img src={icon} alt={title} />
+          <img className="object-cover w-20 h-20" src={icon} alt={title} />
           <div className="ml-2.5">
             <p className="font-bold tracking-[0.01em] text-base">{title}</p>
             <p className="text-sm text-gray-400">{subtitle}</p>

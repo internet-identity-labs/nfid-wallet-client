@@ -37,6 +37,8 @@ const setupCSP = () => {
         "https://stats.g.doubleclick.net/g/collect",
         "https://registry.walletconnect.com",
         "wss://*.bridge.walletconnect.org",
+        "https://ethereum-goerli-rpc.allthatnode.com",
+        "https://ethereum.publicnode.com",
       ],
       "worker-src": "'self'",
       "img-src": [

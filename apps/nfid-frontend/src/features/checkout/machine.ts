@@ -7,7 +7,7 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { RPCMessage, RPCResponse } from "../embed/rpc-service"
 import { sendTransactionService } from "../embed/services/send-transaction"
-import { prepareSignature } from "./services"
+import { decodeRequest, prepareSignature } from "./services"
 
 export type CheckoutMachineContext = {
   authSession: AuthSession
@@ -15,6 +15,7 @@ export type CheckoutMachineContext = {
   rpcMessage?: RPCMessage
   rpcResponse?: RPCResponse
   preparedSignature?: PreparedSignatureResponse
+  decodedData?: any
 }
 
 type Events =
@@ -35,8 +36,15 @@ export const CheckoutMachine =
         context: {} as CheckoutMachineContext,
       },
       id: "CheckoutMachine",
-      initial: "Preloader",
+      initial: "DecodeRequest",
       states: {
+        DecodeRequest: {
+          invoke: {
+            src: "decodeRequest",
+            id: "decodeRequest",
+            onDone: { target: "Preloader", actions: "assignDecodedData" },
+          },
+        },
         Preloader: {
           invoke: {
             src: "prepareSignature",
@@ -85,11 +93,15 @@ export const CheckoutMachine =
         assignRpcResponse: assign({
           rpcResponse: (_, event) => event.data,
         }),
+        assignDecodedData: assign({
+          decodedData: (_, event) => event.data,
+        }),
       },
       guards: {},
       services: {
         prepareSignature,
         sendTransactionService,
+        decodeRequest,
       },
     },
   )

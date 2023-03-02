@@ -3,6 +3,11 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "done.invoke.decodeRequest": {
+      type: "done.invoke.decodeRequest"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.prepareSignature": {
       type: "done.invoke.prepareSignature"
       data: unknown
@@ -12,6 +17,10 @@ export interface Typegen0 {
       type: "done.invoke.sendTransactionService"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
+    }
+    "error.platform.decodeRequest": {
+      type: "error.platform.decodeRequest"
+      data: unknown
     }
     "error.platform.prepareSignature": {
       type: "error.platform.prepareSignature"
@@ -24,6 +33,7 @@ export interface Typegen0 {
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
+    decodeRequest: "done.invoke.decodeRequest"
     prepareSignature: "done.invoke.prepareSignature"
     sendTransactionService: "done.invoke.sendTransactionService"
   }
@@ -34,17 +44,20 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    assignDecodedData: "done.invoke.decodeRequest"
     assignPreparedSignature: "done.invoke.prepareSignature"
     assignRpcResponse: "done.invoke.sendTransactionService"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}
   eventsCausingServices: {
-    prepareSignature: "xstate.init"
+    decodeRequest: "xstate.init"
+    prepareSignature: "done.invoke.decodeRequest"
     sendTransactionService: "VERIFY"
   }
   matchesStates:
     | "Checkout"
+    | "DecodeRequest"
     | "End"
     | "Preloader"
     | "Ramp"

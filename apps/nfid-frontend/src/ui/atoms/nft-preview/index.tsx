@@ -67,11 +67,15 @@ const NFTPreview = (props: UserNFTDetails) => {
           )}
         >
           <img
-            src={props.blockchain === "ic" ? ICPLogo : IconPngEthereum}
+            src={
+              props.blockchain === "Internet Computer"
+                ? ICPLogo
+                : IconPngEthereum
+            }
             alt="logo"
             className={clsx(
               "w-2/3",
-              props.blockchain !== "ic" && "!w-auto h-2/3",
+              props.blockchain !== "Internet Computer" && "!w-auto h-2/3",
             )}
           />
         </div>

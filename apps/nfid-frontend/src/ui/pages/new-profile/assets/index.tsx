@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React, { useMemo, useState } from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
+import { blockchains } from "@nfid/config"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
@@ -57,16 +59,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   }, [blockchainFilter, tokens])
 
   const blockchainOptions = React.useMemo(() => {
-    return [
-      {
-        label: "Internet Computer",
-        value: "ic",
-      },
-      {
-        label: "Ethereum",
-        value: "eth",
-      },
-    ]
+    return blockchains.map((blockchain) => ({
+      label: blockchain,
+      value: blockchain,
+    }))
   }, [])
 
   const resetFilters = React.useCallback(() => {
@@ -124,7 +120,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       </p>
                     </div>
                   </td>
-                  <td>Internet Computer</td>
+                  <td>{token.blockchain}</td>
                   <td className="text-sm">
                     {token.toPresentation(token.balance)} {token.currency}
                   </td>

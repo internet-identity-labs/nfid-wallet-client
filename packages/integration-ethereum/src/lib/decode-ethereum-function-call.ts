@@ -24,21 +24,26 @@ const decoders: { [key: string]: any } = {
 export async function decodeToken(data: string): Promise<Item> {
   const decodedData = await decodeEthereumFunctionCall(data)
   const type: string = decodedData.inputs[0][2]
-  const tokenId = decoders[type]?.decoder(type, decodedData)
+  const tokenId = decoders[type]?.decoder(type, decodedData.inputs[0][3])
   return sdk.apis.item.getItemById({ itemId: tokenId })
 }
 
-function decodeLazy(type: string, decoded: any): string {
+export async function decodeTokenByAssetClass(type: string, data: string) {
+  const tokenId = decoders[type]?.decoder(type, data)
+  return sdk.apis.item.getItemById({ itemId: tokenId })
+}
+
+function decodeLazy(type: string, data: any): string {
   const nft =
     "0x0000000000000000000000000000000000000000000000000000000000000020" +
-    (decoded.inputs[0][3] as string).substring(2)
+    (data as string).substring(2)
   const ethereum = new EthersEthereum(ethers.Wallet.createRandom())
   const result = ethereum.decodeParameter(decoders[type]?.type, nft)
   return "ETHEREUM:" + result[0][0] + ":" + result[0][1][0]
 }
 
-function decode(type: string, decoded: any): string {
-  const nft = decoded.inputs[0][3]
+function decode(type: string, data: any): string {
+  const nft = data
   const schema = decoders[type]?.type
   const id = ethereum.decodeParameter({ root: { schema } }, nft)
   return "ETHEREUM:" + id[0][0][0] + ":" + id[0][0][1]

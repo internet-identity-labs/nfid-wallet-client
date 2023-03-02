@@ -50,6 +50,7 @@ export const getBtcBalance = async (): Promise<TokenBalanceSheet> => {
   return sheet
 }
 
+//sc-6513
 export const computeSheetForRootAccount = async (
   balance: ChainBalance,
   address: string | undefined,

@@ -39,6 +39,10 @@ const setupCSP = () => {
         "wss://*.bridge.walletconnect.org",
         "https://ethereum-goerli-rpc.allthatnode.com",
         "https://ethereum.publicnode.com",
+        "https://testnet-api.rarible.org",
+        "https://logging.rarible.com/",
+        "https://polygon-mainnet.infura.io",
+        "https://rpc-mumbai.maticvigil.com",
       ],
       "worker-src": "'self'",
       "img-src": [

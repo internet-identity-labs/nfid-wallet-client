@@ -2,7 +2,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { WALLET_SCOPE, WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
-import { getScope, getDelegationTTL } from "@nfid/integration"
+import { getScope, getLocalStorageOverride } from "@nfid/integration"
 
 import {
   delegationByScope,
@@ -28,7 +28,7 @@ export async function getWalletDelegation(
     userNumber,
     scope,
     BigInt(
-      getDelegationTTL(
+      getLocalStorageOverride(
         WALLET_SESSION_TTL_2_MIN_IN_NS,
         "NFID_WALLET_DELEGATION_TTL_NS",
       ),

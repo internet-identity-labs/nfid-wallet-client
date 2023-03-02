@@ -3,15 +3,27 @@
  * if not found, it will return the given defaultTTL value
 
  * @param defaultTTL - in mili seconds
+ * @param defaultLocalStorageKey - in mili seconds
  */
-export function getDelegationTTL(
+export function getLocalStorageOverride(
   defaultTTL: number,
-  localStorageKey = "NFID_DELEGATION_TTL",
+  defaultLocalStorageKey = "NFID_DELEGATION_TTL",
 ): number {
-  console.debug("loadProfileFromLocalStorage")
-  const ttl = parseInt(window.localStorage.getItem(localStorageKey) || "")
-  if (!ttl) return defaultTTL
-  console.debug(`getDelegationTTL found ttl in local storage: ${ttl}`)
+  const ttl = parseInt(
+    window.localStorage.getItem(defaultLocalStorageKey) || "",
+  )
+  if (!ttl) {
+    console.debug("getLocalStorageOverride", {
+      defaultTTL,
+      defaultLocalStorageKey,
+    })
+    return defaultTTL
+  }
+  console.debug("getLocalStorageOverride", {
+    defaultTTL,
+    overrideTTL: ttl,
+    defaultLocalStorageKey,
+  })
 
   return ttl
 }

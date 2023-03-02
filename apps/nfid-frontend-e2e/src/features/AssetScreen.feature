@@ -31,5 +31,6 @@ Feature:Fungible Asset
     Then Expect element "token_balance_0" not with text 0 BTC
     Then Expect element "usd_balance_0" not with text $0.00
     And I expect that element app_row_1 becomes not displayed
+    And I expect that element app_row_0 becomes displayed
 
 

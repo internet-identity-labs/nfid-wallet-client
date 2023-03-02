@@ -22,7 +22,7 @@ type Token = {
   balance?: bigint
   price?: string
   blockchain: string
-  blockchain_name: string
+  blockchainName: string
 }
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
@@ -139,7 +139,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="text-sm"
                     id={`token_${token.title}_blockchain`}
                   >
-                    {token.blockchain_name}
+                    {token.blockchainName}
                   </td>
                   <td className="text-sm" id={`token_${token.title}_balance`}>
                     {token.toPresentation(token.balance)} {token.currency}

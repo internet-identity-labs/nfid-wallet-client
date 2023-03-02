@@ -1,13 +1,27 @@
-import { IdleManager } from "@dfinity/auth-client"
+import { IdleManager, IdleManagerOptions } from "@dfinity/auth-client"
+
+import { getLocalStorageOverride } from "../local-storage"
 
 const idleManagerConfig = {
-  idleTimeout: 1000 * 60 * 2,
+  idleTimeout: getLocalStorageOverride(
+    1000 * 60 * 2,
+    "NFID_SESSION_MANAGER_IDLE_TIMEOUT_MS",
+  ),
 }
+
 let idleManager: IdleManager | null
 
-export const setupSessionManager = ({ onIdle }: { onIdle: () => void }) => {
+type SetupSessionManagerArgs = {
+  options?: IdleManagerOptions
+  onIdle: () => void
+}
+
+export const setupSessionManager = ({
+  options = idleManagerConfig,
+  onIdle,
+}: SetupSessionManagerArgs) => {
   if (idleManager) return
   console.debug("setupIdleManager")
 
-  idleManager = IdleManager.create({ ...idleManagerConfig, onIdle })
+  idleManager = IdleManager.create({ ...options, onIdle })
 }

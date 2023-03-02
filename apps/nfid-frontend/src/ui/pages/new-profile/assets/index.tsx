@@ -22,6 +22,7 @@ type Token = {
   balance?: bigint
   price?: string
   blockchain: string
+  blockchain_name: string
 }
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
@@ -66,6 +67,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
         label: "Ethereum",
         value: "eth",
       },
+      {
+        label: "Bitcoin",
+        value: "btc",
+      },
     ]
   }, [])
 
@@ -108,6 +113,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               {filteredTokens.map((token, index) => (
                 <tr
                   key={`token_${index}`}
+                  id={`token_${token.title}`}
                   onClick={handleNavigateToTokenDetails(token.currency)}
                   className="border-b border-gray-200 cursor-pointer last:border-b-0 hover:bg-gray-100"
                 >
@@ -118,17 +124,17 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       appName={token.title}
                     />
                     <div>
-                      <p className="text-sm font-bold">{token.currency}</p>
-                      <p className={"text-[#9CA3AF] text-xs items-left flex"}>
+                      <p className="text-sm font-bold" id={`token_${token.title}_currency`}>{token.currency}</p>
+                      <p className={"text-[#9CA3AF] text-xs items-left flex" }>
                         {token.title}
                       </p>
                     </div>
                   </td>
-                  <td>Internet Computer</td>
-                  <td className="text-sm">
+                  <td className="text-sm" id={`token_${token.title}_blockchain`}>{token.blockchain_name}</td>
+                  <td className="text-sm" id={`token_${token.title}_balance`}>
                     {token.toPresentation(token.balance)} {token.currency}
                   </td>
-                  <td className="text-sm">{token.price}</td>
+                  <td className="text-sm" id={`token_${token.title}_usd`}>{token.price}</td>
                   <td>
                     <img src={ArrowRight} alt="arrow right" />
                   </td>

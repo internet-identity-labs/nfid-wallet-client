@@ -29,7 +29,7 @@ export function NFIDCheckoutCoordinator({
   )
 
   switch (true) {
-    case state.matches("Preloader"):
+    case state.matches("Preloader") || state.matches("DecodeRequest"):
       return <CheckoutPreloader />
     case state.matches("Checkout"):
       return (
@@ -45,6 +45,9 @@ export function NFIDCheckoutCoordinator({
           applicationLogo={state.context.appMeta?.logo}
           fromAddress={state.context.rpcMessage?.params[0].from}
           toAddress={state.context.rpcMessage?.params[0].to}
+          networkFee={state.context.rpcMessage?.params[0].maxFeePerGas}
+          price={state.context.rpcMessage?.params[0].value}
+          data={state.context?.decodedData}
         />
       )
     case state.matches("TransactionDetails"):

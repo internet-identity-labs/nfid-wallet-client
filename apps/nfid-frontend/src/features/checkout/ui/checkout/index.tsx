@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import {
   SDKApplicationMeta,
@@ -17,7 +17,6 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 
 import { CheckoutItem } from "./checkout-item"
 import { InfoItem } from "./info-item"
-import Nft from "./nft.svg"
 
 interface ICheckoutPage {
   showTransactionDetails: () => void
@@ -27,6 +26,9 @@ interface ICheckoutPage {
   applicationLogo?: string
   fromAddress?: string
   toAddress?: string
+  data?: any
+  networkFee?: string
+  price?: string
 }
 
 export const CheckoutPage = ({
@@ -37,6 +39,9 @@ export const CheckoutPage = ({
   applicationLogo,
   fromAddress,
   toAddress,
+  networkFee,
+  price,
+  data,
 }: ICheckoutPage) => {
   const [isButtonDisabled, setIsButtonDisable] = useState(true)
   const { counter } = useTimer({
@@ -46,14 +51,26 @@ export const CheckoutPage = ({
     onElapsed: () => setIsButtonDisable(false),
   })
 
+  const calculatedFee = useMemo(() => {
+    if (!networkFee) return 0
+
+    return Number((Number(parseInt(networkFee, 16)) / 10 ** 18).toFixed(4))
+  }, [networkFee])
+
+  const collectibleCost = useMemo(() => {
+    if (!price) return 0
+
+    return Number((Number(parseInt(price, 16)) / 10 ** 18).toFixed(4))
+  }, [price])
+
   return (
     <TooltipProvider>
       <SDKApplicationMeta
-        title="Checkout"
+        title="Buy collectible"
         applicationLogo={applicationLogo}
         subTitle={
           <div className="flex items-center space-x-1">
-            <span>to connect to</span>
+            <span>Request from</span>
             <a
               className="text-blue hover:opacity-70"
               href={`https://${applicationURL}`}
@@ -69,11 +86,10 @@ export const CheckoutPage = ({
         }
       />
       <CheckoutItem
-        icon={Nft}
-        title="Solo Sensei #2969"
-        subtitle="Degenerate Ape Academy"
+        icon={data?.meta?.content[0].url ?? ""}
+        title={data?.meta?.name}
+        subtitle={data?.collectionData?.name}
       />
-
       <div className={clsx("mt-6 space-y-2 text-sm")}>
         <InfoItem
           title="From"
@@ -107,15 +123,22 @@ export const CheckoutPage = ({
             />
           }
         />
-        <InfoItem title="Network" description="Ethereum" />
+        <InfoItem title="Network" description={data?.blockchain} />
         <InfoItem
           title="Network fee"
-          description="0 ETH"
+          description={`${calculatedFee} ETH`}
           tooltip="123"
           icon={<IconCmpSettings className="ml-[6px] cursor-pointer" />}
         />
-        <InfoItem title="Collectible cost" description="0.65 ETH" />
-        <InfoItem title="Total" description="0.65 ETH" isBold />
+        <InfoItem
+          title="Collectible cost"
+          description={`${collectibleCost} ETH`}
+        />
+        <InfoItem
+          title="Total"
+          description={`${collectibleCost + calculatedFee} ETH`}
+          isBold
+        />
       </div>
 
       <p

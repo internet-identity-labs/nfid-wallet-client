@@ -1,4 +1,4 @@
-import { Item } from "@rarible/api-client"
+import { Collection, Item } from "@rarible/api-client"
 import { EthersEthereum } from "@rarible/ethers-ethereum"
 import { createRaribleSdk } from "@rarible/sdk"
 import { ethers } from "ethers"
@@ -21,11 +21,21 @@ const decoders: { [key: string]: any } = {
   "0x73ad2146": { type: CONTRACT_TOKEN_ID, decoder: decode },
 }
 
-export async function decodeToken(data: string): Promise<Item> {
+export async function decodeToken(
+  data: string,
+): Promise<Item & { collectionData: Collection }> {
   const decodedData = await decodeEthereumFunctionCall(data)
   const type: string = decodedData.inputs[0][2]
   const tokenId = decoders[type]?.decoder(type, decodedData)
-  return sdk.apis.item.getItemById({ itemId: tokenId })
+  const item = await sdk.apis.item.getItemById({ itemId: tokenId })
+  const collection = await sdk.apis.collection.getCollectionById({
+    collection: item.collection ?? "",
+  })
+
+  return {
+    ...item,
+    collectionData: collection,
+  }
 }
 
 function decodeLazy(type: string, decoded: any): string {

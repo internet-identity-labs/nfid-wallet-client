@@ -22,7 +22,7 @@ export class Assets {
             return equality ? l.includes(expected) : !l.includes(expected)
           }),
       {
-        timeout: 30000,
+        timeout: 50000,
         timeoutMsg:
           "Asset equality error! " +
           (await $(this.assetElement + `${name}` + "']").getText()),

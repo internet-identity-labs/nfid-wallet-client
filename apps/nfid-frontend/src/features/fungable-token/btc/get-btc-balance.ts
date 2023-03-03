@@ -45,7 +45,9 @@ export const getBtcBalance = async (): Promise<TokenBalanceSheet> => {
     )
   }
 
+  console.info("getBtcBalance" )
   const balance = await BtcAsset.getBalance(address)
+  console.info("getBtcBalance DONE " + JSON.stringify(balance) )
   const sheet = computeSheetForRootAccount(balance, address, principal)
   return sheet
 }
@@ -56,8 +58,11 @@ export const computeSheetForRootAccount = async (
   address: string | undefined,
   principalId: string,
 ): Promise<TokenBalanceSheet> => {
+  console.info("computeSheetForRootAccount" )
   const tokenBalance = BigInt(Number(balance.balance?.multipliedBy(E8S) ?? 0))
+  console.info("computeSheetForRootAccount" + tokenBalance )
   const usdBalance = "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00")
+  console.info("computeSheetForRootAccount" + usdBalance )
   const rootAccountBalance: AccountBalance = {
     accountName: "account 1",
     address: address ?? "",

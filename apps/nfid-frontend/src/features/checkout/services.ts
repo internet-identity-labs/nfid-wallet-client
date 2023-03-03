@@ -1,5 +1,5 @@
 import { nfidEthWallet } from "@nfid/integration"
-import { decodeToken } from "@nfid/integration-ethereum"
+import { decode } from "@nfid/integration-ethereum"
 
 import { CheckoutMachineContext } from "./machine"
 
@@ -26,5 +26,5 @@ export const prepareSignature = async ({
 
 export const decodeRequest = async ({ rpcMessage }: CheckoutMachineContext) => {
   const data = rpcMessage?.params[0].data
-  return await decodeToken(data)
+  return await decode(data)
 }

@@ -20,9 +20,7 @@ export const BtcAsset: FungibleAsset = {
       ? walletAddress
       : await new BtcWallet().getBitcoinAddress()
     url += `${address}`
-    console.debug("BTC_ASSET: " + url)
     const response = await fetch(url)
-    console.debug("BTC_ASSET RESPONSE: " + JSON.stringify(response))
 
     const json: MempoolAddressResponse = await response.json()
 
@@ -33,12 +31,8 @@ export const BtcAsset: FungibleAsset = {
 
     const balanceBN = toBn(balance * 0.00000001)
 
-    console.debug("BTC_ASSET BALANCE: " + JSON.stringify(response))
-
     const price = await getPrice(["BTC"])
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
-
-    console.debug("BTC_ASSET BALANCE in USD: " + JSON.stringify(response))
 
     return { balance: balanceBN, balanceinUsd }
   },

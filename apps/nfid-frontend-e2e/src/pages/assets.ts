@@ -22,7 +22,7 @@ export class Assets {
             return equality ? l.includes(expected) : !l.includes(expected)
           }),
       {
-        timeout: 30000,
+        timeout: 60000,
         timeoutMsg:
           "Asset equality error! " +
           (await $(this.assetElement + `${name}` + "']").getText()),
@@ -75,14 +75,14 @@ export class Assets {
       this.assetLabel + `${name}` + "_balance']",
     ).getText()
     let calc = 0
-    while (expectedBalance === "0 BTC" && calc < 30) {
+    while (expectedBalance === "0 BTC" && calc < 60) {
       expectedBalance = await $(
         this.assetLabel + `${name}` + "_balance']",
       ).getText()
       await wait(1000)
       calc++
     }
-    if (calc === 30) {
+    if (calc === 60) {
       fail("Balance did not change")
     }
   }

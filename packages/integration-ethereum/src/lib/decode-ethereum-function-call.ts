@@ -1,4 +1,3 @@
-import { Collection, Item } from "@rarible/api-client"
 import { EthersEthereum } from "@rarible/ethers-ethereum"
 import { createRaribleSdk } from "@rarible/sdk"
 import { ethers } from "ethers"
@@ -9,33 +8,48 @@ import {
   ERC1155_LAZY_TYPE,
   ERC721_LAZY_TYPE,
   abi,
+  CollectionRequest,
+  DecodeResponse,
 } from "./constant"
 
 const ethereum = new EthersEthereum(ethers.Wallet.createRandom())
 const sdk = createRaribleSdk(null, "testnet")
 
 const decoders: { [key: string]: any } = {
-  "0xd8f960c1": { type: ERC721_LAZY_TYPE, decoder: decodeLazy },
-  "0x1cdfaa40": { type: ERC1155_LAZY_TYPE, decoder: decodeLazy },
-  "0x973bb640": { type: CONTRACT_TOKEN_ID, decoder: decode },
-  "0x73ad2146": { type: CONTRACT_TOKEN_ID, decoder: decode },
+  "0xd8f960c1": { type: ERC721_LAZY_TYPE, decoder: decodeTokenIdLazy },
+  "0x1cdfaa40": { type: ERC1155_LAZY_TYPE, decoder: decodeTokenIdLazy },
+  "0x973bb640": { type: CONTRACT_TOKEN_ID, decoder: decodeTokenId },
+  "0x73ad2146": { type: CONTRACT_TOKEN_ID, decoder: decodeTokenId },
 }
 
-export async function decodeToken(
-  data: string,
-): Promise<Item & { collectionData: Collection }> {
-  const decodedData = await decodeEthereumFunctionCall(data)
-  const type: string = decodedData.inputs[0][2]
-  const tokenId = decoders[type]?.decoder(type, decodedData.inputs[0][3])
-  const item = await sdk.apis.item.getItemById({ itemId: tokenId })
-  const collection = await sdk.apis.collection.getCollectionById({
-    collection: item.collection ?? "",
-  })
+const decs: {
+  [key: string]: (x: DecodedFunctionCall) => Promise<DecodeResponse>
+} = {
+  directPurchase: decodeToken,
+  createToken: decodeCollection,
+}
 
-  return {
-    ...item,
-    collectionData: collection,
+const methods = {
+  createToken: (x: any): CollectionRequest => {
+    return {
+      name: x.inputs[0],
+      symbol: x.inputs[1],
+      baseURI: x.inputs[2],
+      contractURI: x.inputs[3],
+      isPrivate: !Array.isArray(x.inputs[4]),
+    }
+  },
+}
+
+export async function decode(data: string): Promise<DecodeResponse> {
+  const decodedData = await decodeEthereumFunctionCall(data)
+  const method = decodedData.method
+
+  if (!method) {
+    throw new Error("No method found")
   }
+
+  return decs[method](decodedData)
 }
 
 export async function decodeTokenByAssetClass(type: string, data: string) {
@@ -43,7 +57,35 @@ export async function decodeTokenByAssetClass(type: string, data: string) {
   return sdk.apis.item.getItemById({ itemId: tokenId })
 }
 
-function decodeLazy(type: string, data: any): string {
+async function decodeCollection(
+  data: DecodedFunctionCall,
+): Promise<DecodeResponse> {
+  return {
+    interface: "CollectionRequest",
+    method: "createToken",
+    data: methods.createToken(data),
+  }
+}
+
+async function decodeToken(data: DecodedFunctionCall): Promise<DecodeResponse> {
+  const type: string = data.inputs[0][2]
+  const tokenId = decoders[type]?.decoder(type, data.inputs[0][3])
+  const item = await sdk.apis.item.getItemById({ itemId: tokenId })
+  const collection = await sdk.apis.collection.getCollectionById({
+    collection: item.collection ?? "",
+  })
+
+  return {
+    interface: "Item",
+    method: "directPurchase",
+    data: {
+      ...item,
+      collectionData: collection,
+    },
+  }
+}
+
+function decodeTokenIdLazy(type: string, data: any): string {
   const nft =
     "0x0000000000000000000000000000000000000000000000000000000000000020" +
     (data as string).substring(2)
@@ -52,7 +94,7 @@ function decodeLazy(type: string, data: any): string {
   return "ETHEREUM:" + result[0][0] + ":" + result[0][1][0]
 }
 
-function decode(type: string, data: any): string {
+function decodeTokenId(type: string, data: any): string {
   const nft = data
   const schema = decoders[type]?.type
   const id = ethereum.decodeParameter({ root: { schema } }, nft)

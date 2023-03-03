@@ -1,5 +1,29 @@
+import {
+  Collection as CollectionRarible,
+  Item as ItemRarible,
+} from "@rarible/api-client"
+
 export type AbiType = "function" | "constructor" | "event" | "fallback"
 export type StateMutabilityType = "pure" | "view" | "nonpayable" | "payable"
+
+export type Item = ItemRarible & { collectionData: CollectionRarible }
+export type Interface = "Item" | "CollectionRequest"
+export type Method = "createToken" | "directPurchase"
+export type Data = Item | CollectionRequest
+
+export type DecodeResponse = {
+  interface: Interface
+  method: Method
+  data: Data
+}
+
+export type CollectionRequest = {
+  name: string
+  symbol: string
+  baseURI: string
+  contractURI: string
+  isPrivate: boolean
+}
 
 export type DecodedFunctionCall = {
   method?: string
@@ -36,6 +60,77 @@ export interface AbiOutput {
 }
 
 export const abi: AbiItem[] = [
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_symbol",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "baseURI",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "contractURI",
+        type: "string",
+      },
+      {
+        internalType: "address[]",
+        name: "operators",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256",
+        name: "salt",
+        type: "uint256",
+      },
+    ],
+    name: "createToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_symbol",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "baseURI",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "contractURI",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "salt",
+        type: "uint256",
+      },
+    ],
+    name: "createToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
   {
     anonymous: false,
     inputs: [

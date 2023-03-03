@@ -14,4 +14,4 @@ declare const VERIFIER_CANISTER_ID: string;
 declare const BITCOIN_WALLET_CANISTER_ID: string;
 declare const FRONTEND_MODE: string;
 declare const ALCHEMY_API_KEY: string;
-declare const IS_E2E_TEST: boolean;
+declare const BTC_NETWORK: string;

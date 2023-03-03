@@ -10,12 +10,9 @@ import {
 } from "../asset/types"
 import { BtcWallet } from "./btc-wallet"
 
-const mainnet = "https://mempool.space/api/address/"
-const testnet = "https://mempool.space/testnet/api/address/"
-
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress): Promise<ChainBalance> {
-    let url = defineUrl()
+    let url = BTC_NETWORK
     console.debug(url)
     const address = walletAddress
       ? walletAddress
@@ -136,11 +133,4 @@ interface MempoolAddressResponse {
     tx_count: number
   }
 }
-
-function defineUrl() {
-  if (IS_E2E_TEST) {
-    return testnet
-  } else {
-    return "production" == FRONTEND_MODE ? mainnet : testnet
-  }
 }

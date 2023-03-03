@@ -10,12 +10,13 @@ const ProfileTokenWalletsDetailPage = () => {
   const { balances: btcSheet } = useBtcBalance()
 
   const { token } = useParams()
-  let balanceSheet =
-    token && appAccountBalance ? appAccountBalance[token] : undefined
+  let balanceSheet;
   if (token === "BTC") {
     balanceSheet = btcSheet
+  }else {
+    balanceSheet = token && appAccountBalance ? appAccountBalance[token] : undefined
   }
-  console.log(">> ProfileIWallets", { balanceSheet })
+  console.debug(">> ProfileIWallets", { balanceSheet })
 
   return <TokenWalletsDetailPage balanceSheet={balanceSheet} />
 }

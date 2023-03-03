@@ -74,15 +74,15 @@ export class Assets {
     let expectedBalance = await $(
       this.assetLabel + `${name}` + "_balance']",
     ).getText()
-    let calc = 0
-    while (expectedBalance === "0 BTC" && calc < 20) {
+    let calc = 50
+    while (expectedBalance === "0 BTC" && calc > 0) {
       expectedBalance = await $(
         this.assetLabel + `${name}` + "_balance']",
       ).getText()
       await wait(1000)
-      calc++
+      calc--
     }
-    if (calc === 20) {
+    if (calc === 0) {
       fail("Balance did not change")
     }
   }

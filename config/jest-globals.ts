@@ -27,7 +27,7 @@ export const JEST_GLOBALS = {
     "339872286671-87oou3adnvl7hst9gd90r9k7j6enl7vk.apps.googleusercontent.com",
   SIGNIN_GOOGLE: "/signin",
   FRONTEND_MODE: "development",
-  NETWORK_CHAIN: "testnet",
+  CHAIN_NETWORK: "testnet",
   CURRCONV_TOKEN: process.env["CURRCONV_TOKEN"],
   ETHERSCAN_API_KEY: process.env["ETHERSCAN_API_KEY"],
   ALCHEMY_API_KEY: process.env["ALCHEMY_API_KEY"],

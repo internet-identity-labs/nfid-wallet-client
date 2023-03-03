@@ -138,7 +138,7 @@ interface MempoolAddressResponse {
 }
 
 function defineUrl() {
-  if (FRONTEND_MODE) {
+  if (IS_E2E_TEST) {
     return testnet
   } else {
     return "production" == FRONTEND_MODE ? mainnet : testnet

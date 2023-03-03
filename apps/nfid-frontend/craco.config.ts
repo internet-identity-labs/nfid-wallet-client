@@ -11,92 +11,96 @@ import dfxJson from "../../dfx.json"
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 
 const setupCSP = () => {
-  const cspConfigPolicy = {
-    "default-src": "'none'",
-    "object-src": "'none'",
-    "base-uri": "'self'",
-    "connect-src": [
-      "'self'",
-      "https://ic0.app",
-      "https://*.ic0.app",
-      "https://analytics.google.com",
-      "https://*.google-analytics.com",
-      "https://*.analytics.google.com",
-      "https://*.googletagmanager.com",
-      process.env.AWS_VERIFY_PHONENUMBER as string,
-      process.env.AWS_SYMMETRIC as string,
-      process.env.AWS_AUTH_STATS as string,
-      process.env.AWS_SIGNATURE_EVENT as string,
-      process.env.AWS_SIGNIN_GOOGLE as string,
-      "https://o1255710.ingest.sentry.io",
-      "https://rosetta-api.internetcomputer.org",
-      "https://free.currconv.com/",
-      "https://us-central1-entrepot-api.cloudfunctions.net",
-      "https://stats.g.doubleclick.net/g/collect",
-      "https://registry.walletconnect.com",
-      "wss://*.bridge.walletconnect.org",
-      "https://ethereum-goerli-rpc.allthatnode.com",
-      "https://ethereum.publicnode.com",
-      "https://testnet-api.rarible.org",
-      "https://logging.rarible.com/",
-      "https://polygon-mainnet.infura.io",
-      "https://rpc-mumbai.maticvigil.com",
-      "https://mempool.space/",
-      "https://api.rarible.org",
-      "https://ethereum-api.rarible.org"
-    ],
-    "worker-src": "'self'",
-    "img-src": [
-      "'self' blob: data: content: https:",
-      "https://*.google-analytics.com",
-      "https://*.googletagmanager.com",
-    ],
-    "font-src": [
-      "'self'",
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com",
-    ],
-    "frame-src": [
-      "'self'",
-      "https://*.ic0.app",
-      "https://accounts.google.com/gsi/style",
-      "https://accounts.google.com/",
-    ],
-    "manifest-src": "'self'",
-    "style-src": [
-      "'self'",
-      // FIXME: libraries adding inline styles:
-      // - google button
-      "'unsafe-inline'",
-      // FIXME: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      "https://accounts.google.com/gsi/style",
-      "https://fonts.googleapis.com",
-    ],
-    "script-src": [
-      "'self'",
-      // FIXME: required for WebAssembly.instantiate()
-      "'unsafe-eval'",
-      "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
-      "https://accounts.google.com/gsi/client",
-      "https://*.googletagmanager.com",
-    ],
-    "require-trusted-types-for": ["'script'"],
-  }
+  const isProduction = process.env.FRONTEND_MODE === "production"
+  if (isProduction) {
+    const cspConfigPolicy = {
+      "default-src": "'none'",
+      "object-src": "'none'",
+      "base-uri": "'self'",
+      "connect-src": [
+        "'self'",
+        "https://ic0.app",
+        "https://*.ic0.app",
+        "https://analytics.google.com",
+        "https://*.google-analytics.com",
+        "https://*.analytics.google.com",
+        "https://*.googletagmanager.com",
+        process.env.AWS_VERIFY_PHONENUMBER as string,
+        process.env.AWS_SYMMETRIC as string,
+        process.env.AWS_AUTH_STATS as string,
+        process.env.AWS_SIGNATURE_EVENT as string,
+        process.env.AWS_SIGNIN_GOOGLE as string,
+        "https://o1255710.ingest.sentry.io",
+        "https://rosetta-api.internetcomputer.org",
+        "https://free.currconv.com/",
+        "https://us-central1-entrepot-api.cloudfunctions.net",
+        "https://stats.g.doubleclick.net/g/collect",
+        "https://registry.walletconnect.com",
+        "wss://*.bridge.walletconnect.org",
+        "https://ethereum-goerli-rpc.allthatnode.com",
+        "https://ethereum.publicnode.com",
+        "https://testnet-api.rarible.org",
+        "https://logging.rarible.com/",
+        "https://polygon-mainnet.infura.io",
+        "https://rpc-mumbai.maticvigil.com",
+        "https://mempool.space/",
+        "https://api.rarible.org",
+        "https://ethereum-api.rarible.org",
+      ],
+      "worker-src": "'self'",
+      "img-src": [
+        "'self' blob: data: content: https:",
+        "https://*.google-analytics.com",
+        "https://*.googletagmanager.com",
+      ],
+      "font-src": [
+        "'self'",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+      ],
+      "frame-src": [
+        "'self'",
+        "https://*.ic0.app",
+        "https://accounts.google.com/gsi/style",
+        "https://accounts.google.com/",
+      ],
+      "manifest-src": "'self'",
+      "style-src": [
+        "'self'",
+        // FIXME: libraries adding inline styles:
+        // - google button
+        "'unsafe-inline'",
+        // FIXME: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "https://accounts.google.com/gsi/style",
+        "https://fonts.googleapis.com",
+      ],
+      "script-src": [
+        "'self'",
+        // FIXME: required for WebAssembly.instantiate()
+        "'unsafe-eval'",
+        "'sha256-6dv10xlkUu6+B73+WBPb1lJ7kFQFnr086T6FvXhkfHY='",
+        "https://accounts.google.com/gsi/client",
+        "https://*.googletagmanager.com",
+      ],
+      "require-trusted-types-for": ["'script'"],
+    }
 
-  return [
-    new CspHtmlWebpackPlugin(cspConfigPolicy, {
-      // PrimeReact is a component library which is enabled by default,
-      // but it is not used in the frontend. When it is enabled, it produces
-      // a nonce within `style-src` which in turn disables `unsafe-inline`.
-      primeReactEnabled: false,
-      hashEnabled: {
-        "style-src": false,
-      },
-      nonceEnabled: {
-        "style-src": false,
-      },
-    }),
-  ]
+    return [
+      new CspHtmlWebpackPlugin(cspConfigPolicy, {
+        // PrimeReact is a component library which is enabled by default,
+        // but it is not used in the frontend. When it is enabled, it produces
+        // a nonce within `style-src` which in turn disables `unsafe-inline`.
+        primeReactEnabled: false,
+        hashEnabled: {
+          "style-src": false,
+        },
+        nonceEnabled: {
+          "style-src": false,
+        },
+      }),
+    ]
+  }
+  return []
 }
 
 // Gets the port dfx is running on from dfx.json

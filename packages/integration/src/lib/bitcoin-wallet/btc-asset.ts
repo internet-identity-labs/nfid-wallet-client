@@ -15,7 +15,8 @@ const testnet = "https://mempool.space/testnet/api/address/"
 
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress): Promise<ChainBalance> {
-    let url = "production" == FRONTEND_MODE ? mainnet : testnet
+    let url = defineUrl()
+    console.debug(url)
     const address = walletAddress
       ? walletAddress
       : await new BtcWallet().getBitcoinAddress()
@@ -46,16 +47,13 @@ export const BtcAsset: FungibleAsset = {
     const address = request.address
       ? request.address
       : await new BtcWallet().getBitcoinAddress()
-    let url = "production" == FRONTEND_MODE ? mainnet : testnet
-    console.debug("FE"+FRONTEND_MODE)
-    console.debug("AAAAAA" + url)
+    let url = defineUrl()
     url += `${address}/txs`
     for (;;) {
       if (cursor) {
         url += `?last_seen_txid=${cursor}`
       }
       const response = await fetch(url)
-      console.debug("AAAAAA" + response)
 
       const json: MempoolTransactionResponse[] = await response.json()
 
@@ -136,5 +134,13 @@ interface MempoolAddressResponse {
     funded_txo_sum: number
     spent_txo_sum: number
     tx_count: number
+  }
+}
+
+function defineUrl() {
+  if (FRONTEND_MODE) {
+    return testnet
+  } else {
+    return "production" == FRONTEND_MODE ? mainnet : testnet
   }
 }

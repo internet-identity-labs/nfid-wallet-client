@@ -55,11 +55,11 @@ export const computeSheetForRootAccount = async (
   address: string | undefined,
   principalId: string,
 ): Promise<TokenBalanceSheet> => {
-  console.info("computeSheetForRootAccount" )
+  console.info("computeSheetForRootAccount")
   const tokenBalance = BigInt(Number(balance.balance?.multipliedBy(E8S) ?? 0))
-  console.info("computeSheetForRootAccount" + tokenBalance )
+  console.info("computeSheetForRootAccount" + tokenBalance)
   const usdBalance = "$" + (balance.balanceinUsd?.toFixed(2) ?? "0.00")
-  console.info("computeSheetForRootAccount" + usdBalance )
+  console.info("computeSheetForRootAccount" + usdBalance)
   const rootAccountBalance: AccountBalance = {
     accountName: "account 1",
     address: address ?? "",

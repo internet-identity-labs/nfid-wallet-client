@@ -47,12 +47,16 @@ export const BtcAsset: FungibleAsset = {
       ? request.address
       : await new BtcWallet().getBitcoinAddress()
     let url = "production" == FRONTEND_MODE ? mainnet : testnet
+    console.debug("FE"+FRONTEND_MODE)
+    console.debug("AAAAAA" + url)
     url += `${address}/txs`
     for (;;) {
       if (cursor) {
         url += `?last_seen_txid=${cursor}`
       }
       const response = await fetch(url)
+      console.debug("AAAAAA" + response)
+
       const json: MempoolTransactionResponse[] = await response.json()
 
       let records: FungibleActivityRecord[] = []

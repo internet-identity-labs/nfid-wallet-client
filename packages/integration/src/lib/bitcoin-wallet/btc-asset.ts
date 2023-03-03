@@ -16,12 +16,14 @@ const testnet = "https://mempool.space/testnet/api/address/"
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress): Promise<ChainBalance> {
     let url = "production" == FRONTEND_MODE ? mainnet : testnet
-
     const address = walletAddress
       ? walletAddress
       : await new BtcWallet().getBitcoinAddress()
     url += `${address}`
+    console.debug("BTC_ASSET: " + url)
     const response = await fetch(url)
+    console.debug("BTC_ASSET RESPONSE: " + response)
+
     const json: MempoolAddressResponse = await response.json()
 
     // Calculate the account balance based on the funded and spent transaction outputs

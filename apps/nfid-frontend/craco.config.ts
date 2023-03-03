@@ -43,7 +43,7 @@ const setupCSP = () => {
         "https://logging.rarible.com/",
         "https://polygon-mainnet.infura.io",
         "https://rpc-mumbai.maticvigil.com",
-        "https://mempool.space",
+        "https://mempool.space/",
         "https://api.rarible.org",
         "https://ethereum-api.rarible.org"
       ],

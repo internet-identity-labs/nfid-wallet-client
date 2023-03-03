@@ -38,16 +38,19 @@ export const getBtcBalance = async (): Promise<TokenBalanceSheet> => {
     await replaceActorIdentity(btcAPI, identity)
     principal = identity.getPrincipal().toText()
     address = await new BtcWallet().getBitcoinAddress()
+    console.debug("getBtcBalance ADDRESS " + address )
     createAddress({ accountId: BTC_ROOT_ACCOUNT, hostname, address })
   } else {
     principal = await getWalletDelegation(profile?.anchor).then((l) =>
       l.getPrincipal().toText(),
     )
+    console.debug("getBtcBalance PRINCIPAL " + principal )
+
   }
 
-  console.info("getBtcBalance" )
+  console.debug("getBtcBalance" )
   const balance = await BtcAsset.getBalance(address)
-  console.info("getBtcBalance DONE " + JSON.stringify(balance) )
+  console.debug("getBtcBalance DONE " + JSON.stringify(balance) )
   const sheet = computeSheetForRootAccount(balance, address, principal)
   return sheet
 }

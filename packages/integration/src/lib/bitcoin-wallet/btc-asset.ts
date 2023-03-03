@@ -10,9 +10,12 @@ import {
 } from "../asset/types"
 import { BtcWallet } from "./btc-wallet"
 
+const mainnet = "https://mempool.space/api/address/"
+const testnet = "https://mempool.space/testnet/api/address/"
+
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress): Promise<ChainBalance> {
-    let url = BTC_NETWORK
+    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
     console.debug(url)
     const address = walletAddress
       ? walletAddress
@@ -44,7 +47,7 @@ export const BtcAsset: FungibleAsset = {
     const address = request.address
       ? request.address
       : await new BtcWallet().getBitcoinAddress()
-    let url = defineUrl()
+    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
     url += `${address}/txs`
     for (;;) {
       if (cursor) {

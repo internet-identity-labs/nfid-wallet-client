@@ -65,7 +65,7 @@ export const serviceConfig = {
   RAMP_WALLET_SDK_URL: JSON.stringify(
     process.env.RAMP_WALLET_SDK_URL,
   ),
-  BTC_NETWORK: JSON.stringify(
-    process.env.BTC_NETWORK,
+  CHAIN_NETWORK: JSON.stringify(
+    process.env.CHAIN_NETWORK,
   ),
 }

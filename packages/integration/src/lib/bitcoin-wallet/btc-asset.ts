@@ -15,13 +15,14 @@ const testnet = "https://mempool.space/testnet/api/address/"
 
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress): Promise<ChainBalance> {
-    let url = "production" == FRONTEND_MODE ? mainnet : testnet
-
+    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
+    console.debug(url)
     const address = walletAddress
       ? walletAddress
       : await new BtcWallet().getBitcoinAddress()
     url += `${address}`
     const response = await fetch(url)
+
     const json: MempoolAddressResponse = await response.json()
 
     // Calculate the account balance based on the funded and spent transaction outputs
@@ -30,6 +31,7 @@ export const BtcAsset: FungibleAsset = {
     const balance = funded - spent
 
     const balanceBN = toBn(balance * 0.00000001)
+
     const price = await getPrice(["BTC"])
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
 
@@ -45,13 +47,14 @@ export const BtcAsset: FungibleAsset = {
     const address = request.address
       ? request.address
       : await new BtcWallet().getBitcoinAddress()
-    let url = "production" == FRONTEND_MODE ? mainnet : testnet
+    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
     url += `${address}/txs`
     for (;;) {
       if (cursor) {
         url += `?last_seen_txid=${cursor}`
       }
       const response = await fetch(url)
+
       const json: MempoolTransactionResponse[] = await response.json()
 
       let records: FungibleActivityRecord[] = []

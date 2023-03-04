@@ -14,14 +14,16 @@ import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
 interface GridCellProps {
   className?: string
   children: ReactNode | ReactNode[]
+  id?: string
 }
 
 const GridCell = React.forwardRef<HTMLTableCellElement, GridCellProps>(
-  ({ children, className, ...props }, ref) => (
+  ({ children, className, id, ...props }, ref) => (
     <td
       ref={ref}
       className={clsx("relative px-3 h-14 hover:bg-gray-200", className)}
       {...props}
+      id={id}
     >
       {children}
     </td>
@@ -61,6 +63,7 @@ const AppRow: React.FC<
           key={account.address}
           className="pl-10 cursor-pointer hover:bg-gray-200"
           onClick={navigateToTransactions(account.address)}
+          id={`account_row_${i}`}
         >
           {i === 0 && (
             <GridCell
@@ -69,6 +72,7 @@ const AppRow: React.FC<
               className={clsx(
                 "align-top whitespace-nowrap overflow-hidden text-ellipsis group-hover:bg-gray-200",
               )}
+              id={`app_name_${i}`}
             >
               <div
                 className="flex items-center"
@@ -79,14 +83,14 @@ const AppRow: React.FC<
               </div>
             </GridCell>
           )}
-          <GridCell>{account.accountName}</GridCell>
-          <GridCell>
+          <GridCell id={`acc_name_${i}`}>{account.accountName}</GridCell>
+          <GridCell id={`token_balance_${i}`}>
             {toPresentation ? toPresentation(account.tokenBalance) : 0}{" "}
             {currency}
           </GridCell>
-          <GridCell>{account.usdBalance}</GridCell>
+          <GridCell id={`usd_balance_${i}`}>{account.usdBalance}</GridCell>
           <Tooltip tip="Copy to clipboard">
-            <GridCell>
+            <GridCell id={`account_id_${i}`}>
               <CenterEllipsis
                 onClick={copyToClipboard("Account ID", account.address)}
                 value={account.address}
@@ -96,7 +100,7 @@ const AppRow: React.FC<
             </GridCell>
           </Tooltip>
           <Tooltip tip="Copy to clipboard">
-            <GridCell>
+            <GridCell id={`principal_id_${i}`}>
               <CenterEllipsis
                 onClick={copyToClipboard("Principal ID", account.principalId)}
                 value={account.principalId}

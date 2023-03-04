@@ -1,6 +1,8 @@
 import { Then } from "@cucumber/cucumber"
+import { wait } from "@nrwl/nx-cloud/lib/utilities/waiter"
 
 import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
+import Assets from "../pages/assets"
 import Profile from "../pages/profile"
 import Vault from "../pages/vault"
 import Vaults from "../pages/vaults"
@@ -228,3 +230,48 @@ Then(/^I toggle checkbox "([^"]*)?"$/, async function (selector: string) {
 Then(/^I press button "([^"]*)?"$/, async function (button: string) {
   await clickElement("click", "selector", button)
 })
+
+Then(/^Asset appears with label ([^"]*)$/, async (asselLabel: string) => {
+  await Assets.getAssetByLabel(asselLabel)
+})
+
+Then(/^Open asset with label ([^"]*)$/, async (asselLabel: string) => {
+  await Assets.openAssetByLabel(asselLabel)
+})
+
+Then(
+  /^Asset ([^"]*) appears with currency ([^"]*) and blockchain ([^"]*) balance ([^"]*) and ([^"]*)$/,
+  async (
+    asselLabel: string,
+    currency: string,
+    blockchain: string,
+    balance: string,
+    usd: string,
+  ) => {
+    await Assets.verifyAssetFields(
+      asselLabel,
+      currency,
+      blockchain,
+      balance,
+      usd,
+    )
+  },
+)
+
+Then(/^([^"]*) address calculated$/, async (asselLabel: string) => {
+  await Assets.waitUntilAddressWithFundsCalculated(asselLabel)
+})
+
+Then(
+  /^Expect ([^"]*) with text ([^"]*)$/,
+  async (asselLabel: string, text: string) => {
+    await Assets.getAssetByElementAndCompareText(asselLabel, text)
+  },
+)
+
+Then(
+  /^Expect "([^"]*)" not with text ([^"]*)$/,
+  async (asselLabel: string, text: string) => {
+    await Assets.getAssetByElementAndCompareText(asselLabel, text, false)
+  },
+)

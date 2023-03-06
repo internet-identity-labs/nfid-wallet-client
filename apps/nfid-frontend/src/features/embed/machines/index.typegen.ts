@@ -4,18 +4,13 @@ export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
     "": { type: "" }
-    "done.invoke.CheckoutMachine": {
-      type: "done.invoke.CheckoutMachine"
-      data: unknown
-      __tip: "See the XState TS docs to learn how to strongly type this."
-    }
     "done.invoke.EmbedConnectAccountMachine": {
       type: "done.invoke.EmbedConnectAccountMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.SignMessageMachine": {
-      type: "done.invoke.SignMessageMachine"
+    "done.invoke.EmbedControllerMachine": {
+      type: "done.invoke.EmbedControllerMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -29,16 +24,12 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "error.platform.CheckoutMachine": {
-      type: "error.platform.CheckoutMachine"
-      data: unknown
-    }
     "error.platform.EmbedConnectAccountMachine": {
       type: "error.platform.EmbedConnectAccountMachine"
       data: unknown
     }
-    "error.platform.SignMessageMachine": {
-      type: "error.platform.SignMessageMachine"
+    "error.platform.EmbedControllerMachine": {
+      type: "error.platform.EmbedControllerMachine"
       data: unknown
     }
     "error.platform.authenticate": {
@@ -53,9 +44,8 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.authenticate"
-    CheckoutMachine: "done.invoke.CheckoutMachine"
     EmbedConnectAccountMachine: "done.invoke.EmbedConnectAccountMachine"
-    SignMessageMachine: "done.invoke.SignMessageMachine"
+    EmbedControllerMachine: "done.invoke.EmbedControllerMachine"
     TrustDeviceMachine: "done.invoke.trustDeviceMachine"
   }
   missingImplementations: {
@@ -66,15 +56,16 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.authenticate"
+    assignError:
+      | "error.platform.EmbedConnectAccountMachine"
+      | "error.platform.EmbedControllerMachine"
+      | "error.platform.authenticate"
+      | "error.platform.trustDeviceMachine"
     assignRPCMessage: "CONNECT_ACCOUNT" | "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
-    assingError:
-      | "error.platform.CheckoutMachine"
-      | "error.platform.SignMessageMachine"
     nfid_authenticated: "done.invoke.trustDeviceMachine"
     sendRPCResponse:
-      | "done.invoke.CheckoutMachine"
       | "done.invoke.EmbedConnectAccountMachine"
-      | "done.invoke.SignMessageMachine"
+      | "done.invoke.EmbedControllerMachine"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
@@ -90,19 +81,17 @@ export interface Typegen0 {
       | "CONNECT_ACCOUNT"
       | "SEND_TRANSACTION"
       | "SIGN_TYPED_DATA"
-    CheckoutMachine: "SEND_TRANSACTION"
     EmbedConnectAccountMachine: "CONNECT_ACCOUNT"
-    SignMessageMachine: "SIGN_TYPED_DATA"
+    EmbedControllerMachine: "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
     TrustDeviceMachine: "done.invoke.authenticate"
   }
   matchesStates:
     | "AuthenticationMachine"
     | "CheckAuthState"
-    | "CheckoutMachine"
     | "ConnectAccount"
+    | "EmbedController"
     | "Error"
     | "Ready"
-    | "SignTypedDataV4"
     | "TrustDevice"
   tags: never
 }

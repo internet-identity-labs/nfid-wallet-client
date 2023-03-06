@@ -4,47 +4,49 @@ import { useMemo, useState } from "react"
 
 import {
   SDKApplicationMeta,
-  IconCmpInfo,
   IconCmpOut,
   IconCmpSettings,
   Button,
-  Tooltip,
 } from "@nfid-frontend/ui"
 import { copyToClipboard } from "@nfid-frontend/utils"
 
+import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
+import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { useTimer } from "frontend/ui/utils/use-timer"
 
-import { CheckoutItem } from "./checkout-item"
-import { InfoItem } from "./info-item"
+import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
+import { AssetPreview } from "../ui/asset-item"
+import { InfoListItem } from "../ui/info-list-item"
 
-interface ICheckoutPage {
+interface IBuyComponent {
   showTransactionDetails: () => void
   onApprove: () => void
   onCancel: () => void
+  applicationMeta?: AuthorizingAppMeta
   isButtonDisabled: boolean
-  applicationURL?: string
-  applicationLogo?: string
   fromAddress?: string
   toAddress?: string
   data?: any
-  networkFee?: string
+  feeMin?: string
+  feeMax?: string
   price?: string
 }
 
-export const CheckoutPage = ({
+export const BuyComponent = ({
   showTransactionDetails,
+  applicationMeta,
+  isButtonDisabled: isButtonDisabledProp,
   onApprove,
   onCancel,
-  isButtonDisabled: isButtonDisabledProp,
-  applicationURL,
-  applicationLogo,
   fromAddress,
   toAddress,
-  networkFee,
+  feeMin,
+  feeMax,
   price,
   data,
-}: ICheckoutPage) => {
+}: IBuyComponent) => {
+  const { rates } = useExchangeRates(["ETH"])
   const [isButtonDisabled, setIsButtonDisable] = useState(isButtonDisabledProp)
   const { counter } = useTimer({
     defaultCounter: 100,
@@ -53,64 +55,55 @@ export const CheckoutPage = ({
     onElapsed: () => setIsButtonDisable(false),
   })
 
-  const calculatedFee = useMemo(() => {
-    if (!networkFee) return 0
+  const fee = useMemo(() => {
+    if (!feeMin || !feeMax || !rates)
+      return { averageInEth: 0, averageInUsd: 0 }
 
-    return Number((Number(parseInt(networkFee, 16)) / 10 ** 18).toFixed(4))
-  }, [networkFee])
+    const minFeeInEth = Number(parseInt(feeMin, 16)) / 10 ** 18
+    const minFeeInUsd = (minFeeInEth * rates["ETH"]).toFixed(2)
+
+    const maxFeeInEth = Number(parseInt(feeMax, 16)) / 10 ** 18
+    const maxFeeInUsd = (maxFeeInEth * rates["ETH"]).toFixed(2)
+
+    return {
+      min: minFeeInUsd,
+      max: maxFeeInUsd,
+      averageInEth: (minFeeInEth + maxFeeInEth) / 2,
+      averageInUsd: Number(((minFeeInEth + maxFeeInEth) / 2).toFixed(2)),
+    }
+  }, [feeMax, feeMin, rates])
 
   const collectibleCost = useMemo(() => {
-    if (!price) return 0
+    if (!price || !rates) return { eth: 0, usd: 0 }
 
-    return Number((Number(parseInt(price, 16)) / 10 ** 18).toFixed(4))
-  }, [price])
+    const costInEth = Number(parseInt(price, 16)) / 10 ** 18
+    const costInUsd = Number((costInEth * rates["ETH"]).toFixed(2))
+
+    return {
+      eth: costInEth,
+      usd: costInUsd,
+    }
+  }, [price, rates])
+
+  console.log({ data })
 
   return (
     <TooltipProvider>
       <SDKApplicationMeta
         title="Buy collectible"
-        applicationLogo={applicationLogo}
+        applicationLogo={applicationMeta?.logo}
         subTitle={
-          <div className="flex items-center space-x-1">
-            <span>Request from</span>
-            <a
-              className="text-blue hover:opacity-70"
-              href={`https://${applicationURL}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {applicationURL}
-            </a>
-            <Tooltip tip="123">
-              <IconCmpInfo className="w-4 text-gray-400" />
-            </Tooltip>
-          </div>
+          <RPCApplicationMetaSubtitle applicationURL={applicationMeta?.url} />
         }
       />
-      <CheckoutItem
-        icon={data?.meta?.content[0].url ?? ""}
+      <AssetPreview
+        icon={data?.meta?.content[0].url}
         title={data?.meta?.name}
         subtitle={data?.collectionData?.name}
       />
       <div className={clsx("mt-6 space-y-2 text-sm")}>
-        <InfoItem
+        <InfoListItem
           title="From"
-          description={
-            <CenterEllipsis
-              value={fromAddress ?? ""}
-              trailingChars={6}
-              leadingChars={4}
-            />
-          }
-          icon={
-            <IconCmpOut
-              className="ml-2.5 cursor-pointer"
-              onClick={(e) => copyToClipboard(e, fromAddress)}
-            />
-          }
-        />
-        <InfoItem
-          title="To"
           description={
             <CenterEllipsis
               value={toAddress ?? ""}
@@ -125,21 +118,38 @@ export const CheckoutPage = ({
             />
           }
         />
-        <InfoItem title="Network" description={data?.blockchain} />
-        <InfoItem
+        <InfoListItem
+          title="To"
+          description={
+            <CenterEllipsis
+              value={fromAddress ?? ""}
+              trailingChars={6}
+              leadingChars={4}
+            />
+          }
+          icon={
+            <IconCmpOut
+              className="ml-2.5 cursor-pointer"
+              onClick={(e) => copyToClipboard(e, fromAddress)}
+            />
+          }
+        />
+        <InfoListItem title="Network" description={data?.blockchain} />
+        <InfoListItem
           title="Network fee"
-          description={`${calculatedFee} ETH`}
-          tooltip="123"
+          description={`$${fee?.min}-$${fee.max}`}
+          tooltip="Applies to all transactions. Not paid to NFID Wallet."
           icon={<IconCmpSettings className="ml-[6px] cursor-pointer" />}
         />
-        <InfoItem
+        <InfoListItem
           title="Collectible cost"
-          description={`${collectibleCost} ETH`}
+          description={`${collectibleCost.eth} ETH`}
         />
-        <InfoItem
+        <InfoListItem
           title="Total"
-          description={`${collectibleCost + calculatedFee} ETH`}
+          description={`${collectibleCost.eth + fee?.averageInEth} ETH`}
           isBold
+          subDescription={`~$${collectibleCost.usd + fee?.averageInUsd}`}
         />
       </div>
 

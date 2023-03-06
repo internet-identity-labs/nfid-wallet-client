@@ -2,7 +2,7 @@ import { SDKFooter, Skeleton } from "@nfid-frontend/ui"
 
 import SkeletonNft from "./skeleton-img.svg"
 
-export const CheckoutPreloader = () => {
+export const RPCPreloader = () => {
   return (
     <div>
       <div className="flex items-center">

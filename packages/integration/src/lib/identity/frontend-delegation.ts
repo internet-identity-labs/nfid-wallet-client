@@ -22,7 +22,10 @@ export interface FrontendDelegation {
 
 export const requestFEDelegationChain = async (
   identity: SignIdentity,
-  ttl: number = getLocalStorageOverride(TEN_MINUTES_IN_M_SEC),
+  ttl: number = getLocalStorageOverride(
+    TEN_MINUTES_IN_M_SEC,
+    "NFID_DELEGATION_TTL_MS",
+  ),
 ) => {
   console.debug("Request FE Delegation Chain.")
   const sessionKey = Ed25519KeyIdentity.generate()

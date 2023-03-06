@@ -36,7 +36,7 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           showTransactionDetails={() => send("SHOW_TRANSACTION_DETAILS")}
           onApprove={() => send({ type: "SIGN" })}
           onCancel={() => send("CANCEL")}
-          data={state.context.data}
+          data={state.context.data?.data}
           fromAddress={state.context.rpcMessage?.params[0].from}
           toAddress={state.context.rpcMessage?.params[0].to}
           feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
@@ -65,7 +65,7 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
         <SuccessComponent
           onClose={() => send("CLOSE")}
           method={state.context?.method}
-          itemName={state.context.data?.meta?.name}
+          itemName={state.context.data?.data?.meta?.name}
         />
       )
     case state.matches("Initial.UI.TransactionDetails"):

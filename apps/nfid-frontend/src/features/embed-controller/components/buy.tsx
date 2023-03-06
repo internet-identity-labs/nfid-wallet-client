@@ -85,6 +85,8 @@ export const BuyComponent = ({
     }
   }, [price, rates])
 
+  console.log({ data })
+
   return (
     <TooltipProvider>
       <SDKApplicationMeta

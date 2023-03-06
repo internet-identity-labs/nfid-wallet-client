@@ -5,12 +5,12 @@ import { ecdsaSigner, EthWallet, replaceActorIdentity } from "@nfid/integration"
 import { RPCResponse, RPC_BASE } from "frontend/features/embed/rpc-service"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
-import { RPCControllerContext } from "../machine"
+import { EmbedControllerContext } from "../machine"
 
 export const SignTypedDataService = async ({
   authSession,
   rpcMessage,
-}: RPCControllerContext): Promise<RPCResponse> => {
+}: EmbedControllerContext): Promise<RPCResponse> => {
   console.log({ rpcMessage })
   if (!rpcMessage) throw new Error("No event data")
   const identity = await getWalletDelegation(authSession.anchor)

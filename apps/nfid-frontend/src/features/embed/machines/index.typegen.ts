@@ -9,8 +9,8 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
-    "done.invoke.RPCControllerMachine": {
-      type: "done.invoke.RPCControllerMachine"
+    "done.invoke.EmbedControllerMachine": {
+      type: "done.invoke.EmbedControllerMachine"
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
@@ -28,8 +28,8 @@ export interface Typegen0 {
       type: "error.platform.EmbedConnectAccountMachine"
       data: unknown
     }
-    "error.platform.RPCControllerMachine": {
-      type: "error.platform.RPCControllerMachine"
+    "error.platform.EmbedControllerMachine": {
+      type: "error.platform.EmbedControllerMachine"
       data: unknown
     }
     "error.platform.authenticate": {
@@ -45,7 +45,7 @@ export interface Typegen0 {
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.authenticate"
     EmbedConnectAccountMachine: "done.invoke.EmbedConnectAccountMachine"
-    RPCControllerMachine: "done.invoke.RPCControllerMachine"
+    EmbedControllerMachine: "done.invoke.EmbedControllerMachine"
     TrustDeviceMachine: "done.invoke.trustDeviceMachine"
   }
   missingImplementations: {
@@ -60,7 +60,7 @@ export interface Typegen0 {
     nfid_authenticated: "done.invoke.trustDeviceMachine"
     sendRPCResponse:
       | "done.invoke.EmbedConnectAccountMachine"
-      | "done.invoke.RPCControllerMachine"
+      | "done.invoke.EmbedControllerMachine"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
@@ -77,15 +77,15 @@ export interface Typegen0 {
       | "SEND_TRANSACTION"
       | "SIGN_TYPED_DATA"
     EmbedConnectAccountMachine: "CONNECT_ACCOUNT"
-    RPCControllerMachine: "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
+    EmbedControllerMachine: "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
     TrustDeviceMachine: "done.invoke.authenticate"
   }
   matchesStates:
     | "AuthenticationMachine"
     | "CheckAuthState"
     | "ConnectAccount"
+    | "EmbedController"
     | "Error"
-    | "RPCController"
     | "Ready"
     | "TrustDevice"
   tags: never

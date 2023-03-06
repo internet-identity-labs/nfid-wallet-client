@@ -5,20 +5,20 @@ import { BuyComponent } from "./components/buy"
 import { DetailsComponent } from "./components/details"
 import { SellComponent } from "./components/sell"
 import { SuccessComponent } from "./components/success"
-import { RPCControllerMachineActor } from "./machine"
+import { EmbedControllerMachineActor } from "./machine"
 import { PostloaderComponent } from "./ui/postloader"
 import { RPCPreloader } from "./ui/preloader"
 
-interface RPCControllerProps {
-  actor: RPCControllerMachineActor
+interface EmbedControllerProps {
+  actor: EmbedControllerMachineActor
 }
 
-export const RPCControllerCoordinator = ({ actor }: RPCControllerProps) => {
+export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
   const [state, send] = useActor(actor)
 
   React.useEffect(
     () =>
-      console.log("RPCControllerCoordinator", {
+      console.log("EmbedControllerCoordinator", {
         context: state.context,
         state: state.value,
       }),
@@ -70,6 +70,6 @@ export const RPCControllerCoordinator = ({ actor }: RPCControllerProps) => {
     case state.matches("Initial.UI.TransactionDetails"):
       return <DetailsComponent onClose={() => send("BACK")} />
     default:
-      return <div>RPCController default</div>
+      return <div>EmbedController default</div>
   }
 }

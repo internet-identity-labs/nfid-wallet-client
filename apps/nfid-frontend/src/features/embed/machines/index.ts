@@ -4,7 +4,7 @@ import { createMachine, assign } from "xstate"
 import { checkIsIframe } from "@nfid-frontend/utils"
 import { isDelegationExpired } from "@nfid/integration"
 
-import RPCControllerMachine from "frontend/features/sdk/machine"
+import EmbedControllerMachine from "frontend/features/embed-controller/machine"
 import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
@@ -92,21 +92,21 @@ export const NFIDEmbedMachine =
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
             SEND_TRANSACTION: [
-              { target: "RPCController", cond: "isAuthenticated" },
+              { target: "EmbedController", cond: "isAuthenticated" },
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
             SIGN_TYPED_DATA: [
-              { target: "RPCController", cond: "isAuthenticated" },
+              { target: "EmbedController", cond: "isAuthenticated" },
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
           },
         },
         Error: {},
 
-        RPCController: {
+        EmbedController: {
           invoke: {
-            src: "RPCControllerMachine",
-            id: "RPCControllerMachine",
+            src: "EmbedControllerMachine",
+            id: "EmbedControllerMachine",
             data: (context, event) => ({
               ...context,
               rpcMessage: event.data,
@@ -183,7 +183,7 @@ export const NFIDEmbedMachine =
         AuthenticationMachine,
         EmbedConnectAccountMachine,
         TrustDeviceMachine,
-        RPCControllerMachine,
+        EmbedControllerMachine,
       },
     },
   )

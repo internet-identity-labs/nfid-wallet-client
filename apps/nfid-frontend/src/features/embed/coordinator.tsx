@@ -8,8 +8,8 @@ import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-d
 
 import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
 import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
-import { RPCControllerCoordinator } from "../sdk/coordinator"
-import { RPCControllerMachineActor } from "../sdk/machine"
+import { EmbedControllerCoordinator } from "../embed-controller/coordinator"
+import { EmbedControllerMachineActor } from "../embed-controller/machine"
 import { NFIDEmbedMachine } from "./machines"
 
 export const NFIDEmbedCoordinator = () => {
@@ -45,11 +45,11 @@ export const NFIDEmbedCoordinator = () => {
           actor={state.children.trustDeviceMachine as TrustDeviceActor}
         />
       )
-    case state.matches("RPCController"):
+    case state.matches("EmbedController"):
       return (
-        <RPCControllerCoordinator
+        <EmbedControllerCoordinator
           actor={
-            state.children.RPCControllerMachine as RPCControllerMachineActor
+            state.children.EmbedControllerMachine as EmbedControllerMachineActor
           }
         />
       )

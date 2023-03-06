@@ -46,7 +46,7 @@ export const BuyComponent = ({
   data,
 }: IBuyComponent) => {
   const { rates } = useExchangeRates(["ETH"])
-  const [isButtonDisabled, setIsButtonDisable] = useState(true)
+  const [isButtonDisabled, setIsButtonDisable] = useState(isButtonDisabledProp)
   const { counter } = useTimer({
     defaultCounter: 100,
     frequency: 100,

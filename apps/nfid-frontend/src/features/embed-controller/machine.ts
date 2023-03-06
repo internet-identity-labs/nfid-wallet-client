@@ -26,15 +26,15 @@ type Events =
   | { type: "done.invoke.prepareSignature"; data?: PreparedSignatureResponse }
   | {
       type: "done.invoke.decodeRPCRequestService"
-      data: any
+      data: unknown
     }
   | {
       type: "done.invoke.sendTransactionService"
-      data: any
+      data: RPCResponse
     }
   | {
       type: "done.invoke.SignTypedDataService"
-      data: any
+      data: RPCResponse
     }
   | {
       type: "done.invoke.MethodControllerService"

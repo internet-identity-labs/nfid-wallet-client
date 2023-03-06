@@ -63,6 +63,7 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
     if (tx.from !== null) {
       delete tx.from
     }
+    console.debug("prepareSendTransaction", {tx, transaction})
 
     const keccakHash = keccak256(serialize(<UnsignedTransaction>tx))
     const message = arrayify(keccakHash)

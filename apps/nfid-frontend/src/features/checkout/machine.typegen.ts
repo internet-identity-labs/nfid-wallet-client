@@ -59,29 +59,46 @@ export interface Typegen0 {
     sendTransactionService: "" | "VERIFY"
   }
   matchesStates:
-    | "Preparation"
-    | "Preparation.DecodeRequest"
-    | "Preparation.PrepareSignature"
-    | "UI"
-    | "UI.Checkout"
-    | "UI.End"
-    | "UI.Loader"
-    | "UI.Ramp"
-    | "UI.Success"
-    | "UI.TransactionDetails"
-    | "UI.Verifying"
-    | "UI.WaitForSignature"
+    | "done"
+    | "initial"
+    | "initial.Preparation"
+    | "initial.Preparation.DecodeRequest"
+    | "initial.Preparation.DecodeRequest.Decode"
+    | "initial.Preparation.DecodeRequest.Done"
+    | "initial.Preparation.PrepareSignature"
+    | "initial.Preparation.PrepareSignature.Done"
+    | "initial.Preparation.PrepareSignature.Prepare"
+    | "initial.UI"
+    | "initial.UI.Checkout"
+    | "initial.UI.End"
+    | "initial.UI.Loader"
+    | "initial.UI.Ramp"
+    | "initial.UI.Success"
+    | "initial.UI.TransactionDetails"
+    | "initial.UI.Verifying"
+    | "initial.UI.WaitForSignature"
     | {
-        Preparation?: "DecodeRequest" | "PrepareSignature"
-        UI?:
-          | "Checkout"
-          | "End"
-          | "Loader"
-          | "Ramp"
-          | "Success"
-          | "TransactionDetails"
-          | "Verifying"
-          | "WaitForSignature"
+        initial?:
+          | "Preparation"
+          | "UI"
+          | {
+              Preparation?:
+                | "DecodeRequest"
+                | "PrepareSignature"
+                | {
+                    DecodeRequest?: "Decode" | "Done"
+                    PrepareSignature?: "Done" | "Prepare"
+                  }
+              UI?:
+                | "Checkout"
+                | "End"
+                | "Loader"
+                | "Ramp"
+                | "Success"
+                | "TransactionDetails"
+                | "Verifying"
+                | "WaitForSignature"
+            }
       }
   tags: never
 }

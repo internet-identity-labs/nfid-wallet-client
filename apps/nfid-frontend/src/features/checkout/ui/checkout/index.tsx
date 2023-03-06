@@ -22,6 +22,7 @@ interface ICheckoutPage {
   showTransactionDetails: () => void
   onApprove: () => void
   onCancel: () => void
+  isButtonDisabled: boolean
   applicationURL?: string
   applicationLogo?: string
   fromAddress?: string
@@ -35,6 +36,7 @@ export const CheckoutPage = ({
   showTransactionDetails,
   onApprove,
   onCancel,
+  isButtonDisabled: isButtonDisabledProp,
   applicationURL,
   applicationLogo,
   fromAddress,
@@ -43,7 +45,7 @@ export const CheckoutPage = ({
   price,
   data,
 }: ICheckoutPage) => {
-  const [isButtonDisabled, setIsButtonDisable] = useState(true)
+  const [isButtonDisabled, setIsButtonDisable] = useState(isButtonDisabledProp)
   const { counter } = useTimer({
     defaultCounter: 100,
     frequency: 100,

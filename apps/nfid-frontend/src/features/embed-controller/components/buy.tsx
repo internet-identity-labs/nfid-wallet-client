@@ -24,6 +24,7 @@ interface IBuyComponent {
   onApprove: () => void
   onCancel: () => void
   applicationMeta?: AuthorizingAppMeta
+  isButtonDisabled: boolean
   fromAddress?: string
   toAddress?: string
   data?: any

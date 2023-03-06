@@ -70,14 +70,13 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
   }
 
   async sendPreparedTransaction(hash: string, message: Bytes | string, tx: TransactionRequest) {
-    const messageHashAsBytes = arrayify(hashMessage(message))
-    return getSignature(hash).then(async signature => {
-      if (!this.provider) throw new Error("missing provider");
+    if (!this.provider) throw new Error("missing provider")
 
-      const ethersSignature = await this._splitSignature(signature, messageHashAsBytes)
-      const serializedMessage = serialize(<UnsignedTransaction>tx, ethersSignature)
-      return this.provider.sendTransaction(serializedMessage)
-    })
+    const messageHashAsBytes = arrayify(hashMessage(message))
+    const signature = await getSignature(hash)
+    const ethersSignature = await this._splitSignature(signature, messageHashAsBytes)
+    const serializedMessage = serialize(<UnsignedTransaction>tx, ethersSignature)
+    return this.provider.sendTransaction(serializedMessage)
   }
 
 

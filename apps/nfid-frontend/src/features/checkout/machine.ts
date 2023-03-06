@@ -8,6 +8,7 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { RPCMessage, RPCResponse } from "../embed/rpc-service"
 import { sendTransactionService } from "../embed/services/send-transaction"
 import { decodeRequest, prepareSignature } from "./services"
+import { timeoutSrv } from "./services"
 
 export type CheckoutMachineContext = {
   authSession: AuthSession
@@ -36,52 +37,82 @@ export const CheckoutMachine =
         context: {} as CheckoutMachineContext,
       },
       id: "CheckoutMachine",
-      initial: "DecodeRequest",
+      initial: "Preparation",
+      type: "parallel",
       states: {
-        DecodeRequest: {
-          invoke: {
-            src: "decodeRequest",
-            id: "decodeRequest",
-            onDone: { target: "Preloader", actions: "assignDecodedData" },
+        Preparation: {
+          type: "parallel",
+          states: {
+            DecodeRequest: {
+              invoke: {
+                src: "decodeRequest",
+                id: "decodeRequest",
+                onDone: {
+                  actions: ["assignDecodedData"],
+                },
+              },
+            },
+            PrepareSignature: {
+              invoke: {
+                src: "prepareSignature",
+                id: "prepareSignature",
+                onDone: {
+                  actions: "assignPreparedSignature",
+                },
+              },
+            },
           },
         },
-        Preloader: {
-          invoke: {
-            src: "prepareSignature",
-            id: "prepareSignature",
-            onDone: { target: "Checkout", actions: "assignPreparedSignature" },
-          },
-        },
-        Checkout: {
-          on: {
-            SHOW_TRANSACTION_DETAILS: "TransactionDetails",
-            VERIFY: "Verifying",
-            CLOSE: "End",
-          },
-        },
-        TransactionDetails: {
-          on: {
-            BACK: "Checkout",
-          },
-        },
-        Ramp: {},
-        Verifying: {
-          invoke: {
-            src: "sendTransactionService",
-            id: "sendTransactionService",
-            onDone: { target: "Success", actions: "assignRpcResponse" },
-            onError: "Checkout",
-          },
-        },
-        Success: {
-          on: {
-            CLOSE: "End",
-          },
-        },
+        UI: {
+          initial: "Loader",
+          states: {
+            Loader: {
+              invoke: {
+                src: () => timeoutSrv({ timeout: 3000 }),
+                onDone: "Checkout",
+              },
+            },
+            Checkout: {
+              on: {
+                SHOW_TRANSACTION_DETAILS: "TransactionDetails",
+                VERIFY: [
+                  { target: "WaitForSignature" },
+                  { target: "Verifying", cond: "hasPreparedSignature" },
+                ],
+                CLOSE: "End",
+              },
+            },
+            TransactionDetails: {
+              on: {
+                BACK: "Checkout",
+              },
+            },
+            Ramp: {},
+            WaitForSignature: {
+              always: {
+                target: "Verifying",
+                cond: "hasPreparedSignature",
+              },
+            },
+            Verifying: {
+              invoke: {
+                src: "sendTransactionService",
+                id: "sendTransactionService",
+                onDone: { target: "Success", actions: "assignRpcResponse" },
+                onError: "Checkout",
+              },
+            },
+            Success: {
+              on: {
+                CLOSE: "End",
+              },
+            },
 
-        End: {
-          type: "final",
-          data: (context) => context.rpcResponse,
+            End: {
+              type: "final",
+              data: (context) => context.rpcResponse,
+            },
+          },
         },
       },
     },
@@ -97,7 +128,9 @@ export const CheckoutMachine =
           decodedData: (_, event) => event.data,
         }),
       },
-      guards: {},
+      guards: {
+        hasPreparedSignature: (context) => !!context.preparedSignature,
+      },
       services: {
         prepareSignature,
         sendTransactionService,

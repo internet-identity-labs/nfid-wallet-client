@@ -29,9 +29,10 @@ export function NFIDCheckoutCoordinator({
   )
 
   switch (true) {
-    case state.matches("Preloader") || state.matches("DecodeRequest"):
+    case state.matches("UI.Loader"):
       return <CheckoutPreloader />
-    case state.matches("Checkout"):
+
+    case state.matches("UI.Checkout"):
       return (
         <CheckoutPage
           showTransactionDetails={() =>
@@ -50,13 +51,13 @@ export function NFIDCheckoutCoordinator({
           data={state.context?.decodedData}
         />
       )
-    case state.matches("TransactionDetails"):
+    case state.matches("UI.TransactionDetails"):
       return <TransactionDetails onClose={() => send({ type: "BACK" })} />
-    case state.matches("Verifying"):
+    case state.matches("UI.Verifying"):
       return <CheckoutPostloader />
-    case state.matches("Ramp"):
+    case state.matches("UI.Ramp"):
       return <div>Ramp</div>
-    case state.matches("Success"):
+    case state.matches("UI.Success"):
       return (
         <TransferModalSuccess
           transactionMessage="You just bought “Solo Sensei #2969”"

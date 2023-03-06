@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "": { type: "" }
     "done.invoke.decodeRequest": {
       type: "done.invoke.decodeRequest"
       data: unknown
@@ -49,20 +50,38 @@ export interface Typegen0 {
     assignRpcResponse: "done.invoke.sendTransactionService"
   }
   eventsCausingDelays: {}
-  eventsCausingGuards: {}
+  eventsCausingGuards: {
+    hasPreparedSignature: "" | "VERIFY"
+  }
   eventsCausingServices: {
     decodeRequest: "xstate.init"
-    prepareSignature: "done.invoke.decodeRequest"
-    sendTransactionService: "VERIFY"
+    prepareSignature: "xstate.init"
+    sendTransactionService: "" | "VERIFY"
   }
   matchesStates:
-    | "Checkout"
-    | "DecodeRequest"
-    | "End"
-    | "Preloader"
-    | "Ramp"
-    | "Success"
-    | "TransactionDetails"
-    | "Verifying"
+    | "Preparation"
+    | "Preparation.DecodeRequest"
+    | "Preparation.PrepareSignature"
+    | "UI"
+    | "UI.Checkout"
+    | "UI.End"
+    | "UI.Loader"
+    | "UI.Ramp"
+    | "UI.Success"
+    | "UI.TransactionDetails"
+    | "UI.Verifying"
+    | "UI.WaitForSignature"
+    | {
+        Preparation?: "DecodeRequest" | "PrepareSignature"
+        UI?:
+          | "Checkout"
+          | "End"
+          | "Loader"
+          | "Ramp"
+          | "Success"
+          | "TransactionDetails"
+          | "Verifying"
+          | "WaitForSignature"
+      }
   tags: never
 }

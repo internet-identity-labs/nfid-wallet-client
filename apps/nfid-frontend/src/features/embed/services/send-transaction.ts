@@ -8,6 +8,7 @@ export const sendTransactionService = async (
   { preparedSignature }: CheckoutMachineContext,
   event: { type: string; data?: RPCMessage },
 ): Promise<RPCResponse> => {
+  console.debug("sendTransactionService", { preparedSignature })
   if (!event.data) throw new Error("No event data")
   if (
     !preparedSignature?.hash ||

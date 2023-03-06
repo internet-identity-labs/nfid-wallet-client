@@ -11,11 +11,12 @@ const TransactionStatuses = [
   "Confirming transaction",
 ]
 
-export const CheckoutPostloader = () => {
+export const PostloaderComponent = () => {
   const [currentStatus, setCurrentStatus] = useState(0)
 
   useEffect(() => {
-    setInterval(() => {
+    const interval: NodeJS.Timeout = setInterval(() => {
+      if (currentStatus === 4) return clearInterval(interval)
       setCurrentStatus(currentStatus + 1)
     }, 1000)
   }, [currentStatus])

@@ -1,3 +1,5 @@
+import { Actor } from "@dfinity/agent"
+
 import { ecdsaSigner as ecdsaAPI } from "../actors"
 import { hasOwnProperty } from "../test-utils"
 
@@ -31,12 +33,18 @@ export async function signEcdsaMessage(
 export async function prepareSignature(
   message: Array<number>,
 ): Promise<string> {
+  const principal = await Actor.agentOf(ecdsaAPI)?.getPrincipal()
+  console.debug("prepareSignature", { principalId: principal?.toString() })
+
   return await ecdsaAPI.prepare_signature(message).catch((e) => {
     throw new Error(`prepareSignature: ${e.message}`)
   })
 }
 
 export async function getSignature(hash: string): Promise<Array<number>> {
+  const principal = await Actor.agentOf(ecdsaAPI)?.getPrincipal()
+
+  console.debug("getSignature", { principalId: principal?.toString() })
   const signatureResult = await ecdsaAPI.get_signature(hash).catch((e) => {
     throw new Error(`getSignature: ${e.message}`)
   })

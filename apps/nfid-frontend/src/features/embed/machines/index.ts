@@ -114,6 +114,7 @@ export const NFIDEmbedMachine =
               authRequest: mockContext.authRequest,
             }),
             onDone: { target: "Ready", actions: "sendRPCResponse" },
+            onError: { target: "Error", actions: "assignError" },
           },
         },
 
@@ -122,6 +123,8 @@ export const NFIDEmbedMachine =
             src: "AuthenticationMachine",
             id: "authenticate",
             onDone: { target: "TrustDevice", actions: "assignAuthSession" },
+            onError: { target: "Error", actions: "assignError" },
+
             data: () => mockContext,
           },
         },
@@ -136,6 +139,7 @@ export const NFIDEmbedMachine =
                 actions: ["nfid_authenticated"],
               },
             ],
+            onError: { target: "Error", actions: "assignError" },
             data: () => ({ isIframe: checkIsIframe() }),
           },
         },
@@ -150,6 +154,7 @@ export const NFIDEmbedMachine =
               appMeta: mockContext.appMeta,
               authRequest: mockContext.authRequest,
             }),
+            onError: { target: "Error", actions: "assignError" },
             onDone: { target: "Ready", actions: "sendRPCResponse" },
           },
         },
@@ -160,8 +165,11 @@ export const NFIDEmbedMachine =
         assignAuthSession: assign((_, event) => ({
           authSession: event.data,
         })),
-        assignRPCMessage: assign((context, event) => ({
+        assignRPCMessage: assign((_, event) => ({
           rpcMessage: event.data,
+        })),
+        assignError: assign((_, event) => ({
+          error: event.data,
         })),
         nfid_authenticated: () => {
           console.debug("nfid_authenticated")

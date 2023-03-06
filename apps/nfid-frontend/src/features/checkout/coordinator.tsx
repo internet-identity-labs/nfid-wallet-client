@@ -29,9 +29,10 @@ export function NFIDCheckoutCoordinator({
   )
 
   switch (true) {
-    case state.matches("Preloader") || state.matches("DecodeRequest"):
+    case state.matches("initial.UI.Loader"):
       return <CheckoutPreloader />
-    case state.matches("Checkout"):
+
+    case state.matches("initial.UI.Checkout"):
       return (
         <CheckoutPage
           showTransactionDetails={() =>
@@ -48,15 +49,19 @@ export function NFIDCheckoutCoordinator({
           networkFee={state.context.rpcMessage?.params[0].maxFeePerGas}
           price={state.context.rpcMessage?.params[0].value}
           data={state.context?.decodedData}
+          isButtonDisabled={state.matches(
+            "initial.Preparation.PrepareSignature.Prepare",
+          )}
         />
       )
-    case state.matches("TransactionDetails"):
+    case state.matches("initial.UI.TransactionDetails"):
       return <TransactionDetails onClose={() => send({ type: "BACK" })} />
-    case state.matches("Verifying"):
+    case state.matches("initial.UI.WaitForSignature"):
+    case state.matches("initial.UI.Verifying"):
       return <CheckoutPostloader />
-    case state.matches("Ramp"):
+    case state.matches("initial.UI.Ramp"):
       return <div>Ramp</div>
-    case state.matches("Success"):
+    case state.matches("initial.UI.Success"):
       return (
         <TransferModalSuccess
           transactionMessage="You just bought “Solo Sensei #2969”"

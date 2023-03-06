@@ -12,7 +12,7 @@ import { decodeRPCRequestService } from "./services/rpc-decode"
 import { sendTransactionService } from "./services/send-transaction"
 import { SignTypedDataService } from "./services/sign-typed-data"
 
-export type RPCControllerContext = {
+export type EmbedControllerContext = {
   authSession: AuthSession
   appMeta?: AuthorizingAppMeta
   rpcMessage?: RPCMessage
@@ -47,7 +47,7 @@ type Events =
   | { type: "BACK" }
   | { type: "BUY" }
 
-export const RPCControllerMachine =
+export const EmbedControllerMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QGEAWYDGBrA9gVwBcBZAQw1QEsA7MAOgAUAnMABxMZIIpytoBFMOCGABKYAI544BAMQQedagDccWOsIxDREqbAIBtAAwBdRKBY5YFLjzMgAHogCMAVgBMtACwB2NwDY-AGYXAE5vEMN-NwAaEABPZxcnWkNU1KcnN0DPQydAtwBfAti0TFxCUnJqOiZWdk5uXlq2ZgBlCigqTjxmOQVaZVU6FmYWsHbO7uYjUyQQCysbKjtHBCdPF1o3AA4I709Mtw3vQNiEhGDPWhCXQNcnAMNQl0NPIpL0bHxiMkoaWgAqgBJWgAGRwJGEjD6-0GalopS+FV+1UBIPBkLAjAQgwwDR4MxmdgW1kaK0Q3lCtBclM8fkOrzcMXiiHygRSTzubge-j8hiC7xAiPKPyq-2BCM+IpkrQAEgB5ADqAH0ACoiACCADlWhrkKqgfKtcq+ABRVUaoGg1pEuYkpbktZPTaRbahQz7B5ulxnVlHLx+G4hbYHPneD3eQXC76VP50CXRwgyABqppEQIAYgBNW3mSyk2xzVZOZ0pHbuz1+b2+i77a6B0IhenbQIRQJ+KNSmMo8UgxOyVPp7P6JyzPOLMlF5yl10V0PVlkITwhK7cm7bdYe7b8yPFIVd5Fi+N9g+yZCg+WtU25+b5h1Tp0uF3lvbzp81lyeK7eJzr-wlzIOz3ftY1RCVVQ4KhYDIJYBAIEgKAAG1gGQACE9QAaRve1J1AYsdnZHc-G8PwaXWKtmXONwTnrINfDySlMk7MpuyPNFaEVBCCAzHBGAmLoCB6MAZGwu9cIcRJvG8Wgf3pO5tnpZcSJrQIpK2X9QnDXJ-FbZikVFON2OTLEKAAMziagoBhRQqBUeFYDAKgIAgkgoJgxpWixJQKAwMBRInQs8MQJkchSRtqPbPxqJCGsHkMWh223NxP1bSl5L0kVQN7WhjMYMyLKoKysUYXjaBYRDOFM3iAFtaAcpyXLcjAlk8xhvN8-yC2WB9XDU2S8icBT1jCPxYs-GSNJCQJAnSG48gy1jDIlVo8AwXzYBQ89L2vExiTEwKJIQf92R2UiMiiwbdlijdaBDDYptS9t8l3PcqC0eA5hAnswD2gLuqChAAFpfxrQHktoUjP0icJW29SIFsPQzmnqe9xy6x03BixcgmpNJUhcektICBGDNRZGOCWfhBGEMRJGkX70YfENaFcKKCe0nS-E8GsjhCLxbjybYjkMFcMjeYDTyympRhRxoGBltoOgEoSGdRw6pJrDZ2RyKLtm2KSN2yEISaltFVfE1ZP2kpJMZpVtppm7wa3pW6v1CPWnH2JsV3Fj4WMRsD0QhKFzYOy2bmpTIbhOB7HZ54NcduHZPcNu5ff3f3Sey-tQ-+w6Ik2YNPcAvlghXFSmQ5dwmwCaa8hcE3vvYxroOaxo4IQ5Dc8dQXrZCDJ1g2W59Z5oXqWrzx8j1oJskbtiJREEhqpYbuHyivmps8FsnrZ+lNdeKuZtSyfUkCOelpBTjrB4vilamH67X2vPi1beKGJCFcNyL7YVMpAMm0GifPIgRtjn0DjlEy5lLKrwBoAq4TwP6vH1scZSi5hoJS-HyRkuwYZnwlpnU2y1VrrQ+mjNWqxebSRjkEJISl+TczQWPbIdIGT935IGMB2VTRORgYdai4NgxNknk+YMvJrrbBkvSaiIt9ZBibJw48tBeEEBwCvBASQJGw0pMRVSSUfQgEQmAUyBBnB0j8CzdwIYpohhATsWIAAjHABAVHVUQATcxWiCYnG8Ho2IeUoCoBMWsFwCkLE7GXCAyeQsf4gAAO4UAgAQVAzg3CGFiOgDogTEBb1iMWMxYSrGRNsTE84GiErBm0d4vRRQihAA */
   createMachine(
     {
@@ -55,9 +55,9 @@ export const RPCControllerMachine =
       tsTypes: {} as import("./machine.typegen").Typegen0,
       schema: {
         events: {} as Events,
-        context: {} as RPCControllerContext,
+        context: {} as EmbedControllerContext,
       },
-      id: "RPCController",
+      id: "EmbedController",
       initial: "Initial",
       states: {
         Initial: {
@@ -226,8 +226,8 @@ export const RPCControllerMachine =
     },
   )
 
-export type RPCControllerMachineActor = ActorRefFrom<
-  typeof RPCControllerMachine
+export type EmbedControllerMachineActor = ActorRefFrom<
+  typeof EmbedControllerMachine
 >
 
-export default RPCControllerMachine
+export default EmbedControllerMachine

@@ -2,12 +2,12 @@ import { nfidEthWallet } from "@nfid/integration"
 
 import { RPCResponse, RPC_BASE } from "frontend/features/embed/rpc-service"
 
-import { RPCControllerContext } from "../machine"
+import { EmbedControllerContext } from "../machine"
 
 export const sendTransactionService = async ({
   preparedSignature,
   rpcMessage,
-}: RPCControllerContext): Promise<RPCResponse> => {
+}: EmbedControllerContext): Promise<RPCResponse> => {
   console.debug("sendTransactionService", { preparedSignature })
   if (!rpcMessage) throw new Error("No rpcMessage")
   if (

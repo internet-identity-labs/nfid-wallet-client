@@ -1,10 +1,10 @@
 import { nfidEthWallet } from "@nfid/integration"
 
-import { RPCControllerContext } from "../machine"
+import { EmbedControllerContext } from "../machine"
 
 export const prepareSignature = async ({
   rpcMessage,
-}: RPCControllerContext) => {
+}: EmbedControllerContext) => {
   console.debug("prepareSignature", { rpcMessage })
   const rawMessage = rpcMessage?.params[0]
   const message = Object.keys(rawMessage).reduce(

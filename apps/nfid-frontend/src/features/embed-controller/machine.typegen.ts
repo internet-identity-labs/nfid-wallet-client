@@ -49,8 +49,8 @@ export interface Typegen0 {
       type: "error.platform.sendTransactionService"
       data: unknown
     }
-    "xstate.after(3000)#RPCController.Initial.UI.DecodeRequest": {
-      type: "xstate.after(3000)#RPCController.Initial.UI.DecodeRequest"
+    "xstate.after(3000)#EmbedController.Initial.UI.DecodeRequest": {
+      type: "xstate.after(3000)#EmbedController.Initial.UI.DecodeRequest"
     }
     "xstate.init": { type: "xstate.init" }
   }
@@ -80,7 +80,7 @@ export interface Typegen0 {
     hasPreparedSignature: "" | "SIGN"
   }
   eventsCausingServices: {
-    MethodControllerService: "xstate.after(3000)#RPCController.Initial.UI.DecodeRequest"
+    MethodControllerService: "xstate.after(3000)#EmbedController.Initial.UI.DecodeRequest"
     SignTypedDataService: "SIGN"
     decodeRPCRequestService: "xstate.init"
     prepareSignature: "xstate.init"

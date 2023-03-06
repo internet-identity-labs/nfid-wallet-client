@@ -1,10 +1,10 @@
 import { decode, decodeTokenByAssetClass } from "@nfid/integration-ethereum"
 
-import { RPCControllerContext } from "../machine"
+import { EmbedControllerContext } from "../machine"
 
 export const decodeRPCRequestService = async ({
   rpcMessage,
-}: RPCControllerContext) => {
+}: EmbedControllerContext) => {
   if (!rpcMessage?.params) throw new Error("No rpcMessage params")
 
   try {

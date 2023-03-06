@@ -1,8 +1,8 @@
-import { RPCControllerContext } from "../machine"
+import { EmbedControllerContext } from "../machine"
 
 export const MethodControllerService = async ({
   rpcMessage,
-}: RPCControllerContext) => {
+}: EmbedControllerContext) => {
   let dataString: string
   if (rpcMessage?.params && rpcMessage.params.length > 1) {
     const data = JSON.parse(rpcMessage.params[1])

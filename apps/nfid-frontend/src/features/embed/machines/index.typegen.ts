@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "": { type: "" }
     "done.invoke.CheckoutMachine": {
       type: "done.invoke.CheckoutMachine"
       data: unknown
@@ -49,7 +50,6 @@ export interface Typegen0 {
       data: unknown
     }
     "xstate.init": { type: "xstate.init" }
-    "xstate.stop": { type: "xstate.stop" }
   }
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.authenticate"
@@ -75,20 +75,21 @@ export interface Typegen0 {
       | "done.invoke.CheckoutMachine"
       | "done.invoke.EmbedConnectAccountMachine"
       | "done.invoke.SignMessageMachine"
-      | "error.platform.CheckoutMachine"
-      | "error.platform.SignMessageMachine"
-      | "xstate.stop"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
-    isAuthenticated: "CONNECT_ACCOUNT" | "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
-  }
-  eventsCausingServices: {
-    AuthenticationMachine:
+    isAuthenticated:
+      | ""
       | "CONNECT_ACCOUNT"
       | "SEND_TRANSACTION"
       | "SIGN_TYPED_DATA"
-      | "xstate.init"
+  }
+  eventsCausingServices: {
+    AuthenticationMachine:
+      | ""
+      | "CONNECT_ACCOUNT"
+      | "SEND_TRANSACTION"
+      | "SIGN_TYPED_DATA"
     CheckoutMachine: "SEND_TRANSACTION"
     EmbedConnectAccountMachine: "CONNECT_ACCOUNT"
     SignMessageMachine: "SIGN_TYPED_DATA"
@@ -96,6 +97,7 @@ export interface Typegen0 {
   }
   matchesStates:
     | "AuthenticationMachine"
+    | "CheckAuthState"
     | "CheckoutMachine"
     | "ConnectAccount"
     | "Error"

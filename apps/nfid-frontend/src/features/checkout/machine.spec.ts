@@ -5,6 +5,7 @@ import { PreparedSignatureResponse } from "@nfid/integration"
 
 import { AuthSession } from "frontend/state/authentication"
 
+import { RPCResponse, RPC_BASE } from "../embed/rpc-service"
 import CheckoutMachine from "./machine"
 
 describe("checkout machine", () => {
@@ -22,6 +23,18 @@ describe("checkout machine", () => {
             }, 15000)
           })
         },
+        sendTransactionService: () =>
+          new Promise<RPCResponse>((resolve) => {
+            setTimeout(
+              () =>
+                resolve({
+                  ...RPC_BASE,
+                  id: "1",
+                  result: "0x123",
+                }),
+              1000,
+            )
+          }),
         decodeRequest: () => Promise.resolve({ data: "decoded" }),
       },
     }
@@ -39,39 +52,75 @@ describe("checkout machine", () => {
     service.start()
 
     expect(service.state.value).toEqual({
-      Preparation: {
-        DecodeRequest: {},
-        PrepareSignature: {},
+      initial: {
+        Preparation: {
+          DecodeRequest: "Decode",
+          PrepareSignature: "Prepare",
+        },
+        UI: "Loader",
       },
-      UI: "Loader",
     })
 
     jest.advanceTimersByTime(3001)
 
-    await waitFor(service, (state) => state.matches("UI.Checkout"))
+    await waitFor(service, (state) => state.matches("initial.UI.Checkout"))
 
     expect(service.state.value).toEqual({
-      Preparation: {
-        DecodeRequest: {},
-        PrepareSignature: {},
+      initial: {
+        Preparation: {
+          DecodeRequest: "Done",
+          PrepareSignature: "Prepare",
+        },
+        UI: "Checkout",
       },
-      UI: "Checkout",
     })
 
     service.send("VERIFY")
-    await waitFor(service, (state) => state.matches("UI.WaitForSignature"))
+    await waitFor(service, (state) =>
+      state.matches("initial.UI.WaitForSignature"),
+    )
 
     // 15000ms signature preparation minus 3000 ms loader delay
     jest.advanceTimersByTime(12000)
 
-    await waitFor(service, (state) => state.matches("UI.Verifying"))
+    await waitFor(service, (state) => state.matches("initial.UI.Verifying"))
 
-    expect(service.state.value).toEqual({
-      Preparation: {
-        DecodeRequest: {},
-        PrepareSignature: {},
-      },
-      UI: "Verifying",
+    expect(service.state.value).toEqual(
+      expect.objectContaining({
+        initial: {
+          Preparation: {
+            DecodeRequest: "Done",
+            PrepareSignature: "Done",
+          },
+          UI: "Verifying",
+        },
+      }),
+    )
+
+    jest.advanceTimersByTime(1000)
+
+    await waitFor(service, (state) => state.matches("initial.UI.Success"))
+
+    expect(service.state.value).toEqual(
+      expect.objectContaining({
+        initial: {
+          Preparation: {
+            DecodeRequest: "Done",
+            PrepareSignature: "Done",
+          },
+          UI: "Success",
+        },
+      }),
+    )
+
+    expect(service.state.context.rpcResponse).toEqual({
+      ...RPC_BASE,
+      id: "1",
+      result: "0x123",
     })
+
+    service.send("CLOSE")
+
+    expect(service.state.value).toEqual("done")
   })
 })

@@ -36,6 +36,7 @@ interface IBuyComponent {
 export const BuyComponent = ({
   showTransactionDetails,
   applicationMeta,
+  isButtonDisabled: isButtonDisabledProp,
   onApprove,
   onCancel,
   fromAddress,

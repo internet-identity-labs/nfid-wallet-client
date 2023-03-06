@@ -1,7 +1,12 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 
-import { SDKApplicationMeta, IconCmpOut, Button } from "@nfid-frontend/ui"
+import {
+  SDKApplicationMeta,
+  IconCmpOut,
+  Button,
+  IconCmpWarning,
+} from "@nfid-frontend/ui"
 import { copyToClipboard } from "@nfid-frontend/utils"
 
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -38,11 +43,22 @@ export const SellComponent = ({
         }
       />
       <AssetPreview
-        icon={data?.meta?.content[0].url}
-        title={data?.meta?.name}
-        subtitle={data?.collectionData?.name}
+        icon={data?.data?.meta?.content[0].url}
+        title={data?.data?.meta?.name}
+        subtitle={data?.data?.collectionData?.name}
       />
       <div className={clsx("mt-6 space-y-2 text-sm")}>
+        <InfoListItem
+          title="Withdraw limit"
+          description={
+            <span className="text-orange-500">Entire collection</span>
+          }
+          icon={<IconCmpWarning className="ml-2.5 text-orange-500" />}
+        />
+        <div className={clsx("text-xs text-orange-500 bg-orange-50", "p-3")}>
+          This dapp can withdraw all your BitCoin Elep NFTs. Make sure you trust
+          this site.
+        </div>
         <InfoListItem
           title="From"
           description={
@@ -59,7 +75,7 @@ export const SellComponent = ({
             />
           }
         />
-        <InfoListItem title="Network" description={data?.blockchain} />
+        <InfoListItem title="Network" description={data?.data?.blockchain} />
       </div>
 
       <p

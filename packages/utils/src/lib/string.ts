@@ -8,7 +8,7 @@ export const truncateString = (str: string, maxLength: number): string => {
 }
 
 export const copyToClipboard = (
-  e: React.MouseEvent<HTMLElement | SVGSVGElement, MouseEvent>,
+  e: { stopPropagation: () => void },
   value?: string,
   callback?: () => void,
 ) => {

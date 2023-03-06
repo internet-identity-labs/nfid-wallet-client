@@ -35,5 +35,11 @@ export const ConnectAccountService = async (
     domain: event.data.hostname,
   })
 
+  createConnection({
+    connectionDomain: authRequest.derivationOrigin ?? authRequest.hostname,
+    accountId: event.data.accountId,
+    domain: event.data.hostname,
+  })
+
   return Promise.resolve({ ...RPC_BASE, id: rpcMessage.id, result: [address] })
 }

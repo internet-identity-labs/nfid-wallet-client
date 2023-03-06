@@ -26,8 +26,8 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
   )
 
   switch (true) {
-    case state.matches("Initial.UI.DecodeRequest") ||
-      state.matches("Initial.UI.MethodController"):
+    case state.matches("Initial.UI.DecodeRequest"):
+    case state.matches("Initial.UI.MethodController"):
       return <RPCPreloader />
     case state.matches("Initial.UI.Buy"):
       return (

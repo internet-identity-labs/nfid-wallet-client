@@ -42,6 +42,7 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
           feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
           price={state.context.rpcMessage?.params[0].value}
+          isButtonDisabled={true}
         />
       )
     case state.matches("Initial.UI.Sell"):

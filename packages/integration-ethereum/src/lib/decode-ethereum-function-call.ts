@@ -1,6 +1,7 @@
 import { EthersEthereum } from "@rarible/ethers-ethereum"
 import { createRaribleSdk } from "@rarible/sdk"
 import { ethers } from "ethers"
+import { Interface, FunctionFragment, Fragment } from "ethers/lib/utils"
 
 import {
   CONTRACT_TOKEN_ID,
@@ -8,36 +9,67 @@ import {
   ERC1155_LAZY_TYPE,
   ERC721_LAZY_TYPE,
   abi,
-  CollectionRequest,
   DecodeResponse,
+  TokenId,
+  Method,
 } from "./constant"
 
 const ethereum = new EthersEthereum(ethers.Wallet.createRandom())
 const sdk = createRaribleSdk(null, "testnet")
 
-const decoders: { [key: string]: any } = {
+const decoders: {
+  [key: string]: {
+    type: object
+    decoder: (type: string, data: string) => TokenId
+  }
+} = {
   "0xd8f960c1": { type: ERC721_LAZY_TYPE, decoder: decodeTokenIdLazy },
   "0x1cdfaa40": { type: ERC1155_LAZY_TYPE, decoder: decodeTokenIdLazy },
   "0x973bb640": { type: CONTRACT_TOKEN_ID, decoder: decodeTokenId },
   "0x73ad2146": { type: CONTRACT_TOKEN_ID, decoder: decodeTokenId },
 }
 
-const decs: {
+const methods: {
   [key: string]: (x: DecodedFunctionCall) => Promise<DecodeResponse>
 } = {
-  directPurchase: decodeToken,
-  createToken: decodeCollection,
-}
-
-const methods = {
-  createToken: (x: any): CollectionRequest => {
-    return {
-      name: x.inputs[0],
-      symbol: x.inputs[1],
-      baseURI: x.inputs[2],
-      contractURI: x.inputs[3],
-      isPrivate: !Array.isArray(x.inputs[4]),
-    }
+  directPurchase: (x: DecodedFunctionCall): Promise<DecodeResponse> => {
+    const type: string = x.inputs[0][2]
+    const content: string = x.inputs[0][3]
+    return decodeByAssetClass(type, content, "directPurchase")
+  },
+  createToken: (x: DecodedFunctionCall): Promise<DecodeResponse> => {
+    return Promise.resolve({
+      interface: "CollectionRequest",
+      method: "createToken",
+      data: {
+        name: x.inputs[0],
+        symbol: x.inputs[1],
+        baseURI: x.inputs[2],
+        contractURI: x.inputs[3],
+        isPrivate: !Array.isArray(x.inputs[4]),
+      },
+    })
+  },
+  mintAndTransfer: (x: DecodedFunctionCall): Promise<DecodeResponse> => {
+    console.log(JSON.stringify(x.inputs[0][2]))
+    const creators = x.inputs[0][2].map((v: any) => {
+      return {
+        creator: v[0],
+        value: (v[1] as ethers.BigNumber).toString(),
+      }
+    })
+    return Promise.resolve({
+      interface: "MintRequest",
+      method: "mintAndTransfer",
+      data: {
+        tokenId: (x.inputs[0][0] as ethers.BigNumber).toString(),
+        tokenURI: x.inputs[0][1],
+        creators,
+        royalties: x.inputs[0][3],
+        signatures: x.inputs[0][4],
+        to: x.inputs[1],
+      },
+    })
   },
 }
 
@@ -49,35 +81,34 @@ export async function decode(data: string): Promise<DecodeResponse> {
     throw new Error("No method found")
   }
 
-  return decs[method](decodedData)
+  return methods[method](decodedData)
 }
 
-export async function decodeTokenByAssetClass(type: string, data: string) {
-  const tokenId = decoders[type]?.decoder(type, data)
-  return sdk.apis.item.getItemById({ itemId: tokenId })
-}
-
-async function decodeCollection(
-  data: DecodedFunctionCall,
+export async function decodeTokenByAssetClass(
+  type: string,
+  data: string,
 ): Promise<DecodeResponse> {
-  return {
-    interface: "CollectionRequest",
-    method: "createToken",
-    data: methods.createToken(data),
-  }
+  return await decodeByAssetClass(type, data, "sell")
 }
 
-async function decodeToken(data: DecodedFunctionCall): Promise<DecodeResponse> {
-  const type: string = data.inputs[0][2]
-  const tokenId = decoders[type]?.decoder(type, data.inputs[0][3])
-  const item = await sdk.apis.item.getItemById({ itemId: tokenId })
-  const collection = await sdk.apis.collection.getCollectionById({
-    collection: item.collection ?? "",
-  })
+async function decodeByAssetClass(
+  type: string,
+  data: string,
+  method: Method,
+): Promise<DecodeResponse> {
+  const tokenId = decoders[type]?.decoder(type, data)
+  const [item, collection] = await Promise.all([
+    await sdk.apis.item.getItemById({
+      itemId: `ETHEREUM:${tokenId.collectionId}:${tokenId.tokenId}`,
+    }),
+    await sdk.apis.collection.getCollectionById({
+      collection: `ETHEREUM:${tokenId.collectionId}`,
+    }),
+  ])
 
   return {
     interface: "Item",
-    method: "directPurchase",
+    method: method,
     data: {
       ...item,
       collectionData: collection,
@@ -85,99 +116,64 @@ async function decodeToken(data: DecodedFunctionCall): Promise<DecodeResponse> {
   }
 }
 
-function decodeTokenIdLazy(type: string, data: any): string {
+function decodeTokenIdLazy(type: string, data: string): TokenId {
   const nft =
     "0x0000000000000000000000000000000000000000000000000000000000000020" +
-    (data as string).substring(2)
+    data.substring(2)
   const ethereum = new EthersEthereum(ethers.Wallet.createRandom())
   const result = ethereum.decodeParameter(decoders[type]?.type, nft)
-  return "ETHEREUM:" + result[0][0] + ":" + result[0][1][0]
+  return { collectionId: result[0][0], tokenId: result[0][1][0] }
 }
 
-function decodeTokenId(type: string, data: any): string {
-  const nft = data
+function decodeTokenId(type: string, data: string): TokenId {
   const schema = decoders[type]?.type
-  const id = ethereum.decodeParameter({ root: { schema } }, nft)
-  return "ETHEREUM:" + id[0][0][0] + ":" + id[0][0][1]
+  const result = ethereum.decodeParameter({ root: { schema } }, data)
+  return { collectionId: result[0][0][0], tokenId: result[0][0][1] }
+}
+
+interface DecodedFunctionCall1 {
+  method: string
+  types: string[]
+  names: (string | [string, string[]])[]
+  inputs: any[]
 }
 
 export async function decodeEthereumFunctionCall(
   data: string,
-): Promise<DecodedFunctionCall> {
-  const result = abi.reduce<DecodedFunctionCall>(
-    (acc, obj) => {
-      const method = obj.name
-      try {
-        const ifc = new ethers.utils.Interface([])
-        // FIXME:
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const _result = ifc.decodeFunctionData(
-          // FIXME:
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          ethers.utils.FunctionFragment.fromObject(obj),
-          data,
-        )
-        const inputs = deepRemoveUnwantedArrayProperties(_result)
-        acc.method = method
-        acc.inputs = inputs
-        acc.names = obj.inputs
-          ? obj.inputs.map((x) => {
-              if (x.type.includes("tuple")) {
-                return [x.name, x.components?.map((a) => a.name)]
-              } else {
-                return x.name
-              }
-            })
-          : []
-        const types = obj.inputs
-          ? obj.inputs.map((x) => {
-              if (x.type.includes("tuple")) {
-                return x
-              } else {
-                return x.type
-              }
-            })
-          : []
-        acc.types = types.map((t) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          if (t.components) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const arr = t.components.reduce(
-              // FIXME:
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              (acc, cur) => [...acc, cur.type],
-              [],
-            )
-            const tupleStr = `(${arr.join(",")})`
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            if (t.type === "tuple[]") return tupleStr + "[]"
-            return tupleStr
+): Promise<DecodedFunctionCall1> {
+  for (const fragment of abi) {
+    const method = fragment.name
+
+    try {
+      const iface = new Interface([fragment as Fragment])
+      const inputs = iface.decodeFunctionData(
+        FunctionFragment.from(fragment as Fragment),
+        data,
+      )
+      const names =
+        fragment.inputs?.map((input) => {
+          if (input.type.includes("tuple")) {
+            return [input.name, input.components?.map((c) => c.name)]
           }
-          return t
-        })
-      } catch (error) {
-        console.debug(`${method} is not a match`)
-        return acc
-      }
+          return input.name
+        }) ?? []
+      const types =
+        fragment.inputs?.map((input) => {
+          if (input.type.includes("tuple")) {
+            const componentTypes =
+              input.components?.map((c) => c.type).join(",") ?? ""
+            return `(${componentTypes})`
+          }
+          return input.type
+        }) ?? []
+      // FIXME:
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return { method, inputs, names, types }
+    } catch (error) {
+      console.debug(`${method} is not a match`)
+    }
+  }
 
-      return acc
-    },
-    { method: undefined, types: [], names: [], inputs: [] },
-  )
-  return result
-}
-
-function deepRemoveUnwantedArrayProperties(arr: any) {
-  return [
-    ...arr.map((item: any) => {
-      if (Array.isArray(item)) return deepRemoveUnwantedArrayProperties(item)
-      return item
-    }),
-  ]
+  return { method: "", inputs: [], names: [], types: [] }
 }

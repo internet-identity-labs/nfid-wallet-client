@@ -2,14 +2,25 @@ import {
   Collection as CollectionRarible,
   Item as ItemRarible,
 } from "@rarible/api-client"
+import { BigNumber } from "ethers"
+import { exitCode } from "process"
 
 export type AbiType = "function" | "constructor" | "event" | "fallback"
 export type StateMutabilityType = "pure" | "view" | "nonpayable" | "payable"
 
 export type Item = ItemRarible & { collectionData: CollectionRarible }
-export type Interface = "Item" | "CollectionRequest"
-export type Method = "createToken" | "directPurchase"
-export type Data = Item | CollectionRequest
+export type Interface = "Item" | "CollectionRequest" | "MintRequest"
+export type Method =
+  | "createToken"
+  | "directPurchase"
+  | "mintAndTransfer"
+  | "sell"
+export type Data = Item | DeployCollectionRequest | MintRequest
+
+export type TokenId = {
+  collectionId: string
+  tokenId: string
+}
 
 export type DecodeResponse = {
   interface: Interface
@@ -17,12 +28,26 @@ export type DecodeResponse = {
   data: Data
 }
 
-export type CollectionRequest = {
+export type DeployCollectionRequest = {
   name: string
   symbol: string
   baseURI: string
   contractURI: string
   isPrivate: boolean
+}
+
+export type Creator = {
+  creator: string
+  value: number
+}
+
+export type MintRequest = {
+  tokenId: string
+  tokenURI: string
+  creators: Creator[]
+  royalties: string[]
+  signatures: string[]
+  to: string
 }
 
 export type DecodedFunctionCall = {
@@ -60,6 +85,75 @@ export interface AbiOutput {
 }
 
 export const abi: AbiItem[] = [
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "tokenURI",
+            type: "string",
+          },
+          {
+            components: [
+              {
+                internalType: "address payable",
+                name: "account",
+                type: "address",
+              },
+              {
+                internalType: "uint96",
+                name: "value",
+                type: "uint96",
+              },
+            ],
+            internalType: "struct LibPart.Part[]",
+            name: "creators",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "address payable",
+                name: "account",
+                type: "address",
+              },
+              {
+                internalType: "uint96",
+                name: "value",
+                type: "uint96",
+              },
+            ],
+            internalType: "struct LibPart.Part[]",
+            name: "royalties",
+            type: "tuple[]",
+          },
+          {
+            internalType: "bytes[]",
+            name: "signatures",
+            type: "bytes[]",
+          },
+        ],
+        internalType: "struct LibERC721LazyMint.Mint721Data",
+        name: "data",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+    ],
+    name: "mintAndTransfer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
   {
     inputs: [
       {

@@ -1,6 +1,7 @@
 import IconSvgAlertCircle from "./alert-circle.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgBook from "./book.svg"
+import IconSvgBTC from "./btc.svg"
 import IconSvgCalendar from "./calendar.svg"
 import IconSvgCancel from "./cancel.svg"
 import IconSvgCheckMark from "./check-mark.svg"
@@ -38,6 +39,7 @@ import IconSvgWarning from "./warning.svg"
 
 export {
   IconPngEthereum,
+  IconSvgBTC,
   IconSvgArrow,
   IconSvgCalendar,
   IconSvgCancel,

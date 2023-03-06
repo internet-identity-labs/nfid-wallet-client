@@ -1,6 +1,7 @@
 import React from "react"
+import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance"
 
-import { IconPngEthereum, IconSvgDfinity } from "@nfid-frontend/ui"
+import { IconPngEthereum, IconSvgBTC, IconSvgDfinity } from "@nfid-frontend/ui"
 import {
   E8S,
   toPresentation,
@@ -26,9 +27,11 @@ export interface TokenConfig {
   toPresentation: (value?: bigint) => number
   transformAmount: (value: string) => number
   blockchain: string
+  blockchainName: string
 }
 
 export const useAllToken = (): { token: TokenConfig[] } => {
+  const { balances: btcSheet } = useBtcBalance()
   const { appAccountBalance } = useBalanceICPAll()
   const { token: dip20Token } = useAllDip20Token()
   const { balances: ethBalance } = useEthBalances()
@@ -46,6 +49,20 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         toPresentation,
         transformAmount: stringICPtoE8s,
         blockchain: "ic",
+        blockchainName: "Internet Computer",
+      },
+      {
+        icon: IconSvgBTC,
+        tokenStandard: TokenStandards.BTC,
+        title: "Bitcoin",
+        currency: "BTC",
+        balance: btcSheet?.tokenBalance,
+        price: btcSheet?.usdBalance ?? "$0.00",
+        fee: BigInt(0),
+        toPresentation,
+        transformAmount: stringICPtoE8s,
+        blockchain: "btc",
+        blockchainName: "Bitcoin",
       },
       {
         icon: IconPngEthereum,
@@ -58,6 +75,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         toPresentation,
         transformAmount: stringICPtoE8s,
         blockchain: "eth",
+        blockchainName: "Ethereum",
       },
       ...(dip20Token
         ? dip20Token.map(({ symbol, name, logo, ...rest }) => ({
@@ -69,6 +87,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
             price: appAccountBalance?.[symbol].usdBalance,
             ...rest,
             blockchain: "ic",
+            blockchainName: "Internet Computer",
           }))
         : []),
     ]
@@ -77,6 +96,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
     dip20Token,
     ethBalance?.totalETH,
     ethBalance?.totalUSD,
+    btcSheet,
   ])
   console.debug("useAllToken", { token })
   return { token }

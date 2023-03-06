@@ -206,6 +206,10 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         label: "Ethereum",
         value: "eth",
       },
+      {
+        label: "Bitcoin",
+        value: "btc",
+      },
     ]
   }, [])
 

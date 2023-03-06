@@ -56,6 +56,11 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.authenticate"
+    assignError:
+      | "error.platform.EmbedConnectAccountMachine"
+      | "error.platform.EmbedControllerMachine"
+      | "error.platform.authenticate"
+      | "error.platform.trustDeviceMachine"
     assignRPCMessage: "CONNECT_ACCOUNT" | "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
     nfid_authenticated: "done.invoke.trustDeviceMachine"
     sendRPCResponse:

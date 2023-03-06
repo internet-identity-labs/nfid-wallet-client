@@ -1,15 +1,14 @@
 import { nfidEthWallet } from "@nfid/integration"
 
-import { CheckoutMachineContext } from "frontend/features/checkout/machine"
+import { RPCResponse, RPC_BASE } from "frontend/features/embed/rpc-service"
 
-import { RPCMessage, RPCResponse, RPC_BASE } from "../rpc-service"
+import { RPCControllerContext } from "../machine"
 
-export const sendTransactionService = async (
-  { preparedSignature, rpcMessage }: CheckoutMachineContext,
-  event: { type: string; data?: RPCMessage },
-): Promise<RPCResponse> => {
+export const sendTransactionService = async ({
+  preparedSignature,
+  rpcMessage,
+}: RPCControllerContext): Promise<RPCResponse> => {
   console.debug("sendTransactionService", { preparedSignature })
-  if (!event.data) throw new Error("No event data")
   if (!rpcMessage) throw new Error("No rpcMessage")
   if (
     !preparedSignature?.hash ||

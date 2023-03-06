@@ -4,8 +4,7 @@ import { createMachine, assign } from "xstate"
 import { checkIsIframe } from "@nfid-frontend/utils"
 import { isDelegationExpired } from "@nfid/integration"
 
-import CheckoutMachine from "frontend/features/checkout/machine"
-import SignMessageMachine from "frontend/features/sign-message/machine"
+import RPCControllerMachine from "frontend/features/sdk/machine"
 import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
@@ -47,7 +46,7 @@ type Services = {
 }
 
 export const NFIDEmbedMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QDkBiBJAIgUQLYCNIBZAQwGMALASwDswA6AYQrDIGsBBAVwBcKBlHiR5gAxAG0ADAF1EoAA4B7WFR5VFNOSAAeiAEwBGAGz1JRvQFZJAdmsBOAMxGAHABYjAGhABPRI-qu1kYWzgYhdnrWkhYWAL6xXmhYeIQQpJS0DMysnLwCQiISBrJIIEoqahpaugiGJmaWNvZObp4+iEaSzvTWznaSdhbBRsZ2rvGJGDgExOTUdPQASmAkEN6iYABOm4qb9PIANsIAZru49EnTqenzDMur3gi0AG6KZMLqNFLS31rlqp9qh0LA56CCDA4bAZJNFbBYvL4EHZBvRIXUDIZmnEEiBLilZhkFvc1qJGAB5ZDIbCMAAqAH0OIxyQBVZA036lf6VTSlGrBUHgyHWaGw6zw9oIPquAKuCyuAyOYzGIwTXFTfFpOaZJYrEnkynU+mMlls8TFP7KAFVXnAgUOCFQmEWOEIxAOPSSegGezWBy2Vz2+3e1V4maawl3XXrfjYZCYOk0xYcZD8Rk09AUjkKS3coEIflgwOO0XixFiz2uCJ6D0BoaSYM40PXLVEqOiGNxhNJlNpjPIM0lbMVQE2-MgwsO4VOl0S+UmIzutzOByuUIhBzYybJMM3bXE6PoADiyATAE0AArYeOYDg0jhZso5kegPnjwXF51i135syF-p9PRnBGSsQ3VHcW0jB52yPE8aQvK86RvO8BwtYdrRfW0JyFEVP1LfQ9FBaw9GCUI7DcSQ9EccZGzA5sI3obg+DAGg1HebldzoUQIA0BgXkUNgGBIPJmNY4QwAfLlnx0RADFcSIAj9BcjF9FdHG-AjpUiIxOiGBw7GVdxQO3OjbnoGlNi4WAeEwMBnioMgxG4hY+IE+geAsqybLshyOPEmRUKtHkMIQWS-XoCIFRGSEgIib9QgCZFEucNwgjsYUjKuAlTMYDQ6DIHgODIMhFC4FiuJ4+gXIYDUcpoPKCqKkqWN8iSn3Q6SEGFUFnAsMYQRCNwrGsOKYXCqsYgMb0jHcawMo1XymBYdgSp4XzyucmhXlc7Jlt4Fr-M5Nqgo65xRvsIwxghIIrAu79gmsUw9OhCF9LCZS5vA+idrYFa1q2HY9kOE4zkWnJfog1q0OOmpZPkgMgicFTKwcO6iPCmJUqcAxnEsBwPpM7V+CoKAaBpbx5EgTBhBIAA1Vx1t4zb+IYImSaIOBYBIGB9sHR8obzWwHsiDcFXInHvwsCFTB6wY+nBHqVRo4yssJ4nSfJynqbpjZtl2fYjh4U5NnOVmaHZ2BOe5iGDqHQK81hh74aUpG1IlEE9C9C7KP0sx3El+IcRoRQIDgLQmxVugAtzUcAFo2kROP8YjrIltyPhBDEqOpJqOTvzI+g+ndatJAcIC6zsJPw1M-cs-anPXGldxnF6ZE+gutuJeXP8Blh7TAkrhbsF1zZa+hmSXE9YjnQuyahiGYa3eCUwPR6tw9FlfkB4ghjhJY+yPg0XzR-tkuTEL5dtOb6tlPU90ekFICiJXaet-o8zLOs2z7LAY-R2MU76BT1SrPYYC9EQokLuvTockvaTVftlXKrAGrFVKjwX+wVoT2gUmKU6ykHD2nXiNOwpgLCYmdOvOUIElaZSrtqb64MIzoI6pg4hktnTRFkkuYwqMDAKQIuvNKNYFTwNViTMmFMIBUyEHTJhMMS68PhiEMwKkMSuAloYL0soeqS3rOYC6AdYhAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QDkBiBJAIgUQLYCNIBZAQwGMALASwDswA6AJTBIgE8BiAYQHlllsXACoB9AIJdeAVWRCA2gAYAuolAAHAPawqAFyoaaqkAA9EAZgCsZ+hYUAOAJwA2AOxOnAJgsO7TiwBoQNkQnR3ofABYoiwBGFxczJwcLAF8UwLQsPEIIUkpaBmZWTl5+QVEJaVk5GJUkEE1tPQMjUwQnMwd6MwUIuxjnSwcHDxdA4IQzMLs7COTZnzcXCLSMjBwCYnJqOiYWdg4AZWxkTBEhRjFkQ4khdD5FOvUtXX1DeraHFwtwrz7bMweJxxBzjRAxMwuegRCwuL52BQOKYKBReVYgTIbHJ5HaFfacY6nc6Xa63e7IGpPBovZrvUBtGIouz0YFIpHuHoDUFBRAAWmB9BifWGcQsrk6MScK3SGPW2S2+V2YgArjoKGAaHoyCRaTiChwIAYGLQAG4aADWDBIqvVmqo2p0YEeRkarxaH0QChZflmMVsdjMEQ8nWBYIQvKm3UlCkBo0csQs0rWWU2uW2BXoXAMdDIOjEZDIGmVmoNRvopotDCzNBzeYLRc1hzAACcTfancoXTS3q1zIz6EDIWZhz4gZEwx4fNDLMCPI4PDEZnZ0Zj5WnFQwmzQIEJmyQaLByLTS7sK5b6Fud3uD0e3k3W+3nfVXbTewg7F56AonL12TF--EYYWJO3SJBELgInOrIeCucqpnquyXru+6HrmbwcC2zYaM29BqAANjqABm2G4BeGpXiht4GPebZkB2VIvj2HoIDEC4xN0XxzIiET2BEkphskUIjMOwYeBEfgDKk6I0BoEBwEYq7wemdBdk0TH0nyEJON08QQiMXGeDEYYRsGNhmBCfocsGbhScmWIKriezFKpbp0iY5h2FCMKsREw5WKxfrGdYiSTh4vQiZ5MJ+LBKbYspDDYM2WHNi5r7MdGHjdP0oQ-jxH4KEZPLvuxYmhBCYkWBYviBjF9nro5KpqhqWo6m8CFgKl6nueGMw6S4eliQ434LmYxnBtpMYQuBlVDfptVru1mbZmAub5oWxY6J17oaeG3yClpqJJJVw5jEVUrWJEUUuECYXifNSkbmR27ITeaHbdSanvW0lg-LlgLfCMH76QJoz0BB-yzG4CjxGYaRpEAA */
   createMachine(
     {
       tsTypes: {} as import("./index.typegen").Typegen0,
@@ -93,16 +92,30 @@ export const NFIDEmbedMachine =
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
             SEND_TRANSACTION: [
-              { target: "CheckoutMachine", cond: "isAuthenticated" },
+              { target: "RPCController", cond: "isAuthenticated" },
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
             SIGN_TYPED_DATA: [
-              { target: "SignTypedDataV4", cond: "isAuthenticated" },
+              { target: "RPCController", cond: "isAuthenticated" },
               { target: "AuthenticationMachine", actions: "assignRPCMessage" },
             ],
           },
         },
         Error: {},
+
+        RPCController: {
+          invoke: {
+            src: "RPCControllerMachine",
+            id: "RPCControllerMachine",
+            data: (context, event) => ({
+              ...context,
+              rpcMessage: event.data,
+              appMeta: mockContext.appMeta,
+              authRequest: mockContext.authRequest,
+            }),
+            onDone: { target: "Ready", actions: "sendRPCResponse" },
+          },
+        },
 
         AuthenticationMachine: {
           invoke: {
@@ -137,37 +150,7 @@ export const NFIDEmbedMachine =
               appMeta: mockContext.appMeta,
               authRequest: mockContext.authRequest,
             }),
-            onDone: { target: "Ready", actions: ["sendRPCResponse"] },
-          },
-        },
-
-        CheckoutMachine: {
-          invoke: {
-            src: "CheckoutMachine",
-            id: "CheckoutMachine",
-            data: (context, event) => ({
-              authSession: context.authSession,
-              rpcMessage: event.data,
-              appMeta: mockContext.appMeta,
-              authRequest: mockContext.authRequest,
-            }),
             onDone: { target: "Ready", actions: "sendRPCResponse" },
-            onError: { target: "Error", actions: "assingError" },
-          },
-        },
-
-        SignTypedDataV4: {
-          invoke: {
-            src: "SignMessageMachine",
-            id: "SignMessageMachine",
-            onDone: { target: "Ready", actions: ["sendRPCResponse"] },
-            onError: { target: "Error", actions: "assingError" },
-            data: (context, event) => ({
-              authSession: context.authSession,
-              rpcMessage: event.data,
-              appMeta: mockContext.appMeta,
-              authRequest: mockContext.authRequest,
-            }),
           },
         },
       },
@@ -180,13 +163,6 @@ export const NFIDEmbedMachine =
         assignRPCMessage: assign((context, event) => ({
           rpcMessage: event.data,
         })),
-        // FIXME:
-        // @ts-ignore
-        assingError: assign({
-          error: (context: any, event: any) => {
-            return event.error
-          },
-        }),
         nfid_authenticated: () => {
           console.debug("nfid_authenticated")
           window.parent.postMessage(
@@ -205,10 +181,9 @@ export const NFIDEmbedMachine =
       },
       services: {
         AuthenticationMachine,
-        CheckoutMachine,
         EmbedConnectAccountMachine,
-        SignMessageMachine,
         TrustDeviceMachine,
+        RPCControllerMachine,
       },
     },
   )

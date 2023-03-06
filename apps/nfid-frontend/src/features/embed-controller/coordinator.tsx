@@ -55,9 +55,9 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           fromAddress={state.context.rpcMessage?.params[0]}
         />
       )
-    case state.matches("Initial.UI.WaitForSignature") ||
-      state.matches("Initial.UI.SendTransaction") ||
-      state.matches("Initial.UI.SignTypedData"):
+    case state.matches("Initial.UI.WaitForSignature"):
+    case state.matches("Initial.UI.SendTransaction"):
+    case state.matches("Initial.UI.SignTypedData"):
       return <PostloaderComponent />
     case state.matches("Initial.UI.Success"):
       return (

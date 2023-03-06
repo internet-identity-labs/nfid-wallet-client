@@ -1,11 +1,10 @@
 import { nfidEthWallet } from "@nfid/integration"
-import { decode } from "@nfid/integration-ethereum"
 
-import { CheckoutMachineContext } from "../machine"
+import { RPCControllerContext } from "../machine"
 
 export const prepareSignature = async ({
   rpcMessage,
-}: CheckoutMachineContext) => {
+}: RPCControllerContext) => {
   console.debug("prepareSignature", { rpcMessage })
   const rawMessage = rpcMessage?.params[0]
   const message = Object.keys(rawMessage).reduce(
@@ -16,14 +15,13 @@ export const prepareSignature = async ({
     {},
   )
   console.debug("prepareSignature", { message })
-
-  const response = await nfidEthWallet.prepareSendTransaction(message)
+  let response
+  try {
+    response = await nfidEthWallet.prepareSendTransaction(message)
+  } catch (e) {
+    console.log("prepareSignature Error", { e })
+  }
   console.debug("prepareSignature", { response })
 
   return response
-}
-
-export const decodeRequest = async ({ rpcMessage }: CheckoutMachineContext) => {
-  const data = rpcMessage?.params[0].data
-  return await decode(data)
 }

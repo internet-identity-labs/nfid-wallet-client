@@ -1,4 +1,4 @@
-import { createConnection, readAddress } from "@nfid/client-db"
+import { createConnection } from "@nfid/client-db"
 import { ecdsaSigner, replaceActorIdentity } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -15,12 +15,6 @@ export const ConnectAccountService = async (
   },
 ) => {
   console.debug("ConnectAccountService", event)
-  const cachedAddress = readAddress({
-    accountId: event.data.accountId,
-    hostname: event.data.hostname,
-  })
-  console.debug("ConnectAccountService", { cachedAddress })
-
   if (!authSession || !rpcMessage)
     throw new Error("No authSession or rpcMessage")
 
@@ -28,6 +22,7 @@ export const ConnectAccountService = async (
     anchor: authSession.anchor,
     ...event.data,
   })
+  console.debug("ConnectAccountService", { address })
 
   const identity = await getWalletDelegation(
     authSession.anchor,

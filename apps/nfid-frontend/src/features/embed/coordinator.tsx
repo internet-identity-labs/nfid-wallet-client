@@ -6,12 +6,10 @@ import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 
-import { NFIDCheckoutCoordinator } from "../checkout/coordinator"
-import { CheckoutMachineActor } from "../checkout/machine"
 import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
 import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
-import { NFIDSignMessageCoordinator } from "../sign-message/coordinator"
-import { SignMessageActor } from "../sign-message/machine"
+import { RPCControllerCoordinator } from "../sdk/coordinator"
+import { RPCControllerMachineActor } from "../sdk/machine"
 import { NFIDEmbedMachine } from "./machines"
 
 export const NFIDEmbedCoordinator = () => {
@@ -41,23 +39,18 @@ export const NFIDEmbedCoordinator = () => {
           }
         />
       )
-    case state.matches("CheckoutMachine"):
-      return (
-        <NFIDCheckoutCoordinator
-          actor={state.children.CheckoutMachine as CheckoutMachineActor}
-        />
-      )
-
     case state.matches("TrustDevice"):
       return (
         <TrustDeviceCoordinator
           actor={state.children.trustDeviceMachine as TrustDeviceActor}
         />
       )
-    case state.matches("SignTypedDataV4"):
+    case state.matches("RPCController"):
       return (
-        <NFIDSignMessageCoordinator
-          actor={state.children.SignMessageMachine as SignMessageActor}
+        <RPCControllerCoordinator
+          actor={
+            state.children.RPCControllerMachine as RPCControllerMachineActor
+          }
         />
       )
     case state.matches("Ready"):

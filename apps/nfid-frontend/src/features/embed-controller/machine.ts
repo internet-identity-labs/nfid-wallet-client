@@ -113,6 +113,11 @@ export const EmbedControllerMachine =
                         actions: "assignMethod",
                         cond: (_, event) => event.data === "Sell",
                       },
+                      {
+                        target: "DeployCollection",
+                        actions: "assignMethod",
+                        cond: (_, event) => event.data === "DeployCollection",
+                      },
                     ],
                   },
                 },

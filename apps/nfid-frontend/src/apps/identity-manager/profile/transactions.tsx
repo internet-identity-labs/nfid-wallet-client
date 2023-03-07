@@ -69,7 +69,7 @@ const ProfileTransactions = () => {
       .map((f) => transactionsFilterOptions.find((tf) => tf.value === f))
       .filter((f: IOption | undefined): f is IOption => Boolean(f))
     return tf
-  }, [transactionFilter, transactionsFilterOptions, btcAddress])
+  }, [transactionFilter, transactionsFilterOptions])
 
   // FIXME: find suitable hook to return the walletAddresses
   // they need to be calculated already when fetching transactions
@@ -81,7 +81,6 @@ const ProfileTransactions = () => {
     [
       transactionFilter,
       transactionsFilterOptions,
-      btcAddress,
       selectedTransactionFilter,
     ],
   )
@@ -106,11 +105,11 @@ const ProfileTransactions = () => {
           )
         : [],
     [
+      btcWalletAddress,
       sendEthTXs,
       walletAddresses,
       walletTransactions,
       sendBtcTransactions,
-      selectedTransactionFilter,
     ],
   )
 
@@ -134,11 +133,11 @@ const ProfileTransactions = () => {
           )
         : [],
     [
+      btcWalletAddress,
       receiveEthTXs,
       walletAddresses,
       walletTransactions,
       receivedBtcTransactions,
-      selectedTransactionFilter,
     ],
   )
 

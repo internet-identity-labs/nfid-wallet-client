@@ -46,6 +46,7 @@ export const useTransactionsFilter = ({
       transactions,
       excludeEmpty,
       includeAddresses,
+      btcData
     ],
   )
 

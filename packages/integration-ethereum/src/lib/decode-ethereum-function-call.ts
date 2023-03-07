@@ -32,6 +32,29 @@ const decoders: {
 const methods: {
   [key: string]: (x: DecodedFunctionCall) => Promise<DecodeResponse>
 } = {
+  bulkPurchase: async (x: DecodedFunctionCall): Promise<DecodeResponse> => {
+    const promises = x.inputs[0].map(async (x: any) => {
+      return {
+        amount: (x[1] as ethers.BigNumber).toString(),
+        fees: (x[2] as ethers.BigNumber).toString(),
+        item: await decode(x[3]),
+        marketId: x[0],
+      }
+    })
+
+    const items = await Promise.all(promises)
+
+    return Promise.resolve({
+      interface: "BatchBuyRequest",
+      method: "bulkPurchase",
+      data: {
+        allowFail: x.inputs[3] as boolean,
+        feeRecipientFirst: parseInt(x.inputs[1], 16),
+        feeRecipientSecond: parseInt(x.inputs[2], 16),
+        items,
+      },
+    })
+  },
   directPurchase: (x: DecodedFunctionCall): Promise<DecodeResponse> => {
     const type: string = x.inputs[0][2]
     const content: string = x.inputs[0][3]

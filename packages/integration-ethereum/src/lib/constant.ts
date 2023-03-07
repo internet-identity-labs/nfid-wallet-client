@@ -3,19 +3,39 @@ import {
   Item as ItemRarible,
 } from "@rarible/api-client"
 import { BigNumber } from "ethers"
-import { exitCode } from "process"
 
 export type AbiType = "function" | "constructor" | "event" | "fallback"
 export type StateMutabilityType = "pure" | "view" | "nonpayable" | "payable"
-
 export type Item = ItemRarible & { collectionData: CollectionRarible }
-export type Interface = "Item" | "CollectionRequest" | "MintRequest"
+export type Interface =
+  | "Item"
+  | "CollectionRequest"
+  | "MintRequest"
+  | "BatchBuyRequest"
 export type Method =
   | "createToken"
   | "directPurchase"
   | "mintAndTransfer"
   | "sell"
-export type Data = Item | DeployCollectionRequest | MintRequest
+  | "bulkPurchase"
+export type Data =
+  | Item
+  | DeployCollectionRequest
+  | MintRequest
+  | BatchBuyRequest
+export type BatchBuyRequest = {
+  allowFail: boolean
+  feeRecipientFirst: number
+  feeRecipientSecond: number
+  items: Array<BuyRequest>
+}
+
+export type BuyRequest = {
+  amount: BigNumber
+  fees: BigNumber
+  item: Item
+  marketId: number
+}
 
 export type TokenId = {
   collectionId: string
@@ -85,6 +105,56 @@ export interface AbiOutput {
 }
 
 export const abi: AbiItem[] = [
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "enum RaribleExchangeWrapper.Markets",
+            name: "marketId",
+            type: "uint8",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "fees",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct RaribleExchangeWrapper.PurchaseDetails[]",
+        name: "purchaseDetails",
+        type: "tuple[]",
+      },
+      {
+        internalType: "address",
+        name: "feeRecipientFirst",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "feeRecipientSecond",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "allowFail",
+        type: "bool",
+      },
+    ],
+    name: "bulkPurchase",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
   {
     inputs: [
       {

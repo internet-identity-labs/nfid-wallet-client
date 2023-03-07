@@ -47,8 +47,8 @@ Feature:Fungible Asset
     And Expect that date is "Mar 02, 2023 - 12:56:29 am"
     And Expect that asset is "BTC"
     And Expect that quantity is "0.00012717"
-    And Expect transaction_to_0 with text mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1
-    And Expect transaction_from_0 with text tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4
+    And Expect that to is "mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1"
+    And Expect that from is "tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4"
 
   @asset4
   Scenario: User should be able to see transaction depends on selected app

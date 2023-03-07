@@ -18,7 +18,7 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
 
   React.useEffect(
     () =>
-      console.log("EmbedControllerCoordinator", {
+      console.debug("EmbedControllerCoordinator", {
         context: state.context,
         state: state.value,
       }),
@@ -42,7 +42,7 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
           feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
           price={state.context.rpcMessage?.params[0].value}
-          isButtonDisabled={true}
+          isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
         />
       )
     case state.matches("Initial.UI.Sell"):

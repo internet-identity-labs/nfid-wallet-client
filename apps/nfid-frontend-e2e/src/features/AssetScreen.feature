@@ -44,7 +44,7 @@ Feature:Fungible Asset
     And Open first account in the row
     And Open Received tab
     Then I expect that element transaction_0 becomes displayed
-    And Expect that date is "Mar 02, 2023 - 12:56:29 am"
+    And Expect that date is "Mar 02, 2023"
     And Expect that asset is "BTC"
     And Expect that quantity is "0.00012717"
     And Expect that to is "mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1"

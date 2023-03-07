@@ -48,7 +48,6 @@ export const useTransactionsFilter = ({
       includeAddresses,
     ],
   )
-  console.log("useTransactionsFilter", { transactionsFilterOptions })
 
   return { transactionsFilterOptions }
 }

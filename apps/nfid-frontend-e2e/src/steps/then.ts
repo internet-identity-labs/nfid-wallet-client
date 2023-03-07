@@ -301,7 +301,7 @@ Then(
 )
 
 Then(
-  /^Expect checkbox for account "([^"]*)" is( not)* selected"$/,
+  /^Expect checkbox for account "([^"]*)" is( not)* selected$/,
   async (asselLabel: string, falseCase: string) => {
     asselLabel = asselLabel.replace(/\s/g, "")
     await Assets.isElementSelected("option_cbx_" + asselLabel, falseCase)

@@ -63,7 +63,7 @@ Feature:Fungible Asset
     And Open dropdown menu on transactions page
     Then Expect dropdown menu with text "1 selected"
     And Expect txs account "NFID account 1" with txs amount "1 TXs"
-    And Expect checkbox for account "NFID account 1" is selected"
+    And Expect checkbox for account "NFID account 1" is selected
     Then Click checkbox account NFID account 1
     Then Expect dropdown menu with text "All wallets"
     Then I expect that element transaction_0 becomes displayed

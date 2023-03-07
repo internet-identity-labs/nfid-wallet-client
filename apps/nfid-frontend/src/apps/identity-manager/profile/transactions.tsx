@@ -81,7 +81,6 @@ const ProfileTransactions = () => {
     [
       transactionFilter,
       transactionsFilterOptions,
-      selectedTransactionFilter,
     ],
   )
 

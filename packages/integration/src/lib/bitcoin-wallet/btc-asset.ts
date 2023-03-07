@@ -33,9 +33,9 @@ export const BtcAsset: FungibleAsset = {
     let price
     const balanceBN = toBn(balance * 0.00000001)
     try {
-       price = await getPrice(["BTC"])
-    } catch (e){
-       price = [{price:0.00}]
+      price = await getPrice(["BTC"])
+    } catch (e) {
+      price = [{ price: 0.0 }]
     }
 
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)

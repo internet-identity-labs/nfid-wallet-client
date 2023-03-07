@@ -239,6 +239,21 @@ Then(/^Open asset with label ([^"]*)$/, async (asselLabel: string) => {
   await Assets.openAssetByLabel(asselLabel)
 })
 
+Then(/^Open element with id ([^"]*)$/, async (asselLabel: string) => {
+  await Assets.openElementById(asselLabel)
+})
+
+Then(/^Click element with id ([^"]*)$/, async (asselLabel: string) => {
+  await Assets.openElementById(asselLabel)
+})
+
+Then(
+  /^Expect element with id "([^"]*)" is( not)* selected$/,
+  async (asselLabel: string, falseCase: string) => {
+    await Assets.isElementSelected(asselLabel, falseCase)
+  },
+)
+
 Then(
   /^Asset ([^"]*) appears with currency ([^"]*) and blockchain ([^"]*) balance ([^"]*) and ([^"]*)$/,
   async (
@@ -268,6 +283,64 @@ Then(
     await Assets.getAssetByElementAndCompareText(asselLabel, text)
   },
 )
+
+Then(/^Open dropdown menu on transactions page/, async () => {
+  let dropdownAccountId = "selected_acc"
+  await Assets.openElementById(dropdownAccountId)
+})
+
+Then(
+  /^Expect txs account "([^"]*)" with txs amount "([^"]*)"$/,
+  async (asselLabel: string, text: string) => {
+    asselLabel = asselLabel.replace(/\s/g, "")
+    await Assets.getAssetByElementAndCompareText(
+      "option_txs_" + asselLabel,
+      text,
+    )
+  },
+)
+
+Then(
+  /^Expect checkbox for account "([^"]*)" is( not)* selected"$/,
+  async (asselLabel: string, falseCase: string) => {
+    asselLabel = asselLabel.replace(/\s/g, "")
+    await Assets.isElementSelected("option_cbx_" + asselLabel, falseCase)
+  },
+)
+
+Then(/^Click checkbox account ([^"]*)$/, async (asselLabel: string) => {
+  asselLabel = asselLabel.replace(/\s/g, "")
+  await Assets.openElementById("option_cbx_" + asselLabel)
+})
+
+Then(
+  /^Expect dropdown menu with text "([^"]*)"$/,
+  async (expectedText: string) => {
+    let dropdownAccountId = "selected_acc"
+    await Assets.getAssetByElementAndCompareText(
+      dropdownAccountId,
+      expectedText,
+    )
+  },
+)
+
+Then(/^Open ([^"]*) tab$/, async (tab: string) => {
+  await Assets.openElementById("tab_" + tab)
+})
+
+Then(/^Wait while ([^"]*) calculated$/, async (text: string) => {
+  const asselLabel = "page_title"
+  await Assets.getAssetByElementAndCompareText(asselLabel, text)
+})
+
+Then(/^Expect that ([^"]*) is "([^"]*)"$/, async (id: string, text: string) => {
+  let label = "transaction_" + id + "_0"
+  await Assets.getAssetByElementAndCompareText(label, text)
+})
+
+Then(/^Open first account in the row/, async () => {
+  await clickElement("click", "selector", '[id="account_row_0"]')
+})
 
 Then(
   /^Expect "([^"]*)" not with text ([^"]*)$/,

@@ -20,7 +20,7 @@ export interface BtcTransactionData {
 export const useTransactionsFilter = ({
   excludeEmpty = true,
   includeAddresses = [],
-  btcData
+  btcData,
 }: UseTransactionsFilterProps) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
@@ -32,7 +32,7 @@ export const useTransactionsFilter = ({
             principals,
             applicationsMeta,
             transactions.transactions,
-            btcData
+            btcData,
           ).filter((t) =>
             excludeEmpty
               ? Number(t.afterLabel) > 0 ||

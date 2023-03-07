@@ -1,76 +1,75 @@
-import React, { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useMemo } from "react"
+import { useSearchParams } from "react-router-dom"
+import { useBtcTransactions } from "src/features/fungable-token/btc/hooks/use-btc-transactions"
 
-import { IOption } from "@nfid-frontend/ui";
-import { sortByDate } from "@nfid-frontend/utils";
+import { IOption } from "@nfid-frontend/ui"
+import { sortByDate } from "@nfid-frontend/utils"
 
-import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions";
-import { selectReceivedTransactions, selectSendTransactions } from "frontend/integration/rosetta/select-transactions";
-import { useTransactionsFilter } from "frontend/integration/wallet/hooks/use-transactions-filter";
-import { useWallet } from "frontend/integration/wallet/hooks/use-wallet";
-import { Loader } from "frontend/ui/atoms/loader";
-import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history";
-import { useBtcTransactions } from "src/features/fungable-token/btc/hooks/use-btc-transactions";
+import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
+import {
+  selectReceivedTransactions,
+  selectSendTransactions,
+} from "frontend/integration/rosetta/select-transactions"
+import { useTransactionsFilter } from "frontend/integration/wallet/hooks/use-transactions-filter"
+import { useWallet } from "frontend/integration/wallet/hooks/use-wallet"
+import { Loader } from "frontend/ui/atoms/loader"
+import ProfileTransactionsPage from "frontend/ui/pages/new-profile/transaction-history"
 
 const ProfileTransactions = () => {
-  const { walletTransactions, isWalletLoading } = useWallet();
+  const { walletTransactions, isWalletLoading } = useWallet()
   const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
-    useEthTransactions();
-  const { txs: btcTxs } = useBtcTransactions();
+    useEthTransactions()
+  const { txs: btcTxs } = useBtcTransactions()
 
   const sendBtcTransactions = useMemo(() => {
-    return btcTxs?.sendTransactions?.filter((tx) => tx.type === "send") ?? [];
-  }, [btcTxs]);
+    return btcTxs?.sendTransactions?.filter((tx) => tx.type === "send") ?? []
+  }, [btcTxs])
   const receivedBtcTransactions = useMemo(() => {
-    return btcTxs?.receivedTransactions?.filter((tx) => tx.type === "received") ?? [];
-  }, [btcTxs]);
-  const btcWalletAddress = btcTxs?.walletAddress;
-  const btcAddress = btcTxs?.btcAddress;
+    return (
+      btcTxs?.receivedTransactions?.filter((tx) => tx.type === "received") ?? []
+    )
+  }, [btcTxs])
+  const btcWalletAddress = btcTxs?.walletAddress
+  const btcAddress = btcTxs?.btcAddress
 
-  const [search] = useSearchParams();
+  const [search] = useSearchParams()
 
-  let transactionFilterFromSearch = search.get("wallet");
-
-  console.log("transactionFilterFromSearch", transactionFilterFromSearch);
-
-  //dirty hack. don't do like this
-  if (btcAddress === transactionFilterFromSearch && btcWalletAddress) {
-    console.log("btcWalletAddress", btcWalletAddress);
-    transactionFilterFromSearch = btcWalletAddress;
-  }
-  console.log("transactionFilterFromSearch2", transactionFilterFromSearch);
+  let transactionFilterFromSearch = search.get("wallet")
 
   let [transactionFilter, setTransactionFilter] = React.useState<string[]>(
-    transactionFilterFromSearch ? [transactionFilterFromSearch] : []
-  );
+    transactionFilterFromSearch ? [transactionFilterFromSearch] : [],
+  )
 
-  const btcTransactionAmount = receivedBtcTransactions.length + sendBtcTransactions.length;
+  //dirty hack. don't do like this
+  //on first load calculation of BTC takes significant amount of time
+  //we have to rerender it when ready
+  if (
+    btcAddress &&
+    btcWalletAddress &&
+    transactionFilter.includes(btcAddress)
+  ) {
+    const a = transactionFilter.indexOf(btcAddress)
+    transactionFilter[a] = btcWalletAddress
+    setTransactionFilter(transactionFilter)
+  }
+
+  const btcTransactionAmount =
+    receivedBtcTransactions.length + sendBtcTransactions.length
 
   const { transactionsFilterOptions } = useTransactionsFilter({
     excludeEmpty: false,
     btcData: {
       value: btcWalletAddress,
-      transactions: btcTransactionAmount
-    }
-  });
+      transactions: btcTransactionAmount,
+    },
+  })
 
-  console.log("transactionFilter", transactionFilter);
-  let selectedTransactionFilter = React.useMemo(
-    () => {
-      let tf = transactionFilter
-        .map((f) => transactionsFilterOptions.find((tf) => tf.value === f))
-        .filter((f: IOption | undefined): f is IOption => Boolean(f));
-      // if (tf.length === 0) {
-      //   tf = transactionFilter
-      //     .map((f) => transactionsFilterOptions.find((tf) => tf.label === "NFID account 1"))
-      //     .filter((f: IOption | undefined): f is IOption => Boolean(f));
-      // }
-      return tf;
-    }
-    ,
-    [transactionFilter, transactionsFilterOptions, btcAddress]
-  );
-
+  let selectedTransactionFilter = React.useMemo(() => {
+    let tf = transactionFilter
+      .map((f) => transactionsFilterOptions.find((tf) => tf.value === f))
+      .filter((f: IOption | undefined): f is IOption => Boolean(f))
+    return tf
+  }, [transactionFilter, transactionsFilterOptions, btcAddress])
 
   // FIXME: find suitable hook to return the walletAddresses
   // they need to be calculated already when fetching transactions
@@ -79,60 +78,79 @@ const ProfileTransactions = () => {
       transactionFilter.length === 0
         ? transactionsFilterOptions.map((tfo) => tfo.value)
         : transactionFilter,
-    [transactionFilter, transactionsFilterOptions, btcAddress, selectedTransactionFilter]
-  );
+    [
+      transactionFilter,
+      transactionsFilterOptions,
+      btcAddress,
+      selectedTransactionFilter,
+    ],
+  )
 
   const sendTransactions = React.useMemo(
     () =>
       walletTransactions
         ? sortByDate(
-          selectSendTransactions({
-            transactions: walletTransactions,
-            accounts: walletAddresses
-          }).concat(sendEthTXs)
-            .concat(sendBtcTransactions.filter(
-              () => {
-                return btcWalletAddress ?
-                  walletAddresses.indexOf(btcWalletAddress) > -1
-                  : false;
-              }
-            )),
-          "MMM dd',' yyyy - hh:mm:ss a"
-        )
+            selectSendTransactions({
+              transactions: walletTransactions,
+              accounts: walletAddresses,
+            })
+              .concat(sendEthTXs)
+              .concat(
+                sendBtcTransactions.filter(() => {
+                  return btcWalletAddress
+                    ? walletAddresses.indexOf(btcWalletAddress) > -1
+                    : false
+                }),
+              ),
+            "MMM dd',' yyyy - hh:mm:ss a",
+          )
         : [],
-    [sendEthTXs, walletAddresses, walletTransactions, sendBtcTransactions, selectedTransactionFilter]
-  );
+    [
+      sendEthTXs,
+      walletAddresses,
+      walletTransactions,
+      sendBtcTransactions,
+      selectedTransactionFilter,
+    ],
+  )
 
   const recceivedTransactions = React.useMemo(
     () =>
       walletTransactions
         ? sortByDate(
-          selectReceivedTransactions({
-            transactions: walletTransactions,
-            accounts: walletAddresses
-          }).concat(receiveEthTXs)
-            .concat(receivedBtcTransactions.filter(
-              () => {
-                return btcWalletAddress ?
-                  walletAddresses.indexOf(btcWalletAddress) > -1
-                  : false;
-              }
-            )),
-          "MMM dd',' yyyy - hh:mm:ss a"
-        )
+            selectReceivedTransactions({
+              transactions: walletTransactions,
+              accounts: walletAddresses,
+            })
+              .concat(receiveEthTXs)
+              .concat(
+                receivedBtcTransactions.filter(() => {
+                  return btcWalletAddress
+                    ? walletAddresses.indexOf(btcWalletAddress) > -1
+                    : false
+                }),
+              ),
+            "MMM dd',' yyyy - hh:mm:ss a",
+          )
         : [],
-    [receiveEthTXs, walletAddresses, walletTransactions, receivedBtcTransactions, selectedTransactionFilter]
-  );
+    [
+      receiveEthTXs,
+      walletAddresses,
+      walletTransactions,
+      receivedBtcTransactions,
+      selectedTransactionFilter,
+    ],
+  )
 
   const handleRemoveFilterChip = React.useCallback(
     (value: string) => {
       const transactionFilter = selectedTransactionFilter.filter(
-        (stf) => stf.label !== value
-      );
-      setTransactionFilter(transactionFilter.map((tf) => tf.value));
+        (stf) => stf.label !== value,
+      )
+      setTransactionFilter(transactionFilter.map((tf) => tf.value))
     },
-    [selectedTransactionFilter]
-  );
+    [selectedTransactionFilter],
+  )
 
   return (
     <>
@@ -147,7 +165,7 @@ const ProfileTransactions = () => {
         onChipRemove={handleRemoveFilterChip}
       />
     </>
-  );
-};
+  )
+}
 
-export default ProfileTransactions;
+export default ProfileTransactions

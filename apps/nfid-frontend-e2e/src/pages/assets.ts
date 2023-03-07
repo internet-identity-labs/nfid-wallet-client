@@ -47,6 +47,27 @@ export class Assets {
     await $(this.assetLabel + `${name}` + "']").click()
   }
 
+  public async openElementById(name: string) {
+    await $(this.assetElement + `${name}` + "']").waitForDisplayed({
+      timeout: 15000,
+      timeoutMsg: "Element has not been showed! Missing asset label!",
+    })
+    await $(this.assetElement + `${name}` + "']").click()
+  }
+
+  public async isElementSelected(name: string, falseCase: string) {
+    await $(this.assetElement + `${name}` + "']").waitForDisplayed({
+      timeout: 15000,
+      timeoutMsg: "Element has not been showed! Missing asset label!",
+    })
+    let isSel = await $(this.assetElement + `${name}` + "']").isSelected()
+    if (falseCase) {
+      expect(isSel).toEqual(false)
+    } else {
+      expect(isSel).toEqual(true)
+    }
+  }
+
   public async verifyAssetFields(
     name: string,
     currency: string,

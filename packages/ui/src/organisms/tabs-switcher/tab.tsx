@@ -6,7 +6,7 @@ interface ITab extends React.HTMLAttributes<HTMLDivElement> {
   onClick?: () => void
 }
 
-const Tab: React.FC<ITab> = ({ isActive, onClick, children }) => {
+const Tab: React.FC<ITab> = ({ isActive, onClick, children, id }) => {
   return (
     <div
       className={clsx(
@@ -15,7 +15,10 @@ const Tab: React.FC<ITab> = ({ isActive, onClick, children }) => {
       )}
       onClick={onClick}
     >
-      <div className={clsx("font-bold", isActive ? "text-blue" : "text-black")}>
+      <div
+        className={clsx("font-bold", isActive ? "text-blue" : "text-black")}
+        id={`${id}`}
+      >
         {children}
       </div>
     </div>

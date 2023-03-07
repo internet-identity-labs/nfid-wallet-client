@@ -30,6 +30,7 @@ export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
             key={`tab_${tab.name}`}
             isActive={activeTab === tab.name}
             onClick={() => setActiveTab(tab.name)}
+            id={`tab_${tab.name}`}
           >
             {tab.title}
           </Tab>

@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 
 import {
   SDKApplicationMeta,
@@ -47,13 +47,16 @@ export const BuyComponent = ({
   data,
 }: IBuyComponent) => {
   const { rates } = useExchangeRates(["ETH"])
-  const [isButtonDisabled, setIsButtonDisable] = useState(isButtonDisabledProp)
   const { counter } = useTimer({
     defaultCounter: 100,
     frequency: 100,
     loop: false,
-    onElapsed: () => setIsButtonDisable(false),
   })
+
+  const isButtonDisabled = useMemo(
+    () => (!isButtonDisabledProp ? isButtonDisabledProp : counter > 0),
+    [counter, isButtonDisabledProp],
+  )
 
   const fee = useMemo(() => {
     if (!feeMin || !feeMax || !rates)
@@ -84,8 +87,6 @@ export const BuyComponent = ({
       usd: costInUsd,
     }
   }, [price, rates])
-
-  console.log({ data })
 
   return (
     <TooltipProvider>

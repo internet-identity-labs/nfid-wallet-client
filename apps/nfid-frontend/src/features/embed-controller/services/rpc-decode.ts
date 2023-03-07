@@ -10,7 +10,6 @@ export const decodeRPCRequestService = async ({
   try {
     if (rpcMessage?.params.length > 1) {
       const data = JSON.parse(rpcMessage?.params[1])
-      console.log({ data })
       return await decodeTokenByAssetClass(
         data.message.makeAsset.assetType.assetClass,
         data.message.makeAsset.assetType.data,

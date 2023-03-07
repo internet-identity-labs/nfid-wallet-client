@@ -23,13 +23,13 @@ export const AssetPreview: React.FC<IAssetPreview> = ({
         "border rounded-md",
       )}
     >
-      <div className="flex items-center">
+      <div className="flex items-center w-full">
         <img
           className={clsx("object-cover w-20 h-20", !icon && "hidden")}
           src={icon}
           alt={title}
         />
-        <div className={clsx("ml-2.5", !icon && "text-center")}>
+        <div className={clsx("ml-2.5", !icon && "text-center !ml-0 w-full")}>
           <p className="font-bold tracking-[0.01em] text-base">{title}</p>
           <p className="text-sm text-gray-400">{subtitle}</p>
         </div>

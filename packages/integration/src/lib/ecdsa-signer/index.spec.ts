@@ -73,6 +73,25 @@ describe("ECDSA suite", () => {
     expect(actual).toEqual((await nfidWallet.getAddress()).toLowerCase())
   })
 
+  it("nfid-wallet sign typed data with prepare and retrieve.", async () => {
+    const data = JSON.parse(
+      '{"primaryType":"Order","domain":{"name":"Exchange","version":"2","verifyingContract":"0x02afbd43cad367fcb71305a2dfb9a3928218f0c1","chainId":5},"types":{"EIP712Domain":[{"type":"string","name":"name"},{"type":"string","name":"version"},{"type":"uint256","name":"chainId"},{"type":"address","name":"verifyingContract"}],"AssetType":[{"name":"assetClass","type":"bytes4"},{"name":"data","type":"bytes"}],"Asset":[{"name":"assetType","type":"AssetType"},{"name":"value","type":"uint256"}],"Order":[{"name":"maker","type":"address"},{"name":"makeAsset","type":"Asset"},{"name":"taker","type":"address"},{"name":"takeAsset","type":"Asset"},{"name":"salt","type":"uint256"},{"name":"start","type":"uint256"},{"name":"end","type":"uint256"},{"name":"dataType","type":"bytes4"},{"name":"data","type":"bytes"}]},"message":{"maker":"0x5d88229726c01f00fdefed1e70bd628407dc07ce","makeAsset":{"assetType":{"assetClass":"0x73ad2146","data":"0x000000000000000000000000d8560c88d1dc85f9ed05b25878e366c49b68bef9c3217ef1d6027b5ad5404b21a911b952b5f728b4000000000000000000000002"},"value":"1"},"taker":"0x0000000000000000000000000000000000000000","takeAsset":{"assetType":{"assetClass":"0xaaaebeba","data":"0x"},"value":"1000000000000000"},"salt":"0x735d4f76838af5686a9a127ec4200b5682f72ebb0b8732e422cfa4d6d47fb4a6","start":0,"end":0,"dataType":"0x2fa3cfd3","data":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003e812345678900000000000000000000000000123456789face09616c6c64617461"}}',
+    )
+    const hash = await nfidWallet.prepareTypedSignature(data)
+    const nfidSignature = await nfidWallet.getPreparedTypedSignature(hash, data)
+    const actual = recoverTypedSignature({
+      data: {
+        types: data.types,
+        primaryType: data.primaryType,
+        domain: data.domain,
+        message: data.message,
+      },
+      signature: nfidSignature,
+      version: SignTypedDataVersion.V4,
+    })
+    expect(actual).toEqual((await nfidWallet.getAddress()).toLowerCase())
+  })
+
   it.skip("nfid-wallet safeTransfer eip721", async () => {
     const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
     const to = "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439"

@@ -15,6 +15,7 @@ export const MethodControllerService = async ({
   // "0x0d5f7d35" and "0x973bb640"
   if (dataString.startsWith("0x0d5f7d35")) return "Buy"
   if (dataString.startsWith("0x973bb640")) return "Sell"
+  if (dataString.startsWith("0x27050d1f")) return "DeployCollection"
 
   return "Success"
 }

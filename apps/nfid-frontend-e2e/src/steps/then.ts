@@ -239,21 +239,6 @@ Then(/^Open asset with label ([^"]*)$/, async (asselLabel: string) => {
   await Assets.openAssetByLabel(asselLabel)
 })
 
-Then(/^Open element with id ([^"]*)$/, async (asselLabel: string) => {
-  await Assets.openElementById(asselLabel)
-})
-
-Then(/^Click element with id ([^"]*)$/, async (asselLabel: string) => {
-  await Assets.openElementById(asselLabel)
-})
-
-Then(
-  /^Expect element with id "([^"]*)" is( not)* selected$/,
-  async (asselLabel: string, falseCase: string) => {
-    await Assets.isElementSelected(asselLabel, falseCase)
-  },
-)
-
 Then(
   /^Asset ([^"]*) appears with currency ([^"]*) and blockchain ([^"]*) balance ([^"]*) and ([^"]*)$/,
   async (

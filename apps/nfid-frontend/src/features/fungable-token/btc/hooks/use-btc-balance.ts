@@ -1,4 +1,4 @@
-import { getBtcBalance } from "src/features/fungable-token/btc/get-btc-balance"
+import { getBtcBalance } from "src/features/fungable-token/btc/get-btc"
 import useSWR from "swr"
 
 export const useBtcBalance = () => {

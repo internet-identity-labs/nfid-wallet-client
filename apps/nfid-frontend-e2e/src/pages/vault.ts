@@ -29,6 +29,10 @@ export class Vault extends Vaults {
     return "[id*='member_"
   }
 
+  private get walletOption() {
+    return "[id*='option_cbx_"
+  }
+
   private get addPolicyButton() {
     return $("#create-policy-trigger")
   }
@@ -117,6 +121,14 @@ export class Vault extends Vaults {
     return await $(this.memberName + `${memberName}` + "']")
   }
 
+  public async selectWalletFromDropdown(walletName: string) {
+    await $(this.walletOption + `${walletName}` + "']").waitForDisplayed({
+      timeout: 7000,
+      timeoutMsg: "Wallet has not been created! Missing wallet option!",
+    })
+    return await $(this.walletOption + `${walletName}` + "']").click()
+  }
+
   public async addWallet(walletName: string) {
     await this.addWalletButton.waitForDisplayed({
       timeout: 4000,
@@ -160,11 +172,7 @@ export class Vault extends Vaults {
       timeoutMsg: "Wallets are not on the list",
     })
 
-    await this.walletsList.forEach(async (wallet) => {
-      if ((await wallet.getText()) === walletName) {
-        await wallet.click()
-      }
-    })
+    await this.selectWalletFromDropdown(walletName)
 
     await this.greaterThanInput.setValue(greaterThan)
     await this.approversInput.setValue(approvers)

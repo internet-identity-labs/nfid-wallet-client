@@ -4,6 +4,7 @@ import React from "react"
 import { BuyComponent } from "./components/buy"
 import { DeployComponent } from "./components/deploy-collection"
 import { DetailsComponent } from "./components/details"
+import { MintComponent } from "./components/mint"
 import { SellComponent } from "./components/sell"
 import { SuccessComponent } from "./components/success"
 import { EmbedControllerMachineActor } from "./machine"
@@ -69,6 +70,22 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           toAddress={state.context.rpcMessage?.params[0].to}
           feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
           feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
+          isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
+        />
+      )
+    case state.matches("Initial.UI.Mint"):
+      return (
+        <MintComponent
+          applicationMeta={state.context.appMeta}
+          showTransactionDetails={() => send("SHOW_TRANSACTION_DETAILS")}
+          onApprove={() => send({ type: "SIGN" })}
+          onCancel={() => send("CANCEL")}
+          data={state.context.data?.data}
+          fromAddress={state.context.rpcMessage?.params[0].from}
+          toAddress={state.context.rpcMessage?.params[0].to}
+          feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
+          feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
+          price={state.context.rpcMessage?.params[0].value}
           isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
         />
       )

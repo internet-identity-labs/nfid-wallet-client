@@ -2,6 +2,7 @@ import { useActor } from "@xstate/react"
 import React from "react"
 
 import { BuyComponent } from "./components/buy"
+import { DeployComponent } from "./components/deploy-collection"
 import { DetailsComponent } from "./components/details"
 import { SellComponent } from "./components/sell"
 import { SuccessComponent } from "./components/success"
@@ -54,6 +55,21 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           onCancel={() => send("CANCEL")}
           data={state.context.data}
           fromAddress={state.context.rpcMessage?.params[0]}
+        />
+      )
+    case state.matches("Initial.UI.DeployCollection"):
+      return (
+        <DeployComponent
+          applicationMeta={state.context.appMeta}
+          showTransactionDetails={() => send("SHOW_TRANSACTION_DETAILS")}
+          onApprove={() => send({ type: "SIGN" })}
+          onCancel={() => send("CANCEL")}
+          data={state.context.data?.data}
+          fromAddress={state.context.rpcMessage?.params[0].from}
+          toAddress={state.context.rpcMessage?.params[0].to}
+          feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
+          feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
+          isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
         />
       )
     case state.matches("Initial.UI.WaitForSignature"):

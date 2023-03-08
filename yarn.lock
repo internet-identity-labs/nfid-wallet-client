@@ -1358,7 +1358,7 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@coinbase/wallet-sdk@3.6.3", "@coinbase/wallet-sdk@^3.5.4":
+"@coinbase/wallet-sdk@^3.5.4":
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.6.3.tgz#fd96f6f19d5a0090520c1b014ad4737bbc8e1267"
   integrity sha512-XUR4poOJE+dKzwBTdlM693CdLFitr046oZOVY3iDnbFcRrrQswhbDji7q4CmUcD4HxbfViX7PFoIwl79YQcukg==
@@ -8451,7 +8451,7 @@
   dependencies:
     tslib "1.14.1"
 
-"@walletconnect/ethereum-provider@1.8.0", "@walletconnect/ethereum-provider@^1.8.0":
+"@walletconnect/ethereum-provider@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/ethereum-provider/-/ethereum-provider-1.8.0.tgz#ed1dbf9cecc3b818758a060d2f9017c50bde1d32"
   integrity sha512-Nq9m+oo5P0F+njsROHw9KMWdoc/8iGHYzQdkjJN/1C7DtsqFRg5k5a3hd9rzCLpbPsOC1q8Z5lRs6JQgDvPm6Q==
@@ -9041,13 +9041,10 @@
     buffer "6.0.3"
     valtio "1.7.6"
 
-"@web3modal/ethereum@^2.0.0-beta.9":
-  version "2.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/@web3modal/ethereum/-/ethereum-2.0.0-beta.10.tgz#cb49700f492f9fc651f1a033f60f5c1bb8821bb1"
-  integrity sha512-Lu1veaAyATAUNaA1tHUlxPxq97eZPR8khPkCjaEu087Ss4k6mJbqfoHyd73ySBDL6ycJIcgggMyMlSU4fGQVYA==
-  dependencies:
-    "@coinbase/wallet-sdk" "3.6.3"
-    "@walletconnect/ethereum-provider" "1.8.0"
+"@web3modal/ethereum@^2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@web3modal/ethereum/-/ethereum-2.1.3.tgz#9e13a2df8303b8241efd800e2f333a2f42329868"
+  integrity sha512-LUYAKP4FCjyQkyuo8luLWa6D40p23R+GBkc35Yrlgkc8f1c9ZbeAMkg6D3HD4A0KsacALfVcf/AQrDD35fZM2A==
 
 "@web3modal/html@^2.0.0-beta.9":
   version "2.0.0-beta.10"

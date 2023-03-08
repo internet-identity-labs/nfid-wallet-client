@@ -20,6 +20,10 @@ export const SuccessComponent = ({
         return `You just bought “${itemName}”`
       case "Sell":
         return `You just sold “${itemName}”`
+      case "Mint":
+        return `You've just minted a new NFT`
+      case "LazyMint":
+        return `You've just minted a new NFT`
     }
   }, [itemName, method])
 

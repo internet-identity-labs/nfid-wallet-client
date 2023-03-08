@@ -123,6 +123,11 @@ export const EmbedControllerMachine =
                         actions: "assignMethod",
                         cond: (_, event) => event.data === "Mint",
                       },
+                      {
+                        target: "LazyMint",
+                        actions: "assignMethod",
+                        cond: (_, event) => event.data === "LazyMint",
+                      },
                     ],
                   },
                 },

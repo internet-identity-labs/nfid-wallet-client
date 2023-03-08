@@ -4,6 +4,7 @@ import React from "react"
 import { BuyComponent } from "./components/buy"
 import { DeployComponent } from "./components/deploy-collection"
 import { DetailsComponent } from "./components/details"
+import { LazyMintComponent } from "./components/lazy-mint"
 import { MintComponent } from "./components/mint"
 import { SellComponent } from "./components/sell"
 import { SuccessComponent } from "./components/success"
@@ -87,6 +88,15 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
           price={state.context.rpcMessage?.params[0].value}
           isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
+        />
+      )
+    case state.matches("Initial.UI.LazyMint"):
+      return (
+        <LazyMintComponent
+          applicationMeta={state.context.appMeta}
+          onSign={() => send({ type: "SIGN" })}
+          onCancel={() => send("CANCEL")}
+          data={state.context.data}
         />
       )
     case state.matches("Initial.UI.WaitForSignature"):

@@ -101,7 +101,7 @@ export const useAllNFTs = () => {
           collection: {
             id: "zhibq-piaaa-aaaah-qcvka-cai",
             priority: 10,
-            name: "Encoded collection",
+            name: nft?.contractName,
             brief: "9999 beautiful and striking NFTs",
             description:
               "Panda Queen is a bold and gorgeous artwork drawn in a unique fine-art comic style by artist Mark Sarmel.",
@@ -145,12 +145,11 @@ export const useAllNFTs = () => {
           },
           canisterId: "zhibq-piaaa-aaaah-qcvka-cai",
           index: 571,
-          tokenId: nft.tokenId,
-          name: "Encoded NFT",
-          assetPreview:
-            "https://images.entrepot.app/tnc/qtejr-pqaaa-aaaah-qcyvq-cai/prxrd-4ykor-uwiaa-aaaaa-beaan-iaqca-aaaim-a",
+          tokenId: nft?.tokenId,
+          name: nft?.title,
+          assetPreview: nft?.thumbnail,
           assetFullsize: {
-            url: "https://dhiaa-ryaaa-aaaae-qabva-cai.raw.ic0.app/?tokenid=prxrd-4ykor-uwiaa-aaaaa-beaan-iaqca-aaaim-a",
+            url: nft?.image,
             format: "iframe",
           },
           blockchain: "eth",

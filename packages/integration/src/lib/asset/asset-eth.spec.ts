@@ -127,8 +127,27 @@ describe("Ethereum Asset", () => {
   it("should request items by user", async function () {
     const items = await ethereumAsset.getItemsByUser({ size: 1 })
     expect(items).toEqual({
-      total: undefined,
-      items: expect.any(Array),
+      total: 5,
+      items: [
+        {
+          id: "ETHEREUM:0x1f419b9469d641d333805c4054ca3b65af54d315:1653",
+          tokenId: "1653",
+          contract: "0x1f419b9469d641d333805c4054ca3b65af54d315",
+          collection: "0x1f419b9469d641d333805c4054ca3b65af54d315",
+          blockchain: "ETHEREUM",
+          lastUpdatedAt: "2023-03-07T14:46:38.138Z",
+          thumbnail:
+            "https://res.cloudinary.com/alchemyapi/image/upload/thumbnailv2/eth-goerli/59574aaf4d245619066f319901075a03",
+          image:
+            "https://nft-cdn.alchemy.com/eth-goerli/59574aaf4d245619066f319901075a03",
+          title: "Snake #1653",
+          description:
+            "A research project by DEPT® for generating and running interactive NFTs.",
+          tokenType: "ERC721",
+          contractName: "Snakes on a chain",
+          contractSymbol: "SNAKE",
+        },
+      ],
     })
   })
 

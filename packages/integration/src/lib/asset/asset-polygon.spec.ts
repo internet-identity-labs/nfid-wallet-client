@@ -126,8 +126,27 @@ describe("Polygon Asset", () => {
   it("should request items by user", async function () {
     const items = await polygonAsset.getItemsByUser({ size: 1 })
     expect(items).toEqual({
-      total: undefined,
-      items: expect.any(Array),
+      total: 1,
+      items: [
+        {
+          id: "POLYGON:0xa25ccf05ddb5d67d9ebfdea9b76fe3201b90d3ae:65478239585360661566186731368853181570115269014612076549743176376606543266369",
+          tokenId:
+            "65478239585360661566186731368853181570115269014612076549743176376606543266369",
+          contract: "0xa25ccf05ddb5d67d9ebfdea9b76fe3201b90d3ae",
+          collection: "0xa25ccf05ddb5d67d9ebfdea9b76fe3201b90d3ae",
+          blockchain: "POLYGON",
+          lastUpdatedAt: "2023-02-01T12:03:23.348Z",
+          thumbnail:
+            "https://res.cloudinary.com/alchemyapi/image/upload/thumbnailv2/matic-mumbai/bb028732257939400ab526ce1e60a3f2",
+          image:
+            "https://nft-cdn.alchemy.com/matic-mumbai/bb028732257939400ab526ce1e60a3f2",
+          title: "Test Gateway #22",
+          description: "",
+          tokenType: "ERC1155",
+          contractName: "Meshplus Test Store Multi",
+          contractSymbol: "MTSM",
+        },
+      ],
     })
   })
 

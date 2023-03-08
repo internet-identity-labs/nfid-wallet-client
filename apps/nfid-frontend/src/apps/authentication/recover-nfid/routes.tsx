@@ -1,7 +1,10 @@
+import React from "react"
 import { Outlet, Route } from "react-router-dom"
 
-import { AppScreenRecoverNFID } from "."
-import { RouterRegisterDeviceDecider } from "../../device/register-device-decider"
+const AppScreenRecoverNFID = React.lazy(() => import("."))
+const RouterRegisterDeviceDecider = React.lazy(
+  () => import("../../device/register-device-decider"),
+)
 
 export const RecoverNFIDRoutesConstants = {
   base: "/recover-nfid",
@@ -14,17 +17,21 @@ export const RecoverNFIDRoutes = (
     <Route
       path={RecoverNFIDRoutesConstants.enterRecoveryPhrase}
       element={
-        <AppScreenRecoverNFID
-          registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
-        />
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <AppScreenRecoverNFID
+            registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
+          />
+        </React.Suspense>
       }
     />
     <Route
       path={RecoverNFIDRoutesConstants.registerDevice}
       element={
-        <RouterRegisterDeviceDecider
-          registerSuccessPath={"/profile/security"}
-        />
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <RouterRegisterDeviceDecider
+            registerSuccessPath={"/profile/security"}
+          />
+        </React.Suspense>
       }
     />
   </Route>

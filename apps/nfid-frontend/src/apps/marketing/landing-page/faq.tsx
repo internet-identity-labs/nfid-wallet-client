@@ -104,3 +104,5 @@ export const Faq = () => {
     </AppScreen>
   )
 }
+
+export default Faq

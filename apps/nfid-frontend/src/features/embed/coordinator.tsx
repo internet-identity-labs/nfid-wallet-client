@@ -12,7 +12,7 @@ import { EmbedControllerCoordinator } from "../embed-controller/coordinator"
 import { EmbedControllerMachineActor } from "../embed-controller/machine"
 import { NFIDEmbedMachine } from "./machines"
 
-export const NFIDEmbedCoordinator = () => {
+export default function NFIDEmbedCoordinator() {
   const [state] = useMachine(NFIDEmbedMachine)
 
   React.useEffect(

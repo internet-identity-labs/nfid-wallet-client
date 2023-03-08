@@ -182,3 +182,4 @@ export const VaultTransactionsDetailsPage = () => {
     </ProfileTemplate>
   )
 }
+export default VaultTransactionsDetailsPage

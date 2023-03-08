@@ -25,3 +25,5 @@ export const VaultsDetailsCoordinator: React.FC<
     </ProfileTemplate>
   )
 }
+
+export default VaultsDetailsCoordinator

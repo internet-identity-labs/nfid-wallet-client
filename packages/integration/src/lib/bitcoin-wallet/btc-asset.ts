@@ -7,6 +7,7 @@ import {
   FungibleActivityRecords,
   FungibleActivityRequest,
   FungibleAsset,
+  TokenPrice,
 } from "../asset/types"
 import { BtcWallet } from "./btc-wallet"
 
@@ -30,9 +31,14 @@ export const BtcAsset: FungibleAsset = {
     const spent = json.chain_stats.spent_txo_sum
     const balance = funded - spent
 
+    let price: TokenPrice[]
     const balanceBN = toBn(balance * 0.00000001)
+    try {
+      price = await getPrice(["BTC"])
+    } catch (e) {
+      price = [{ price: "0.0", token: "BTC" }]
+    }
 
-    const price = await getPrice(["BTC"])
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
 
     return { balance: balanceBN, balanceinUsd }
@@ -41,7 +47,7 @@ export const BtcAsset: FungibleAsset = {
   async getFungibleActivityByTokenAndUser(
     request: FungibleActivityRequest,
   ): Promise<FungibleActivityRecords> {
-    const size = request.size ? request.size : 10
+    const size = request.size ? request.size : Number.MAX_VALUE
     const activities: FungibleActivityRecord[] = []
     let cursor = request.cursor
     const address = request.address
@@ -99,6 +105,10 @@ export const BtcAsset: FungibleAsset = {
           })
       }
 
+      if (json.length === 0) {
+        break
+      }
+
       if (records.length < size) {
         activities.push(...records)
         break
@@ -115,7 +125,6 @@ export const BtcAsset: FungibleAsset = {
       activities.push(...records)
       cursor = records[records.length - 1].transactionHash
     }
-
     return { activities, cursor }
   },
 }

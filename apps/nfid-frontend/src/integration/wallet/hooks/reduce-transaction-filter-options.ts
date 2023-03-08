@@ -1,4 +1,5 @@
 import { principalToAddress } from "ictool"
+import { BtcTransactionData } from "src/integration/wallet/hooks/use-transactions-filter"
 
 import { IOption } from "@nfid-frontend/ui"
 import { Application, PrincipalAccount } from "@nfid/integration"
@@ -29,11 +30,17 @@ const mapToTransactionFilterOption = (
   principal: PrincipalAccount,
   transactions: Transaction[],
   application?: Application,
+  btcValue?: string,
+  btcTransactionsCount?: number,
 ): TransactionsFilterOption => {
   const value = principalToAddress(principal.principal as any)
+  let transactionCount = getTransactionsCount(value, transactions)
+  if (value === btcValue && btcTransactionsCount) {
+    transactionCount += btcTransactionsCount
+  }
   return {
     label: getWalletName(principal.account, application),
-    afterLabel: `${getTransactionsCount(value, transactions)} TXs`,
+    afterLabel: `${transactionCount} TXs`,
     value,
   }
 }
@@ -44,6 +51,7 @@ export const reduceTransactionFilterOptions = (
   principals: PrincipalAccount[],
   applications: Application[],
   transactions: Transaction[],
+  btcData?: BtcTransactionData,
 ): TransactionsFilterOption[] => {
   const options = principals
     .reduce<TransactionsFilterOption[]>((acc, principal) => {
@@ -52,7 +60,13 @@ export const reduceTransactionFilterOptions = (
       )
       return [
         ...acc,
-        mapToTransactionFilterOption(principal, transactions, applicationMatch),
+        mapToTransactionFilterOption(
+          principal,
+          transactions,
+          applicationMatch,
+          btcData?.value,
+          btcData?.transactions,
+        ),
       ]
     }, [])
     .sort(sortAlphabetic(({ label }) => label))

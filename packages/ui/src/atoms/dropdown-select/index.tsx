@@ -123,6 +123,7 @@ export const DropdownSelect = ({
             "text-sm leading-5",
             (!isMultiselect || isAllSelected) && "hidden",
           )}
+          id="selected_acc"
         >
           {selectedValues?.length
             ? `${selectedValues.length} selected`

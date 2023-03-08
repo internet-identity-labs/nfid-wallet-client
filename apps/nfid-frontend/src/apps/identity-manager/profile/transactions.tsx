@@ -1,5 +1,6 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
+import { useBtcTransactions } from "src/features/fungable-token/btc/hooks/use-btc-transactions"
 
 import { IOption } from "@nfid-frontend/ui"
 import { sortByDate } from "@nfid-frontend/utils"
@@ -18,24 +19,57 @@ const ProfileTransactions = () => {
   const { walletTransactions, isWalletLoading } = useWallet()
   const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
     useEthTransactions()
+  const { txs: btcTxs } = useBtcTransactions()
+
+  const sendBtcTransactions = useMemo(() => {
+    return btcTxs?.sendTransactions?.filter((tx) => tx.type === "send") ?? []
+  }, [btcTxs])
+  const receivedBtcTransactions = useMemo(() => {
+    return (
+      btcTxs?.receivedTransactions?.filter((tx) => tx.type === "received") ?? []
+    )
+  }, [btcTxs])
+  const btcWalletPrincipal = btcTxs?.walletAddress
+  const btcAddress = btcTxs?.btcAddress
+
   const [search] = useSearchParams()
 
-  const transactionFilterFromSearch = search.get("wallet")
+  let transactionFilterFromSearch = search.get("wallet")
 
-  const [transactionFilter, setTransactionFilter] = React.useState<string[]>(
+  let [transactionFilter, setTransactionFilter] = React.useState<string[]>(
     transactionFilterFromSearch ? [transactionFilterFromSearch] : [],
   )
+
+  //dirty hack. don't do like this
+  //on first load calculation of BTC takes significant amount of time
+  //we have to rerender it when ready
+  if (
+    btcAddress &&
+    btcWalletPrincipal &&
+    transactionFilter.includes(btcAddress)
+  ) {
+    const a = transactionFilter.indexOf(btcAddress)
+    transactionFilter[a] = btcWalletPrincipal
+    setTransactionFilter(transactionFilter)
+  }
+
+  const btcTransactionAmount =
+    receivedBtcTransactions.length + sendBtcTransactions.length
+
   const { transactionsFilterOptions } = useTransactionsFilter({
     excludeEmpty: false,
+    btcData: {
+      value: btcWalletPrincipal,
+      transactions: btcTransactionAmount,
+    },
   })
 
-  const selectedTransactionFilter = React.useMemo(
-    () =>
-      transactionFilter
-        .map((f) => transactionsFilterOptions.find((tf) => tf.value === f))
-        .filter((f: IOption | undefined): f is IOption => Boolean(f)),
-    [transactionFilter, transactionsFilterOptions],
-  )
+  let selectedTransactionFilter = React.useMemo(() => {
+    let tf = transactionFilter
+      .map((f) => transactionsFilterOptions.find((tf) => tf.value === f))
+      .filter((f: IOption | undefined): f is IOption => Boolean(f))
+    return tf
+  }, [transactionFilter, transactionsFilterOptions])
 
   // FIXME: find suitable hook to return the walletAddresses
   // they need to be calculated already when fetching transactions
@@ -54,12 +88,27 @@ const ProfileTransactions = () => {
             selectSendTransactions({
               transactions: walletTransactions,
               accounts: walletAddresses,
-            }).concat(sendEthTXs),
+            })
+              .concat(sendEthTXs)
+              .concat(
+                sendBtcTransactions.filter(() => {
+                  return btcWalletPrincipal
+                    ? walletAddresses.indexOf(btcWalletPrincipal) > -1
+                    : false
+                }),
+              ),
             "MMM dd',' yyyy - hh:mm:ss a",
           )
         : [],
-    [sendEthTXs, walletAddresses, walletTransactions],
+    [
+      btcWalletPrincipal,
+      sendEthTXs,
+      walletAddresses,
+      walletTransactions,
+      sendBtcTransactions,
+    ],
   )
+
   const recceivedTransactions = React.useMemo(
     () =>
       walletTransactions
@@ -67,11 +116,25 @@ const ProfileTransactions = () => {
             selectReceivedTransactions({
               transactions: walletTransactions,
               accounts: walletAddresses,
-            }).concat(receiveEthTXs),
+            })
+              .concat(receiveEthTXs)
+              .concat(
+                receivedBtcTransactions.filter(() => {
+                  return btcWalletPrincipal
+                    ? walletAddresses.indexOf(btcWalletPrincipal) > -1
+                    : false
+                }),
+              ),
             "MMM dd',' yyyy - hh:mm:ss a",
           )
         : [],
-    [receiveEthTXs, walletAddresses, walletTransactions],
+    [
+      btcWalletPrincipal,
+      receiveEthTXs,
+      walletAddresses,
+      walletTransactions,
+      receivedBtcTransactions,
+    ],
   )
 
   const handleRemoveFilterChip = React.useCallback(

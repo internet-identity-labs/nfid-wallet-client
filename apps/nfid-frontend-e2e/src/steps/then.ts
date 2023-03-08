@@ -1,5 +1,4 @@
 import { Then } from "@cucumber/cucumber"
-import { wait } from "@nrwl/nx-cloud/lib/utilities/waiter"
 
 import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Assets from "../pages/assets"
@@ -39,6 +38,7 @@ import isVisible from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
+import { format } from "date-fns"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -268,6 +268,73 @@ Then(
     await Assets.getAssetByElementAndCompareText(asselLabel, text)
   },
 )
+
+Then(/^Open dropdown menu on transactions page/, async () => {
+  let dropdownAccountId = "selected_acc"
+  await Assets.openElementById(dropdownAccountId)
+})
+
+Then(
+  /^Expect txs account "([^"]*)" with txs amount "([^"]*)"$/,
+  async (asselLabel: string, text: string) => {
+    asselLabel = asselLabel.replace(/\s/g, "")
+    await Assets.getAssetByElementAndCompareText(
+      "option_txs_" + asselLabel,
+      text,
+    )
+  },
+)
+
+Then(
+  /^Expect checkbox for account "([^"]*)" is( not)* selected$/,
+  async (asselLabel: string, falseCase: string) => {
+    asselLabel = asselLabel.replace(/\s/g, "")
+    await Assets.isElementSelected("option_cbx_" + asselLabel, falseCase)
+  },
+)
+
+Then(/^Click checkbox account ([^"]*)$/, async (asselLabel: string) => {
+  asselLabel = asselLabel.replace(/\s/g, "")
+  await Assets.openElementById("option_cbx_" + asselLabel)
+})
+
+Then(
+  /^Expect dropdown menu with text "([^"]*)"$/,
+  async (expectedText: string) => {
+    let dropdownAccountId = "selected_acc"
+    await Assets.getAssetByElementAndCompareText(
+      dropdownAccountId,
+      expectedText,
+    )
+  },
+)
+
+Then(/^Open ([^"]*) tab$/, async (tab: string) => {
+  await Assets.openElementById("tab_" + tab)
+})
+
+Then(/^Wait while ([^"]*) calculated$/, async (text: string) => {
+  const asselLabel = "page_title"
+  await Assets.getAssetByElementAndCompareText(asselLabel, text)
+})
+
+Then(/^Expect that ([^"]*) is "([^"]*)"$/, async (id: string, text: string) => {
+  let label = "transaction_" + id + "_0"
+  await Assets.getAssetByElementAndCompareText(label, text)
+})
+
+Then(/^Expect that time field "([^"]*)" equal to ([^"]*) millis$/, async (id: string, date: string) => {
+  let label = "transaction_" + id + "_0"
+  let parsed = format(
+    new Date(Number(date)),
+    "MMM dd, yyyy - hh:mm:ss aaa",
+  )
+  await Assets.getAssetByElementAndCompareText(label, parsed)
+})
+
+Then(/^Open first account in the row/, async () => {
+  await clickElement("click", "selector", '[id="account_row_0"]')
+})
 
 Then(
   /^Expect "([^"]*)" not with text ([^"]*)$/,

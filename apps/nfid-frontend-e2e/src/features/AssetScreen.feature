@@ -2,7 +2,6 @@
 Feature:Fungible Asset
   As a user, I want to see fungible assets in profile
 
-  @asset1
   Scenario: User should be able to see BTC in assets
     Given User opens NFID site
     And User is already authenticated
@@ -13,14 +12,13 @@ Feature:Fungible Asset
     Then Bitcoin address calculated
     And Expect "token_Bitcoin_usd" not with text $0.00
 
-  @asset2
   Scenario: User should be able to see BTC in asset details
     Given User opens NFID site
     And User is already authenticated
     Given User signs in
     And Tokens displayed on user assets
     And Open asset with label Bitcoin
-    Then Expect page_title with text Your Bitcoin accounts
+    Then Wait while Bitcoin accounts calculated
     Then Expect label with text Bitcoin
     Then Expect token with text BTC
     Then Expect "token_info" not with text 0 BTC
@@ -33,4 +31,39 @@ Feature:Fungible Asset
     Then I expect that element app_row_1 becomes not displayed
     Then I expect that element app_row_0 becomes displayed
 
+  Scenario: User should be able to see transaction history in Received
+    Given User opens NFID site
+    And User is already authenticated
+    Given User signs in
+    And Tokens displayed on user assets
+    And Open asset with label Bitcoin
+    Then Wait while Bitcoin accounts calculated
+    And Open first account in the row
+    And Open Received tab
+    Then I expect that element transaction_0 becomes displayed
+    And Expect that time field "date" equal to 1677707789000 millis
+    And Expect that asset is "BTC"
+    And Expect that quantity is "0.00012717"
+    And Expect that to is "mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1"
+    And Expect that from is "tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4"
+
+  Scenario: User should be able to see transaction depends on selected app
+    Given User opens NFID site
+    And User is already authenticated
+    Given User signs in
+    And Tokens displayed on user assets
+    And Open asset with label Bitcoin
+    Then Wait while Bitcoin accounts calculated
+    And Open first account in the row
+    And Open Received tab
+    And Open dropdown menu on transactions page
+    Then Expect dropdown menu with text "1 selected"
+    And Expect txs account "NFID account 1" with txs amount "1 TXs"
+    And Expect checkbox for account "NFID account 1" is selected
+    Then Click checkbox account NFID account 1
+    Then Expect dropdown menu with text "All wallets"
+    Then I expect that element transaction_0 becomes displayed
+    Then Click checkbox account NNS account 1
+    Then Expect txs account "NNS account 1" with txs amount "0 TXs"
+    Then I expect that element transaction_0 becomes not displayed
 

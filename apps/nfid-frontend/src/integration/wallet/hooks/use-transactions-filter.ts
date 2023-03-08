@@ -9,11 +9,18 @@ import { reduceTransactionFilterOptions } from "./reduce-transaction-filter-opti
 export interface UseTransactionsFilterProps {
   excludeEmpty?: boolean
   includeAddresses?: string[]
+  btcData?: BtcTransactionData
+}
+
+export interface BtcTransactionData {
+  transactions?: number
+  value?: string
 }
 
 export const useTransactionsFilter = ({
   excludeEmpty = true,
   includeAddresses = [],
+  btcData,
 }: UseTransactionsFilterProps) => {
   const { principals } = useAllPrincipals()
   const { applicationsMeta } = useApplicationsMeta()
@@ -25,6 +32,7 @@ export const useTransactionsFilter = ({
             principals,
             applicationsMeta,
             transactions.transactions,
+            btcData,
           ).filter((t) =>
             excludeEmpty
               ? Number(t.afterLabel) > 0 ||
@@ -38,9 +46,9 @@ export const useTransactionsFilter = ({
       transactions,
       excludeEmpty,
       includeAddresses,
+      btcData
     ],
   )
-  console.debug("useTransactionsFilter", { transactionsFilterOptions })
 
   return { transactionsFilterOptions }
 }

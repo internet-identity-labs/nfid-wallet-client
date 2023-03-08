@@ -91,17 +91,26 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
                       "hover:bg-[#F3F4F6] hover:cursor-pointer h-16",
                     )}
                     key={`transaction_${index}`}
+                    id={`transaction_${index}`}
                   >
-                    <td className="pl-4 whitespace-nowrap">
+                    <td
+                      className="pl-4 whitespace-nowrap"
+                      id={`transaction_date_${index}`}
+                    >
                       {transaction.date}
                     </td>
-                    <td>{transaction.asset}</td>
-                    <td>{transaction.quantity}</td>
+                    <td id={`transaction_asset_${index}`}>
+                      {transaction.asset}
+                    </td>
+                    <td id={`transaction_quantity_${index}`}>
+                      {transaction.quantity}
+                    </td>
                     <td>
                       <span
                         className={clsx(
                           "inline-block max-w-[400px] break-words pr-5",
                         )}
+                        id={`transaction_from_${index}`}
                       >
                         {transaction.from}
                       </span>
@@ -111,6 +120,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
                         className={clsx(
                           "inline-block max-w-[400px] break-words",
                         )}
+                        id={`transaction_to_${index}`}
                       >
                         {transaction.to}
                       </span>
@@ -136,6 +146,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
       <div className={clsx("my-2")}>
         <Pagination
           data={activeTab === "Sent" ? sentData : receivedData}
+          id={`active_tab_` + activeTab}
           sliceData={setFilteredData}
         />
       </div>

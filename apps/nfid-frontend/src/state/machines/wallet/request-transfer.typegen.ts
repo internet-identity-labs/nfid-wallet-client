@@ -29,9 +29,9 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.AuthenticationMachine"
@@ -39,12 +39,12 @@ export interface Typegen0 {
     assignRequestTransferRequest: "done.invoke.registerRequestTransferHandler"
     setBlockHeight: "CONFIRM"
   }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {}
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerRequestTransferHandler"
     registerRequestTransferHandler: "xstate.init"
   }
-  eventsCausingGuards: {}
-  eventsCausingDelays: {}
   matchesStates:
     | "Authenticate"
     | "Confirm"

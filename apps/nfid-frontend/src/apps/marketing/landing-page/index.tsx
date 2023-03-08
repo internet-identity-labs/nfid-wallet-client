@@ -416,3 +416,5 @@ export const HomeScreen: React.FC<Props> = ({ children, className }) => {
     </AppScreen>
   )
 }
+
+export default HomeScreen

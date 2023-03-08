@@ -8,7 +8,6 @@ import { ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
-import { OurMission } from "./apps/marketing/landing-page/our-mission"
 import { NotFound } from "./ui/pages/404"
 
 const IDPCoordinator = React.lazy(() => import("./coordination/idp"))
@@ -33,6 +32,10 @@ const NFIDEmbedCoordinator = React.lazy(
 
 const IframeTrustDeviceCoordinator = React.lazy(
   () => import("./features/iframe/iframe-trust-device/coordinator"),
+)
+
+const OurMission = React.lazy(
+  () => import("./apps/marketing/landing-page/our-mission"),
 )
 
 if (USERGEEK_API_KEY) {

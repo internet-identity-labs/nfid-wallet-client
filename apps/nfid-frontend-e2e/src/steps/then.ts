@@ -1,5 +1,4 @@
 import { Then } from "@cucumber/cucumber"
-import { wait } from "@nrwl/nx-cloud/lib/utilities/waiter"
 
 import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Assets from "../pages/assets"
@@ -39,6 +38,7 @@ import isVisible from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
+import { format } from "date-fns"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -336,6 +336,15 @@ Then(/^Wait while ([^"]*) calculated$/, async (text: string) => {
 Then(/^Expect that ([^"]*) is "([^"]*)"$/, async (id: string, text: string) => {
   let label = "transaction_" + id + "_0"
   await Assets.getAssetByElementAndCompareText(label, text)
+})
+
+Then(/^Expect that time field "([^"]*)" equal to ([^"]*) millis$/, async (id: string, date: string) => {
+  let label = "transaction_" + id + "_0"
+  let parsed = format(
+    new Date(Number(date)),
+    "MMM dd, yyyy - hh:mm:ss aaa",
+  )
+  await Assets.getAssetByElementAndCompareText(label, parsed)
 })
 
 Then(/^Open first account in the row/, async () => {

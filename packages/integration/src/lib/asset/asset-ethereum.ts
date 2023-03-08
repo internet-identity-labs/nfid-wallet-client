@@ -23,6 +23,7 @@ import {
   Alchemy,
   SortingOrder,
   AssetTransfersCategory,
+  OwnedNftsResponse as AlchemyOwnedNftsResponse,
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
 
@@ -135,22 +136,7 @@ class EthereumAsset implements NonFungibleAsset {
     size,
     address,
   }: PageRequest = {}): Promise<NonFungibleItems> {
-    const validAddress = address ?? (await this.wallet.getAddress())
-
-    const unionAddress: UnionAddress = convertEthereumToUnionAddress(
-      validAddress,
-      this.unionBlockchain,
-    )
-    const raribleItems = await this.raribleSdk.apis.item.getItemsByOwner({
-      owner: unionAddress,
-      size,
-      continuation: cursor,
-      blockchains: [this.blockchain],
-    })
-    return {
-      total: raribleItems.total,
-      items: raribleItems.items.map(this.mapItem),
-    }
+    return this.getNftsAlchemy({ cursor, size, address })
   }
 
   public async getBalance(address?: string): Promise<ChainBalance> {
@@ -237,6 +223,43 @@ class EthereumAsset implements NonFungibleAsset {
     }
   }
 
+  private async getNftsAlchemy({
+    cursor,
+    size,
+    address,
+  }: PageRequest = {}): Promise<NonFungibleItems> {
+    const validAddress = address ?? (await this.wallet.getAddress())
+    const tokens: AlchemyOwnedNftsResponse =
+      await this.alchemySdk.nft.getNftsForOwner(validAddress, {
+        pageKey: cursor,
+        pageSize: size,
+        omitMetadata: false,
+      })
+
+    return {
+      total: tokens.totalCount,
+      items: tokens.ownedNfts.map((item) => {
+        const contract = item.contract.address
+        const chain = this.blockchain.toString()
+        return {
+          id: `${chain}:${contract}:${item.tokenId}`,
+          blockchain: chain,
+          collection: contract,
+          contract: contract,
+          tokenId: item.tokenId,
+          lastUpdatedAt: item.timeLastUpdated,
+          thumbnail: item.media[0].thumbnail,
+          image: item.media[0].gateway,
+          title: item.title,
+          description: item.description,
+          tokenType: item.tokenType.toString(),
+          contractName: item.contract.name,
+          contractSymbol: item.contract.symbol,
+        }
+      }),
+    }
+  }
+
   private mapActivity(activity: RaribleActivity): ActivityRecord {
     switch (activity["@type"]) {
       case "SELL": {
@@ -266,17 +289,6 @@ class EthereumAsset implements NonFungibleAsset {
       default: {
         throw Error("Not supported Activity Type.")
       }
-    }
-  }
-
-  private mapItem(raribleItem: RaribleItem): NonFungibleItem {
-    return {
-      id: raribleItem.id.toString(),
-      blockchain: raribleItem.blockchain.toString(),
-      collection: raribleItem.collection?.toString(),
-      contract: raribleItem.contract?.toString(),
-      tokenId: raribleItem.tokenId?.toString(),
-      lastUpdatedAt: raribleItem.lastUpdatedAt.toString(),
     }
   }
 

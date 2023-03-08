@@ -114,6 +114,13 @@ declare type NonFungibleItem = {
   contract?: string
   tokenId?: string
   lastUpdatedAt: string
+  thumbnail?: string
+  image: string
+  title: string
+  description: string
+  tokenType: string
+  contractName?: string
+  contractSymbol?: string
 }
 
 declare type TokenPrice = {

@@ -7,6 +7,7 @@ import {
   FungibleActivityRecords,
   FungibleActivityRequest,
   FungibleAsset,
+  TokenPrice,
 } from "../asset/types"
 import { BtcWallet } from "./btc-wallet"
 
@@ -30,12 +31,12 @@ export const BtcAsset: FungibleAsset = {
     const spent = json.chain_stats.spent_txo_sum
     const balance = funded - spent
 
-    let price
+    let price: TokenPrice[]
     const balanceBN = toBn(balance * 0.00000001)
     try {
       price = await getPrice(["BTC"])
     } catch (e) {
-      price = [{ price: 0.0 }]
+      price = [{ price: "0.0", token: "BTC" }]
     }
 
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)

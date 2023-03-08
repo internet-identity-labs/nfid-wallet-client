@@ -110,8 +110,9 @@ export async function decode(data: string): Promise<DecodeResponse> {
 export async function decodeTokenByAssetClass(
   type: string,
   data: string,
+  method: Method = "sell",
 ): Promise<DecodeResponse> {
-  return await decodeByAssetClass(type, data, "sell")
+  return await decodeByAssetClass(type, data, method)
 }
 
 async function decodeByAssetClass(

@@ -29,7 +29,7 @@ export const PostloaderComponent = () => {
         "text-sm",
       )}
     >
-      <IconCmpLoading />
+      <IconCmpLoading className="animate-spin" />
       <p className="mt-4">{TransactionStatuses[currentStatus]}...</p>
     </div>
   )

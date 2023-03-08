@@ -118,6 +118,16 @@ export const EmbedControllerMachine =
                         actions: "assignMethod",
                         cond: (_, event) => event.data === "DeployCollection",
                       },
+                      {
+                        target: "Mint",
+                        actions: "assignMethod",
+                        cond: (_, event) => event.data === "Mint",
+                      },
+                      {
+                        target: "LazyMint",
+                        actions: "assignMethod",
+                        cond: (_, event) => event.data === "LazyMint",
+                      },
                     ],
                   },
                 },
@@ -143,7 +153,13 @@ export const EmbedControllerMachine =
                 Mint: {
                   on: {
                     SHOW_TRANSACTION_DETAILS: "TransactionDetails",
-                    SIGN: "SendTransaction",
+                    SIGN: [
+                      {
+                        target: "SendTransaction",
+                        cond: "hasPreparedSignature",
+                      },
+                      { target: "WaitForSignature" },
+                    ],
                   },
                 },
                 LazyMint: {

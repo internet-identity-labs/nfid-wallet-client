@@ -57,7 +57,14 @@ export const App = () => (
         </React.Suspense>
       }
     />
-    <Route path={"/our-mission"} element={<OurMission />} />
+    <Route
+      path={"/our-mission"}
+      element={
+        <React.Suspense>
+          <OurMission />
+        </React.Suspense>
+      }
+    />
 
     <Route
       path="/credential/verified-phone-number"

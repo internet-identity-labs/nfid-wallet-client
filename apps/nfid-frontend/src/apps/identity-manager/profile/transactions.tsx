@@ -29,7 +29,7 @@ const ProfileTransactions = () => {
       btcTxs?.receivedTransactions?.filter((tx) => tx.type === "received") ?? []
     )
   }, [btcTxs])
-  const btcWalletAddress = btcTxs?.walletAddress
+  const btcWalletPrincipal = btcTxs?.walletAddress
   const btcAddress = btcTxs?.btcAddress
 
   const [search] = useSearchParams()
@@ -45,11 +45,11 @@ const ProfileTransactions = () => {
   //we have to rerender it when ready
   if (
     btcAddress &&
-    btcWalletAddress &&
+    btcWalletPrincipal &&
     transactionFilter.includes(btcAddress)
   ) {
     const a = transactionFilter.indexOf(btcAddress)
-    transactionFilter[a] = btcWalletAddress
+    transactionFilter[a] = btcWalletPrincipal
     setTransactionFilter(transactionFilter)
   }
 
@@ -59,7 +59,7 @@ const ProfileTransactions = () => {
   const { transactionsFilterOptions } = useTransactionsFilter({
     excludeEmpty: false,
     btcData: {
-      value: btcWalletAddress,
+      value: btcWalletPrincipal,
       transactions: btcTransactionAmount,
     },
   })
@@ -78,10 +78,7 @@ const ProfileTransactions = () => {
       transactionFilter.length === 0
         ? transactionsFilterOptions.map((tfo) => tfo.value)
         : transactionFilter,
-    [
-      transactionFilter,
-      transactionsFilterOptions,
-    ],
+    [transactionFilter, transactionsFilterOptions],
   )
 
   const sendTransactions = React.useMemo(
@@ -95,8 +92,8 @@ const ProfileTransactions = () => {
               .concat(sendEthTXs)
               .concat(
                 sendBtcTransactions.filter(() => {
-                  return btcWalletAddress
-                    ? walletAddresses.indexOf(btcWalletAddress) > -1
+                  return btcWalletPrincipal
+                    ? walletAddresses.indexOf(btcWalletPrincipal) > -1
                     : false
                 }),
               ),
@@ -104,7 +101,7 @@ const ProfileTransactions = () => {
           )
         : [],
     [
-      btcWalletAddress,
+      btcWalletPrincipal,
       sendEthTXs,
       walletAddresses,
       walletTransactions,
@@ -123,8 +120,8 @@ const ProfileTransactions = () => {
               .concat(receiveEthTXs)
               .concat(
                 receivedBtcTransactions.filter(() => {
-                  return btcWalletAddress
-                    ? walletAddresses.indexOf(btcWalletAddress) > -1
+                  return btcWalletPrincipal
+                    ? walletAddresses.indexOf(btcWalletPrincipal) > -1
                     : false
                 }),
               ),
@@ -132,7 +129,7 @@ const ProfileTransactions = () => {
           )
         : [],
     [
-      btcWalletAddress,
+      btcWalletPrincipal,
       receiveEthTXs,
       walletAddresses,
       walletTransactions,

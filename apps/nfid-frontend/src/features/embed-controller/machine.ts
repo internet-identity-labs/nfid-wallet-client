@@ -148,7 +148,13 @@ export const EmbedControllerMachine =
                 Mint: {
                   on: {
                     SHOW_TRANSACTION_DETAILS: "TransactionDetails",
-                    SIGN: "SendTransaction",
+                    SIGN: [
+                      {
+                        target: "SendTransaction",
+                        cond: "hasPreparedSignature",
+                      },
+                      { target: "WaitForSignature" },
+                    ],
                   },
                 },
                 LazyMint: {

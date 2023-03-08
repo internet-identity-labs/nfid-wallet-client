@@ -110,6 +110,28 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
       });
   }
 
+  async prepareTypedSignature({ types, primaryType, domain, message }: TypedMessage<any>): Promise<string> {
+    console.debug("signTypedData", { types, primaryType, domain, message })
+
+    const typedDataHash = TypedDataUtils.eip712Hash(
+      { types, primaryType, domain, message },
+      SignTypedDataVersion.V4
+    );
+    return prepareSignature([...typedDataHash])
+  }
+
+  async getPreparedTypedSignature(hash: string,{ types, primaryType, domain, message }: TypedMessage<any>): Promise<string> {
+    const typedDataHash = TypedDataUtils.eip712Hash(
+      { types, primaryType, domain, message },
+      SignTypedDataVersion.V4
+    );
+
+    return getSignature(hash).then(async signature => {
+      const ethersSignature = await this._splitSignature(signature, typedDataHash)
+      return joinSignature(ethersSignature)
+    })
+  }
+
   async safeTransferFrom(to: string, contractAddress: string, tokenId: string) {
     const contract = new ethers.Contract(contractAddress, ABI_721, this.provider)
     const connectedWallet = contract.connect(this)

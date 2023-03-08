@@ -2,7 +2,6 @@
 Feature:Fungible Asset
   As a user, I want to see fungible assets in profile
 
-  @asset1
   Scenario: User should be able to see BTC in assets
     Given User opens NFID site
     And User is already authenticated
@@ -13,7 +12,6 @@ Feature:Fungible Asset
     Then Bitcoin address calculated
     And Expect "token_Bitcoin_usd" not with text $0.00
 
-  @asset2
   Scenario: User should be able to see BTC in asset details
     Given User opens NFID site
     And User is already authenticated
@@ -33,7 +31,6 @@ Feature:Fungible Asset
     Then I expect that element app_row_1 becomes not displayed
     Then I expect that element app_row_0 becomes displayed
 
-  @asset3
   Scenario: User should be able to see transaction history in Received
     Given User opens NFID site
     And User is already authenticated
@@ -50,7 +47,6 @@ Feature:Fungible Asset
     And Expect that to is "mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1"
     And Expect that from is "tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4"
 
-  @asset4
   Scenario: User should be able to see transaction depends on selected app
     Given User opens NFID site
     And User is already authenticated

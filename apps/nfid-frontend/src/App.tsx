@@ -112,7 +112,9 @@ export const App = () => (
       path="/iframe/trust-device"
       element={
         <ScreenResponsive>
-          <IframeTrustDeviceCoordinator />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <IframeTrustDeviceCoordinator />
+          </React.Suspense>
         </ScreenResponsive>
       }
     />
@@ -121,7 +123,9 @@ export const App = () => (
       path="/embed"
       element={
         <ScreenResponsive className="overflow-auto">
-          <NFIDEmbedCoordinator />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <NFIDEmbedCoordinator />
+          </React.Suspense>
         </ScreenResponsive>
       }
     />

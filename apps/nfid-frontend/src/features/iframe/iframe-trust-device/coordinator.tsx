@@ -6,7 +6,7 @@ import { creationOptions } from "frontend/integration/webauthn/creation-options"
 
 import { IframeTrustDevice } from "."
 
-export const IframeTrustDeviceCoordinator = () => {
+export default function IframeTrustDeviceCoordinator() {
   const [userDevices, setUserDevices] = useState(undefined)
 
   useEffect(() => {

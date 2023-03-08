@@ -1,9 +1,6 @@
 import React from "react"
 import { Route, Outlet } from "react-router-dom"
 
-import { VaultsDetailsCoordinator } from "frontend/features/vaults/vaults-details"
-import { VaultTransactionsDetailsPage } from "frontend/features/vaults/vaults-details/transactions-details-page"
-import { VaultsListPage } from "frontend/features/vaults/vaults-list-page"
 import ApplicationsIcon from "frontend/ui/organisms/profile-sidebar/assets/applications.svg"
 import AssetsIcon from "frontend/ui/organisms/profile-sidebar/assets/assets.svg"
 import CollectiblesIcon from "frontend/ui/organisms/profile-sidebar/assets/collectibles.svg"
@@ -12,17 +9,29 @@ import SecurityIcon from "frontend/ui/organisms/profile-sidebar/assets/security.
 import VaultsIcon from "frontend/ui/organisms/profile-sidebar/assets/vault.svg"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 
-import ProfileApplications from "./applications"
-import ProfileAssets from "./assets"
-import ProfileCollectiblesPage from "./collectibles"
-import CopyRecoveryPhrase from "./copy-recovery-phrase"
-import ProfileCredentials from "./credentials"
-import ProfilePhone from "./credentials/phone-number"
-import ProfileSMS from "./credentials/phone-sms"
-import ProfileTokenWalletsDetailPage from "./internet-computer-wallets"
-import ProfileNFTDetails from "./nft-details"
-import ProfileSecurity from "./security"
-import ProfileTransactions from "./transactions"
+const ProfileTokenWalletsDetailPage = React.lazy(
+  () => import("./internet-computer-wallets"),
+)
+const ProfileAssets = React.lazy(() => import("./assets"))
+const ProfileTransactions = React.lazy(() => import("./transactions"))
+const ProfileCredentials = React.lazy(() => import("./credentials"))
+const ProfileSecurity = React.lazy(() => import("./security"))
+const ProfileApplications = React.lazy(() => import("./applications"))
+const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
+const ProfilePhone = React.lazy(() => import("./credentials/phone-number"))
+const ProfileSMS = React.lazy(() => import("./credentials/phone-sms"))
+const ProfileNFTDetails = React.lazy(() => import("./nft-details"))
+const VaultsListPage = React.lazy(
+  () => import("frontend/features/vaults/vaults-list-page"),
+)
+const VaultsDetailsCoordinator = React.lazy(
+  () => import("frontend/features/vaults/vaults-details"),
+)
+const VaultTransactionsDetailsPage = React.lazy(
+  () =>
+    import("frontend/features/vaults/vaults-details/transactions-details-page"),
+)
+const ProfileCollectiblesPage = React.lazy(() => import("./collectibles"))
 
 export const ProfileConstants = {
   base: "/profile",
@@ -48,7 +57,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.assets}
       element={
         <AuthWrapper>
-          <ProfileAssets />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileAssets />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -56,7 +67,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.collectibles}
       element={
         <AuthWrapper>
-          <ProfileCollectiblesPage />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileCollectiblesPage />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -64,7 +77,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.wallet}
       element={
         <AuthWrapper>
-          <ProfileTokenWalletsDetailPage />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileTokenWalletsDetailPage />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -72,7 +87,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.transactions}
       element={
         <AuthWrapper>
-          <ProfileTransactions />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileTransactions />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -80,7 +97,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.credentials}
       element={
         <AuthWrapper>
-          <ProfileCredentials />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileCredentials />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -88,7 +107,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.security}
       element={
         <AuthWrapper>
-          <ProfileSecurity />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileSecurity />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -96,7 +117,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.applications}
       element={
         <AuthWrapper>
-          <ProfileApplications />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileApplications />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -104,7 +127,9 @@ export const ProfileRoutes = (
       path={ProfileConstants.copyRecoveryPhrase}
       element={
         <AuthWrapper>
-          <CopyRecoveryPhrase />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <CopyRecoveryPhrase />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -112,7 +137,9 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.credentials}/${ProfileConstants.addPhoneNumber}`}
       element={
         <AuthWrapper>
-          <ProfilePhone />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfilePhone />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -120,7 +147,9 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.credentials}/${ProfileConstants.verifySMS}`}
       element={
         <AuthWrapper>
-          <ProfileSMS />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileSMS />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -128,7 +157,9 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.assets}/${ProfileConstants.nftDetails}`}
       element={
         <AuthWrapper>
-          <ProfileNFTDetails />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <ProfileNFTDetails />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -136,7 +167,9 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}`}
       element={
         <AuthWrapper>
-          <VaultsListPage />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <VaultsListPage />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -144,7 +177,9 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
       element={
         <AuthWrapper>
-          <VaultsDetailsCoordinator />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <VaultsDetailsCoordinator />
+          </React.Suspense>
         </AuthWrapper>
       }
     />
@@ -152,7 +187,9 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
       element={
         <AuthWrapper>
-          <VaultTransactionsDetailsPage />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <VaultTransactionsDetailsPage />
+          </React.Suspense>
         </AuthWrapper>
       }
     />

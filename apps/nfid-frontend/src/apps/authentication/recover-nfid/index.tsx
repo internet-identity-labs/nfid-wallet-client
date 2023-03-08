@@ -73,3 +73,5 @@ export const AppScreenRecoverNFID: React.FC<
     />
   )
 }
+
+export default AppScreenRecoverNFID

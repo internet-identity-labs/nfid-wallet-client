@@ -1,5 +1,74 @@
+import {
+  Collection as CollectionRarible,
+  Item as ItemRarible,
+} from "@rarible/api-client"
+import { BigNumber } from "ethers"
+
 export type AbiType = "function" | "constructor" | "event" | "fallback"
 export type StateMutabilityType = "pure" | "view" | "nonpayable" | "payable"
+export type Item = ItemRarible & { collectionData: CollectionRarible }
+export type Interface =
+  | "Item"
+  | "CollectionRequest"
+  | "MintRequest"
+  | "BatchBuyRequest"
+export type Method =
+  | "createToken"
+  | "directPurchase"
+  | "mintAndTransfer"
+  | "sell"
+  | "bulkPurchase"
+export type Data =
+  | Item
+  | DeployCollectionRequest
+  | MintRequest
+  | BatchBuyRequest
+export type BatchBuyRequest = {
+  allowFail: boolean
+  feeRecipientFirst: number
+  feeRecipientSecond: number
+  items: Array<BuyRequest>
+}
+
+export type BuyRequest = {
+  amount: BigNumber
+  fees: BigNumber
+  item: Item
+  marketId: number
+}
+
+export type TokenId = {
+  collectionId: string
+  tokenId: string
+}
+
+export type DecodeResponse = {
+  interface: Interface
+  method: Method
+  data: Data
+}
+
+export type DeployCollectionRequest = {
+  name: string
+  symbol: string
+  baseURI: string
+  contractURI: string
+  isPrivate: boolean
+}
+
+export type Creator = {
+  creator: string
+  value: number
+}
+
+export type MintRequest = {
+  tokenId: string
+  tokenURI: string
+  creators: Creator[]
+  royalties: string[]
+  signatures: string[]
+  to: string
+}
 
 export type DecodedFunctionCall = {
   method?: string
@@ -36,6 +105,196 @@ export interface AbiOutput {
 }
 
 export const abi: AbiItem[] = [
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "enum RaribleExchangeWrapper.Markets",
+            name: "marketId",
+            type: "uint8",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "fees",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct RaribleExchangeWrapper.PurchaseDetails[]",
+        name: "purchaseDetails",
+        type: "tuple[]",
+      },
+      {
+        internalType: "address",
+        name: "feeRecipientFirst",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "feeRecipientSecond",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "allowFail",
+        type: "bool",
+      },
+    ],
+    name: "bulkPurchase",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "tokenURI",
+            type: "string",
+          },
+          {
+            components: [
+              {
+                internalType: "address payable",
+                name: "account",
+                type: "address",
+              },
+              {
+                internalType: "uint96",
+                name: "value",
+                type: "uint96",
+              },
+            ],
+            internalType: "struct LibPart.Part[]",
+            name: "creators",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "address payable",
+                name: "account",
+                type: "address",
+              },
+              {
+                internalType: "uint96",
+                name: "value",
+                type: "uint96",
+              },
+            ],
+            internalType: "struct LibPart.Part[]",
+            name: "royalties",
+            type: "tuple[]",
+          },
+          {
+            internalType: "bytes[]",
+            name: "signatures",
+            type: "bytes[]",
+          },
+        ],
+        internalType: "struct LibERC721LazyMint.Mint721Data",
+        name: "data",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+    ],
+    name: "mintAndTransfer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_symbol",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "baseURI",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "contractURI",
+        type: "string",
+      },
+      {
+        internalType: "address[]",
+        name: "operators",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256",
+        name: "salt",
+        type: "uint256",
+      },
+    ],
+    name: "createToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_symbol",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "baseURI",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "contractURI",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "salt",
+        type: "uint256",
+      },
+    ],
+    name: "createToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
   {
     anonymous: false,
     inputs: [

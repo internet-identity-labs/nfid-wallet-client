@@ -27,6 +27,7 @@ import IconSvgPlus from "./plus.svg"
 import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
+import ImagePngSuccess from "./success.png"
 import IconSvgSuccess from "./success.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
@@ -76,6 +77,7 @@ export {
   IconSvgTransactions,
   IconSvgBook,
   IconSvgAlertCircle,
+  ImagePngSuccess,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

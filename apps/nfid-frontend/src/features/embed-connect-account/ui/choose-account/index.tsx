@@ -103,7 +103,7 @@ export const ChooseAccount = ({
 
   useEffect(() => {
     accountsOptions.length &&
-      setSelectedAccount(accountsOptions[0].options[0].value)
+      setSelectedAccount(accountsOptions[0].options[0]?.value)
   }, [accountsOptions])
 
   return (

@@ -10,7 +10,7 @@ import Blur3 from "./assets/blur_3.png"
 
 import { Footer } from "./footer"
 
-export const OurMission = () => {
+export default function OurMission() {
   return (
     <AppScreen
       bubbleOptions={{

@@ -6,15 +6,13 @@ import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 
-import { NFIDCheckoutCoordinator } from "../checkout/coordinator"
-import { CheckoutMachineActor } from "../checkout/machine"
 import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
 import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
-import { NFIDSignMessageCoordinator } from "../sign-message/coordinator"
-import { SignMessageActor } from "../sign-message/machine"
+import { EmbedControllerCoordinator } from "../embed-controller/coordinator"
+import { EmbedControllerMachineActor } from "../embed-controller/machine"
 import { NFIDEmbedMachine } from "./machines"
 
-export const NFIDEmbedCoordinator = () => {
+export default function NFIDEmbedCoordinator() {
   const [state] = useMachine(NFIDEmbedMachine)
 
   React.useEffect(
@@ -41,23 +39,18 @@ export const NFIDEmbedCoordinator = () => {
           }
         />
       )
-    case state.matches("CheckoutMachine"):
-      return (
-        <NFIDCheckoutCoordinator
-          actor={state.children.CheckoutMachine as CheckoutMachineActor}
-        />
-      )
-
     case state.matches("TrustDevice"):
       return (
         <TrustDeviceCoordinator
           actor={state.children.trustDeviceMachine as TrustDeviceActor}
         />
       )
-    case state.matches("SignTypedDataV4"):
+    case state.matches("EmbedController"):
       return (
-        <NFIDSignMessageCoordinator
-          actor={state.children.SignMessageMachine as SignMessageActor}
+        <EmbedControllerCoordinator
+          actor={
+            state.children.EmbedControllerMachine as EmbedControllerMachineActor
+          }
         />
       )
     case state.matches("Ready"):

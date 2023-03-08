@@ -76,7 +76,7 @@ export const App = () => (
     <Route
       path="/embed"
       element={
-        <ScreenResponsive>
+        <ScreenResponsive className="overflow-auto">
           <NFIDEmbedCoordinator />
         </ScreenResponsive>
       }

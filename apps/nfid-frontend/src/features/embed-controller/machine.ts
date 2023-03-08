@@ -118,6 +118,11 @@ export const EmbedControllerMachine =
                         actions: "assignMethod",
                         cond: (_, event) => event.data === "DeployCollection",
                       },
+                      {
+                        target: "Mint",
+                        actions: "assignMethod",
+                        cond: (_, event) => event.data === "Mint",
+                      },
                     ],
                   },
                 },

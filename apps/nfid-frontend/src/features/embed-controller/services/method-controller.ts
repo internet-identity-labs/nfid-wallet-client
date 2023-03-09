@@ -6,7 +6,9 @@ export const MethodControllerService = async ({
   let dataString: string
   if (rpcMessage?.params && rpcMessage.params.length > 1) {
     const data = JSON.parse(rpcMessage.params[1])
-    if (data?.message?.tokenURI.length) dataString = "LazyMint"
+    console.debug("MethodControllerService", { data })
+
+    if (data?.message?.tokenURI?.length) dataString = "LazyMint"
     else dataString = data.message.makeAsset.assetType.assetClass
   } else {
     dataString = rpcMessage?.params[0].data

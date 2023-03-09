@@ -20,7 +20,7 @@ export const DropdownOption = ({
     <label
       key={`option_${option.value}`}
       id={`option_${option.label.replace(/\s/g, "")}`}
-      htmlFor={option.value}
+      htmlFor={`option_cbx_${option.label.replace(/\s/g, "")}`}
       className={clsx(
         "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
         "flex items-center text-sm text-black",

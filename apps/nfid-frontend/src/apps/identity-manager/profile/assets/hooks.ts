@@ -150,9 +150,9 @@ export const useAllNFTs = () => {
           assetPreview: nft?.thumbnail,
           assetFullsize: {
             url: nft?.image,
-            format: "iframe",
+            format: "image",
           },
-          blockchain: "eth",
+          blockchain: "Ethereum",
         })) ?? [],
       )
   }, [data, applicationsMeta, ethNFTS])

@@ -209,6 +209,6 @@ export class EthWallet<T = Record<string, ActorMethod>> extends Signer {
 }
 
 const rpcProvider = new ethers.providers.JsonRpcProvider(
-  "https://ethereum-goerli-rpc.allthatnode.com",
+  "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
 )
 export const nfidEthWallet = new EthWallet(rpcProvider)

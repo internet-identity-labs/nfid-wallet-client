@@ -20,7 +20,7 @@ const idd: JsonnableEd25519KeyIdentity = [
 describe("ECDSA suite", () => {
   jest.setTimeout(200000)
   const rpcProvider = new ethers.providers.JsonRpcProvider(
-    "https://ethereum-goerli-rpc.allthatnode.com",
+    "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
   )
   const nfidWallet = new EthWallet(rpcProvider)
   it("ecdsa public key", async () => {

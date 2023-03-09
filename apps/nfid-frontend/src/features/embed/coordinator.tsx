@@ -10,7 +10,7 @@ import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordina
 import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
 import { EmbedControllerCoordinator } from "../embed-controller/coordinator"
 import { EmbedControllerMachineActor } from "../embed-controller/machine"
-import { NFIDEmbedMachine } from "./machines"
+import { NFIDEmbedMachine } from "./machine"
 
 export default function NFIDEmbedCoordinator() {
   const [state] = useMachine(NFIDEmbedMachine)

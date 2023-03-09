@@ -47,6 +47,8 @@ const setupCSP = () => {
         "https://api.rarible.org",
         "https://ethereum-api.rarible.org",
         "https://api.coinbase.com",
+        "https://eth-mainnet.g.alchemy.com",
+        "https://*.alchemy.com",
       ],
       "worker-src": "'self'",
       "img-src": [

@@ -8,7 +8,10 @@ import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
 
-import { EmbedConnectAccountMachine } from "../embed-connect-account/machines"
+import {
+  EmbedConnectAccountMachine,
+  EmbedConnectAccountMachineContext,
+} from "../embed-connect-account/machines"
 import { RPCMessage, RPCResponse, RPCService } from "./rpc-service"
 
 type NFIDEmbedMachineContext = {
@@ -41,6 +44,18 @@ type Services = {
   }
   CheckoutMachine: {
     data: RPCResponse
+  }
+  EmbedConnectAccountMachine: {
+    data: EmbedConnectAccountMachineContext
+  }
+  TrustDeviceMachine: {
+    data: void
+  }
+  EmbedControllerMachine: {
+    data: RPCResponse
+  }
+  RPCService: {
+    data: void
   }
 }
 
@@ -173,12 +188,13 @@ export const NFIDEmbedMachine =
         isAuthenticated: (context) =>
           !isDelegationExpired(context.authSession?.delegationIdentity),
       },
-      services: {
-        AuthenticationMachine,
-        EmbedConnectAccountMachine,
-        TrustDeviceMachine,
-        EmbedControllerMachine,
-        RPCService,
-      },
     },
   )
+
+export const services = {
+  AuthenticationMachine,
+  EmbedConnectAccountMachine,
+  TrustDeviceMachine,
+  EmbedControllerMachine,
+  RPCService,
+}

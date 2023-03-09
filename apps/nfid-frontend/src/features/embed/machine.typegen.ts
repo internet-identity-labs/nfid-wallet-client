@@ -62,7 +62,12 @@ export interface Typegen0 {
     actions: never
     delays: never
     guards: never
-    services: never
+    services:
+      | "AuthenticationMachine"
+      | "EmbedConnectAccountMachine"
+      | "EmbedControllerMachine"
+      | "RPCService"
+      | "TrustDeviceMachine"
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.authenticate"

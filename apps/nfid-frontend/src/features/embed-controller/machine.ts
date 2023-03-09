@@ -5,7 +5,7 @@ import { PreparedSignatureResponse } from "@nfid/integration"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { RPCMessage, RPCResponse } from "../embed/rpc-service"
+import { RPCMessage, RPCResponse, RPC_BASE } from "../embed/rpc-service"
 import { MethodControllerService } from "./services/method-controller"
 import { prepareSignature } from "./services/prepare-signature"
 import { decodeRPCRequestService } from "./services/rpc-decode"
@@ -51,7 +51,7 @@ export const EmbedControllerMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QGEAWYDGBrA9gVwBcBZAQw1QEsA7MAOgAUAnMABxMZIIpytoBFMOCGABKYAI544BAMQQedagDccWOsIxDREqbAIBtAAwBdRKBY5YFLjzMgAHogCMAVgBMtACwB2NwDY-AGYXAE5vEMN-NwAaEABPZxcnWkNU1KcnN0DPQydAtwBfAti0TFxCUnJqOiZWdk5uXlq2ZgBlCigqTjxmOQVaZVU6FmYWsHbO7uYjUyQQCysbKjtHBCdPF1o3AA4I709Mtw3vQNiEhGDPWhCXQNcnAMNQl0NPIpL0bHxiMkoaWgAqgBJWgAGRwJGEjD6-0GalopS+FV+1UBIPBkLAjAQgwwDR4MxmdgW1kaK0Q3lCtBclM8fkOrzcMXiiHygRSTzubge-j8hiC7xAiPKPyq-2BCM+IpkrQAEgB5ADqAH0ACoiACCADlWhrkKqgfKtcq+ABRVUaoGg1pEuYkpbktZPTaRbahQz7B5ulxnVlHLx+G4hbYHPneD3eQXC76VP50CXRwgyABqppEQIAYgBNW3mSyk2xzVZOZ0pHbuz1+b2+i77a6B0IhenbQIRQJ+KNSmMo8UgxOyVPp7P6JyzPOLMlF5yl10V0PVlkITwhK7cm7bdYe7b8yPFIVd5Fi+N9g+yZCg+WtU25+b5h1Tp0uF3lvbzp81lyeK7eJzr-wlzIOz3ftY1RCVVQ4KhYDIJYBAIEgKAAG1gGQACE9QAaRve1J1AYsdnZHc-G8PwaXWKtmXONwTnrINfDySlMk7MpuyPNFaEVBCCAzHBGAmLoCB6MAZGwu9cIcRJvG8Wgf3pO5tnpZcSJrQIpK2X9QnDXJ-FbZikVFON2OTLEKAAMziagoBhRQqBUeFYDAKgIAgkgoJgxpWixJQKAwMBRInQs8MQJkchSRtqPbPxqJCGsHkMWh223NxP1bSl5L0kVQN7WhjMYMyLKoKysUYXjaBYRDOFM3iAFtaAcpyXLcjAlk8xhvN8-yC2WB9XDU2S8icBT1jCPxYs-GSNJCQJAnSG48gy1jDIlVo8AwXzYBQ89L2vExiTEwKJIQf92R2UiMiiwbdlijdaBDDYptS9t8l3PcqC0eA5hAnswD2gLuqChAAFpfxrQHktoUjP0icJW29SIFsPQzmnqe9xy6x03BixcgmpNJUhcektICBGDNRZGOCWfhBGEMRJGkX70YfENaFcKKCe0nS-E8GsjhCLxbjybYjkMFcMjeYDTyympRhRxoGBltoOgEoSGdRw6pJrDZ2RyKLtm2KSN2yEISaltFVfE1ZP2kpJMZpVtppm7wa3pW6v1CPWnH2JsV3Fj4WMRsD0QhKFzYOy2bmpTIbhOB7HZ54NcduHZPcNu5ff3f3Sey-tQ-+w6Ik2YNPcAvlghXFSmQ5dwmwCaa8hcE3vvYxroOaxo4IQ5Dc8dQXrZCDJ1g2W59Z5oXqWrzx8j1oJskbtiJREEhqpYbuHyivmps8FsnrZ+lNdeKuZtSyfUkCOelpBTjrB4vilamH67X2vPi1beKGJCFcNyL7YVMpAMm0GifPIgRtjn0DjlEy5lLKrwBoAq4TwP6vH1scZSi5hoJS-HyRkuwYZnwlpnU2y1VrrQ+mjNWqxebSRjkEJISl+TczQWPbIdIGT935IGMB2VTRORgYdai4NgxNknk+YMvJrrbBkvSaiIt9ZBibJw48tBeEEBwCvBASQJGw0pMRVSSUfQgEQmAUyBBnB0j8CzdwIYpohhATsWIAAjHABAVHVUQATcxWiCYnG8Ho2IeUoCoBMWsFwCkLE7GXCAyeQsf4gAAO4UAgAQVAzg3CGFiOgDogTEBb1iMWMxYSrGRNsTE84GiErBm0d4vRRQihAA */
   createMachine(
     {
-      /** @xstate-layout N4IgpgJg5mDOIC5QCUAKBhdB7AdgFwCcsAbYsAgOgEkcBLPWgQ2ItQLAAdH2BlWqHIzwBXdq3Zd2AYgi4wFWjgBuWANbyOE7mD4ChosAG0ADAF1EoDllj1auCyAAeiACwBWAJwUATAGYXvgAcAOwAjB6hAGxungA0IACeiN4pFMZ+LgGBEaFukZG+AL6F8WiYuIQkZJQ0tswUAKpUFAAiYADGWBBgyGAAjsJweDJyCspq8t2d3WW9A0M85Eq07UZmDlY2DPZITohRgRS+xoFugS4ewZHexpHp8UkIp75HgcZu7t4exsHe+cWlDDYfBEUjkah0Bj1JqtDpdHr9QawYaOZFCeSMABmeHIAApjsZjABKKRlYGVME1SFMFgwtrTBHzZEmcy7Ta2HagZwINzpCgeAUeSIeELGY4pYIPRAitwUQK+XwFS7hXLeFwAkBkiqg6oQuq05oAWTAeAAFl1yTryCMcPJFCp1BRjWaLdqquRFgRlqsWRtrBycA5uaF0t4KJFgkLFR4XJHCZLEog3MFZd5gv4XCdjB5ji5vBqtSD3VT9Y0jSbzRBLcWbXbxo7nZXq5TPd6jKFWZZ-dtA7tg6Hw5GCsLY98flKECLjD508FM7O-CkC0C3ZS9VCDRRFqQpDwABIAeQA6gB9AAqyAAggA5HiX9BnqgH68nloAUTPl6oABkeL62d2di9ly+zJsEPjJsK0SBJEgS5AmjweMm4b5NkgRwSk0QeMu5RFmutQbmWW5gDuPBUAA4te-5dlsQFBqBwTgd4kFCmcsHwROIYnBQUTBOk2YhIqsE4c2uoETSREAELCAku6HqeF43neD5Pi+76fj+f7rABtGcnsCCYYcbhBEhLi5G4oR5pEE5hOBvKEu8ETphGkQiauYnUtCzTSbJZGUdRIDsj29EGZEsZHDcfwpiG7gIYgvwvBEEaBN4lnCtk+YlJqK54R5pYwj5u4UVRHZ+rpwH6X84W+JFEYWcYsUTncLgoRGqWOVkrlZYWFJ5YRMKGoowz7se55Xre96Ps+r4fl+v4BUFdF9gxTEsdB7HJhOsaRGkDmXClCqhJGbm5eC4leU6Q1Ff52k0QGIXwatVysTBcGbYmCB5rKFwCimYUpUdtwnb1Z2eZu36MAAXgkg34NdVG3YFgF6cGYEQc961vXFCAhncEFiqE-ihMx8qZYCuEgyW-XNG0HDEFgCTYGC7Q9nJo2KRNKnTepc1aZ2SPlQ9aPMRjbFYzZnj8rxc6+EKkShOcwNWlTEl0pw9OM+6LNAfDC3IxVqOMejUFixxH3oYcKbpHmfHpHBwRK8W66q80iw4BAZ4EIwOCwIw2u4LWYwOvIsBgO7nve77-s4K2KxrPzi0o4gvjptOtxqinAQpDBbhNREFAXMYBy8mEmQO91OWU87F26DgZ4JBwkAtEIjCB-aExbvwdcN03Lexz6iOJwbyR-EZJkfOZll-Jx-EUG4fjpe8vjGRcjv4WDRFHow9AAGJYAQtf6NIeuC8tCC+KEIZyp4F+XNmNzvE1txS+xAouKcBSBGvfUuxQEc+37HsbQ8Db2ILAKQkl7wAGkT73TPoZOe48zIxCntZD6VxDgOWJm8DwapYJuG-qDfKrthDtFWLAcB6BvwHh4G+WBwUz5mTFD4dCIpLi8giDPfwFArbeHQimG4eQupZRwPCeAuwerKzKnAkCCAAC0eYJwKLJtlCmytq7EGkQw2RaDHjuDng5IuIZeTYPVBXNRTtzosDYJwbQh8RDsC0UtWRHxOIKl2oScyY4IhBEISreoNjJA6C7kfeQgTtBOKTjje4H0UjTnsoSQ6vIggEPMaJIhhFwm8BCQ4+Qb53aROHggWCLVsjp0uKZPMHgJxqjDHOQUMRjKMTFF1cm6T-EGkKSFOIH0FTgUFCKSMi5batNUe0jRRF6TwjmEiPAXSz4hmxkhUIcoFR1V5PghUfiJkDQrK6U6BB5k6L+IOOWfFGKeHOBOZZqzFSpRFFhBq2yrFEW3JonSMj9JpTDGqFwbUzixjzKEGefJmLpBFGmN4PxsJpPchk3+PkjmVTyC8FK1sFbGV4r4GyCsPEdRTgUd4zyN4DSGki4Mhd+S3EvoTP4uCXBbT4mkeUKcLKEyQjmYlxCKAQ2hrDOZHztFfPcDtX4YViaKl+NkBlH1cbTithfImJMapcuprCOmDMmZkGjuS-YssvCpRgimbIFk5yBAnOhMMLKwrvzCMZa4qrf5uw9l7ABOrBXOP0gqbh6c-l-XCOcbwTU3gF3yL8H4qUjq4MdTXLu9dG4QGbiA3VOMQhhmMmhPM5xzgNRBV4eyYKop5E5bCg5Ozmhb13vvexBgU1fGOHKPhtwfgfHyGKJ+sooiwSbYKMKKjJGWJJc0f+UcgEmlAeIu6QrgxIStawj+yZ3joRsnjMyEYZZywVmYtpcKOmvNIeQydAtPnclliEHhQKjFpi+ITLhqYTH20vpimNm58kQBTUC2UAp2q4KOtELhLUHJ0ouEEL4L6WhyA-UG2V4RAOEjTHcGI1xfjFGKEAA */
+      /** @xstate-layout N4IgpgJg5mDOIC5QFEC2AjSBhA9gOwBcAnHAG1LCIDoBJPASwPoENSBiCfMK2A5g7mkwRchEuUq0GTVgG0ADAF1EoAA45YjevhUgAHogAsAZgCcAViqHTAJjMB2e6YAcpw+YA0IAJ6IAbPKmVOby8gCM9vI2NmHG8oY2AL6JXkLY+MRkFNR0WqxUAApEYKrMxQDK9FB4-ACuxYXFpcUcXFT0eABuOADW3KpNZWCV1XXFCspIIOqaTDpTBgjuQXaGhvLGhvYx0RZevgjRNlRRm85hYVt+zubOyakY6WJZkrkypFQAqjRUACJgAGMcBAwAAlMAAR1qcAIrTw3A63T6VBBQJBoIKWHBUJh5UonXoALAE10My081AizC1yocRujmcxhs6z8NlM+0QN2MtOc8hCNnC5nMphF9xAaREGXE2SkeQ+3z+gOBYMh0N4bD0vH43GYADMBEQABRxUIASjYEtEmQkOWkLHlP3+aJVON4JKmZLmeF0ixC3NCoQu1K2pnsmw5CBclkZxlZNjDhjCzmTYstUpetrlXx+AFkwAQABbAq3SyhwhFdXrcPOF4vpm14ogEonutQacnehaIMJRY5+Jz2EyuWybGwR8z2Szx2PmaxJrbyeypx6S5422XvbNUGtF1fW7Ll9qV5E7utr7KN5vEsKTNuzbSdynd3tUfuhoci1ZjnyIFzyKjTts5zyH4AQWMuwglhmG72lueLkGw5QABIAPIAOoAPoACqggAggAcuUuFYFhNAofhGG-MgWG4TQAAy5SttM7Zej63YTvYAETqYUQmG4YTsj+kYTq+oHnMY9jOI41JhBBTz7q8dr5Aq8HsOUNAAOL4UxnoPmxCBhBxXFOLxZiJoJBw9vIzhUNSfg8QESZ8sKcl7qWmabgqABCtTeIhqGYThBFESRZEUVRNH0YxSikixeldocNg0uYZgREmg5Mp4Qn2BEwShDEazUmyrlQeubywd5vmIZp2kxR6cUUvoiBJVstICkOs4WIuEbbNypjUsmWznH484lfWMrlcpPw+X56labIN6xfejWLC1nFMvExg3NYIT2BGASGKJ9nWZEhjnDcY3nopWYKjmHSwsh6HYXhhHEaR5GUdRtEMTpDWPk1BlGTY3GmfxFlGPYfgnIG0RJsK1hLik4orqVE1KQ6273dV811XeHb6YZjjGTxzJmQJEYJJYIT5SKQpgaYxiXQpHkVT8dHMAAXt4d2ENjtW3sxy3-VSQMg6TYMRj2ARcbxI05X4xjmH4TPuTBU2KqopA4N4uASACXr+U9QWvaFH0Rd90UC7pK3sUTwMmeL5k9cKVD9fZFzMgzSXK0jaZXSz6v-Jr2u6xQ+sPnzv1CwTosO3xTtCcmNmTlEtx+FsYair7KPjddnk-HieAQFhRDMHgsDMOH+CHoiVY8GARcl2XFdV3gl6EsSuOC-jCUSXEJysqBvYxM4hh+Pt-VWDxZjWa4iYxCr0GTRjIx4Fh3iqJAvz8MwNfHtwq-r5vEDb3w7ctl31vC81SU2Sl-U5VJJjA5LUT-uYdiDgJSUM+YsnZ5BXOAcMZoWYIwAAYjgIgq8xhgDYFHHuT4EDGAuP+G4bhQxJkMsYfaIFXbUlMCNMwisTCMwAfJVWy8txN3LpXL0-w+D0FILANgXliIAGkEGsQStEZKqVH4ZRftlGkAY4igTHgrKIi8yrozgrUAERJYAsKwHRFC5RkBcPikgxMGwAKuHjGEGwNxeTOFfpsKgKcUG3EMZDaIyQkZ4GVPAKYftmZLUQQDAAtAkCM3iwiuxFIEoJgTnA+weIA-2atSDuO4Ug8eQl3B5VCCadwgRnBJHIW5JesiiglCGDAgg9QwAxK0QDWcktjD+gDAEQI4RCESWkWjLMuTmjDCqDUQpDQWlDBKTbAyUQIzRHfgGIUFwRqBE2I0vOsFukVHabAqgyAi69Ovgga4h1XAgWiIOBWElTFCWZMcFOGxtgJEiDsKZwDswrP0sKCMlSbIBiiHLawoREbhIodkm6jolTolVDCG5CUex7SEhYfxMZWShiHpsMJyMInMyiVuU8WSbSAriUlV8A4mQJhMNcCMYKqAQs2JcTYTJYWuMobIlSYByBooBpcVkAE1hSXiG4bYGxX5RBlmydYTlYzkpzpEqhlUDh41iQDYGCtCXtTiJcNYlTDA9STNDXibgSGTjIR8lFTT86Y0IHSqkrzXYgQVSgkCLgKaRBOIyM61wzC8n7O8uFnyZHfKoOzLmPMCAGu7O4KG2xQJGMCUlECr9pYpyMRcHi6T-5atRtMwOJQtY6xeK3H1BkzArCTOk4ls57LxIOMmY4MYOIPLdpq512qE0rwbsXUutC031Wjr3BVA8Wo8QnFtMM+1eRWFAm4eM50H6XMRSpdpR8t473TelY499qSLkCB-SGnKgjU2BsmfKPKR3Cp+KAiBUCClFPTWyfu6T0lj0HMmQxWUDgBEsHZUMT8UGuG3VSn4NCW70PzGA5h06LDFtcNSMRdkBnCP-Imey5wjGQ0IaYV9bryjyMUc4sVpTFj2s4oOOwjIUpCmSWYqcfpDJQdsYYeDuqlkQHTQkQyATmSbXldSMxh0AzxkCNJUCFaKVfPeL8Lg6aJwVIsCquI09QgMzuPYoAA */
       tsTypes: {} as import("./machine.typegen").Typegen0,
       schema: {
         events: {} as Events,
@@ -62,7 +62,7 @@ export const EmbedControllerMachine =
       states: {
         Initial: {
           type: "parallel",
-          onDone: "InitialDone",
+          onDone: "Done",
           states: {
             PrepareSignature: {
               initial: "Prepare",
@@ -136,6 +136,7 @@ export const EmbedControllerMachine =
                   on: {
                     SHOW_TRANSACTION_DETAILS: "TransactionDetails",
                     SIGN: "SignTypedData",
+                    CANCEL: "#EmbedController.Canceled",
                   },
                 },
                 Buy: {
@@ -148,6 +149,7 @@ export const EmbedControllerMachine =
                       },
                       { target: "WaitForSignature" },
                     ],
+                    CANCEL: "#EmbedController.Canceled",
                   },
                 },
                 Mint: {
@@ -160,11 +162,13 @@ export const EmbedControllerMachine =
                       },
                       { target: "WaitForSignature" },
                     ],
+                    CANCEL: "#EmbedController.Canceled",
                   },
                 },
                 LazyMint: {
                   on: {
                     SIGN: "SignTypedData",
+                    CANCEL: "#EmbedController.Canceled",
                   },
                 },
                 DeployCollection: {
@@ -177,6 +181,7 @@ export const EmbedControllerMachine =
                       },
                       { target: "WaitForSignature" },
                     ],
+                    CANCEL: "#EmbedController.Canceled",
                   },
                 },
 
@@ -219,9 +224,20 @@ export const EmbedControllerMachine =
             },
           },
         },
-        InitialDone: {
+        Done: {
           type: "final",
           data: (context) => context.rpcResponse,
+        },
+        Canceled: {
+          type: "final",
+          data: (context) => ({
+            ...RPC_BASE,
+            id: context.rpcMessage?.id,
+            error: {
+              code: 4001,
+              message: "User rejected the request",
+            },
+          }),
         },
       },
     },

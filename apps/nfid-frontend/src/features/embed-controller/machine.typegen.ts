@@ -87,6 +87,8 @@ export interface Typegen0 {
     sendTransactionService: "" | "SIGN"
   }
   matchesStates:
+    | "Canceled"
+    | "Done"
     | "Initial"
     | "Initial.PrepareSignature"
     | "Initial.PrepareSignature.End"
@@ -105,7 +107,6 @@ export interface Typegen0 {
     | "Initial.UI.Success"
     | "Initial.UI.TransactionDetails"
     | "Initial.UI.WaitForSignature"
-    | "InitialDone"
     | {
         Initial?:
           | "PrepareSignature"

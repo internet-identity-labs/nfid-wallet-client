@@ -14,6 +14,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.RPCService": {
+      type: "done.invoke.RPCService"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.authenticate": {
       type: "done.invoke.authenticate"
       data: unknown
@@ -32,6 +37,10 @@ export interface Typegen0 {
       type: "error.platform.EmbedControllerMachine"
       data: unknown
     }
+    "error.platform.RPCService": {
+      type: "error.platform.RPCService"
+      data: unknown
+    }
     "error.platform.authenticate": {
       type: "error.platform.authenticate"
       data: unknown
@@ -46,6 +55,7 @@ export interface Typegen0 {
     AuthenticationMachine: "done.invoke.authenticate"
     EmbedConnectAccountMachine: "done.invoke.EmbedConnectAccountMachine"
     EmbedControllerMachine: "done.invoke.EmbedControllerMachine"
+    RPCService: "done.invoke.RPCService"
     TrustDeviceMachine: "done.invoke.trustDeviceMachine"
   }
   missingImplementations: {
@@ -83,6 +93,11 @@ export interface Typegen0 {
       | "SIGN_TYPED_DATA"
     EmbedConnectAccountMachine: "CONNECT_ACCOUNT"
     EmbedControllerMachine: "SEND_TRANSACTION" | "SIGN_TYPED_DATA"
+    RPCService:
+      | ""
+      | "done.invoke.EmbedConnectAccountMachine"
+      | "done.invoke.EmbedControllerMachine"
+      | "done.invoke.trustDeviceMachine"
     TrustDeviceMachine: "done.invoke.authenticate"
   }
   matchesStates:

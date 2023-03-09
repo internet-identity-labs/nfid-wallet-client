@@ -32,6 +32,9 @@ const decoders: {
 const methods: {
   [key: string]: (x: DecodedFunctionCall) => Promise<DecodeResponse>
 } = {
+  directAcceptBid,
+  burn,
+  safeTransferFrom,
   bulkPurchase: async (x: DecodedFunctionCall): Promise<DecodeResponse> => {
     const promises = x.inputs[0].map(async (x: any) => {
       return {
@@ -201,4 +204,61 @@ export async function decodeEthereumFunctionCall(
   }
 
   return { method: "", inputs: [], names: [], types: [] }
+}
+
+async function safeTransferFrom(
+  x: DecodedFunctionCall,
+): Promise<DecodeResponse> {
+  return Promise.resolve({
+    interface: "SafeTransferFrom",
+    method: "safeTransferFrom",
+    data: {
+      from: x.inputs[0],
+      to: x.inputs[1],
+      id: (x.inputs[2] as ethers.BigNumber).toString(),
+      amount: (x.inputs[3] as ethers.BigNumber).toString(),
+      data: x.inputs[4],
+    },
+  })
+}
+
+async function burn(x: DecodedFunctionCall): Promise<DecodeResponse> {
+  return Promise.resolve({
+    interface: "Burn",
+    method: "burn",
+    data: {
+      tokenId: (x.inputs[0] as ethers.BigNumber).toString(),
+    },
+  })
+}
+
+async function directAcceptBid(
+  x: DecodedFunctionCall,
+): Promise<DecodeResponse> {
+  const nftAssetClass = x.inputs[0][2]
+  const nftData = x.inputs[0][3]
+  const nft: DecodeResponse = await decodeTokenByAssetClass(
+    nftAssetClass,
+    nftData,
+  )
+  return Promise.resolve({
+    interface: "DirectAcceptBid",
+    method: "directAcceptBid",
+    data: {
+      bidMaker: x.inputs[0][0],
+      bidNftAmount: (x.inputs[0][1] as ethers.BigNumber).toString(),
+      nft,
+      bidPaymentAmount: (x.inputs[0][4] as ethers.BigNumber).toString(),
+      paymentToken: x.inputs[0][5],
+      bidSalt: (x.inputs[0][6] as ethers.BigNumber).toString(),
+      bidStart: (x.inputs[0][7] as ethers.BigNumber).toString(),
+      bidEnd: (x.inputs[0][8] as ethers.BigNumber).toString(),
+      bidDataType: x.inputs[0][9],
+      bidData: x.inputs[0][10],
+      bidSignature: x.inputs[0][11],
+      sellOrderPaymentAmount: (x.inputs[0][12] as ethers.BigNumber).toString(),
+      sellOrderNftAmount: (x.inputs[0][13] as ethers.BigNumber).toString(),
+      sellOrderData: x.inputs[0][14],
+    },
+  })
 }

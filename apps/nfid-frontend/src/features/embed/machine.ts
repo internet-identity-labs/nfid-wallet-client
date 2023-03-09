@@ -1,4 +1,3 @@
-import { map } from "rxjs"
 import { createMachine, assign } from "xstate"
 
 import { checkIsIframe } from "@nfid-frontend/utils"
@@ -9,8 +8,11 @@ import { AuthSession } from "frontend/state/authentication"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
 
-import { EmbedConnectAccountMachine } from "../../embed-connect-account/machines"
-import { RPCMessage, rpcMessages, RPCResponse } from "../rpc-service"
+import {
+  EmbedConnectAccountMachine,
+  EmbedConnectAccountMachineContext,
+} from "../embed-connect-account/machines"
+import { RPCMessage, RPCResponse, RPCService } from "./rpc-service"
 
 type NFIDEmbedMachineContext = {
   authSession?: AuthSession
@@ -43,13 +45,25 @@ type Services = {
   CheckoutMachine: {
     data: RPCResponse
   }
+  EmbedConnectAccountMachine: {
+    data: EmbedConnectAccountMachineContext
+  }
+  TrustDeviceMachine: {
+    data: void
+  }
+  EmbedControllerMachine: {
+    data: RPCResponse
+  }
+  RPCService: {
+    data: void
+  }
 }
 
 export const NFIDEmbedMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QDkBiBJAIgUQLYCNIBZAQwGMALASwDswA6AJTBIgE8BiAYQHlllsXACoB9AIJdeAVWRCA2gAYAuolAAHAPawqAFyoaaqkAA9EAZgCsZ+hYUAOAJwA2AOxOnAJgsO7TiwBoQNkQnR3ofABYoiwBGFxczJwcLAF8UwLQsPEIIUkpaBmZWTl5+QVEJaVk5GJUkEE1tPQMjUwQnMwd6MwUIuxjnSwcHDxdA4IQzMLs7COTZnzcXCLSMjBwCYnJqOiYWdg4AZWxkTBEhRjFkQ4khdD5FOvUtXX1DeraHFwtwrz7bMweJxxBzjRAxMwuegRCwuL52BQOKYKBReVYgTIbHJ5HaFfacY6nc6Xa63e7IGpPBovZrvUBtGIouz0YFIpHuHoDUFBRAAWmB9BifWGcQsrk6MScK3SGPW2S2+V2YgArjoKGAaHoyCRaTiChwIAYGLQAG4aADWDBIqvVmqo2p0YEeRkarxaH0QChZflmMVsdjMEQ8nWBYIQvKm3UlCkBo0csQs0rWWU2uW2BXoXAMdDIOjEZDIGmVmoNRvopotDCzNBzeYLRc1hzAACcTfancoXTS3q1zIz6EDIWZhz4gZEwx4fNDLMCPI4PDEZnZ0Zj5WnFQwmzQIEJmyQaLByLTS7sK5b6Fud3uD0e3k3W+3nfVXbTewg7F56AonL12TF--EYYWJO3SJBELgInOrIeCucqpnquyXru+6HrmbwcC2zYaM29BqAANjqABm2G4BeGpXiht4GPebZkB2VIvj2HoIDEC4xN0XxzIiET2BEkphskUIjMOwYeBEfgDKk6I0BoEBwEYq7wemdBdk0TH0nyEJON08QQiMXGeDEYYRsGNhmBCfocsGbhScmWIKriezFKpbp0iY5h2FCMKsREw5WKxfrGdYiSTh4vQiZ5MJ+LBKbYspDDYM2WHNi5r7MdGHjdP0oQ-jxH4KEZPLvuxYmhBCYkWBYviBjF9nro5KpqhqWo6m8CFgKl6nueGMw6S4eliQ434LmYxnBtpMYQuBlVDfptVru1mbZmAub5oWxY6J17oaeG3yClpqJJJVw5jEVUrWJEUUuECYXifNSkbmR27ITeaHbdSanvW0lg-LlgLfCMH76QJoz0BB-yzG4CjxGYaRpEAA */
   createMachine(
     {
-      tsTypes: {} as import("./index.typegen").Typegen0,
+      tsTypes: {} as import("./machine.typegen").Typegen0,
       schema: {
         events: {} as Events,
         context: {} as NFIDEmbedMachineContext,
@@ -67,21 +81,8 @@ export const NFIDEmbedMachine =
         Ready: {
           invoke: {
             onError: "Error",
-            src: () =>
-              rpcMessages.pipe(
-                map(({ data, origin }) => {
-                  switch (data.method) {
-                    case "eth_accounts":
-                      return { type: "CONNECT_ACCOUNT", data, origin }
-                    case "eth_sendTransaction":
-                      return { type: "SEND_TRANSACTION", data, origin }
-                    case "eth_signTypedData_v4":
-                      return { type: "SIGN_TYPED_DATA", data, origin }
-                    default:
-                      throw new Error(`Unknown method: ${data.method}`)
-                  }
-                }),
-              ),
+            id: "RPCService",
+            src: "RPCService",
           },
           on: {
             CONNECT_ACCOUNT: [
@@ -187,11 +188,13 @@ export const NFIDEmbedMachine =
         isAuthenticated: (context) =>
           !isDelegationExpired(context.authSession?.delegationIdentity),
       },
-      services: {
-        AuthenticationMachine,
-        EmbedConnectAccountMachine,
-        TrustDeviceMachine,
-        EmbedControllerMachine,
-      },
     },
   )
+
+export const services = {
+  AuthenticationMachine,
+  EmbedConnectAccountMachine,
+  TrustDeviceMachine,
+  EmbedControllerMachine,
+  RPCService,
+}

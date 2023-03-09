@@ -30,3 +30,23 @@ export function stringify(
 ) {
   return JSON.stringify(value, replacer, space)
 }
+
+export const makeServiceMock = <T>(): {
+  service: () => Promise<T>
+  resolve: (value: T) => void
+  reject: () => void
+} => {
+  let resolve: any
+  let reject: any
+
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+
+  return {
+    service: () => promise,
+    resolve,
+    reject,
+  }
+}

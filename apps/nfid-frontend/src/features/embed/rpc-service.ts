@@ -1,4 +1,4 @@
-import { filter, fromEvent } from "rxjs"
+import { filter, fromEvent, map } from "rxjs"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 
@@ -31,3 +31,19 @@ const windowMessages = fromEvent<MessageEvent<RPCMessage>>(window, "message")
 export const rpcMessages = windowMessages.pipe(
   filter((event) => event.data && event.data.jsonrpc === "2.0"),
 )
+
+export const RPCService = () =>
+  rpcMessages.pipe(
+    map(({ data, origin }) => {
+      switch (data.method) {
+        case "eth_accounts":
+          return { type: "CONNECT_ACCOUNT", data, origin }
+        case "eth_sendTransaction":
+          return { type: "SEND_TRANSACTION", data, origin }
+        case "eth_signTypedData_v4":
+          return { type: "SIGN_TYPED_DATA", data, origin }
+        default:
+          throw new Error(`Unknown method: ${data.method}`)
+      }
+    }),
+  )

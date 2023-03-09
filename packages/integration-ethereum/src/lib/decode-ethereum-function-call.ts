@@ -121,12 +121,13 @@ async function decodeByAssetClass(
   method: Method,
 ): Promise<DecodeResponse> {
   const tokenId = decoders[type]?.decoder(type, data)
+  console.debug("decodeByAssetClass", { type, data, method, tokenId })
   const [item, collection] = await Promise.all([
     await sdk.apis.item.getItemById({
       itemId: `ETHEREUM:${tokenId.collectionId}:${tokenId.tokenId}`,
     }),
     await sdk.apis.collection.getCollectionById({
-      collection: `ETHEREUM:${tokenId.collectionId}`,
+      collection: `ETHEREUM:${tokenId?.collectionId}`,
     }),
   ])
 

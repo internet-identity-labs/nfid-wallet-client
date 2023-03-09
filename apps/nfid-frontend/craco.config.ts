@@ -37,7 +37,7 @@ const setupCSP = () => {
         "https://stats.g.doubleclick.net/g/collect",
         "https://registry.walletconnect.com",
         "wss://*.bridge.walletconnect.org",
-        "https://ethereum-goerli-rpc.allthatnode.com",
+        "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
         "https://ethereum.publicnode.com",
         "https://testnet-api.rarible.org",
         "https://logging.rarible.com/",

@@ -12,17 +12,58 @@ export type Interface =
   | "CollectionRequest"
   | "MintRequest"
   | "BatchBuyRequest"
+  | "SafeTransferFrom"
+  | "Burn"
+  | "DirectAcceptBid"
+
 export type Method =
   | "createToken"
   | "directPurchase"
   | "mintAndTransfer"
   | "sell"
   | "bulkPurchase"
+  | "safeTransferFrom"
+  | "burn"
+  | "directAcceptBid"
+
 export type Data =
   | Item
   | DeployCollectionRequest
   | MintRequest
   | BatchBuyRequest
+  | SafeTransferFrom
+  | Burn
+  | DirectAcceptBid
+
+export type DirectAcceptBid = {
+  bidMaker: string
+  bidNftAmount: string
+  nft: DecodeResponse
+  bidPaymentAmount: string
+  paymentToken: string
+  bidSalt: string
+  bidStart: string
+  bidEnd: string
+  bidDataType: string
+  bidData: string
+  bidSignature: string
+  sellOrderPaymentAmount: string
+  sellOrderNftAmount: string
+  sellOrderData: string
+}
+
+export type Burn = {
+  tokenId: string
+}
+
+export type SafeTransferFrom = {
+  from: string
+  to: string
+  id: string
+  amount: string
+  data: string
+}
+
 export type BatchBuyRequest = {
   allowFail: boolean
   feeRecipientFirst: number
@@ -105,6 +146,142 @@ export interface AbiOutput {
 }
 
 export const abi: AbiItem[] = [
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "bidMaker",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "bidNftAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes4",
+            name: "nftAssetClass",
+            type: "bytes4",
+          },
+          {
+            internalType: "bytes",
+            name: "nftData",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "bidPaymentAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "paymentToken",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "bidSalt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "bidStart",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "bidEnd",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes4",
+            name: "bidDataType",
+            type: "bytes4",
+          },
+          {
+            internalType: "bytes",
+            name: "bidData",
+            type: "bytes",
+          },
+          {
+            internalType: "bytes",
+            name: "bidSignature",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "sellOrderPaymentAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "sellOrderNftAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "sellOrderData",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct LibDirectTransfer.AcceptBid",
+        name: "direct",
+        type: "tuple",
+      },
+    ],
+    name: "directAcceptBid",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "burn",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "safeTransferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
   {
     inputs: [
       {

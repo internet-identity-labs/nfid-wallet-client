@@ -29,3 +29,4 @@ declare const II_ENV: string
 declare const IS_DEV: string
 declare const IC_HOST: string
 declare const ALCHEMY_API_KEY: string
+declare const CHAIN_NETWORK: string

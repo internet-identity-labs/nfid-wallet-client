@@ -1,0 +1,66 @@
+[
+    {
+        "seed": "10974 same candy swim dry violin end asthma lake similar bronze dragon obtain recall panther essence cheese pitch flip slot nerve insane village protect load",
+        "accountId": "2858402a5b7768278c8cde81bbe22f564746dec009dcbac7a9f092ed0a04d4b1",
+        "principalId": "eirkj-rwarb-gbiyq-5ncfk-hoals-ommtm-2uuee-2uz3i-vjfts-yqhjk-2qe",
+        "account": {
+            "anchor": 10974,
+            "accessPoints": [
+                {
+                    "icon": "",
+                    "device": "NFID Chrome on Mac OS",
+                    "browser": "Chrome",
+                    "lastUsed": 1662318242345156000,
+                    "principalId": "gyu2j-2ni7o-o6yjt-n7lyh-x3sxq-zh7hp-sjvqe-t7oul-4eehb-2gvtt-jae"
+                },
+                {
+                    "icon": "document",
+                    "device": "Recovery phrase",
+                    "browser": "Chrome",
+                    "lastUsed": 1678184414695934700,
+                    "principalId": "fwpnd-r2y37-lv4ue-vyo3g-4u7zt-f5ncq-2ytan-zjs7b-2ioqf-n7j6u-gqe"
+                },
+                {
+                    "icon": "",
+                    "device": "NFID Chrome on Mac OS",
+                    "browser": "Chrome",
+                    "lastUsed": 1678184164733329000,
+                    "principalId": "xnxbw-3qubw-pc2f7-6uu6l-sy7xq-ghk7l-mpxib-3ttyv-uw2x7-vfdhf-2ae"
+                }
+            ],
+            "accounts": [],
+            "principalId": "fwpnd-r2y37-lv4ue-vyo3g-4u7zt-f5ncq-2ytan-zjs7b-2ioqf-n7j6u-gqe"
+        },
+        "credentials": {
+            "credentialId": "Md9X0nep07OMl0vQHestjprGLoUhZD6mOOLl0yY4N2k",
+            "isResidentCredential": false,
+            "privateKey": "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgqbOhXdCEGBZBlaiVlvZDZN1_yWn3TYuGo-60q6PidbChRANCAARFK_0WLcAtl3Toq5WuhABZ0HhbihJ5735_0pFQ6oX2vlZaDjvsbC2r-UVxMGkgMHxdW4AZUj-dxSydgd-7ykUO",
+            "signCount": 1
+        }
+    },
+    {
+        "seed": "25795 renew sugar usage mimic theory excuse cushion oyster combine sad grain model hen small parrot trumpet employ amateur hotel beyond combine clean rule swing",
+        "accountId": "91b7f326f970d04eb34956bfb3000b2f47d4044e330ffb5d2a88eae86c7214f0",
+        "principalId": "5qfmb-4bsfv-yiefm-bou5s-yi5sn-p7lig-enxfh-by4ko-t4kyu-imngt-fae",
+        "account": {
+            "anchor": 25795,
+            "accessPoints": [
+                {
+                    "icon": "mobile",
+                    "device": "NFID Chrome on Mac OS",
+                    "browser": "Chrome",
+                    "lastUsed": 1675875842931145200,
+                    "principalId": "k3qst-by7cm-2ijp3-rfdiu-oc4ji-lkyvr-xkw4g-n2xat-rzqcq-cccwq-jae"
+                }
+            ],
+            "accounts": [],
+            "principalId": "k3qst-by7cm-2ijp3-rfdiu-oc4ji-lkyvr-xkw4g-n2xat-rzqcq-cccwq-jae"
+        },
+        "credentials": {
+            "credentialId": "Md9X0nep07OMl0vQHestjprGLoUhZD6mOOLl0yY4N2k",
+            "isResidentCredential": false,
+            "privateKey": "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgqbOhXdCEGBZBlaiVlvZDZN1_yWn3TYuGo-60q6PidbChRANCAARFK_0WLcAtl3Toq5WuhABZ0HhbihJ5735_0pFQ6oX2vlZaDjvsbC2r-UVxMGkgMHxdW4AZUj-dxSydgd-7ykUO",
+            "signCount": 1
+        }
+    }
+]

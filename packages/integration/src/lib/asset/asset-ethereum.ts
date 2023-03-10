@@ -42,9 +42,6 @@ import {
   SortRequest,
 } from "./types"
 
-declare const CHAIN_NETWORK: string
-declare const ALCHEMY_API_KEY: string
-
 class EthereumAsset implements NonFungibleAsset {
   private readonly blockchain: EVMBlockchain
   private readonly unionBlockchain: EVMBlockchain

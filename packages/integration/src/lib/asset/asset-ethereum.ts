@@ -4,7 +4,6 @@ import {
   ActivitySort,
   ActivityType,
   OrderMatchSell,
-  Item as RaribleItem,
   UserActivityType,
 } from "@rarible/api-client"
 import { Blockchain } from "@rarible/api-client"
@@ -33,7 +32,6 @@ import {
   ChainBalance,
   ActivityRecord,
   NonFungibleActivityRecords,
-  NonFungibleItem,
   NonFungibleItems,
   FungibleActivityRecords,
   Tokens,
@@ -44,7 +42,7 @@ import {
   SortRequest,
 } from "./types"
 
-declare const FRONTEND_MODE: string
+declare const CHAIN_NETWORK: string
 declare const ALCHEMY_API_KEY: string
 
 class EthereumAsset implements NonFungibleAsset {
@@ -56,8 +54,8 @@ class EthereumAsset implements NonFungibleAsset {
   private readonly alchemySdk: Alchemy
 
   constructor(config: Configuration) {
-    const [raribleSdk, wallet] = this.getRaribleSdk(FRONTEND_MODE, config)
-    this.alchemySdk = this.getAlchemySdk(FRONTEND_MODE, config)
+    const [raribleSdk, wallet] = this.getRaribleSdk(CHAIN_NETWORK, config)
+    this.alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, config)
     this.raribleSdk = raribleSdk
     this.wallet = wallet
     this.blockchain = config.blockchain
@@ -296,9 +294,9 @@ class EthereumAsset implements NonFungibleAsset {
     mode: string,
     config: Configuration,
   ): [IRaribleSdk, EthWallet] {
-    const network = "production" == FRONTEND_MODE ? "prod" : "testnet"
+    const network = "mainnet" == mode ? "prod" : "testnet"
     const url =
-      "production" == mode ? config.provider.mainnet : config.provider.testnet
+      "mainnet" == mode ? config.provider.mainnet : config.provider.testnet
     const rpcProvider = new ethers.providers.JsonRpcProvider(url)
     const wallet = new EthWallet(rpcProvider)
     const ethersWallet = new EthereumWallet(new EthersEthereum(wallet))
@@ -309,7 +307,7 @@ class EthereumAsset implements NonFungibleAsset {
 
   private getAlchemySdk(mode: string, config: Configuration): Alchemy {
     const alchemyNetwork: Network =
-      "production" == mode ? config.alchemy.mainnet : config.alchemy.testnet
+      "mainnet" == mode ? config.alchemy.mainnet : config.alchemy.testnet
     return new Alchemy({
       apiKey: ALCHEMY_API_KEY,
       network: alchemyNetwork,

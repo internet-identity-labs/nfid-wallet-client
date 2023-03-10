@@ -1,5 +1,6 @@
 Feature: Sign in
 
+  @onlythis
   Scenario: User Signs In with predefined credentials
     Given User opens NFID site
     And User is already authenticated
@@ -18,13 +19,10 @@ Feature: Sign in
     Given User opens NFID site
     When I click on the link FAQ
     And User goes to recover account with FAQ
-    And User recovers account with a <phrase>
+    And User authenticates with a phrase
     And It log's me in
     When User opens profile menu
     Then NFID number is not zero
-    Examples:
-      | phrase                                                                                                                                                        |
-      | 10974 same candy swim dry violin end asthma lake similar bronze dragon obtain recall panther essence cheese pitch flip slot nerve insane village protect load |
 
 
   @mobile

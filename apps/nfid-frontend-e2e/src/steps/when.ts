@@ -1,7 +1,6 @@
 import { When } from "@cucumber/cucumber"
 
 import { baseURL } from "../../wdio.conf"
-import { readFile } from "../helpers/fileops"
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
 import RecoveryPage from "../pages/recovery-page"
@@ -64,7 +63,7 @@ When(/^User has account stored in localstorage$/, async () => {
 })
 
 When(/^User is already authenticated$/, async function () {
-  this.authId = await browser.addVirtualWebAuth(
+  const authId = await browser.addVirtualWebAuth(
     "ctap2",
     "internal",
     true,
@@ -73,11 +72,12 @@ When(/^User is already authenticated$/, async function () {
     true,
   )
   const rpId = new URL(baseURL).hostname
-  const creds: WebAuthnCredential = await readFile("credentials.json")
-  const anchor: Object = await readFile("accounts.json")
+  let testUser: TestUser = this.testUser
+  const creds: WebAuthnCredential = testUser.credentials
+  const anchor: JSON = testUser.account
 
   await browser.addWebauthnCredential(
-    this.authId,
+    authId,
     rpId,
     creds.credentialId,
     creds.isResidentCredential,
@@ -174,8 +174,9 @@ When(/^User goes to recover account with FAQ$/, async () => {
   await HomePage.switchToWindow("last")
 })
 
-When(/^User recovers account with a ([^"]*)$/, async (phrase: string) => {
-  await RecoveryPage.recoverAccountWithThePhrase(phrase)
+When(/^User authenticates with a phrase/, async function () {
+  let testUser: TestUser = this.testUser
+  await RecoveryPage.recoverAccountWithThePhrase(testUser.seed)
 })
 
 When(/^I (click|doubleclick) on the (link|selector) ([^"]*)?$/, clickElement)

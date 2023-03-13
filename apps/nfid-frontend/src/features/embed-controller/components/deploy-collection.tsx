@@ -32,6 +32,8 @@ interface IBuyComponent {
   feeMax?: string
 }
 
+const tokens = ["ETH"]
+
 export const DeployComponent = ({
   showTransactionDetails,
   applicationMeta,
@@ -44,7 +46,7 @@ export const DeployComponent = ({
   feeMax,
   data,
 }: IBuyComponent) => {
-  const { rates } = useExchangeRates(["ETH"])
+  const { rates } = useExchangeRates(tokens)
   const { counter } = useTimer({
     defaultCounter: 100,
     frequency: 100,
@@ -66,7 +68,7 @@ export const DeployComponent = ({
     const maxFeeInEth = parseInt(feeMax, 16) / 10 ** 18
     const maxFeeInUsd = (maxFeeInEth * rates["ETH"]).toFixed(2)
 
-    console.log({
+    console.debug("DeployComponent fee useMemo", {
       minFeeInEth,
       maxFeeInEth,
       feeMin: parseInt(feeMin, 16),

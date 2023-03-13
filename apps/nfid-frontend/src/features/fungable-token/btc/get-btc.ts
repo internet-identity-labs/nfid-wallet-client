@@ -85,11 +85,7 @@ export const getAccIdentifier = async () => {
     hostname,
   })
   let principal = ""
-  let profile = loadProfileFromLocalStorage()
-  if (!profile?.anchor) {
-    profile = await fetchProfile()
-    setProfile(profile)
-  }
+  let profile = await fetchProfile()
   if (!address) {
     const identity = await getWalletDelegation(profile.anchor)
     await replaceActorIdentity(btcAPI, identity)

@@ -56,8 +56,8 @@ export const SellComponent = ({
           icon={<IconCmpWarning className="ml-2.5 text-orange-500" />}
         />
         <div className={clsx("text-xs text-orange-500 bg-orange-50", "p-3")}>
-          This dapp can withdraw all your BitCoin Elep NFTs. Make sure you trust
-          this site.
+          This dapp can withdraw all your {data?.data?.collectionData?.name}{" "}
+          NFTs. Make sure you trust this site.
         </div>
         <InfoListItem
           title="From"

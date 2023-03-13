@@ -4,6 +4,7 @@ import React from "react"
 import { BuyComponent } from "./components/buy"
 import { DeployComponent } from "./components/deploy-collection"
 import { DetailsComponent } from "./components/details"
+import { DefaultSign } from "./components/fallbacks/signTypedData"
 import { LazyMintComponent } from "./components/lazy-mint"
 import { MintComponent } from "./components/mint"
 import { SellComponent } from "./components/sell"
@@ -113,6 +114,14 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
       )
     case state.matches("Initial.UI.TransactionDetails"):
       return <DetailsComponent onClose={() => send("BACK")} />
+    case state.matches("Initial.UI.DefaultSign"):
+      return (
+        <DefaultSign
+          data={state.context.rpcMessage?.params[1]}
+          onCancel={() => send("CANCEL")}
+          onSign={() => send({ type: "SIGN" })}
+        />
+      )
     default:
       return <div>EmbedController default</div>
   }

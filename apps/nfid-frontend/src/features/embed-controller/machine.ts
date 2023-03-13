@@ -20,6 +20,7 @@ export type EmbedControllerContext = {
   preparedSignature?: PreparedSignatureResponse
   data?: any
   method?: string
+  error?: string
 }
 
 type Events =
@@ -128,7 +129,18 @@ export const EmbedControllerMachine =
                         actions: "assignMethod",
                         cond: (_, event) => event.data === "LazyMint",
                       },
+                      {
+                        target: "DefaultSign",
+                        actions: "assignMethod",
+                        cond: (_, event) => event.data === "DefaultSign",
+                      },
                     ],
+                  },
+                },
+                DefaultSign: {
+                  on: {
+                    SIGN: "SignTypedData",
+                    CANCEL: "#EmbedController.Canceled",
                   },
                 },
 

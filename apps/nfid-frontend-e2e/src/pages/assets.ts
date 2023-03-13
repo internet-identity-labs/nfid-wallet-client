@@ -31,12 +31,27 @@ export class Assets {
     return $(this.assetElement + `${name}` + "']")
   }
 
-  public async getAssetByLabel(name: string) {
+  public async getAssetByLabel(name: string, reverse: boolean = false) {
     await $(this.assetLabel + `${name}` + "']").waitForDisplayed({
       timeout: 7000,
       timeoutMsg: "Asset has not been showed! Missing asset label!",
+      reverse: reverse,
     })
     return $(this.assetLabel + `${name}` + "']")
+  }
+
+  public async getAssetByElement(name: string, reverse: boolean = false) {
+    await $(this.assetElement + `${name}` + "']").waitForDisplayed({
+      timeout: 7000,
+      timeoutMsg: "Element has not been showed! Missing asset label!",
+      reverse: reverse,
+    })
+    return $(this.assetElement + `${name}` + "']")
+  }
+
+  public async verifyTransactionField(name: string, text: string) {
+    let label = "transaction_" + name + "_0"
+    await this.getAssetByElementAndCompareText(label, text)
   }
 
   public async openAssetByLabel(name: string) {

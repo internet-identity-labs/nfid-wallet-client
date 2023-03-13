@@ -1,4 +1,5 @@
 import { Then } from "@cucumber/cucumber"
+import { format } from "date-fns"
 
 import { checkCredentialAmount } from "../helpers/setupVirtualWebauthn"
 import Assets from "../pages/assets"
@@ -38,7 +39,6 @@ import isVisible from "./support/check/isDisplayed"
 import isEnabled from "./support/check/isEnabled"
 import isExisting from "./support/check/isExisting"
 import checkIfElementExists from "./support/lib/checkIfElementExists"
-import { format } from "date-fns"
 
 Then(/^User logs out$/, async () => {
   await Profile.logout()
@@ -239,6 +239,10 @@ Then(/^Open asset with label ([^"]*)$/, async (asselLabel: string) => {
   await Assets.openAssetByLabel(asselLabel)
 })
 
+Then(/^Only (\d+) asset displayed/, async (amount: number) => {
+  await Profile.waitForTokensAppear(amount)
+})
+
 Then(
   /^Asset ([^"]*) appears with currency ([^"]*) and blockchain ([^"]*) balance ([^"]*) and ([^"]*)$/,
   async (
@@ -269,7 +273,7 @@ Then(
   },
 )
 
-Then(/^Open dropdown menu on transactions page/, async () => {
+Then(/^Open dropdown menu on page/, async () => {
   let dropdownAccountId = "selected_acc"
   await Assets.openElementById(dropdownAccountId)
 })
@@ -298,6 +302,11 @@ Then(/^Click checkbox account ([^"]*)$/, async (asselLabel: string) => {
   await Assets.openElementById("option_cbx_" + asselLabel)
 })
 
+Then(/^Click checkbox chain ([^"]*)$/, async (asselLabel: string) => {
+  asselLabel = asselLabel.replace(/\s/g, "")
+  await Assets.openElementById("option_cbx_" + asselLabel)
+})
+
 Then(
   /^Expect dropdown menu with text "([^"]*)"$/,
   async (expectedText: string) => {
@@ -313,7 +322,7 @@ Then(/^Open ([^"]*) tab$/, async (tab: string) => {
   await Assets.openElementById("tab_" + tab)
 })
 
-Then(/^Wait while ([^"]*) calculated$/, async (text: string) => {
+Then(/^Wait while ([^"]*) accounts calculated$/, async (text: string) => {
   const asselLabel = "page_title"
   await Assets.getAssetByElementAndCompareText(asselLabel, text)
 })
@@ -323,12 +332,9 @@ Then(/^Expect that ([^"]*) is "([^"]*)"$/, async (id: string, text: string) => {
   await Assets.getAssetByElementAndCompareText(label, text)
 })
 
-Then(/^Expect that time field "([^"]*)" equal to ([^"]*) millis$/, async (id: string, date: string) => {
-  let label = "transaction_" + id + "_0"
-  let parsed = format(
-    new Date(Number(date)),
-    "MMM dd, yyyy - hh:mm:ss aaa",
-  )
+Then(/^Date is ([^"]*) millis$/, async (date: string) => {
+  let label = "transaction_date_0"
+  let parsed = format(new Date(Number(date)), "MMM dd, yyyy - hh:mm:ss aaa")
   await Assets.getAssetByElementAndCompareText(label, parsed)
 })
 
@@ -336,9 +342,83 @@ Then(/^Open first account in the row/, async () => {
   await clickElement("click", "selector", '[id="account_row_0"]')
 })
 
+Then(/^Open filter menu on assets screen/, async () => {
+  let dropdownAccountId = "asset_filter"
+  await Assets.openElementById(dropdownAccountId)
+})
+
+Then(
+  /^([^"]*) USD balance not ([^"]*)$/,
+  async (chain: string, balance: string) => {
+    let assetLabel = "token_" + chain + "_usd"
+    await Assets.getAssetByElementAndCompareText(assetLabel, balance, false)
+  },
+)
+
+Then(/^Account balance USD not ([^"]*)$/, async (balance: string) => {
+  let assetLabel = "usd_balance_0"
+  await Assets.getAssetByElementAndCompareText(assetLabel, balance, false)
+})
+
+Then(
+  /^([^"]*) with ([^"]*) of ([^"]*) in header/,
+  async (chain: string, amount: string, token: string) => {
+    await Assets.getAssetByElementAndCompareText("label", chain)
+    await Assets.getAssetByElementAndCompareText("token", token)
+    await Assets.getAssetByElementAndCompareText(
+      "token_info",
+      amount + " " + token,
+    )
+  },
+)
+
+Then(
+  /^([^"]*) app ([^"]*) with ([^"]*) ([^"]*) displayed/,
+  async (app: string, account: string, crypto: string, currency: string) => {
+    await Assets.getAssetByElementAndCompareText("app_name_0", app)
+    await Assets.getAssetByElementAndCompareText("acc_name_0", account)
+    await Assets.getAssetByElementAndCompareText(
+      "token_balance_0",
+      crypto + " " + currency,
+    )
+  },
+)
+
+Then(
+  /^Principal is ([^"]*) and address is ([^"]*)/,
+  async (princ: string, account: string) => {
+    await Assets.getAssetByElementAndCompareText("principal_id_0", princ)
+    await Assets.getAssetByElementAndCompareText("account_id_0", account)
+  },
+)
+
+Then(/^(\d+) row in the table/, async (amount: number) => {
+  for (let i = 0; i < amount; i++) {
+    await Assets.getAssetByElement("account_row_" + i)
+  }
+  await Assets.getAssetByElement("account_row_" + amount, true)
+})
+
+Then(/^(\d+) transaction in the table/, async (amount: number) => {
+  for (let i = 0; i < amount; i++) {
+    await Assets.getAssetByElement("transaction_" + i)
+  }
+  await Assets.getAssetByElement("transaction_" + amount, true)
+})
+
+Then(/^Sent ([^"]*) ([^"]*)/, async (amount: string, currency: string) => {
+  await Assets.verifyTransactionField("asset", currency)
+  await Assets.verifyTransactionField("quantity", amount)
+})
+
+Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
+  await Assets.verifyTransactionField("from", from)
+  await Assets.verifyTransactionField("to", to)
+})
+
 Then(
   /^Expect "([^"]*)" not with text ([^"]*)$/,
-  async (asselLabel: string, text: string) => {
-    await Assets.getAssetByElementAndCompareText(asselLabel, text, false)
+  async (assetLabel: string, text: string) => {
+    await Assets.getAssetByElementAndCompareText(assetLabel, text, false)
   },
 )

@@ -1,4 +1,4 @@
-import { SDKFooter, Skeleton } from "@nfid-frontend/ui"
+import { Skeleton } from "@nfid-frontend/ui"
 
 import SkeletonNft from "./skeleton-img.svg"
 
@@ -70,7 +70,6 @@ export const RPCPreloader = () => {
       <Skeleton className="flex items-center justify-center w-full h-12 rounded-md mt-14">
         <Skeleton className="h-3 w-[120px] !bg-white" />
       </Skeleton>
-      <SDKFooter />
     </div>
   )
 }

@@ -344,13 +344,10 @@ Then(/^Open filter menu on assets screen/, async () => {
   await Assets.openElementById(dropdownAccountId)
 })
 
-Then(
-  /^([^"]*) USD balance not empty$/,
-  async (chain: string) => {
-    let assetLabel = "token_" + chain + "_usd"
-    await Assets.getAssetByElementAndCompareText(assetLabel, "$0.00", false)
-  },
-)
+Then(/^([^"]*) USD balance not empty$/, async (chain: string) => {
+  let assetLabel = "token_" + chain + "_usd"
+  await Assets.getAssetByElementAndCompareText(assetLabel, "$0.00", false)
+})
 
 Then(/^Account balance in USD not empty$/, async () => {
   let assetLabel = "usd_balance_0"

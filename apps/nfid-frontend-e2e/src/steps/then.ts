@@ -244,7 +244,7 @@ Then(/^Only (\d+) asset displayed/, async (amount: number) => {
 })
 
 Then(
-  /^Asset ([^"]*) appears with currency ([^"]*) and blockchain ([^"]*) balance ([^"]*) and ([^"]*)$/,
+  /^([^"]*) appears with ([^"]*) on ([^"]*) and ([^"]*) && ([^"]*) USD$/,
   async (
     asselLabel: string,
     currency: string,
@@ -318,7 +318,8 @@ Then(
   },
 )
 
-Then(/^Open ([^"]*) tab$/, async (tab: string) => {
+Then(/^Open ([^"]*) tab for first account$/, async (tab: string) => {
+  await clickElement("click", "selector", '[id="account_row_0"]')
   await Assets.openElementById("tab_" + tab)
 })
 
@@ -332,14 +333,10 @@ Then(/^Expect that ([^"]*) is "([^"]*)"$/, async (id: string, text: string) => {
   await Assets.getAssetByElementAndCompareText(label, text)
 })
 
-Then(/^Date is ([^"]*) millis$/, async (date: string) => {
+Then(/^Date is ([^"]*)$/, async (date: string) => {
   let label = "transaction_date_0"
   let parsed = format(new Date(Number(date)), "MMM dd, yyyy - hh:mm:ss aaa")
   await Assets.getAssetByElementAndCompareText(label, parsed)
-})
-
-Then(/^Open first account in the row/, async () => {
-  await clickElement("click", "selector", '[id="account_row_0"]')
 })
 
 Then(/^Open filter menu on assets screen/, async () => {
@@ -348,16 +345,16 @@ Then(/^Open filter menu on assets screen/, async () => {
 })
 
 Then(
-  /^([^"]*) USD balance not ([^"]*)$/,
-  async (chain: string, balance: string) => {
+  /^([^"]*) USD balance not empty$/,
+  async (chain: string) => {
     let assetLabel = "token_" + chain + "_usd"
-    await Assets.getAssetByElementAndCompareText(assetLabel, balance, false)
+    await Assets.getAssetByElementAndCompareText(assetLabel, "$0.00", false)
   },
 )
 
-Then(/^Account balance USD not ([^"]*)$/, async (balance: string) => {
+Then(/^Account balance in USD not empty$/, async (balance: string) => {
   let assetLabel = "usd_balance_0"
-  await Assets.getAssetByElementAndCompareText(assetLabel, balance, false)
+  await Assets.getAssetByElementAndCompareText(assetLabel, "$0.00", false)
 })
 
 Then(
@@ -385,7 +382,7 @@ Then(
 )
 
 Then(
-  /^Principal is ([^"]*) and address is ([^"]*)/,
+  /^Identifiers are ([^"]*) and ([^"]*)/,
   async (princ: string, account: string) => {
     await Assets.getAssetByElementAndCompareText("principal_id_0", princ)
     await Assets.getAssetByElementAndCompareText("account_id_0", account)
@@ -411,7 +408,7 @@ Then(/^Sent ([^"]*) ([^"]*)/, async (amount: string, currency: string) => {
   await Assets.verifyTransactionField("quantity", amount)
 })
 
-Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
+Then(/^([^"]*) address ([^"]*)/, async (from: string, to: string) => {
   await Assets.verifyTransactionField("from", from)
   await Assets.verifyTransactionField("to", to)
 })

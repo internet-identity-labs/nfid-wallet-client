@@ -8,12 +8,12 @@ Feature:Fungible Asset
     Given User signs in
     And Tokens displayed on user assets
     And Asset appears with label <chain>
-    And Asset <chain> appears with currency <currency> and blockchain <chain> balance <balance> and <usd>
-    Then <chain> address calculated
-    And <chain> USD balance not <usd>
+    And <asset> appears with <currency> on <chain> and <balance> && $0.00 USD
+    And <chain> address calculated
+    And <chain> USD balance not empty
     Examples:
-      | chain   | currency | balance | usd   |
-      | Bitcoin | BTC      | 0 BTC   | $0.00 |
+      | chain   | currency | balance | asset   |
+      | Bitcoin | BTC      | 0 BTC   | Bitcoin |
 
   Scenario Outline: User should be able to see BTC in asset details
     Given User opens NFID site
@@ -25,11 +25,11 @@ Feature:Fungible Asset
     Then <chain> with <balance> <currency> in header
     Then 1 row in the table
     And NFID app account 1 with <balance> <currency> displayed
-    And Principal is <principal> and address is <address>
-    And Account balance USD not <usd>
+    And Identifiers are <principal> and <address>
+    And Account balance in USD not empty
     Examples:
-      | chain   | currency | balance    | usd   | principal | address |
-      | Bitcoin | BTC      | 0.00012717 | $0.00 | 5qfm      | mvyM    |
+      | chain   | currency | balance    | principal | address |
+      | Bitcoin | BTC      | 0.00012717 | 5qfm      | mvyM    |
 
   Scenario Outline: User should be able to see transaction history in Received
     Given User opens NFID site
@@ -38,14 +38,13 @@ Feature:Fungible Asset
     And Tokens displayed on user assets
     And Open asset with label <chain>
     Then Wait while <chain> accounts calculated
-    And Open first account in the row
-    And Open Received tab
+    And Open Received tab for first account
     Then 1 transaction in the table
     And Sent <balance> <currency>
-    And From <from> to <to>
-    And Date is <date> millis
+    And <from> address <to>
+    And Date is <millis>
     Examples:
-      | chain   | currency | balance    | date          | from                                       | to                                 |
+      | chain   | currency | balance    | millis          | from                                       | to                                 |
       | Bitcoin | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4 | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1 |
 
   Scenario Outline: User should be able to see transaction depends on selected app
@@ -55,8 +54,7 @@ Feature:Fungible Asset
     And Tokens displayed on user assets
     And Open asset with label <chain>
     Then Wait while <chain> accounts calculated
-    And Open first account in the row
-    And Open Received tab
+    Then Open Received tab for first account
     And Open dropdown menu on page
     Then Expect dropdown menu with text "1 selected"
     And Expect txs account "NFID account 1" with txs amount "1 TXs"

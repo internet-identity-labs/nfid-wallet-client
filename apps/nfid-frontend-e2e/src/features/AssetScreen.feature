@@ -22,7 +22,7 @@ Feature:Fungible Asset
     And Tokens displayed on user assets
     And Open asset with label <chain>
     Then Wait while <chain> accounts calculated
-    Then <chain> with <balance> of <currency> in header
+    Then <chain> with <balance> <currency> in header
     Then 1 row in the table
     And NFID app account 1 with <balance> <currency> displayed
     And Principal is <principal> and address is <address>

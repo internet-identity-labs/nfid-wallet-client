@@ -361,7 +361,7 @@ Then(/^Account balance USD not ([^"]*)$/, async (balance: string) => {
 })
 
 Then(
-  /^([^"]*) with ([^"]*) of ([^"]*) in header/,
+  /^([^"]*) with ([^"]*) ([^"]*) in header/,
   async (chain: string, amount: string, token: string) => {
     await Assets.getAssetByElementAndCompareText("label", chain)
     await Assets.getAssetByElementAndCompareText("token", token)

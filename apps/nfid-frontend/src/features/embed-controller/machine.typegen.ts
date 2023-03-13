@@ -96,6 +96,7 @@ export interface Typegen0 {
     | "Initial.UI"
     | "Initial.UI.Buy"
     | "Initial.UI.DecodeRequest"
+    | "Initial.UI.DefaultSign"
     | "Initial.UI.DeployCollection"
     | "Initial.UI.End"
     | "Initial.UI.LazyMint"
@@ -116,6 +117,7 @@ export interface Typegen0 {
               UI?:
                 | "Buy"
                 | "DecodeRequest"
+                | "DefaultSign"
                 | "DeployCollection"
                 | "End"
                 | "LazyMint"

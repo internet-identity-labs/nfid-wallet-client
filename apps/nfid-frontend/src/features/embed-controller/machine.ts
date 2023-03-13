@@ -20,7 +20,6 @@ export type EmbedControllerContext = {
   preparedSignature?: PreparedSignatureResponse
   data?: any
   method?: string
-  error?: string
 }
 
 type Events =

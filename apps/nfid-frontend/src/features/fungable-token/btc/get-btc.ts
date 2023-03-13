@@ -17,9 +17,7 @@ import { IconSvgBTC } from "@nfid-frontend/ui"
 import { createAddress, readAddress } from "@nfid/client-db"
 import {
   btcWallet as btcAPI,
-  loadProfileFromLocalStorage,
   replaceActorIdentity,
-  setProfile,
 } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 

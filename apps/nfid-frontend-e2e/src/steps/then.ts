@@ -352,7 +352,7 @@ Then(
   },
 )
 
-Then(/^Account balance in USD not empty$/, async (balance: string) => {
+Then(/^Account balance in USD not empty$/, async () => {
   let assetLabel = "usd_balance_0"
   await Assets.getAssetByElementAndCompareText(assetLabel, "$0.00", false)
 })
@@ -408,7 +408,7 @@ Then(/^Sent ([^"]*) ([^"]*)/, async (amount: string, currency: string) => {
   await Assets.verifyTransactionField("quantity", amount)
 })
 
-Then(/^([^"]*) address ([^"]*)/, async (from: string, to: string) => {
+Then(/^From ([^"]*) to ([^"]*)/, async (from: string, to: string) => {
   await Assets.verifyTransactionField("from", from)
   await Assets.verifyTransactionField("to", to)
 })

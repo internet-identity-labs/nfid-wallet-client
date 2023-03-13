@@ -2,6 +2,7 @@
 Feature:Fungible Asset
   As a user, I want to see fungible assets in profile
 
+  @asset1
   Scenario Outline: User should be able to see BTC in assets
     Given User opens NFID site
     And User is already authenticated with BTC
@@ -15,6 +16,7 @@ Feature:Fungible Asset
       | chain   | currency | balance | asset   |
       | Bitcoin | BTC      | 0 BTC   | Bitcoin |
 
+  @asset2
   Scenario Outline: User should be able to see BTC in asset details
     Given User opens NFID site
     And User is already authenticated with BTC
@@ -31,6 +33,7 @@ Feature:Fungible Asset
       | chain   | currency | balance    | principal | address |
       | Bitcoin | BTC      | 0.00012717 | 5qfm      | mvyM    |
 
+  @asset3
   Scenario Outline: User should be able to see transaction history in Received
     Given User opens NFID site
     And User is already authenticated with BTC
@@ -41,12 +44,13 @@ Feature:Fungible Asset
     And Open Received tab for first account
     Then 1 transaction in the table
     And Sent <balance> <currency>
-    And <from> address <to>
+    And From <address_from> to <address_to>
     And Date is <millis>
     Examples:
-      | chain   | currency | balance    | millis          | from                                       | to                                 |
+      | chain   | currency | balance    | millis        | address_from                               | address_to                         |
       | Bitcoin | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4 | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1 |
 
+  @asset4
   Scenario Outline: User should be able to see transaction depends on selected app
     Given User opens NFID site
     And User is already authenticated with BTC
@@ -69,6 +73,7 @@ Feature:Fungible Asset
       | chain   |
       | Bitcoin |
 
+  @asset5
   Scenario Outline: User should be able to filter assets by blockchain
     Given User opens NFID site
     And User is already authenticated

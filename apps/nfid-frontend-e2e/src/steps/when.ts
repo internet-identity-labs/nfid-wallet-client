@@ -1,5 +1,6 @@
 import { When } from "@cucumber/cucumber"
 
+import userClient from "../helpers/accounts-service"
 import { baseURL } from "../../wdio.conf"
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
@@ -62,7 +63,25 @@ When(/^User has account stored in localstorage$/, async () => {
   expect(localStorage).toContain("account")
 })
 
-When(/^User is already authenticated$/, async function () {
+When(/^User is already authenticated with ?(?:(.*))?$/, async function (account: string) {
+  if (account === "BTC") {
+    for (let i = 0; i < userClient.userMap.size; i++) {
+      if ((userClient.userMap.get(userClient.users[i]) === false) && (userClient.users[i].btcAddress !== undefined)) {
+        await userClient.takeUser(userClient.users[i])
+        this.testUser = userClient.users[i]
+      }
+    }
+  } else {
+    for (let i = 0; i < userClient.userMap.size; i++) {
+      if (userClient.userMap.get(userClient.users[i]) === false) {
+        await userClient.takeUser(userClient.users[i])
+        this.testUser = userClient.users[i]
+      }
+    }
+  }
+
+  let testUser: TestUser = this.testUser
+
   const authId = await browser.addVirtualWebAuth(
     "ctap2",
     "internal",
@@ -72,7 +91,6 @@ When(/^User is already authenticated$/, async function () {
     true,
   )
   const rpId = new URL(baseURL).hostname
-  let testUser: TestUser = this.testUser
   const creds: WebAuthnCredential = testUser.credentials
   const anchor: JSON = testUser.account
 

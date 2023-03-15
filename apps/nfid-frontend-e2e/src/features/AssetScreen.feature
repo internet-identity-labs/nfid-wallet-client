@@ -4,7 +4,7 @@ Feature:Fungible Asset
 
   Scenario: User should be able to see BTC in assets
     Given User opens NFID site
-    And User is already authenticated
+    And User is already authenticated with
     Given User signs in
     And Tokens displayed on user assets
     And Asset appears with label Bitcoin
@@ -14,7 +14,7 @@ Feature:Fungible Asset
 
   Scenario: User should be able to see BTC in asset details
     Given User opens NFID site
-    And User is already authenticated
+    And User is already authenticated with BTC
     Given User signs in
     And Tokens displayed on user assets
     And Open asset with label Bitcoin
@@ -33,7 +33,7 @@ Feature:Fungible Asset
 
   Scenario: User should be able to see transaction history in Received
     Given User opens NFID site
-    And User is already authenticated
+    And User is already authenticated with BTC
     Given User signs in
     And Tokens displayed on user assets
     And Open asset with label Bitcoin
@@ -49,7 +49,7 @@ Feature:Fungible Asset
 
   Scenario: User should be able to see transaction depends on selected app
     Given User opens NFID site
-    And User is already authenticated
+    And User is already authenticated with BTC
     Given User signs in
     And Tokens displayed on user assets
     And Open asset with label Bitcoin

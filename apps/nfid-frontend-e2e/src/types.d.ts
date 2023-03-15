@@ -7,8 +7,9 @@ type WebAuthnCredential = {
 
 type TestUser = {
   seed: string
-  accountId: string
-  principalId: string
+  icpAddress: string
+  btcAddress: string
+  ethAddress: string
   account: JSON
   credentials: WebAuthnCredential
 }

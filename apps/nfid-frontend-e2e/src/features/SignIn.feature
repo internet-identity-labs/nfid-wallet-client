@@ -3,7 +3,7 @@ Feature: Sign in
   @onlythis
   Scenario: User Signs In with predefined credentials
     Given User opens NFID site
-    And User is already authenticated
+    And User is already authenticated with
     Given User signs in
     And Tokens displayed on user assets
     When User opens profile menu
@@ -28,7 +28,7 @@ Feature: Sign in
   @mobile
   Scenario: User Signs In from mobile
     Given User opens NFID site
-    And User is already authenticated
+    And User is already authenticated with
     Given User signs in from mobile
     And Tokens displayed on user assets
     When User opens mobile profile menu

@@ -32,6 +32,7 @@ const decoders: {
 const methods: {
   [key: string]: (x: DecodedFunctionCall) => Promise<DecodeResponse>
 } = {
+  cancel,
   directAcceptBid,
   burn,
   safeTransferFrom,
@@ -77,7 +78,6 @@ const methods: {
     })
   },
   mintAndTransfer: (x: DecodedFunctionCall): Promise<DecodeResponse> => {
-    console.log(JSON.stringify(x.inputs[0][2]))
     const creators = x.inputs[0][2].map((v: any) => {
       return {
         creator: v[0],
@@ -259,6 +259,27 @@ async function directAcceptBid(
       sellOrderPaymentAmount: (x.inputs[0][12] as ethers.BigNumber).toString(),
       sellOrderNftAmount: (x.inputs[0][13] as ethers.BigNumber).toString(),
       sellOrderData: x.inputs[0][14],
+    },
+  })
+}
+
+async function cancel(x: DecodedFunctionCall): Promise<DecodeResponse> {
+  const makeAsset: DecodeResponse = await decodeTokenByAssetClass(
+    x.inputs[0][1][0][0],
+    x.inputs[0][1][0][1],
+  )
+
+  return Promise.resolve({
+    interface: "CancelOrder",
+    method: "cancel",
+    data: {
+      maker: x.inputs[0][0],
+      makeAsset,
+      taker: x.inputs[0][2],
+      takeAssetPrice: (x.inputs[0][3][1] as ethers.BigNumber).toString(),
+      salt: (x.inputs[0][4] as ethers.BigNumber).toString(),
+      start: (x.inputs[0][5] as ethers.BigNumber).toString(),
+      end: (x.inputs[0][6] as ethers.BigNumber).toString(),
     },
   })
 }

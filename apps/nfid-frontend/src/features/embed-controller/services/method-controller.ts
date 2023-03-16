@@ -20,7 +20,11 @@ export const MethodControllerService = async ({
   if (dataString.startsWith("0x0d5f7d35")) return "Buy"
   if (dataString.startsWith("0x973bb640") || data?.method === "sell")
     return "Sell"
-  if (dataString.startsWith("0x27050d1f")) return "DeployCollection"
+  if (
+    dataString.startsWith("0x27050d1f") ||
+    dataString.startsWith("0x72397ad5")
+  )
+    return "DeployCollection"
   if (dataString.startsWith("0x22a775b6")) return "Mint"
   if (dataString.startsWith("LazyMint")) return "LazyMint"
 

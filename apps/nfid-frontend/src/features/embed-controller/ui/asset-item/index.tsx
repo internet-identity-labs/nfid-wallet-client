@@ -29,7 +29,9 @@ export const AssetPreview: React.FC<IAssetPreview> = ({
           src={icon}
           alt={title}
         />
-        <div className={clsx("ml-2.5", !icon && "text-center !ml-0 w-full")}>
+        <div
+          className={clsx("ml-2.5", !icon && "text-center !ml-0 w-full py-2.5")}
+        >
           <p className="font-bold tracking-[0.01em] text-base">{title}</p>
           <p className="text-sm text-gray-400">{subtitle}</p>
         </div>

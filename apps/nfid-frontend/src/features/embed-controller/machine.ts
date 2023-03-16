@@ -133,6 +133,12 @@ export const EmbedControllerMachine =
                         actions: "assignMethod",
                         cond: (_, event) => event.data === "DefaultSign",
                       },
+                      {
+                        target: "DefaultSendTransaction",
+                        actions: "assignMethod",
+                        cond: (_, event) =>
+                          event.data === "DefaultSendTransaction",
+                      },
                     ],
                   },
                 },
@@ -140,6 +146,19 @@ export const EmbedControllerMachine =
                   on: {
                     SIGN: "SignTypedData",
                     CANCEL: "#EmbedController.Canceled",
+                  },
+                },
+                DefaultSendTransaction: {
+                  on: {
+                    SHOW_TRANSACTION_DETAILS: "TransactionDetails",
+                    CANCEL: "#EmbedController.Canceled",
+                    SIGN: [
+                      {
+                        target: "SendTransaction",
+                        cond: "hasPreparedSignature",
+                      },
+                      { target: "WaitForSignature" },
+                    ],
                   },
                 },
 

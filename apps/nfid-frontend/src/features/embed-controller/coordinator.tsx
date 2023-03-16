@@ -4,6 +4,7 @@ import React from "react"
 import { BuyComponent } from "./components/buy"
 import { DeployComponent } from "./components/deploy-collection"
 import { DetailsComponent } from "./components/details"
+import { DefaultSendTransaction } from "./components/fallbacks/sendTransaction"
 import { DefaultSign } from "./components/fallbacks/signTypedData"
 import { LazyMintComponent } from "./components/lazy-mint"
 import { MintComponent } from "./components/mint"
@@ -120,6 +121,22 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           data={state.context.rpcMessage?.params[1]}
           onCancel={() => send("CANCEL")}
           onSign={() => send({ type: "SIGN" })}
+        />
+      )
+    case state.matches("Initial.UI.DefaultSendTransaction"):
+      return (
+        <DefaultSendTransaction
+          applicationMeta={state.context.appMeta}
+          showTransactionDetails={() => send("SHOW_TRANSACTION_DETAILS")}
+          onApprove={() => send({ type: "SIGN" })}
+          onCancel={() => send("CANCEL")}
+          data={state.context.data?.data}
+          fromAddress={state.context.rpcMessage?.params[0].from}
+          toAddress={state.context.rpcMessage?.params[0].to}
+          feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
+          feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
+          price={state.context.rpcMessage?.params[0].value}
+          isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
         />
       )
     default:

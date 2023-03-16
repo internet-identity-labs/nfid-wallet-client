@@ -126,7 +126,10 @@ export const DeployComponent = ({
             />
           }
         />
-        <InfoListItem title="Network" description={data?.blockchain} />
+        <InfoListItem
+          title="Network"
+          description={data?.blockchain ?? "ETHEREUM"}
+        />
         <InfoListItem
           title="Network fee"
           description={`$${fee?.min}-$${fee.max}`}

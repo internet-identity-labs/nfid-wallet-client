@@ -4,7 +4,7 @@ Feature:Fungible Asset
 
   Scenario: User should be able to see BTC in assets
     Given User opens NFID site
-    And User is already authenticated with
+    And User is already authenticated with BTC
     Given User signs in
     And Tokens displayed on user assets
     And Asset appears with label Bitcoin

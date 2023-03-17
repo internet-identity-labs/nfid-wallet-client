@@ -27,6 +27,7 @@ export const MethodControllerService = async ({
     return "DeployCollection"
   if (dataString.startsWith("0x22a775b6")) return "Mint"
   if (dataString.startsWith("LazyMint")) return "LazyMint"
+  if (dataString.startsWith("0xb94ee332")) return "BatchBuy"
 
   return rpcMessage?.method === "eth_signTypedData_v4"
     ? "DefaultSign"

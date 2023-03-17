@@ -1,6 +1,7 @@
 import { useActor } from "@xstate/react"
 import React from "react"
 
+import { BatchBuyComponent } from "./components/batch-buy"
 import { BuyComponent } from "./components/buy"
 import { DeployComponent } from "./components/deploy-collection"
 import { DetailsComponent } from "./components/details"
@@ -114,6 +115,22 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
       )
     case state.matches("Initial.UI.TransactionDetails"):
       return <DetailsComponent onClose={() => send("BACK")} />
+    case state.matches("Initial.UI.BatchBuy"):
+      return (
+        <BatchBuyComponent
+          data={state.context.data.data}
+          showTransactionDetails={function (): void {
+            throw new Error("Function not implemented.")
+          }}
+          onApprove={function (): void {
+            throw new Error("Function not implemented.")
+          }}
+          onCancel={function (): void {
+            throw new Error("Function not implemented.")
+          }}
+          isButtonDisabled={false}
+        />
+      )
     case state.matches("Initial.UI.DefaultSign"):
       return (
         <DefaultSign

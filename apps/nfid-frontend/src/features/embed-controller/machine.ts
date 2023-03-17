@@ -133,6 +133,11 @@ export const EmbedControllerMachine =
                         actions: "assignMethod",
                         cond: (_, event) => event.data === "DefaultSign",
                       },
+                      {
+                        target: "BatchBuy",
+                        actions: "assignMethod",
+                        cond: (_, event) => event.data === "BatchBuy",
+                      },
                     ],
                   },
                 },
@@ -151,6 +156,19 @@ export const EmbedControllerMachine =
                   },
                 },
                 Buy: {
+                  on: {
+                    SHOW_TRANSACTION_DETAILS: "TransactionDetails",
+                    SIGN: [
+                      {
+                        target: "SendTransaction",
+                        cond: "hasPreparedSignature",
+                      },
+                      { target: "WaitForSignature" },
+                    ],
+                    CANCEL: "#EmbedController.Canceled",
+                  },
+                },
+                BatchBuy: {
                   on: {
                     SHOW_TRANSACTION_DETAILS: "TransactionDetails",
                     SIGN: [

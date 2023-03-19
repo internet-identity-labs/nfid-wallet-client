@@ -17,7 +17,7 @@ Feature:Fungible Asset
       | Bitcoin | BTC      | 0 BTC   | Bitcoin |
 
   @asset2
-  Scenario Outline: User should be able to see BTC in asset details
+  Scenario Outline: User should be able to see <chain> in asset details
     Given User opens NFID site
     And User is already authenticated with BTC
     Given User signs in

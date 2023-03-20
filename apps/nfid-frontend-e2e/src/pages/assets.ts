@@ -1,4 +1,3 @@
-import { wait } from "@nrwl/nx-cloud/lib/utilities/waiter"
 
 export class Assets {
   private get assetLabel() {
@@ -61,22 +60,6 @@ export class Assets {
     expect(expectedBlockchain).toEqual(blockchain)
   }
 
-  public async waitUntilAddressWithFundsCalculated(name: string) {
-    let expectedBalance = await $(
-      this.assetLabel + `${name}` + "_balance']",
-    ).getText()
-    let calc = 50
-    while (expectedBalance === "0 BTC" && calc > 0) {
-      expectedBalance = await $(
-        this.assetLabel + `${name}` + "_balance']",
-      ).getText()
-      await wait(1000)
-      calc--
-    }
-    if (calc === 0) {
-      fail("Balance did not change")
-    }
-  }
 }
 
 export default new Assets()

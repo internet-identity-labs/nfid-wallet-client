@@ -10,11 +10,12 @@ Feature:Fungible Asset
     And Tokens displayed on user assets
     And Asset appears with label <chain>
     And <asset> appears with <currency> on <chain> and <balance> && $0.00 USD
-    And <chain> address calculated
+    And <chain> <currency> address calculated
     And <chain> USD balance not empty
     Examples:
-      | chain   | currency | balance | asset   | anchor |
-      | Bitcoin | BTC      | 0 BTC   | Bitcoin | 25795  |
+      | chain    | currency | balance | asset    | anchor |
+      | Bitcoin  | BTC      | 0 BTC   | Bitcoin  | 25795  |
+#      | Ethereum | ETH      | 0 ETH   | Ethereum | 10974  |
 
   @asset2
   Scenario Outline: User should be able to see <chain> in asset details
@@ -72,6 +73,7 @@ Feature:Fungible Asset
     Examples:
       | chain   | anchor |
       | Bitcoin | 25795  |
+#      | Ethereum | 10974  |
 
   @asset5
   Scenario Outline: User should be able to filter assets by blockchain
@@ -86,5 +88,6 @@ Feature:Fungible Asset
     Then Only 1 asset displayed
     Then Asset appears with label <chain>
     Examples:
-      | chain   | anchor |
-      | Bitcoin | 25795  |
+      | chain    | anchor |
+      | Bitcoin  | 25795  |
+      | Ethereum | 10974  |

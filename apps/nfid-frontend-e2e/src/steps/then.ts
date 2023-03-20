@@ -262,8 +262,17 @@ Then(
   },
 )
 
-Then(/^([^"]*) address calculated$/, async (asselLabel: string) => {
-  await Assets.waitUntilAddressWithFundsCalculated(asselLabel)
+Then(/^([^"]*) ([^"]*) address calculated$/, async (chain: string, asset: string) => {
+  const title = `#token_${chain}_balance`
+  await $(title).waitUntil(
+    async () =>
+      (await $(title)).getText().then((l) => {
+        return l !== ("0 " + asset)
+      }),
+    {
+      timeout: 59000,
+    },
+  )
 })
 
 Then(/^Open dropdown menu on page/, async () => {

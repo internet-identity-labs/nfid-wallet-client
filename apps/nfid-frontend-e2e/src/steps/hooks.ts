@@ -1,9 +1,9 @@
 import { After, Before } from "@cucumber/cucumber"
 import cucumberJson from "wdio-cucumberjs-json-reporter"
+
 import userClient from "../helpers/accounts-service"
 
-Before(async function () {
-})
+Before(async function () {})
 
 After(async function () {
   // @ts-ignore

@@ -5,6 +5,16 @@ import {
 
 import { Decoder } from "../../decoder/decoder"
 
+export type Interface =
+  | "BatchBuyRequest"
+  | "Burn"
+  | "CancelOrder"
+  | "CollectionRequest"
+  | "DirectAcceptBid"
+  | "Item"
+  | "MintRequest"
+  | "SafeTransferFrom"
+
 export type Item = ItemRarible & { collectionData: CollectionRarible }
 
 export type DecodedFunctionCall = {
@@ -15,7 +25,7 @@ export type DecodedFunctionCall = {
 }
 
 export type FunctionCall = {
-  interface: string
+  interface: Interface
   method: string
   data: object
 }

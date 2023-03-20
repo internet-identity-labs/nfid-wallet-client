@@ -6,7 +6,7 @@ import {
 } from "../method-decoder"
 import { directPurchaseAbi } from "./direct-purchase-abi"
 
-export type DirectPurchase = FunctionCall & FunctionCall
+export type DirectPurchase = FunctionCall
 
 class DirectPurchaseMethodDecoder implements MethodDecoder {
   getAbi(): object {

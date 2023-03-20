@@ -15,7 +15,11 @@ import { createTokenPrivateMethodDecoder } from "./method-decoder/create-token/c
 import { createTokenPublicMethodDecoder } from "./method-decoder/create-token/create-token-public/create-token-public-method-decoder"
 import { directAcceptBidMethodDecoder } from "./method-decoder/direct-accept-bid/direct-accept-bid-method-decoder"
 import { directPurchaseMethodDecoder } from "./method-decoder/direct-purchase/direct-purchase-method-decoder"
-import { MethodDecoder, FunctionCall } from "./method-decoder/method-decoder"
+import {
+  MethodDecoder,
+  FunctionCall,
+  Method,
+} from "./method-decoder/method-decoder"
 import { mintAndTransferMethodDecoder } from "./method-decoder/mint/mint-and-transfer-method-decoder"
 import { safeTransferFromMethodDecoder } from "./method-decoder/safe-transfer-from/safe-transfer-from-method-decoder"
 
@@ -58,7 +62,7 @@ export class FunctionCallDecoder {
   async decodeByAssetClass(
     type: string,
     data: string,
-    method: string,
+    method: Method,
   ): Promise<FunctionCall> {
     const assetDecoder = this.assetDecoders[type]
 

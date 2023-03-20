@@ -28,7 +28,7 @@ export const ProfileAssetsHeader = ({
     <div className="flex items-center justify-between w-full">
       <p>Your tokens</p>
       <div className="flex items-center">
-        <div className="cursor-pointer">
+        <div className="cursor-pointer" id="asset_filter">
           <ModalAdvanced
             isModalOpen={isFiltersOpen}
             isModalOpenChange={setIsFiltersOpen}

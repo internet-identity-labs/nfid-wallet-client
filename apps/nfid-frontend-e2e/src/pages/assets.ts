@@ -9,36 +9,6 @@ export class Assets {
     return "[id*='"
   }
 
-  public async getAssetByElementAndCompareText(
-    name: string,
-    expected: string,
-    equality: boolean = true,
-  ) {
-    await $(this.assetElement + `${name}` + "']").waitUntil(
-      async () =>
-        await $(this.assetElement + `${name}` + "']")
-          .getText()
-          .then((l) => {
-            return equality ? l.includes(expected) : !l.includes(expected)
-          }),
-      {
-        timeout: 50000,
-        timeoutMsg:
-          "Asset equality error! " +
-          (await $(this.assetElement + `${name}` + "']").getText()),
-      },
-    )
-    return $(this.assetElement + `${name}` + "']")
-  }
-
-  public async getAssetByLabel(name: string) {
-    await $(this.assetLabel + `${name}` + "']").waitForDisplayed({
-      timeout: 7000,
-      timeoutMsg: "Asset has not been showed! Missing asset label!",
-    })
-    return $(this.assetLabel + `${name}` + "']")
-  }
-
   public async openAssetByLabel(name: string) {
     await $(this.assetLabel + `${name}` + "']").waitForDisplayed({
       timeout: 7000,

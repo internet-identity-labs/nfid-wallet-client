@@ -1,7 +1,7 @@
 import { When } from "@cucumber/cucumber"
 
-import userClient from "../helpers/accounts-service"
 import { baseURL } from "../../wdio.conf"
+import userClient from "../helpers/accounts-service"
 import HomePage from "../pages/home-page"
 import Profile from "../pages/profile"
 import RecoveryPage from "../pages/recovery-page"
@@ -63,49 +63,86 @@ When(/^User has account stored in localstorage$/, async () => {
   expect(localStorage).toContain("account")
 })
 
-When(/^User is already authenticated with ?(?:(.*))?$/, async function (account: string) {
-  if (account === "BTC") {
-    for (let i = 0; i < userClient.userMap.size; i++) {
-      if ((userClient.userMap.get(userClient.users[i]) === false) && (userClient.users[i].btcAddress !== undefined)) {
-        await userClient.takeUser(userClient.users[i])
-        this.testUser = userClient.users[i]
+When(
+  /^User is already authenticated with ?(?:(.*))?$/,
+  async function (account: string) {
+    if (account === "BTC") {
+      for (let i = 0; i < userClient.userMap.size; i++) {
+        if (
+          userClient.userMap.get(userClient.users[i]) === false &&
+          userClient.users[i].btcAddress !== undefined
+        ) {
+          await userClient.takeUser(userClient.users[i])
+          this.testUser = userClient.users[i]
+        }
+      }
+    } else {
+      for (let i = 0; i < userClient.userMap.size; i++) {
+        if (userClient.userMap.get(userClient.users[i]) === false) {
+          await userClient.takeUser(userClient.users[i])
+          this.testUser = userClient.users[i]
+        }
       }
     }
-  } else {
-    for (let i = 0; i < userClient.userMap.size; i++) {
-      if (userClient.userMap.get(userClient.users[i]) === false) {
-        await userClient.takeUser(userClient.users[i])
-        this.testUser = userClient.users[i]
-      }
-    }
-  }
 
-  let testUser: TestUser = this.testUser
+    let testUser: TestUser = this.testUser
 
-  const authId = await browser.addVirtualWebAuth(
-    "ctap2",
-    "internal",
-    true,
-    true,
-    true,
-    true,
-  )
-  const rpId = new URL(baseURL).hostname
-  const creds: WebAuthnCredential = testUser.credentials
-  const anchor: JSON = testUser.account
+    const authId = await browser.addVirtualWebAuth(
+      "ctap2",
+      "internal",
+      true,
+      true,
+      true,
+      true,
+    )
+    const rpId = new URL(baseURL).hostname
+    const creds: WebAuthnCredential = testUser.credentials
+    const anchor: JSON = testUser.account
 
-  await browser.addWebauthnCredential(
-    authId,
-    rpId,
-    creds.credentialId,
-    creds.isResidentCredential,
-    creds.privateKey,
-    creds.signCount,
-  )
+    await browser.addWebauthnCredential(
+      authId,
+      rpId,
+      creds.credentialId,
+      creds.isResidentCredential,
+      creds.privateKey,
+      creds.signCount,
+    )
 
-  await browser.setLocalStorage("account", JSON.stringify(anchor))
-  await browser.refresh()
-})
+    await browser.setLocalStorage("account", JSON.stringify(anchor))
+    await browser.refresh()
+  },
+)
+
+When(
+  /^User is already authenticated by ([^"]*) anchor$/,
+  async function (anchor: number) {
+    let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
+
+    const authId = await browser.addVirtualWebAuth(
+      "ctap2",
+      "internal",
+      true,
+      true,
+      true,
+      true,
+    )
+    const rpId = new URL(baseURL).hostname
+    const creds: WebAuthnCredential = testUser.credentials
+    const account: JSON = testUser.account
+
+    await browser.addWebauthnCredential(
+      authId,
+      rpId,
+      creds.credentialId,
+      creds.isResidentCredential,
+      creds.privateKey,
+      creds.signCount,
+    )
+
+    await browser.setLocalStorage("account", JSON.stringify(account))
+    await browser.refresh()
+  },
+)
 
 When(/^I open Vaults$/, async () => {
   await Profile.openVaults()

@@ -3,9 +3,9 @@ Feature:Fungible Asset
   As a user, I want to see fungible assets in profile
 
   @asset1
-  Scenario Outline: User should be able to see BTC in assets
+  Scenario Outline: User should be able to see <chain> in assets
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
     And Asset appears with label <chain>
@@ -13,13 +13,13 @@ Feature:Fungible Asset
     And <chain> address calculated
     And <chain> USD balance not empty
     Examples:
-      | chain   | currency | balance | asset   |
-      | Bitcoin | BTC      | 0 BTC   | Bitcoin |
+      | chain   | currency | balance | asset   | anchor |
+      | Bitcoin | BTC      | 0 BTC   | Bitcoin | 25795  |
 
   @asset2
   Scenario Outline: User should be able to see <chain> in asset details
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
     And Open asset with label <chain>
@@ -30,13 +30,13 @@ Feature:Fungible Asset
     And Identifiers are <principal> and <address>
     And Account balance in USD not empty
     Examples:
-      | chain   | currency | balance    | principal | address |
-      | Bitcoin | BTC      | 0.00012717 | 5qfm      | mvyM    |
+      | chain   | currency | balance    | principal | address | anchor |
+      | Bitcoin | BTC      | 0.00012717 | 5qfm      | mvyM    | 25795  |
 
   @asset3
   Scenario Outline: User should be able to see transaction history in Received
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
     And Open asset with label <chain>
@@ -47,13 +47,13 @@ Feature:Fungible Asset
     And From <address_from> to <address_to>
     And Date is <millis>
     Examples:
-      | chain   | currency | balance    | millis        | address_from                               | address_to                         |
-      | Bitcoin | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4 | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1 |
+      | chain   | currency | balance    | millis        | address_from                               | address_to                         | anchor |
+      | Bitcoin | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4 | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1 | 25795  |
 
   @asset4
   Scenario Outline: User should be able to see transaction depends on selected app
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
     And Open asset with label <chain>
@@ -70,13 +70,13 @@ Feature:Fungible Asset
     Then Expect txs account "NNS account 1" with txs amount "0 TXs"
     Then 0 transaction in the table
     Examples:
-      | chain   |
-      | Bitcoin |
+      | chain   | anchor |
+      | Bitcoin | 25795  |
 
   @asset5
   Scenario Outline: User should be able to filter assets by blockchain
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
     Then Open filter menu on assets screen
@@ -86,5 +86,5 @@ Feature:Fungible Asset
     Then Only 1 asset displayed
     Then Asset appears with label <chain>
     Examples:
-      | chain   |
-      | Bitcoin |
+      | chain   | anchor |
+      | Bitcoin | 25795  |

@@ -2,68 +2,89 @@
 Feature:Fungible Asset
   As a user, I want to see fungible assets in profile
 
-  Scenario: User should be able to see BTC in assets
+  @asset1
+  Scenario Outline: User should be able to see <chain> in assets
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    And Asset appears with label Bitcoin
-    And Asset Bitcoin appears with currency BTC and blockchain Bitcoin balance 0 BTC and $0.00
-    Then Bitcoin address calculated
-    And Expect "token_Bitcoin_usd" not with text $0.00
+    And Asset appears with label <chain>
+    And <asset> appears with <currency> on <chain> and <balance> && $0.00 USD
+    And <chain> address calculated
+    And <chain> USD balance not empty
+    Examples:
+      | chain   | currency | balance | asset   | anchor |
+      | Bitcoin | BTC      | 0 BTC   | Bitcoin | 25795  |
 
-  Scenario: User should be able to see BTC in asset details
+  @asset2
+  Scenario Outline: User should be able to see <chain> in asset details
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    And Open asset with label Bitcoin
-    Then Wait while Bitcoin accounts calculated
-    Then Expect label with text Bitcoin
-    Then Expect token with text BTC
-    Then Expect "token_info" not with text 0 BTC
-    Then Expect app_name_0 with text NFID
-    Then Expect acc_name_0 with text account 1
-    Then Expect account_id_0 with text mvyM
-    Then Expect principal_id_0 with text 5qfm
-    Then Expect "token_balance_0" not with text 0 BTC
-    Then Expect "usd_balance_0" not with text $0.00
-    Then I expect that element app_row_1 becomes not displayed
-    Then I expect that element app_row_0 becomes displayed
+    And Open asset with label <chain>
+    Then Wait while <chain> accounts calculated
+    Then <chain> with <balance> <currency> in header
+    Then 1 row in the table
+    And NFID app account 1 with <balance> <currency> displayed
+    And Identifiers are <principal> and <address>
+    And Account balance in USD not empty
+    Examples:
+      | chain   | currency | balance    | principal | address | anchor |
+      | Bitcoin | BTC      | 0.00012717 | 5qfm      | mvyM    | 25795  |
 
-  Scenario: User should be able to see transaction history in Received
+  @asset3
+  Scenario Outline: User should be able to see transaction history in Received
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    And Open asset with label Bitcoin
-    Then Wait while Bitcoin accounts calculated
-    And Open first account in the row
-    And Open Received tab
-    Then I expect that element transaction_0 becomes displayed
-    And Expect that time field "date" equal to 1677707789000 millis
-    And Expect that asset is "BTC"
-    And Expect that quantity is "0.00012717"
-    And Expect that to is "mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1"
-    And Expect that from is "tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4"
+    And Open asset with label <chain>
+    Then Wait while <chain> accounts calculated
+    And Open Received tab for first account
+    Then 1 transaction in the table
+    And Sent <balance> <currency>
+    And From <address_from> to <address_to>
+    And Date is <millis>
+    Examples:
+      | chain   | currency | balance    | millis        | address_from                               | address_to                         | anchor |
+      | Bitcoin | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4 | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1 | 25795  |
 
-  Scenario: User should be able to see transaction depends on selected app
+  @asset4
+  Scenario Outline: User should be able to see transaction depends on selected app
     Given User opens NFID site
-    And User is already authenticated with BTC
+    And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    And Open asset with label Bitcoin
-    Then Wait while Bitcoin accounts calculated
-    And Open first account in the row
-    And Open Received tab
-    And Open dropdown menu on transactions page
+    And Open asset with label <chain>
+    Then Wait while <chain> accounts calculated
+    Then Open Received tab for first account
+    And Open dropdown menu on page
     Then Expect dropdown menu with text "1 selected"
     And Expect txs account "NFID account 1" with txs amount "1 TXs"
     And Expect checkbox for account "NFID account 1" is selected
     Then Click checkbox account NFID account 1
     Then Expect dropdown menu with text "All wallets"
-    Then I expect that element transaction_0 becomes displayed
+    Then 1 transaction in the table
     Then Click checkbox account NNS account 1
     Then Expect txs account "NNS account 1" with txs amount "0 TXs"
-    Then I expect that element transaction_0 becomes not displayed
+    Then 0 transaction in the table
+    Examples:
+      | chain   | anchor |
+      | Bitcoin | 25795  |
 
+  @asset5
+  Scenario Outline: User should be able to filter assets by blockchain
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    Given User signs in
+    And Tokens displayed on user assets
+    Then Open filter menu on assets screen
+    And Expect dropdown menu with text "All"
+    And Open dropdown menu on page
+    And Click checkbox chain <chain>
+    Then Only 1 asset displayed
+    Then Asset appears with label <chain>
+    Examples:
+      | chain   | anchor |
+      | Bitcoin | 25795  |

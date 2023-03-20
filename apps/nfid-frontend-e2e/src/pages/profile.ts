@@ -109,11 +109,21 @@ export class Profile extends HomePage {
     } catch (err) {}
   }
 
-  public async waitForTokensAppear() {
-    await browser.waitUntil(async () => (await this.tokens.length) > 1, {
-      timeout: 13000,
-      timeoutMsg: "Tokens are not displayed on user profile!",
-    })
+  public async waitForTokensAppear(amount?: number) {
+    if (amount) {
+      await browser.waitUntil(
+        async () => (await this.tokens.length) === amount,
+        {
+          timeout: 13000,
+          timeoutMsg: "Not all tokens displayed on user profile!",
+        },
+      )
+    } else {
+      await browser.waitUntil(async () => (await this.tokens.length) > 1, {
+        timeout: 13000,
+        timeoutMsg: "Tokens are not displayed on user profile!",
+      })
+    }
   }
 
   public async openMobileProfileMenu() {

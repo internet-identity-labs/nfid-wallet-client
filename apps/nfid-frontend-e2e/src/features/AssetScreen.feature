@@ -76,7 +76,7 @@ Feature:Fungible Asset
   @asset5
   Scenario Outline: User should be able to filter assets by blockchain
     Given User opens NFID site
-    And User is already authenticated
+    And User is already authenticated with BTC
     Given User signs in
     And Tokens displayed on user assets
     Then Open filter menu on assets screen

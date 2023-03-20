@@ -46,6 +46,7 @@ const setupCSP = () => {
         "https://mempool.space/",
         "https://api.rarible.org",
         "https://ethereum-api.rarible.org",
+        "https://testnet-ethereum-api.rarible.org",
         "https://api.coinbase.com",
         "https://eth-mainnet.g.alchemy.com",
         "https://*.alchemy.com",

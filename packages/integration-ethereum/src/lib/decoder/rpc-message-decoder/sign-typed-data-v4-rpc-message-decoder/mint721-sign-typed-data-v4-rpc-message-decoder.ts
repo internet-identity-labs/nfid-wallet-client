@@ -1,7 +1,7 @@
-import { ErcMessageFunctionalCall } from "../rpc-message-decoder"
+import { RpcMessageFunctionalCall } from "../rpc-message-decoder"
 import { SignTypedDataV4RpcMessageDecoder } from "../sign-typed-data-v4-rpc-message-decoder."
 
-export type Mint721 = {
+export type MintLazy721 = {
   contract: string
   uri: string
   tokenId: string
@@ -12,10 +12,10 @@ export const mint721SignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageD
     decode: async (
       from: string,
       json: any,
-    ): Promise<ErcMessageFunctionalCall> => {
+    ): Promise<RpcMessageFunctionalCall> => {
       const { contract, uri, tokenId } = json.message
       return Promise.resolve({
-        interface: "Mint721",
+        interface: "MintLazy721",
         method: "Mint721",
         from,
         data: {

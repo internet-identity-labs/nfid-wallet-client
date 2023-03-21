@@ -179,7 +179,7 @@ describe("Decode function call data.", () => {
 
     const actual = await decodeRpcMessage(request)
     expect(actual).toEqual({
-      interface: "Mint721",
+      interface: "MintLazy721",
       method: "Mint721",
       from: "0xBEcedD989418F4D8109920ebC51E12c01CE9978e",
       data: {

@@ -1,12 +1,12 @@
 import {
-  ErcMessageDecoder,
-  ErcMessageFunctionalCall,
+  RpcMessageDecoder,
+  RpcMessageFunctionalCall,
 } from "./rpc-message-decoder"
 import { mint721SignTypedDataV4RpcMessageDecoder } from "./sign-typed-data-v4-rpc-message-decoder/mint721-sign-typed-data-v4-rpc-message-decoder"
 import { orderSignTypedDataV4RpcMessageDecoder } from "./sign-typed-data-v4-rpc-message-decoder/order-sign-typed-data-v4-rpc-message-decoder copy"
 
 export type SignTypedDataV4RpcMessageDecoder = {
-  decode: (from: string, json: object) => Promise<ErcMessageFunctionalCall>
+  decode: (from: string, json: object) => Promise<RpcMessageFunctionalCall>
 }
 
 const decoders: { [key: string]: SignTypedDataV4RpcMessageDecoder } = {
@@ -14,12 +14,12 @@ const decoders: { [key: string]: SignTypedDataV4RpcMessageDecoder } = {
   Mint721: mint721SignTypedDataV4RpcMessageDecoder,
 }
 
-export const signTypedDataV4RpcMessageDecoder: ErcMessageDecoder = {
+export const signTypedDataV4RpcMessageDecoder: RpcMessageDecoder = {
   method: "eth_signTypedData_v4",
   decode: async ([
     from,
     parameter,
-  ]: any[]): Promise<ErcMessageFunctionalCall> => {
+  ]: any[]): Promise<RpcMessageFunctionalCall> => {
     const json = JSON.parse(parameter)
     const type = json.primaryType
 

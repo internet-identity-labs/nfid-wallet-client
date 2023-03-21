@@ -1,6 +1,6 @@
 import { Interface, Method } from "../method-decoder/method-decoder"
 
-export type ErcMessageFunctionalCall = {
+export type RpcMessageFunctionalCall = {
   interface: Interface
   method: Method
   data: object
@@ -11,9 +11,9 @@ export type ErcMessageFunctionalCall = {
   value?: string
 }
 
-export type ErcMessageDecoder = {
+export type RpcMessageDecoder = {
   method: string
-  decode: (params: any[]) => Promise<ErcMessageFunctionalCall>
+  decode: (params: any[]) => Promise<RpcMessageFunctionalCall>
 }
 
 export const parseHex = (x: string): string =>

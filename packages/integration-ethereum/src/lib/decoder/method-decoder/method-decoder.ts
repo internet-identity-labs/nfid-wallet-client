@@ -14,7 +14,7 @@ export type Interface =
   | "Item"
   | "MintRequest"
   | "SafeTransferFrom"
-  | "Mint721"
+  | "MintLazy721"
 
 export type Method =
   | "bulkPurchase"

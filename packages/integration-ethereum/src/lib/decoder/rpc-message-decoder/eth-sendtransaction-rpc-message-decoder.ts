@@ -1,13 +1,13 @@
 import { functionCallDecoder } from "../function-call-decoder"
 import {
-  ErcMessageDecoder,
-  ErcMessageFunctionalCall,
+  RpcMessageDecoder,
+  RpcMessageFunctionalCall,
   parseHex,
 } from "./rpc-message-decoder"
 
-export const ethSendTransactionRpcMessageDecoder: ErcMessageDecoder = {
+export const ethSendTransactionRpcMessageDecoder: RpcMessageDecoder = {
   method: "eth_sendTranscation",
-  decode: async ([parameter]: any[]): Promise<ErcMessageFunctionalCall> => {
+  decode: async ([parameter]: any[]): Promise<RpcMessageFunctionalCall> => {
     const data = await functionCallDecoder.decode(parameter.data)
 
     return Promise.resolve({

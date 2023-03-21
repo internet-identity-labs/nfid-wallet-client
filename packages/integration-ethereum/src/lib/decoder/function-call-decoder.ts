@@ -20,8 +20,8 @@ import { mintAndTransferMethodDecoder } from "./method-decoder/mint/mint-and-tra
 import { safeTransferFromMethodDecoder } from "./method-decoder/safe-transfer-from/safe-transfer-from-method-decoder"
 import { ethSendTransactionRpcMessageDecoder } from "./rpc-message-decoder/eth-sendtransaction-rpc-message-decoder"
 import {
-  ErcMessageDecoder,
-  ErcMessageFunctionalCall,
+  RpcMessageDecoder,
+  RpcMessageFunctionalCall,
 } from "./rpc-message-decoder/rpc-message-decoder"
 import { signTypedDataV4RpcMessageDecoder } from "./rpc-message-decoder/sign-typed-data-v4-rpc-message-decoder."
 
@@ -43,7 +43,7 @@ const assetDecoders = dependencyService.group([
   erc1155AssetDecoder,
   erc1155TokenLazyDecoder,
 ])
-const rpcMessageDecoders: { [key: string]: ErcMessageDecoder } = {
+const rpcMessageDecoders: { [key: string]: RpcMessageDecoder } = {
   eth_sendTransaction: ethSendTransactionRpcMessageDecoder,
   eth_signTypedData_v4: signTypedDataV4RpcMessageDecoder,
 }
@@ -96,7 +96,7 @@ export const functionCallDecoder = {
   async decodeRpcMessage({
     method,
     params,
-  }: RPCMessage): Promise<ErcMessageFunctionalCall> {
+  }: RPCMessage): Promise<RpcMessageFunctionalCall> {
     const rpcMessageDecoder = rpcMessageDecoders[method]
 
     if (!rpcMessageDecoder) {

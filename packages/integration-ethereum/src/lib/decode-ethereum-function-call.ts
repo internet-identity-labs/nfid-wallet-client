@@ -1,6 +1,6 @@
 import { functionCallDecoder } from "./decoder/function-call-decoder"
 import { FunctionCall, Method } from "./decoder/method-decoder/method-decoder"
-import { ErcMessageFunctionalCall } from "./decoder/rpc-message-decoder/rpc-message-decoder"
+import { RpcMessageFunctionalCall } from "./decoder/rpc-message-decoder/rpc-message-decoder"
 
 export interface RPCMessage {
   method: string
@@ -9,7 +9,7 @@ export interface RPCMessage {
 
 export async function decodeRpcMessage(
   rpcMessage: RPCMessage,
-): Promise<ErcMessageFunctionalCall> {
+): Promise<RpcMessageFunctionalCall> {
   return functionCallDecoder.decodeRpcMessage(rpcMessage)
 }
 

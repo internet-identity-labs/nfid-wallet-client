@@ -1,12 +1,12 @@
 import { ActorMethod } from "@dfinity/agent";
 import { Bytes, ethers, Signer, TypedDataDomain, TypedDataField } from "ethers";
 import { Provider, TransactionRequest } from "@ethersproject/abstract-provider";
-import { hashMessage, keccak256, resolveProperties } from "ethers/lib/utils";
+import { hashMessage, keccak256, resolveProperties, _TypedDataEncoder, hexlify } from "ethers/lib/utils";
 import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
 import { UnsignedTransaction } from "ethers-ts";
 import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
-import { getPublicKey, signECDSA } from "../lambda/ecdsa";
+import { getPublicKey, signECDSA } from "./ecdsa";
 import { DelegationIdentity } from "@dfinity/identity";
 
 const ABI_721 = [
@@ -63,7 +63,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
       { types, primaryType, domain, message },
       SignTypedDataVersion.V4
     );
-    return signECDSA(typedDataHash.toString(), this.walletIdentity)
+    return signECDSA(hexlify(typedDataHash), this.walletIdentity)
       .then(async signature => {
         return joinSignature(signature);
       });

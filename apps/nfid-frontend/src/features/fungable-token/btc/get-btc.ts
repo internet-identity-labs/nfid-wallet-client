@@ -15,10 +15,7 @@ import { TransactionRow } from "src/integration/rosetta/select-transactions"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import { createAddress, readAddress } from "@nfid/client-db"
-import {
-  btcWallet as btcAPI,
-  replaceActorIdentity,
-} from "@nfid/integration"
+import { btcWallet as btcAPI, replaceActorIdentity } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 
 const ROOT_DOMAIN = "nfid.one"

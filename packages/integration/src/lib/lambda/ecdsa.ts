@@ -1,101 +1,97 @@
-import { Actor, Cbor, QueryFields } from "@dfinity/agent";
-import { IDL } from "@dfinity/candid";
-import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer";
-import { DelegationIdentity } from "@dfinity/identity";
-import { authState } from "../auth-state/index";
-import { ic } from "../agent/index";
+import { Cbor, QueryFields } from "@dfinity/agent"
+import { IDL } from "@dfinity/candid"
+import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { DelegationIdentity } from "@dfinity/identity"
+import { Signature } from "ethers"
 
-import { ecdsaSigner, replaceActorIdentity } from "../actors";
-import { KeyPair } from "../_ic_api/ecdsa-signer.d";
-import { getTransformedRequest } from "./util";
-import { Signature } from "ethers";
-
+import { KeyPair } from "../_ic_api/ecdsa-signer.d"
+import { ecdsaSigner, replaceActorIdentity } from "../actors"
+import { ic } from "../agent/index"
+import { getTransformedRequest } from "./util"
 
 export async function registerECDSA(
-  identity: DelegationIdentity
+  identity: DelegationIdentity,
 ): Promise<string> {
-  const url = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER;
-  await replaceActorIdentity(ecdsaSigner, identity);
-  const request = await getRegisterRequest(identity);
+  const url = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
+  await replaceActorIdentity(ecdsaSigner, identity)
+  const request = await getRegisterRequest(identity)
   return await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request)
-  }).then(async response => {
-    if (!response.ok) throw new Error(await response.text());
-    const kp: KeyPair = await response.json();
-    await ecdsaSigner.add_kp(kp);
-    return kp.public_key;
-  });
+    body: JSON.stringify(request),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    const kp: KeyPair = await response.json()
+    await ecdsaSigner.add_kp(kp)
+    return kp.public_key
+  })
 }
 
 export async function getPublicKey(
-  identity?: DelegationIdentity
+  identity?: DelegationIdentity,
 ): Promise<string> {
-  const response = await ecdsaSigner.get_kp();
+  const response = await ecdsaSigner.get_kp()
   if (response.key_pair.length === 0) {
     if (!identity) {
-      throw Error("Delegation required");
+      throw Error("Delegation required")
     }
-    return registerECDSA(identity);
+    return registerECDSA(identity)
   }
-  return response.key_pair[0].public_key;
+  return response.key_pair[0].public_key
 }
 
 export async function signECDSA(
   keccak: string,
-  identity?: DelegationIdentity
+  identity?: DelegationIdentity,
 ): Promise<Signature> {
   if (!identity) {
-    throw Error("1");
+    throw Error("1")
   }
-  const url = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN;
-  const request = await getSignCBORRequest(identity, keccak);
+  const url = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
+  const request = await getSignCBORRequest(identity, keccak)
   return await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request)
-  }).then(async response => {
-    if (!response.ok) throw new Error(await response.text());
-    const signature: Signature = await response.json();
-    return signature;
-  });
+    body: JSON.stringify(request),
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(await response.text())
+    const signature: Signature = await response.json()
+    return signature
+  })
 }
 
 export async function getSignCBORRequest(
   identity: DelegationIdentity,
-  keccak: string
+  keccak: string,
 ) {
   const fields: QueryFields = {
     methodName: "get_kp",
-    arg: IDL.encode([IDL.Opt(IDL.Text)], [[]])
-  };
+    arg: IDL.encode([IDL.Opt(IDL.Text)], [[]]),
+  }
   const request: any = await getTransformedRequest(
     identity,
     ECDSA_SIGNER_CANISTER_ID,
-    fields
-  );
-  const cbor = Cbor.encode(request.body);
+    fields,
+  )
+  const cbor = Cbor.encode(request.body)
   return {
     cbor: toHexString(cbor),
-    keccak
-  };
+    keccak,
+  }
 }
 
-export async function getRegisterRequest(
-  identity: DelegationIdentity
-) {
+export async function getRegisterRequest(identity: DelegationIdentity) {
   const fields: QueryFields = {
     methodName: "get_principal",
-    arg: IDL.encode([IDL.Opt(IDL.Text)], [[]])
-  };
+    arg: IDL.encode([IDL.Opt(IDL.Text)], [[]]),
+  }
   const request: any = await getTransformedRequest(
     identity,
     ECDSA_SIGNER_CANISTER_ID,
-    fields
-  );
-  const body = Cbor.encode(request.body);
+    fields,
+  )
+  const body = Cbor.encode(request.body)
   return {
-    cbor: toHexString(body)
-  };
+    cbor: toHexString(body),
+  }
 }

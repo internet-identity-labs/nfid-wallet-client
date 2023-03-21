@@ -1,13 +1,13 @@
 import { Actor } from "@dfinity/agent"
 
-import { ecdsaSigner as ecdsaAPI } from "../actors"
+import { ecdsaSigner, ecdsaSigner as ecdsaAPI } from "../actors"
 import { hasOwnProperty } from "../test-utils"
 
 export * from "./ecdsa-wallet"
 export * from "./types"
 
 export async function getEcdsaPublicKey(): Promise<Array<number>> {
-  const publicKeyResult = await ecdsaAPI.public_key().catch((e) => {
+  const publicKeyResult = await ecdsaSigner.public_key().catch((e) => {
     throw new Error(`getEcdsaPublicKey: ${e.message}`)
   })
   if (hasOwnProperty(publicKeyResult, "Err")) {

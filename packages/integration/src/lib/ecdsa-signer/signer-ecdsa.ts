@@ -6,7 +6,7 @@ import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
 import { UnsignedTransaction } from "ethers-ts";
 import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
-import { getPublicKey, signECDSA } from "./ecdsa";
+import { getPublicKey, signECDSA } from "../lambda/ecdsa";
 import { DelegationIdentity } from "@dfinity/identity";
 
 const ABI_721 = [
@@ -19,9 +19,9 @@ const ABI_721 = [
 
 export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
   override provider?: Provider;
-  private walletIdentity?: DelegationIdentity;
+  readonly walletIdentity: DelegationIdentity;
 
-  constructor(provider?: Provider, walletIdentity?: DelegationIdentity) {
+  constructor(walletIdentity: DelegationIdentity, provider?: Provider) {
     super();
     this.provider = provider;
     this.walletIdentity = walletIdentity;
@@ -38,7 +38,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
       .then(joinSignature);
   }
 
-  async signTransaction(transaction: TransactionRequest, walletIdentity?: DelegationIdentity): Promise<string> {
+  async signTransaction(transaction: TransactionRequest): Promise<string> {
     return resolveProperties(transaction).then((tx) => {
       if (tx.from != null) {
         delete tx.from;
@@ -96,11 +96,6 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
   connect(provider: Provider): Signer {
     this.provider = provider;
     return this;
-  }
-
-  init(identity: DelegationIdentity): EthWalletV2 {
-    this.walletIdentity = identity;
-    return this
   }
 
   async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {

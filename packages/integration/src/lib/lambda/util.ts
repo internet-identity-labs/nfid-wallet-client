@@ -11,8 +11,6 @@ export async function getTransformedRequest(
 ) {
   const canister =
     typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId
-  console.log("identity")
-  console.log(identity)
   const sender = identity.getPrincipal()
   const request = {
     request_type: "query",

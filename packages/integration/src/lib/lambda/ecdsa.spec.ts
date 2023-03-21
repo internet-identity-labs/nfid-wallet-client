@@ -13,7 +13,7 @@ import {
 
 import { registerECDSA, signECDSA } from "./ecdsa"
 
-describe("123 suite", () => {
+describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(50000)
 
   describe("lambdaECDSA", () => {
@@ -27,9 +27,7 @@ describe("123 suite", () => {
       const signature = await signECDSA(keccak, delegationIdentity)
       const digestBytes = arrayify(keccak)
       const pk = ethers.utils.recoverPublicKey(digestBytes, signature)
-      // expect(pk).toEqual(publicKey)
-      console.log(publicKey)
-      console.log(pk)
+      expect(pk).toEqual(publicKey)
     })
   })
 })

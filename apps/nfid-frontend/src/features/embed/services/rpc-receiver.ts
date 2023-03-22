@@ -1,7 +1,10 @@
-import { DecodeResponse } from "packages/integration-ethereum/src/lib/constant"
 import { filter, fromEvent, map } from "rxjs"
 
-import { decode, decodeTokenByAssetClass } from "@nfid/integration-ethereum"
+import {
+  decode,
+  decodeTokenByAssetClass,
+  FunctionCall,
+} from "@nfid/integration-ethereum"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 
@@ -53,7 +56,7 @@ export const RPCReceiver = () =>
 
 type ProcedureDetails = {
   rpcMessage: RPCMessage
-  rpcMessageDecoded?: DecodeResponse
+  rpcMessageDecoded?: FunctionCall
   origin: string
 }
 
@@ -86,7 +89,7 @@ export const RPCReceiverV2 =
 
 const decodeRPCMEssage = async (
   rpcMessage: RPCMessage,
-): Promise<DecodeResponse | undefined> => {
+): Promise<FunctionCall | undefined> => {
   try {
     if (rpcMessage?.params.length > 1) {
       const data = JSON.parse(rpcMessage.params[1])

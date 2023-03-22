@@ -25,14 +25,14 @@ interface ISellComponent {
   data?: any
 }
 
-export const SellComponent = ({
+export const SellComponent: React.FC<ISellComponent> = ({
   showTransactionDetails,
   applicationMeta,
   onApprove,
   onCancel,
   fromAddress,
   data,
-}: ISellComponent) => {
+}) => {
   return (
     <TooltipProvider>
       <SDKApplicationMeta

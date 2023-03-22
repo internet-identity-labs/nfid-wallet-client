@@ -71,6 +71,7 @@ export interface Typegen0 {
   eventsCausingActions: {
     assignData: "done.invoke.decodeRPCRequestService"
     assignError:
+      | ""
       | "error.platform.MethodControllerService"
       | "error.platform.SignTypedDataService"
       | "error.platform.decodeRPCRequestService"

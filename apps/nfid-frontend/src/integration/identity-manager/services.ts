@@ -1,6 +1,7 @@
 import { fetchPrincipal } from "@nfid/integration"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
 
+import { AuthorizationRequest } from "frontend/state/authorization"
 import { AuthorizationMachineContext } from "frontend/state/machines/authorization/authorization"
 
 import {
@@ -40,10 +41,14 @@ export async function checkRegistrationStatus() {
   }
 }
 
-export async function fetchAccountsService(
-  context: Pick<AuthorizationMachineContext, "authRequest">,
-) {
-  if (!context.authRequest?.hostname) {
+type FetchAccountsServiceArgs = {
+  authRequest: AuthorizationRequest
+}
+
+export async function fetchAccountsService({
+  authRequest,
+}: FetchAccountsServiceArgs) {
+  if (!authRequest?.hostname) {
     throw new Error(
       `fetchAccountsService Cannot filter personas without hostname`,
     )
@@ -51,8 +56,8 @@ export async function fetchAccountsService(
   const personas = await fetchAccounts()
   return selectAccounts(
     personas,
-    context.authRequest.hostname,
-    context.authRequest.derivationOrigin,
+    authRequest.hostname,
+    authRequest.derivationOrigin,
   )
 }
 

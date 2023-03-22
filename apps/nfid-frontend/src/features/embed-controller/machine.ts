@@ -5,8 +5,15 @@ import { PreparedSignatureResponse } from "@nfid/integration"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { RPCMessage, RPCResponse, RPC_BASE } from "../embed/rpc-service"
-import { MethodControllerService } from "./services/method-controller"
+import {
+  RPCMessage,
+  RPCResponse,
+  RPC_BASE,
+} from "../embed/services/rpc-receiver"
+import {
+  MethodControllerService,
+  MethodEvents,
+} from "./services/method-controller"
 import { prepareSignature } from "./services/prepare-signature"
 import { decodeRPCRequestService } from "./services/rpc-decode"
 import { sendTransactionService } from "./services/send-transaction"
@@ -29,10 +36,6 @@ type ErrorEvents =
       data: Error
     }
   | {
-      type: "error.platform.MethodControllerService"
-      data: Error
-    }
-  | {
       type: "error.platform.sendTransactionService"
       data: Error
     }
@@ -47,18 +50,18 @@ type ErrorEvents =
 
 type Events =
   | ErrorEvents
+  | MethodEvents
   | { type: "SHOW_TRANSACTION_DETAILS" }
   | { type: "CLOSE" }
   | { type: "CANCEL" }
   | { type: "SIGN" }
   | { type: "BACK" }
-  | { type: "BUY" }
 
 export const EmbedControllerMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QGEAWYDGBrA9gVwBcBZAQw1QEsA7MAOgAUAnMABxMZIIpytoBFMOCGABKYAI544BAMQQedagDccWOsIxDREqbAIBtAAwBdRKBY5YFLjzMgAHogCMAVgBMtACwB2NwDY-AGYXAE5vEMN-NwAaEABPZxcnWkNU1KcnN0DPQydAtwBfAti0TFxCUnJqOiZWdk5uXlq2ZgBlCigqTjxmOQVaZVU6FmYWsHbO7uYjUyQQCysbKjtHBCdPF1o3AA4I709Mtw3vQNiEhGDPWhCXQNcnAMNQl0NPIpL0bHxiMkoaWgAqgBJWgAGRwJGEjD6-0GalopS+FV+1UBIPBkLAjAQgwwDR4MxmdgW1kaK0Q3lCtBclM8fkOrzcMXiiHygRSTzubge-j8hiC7xAiPKPyq-2BCM+IpkrQAEgB5ADqAH0ACoiACCADlWhrkKqgfKtcq+ABRVUaoGg1pEuYkpbktZPTaRbahQz7B5ulxnVlHLx+G4hbYHPneD3eQXC76VP50CXRwgyABqppEQIAYgBNW3mSyk2xzVZOZ0pHbuz1+b2+i77a6B0IhenbQIRQJ+KNSmMo8UgxOyVPp7P6JyzPOLMlF5yl10V0PVlkITwhK7cm7bdYe7b8yPFIVd5Fi+N9g+yZCg+WtU25+b5h1Tp0uF3lvbzp81lyeK7eJzr-wlzIOz3ftY1RCVVQ4KhYDIJYBAIEgKAAG1gGQACE9QAaRve1J1AYsdnZHc-G8PwaXWKtmXONwTnrINfDySlMk7MpuyPNFaEVBCCAzHBGAmLoCB6MAZGwu9cIcRJvG8Wgf3pO5tnpZcSJrQIpK2X9QnDXJ-FbZikVFON2OTLEKAAMziagoBhRQqBUeFYDAKgIAgkgoJgxpWixJQKAwMBRInQs8MQJkchSRtqPbPxqJCGsHkMWh223NxP1bSl5L0kVQN7WhjMYMyLKoKysUYXjaBYRDOFM3iAFtaAcpyXLcjAlk8xhvN8-yC2WB9XDU2S8icBT1jCPxYs-GSNJCQJAnSG48gy1jDIlVo8AwXzYBQ89L2vExiTEwKJIQf92R2UiMiiwbdlijdaBDDYptS9t8l3PcqC0eA5hAnswD2gLuqChAAFpfxrQHktoUjP0icJW29SIFsPQzmnqe9xy6x03BixcgmpNJUhcektICBGDNRZGOCWfhBGEMRJGkX70YfENaFcKKCe0nS-E8GsjhCLxbjybYjkMFcMjeYDTyympRhRxoGBltoOgEoSGdRw6pJrDZ2RyKLtm2KSN2yEISaltFVfE1ZP2kpJMZpVtppm7wa3pW6v1CPWnH2JsV3Fj4WMRsD0QhKFzYOy2bmpTIbhOB7HZ54NcduHZPcNu5ff3f3Sey-tQ-+w6Ik2YNPcAvlghXFSmQ5dwmwCaa8hcE3vvYxroOaxo4IQ5Dc8dQXrZCDJ1g2W59Z5oXqWrzx8j1oJskbtiJREEhqpYbuHyivmps8FsnrZ+lNdeKuZtSyfUkCOelpBTjrB4vilamH67X2vPi1beKGJCFcNyL7YVMpAMm0GifPIgRtjn0DjlEy5lLKrwBoAq4TwP6vH1scZSi5hoJS-HyRkuwYZnwlpnU2y1VrrQ+mjNWqxebSRjkEJISl+TczQWPbIdIGT935IGMB2VTRORgYdai4NgxNknk+YMvJrrbBkvSaiIt9ZBibJw48tBeEEBwCvBASQJGw0pMRVSSUfQgEQmAUyBBnB0j8CzdwIYpohhATsWIAAjHABAVHVUQATcxWiCYnG8Ho2IeUoCoBMWsFwCkLE7GXCAyeQsf4gAAO4UAgAQVAzg3CGFiOgDogTEBb1iMWMxYSrGRNsTE84GiErBm0d4vRRQihAA */
   createMachine(
     {
-      /** @xstate-layout N4IgpgJg5mDOIC5QFEC2AjSBhA9gOwBcAnHAG1LCIDoBJPASwPoENSBiCfMK2A5g7mkwRchEuUq0GTVgG0ADAF1EoAA45YjevhUgAHogAsAZgCcAViqHTAJjMB2e6YAcpw+YA0IAJ6IAbPKmVOby8gCM9vI2NmHG8oY2AL6JXkLY+MRkFNR0WqxUAApEYKrMxQDK9FB4-ACuxYXFpcUcXFT0eABuOADW3KpNZWCV1XXFCspIIOqaTDpTBgjuQXaGhvLGhvYx0RZevgjRNlRRm85hYVt+zubOyakY6WJZkrkypFQAqjRUACJgAGMcBAwAAlMAAR1qcAIrTw3A63T6VBBQJBoIKWHBUJh5UonXoALAE10My081AizC1yocRujmcxhs6z8NlM+0QN2MtOc8hCNnC5nMphF9xAaREGXE2SkeQ+3z+gOBYMh0N4bD0vH43GYADMBEQABRxUIASjYEtEmQkOWkLHlP3+aJVON4JKmZLmeF0ixC3NCoQu1K2pnsmw5CBclkZxlZNjDhjCzmTYstUpetrlXx+AFkwAQABbAq3SyhwhFdXrcPOF4vpm14ogEonutQacnehaIMJRY5+Jz2EyuWybGwR8z2Szx2PmaxJrbyeypx6S5422XvbNUGtF1fW7Ll9qV5E7utr7KN5vEsKTNuzbSdynd3tUfuhoci1ZjnyIFzyKjTts5zyH4AQWMuwglhmG72lueLkGw5QABIAPIAOoAPoACqggAggAcuUuFYFhNAofhGG-MgWG4TQAAy5SttM7Zej63YTvYAETqYUQmG4YTsj+kYTq+oHnMY9jOI41JhBBTz7q8dr5Aq8HsOUNAAOL4UxnoPmxCBhBxXFOLxZiJoJBw9vIzhUNSfg8QESZ8sKcl7qWmabgqABCtTeIhqGYThBFESRZEUVRNH0YxSikixeldocNg0uYZgREmg5Mp4Qn2BEwShDEazUmyrlQeubywd5vmIZp2kxR6cUUvoiBJVstICkOs4WIuEbbNypjUsmWznH484lfWMrlcpPw+X56labIN6xfejWLC1nFMvExg3NYIT2BGASGKJ9nWZEhjnDcY3nopWYKjmHSwsh6HYXhhHEaR5GUdRtEMTpDWPk1BlGTY3GmfxFlGPYfgnIG0RJsK1hLik4orqVE1KQ6273dV811XeHb6YZjjGTxzJmQJEYJJYIT5SKQpgaYxiXQpHkVT8dHMAAXt4d2ENjtW3sxy3-VSQMg6TYMRj2ARcbxI05X4xjmH4TPuTBU2KqopA4N4uASACXr+U9QWvaFH0Rd90UC7pK3sUTwMmeL5k9cKVD9fZFzMgzSXK0jaZXSz6v-Jr2u6xQ+sPnzv1CwTosO3xTtCcmNmTlEtx+FsYair7KPjddnk-HieAQFhRDMHgsDMOH+CHoiVY8GARcl2XFdV3gl6EsSuOC-jCUSXEJysqBvYxM4hh+Pt-VWDxZjWa4iYxCr0GTRjIx4Fh3iqJAvz8MwNfHtwq-r5vEDb3w7ctl31vC81SU2Sl-U5VJJjA5LUT-uYdiDgJSUM+YsnZ5BXOAcMZoWYIwAAYjgIgq8xhgDYFHHuT4EDGAuP+G4bhQxJkMsYfaIFXbUlMCNMwisTCMwAfJVWy8txN3LpXL0-w+D0FILANgXliIAGkEGsQStEZKqVH4ZRftlGkAY4igTHgrKIi8yrozgrUAERJYAsKwHRFC5RkBcPikgxMGwAKuHjGEGwNxeTOFfpsKgKcUG3EMZDaIyQkZ4GVPAKYftmZLUQQDAAtAkCM3iwiuxFIEoJgTnA+weIA-2atSDuO4Ug8eQl3B5VCCadwgRnBJHIW5JesiiglCGDAgg9QwAxK0QDWcktjD+gDAEQI4RCESWkWjLMuTmjDCqDUQpDQWlDBKTbAyUQIzRHfgGIUFwRqBE2I0vOsFukVHabAqgyAi69Ovgga4h1XAgWiIOBWElTFCWZMcFOGxtgJEiDsKZwDswrP0sKCMlSbIBiiHLawoREbhIodkm6jolTolVDCG5CUex7SEhYfxMZWShiHpsMJyMInMyiVuU8WSbSAriUlV8A4mQJhMNcCMYKqAQs2JcTYTJYWuMobIlSYByBooBpcVkAE1hSXiG4bYGxX5RBlmydYTlYzkpzpEqhlUDh41iQDYGCtCXtTiJcNYlTDA9STNDXibgSGTjIR8lFTT86Y0IHSqkrzXYgQVSgkCLgKaRBOIyM61wzC8n7O8uFnyZHfKoOzLmPMCAGu7O4KG2xQJGMCUlECr9pYpyMRcHi6T-5atRtMwOJQtY6xeK3H1BkzArCTOk4ls57LxIOMmY4MYOIPLdpq512qE0rwbsXUutC031Wjr3BVA8Wo8QnFtMM+1eRWFAm4eM50H6XMRSpdpR8t473TelY499qSLkCB-SGnKgjU2BsmfKPKR3Cp+KAiBUCClFPTWyfu6T0lj0HMmQxWUDgBEsHZUMT8UGuG3VSn4NCW70PzGA5h06LDFtcNSMRdkBnCP-Imey5wjGQ0IaYV9bryjyMUc4sVpTFj2s4oOOwjIUpCmSWYqcfpDJQdsYYeDuqlkQHTQkQyATmSbXldSMxh0AzxkCNJUCFaKVfPeL8Lg6aJwVIsCquI09QgMzuPYoAA */
+      /** @xstate-layout N4IgpgJg5mDOIC5QFEC2AjSBhA9gOwBcAnHAG1LCIDoBJPASwPoENSBiCfMK2A5g7mkwRchEuUq0GTVgG0ADAF1EoAA45YjevhUgAHogAsAZnmGqhwwFZjxgGx2A7LYAcATgA0IAJ6IATPJWVPIuxgEuhgE2dn4AvrFeQtj4xGQU1HRarFQACkRgqsz5AMr0UHj8AK75ufmF+RxcVPR4AG44ANbcqnVFYKXlVfkKykgg6ppMOmMGCMZWLlR+dgCMdm5+LgErLivWXr4IALQrblRrVsumjoYO7sbxiRjJYmmSmTKktQV9AxUE1W4eR+DUoJGoqlI-AAZjgiKgqD0Qf0yv9ASNdBMtNNQLMjmFzLs-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-KAm5sdVihck6Z1ztRAupddy-aRsDqYaCSwbCaORh6L0IEsqpLGnSO1x6x2jPpfK0lko+D0FILAQigMADSy7-A8RjWHeNkck0x19N+RBMFvksg2EBgtxRKhShtLAaDWBvKyQQ2oo8oY7XsTVh+QwEQDJrCFmyOMvVLgckxcgctcJIkQubdtDhmHLiVy48dUup064CL5mxeI448BVngGMeCadhOw0DviCk-U0U0U3RdQMRxNjkJ2BEDYzhwxhErgR9MmnVFHEAq+ywtgOQ5VMDow4JwkZUBZBECIZIdgeLs9kYE9QUSDABPkBzCyji3DDBSVYA1vS7HpITYz6lFjmaYya8kTISYHNySMuc4Xfg3ui0CXoMWH0tpdMEYkusYwhgGuSIxxmAh+fRh+PK8wjwmH2epteaCyslAq4CKgyBcWxdUrjMMbEcqxxZD6V5+7VhJyiFHG440HVSPPTQGbcV4uLC0q5+YzGjEhADDPVqEELqcqyui0LJy7y1jVIdjhsZvwGwcNYHiZsVi9m9BYbKWwYKXBMM9l+jlJLBI+4HGIRdEoenyupckxhezYwHKSX8XbRxQ+leQeHLowhGXJAt0IMRiRmQMsSVJeNTDmTMCeorebzEbztsT-wlgvz5VSw3NH8xq4bE4qEc7FJ7A7dPXtqVjDCBc56kKpKXoLqBDpDEfh7EkWDRsCNcCBOxRhNsW-BXpd6SpKysx8MKWhfdROmGcVH42Jm0JgbsZZyJllJE2w73LotJGRDD+IawdUYgUniDzzTELjEjdzi2VDKFVafmapGzX5uWE0e2YGzIFTgR8CL6WwSMbCx6LUGkNzBTc31DsyC6scKcpuZEi2w0mzKE16W7y9BBZ1EHnZVhXmxc-0XDOpEVsdd39rF6SQyTGc2s7PbLqgIGtUUXA1OqDputj7oumjL0tg64xw4mNHiuv+l7BZ0NvJoyiMkbgKpvevvEC6xyhrWMMRTIDR3d1fl9P3-lwxm7qbCABXD0PYPzP0A2Uwf8DHL-WkJvPGPnE6XqP5XbYJfbSbfjIgBXI4U6U7AcdzS7C6LYViSOUXbiXiZGc-SRVAvjcELAwCKTEXWTcISBBTFAo5cULgYAkwOOUkHYIxRkPYZNO3T8fqLxC4RwNiPlUxNg9uLAQlG0CgIA2rB-NRbgziPGDzAQ-YbqYMMnPsAaQIH0PGRTWIIAA */
       tsTypes: {} as import("./machine.typegen").Typegen0,
       schema: {
         events: {} as Events,
@@ -69,10 +72,6 @@ export const EmbedControllerMachine =
           }
           decodeRPCRequestService: {
             data: any | Error
-          }
-          MethodControllerService: {
-            data: any
-            error: Error
           }
           sendTransactionService: {
             data: RPCResponse
@@ -163,6 +162,14 @@ export const EmbedControllerMachine =
                     ],
                     onError: "#EmbedController.Error",
                   },
+                  on: {
+                    BUY: "Buy",
+                    SELL: "Sell",
+                    DEPLOY_COLLECTION: "DeployCollection",
+                    MINT: "Mint",
+                    LAZY_MINT: "LazyMint",
+                  },
+                  exit: "assignMethod",
                 },
                 DefaultSign: {
                   on: {
@@ -312,7 +319,7 @@ export const EmbedControllerMachine =
           rpcResponse: (_, event) => event.data,
         }),
         assignMethod: assign({
-          method: (_, event) => event.data,
+          method: (_, event) => event.type,
         }),
         assignError: assign({
           error: (_, event) => event.data,

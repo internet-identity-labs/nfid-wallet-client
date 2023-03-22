@@ -1,6 +1,9 @@
 import { nfidEthWallet } from "@nfid/integration"
 
-import { RPCResponse, RPC_BASE } from "frontend/features/embed/rpc-service"
+import {
+  RPCResponse,
+  RPC_BASE,
+} from "frontend/features/embed/services/rpc-receiver"
 
 import { EmbedControllerContext } from "../machine"
 

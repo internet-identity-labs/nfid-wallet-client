@@ -5,7 +5,7 @@ import { EmbedControllerContext } from "../machine"
 export const prepareSignature = async ({
   rpcMessage,
 }: EmbedControllerContext) => {
-  console.debug("prepareSignature", { rpcMessage })
+  console.debug("prepareSignatureService", { rpcMessage })
   const rawMessage = rpcMessage?.params[0]
   const message = Object.keys(rawMessage).reduce(
     (acc, key) => ({
@@ -14,14 +14,9 @@ export const prepareSignature = async ({
     }),
     {},
   )
-  console.debug("prepareSignature", { message })
-  let response
-  try {
-    response = await nfidEthWallet.prepareSendTransaction(message)
-  } catch (e) {
-    console.log("prepareSignature Error", { e })
-  }
-  console.debug("prepareSignature", { response })
+  console.debug("prepareSignatureService", { message })
+  const response = await nfidEthWallet.prepareSendTransaction(message)
+  console.debug("prepareSignatureService", { response })
 
   return response
 }

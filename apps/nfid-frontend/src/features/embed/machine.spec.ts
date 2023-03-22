@@ -6,7 +6,7 @@ import { makeServiceMock } from "@nfid/integration"
 import { AuthSession } from "frontend/state/authentication"
 
 import { NFIDEmbedMachine } from "./machine"
-import { RPCResponse, RPC_BASE } from "./rpc-service"
+import { RPCResponse, RPC_BASE } from "./services/rpc-receiver"
 
 const makeMachineMock = () => {
   const MockAuthenticationMachine = makeServiceMock<AuthSession>()

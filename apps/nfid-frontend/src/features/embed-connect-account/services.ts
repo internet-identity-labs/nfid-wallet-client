@@ -2,13 +2,20 @@ import { createConnection } from "@nfid/client-db"
 import { ecdsaSigner, replaceActorIdentity } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { AuthSession } from "frontend/state/authentication"
+import { AuthorizationRequest } from "frontend/state/authorization"
 
-import { RPC_BASE } from "../embed/rpc-service"
+import { RPCMessage, RPC_BASE } from "../embed/services/rpc-receiver"
 import { getEthAddress } from "../fungable-token/eth/get-eth-address"
-import { EmbedConnectAccountMachineContext } from "./machines"
+
+type ConnectAccountServiceArgs = {
+  authSession: AuthSession
+  rpcMessage: RPCMessage
+  authRequest: AuthorizationRequest
+}
 
 export const ConnectAccountService = async (
-  { authSession, rpcMessage, authRequest }: EmbedConnectAccountMachineContext,
+  { authSession, rpcMessage, authRequest }: ConnectAccountServiceArgs,
   event: {
     type: string
     data: { hostname: string; accountId: string }

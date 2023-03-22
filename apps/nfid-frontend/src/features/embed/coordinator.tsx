@@ -6,16 +6,12 @@ import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 
-import { NFIDConnectAccountCoordinator } from "../embed-connect-account/coordinator"
-import { NFIDConnectAccountActor } from "../embed-connect-account/machines"
-import { EmbedControllerCoordinator } from "../embed-controller/coordinator"
-import { EmbedControllerMachineActor } from "../embed-controller/machine"
-import { NFIDEmbedMachine, services } from "./machine"
-
-const machine = NFIDEmbedMachine.withConfig({ services })
+import { ProcedureApprovalCoordinator } from "./components/procedure-approval-coordinator"
+import { NFIDEmbedMachineV2 } from "./machine-v2"
 
 export default function NFIDEmbedCoordinator() {
-  const [state] = useMachine(machine)
+  const [state, send] = useMachine(NFIDEmbedMachineV2)
+  console.debug("NFIDEmbedCoordinator")
 
   React.useEffect(
     () =>
@@ -27,42 +23,41 @@ export default function NFIDEmbedCoordinator() {
   )
 
   switch (true) {
-    case state.matches("AuthenticationMachine"):
+    case state.matches("AUTH.Authenticate"):
       return (
         <AuthenticationCoordinator
-          actor={state.children.authenticate as AuthenticationActor}
-        />
-      )
-    case state.matches("ConnectAccount"):
-      return (
-        <NFIDConnectAccountCoordinator
           actor={
-            state.children.EmbedConnectAccountMachine as NFIDConnectAccountActor
+            state.children[
+              "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+            ] as AuthenticationActor
           }
         />
       )
-    case state.matches("TrustDevice"):
+    case state.matches("AUTH.TrustDevice"):
       return (
         <TrustDeviceCoordinator
-          actor={state.children.trustDeviceMachine as TrustDeviceActor}
-        />
-      )
-    case state.matches("EmbedController"):
-      return (
-        <EmbedControllerCoordinator
           actor={
-            state.children.EmbedControllerMachine as EmbedControllerMachineActor
+            state.children[
+              "NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
+            ] as TrustDeviceActor
           }
         />
       )
-    case state.matches("Ready"):
-      return <div>Waiting for RPC Messages</div>
-    case state.matches("Error"):
+    case state.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
+      if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
+      if (!state.context.authSession) throw new Error("missing authSession")
+
       return (
-        <div>
-          <div>Error:</div>
-          <div className="p-2 bg-red-300">{state.context.error.message}</div>
-        </div>
+        <ProcedureApprovalCoordinator
+          appMeta={state.context.appMeta}
+          authSession={state.context.authSession}
+          rpcMessage={state.context.rpcMessage}
+          rpcMessageDecoded={state.context.rpcMessageDecoded}
+          onConfirm={(data) => {
+            console.debug("onConfirm", { data })
+            send({ type: "APPROVE", data })
+          }}
+        />
       )
     default:
       return <div>NFIDEmbedCoordinator</div>

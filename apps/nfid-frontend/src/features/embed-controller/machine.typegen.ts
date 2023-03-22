@@ -53,6 +53,7 @@ export interface Typegen0 {
       type: "xstate.after(3000)#EmbedController.Initial.UI.DecodeRequest"
     }
     "xstate.init": { type: "xstate.init" }
+    "xstate.stop": { type: "xstate.stop" }
   }
   invokeSrcNameMap: {
     MethodControllerService: "done.invoke.MethodControllerService"
@@ -75,7 +76,16 @@ export interface Typegen0 {
       | "error.platform.decodeRPCRequestService"
       | "error.platform.prepareSignature"
       | "error.platform.sendTransactionService"
-    assignMethod: "done.invoke.MethodControllerService"
+    assignMethod:
+      | "BUY"
+      | "DEPLOY_COLLECTION"
+      | "LAZY_MINT"
+      | "MINT"
+      | "SELL"
+      | "done.invoke.MethodControllerService"
+      | "done.state.EmbedController.Initial"
+      | "error.platform.MethodControllerService"
+      | "xstate.stop"
     assignPreparedSignature: "done.invoke.prepareSignature"
     assignRpcResponse:
       | "done.invoke.SignTypedDataService"

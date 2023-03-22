@@ -71,7 +71,10 @@ export interface Typegen0 {
     assignData: "done.invoke.decodeRPCRequestService"
     assignError:
       | "error.platform.MethodControllerService"
+      | "error.platform.SignTypedDataService"
       | "error.platform.decodeRPCRequestService"
+      | "error.platform.prepareSignature"
+      | "error.platform.sendTransactionService"
     assignMethod: "done.invoke.MethodControllerService"
     assignPreparedSignature: "done.invoke.prepareSignature"
     assignRpcResponse:
@@ -80,6 +83,7 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    hasError: ""
     hasPreparedSignature: "" | "SIGN"
   }
   eventsCausingServices: {

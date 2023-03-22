@@ -12,8 +12,10 @@ import { EmbedControllerCoordinator } from "../embed-controller/coordinator"
 import { EmbedControllerMachineActor } from "../embed-controller/machine"
 import { NFIDEmbedMachine, services } from "./machine"
 
+const machine = NFIDEmbedMachine.withConfig({ services })
+
 export default function NFIDEmbedCoordinator() {
-  const [state] = useMachine(NFIDEmbedMachine.withConfig({ services }))
+  const [state] = useMachine(machine)
 
   React.useEffect(
     () =>
@@ -56,7 +58,12 @@ export default function NFIDEmbedCoordinator() {
     case state.matches("Ready"):
       return <div>Waiting for RPC Messages</div>
     case state.matches("Error"):
-      return <div>Some Error happened</div>
+      return (
+        <div>
+          <div>Error:</div>
+          <div className="p-2 bg-red-300">{state.context.error.message}</div>
+        </div>
+      )
     default:
       return <div>NFIDEmbedCoordinator</div>
   }

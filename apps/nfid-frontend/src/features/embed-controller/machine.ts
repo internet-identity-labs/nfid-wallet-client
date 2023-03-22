@@ -32,6 +32,18 @@ type ErrorEvents =
       type: "error.platform.MethodControllerService"
       data: Error
     }
+  | {
+      type: "error.platform.sendTransactionService"
+      data: Error
+    }
+  | {
+      type: "error.platform.SignTypedDataService"
+      data: Error
+    }
+  | {
+      type: "error.platform.prepareSignature"
+      data: Error
+    }
 
 type Events =
   | ErrorEvents
@@ -88,6 +100,7 @@ export const EmbedControllerMachine =
                       actions: "assignPreparedSignature",
                       target: "End",
                     },
+                    onError: "#EmbedController.Error",
                   },
                 },
                 End: {
@@ -106,7 +119,7 @@ export const EmbedControllerMachine =
                     onDone: {
                       actions: "assignData",
                     },
-                    onError: "Error",
+                    onError: "#EmbedController.Error",
                   },
                   after: {
                     3000: "MethodController",
@@ -148,7 +161,7 @@ export const EmbedControllerMachine =
                         cond: (_, event) => event.data === "DefaultSign",
                       },
                     ],
-                    onError: "Error",
+                    onError: "#EmbedController.Error",
                   },
                 },
                 DefaultSign: {
@@ -219,6 +232,7 @@ export const EmbedControllerMachine =
                     src: "sendTransactionService",
                     id: "sendTransactionService",
                     onDone: { target: "Success", actions: "assignRpcResponse" },
+                    onError: "#EmbedController.Error",
                   },
                 },
                 SignTypedData: {
@@ -226,14 +240,21 @@ export const EmbedControllerMachine =
                     src: "SignTypedDataService",
                     id: "SignTypedDataService",
                     onDone: { target: "Success", actions: "assignRpcResponse" },
+                    onError: "#EmbedController.Error",
                   },
                 },
 
                 WaitForSignature: {
-                  always: {
-                    target: "SendTransaction",
-                    cond: "hasPreparedSignature",
-                  },
+                  always: [
+                    {
+                      target: "SendTransaction",
+                      cond: "hasPreparedSignature",
+                    },
+                    {
+                      target: "Error",
+                      cond: "hasError",
+                    },
+                  ],
                 },
                 TransactionDetails: {
                   on: {
@@ -249,13 +270,18 @@ export const EmbedControllerMachine =
                 End: {
                   type: "final",
                 },
+                Error: {
+                  type: "final",
+                },
               },
             },
           },
         },
         Error: {
-          type: "final",
-          data: (context) => context.error,
+          entry: "assignError",
+          on: {
+            CANCEL: "#EmbedController.Canceled",
+          },
         },
         Done: {
           type: "final",
@@ -301,6 +327,7 @@ export const EmbedControllerMachine =
       },
       guards: {
         hasPreparedSignature: (context) => !!context.preparedSignature,
+        hasError: (context) => !!context.error,
       },
     },
   )

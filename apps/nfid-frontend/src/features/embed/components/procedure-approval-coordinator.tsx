@@ -4,6 +4,7 @@ import { BlurredLoader } from "@nfid-frontend/ui"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { NFIDConnectAccountCoordinator } from "frontend/features/embed-connect-account/coordinator"
+import { DefaultSign } from "frontend/features/embed-controller/components/fallbacks/signTypedData"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
@@ -76,6 +77,12 @@ export const ProcedureApprovalCoordinator: React.FC<
         />
       )
     default:
-      return <div>DefaultProcedureApprover</div>
+      return (
+        <DefaultSign
+          data={rpcMessage?.params[1]}
+          onCancel={onReject}
+          onSign={onConfirm}
+        />
+      )
   }
 }

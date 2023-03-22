@@ -3,6 +3,7 @@ import { AssetDecoder, AssetId } from "../asset-decoder"
 import {
   assetDecoderService,
   AssetDecoderService,
+  AssetType,
 } from "../asset-decoder-service"
 
 class Erc721AssetDecoder implements AssetDecoder {
@@ -17,7 +18,7 @@ class Erc721AssetDecoder implements AssetDecoder {
   }
 
   getMethod(): string {
-    return "0x73ad2146"
+    return AssetType.ERC721
   }
 
   map(data: string): AssetId {

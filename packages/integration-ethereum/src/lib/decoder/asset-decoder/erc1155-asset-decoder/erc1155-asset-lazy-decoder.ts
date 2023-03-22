@@ -2,6 +2,7 @@ import { AssetDecoder, AssetId } from "../asset-decoder"
 import {
   assetDecoderService,
   AssetDecoderService,
+  AssetType,
 } from "../asset-decoder-service"
 import { erc1155AssetLazyAbi } from "./erc1155-asset-lazy-abi"
 
@@ -17,7 +18,7 @@ class Erc1155TokenLazyDecoder implements AssetDecoder {
   }
 
   getMethod(): string {
-    return "0x1cdfaa40"
+    return AssetType.ERC1155_LAZY
   }
 
   map(data: string): AssetId {

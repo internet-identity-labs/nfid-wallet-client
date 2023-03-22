@@ -32,6 +32,12 @@ const componentMap: ComponentMap = {
     () =>
       import("frontend/features/embed-controller/components/deploy-collection"),
   ),
+  Mint: React.lazy(
+    () => import("frontend/features/embed-controller/components/mint"),
+  ),
+  LazyMint: React.lazy(
+    () => import("frontend/features/embed-controller/components/lazy-mint"),
+  ),
 }
 
 const hasMapped = (messageInterface: string = "") =>

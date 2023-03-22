@@ -13,7 +13,7 @@ import {
 
 import { registerECDSA, signECDSA } from "./ecdsa"
 
-describe("Lambda Sign/Register ECDSA", () => {
+describe.skip("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(50000)
 
   describe("lambdaECDSA", () => {

@@ -9,9 +9,7 @@ import {
   Button,
 } from "@nfid-frontend/ui"
 import { copyToClipboard } from "@nfid-frontend/utils"
-import { FunctionCall } from "@nfid/integration-ethereum"
 
-import { RPCMessage } from "frontend/features/embed/services/rpc-receiver"
 import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
@@ -20,6 +18,7 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { ApproverCmpProps } from "./types"
 
 interface IBuyComponent {
   showTransactionDetails: () => void
@@ -190,14 +189,6 @@ export const BuyComponent: React.FC<IBuyComponent> = ({
   )
 }
 
-type ApproverCmpProps = {
-  appMeta: AuthorizingAppMeta
-  rpcMessage: RPCMessage
-  rpcMessageDecoded?: FunctionCall
-  onConfirm: (data?: any) => void
-  onReject: (reason?: any) => void
-}
-
 const MappedBuy: React.FC<ApproverCmpProps> = ({
   appMeta,
   rpcMessage,
@@ -208,6 +199,7 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
   return (
     <BuyComponent
       applicationMeta={appMeta}
+      // TODO: handle details internally
       showTransactionDetails={() => {}}
       onApprove={onConfirm}
       onCancel={onReject}

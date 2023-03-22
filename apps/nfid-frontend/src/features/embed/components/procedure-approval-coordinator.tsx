@@ -28,6 +28,10 @@ const componentMap: ComponentMap = {
   Sell: React.lazy(
     () => import("frontend/features/embed-controller/components/sell"),
   ),
+  DeployCollection: React.lazy(
+    () =>
+      import("frontend/features/embed-controller/components/deploy-collection"),
+  ),
 }
 
 const hasMapped = (messageInterface: string = "") =>

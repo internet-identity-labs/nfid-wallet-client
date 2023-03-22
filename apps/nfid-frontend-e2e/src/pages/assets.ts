@@ -44,17 +44,17 @@ export class Assets {
     usd: string,
   ) {
     let expectedBalance = await $(
-      this.assetLabel + `${name}` + "_balance']",
+      this.assetLabel + `${name.replace(/\s/g, "")}` + "_balance']",
     ).getText()
     expect(expectedBalance).toEqual(balance)
-    let expectedUsd = await $(this.assetLabel + `${name}` + "_usd']").getText()
+    let expectedUsd = await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "_usd']").getText()
     expect(expectedUsd).toEqual(usd)
     let expectedCurrency = await $(
       this.assetLabel + `${name}` + "_currency']",
     ).getText()
     expect(expectedCurrency).toEqual(currency)
     let expectedBlockchain = await $(
-      this.assetLabel + `${name}` + "_blockchain']",
+      this.assetLabel + `${name.replace(/\s/g, "")}` + "_blockchain']",
     ).getText()
     expect(expectedBlockchain).toEqual(blockchain)
   }

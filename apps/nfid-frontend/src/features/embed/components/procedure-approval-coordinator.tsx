@@ -25,6 +25,9 @@ const componentMap: ComponentMap = {
   Item: React.lazy(
     () => import("frontend/features/embed-controller/components/buy"),
   ),
+  Sell: React.lazy(
+    () => import("frontend/features/embed-controller/components/sell"),
+  ),
 }
 
 const hasMapped = (messageInterface: string = "") =>

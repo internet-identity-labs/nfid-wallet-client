@@ -28,13 +28,11 @@ export async function registerECDSA(
 }
 
 export async function getPublicKey(
-  identity?: DelegationIdentity,
+  identity: DelegationIdentity,
 ): Promise<string> {
+  await replaceActorIdentity(ecdsaSigner, identity)
   const response = await ecdsaSigner.get_kp()
   if (response.key_pair.length === 0) {
-    if (!identity) {
-      throw Error("Delegation required")
-    }
     return registerECDSA(identity)
   }
   return response.key_pair[0].public_key
@@ -42,11 +40,8 @@ export async function getPublicKey(
 
 export async function signECDSA(
   keccak: string,
-  identity?: DelegationIdentity,
+  identity: DelegationIdentity,
 ): Promise<Signature> {
-  if (!identity) {
-    throw Error("1")
-  }
   const url = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
   const request = await getSignCBORRequest(identity, keccak)
   return await fetch(url, {

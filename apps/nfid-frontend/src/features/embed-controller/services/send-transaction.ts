@@ -17,30 +17,17 @@ export const sendTransactionService = async ({
   )
     throw new Error("No prepared signature")
 
-  return new Promise(async (resolve) => {
-    try {
-      console.time("SendTransactionService sendTransaction:")
-      const { wait, ...result } = await nfidEthWallet.sendPreparedTransaction(
-        preparedSignature?.hash,
-        preparedSignature?.message,
-        preparedSignature?.tx,
-      )
-      console.timeEnd("SendTransactionService sendTransaction:")
-      console.debug("SendTransactionService", { result })
-      return resolve({
-        ...RPC_BASE,
-        id: rpcMessage.id,
-        result: result.hash,
-      })
-    } catch (e) {
-      console.error("SendTransactionService", { e })
-      return resolve({
-        ...RPC_BASE,
-        id: rpcMessage.id,
-        // FIXME:
-        // define which errors could happen
-        error: { code: -1, message: (e as any).message, data: e },
-      })
-    }
-  })
+  console.time("SendTransactionService sendTransaction:")
+  const { wait, ...result } = await nfidEthWallet.sendPreparedTransaction(
+    preparedSignature?.hash,
+    preparedSignature?.message,
+    preparedSignature?.tx,
+  )
+  console.timeEnd("SendTransactionService sendTransaction:")
+  console.debug("SendTransactionService", { result })
+  return {
+    ...RPC_BASE,
+    id: rpcMessage.id,
+    result: result.hash,
+  }
 }

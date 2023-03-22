@@ -8,34 +8,36 @@ Feature:Fungible Asset
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    And Asset appears with label <chain>
+    And Asset appears with label <label>
     And <asset> appears with <currency> on <chain> and <balance> && <initial_usd> USD
-    And <chain> <currency> address calculated
-    And <chain> USD balance is not empty
-    And <chain> USD balance not $0.00
+    And <label> <currency> address calculated
+    And <label> USD balance is not empty
+    And <label> USD balance not $0.00
     Examples:
-      | chain             | currency | balance | asset             | anchor | initial_usd |
-      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             |
-#      | Ethereum         | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00 |
-      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             |
+      | chain             | currency | balance | asset             | anchor | initial_usd | label             |
+      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             | Bitcoin           |
+#      | Ethereum          | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00       | Ethereum          |
+      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             | Internet Computer |
+      | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  |             | WICP              |
 
   @asset2
-  Scenario Outline: User should be able to see <chain> in asset details
+  Scenario Outline: User should be able to see <label> in asset details
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    And Open asset with label <chain>
-    Then Wait while <chain> accounts calculated
-    Then <chain> with <balance> <currency> in header
+    And Open asset with label <label>
+    Then Wait while <label> accounts calculated
+    Then <label> with <balance> <currency> in header
     Then 1 row in the table
     And NFID app account 1 with <balance> <currency> displayed
     And Identifiers are <principal> and <address>
     And Account balance in USD not empty
     Examples:
-      | chain             | currency | balance    | principal | address | anchor |
+      | label             | currency | balance    | principal | address | anchor |
       | Bitcoin           | BTC      | 0.00012717 | 5qfm      | mvyM    | 25795  |
       | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
+      | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |
 
   @asset3
   Scenario Outline: User should be able to see transaction history in Received
@@ -43,15 +45,15 @@ Feature:Fungible Asset
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    And Open asset with label <chain>
-    Then Wait while <chain> accounts calculated
+    And Open asset with label <label>
+    Then Wait while <label> accounts calculated
     And Open Received tab for first account
     Then 1 transaction in the table
     And Sent <balance> <currency>
     And From <address_from> to <address_to>
     And Date is <millis>
     Examples:
-      | chain             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
+      | label             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
       | Bitcoin           | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4                       | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1                               | 25795  |
       | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
 

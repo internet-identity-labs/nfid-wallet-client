@@ -14,7 +14,6 @@ import { MethodControllerService } from "./services/method-controller"
 import { prepareSignature } from "./services/prepare-signature"
 import { decodeRPCRequestService } from "./services/rpc-decode"
 import { sendTransactionService } from "./services/send-transaction"
-import { SignTypedDataService } from "./services/sign-typed-data"
 
 export type EmbedControllerContext = {
   authSession: AuthSession
@@ -327,7 +326,6 @@ export const EmbedControllerMachine =
       services: {
         decodeRPCRequestService,
         sendTransactionService,
-        SignTypedDataService,
         MethodControllerService,
         prepareSignature,
       },

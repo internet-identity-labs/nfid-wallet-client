@@ -57,7 +57,7 @@ type ProcedureDetails = {
 }
 
 export type ProcedureCallEvent = {
-  type: "PROCEDURE_CALL"
+  type: "RPC_MESSAGE"
   data: ProcedureDetails
 }
 
@@ -66,10 +66,18 @@ export const RPCReceiverV2 =
     const subsciption = rpcMessages.subscribe(async ({ data, origin }) => {
       switch (data.method) {
         case "eth_accounts":
+          return send({
+            type: "RPC_MESSAGE",
+            data: {
+              rpcMessage: data,
+              rpcMessageDecoded: undefined,
+              origin,
+            },
+          })
         case "eth_sendTransaction":
         case "eth_signTypedData_v4":
           return send({
-            type: "PROCEDURE_CALL",
+            type: "RPC_MESSAGE",
             data: {
               rpcMessage: data,
               rpcMessageDecoded: await decodeMessage(data),
@@ -87,7 +95,7 @@ const decodeMessage = async (
   rpcMessage: RPCMessage,
 ): Promise<FunctionCall | undefined> => {
   try {
-    decodeRpcMessage(rpcMessage)
+    return decodeRpcMessage(rpcMessage)
   } catch (error: any) {
     console.warn("decodeRPCMEssage", { error })
     return undefined

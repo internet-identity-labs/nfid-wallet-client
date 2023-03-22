@@ -1,4 +1,3 @@
-
 export class Assets {
   private get assetLabel() {
     return "[id*='token_"
@@ -59,7 +58,6 @@ export class Assets {
     ).getText()
     expect(expectedBlockchain).toEqual(blockchain)
   }
-
 }
 
 export default new Assets()

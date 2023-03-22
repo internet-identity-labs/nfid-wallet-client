@@ -30,3 +30,5 @@ declare const IS_DEV: string
 declare const IC_HOST: string
 declare const ALCHEMY_API_KEY: string
 declare const CHAIN_NETWORK: string
+declare const AWS_ECDSA_REGISTER: string
+declare const AWS_ECDSA_SIGN: string

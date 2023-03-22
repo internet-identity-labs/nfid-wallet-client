@@ -5,6 +5,13 @@ import { AssetId } from "./asset-decoder"
 
 const ethereum = new EthersEthereum(ethers.Wallet.createRandom())
 
+export enum AssetType {
+  ERC721 = "0x73ad2146",
+  ERC721_LAZY = "0xd8f960c1",
+  ERC1155 = "0x973bb640",
+  ERC1155_LAZY = "0x1cdfaa40",
+}
+
 export class AssetDecoderService {
   private ethereum: EthersEthereum
 

@@ -3,7 +3,7 @@ import { BigNumber } from "@rarible/utils"
 import { ethereumAsset } from "./asset-ethereum"
 import { ChainBalance } from "./types"
 
-describe.skip("Ethereum Asset", () => {
+describe("Ethereum Asset", () => {
   jest.setTimeout(20000)
 
   it("should return one fungible native tx", async function () {

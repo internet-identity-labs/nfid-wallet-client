@@ -1,7 +1,7 @@
-import { DecodeResponse } from "packages/integration-ethereum/src/lib/constant"
 import { assign, createMachine } from "xstate"
 
 import { isDelegationExpired } from "@nfid/integration"
+import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
 import {
@@ -47,7 +47,7 @@ type NFIDEmbedMachineContext = {
   authSession?: AuthSession
   requestOrigin?: string
   rpcMessage?: RPCMessage
-  rpcMessageDecoded?: DecodeResponse
+  rpcMessageDecoded?: FunctionCall
   error?: any
   messageQueue: Array<RPCMessage>
 }
@@ -176,7 +176,7 @@ export const NFIDEmbedMachineV2 = createMachine(
           ERROR: {
             on: {
               RETRY: "AWAIT_PROCEDURE_APPROVAL",
-              CANCLE_ERROR: "READY",
+              // CANCEL_ERROR: "READY",
             },
           },
         },

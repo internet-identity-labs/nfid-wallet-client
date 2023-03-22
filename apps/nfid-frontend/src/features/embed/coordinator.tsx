@@ -59,6 +59,7 @@ export default function NFIDEmbedCoordinator() {
             console.debug("onConfirm", { data })
             send({ type: "APPROVE", data })
           }}
+          onReject={() => send({ type: "CANCEL" })}
         />
       )
     case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):

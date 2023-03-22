@@ -9,7 +9,9 @@ import {
   Button,
 } from "@nfid-frontend/ui"
 import { copyToClipboard } from "@nfid-frontend/utils"
+import { FunctionCall } from "@nfid/integration-ethereum"
 
+import { RPCMessage } from "frontend/features/embed/services/rpc-receiver"
 import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
@@ -24,7 +26,7 @@ interface IBuyComponent {
   onApprove: () => void
   onCancel: () => void
   applicationMeta?: AuthorizingAppMeta
-  isButtonDisabled: boolean
+  isButtonDisabled?: boolean
   fromAddress?: string
   toAddress?: string
   data?: any
@@ -33,10 +35,10 @@ interface IBuyComponent {
   price?: string
 }
 
-export const BuyComponent = ({
+export const BuyComponent: React.FC<IBuyComponent> = ({
   showTransactionDetails,
   applicationMeta,
-  isButtonDisabled: isButtonDisabledProp,
+  isButtonDisabled: isButtonDisabledProp = false,
   onApprove,
   onCancel,
   fromAddress,
@@ -187,3 +189,36 @@ export const BuyComponent = ({
     </TooltipProvider>
   )
 }
+
+type ApproverCmpProps = {
+  appMeta: AuthorizingAppMeta
+  rpcMessage: RPCMessage
+  rpcMessageDecoded?: FunctionCall
+  onConfirm: (data?: any) => void
+  onReject: (reason?: any) => void
+}
+
+const MappedBuy: React.FC<ApproverCmpProps> = ({
+  appMeta,
+  rpcMessage,
+  rpcMessageDecoded,
+  onConfirm,
+  onReject,
+}) => {
+  return (
+    <BuyComponent
+      applicationMeta={appMeta}
+      showTransactionDetails={() => {}}
+      onApprove={onConfirm}
+      onCancel={onReject}
+      data={rpcMessageDecoded?.data}
+      fromAddress={rpcMessage?.params[0].from}
+      toAddress={rpcMessage?.params[0].to}
+      feeMin={rpcMessage?.params[0]?.maxFeePerGas}
+      feeMax={rpcMessage?.params[0]?.maxPriorityFeePerGas}
+      price={rpcMessage?.params[0].value}
+    />
+  )
+}
+
+export default MappedBuy

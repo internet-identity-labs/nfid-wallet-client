@@ -17,6 +17,7 @@ import {
   RPCMessage,
   RPCReceiverV2 as RPCReceiver,
   RPCResponse,
+  RPC_BASE,
 } from "./services/rpc-receiver"
 
 type Events =
@@ -44,6 +45,7 @@ type NFIDEmbedMachineContext = {
     hostname: string
   }
   authSession?: AuthSession
+  requestOrigin?: string
   rpcMessage?: RPCMessage
   rpcMessageDecoded?: DecodeResponse
   error?: any
@@ -52,7 +54,7 @@ type NFIDEmbedMachineContext = {
 
 export const NFIDEmbedMachineV2 = createMachine(
   {
-    /** @xstate-layout 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 */
+    /** @xstate-layout N4IgpgJg5mDOIC5QDkBiBJAIgUQLYCNIBZAQwGMALASwDswA1AJgDoAlABQGEB9V7T7OnrZWAYnasA8gMwBVPt04BBADIqA2gAYAuolAAHAPawqAFyqGaekAA9EAZgAsLRgDZXAdjeuAnIwCs-h72HgA0IACeDgAcrsya9rEesY4+Ho7urgC+WeFoWHiEEKSUtAwsHDx8AkIi4lIy8tiKqhoAjLpIIEYm5pbWdgj2w8z2Pm2Ompnjmv4+-uFRCI7RPqOMIYyrHpo+4045eRg4BMTk1HRMzEqyACoAEsycFGBkANZKAK6mLzTmZCQ+jRRFpOgZjGYLFYuoNGH5mGkfLtovY2sEPB5XItEG1US5NClXG4Mm0EocQPkTkUShdytc7o9nq8Pt9fv9AVCQR1rD1If0YQ4EsxVvZNG1XP5XKlktiEG1-ELGJNXG1GIw2hNieTKYUzqVLiwbg9rqywH8qADTGBRBBLGBmLQAG6GN72nWnYrnMpXI2PL4-M3sq0IJ2GS1Q0GgnkQoEDRDRBXMBWJJzRHZuNqyiYeNb+CZi0XzRjJHza466z36um+5i3ABOn1gpkwYEdFuttroDpoztdzHd1K9BvpxvrjebrfbIZ7YY5lkjOmjvShcblgRY8o8-kcmP8SvsSqzCpY8xR-lW0Wl6TLBQ9NO9hoZJoD5stkFEAGVsB+P+hJMhuGwAANdh0D4TAoy6XlYwFBAiX8BEfEcIJoi2TQMi3LN7H8exmDVUV7HcMUMMcG8qT1WkrnuJRkEwFRmgkaRsDkPg2GwJRMAATRBRcoJjFdYLaNJmAyJE8ycCV0VlS9cMcRIVkcSYcw8eUyIre9h2o2j6O4RjGlYpQAHUlHQW5dIaZimm4JR2EY+hVFEGy7OwSDwWXflQEGaIhOYLd1U0YICWwnxpMcNpmDaaIE3QvMpQlRg1LvIc6S0uiGIsljsGuYzTPMpjMus2ypHslRRGUZABA0Xi3L5aFPMQVIEIVCUnCVHc5icWUfEIkTutcEIJkRPNEsHKsqJotK8v0rLgP4O50vypobTtbtezdcskrGlhUp0vTLNY2bOHmqb9uwadnXDecdFc7p+I82wcQSRxmHcYIfCind0gCrrkgReLUVxfDUJGiiH2YHaFum5hDuOvbMtEMA6zrQw62YfQABtAQAMxR3B+w20bKO2ibdoyppoaAubbkh07ztnIEFzBW73Lqh65TC8Lok0LY0zcJwfBVUKWBUkJZhzeVsI8EHKyJ8GSZpzLodYKQxD4W5WE4m7oIE+q5Q2NZUUIrwDz2NJGFlYJnrC4ZSTGeYFVLckaEMCA4GsAdQYNJdatXABaJUk12bcNm8pwEkzSJEDhaIk0SVwUW6jV5Udo5b0JsHKl4fhBGEVhvZg3XRSTUk9lDrd0QJWUOdGS8MT8XFUhWaWNOrBl851tmNl6mLMUiiUBZCyO9YDnZYgmRJvNWfxm+Sn0nyZd5-TZC051Z7X7sGFTu+Q3vYjmXwj00TRENmNN+rVPMEtyCkCc91vjSXwMV6tduN4armXqE5wxjFlUI6WCYgRRgSm3ESNMOFYgzy2iOR4Y4mwtjbGQMAr9WaDA1AmWOqwL4BQVGmLMyEEKEW3O9WYgQj6kWvh7GWYMayP1fICSAKDVyRVSKMPuwxPBSnmPgoBRDQFbC3HHKBssIYnUykw2CAR4hjFeq4dCaY0TcKHnFBEuJUSBH6t-K+qdyLUM0vLMR5M+AcU4hI3WwRpEC04fIlS0RQrhUirXNR6FUTZEobfPRKUDFw3JkZEyZkfEKCcsVVQZi2ZhTiIRLYB4EjJnSFiIel4HFRQVMhcUGQ9zCLBqIwJM1KZHWpoYvgYS0EJA3CqHc0dFJEmkmiF6H0cxpmCBsNoWT9HaQVuTEQKsSk4i3MfPYCQUh5h3HYxJYUIoNOcXJcUOQchAA */
     id: "NFIDEmbedMachineV2",
     tsTypes: {} as import("./machine-v2.typegen").Typegen0,
     type: "parallel",
@@ -153,7 +155,10 @@ export const NFIDEmbedMachineV2 = createMachine(
           AWAIT_PROCEDURE_APPROVAL: {
             on: {
               APPROVE: "EXECUTE_PROCEDURE",
-              CANCEL: "SEND_RPC_CANCEL_RESPONSE",
+              CANCEL: {
+                target: "READY",
+                actions: "sendRPCCancelResponse",
+              },
             },
           },
 
@@ -173,8 +178,6 @@ export const NFIDEmbedMachineV2 = createMachine(
               RETRY: "AWAIT_PROCEDURE_APPROVAL",
             },
           },
-
-          SEND_RPC_CANCEL_RESPONSE: {},
         },
       },
     },
@@ -182,6 +185,7 @@ export const NFIDEmbedMachineV2 = createMachine(
   {
     actions: {
       assignProcedure: assign((_, event) => ({
+        requestOrigin: event.data.origin,
         rpcMessage: event.data.rpcMessage,
         rpcMessageDecoded: event.data.rpcMessageDecoded,
       })),
@@ -205,17 +209,39 @@ export const NFIDEmbedMachineV2 = createMachine(
           "http://localhost:3000",
         )
       },
-      nfid_unauthenticated: () => {
+      nfid_unauthenticated: ({ requestOrigin }) => {
+        if (!requestOrigin)
+          throw new Error("nfid_unauthenticated: missing requestOrigin")
+
         console.debug("nfid_authenticated")
         window.parent.postMessage(
           { type: "nfid_unauthenticated" },
-          "http://localhost:3000",
+          requestOrigin,
         )
       },
-      sendRPCResponse: (_, event) => {
+      sendRPCResponse: ({ requestOrigin }, event) => {
+        if (!requestOrigin)
+          throw new Error("nfid_unauthenticated: missing requestOrigin")
+
         console.debug("sendRPCResponse", { event })
         // TODO: make origin dynamic
-        window.parent.postMessage(event.data, "http://localhost:3000")
+        window.parent.postMessage(event.data, requestOrigin)
+      },
+      sendRPCCancelResponse: ({ rpcMessage, requestOrigin }) => {
+        if (!requestOrigin)
+          throw new Error("nfid_unauthenticated: missing requestOrigin")
+        if (!rpcMessage?.id)
+          throw new Error("sendRPCCancelResponse: missing rpcMessage.id")
+
+        window.parent.postMessage(
+          {
+            ...RPC_BASE,
+            id: rpcMessage.id,
+            // FIXME: find correct error code
+            error: { code: -1, message: "NFID: user canceled request" },
+          },
+          requestOrigin,
+        )
       },
     },
     guards: {

@@ -1,10 +1,6 @@
 import { filter, fromEvent, map } from "rxjs"
 
-import {
-  decode,
-  decodeTokenByAssetClass,
-  FunctionCall,
-} from "@nfid/integration-ethereum"
+import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 
@@ -76,7 +72,7 @@ export const RPCReceiverV2 =
             type: "PROCEDURE_CALL",
             data: {
               rpcMessage: data,
-              rpcMessageDecoded: await decodeRPCMEssage(data),
+              rpcMessageDecoded: await decodeMessage(data),
               origin,
             },
           })
@@ -87,19 +83,11 @@ export const RPCReceiverV2 =
     return () => subsciption.unsubscribe()
   }
 
-const decodeRPCMEssage = async (
+const decodeMessage = async (
   rpcMessage: RPCMessage,
 ): Promise<FunctionCall | undefined> => {
   try {
-    if (rpcMessage?.params.length > 1) {
-      const data = JSON.parse(rpcMessage.params[1])
-      if (data?.message?.tokenURI?.length) return data.message
-
-      return await decodeTokenByAssetClass(
-        data?.message?.makeAsset?.assetType?.assetClass,
-        data?.message?.makeAsset?.assetType?.data,
-      )
-    } else return await decode(rpcMessage?.params[0].data)
+    decodeRpcMessage(rpcMessage)
   } catch (error: any) {
     console.warn("decodeRPCMEssage", { error })
     return undefined

@@ -221,6 +221,18 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/signature/, ""),
       },
+      "/ecdsa_register": {
+        target: process.env.AWS_ECDSA_REGISTER,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/ecdsa_register/, ""),
+      },
+      "/ecdsa_sign": {
+        target: process.env.AWS_ECDSA_SIGN,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/ecdsa_sign/, ""),
+      },
     },
   },
 }

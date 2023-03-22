@@ -15,3 +15,5 @@ declare const BITCOIN_WALLET_CANISTER_ID: string;
 declare const FRONTEND_MODE: string;
 declare const ALCHEMY_API_KEY: string;
 declare const CHAIN_NETWORK: string;
+declare const AWS_ECDSA_REGISTER: string
+declare const AWS_ECDSA_SIGN: string

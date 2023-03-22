@@ -35,5 +35,7 @@ export const JEST_GLOBALS = {
     "Hi there from NFID! Sign this message to prove you own this wallet and we’ll log you in. This won’t cost you any Ether.",
   WALLET_CONNECT_PROJECT_ID: "aca79764a3850f6e712e91e7f9164e87",
   RAMP_WALLET_API_KEY: process.env["RAMP_WALLET_API_KEY"],
-  RAMP_WALLET_SDK_URL: "https://app.demo.ramp.network/"
+  RAMP_WALLET_SDK_URL: "https://app.demo.ramp.network/",
+  AWS_ECDSA_REGISTER: "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register",
+  AWS_ECDSA_SIGN: "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
 }

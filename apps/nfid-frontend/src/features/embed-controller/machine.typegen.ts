@@ -66,7 +66,7 @@ export interface Typegen0 {
     actions: never
     delays: never
     guards: never
-    services: never
+    services: "SignTypedDataService"
   }
   eventsCausingActions: {
     assignData: "done.invoke.decodeRPCRequestService"

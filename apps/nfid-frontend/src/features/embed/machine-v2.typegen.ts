@@ -19,6 +19,10 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]": {
+      type: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
+      data: unknown
+    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
@@ -35,28 +39,30 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
-    assignProcedure: "PROCEDURE_CALL"
+    assignError: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
+    assignProcedure: "RPC_MESSAGE"
     nfid_authenticated:
       | ""
       | "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
     nfid_unauthenticated: "SESSION_EXPIRED"
-    queueRequest: "PROCEDURE_CALL"
-    sendRPCCancelResponse: "CANCEL"
+    queueRequest: "RPC_MESSAGE"
+    sendRPCCancelResponse: "CANCEL" | "CANCEL_ERROR"
     sendRPCResponse: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     updateProcedure:
       | "CANCEL"
+      | "CANCEL_ERROR"
       | "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
     hasProcedure: ""
     isAuthenticated: ""
-    isReady: "PROCEDURE_CALL"
+    isReady: "RPC_MESSAGE"
   }
   eventsCausingServices: {
     AuthenticationMachine: "" | "SESSION_EXPIRED"
     ExecuteProcedureService: "APPROVE"
-    RPCReceiver: "PROCEDURE_CALL" | "xstate.init"
+    RPCReceiver: "RPC_MESSAGE" | "xstate.init"
     TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
   }
   matchesStates:

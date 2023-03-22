@@ -50,6 +50,7 @@ export * from "./pages/auth-ii-recovery"
 export * from "./pages/auth-ii-complete"
 export * from "./pages/auth-ii-code"
 
+export * from "./templates/page/page"
 export * from "./templates/approve-template"
 export * from "./templates/screen-responsive"
 export * from "./templates/screen-responsive/config"

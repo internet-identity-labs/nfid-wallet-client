@@ -8,6 +8,7 @@ import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 
+import { ErrorCmp } from "./components/error"
 import { ProcedureApprovalCoordinator } from "./components/procedure-approval-coordinator"
 import { NFIDEmbedMachineV2 } from "./machine-v2"
 
@@ -62,9 +63,16 @@ export default function NFIDEmbedCoordinator() {
           onReject={() => send({ type: "CANCEL" })}
         />
       )
+    case state.matches("HANDLE_PROCEDURE.ERROR"):
+      return (
+        <ErrorCmp
+          error={state.context.error}
+          onCancel={() => send({ type: "CANCEL_ERROR" })}
+          onRetry={() => send({ type: "RETRY" })}
+        />
+      )
     case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
-      return <BlurredLoader isLoading />
     default:
-      return <div>NFIDEmbedCoordinator</div>
+      return <BlurredLoader isLoading />
   }
 }

@@ -43,7 +43,9 @@ export interface Typegen0 {
     queueRequest: "PROCEDURE_CALL"
     sendRPCCancelResponse: "CANCEL"
     sendRPCResponse: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
-    updateProcedure: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
+    updateProcedure:
+      | "CANCEL"
+      | "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {

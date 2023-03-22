@@ -5,25 +5,24 @@ import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
-import { RPCMessage, RPC_BASE } from "../embed/services/rpc-receiver"
-import { getEthAddress } from "../fungable-token/eth/get-eth-address"
+import { getEthAddress } from "../../fungable-token/eth/get-eth-address"
 
-type ConnectAccountServiceArgs = {
-  authSession: AuthSession
-  rpcMessage: RPCMessage
-  authRequest: AuthorizationRequest
+export type ConnectAccountServiceContext = {
+  authSession?: AuthSession
+  authRequest?: AuthorizationRequest
 }
 
 export const ConnectAccountService = async (
-  { authSession, rpcMessage, authRequest }: ConnectAccountServiceArgs,
+  { authSession, authRequest }: ConnectAccountServiceContext,
   event: {
-    type: string
     data: { hostname: string; accountId: string }
   },
 ) => {
   console.debug("ConnectAccountService", event)
-  if (!authSession || !rpcMessage)
-    throw new Error("No authSession or rpcMessage")
+  if (!authSession)
+    throw new Error("ConnectAccountService: missing authSession")
+  if (!authRequest)
+    throw new Error("ConnectAccountService: missing authRequest")
 
   const address = await getEthAddress({
     anchor: authSession.anchor,
@@ -44,5 +43,5 @@ export const ConnectAccountService = async (
     domain: event.data.hostname,
   })
 
-  return Promise.resolve({ ...RPC_BASE, id: rpcMessage.id, result: [address] })
+  return [address]
 }

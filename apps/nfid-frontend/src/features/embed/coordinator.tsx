@@ -1,6 +1,8 @@
 import { useMachine } from "@xstate/react"
 import React from "react"
 
+import { BlurredLoader } from "@nfid-frontend/ui"
+
 import { AuthenticationCoordinator } from "frontend/coordination/authentication"
 import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
@@ -59,6 +61,8 @@ export default function NFIDEmbedCoordinator() {
           }}
         />
       )
+    case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
+      return <BlurredLoader isLoading />
     default:
       return <div>NFIDEmbedCoordinator</div>
   }

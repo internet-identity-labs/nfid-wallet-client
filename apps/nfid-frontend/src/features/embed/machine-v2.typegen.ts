@@ -14,11 +14,16 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]": {
+      type: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.init": { type: "xstate.init" }
-    "xstate.stop": { type: "xstate.stop" }
   }
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+    ExecuteProcedureService: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     RPCReceiver: "done.invoke.NFIDEmbedMachineV2.RPC_RECEIVER:invocation[0]"
     TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
   }
@@ -33,20 +38,21 @@ export interface Typegen0 {
     assignProcedure: "PROCEDURE_CALL"
     nfid_authenticated:
       | ""
-      | "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
       | "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
-    nfid_unauthenticated: "SESSION_EXPIRED" | "xstate.stop"
+    nfid_unauthenticated: "SESSION_EXPIRED"
     queueRequest: "PROCEDURE_CALL"
+    sendRPCResponse: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
+    updateProcedure: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    hasProcedure: ""
     isAuthenticated: ""
     isReady: "PROCEDURE_CALL"
-    isTrusted: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
-    newRPCMessage: ""
   }
   eventsCausingServices: {
     AuthenticationMachine: "" | "SESSION_EXPIRED"
+    ExecuteProcedureService: "APPROVE"
     RPCReceiver: "PROCEDURE_CALL" | "xstate.init"
     TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
   }
@@ -62,7 +68,6 @@ export interface Typegen0 {
     | "HANDLE_PROCEDURE.EXECUTE_PROCEDURE"
     | "HANDLE_PROCEDURE.READY"
     | "HANDLE_PROCEDURE.SEND_RPC_CANCEL_RESPONSE"
-    | "HANDLE_PROCEDURE.SEND_RPC_RESPONSE"
     | "RPC_RECEIVER"
     | {
         AUTH?:
@@ -76,7 +81,6 @@ export interface Typegen0 {
           | "EXECUTE_PROCEDURE"
           | "READY"
           | "SEND_RPC_CANCEL_RESPONSE"
-          | "SEND_RPC_RESPONSE"
       }
   tags: never
 }

@@ -1,10 +1,4 @@
 {
-  "workspaceLayout": {
-    "appsDir": "apps",
-    "libsDir": "packages"
-  },
-  "extends": "nx/presets/npm.json",
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",
@@ -20,6 +14,17 @@
       }
     }
   },
+  "pluginsConfig": {
+    "@nrwl/js": {
+      "analyzeSourceFiles": true
+    }
+  },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "packages"
+  },
+  "extends": "nx/presets/npm.json",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "generators": {
     "@nrwl/react": {
       "application": {
@@ -34,51 +39,100 @@
     },
     "lint": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+    },
+    "build-storybook": {
+      "inputs": ["default", "^production", "!{projectRoot}/.storybook/**/*"]
+    },
+    "e2e": {
+      "inputs": ["default", "^production"]
     }
   },
   "namedInputs": {
     "default": [
       "{projectRoot}/**/*",
       "sharedGlobals",
-      { "env": "FRONTEND_MODE" },
-      { "env": "BACKEND_MODE" },
-      { "env": "II_MODE" },
-      { "env": "IC_HOST" },
-      { "env": "CURRCONV_TOKEN" },
-      { "env": "ETHERSCAN_API_KEY" },
-      { "env": "ALCHEMY_API_KEY" },
-      { "env": "RAMP_WALLET_API_KEY" },
-      { "env": "REACT_APP_SENTRY_CONNECTION" },
-      { "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION" },
-      { "env": "PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION" },
-      { "env": "VERIFIER_CANISTER_ID_PRODUCTION" },
-      { "env": "INTERNET_IDENTITY_CANISTER_ID_PRODUCTION" },
-      { "env": "AWS_VERIFY_PHONENUMBER" },
-      { "env": "AWS_SIGNIN_GOOGLE" },
-      { "env": "AWS_SYMMETRIC" },
-      { "env": "AWS_AUTH_STATS" },
-      { "env": "AWS_SIGNATURE_EVENT" },
-      { "env": "GOOGLE_CLIENT_ID" },
-      { "env": "USERGEEK_API_KEY" },
-      { "env": "LEDGER_CANISTER_ID" },
-      { "env": "CYCLES_MINTER_CANISTER_ID" },
-      { "env": "PSYCHEDELIC_GH_NPM_REGISTRY" }
+      {
+        "env": "FRONTEND_MODE"
+      },
+      {
+        "env": "BACKEND_MODE"
+      },
+      {
+        "env": "II_MODE"
+      },
+      {
+        "env": "IC_HOST"
+      },
+      {
+        "env": "CURRCONV_TOKEN"
+      },
+      {
+        "env": "ETHERSCAN_API_KEY"
+      },
+      {
+        "env": "ALCHEMY_API_KEY"
+      },
+      {
+        "env": "RAMP_WALLET_API_KEY"
+      },
+      {
+        "env": "REACT_APP_SENTRY_CONNECTION"
+      },
+      {
+        "env": "IDENTITY_MANAGER_CANISTER_ID_PRODUCTION"
+      },
+      {
+        "env": "PUB_SUB_CHANNEL_CANISTER_ID_PRODUCTION"
+      },
+      {
+        "env": "VERIFIER_CANISTER_ID_PRODUCTION"
+      },
+      {
+        "env": "INTERNET_IDENTITY_CANISTER_ID_PRODUCTION"
+      },
+      {
+        "env": "AWS_VERIFY_PHONENUMBER"
+      },
+      {
+        "env": "AWS_SIGNIN_GOOGLE"
+      },
+      {
+        "env": "AWS_SYMMETRIC"
+      },
+      {
+        "env": "AWS_AUTH_STATS"
+      },
+      {
+        "env": "AWS_SIGNATURE_EVENT"
+      },
+      {
+        "env": "GOOGLE_CLIENT_ID"
+      },
+      {
+        "env": "USERGEEK_API_KEY"
+      },
+      {
+        "env": "LEDGER_CANISTER_ID"
+      },
+      {
+        "env": "CYCLES_MINTER_CANISTER_ID"
+      },
+      {
+        "env": "PSYCHEDELIC_GH_NPM_REGISTRY"
+      }
     ],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/.eslintrc.json"
+      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/.storybook/**/*",
+      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)"
     ],
     "sharedGlobals": [
       "{workspaceRoot}/babel.config.json",
       "{workspaceRoot}/.env.(production|staging)"
     ]
-  },
-  "pluginsConfig": {
-    "@nrwl/js": {
-      "analyzeSourceFiles": true
-    }
   }
 }

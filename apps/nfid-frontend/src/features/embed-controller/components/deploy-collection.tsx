@@ -18,13 +18,14 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { ApproverCmpProps } from "./types"
 
 interface IBuyComponent {
   showTransactionDetails: () => void
   onApprove: () => void
   onCancel: () => void
   applicationMeta?: AuthorizingAppMeta
-  isButtonDisabled: boolean
+  isButtonDisabled?: boolean
   fromAddress?: string
   toAddress?: string
   data?: any
@@ -37,7 +38,7 @@ const tokens = ["ETH"]
 export const DeployComponent = ({
   showTransactionDetails,
   applicationMeta,
-  isButtonDisabled: isButtonDisabledProp,
+  isButtonDisabled: isButtonDisabledProp = false,
   onApprove,
   onCancel,
   fromAddress,
@@ -177,3 +178,28 @@ export const DeployComponent = ({
     </TooltipProvider>
   )
 }
+
+const MappedDeployCollection: React.FC<ApproverCmpProps> = ({
+  appMeta,
+  rpcMessage,
+  rpcMessageDecoded,
+  onConfirm,
+  onReject,
+}) => {
+  return (
+    <DeployComponent
+      // TODO: handle details internally
+      showTransactionDetails={() => {}}
+      applicationMeta={appMeta}
+      onApprove={onConfirm}
+      onCancel={onReject}
+      data={rpcMessageDecoded?.data}
+      fromAddress={rpcMessage?.params[0].from}
+      toAddress={rpcMessage?.params[0].to}
+      feeMin={rpcMessage?.params[0]?.maxFeePerGas}
+      feeMax={rpcMessage?.params[0]?.maxPriorityFeePerGas}
+    />
+  )
+}
+
+export default MappedDeployCollection

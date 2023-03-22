@@ -157,7 +157,7 @@ export const NFIDEmbedMachineV2 = createMachine(
               APPROVE: "EXECUTE_PROCEDURE",
               CANCEL: {
                 target: "READY",
-                actions: "sendRPCCancelResponse",
+                actions: ["sendRPCCancelResponse", "updateProcedure"],
               },
             },
           },

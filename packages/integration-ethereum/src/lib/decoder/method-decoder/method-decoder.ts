@@ -26,10 +26,11 @@ export type Method =
   | "directPurchase"
   | "mintAndTransfer"
   | "safeTransferFrom"
-  | "Order"
-  | "sell"
+  | "SellOrder"
+  | "BidOrder"
   | "Mint721"
   | "Mint1155"
+  | "sell"
 
 export type Item = ItemRarible & { collectionData: CollectionRarible }
 

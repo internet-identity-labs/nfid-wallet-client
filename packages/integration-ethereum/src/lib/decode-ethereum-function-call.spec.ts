@@ -398,8 +398,38 @@ describe("Decode function call data.", () => {
     const actual = await decodeRpcMessage(request)
     expect(actual).toEqual({
       interface: "Item",
-      method: "Order",
+      method: "SellOrder",
       from: "0x1A90e5cd839d61b167D516108606456C2d06d369",
+      data: expect.objectContaining({
+        blockchain: "ETHEREUM",
+        collection: expect.stringMatching(
+          /ETHEREUM:0x8a1d516d73fb36227d6ded260888c42bb7c55cfa/i,
+        ),
+        contract: expect.stringMatching(
+          /ETHEREUM:0x8a1d516d73fb36227d6ded260888c42bb7c55cfa/i,
+        ),
+        tokenId: expect.stringMatching(
+          /12997079243578958014486847546347798191014225278195692514948617470507594285060/i,
+        ),
+      }),
+    })
+  })
+
+  it("should return decoded bid request by decodeRpcMessage", async () => {
+    const request: RPCMessage = {
+      method: "eth_signTypedData_v4",
+      params: [
+        "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        '{"primaryType":"Order","domain":{"name":"Exchange","version":"2","verifyingContract":"0x02afbd43cad367fcb71305a2dfb9a3928218f0c1","chainId":5},"types":{"EIP712Domain":[{"type":"string","name":"name"},{"type":"string","name":"version"},{"type":"uint256","name":"chainId"},{"type":"address","name":"verifyingContract"}],"AssetType":[{"name":"assetClass","type":"bytes4"},{"name":"data","type":"bytes"}],"Asset":[{"name":"assetType","type":"AssetType"},{"name":"value","type":"uint256"}],"Order":[{"name":"maker","type":"address"},{"name":"makeAsset","type":"Asset"},{"name":"taker","type":"address"},{"name":"takeAsset","type":"Asset"},{"name":"salt","type":"uint256"},{"name":"start","type":"uint256"},{"name":"end","type":"uint256"},{"name":"dataType","type":"bytes4"},{"name":"data","type":"bytes"}]},"message":{"maker":"0xdc75e8c3ae765d8947adbc6698a2403a6141d439","makeAsset":{"assetType":{"assetClass":"0x8ae85d84","data":"0x000000000000000000000000b4fbf271143f4fbf7b91a5ded31805e42b2208d6"},"value":"10000000000000000"},"taker":"0x0000000000000000000000000000000000000000","takeAsset":{"assetType":{"assetClass":"0x973bb640","data":"0x0000000000000000000000008a1d516d73fb36227d6ded260888c42bb7c55cfa1cbc160eb6699ab0528bbfde0b65db6c117f5118000000000000000000000004"},"value":"1"},"salt":"0x715753b2c8acdf0336c15ec4b0e8a57d3f14ae2834d1df75b4478df352212e07","start":0,"end":0,"dataType":"0x1b18cdf6","data":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012345678900000000000000000000000000123456789face09616c6c64617461"}}',
+      ],
+    }
+
+    const actual = await decodeRpcMessage(request)
+    console.log(JSON.stringify(actual))
+    expect(actual).toEqual({
+      interface: "Item",
+      method: "BidOrder",
+      from: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
       data: expect.objectContaining({
         blockchain: "ETHEREUM",
         collection: expect.stringMatching(

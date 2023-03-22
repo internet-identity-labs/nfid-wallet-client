@@ -5,6 +5,7 @@ import { SDKApplicationMeta, Button } from "@nfid-frontend/ui"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
+import { ApproverCmpProps } from "./types"
 
 interface ILazyMintComponent {
   onCancel: () => void
@@ -76,3 +77,19 @@ export const LazyMintComponent = ({
     </div>
   )
 }
+const MappedLazyMintComponent: React.FC<ApproverCmpProps> = ({
+  appMeta,
+  rpcMessageDecoded,
+  onConfirm,
+  onReject,
+}) => {
+  return (
+    <LazyMintComponent
+      applicationMeta={appMeta}
+      onSign={onConfirm}
+      onCancel={onReject}
+      data={rpcMessageDecoded?.data}
+    />
+  )
+}
+export default MappedLazyMintComponent

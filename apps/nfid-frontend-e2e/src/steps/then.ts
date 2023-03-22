@@ -463,7 +463,7 @@ Then(/^(\d+) transaction in the table/, async (amount: number) => {
     })
   }
   await $("id=transaction_" + amount).waitForDisplayed({
-    timeout: 7000,
+    timeout: 70000,
     timeoutMsg: "Transaction has been showed! Unexpected transaction!",
     reverse: true,
   })

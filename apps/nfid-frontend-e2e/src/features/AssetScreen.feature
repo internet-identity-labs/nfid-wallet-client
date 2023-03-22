@@ -13,10 +13,10 @@ Feature:Fungible Asset
     And <chain> <currency> address calculated
     And <chain> USD balance not <usd>
     Examples:
-      | chain             | currency | balance | asset             | anchor | usd   |
-      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  | $0.00 |
+      | chain             | currency | balance | asset             | anchor | usd |
+      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |     |
 #      | Ethereum         | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00 |
-      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |       |
+      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |     |
 
   @asset2
   Scenario Outline: User should be able to see <chain> in asset details

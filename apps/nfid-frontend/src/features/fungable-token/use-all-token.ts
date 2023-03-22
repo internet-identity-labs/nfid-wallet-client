@@ -57,7 +57,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         title: "Bitcoin",
         currency: "BTC",
         balance: btcSheet?.tokenBalance,
-        price: btcSheet?.usdBalance ?? "$0.00",
+        price: btcSheet?.usdBalance,
         fee: BigInt(0),
         toPresentation,
         transformAmount: stringICPtoE8s,

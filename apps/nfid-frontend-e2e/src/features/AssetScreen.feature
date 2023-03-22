@@ -9,14 +9,15 @@ Feature:Fungible Asset
     Given User signs in
     And Tokens displayed on user assets
     And Asset appears with label <chain>
-    And <asset> appears with <currency> on <chain> and <balance> && <usd> USD
+    And <asset> appears with <currency> on <chain> and <balance> && <initial_usd> USD
     And <chain> <currency> address calculated
-    And <chain> USD balance not <usd>
+    And <chain> USD balance is not empty
+    And <chain> USD balance not $0.00
     Examples:
-      | chain             | currency | balance | asset             | anchor | usd |
-      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |     |
+      | chain             | currency | balance | asset             | anchor | initial_usd |
+      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             |
 #      | Ethereum         | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00 |
-      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |     |
+      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             |
 
   @asset2
   Scenario Outline: User should be able to see <chain> in asset details

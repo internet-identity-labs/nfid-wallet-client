@@ -3,6 +3,7 @@ import {
   RpcMessageFunctionalCall,
 } from "./rpc-message-decoder"
 import { mint721SignTypedDataV4RpcMessageDecoder } from "./sign-typed-data-v4-rpc-message-decoder/mint721-sign-typed-data-v4-rpc-message-decoder"
+import { mint1155SignTypedDataV4RpcMessageDecoder } from "./sign-typed-data-v4-rpc-message-decoder/mint1155-sign-typed-data-v4-rpc-message-decoder"
 import { orderSignTypedDataV4RpcMessageDecoder } from "./sign-typed-data-v4-rpc-message-decoder/order-sign-typed-data-v4-rpc-message-decoder copy"
 
 export type SignTypedDataV4RpcMessageDecoder = {
@@ -12,6 +13,7 @@ export type SignTypedDataV4RpcMessageDecoder = {
 const decoders: { [key: string]: SignTypedDataV4RpcMessageDecoder } = {
   Order: orderSignTypedDataV4RpcMessageDecoder,
   Mint721: mint721SignTypedDataV4RpcMessageDecoder,
+  Mint1155: mint1155SignTypedDataV4RpcMessageDecoder,
 }
 
 export const signTypedDataV4RpcMessageDecoder: RpcMessageDecoder = {

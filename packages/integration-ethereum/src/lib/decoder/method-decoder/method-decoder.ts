@@ -15,6 +15,7 @@ export type Interface =
   | "MintRequest"
   | "SafeTransferFrom"
   | "MintLazy721"
+  | "MintLazy1155"
 
 export type Method =
   | "bulkPurchase"
@@ -28,6 +29,7 @@ export type Method =
   | "Order"
   | "sell"
   | "Mint721"
+  | "Mint1155"
 
 export type Item = ItemRarible & { collectionData: CollectionRarible }
 

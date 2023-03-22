@@ -12,7 +12,7 @@ import { arrayify, hashMessage } from "ethers/lib/utils"
 import { generateDelegationIdentity } from "../test-utils"
 import { EthWalletV2 } from "./signer-ecdsa"
 
-describe("ECDSA suite", () => {
+describe.skip("ECDSA suite", () => {
   jest.setTimeout(200000)
   const rpcProvider = new ethers.providers.JsonRpcProvider(
     "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ",

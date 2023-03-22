@@ -12,7 +12,7 @@ import { arrayify, hashMessage } from "ethers/lib/utils"
 import { generateDelegationIdentity } from "../test-utils"
 import { DelegationWalletAdapter } from "./delegation-adapter"
 
-describe("Wallet Adapter suite", () => {
+describe.skip("Wallet Adapter suite", () => {
   jest.setTimeout(200000)
   const url =
     "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ"

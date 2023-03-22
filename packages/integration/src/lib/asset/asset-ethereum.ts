@@ -311,26 +311,26 @@ class EthereumAsset implements NonFungibleAsset {
     })
   }
 }
-//
-// export const ethereumAsset = new EthereumAsset({
-//   currencyId: "ETHEREUM:0x0000000000000000000000000000000000000000",
-//   blockchain: Blockchain.ETHEREUM as EVMBlockchain,
-//   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
-//   provider: {
-//     mainnet: "https://ethereum.publicnode.com",
-//     testnet:
-//       "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ",
-//   },
-//   alchemy: { mainnet: Network.ETH_MAINNET, testnet: Network.ETH_GOERLI },
-// })
 
-// export const polygonAsset = new EthereumAsset({
-//   currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
-//   blockchain: Blockchain.POLYGON as EVMBlockchain,
-//   unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
-//   provider: {
-//     mainnet: "https://polygon-mainnet.infura.io",
-//     testnet: "https://rpc-mumbai.maticvigil.com",
-//   },
-//   alchemy: { mainnet: Network.MATIC_MAINNET, testnet: Network.MATIC_MUMBAI },
-// })
+export const ethereumAsset = new EthereumAsset({
+  currencyId: "ETHEREUM:0x0000000000000000000000000000000000000000",
+  blockchain: Blockchain.ETHEREUM as EVMBlockchain,
+  unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
+  provider: {
+    mainnet: "https://ethereum.publicnode.com",
+    testnet:
+      "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ",
+  },
+  alchemy: { mainnet: Network.ETH_MAINNET, testnet: Network.ETH_GOERLI },
+})
+
+export const polygonAsset = new EthereumAsset({
+  currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
+  blockchain: Blockchain.POLYGON as EVMBlockchain,
+  unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
+  provider: {
+    mainnet: "https://polygon-mainnet.infura.io",
+    testnet: "https://rpc-mumbai.maticvigil.com",
+  },
+  alchemy: { mainnet: Network.MATIC_MAINNET, testnet: Network.MATIC_MUMBAI },
+})

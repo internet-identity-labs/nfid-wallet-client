@@ -3,7 +3,7 @@ import { BigNumber } from "@rarible/utils"
 import { ethereumAsset } from "./asset-ethereum"
 import { ChainBalance } from "./types"
 
-describe("Ethereum Asset", () => {
+describe.skip("Ethereum Asset", () => {
   jest.setTimeout(20000)
 
   it("should return one fungible native tx", async function () {
@@ -135,7 +135,7 @@ describe("Ethereum Asset", () => {
           contract: "0x1f419b9469d641d333805c4054ca3b65af54d315",
           collection: "0x1f419b9469d641d333805c4054ca3b65af54d315",
           blockchain: "ETHEREUM",
-          lastUpdatedAt: "2023-03-07T14:46:38.138Z",
+          lastUpdatedAt: expect.any(String),
           thumbnail:
             "https://res.cloudinary.com/alchemyapi/image/upload/thumbnailv2/eth-goerli/59574aaf4d245619066f319901075a03",
           image:

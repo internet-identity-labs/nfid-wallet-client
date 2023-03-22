@@ -34,7 +34,7 @@ export function stringify(
 export const makeServiceMock = <T>(): {
   service: () => Promise<T>
   resolve: (value: T) => void
-  reject: () => void
+  reject: (reason?: any) => void
 } => {
   let resolve: any
   let reject: any

@@ -6,6 +6,18 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { RPCMessage } from "../services/rpc-receiver"
 
+interface ComponentMap {
+  [messageInterface: string]: () => JSX.Element
+}
+
+const componentMap: ComponentMap = {
+  BatchBuyRequest: () => <div>BatchBuyRequest</div>,
+  Burn: () => <div>Burn</div>,
+}
+
+const hasMapped = (messageInterface: string = "") =>
+  !!componentMap[messageInterface]
+
 type ProcedureApprovalCoordinatorProps = {
   appMeta: AuthorizingAppMeta
   rpcMessage: RPCMessage
@@ -15,8 +27,12 @@ type ProcedureApprovalCoordinatorProps = {
 }
 export const ProcedureApprovalCoordinator: React.FC<
   ProcedureApprovalCoordinatorProps
-> = ({ appMeta, rpcMessage, onConfirm }) => {
+> = ({ appMeta, rpcMessage, rpcMessageDecoded, onConfirm }) => {
   switch (true) {
+    case hasMapped(rpcMessageDecoded?.interface):
+      const ApproverCmp = componentMap[rpcMessageDecoded?.interface as string]
+      return <ApproverCmp />
+
     case rpcMessage.method === "eth_accounts":
       return (
         <NFIDConnectAccountCoordinator

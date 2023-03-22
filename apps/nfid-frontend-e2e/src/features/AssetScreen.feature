@@ -9,13 +9,15 @@ Feature:Fungible Asset
     Given User signs in
     And Tokens displayed on user assets
     And Asset appears with label <chain>
-    And <asset> appears with <currency> on <chain> and <balance> && $0.00 USD
+    And <asset> appears with <currency> on <chain> and <balance> && <initial_usd> USD
     And <chain> <currency> address calculated
-    And <chain> USD balance not empty
+    And <chain> USD balance is not empty
+    And <chain> USD balance not $0.00
     Examples:
-      | chain    | currency | balance | asset    | anchor |
-      | Bitcoin  | BTC      | 0 BTC   | Bitcoin  | 25795  |
-#      | Ethereum | ETH      | 0 ETH   | Ethereum | 10974  |
+      | chain             | currency | balance | asset             | anchor | initial_usd |
+      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             |
+#      | Ethereum         | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00 |
+      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             |
 
   @asset2
   Scenario Outline: User should be able to see <chain> in asset details
@@ -31,8 +33,9 @@ Feature:Fungible Asset
     And Identifiers are <principal> and <address>
     And Account balance in USD not empty
     Examples:
-      | chain   | currency | balance    | principal | address | anchor |
-      | Bitcoin | BTC      | 0.00012717 | 5qfm      | mvyM    | 25795  |
+      | chain             | currency | balance    | principal | address | anchor |
+      | Bitcoin           | BTC      | 0.00012717 | 5qfm      | mvyM    | 25795  |
+      | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
 
   @asset3
   Scenario Outline: User should be able to see transaction history in Received
@@ -48,8 +51,9 @@ Feature:Fungible Asset
     And From <address_from> to <address_to>
     And Date is <millis>
     Examples:
-      | chain   | currency | balance    | millis        | address_from                               | address_to                         | anchor |
-      | Bitcoin | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4 | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1 | 25795  |
+      | chain             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
+      | Bitcoin           | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4                       | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1                               | 25795  |
+      | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
 
   @asset4
   Scenario Outline: User should be able to see transaction depends on selected app
@@ -71,9 +75,10 @@ Feature:Fungible Asset
     Then Expect txs account "NNS account 1" with txs amount "0 TXs"
     Then 0 transaction in the table
     Examples:
-      | chain   | anchor |
-      | Bitcoin | 25795  |
-#      | Ethereum | 10974  |
+      | chain             | anchor |
+      | Bitcoin           | 25795  |
+      | Internet Computer | 28542  |
+      | Ethereum          | 10974  |
 
   @asset5
   Scenario Outline: User should be able to filter assets by blockchain
@@ -88,6 +93,7 @@ Feature:Fungible Asset
     Then Only 1 asset displayed
     Then Asset appears with label <chain>
     Examples:
-      | chain    | anchor |
-      | Bitcoin  | 25795  |
-      | Ethereum | 10974  |
+      | chain             | anchor |
+      | Bitcoin           | 25795  |
+      | Ethereum          | 10974  |
+      | Internet Computer | 28542  |

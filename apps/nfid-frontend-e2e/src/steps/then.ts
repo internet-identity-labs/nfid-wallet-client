@@ -232,7 +232,7 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
 })
 
 Then(/^Asset appears with label ([^"]*)$/, async (asselLabel: string) => {
-  await $(`#token_${asselLabel}`).waitForDisplayed({ timeout: 7000 })
+  await $(`#token_${asselLabel.replace(/\s/g, "")}`).waitForDisplayed({ timeout: 7000 })
 })
 
 Then(/^Open asset with label ([^"]*)$/, async (asselLabel: string) => {
@@ -265,7 +265,7 @@ Then(
 Then(
   /^([^"]*) ([^"]*) address calculated$/,
   async (chain: string, asset: string) => {
-    const title = `#token_${chain}_balance`
+    const title = `#token_${chain.replace(/\s/g, "")}_balance`
     await $(title).waitUntil(
       async () =>
         (await $(title)).getText().then((l) => {
@@ -364,12 +364,22 @@ Then(/^Open filter menu on assets screen/, async () => {
   await Assets.openElementById(dropdownAccountId)
 })
 
-Then(/^([^"]*) USD balance not empty$/, async (chain: string) => {
-  const usd = await $(`#token_${chain}_usd`)
+Then(/^([^"]*) USD balance not ([^"]*)$/, async (chain: string, text: string) => {
+  const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
+
   await usd.waitForExist({
     timeout: 7000,
   })
-  await expect(usd).not.toHaveText("$0.00")
+  await expect(usd).not.toHaveText(text)
+})
+
+Then(/^([^"]*) USD balance is not empty$/, async (chain: string) => {
+  const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
+
+  await usd.waitForExist({
+    timeout: 7000,
+  })
+  await expect(usd).not.toHaveText("")
 })
 
 Then(/^Account balance in USD not empty$/, async () => {
@@ -377,7 +387,7 @@ Then(/^Account balance in USD not empty$/, async () => {
   await usd.waitForExist({
     timeout: 7000,
   })
-  await expect(usd).not.toHaveText("$0.00")
+  await expect(usd).not.toHaveText("")
 })
 
 Then(

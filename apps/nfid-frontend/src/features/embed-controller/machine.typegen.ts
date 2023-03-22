@@ -69,6 +69,9 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignData: "done.invoke.decodeRPCRequestService"
+    assignError:
+      | "error.platform.MethodControllerService"
+      | "error.platform.decodeRPCRequestService"
     assignMethod: "done.invoke.MethodControllerService"
     assignPreparedSignature: "done.invoke.prepareSignature"
     assignRpcResponse:
@@ -89,6 +92,7 @@ export interface Typegen0 {
   matchesStates:
     | "Canceled"
     | "Done"
+    | "Error"
     | "Initial"
     | "Initial.PrepareSignature"
     | "Initial.PrepareSignature.End"
@@ -99,6 +103,7 @@ export interface Typegen0 {
     | "Initial.UI.DefaultSign"
     | "Initial.UI.DeployCollection"
     | "Initial.UI.End"
+    | "Initial.UI.Error"
     | "Initial.UI.LazyMint"
     | "Initial.UI.MethodController"
     | "Initial.UI.Mint"
@@ -120,6 +125,7 @@ export interface Typegen0 {
                 | "DefaultSign"
                 | "DeployCollection"
                 | "End"
+                | "Error"
                 | "LazyMint"
                 | "MethodController"
                 | "Mint"

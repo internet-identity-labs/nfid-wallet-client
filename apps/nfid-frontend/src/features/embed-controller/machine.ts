@@ -20,26 +20,21 @@ export type EmbedControllerContext = {
   preparedSignature?: PreparedSignatureResponse
   data?: any
   method?: string
+  error?: Error
 }
 
+type ErrorEvents =
+  | {
+      type: "error.platform.decodeRPCRequestService"
+      data: Error
+    }
+  | {
+      type: "error.platform.MethodControllerService"
+      data: Error
+    }
+
 type Events =
-  | { type: "done.invoke.prepareSignature"; data?: PreparedSignatureResponse }
-  | {
-      type: "done.invoke.decodeRPCRequestService"
-      data: unknown
-    }
-  | {
-      type: "done.invoke.sendTransactionService"
-      data: RPCResponse
-    }
-  | {
-      type: "done.invoke.SignTypedDataService"
-      data: RPCResponse
-    }
-  | {
-      type: "done.invoke.MethodControllerService"
-      data: string
-    }
+  | ErrorEvents
   | { type: "SHOW_TRANSACTION_DETAILS" }
   | { type: "CLOSE" }
   | { type: "CANCEL" }
@@ -56,6 +51,24 @@ export const EmbedControllerMachine =
       schema: {
         events: {} as Events,
         context: {} as EmbedControllerContext,
+        services: {} as {
+          prepareSignature: {
+            data: PreparedSignatureResponse | undefined
+          }
+          decodeRPCRequestService: {
+            data: any | Error
+          }
+          MethodControllerService: {
+            data: any
+            error: Error
+          }
+          sendTransactionService: {
+            data: RPCResponse
+          }
+          SignTypedDataService: {
+            data: RPCResponse
+          }
+        },
       },
       id: "EmbedController",
       initial: "Initial",
@@ -93,6 +106,7 @@ export const EmbedControllerMachine =
                     onDone: {
                       actions: "assignData",
                     },
+                    onError: "Error",
                   },
                   after: {
                     3000: "MethodController",
@@ -134,6 +148,7 @@ export const EmbedControllerMachine =
                         cond: (_, event) => event.data === "DefaultSign",
                       },
                     ],
+                    onError: "Error",
                   },
                 },
                 DefaultSign: {
@@ -141,6 +156,9 @@ export const EmbedControllerMachine =
                     SIGN: "SignTypedData",
                     CANCEL: "#EmbedController.Canceled",
                   },
+                },
+                Error: {
+                  entry: "assignError",
                 },
 
                 Sell: {
@@ -235,6 +253,10 @@ export const EmbedControllerMachine =
             },
           },
         },
+        Error: {
+          type: "final",
+          data: (context) => context.error,
+        },
         Done: {
           type: "final",
           data: (context) => context.rpcResponse,
@@ -265,6 +287,9 @@ export const EmbedControllerMachine =
         }),
         assignMethod: assign({
           method: (_, event) => event.data,
+        }),
+        assignError: assign({
+          error: (_, event) => event.data,
         }),
       },
       services: {

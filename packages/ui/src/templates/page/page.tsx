@@ -42,11 +42,11 @@ export const Page: React.FC<PageProps> & PageCompoundComponents = ({
   ) as React.ReactElement
 
   return (
-    <ScreenResponsive className="gap-4">
+    <div className="flex flex-col flex-grow w-full h-full gap-4">
       {header}
       {body}
       {footer}
-    </ScreenResponsive>
+    </div>
   )
 }
 

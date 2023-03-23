@@ -22,11 +22,6 @@ type ComponentMap = {
   [method in Method]: React.ComponentType<ApproverCmpProps>
 }
 
-const UnknownCmp: React.FC<ApproverCmpProps> = (props) => {
-  console.debug("UnknownCmp", { props })
-  return <pre>{JSON.stringify(props, null, 2)}</pre>
-}
-
 const componentMap: ComponentMap = {
   directPurchase: React.lazy(
     () => import("frontend/features/embed-controller/components/buy"),
@@ -38,14 +33,53 @@ const componentMap: ComponentMap = {
   mintAndTransfer: React.lazy(
     () => import("frontend/features/embed-controller/components/mint"),
   ),
-  bulkPurchase: UnknownCmp,
-  burn: UnknownCmp,
-  cancel: UnknownCmp,
-  directAcceptBid: UnknownCmp,
-  safeTransferFrom: UnknownCmp,
-  sell: UnknownCmp,
-  Order: UnknownCmp,
-  Mint721: UnknownCmp,
+  SellOrder: React.lazy(
+    () => import("frontend/features/embed-controller/components/sell"),
+  ),
+  BidOrder: React.lazy(
+    () =>
+      import(
+        "frontend/features/embed-controller/components/fallbacks/signTypedData"
+      ),
+  ),
+  bulkPurchase: React.lazy(
+    () =>
+      import(
+        "frontend/features/embed-controller/components/fallbacks/signTypedData"
+      ),
+  ),
+  burn: React.lazy(
+    () =>
+      import(
+        "frontend/features/embed-controller/components/fallbacks/signTypedData"
+      ),
+  ),
+  cancel: React.lazy(
+    () =>
+      import(
+        "frontend/features/embed-controller/components/fallbacks/signTypedData"
+      ),
+  ),
+  directAcceptBid: React.lazy(
+    () =>
+      import(
+        "frontend/features/embed-controller/components/fallbacks/signTypedData"
+      ),
+  ),
+  safeTransferFrom: React.lazy(
+    () =>
+      import(
+        "frontend/features/embed-controller/components/fallbacks/signTypedData"
+      ),
+  ),
+
+  Mint721: React.lazy(
+    () => import("frontend/features/embed-controller/components/lazy-mint"),
+  ),
+
+  sell: React.lazy(
+    () => import("frontend/features/embed-controller/components/sell"),
+  ),
 }
 
 const hasMapped = (messageInterface: string = "") =>

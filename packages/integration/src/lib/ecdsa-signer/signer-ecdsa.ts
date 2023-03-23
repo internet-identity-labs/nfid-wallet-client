@@ -1,7 +1,7 @@
 import { ActorMethod } from "@dfinity/agent";
 import { Bytes, ethers, Signer, TypedDataDomain, TypedDataField } from "ethers";
 import { Provider, TransactionRequest } from "@ethersproject/abstract-provider";
-import { hashMessage, keccak256, resolveProperties, _TypedDataEncoder, hexlify } from "ethers/lib/utils";
+import { hashMessage, keccak256, resolveProperties, hexlify } from "ethers/lib/utils";
 import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
 import { UnsignedTransaction } from "ethers-ts";

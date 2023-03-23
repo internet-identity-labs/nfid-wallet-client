@@ -1,5 +1,9 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { Provider, TransactionRequest } from "@ethersproject/abstract-provider"
+import {
+  TransactionRequest,
+  TransactionResponse,
+} from "@ethersproject/abstract-provider"
+import { Deferrable } from "@ethersproject/properties"
 import { TypedMessage } from "@metamask/eth-sig-util"
 import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
@@ -28,6 +32,30 @@ export class DelegationWalletAdapter {
   async getAddress(walletDelegation: DelegationIdentity): Promise<string> {
     this.wallet.replaceIdentity(walletDelegation)
     return this.wallet.getAddress()
+  }
+
+  async sendTransaction(
+    transaction: Deferrable<TransactionRequest>,
+    delegation: DelegationIdentity,
+  ): Promise<TransactionResponse> {
+    this.wallet.replaceIdentity(delegation)
+    const provider = this.getProvider()
+    if (!provider) throw new Error("provider missing")
+    this.wallet._checkProvider("sendTransaction")
+
+    let tx
+    for (let index = 0; index <= 3; index++) {
+      try {
+        tx = await this.wallet.populateTransaction(transaction)
+      } catch (error) {
+        console.error("sendTransaction", { error })
+      }
+    }
+    const signedTx = await this.signTransaction(
+      tx || (transaction as TransactionRequest),
+      delegation,
+    )
+    return await provider.sendTransaction(signedTx)
   }
 
   async signMessage(

@@ -239,7 +239,6 @@ export const NFIDEmbedMachineV2 = createMachine(
           throw new Error("nfid_unauthenticated: missing requestOrigin")
 
         console.debug("sendRPCResponse", { event })
-        // TODO: make origin dynamic
         window.parent.postMessage(event.data, requestOrigin)
       },
       sendRPCCancelResponse: (context) => {

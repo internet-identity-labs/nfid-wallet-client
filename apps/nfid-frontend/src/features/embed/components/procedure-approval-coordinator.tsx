@@ -76,6 +76,9 @@ const componentMap: ComponentMap = {
   Mint721: React.lazy(
     () => import("frontend/features/embed-controller/components/lazy-mint"),
   ),
+  Mint1155: React.lazy(
+    () => import("frontend/features/embed-controller/components/lazy-mint"),
+  ),
 
   sell: React.lazy(
     () => import("frontend/features/embed-controller/components/sell"),

@@ -51,7 +51,7 @@ export async function transformDidToJs(
     canisterId: candidUICanister,
   })
   const result: any = await didJs.did_to_js(candid)
-  if (result === []) {
+  if (!result) {
     throw Error("Did to Js transformation error")
   }
   return result[0]

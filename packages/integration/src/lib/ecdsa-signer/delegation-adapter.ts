@@ -3,10 +3,10 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from "@ethersproject/abstract-provider"
-import { Deferrable } from "@ethersproject/properties"
 import { TypedMessage } from "@metamask/eth-sig-util"
-import { Bytes } from "ethers"
+import { BigNumber, Bytes } from "ethers"
 import { ethers } from "ethers-ts"
+import { Deferrable } from "ethers/lib/utils"
 
 import { EthWalletV2 } from "./signer-ecdsa"
 
@@ -35,7 +35,7 @@ export class DelegationWalletAdapter {
   }
 
   async sendTransaction(
-    transaction: Deferrable<TransactionRequest>,
+    transaction: TransactionRequest,
     delegation: DelegationIdentity,
   ): Promise<TransactionResponse> {
     this.wallet.replaceIdentity(delegation)
@@ -48,10 +48,28 @@ export class DelegationWalletAdapter {
       try {
         tx = await this.wallet.populateTransaction(transaction)
       } catch (error) {
+        const gasPrice = await provider.getGasPrice()
+        // TODO: SC-6735 what to do with gasLimit?
+        const gasLimit = BigNumber.from(100000)
+        tx = {
+          from: transaction.from,
+          to: transaction.to,
+          data: transaction.data,
+          value: transaction.value,
+          nonce: provider.getTransactionCount(
+            transaction.from || "",
+            "pending",
+          ),
+          gasLimit,
+          gasPrice,
+        }
         console.error("sendTransaction", { error })
       }
     }
+
     const signedTx = await this.signTransaction(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       tx || (transaction as TransactionRequest),
       delegation,
     )
@@ -74,6 +92,7 @@ export class DelegationWalletAdapter {
     return this.wallet.signTransaction(transaction)
   }
 
+  // TODO: type the dude
   async signTypedData(
     { types, primaryType, domain, message }: TypedMessage<any>,
     walletDelegation: DelegationIdentity,

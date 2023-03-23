@@ -42,7 +42,7 @@ export const Page: React.FC<PageProps> & PageCompoundComponents = ({
   ) as React.ReactElement
 
   return (
-    <ScreenResponsive>
+    <ScreenResponsive className="gap-4">
       {header}
       {body}
       {footer}
@@ -55,9 +55,9 @@ Page.Header = ({ children }) => {
 }
 
 Page.Body = ({ children }) => {
-  return <main>{children}</main>
+  return <main className="flex flex-col flex-1">{children}</main>
 }
 
 Page.Footer = ({ children }) => {
-  return <footer>{children}</footer>
+  return <footer className={"flex flex-col flex-0 w-full"}>{children}</footer>
 }

@@ -45,7 +45,7 @@ export const ExecuteProcedureService = async ({
     }
     case "eth_signTypedData_v4": {
       const result = await adapter.signTypedData(
-        rpcMessage.params[1].data,
+        JSON.parse(rpcMessage.params[1]),
         delegation,
       )
       const response = { ...rpcBase, result }
@@ -58,8 +58,11 @@ export const ExecuteProcedureService = async ({
       const data = removeEmptyKeys(rpcMessage?.params[0])
       console.debug("ExecuteProcedureService eth_sendTransaction", { data })
 
-      const result = await adapter.sendTransaction(data, delegation)
-      const response = { ...rpcBase, result }
+      const { wait, ...result } = await adapter.sendTransaction(
+        data,
+        delegation,
+      )
+      const response = { ...rpcBase, result: result.hash }
       console.debug("ExecuteProcedureService eth_accounts", {
         response,
       })

@@ -1,14 +1,13 @@
 import { useMachine } from "@xstate/react"
 import React from "react"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
+import { BlurredLoader, PageError } from "@nfid-frontend/ui"
 
 import { AuthenticationCoordinator } from "frontend/coordination/authentication"
 import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 
-import { ErrorCmp } from "./components/error"
 import { ProcedureApprovalCoordinator } from "./components/procedure-approval-coordinator"
 import { NFIDEmbedMachineV2 } from "./machine-v2"
 
@@ -65,7 +64,7 @@ export default function NFIDEmbedCoordinator() {
       )
     case state.matches("HANDLE_PROCEDURE.ERROR"):
       return (
-        <ErrorCmp
+        <PageError
           error={state.context.error}
           onCancel={() => send({ type: "CANCEL_ERROR" })}
           onRetry={() => send({ type: "RETRY" })}

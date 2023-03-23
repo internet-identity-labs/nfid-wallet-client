@@ -1,60 +1,70 @@
-import { nfidEthWallet } from "@nfid/integration"
+import { DelegationWalletAdapter } from "@nfid/integration"
 
-import {
-  ConnectAccountService,
-  ConnectAccountServiceContext,
-} from "./connect-account-service"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { AuthSession } from "frontend/state/authentication"
+
 import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
-import { SignTypedDataService } from "./sign-typed-data"
 
-type CommonContext = { rpcMessage?: RPCMessage }
+type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
 
-type ExecuteProcedureServiceContext = CommonContext &
-  ConnectAccountServiceContext
+type ExecuteProcedureServiceContext = CommonContext
 
-type ExecuteProcedureServiceEvents = {
-  type: string
-  data?: { hostname: string; accountId: string }
+function removeEmptyKeys(data: { [key: string]: unknown }) {
+  return Object.keys(data).reduce(
+    (acc, key) => ({
+      ...acc,
+      ...(data[key] ? { [key]: data[key] } : {}),
+    }),
+    {},
+  )
 }
 
-export const ExecuteProcedureService = async (
-  { rpcMessage, authSession, authRequest }: ExecuteProcedureServiceContext,
-  { data }: ExecuteProcedureServiceEvents,
-): Promise<RPCResponse> => {
+export const ExecuteProcedureService = async ({
+  rpcMessage,
+  authSession,
+}: ExecuteProcedureServiceContext): Promise<RPCResponse> => {
   if (!rpcMessage)
     throw new Error("ExecuteProcedureService: missing rpcMessage")
   if (!authSession)
     throw new Error("ExecuteProcedureService: missing authSession")
 
   const rpcBase = { ...RPC_BASE, id: rpcMessage.id }
+  const adapter = new DelegationWalletAdapter(
+    "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
+  )
+  const delegation = await getWalletDelegation(authSession.anchor)
   switch (rpcMessage.method) {
     case "eth_accounts": {
-      if (!data) throw new Error("selected account information missing")
-      const result = await ConnectAccountService(
-        { authRequest, authSession },
-        { data },
-      )
-      const response = { ...rpcBase, result }
+      const address = await adapter.getAddress(delegation)
+
+      const response = { ...rpcBase, result: [address] }
       console.debug("ExecuteProcedureService eth_accounts", {
         response,
       })
       return response
     }
     case "eth_signTypedData_v4": {
-      const result = await SignTypedDataService({ authSession, rpcMessage })
+      const result = await adapter.signTypedData(
+        rpcMessage.params[1].data,
+        delegation,
+      )
       const response = { ...rpcBase, result }
       console.debug("ExecuteProcedureService eth_signTypedData_v4", {
         response,
       })
       return response
     }
-    case "eth_sendTransaction":
-      const result = await nfidEthWallet.sendTransaction(rpcMessage.params[0])
+    case "eth_sendTransaction": {
+      const data = removeEmptyKeys(rpcMessage?.params[0])
+      console.debug("ExecuteProcedureService eth_sendTransaction", { data })
+
+      const result = await adapter.sendTransaction(data, delegation)
       const response = { ...rpcBase, result }
       console.debug("ExecuteProcedureService eth_accounts", {
         response,
       })
       return response
+    }
     default:
       throw new Error("ExecuteProcedureService: unknown procedure")
   }

@@ -8,6 +8,8 @@ import webpack from "webpack"
 import { serviceConfig } from "../../config/webpack-env"
 import dfxJson from "../../dfx.json"
 
+console.log("nfid-frontend", { serviceConfig })
+
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 
 const setupCSP = () => {

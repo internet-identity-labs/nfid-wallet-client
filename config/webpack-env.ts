@@ -42,7 +42,9 @@ export const serviceConfig = {
     process.env.PUB_SUB_CHANNEL_CANISTER_ID,
   ),
   VERIFIER_CANISTER_ID: JSON.stringify(process.env.VERIFIER_CANISTER_ID),
-  BITCOIN_WALLET_CANISTER_ID: JSON.stringify(process.env.BITCOIN_WALLET_CANISTER_ID),
+  BITCOIN_WALLET_CANISTER_ID: JSON.stringify(
+    process.env.BITCOIN_WALLET_CANISTER_ID,
+  ),
   LEDGER_CANISTER_ID: JSON.stringify(process.env.LEDGER_CANISTER_ID),
   CYCLES_MINTER_CANISTER_ID: JSON.stringify(
     process.env.CYCLES_MINTER_CANISTER_ID,
@@ -59,13 +61,9 @@ export const serviceConfig = {
   ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
     process.env.ECDSA_SIGNER_CANISTER_ID,
   ),
-  RAMP_WALLET_API_KEY: JSON.stringify(
-    process.env.RAMP_WALLET_API_KEY,
-  ),
-  RAMP_WALLET_SDK_URL: JSON.stringify(
-    process.env.RAMP_WALLET_SDK_URL,
-  ),
-  CHAIN_NETWORK: JSON.stringify(
-    process.env.CHAIN_NETWORK,
-  ),
+  RAMP_WALLET_API_KEY: JSON.stringify(process.env.RAMP_WALLET_API_KEY),
+  RAMP_WALLET_SDK_URL: JSON.stringify(process.env.RAMP_WALLET_SDK_URL),
+  CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),
+  AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),
+  AWS_ECDSA_REGISTER: JSON.stringify(process.env.AWS_ECDSA_REGISTER),
 }

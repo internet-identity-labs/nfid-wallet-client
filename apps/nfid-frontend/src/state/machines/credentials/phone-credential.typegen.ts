@@ -79,9 +79,9 @@ export interface Typegen0 {
   }
   missingImplementations: {
     actions: never
-    services: never
-    guards: never
     delays: never
+    guards: never
+    services: never
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.AuthenticationMachine"
@@ -92,6 +92,12 @@ export interface Typegen0 {
     assignPhoneNumber: "ENTER_PHONE_NUMBER"
     presentCredential: "done.invoke.generateCredential"
     rejectCredential: "REJECT"
+  }
+  eventsCausingDelays: {}
+  eventsCausingGuards: {
+    bool: "done.invoke.verifySmsService"
+    defined: "done.invoke.fetchPhoneNumber"
+    isDev: "done.invoke.AuthenticationMachine"
   }
   eventsCausingServices: {
     AuthenticationMachine: "done.invoke.registerCredentialHandler"
@@ -104,12 +110,6 @@ export interface Typegen0 {
     verifyPhoneNumberService: "ENTER_PHONE_NUMBER" | "RESEND"
     verifySmsService: "ENTER_SMS_TOKEN"
   }
-  eventsCausingGuards: {
-    bool: "done.invoke.verifySmsService"
-    defined: "done.invoke.fetchPhoneNumber"
-    isDev: "done.invoke.AuthenticationMachine"
-  }
-  eventsCausingDelays: {}
   matchesStates:
     | "Authenticate"
     | "Consent"

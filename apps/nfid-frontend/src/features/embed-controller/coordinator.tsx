@@ -1,6 +1,8 @@
 import { useActor } from "@xstate/react"
 import React from "react"
 
+import { Button } from "@nfid-frontend/ui"
+
 import { BuyComponent } from "./components/buy"
 import { DeployComponent } from "./components/deploy-collection"
 import { DetailsComponent } from "./components/details"
@@ -30,6 +32,7 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
   )
 
   switch (true) {
+    default:
     case state.matches("Initial.UI.DecodeRequest"):
     case state.matches("Initial.UI.MethodController"):
       return <RPCPreloader />
@@ -122,7 +125,19 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           onSign={() => send({ type: "SIGN" })}
         />
       )
-    default:
-      return <div>EmbedController default</div>
+    case state.matches("Error"):
+      return (
+        <div>
+          <div>Error:</div>
+          <div className="p-2 bg-red-300">{state.context.error?.message}</div>
+          <Button
+            type="stroke"
+            className="w-full mr-2"
+            onClick={() => send("CANCEL")}
+          >
+            Cancel
+          </Button>
+        </div>
+      )
   }
 }

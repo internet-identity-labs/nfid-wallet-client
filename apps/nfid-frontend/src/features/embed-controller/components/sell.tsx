@@ -15,6 +15,7 @@ import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { ApproverCmpProps } from "./types"
 
 interface ISellComponent {
   showTransactionDetails: () => void
@@ -25,14 +26,14 @@ interface ISellComponent {
   data?: any
 }
 
-export const SellComponent = ({
+export const SellComponent: React.FC<ISellComponent> = ({
   showTransactionDetails,
   applicationMeta,
   onApprove,
   onCancel,
   fromAddress,
   data,
-}: ISellComponent) => {
+}) => {
   return (
     <TooltipProvider>
       <SDKApplicationMeta
@@ -100,3 +101,25 @@ export const SellComponent = ({
     </TooltipProvider>
   )
 }
+
+const MappedSell: React.FC<ApproverCmpProps> = ({
+  appMeta,
+  rpcMessage,
+  rpcMessageDecoded,
+  onConfirm,
+  onReject,
+}) => {
+  return (
+    <SellComponent
+      applicationMeta={appMeta}
+      // TODO: handle details internally
+      showTransactionDetails={() => {}}
+      onApprove={onConfirm}
+      onCancel={onReject}
+      data={rpcMessageDecoded?.data}
+      fromAddress={rpcMessage?.params[0]}
+    />
+  )
+}
+
+export default MappedSell

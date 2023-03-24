@@ -16,13 +16,12 @@ export const SuccessComponent = ({
 }: ISuccessComponent) => {
   const message = useMemo(() => {
     switch (method) {
-      case "Buy":
+      case "BUY":
         return `You just bought “${itemName}”`
-      case "Sell":
+      case "SELL":
         return `You just sold “${itemName}”`
-      case "Mint":
-        return `You've just minted a new NFT`
-      case "LazyMint":
+      case "MINT":
+      case "LAZY_MINT":
         return `You've just minted a new NFT`
     }
   }, [itemName, method])

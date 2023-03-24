@@ -24,6 +24,8 @@ declare const VERIFY_PHONE_NUMBER: string
 declare const WALLET_CONNECT_PROJECT_ID: string
 declare const AWS_AUTH_STATS: string
 declare const AWS_SIGNATURE_EVENT: string
+declare const AWS_ECDSA_REGISTER: string
+declare const AWS_ECDSA_SIGN: string
 
 declare const II_ENV: string
 declare const IS_DEV: string

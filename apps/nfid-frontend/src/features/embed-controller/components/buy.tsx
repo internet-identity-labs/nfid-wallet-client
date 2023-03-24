@@ -18,13 +18,14 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { ApproverCmpProps } from "./types"
 
 interface IBuyComponent {
   showTransactionDetails: () => void
   onApprove: () => void
   onCancel: () => void
   applicationMeta?: AuthorizingAppMeta
-  isButtonDisabled: boolean
+  isButtonDisabled?: boolean
   fromAddress?: string
   toAddress?: string
   data?: any
@@ -33,10 +34,10 @@ interface IBuyComponent {
   price?: string
 }
 
-export const BuyComponent = ({
+export const BuyComponent: React.FC<IBuyComponent> = ({
   showTransactionDetails,
   applicationMeta,
-  isButtonDisabled: isButtonDisabledProp,
+  isButtonDisabled: isButtonDisabledProp = false,
   onApprove,
   onCancel,
   fromAddress,
@@ -187,3 +188,29 @@ export const BuyComponent = ({
     </TooltipProvider>
   )
 }
+
+const MappedBuy: React.FC<ApproverCmpProps> = ({
+  appMeta,
+  rpcMessage,
+  rpcMessageDecoded,
+  onConfirm,
+  onReject,
+}) => {
+  return (
+    <BuyComponent
+      applicationMeta={appMeta}
+      // TODO: handle details internally
+      showTransactionDetails={() => {}}
+      onApprove={onConfirm}
+      onCancel={onReject}
+      data={rpcMessageDecoded?.data}
+      fromAddress={rpcMessage?.params[0].from}
+      toAddress={rpcMessage?.params[0].to}
+      feeMin={rpcMessage?.params[0]?.maxFeePerGas}
+      feeMax={rpcMessage?.params[0]?.maxPriorityFeePerGas}
+      price={rpcMessage?.params[0].value}
+    />
+  )
+}
+
+export default MappedBuy

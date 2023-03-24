@@ -32,6 +32,8 @@ const setupCSP = () => {
         process.env.AWS_AUTH_STATS as string,
         process.env.AWS_SIGNATURE_EVENT as string,
         process.env.AWS_SIGNIN_GOOGLE as string,
+        process.env.AWS_ECDSA_SIGN as string,
+        process.env.AWS_ECDSA_REGISTER as string,
         "https://o1255710.ingest.sentry.io",
         "https://rosetta-api.internetcomputer.org",
         "https://free.currconv.com/",

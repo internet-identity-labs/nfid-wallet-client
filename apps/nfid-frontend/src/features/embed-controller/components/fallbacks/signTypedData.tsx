@@ -5,6 +5,7 @@ import { SDKApplicationMeta, Button } from "@nfid-frontend/ui"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { RPCApplicationMetaSubtitle } from "../../ui/app-meta/subtitle"
+import { ApproverCmpProps } from "../types"
 
 interface IDefaultSign {
   onCancel: () => void
@@ -51,3 +52,22 @@ export const DefaultSign = ({
     </div>
   )
 }
+
+const MappedDefaultSign: React.FC<ApproverCmpProps> = ({
+  appMeta,
+  rpcMessage,
+  rpcMessageDecoded,
+  onConfirm,
+  onReject,
+}) => {
+  return (
+    <DefaultSign
+      applicationMeta={appMeta}
+      data={rpcMessage?.params[1]}
+      onCancel={onReject}
+      onSign={onConfirm}
+    />
+  )
+}
+
+export default MappedDefaultSign

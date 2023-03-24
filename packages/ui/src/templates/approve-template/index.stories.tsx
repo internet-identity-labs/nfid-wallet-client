@@ -1,5 +1,5 @@
 import { Meta, Story } from "@storybook/react"
-import React from "react"
+import { withRouter } from "storybook-addon-react-router-v6"
 
 import { ApproveTemplate, ApproveTemplateProps } from "./index"
 
@@ -7,6 +7,7 @@ const meta: Meta = {
   title: "Templates/ApproveTemplate",
   component: ApproveTemplate,
   argTypes: {},
+  decorators: [withRouter],
   parameters: {
     controls: { expanded: true },
   },

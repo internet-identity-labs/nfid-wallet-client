@@ -494,6 +494,8 @@ export async function register(
   if (hasOwnProperty(registerResponse, "canister_full")) {
     return { kind: "registerNoSpace" }
   } else if (hasOwnProperty(registerResponse, "registered")) {
+    // FIXME: type guard
+    // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
     authState.set(identity, delegation.delegationIdentity, ii)
@@ -556,6 +558,8 @@ export async function registerFromGoogle(
   if (hasOwnProperty(registerResponse, "canister_full")) {
     return { kind: "registerNoSpace" }
   } else if (hasOwnProperty(registerResponse, "registered")) {
+    // FIXME: type guard
+    // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
     replaceIdentity(delegation.delegationIdentity)

@@ -53,6 +53,7 @@ export interface Typegen0 {
       type: "xstate.after(3000)#EmbedController.Initial.UI.DecodeRequest"
     }
     "xstate.init": { type: "xstate.init" }
+    "xstate.stop": { type: "xstate.stop" }
   }
   invokeSrcNameMap: {
     MethodControllerService: "done.invoke.MethodControllerService"
@@ -65,11 +66,27 @@ export interface Typegen0 {
     actions: never
     delays: never
     guards: never
-    services: never
+    services: "SignTypedDataService"
   }
   eventsCausingActions: {
     assignData: "done.invoke.decodeRPCRequestService"
-    assignMethod: "done.invoke.MethodControllerService"
+    assignError:
+      | ""
+      | "error.platform.MethodControllerService"
+      | "error.platform.SignTypedDataService"
+      | "error.platform.decodeRPCRequestService"
+      | "error.platform.prepareSignature"
+      | "error.platform.sendTransactionService"
+    assignMethod:
+      | "BUY"
+      | "DEPLOY_COLLECTION"
+      | "LAZY_MINT"
+      | "MINT"
+      | "SELL"
+      | "done.invoke.MethodControllerService"
+      | "done.state.EmbedController.Initial"
+      | "error.platform.MethodControllerService"
+      | "xstate.stop"
     assignPreparedSignature: "done.invoke.prepareSignature"
     assignRpcResponse:
       | "done.invoke.SignTypedDataService"
@@ -77,6 +94,7 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    hasError: ""
     hasPreparedSignature: "" | "SIGN"
   }
   eventsCausingServices: {
@@ -89,6 +107,7 @@ export interface Typegen0 {
   matchesStates:
     | "Canceled"
     | "Done"
+    | "Error"
     | "Initial"
     | "Initial.PrepareSignature"
     | "Initial.PrepareSignature.End"
@@ -99,6 +118,7 @@ export interface Typegen0 {
     | "Initial.UI.DefaultSign"
     | "Initial.UI.DeployCollection"
     | "Initial.UI.End"
+    | "Initial.UI.Error"
     | "Initial.UI.LazyMint"
     | "Initial.UI.MethodController"
     | "Initial.UI.Mint"
@@ -120,6 +140,7 @@ export interface Typegen0 {
                 | "DefaultSign"
                 | "DeployCollection"
                 | "End"
+                | "Error"
                 | "LazyMint"
                 | "MethodController"
                 | "Mint"

@@ -84,7 +84,7 @@ export function unpackResponse<T>(response: NFIDResponse<T>) {
  * @param variant a candid variant type
  * @returns string as keyof variant
  */
-export function mapVariant<T>(variant: T): keyof T {
+export function mapVariant<T extends Object>(variant: T): keyof T {
   return Object.keys(variant)[0] as keyof T
 }
 

@@ -2,21 +2,27 @@ import { createConnection } from "@nfid/client-db"
 import { ecdsaSigner, replaceActorIdentity } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { AuthSession } from "frontend/state/authentication"
+import { AuthorizationRequest } from "frontend/state/authorization"
 
-import { RPC_BASE } from "../embed/rpc-service"
-import { getEthAddress } from "../fungable-token/eth/get-eth-address"
-import { EmbedConnectAccountMachineContext } from "./machines"
+import { getEthAddress } from "../../fungable-token/eth/get-eth-address"
+
+export type ConnectAccountServiceContext = {
+  authSession?: AuthSession
+  authRequest?: AuthorizationRequest
+}
 
 export const ConnectAccountService = async (
-  { authSession, rpcMessage, authRequest }: EmbedConnectAccountMachineContext,
+  { authSession, authRequest }: ConnectAccountServiceContext,
   event: {
-    type: string
     data: { hostname: string; accountId: string }
   },
 ) => {
   console.debug("ConnectAccountService", event)
-  if (!authSession || !rpcMessage)
-    throw new Error("No authSession or rpcMessage")
+  if (!authSession)
+    throw new Error("ConnectAccountService: missing authSession")
+  if (!authRequest)
+    throw new Error("ConnectAccountService: missing authRequest")
 
   const address = await getEthAddress({
     anchor: authSession.anchor,
@@ -37,5 +43,5 @@ export const ConnectAccountService = async (
     domain: event.data.hostname,
   })
 
-  return Promise.resolve({ ...RPC_BASE, id: rpcMessage.id, result: [address] })
+  return [address]
 }

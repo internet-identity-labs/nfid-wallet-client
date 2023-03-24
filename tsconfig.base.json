@@ -20,10 +20,10 @@
       "@nfid/client-db": ["packages/client-db/src/index.ts"],
       "@nfid/config": ["packages/config/src/index.ts"],
       "@nfid/integration": ["packages/integration/src/index.ts"],
-      "@nfid/integration/token/*": ["packages/integration/src/lib/token/*"],
       "@nfid/integration-ethereum": [
         "packages/integration-ethereum/src/index.ts"
       ],
+      "@nfid/integration/token/*": ["packages/integration/src/lib/token/*"],
       "frontend/*": ["apps/nfid-frontend/src/*"],
       "src/*": ["apps/nfid-frontend/src/*"]
     }

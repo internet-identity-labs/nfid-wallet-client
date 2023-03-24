@@ -63,31 +63,29 @@ export type ProcedureCallEvent = {
 
 export const RPCReceiverV2 =
   () => (send: (event: ProcedureCallEvent) => void) => {
-    const subsciption = rpcMessages.subscribe(async ({ data, origin }) => {
-      switch (data.method) {
-        case "eth_accounts":
-          return send({
-            type: "RPC_MESSAGE",
-            data: {
-              rpcMessage: data,
-              rpcMessageDecoded: undefined,
-              origin,
-            },
-          })
-        case "eth_sendTransaction":
-        case "eth_signTypedData_v4":
-          return send({
-            type: "RPC_MESSAGE",
-            data: {
-              rpcMessage: data,
-              rpcMessageDecoded: await decodeMessage(data),
-              origin,
-            },
-          })
-        default:
-          throw new Error(`RPCReceiverV2 unknown method: ${data.method}`)
-      }
-    })
+    const subsciption = rpcMessages.subscribe(
+      async ({ data: rpcMessage, origin }) => {
+        const rpcMessageDecoded = await decodeMessage(rpcMessage)
+
+        switch (rpcMessage.method) {
+          case "eth_accounts":
+            return send({
+              type: "RPC_MESSAGE",
+              data: { rpcMessage, rpcMessageDecoded, origin },
+            })
+          case "eth_sendTransaction":
+          case "eth_signTypedData_v4":
+            return send({
+              type: "RPC_MESSAGE",
+              data: { rpcMessage, rpcMessageDecoded, origin },
+            })
+          default:
+            throw new Error(
+              `RPCReceiverV2 unknown method: ${rpcMessage.method}`,
+            )
+        }
+      },
+    )
     return () => subsciption.unsubscribe()
   }
 
@@ -95,7 +93,7 @@ const decodeMessage = async (
   rpcMessage: RPCMessage,
 ): Promise<FunctionCall | undefined> => {
   try {
-    return decodeRpcMessage(rpcMessage)
+    return await decodeRpcMessage(rpcMessage)
   } catch (error: any) {
     console.warn("decodeRPCMEssage", { error })
     return undefined

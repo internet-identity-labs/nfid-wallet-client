@@ -1,6 +1,7 @@
 import React from "react"
 
 import { SDKApplicationMeta } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 
 import { ElementProps } from "frontend/types/react"
 import { Button } from "frontend/ui/atoms/button"
@@ -33,7 +34,7 @@ export const AuthorizeAppSingleAccount: React.FC<
         title="Unlock NFID"
         subTitle={`to continue${applicationName && ` to ${applicationName}`}`}
       />
-      <img className="w-full max-w-max" src={MobileHero} alt="" />
+      <Image className="w-full max-w-max" src={MobileHero} alt="" />
       <Button className="my-6 " block primary onClick={onContinueButtonClick}>
         Unlock to continue
       </Button>

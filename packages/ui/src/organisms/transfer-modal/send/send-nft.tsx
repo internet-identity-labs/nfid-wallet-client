@@ -1,6 +1,8 @@
 import React, { useMemo } from "react"
 import { useForm } from "react-hook-form"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { DropdownSelect } from "../../../atoms/dropdown-select"
 import { Button } from "../../../molecules/button"
 import { InputDropdown } from "../../../molecules/input-dropdown"
@@ -96,7 +98,7 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
         id="send-nft-button"
         onClick={handleSubmit(onNFTSubmit)}
         icon={
-          <img
+          <Image
             src={ArrowWhite}
             alt="ArrowWhite"
             className="w-[18px] h-[18px mr-[10px]"

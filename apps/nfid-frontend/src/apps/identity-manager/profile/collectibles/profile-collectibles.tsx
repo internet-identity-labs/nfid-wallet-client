@@ -15,6 +15,7 @@ import {
   Tooltip,
   transferModalAtom,
 } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 import { Application, getWalletName } from "@nfid/integration"
 
 import { link } from "frontend/integration/entrepot"
@@ -119,7 +120,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
         <Link
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
         >
-          <img
+          <Image
             alt={`${token.collection.name} ${token.index}`}
             src={token.assetPreview}
             className={clsx(`w-[74px] h-[74px] object-cover rounded`)}

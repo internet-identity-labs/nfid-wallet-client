@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { Image } from "packages/ui/src/atoms/image"
 import React from "react"
 
 import logo from "../../assets/id.svg"
@@ -29,7 +30,7 @@ export const ThirdPartyTemplate: React.FC<ResponsiveTemplateProps> = ({
           "sm:border-x",
         )}
       >
-        <img src={logo} alt="logo" />
+        <Image src={logo} alt="logo" />
         <span className="text-xs text-secondary">{frameLabel}</span>
       </div>
 

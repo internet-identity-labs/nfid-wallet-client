@@ -1,5 +1,7 @@
 import clsx from "clsx"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { IconSvgChevron } from "../../atoms/icons"
 
 export type SelectedTokenProps = {
@@ -16,11 +18,16 @@ export const SelectedToken: React.FC<SelectedTokenProps> = ({
       className={clsx("flex items-center space-x-2", "text-sm font-semibold")}
     >
       <div>
-        <img src={icon} alt={`icon-${symbol}`} width={45} height={45} />
+        <Image src={icon} alt={`icon-${symbol}`} width={45} height={45} />
       </div>
       <div>{symbol}</div>
       <div>
-        <img src={IconSvgChevron} alt={`icon-chevron`} width={20} height={20} />
+        <Image
+          src={IconSvgChevron}
+          alt={`icon-chevron`}
+          width={20}
+          height={20}
+        />
       </div>
     </div>
   )

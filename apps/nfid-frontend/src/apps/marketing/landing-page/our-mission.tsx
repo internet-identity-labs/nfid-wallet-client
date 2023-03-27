@@ -3,6 +3,8 @@ import React from "react"
 import { Fade } from "react-awesome-reveal"
 import { ParallaxProvider } from "react-scroll-parallax"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { ScrollTopOnNavigate } from "frontend/ui/templates/ScrollTopOnNavigate"
 import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
 
@@ -31,7 +33,7 @@ export default function OurMission() {
                 id="our-mission"
                 className="relative grid grid-cols-1 sm:grid-cols-[5fr,7fr] gap-10 sm:pt-24"
               >
-                <img
+                <Image
                   className="absolute z-0 w-50% top-64 -left-[20vw]"
                   src={Blur3}
                   alt="blur3"

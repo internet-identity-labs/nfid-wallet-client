@@ -1,5 +1,7 @@
 import clsx from "clsx"
 
+import { Image } from "@nfid-frontend/ui"
+
 export type TokenOptionProps = {
   isSelected: boolean
   value: string
@@ -19,7 +21,7 @@ export const TokenOption: React.FC<TokenOptionProps> = ({
         isSelected && "bg-gray-100",
       )}
     >
-      <img src={icon} alt={`icon-${value}`} className="w-6" />
+      <Image src={icon} alt={`icon-${value}`} className="w-6" />
       <span>{value}</span>
     </div>
   )

@@ -2,6 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import { Button, SDKApplicationMeta, Tooltip } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
@@ -118,7 +119,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               }. Manage your accounts from your NFID Profile page.`}
               className="w-72"
             >
-              <img src={alertIcon} alt="alert" />
+              <Image src={alertIcon} alt="alert" />
             </Tooltip>
           )}
         </div>

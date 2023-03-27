@@ -2,6 +2,7 @@ import clsx from "clsx"
 
 import { IOption, DropdownSelect, SDKApplicationMeta } from "@nfid-frontend/ui"
 import { ScreenResponsive } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 
 import { Button } from "frontend/ui/atoms/button"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
@@ -55,7 +56,7 @@ export const SDKRequestAccountsPage: React.FC<SDKRequestAccountsPageProps> = ({
                     "relative",
                   )}
                 >
-                  <img className="w-6" src={NFIDLogo} alt="nfid" />
+                  <Image className="w-6" src={NFIDLogo} alt="nfid" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold">

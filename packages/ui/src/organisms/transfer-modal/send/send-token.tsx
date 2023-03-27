@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React, { useCallback, useMemo } from "react"
 import { useForm } from "react-hook-form"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { DropdownSelect } from "../../../atoms/dropdown-select"
 import { Button } from "../../../molecules/button"
 import { InputDropdown } from "../../../molecules/input-dropdown"
@@ -190,7 +192,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
         onClick={handleSubmit(onTokenSubmit)}
         id="send-token-button"
         icon={
-          <img
+          <Image
             src={ArrowWhite}
             alt="ArrowWhite"
             className="w-[18px] h-[18px mr-[10px]"

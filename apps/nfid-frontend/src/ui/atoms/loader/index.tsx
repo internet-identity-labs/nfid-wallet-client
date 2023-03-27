@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { NFIDLogoID } from "./NFIDLogoID"
 
 interface LoaderProps {
@@ -17,13 +19,15 @@ export const ImageOnlyLoader: React.FC<
 > = ({ className }) => {
   return (
     <div className="transition duration-100 group">
-      <img
+      <Image
+        auto="format"
         alt="loader"
         src={"/assets/loader.webp"}
         className={clsx(
           "select-none pointer-events-none group-hover:flex hidden",
           className,
         )}
+        imgixParams={{}}
       />
 
       <NFIDLogoID className="w-12 h-12 p-1 group-hover:hidden" />
@@ -46,7 +50,7 @@ export const Loader: React.FC<LoaderProps> = ({
           "absolute w-full h-full top-0 right-0 bottom-0 left-0 bg-gray-900 opacity-[75%] pointer-events-none select-none",
         )}
       />
-      <img
+      <Image
         alt="loader"
         className={clsx(
           "absolute",
@@ -56,13 +60,15 @@ export const Loader: React.FC<LoaderProps> = ({
           "select-none pointer-events-none",
         )}
         src={"/assets/loader.webp"}
+        imgixParams={{}}
       />
     </div>
   ) : isLoading && !fullscreen ? (
-    <img
+    <Image
       id="loader"
       alt="loader"
       src={"/assets/loader.webp"}
+      imgixParams={{}}
       className={clsx("select-none pointer-events-none", imageClasses)}
     />
   ) : null

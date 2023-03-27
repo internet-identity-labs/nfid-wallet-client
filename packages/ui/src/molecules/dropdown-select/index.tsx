@@ -2,6 +2,8 @@ import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
+import { Image } from "@nfid-frontend/ui"
+
 import useClickOutside from "../../utils/use-click-outside"
 import { Input } from "../input"
 import Arrow from "./arrow.svg"
@@ -124,7 +126,7 @@ export const DropdownSelect = ({
             ? options.find((o) => o.value === selectedValues[0])?.label
             : placeholder}
         </p>
-        <img src={Arrow} alt="arrow" />
+        <Image src={Arrow} alt="arrow" />
       </div>
       <p className={clsx("text-sm text-red-600")}>{errorText}</p>
       {isDropdownOpen && (

@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { useAtom } from "jotai"
 import { useCallback } from "react"
 
+import { Image } from "@nfid-frontend/ui"
 import { transferModalAtom } from "@nfid-frontend/ui"
 import { Application } from "@nfid/integration"
 
@@ -52,7 +53,7 @@ export const ProfileNFTDetailsPage = ({
       showBackButton
       headerMenu={
         <div className="flex items-center space-x-4">
-          <img
+          <Image
             className="transition-opacity cursor-pointer hover:opacity-50"
             src={TransferIcon}
             alt="transfer"
@@ -92,7 +93,7 @@ export const ProfileNFTDetailsPage = ({
           <p className="text-[28px] mt-2.5">{nft.name}</p>
           {"account" in nft ? (
             <div className="flex items-center mt-4 space-x-2">
-              <img src={WalletIcon} alt="wallet" />
+              <Image src={WalletIcon} alt="wallet" />
               <p className="text-sm font-semibold text-secondary">
                 {
                   applications.find((x) => x.domain === nft.account.domain)

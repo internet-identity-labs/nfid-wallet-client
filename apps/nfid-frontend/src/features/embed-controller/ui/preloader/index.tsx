@@ -1,4 +1,5 @@
 import { Skeleton } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 
 import SkeletonNft from "./skeleton-img.svg"
 
@@ -14,7 +15,7 @@ export const RPCPreloader = () => {
         <Skeleton className="w-5 h-3 " />
       </div>
       <div className="border border-gray-100 -md mt-1.5 flex items-center">
-        <img src={SkeletonNft} alt="" />
+        <Image src={SkeletonNft} alt="" />
         <div className="ml-2.5">
           <div className="flex items-center">
             <Skeleton className="w-20 h-3 mr-1.5 " />

@@ -1,5 +1,7 @@
 import React from "react"
 
+import { Image } from "@nfid-frontend/ui"
+
 import PoweredBy from "./assets/poweredBy.svg"
 
 interface FooterProps
@@ -24,7 +26,7 @@ export const Footer: React.FC<FooterProps> = ({ children, className }) => {
       </div>
       <div>
         <a href="https://smartcontracts.org" target="_blank" rel="noreferrer">
-          <img src={PoweredBy} alt="PoweredBy" />
+          <Image src={PoweredBy} alt="PoweredBy" />
         </a>
       </div>
     </footer>

@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React, { useMemo, useState } from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
@@ -141,14 +143,20 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                   >
                     {token.blockchainName}
                   </td>
-                  <td className="text-sm" id={`token_${token.title.replace(/\s/g, "")}_balance`}>
+                  <td
+                    className="text-sm"
+                    id={`token_${token.title.replace(/\s/g, "")}_balance`}
+                  >
                     {token.toPresentation(token.balance)} {token.currency}
                   </td>
-                  <td className="text-sm" id={`token_${token.title.replace(/\s/g, "")}_usd`}>
+                  <td
+                    className="text-sm"
+                    id={`token_${token.title.replace(/\s/g, "")}_usd`}
+                  >
                     {token.price}
                   </td>
                   <td>
-                    <img src={ArrowRight} alt="arrow right" />
+                    <Image src={ArrowRight} alt="arrow right" />
                   </td>
                 </tr>
               ))}
@@ -162,7 +170,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                 onClick={handleNavigateToTokenDetails(token.currency)}
               >
                 <div className="flex items-center text-[#0B0E13]">
-                  <img
+                  <Image
                     src={token.icon}
                     alt="icon"
                     className="w-6 h-6 mr-[13px]"

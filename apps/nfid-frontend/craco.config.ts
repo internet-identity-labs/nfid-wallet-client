@@ -57,6 +57,7 @@ const setupCSP = () => {
       ],
       "worker-src": "'self'",
       "img-src": [
+        "https://nfid.imgix.net",
         "'self' blob: data: content: https:",
         "https://*.google-analytics.com",
         "https://*.googletagmanager.com",

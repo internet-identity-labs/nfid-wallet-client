@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { NFTDetails } from "frontend/integration/entrepot/types"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -36,14 +38,14 @@ export const ProfileNFTNotPresent: React.FC<IProfileNFTNotPresent> = ({
               Email us at{" "}
               <a
                 href="mailto:hello@identitylabs.ooo"
-                className="text-blue transition-opacity hover:opacity-50"
+                className="transition-opacity text-blue hover:opacity-50"
               >
                 hello@identitylabs.ooo
               </a>{" "}
               for support.
             </p>
           </div>
-          <img
+          <Image
             src={WithoutNFT}
             alt="Coming soon"
             className={clsx(

@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Image } from "@nfid-frontend/ui"
+
 import Arrow from "./assets/arrow.svg"
 import ArrowDisabled from "./assets/arrowDisabled.svg"
 
@@ -46,7 +48,10 @@ const Pagination: React.FC<IPagination> = ({
         onClick={() => setCurrentPage(currentPage - 1)}
         className={clsx(currentPage !== 1 && "rotate-180")}
       >
-        <img src={currentPage === 1 ? ArrowDisabled : Arrow} alt="arrow next" />
+        <Image
+          src={currentPage === 1 ? ArrowDisabled : Arrow}
+          alt="arrow next"
+        />
       </Box>
       {Array(pagesQuantity)
         .fill(null)
@@ -64,7 +69,7 @@ const Pagination: React.FC<IPagination> = ({
         onClick={() => setCurrentPage(currentPage + 1)}
         className={clsx(currentPage === pagesQuantity && "rotate-180")}
       >
-        <img
+        <Image
           src={currentPage === pagesQuantity ? ArrowDisabled : Arrow}
           alt="arrow previous"
         />

@@ -3,6 +3,7 @@ import { useAtom } from "jotai"
 import React from "react"
 
 import { ArrowButton, Tooltip, transferModalAtom } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 
 import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -67,7 +68,7 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
 
             {icon && onIconClick && (
               <Tooltip tip={iconTooltip}>
-                <img
+                <Image
                   src={icon}
                   alt="icon"
                   onClick={onIconClick}

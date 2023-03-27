@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 
 import { IconButton } from "frontend/ui/atoms/button/icon-button"
 import {
@@ -87,7 +88,7 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
               id="continue-with-enhanced-security"
               title="Continue with enhanced security"
               subtitle="Use passkey on this device"
-              img={<img src={TouchId} alt="passkey" />}
+              img={<Image src={TouchId} alt="passkey" />}
               onClick={onRegister}
             />
           </>
@@ -113,13 +114,13 @@ export const RegisterAccountIntro: React.FC<RegisterAccountIntroProps> = ({
             <IconButton
               title="Platform auth on this device"
               subtitle="Use this device if previously registered"
-              img={<img src={TouchId} alt="touch-id" />}
+              img={<Image src={TouchId} alt="touch-id" />}
               onClick={handleSubmit(handleSelectSameDeviceAuthorization)}
             />
             <IconButton
               title="Security key"
               subtitle="Use a previously registered security key"
-              img={<img src={SecurityKey} alt="touch-id" />}
+              img={<Image src={SecurityKey} alt="touch-id" />}
               onClick={handleSubmit(handleSelectSecurityKeyAuthorization)}
             />
           </>

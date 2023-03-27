@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { useMemo } from "react"
 
+import { Image } from "@nfid-frontend/ui"
 import { Button, ImagePngSuccess } from "@nfid-frontend/ui"
 
 interface ISuccessComponent {
@@ -34,7 +35,7 @@ export const SuccessComponent = ({
       )}
     >
       <div className="flex-grow">
-        <img
+        <Image
           className="w-[240px] mx-auto"
           src={ImagePngSuccess}
           alt="success"

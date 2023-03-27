@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
+import { Image } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import {
   IconCmpArrow,
@@ -62,7 +63,7 @@ export const ChooseModal = ({
       >
         <div className="flex">
           {selectedOption?.icon && (
-            <img
+            <Image
               src={selectedOption?.icon}
               alt={selectedOption?.value}
               className="mr-2.5"

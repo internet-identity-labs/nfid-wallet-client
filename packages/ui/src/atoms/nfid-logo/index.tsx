@@ -1,5 +1,7 @@
 import clsx from "clsx"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { NFIDLogoSpinning } from "../nfid-logo-spinning"
 import logo from "./logo.svg"
 
@@ -16,7 +18,7 @@ export const NFIDLogo = () => {
         />
 
         <div className="w-12 h-12 p-1 group-hover:hidden">
-          <img src={logo} />
+          <Image src={logo} />
         </div>
       </div>
     </div>

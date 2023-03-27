@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { EmptyAssetPreview } from "./empty"
 
 interface IAssetPreview {
@@ -24,7 +26,7 @@ export const AssetPreview: React.FC<IAssetPreview> = ({
       )}
     >
       <div className="flex items-center w-full">
-        <img
+        <Image
           className={clsx("object-cover w-20 h-20", !icon && "hidden")}
           src={icon}
           alt={title}

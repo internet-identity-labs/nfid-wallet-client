@@ -1,5 +1,7 @@
 import { clsx } from "clsx"
 
+import { Image } from "@nfid-frontend/ui"
+
 interface IChooseItem {
   handleClick: () => void
   image?: string
@@ -28,7 +30,7 @@ export const ChooseItem = ({
       )}
     >
       <div className="flex items-center">
-        <img
+        <Image
           src={image}
           alt={title}
           className={clsx("mr-2.5", !image && "hidden")}

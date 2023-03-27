@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { getImageUrl } from "@nfid-frontend/ui"
+
 interface IProfileSidebarItem extends React.HTMLAttributes<HTMLDivElement> {
   icon?: string
   title: string
@@ -33,8 +35,8 @@ const ProfileSidebarItem: React.FC<IProfileSidebarItem> = ({
       <div
         className={clsx("w-6 h-6", isActive ? "bg-blue-600" : "bg-gray-700")}
         style={{
-          mask: `url(${icon})`,
-          WebkitMask: `url(${icon})`,
+          mask: `url(${getImageUrl(icon as string)})`,
+          WebkitMask: `url(${getImageUrl(icon as string)})`,
         }}
       />
       <span

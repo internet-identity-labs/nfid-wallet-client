@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { useAtom } from "jotai"
 
 import { transferModalAtom } from "@nfid-frontend/ui"
+import { Image } from "@nfid-frontend/ui"
 
 import { Button } from "frontend/ui/atoms/button"
 
@@ -23,7 +24,7 @@ export const SendReceiveButton = () => {
         }
         primary
       >
-        <img src={SendReceiveIcon} alt="send/receive" />
+        <Image src={SendReceiveIcon} alt="send/receive" />
         <span>Send / Receive</span>
       </Button>
       <div
@@ -37,7 +38,7 @@ export const SendReceiveButton = () => {
           setTransferModalState({ ...transferModalState, isModalOpen: true })
         }
       >
-        <img className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />
+        <Image className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />
       </div>
     </div>
   )

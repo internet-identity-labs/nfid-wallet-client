@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { IoCloseOutline } from "react-icons/io5"
 
+import { Image } from "@nfid-frontend/ui"
+
 import useClickOutside from "../../utils/use-click-outside"
 import Arrow from "./arrow.svg"
 
@@ -111,7 +113,7 @@ export const InputDropdown = ({
           {selectedOption ? (
             <IoCloseOutline />
           ) : (
-            <img src={Arrow} alt="arrow" />
+            <Image src={Arrow} alt="arrow" />
           )}
         </div>
       </label>
@@ -132,7 +134,7 @@ export const InputDropdown = ({
                 onClick={() => selectDropdownOption(option)}
               >
                 {option.icon && (
-                  <img
+                  <Image
                     className="mr-[13px] w-10 h-10 object-cover"
                     src={option.icon}
                     alt={option.value}

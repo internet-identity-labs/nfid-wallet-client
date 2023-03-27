@@ -68,7 +68,6 @@ export const Loader: React.FC<LoaderProps> = ({
       id="loader"
       alt="loader"
       src={"/assets/loader.webp"}
-      imgixParams={{}}
       className={clsx("select-none pointer-events-none", imageClasses)}
     />
   ) : null

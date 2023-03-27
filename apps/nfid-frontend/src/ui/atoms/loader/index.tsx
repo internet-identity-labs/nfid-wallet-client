@@ -27,7 +27,6 @@ export const ImageOnlyLoader: React.FC<
           "select-none pointer-events-none group-hover:flex hidden",
           className,
         )}
-        imgixParams={{}}
       />
 
       <NFIDLogoID className="w-12 h-12 p-1 group-hover:hidden" />

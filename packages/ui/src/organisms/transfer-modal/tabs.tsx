@@ -4,6 +4,7 @@ import React from "react"
 import ArrowReceive from "./assets/arrowReceive.svg"
 import ArrowSend from "./assets/arrowSend.svg"
 
+import { getImageUrl } from "../../atoms/image"
 import { TabsSwitcher } from "../tabs-switcher"
 import { modalTypes } from "./transfer-modal"
 
@@ -30,8 +31,8 @@ export const TransferModalTabs: React.FC<ITransferModalTabs> = ({
                 activeTab === "Send" ? "bg-blue-600" : "bg-black",
               )}
               style={{
-                WebkitMask: `url(${ArrowSend})`,
-                mask: `url(${ArrowSend})`,
+                WebkitMask: `url(${getImageUrl(ArrowSend)})`,
+                mask: `url(${getImageUrl(ArrowSend)})`,
               }}
             />
             Send
@@ -48,8 +49,8 @@ export const TransferModalTabs: React.FC<ITransferModalTabs> = ({
                 activeTab === "Receive" ? "bg-blue-600" : "bg-black",
               )}
               style={{
-                WebkitMask: `url(${ArrowReceive})`,
-                mask: `url(${ArrowReceive})`,
+                WebkitMask: `url(${getImageUrl(ArrowReceive)})`,
+                mask: `url(${getImageUrl(ArrowReceive)})`,
               }}
             />
             Receive

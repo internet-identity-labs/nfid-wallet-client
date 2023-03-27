@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
+import { Image } from "@nfid-frontend/ui"
+
 import success from "./assets/success.png"
 
 import { Button } from "../../molecules/button"
@@ -34,7 +36,7 @@ export const TransferModalSuccess: React.FC<ITransferModalSuccess> = ({
       )}
     >
       <div className="flex-grow">
-        <img className="w-[240px] mx-auto" src={success} alt="success" />
+        <Image className="w-[240px] mx-auto" src={success} alt="success" />
         <p className="text-xl font-bold">Transaction successful</p>
         <p className="font-bold mt-[10px] mb-3">{transactionMessage}</p>
         <p className={clsx("text-sm", !transactionRoute?.length && "hidden")}>

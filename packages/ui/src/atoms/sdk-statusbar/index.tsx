@@ -1,5 +1,7 @@
 import clsx from "clsx"
 
+import { Image } from "@nfid-frontend/ui"
+
 import loadingIcon from "./assets/loading.svg"
 import successGreenIcon from "./assets/success-green.svg"
 
@@ -25,14 +27,14 @@ export const SDKStatusbar = ({
           "relative",
         )}
       >
-        <img className="w-6" src={logo} alt="provider" />
+        <Image className="w-6" src={logo} alt="provider" />
         <div className={clsx("absolute -bottom-1 -right-1")}>
-          <img
+          <Image
             className={clsx("animate-spin", !isLoading && "hidden")}
             src={loadingIcon}
             alt="loading"
           />
-          <img
+          <Image
             className={clsx(!isSuccess && "hidden")}
             src={successGreenIcon}
             alt="success"

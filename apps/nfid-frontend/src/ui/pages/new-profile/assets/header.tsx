@@ -1,5 +1,6 @@
 import { useState } from "react"
 
+import { Image } from "@nfid-frontend/ui"
 import {
   DropdownSelect,
   IconCmpFilters,
@@ -66,7 +67,7 @@ export const ProfileAssetsHeader = ({
           }
         >
           <div className="ml-2 cursor-pointer">
-            <img src={ActionIcon} alt="ActionIcon" />
+            <Image src={ActionIcon} alt="ActionIcon" />
           </div>
         </Tooltip>
       </div>

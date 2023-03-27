@@ -2,6 +2,8 @@ import clsx from "clsx"
 import React from "react"
 import User from "src/assets/userpics/userpic_6.svg"
 
+import { Image } from "@nfid-frontend/ui"
+
 import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 interface IAuthenticatedPopup extends React.HTMLAttributes<HTMLDivElement> {
@@ -25,7 +27,7 @@ const AuthenticatedPopup: React.FC<IAuthenticatedPopup> = ({
       )}
     >
       <div className="mb-6">
-        <img
+        <Image
           className={clsx("w-20 h-20 mx-auto mt-[30px]")}
           src={User}
           alt="profile icon"

@@ -1,6 +1,7 @@
 import React from "react"
 import { useForm } from "react-hook-form"
 
+import { Image } from "@nfid-frontend/ui"
 import { anchorRules, Input, SDKApplicationMeta } from "@nfid-frontend/ui"
 
 import IIIcon from "frontend/assets/dfinity.svg"
@@ -139,17 +140,17 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
 
             <div className="grid h-12 grid-cols-3 gap-4 my-2.5">
               <IconButton
-                img={<img src={MetamaskIcon} alt="metamask" />}
+                img={<Image src={MetamaskIcon} alt="metamask" />}
                 onClick={onSelectMetamaskAuthorization}
                 className="flex justify-center"
               />
               <IconButton
-                img={<img src={IIIcon} alt="ii" />}
+                img={<Image src={IIIcon} alt="ii" />}
                 onClick={onSelectIIAuthorization}
                 className="flex justify-center"
               />
               <IconButton
-                img={<img src={WConnectIcon} alt="wallet-connect" />}
+                img={<Image src={WConnectIcon} alt="wallet-connect" />}
                 onClick={onSelectWConnectAuthorization}
                 className="flex justify-center"
               />

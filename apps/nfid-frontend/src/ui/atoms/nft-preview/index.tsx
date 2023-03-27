@@ -4,6 +4,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
+import { Image } from "@nfid-frontend/ui"
 import {
   IconCmpDots,
   IconPngEthereum,
@@ -66,7 +67,7 @@ const NFTPreview = (props: UserNFTDetails) => {
             "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
           )}
         >
-          <img
+          <Image
             src={props.blockchain === "ic" ? ICPLogo : IconPngEthereum}
             alt="logo"
             className={clsx(
@@ -75,7 +76,7 @@ const NFTPreview = (props: UserNFTDetails) => {
             )}
           />
         </div>
-        <img
+        <Image
           className={clsx(
             "rounded-[5px] w-full h-[245px] md:h-[300px] object-cover",
           )}
@@ -115,7 +116,7 @@ const NFTPreview = (props: UserNFTDetails) => {
                   "flex items-center space-x-2",
                 )}
               >
-                <img src={transferIcon} alt="" />
+                <Image src={transferIcon} alt="" />
                 <span>Transfer</span>
               </div>
               <div
@@ -125,7 +126,7 @@ const NFTPreview = (props: UserNFTDetails) => {
                   "flex items-center space-x-2",
                 )}
               >
-                <img src={copyIcon} alt="" />
+                <Image src={copyIcon} alt="" />
                 <span> Copy link</span>
               </div>
             </div>

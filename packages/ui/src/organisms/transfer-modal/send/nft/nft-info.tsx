@@ -1,5 +1,7 @@
 import clsx from "clsx"
 
+import { Image } from "@nfid-frontend/ui"
+
 import WalletIcon from "../../assets/wallet.svg"
 import { NFT } from "../../types"
 
@@ -11,7 +13,7 @@ export type Application = {
 export const TransferSendNFTInfo = ({ nft }: { nft: NFT }) => {
   return (
     <div className="flex items-center space-x-6 h-[142px]">
-      <img
+      <Image
         src={nft.assetPreview}
         className="h-[134px] w-[134px] rounded-md object-cover"
         alt={nft.name}
@@ -27,7 +29,7 @@ export const TransferSendNFTInfo = ({ nft }: { nft: NFT }) => {
             "flex items-center space-x-2",
           )}
         >
-          <img src={WalletIcon} alt="wallet" />
+          <Image src={WalletIcon} alt="wallet" />
           <span>{nft.walletName}</span>
         </p>
       </div>

@@ -60,7 +60,6 @@ export const Loader: React.FC<LoaderProps> = ({
           "select-none pointer-events-none",
         )}
         src={"/assets/loader.webp"}
-        imgixParams={{}}
       />
     </div>
   ) : isLoading && !fullscreen ? (

@@ -166,17 +166,17 @@ class EthereumAsset implements NonFungibleAsset {
 
   public async transferETH(to: string, amount: string) {
     const address = await this.wallet.getAddress()
-    const trCount = await this.wallet.getTransactionCount("latest")
-    const gasPrice = await this.wallet.getGasPrice()
-    const gasLimit = BigNumber.from(100000)
+    // const trCount = await this.wallet.getTransactionCount("latest")
+    // const gasPrice = await this.wallet.getGasPrice()
+    // const gasLimit = BigNumber.from(100000)
 
     const transaction = {
       from: address,
       to: to,
       value: ethers.utils.parseEther(amount),
-      nonce: trCount,
-      gasLimit: gasLimit,
-      gasPrice: gasPrice,
+      // nonce: trCount,
+      // gasLimit: gasLimit,
+      // gasPrice: gasPrice,
     }
 
     return this.wallet.sendTransaction(transaction)

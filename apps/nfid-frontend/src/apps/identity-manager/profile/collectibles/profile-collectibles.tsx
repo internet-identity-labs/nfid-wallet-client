@@ -1,6 +1,6 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import React from "react"
+import React, { useContext } from "react"
 import { IoIosSearch } from "react-icons/io"
 import { Link, useNavigate } from "react-router-dom"
 
@@ -13,13 +13,14 @@ import {
   Loader,
   ModalAdvanced,
   Tooltip,
-  transferModalAtom,
 } from "@nfid-frontend/ui"
 import { Image } from "@nfid-frontend/ui"
+import { blockchains } from "@nfid/config"
 import { Application, getWalletName } from "@nfid/integration"
 
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { link } from "frontend/integration/entrepot"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { ProfileContext } from "frontend/provider"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -37,7 +38,7 @@ import {
 
 interface CollectiblesPage extends React.HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
-  tokens: UserNFTDetails[]
+  tokens: UserNonFungibleToken[]
   applications: Application[]
 }
 
@@ -46,7 +47,9 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
   tokens,
   applications,
 }) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const globalServices = useContext(ProfileContext)
+
+  const [, send] = useActor(globalServices.transferService)
   const [search, setSearch] = React.useState("")
   const [display, setDisplay] = React.useState<"grid" | "table">("grid")
 
@@ -103,14 +106,16 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
 
   const onTransferNFT = React.useCallback(
     (tokenId: string) => {
-      setTransferModalState({
-        ...transferModalState,
-        isModalOpen: true,
-        sendType: "nft",
-        selectedNFT: [tokenId],
-      })
+      const nft = tokens.find((token) => token.tokenId === tokenId)
+      if (!nft) return
+
+      send({ type: "ASSIGN_SELECTED_NFT", data: nft })
+      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
+      send({ type: "CHANGE_DIRECTION", data: "send" })
+
+      send("SHOW")
     },
-    [setTransferModalState, transferModalState],
+    [send, tokens],
   )
 
   const rows = React.useMemo(() => {
@@ -119,6 +124,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
       val: [
         <Link
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+          state={{ nft: token }}
         >
           <Image
             alt={`${token.collection.name} ${token.index}`}
@@ -149,7 +155,13 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
               onClick={() => onTransferNFT(token.tokenId)}
             />
           </Tooltip>
-          <Copy value={link(token.collection.id, token.index)} />
+          <Copy
+            value={
+              token.blockchain === "Internet Computer"
+                ? link(token.collection.id, Number(token.index))
+                : token.assetFullsize.url
+            }
+          />
         </div>,
       ],
     }))
@@ -193,25 +205,15 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     return tokensByCollection.map((option) => ({
       label: option.collection.name,
       value: option.collection.id,
-      icon: option.collection.avatar,
+      icon: option.collection?.avatar,
     }))
   }, [tokensByCollections, walletsFilter])
 
   const blockchainOptions = React.useMemo(() => {
-    return [
-      {
-        label: "Internet Computer",
-        value: "ic",
-      },
-      {
-        label: "Ethereum",
-        value: "eth",
-      },
-      {
-        label: "Bitcoin",
-        value: "btc",
-      },
-    ]
+    return blockchains.map((blockchain) => ({
+      label: blockchain,
+      value: blockchain,
+    }))
   }, [])
 
   const onResetFilters = React.useCallback(() => {

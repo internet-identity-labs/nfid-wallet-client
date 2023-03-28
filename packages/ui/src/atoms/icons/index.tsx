@@ -22,6 +22,7 @@ import IconSvgLaptop from "./laptop.svg"
 import IconSvgLogout from "./logout.svg"
 import IconSvgMapPin from "./map-pin.svg"
 import IconSvgMobile from "./mobile.svg"
+import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPencil from "./pencil.svg"
 import IconSvgPlus from "./plus.svg"
 import IconSvgRecovery from "./recovery.svg"
@@ -78,6 +79,7 @@ export {
   IconSvgBook,
   IconSvgAlertCircle,
   ImagePngSuccess,
+  IconSvgNFTPreview,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
@@ -128,6 +130,7 @@ export { ReactComponent as IconCmpBook } from "./book.svg"
 export { ReactComponent as IconCmpNFIDWallet } from "./nfid-wallet.svg"
 export { ReactComponent as IconCmpAlertCircle } from "./alert-circle.svg"
 export { ReactComponent as IconCmpLoading } from "./loader.svg"
+export { ReactComponent as IconCmpNFTPreview } from "./nft-preview.svg"
 
 // png
 export { IconMetamask } from "./metamask"

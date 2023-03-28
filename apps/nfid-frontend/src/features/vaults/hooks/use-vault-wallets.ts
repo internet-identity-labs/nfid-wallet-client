@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom"
 import useSWR from "swr"
 
 import { getWallets } from "@nfid/integration"
-import { fetchVaultWalletsBalances } from "@nfid/integration/token/fetch-balances"
+
+import { fetchVaultWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
 
 export const useVaultWallets = () => {
   const { vaultId } = useParams()

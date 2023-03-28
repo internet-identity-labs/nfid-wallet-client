@@ -2,8 +2,8 @@ import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 
 import { Application, Balance } from "@nfid/integration"
-import { AccountBalance } from "@nfid/integration/token/fetch-balances"
 
+import { AccountBalance } from "frontend/features/fungable-token/fetch-balances"
 import { isDefaultLabel } from "frontend/integration/identity-manager/account/utils"
 import {
   e8sICPToString,

@@ -1,12 +1,12 @@
 import React from "react"
 
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 
 import { ProfileNFTNotPresent } from "./not-present-nft"
 import { ProfileNFTPresent } from "./present-nft"
 
 interface IProfileAssetsNFT extends React.HTMLAttributes<HTMLDivElement> {
-  nfts?: UserNFTDetails[]
+  nfts?: UserNonFungibleToken[]
 }
 
 export const ProfileAssetsNFT: React.FC<IProfileAssetsNFT> = ({ nfts }) => {

@@ -1,11 +1,12 @@
 import { Principal } from "@dfinity/principal"
 
-import { IGroupedOptions, TokenBalance } from "@nfid-frontend/ui"
+import { IGroupedOptions } from "@nfid-frontend/ui"
 import { groupArrayByField, truncateString } from "@nfid-frontend/utils"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { IRate } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
+import { TokenBalance } from "frontend/features/fungable-token/fetch-balances"
 
 export const mapAccountBalancesToOptions = (
   wallets: {

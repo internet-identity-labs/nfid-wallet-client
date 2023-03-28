@@ -7,7 +7,7 @@ import { mapAccountBalancesToOptions } from "../utils/map-balances-to-options"
 
 export const useWalletOptions = (selectedToken: string) => {
   const { wallets } = useAllWallets()
-  const { rates } = useExchangeRates(["ICP", "BTC", "ETH"])
+  const { rates } = useExchangeRates()
 
   const walletOptions = useMemo(() => {
     return mapAccountBalancesToOptions(wallets, selectedToken, rates)

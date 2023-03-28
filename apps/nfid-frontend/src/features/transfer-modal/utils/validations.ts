@@ -37,11 +37,13 @@ export const isValidPrincipalId = (value: string) => {
   return "Not a valid principal ID"
 }
 
-export const validateTransferAmountField = (value: string | number) => {
-  if (Number(value) < 0) return "Transfer amount can't be negative value"
-  if (Number(value) === 0) return "You can't send 0 ICP"
-  return true
-}
+export const validateTransferAmountField =
+  (balance?: number | string) => (value: string | number) => {
+    if (Number(value) < 0) return "Transfer amount can't be negative value"
+    if (Number(value) === 0) return "You can't send 0 ICP"
+    if (balance && Number(balance) < Number(value)) return "Insufficient funds"
+    return true
+  }
 
 export const makeAddressFieldValidation = (type: string) => (value: string) => {
   if (typeof isNotEmpty(value) !== "boolean") return isNotEmpty(value)

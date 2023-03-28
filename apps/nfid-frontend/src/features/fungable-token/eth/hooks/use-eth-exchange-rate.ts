@@ -3,12 +3,12 @@ import useSWR from "swr"
 
 const COINBASE_RATES_URL = `https://api.coinbase.com/v2/exchange-rates`
 const NOT_AVAILABLE = "N/A"
-
+const DEFAULT_EXCHANGE_RATES = ["ICP", "ETH", "BTC"]
 export interface IRate {
   [currency: string]: number
 }
 
-export const useExchangeRates = (tokens: string[]) => {
+export const useExchangeRates = (tokens = DEFAULT_EXCHANGE_RATES) => {
   const { data: prices, ...rest } = useSWR("exchangeRates", () =>
     fetch(COINBASE_RATES_URL).then((res) => res.json()),
   )

@@ -1,5 +1,4 @@
 import clsx from "clsx"
-import { validateTransferAmountField } from "packages/ui/src/organisms/transfer-modal/send/utils"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
@@ -12,7 +11,6 @@ import {
   sumRules,
 } from "@nfid-frontend/ui"
 
-import { transformToAddress } from "frontend/apps/identity-manager/profile/transfer-modal/transform-to-address"
 import {
   TokenConfig,
   useAllToken,
@@ -24,7 +22,11 @@ import {
 
 import { useTokenOptions } from "../hooks/use-token-options"
 import { useWalletOptions } from "../hooks/use-wallets-options"
-import { makeAddressFieldValidation } from "../utils/validations"
+import { transformToAddress } from "../utils/transform-to-address"
+import {
+  makeAddressFieldValidation,
+  validateTransferAmountField,
+} from "../utils/validations"
 
 interface ITransferFT {
   assignToken: (token: TokenConfig) => void

@@ -2,11 +2,8 @@ import clsx from "clsx"
 import React, { useMemo, useState } from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
-<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
-=======
 import { blockchains } from "@nfid/config"
->>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
@@ -137,15 +134,6 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     className="text-sm"
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
-<<<<<<< HEAD
-                    {token.blockchainName}
-                  </td>
-                  <td
-                    className="text-sm"
-                    id={`token_${token.title.replace(/\s/g, "")}_balance`}
-                  >
-=======
->>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
                     {token.toPresentation(token.balance)} {token.currency}
                   </td>
                   <td

@@ -1,12 +1,8 @@
 import clsx from "clsx"
 import React from "react"
 
-<<<<<<< HEAD
-import { ArrowButton, Tooltip, transferModalAtom } from "@nfid-frontend/ui"
-import { Image } from "@nfid-frontend/ui"
-=======
 import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
->>>>>>> 6d7595e35 (feat(transfer): send/receive for fungible tokens without dip20)
+import { Image } from "@nfid-frontend/ui"
 
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { Loader } from "frontend/ui/atoms/loader"

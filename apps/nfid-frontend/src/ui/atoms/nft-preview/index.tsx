@@ -4,16 +4,8 @@ import React, { useCallback, useContext } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
-<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
-import {
-  IconCmpDots,
-  IconPngEthereum,
-  transferModalAtom,
-} from "@nfid-frontend/ui"
-=======
 import { IconCmpDots, IconPngEthereum } from "@nfid-frontend/ui"
->>>>>>> 395f54c84 (feat([sc-6070]): added toast errors)
 
 import { ProfileContext } from "frontend/App"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -89,17 +81,12 @@ const NFTPreview = (props: UserNonFungibleToken) => {
             "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
           )}
         >
-<<<<<<< HEAD
           <Image
-            src={props.blockchain === "ic" ? ICPLogo : IconPngEthereum}
-=======
-          <img
             src={
               props.blockchain === "Internet Computer"
                 ? ICPLogo
                 : IconPngEthereum
             }
->>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
             alt="logo"
             className={clsx(
               "w-2/3",

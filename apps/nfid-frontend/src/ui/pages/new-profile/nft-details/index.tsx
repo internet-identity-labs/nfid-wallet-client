@@ -2,11 +2,7 @@ import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { useCallback, useContext } from "react"
 
-<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
-import { transferModalAtom } from "@nfid-frontend/ui"
-=======
->>>>>>> 395f54c84 (feat([sc-6070]): added toast errors)
 import { Application } from "@nfid/integration"
 
 import { ProfileContext } from "frontend/App"

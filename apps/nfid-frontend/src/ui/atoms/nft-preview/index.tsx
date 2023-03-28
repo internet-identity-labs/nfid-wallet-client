@@ -67,12 +67,21 @@ const NFTPreview = (props: UserNFTDetails) => {
             "absolute w-6 h-6 bg-white rounded-full right-2.5 top-[215px] md:top-[270px]",
           )}
         >
+<<<<<<< HEAD
           <Image
             src={props.blockchain === "ic" ? ICPLogo : IconPngEthereum}
+=======
+          <img
+            src={
+              props.blockchain === "Internet Computer"
+                ? ICPLogo
+                : IconPngEthereum
+            }
+>>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
             alt="logo"
             className={clsx(
               "w-2/3",
-              props.blockchain !== "ic" && "!w-auto h-2/3",
+              props.blockchain !== "Internet Computer" && "!w-auto h-2/3",
             )}
           />
         </div>

@@ -43,7 +43,6 @@ export * from "./molecules/choose-modal"
 export * from "./molecules/choose-modal/types"
 
 export * from "./organisms/tabs-switcher"
-export * from "./organisms/transfer-modal"
 
 export * from "./pages/auth-ii"
 export * from "./pages/auth-ii-connect"

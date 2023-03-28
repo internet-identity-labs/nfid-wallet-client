@@ -47,7 +47,7 @@ export const BuyComponent: React.FC<IBuyComponent> = ({
   price,
   data,
 }: IBuyComponent) => {
-  const { rates } = useExchangeRates(["ETH"])
+  const { rates } = useExchangeRates()
   const { counter } = useTimer({
     defaultCounter: 100,
     frequency: 100,

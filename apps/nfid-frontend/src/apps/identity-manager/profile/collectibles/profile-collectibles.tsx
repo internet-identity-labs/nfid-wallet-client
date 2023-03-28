@@ -1,6 +1,6 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import React from "react"
+import React, { useContext } from "react"
 import { IoIosSearch } from "react-icons/io"
 import { Link, useNavigate } from "react-router-dom"
 
@@ -13,7 +13,6 @@ import {
   Loader,
   ModalAdvanced,
   Tooltip,
-  transferModalAtom,
 } from "@nfid-frontend/ui"
 <<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
@@ -22,7 +21,9 @@ import { blockchains } from "@nfid/config"
 >>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
 import { Application, getWalletName } from "@nfid/integration"
 
+import { ProfileContext } from "frontend/App"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { link } from "frontend/integration/entrepot"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import Table from "frontend/ui/atoms/table"
@@ -50,7 +51,13 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
   tokens,
   applications,
 }) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const globalServices = useContext(ProfileContext)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, send] = useActor(
+    (globalServices as { transferService: TransferMachineActor })
+      .transferService,
+  )
   const [search, setSearch] = React.useState("")
   const [display, setDisplay] = React.useState<"grid" | "table">("grid")
 
@@ -107,14 +114,16 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
 
   const onTransferNFT = React.useCallback(
     (tokenId: string) => {
-      setTransferModalState({
-        ...transferModalState,
-        isModalOpen: true,
-        sendType: "nft",
-        selectedNFT: [tokenId],
-      })
+      const nft = tokens.find((token) => token.tokenId === tokenId)
+      if (!nft) return
+
+      send({ type: "ASSIGN_SELECTED_NFT", data: nft })
+      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
+      send({ type: "CHANGE_DIRECTION", data: "send" })
+
+      send("SHOW")
     },
-    [setTransferModalState, transferModalState],
+    [send, tokens],
   )
 
   const rows = React.useMemo(() => {

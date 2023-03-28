@@ -1,16 +1,28 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
+<<<<<<< HEAD
 import { useAtom } from "jotai"
 
 import { transferModalAtom } from "@nfid-frontend/ui"
 import { Image } from "@nfid-frontend/ui"
+=======
+import { useContext } from "react"
+>>>>>>> 6d7595e35 (feat(transfer): send/receive for fungible tokens without dip20)
 
+import { ProfileContext } from "frontend/App"
+import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { Button } from "frontend/ui/atoms/button"
 
 import SendReceiveIcon from "./send_receive.svg"
 
 export const SendReceiveButton = () => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const globalServices = useContext(ProfileContext)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, send] = useActor(
+    (globalServices as { transferService: TransferMachineActor })
+      .transferService,
+  )
   return (
     <div id="sendReceiveButton">
       <Button
@@ -19,9 +31,7 @@ export const SendReceiveButton = () => {
           "hidden md:flex z-10",
         )}
         id="sendReceiveButton"
-        onClick={() =>
-          setTransferModalState({ ...transferModalState, isModalOpen: true })
-        }
+        onClick={() => send("SHOW")}
         primary
       >
         <Image src={SendReceiveIcon} alt="send/receive" />
@@ -34,9 +44,7 @@ export const SendReceiveButton = () => {
           "rounded-full shadow-blueLight shadow-blue-600",
           "cursor-pointer z-30",
         )}
-        onClick={() =>
-          setTransferModalState({ ...transferModalState, isModalOpen: true })
-        }
+        onClick={() => send("SHOW")}
       >
         <Image className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />
       </div>

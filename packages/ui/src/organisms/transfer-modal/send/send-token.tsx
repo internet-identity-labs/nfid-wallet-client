@@ -117,7 +117,7 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
               min={0}
               {...register("amount", {
                 required: sumRules.errorMessages.required,
-                validate: validateTransferAmountField,
+                validate: validateTransferAmountField(),
               })}
             />
             <SelectTokenMenu

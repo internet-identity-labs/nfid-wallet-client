@@ -7,8 +7,8 @@ import { transferModalAtom } from "@nfid-frontend/ui"
 import { Application } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { link } from "frontend/integration/entrepot"
-import { NFTDetails, UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
@@ -21,7 +21,7 @@ import WalletIcon from "./assets/wallet.svg"
 import { NFTAsset } from "./nft-asset"
 
 interface IProfileNFTDetails {
-  nft: UserNFTDetails | NFTDetails
+  nft: UserNonFungibleToken
   isTransactionsFetching?: boolean
   transactions: ITransaction[]
   applications: Application[]
@@ -59,7 +59,13 @@ export const ProfileNFTDetailsPage = ({
             alt="transfer"
             onClick={onTransferNFT}
           />
-          <Copy value={link(nft.collection.id, nft.index)} />
+          <Copy
+            value={
+              nft.blockchain === "Internet Computer"
+                ? link(nft.collection.id, Number(nft.index))
+                : ""
+            }
+          />
         </div>
       }
       className="w-full z-[1]"
@@ -106,26 +112,29 @@ export const ProfileNFTDetailsPage = ({
           <ProfileContainer title="Details" className="mt-6">
             <div className="mt-5 space-y-4 text-sm">
               <div
-                className={clsx("flex items-center justify-between flex-wrap")}
+                className={clsx(
+                  "grid grid-cols-1 sm:grid-cols-[100px,1fr] gap-5",
+                )}
               >
-                <p className="mb-1 text-secondary">Standard</p>
-                <p className={clsx("w-full sm:w-[80%]")}>
+                <p className="mb-1 text-secondary">Blockchain</p>
+                <p className={clsx("w-full")}>
                   {nft.collection.standard === "legacy"
                     ? "Legacy EXT"
                     : nft.collection.standard}
                 </p>
-              </div>
-              <div
-                className={clsx("flex items-center justify-between flex-wrap")}
-              >
+
+                <p className="mb-1 text-secondary">Standard</p>
+                <p className={clsx("w-full")}>
+                  {nft.collection.standard === "legacy"
+                    ? "Legacy EXT"
+                    : nft.collection.standard}
+                </p>
+
                 <p className="mb-1 text-secondary">NFT ID</p>
-                <p className="w-full sm:w-[80%]">{nft.tokenId}</p>
-              </div>
-              <div
-                className={clsx("flex items-center justify-between flex-wrap")}
-              >
+                <p className="w-full overflow-hidden">{nft.tokenId}</p>
+
                 <p className="mb-1 text-secondary">Collection ID</p>
-                <p className="w-full sm:w-[80%]">{nft.canisterId}</p>
+                <p className="w-full overflow-hidden">{nft.contractId}</p>
               </div>
             </div>
           </ProfileContainer>

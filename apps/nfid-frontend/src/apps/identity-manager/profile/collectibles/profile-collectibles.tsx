@@ -123,6 +123,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
       val: [
         <Link
           to={`${ProfileConstants.base}/${ProfileConstants.assets}/${token.tokenId}`}
+          state={{ nft: token }}
         >
           <Image
             alt={`${token.collection.name} ${token.index}`}
@@ -153,7 +154,13 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
               onClick={() => onTransferNFT(token.tokenId)}
             />
           </Tooltip>
-          <Copy value={link(token.collection.id, token.index)} />
+          <Copy
+            value={
+              token.blockchain === "Internet Computer"
+                ? link(token.collection.id, token.index)
+                : ""
+            }
+          />
         </div>,
       ],
     }))

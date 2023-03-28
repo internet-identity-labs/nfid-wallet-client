@@ -5,7 +5,7 @@ import { Account } from "@nfid/integration"
 export interface NonFungibleToken {
   blockchain: "Internet Computer" | "Ethereum"
   name: string
-  index: string
+  index: string | number
   tokenId: string
   contractId: string // same as canister id for ic
   assetPreview: string

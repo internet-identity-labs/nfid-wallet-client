@@ -1,10 +1,11 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
 import { TokenConfig } from "../fungable-token/use-all-token"
+import { UserNonFungibleToken } from "../non-fungable-token/types"
 import { transferFT } from "./services/transfer-ft"
+import { transferNFT } from "./services/transfer-nft"
 
 export type TransferMachineContext = {
   direction: "send" | "receive"
@@ -12,7 +13,7 @@ export type TransferMachineContext = {
   sourceWalletAddress?: string
   sourceAccount?: Wallet
   selectedFT?: TokenConfig
-  selectedNFT?: UserNFTDetails
+  selectedNFT?: UserNonFungibleToken
   receiverWallet: string
   amount: string
   successMessage: string
@@ -28,11 +29,14 @@ export type Events =
   | { type: "ASSIGN_AMOUNT"; data: string }
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
   | { type: "ASSIGN_SELECTED_FT"; data: TokenConfig }
-  | { type: "ASSIGN_SELECTED_NFT"; data: UserNFTDetails }
+  | { type: "ASSIGN_SELECTED_NFT"; data: UserNonFungibleToken }
   | { type: "ON_SUBMIT" }
 
 type Services = {
   transferFT: {
+    data: any
+  }
+  transferNFT: {
     data: any
   }
 }
@@ -146,7 +150,10 @@ export const transferMachine = createMachine(
         },
       },
       TransferNFT: {
-        invoke: { src: "", onDone: "", onError: "" },
+        invoke: {
+          src: "transferNFT",
+          onDone: { target: "Success", actions: "assignSuccessMessage" },
+        },
       },
 
       Success: {
@@ -195,6 +202,7 @@ export const transferMachine = createMachine(
     },
     services: {
       transferFT,
+      transferNFT,
     },
   },
 )

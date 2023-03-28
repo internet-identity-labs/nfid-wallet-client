@@ -13,6 +13,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { ProfileContext } from "frontend/App"
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 
@@ -40,7 +41,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isAdmin,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-
+  const { token: allTokens } = useAllToken()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, send] = useActor(
     (globalServices as { transferService: TransferMachineActor })
@@ -61,11 +62,13 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   }, [address, send, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
+    console.log({ address })
+    send({ type: "ASSIGN_SELECTED_FT", data: allTokens[0] })
     send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
     send({ type: "CHANGE_DIRECTION", data: "receive" })
 
     send({ type: "SHOW" })
-  }, [send, address])
+  }, [address, send, allTokens])
 
   return (
     <TableRow

@@ -4,12 +4,15 @@ import { Image, getImageUrl } from "."
 import * as isProductionMock from "../../utils/is-production"
 
 describe("Imgix integration", () => {
+  beforeEach(() => {
+    jest.spyOn(isProductionMock, "isProduction").mockImplementation(() => true)
+  })
   describe("Image component", () => {
     it("renders an img tag with the correct src when given a webp image", () => {
       const props = { src: "image.webp", alt: "image" }
       const { getByAltText } = render(<Image {...props} />)
       expect(getByAltText("image").getAttribute("src")).toEqual(
-        getImageUrl("image.webp"),
+        "https://nfid.imgix.net/image.webp",
       )
     })
 
@@ -17,7 +20,7 @@ describe("Imgix integration", () => {
       const props = { src: "data:image/png;base64,iVBORw0KG...", alt: "image" }
       const { getByAltText } = render(<Image {...props} />)
       expect(getByAltText("image").getAttribute("src")).toEqual(
-        getImageUrl(props.src),
+        "data:image/png;base64,iVBORw0KG...",
       )
     })
 
@@ -25,7 +28,7 @@ describe("Imgix integration", () => {
       const props = { src: "https://example.com/image.jpg", alt: "image" }
       const { getByAltText } = render(<Image {...props} />)
       expect(getByAltText("image").getAttribute("src")).toEqual(
-        getImageUrl(props.src),
+        "https://example.com/image.jpg",
       )
     })
 
@@ -33,7 +36,7 @@ describe("Imgix integration", () => {
       const props = { src: "media/image.jpg", alt: "image" }
       const { getByAltText } = render(<Image {...props} />)
       expect(getByAltText("image").getAttribute("src")).toEqual(
-        getImageUrl(props.src),
+        "https://nfid.imgix.net/media/image.jpg?auto=format",
       )
     })
   })

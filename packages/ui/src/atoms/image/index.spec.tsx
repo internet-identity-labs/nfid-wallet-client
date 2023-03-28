@@ -39,6 +39,12 @@ describe("Imgix integration", () => {
         "https://nfid.imgix.net/media/image.jpg?auto=format",
       )
     })
+
+    it("renders an Imgix component without src when given a non-webp image", () => {
+      const props = { alt: "image" }
+      const { getByAltText } = render(<Image {...props} />)
+      expect(getByAltText("image").getAttribute("src")).toBeFalsy()
+    })
   })
 
   describe("getImageUrl function", () => {

@@ -58,7 +58,6 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   }, [address, send, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
-    console.log({ address })
     send({ type: "ASSIGN_SELECTED_FT", data: allTokens[0] })
     send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
     send({ type: "CHANGE_DIRECTION", data: "receive" })

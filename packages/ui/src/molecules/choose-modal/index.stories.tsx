@@ -9,7 +9,13 @@ export default {
 } as ComponentMeta<typeof ChooseModal>
 
 const ChoseModalWrapper: ComponentStory<typeof ChooseModal> = (args) => {
-  return <ChooseModal {...args} />
+  return (
+    <div className="space-y-4">
+      <ChooseModal {...args} type="trigger" trigger={<div>trigger</div>} />
+      <ChooseModal {...args} type="input" isFirstPreselected={false} />
+      <ChooseModal {...args} />
+    </div>
+  )
 }
 
 export const ChooseModalScreen = ChoseModalWrapper.bind({})

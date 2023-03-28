@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
 import { Image } from "@nfid-frontend/ui"
@@ -14,6 +14,8 @@ import {
 
 import { ChooseItem } from "./choose-item"
 import { filterGroupedOptionsByTitle } from "./helpers"
+import { DefaultTrigger } from "./triggers/default"
+import { InputTrigger } from "./triggers/input"
 import { IGroupedOptions, IGroupOption } from "./types"
 
 export interface IChooseModal {
@@ -22,6 +24,9 @@ export interface IChooseModal {
   infoText?: string
   label?: string
   title: string
+  type?: "default" | "input" | "trigger"
+  isFirstPreselected?: boolean
+  trigger?: JSX.Element
 }
 
 export const ChooseModal = ({
@@ -30,13 +35,17 @@ export const ChooseModal = ({
   infoText,
   title,
   label,
+  type = "default",
+  isFirstPreselected = true,
+  trigger,
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
+  const [selectedValue, setSelectedValue] = useState("")
 
   const handleSelect = (option: IGroupOption) => {
-    onSelect && onSelect(option.value)
+    setSelectedValue(option.value)
     setSelectedOption(option)
     setIsModalVisible(false)
   }
@@ -45,14 +54,24 @@ export const ChooseModal = ({
     return filterGroupedOptionsByTitle(optionGroups, searchInput)
   }, [optionGroups, searchInput])
 
+  const resetValue = useCallback(() => {
+    setSelectedOption(undefined)
+    setSelectedValue("")
+  }, [])
+
   useEffect(() => {
-    if (optionGroups.length && !selectedOption)
+    if (optionGroups.length && !selectedOption && isFirstPreselected)
       setSelectedOption(optionGroups[0]?.options[0])
-  }, [optionGroups])
+  }, [optionGroups, isFirstPreselected])
+
+  useEffect(() => {
+    onSelect && onSelect(selectedValue)
+  }, [selectedValue])
 
   return (
     <div>
       {label && <Label className="mb-1">{label}</Label>}
+<<<<<<< HEAD
       <div
         className={clsx(
           "border border-black rounded-md cursor-pointer h-14",
@@ -76,6 +95,26 @@ export const ChooseModal = ({
         </div>
         <IconCmpArrowRight />
       </div>
+=======
+
+      {type === "input" ? (
+        <InputTrigger
+          placeholder="Recipient principal or account ID"
+          onShowModal={() => setIsModalVisible(true)}
+          onClearValue={resetValue}
+          selectedOption={selectedOption}
+          setSelectedValue={(value) => setSelectedValue(value)}
+        />
+      ) : type === "trigger" ? (
+        <div onClick={() => setIsModalVisible(true)}>{trigger}</div>
+      ) : (
+        <DefaultTrigger
+          actionHandler={() => setIsModalVisible(true)}
+          selectedOption={selectedOption}
+        />
+      )}
+
+>>>>>>> 9b3306380 (feat([sc-6070]): prepared ChooseModal)
       <div
         className={clsx(
           "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",

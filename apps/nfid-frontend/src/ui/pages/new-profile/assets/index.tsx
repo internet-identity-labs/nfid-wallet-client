@@ -2,7 +2,11 @@ import clsx from "clsx"
 import React, { useMemo, useState } from "react"
 import { generatePath, useNavigate } from "react-router-dom"
 
+<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
+=======
+import { blockchains } from "@nfid/config"
+>>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
@@ -24,7 +28,6 @@ type Token = {
   balance?: bigint
   price?: string
   blockchain: string
-  blockchainName: string
 }
 
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
@@ -60,20 +63,10 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
   }, [blockchainFilter, tokens])
 
   const blockchainOptions = React.useMemo(() => {
-    return [
-      {
-        label: "Internet Computer",
-        value: "ic",
-      },
-      {
-        label: "Ethereum",
-        value: "eth",
-      },
-      {
-        label: "Bitcoin",
-        value: "btc",
-      },
-    ]
+    return blockchains.map((blockchain) => ({
+      label: blockchain,
+      value: blockchain,
+    }))
   }, [])
 
   const resetFilters = React.useCallback(() => {
@@ -137,16 +130,22 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       </p>
                     </div>
                   </td>
+                  <td id={`token_${token.title}_blockchain`}>
+                    {token.blockchain}
+                  </td>
                   <td
                     className="text-sm"
-                    id={`token_${token.title.replace(/\s/g, "")}_blockchain`}
+                    id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
+<<<<<<< HEAD
                     {token.blockchainName}
                   </td>
                   <td
                     className="text-sm"
                     id={`token_${token.title.replace(/\s/g, "")}_balance`}
                   >
+=======
+>>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
                     {token.toPresentation(token.balance)} {token.currency}
                   </td>
                   <td

@@ -23,7 +23,7 @@ export const AppScreen = Template.bind({})
 
 AppScreen.args = {
   nft: {
-    blockchain: "ic",
+    blockchain: "Internet Computer",
     collection: {
       id: "cwu5z-wyaaa-aaaaj-qaoaq-cai",
       priority: 10,

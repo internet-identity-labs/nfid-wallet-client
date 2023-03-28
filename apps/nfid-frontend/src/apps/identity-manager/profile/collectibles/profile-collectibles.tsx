@@ -15,7 +15,11 @@ import {
   Tooltip,
   transferModalAtom,
 } from "@nfid-frontend/ui"
+<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
+=======
+import { blockchains } from "@nfid/config"
+>>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
 import { Application, getWalletName } from "@nfid/integration"
 
 import { link } from "frontend/integration/entrepot"
@@ -198,20 +202,10 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
   }, [tokensByCollections, walletsFilter])
 
   const blockchainOptions = React.useMemo(() => {
-    return [
-      {
-        label: "Internet Computer",
-        value: "ic",
-      },
-      {
-        label: "Ethereum",
-        value: "eth",
-      },
-      {
-        label: "Bitcoin",
-        value: "btc",
-      },
-    ]
+    return blockchains.map((blockchain) => ({
+      label: blockchain,
+      value: blockchain,
+    }))
   }, [])
 
   const onResetFilters = React.useCallback(() => {

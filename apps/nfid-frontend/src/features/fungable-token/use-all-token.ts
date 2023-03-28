@@ -23,7 +23,6 @@ export interface TokenConfig {
   toPresentation: (value?: bigint) => number
   transformAmount: (value: string) => number
   blockchain: string
-  blockchainName: string
 }
 
 export const useAllToken = (): { token: TokenConfig[] } => {
@@ -44,8 +43,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         fee: BigInt(WALLET_FEE_E8S),
         toPresentation,
         transformAmount: stringICPtoE8s,
-        blockchain: "ic",
-        blockchainName: "Internet Computer",
+        blockchain: "Internet Computer",
       },
       {
         icon: IconSvgBTC,
@@ -57,8 +55,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         fee: BigInt(0),
         toPresentation,
         transformAmount: stringICPtoE8s,
-        blockchain: "btc",
-        blockchainName: "Bitcoin",
+        blockchain: "Bitcoin",
       },
       {
         icon: IconPngEthereum,
@@ -70,8 +67,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         fee: BigInt(0),
         toPresentation,
         transformAmount: stringICPtoE8s,
-        blockchain: "eth",
-        blockchainName: "Ethereum",
+        blockchain: "Ethereum",
       },
       ...(dip20Token
         ? dip20Token.map(({ symbol, name, logo, ...rest }) => ({
@@ -81,9 +77,8 @@ export const useAllToken = (): { token: TokenConfig[] } => {
             currency: symbol,
             balance: appAccountBalance?.[symbol].tokenBalance,
             price: appAccountBalance?.[symbol].usdBalance,
+            blockchain: "Internet Computer",
             ...rest,
-            blockchain: "ic",
-            blockchainName: "Internet Computer",
           }))
         : []),
     ]

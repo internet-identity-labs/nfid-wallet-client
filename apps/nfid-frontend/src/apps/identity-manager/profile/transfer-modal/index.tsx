@@ -302,7 +302,7 @@ export const ProfileTransferModal = () => {
       }
     >
       <Loader isLoading={isLoading} />
-      <TransferModal
+      {/* <TransferModal
         transactionRoute={`${ProfileConstants.base}/${ProfileConstants.transactions}`}
         tokenType={transferModalState.sendType}
         tokenConfig={selectedToken}
@@ -353,7 +353,7 @@ export const ProfileTransferModal = () => {
         setModalType={(value: modalTypes) =>
           setTransferModalState({ ...transferModalState, modalType: value })
         }
-      />
+      /> */}
     </div>
   )
 }

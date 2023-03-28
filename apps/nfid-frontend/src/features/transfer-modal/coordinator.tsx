@@ -59,7 +59,17 @@ export const TransferModalCoordinator = () => {
           />
         )
       case state.matches("SendMachine.SendNFT"):
-        return <TransferNFT />
+        return (
+          <TransferNFT
+            assignReceiverWallet={(value) =>
+              send({ type: "ASSIGN_RECEIVER_WALLET", data: value })
+            }
+            onSubmit={() => send({ type: "ON_SUBMIT" })}
+            assignSelectedNFT={(value) =>
+              send({ type: "ASSIGN_SELECTED_NFT", data: value })
+            }
+          />
+        )
       case state.matches("ReceiveMachine"):
         return (
           <TransferReceive

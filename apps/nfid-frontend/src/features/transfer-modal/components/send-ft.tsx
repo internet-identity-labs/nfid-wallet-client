@@ -23,7 +23,7 @@ import {
 
 import { useTokenOptions } from "../hooks/use-token-options"
 import { useWalletOptions } from "../hooks/use-wallets-options"
-import { makeAddressFieldValidation } from "../utils"
+import { makeAddressFieldValidation } from "../utils/validations"
 
 interface ITransferFT {
   assignToken: (token: TokenConfig) => void

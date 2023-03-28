@@ -58,10 +58,12 @@ export const TransferReceive = ({
     if (!token) return
 
     assignSelectedToken(token)
+    assignSourceWallet(walletOptions[0].options[0]?.value)
   }
 
   useEffect(() => {
-    assignSourceWallet(walletOptions[0].options[0]?.value)
+    if (!selectedSourceWallet?.length)
+      assignSourceWallet(walletOptions[0].options[0]?.value)
   }, [selectedToken]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

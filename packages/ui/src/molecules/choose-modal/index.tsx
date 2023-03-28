@@ -187,6 +187,7 @@ export const ChooseModal = ({
                   subTitle={option.subTitle}
                   innerTitle={option.innerTitle}
                   innerSubtitle={option.innerSubtitle}
+                  iconClassnames={iconClassnames}
                 />
               ))}
             </div>

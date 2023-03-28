@@ -9,6 +9,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.TransferMachine.TransferNFT:invocation[0]": {
+      type: "done.invoke.TransferMachine.TransferNFT:invocation[0]"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "xstate.after(5000)#TransferMachine.Success": {
       type: "xstate.after(5000)#TransferMachine.Success"
     }
@@ -16,6 +21,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     transferFT: "done.invoke.TransferMachine.TransferFT:invocation[0]"
+    transferNFT: "done.invoke.TransferMachine.TransferNFT:invocation[0]"
   }
   missingImplementations: {
     actions: never
@@ -31,7 +37,9 @@ export interface Typegen0 {
     assignSelectedNFT: "ASSIGN_SELECTED_NFT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
-    assignSuccessMessage: "done.invoke.TransferMachine.TransferFT:invocation[0]"
+    assignSuccessMessage:
+      | "done.invoke.TransferMachine.TransferFT:invocation[0]"
+      | "done.invoke.TransferMachine.TransferNFT:invocation[0]"
     assignTokenType: "CHANGE_TOKEN_TYPE"
   }
   eventsCausingDelays: {}
@@ -41,6 +49,7 @@ export interface Typegen0 {
   }
   eventsCausingServices: {
     transferFT: "ON_SUBMIT"
+    transferNFT: "ON_SUBMIT"
   }
   matchesStates:
     | "Hidden"

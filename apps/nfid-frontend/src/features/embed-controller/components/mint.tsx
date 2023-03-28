@@ -47,7 +47,7 @@ export const MintComponent = ({
   price,
   data,
 }: IMintComponent) => {
-  const { rates } = useExchangeRates(["ETH"])
+  const { rates } = useExchangeRates()
   const { counter } = useTimer({
     defaultCounter: 100,
     frequency: 100,

@@ -14,7 +14,7 @@ export const transformToAddress = (
       : principalToAddress(Principal.fromText(toAddress))
   }
 
-  if (isHex(toAddress))
+  if (tokenStandard === TokenStandards.DIP20 && isHex(toAddress))
     throw new Error(
       `For tokenStandard ${TokenStandards.DIP20} only pricipals are allowed. Invalid address: ${toAddress}`,
     )

@@ -16,3 +16,22 @@ export function processArray<T>(
     callback()
   }
 }
+
+export function groupArrayByField<T>(data: T[], fieldName: keyof T): T[][] {
+  const groupedData: Record<string, T[]> = data.reduce(
+    (acc: Record<string, T[]>, item: T) => {
+      const fieldValue = item[fieldName]
+      if (fieldValue == null) {
+        return acc
+      }
+      const key = fieldValue.toString()
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push(item)
+      return acc
+    },
+    {},
+  )
+  return Object.values(groupedData)
+}

@@ -1,12 +1,9 @@
 import useSWR from "swr"
 
-import { getAllEthBalances } from "../get-all-balances"
+import { getEthBalance } from "../get-eth-balance"
 
-export const useEthBalances = () => {
-  const { data: balances, ...rest } = useSWR(
-    "ethereumBalances",
-    getAllEthBalances,
-  )
+export const useEthBalance = () => {
+  const { data: balance, ...rest } = useSWR("ethBalance", getEthBalance)
 
-  return { balances, ...rest }
+  return { balance, ...rest }
 }

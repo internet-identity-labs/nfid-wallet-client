@@ -7,7 +7,7 @@ interface GetBalanceParams {
   principalId: string
 }
 
-export const getBalance = async ({
+export const getDIP20Balance = async ({
   canisterId,
   principalId,
 }: GetBalanceParams) => {

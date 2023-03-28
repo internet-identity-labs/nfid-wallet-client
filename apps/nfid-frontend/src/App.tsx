@@ -42,109 +42,111 @@ if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
 }
 
-export const App = () => (
-  <Routes>
-    <Route
-      path={"/"}
-      element={
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <HomeScreen />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path={"/faq"}
-      element={
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <Faq />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path={"/our-mission"}
-      element={
-        <React.Suspense>
-          <OurMission />
-        </React.Suspense>
-      }
-    />
-
-    <Route
-      path="/credential/verified-phone-number"
-      element={
-        <ScreenResponsive frameLabel="Verify with NFID">
+export const App = () => {
+  return (
+    <Routes>
+      <Route
+        path={"/"}
+        element={
           <React.Suspense fallback={<div>Loading...</div>}>
-            <PhoneCredentialCoordinator />
+            <HomeScreen />
           </React.Suspense>
-        </ScreenResponsive>
-      }
-    />
-
-    <Route
-      path="/wallet/request-transfer"
-      element={
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <RequestTransferCoordinator />
-        </React.Suspense>
-      }
-    />
-
-    <Route
-      path="/wallet/request-accounts"
-      element={
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <RequestAccountsCoordinator />
-        </React.Suspense>
-      }
-    />
-
-    <Route
-      path="/authenticate"
-      element={
-        <ScreenResponsive className="flex flex-col items-center">
+        }
+      />
+      <Route
+        path={"/faq"}
+        element={
           <React.Suspense fallback={<div>Loading...</div>}>
-            <IDPCoordinator />
+            <Faq />
           </React.Suspense>
-        </ScreenResponsive>
-      }
-    />
-    <Route
-      path="/ridp"
-      element={
-        <ScreenResponsive className="flex flex-col items-center">
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <RemoteIDPCoordinator />
+        }
+      />
+      <Route
+        path={"/our-mission"}
+        element={
+          <React.Suspense>
+            <OurMission />
           </React.Suspense>
-        </ScreenResponsive>
-      }
-    />
-    <Route
-      path="/iframe/trust-device"
-      element={
-        <ScreenResponsive>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <IframeTrustDeviceCoordinator />
-          </React.Suspense>
-        </ScreenResponsive>
-      }
-    />
+        }
+      />
 
-    <Route
-      path="/embed"
-      element={
-        <ScreenResponsive className="overflow-auto">
+      <Route
+        path="/credential/verified-phone-number"
+        element={
+          <ScreenResponsive frameLabel="Verify with NFID">
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <PhoneCredentialCoordinator />
+            </React.Suspense>
+          </ScreenResponsive>
+        }
+      />
+
+      <Route
+        path="/wallet/request-transfer"
+        element={
           <React.Suspense fallback={<div>Loading...</div>}>
-            <NFIDEmbedCoordinator />
+            <RequestTransferCoordinator />
           </React.Suspense>
-        </ScreenResponsive>
-      }
-    />
+        }
+      />
 
-    {ProfileRoutes}
-    {RecoverNFIDRoutes}
+      <Route
+        path="/wallet/request-accounts"
+        element={
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <RequestAccountsCoordinator />
+          </React.Suspense>
+        }
+      />
 
-    <Route path={"*"} element={<NotFound />} />
-  </Routes>
-)
+      <Route
+        path="/authenticate"
+        element={
+          <ScreenResponsive className="flex flex-col items-center">
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <IDPCoordinator />
+            </React.Suspense>
+          </ScreenResponsive>
+        }
+      />
+      <Route
+        path="/ridp"
+        element={
+          <ScreenResponsive className="flex flex-col items-center">
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <RemoteIDPCoordinator />
+            </React.Suspense>
+          </ScreenResponsive>
+        }
+      />
+      <Route
+        path="/iframe/trust-device"
+        element={
+          <ScreenResponsive>
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <IframeTrustDeviceCoordinator />
+            </React.Suspense>
+          </ScreenResponsive>
+        }
+      />
+
+      <Route
+        path="/embed"
+        element={
+          <ScreenResponsive className="overflow-auto">
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <NFIDEmbedCoordinator />
+            </React.Suspense>
+          </ScreenResponsive>
+        }
+      />
+
+      {ProfileRoutes}
+      {RecoverNFIDRoutes}
+
+      <Route path={"*"} element={<NotFound />} />
+    </Routes>
+  )
+}
 
 export default App

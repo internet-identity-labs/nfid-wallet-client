@@ -1,16 +1,18 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useAtom } from "jotai"
+import { useContext } from "react"
 
-import { transferModalAtom } from "@nfid-frontend/ui"
 import { Image } from "@nfid-frontend/ui"
 
+import { ProfileContext } from "frontend/provider"
 import { Button } from "frontend/ui/atoms/button"
 
 import SendReceiveIcon from "./send_receive.svg"
 
 export const SendReceiveButton = () => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const globalServices = useContext(ProfileContext)
 
+  const [, send] = useActor(globalServices.transferService)
   return (
     <div id="sendReceiveButton">
       <Button
@@ -19,9 +21,7 @@ export const SendReceiveButton = () => {
           "hidden md:flex z-10",
         )}
         id="sendReceiveButton"
-        onClick={() =>
-          setTransferModalState({ ...transferModalState, isModalOpen: true })
-        }
+        onClick={() => send("SHOW")}
         primary
       >
         <Image src={SendReceiveIcon} alt="send/receive" />
@@ -34,9 +34,7 @@ export const SendReceiveButton = () => {
           "rounded-full shadow-blueLight shadow-blue-600",
           "cursor-pointer z-30",
         )}
-        onClick={() =>
-          setTransferModalState({ ...transferModalState, isModalOpen: true })
-        }
+        onClick={() => send("SHOW")}
       >
         <Image className="w-6 h-6" src={SendReceiveIcon} alt="transaction" />
       </div>

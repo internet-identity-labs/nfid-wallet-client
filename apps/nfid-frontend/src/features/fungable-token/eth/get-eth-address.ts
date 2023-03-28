@@ -7,17 +7,10 @@ import {
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
-type GetAddressArgs = {
-  anchor: number
-  hostname: string
-  accountId: string
-}
+export const getEthAddress = async (anchor: number) => {
+  const hostname = "nfid.one"
+  const accountId = "0"
 
-export const getEthAddress = async ({
-  anchor,
-  hostname,
-  accountId,
-}: GetAddressArgs) => {
   const cachedAddress = readAddress({
     accountId: accountId,
     hostname: hostname,

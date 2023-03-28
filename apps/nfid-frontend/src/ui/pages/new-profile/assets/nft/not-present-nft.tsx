@@ -3,14 +3,14 @@ import React from "react"
 
 import { Image } from "@nfid-frontend/ui"
 
-import { NFTDetails } from "frontend/integration/entrepot/types"
+import { NonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 
 import WithoutNFT from "./assets/NFTComing.png"
 
 interface IProfileNFTNotPresent extends React.HTMLAttributes<HTMLDivElement> {
-  nfts?: NFTDetails[]
+  nfts?: NonFungibleToken[]
 }
 
 export const ProfileNFTNotPresent: React.FC<IProfileNFTNotPresent> = ({

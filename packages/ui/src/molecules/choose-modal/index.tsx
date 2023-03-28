@@ -1,42 +1,57 @@
 import clsx from "clsx"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 
 import { Image } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
-import {
-  IconCmpArrow,
-  IconCmpArrowRight,
-  IconCmpInfo,
-  Label,
-  Tooltip,
-} from "@nfid-frontend/ui"
+import { IconCmpArrow, IconCmpInfo, Label, Tooltip } from "@nfid-frontend/ui"
 
 import { ChooseItem } from "./choose-item"
-import { filterGroupedOptionsByTitle } from "./helpers"
+import { filterGroupedOptionsByTitle, findOptionByValue } from "./helpers"
+import { DefaultTrigger } from "./triggers/default"
+import { InputTrigger } from "./triggers/input"
+import { SmallTrigger } from "./triggers/small"
 import { IGroupedOptions, IGroupOption } from "./types"
 
 export interface IChooseModal {
   optionGroups: IGroupedOptions[]
+  preselectedValue?: string
   onSelect?: (value: string) => void
   infoText?: string
   label?: string
   title: string
+  type?: "default" | "input" | "trigger" | "small"
+  isFirstPreselected?: boolean
+  trigger?: JSX.Element
+  placeholder?: string
+  errorText?: string
+  registerFunction?: UseFormRegisterReturn<string>
+  iconClassnames?: string
 }
 
 export const ChooseModal = ({
   optionGroups,
+  preselectedValue,
   onSelect,
   infoText,
   title,
   label,
+  type = "default",
+  isFirstPreselected = true,
+  trigger,
+  placeholder,
+  errorText,
+  registerFunction,
+  iconClassnames,
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
+  const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
 
   const handleSelect = (option: IGroupOption) => {
-    onSelect && onSelect(option.value)
+    setSelectedValue(option.value)
     setSelectedOption(option)
     setIsModalVisible(false)
   }
@@ -45,40 +60,64 @@ export const ChooseModal = ({
     return filterGroupedOptionsByTitle(optionGroups, searchInput)
   }, [optionGroups, searchInput])
 
+  const resetValue = useCallback(() => {
+    setSelectedOption(undefined)
+    setSelectedValue("")
+  }, [])
+
   useEffect(() => {
-    if (optionGroups.length && !selectedOption)
-      setSelectedOption(optionGroups[0]?.options[0])
-  }, [optionGroups])
+    if (!optionGroups.length && selectedOption) return
+
+    if (preselectedValue) {
+      const option = findOptionByValue(optionGroups, preselectedValue)
+      setSelectedOption(option)
+    } else if (optionGroups.length && !selectedOption && isFirstPreselected) {
+      const option = optionGroups[0]?.options[0]
+      setSelectedOption(option)
+      onSelect && option?.value && onSelect(option?.value)
+    }
+  }, [optionGroups, isFirstPreselected, preselectedValue])
+
+  useEffect(() => {
+    onSelect && onSelect(selectedValue)
+  }, [selectedValue])
 
   return (
-    <div>
+    <div className="flex flex-col shrink-0">
       {label && <Label className="mb-1">{label}</Label>}
-      <div
-        className={clsx(
-          "border border-black rounded-md cursor-pointer h-14",
-          "flex items-center justify-between hover:opacity-70",
-          "text-black px-4",
-        )}
-        onClick={() => setIsModalVisible(true)}
-      >
-        <div className="flex">
-          {selectedOption?.icon && (
-            <Image
-              src={selectedOption?.icon}
-              alt={selectedOption?.value}
-              className="mr-2.5"
-            />
-          )}
-          <div className="leading-5">
-            <p className="text-sm">{selectedOption?.title}</p>
-            <p className="text-xs text-gray-400">{selectedOption?.subTitle}</p>
-          </div>
+
+      {type === "input" ? (
+        <InputTrigger
+          placeholder={placeholder}
+          onShowModal={() => setIsModalVisible(true)}
+          onClearValue={resetValue}
+          selectedOption={selectedOption}
+          errorText={errorText}
+          registerFunction={registerFunction}
+          setSelectedValue={(value) => setSelectedValue(value)}
+        />
+      ) : type === "trigger" ? (
+        <div className="flex shrink-0" onClick={() => setIsModalVisible(true)}>
+          {trigger}
         </div>
-        <IconCmpArrowRight />
-      </div>
+      ) : type === "small" ? (
+        <SmallTrigger
+          actionHandler={() => setIsModalVisible(true)}
+          selectedOption={selectedOption}
+          iconClassnames={iconClassnames}
+        />
+      ) : (
+        <DefaultTrigger
+          actionHandler={() => setIsModalVisible(true)}
+          selectedOption={selectedOption}
+          iconClassnames={iconClassnames}
+        />
+      )}
+
       <div
         className={clsx(
           "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",
+          "flex flex-col",
           !isModalVisible && "hidden",
         )}
       >
@@ -105,7 +144,7 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput(e.target.value)}
           className="my-4"
         />
-        <div className="h-full overflow-auto snap-end scroll-pl-1">
+        <div className="flex-1 overflow-auto snap-end scroll-pl-1">
           {filteredOptions.map((group) => (
             <div
               className="mt-6"
@@ -123,6 +162,7 @@ export const ChooseModal = ({
                   subTitle={option.subTitle}
                   innerTitle={option.innerTitle}
                   innerSubtitle={option.innerSubtitle}
+                  iconClassnames={iconClassnames}
                 />
               ))}
             </div>

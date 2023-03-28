@@ -1,11 +1,11 @@
 import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
 
-import { Account } from "../identity-manager/account"
-import { PrincipalAccount } from "../internet-identity"
-import { Balance, getBalance as getICPBalance } from "../rosetta"
-import { Wallet } from "../vault/types"
-import { TokenMetadata, getBalance as getDip20Balance } from "./dip-20"
+import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
+import { getBalance as getICPBalance } from "@nfid/integration"
+import { getDIP20Balance, TokenMetadata } from "@nfid/integration/token/dip-20"
+
+import { getEthBalance } from "./eth/get-eth-balance"
 
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]
@@ -24,6 +24,8 @@ export type AccountBalance = {
   account: Account
   balance: TokenBalance
   address?: string
+  vaultId?: bigint
+  vaultName?: string
 }
 
 export async function fetchBalances({
@@ -37,8 +39,11 @@ export async function fetchBalances({
         ...["ICP"].map(async (token) => ({
           [token]: await getICPBalance(principalToAddress(principal)),
         })),
+        ...["ETH"].map(async (token) => ({
+          [token]: (await getEthBalance()).tokenBalance,
+        })),
         ...dip20Token.map(async ({ symbol: token, canisterId }) => ({
-          [token]: await getDip20Balance({
+          [token]: await getDIP20Balance({
             canisterId,
             principalId: principal.toText(),
           }),
@@ -77,6 +82,8 @@ export async function fetchVaultsWalletsBalances(
         principalId: principal.toText(),
         address: address,
         balance: { ICP: balance },
+        vaultId: wallet?.vaultId,
+        vaultName: wallet?.vaultName,
       }
     }),
   )

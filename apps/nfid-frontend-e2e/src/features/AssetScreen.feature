@@ -16,7 +16,7 @@ Feature:Fungible Asset
     Examples:
       | chain             | currency | balance | asset             | anchor | initial_usd | label             |
       | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             | Bitcoin           |
-#      | Ethereum          | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00       | Ethereum          |
+      #      | Ethereum          | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00       | Ethereum          |
       | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             | Internet Computer |
       | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  |             | WICP              |
 

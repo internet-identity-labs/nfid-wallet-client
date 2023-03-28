@@ -7,12 +7,14 @@ import { BlurOverlay } from "../blur-overlay"
 interface BlurredLoaderProps extends HTMLAttributes<HTMLDivElement> {
   isLoading?: boolean
   loadingMessage?: string | boolean
+  overlayClassnames?: string
 }
 export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
   isLoading,
   loadingMessage,
   children,
   className,
+  overlayClassnames,
 }) => {
   return (
     <>
@@ -20,7 +22,10 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
       {isLoading ? (
         <BlurOverlay
           id="loader"
-          className="absolute top-0 bottom-0 left-0 z-20 w-full"
+          className={clsx(
+            "absolute top-0 bottom-0 left-0 z-20 w-full",
+            overlayClassnames,
+          )}
         >
           <div className="flex flex-col items-center justify-center w-full h-full px-14">
             <Loader

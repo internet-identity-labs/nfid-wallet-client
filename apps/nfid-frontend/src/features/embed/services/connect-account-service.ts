@@ -24,10 +24,7 @@ export const ConnectAccountService = async (
   if (!authRequest)
     throw new Error("ConnectAccountService: missing authRequest")
 
-  const address = await getEthAddress({
-    anchor: authSession.anchor,
-    ...event.data,
-  })
+  const address = await getEthAddress(authSession.anchor)
   console.debug("ConnectAccountService", { address })
 
   const identity = await getWalletDelegation(

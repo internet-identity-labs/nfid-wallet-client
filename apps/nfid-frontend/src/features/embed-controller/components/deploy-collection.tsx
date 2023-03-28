@@ -33,8 +33,6 @@ interface IBuyComponent {
   feeMax?: string
 }
 
-const tokens = ["ETH"]
-
 export const DeployComponent = ({
   showTransactionDetails,
   applicationMeta,
@@ -47,7 +45,7 @@ export const DeployComponent = ({
   feeMax,
   data,
 }: IBuyComponent) => {
-  const { rates } = useExchangeRates(tokens)
+  const { rates } = useExchangeRates()
   const { counter } = useTimer({
     defaultCounter: 100,
     frequency: 100,

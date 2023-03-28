@@ -2,41 +2,39 @@ import { TransactionPrettified } from "@psychedelic/cap-js"
 import React, { useState } from "react"
 import { useLocation, useParams } from "react-router-dom"
 
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { getTokenTxHistoryOfTokenIndex } from "frontend/integration/cap/fungible-transactions"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { Loader } from "frontend/ui/atoms/loader"
 import { ProfileNFTDetailsPage } from "frontend/ui/pages/new-profile/nft-details"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
-import { useNFT } from "../assets/hooks"
 import { mapTransactionsForUI } from "./utils"
 
 const ACTIVITY_TARGET = 5
 
 const ProfileNFTDetails = () => {
   const location = useLocation()
-  const state = location.state as { nft?: UserNFTDetails }
+  const state = location.state as { nft?: UserNonFungibleToken }
   const { tokenId } = useParams()
 
-  const { data: nftDetails } = useNFT(tokenId ?? "")
   const [NFTActivity, setNFTActivity] = useState<TransactionPrettified[]>([])
   const applications = useApplicationsMeta()
 
   const [isActivityFetching, setIsActivityFetching] = useState<boolean>(true)
 
   const nft = React.useMemo(() => {
-    return state?.nft ?? nftDetails
-  }, [nftDetails, state?.nft])
+    return state?.nft
+  }, [state?.nft])
 
   const fetchTokenHistory = React.useCallback(
     async (i: number) => {
-      if (!nft?.canisterId || !tokenId) return
+      if (!nft?.contractId || !tokenId) return
       let result
 
       try {
         result = await getTokenTxHistoryOfTokenIndex(
-          nft.canisterId,
+          nft.contractId,
           tokenId,
           i * 10 - 10,
           i * 10,
@@ -57,7 +55,7 @@ const ProfileNFTDetails = () => {
         fetchTokenHistory(i + 1)
       else setIsActivityFetching(false)
     },
-    [NFTActivity, nft?.canisterId, tokenId],
+    [NFTActivity, nft?.contractId, tokenId],
   )
 
   React.useEffect(() => {

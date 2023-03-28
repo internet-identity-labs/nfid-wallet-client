@@ -1,14 +1,14 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import { useCallback } from "react"
+import { useCallback, useContext } from "react"
 
 import { Image } from "@nfid-frontend/ui"
-import { transferModalAtom } from "@nfid-frontend/ui"
 import { Application } from "@nfid/integration"
 
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { link } from "frontend/integration/entrepot"
-import { NFTDetails, UserNFTDetails } from "frontend/integration/entrepot/types"
+import { ProfileContext } from "frontend/provider"
 import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
@@ -21,7 +21,7 @@ import WalletIcon from "./assets/wallet.svg"
 import { NFTAsset } from "./nft-asset"
 
 interface IProfileNFTDetails {
-  nft: UserNFTDetails | NFTDetails
+  nft: UserNonFungibleToken
   isTransactionsFetching?: boolean
   transactions: ITransaction[]
   applications: Application[]
@@ -33,19 +33,21 @@ export const ProfileNFTDetailsPage = ({
   transactions,
   applications,
 }: IProfileNFTDetails) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const globalServices = useContext(ProfileContext)
+
+  const [, send] = useActor(globalServices.transferService)
 
   const onTransferNFT = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault()
-      setTransferModalState({
-        ...transferModalState,
-        isModalOpen: true,
-        sendType: "nft",
-        selectedNFT: [nft.tokenId],
-      })
+
+      send({ type: "ASSIGN_SELECTED_NFT", data: nft })
+      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
+      send({ type: "CHANGE_DIRECTION", data: "send" })
+
+      send("SHOW")
     },
-    [nft.tokenId, setTransferModalState, transferModalState],
+    [nft, send],
   )
 
   return (
@@ -59,7 +61,13 @@ export const ProfileNFTDetailsPage = ({
             alt="transfer"
             onClick={onTransferNFT}
           />
-          <Copy value={link(nft.collection.id, nft.index)} />
+          <Copy
+            value={
+              nft.blockchain === "Internet Computer"
+                ? link(nft.collection.id, Number(nft.index))
+                : nft.assetFullsize.url
+            }
+          />
         </div>
       }
       className="w-full z-[1]"
@@ -106,26 +114,25 @@ export const ProfileNFTDetailsPage = ({
           <ProfileContainer title="Details" className="mt-6">
             <div className="mt-5 space-y-4 text-sm">
               <div
-                className={clsx("flex items-center justify-between flex-wrap")}
+                className={clsx(
+                  "grid grid-cols-1 sm:grid-cols-[100px,1fr] gap-5",
+                )}
               >
+                <p className="mb-1 text-secondary">Blockchain</p>
+                <p className={clsx("w-full")}>{nft.blockchain}</p>
+
                 <p className="mb-1 text-secondary">Standard</p>
-                <p className={clsx("w-full sm:w-[80%]")}>
+                <p className={clsx("w-full")}>
                   {nft.collection.standard === "legacy"
                     ? "Legacy EXT"
                     : nft.collection.standard}
                 </p>
-              </div>
-              <div
-                className={clsx("flex items-center justify-between flex-wrap")}
-              >
+
                 <p className="mb-1 text-secondary">NFT ID</p>
-                <p className="w-full sm:w-[80%]">{nft.tokenId}</p>
-              </div>
-              <div
-                className={clsx("flex items-center justify-between flex-wrap")}
-              >
+                <p className="w-full overflow-hidden">{nft.tokenId}</p>
+
                 <p className="mb-1 text-secondary">Collection ID</p>
-                <p className="w-full sm:w-[80%]">{nft.canisterId}</p>
+                <p className="w-full overflow-hidden">{nft.contractId}</p>
               </div>
             </div>
           </ProfileContainer>

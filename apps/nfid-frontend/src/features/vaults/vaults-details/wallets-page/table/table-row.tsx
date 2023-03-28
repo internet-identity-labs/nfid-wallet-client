@@ -1,6 +1,6 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import React, { useCallback } from "react"
+import React, { useCallback, useContext } from "react"
 
 import {
   IconCmpArchive,
@@ -10,10 +10,11 @@ import {
   PopoverTools,
   TableCell,
   TableRow,
-  transferModalAtom,
 } from "@nfid-frontend/ui"
 
+import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
+import { ProfileContext } from "frontend/provider"
 
 export interface VaultsWalletsTableRowProps {
   address?: string
@@ -38,28 +39,31 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isArchived,
   isAdmin,
 }: VaultsWalletsTableRowProps) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const globalServices = useContext(ProfileContext)
+  const { token: allTokens } = useAllToken()
+
+  const [, send] = useActor(globalServices.transferService)
   const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {
-    setTransferModalState({
-      ...transferModalState,
-      isModalOpen: true,
-      sendType: "ft",
-      modalType: "Send",
-      selectedWallets: address ? [address] : [],
-      selectedWallet: wallets.find((w) => w.address === address) ?? ({} as any),
+    send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
+    send({
+      type: "ASSIGN_SOURCE_ACCOUNT",
+      data: wallets.find((w) => w.address === address) ?? ({} as any),
     })
-  }, [address, setTransferModalState, transferModalState, wallets])
+    send({ type: "CHANGE_DIRECTION", data: "send" })
+    send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+
+    send({ type: "SHOW" })
+  }, [address, send, wallets])
 
   const onReceiveToVaultWallet = useCallback(() => {
-    setTransferModalState({
-      ...transferModalState,
-      isModalOpen: true,
-      modalType: "Receive",
-      selectedWallets: address ? [address] : [],
-    })
-  }, [setTransferModalState, transferModalState, address])
+    send({ type: "ASSIGN_SELECTED_FT", data: allTokens[0] })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
+    send({ type: "CHANGE_DIRECTION", data: "receive" })
+
+    send({ type: "SHOW" })
+  }, [address, send, allTokens])
 
   return (
     <TableRow

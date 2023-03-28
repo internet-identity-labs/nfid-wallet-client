@@ -1,27 +1,26 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import React from "react"
+import React, { useCallback, useContext } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { Image } from "@nfid-frontend/ui"
-import {
-  IconCmpDots,
-  IconPngEthereum,
-  transferModalAtom,
-} from "@nfid-frontend/ui"
+import { IconCmpDots, IconPngEthereum } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import ICPLogo from "frontend/assets/dfinity.svg"
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { link } from "frontend/integration/entrepot"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { ProfileContext } from "frontend/provider"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import copyIcon from "./assets/copy.svg"
 import transferIcon from "./assets/transfer.svg"
 
-const NFTPreview = (props: UserNFTDetails) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+const NFTPreview = (props: UserNonFungibleToken) => {
+  const globalServices = useContext(ProfileContext)
+
+  const [, send] = useActor(globalServices.transferService)
 
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
   const ref = useClickOutside(() => setIsTooltipOpen(false))
@@ -32,22 +31,32 @@ const NFTPreview = (props: UserNFTDetails) => {
       toast.info("NFT URL copied to clipboard", {
         toastId: `copied_nft_${props.tokenId}`,
       })
-      navigator.clipboard.writeText(link(props.collection.id, props.index))
+      navigator.clipboard.writeText(
+        props.blockchain === "Ethereum"
+          ? props.assetFullsize.url
+          : link(props.collection.id, Number(props.index)),
+      )
     },
-    [props.collection.id, props.index, props.tokenId],
+    [
+      props.assetFullsize.url,
+      props.blockchain,
+      props.collection.id,
+      props.index,
+      props.tokenId,
+    ],
   )
 
-  const onTransferNFT = React.useCallback(
+  const onTransferNFT = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault()
-      setTransferModalState({
-        ...transferModalState,
-        isModalOpen: true,
-        sendType: "nft",
-        selectedNFT: [props.tokenId],
-      })
+
+      send({ type: "ASSIGN_SELECTED_NFT", data: props })
+      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
+      send({ type: "CHANGE_DIRECTION", data: "send" })
+
+      send("SHOW")
     },
-    [props.tokenId, setTransferModalState, transferModalState],
+    [props, send],
   )
 
   return (
@@ -68,11 +77,15 @@ const NFTPreview = (props: UserNFTDetails) => {
           )}
         >
           <Image
-            src={props.blockchain === "ic" ? ICPLogo : IconPngEthereum}
+            src={
+              props.blockchain === "Internet Computer"
+                ? ICPLogo
+                : IconPngEthereum
+            }
             alt="logo"
             className={clsx(
               "w-2/3",
-              props.blockchain !== "ic" && "!w-auto h-2/3",
+              props.blockchain !== "Internet Computer" && "!w-auto h-2/3",
             )}
           />
         </div>

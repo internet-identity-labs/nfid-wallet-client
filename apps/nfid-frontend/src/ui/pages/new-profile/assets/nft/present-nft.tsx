@@ -3,13 +3,13 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 import useWindowSize from "frontend/ui/utils/use-window-size"
 
 interface IProfileAssetsNFT extends React.HTMLAttributes<HTMLDivElement> {
-  nfts: UserNFTDetails[]
+  nfts: UserNonFungibleToken[]
 }
 
 export const ProfileNFTPresent: React.FC<IProfileAssetsNFT> = ({ nfts }) => {

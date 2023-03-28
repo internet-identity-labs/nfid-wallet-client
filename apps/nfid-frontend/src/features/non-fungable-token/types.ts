@@ -13,12 +13,15 @@ export interface NonFungibleToken {
     format: "video" | "img" | "iframe"
     url: string
   }
-  collection: {
-    standard: string
-    name: string
-    description: string
-    id: string
-  }
+  collection: NonFungibleCollection
+}
+
+export interface NonFungibleCollection {
+  standard: string
+  name: string
+  description: string
+  id: string
+  avatar?: string
 }
 
 export interface UserNonFungibleToken extends NonFungibleToken {

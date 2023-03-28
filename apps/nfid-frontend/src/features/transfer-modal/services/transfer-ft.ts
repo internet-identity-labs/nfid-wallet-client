@@ -46,7 +46,9 @@ const transferETH = async (amount: number, to: string) => {
 
     return `You've sent ${amount} ETH`
   } catch (e: any) {
-    throw new Error(e?.message)
+    throw new Error(
+      e?.message ?? "Unexpected error: The transaction has been cancelled",
+    )
   }
 }
 
@@ -76,7 +78,9 @@ const transferICP = async (
     }
     await submitICP(stringICPtoE8s(String(amount)), to, identity)
   } catch (e: any) {
-    throw new Error(e?.message)
+    throw new Error(
+      e?.message ?? "Unexpected error: The transaction has been cancelled",
+    )
   }
   return `You've sent ${amount} ICP`
 }
@@ -91,7 +95,9 @@ const transferVaultICP = async (to: string, amount: string, from?: string) => {
       from_sub_account: from,
     })
   } catch (e: any) {
-    throw new Error(e?.message)
+    throw new Error(
+      e?.message ?? "Unexpected error: The transaction has been cancelled",
+    )
   }
 
   return `You've requested ${amount} ICP from the vault`

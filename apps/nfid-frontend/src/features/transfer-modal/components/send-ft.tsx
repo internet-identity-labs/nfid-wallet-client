@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { validateTransferAmountField } from "packages/ui/src/organisms/transfer-modal/send/utils"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 
 import {
   BlurredLoader,
@@ -65,14 +66,17 @@ export const TransferFT = ({
   } = useForm({
     mode: "all",
     defaultValues: {
-      amount: "0.00",
+      amount: undefined as any as number,
       from: selectedSourceWallet ?? "",
       to: selectedReceiverWallet ?? "",
     },
   })
 
   const setFullAmount = useCallback(() => {
-    if (!selectedToken || !selectedToken.balance) return
+    if (!selectedToken || !selectedToken.balance)
+      return toast.error("No selected token or selected token has no balance", {
+        toastId: "unexpectedTransferError",
+      })
 
     const amount =
       BigInt(
@@ -80,15 +84,20 @@ export const TransferFT = ({
           selectedToken.fee,
       ) - selectedToken.fee
 
+    if (!amount || typeof amount !== "bigint")
+      return toast.error("Amount is invalid", {
+        toastId: "unexpectedTransferError",
+      })
+
     if (amount < 0) {
-      setValue("amount", "0.00")
+      setValue("amount", 0)
       setError("amount", { message: "Insufficient funds" })
       setTimeout(() => {
         resetField("amount")
       }, 2000)
     } else {
       resetField("amount")
-      setValue("amount", String(selectedToken.toPresentation(amount)))
+      setValue("amount", Number(selectedToken.toPresentation(amount)))
     }
   }, [
     selectedToken,
@@ -104,9 +113,10 @@ export const TransferFT = ({
       if (!token) return
 
       assignToken(token)
-      assignSourceWallet("")
+      assignSourceWallet(walletOptions[0].options[0]?.value)
+      setValue("from", walletOptions[0].options[0]?.value)
     },
-    [allTokens, assignSourceWallet, assignToken],
+    [allTokens, assignSourceWallet, assignToken, setValue, walletOptions],
   )
   const handleSelectWallet = useCallback(
     (value: string) => {
@@ -123,7 +133,13 @@ export const TransferFT = ({
 
   const submit = useCallback(
     (values: any) => {
-      if (!selectedToken) throw new Error("No selected token")
+      if (!selectedToken)
+        return toast.error(
+          "No selected token or selected token has no balance",
+          {
+            toastId: "unexpectedTransferError",
+          },
+        )
       if (values.from === values.to)
         return setError("to", {
           type: "value",
@@ -140,18 +156,13 @@ export const TransferFT = ({
   )
 
   useEffect(() => {
-    if (!selectedToken && allTokens.length && allTokens[0].balance)
+    if (!selectedToken && allTokens.length && allTokens[0]?.balance)
       assignToken(allTokens[0])
   }, [allTokens, assignToken, selectedToken])
 
-  useEffect(() => {
-    handleSelectWallet(walletOptions[0].options[0]?.value)
-    setValue("from", walletOptions[0].options[0]?.value)
-  }, [selectedToken]) // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <BlurredLoader
-      className="p-0 text-xs"
+      className="!p-0 text-xs"
       overlayClassnames="rounded-xl"
       isLoading={!selectedToken || !walletOptions || !walletOptions?.length}
     >
@@ -182,6 +193,7 @@ export const TransferFT = ({
                 selectedSourceAccount?.balance[selectedToken.currency],
               ),
             ),
+            valueAsNumber: true,
           })}
         />
         <ChooseModal
@@ -224,14 +236,14 @@ export const TransferFT = ({
       </div>
       <div className="mt-4 space-y-5">
         <ChooseModal
-          label="From"
           optionGroups={walletOptions}
+          preselectedValue={selectedSourceWallet}
+          label="From"
           title={"Choose an account"}
           onSelect={(value) => {
             setValue("from", value)
             handleSelectWallet(value)
           }}
-          preselectedValue={selectedSourceWallet}
         />
         <ChooseModal
           label="To"

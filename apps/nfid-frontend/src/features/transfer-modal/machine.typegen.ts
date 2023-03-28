@@ -14,6 +14,14 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.TransferMachine.TransferFT:invocation[0]": {
+      type: "error.platform.TransferMachine.TransferFT:invocation[0]"
+      data: unknown
+    }
+    "error.platform.TransferMachine.TransferNFT:invocation[0]": {
+      type: "error.platform.TransferMachine.TransferNFT:invocation[0]"
+      data: unknown
+    }
     "xstate.after(5000)#TransferMachine.Success": {
       type: "xstate.after(5000)#TransferMachine.Success"
     }
@@ -32,6 +40,10 @@ export interface Typegen0 {
   eventsCausingActions: {
     assignAmount: "ASSIGN_AMOUNT"
     assignDirection: "CHANGE_DIRECTION"
+    assignError:
+      | "ASSIGN_ERROR"
+      | "error.platform.TransferMachine.TransferFT:invocation[0]"
+      | "error.platform.TransferMachine.TransferNFT:invocation[0]"
     assignReceiverWallet: "ASSIGN_RECEIVER_WALLET"
     assignSelectedFT: "ASSIGN_SELECTED_FT"
     assignSelectedNFT: "ASSIGN_SELECTED_NFT"

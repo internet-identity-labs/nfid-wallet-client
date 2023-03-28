@@ -17,7 +17,18 @@ export type TransferMachineContext = {
   receiverWallet: string
   amount: string
   successMessage: string
+  error?: Error
 }
+
+export type ErrorEvents =
+  | {
+      type: "error.platform.transferFT"
+      data: Error
+    }
+  | {
+      type: "error.platform.transferNFT"
+      data: Error
+    }
 
 export type Events =
   | { type: "SHOW" }
@@ -30,6 +41,7 @@ export type Events =
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
   | { type: "ASSIGN_SELECTED_FT"; data: TokenConfig }
   | { type: "ASSIGN_SELECTED_NFT"; data: UserNonFungibleToken }
+  | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ON_SUBMIT" }
 
 type Services = {
@@ -58,7 +70,7 @@ export const transferMachine = createMachine(
       successMessage: "",
     },
     id: "TransferMachine",
-    initial: "TransferModal",
+    initial: "Hidden",
     on: {
       CHANGE_TOKEN_TYPE: {
         target: "#SendMachine.CheckSendType",
@@ -88,6 +100,9 @@ export const transferMachine = createMachine(
       },
       HIDE: {
         target: "#TransferMachine.Hidden",
+      },
+      ASSIGN_ERROR: {
+        actions: "assignError",
       },
     },
     states: {
@@ -147,12 +162,20 @@ export const transferMachine = createMachine(
         invoke: {
           src: "transferFT",
           onDone: { target: "Success", actions: "assignSuccessMessage" },
+          onError: {
+            target: "#SendMachine.SendFT",
+            actions: "assignError",
+          },
         },
       },
       TransferNFT: {
         invoke: {
           src: "transferNFT",
           onDone: { target: "Success", actions: "assignSuccessMessage" },
+          onError: {
+            target: "#SendMachine.SendNFT",
+            actions: "assignError",
+          },
         },
       },
 
@@ -199,6 +222,10 @@ export const transferMachine = createMachine(
       assignSuccessMessage: assign((_, event) => ({
         successMessage: event?.data,
       })),
+      assignError: assign({
+        // @ts-ignore
+        error: (_, event) => event.data,
+      }),
     },
     services: {
       transferFT,

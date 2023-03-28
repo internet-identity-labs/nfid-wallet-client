@@ -1,13 +1,18 @@
+import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { useAtom } from "jotai"
-import { useCallback } from "react"
+import { useCallback, useContext } from "react"
 
+<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
 import { transferModalAtom } from "@nfid-frontend/ui"
+=======
+>>>>>>> 395f54c84 (feat([sc-6070]): added toast errors)
 import { Application } from "@nfid/integration"
 
+import { ProfileContext } from "frontend/App"
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
+import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { link } from "frontend/integration/entrepot"
 import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
@@ -33,19 +38,25 @@ export const ProfileNFTDetailsPage = ({
   transactions,
   applications,
 }: IProfileNFTDetails) => {
-  const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
+  const globalServices = useContext(ProfileContext)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, send] = useActor(
+    (globalServices as { transferService: TransferMachineActor })
+      .transferService,
+  )
 
   const onTransferNFT = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.preventDefault()
-      setTransferModalState({
-        ...transferModalState,
-        isModalOpen: true,
-        sendType: "nft",
-        selectedNFT: [nft.tokenId],
-      })
+
+      send({ type: "ASSIGN_SELECTED_NFT", data: nft })
+      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
+      send({ type: "CHANGE_DIRECTION", data: "send" })
+
+      send("SHOW")
     },
-    [nft.tokenId, setTransferModalState, transferModalState],
+    [nft, send],
   )
 
   return (
@@ -63,7 +74,7 @@ export const ProfileNFTDetailsPage = ({
             value={
               nft.blockchain === "Internet Computer"
                 ? link(nft.collection.id, Number(nft.index))
-                : ""
+                : nft.assetFullsize.url
             }
           />
         </div>
@@ -117,11 +128,7 @@ export const ProfileNFTDetailsPage = ({
                 )}
               >
                 <p className="mb-1 text-secondary">Blockchain</p>
-                <p className={clsx("w-full")}>
-                  {nft.collection.standard === "legacy"
-                    ? "Legacy EXT"
-                    : nft.collection.standard}
-                </p>
+                <p className={clsx("w-full")}>{nft.blockchain}</p>
 
                 <p className="mb-1 text-secondary">Standard</p>
                 <p className={clsx("w-full")}>

@@ -161,7 +161,7 @@ class EthereumAsset implements NonFungibleAsset {
     contract: string,
     receiver: string,
   ): Promise<void> {
-    this.wallet.safeTransferFrom(receiver, contract, tokenId)
+    return await this.wallet.safeTransferFrom(receiver, contract, tokenId)
   }
 
   public async transferETH(to: string, amount: string) {

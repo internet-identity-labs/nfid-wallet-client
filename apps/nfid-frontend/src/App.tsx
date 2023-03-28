@@ -1,5 +1,4 @@
-import { useInterpret } from "@xstate/react"
-import React, { createContext } from "react"
+import React from "react"
 import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -9,7 +8,6 @@ import { ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
-import { transferMachine } from "./features/transfer-modal/machine"
 import { NotFound } from "./ui/pages/404"
 
 const IDPCoordinator = React.lazy(() => import("./coordination/idp"))
@@ -43,116 +41,111 @@ const OurMission = React.lazy(
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
 }
-export const ProfileContext = createContext({})
 
 export const App = () => {
-  const transferService = useInterpret(transferMachine)
-
   return (
-    <ProfileContext.Provider value={{ transferService }}>
-      <Routes>
-        <Route
-          path={"/"}
-          element={
+    <Routes>
+      <Route
+        path={"/"}
+        element={
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <HomeScreen />
+          </React.Suspense>
+        }
+      />
+      <Route
+        path={"/faq"}
+        element={
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <Faq />
+          </React.Suspense>
+        }
+      />
+      <Route
+        path={"/our-mission"}
+        element={
+          <React.Suspense>
+            <OurMission />
+          </React.Suspense>
+        }
+      />
+
+      <Route
+        path="/credential/verified-phone-number"
+        element={
+          <ScreenResponsive frameLabel="Verify with NFID">
             <React.Suspense fallback={<div>Loading...</div>}>
-              <HomeScreen />
+              <PhoneCredentialCoordinator />
             </React.Suspense>
-          }
-        />
-        <Route
-          path={"/faq"}
-          element={
+          </ScreenResponsive>
+        }
+      />
+
+      <Route
+        path="/wallet/request-transfer"
+        element={
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <RequestTransferCoordinator />
+          </React.Suspense>
+        }
+      />
+
+      <Route
+        path="/wallet/request-accounts"
+        element={
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <RequestAccountsCoordinator />
+          </React.Suspense>
+        }
+      />
+
+      <Route
+        path="/authenticate"
+        element={
+          <ScreenResponsive className="flex flex-col items-center">
             <React.Suspense fallback={<div>Loading...</div>}>
-              <Faq />
+              <IDPCoordinator />
             </React.Suspense>
-          }
-        />
-        <Route
-          path={"/our-mission"}
-          element={
-            <React.Suspense>
-              <OurMission />
-            </React.Suspense>
-          }
-        />
-
-        <Route
-          path="/credential/verified-phone-number"
-          element={
-            <ScreenResponsive frameLabel="Verify with NFID">
-              <React.Suspense fallback={<div>Loading...</div>}>
-                <PhoneCredentialCoordinator />
-              </React.Suspense>
-            </ScreenResponsive>
-          }
-        />
-
-        <Route
-          path="/wallet/request-transfer"
-          element={
+          </ScreenResponsive>
+        }
+      />
+      <Route
+        path="/ridp"
+        element={
+          <ScreenResponsive className="flex flex-col items-center">
             <React.Suspense fallback={<div>Loading...</div>}>
-              <RequestTransferCoordinator />
+              <RemoteIDPCoordinator />
             </React.Suspense>
-          }
-        />
-
-        <Route
-          path="/wallet/request-accounts"
-          element={
+          </ScreenResponsive>
+        }
+      />
+      <Route
+        path="/iframe/trust-device"
+        element={
+          <ScreenResponsive>
             <React.Suspense fallback={<div>Loading...</div>}>
-              <RequestAccountsCoordinator />
+              <IframeTrustDeviceCoordinator />
             </React.Suspense>
-          }
-        />
+          </ScreenResponsive>
+        }
+      />
 
-        <Route
-          path="/authenticate"
-          element={
-            <ScreenResponsive className="flex flex-col items-center">
-              <React.Suspense fallback={<div>Loading...</div>}>
-                <IDPCoordinator />
-              </React.Suspense>
-            </ScreenResponsive>
-          }
-        />
-        <Route
-          path="/ridp"
-          element={
-            <ScreenResponsive className="flex flex-col items-center">
-              <React.Suspense fallback={<div>Loading...</div>}>
-                <RemoteIDPCoordinator />
-              </React.Suspense>
-            </ScreenResponsive>
-          }
-        />
-        <Route
-          path="/iframe/trust-device"
-          element={
-            <ScreenResponsive>
-              <React.Suspense fallback={<div>Loading...</div>}>
-                <IframeTrustDeviceCoordinator />
-              </React.Suspense>
-            </ScreenResponsive>
-          }
-        />
+      <Route
+        path="/embed"
+        element={
+          <ScreenResponsive className="overflow-auto">
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <NFIDEmbedCoordinator />
+            </React.Suspense>
+          </ScreenResponsive>
+        }
+      />
 
-        <Route
-          path="/embed"
-          element={
-            <ScreenResponsive className="overflow-auto">
-              <React.Suspense fallback={<div>Loading...</div>}>
-                <NFIDEmbedCoordinator />
-              </React.Suspense>
-            </ScreenResponsive>
-          }
-        />
+      {ProfileRoutes}
+      {RecoverNFIDRoutes}
 
-        {ProfileRoutes}
-        {RecoverNFIDRoutes}
-
-        <Route path={"*"} element={<NotFound />} />
-      </Routes>
-    </ProfileContext.Provider>
+      <Route path={"*"} element={<NotFound />} />
+    </Routes>
   )
 }
 

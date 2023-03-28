@@ -4,8 +4,7 @@ import { useContext } from "react"
 
 import { Image } from "@nfid-frontend/ui"
 
-import { ProfileContext } from "frontend/App"
-import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
+import { ProfileContext } from "frontend/provider"
 import { Button } from "frontend/ui/atoms/button"
 
 import SendReceiveIcon from "./send_receive.svg"
@@ -13,11 +12,7 @@ import SendReceiveIcon from "./send_receive.svg"
 export const SendReceiveButton = () => {
   const globalServices = useContext(ProfileContext)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, send] = useActor(
-    (globalServices as { transferService: TransferMachineActor })
-      .transferService,
-  )
+  const [, send] = useActor(globalServices.transferService)
   return (
     <div id="sendReceiveButton">
       <Button

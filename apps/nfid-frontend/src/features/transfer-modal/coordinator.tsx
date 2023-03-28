@@ -6,22 +6,18 @@ import { toast } from "react-toastify"
 
 import { BlurredLoader, Tabs } from "@nfid-frontend/ui"
 
-import { ProfileContext } from "frontend/App"
+import { ProfileContext } from "frontend/provider"
 
 import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { TransferSuccess } from "./components/success"
 import { transferTabs } from "./constants"
-import { TransferMachineActor } from "./machine"
 
 export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)
 
-  const [state, send] = useActor(
-    (globalServices as { transferService: TransferMachineActor })
-      .transferService,
-  )
+  const [state, send] = useActor(globalServices.transferService)
 
   React.useEffect(
     () =>

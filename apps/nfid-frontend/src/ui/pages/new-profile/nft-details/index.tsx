@@ -5,11 +5,10 @@ import { useCallback, useContext } from "react"
 import { Image } from "@nfid-frontend/ui"
 import { Application } from "@nfid/integration"
 
-import { ProfileContext } from "frontend/App"
 import { ITransaction } from "frontend/apps/identity-manager/profile/nft-details/utils"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
-import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { link } from "frontend/integration/entrepot"
+import { ProfileContext } from "frontend/provider"
 import { Copy } from "frontend/ui/atoms/copy"
 import { Loader } from "frontend/ui/atoms/loader"
 import Table from "frontend/ui/atoms/table"
@@ -36,11 +35,7 @@ export const ProfileNFTDetailsPage = ({
 }: IProfileNFTDetails) => {
   const globalServices = useContext(ProfileContext)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, send] = useActor(
-    (globalServices as { transferService: TransferMachineActor })
-      .transferService,
-  )
+  const [, send] = useActor(globalServices.transferService)
 
   const onTransferNFT = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {

@@ -11,16 +11,9 @@ import { fetchProfile } from "frontend/integration/identity-manager"
 import { AccountBalance, AppBalance, TokenBalanceSheet } from "../types"
 import { getEthAddress } from "./get-eth-address"
 
-const ROOT_DOMAIN = "nfid.one"
-const ETH_ROOT_ACCOUNT = "account 1"
-
 export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const address = await getEthAddress({
-    anchor: profile.anchor,
-    accountId: ETH_ROOT_ACCOUNT,
-    hostname: ROOT_DOMAIN,
-  })
+  const address = await getEthAddress(profile?.anchor)
   const balance = await ethereumAsset.getBalance(address)
   const principal = (await getWalletDelegation(profile.anchor))
     .getPrincipal()

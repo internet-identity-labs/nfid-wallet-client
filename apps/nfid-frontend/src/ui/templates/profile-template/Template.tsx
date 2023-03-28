@@ -1,11 +1,14 @@
 import clsx from "clsx"
-import { useAtom } from "jotai"
 import React from "react"
 
+<<<<<<< HEAD
 import { ArrowButton, Tooltip, transferModalAtom } from "@nfid-frontend/ui"
 import { Image } from "@nfid-frontend/ui"
+=======
+import { ArrowButton, Tooltip } from "@nfid-frontend/ui"
+>>>>>>> 6d7595e35 (feat(transfer): send/receive for fungible tokens without dip20)
 
-import { ProfileTransferModal } from "frontend/apps/identity-manager/profile/transfer-modal"
+import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileHeader from "frontend/ui/organisms/profile-header"
 import ProfileSidebar from "frontend/ui/organisms/profile-sidebar"
@@ -38,12 +41,11 @@ const ProfileTemplate: React.FC<IProfileTemplate> = ({
   const handleNavigateBack = React.useCallback(() => {
     window.history.back()
   }, [])
-  const [transferModalState] = useAtom(transferModalAtom)
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden")}>
       <ProfileHeader className={clsx("px-4 sm:px-[30px]", headerClassName)} />
-      {transferModalState.isModalOpen && <ProfileTransferModal />}
+      <TransferModalCoordinator />
       <div
         className={clsx(
           "h-[calc(100vh-70px)] relative z-1 px-4",

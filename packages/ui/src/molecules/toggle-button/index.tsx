@@ -1,19 +1,27 @@
 import clsx from "clsx"
+import { useEffect, useState } from "react"
 
-interface IToggleButton extends React.HTMLAttributes<HTMLDivElement> {
+interface IToggleButton {
+  className?: string
   firstValue: string
   secondValue: string
-  value: boolean
-  toggleValue: () => void
+  onChange: (value: boolean) => void
+  defaultValue?: boolean
 }
 
 export const ToggleButton: React.FC<IToggleButton> = ({
   firstValue,
   secondValue,
   className,
-  value,
-  toggleValue,
+  onChange,
+  defaultValue,
 }) => {
+  const [value, setValue] = useState(defaultValue ?? false)
+
+  useEffect(() => {
+    onChange(value)
+  }, [onChange, value])
+
   return (
     <div
       className={clsx(
@@ -21,7 +29,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
         "grid grid-cols-2 relative select-none",
         className,
       )}
-      onClick={toggleValue}
+      onClick={() => setValue(!value)}
     >
       <div
         className={clsx(

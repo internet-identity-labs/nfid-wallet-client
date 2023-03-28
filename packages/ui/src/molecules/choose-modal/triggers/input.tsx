@@ -74,7 +74,9 @@ export const InputTrigger = ({
           {selectedOption ? <IconCmpCancel /> : <IconCmpArrowRight />}
         </div>
       </div>
-      <div className={clsx("text-xs py-1 text-red")}>{errorText}</div>
+      <div className={clsx("absolute mt-[75px]", "text-xs py-1 text-red")}>
+        {errorText}
+      </div>
     </>
   )
 }

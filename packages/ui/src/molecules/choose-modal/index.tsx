@@ -11,6 +11,7 @@ import { ChooseItem } from "./choose-item"
 import { filterGroupedOptionsByTitle, findOptionByValue } from "./helpers"
 import { DefaultTrigger } from "./triggers/default"
 import { InputTrigger } from "./triggers/input"
+import { SmallTrigger } from "./triggers/small"
 import { IGroupedOptions, IGroupOption } from "./types"
 
 export interface IChooseModal {
@@ -20,12 +21,13 @@ export interface IChooseModal {
   infoText?: string
   label?: string
   title: string
-  type?: "default" | "input" | "trigger"
+  type?: "default" | "input" | "trigger" | "small"
   isFirstPreselected?: boolean
   trigger?: JSX.Element
   placeholder?: string
   errorText?: string
   registerFunction?: UseFormRegisterReturn<string>
+  iconClassnames?: string
 }
 
 export const ChooseModal = ({
@@ -41,6 +43,7 @@ export const ChooseModal = ({
   placeholder,
   errorText,
   registerFunction,
+  iconClassnames,
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -69,11 +72,8 @@ export const ChooseModal = ({
       const option = findOptionByValue(optionGroups, preselectedValue)
       setSelectedOption(option)
     } else if (optionGroups.length && !selectedOption && isFirstPreselected) {
-      setSelectedOption(
-        optionGroups[0]?.options?.length
-          ? optionGroups[0]?.options[0]
-          : undefined,
-      )
+      const option = optionGroups[0]?.options[0]
+      setSelectedOption(option)
     }
   }, [optionGroups, isFirstPreselected, preselectedValue])
 
@@ -82,7 +82,7 @@ export const ChooseModal = ({
   }, [selectedValue])
 
   return (
-    <div>
+    <div className="flex flex-col shrink-0">
       {label && <Label className="mb-1">{label}</Label>}
 <<<<<<< HEAD
       <div
@@ -121,11 +121,20 @@ export const ChooseModal = ({
           setSelectedValue={(value) => setSelectedValue(value)}
         />
       ) : type === "trigger" ? (
-        <div onClick={() => setIsModalVisible(true)}>{trigger}</div>
+        <div className="flex shrink-0" onClick={() => setIsModalVisible(true)}>
+          {trigger}
+        </div>
+      ) : type === "small" ? (
+        <SmallTrigger
+          actionHandler={() => setIsModalVisible(true)}
+          selectedOption={selectedOption}
+          iconClassnames={iconClassnames}
+        />
       ) : (
         <DefaultTrigger
           actionHandler={() => setIsModalVisible(true)}
           selectedOption={selectedOption}
+          iconClassnames={iconClassnames}
         />
       )}
 

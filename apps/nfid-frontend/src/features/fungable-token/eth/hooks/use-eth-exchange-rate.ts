@@ -4,7 +4,7 @@ import useSWR from "swr"
 const COINBASE_RATES_URL = `https://api.coinbase.com/v2/exchange-rates`
 const NOT_AVAILABLE = "N/A"
 
-interface IRate {
+export interface IRate {
   [currency: string]: number
 }
 

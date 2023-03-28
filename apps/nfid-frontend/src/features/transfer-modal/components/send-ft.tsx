@@ -1,0 +1,266 @@
+import clsx from "clsx"
+import { validateTransferAmountField } from "packages/ui/src/organisms/transfer-modal/send/utils"
+import { useCallback, useEffect } from "react"
+import { useForm } from "react-hook-form"
+
+import {
+  BlurredLoader,
+  Button,
+  ChooseModal,
+  IconCmpArrowRight,
+  sumRules,
+} from "@nfid-frontend/ui"
+
+import { transformToAddress } from "frontend/apps/identity-manager/profile/transfer-modal/transform-to-address"
+import {
+  TokenConfig,
+  useAllToken,
+} from "frontend/features/fungable-token/use-all-token"
+import {
+  useAllWallets,
+  Wallet,
+} from "frontend/integration/wallet/hooks/use-all-wallets"
+
+import { useTokenOptions } from "../hooks/use-token-options"
+import { useWalletOptions } from "../hooks/use-wallets-options"
+import { makeAddressFieldValidation } from "../utils"
+
+interface ITransferFT {
+  assignToken: (token: TokenConfig) => void
+  assignSourceWallet: (value: string) => void
+  assignReceiverWallet: (value: string) => void
+  assignFromAccount: (value: Wallet) => void
+  assignAmount: (value: string) => void
+  selectedToken?: TokenConfig
+  selectedSourceWallet?: string
+  selectedSourceAccount?: Wallet
+  selectedReceiverWallet?: string
+  onSubmit: () => void
+}
+
+export const TransferFT = ({
+  assignToken,
+  assignSourceWallet,
+  assignReceiverWallet,
+  assignFromAccount,
+  assignAmount,
+  selectedToken,
+  selectedSourceWallet,
+  selectedReceiverWallet,
+  selectedSourceAccount,
+  onSubmit,
+}: ITransferFT) => {
+  const { walletOptions } = useWalletOptions(selectedToken?.currency ?? "ICP")
+  const { tokenOptions } = useTokenOptions()
+  const { token: allTokens } = useAllToken()
+  const { wallets } = useAllWallets()
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setValue,
+    setError,
+    resetField,
+  } = useForm({
+    mode: "all",
+    defaultValues: {
+      amount: "0.00",
+      from: selectedSourceWallet ?? "",
+      to: selectedReceiverWallet ?? "",
+    },
+  })
+
+  const setFullAmount = useCallback(() => {
+    if (!selectedToken || !selectedToken.balance) return
+
+    const amount =
+      BigInt(
+        selectedSourceAccount?.balance[selectedToken.currency] ??
+          selectedToken.fee,
+      ) - selectedToken.fee
+
+    if (amount < 0) {
+      setValue("amount", "0.00")
+      setError("amount", { message: "Insufficient funds" })
+      setTimeout(() => {
+        resetField("amount")
+      }, 2000)
+    } else {
+      resetField("amount")
+      setValue("amount", String(selectedToken.toPresentation(amount)))
+    }
+  }, [
+    selectedToken,
+    selectedSourceAccount?.balance,
+    setValue,
+    setError,
+    resetField,
+  ])
+
+  const handleSelectToken = useCallback(
+    (value: string) => {
+      const token = allTokens.find((t) => t.currency === value)
+      if (!token) return
+
+      assignToken(token)
+      assignSourceWallet("")
+    },
+    [allTokens, assignSourceWallet, assignToken],
+  )
+  const handleSelectWallet = useCallback(
+    (value: string) => {
+      const account = wallets?.find((w) =>
+        [w.principal.toText(), w.ethAddress, w.accountId].includes(value),
+      )
+      if (!account) return
+
+      assignFromAccount(account)
+      assignSourceWallet(value)
+    },
+    [assignFromAccount, assignSourceWallet, wallets],
+  )
+
+  const submit = useCallback(
+    (values: any) => {
+      if (!selectedToken) throw new Error("No selected token")
+      if (values.from === values.to)
+        return setError("to", {
+          type: "value",
+          message: "You can't transfer to the same wallet",
+        })
+      assignAmount(values.amount)
+      assignReceiverWallet(
+        transformToAddress(values.to, selectedToken?.tokenStandard),
+      )
+
+      onSubmit()
+    },
+    [assignAmount, assignReceiverWallet, onSubmit, selectedToken, setError],
+  )
+
+  useEffect(() => {
+    if (!selectedToken && allTokens.length && allTokens[0].balance)
+      assignToken(allTokens[0])
+  }, [allTokens, assignToken, selectedToken])
+
+  useEffect(() => {
+    handleSelectWallet(walletOptions[0].options[0]?.value)
+    setValue("from", walletOptions[0].options[0]?.value)
+  }, [selectedToken]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <BlurredLoader
+      className="p-0 text-xs"
+      overlayClassnames="rounded-xl"
+      isLoading={!selectedToken || !walletOptions || !walletOptions?.length}
+    >
+      <p className="mb-1">Amount to send</p>
+      <span className={clsx("absolute -mt-5 right-5", "text-red-600 text-xs")}>
+        {errors.amount?.message}
+      </span>
+      <div
+        className={clsx(
+          "border rounded-md flex items-center justify-between pl-4 pr-5 h-20",
+          errors.amount ? "border-red-600" : "border-black",
+        )}
+      >
+        <input
+          className={clsx(
+            "min-w-0 text-3xl placeholder:text-black",
+            "outline-none border-none h-[66px] focus:ring-0",
+            "p-0",
+          )}
+          placeholder="0.00"
+          type="number"
+          id="amount"
+          min={0.0}
+          {...register("amount", {
+            required: sumRules.errorMessages.required,
+            validate: validateTransferAmountField(
+              selectedToken?.toPresentation(
+                selectedSourceAccount?.balance[selectedToken.currency],
+              ),
+            ),
+          })}
+        />
+        <ChooseModal
+          optionGroups={tokenOptions}
+          title="Choose an asset"
+          type="trigger"
+          onSelect={handleSelectToken}
+          isFirstPreselected={false}
+          trigger={
+            <div className="flex items-center cursor-pointer shrink-0">
+              <img
+                className="w-[26px] mr-1.5"
+                src={selectedToken?.icon}
+                alt={selectedToken?.currency}
+              />
+              <p className="text-lg font-semibold">{selectedToken?.currency}</p>
+              <IconCmpArrowRight className="ml-4" />
+            </div>
+          }
+        />
+      </div>
+      <div className="flex items-center justify-between mt-2 mb-3.5">
+        <p className={clsx(errors.amount ? "text-red-600" : "text-gray-400")}>
+          Balance:{" "}
+          <span
+            className="text-black underline cursor-pointer decoration-dotted"
+            onClick={setFullAmount}
+          >
+            {selectedToken?.toPresentation(
+              selectedSourceAccount?.balance[selectedToken.currency],
+            )}
+          </span>
+        </p>
+        <p className="text-gray-400">
+          Transfer fee:{" "}
+          {`${selectedToken?.toPresentation(selectedToken?.fee)} ${
+            selectedToken?.currency
+          }`}
+        </p>
+      </div>
+      <div className="mt-4 space-y-5">
+        <ChooseModal
+          label="From"
+          optionGroups={walletOptions}
+          title={"Choose an account"}
+          onSelect={(value) => {
+            setValue("from", value)
+            handleSelectWallet(value)
+          }}
+          preselectedValue={selectedSourceWallet}
+        />
+        <ChooseModal
+          label="To"
+          optionGroups={walletOptions}
+          title={"Choose an account"}
+          onSelect={(value) => {
+            resetField("to")
+            setValue("to", value)
+          }}
+          type="input"
+          placeholder={
+            selectedToken?.tokenStandard === "ICP"
+              ? "Recipient principal or account ID"
+              : "Recipient principal"
+          }
+          isFirstPreselected={false}
+          errorText={errors.to?.message}
+          registerFunction={register("to", {
+            required: "This field cannot be empty",
+            validate: makeAddressFieldValidation(
+              selectedToken?.currency ?? "ICP",
+            ),
+          })}
+        />
+
+        <Button type="primary" block onClick={handleSubmit(submit)}>
+          Send
+        </Button>
+      </div>
+    </BlurredLoader>
+  )
+}

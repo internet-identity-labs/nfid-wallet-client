@@ -5,18 +5,30 @@ import React from "react"
 export interface ITab {
   value: string
   label: JSX.Element | string
-  content: JSX.Element | string
+  content?: JSX.Element | string
 }
 
 export interface TabsProps {
   tabs: ITab[]
   defaultValue?: string
+  onValueChange?: (value: string) => void
+  isFitLine?: boolean
 }
 
-export const Tabs: React.FC<TabsProps> = ({ tabs, defaultValue }) => {
+export const Tabs: React.FC<TabsProps> = ({
+  tabs,
+  defaultValue,
+  onValueChange,
+  isFitLine = true,
+}) => {
   return (
-    <RadixTabs.Root defaultValue={defaultValue}>
-      <RadixTabs.List className="space-x-0.5 flex w-full mb-2">
+    <RadixTabs.Root defaultValue={defaultValue} onValueChange={onValueChange}>
+      <RadixTabs.List
+        className={clsx(
+          "space-x-0.5 flex w-full mb-2",
+          !isFitLine && `grid grid-cols-${tabs.length}`,
+        )}
+      >
         {tabs.map((tab) => (
           <RadixTabs.Trigger
             className={clsx(
@@ -33,7 +45,10 @@ export const Tabs: React.FC<TabsProps> = ({ tabs, defaultValue }) => {
         ))}
         <RadixTabs.Trigger
           disabled
-          className={clsx("pb-1.5 border-b-2 border-black w-full")}
+          className={clsx(
+            "pb-1.5 border-b-2 border-black w-full",
+            !isFitLine && "hidden",
+          )}
           value="empty"
         >
           &nbsp;

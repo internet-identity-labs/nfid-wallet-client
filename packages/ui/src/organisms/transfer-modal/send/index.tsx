@@ -53,13 +53,13 @@ export const TransferModalSend: React.FC<ITransferModalSend> = ({
 }) => {
   return (
     <>
-      <ToggleButton
+      {/* <ToggleButton
         firstValue="Token"
         secondValue="NFT"
         className="mb-6"
         value={tokenType === "nft"}
         toggleValue={toggleTokenType}
-      />
+      /> */}
       <div className={clsx("flex flex-col justify-between flex-grow")}>
         {tokenType === "ft" ? (
           <TransferModalSendToken

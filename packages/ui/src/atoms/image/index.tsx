@@ -1,7 +1,7 @@
 import { isProduction } from "../../utils/is-production"
 
 export const Image = ({ src, ...rest }: any) => {
-  return <img src={getImageUrl(src)} {...rest} />
+  return src ? <img src={getImageUrl(src)} {...rest} /> : <img {...rest} />
 }
 
 export const getImageUrl = (src: string): string => {

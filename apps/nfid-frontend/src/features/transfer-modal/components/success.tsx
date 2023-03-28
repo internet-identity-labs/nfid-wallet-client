@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import React, { useEffect } from "react"
+import React from "react"
 
 import { Button, Image, ImagePngSuccess } from "@nfid-frontend/ui"
 
@@ -14,16 +14,6 @@ export const TransferSuccess: React.FC<ITransferModalSuccess> = ({
   transactionRoute,
   onClose,
 }) => {
-  useEffect(() => {
-    function handler(e: BeforeUnloadEvent) {
-      e.preventDefault()
-      e.stopPropagation()
-      onClose()
-    }
-    window.addEventListener("beforeunload", handler)
-    return () => window.removeEventListener("beforeunload", handler)
-  }, [onClose])
-
   return (
     <div
       className={clsx(

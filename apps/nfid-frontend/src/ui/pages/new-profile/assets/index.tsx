@@ -9,7 +9,7 @@ import { blockchains } from "@nfid/config"
 >>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -33,7 +33,7 @@ type Token = {
 interface IProfileAssetsPage extends React.HTMLAttributes<HTMLDivElement> {
   onIconClick: () => void
   tokens: Token[]
-  nfts?: UserNFTDetails[]
+  nfts?: UserNonFungibleToken[]
 }
 
 const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({

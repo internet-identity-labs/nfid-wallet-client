@@ -48,7 +48,7 @@ export const ChooseModal = ({
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
-  const [selectedValue, setSelectedValue] = useState("")
+  const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
 
   const handleSelect = (option: IGroupOption) => {
     setSelectedValue(option.value)
@@ -74,6 +74,7 @@ export const ChooseModal = ({
     } else if (optionGroups.length && !selectedOption && isFirstPreselected) {
       const option = optionGroups[0]?.options[0]
       setSelectedOption(option)
+      onSelect && option?.value && onSelect(option?.value)
     }
   }, [optionGroups, isFirstPreselected, preselectedValue])
 

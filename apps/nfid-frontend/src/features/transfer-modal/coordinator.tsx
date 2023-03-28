@@ -2,6 +2,7 @@ import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 import React, { useCallback, useContext, useMemo } from "react"
+import { toast } from "react-toastify"
 
 import { BlurredLoader, Tabs } from "@nfid-frontend/ui"
 
@@ -30,6 +31,18 @@ export const TransferModalCoordinator = () => {
       }),
     [state.value, state.context],
   )
+
+  React.useEffect(() => {
+    if (state.context.error?.message?.length) {
+      toast.error(state.context?.error.message, {
+        toastId: "unexpectedTransferError",
+      })
+
+      setTimeout(() => {
+        send({ type: "ASSIGN_ERROR", data: "" })
+      }, 5000)
+    }
+  }, [send, state.context.error])
 
   const Component = useMemo(() => {
     switch (true) {

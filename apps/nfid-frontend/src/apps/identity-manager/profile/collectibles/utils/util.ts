@@ -1,16 +1,16 @@
 import { Account } from "@nfid/integration"
 
 import {
-  EntrepotCollection,
-  UserNFTDetails,
-} from "frontend/integration/entrepot/types"
+  NonFungibleCollection,
+  UserNonFungibleToken,
+} from "frontend/features/non-fungable-token/types"
 
 import { GlauberTS } from "./search"
 
 const sortFuncs: {
-  [key: string]: (a: UserNFTDetails, b: UserNFTDetails) => number
+  [key: string]: (a: UserNonFungibleToken, b: UserNonFungibleToken) => number
 } = {
-  "Token #": (a, b) => a.index - b.index,
+  "Token #": (a, b) => Number(a.index) - Number(b.index),
   Wallet: (a, b) =>
     a.account.label.toLowerCase() < b.account.label.toLowerCase() ? -1 : 1,
   Collection: (a, b) =>
@@ -19,7 +19,7 @@ const sortFuncs: {
 }
 
 export function sortUserTokens(
-  tokens: UserNFTDetails[],
+  tokens: UserNonFungibleToken[],
   fields: string[] = ["Token #"],
 ) {
   const func = sortFuncs[fields[0]]
@@ -28,7 +28,7 @@ export function sortUserTokens(
 }
 
 export function filterUserTokens(
-  tokens: UserNFTDetails[],
+  tokens: UserNonFungibleToken[],
   filters: {
     search?: string
   },
@@ -41,10 +41,10 @@ export function filterUserTokens(
   return result
 }
 
-export function userTokensByWallet(tokens: UserNFTDetails[]) {
+export function userTokensByWallet(tokens: UserNonFungibleToken[]) {
   return tokens.reduce<{
     [key: string]: {
-      tokens: UserNFTDetails[]
+      tokens: UserNonFungibleToken[]
       account: Account
       principal: string
     }
@@ -61,11 +61,11 @@ export function userTokensByWallet(tokens: UserNFTDetails[]) {
   )
 }
 
-export function userTokensByCollection(tokens: UserNFTDetails[]) {
+export function userTokensByCollection(tokens: UserNonFungibleToken[]) {
   return tokens.reduce<{
     [key: string]: {
-      tokens: UserNFTDetails[]
-      collection: EntrepotCollection
+      tokens: UserNonFungibleToken[]
+      collection: NonFungibleCollection
     }
   }>(
     (agg, token) => ({

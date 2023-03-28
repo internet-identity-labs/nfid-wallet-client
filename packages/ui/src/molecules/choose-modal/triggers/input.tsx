@@ -31,7 +31,7 @@ export const InputTrigger = ({
           "border border-black rounded-md cursor-pointer h-14",
           "flex items-center justify-between",
           "text-black pl-4",
-          errorText && "border-red-600 ring ring-red-100",
+          errorText && "!border-red-600 ring ring-red-100",
         )}
       >
         {!selectedOption ? (

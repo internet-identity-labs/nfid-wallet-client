@@ -22,8 +22,8 @@ import { blockchains } from "@nfid/config"
 >>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
 import { Application, getWalletName } from "@nfid/integration"
 
+import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
 import { link } from "frontend/integration/entrepot"
-import { UserNFTDetails } from "frontend/integration/entrepot/types"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -41,7 +41,7 @@ import {
 
 interface CollectiblesPage extends React.HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
-  tokens: UserNFTDetails[]
+  tokens: UserNonFungibleToken[]
   applications: Application[]
 }
 
@@ -157,8 +157,8 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
           <Copy
             value={
               token.blockchain === "Internet Computer"
-                ? link(token.collection.id, token.index)
-                : ""
+                ? link(token.collection.id, Number(token.index))
+                : token.assetFullsize.url
             }
           />
         </div>,
@@ -204,7 +204,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
     return tokensByCollection.map((option) => ({
       label: option.collection.name,
       value: option.collection.id,
-      icon: option.collection.avatar,
+      icon: option.collection?.avatar,
     }))
   }, [tokensByCollections, walletsFilter])
 

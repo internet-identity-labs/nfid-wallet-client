@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
+import { IGroupedOptions } from "../../molecules/choose-modal/types"
 import { TokenOption } from "../select-token/select-token-menu"
 import { TransferModalReceive } from "./receive"
 import { TokenType, TransferModalSend } from "./send"
@@ -30,7 +31,7 @@ interface ITransferModal {
   tokenOptions: TokenOption[]
   tokenType: TokenType
   transactionRoute: string
-  walletOptions: { label: string; value: string; afterLabel: string }[]
+  walletOptions: IGroupedOptions[]
   wallets?: IWallet[]
   modalType: modalTypes
   setModalType: (value: modalTypes) => void
@@ -69,7 +70,7 @@ export const TransferModal: React.FC<ITransferModal> = ({
         "rounded-xl shadow-lg p-5 text-secondary",
         "z-20 bg-white absolute flex flex-col",
         "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
-        "w-[95%] sm:w-[420px] h-[510px]",
+        "w-[95%] sm:w-[420px] h-[540px]",
       )}
       onClick={(e) => e.stopPropagation()}
     >

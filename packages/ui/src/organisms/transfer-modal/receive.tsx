@@ -2,15 +2,18 @@ import clsx from "clsx"
 import { useAtom } from "jotai"
 import { useEffect, useMemo } from "react"
 
+import { ChooseModal } from "@nfid-frontend/ui"
+
 import { Copy } from "../../atoms/copy"
 import { DropdownSelect } from "../../atoms/dropdown-select"
 import { QRCode } from "../../atoms/qrcode"
+import { IGroupedOptions } from "../../molecules/choose-modal/types"
 import { transferModalAtom } from "./state"
 import { IWallet } from "./types"
 
 interface ITransferModalReceive {
   wallets: IWallet[] | undefined
-  walletOptions: { label: string; value: string }[]
+  walletOptions: IGroupedOptions[]
 }
 
 export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
@@ -18,15 +21,6 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
   wallets,
 }) => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
-
-  useEffect(() => {
-    if (wallets?.length && !transferModalState.selectedWallets.length) {
-      setTransferModalState({
-        ...transferModalState,
-        selectedWallets: [wallets[0].principal?.toText() ?? ""],
-      })
-    }
-  }, [setTransferModalState, transferModalState, wallets])
 
   const selectedWallet = useMemo(() => {
     const wallet = wallets?.find((wallet) => {
@@ -38,21 +32,28 @@ export const TransferModalReceive: React.FC<ITransferModalReceive> = ({
     return wallet
   }, [transferModalState.selectedWallets, wallets])
 
+  useEffect(() => {
+    if (walletOptions && !selectedWallet) {
+      setTransferModalState({
+        ...transferModalState,
+        selectedWallets: [walletOptions[0]?.options[0]?.value],
+      })
+    }
+  }, [setTransferModalState, transferModalState, wallets])
+
   return (
     <div className="flex flex-col flex-grow">
       <div className="flex flex-col space-y-2.5 text-black">
-        <DropdownSelect
+        <ChooseModal
           label="Select your account"
-          options={walletOptions ?? []}
-          selectedValues={transferModalState.selectedWallets}
-          setSelectedValues={(value) =>
+          title={"Choose an account"}
+          optionGroups={walletOptions}
+          onSelect={(value) =>
             setTransferModalState({
               ...transferModalState,
-              selectedWallets: value,
+              selectedWallets: [value],
             })
           }
-          isSearch
-          isMultiselect={false}
         />
 
         <div>

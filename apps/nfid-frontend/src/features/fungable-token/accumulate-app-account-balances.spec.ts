@@ -4,8 +4,9 @@
 import { Principal } from "@dfinity/principal"
 
 import { Application } from "@nfid/integration"
-import { AccountBalance } from "@nfid/integration/token/fetch-balances"
 import { E8S, toPresentation } from "@nfid/integration/token/icp"
+
+import { AccountBalance } from "frontend/features/fungable-token/fetch-balances"
 
 import {
   accumulateAppAccountBalance,

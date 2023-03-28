@@ -1,8 +1,8 @@
 import useSWR from "swr"
 
 import { getVaults, getWallets, ObjectState } from "@nfid/integration"
-import { fetchVaultsWalletsBalances } from "@nfid/integration/token/fetch-balances"
 
+import { fetchVaultsWalletsBalances } from "frontend/features/fungable-token/fetch-balances"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 
 import { useVaultDelegation } from "./use-vault-delegation"
@@ -17,7 +17,12 @@ export const useAllVaultsWallets = () => {
       const vaults = await getVaults()
 
       const promisesArray = vaults?.map(async (vault) => {
-        return await getWallets(vault.id)
+        const result = await getWallets(vault.id)
+        return result.map((wallet) => ({
+          ...wallet,
+          vaultId: vault.id,
+          vaultName: vault.name,
+        }))
       })
 
       return (await Promise.all(promisesArray))

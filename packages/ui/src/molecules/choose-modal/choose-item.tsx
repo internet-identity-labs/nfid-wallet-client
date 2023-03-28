@@ -33,7 +33,7 @@ export const ChooseItem = ({
         <Image
           src={image}
           alt={title}
-          className={clsx("mr-2.5", !image && "hidden")}
+          className={clsx("mr-2.5 w-12 h-12 object-cover", !image && "hidden")}
         />
         <div>
           <p className="text-sm">{title}</p>

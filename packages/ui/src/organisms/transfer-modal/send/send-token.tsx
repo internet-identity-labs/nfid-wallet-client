@@ -1,4 +1,6 @@
 import clsx from "clsx"
+import { ChooseModal } from "packages/ui/src/molecules/choose-modal"
+import { IGroupedOptions } from "packages/ui/src/molecules/choose-modal/types"
 import React, { useCallback, useMemo } from "react"
 import { useForm } from "react-hook-form"
 
@@ -40,7 +42,7 @@ interface ITransferModalSendToken {
   selectedWalletId?: string
   tokenConfig: TokenConfig
   tokenOptions: TokenOption[]
-  walletOptions: { label: string; value: string; afterLabel: string }[]
+  walletOptions: IGroupedOptions[]
   wallets?: IWallet[]
 }
 
@@ -156,33 +158,29 @@ export const TransferModalSendToken: React.FC<ITransferModalSendToken> = ({
           </div>
         </div>
         <div className="mt-5 space-y-2 text-black">
-          <DropdownSelect
+          <ChooseModal
             label="From"
-            options={walletOptions ?? []}
-            selectedValues={selectedWalletId ? [selectedWalletId] : []}
-            setSelectedValues={([walletId]) => onSelectWallet(walletId)}
-            isMultiselect={false}
+            title={"Choose an account"}
+            onSelect={(value) => onSelectWallet(value)}
+            preselectedValue={selectedWalletId}
+            optionGroups={walletOptions}
           />
-          <InputDropdown
+          <ChooseModal
             label="To"
+            optionGroups={walletOptions}
+            title={"Choose an account"}
+            onSelect={(value) => setValue("to", value)}
+            type="input"
             placeholder={
               selectedToken.tokenStandard === "ICP"
                 ? "Recipient principal or account ID"
                 : "Recipient principal"
             }
-            options={
-              walletOptions?.filter(
-                (wallet) => wallet.value !== selectedWalletId,
-              ) ?? []
-            }
+            isFirstPreselected={false}
             errorText={errors.to?.message}
             registerFunction={register("to", {
-              validate: makeAddressFieldValidation(
-                selectedToken.tokenStandard === "ICP",
-              ),
               required: "This field cannot be empty",
             })}
-            setValue={(value) => setValue("to", value)}
           />
         </div>
       </div>

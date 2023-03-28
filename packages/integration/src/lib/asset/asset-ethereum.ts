@@ -24,7 +24,7 @@ import {
   AssetTransfersCategory,
   OwnedNftsResponse as AlchemyOwnedNftsResponse,
 } from "alchemy-sdk"
-import { BigNumber, ethers } from "ethers-ts"
+import { ethers } from "ethers-ts"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import {

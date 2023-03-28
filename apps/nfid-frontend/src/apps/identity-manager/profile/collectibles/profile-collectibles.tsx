@@ -18,10 +18,9 @@ import { Image } from "@nfid-frontend/ui"
 import { blockchains } from "@nfid/config"
 import { Application, getWalletName } from "@nfid/integration"
 
-import { ProfileContext } from "frontend/App"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
-import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { link } from "frontend/integration/entrepot"
+import { ProfileContext } from "frontend/provider"
 import NFTPreview from "frontend/ui/atoms/nft-preview"
 import Table from "frontend/ui/atoms/table"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
@@ -50,11 +49,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
 }) => {
   const globalServices = useContext(ProfileContext)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, send] = useActor(
-    (globalServices as { transferService: TransferMachineActor })
-      .transferService,
-  )
+  const [, send] = useActor(globalServices.transferService)
   const [search, setSearch] = React.useState("")
   const [display, setDisplay] = React.useState<"grid" | "table">("grid")
 

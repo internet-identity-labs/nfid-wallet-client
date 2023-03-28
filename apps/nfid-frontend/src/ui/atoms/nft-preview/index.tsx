@@ -7,12 +7,11 @@ import { toast } from "react-toastify"
 import { Image } from "@nfid-frontend/ui"
 import { IconCmpDots, IconPngEthereum } from "@nfid-frontend/ui"
 
-import { ProfileContext } from "frontend/App"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import ICPLogo from "frontend/assets/dfinity.svg"
 import { UserNonFungibleToken } from "frontend/features/non-fungable-token/types"
-import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { link } from "frontend/integration/entrepot"
+import { ProfileContext } from "frontend/provider"
 import useClickOutside from "frontend/ui/utils/use-click-outside"
 
 import copyIcon from "./assets/copy.svg"
@@ -21,11 +20,7 @@ import transferIcon from "./assets/transfer.svg"
 const NFTPreview = (props: UserNonFungibleToken) => {
   const globalServices = useContext(ProfileContext)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, send] = useActor(
-    (globalServices as { transferService: TransferMachineActor })
-      .transferService,
-  )
+  const [, send] = useActor(globalServices.transferService)
 
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
   const ref = useClickOutside(() => setIsTooltipOpen(false))

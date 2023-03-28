@@ -12,10 +12,9 @@ import {
   TableRow,
 } from "@nfid-frontend/ui"
 
-import { ProfileContext } from "frontend/App"
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
-import { TransferMachineActor } from "frontend/features/transfer-modal/machine"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
+import { ProfileContext } from "frontend/provider"
 
 export interface VaultsWalletsTableRowProps {
   address?: string
@@ -42,11 +41,8 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
   const { token: allTokens } = useAllToken()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, send] = useActor(
-    (globalServices as { transferService: TransferMachineActor })
-      .transferService,
-  )
+
+  const [, send] = useActor(globalServices.transferService)
   const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {

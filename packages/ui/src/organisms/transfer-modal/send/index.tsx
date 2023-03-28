@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { IGroupedOptions } from "packages/ui/src/molecules/choose-modal/types"
 import React from "react"
 
 import { ToggleButton } from "../../../molecules/toggle-button"
@@ -27,7 +28,7 @@ interface ITransferModalSend {
   tokenType: TokenType
   tokenConfig: TokenConfig
   wallets?: IWallet[]
-  walletOptions: { label: string; value: string; afterLabel: string }[]
+  walletOptions: IGroupedOptions[]
   nfts: NFT[]
   selectedNFTDetails?: NFT
 }

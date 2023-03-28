@@ -5,6 +5,10 @@
     "declaration": true,
     "types": ["node"]
   },
-  "include": ["**/*.ts", "src/lib/actors.ts.back"],
+  "include": [
+    "**/*.ts",
+    "src/lib/actors.ts.back",
+    "../../apps/nfid-frontend/src/features/fungable-token/fetch-balances.ts"
+  ],
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
 }

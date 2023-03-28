@@ -11,13 +11,20 @@ import {
   TransferModal,
   transferModalAtom,
   modalTypes,
+  IGroupedOptions,
 } from "@nfid-frontend/ui"
+import { groupArrayByField, truncateString } from "@nfid-frontend/utils"
 import {
+  ecdsaSigner,
+  ethereumAsset,
   registerTransaction,
+  replaceActorIdentity,
   TransactionRegisterOptions,
 } from "@nfid/integration"
 import { toPresentation } from "@nfid/integration/token/icp"
 
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
+import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { transferEXT } from "frontend/integration/entrepot/ext"
@@ -38,6 +45,7 @@ import { transformToAddress } from "./transform-to-address"
 export const ProfileTransferModal = () => {
   const [transferModalState, setTransferModalState] = useAtom(transferModalAtom)
   const { profile } = useProfile()
+  const { rates } = useExchangeRates(["ICP", "BTC", "ETH"])
 
   const [successMessage, setSuccessMessage] = useState("")
   const [selectedTokenValue, setSelectedTokenValue] = useState("")
@@ -80,18 +88,47 @@ export const ProfileTransferModal = () => {
   const { nfts } = useAllNFTs()
   const [isLoading, setIsLoading] = useState(false)
 
-  const walletOptions = React.useMemo(() => {
-    return wallets?.map((wallet) => ({
-      label: wallet.label ?? "",
+  const walletOptions: IGroupedOptions[] = React.useMemo(() => {
+    if (!wallets) return []
+
+    const formattedOptions = wallets.map((wallet) => ({
+      title: wallet.label ?? "",
       value: wallet.isVaultWallet
         ? wallet.address ?? ""
         : wallet.principal?.toText(),
-      afterLabel: `${toPresentation(wallet.balance[selectedToken.value])} ${
+      subTitle: truncateString(wallet.principalId, 5),
+      innerTitle: `${toPresentation(wallet.balance[selectedToken.value])} ${
         selectedToken.value
       }`,
+      innerSubtitle: toUSD(
+        toPresentation(wallet.balance[selectedToken.value]),
+        rates[selectedToken.value],
+      ),
       isVaultWallet: wallet.isVaultWallet,
+      vaultId: wallet.vaultId,
+      vaultName: wallet.vaultName,
     }))
-  }, [selectedToken, wallets])
+
+    const publicWallets = formattedOptions.filter((w) => !w.isVaultWallet)
+    const vaultWallets = formattedOptions.filter((w) => w.isVaultWallet)
+    const vaultGroups = groupArrayByField(vaultWallets, "vaultId").map(
+      (group) => ({
+        label: group[0]?.vaultName,
+        options: group,
+      }),
+    )
+
+    if (selectedToken.value === "ETH" || selectedToken.value === "BTC")
+      return [{ label: "Public", options: publicWallets.slice(0, 1) }]
+
+    return [
+      {
+        label: "Public",
+        options: publicWallets,
+      },
+      ...vaultGroups,
+    ] as IGroupedOptions[]
+  }, [rates, selectedToken.value, wallets])
 
   const submitVaultWallet = React.useCallback(
     async (data: TransactionRegisterOptions) => {
@@ -116,7 +153,44 @@ export const ProfileTransferModal = () => {
     [setTransferModalState, transferModalState],
   )
 
+  const submitETH = React.useCallback(
+    async (values: ITransferToken) => {
+      try {
+        setIsLoading(true)
+        const identity = await getWalletDelegation(
+          profile?.anchor ?? 0,
+          "nfid.one",
+          "account 1",
+        )
+        await replaceActorIdentity(ecdsaSigner, identity)
+        const res = await ethereumAsset.transferETH(
+          values.to,
+          String(values.amount),
+        )
+        console.log("transfer ETH", res)
+        setTransferModalState({ ...transferModalState, modalType: "Success" })
+        setSuccessMessage(`You've sent ${values.amount} ETH`)
+        await refreshBalances()
+      } catch (e) {
+        console.log({ e })
+        toast.error("Unexpected error: The transaction has been cancelled", {
+          toastId: "unexpectedTransferError",
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [
+      profile?.anchor,
+      refreshBalances,
+      setTransferModalState,
+      transferModalState,
+    ],
+  )
+
   const onTokenSubmit = async (values: ITransferToken) => {
+    if (selectedToken.value === "ETH") return submitETH(values)
+
     const validAddress = transformToAddress(
       values.to,
       selectedToken.tokenStandard,
@@ -207,7 +281,7 @@ export const ProfileTransferModal = () => {
 
   React.useEffect(() => {
     if (!transferModalState.selectedWallets.length && walletOptions.length)
-      handleSelectWallet(walletOptions[0]?.value)
+      handleSelectWallet(walletOptions[0].options[0]?.value)
   }, [
     handleSelectWallet,
     setTransferModalState,
@@ -269,7 +343,10 @@ export const ProfileTransferModal = () => {
         )}
         onSelectWallet={handleSelectWallet}
         selectedWalletId={transferModalState.selectedWallets[0]}
-        onSelectToken={setSelectedTokenValue}
+        onSelectToken={(value: string) => {
+          setSelectedTokenValue(value)
+          handleSelectWallet(walletOptions[0].options[0]?.value)
+        }}
         tokenOptions={tokenOptions}
         selectedToken={selectedToken}
         modalType={transferModalState.modalType}

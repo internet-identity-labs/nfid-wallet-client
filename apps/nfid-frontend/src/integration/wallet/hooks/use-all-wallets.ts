@@ -3,8 +3,8 @@ import { principalToAddress } from "ictool"
 import React from "react"
 
 import { getWalletName } from "@nfid/integration"
-import { TokenBalance } from "@nfid/integration/token/fetch-balances"
 
+import { TokenBalance } from "frontend/features/fungable-token/fetch-balances"
 import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
@@ -19,6 +19,8 @@ type Wallet = {
   domain: string
   isVaultWallet?: boolean
   address?: string
+  vaultId?: bigint
+  vaultName?: string
 }
 
 export const useAllWallets = () => {
@@ -52,9 +54,9 @@ export const useAllWallets = () => {
           domain: account.domain,
           principal,
           address: address ?? account.accountId,
-          ...rest,
           isVaultWallet: true,
-        })),
+          ...rest,
+        })) ?? [],
       )
     return keepStaticOrder<Wallet>(
       ({ label }) => label ?? "",

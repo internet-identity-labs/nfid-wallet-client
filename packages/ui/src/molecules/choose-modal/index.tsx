@@ -1,25 +1,21 @@
 import clsx from "clsx"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 
 import { Image } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
-import {
-  IconCmpArrow,
-  IconCmpArrowRight,
-  IconCmpInfo,
-  Label,
-  Tooltip,
-} from "@nfid-frontend/ui"
+import { IconCmpArrow, IconCmpInfo, Label, Tooltip } from "@nfid-frontend/ui"
 
 import { ChooseItem } from "./choose-item"
-import { filterGroupedOptionsByTitle } from "./helpers"
+import { filterGroupedOptionsByTitle, findOptionByValue } from "./helpers"
 import { DefaultTrigger } from "./triggers/default"
 import { InputTrigger } from "./triggers/input"
 import { IGroupedOptions, IGroupOption } from "./types"
 
 export interface IChooseModal {
   optionGroups: IGroupedOptions[]
+  preselectedValue?: string
   onSelect?: (value: string) => void
   infoText?: string
   label?: string
@@ -27,10 +23,14 @@ export interface IChooseModal {
   type?: "default" | "input" | "trigger"
   isFirstPreselected?: boolean
   trigger?: JSX.Element
+  placeholder?: string
+  errorText?: string
+  registerFunction?: UseFormRegisterReturn<string>
 }
 
 export const ChooseModal = ({
   optionGroups,
+  preselectedValue,
   onSelect,
   infoText,
   title,
@@ -38,6 +38,9 @@ export const ChooseModal = ({
   type = "default",
   isFirstPreselected = true,
   trigger,
+  placeholder,
+  errorText,
+  registerFunction,
 }: IChooseModal) => {
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -60,9 +63,19 @@ export const ChooseModal = ({
   }, [])
 
   useEffect(() => {
-    if (optionGroups.length && !selectedOption && isFirstPreselected)
-      setSelectedOption(optionGroups[0]?.options[0])
-  }, [optionGroups, isFirstPreselected])
+    if (!optionGroups.length && selectedOption) return
+
+    if (preselectedValue) {
+      const option = findOptionByValue(optionGroups, preselectedValue)
+      setSelectedOption(option)
+    } else if (optionGroups.length && !selectedOption && isFirstPreselected) {
+      setSelectedOption(
+        optionGroups[0]?.options?.length
+          ? optionGroups[0]?.options[0]
+          : undefined,
+      )
+    }
+  }, [optionGroups, isFirstPreselected, preselectedValue])
 
   useEffect(() => {
     onSelect && onSelect(selectedValue)
@@ -99,10 +112,12 @@ export const ChooseModal = ({
 
       {type === "input" ? (
         <InputTrigger
-          placeholder="Recipient principal or account ID"
+          placeholder={placeholder}
           onShowModal={() => setIsModalVisible(true)}
           onClearValue={resetValue}
           selectedOption={selectedOption}
+          errorText={errorText}
+          registerFunction={registerFunction}
           setSelectedValue={(value) => setSelectedValue(value)}
         />
       ) : type === "trigger" ? (
@@ -118,6 +133,7 @@ export const ChooseModal = ({
       <div
         className={clsx(
           "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",
+          "flex flex-col",
           !isModalVisible && "hidden",
         )}
       >
@@ -144,7 +160,7 @@ export const ChooseModal = ({
           onKeyUp={(e) => setSearchInput(e.target.value)}
           className="my-4"
         />
-        <div className="h-full overflow-auto snap-end scroll-pl-1">
+        <div className="flex-1 overflow-auto snap-end scroll-pl-1">
           {filteredOptions.map((group) => (
             <div
               className="mt-6"

@@ -1,7 +1,13 @@
+import { IGroupedOptions } from "packages/ui/src/molecules/choose-modal/types"
 import React, { useMemo } from "react"
 import { useForm } from "react-hook-form"
 
+<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
+=======
+import { ChooseModal } from "@nfid-frontend/ui"
+import { groupArrayByField } from "@nfid-frontend/utils"
+>>>>>>> feea2d104 (feat([sc-6070]): transfer eth)
 
 import { DropdownSelect } from "../../../atoms/dropdown-select"
 import { Button } from "../../../molecules/button"
@@ -10,7 +16,7 @@ import ArrowWhite from "../assets/arrowWhite.svg"
 import { NFT } from "../types"
 import { TransferSendNFTInfo } from "./nft/nft-info"
 import { TransferSendNFTPlaceholder } from "./nft/nft-placeholder"
-import { validateAddressField } from "./utils"
+import { makeAddressFieldValidation, validateAddressField } from "./utils"
 
 export interface ITransferNFT {
   to: string
@@ -22,7 +28,7 @@ interface ITransferModalSendNFT {
   onNFTSubmit: (values: ITransferNFT) => void
   setSelectedNFTs: (nftIds: string[]) => void
   selectedNFTIds: string[]
-  walletOptions?: { label: string; value: string }[]
+  walletOptions: IGroupedOptions[]
   selectedNFTDetails?: NFT
 }
 
@@ -35,11 +41,23 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
   selectedNFTIds,
 }) => {
   const nftOptions = useMemo(() => {
-    return nfts?.map((nft) => ({
-      label: nft.name,
+    const formattedOptions = nfts.map((nft) => ({
+      title: nft.name,
       value: nft.tokenId,
+      subTitle: nft.collection.name,
       icon: nft.assetPreview,
+      walletName: nft?.walletName ?? "",
     }))
+
+    const groupedOptions = groupArrayByField(
+      formattedOptions,
+      "walletName",
+    ).map((group) => ({
+      label: group[0]?.walletName,
+      options: group,
+    }))
+
+    return groupedOptions
   }, [nfts])
 
   const {
@@ -64,31 +82,25 @@ export const TransferModalSendNFT: React.FC<ITransferModalSendNFT> = ({
           <TransferSendNFTPlaceholder />
         )}
         <div className="mt-5 space-y-2 text-black">
-          <DropdownSelect
-            placeholder="Choose NFT"
+          <ChooseModal
             label="NFT to transfer"
-            options={nftOptions}
-            selectedValues={selectedNFTIds}
-            setSelectedValues={setSelectedNFTs}
-            isSearch
-            isMultiselect={false}
+            optionGroups={nftOptions}
+            title="Choose NFT"
+            onSelect={(value) => setSelectedNFTs([value])}
           />
-
-          <InputDropdown
+          <ChooseModal
             label="To"
+            optionGroups={walletOptions}
+            title={"Choose an account"}
+            onSelect={(value) => setValue("to", value)}
+            type="input"
             placeholder="Recipient principal or account ID"
-            options={
-              walletOptions?.filter(
-                (wallet) =>
-                  wallet.value !== selectedNFTDetails?.principal.toText(),
-              ) ?? []
-            }
+            isFirstPreselected={false}
             errorText={errors.to?.message}
             registerFunction={register("to", {
-              validate: validateAddressField,
+              validate: makeAddressFieldValidation(true),
               required: "This field cannot be empty",
             })}
-            setValue={(value) => setValue("to", value)}
           />
         </div>
       </div>

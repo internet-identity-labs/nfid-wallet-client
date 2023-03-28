@@ -26,7 +26,7 @@ export const DefaultTrigger = ({
           <img
             src={selectedOption?.icon}
             alt={selectedOption?.value}
-            className="mr-2.5"
+            className="mr-2.5 w-12 h-12 object-cover"
           />
         )}
         <div className="leading-5">

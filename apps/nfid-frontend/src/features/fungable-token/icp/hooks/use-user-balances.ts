@@ -1,7 +1,6 @@
 import useSWR from "swr"
 
-import { fetchBalances } from "@nfid/integration/token/fetch-balances"
-
+import { fetchBalances } from "frontend/features/fungable-token/fetch-balances"
 import { useAllPrincipals } from "frontend/integration/internet-identity/queries"
 
 import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"

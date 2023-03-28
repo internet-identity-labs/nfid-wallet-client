@@ -9,6 +9,7 @@ import {
   IconPngEthereum,
   IconSvgDfinity,
   IconSvgNFTPreview,
+  Image,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 import { getWalletName } from "@nfid/integration"
@@ -83,7 +84,7 @@ export const TransferNFT = ({
           <div className="flex items-center justify-between w-full h-[131px] p-2 pr-5 border border-black rounded-md">
             <div className="flex items-center">
               <div className="relative flex items-center mr-2.5">
-                <img
+                <Image
                   className="object-cover rounded-sm w-28 h-28"
                   src={selectedNFT?.assetPreview ?? IconSvgNFTPreview}
                   alt={""}
@@ -96,7 +97,7 @@ export const TransferNFT = ({
                     !selectedNFT && "hidden",
                   )}
                 >
-                  <img
+                  <Image
                     className="w-4"
                     src={
                       selectedNFT?.blockchain === "Ethereum"

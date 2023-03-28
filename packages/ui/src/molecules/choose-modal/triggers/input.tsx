@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { IconCmpArrowRight, IconCmpCancel } from "packages/ui/src/atoms/icons"
+import { Image } from "packages/ui/src/atoms/image"
 import { ChangeEvent } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 
@@ -50,7 +51,7 @@ export const InputTrigger = ({
         ) : (
           <div className="flex">
             {selectedOption?.icon && (
-              <img
+              <Image
                 src={selectedOption?.icon}
                 alt={selectedOption?.value}
                 className="mr-2.5"

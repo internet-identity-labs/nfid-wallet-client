@@ -1,13 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
-<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
 
-import { NFTDetails } from "frontend/integration/entrepot/types"
-=======
 import { NonFungibleToken } from "frontend/features/non-fungable-token/types"
->>>>>>> 395f54c84 (feat([sc-6070]): added toast errors)
 import { Loader } from "frontend/ui/atoms/loader"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"
 

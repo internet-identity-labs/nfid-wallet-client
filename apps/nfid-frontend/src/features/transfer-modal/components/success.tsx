@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React, { useEffect } from "react"
 
-import { Button, ImagePngSuccess } from "@nfid-frontend/ui"
+import { Button, Image, ImagePngSuccess } from "@nfid-frontend/ui"
 
 interface ITransferModalSuccess {
   transactionMessage: string
@@ -32,7 +32,7 @@ export const TransferSuccess: React.FC<ITransferModalSuccess> = ({
       )}
     >
       <div className="flex-grow">
-        <img
+        <Image
           className="w-[240px] mx-auto"
           src={ImagePngSuccess}
           alt="success"

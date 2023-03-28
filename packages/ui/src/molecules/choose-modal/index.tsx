@@ -85,31 +85,6 @@ export const ChooseModal = ({
   return (
     <div className="flex flex-col shrink-0">
       {label && <Label className="mb-1">{label}</Label>}
-<<<<<<< HEAD
-      <div
-        className={clsx(
-          "border border-black rounded-md cursor-pointer h-14",
-          "flex items-center justify-between hover:opacity-70",
-          "text-black px-4",
-        )}
-        onClick={() => setIsModalVisible(true)}
-      >
-        <div className="flex">
-          {selectedOption?.icon && (
-            <Image
-              src={selectedOption?.icon}
-              alt={selectedOption?.value}
-              className="mr-2.5"
-            />
-          )}
-          <div className="leading-5">
-            <p className="text-sm">{selectedOption?.title}</p>
-            <p className="text-xs text-gray-400">{selectedOption?.subTitle}</p>
-          </div>
-        </div>
-        <IconCmpArrowRight />
-      </div>
-=======
 
       {type === "input" ? (
         <InputTrigger
@@ -139,7 +114,6 @@ export const ChooseModal = ({
         />
       )}
 
->>>>>>> 9b3306380 (feat([sc-6070]): prepared ChooseModal)
       <div
         className={clsx(
           "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",

@@ -8,6 +8,7 @@ import {
   Button,
   ChooseModal,
   IconCmpArrowRight,
+  Image,
   sumRules,
 } from "@nfid-frontend/ui"
 
@@ -206,7 +207,7 @@ export const TransferFT = ({
           isFirstPreselected={false}
           trigger={
             <div className="flex items-center cursor-pointer shrink-0">
-              <img
+              <Image
                 className="w-[26px] mr-1.5"
                 src={selectedToken?.icon}
                 alt={selectedToken?.currency}

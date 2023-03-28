@@ -14,11 +14,8 @@ import {
   ModalAdvanced,
   Tooltip,
 } from "@nfid-frontend/ui"
-<<<<<<< HEAD
 import { Image } from "@nfid-frontend/ui"
-=======
 import { blockchains } from "@nfid/config"
->>>>>>> fe92fb26c (feat([sc-6069]): blockchains constant)
 import { Application, getWalletName } from "@nfid/integration"
 
 import { ProfileContext } from "frontend/App"

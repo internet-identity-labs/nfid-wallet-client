@@ -1,13 +1,8 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
-<<<<<<< HEAD
-import { useAtom } from "jotai"
-
-import { transferModalAtom } from "@nfid-frontend/ui"
-import { Image } from "@nfid-frontend/ui"
-=======
 import { useContext } from "react"
->>>>>>> 6d7595e35 (feat(transfer): send/receive for fungible tokens without dip20)
+
+import { Image } from "@nfid-frontend/ui"
 
 import { ProfileContext } from "frontend/App"
 import { TransferMachineActor } from "frontend/features/transfer-modal/machine"

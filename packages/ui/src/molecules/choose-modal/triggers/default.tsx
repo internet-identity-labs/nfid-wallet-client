@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { IconCmpArrowRight } from "packages/ui/src/atoms/icons"
+import { Image } from "packages/ui/src/atoms/image"
 
 import { IGroupOption } from "../types"
 
@@ -25,7 +26,7 @@ export const DefaultTrigger = ({
     >
       <div className="flex">
         {selectedOption?.icon && (
-          <img
+          <Image
             src={selectedOption?.icon}
             alt={selectedOption?.value}
             className={clsx("mr-2.5 w-12 h-12 object-cover", iconClassnames)}

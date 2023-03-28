@@ -1,18 +1,21 @@
-import { ethereumAsset } from "@nfid/integration"
+import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
 
-import { getAllEthAddresses } from "./get-all-addresses"
+import { fetchProfile } from "frontend/integration/identity-manager"
+
+import { getEthAddress } from "./get-eth-address"
+
+const ROOT_DOMAIN = "nfid.one"
+const ETH_ROOT_ACCOUNT = "account 1"
 
 export const getAllEthNFTs = async () => {
-  const addresses = await getAllEthAddresses()
+  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  const address = await getEthAddress({
+    anchor: profile.anchor,
+    accountId: ETH_ROOT_ACCOUNT,
+    hostname: ROOT_DOMAIN,
+  })
 
-  const nfts = await Promise.all(
-    addresses.map(async (address) => {
-      const { items } = await ethereumAsset.getItemsByUser({ address })
+  const { items } = await ethereumAsset.getItemsByUser({ address })
 
-      const result = items.map((item) => ({ ...item, owner: address }))
-      return result
-    }),
-  )
-
-  return nfts.flat(1)
+  return items
 }

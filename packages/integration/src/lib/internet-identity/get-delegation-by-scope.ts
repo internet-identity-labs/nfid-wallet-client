@@ -11,6 +11,7 @@ export async function delegationByScope(
   scope: string,
   maxTimeToLive?: bigint,
 ): Promise<DelegationIdentity> {
+  console.debug("delegationByScope", { userNumber, scope, maxTimeToLive })
   const sessionKey = Ed25519KeyIdentity.generate()
 
   const delegation = await fetchDelegate(

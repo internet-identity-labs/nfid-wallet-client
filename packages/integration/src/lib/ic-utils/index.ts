@@ -7,6 +7,7 @@ export function reverseMapDate(number: number): bigint {
 
 export function mapOptional<T>(value: [T] | []): T | undefined {
   if (value.length) return value[0]
+  return undefined
 }
 
 export function reverseMapOptional<T>(value?: T): [] | [T] {

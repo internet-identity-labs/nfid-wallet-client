@@ -61,13 +61,14 @@ function createDelegationState() {
       maxTimeToLive,
     )
     const expiresIn = getExpirationDelay(delegation)
+    const timeout = Math.floor(expiresIn * 0.8)
     const timer = setTimeout(() => {
       console.debug(
         "createDelegationState _setupRefreshingDelegation timeout",
         { anchor, scope },
       )
       _setupRefreshingDelegation(anchor, scope, maxTimeToLive)
-    }, expiresIn - 5000)
+    }, timeout)
     window.addEventListener("beforeunload", () => clearTimeout(timer))
     return delegation
   }

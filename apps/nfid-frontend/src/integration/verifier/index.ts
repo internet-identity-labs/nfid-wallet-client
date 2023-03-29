@@ -1,6 +1,6 @@
-import { verifier } from "@nfid/integration"
+import { mapOptional, verifier } from "@nfid/integration"
 
-import { mapDate, mapOptional } from "../_common"
+import { mapDate } from "../_common"
 import { Certificate as ExternalCertificate } from "../_ic_api/verifier.d"
 
 export interface Certificate {

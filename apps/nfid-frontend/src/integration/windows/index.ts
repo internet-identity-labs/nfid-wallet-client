@@ -1,6 +1,7 @@
+import { SignedDelegation } from "@nfid/integration"
+
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { SignedDelegation } from "../internet-identity"
 import { BuiltDelegate } from "../internet-identity/build-delegate"
 import { hasOwnProperty } from "../internet-identity/utils"
 

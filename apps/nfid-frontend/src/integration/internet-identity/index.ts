@@ -33,7 +33,6 @@ import {
   UserNumber,
 } from "frontend/integration/_ic_api/internet_identity.d"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
-import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
 import { mapVariant } from "../_common"
 import { getBrowserName } from "../device"

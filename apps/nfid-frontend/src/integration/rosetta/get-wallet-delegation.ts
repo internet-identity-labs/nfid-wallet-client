@@ -7,11 +7,10 @@ import {
 } from "@dfinity/identity"
 
 import { WALLET_SCOPE, WALLET_SESSION_TTL } from "@nfid/config"
-
 import {
   delegationIdentityFromSignedIdentity,
   fetchDelegate,
-} from "../internet-identity"
+} from "@nfid/integration"
 
 export async function getWalletDelegation(
   userNumber: number,
@@ -32,7 +31,7 @@ export async function getWalletDelegation(
     maxTimeToLive,
   )
 
-  return await delegationIdentityFromSignedIdentity(
+  return delegationIdentityFromSignedIdentity(
     sessionKey,
     DelegationChain.fromDelegations(
       [

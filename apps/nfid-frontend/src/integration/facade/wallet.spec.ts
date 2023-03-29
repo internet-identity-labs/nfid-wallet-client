@@ -4,13 +4,12 @@
 import { Principal } from "@dfinity/principal"
 import { expect } from "@jest/globals"
 
-import { ii } from "@nfid/integration"
+import { delegationByScope, ii } from "@nfid/integration"
 
 import {
   getWalletDelegation,
   getWalletPrincipal,
 } from "frontend/integration/facade/wallet"
-import { delegationByScope } from "frontend/integration/internet-identity"
 
 describe("wallet suite", () => {
   describe("getWalletPrincipal", () => {

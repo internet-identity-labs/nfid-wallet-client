@@ -10,6 +10,7 @@ import {
   loadProfileFromLocalStorage,
   Icon,
   Profile,
+  fetchDelegate,
 } from "@nfid/integration"
 
 import {
@@ -29,7 +30,6 @@ import {
 import {
   CaptchaChallenge,
   Device,
-  fetchDelegate,
   login,
   lookup,
   registerInternetIdentity,

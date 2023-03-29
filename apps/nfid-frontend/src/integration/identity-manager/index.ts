@@ -8,18 +8,15 @@ import {
   Application,
   Icon,
   im,
+  mapOptional,
   Profile,
+  reverseMapOptional,
 } from "@nfid/integration"
 
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
-import {
-  mapOptional,
-  reverseMapOptional,
-  unpackLegacyResponse,
-  unpackResponse,
-} from "../_common"
+import { unpackLegacyResponse, unpackResponse } from "../_common"
 import {
   AccessPointRequest,
   AccessPointResponse,

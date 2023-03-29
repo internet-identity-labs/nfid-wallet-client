@@ -1,19 +1,17 @@
-import { DerEncodedPublicKey, Signature, SignIdentity } from "@dfinity/agent"
+import { DerEncodedPublicKey, SignIdentity } from "@dfinity/agent"
 import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import {
-  Delegation,
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
   WebAuthnIdentity,
 } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
 import { arrayBufferEqual } from "ictool/dist/bits"
 
-import { WALLET_SESSION_TTL_2_MIN_IN_NS } from "@nfid/config"
 import {
   authState,
   FrontendDelegation,
+  mapOptional,
   requestFEDelegation,
 } from "@nfid/integration"
 import { ii, im, invalidateIdentity, replaceIdentity } from "@nfid/integration"
@@ -37,7 +35,7 @@ import {
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
-import { mapOptional, mapVariant, reverseMapOptional } from "../_common"
+import { mapVariant } from "../_common"
 import { getBrowserName } from "../device"
 import { MultiWebAuthnIdentity } from "../identity/multiWebAuthnIdentity"
 import { getCredentials } from "../webauthn/creation-options"
@@ -790,135 +788,6 @@ export function reconstructIdentity({
 
 // This whole file is a big nightmare. I'm starting again down here. 😂
 
-export interface SignedDelegation {
-  delegation: {
-    expiration: bigint
-    pubkey: PublicKey
-    targets: Principal[] | undefined
-  }
-  signature: Array<number>
-}
-
-/**
- * Prepare a third party auth session.
- * @param userNumber
- * @param scope
- * @param sessionKey session key generated and provided by 3rd party connecting app
- * @param maxTimeToLive
- * @returns public key and timestamp (for lookup)
- */
-export async function prepareDelegate(
-  userNumber: number,
-  scope: string,
-  sessionKey: PublicKey,
-  maxTimeToLive?: bigint,
-) {
-  console.debug("prepareDelegate", {
-    userNumber,
-    scope,
-    sessionKey,
-    maxTimeToLive,
-  })
-  return ii
-    .prepare_delegation(
-      BigInt(userNumber),
-      scope,
-      sessionKey,
-      reverseMapOptional(maxTimeToLive ? maxTimeToLive : undefined),
-    )
-    .then(([userPublicKey, timestamp]) => ({
-      userPublicKey: new Uint8Array(userPublicKey),
-      timestamp: timestamp,
-    }))
-}
-
-/**
- * Retrieve prepared third party auth session.
- * @param userNumber
- * @param scope
- * @param sessionKey
- * @param timestamp
- * @returns signed delegate
- */
-export async function getDelegate(
-  userNumber: number,
-  scope: string,
-  sessionKey: PublicKey,
-  timestamp: bigint,
-): Promise<SignedDelegation> {
-  console.debug("getDelegate", { userNumber, scope, sessionKey, timestamp })
-
-  return ii
-    .get_delegation(BigInt(userNumber), scope, sessionKey, timestamp)
-    .then((r) => {
-      if ("signed_delegation" in r) {
-        return {
-          delegation: {
-            expiration: r.signed_delegation.delegation.expiration,
-            pubkey: r.signed_delegation.delegation.pubkey,
-            targets: mapOptional(r.signed_delegation.delegation.targets),
-          },
-          signature: r.signed_delegation.signature,
-        }
-      }
-      throw new Error("No such delegation")
-    })
-}
-
-export async function getDelegateRetry(
-  userNumber: number,
-  scope: string,
-  sessionKey: PublicKey,
-  timestamp: bigint,
-): Promise<SignedDelegation> {
-  for (let i = 0; i < 10; i++) {
-    try {
-      // Linear backoff
-      await new Promise((resolve) => {
-        setInterval(resolve, 1000 * i)
-      })
-      return await getDelegate(userNumber, scope, sessionKey, timestamp)
-    } catch (e) {
-      console.warn("Failed to retrieve delegation.", e)
-    }
-  }
-  throw new Error(`Failed to retrieve a delegation after ${10} retries.`)
-}
-
-export async function fetchDelegate(
-  userNumber: number,
-  scope: string,
-  sessionKey: PublicKey,
-  maxTimeToLive?: bigint,
-): Promise<ThirdPartyAuthSession> {
-  console.debug("fetchDelegate", {
-    userNumber,
-    scope,
-    sessionKey,
-    maxTimeToLive,
-  })
-  const prepare = await prepareDelegate(
-    userNumber,
-    scope,
-    sessionKey,
-    maxTimeToLive,
-  )
-
-  const signedDelegation = await getDelegateRetry(
-    userNumber,
-    scope,
-    sessionKey,
-    prepare.timestamp,
-  )
-
-  return {
-    scope,
-    anchor: userNumber,
-    signedDelegation,
-    userPublicKey: prepare.userPublicKey,
-  }
-}
-
 export interface CaptchaChallenge {
   pngBase64: string
   challengeKey: string
@@ -1087,55 +956,4 @@ export interface Device {
  */
 export function fetchPrincipal(anchor: number, scope: string) {
   return ii.get_principal(BigInt(anchor), scope)
-}
-
-export const delegationIdentityFromSignedIdentity = (
-  sessionKey: Pick<SignIdentity, "sign">,
-  chain: DelegationChain,
-): DelegationIdentity => {
-  const delegationIdentity = DelegationIdentity.fromDelegation(
-    sessionKey,
-    chain,
-  )
-
-  return delegationIdentity
-}
-
-export const getDelegationChain = (delegation: ThirdPartyAuthSession) => {
-  return DelegationChain.fromDelegations(
-    [
-      {
-        delegation: new Delegation(
-          new Uint8Array(delegation.signedDelegation.delegation.pubkey).buffer,
-          delegation.signedDelegation.delegation.expiration,
-          delegation.signedDelegation.delegation.targets,
-        ),
-        signature: new Uint8Array(delegation.signedDelegation.signature)
-          .buffer as Signature,
-      },
-    ],
-    new Uint8Array(delegation.userPublicKey).buffer as DerEncodedPublicKey,
-  )
-}
-
-export async function delegationByScope(
-  userNumber: number,
-  scope: string,
-  maxTimeToLive?: bigint,
-) {
-  const sessionKey = Ed25519KeyIdentity.generate()
-
-  const delegation = await fetchDelegate(
-    userNumber,
-    scope,
-    Array.from(new Uint8Array(sessionKey.getPublicKey().toDer())),
-    typeof maxTimeToLive === "undefined"
-      ? BigInt(WALLET_SESSION_TTL_2_MIN_IN_NS)
-      : maxTimeToLive,
-  )
-
-  return delegationIdentityFromSignedIdentity(
-    sessionKey,
-    getDelegationChain(delegation),
-  )
 }

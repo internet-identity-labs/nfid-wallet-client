@@ -34,6 +34,7 @@ import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
 import IconSvgTouchId from "./touch-id.svg"
 import IconSvgTransactions from "./transactions.svg"
+import IconSvgTransfer from "./transfer.svg"
 import IconSvgTrash from "./trash.svg"
 import IconSvgUnknown from "./unknown.svg"
 import IconSvgUsb from "./usb.svg"
@@ -80,6 +81,7 @@ export {
   IconSvgAlertCircle,
   ImagePngSuccess,
   IconSvgNFTPreview,
+  IconSvgTransfer,
 }
 
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"

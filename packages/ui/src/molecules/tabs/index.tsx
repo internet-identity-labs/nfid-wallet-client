@@ -6,6 +6,7 @@ export interface ITab {
   value: string
   label: JSX.Element | string
   content?: JSX.Element | string
+  icon?: JSX.Element
 }
 
 export interface TabsProps {
@@ -40,7 +41,10 @@ export const Tabs: React.FC<TabsProps> = ({
             key={`radix_tab_${tab.value}`}
             id={`tab_${tab.value}`}
           >
-            {tab.label}
+            <div className="flex items-center space-x-2">
+              {tab.icon}
+              <p className="text-xl">{tab.label}</p>
+            </div>
           </RadixTabs.Trigger>
         ))}
         <RadixTabs.Trigger

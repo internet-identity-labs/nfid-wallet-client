@@ -136,7 +136,7 @@ export const TransferModalCoordinator = () => {
           "rounded-xl shadow-lg p-5 text-black",
           "z-20 bg-white absolute flex flex-col",
           "left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2",
-          "w-[95%] sm:w-[420px] h-[510px]",
+          "w-[95%] sm:w-[450px] h-[540px]",
         )}
         onClick={(e) => e.stopPropagation()}
       >
@@ -151,7 +151,7 @@ export const TransferModalCoordinator = () => {
         {state.context.direction === "send" && !state.matches("Success") && (
           <ToggleButton
             firstValue="Token"
-            secondValue="NFT"
+            secondValue="Collectible"
             className="mb-6"
             onChange={onTokenTypeChange}
             defaultValue={state.context.tokenType === "nft"}

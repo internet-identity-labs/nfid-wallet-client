@@ -7,6 +7,7 @@ import {
   BlurredLoader,
   Button,
   ChooseModal,
+  IconCmpArrow,
   IconCmpArrowRight,
   Image,
   sumRules,
@@ -159,8 +160,7 @@ export const TransferFT = ({
   )
 
   useEffect(() => {
-    if (!selectedToken && allTokens.length && allTokens[0]?.balance)
-      assignToken(allTokens[0])
+    if (!selectedToken && allTokens.length) assignToken(allTokens[0])
   }, [allTokens, assignToken, selectedToken])
 
   return (
@@ -170,13 +170,10 @@ export const TransferFT = ({
       isLoading={!selectedToken || !walletOptions || !walletOptions?.length}
     >
       <p className="mb-1">Amount to send</p>
-      <span className={clsx("absolute -mt-5 right-5", "text-red-600 text-xs")}>
-        {errors.amount?.message}
-      </span>
       <div
         className={clsx(
           "border rounded-md flex items-center justify-between pl-4 pr-5 h-20",
-          errors.amount ? "border-red-600" : "border-black",
+          errors.amount ? "ring border-red-600 ring-red-100" : "border-black",
         )}
       >
         <input
@@ -271,8 +268,13 @@ export const TransferFT = ({
             ),
           })}
         />
-
-        <Button type="primary" block onClick={handleSubmit(submit)}>
+        <Button
+          className="text-base !mt-[35px]"
+          type="primary"
+          block
+          onClick={handleSubmit(submit)}
+          icon={<IconCmpArrow className="rotate-[135deg]" />}
+        >
           Send
         </Button>
       </div>

@@ -41,6 +41,7 @@ export const InputTrigger = ({
             className={clsx(
               "outline-none bg-transparent w-full h-11",
               "text-sm border-r border-r-gray-200",
+              "placeholder:text-gray-400",
             )}
             placeholder={placeholder}
             onChangeCapture={(e: ChangeEvent<HTMLInputElement>) =>

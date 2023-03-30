@@ -1,4 +1,4 @@
-import { SignedDelegation } from "frontend/integration/internet-identity"
+import { SignedDelegation } from "@nfid/integration"
 
 /**
  * An auth session, signed by the private keys in II, delegating signing authority for a

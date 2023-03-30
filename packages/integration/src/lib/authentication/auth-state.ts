@@ -14,12 +14,11 @@ import { requestFEDelegation } from "../identity/frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 
 interface ObservableAuthState {
-  pendingRenewDelegation?: boolean // is used to determin
+  pendingRenewDelegation?: boolean // is used to determine if a renewal is in progress
   actor?: ActorSubclass<InternetIdentity> // is never really used
-  identity?: SignIdentity // Device Identity (different for each device and browser combination)
   //
+  identity?: SignIdentity // Device Identity (different for each device and browser combination)
   delegationIdentity?: DelegationIdentity // User Identity (unique across all users devices)
-  walletIdentity?: DelegationIdentity // User Identity for the different scopes
   //
   // This is only required to remote authenticate via post message channel
   chain?: DelegationChain

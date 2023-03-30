@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import {
   Button,
   ChooseModal,
+  IconCmpArrow,
   IconCmpArrowRight,
   IconPngEthereum,
   IconSvgDfinity,
@@ -77,7 +78,7 @@ export const TransferNFT = ({
       <ChooseModal
         label="NFT to transfer"
         optionGroups={nftsOptions}
-        title={"Choose an account"}
+        title={"Choose an NFT"}
         onSelect={(value) => setSelectedNFTId(value)}
         iconClassnames="!w-12 !h-12 !object-cover rounded-md"
         trigger={
@@ -131,7 +132,7 @@ export const TransferNFT = ({
         <div className={clsx("rounded-md bg-gray-100 px-2.5 h-14 mt-1")}>
           {selectedNFT ? (
             <div className="flex flex-col justify-center h-full">
-              <p className="text-black">
+              <p className="text-black mb-[3px]">
                 {getWalletName(
                   applicationsMeta ?? [],
                   selectedNFT?.account.domain ?? "",
@@ -141,7 +142,7 @@ export const TransferNFT = ({
               <p>{truncateString(selectedNFT.owner, 40)}</p>
             </div>
           ) : (
-            <p className="leading-[56px]">Your NFT account address</p>
+            <p className="leading-[56px] text-sm">Your NFT account address</p>
           )}
         </div>
       </div>
@@ -167,10 +168,11 @@ export const TransferNFT = ({
         })}
       />
       <Button
-        block
+        className="text-base !mt-[35px]"
         type="primary"
-        className="!mt-5"
+        block
         onClick={handleSubmit(submit)}
+        icon={<IconCmpArrow className="rotate-[135deg]" />}
       >
         Send
       </Button>

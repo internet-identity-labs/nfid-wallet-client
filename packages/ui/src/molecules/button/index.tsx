@@ -90,9 +90,7 @@ export const Button: React.FC<ButtonProps> = ({
     >
       <div className="flex items-center justify-center space-x-2">
         {icon ? (
-          <div className="w-[18px] h-[18px] flex items-center justify-center">
-            {icon}
-          </div>
+          <div className="flex items-center justify-center w-6 h-6">{icon}</div>
         ) : null}
         {children ? <div className="text-center">{children}</div> : null}
       </div>

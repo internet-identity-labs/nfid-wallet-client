@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 
-import { Image } from "@nfid-frontend/ui"
+import { IconCmpSearch, Image } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow, IconCmpInfo, Label, Tooltip } from "@nfid-frontend/ui"
 
@@ -117,7 +117,7 @@ export const ChooseModal = ({
       <div
         className={clsx(
           "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",
-          "flex flex-col",
+          "flex flex-col rounded-xl",
           !isModalVisible && "hidden",
         )}
       >
@@ -140,11 +140,16 @@ export const ChooseModal = ({
         <Input
           type="text"
           placeholder="Search"
-          icon={<IoIosSearch size="20" />}
+          icon={<IconCmpSearch />}
           onKeyUp={(e) => setSearchInput(e.target.value)}
           className="my-4"
         />
-        <div className="flex-1 overflow-auto snap-end scroll-pl-1">
+        <div
+          className={clsx(
+            "flex-1 overflow-auto snap-end scroll-pl-1",
+            "scrollbar scrollbar-thumb-rose-500 scrollbar-track-white",
+          )}
+        >
           {filteredOptions.map((group) => (
             <div
               className="mt-6"

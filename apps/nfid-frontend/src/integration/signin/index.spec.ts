@@ -1,6 +1,8 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 
 import {
+  delegationIdentityFromSignedIdentity,
+  fetchDelegate,
   generateDelegationIdentity,
   ii,
   im,
@@ -21,10 +23,6 @@ import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { createDeviceFactory } from "../device/create-device-factory"
 import { fetchProfile } from "../identity-manager"
 import { delegationChainFromDelegation } from "../identity/delegation-chain-from-delegation"
-import {
-  delegationIdentityFromSignedIdentity,
-  fetchDelegate,
-} from "../internet-identity"
 import { registerIIAccount, registerIIAndIM } from "../test-util"
 
 describe("SignIn with Internet Identity", () => {
@@ -128,7 +126,7 @@ describe("SignIn with Internet Identity", () => {
     )
 
     const derivedDelegationIdentity: DelegationIdentity =
-      await delegationIdentityFromSignedIdentity(
+      delegationIdentityFromSignedIdentity(
         privateIiIdentity,
         delegationChainFromDelegation(privateDelegation),
       )

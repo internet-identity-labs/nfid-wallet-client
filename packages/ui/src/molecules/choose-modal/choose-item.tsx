@@ -25,7 +25,7 @@ export const ChooseItem = ({
     <div
       onClick={handleClick}
       className={clsx(
-        "border-t border-t-gray-100 last:border-b last:border-b-gray-100",
+        "border-t border-t-gray-100 last:border-b last:border-b-gray-100 h-[60px]",
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
         "py-2.5 cursor-pointer",
@@ -38,7 +38,7 @@ export const ChooseItem = ({
           className={clsx("mr-2.5 w-7", iconClassnames, !image && "hidden")}
         />
         <div>
-          <p className="text-sm">{title}</p>
+          <p className="text-sm mb-0.5">{title}</p>
           <p className="text-xs text-gray-400">{subTitle}</p>
         </div>
       </div>

@@ -42,9 +42,5 @@ module.exports = plugin(
         checkMarkColor: "rgb(var(--color-checkMarkColor) / <alpha-value>)",
       },
     },
-    // plugins: [
-    //   // ...
-    //   require("tailwind-scrollbar")({ nocompatible: true }),
-    // ],
   },
 )

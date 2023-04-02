@@ -17,7 +17,6 @@ const testnet = "https://mempool.space/testnet/api/address/"
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress): Promise<ChainBalance> {
     let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
-    console.debug(url)
     const address = walletAddress
       ? walletAddress
       : await new BtcWallet().getBitcoinAddress()

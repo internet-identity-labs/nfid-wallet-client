@@ -14,7 +14,7 @@ import { fetchProfile } from "src/integration/identity-manager"
 import { TransactionRow } from "src/integration/rosetta/select-transactions"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
-import { createAddress, readAddress } from "@nfid/client-db"
+import { storeAddressInLocalCache, readAddressFromLocalCache } from "@nfid/client-db"
 import { btcWallet as btcAPI, replaceActorIdentity } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 
@@ -75,7 +75,7 @@ export const getTransactions = async (
 
 export const getAccIdentifier = async () => {
   const hostname = "btc_" + ROOT_DOMAIN
-  let address = readAddress({
+  let address = readAddressFromLocalCache({
     accountId: BTC_ROOT_ACCOUNT,
     hostname,
   })
@@ -85,8 +85,8 @@ export const getAccIdentifier = async () => {
     const identity = await getWalletDelegation(profile.anchor)
     await replaceActorIdentity(btcAPI, identity)
     principal = identity.getPrincipal().toText()
-    address = await new BtcWallet().getBitcoinAddress()
-    createAddress({ accountId: BTC_ROOT_ACCOUNT, hostname, address })
+    address = await new BtcWallet(identity).getBitcoinAddress()
+    storeAddressInLocalCache({ accountId: BTC_ROOT_ACCOUNT, hostname, address })
   } else {
     principal = await getWalletDelegation(profile?.anchor).then((l) =>
       l.getPrincipal().toText(),

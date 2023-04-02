@@ -20,7 +20,7 @@ type CreateAddressArg = {
   address: string
 }
 
-export const createAddress = ({
+export const storeAddressInLocalCache = ({
   hostname,
   accountId,
   address,
@@ -33,7 +33,7 @@ export const createAddress = ({
   )
 }
 
-export const readAddress = ({
+export const readAddressFromLocalCache = ({
   hostname,
   accountId,
 }: ReadAddressArg): string | undefined => {

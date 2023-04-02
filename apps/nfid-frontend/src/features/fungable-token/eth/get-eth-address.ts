@@ -1,4 +1,4 @@
-import { createAddress, readAddress } from "@nfid/client-db"
+import { storeAddressInLocalCache, readAddressFromLocalCache } from "@nfid/client-db"
 import {
   replaceActorIdentity,
   ecdsaSigner,
@@ -11,7 +11,7 @@ export const getEthAddress = async (anchor: number) => {
   const hostname = "nfid.one"
   const accountId = "0"
 
-  const cachedAddress = readAddress({
+  const cachedAddress = readAddressFromLocalCache({
     accountId: accountId,
     hostname: hostname,
   })
@@ -23,7 +23,7 @@ export const getEthAddress = async (anchor: number) => {
 
   const address = await ethereumAsset.getAddress()
 
-  !cachedAddress && createAddress({ address, accountId, hostname })
+  !cachedAddress && storeAddressInLocalCache({ address, accountId, hostname })
 
   return address
 }

@@ -47,7 +47,9 @@ export class Assets {
       this.assetLabel + `${name.replace(/\s/g, "")}` + "_balance']",
     ).getText()
     expect(expectedBalance).toEqual(balance)
-    let expectedUsd = await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "_usd']").getText()
+    let expectedUsd = await $(
+      this.assetLabel + `${name.replace(/\s/g, "")}` + "_usd']",
+    ).getText()
     expect(expectedUsd).toEqual(usd)
     let expectedCurrency = await $(
       this.assetLabel + `${name}` + "_currency']",

@@ -4,18 +4,18 @@ import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationIdentity } from "@dfinity/identity"
 
 import { KeyPair } from "../_ic_api/ecdsa-signer.d"
-import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors";
+import { btcSigner, ecdsaSigner, replaceActorIdentity } from "../actors"
 import { ic } from "../agent/index"
 import { getTransformedRequest } from "./util"
 
 export enum Chain {
-  BTC = 'BTC',
-  ETH = 'ETH',
+  BTC = "BTC",
+  ETH = "ETH",
 }
 
 export async function registerECDSA(
   identity: DelegationIdentity,
-  chain: Chain
+  chain: Chain,
 ): Promise<string> {
   const url = ic.isLocal ? `/ecdsa_register` : AWS_ECDSA_REGISTER
   const signer = defineSigner(chain)
@@ -35,7 +35,7 @@ export async function registerECDSA(
 
 export async function getPublicKey(
   identity: DelegationIdentity,
-  chain: Chain
+  chain: Chain,
 ): Promise<string> {
   const signer = defineSigner(chain)
   await replaceActorIdentity(signer, identity)
@@ -49,7 +49,7 @@ export async function getPublicKey(
 export async function signECDSA(
   keccak: string,
   identity: DelegationIdentity,
-  chain: Chain
+  chain: Chain,
 ) {
   const url = ic.isLocal ? `/ecdsa_sign` : AWS_ECDSA_SIGN
   const request = await getSignCBORRequest(identity, keccak, chain)
@@ -66,7 +66,7 @@ export async function signECDSA(
 export async function getSignCBORRequest(
   identity: DelegationIdentity,
   keccak: string,
-  chain: Chain
+  chain: Chain,
 ) {
   const fields: QueryFields = {
     methodName: "get_kp",
@@ -81,7 +81,7 @@ export async function getSignCBORRequest(
   return {
     cbor: toHexString(cbor),
     keccak,
-    chain
+    chain,
   }
 }
 
@@ -103,7 +103,10 @@ function defineCanisterId(chain: Chain) {
   }
 }
 
-export async function getRegisterRequest(identity: DelegationIdentity, chain: Chain) {
+export async function getRegisterRequest(
+  identity: DelegationIdentity,
+  chain: Chain,
+) {
   const fields: QueryFields = {
     methodName: "get_principal",
     arg: IDL.encode([IDL.Opt(IDL.Text)], [[]]),
@@ -116,6 +119,6 @@ export async function getRegisterRequest(identity: DelegationIdentity, chain: Ch
   const body = Cbor.encode(request.body)
   return {
     cbor: toHexString(body),
-    chain
+    chain,
   }
 }

@@ -14,7 +14,10 @@ import { fetchProfile } from "src/integration/identity-manager"
 import { TransactionRow } from "src/integration/rosetta/select-transactions"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
-import { storeAddressInLocalCache, readAddressFromLocalCache } from "@nfid/client-db"
+import {
+  storeAddressInLocalCache,
+  readAddressFromLocalCache,
+} from "@nfid/client-db"
 import { btcWallet as btcAPI, replaceActorIdentity } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 

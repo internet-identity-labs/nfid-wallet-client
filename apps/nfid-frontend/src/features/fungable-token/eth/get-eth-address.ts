@@ -1,4 +1,7 @@
-import { storeAddressInLocalCache, readAddressFromLocalCache } from "@nfid/client-db"
+import {
+  storeAddressInLocalCache,
+  readAddressFromLocalCache,
+} from "@nfid/client-db"
 import {
   replaceActorIdentity,
   ecdsaSigner,

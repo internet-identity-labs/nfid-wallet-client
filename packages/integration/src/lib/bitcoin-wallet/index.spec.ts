@@ -4,11 +4,12 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
 import { BigNumber } from "@rarible/utils"
 
+import { mockIdentityA } from "@nfid/integration"
+
 import { btcWallet, replaceActorIdentity } from "../actors"
 import { generateDelegationIdentity } from "../test-utils"
 import { BtcAsset } from "./btc-asset"
 import { BtcWallet } from "./btc-wallet"
-import { mockIdentityA } from "@nfid/integration";
 
 describe.skip("BTC suite", () => {
   jest.setTimeout(200000)

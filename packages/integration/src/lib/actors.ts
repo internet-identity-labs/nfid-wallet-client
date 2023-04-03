@@ -16,6 +16,7 @@ import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"
 import { idlFactory as ecdsaSignerIDL } from "./_ic_api/ecdsa-signer"
 import { _SERVICE as EcdsaSigner } from "./_ic_api/ecdsa-signer.d"
+import { _SERVICE as BtcSigner } from "./_ic_api/ecdsa-signer.d"
 import { idlFactory as ethSecretStorageIDL } from "./_ic_api/eth_secret_storage"
 import { _SERVICE as EthSecretStorage } from "./_ic_api/eth_secret_storage.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
@@ -47,7 +48,7 @@ const canisterConfig = [
   ["Vault", VAULT_CANISTER_ID],
   ["EthSecretStorage", ETH_SECRET_STORAGE_CANISTER_ID],
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
-  ["Btc", BITCOIN_WALLET_CANISTER_ID],
+  ["BtcSigner", BTC_SIGNER_CANISTER_ID],
 ]
 
 export const accessList = [
@@ -118,6 +119,11 @@ export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(
     agent: new HttpAgent({ ...agentBaseConfig }),
   },
 )
+
+export const btcSigner = Agent.Actor.createActor<BtcSigner>(ecdsaSignerIDL, {
+  canisterId: BTC_SIGNER_CANISTER_ID,
+  agent: new HttpAgent({ ...agentBaseConfig }),
+})
 
 export const btcWallet = Agent.Actor.createActor<Btc>(btcIDL, {
   canisterId: BITCOIN_WALLET_CANISTER_ID,

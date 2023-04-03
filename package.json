@@ -89,7 +89,8 @@
     "uuid": "8.3.2",
     "web3modal": "^1.9.10",
     "wouter": "2.9.0",
-    "xstate": "^4.32.1"
+    "xstate": "^4.32.1",
+    "bitcoinjs-lib": "5.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.12.13",

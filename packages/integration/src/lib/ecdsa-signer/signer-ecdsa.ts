@@ -1,12 +1,12 @@
 import { ActorMethod } from "@dfinity/agent";
 import { Bytes, ethers, Signer, TypedDataDomain, TypedDataField } from "ethers";
 import { Provider, TransactionRequest } from "@ethersproject/abstract-provider";
-import { hashMessage, keccak256, resolveProperties, hexlify } from "ethers/lib/utils";
+import { hashMessage, hexlify, keccak256, resolveProperties } from "ethers/lib/utils";
 import { joinSignature } from "@ethersproject/bytes";
 import { serialize } from "@ethersproject/transactions";
 import { UnsignedTransaction } from "ethers-ts";
 import { SignTypedDataVersion, TypedDataUtils, TypedMessage } from "@metamask/eth-sig-util";
-import { getPublicKey, signECDSA } from "../lambda/ecdsa";
+import { Chain, getPublicKey, signECDSA } from "../lambda/ecdsa";
 import { DelegationIdentity } from "@dfinity/identity";
 
 const ABI_721 = [
@@ -30,7 +30,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
   async getAddress(): Promise<string> {
     if (!this.walletIdentity){
       throw Error("Empty wallet identity")
-    }    return getPublicKey(this.walletIdentity)
+    }    return getPublicKey(this.walletIdentity, Chain.ETH)
       .then(ethers.utils.computeAddress);
   }
 
@@ -39,7 +39,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
       throw Error("Empty wallet identity")
     }
     const keccakHash = hashMessage(message);
-    return signECDSA(keccakHash, this.walletIdentity)
+    return signECDSA(keccakHash, this.walletIdentity, Chain.ETH)
       .then(joinSignature);
   }
 
@@ -52,7 +52,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
         delete tx.from;
       }
       const keccakHash = keccak256(serialize(<UnsignedTransaction>tx));
-      return signECDSA(keccakHash, this.walletIdentity)
+      return signECDSA(keccakHash, this.walletIdentity, Chain.ETH)
         .then(async signature => {
           return serialize(<UnsignedTransaction>tx, signature);
         });
@@ -73,7 +73,7 @@ export class EthWalletV2<T = Record<string, ActorMethod>> extends Signer {
       { types, primaryType, domain, message },
       SignTypedDataVersion.V4
     );
-    return signECDSA(hexlify(typedDataHash), this.walletIdentity)
+    return signECDSA(hexlify(typedDataHash), this.walletIdentity, Chain.ETH)
       .then(async signature => {
         return joinSignature(signature);
       });

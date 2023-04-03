@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { toBn } from "@rarible/utils"
 
 import { getPrice } from "../asset/asset"
@@ -15,12 +16,14 @@ const mainnet = "https://mempool.space/api/address/"
 const testnet = "https://mempool.space/testnet/api/address/"
 
 export const BtcAsset: FungibleAsset = {
-  async getBalance(walletAddress): Promise<ChainBalance> {
+  async getBalance(walletAddress, delegation): Promise<ChainBalance> {
     let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
-    console.debug(url)
+    if (!walletAddress || !delegation) {
+      throw new Error("Can not get BTC activity")
+    }
     const address = walletAddress
       ? walletAddress
-      : await new BtcWallet().getBitcoinAddress()
+      : await new BtcWallet(delegation).getBitcoinAddress()
     url += `${address}`
     const response = await fetch(url)
 
@@ -46,13 +49,18 @@ export const BtcAsset: FungibleAsset = {
 
   async getFungibleActivityByTokenAndUser(
     request: FungibleActivityRequest,
+    delegation?: DelegationIdentity,
   ): Promise<FungibleActivityRecords> {
     const size = request.size ? request.size : Number.MAX_VALUE
     const activities: FungibleActivityRecord[] = []
     let cursor = request.cursor
+    if (!request.address || !delegation) {
+      throw new Error("Can not get BTC activity")
+    }
     const address = request.address
       ? request.address
-      : await new BtcWallet().getBitcoinAddress()
+      : await new BtcWallet(delegation).getBitcoinAddress()
+
     let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
     url += `${address}/txs`
     for (;;) {

@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { BigNumber } from "@rarible/utils"
 import { Network } from "alchemy-sdk"
@@ -21,9 +22,13 @@ declare type NonFungibleAsset = FungibleAsset & {
 }
 
 declare type FungibleAsset = {
-  getBalance(address?: string): Promise<ChainBalance>
+  getBalance(
+    address?: string,
+    delegation?: DelegationIdentity,
+  ): Promise<ChainBalance>
   getFungibleActivityByTokenAndUser(
     request: FungibleActivityRequest,
+    delegation?: DelegationIdentity,
   ): Promise<FungibleActivityRecords>
 }
 

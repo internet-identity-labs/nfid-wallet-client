@@ -1,7 +1,7 @@
 import { getScope } from "@nfid/integration"
 
 import { STORAGE_KEY } from "./constants"
-import { createAddress, readAddress } from "./repo"
+import { storeAddressInLocalCache, readAddressFromLocalCache } from "./repo"
 
 describe("address repo", () => {
   const mockedLocalStorage = {
@@ -26,7 +26,7 @@ describe("address repo", () => {
       [scope]: address,
     }
 
-    createAddress({
+    storeAddressInLocalCache({
       hostname: "example.com",
       accountId: "123",
       address,
@@ -47,7 +47,7 @@ describe("address repo", () => {
     }
     mockedLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(cache))
 
-    const result = readAddress({
+    const result = readAddressFromLocalCache({
       hostname: "example.com",
       accountId: "123",
     })

@@ -18,12 +18,13 @@ const testnet = "https://mempool.space/testnet/api/address/"
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress, delegation): Promise<ChainBalance> {
     let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
-    if (!walletAddress || !delegation) {
-      throw new Error("Can not get BTC activity")
+    let address: string
+    if (!walletAddress) {
+      if (!delegation) throw new Error("Can not get BTC activity")
+      address = await new BtcWallet(delegation).getBitcoinAddress()
+    } else {
+      address = walletAddress
     }
-    const address = walletAddress
-      ? walletAddress
-      : await new BtcWallet(delegation).getBitcoinAddress()
     url += `${address}`
     const response = await fetch(url)
 
@@ -54,13 +55,13 @@ export const BtcAsset: FungibleAsset = {
     const size = request.size ? request.size : Number.MAX_VALUE
     const activities: FungibleActivityRecord[] = []
     let cursor = request.cursor
-    if (!request.address || !delegation) {
-      throw new Error("Can not get BTC activity")
+    let address: string
+    if (!request.address) {
+      if (!delegation) throw new Error("Can not get BTC activity")
+      address = await new BtcWallet(delegation).getBitcoinAddress()
+    } else {
+      address = request.address
     }
-    const address = request.address
-      ? request.address
-      : await new BtcWallet(delegation).getBitcoinAddress()
-
     let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
     url += `${address}/txs`
     for (;;) {

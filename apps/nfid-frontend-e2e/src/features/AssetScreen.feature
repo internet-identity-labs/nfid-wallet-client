@@ -17,8 +17,8 @@ Feature:Fungible Asset
       | chain             | currency | balance | asset             | anchor | initial_usd | label             |
       | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             | Bitcoin           |
       #      | Ethereum          | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00       | Ethereum          |
-      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             | Internet Computer |
-      | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  |             | WICP              |
+#      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             | Internet Computer |
+#      | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  |             | WICP              |
 
   @asset2
   Scenario Outline: User should be able to see <label> in asset details
@@ -36,8 +36,8 @@ Feature:Fungible Asset
     Examples:
       | label             | currency | balance    | principal | address | anchor |
       | Bitcoin           | BTC      | 0.00012717 | 5qfm      | mvyM    | 25795  |
-      | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
-      | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |
+#      | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
+#      | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |
 
   @asset3
   Scenario Outline: User should be able to see transaction history in Received

@@ -8,7 +8,7 @@ const mainnet = "https://api.blockcypher.com/v1/btc/main/txs/push";
 const testnet = "https://api.blockcypher.com/v1/btc/test3/txs/push";
 
 export class BtcWallet {
-  private walletIdentity?: DelegationIdentity;
+  private readonly walletIdentity?: DelegationIdentity;
 
   constructor(identity?: DelegationIdentity) {
     this.walletIdentity = identity;
@@ -47,8 +47,8 @@ export class BtcWallet {
   }
 
   async computeTransaction(address: string, transactionValue: number, targetAddress: string) {
-    const apiEndpoint = `https://api.blockcypher.com/v1/btc/test3/addrs/${address}/full`;
-    const response = await fetch(apiEndpoint);
+    const url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet;
+    const response = await fetch(url);
     const json = await response.json();
     const inputs = json.txs.map((tx: any) => ({
       txid: tx.hash,

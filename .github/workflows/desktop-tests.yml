@@ -163,7 +163,7 @@ jobs:
 
       - name: Running E2E test
         run: |
-          npx nx clean nfid-frontend-e2e &&
+          npx nx clean nfid-frontend-e2e
           IS_HEADLESS='true' npx env-cmd -f .env.${{ github.event.inputs.env || 'dev' }} nx test:e2e nfid-frontend-e2e
         env:
           URL_AWS_USER_E2E_GOOGLE: ${{secrets.URL_AWS_USER_E2E_GOOGLE}}

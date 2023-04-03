@@ -17,8 +17,8 @@ Feature:Fungible Asset
       | chain             | currency | balance | asset             | anchor | initial_usd | label             |
       | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             | Bitcoin           |
       #      | Ethereum          | ETH      | 0 ETH   | Ethereum          | 10974  | $0.00       | Ethereum          |
-#      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             | Internet Computer |
-#      | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  |             | WICP              |
+      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             | Internet Computer |
+      | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  |             | WICP              |
 
   @asset2
   Scenario Outline: User should be able to see <label> in asset details
@@ -35,9 +35,9 @@ Feature:Fungible Asset
     And Account balance in USD not empty
     Examples:
       | label             | currency | balance    | principal | address | anchor |
-      | Bitcoin           | BTC      | 0.00012717 | 5qfm      | mvyM    | 25795  |
-#      | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
-#      | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |
+      | Bitcoin           | BTC      | 0.00006879 | 5qfm      | mn9c    | 25795  |
+      | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
+      | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |
 
   @asset3
   Scenario Outline: User should be able to see transaction history in Received
@@ -54,7 +54,7 @@ Feature:Fungible Asset
     And Date is <millis>
     Examples:
       | label             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
-      | Bitcoin           | BTC      | 0.00012717 | 1677707789000 | tb1qxzwaumt2cjddwjwsnvwm9jsmmzyhjvdqn7q4p4                       | mvyMknk9BfFAQp8tuErvozWaB6BsDtB2v1                               | 25795  |
+      | Bitcoin           | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre                              | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h                               | 25795  |
       | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
 
   @asset4

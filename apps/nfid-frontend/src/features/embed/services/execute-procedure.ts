@@ -13,16 +13,6 @@ type ExecuteProcedureServiceContext = CommonContext & {
   populatedTransaction: TransactionRequest
 }
 
-export function removeEmptyKeys(data: { [key: string]: unknown }) {
-  return Object.keys(data).reduce(
-    (acc, key) => ({
-      ...acc,
-      ...(data[key] ? { [key]: data[key] } : {}),
-    }),
-    {},
-  )
-}
-
 export const ExecuteProcedureService = async ({
   populatedTransaction,
   rpcMessage,
@@ -60,9 +50,6 @@ export const ExecuteProcedureService = async ({
       return response
     }
     case "eth_sendTransaction": {
-      const data = removeEmptyKeys(rpcMessage?.params[0])
-      console.debug("ExecuteProcedureService eth_sendTransaction", { data })
-
       const { wait, ...result } = await adapter.sendTransaction(
         populatedTransaction,
         delegation,

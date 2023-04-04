@@ -10,8 +10,6 @@ import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
 
-import { removeEmptyKeys } from "./execute-procedure"
-
 export const RPC_BASE = { jsonrpc: "2.0" }
 
 interface RPCBase {
@@ -142,4 +140,14 @@ async function populateTransactionData(
   } catch (e) {
     return e as Error
   }
+}
+
+function removeEmptyKeys(data: { [key: string]: unknown }) {
+  return Object.keys(data).reduce(
+    (acc, key) => ({
+      ...acc,
+      ...(data[key] ? { [key]: data[key] } : {}),
+    }),
+    {},
+  )
 }

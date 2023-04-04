@@ -230,8 +230,13 @@ When(/^User goes to recover account with FAQ$/, async () => {
 })
 
 When(/^User authenticates with a phrase/, async function () {
-  let testUser: TestUser = this.testUser
-  await RecoveryPage.recoverAccountWithThePhrase(testUser.seed)
+  for (let i = 0; i < userClient.userMap.size; i++) {
+    if (userClient.userMap.get(userClient.users[i]) === false) {
+      await userClient.takeUser(userClient.users[i])
+      this.testUserSeed = userClient.users[i]
+    }
+  }
+  await RecoveryPage.recoverAccountWithThePhrase(this.testUserSeed.seed)
 })
 
 When(/^I (click|doubleclick) on the (link|selector) ([^"]*)?$/, clickElement)

@@ -1,6 +1,6 @@
 Feature: Sign in
 
-  @onlythis
+  
   Scenario: User Signs In with predefined credentials
     Given User opens NFID site
     And User is already authenticated with

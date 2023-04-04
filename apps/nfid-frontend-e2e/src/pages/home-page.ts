@@ -101,6 +101,7 @@ export class HomePage extends Page {
         timeoutMsg: "Sign In button is not clickable!",
       })
       await this.signInButton[index].click()
+      await $(".//div[contains(text(),'Loading')]").waitForDisplayed({ interval: 8000, reverse: true })
       try {
         // handles the situation with Registration ceremony
         // https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client

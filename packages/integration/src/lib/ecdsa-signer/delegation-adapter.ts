@@ -5,6 +5,7 @@ import {
 } from "@ethersproject/abstract-provider"
 import { TypedMessage } from "@metamask/eth-sig-util"
 import { Alchemy, Network } from "alchemy-sdk"
+import { debug } from "console"
 import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
 
@@ -37,52 +38,54 @@ export class DelegationWalletAdapter {
   async populateTransaction(
     transaction: TransactionRequest,
     delegation: DelegationIdentity,
-  ): Promise<TransactionRequest | Error> {
+  ): Promise<[TransactionRequest, Error | undefined]> {
     this.wallet.replaceIdentity(delegation)
     const provider = this.getProvider()
     if (!provider) throw new Error("provider missing")
     this.wallet._checkProvider("sendTransaction")
 
-    let tx
+    let tx: TransactionRequest
+    let err: Error | undefined
+    let gasLimit
+    const gasPrice = await provider.getGasPrice()
+
     for (let index = 0; index <= 3; index++) {
       try {
-        return (tx = await this.wallet.populateTransaction(transaction))
+        tx = await this.wallet.populateTransaction(transaction)
+        return [tx, err]
       } catch (error) {
-        const gasPrice = await provider.getGasPrice()
         const alchemy = new Alchemy({
           apiKey: ALCHEMY_API_KEY,
           network: Network.ETH_GOERLI,
         })
-        let gasLimit
         try {
           gasLimit = await alchemy.core.estimateGas(transaction)
         } catch (error) {
-          return Error(
+          gasLimit = ethers.utils.parseEther("0.7").div(gasPrice)
+          err = Error(
             "Network is busy, the provider cannot estimate gas for transaction.",
           )
         }
-
-        const nonce = await provider.getTransactionCount(
-          transaction.from || "",
-          "pending",
-        )
-        tx = {
-          from: transaction.from,
-          to: transaction.to,
-          data: transaction.data,
-          value: transaction.value,
-          nonce,
-          gasLimit,
-          gasPrice,
-        }
-        return tx
       }
     }
-    return Error("Cannot populate data for transaction")
+    const nonce = await provider.getTransactionCount(
+      transaction.from || "",
+      "pending",
+    )
+    tx = {
+      from: transaction.from,
+      to: transaction.to,
+      data: transaction.data,
+      value: transaction.value,
+      nonce,
+      gasLimit,
+      gasPrice,
+    }
+    return [tx, err]
   }
 
   async sendTransaction(
-    transaction: TransactionRequest,
+    [transaction, _]: [TransactionRequest, Error | undefined],
     delegation: DelegationIdentity,
   ): Promise<TransactionResponse> {
     this.wallet.replaceIdentity(delegation)

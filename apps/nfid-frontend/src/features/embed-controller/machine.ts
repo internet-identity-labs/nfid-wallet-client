@@ -25,7 +25,7 @@ export type EmbedControllerContext = {
   data?: any
   method?: string
   error?: Error
-  populatedTransaction?: TransactionRequest | Error
+  populatedTransaction?: [TransactionRequest, Error]
 }
 
 type ErrorEvents =

@@ -33,7 +33,7 @@ interface IBuyComponent {
   data?: any
   feeMin?: string
   feeMax?: string
-  populatedTransaction?: TransactionRequest | Error
+  populatedTransaction?: [TransactionRequest, Error | undefined]
 }
 
 export const DeployComponent = ({
@@ -62,7 +62,7 @@ export const DeployComponent = ({
   )
 
   const price = useMemo(() => {
-    return calcPriceDeployCollection(populatedTransaction, rates)
+    return calcPriceDeployCollection(rates, populatedTransaction)
   }, [rates, populatedTransaction])
 
   return (

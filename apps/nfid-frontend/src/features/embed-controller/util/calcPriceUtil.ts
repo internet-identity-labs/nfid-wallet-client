@@ -5,10 +5,12 @@ import { BigNumber } from "ethers/lib/ethers"
 import { IRate } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 
 export function calcPrice(
-  populatedTransaction: TransactionRequest | Error | undefined,
   rates: IRate,
+  populatedTransaction?: [TransactionRequest, Error | undefined],
 ) {
-  if (!rates["ETH"] || !populatedTransaction)
+  let error
+
+  if (!rates["ETH"] || !populatedTransaction || !populatedTransaction[0])
     return {
       fee: "0",
       feeUsd: "0",
@@ -17,20 +19,21 @@ export function calcPrice(
       price: "0",
     }
 
-  if (populatedTransaction instanceof Error) {
-    return {
-      fee: "N/A",
-      feeUsd: "N/A",
-      total:
-        (populatedTransaction as any).reason || populatedTransaction.message,
-      totalUsd: "N/A",
-      price: "N/A",
+  const [transaction, err] = populatedTransaction
+
+  debugger
+
+  if (err) {
+    error = {
+      message: (err as any).reason || err.message,
     }
   }
 
-  const gasLimit = BigNumber.from(populatedTransaction?.gasLimit)
-  const maxFeePerGas = BigNumber.from(populatedTransaction?.maxFeePerGas)
-  const price = BigNumber.from(populatedTransaction?.value)
+  const gasLimit = BigNumber.from(transaction?.gasLimit)
+  const maxFeePerGas = BigNumber.from(
+    transaction?.maxFeePerGas ?? transaction?.gasPrice,
+  )
+  const price = BigNumber.from(transaction?.value)
   const fee = gasLimit.mul(maxFeePerGas)
   const total = price.add(fee)
   const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rates["ETH"]
@@ -41,5 +44,6 @@ export function calcPrice(
     total: ethers.utils.formatEther(total),
     totalUsd: totalUsd.toFixed(2),
     price: ethers.utils.formatEther(price),
+    error,
   }
 }

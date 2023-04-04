@@ -10,7 +10,7 @@ import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
 
 type ExecuteProcedureServiceContext = CommonContext & {
-  populatedTransaction: TransactionRequest
+  populatedTransaction: [TransactionRequest, Error | undefined]
 }
 
 export const ExecuteProcedureService = async ({

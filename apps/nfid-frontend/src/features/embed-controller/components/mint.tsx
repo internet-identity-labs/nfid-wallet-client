@@ -31,7 +31,7 @@ interface IMintComponent {
   fromAddress?: string
   toAddress?: string
   data?: any
-  populatedTransaction?: TransactionRequest | Error
+  populatedTransaction?: [TransactionRequest, Error | undefined]
 }
 
 export const MintComponent = ({
@@ -60,7 +60,7 @@ export const MintComponent = ({
   )
 
   const price = useMemo(() => {
-    return calcPrice(populatedTransaction, rates)
+    return calcPrice(rates, populatedTransaction)
   }, [rates, populatedTransaction])
 
   return (

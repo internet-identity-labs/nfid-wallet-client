@@ -9,7 +9,7 @@ export type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
-  populatedTransaction?: TransactionRequest | Error
+  populatedTransaction?: [TransactionRequest, Error | undefined]
   onConfirm: (data?: any) => void
   onReject: (reason?: any) => void
 }

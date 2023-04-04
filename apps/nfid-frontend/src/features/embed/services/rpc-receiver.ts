@@ -62,7 +62,7 @@ type ProcedureDetails = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   origin: string
-  populatedTransaction?: TransactionRequest | Error
+  populatedTransaction?: [TransactionRequest, Error | undefined]
 }
 
 export type ProcedureCallEvent = {
@@ -81,7 +81,6 @@ export const RPCReceiverV2 =
               data: { rpcMessage, origin },
             })
           case "eth_sendTransaction":
-          case "eth_signTypedData_v4":
             const rpcMessageDecoded = await decodeMessage(rpcMessage)
             const adapter = new DelegationWalletAdapter(
               "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ",
@@ -90,8 +89,6 @@ export const RPCReceiverV2 =
               adapter,
               rpcMessage,
             )
-
-            console.debug("RPCReceiverV2.send", { populatedTransaction })
             return send({
               type: "RPC_MESSAGE",
               data: {
@@ -99,6 +96,16 @@ export const RPCReceiverV2 =
                 rpcMessageDecoded,
                 origin,
                 populatedTransaction,
+              },
+            })
+          case "eth_signTypedData_v4":
+            const rpcMessageDecodedTypedData = await decodeMessage(rpcMessage)
+            return send({
+              type: "RPC_MESSAGE",
+              data: {
+                rpcMessage,
+                rpcMessageDecoded: rpcMessageDecodedTypedData,
+                origin,
               },
             })
           default:
@@ -125,7 +132,7 @@ const decodeMessage = async (
 async function populateTransactionData(
   adapter: DelegationWalletAdapter,
   rpcMessage: RPCMessage,
-): Promise<TransactionRequest | Error> {
+): Promise<[TransactionRequest, Error | undefined]> {
   const data = removeEmptyKeys(rpcMessage?.params[0])
   const hostname = "nfid.one"
   const accountId = "0"
@@ -135,11 +142,7 @@ async function populateTransactionData(
     hostname,
     accountId,
   )
-  try {
-    return adapter.populateTransaction(data, delegation)
-  } catch (e) {
-    return e as Error
-  }
+  return adapter.populateTransaction(data, delegation)
 }
 
 function removeEmptyKeys(data: { [key: string]: unknown }) {

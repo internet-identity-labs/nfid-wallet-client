@@ -31,7 +31,7 @@ interface IBuyComponent {
   fromAddress?: string
   toAddress?: string
   data?: any
-  populatedTransaction?: TransactionRequest | Error
+  populatedTransaction?: [TransactionRequest, Error | undefined]
 }
 
 export const BuyComponent: React.FC<IBuyComponent> = ({
@@ -53,14 +53,12 @@ export const BuyComponent: React.FC<IBuyComponent> = ({
   })
 
   const isButtonDisabled = useMemo(
-    () =>
-      (!isButtonDisabledProp ? isButtonDisabledProp : counter > 0) ||
-      populatedTransaction instanceof Error,
-    [counter, isButtonDisabledProp, populatedTransaction],
+    () => (!isButtonDisabledProp ? isButtonDisabledProp : counter > 0),
+    [counter, isButtonDisabledProp],
   )
 
   const price = useMemo(() => {
-    return calcPrice(populatedTransaction, rates)
+    return calcPrice(rates, populatedTransaction)
   }, [rates, populatedTransaction])
 
   return (

@@ -5,9 +5,8 @@ import {
 } from "@ethersproject/abstract-provider"
 import { TypedMessage } from "@metamask/eth-sig-util"
 import { Alchemy, Network } from "alchemy-sdk"
-import { BigNumber, Bytes } from "ethers"
+import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
-import { Deferrable } from "ethers/lib/utils"
 
 import { EthWalletV2 } from "./signer-ecdsa"
 

@@ -58,7 +58,7 @@ type NFIDEmbedMachineContext = {
   rpcMessageDecoded?: FunctionCall
   error?: Error
   messageQueue: Array<RPCMessage>
-  populatedTransction?: TransactionRequest | Error
+  populatedTransaction?: TransactionRequest | Error
 }
 
 export const NFIDEmbedMachineV2 = createMachine(
@@ -202,7 +202,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         requestOrigin: event.data.origin,
         rpcMessage: event.data.rpcMessage,
         rpcMessageDecoded: event.data.rpcMessageDecoded,
-        populatedTransction: event.data.populatedTransction,
+        populatedTransaction: event.data.populatedTransaction,
       })),
       updateProcedure: assign(({ messageQueue }, event) => {
         return {

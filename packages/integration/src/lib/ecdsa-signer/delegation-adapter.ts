@@ -38,7 +38,7 @@ export class DelegationWalletAdapter {
   async populateTransaction(
     transaction: TransactionRequest,
     delegation: DelegationIdentity,
-  ): Promise<TransactionRequest> {
+  ): Promise<TransactionRequest | Error> {
     this.wallet.replaceIdentity(delegation)
     const provider = this.getProvider()
     if (!provider) throw new Error("provider missing")
@@ -54,7 +54,15 @@ export class DelegationWalletAdapter {
           apiKey: ALCHEMY_API_KEY,
           network: Network.ETH_GOERLI,
         })
-        const gasLimit = await alchemy.core.estimateGas(transaction)
+        let gasLimit
+        try {
+          gasLimit = await alchemy.core.estimateGas(transaction)
+        } catch (error) {
+          return Error(
+            "Network is busy, the provider cannot estimate gas for transaction.",
+          )
+        }
+
         const nonce = await provider.getTransactionCount(
           transaction.from || "",
           "pending",
@@ -71,8 +79,7 @@ export class DelegationWalletAdapter {
         return tx
       }
     }
-
-    throw Error("Cannot populate data for transaction")
+    return Error("Cannot populate data for transaction")
   }
 
   async sendTransaction(

@@ -64,7 +64,7 @@ type ProcedureDetails = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   origin: string
-  populatedTransction?: TransactionRequest | Error
+  populatedTransaction?: TransactionRequest | Error
 }
 
 export type ProcedureCallEvent = {
@@ -88,33 +88,19 @@ export const RPCReceiverV2 =
             const adapter = new DelegationWalletAdapter(
               "https://eth-goerli.g.alchemy.com/v2/KII7f84ZxFDWMdnm_CNVW5hI8NfbnFhZ",
             )
-            const data = removeEmptyKeys(rpcMessage?.params[0])
-            const hostname = "nfid.one"
-            const accountId = "0"
-            const profile =
-              loadProfileFromLocalStorage() ?? (await fetchProfile())
-            const delegation = await getWalletDelegation(
-              profile?.anchor,
-              hostname,
-              accountId,
+            const populatedTransaction = await populateTransactionData(
+              adapter,
+              rpcMessage,
             )
-            let populatedTransction
-            try {
-              populatedTransction = await adapter.populateTransaction(
-                data,
-                delegation,
-              )
-            } catch (e) {
-              populatedTransction = e as Error
-            }
 
+            console.debug("RPCReceiverV2.send", { populatedTransaction })
             return send({
               type: "RPC_MESSAGE",
               data: {
                 rpcMessage,
                 rpcMessageDecoded,
                 origin,
-                populatedTransction,
+                populatedTransaction,
               },
             })
           default:
@@ -135,5 +121,25 @@ const decodeMessage = async (
   } catch (error: any) {
     console.warn("decodeRPCMEssage", { error })
     return undefined
+  }
+}
+
+async function populateTransactionData(
+  adapter: DelegationWalletAdapter,
+  rpcMessage: RPCMessage,
+): Promise<TransactionRequest | Error> {
+  const data = removeEmptyKeys(rpcMessage?.params[0])
+  const hostname = "nfid.one"
+  const accountId = "0"
+  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  const delegation = await getWalletDelegation(
+    profile?.anchor,
+    hostname,
+    accountId,
+  )
+  try {
+    return adapter.populateTransaction(data, delegation)
+  } catch (e) {
+    return e as Error
   }
 }

@@ -1,8 +1,6 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import { ethers } from "ethers"
-import { BigNumber } from "ethers/lib/ethers"
 import { useMemo } from "react"
 
 import {
@@ -21,6 +19,7 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { calcPriceDeployCollection } from "../util/calcPriceDeployCollectionUtil"
 import { ApproverCmpProps } from "./types"
 
 interface IBuyComponent {
@@ -63,28 +62,7 @@ export const DeployComponent = ({
   )
 
   const price = useMemo(() => {
-    if (!rates["ETH"] || !populatedTransaction)
-      return {
-        fee: "0",
-        feeUsd: "0",
-      }
-
-    if (populatedTransaction instanceof Error) {
-      return {
-        fee: (populatedTransaction as any).reason,
-        feeUsd: "0",
-      }
-    }
-
-    const gasLimit = BigNumber.from(populatedTransaction?.gasLimit)
-    const maxFeePerGas = BigNumber.from(populatedTransaction?.maxFeePerGas)
-    const fee = gasLimit.mul(maxFeePerGas)
-    const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rates["ETH"]
-
-    return {
-      feeUsd: feeUsd.toFixed(2),
-      fee: ethers.utils.formatEther(fee),
-    }
+    return calcPriceDeployCollection(populatedTransaction, rates)
   }, [rates, populatedTransaction])
 
   return (

@@ -1,5 +1,4 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
-import { debug } from "console"
 
 import { DelegationWalletAdapter } from "@nfid/integration"
 
@@ -11,7 +10,7 @@ import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
 
 type ExecuteProcedureServiceContext = CommonContext & {
-  populatedTransction: TransactionRequest
+  populatedTransaction: TransactionRequest
 }
 
 export function removeEmptyKeys(data: { [key: string]: unknown }) {
@@ -25,7 +24,7 @@ export function removeEmptyKeys(data: { [key: string]: unknown }) {
 }
 
 export const ExecuteProcedureService = async ({
-  populatedTransction,
+  populatedTransaction,
   rpcMessage,
   authSession,
 }: ExecuteProcedureServiceContext): Promise<RPCResponse> => {
@@ -65,7 +64,7 @@ export const ExecuteProcedureService = async ({
       console.debug("ExecuteProcedureService eth_sendTransaction", { data })
 
       const { wait, ...result } = await adapter.sendTransaction(
-        populatedTransction,
+        populatedTransaction,
         delegation,
       )
       const response = { ...rpcBase, result: result.hash }

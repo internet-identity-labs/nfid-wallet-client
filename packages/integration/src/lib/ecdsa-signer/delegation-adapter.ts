@@ -4,6 +4,7 @@ import {
   TransactionResponse,
 } from "@ethersproject/abstract-provider"
 import { TypedMessage } from "@metamask/eth-sig-util"
+import { Alchemy, Network } from "alchemy-sdk"
 import { BigNumber, Bytes } from "ethers"
 import { ethers } from "ethers-ts"
 import { Deferrable } from "ethers/lib/utils"
@@ -34,10 +35,10 @@ export class DelegationWalletAdapter {
     return this.wallet.getAddress()
   }
 
-  async sendTransaction(
+  async populateTransaction(
     transaction: TransactionRequest,
     delegation: DelegationIdentity,
-  ): Promise<TransactionResponse> {
+  ): Promise<TransactionRequest> {
     this.wallet.replaceIdentity(delegation)
     const provider = this.getProvider()
     if (!provider) throw new Error("provider missing")
@@ -46,33 +47,43 @@ export class DelegationWalletAdapter {
     let tx
     for (let index = 0; index <= 3; index++) {
       try {
-        tx = await this.wallet.populateTransaction(transaction)
+        return (tx = await this.wallet.populateTransaction(transaction))
       } catch (error) {
         const gasPrice = await provider.getGasPrice()
-        // TODO: SC-6735 what to do with gasLimit?
-        const gasLimit = BigNumber.from(100000)
+        const alchemy = new Alchemy({
+          apiKey: ALCHEMY_API_KEY,
+          network: Network.ETH_GOERLI,
+        })
+        const gasLimit = await alchemy.core.estimateGas(transaction)
+        const nonce = await provider.getTransactionCount(
+          transaction.from || "",
+          "pending",
+        )
         tx = {
           from: transaction.from,
           to: transaction.to,
           data: transaction.data,
           value: transaction.value,
-          nonce: provider.getTransactionCount(
-            transaction.from || "",
-            "pending",
-          ),
+          nonce,
           gasLimit,
           gasPrice,
         }
-        console.error("sendTransaction", { error })
+        return tx
       }
     }
 
-    const signedTx = await this.signTransaction(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      tx || (transaction as TransactionRequest),
-      delegation,
-    )
+    throw Error("Cannot populate data for transaction")
+  }
+
+  async sendTransaction(
+    transaction: TransactionRequest,
+    delegation: DelegationIdentity,
+  ): Promise<TransactionResponse> {
+    this.wallet.replaceIdentity(delegation)
+    const provider = this.getProvider()
+    if (!provider) throw new Error("provider missing")
+    this.wallet._checkProvider("sendTransaction")
+    const signedTx = await this.signTransaction(transaction, delegation)
     return await provider.sendTransaction(signedTx)
   }
 

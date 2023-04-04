@@ -55,6 +55,7 @@ export default function NFIDEmbedCoordinator() {
           authSession={state.context.authSession}
           rpcMessage={state.context.rpcMessage}
           rpcMessageDecoded={state.context.rpcMessageDecoded}
+          populatedTransaction={state.context.populatedTransction}
           onConfirm={(data) => {
             console.debug("onConfirm", { data })
             send({ type: "APPROVE", data })

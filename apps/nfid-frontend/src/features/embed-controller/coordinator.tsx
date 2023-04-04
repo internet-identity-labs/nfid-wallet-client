@@ -46,9 +46,6 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           data={state.context.data?.data}
           fromAddress={state.context.rpcMessage?.params[0].from}
           toAddress={state.context.rpcMessage?.params[0].to}
-          feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
-          feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
-          price={state.context.rpcMessage?.params[0].value}
           isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
         />
       )
@@ -88,9 +85,6 @@ export const EmbedControllerCoordinator = ({ actor }: EmbedControllerProps) => {
           data={state.context.data?.data}
           fromAddress={state.context.rpcMessage?.params[0].from}
           toAddress={state.context.rpcMessage?.params[0].to}
-          feeMin={state.context.rpcMessage?.params[0]?.maxFeePerGas}
-          feeMax={state.context.rpcMessage?.params[0]?.maxPriorityFeePerGas}
-          price={state.context.rpcMessage?.params[0].value}
           isButtonDisabled={state.matches("Initial.PrepareSignature.Prepare")}
         />
       )

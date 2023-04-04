@@ -1,3 +1,4 @@
+import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { assign, createMachine } from "xstate"
 
 import { isDelegationExpired } from "@nfid/integration"
@@ -57,6 +58,7 @@ type NFIDEmbedMachineContext = {
   rpcMessageDecoded?: FunctionCall
   error?: Error
   messageQueue: Array<RPCMessage>
+  populatedTransction?: TransactionRequest | Error
 }
 
 export const NFIDEmbedMachineV2 = createMachine(
@@ -200,6 +202,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         requestOrigin: event.data.origin,
         rpcMessage: event.data.rpcMessage,
         rpcMessageDecoded: event.data.rpcMessageDecoded,
+        populatedTransction: event.data.populatedTransction,
       })),
       updateProcedure: assign(({ messageQueue }, event) => {
         return {
@@ -212,6 +215,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         return { authSession: event.data }
       }),
       queueRequest: assign((context, event) => ({
+        // TODO: we need to queue all data
         messageQueue: [...context.messageQueue, event.data.rpcMessage],
       })),
       assignError: assign((context, event) => ({

@@ -1,3 +1,4 @@
+import { TransactionRequest } from "@ethersproject/abstract-provider"
 import React from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
@@ -14,6 +15,7 @@ type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
+  populatedTransaction?: TransactionRequest | Error
   onConfirm: (data?: any) => void
   onReject: (reason?: any) => void
 }
@@ -93,7 +95,14 @@ interface ProcedureApprovalCoordinatorProps extends ApproverCmpProps {
 }
 export const ProcedureApprovalCoordinator: React.FC<
   ProcedureApprovalCoordinatorProps
-> = ({ appMeta, rpcMessage, rpcMessageDecoded, onConfirm, onReject }) => {
+> = ({
+  appMeta,
+  rpcMessage,
+  rpcMessageDecoded,
+  populatedTransaction,
+  onConfirm,
+  onReject,
+}) => {
   switch (true) {
     case hasMapped(rpcMessageDecoded?.method):
       const ApproverCmp = componentMap[rpcMessageDecoded?.method as Method]
@@ -106,7 +115,14 @@ export const ProcedureApprovalCoordinator: React.FC<
           }
         >
           <ApproverCmp
-            {...{ rpcMessage, appMeta, rpcMessageDecoded, onConfirm, onReject }}
+            {...{
+              rpcMessage,
+              appMeta,
+              rpcMessageDecoded,
+              populatedTransaction,
+              onConfirm,
+              onReject,
+            }}
           />
         </React.Suspense>
       )

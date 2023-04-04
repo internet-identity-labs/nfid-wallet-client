@@ -1,5 +1,8 @@
+import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
+import { ethers } from "ethers"
+import { BigNumber } from "ethers/lib/ethers"
 import { useMemo } from "react"
 
 import {
@@ -29,9 +32,7 @@ interface IMintComponent {
   fromAddress?: string
   toAddress?: string
   data?: any
-  feeMin?: string
-  feeMax?: string
-  price?: string
+  populatedTransaction?: TransactionRequest | Error
 }
 
 export const MintComponent = ({
@@ -42,10 +43,8 @@ export const MintComponent = ({
   onCancel,
   fromAddress,
   toAddress,
-  feeMin,
-  feeMax,
-  price,
   data,
+  populatedTransaction,
 }: IMintComponent) => {
   const { rates } = useExchangeRates()
   const { counter } = useTimer({
@@ -55,39 +54,47 @@ export const MintComponent = ({
   })
 
   const isButtonDisabled = useMemo(
-    () => (!isButtonDisabledProp ? isButtonDisabledProp : counter > 0),
-    [counter, isButtonDisabledProp],
+    () =>
+      (!isButtonDisabledProp ? isButtonDisabledProp : counter > 0) ||
+      populatedTransaction instanceof Error,
+    [counter, isButtonDisabledProp, populatedTransaction],
   )
 
-  const fee = useMemo(() => {
-    if (!feeMin || !feeMax || !rates)
-      return { averageInEth: 0, averageInUsd: 0 }
+  const price = useMemo(() => {
+    if (!rates["ETH"] || !populatedTransaction)
+      return {
+        fee: "0",
+        feeUsd: "0",
+        total: "0",
+        totalUsd: "0",
+        price: "0",
+      }
 
-    const minFeeInEth = Number(parseInt(feeMin, 16)) / 10 ** 18
-    const minFeeInUsd = (minFeeInEth * rates["ETH"]).toFixed(2)
+    if (populatedTransaction instanceof Error) {
+      return {
+        fee: "0",
+        feeUsd: "0",
+        total: (populatedTransaction as any).reason,
+        totalUsd: "0",
+        price: "0",
+      }
+    }
 
-    const maxFeeInEth = Number(parseInt(feeMax, 16)) / 10 ** 18
-    const maxFeeInUsd = (maxFeeInEth * rates["ETH"]).toFixed(2)
+    const gasLimit = BigNumber.from(populatedTransaction?.gasLimit)
+    const maxFeePerGas = BigNumber.from(populatedTransaction?.maxFeePerGas)
+    const price = BigNumber.from(populatedTransaction?.value)
+    const fee = gasLimit.mul(maxFeePerGas)
+    const total = price.add(fee)
+    const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rates["ETH"]
+    const totalUsd = parseFloat(ethers.utils.formatEther(total)) * rates["ETH"]
 
     return {
-      min: minFeeInUsd,
-      max: maxFeeInUsd,
-      averageInEth: (minFeeInEth + maxFeeInEth) / 2,
-      averageInUsd: Number(((minFeeInEth + maxFeeInEth) / 2).toFixed(2)),
+      feeUsd: feeUsd.toFixed(2),
+      total: ethers.utils.formatEther(total),
+      totalUsd: totalUsd.toFixed(2),
+      price: ethers.utils.formatEther(price),
     }
-  }, [feeMax, feeMin, rates])
-
-  const collectibleCost = useMemo(() => {
-    if (!price || !rates) return { eth: 0, usd: 0 }
-
-    const costInEth = Number(parseInt(price, 16)) / 10 ** 18
-    const costInUsd = Number((costInEth * rates["ETH"]).toFixed(2))
-
-    return {
-      eth: costInEth,
-      usd: costInUsd,
-    }
-  }, [price, rates])
+  }, [rates, populatedTransaction])
 
   return (
     <TooltipProvider>
@@ -139,19 +146,19 @@ export const MintComponent = ({
         <InfoListItem title="Network" description={data?.blockchain} />
         <InfoListItem
           title="Network fee"
-          description={`$${fee?.min}-$${fee.max}`}
+          description={`$${price?.feeUsd}`}
           tooltip="Applies to all transactions. Not paid to NFID Wallet."
           icon={<IconCmpSettings className="ml-[6px] cursor-pointer" />}
         />
         <InfoListItem
           title="Collectible cost"
-          description={`${collectibleCost.eth} ETH`}
+          description={`${price?.price} ETH`}
         />
         <InfoListItem
           title="Total"
-          description={`${collectibleCost.eth + fee?.averageInEth} ETH`}
+          description={`${price?.total} ETH`}
           isBold
-          subDescription={`~$${collectibleCost.usd + fee?.averageInUsd}`}
+          subDescription={`~$${price.totalUsd}`}
         />
       </div>
 
@@ -193,6 +200,7 @@ const MappedMintComponent: React.FC<ApproverCmpProps> = ({
   appMeta,
   rpcMessage,
   rpcMessageDecoded,
+  populatedTransaction,
   onConfirm,
   onReject,
 }) => {
@@ -206,9 +214,7 @@ const MappedMintComponent: React.FC<ApproverCmpProps> = ({
       data={rpcMessageDecoded?.data}
       fromAddress={rpcMessage?.params[0].from}
       toAddress={rpcMessage?.params[0].to}
-      feeMin={rpcMessage?.params[0]?.maxFeePerGas}
-      feeMax={rpcMessage?.params[0]?.maxPriorityFeePerGas}
-      price={rpcMessage?.params[0].value}
+      populatedTransaction={populatedTransaction}
     />
   )
 }

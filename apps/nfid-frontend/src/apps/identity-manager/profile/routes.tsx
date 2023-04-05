@@ -13,11 +13,11 @@ const ProfileTokenWalletsDetailPage = React.lazy(
   () => import("./internet-computer-wallets"),
 )
 const ProfileAssets = React.lazy(() => import("./assets"))
-const ProfileTransactions = React.lazy(() => import("./transactions"))
 const ProfileCredentials = React.lazy(() => import("./credentials"))
 const ProfileSecurity = React.lazy(() => import("./security"))
 const ProfileApplications = React.lazy(() => import("./applications"))
 const CopyRecoveryPhrase = React.lazy(() => import("./copy-recovery-phrase"))
+const ProfileTransactions = React.lazy(() => import("./transactions"))
 const ProfilePhone = React.lazy(() => import("./credentials/phone-number"))
 const ProfileSMS = React.lazy(() => import("./credentials/phone-sms"))
 const ProfileNFTDetails = React.lazy(() => import("./nft-details"))

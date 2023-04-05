@@ -8,6 +8,7 @@ import { Principal } from "@dfinity/principal"
 
 import { accessList } from "../actors"
 import { getLocalStorageOverride } from "../local-storage/get-delegation-ttl"
+import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
 
 // FIXME: move to constants
 const ONE_SECOND_IN_M_SEC = 1000
@@ -47,6 +48,9 @@ export const requestFEDelegation = async (
 ): Promise<FrontendDelegation> => {
   console.debug("requestFEDelegation")
   const { sessionKey, chain } = await requestFEDelegationChain(identity)
+
+  await authStorage.set(KEY_STORAGE_KEY, JSON.stringify(sessionKey.toJSON()))
+  await authStorage.set(KEY_STORAGE_DELEGATION, JSON.stringify(chain.toJSON()))
 
   const delegationIdentity = DelegationIdentity.fromDelegation(
     sessionKey,

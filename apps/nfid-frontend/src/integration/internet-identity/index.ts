@@ -14,7 +14,7 @@ import {
   mapOptional,
   requestFEDelegation,
 } from "@nfid/integration"
-import { ii, im, invalidateIdentity, replaceIdentity } from "@nfid/integration"
+import { ii, im, replaceIdentity } from "@nfid/integration"
 
 import {
   Challenge,
@@ -125,27 +125,23 @@ export async function fetchRecoveryDevices(anchor: UserNumber) {
 
 async function renewDelegation() {
   console.debug("renewDelegation")
-  const { delegationIdentity, actor, identity } = authState.get()
+  const { delegationIdentity, identity } = authState.get()
   if (!delegationIdentity || !identity)
     throw new Error(`renewDelegation unauthorized`)
 
   for (const { delegation } of delegationIdentity.getDelegation().delegations) {
     // prettier-ignore
     if (+new Date(Number(delegation.expiration / BigInt(1000000))) <= +Date.now()) {
-      invalidateIdentity();
+      authState.logout();
       break;
     }
   }
 
-  if (actor === undefined) {
-    // Create our actor with a DelegationIdentity to avoid re-prompting auth
-
-    authState.set({
-      identity,
-      delegationIdentity: (await requestFEDelegation(identity))
-        .delegationIdentity,
-    })
-  }
+  authState.set({
+    identity,
+    delegationIdentity: (await requestFEDelegation(identity))
+      .delegationIdentity,
+  })
 }
 
 /**

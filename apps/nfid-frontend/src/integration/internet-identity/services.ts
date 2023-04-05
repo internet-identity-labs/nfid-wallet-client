@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/browser"
 import {
   authState,
   requestFEDelegationChain,
-  ii,
   im,
   setProfile,
   loadProfileFromLocalStorage,

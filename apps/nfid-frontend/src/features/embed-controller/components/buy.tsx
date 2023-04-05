@@ -19,6 +19,7 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { WarningComponent } from "../ui/warning"
 import { calcPrice } from "../util/calcPriceUtil"
 import { ApproverCmpProps } from "./types"
 
@@ -76,6 +77,9 @@ export const BuyComponent: React.FC<IBuyComponent> = ({
         subtitle={data?.collectionData?.name}
       />
       <div className={clsx("mt-6 space-y-2 text-sm")}>
+        {"error" in price ? (
+          <WarningComponent isNetworkBusy={true} isAuthorizeAll={false} />
+        ) : null}
         <InfoListItem
           title="From"
           description={

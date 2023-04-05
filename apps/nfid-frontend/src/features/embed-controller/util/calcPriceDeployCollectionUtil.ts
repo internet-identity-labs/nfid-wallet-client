@@ -1,16 +1,15 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
-import { debug } from "console"
 import { ethers } from "ethers"
 import { BigNumber } from "ethers/lib/ethers"
+
+import { ProviderError } from "@nfid/integration"
 
 import { IRate } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 
 export function calcPriceDeployCollection(
   rates: IRate,
-  populatedTransaction?: [TransactionRequest, Error | undefined],
+  populatedTransaction?: [TransactionRequest, ProviderError | undefined],
 ) {
-  let error
-
   if (!rates["ETH"] || !populatedTransaction || !populatedTransaction[0])
     return {
       fee: "0",
@@ -18,12 +17,6 @@ export function calcPriceDeployCollection(
     }
 
   const [transaction, err] = populatedTransaction
-
-  if (err) {
-    error = {
-      message: (err as any).reason || err.message,
-    }
-  }
 
   const gasLimit = BigNumber.from(transaction?.gasLimit)
   const maxFeePerGas = BigNumber.from(transaction?.maxFeePerGas)
@@ -33,6 +26,7 @@ export function calcPriceDeployCollection(
   return {
     feeUsd: feeUsd.toFixed(2),
     fee: ethers.utils.formatEther(fee),
-    error,
+    isInsufficientFundsError: err ?? ProviderError.INSUFICIENT_FUNDS === err,
+    isNetworkIsBusyWarning: err ?? ProviderError.NETWORK_BUSY === err,
   }
 }

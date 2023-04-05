@@ -10,6 +10,7 @@ import {
   Button,
 } from "@nfid-frontend/ui"
 import { copyToClipboard } from "@nfid-frontend/utils"
+import { ProviderError } from "@nfid/integration"
 
 import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -19,6 +20,7 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { WarningComponent } from "../ui/warning"
 import { calcPrice } from "../util/calcPriceUtil"
 import { ApproverCmpProps } from "./types"
 
@@ -31,7 +33,7 @@ interface IMintComponent {
   fromAddress?: string
   toAddress?: string
   data?: any
-  populatedTransaction?: [TransactionRequest, Error | undefined]
+  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export const MintComponent = ({
@@ -135,7 +137,23 @@ export const MintComponent = ({
       >
         Transaction details
       </p>
-      <div className="flex items-center w-full mt-14">
+      {price.isNetworkIsBusyWarning ? (
+        <WarningComponent isNetworkBusy={true} isAuthorizeAll={false} />
+      ) : null}
+      <p
+        className={clsx(
+          "text-xs text-red my-3.5",
+          !price.isInsufficientFundsError && "hidden",
+        )}
+      >
+        Insufficient balance in your account to pay for this transaction.
+        <span className="font-semibold cursor-pointer text-blue">
+          {" "}
+          Buy ETH{" "}
+        </span>
+        or deposit from another account.
+      </p>
+      <div className="flex items-center w-full">
         <Button type="stroke" className="w-full mr-2" onClick={onCancel}>
           Cancel
         </Button>

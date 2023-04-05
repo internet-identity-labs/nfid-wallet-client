@@ -5,11 +5,15 @@ import {
 } from "@ethersproject/abstract-provider"
 import { TypedMessage } from "@metamask/eth-sig-util"
 import { Alchemy, Network } from "alchemy-sdk"
-import { debug } from "console"
 import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
 
 import { EthWalletV2 } from "./signer-ecdsa"
+
+export enum ProviderError {
+  INSUFICIENT_FUNDS,
+  NETWORK_BUSY,
+}
 
 export class DelegationWalletAdapter {
   private wallet: EthWalletV2
@@ -38,14 +42,14 @@ export class DelegationWalletAdapter {
   async populateTransaction(
     transaction: TransactionRequest,
     delegation: DelegationIdentity,
-  ): Promise<[TransactionRequest, Error | undefined]> {
+  ): Promise<[TransactionRequest, ProviderError | undefined]> {
     this.wallet.replaceIdentity(delegation)
     const provider = this.getProvider()
     if (!provider) throw new Error("provider missing")
     this.wallet._checkProvider("sendTransaction")
 
     let tx: TransactionRequest
-    let err: Error | undefined
+    let err: ProviderError | undefined
     let gasLimit
     const gasPrice = await provider.getGasPrice()
 
@@ -61,10 +65,17 @@ export class DelegationWalletAdapter {
         try {
           gasLimit = await alchemy.core.estimateGas(transaction)
         } catch (error) {
-          gasLimit = ethers.utils.parseEther("0.7").div(gasPrice)
-          err = Error(
-            "Network is busy, the provider cannot estimate gas for transaction.",
-          )
+          try {
+            gasLimit = await alchemy.core.estimateGas({
+              ...transaction,
+              from: "0x0000000000000000000000000000000000000000",
+              to: "0x0000000000000000000000000000000000000000",
+            })
+            err = ProviderError.INSUFICIENT_FUNDS
+          } catch (error) {
+            gasLimit = ethers.utils.parseEther("0.7").div(gasPrice)
+            err = ProviderError.NETWORK_BUSY
+          }
         }
       }
     }
@@ -85,7 +96,7 @@ export class DelegationWalletAdapter {
   }
 
   async sendTransaction(
-    [transaction, _]: [TransactionRequest, Error | undefined],
+    [transaction, _]: [TransactionRequest, ProviderError | undefined],
     delegation: DelegationIdentity,
   ): Promise<TransactionResponse> {
     this.wallet.replaceIdentity(delegation)

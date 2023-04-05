@@ -1,6 +1,6 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 
-import { DelegationWalletAdapter } from "@nfid/integration"
+import { DelegationWalletAdapter, ProviderError } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { AuthSession } from "frontend/state/authentication"
@@ -10,7 +10,7 @@ import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
 
 type ExecuteProcedureServiceContext = CommonContext & {
-  populatedTransaction: [TransactionRequest, Error | undefined]
+  populatedTransaction: [TransactionRequest, ProviderError | undefined]
 }
 
 export const ExecuteProcedureService = async ({

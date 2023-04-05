@@ -3,6 +3,7 @@ import { filter, fromEvent, map } from "rxjs"
 
 import {
   DelegationWalletAdapter,
+  ProviderError,
   loadProfileFromLocalStorage,
 } from "@nfid/integration"
 import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
@@ -62,7 +63,7 @@ type ProcedureDetails = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   origin: string
-  populatedTransaction?: [TransactionRequest, Error | undefined]
+  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export type ProcedureCallEvent = {
@@ -132,7 +133,7 @@ const decodeMessage = async (
 async function populateTransactionData(
   adapter: DelegationWalletAdapter,
   rpcMessage: RPCMessage,
-): Promise<[TransactionRequest, Error | undefined]> {
+): Promise<[TransactionRequest, ProviderError | undefined]> {
   const data = removeEmptyKeys(rpcMessage?.params[0])
   const hostname = "nfid.one"
   const accountId = "0"

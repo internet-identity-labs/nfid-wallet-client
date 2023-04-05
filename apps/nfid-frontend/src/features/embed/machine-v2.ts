@@ -1,7 +1,7 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { assign, createMachine } from "xstate"
 
-import { isDelegationExpired } from "@nfid/integration"
+import { ProviderError, isDelegationExpired } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
@@ -58,7 +58,7 @@ type NFIDEmbedMachineContext = {
   rpcMessageDecoded?: FunctionCall
   error?: Error
   messageQueue: Array<RPCMessage>
-  populatedTransaction?: [TransactionRequest, Error | undefined]
+  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export const NFIDEmbedMachineV2 = createMachine(

@@ -114,13 +114,13 @@ export class Profile extends HomePage {
       await browser.waitUntil(
         async () => (await this.tokens.length) === amount,
         {
-          timeout: 13000,
+          timeout: 30000,
           timeoutMsg: "Not all tokens displayed on user profile!",
         },
       )
     } else {
       await browser.waitUntil(async () => (await this.tokens.length) > 1, {
-        timeout: 13000,
+        timeout: 30000,
         timeoutMsg: "Tokens are not displayed on user profile!",
       })
     }

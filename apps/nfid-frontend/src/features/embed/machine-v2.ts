@@ -1,6 +1,7 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { assign, createMachine } from "xstate"
-import { ProviderError, isDelegationExpired } from "@nfid/integration"
+
+import { ProviderError } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"

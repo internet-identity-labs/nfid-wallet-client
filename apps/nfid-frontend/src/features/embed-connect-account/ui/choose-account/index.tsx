@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 
-import { IGroupedOptions, IGroupOption } from "@nfid-frontend/ui"
+import { IGroupedOptions } from "@nfid-frontend/ui"
 import {
   BlurredLoader,
   Button,
@@ -10,109 +10,56 @@ import {
   SDKApplicationMeta,
   Tooltip,
 } from "@nfid-frontend/ui"
-import { Account, getScope, getWalletName } from "@nfid/integration"
-import { toPresentation } from "@nfid/integration/token/icp"
+import { E8S } from "@nfid/integration/token/icp"
 
-import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
-import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
-import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
-import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
-import { sortAlphabetic } from "frontend/ui/utils/sorting"
+import { useEthBalance } from "frontend/features/fungable-token/eth/hooks/use-eth-balances"
 
 interface IChooseAccount {
   applicationLogo?: string
   applicationName?: string
   applicationURL?: string
   onConnectionDetails: () => void
-  onConnectAnonymously: () => void
   onConnect: (hostname: string, accountId: string) => void
-  accounts?: Account[]
 }
 
 export const ChooseAccount = ({
   applicationLogo,
   applicationName,
   applicationURL,
-  onConnectAnonymously,
   onConnectionDetails,
   onConnect,
-  accounts,
 }: IChooseAccount) => {
-  const { balances: wallets } = useUserBalances()
-  const { exchangeRate } = useICPExchangeRate()
   const { address } = useEthAddress()
-
-  const applications = useApplicationsMeta()
-  const [selectedAccount, setSelectedAccount] = useState("")
+  const { balance } = useEthBalance()
 
   const accountsOptions: IGroupedOptions[] = useMemo(() => {
-    if (!exchangeRate || !wallets) return []
+    if (!address) return []
 
     return [
       {
         label: "Public",
-        options:
-          wallets
-            .filter((wallet) => wallet.account.domain === "nfid.one")
-            .map(
-              (account) =>
-                ({
-                  title: getWalletName(
-                    applications.applicationsMeta ?? [],
-                    account.account.domain,
-                    account.account.accountId,
-                  ),
-                  value: account.principalId,
-                  subTitle: address,
-                  innerTitle: toPresentation(account.balance["ICP"]).toString(),
-                  innerSubtitle: toUSD(
-                    toPresentation(account.balance["ICP"]),
-                    exchangeRate,
-                  ),
-                } as IGroupOption),
-            )
-            .sort(sortAlphabetic(({ title }) => title ?? "")) || [],
-      },
-      {
-        label: "Anonymous",
-        options:
-          accounts?.map((acc) => ({
-            title: `${applicationName} ${acc.label}`,
-            value: getScope(acc.domain, acc.accountId),
-          })) ?? [],
+        options: [
+          {
+            title: "NFID Account 1",
+            value: address,
+            subTitle: address,
+            innerTitle: balance?.tokenBalance
+              ? `${Number(balance.tokenBalance) / E8S} ETH`
+              : "",
+            innerSubtitle: balance?.usdBalance,
+          },
+        ],
       },
     ]
-  }, [
-    accounts,
-    address,
-    applicationName,
-    applications.applicationsMeta,
-    exchangeRate,
-    wallets,
-  ])
+  }, [address, balance?.tokenBalance, balance?.usdBalance])
 
   const handleConnect = useCallback(() => {
-    const account = wallets?.find((acc) => acc.principalId === selectedAccount)
-    if (account)
-      return onConnect(account?.account.domain, account?.account.accountId)
-
-    const acc = accounts?.find(
-      (acc) => getScope(acc.domain, acc.accountId) === selectedAccount,
-    )
-    return onConnect(acc?.domain ?? "", acc?.accountId ?? "")
-  }, [accounts, onConnect, selectedAccount, wallets])
-
-  useEffect(() => {
-    accountsOptions.length &&
-      setSelectedAccount(accountsOptions[0].options[0]?.value)
-  }, [accountsOptions])
+    return onConnect("nfid.one", "0")
+  }, [onConnect])
 
   return (
-    <BlurredLoader
-      className="!p-0"
-      isLoading={!wallets?.length || !exchangeRate}
-    >
+    <BlurredLoader className="!p-0" isLoading={!accountsOptions?.length}>
       <div className="flex justify-between">
         <div>
           <SDKApplicationMeta
@@ -149,7 +96,7 @@ export const ChooseAccount = ({
         title="Choose an account"
         label="Account"
         optionGroups={accountsOptions}
-        onSelect={(value) => setSelectedAccount(value)}
+        preselectedValue={address ?? ""}
       />
       <div className="rounded-md bg-gray-50 p-5 text-gray-500 text-sm mt-3.5 space-y-3">
         <p>

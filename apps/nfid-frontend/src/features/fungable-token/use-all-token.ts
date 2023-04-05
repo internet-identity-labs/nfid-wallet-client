@@ -63,7 +63,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         title: "Ethereum",
         currency: "ETH",
         balance: ethSheet?.tokenBalance,
-        price: ethSheet?.usdBalance ?? "$0.00",
+        price: ethSheet?.usdBalance,
         fee: BigInt(0),
         toPresentation,
         transformAmount: stringICPtoE8s,

@@ -1,4 +1,6 @@
+import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
+import { principalToAddress } from "ictool"
 import { ReactNode } from "react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
@@ -6,7 +8,11 @@ import { toast } from "react-toastify"
 
 import { Tooltip } from "@nfid-frontend/ui"
 
-import { AppBalance } from "frontend/features/fungable-token/types"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import {
+  AccountBalance,
+  AppBalance,
+} from "frontend/features/fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"
@@ -50,10 +56,18 @@ const AppRow: React.FC<
   )
 
   const navigateToTransactions = React.useCallback(
-    (address: string) => () => {
-      navigate(`/profile/transactions?wallet=${address}`)
+    (account: AccountBalance) => () => {
+      navigate(`${ProfileConstants.base}/${ProfileConstants.transactions}`, {
+        state: {
+          wallet: {
+            label: `${appName} ${account.accountName}`,
+            value: principalToAddress(Principal.fromText(account.principalId)),
+          },
+          blockchain: currency,
+        },
+      })
     },
-    [navigate],
+    [appName, currency, navigate],
   )
 
   return (
@@ -62,7 +76,7 @@ const AppRow: React.FC<
         <tr
           key={account.address}
           className="pl-10 cursor-pointer hover:bg-gray-200"
-          onClick={navigateToTransactions(account.address)}
+          onClick={navigateToTransactions(account)}
           id={`account_row_${i}`}
         >
           {i === 0 && (

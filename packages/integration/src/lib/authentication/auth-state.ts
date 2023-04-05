@@ -43,30 +43,33 @@ type SetProps = {
   sessionKey?: Ed25519KeyIdentity | undefined
 }
 
-async function _hydrate() {
-  const sessionKey = await authStorage.get(KEY_STORAGE_KEY)
-  const chain = await authStorage.get(KEY_STORAGE_DELEGATION)
-  if (!sessionKey || !chain) return
-
-  const delegationIdentity = DelegationIdentity.fromDelegation(
-    Ed25519KeyIdentity.fromJSON(sessionKey),
-    DelegationChain.fromJSON(chain),
-  )
-  // TODO: check delegation expiration
-
-  console.debug("_hydrate", {
-    principalId: delegationIdentity.getPrincipal().toText(),
-  })
-
-  observableAuthState$.next({
-    cacheLoaded: true,
-    delegationIdentity,
-  })
-}
-
 function makeAuthState() {
   let pendingRenewDelegation = false
-  _hydrate()
+  _loadAuthSessionFromCache()
+
+  async function _loadAuthSessionFromCache() {
+    const sessionKey = await authStorage.get(KEY_STORAGE_KEY)
+    const chain = await authStorage.get(KEY_STORAGE_DELEGATION)
+    if (!sessionKey || !chain) return
+
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      Ed25519KeyIdentity.fromJSON(sessionKey),
+      DelegationChain.fromJSON(chain),
+    )
+
+    if (isDelegationExpired(delegationIdentity)) return
+
+    replaceIdentity(delegationIdentity)
+
+    console.debug("_hydrate", {
+      principalId: delegationIdentity.getPrincipal().toText(),
+    })
+
+    observableAuthState$.next({
+      cacheLoaded: true,
+      delegationIdentity,
+    })
+  }
 
   function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
     setupSessionManager({ onIdle: invalidateIdentity })

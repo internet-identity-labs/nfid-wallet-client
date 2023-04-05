@@ -10,11 +10,11 @@ import {
   SDKApplicationMeta,
   Tooltip,
 } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
 import { Account, getScope, getWalletName } from "@nfid/integration"
 import { toPresentation } from "@nfid/integration/token/icp"
 
 import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
+import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
 import { useICPExchangeRate } from "frontend/features/fungable-token/icp/hooks/use-icp-exchange-rate"
 import { useUserBalances } from "frontend/features/fungable-token/icp/hooks/use-user-balances"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
@@ -41,6 +41,7 @@ export const ChooseAccount = ({
 }: IChooseAccount) => {
   const { balances: wallets } = useUserBalances()
   const { exchangeRate } = useICPExchangeRate()
+  const { address } = useEthAddress()
 
   const applications = useApplicationsMeta()
   const [selectedAccount, setSelectedAccount] = useState("")
@@ -63,7 +64,7 @@ export const ChooseAccount = ({
                     account.account.accountId,
                   ),
                   value: account.principalId,
-                  subTitle: truncateString(account.principalId, 5),
+                  subTitle: address,
                   innerTitle: toPresentation(account.balance["ICP"]).toString(),
                   innerSubtitle: toUSD(
                     toPresentation(account.balance["ICP"]),
@@ -84,6 +85,7 @@ export const ChooseAccount = ({
     ]
   }, [
     accounts,
+    address,
     applicationName,
     applications.applicationsMeta,
     exchangeRate,
@@ -108,7 +110,7 @@ export const ChooseAccount = ({
 
   return (
     <BlurredLoader
-      className="p-0"
+      className="!p-0"
       isLoading={!wallets?.length || !exchangeRate}
     >
       <div className="flex justify-between">
@@ -171,14 +173,6 @@ export const ChooseAccount = ({
       </div>
       <Button className="w-full mt-3" onClick={handleConnect}>
         Connect
-      </Button>
-      <Button
-        type="ghost"
-        block
-        className="mt-3"
-        onClick={onConnectAnonymously}
-      >
-        Connect anonymously
       </Button>
     </BlurredLoader>
   )

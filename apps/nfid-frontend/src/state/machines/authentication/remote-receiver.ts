@@ -1,7 +1,6 @@
 import { ActorRefFrom, createMachine } from "xstate"
 
 import { authState } from "@nfid/integration"
-import { ii } from "@nfid/integration"
 
 import { RemoteDeviceAuthSession } from "frontend/state/authentication"
 import {

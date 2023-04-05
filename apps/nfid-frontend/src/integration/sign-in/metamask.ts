@@ -4,7 +4,6 @@ import { ethers, providers } from "ethers"
 import {
   authState,
   ethSecretStorage,
-  ii,
   im,
   requestFEDelegation,
 } from "@nfid/integration"

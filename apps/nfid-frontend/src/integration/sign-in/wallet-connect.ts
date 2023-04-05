@@ -2,7 +2,7 @@ import WalletConnectProvider from "@walletconnect/ethereum-provider"
 import { providers } from "ethers"
 import Web3Modal from "web3modal"
 
-import { authState, ii, im, requestFEDelegation } from "@nfid/integration"
+import { authState, im, requestFEDelegation } from "@nfid/integration"
 
 import { WalletConnectAuthSession } from "frontend/state/authentication"
 

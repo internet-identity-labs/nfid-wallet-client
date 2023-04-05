@@ -103,3 +103,5 @@ export class IdbStorage implements AuthClientStorage {
     await db.remove(key)
   }
 }
+
+export const authStorage = new IdbStorage()

@@ -1,7 +1,7 @@
 import { AuthClient } from "@dfinity/auth-client"
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { authState, ii, im } from "@nfid/integration"
+import { authState, im } from "@nfid/integration"
 
 import { IIAuthSession } from "frontend/state/authentication"
 

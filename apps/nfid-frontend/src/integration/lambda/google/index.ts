@@ -1,6 +1,6 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { authState, ii, im, requestFEDelegation } from "@nfid/integration"
+import { authState, im, requestFEDelegation } from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
 import "frontend/integration/internet-identity"

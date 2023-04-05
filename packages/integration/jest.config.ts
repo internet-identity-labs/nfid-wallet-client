@@ -15,5 +15,5 @@ export default {
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",
-  setupFilesAfterEnv: ["./src/setupTests.ts"],
+  setupFiles: ["./src/setup-tests.ts"],
 }

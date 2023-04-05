@@ -4,7 +4,6 @@ import { ethers, providers } from "ethers"
 import {
   authState,
   ethSecretStorage,
-  ii,
   im,
   requestFEDelegation,
 } from "@nfid/integration"
@@ -72,7 +71,7 @@ export async function getMetamaskAuthSession() {
   const { delegationIdentity } = await requestFEDelegation(identity)
 
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
-  authState.set(identity, delegationIdentity, ii)
+  authState.set({ identity, delegationIdentity })
 
   let profile
   try {

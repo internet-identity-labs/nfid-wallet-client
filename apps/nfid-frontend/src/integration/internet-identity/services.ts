@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/browser"
 import {
   authState,
   requestFEDelegationChain,
-  ii,
   im,
   setProfile,
   loadProfileFromLocalStorage,
@@ -59,13 +58,12 @@ export async function loginWithAnchor(
       authResult.sessionKey,
       authResult.chain,
     )
-    authState.set(
-      authResult.sessionKey,
+    authState.set({
+      identity: authResult.sessionKey,
       delegationIdentity,
-      ii,
-      authResult.chain,
-      authResult.sessionKey,
-    )
+      chain: authResult.chain,
+      sessionKey: authResult.sessionKey,
+    })
 
     im.use_access_point([getBrowserName()]).catch((error) => {
       throw new Error(`loginWithAnchor im.use_access_point: ${error.message}`)
@@ -145,13 +143,12 @@ export async function loginService(context: {
     principalId: delegationIdentity.getPrincipal().toText(),
   })
 
-  authState.set(
-    multiIdent._actualIdentity!,
+  authState.set({
+    identity: multiIdent._actualIdentity!,
     delegationIdentity,
-    ii,
     chain,
     sessionKey,
-  )
+  })
 
   im.use_access_point([getBrowserName()]).catch((error) => {
     throw new Error(`loginService im.use_access_point: ${error.message}`)

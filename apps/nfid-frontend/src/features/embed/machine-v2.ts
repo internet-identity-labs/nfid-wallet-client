@@ -1,6 +1,5 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { assign, createMachine } from "xstate"
-
 import { ProviderError, isDelegationExpired } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
@@ -12,6 +11,7 @@ import {
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
 
+import { CheckAuthState } from "./services/check-auth-state"
 import { ExecuteProcedureService } from "./services/execute-procedure"
 import {
   ProcedureCallEvent,
@@ -38,6 +38,9 @@ type Events =
 type Services = {
   RPCReceiver: {
     data: null
+  }
+  CheckAuthState: {
+    data: AuthSession
   }
   AuthenticationMachine: {
     data: AuthSession
@@ -108,15 +111,14 @@ export const NFIDEmbedMachineV2 = createMachine(
         initial: "CheckAuthentication",
         states: {
           CheckAuthentication: {
-            always: [
-              {
+            invoke: {
+              src: "CheckAuthState",
+              onDone: {
                 target: "Authenticated",
-                cond: "isAuthenticated",
+                actions: ["assignAuthSession", "nfid_authenticated"],
               },
-              {
-                target: "Authenticate",
-              },
-            ],
+              onError: "Authenticate",
+            },
           },
           Authenticate: {
             invoke: {
@@ -264,17 +266,15 @@ export const NFIDEmbedMachineV2 = createMachine(
     },
     guards: {
       hasProcedure: (context: NFIDEmbedMachineContext) => !!context.rpcMessage,
-      isAuthenticated: (context: NFIDEmbedMachineContext) =>
-        !isDelegationExpired(context.authSession?.delegationIdentity),
       isReady: (_: NFIDEmbedMachineContext, __: Events, { state }: any) =>
         state.matches("HANDLE_PROCEDURE.READY"),
     },
     services: {
-      // @ts-ignore
       ExecuteProcedureService,
       AuthenticationMachine,
       TrustDeviceMachine,
       RPCReceiver,
+      CheckAuthState,
     },
   },
 )

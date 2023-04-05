@@ -1,7 +1,6 @@
 import { ActorRefFrom, createMachine } from "xstate"
 
 import { authState } from "@nfid/integration"
-import { ii } from "@nfid/integration"
 
 import { RemoteDeviceAuthSession } from "frontend/state/authentication"
 import {
@@ -46,11 +45,10 @@ const RemoteReceiverMachine =
           type: "final",
           data: (context, event: { data: RemoteDeviceAuthSession }) => {
             // NOTE: where should this ideally live?
-            authState.set(
-              event.data.identity,
-              event.data.delegationIdentity,
-              ii,
-            )
+            authState.set({
+              identity: event.data.identity,
+              delegationIdentity: event.data.delegationIdentity,
+            })
             return event.data
           },
         },

@@ -4,7 +4,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { BehaviorSubject } from "rxjs"
+import { BehaviorSubject, Subscription } from "rxjs"
 
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
@@ -37,7 +37,7 @@ observableAuthState$.subscribe({
 })
 
 type SetProps = {
-  identity: SignIdentity
+  identity?: SignIdentity
   delegationIdentity: DelegationIdentity
   chain?: DelegationChain | undefined
   sessionKey?: Ed25519KeyIdentity | undefined
@@ -57,7 +57,11 @@ function makeAuthState() {
       DelegationChain.fromJSON(chain),
     )
 
-    if (isDelegationExpired(delegationIdentity)) return
+    if (isDelegationExpired(delegationIdentity)) {
+      return observableAuthState$.next({
+        cacheLoaded: true,
+      })
+    }
 
     replaceIdentity(delegationIdentity)
 
@@ -69,6 +73,20 @@ function makeAuthState() {
       cacheLoaded: true,
       delegationIdentity,
     })
+  }
+
+  async function loadCachedAuthSession() {
+    let sub: Subscription | undefined
+    return new Promise<ObservableAuthState & { cacheLoaded: true }>(
+      (resolve) => {
+        sub = subscribe((state) => {
+          if (state.cacheLoaded === true) {
+            sub && sub.unsubscribe()
+            resolve({ ...state, cacheLoaded: true })
+          }
+        })
+      },
+    )
   }
 
   function set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
@@ -135,6 +153,7 @@ function makeAuthState() {
     get,
     reset,
     subscribe,
+    loadCachedAuthSession,
     checkAndRenewFEDelegation,
     logout: invalidateIdentity,
   }

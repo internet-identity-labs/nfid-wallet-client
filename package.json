@@ -213,7 +213,7 @@
     "wdio-geckodriver-service": "3.0.3",
     "wdio-json-reporter": "3.0.0",
     "webdriverio": "7.23.0",
-    "webpack": "5.76.2",
+    "webpack": "5.76.3",
     "whatwg-fetch": "3.6.2"
   },
   "repository": "git@github.com:internet-identity-labs/nfid-frontend.git",

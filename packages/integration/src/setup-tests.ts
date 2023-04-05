@@ -1,5 +1,9 @@
+import { Crypto } from "@peculiar/webcrypto"
+import "fake-indexeddb/auto"
 import { TextEncoder, TextDecoder } from "util"
 import "whatwg-fetch"
+
+global.crypto = new Crypto()
 
 global.TextEncoder = TextEncoder
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

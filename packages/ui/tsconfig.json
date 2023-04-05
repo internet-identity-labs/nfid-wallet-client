@@ -13,7 +13,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "files": [],
-  "include": ["../../types/env/index.d.ts"],
+  "include": ["../../types/env"],
   "references": [
     {
       "path": "./tsconfig.lib.json"

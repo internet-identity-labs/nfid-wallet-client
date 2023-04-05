@@ -7,7 +7,7 @@ import { Principal } from "@dfinity/principal"
 import React from "react"
 import useSWR from "swr"
 
-import { im, authState, Icon } from "@nfid/integration"
+import { im, Icon } from "@nfid/integration"
 
 import {
   AccessPointRequest,
@@ -309,7 +309,7 @@ export const useDevices = () => {
 
   const deleteDevice = React.useCallback(
     async (pubkey: PublicKey) => {
-      if (authState.get().actor && profile?.anchor) {
+      if (profile?.anchor) {
         await removeAccessPointFacade(BigInt(profile?.anchor), pubkey)
         refreshDevices()
       }
@@ -350,9 +350,6 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      if (!authState.get().actor)
-        throw new Error("useDevices.createDevice Unauthorized")
-
       const pub_key = fromHexString(publicKey)
 
       await Promise.all([
@@ -406,10 +403,6 @@ export const useDevices = () => {
   const recoverDevice = React.useCallback(
     async (userNumber: number) => {
       try {
-        if (!authState.get().actor)
-          throw new Error(
-            "useDevices.recoverDevice Unauthorized authState.get().actor is undefined",
-          )
         const { device } = await createWebAuthNDevice(BigInt(userNumber))
 
         await createDevice({
@@ -449,10 +442,6 @@ export const useDevices = () => {
       if (!profile?.anchor)
         throw new Error(
           "useDevice.createRecoveryPhrase profile?.anchor missing",
-        )
-      if (!authState.get().actor)
-        throw new Error(
-          "useDevice.createRecoveryPhrase internetIdentity missing",
         )
 
       // NOTE: NEVER LOG RECOVERY PHRASE
@@ -499,10 +488,6 @@ export const useDevices = () => {
       const actualUserNumber = profile?.anchor || userNumberOverwrite
       if (!actualUserNumber)
         throw new Error("useDevice.createSecurityDevice userNumber missing")
-      if (!authState.get().actor)
-        throw new Error(
-          "useDevice.createSecurityDevice internetIdentity missing",
-        )
 
       const devices = await fetchAllDevices(BigInt(actualUserNumber))
       const deviceName = "Security Key"

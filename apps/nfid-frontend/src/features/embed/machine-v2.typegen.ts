@@ -9,6 +9,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]": {
+      type: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]": {
       type: "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
       data: unknown
@@ -19,6 +24,10 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]": {
+      type: "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
+      data: unknown
+    }
     "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]": {
       type: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
       data: unknown
@@ -27,6 +36,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+    CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     ExecuteProcedureService: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     RPCReceiver: "done.invoke.NFIDEmbedMachineV2.RPC_RECEIVER:invocation[0]"
     TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
@@ -38,11 +48,13 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
-    assignAuthSession: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+    assignAuthSession:
+      | "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+      | "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     assignError: "error.platform.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     assignProcedure: "RPC_MESSAGE"
     nfid_authenticated:
-      | ""
+      | "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
       | "done.invoke.NFIDEmbedMachineV2.AUTH.TrustDevice:invocation[0]"
     nfid_unauthenticated: "SESSION_EXPIRED"
     queueRequest: "RPC_MESSAGE"
@@ -56,11 +68,13 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {
     hasProcedure: ""
-    isAuthenticated: ""
     isReady: "RPC_MESSAGE"
   }
   eventsCausingServices: {
-    AuthenticationMachine: "" | "SESSION_EXPIRED"
+    AuthenticationMachine:
+      | "SESSION_EXPIRED"
+      | "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
+    CheckAuthState: "xstate.init"
     ExecuteProcedureService: "APPROVE"
     RPCReceiver: "RPC_MESSAGE" | "xstate.init"
     TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"

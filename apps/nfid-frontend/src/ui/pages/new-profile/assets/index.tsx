@@ -105,7 +105,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
               {filteredTokens.map((token, index) => (
                 <tr
                   key={`token_${index}`}
-                  id={`token_${token.title.replace(/\s/g, "")}`}
+                  id={`token_${token.title.replace(/\s+/g, "")}`}
                   onClick={handleNavigateToTokenDetails(token.currency)}
                   className="border-b border-gray-200 cursor-pointer last:border-b-0 hover:bg-gray-100"
                 >
@@ -127,7 +127,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                       </p>
                     </div>
                   </td>
-                  <td id={`token_${token.title}_blockchain`}>
+                  <td id={`token_${token.title.replace(/\s/g, "")}_blockchain`}>
                     {token.blockchain}
                   </td>
                   <td

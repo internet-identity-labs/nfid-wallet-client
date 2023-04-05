@@ -101,7 +101,10 @@ describe("Facade suite", () => {
       im.use_access_point = jest.fn((x: [] | [string]) => ({
         catch: jest.fn(),
       }))
-      authStateMock.set(recoveryDevice, recoveryIdentity, ii)
+      authStateMock.set({
+        identity: recoveryDevice,
+        delegationIdentity: recoveryIdentity,
+      })
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
         Promise.resolve(recoveryDevice),
@@ -249,7 +252,7 @@ describe("Facade suite", () => {
       im.use_access_point = jest.fn((x: [] | [string]) => ({
         catch: jest.fn(),
       }))
-      authStateMock.set(mockedIdentity, delegationIdentity, ii)
+      authStateMock.set({ identity: mockedIdentity, delegationIdentity })
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
         Promise.resolve(mockedIdentity),

@@ -140,11 +140,11 @@ async function renewDelegation() {
   if (actor === undefined) {
     // Create our actor with a DelegationIdentity to avoid re-prompting auth
 
-    authState.set(
+    authState.set({
       identity,
-      (await requestFEDelegation(identity)).delegationIdentity,
-      ii,
-    )
+      delegationIdentity: (await requestFEDelegation(identity))
+        .delegationIdentity,
+    })
   }
 }
 
@@ -466,7 +466,7 @@ export async function register(
   const credential_id = Array.from(new Uint8Array(identity.rawId))
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
-  authState.set(identity, delegation.delegationIdentity, ii)
+  authState.set({ identity, delegationIdentity: delegation.delegationIdentity })
 
   let registerResponse: RegisterResponse
   try {
@@ -495,7 +495,10 @@ export async function register(
     // @ts-ignore
     const userNumber = registerResponse["registered"].user_number
     console.log(`registered Identity Anchor ${userNumber}`)
-    authState.set(identity, delegation.delegationIdentity, ii)
+    authState.set({
+      identity,
+      delegationIdentity: delegation.delegationIdentity,
+    })
     return {
       kind: "loginSuccess",
       chain: delegation.chain,
@@ -535,7 +538,7 @@ export async function registerFromGoogle(
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
   replaceIdentity(delegation.delegationIdentity)
-  authState.set(identity, delegation.delegationIdentity, ii)
+  authState.set({ identity, delegationIdentity: delegation.delegationIdentity })
 
   let registerResponse: RegisterResponse
   try {
@@ -629,7 +632,10 @@ export async function fromSeedPhrase(
   const delegationIdentity = await requestFEDelegation(identity)
 
   replaceIdentity(delegationIdentity.delegationIdentity)
-  authState.set(identity, delegationIdentity.delegationIdentity, ii)
+  authState.set({
+    identity,
+    delegationIdentity: delegationIdentity.delegationIdentity,
+  })
 
   im.use_access_point([getBrowserName()]).catch((e) => {
     // When user recovers from II, the call to use_access_points will fail
@@ -684,7 +690,10 @@ async function fromWebauthnDevices(
   })
 
   replaceIdentity(delegation.delegationIdentity)
-  authState.set(multiIdent._actualIdentity!, delegation.delegationIdentity, ii)
+  authState.set({
+    identity: multiIdent._actualIdentity!,
+    delegationIdentity: delegation.delegationIdentity,
+  })
 
   im.use_access_point([getBrowserName()]).catch((error) => {
     console.log(error)
@@ -722,7 +731,7 @@ export async function loginFromRemoteFrontendDelegation({
   const multiIdent = getMultiIdent(devices)
   console.debug("loginFromRemoteFrontendDelegation", { devices })
 
-  authState.set(multiIdent._actualIdentity!, delegationIdentity, ii)
+  authState.set({ identity: multiIdent._actualIdentity!, delegationIdentity })
 
   return {
     kind: "loginSuccess",
@@ -741,7 +750,10 @@ export async function loginfromGoogleDevice(identity: string): Promise<void> {
   const googleIdentity = Ed25519KeyIdentity.fromJSON(identity)
   const frontendDelegation = await requestFEDelegation(googleIdentity)
 
-  authState.set(googleIdentity, frontendDelegation.delegationIdentity, ii)
+  authState.set({
+    identity: googleIdentity,
+    delegationIdentity: frontendDelegation.delegationIdentity,
+  })
   im.use_access_point([getBrowserName()]).catch((error) => {
     throw new Error(
       `loginfromGoogleDevice im.use_access_point: ${error.message}`,
@@ -847,13 +859,12 @@ export async function registerInternetIdentity(
   const credentialId = Array.from(new Uint8Array(identity.rawId))
   const pubkey = Array.from(new Uint8Array(identity.getPublicKey().toDer()))
 
-  authState.set(
+  authState.set({
     identity,
-    delegation.delegationIdentity,
-    ii,
-    delegation.chain,
-    delegation.sessionKey,
-  )
+    delegationIdentity: delegation.delegationIdentity,
+    chain: delegation.chain,
+    sessionKey: delegation.sessionKey,
+  })
 
   const anchor = await ii
     .register(

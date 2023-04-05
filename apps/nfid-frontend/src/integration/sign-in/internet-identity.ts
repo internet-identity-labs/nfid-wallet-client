@@ -37,7 +37,7 @@ export const getIIAuthSessionService = async () => {
   const identity = (await signinWithII()) as DelegationIdentity
 
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
-  authState.set(identity, identity, ii)
+  authState.set({ identity, delegationIdentity: identity })
 
   let profile
   try {

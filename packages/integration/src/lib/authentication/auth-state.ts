@@ -39,19 +39,19 @@ observableAuthState$.subscribe({
   },
 })
 
+type SetProps = {
+  identity: SignIdentity
+  delegationIdentity: DelegationIdentity
+  chain?: DelegationChain | undefined
+  sessionKey?: Ed25519KeyIdentity | undefined
+}
+
 function authStateClosure() {
   return {
-    set(
-      identity: SignIdentity,
-      delegationIdentity: DelegationIdentity,
-      actor: ActorSubclass<InternetIdentity>,
-      chain?: DelegationChain | undefined,
-      sessionKey?: Ed25519KeyIdentity | undefined,
-    ) {
+    set({ identity, delegationIdentity, chain, sessionKey }: SetProps) {
       setupSessionManager({ onIdle: invalidateIdentity })
       observableAuthState$.next({
         pendingRenewDelegation: false,
-        actor,
         identity,
         delegationIdentity,
         chain,
@@ -78,23 +78,21 @@ function authStateClosure() {
 }
 
 export function checkDelegationExpiration() {
-  const { pendingRenewDelegation, delegationIdentity, identity } =
-    observableAuthState$.getValue()
+  const { delegationIdentity, identity } = observableAuthState$.getValue()
 
-  if (!delegationIdentity || !identity || pendingRenewDelegation) return
+  if (!delegationIdentity || !identity) return
 
   if (isDelegationExpired(delegationIdentity)) {
     authState.setRenewDelegationStatus(true)
 
     return requestFEDelegation(identity)
       .then((result) => {
-        authState.set(
+        authState.set({
           identity,
-          result.delegationIdentity,
-          ii,
-          result.chain,
-          result.sessionKey,
-        )
+          delegationIdentity: result.delegationIdentity,
+          chain: result.chain,
+          sessionKey: result.sessionKey,
+        })
       })
       .catch((e) => {
         console.error("checkDelegationExpiration", e)

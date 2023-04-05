@@ -46,11 +46,10 @@ const RemoteReceiverMachine =
           type: "final",
           data: (context, event: { data: RemoteDeviceAuthSession }) => {
             // NOTE: where should this ideally live?
-            authState.set(
-              event.data.identity,
-              event.data.delegationIdentity,
-              ii,
-            )
+            authState.set({
+              identity: event.data.identity,
+              delegationIdentity: event.data.delegationIdentity,
+            })
             return event.data
           },
         },

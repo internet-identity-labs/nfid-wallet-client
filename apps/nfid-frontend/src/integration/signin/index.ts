@@ -100,13 +100,12 @@ export async function createTentativeDevice({
 
   replaceIdentity(userDelegation.delegationIdentity)
 
-  authState.set(
-    userIdentity,
-    userDelegation.delegationIdentity,
-    ii,
-    userDelegation.chain,
-    userDelegation.sessionKey,
-  )
+  authState.set({
+    identity: userIdentity,
+    delegationIdentity: userDelegation.delegationIdentity,
+    chain: userDelegation.chain,
+    sessionKey: userDelegation.sessionKey,
+  })
 
   let profile
   try {

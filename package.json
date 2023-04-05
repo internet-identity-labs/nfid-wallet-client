@@ -60,6 +60,7 @@
     "ethers": "^5.7.2",
     "ethers-ts": "^5.5.3",
     "ictool": "^0.0.6",
+    "idb": "7.1.1",
     "immer": "9.0.12",
     "jest-environment-jsdom": "^28",
     "jotai": "1.11.0",

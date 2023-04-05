@@ -9,6 +9,7 @@ import { blockchains } from "@nfid/config"
 
 import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
 import {
+  TransactionRow,
   selectReceivedTransactions,
   selectSendTransactions,
 } from "frontend/integration/rosetta/select-transactions"
@@ -34,32 +35,23 @@ const ProfileTransactions = () => {
     string[]
   >([])
 
-  const accountsOptions = useMemo(() => {
-    return wallets.map(
-      (w) =>
-        ({
-          label: w.label,
-          value: principalToAddress(w.principal),
-        } as IOption),
-    )
-  }, [wallets])
-
   const isNFIDAccount = useMemo(() => {
+    if (!wallets.length) return false
     return !selectedAccountFilters.length
       ? true
       : !!selectedAccountFilters.find(
-          (f) => f?.value === accountsOptions[0]?.value,
+          (f) => f?.value === principalToAddress(wallets[0]?.principal),
         )
       ? true
       : false
-  }, [selectedAccountFilters, accountsOptions])
+  }, [selectedAccountFilters, wallets])
 
-  const sendTransactions = useMemo(() => {
+  const sendTransactions: TransactionRow[] = useMemo(() => {
     const ICTransactions = selectSendTransactions({
       transactions: walletTransactions ?? { totalCount: 0, transactions: [] },
       accounts: selectedAccountFilters.length
         ? selectedAccountFilters.map((f) => f.value)
-        : accountsOptions.map((o) => o.value),
+        : wallets.map((w) => principalToAddress(w.principal)),
     })
     const ETHTransactions = isNFIDAccount ? sendEthTXs : []
     const BTCTransactions = isNFIDAccount ? btcTxs?.sendTransactions ?? [] : []
@@ -83,19 +75,19 @@ const ProfileTransactions = () => {
   }, [
     walletTransactions,
     selectedAccountFilters,
-    accountsOptions,
+    wallets,
     isNFIDAccount,
     sendEthTXs,
     btcTxs?.sendTransactions,
     selectedBlockchainFilters,
   ])
 
-  const receivedTransactions = useMemo(() => {
+  const receivedTransactions: TransactionRow[] = useMemo(() => {
     const ICTransactions = selectReceivedTransactions({
       transactions: walletTransactions ?? { totalCount: 0, transactions: [] },
       accounts: selectedAccountFilters.length
         ? selectedAccountFilters.map((f) => f.value)
-        : accountsOptions.map((o) => o.value),
+        : wallets.map((w) => principalToAddress(w.principal)),
     })
     const ETHTransactions = isNFIDAccount ? receiveEthTXs : []
     const BTCTransactions = isNFIDAccount
@@ -121,11 +113,53 @@ const ProfileTransactions = () => {
   }, [
     walletTransactions,
     selectedAccountFilters,
-    accountsOptions,
+    wallets,
     isNFIDAccount,
-    selectedBlockchainFilters,
     receiveEthTXs,
     btcTxs?.receivedTransactions,
+    selectedBlockchainFilters,
+  ])
+
+  const accountsOptions = useMemo(() => {
+    return wallets.map((w) => {
+      const ICTransactionsLength =
+        selectReceivedTransactions({
+          transactions: walletTransactions ?? {
+            totalCount: 0,
+            transactions: [],
+          },
+          accounts: [principalToAddress(w.principal)],
+        }).length +
+        selectSendTransactions({
+          transactions: walletTransactions ?? {
+            totalCount: 0,
+            transactions: [],
+          },
+          accounts: [principalToAddress(w.principal)],
+        }).length
+
+      const transactionsLength =
+        w.domain === "nfid.one"
+          ? sendEthTXs.length +
+            receiveEthTXs.length +
+            (btcTxs?.sendTransactions?.length ?? 0) +
+            (btcTxs?.receivedTransactions?.length ?? 0) +
+            ICTransactionsLength
+          : ICTransactionsLength
+
+      return {
+        label: w.label,
+        value: principalToAddress(w.principal),
+        afterLabel: `${transactionsLength} TXs`,
+      } as IOption
+    })
+  }, [
+    btcTxs?.receivedTransactions?.length,
+    btcTxs?.sendTransactions?.length,
+    receiveEthTXs.length,
+    sendEthTXs.length,
+    walletTransactions,
+    wallets,
   ])
 
   const handleSelectAccountFilter = useCallback(

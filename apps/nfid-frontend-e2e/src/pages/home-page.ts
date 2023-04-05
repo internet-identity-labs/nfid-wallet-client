@@ -90,7 +90,7 @@ export class HomePage extends Page {
   public async signIn(isMobile?: boolean) {
     let index = isMobile ? 0 : 1
     let counter = 0
-    while ((await this.signInButton.length) > 0 || counter < 3) {
+    while ((await this.signInButton.length) > 0 || counter < 5) {
       if (isMobile) await this.openHomeBurgerMenu()
       await this.signInButton[index].waitForDisplayed({
         timeout: 7000,
@@ -101,6 +101,10 @@ export class HomePage extends Page {
         timeoutMsg: "Sign In button is not clickable!",
       })
       await this.signInButton[index].click()
+      await $(".//div[contains(text(),'Loading')]").waitForDisplayed({
+        interval: 8000,
+        reverse: true,
+      })
       try {
         // handles the situation with Registration ceremony
         // https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client

@@ -1,7 +1,13 @@
 import clsx from "clsx"
 import React, { useState } from "react"
 
-import { DropdownSelect, IOption, TabsSwitcher } from "@nfid-frontend/ui"
+import {
+  DropdownSelect,
+  IconCmpFilters,
+  IOption,
+  ModalAdvanced,
+  TabsSwitcher,
+} from "@nfid-frontend/ui"
 
 import { TransactionRow } from "frontend/integration/rosetta/select-transactions"
 import { Chip } from "frontend/ui/atoms/chip"
@@ -14,10 +20,13 @@ interface IProfileTransactionsPage
   sentData: TransactionRow[]
   receivedData: TransactionRow[]
   transactionsFilterOptions: IOption[]
-  chips: string[]
   onChipRemove: (value: string) => void
   setTransactionFilter: (value: string[]) => void
-  selectedTransactionFilter: string[]
+  selectedTransactionFilter: IOption[]
+  blockchainOptions: string[]
+  resetBlockchainFilter: () => void
+  blockchainFilter: string[]
+  setBlockchainFilter: (value: string[]) => void
 }
 
 const tabs = [
@@ -37,12 +46,15 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
   transactionsFilterOptions,
   setTransactionFilter,
   selectedTransactionFilter,
-  chips,
   onChipRemove,
+  resetBlockchainFilter,
+  blockchainFilter,
+  blockchainOptions,
+  setBlockchainFilter,
 }) => {
   const [activeTab, setActiveTab] = useState("Sent")
-  const [filteredData, setFilteredData] = useState<any[]>([])
-
+  const [filteredData, setFilteredData] = useState<TransactionRow[]>([])
+  const [isBlockchainFilterOpen, setIsBlockchainFilterOpen] = useState(false)
   return (
     <ProfileTemplate
       pageTitle="Transactions history"
@@ -50,19 +62,52 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
       showBackButton
     >
       <ProfileContainer className={clsx(`bg-gray-200`)}>
-        <DropdownSelect
-          bordered={false}
-          options={transactionsFilterOptions}
-          placeholder="All wallets"
-          setSelectedValues={setTransactionFilter}
-          selectedValues={selectedTransactionFilter}
-          isSearch
-        />
+        <div className="flex items-center justify-between w-full space-x-10 ">
+          <DropdownSelect
+            bordered={false}
+            options={transactionsFilterOptions}
+            placeholder="All wallets"
+            setSelectedValues={setTransactionFilter}
+            selectedValues={selectedTransactionFilter.map((f) => f.value)}
+            isSearch
+          />
+
+          <ModalAdvanced
+            isModalOpen={isBlockchainFilterOpen}
+            isModalOpenChange={setIsBlockchainFilterOpen}
+            secondaryButton={{
+              type: "stroke",
+              onClick: () => resetBlockchainFilter(),
+              text: "Reset filter",
+              id: "reset-filters-button",
+              block: true,
+            }}
+            primaryButton={{
+              type: "primary",
+              onClick: () => setIsBlockchainFilterOpen(false),
+              text: "Apply",
+              id: "apply-filters-button",
+              block: true,
+            }}
+            trigger={<IconCmpFilters className="cursor-pointer" />}
+            title="Filter"
+          >
+            <DropdownSelect
+              label="Blockchain"
+              options={blockchainOptions.map((f) => ({
+                label: f,
+                value: f,
+              }))}
+              selectedValues={blockchainFilter}
+              setSelectedValues={setBlockchainFilter}
+            />
+          </ModalAdvanced>
+        </div>
       </ProfileContainer>
       {/* TODO: create Chiplist component */}
       <div className="mt-6 flex w-full flex-wrap gap-2.5">
-        {chips.map((chip) => (
-          <Chip key={chip} title={chip} onRemove={onChipRemove} />
+        {selectedTransactionFilter.map((chip) => (
+          <Chip key={chip.label} title={chip.label} onRemove={onChipRemove} />
         ))}
       </div>
       <TabsSwitcher
@@ -90,7 +135,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
                     className={clsx(
                       "hover:bg-[#F3F4F6] hover:cursor-pointer h-16",
                     )}
-                    key={`transaction_${index}`}
+                    key={`transaction_${index}_${transaction.date}}`}
                     id={`transaction_${index}`}
                   >
                     <td

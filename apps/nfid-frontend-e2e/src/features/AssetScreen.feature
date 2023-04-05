@@ -57,6 +57,7 @@ Feature:Fungible Asset
       | label             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
       | Bitcoin           | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre                              | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h                               | 25795  |
       | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
+      | Ethereum          | ETH      | 0.1        | 0.1           | 0x51c20059d7084e3d381403939d5dc3158f891a8e                       | 0x36c4dac48217546e0be2b5057857e76ac784b3c7                       | 10974  |
 
   @asset4
   Scenario Outline: User should be able to see transaction depends on selected app

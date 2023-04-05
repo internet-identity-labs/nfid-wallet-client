@@ -10,7 +10,7 @@ import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
 
 type ExecuteProcedureServiceContext = CommonContext & {
-  populatedTransaction: [TransactionRequest, ProviderError | undefined]
+  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export const ExecuteProcedureService = async ({
@@ -51,8 +51,8 @@ export const ExecuteProcedureService = async ({
     }
     case "eth_sendTransaction": {
       const { wait, ...result } = await adapter.sendTransaction(
-        populatedTransaction,
         delegation,
+        populatedTransaction,
       )
       const response = { ...rpcBase, result: result.hash }
       console.debug("ExecuteProcedureService eth_accounts", {

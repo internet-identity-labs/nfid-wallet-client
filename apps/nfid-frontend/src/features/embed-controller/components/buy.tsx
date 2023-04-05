@@ -156,7 +156,7 @@ export const BuyComponent: React.FC<IBuyComponent> = ({
           Cancel
         </Button>
         <Button
-          disabled={isButtonDisabled}
+          disabled={isButtonDisabled || !!price.isInsufficientFundsError}
           className={clsx(
             "w-full relative disabled:bg-gray-200 overflow-hidden",
           )}

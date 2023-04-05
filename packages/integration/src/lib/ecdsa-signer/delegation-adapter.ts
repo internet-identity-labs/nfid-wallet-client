@@ -96,13 +96,16 @@ export class DelegationWalletAdapter {
   }
 
   async sendTransaction(
-    [transaction, _]: [TransactionRequest, ProviderError | undefined],
     delegation: DelegationIdentity,
+    populatedTransaction?: [TransactionRequest, ProviderError | undefined],
   ): Promise<TransactionResponse> {
     this.wallet.replaceIdentity(delegation)
     const provider = this.getProvider()
     if (!provider) throw new Error("provider missing")
     this.wallet._checkProvider("sendTransaction")
+
+    if (!populatedTransaction) throw new Error("No populated transaction")
+    const [transaction, _] = populatedTransaction
     const signedTx = await this.signTransaction(transaction, delegation)
     return await provider.sendTransaction(signedTx)
   }

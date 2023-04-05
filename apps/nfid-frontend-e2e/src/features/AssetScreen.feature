@@ -95,8 +95,9 @@ Feature:Fungible Asset
     And Open dropdown menu on page
     And Click checkbox chain <chain>
     Then Asset appears with label <chain>
+    Then Only <amount> asset displayed
     Examples:
-      | chain             | anchor |
-      | Bitcoin           | 25795  |
-      | Ethereum          | 10974  |
-      | Internet Computer | 28542  |
+      | chain             | anchor | amount |
+      | Bitcoin           | 25795  | 1      |
+      | Ethereum          | 10974  | 1      |
+      | Internet Computer | 28542  | 4      |

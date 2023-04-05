@@ -6,6 +6,6 @@
     "declaration": true,
     "types": ["node"]
   },
-  "include": ["**/*.ts", "src/lib/actors.ts.back"],
+  "include": ["**/*.ts", "../../types/env"],
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
 }

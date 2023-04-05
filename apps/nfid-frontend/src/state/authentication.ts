@@ -16,8 +16,12 @@ import { DelegationIdentity } from "@dfinity/identity"
 export interface AbstractAuthSession {
   // Note: how do we transport these identities?
   anchor: number
-  identity: SignIdentity
+  identity?: SignIdentity
   delegationIdentity: DelegationIdentity
+}
+
+export interface CachedAuthSession extends AbstractAuthSession {
+  sessionSource: "cache"
 }
 
 export interface GoogleAuthSession extends AbstractAuthSession {
@@ -43,6 +47,7 @@ export interface WalletConnectAuthSession extends AbstractAuthSession {
 }
 
 export type AuthSession =
+  | CachedAuthSession
   | GoogleAuthSession
   | RemoteDeviceAuthSession
   | LocalDeviceAuthSession

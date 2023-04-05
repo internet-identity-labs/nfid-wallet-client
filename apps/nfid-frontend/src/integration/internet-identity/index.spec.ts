@@ -123,7 +123,10 @@ describe("ii suite", () => {
       im.use_access_point = jest.fn((x: [] | [string]) => ({
         catch: jest.fn(),
       }))
-      authStateMock.set(mockedIdentity, delegationIdentityDummy, ii)
+      authStateMock.set({
+        identity: mockedIdentity,
+        delegationIdentity: delegationIdentityDummy,
+      })
       // @ts-ignore
       ed25519Mock.fromMnemonicWithoutValidation = jest.fn(() =>
         Promise.resolve(mockedIdentity),

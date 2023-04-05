@@ -24,11 +24,9 @@ export const NFIDConnectAccountCoordinator: React.FC<
         <ChooseAccount
           onConnectionDetails={() => send({ type: "CONNECTION_DETAILS" })}
           onConnect={onConnect}
-          onConnectAnonymously={() => send({ type: "CONNECT_ANONYMOUSLY" })}
           applicationName={appMeta.name}
           applicationLogo={appMeta.logo}
           applicationURL={appMeta.url}
-          accounts={state?.context?.accounts}
         />
       )
     case state.matches("ConnectionDetails"):

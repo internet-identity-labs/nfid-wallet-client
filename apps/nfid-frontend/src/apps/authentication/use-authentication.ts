@@ -6,7 +6,7 @@ import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
 import { authState, hasOwnProperty } from "@nfid/integration"
-import { agent, invalidateIdentity } from "@nfid/integration"
+import { agent } from "@nfid/integration"
 
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
 import {
@@ -51,7 +51,7 @@ export const useAuthentication = () => {
   }, [setIsAuthenticated])
 
   const logout = React.useCallback(() => {
-    invalidateIdentity()
+    authState.logout()
     setUser(undefined)
     Sentry.setUser(null)
 

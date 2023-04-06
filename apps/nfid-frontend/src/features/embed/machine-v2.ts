@@ -1,5 +1,7 @@
+import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { assign, createMachine } from "xstate"
 
+import { ProviderError } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
@@ -60,6 +62,7 @@ type NFIDEmbedMachineContext = {
   rpcMessageDecoded?: FunctionCall
   error?: Error
   messageQueue: Array<RPCMessage>
+  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export const NFIDEmbedMachineV2 = createMachine(
@@ -202,6 +205,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         requestOrigin: event.data.origin,
         rpcMessage: event.data.rpcMessage,
         rpcMessageDecoded: event.data.rpcMessageDecoded,
+        populatedTransaction: event.data.populatedTransaction,
       })),
       updateProcedure: assign(({ messageQueue }, event) => {
         return {
@@ -214,6 +218,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         return { authSession: event.data }
       }),
       queueRequest: assign((context, event) => ({
+        // TODO: we need to queue all data
         messageQueue: [...context.messageQueue, event.data.rpcMessage],
       })),
       assignError: assign((context, event) => ({

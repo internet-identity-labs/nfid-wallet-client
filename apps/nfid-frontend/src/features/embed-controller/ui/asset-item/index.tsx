@@ -22,7 +22,7 @@ export const AssetPreview: React.FC<IAssetPreview> = ({
     <div
       className={clsx(
         "flex items-center justify-between overflow-hidden",
-        "border rounded-md",
+        "border rounded-md shrink-0",
       )}
     >
       <div className="flex items-center w-full">

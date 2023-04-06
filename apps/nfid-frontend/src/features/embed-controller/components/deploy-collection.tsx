@@ -1,3 +1,4 @@
+import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import { useMemo } from "react"
@@ -9,6 +10,7 @@ import {
   Button,
 } from "@nfid-frontend/ui"
 import { copyToClipboard } from "@nfid-frontend/utils"
+import { ProviderError } from "@nfid/integration"
 
 import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -18,6 +20,8 @@ import { useTimer } from "frontend/ui/utils/use-timer"
 import { RPCApplicationMetaSubtitle } from "../ui/app-meta/subtitle"
 import { AssetPreview } from "../ui/asset-item"
 import { InfoListItem } from "../ui/info-list-item"
+import { WarningComponent } from "../ui/warning"
+import { calcPriceDeployCollection } from "../util/calcPriceDeployCollectionUtil"
 import { ApproverCmpProps } from "./types"
 
 interface IBuyComponent {
@@ -31,6 +35,7 @@ interface IBuyComponent {
   data?: any
   feeMin?: string
   feeMax?: string
+  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export const DeployComponent = ({
@@ -41,9 +46,8 @@ export const DeployComponent = ({
   onCancel,
   fromAddress,
   toAddress,
-  feeMin,
-  feeMax,
   data,
+  populatedTransaction,
 }: IBuyComponent) => {
   const { rates } = useExchangeRates()
   const { counter } = useTimer({
@@ -53,34 +57,15 @@ export const DeployComponent = ({
   })
 
   const isButtonDisabled = useMemo(
-    () => (!isButtonDisabledProp ? isButtonDisabledProp : counter > 0),
-    [counter, isButtonDisabledProp],
+    () =>
+      (!isButtonDisabledProp ? isButtonDisabledProp : counter > 0) ||
+      populatedTransaction instanceof Error,
+    [counter, isButtonDisabledProp, populatedTransaction],
   )
 
-  const fee = useMemo(() => {
-    if (!feeMin || !feeMax || !rates)
-      return { averageInEth: 0, averageInUsd: 0 }
-
-    const minFeeInEth = parseInt(feeMin, 16) / 10 ** 18
-    const minFeeInUsd = (minFeeInEth * rates["ETH"]).toFixed(2)
-
-    const maxFeeInEth = parseInt(feeMax, 16) / 10 ** 18
-    const maxFeeInUsd = (maxFeeInEth * rates["ETH"]).toFixed(2)
-
-    console.debug("DeployComponent fee useMemo", {
-      minFeeInEth,
-      maxFeeInEth,
-      feeMin: parseInt(feeMin, 16),
-      feeMax: parseInt(feeMax, 16),
-    })
-
-    return {
-      min: minFeeInUsd,
-      max: maxFeeInUsd,
-      averageInEth: (minFeeInEth + maxFeeInEth) / 2,
-      averageInUsd: Number(((minFeeInEth + maxFeeInEth) / 2).toFixed(2)),
-    }
-  }, [feeMax, feeMin, rates])
+  const price = useMemo(() => {
+    return calcPriceDeployCollection(rates, populatedTransaction)
+  }, [rates, populatedTransaction])
 
   return (
     <TooltipProvider>
@@ -131,15 +116,15 @@ export const DeployComponent = ({
         />
         <InfoListItem
           title="Network fee"
-          description={`$${fee?.min}-$${fee.max}`}
+          description={`$${price?.feeUsd}`}
           tooltip="Applies to all transactions. Not paid to NFID Wallet."
           icon={<IconCmpSettings className="ml-[6px] cursor-pointer" />}
         />
         <InfoListItem
           title="Total"
-          description={`${fee?.averageInEth} ETH`}
+          description={`${price?.fee} ETH`}
           isBold
-          subDescription={`~$${fee?.averageInUsd}`}
+          subDescription={`~$${price.feeUsd}`}
         />
       </div>
 
@@ -149,12 +134,28 @@ export const DeployComponent = ({
       >
         Transaction details
       </p>
-      <div className="flex items-center w-full mt-14">
+      {price.isNetworkIsBusyWarning ? (
+        <WarningComponent isNetworkBusy={true} isAuthorizeAll={false} />
+      ) : null}
+      <p
+        className={clsx(
+          "text-xs text-red my-3.5",
+          !price.isInsufficientFundsError && "hidden",
+        )}
+      >
+        Insufficient balance in your account to pay for this transaction.
+        <span className="font-semibold cursor-pointer text-blue">
+          {" "}
+          Buy ETH{" "}
+        </span>
+        or deposit from another account.
+      </p>
+      <div className="flex items-center w-full">
         <Button type="stroke" className="w-full mr-2" onClick={onCancel}>
           Cancel
         </Button>
         <Button
-          disabled={isButtonDisabled}
+          disabled={isButtonDisabled || !!price.isInsufficientFundsError}
           className={clsx(
             "w-full relative disabled:bg-gray-200 overflow-hidden",
           )}
@@ -181,6 +182,7 @@ const MappedDeployCollection: React.FC<ApproverCmpProps> = ({
   appMeta,
   rpcMessage,
   rpcMessageDecoded,
+  populatedTransaction,
   onConfirm,
   onReject,
 }) => {
@@ -194,8 +196,7 @@ const MappedDeployCollection: React.FC<ApproverCmpProps> = ({
       data={rpcMessageDecoded?.data}
       fromAddress={rpcMessage?.params[0].from}
       toAddress={rpcMessage?.params[0].to}
-      feeMin={rpcMessage?.params[0]?.maxFeePerGas}
-      feeMax={rpcMessage?.params[0]?.maxPriorityFeePerGas}
+      populatedTransaction={populatedTransaction}
     />
   )
 }

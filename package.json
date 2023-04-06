@@ -24,6 +24,7 @@
     "@nfid/wallet": "1.1.0-alpha.0",
     "@nrwl/nx-cloud": "15.2.4",
     "@psychedelic/cap-js": "0.0.8",
+    "@radix-ui/react-accordion": "^1.1.1",
     "@radix-ui/react-dialog": "^1.0.2",
     "@radix-ui/react-dropdown-menu": "2.0.1",
     "@radix-ui/react-popover": "^1.0.2",
@@ -49,6 +50,7 @@
     "alchemy-sdk": "^2.4.3",
     "biguintle": "1.0.3",
     "bip39": "3.0.4",
+    "bitcoinjs-lib": "5.2.0",
     "bn.js": "5.2.1",
     "borc": "3.0.0",
     "bowser": "^2.11.0",
@@ -90,8 +92,7 @@
     "uuid": "8.3.2",
     "web3modal": "^1.9.10",
     "wouter": "2.9.0",
-    "xstate": "^4.32.1",
-    "bitcoinjs-lib": "5.2.0"
+    "xstate": "^4.32.1"
   },
   "devDependencies": {
     "@babel/core": "7.12.13",

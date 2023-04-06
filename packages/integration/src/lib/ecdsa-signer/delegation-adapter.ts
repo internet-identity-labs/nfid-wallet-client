@@ -4,11 +4,16 @@ import {
   TransactionResponse,
 } from "@ethersproject/abstract-provider"
 import { TypedMessage } from "@metamask/eth-sig-util"
-import { BigNumber, Bytes } from "ethers"
+import { Alchemy, Network } from "alchemy-sdk"
+import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
-import { Deferrable } from "ethers/lib/utils"
 
 import { EthWalletV2 } from "./signer-ecdsa"
+
+export enum ProviderError {
+  INSUFICIENT_FUNDS,
+  NETWORK_BUSY,
+}
 
 export class DelegationWalletAdapter {
   private wallet: EthWalletV2
@@ -34,45 +39,74 @@ export class DelegationWalletAdapter {
     return this.wallet.getAddress()
   }
 
-  async sendTransaction(
+  async populateTransaction(
     transaction: TransactionRequest,
     delegation: DelegationIdentity,
+  ): Promise<[TransactionRequest, ProviderError | undefined]> {
+    this.wallet.replaceIdentity(delegation)
+    const provider = this.getProvider()
+    if (!provider) throw new Error("provider missing")
+    this.wallet._checkProvider("sendTransaction")
+
+    let tx: TransactionRequest
+    let err: ProviderError | undefined
+    let gasLimit
+    const gasPrice = await provider.getGasPrice()
+
+    for (let index = 0; index <= 3; index++) {
+      try {
+        tx = await this.wallet.populateTransaction(transaction)
+        return [tx, err]
+      } catch (error) {
+        const alchemy = new Alchemy({
+          apiKey: ALCHEMY_API_KEY,
+          network: Network.ETH_GOERLI,
+        })
+        try {
+          gasLimit = await alchemy.core.estimateGas(transaction)
+        } catch (error) {
+          try {
+            gasLimit = await alchemy.core.estimateGas({
+              ...transaction,
+              from: "0x0000000000000000000000000000000000000000",
+              to: "0x0000000000000000000000000000000000000000",
+            })
+            err = ProviderError.INSUFICIENT_FUNDS
+          } catch (error) {
+            gasLimit = ethers.utils.parseEther("0.7").div(gasPrice)
+            err = ProviderError.NETWORK_BUSY
+          }
+        }
+      }
+    }
+    const nonce = await provider.getTransactionCount(
+      transaction.from || "",
+      "pending",
+    )
+    tx = {
+      from: transaction.from,
+      to: transaction.to,
+      data: transaction.data,
+      value: transaction.value,
+      nonce,
+      gasLimit,
+      gasPrice,
+    }
+    return [tx, err]
+  }
+
+  async sendTransaction(
+    delegation: DelegationIdentity,
+    populatedTransaction?: [TransactionRequest, ProviderError | undefined],
   ): Promise<TransactionResponse> {
     this.wallet.replaceIdentity(delegation)
     const provider = this.getProvider()
     if (!provider) throw new Error("provider missing")
     this.wallet._checkProvider("sendTransaction")
 
-    let tx
-    for (let index = 0; index <= 3; index++) {
-      try {
-        tx = await this.wallet.populateTransaction(transaction)
-      } catch (error) {
-        const gasPrice = await provider.getGasPrice()
-        // TODO: SC-6735 what to do with gasLimit?
-        const gasLimit = BigNumber.from(100000)
-        tx = {
-          from: transaction.from,
-          to: transaction.to,
-          data: transaction.data,
-          value: transaction.value,
-          nonce: provider.getTransactionCount(
-            transaction.from || "",
-            "pending",
-          ),
-          gasLimit,
-          gasPrice,
-        }
-        console.error("sendTransaction", { error })
-      }
-    }
-
-    const signedTx = await this.signTransaction(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      tx || (transaction as TransactionRequest),
-      delegation,
-    )
+    if (!populatedTransaction) throw new Error("No populated transaction")
+    const [transaction, _] = populatedTransaction
+    const signedTx = await this.signTransaction(transaction, delegation)
     return await provider.sendTransaction(signedTx)
   }
 

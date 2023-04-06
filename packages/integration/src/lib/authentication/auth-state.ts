@@ -50,7 +50,11 @@ function makeAuthState() {
   async function _loadAuthSessionFromCache() {
     const sessionKey = await authStorage.get(KEY_STORAGE_KEY)
     const chain = await authStorage.get(KEY_STORAGE_DELEGATION)
-    if (!sessionKey || !chain) return
+    if (!sessionKey || !chain) {
+      return observableAuthState$.next({
+        cacheLoaded: true,
+      })
+    }
 
     const delegationIdentity = DelegationIdentity.fromDelegation(
       Ed25519KeyIdentity.fromJSON(sessionKey),

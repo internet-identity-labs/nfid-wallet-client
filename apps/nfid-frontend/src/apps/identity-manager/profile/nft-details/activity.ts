@@ -48,7 +48,11 @@ export const useNFTActivity = (nft?: UserNonFungibleToken) => {
 
   const fetchETHTokenHistory = React.useCallback(async () => {
     if (!nft?.contractId || !nft?.tokenId) return
-    const transactions = await getETHTokenActivity(nft.contractId, nft.tokenId)
+    const transactions = await getETHTokenActivity(
+      nft.contractId,
+      nft.tokenId,
+      ACTIVITY_TARGET,
+    )
     setNFTActivity(
       transactions.activities.map(
         (t) =>

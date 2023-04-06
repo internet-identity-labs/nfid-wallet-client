@@ -58,6 +58,13 @@ export const hooks = {
   before: async function (capabilities: any, specs: any) {
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
+    browser.executeAsync(function () {
+      // @ts-ignore
+      this.indexedDB.databases().then((dbs) => {
+        // @ts-ignore
+        dbs.map((db) => this.indexedDB.deleteDatabase(db.name))
+      })
+    })
   },
   /**
    * Gets executed before the suite starts.
@@ -163,6 +170,13 @@ export const hooks = {
    */
   beforeScenario: async (world: any) => {
     allureReporter.addFeature(world.name)
+    browser.executeAsync(function () {
+      // @ts-ignore
+      this.indexedDB.databases().then((dbs) => {
+        // @ts-ignore
+        dbs.map((db) => this.indexedDB.deleteDatabase(db.name))
+      })
+    })
   },
   afterScenario: async () => {
     browser.execute("window.localStorage.clear()")

@@ -8,15 +8,18 @@ interface ISmallTrigger {
   selectedOption?: IGroupOption
   actionHandler: () => void
   iconClassnames?: string
+  id?: string
 }
 
 export const SmallTrigger = ({
   selectedOption,
   actionHandler,
   iconClassnames,
+  id
 }: ISmallTrigger) => {
   return (
     <div
+      id={id}
       className={clsx(
         "border border-black rounded-md cursor-pointer h-10",
         "flex items-center justify-between hover:opacity-70",

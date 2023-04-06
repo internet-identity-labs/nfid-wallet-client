@@ -33,15 +33,20 @@ export interface BtcTxs {
 
 export const getBtcBalance = async (): Promise<TokenBalanceSheet> => {
   const { address, principal } = await getAccIdentifier()
-
   const balance = await BtcAsset.getBalance(address)
   return computeSheetForRootAccount(balance, address, principal)
+}
+
+export const getBtcAddress = async (): Promise<string> => {
+  const { address } = await getAccIdentifier()
+  return address
 }
 
 export const getBtcTransactionHistory = async (): Promise<BtcTxs> => {
   const { address, principal } = await getAccIdentifier()
   const sendTransactions = await getTransactions("send", address)
   const receivedTransactions = await getTransactions("received", address)
+  console.log(sendTransactions)
   let addressPrincipal = principalToAddress(Principal.fromText(principal))
   return {
     sendTransactions,
@@ -62,7 +67,7 @@ export const getTransactions = async (
     return tss.activities.map(
       (tx) =>
         ({
-          type: tx.from === address.toLowerCase() ? "send" : "received",
+          type: tx.from.toLowerCase() === address.toLowerCase() ? "send" : "received",
           asset: "BTC",
           quantity: Number(tx.price) / E8S,
           date: format(

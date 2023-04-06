@@ -101,3 +101,36 @@ Feature:Fungible Asset
       | Bitcoin           | 25795  | 1      |
       | Ethereum          | 10974  | 1      |
       | Internet Computer | 28542  | 4      |
+
+  @asset6
+  Scenario Outline: User should be able to receive transaction
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    Given User signs in
+    And Tokens displayed on user assets
+    Then Asset appears with label <chain>
+    And <chain> USD balance is not empty
+    Then User opens receive dialog window
+    Then Choose BTC from options
+    And Account ID is <first_acc_part> ... <second_acc_part>
+    Examples:
+      | chain   | anchor | first_acc_part                | second_acc_part |
+      | Bitcoin | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z | FDm2h           |
+
+  @asset7
+  Scenario Outline: User should be able to see transaction history in Received
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    Given User signs in
+    And Tokens displayed on user assets
+    And Open asset with label <label>
+    Then Wait while <label> accounts calculated
+    And Open Sent tab for first account
+    Then 1 transaction in the table
+    And Sent <balance> <currency>
+    And From <address_from> to <address_to>
+    And Date is <millis>
+    Examples:
+      | label   | currency | balance    | millis        | address_from                        | address_to                         | anchor |
+      | Bitcoin | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h | 25795  |
+

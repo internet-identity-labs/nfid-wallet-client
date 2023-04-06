@@ -105,6 +105,7 @@ export const ChooseModal = ({
           actionHandler={() => setIsModalVisible(true)}
           selectedOption={selectedOption}
           iconClassnames={iconClassnames}
+          id={"option_" + label}
         />
       ) : (
         <DefaultTrigger
@@ -150,7 +151,7 @@ export const ChooseModal = ({
               className="mt-6"
               key={`group_${group.label}_${group.options.length}`}
             >
-              <p className="text-sm font-bold tracking-[0.01em] mb-1.5">
+              <p id={"label_" + group.label} className="text-sm font-bold tracking-[0.01em] mb-1.5">
                 {group.label}
               </p>
               {group.options.map((option) => (
@@ -163,6 +164,7 @@ export const ChooseModal = ({
                   innerTitle={option.innerTitle}
                   innerSubtitle={option.innerSubtitle}
                   iconClassnames={iconClassnames}
+                  id={`option_${option.value}`}
                 />
               ))}
             </div>

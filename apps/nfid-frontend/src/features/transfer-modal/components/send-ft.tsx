@@ -125,7 +125,12 @@ export const TransferFT = ({
   const handleSelectWallet = useCallback(
     (value: string) => {
       const account = wallets?.find((w) =>
-        [w.principal.toText(), w.ethAddress, w.accountId].includes(value),
+        [
+          w.principal.toText(),
+          w.ethAddress,
+          w.btcAddress,
+          w.accountId,
+        ].includes(value),
       )
       if (!account) return
 

@@ -52,37 +52,66 @@ export class DelegationWalletAdapter {
     let err: ProviderError | undefined
     let gasLimit
     const gasPrice = await provider.getGasPrice()
-
-    for (let index = 0; index <= 3; index++) {
-      try {
-        tx = await this.wallet.populateTransaction(transaction)
-        return [tx, err]
-      } catch (error) {
-        const alchemy = new Alchemy({
-          apiKey: ALCHEMY_API_KEY,
-          network: Network.ETH_GOERLI,
-        })
-        try {
-          gasLimit = await alchemy.core.estimateGas(transaction)
-        } catch (error) {
-          try {
-            gasLimit = await alchemy.core.estimateGas({
-              ...transaction,
-              from: "0x0000000000000000000000000000000000000000",
-              to: "0x0000000000000000000000000000000000000000",
-            })
-            err = ProviderError.INSUFICIENT_FUNDS
-          } catch (error) {
-            gasLimit = ethers.utils.parseEther("0.7").div(gasPrice)
-            err = ProviderError.NETWORK_BUSY
-          }
-        }
-      }
-    }
     const nonce = await provider.getTransactionCount(
       transaction.from || "",
       "pending",
     )
+
+    try {
+      tx = await this.wallet.populateTransaction(transaction)
+      return [tx, err]
+    } catch (error) {
+      const alchemy = new Alchemy({
+        apiKey: ALCHEMY_API_KEY,
+        network: Network.ETH_GOERLI,
+      })
+
+      if ((error as any).code === "INSUFFICIENT_FUNDS") {
+        err = ProviderError.INSUFICIENT_FUNDS
+        const t = { ...transaction }
+        t.from = "0xC48E23C5F6e1eA0BaEf6530734edC3968f79Af2e"
+
+        gasLimit = await alchemy.core.estimateGas(t)
+        tx = {
+          from: transaction.from,
+          to: transaction.to,
+          data: transaction.data,
+          value: transaction.value,
+          nonce,
+          gasLimit,
+          gasPrice,
+        }
+        return [tx, err]
+      }
+
+      try {
+        err = ProviderError.NETWORK_BUSY
+        gasLimit = await alchemy.core.estimateGas(transaction)
+
+        tx = {
+          from: transaction.from,
+          to: transaction.to,
+          data: transaction.data,
+          value: transaction.value,
+          nonce,
+          gasLimit,
+          gasPrice,
+        }
+        return [tx, err]
+      } catch (error) {
+        try {
+          const t = { ...transaction }
+
+          delete t.maxFeePerGas
+          delete t.maxPriorityFeePerGas
+
+          gasLimit = await alchemy.core.estimateGas(t)
+        } catch (error) {
+          gasLimit = ethers.utils.parseEther("0.7").div(gasPrice)
+        }
+      }
+    }
+
     tx = {
       from: transaction.from,
       to: transaction.to,

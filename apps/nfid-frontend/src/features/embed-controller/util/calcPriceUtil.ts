@@ -26,16 +26,11 @@ export function calcPrice(
   const maxFeePerGas = BigNumber.from(
     transaction?.maxFeePerGas ?? transaction?.gasPrice,
   )
-  const price = BigNumber.from(transaction?.value)
+  const price = BigNumber.from(transaction?.value ?? "0x0")
   const fee = gasLimit.mul(maxFeePerGas)
   const total = price.add(fee)
   const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rates["ETH"]
   const totalUsd = parseFloat(ethers.utils.formatEther(total)) * rates["ETH"]
-
-  console.log("COMPARISON", {
-    isInsufficientFundsError: ProviderError.INSUFICIENT_FUNDS === err,
-    isNetworkIsBusyWarning: ProviderError.NETWORK_BUSY === err,
-  })
 
   return {
     feeUsd: feeUsd.toFixed(2),

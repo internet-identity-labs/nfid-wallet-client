@@ -14,12 +14,15 @@ export function calcPriceDeployCollection(
     return {
       fee: "0",
       feeUsd: "0",
+      isInsufficientFundsError: false,
+      isNetworkIsBusyWarning: false,
     }
-
   const [transaction, err] = populatedTransaction
 
   const gasLimit = BigNumber.from(transaction?.gasLimit)
-  const maxFeePerGas = BigNumber.from(transaction?.maxFeePerGas)
+  const maxFeePerGas = BigNumber.from(
+    transaction?.maxFeePerGas ?? transaction?.gasPrice,
+  )
   const fee = gasLimit.mul(maxFeePerGas)
   const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * rates["ETH"]
 

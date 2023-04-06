@@ -48,16 +48,17 @@ Feature:Fungible Asset
     And Tokens displayed on user assets
     And Open asset with label <label>
     Then Wait while <label> accounts calculated
-    And Open Received tab for first account
+    And Open <tab> tab for first account
     Then 1 transaction in the table
     And Sent <balance> <currency>
     And From <address_from> to <address_to>
     And Date is <millis>
     Examples:
-      | label             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
-      | Bitcoin           | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre                              | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h                               | 25795  |
-      | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
-      | Ethereum          | ETH      | 0.1        | 1680091200000 | 0x51c20059d7084e3d381403939d5dc3158f891a8e                       | 0x36c4dac48217546e0be2b5057857e76ac784b3c7                       | 10974  |
+      | tab      | label             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
+      | Received | Bitcoin           | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre                              | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h                               | 25795  |
+      | Received | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
+      | Sent     | Bitcoin           | BTC      | 0.00005269 | 1680784471000 | n2yvAStr9w75oUMyb3c7s4QdQu78Rj9Sjc                               | mohjSavDdQYHRYXcS3uS6ttaHP8amyvX78                               | 28593  |
+      | Received | Ethereum          | ETH      | 0.1        | 1680091200000 | 0x51c20059d7084e3d381403939d5dc3158f891a8e                       | 0x36c4dac48217546e0be2b5057857e76ac784b3c7                       | 10974  |
 
   @asset4
   Scenario Outline: User should be able to see transaction depends on selected app
@@ -67,10 +68,10 @@ Feature:Fungible Asset
     And Tokens displayed on user assets
     And Open asset with label <chain>
     Then Wait while <chain> accounts calculated
-    Then Open Received tab for first account
+    Then Open <tab> tab for first account
     And Open dropdown menu on page
     Then Expect dropdown menu with text "1 selected"
-    And Expect txs account "NFID account 1" with txs amount "1 TXs"
+    And Expect txs account "NFID account 1" with txs amount "<txs>"
     And Expect checkbox for account "NFID account 1" is selected
     Then Click checkbox account NFID account 1
     Then Expect dropdown menu with text "All wallets"
@@ -79,10 +80,11 @@ Feature:Fungible Asset
     Then Expect txs account "NNS account 1" with txs amount "0 TXs"
     Then 0 transaction in the table
     Examples:
-      | chain             | anchor |
-      | Bitcoin           | 25795  |
-      | Internet Computer | 28542  |
-      | Ethereum          | 10974  |
+      | tab      | chain             | anchor | txs   |
+      | Received | Bitcoin           | 25795  | 1 TXs |
+      | Sent     | Bitcoin           | 28593  | 2 TXs |
+      | Received | Internet Computer | 28542  | 1 TXs |
+      | Received | Ethereum          | 10974  | 1 TXs |
 
   @asset5
   Scenario Outline: User should be able to filter assets by blockchain
@@ -94,6 +96,7 @@ Feature:Fungible Asset
     And Expect dropdown menu with text "All"
     And Open dropdown menu on page
     And Click checkbox chain <chain>
+    Then Only 1 asset displayed
     Then Asset appears with label <chain>
     Then Only <amount> asset displayed
     Examples:
@@ -116,21 +119,4 @@ Feature:Fungible Asset
     Examples:
       | chain   | anchor | first_acc_part                | second_acc_part |
       | Bitcoin | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z | FDm2h           |
-
-  @asset7
-  Scenario Outline: User should be able to see transaction history in Received
-    Given User opens NFID site
-    And User is already authenticated by <anchor> anchor
-    Given User signs in
-    And Tokens displayed on user assets
-    And Open asset with label <label>
-    Then Wait while <label> accounts calculated
-    And Open Sent tab for first account
-    Then 1 transaction in the table
-    And Sent <balance> <currency>
-    And From <address_from> to <address_to>
-    And Date is <millis>
-    Examples:
-      | label   | currency | balance    | millis        | address_from                        | address_to                         | anchor |
-      | Bitcoin | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h | 25795  |
 

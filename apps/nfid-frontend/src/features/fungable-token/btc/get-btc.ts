@@ -67,7 +67,10 @@ export const getTransactions = async (
     return tss.activities.map(
       (tx) =>
         ({
-          type: tx.from.toLowerCase() === address.toLowerCase() ? "send" : "received",
+          type:
+            tx.from.toLowerCase() === address.toLowerCase()
+              ? "send"
+              : "received",
           asset: "BTC",
           quantity: Number(tx.price) / E8S,
           date: format(

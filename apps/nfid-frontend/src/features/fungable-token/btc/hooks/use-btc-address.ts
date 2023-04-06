@@ -1,6 +1,4 @@
-import {
-  getBtcAddress,
-} from "src/features/fungable-token/btc/get-btc"
+import { getBtcAddress } from "src/features/fungable-token/btc/get-btc"
 import useSWR from "swr"
 
 export const useBtcAddress = () => {

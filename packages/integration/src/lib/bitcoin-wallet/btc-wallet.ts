@@ -53,8 +53,8 @@ export class BtcWallet {
     targetAddress: string,
   ) {
     const net = "mainnet" == CHAIN_NETWORK ? "" : "testnet"
-    const url = `https://mempool.space/${net}/api/address/${address}/utxo`;
-    const response = await fetch(url);
+    const url = `https://mempool.space/${net}/api/address/${address}/utxo`
+    const response = await fetch(url)
     const inputs = await response.json()
     const network =
       "mainnet" == CHAIN_NETWORK ? networks.bitcoin : networks.testnet
@@ -73,7 +73,7 @@ export class BtcWallet {
       throw new Error(`BTC insufficient funds`)
     }
     txb.addOutput(targetAddress, transactionValue)
-    if (inputTotal > (transactionValue + fee)){
+    if (inputTotal > transactionValue + fee) {
       txb.addOutput(address, inputTotal - transactionValue - fee)
     }
     return txb.buildIncomplete()

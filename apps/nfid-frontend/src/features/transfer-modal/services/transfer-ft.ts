@@ -1,3 +1,6 @@
+import BigNumber from "bignumber.js"
+import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
+
 import {
   Account,
   ecdsaSigner,
@@ -7,7 +10,7 @@ import {
   replaceActorIdentity,
 } from "@nfid/integration"
 import { transfer as submitDIP20 } from "@nfid/integration/token/dip-20"
-import { transfer as submitICP } from "@nfid/integration/token/icp"
+import { E8S, transfer as submitICP } from "@nfid/integration/token/icp"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -27,6 +30,8 @@ export const transferFT = async (context: TransferMachineContext) => {
   switch (context.selectedFT?.currency) {
     case "ETH":
       return transferETH(parseFloat(context.amount), context.receiverWallet)
+    case "BTC":
+      return transferBTC(parseFloat(context.amount), context.receiverWallet)
     default:
       return transferICP(
         context.amount,
@@ -52,6 +57,26 @@ const transferETH = async (amount: number, to: string) => {
   } catch (e: any) {
     throw new Error(
       e?.message ?? "Unexpected error: The transaction has been cancelled",
+    )
+  }
+}
+
+const transferBTC = async (amount: number, to: string) => {
+  try {
+    const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+    const identity = await getWalletDelegation(profile.anchor, "nfid.one", "1")
+    const satoshi = BigNumber(amount).multipliedBy(E8S).toNumber()
+    try {
+      let response = await new BtcWallet(identity).sendSatoshi(to, satoshi)
+      console.log("response")
+      console.log(response)
+      return `You've sent ${amount} BTC. Transaction hash: ${response.tx.hash}`
+    } catch (e: any) {
+      return e.message
+    }
+  } catch (e: any) {
+    throw new Error(
+      e?.message ?? "Unexpected error: The BTC transaction has been cancelled",
     )
   }
 }

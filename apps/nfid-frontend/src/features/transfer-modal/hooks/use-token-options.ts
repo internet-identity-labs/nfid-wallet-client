@@ -2,6 +2,7 @@ import { useMemo } from "react"
 
 import {
   IconPngEthereum,
+  IconSvgBTC,
   IconSvgDfinity,
   IGroupedOptions,
 } from "@nfid-frontend/ui"
@@ -39,6 +40,17 @@ export const useTokenOptions = () => {
             title: "ETH",
             subTitle: "Ethereum",
             value: "ETH",
+          },
+        ],
+      },
+      {
+        label: "Bitcoin",
+        options: [
+          {
+            icon: IconSvgBTC,
+            title: "BTC",
+            subTitle: "Bitcoin",
+            value: "BTC",
           },
         ],
       },

@@ -12,11 +12,12 @@ export function calcPrice(
 ) {
   if (!rates["ETH"] || !populatedTransaction || !populatedTransaction[0])
     return {
-      fee: "0",
       feeUsd: "0",
       total: "0",
       totalUsd: "0",
       price: "0",
+      isInsufficientFundsError: false,
+      isNetworkIsBusyWarning: false,
     }
 
   const [transaction, err] = populatedTransaction

@@ -163,7 +163,7 @@ export const ProfileNFTDetailsPage = ({
         <Table
           headings={["Event type", "Date and time", "From", "To", "Price"]}
           rows={transactions.map((transaction) => ({
-            key: `${transaction.from}${transaction.to}${transaction.datetime}`,
+            key: `${transaction.from}${transaction.to}${transaction.datetime}${transaction.type}`,
             val: Object.values(transaction).map((value, i) => (
               <span
                 className={clsx(

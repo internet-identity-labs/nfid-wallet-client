@@ -21,7 +21,7 @@ export const ChooseItem = ({
   innerTitle,
   innerSubtitle,
   iconClassnames,
-  id
+  id,
 }: IChooseItem) => {
   return (
     <div

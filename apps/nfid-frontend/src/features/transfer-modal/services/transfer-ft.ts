@@ -66,8 +66,8 @@ const transferBTC = async (amount: number, to: string) => {
     const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
     const identity = await getWalletDelegation(profile.anchor, "nfid.one", "1")
     const satoshi = BigNumber(amount).multipliedBy(E8S).toNumber()
-      let response = await new BtcWallet(identity).sendSatoshi(to, satoshi)
-      return `You've sent ${amount} BTC. Transaction hash: ${response.tx.hash}`
+    let response = await new BtcWallet(identity).sendSatoshi(to, satoshi)
+    return `You've sent ${amount} BTC. Transaction hash: ${response.tx.hash}`
   } catch (e: any) {
     throw new Error(
       e?.message ?? "Unexpected error: The BTC transaction has been cancelled",

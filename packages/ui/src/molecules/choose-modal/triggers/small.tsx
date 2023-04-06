@@ -15,7 +15,7 @@ export const SmallTrigger = ({
   selectedOption,
   actionHandler,
   iconClassnames,
-  id
+  id,
 }: ISmallTrigger) => {
   return (
     <div

@@ -151,7 +151,10 @@ export const ChooseModal = ({
               className="mt-6"
               key={`group_${group.label}_${group.options.length}`}
             >
-              <p id={"label_" + group.label} className="text-sm font-bold tracking-[0.01em] mb-1.5">
+              <p
+                id={"label_" + group.label}
+                className="text-sm font-bold tracking-[0.01em] mb-1.5"
+              >
                 {group.label}
               </p>
               {group.options.map((option) => (

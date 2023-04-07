@@ -79,6 +79,13 @@ function makeAuthState() {
     })
   }
 
+  async function _clearAuthSessionFromCache() {
+    await Promise.all([
+      authStorage.remove(KEY_STORAGE_KEY),
+      authStorage.remove(KEY_STORAGE_DELEGATION),
+    ])
+  }
+
   async function loadCachedAuthSession() {
     let sub: Subscription | undefined
     return new Promise<ObservableAuthState & { cacheLoaded: true }>(
@@ -146,7 +153,8 @@ function makeAuthState() {
   /**
    * When user disconnects an identity, we update our agent.
    */
-  function invalidateIdentity() {
+  async function invalidateIdentity() {
+    await _clearAuthSessionFromCache()
     console.debug("invalidateIdentity")
     reset()
     agent.invalidateIdentity()

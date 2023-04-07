@@ -62,6 +62,13 @@ function createDelegationState() {
     )
     const expiresIn = getExpirationDelay(delegation)
     const timeout = Math.floor(expiresIn * 0.8)
+
+    const now = Date.now()
+    console.debug("createDelegationState _setupRefreshingDelegation", {
+      expiresIn: new Date(now + expiresIn).toISOString(),
+      timeout: new Date(now + timeout).toISOString(),
+    })
+
     const timer = setTimeout(() => {
       console.debug(
         "createDelegationState _setupRefreshingDelegation timeout",

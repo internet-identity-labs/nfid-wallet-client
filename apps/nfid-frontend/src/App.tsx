@@ -4,6 +4,7 @@ import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
 import { ScreenResponsive } from "@nfid-frontend/ui"
+import { ROUTE_EMBED } from "@nfid/config"
 import { ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
@@ -131,7 +132,7 @@ export const App = () => {
       />
 
       <Route
-        path="/embed"
+        path={ROUTE_EMBED}
         element={
           <ScreenResponsive className="overflow-auto">
             <React.Suspense fallback={<div>Loading...</div>}>

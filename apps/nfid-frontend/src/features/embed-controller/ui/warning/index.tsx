@@ -16,7 +16,7 @@ export const WarningComponent = ({
 }: IWarningComponent) => {
   return (
     <AccordionV2
-      className="w-full p-4 rounded-md bg-orange-50"
+      className="w-full p-4 my-3 rounded-md bg-orange-50"
       trigger={
         <div className={clsx("flex items-center justify-between")}>
           <div className="flex items-center text-sm font-bold">

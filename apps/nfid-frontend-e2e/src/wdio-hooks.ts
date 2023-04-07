@@ -3,6 +3,7 @@ import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import { baseURL } from "../wdio.conf"
 import { deviceName } from "../wdio.mobile.conf"
+import { clearIndexDb } from "./helpers/clear-index-db"
 import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
 import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
 
@@ -58,6 +59,7 @@ export const hooks = {
   before: async function (capabilities: any, specs: any) {
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
+    clearIndexDb(browser)
   },
   /**
    * Gets executed before the suite starts.
@@ -162,7 +164,9 @@ export const hooks = {
    * @param {Object}                 context  Cucumber World object
    */
   beforeScenario: async (world: any) => {
+    console.debug("running hook beforeScenario")
     allureReporter.addFeature(world.name)
+    clearIndexDb(browser)
   },
   afterScenario: async () => {
     browser.execute("window.localStorage.clear()")

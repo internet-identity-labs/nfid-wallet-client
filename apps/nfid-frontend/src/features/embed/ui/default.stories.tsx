@@ -21,9 +21,9 @@ const Template: ComponentStory<typeof DefaultComponent> = (args) => (
   </TooltipProvider>
 )
 
-export const Pair = Template.bind({})
+export const Default = Template.bind({})
 
-Pair.args = {
+Default.args = {
   applicationMeta: {
     url: "rarible.com",
   },

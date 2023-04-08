@@ -21,9 +21,9 @@ const Template: ComponentStory<typeof Mint> = (args) => (
   </BrowserRouter>
 )
 
-export const MintComponent = Template.bind({})
+export const Default = Template.bind({})
 
-MintComponent.args = {
+Default.args = {
   applicationMeta: {
     name: "Review",
     url: "rarible.com",
@@ -48,5 +48,5 @@ MintComponent.args = {
   ],
 
   assetTitle: "Solo Sensei #2969",
-  assetColectionName: "Degenerate Ape Academy",
+  assetCollectionName: "Degenerate Ape Academy",
 }

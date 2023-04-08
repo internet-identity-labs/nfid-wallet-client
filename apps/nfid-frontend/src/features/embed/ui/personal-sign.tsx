@@ -8,7 +8,6 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 interface IPersonalSign {
   applicationMeta: AuthorizingAppMeta
   message: string
-
   onApprove: () => void
   onCancel: () => void
 }
@@ -16,7 +15,6 @@ interface IPersonalSign {
 export const PersonalSign: React.FC<IPersonalSign> = ({
   applicationMeta,
   message,
-
   onApprove,
   onCancel,
 }: IPersonalSign) => {

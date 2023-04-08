@@ -16,7 +16,6 @@ interface ISignTypedData {
   creators: IObject[]
   tokenId: string
   tokenURI: string
-
   onApprove: () => void
   onCancel: () => void
 }
@@ -27,7 +26,6 @@ export const SignTypedData: React.FC<ISignTypedData> = ({
   creators,
   tokenId,
   tokenURI,
-
   onApprove,
   onCancel,
 }: ISignTypedData) => {
@@ -53,7 +51,10 @@ export const SignTypedData: React.FC<ISignTypedData> = ({
         >
           <p className="font-bold">Royalties</p>
           {royalties.map((object) => (
-            <div className="pl-2.5 grid grid-cols-[90px,1fr] gap-2.5">
+            <div
+              key={`royalty_${object.account}`}
+              className="pl-2.5 grid grid-cols-[90px,1fr] gap-2.5"
+            >
               <span>Account</span>
               <span className="text-black">{object.account}</span>
               <span>Value</span>
@@ -62,7 +63,10 @@ export const SignTypedData: React.FC<ISignTypedData> = ({
           ))}
           <p className="font-bold">Creators</p>
           {creators.map((object) => (
-            <div className="pl-2.5 grid grid-cols-[90px,1fr] gap-2.5">
+            <div
+              key={`creator_${object.account}`}
+              className="pl-2.5 grid grid-cols-[90px,1fr] gap-2.5"
+            >
               <span>Account</span>
               <span className="text-black">{object.account}</span>
               <span>Value</span>

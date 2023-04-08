@@ -2,8 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import { Image } from "@nfid-frontend/ui"
-
-import { EmptyAssetPreview } from "./empty"
+import { ic } from "@nfid/integration"
 
 interface IAssetPreview {
   icon?: string
@@ -16,8 +15,7 @@ export const AssetPreview: React.FC<IAssetPreview> = ({
   title,
   subtitle,
 }) => {
-  if (!icon && !title) return <EmptyAssetPreview />
-
+  if (!icon && !title && !subtitle) return null
   return (
     <div
       className={clsx(

@@ -2,7 +2,7 @@ import { ApplicationLogo } from "../../atoms/application-logo"
 import { H5 } from "../../atoms/typography"
 import { P } from "../../atoms/typography/paragraph"
 
-interface SDKApplicationMetaProps {
+export interface SDKApplicationMetaProps {
   applicationLogo?: string
   applicationName?: string
   title?: string
@@ -17,11 +17,13 @@ export const SDKApplicationMeta: React.FC<SDKApplicationMetaProps> = ({
 }) => (
   <>
     <div className="flex items-center space-x-2.5">
-      {applicationLogo && (
+      {applicationLogo ? (
         <ApplicationLogo
           src={applicationLogo}
           applicationName={applicationName}
         />
+      ) : (
+        <div className="w-10 h-10 bg-gray-100 rounded-md" />
       )}
       <H5 className="">{title}</H5>
     </div>

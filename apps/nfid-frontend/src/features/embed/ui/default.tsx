@@ -5,17 +5,17 @@ import {
   IconCmpOut,
   IconCmpSettings,
   Button,
-  SDKApplicationMetaProps,
   InfoListItem,
   WarningAccordion,
   IWarningAccordionOption,
 } from "@nfid-frontend/ui"
 
 import { RPCApplicationMetaSubtitle } from "frontend/features/embed-controller/ui/app-meta/subtitle"
+import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
 interface IDefaultComponent {
-  applicationMeta?: SDKApplicationMetaProps & { applicationURL?: string }
+  applicationMeta: AuthorizingAppMeta
   fromAddress: string
   toAddress: string
   network: string
@@ -48,14 +48,13 @@ export const DefaultComponent: React.FC<IDefaultComponent> = ({
   onAdjustNetworkFee,
 }: IDefaultComponent) => {
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between shrink-1">
       <div>
         <SDKApplicationMeta
-          {...applicationMeta}
+          title="Review collectible"
+          applicationLogo={applicationMeta?.logo}
           subTitle={
-            <RPCApplicationMetaSubtitle
-              applicationURL={applicationMeta?.applicationURL}
-            />
+            <RPCApplicationMetaSubtitle applicationURL={applicationMeta?.url} />
           }
         />
         <div className="mt-5 space-y-3">

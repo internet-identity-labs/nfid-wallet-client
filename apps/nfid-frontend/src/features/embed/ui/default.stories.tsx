@@ -25,8 +25,7 @@ export const Pair = Template.bind({})
 
 Pair.args = {
   applicationMeta: {
-    title: "Review",
-    applicationURL: "rarible.com",
+    url: "rarible.com",
   },
   fromAddress: "0x51c20059d7084e3d381403939d5dc3158f891a8e",
   toAddress: "0x51c20059d7084e3d381403939d5dc3158f891a8e",

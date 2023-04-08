@@ -1,14 +1,17 @@
 {
-  "nfid-frontend": {
-    "ic": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-    "dev": "dq6kg-laaaa-aaaah-aaeaq-cai"
-  },
   "nfid-demo": {
-    "ic": "hvn26-aiaaa-aaaak-aaa2a-cai",
-    "dev": "wzkxy-vyaaa-aaaaj-qab3q-cai"
+    "dev": "wzkxy-vyaaa-aaaaj-qab3q-cai",
+    "ic": "hvn26-aiaaa-aaaak-aaa2a-cai"
   },
   "nfid-demo-single-account": {
-    "ic": "pwy6s-kiaaa-aaaak-acm3q-cai",
-    "dev": "zqrbj-lqaaa-aaaal-aa7ja-cai"
+    "dev": "zqrbj-lqaaa-aaaal-aa7ja-cai",
+    "ic": "pwy6s-kiaaa-aaaak-acm3q-cai"
+  },
+  "nfid-frontend": {
+    "dev": "dq6kg-laaaa-aaaah-aaeaq-cai",
+    "ic": "3y5ko-7qaaa-aaaal-aaaaq-cai"
+  },
+  "nfid-storybook-frontend": {
+    "ic": "ma5gf-mqaaa-aaaao-aibya-cai"
   }
 }

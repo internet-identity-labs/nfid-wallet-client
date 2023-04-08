@@ -48,7 +48,7 @@ export const DefaultComponent: React.FC<IDefaultComponent> = ({
   onAdjustNetworkFee,
 }: IDefaultComponent) => {
   return (
-    <div className="flex flex-col justify-between shrink-1">
+    <div className="flex flex-col justify-between flex-1">
       <div>
         <SDKApplicationMeta
           title="Review collectible"

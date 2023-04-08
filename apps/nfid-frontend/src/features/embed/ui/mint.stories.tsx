@@ -49,4 +49,6 @@ Default.args = {
 
   assetTitle: "Solo Sensei #2969",
   assetCollectionName: "Degenerate Ape Academy",
+  assetUrl:
+    "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
 }

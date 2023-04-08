@@ -54,7 +54,7 @@ export const Mint = ({
   onCancel,
 }: IMint) => {
   return (
-    <div className="flex flex-col justify-between shrink-1">
+    <div className="flex flex-col justify-between flex-1">
       <div className="">
         <SDKApplicationMeta
           title="Mint collectible"

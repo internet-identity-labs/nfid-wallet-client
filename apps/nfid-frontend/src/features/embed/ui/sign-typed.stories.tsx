@@ -9,6 +9,13 @@ import { SignTypedData } from "./sign-typed"
 export default {
   title: "SignTypedData",
   component: SignTypedData,
+  args: {
+    applicationMeta: {
+      name: "Review",
+      url: "rarible.com",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Rarible_Logo.png/480px-Rarible_Logo.png",
+    },
+  },
 } as ComponentMeta<typeof SignTypedData>
 
 const Template: ComponentStory<typeof SignTypedData> = (args) => (
@@ -24,10 +31,6 @@ const Template: ComponentStory<typeof SignTypedData> = (args) => (
 export const Default = Template.bind({})
 
 Default.args = {
-  applicationMeta: {
-    name: "Review",
-    url: "rarible.com",
-  },
   creators: [
     {
       account: "Account1",

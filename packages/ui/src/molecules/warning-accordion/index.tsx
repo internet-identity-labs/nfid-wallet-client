@@ -8,7 +8,7 @@ import {
 
 export interface IWarningAccordionOption {
   title: string
-  subtitle: string
+  subtitle: string | JSX.Element
 }
 
 export interface IWarningAccordion {

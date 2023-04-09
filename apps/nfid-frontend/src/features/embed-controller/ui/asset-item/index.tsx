@@ -2,7 +2,6 @@ import clsx from "clsx"
 import React from "react"
 
 import { Image } from "@nfid-frontend/ui"
-import { ic } from "@nfid/integration"
 
 interface IAssetPreview {
   icon?: string

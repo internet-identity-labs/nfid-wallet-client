@@ -16,20 +16,20 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 
 interface ISendTransaction {
-  title: string
+  title?: string
   applicationMeta: AuthorizingAppMeta
-  fromAddress: string
-  toAddress: string
+  fromAddress?: string
+  toAddress?: string
   network: string
-  networkFee: string
+  networkFee?: string
   totalUSD: string
   totalToken: string
   currency: string
-  warnings: IWarningAccordionOption[]
-  isInsufficientBalance: boolean
+  warnings?: IWarningAccordionOption[]
+  isInsufficientBalance?: boolean
   assetUrl?: string
-  assetTitle: string
-  assetCollectionName: string
+  assetTitle?: string
+  assetCollectionName?: string
   onAdjustNetworkFee?: () => void
   onShowTransactionDetails?: () => void
   onApprove: () => void
@@ -73,51 +73,57 @@ export const SendTransaction = ({
         />
 
         <div className="mt-5 space-y-3">
-          <InfoListItem
-            title="From"
-            icon={
-              <IconCmpOut
-                className="w-[18px] cursor-pointer"
-                onClick={(e) => {}}
-              />
-            }
-          >
-            <CenterEllipsis
-              value={fromAddress}
-              leadingChars={6}
-              trailingChars={4}
-            />
-          </InfoListItem>
-          <InfoListItem
-            title="To"
-            icon={
-              <IconCmpOut
-                className="w-[18px] cursor-pointer"
-                onClick={(e) => {}}
-              />
-            }
-          >
-            <CenterEllipsis
-              value={toAddress}
-              leadingChars={6}
-              trailingChars={4}
-            />
-          </InfoListItem>
-          <InfoListItem title="Network">{network}</InfoListItem>
-          <InfoListItem
-            title="Network fee"
-            tooltip="Applies to all transactions. Not paid to NFID Wallet."
-            icon={
-              onAdjustNetworkFee && (
-                <IconCmpSettings
-                  className="ml-1.5 cursor-pointer text-black"
-                  onClick={onAdjustNetworkFee}
+          {fromAddress && (
+            <InfoListItem
+              title="From"
+              icon={
+                <IconCmpOut
+                  className="w-[18px] cursor-pointer"
+                  onClick={(e) => {}}
                 />
-              )
-            }
-          >
-            {`${networkFee} ${currency}`}
-          </InfoListItem>
+              }
+            >
+              <CenterEllipsis
+                value={fromAddress}
+                leadingChars={6}
+                trailingChars={4}
+              />
+            </InfoListItem>
+          )}
+          {toAddress && (
+            <InfoListItem
+              title="To"
+              icon={
+                <IconCmpOut
+                  className="w-[18px] cursor-pointer"
+                  onClick={(e) => {}}
+                />
+              }
+            >
+              <CenterEllipsis
+                value={toAddress}
+                leadingChars={6}
+                trailingChars={4}
+              />
+            </InfoListItem>
+          )}
+          <InfoListItem title="Network">{network}</InfoListItem>
+          {networkFee && (
+            <InfoListItem
+              title="Network fee"
+              tooltip="Applies to all transactions. Not paid to NFID Wallet."
+              icon={
+                onAdjustNetworkFee && (
+                  <IconCmpSettings
+                    className="ml-1.5 cursor-pointer text-black"
+                    onClick={onAdjustNetworkFee}
+                  />
+                )
+              }
+            >
+              {`${networkFee} ${currency}`}
+            </InfoListItem>
+          )}
           <InfoListItem title="Total" isBold>
             <div className="relative">
               <p>
@@ -130,7 +136,7 @@ export const SendTransaction = ({
                   "absolute right-0 top-full",
                 )}
               >
-                ≈${totalUSD}
+                ~${totalUSD}
               </div>
             </div>
           </InfoListItem>

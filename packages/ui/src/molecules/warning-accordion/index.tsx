@@ -12,7 +12,7 @@ export interface IWarningAccordionOption {
 }
 
 export interface IWarningAccordion {
-  warnings: IWarningAccordionOption[]
+  warnings?: IWarningAccordionOption[]
 }
 
 export const WarningAccordion = ({ warnings }: IWarningAccordion) => {

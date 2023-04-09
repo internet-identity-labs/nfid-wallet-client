@@ -1,14 +1,12 @@
-import { ReactComponent as Error } from "../../atoms/icons/error.svg"
-import { Button } from "../../molecules/button"
-import { Page } from "../page/page"
+import { Button, IconCmpError, Page } from "@nfid-frontend/ui"
 
-type ErrorCmpProps = {
+type PageErrorCmpProps = {
   error?: Error
   onRetry: () => void
   onCancel: () => void
 }
 
-export const PageError: React.FC<ErrorCmpProps> = ({
+export const PageError: React.FC<PageErrorCmpProps> = ({
   error,
   onRetry,
   onCancel,
@@ -17,7 +15,7 @@ export const PageError: React.FC<ErrorCmpProps> = ({
     <Page>
       <Page.Header>
         <div className="flex gap-2">
-          <Error className="text-red-500" />
+          <IconCmpError className="text-red-500" />
           <div className="font-bold">Error</div>
         </div>
       </Page.Header>

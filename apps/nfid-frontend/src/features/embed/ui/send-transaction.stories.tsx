@@ -38,7 +38,7 @@ export default {
 
 const Template: ComponentStory<typeof SendTransaction> = (args) => (
   <BrowserRouter>
-    <ScreenResponsive className="overflow-auto max-w-[450px] max-h-[580px] shadow-lg m-auto border border-gray-100">
+    <ScreenResponsive className="relative overflow-auto max-w-[450px] max-h-[580px] shadow-lg m-auto border border-gray-100">
       <TooltipProvider>
         <SendTransaction {...args} />
       </TooltipProvider>
@@ -51,12 +51,16 @@ export const Mint = Template.bind({})
 export const DeployCollection = Template.bind({})
 export const Sell = Template.bind({})
 export const Buy = Template.bind({})
+export const BatchBuy = Template.bind({})
 
 Default.args = {
-  assetTitle: "Solo Sensei #2969",
-  assetCollectionName: "Degenerate Ape Academy",
-  assetUrl:
-    "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
+  assets: [
+    {
+      title: "Solo Sensei #2969",
+      subtitle: "Degenerate Ape Academy",
+      icon: "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
+    },
+  ],
 }
 
 Mint.args = {
@@ -72,19 +76,57 @@ Sell.args = {
   totalUSD: "notFound",
   totalToken: "notFound",
 
-  assetTitle: "BitCoin Elep #40",
-  assetCollectionName: "BitCoin Elep",
-  assetUrl:
-    "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
+  assets: [
+    {
+      title: "Solo Sensei #2969",
+      subtitle: "Degenerate Ape Academy",
+      icon: "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
+    },
+  ],
 }
 
 Buy.args = {
   title: "Buy collectible",
 
-  assetTitle: "Solo Sensei #2969",
-  assetCollectionName: "Degenerate Ape Academy",
-  assetUrl:
-    "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
+  assets: [
+    {
+      title: "Solo Sensei #2969",
+      subtitle: "Degenerate Ape Academy",
+      icon: "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
+    },
+  ],
+}
+
+BatchBuy.args = {
+  title: "Buy multiple collectibles",
+
+  assets: [
+    {
+      title: "NFT title",
+      subtitle: "Asset subtitle",
+      icon: "https://cache.icpunks.com/icpunks//Token/6471",
+    },
+    {
+      title: "NFT title",
+      subtitle: "Asset subtitle",
+      icon: "https://cache.icpunks.com/icpunks//Token/1528",
+    },
+    {
+      title: "NFT title",
+      subtitle: "Asset subtitle",
+      icon: "https://cache.icpunks.com/icpunks//Token/6662",
+    },
+    {
+      title: "NFT title",
+      subtitle: "Asset subtitle",
+      icon: "https://cache.icpunks.com/icpunks//Token/6602",
+    },
+    {
+      title: "NFT title",
+      subtitle: "Asset subtitle",
+      icon: "https://cache.icpunks.com/icpunks//Token/5662",
+    },
+  ],
 }
 
 DeployCollection.args = {

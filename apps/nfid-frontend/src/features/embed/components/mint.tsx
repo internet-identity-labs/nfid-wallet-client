@@ -70,9 +70,6 @@ const MappedMintComponent: React.FC<ApproverCmpProps> = ({
       isInsufficientBalance={price.isInsufficientFundsError}
       warnings={warnings}
       onCancel={onReject}
-      assetUrl={rpcMessageDecoded?.data?.meta?.content[0].url}
-      assetTitle={rpcMessageDecoded?.data?.meta?.name}
-      assetCollectionName={rpcMessageDecoded?.data?.collectionData?.name}
     />
   )
 }

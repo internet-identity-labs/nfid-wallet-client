@@ -31,7 +31,7 @@ const componentMap: ComponentMap = {
   mintAndTransfer: React.lazy(() => import("./components/lazy-mint")), // decoding issue
   SellOrder: React.lazy(() => import("./components/sell")),
   BidOrder: React.lazy(() => import("./components/default-send")),
-  bulkPurchase: React.lazy(() => import("./components/default-send")),
+  bulkPurchase: React.lazy(() => import("./components/batch-buy")),
   burn: React.lazy(() => import("./components/default-send")),
   cancel: React.lazy(() => import("./components/default-send")),
 

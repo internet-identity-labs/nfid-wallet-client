@@ -11,9 +11,10 @@ import {
 } from "@nfid-frontend/ui"
 
 import { RPCApplicationMetaSubtitle } from "frontend/features/embed-controller/ui/app-meta/subtitle"
-import { AssetPreview } from "frontend/features/embed-controller/ui/asset-item"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
+
+import { AssetPreview, IAsset } from "./asset-preview"
 
 interface ISendTransaction {
   title?: string
@@ -27,9 +28,7 @@ interface ISendTransaction {
   currency: string
   warnings?: IWarningAccordionOption[]
   isInsufficientBalance?: boolean
-  assetUrl?: string
-  assetTitle?: string
-  assetCollectionName?: string
+  assets?: IAsset[]
   onAdjustNetworkFee?: () => void
   onShowTransactionDetails?: () => void
   onApprove: () => void
@@ -48,9 +47,7 @@ export const SendTransaction = ({
   currency,
   warnings,
   isInsufficientBalance,
-  assetUrl,
-  assetTitle,
-  assetCollectionName,
+  assets,
   onAdjustNetworkFee,
   onShowTransactionDetails,
   onApprove,
@@ -66,11 +63,7 @@ export const SendTransaction = ({
             <RPCApplicationMetaSubtitle applicationURL={applicationMeta?.url} />
           }
         />
-        <AssetPreview
-          icon={assetUrl}
-          title={assetTitle}
-          subtitle={assetCollectionName}
-        />
+        <AssetPreview assets={assets} />
 
         <div className="mt-5 space-y-3">
           {fromAddress && (

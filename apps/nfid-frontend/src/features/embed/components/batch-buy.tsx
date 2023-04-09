@@ -27,17 +27,6 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
     if (!price) return []
     let warnings: IWarningAccordionOption[] = []
 
-    // if (
-    //   !rpcMessageDecoded?.data?.meta?.content[0].url &&
-    //   !rpcMessageDecoded?.data?.meta?.name &&
-    //   rpcMessageDecoded?.data?.collectionData?.name
-    // )
-    //   warnings.push({
-    //     title: "Preview unavailable",
-    //     subtitle:
-    //       "Unable to estimate asset changes. Please make sure you trust this dapp.",
-    //   })
-
     if (price.isNetworkIsBusyWarning)
       warnings.push({
         title: "Network is busy",

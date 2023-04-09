@@ -1,9 +1,6 @@
-import { Skeleton } from "@nfid-frontend/ui"
-import { Image } from "@nfid-frontend/ui"
+import { IconCmpNFTPreview, Skeleton } from "@nfid-frontend/ui"
 
-import SkeletonNft from "./skeleton-img.svg"
-
-export const RPCPreloader = () => {
+export const Loader = () => {
   return (
     <div>
       <div className="flex items-center">
@@ -14,8 +11,9 @@ export const RPCPreloader = () => {
         <Skeleton className="w-32 h-3 mr-1 " />
         <Skeleton className="w-5 h-3 " />
       </div>
-      <div className="border border-gray-100 -md mt-1.5 flex items-center">
-        <Image src={SkeletonNft} alt="" />
+      <div className="border border-gray-100 -md mt-1.5 flex items-center rounded-md">
+        <IconCmpNFTPreview className="w-[102px] h-[102px] text-gray-100" />
+
         <div className="ml-2.5">
           <div className="flex items-center">
             <Skeleton className="w-20 h-3 mr-1.5 " />
@@ -27,24 +25,21 @@ export const RPCPreloader = () => {
           </div>
         </div>
       </div>
-      <Skeleton className="h-3 w-[140px]  mt-[18px]" />
-      <div className="flex justify-between items-center border border-gray-100 rounded-md mt-[5px] px-2.5 py-2">
-        <div className="flex items-center">
-          <Skeleton className="w-10 h-10 -full" />
-          <div className="ml-2.5">
-            <div className="flex ">
-              <Skeleton className="w-24 h-3 mr-[5px] " />
-              <Skeleton className="h-3 w-11" />
-            </div>
-            <Skeleton className="h-3 mt-2 w-11" />
+      <div className="space-y-4 mt-7">
+        <div className="flex items-center justify-between">
+          <Skeleton className="w-32 h-3" />
+          <div className="flex">
+            <Skeleton className="w-14 h-3 mr-[5px]"></Skeleton>
+            <Skeleton className="w-5 h-3 "></Skeleton>
           </div>
         </div>
-        <div className="flex">
-          <Skeleton className="h-3 w-11 mr-[5px]" />
-          <Skeleton className="w-5 h-3" />
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-3 w-28" />
+          <div className="flex">
+            <Skeleton className="w-12 h-3 mr-[5px]"></Skeleton>
+            <Skeleton className="w-5 h-3 "></Skeleton>
+          </div>
         </div>
-      </div>
-      <div className="mt-7">
         <div className="flex items-center justify-between">
           <Skeleton className="h-3 w-36" />
           <div className="flex">
@@ -52,15 +47,15 @@ export const RPCPreloader = () => {
             <Skeleton className="w-5 h-3 "></Skeleton>
           </div>
         </div>
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between">
           <Skeleton className="w-24 h-3 " />
           <div className="flex">
             <Skeleton className="w-11 h-3 mr-[5px]"></Skeleton>
             <Skeleton className="w-5 h-3 "></Skeleton>
           </div>
         </div>
-        <div className="flex items-center justify-between mt-4">
-          <Skeleton className="h-3  w-[120px]" />
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-3 w-[120px]" />
           <div className="flex">
             <Skeleton className="w-[60px] h-3 mr-[5px]"></Skeleton>
             <Skeleton className="w-5 h-3"></Skeleton>

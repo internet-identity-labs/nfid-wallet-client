@@ -7,7 +7,7 @@ import { ScreenResponsive } from "@nfid-frontend/ui"
 import { PersonalSign } from "./personal-sign"
 
 export default {
-  title: "PersonalSign",
+  title: "Embed/PersonalSign",
   component: PersonalSign,
   args: {
     applicationMeta: {

@@ -1,7 +1,6 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import React from "react"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
 import { ProviderError } from "@nfid/integration"
 import { FunctionCall, Method } from "@nfid/integration-ethereum"
 
@@ -10,7 +9,8 @@ import { DefaultSign } from "frontend/features/embed-controller/components/fallb
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import { RPCMessage } from "../services/rpc-receiver"
+import { RPCMessage } from "./services/rpc-receiver"
+import { Loader } from "./ui/loader"
 
 type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
@@ -26,19 +26,10 @@ type ComponentMap = {
 }
 
 const componentMap: ComponentMap = {
-  directPurchase: React.lazy(
-    () => import("frontend/features/embed-controller/components/buy"),
-  ),
-  createToken: React.lazy(
-    () =>
-      import("frontend/features/embed-controller/components/deploy-collection"),
-  ),
-  mintAndTransfer: React.lazy(
-    () => import("frontend/features/embed-controller/components/mint"),
-  ),
-  SellOrder: React.lazy(
-    () => import("frontend/features/embed-controller/components/sell"),
-  ),
+  directPurchase: React.lazy(() => import("./components/buy")),
+  createToken: React.lazy(() => import("./components/deploy-collection")),
+  mintAndTransfer: React.lazy(() => import("./components/lazy-mint")), // decoding issue
+  SellOrder: React.lazy(() => import("./components/sell")),
   BidOrder: React.lazy(
     () =>
       import(
@@ -76,16 +67,10 @@ const componentMap: ComponentMap = {
       ),
   ),
 
-  Mint721: React.lazy(
-    () => import("frontend/features/embed-controller/components/lazy-mint"),
-  ),
-  Mint1155: React.lazy(
-    () => import("frontend/features/embed-controller/components/lazy-mint"),
-  ),
+  Mint721: React.lazy(() => import("./components/mint")), // decoding issue
+  Mint1155: React.lazy(() => import("./components/mint")), // decoding issue
 
-  sell: React.lazy(
-    () => import("frontend/features/embed-controller/components/sell"),
-  ),
+  sell: React.lazy(() => import("./components/sell")),
 }
 
 const hasMapped = (messageInterface: string = "") =>
@@ -108,13 +93,7 @@ export const ProcedureApprovalCoordinator: React.FC<
     case hasMapped(rpcMessageDecoded?.method):
       const ApproverCmp = componentMap[rpcMessageDecoded?.method as Method]
       return (
-        <React.Suspense
-          fallback={
-            <BlurredLoader
-              loadingMessage={`${rpcMessageDecoded?.interface} flow...`}
-            />
-          }
-        >
+        <React.Suspense fallback={<Loader />}>
           <ApproverCmp
             {...{
               rpcMessage,

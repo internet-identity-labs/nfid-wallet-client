@@ -7,7 +7,7 @@ import { ScreenResponsive } from "@nfid-frontend/ui"
 import { SendTransaction } from "./send-transaction"
 
 export default {
-  title: "SendTransaction",
+  title: "Embed/SendTransaction",
   component: SendTransaction,
   args: {
     applicationMeta: {
@@ -61,15 +61,16 @@ Default.args = {
 
 Mint.args = {
   title: "Mint collectible",
-
-  assetTitle: "Solo Sensei #2969",
-  assetCollectionName: "Degenerate Ape Academy",
-  assetUrl:
-    "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
 }
 
 Sell.args = {
-  title: "Pre-authorize withdrawal",
+  title: "Sell collectible",
+
+  fromAddress: undefined,
+  toAddress: undefined,
+
+  totalUSD: "notFound",
+  totalToken: "notFound",
 
   assetTitle: "BitCoin Elep #40",
   assetCollectionName: "BitCoin Elep",
@@ -84,4 +85,8 @@ Buy.args = {
   assetCollectionName: "Degenerate Ape Academy",
   assetUrl:
     "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
+}
+
+DeployCollection.args = {
+  title: "Deploy collection",
 }

@@ -7,7 +7,7 @@ import { ScreenResponsive } from "@nfid-frontend/ui"
 import { SignTypedData } from "./sign-typed"
 
 export default {
-  title: "SignTypedData",
+  title: "Embed/SignTypedData",
   component: SignTypedData,
   args: {
     applicationMeta: {

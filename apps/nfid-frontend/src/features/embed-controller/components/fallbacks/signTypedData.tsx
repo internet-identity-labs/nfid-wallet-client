@@ -4,8 +4,8 @@ import { SDKApplicationMeta, Button } from "@nfid-frontend/ui"
 
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
+import { ApproverCmpProps } from "../../../embed/types"
 import { RPCApplicationMetaSubtitle } from "../../ui/app-meta/subtitle"
-import { ApproverCmpProps } from "../types"
 
 interface IDefaultSign {
   onCancel: () => void

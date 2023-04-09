@@ -10,7 +10,6 @@ import {
   IconCmpNFTPreview,
   IconPngEthereum,
   IconSvgDfinity,
-  IconSvgNFTPreview,
   Image,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"

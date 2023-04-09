@@ -5,10 +5,10 @@ import { ProviderError } from "@nfid/integration"
 import { FunctionCall, Method } from "@nfid/integration-ethereum"
 
 import { NFIDConnectAccountCoordinator } from "frontend/features/embed-connect-account/coordinator"
-import { DefaultSign } from "frontend/features/embed-controller/components/fallbacks/signTypedData"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
+import MappedDefaultSend from "./components/default-send"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
 
@@ -30,42 +30,13 @@ const componentMap: ComponentMap = {
   createToken: React.lazy(() => import("./components/deploy-collection")),
   mintAndTransfer: React.lazy(() => import("./components/lazy-mint")), // decoding issue
   SellOrder: React.lazy(() => import("./components/sell")),
-  BidOrder: React.lazy(
-    () =>
-      import(
-        "frontend/features/embed-controller/components/fallbacks/signTypedData"
-      ),
-  ),
-  bulkPurchase: React.lazy(
-    () =>
-      import(
-        "frontend/features/embed-controller/components/fallbacks/signTypedData"
-      ),
-  ),
-  burn: React.lazy(
-    () =>
-      import(
-        "frontend/features/embed-controller/components/fallbacks/signTypedData"
-      ),
-  ),
-  cancel: React.lazy(
-    () =>
-      import(
-        "frontend/features/embed-controller/components/fallbacks/signTypedData"
-      ),
-  ),
-  directAcceptBid: React.lazy(
-    () =>
-      import(
-        "frontend/features/embed-controller/components/fallbacks/signTypedData"
-      ),
-  ),
-  safeTransferFrom: React.lazy(
-    () =>
-      import(
-        "frontend/features/embed-controller/components/fallbacks/signTypedData"
-      ),
-  ),
+  BidOrder: React.lazy(() => import("./components/default-send")),
+  bulkPurchase: React.lazy(() => import("./components/default-send")),
+  burn: React.lazy(() => import("./components/default-send")),
+  cancel: React.lazy(() => import("./components/default-send")),
+
+  directAcceptBid: React.lazy(() => import("./components/default-send")),
+  safeTransferFrom: React.lazy(() => import("./components/default-send")),
 
   Mint721: React.lazy(() => import("./components/mint")), // decoding issue
   Mint1155: React.lazy(() => import("./components/mint")), // decoding issue
@@ -118,10 +89,15 @@ export const ProcedureApprovalCoordinator: React.FC<
       )
     default:
       return (
-        <DefaultSign
-          data={rpcMessage?.params[1]}
-          onCancel={onReject}
-          onSign={onConfirm}
+        <MappedDefaultSend
+          {...{
+            rpcMessage,
+            appMeta,
+            rpcMessageDecoded,
+            populatedTransaction,
+            onConfirm,
+            onReject,
+          }}
         />
       )
   }

@@ -3,18 +3,17 @@ import React from "react"
 
 import { Image } from "@nfid-frontend/ui"
 
-interface IAssetPreview {
+interface IAsset {
   icon?: string
   title?: string
   subtitle?: string
 }
 
-export const AssetPreview: React.FC<IAssetPreview> = ({
+export const SingleAssetPreview: React.FC<IAsset> = ({
   icon,
   title,
   subtitle,
-}) => {
-  if (!icon && !title && !subtitle) return null
+}: IAsset) => {
   return (
     <div
       className={clsx(
@@ -24,7 +23,10 @@ export const AssetPreview: React.FC<IAssetPreview> = ({
     >
       <div className="flex items-center w-full">
         <Image
-          className={clsx("object-cover w-20 h-20", !icon && "hidden")}
+          className={clsx(
+            "object-cover w-20 h-20 rounded-[5px]",
+            !icon && "hidden",
+          )}
           src={icon}
           alt={title}
         />

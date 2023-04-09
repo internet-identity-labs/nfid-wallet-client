@@ -18,9 +18,13 @@ const MappedSell: React.FC<ApproverCmpProps> = ({
       currency={"ETH"}
       onApprove={onConfirm}
       onCancel={onReject}
-      assetUrl={rpcMessageDecoded?.data?.meta?.content[0].url}
-      assetTitle={rpcMessageDecoded?.data?.meta?.name}
-      assetCollectionName={rpcMessageDecoded?.data?.collectionData?.name}
+      assets={[
+        {
+          icon: rpcMessageDecoded?.data?.meta?.content[0].url,
+          title: rpcMessageDecoded?.data?.meta?.name,
+          subtitle: rpcMessageDecoded?.data?.collectionData?.name,
+        },
+      ]}
     />
   )
 }

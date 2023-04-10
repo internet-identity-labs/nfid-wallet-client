@@ -30,12 +30,12 @@ function createDelegationState() {
   const _getDelegationFromClosure = (
     anchor: number,
     scope: string,
-  ): DelegationIdentity | undefined => {
+  ): DelegationEntry | undefined => {
     console.debug("createDelegationState _getDelegationFromClosure", {
       anchor,
       scope,
     })
-    return _delegationMap.get(_getKey(anchor, scope))?.delegation
+    return _delegationMap.get(_getKey(anchor, scope))
   }
 
   const _addDelegationToClosure = (
@@ -55,22 +55,37 @@ function createDelegationState() {
       anchor,
       scope,
     })
-    const delegation = await delegationByScope(
+    const delegationPromise = delegationByScope(
       Number(anchor),
       scope,
       maxTimeToLive,
-    )
-    const expiresIn = getExpirationDelay(delegation)
-    const timeout = Math.floor(expiresIn * 0.8)
-    const timer = setTimeout(() => {
-      console.debug(
-        "createDelegationState _setupRefreshingDelegation timeout",
-        { anchor, scope },
-      )
-      _setupRefreshingDelegation(anchor, scope, maxTimeToLive)
-    }, timeout)
-    window.addEventListener("beforeunload", () => clearTimeout(timer))
-    return delegation
+    ).then((delegation) => {
+      const { requestedAt } = _getDelegationFromClosure(anchor, scope) || {}
+      _addDelegationToClosure(anchor, scope, {
+        requestedAt: requestedAt || Date.now(),
+        delegation,
+      })
+      const expiresIn = getExpirationDelay(delegation)
+      const timeout = Math.floor(expiresIn * 0.8)
+
+      const now = Date.now()
+      console.debug("createDelegationState _setupRefreshingDelegation", {
+        expiresIn: new Date(now + expiresIn).toISOString(),
+        timeout: new Date(now + timeout).toISOString(),
+      })
+
+      const timer = setTimeout(() => {
+        console.debug(
+          "createDelegationState _setupRefreshingDelegation timeout",
+          { anchor, scope },
+        )
+        _setupRefreshingDelegation(anchor, scope, maxTimeToLive)
+      }, timeout)
+      window.addEventListener("beforeunload", () => clearTimeout(timer))
+      return delegation
+    })
+    _setDelegationPromise(anchor, scope, delegationPromise)
+    return delegationPromise
   }
 
   async function getDelegation(
@@ -78,7 +93,8 @@ function createDelegationState() {
     scope: string,
     maxTimeToLive: bigint,
   ): Promise<DelegationIdentity> {
-    const delegationFromClosure = _getDelegationFromClosure(anchor, scope)
+    const { delegation: delegationFromClosure } =
+      _getDelegationFromClosure(anchor, scope) || {}
 
     if (delegationFromClosure) {
       console.debug("createDelegationState getDelegation from state", {

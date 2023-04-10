@@ -1,4 +1,7 @@
 import { IdleManager, IdleManagerOptions } from "@dfinity/auth-client"
+import { matchPath } from "react-router-dom"
+
+import { ROUTE_EMBED } from "@nfid/config"
 
 import { getLocalStorageOverride } from "../local-storage"
 
@@ -20,6 +23,7 @@ export const setupSessionManager = ({
   options = idleManagerConfig,
   onIdle,
 }: SetupSessionManagerArgs) => {
+  if (matchPath(ROUTE_EMBED, window.location.pathname)) return
   if (idleManager) return
   console.debug("setupIdleManager")
 

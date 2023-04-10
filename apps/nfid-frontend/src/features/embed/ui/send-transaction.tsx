@@ -72,7 +72,12 @@ export const SendTransaction = ({
               icon={
                 <IconCmpOut
                   className="w-[18px] cursor-pointer"
-                  onClick={(e) => {}}
+                  onClick={(e) =>
+                    window.open(
+                      // PASHUNYA TODO: use network
+                      `https://goerli.etherscan.io/address/${fromAddress}`,
+                    )
+                  }
                 />
               }
             >
@@ -89,7 +94,12 @@ export const SendTransaction = ({
               icon={
                 <IconCmpOut
                   className="w-[18px] cursor-pointer"
-                  onClick={(e) => {}}
+                  onClick={(e) =>
+                    window.open(
+                      // PASHUNYA TODO: use network
+                      `https://goerli.etherscan.io/address/${toAddress}`,
+                    )
+                  }
                 />
               }
             >

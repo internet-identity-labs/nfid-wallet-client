@@ -82,7 +82,7 @@ Feature:Fungible Asset
     Examples:
       | tab      | chain             | anchor | txs   | txss |
       | Received | Bitcoin           | 25795  | 1 TXs | 1    |
-      | Sent     | Bitcoin           | 28593  | 2 TXs | 2    |
+      | Sent     | Bitcoin           | 28593  | 5 TXs | 2    |
       | Received | Internet Computer | 28542  | 1 TXs | 1    |
       | Received | Ethereum          | 10974  | 1 TXs | 1    |
 

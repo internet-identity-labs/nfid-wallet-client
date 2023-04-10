@@ -23,11 +23,13 @@ export const orderSignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageDec
         asset.value.assetClass,
         asset.value.data,
       )
+
       return Promise.resolve({
         interface: "Item",
         method: asset.method,
         data: data.data,
         from: from,
+        total: Number(json?.message?.takeAsset?.value) / 10 ** 18,
       })
     },
   }

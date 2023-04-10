@@ -75,6 +75,7 @@ export const ChooseAccount = ({
                   target="_blank"
                   rel="noreferrer"
                 >
+                  {" "}
                   {applicationURL}
                 </a>
               </>

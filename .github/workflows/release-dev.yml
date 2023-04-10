@@ -73,6 +73,14 @@ jobs:
           dfx deploy --network dev nfid-frontend --no-wallet
           dfx deploy --network dev nfid-demo --no-wallet
 
+      - name: STORYBOOK FRONTEND | deploy
+        run: |
+
+          npx nx build-storybook nfid-frontend
+
+          dfx identity use action
+          dfx deploy --network ic nfid-storybook-frontend --no-wallet
+
         env:
           IS_DEV: true
           IC_HOST: https://ic0.app

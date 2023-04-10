@@ -44,7 +44,7 @@ export type DecodedFunctionCall = {
 export type FunctionCall = {
   interface: Interface
   method: Method
-  data: object
+  data: any
 }
 
 export interface MethodDecoder

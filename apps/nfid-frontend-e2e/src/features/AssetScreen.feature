@@ -49,16 +49,16 @@ Feature:Fungible Asset
     And Open asset with label <label>
     Then Wait while <label> accounts calculated
     And Open <tab> tab for first account
-    Then 1 transaction in the table
+    Then <txs> transaction in the table
     And Sent <balance> <currency>
     And From <address_from> to <address_to>
     And Date is <millis>
     Examples:
-      | tab      | label             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
-      | Received | Bitcoin           | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre                              | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h                               | 25795  |
-      | Received | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
-      | Sent     | Bitcoin           | BTC      | 0.00005269 | 1680784471000 | n2yvAStr9w75oUMyb3c7s4QdQu78Rj9Sjc                               | mohjSavDdQYHRYXcS3uS6ttaHP8amyvX78                               | 28593  |
-      | Received | Ethereum          | ETH      | 0.1        | 1681205316000 | 0xdc75e8c3ae765d8947adbc6698a2403a6141d439                       | 0xcdf42ca0423a6063fa4e60bdcbceae64f7d07cda                       | 10974  |
+      | txs | tab      | label             | currency | balance    | millis        | address_from                                                     | address_to                                                       | anchor |
+      | 1   | Received | Bitcoin           | BTC      | 0.00006879 | 1680510249000 | 2MxAMYp3JVcTbicoHTC7EFy6eN2B1Sersre                              | mn9cmLSFxFE5ASRNXFnxbdZmEvp4ZFDm2h                               | 25795  |
+      | 1   | Received | Internet Computer | ICP      | 0.01       | 1679482557000 | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 8f4835777b8e7abf166ab5e7390abf5c4871d55204994ca30d25d90af30d52ba | 28542  |
+      | 2   | Sent     | Bitcoin           | BTC      | 0.00005269 | 1680784471000 | n2yvAStr9w75oUMyb3c7s4QdQu78Rj9Sjc                               | mohjSavDdQYHRYXcS3uS6ttaHP8amyvX78                               | 28593  |
+      | 1   | Received | Ethereum          | ETH      | 0.1        | 1681205316000 | 0xdc75e8c3ae765d8947adbc6698a2403a6141d439                       | 0xcdf42ca0423a6063fa4e60bdcbceae64f7d07cda                       | 10974  |
 
   @asset4
   Scenario Outline: User should be able to see transaction depends on selected app
@@ -75,16 +75,16 @@ Feature:Fungible Asset
     And Expect checkbox for account "NFID account 1" is selected
     Then Click checkbox account NFID account 1
     Then Expect dropdown menu with text "All wallets"
-    Then 1 transaction in the table
+    Then <txss> transaction in the table
     Then Click checkbox account NNS account 1
     Then Expect txs account "NNS account 1" with txs amount "0 TXs"
     Then 0 transaction in the table
     Examples:
-      | tab      | chain             | anchor | txs   |
-      | Received | Bitcoin           | 25795  | 1 TXs |
-      | Sent     | Bitcoin           | 28593  | 2 TXs |
-      | Received | Internet Computer | 28542  | 1 TXs |
-      | Received | Ethereum          | 10974  | 1 TXs |
+      | tab      | chain             | anchor | txs   | txss |
+      | Received | Bitcoin           | 25795  | 1 TXs | 1    |
+      | Sent     | Bitcoin           | 28593  | 2 TXs | 2    |
+      | Received | Internet Computer | 28542  | 1 TXs | 1    |
+      | Received | Ethereum          | 10974  | 1 TXs | 1    |
 
   @asset5
   Scenario Outline: User should be able to filter assets by blockchain
@@ -115,8 +115,46 @@ Feature:Fungible Asset
     And <chain> USD balance is not empty
     Then User opens receive dialog window
     Then Choose BTC from options
-    And Account ID is <first_acc_part> ... <second_acc_part>
+    Then Choose NFID Account 1 from receive accounts
+#  sc-6838
+#    And Account ID is <first_acc_part> ... <second_acc_part>
     Examples:
       | chain   | anchor | first_acc_part                | second_acc_part |
       | Bitcoin | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z | FDm2h           |
 
+
+  @asset7
+  Scenario Outline: User should be able to see balance and fee
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    Given User signs in
+    And Tokens displayed on user assets
+    Then Asset appears with label <chain>
+    And <chain> asset calculated
+    Then User opens send dialog window
+    Then Choose BTC from send options
+    Then Choose NFID Account 1 from accounts
+#  sc-6838
+#    Then Balance is <balance> and fee is <fee>
+    Examples:
+      | chain   | anchor | balance    | fee      |
+      | Bitcoin | 25795  | 0.00006879 | 6e-8 BTC |
+
+  @asset8
+  Scenario Outline: User should be able to send transaction
+    Given User opens NFID site
+    And User is already authenticated by <anchor> anchor
+    Given User signs in
+    And Tokens displayed on user assets
+    Then Asset appears with label <chain>
+    And <chain> asset calculated
+    And User opens send dialog window
+    And Choose BTC from send options
+    And Choose NFID Account 1 from accounts
+    And Set <target> address and <amount> and send
+    Then Success window appears with <text>
+    Examples:
+      | chain   | anchor | target                             | amount   | text                                    |
+      | Bitcoin | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p | 0.000001 | You've sent 1e-8 BTC. Transaction hash: |
+
+#  mhb5nMJapMHx2ZGYBwMaPUqz1byj6rA5BN

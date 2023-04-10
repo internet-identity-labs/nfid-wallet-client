@@ -25,6 +25,7 @@ export const ChooseItem = ({
 }: IChooseItem) => {
   return (
     <div
+      id={id}
       onClick={handleClick}
       className={clsx(
         "border-t border-t-gray-100 last:border-b last:border-b-gray-100 h-[60px]",

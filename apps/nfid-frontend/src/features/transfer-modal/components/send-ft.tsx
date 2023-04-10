@@ -208,7 +208,7 @@ export const TransferFT = ({
           onSelect={handleSelectToken}
           isFirstPreselected={false}
           trigger={
-            <div className="flex items-center cursor-pointer shrink-0">
+            <div id={`token_${selectedToken?.currency}`} className="flex items-center cursor-pointer shrink-0">
               <Image
                 className="w-[26px] mr-1.5"
                 src={selectedToken?.icon}
@@ -221,7 +221,7 @@ export const TransferFT = ({
         />
       </div>
       <div className="flex items-center justify-between mt-2 mb-3.5">
-        <p className={clsx(errors.amount ? "text-red-600" : "text-gray-400")}>
+        <p id={"balance"}  className={clsx(errors.amount ? "text-red-600" : "text-gray-400")}>
           Balance:{" "}
           <span
             className="text-black underline cursor-pointer decoration-dotted"
@@ -232,7 +232,7 @@ export const TransferFT = ({
             )}
           </span>
         </p>
-        <p className="text-gray-400">
+        <p  id={"transfer_fee"} className="text-gray-400">
           Transfer fee:{" "}
           {`${selectedToken?.toPresentation(selectedToken?.fee)} ${
             selectedToken?.currency
@@ -276,6 +276,7 @@ export const TransferFT = ({
         <Button
           className="text-base !mt-[35px]"
           type="primary"
+          id={"sendFT"}
           block
           onClick={handleSubmit(submit)}
           icon={<IconCmpArrow className="rotate-[135deg]" />}

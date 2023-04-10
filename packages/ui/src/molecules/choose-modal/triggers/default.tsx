@@ -8,15 +8,18 @@ interface IDefaultTrigger {
   selectedOption?: IGroupOption
   actionHandler: () => void
   iconClassnames?: string
+  id?: string
 }
 
 export const DefaultTrigger = ({
   selectedOption,
   actionHandler,
   iconClassnames,
+  id
 }: IDefaultTrigger) => {
   return (
     <div
+      id={id}
       className={clsx(
         "border border-black rounded-md cursor-pointer h-14",
         "flex items-center justify-between hover:opacity-70",
@@ -24,7 +27,7 @@ export const DefaultTrigger = ({
       )}
       onClick={actionHandler}
     >
-      <div className="flex">
+      <div className="flex" id={"option_"+selectedOption?.title.replace(/\s/g, "")}>
         {selectedOption?.icon && (
           <Image
             src={selectedOption?.icon}

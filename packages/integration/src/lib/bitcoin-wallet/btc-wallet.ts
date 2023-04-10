@@ -79,6 +79,9 @@ export class BtcWallet {
     const txb = new TransactionBuilder(network)
     nonMempoolUtxos.sort((a: any, b: any) => a.value - b.value)
     let inputTotal = 0
+    if (nonMempoolUtxos.length === 0) {
+      throw new Error("All UTXOs are busy in transactions")
+    }
     for (let i = 0; i < nonMempoolUtxos.length; i++) {
       const utxo = nonMempoolUtxos[i]
       txb.addInput(utxo.txid, utxo.vout)

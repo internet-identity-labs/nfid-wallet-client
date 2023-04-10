@@ -96,7 +96,6 @@ Feature:Fungible Asset
     And Expect dropdown menu with text "All"
     And Open dropdown menu on page
     And Click checkbox chain <chain>
-    Then Only 1 asset displayed
     Then Asset appears with label <chain>
     Then Only <amount> asset displayed
     Examples:

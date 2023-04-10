@@ -76,7 +76,7 @@ jobs:
       - name: STORYBOOK FRONTEND | deploy
         run: |
 
-          npx nx build-storybook nfid-frontend
+          npx env-cmd -f .env.staging nx build-storybook nfid-frontend
 
           dfx identity use action
           dfx deploy --network ic nfid-storybook-frontend --no-wallet

@@ -18,7 +18,11 @@ import {
   storeAddressInLocalCache,
   readAddressFromLocalCache,
 } from "@nfid/client-db"
-import { btcWallet as btcAPI, replaceActorIdentity } from "@nfid/integration"
+import {
+  btcWallet as btcAPI,
+  loadProfileFromLocalStorage,
+  replaceActorIdentity,
+} from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/icp"
 
 const ROOT_DOMAIN = "nfid.one"
@@ -35,6 +39,12 @@ export const getBtcBalance = async (): Promise<TokenBalanceSheet> => {
   const { address, principal } = await getAccIdentifier()
   const balance = await BtcAsset.getBalance(address)
   return computeSheetForRootAccount(balance, address, principal)
+}
+
+export const getBtcFee = async (): Promise<number> => {
+  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  const identity = await getWalletDelegation(profile.anchor, "nfid.one", "1")
+  return new BtcWallet(identity).getFee()
 }
 
 export const getBtcAddress = async (): Promise<string> => {

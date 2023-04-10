@@ -39,3 +39,9 @@ export interface BlockCypherTx {
   tosign: string[]
   signatures: string[]
 }
+
+export interface Fee {
+  halfHourFee: number
+  hourFee: number
+  fastestFee: number
+}

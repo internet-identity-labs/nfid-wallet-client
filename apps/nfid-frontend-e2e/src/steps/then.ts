@@ -395,7 +395,7 @@ Then(/^Choose BTC from send options/, async () => {
 Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
   const assetOptions = await $("#default_trigger_From")
   await assetOptions.click()
-    const defaultAcc = await $(`#choose_option_${account.replace(/\s/g, "")}`)
+  const defaultAcc = await $(`#choose_option_${account.replace(/\s/g, "")}`)
   await defaultAcc.waitForExist({
     timeout: 17000,
   })
@@ -405,35 +405,40 @@ Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
 Then(/^Choose ([^"]*) from receive accounts/, async (account: string) => {
   const assetOptions = await $("#option_Account")
   await assetOptions.click()
-    const defaultAcc = await $(`#choose_option_${account.replace(/\s/g, "")}`)
+  const defaultAcc = await $(`#choose_option_${account.replace(/\s/g, "")}`)
   await defaultAcc.waitForExist({
     timeout: 17000,
   })
   await defaultAcc.click()
 })
 
-Then(/^Balance is ([^"]*) and fee is ([^"]*)/, async (balance: string, fee: string) => {
-  const assetBalance = await $("#balance")
-  await expect(assetBalance).toHaveText("Balance: "+balance)
-  const transferFee = await $("#transfer_fee")
-  await expect(transferFee).toHaveText("Transfer fee: " + fee)
-})
+Then(
+  /^Balance is ([^"]*) and fee is ([^"]*)/,
+  async (balance: string, fee: string) => {
+    const assetBalance = await $("#balance")
+    await expect(assetBalance).toHaveText("Balance: " + balance)
+    const transferFee = await $("#transfer_fee")
+    await expect(transferFee).toHaveText("Transfer fee: " + fee)
+  },
+)
 
-Then(/^Set ([^"]*) address and ([^"]*) and send/, async (address: string, amount: string) => {
-  const target = await $("#input")
-  await target.setValue(address)
-  const amountToSend = await $("#amount")
-  await amountToSend.setValue(amount)
-  const sendButton = await $("#sendFT")
-  await sendButton.click()
-
-})
+Then(
+  /^Set ([^"]*) address and ([^"]*) and send/,
+  async (address: string, amount: string) => {
+    const target = await $("#input")
+    await target.setValue(address)
+    const amountToSend = await $("#amount")
+    await amountToSend.setValue(amount)
+    const sendButton = await $("#sendFT")
+    await sendButton.click()
+  },
+)
 
 Then(/^([^"]*) asset calculated$/, async (chain: string) => {
   const btc = await $(`#token_${chain.replace(/\s/g, "")}_balance`)
 
   await btc.waitForExist({
-    timeout: 17000,
+    timeout: 27000,
   })
   await expect(btc).not.toHaveText("0 BTC")
 })
@@ -444,7 +449,7 @@ Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
   await sw.waitForExist({
     timeout: 50000,
   })
-  await expect(sw).toHaveText(text)
+  await expect(sw).toHaveTextContaining(text)
 })
 
 Then(

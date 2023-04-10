@@ -133,7 +133,7 @@ export const config: WebdriverIO.Config = {
   connectionRetryTimeout: 120000,
   //
   // Default request retries count
-  connectionRetryCount: 3,
+  connectionRetryCount: 2,
   //
   // Test runner services
   // Services take over a specific job you don't want to take care of. They enhance
@@ -150,7 +150,7 @@ export const config: WebdriverIO.Config = {
   framework: "cucumber",
   //
   // The number of times to retry the entire specfile when it fails as a whole
-  specFileRetries: 3,
+  // specFileRetries: 1,
   //
   // Delay in seconds between the spec file retry attempts
   // specFileRetriesDelay: 0,

@@ -1,15 +1,16 @@
 import { useMachine } from "@xstate/react"
 import React from "react"
 
-import { BlurredLoader, PageError } from "@nfid-frontend/ui"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { AuthenticationCoordinator } from "frontend/coordination/authentication"
 import { TrustDeviceCoordinator } from "frontend/coordination/trust-device"
 import { AuthenticationActor } from "frontend/state/machines/authentication/authentication"
 import { TrustDeviceActor } from "frontend/state/machines/authentication/trust-device"
 
-import { ProcedureApprovalCoordinator } from "./components/procedure-approval-coordinator"
 import { NFIDEmbedMachineV2 } from "./machine-v2"
+import { ProcedureApprovalCoordinator } from "./procedure-approval-coordinator"
+import { PageError } from "./ui/error"
 
 export default function NFIDEmbedCoordinator() {
   const [state, send] = useMachine(NFIDEmbedMachineV2)

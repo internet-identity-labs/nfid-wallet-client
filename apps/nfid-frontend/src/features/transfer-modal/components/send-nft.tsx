@@ -7,9 +7,9 @@ import {
   ChooseModal,
   IconCmpArrow,
   IconCmpArrowRight,
+  IconCmpNFTPreview,
   IconPngEthereum,
   IconSvgDfinity,
-  IconSvgNFTPreview,
   Image,
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
@@ -85,11 +85,15 @@ export const TransferNFT = ({
           <div className="flex items-center justify-between w-full h-[131px] p-2 pr-5 border border-black rounded-md">
             <div className="flex items-center">
               <div className="relative flex items-center mr-2.5">
-                <Image
-                  className="object-cover rounded-sm w-28 h-28"
-                  src={selectedNFT?.assetPreview ?? IconSvgNFTPreview}
-                  alt={""}
-                />
+                {selectedNFT?.assetPreview ? (
+                  <Image
+                    className="object-cover rounded-sm w-28 h-28"
+                    src={selectedNFT?.assetPreview}
+                    alt={""}
+                  />
+                ) : (
+                  <IconCmpNFTPreview className="text-gray-100 rounded-sm w-28 h-28" />
+                )}
 
                 <div
                   className={clsx(

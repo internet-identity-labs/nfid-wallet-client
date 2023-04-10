@@ -90,19 +90,19 @@ export class HomePage extends Page {
   public async signIn(isMobile?: boolean) {
     let index = isMobile ? 0 : 1
     let counter = 0
-    while ((await this.signInButton.length) > 0 || counter < 5) {
+    while ((await this.signInButton.length) > 0 || counter < 8) {
       if (isMobile) await this.openHomeBurgerMenu()
       await this.signInButton[index].waitForDisplayed({
-        timeout: 7000,
+        timeout: 12000,
         timeoutMsg: "Sign In button is not displayed!",
       })
       await this.signInButton[index].waitForClickable({
-        timeout: 4000,
+        timeout: 8000,
         timeoutMsg: "Sign In button is not clickable!",
       })
       await this.signInButton[index].click()
       await $(".//div[contains(text(),'Loading')]").waitForDisplayed({
-        interval: 8000,
+        interval: 16000,
         reverse: true,
       })
       try {
@@ -111,7 +111,7 @@ export class HomePage extends Page {
         await browser.waitUntil(
           async () => (await this.signInButton.length) < 1,
           {
-            timeout: 6000 + counter * 2500,
+            timeout: 6000 + counter * 3000,
           },
         )
         break

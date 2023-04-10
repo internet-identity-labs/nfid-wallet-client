@@ -27,6 +27,6 @@ export const SDKApplicationMeta: React.FC<SDKApplicationMetaProps> = ({
       )}
       <H5 className="">{title}</H5>
     </div>
-    <div className="mt-4 mb-3 text-sm leading-6 text-black">{subTitle}</div>
+    <div className="mt-2 mb-3 text-sm leading-6 text-black">{subTitle}</div>
   </>
 )

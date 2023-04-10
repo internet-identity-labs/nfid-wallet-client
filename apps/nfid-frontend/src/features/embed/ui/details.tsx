@@ -1,12 +1,10 @@
-import { IconCmpArrow, IconCmpWarning } from "@nfid-frontend/ui"
-
-import { InfoListItem } from "../ui/info-list-item"
+import { IconCmpArrow, IconCmpWarning, InfoListItem } from "@nfid-frontend/ui"
 
 interface ITransaction {
   onClose: () => void
 }
 
-export const DetailsComponent = ({ onClose }: ITransaction) => {
+export const Details = ({ onClose }: ITransaction) => {
   return (
     <div className="flex flex-col flex-1 h-full text-sm">
       <div className="flex items-center">
@@ -25,11 +23,13 @@ export const DetailsComponent = ({ onClose }: ITransaction) => {
         </div>
         <div className="mt-[14px] bg-gray-50 rounded-md flex-1 h-full p-[14px]">
           <InfoListItem
-            title={"Function type"}
-            description={
-              "SetApprovalForAll (Address Uint256, Bytes4, Bytes, Uint256, Address, Uint256, Uint256, Bytes, Bytes, Uint256, Uint256, Bytes)"
-            }
-          />
+            className="text-gray-500"
+            title="Function type"
+            isVerticalCentered={false}
+          >
+            SetApprovalForAll (Address Uint256, Bytes4, Bytes, Uint256, Address,
+            Uint256, Uint256, Bytes, Bytes, Uint256, Uint256, Bytes)
+          </InfoListItem>
         </div>
       </div>
     </div>

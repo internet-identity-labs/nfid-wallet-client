@@ -53,18 +53,36 @@ export class BtcWallet {
     targetAddress: string,
   ) {
     const net = "mainnet" == CHAIN_NETWORK ? "" : "testnet"
-    const url = `https://mempool.space/${net}/api/address/${address}/utxo`
-    const response = await fetch(url)
-    const inputs = await response.json()
+
+    // Get all UTXOs for the given address
+    const utxoUrl = `https://mempool.space/${net}/api/address/${address}/utxo`
+    const utxoResponse = await fetch(utxoUrl)
+    const utxos = await utxoResponse.json()
+
+    // Get all transactions in the mempool for the given address
+    const mempoolUrl = `https://mempool.space/${net}/api/address/${address}/txs/mempool`
+    const mempoolResponse = await fetch(mempoolUrl)
+    const mempoolTransactions = await mempoolResponse.json()
+
+    // Find UTXOs not in the mempool
+    const nonMempoolUtxos = utxos.filter((utxo: any) => {
+      for (const tx of mempoolTransactions) {
+        if (utxo.txid === tx.txid && utxo.vout === tx.vout) {
+          return false
+        }
+      }
+      return true
+    })
+
     const network =
       "mainnet" == CHAIN_NETWORK ? networks.bitcoin : networks.testnet
     const txb = new TransactionBuilder(network)
-    inputs.sort((a: any, b: any) => a.value - b.value)
+    nonMempoolUtxos.sort((a: any, b: any) => a.value - b.value)
     let inputTotal = 0
-    for (let i = 0; i < inputs.length; i++) {
-      const input = inputs[i]
-      txb.addInput(input.txid, input.vout)
-      inputTotal += input.value
+    for (let i = 0; i < nonMempoolUtxos.length; i++) {
+      const utxo = nonMempoolUtxos[i]
+      txb.addInput(utxo.txid, utxo.vout)
+      inputTotal += utxo.value
       if (inputTotal >= transactionValue) {
         break
       }

@@ -15,7 +15,7 @@ export const DefaultTrigger = ({
   selectedOption,
   actionHandler,
   iconClassnames,
-  id
+  id,
 }: IDefaultTrigger) => {
   return (
     <div
@@ -27,7 +27,10 @@ export const DefaultTrigger = ({
       )}
       onClick={actionHandler}
     >
-      <div className="flex" id={"option_"+selectedOption?.title.replace(/\s/g, "")}>
+      <div
+        className="flex"
+        id={"option_" + selectedOption?.title.replace(/\s/g, "")}
+      >
         {selectedOption?.icon && (
           <Image
             src={selectedOption?.icon}

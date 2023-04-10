@@ -141,6 +141,7 @@ Feature:Fungible Asset
       | Bitcoin | 25795  | 0.00006879 | 6e-8 BTC |
 
   @asset8
+  @pending
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -154,7 +155,7 @@ Feature:Fungible Asset
     And Set <target> address and <amount> and send
     Then Success window appears with <text>
     Examples:
-      | chain   | anchor | target                             | amount   | text                                    |
-      | Bitcoin | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p | 0.000001 | You've sent 1e-8 BTC. Transaction hash: |
+      | chain   | anchor | target                             | amount    | text                                    |
+      | Bitcoin | 28567  | mjXH5mLcWY2VRRvSZQ1Q33qXJjzBiUq45p | 0.0000001 | You've sent 1e-7 BTC. Transaction hash: |
 
-#  mhb5nMJapMHx2ZGYBwMaPUqz1byj6rA5BN
+

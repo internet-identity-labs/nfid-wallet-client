@@ -46,7 +46,6 @@ export const getBtcTransactionHistory = async (): Promise<BtcTxs> => {
   const { address, principal } = await getAccIdentifier()
   const sendTransactions = await getTransactions("send", address)
   const receivedTransactions = await getTransactions("received", address)
-  console.log(sendTransactions)
   let addressPrincipal = principalToAddress(Principal.fromText(principal))
   return {
     sendTransactions,

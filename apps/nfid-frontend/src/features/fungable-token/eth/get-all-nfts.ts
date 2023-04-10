@@ -1,14 +1,19 @@
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
 
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
 
-import { getEthAddress } from "./get-eth-address"
-
 export const getAllEthNFTs = async () => {
+  const hostname = "nfid.one"
+  const accountId = "0"
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const address = await getEthAddress(profile?.anchor)
+  const delegation = await getWalletDelegation(
+    profile?.anchor,
+    hostname,
+    accountId,
+  )
 
-  const { items } = await ethereumAsset.getItemsByUser({ address })
+  const { items } = await ethereumAsset.getItemsByUser({ identity: delegation })
 
   return items
 }

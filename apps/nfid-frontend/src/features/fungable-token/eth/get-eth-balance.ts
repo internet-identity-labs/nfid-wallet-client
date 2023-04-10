@@ -9,12 +9,18 @@ import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
 
 import { AccountBalance, AppBalance, TokenBalanceSheet } from "../types"
-import { getEthAddress } from "./get-eth-address"
 
 export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
+  const hostname = "nfid.one"
+  const accountId = "0"
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const address = await getEthAddress(profile?.anchor)
-  const balance = await ethereumAsset.getBalance(address)
+  const delegation = await getWalletDelegation(
+    profile?.anchor,
+    hostname,
+    accountId,
+  )
+  const balance = await ethereumAsset.getBalance(undefined, delegation)
+  const address = await ethereumAsset.getAddress(delegation)
   const principal = (await getWalletDelegation(profile.anchor))
     .getPrincipal()
     .toText()

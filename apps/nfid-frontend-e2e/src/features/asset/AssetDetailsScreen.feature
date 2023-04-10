@@ -1,26 +1,6 @@
-@asset
-Feature:Fungible Asset
-  As a user, I want to see fungible assets in profile
+Feature:Fungible Asset Details
+  As a user, I want to see fungible assets details
 
-  @asset1
-  Scenario Outline: User should be able to see <chain> in assets
-    Given User opens NFID site
-    And User is already authenticated by <anchor> anchor
-    Given User signs in
-    And Tokens displayed on user assets
-    And Asset appears with label <label>
-    And <asset> appears with <currency> on <chain> and <balance> && <initial_usd> USD
-    And <label> <currency> address calculated
-    And <label> USD balance is not empty
-    And <label> USD balance not $0.00
-    Examples:
-      | chain             | currency | balance | asset             | anchor | initial_usd | label             |
-      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  |             | Bitcoin           |
-      | Ethereum          | ETH      | 0 ETH   | Ethereum          | 10974  |             | Ethereum          |
-      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  |             | Internet Computer |
-      | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  |             | WICP              |
-
-  @asset2
   Scenario Outline: User should be able to see <label> in asset details
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -40,7 +20,6 @@ Feature:Fungible Asset
       | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
       | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |
 
-  @asset3
   Scenario Outline: User should be able to see transaction history in Received
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -60,7 +39,6 @@ Feature:Fungible Asset
       | 2   | Sent     | Bitcoin           | BTC      | 0.00003269 | 1680864742000 | n2yvAStr9w75oUMyb3c7s4QdQu78Rj9Sjc                               | mohjSavDdQYHRYXcS3uS6ttaHP8amyvX78                               | 28593  |
       | 1   | Received | Ethereum          | ETH      | 0.1        | 1680091200000 | 0x51c20059d7084e3d381403939d5dc3158f891a8e                       | 0x36c4dac48217546e0be2b5057857e76ac784b3c7                       | 10974  |
 
-  @asset4
   Scenario Outline: User should be able to see transaction depends on selected app
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -85,22 +63,4 @@ Feature:Fungible Asset
       | Sent     | Bitcoin           | 28593  | 5 TXs | 2    |
       | Received | Internet Computer | 28542  | 1 TXs | 1    |
       | Received | Ethereum          | 10974  | 1 TXs | 1    |
-
-  @asset5
-  Scenario Outline: User should be able to filter assets by blockchain
-    Given User opens NFID site
-    And User is already authenticated by <anchor> anchor
-    Given User signs in
-    And Tokens displayed on user assets
-    Then Open filter menu on assets screen
-    And Expect dropdown menu with text "All"
-    And Open dropdown menu on page
-    And Click checkbox chain <chain>
-    Then Asset appears with label <chain>
-    Then Only <amount> asset displayed
-    Examples:
-      | chain             | anchor | amount |
-      | Bitcoin           | 25795  | 1      |
-      | Ethereum          | 10974  | 1      |
-      | Internet Computer | 28542  | 4      |
 

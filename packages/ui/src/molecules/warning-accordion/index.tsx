@@ -8,11 +8,11 @@ import {
 
 export interface IWarningAccordionOption {
   title: string
-  subtitle: string
+  subtitle: string | JSX.Element
 }
 
 export interface IWarningAccordion {
-  warnings: IWarningAccordionOption[]
+  warnings?: IWarningAccordionOption[]
 }
 
 export const WarningAccordion = ({ warnings }: IWarningAccordion) => {

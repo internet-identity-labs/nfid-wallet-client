@@ -9,6 +9,7 @@ interface IInfoListItem {
   className?: string
   children: JSX.Element | string
   icon?: JSX.Element | string
+  isVerticalCentered?: boolean
 }
 
 export const InfoListItem = ({
@@ -18,15 +19,17 @@ export const InfoListItem = ({
   isBold,
   className,
   icon,
+  isVerticalCentered = true,
 }: IInfoListItem) => {
   return (
     <div
       className={clsx(
-        "flex items-center justify-between w-full text-sm",
+        "flex justify-between w-full text-sm",
         isBold && "font-bold",
+        isVerticalCentered && "items-center",
       )}
     >
-      <div className="flex space-x-1 mr-2.5 items-center">
+      <div className="flex space-x-2 mr-2.5 items-center h-5">
         <p className={clsx("whitespace-nowrap", className)}>{title}</p>
         {tooltip && (
           <Tooltip tip={tooltip}>

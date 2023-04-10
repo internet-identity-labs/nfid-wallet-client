@@ -4,14 +4,27 @@
       "frontend": {
         "entrypoint": "dist/apps/nfid-frontend/index.html"
       },
-      "source": ["dist/apps/nfid-frontend/"],
+      "source": [
+        "dist/apps/nfid-frontend/"
+      ],
       "type": "assets"
     },
     "nfid-demo": {
       "frontend": {
         "entrypoint": "dist/apps/nfid-demo/index.html"
       },
-      "source": ["dist/apps/nfid-demo/"],
+      "source": [
+        "dist/apps/nfid-demo/"
+      ],
+      "type": "assets"
+    },
+    "nfid-storybook-frontend": {
+      "frontend": {
+        "entrypoint": "dist/apps/nfid-demo/index.html"
+      },
+      "source": [
+        "dist/storybook/nfid-frontend/"
+      ],
       "type": "assets"
     }
   },
@@ -26,11 +39,15 @@
       "type": "ephemeral"
     },
     "ic": {
-      "providers": ["https://mainnet.dfinity.network"],
+      "providers": [
+        "https://mainnet.dfinity.network"
+      ],
       "type": "persistent"
     },
     "dev": {
-      "providers": ["https://ic0.app"],
+      "providers": [
+        "https://ic0.app"
+      ],
       "type": "persistent"
     }
   },

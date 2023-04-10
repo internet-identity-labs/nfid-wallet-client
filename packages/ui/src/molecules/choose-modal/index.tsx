@@ -112,6 +112,7 @@ export const ChooseModal = ({
           actionHandler={() => setIsModalVisible(true)}
           selectedOption={selectedOption}
           iconClassnames={iconClassnames}
+          id={"default_trigger_" + label}
         />
       )}
 
@@ -167,7 +168,7 @@ export const ChooseModal = ({
                   innerTitle={option.innerTitle}
                   innerSubtitle={option.innerSubtitle}
                   iconClassnames={iconClassnames}
-                  id={`option_${option.value}`}
+                  id={`choose_option_${option.title.replace(/\s/g, "")}`}
                 />
               ))}
             </div>

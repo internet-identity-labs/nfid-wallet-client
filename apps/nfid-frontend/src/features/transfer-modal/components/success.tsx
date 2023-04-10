@@ -16,6 +16,7 @@ export const TransferSuccess: React.FC<ITransferModalSuccess> = ({
 }) => {
   return (
     <div
+      id={"success_window"}
       className={clsx(
         "text-black text-center",
         "flex flex-grow flex-col justify-between",

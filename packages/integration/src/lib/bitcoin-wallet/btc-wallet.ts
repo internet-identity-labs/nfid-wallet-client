@@ -7,7 +7,7 @@ import { BlockCypherTx } from "./types"
 
 const mainnet = "https://api.blockcypher.com/v1/btc/main"
 const testnet = "https://api.blockcypher.com/v1/btc/test3"
-const fee = 1000
+const fee = 1500
 export class BtcWallet {
   private readonly walletIdentity: DelegationIdentity
 
@@ -59,7 +59,7 @@ export class BtcWallet {
     const network =
       "mainnet" == CHAIN_NETWORK ? networks.bitcoin : networks.testnet
     const txb = new TransactionBuilder(network)
-    inputs.sort((a: any, b: any) => b.value - a.value)
+    inputs.sort((a: any, b: any) => a.value - b.value)
     let inputTotal = 0
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i]

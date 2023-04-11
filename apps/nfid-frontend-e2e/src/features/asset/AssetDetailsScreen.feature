@@ -9,8 +9,8 @@ Feature:Fungible Asset Details
     And Open asset with label <label>
     Then Wait while <label> accounts calculated
     Then <label> with <balance> <currency> in header
-    Then 1 row in the table
     And NFID app account 1 with <balance> <currency> displayed
+    And 1 row in the table
     And Identifiers are <principal> and <address>
     And Account balance in USD not empty
     Examples:

@@ -12,8 +12,8 @@ import {
 } from "../asset/types"
 import { BtcWallet } from "./btc-wallet"
 
-const mainnet = "https://mempool.space/api/address/"
-const testnet = "https://mempool.space/testnet/api/address/"
+export const mainnet = "https://mempool.space/api/address/"
+export const testnet = "https://mempool.space/testnet/api/address/"
 
 export const BtcAsset: FungibleAsset = {
   async getBalance(walletAddress, delegation): Promise<ChainBalance> {

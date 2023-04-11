@@ -21,6 +21,7 @@ export const mapAccountBalancesToOptions = (
     vaultId?: bigint
     vaultName?: string
     ethAddress?: string
+    btcAddress?: string
   }[],
   selectedToken: string,
   rates: IRate,
@@ -36,6 +37,27 @@ export const mapAccountBalancesToOptions = (
             title: "NFID Account 1",
             value: wallets[0]?.ethAddress,
             subTitle: truncateString(wallets[0]?.ethAddress ?? "", 10),
+            innerTitle: `${toPresentation(
+              wallets[0]?.balance[selectedToken],
+            )} ${selectedToken}`,
+            innerSubtitle: toUSD(
+              toPresentation(wallets[0]?.balance[selectedToken]),
+              rates[selectedToken],
+            ),
+          },
+        ],
+      },
+    ] as IGroupedOptions[]
+
+  if (selectedToken === "BTC")
+    return [
+      {
+        label: "Public",
+        options: [
+          {
+            title: "NFID Account 1",
+            value: wallets[0]?.btcAddress,
+            subTitle: truncateString(wallets[0]?.btcAddress ?? "", 10),
             innerTitle: `${toPresentation(
               wallets[0]?.balance[selectedToken],
             )} ${selectedToken}`,

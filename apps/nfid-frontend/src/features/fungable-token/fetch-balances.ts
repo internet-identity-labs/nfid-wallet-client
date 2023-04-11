@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
+import { getBtcBalance } from "src/features/fungable-token/btc/get-btc"
 
 import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
 import { getBalance as getICPBalance } from "@nfid/integration"
@@ -41,6 +42,9 @@ export async function fetchBalances({
         })),
         ...["ETH"].map(async (token) => ({
           [token]: (await getEthBalance()).tokenBalance,
+        })),
+        ...["BTC"].map(async (token) => ({
+          [token]: (await getBtcBalance()).tokenBalance,
         })),
         ...dip20Token.map(async ({ symbol: token, canisterId }) => ({
           [token]: await getDIP20Balance({

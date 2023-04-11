@@ -34,9 +34,13 @@ export const TransferReceive = ({
     if (!selectedSourceWallet) return
 
     return wallets.find((w) =>
-      [w.principal.toText(), w.address, w.ethAddress, w.principalId].includes(
-        selectedSourceWallet,
-      ),
+      [
+        w.principal.toText(),
+        w.address,
+        w.ethAddress,
+        w.principalId,
+        w.btcAddress,
+      ].includes(selectedSourceWallet),
     )
   }, [selectedSourceWallet, wallets])
 
@@ -44,6 +48,8 @@ export const TransferReceive = ({
     switch (selectedToken?.tokenStandard) {
       case "ETH":
         return selectedWallet?.ethAddress
+      case "BTC":
+        return selectedWallet?.btcAddress
       case "ICP":
         return selectedWallet?.address
     }
@@ -51,6 +57,7 @@ export const TransferReceive = ({
     selectedToken?.tokenStandard,
     selectedWallet?.address,
     selectedWallet?.ethAddress,
+    selectedWallet?.btcAddress,
   ])
 
   const handleSelectToken = (value: string) => {

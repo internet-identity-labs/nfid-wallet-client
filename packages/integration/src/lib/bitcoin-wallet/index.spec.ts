@@ -117,4 +117,14 @@ describe.skip("BTC suite", () => {
         "3d1aed3299deb41ff8ae42ba7219bc3155a40766635e105b08ba18d0f9ada3d4",
     })
   })
+
+  it("get fee", async () => {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+    let fee = await new BtcWallet(delegationIdentity).getFee()
+    expect(fee).toEqual(1500)
+    fee = await new BtcWallet(delegationIdentity, true).getFee()
+    expect(fee).not.toEqual(1500)
+  })
 })

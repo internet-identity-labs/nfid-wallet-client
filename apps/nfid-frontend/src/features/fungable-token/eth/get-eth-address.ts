@@ -24,7 +24,7 @@ export const getEthAddress = async (anchor: number) => {
   const identity = await getWalletDelegation(anchor, hostname, accountId)
   replaceActorIdentity(ecdsaSigner, identity)
 
-  const address = await ethereumAsset.getAddress()
+  const address = await ethereumAsset.getAddress(identity)
 
   !cachedAddress && storeAddressInLocalCache({ address, accountId, hostname })
 

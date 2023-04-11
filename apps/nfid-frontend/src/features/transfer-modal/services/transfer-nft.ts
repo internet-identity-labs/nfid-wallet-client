@@ -50,7 +50,12 @@ const transferETH = async (
 ) => {
   try {
     await replaceActorIdentity(ecdsaSigner, identity)
-    const res = await ethereumAsset.transferNft(tokenId, contract, receiver)
+    const res = await ethereumAsset.transferNft({
+      delegation: identity,
+      tokenId,
+      contract,
+      receiver,
+    })
     console.debug("transferNFT", res)
   } catch (e: any) {
     throw new Error(

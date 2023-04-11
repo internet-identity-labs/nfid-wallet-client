@@ -2,24 +2,35 @@ import { format } from "date-fns"
 
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
 
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
 import { TransactionRow } from "frontend/integration/rosetta/select-transactions"
 
-import { getEthAddress } from "./get-eth-address"
-
 export const getEthTransactions = async () => {
+  const hostname = "nfid.one"
+  const accountId = "0"
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const address = await getEthAddress(profile?.anchor)
+  const delegation = await getWalletDelegation(
+    profile?.anchor,
+    hostname,
+    accountId,
+  )
 
-  const incoming = await ethereumAsset.getFungibleActivityByTokenAndUser({
-    address: address,
-    direction: "to",
-  })
+  const address = await ethereumAsset.getAddress(delegation)
 
-  const outcoming = await ethereumAsset.getFungibleActivityByTokenAndUser({
-    address: address,
-    direction: "from",
-  })
+  const incoming = await ethereumAsset.getFungibleActivityByTokenAndUser(
+    {
+      direction: "to",
+    },
+    delegation,
+  )
+
+  const outcoming = await ethereumAsset.getFungibleActivityByTokenAndUser(
+    {
+      direction: "from",
+    },
+    delegation,
+  )
 
   const allTXs = incoming.activities.concat(outcoming.activities)
 

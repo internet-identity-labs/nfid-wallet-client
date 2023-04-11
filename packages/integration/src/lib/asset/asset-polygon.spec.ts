@@ -1,6 +1,6 @@
 import { BigNumber } from "@rarible/utils"
 
-import { polygonAsset } from "./asset-ethereum"
+import { polygonAsset } from "./asset-polygon"
 import { ChainBalance } from "./types"
 
 describe("Polygon Asset", () => {
@@ -8,6 +8,7 @@ describe("Polygon Asset", () => {
 
   it("should return one fungible native tx", async function () {
     const actual = await polygonAsset.getFungibleActivityByTokenAndUser({
+      address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
       sort: "asc",
     })
@@ -29,6 +30,7 @@ describe("Polygon Asset", () => {
 
   it("should return one fungible erc20 tx", async function () {
     const actual = await polygonAsset.getFungibleActivityByTokenAndUser({
+      address: "0x382901144a77bec53493fa090053b9c63da5dd07",
       contract: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
       size: 1,
       sort: "asc",
@@ -51,7 +53,9 @@ describe("Polygon Asset", () => {
   })
 
   it("should return one fungible erc20 token", async function () {
-    const actual = await polygonAsset.getErc20TokensByUser()
+    const actual = await polygonAsset.getErc20TokensByUser({
+      identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
+    })
     expect(actual).toEqual({
       cursor: undefined,
       tokens: [
@@ -67,7 +71,9 @@ describe("Polygon Asset", () => {
   })
 
   it("should request balance", async function () {
-    const balance: ChainBalance = await polygonAsset.getBalance()
+    const balance: ChainBalance = await polygonAsset.getBalance(
+      "0x382901144a77bec53493fa090053b9c63da5dd07",
+    )
     expect(balance).toMatchObject({
       balance: expect.any(BigNumber),
       balanceinUsd: expect.any(BigNumber),
@@ -103,6 +109,7 @@ describe("Polygon Asset", () => {
 
   it("should request activities by user", async function () {
     const activities = await polygonAsset.getActivitiesByUser({
+      identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
       size: 1,
       sort: "asc",
     })
@@ -124,7 +131,10 @@ describe("Polygon Asset", () => {
   })
 
   it("should request items by user", async function () {
-    const items = await polygonAsset.getItemsByUser({ size: 1 })
+    const items = await polygonAsset.getItemsByUser({
+      identity: "0x382901144a77bec53493fa090053b9c63da5dd07",
+      size: 1,
+    })
     expect(items).toEqual({
       total: 1,
       items: [
@@ -149,19 +159,4 @@ describe("Polygon Asset", () => {
       ],
     })
   })
-
-  // @Dmitrii please check it
-  // it("should request transfer", async function () {
-  //   const contract = "0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"
-  //   const to = "0xdC75e8c3aE765D8947aDBC6698a2403A6141D439"
-  //   const tokenId =
-  //     "80322369037599879817130611650014995038071054105692890356259348959353817268226"
-  //   try {
-  //     await polygonAsset.transferNft(to, contract, tokenId)
-  //   } catch (e) {
-  //     expect(JSON.stringify(e)).toContain(
-  //       "transfer caller is not owner nor approved",
-  //     )
-  //   }
-  // })
 })

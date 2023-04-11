@@ -31,6 +31,9 @@ export class Assets {
 
   public async sendDialog() {
     const sendReceiveButton = await $("#sendReceiveButton")
+    await sendReceiveButton.waitForDisplayed({
+      timeout: 7000,
+    })
     await sendReceiveButton.click()
   }
 

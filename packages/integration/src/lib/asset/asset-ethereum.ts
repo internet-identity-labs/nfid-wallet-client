@@ -1,3 +1,5 @@
+import { DelegationIdentity } from "@dfinity/identity"
+import { TransactionResponse } from "@ethersproject/abstract-provider"
 import {
   Activity as RaribleActivity,
   TransferActivity,
@@ -6,14 +8,12 @@ import {
   OrderMatchSell,
   UserActivityType,
 } from "@rarible/api-client"
-import { Blockchain } from "@rarible/api-client"
 import { EthersEthereum } from "@rarible/ethers-ethereum"
 import { createRaribleSdk, IRaribleSdk } from "@rarible/sdk"
 import { EthereumWallet } from "@rarible/sdk-wallet"
 import {
   convertEthereumToUnionAddress,
   convertEthereumItemId,
-  EVMBlockchain,
 } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { toCurrencyId, UnionAddress } from "@rarible/types"
 import { toBn } from "@rarible/utils"
@@ -27,6 +27,7 @@ import {
 import { ethers } from "ethers-ts"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
+import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import {
   NonFungibleAsset,
   ChainBalance,
@@ -38,45 +39,44 @@ import {
   FungibleActivityRequest,
   Configuration,
   ActivitiesByItemRequest,
-  PageRequest,
-  SortRequest,
+  ActivitiesByUserRequest,
+  Address,
+  Identity,
+  ItemsByUserRequest,
+  TransferNftRequest,
+  TransferETHRequest,
+  Erc20TokensByUserRequest,
 } from "./types"
 
-class EthereumAsset implements NonFungibleAsset {
-  private readonly blockchain: EVMBlockchain
-  private readonly unionBlockchain: EVMBlockchain
-  private readonly currencyId: string
-  private readonly raribleSdk: IRaribleSdk
-  private readonly wallet: EthWallet
-  private readonly alchemySdk: Alchemy
+export class EthereumAsset implements NonFungibleAsset {
+  private readonly config: Configuration
 
   constructor(config: Configuration) {
-    const [raribleSdk, wallet] = this.getRaribleSdk(CHAIN_NETWORK, config)
-    this.alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, config)
-    this.raribleSdk = raribleSdk
-    this.wallet = wallet
-    this.blockchain = config.blockchain
-    this.currencyId = config.currencyId
-    this.unionBlockchain = config.unionBlockchain
+    this.config = config
   }
 
-  public async getAddress(): Promise<string> {
-    return await this.wallet.getAddress()
+  public async getAddress(delegation?: DelegationIdentity): Promise<string> {
+    if (!delegation) {
+      throw Error("Delegation is needed.")
+    }
+    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    return await wallet.getAddress()
   }
 
   public async getActivitiesByItem({
     tokenId,
     contract,
     cursor,
-    size,
     sort,
+    size,
   }: ActivitiesByItemRequest): Promise<NonFungibleActivityRecords> {
+    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
     const itemId = convertEthereumItemId(
       `${contract}:${tokenId}`,
-      this.blockchain,
+      this.config.blockchain,
     )
     const raribleActivities =
-      await this.raribleSdk.apis.activity.getActivitiesByItem({
+      await raribleSdk.apis.activity.getActivitiesByItem({
         type: [ActivityType.SELL, ActivityType.TRANSFER],
         itemId,
         cursor,
@@ -94,17 +94,19 @@ class EthereumAsset implements NonFungibleAsset {
   }
 
   public async getActivitiesByUser({
+    identity,
     cursor,
     size,
     sort,
-  }: PageRequest & SortRequest = {}): Promise<NonFungibleActivityRecords> {
-    const address = await this.wallet.getAddress()
+  }: ActivitiesByUserRequest): Promise<NonFungibleActivityRecords> {
+    const address = await this.getAddressByIdentity(identity)
+    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
     const unionAddress: UnionAddress = convertEthereumToUnionAddress(
       address,
-      this.unionBlockchain,
+      this.config.unionBlockchain,
     )
     const raribleActivities =
-      await this.raribleSdk.apis.activity.getActivitiesByUser({
+      await raribleSdk.apis.activity.getActivitiesByUser({
         type: [
           UserActivityType.SELL,
           UserActivityType.TRANSFER_FROM,
@@ -114,7 +116,7 @@ class EthereumAsset implements NonFungibleAsset {
         user: [unionAddress],
         cursor,
         size,
-        blockchains: [this.blockchain],
+        blockchains: [this.config.blockchain],
         sort:
           "asc" === sort
             ? ActivitySort.EARLIEST_FIRST
@@ -127,27 +129,63 @@ class EthereumAsset implements NonFungibleAsset {
   }
 
   public async getItemsByUser({
+    identity,
     cursor,
     size,
-    address,
-  }: PageRequest = {}): Promise<NonFungibleItems> {
-    return this.getNftsAlchemy({ cursor, size, address })
+  }: ItemsByUserRequest): Promise<NonFungibleItems> {
+    const address = await this.getAddressByIdentity(identity)
+    const alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, this.config)
+    const tokens: AlchemyOwnedNftsResponse =
+      await alchemySdk.nft.getNftsForOwner(address, {
+        pageKey: cursor,
+        pageSize: size,
+        omitMetadata: false,
+      })
+
+    return {
+      total: tokens.totalCount,
+      items: tokens.ownedNfts.map((item) => {
+        const contract = item.contract.address
+        const chain = this.config.blockchain.toString()
+        return {
+          id: `${chain}:${contract}:${item.tokenId}`,
+          blockchain: chain,
+          collection: contract,
+          contract: contract,
+          tokenId: item.tokenId,
+          lastUpdatedAt: item.timeLastUpdated,
+          thumbnail: item.media.length ? item.media[0]?.thumbnail : "",
+          image: item.media.length ? item.media[0]?.gateway : "",
+          title: item.title,
+          description: item.description,
+          tokenType: item.tokenType.toString(),
+          contractName: item.contract.name,
+          contractSymbol: item.contract.symbol,
+        }
+      }),
+    }
   }
 
-  public async getBalance(address?: string): Promise<ChainBalance> {
-    const validAddress = address ?? (await this.wallet.getAddress())
-    const unionAddress: UnionAddress = convertEthereumToUnionAddress(
-      validAddress,
-      this.unionBlockchain,
+  public async getBalance(
+    address?: string,
+    delegation?: DelegationIdentity,
+  ): Promise<ChainBalance> {
+    const addressVal = await this.getAddressByIdentity(
+      address ?? delegation ?? undefined,
     )
+    const unionAddress: UnionAddress = convertEthereumToUnionAddress(
+      addressVal,
+      this.config.unionBlockchain,
+    )
+    const raribleSdk = this.getRaribleSdk(CHAIN_NETWORK)
     const now = new Date()
     const [balance, currencyRate] = await Promise.all([
-      this.raribleSdk.balances.getBalance(
+      raribleSdk.balances.getBalance(
         unionAddress,
-        toCurrencyId(this.currencyId),
+        toCurrencyId(this.config.currencyId),
       ),
-      this.raribleSdk.apis.currency.getCurrencyUsdRateByCurrencyId({
-        currencyId: this.currencyId,
+      raribleSdk.apis.currency.getCurrencyUsdRateByCurrencyId({
+        currencyId: this.config.currencyId,
         at: now,
       }),
     ])
@@ -156,20 +194,28 @@ class EthereumAsset implements NonFungibleAsset {
     return { balance: balanceBN, balanceinUsd }
   }
 
-  public async transferNft(
-    tokenId: string,
-    contract: string,
-    receiver: string,
-  ): Promise<void> {
-    return await this.wallet.safeTransferFrom(receiver, contract, tokenId)
+  public async transferNft({
+    delegation,
+    tokenId,
+    contract,
+    receiver,
+  }: TransferNftRequest): Promise<void> {
+    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    return await wallet.safeTransferFrom(receiver, contract, tokenId)
   }
 
-  public async transferETH(to: string, amount: string) {
-    const address = await this.wallet.getAddress()
+  public async transferETH({
+    delegation,
+    to,
+    amount,
+  }: TransferETHRequest): Promise<TransactionResponse> {
+    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    const address = await wallet.getAddress()
     // const trCount = await this.wallet.getTransactionCount("latest")
     // const gasPrice = await this.wallet.getGasPrice()
     // const gasLimit = BigNumber.from(100000)
 
+    new EthWallet().sendTransaction
     const transaction = {
       from: address,
       to: to,
@@ -179,14 +225,16 @@ class EthereumAsset implements NonFungibleAsset {
       // gasPrice: gasPrice,
     }
 
-    return this.wallet.sendTransaction(transaction)
+    return wallet.sendTransaction(transaction)
   }
 
   public async getErc20TokensByUser({
+    identity,
     cursor,
-  }: PageRequest = {}): Promise<Tokens> {
-    const address = await this.wallet.getAddress()
-    const tokens = await this.alchemySdk.core.getTokensForOwner(address, {
+  }: Erc20TokensByUserRequest): Promise<Tokens> {
+    const address = await this.getAddressByIdentity(identity)
+    const alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, this.config)
+    const tokens = await alchemySdk.core.getTokensForOwner(address, {
       pageKey: cursor,
     })
     return {
@@ -203,18 +251,25 @@ class EthereumAsset implements NonFungibleAsset {
     }
   }
 
-  public async getFungibleActivityByTokenAndUser({
-    direction = "from",
-    contract,
-    cursor,
-    size,
-    sort = "desc",
-    address,
-  }: FungibleActivityRequest = {}): Promise<FungibleActivityRecords> {
-    const validAddress = address ?? (await this.wallet.getAddress())
-    const transfers = await this.alchemySdk.core.getAssetTransfers({
-      fromAddress: "from" == direction ? validAddress : undefined,
-      toAddress: "to" == direction ? validAddress : undefined,
+  public async getFungibleActivityByTokenAndUser(
+    {
+      direction = "from",
+      contract,
+      cursor,
+      size,
+      sort = "desc",
+      address,
+    }: FungibleActivityRequest,
+    delegation?: DelegationIdentity,
+  ): Promise<FungibleActivityRecords> {
+    const addressVal = await this.getAddressByIdentity(
+      address ?? delegation ?? undefined,
+    )
+    const alchemySdk = this.getAlchemySdk(CHAIN_NETWORK, this.config)
+
+    const transfers = await alchemySdk.core.getAssetTransfers({
+      fromAddress: "from" == direction ? addressVal : undefined,
+      toAddress: "to" == direction ? addressVal : undefined,
       category: contract
         ? [AssetTransfersCategory.ERC20]
         : [AssetTransfersCategory.EXTERNAL],
@@ -236,41 +291,20 @@ class EthereumAsset implements NonFungibleAsset {
     }
   }
 
-  private async getNftsAlchemy({
-    cursor,
-    size,
-    address,
-  }: PageRequest = {}): Promise<NonFungibleItems> {
-    const validAddress = address ?? (await this.wallet.getAddress())
-    const tokens: AlchemyOwnedNftsResponse =
-      await this.alchemySdk.nft.getNftsForOwner(validAddress, {
-        pageKey: cursor,
-        pageSize: size,
-        omitMetadata: false,
-      })
-
-    return {
-      total: tokens.totalCount,
-      items: tokens.ownedNfts.map((item) => {
-        const contract = item.contract.address
-        const chain = this.blockchain.toString()
-        return {
-          id: `${chain}:${contract}:${item.tokenId}`,
-          blockchain: chain,
-          collection: contract,
-          contract: contract,
-          tokenId: item.tokenId,
-          lastUpdatedAt: item.timeLastUpdated,
-          thumbnail: item.media.length ? item.media[0]?.thumbnail : "",
-          image: item.media.length ? item.media[0]?.gateway : "",
-          title: item.title,
-          description: item.description,
-          tokenType: item.tokenType.toString(),
-          contractName: item.contract.name,
-          contractSymbol: item.contract.symbol,
-        }
-      }),
+  private getAddressByIdentity(identity?: Identity): Promise<string> {
+    if (!identity) {
+      throw Error("No Identity provided.")
     }
+    return identity instanceof DelegationIdentity
+      ? this.getAddressByDelegation(identity as DelegationIdentity)
+      : Promise.resolve(identity as Address)
+  }
+
+  private getAddressByDelegation(
+    delegation: DelegationIdentity,
+  ): Promise<string> {
+    const wallet = this.getWallet(delegation, CHAIN_NETWORK, this.config)
+    return wallet.getAddress()
   }
 
   private mapActivity(activity: RaribleActivity): ActivityRecord {
@@ -305,19 +339,24 @@ class EthereumAsset implements NonFungibleAsset {
     }
   }
 
-  private getRaribleSdk(
+  private getWallet(
+    delegation: DelegationIdentity,
     mode: string,
     config: Configuration,
-  ): [IRaribleSdk, EthWallet] {
-    const network = "mainnet" == mode ? "prod" : "testnet"
+  ): EthWalletV2 {
     const url =
       "mainnet" == mode ? config.provider.mainnet : config.provider.testnet
     const rpcProvider = new ethers.providers.JsonRpcProvider(url)
-    const wallet = new EthWallet(rpcProvider)
-    const ethersWallet = new EthereumWallet(new EthersEthereum(wallet))
-    const raribleSdk = createRaribleSdk(ethersWallet, network)
+    return new EthWalletV2(rpcProvider, delegation)
+  }
 
-    return [raribleSdk, wallet]
+  private getRaribleSdk(mode: string, wallet?: EthWallet): IRaribleSdk {
+    const network = "mainnet" == mode ? "prod" : "testnet"
+    const ethersWallet = wallet
+      ? new EthereumWallet(new EthersEthereum(wallet))
+      : undefined
+    const raribleSdk = createRaribleSdk(ethersWallet, network)
+    return raribleSdk
   }
 
   private getAlchemySdk(mode: string, config: Configuration): Alchemy {
@@ -329,26 +368,3 @@ class EthereumAsset implements NonFungibleAsset {
     })
   }
 }
-
-export const ethereumAsset = new EthereumAsset({
-  currencyId: "ETHEREUM:0x0000000000000000000000000000000000000000",
-  blockchain: Blockchain.ETHEREUM as EVMBlockchain,
-  unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
-  provider: {
-    mainnet: "https://ethereum.publicnode.com",
-    testnet:
-      "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
-  },
-  alchemy: { mainnet: Network.ETH_MAINNET, testnet: Network.ETH_GOERLI },
-})
-
-export const polygonAsset = new EthereumAsset({
-  currencyId: "POLYGON:0x0000000000000000000000000000000000000000",
-  blockchain: Blockchain.POLYGON as EVMBlockchain,
-  unionBlockchain: Blockchain.ETHEREUM as EVMBlockchain,
-  provider: {
-    mainnet: "https://polygon-mainnet.infura.io",
-    testnet: "https://rpc-mumbai.maticvigil.com",
-  },
-  alchemy: { mainnet: Network.MATIC_MAINNET, testnet: Network.MATIC_MUMBAI },
-})

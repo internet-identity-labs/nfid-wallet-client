@@ -3,22 +3,17 @@ import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/commo
 import { BigNumber } from "@rarible/utils"
 import { Network } from "alchemy-sdk"
 
+declare type Address = string
+declare type Identity = DelegationIdentity | Address
+
 declare type NonFungibleAsset = FungibleAsset & {
-  getActivitiesByItem(
-    request: ActivitiesByItemRequest,
-  ): Promise<NonFungibleActivityRecords>
-  getActivitiesByUser(
-    request?: PageRequest & SortRequest,
-  ): Promise<NonFungibleActivityRecords>
-  getItemsByUser(request?: PageRequest): Promise<NonFungibleItems>
-  getBalance(address?: string): Promise<ChainBalance>
-  transferNft(
-    tokenId: string,
-    constract: string,
-    receiver: string,
-  ): Promise<void>
-  getErc20TokensByUser(request?: CursorRequest): Promise<Tokens>
-  getAddress(): Promise<string>
+  getActivitiesByItem(request: ActivitiesByItemRequest): Promise<NonFungibleActivityRecords>
+  getActivitiesByUser(request: ActivitiesByUserRequest): Promise<NonFungibleActivityRecords>
+  getItemsByUser(request: ItemsByUserRequest): Promise<NonFungibleItems>
+  transferNft(request: TransferNftRequest): Promise<void>
+  transferETH(request: TransferETHRequest): Promise<TransactionResponse>
+  getErc20TokensByUser(request: Erc20TokensByUserRequest): Promise<Tokens>
+  getAddress(delegation?: DelegationIdentity): Promise<string>
 }
 
 declare type FungibleAsset = {
@@ -30,6 +25,49 @@ declare type FungibleAsset = {
     request: FungibleActivityRequest,
     delegation?: DelegationIdentity,
   ): Promise<FungibleActivityRecords>
+}
+
+declare type ActivitiesByItemRequest = {
+  tokenId: string
+  contract: string
+  cursor?: string
+  sort?: "asc" | "desc"
+  size?: number
+}
+
+declare type ActivitiesByUserRequest = {
+  identity: Identity
+  cursor?: string
+  sort?: "asc" | "desc"
+  size?: number
+}
+
+declare type ItemsByUserRequest = {
+  identity: Identity
+cursor?: string
+  size?: number
+}
+
+declare type BalanceRequest = {
+  identity: Identity
+}
+
+declare type TransferNftRequest = {
+      delegation: DelegationIdentity,
+    tokenId: string,
+    contract: string,
+    receiver: string,
+}
+
+declare type TransferETHRequest = {
+  delegation: DelegationIdentity,
+  to: string,
+  amount: string
+}
+
+declare type Erc20TokensByUserRequest = {
+      identity: Identity,
+      cursor?: string
 }
 
 declare type SortRequest = {

@@ -56,6 +56,12 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
     rpcMessageDecoded?.data?.meta?.name,
   ])
 
+  const total = useMemo(() => {
+    if (!populatedTransaction) return
+
+    return String(Number(populatedTransaction[0]?.value) / 10 ** 18)
+  }, [populatedTransaction])
+
   return (
     <SendTransaction
       title="Buy collectible"
@@ -66,6 +72,7 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
       networkFee={price.fee}
       totalUSD={price.totalUsd}
       totalToken={price.total}
+      price={total}
       currency={"ETH"}
       onApprove={onConfirm}
       isInsufficientBalance={price.isInsufficientFundsError}

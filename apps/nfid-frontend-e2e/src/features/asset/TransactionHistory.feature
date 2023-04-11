@@ -22,6 +22,7 @@ Feature:Fungible Asset History
       | 2   | Sent     | Bitcoin           | BTC      | 0.00003269 | 1680864742000 | n2yvAStr9w75oUMyb3c7s4QdQu78Rj9Sjc                               | mohjSavDdQYHRYXcS3uS6ttaHP8amyvX78                               | 28593  |
       | 1   | Received | Ethereum          | ETH      | 0.1        | 1681205316000 | 0xdc75e8c3ae765d8947adbc6698a2403a6141d439                       | 0xcdf42ca0423a6063fa4e60bdcbceae64f7d07cda                       | 10974  |
 
+  @tsxhistory2
   Scenario Outline: User should be able to see transaction depends on selected app
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

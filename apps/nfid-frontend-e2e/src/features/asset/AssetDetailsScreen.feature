@@ -1,6 +1,8 @@
+@assetdetails
 Feature:Fungible Asset Details
   As a user, I want to see fungible assets details
 
+  @assetdetails1
   Scenario Outline: User should be able to see <label> in asset details
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -20,6 +22,7 @@ Feature:Fungible Asset Details
       | Internet Computer | ICP      | 0.01       | ymhy      | 8f48    | 28542  |
       | WICP              | WICP     | 0.01       | m5iz      | aaed    | 28565  |
 
+  @assetdetails2
   Scenario Outline: User should be able to see transaction history in Received
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
@@ -60,7 +63,7 @@ Feature:Fungible Asset Details
     Examples:
       | tab      | chain             | anchor | txs   | txss |
       | Received | Bitcoin           | 25795  | 1 TXs | 1    |
-      | Sent     | Bitcoin           | 28593  | 5 TXs | 2    |
+      | Sent     | Bitcoin           | 28593  | 7 TXs | 2    |
       | Received | Internet Computer | 28542  | 1 TXs | 1    |
       | Received | Ethereum          | 10974  | 1 TXs | 1    |
 

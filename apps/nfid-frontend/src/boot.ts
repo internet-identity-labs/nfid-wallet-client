@@ -7,7 +7,7 @@ export const initializeConsoleWarnings = () => {
 
 export const redirectFromCanisters = () => {
   const productionHost = "3y5ko-7qaaa-aaaal-aaaaq-cai.ic0.app"
-  const devHost = "n2mln-sqaaa-aaaag-abjoa-cai"
+  const devHost = "n2mln-sqaaa-aaaag-abjoa-cai.ic0.app"
 
   if (window.location.host === productionHost)
     return (window.location.href = "https://nfid.one")

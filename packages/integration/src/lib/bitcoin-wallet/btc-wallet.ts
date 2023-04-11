@@ -3,16 +3,22 @@ import { networks, payments, TransactionBuilder } from "bitcoinjs-lib"
 import fetch from "node-fetch"
 
 import { Chain, getPublicKey, signECDSA } from "../lambda/ecdsa"
-import { BlockCypherTx } from "./types"
+import { BlockCypherTx, Fee } from "./types"
 
 const mainnet = "https://api.blockcypher.com/v1/btc/main"
 const testnet = "https://api.blockcypher.com/v1/btc/test3"
-const fee = 1500
+const feeTestnet = 1500
 export class BtcWallet {
   private readonly walletIdentity: DelegationIdentity
+  private readonly isMainNet: boolean
 
-  constructor(identity: DelegationIdentity) {
+  constructor(identity: DelegationIdentity, isMainNet?: boolean) {
     this.walletIdentity = identity
+    if (typeof isMainNet === "undefined") {
+      this.isMainNet = "mainnet" == CHAIN_NETWORK
+    } else {
+      this.isMainNet = isMainNet
+    }
   }
 
   async getBitcoinAddress(): Promise<string> {
@@ -33,7 +39,7 @@ export class BtcWallet {
     targetAddress: string,
     satoshi: number,
   ): Promise<BlockCypherTx> {
-    const url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
+    const url = this.isMainNet ? mainnet : testnet
     const source = await this.getBitcoinAddress()
     const tx = await this.computeTransaction(source, satoshi, targetAddress)
     const signedTx = await signECDSA(tx.toHex(), this.walletIdentity, Chain.BTC)
@@ -47,20 +53,32 @@ export class BtcWallet {
     })
   }
 
+  async getFee(): Promise<number> {
+    const net = this.isMainNet ? "" : "/testnet"
+    const feeAPI = `https://mempool.space${net}/api/v1/fees/recommended`
+    const feeResponse = await fetch(feeAPI)
+    const feeData = await feeResponse.json()
+    if (this.isMainNet) {
+      return feeData.halfHourFee
+    } else {
+      return feeTestnet
+    }
+  }
+
   async computeTransaction(
     address: string,
     transactionValue: number,
     targetAddress: string,
   ) {
-    const net = "mainnet" == CHAIN_NETWORK ? "" : "testnet"
+    const net = this.isMainNet ? "" : "/testnet"
 
     // Get all UTXOs for the given address
-    const utxoUrl = `https://mempool.space/${net}/api/address/${address}/utxo`
+    const utxoUrl = `https://mempool.space${net}/api/address/${address}/utxo`
     const utxoResponse = await fetch(utxoUrl)
     const utxos = await utxoResponse.json()
 
     // Get all transactions in the mempool for the given address
-    const mempoolUrl = `https://mempool.space/${net}/api/address/${address}/txs/mempool`
+    const mempoolUrl = `https://mempool.space${net}/api/address/${address}/txs/mempool`
     const mempoolResponse = await fetch(mempoolUrl)
     const mempoolTransactions = await mempoolResponse.json()
 
@@ -74,8 +92,7 @@ export class BtcWallet {
       return true
     })
 
-    const network =
-      "mainnet" == CHAIN_NETWORK ? networks.bitcoin : networks.testnet
+    const network = this.isMainNet ? networks.bitcoin : networks.testnet
     const txb = new TransactionBuilder(network)
     nonMempoolUtxos.sort((a: any, b: any) => a.value - b.value)
     let inputTotal = 0
@@ -93,6 +110,7 @@ export class BtcWallet {
     if (inputTotal < transactionValue) {
       throw new Error(`BTC insufficient funds`)
     }
+    const fee = await this.getFee()
     txb.addOutput(targetAddress, transactionValue)
     if (inputTotal > transactionValue + fee) {
       txb.addOutput(address, inputTotal - transactionValue - fee)

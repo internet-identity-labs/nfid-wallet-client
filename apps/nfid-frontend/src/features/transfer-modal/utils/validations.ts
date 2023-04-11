@@ -40,7 +40,7 @@ export const isValidPrincipalId = (value: string) => {
 export const validateTransferAmountField =
   (balance?: number | string) => (value: string | number) => {
     if (Number(value) < 0) return "Transfer amount can't be negative value"
-    if (Number(value) === 0) return "You can't send 0 ICP"
+    if (Number(value) === 0) return "You can't send 0"
     if (balance && Number(balance) < Number(value)) return "Insufficient funds"
     return true
   }
@@ -54,6 +54,12 @@ export const makeAddressFieldValidation = (type: string) => (value: string) => {
         value.length === ETH_ADDRESS_LENGTH
         ? true
         : "Incorrect address"
+    case "BTC":
+      return typeof isHex(value) === "boolean" &&
+        value.length > 25 &&
+        value.length < 36
+        ? true
+        : "Incorrect BTC address"
     case "DIP20":
       return typeof isValidPrincipalId(value) === "boolean" &&
         value.length === PRINCIPAL_LENGTH

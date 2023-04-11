@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
 import React from "react"
+import { useBtcAddress } from "src/features/fungable-token/btc/hooks/use-btc-address"
 
 import { getWalletName } from "@nfid/integration"
 
@@ -23,6 +24,7 @@ export type Wallet = {
   vaultId?: bigint
   vaultName?: string
   ethAddress?: string
+  btcAddress?: string
 }
 
 export const useAllWallets = () => {
@@ -30,6 +32,7 @@ export const useAllWallets = () => {
   const { balances: vaultsBalances, isLoading: isAllWalletsLoading } =
     useAllVaultsWallets()
   const { address } = useEthAddress()
+  const { btcAddress } = useBtcAddress()
 
   const applications = useApplicationsMeta()
 
@@ -48,6 +51,7 @@ export const useAllWallets = () => {
         principal,
         address: principalToAddress(principal),
         ethAddress: address,
+        btcAddress: btcAddress,
         ...rest,
       }))
       .sort(sortAlphabetic(({ label }) => label ?? ""))
@@ -60,6 +64,7 @@ export const useAllWallets = () => {
           address: address ?? account.accountId,
           isVaultWallet: true,
           ethAddress: address,
+          btcAddress: btcAddress,
           ...rest,
         })) ?? [],
       )
@@ -67,7 +72,13 @@ export const useAllWallets = () => {
       ({ label }) => label ?? "",
       ["NFID", "NNS"],
     )(wallets || [])
-  }, [address, applications.applicationsMeta, balances, vaultsBalances])
+  }, [
+    address,
+    applications.applicationsMeta,
+    balances,
+    vaultsBalances,
+    btcAddress,
+  ])
 
   return { wallets, isLoading: isLoading || isAllWalletsLoading }
 }

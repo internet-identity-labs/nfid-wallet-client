@@ -18,11 +18,16 @@ export const CenterEllipsis = React.forwardRef<
   const splitAt = value.length - trailingChars
   return (
     <div ref={ref} className="flex min-w-0" {...divProps}>
-      <div className={clsx("overflow-hidden whitespace-nowrap")}>
+      <div
+        id={"first_part"}
+        className={clsx("overflow-hidden whitespace-nowrap")}
+      >
         {value.slice(0, leadingChars)}
       </div>
       <div>...</div>
-      <div className="flex-shrink-0">{value.slice(splitAt)}</div>
+      <div id={"second_part"} className="flex-shrink-0">
+        {value.slice(splitAt)}
+      </div>
     </div>
   )
 })

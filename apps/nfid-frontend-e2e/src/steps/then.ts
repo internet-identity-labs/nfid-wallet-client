@@ -366,6 +366,68 @@ Then(/^Open filter menu on assets screen/, async () => {
   await Assets.openElementById(dropdownAccountId)
 })
 
+Then(/^User opens receive dialog window/, async () => {
+  await Assets.receiveDialog()
+})
+
+Then(/^User opens send dialog window/, async () => {
+  await Assets.sendDialog()
+})
+
+Then(/^Choose BTC from options/, async () => {
+  await Assets.sendDialog()
+  const optionBtc = await $("#choose_option_BTC")
+  await optionBtc.click()
+})
+
+Then(/^Choose BTC from send options/, async () => {
+  await Assets.openAssetOptionsOnSR()
+  const optionBtc = await $("#choose_option_BTC")
+  await optionBtc.click()
+})
+
+Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
+  await Assets.chooseAccountFrom(account)
+})
+
+Then(/^Choose ([^"]*) from receive accounts/, async (account: string) => {
+  await Assets.chooseAccountReceive(account)
+})
+
+Then(
+  /^Balance is ([^"]*) and fee is ([^"]*)/,
+  async (balance: string, fee: string) => {
+    const assetBalance = await Assets.getBalance()
+    await expect(assetBalance).toHaveText("Balance: " + balance)
+    const transferFee = await Assets.getFee()
+    await expect(transferFee).toHaveText("Transfer fee: " + fee)
+  },
+)
+
+Then(
+  /^Set ([^"]*) address and ([^"]*) and send/,
+  async (address: string, amount: string) => {
+    await Assets.sendFTto(address, amount)
+  },
+)
+
+Then(/^([^"]*) asset calculated$/, async (chain: string) => {
+  await Assets.waitWhileAssetCalculated(chain)
+})
+
+Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
+  await Assets.successWindow(text)
+})
+
+Then(
+  /^Account ID is ([^"]*) ... ([^"]*)/,
+  async (first: string, second: string) => {
+    let address = await Assets.getAddress()
+    await expect(address.firstAddressPart).toHaveText(first)
+    await expect(address.secondAddressElement).toHaveText(second)
+  },
+)
+
 Then(
   /^([^"]*) USD balance not ([^"]*)$/,
   async (chain: string, text: string) => {

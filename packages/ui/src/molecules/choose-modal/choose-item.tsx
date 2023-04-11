@@ -10,6 +10,7 @@ interface IChooseItem {
   innerTitle?: string
   innerSubtitle?: string
   iconClassnames?: string
+  id?: string
 }
 
 export const ChooseItem = ({
@@ -20,9 +21,11 @@ export const ChooseItem = ({
   innerTitle,
   innerSubtitle,
   iconClassnames,
+  id,
 }: IChooseItem) => {
   return (
     <div
+      id={id}
       onClick={handleClick}
       className={clsx(
         "border-t border-t-gray-100 last:border-b last:border-b-gray-100 h-[60px]",
@@ -31,7 +34,7 @@ export const ChooseItem = ({
         "py-2.5 cursor-pointer",
       )}
     >
-      <div className="flex items-center">
+      <div id={id} className="flex items-center">
         <Image
           src={image}
           alt={title}

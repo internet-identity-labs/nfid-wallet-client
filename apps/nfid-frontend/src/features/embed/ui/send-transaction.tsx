@@ -25,6 +25,7 @@ interface ISendTransaction {
   networkFee?: string
   totalUSD: string
   totalToken: string
+  price?: string
   currency: string
   warnings?: IWarningAccordionOption[]
   isInsufficientBalance?: boolean
@@ -44,6 +45,7 @@ export const SendTransaction = ({
   networkFee,
   totalUSD,
   totalToken,
+  price,
   currency,
   warnings,
   isInsufficientBalance,
@@ -125,6 +127,17 @@ export const SendTransaction = ({
               }
             >
               {`${networkFee} ${currency}`}
+            </InfoListItem>
+          )}
+          {price && (
+            <InfoListItem
+              title={
+                assets && assets?.length > 1
+                  ? "Collectibles cost"
+                  : "Collectible cost"
+              }
+            >
+              {`${price} ${currency}`}
             </InfoListItem>
           )}
           <InfoListItem title="Total" isBold>

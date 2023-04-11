@@ -5,6 +5,7 @@ import { Item } from "@nfid/integration-ethereum"
 
 import { ApproverCmpProps } from "frontend/features/embed/types"
 import { calcPrice } from "frontend/features/embed/util/calcPriceUtil"
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 
 import { SendTransaction } from "../ui/send-transaction"
@@ -47,10 +48,11 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
         icon: item?.item?.data?.meta?.content[0]?.url,
         title: item?.item?.data?.meta?.name,
         subtitle: item?.item?.data?.collectionData?.name,
-        innerTitle: Number(item?.amount) / 10 ** 18,
+        innerTitle: Number(item?.amount) / 10 ** 18 + " ETH",
+        innerSubtitle: toUSD(Number(item?.amount) / 10 ** 18, rates["ETH"]),
       }),
     )
-  }, [rpcMessageDecoded?.data?.items])
+  }, [rates, rpcMessageDecoded?.data?.items])
 
   return (
     <SendTransaction

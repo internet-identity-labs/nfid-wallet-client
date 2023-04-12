@@ -85,7 +85,6 @@ export class DelegationWalletAdapter {
       }
 
       try {
-        err = ProviderError.NETWORK_BUSY
         gasLimit = await alchemy.core.estimateGas(transaction)
 
         tx = {
@@ -100,6 +99,7 @@ export class DelegationWalletAdapter {
         return [tx, err]
       } catch (error) {
         try {
+          err = ProviderError.NETWORK_BUSY
           const t = { ...transaction }
 
           delete t.maxFeePerGas

@@ -6,7 +6,6 @@ Feature: Vault scenarios
     Given User opens NFID site
 
   Scenario: User registers via google
-    Given I remove the authstate from indexedDB
     Given I remove the e2e@identitylabs.ooo
     Given User authenticates with google account
     And User enters a captcha
@@ -16,7 +15,6 @@ Feature: Vault scenarios
     Then User logs out
 
   Scenario: Create a new Vault
-    Given I remove the authstate from indexedDB
     Given User authenticates with google account
     And It log's me in
     And Tokens displayed on user assets
@@ -25,7 +23,6 @@ Feature: Vault scenarios
     Then Vault appears with name testVault
 
   Scenario: Add wallet
-    Given I remove the authstate from indexedDB
     Given User authenticates with google account
     And It log's me in
     And Tokens displayed on user assets
@@ -35,7 +32,6 @@ Feature: Vault scenarios
     Then Wallet displays with name myNewWallet
 
   Scenario: Add member
-    Given I remove the authstate from indexedDB
     Given User authenticates with google account
     And It log's me in
     And Tokens displayed on user assets
@@ -50,7 +46,6 @@ Feature: Vault scenarios
       | john       | bf255d5747df36885680098ef6cfe1137720dfdd2206904b69a6758160988b39 |
 
   Scenario: Add policy
-    Given I remove the authstate from indexedDB
     Given User authenticates with google account
     And It log's me in
     And Tokens displayed on user assets

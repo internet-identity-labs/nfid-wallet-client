@@ -1,4 +1,4 @@
-@registration @google
+@registration @google @registration-with-google
 Feature: Registration using Google
 
   @register-with-google

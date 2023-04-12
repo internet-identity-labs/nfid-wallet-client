@@ -11,7 +11,7 @@ jobs:
       run:
         shell: bash
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-16-cores
 
     steps:
       - name: Checkout CI repo.
@@ -37,7 +37,7 @@ jobs:
 
   deploy:
     needs: check-secrets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-16-cores
     steps:
       - uses: actions/checkout@v2
 
@@ -72,14 +72,6 @@ jobs:
           dfx identity use action
           dfx deploy --network dev nfid-frontend --no-wallet
           dfx deploy --network dev nfid-demo --no-wallet
-
-        # - name: STORYBOOK FRONTEND | deploy
-        #   run: |
-
-        #     npx env-cmd -f .env.staging nx build-storybook nfid-frontend
-
-        #     dfx identity use action
-        #     dfx deploy --network ic nfid-storybook-frontend --no-wallet
 
         env:
           IS_DEV: true

@@ -60,7 +60,7 @@ export const hooks = {
     console.log("running hook before")
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
-    await clearIndexDb(browser)
+    await browser.execute("window.indexedDB.deleteDatabase('authstate')")
   },
   /**
    * Gets executed before the suite starts.
@@ -167,10 +167,11 @@ export const hooks = {
   beforeScenario: async (world: any) => {
     console.debug("running hook beforeScenario")
     allureReporter.addFeature(world.name)
-    await clearIndexDb(browser)
+    await browser.execute("window.indexedDB.deleteDatabase('authstate')")
   },
   afterScenario: async () => {
     browser.execute("window.localStorage.clear()")
+    await browser.execute("window.indexedDB.deleteDatabase('authstate')")
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },

@@ -1,5 +1,7 @@
-export function clearIndexDb(browser: WebdriverIO.Browser): void {
-  browser.execute(function () {
+export async function clearIndexDb(
+  browser: WebdriverIO.Browser,
+): Promise<void> {
+  await browser.execute(function () {
     // @ts-ignore
     this.indexedDB.databases().then((dbs) => {
       // @ts-ignore

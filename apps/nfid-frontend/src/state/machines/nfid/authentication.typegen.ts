@@ -3,6 +3,7 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
+    "": { type: "" }
     "done.invoke.AuthenticationMachine": {
       type: "done.invoke.AuthenticationMachine"
       data: unknown
@@ -38,12 +39,13 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    isAuthenticated: ""
     isWebAuthNSupported: "done.invoke.AuthenticationMachine"
   }
   eventsCausingServices: {
-    AuthenticationMachine: "xstate.init"
-    TrustDeviceMachine: "done.invoke.AuthenticationMachine"
+    AuthenticationMachine: ""
+    TrustDeviceMachine: "" | "done.invoke.AuthenticationMachine"
   }
-  matchesStates: "Authenticate" | "End" | "TrustDevice"
+  matchesStates: "Authenticate" | "CheckAuthState" | "End" | "TrustDevice"
   tags: never
 }

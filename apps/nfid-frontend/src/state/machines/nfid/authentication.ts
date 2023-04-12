@@ -1,6 +1,8 @@
 // State machine controlling the phone number credential flow.
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+import { authState } from "@nfid/integration"
+
 import { isWebAuthNSupported } from "frontend/integration/device"
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
@@ -30,8 +32,14 @@ const NFIDAuthenticationMachine = createMachine(
     tsTypes: {} as import("./authentication.typegen").Typegen0,
     schema: { events: {} as Events },
     id: "NFIDAuthenticationMachine",
-    initial: "Authenticate",
+    initial: "CheckAuthState",
     states: {
+      CheckAuthState: {
+        always: [
+          { target: "TrustDevice", cond: "isAuthenticated" },
+          "Authenticate",
+        ],
+      },
       Authenticate: {
         invoke: {
           src: "AuthenticationMachine",
@@ -56,6 +64,7 @@ const NFIDAuthenticationMachine = createMachine(
           src: "TrustDeviceMachine",
           id: "trustDeviceMachine",
           onDone: "End",
+          onError: "End",
         },
       },
       End: {
@@ -74,6 +83,7 @@ const NFIDAuthenticationMachine = createMachine(
       TrustDeviceMachine,
     },
     guards: {
+      isAuthenticated: (context) => !!authState.get().delegationIdentity,
       isWebAuthNSupported,
     },
   },

@@ -50,7 +50,7 @@ jobs:
 
       - uses: aviate-labs/setup-dfx@v0.2.4
         with:
-          dfx-version: 0.11.2
+          dfx-version: 0.13.1
           dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
@@ -71,8 +71,9 @@ jobs:
           # install local to generate the types
           npx env-cmd -f .env.production nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend --skip-nx-cache
 
+          rm -rf .dfx
           dfx identity use action
-          dfx deploy --network ic nfid-frontend --no-wallet
+          dfx deploy --network ic nfid-frontend --upgrade-unchanged --no-wallet
           dfx deploy --network ic nfid-demo --no-wallet
 
         env:

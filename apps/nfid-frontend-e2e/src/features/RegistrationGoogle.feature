@@ -3,6 +3,7 @@ Feature: Registration using Google
 
   @register-with-google
   Scenario Outline: User wants to register with Google
+    Given I remove the authstate from indexedDB
     Given User opens NFID site
     Given I remove the e2e@identitylabs.ooo
     Given User authenticates with google account
@@ -14,6 +15,7 @@ Feature: Registration using Google
 
   @login-with-google
   Scenario Outline: User wants to login with Google
+    Given I remove the authstate from indexedDB
     Given User opens NFID site
     Given User authenticates with google account
     And It log's me in
@@ -24,6 +26,7 @@ Feature: Registration using Google
   #wdio unable to click google iframe button
   @mobile @pending @register-with-google-mobile
   Scenario Outline: User wants to register with Google from mobile
+    Given I remove the authstate from indexedDB
     Given User opens NFID site
     Given I remove the e2e@identitylabs.ooo
     Given User authenticates with google account

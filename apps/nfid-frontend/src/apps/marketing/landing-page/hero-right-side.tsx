@@ -4,6 +4,7 @@ import React from "react"
 import { Image } from "@nfid-frontend/ui"
 import { SDKFooter } from "@nfid-frontend/ui"
 
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import NFIDAuthenticationCoordinator from "frontend/coordination/nfid-authentication"
 import { ElementProps } from "frontend/types/react"
 
@@ -16,7 +17,8 @@ interface HeroRightSideProps extends ElementProps<HTMLDivElement> {
 export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
   isUnregistered,
 }) => {
-  console.debug("HeroRightSide", { isUnregistered })
+  const { isAuthenticated } = useAuthentication()
+  console.debug("HeroRightSide", { isUnregistered, isAuthenticated })
 
   return isUnregistered ? (
     <div

@@ -93,7 +93,15 @@ function makeAuthState() {
         sub = subscribe((state) => {
           if (state.cacheLoaded === true) {
             sub && sub.unsubscribe()
-            resolve({ ...state, cacheLoaded: true })
+            const { delegationIdentity } = state
+            const isExpired = isDelegationExpired(delegationIdentity)
+            resolve({
+              ...state,
+              ...(isExpired
+                ? { delegationIdentity: undefined }
+                : { delegationIdentity }),
+              cacheLoaded: true,
+            })
           }
         })
       },

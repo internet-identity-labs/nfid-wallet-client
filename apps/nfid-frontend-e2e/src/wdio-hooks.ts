@@ -3,7 +3,6 @@ import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import { baseURL } from "../wdio.conf"
 import { deviceName } from "../wdio.mobile.conf"
-import { clearIndexDb } from "./helpers/clear-index-db"
 import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
 import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
 
@@ -57,9 +56,14 @@ export const hooks = {
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
   before: async function (capabilities: any, specs: any) {
+    console.log("running hook before")
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
-    clearIndexDb(browser)
+    try {
+      await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    } catch (error) {
+      console.log("authstate database not found")
+    }
   },
   /**
    * Gets executed before the suite starts.
@@ -166,10 +170,19 @@ export const hooks = {
   beforeScenario: async (world: any) => {
     console.debug("running hook beforeScenario")
     allureReporter.addFeature(world.name)
-    clearIndexDb(browser)
+    try {
+      await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    } catch (error) {
+      console.log("authstate database not found")
+    }
   },
   afterScenario: async () => {
     browser.execute("window.localStorage.clear()")
+    try {
+      await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    } catch (error) {
+      console.log("authstate database not found")
+    }
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },

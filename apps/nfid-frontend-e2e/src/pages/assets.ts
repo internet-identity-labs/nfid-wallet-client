@@ -11,9 +11,27 @@ export class Assets {
     return $("#balance")
   }
 
+  private get principal() {
+    return $("#principal")
+  }
+
+  private get address() {
+    return $("#address")
+  }
+
   public async openAssetOptionsOnSR() {
     const assetOptions = await $("#token_ICP")
     await assetOptions.click()
+  }
+
+  public async openAssetOptions() {
+    const assetOptions = await $("#option_Asset")
+    await assetOptions.click()
+  }
+
+  public async chooseChainOption(chain: string) {
+    const option = await $(`#choose_option_${chain}`)
+    await option.click()
   }
 
   public async sendFTto(address: string, amount: string) {
@@ -51,12 +69,18 @@ export class Assets {
     await tabReceive.click()
   }
 
-  public async getAddress() {
-    const firstAddressPart = await $("#first_part")
+  public async getAccountId(isAddress?: boolean) {
+    let parent
+    if (isAddress) {
+      parent = await this.address
+    } else {
+      parent = await this.principal
+    }
+    const firstAddressPart = await parent.$("#first_part")
     await firstAddressPart.waitForExist({
       timeout: 7000,
     })
-    const secondAddressElement = await $("#second_part")
+    const secondAddressElement = await parent.$("#second_part")
     await secondAddressElement.waitForExist({
       timeout: 7000,
     })

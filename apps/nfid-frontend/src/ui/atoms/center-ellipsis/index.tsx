@@ -9,6 +9,7 @@ interface CenterEllipsisProps
   value: string
   trailingChars: number
   leadingChars: number
+  id?: string
 }
 
 export const CenterEllipsis = React.forwardRef<

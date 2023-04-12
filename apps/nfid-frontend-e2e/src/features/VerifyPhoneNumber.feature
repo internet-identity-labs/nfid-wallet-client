@@ -1,12 +1,13 @@
-@registration @phone
+@registration @phone @verify-phone-number
 Feature: User wants to veirfy his phone number
 
   Background: Open the link and ensure userE2E and user by test phone number are deleted
-    Given User opens NFID site
     Given I remove the e2e@identitylabs.ooo
     Given I remove the account by phone number 380990374146
 
   Scenario Outline: User wants to veirfy his phone number
+    Given I remove the authstate from indexedDB
+    Given User opens NFID site
     Given User authenticates with google account
     And User enters a captcha
     And It log's me in

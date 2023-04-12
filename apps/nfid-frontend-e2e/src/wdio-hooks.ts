@@ -3,7 +3,6 @@ import cucumberJson from "wdio-cucumberjs-json-reporter"
 
 import { baseURL } from "../wdio.conf"
 import { deviceName } from "../wdio.mobile.conf"
-import { clearIndexDb } from "./helpers/clear-index-db"
 import { addLocalStorageCommands } from "./helpers/setupLocalStorage"
 import { addVirtualAuthCommands } from "./helpers/setupVirtualWebauthn"
 

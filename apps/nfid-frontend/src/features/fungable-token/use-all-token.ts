@@ -91,7 +91,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
     ethSheet?.tokenBalance,
     ethSheet?.usdBalance,
     dip20Token,
-    btcFee
+    btcFee,
   ])
   console.debug("useAllToken", { token })
   return { token }

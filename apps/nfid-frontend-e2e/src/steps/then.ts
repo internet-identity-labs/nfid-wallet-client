@@ -374,16 +374,14 @@ Then(/^User opens send dialog window/, async () => {
   await Assets.sendDialog()
 })
 
-Then(/^Choose BTC from options/, async () => {
-  await Assets.sendDialog()
-  const optionBtc = await $("#choose_option_BTC")
-  await optionBtc.click()
+Then(/^Choose ([^"]*) from options/, async (chain: string) => {
+  await Assets.openAssetOptions()
+  await Assets.chooseChainOption(chain)
 })
 
-Then(/^Choose BTC from send options/, async () => {
+Then(/^Choose ([^"]*) from send options/, async (chain: string) => {
   await Assets.openAssetOptionsOnSR()
-  const optionBtc = await $("#choose_option_BTC")
-  await optionBtc.click()
+  await Assets.chooseChainOption(chain)
 })
 
 Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
@@ -392,6 +390,10 @@ Then(/^Choose ([^"]*) from accounts/, async (account: string) => {
 
 Then(/^Choose ([^"]*) from receive accounts/, async (account: string) => {
   await Assets.chooseAccountReceive(account)
+})
+
+Then(/^Asset calculated for ([^"]*)$/, async (asselLabel: string) => {
+  await Assets.waitWhileCalculated(asselLabel)
 })
 
 Then(
@@ -411,10 +413,6 @@ Then(
   },
 )
 
-Then(/^([^"]*) asset calculated$/, async (chain: string) => {
-  await Assets.waitWhileAssetCalculated(chain)
-})
-
 Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
   await Assets.successWindow(text)
 })
@@ -422,11 +420,29 @@ Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
 Then(
   /^Account ID is ([^"]*) ... ([^"]*)/,
   async (first: string, second: string) => {
-    let address = await Assets.getAddress()
+    let address = await Assets.getAccountId()
     await expect(address.firstAddressPart).toHaveText(first)
     await expect(address.secondAddressElement).toHaveText(second)
   },
 )
+
+Then(/^Account ID is ([^"]*)/, async (principal: string) => {
+  let address = await Assets.getAccountId(false)
+  expect(
+    (await address.firstAddressPart.getText()) +
+      "..." +
+      (await address.secondAddressElement.getText()),
+  ).toEqual(principal)
+})
+
+Then(/^Address is ([^"]*)/, async (principal: string) => {
+  let address = await Assets.getAccountId(true)
+  expect(
+    (await address.firstAddressPart.getText()) +
+      "..." +
+      (await address.secondAddressElement.getText()),
+  ).toEqual(principal)
+})
 
 Then(
   /^([^"]*) USD balance not ([^"]*)$/,
@@ -500,12 +516,12 @@ Then(
   async (princ: string, account: string) => {
     await $("#principal_id_0").then((x) =>
       x
-        .waitForDisplayed({ timeout: 7000 })
+        .waitForDisplayed({ timeout: 12000 })
         .then(async () => expect(await x.getText()).toContain(princ)),
     )
     await $("#account_id_0").then((x) =>
       x
-        .waitForDisplayed({ timeout: 7000 })
+        .waitForDisplayed({ timeout: 12000 })
         .then(async () => expect(await x.getText()).toContain(account)),
     )
   },

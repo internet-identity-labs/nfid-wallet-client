@@ -51,7 +51,7 @@ Feature:Send/Receive Asset
       | Internet Computer | 28542  | 0.09       | 0.0001 ICP | NFID account 1 | ICP      |
 
   @pending
-    @send_receive_once_a_day
+  @send_receive_once_a_day
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

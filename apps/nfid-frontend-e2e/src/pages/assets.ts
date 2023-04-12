@@ -37,7 +37,7 @@ export class Assets {
       timeout: 7000,
     })
     const usd = await $(this.getTokenUsd(asselLabel))
-    await usd.waitForExist({
+    await usd.waitForDisplayed({
       timeout: 7000,
     })
     await expect(usd).not.toHaveText("")

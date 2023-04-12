@@ -5,6 +5,7 @@ import { Item } from "@nfid/integration-ethereum"
 
 import { ApproverCmpProps } from "frontend/features/embed/types"
 import { calcPrice } from "frontend/features/embed/util/calcPriceUtil"
+import { toUSD } from "frontend/features/fungable-token/accumulate-app-account-balances"
 import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use-eth-exchange-rate"
 
 import { SendTransaction } from "../ui/send-transaction"
@@ -47,10 +48,17 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
         icon: item?.item?.data?.meta?.content[0]?.url,
         title: item?.item?.data?.meta?.name,
         subtitle: item?.item?.data?.collectionData?.name,
-        innerTitle: Number(item?.amount) / 10 ** 18,
+        innerTitle: Number(item?.amount) / 10 ** 18 + " ETH",
+        innerSubtitle: toUSD(Number(item?.amount) / 10 ** 18, rates["ETH"]),
       }),
     )
-  }, [rpcMessageDecoded?.data?.items])
+  }, [rates, rpcMessageDecoded?.data?.items])
+
+  const total = useMemo(() => {
+    if (!populatedTransaction) return
+
+    return String(Number(populatedTransaction[0]?.value) / 10 ** 18)
+  }, [populatedTransaction])
 
   return (
     <SendTransaction
@@ -59,9 +67,10 @@ const MappedBuy: React.FC<ApproverCmpProps> = ({
       fromAddress={rpcMessage?.params[0].from}
       toAddress={rpcMessage?.params[0].to}
       network={"Ethereum"}
-      networkFee={price.feeUsd}
+      networkFee={price.fee}
       totalUSD={price.totalUsd}
       totalToken={price.total}
+      price={total}
       currency={"ETH"}
       onApprove={onConfirm}
       isInsufficientBalance={price.isInsufficientFundsError}

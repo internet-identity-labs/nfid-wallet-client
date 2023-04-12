@@ -95,6 +95,7 @@ Buy.args = {
       icon: "https://nfid.imgix.net//static/media/nfid_icon_3.ff2998627f895912249f25edd7a79eed.svg?auto=format",
     },
   ],
+  price: "0.01",
 }
 
 BatchBuy.args = {
@@ -105,28 +106,40 @@ BatchBuy.args = {
       title: "NFT title",
       subtitle: "Asset subtitle",
       icon: "https://cache.icpunks.com/icpunks//Token/6471",
+      innerTitle: "0.002 ETH",
+      innerSubtitle: "$10.27",
     },
     {
       title: "NFT title",
       subtitle: "Asset subtitle",
       icon: "https://cache.icpunks.com/icpunks//Token/1528",
+      innerTitle: "0.002 ETH",
+      innerSubtitle: "$10.27",
     },
     {
       title: "NFT title",
       subtitle: "Asset subtitle",
       icon: "https://cache.icpunks.com/icpunks//Token/6662",
+      innerTitle: "0.002 ETH",
+      innerSubtitle: "$10.27",
     },
     {
       title: "NFT title",
       subtitle: "Asset subtitle",
       icon: "https://cache.icpunks.com/icpunks//Token/6602",
+      innerTitle: "0.002 ETH",
+      innerSubtitle: "$10.27",
     },
     {
       title: "NFT title",
       subtitle: "Asset subtitle",
       icon: "https://cache.icpunks.com/icpunks//Token/5662",
+      innerTitle: "0.002 ETH",
+      innerSubtitle: "$10.27",
     },
   ],
+
+  price: "0.29",
 }
 
 DeployCollection.args = {

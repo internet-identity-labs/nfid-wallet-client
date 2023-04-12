@@ -5,8 +5,9 @@ export interface IAsset {
   icon?: string
   title?: string
   subtitle?: string
+  innerTitle?: string
+  innerSubtitle?: string
 }
-
 interface IAssetPreview {
   assets?: IAsset[]
 }

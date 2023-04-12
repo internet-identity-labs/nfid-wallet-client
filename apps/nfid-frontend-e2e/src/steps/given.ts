@@ -4,6 +4,7 @@ import { setupVirtualAuthenticator } from "../helpers/setupVirtualWebauthn"
 import HomePage from "../pages/home-page"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab"
 import openWebsite from "./support/action/openWebsite"
+import removeIndexedDb from "./support/action/remove-indexed-db"
 import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
 import removeUserE2E from "./support/action/removeUserE2E"
 import setWindowSize from "./support/action/setWindowSize"
@@ -32,6 +33,8 @@ Given(
   /^I remove the account by phone number 380990374146$/,
   removeAccountByPhoneNumber,
 )
+
+Given(/^I remove the authstate from indexedDB$/, removeIndexedDb)
 
 Given(/^User authenticates with google account$/, async () => {
   await HomePage.authenticateWithGoogle()

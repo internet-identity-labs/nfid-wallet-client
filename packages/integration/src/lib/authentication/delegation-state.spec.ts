@@ -1,12 +1,19 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
 import * as delegationByScope from "../internet-identity/get-delegation-by-scope"
-import { delegationState } from "./delegation-state"
+import { createDelegationState } from "./delegation-state"
 
 const makeGetDelegationByScopeMock = () => {
+  const now = Date.now()
   const mockedDelegationIdentity = {
     getDelegation: () => ({
-      delegations: [{ delegation: { expiration: BigInt(100000) } }],
+      delegations: [
+        {
+          delegation: {
+            expiration: BigInt(now + 2 * 60 * 1000) * BigInt(1000000),
+          },
+        },
+      ],
     }),
   } as DelegationIdentity
   const mockDelegationByScope = jest
@@ -21,14 +28,13 @@ describe("createDelegationState", () => {
   const scope = "some-scope"
   const maxTimeToLive = BigInt(100000)
 
-  beforeAll(() => {
+  beforeEach(() => {
     jest.useFakeTimers()
-  })
-  afterAll(() => {
     jest.clearAllMocks()
   })
 
   it("should return a DelegationIdentity", async () => {
+    const delegationState = createDelegationState()
     const { mockDelegationByScope, mockedDelegationIdentity } =
       makeGetDelegationByScopeMock()
     const delegation = await delegationState.getDelegation(
@@ -41,6 +47,7 @@ describe("createDelegationState", () => {
   })
 
   it("should cache delegation for the same anchor and scope", async () => {
+    const delegationState = createDelegationState()
     const { mockDelegationByScope } = makeGetDelegationByScopeMock()
 
     const delegation1 = await delegationState.getDelegation(
@@ -58,7 +65,8 @@ describe("createDelegationState", () => {
   })
 
   it("should refresh delegation before it expires", async () => {
-    const expiresIn = 6000
+    const delegationState = createDelegationState()
+    const expiresIn = 2 * 60 * 1000
     const { mockDelegationByScope } = makeGetDelegationByScopeMock()
 
     delegationState.getDelegation(anchor, scope, maxTimeToLive)
@@ -69,6 +77,7 @@ describe("createDelegationState", () => {
       scope,
       maxTimeToLive,
     )
+    await Promise.resolve() // Wait for promises to resolve
     jest.advanceTimersByTime(expiresIn)
     await Promise.resolve() // Wait for promises to resolve
     expect(mockDelegationByScope).toHaveBeenCalledTimes(2) // delegationByScope should have been called again after the expiration time

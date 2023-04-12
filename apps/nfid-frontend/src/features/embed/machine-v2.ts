@@ -1,7 +1,8 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
+import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
 import { assign, createMachine } from "xstate"
 
-import { ProviderError } from "@nfid/integration"
+import { ProviderError, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
@@ -145,6 +146,29 @@ export const NFIDEmbedMachineV2 = createMachine(
           },
           Authenticated: {
             entry: "nfid_authenticated",
+            invoke: {
+              src: () => (send) => {
+                const { delegationIdentity } = authState.get()
+                if (!delegationIdentity) return send("SESSION_EXPIRED")
+
+                const expiresIn = getExpirationDelay(delegationIdentity)
+                const timeoutIn = expiresIn * 0.8
+
+                const now = Date.now()
+
+                console.debug("NFIDEmbedMachineV2 delegation expires at", {
+                  expiresAt: new Date(now + expiresIn),
+                  timeoutAt: new Date(now + timeoutIn),
+                })
+
+                const timeout = setTimeout(() => {
+                  console.debug("NFIDEmbedMachineV2 delegation expired")
+                  send("SESSION_EXPIRED")
+                }, timeoutIn)
+
+                return () => clearTimeout(timeout)
+              },
+            },
             on: {
               SESSION_EXPIRED: {
                 target: "Authenticate",

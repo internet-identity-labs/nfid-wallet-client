@@ -33,7 +33,7 @@ export function calcPrice(
   const totalUsd = parseFloat(ethers.utils.formatEther(total)) * rates["ETH"]
 
   return {
-    fee: String(Number(fee) / 10 ** 18),
+    fee: ethers.utils.formatEther(fee),
     feeUsd: feeUsd.toFixed(2),
     total: ethers.utils.formatEther(total),
     totalUsd: totalUsd.toFixed(2),

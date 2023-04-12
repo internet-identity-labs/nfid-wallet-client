@@ -7,8 +7,8 @@ export const RPCApplicationMetaSubtitle = ({
   applicationURL,
 }: RPCApplicationMetaSubtitleProps) => {
   return (
-    <div className="flex items-center">
-      <span>Request from </span>
+    <div className="flex items-center space-x-1">
+      <span>Request from</span>
       <a
         className="text-blue hover:opacity-70"
         href={`https://${applicationURL}`}

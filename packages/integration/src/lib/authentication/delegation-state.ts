@@ -3,34 +3,99 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { delegationByScope } from "../internet-identity/get-delegation-by-scope"
 import { getExpirationDelay } from "./get-expiration"
 
-interface DelegationEntry {
-  requestedAt: number
-  delegation: DelegationIdentity
+class RefreshingDelegation {
+  private _expirationPadding?: number
+  private _timer?: NodeJS.Timeout
+  private _delegation?: DelegationIdentity
+  private _delegationPromise?: Promise<DelegationIdentity>
+  private readonly _maxTimeToLive: bigint
+  private readonly _scope: string
+  private readonly _anchor: number
+
+  constructor({
+    scope,
+    anchor,
+    maxTimeToLive,
+  }: {
+    scope: string
+    anchor: number
+    maxTimeToLive: bigint
+  }) {
+    this._scope = scope
+    this._anchor = anchor
+    this._maxTimeToLive = maxTimeToLive
+  }
+
+  get isValid() {
+    if (!this._delegation) return false
+    if (!this._expirationPadding) return false
+
+    const expirationDelay = getExpirationDelay(this._delegation)
+    return expirationDelay >= this._expirationPadding
+  }
+
+  async _getDelegation(): Promise<DelegationIdentity> {
+    if (this._delegationPromise) {
+      return this._delegationPromise
+    }
+    this._delegationPromise = delegationByScope(
+      this._anchor,
+      this._scope,
+      this._maxTimeToLive,
+    )
+      .then((delegation) => {
+        this._setupRefreshingDelay(delegation)
+        this._delegation = delegation
+        return delegation
+      })
+      .finally(() => (this._delegationPromise = undefined))
+    return this._delegationPromise
+  }
+
+  async _setupRefreshingDelay(delegation: DelegationIdentity) {
+    if (this._timer) clearTimeout(this._timer)
+
+    const expiresIn = getExpirationDelay(delegation)
+    this._expirationPadding = Math.floor(expiresIn * 0.2)
+    const timeout = Math.floor(expiresIn - this._expirationPadding)
+
+    const now = Date.now()
+    console.debug("RefreshingDelegation _setupRefreshingDelay", {
+      expiresAt: new Date(now + expiresIn),
+      refreschingAt: new Date(now + timeout),
+    })
+
+    this._timer = setTimeout(() => {
+      console.debug(
+        "RefreshingDelegation timeout calling this._getDelegation",
+        {
+          scope: this._scope,
+          anchor: this._anchor,
+        },
+      )
+      this._getDelegation()
+    }, timeout)
+  }
+
+  async getDelegation(): Promise<DelegationIdentity> {
+    if (this.isValid) {
+      return this._delegation as DelegationIdentity
+    }
+    return this._getDelegation()
+  }
 }
 
 function createDelegationState() {
-  const _delegationPromises = new Map<string, Promise<DelegationIdentity>>()
-  const _delegationMap = new Map<string, DelegationEntry>()
+  const _delegationMap = new Map<string, RefreshingDelegation>()
 
   function _getKey(anchor: number, scope: string) {
     return `${anchor}:${scope}`
   }
 
-  const _getDelegationPromise = (anchor: number, scope: string) => {
-    return _delegationPromises.get(_getKey(anchor, scope))
-  }
-  const _setDelegationPromise = (
-    anchor: number,
-    scope: string,
-    delegationPromise: Promise<DelegationIdentity>,
-  ) => {
-    return _delegationPromises.set(_getKey(anchor, scope), delegationPromise)
-  }
-
   const _getDelegationFromClosure = (
     anchor: number,
     scope: string,
-  ): DelegationEntry | undefined => {
+  ): RefreshingDelegation | undefined => {
     console.debug("createDelegationState _getDelegationFromClosure", {
       anchor,
       scope,
@@ -41,51 +106,9 @@ function createDelegationState() {
   const _addDelegationToClosure = (
     anchor: number,
     scope: string,
-    delegation: DelegationEntry,
+    delegation: RefreshingDelegation,
   ): void => {
     _delegationMap.set(_getKey(anchor, scope), delegation)
-  }
-
-  async function _setupRefreshingDelegation(
-    anchor: number,
-    scope: string,
-    maxTimeToLive: bigint,
-  ) {
-    console.debug("createDelegationState _setupRefreshingDelegation", {
-      anchor,
-      scope,
-    })
-    const delegationPromise = delegationByScope(
-      Number(anchor),
-      scope,
-      maxTimeToLive,
-    ).then((delegation) => {
-      const { requestedAt } = _getDelegationFromClosure(anchor, scope) || {}
-      _addDelegationToClosure(anchor, scope, {
-        requestedAt: requestedAt || Date.now(),
-        delegation,
-      })
-      const expiresIn = getExpirationDelay(delegation)
-      const timeout = Math.floor(expiresIn * 0.8)
-
-      const now = Date.now()
-      console.debug("createDelegationState _setupRefreshingDelegation", {
-        expiresIn: new Date(now + expiresIn).toISOString(),
-        timeout: new Date(now + timeout).toISOString(),
-      })
-
-      const timer = setTimeout(() => {
-        console.debug(
-          "createDelegationState _setupRefreshingDelegation timeout",
-          { anchor, scope },
-        )
-        _setupRefreshingDelegation(anchor, scope, maxTimeToLive)
-      }, timeout)
-      window.addEventListener("beforeunload", () => clearTimeout(timer))
-      return delegation
-    })
-    _setDelegationPromise(anchor, scope, delegationPromise)
-    return delegationPromise
   }
 
   async function getDelegation(
@@ -93,49 +116,25 @@ function createDelegationState() {
     scope: string,
     maxTimeToLive: bigint,
   ): Promise<DelegationIdentity> {
-    const { delegation: delegationFromClosure } =
-      _getDelegationFromClosure(anchor, scope) || {}
+    const refreshingDelegation = _getDelegationFromClosure(anchor, scope)
 
-    if (delegationFromClosure) {
+    if (refreshingDelegation) {
       console.debug("createDelegationState getDelegation from state", {
         anchor,
         scope,
       })
-      return delegationFromClosure
+      return refreshingDelegation.getDelegation()
     }
 
-    const delegationPromise = _getDelegationPromise(anchor, scope)
-    if (delegationPromise) {
-      console.debug("createDelegationState getDelegation promise", {
-        anchor,
-        scope,
-      })
-      return await delegationPromise
-    }
+    const newRefreshDelegation = new RefreshingDelegation({
+      scope,
+      anchor,
+      maxTimeToLive,
+    })
 
-    const requestedAt = Date.now()
+    _addDelegationToClosure(anchor, scope, newRefreshDelegation)
 
-    const newDelegationPromise = new Promise<DelegationIdentity>(
-      (resolve, reject) => {
-        const delegation = _setupRefreshingDelegation(
-          anchor,
-          scope,
-          maxTimeToLive,
-        )
-          .then((delegation) => {
-            resolve(delegation)
-            _addDelegationToClosure(anchor, scope, {
-              requestedAt,
-              delegation,
-            })
-          })
-          .catch((error) => reject(error))
-
-        return delegation
-      },
-    )
-    _setDelegationPromise(anchor, scope, newDelegationPromise)
-    return newDelegationPromise
+    return newRefreshDelegation.getDelegation()
   }
 
   return { getDelegation }

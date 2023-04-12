@@ -12,7 +12,6 @@ export const chromeBrowserOptions: IChromeOption = {
     "--disable-gpu",
     // "--enable-features=NetworkService,NetworkServiceInProcess"
     `--user-data-dir=${process.env.USER_DATA_DIR}`,
-    "--allow-file-access-from-files",
   ],
   w3c: false,
 }

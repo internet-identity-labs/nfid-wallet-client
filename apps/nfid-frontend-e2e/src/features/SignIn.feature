@@ -1,8 +1,7 @@
 Feature: Sign in
 
-
+  
   Scenario: User Signs In with predefined credentials
-    Given I remove the authstate from indexedDB
     Given User opens NFID site
     And User is already authenticated with
     Given User signs in
@@ -28,7 +27,6 @@ Feature: Sign in
 
   @mobile
   Scenario: User Signs In from mobile
-    Given I remove the authstate from indexedDB
     Given User opens NFID site
     And User is already authenticated with
     Given User signs in from mobile

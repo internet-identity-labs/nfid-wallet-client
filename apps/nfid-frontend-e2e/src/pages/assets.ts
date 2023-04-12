@@ -24,6 +24,17 @@ export class Assets {
     await assetOptions.click()
   }
 
+  public async waitWhileCalculated(asselLabel: string){
+    await $(`#token_${asselLabel.replace(/\s/g, "")}`).waitForDisplayed({
+      timeout: 7000,
+    })
+    const usd = await $(`#token_${asselLabel.replace(/\s/g, "")}_usd`)
+    await usd.waitForExist({
+      timeout: 7000,
+    })
+    await expect(usd).not.toHaveText("")
+  }
+
   public async openAssetOptions() {
     const assetOptions = await $("#option_Asset")
     await assetOptions.click()

@@ -11,7 +11,7 @@ jobs:
       run:
         shell: bash
 
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout CI repo.
@@ -37,7 +37,7 @@ jobs:
 
   deploy:
     needs: check-secrets
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 

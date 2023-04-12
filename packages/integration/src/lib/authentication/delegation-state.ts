@@ -48,7 +48,9 @@ class RefreshingDelegation {
         this._delegation = delegation
         return delegation
       })
-      .finally(() => (this._delegationPromise = undefined))
+      .finally(() => {
+        this._delegationPromise = undefined
+      })
     return this._delegationPromise
   }
 
@@ -85,7 +87,7 @@ class RefreshingDelegation {
   }
 }
 
-function createDelegationState() {
+export function createDelegationState() {
   const _delegationMap = new Map<string, RefreshingDelegation>()
 
   function _getKey(anchor: number, scope: string) {

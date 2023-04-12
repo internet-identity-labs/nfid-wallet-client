@@ -20,7 +20,7 @@ export const NFIDAuthentication: React.FC<HeroRightSideProps> = ({
   const { isAuthenticated } = useAuthentication()
   console.debug("HeroRightSide", { isUnregistered, isAuthenticated })
 
-  return isUnregistered && !isAuthenticated ? (
+  return isUnregistered ? (
     <div
       className={clsx(
         "relative m-auto sm:block z-10 bg-white rounded-xl overflow-hidden",

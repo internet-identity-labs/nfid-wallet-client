@@ -57,9 +57,10 @@ export const hooks = {
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
   before: async function (capabilities: any, specs: any) {
+    console.log("running hook before")
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
-    clearIndexDb(browser)
+    await clearIndexDb(browser)
   },
   /**
    * Gets executed before the suite starts.
@@ -166,7 +167,7 @@ export const hooks = {
   beforeScenario: async (world: any) => {
     console.debug("running hook beforeScenario")
     allureReporter.addFeature(world.name)
-    clearIndexDb(browser)
+    await clearIndexDb(browser)
   },
   afterScenario: async () => {
     browser.execute("window.localStorage.clear()")

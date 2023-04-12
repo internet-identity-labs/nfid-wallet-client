@@ -59,7 +59,11 @@ export const hooks = {
     console.log("running hook before")
     await addVirtualAuthCommands(browser)
     await addLocalStorageCommands(browser)
-    await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    try {
+      await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    } catch (error) {
+      console.log("authstate database not found")
+    }
   },
   /**
    * Gets executed before the suite starts.
@@ -166,11 +170,19 @@ export const hooks = {
   beforeScenario: async (world: any) => {
     console.debug("running hook beforeScenario")
     allureReporter.addFeature(world.name)
-    await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    try {
+      await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    } catch (error) {
+      console.log("authstate database not found")
+    }
   },
   afterScenario: async () => {
     browser.execute("window.localStorage.clear()")
-    await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    try {
+      await browser.execute("window.indexedDB.deleteDatabase('authstate')")
+    } catch (error) {
+      console.log("authstate database not found")
+    }
   },
   // beforeStep: function ({uri, feature, step}, context) {
   // },

@@ -1,6 +1,11 @@
 export default async () => {
   return await browser.execute(function (key) {
-    // @ts-ignore
-    this.indexedDB.deleteDatabase(key)
+    try {
+      // @ts-ignore
+      return this.indexedDB.deleteDatabase(key)
+    } catch (e) {
+      // database not found
+      return
+    }
   }, "authstate")
 }

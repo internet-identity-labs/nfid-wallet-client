@@ -95,7 +95,8 @@ export const TransferReceive = ({
       {["ETH", "ICP", "BTC"].includes(selectedToken?.tokenStandard ?? "") && (
         <div>
           <p className="mb-1 text-gray-400">
-            {selectedToken?.tokenStandard === "ETH"
+            {selectedToken?.tokenStandard === "ETH" ||
+            selectedToken?.tokenStandard === "BTC"
               ? "Wallet address"
               : "Account ID"}
           </p>
@@ -104,6 +105,7 @@ export const TransferReceive = ({
               value={selectedAddress ?? ""}
               leadingChars={29}
               trailingChars={5}
+              id={"principal"}
             />
             <Copy value={selectedAddress ?? ""} />
           </div>
@@ -118,6 +120,7 @@ export const TransferReceive = ({
               value={selectedWallet?.principal.toText() ?? ""}
               leadingChars={29}
               trailingChars={5}
+              id={"address"}
             />
             <Copy value={selectedWallet?.principal.toText() ?? ""} />
           </div>

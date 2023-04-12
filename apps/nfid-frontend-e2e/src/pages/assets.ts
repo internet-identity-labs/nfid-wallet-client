@@ -11,9 +11,46 @@ export class Assets {
     return $("#balance")
   }
 
+  private getTokenUsd(assetLabel: string){
+    return `#token_${assetLabel.replace(/\s/g, "")}_usd`
+  }
+
+  private getTokenBalance(chain: string){
+    return `#token_${chain.replace(/\s/g, "")}_balance`
+  }
+
+  private get principal() {
+    return $("#principal")
+  }
+
+  private get address() {
+    return $("#address")
+  }
+
   public async openAssetOptionsOnSR() {
     const assetOptions = await $("#token_ICP")
     await assetOptions.click()
+  }
+
+  public async waitWhileCalculated(asselLabel: string){
+    await $(this.getTokenUsd(asselLabel)).waitForDisplayed({
+      timeout: 7000,
+    })
+    const usd = await $(this.getTokenUsd(asselLabel))
+    await usd.waitForDisplayed({
+      timeout: 7000,
+    })
+    await expect(usd).not.toHaveText("")
+  }
+
+  public async openAssetOptions() {
+    const assetOptions = await $("#option_Asset")
+    await assetOptions.click()
+  }
+
+  public async chooseChainOption(chain: string) {
+    const option = await $(`#choose_option_${chain}`)
+    await option.click()
   }
 
   public async sendFTto(address: string, amount: string) {
@@ -37,26 +74,24 @@ export class Assets {
     await sendReceiveButton.click()
   }
 
-  public async waitWhileAssetCalculated(chain: string) {
-    const btc = await $(`#token_${chain.replace(/\s/g, "")}_balance`)
-    await btc.waitForExist({
-      timeout: 27000,
-    })
-    await expect(btc).not.toHaveText("0 BTC")
-  }
-
   public async receiveDialog() {
     await this.sendDialog()
     const tabReceive = await $("#tab_receive")
     await tabReceive.click()
   }
 
-  public async getAddress() {
-    const firstAddressPart = await $("#first_part")
+  public async getAccountId(isAddress?: boolean) {
+    let parent
+    if (isAddress) {
+      parent = await this.address
+    } else {
+      parent = await this.principal
+    }
+    const firstAddressPart = await parent.$("#first_part")
     await firstAddressPart.waitForExist({
       timeout: 7000,
     })
-    const secondAddressElement = await $("#second_part")
+    const secondAddressElement = await parent.$("#second_part")
     await secondAddressElement.waitForExist({
       timeout: 7000,
     })

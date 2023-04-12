@@ -11,6 +11,14 @@ export class Assets {
     return $("#balance")
   }
 
+  private getTokenUsd(assetLabel: string){
+    return `#token_${assetLabel.replace(/\s/g, "")}_usd`
+  }
+
+  private getTokenBalance(chain: string){
+    return `#token_${chain.replace(/\s/g, "")}_balance`
+  }
+
   private get principal() {
     return $("#principal")
   }
@@ -25,10 +33,10 @@ export class Assets {
   }
 
   public async waitWhileCalculated(asselLabel: string){
-    await $(`#token_${asselLabel.replace(/\s/g, "")}`).waitForDisplayed({
+    await $(this.getTokenUsd(asselLabel)).waitForDisplayed({
       timeout: 7000,
     })
-    const usd = await $(`#token_${asselLabel.replace(/\s/g, "")}_usd`)
+    const usd = await $(this.getTokenUsd(asselLabel))
     await usd.waitForExist({
       timeout: 7000,
     })
@@ -64,14 +72,6 @@ export class Assets {
       timeout: 7000,
     })
     await sendReceiveButton.click()
-  }
-
-  public async waitWhileAssetCalculated(chain: string) {
-    const btc = await $(`#token_${chain.replace(/\s/g, "")}_balance`)
-    await btc.waitForExist({
-      timeout: 27000,
-    })
-    await expect(btc).not.toHaveText("0 BTC")
   }
 
   public async receiveDialog() {

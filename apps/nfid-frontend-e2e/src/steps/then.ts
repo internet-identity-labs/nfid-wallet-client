@@ -413,10 +413,6 @@ Then(
   },
 )
 
-Then(/^([^"]*) asset calculated$/, async (chain: string) => {
-  await Assets.waitWhileAssetCalculated(chain)
-})
-
 Then(/^Success window appears with ([^"]*)$/, async (text: string) => {
   await Assets.successWindow(text)
 })

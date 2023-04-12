@@ -57,8 +57,7 @@ Feature:Send/Receive Asset
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
-    Then Asset appears with label <chain>
-    And <chain> asset calculated
+    Then Asset calculated for <chain>
     And User opens send dialog window
     And Choose <currency> from send options
     And Choose <account> from accounts

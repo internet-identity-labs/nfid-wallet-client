@@ -8,13 +8,7 @@ import {
 } from "@nfid-frontend/ui"
 import { truncateString } from "@nfid-frontend/utils"
 
-interface IAsset {
-  icon?: string
-  title?: string
-  subtitle?: string
-  innerTitle?: string
-  innerSubtitle?: string
-}
+import { IAsset } from "."
 
 interface IBatchAssetPreview {
   assets: IAsset[]

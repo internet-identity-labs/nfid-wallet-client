@@ -13,7 +13,8 @@ export const mint721SignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageD
       from: string,
       json: any,
     ): Promise<RpcMessageFunctionalCall> => {
-      const { contract, uri, tokenId } = json.message
+      const { contract, uri, tokenId, royalties, creators } = json.message
+
       return Promise.resolve({
         interface: "MintLazy721",
         method: "Mint721",
@@ -22,6 +23,8 @@ export const mint721SignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageD
           contract,
           uri,
           tokenId,
+          royalties,
+          creators,
         },
       })
     },

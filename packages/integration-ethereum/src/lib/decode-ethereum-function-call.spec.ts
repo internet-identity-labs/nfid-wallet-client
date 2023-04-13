@@ -464,6 +464,13 @@ describe("Decode function call data.", () => {
         tokenId:
           "86304941125615980727754172160686366648346472280739372150188793001574272073730",
         uri: "/bafkreiacj42t6ux5vcxn3ewtmxxo5dj75ova5vgkn56o4hceiwnyucd26i",
+        creators: [
+          {
+            account: "0xbecedd989418f4d8109920ebc51e12c01ce9978e",
+            value: 10000,
+          },
+        ],
+        royalties: [],
       },
     })
   })

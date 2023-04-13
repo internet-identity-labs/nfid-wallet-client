@@ -5,6 +5,8 @@ export type MintLazy721 = {
   contract: string
   uri: string
   tokenId: string
+  royalties: any[]
+  creators: any[]
 }
 
 export const mint721SignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageDecoder =

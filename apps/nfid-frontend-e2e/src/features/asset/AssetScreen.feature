@@ -5,6 +5,7 @@ Feature:Fungible Asset
   @asset1
   Scenario Outline: User should be able to see <chain> in assets
     Given User opens NFID site
+    Given I reset the authstate from indexedDB
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
@@ -24,6 +25,7 @@ Feature:Fungible Asset
   @asset2
   Scenario Outline: User should be able to filter assets by blockchain
     Given User opens NFID site
+    Given I reset the authstate from indexedDB
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets

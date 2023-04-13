@@ -5,6 +5,7 @@ Feature:Fungible Asset History
   @tsxhistory1
   Scenario Outline: User should be able to see transaction history in Sent/Received
     Given User opens NFID site
+    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
@@ -27,7 +28,7 @@ Feature:Fungible Asset History
   @tsxhistory2
   Scenario Outline: User should be able to see transaction depends on selected app
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets

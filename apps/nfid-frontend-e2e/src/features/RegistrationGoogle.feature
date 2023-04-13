@@ -4,7 +4,7 @@ Feature: Registration using Google
   @register-with-google
   Scenario Outline: User wants to register with Google
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     Given I remove the e2e@identitylabs.ooo
     Given User authenticates with google account
     And User enters a captcha
@@ -16,7 +16,7 @@ Feature: Registration using Google
   @login-with-google
   Scenario Outline: User wants to login with Google
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     Given User authenticates with google account
     And It log's me in
     And Tokens displayed on user assets
@@ -27,7 +27,7 @@ Feature: Registration using Google
   @mobile @pending @register-with-google-mobile
   Scenario Outline: User wants to register with Google from mobile
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     Given I remove the e2e@identitylabs.ooo
     Given User authenticates with google account
     And User enters a captcha

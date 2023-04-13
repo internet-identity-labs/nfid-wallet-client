@@ -5,7 +5,7 @@ import { Usergeek } from "usergeek-ic-js"
 
 import { ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED } from "@nfid/config"
-import { ic } from "@nfid/integration"
+import { authState, ic } from "@nfid/integration"
 
 import { RecoverNFIDRoutes } from "./apps/authentication/recover-nfid/routes"
 import { ProfileRoutes } from "./apps/identity-manager/profile/routes"
@@ -44,6 +44,16 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
+  React.useEffect(() => {
+    const sub = authState.subscribe(({ cacheLoaded }) => {
+      const root = document.getElementById("root")
+      if (root) {
+        root.setAttribute("data-cache-loaded", cacheLoaded.toString())
+      }
+    })
+    return () => sub.unsubscribe()
+  }, [])
+
   return (
     <Routes>
       <Route

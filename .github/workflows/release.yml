@@ -71,9 +71,8 @@ jobs:
           # install local to generate the types
           npx env-cmd -f .env.production nx run-many --target=build --configuration=production --projects=nfid-demo,nfid-frontend --skip-nx-cache
 
-          rm -rf .dfx
           dfx identity use action
-          dfx deploy --network ic nfid-frontend --upgrade-unchanged --no-wallet
+          dfx deploy --network ic nfid-frontend --no-wallet
           dfx deploy --network ic nfid-demo --no-wallet
 
         env:

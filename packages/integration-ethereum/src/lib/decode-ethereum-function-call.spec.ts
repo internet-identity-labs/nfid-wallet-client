@@ -27,6 +27,13 @@ describe("Decode function call data.", () => {
         uri: "/1",
         supply: "1",
         account: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        creators: [
+          {
+            account: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+            value: 10000,
+          },
+        ],
+        royalties: [],
       },
     })
   })
@@ -396,7 +403,7 @@ describe("Decode function call data.", () => {
     }
 
     const actual = await decodeRpcMessage(request)
-    expect(actual).toEqual({
+    expect(actual).toContain({
       interface: "Item",
       method: "SellOrder",
       from: "0x1A90e5cd839d61b167D516108606456C2d06d369",

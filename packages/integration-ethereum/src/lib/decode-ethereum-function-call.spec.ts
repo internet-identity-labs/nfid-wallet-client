@@ -27,6 +27,13 @@ describe("Decode function call data.", () => {
         uri: "/1",
         supply: "1",
         account: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        creators: [
+          {
+            account: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+            value: 10000,
+          },
+        ],
+        royalties: [],
       },
     })
   })
@@ -412,6 +419,7 @@ describe("Decode function call data.", () => {
           /12997079243578958014486847546347798191014225278195692514948617470507594285060/i,
         ),
       }),
+      total: 0.1,
     })
   })
 
@@ -442,6 +450,7 @@ describe("Decode function call data.", () => {
           /12997079243578958014486847546347798191014225278195692514948617470507594285060/i,
         ),
       }),
+      total: 1e-18,
     })
   })
 
@@ -464,6 +473,13 @@ describe("Decode function call data.", () => {
         tokenId:
           "86304941125615980727754172160686366648346472280739372150188793001574272073730",
         uri: "/bafkreiacj42t6ux5vcxn3ewtmxxo5dj75ova5vgkn56o4hceiwnyucd26i",
+        creators: [
+          {
+            account: "0xbecedd989418f4d8109920ebc51e12c01ce9978e",
+            value: 10000,
+          },
+        ],
+        royalties: [],
       },
     })
   })

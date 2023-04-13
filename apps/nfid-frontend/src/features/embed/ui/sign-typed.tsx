@@ -49,7 +49,7 @@ export const SignTypedData: React.FC<ISignTypedData> = ({
             "text-gray-500 break-all text-sm",
           )}
         >
-          <p className="font-bold">Royalties</p>
+          {royalties?.length ? <p className="font-bold">Royalties</p> : null}
           {royalties.map((object) => (
             <div
               key={`royalty_${object.account}`}
@@ -61,7 +61,7 @@ export const SignTypedData: React.FC<ISignTypedData> = ({
               <span className="text-black">{object.value}</span>
             </div>
           ))}
-          <p className="font-bold">Creators</p>
+          {creators.length ? <p className="font-bold">Creators</p> : null}
           {creators.map((object) => (
             <div
               key={`creator_${object.account}`}

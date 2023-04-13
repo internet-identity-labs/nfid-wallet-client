@@ -28,7 +28,7 @@ type ComponentMap = {
 const componentMap: ComponentMap = {
   directPurchase: React.lazy(() => import("./components/buy")),
   createToken: React.lazy(() => import("./components/deploy-collection")),
-  mintAndTransfer: React.lazy(() => import("./components/lazy-mint")), // decoding issue
+  mintAndTransfer: React.lazy(() => import("./components/mint")),
   SellOrder: React.lazy(() => import("./components/sell")),
   BidOrder: React.lazy(() => import("./components/default-send")),
   bulkPurchase: React.lazy(() => import("./components/batch-buy")),
@@ -38,8 +38,8 @@ const componentMap: ComponentMap = {
   directAcceptBid: React.lazy(() => import("./components/default-send")),
   safeTransferFrom: React.lazy(() => import("./components/default-send")),
 
-  Mint721: React.lazy(() => import("./components/mint")), // decoding issue
-  Mint1155: React.lazy(() => import("./components/mint")), // decoding issue
+  Mint721: React.lazy(() => import("./components/lazy-mint")), // decoding issue
+  Mint1155: React.lazy(() => import("./components/lazy-mint")), // decoding issue
 
   sell: React.lazy(() => import("./components/sell")),
 }

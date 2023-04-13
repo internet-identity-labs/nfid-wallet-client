@@ -11,17 +11,11 @@ const MappedLazyMintComponent: React.FC<ApproverCmpProps> = ({
   onReject,
 }) => {
   const royalties = useMemo(() => {
-    return rpcMessageDecoded?.data.royalties.map((user: any) => ({
-      account: user?.creator,
-      value: user?.value,
-    }))
+    return rpcMessageDecoded?.data?.royalties ?? []
   }, [rpcMessageDecoded?.data.royalties])
 
   const creators = useMemo(() => {
-    return rpcMessageDecoded?.data.creators.map((user: any) => ({
-      account: user?.creator,
-      value: user?.value,
-    }))
+    return rpcMessageDecoded?.data?.creators ?? []
   }, [rpcMessageDecoded?.data.creators])
 
   return (
@@ -32,7 +26,7 @@ const MappedLazyMintComponent: React.FC<ApproverCmpProps> = ({
       creators={creators}
       royalties={royalties}
       tokenId={rpcMessageDecoded?.data?.tokenId}
-      tokenURI={rpcMessageDecoded?.data?.tokenURI}
+      tokenURI={rpcMessageDecoded?.data?.uri}
     />
   )
 }

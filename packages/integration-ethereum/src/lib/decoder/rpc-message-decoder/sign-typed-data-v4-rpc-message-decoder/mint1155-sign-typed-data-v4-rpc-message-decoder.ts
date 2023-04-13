@@ -7,6 +7,8 @@ export type MintLazy1155 = {
   tokenId: string
   supply: string
   account: string
+  royalties: any[]
+  creators: any[]
 }
 
 export const mint1155SignTypedDataV4RpcMessageDecoder: SignTypedDataV4RpcMessageDecoder =

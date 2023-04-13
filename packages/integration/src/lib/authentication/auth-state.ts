@@ -47,6 +47,12 @@ function makeAuthState() {
   let pendingRenewDelegation = false
   _loadAuthSessionFromCache()
 
+  if (typeof window !== "undefined") {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.resetAuthState = invalidateIdentity
+  }
+
   async function _loadAuthSessionFromCache() {
     const sessionKey = await authStorage.get(KEY_STORAGE_KEY)
     const chain = await authStorage.get(KEY_STORAGE_DELEGATION)
@@ -123,7 +129,10 @@ function makeAuthState() {
     checkAndRenewFEDelegation()
     return observableAuthState$.getValue()
   }
-  function reset() {
+  async function reset() {
+    await _clearAuthSessionFromCache()
+    console.debug("invalidateIdentity")
+    agent.invalidateIdentity()
     observableAuthState$.next({
       cacheLoaded: true,
     })
@@ -162,10 +171,7 @@ function makeAuthState() {
    * When user disconnects an identity, we update our agent.
    */
   async function invalidateIdentity() {
-    await _clearAuthSessionFromCache()
-    console.debug("invalidateIdentity")
-    reset()
-    agent.invalidateIdentity()
+    await reset()
     window.location.reload()
   }
   return {

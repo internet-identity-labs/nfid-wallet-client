@@ -102,6 +102,13 @@ export class IdbStorage implements AuthClientStorage {
     const db = await this._db
     await db.remove(key)
   }
+
+  public async reset() {
+    return Promise.all([
+      this.remove(KEY_STORAGE_KEY),
+      this.remove(KEY_STORAGE_DELEGATION),
+    ])
+  }
 }
 
 export const authStorage = new IdbStorage()

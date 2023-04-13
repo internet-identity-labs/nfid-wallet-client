@@ -1,7 +1,5 @@
 import { openDB, IDBPDatabase } from "idb"
 
-import { isBrowser, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
-
 type Database = IDBPDatabase<unknown>
 type IDBValidKey = string | number | Date | BufferSource | IDBValidKey[]
 const AUTH_DB_NAME = "authstate"
@@ -12,11 +10,6 @@ const _openDbStore = async (
   storeName = OBJECT_STORE_NAME,
   version: number,
 ) => {
-  // Clear legacy stored delegations
-  if (isBrowser && localStorage?.getItem(KEY_STORAGE_DELEGATION)) {
-    localStorage.removeItem(KEY_STORAGE_DELEGATION)
-    localStorage.removeItem(KEY_STORAGE_KEY)
-  }
   return await openDB(dbName, version, {
     upgrade: (database) => {
       database.objectStoreNames

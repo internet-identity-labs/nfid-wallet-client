@@ -38,8 +38,8 @@ const componentMap: ComponentMap = {
   directAcceptBid: React.lazy(() => import("./components/default-send")),
   safeTransferFrom: React.lazy(() => import("./components/default-send")),
 
-  Mint721: React.lazy(() => import("./components/lazy-mint")), // decoding issue
-  Mint1155: React.lazy(() => import("./components/lazy-mint")), // decoding issue
+  Mint721: React.lazy(() => import("./components/lazy-mint")),
+  Mint1155: React.lazy(() => import("./components/lazy-mint")),
 
   sell: React.lazy(() => import("./components/sell")),
 }

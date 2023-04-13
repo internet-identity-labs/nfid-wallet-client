@@ -3,7 +3,7 @@ Feature: Sign in
 
   Scenario: User Signs In with predefined credentials
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     And User is already authenticated with
     Given User signs in
     And Tokens displayed on user assets
@@ -18,7 +18,7 @@ Feature: Sign in
 
   Scenario: User authenticates with recovery phrase (FAQ)
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     When I click on the link FAQ
     And User goes to recover account with FAQ
     And User authenticates with a phrase
@@ -30,7 +30,7 @@ Feature: Sign in
   @mobile
   Scenario: User Signs In from mobile
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     And User is already authenticated with
     Given User signs in from mobile
     And Tokens displayed on user assets

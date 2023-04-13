@@ -2,9 +2,9 @@ import { Given } from "@cucumber/cucumber"
 
 import { setupVirtualAuthenticator } from "../helpers/setupVirtualWebauthn"
 import HomePage from "../pages/home-page"
+import clearAuthState from "./support/action/clear-auth-state"
 import closeAllButFirstTab from "./support/action/closeAllButFirstTab"
 import openWebsite from "./support/action/openWebsite"
-import removeIndexedDb from "./support/action/remove-indexed-db"
 import removeAccountByPhoneNumber from "./support/action/removeAccountByPhoneNumber"
 import removeUserE2E from "./support/action/removeUserE2E"
 import setWindowSize from "./support/action/setWindowSize"
@@ -34,7 +34,7 @@ Given(
   removeAccountByPhoneNumber,
 )
 
-Given(/^I reset the authstate from indexedDB$/, removeIndexedDb)
+Given(/^authstate is cleared$/, clearAuthState)
 
 Given(/^User authenticates with google account$/, async () => {
   await HomePage.authenticateWithGoogle()

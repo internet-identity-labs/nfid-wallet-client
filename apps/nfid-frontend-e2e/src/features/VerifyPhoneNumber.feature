@@ -7,7 +7,7 @@ Feature: User wants to veirfy his phone number
 
   Scenario Outline: User wants to veirfy his phone number
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     Given User authenticates with google account
     And User enters a captcha
     And It log's me in

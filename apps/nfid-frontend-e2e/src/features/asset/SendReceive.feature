@@ -4,7 +4,7 @@ Feature:Send/Receive Asset
   @sendreceive1
   Scenario Outline: User should be able to receive BTC/ETH transaction
     Given User opens NFID site
-    Given I reset the authstate from indexedDB
+    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
@@ -12,8 +12,8 @@ Feature:Send/Receive Asset
     Then User opens receive dialog window
     Then Choose <currency> from options
     Then Choose NFID Account 1 from receive accounts
-#  sc-6838
-#    Then Account ID is <account_id>
+    #  sc-6838
+    #    Then Account ID is <account_id>
     Examples:
       | chain    | anchor | account_id                            | currency |
       | Bitcoin  | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h | BTC      |
@@ -22,6 +22,7 @@ Feature:Send/Receive Asset
   @sendreceive2
   Scenario Outline: User should be able to receive ICP transaction
     Given User opens NFID site
+    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
@@ -36,6 +37,7 @@ Feature:Send/Receive Asset
 
   Scenario Outline: User should be able to see balance and fee
     Given User opens NFID site
+    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets
@@ -43,8 +45,8 @@ Feature:Send/Receive Asset
     Then User opens send dialog window
     Then Choose <currency> from send options
     Then Choose <account> from accounts
-#  sc-6838
-#    Then Balance is <balance> and fee is <fee>
+    #  sc-6838
+    #    Then Balance is <balance> and fee is <fee>
     Examples:
       | chain             | anchor | balance    | fee        | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | 6e-8 BTC   | NFID Account 1 | BTC      |

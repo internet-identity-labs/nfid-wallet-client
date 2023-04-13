@@ -73,6 +73,13 @@ export class LocalStorage implements AuthClientStorage {
  * @see implements {@link AuthClientStorage}
  */
 export class IdbStorage implements AuthClientStorage {
+  constructor() {
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.resetAuthState = this.reset.bind(this)
+    }
+  }
   // Initializes a KeyVal on first request
   private initializedDb: IdbKeyVal | undefined
   get _db(): Promise<IdbKeyVal> {
@@ -101,6 +108,13 @@ export class IdbStorage implements AuthClientStorage {
   public async remove(key: string): Promise<void> {
     const db = await this._db
     await db.remove(key)
+  }
+
+  public async reset() {
+    return Promise.all([
+      this.remove(KEY_STORAGE_KEY),
+      this.remove(KEY_STORAGE_DELEGATION),
+    ])
   }
 }
 

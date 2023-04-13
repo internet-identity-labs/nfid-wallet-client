@@ -69,9 +69,8 @@ jobs:
 
           npx env-cmd -f .env.staging nx run-many --target=build --configuration=staging --projects=nfid-demo,nfid-frontend
 
-          rm -rf .dfx
           dfx identity use action
-          dfx deploy --network dev nfid-frontend --upgrade-unchanged --no-wallet
+          dfx deploy --network dev nfid-frontend --no-wallet
           dfx deploy --network dev nfid-demo --no-wallet
 
         env:

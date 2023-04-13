@@ -34,7 +34,7 @@ Given(
   removeAccountByPhoneNumber,
 )
 
-Given(/^I remove the authstate from indexedDB$/, removeIndexedDb)
+Given(/^I reset the authstate from indexedDB$/, removeIndexedDb)
 
 Given(/^User authenticates with google account$/, async () => {
   await HomePage.authenticateWithGoogle()

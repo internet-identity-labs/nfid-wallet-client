@@ -1,11 +1,11 @@
 export default async () => {
-  return await browser.execute(function (key) {
-    try {
+  return await browser.execute(function () {
+    // @ts-ignore
+    if (typeof this.resetAuthState === "function") {
       // @ts-ignore
-      return this.indexedDB.deleteDatabase(key)
-    } catch (e) {
-      // database not found
-      return
+      await this.resetAuthState()
+      // @ts-ignore
+      this.location.reload()
     }
-  }, "authstate")
+  })
 }

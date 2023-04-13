@@ -5,6 +5,7 @@ Feature:Fungible Asset Details
   @assetdetails1
   Scenario Outline: User should be able to see <label> in asset details
     Given User opens NFID site
+    Given I remove the authstate from indexedDB
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets

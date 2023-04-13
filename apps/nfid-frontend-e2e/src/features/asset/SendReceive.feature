@@ -4,6 +4,7 @@ Feature:Send/Receive Asset
   @sendreceive1
   Scenario Outline: User should be able to receive BTC/ETH transaction
     Given User opens NFID site
+    Given I remove the authstate from indexedDB
     And User is already authenticated by <anchor> anchor
     Given User signs in
     And Tokens displayed on user assets

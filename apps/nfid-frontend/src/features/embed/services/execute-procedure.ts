@@ -60,6 +60,14 @@ export const ExecuteProcedureService = async ({
       })
       return response
     }
+    case "personal_sign": {
+      const result = await adapter.signMessage(rpcMessage.params[0], delegation)
+      const response = { ...rpcBase, result: result }
+      console.debug("ExecuteProcedureService personal_sign", {
+        response,
+      })
+      return response
+    }
     default:
       throw new Error("ExecuteProcedureService: unknown procedure")
   }

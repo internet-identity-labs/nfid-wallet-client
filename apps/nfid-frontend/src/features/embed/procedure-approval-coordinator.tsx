@@ -42,6 +42,7 @@ const componentMap: ComponentMap = {
   Mint1155: React.lazy(() => import("./components/lazy-mint")),
 
   sell: React.lazy(() => import("./components/sell")),
+  personalSign: React.lazy(() => import("./components/sign-message")),
 }
 
 const hasMapped = (messageInterface: string = "") =>

@@ -811,4 +811,27 @@ describe("Decode function call data.", () => {
       }),
     )
   })
+
+  it("should return signMessage by personal_sign", async () => {
+    const rpcMessage = {
+      jsonrpc: "2.0",
+      id: "cf3dc342-f917-41d5-b8c1-c73e7a917f7e",
+      method: "personal_sign",
+      params: [
+        "0x48656c6c6f20776f726c64",
+        "0xc6d2b7df32355d169c15d45d99333248f1be4688",
+        null,
+      ],
+    }
+    const actual = await decodeRpcMessage(rpcMessage)
+
+    expect(actual).toEqual({
+      interface: "PersonalSign",
+      method: "personalSign",
+      data: {
+        message: "Hello world",
+      },
+      from: "0xc6d2b7df32355d169c15d45d99333248f1be4688",
+    })
+  })
 })

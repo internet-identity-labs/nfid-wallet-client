@@ -19,6 +19,7 @@ import { FunctionCall, Method } from "./method-decoder/method-decoder"
 import { mintAndTransferMethodDecoder } from "./method-decoder/mint/mint-and-transfer-method-decoder"
 import { safeTransferFromMethodDecoder } from "./method-decoder/safe-transfer-from/safe-transfer-from-method-decoder"
 import { ethSendTransactionRpcMessageDecoder } from "./rpc-message-decoder/eth-sendtransaction-rpc-message-decoder"
+import { personalSignRpcMessageDecoder } from "./rpc-message-decoder/personal-sign-decoder"
 import {
   RpcMessageDecoder,
   RpcMessageFunctionalCall,
@@ -46,6 +47,7 @@ const assetDecoders = dependencyService.group([
 const rpcMessageDecoders: { [key: string]: RpcMessageDecoder } = {
   eth_sendTransaction: ethSendTransactionRpcMessageDecoder,
   eth_signTypedData_v4: signTypedDataV4RpcMessageDecoder,
+  personal_sign: personalSignRpcMessageDecoder,
 }
 
 export const functionCallDecoder = {

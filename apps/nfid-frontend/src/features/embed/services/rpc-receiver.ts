@@ -109,6 +109,16 @@ export const RPCReceiverV2 =
                 origin,
               },
             })
+          case "personal_sign":
+            const rpcMessagePersonalSign = await decodeMessage(rpcMessage)
+            return send({
+              type: "RPC_MESSAGE",
+              data: {
+                rpcMessage,
+                rpcMessageDecoded: rpcMessagePersonalSign,
+                origin,
+              },
+            })
           default:
             throw new Error(
               `RPCReceiverV2 unknown method: ${rpcMessage.method}`,

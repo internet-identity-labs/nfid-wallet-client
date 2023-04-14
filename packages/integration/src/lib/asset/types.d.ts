@@ -1,19 +1,30 @@
 import { DelegationIdentity } from "@dfinity/identity"
+import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { BigNumber } from "@rarible/utils"
 import { Network } from "alchemy-sdk"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
+declare type EtherscanTransactionHashUrl = string
 
 declare type NonFungibleAsset = FungibleAsset & {
-  getActivitiesByItem(request: ActivitiesByItemRequest): Promise<NonFungibleActivityRecords>
-  getActivitiesByUser(request: ActivitiesByUserRequest): Promise<NonFungibleActivityRecords>
+  getActivitiesByItem(
+    request: ActivitiesByItemRequest,
+  ): Promise<NonFungibleActivityRecords>
+  getActivitiesByUser(
+    request: ActivitiesByUserRequest,
+  ): Promise<NonFungibleActivityRecords>
   getItemsByUser(request: ItemsByUserRequest): Promise<NonFungibleItems>
-  transferNft(request: TransferNftRequest): Promise<void>
-  transferETH(request: TransferETHRequest): Promise<TransactionResponse>
+  transfer(
+    identity: DelegationIdentity,
+    transaction: TransactionRequest,
+  ): Promise<EtherscanTransactionHashUrl>
   getErc20TokensByUser(request: Erc20TokensByUserRequest): Promise<Tokens>
   getAddress(delegation?: DelegationIdentity): Promise<string>
+  getEstimatedTransaction(
+    request: EstimatedTransactionRequest,
+  ): Promise<EstimatedTransaction>
 }
 
 declare type FungibleAsset = {
@@ -44,7 +55,7 @@ declare type ActivitiesByUserRequest = {
 
 declare type ItemsByUserRequest = {
   identity: Identity
-cursor?: string
+  cursor?: string
   size?: number
 }
 
@@ -53,47 +64,46 @@ declare type BalanceRequest = {
 }
 
 declare type TransferNftRequest = {
-      delegation: DelegationIdentity,
-    tokenId: string,
-    contract: string,
-    receiver: string,
+  delegation: DelegationIdentity
+  tokenId: string
+  contract: string
+  receiver: string
 }
 
 declare type TransferETHRequest = {
-  delegation: DelegationIdentity,
-  to: string,
+  delegation: DelegationIdentity
+  to: string
   amount: string
 }
 
 declare type Erc20TokensByUserRequest = {
-      identity: Identity,
-      cursor?: string
-}
-
-declare type SortRequest = {
-  sort?: "asc" | "desc"
-}
-
-declare type CursorRequest = {
+  identity: Identity
   cursor?: string
 }
 
-declare type PageRequest = CursorRequest & {
-  size?: number
-  address?: string
+declare type EstimatedTransaction = {
+  transaction: TransactionRequest
+  fee: string
+  feeUsd: string
+  maxFee: string
+  maxFeeUsd: string
 }
 
-declare type ActivitiesByItemRequest = PageRequest &
-  SortRequest & {
-    tokenId: string
-    contract: string
-  }
+declare type EstimatedTransactionRequest = {
+  identity: DelegationIdentity
+  to?: string
+  amount?: string
+  tokenId?: string
+}
 
 declare type FungibleActivityRequest = PageRequest & {
   address?: string
   direction?: "from" | "to"
   contract?: string
   sort?: "asc" | "desc"
+  size?: number
+  address?: string
+  cursor?: string
 }
 
 declare type Tokens = {
@@ -180,4 +190,8 @@ declare type Configuration = {
     testnet: string
   }
   alchemy: { mainnet: Network; testnet: Network }
+  etherscanUrl: {
+    mainnet: string
+    testnet: string
+  }
 }

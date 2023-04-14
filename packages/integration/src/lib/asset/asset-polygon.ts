@@ -13,4 +13,8 @@ export const polygonAsset = new EthereumAsset({
     testnet: "https://rpc-mumbai.maticvigil.com",
   },
   alchemy: { mainnet: Network.MATIC_MAINNET, testnet: Network.MATIC_MUMBAI },
+  etherscanUrl: {
+    mainnet: "https://polygonscan.com/tx/",
+    testnet: "https://mumbai.polygonscan.com/tx/",
+  },
 })

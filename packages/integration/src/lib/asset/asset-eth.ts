@@ -14,4 +14,8 @@ export const ethereumAsset = new EthereumAsset({
       "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
   },
   alchemy: { mainnet: Network.ETH_MAINNET, testnet: Network.ETH_GOERLI },
+  etherscanUrl: {
+    mainnet: "https://etherscan.io/tx/",
+    testnet: "https://goerli.etherscan.io/tx/",
+  },
 })

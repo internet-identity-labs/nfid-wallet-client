@@ -17,7 +17,7 @@ const idd: JsonnableEd25519KeyIdentity = [
   "fa1e290e2524ec98e24e49e95c0e30b43e9c96504715cea4d802269f80f638e6",
 ]
 
-describe("ECDSA suite", () => {
+describe.skip("ECDSA suite", () => {
   jest.setTimeout(200000)
   const rpcProvider = new ethers.providers.JsonRpcProvider(
     "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",

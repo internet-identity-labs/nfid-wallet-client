@@ -10,7 +10,7 @@ import { ethereumAsset } from "./asset-eth"
 import { ChainBalance } from "./types"
 
 describe("Ethereum Asset", () => {
-  jest.setTimeout(2000000000)
+  jest.setTimeout(20000)
 
   it("should return hash with etherenet url after transfer", async () => {
     const walletSpy = jest.spyOn(EthWalletV2.prototype, "sendTransaction")

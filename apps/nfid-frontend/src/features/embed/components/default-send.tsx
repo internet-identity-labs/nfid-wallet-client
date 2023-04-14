@@ -58,12 +58,12 @@ const MappedDefaultSend: React.FC<ApproverCmpProps> = ({
 
   return (
     <SendTransaction
-      title={`Review ${rpcMessageDecoded?.interface}`}
+      title={`Review ${rpcMessageDecoded?.method}`}
       applicationMeta={appMeta}
       fromAddress={rpcMessage?.params[0].from}
       toAddress={rpcMessage?.params[0].to}
       network={"Ethereum"}
-      networkFee={price.feeUsd}
+      networkFee={price.fee}
       totalUSD={price.totalUsd}
       totalToken={price.total}
       currency={"ETH"}

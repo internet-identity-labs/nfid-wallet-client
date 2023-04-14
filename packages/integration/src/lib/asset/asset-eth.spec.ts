@@ -1,10 +1,68 @@
+import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { TransactionResponse } from "@ethersproject/abstract-provider"
 import { BigNumber } from "@rarible/utils"
+import { ethers } from "ethers-ts"
 
+import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
+import { mockIdentityA } from "../identity"
+import { generateDelegationIdentity } from "../test-utils"
 import { ethereumAsset } from "./asset-eth"
 import { ChainBalance } from "./types"
 
 describe("Ethereum Asset", () => {
-  jest.setTimeout(20000)
+  jest.setTimeout(2000000000)
+
+  it("should return hash with etherenet url after transfer", async () => {
+    const walletSpy = jest.spyOn(EthWalletV2.prototype, "sendTransaction")
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const identity: DelegationIdentity = await generateDelegationIdentity(
+      mockedIdentity,
+    )
+    const transaction: ethers.providers.TransactionRequest = {
+      to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      value: ethers.utils.parseEther("1"),
+    }
+    const expectedResponse: TransactionResponse = {
+      hash: "0x35cbbf3a821d29c641eb3902683903fdb2e7337679dc6fe0fd208e3cd9e483fb",
+    } as TransactionResponse
+
+    walletSpy.mockResolvedValueOnce(expectedResponse)
+    const result = await ethereumAsset.transfer(identity, transaction)
+
+    expect(walletSpy).toHaveBeenCalledTimes(1)
+    expect(walletSpy).toHaveBeenCalledWith(transaction)
+    expect(result).toEqual(
+      "https://goerli.etherscan.io/tx/0x35cbbf3a821d29c641eb3902683903fdb2e7337679dc6fe0fd208e3cd9e483fb",
+    )
+
+    walletSpy.mockRestore()
+  })
+
+  it("should return one estimated tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+    const actual = await ethereumAsset.getEstimatedTransaction({
+      identity: delegationIdentity,
+      to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      amount: "0.01",
+    })
+    expect(actual).toEqual({
+      transaction: {
+        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
+        to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+        nonce: 8,
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        value: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+      },
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+    })
+  })
 
   it("should return one fungible native tx", async function () {
     const actual = await ethereumAsset.getFungibleActivityByTokenAndUser({

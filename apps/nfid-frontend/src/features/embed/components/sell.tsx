@@ -14,9 +14,8 @@ const MappedSell: React.FC<ApproverCmpProps> = ({
   const { rates } = useExchangeRates()
 
   const price = useMemo(() => {
-    if (!rates) return
-    // @ts-ignore
-    // Sell type hotfix for demo
+    if (!rates || !rpcMessageDecoded?.total) return
+
     const total = rpcMessageDecoded?.total
     const totalUSD = (parseFloat(total) * rates["ETH"]).toFixed(2)
     return { total, totalUSD }
@@ -27,10 +26,8 @@ const MappedSell: React.FC<ApproverCmpProps> = ({
       title="Sell collectible"
       applicationMeta={appMeta}
       network={"Ethereum"}
-      // @ts-ignore
-      // Sell type hotfix for demo
       fromAddress={rpcMessageDecoded?.from}
-      totalToken={price?.total}
+      totalToken={String(price?.total)}
       totalUSD={String(price?.totalUSD)}
       currency={"ETH"}
       onApprove={onConfirm}

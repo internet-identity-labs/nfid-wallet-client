@@ -94,19 +94,26 @@ export const getTransactions = async (
 }
 
 export const getAccIdentifier = async () => {
+  let profile = await fetchProfile()
+  const anchor = BigInt(profile.anchor)
   const hostname = "btc_" + ROOT_DOMAIN
   let address = readAddressFromLocalCache({
     accountId: BTC_ROOT_ACCOUNT,
     hostname,
+    anchor,
   })
   let principal = ""
-  let profile = await fetchProfile()
   if (!address) {
     const identity = await getWalletDelegation(profile.anchor)
     await replaceActorIdentity(btcAPI, identity)
     principal = identity.getPrincipal().toText()
     address = await new BtcWallet(identity).getBitcoinAddress()
-    storeAddressInLocalCache({ accountId: BTC_ROOT_ACCOUNT, hostname, address })
+    storeAddressInLocalCache({
+      accountId: BTC_ROOT_ACCOUNT,
+      hostname,
+      address,
+      anchor,
+    })
   } else {
     principal = await getWalletDelegation(profile?.anchor).then((l) =>
       l.getPrincipal().toText(),

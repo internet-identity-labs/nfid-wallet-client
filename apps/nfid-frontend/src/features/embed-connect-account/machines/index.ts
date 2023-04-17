@@ -2,6 +2,7 @@ import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { Account } from "@nfid/integration"
 
+import { RPCMessage } from "frontend/features/embed/services/rpc-receiver"
 import { fetchAccountsService } from "frontend/integration/identity-manager/services"
 import {
   AuthorizationRequest,
@@ -13,6 +14,7 @@ export type EmbedConnectAccountMachineContext = {
   authRequest: AuthorizationRequest
   accounts?: Account[]
   accountsLimit?: number
+  rpcMessage?: RPCMessage
 }
 
 type Events =

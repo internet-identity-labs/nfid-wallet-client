@@ -9,35 +9,44 @@ const loadAddressCache = (): CachedAddresses => {
   return parsedCache
 }
 
-type ReadAddressArg = {
-  hostname: string
+type KeyArgs = {
+  anchor: bigint
   accountId: string
+  hostname: string
 }
 
-type CreateAddressArg = {
-  hostname: string
-  accountId: string
+type ReadAddressArg = KeyArgs
+
+type CreateAddressArg = KeyArgs & {
   address: string
+}
+
+const getKey = ({ hostname, accountId, anchor }: KeyArgs) => {
+  const scope = getScope(hostname, accountId)
+  const key = `${anchor}:${scope}`
+  return key
 }
 
 export const storeAddressInLocalCache = ({
   hostname,
+  anchor,
   accountId,
   address,
 }: CreateAddressArg) => {
   const cache = loadAddressCache()
-  const scope = getScope(hostname, accountId)
+  const key = getKey({ hostname, anchor, accountId })
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ ...cache, [scope]: address }),
+    JSON.stringify({ ...cache, [key]: address }),
   )
 }
 
 export const readAddressFromLocalCache = ({
-  hostname,
   accountId,
+  anchor,
+  hostname,
 }: ReadAddressArg): string | undefined => {
   const cache = loadAddressCache()
-  const scope = getScope(hostname, accountId)
-  return cache[scope]
+  const key = getKey({ hostname, accountId, anchor })
+  return cache[key]
 }

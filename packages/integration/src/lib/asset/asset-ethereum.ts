@@ -1,7 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import {
-  TransactionResponse,
   TransactionRequest,
+  TransactionResponse,
 } from "@ethersproject/abstract-provider"
 import {
   Activity as RaribleActivity,
@@ -25,28 +25,28 @@ import {
   AssetTransfersCategory,
   Network,
   OwnedNftsResponse as AlchemyOwnedNftsResponse,
-  BigNumber,
   SortingOrder,
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
-import {
-  AccountBalance,
-  AppBalance,
-  TokenBalanceSheet,
-} from "./types"
+
+import { E8S } from "@nfid/integration/token/icp"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { getPrice } from "./asset"
-import { getPriceFull } from "./asset"
+import { getPrice, getPriceFull } from "./asset"
 import {
+  AccountBalance,
   ActivitiesByItemRequest,
   ActivitiesByUserRequest,
   ActivityRecord,
   Address,
+  AppBalance,
   ChainBalance,
   Configuration,
   Erc20TokensByUserRequest,
+  EstimatedTransaction,
+  EstimatedTransactionRequest,
+  EtherscanTransactionHashUrl,
   FungibleActivityRecords,
   FungibleActivityRequest,
   Identity,
@@ -55,15 +55,11 @@ import {
   NonFungibleAsset,
   NonFungibleItems,
   Token,
+  TokenBalanceSheet,
   Tokens,
   TransferETHRequest,
-  Erc20TokensByUserRequest,
-  EstimatedTransaction,
-  EstimatedTransactionRequest,
-  EtherscanTransactionHashUrl,
   TransferNftRequest,
 } from "./types"
-import { E8S } from "@nfid/integration/token/icp";
 
 export class EthereumAsset implements NonFungibleAsset {
   private readonly config: Configuration
@@ -334,7 +330,9 @@ export class EthereumAsset implements NonFungibleAsset {
     }
   }
 
-  public async getErc20Accounts(identity: DelegationIdentity): Promise<Array<TokenBalanceSheet>> {
+  public async getErc20Accounts(
+    identity: DelegationIdentity,
+  ): Promise<Array<TokenBalanceSheet>> {
     return this.getErc20TokensByUser({ identity }).then((tokens) =>
       tokens.tokens.map((l) => {
         return this.computeSheetForRootAccount(

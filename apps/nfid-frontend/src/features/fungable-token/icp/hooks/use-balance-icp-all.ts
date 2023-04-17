@@ -1,3 +1,4 @@
+import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import React from "react"
 
 import { toPresentation } from "@nfid/integration/token/icp"
@@ -9,7 +10,6 @@ import { accumulateAppAccountBalance } from "../../accumulate-app-account-balanc
 import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 import { useUserBalances } from "./use-user-balances"
-import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types";
 
 type AppAccountBalanceByToken = {
   [token: string]: TokenBalanceSheet

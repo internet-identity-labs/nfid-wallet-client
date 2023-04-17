@@ -3,7 +3,8 @@ import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { EVMBlockchain } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { BigNumber } from "@rarible/utils"
 import { Network } from "alchemy-sdk"
-import { Balance } from "@nfid/integration";
+
+import { Balance } from "@nfid/integration"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address

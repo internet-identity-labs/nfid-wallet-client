@@ -30,4 +30,3 @@ export const getPriceFull = async (): Promise<TokenPrice[]> => {
     return response.json().then((x) => x.data.rates)
   })
 }
-

@@ -2,13 +2,13 @@ import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
 import { principalToAddress } from "ictool"
 import { ChainBalance } from "packages/integration/src/lib/asset/types"
-import { BtcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
-import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
 import {
   AccountBalance,
   AppBalance,
   TokenBalanceSheet,
-}  from "packages/integration/src/lib/asset/types";
+} from "packages/integration/src/lib/asset/types"
+import { BtcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
+import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
 import { TransactionRow } from "src/integration/rosetta/select-transactions"

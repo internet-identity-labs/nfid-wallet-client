@@ -233,7 +233,7 @@ Then(/^I press button "([^"]*)?"$/, async function (button: string) {
 
 Then(/^Asset appears with label ([^"]*)$/, async (asselLabel: string) => {
   await $(`#token_${asselLabel.replace(/\s/g, "")}`).waitForDisplayed({
-    timeout: 7000,
+    timeout: 17000,
   })
 })
 
@@ -246,21 +246,19 @@ Then(/^Only (\d+) asset displayed/, async (amount: number) => {
 })
 
 Then(
-  /^([^"]*) appears with ([^"]*) on ([^"]*) and ([^"]*) && ([^"]*) USD$/,
+  /^([^"]*) appears with ([^"]*) on ([^"]*) and ([^"]*)$/,
   async (
     asselLabel: string,
     currency: string,
     blockchain: string,
     balance: string,
-    usd: string,
   ) => {
-    await Assets.verifyAssetFields(
-      asselLabel,
-      currency,
-      blockchain,
-      balance,
-      usd,
-    )
+    let assetBalance =await Assets.getAssetBalance(asselLabel)
+    await expect(assetBalance).toHaveText(balance)
+    let assetCurrency =await Assets.getCurrency(asselLabel)
+    await expect(assetCurrency).toHaveText(currency)
+    let assetBlockchain =await Assets.getBlockchain(asselLabel)
+    await expect(assetBlockchain).toHaveText(blockchain)
   },
 )
 

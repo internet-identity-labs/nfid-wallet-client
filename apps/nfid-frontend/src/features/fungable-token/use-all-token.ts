@@ -1,6 +1,7 @@
 import React from "react"
 import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance"
 import { useBtcFee } from "src/features/fungable-token/btc/hooks/use-btc-fee"
+import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
 
 import { IconPngEthereum, IconSvgBTC, IconSvgDfinity } from "@nfid-frontend/ui"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
@@ -32,7 +33,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
   const { appAccountBalance } = useBalanceICPAll()
   const { token: dip20Token } = useAllDip20Token()
   const { balance: ethSheet } = useEthBalance()
-
+  const { erc20 } = useErc20()
   const token: TokenConfig[] = React.useMemo(() => {
     return [
       {
@@ -83,6 +84,20 @@ export const useAllToken = (): { token: TokenConfig[] } => {
             ...rest,
           }))
         : []),
+      ...(erc20
+        ? erc20.map((l) => ({
+            tokenStandard: TokenStandards.ERC20,
+            icon: l.icon,
+            title: l.label,
+            currency: l.token,
+            balance: l.tokenBalance,
+            price: l.usdBalance,
+            blockchain: "Ethereum",
+            fee: BigInt(0),
+            toPresentation,
+            transformAmount: stringICPtoE8s,
+          }))
+        : []),
     ]
   }, [
     appAccountBalance,
@@ -92,6 +107,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
     ethSheet?.usdBalance,
     dip20Token,
     btcFee,
+    erc20,
   ])
   console.debug("useAllToken", { token })
   return { token }

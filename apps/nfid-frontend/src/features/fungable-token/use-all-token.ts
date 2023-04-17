@@ -1,7 +1,7 @@
 import React from "react"
 import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance"
 import { useBtcFee } from "src/features/fungable-token/btc/hooks/use-btc-fee"
-import { useErc20 } from "src/features/fungable-token/erc-20/hooks/get-erc-20"
+import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
 
 import { IconPngEthereum, IconSvgBTC, IconSvgDfinity } from "@nfid-frontend/ui"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"

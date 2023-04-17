@@ -1,7 +1,7 @@
 import React, { useMemo } from "react"
 import { useParams } from "react-router-dom"
 import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance"
-import { useErc20 } from "src/features/fungable-token/erc-20/hooks/get-erc-20"
+import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 

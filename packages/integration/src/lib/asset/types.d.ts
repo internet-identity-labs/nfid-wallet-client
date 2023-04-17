@@ -89,13 +89,6 @@ declare type EstimatedTransaction = {
   maxFeeUsd: string
 }
 
-declare type EstimatedTransactionRequest = {
-  identity: DelegationIdentity
-  to?: string
-  amount?: string
-  tokenId?: string
-}
-
 declare type FungibleActivityRequest = PageRequest & {
   address?: string
   direction?: "from" | "to"
@@ -195,3 +188,13 @@ declare type Configuration = {
     testnet: string
   }
 }
+
+declare interface EstimatedTransactionRequest {
+  to: string
+  identity: DelegationIdentity
+}
+
+declare type EthEstimatedTransactionRequest =
+  | EthTransferRequest
+  | NftERC721TransferRequest
+  | NftERC1155TransferRequest

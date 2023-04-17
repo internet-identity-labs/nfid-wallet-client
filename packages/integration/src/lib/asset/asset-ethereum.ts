@@ -1,8 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import {
-  TransactionResponse,
-  TransactionRequest,
-} from "@ethersproject/abstract-provider"
+import { TransactionResponse } from "@ethersproject/abstract-provider"
 import {
   Activity as RaribleActivity,
   TransferActivity,
@@ -26,13 +23,12 @@ import {
   SortingOrder,
   AssetTransfersCategory,
   OwnedNftsResponse as AlchemyOwnedNftsResponse,
-  BigNumber,
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { getPrice } from "./asset"
+import { estimateTransaction } from "./estimateTransaction/estimateTransaction"
 import {
   NonFungibleAsset,
   ChainBalance,
@@ -52,9 +48,37 @@ import {
   TransferETHRequest,
   Erc20TokensByUserRequest,
   EstimatedTransaction,
-  EstimatedTransactionRequest,
   EtherscanTransactionHashUrl,
+  EthEstimatedTransactionRequest,
+  EstimatedTransactionRequest,
 } from "./types"
+
+export class EthTransferRequest implements EstimatedTransactionRequest {
+  constructor(
+    readonly identity: DelegationIdentity,
+    readonly to: string,
+    readonly amount: number,
+  ) {}
+}
+
+export class NftErc721TransferRequest implements EstimatedTransactionRequest {
+  constructor(
+    readonly identity: DelegationIdentity,
+    readonly to: string,
+    readonly contractId: string,
+    readonly tokenId: string,
+  ) {}
+}
+
+export class NftErc1155TransferRequest implements EstimatedTransactionRequest {
+  constructor(
+    readonly identity: DelegationIdentity,
+    readonly to: string,
+    readonly amount: number,
+    readonly contractId: string,
+    readonly tokenId: string,
+  ) {}
+}
 
 export class EthereumAsset implements NonFungibleAsset {
   private readonly config: Configuration
@@ -73,57 +97,11 @@ export class EthereumAsset implements NonFungibleAsset {
     return `${etherscanUrl}${response.hash}`
   }
 
-  async getEstimatedTransaction({
-    identity,
-    to,
-    amount,
-    tokenId,
-  }: EstimatedTransactionRequest): Promise<EstimatedTransaction> {
-    const wallet = this.getWallet(identity, CHAIN_NETWORK, this.config)
-    const [from, nonce, feeData, rates] = await Promise.all([
-      wallet.getAddress(),
-      wallet.getTransactionCount("latest"),
-      wallet.getFeeData(),
-      getPrice(["ETH"]),
-    ])
-
-    if (
-      !feeData.gasPrice ||
-      !feeData.maxPriorityFeePerGas ||
-      !feeData.maxFeePerGas
-    ) {
-      throw Error("No FeeData received from Provider.")
-    }
-
-    const { gasPrice, maxPriorityFeePerGas, maxFeePerGas } = feeData
-
-    const transaction: TransactionRequest = {
-      from,
-      to,
-      nonce,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-    }
-
-    if (amount) {
-      transaction.value = ethers.utils.parseEther(amount)
-    }
-
-    transaction.gasLimit = await wallet.estimateGas(transaction)
-
-    const ethPrice = parseFloat(rates[0].price)
-    const fee = transaction.gasLimit.mul(gasPrice)
-    const feeUsd = parseFloat(ethers.utils.formatEther(fee)) * ethPrice
-    const maxFee = transaction.gasLimit.mul(maxFeePerGas)
-    const maxFeeUsd = parseFloat(ethers.utils.formatEther(maxFee)) * ethPrice
-
-    return {
-      transaction,
-      fee: ethers.utils.formatEther(fee),
-      feeUsd: feeUsd.toFixed(2),
-      maxFee: ethers.utils.formatEther(maxFee),
-      maxFeeUsd: maxFeeUsd.toFixed(2),
-    }
+  async getEstimatedTransaction(
+    request: EthEstimatedTransactionRequest,
+  ): Promise<EstimatedTransaction> {
+    const wallet = this.getWallet(request.identity, CHAIN_NETWORK, this.config)
+    return estimateTransaction(wallet, request)
   }
 
   public async getAddress(delegation?: DelegationIdentity): Promise<string> {

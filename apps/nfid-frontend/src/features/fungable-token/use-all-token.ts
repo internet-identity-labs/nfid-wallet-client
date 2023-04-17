@@ -33,8 +33,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
   const { appAccountBalance } = useBalanceICPAll()
   const { token: dip20Token } = useAllDip20Token()
   const { balance: ethSheet } = useEthBalance()
-  const { erc20: erc20 } = useErc20()
-  console.log(erc20)
+  const { erc20 } = useErc20()
   const token: TokenConfig[] = React.useMemo(() => {
     return [
       {

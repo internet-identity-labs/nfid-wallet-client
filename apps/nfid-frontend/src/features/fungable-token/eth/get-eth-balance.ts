@@ -12,7 +12,7 @@ import {
   AccountBalance,
   AppBalance,
   TokenBalanceSheet,
-} from "../../../../../../packages/integration/src/lib/asset/types"
+} from "packages/integration/src/lib/asset/types"
 
 export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
   const hostname = "nfid.one"

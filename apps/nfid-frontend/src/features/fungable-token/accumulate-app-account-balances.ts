@@ -9,11 +9,8 @@ import {
   e8sICPToString,
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
+import { AppBalance, TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 
-import {
-  AppBalance,
-  TokenBalanceSheet,
-} from "../../../../../packages/integration/src/lib/asset/types"
 
 export const sumE8sICPString = (a: string, b: string) => {
   return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))

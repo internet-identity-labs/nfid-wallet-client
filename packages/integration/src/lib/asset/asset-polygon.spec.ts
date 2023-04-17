@@ -65,6 +65,8 @@ describe("Polygon Asset", () => {
           logo: undefined,
           balance: "100.0",
           contractAddress: "0xe097d6b3100777dc31b34dc2c58fb524c2e76921",
+          address: "0x382901144a77bec53493fa090053b9c63da5dd07",
+          balanceinUsd: expect.any(String),
         },
       ],
     })

@@ -11,11 +11,11 @@ export class Assets {
     return $("#balance")
   }
 
-  private getTokenUsd(assetLabel: string){
+  private getTokenUsd(assetLabel: string) {
     return `#token_${assetLabel.replace(/\s/g, "")}_usd`
   }
 
-  private getTokenBalance(chain: string){
+  private getTokenBalance(chain: string) {
     return `#token_${chain.replace(/\s/g, "")}_balance`
   }
 
@@ -32,7 +32,7 @@ export class Assets {
     await assetOptions.click()
   }
 
-  public async waitWhileCalculated(asselLabel: string){
+  public async waitWhileCalculated(asselLabel: string) {
     await $(this.getTokenUsd(asselLabel)).waitForDisplayed({
       timeout: 7000,
     })

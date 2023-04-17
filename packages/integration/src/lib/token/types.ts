@@ -3,4 +3,5 @@ export enum TokenStandards {
   "DIP20" = "DIP20",
   "ETH" = "ETH",
   "BTC" = "BTC",
+  "ERC20" = "ERC20",
 }

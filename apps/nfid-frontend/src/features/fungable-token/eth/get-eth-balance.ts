@@ -8,7 +8,7 @@ import { TokenStandards } from "@nfid/integration/token/types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
 
-import { AccountBalance, AppBalance, TokenBalanceSheet } from "../types"
+import { AccountBalance, AppBalance, TokenBalanceSheet } from "../../../../../../packages/integration/src/lib/asset/types"
 
 export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
   const hostname = "nfid.one"

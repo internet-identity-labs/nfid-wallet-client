@@ -8,7 +8,7 @@ import {
   AccountBalance,
   AppBalance,
   TokenBalanceSheet,
-} from "src/features/fungable-token/types"
+}  from "packages/integration/src/lib/asset/types";
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
 import { TransactionRow } from "src/integration/rosetta/select-transactions"

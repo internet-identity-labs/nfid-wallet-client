@@ -7,9 +7,9 @@ import { useApplicationsMeta } from "frontend/integration/identity-manager/queri
 
 import { accumulateAppAccountBalance } from "../../accumulate-app-account-balances"
 import { useAllDip20Token } from "../../dip-20/hooks/use-all-token-meta"
-import { TokenBalanceSheet } from "../../types"
 import { useICPExchangeRate } from "./use-icp-exchange-rate"
 import { useUserBalances } from "./use-user-balances"
+import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types";
 
 type AppAccountBalanceByToken = {
   [token: string]: TokenBalanceSheet

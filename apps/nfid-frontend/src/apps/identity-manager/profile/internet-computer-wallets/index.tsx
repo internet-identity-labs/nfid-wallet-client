@@ -1,6 +1,7 @@
 import React, { useMemo } from "react"
 import { useParams } from "react-router-dom"
 import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance"
+import { useErc20 } from "src/features/fungable-token/erc-20/hooks/get-erc-20"
 
 import { TokenStandards } from "@nfid/integration/token/types"
 
@@ -10,6 +11,7 @@ import TokenWalletsDetailPage from "frontend/ui/pages/new-profile/internet-compu
 
 const ProfileTokenWalletsDetailPage = () => {
   const { appAccountBalance } = useBalanceICPAll()
+  const { erc20 } = useErc20()
   const { balances: btcSheet } = useBtcBalance()
   const { balance: ethSheet } = useEthBalance()
   const { token } = useParams()
@@ -23,9 +25,15 @@ const ProfileTokenWalletsDetailPage = () => {
       case TokenStandards.ETH:
         return ethSheet
       default:
-        return appAccountBalance ? appAccountBalance[token] : undefined
+        if (appAccountBalance && appAccountBalance[token]) {
+          return appAccountBalance[token]
+        }
+        if (typeof erc20 !== "undefined") {
+          return erc20.find((l) => l.token === token)
+        }
+        return undefined
     }
-  }, [appAccountBalance, btcSheet, ethSheet, token])
+  }, [appAccountBalance, btcSheet, ethSheet, token, erc20])
   console.debug(">> ProfileIWallets", { balance })
 
   return <TokenWalletsDetailPage balanceSheet={balance} />

@@ -12,7 +12,7 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import {
   AccountBalance,
   AppBalance,
-} from "frontend/features/fungable-token/types"
+} from "packages/integration/src/lib/asset/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"

@@ -30,6 +30,7 @@ describe("address repo", () => {
       hostname: "example.com",
       accountId: "123",
       address,
+      anchor: BigInt(10000),
     })
 
     expect(mockedLocalStorage.setItem).toHaveBeenCalledTimes(1)
@@ -50,6 +51,7 @@ describe("address repo", () => {
     const result = readAddressFromLocalCache({
       hostname: "example.com",
       accountId: "123",
+      anchor: BigInt(10000),
     })
 
     expect(mockedLocalStorage.getItem).toHaveBeenCalledTimes(1)

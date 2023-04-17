@@ -17,6 +17,7 @@ export const getEthAddress = async (anchor: number) => {
   const cachedAddress = readAddressFromLocalCache({
     accountId: accountId,
     hostname: hostname,
+    anchor: BigInt(anchor),
   })
 
   if (cachedAddress) return cachedAddress
@@ -26,7 +27,13 @@ export const getEthAddress = async (anchor: number) => {
 
   const address = await ethereumAsset.getAddress(identity)
 
-  !cachedAddress && storeAddressInLocalCache({ address, accountId, hostname })
+  !cachedAddress &&
+    storeAddressInLocalCache({
+      address,
+      accountId,
+      hostname,
+      anchor: BigInt(anchor),
+    })
 
   return address
 }

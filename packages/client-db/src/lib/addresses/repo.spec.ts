@@ -1,7 +1,9 @@
-import { getScope } from "@nfid/integration"
-
 import { STORAGE_KEY } from "./constants"
-import { storeAddressInLocalCache, readAddressFromLocalCache } from "./repo"
+import {
+  storeAddressInLocalCache,
+  readAddressFromLocalCache,
+  getKey,
+} from "./repo"
 
 describe("address repo", () => {
   const mockedLocalStorage = {
@@ -20,16 +22,21 @@ describe("address repo", () => {
   })
 
   it("should create an address", () => {
-    const scope = getScope("example.com", "123")
+    const key = getKey({
+      hostname: "example.com",
+      accountId: "123",
+      anchor: BigInt(10000),
+    })
     const address = "0x2b6f14C88B256f2EbCb8e22267d5F726D0429a28"
     const expectedCache = {
-      [scope]: address,
+      [key]: address,
     }
 
     storeAddressInLocalCache({
       hostname: "example.com",
       accountId: "123",
       address,
+      anchor: BigInt(10000),
     })
 
     expect(mockedLocalStorage.setItem).toHaveBeenCalledTimes(1)
@@ -40,16 +47,21 @@ describe("address repo", () => {
   })
 
   it("should read an address", () => {
-    const scope = getScope("example.com", "123")
+    const key = getKey({
+      hostname: "example.com",
+      accountId: "123",
+      anchor: BigInt(10000),
+    })
     const address = "0x2b6f14C88B256f2EbCb8e22267d5F726D0429a28"
     const cache = {
-      [scope]: address,
+      [key]: address,
     }
     mockedLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(cache))
 
     const result = readAddressFromLocalCache({
       hostname: "example.com",
       accountId: "123",
+      anchor: BigInt(10000),
     })
 
     expect(mockedLocalStorage.getItem).toHaveBeenCalledTimes(1)

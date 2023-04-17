@@ -21,7 +21,7 @@ type CreateAddressArg = KeyArgs & {
   address: string
 }
 
-const getKey = ({ hostname, accountId, anchor }: KeyArgs) => {
+export const getKey = ({ hostname, accountId, anchor }: KeyArgs) => {
   const scope = getScope(hostname, accountId)
   const key = `${anchor}:${scope}`
   return key

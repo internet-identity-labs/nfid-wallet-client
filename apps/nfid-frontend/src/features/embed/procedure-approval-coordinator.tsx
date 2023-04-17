@@ -60,6 +60,7 @@ export const ProcedureApprovalCoordinator: React.FC<
   populatedTransaction,
   onConfirm,
   onReject,
+  authSession,
 }) => {
   switch (true) {
     case hasMapped(rpcMessageDecoded?.method):
@@ -82,10 +83,14 @@ export const ProcedureApprovalCoordinator: React.FC<
     case rpcMessage.method === "eth_accounts":
       return (
         <NFIDConnectAccountCoordinator
-          appMeta={appMeta}
           onConnect={(hostname, accountId) =>
             onConfirm({ hostname, accountId })
           }
+          {...{
+            rpcMessage,
+            appMeta,
+            authSession,
+          }}
         />
       )
     default:

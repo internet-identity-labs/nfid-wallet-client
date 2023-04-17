@@ -2,20 +2,28 @@ import { useMachine } from "@xstate/react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 
-import { AuthorizingAppMeta } from "frontend/state/authorization"
+import { AuthSession } from "frontend/state/authentication"
+import {
+  AuthorizationRequest,
+  AuthorizingAppMeta,
+} from "frontend/state/authorization"
 
+import { RPCMessage } from "../embed/services/rpc-receiver"
+import { MappedConnectionDetails } from "./components/connection-details"
 import EmbedConnectAccountMachine from "./machines"
 import { ChooseAccount } from "./ui/choose-account"
-import { ConnectionDetails } from "./ui/connection-details"
 
 type NFIDConnectAccountCoordinatorProps = {
   appMeta: AuthorizingAppMeta
   onConnect: (hostname: string, accountId: string) => void
+  rpcMessage?: RPCMessage
+  authRequest?: AuthorizationRequest
+  authSession?: AuthSession
 }
 
 export const NFIDConnectAccountCoordinator: React.FC<
   NFIDConnectAccountCoordinatorProps
-> = ({ appMeta, onConnect }) => {
+> = ({ appMeta, onConnect, rpcMessage, authRequest, authSession }) => {
   const [state, send] = useMachine(EmbedConnectAccountMachine)
 
   switch (true) {
@@ -30,7 +38,13 @@ export const NFIDConnectAccountCoordinator: React.FC<
         />
       )
     case state.matches("ConnectionDetails"):
-      return <ConnectionDetails onBack={() => send("BACK")} />
+      return (
+        <MappedConnectionDetails
+          onCancel={() => send("BACK")}
+          rpcMessage={rpcMessage}
+          authSession={authSession}
+        />
+      )
     default:
       return <BlurredLoader className="w-full h-full" isLoading={true} />
   }

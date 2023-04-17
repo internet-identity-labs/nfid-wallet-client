@@ -118,7 +118,7 @@ const ProfileAssetsPage: React.FC<IProfileAssetsPage> = ({
                     <div>
                       <p
                         className="text-sm font-bold"
-                        id={`token_${token.title}_currency`}
+                        id={`token_${token.title.replace(/\s/g, "")}_currency`}
                       >
                         {token.currency}
                       </p>

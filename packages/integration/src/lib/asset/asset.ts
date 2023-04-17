@@ -21,3 +21,12 @@ export const getPrice = async (tokens: string[]): Promise<TokenPrice[]> => {
 
   return result
 }
+
+export const getPriceFull = async (): Promise<TokenPrice[]> => {
+  return fetch(COINBASE_RATES_URL).then(async (response) => {
+    if (!response.ok) {
+      throw []
+    }
+    return response.json().then((x) => x.data.rates)
+  })
+}

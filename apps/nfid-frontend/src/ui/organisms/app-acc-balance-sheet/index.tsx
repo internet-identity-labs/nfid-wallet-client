@@ -1,6 +1,10 @@
 import { Principal } from "@dfinity/principal"
 import clsx from "clsx"
 import { principalToAddress } from "ictool"
+import {
+  AccountBalance,
+  AppBalance,
+} from "packages/integration/src/lib/asset/types"
 import { ReactNode } from "react"
 import React from "react"
 import { useNavigate } from "react-router-dom"
@@ -9,10 +13,6 @@ import { toast } from "react-toastify"
 import { Tooltip } from "@nfid-frontend/ui"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import {
-  AccountBalance,
-  AppBalance,
-} from "frontend/features/fungable-token/types"
 import { ApplicationIcon } from "frontend/ui/atoms/application-icon"
 import { CenterEllipsis } from "frontend/ui/atoms/center-ellipsis"
 import { TableBase, TableHead, TableWrapper } from "frontend/ui/atoms/table"

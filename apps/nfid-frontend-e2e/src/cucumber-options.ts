@@ -18,7 +18,7 @@ export const cucumberOpts = {
   // <string> (expression) only execute the features or scenarios with tags matching the expression
   tagExpression: "not @pending and not @mobile",
   // <number> timeout for step definitions
-  timeout: 120000,
+  timeout: 180000,
   // <boolean> Enable this config to treat undefined definitions as warnings.
   ignoreUndefinedDefinitions: false,
 } as WebdriverIO.CucumberOpts

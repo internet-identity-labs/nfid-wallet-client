@@ -4,6 +4,7 @@ import { ethers } from "ethers"
 import { EthWalletV2 } from "../../ecdsa-signer/signer-ecdsa"
 import { getPrice } from "../asset"
 import { EthEstimatedTransactionRequest } from "../types"
+import { erc20TransferRequest } from "./transferRequest/erc20TransferRequest"
 import { ethTransferRequest } from "./transferRequest/ethTransferRequest"
 import { ntfErc721TransferRequest } from "./transferRequest/nftErc721TransferRequest"
 import { ntfErc1155TransferRequest } from "./transferRequest/nftErc1155TransferRequest"
@@ -17,6 +18,7 @@ export type TransferRequest = {
 }
 
 const transferRequests: { [key: string]: TransferRequest } = {
+  Erc20TransferRequest: erc20TransferRequest,
   EthTransferRequest: ethTransferRequest,
   NftErc721TransferRequest: ntfErc721TransferRequest,
   NftErc1155TransferRequest: ntfErc1155TransferRequest,
@@ -56,7 +58,12 @@ export async function estimateTransaction(
     ...tx,
   }
 
-  transaction.gasLimit = await wallet.estimateGas(transaction)
+  try {
+    transaction.gasLimit = await wallet.estimateGas(transaction)
+  } catch (e) {
+    console.debug("estimateTransaction.wallet.estimateGas", e)
+    throw Error("Insufficient funds.")
+  }
 
   const ethPrice = parseFloat(rates[0].price)
   const fee = transaction.gasLimit.mul(gasPrice)

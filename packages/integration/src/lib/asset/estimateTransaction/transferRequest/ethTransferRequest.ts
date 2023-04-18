@@ -1,9 +1,20 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { ethers } from "ethers-ts"
 
 import { EthWalletV2 } from "../../../ecdsa-signer/signer-ecdsa"
-import { EthTransferRequest } from "../../asset-ethereum"
-import { EthEstimatedTransactionRequest } from "../../types"
+import {
+  EstimatedTransactionRequest,
+  EthEstimatedTransactionRequest,
+} from "../../types"
 import { TransferRequest } from "../estimateTransaction"
+
+export class EthTransferRequest implements EstimatedTransactionRequest {
+  constructor(
+    readonly identity: DelegationIdentity,
+    readonly to: string,
+    readonly amount: number,
+  ) {}
+}
 
 export const ethTransferRequest: TransferRequest = {
   estimate: (

@@ -9,6 +9,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]": {
+      type: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]": {
       type: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
       data: unknown
@@ -36,6 +41,7 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {
     AuthenticationMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+    CheckApplicationMeta: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
     CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
     ExecuteProcedureService: "done.invoke.NFIDEmbedMachineV2.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
     RPCReceiver: "done.invoke.NFIDEmbedMachineV2.RPC_RECEIVER:invocation[0]"
@@ -48,6 +54,7 @@ export interface Typegen0 {
     services: never
   }
   eventsCausingActions: {
+    assignAppMeta: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
     assignAuthSession:
       | "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
       | "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
@@ -74,7 +81,8 @@ export interface Typegen0 {
     AuthenticationMachine:
       | "SESSION_EXPIRED"
       | "error.platform.NFIDEmbedMachineV2.AUTH.CheckAuthentication:invocation[0]"
-    CheckAuthState: "xstate.init"
+    CheckApplicationMeta: "xstate.init"
+    CheckAuthState: "done.invoke.NFIDEmbedMachineV2.AUTH.CheckAppMeta:invocation[0]"
     ExecuteProcedureService: "APPROVE"
     RPCReceiver: "RPC_MESSAGE" | "xstate.init"
     TrustDeviceMachine: "done.invoke.NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
@@ -83,6 +91,7 @@ export interface Typegen0 {
     | "AUTH"
     | "AUTH.Authenticate"
     | "AUTH.Authenticated"
+    | "AUTH.CheckAppMeta"
     | "AUTH.CheckAuthentication"
     | "AUTH.TrustDevice"
     | "HANDLE_PROCEDURE"
@@ -95,6 +104,7 @@ export interface Typegen0 {
         AUTH?:
           | "Authenticate"
           | "Authenticated"
+          | "CheckAppMeta"
           | "CheckAuthentication"
           | "TrustDevice"
         HANDLE_PROCEDURE?:

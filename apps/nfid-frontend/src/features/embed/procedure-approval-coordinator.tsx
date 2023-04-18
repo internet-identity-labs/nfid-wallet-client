@@ -8,7 +8,7 @@ import { NFIDConnectAccountCoordinator } from "frontend/features/embed-connect-a
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
 
-import MappedDefaultSend from "./components/default-send"
+import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
 
@@ -30,13 +30,13 @@ const componentMap: ComponentMap = {
   createToken: React.lazy(() => import("./components/deploy-collection")),
   mintAndTransfer: React.lazy(() => import("./components/mint")),
   SellOrder: React.lazy(() => import("./components/sell")),
-  BidOrder: React.lazy(() => import("./components/default-send")),
+  BidOrder: React.lazy(() => import("./components/fallback")),
   bulkPurchase: React.lazy(() => import("./components/batch-buy")),
-  burn: React.lazy(() => import("./components/default-send")),
-  cancel: React.lazy(() => import("./components/default-send")),
+  burn: React.lazy(() => import("./components/fallback")),
+  cancel: React.lazy(() => import("./components/fallback")),
 
-  directAcceptBid: React.lazy(() => import("./components/default-send")),
-  safeTransferFrom: React.lazy(() => import("./components/default-send")),
+  directAcceptBid: React.lazy(() => import("./components/fallback")),
+  safeTransferFrom: React.lazy(() => import("./components/fallback")),
 
   Mint721: React.lazy(() => import("./components/lazy-mint")),
   Mint1155: React.lazy(() => import("./components/lazy-mint")),
@@ -90,7 +90,7 @@ export const ProcedureApprovalCoordinator: React.FC<
       )
     default:
       return (
-        <MappedDefaultSend
+        <MappedFallback
           {...{
             rpcMessage,
             appMeta,

@@ -47,6 +47,8 @@ export type FunctionCall = {
   interface: Interface
   method: Method
   data: any
+  total?: string
+  from?: string
 }
 
 export interface MethodDecoder

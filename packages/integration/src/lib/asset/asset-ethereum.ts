@@ -1,8 +1,5 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import {
-  TransactionRequest,
-  TransactionResponse,
-} from "@ethersproject/abstract-provider"
+import { TransactionResponse } from "@ethersproject/abstract-provider"
 import {
   Activity as RaribleActivity,
   ActivitySort,
@@ -33,8 +30,8 @@ import { E8S } from "@nfid/integration/token/icp"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
+import { getPriceFull } from "./asset"
 import { estimateTransaction } from "./estimateTransaction/estimateTransaction"
-import { getPrice, getPriceFull } from "./asset"
 import {
   AccountBalance,
   ActivitiesByItemRequest,

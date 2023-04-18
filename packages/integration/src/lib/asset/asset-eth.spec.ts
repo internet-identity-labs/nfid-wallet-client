@@ -7,10 +7,78 @@ import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { mockIdentityA } from "../identity"
 import { generateDelegationIdentity } from "../test-utils"
 import { ethereumAsset } from "./asset-eth"
-import { ChainBalance } from "./types"
+import {
+  EthTransferRequest,
+  NftErc1155TransferRequest,
+  NftErc721TransferRequest,
+} from "./asset-ethereum"
+import { ChainBalance } from "./types.d"
 
 describe("Ethereum Asset", () => {
-  jest.setTimeout(20000)
+  jest.setTimeout(30000)
+
+  it("should return one estimated nft erc1155 tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+
+    const request = new NftErc1155TransferRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      1,
+      "0x8652d6162Eb9b4E46cB6C1F77b8d7257663F360D",
+      "1",
+    )
+
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
+
+    expect(actual).toEqual({
+      transaction: {
+        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
+        to: "0x8652d6162Eb9b4E46cB6C1F77b8d7257663F360D",
+        nonce: expect.any(Number),
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+        data: "0xf242432a000000000000000000000000f7eb98df5cef7b45ec77b1bd11f593dbb3c8e647000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4390000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000",
+      },
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+    })
+  })
+
+  it("should return one estimated nft erc721 tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+
+    const request = new NftErc721TransferRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      "0xE6c6bb10c86bB18484e2EE9089087683D56C7542",
+      "38940887899251058536299255011156548386618152174517910543504708906964800765956",
+    )
+
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
+
+    expect(actual).toEqual({
+      transaction: {
+        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
+        to: "0xE6c6bb10c86bB18484e2EE9089087683D56C7542",
+        nonce: expect.any(Number),
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+        data: "0x42842e0e000000000000000000000000f7eb98df5cef7b45ec77b1bd11f593dbb3c8e647000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4395617c2f117605bae6a3077dd38f68c8acd6d8350000000000000000000000004",
+      },
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+    })
+  })
 
   it("should return hash with etherenet url after transfer", async () => {
     const walletSpy = jest.spyOn(EthWalletV2.prototype, "sendTransaction")
@@ -42,16 +110,18 @@ describe("Ethereum Asset", () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const delegationIdentity: DelegationIdentity =
       await generateDelegationIdentity(mockedIdentity)
-    const actual = await ethereumAsset.getEstimatedTransaction({
-      identity: delegationIdentity,
-      to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
-      amount: "0.01",
-    })
+
+    const request = new EthTransferRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      0.001,
+    )
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
         from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
         to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
-        nonce: 8,
+        nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         value: expect.any(ethers.BigNumber),

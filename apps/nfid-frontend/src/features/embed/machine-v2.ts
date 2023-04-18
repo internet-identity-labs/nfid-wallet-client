@@ -2,17 +2,15 @@ import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
 import { assign, createMachine } from "xstate"
 
-import { ProviderError, authState } from "@nfid/integration"
+import { Application, ProviderError, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
-import {
-  AuthorizationRequest,
-  AuthorizingAppMeta,
-} from "frontend/state/authorization"
+import { AuthorizingAppMeta } from "frontend/state/authorization"
 import AuthenticationMachine from "frontend/state/machines/authentication/authentication"
 import TrustDeviceMachine from "frontend/state/machines/authentication/trust-device"
 
+import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import { ExecuteProcedureService } from "./services/execute-procedure"
 import {
@@ -50,6 +48,9 @@ type Services = {
   ExecuteProcedureService: {
     data: RPCResponse
   }
+  CheckApplicationMeta: {
+    data: Application
+  }
 }
 
 type NFIDEmbedMachineContext = {
@@ -80,14 +81,10 @@ export const NFIDEmbedMachineV2 = createMachine(
     },
     context: {
       messageQueue: [],
-      appMeta: {
-        name: "Rarible SDK Example",
-        logo: "https://app.rarible.com/favicon.ico",
-        url: "rarible.com",
-      },
+      appMeta: {},
       authRequest: {
-        hostname: "http://localhost:3000",
-      } as AuthorizationRequest,
+        hostname: "",
+      },
     },
     states: {
       RPC_RECEIVER: {
@@ -110,8 +107,17 @@ export const NFIDEmbedMachineV2 = createMachine(
       },
 
       AUTH: {
-        initial: "CheckAuthentication",
+        initial: "CheckAppMeta",
         states: {
+          CheckAppMeta: {
+            invoke: {
+              src: "CheckApplicationMeta",
+              onDone: {
+                target: "CheckAuthentication",
+                actions: "assignAppMeta",
+              },
+            },
+          },
           CheckAuthentication: {
             invoke: {
               src: "CheckAuthState",
@@ -225,6 +231,15 @@ export const NFIDEmbedMachineV2 = createMachine(
   },
   {
     actions: {
+      assignAppMeta: assign((context, event) => ({
+        appMeta: {
+          logo:
+            window.location.origin + new URL(event?.data?.icon ?? "")?.pathname,
+          name: event?.data?.name,
+          url: new URL(event?.data?.domain).host,
+        },
+        authRequest: { hostname: event?.data?.domain },
+      })),
       assignProcedure: assign((_, event) => ({
         requestOrigin: event.data.origin,
         rpcMessage: event.data.rpcMessage,
@@ -295,6 +310,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         state.matches("HANDLE_PROCEDURE.READY"),
     },
     services: {
+      CheckApplicationMeta,
       ExecuteProcedureService,
       AuthenticationMachine,
       TrustDeviceMachine,

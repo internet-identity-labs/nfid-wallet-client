@@ -1,9 +1,9 @@
-import React from "react"
-
 import {
   AppBalance,
   TokenBalanceSheet,
-} from "frontend/features/fungable-token/types"
+} from "packages/integration/src/lib/asset/types"
+import React from "react"
+
 import { useAllToken } from "frontend/features/fungable-token/use-all-token"
 import { rmProto } from "frontend/integration/identity-manager"
 import { TokenDetailBalance } from "frontend/ui/molecules/token-detail"

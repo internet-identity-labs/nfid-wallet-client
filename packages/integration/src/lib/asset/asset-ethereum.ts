@@ -1,56 +1,66 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import { TransactionResponse } from "@ethersproject/abstract-provider"
+import {
+  TransactionRequest,
+  TransactionResponse,
+} from "@ethersproject/abstract-provider"
 import {
   Activity as RaribleActivity,
-  TransferActivity,
   ActivitySort,
   ActivityType,
   OrderMatchSell,
+  TransferActivity,
   UserActivityType,
 } from "@rarible/api-client"
 import { EthersEthereum } from "@rarible/ethers-ethereum"
 import { createRaribleSdk, IRaribleSdk } from "@rarible/sdk"
 import { EthereumWallet } from "@rarible/sdk-wallet"
 import {
-  convertEthereumToUnionAddress,
   convertEthereumItemId,
+  convertEthereumToUnionAddress,
 } from "@rarible/sdk/build/sdk-blockchains/ethereum/common"
 import { toCurrencyId, UnionAddress } from "@rarible/types"
 import { toBn } from "@rarible/utils"
 import {
-  Network,
   Alchemy,
-  SortingOrder,
   AssetTransfersCategory,
+  Network,
   OwnedNftsResponse as AlchemyOwnedNftsResponse,
+  SortingOrder,
 } from "alchemy-sdk"
 import { ethers } from "ethers-ts"
+
+import { E8S } from "@nfid/integration/token/icp"
 
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { estimateTransaction } from "./estimateTransaction/estimateTransaction"
+import { getPrice, getPriceFull } from "./asset"
 import {
-  NonFungibleAsset,
-  ChainBalance,
-  ActivityRecord,
-  NonFungibleActivityRecords,
-  NonFungibleItems,
-  FungibleActivityRecords,
-  Tokens,
-  FungibleActivityRequest,
-  Configuration,
+  AccountBalance,
   ActivitiesByItemRequest,
   ActivitiesByUserRequest,
+  ActivityRecord,
   Address,
-  Identity,
-  ItemsByUserRequest,
-  TransferNftRequest,
-  TransferETHRequest,
+  AppBalance,
+  ChainBalance,
+  Configuration,
   Erc20TokensByUserRequest,
   EstimatedTransaction,
   EtherscanTransactionHashUrl,
   EthEstimatedTransactionRequest,
   EstimatedTransactionRequest,
+  FungibleActivityRecords,
+  FungibleActivityRequest,
+  Identity,
+  ItemsByUserRequest,
+  NonFungibleActivityRecords,
+  NonFungibleAsset,
+  NonFungibleItems,
+  Token,
+  TokenBalanceSheet,
+  Tokens,
+  TransferETHRequest,
+  TransferNftRequest,
 } from "./types"
 
 export class EthTransferRequest implements EstimatedTransactionRequest {
@@ -286,18 +296,34 @@ export class EthereumAsset implements NonFungibleAsset {
     const tokens = await alchemySdk.core.getTokensForOwner(address, {
       pageKey: cursor,
     })
+    const price = await getPriceFull()
     return {
       cursor: tokens.pageKey,
       tokens: tokens.tokens
         .filter((x) => x.rawBalance !== undefined && 0 != +x.rawBalance)
         .map((x) => ({
+          address,
           name: x.name || "N/A",
           symbol: x.symbol || "N/A",
           logo: x.logo,
-          balance: x.balance || "0.0",
+          balance: x.balance || "0",
           contractAddress: x.contractAddress,
+          balanceinUsd: this.priceInUsd(price, x.balance, x.symbol),
         })),
     }
+  }
+
+  public async getErc20Accounts(
+    identity: DelegationIdentity,
+  ): Promise<Array<TokenBalanceSheet>> {
+    return this.getErc20TokensByUser({ identity }).then((tokens) =>
+      tokens.tokens.map((l) => {
+        return this.computeSheetForRootAccount(
+          l,
+          identity.getPrincipal().toText(),
+        )
+      }),
+    )
   }
 
   public async getFungibleActivityByTokenAndUser(
@@ -423,5 +449,50 @@ export class EthereumAsset implements NonFungibleAsset {
       apiKey: ALCHEMY_API_KEY,
       network: alchemyNetwork,
     })
+  }
+
+  private computeSheetForRootAccount(
+    token: Token,
+    principalId: string,
+  ): TokenBalanceSheet {
+    const rootAccountBalance: AccountBalance = {
+      accountName: "account 1",
+      address: token.address,
+      principalId,
+      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+      usdBalance: token.balanceinUsd,
+    }
+    const appBalance: AppBalance = {
+      accounts: [rootAccountBalance],
+      appName: "NFID",
+      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+    }
+    return {
+      applications: {
+        NFID: appBalance,
+      },
+      icon: token.logo ? token.logo : "",
+      label: token.name,
+      token: token.symbol,
+      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+      usdBalance: token.balanceinUsd,
+    }
+  }
+
+  private stringICPtoE8s = (value: string) => {
+    return Number(parseFloat(value) * E8S)
+  }
+
+  private priceInUsd(price: any, balance?: string, token?: string) {
+    if (!token || !balance) {
+      return "N/A"
+    }
+    const selectedTokenPrice = price[token]
+    if (!selectedTokenPrice) {
+      return "N/A"
+    }
+    const balanceBN = toBn(balance)
+    const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)
+    return "$" + (usd?.toFixed(2) ?? "0.00")
   }
 }

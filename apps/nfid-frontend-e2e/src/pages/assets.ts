@@ -11,6 +11,20 @@ export class Assets {
     return $("#balance")
   }
 
+  public async getAssetBalance(label:string) {
+    return $(
+      this.assetLabel + `${label.replace(/\s/g, "")}` + "_balance']",
+    )
+  }
+
+  public async getCurrency(label:string) {
+    return  $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_currency']")
+  }
+
+  public async getBlockchain(label:string) {
+    return  $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_blockchain']")
+  }
+
   private getTokenUsd(assetLabel: string) {
     return `#token_${assetLabel.replace(/\s/g, "")}_usd`
   }
@@ -132,11 +146,11 @@ export class Assets {
   }
 
   public async openAssetByLabel(name: string) {
-    await $(this.assetLabel + `${name}` + "']").waitForDisplayed({
+    await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").waitForDisplayed({
       timeout: 7000,
       timeoutMsg: "Asset has not been showed! Missing asset label!",
     })
-    await $(this.assetLabel + `${name}` + "']").click()
+    await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").click()
   }
 
   public async openElementById(name: string) {
@@ -158,31 +172,6 @@ export class Assets {
     } else {
       expect(isSel).toEqual(true)
     }
-  }
-
-  public async verifyAssetFields(
-    name: string,
-    currency: string,
-    blockchain: string,
-    balance: string,
-    usd: string,
-  ) {
-    let expectedBalance = await $(
-      this.assetLabel + `${name.replace(/\s/g, "")}` + "_balance']",
-    ).getText()
-    expect(expectedBalance).toEqual(balance)
-    let expectedUsd = await $(
-      this.assetLabel + `${name.replace(/\s/g, "")}` + "_usd']",
-    ).getText()
-    expect(expectedUsd).toEqual(usd)
-    let expectedCurrency = await $(
-      this.assetLabel + `${name}` + "_currency']",
-    ).getText()
-    expect(expectedCurrency).toEqual(currency)
-    let expectedBlockchain = await $(
-      this.assetLabel + `${name.replace(/\s/g, "")}` + "_blockchain']",
-    ).getText()
-    expect(expectedBlockchain).toEqual(blockchain)
   }
 }
 

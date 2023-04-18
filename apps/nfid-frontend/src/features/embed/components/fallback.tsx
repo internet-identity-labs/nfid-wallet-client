@@ -8,7 +8,7 @@ import { useExchangeRates } from "frontend/features/fungable-token/eth/hooks/use
 
 import { SendTransaction } from "../ui/send-transaction"
 
-const MappedDefaultSend: React.FC<ApproverCmpProps> = ({
+const MappedFallback: React.FC<ApproverCmpProps> = ({
   appMeta,
   rpcMessage,
   rpcMessageDecoded,
@@ -58,14 +58,14 @@ const MappedDefaultSend: React.FC<ApproverCmpProps> = ({
 
   return (
     <SendTransaction
-      title={`Review ${rpcMessageDecoded?.method}`}
+      title={`Review ${rpcMessageDecoded?.method ?? ""}`}
       applicationMeta={appMeta}
-      fromAddress={rpcMessage?.params[0].from}
+      fromAddress={rpcMessage?.params[0].from ?? rpcMessageDecoded?.from}
       toAddress={rpcMessage?.params[0].to}
       network={"Ethereum"}
       networkFee={price.fee}
       totalUSD={price.totalUsd}
-      totalToken={price.total}
+      totalToken={price.total ?? rpcMessageDecoded?.total}
       currency={"ETH"}
       onApprove={onConfirm}
       isInsufficientBalance={price.isInsufficientFundsError}
@@ -88,4 +88,4 @@ const MappedDefaultSend: React.FC<ApproverCmpProps> = ({
   )
 }
 
-export default MappedDefaultSend
+export default MappedFallback

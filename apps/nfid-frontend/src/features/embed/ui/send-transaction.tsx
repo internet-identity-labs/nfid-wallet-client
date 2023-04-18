@@ -140,22 +140,24 @@ export const SendTransaction = ({
               {`${price} ${currency}`}
             </InfoListItem>
           )}
-          <InfoListItem title="Total" isBold>
-            <div className="relative">
-              <p>
-                {totalToken} {currency}
-              </p>
+          {totalToken && (
+            <InfoListItem title="Total" isBold>
+              <div className="relative">
+                <p>
+                  {totalToken} {currency}
+                </p>
 
-              <div
-                className={clsx(
-                  "text-xs leading-4 text-gray-400 font-normal",
-                  "absolute right-0 top-full",
-                )}
-              >
-                ~${totalUSD}
+                <div
+                  className={clsx(
+                    "text-xs leading-4 text-gray-400 font-normal",
+                    "absolute right-0 top-full",
+                  )}
+                >
+                  ~${totalUSD}
+                </div>
               </div>
-            </div>
-          </InfoListItem>
+            </InfoListItem>
+          )}
         </div>
         <p
           className="mt-10 text-sm cursor-pointer text-blue"

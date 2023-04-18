@@ -91,13 +91,6 @@ declare type EstimatedTransaction = {
   maxFeeUsd: string
 }
 
-declare type EstimatedTransactionRequest = {
-  identity: DelegationIdentity
-  to?: string
-  amount?: string
-  tokenId?: string
-}
-
 declare type FungibleActivityRequest = PageRequest & {
   address?: string
   direction?: "from" | "to"
@@ -200,7 +193,17 @@ declare type Configuration = {
   }
 }
 
-export interface AccountBalance {
+declare interface EstimatedTransactionRequest {
+  to: string
+  identity: DelegationIdentity
+}
+
+declare type EthEstimatedTransactionRequest =
+  | EthTransferRequest
+  | NftERC721TransferRequest
+  | NftERC1155TransferRequest
+
+declare interface AccountBalance {
   accountName: string
   tokenBalance: Balance
   usdBalance: string
@@ -208,14 +211,14 @@ export interface AccountBalance {
   address: string
 }
 
-export interface AppBalance {
+declare interface AppBalance {
   icon?: string
   appName: string
   tokenBalance: Balance
   accounts: AccountBalance[]
 }
 
-export interface TokenBalanceSheet {
+declare interface TokenBalanceSheet {
   label: string
   token: string
   icon: string
@@ -223,3 +226,4 @@ export interface TokenBalanceSheet {
   usdBalance: string
   applications: { [applicationName: string]: AppBalance | undefined }
 }
+

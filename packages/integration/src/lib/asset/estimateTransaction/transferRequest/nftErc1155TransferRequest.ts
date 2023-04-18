@@ -1,9 +1,22 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { ethers } from "ethers-ts"
 
 import { EthWalletV2 } from "../../../ecdsa-signer/signer-ecdsa"
-import { NftErc1155TransferRequest } from "../../asset-ethereum"
-import { EthEstimatedTransactionRequest } from "../../types"
+import {
+  EstimatedTransactionRequest,
+  EthEstimatedTransactionRequest,
+} from "../../types"
 import { TransferRequest } from "../estimateTransaction"
+
+export class NftErc1155TransferRequest implements EstimatedTransactionRequest {
+  constructor(
+    readonly identity: DelegationIdentity,
+    readonly to: string,
+    readonly amount: number,
+    readonly contractId: string,
+    readonly tokenId: string,
+  ) {}
+}
 
 const ABI = [
   "function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)",

@@ -45,7 +45,6 @@ import {
   EstimatedTransaction,
   EtherscanTransactionHashUrl,
   EthEstimatedTransactionRequest,
-  EstimatedTransactionRequest,
   FungibleActivityRecords,
   FungibleActivityRequest,
   Identity,
@@ -59,33 +58,6 @@ import {
   TransferETHRequest,
   TransferNftRequest,
 } from "./types"
-
-export class EthTransferRequest implements EstimatedTransactionRequest {
-  constructor(
-    readonly identity: DelegationIdentity,
-    readonly to: string,
-    readonly amount: number,
-  ) {}
-}
-
-export class NftErc721TransferRequest implements EstimatedTransactionRequest {
-  constructor(
-    readonly identity: DelegationIdentity,
-    readonly to: string,
-    readonly contractId: string,
-    readonly tokenId: string,
-  ) {}
-}
-
-export class NftErc1155TransferRequest implements EstimatedTransactionRequest {
-  constructor(
-    readonly identity: DelegationIdentity,
-    readonly to: string,
-    readonly amount: number,
-    readonly contractId: string,
-    readonly tokenId: string,
-  ) {}
-}
 
 export class EthereumAsset implements NonFungibleAsset {
   private readonly config: Configuration

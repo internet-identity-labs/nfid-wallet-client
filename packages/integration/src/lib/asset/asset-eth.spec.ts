@@ -7,15 +7,44 @@ import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
 import { mockIdentityA } from "../identity"
 import { generateDelegationIdentity } from "../test-utils"
 import { ethereumAsset } from "./asset-eth"
-import {
-  EthTransferRequest,
-  NftErc1155TransferRequest,
-  NftErc721TransferRequest,
-} from "./asset-ethereum"
+import { Erc20TransferRequest } from "./estimateTransaction/transferRequest/erc20TransferRequest"
+import { EthTransferRequest } from "./estimateTransaction/transferRequest/ethTransferRequest"
+import { NftErc721TransferRequest } from "./estimateTransaction/transferRequest/nftErc721TransferRequest"
+import { NftErc1155TransferRequest } from "./estimateTransaction/transferRequest/nftErc1155TransferRequest"
 import { ChainBalance } from "./types.d"
 
 describe("Ethereum Asset", () => {
   jest.setTimeout(30000)
+
+  it("should return one estimated erc20 tx", async function () {
+    const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const delegationIdentity: DelegationIdentity =
+      await generateDelegationIdentity(mockedIdentity)
+
+    const request = new Erc20TransferRequest(
+      delegationIdentity,
+      "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
+      "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+      1,
+    )
+
+    const actual = await ethereumAsset.getEstimatedTransaction(request)
+    expect(actual).toEqual({
+      transaction: {
+        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
+        to: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+        nonce: expect.any(Number),
+        maxFeePerGas: expect.any(ethers.BigNumber),
+        maxPriorityFeePerGas: expect.any(ethers.BigNumber),
+        gasLimit: expect.any(ethers.BigNumber),
+        data: "0xa9059cbb000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4390000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      },
+      fee: expect.any(String),
+      feeUsd: expect.any(String),
+      maxFee: expect.any(String),
+      maxFeeUsd: expect.any(String),
+    })
+  })
 
   it("should return one estimated nft erc1155 tx", async function () {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)

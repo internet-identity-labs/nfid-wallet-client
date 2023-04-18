@@ -105,6 +105,7 @@ export class HomePage extends Page {
         interval: 8000,
         reverse: true,
       })
+      console.log("LOGS: ", await browser.getLogs("browser"))
       try {
         // handles the situation with Registration ceremony
         // https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client

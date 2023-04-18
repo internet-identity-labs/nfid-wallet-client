@@ -8,6 +8,7 @@ import { Alchemy, Network } from "alchemy-sdk"
 import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
 
+import { TransferRequest } from "../asset/estimateTransaction/estimateTransaction"
 import { EthWalletV2 } from "./signer-ecdsa"
 
 export enum ProviderError {
@@ -51,11 +52,24 @@ export class DelegationWalletAdapter {
     let tx: TransactionRequest
     let err: ProviderError | undefined
     let gasLimit
-    const gasPrice = await provider.getGasPrice()
-    const nonce = await provider.getTransactionCount(
-      transaction.from || "",
-      "pending",
-    )
+    const [nonce, { gasPrice, maxPriorityFeePerGas, maxFeePerGas }] =
+      await Promise.all([
+        provider.getTransactionCount(transaction.from || "", "pending"),
+        this.wallet.getFeeData(),
+      ])
+
+    if (!gasPrice || !maxPriorityFeePerGas || !maxFeePerGas) {
+      throw Error("FeeData isn't available.")
+    }
+
+    delete (transaction as any)["gas"]
+
+    tx = {
+      ...transaction,
+      nonce,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+    }
 
     try {
       tx = await this.wallet.populateTransaction(transaction)

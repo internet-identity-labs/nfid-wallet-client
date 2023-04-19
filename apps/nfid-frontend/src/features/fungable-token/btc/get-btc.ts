@@ -1,7 +1,10 @@
 import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
 import { principalToAddress } from "ictool"
-import { ChainBalance, FungibleTxs } from "packages/integration/src/lib/asset/types";
+import {
+  ChainBalance,
+  FungibleTxs,
+} from "packages/integration/src/lib/asset/types"
 import {
   AccountBalance,
   AppBalance,
@@ -89,7 +92,7 @@ export const getTransactions = async (
 export const getAccIdentifier = async () => {
   let profile = await fetchProfile()
   const anchor = BigInt(profile.anchor)
-  const hostname = ROOT_DOMAIN
+  const hostname = "btc_" + ROOT_DOMAIN
   let address = readAddressFromLocalCache({
     accountId: BTC_ROOT_ACCOUNT,
     hostname,

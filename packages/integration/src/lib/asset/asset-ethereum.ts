@@ -48,6 +48,7 @@ import {
   EstimatedTransaction,
   EtherscanTransactionHashUrl,
   EthEstimatedTransactionRequest,
+  FungibleActivityRecord,
   FungibleActivityRecords,
   FungibleActivityRequest,
   Identity,
@@ -308,38 +309,16 @@ export class EthereumAsset implements NonFungibleAsset {
       contract: "erc20",
       address,
     }).then((receiveTsx) => {
-      return receiveTsx.activities.map((tx) => {
-        return {
-          type:
-            tx.from.toLowerCase() === address.toLowerCase()
-              ? "send"
-              : "received",
-          asset: tx.asset,
-          quantity: tx.price,
-          date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),
-          from: tx.from,
-          to: tx.to,
-        } as TransactionRow
-      })
+      return receiveTsx.activities.map((tx) =>
+        this.toTransactionRow(tx, address),
+      )
     })
     const sendTransactions = await this.getFungibleActivityByTokenAndUser({
       direction: "from",
       contract: "erc20",
       address,
     }).then((sendTsx) => {
-      return sendTsx.activities.map((tx) => {
-        return {
-          type:
-            tx.from.toLowerCase() === address.toLowerCase()
-              ? "send"
-              : "received",
-          asset: tx.asset,
-          quantity: tx.price,
-          date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),
-          from: tx.from,
-          to: tx.to,
-        } as TransactionRow
-      })
+      return sendTsx.activities.map((tx) => this.toTransactionRow(tx, address))
     })
     const addressPrincipal = principalToAddress(identity.getPrincipal())
     return {
@@ -520,5 +499,17 @@ export class EthereumAsset implements NonFungibleAsset {
     const balanceBN = toBn(balance)
     const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)
     return "$" + (usd?.toFixed(2) ?? "0.00")
+  }
+
+  private toTransactionRow(tx: FungibleActivityRecord, address: string) {
+    return {
+      type:
+        tx.from.toLowerCase() === address.toLowerCase() ? "send" : "received",
+      asset: tx.asset,
+      quantity: tx.price,
+      date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),
+      from: tx.from,
+      to: tx.to,
+    } as TransactionRow
   }
 }

@@ -32,6 +32,11 @@ export const getKey = ({ hostname, accountId, anchor }: KeyArgs) => {
   return key
 }
 
+const getEntity = (key: string) => {
+  const cache = loadAddressCache()
+  return typeof cache[key] === "object" ? cache[key] : {}
+}
+
 export const storeAddressInLocalCache = ({
   hostname,
   anchor,
@@ -41,9 +46,10 @@ export const storeAddressInLocalCache = ({
 }: CreateAddressArg) => {
   const cache = loadAddressCache()
   const key = getKey({ hostname, anchor, accountId })
+  const existing = getEntity(key)
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ ...cache, [key]: { ...cache[key], [network]: address } }),
+    JSON.stringify({ ...cache, [key]: { ...existing, [network]: address } }),
   )
 }
 
@@ -53,7 +59,7 @@ export const readAddressFromLocalCache = ({
   hostname,
   network,
 }: ReadAddressArg): string | undefined => {
-  const cache = loadAddressCache()
   const key = getKey({ hostname, accountId, anchor })
-  return cache[key][network]
+  const entity = getEntity(key)
+  return entity[network]
 }

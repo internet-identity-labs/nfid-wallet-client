@@ -32,7 +32,7 @@ export const getKey = ({ hostname, accountId, anchor }: KeyArgs) => {
   return key
 }
 
-const getEntity = (key: string) => {
+const getEntity = (key: string): { [key: string]: string } => {
   const cache = loadAddressCache()
   return typeof cache[key] === "object" ? cache[key] : {}
 }

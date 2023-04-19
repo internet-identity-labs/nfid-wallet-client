@@ -1,10 +1,10 @@
 import { format } from "date-fns"
+import { TransactionRow } from "packages/integration/src/lib/asset/types"
 
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
-import { TransactionRow } from "frontend/integration/rosetta/select-transactions"
 
 export const getEthTransactions = async () => {
   const hostname = "nfid.one"

@@ -6,12 +6,12 @@ import {
   AccountBalance,
   AppBalance,
   TokenBalanceSheet,
+  TransactionRow,
 } from "packages/integration/src/lib/asset/types"
 import { BtcAsset } from "packages/integration/src/lib/bitcoin-wallet/btc-asset"
 import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
-import { TransactionRow } from "src/integration/rosetta/select-transactions"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import {
@@ -28,7 +28,7 @@ import { E8S } from "@nfid/integration/token/icp"
 const ROOT_DOMAIN = "nfid.one"
 const BTC_ROOT_ACCOUNT = "account 1"
 
-export interface BtcTxs {
+export interface FungibleTxs {
   sendTransactions?: TransactionRow[]
   receivedTransactions?: TransactionRow[]
   walletAddress: string
@@ -52,7 +52,7 @@ export const getBtcAddress = async (): Promise<string> => {
   return address
 }
 
-export const getBtcTransactionHistory = async (): Promise<BtcTxs> => {
+export const getBtcTransactionHistory = async (): Promise<FungibleTxs> => {
   const { address, principal } = await getAccIdentifier()
   const sendTransactions = await getTransactions("send", address)
   const receivedTransactions = await getTransactions("received", address)
@@ -151,5 +151,6 @@ export const computeSheetForRootAccount = async (
     token: "BTC",
     tokenBalance,
     usdBalance,
+    blockchain: "Bitcoin",
   }
 }

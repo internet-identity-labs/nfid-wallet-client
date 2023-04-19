@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { TransactionRow } from "packages/integration/src/lib/asset/types"
 import React, { useState } from "react"
 
 import {
@@ -9,7 +10,6 @@ import {
   TabsSwitcher,
 } from "@nfid-frontend/ui"
 
-import { TransactionRow } from "frontend/integration/rosetta/select-transactions"
 import { Chip } from "frontend/ui/atoms/chip"
 import Pagination from "frontend/ui/molecules/pagination"
 import ProfileContainer from "frontend/ui/templates/profile-container/Container"

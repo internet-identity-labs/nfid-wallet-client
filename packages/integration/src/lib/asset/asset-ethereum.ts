@@ -24,7 +24,10 @@ import {
   OwnedNftsResponse as AlchemyOwnedNftsResponse,
   SortingOrder,
 } from "alchemy-sdk"
+import { format } from "date-fns"
 import { ethers } from "ethers-ts"
+import { principalToAddress } from "ictool"
+import { FungibleTxs } from "src/features/fungable-token/btc/get-btc"
 
 import { E8S } from "@nfid/integration/token/icp"
 
@@ -55,6 +58,7 @@ import {
   Token,
   TokenBalanceSheet,
   Tokens,
+  TransactionRow,
   TransferETHRequest,
   TransferNftRequest,
 } from "./types"
@@ -295,6 +299,57 @@ export class EthereumAsset implements NonFungibleAsset {
     )
   }
 
+  public async getErc20TransactionHistory(
+    identity: DelegationIdentity,
+  ): Promise<FungibleTxs> {
+    const address = await this.getAddress(identity)
+    const receivedTransactions = await this.getFungibleActivityByTokenAndUser({
+      direction: "to",
+      contract: "erc20",
+      address,
+    }).then((receiveTsx) => {
+      return receiveTsx.activities.map((tx) => {
+        return {
+          type:
+            tx.from.toLowerCase() === address.toLowerCase()
+              ? "send"
+              : "received",
+          asset: tx.asset,
+          quantity: tx.price,
+          date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),
+          from: tx.from,
+          to: tx.to,
+        } as TransactionRow
+      })
+    })
+    const sendTransactions = await this.getFungibleActivityByTokenAndUser({
+      direction: "from",
+      contract: "erc20",
+      address,
+    }).then((sendTsx) => {
+      return sendTsx.activities.map((tx) => {
+        return {
+          type:
+            tx.from.toLowerCase() === address.toLowerCase()
+              ? "send"
+              : "received",
+          asset: tx.asset,
+          quantity: tx.price,
+          date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),
+          from: tx.from,
+          to: tx.to,
+        } as TransactionRow
+      })
+    })
+    const addressPrincipal = principalToAddress(identity.getPrincipal())
+    return {
+      sendTransactions,
+      receivedTransactions,
+      walletAddress: addressPrincipal,
+      btcAddress: address,
+    }
+  }
+
   public async getFungibleActivityByTokenAndUser(
     {
       direction = "from",
@@ -331,6 +386,7 @@ export class EthereumAsset implements NonFungibleAsset {
         from: x.from,
         transactionHash: x.hash,
         price: x.value || 0,
+        asset: x.asset || x.erc721TokenId || "",
       })),
     }
   }
@@ -445,6 +501,7 @@ export class EthereumAsset implements NonFungibleAsset {
       token: token.symbol,
       tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
       usdBalance: token.balanceinUsd,
+      blockchain: "Ethereum",
     }
   }
 

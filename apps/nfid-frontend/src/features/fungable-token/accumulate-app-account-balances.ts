@@ -1,5 +1,9 @@
 import { Principal } from "@dfinity/principal"
 import { principalToAddress } from "ictool"
+import {
+  AppBalance,
+  TokenBalanceSheet,
+} from "packages/integration/src/lib/asset/types"
 
 import { Application, Balance } from "@nfid/integration"
 
@@ -9,8 +13,6 @@ import {
   e8sICPToString,
   stringICPtoE8s,
 } from "frontend/integration/wallet/utils"
-import { AppBalance, TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
-
 
 export const sumE8sICPString = (a: string, b: string) => {
   return e8sICPToString(stringICPtoE8s(a) + stringICPtoE8s(b))

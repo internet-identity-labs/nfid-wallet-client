@@ -1,19 +1,11 @@
 import { format } from "date-fns"
+import { TransactionRow } from "packages/integration/src/lib/asset/types"
 
 import { Transaction, TransactionHistory } from "./rosetta_interface"
 
 interface SelectTransactionProps {
   transactions: TransactionHistory
   accounts: string[]
-}
-
-export interface TransactionRow {
-  type: "send" | "received"
-  asset: string
-  quantity: number
-  date: string
-  from: string
-  to: string
 }
 
 const toTransactionRow =

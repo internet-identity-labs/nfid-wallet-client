@@ -173,6 +173,7 @@ describe("Ethereum Asset", () => {
       cursor: expect.any(String),
       activities: [
         {
+          asset: "ETH",
           date: "2023-01-23T17:11:00.000Z",
           from: "0x382901144a77bec53493fa090053b9c63da5dd07",
           id: "0xfe38a1136ab602dee254731dd38609d61cd474d57a0bad314ef2c1f035da3101:external",
@@ -197,6 +198,7 @@ describe("Ethereum Asset", () => {
       cursor: expect.any(String),
       activities: [
         {
+          asset: "LINK",
           date: "2023-02-14T15:05:00.000Z",
           from: "0x4281ecf07378ee595c564a59048801330f3084ee",
           id: "0xa1a5a26750235ec8a8a65110926932befd67351e01ee19bfb20f8d01dab24f2c:log:32",

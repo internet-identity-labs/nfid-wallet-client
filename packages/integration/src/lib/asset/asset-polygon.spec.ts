@@ -16,6 +16,7 @@ describe("Polygon Asset", () => {
       cursor: expect.any(String),
       activities: [
         {
+          asset: "MATIC",
           id: "0x1a821c20741e9ff6dfe148cf4ff2b44c5064e2b3b86cbe720c8a638c8b93ad1c:external",
           date: "2023-02-07T15:40:17.000Z",
           to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
@@ -40,6 +41,7 @@ describe("Polygon Asset", () => {
       cursor: expect.any(String),
       activities: [
         {
+          asset: "USDC",
           id: "0xc569a7bd93bb29138b1374ce293469f7da1e2b662314e5ae27c44253a847c524:log:16",
           date: "2023-02-17T14:45:35.000Z",
           to: "0x382901144a77bec53493fa090053b9c63da5dd07",

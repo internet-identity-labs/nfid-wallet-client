@@ -24,6 +24,7 @@ Feature:Fungible Asset History
       | 1   | Sent     | Internet Computer | ICP      | 0.18       | 1681206438000 | 7d2912c28cd074a912be7d0cd5a6f6dd48591045d7d626edc5e6877a3a22314f | d5066269d8ae5cd30c23bda91d42e56bd2475bb318d38841c589eb2ae4fe1f06 | 28593  |
       | 1   | Sent     | Ethereum          | ETH      | 0.05       | 1681292364000 | 0xf9387c5e8f3ac64824706623daeaa49c65d8b2b1                       | 0xb1107f4141fb56b07d15b65f1629451443ff8f8e                       | 28593  |
       | 1   | Received | Ethereum          | ETH      | 0.1        | 1681205316000 | 0xdc75e8c3ae765d8947adbc6698a2403a6141d439                       | 0xcdf42ca0423a6063fa4e60bdcbceae64f7d07cda                       | 10974  |
+      | 2   | Received | Ethereum          | FAU      | 1          | 1681722444000 | 0x0000000000000000000000000000000000000000                       | 0x1e76a4b38be7573bcb0fe5f7cc8c396a083545f3                       | 25795  |
 
   @tsxhistory2
   Scenario Outline: User should be able to see transaction depends on selected app
@@ -47,7 +48,8 @@ Feature:Fungible Asset History
     Then 0 transaction in the table
     Examples:
       | tab      | chain             | anchor | txs   | txss |
-      | Received | Bitcoin           | 25795  | 1 TXs | 1    |
+      | Received | Bitcoin           | 25795  | 3 TXs | 1    |
+      | Received | Ethereum          | 25795  | 3 TXs | 2    |
       | Sent     | Bitcoin           | 28593  | 9 TXs | 2    |
       | Sent     | Ethereum          | 28593  | 9 TXs | 1    |
       | Sent     | Internet Computer | 28593  | 9 TXs | 1    |

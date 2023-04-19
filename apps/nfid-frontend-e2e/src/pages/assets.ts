@@ -11,18 +11,16 @@ export class Assets {
     return $("#balance")
   }
 
-  public async getAssetBalance(label:string) {
-    return $(
-      this.assetLabel + `${label.replace(/\s/g, "")}` + "_balance']",
-    )
+  public async getAssetBalance(label: string) {
+    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_balance']")
   }
 
-  public async getCurrency(label:string) {
-    return  $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_currency']")
+  public async getCurrency(label: string) {
+    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_currency']")
   }
 
-  public async getBlockchain(label:string) {
-    return  $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_blockchain']")
+  public async getBlockchain(label: string) {
+    return $(this.assetLabel + `${label.replace(/\s/g, "")}` + "_blockchain']")
   }
 
   private getTokenUsd(assetLabel: string) {
@@ -146,7 +144,9 @@ export class Assets {
   }
 
   public async openAssetByLabel(name: string) {
-    await $(this.assetLabel + `${name.replace(/\s/g, "")}` + "']").waitForDisplayed({
+    await $(
+      this.assetLabel + `${name.replace(/\s/g, "")}` + "']",
+    ).waitForDisplayed({
       timeout: 7000,
       timeoutMsg: "Asset has not been showed! Missing asset label!",
     })

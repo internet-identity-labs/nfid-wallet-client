@@ -133,6 +133,7 @@ declare type FungibleActivityRecord = {
   from: string
   transactionHash: string
   price: number
+  asset?: string
 }
 
 declare type ActivityRecord = {
@@ -225,5 +226,21 @@ declare interface TokenBalanceSheet {
   tokenBalance: Balance
   usdBalance: string
   applications: { [applicationName: string]: AppBalance | undefined }
+  blockchain?: string
 }
 
+declare interface TransactionRow {
+  type: "send" | "received"
+  asset: string
+  quantity: number
+  date: string
+  from: string
+  to: string
+}
+
+export interface FungibleTxs {
+  sendTransactions?: TransactionRow[]
+  receivedTransactions?: TransactionRow[]
+  walletAddress: string
+  btcAddress: string
+}

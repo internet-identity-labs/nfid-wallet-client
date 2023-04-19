@@ -1,4 +1,9 @@
 import { ChainBalance } from "packages/integration/src/lib/asset/types"
+import {
+  AccountBalance,
+  AppBalance,
+  TokenBalanceSheet,
+} from "packages/integration/src/lib/asset/types"
 
 import { IconPngEthereum } from "@nfid-frontend/ui"
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
@@ -7,12 +12,6 @@ import { TokenStandards } from "@nfid/integration/token/types"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { fetchProfile } from "frontend/integration/identity-manager"
-
-import {
-  AccountBalance,
-  AppBalance,
-  TokenBalanceSheet,
-} from "packages/integration/src/lib/asset/types"
 
 export const getEthBalance = async (): Promise<TokenBalanceSheet> => {
   const hostname = "nfid.one"
@@ -63,5 +62,6 @@ export const computeSheetForRootAccount = async (
     token: TokenStandards.ETH,
     tokenBalance,
     usdBalance,
+    blockchain: "Ethereum",
   }
 }

@@ -68,7 +68,7 @@ const AppRow: React.FC<
         },
       })
     },
-    [appName, currency, navigate, blockchain],
+    [appName, navigate, blockchain],
   )
 
   return (

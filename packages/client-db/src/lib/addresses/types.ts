@@ -1,3 +1,7 @@
+export type NetworkKey = "BTC" | "ETH"
+
 export type CachedAddresses = {
-  [scope: string]: string
+  [scope: string]: {
+    [network: string]: string
+  }
 }

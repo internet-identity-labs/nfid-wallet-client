@@ -18,6 +18,7 @@ export const getEthAddress = async (anchor: number) => {
     accountId: accountId,
     hostname: hostname,
     anchor: BigInt(anchor),
+    network: "ETH",
   })
 
   if (cachedAddress) return cachedAddress
@@ -33,6 +34,7 @@ export const getEthAddress = async (anchor: number) => {
       accountId,
       hostname,
       anchor: BigInt(anchor),
+      network: "ETH",
     })
 
   return address

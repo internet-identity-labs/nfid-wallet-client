@@ -27,7 +27,6 @@ import {
 import { format } from "date-fns"
 import { ethers } from "ethers-ts"
 import { principalToAddress } from "ictool"
-import { FungibleTxs } from "src/features/fungable-token/btc/get-btc"
 
 import { E8S } from "@nfid/integration/token/icp"
 
@@ -62,6 +61,7 @@ import {
   TransactionRow,
   TransferETHRequest,
   TransferNftRequest,
+  FungibleTxs
 } from "./types"
 
 export class EthereumAsset implements NonFungibleAsset {

@@ -1,7 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
 import { principalToAddress } from "ictool"
-import { ChainBalance } from "packages/integration/src/lib/asset/types"
+import { ChainBalance, FungibleTxs } from "packages/integration/src/lib/asset/types";
 import {
   AccountBalance,
   AppBalance,
@@ -27,13 +27,6 @@ import { E8S } from "@nfid/integration/token/icp"
 
 const ROOT_DOMAIN = "nfid.one"
 const BTC_ROOT_ACCOUNT = "account 1"
-
-export interface FungibleTxs {
-  sendTransactions?: TransactionRow[]
-  receivedTransactions?: TransactionRow[]
-  walletAddress: string
-  btcAddress: string
-}
 
 export const getBtcBalance = async (): Promise<TokenBalanceSheet> => {
   const { address, principal } = await getAccIdentifier()

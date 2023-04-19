@@ -237,3 +237,10 @@ declare interface TransactionRow {
   from: string
   to: string
 }
+
+export interface FungibleTxs {
+  sendTransactions?: TransactionRow[]
+  receivedTransactions?: TransactionRow[]
+  walletAddress: string
+  btcAddress: string
+}

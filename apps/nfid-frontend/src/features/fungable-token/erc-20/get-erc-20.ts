@@ -1,5 +1,4 @@
-import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
-import { FungibleTxs } from "src/features/fungable-token/btc/get-btc"
+import { FungibleTxs, TokenBalanceSheet } from "packages/integration/src/lib/asset/types";
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
 

@@ -8,7 +8,6 @@ import { Alchemy, Network } from "alchemy-sdk"
 import { Bytes } from "ethers"
 import { ethers } from "ethers-ts"
 
-import { TransferRequest } from "../asset/estimateTransaction/estimateTransaction"
 import { EthWalletV2 } from "./signer-ecdsa"
 
 export enum ProviderError {
@@ -54,7 +53,7 @@ export class DelegationWalletAdapter {
     let gasLimit
     const [nonce, { gasPrice, maxPriorityFeePerGas, maxFeePerGas }] =
       await Promise.all([
-        provider.getTransactionCount(transaction.from || "", "pending"),
+        this.wallet.getTransactionCount("latest"),
         this.wallet.getFeeData(),
       ])
 
@@ -67,12 +66,13 @@ export class DelegationWalletAdapter {
     tx = {
       ...transaction,
       nonce,
-      maxPriorityFeePerGas,
-      maxFeePerGas,
+      maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
+      maxFeePerGas: transaction.maxFeePerGas,
     }
 
     try {
       tx = await this.wallet.populateTransaction(transaction)
+      tx.gasLimit = ethers.BigNumber.from(tx.gasLimit).mul(125).div(100)
       return [tx, err]
     } catch (error) {
       const alchemy = new Alchemy({

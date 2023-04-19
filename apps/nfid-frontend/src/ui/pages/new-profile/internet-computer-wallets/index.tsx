@@ -70,6 +70,7 @@ const TokenWalletsDetailPage: React.FC<IProfileTransactionsPage> = ({
           <AppAccountBalanceSheet
             apps={apps}
             currency={balanceSheet?.token}
+            blockchain={balanceSheet?.blockchain}
             toPresentation={tokenConfig?.toPresentation}
           />
         )}

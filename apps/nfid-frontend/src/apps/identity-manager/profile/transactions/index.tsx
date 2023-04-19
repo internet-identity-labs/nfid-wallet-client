@@ -1,7 +1,9 @@
 import { principalToAddress } from "ictool"
+import { TransactionRow } from "packages/integration/src/lib/asset/types"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useBtcTransactions } from "src/features/fungable-token/btc/hooks/use-btc-transactions"
+import { useErc20Transactions } from "src/features/fungable-token/erc-20/hooks/use-erc-20-transactions"
 
 import { IOption } from "@nfid-frontend/ui"
 import { sortByDate } from "@nfid-frontend/utils"
@@ -9,7 +11,6 @@ import { blockchains } from "@nfid/config"
 
 import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
 import {
-  TransactionRow,
   selectReceivedTransactions,
   selectSendTransactions,
 } from "frontend/integration/rosetta/select-transactions"
@@ -23,6 +24,7 @@ const ProfileTransactions = () => {
   const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
     useEthTransactions()
   const { txs: btcTxs } = useBtcTransactions()
+  const { erc20txs } = useErc20Transactions()
 
   const { wallets } = useAllWallets()
 
@@ -55,10 +57,18 @@ const ProfileTransactions = () => {
     })
     const ETHTransactions = isNFIDAccount ? sendEthTXs : []
     const BTCTransactions = isNFIDAccount ? btcTxs?.sendTransactions ?? [] : []
+    const ERC20Transactions = isNFIDAccount
+      ? erc20txs?.sendTransactions ?? []
+      : []
 
     if (!selectedBlockchainFilters.length)
       return sortByDate(
-        [...ICTransactions, ...ETHTransactions, ...BTCTransactions],
+        [
+          ...ICTransactions,
+          ...ETHTransactions,
+          ...BTCTransactions,
+          ...ERC20Transactions,
+        ],
         "MMM dd',' yyyy - hh:mm:ss a",
       )
 
@@ -67,7 +77,7 @@ const ProfileTransactions = () => {
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
     selectedBlockchainFilters.includes("Ethereum") &&
-      transactions.push(...ETHTransactions)
+      transactions.push(...ETHTransactions, ...ERC20Transactions)
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
 
@@ -80,6 +90,7 @@ const ProfileTransactions = () => {
     sendEthTXs,
     btcTxs?.sendTransactions,
     selectedBlockchainFilters,
+    erc20txs?.sendTransactions,
   ])
 
   const receivedTransactions: TransactionRow[] = useMemo(() => {
@@ -90,13 +101,22 @@ const ProfileTransactions = () => {
         : wallets.map((w) => principalToAddress(w.principal)),
     })
     const ETHTransactions = isNFIDAccount ? receiveEthTXs : []
+    const ERC20Transactions = isNFIDAccount
+      ? erc20txs?.receivedTransactions ?? []
+      : []
+
     const BTCTransactions = isNFIDAccount
       ? btcTxs?.receivedTransactions ?? []
       : []
 
     if (!selectedBlockchainFilters.length)
       return sortByDate(
-        [...ICTransactions, ...ETHTransactions, ...BTCTransactions],
+        [
+          ...ICTransactions,
+          ...ETHTransactions,
+          ...BTCTransactions,
+          ...ERC20Transactions,
+        ],
         "MMM dd',' yyyy - hh:mm:ss a",
       )
 
@@ -105,7 +125,7 @@ const ProfileTransactions = () => {
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
     selectedBlockchainFilters.includes("Ethereum") &&
-      transactions.push(...ETHTransactions)
+      transactions.push(...ETHTransactions, ...ERC20Transactions)
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
 
@@ -118,6 +138,7 @@ const ProfileTransactions = () => {
     receiveEthTXs,
     btcTxs?.receivedTransactions,
     selectedBlockchainFilters,
+    erc20txs?.receivedTransactions,
   ])
 
   const accountsOptions = useMemo(() => {
@@ -144,6 +165,8 @@ const ProfileTransactions = () => {
             receiveEthTXs.length +
             (btcTxs?.sendTransactions?.length ?? 0) +
             (btcTxs?.receivedTransactions?.length ?? 0) +
+            (erc20txs?.sendTransactions?.length ?? 0) +
+            (erc20txs?.receivedTransactions?.length ?? 0) +
             ICTransactionsLength
           : ICTransactionsLength
 
@@ -156,6 +179,8 @@ const ProfileTransactions = () => {
   }, [
     btcTxs?.receivedTransactions?.length,
     btcTxs?.sendTransactions?.length,
+    erc20txs?.receivedTransactions?.length,
+    erc20txs?.sendTransactions?.length,
     receiveEthTXs.length,
     sendEthTXs.length,
     walletTransactions,
@@ -192,15 +217,7 @@ const ProfileTransactions = () => {
   useEffect(() => {
     const blockchain = location.state?.blockchain
     if (!blockchain) return
-
-    switch (blockchain) {
-      case "ETH":
-        return setSelectedBlockchainFilters(["Ethereum"])
-      case "BTC":
-        return setSelectedBlockchainFilters(["Bitcoin"])
-      default:
-        return setSelectedBlockchainFilters(["Internet Computer"])
-    }
+    setSelectedBlockchainFilters([blockchain])
   }, [location.state?.blockchain])
 
   return (

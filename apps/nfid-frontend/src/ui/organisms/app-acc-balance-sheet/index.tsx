@@ -39,9 +39,10 @@ const GridCell = React.forwardRef<HTMLTableCellElement, GridCellProps>(
 const AppRow: React.FC<
   Pick<AppBalance, "accounts" | "appName" | "icon"> & {
     currency: string
+    blockchain: string
     toPresentation?: (balance?: bigint) => number
   }
-> = ({ appName, icon, accounts, currency, toPresentation }) => {
+> = ({ appName, icon, accounts, currency, blockchain, toPresentation }) => {
   const navigate = useNavigate()
   const copyToClipboard = React.useCallback(
     (type: string, value: string) => (e: React.SyntheticEvent) => {
@@ -63,11 +64,11 @@ const AppRow: React.FC<
             label: `${appName} ${account.accountName}`,
             value: principalToAddress(Principal.fromText(account.principalId)),
           },
-          blockchain: currency,
+          blockchain,
         },
       })
     },
-    [appName, currency, navigate],
+    [appName, navigate, blockchain],
   )
 
   return (
@@ -132,12 +133,14 @@ const AppRow: React.FC<
 interface AppAccountBalanceSheetProps {
   apps: AppBalance[]
   currency?: string
+  blockchain?: string
   toPresentation?: (balance?: bigint) => number
 }
 
 export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
   apps,
   currency = "ICP",
+  blockchain = "Internet Computer",
   toPresentation,
 }) => {
   const headings = [
@@ -160,6 +163,7 @@ export const AppAccountBalanceSheet: React.FC<AppAccountBalanceSheetProps> = ({
             appName={app.appName}
             accounts={app.accounts}
             icon={app.icon}
+            blockchain={blockchain}
             toPresentation={toPresentation}
           />
         ))}

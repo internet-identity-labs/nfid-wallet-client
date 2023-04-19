@@ -253,11 +253,11 @@ Then(
     blockchain: string,
     balance: string,
   ) => {
-    let assetBalance =await Assets.getAssetBalance(asselLabel)
+    let assetBalance = await Assets.getAssetBalance(asselLabel)
     await expect(assetBalance).toHaveText(balance)
-    let assetCurrency =await Assets.getCurrency(asselLabel)
+    let assetCurrency = await Assets.getCurrency(asselLabel)
     await expect(assetCurrency).toHaveText(currency)
-    let assetBlockchain =await Assets.getBlockchain(asselLabel)
+    let assetBlockchain = await Assets.getBlockchain(asselLabel)
     await expect(assetBlockchain).toHaveText(blockchain)
   },
 )

@@ -61,8 +61,6 @@ const ProfileTransactions = () => {
       ? erc20tsx?.sendTransactions ?? []
       : []
 
-    console.log("ERC20TransactionsSS")
-    console.log(ERC20Transactions)
     if (!selectedBlockchainFilters.length)
       return sortByDate(
         [

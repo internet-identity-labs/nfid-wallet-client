@@ -24,7 +24,7 @@ const ProfileTransactions = () => {
   const { sendTransactions: sendEthTXs, receiveTransactions: receiveEthTXs } =
     useEthTransactions()
   const { txs: btcTxs } = useBtcTransactions()
-  const { erc20tsx } = useErc20Transactions()
+  const { erc20txs } = useErc20Transactions()
 
   const { wallets } = useAllWallets()
 
@@ -58,7 +58,7 @@ const ProfileTransactions = () => {
     const ETHTransactions = isNFIDAccount ? sendEthTXs : []
     const BTCTransactions = isNFIDAccount ? btcTxs?.sendTransactions ?? [] : []
     const ERC20Transactions = isNFIDAccount
-      ? erc20tsx?.sendTransactions ?? []
+      ? erc20txs?.sendTransactions ?? []
       : []
 
     if (!selectedBlockchainFilters.length)
@@ -90,7 +90,7 @@ const ProfileTransactions = () => {
     sendEthTXs,
     btcTxs?.sendTransactions,
     selectedBlockchainFilters,
-    erc20tsx?.sendTransactions,
+    erc20txs?.sendTransactions,
   ])
 
   const receivedTransactions: TransactionRow[] = useMemo(() => {
@@ -102,7 +102,7 @@ const ProfileTransactions = () => {
     })
     const ETHTransactions = isNFIDAccount ? receiveEthTXs : []
     const ERC20Transactions = isNFIDAccount
-      ? erc20tsx?.receivedTransactions ?? []
+      ? erc20txs?.receivedTransactions ?? []
       : []
 
     const BTCTransactions = isNFIDAccount
@@ -138,7 +138,7 @@ const ProfileTransactions = () => {
     receiveEthTXs,
     btcTxs?.receivedTransactions,
     selectedBlockchainFilters,
-    erc20tsx?.receivedTransactions,
+    erc20txs?.receivedTransactions,
   ])
 
   const accountsOptions = useMemo(() => {
@@ -165,8 +165,8 @@ const ProfileTransactions = () => {
             receiveEthTXs.length +
             (btcTxs?.sendTransactions?.length ?? 0) +
             (btcTxs?.receivedTransactions?.length ?? 0) +
-            (erc20tsx?.sendTransactions?.length ?? 0) +
-            (erc20tsx?.receivedTransactions?.length ?? 0) +
+            (erc20txs?.sendTransactions?.length ?? 0) +
+            (erc20txs?.receivedTransactions?.length ?? 0) +
             ICTransactionsLength
           : ICTransactionsLength
 
@@ -179,8 +179,8 @@ const ProfileTransactions = () => {
   }, [
     btcTxs?.receivedTransactions?.length,
     btcTxs?.sendTransactions?.length,
-    erc20tsx?.receivedTransactions?.length,
-    erc20tsx?.sendTransactions?.length,
+    erc20txs?.receivedTransactions?.length,
+    erc20txs?.sendTransactions?.length,
     receiveEthTXs.length,
     sendEthTXs.length,
     walletTransactions,

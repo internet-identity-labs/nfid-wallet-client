@@ -94,6 +94,7 @@ export const getAccIdentifier = async () => {
     accountId: BTC_ROOT_ACCOUNT,
     hostname,
     anchor,
+    network: "BTC",
   })
   let principal = ""
   if (!address) {
@@ -106,6 +107,7 @@ export const getAccIdentifier = async () => {
       hostname,
       address,
       anchor,
+      network: "BTC",
     })
   } else {
     principal = await getWalletDelegation(profile?.anchor).then((l) =>

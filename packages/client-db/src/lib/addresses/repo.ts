@@ -1,7 +1,7 @@
 import { getScope } from "@nfid/integration"
 
 import { STORAGE_KEY } from "./constants"
-import { CachedAddresses } from "./types"
+import { CachedAddresses, NetworkKey } from "./types"
 
 const loadAddressCache = (): CachedAddresses => {
   const cache = localStorage.getItem(STORAGE_KEY)
@@ -15,11 +15,16 @@ type KeyArgs = {
   hostname: string
 }
 
-type ReadAddressArg = KeyArgs
-
-type CreateAddressArg = KeyArgs & {
-  address: string
+type NetworkArgs = {
+  network: NetworkKey
 }
+
+type ReadAddressArg = KeyArgs & NetworkArgs
+
+type CreateAddressArg = KeyArgs &
+  NetworkArgs & {
+    address: string
+  }
 
 export const getKey = ({ hostname, accountId, anchor }: KeyArgs) => {
   const scope = getScope(hostname, accountId)
@@ -32,12 +37,13 @@ export const storeAddressInLocalCache = ({
   anchor,
   accountId,
   address,
+  network,
 }: CreateAddressArg) => {
   const cache = loadAddressCache()
   const key = getKey({ hostname, anchor, accountId })
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ ...cache, [key]: address }),
+    JSON.stringify({ ...cache, [key]: { ...cache[key], [network]: address } }),
   )
 }
 
@@ -45,8 +51,9 @@ export const readAddressFromLocalCache = ({
   accountId,
   anchor,
   hostname,
+  network,
 }: ReadAddressArg): string | undefined => {
   const cache = loadAddressCache()
   const key = getKey({ hostname, accountId, anchor })
-  return cache[key]
+  return cache[key][network]
 }

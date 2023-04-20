@@ -1,7 +1,10 @@
 import { Principal } from "@dfinity/principal"
 import { format } from "date-fns"
 import { principalToAddress } from "ictool"
-import { ChainBalance, FungibleTxs } from "packages/integration/src/lib/asset/types";
+import {
+  ChainBalance,
+  FungibleTxs,
+} from "packages/integration/src/lib/asset/types"
 import {
   AccountBalance,
   AppBalance,
@@ -94,6 +97,7 @@ export const getAccIdentifier = async () => {
     accountId: BTC_ROOT_ACCOUNT,
     hostname,
     anchor,
+    network: "BTC",
   })
   let principal = ""
   if (!address) {
@@ -106,6 +110,7 @@ export const getAccIdentifier = async () => {
       hostname,
       address,
       anchor,
+      network: "BTC",
     })
   } else {
     principal = await getWalletDelegation(profile?.anchor).then((l) =>

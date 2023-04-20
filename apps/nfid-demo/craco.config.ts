@@ -36,7 +36,14 @@ const config = {
       return {
         ...config,
         ignoreWarnings: [/Failed to parse source map from/],
-        plugins: [...config.plugins, new webpack.DefinePlugin(serviceConfig)],
+        plugins: [
+          ...config.plugins,
+          new webpack.DefinePlugin(serviceConfig),
+          new webpack.ProvidePlugin({
+            Buffer: [require.resolve("buffer/"), "Buffer"],
+            process: require.resolve("process/browser"),
+          }),
+        ],
         resolve: {
           ...config.resolve,
           fallback: {

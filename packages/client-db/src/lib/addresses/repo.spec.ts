@@ -29,7 +29,7 @@ describe("address repo", () => {
     })
     const address = "0x2b6f14C88B256f2EbCb8e22267d5F726D0429a28"
     const expectedCache = {
-      [key]: address,
+      [key]: { ETH: address },
     }
 
     storeAddressInLocalCache({
@@ -37,6 +37,7 @@ describe("address repo", () => {
       accountId: "123",
       address,
       anchor: BigInt(10000),
+      network: "ETH",
     })
 
     expect(mockedLocalStorage.setItem).toHaveBeenCalledTimes(1)
@@ -54,7 +55,7 @@ describe("address repo", () => {
     })
     const address = "0x2b6f14C88B256f2EbCb8e22267d5F726D0429a28"
     const cache = {
-      [key]: address,
+      [key]: { ETH: address },
     }
     mockedLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(cache))
 
@@ -62,6 +63,7 @@ describe("address repo", () => {
       hostname: "example.com",
       accountId: "123",
       anchor: BigInt(10000),
+      network: "ETH",
     })
 
     expect(mockedLocalStorage.getItem).toHaveBeenCalledTimes(1)

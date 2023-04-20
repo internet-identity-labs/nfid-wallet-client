@@ -167,7 +167,6 @@ export const TransferFT = ({
   useEffect(() => {
     if (!selectedToken && allTokens.length) assignToken(allTokens[0])
   }, [allTokens, assignToken, selectedToken])
-
   return (
     <BlurredLoader
       className="!p-0 text-xs"
@@ -241,7 +240,7 @@ export const TransferFT = ({
         <p id={"transfer_fee"} className="text-gray-400">
           Transfer fee:{" "}
           {`${selectedToken?.toPresentation(selectedToken?.fee)} ${
-            selectedToken?.currency
+            selectedToken?.feeCurrency ?? selectedToken?.currency
           }`}
         </p>
       </div>
@@ -275,7 +274,7 @@ export const TransferFT = ({
           registerFunction={register("to", {
             required: "This field cannot be empty",
             validate: makeAddressFieldValidation(
-              selectedToken?.currency ?? "ICP",
+              selectedToken?.tokenStandard ?? "ICP",
             ),
           })}
         />

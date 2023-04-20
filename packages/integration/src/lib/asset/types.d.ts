@@ -6,6 +6,8 @@ import { Network } from "alchemy-sdk"
 
 import { Balance } from "@nfid/integration"
 
+import { Erc20TransferRequest } from "./estimateTransaction/transferRequest/erc20TransferRequest"
+
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
 declare type EtherscanTransactionHashUrl = string
@@ -203,6 +205,7 @@ declare type EthEstimatedTransactionRequest =
   | EthTransferRequest
   | NftERC721TransferRequest
   | NftERC1155TransferRequest
+  | Erc20TransferRequest
 
 declare interface AccountBalance {
   accountName: string
@@ -227,6 +230,8 @@ declare interface TokenBalanceSheet {
   usdBalance: string
   applications: { [applicationName: string]: AppBalance | undefined }
   blockchain?: string
+  contract?: string
+  fee?: string
 }
 
 declare interface TransactionRow {

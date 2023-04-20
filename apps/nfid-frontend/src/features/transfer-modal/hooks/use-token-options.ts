@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
 
 import {
   IconPngEthereum,
@@ -11,6 +12,7 @@ import { useAllDip20Token } from "frontend/features/fungable-token/dip-20/hooks/
 
 export const useTokenOptions = () => {
   const { token: dip20Tokens } = useAllDip20Token()
+  const { erc20 } = useErc20()
 
   const tokenOptions: IGroupedOptions[] = useMemo(() => {
     return [
@@ -41,7 +43,14 @@ export const useTokenOptions = () => {
             subTitle: "Ethereum",
             value: "ETH",
           },
-        ],
+        ].concat(
+          erc20?.map((token) => ({
+            icon: token.icon,
+            title: token.token,
+            subTitle: token.label,
+            value: token.token,
+          })) ?? [],
+        ),
       },
       {
         label: "Bitcoin",

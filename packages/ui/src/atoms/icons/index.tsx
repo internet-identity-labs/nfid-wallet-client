@@ -11,6 +11,7 @@ import IconSvgDesktop from "./desktop.svg"
 import IconSvgDfinity from "./dfinity.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
+import IconERC20 from "./erc20.svg"
 import IconSvgError from "./error.svg"
 import IconPngEthereum from "./ethereum.png"
 import IconSvgGmail from "./gmail.svg"
@@ -43,6 +44,7 @@ import IconSvgWarning from "./warning.svg"
 export {
   IconPngEthereum,
   IconSvgBTC,
+  IconERC20,
   IconSvgArrow,
   IconSvgCalendar,
   IconSvgCancel,

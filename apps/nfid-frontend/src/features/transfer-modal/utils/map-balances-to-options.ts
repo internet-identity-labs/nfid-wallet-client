@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 
 import { IGroupedOptions } from "@nfid-frontend/ui"
 import { groupArrayByField, truncateString } from "@nfid-frontend/utils"
@@ -25,6 +26,7 @@ export const mapAccountBalancesToOptions = (
   }[],
   selectedToken: string,
   rates: IRate,
+  erc20: TokenBalanceSheet[],
 ) => {
   if (!wallets) return []
 
@@ -69,6 +71,26 @@ export const mapAccountBalancesToOptions = (
         ],
       },
     ] as IGroupedOptions[]
+
+  const erc20token = erc20.find((l) => l.token === selectedToken)
+  if (erc20token) {
+    return [
+      {
+        label: "Public",
+        options: [
+          {
+            title: "NFID Account 1",
+            value: wallets[0]?.ethAddress,
+            subTitle: truncateString(wallets[0]?.ethAddress ?? "", 10),
+            innerTitle: `${toPresentation(
+              erc20token.tokenBalance,
+            )} ${selectedToken}`,
+            innerSubtitle: erc20token.usdBalance,
+          },
+        ],
+      },
+    ] as IGroupedOptions[]
+  }
 
   const formattedOptions = wallets.map((wallet) => ({
     title: wallet.label ?? "",

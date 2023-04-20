@@ -64,7 +64,7 @@ export const useTokenOptions = () => {
         ],
       },
     ] as IGroupedOptions[]
-  }, [dip20Tokens])
+  }, [dip20Tokens, erc20])
 
   return { tokenOptions }
 }

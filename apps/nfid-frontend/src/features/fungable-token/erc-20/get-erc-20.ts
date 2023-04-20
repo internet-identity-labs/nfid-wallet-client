@@ -9,16 +9,15 @@ import { fetchProfile } from "src/integration/identity-manager"
 
 import { IconERC20 } from "@nfid-frontend/ui"
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
+import { DelegationIdentity } from "@dfinity/identity";
 
 export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
-  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
+  const identity = await getIdentity();
   return await ethereumAsset.getErc20Accounts(identity, IconERC20)
 }
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
-  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
+  const identity = await getIdentity();
   return ethereumAsset.getErc20TransactionHistory(identity)
 }
 
@@ -28,8 +27,7 @@ export const transferERC20 = async (
   token: TokenConfig,
 ) => {
   try {
-    const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-    const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
+    const identity = await getIdentity();
     const transaction = await ethereumAsset.getEstimatedTransaction(
       new Erc20TransferRequest(identity, to, token.contract!, amount),
     )
@@ -43,4 +41,9 @@ export const transferERC20 = async (
       e?.message ?? "Unexpected error: The transaction has been cancelled",
     )
   }
+}
+
+const  getIdentity = async(): Promise<DelegationIdentity> => {
+  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
+  return await getWalletDelegation(profile.anchor, "nfid.one", "0")
 }

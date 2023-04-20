@@ -61,7 +61,7 @@ import {
   TransactionRow,
   TransferETHRequest,
   TransferNftRequest,
-  FungibleTxs
+  FungibleTxs,
 } from "./types"
 
 export class EthereumAsset implements NonFungibleAsset {
@@ -289,15 +289,16 @@ export class EthereumAsset implements NonFungibleAsset {
 
   public async getErc20Accounts(
     identity: DelegationIdentity,
+    defaultIcon?: string,
   ): Promise<Array<TokenBalanceSheet>> {
-    return this.getErc20TokensByUser({ identity }).then((tokens) =>
-      tokens.tokens.map((l) => {
-        return this.computeSheetForRootAccount(
-          l,
-          identity.getPrincipal().toText(),
-        )
-      }),
-    )
+    const tokens = await this.getErc20TokensByUser({ identity })
+    return tokens.tokens.map((l) => {
+      return this.computeSheetForRootAccount(
+        l,
+        identity.getPrincipal().toText(),
+        defaultIcon,
+      )
+    })
   }
 
   public async getErc20TransactionHistory(
@@ -458,6 +459,8 @@ export class EthereumAsset implements NonFungibleAsset {
   private computeSheetForRootAccount(
     token: Token,
     principalId: string,
+    defaultIcon?: string,
+    fee?: string,
   ): TokenBalanceSheet {
     const rootAccountBalance: AccountBalance = {
       accountName: "account 1",
@@ -475,12 +478,14 @@ export class EthereumAsset implements NonFungibleAsset {
       applications: {
         NFID: appBalance,
       },
-      icon: token.logo ? token.logo : "",
+      icon: token.logo ? token.logo : defaultIcon!,
       label: token.name,
       token: token.symbol,
       tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
       usdBalance: token.balanceinUsd,
       blockchain: "Ethereum",
+      fee: fee,
+      contract: token.contractAddress,
     }
   }
 

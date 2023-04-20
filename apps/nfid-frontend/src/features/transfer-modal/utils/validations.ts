@@ -54,6 +54,11 @@ export const makeAddressFieldValidation = (type: string) => (value: string) => {
         value.length === ETH_ADDRESS_LENGTH
         ? true
         : "Incorrect address"
+    case "ERC20":
+      return typeof isHex(value) === "boolean" &&
+        value.length === ETH_ADDRESS_LENGTH
+        ? true
+        : "Incorrect address"
     case "BTC":
       return typeof isHex(value) === "boolean" &&
         value.length > 25 &&

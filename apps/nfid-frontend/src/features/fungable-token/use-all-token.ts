@@ -25,6 +25,8 @@ export interface TokenConfig {
   toPresentation: (value?: bigint) => number
   transformAmount: (value: string) => number
   blockchain: string
+  feeCurrency?: string
+  contract?: string
 }
 
 export const useAllToken = (): { token: TokenConfig[] } => {
@@ -96,6 +98,8 @@ export const useAllToken = (): { token: TokenConfig[] } => {
             fee: BigInt(0),
             toPresentation,
             transformAmount: stringICPtoE8s,
+            feeCurrency: "ETH",
+            contract: l.contract,
           }))
         : []),
     ]

@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { fromHexString, principalToAddress } from "ictool"
+import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
 import { getBtcBalance } from "src/features/fungable-token/btc/get-btc"
 
 import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
@@ -11,6 +12,7 @@ import { getEthBalance } from "./eth/get-eth-balance"
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]
   dip20Token: TokenMetadata[]
+  erc20: TokenBalanceSheet[]
 }
 
 export type Token = string
@@ -32,6 +34,7 @@ export type AccountBalance = {
 export async function fetchBalances({
   principals,
   dip20Token,
+  erc20,
 }: FetchBalanceArgs): Promise<AccountBalance[]> {
   return await Promise.all(
     principals.map(async ({ principal, account }) => {
@@ -51,6 +54,9 @@ export async function fetchBalances({
             canisterId,
             principalId: principal.toText(),
           }),
+        })),
+        ...erc20.map(async (token) => ({
+          [token.token]: token.tokenBalance,
         })),
       ])
 

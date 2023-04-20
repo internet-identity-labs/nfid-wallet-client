@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js"
 import { BtcWallet } from "packages/integration/src/lib/bitcoin-wallet/btc-wallet"
+import { transferERC20 } from "src/features/fungable-token/erc-20/get-erc-20"
 
 import {
   Account,
@@ -27,11 +28,17 @@ export const transferFT = async (context: TransferMachineContext) => {
     )
   }
 
-  switch (context.selectedFT?.currency) {
+  switch (context.selectedFT?.tokenStandard) {
     case "ETH":
       return transferETH(parseFloat(context.amount), context.receiverWallet)
     case "BTC":
       return transferBTC(parseFloat(context.amount), context.receiverWallet)
+    case "ERC20":
+      return transferERC20(
+        parseFloat(context.amount),
+        context.receiverWallet,
+        context.selectedFT,
+      )
     default:
       return transferICP(
         context.amount,

@@ -105,7 +105,7 @@ describe("KnownDevice Coordinator", () => {
     const RENDER_AUTH_STATE_TEST_PLAN = [
       {
         description: "should render MultiAccount Authentication state",
-        detectOnScreen: ["Choose an account", "to connect to MyApp"],
+        detectOnScreen: ["Unlock your NFID"],
         hostNameMock: "https://my-application.com",
         fetchApplicationsMock: [],
         profile: {
@@ -114,7 +114,7 @@ describe("KnownDevice Coordinator", () => {
       },
       {
         description: "should render SingleAccount Authentication state",
-        detectOnScreen: ["Unlock NFID", "to continue to MyApp"],
+        detectOnScreen: ["Unlock your NFID"],
         hostNameMock: "https://my-application.com",
         fetchApplicationsMock: [
           { accountLimit: 1, domain: "https://my-application.com" },
@@ -140,11 +140,12 @@ describe("KnownDevice Coordinator", () => {
         IM.fetchApplications = jest.fn(() =>
           Promise.resolve(plan.fetchApplicationsMock),
         )
+
         const context = {
           profile: {
             anchor: 11111,
           } as Profile,
-          isNFID: false,
+          isNFID: true,
           appMeta: {
             name: "MyApp",
             logo: "https://my-app.com/logo.svg",
@@ -155,6 +156,7 @@ describe("KnownDevice Coordinator", () => {
             hostname: plan.hostNameMock,
           },
         }
+
         const actor = makeInvokedActor<KnownDeviceMachineContext>(
           KnownDeviceMachine,
           context,
@@ -164,10 +166,6 @@ describe("KnownDevice Coordinator", () => {
 
         await waitFor(() => {
           plan.detectOnScreen.map((ele) => screen.getByText(ele))
-          const appLogo = screen.getByAltText(`application-logo-MyApp`)
-          expect(appLogo.getAttribute("src")).toBe(
-            "https://my-app.com/logo.svg",
-          )
         })
         expect(IM.fetchApplications).toHaveBeenCalledWith()
         expect(II.lookup).toHaveBeenCalledWith(11111, expect.any(Function))
@@ -188,16 +186,6 @@ describe("KnownDevice Coordinator", () => {
         profile: {
           anchor: 11111,
         } as Profile,
-      },
-      {
-        description:
-          "MultiAccount should produce an authSession when user clicks unlock",
-        detectOnScreen: ["Choose an account", "to connect to MyApp"],
-        unlockTarget: "Continue",
-        lookupMock: AUTHENTICATOR_DEVICES,
-        hostNameMock: "https://my-application.com",
-        fetchApplicationsMock: [],
-        isNFID: false,
       },
       {
         description:

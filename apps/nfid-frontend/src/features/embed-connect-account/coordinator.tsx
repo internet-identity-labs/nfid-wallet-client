@@ -9,9 +9,9 @@ import {
 } from "frontend/state/authorization"
 
 import { RPCMessage } from "../embed/services/rpc-receiver"
+import { EmbedChooseAccount } from "./components"
 import { MappedConnectionDetails } from "./components/connection-details"
 import EmbedConnectAccountMachine from "./machines"
-import { ChooseAccount } from "./ui/choose-account"
 
 type NFIDConnectAccountCoordinatorProps = {
   appMeta: AuthorizingAppMeta
@@ -29,7 +29,7 @@ export const NFIDConnectAccountCoordinator: React.FC<
   switch (true) {
     case state.matches("Start"):
       return (
-        <ChooseAccount
+        <EmbedChooseAccount
           onConnectionDetails={() => send({ type: "CONNECTION_DETAILS" })}
           onConnect={onConnect}
           applicationName={appMeta.name}

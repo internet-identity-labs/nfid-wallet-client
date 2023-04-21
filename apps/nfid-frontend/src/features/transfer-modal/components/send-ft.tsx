@@ -171,7 +171,6 @@ export const TransferFT = ({
     assignSourceWallet(walletOptions[0].options[0]?.value)
   }, [walletOptions]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  console.log({ selectedToken, selectedSourceAccount })
   return (
     <BlurredLoader
       className="!p-0 text-xs"

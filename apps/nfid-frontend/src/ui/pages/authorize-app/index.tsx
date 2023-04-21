@@ -1,5 +1,9 @@
+import clsx from "clsx"
 import React from "react"
 
+import { BlurOverlay, Button } from "@nfid-frontend/ui"
+
+import dfinity from "frontend/assets/dfinity.svg"
 import { ChooseAccount } from "frontend/features/embed-connect-account/ui/choose-account/choose-account"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
@@ -62,6 +66,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
               }`
             : `Account ${Number(acc.persona_id) + accountOffset}`,
           value: acc.persona_id,
+          icon: dfinity,
         })),
       },
     ]
@@ -89,7 +94,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             : undefined
         }
       />
-      {/* {!isAuthenticated && (
+      {!isAuthenticated && (
         <div>
           <BlurOverlay
             className={clsx(
@@ -107,7 +112,7 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
             Continue
           </Button>
         </div>
-      )} */}
+      )}
     </BlurredLoader>
   )
 }

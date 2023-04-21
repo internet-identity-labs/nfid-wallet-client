@@ -6,6 +6,36 @@ import {
 } from "./decode-ethereum-function-call"
 
 describe("Decode function call data.", () => {
+  it("should return decoded SetApprovalForAll request by decodeRpcMessage", async () => {
+    const request: RPCMessage = {
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: "0x3d47d0475192d8245020287eedb81f66efca35a8",
+          data: "0xa22cb46500000000000000000000000021b0b84ffab5a8c48291f5ec9d9fdb9aef5740520000000000000000000000000000000000000000000000000000000000000001",
+          to: "0xc3e4214dd442136079df06bb2529bae276d37564",
+          maxPriorityFeePerGas: "0x9502F900",
+          maxFeePerGas: "0x5c273fadd6",
+        },
+      ],
+    }
+
+    const actual = await decodeRpcMessage(request)
+    expect(actual).toEqual({
+      interface: "SetApprovalForAll",
+      method: "setApprovalForAll",
+      from: "0x3d47d0475192d8245020287eedb81f66efca35a8",
+      to: "0xc3e4214dd442136079df06bb2529bae276d37564",
+      maxFeePerGas: expect.any(String),
+      maxPriorityFeePerGas: "2.5e-9",
+      value: undefined,
+      data: {
+        operator: "0x21B0B84FfAB5A8c48291f5eC9D9FDb9aef574052",
+        approved: true,
+      },
+    })
+  })
+
   it("should return decoded mint 1155 lazy request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
       method: "eth_signTypedData_v4",

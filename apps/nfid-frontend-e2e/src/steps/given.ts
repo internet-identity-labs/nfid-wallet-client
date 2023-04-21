@@ -65,6 +65,7 @@ Given(/^User opens NFID ?(?:(.*))?$/, async function (site: string) {
   if (site === "site") await HomePage.openBaseUrl()
   else await HomePage.openPage(site)
   await HomePage.waitForLoaderDisappear()
+  await HomePage.waitForDataCacheLoading()
 })
 
 Given(/^I open the (url|site) "([^"]*)?"$/, openWebsite)

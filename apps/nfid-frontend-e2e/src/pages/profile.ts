@@ -106,7 +106,7 @@ export class Profile extends HomePage {
     })
     try {
       await this.sendPinButton.click()
-    } catch (err) {}
+    } catch (err) { }
   }
 
   public async waitForTokensAppear(amount?: number) {
@@ -149,7 +149,7 @@ export class Profile extends HomePage {
   }
 
   public async getNFIDnumber() {
-    return $("#nfid-anchor")
+    return (await $("#nfid-anchor").getText()).replace(/[^0-9]+/g, "")
   }
 
   public async logout() {

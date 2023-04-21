@@ -5,26 +5,24 @@ import useSWRImmutable from "swr/immutable"
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-
 interface AuthWrapperProps {
   iframe?: boolean
   children: JSX.Element | JSX.Element[]
 }
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
-  const { isAuthenticated } = useAuthentication()
-
   const { data } = useSWRImmutable("cachedAuthState", () =>
     authState.loadCachedAuthSession(),
   )
 
   switch (true) {
-    case !data?.cacheLoaded:
-      return <BlurredLoader loadingMessage="loading auth session" />
-    case isAuthenticated:
+    case !!data?.delegationIdentity:
       authState.checkAndRenewFEDelegation()
       return <>{children}</>
-    default:
+
+    case data?.cacheLoaded && !data.delegationIdentity:
       return <Navigate to="/" />
+
+    default:
+      return <BlurredLoader loadingMessage="loading auth session" />
   }
 }

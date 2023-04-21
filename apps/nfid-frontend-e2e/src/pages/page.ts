@@ -35,4 +35,17 @@ export class Page {
       // console.log(e);
     }
   }
+
+  public async waitForDataCacheLoading() {
+    await browser.waitUntil(
+      async function () {
+        return (await $("#root").getAttribute("data-cache-loaded")) === "true"
+      },
+      {
+        timeout: 15000,
+        timeoutMsg: "expected data-cache-loaded to be true after 15s",
+      },
+    )
+  }
+
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 
 import { ChooseModal, Copy, QRCode } from "@nfid-frontend/ui"
 
@@ -62,18 +62,19 @@ export const TransferReceive = ({
     selectedWallet?.btcAddress,
   ])
 
-  const handleSelectToken = (value: string) => {
-    const token = allTokens.find((t) => t.currency === value)
-    if (!token) return
+  const handleSelectToken = useCallback(
+    (value: string) => {
+      const token = allTokens.find((t) => t.currency === value)
+      if (!token) return
 
-    assignSelectedToken(token)
-    assignSourceWallet(walletOptions[0].options[0]?.value)
-  }
+      assignSelectedToken(token)
+    },
+    [allTokens, assignSelectedToken],
+  )
 
   useEffect(() => {
-    if (!selectedSourceWallet?.length)
-      assignSourceWallet(walletOptions[0].options[0]?.value)
-  }, [selectedToken]) // eslint-disable-line react-hooks/exhaustive-deps
+    assignSourceWallet(walletOptions[0].options[0]?.value)
+  }, [walletOptions]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-3 text-xs">

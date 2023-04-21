@@ -12,13 +12,12 @@ Feature:Send/Receive Asset
     Then User opens receive dialog window
     Then Choose <currency> from options
     Then Choose NFID Account 1 from receive accounts
-    #  sc-6838
-    #    Then Account ID is <account_id>
+    Then Account ID is <account_id>
     Examples:
       | chain           | anchor | account_id                            | currency |
       | Bitcoin         | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h | BTC      |
       | Ethereum        | 10974  | 0xcDF42Ca0423a6063Fa4E60BdCBc...07CDa | ETH      |
-      | ChainLink Token | 25795  | 0xcDF42Ca0423a6063Fa4E60BdCBc...07CDa | LINK     |
+      | ChainLink Token | 25795  | 0x1e76A4b38Be7573bCb0fE5f7cc8...545F3 | LINK     |
 
   @sendreceive2
   Scenario Outline: User should be able to receive ICP transaction
@@ -36,6 +35,7 @@ Feature:Send/Receive Asset
       | chain             | anchor | princ                                 | address                               | currency |
       | Internet Computer | 28542  | 8f4835777b8e7abf166ab5e7390ab...d52ba | ymhyc-prisv-3sxup-hjy2n-4tgz4...q-pae | ICP      |
 
+  @sendreceive3
   Scenario Outline: User should be able to see balance and fee
     Given User opens NFID site
     Given authstate is cleared
@@ -46,17 +46,16 @@ Feature:Send/Receive Asset
     Then User opens send dialog window
     Then Choose <currency> from send options
     Then Choose <account> from accounts
-    #  sc-6838
-    #    Then Balance is <balance> and fee is <fee>
+    Then Balance is <balance> and fee is <fee>
     Examples:
-      | chain             | anchor | balance    | fee        | account        | currency |
-      | Bitcoin           | 25795  | 0.00006879 | 6e-8 BTC   | NFID Account 1 | BTC      |
-      | Ethereum          | 10974  | 0.00003879 | 6e-8 BTC   | NFID Account 1 | ETH      |
-      | Internet Computer | 28542  | 0.09       | 0.0001 ICP | NFID account 1 | ICP      |
-      | ChainLink Token   | 25795  | 20         | 0 ETH      | NFID Account 1 | LINK     |
+      | chain             | anchor | balance    | fee          | account        | currency |
+      | Bitcoin           | 25795  | 0.00006879 | 0.000015 BTC | NFID Account 1 | BTC      |
+      | Ethereum          | 10974  | 0.1        | 0 ETH        | NFID Account 1 | ETH      |
+      | Internet Computer | 28542  | 0.01       | 0.0001 ICP   | NFID account 1 | ICP      |
+      | ChainLink Token   | 25795  | 20         | 0 ETH        | NFID Account 1 | LINK     |
 
   @pending
-    @send_receive_once_a_day
+  @send_receive_once_a_day
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor

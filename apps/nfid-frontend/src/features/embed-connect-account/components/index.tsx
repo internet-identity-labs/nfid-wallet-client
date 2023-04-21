@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { IGroupedOptions } from "@nfid-frontend/ui"
+import { IGroupedOptions, IconPngEthereum } from "@nfid-frontend/ui"
 import { E8S } from "@nfid/integration/token/icp"
 
 import { useEthAddress } from "frontend/features/fungable-token/eth/hooks/use-eth-address"
@@ -41,6 +41,7 @@ export const EmbedChooseAccount = ({
               ? `${Number(balance.tokenBalance) / E8S} ETH`
               : "",
             innerSubtitle: balance?.usdBalance,
+            icon: IconPngEthereum,
           },
         ],
       },

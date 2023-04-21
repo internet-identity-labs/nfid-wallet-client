@@ -13,7 +13,7 @@ const initialStyleConfig = {
   mainTextColor: "",
   secondaryTextColor: "",
   linkColor: "",
-  checkmarkColor: "",
+  checkMarkColor: "",
 }
 
 export const IframeConfig = ({

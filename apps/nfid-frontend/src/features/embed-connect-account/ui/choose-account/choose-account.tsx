@@ -77,6 +77,7 @@ export const ChooseAccount = ({
         label="Account"
         optionGroups={accounts}
         onSelect={onSelectAccount}
+        iconClassnames="!object-contain"
       />
       <div className="rounded-md bg-gray-50 p-5 text-gray-500 text-sm mt-3.5 space-y-3">
         <p>

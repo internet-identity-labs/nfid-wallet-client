@@ -4,9 +4,8 @@ Feature:Send/Receive Asset
   @sendreceive1
   Scenario Outline: User should be able to receive BTC/ETH transaction
     Given User opens NFID site
-    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
-    Given User signs in
+    And It log's me in
     And Tokens displayed on user assets
     Then Asset calculated for <chain>
     Then User opens receive dialog window
@@ -22,9 +21,8 @@ Feature:Send/Receive Asset
   @sendreceive2
   Scenario Outline: User should be able to receive ICP transaction
     Given User opens NFID site
-    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
-    Given User signs in
+    And It log's me in
     And Tokens displayed on user assets
     Then Asset calculated for <chain>
     Then User opens receive dialog window
@@ -38,9 +36,8 @@ Feature:Send/Receive Asset
   @sendreceive3
   Scenario Outline: User should be able to see balance and fee
     Given User opens NFID site
-    Given authstate is cleared
     And User is already authenticated by <anchor> anchor
-    Given User signs in
+    And It log's me in
     And Tokens displayed on user assets
     Then Asset calculated for <chain>
     Then User opens send dialog window
@@ -59,7 +56,7 @@ Feature:Send/Receive Asset
   Scenario Outline: User should be able to send transaction
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    Given User signs in
+    And It log's me in
     And Tokens displayed on user assets
     Then Asset calculated for <chain>
     And User opens send dialog window

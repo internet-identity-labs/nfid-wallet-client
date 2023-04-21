@@ -112,7 +112,7 @@ export class HomePage extends Page {
         await browser.waitUntil(
           async () => (await this.signInButton.length) < 1,
           {
-            timeout: 10000 + (counter * 7500)
+            timeout: 6000 + (counter * 3500)
           }
         )
         break

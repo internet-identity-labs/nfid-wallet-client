@@ -50,11 +50,11 @@ export const ChooseModal = ({
   const [selectedOption, setSelectedOption] = useState<IGroupOption>()
   const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
 
-  const handleSelect = (option: IGroupOption) => {
+  const handleSelect = useCallback((option: IGroupOption) => {
     setSelectedValue(option.value)
     setSelectedOption(option)
     setIsModalVisible(false)
-  }
+  }, [])
 
   const filteredOptions = useMemo(() => {
     return filterGroupedOptionsByTitle(optionGroups, searchInput)
@@ -70,8 +70,14 @@ export const ChooseModal = ({
 
     if (preselectedValue) {
       const option = findOptionByValue(optionGroups, preselectedValue)
+      if (!option) return
+
       setSelectedOption(option)
-    } else if (optionGroups.length && !selectedOption && isFirstPreselected) {
+      setSelectedValue(option?.value ?? "")
+      return
+    }
+
+    if (optionGroups.length && !selectedOption && isFirstPreselected) {
       const option = optionGroups[0]?.options[0]
       setSelectedOption(option)
       onSelect && option?.value && onSelect(option?.value)

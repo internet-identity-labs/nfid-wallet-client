@@ -15,9 +15,11 @@ export const useUserBalances = () => {
     isValidating: isLoading,
     mutate: refreshBalances,
   } = useSWR(
-    dip20Token && principals ? [principals, dip20Token, `AllBalanceRaw`] : null,
+    dip20Token && principals && erc20
+      ? [principals, dip20Token, erc20, `AllBalanceRaw`]
+      : null,
     async ([principals, dip20Token]) => {
-      console.debug("AllBalanceRaw", { principals, dip20Token })
+      console.debug("AllBalanceRaw", { principals, dip20Token, erc20 })
       return await fetchBalances({
         principals,
         dip20Token,

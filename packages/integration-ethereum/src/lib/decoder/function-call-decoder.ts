@@ -18,6 +18,7 @@ import { directPurchaseMethodDecoder } from "./method-decoder/direct-purchase/di
 import { FunctionCall, Method } from "./method-decoder/method-decoder"
 import { mintAndTransferMethodDecoder } from "./method-decoder/mint/mint-and-transfer-method-decoder"
 import { safeTransferFromMethodDecoder } from "./method-decoder/safe-transfer-from/safe-transfer-from-method-decoder"
+import { setApprovalForAllMethodDecoder } from "./method-decoder/set-approval-for-all/set-approval-for-all-method-decoder"
 import { ethSendTransactionRpcMessageDecoder } from "./rpc-message-decoder/eth-sendtransaction-rpc-message-decoder"
 import { personalSignRpcMessageDecoder } from "./rpc-message-decoder/personal-sign-decoder"
 import {
@@ -37,6 +38,7 @@ const methodDecoders = dependencyService.group([
   createTokenPrivateMethodDecoder,
   createTokenPublicMethodDecoder,
   mintAndTransferMethodDecoder,
+  setApprovalForAllMethodDecoder,
 ])
 const assetDecoders = dependencyService.group([
   erc721AssetDecoder,

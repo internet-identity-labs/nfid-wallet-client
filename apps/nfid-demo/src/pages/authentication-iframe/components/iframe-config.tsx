@@ -1,7 +1,7 @@
+import { ScreenStyleParams } from "packages/ui/src/templates/screen-responsive/config"
 import { useCallback, useState } from "react"
 import { ChromePicker } from "react-color"
 
-import { ScreenStyleParams } from "@nfid-frontend/ui"
 import { Button, H3, H5, Popover } from "@nfid-frontend/ui"
 
 const initialStyleConfig = {

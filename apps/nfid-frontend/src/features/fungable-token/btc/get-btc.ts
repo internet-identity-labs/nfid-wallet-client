@@ -36,7 +36,7 @@ export const getBtcBalance = async (): Promise<TokenBalanceSheet> => {
 
 export const getBtcFee = async (): Promise<number> => {
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const identity = await getWalletDelegation(profile.anchor, "nfid.one", "1")
+  const identity = await getWalletDelegation(profile.anchor, "nfid.one", "0")
   return new BtcWallet(identity).getFee()
 }
 

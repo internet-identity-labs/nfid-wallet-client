@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { Erc20TransferRequest } from "packages/integration/src/lib/asset/estimateTransaction/transferRequest/erc20TransferRequest"
 import {
   FungibleTxs,
@@ -9,16 +10,15 @@ import { fetchProfile } from "src/integration/identity-manager"
 
 import { IconERC20 } from "@nfid-frontend/ui"
 import { ethereumAsset, loadProfileFromLocalStorage } from "@nfid/integration"
-import { DelegationIdentity } from "@dfinity/identity";
 
 export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
-  const identity = await getIdentity();
-  return await ethereumAsset.getErc20Accounts(identity, IconERC20)
+  const identity = await getIdentity()
+  return await ethereumAsset.getAccounts(identity, IconERC20)
 }
 
 export const getErc20TransactionHistory = async (): Promise<FungibleTxs> => {
-  const identity = await getIdentity();
-  return ethereumAsset.getErc20TransactionHistory(identity)
+  const identity = await getIdentity()
+  return ethereumAsset.getTransactionHistory(identity)
 }
 
 export const transferERC20 = async (
@@ -27,7 +27,7 @@ export const transferERC20 = async (
   token: TokenConfig,
 ) => {
   try {
-    const identity = await getIdentity();
+    const identity = await getIdentity()
     const transaction = await ethereumAsset.getEstimatedTransaction(
       new Erc20TransferRequest(identity, to, token.contract!, amount),
     )
@@ -43,7 +43,7 @@ export const transferERC20 = async (
   }
 }
 
-const  getIdentity = async(): Promise<DelegationIdentity> => {
+const getIdentity = async (): Promise<DelegationIdentity> => {
   const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
   return await getWalletDelegation(profile.anchor, "nfid.one", "0")
 }

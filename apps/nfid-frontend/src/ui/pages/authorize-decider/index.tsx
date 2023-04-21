@@ -100,7 +100,7 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
   )
 
   return (
-    <BlurredLoader isLoading={isLoading}>
+    <BlurredLoader isLoading={isLoading} className="flex flex-col">
       <SDKApplicationMeta
         applicationName={applicationName}
         applicationLogo={applicationLogo}
@@ -111,81 +111,81 @@ export const AuthorizeDecider: React.FC<AuthorizeAppUnknownDeviceProps> = ({
             : `to continue to ${applicationName ?? "the application"}`
         }
       />
-      <div
-        className="flex flex-col items-center w-full mt-8"
-        ref={containerRef}
-      >
-        {showAdvancedOptions && (
-          <div className="w-full">
-            <Input
-              errorText={errors.userNumber?.message}
-              labelText="Your NFID number"
-              {...register("userNumber", {
-                required: "userNumber is required",
-                pattern: {
-                  value: anchorRules.regex,
-                  message: anchorRules.errorMessages.pattern,
-                },
-                minLength: {
-                  value: anchorRules.minLength,
-                  message: anchorRules.errorMessages.length,
-                },
-              })}
-            />
-          </div>
-        )}
-        {!showAdvancedOptions ? (
-          <div className="w-full max-w-[400px]">
-            <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
 
-            <div className="grid h-12 grid-cols-3 gap-4 my-2.5">
-              <IconButton
-                img={<Image src={MetamaskIcon} alt="metamask" />}
-                onClick={onSelectMetamaskAuthorization}
-                className="flex justify-center"
-              />
-              <IconButton
-                img={<Image src={IIIcon} alt="ii" />}
-                onClick={onSelectIIAuthorization}
-                className="flex justify-center"
-              />
-              <IconButton
-                img={<Image src={WConnectIcon} alt="wallet-connect" />}
-                onClick={onSelectWConnectAuthorization}
-                className="flex justify-center"
+      <div className="flex items-center flex-1 w-full mt-8">
+        <div className="flex flex-col items-center w-full" ref={containerRef}>
+          {showAdvancedOptions && (
+            <div className="w-full">
+              <Input
+                errorText={errors.userNumber?.message}
+                labelText="Your NFID number"
+                {...register("userNumber", {
+                  required: "userNumber is required",
+                  pattern: {
+                    value: anchorRules.regex,
+                    message: anchorRules.errorMessages.pattern,
+                  },
+                  minLength: {
+                    value: anchorRules.minLength,
+                    message: anchorRules.errorMessages.length,
+                  },
+                })}
               />
             </div>
+          )}
+          {!showAdvancedOptions ? (
+            <div className="w-full max-w-[400px]">
+              <SignInWithGoogle onLogin={onSelectGoogleAuthorization} />
 
-            <IconButton
-              title="iPhone, iPad, or Android device"
-              subtitle="Use passkey from a device with a camera"
-              img={<QRCode />}
-              onClick={onSelectRemoteAuthorization}
-            />
-          </div>
-        ) : (
-          <div className="space-y-2.5 mt-7 w-full">
-            <IconButton
-              title="Platform auth on this device"
-              subtitle="Use this device if previously registered"
-              img={<TouchId />}
-              onClick={handleSubmit(handleSelectSameDeviceAuthorization)}
-            />
-            <IconButton
-              title="Security key"
-              subtitle="Use a previously registered security key"
-              img={<SecurityKey />}
-              onClick={handleSubmit(handleSelectSecurityKeyAuthorization)}
-            />
-          </div>
-        )}
+              <div className="grid h-12 grid-cols-3 gap-4 my-2.5">
+                <IconButton
+                  img={<Image src={MetamaskIcon} alt="metamask" />}
+                  onClick={onSelectMetamaskAuthorization}
+                  className="flex justify-center"
+                />
+                <IconButton
+                  img={<Image src={IIIcon} alt="ii" />}
+                  onClick={onSelectIIAuthorization}
+                  className="flex justify-center"
+                />
+                <IconButton
+                  img={<Image src={WConnectIcon} alt="wallet-connect" />}
+                  onClick={onSelectWConnectAuthorization}
+                  className="flex justify-center"
+                />
+              </div>
 
-        <p
-          className="py-4 text-sm text-center cursor-pointer text-linkColor"
-          onClick={onToggleAdvancedOptions}
-        >
-          {showAdvancedOptions ? "Back" : "Other sign in options"}
-        </p>
+              <IconButton
+                title="iPhone, iPad, or Android device"
+                subtitle="Use passkey from a device with a camera"
+                img={<QRCode />}
+                onClick={onSelectRemoteAuthorization}
+              />
+            </div>
+          ) : (
+            <div className="space-y-2.5 mt-7 w-full">
+              <IconButton
+                title="Platform auth on this device"
+                subtitle="Use this device if previously registered"
+                img={<TouchId />}
+                onClick={handleSubmit(handleSelectSameDeviceAuthorization)}
+              />
+              <IconButton
+                title="Security key"
+                subtitle="Use a previously registered security key"
+                img={<SecurityKey />}
+                onClick={handleSubmit(handleSelectSecurityKeyAuthorization)}
+              />
+            </div>
+          )}
+
+          <p
+            className="py-4 text-sm text-center cursor-pointer text-linkColor"
+            onClick={onToggleAdvancedOptions}
+          >
+            {showAdvancedOptions ? "Back" : "Other sign in options"}
+          </p>
+        </div>
       </div>
     </BlurredLoader>
   )

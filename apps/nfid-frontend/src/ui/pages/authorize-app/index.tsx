@@ -1,18 +1,17 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Button, SDKApplicationMeta, Tooltip } from "@nfid-frontend/ui"
+import { BlurOverlay, Button, SDKApplicationMeta } from "@nfid-frontend/ui"
 import { Image } from "@nfid-frontend/ui"
 
+import dfinity from "frontend/assets/dfinity.svg"
+import { ChooseAccount } from "frontend/features/embed-connect-account/ui/choose-account/choose-account"
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 import { getAccountDisplayOffset } from "frontend/integration/identity-manager/persona/utils"
 import { ElementProps } from "frontend/types/react"
-import { BlurOverlay } from "frontend/ui/molecules/blur-overlay"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
-import alertIcon from "./assets/alert-triangle.svg"
-
-import { AccountItem } from "./raw-item"
+import MobileHero from "./assets/mobile_hero.svg"
 
 interface AuthorizeAppProps extends ElementProps<HTMLDivElement> {
   isAuthenticated?: boolean
@@ -39,6 +38,9 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
   onLogin,
   onCreateAccount,
 }) => {
+  const [selectedPersonaID, setSelectedAccount] = React.useState<
+    string | null
+  >()
   console.debug("AuthorizeApp", {
     isAuthenticated,
     applicationName,
@@ -56,13 +58,22 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
     return accountsLimit && accounts.length >= accountsLimit
   }, [accounts.length, accountsLimit])
 
-  const displayAccounts = isAuthenticated
-    ? accounts
-    : // FAKE DISPLAY DATA FOR BLURRED BACKGROUND
-      new Array(4).fill(null).map((_, i) => ({
-        domain: "http://fake.com",
-        persona_id: i === 0 ? "longer" : `${i}`,
-      }))
+  const accountsOptions = React.useMemo(() => {
+    return [
+      {
+        label: "Anonymous",
+        options: accounts.map((acc) => ({
+          title: applicationName
+            ? `${applicationName} account ${
+                Number(acc.persona_id) + accountOffset
+              }`
+            : `Account ${Number(acc.persona_id) + accountOffset}`,
+          value: acc.persona_id,
+          icon: dfinity,
+        })),
+      },
+    ]
+  }, [accountOffset, accounts, applicationName])
 
   return (
     <BlurredLoader
@@ -70,79 +81,51 @@ export const AuthorizeApp: React.FC<AuthorizeAppProps> = ({
       loadingMessage={loadingMessage}
       className="flex flex-col flex-1"
     >
-      <SDKApplicationMeta
-        applicationName={applicationName}
-        applicationLogo={applicationLogo}
-        title="Choose an account"
-        subTitle={`to connect to ${applicationName}`}
+      <ChooseAccount
+        appMeta={{
+          logo: applicationLogo,
+          name: applicationName,
+          url: applicationName,
+        }}
+        accounts={accountsOptions}
+        onConnect={() => onLogin(selectedPersonaID ?? accounts[0].persona_id)}
+        onSelectAccount={(value) => setSelectedAccount(value)}
+        onConnectAnonymously={onCreateAccount}
+        accountsLimitMessage={
+          isAccountsLimit
+            ? `${applicationName} has limited the number of free accounts to ${accountsLimit}. Manage your accounts from your NFID Profile page.`
+            : undefined
+        }
       />
-      <div
-        className={clsx("flex flex-col w-full pt-4 space-y-1 relative h-full")}
-      >
-        {displayAccounts.map((account, i) => {
-          return (
-            <AccountItem
-              title={
-                applicationName
-                  ? `${applicationName} account ${
-                      Number(account.persona_id) + accountOffset
-                    }`
-                  : `Account ${Number(account.persona_id) + accountOffset}`
-              }
-              onClick={() => onLogin(account.persona_id)}
-              key={`account${account.persona_id}${i}`}
-            />
-          )
-        })}
-        <div
-          className={clsx("h-8 flex items-center justify-center space-x-3")}
-          onClick={!isAccountsLimit ? onCreateAccount : undefined}
-        >
-          <div
+      {!isAuthenticated && (
+        <div>
+          <BlurOverlay
             className={clsx(
-              "hover:opacity-70 transition-all cursor-pointer text-center",
-              "text-sm font-semibold",
-              isAccountsLimit
-                ? "text-secondary pointer-events-none"
-                : "text-primaryButtonColor",
-              !isAuthenticated && "hidden",
+              "w-full h-full p-5",
+              "absolute left-0 top-0 bottom-0 right-0 z-10",
+              "flex flex-col justify-between",
             )}
           >
-            Create a new account
-          </div>
-          {isAccountsLimit && (
-            <Tooltip
-              tip={`${
-                applicationName ?? "The application"
-              } has limited the number of free accounts${
-                accountsLimit ? ` to ${accountsLimit}` : ""
-              }. Manage your accounts from your NFID Profile page.`}
-              className="w-72"
-            >
-              <Image src={alertIcon} alt="alert" />
-            </Tooltip>
-          )}
-        </div>
-        {!isAuthenticated && (
-          <div>
-            <BlurOverlay
-              className={clsx(
-                "w-full h-full",
-                "absolute left-0 top-0 bottom-0 right-0 z-10",
-                "flex items-end",
-              )}
-            ></BlurOverlay>
+            <div>
+              <SDKApplicationMeta
+                applicationLogo={applicationLogo}
+                applicationName={applicationName}
+                title="Unlock your NFID"
+                subTitle={`to connect to ${applicationName}`}
+              />
+              <Image className="w-full max-w-max" src={MobileHero} alt="" />
+            </div>
             <Button
               className="relative z-20"
               type="primary"
               block
               onClick={() => onUnlockNFID()}
             >
-              Continue
+              Unlock to continue
             </Button>
-          </div>
-        )}
-      </div>
+          </BlurOverlay>
+        </div>
+      )}
     </BlurredLoader>
   )
 }

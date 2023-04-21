@@ -28,7 +28,7 @@ export const DefaultTrigger = ({
       onClick={actionHandler}
     >
       <div
-        className="flex"
+        className="flex items-center"
         id={"option_" + selectedOption?.title.replace(/\s/g, "")}
       >
         {selectedOption?.icon && (
@@ -38,10 +38,14 @@ export const DefaultTrigger = ({
             className={clsx("mr-2.5 w-12 h-12 object-cover", iconClassnames)}
           />
         )}
-        <div className="leading-5">
+        {selectedOption?.subTitle ? (
+          <div className="leading-5">
+            <p className="text-sm">{selectedOption?.title}</p>
+            <p className="text-xs text-gray-400">{selectedOption?.subTitle}</p>
+          </div>
+        ) : (
           <p className="text-sm">{selectedOption?.title}</p>
-          <p className="text-xs text-gray-400">{selectedOption?.subTitle}</p>
-        </div>
+        )}
       </div>
       <IconCmpArrowRight />
     </div>

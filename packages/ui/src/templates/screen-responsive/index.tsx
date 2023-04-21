@@ -11,7 +11,7 @@ interface IFrameTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   frameLabel?: string
 }
 
-const initialStyleConfig = {
+export const initialStyleConfig = {
   frameBgColor: "",
   frameBorderColor: "",
   primaryButtonColor: "",
@@ -39,6 +39,7 @@ export const ScreenResponsive: React.FC<IFrameTemplateProps> = ({
       secondaryTextColor: searchParams.get("secondaryTextColor"),
       linkColor: searchParams.get("linkColor"),
       buttonBorderColor: searchParams.get("buttonBorderColor"),
+      checkMarkColor: searchParams.get("checkMarkColor"),
     })
   }, [searchParams])
 

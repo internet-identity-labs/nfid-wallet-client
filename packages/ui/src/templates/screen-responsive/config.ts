@@ -7,4 +7,5 @@ export interface ScreenStyleParams {
   mainTextColor?: string | null
   secondaryTextColor?: string | null
   linkColor?: string | null
+  checkMarkColor?: string | null
 }

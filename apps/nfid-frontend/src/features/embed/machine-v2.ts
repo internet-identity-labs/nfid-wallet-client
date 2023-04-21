@@ -233,8 +233,10 @@ export const NFIDEmbedMachineV2 = createMachine(
     actions: {
       assignAppMeta: assign((context, event) => ({
         appMeta: {
-          logo:
-            window.location.origin + new URL(event?.data?.icon ?? "")?.pathname,
+          logo: event.data?.icon
+            ? window.location.origin +
+              new URL(event?.data?.icon ?? "")?.pathname
+            : undefined,
           name: event?.data?.name,
           url: new URL(event?.data?.domain).host,
         },
@@ -267,7 +269,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         console.debug("nfid_authenticated")
         window.parent.postMessage(
           { type: "nfid_authenticated" },
-          "http://localhost:3000",
+          window.location.ancestorOrigins[0],
         )
       },
       nfid_unauthenticated: ({ requestOrigin }) => {

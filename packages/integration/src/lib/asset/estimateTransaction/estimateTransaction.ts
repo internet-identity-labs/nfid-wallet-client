@@ -2,7 +2,7 @@ import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { ethers } from "ethers"
 
 import { EthWalletV2 } from "../../ecdsa-signer/signer-ecdsa"
-import { getPrice } from "../asset"
+import { getPrice } from "../asset-util"
 import { EthEstimatedTransactionRequest } from "../types"
 import { erc20TransferRequest } from "./transferRequest/erc20TransferRequest"
 import { ethTransferRequest } from "./transferRequest/ethTransferRequest"

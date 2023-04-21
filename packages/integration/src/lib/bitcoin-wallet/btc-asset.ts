@@ -1,30 +1,76 @@
 import { DelegationIdentity } from "@dfinity/identity"
 import { toBn } from "@rarible/utils"
+import BigNumber from "bignumber.js"
+import { format } from "date-fns"
+import { principalToAddress } from "ictool"
 
-import { getPrice } from "../asset/asset"
+import { E8S } from "@nfid/integration/token/icp"
+
+import { Asset } from "../asset/asset"
+import { getPrice } from "../asset/asset-util"
 import {
   ChainBalance,
   FungibleActivityRecord,
   FungibleActivityRecords,
   FungibleActivityRequest,
-  FungibleAsset,
+  FungibleTransactionRequest,
+  FungibleTxs,
+  Token,
+  TokenBalanceSheet,
   TokenPrice,
+  TransactionRow,
 } from "../asset/types"
 import { BtcWallet } from "./btc-wallet"
 
 export const mainnet = "https://mempool.space/api/address/"
 export const testnet = "https://mempool.space/testnet/api/address/"
 
-export const BtcAsset: FungibleAsset = {
-  async getBalance(walletAddress, delegation): Promise<ChainBalance> {
-    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
-    let address: string
-    if (!walletAddress) {
-      if (!delegation) throw new Error("Can not get BTC activity")
-      address = await new BtcWallet(delegation).getBitcoinAddress()
-    } else {
-      address = walletAddress
+export class BtcAsset extends Asset {
+  getAddress(identity: DelegationIdentity): Promise<string> {
+    return new BtcWallet(identity).getBitcoinAddress()
+  }
+
+  getBalance(
+    address: string | undefined,
+    delegation: DelegationIdentity | undefined,
+  ): Promise<ChainBalance> {
+    throw new Error("Method not implemented.")
+  }
+
+  getBlockchain(): string {
+    return "Bitcoin"
+  }
+
+  async transfer(
+    identity: DelegationIdentity,
+    request: FungibleTransactionRequest,
+  ): Promise<string> {
+    try {
+      const satoshi = BigNumber(request.amount).multipliedBy(E8S).toNumber()
+      const response = await new BtcWallet(identity).sendSatoshi(
+        request.to,
+        satoshi,
+      )
+      return `You've sent ${request.amount} BTC. Transaction hash: ${response.tx.hash}`
+    } catch (e: any) {
+      throw new Error(
+        e?.message ??
+          "Unexpected error: The BTC transaction has been cancelled",
+      )
     }
+  }
+
+  async getRootAccount(
+    addressW?: string,
+    delegation?: DelegationIdentity,
+    logo?: string,
+  ): Promise<TokenBalanceSheet> {
+    if (!delegation) {
+      throw Error("Give me delegation. It's cached!")
+    }
+    let url = "mainnet" == CHAIN_NETWORK ? mainnet : testnet
+    const wallet = new BtcWallet(delegation)
+    const address: string = await wallet.getBitcoinAddress()
     url += `${address}`
     const response = await fetch(url)
 
@@ -42,11 +88,65 @@ export const BtcAsset: FungibleAsset = {
     } catch (e) {
       price = [{ price: "0.0", token: "BTC" }]
     }
-
     const balanceinUsd = toBn(price[0].price).multipliedBy(balanceBN)
+    const token: Token = {
+      address: address,
+      balance: balanceBN.toString(),
+      balanceinUsd: "$" + (balanceinUsd?.toFixed(2) ?? "0.00"),
+      logo,
+      name: this.getBlockchain(),
+      symbol: "BTC",
+    }
+    const fee = await wallet.getFee()
+    return super.computeSheetForRootAccount(
+      token,
+      delegation.getPrincipal().toText(),
+      logo,
+      fee.toString(),
+    )
+  }
 
-    return { balance: balanceBN, balanceinUsd }
-  },
+  async getTransactionHistory(
+    identity: DelegationIdentity,
+  ): Promise<FungibleTxs> {
+    const address = await new BtcWallet(identity).getBitcoinAddress()
+    const sendTransactions = await this.getTransactions("send", address)
+    const receivedTransactions = await this.getTransactions("received", address)
+    const addressPrincipal = principalToAddress(identity.getPrincipal())
+    return {
+      sendTransactions,
+      receivedTransactions,
+      walletAddress: addressPrincipal,
+      btcAddress: address,
+    }
+  }
+
+  private async getTransactions(
+    type: string,
+    address: string,
+  ): Promise<TransactionRow[]> {
+    return await new BtcAsset()
+      .getFungibleActivityByTokenAndUser({
+        address,
+        direction: type === "send" ? "from" : "to",
+      })
+      .then((tss) => {
+        return tss.activities
+          .map((tx) => {
+            tx.asset = "BTC"
+            return tx
+          })
+          .map((tx) => this.toTransactionRow(tx, address))
+      })
+  }
+
+  protected override formatDate(date: string): string {
+    return format(new Date(Number(date) * 1000), "MMM dd, yyyy - hh:mm:ss aaa")
+  }
+
+  protected override formatPrice(price: number) {
+    return Number(price) / E8S
+  }
 
   async getFungibleActivityByTokenAndUser(
     request: FungibleActivityRequest,
@@ -135,7 +235,7 @@ export const BtcAsset: FungibleAsset = {
       cursor = records[records.length - 1].transactionHash
     }
     return { activities, cursor }
-  },
+  }
 }
 
 interface MempoolTransactionResponse {

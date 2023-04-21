@@ -6,32 +6,36 @@ import { Network } from "alchemy-sdk"
 
 import { Balance } from "@nfid/integration"
 
+import { Asset } from "./asset"
 import { Erc20TransferRequest } from "./estimateTransaction/transferRequest/erc20TransferRequest"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
 declare type EtherscanTransactionHashUrl = string
 
-declare type NonFungibleAsset = FungibleAsset & {
-  getActivitiesByItem(
-    request: ActivitiesByItemRequest,
-  ): Promise<NonFungibleActivityRecords>
-  getActivitiesByUser(
-    request: ActivitiesByUserRequest,
-  ): Promise<NonFungibleActivityRecords>
-  getItemsByUser(request: ItemsByUserRequest): Promise<NonFungibleItems>
+declare type NonFungibleAssetI = Asset &
+  FungibleAsset & {
+    getActivitiesByItem(
+      request: ActivitiesByItemRequest,
+    ): Promise<NonFungibleActivityRecords>
+    getActivitiesByUser(
+      request: ActivitiesByUserRequest,
+    ): Promise<NonFungibleActivityRecords>
+    getItemsByUser(request: ItemsByUserRequest): Promise<NonFungibleItems>
+    getErc20TokensByUser(request: Erc20TokensByUserRequest): Promise<Tokens>
+    getAddress(delegation?: DelegationIdentity): Promise<string>
+    getEstimatedTransaction(
+      request: EstimatedTransactionRequest,
+    ): Promise<EstimatedTransaction>
+  }
+
+declare type FungibleAsset = Asset & {
   transfer(
     identity: DelegationIdentity,
-    transaction: TransactionRequest,
+    transaction: TransactionRequest | FungibleTransactionRequest,
   ): Promise<EtherscanTransactionHashUrl>
-  getErc20TokensByUser(request: Erc20TokensByUserRequest): Promise<Tokens>
-  getAddress(delegation?: DelegationIdentity): Promise<string>
-  getEstimatedTransaction(
-    request: EstimatedTransactionRequest,
-  ): Promise<EstimatedTransaction>
-}
-
-declare type FungibleAsset = {
+  getAddress(identity: DelegationIdentity): Promise<string>
+  getTransactionHistory(identity: DelegationIdentity): Promise<FungibleTxs>
   getBalance(
     address?: string,
     delegation?: DelegationIdentity,
@@ -40,6 +44,7 @@ declare type FungibleAsset = {
     request: FungibleActivityRequest,
     delegation?: DelegationIdentity,
   ): Promise<FungibleActivityRecords>
+  getBlockchain(): string
 }
 
 declare type ActivitiesByItemRequest = {
@@ -114,7 +119,7 @@ declare type Token = {
   logo?: string
   balance: string
   balanceinUsd: string
-  contractAddress: string
+  contractAddress?: string
   address: string
 }
 
@@ -248,4 +253,9 @@ export interface FungibleTxs {
   receivedTransactions?: TransactionRow[]
   walletAddress: string
   btcAddress: string
+}
+
+export interface FungibleTransactionRequest {
+  amount: number
+  to: string
 }

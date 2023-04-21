@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { BigNumber } from "@rarible/utils"
 
 import { mockIdentityA } from "@nfid/integration"
 
@@ -25,16 +24,8 @@ describe.skip("BTC suite", () => {
     expect(address).toEqual("mujCjK6xVJJYfkVp1u4WVvv8i3LE86giqc")
   })
 
-  it("get balance", async () => {
-    const balance = await BtcAsset.getBalance(address)
-    expect(balance).toMatchObject({
-      balance: expect.any(BigNumber),
-      balanceinUsd: expect.any(BigNumber),
-    })
-  })
-
   it("get activities to", async () => {
-    const txs = await BtcAsset.getFungibleActivityByTokenAndUser({
+    const txs = await new BtcAsset().getFungibleActivityByTokenAndUser({
       address,
       cursor: undefined,
       size: 1,
@@ -59,7 +50,7 @@ describe.skip("BTC suite", () => {
   })
 
   it("get activities with cursor", async () => {
-    const txs = await BtcAsset.getFungibleActivityByTokenAndUser({
+    const txs =  await new BtcAsset().getFungibleActivityByTokenAndUser({
       address,
       cursor:
         "e1a7aa68258849bd01d4ad460204327a00cae2a154260edc68211f9534ea1f99",
@@ -94,7 +85,7 @@ describe.skip("BTC suite", () => {
   })
 
   it("get activities from", async () => {
-    const txs = await BtcAsset.getFungibleActivityByTokenAndUser({
+    const txs =  await new BtcAsset().getFungibleActivityByTokenAndUser({
       address,
       cursor: undefined,
       size: 1,

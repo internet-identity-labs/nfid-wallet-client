@@ -117,10 +117,9 @@ export const TransferFT = ({
       if (!token) return
 
       assignToken(token)
-      assignSourceWallet(walletOptions[0].options[0]?.value)
       setValue("from", walletOptions[0].options[0]?.value)
     },
-    [allTokens, assignSourceWallet, assignToken, setValue, walletOptions],
+    [allTokens, assignToken, setValue, walletOptions],
   )
   const handleSelectWallet = useCallback(
     (value: string) => {
@@ -167,11 +166,17 @@ export const TransferFT = ({
   useEffect(() => {
     if (!selectedToken && allTokens.length) assignToken(allTokens[0])
   }, [allTokens, assignToken, selectedToken])
+
+  useEffect(() => {
+    assignSourceWallet(walletOptions[0].options[0]?.value)
+  }, [walletOptions]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  console.log({ selectedToken, selectedSourceAccount })
   return (
     <BlurredLoader
       className="!p-0 text-xs"
       overlayClassnames="rounded-xl"
-      isLoading={!selectedToken || !walletOptions || !walletOptions?.length}
+      isLoading={!selectedSourceWallet}
     >
       <p className="mb-1">Amount to send</p>
       <div

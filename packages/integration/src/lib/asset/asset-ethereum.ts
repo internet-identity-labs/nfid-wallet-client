@@ -24,50 +24,43 @@ import {
   OwnedNftsResponse as AlchemyOwnedNftsResponse,
   SortingOrder,
 } from "alchemy-sdk"
-import { format } from "date-fns"
 import { ethers } from "ethers-ts"
 import { principalToAddress } from "ictool"
 
-import { E8S } from "@nfid/integration/token/icp"
-
 import { EthWallet } from "../ecdsa-signer/ecdsa-wallet"
 import { EthWalletV2 } from "../ecdsa-signer/signer-ecdsa"
-import { getPriceFull } from "./asset"
+import { getPriceFull } from "./asset-util"
 import { estimateTransaction } from "./estimateTransaction/estimateTransaction"
+import { NonFungibleAsset } from "./non-fungible-asset"
 import {
-  AccountBalance,
   ActivitiesByItemRequest,
   ActivitiesByUserRequest,
   ActivityRecord,
   Address,
-  AppBalance,
   ChainBalance,
   Configuration,
   Erc20TokensByUserRequest,
   EstimatedTransaction,
   EtherscanTransactionHashUrl,
   EthEstimatedTransactionRequest,
-  FungibleActivityRecord,
   FungibleActivityRecords,
   FungibleActivityRequest,
+  FungibleTxs,
   Identity,
   ItemsByUserRequest,
   NonFungibleActivityRecords,
-  NonFungibleAsset,
   NonFungibleItems,
-  Token,
   TokenBalanceSheet,
   Tokens,
-  TransactionRow,
   TransferETHRequest,
   TransferNftRequest,
-  FungibleTxs,
 } from "./types"
 
-export class EthereumAsset implements NonFungibleAsset {
+export class EthereumAsset extends NonFungibleAsset {
   private readonly config: Configuration
 
   constructor(config: Configuration) {
+    super()
     this.config = config
   }
 
@@ -287,13 +280,13 @@ export class EthereumAsset implements NonFungibleAsset {
     }
   }
 
-  public async getErc20Accounts(
+  public async getAccounts(
     identity: DelegationIdentity,
     defaultIcon?: string,
   ): Promise<Array<TokenBalanceSheet>> {
     const tokens = await this.getErc20TokensByUser({ identity })
     return tokens.tokens.map((l) => {
-      return this.computeSheetForRootAccount(
+      return super.computeSheetForRootAccount(
         l,
         identity.getPrincipal().toText(),
         defaultIcon,
@@ -301,7 +294,7 @@ export class EthereumAsset implements NonFungibleAsset {
     })
   }
 
-  public async getErc20TransactionHistory(
+  public async getTransactionHistory(
     identity: DelegationIdentity,
   ): Promise<FungibleTxs> {
     const address = await this.getAddress(identity)
@@ -456,43 +449,6 @@ export class EthereumAsset implements NonFungibleAsset {
     })
   }
 
-  private computeSheetForRootAccount(
-    token: Token,
-    principalId: string,
-    defaultIcon?: string,
-    fee?: string,
-  ): TokenBalanceSheet {
-    const rootAccountBalance: AccountBalance = {
-      accountName: "account 1",
-      address: token.address,
-      principalId,
-      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
-      usdBalance: token.balanceinUsd,
-    }
-    const appBalance: AppBalance = {
-      accounts: [rootAccountBalance],
-      appName: "NFID",
-      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
-    }
-    return {
-      applications: {
-        NFID: appBalance,
-      },
-      icon: token.logo ? token.logo : defaultIcon!,
-      label: token.name,
-      token: token.symbol,
-      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
-      usdBalance: token.balanceinUsd,
-      blockchain: "Ethereum",
-      fee: fee,
-      contract: token.contractAddress,
-    }
-  }
-
-  private stringICPtoE8s = (value: string) => {
-    return Number(parseFloat(value) * E8S)
-  }
-
   private priceInUsd(price: any, balance?: string, token?: string) {
     if (!token || !balance) {
       return "N/A"
@@ -506,15 +462,7 @@ export class EthereumAsset implements NonFungibleAsset {
     return "$" + (usd?.toFixed(2) ?? "0.00")
   }
 
-  private toTransactionRow(tx: FungibleActivityRecord, address: string) {
-    return {
-      type:
-        tx.from.toLowerCase() === address.toLowerCase() ? "send" : "received",
-      asset: tx.asset,
-      quantity: tx.price,
-      date: format(new Date(tx.date), "MMM dd, yyyy - hh:mm:ss aaa"),
-      from: tx.from,
-      to: tx.to,
-    } as TransactionRow
+  getBlockchain(): string {
+    return "Ethereum"
   }
 }

@@ -1,32 +1,102 @@
-import { TokenPrice } from "./types"
+import { DelegationIdentity } from "@dfinity/identity"
+import { TransactionRequest } from "@ethersproject/abstract-provider"
+import { format } from "date-fns"
 
-const COINBASE_RATES_URL = `https://api.coinbase.com/v2/exchange-rates`
-const NOT_AVAILABLE = "N/A"
+import { E8S } from "@nfid/integration/token/icp"
 
-export const getPrice = async (tokens: string[]): Promise<TokenPrice[]> => {
-  const prices = await fetch(COINBASE_RATES_URL).then(async (response) => {
-    if (!response.ok) {
-      throw []
+import {
+  AccountBalance,
+  AppBalance,
+  ChainBalance,
+  FungibleActivityRecord,
+  FungibleActivityRecords,
+  FungibleActivityRequest,
+  FungibleAsset,
+  FungibleTransactionRequest,
+  FungibleTxs,
+  Token,
+  TokenBalanceSheet,
+  TransactionRow,
+} from "./types"
+
+export abstract class Asset implements FungibleAsset {
+  abstract transfer(
+    identity: DelegationIdentity,
+    transaction: TransactionRequest | FungibleTransactionRequest,
+  ): Promise<string>
+
+  abstract getAddress(identity: DelegationIdentity): Promise<string>
+
+  abstract getTransactionHistory(
+    identity: DelegationIdentity,
+  ): Promise<FungibleTxs>
+
+  abstract getBalance(
+    address: string | undefined,
+    delegation: DelegationIdentity | undefined,
+  ): Promise<ChainBalance>
+
+  abstract getBlockchain(): string
+
+  abstract getFungibleActivityByTokenAndUser(
+    request: FungibleActivityRequest,
+    delegation: DelegationIdentity | undefined,
+  ): Promise<FungibleActivityRecords>
+
+  protected computeSheetForRootAccount(
+    token: Token,
+    principalId: string,
+    defaultIcon?: string,
+    fee?: string,
+  ): TokenBalanceSheet {
+    const rootAccountBalance: AccountBalance = {
+      accountName: "account 1",
+      address: token.address,
+      principalId,
+      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+      usdBalance: token.balanceinUsd,
     }
-    return response.json().then((x) => x.data.rates)
-  })
-
-  const result = tokens.map((token) => {
-    const priceInToken = prices[token]
-    const priceInUsd = priceInToken
-      ? (1 / priceInToken).toFixed(2)
-      : NOT_AVAILABLE
-    return { token, price: priceInUsd }
-  })
-
-  return result
-}
-
-export const getPriceFull = async (): Promise<TokenPrice[]> => {
-  return fetch(COINBASE_RATES_URL).then(async (response) => {
-    if (!response.ok) {
-      throw []
+    const appBalance: AppBalance = {
+      accounts: [rootAccountBalance],
+      appName: "NFID",
+      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
     }
-    return response.json().then((x) => x.data.rates)
-  })
+    return {
+      applications: {
+        NFID: appBalance,
+      },
+      icon: token.logo ? token.logo : defaultIcon!,
+      label: token.name,
+      token: token.symbol,
+      tokenBalance: BigInt(this.stringICPtoE8s(token.balance)),
+      usdBalance: token.balanceinUsd,
+      blockchain: this.getBlockchain(),
+      fee: fee,
+      contract: token.contractAddress,
+    }
+  }
+
+  protected toTransactionRow(tx: FungibleActivityRecord, address: string) {
+    return {
+      type:
+        tx.from.toLowerCase() === address.toLowerCase() ? "send" : "received",
+      asset: tx.asset,
+      quantity: this.formatPrice(tx.price),
+      date: this.formatDate(tx.date),
+      from: tx.from,
+      to: tx.to,
+    } as TransactionRow
+  }
+
+  protected formatDate(date: string) {
+    return format(new Date(date), "MMM dd, yyyy - hh:mm:ss aaa")
+  }
+
+  protected formatPrice(price: number) {
+    return price
+  }
+
+  private stringICPtoE8s = (value: string) => {
+    return Number(parseFloat(value) * E8S)
+  }
 }

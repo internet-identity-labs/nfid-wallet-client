@@ -1,6 +1,5 @@
 import React from "react"
 import { useBtcBalance } from "src/features/fungable-token/btc/hooks/use-btc-balance"
-import { useBtcFee } from "src/features/fungable-token/btc/hooks/use-btc-fee"
 import { useErc20 } from "src/features/fungable-token/erc-20/hooks/use-erc-20"
 
 import { IconPngEthereum, IconSvgBTC, IconSvgDfinity } from "@nfid-frontend/ui"
@@ -31,7 +30,6 @@ export interface TokenConfig {
 
 export const useAllToken = (): { token: TokenConfig[] } => {
   const { balances: btcSheet } = useBtcBalance()
-  const { btcFee } = useBtcFee()
   const { appAccountBalance } = useBalanceICPAll()
   const { token: dip20Token } = useAllDip20Token()
   const { balance: ethSheet } = useEthBalance()
@@ -57,7 +55,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
         currency: "BTC",
         balance: btcSheet?.tokenBalance,
         price: btcSheet?.usdBalance,
-        fee: BigInt(btcFee ? btcFee : 0),
+        fee: BigInt(btcSheet?.fee ?? 0),
         toPresentation,
         transformAmount: stringICPtoE8s,
         blockchain: "Bitcoin",
@@ -110,7 +108,7 @@ export const useAllToken = (): { token: TokenConfig[] } => {
     ethSheet?.tokenBalance,
     ethSheet?.usdBalance,
     dip20Token,
-    btcFee,
+    btcSheet?.fee,
     erc20,
   ])
   console.debug("useAllToken", { token })

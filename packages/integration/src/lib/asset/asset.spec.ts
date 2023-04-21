@@ -1,4 +1,4 @@
-import { getPrice } from "./asset"
+import { getPrice } from "./asset-util"
 
 describe("Ethereum Asset", () => {
   jest.setTimeout(200000)

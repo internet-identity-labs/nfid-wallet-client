@@ -148,7 +148,8 @@ When(
         this.setAuthState(authState)
       }
     }, testUser.authstate)
-  },
+    await HomePage.openPage("/profile/assets")
+  }
 )
 
 When(/^I open Vaults$/, async () => {

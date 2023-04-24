@@ -6,7 +6,6 @@ Feature:Fungible Asset Details
   Scenario Outline: User should be able to see <label> in asset details
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And It log's me in
     And Tokens displayed on user assets
     And Open asset with label <label>
     Then Wait while <label> accounts calculated

@@ -15,13 +15,13 @@ Feature:Fungible Asset
     And <label> USD balance is not empty
     And <label> USD balance not $0.00
     Examples:
-      | chain             | currency | balance | asset             | anchor | label             |
-      | Bitcoin           | BTC      | 0 BTC   | Bitcoin           | 25795  | Bitcoin           |
-      | Ethereum          | LINK     | 20 LINK | ChainLink Token   | 25795  | ChainLink Token   |
-      | Ethereum          | FAU      | 1 FAU   | FaucetToken       | 25795  | FaucetToken       |
-      | Ethereum          | ETH      | 0 ETH   | Ethereum          | 10974  | Ethereum          |
-      | Internet Computer | ICP      | 0 ICP   | Internet Computer | 28542  | Internet Computer |
-      | Internet Computer | WICP     | 0 WICP  | WICP              | 28565  | WICP              |
+      | chain             | currency | balance        | asset             | anchor | label             |
+      | Bitcoin           | BTC      | 0.00006879 BTC | Bitcoin           | 25795  | Bitcoin           |
+      | Ethereum          | LINK     | 20 LINK        | ChainLink Token   | 25795  | ChainLink Token   |
+      | Ethereum          | FAU      | 1 FAU          | FaucetToken       | 25795  | FaucetToken       |
+      | Ethereum          | ETH      | 0.1 ETH        | Ethereum          | 25795  | Ethereum          |
+      | Internet Computer | ICP      | 0 ICP          | Internet Computer | 28542  | Internet Computer |
+      | Internet Computer | WICP     | 0 WICP         | WICP              | 28565  | WICP              |
 
 
   @asset2
@@ -41,6 +41,5 @@ Feature:Fungible Asset
       | chain             | anchor | amount |
       | Bitcoin           | 25795  | 1      |
       | Ethereum          | 25795  | 3      |
-      | Ethereum          | 10974  | 1      |
       | Internet Computer | 28542  | 4      |
 

@@ -8,6 +8,7 @@ import { erc1155AssetDecoder } from "./asset-decoder/erc1155-asset-decoder/erc11
 import { erc1155TokenLazyDecoder } from "./asset-decoder/erc1155-asset-decoder/erc1155-asset-lazy-decoder"
 import { dependencyService } from "./dependency-service"
 import { functionCallService } from "./function-call-service"
+import { approveMethodDecoder } from "./method-decoder/approve/approve-method-decoder"
 import { bulkPurchaseMethodDecoder } from "./method-decoder/bulk-purchase/bulk-purchase-method-decoder"
 import { burnMethodDecoder } from "./method-decoder/burn/burn-method-decoder"
 import { cancelMethodDecoder } from "./method-decoder/cancel/cancel-method-decoder"
@@ -39,6 +40,7 @@ const methodDecoders = dependencyService.group([
   createTokenPublicMethodDecoder,
   mintAndTransferMethodDecoder,
   setApprovalForAllMethodDecoder,
+  approveMethodDecoder,
 ])
 const assetDecoders = dependencyService.group([
   erc721AssetDecoder,

@@ -18,6 +18,7 @@ export type Interface =
   | "MintLazy1155"
   | "PersonalSign"
   | "SetApprovalForAll"
+  | "Approve"
 
 export type Method =
   | "bulkPurchase"
@@ -35,6 +36,7 @@ export type Method =
   | "sell"
   | "personalSign"
   | "setApprovalForAll"
+  | "approve"
 
 export type Item = ItemRarible & { collectionData: CollectionRarible }
 

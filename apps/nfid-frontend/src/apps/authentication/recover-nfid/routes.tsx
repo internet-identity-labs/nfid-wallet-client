@@ -17,21 +17,17 @@ export const RecoverNFIDRoutes = (
     <Route
       path={RecoverNFIDRoutesConstants.enterRecoveryPhrase}
       element={
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <AppScreenRecoverNFID
-            registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
-          />
-        </React.Suspense>
+        <AppScreenRecoverNFID
+          registerDeviceDeciderPath={`${RecoverNFIDRoutesConstants.base}/${RecoverNFIDRoutesConstants.registerDevice}`}
+        />
       }
     />
     <Route
       path={RecoverNFIDRoutesConstants.registerDevice}
       element={
-        <React.Suspense fallback={<div>Loading...</div>}>
-          <RouterRegisterDeviceDecider
-            registerSuccessPath={"/profile/security"}
-          />
-        </React.Suspense>
+        <RouterRegisterDeviceDecider
+          registerSuccessPath={"/profile/security"}
+        />
       }
     />
   </Route>

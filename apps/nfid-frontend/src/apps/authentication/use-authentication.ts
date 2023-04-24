@@ -5,7 +5,11 @@ import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"
 
-import { authState, hasOwnProperty } from "@nfid/integration"
+import {
+  authState,
+  hasOwnProperty,
+  loadProfileFromLocalStorage,
+} from "@nfid/integration"
 import { agent } from "@nfid/integration"
 
 import { userNumberAtom } from "frontend/integration/identity-manager/account/state"
@@ -50,15 +54,20 @@ export const useAuthentication = () => {
     return () => observer.unsubscribe()
   }, [setIsAuthenticated])
 
-  const logout = React.useCallback(() => {
-    authState.logout()
+  const logout = React.useCallback(async () => {
+    await authState.logout()
     setUser(undefined)
     Sentry.setUser(null)
 
-    // NOTE: after dom ready reload the page so thate safari is able to authenticate again
-    setTimeout(() => {
-      window.location.reload()
-    })
+    // NOTE:
+    // when user has profile in localStorage (meaning he has registered this device)
+    // we need to reload the page so that webAuthN is able to authenticate again
+    //
+    if (!!loadProfileFromLocalStorage()) {
+      setTimeout(() => {
+        window.location.reload()
+      })
+    }
 
     Usergeek.setPrincipal(Principal.anonymous())
   }, [])

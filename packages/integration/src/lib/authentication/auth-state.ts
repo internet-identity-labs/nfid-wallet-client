@@ -172,7 +172,6 @@ function makeAuthState() {
    */
   async function invalidateIdentity() {
     await reset()
-    window.location.reload()
   }
   return {
     set,

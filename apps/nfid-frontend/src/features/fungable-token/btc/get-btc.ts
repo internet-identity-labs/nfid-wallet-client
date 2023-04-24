@@ -15,7 +15,6 @@ import { fetchProfile } from "src/integration/identity-manager"
 
 import { IconSvgBTC } from "@nfid-frontend/ui"
 import { loadProfileFromLocalStorage } from "@nfid/integration"
-import { DelegationIdentity } from "@dfinity/identity"
 
 export const getAccounts = async (): Promise<TokenBalanceSheet> => {
   const principal = await getIdentity()

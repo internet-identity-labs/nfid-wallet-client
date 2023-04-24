@@ -106,7 +106,7 @@ export class Profile extends HomePage {
     })
     try {
       await this.sendPinButton.click()
-    } catch (err) { }
+    } catch (err) {}
   }
 
   public async waitForTokensAppear(amount?: number) {

@@ -16,8 +16,8 @@ Feature:Send/Receive Asset
     Examples:
       | chain           | anchor | account_id                            | currency |
       | Bitcoin         | 25795  | mn9cmLSFxFE5ASRNXFnxbdZmEvp4Z...FDm2h | BTC      |
-      | Ethereum        | 10974  | 0xcDF42Ca0423a6063Fa4E60BdCBc...07CDa | ETH      |
-      | ChainLink Token | 25795  | 0x1e76A4b38Be7573bCb0fE5f7cc8...545F3 | LINK     |
+      | Ethereum        | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | ETH      |
+      | ChainLink Token | 25795  | 0x00607C1f864508E7De80B6db6A2...f01E7 | LINK     |
 
   @sendreceive2
   Scenario Outline: User should be able to receive ICP transaction
@@ -50,7 +50,7 @@ Feature:Send/Receive Asset
     Examples:
       | chain             | anchor | balance    | fee          | account        | currency |
       | Bitcoin           | 25795  | 0.00006879 | 0.000015 BTC | NFID Account 1 | BTC      |
-      | Ethereum          | 10974  | 0.1        | 0 ETH        | NFID Account 1 | ETH      |
+      | Ethereum          | 25795  | 0.1        | 0 ETH        | NFID Account 1 | ETH      |
       | Internet Computer | 28542  | 0.01       | 0.0001 ICP   | NFID account 1 | ICP      |
       | ChainLink Token   | 25795  | 20         | 0 ETH        | NFID Account 1 | LINK     |
 

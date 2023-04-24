@@ -9,11 +9,11 @@ interface IDisplaySwitch {
 
 export const DisplaySwitch = ({ state, setState }: IDisplaySwitch) => {
   return (
-    <div className={clsx(`gap-3 bg-white p-1 rounded-md`, "hidden sm:flex")}>
+    <div className={clsx(`gap-3 bg-white p-0.5 rounded-md`, "hidden sm:flex")}>
       <div
         onClick={() => setState("grid")}
         className={clsx(
-          "p-0 w-10 h-10 outline-none rounded-[4px]",
+          "p-0 w-[36px] h-[36px] outline-none rounded-[4px]",
           "hover:text-gray-100 transition-all cursor-pointer",
           "flex justify-center items-center",
           state === "grid" && "bg-gray-200",
@@ -26,7 +26,7 @@ export const DisplaySwitch = ({ state, setState }: IDisplaySwitch) => {
       <div
         onClick={() => setState("table")}
         className={clsx(
-          "p-0 w-10 h-10  outline-none rounded-[4px]",
+          "p-0 w-[36px] h-[36px] outline-none rounded-[4px]",
           "hover:text-gray-100 transition-all cursor-pointer",
           "flex justify-center items-center",
           state === "table" && "bg-gray-200",

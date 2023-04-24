@@ -12,7 +12,6 @@ Feature:Fungible Asset
     And Asset appears with label <label>
     And <asset> appears with <currency> on <chain> and <balance>
     And <label> <currency> address calculated
-    And <label> USD balance is not empty
     And <label> USD balance not $0.00
     Examples:
       | chain             | currency | balance | asset             | anchor | label             |

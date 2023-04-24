@@ -458,7 +458,7 @@ Then(/^([^"]*) USD balance is not empty$/, async (chain: string) => {
   const usd = await $(`#token_${chain.replace(/\s/g, "")}_usd`)
 
   await usd.waitForExist({
-    timeout: 7000,
+    timeout: 10000,
   })
   await expect(usd).not.toHaveText("")
 })

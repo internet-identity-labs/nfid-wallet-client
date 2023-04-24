@@ -62,7 +62,7 @@ const NFTPreview = (props: UserNonFungibleToken) => {
   return (
     <div
       className={clsx(
-        "rounded-md w-full transition-all cursor-pointer overflow-visible p-[1px] relative",
+        "rounded-md w-full transition-all cursor-pointer overflow-visible p-[1px] relative z-10",
         "bg-gray-50 hover:bg-white hover:shadow-[0_2px_15px_rgba(0,0,0,0.1)]",
       )}
     >

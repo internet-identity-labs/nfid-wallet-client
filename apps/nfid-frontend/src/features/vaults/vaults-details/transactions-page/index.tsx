@@ -28,7 +28,6 @@ const initialTimeFilter = {
 export const VaultsTransactionsPage: React.FC<
   VaultsTransactionsPageProps
 > = () => {
-  const [isFiltersModalVisible, setIsFiltersModalVisible] = useState(false)
   const [searchFilter, setSearchFilter] = useState("")
   const [initiatedFilter, setInitiatedFilter] = useState<string[]>([])
   const [statusFilter, setStatusFilter] = useState<string[]>([])
@@ -62,10 +61,6 @@ export const VaultsTransactionsPage: React.FC<
     setStatusFilter([])
     setInitiatedFilter([])
     setTimeFilter(initialTimeFilter)
-  }, [])
-
-  const onApplyFilters = useCallback(() => {
-    setIsFiltersModalVisible(false)
   }, [])
 
   const filteredTransactions: Transaction[] = useMemo(() => {
@@ -120,8 +115,6 @@ export const VaultsTransactionsPage: React.FC<
         actionButtons={
           <div className="flex items-center justify-end w-full ml-4 space-x-5">
             <VaultFilterTransactions
-              isModalOpen={isFiltersModalVisible}
-              setIsModalOpen={setIsFiltersModalVisible}
               initiatorsOptions={initiatorsOptions}
               statusOptions={statusOptions}
               initiatedFilter={initiatedFilter}
@@ -131,7 +124,6 @@ export const VaultsTransactionsPage: React.FC<
               timeFilter={timeFilter}
               setTimeFilter={setTimeFilter}
               onResetFilters={onResetFilters}
-              onApplyFilters={onApplyFilters}
             />
             <IconCmpSorting className="transition-opacity cursor-pointer hover:opacity-60" />
           </div>

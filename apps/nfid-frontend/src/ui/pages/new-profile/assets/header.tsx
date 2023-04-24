@@ -1,11 +1,8 @@
-import { useState } from "react"
-
-import { Image } from "@nfid-frontend/ui"
+import { FilterPopover, Image } from "@nfid-frontend/ui"
 import {
   DropdownSelect,
   IconCmpFilters,
   IOption,
-  ModalAdvanced,
   Tooltip,
 } from "@nfid-frontend/ui"
 
@@ -24,31 +21,15 @@ export const ProfileAssetsHeader = ({
   setBlockchainFilter,
   resetFilters,
 }: IProfileAssetsHeader) => {
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
   return (
     <div className="flex items-center justify-between w-full">
       <p>Your tokens</p>
       <div className="flex items-center">
-        <div className="cursor-pointer" id="asset_filter">
-          <ModalAdvanced
-            isModalOpen={isFiltersOpen}
-            isModalOpenChange={setIsFiltersOpen}
-            secondaryButton={{
-              type: "stroke",
-              onClick: () => resetFilters(),
-              text: "Reset filter",
-              id: "reset-filters-button",
-              block: true,
-            }}
-            primaryButton={{
-              type: "primary",
-              onClick: () => setIsFiltersOpen(false),
-              text: "Apply",
-              id: "apply-filters-button",
-              block: true,
-            }}
+        <div className="flex justify-center cursor-pointer" id="asset_filter">
+          <FilterPopover
+            onReset={() => resetFilters()}
             trigger={<IconCmpFilters />}
-            title="Filter"
+            align="end"
           >
             <DropdownSelect
               label="Blockchain"
@@ -56,7 +37,7 @@ export const ProfileAssetsHeader = ({
               selectedValues={blockchainFilter}
               setSelectedValues={setBlockchainFilter}
             />
-          </ModalAdvanced>
+          </FilterPopover>
         </div>
         <Tooltip
           tip={

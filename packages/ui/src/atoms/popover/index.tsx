@@ -1,5 +1,4 @@
 import * as RadixPopover from "@radix-ui/react-popover"
-import clsx from "clsx"
 import { ReactElement } from "react"
 
 export interface PopoverProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -17,7 +16,7 @@ export const Popover: React.FC<PopoverProps> = ({
   return (
     <RadixPopover.Root>
       <RadixPopover.Trigger>{trigger}</RadixPopover.Trigger>
-      <RadixPopover.Content side={position} align={align}>
+      <RadixPopover.Content side={position} align={align} className="!z-30">
         {children}
       </RadixPopover.Content>
     </RadixPopover.Root>

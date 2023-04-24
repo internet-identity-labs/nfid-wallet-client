@@ -57,9 +57,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.assets}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileAssets />
-          </React.Suspense>
+          <ProfileAssets />
         </AuthWrapper>
       }
     />
@@ -67,9 +65,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.collectibles}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileCollectiblesPage />
-          </React.Suspense>
+          <ProfileCollectiblesPage />
         </AuthWrapper>
       }
     />
@@ -77,9 +73,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.wallet}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileTokenWalletsDetailPage />
-          </React.Suspense>
+          <ProfileTokenWalletsDetailPage />
         </AuthWrapper>
       }
     />
@@ -87,9 +81,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.transactions}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileTransactions />
-          </React.Suspense>
+          <ProfileTransactions />
         </AuthWrapper>
       }
     />
@@ -97,9 +89,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.credentials}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileCredentials />
-          </React.Suspense>
+          <ProfileCredentials />
         </AuthWrapper>
       }
     />
@@ -107,9 +97,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.security}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileSecurity />
-          </React.Suspense>
+          <ProfileSecurity />
         </AuthWrapper>
       }
     />
@@ -117,9 +105,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.applications}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileApplications />
-          </React.Suspense>
+          <ProfileApplications />
         </AuthWrapper>
       }
     />
@@ -127,9 +113,7 @@ export const ProfileRoutes = (
       path={ProfileConstants.copyRecoveryPhrase}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <CopyRecoveryPhrase />
-          </React.Suspense>
+          <CopyRecoveryPhrase />
         </AuthWrapper>
       }
     />
@@ -137,9 +121,7 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.credentials}/${ProfileConstants.addPhoneNumber}`}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfilePhone />
-          </React.Suspense>
+          <ProfilePhone />
         </AuthWrapper>
       }
     />
@@ -147,9 +129,7 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.credentials}/${ProfileConstants.verifySMS}`}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileSMS />
-          </React.Suspense>
+          <ProfileSMS />
         </AuthWrapper>
       }
     />
@@ -157,9 +137,7 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.assets}/${ProfileConstants.nftDetails}`}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <ProfileNFTDetails />
-          </React.Suspense>
+          <ProfileNFTDetails />
         </AuthWrapper>
       }
     />
@@ -167,9 +145,7 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}`}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <VaultsListPage />
-          </React.Suspense>
+          <VaultsListPage />
         </AuthWrapper>
       }
     />
@@ -177,9 +153,7 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <VaultsDetailsCoordinator />
-          </React.Suspense>
+          <VaultsDetailsCoordinator />
         </AuthWrapper>
       }
     />
@@ -187,9 +161,7 @@ export const ProfileRoutes = (
       path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
       element={
         <AuthWrapper>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <VaultTransactionsDetailsPage />
-          </React.Suspense>
+          <VaultTransactionsDetailsPage />
         </AuthWrapper>
       }
     />

@@ -1,7 +1,7 @@
 import { TokenPrice } from "./types"
 
 const COINBASE_RATES_URL = `https://api.coinbase.com/v2/exchange-rates`
-const NOT_AVAILABLE = "N/A"
+const NOT_AVAILABLE = ""
 
 export const getPrice = async (tokens: string[]): Promise<TokenPrice[]> => {
   const prices = await fetch(COINBASE_RATES_URL).then(async (response) => {

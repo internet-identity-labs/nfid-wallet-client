@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import useSWR from "swr"
 
 const COINBASE_RATES_URL = `https://api.coinbase.com/v2/exchange-rates`
-const NOT_AVAILABLE = "N/A"
+const NOT_AVAILABLE = ""
 const DEFAULT_EXCHANGE_RATES = ["ICP", "ETH", "BTC"]
 export interface IRate {
   [currency: string]: number

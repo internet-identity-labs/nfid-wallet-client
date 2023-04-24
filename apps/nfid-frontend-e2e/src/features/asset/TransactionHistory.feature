@@ -6,7 +6,6 @@ Feature:Fungible Asset History
   Scenario Outline: User should be able to see transaction history in Sent/Received
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And It log's me in
     And Tokens displayed on user assets
     And Open asset with label <label>
     Then Wait while <label> accounts calculated
@@ -31,7 +30,6 @@ Feature:Fungible Asset History
   Scenario Outline: User should be able to see transaction depends on selected app
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And It log's me in
     And Tokens displayed on user assets
     And Open asset with label <chain>
     Then Wait while <chain> accounts calculated

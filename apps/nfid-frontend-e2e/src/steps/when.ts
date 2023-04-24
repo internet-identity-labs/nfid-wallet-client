@@ -78,7 +78,7 @@ When(
 
     await browser.execute(function (authState: AuthState) {
       // @ts-ignore
-      if (typeof this.resetAuthState === "function") {
+      if (typeof this.setAuthState === "function") {
         // @ts-ignore
         this.setAuthState(authState)
       }
@@ -143,13 +143,13 @@ When(
 
     await browser.execute(function (authState: AuthState) {
       // @ts-ignore
-      if (typeof this.resetAuthState === "function") {
+      if (typeof this.setAuthState === "function") {
         // @ts-ignore
         this.setAuthState(authState)
       }
     }, testUser.authstate)
     await HomePage.openPage("/profile/assets")
-  }
+  },
 )
 
 When(/^I open Vaults$/, async () => {

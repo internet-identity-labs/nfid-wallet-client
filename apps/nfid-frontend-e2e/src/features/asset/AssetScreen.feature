@@ -6,7 +6,6 @@ Feature:Fungible Asset
   Scenario Outline: User should be able to see <chain> in assets
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And It log's me in
     And Tokens displayed on user assets
     And Asset appears with label <label>
     And <asset> appears with <currency> on <chain> and <balance>
@@ -26,7 +25,6 @@ Feature:Fungible Asset
   Scenario Outline: User should be able to filter assets by blockchain
     Given User opens NFID site
     And User is already authenticated by <anchor> anchor
-    And It log's me in
     And Tokens displayed on user assets
     Then Open filter menu on assets screen
     And Expect blockchain filter menu with text "All"

@@ -45,7 +45,6 @@ import {
   EthEstimatedTransactionRequest,
   FungibleActivityRecords,
   FungibleActivityRequest,
-  FungibleTxs,
   Identity,
   ItemsByUserRequest,
   NonFungibleActivityRecords,
@@ -54,6 +53,7 @@ import {
   Tokens,
   TransferETHRequest,
   TransferNftRequest,
+  FungibleTxs,
 } from "./types"
 
 export class EthereumAsset extends NonFungibleAsset {

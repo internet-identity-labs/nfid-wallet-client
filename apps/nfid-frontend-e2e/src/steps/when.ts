@@ -64,29 +64,6 @@ When(/^User has account stored in localstorage$/, async () => {
 })
 
 When(
-  /^User has authState$/,
-  //use this method to pick a random available user from the list
-  async function () {
-    for (let i = 0; i < userClient.userMap.size; i++) {
-      if (userClient.userMap.get(userClient.users[i]) === false) {
-        await userClient.takeUser(userClient.users[i])
-        this.testUser = userClient.users[i]
-      }
-    }
-
-    let testUser: TestUser = this.testUser
-
-    await browser.execute(function (authState: AuthState) {
-      // @ts-ignore
-      if (typeof this.setAuthState === "function") {
-        // @ts-ignore
-        this.setAuthState(authState)
-      }
-    }, testUser.authstate)
-  },
-)
-
-When(
   /^User is already authenticated with ?(?:(.*))?$/,
   async function (account: string) {
     if (account === "BTC") {

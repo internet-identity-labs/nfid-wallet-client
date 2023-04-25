@@ -74,7 +74,7 @@ export const ProcedureApprovalCoordinator: React.FC<
       ? [rpcMessage, "populateTransactionData"]
       : null,
     async ([rpcMessage]) => {
-      await populateTransactionData(rpcMessage)
+      return await populateTransactionData(rpcMessage)
     },
     { refreshInterval: 3 * 1000 },
   )

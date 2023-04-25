@@ -10,6 +10,7 @@ import { sortByDate } from "@nfid-frontend/utils"
 import { blockchains } from "@nfid/config"
 
 import { useEthTransactions } from "frontend/features/fungable-token/eth/hooks/use-eth-transactions"
+import { useUserEthNFTTransactions } from "frontend/features/non-fungable-token/eth/use-user-nft-transactions"
 import {
   selectReceivedTransactions,
   selectSendTransactions,
@@ -25,6 +26,7 @@ const ProfileTransactions = () => {
     useEthTransactions()
   const { txs: btcTxs } = useBtcTransactions()
   const { erc20txs } = useErc20Transactions()
+  const { transactions: nftTransactions } = useUserEthNFTTransactions()
 
   const { wallets } = useAllWallets()
 
@@ -60,6 +62,9 @@ const ProfileTransactions = () => {
     const ERC20Transactions = isNFIDAccount
       ? erc20txs?.sendTransactions ?? []
       : []
+    const ETHNFTTransactions = isNFIDAccount
+      ? nftTransactions?.filter((t) => t.type === "send") ?? []
+      : []
 
     if (!selectedBlockchainFilters.length)
       return sortByDate(
@@ -68,6 +73,7 @@ const ProfileTransactions = () => {
           ...ETHTransactions,
           ...BTCTransactions,
           ...ERC20Transactions,
+          ...ETHNFTTransactions,
         ],
         "MMM dd',' yyyy - hh:mm:ss a",
       )
@@ -77,7 +83,11 @@ const ProfileTransactions = () => {
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
     selectedBlockchainFilters.includes("Ethereum") &&
-      transactions.push(...ETHTransactions, ...ERC20Transactions)
+      transactions.push(
+        ...ETHTransactions,
+        ...ERC20Transactions,
+        ...ETHNFTTransactions,
+      )
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
 
@@ -89,8 +99,9 @@ const ProfileTransactions = () => {
     isNFIDAccount,
     sendEthTXs,
     btcTxs?.sendTransactions,
-    selectedBlockchainFilters,
     erc20txs?.sendTransactions,
+    nftTransactions,
+    selectedBlockchainFilters,
   ])
 
   const receivedTransactions: TransactionRow[] = useMemo(() => {
@@ -109,6 +120,10 @@ const ProfileTransactions = () => {
       ? btcTxs?.receivedTransactions ?? []
       : []
 
+    const ETHNFTTransactions = isNFIDAccount
+      ? nftTransactions?.filter((t) => t.type === "received") ?? []
+      : []
+
     if (!selectedBlockchainFilters.length)
       return sortByDate(
         [
@@ -116,6 +131,7 @@ const ProfileTransactions = () => {
           ...ETHTransactions,
           ...BTCTransactions,
           ...ERC20Transactions,
+          ...ETHNFTTransactions,
         ],
         "MMM dd',' yyyy - hh:mm:ss a",
       )
@@ -125,7 +141,11 @@ const ProfileTransactions = () => {
     selectedBlockchainFilters.includes("Internet Computer") &&
       transactions.push(...ICTransactions)
     selectedBlockchainFilters.includes("Ethereum") &&
-      transactions.push(...ETHTransactions, ...ERC20Transactions)
+      transactions.push(
+        ...ETHTransactions,
+        ...ERC20Transactions,
+        ...ETHNFTTransactions,
+      )
     selectedBlockchainFilters.includes("Bitcoin") &&
       transactions.push(...BTCTransactions)
 
@@ -136,9 +156,10 @@ const ProfileTransactions = () => {
     wallets,
     isNFIDAccount,
     receiveEthTXs,
-    btcTxs?.receivedTransactions,
-    selectedBlockchainFilters,
     erc20txs?.receivedTransactions,
+    btcTxs?.receivedTransactions,
+    nftTransactions,
+    selectedBlockchainFilters,
   ])
 
   const accountsOptions = useMemo(() => {

@@ -44,6 +44,7 @@ const componentMap: ComponentMap = {
   sell: React.lazy(() => import("./components/sell")),
   personalSign: React.lazy(() => import("./components/sign-message")),
   setApprovalForAll: React.lazy(() => import("./components/fallback")),
+  approve: React.lazy(() => import("./components/fallback")),
 }
 
 const hasMapped = (messageInterface: string = "") =>

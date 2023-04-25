@@ -31,7 +31,7 @@ describe("Ethereum Asset", () => {
     const actual = await ethereumAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
-        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
@@ -55,21 +55,21 @@ describe("Ethereum Asset", () => {
       delegationIdentity,
       "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
       1,
-      "0x8652d6162Eb9b4E46cB6C1F77b8d7257663F360D",
-      "1",
+      "0xCB7E40c8DfBb6b83C7D222af862a6A1111D77897",
+      "82484607247348712068732030314470275353650558748440325380375732522564550918146",
     )
 
     const actual = await ethereumAsset.getEstimatedTransaction(request)
 
     expect(actual).toEqual({
       transaction: {
-        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
-        to: "0x8652d6162Eb9b4E46cB6C1F77b8d7257663F360D",
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
+        to: "0xCB7E40c8DfBb6b83C7D222af862a6A1111D77897",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
-        data: "0xf242432a000000000000000000000000f7eb98df5cef7b45ec77b1bd11f593dbb3c8e647000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4390000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000",
+        data: "0xf242432a0000000000000000000000006a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439b65ca21d6396e0d8455bacaa1eb43cad27788f80000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000",
       },
       fee: expect.any(String),
       feeUsd: expect.any(String),
@@ -86,21 +86,21 @@ describe("Ethereum Asset", () => {
     const request = new NftErc721TransferRequest(
       delegationIdentity,
       "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
-      "0xE6c6bb10c86bB18484e2EE9089087683D56C7542",
-      "38940887899251058536299255011156548386618152174517910543504708906964800765956",
+      "0xD8560C88D1DC85f9ED05b25878E366c49B68bEf9",
+      "90954632668492117629724492447872876170185211583852507408636743397101359071345",
     )
 
     const actual = await ethereumAsset.getEstimatedTransaction(request)
 
     expect(actual).toEqual({
       transaction: {
-        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
-        to: "0xE6c6bb10c86bB18484e2EE9089087683D56C7542",
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
+        to: "0xD8560C88D1DC85f9ED05b25878E366c49B68bEf9",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),
         maxPriorityFeePerGas: expect.any(ethers.BigNumber),
         gasLimit: expect.any(ethers.BigNumber),
-        data: "0x42842e0e000000000000000000000000f7eb98df5cef7b45ec77b1bd11f593dbb3c8e647000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d4395617c2f117605bae6a3077dd38f68c8acd6d8350000000000000000000000004",
+        data: "0x42842e0e0000000000000000000000006a4b85a37ee98ae99cf995ff87fe35a8b23ea3ec000000000000000000000000dc75e8c3ae765d8947adbc6698a2403a6141d439c9167f6d465d3f38a4e8afd07cfdd529b1260f1a000000000000000000000071",
       },
       fee: expect.any(String),
       feeUsd: expect.any(String),
@@ -148,7 +148,7 @@ describe("Ethereum Asset", () => {
     const actual = await ethereumAsset.getEstimatedTransaction(request)
     expect(actual).toEqual({
       transaction: {
-        from: "0xF7eB98Df5cef7b45eC77b1BD11f593dBb3c8e647",
+        from: "0x6a4b85A37ee98aE99cF995FF87fe35A8B23ea3eC",
         to: "0xdc75e8c3ae765d8947adbc6698a2403a6141d439",
         nonce: expect.any(Number),
         maxFeePerGas: expect.any(ethers.BigNumber),

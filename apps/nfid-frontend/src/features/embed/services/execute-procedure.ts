@@ -9,15 +9,18 @@ import { RPCMessage, RPCResponse, RPC_BASE } from "./rpc-receiver"
 
 type CommonContext = { rpcMessage?: RPCMessage; authSession?: AuthSession }
 
-type ExecuteProcedureServiceContext = CommonContext & {
+export type ApproveSignatureEvent = {
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
-export const ExecuteProcedureService = async ({
-  populatedTransaction,
-  rpcMessage,
-  authSession,
-}: ExecuteProcedureServiceContext): Promise<RPCResponse> => {
+type ExecuteProcedureEvent = ApproveSignatureEvent
+
+type ExecuteProcedureServiceContext = CommonContext
+
+export const ExecuteProcedureService = async (
+  { rpcMessage, authSession }: ExecuteProcedureServiceContext,
+  { data }: { data?: ExecuteProcedureEvent },
+): Promise<RPCResponse> => {
   if (!rpcMessage)
     throw new Error("ExecuteProcedureService: missing rpcMessage")
   if (!authSession)
@@ -52,7 +55,7 @@ export const ExecuteProcedureService = async ({
     case "eth_sendTransaction": {
       const { wait, ...result } = await adapter.sendTransaction(
         delegation,
-        populatedTransaction,
+        data?.populatedTransaction,
       )
       const response = { ...rpcBase, result: result.hash }
       console.debug("ExecuteProcedureService eth_accounts", {

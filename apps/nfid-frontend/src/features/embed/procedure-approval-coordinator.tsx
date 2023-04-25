@@ -19,7 +19,11 @@ type ApproverCmpProps = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
-  onConfirm: (data?: any) => void
+  onConfirm: (
+    data?: {
+      populatedTransaction: [TransactionRequest, ProviderError | undefined]
+    },
+  ) => void
   onReject: (reason?: any) => void
 }
 
@@ -84,6 +88,11 @@ export const ProcedureApprovalCoordinator: React.FC<
     },
     { refreshInterval: 3 * 1000 },
   )
+
+  const handleOnConfirmSignature = React.useCallback(() => {
+    return populatedTransaction && onConfirm({ populatedTransaction })
+  }, [onConfirm, populatedTransaction])
+
   switch (true) {
     case hasMapped(rpcMessageDecoded?.method):
       const ApproverCmp = componentMap[rpcMessageDecoded?.method as Method]
@@ -95,7 +104,7 @@ export const ProcedureApprovalCoordinator: React.FC<
               appMeta,
               rpcMessageDecoded,
               populatedTransaction,
-              onConfirm,
+              onConfirm: handleOnConfirmSignature,
               onReject,
             }}
           />
@@ -105,9 +114,7 @@ export const ProcedureApprovalCoordinator: React.FC<
     case rpcMessage.method === "eth_accounts":
       return (
         <NFIDConnectAccountCoordinator
-          onConnect={(hostname, accountId) =>
-            onConfirm({ hostname, accountId })
-          }
+          onConnect={() => onConfirm()}
           {...{
             rpcMessage,
             appMeta,

@@ -5,13 +5,13 @@ import { IoIosSearch } from "react-icons/io"
 import { Link, useNavigate } from "react-router-dom"
 
 import {
+  FilterPopover,
   Copy,
   IconCmpFilters,
   IconCmpTransfer,
   IconSvgBook,
   Input,
   Loader,
-  ModalAdvanced,
   Tooltip,
 } from "@nfid-frontend/ui"
 import { Image } from "@nfid-frontend/ui"
@@ -56,7 +56,6 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
   const [walletsFilter, setWalletsFilter] = React.useState<string[]>([])
   const [collectionsFilter, setCollectionsFilter] = React.useState<string[]>([])
   const [blockchainFilter, setBlockchainFilter] = React.useState<string[]>([])
-  const [isFiltersOpen, setIsFiltersOpen] = React.useState(false)
 
   const navigate = useNavigate()
 
@@ -244,27 +243,13 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
               className="w-full"
             />
             <div className={clsx("flex items-center space-x-6 shrink-0")}>
-              <ModalAdvanced
-                isModalOpen={isFiltersOpen}
-                isModalOpenChange={setIsFiltersOpen}
-                secondaryButton={{
-                  type: "stroke",
-                  onClick: onResetFilters,
-                  text: "Reset filter",
-                  id: "reset-filters-button",
-                  block: true,
-                }}
-                primaryButton={{
-                  type: "primary",
-                  onClick: () => setIsFiltersOpen(false),
-                  text: "Apply",
-                  id: "apply-filters-button",
-                  block: true,
-                }}
+              <FilterPopover
                 trigger={
-                  <IconCmpFilters className="transition-opacity cursor-pointer hover:opacity-60" />
+                  <div className="flex items-center justify-center p-2 rounded-md md:bg-white">
+                    <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60" />
+                  </div>
                 }
-                title="Filters"
+                onReset={onResetFilters}
               >
                 <CollectiblesModal
                   collectionsOptions={collectionsOptions}
@@ -277,7 +262,7 @@ export const ProfileCollectibles: React.FC<CollectiblesPage> = ({
                   setBlockchainFilter={setBlockchainFilter}
                   blockchainOptions={blockchainOptions}
                 />
-              </ModalAdvanced>
+              </FilterPopover>
               <DisplaySwitch state={display} setState={setDisplay} />
             </div>
           </div>

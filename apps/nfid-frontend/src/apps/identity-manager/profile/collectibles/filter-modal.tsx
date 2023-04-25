@@ -32,7 +32,7 @@ export const CollectiblesModal = ({
   walletsFilter,
 }: ICollectiblesModal) => {
   return (
-    <div className="my-4 space-y-2">
+    <div className="space-y-2">
       <DropdownSelect
         label="Blockchain"
         options={blockchainOptions}

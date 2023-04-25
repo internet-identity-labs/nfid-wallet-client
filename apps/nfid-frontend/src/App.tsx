@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
-import { ScreenResponsive } from "@nfid-frontend/ui"
+import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED } from "@nfid/config"
 import { authState, ic } from "@nfid/integration"
 
@@ -55,108 +55,78 @@ export const App = () => {
   }, [])
 
   return (
-    <Routes>
-      <Route
-        path={"/"}
-        element={
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <HomeScreen />
-          </React.Suspense>
-        }
-      />
-      <Route
-        path={"/faq"}
-        element={
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <Faq />
-          </React.Suspense>
-        }
-      />
-      <Route
-        path={"/our-mission"}
-        element={
-          <React.Suspense>
-            <OurMission />
-          </React.Suspense>
-        }
-      />
+    <React.Suspense fallback={<BlurredLoader isLoading />}>
+      <Routes>
+        <Route path={"/"} element={<HomeScreen />} />
+        <Route path={"/faq"} element={<Faq />} />
+        <Route
+          path={"/our-mission"}
+          element={
+            <React.Suspense>
+              <OurMission />
+            </React.Suspense>
+          }
+        />
 
-      <Route
-        path="/credential/verified-phone-number"
-        element={
-          <ScreenResponsive frameLabel="Verify with NFID">
-            <React.Suspense fallback={<div>Loading...</div>}>
+        <Route
+          path="/credential/verified-phone-number"
+          element={
+            <ScreenResponsive frameLabel="Verify with NFID">
               <PhoneCredentialCoordinator />
-            </React.Suspense>
-          </ScreenResponsive>
-        }
-      />
+            </ScreenResponsive>
+          }
+        />
 
-      <Route
-        path="/wallet/request-transfer"
-        element={
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <RequestTransferCoordinator />
-          </React.Suspense>
-        }
-      />
+        <Route
+          path="/wallet/request-transfer"
+          element={<RequestTransferCoordinator />}
+        />
 
-      <Route
-        path="/wallet/request-accounts"
-        element={
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <RequestAccountsCoordinator />
-          </React.Suspense>
-        }
-      />
+        <Route
+          path="/wallet/request-accounts"
+          element={<RequestAccountsCoordinator />}
+        />
 
-      <Route
-        path="/authenticate"
-        element={
-          <ScreenResponsive className="flex flex-col items-center">
-            <React.Suspense fallback={<div>Loading...</div>}>
+        <Route
+          path="/authenticate"
+          element={
+            <ScreenResponsive className="flex flex-col items-center">
               <IDPCoordinator />
-            </React.Suspense>
-          </ScreenResponsive>
-        }
-      />
-      <Route
-        path="/ridp"
-        element={
-          <ScreenResponsive className="flex flex-col items-center">
-            <React.Suspense fallback={<div>Loading...</div>}>
+            </ScreenResponsive>
+          }
+        />
+        <Route
+          path="/ridp"
+          element={
+            <ScreenResponsive className="flex flex-col items-center">
               <RemoteIDPCoordinator />
-            </React.Suspense>
-          </ScreenResponsive>
-        }
-      />
-      <Route
-        path="/iframe/trust-device"
-        element={
-          <ScreenResponsive>
-            <React.Suspense fallback={<div>Loading...</div>}>
+            </ScreenResponsive>
+          }
+        />
+        <Route
+          path="/iframe/trust-device"
+          element={
+            <ScreenResponsive>
               <IframeTrustDeviceCoordinator />
-            </React.Suspense>
-          </ScreenResponsive>
-        }
-      />
+            </ScreenResponsive>
+          }
+        />
 
-      <Route
-        path={ROUTE_EMBED}
-        element={
-          <ScreenResponsive className="overflow-auto">
-            <React.Suspense fallback={<div>Loading...</div>}>
+        <Route
+          path={ROUTE_EMBED}
+          element={
+            <ScreenResponsive className="overflow-auto">
               <NFIDEmbedCoordinator />
-            </React.Suspense>
-          </ScreenResponsive>
-        }
-      />
+            </ScreenResponsive>
+          }
+        />
 
-      {ProfileRoutes}
-      {RecoverNFIDRoutes}
+        {ProfileRoutes}
+        {RecoverNFIDRoutes}
 
-      <Route path={"*"} element={<NotFound />} />
-    </Routes>
+        <Route path={"*"} element={<NotFound />} />
+      </Routes>
+    </React.Suspense>
   )
 }
 

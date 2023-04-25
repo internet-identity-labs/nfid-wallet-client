@@ -9,7 +9,7 @@ describe("Ethereum Asset", () => {
 
     expect(actual[0]).toMatchObject({
       token: "AAA",
-      price: "N/A",
+      price: "",
     })
 
     expect(actual[1]).toMatchObject({

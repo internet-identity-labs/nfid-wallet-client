@@ -19,11 +19,9 @@ type ApproverCmpProps = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
-  onConfirm: (
-    data?: {
-      populatedTransaction: [TransactionRequest, ProviderError | undefined]
-    },
-  ) => void
+  onConfirm: (data?: {
+    populatedTransaction: [TransactionRequest, ProviderError | undefined]
+  }) => void
   onReject: (reason?: any) => void
 }
 
@@ -76,12 +74,8 @@ export const ProcedureApprovalCoordinator: React.FC<
       ? [rpcMessage, "populateTransactionData"]
       : null,
     async ([rpcMessage]) => {
-      let a
-      console.debug("populating transaction data", { rpcMessage })
       try {
-        a = await populateTransactionData(rpcMessage)
-        console.debug("populated transaction data", { a })
-        return a
+        return await populateTransactionData(rpcMessage)
       } catch (e) {
         console.debug("populating error data", { e })
       }

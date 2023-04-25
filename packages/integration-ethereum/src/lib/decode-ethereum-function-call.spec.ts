@@ -6,6 +6,37 @@ import {
 } from "./decode-ethereum-function-call"
 
 describe("Decode function call data.", () => {
+  it("should return decoded approve request by decodeRpcMessage", async () => {
+    const request: RPCMessage = {
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: "0x3d47d0475192d8245020287eedb81f66efca35a8",
+          data: "0x095ea7b300000000000000000000000017cef9a8bf107d58e87c170be1652c06390bd990ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          to: "0xcfaf03b6254363bca1a9d8e529270b5660bf3109",
+          maxPriorityFeePerGas: "0x9502F900",
+          maxFeePerGas: "0x1e471e2eac",
+        },
+      ],
+    }
+
+    const actual = await decodeRpcMessage(request)
+    expect(actual).toEqual({
+      interface: "Approve",
+      method: "approve",
+      from: "0x3d47d0475192d8245020287eedb81f66efca35a8",
+      to: "0xcfaf03b6254363bca1a9d8e529270b5660bf3109",
+      maxFeePerGas: expect.any(String),
+      maxPriorityFeePerGas: "2.5e-9",
+      value: undefined,
+      data: {
+        spender: "0x17cEf9a8bf107D58E87c170be1652c06390BD990",
+        amount:
+          "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+      },
+    })
+  })
+
   it("should return decoded SetApprovalForAll request by decodeRpcMessage", async () => {
     const request: RPCMessage = {
       method: "eth_sendTransaction",

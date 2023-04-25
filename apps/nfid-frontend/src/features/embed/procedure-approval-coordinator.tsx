@@ -74,17 +74,15 @@ export const ProcedureApprovalCoordinator: React.FC<
       ? [rpcMessage, "populateTransactionData"]
       : null,
     async ([rpcMessage]) => {
-      try {
-        return await populateTransactionData(rpcMessage)
-      } catch (e) {
-        console.debug("populating error data", { e })
-      }
+      await populateTransactionData(rpcMessage)
     },
     { refreshInterval: 3 * 1000 },
   )
 
   const handleOnConfirmSignature = React.useCallback(() => {
-    return populatedTransaction ? onConfirm({ populatedTransaction }) : onConform()
+    return populatedTransaction
+      ? onConfirm({ populatedTransaction })
+      : onConfirm()
   }, [onConfirm, populatedTransaction])
 
   switch (true) {

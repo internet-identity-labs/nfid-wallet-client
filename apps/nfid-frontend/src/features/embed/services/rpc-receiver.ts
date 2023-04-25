@@ -1,15 +1,6 @@
-import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { filter, fromEvent, map } from "rxjs"
 
-import {
-  DelegationWalletAdapter,
-  ProviderError,
-  loadProfileFromLocalStorage,
-} from "@nfid/integration"
 import { decodeRpcMessage, FunctionCall } from "@nfid/integration-ethereum"
-
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
-import { fetchProfile } from "frontend/integration/identity-manager"
 
 export const RPC_BASE = { jsonrpc: "2.0" }
 
@@ -63,7 +54,6 @@ type ProcedureDetails = {
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   origin: string
-  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export type ProcedureCallEvent = {
@@ -83,20 +73,13 @@ export const RPCReceiverV2 =
             })
           case "eth_sendTransaction":
             const rpcMessageDecoded = await decodeMessage(rpcMessage)
-            const adapter = new DelegationWalletAdapter(
-              "https://eth-goerli.g.alchemy.com/v2/***REMOVED***",
-            )
-            const populatedTransaction = await populateTransactionData(
-              adapter,
-              rpcMessage,
-            )
+
             return send({
               type: "RPC_MESSAGE",
               data: {
                 rpcMessage,
                 rpcMessageDecoded,
                 origin,
-                populatedTransaction,
               },
             })
           case "eth_signTypedData_v4":
@@ -138,30 +121,4 @@ const decodeMessage = async (
     console.warn("decodeRPCMEssage", { error })
     return undefined
   }
-}
-
-async function populateTransactionData(
-  adapter: DelegationWalletAdapter,
-  rpcMessage: RPCMessage,
-): Promise<[TransactionRequest, ProviderError | undefined]> {
-  const data = removeEmptyKeys(rpcMessage?.params[0])
-  const hostname = "nfid.one"
-  const accountId = "0"
-  const profile = loadProfileFromLocalStorage() ?? (await fetchProfile())
-  const delegation = await getWalletDelegation(
-    profile?.anchor,
-    hostname,
-    accountId,
-  )
-  return adapter.populateTransaction(data, delegation)
-}
-
-function removeEmptyKeys(data: { [key: string]: unknown }) {
-  return Object.keys(data).reduce(
-    (acc, key) => ({
-      ...acc,
-      ...(data[key] ? { [key]: data[key] } : {}),
-    }),
-    {},
-  )
 }

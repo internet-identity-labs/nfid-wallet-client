@@ -90,7 +90,7 @@ export const ProcedureApprovalCoordinator: React.FC<
   )
 
   const handleOnConfirmSignature = React.useCallback(() => {
-    return populatedTransaction && onConfirm({ populatedTransaction })
+    return populatedTransaction ? onConfirm({ populatedTransaction }) : onConform()
   }, [onConfirm, populatedTransaction])
 
   switch (true) {

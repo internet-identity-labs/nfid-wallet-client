@@ -3,10 +3,10 @@ import { TransactionRow } from "packages/integration/src/lib/asset/types"
 import React, { useState } from "react"
 
 import {
+  FilterPopover,
   DropdownSelect,
   IconCmpFilters,
   IOption,
-  ModalAdvanced,
   TabsSwitcher,
 } from "@nfid-frontend/ui"
 
@@ -54,7 +54,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
 }) => {
   const [activeTab, setActiveTab] = useState("Sent")
   const [filteredData, setFilteredData] = useState<TransactionRow[]>([])
-  const [isBlockchainFilterOpen, setIsBlockchainFilterOpen] = useState(false)
+
   return (
     <ProfileTemplate
       pageTitle="Transactions history"
@@ -71,26 +71,10 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
             selectedValues={selectedTransactionFilter.map((f) => f.value)}
             isSearch
           />
-
-          <ModalAdvanced
-            isModalOpen={isBlockchainFilterOpen}
-            isModalOpenChange={setIsBlockchainFilterOpen}
-            secondaryButton={{
-              type: "stroke",
-              onClick: () => resetBlockchainFilter(),
-              text: "Reset filter",
-              id: "reset-filters-button",
-              block: true,
-            }}
-            primaryButton={{
-              type: "primary",
-              onClick: () => setIsBlockchainFilterOpen(false),
-              text: "Apply",
-              id: "apply-filters-button",
-              block: true,
-            }}
+          <FilterPopover
+            onReset={() => resetBlockchainFilter()}
             trigger={<IconCmpFilters className="cursor-pointer" />}
-            title="Filter"
+            align="end"
           >
             <DropdownSelect
               label="Blockchain"
@@ -101,7 +85,7 @@ const ProfileTransactionsPage: React.FC<IProfileTransactionsPage> = ({
               selectedValues={blockchainFilter}
               setSelectedValues={setBlockchainFilter}
             />
-          </ModalAdvanced>
+          </FilterPopover>
         </div>
       </ProfileContainer>
       {/* TODO: create Chiplist component */}

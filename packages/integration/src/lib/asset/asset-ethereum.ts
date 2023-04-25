@@ -270,8 +270,8 @@ export class EthereumAsset extends NonFungibleAsset {
         .filter((x) => x.rawBalance !== undefined && 0 != +x.rawBalance)
         .map((x) => ({
           address,
-          name: x.name || "N/A",
-          symbol: x.symbol || "N/A",
+          name: x.name || "",
+          symbol: x.symbol || "",
           logo: x.logo,
           balance: x.balance || "0",
           contractAddress: x.contractAddress,
@@ -355,7 +355,7 @@ export class EthereumAsset extends NonFungibleAsset {
       activities: transfers.transfers.map((x) => ({
         id: x.uniqueId,
         date: x.metadata.blockTimestamp,
-        to: x.to || "N/A",
+        to: x.to || "",
         from: x.from,
         transactionHash: x.hash,
         price: x.value || 0,
@@ -451,11 +451,11 @@ export class EthereumAsset extends NonFungibleAsset {
 
   private priceInUsd(price: any, balance?: string, token?: string) {
     if (!token || !balance) {
-      return "N/A"
+      return ""
     }
     const selectedTokenPrice = price[token]
     if (!selectedTokenPrice) {
-      return "N/A"
+      return ""
     }
     const balanceBN = toBn(balance)
     const usd = toBn(selectedTokenPrice).multipliedBy(balanceBN)

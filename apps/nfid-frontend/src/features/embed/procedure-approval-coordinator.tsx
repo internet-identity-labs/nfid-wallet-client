@@ -1,5 +1,6 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import React from "react"
+import useSWR from "swr"
 
 import { ProviderError } from "@nfid/integration"
 import { FunctionCall, Method } from "@nfid/integration-ethereum"
@@ -11,6 +12,7 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
+import { populateTransactionData } from "./util/populateTxService"
 
 type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
@@ -59,11 +61,29 @@ export const ProcedureApprovalCoordinator: React.FC<
   appMeta,
   rpcMessage,
   rpcMessageDecoded,
-  populatedTransaction,
   onConfirm,
   onReject,
   authSession,
 }) => {
+  console.debug("ProcedureApprovalCoordinator", { rpcMessage })
+
+  const { data: populatedTransaction } = useSWR(
+    rpcMessage.method === "eth_sendTransaction"
+      ? [rpcMessage, "populateTransactionData"]
+      : null,
+    async ([rpcMessage]) => {
+      let a
+      console.debug("populating transaction data", { rpcMessage })
+      try {
+        a = await populateTransactionData(rpcMessage)
+        console.debug("populated transaction data", { a })
+        return a
+      } catch (e) {
+        console.debug("populating error data", { e })
+      }
+    },
+    { refreshInterval: 3 * 1000 },
+  )
   switch (true) {
     case hasMapped(rpcMessageDecoded?.method):
       const ApproverCmp = componentMap[rpcMessageDecoded?.method as Method]

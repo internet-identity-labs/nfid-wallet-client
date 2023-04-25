@@ -1,5 +1,6 @@
 import { TransactionRequest } from "@ethersproject/abstract-provider"
 import React from "react"
+import useSWR from "swr"
 
 import { ProviderError } from "@nfid/integration"
 import { FunctionCall, Method } from "@nfid/integration-ethereum"
@@ -11,13 +12,16 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 import MappedFallback from "./components/fallback"
 import { RPCMessage } from "./services/rpc-receiver"
 import { Loader } from "./ui/loader"
+import { populateTransactionData } from "./util/populateTxService"
 
 type ApproverCmpProps = {
   appMeta: AuthorizingAppMeta
   rpcMessage: RPCMessage
   rpcMessageDecoded?: FunctionCall
   populatedTransaction?: [TransactionRequest, ProviderError | undefined]
-  onConfirm: (data?: any) => void
+  onConfirm: (data?: {
+    populatedTransaction: [TransactionRequest, ProviderError | undefined]
+  }) => void
   onReject: (reason?: any) => void
 }
 
@@ -59,11 +63,28 @@ export const ProcedureApprovalCoordinator: React.FC<
   appMeta,
   rpcMessage,
   rpcMessageDecoded,
-  populatedTransaction,
   onConfirm,
   onReject,
   authSession,
 }) => {
+  console.debug("ProcedureApprovalCoordinator", { rpcMessage })
+
+  const { data: populatedTransaction } = useSWR(
+    rpcMessage.method === "eth_sendTransaction"
+      ? [rpcMessage, "populateTransactionData"]
+      : null,
+    async ([rpcMessage]) => {
+      return await populateTransactionData(rpcMessage)
+    },
+    { refreshInterval: 3 * 1000 },
+  )
+
+  const handleOnConfirmSignature = React.useCallback(() => {
+    return populatedTransaction
+      ? onConfirm({ populatedTransaction })
+      : onConfirm()
+  }, [onConfirm, populatedTransaction])
+
   switch (true) {
     case hasMapped(rpcMessageDecoded?.method):
       const ApproverCmp = componentMap[rpcMessageDecoded?.method as Method]
@@ -75,7 +96,7 @@ export const ProcedureApprovalCoordinator: React.FC<
               appMeta,
               rpcMessageDecoded,
               populatedTransaction,
-              onConfirm,
+              onConfirm: handleOnConfirmSignature,
               onReject,
             }}
           />
@@ -85,9 +106,7 @@ export const ProcedureApprovalCoordinator: React.FC<
     case rpcMessage.method === "eth_accounts":
       return (
         <NFIDConnectAccountCoordinator
-          onConnect={(hostname, accountId) =>
-            onConfirm({ hostname, accountId })
-          }
+          onConnect={() => onConfirm()}
           {...{
             rpcMessage,
             appMeta,

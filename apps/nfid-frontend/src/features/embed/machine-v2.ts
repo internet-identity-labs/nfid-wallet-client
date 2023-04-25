@@ -1,8 +1,7 @@
-import { TransactionRequest } from "@ethersproject/abstract-provider"
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
 import { assign, createMachine } from "xstate"
 
-import { Application, ProviderError, authState } from "@nfid/integration"
+import { Application, authState } from "@nfid/integration"
 import { FunctionCall } from "@nfid/integration-ethereum"
 
 import { AuthSession } from "frontend/state/authentication"
@@ -12,7 +11,10 @@ import TrustDeviceMachine from "frontend/state/machines/authentication/trust-dev
 
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
-import { ExecuteProcedureService } from "./services/execute-procedure"
+import {
+  ExecuteProcedureService,
+  ApproveSignatureEvent,
+} from "./services/execute-procedure"
 import {
   ProcedureCallEvent,
   RPCMessage,
@@ -30,7 +32,10 @@ type Events =
   | InvokationErrors
   | ProcedureCallEvent
   | { type: "SESSION_EXPIRED" }
-  | { type: "APPROVE"; data?: { hostname: string; accountId: string } }
+  | {
+      type: "APPROVE"
+      data?: ApproveSignatureEvent
+    }
   | { type: "CANCEL" }
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
@@ -64,7 +69,6 @@ type NFIDEmbedMachineContext = {
   rpcMessageDecoded?: FunctionCall
   error?: Error
   messageQueue: Array<RPCMessage>
-  populatedTransaction?: [TransactionRequest, ProviderError | undefined]
 }
 
 export const NFIDEmbedMachineV2 = createMachine(
@@ -246,7 +250,6 @@ export const NFIDEmbedMachineV2 = createMachine(
         requestOrigin: event.data.origin,
         rpcMessage: event.data.rpcMessage,
         rpcMessageDecoded: event.data.rpcMessageDecoded,
-        populatedTransaction: event.data.populatedTransaction,
       })),
       updateProcedure: assign(({ messageQueue }, event) => {
         return {

@@ -6,10 +6,10 @@ import { TokenConfig } from "src/ui/view-model/types"
 
 export const useAllToken = (): { token: TokenConfig[] } => {
   const tokens = getAssetScreenTokens()
-  let configs = tokens.map(useTokenConfig)
-  let tokenConfigs = configs.flatMap((config) => config.configs ?? [])
+  const configs = tokens.map(useTokenConfig)
+  const tokenConfigs = configs.flatMap((config) => config.configs ?? [])
   //¯\_(ツ)_/¯
-  let icTokenConfigs = useICTokens()
+  const icTokenConfigs = useICTokens()
   const token: TokenConfig[] = React.useMemo(() => {
     return [...tokenConfigs, ...icTokenConfigs]
   }, [tokenConfigs, icTokenConfigs])

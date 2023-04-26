@@ -29,11 +29,9 @@ export const mapAccountBalancesToOptions = (
   erc20: TokenBalanceSheet[],
   erc20Polygon: TokenBalanceSheet[],
 ) => {
-  console.log("erc20Polygon")
-
   if (!wallets) return []
 
-  if (selectedToken === "ETH")
+  if (selectedToken === "ETH" || selectedToken === 'MATIC')
     return [
       {
         label: "Public",
@@ -94,7 +92,6 @@ export const mapAccountBalancesToOptions = (
       },
     ] as IGroupedOptions[]
   }
-  console.log(erc20Polygon)
   const erc20PolygonToken = erc20Polygon.find((l) => l.token === selectedToken)
 
   if (erc20PolygonToken) {

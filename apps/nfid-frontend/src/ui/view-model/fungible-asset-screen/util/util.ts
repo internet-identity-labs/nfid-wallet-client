@@ -1,7 +1,8 @@
-import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types";
-import { stringICPtoE8s } from "src/integration/wallet/utils";
-import { TokenConfig } from "src/ui/view-model/fungible-asset/types";
-import { toPresentation } from "@nfid/integration/token/icp";
+import { TokenBalanceSheet } from "packages/integration/src/lib/asset/types"
+import { stringICPtoE8s } from "src/integration/wallet/utils"
+import { TokenConfig } from "src/ui/view-model/types"
+
+import { toPresentation } from "@nfid/integration/token/icp"
 
 export function nativeToTokenConfig(
   config: any,

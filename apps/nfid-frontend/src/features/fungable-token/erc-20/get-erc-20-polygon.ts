@@ -6,13 +6,10 @@ import {
 } from "packages/integration/src/lib/asset/types"
 import { getWalletDelegation } from "src/integration/facade/wallet"
 import { fetchProfile } from "src/integration/identity-manager"
-import { TokenConfig } from "src/ui/view-model/fungible-asset/types"
+import { TokenConfig } from "src/ui/view-model/types"
 
 import { IconERC20 } from "@nfid-frontend/ui"
-import {
-  loadProfileFromLocalStorage,
-  polygonAsset,
-} from "@nfid/integration"
+import { loadProfileFromLocalStorage, polygonAsset } from "@nfid/integration"
 
 export const getErc20Tokens = async (): Promise<Array<TokenBalanceSheet>> => {
   const identity = await getIdentity()

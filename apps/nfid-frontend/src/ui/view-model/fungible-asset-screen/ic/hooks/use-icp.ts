@@ -1,7 +1,7 @@
 import { useAllDip20Token } from "src/features/fungable-token/dip-20/hooks/use-all-token-meta"
 import { useBalanceICPAll } from "src/features/fungable-token/icp/hooks/use-balance-icp-all"
 import { stringICPtoE8s } from "src/integration/wallet/utils"
-import { TokenConfig } from "src/ui/view-model/fungible-asset/types"
+import { TokenConfig } from "src/ui/view-model/types"
 
 import { IconSvgDfinity } from "@nfid-frontend/ui"
 import { toPresentation, WALLET_FEE_E8S } from "@nfid/integration/token/icp"
